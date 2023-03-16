@@ -1,13 +1,13 @@
 <template>
   <div class="_homeView">
-    <div class="_floatinProjectBtn">
+    <!-- <div class="_floatinProjectBtn">
       <router-link
         class="u-button u-button_red u-button_big u-button_floating"
         to="/projects"
       >
         {{ $t("show_projects") }}&nbsp;<sl-icon name="arrow-up-right" />
       </router-link>
-    </div>
+    </div> -->
 
     <div class="_homeView--content">
       <!-- <img :src="`${$root.publicPath}i_logo.svg`" class="_dodoclogo" /> -->
@@ -29,7 +29,11 @@
           {{ $root.app_infos.contactmail_of_instance }}
         </a>
       </p>
+    </div>
 
+    <SpacesList />
+
+    <div class="">
       <small class="_versionNumber">
         <button
           type="button"
@@ -50,11 +54,13 @@
 <script>
 // import SocketStatus from "@/components/.vue";
 import AdminSettings from "@/adc-core/AdminSettings.vue";
+import SpacesList from "@/components/space/SpacesList.vue";
 
 export default {
   props: {},
   components: {
     AdminSettings,
+    SpacesList,
   },
   data() {
     return {
@@ -72,6 +78,7 @@ export default {
       );
     },
   },
+  methods: {},
 };
 </script>
 <style lang="scss">
@@ -86,6 +93,8 @@ export default {
   max-height: -webkit-fill-available;
 
   display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
   align-items: center;
 
   padding-bottom: 150px;
@@ -94,7 +103,12 @@ export default {
 ._homeView--content {
   max-width: 600px;
   width: 100%;
+  min-height: 60vh;
   margin: 0 auto;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
 }
 
 ._panesLeft {

@@ -38,7 +38,8 @@ module.exports = (function () {
     app.get(
       [
         "/_api2/:folder_type/:folder_slug/:meta_filename",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
       _getFile
@@ -46,7 +47,8 @@ module.exports = (function () {
     app.post(
       [
         "/_api2/:folder_type/:folder_slug/_upload",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_upload",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_upload",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_upload",
       ],
       _generalPasswordCheck,
       _authenticateToken,
@@ -55,7 +57,8 @@ module.exports = (function () {
     app.post(
       [
         "/_api2/:folder_type/:folder_slug/_export",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_export",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_export",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_export",
       ],
       _generalPasswordCheck,
       _authenticateToken,
@@ -64,7 +67,8 @@ module.exports = (function () {
     app.patch(
       [
         "/_api2/:folder_type/:folder_slug/:meta_filename",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
       _authenticateToken,
@@ -73,7 +77,8 @@ module.exports = (function () {
     app.delete(
       [
         "/_api2/:folder_type/:folder_slug/:meta_filename",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
       _authenticateToken,
@@ -82,7 +87,8 @@ module.exports = (function () {
     app.post(
       [
         "/_api2/:folder_type/:folder_slug/:meta_filename/_duplicate",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename/_duplicate",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename/_duplicate",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_duplicate",
       ],
       _generalPasswordCheck,
       _authenticateToken,
@@ -93,7 +99,8 @@ module.exports = (function () {
     app.get(
       [
         "/_api2/:folder_type",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type",
       ],
       _generalPasswordCheck,
       _getFolders
@@ -111,7 +118,8 @@ module.exports = (function () {
     app.post(
       [
         "/_api2/:folder_type",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type",
       ],
       _generalPasswordCheck,
       _createFolder
@@ -120,7 +128,8 @@ module.exports = (function () {
     app.get(
       [
         "/_api2/:folder_type/:folder_slug",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
       _getFolder
@@ -129,7 +138,8 @@ module.exports = (function () {
     app.patch(
       [
         "/_api2/:folder_type/:folder_slug",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
       _authenticateToken,
@@ -138,7 +148,8 @@ module.exports = (function () {
     app.delete(
       [
         "/_api2/:folder_type/:folder_slug",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
       _authenticateToken,
@@ -265,16 +276,16 @@ module.exports = (function () {
       }
 
       // if folder is child/has parent, the parent's authors will determine who can edit this child
-      if (path_to_parent_folder)
-        await auth.isAuthorIncluded({
-          path_to_folder: path_to_parent_folder,
-          author_path: token_path,
-        });
-      else
-        await auth.isAuthorIncluded({
-          path_to_folder,
-          author_path: token_path,
-        });
+      // if (path_to_parent_folder)
+      //   await auth.isAuthorIncluded({
+      //     path_to_folder: path_to_parent_folder,
+      //     author_path: token_path,
+      //   });
+      // else
+      //   await auth.isAuthorIncluded({
+      //     path_to_folder,
+      //     author_path: token_path,
+      //   });
 
       dev.logapi("Author allowed, next");
       return next ? next() : undefined;

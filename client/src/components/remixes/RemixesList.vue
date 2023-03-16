@@ -52,6 +52,7 @@ export default {
 <style lang="scss" scoped>
 ._remixesList {
   max-width: 800px;
+  max-width: var(--max-column-width);
   margin: 0 auto;
 }
 

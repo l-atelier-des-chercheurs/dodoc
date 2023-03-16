@@ -46,7 +46,7 @@
           </div>
           <div class="">
             <router-link
-              :to="{ path: '/' + publication.$path }"
+              :to="{ path: createURLFromPath(publication.$path) }"
               target="_blank"
               class="u-buttonLink"
             >

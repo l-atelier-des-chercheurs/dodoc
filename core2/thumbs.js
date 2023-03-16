@@ -37,7 +37,7 @@ module.exports = (function () {
         path_to_folder,
       });
 
-      const { schema } = await utils.parseAndCheckSchema({
+      const schema = await utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
       const filethumbs_resolutions = schema.$files?.thumbs?.resolutions;
@@ -268,7 +268,7 @@ module.exports = (function () {
       cover_name
     );
 
-    const { schema } = await utils.parseAndCheckSchema({
+    const schema = await utils.parseAndCheckSchema({
       relative_path: path_to_folder,
     });
     const cover_schema = schema.$cover;

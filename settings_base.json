@@ -298,12 +298,12 @@
     }
   },
   "schema": {
-    "projects": {
+    "spaces": {
       "$cover": {
-        "width": 2000,
-        "height": 2000,
+        "width": 1200,
+        "height": 1200,
         "thumbs": {
-          "resolutions": [50, 320, 640, 2000]
+          "resolutions": [50, 320, 640, 1200]
         }
       },
       "fields": {
@@ -311,193 +311,214 @@
           "type": "string",
           "unique": true
         },
-        "keywords": {
-          "type": "array"
-        },
-        "materials": {
-          "type": "array"
-        },
         "description": {
           "type": "string"
-        },
-        "folder": {
-          "type": "string"
-        },
-        "license": {
-          "type": "string",
-          "options": ["CC", "all_rights_reserved", "copyleft"],
-          "default": "CC"
         }
       },
-      "$files": {
-        "thumbs": {
-          "resolutions": [180, 360, 1600]
-        },
-        "fields": {
-          "caption": {
-            "type": "string"
-          }
-        }
-      },
+      "$files": {},
       "$folders": {
-        "stopmotions": {
-          "fields": {
-            "images_list": {
-              "type": "array"
+        "projects": {
+          "$cover": {
+            "width": 2000,
+            "height": 2000,
+            "thumbs": {
+              "resolutions": [50, 320, 640, 2000]
             }
           },
-          "$files": {
-            "thumbs": {
-              "resolutions": [240, 1600]
-            }
-          }
-        },
-        "remixes": {
           "fields": {
             "title": {
               "type": "string",
               "unique": true
             },
-            "type": {
+            "keywords": {
+              "type": "array"
+            },
+            "materials": {
+              "type": "array"
+            },
+            "description": {
               "type": "string"
             },
-            "modules_list": {
-              "type": "array"
+            "folder": {
+              "type": "string"
+            },
+            "license": {
+              "type": "string",
+              "options": ["CC", "all_rights_reserved", "copyleft"],
+              "default": "CC"
             }
           },
           "$files": {
+            "thumbs": {
+              "resolutions": [180, 360, 1600]
+            },
             "fields": {
-              "module_type": {
+              "caption": {
                 "type": "string"
-              },
-              "source_medias": {
-                "type": "array"
               }
             }
-          }
-        },
-        "publications": {
-          "$cover": {
-            "width": 1200,
-            "height": 1200,
-            "thumbs": {
-              "resolutions": [50, 320, 640, 1200]
-            }
           },
-          "fields": {
-            "title": {
-              "type": "string",
-              "unique": true
+          "$folders": {
+            "stopmotions": {
+              "fields": {
+                "images_list": {
+                  "type": "array"
+                }
+              },
+              "$files": {
+                "thumbs": {
+                  "resolutions": [240, 1600]
+                }
+              }
             },
-            "template": {
-              "type": "string",
-              "options": [
-                "page_by_page",
-                "carreau",
-                "story",
-                "face_masks",
-                "image_tracking"
-              ],
-              "default": "page_by_page"
+            "remixes": {
+              "fields": {
+                "title": {
+                  "type": "string",
+                  "unique": true
+                },
+                "type": {
+                  "type": "string"
+                },
+                "modules_list": {
+                  "type": "array"
+                }
+              },
+              "$files": {
+                "fields": {
+                  "module_type": {
+                    "type": "string"
+                  },
+                  "source_medias": {
+                    "type": "array"
+                  }
+                }
+              }
             },
-            "modules_list": {
-              "type": "array"
-            },
-            "pages": {
-              "type": "array"
-            },
-            "page_width": {
-              "type": "number"
-            },
-            "page_height": {
-              "type": "number"
-            },
-            "page_spreads": {
-              "type": "boolean"
-            },
-            "page_margin_top": {
-              "type": "number"
-            },
-            "page_margin_bottom": {
-              "type": "number"
-            },
-            "page_margin_left": {
-              "type": "number"
-            },
-            "page_margin_right": {
-              "type": "number"
-            },
-            "enable_pagination": {
-              "type": "boolean"
-            },
-            "pagn_starts_on_page": {
-              "type": "number"
-            },
-            "pagn_right": {
-              "type": "number"
-            },
-            "pagn_bottom": {
-              "type": "number"
-            }
-          },
-          "$files": {
-            "fields": {
-              "module_type": {
-                "type": "string"
+            "publications": {
+              "$cover": {
+                "width": 1200,
+                "height": 1200,
+                "thumbs": {
+                  "resolutions": [50, 320, 640, 1200]
+                }
               },
-              "source_medias": {
-                "type": "array"
+              "fields": {
+                "title": {
+                  "type": "string",
+                  "unique": true
+                },
+                "template": {
+                  "type": "string",
+                  "options": [
+                    "page_by_page",
+                    "carreau",
+                    "story",
+                    "face_masks",
+                    "image_tracking"
+                  ],
+                  "default": "page_by_page"
+                },
+                "modules_list": {
+                  "type": "array"
+                },
+                "pages": {
+                  "type": "array"
+                },
+                "page_width": {
+                  "type": "number"
+                },
+                "page_height": {
+                  "type": "number"
+                },
+                "page_spreads": {
+                  "type": "boolean"
+                },
+                "page_margin_top": {
+                  "type": "number"
+                },
+                "page_margin_bottom": {
+                  "type": "number"
+                },
+                "page_margin_left": {
+                  "type": "number"
+                },
+                "page_margin_right": {
+                  "type": "number"
+                },
+                "enable_pagination": {
+                  "type": "boolean"
+                },
+                "pagn_starts_on_page": {
+                  "type": "number"
+                },
+                "pagn_right": {
+                  "type": "number"
+                },
+                "pagn_bottom": {
+                  "type": "number"
+                }
               },
-              "size": {
-                "type": "number"
-              },
-              "page_id": {
-                "type": "string"
-              },
-              "align": {
-                "type": "string"
-              },
-              "x": {
-                "type": "number"
-              },
-              "y": {
-                "type": "number"
-              },
-              "width": {
-                "type": "number"
-              },
-              "height": {
-                "type": "number"
-              },
-              "rotation": {
-                "type": "number"
-              },
-              "text_size": {
-                "type": "number"
-              },
-              "opacity": {
-                "type": "number"
-              },
-              "margins": {
-                "type": "number"
-              },
-              "background_color": {
-                "type": "string"
-              },
-              "outline_color": {
-                "type": "string"
-              },
-              "outline_width": {
-                "type": "number"
-              },
-              "border_radius": {
-                "type": "number"
-              },
-              "locked": {
-                "type": "boolean"
-              },
-              "z_index": {
-                "type": "number"
+              "$files": {
+                "fields": {
+                  "module_type": {
+                    "type": "string"
+                  },
+                  "source_medias": {
+                    "type": "array"
+                  },
+                  "size": {
+                    "type": "number"
+                  },
+                  "page_id": {
+                    "type": "string"
+                  },
+                  "align": {
+                    "type": "string"
+                  },
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  },
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  },
+                  "rotation": {
+                    "type": "number"
+                  },
+                  "text_size": {
+                    "type": "number"
+                  },
+                  "opacity": {
+                    "type": "number"
+                  },
+                  "margins": {
+                    "type": "number"
+                  },
+                  "background_color": {
+                    "type": "string"
+                  },
+                  "outline_color": {
+                    "type": "string"
+                  },
+                  "outline_width": {
+                    "type": "number"
+                  },
+                  "border_radius": {
+                    "type": "number"
+                  },
+                  "locked": {
+                    "type": "boolean"
+                  },
+                  "z_index": {
+                    "type": "number"
+                  }
+                }
               }
             }
           }

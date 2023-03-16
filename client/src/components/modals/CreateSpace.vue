@@ -1,10 +1,10 @@
 <template>
-  <BaseModal2 :title="$t('create_a_project')" @close="$emit('close')">
-    <form class="input-validation-required" @submit.prevent="createProject">
+  <BaseModal2 :title="$t('create_a_space')" @close="$emit('close')">
+    <form class="input-validation-required" @submit.prevent="createSpace">
       <DLabel :str="$t('title')" />
 
       <TextInput
-        :content.sync="new_project_title"
+        :content.sync="new_space_title"
         :maxlength="40"
         :required="true"
         @toggleValidity="($event) => (allow_save = $event)"
@@ -14,22 +14,22 @@
 
       <div class="">
         <ToggleInput
-          :content.sync="new_project_is_invisible"
+          :content.sync="new_space_is_invisible"
           :label="$t('invisible')"
           :options="{
-            true: $t('invisible_status_explanations_projects'),
-            false: $t('visible_status_explanations_projects'),
+            true: $t('invisible_status_explanations_spaces'),
+            false: $t('visible_status_explanations_spaces'),
           }"
         />
       </div>
 
       <br />
-      <!-- todo : validate properly -->
+
       <button
         class="u-button u-button_bleuvert"
         type="submit"
         slot="footer"
-        :loading="is_creating_project"
+        :loading="is_creating_space"
       >
         {{ $t("create_and_open") }}
       </button>
@@ -50,10 +50,10 @@ export default {
   components: {},
   data() {
     return {
-      new_project_title: "",
-      new_project_is_invisible: false,
+      new_space_title: "",
+      new_space_is_invisible: false,
 
-      is_creating_project: false,
+      is_creating_space: false,
       allow_save: false,
       error_msg: "",
     };
@@ -64,32 +64,32 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async createProject() {
-      this.is_creating_project = true;
+    async createSpace() {
+      this.is_creating_space = true;
 
       // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
           path: this.path,
           additional_meta: {
-            title: this.new_project_title,
-            requested_slug: this.new_project_title,
+            title: this.new_space_title,
+            requested_slug: this.new_space_title,
             status: "draft",
             license: "CC",
             $status:
-              this.new_project_is_invisible === true ? "invisible" : "draft",
+              this.new_space_is_invisible === true ? "invisible" : "draft",
             $authors: [this.$api.tokenpath.token_path],
           },
         });
         setTimeout(() => {
-          this.$emit("openNewProject", new_folder_slug);
+          this.$emit("openNewSpace", new_folder_slug);
         }, 50);
       } catch (err) {
         this.error_msg = "Error: " + err.message;
         setTimeout(() => {
           this.error_msg = "";
         }, 5000);
-        this.is_creating_project = false;
+        this.is_creating_space = false;
       }
     },
   },

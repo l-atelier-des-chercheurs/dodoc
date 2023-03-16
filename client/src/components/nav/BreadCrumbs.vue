@@ -10,10 +10,10 @@
       <div>
         <router-link
           class="u-buttonLink"
-          :to="`/projects`"
-          :disabled="$route.name === 'Projets'"
+          :to="{ path: '/+' + $route.params.space_slug }"
+          :disabled="$route.name === 'Espace'"
         >
-          {{ $t("list_of_projects") }}
+          {{ $t("space") }}
         </router-link>
       </div>
       <template v-if="$route.name === 'Projet'">
