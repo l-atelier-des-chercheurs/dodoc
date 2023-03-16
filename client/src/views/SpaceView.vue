@@ -135,7 +135,10 @@ export default {
     },
     openNewProject(new_folder_slug) {
       this.show_create_modal = false;
-      this.$router.push("projects/" + new_folder_slug);
+      const url = this.createURLFromPath(
+        this.projects_path + "/" + new_folder_slug
+      );
+      this.$router.push(url);
     },
   },
 };

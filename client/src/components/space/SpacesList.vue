@@ -102,7 +102,11 @@ export default {
         // this.is_creating_project = false;
       }
     },
-    openNewSpace() {},
+    openNewSpace(new_folder_slug) {
+      this.show_create_modal = false;
+      const url = this.createURLFromPath(this.path + "/" + new_folder_slug);
+      this.$router.push(url);
+    },
   },
 };
 </script>
