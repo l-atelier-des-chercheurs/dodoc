@@ -14,19 +14,12 @@
       />
 
       <template v-else>
-        <transition name="fade" mode="out-in">
-          <div class="">
-            <TopBar v-if="$route.name !== 'Publication'" />
-
-            <transition name="fade_fast" mode="out-in">
-              <router-view v-slot="{ Component }" :key="$route.path">
-                <component :is="Component" />
-              </router-view>
-            </transition>
-
-            <TaskTracker />
-          </div>
+        <transition name="fade_fast" mode="out-in">
+          <router-view v-slot="{ Component }" :key="$route.path">
+            <component :is="Component" />
+          </router-view>
         </transition>
+        <TaskTracker />
       </template>
     </template>
 
@@ -34,7 +27,6 @@
   </div>
 </template>
 <script>
-import TopBar from "@/components/TopBar.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
@@ -42,7 +34,6 @@ import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
 export default {
   props: {},
   components: {
-    TopBar,
     GeneralPasswordModal,
     TaskTracker,
     DisconnectModal,
@@ -275,6 +266,7 @@ html {
 }
 body {
   min-height: 100%;
+  height: 100%;
 }
 
 a {
@@ -295,7 +287,7 @@ button {
 
 #app {
   /* font-family: "Work Sans"; */
-
+  height: 100%;
   min-height: 100%;
 }
 
@@ -330,14 +322,8 @@ strong {
   font-weight: 700;
 }
 
-h1 {
-  margin: 0;
-  font-size: var(--sl-font-size-xx-large);
-}
-h2 {
-  margin: 0;
-  font-size: var(--sl-font-size-x-large);
-}
+h1,
+h2,
 h3 {
   margin: 0;
   font-size: var(--sl-font-size-large);
@@ -457,7 +443,7 @@ img {
   pointer-events: none;
   // top: 50%;
 
-  transform: rotate(45deg);
+  transform: rotate(90deg);
 
   width: 3px;
   height: 20px;

@@ -112,9 +112,6 @@ Vue.component("DLabel", DLabel);
 import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
 
-import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
-Vue.component("PickMediaFromProjects", PickMediaFromProjects);
-
 Vue.component("EditBtn", {
   name: "EditBtn",
   template: `
