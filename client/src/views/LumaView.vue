@@ -1,9 +1,6 @@
 <template>
   <div class="_lumaView">
-    <!-- // identifiez-vous  -->
-    <!-- // une fois identifié, accès à son chutier -->
-    <!-- // + accès au lot commun -->
-    <LoaderSpinner v-if="!first_folder" />
+    <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <splitpanes class="_panes">
         <pane class="_myContent" :key="'myContent'" min-size="5">
@@ -22,11 +19,11 @@
           </div>
 
           <div v-if="connected_as" class="">
-            <MyChutier />
+            <MyChutier :shared_space_path="shared_folder_path" />
           </div>
         </pane>
         <pane class="_sharedContent" :key="'sharedContent'" min-size="5">
-          <EspaceCommun />
+          <SharedFolder :shared_folder_path="shared_folder_path" />
         </pane>
       </splitpanes>
     </template>
@@ -37,7 +34,7 @@ import { Splitpanes, Pane } from "splitpanes";
 
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import MyChutier from "@/components/MyChutier.vue";
-import EspaceCommun from "@/components/EspaceCommun.vue";
+import SharedFolder from "@/components/SharedFolder.vue";
 
 export default {
   props: {},
@@ -46,12 +43,14 @@ export default {
     Pane,
     AuthorList,
     MyChutier,
-    EspaceCommun,
+    SharedFolder,
   },
   data() {
     return {
       path: "folders",
       folders: undefined,
+      shared_folder_path: undefined,
+
       show_authors_modal: false,
     };
   },
@@ -69,12 +68,7 @@ export default {
       // }
     },
   },
-  computed: {
-    first_folder() {
-      if (this.folders && this.folders.length > 0) return this.folders[0];
-      return false;
-    },
-  },
+  computed: {},
   methods: {
     async loadFolder() {
       this.folders = await this.$api
@@ -89,9 +83,9 @@ export default {
       if (this.folders.length === 0) {
         await this.createFolder();
         window.location.reload();
+      } else {
+        this.shared_folder_path = this.folders[0].$path;
       }
-
-      this.$api.join({ room: this.path });
     },
     async createFolder() {
       try {

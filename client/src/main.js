@@ -116,7 +116,7 @@ Vue.component("EditBtn", {
   name: "EditBtn",
   template: `
   <sl-button variant="edit" class="editBtn" size="small" circle @click="$emit('click')">
-    <sl-icon name="pencil-fill" :label="$t('edit')" />
+    <sl-icon name="pencil" :label="$t('edit')" />
   </sl-button>
 `,
 });

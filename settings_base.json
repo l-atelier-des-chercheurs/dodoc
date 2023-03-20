@@ -40,6 +40,12 @@
           "resolutions": [180, 360, 1600]
         },
         "fields": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
           "caption": {
             "type": "string"
           }
@@ -70,6 +76,12 @@
           "resolutions": [180, 360, 1600]
         },
         "fields": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
           "caption": {
             "type": "string"
           }
