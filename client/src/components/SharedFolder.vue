@@ -3,6 +3,10 @@
     <div class="_grid">
       <div v-for="file in shared_folder.$files" :key="file.$path">
         <MediaContent class="" :file="file" :context="'preview'" />
+
+        <button type="button" class="u-button" @click="removeMedia(file.$path)">
+          {{ $t("remove") }}
+        </button>
       </div>
     </div>
   </div>
@@ -28,7 +32,11 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    removeMedia(path) {
+      this.$api.deleteItem({ path });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -36,6 +44,6 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 2px;
-  padding: 0 calc(var(--spacing) / 2);
+  // padding: 0 calc(var(--spacing) / 2);
 }
 </style>

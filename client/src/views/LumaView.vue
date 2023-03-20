@@ -8,18 +8,11 @@
             v-if="show_authors_modal"
             @close="show_authors_modal = false"
           />
-
-          <div class="_subscribeBtn">
-            <button type="button" class="_authorBtn" @click="showAuthorModal">
-              <template v-if="connected_as">
-                {{ connected_as.name }}
-              </template>
-              <template v-else>{{ $t("login") }}</template>
-            </button>
-          </div>
-
           <div v-if="connected_as" class="">
-            <MyChutier :shared_space_path="shared_folder_path" />
+            <MyChutier
+              :shared_space_path="shared_folder_path"
+              @showAuthorModal="showAuthorModal"
+            />
           </div>
         </pane>
         <pane class="_sharedContent" :key="'sharedContent'" min-size="5">
@@ -121,9 +114,6 @@ export default {
   height: 100%;
   background: white;
   box-shadow: 0 0px 5px rgb(0 0 0 / 12%);
-}
-
-._subscribeBtn {
-  padding: calc(var(--spacing) / 1);
+  overflow: auto;
 }
 </style>

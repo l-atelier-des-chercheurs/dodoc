@@ -1,7 +1,19 @@
 <template>
-  <div class="_myChutier">
+  <div class="_myChutier" v-if="chutier">
     <div class="_topContent">
-      <h1>MyChutier</h1>
+      <div class="_subscribeBtn">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine _authorBtn"
+          @click="$emit('showAuthorModal')"
+        >
+          <template v-if="connected_as">
+            {{ connected_as.name }}
+          </template>
+          <template v-else>{{ $t("login") }}</template>
+        </button>
+      </div>
+
       <div class="_importBtn">
         <input
           type="file"
@@ -25,52 +37,62 @@
           :selected_files="selected_files"
           :path="path"
           @close="selected_files = []"
+          @importedMedias="importedMedias"
         />
       </div>
     </div>
-    <div v-if="chutier" class="_items">
-      <div class="_item" v-for="file in chutier.$files" :key="file.$path">
-        <MediaContent
-          class="_item--preview"
-          :file="file"
-          :context="'preview'"
-        />
-        <TitleField
-          :field_name="'title'"
-          class="_title"
-          :content="file.title || file.$media_filename"
-          :path="file.$path"
-          :required="true"
-          :maxlength="40"
-          :can_edit="true"
-        />
-        <TitleField
-          :field_name="'description'"
-          class="_description"
-          :content="file.description"
-          :path="file.$path"
-          :required="false"
-          :maxlength="240"
-          :can_edit="true"
-        />
+    <div class="_middleContent">
+      <label for="">Éléments à traiter : {{ chutier_items.length }} </label>
+      <br />
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="selectAll"
+        v-if="chutier_items.length > 0"
+      >
+        Sélectionner tout
+      </button>
+    </div>
+    <div class="_items">
+      <transition-group tag="div" name="listComplete">
+        <div class="_item" v-for="file in chutier_items" :key="file.$path">
+          <ChutierItem
+            :file="file"
+            :is_selected="selected_items.includes(file.$path)"
+            :shared_space_path="shared_space_path"
+            @toggleSelect="toggleSelect(file.$path)"
+          />
+        </div>
+      </transition-group>
+    </div>
 
-        <button
-          type="button"
-          class="u-button u-button_transparent"
-          @click="moveToSharedSpace(file.$path)"
-        >
-          <sl-icon name="arrow-right-square" />
-        </button>
-      </div>
+    <div class="_selectionBar" v-if="selected_items.length > 0">
+      <button type="button" class="u-button u-button_bleuvert">
+        {{ $t("create_stack") }}
+      </button>
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="removeItemsInSelection"
+      >
+        Supprimer la sélection
+      </button>
+      <button type="button" class="u-buttonLink" @click="deselectAll">
+        Déselectionner tout
+      </button>
     </div>
   </div>
 </template>
 <script>
+import ChutierItem from "@/components/ChutierItem.vue";
+
 export default {
   props: {
     shared_space_path: String,
   },
-  components: {},
+  components: {
+    ChutierItem,
+  },
   data() {
     return {
       chutier: undefined,
@@ -78,6 +100,8 @@ export default {
       id: `image_select_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
+
+      selected_items: [],
     };
   },
   created() {},
@@ -88,10 +112,24 @@ export default {
   beforeDestroy() {
     this.$api.leave({ room: this.path });
   },
-  watch: {},
+  watch: {
+    chutier_items() {
+      this.selected_items = this.selected_items.filter((item_path) =>
+        this.chutier_items.find((ci) => ci.$path === item_path)
+      );
+    },
+  },
   computed: {
     path() {
       return this.connected_as.$path;
+    },
+    chutier_items() {
+      if (!this.chutier || !this.chutier.$files) return [];
+      const _medias = JSON.parse(JSON.stringify(this.chutier.$files));
+      _medias.sort(
+        (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+      );
+      return _medias;
     },
   },
   methods: {
@@ -105,13 +143,32 @@ export default {
           this.is_loading = false;
         });
     },
+    toggleSelect(path) {
+      if (this.selected_items.includes(path))
+        this.selected_items = this.selected_items.filter((i) => i !== path);
+      else this.selected_items.push(path);
+    },
+
     updateInputFiles($event) {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
     },
-    async moveToSharedSpace(file_path) {
-      const destination_path_to_folder = this.shared_space_path;
-      await this.$api.copyFile({ path: file_path, destination_path_to_folder });
+    async importedMedias($event) {
+      // await new Promise((r) => setTimeout(r, 1000));
+      this.selected_items = $event.map(
+        (i) => this.connected_as.$path + "/" + i
+      );
+    },
+    selectAll() {
+      this.selected_items = this.chutier_items.map((i) => i.$path);
+    },
+    deselectAll() {
+      this.selected_items = [];
+    },
+    async removeItemsInSelection() {
+      for (const item_path of this.selected_items) {
+        await this.$api.deleteItem({ path: item_path });
+      }
     },
   },
 };
@@ -121,37 +178,34 @@ export default {
   // padding: 0 calc(var(--spacing) / 1);
 }
 ._topContent {
+  position: sticky;
+  display: flex;
+  gap: calc(var(--spacing) / 1);
+  top: 0;
+  padding: calc(var(--spacing) / 1);
+}
+._middleContent {
   padding: 0 calc(var(--spacing) / 1);
 }
 ._importBtn {
-  padding: calc(var(--spacing) / 1) 0;
+  // padding: calc(var(--spacing) / 1) 0;
 }
 
 ._items {
   padding: calc(var(--spacing) / 2) 0;
 }
 
-._item {
+._selectionBar {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
+  flex-flow: column nowrap;
+  justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  width: 100%;
-  border-bottom: 1px solid black;
-}
-._item--preview {
-  height: 100px;
-  width: 100px;
-  flex: 0 0 auto;
-  overflow: hidden;
-
-  ::v-deep ._mediaContent--image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
+  background: rgba(255, 255, 255, 0.94);
+  padding: calc(var(--spacing) / 1);
 }
 </style>
