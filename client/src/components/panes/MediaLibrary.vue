@@ -74,6 +74,12 @@
         :select_mode="select_mode"
         :position_in_list="focused_media_position_in_list"
         @duplicate="duplicateMedia(focused_media.$path)"
+        @copy="
+          copyMedia({
+            media_path: focused_media.$path,
+            destination_path_to_folder: $event,
+          })
+        "
         @remove="removeMedia(focused_media.$path)"
         @close="toggleMediaFocus(focused_media.$path)"
         @select="selectMedia(focused_media.$path)"
@@ -230,7 +236,7 @@ export default {
         .success(this.$t("media_removed"));
     },
     async duplicateMedia(path) {
-      const new_media_path = await this.$api.duplicateFile({
+      const new_media_path = await this.$api.copyFile({
         path,
       });
       new_media_path;
@@ -238,6 +244,18 @@ export default {
         .closeLogOnClick(true)
         .delay(4000)
         .success(this.$t("media_duplicated"));
+    },
+    async copyMedia({ media_path, destination_path_to_folder }) {
+      const new_media_path = await this.$api.copyFile({
+        path: media_path,
+        destination_path_to_folder,
+      });
+      new_media_path;
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("media_copied"));
+      this.toggleMediaFocus(false);
     },
     prevMedia() {
       this.toggleMediaFocus(

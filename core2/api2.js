@@ -86,13 +86,13 @@ module.exports = (function () {
     );
     app.post(
       [
-        "/_api2/:folder_type/:folder_slug/:meta_filename/_duplicate",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename/_duplicate",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_duplicate",
+        "/_api2/:folder_type/:folder_slug/:meta_filename/_copy",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename/_copy",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_copy",
       ],
       _generalPasswordCheck,
       _authenticateToken,
-      _duplicateFile
+      _copyFile
     );
 
     /* FOLDERS */
@@ -654,32 +654,41 @@ module.exports = (function () {
     }
   }
 
-  async function _duplicateFile(req, res, next) {
+  async function _copyFile(req, res, next) {
     const { path_to_folder, meta_filename, path_to_meta, data } =
       utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, path_to_meta, data });
 
+    let { destination_path_to_folder, new_meta } = data;
+    if (!destination_path_to_folder)
+      destination_path_to_folder = path_to_folder;
+
     try {
-      const dup_meta_filename = await file.duplicateFile({
+      const copy_meta_filename = await file.copyFile({
         path_to_folder,
+        destination_path_to_folder,
         meta_filename,
         path_to_meta,
-        data,
+        new_meta,
       });
       dev.logpackets({
-        status: `duplicated file`,
+        status: `copied file`,
         path_to_folder,
-        dup_meta_filename,
+        destination_path_to_folder,
+        copy_meta_filename,
       });
-      res.status(200).json({ meta_filename: dup_meta_filename });
+      res.status(200).json({ meta_filename: copy_meta_filename });
 
       const meta = await file.getFile({
-        path_to_folder,
-        path_to_meta: path.join(path_to_folder, dup_meta_filename),
+        path_to_folder: destination_path_to_folder,
+        path_to_meta: path.join(destination_path_to_folder, copy_meta_filename),
       });
-      notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
+      notifier.emit("fileCreated", destination_path_to_folder, {
+        path_to_folder: destination_path_to_folder,
+        meta,
+      });
     } catch (err) {
-      dev.error("Failed to duplicate expected content: " + err);
+      dev.error("Failed to copy expected content: " + err);
       res.status(500).send({ code: err.code });
     }
   }
