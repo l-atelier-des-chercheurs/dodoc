@@ -662,6 +662,9 @@ module.exports = (function () {
     let { destination_path_to_folder, new_meta } = data;
     if (!destination_path_to_folder)
       destination_path_to_folder = path_to_folder;
+    else {
+      // todo check for auth to copy to folder
+    }
 
     try {
       const copy_meta_filename = await file.copyFile({
