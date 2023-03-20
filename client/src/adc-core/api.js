@@ -433,14 +433,14 @@ export default function () {
 
         return res.data.meta_filename;
       },
-      async duplicateFile({ path, new_meta }) {
-        path = `${path}/_duplicate`;
-
-        const response = await this.$axios.post(path, new_meta).catch((err) => {
-          this.onError(err);
-          throw err;
-        });
-
+      async copyFile({ path, new_meta = {}, destination_path_to_folder = "" }) {
+        path = `${path}/_copy`;
+        const response = await this.$axios
+          .post(path, { new_meta, destination_path_to_folder })
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
         return response.data.meta_filename;
       },
       async exportFolder({ path, instructions }) {

@@ -326,16 +326,28 @@ module.exports = (function () {
 
       return meta_filename;
     },
-
-    duplicateFile: async ({
+    copyFile: async ({
       path_to_folder,
+      destination_path_to_folder,
       meta_filename,
       path_to_meta,
-      data,
+      new_meta,
     }) => {
-      dev.logfunction({ path_to_folder, meta_filename, path_to_meta, data });
+      dev.logfunction({
+        path_to_folder,
+        destination_path_to_folder,
+        meta_filename,
+        path_to_meta,
+        new_meta,
+      });
 
       let meta = await utils.readMetaFile(path_to_meta);
+
+      // todo copy all related meta (archives as well)
+      // const _all_file_paths = await _getAllFilesRelatedToMeta({
+      //   path_to_folder,
+      //   meta_filename,
+      // });
 
       if (meta.hasOwnProperty("$media_filename")) {
         // copy media
@@ -349,7 +361,7 @@ module.exports = (function () {
           meta.$media_filename
         );
         const copy_path = utils.getPathToUserContent(
-          path_to_folder,
+          destination_path_to_folder,
           new_filename
         );
         await fs.copy(og_path, copy_path);
@@ -364,15 +376,15 @@ module.exports = (function () {
       });
 
       await utils.saveMetaAtPath({
-        relative_path: path_to_folder,
+        relative_path: destination_path_to_folder,
         file_slug: new_meta_filename,
         meta,
       });
 
       await API.updateFile({
-        path_to_folder,
-        path_to_meta: path.join(path_to_folder, new_meta_filename),
-        data,
+        path_to_folder: destination_path_to_folder,
+        path_to_meta: path.join(destination_path_to_folder, new_meta_filename),
+        data: new_meta,
       });
 
       return new_meta_filename;
@@ -595,12 +607,11 @@ module.exports = (function () {
     paths.push(full_media_path);
 
     const archive_folder_name = _getArchivePath(media_filename);
-
     const full_archive_path = utils.getPathToUserContent(
       path_to_folder,
       archive_folder_name
     );
-    paths.push(full_archive_path);
+    if (await fs.pathExists(full_archive_path)) paths.push(full_archive_path);
 
     dev.logfunction({ paths });
 
