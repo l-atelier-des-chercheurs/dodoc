@@ -34,6 +34,12 @@
               {{ $t("duplicate") }}
             </button>
           </div>
+          <!-- <div class="">
+            <button type="button" class="u-buttonLink" @click="copyMedia">
+              <sl-icon name="file-arrow-up-fill" />
+              {{ $t("copy") }}
+            </button>
+          </div> -->
 
           <RemoveMenu
             :remove_text="$t('remove_media')"
@@ -138,6 +144,10 @@ export default {
     },
     duplicateMedia() {
       this.$emit("duplicate");
+    },
+    copyMedia() {
+      const destination_path_to_folder = "spaces/reception/projects/mon-projet";
+      this.$emit("copy", destination_path_to_folder);
     },
   },
 };

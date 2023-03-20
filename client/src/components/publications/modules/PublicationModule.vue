@@ -420,7 +420,7 @@ export default {
         let source_path;
         if (path.includes("/publications/")) {
           // this media is specific to publications, lets remove it
-          const new_file_path = await this.$api.duplicateFile({
+          const new_file_path = await this.$api.copyFile({
             path,
           });
           source_path =
@@ -442,7 +442,7 @@ export default {
       }
 
       const meta_filename = await this.$api
-        .duplicateFile({
+        .copyFile({
           path: this.publimodule.$path,
           new_meta,
         })
