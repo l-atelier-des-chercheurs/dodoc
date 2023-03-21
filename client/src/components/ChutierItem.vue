@@ -28,20 +28,41 @@
                 :show_detail_initially="true"
               />
             </small>
-            {{ text_title }}
+
+            <span v-if="!edit_mode">
+              {{ text_title }}
+            </span>
+
+            <template v-else>
+              <input
+                type="text"
+                required
+                v-model="text_title"
+                @click="setFocus"
+                placeholder="Remplir pour partager"
+              />
+            </template>
           </div>
         </div>
         <EditBtn v-if="!edit_mode" @click="edit_mode = true" />
       </div>
       <transition name="scaleInFade" mode="out-in">
+        <!-- <sl-button
+          size="small"
+        > -->
         <sl-icon-button
-          :key="text_title.length > 0"
-          :disabled="false"
-          @click="$emit('focus')"
-          circle
-          style="font-size: 1rem; color: white"
+          :key="share_button_is_enabled"
+          class="_shareBtn"
+          :class="{
+            'is--disabled': !share_button_is_enabled,
+          }"
           name="arrow-right-square"
+          style="font-size: 1rem"
+          :label="$t('share')"
+          circle
+          @click="shareButtonClicked"
         />
+        <!-- </sl-button> -->
       </transition>
 
       <!-- <TitleField
@@ -82,19 +103,36 @@
     </div> -->
     </div>
 
-    <div class="_edition" v-if="edit_mode">
-      <input
-        type="text"
-        v-model="text_title"
-        @click="setFocus"
-        placeholder="Remplir pour partager"
-      />
-      <input
-        v-if="is_clicked"
-        type="text"
-        placeholder="Mot-clé, matériaux, lieux, etc."
-      />
-      <SaveCancelButtons class="_scb" @save="save" @cancel="cancel" />
+    <div class="_keywords" v-if="edit_mode || keywords">
+      <div v-if="!edit_mode">
+        <span class="u-button u-button_orange">
+          {{ keywords }}
+        </span>
+      </div>
+      <template v-else>
+        <input
+          type="text"
+          required
+          v-model="keywords"
+          placeholder="Mot-clé, matériaux, lieux, etc."
+        />
+
+        <span class="u-instructions" v-if="keywords.length === 0">
+          Corrigez ou complétez le titre et les mots-clés pour partager ce
+          document.
+        </span>
+
+        <div class="_suggestions" v-else>
+          <button
+            type="button"
+            class="u-button u-button_orange"
+            v-for="cat in panes[0].categories"
+            :key="cat"
+          >
+            {{ cat }}
+          </button>
+        </div>
+      </template>
     </div>
 
     <!-- <div class="_paneSelector" v-if="is_focused">
@@ -209,16 +247,34 @@ export default {
         },
       ],
 
-      text_title: this.file.$media_filename || "",
+      text_title: this.file.title || this.file.$media_filename || "",
+      keywords: this.file.keywords || "",
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
-  computed: {},
+  watch: {
+    is_clicked() {
+      if (!this.is_clicked && this.edit_mode) {
+        // todo save
+        this.saveFields();
+        this.edit_mode = false;
+      }
+    },
+  },
+  computed: {
+    share_button_is_enabled() {
+      return !(
+        this.text_title.length === 0 ||
+        (this.text_title === this.file.$media_filename && !this.file.title) ||
+        this.keywords.length === 0
+      );
+    },
+  },
   methods: {
     async moveToSharedSpace() {
+      debugger;
       const destination_path_to_folder = this.shared_space_path;
       await this.$api.copyFile({
         path: this.file.$path,
@@ -229,11 +285,38 @@ export default {
     async remove() {
       this.$api.deleteItem({ path: this.file.$path });
     },
+    async shareButtonClicked() {
+      if (this.share_button_is_enabled) {
+        if (this.edit_mode) {
+          await this.saveFields();
+          await this.moveToSharedSpace();
+          return;
+        } else {
+          await this.moveToSharedSpace();
+        }
+      } else {
+        this.edit_mode = true;
+      }
+    },
     setFocus() {
       this.is_focused = true;
     },
     openLarge() {
       this.$emit("");
+    },
+    async saveFields() {
+      await this.$api
+        .updateMeta({
+          path: this.file.$path,
+          new_meta: {
+            title: this.text_title,
+            keywords: this.keywords,
+          },
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
     },
     save() {},
     cancel() {
@@ -342,16 +425,31 @@ export default {
     margin: calc(var(--spacing) / 2);
   }
 }
-._keywordField {
-  padding: calc(var(--spacing) / 1);
-}
 
-._edition {
+._keywords {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2);
 
   justify-content: center;
+}
+
+._shareBtn {
+  &.is--disabled {
+    opacity: 0.3;
+  }
+
+  &::part(base) {
+    color: #fff;
+
+    &:hover,
+    &:focus {
+      color: var(--c-bleuvert);
+    }
+    &:active {
+      color: #ccc;
+    }
+  }
 }
 </style>

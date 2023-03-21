@@ -5,6 +5,10 @@
       :file="file"
       :context="'preview'"
     />
+    <span class="_titleKeywords">
+      {{ file.title }}
+      {{ file.keywords }}
+    </span>
     <button
       type="button"
       class="u-button u-button_transparent _removeBtn"
@@ -54,5 +58,12 @@ export default {
     object-fit: cover;
     object-position: center;
   }
+}
+
+._titleKeywords {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 </style>

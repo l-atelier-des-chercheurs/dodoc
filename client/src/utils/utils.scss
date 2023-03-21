@@ -351,9 +351,9 @@ textarea,
   // color: var(--input-color);
   color: inherit;
   // border: solid var(--input-border-width) var(--input-border-color);
-  border-radius: var(--input-border-radius);
-  background-color: var(--c-gris_clair);
-  color: var(--c-noir);
+  // border-radius: var(--input-border-radius);
+  background-color: rgba(0, 0, 0, 0.2);
+  color: white;
 
   // background: white;
   height: var(--input-height);
@@ -366,17 +366,17 @@ textarea,
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
-  border-bottom: 2px solid transparent;
+  border-bottom: 1px solid white;
 
   transition: all 0.05s;
 
   &:hover {
     outline: 0;
-    border-bottom: 2px solid var(--input-border-color);
+    border-bottom: 1px solid var(--input-border-color);
   }
   &:focus-visible {
     outline: 0;
-    border-bottom: 2px solid var(--input-border-color-focus);
+    border-bottom: 1px solid var(--input-border-color-focus);
   }
 
   &.bg-blanc {

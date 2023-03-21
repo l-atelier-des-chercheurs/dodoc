@@ -43,6 +43,9 @@
           "title": {
             "type": "string"
           },
+          "keywords": {
+            "type": "string"
+          },
           "description": {
             "type": "string"
           },
@@ -77,6 +80,9 @@
         },
         "fields": {
           "title": {
+            "type": "string"
+          },
+          "keywords": {
             "type": "string"
           },
           "description": {

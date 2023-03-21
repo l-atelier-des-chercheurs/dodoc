@@ -1,5 +1,5 @@
 <template>
-  <div class="_myChutier" v-if="chutier">
+  <div class="_myChutier" v-if="chutier" @click="last_clicked = false">
     <div class="_topContent">
       <div class="_subscribeBtn">
         <button
@@ -73,7 +73,7 @@
             v-for="file in ci.files"
             class="_item--files"
             :key="file.$path"
-            @click="last_clicked = file.$path"
+            @click.stop="last_clicked = file.$path"
           >
             <ChutierItem
               :file="file"
@@ -320,6 +320,7 @@ export default {
 }
 ._mediaFocusInPane {
   position: absolute;
+  z-index: 10;
   top: 0;
   width: 100%;
   height: 100%;
