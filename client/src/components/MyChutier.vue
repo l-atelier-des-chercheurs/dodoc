@@ -67,9 +67,15 @@
           </button>
         </div>
         <transition-group tag="div" name="listComplete">
-          <div v-for="file in ci.files" class="_item--files" :key="file.$path">
+          <div
+            v-for="file in ci.files"
+            class="_item--files"
+            :key="file.$path"
+            @click="last_clicked = file.$path"
+          >
             <ChutierItem
               :file="file"
+              :is_clicked="last_clicked === file.$path"
               :is_selected="selected_items.includes(file.$path)"
               :shared_space_path="shared_space_path"
               @toggleSelect="toggleSelect(file.$path)"
@@ -127,6 +133,7 @@ export default {
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
 
+      last_clicked: undefined,
       selected_items: [],
       focused_items_slugs: [],
     };
@@ -270,6 +277,11 @@ export default {
 }
 ._item {
   margin-bottom: calc(var(--spacing) / 1);
+}
+._item--files {
+  &.is--lastClicked {
+    border: 2px solid red;
+  }
 }
 
 ._item--label {

@@ -2,8 +2,8 @@
   <div class="_lumaView">
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
-      <splitpanes class="_panes">
-        <pane class="_myContent" :key="'myContent'" min-size="5">
+      <div class="_panes">
+        <div class="_myContent" :key="'myContent'" min-size="5">
           <AuthorList
             v-if="show_authors_modal"
             @close="show_authors_modal = false"
@@ -13,16 +13,16 @@
             :shared_space_path="shared_folder_path"
             @showAuthorModal="showAuthorModal"
           />
-        </pane>
-        <pane class="_sharedContent" :key="'sharedContent'" min-size="5">
+        </div>
+        <div class="_sharedContent" :key="'sharedContent'" min-size="5">
           <SharedFolder :shared_folder_path="shared_folder_path" />
-        </pane>
-      </splitpanes>
+        </div>
+      </div>
     </template>
   </div>
 </template>
 <script>
-import { Splitpanes, Pane } from "splitpanes";
+// import { Splitpanes, Pane } from "splitpanes";
 
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import MyChutier from "@/components/MyChutier.vue";
@@ -31,8 +31,8 @@ import SharedFolder from "@/components/SharedFolder.vue";
 export default {
   props: {},
   components: {
-    Splitpanes,
-    Pane,
+    // Splitpanes,
+    // Pane,
     AuthorList,
     MyChutier,
     SharedFolder,
@@ -48,6 +48,9 @@ export default {
   },
   created() {},
   async mounted() {
+    // todo add lang selector instead
+    this.$i18n.locale = "fr";
+
     await this.loadFolder();
     // check if necerray to login or create account :
     if (!this.connected_as) this.showAuthorModal();
@@ -105,14 +108,22 @@ export default {
 }
 ._panes {
   height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
 }
 
 ._myContent {
   // width: 550px;
   // min-height: 550px;
+  flex: 0 0 420px;
+
   height: 100%;
   background: white;
   box-shadow: 0 0px 5px rgb(0 0 0 / 12%);
   // overflow: auto;
+}
+._sharedContent {
+  height: 100%;
+  flex: 1 1 auto;
 }
 </style>
