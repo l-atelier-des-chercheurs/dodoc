@@ -19,6 +19,7 @@
             :file="media_with_linked._linked_media"
             :resolution="1600"
             :context="'full'"
+            :show_fullscreen_button="true"
           />
 
           <div class="_btnRow" v-if="can_edit">
