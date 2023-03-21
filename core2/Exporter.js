@@ -220,7 +220,10 @@ class Exporter {
   }
 
   async _loadPageAndPrint() {
-    const url = global.appInfos.homeURL + "/" + this.path_to_folder;
+    const path_without_space = this.path_to_folder
+      .replace("spaces/", "/+")
+      .replace("projects/", "");
+    const url = global.appInfos.homeURL + path_without_space;
 
     const puppeteer = require("puppeteer");
 
