@@ -3,7 +3,7 @@
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <div class="_panes">
-        <div class="_myContent" :key="'myContent'" min-size="5">
+        <div class="_myContent" :key="'myContent'" v-show="show_chutier">
           <AuthorList
             v-if="show_authors_modal"
             @close="show_authors_modal = false"
@@ -12,9 +12,19 @@
             v-if="connected_as"
             :shared_space_path="shared_folder_path"
             @showAuthorModal="showAuthorModal"
+            @close="show_chutier = false"
           />
         </div>
-        <div class="_sharedContent" :key="'sharedContent'" min-size="5">
+        <button
+          type="button"
+          class="_openChutier"
+          v-if="!show_chutier"
+          @click="show_chutier = true"
+        >
+          {{ $t("open_chutier") }}
+        </button>
+
+        <div class="_sharedContent" :key="'sharedContent'">
           <SharedFolder :shared_folder_path="shared_folder_path" />
         </div>
       </div>
@@ -44,6 +54,7 @@ export default {
       shared_folder_path: undefined,
 
       show_authors_modal: false,
+      show_chutier: true,
     };
   },
   created() {},
@@ -113,17 +124,25 @@ export default {
 }
 
 ._myContent {
+  position: relative;
+  z-index: 1;
   // width: 550px;
   // min-height: 550px;
   flex: 0 0 420px;
 
   height: 100%;
   background: white;
-  box-shadow: 0 0px 5px rgb(0 0 0 / 12%);
+  box-shadow: 0 0px 10px rgb(0 0 0 / 52%);
   // overflow: auto;
 }
 ._sharedContent {
   height: 100%;
   flex: 1 1 auto;
+}
+
+._openChutier {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

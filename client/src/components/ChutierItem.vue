@@ -20,25 +20,28 @@
             :context="'preview'"
           />
         </div>
+        <div class="">
+          <div>
+            <small>
+              <DateField
+                :date="file.$date_created"
+                :show_detail_initially="true"
+              />
+            </small>
+            {{ text_title }}
+          </div>
+        </div>
+        <EditBtn v-if="!edit_mode" @click="edit_mode = true" />
       </div>
-
-      <input
-        type="text"
-        v-model="text_title"
-        @click="setFocus"
-        placeholder="Remplir pour partager"
-      />
       <transition name="scaleInFade" mode="out-in">
-        <button
-          type="button"
-          class="u-button u-button_transparent"
+        <sl-icon-button
           :key="text_title.length > 0"
-          :disabled="text_title.length === 0"
+          :disabled="false"
           @click="$emit('focus')"
-        >
-          {{ $t("share") }}&nbsp;
-          <sl-icon name="arrow-right-square" />
-        </button>
+          circle
+          style="font-size: 1rem; color: white"
+          name="arrow-right-square"
+        />
       </transition>
 
       <!-- <TitleField
@@ -79,8 +82,19 @@
     </div> -->
     </div>
 
-    <div class="_keywordField" v-if="is_clicked">
-      <input type="text" placeholder="Mot-clé, matériaux, lieux, etc." />
+    <div class="_edition" v-if="edit_mode">
+      <input
+        type="text"
+        v-model="text_title"
+        @click="setFocus"
+        placeholder="Remplir pour partager"
+      />
+      <input
+        v-if="is_clicked"
+        type="text"
+        placeholder="Mot-clé, matériaux, lieux, etc."
+      />
+      <SaveCancelButtons class="_scb" @save="save" @cancel="cancel" />
     </div>
 
     <!-- <div class="_paneSelector" v-if="is_focused">
@@ -156,6 +170,7 @@ export default {
       is_focused: false,
       opened_pane: undefined,
       show_large: false,
+      edit_mode: false,
 
       panes: [
         {
@@ -194,7 +209,7 @@ export default {
         },
       ],
 
-      text_title: "",
+      text_title: this.file.$media_filename || "",
     };
   },
   created() {},
@@ -220,6 +235,11 @@ export default {
     openLarge() {
       this.$emit("");
     },
+    save() {},
+    cancel() {
+      this.edit_mode = false;
+      // todo reset
+    },
   },
 };
 </script>
@@ -228,9 +248,9 @@ export default {
   width: 100%;
   padding: 2px;
   margin: 2px;
-  background: hsl(0, 0%, 100%);
-  box-shadow: 0 0px 5px rgb(0 0 0 / 6%);
-  border: 2px solid white;
+  background: hsla(0, 0%, 100%, 0.1);
+  box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
+  // border: 2px solid black;
   border-radius: 5px;
 
   &.is--clicked {
@@ -324,5 +344,14 @@ export default {
 }
 ._keywordField {
   padding: calc(var(--spacing) / 1);
+}
+
+._edition {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
+
+  justify-content: center;
 }
 </style>

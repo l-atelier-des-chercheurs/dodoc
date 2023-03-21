@@ -94,7 +94,7 @@ export default {
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
-  --c-gris: hsl(195, 14%, 93%);
+  --c-gris: hsl(195, 14%, 83%);
   --c-gris_clair: hsl(195, 14%, 97%);
   --c-gris_fonce: hsl(195, 14%, 45%);
   --c-vert: hsl(143, 69%, 55%);
@@ -103,7 +103,7 @@ export default {
   --c-bodybg: hsl(48, 19%, 95%);
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
-  // --c-bodybg: white;
+  --c-bodybg: white;
   --body-bg-pattern-color: hsl(48, 19%, 93%);
   --plyr-color-main: var(--c-bleumarine);
 
@@ -129,7 +129,7 @@ export default {
   --input-font-size-small: 0.8rem;
   --input-font-size-big: 1.2rem;
   --input-font-weight: inherit;
-  --input-height: 2.5em;
+  --input-height: 2em;
   --input-height-large: 3em;
   // --input-height-big: 3em;
   --input-height-small: 1.5rem;

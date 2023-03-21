@@ -40,6 +40,8 @@
           @importedMedias="importedMedias"
         />
       </div>
+
+      <button type="button" @click="$emit('close')">{{ $t("fold") }}</button>
     </div>
     <div class="_middleContent">
       <label for="">Éléments à traiter : {{ chutier_items.length }} </label>
@@ -252,18 +254,26 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._myChutier {
+  --chutier-bg: rgba(33, 36, 39, 1);
+
   height: 100%;
   overflow: auto;
   background: #f9f9f9;
+  background: var(--chutier-bg);
+  color: white;
 
   // padding: 0 calc(var(--spacing) / 1);
 }
 ._topContent {
   position: sticky;
+  z-index: 1;
   display: flex;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
   top: 0;
   padding: calc(var(--spacing) / 1);
+
+  backdrop-filter: blur(6px);
+  mask: linear-gradient(black 75%, transparent 100%);
 }
 ._middleContent {
   padding: 0 calc(var(--spacing) / 1);
@@ -304,16 +314,15 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  border-top: 1px solid #000;
-  background: rgba(255, 255, 255, 0.94);
+  // border-top: 1px solid black;
+  background: var(--chutier-bg);
   padding: calc(var(--spacing) / 1);
 }
-
 ._mediaFocusInPane {
   position: absolute;
   top: 0;
   width: 100%;
   height: 100%;
-  background: white;
+  background: var(--chutier-bg);
 }
 </style>

@@ -4,26 +4,25 @@
       <div class="">Espace partagé</div>
     </div>
     <div class="_grid">
-      <div class="_item" v-for="file in shared_items" :key="file.$path">
-        <MediaContent class="" :file="file" :context="'preview'" />
-
-        <button
-          type="button"
-          class="u-button u-button_transparent _removeBtn"
-          @click="removeMedia(file.$path)"
-        >
-          <sl-icon name="trash3" />
-        </button>
-      </div>
+      <SharedFolderItem
+        class="_item"
+        v-for="file in shared_items"
+        :key="file.$path"
+        :file="file"
+      />
     </div>
   </div>
 </template>
 <script>
+import SharedFolderItem from "@/components/SharedFolderItem.vue";
+
 export default {
   props: {
     shared_folder_path: String,
   },
-  components: {},
+  components: {
+    SharedFolderItem,
+  },
   data() {
     return {
       shared_folder: undefined,
@@ -48,34 +47,16 @@ export default {
       return _medias;
     },
   },
-  methods: {
-    removeMedia(path) {
-      this.$api.deleteItem({ path });
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
 ._grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 2px;
-  padding: 2px;
+  margin: 2px;
   // padding: 0 calc(var(--spacing) / 2);
-}
-._item {
-  position: relative;
-  aspect-ratio: 1/1;
-  border: 1px solid black;
-  padding: calc(var(--spacing) / 2);
-  overflow: hidden;
-
-  ::v-deep ._mediaContent--image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
 }
 
 ._removeBtn {
