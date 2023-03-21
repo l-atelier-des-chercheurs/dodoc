@@ -8,7 +8,7 @@
   >
     <template v-if="file.$type === 'image'">
       <img :src="thumb" class="_mediaContent--image" loading="eager" />
-      <template v-if="context === 'full'">
+      <template v-if="show_fullscreen_button">
         <FullscreenBtn
           class="u-floatingFsButton"
           :icon="'fullscreen'"
@@ -70,6 +70,10 @@ export default {
     is_draggable: {
       type: Boolean,
       default: true,
+    },
+    show_fullscreen_button: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},
