@@ -221,7 +221,12 @@ class Exporter {
 
   _loadPageAndPrint() {
     return new Promise(async (resolve, reject) => {
-      const url = global.appInfos.homeURL + "/" + this.path_to_folder;
+      // convert path_to_folder to URL (see createURLFromPath)
+      const path_without_space = this.path_to_folder
+        .replace("spaces/", "/+")
+        .replace("projects/", "");
+
+      const url = global.appInfos.homeURL + path_without_space;
 
       // open page https://localhost:8080/projects/hehe/publications/test-pages/
       const { BrowserWindow } = require("electron");

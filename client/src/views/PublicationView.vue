@@ -103,9 +103,10 @@ export default {
       return this.setPaginationFromPublication(this.publication);
     },
     project_path() {
-      // FIX123
-      debugger;
-      return `/projects/${this.$route.params.project_slug}`;
+      return this.createPath({
+        space_slug: this.$route.params.space_slug,
+        project_slug: this.$route.params.project_slug,
+      });
     },
     publication_path() {
       return `${this.project_path}/publications/${this.$route.params.publication_slug}`;
