@@ -529,7 +529,7 @@ export default function () {
         move_down: "Descendre",
         source_project: "Projet source",
         media_pickers_instr:
-          "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
+          "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord :és dans le projet actuel.",
 
         current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",

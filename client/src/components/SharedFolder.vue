@@ -1,11 +1,18 @@
 <template>
   <div v-if="shared_folder">
+    <div class="_floatingTopBtn">
+      <div class="">Espace partagé</div>
+    </div>
     <div class="_grid">
-      <div v-for="file in shared_folder.$files" :key="file.$path">
+      <div class="_item" v-for="file in shared_items" :key="file.$path">
         <MediaContent class="" :file="file" :context="'preview'" />
 
-        <button type="button" class="u-button" @click="removeMedia(file.$path)">
-          {{ $t("remove") }}
+        <button
+          type="button"
+          class="u-button u-button_transparent _removeBtn"
+          @click="removeMedia(file.$path)"
+        >
+          <sl-icon name="trash3" />
         </button>
       </div>
     </div>
@@ -31,7 +38,16 @@ export default {
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    shared_items() {
+      if (!this.shared_folder?.$files) return [];
+      const _medias = JSON.parse(JSON.stringify(this.shared_folder.$files));
+      _medias.sort(
+        (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+      );
+      return _medias;
+    },
+  },
   methods: {
     removeMedia(path) {
       this.$api.deleteItem({ path });
@@ -44,6 +60,47 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 2px;
+  padding: 2px;
   // padding: 0 calc(var(--spacing) / 2);
+}
+._item {
+  position: relative;
+  aspect-ratio: 1/1;
+  border: 1px solid black;
+  padding: calc(var(--spacing) / 2);
+  overflow: hidden;
+
+  ::v-deep ._mediaContent--image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+._removeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+._floatingTopBtn {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: calc(var(--spacing) / 1);
+  pointer-events: none;
+
+  > * {
+    border-radius: 25px;
+    padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+    background: black;
+    color: white;
+    pointer-events: auto;
+  }
 }
 </style>

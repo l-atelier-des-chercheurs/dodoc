@@ -8,12 +8,11 @@
             v-if="show_authors_modal"
             @close="show_authors_modal = false"
           />
-          <div v-if="connected_as" class="">
-            <MyChutier
-              :shared_space_path="shared_folder_path"
-              @showAuthorModal="showAuthorModal"
-            />
-          </div>
+          <MyChutier
+            v-if="connected_as"
+            :shared_space_path="shared_folder_path"
+            @showAuthorModal="showAuthorModal"
+          />
         </pane>
         <pane class="_sharedContent" :key="'sharedContent'" min-size="5">
           <SharedFolder :shared_folder_path="shared_folder_path" />
@@ -109,11 +108,11 @@ export default {
 }
 
 ._myContent {
-  width: 550px;
-  min-height: 550px;
+  // width: 550px;
+  // min-height: 550px;
   height: 100%;
   background: white;
   box-shadow: 0 0px 5px rgb(0 0 0 / 12%);
-  overflow: auto;
+  // overflow: auto;
 }
 </style>

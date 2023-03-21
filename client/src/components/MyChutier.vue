@@ -25,11 +25,11 @@
           @change="updateInputFiles($event)"
         />
         <label :for="id + '-add_file'">
-          <svg width="20" height="17" viewBox="0 0 20 17">
+          <!-- <svg width="20" height="17" viewBox="0 0 20 17">
             <path
               d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
             />
-          </svg>
+          </svg> -->
           {{ $t("import") }}
         </label>
         <UploadFiles
@@ -53,21 +53,38 @@
         Sélectionner tout
       </button>
     </div>
-    <div class="_items">
-      <transition-group tag="div" name="listComplete">
-        <div class="_item" v-for="file in chutier_items" :key="file.$path">
-          <ChutierItem
-            :file="file"
-            :is_selected="selected_items.includes(file.$path)"
-            :shared_space_path="shared_space_path"
-            @toggleSelect="toggleSelect(file.$path)"
-          />
-        </div>
-      </transition-group>
-    </div>
 
+    <div class="_items">
+      <div class="_item" v-for="ci in chutier_items_grouped" :key="ci.label">
+        <div class="_item--label">
+          <DateField :date="ci.label" :show_detail_initially="false" />
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="selectRange(ci.files.map((f) => f.$path))"
+          >
+            Sélectionner
+          </button>
+        </div>
+        <transition-group tag="div" name="listComplete">
+          <div v-for="file in ci.files" class="_item--files" :key="file.$path">
+            <ChutierItem
+              :file="file"
+              :is_selected="selected_items.includes(file.$path)"
+              :shared_space_path="shared_space_path"
+              @toggleSelect="toggleSelect(file.$path)"
+              @focus="focusItem(file.$path)"
+            />
+          </div>
+        </transition-group>
+      </div>
+    </div>
     <div class="_selectionBar" v-if="selected_items.length > 0">
-      <button type="button" class="u-button u-button_bleuvert">
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="setSelectionAsFocus"
+      >
         {{ $t("create_stack") }}
       </button>
       <button
@@ -81,10 +98,18 @@
         Déselectionner tout
       </button>
     </div>
+
+    <MediaFocus
+      v-if="focused_items.length > 0"
+      class="_mediaFocusInPane"
+      :files="focused_items"
+      @close="focused_items_slugs = []"
+    />
   </div>
 </template>
 <script>
 import ChutierItem from "@/components/ChutierItem.vue";
+import MediaFocus from "@/components/MediaFocus.vue";
 
 export default {
   props: {
@@ -92,6 +117,7 @@ export default {
   },
   components: {
     ChutierItem,
+    MediaFocus,
   },
   data() {
     return {
@@ -102,6 +128,7 @@ export default {
       ).slice(2, 3 + 2)}`,
 
       selected_items: [],
+      focused_items_slugs: [],
     };
   },
   created() {},
@@ -123,6 +150,11 @@ export default {
     path() {
       return this.connected_as.$path;
     },
+    focused_items() {
+      return this.focused_items_slugs.map((fis) =>
+        this.chutier_items.find((ci) => ci.$path === fis)
+      );
+    },
     chutier_items() {
       if (!this.chutier || !this.chutier.$files) return [];
       const _medias = JSON.parse(JSON.stringify(this.chutier.$files));
@@ -130,6 +162,34 @@ export default {
         (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
       );
       return _medias;
+    },
+    chutier_items_grouped() {
+      const grouped = this.chutier_items.reduce((group, file) => {
+        // var key = file.$date_uploaded;
+
+        var dateObj = new Date(file.$date_created);
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
+        const key = year + "/" + month + "/" + day;
+
+        if (!Object.prototype.hasOwnProperty.call(group, key)) group[key] = [];
+        group[key].push(file);
+        return group;
+      }, {});
+
+      let ordered = [];
+      for (const k in grouped)
+        if (!Object.prototype.hasOwnProperty.call(ordered, k)) ordered.push(k);
+      ordered.sort();
+      ordered.reverse();
+
+      return ordered.map((o) => {
+        return {
+          label: o,
+          files: grouped[o],
+        };
+      });
     },
   },
   methods: {
@@ -148,7 +208,14 @@ export default {
         this.selected_items = this.selected_items.filter((i) => i !== path);
       else this.selected_items.push(path);
     },
-
+    focusItem(path) {
+      this.focused_items_slugs = [path];
+    },
+    setSelectionAsFocus() {
+      this.focused_items_slugs = JSON.parse(
+        JSON.stringify(this.selected_items)
+      );
+    },
     updateInputFiles($event) {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
@@ -165,6 +232,9 @@ export default {
     deselectAll() {
       this.selected_items = [];
     },
+    selectRange(range) {
+      this.selected_items = range;
+    },
     async removeItemsInSelection() {
       for (const item_path of this.selected_items) {
         await this.$api.deleteItem({ path: item_path });
@@ -175,6 +245,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._myChutier {
+  height: 100%;
+  overflow: auto;
+  background: #f9f9f9;
+
   // padding: 0 calc(var(--spacing) / 1);
 }
 ._topContent {
@@ -192,7 +266,20 @@ export default {
 }
 
 ._items {
-  padding: calc(var(--spacing) / 2) 0;
+  padding: calc(var(--spacing) / 1);
+}
+._item {
+  margin-bottom: calc(var(--spacing) / 1);
+}
+
+._item--label {
+  // width: 100%;
+  // text-align: center;
+  font-weight: 500;
+  display: flex;
+  gap: calc(var(--spacing) / 4);
+  // align-items: flex-end;
+  // justify-content: space-between;
 }
 
 ._selectionBar {
@@ -205,7 +292,16 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
+  border-top: 1px solid #000;
   background: rgba(255, 255, 255, 0.94);
   padding: calc(var(--spacing) / 1);
+}
+
+._mediaFocusInPane {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
 }
 </style>
