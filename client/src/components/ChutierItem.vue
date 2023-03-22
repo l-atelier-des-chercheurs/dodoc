@@ -43,6 +43,7 @@
               <input
                 type="text"
                 class="is--dark"
+                autofocus
                 required
                 v-model="text_title"
                 placeholder="Remplir pour partager"
@@ -180,6 +181,12 @@ export default {
         this.saveFields();
         this.edit_mode = false;
       }
+    },
+    edit_mode() {
+      if (this.edit_mode)
+        this.$nextTick(() => {
+          this.$el.querySelector("[autofocus]").select();
+        });
     },
   },
   computed: {
