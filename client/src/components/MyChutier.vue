@@ -88,7 +88,7 @@
             <ChutierItem
               :file="file"
               :is_clicked="last_clicked === file.$path"
-              :is_selected="selected_items.includes(file.$path)"
+              :is_selected="selected_items_slugs.includes(file.$path)"
               :shared_space_path="shared_space_path"
               @toggleSelect="toggleSelect(file.$path)"
               @focus="focusItem(file.$path)"
@@ -97,13 +97,22 @@
         </transition-group>
       </div>
     </div>
-    <div class="_selectionBar" v-if="selected_items.length > 0">
+    <div class="_selectionBar" v-if="selected_items_slugs.length > 0">
+      <div class="_selectionBar--previews">
+        <MediaContent
+          v-for="file in selected_items"
+          :key="file.$path"
+          :file="file"
+          class="_selectionBar--previews--preview"
+          :context="'preview'"
+        />
+      </div>
       <button
         type="button"
         class="u-button u-button_bleuvert"
         @click="setSelectionAsFocus"
       >
-        {{ $t("create_stack") }} ({{ selected_items.length }})
+        {{ $t("create_stack") }} ({{ selected_items_slugs.length }})
       </button>
       <button
         type="button"
@@ -146,7 +155,7 @@ export default {
       ).slice(2, 3 + 2)}`,
 
       last_clicked: undefined,
-      selected_items: [],
+      selected_items_slugs: [],
       focused_items_slugs: [],
     };
   },
@@ -160,8 +169,8 @@ export default {
   },
   watch: {
     chutier_items() {
-      this.selected_items = this.selected_items.filter((item_path) =>
-        this.chutier_items.find((ci) => ci.$path === item_path)
+      this.selected_items_slugs = this.selected_items_slugs.filter(
+        (item_path) => this.chutier_items.find((ci) => ci.$path === item_path)
       );
     },
   },
@@ -171,6 +180,11 @@ export default {
     },
     focused_items() {
       return this.focused_items_slugs.map((fis) =>
+        this.chutier_items.find((ci) => ci.$path === fis)
+      );
+    },
+    selected_items() {
+      return this.selected_items_slugs.map((fis) =>
         this.chutier_items.find((ci) => ci.$path === fis)
       );
     },
@@ -223,16 +237,18 @@ export default {
         });
     },
     toggleSelect(path) {
-      if (this.selected_items.includes(path))
-        this.selected_items = this.selected_items.filter((i) => i !== path);
-      else this.selected_items.push(path);
+      if (this.selected_items_slugs.includes(path))
+        this.selected_items_slugs = this.selected_items_slugs.filter(
+          (i) => i !== path
+        );
+      else this.selected_items_slugs.push(path);
     },
     focusItem(path) {
       this.focused_items_slugs = [path];
     },
     setSelectionAsFocus() {
       this.focused_items_slugs = JSON.parse(
-        JSON.stringify(this.selected_items)
+        JSON.stringify(this.selected_items_slugs)
       );
     },
     updateInputFiles($event) {
@@ -241,36 +257,35 @@ export default {
     },
     async importedMedias($event) {
       // await new Promise((r) => setTimeout(r, 1000));
-      this.selected_items = $event.map(
+      this.selected_items_slugs = $event.map(
         (i) => this.connected_as.$path + "/" + i
       );
     },
     selectAll() {
-      this.selected_items = this.chutier_items.map((i) => i.$path);
+      this.selected_items_slugs = this.chutier_items.map((i) => i.$path);
     },
     deselectAll() {
-      this.selected_items = [];
+      this.selected_items_slugs = [];
     },
     selectRange(range) {
-      this.selected_items = this.selected_items.concat(range);
-      this.selected_items = [...new Set(this.selected_items)];
+      this.selected_items_slugs = this.selected_items_slugs.concat(range);
+      this.selected_items_slugs = [...new Set(this.selected_items_slugs)];
     },
     deselectRange(range) {
-      this.selected_items = this.selected_items.filter(
+      this.selected_items_slugs = this.selected_items_slugs.filter(
         (si) => !range.includes(si)
       );
     },
-
     rangeIsSelected(range) {
-      if (this.selected_items.length === 0) return false;
-      // for each item in range, make sure it is included in selected_items
+      if (this.selected_items_slugs.length === 0) return false;
+      // for each item in range, make sure it is included in selected_items_slugs
       return !range.find((p) => {
-        if (this.selected_items.includes(p) === false) return true;
+        if (this.selected_items_slugs.includes(p) === false) return true;
         return false;
       });
     },
     async removeItemsInSelection() {
-      for (const item_path of this.selected_items) {
+      for (const item_path of this.selected_items_slugs) {
         await this.$api.deleteItem({ path: item_path });
       }
     },
@@ -342,6 +357,15 @@ export default {
   // border-top: 1px solid black;
   background: var(--chutier-bg);
   padding: calc(var(--spacing) / 1);
+}
+._selectionBar--previews {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 2);
+}
+._selectionBar--previews--preview {
+  flex: 0 1 50px;
 }
 ._mediaFocusInPane {
   position: absolute;

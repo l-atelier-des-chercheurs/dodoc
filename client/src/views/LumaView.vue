@@ -138,6 +138,7 @@ export default {
 ._sharedContent {
   height: 100%;
   flex: 1 1 auto;
+  overflow: auto;
 }
 
 ._openChutier {
