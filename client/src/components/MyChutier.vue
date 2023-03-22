@@ -41,7 +41,9 @@
         />
       </div>
 
-      <button type="button" @click="$emit('close')">{{ $t("fold") }}</button>
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        {{ $t("fold") }}
+      </button>
     </div>
     <div class="_middleContent">
       <label for="">Éléments à traiter : {{ chutier_items.length }} </label>

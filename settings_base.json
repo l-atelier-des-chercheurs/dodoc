@@ -53,12 +53,12 @@
             "type": "string"
           },
           "belongs_to_stack": {
-            "type": "boolean"
+            "type": "string"
           },
           "is_stack": {
             "type": "boolean"
           },
-          "stack_files": {
+          "stack_files_metas": {
             "type": "array"
           }
         }

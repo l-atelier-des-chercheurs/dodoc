@@ -535,6 +535,7 @@ export default function () {
         current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",
         will_use_cookies: "Cette fonctionnalité utilise les cookies",
+        fold: "replier",
 
         "module.label.text": "Bloc de texte",
         "module.label.mosaic": "Mosaïque de médias",

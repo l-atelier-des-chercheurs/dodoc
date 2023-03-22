@@ -138,7 +138,7 @@ export default {
         keywords: this.keywords,
         requested_slug: "stack",
         is_stack: true,
-        stack_files: [],
+        stack_files_metas: [],
       };
       const stack_meta_filename = await this.$api
         .uploadFile({
@@ -149,8 +149,6 @@ export default {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
-
-      debugger;
 
       const file_metas = [];
       // copy each file to shared space, with a flag to indicate they are part of a stack
@@ -171,7 +169,7 @@ export default {
       await this.$api.updateMeta({
         path: destination_path_to_folder + "/" + stack_meta_filename,
         new_meta: {
-          stack_files: file_metas,
+          stack_files_metas: file_metas,
         },
       });
 

@@ -1,7 +1,17 @@
 <template>
   <div class="_sharedFolderItem">
     <!-- {{ file }} -->
+
+    <div v-if="file.is_stack" class="_sharedFolderItem--previewStack">
+      <MediaContent
+        v-for="file in file._stack_files"
+        :key="file.$path"
+        :file="file"
+        :context="'preview'"
+      />
+    </div>
     <MediaContent
+      v-else
       class="_sharedFolderItem--preview"
       :file="file"
       :context="'preview'"
@@ -9,13 +19,12 @@
     <small class="_titleKeywords">
       {{ file.title }} / {{ file.description }} / {{ file.keywords }}
     </small>
-    <button
-      type="button"
-      class="u-button u-button_transparent _removeBtn"
+    <sl-icon-button
+      name="trash3"
+      circle
+      class="_removeBtn"
       @click="removeMedia(file.$path)"
-    >
-      <sl-icon name="trash3" />
-    </button>
+    />
   </div>
 </template>
 <script>
@@ -42,20 +51,40 @@ export default {
 <style lang="scss" scoped>
 ._sharedFolderItem {
   position: relative;
-  aspect-ratio: 1/1;
-  border-radius: 4px;
-  flex: 0 0 auto;
-  overflow: hidden;
 
   ._sharedFolderItem--preview {
-    width: 100%;
-    height: 100%;
+    // width: 100%;
+    // height: 100%;
+  }
+
+  ._sharedFolderItem--previewStack {
+    // width: 100%;
+    // height: 100%;
+    position: relative;
+
+    > * {
+      &:nth-last-child(1) {
+        position: relative;
+        z-index: 1;
+      }
+
+      &:not(:nth-child(1)) {
+        position: absolute;
+        top: -10px;
+      }
+      &:nth-last-child(2) {
+        top: -20px;
+      }
+      &:nth-last-child(3) {
+        top: -30px;
+      }
+    }
   }
 
   ::v-deep ._mediaContent--image {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
   }
 }
@@ -68,7 +97,7 @@ export default {
 }
 ._removeBtn {
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
 }
 </style>

@@ -17,11 +17,11 @@
         </div>
         <button
           type="button"
-          class="_openChutier"
+          class="u-buttonLink _openChutier"
           v-if="!show_chutier"
           @click="show_chutier = true"
         >
-          {{ $t("open_chutier") }}
+          {{ $t("chutier") }}
         </button>
 
         <div class="_sharedContent" :key="'sharedContent'">
@@ -145,5 +145,6 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+  padding: calc(var(--spacing) / 2);
 }
 </style>
