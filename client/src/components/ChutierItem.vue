@@ -103,13 +103,24 @@
     </div> -->
     </div>
 
-    <div class="_keywords" v-if="edit_mode || keywords">
+    <div class="_keywords" v-if="edit_mode || keywords || description">
       <div v-if="!edit_mode">
-        <span class="u-button u-button_orange">
-          {{ keywords }}
-        </span>
+        <div class="">
+          {{ description }}
+        </div>
+        <div class="">
+          <span class="u-button u-button_orange">
+            {{ keywords }}
+          </span>
+        </div>
       </div>
       <template v-else>
+        <input
+          type="text"
+          required
+          v-model="description"
+          placeholder="Description"
+        />
         <input
           type="text"
           required
@@ -247,7 +258,9 @@ export default {
         },
       ],
 
-      text_title: this.file.title || this.file.$media_filename || "",
+      text_title:
+        this.file.title || this.cleanFilename(this.file.$media_filename) || "",
+      description: this.file.description || "",
       keywords: this.file.keywords || "",
     };
   },
@@ -265,10 +278,10 @@ export default {
   },
   computed: {
     share_button_is_enabled() {
-      return !(
-        this.text_title.length === 0 ||
-        (this.text_title === this.file.$media_filename && !this.file.title) ||
-        this.keywords.length === 0
+      return (
+        this.text_title.length > 0 &&
+        this.description.length > 0 &&
+        this.keywords.length > 0
       );
     },
   },
@@ -286,6 +299,12 @@ export default {
     },
     async remove() {
       this.$api.deleteItem({ path: this.file.$path });
+    },
+    cleanFilename() {
+      return this.file.$media_filename.substring(
+        0,
+        this.file.$media_filename.lastIndexOf(".")
+      );
     },
     async shareButtonClicked() {
       if (this.share_button_is_enabled) {
@@ -312,6 +331,7 @@ export default {
           path: this.file.$path,
           new_meta: {
             title: this.text_title,
+            description: this.description,
             keywords: this.keywords,
           },
         })
