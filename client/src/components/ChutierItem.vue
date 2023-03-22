@@ -1,13 +1,17 @@
 <template>
   <div
-    class="_chutierItem"
+    class="u-chutierItem"
     :class="{
       'is--clicked': is_clicked,
     }"
   >
-    <div class="_rows">
-      <div class="u-sameRow">
-        <label :for="id" class="_selectBox">
+    <div class="u-chutierItem--rows">
+      <div class="u-sameRow _infos">
+        <label
+          :for="id"
+          class="_selectBox"
+          v-if="$listeners && $listeners.toggleSelect"
+        >
           <input
             type="checkbox"
             :checked="is_selected"
@@ -16,32 +20,32 @@
             :id="id"
           />
         </label>
-        <div class="_openLarge" @click="show_large = true">
+
+        <div class="u-chutierItem--openLarge" @click="show_large = true">
           <MediaContent
-            class="_chutierItem--preview"
+            class="u-chutierItem--preview"
             :file="file"
             :context="'preview'"
           />
         </div>
-        <div class="">
+        <div class="_titleDateField">
           <div>
-            <small>
-              <DateField
-                :date="file.$date_created"
-                :show_detail_initially="false"
-              />
-            </small>
+            <div class="">
+              <small>
+                {{ formatDateToHuman(file.$date_created) }}
+              </small>
+            </div>
 
-            <span v-if="!edit_mode">
+            <div v-if="!edit_mode">
               {{ text_title }}
-            </span>
+            </div>
 
             <template v-else>
               <input
                 type="text"
+                class="is--dark"
                 required
                 v-model="text_title"
-                @click="setFocus"
                 placeholder="Remplir pour partager"
               />
             </template>
@@ -50,12 +54,10 @@
         <EditBtn v-if="!edit_mode" @click="edit_mode = true" />
       </div>
       <transition name="scaleInFade" mode="out-in">
-        <!-- <sl-button
-          size="small"
-        > -->
         <sl-icon-button
+          v-if="shared_space_path"
           :key="share_button_is_enabled"
-          class="_shareBtn"
+          class="u-shareBtn"
           :class="{
             'is--disabled': !share_button_is_enabled,
           }"
@@ -65,48 +67,12 @@
           circle
           @click="shareButtonClicked"
         />
-        <!-- </sl-button> -->
       </transition>
-
-      <!-- <TitleField
-      :field_name="'title'"
-      class="_title"
-      :content="file.title || file.$media_filename"
-      :path="file.$path"
-      :required="true"
-      :maxlength="40"
-      :can_edit="true"
-    />
-    <TitleField
-      :field_name="'description'"
-      class="_description"
-      :content="file.description"
-      :path="file.$path"
-      :required="false"
-      :maxlength="240"
-      :can_edit="true"
-    /> -->
-      <!-- <DateField :date="file.$date_created" :show_detail_initially="true" /> -->
-
-      <!-- <div class="">
-      <button
-        type="button"
-        class="u-button u-button_transparent"
-        @click="remove"
-      >
-        <sl-icon name="trash3" />
-      </button>
-      <button
-        type="button"
-        class="u-button u-button_transparent"
-        @click="$emit('focus')"
-      >
-        {{ $t("share") }}
-      </button>
-    </div> -->
     </div>
-
-    <div class="_keywords" v-if="edit_mode || keywords || description">
+    <div
+      class="_keywords"
+      v-if="context !== 'stack' && (edit_mode || keywords || description)"
+    >
       <div v-if="!edit_mode">
         <div class="" v-if="description">
           {{ description }}
@@ -118,9 +84,15 @@
         </div>
       </div>
       <template v-else>
-        <input type="text" v-model="description" placeholder="Description" />
         <input
           type="text"
+          class="is--dark"
+          v-model="description"
+          placeholder="Description"
+        />
+        <input
+          type="text"
+          class="is--dark"
           required
           v-model="keywords"
           placeholder="Mot-clé, matériaux, lieux, etc."
@@ -143,53 +115,11 @@
         </div>
       </template>
     </div>
-
-    <!-- <div class="_paneSelector" v-if="is_focused">
-      <template v-if="!opened_pane">
-        <div class="">
-          <label for="">Indiquez aussi au moins l'un de ces trois champs</label>
-        </div>
-        <div class="_paneSelector--btns">
-          <button
-            type="button"
-            class="u-button"
-            v-for="pane in panes"
-            :key="pane.key"
-            @click="opened_pane = pane.key"
-          >
-            {{ pane.label }}
-          </button>
-        </div>
-      </template>
-      <div class="" v-else>
-        {{ $t(opened_pane) }}
-        <button type="button" @click="opened_pane = false">
-          {{ $t("close") }}
-        </button>
-      </div>
-    </div> -->
-
-    <!-- <details>
-      <summary>Avancé</summary> -->
-
-    <!-- <select>
-        <option>visible par tout Luma</option>
-        <option>collaborateurs de Clay</option>
-        <option>collaborateurs Lot 8</option>
-      </select> -->
-
-    <!-- <button
-          type="button"
-          class="_catBtn"
-          v-for="cat in categories"
-          :key="cat"
-        >
-          {{ cat }}
-        </button>
-        <input type="text" /> -->
-    <!-- </details> -->
-
-    <div v-if="show_large" class="_largePreview" @click="show_large = false">
+    <div
+      v-if="show_large"
+      class="u-chutierItem--largePreview"
+      @click="show_large = false"
+    >
       <MediaContent :file="file" :context="'full'" :resolution="1600" />
       <sl-button
         variant="default"
@@ -210,11 +140,14 @@ export default {
     is_selected: Boolean,
     is_clicked: Boolean,
     shared_space_path: String,
+    context: {
+      type: String,
+      default: "list",
+    },
   },
   components: {},
   data() {
     return {
-      is_focused: false,
       opened_pane: undefined,
       show_large: false,
       edit_mode: false,
@@ -269,6 +202,9 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
+    "file.title"() {
+      this.text_title = this.file.title;
+    },
     is_clicked() {
       if (!this.is_clicked && this.edit_mode) {
         // todo save
@@ -316,9 +252,7 @@ export default {
         this.edit_mode = true;
       }
     },
-    setFocus() {
-      this.is_focused = true;
-    },
+
     openLarge() {
       this.$emit("");
     },
@@ -346,103 +280,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._chutierItem {
-  width: 100%;
-  padding: 2px;
-  margin: 2px;
-  background: hsla(0, 0%, 100%, 0.1);
-  box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
-  // border: 2px solid black;
-  border-radius: 5px;
-
-  &.is--clicked {
-    border-color: #333;
-  }
-  // border: 1px solid black;
-}
-
-._rows {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-}
-
-._chutierItem--preview {
-  position: relative;
-  height: 70px;
-  border-radius: 2px;
-  width: 70px;
-  flex: 0 0 auto;
-  overflow: hidden;
-
-  ::v-deep ._mediaContent--image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-}
-
 ._catBtn {
   background: #ffbe32;
   border-radius: 5px;
   margin: 2px;
   padding: 2px;
-}
-
-._paneSelector {
-  text-align: center;
-}
-._paneSelector--btns {
-  min-height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: calc(var(--spacing) / 4);
-}
-._openLarge {
-  display: block;
-  cursor: pointer;
-  &:hover {
-    opacity: 0.8;
-  }
-}
-._largePreview {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-
-  // display: flex;
-  // place-content: center;
-  background: black;
-
-  ::v-deep ._mediaContent {
-    width: 100%;
-    height: 100%;
-
-    .u-floatingFsButton {
-      display: none;
-    }
-
-    ._mediaContent--image {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center;
-    }
-  }
-
-  ._closeBtn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: calc(var(--spacing) / 2);
-  }
 }
 
 ._keywords {
@@ -454,23 +296,6 @@ export default {
   justify-content: center;
 }
 
-._shareBtn {
-  &.is--disabled {
-    opacity: 0.3;
-  }
-
-  &::part(base) {
-    color: #fff;
-
-    &:hover,
-    &:focus {
-      color: var(--c-bleuvert);
-    }
-    &:active {
-      color: #ccc;
-    }
-  }
-}
 ._selectBox {
   height: 70px;
   display: flex;

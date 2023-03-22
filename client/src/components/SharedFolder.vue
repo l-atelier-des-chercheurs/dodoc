@@ -3,6 +3,7 @@
     <div class="_floatingTopBtn">
       <div class="">Espace partagé</div>
     </div>
+
     <div class="_grid">
       <SharedFolderItem
         class="_item"

@@ -94,6 +94,7 @@ export default function () {
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+        create_stack: "Créer une pile",
 
         ui_lang_select: "Langue de l’interface",
         lang_updated: "La langue a été mise à jour",

@@ -1,5 +1,6 @@
 <template>
   <div class="_sharedFolderItem">
+    <!-- {{ file }} -->
     <MediaContent
       class="_sharedFolderItem--preview"
       :file="file"

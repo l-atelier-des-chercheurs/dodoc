@@ -78,10 +78,9 @@
             Déselectionner
           </button>
         </div>
-        <transition-group tag="div" name="listComplete">
+        <transition-group tag="div" name="listComplete" class="">
           <div
             v-for="file in ci.files"
-            class="_item--files"
             :key="file.$path"
             @click.stop="last_clicked = file.$path"
           >
@@ -91,7 +90,6 @@
               :is_selected="selected_items_slugs.includes(file.$path)"
               :shared_space_path="shared_space_path"
               @toggleSelect="toggleSelect(file.$path)"
-              @focus="focusItem(file.$path)"
             />
           </div>
         </transition-group>
@@ -114,29 +112,36 @@
       >
         {{ $t("create_stack") }} ({{ selected_items_slugs.length }})
       </button>
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="removeItemsInSelection"
-      >
-        Supprimer la sélection
-      </button>
-      <button type="button" class="u-buttonLink" @click="deselectAll">
-        Déselectionner tout
-      </button>
+
+      <div class="u-sameRow">
+        <button type="button" class="u-buttonLink" @click="deselectAll">
+          <sl-icon name="dash-square-dotted" />
+          Déselectionner tout
+        </button>
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="removeItemsInSelection"
+        >
+          <sl-icon name="trash3" />
+          Supprimer la sélection
+        </button>
+      </div>
     </div>
 
-    <MediaFocus
+    <MediaStack
       v-if="focused_items.length > 0"
-      class="_mediaFocusInPane"
+      class="_mediaStack"
       :files="focused_items"
+      :shared_space_path="shared_space_path"
+      @updateFocusedMedia="focused_items_slugs = $event"
       @close="focused_items_slugs = []"
     />
   </div>
 </template>
 <script>
 import ChutierItem from "@/components/ChutierItem.vue";
-import MediaFocus from "@/components/MediaFocus.vue";
+import MediaStack from "@/components/MediaStack.vue";
 
 export default {
   props: {
@@ -144,7 +149,7 @@ export default {
   },
   components: {
     ChutierItem,
-    MediaFocus,
+    MediaStack,
   },
   data() {
     return {
@@ -243,9 +248,6 @@ export default {
         );
       else this.selected_items_slugs.push(path);
     },
-    focusItem(path) {
-      this.focused_items_slugs = [path];
-    },
     setSelectionAsFocus() {
       this.focused_items_slugs = JSON.parse(
         JSON.stringify(this.selected_items_slugs)
@@ -294,7 +296,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._myChutier {
-  --chutier-bg: rgba(33, 36, 39, 1);
+  --chutier-bg: rgb(37, 39, 41);
 
   height: 100%;
   overflow: auto;
@@ -328,16 +330,12 @@ export default {
 ._item {
   margin-bottom: calc(var(--spacing) / 1);
 }
-._item--files {
-  &.is--lastClicked {
-    border: 2px solid red;
-  }
-}
 
 ._item--label {
   // width: 100%;
   // text-align: center;
   font-weight: 500;
+  margin-bottom: 2px;
   // display: flex;
   // gap: calc(var(--spacing) / 4);
   // align-items: flex-end;
@@ -354,25 +352,33 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  // border-top: 1px solid black;
+  box-shadow: 0 2px 6px 0 black;
   background: var(--chutier-bg);
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 }
 ._selectionBar--previews {
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
   gap: calc(var(--spacing) / 2);
+
+  ::v-deep ._mediaContent--image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 }
 ._selectionBar--previews--preview {
   flex: 0 1 50px;
+  aspect-ratio: 1/1;
 }
-._mediaFocusInPane {
+._mediaStack {
   position: absolute;
   z-index: 10;
   top: 0;
   width: 100%;
   height: 100%;
-  background: var(--chutier-bg);
+  overflow: auto;
 }
 </style>

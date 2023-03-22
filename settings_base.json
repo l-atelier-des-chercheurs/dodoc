@@ -51,6 +51,15 @@
           },
           "caption": {
             "type": "string"
+          },
+          "belongs_to_stack": {
+            "type": "boolean"
+          },
+          "is_stack": {
+            "type": "boolean"
+          },
+          "stack_files": {
+            "type": "array"
           }
         }
       }
