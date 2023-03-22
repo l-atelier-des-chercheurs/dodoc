@@ -60,12 +60,22 @@
       <div class="_item" v-for="ci in chutier_items_grouped" :key="ci.label">
         <div class="_item--label">
           <DateField :date="ci.label" :show_detail_initially="false" />
+
           <button
+            v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
             type="button"
             class="u-buttonLink"
             @click="selectRange(ci.files.map((f) => f.$path))"
           >
-            Sélectionner
+            Sélectionner tout
+          </button>
+          <button
+            v-else
+            type="button"
+            class="u-buttonLink"
+            @click="deselectRange(ci.files.map((f) => f.$path))"
+          >
+            Déselectionner
           </button>
         </div>
         <transition-group tag="div" name="listComplete">
@@ -93,7 +103,7 @@
         class="u-button u-button_bleuvert"
         @click="setSelectionAsFocus"
       >
-        {{ $t("create_stack") }}
+        {{ $t("create_stack") }} ({{ selected_items.length }})
       </button>
       <button
         type="button"
@@ -242,7 +252,22 @@ export default {
       this.selected_items = [];
     },
     selectRange(range) {
-      this.selected_items = range;
+      this.selected_items = this.selected_items.concat(range);
+      this.selected_items = [...new Set(this.selected_items)];
+    },
+    deselectRange(range) {
+      this.selected_items = this.selected_items.filter(
+        (si) => !range.includes(si)
+      );
+    },
+
+    rangeIsSelected(range) {
+      if (this.selected_items.length === 0) return false;
+      // for each item in range, make sure it is included in selected_items
+      return !range.find((p) => {
+        if (this.selected_items.includes(p) === false) return true;
+        return false;
+      });
     },
     async removeItemsInSelection() {
       for (const item_path of this.selected_items) {
@@ -298,8 +323,8 @@ export default {
   // width: 100%;
   // text-align: center;
   font-weight: 500;
-  display: flex;
-  gap: calc(var(--spacing) / 4);
+  // display: flex;
+  // gap: calc(var(--spacing) / 4);
   // align-items: flex-end;
   // justify-content: space-between;
 }
