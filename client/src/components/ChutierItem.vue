@@ -274,11 +274,13 @@ export default {
   },
   methods: {
     async moveToSharedSpace() {
-      debugger;
       const destination_path_to_folder = this.shared_space_path;
       await this.$api.copyFile({
         path: this.file.$path,
         destination_path_to_folder,
+        new_meta: {
+          $authors: [this.connected_as.$path],
+        },
       });
       await this.remove();
     },

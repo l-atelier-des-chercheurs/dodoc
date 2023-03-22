@@ -8,6 +8,7 @@
     <span class="_titleKeywords">
       {{ file.title }}
       {{ file.keywords }}
+      {{ file.$authors }}
     </span>
     <button
       type="button"
