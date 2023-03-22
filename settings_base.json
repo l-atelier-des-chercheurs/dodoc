@@ -46,6 +46,9 @@
           "keywords": {
             "type": "string"
           },
+          "date_created_corrected": {
+            "type": "string"
+          },
           "description": {
             "type": "string"
           },
@@ -92,6 +95,9 @@
             "type": "string"
           },
           "keywords": {
+            "type": "string"
+          },
+          "date_created_corrected": {
             "type": "string"
           },
           "description": {

@@ -30,12 +30,22 @@
         <div class="_titleDateField">
           <div>
             <div class="">
-              <small>
-                {{ formatDateToHuman(file.$date_created) }}
+              <small @click="edit_mode = true">
+                <template v-if="!edit_mode">
+                  {{ formatDateToPrecise(date_created_corrected) }}
+                </template>
+                <template v-else>
+                  <input
+                    type="datetime-local"
+                    v-model="date_created_corrected"
+                    step="1"
+                  />
+                </template>
               </small>
             </div>
+            {{ date_created_corrected }}
 
-            <div v-if="!edit_mode">
+            <div v-if="!edit_mode" @click="edit_mode = true">
               {{ text_title }}
             </div>
 
@@ -141,6 +151,12 @@
   </div>
 </template>
 <script>
+function datetimeLocal(datetime) {
+  const dt = new Date(datetime);
+  dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+  return dt.toISOString().slice(0, 16);
+}
+
 export default {
   props: {
     file: Object,
@@ -164,6 +180,11 @@ export default {
 
       text_title:
         this.file.title || this.cleanFilename(this.file.$media_filename) || "",
+      date_created_corrected: datetimeLocal(
+        this.file.date_created_corrected ||
+          this.file.$date_created ||
+          new Date()
+      ),
       description: this.file.description || "",
       keywords: this.file.keywords || "",
     };
@@ -218,6 +239,8 @@ export default {
     cancelEdit() {
       this.text_title =
         this.file.title || this.cleanFilename(this.file.$media_filename) || "";
+      this.date_created_corrected =
+        this.file.date_created_corrected || this.file.$date_created || "";
       this.description = this.file.description || "";
       this.keywords = this.file.keywords || "";
       this.edit_mode = false;
@@ -245,6 +268,7 @@ export default {
           path: this.file.$path,
           new_meta: {
             title: this.text_title,
+            date_created_corrected: this.date_created_corrected,
             description: this.description,
             keywords: this.keywords,
           },
