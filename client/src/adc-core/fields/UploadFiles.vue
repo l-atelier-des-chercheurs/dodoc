@@ -149,7 +149,7 @@ export default {
 
       setTimeout(() => {
         this.$emit("close");
-      }, 2000);
+      }, 1000);
     },
     getImgPreview(file) {
       return URL.createObjectURL(file);
@@ -175,7 +175,7 @@ export default {
   padding: calc(var(--spacing) / 2);
   display: flex;
   flex-flow: column nowrap;
-  max-width: 350px;
+  // max-width: 350px;
 }
 
 ._uploadFile {

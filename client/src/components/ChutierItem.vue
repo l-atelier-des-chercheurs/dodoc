@@ -20,7 +20,6 @@
             :id="id"
           />
         </label>
-
         <div class="u-chutierItem--openLarge" @click="show_large = true">
           <MediaContent
             class="u-chutierItem--preview"
@@ -47,11 +46,25 @@
                 required
                 v-model="text_title"
                 placeholder="Remplir pour partager"
+                @keydown.enter.prevent="
+                  context === 'stack' ? $emit('unclicked') : ''
+                "
+                @keydown.esc.prevent="cancelEdit"
               />
             </template>
           </div>
         </div>
         <EditBtn v-if="!edit_mode" @click="edit_mode = true" />
+        <sl-button
+          variant="edit"
+          v-else
+          class="editBtn"
+          size="small"
+          circle
+          @click="$emit('unclicked')"
+        >
+          <sl-icon name="check-circle" :label="$t('edit')" />
+        </sl-button>
       </div>
       <transition name="scaleInFade" mode="out-in">
         <sl-icon-button
@@ -89,6 +102,7 @@
           class="is--dark"
           v-model="description"
           placeholder="Description"
+          @keydown.esc.prevent="cancelEdit"
         />
         <input
           type="text"
@@ -96,6 +110,7 @@
           required
           v-model="keywords"
           placeholder="Mot-clé, matériaux, lieux, etc."
+          @keydown.esc.prevent="cancelEdit"
         />
 
         <span class="u-instructions" v-if="keywords.length === 0">
@@ -103,16 +118,7 @@
           document.
         </span>
 
-        <div class="_suggestions" v-else>
-          <button
-            type="button"
-            class="u-button u-button_orange"
-            v-for="cat in panes[0].categories"
-            :key="cat"
-          >
-            {{ cat }}
-          </button>
-        </div>
+        <div class="_suggestions" v-else></div>
       </template>
     </div>
     <div
@@ -154,43 +160,6 @@ export default {
       id: `select_chutier_item_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
-
-      panes: [
-        {
-          key: "materials",
-          label: this.$t("materials"),
-          categories: [
-            "abjection",
-            "abjections",
-            "abjectly",
-            "abjectness",
-            "abjectnesses",
-            "abjects",
-            "abjoint",
-            "abjointed",
-            "abjointing",
-            "abjoints",
-            "abjunction",
-            "abjunctions",
-            "abjuration",
-            "abjurations",
-            "abjure",
-            "abjured",
-            "abjurer",
-            "abjurers",
-            "abjures",
-            "abjuring",
-          ],
-        },
-        {
-          key: "techniques",
-          label: this.$t("techniques"),
-        },
-        {
-          key: "implementations",
-          label: this.$t("implementations"),
-        },
-      ],
 
       text_title:
         this.file.title || this.cleanFilename(this.file.$media_filename) || "",
@@ -238,6 +207,13 @@ export default {
         0,
         this.file.$media_filename.lastIndexOf(".")
       );
+    },
+    cancelEdit() {
+      this.text_title =
+        this.file.title || this.cleanFilename(this.file.$media_filename) || "";
+      this.description = this.file.description || "";
+      this.keywords = this.file.keywords || "";
+      this.edit_mode = false;
     },
     async shareButtonClicked() {
       if (this.share_button_is_enabled) {
@@ -300,5 +276,6 @@ export default {
   height: 70px;
   display: flex;
   place-content: center;
+  cursor: pointer;
 }
 </style>

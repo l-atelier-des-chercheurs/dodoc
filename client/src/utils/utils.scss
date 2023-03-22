@@ -784,8 +784,8 @@ fieldset {
   margin-bottom: 2px;
   background: rgb(37, 39, 41);
   box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
-  border-radius: 5px;
-  border: 2px solid rgb(67, 69, 71);
+  border-radius: 4px;
+  border: 1px solid rgb(67, 69, 71);
 
   &.is--clicked {
     background: rgb(67, 69, 71);

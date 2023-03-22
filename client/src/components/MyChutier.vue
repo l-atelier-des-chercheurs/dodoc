@@ -32,19 +32,20 @@
           </svg> -->
           {{ $t("import") }}
         </label>
-        <UploadFiles
-          v-if="selected_files.length > 0"
-          :selected_files="selected_files"
-          :path="path"
-          @close="selected_files = []"
-          @importedMedias="importedMedias"
-        />
       </div>
-
       <button type="button" class="u-buttonLink" @click="$emit('close')">
         {{ $t("fold") }}
       </button>
     </div>
+    <UploadFiles
+      v-if="selected_files.length > 0"
+      class="_uploadFilesList"
+      :selected_files="selected_files"
+      :path="path"
+      @close="selected_files = []"
+      @importedMedias="importedMedias"
+    />
+
     <div class="_middleContent">
       <label for="">Éléments à traiter : {{ chutier_items.length }} </label>
       <br />
@@ -54,6 +55,7 @@
         @click="selectAll"
         v-if="chutier_items.length > 0"
       >
+        <sl-icon name="plus-square-dotted" />
         Sélectionner tout
       </button>
     </div>
@@ -69,7 +71,7 @@
             class="u-buttonLink"
             @click="selectRange(ci.files.map((f) => f.$path))"
           >
-            Sélectionner tout
+            Sélectionner
           </button>
           <button
             v-else
@@ -92,6 +94,7 @@
               :is_selected="selected_items_slugs.includes(file.$path)"
               :shared_space_path="shared_space_path"
               @toggleSelect="toggleSelect(file.$path)"
+              @unclicked="last_clicked = false"
             />
           </div>
         </transition-group>
@@ -99,13 +102,15 @@
     </div>
     <div class="_selectionBar" v-if="selected_items_slugs.length > 0">
       <div class="_selectionBar--previews">
-        <MediaContent
-          v-for="file in selected_items"
-          :key="file.$path"
-          :file="file"
-          class="_selectionBar--previews--preview"
-          :context="'preview'"
-        />
+        <template v-for="file in selected_items">
+          <MediaContent
+            v-if="file.$path"
+            :key="file.$path"
+            :file="file"
+            class="_selectionBar--previews--preview"
+            :context="'preview'"
+          />
+        </template>
       </div>
       <button
         type="button"
@@ -175,11 +180,11 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {
-    chutier_items() {
-      this.selected_items_slugs = this.selected_items_slugs.filter(
-        (item_path) => this.chutier_items.find((ci) => ci.$path === item_path)
-      );
-    },
+    // chutier_items() {
+    //   this.selected_items_slugs = this.selected_items_slugs.filter(
+    //     (item_path) => this.chutier_items.find((ci) => ci.$path === item_path)
+    //   );
+    // },
   },
   computed: {
     path() {
@@ -191,8 +196,8 @@ export default {
       );
     },
     selected_items() {
-      return this.selected_items_slugs.map((fis) =>
-        this.chutier_items.find((ci) => ci.$path === fis)
+      return this.selected_items_slugs.map(
+        (fis) => this.chutier_items.find((ci) => ci.$path === fis) || false
       );
     },
     chutier_items() {
@@ -260,10 +265,12 @@ export default {
       $event.target.value = "";
     },
     async importedMedias($event) {
-      // await new Promise((r) => setTimeout(r, 1000));
+      console.log("selected_items_slugs = " + $event);
       this.selected_items_slugs = $event.map(
         (i) => this.connected_as.$path + "/" + i
       );
+
+      debugger;
     },
     selectAll() {
       this.selected_items_slugs = this.chutier_items.map((i) => i.$path);
@@ -306,6 +313,8 @@ export default {
   background: var(--chutier-bg);
   color: white;
 
+  display: flex;
+  flex-flow: column nowrap;
   // padding: 0 calc(var(--spacing) / 1);
 }
 ._topContent {
@@ -327,6 +336,7 @@ export default {
 }
 
 ._items {
+  flex: 1 1 auto;
   padding: calc(var(--spacing) / 1);
 }
 ._item {
@@ -356,7 +366,8 @@ export default {
 
   box-shadow: 0 2px 6px 0 black;
   background: var(--chutier-bg);
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
+  padding-bottom: calc(var(--spacing) * 2);
 }
 ._selectionBar--previews {
   width: 100%;
@@ -382,5 +393,15 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
+  padding-top: 20px;
+}
+
+._uploadFilesList {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--chutier-bg);
+  z-index: 1;
 }
 </style>

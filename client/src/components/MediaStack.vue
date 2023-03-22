@@ -2,7 +2,7 @@
   <div class="_mediaFocus" @click="last_clicked = false">
     <sl-button
       class="_closeBtn"
-      variant="default"
+      variant="neutral"
       size="medium"
       circle
       @click="$emit('close')"
@@ -29,11 +29,18 @@
               v-text="i + 1"
             />
           </select>
+          <div class="_removeFile">
+            <sl-icon-button
+              name="dash-square-dotted"
+              @click="removeFromSelection(file.$path)"
+            />
+          </div>
           <ChutierItem
             :file="file"
             :is_clicked="last_clicked === file.$path"
             :is_selected="false"
             :context="'stack'"
+            @unclicked="last_clicked = false"
           />
         </div>
       </transition-group>
@@ -67,20 +74,22 @@
       </span>
     </div>
 
-    <transition name="scaleInFade" mode="out-in">
-      <sl-icon-button
-        :key="share_button_is_enabled"
-        class="u-shareBtn"
-        :class="{
-          'is--disabled': !share_button_is_enabled,
-        }"
-        name="arrow-right-square"
-        style="font-size: 1rem"
-        :label="$t('share')"
-        circle
-        @click="shareButtonClicked"
-      />
-    </transition>
+    <div class="_shareBtn">
+      <transition name="scaleInFade" mode="out-in">
+        <sl-icon-button
+          :key="share_button_is_enabled"
+          class="u-shareBtn"
+          :class="{
+            'is--disabled': !share_button_is_enabled,
+          }"
+          name="arrow-right-square"
+          style="font-size: 1rem"
+          :label="$t('share')"
+          circle
+          @click="shareButtonClicked"
+        />
+      </transition>
+    </div>
   </div>
 </template>
 <script>
@@ -124,6 +133,11 @@ export default {
         return arr; // for testing
       }
       array_move(files_path, old_position, new_position);
+      this.$emit("updateFocusedMedia", files_path);
+    },
+    removeFromSelection(path) {
+      let files_path = this.files.map((f) => f.$path);
+      files_path = files_path.filter((fp) => fp !== path);
       this.$emit("updateFocusedMedia", files_path);
     },
     async shareButtonClicked() {
@@ -191,6 +205,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  padding: 5px;
 }
 
 ._openLarge {
@@ -226,5 +241,15 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 1);
+}
+
+sl-icon-button::part(base) {
+  color: white;
+}
+._removeFile {
+}
+._shareBtn {
+  display: flex;
+  justify-content: center;
 }
 </style>

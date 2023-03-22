@@ -1,30 +1,25 @@
 <template>
   <div class="_sharedFolderItem">
     <!-- {{ file }} -->
-
-    <div v-if="file.is_stack" class="_sharedFolderItem--previewStack">
-      <MediaContent
-        v-for="file in file._stack_files"
-        :key="file.$path"
-        :file="file"
-        :context="'preview'"
-      />
+    <div v-if="file.is_stack" class="_sharedFolderItem--stackSign">
+      <sl-button circle class="">
+        <sl-icon class="" name="files" />
+      </sl-button>
     </div>
     <MediaContent
-      v-else
       class="_sharedFolderItem--preview"
-      :file="file"
+      :file="file.is_stack ? file._stack_files[0] : file"
       :context="'preview'"
     />
     <small class="_titleKeywords">
       {{ file.title }} / {{ file.description }} / {{ file.keywords }}
     </small>
-    <sl-icon-button
+    <!-- <sl-icon-button
       name="trash3"
       circle
       class="_removeBtn"
       @click="removeMedia(file.$path)"
-    />
+    /> -->
   </div>
 </template>
 <script>
@@ -53,31 +48,17 @@ export default {
   position: relative;
 
   ._sharedFolderItem--preview {
-    // width: 100%;
-    // height: 100%;
   }
 
-  ._sharedFolderItem--previewStack {
-    // width: 100%;
-    // height: 100%;
-    position: relative;
+  ._sharedFolderItem--stackSign {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     > * {
-      &:nth-last-child(1) {
-        position: relative;
-        z-index: 1;
-      }
-
-      &:not(:nth-child(1)) {
-        position: absolute;
-        top: -10px;
-      }
-      &:nth-last-child(2) {
-        top: -20px;
-      }
-      &:nth-last-child(3) {
-        top: -30px;
-      }
     }
   }
 
