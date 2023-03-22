@@ -25,7 +25,7 @@
             <small>
               <DateField
                 :date="file.$date_created"
-                :show_detail_initially="true"
+                :show_detail_initially="false"
               />
             </small>
 
