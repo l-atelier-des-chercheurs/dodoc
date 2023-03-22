@@ -120,6 +120,13 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+          } else if (
+            new_meta.hasOwnProperty(field_name) &&
+            opt.type === "boolean" &&
+            typeof new_meta[field_name] === "boolean"
+          ) {
+            meta[field_name] = new_meta[field_name];
+            // TODO Validator
           } else {
             if (opt.required === true)
               // field is required in schema but not present in user-submitted object
