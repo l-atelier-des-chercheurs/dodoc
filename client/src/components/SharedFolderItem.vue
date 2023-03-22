@@ -65,4 +65,9 @@ export default {
   left: 0;
   width: 100%;
 }
+._removeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 </style>

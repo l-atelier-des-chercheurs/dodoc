@@ -7,12 +7,15 @@
   >
     <div class="_rows">
       <div class="u-sameRow">
-        <input
-          type="checkbox"
-          :checked="is_selected"
-          @change="$emit('toggleSelect')"
-          class="_selectBox"
-        />
+        <label :for="id" class="_selectBox">
+          <input
+            type="checkbox"
+            :checked="is_selected"
+            :name="id"
+            @change="$emit('toggleSelect')"
+            :id="id"
+          />
+        </label>
         <div class="_openLarge" @click="show_large = true">
           <MediaContent
             class="_chutierItem--preview"
@@ -105,22 +108,17 @@
 
     <div class="_keywords" v-if="edit_mode || keywords || description">
       <div v-if="!edit_mode">
-        <div class="">
+        <div class="" v-if="description">
           {{ description }}
         </div>
-        <div class="">
+        <div class="" v-if="keywords">
           <span class="u-button u-button_orange">
             {{ keywords }}
           </span>
         </div>
       </div>
       <template v-else>
-        <input
-          type="text"
-          required
-          v-model="description"
-          placeholder="Description"
-        />
+        <input type="text" v-model="description" placeholder="Description" />
         <input
           type="text"
           required
@@ -220,6 +218,9 @@ export default {
       opened_pane: undefined,
       show_large: false,
       edit_mode: false,
+      id: `select_chutier_item_${(
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 3 + 2)}`,
 
       panes: [
         {
@@ -278,11 +279,7 @@ export default {
   },
   computed: {
     share_button_is_enabled() {
-      return (
-        this.text_title.length > 0 &&
-        this.description.length > 0 &&
-        this.keywords.length > 0
-      );
+      return this.text_title.length > 0 && this.keywords.length > 0;
     },
   },
   methods: {
@@ -473,5 +470,10 @@ export default {
       color: #ccc;
     }
   }
+}
+._selectBox {
+  height: 70px;
+  display: flex;
+  place-content: center;
 }
 </style>
