@@ -5,11 +5,9 @@
       :file="file"
       :context="'preview'"
     />
-    <span class="_titleKeywords">
-      {{ file.title }}
-      {{ file.keywords }}
-      {{ file.$authors }}
-    </span>
+    <small class="_titleKeywords">
+      {{ file.title }} / {{ file.description }} / {{ file.keywords }}
+    </small>
     <button
       type="button"
       class="u-button u-button_transparent _removeBtn"
