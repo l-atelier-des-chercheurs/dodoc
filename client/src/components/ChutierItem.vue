@@ -43,7 +43,6 @@
                 </template>
               </small>
             </div>
-            {{ date_created_corrected }}
 
             <div v-if="!edit_mode" @click="edit_mode = true">
               {{ text_title }}
@@ -97,40 +96,27 @@
       class="_keywords"
       v-if="context !== 'stack' && (edit_mode || keywords || description)"
     >
-      <div v-if="!edit_mode">
-        <div class="" v-if="description">
+      <div class="" v-if="description">
+        <div v-if="!edit_mode">
           {{ description }}
         </div>
-        <div class="" v-if="keywords">
-          <span class="u-button u-button_orange">
-            {{ keywords }}
-          </span>
-        </div>
-      </div>
-      <template v-else>
         <input
+          v-else
           type="text"
           class="is--dark"
           v-model="description"
           placeholder="Description"
           @keydown.esc.prevent="cancelEdit"
         />
-        <input
-          type="text"
-          class="is--dark"
-          required
-          v-model="keywords"
-          placeholder="Mot-clé, matériaux, lieux, etc."
-          @keydown.esc.prevent="cancelEdit"
+      </div>
+
+      <div class="" v-if="keywords">
+        <KeywordsField
+          :edit_mode="edit_mode"
+          :keywords.sync="keywords"
+          @cancelEdit="cancelEdit"
         />
-
-        <span class="u-instructions" v-if="keywords.length === 0">
-          Corrigez ou complétez le titre et les mots-clés pour partager ce
-          document.
-        </span>
-
-        <div class="_suggestions" v-else></div>
-      </template>
+      </div>
     </div>
     <div
       v-if="show_large"
@@ -151,6 +137,8 @@
   </div>
 </template>
 <script>
+import KeywordsField from "@/components/KeywordsField.vue";
+
 function datetimeLocal(datetime) {
   const dt = new Date(datetime);
   dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
@@ -168,7 +156,9 @@ export default {
       default: "list",
     },
   },
-  components: {},
+  components: {
+    KeywordsField,
+  },
   data() {
     return {
       opened_pane: undefined,

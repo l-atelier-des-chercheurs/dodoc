@@ -44,7 +44,7 @@
             "type": "string"
           },
           "keywords": {
-            "type": "string"
+            "type": "array"
           },
           "date_created_corrected": {
             "type": "string"
@@ -95,7 +95,7 @@
             "type": "string"
           },
           "keywords": {
-            "type": "string"
+            "type": "array"
           },
           "date_created_corrected": {
             "type": "string"
