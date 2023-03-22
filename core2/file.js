@@ -352,7 +352,7 @@ module.exports = (function () {
       if (meta.hasOwnProperty("$media_filename")) {
         // copy media
         let new_filename = await _preventFileOverride({
-          path_to_folder,
+          path_to_folder: destination_path_to_folder,
           original_filename: meta.$media_filename,
         });
 
@@ -371,7 +371,7 @@ module.exports = (function () {
       meta.$date_uploaded = utils.getCurrentDate();
 
       const new_meta_filename = await _preventFileOverride({
-        path_to_folder,
+        path_to_folder: destination_path_to_folder,
         original_filename: meta_filename,
       });
 
