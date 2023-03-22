@@ -151,16 +151,18 @@ module.exports = (function () {
           media_filename
         );
 
-      const _thumbs = await thumbs
-        .makeThumbForMedia({
-          media_type,
-          media_filename,
-          path_to_folder,
-        })
-        .catch((err) => {
-          dev.error(err);
-        });
-      if (_thumbs) meta.$thumbs = _thumbs;
+      if (media_type) {
+        const _thumbs = await thumbs
+          .makeThumbForMedia({
+            media_type,
+            media_filename,
+            path_to_folder,
+          })
+          .catch((err) => {
+            dev.error(err);
+          });
+        if (_thumbs) meta.$thumbs = _thumbs;
+      }
 
       if (media_filename) {
         const file_infos = await thumbs.getInfosForFile({
