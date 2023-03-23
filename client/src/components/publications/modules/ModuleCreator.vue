@@ -16,7 +16,6 @@
       <button
         type="button"
         class="u-button u-button_bleumarine"
-        v-if="!show_media_picker"
         @click="show_media_picker = true"
       >
         <sl-icon
@@ -24,13 +23,30 @@
           style="font-size: var(--icon-size)"
           :label="$t('add_medias')"
         />
-        <!-- {{ $t("add_medias") }} -->
       </button>
       <MediaPicker
-        v-else
+        v-if="show_media_picker"
         :publication_path="publication_path"
         @selectMedia="createMosaic"
         @close="show_media_picker = false"
+      />
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="show_link_picker = true"
+      >
+        <sl-icon
+          name="link"
+          style="font-size: var(--icon-size)"
+          :label="$t('add_link')"
+        />
+      </button>
+      <LinkPicker
+        v-if="show_link_picker"
+        :publication_path="publication_path"
+        @selectMedia="createMosaic"
+        @embed="createEmbed"
+        @close="show_link_picker = false"
       />
       <template v-if="show_shapes === true">
         <button
@@ -82,6 +98,7 @@
 </template>
 <script>
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import LinkPicker from "@/components/publications/LinkPicker.vue";
 
 export default {
   props: {
@@ -96,11 +113,13 @@ export default {
   },
   components: {
     MediaPicker,
+    LinkPicker,
   },
   data() {
     return {
       show_module_selector: false,
       show_media_picker: false,
+      show_link_picker: false,
 
       show_dropzone: false,
 
@@ -166,8 +185,6 @@ export default {
   computed: {},
   methods: {
     async createMosaic({ path_to_source_media }) {
-      //
-
       let source_medias =
         this.context === "page_by_page"
           ? [{ path: path_to_source_media, objectFit: "contain" }]
@@ -178,7 +195,7 @@ export default {
         const media = this.getSourceMedia({
           source_media_path: path_to_source_media,
         });
-        if (media.$infos?.ratio)
+        if (media?.$infos?.ratio)
           addtl_meta.height =
             this.$root.default_new_module_width * media.$infos.ratio;
       }
@@ -189,6 +206,21 @@ export default {
         addtl_meta,
       });
       this.show_media_picker = false;
+    },
+    async createEmbed(full_url) {
+      const text_meta_filename = await this.$api.uploadText({
+        path: this.publication_path,
+        filename: "url.txt",
+        content: full_url,
+        additional_meta: {
+          module_type: this.module_type,
+          $type: "url",
+        },
+      });
+      const text_meta_path = this.publication_path + "/" + text_meta_filename;
+      // const source_medias = [{ path: text_meta_path }];
+
+      this.createMosaic({ path_to_source_media: text_meta_path });
     },
     async createText() {
       const text_meta_filename = await this.$api.uploadText({

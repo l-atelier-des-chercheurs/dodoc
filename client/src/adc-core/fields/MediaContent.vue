@@ -49,6 +49,33 @@
     <template v-else-if="file.$type === 'stl'">
       <img :src="thumb" class="_mediaContent--image" />
     </template>
+    <template v-else-if="file.$type === 'url'">
+      <template v-if="context === 'preview'">
+        <img :src="thumb" class="_mediaContent--image" />
+      </template>
+      <template v-else>
+        <template v-if="url_to_site.type === 'any'">
+          <iframe
+            class="_mediaContent--iframe"
+            :src="url_to_site.src"
+            frameborder="0"
+          />
+        </template>
+        <vue-plyr v-else :key="file_full_path">
+          <div class="plyr__video-embed">
+            <iframe
+              :src="url_to_site.src"
+              class="_mediaContent--iframe"
+              allowfullscreen
+              allowtransparency
+              allow="autoplay"
+              :poster="thumb"
+              frameborder="0"
+            />
+          </div>
+        </vue-plyr>
+      </template>
+    </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
       <sl-icon name="file-earmark" /> {{ file.$media_filename }}
     </small>
@@ -110,6 +137,10 @@ export default {
     timestamp() {
       if (this.file.$date_created) return +new Date(this.file.$date_created);
       else return +new Date();
+    },
+    url_to_site() {
+      if (!this.file.$content) return false;
+      return this.transformURL(this.file.$content);
     },
   },
   methods: {
@@ -178,11 +209,27 @@ export default {
     align-items: center;
     justify-content: center;
   }
+  &[data-filetype="url"] {
+    aspect-ratio: 16/9;
+  }
 }
 
 ._mediaContent--pdfIframe {
   position: absolute;
   width: 100%;
+  height: 100%;
+}
+
+img {
+  max-width: none;
+}
+
+._mediaContent--iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+
   height: 100%;
 }
 </style>

@@ -317,6 +317,7 @@ export default {
   },
   components: {
     ModuleMosaic,
+
     ModuleCarousel,
   },
   data() {
