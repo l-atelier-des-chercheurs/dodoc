@@ -50,6 +50,7 @@ export default {
         maxScale: 5,
         step: 0.05,
         canvas: true,
+        startScale: this.scale,
         startX: left,
         startY: top,
       });
