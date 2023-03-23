@@ -528,6 +528,11 @@ export default {
       border-width: var(--set-outlineWidth);
       border-style: solid;
     }
+
+    ._moduleEmbed iframe {
+      height: 100%;
+      aspect-ratio: auto;
+    }
   }
 
   ._publicationModule.is--shape {

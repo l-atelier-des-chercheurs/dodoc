@@ -111,6 +111,8 @@ import DLabel from "@/adc-core/fields/DLabel.vue";
 Vue.component("DLabel", DLabel);
 import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
+import IframePreview from "@/adc-core/ui/IframePreview.vue";
+Vue.component("IframePreview", IframePreview);
 
 import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
 Vue.component("PickMediaFromProjects", PickMediaFromProjects);

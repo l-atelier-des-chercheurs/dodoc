@@ -33,7 +33,6 @@
     "sharedb": "^3.2.1",
     "socket.io-client": "^4.5.3",
     "splitpanes": "^2.4.1",
-    "store": "^2.0.12",
     "vue": "^2.7.14",
     "vue-cli-plugin-pug": "^2.0.0",
     "vue-i18n": "^8.28.2",

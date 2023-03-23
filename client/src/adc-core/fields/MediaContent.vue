@@ -185,4 +185,8 @@ export default {
   width: 100%;
   height: 100%;
 }
+
+img {
+  max-width: none;
+}
 </style>
