@@ -94,7 +94,10 @@
     </div>
     <div
       class="_keywords"
-      v-if="context !== 'stack' && (edit_mode || keywords || description)"
+      v-if="
+        context !== 'stack' &&
+        (edit_mode || keywords.length > 0 || description.length > 0)
+      "
     >
       <div class="" v-if="description || edit_mode">
         <div v-if="!edit_mode">
@@ -288,9 +291,8 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2);
-
   justify-content: center;
+  padding: calc(var(--spacing) / 2);
 }
 
 ._selectBox {
