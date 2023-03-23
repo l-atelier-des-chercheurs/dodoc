@@ -516,6 +516,7 @@ export default {
     .ql-editor,
     ._mediaContent--image,
     ._mediaContent[data-filetype="video"],
+    ._mediaContent[data-filetype="url"],
     ._mediaContent[data-filetype="audio"] {
       padding: var(--set-margins);
       opacity: var(--set-opacity);
@@ -527,11 +528,6 @@ export default {
       border-color: var(--set-outlineColor);
       border-width: var(--set-outlineWidth);
       border-style: solid;
-    }
-
-    ._moduleEmbed iframe {
-      height: 100%;
-      aspect-ratio: auto;
     }
   }
 

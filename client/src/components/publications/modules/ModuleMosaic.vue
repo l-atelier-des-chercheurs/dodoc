@@ -232,7 +232,8 @@ export default {
       }
 
       ._mediaContent--image,
-      .plyr--video {
+      .plyr--video,
+      ._mediaContent--iframe {
         ._moduleMosaic.is--multipleMedias & {
           position: absolute;
           height: 100%;

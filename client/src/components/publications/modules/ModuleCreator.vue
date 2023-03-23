@@ -195,7 +195,7 @@ export default {
         const media = this.getSourceMedia({
           source_media_path: path_to_source_media,
         });
-        if (media.$infos?.ratio)
+        if (media?.$infos?.ratio)
           addtl_meta.height =
             this.$root.default_new_module_width * media.$infos.ratio;
       }
@@ -218,12 +218,9 @@ export default {
         },
       });
       const text_meta_path = this.publication_path + "/" + text_meta_filename;
-      const source_medias = [{ path: text_meta_path }];
+      // const source_medias = [{ path: text_meta_path }];
 
-      await this.createModule({
-        module_type: "embed",
-        source_medias,
-      });
+      this.createMosaic({ path_to_source_media: text_meta_path });
     },
     async createText() {
       const text_meta_filename = await this.$api.uploadText({

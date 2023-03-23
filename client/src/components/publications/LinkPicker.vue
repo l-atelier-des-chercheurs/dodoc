@@ -6,7 +6,44 @@
         <input type="url" v-model="full_url" placeholder="https://" />
       </div>
 
-      <IframePreview class="_iframePreview" :full_url="full_url" />
+      <div class="u-instructions">
+        PeerTube, YouTube, Vimeo, etc.
+        {{ $t("for_example") }}&nbsp;
+        <button
+          v-for="(url, index) in [
+            'https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde',
+            'https://www.youtube.com/watch?v=Bn6zdyCAwJs',
+            'https://vimeo.com/447785086',
+            'https://observablehq.com/embed/@fil/bertin1953-glsl?cells=canvas',
+          ]"
+          type="button"
+          class="u-buttonLink"
+          @click="full_url = url"
+          :key="index"
+          v-html="url"
+        />
+      </div>
+
+      <br />
+
+      <div class="" :key="full_url">
+        <template v-if="url_to_site.type === 'any'">
+          <iframe class="_siteIframe" :src="url_to_site.src" frameborder="0" />
+        </template>
+        <vue-plyr v-else>
+          <div class="plyr__video-embed">
+            <iframe
+              :src="url_to_site.src"
+              allowfullscreen
+              allowtransparency
+              allow="autoplay"
+              frameborder="0"
+            />
+          </div>
+        </vue-plyr>
+      </div>
+
+      <br />
 
       <div class="_selectBtn" v-if="full_url">
         <button type="button" class="u-buttonLink" @click="$emit('close')">
@@ -37,7 +74,12 @@ export default {
   async created() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    url_to_site() {
+      if (!this.full_url) return false;
+      return this.transformURL(this.full_url);
+    },
+  },
   methods: {},
 };
 </script>
@@ -48,7 +90,7 @@ export default {
   margin: 0 auto;
 }
 ._urlBox {
-  margin-bottom: calc(var(--spacing) * 1);
+  // margin-bottom: calc(var(--spacing) * 1);
 }
 
 ._addMediaBtn {
@@ -64,5 +106,10 @@ export default {
   gap: calc(var(--spacing) / 1);
 
   background: white;
+}
+
+iframe {
+  width: 100%;
+  aspect-ratio: 4/3;
 }
 </style>

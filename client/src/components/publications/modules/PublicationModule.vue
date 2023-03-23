@@ -170,13 +170,6 @@
         @updateMeta="updateMeta"
         @remove="removeModule"
       />
-      <ModuleEmbed
-        v-if="publimodule.module_type === 'embed' && first_media"
-        :publimodule="publimodule"
-        :can_edit="can_edit"
-        :file="first_media"
-        :context="context"
-      />
       <ModuleCarousel
         v-else-if="publimodule.module_type === 'carousel'"
         :publimodule="publimodule"
@@ -306,7 +299,6 @@
 </template>
 <script>
 import ModuleMosaic from "@/components/publications/modules/ModuleMosaic.vue";
-import ModuleEmbed from "@/components/publications/modules/ModuleEmbed.vue";
 import ModuleCarousel from "@/components/publications/modules/ModuleCarousel.vue";
 
 // a module is a block for a publication, listed in publication.modules_list
@@ -325,7 +317,7 @@ export default {
   },
   components: {
     ModuleMosaic,
-    ModuleEmbed,
+
     ModuleCarousel,
   },
   data() {
