@@ -96,7 +96,7 @@
       class="_keywords"
       v-if="context !== 'stack' && (edit_mode || keywords || description)"
     >
-      <div class="" v-if="description">
+      <div class="" v-if="description || edit_mode">
         <div v-if="!edit_mode">
           {{ description }}
         </div>
@@ -110,7 +110,7 @@
         />
       </div>
 
-      <div class="" v-if="keywords">
+      <div class="" v-if="keywords || edit_mode">
         <KeywordsField
           :edit_mode="edit_mode"
           :keywords.sync="keywords"
