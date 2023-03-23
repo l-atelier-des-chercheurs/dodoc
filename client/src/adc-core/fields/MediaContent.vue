@@ -204,6 +204,8 @@ export default {
 }
 
 ._mediaContent {
+  position: relative;
+
   &[data-filetype="other"] {
     display: flex;
     align-items: center;
