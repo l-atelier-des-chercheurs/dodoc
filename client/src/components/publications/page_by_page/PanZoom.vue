@@ -80,12 +80,12 @@ export default {
       const left = -el_left + menu_width + distance_to_corner;
       const top = distance_to_corner;
 
-      console.log("pan_left " + left + "- pan_top " + top);
+      // console.log("pan_left " + left + "- pan_top " + top);
 
       return { left, top };
     },
     panTo({ x, y }) {
-      console.log(`panto ${x} - ${y}`);
+      // console.log(`panto ${x} - ${y}`);
       this.panzoom.pan(-x + 280, -y, { animate: true });
     },
     panzoomzoom($event) {

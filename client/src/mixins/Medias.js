@@ -81,6 +81,10 @@ export default {
     getPeertubeEmbedFromUrl(url) {
       const video_id = url.split("/").at(-1);
       return "https://peertube.fr/videos/embed/" + video_id;
+
+      // const MATCH_URL = new RegExp("(https?)://(.*)(/videos/watch/|/w/)(.*)");
+      // const m = MATCH_URL.exec(url);
+      // return `${m[1]}://${m[2]}/videos/embed/${m[3]}?api=1&controls=${true}`;
     },
     getTweetIdFromURL(url) {
       let tweetRegex =

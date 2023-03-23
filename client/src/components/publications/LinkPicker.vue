@@ -35,7 +35,8 @@
               :src="url_to_site.src"
               allowfullscreen
               allowtransparency
-              allow="autoplay"
+              allow="autoplay; fullscreen"
+              sandbox="allow-same-origin allow-scripts allow-popups"
               frameborder="0"
             />
           </div>
