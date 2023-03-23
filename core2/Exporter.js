@@ -255,7 +255,7 @@ class Exporter {
       let page_timeout = setTimeout(() => {
         clearTimeout(page_timeout);
         dev.error(`page timeout for ${url}`);
-        win.close();
+        if (win) win.close();
         return reject(new Error(`page-timeout`));
       }, 20_000);
 
@@ -283,7 +283,7 @@ class Exporter {
             this._notifyProgress(80);
             dev.logverbose("printed-to-pdf " + url);
 
-            win.close();
+            if (win) win.close();
 
             clearTimeout(page_timeout);
 
@@ -303,7 +303,8 @@ class Exporter {
           })
           .catch((error) => {
             dev.logverbose("printed-to-pdf " + url);
-            win.close();
+            if (win) win.close();
+
             this._notifyEnded({
               event: "failed",
             });
@@ -317,7 +318,8 @@ class Exporter {
           dev.error(`Failed to load print pdf page ${url}`);
           clearTimeout(page_timeout);
           dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
-          win.close();
+          if (win) win.close();
+
           this._notifyEnded({
             event: "failed",
           });
