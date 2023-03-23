@@ -176,7 +176,7 @@ export default {
           new Date()
       ),
       description: this.file.description || "",
-      keywords: this.file.keywords || "",
+      keywords: this.file.keywords || [],
     };
   },
   created() {},

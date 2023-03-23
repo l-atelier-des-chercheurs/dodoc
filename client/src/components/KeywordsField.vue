@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="_keywords">
+    <div class="_keywords" v-if="keywords.length > 0">
       <div
         class="_keyword"
         v-for="keyword in keywords"
