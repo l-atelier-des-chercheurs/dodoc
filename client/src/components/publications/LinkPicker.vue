@@ -25,7 +25,6 @@
       </div>
 
       <br />
-
       <div class="" :key="full_url">
         <template v-if="url_to_site.type === 'any'">
           <iframe class="_siteIframe" :src="url_to_site.src" frameborder="0" />

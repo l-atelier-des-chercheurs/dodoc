@@ -104,7 +104,7 @@ export default {
         return match ? match[1] : null;
       }
       const videoId = getId(url);
-      return `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+      return `https://player.vimeo.com/video/${videoId}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`;
     },
     getSoundcloudEmbedURLFromURL(url) {
       return `https://w.soundcloud.com/player/?url=${url}&color=0066cc`;

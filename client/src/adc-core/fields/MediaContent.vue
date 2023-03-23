@@ -62,15 +62,17 @@
           />
         </template>
         <vue-plyr v-else :key="file_full_path">
-          <iframe
-            :src="url_to_site.src"
-            class="_mediaContent--iframe"
-            allowfullscreen
-            allowtransparency
-            allow="autoplay"
-            :poster="thumb"
-            frameborder="0"
-          />
+          <div class="plyr__video-embed">
+            <iframe
+              :src="url_to_site.src"
+              class="_mediaContent--iframe"
+              allowfullscreen
+              allowtransparency
+              allow="autoplay"
+              :poster="thumb"
+              frameborder="0"
+            />
+          </div>
         </vue-plyr>
       </template>
     </template>
@@ -207,6 +209,9 @@ export default {
     align-items: center;
     justify-content: center;
   }
+  &[data-filetype="url"] {
+    aspect-ratio: 16/9;
+  }
 }
 
 ._mediaContent--pdfIframe {
@@ -220,7 +225,11 @@ img {
 }
 
 ._mediaContent--iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  aspect-ratio: 16/9;
+
+  height: 100%;
 }
 </style>

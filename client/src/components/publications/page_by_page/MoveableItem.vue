@@ -520,6 +520,7 @@ export default {
     ._mediaContent[data-filetype="audio"] {
       padding: var(--set-margins);
       opacity: var(--set-opacity);
+      aspect-ratio: unset;
 
       border-radius: var(--set-borderRadius);
       overflow: hidden;
