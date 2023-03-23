@@ -257,7 +257,7 @@ class Exporter {
         dev.error(`page timeout for ${url}`);
         win.close();
         return reject(new Error(`page-timeout`));
-      }, 10_000);
+      }, 20_000);
 
       win.webContents.once("did-finish-load", async () => {
         dev.logverbose("did-finish-load " + url);
@@ -265,6 +265,7 @@ class Exporter {
 
         await new Promise((r) => setTimeout(r, 1000));
 
+        this._notifyProgress(45);
         win.webContents
           .printToPDF({
             // electron < 21
@@ -279,8 +280,8 @@ class Exporter {
             printSelectionOnly: false,
           })
           .then(async (data) => {
-            dev.logverbose("printed-to-pdf " + url);
             this._notifyProgress(80);
+            dev.logverbose("printed-to-pdf " + url);
 
             win.close();
 
@@ -301,7 +302,11 @@ class Exporter {
             return resolve(full_path_to_pdf);
           })
           .catch((error) => {
+            dev.logverbose("printed-to-pdf " + url);
             win.close();
+            this._notifyEnded({
+              event: "failed",
+            });
             return reject(error);
           });
       });
@@ -313,6 +318,9 @@ class Exporter {
           clearTimeout(page_timeout);
           dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
           win.close();
+          this._notifyEnded({
+            event: "failed",
+          });
           return reject(new Error(`did-fail-load`));
         }
       );
