@@ -50,6 +50,7 @@ export default {
   methods: {
     updateLang(new_lang) {
       this.$i18n.locale = new_lang;
+      localStorage.setItem("language", new_lang);
 
       this.$alertify
         .closeLogOnClick(true)

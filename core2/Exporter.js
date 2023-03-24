@@ -42,7 +42,13 @@ class Exporter {
       full_path_to_file = await this._createStopmotionFromImages();
       desired_filename = "stopmotion.mp4";
     } else if (this.instructions.recipe === "pdf") {
-      full_path_to_file = await this._loadPageAndPrint();
+      full_path_to_file = await this._loadPageAndPrint().catch((err) => {
+        dev.error(err);
+        this._notifyEnded({
+          event: "failed",
+        });
+        throw new Error(`failed`);
+      });
       desired_filename = "publication.pdf";
     } else {
       throw new Error(`recipe_handling_missing`);
@@ -237,7 +243,7 @@ class Exporter {
       dev.error(`page timeout for ${url}`);
       if (browser) await browser.close();
       return reject(new Error(`page-timeout`));
-    }, 10_000);
+    }, 20_000);
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -248,7 +254,13 @@ class Exporter {
     this._notifyProgress(15);
     const page = await browser.newPage();
     this._notifyProgress(30);
-    await page.goto(url);
+    await page
+      .goto(url, {
+        waitUntil: "domcontentloaded",
+      })
+      .catch((err) => {
+        throw err;
+      });
     this._notifyProgress(50);
 
     // Set screen size
@@ -268,6 +280,7 @@ class Exporter {
       full_path_to_folder_in_cache,
       "temp.pdf"
     );
+    this._notifyProgress(75);
 
     await page.pdf({
       path: full_path_to_pdf,
@@ -279,7 +292,7 @@ class Exporter {
     this._notifyProgress(95);
     clearTimeout(page_timeout);
 
-    await browser.close();
+    if (browser) await browser.close();
 
     return full_path_to_pdf;
     // print to pdf

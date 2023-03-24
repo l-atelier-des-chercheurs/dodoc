@@ -1,6 +1,5 @@
 import VueI18n from "vue-i18n";
 import Vue from "vue";
-import localstore from "store";
 
 export default function () {
   Vue.use(VueI18n);
@@ -10,7 +9,7 @@ export default function () {
     default: "en",
     current: "",
     init: function () {
-      let localstore_lang = localstore.get("language");
+      let localstore_lang = localStorage.getItem("language");
 
       // // force lang to french
       // this.current = 'fr';
@@ -56,6 +55,10 @@ export default function () {
         back: "retour",
         save: "enregistrer",
         save_as_favorite: "Enregistrer en favori",
+        input_url: "URL vers un site à intégrer",
+        input_url_instr:
+          "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
+        embed: "Intégrer",
 
         description: "description",
         no_description: "Pas de description",
@@ -508,6 +511,7 @@ export default function () {
         rectangle: "Rectangle",
         line: "Ligne",
         arrow: "Flèche",
+        for_example: "Par exemple",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
