@@ -19,17 +19,16 @@ module.exports = function () {
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
-  const privateKeyPath = !!global.settings.privateKeyPath
-    ? global.settings.privateKeyPath
-    : path.join(__dirname, "ssl", "selfsigned.key");
-
-  const certificatePath = !!global.settings.certificatePath
-    ? global.settings.certificatePath
-    : path.join(__dirname, "ssl", "selfsigned.crt");
-
   const options = {
-    key: fs.readFileSync(privateKeyPath),
-    cert: fs.readFileSync(certificatePath),
+    key: fs.readFileSync(
+      global.settings.privateKeyPath ||
+        path.join(__dirname, "ssl", "selfsigned.key")
+    ),
+    cert: fs.readFileSync(
+      global.settings.certificatePath ||
+        path.join(__dirname, "ssl", "selfsigned.crt")
+    ),
+    passphrase: global.settings.passphrase || "",
   };
 
   if (
