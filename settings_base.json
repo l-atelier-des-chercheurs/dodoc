@@ -12,6 +12,7 @@
 
   "privateKeyPath": "",
   "certificatePath": "",
+  "passphrase": "",
 
   "deletedFolderName": "_bin",
 
