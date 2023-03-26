@@ -1,9 +1,12 @@
 <template>
   <div class="_dLabel">
     <div class="_labelLine">
-      <label class="u-label">
-        <component :is="tag">{{ str }}</component>
+      <label v-if="tag === 'label'" class="u-label">
+        {{ str }}
       </label>
+      <component v-else :is="tag">
+        {{ str }}
+      </component>
       <span v-if="instructions">
         <!-- <sl-button size="small" circle @click="$emit('toggleHelp')">
         <sl-icon name="info-circle" :label="$t('edit')" />
@@ -29,7 +32,7 @@ export default {
     instructions: String,
     tag: {
       type: String,
-      default: "span",
+      default: "label",
     },
   },
   components: {},
@@ -48,7 +51,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._dLabel {
-  margin-bottom: calc(var(--spacing) / 4);
+  // margin-bottom: calc(var(--spacing) / 4);
 }
 ._labelLine {
   display: flex;

@@ -337,6 +337,9 @@ h1 {
 h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.1;
 }
 h3 {
   margin: 0;

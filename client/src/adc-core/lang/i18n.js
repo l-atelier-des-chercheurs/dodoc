@@ -65,7 +65,7 @@ export default function () {
         keywords: "Mots-clés",
         add: "ajouter",
         access: "accéder",
-        title: "titre",
+        title: "Titre",
         name: "nom",
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
@@ -297,6 +297,9 @@ export default function () {
         transparent: "Transparent",
 
         space: "Espace",
+        spaces: "Les espaces",
+        spaces_instr: "",
+        create_a_space: "Créer un espace",
 
         watermark: "Habillage",
         watermark_instructions:

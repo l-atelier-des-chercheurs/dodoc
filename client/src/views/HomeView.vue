@@ -103,7 +103,7 @@ export default {
 ._homeView--content {
   max-width: 600px;
   width: 100%;
-  min-height: 60vh;
+  min-height: 40vh;
   margin: 0 auto;
 
   display: flex;

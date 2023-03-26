@@ -20,9 +20,9 @@
             <div class="_devNotes">
               <div class="u-wips" />
               <small>
-                todo: afficher un petit menu qui contient un encart pour chaque
-                panneau avec les derniers éléments créés ou modifiés, et un lien
-                pour les ouvrir
+                à venir : afficher un petit menu qui contient un encart pour
+                chaque panneau avec les derniers éléments créés ou modifiés, et
+                un lien pour les ouvrir
               </small>
             </div>
           </div>

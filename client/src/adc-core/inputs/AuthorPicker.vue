@@ -1,5 +1,6 @@
 <template>
   <div class="_authorPicker">
+    <DLabel class="_label" :str="$t('add_authors')" />
     <div
       v-for="author_path in all_authors_except_current"
       :key="author_path"
@@ -43,6 +44,8 @@ export default {
 ._maxlength {
   flex: 0 0 auto;
   padding: calc(var(--spacing) / 4) 0;
+}
+._label {
 }
 
 ._authorPicker {

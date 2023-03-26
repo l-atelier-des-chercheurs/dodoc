@@ -3,6 +3,7 @@
     <DLabel
       v-if="label && (new_authors_paths.length > 0 || can_edit)"
       :str="label"
+      :tag="tag"
       :instructions="can_edit ? instructions : ''"
     />
 
@@ -12,6 +13,7 @@
           :path="author_path"
           :key="author_path"
           :edit_mode="edit_mode"
+          :links_to_author_page="!edit_mode"
           @remove="removeAuthor(author_path)"
         />
       </template>
@@ -42,7 +44,6 @@
         /> -->
       <!-- <div class="u-wips" /> -->
 
-      <DLabel :str="$t('add_authors')" />
       <AuthorPicker
         :current_authors="new_authors_paths"
         @addAuthor="addAuthor"
@@ -76,6 +77,7 @@ export default {
       type: String,
       default: "",
     },
+    tag: String,
 
     can_edit: {
       type: Boolean,

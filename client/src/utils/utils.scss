@@ -1,14 +1,14 @@
 .u-label {
   display: block;
-  // font-variant: small-caps;
-  // text-transform: uppercase;
-  // font-weight: 500;
+  font-variant: small-caps;
+  text-transform: uppercase;
+  font-weight: 500;
 
-  // font-family: var(--sl-font-mono);
-  // font-size: var(--sl-font-size-small);
-  // letter-spacing: 0.02em;
-  // color: var(--label-color);
-  // color: var(--c-gris_fonce);
+  font-family: var(--sl-font-mono);
+  font-size: var(--sl-font-size-small);
+  // letter-spacing: 0.01em;
+  color: var(--label-color);
+  // color: var(--c-orange);
 
   margin-bottom: calc(var(--spacing) / 4);
 
@@ -467,9 +467,10 @@ sl-button[variant="semitransparent"] {
 }
 sl-button[variant="edit"] {
   &::part(base) {
-    background: var(--c-bleuvert);
-    // color: var(--c-bleuvert);
-    color: white;
+    // background: var(--c-bleuvert);
+    background: transparent;
+    color: var(--c-bleuvert);
+    // color: white;
     border: none;
     border: 1px solid var(--c-bleuvert);
     // fill: white;

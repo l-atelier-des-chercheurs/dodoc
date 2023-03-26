@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <div>
+  <div class="_spacePresentation">
+    <div class="_coverField">
+      <img
+        src="https://latelier-des-chercheurs.fr/thumbs/ateliers/chepa-le-journal-pour-tou-te-s/cover-1280x800-q60.jpg"
+      />
+    </div>
+    <div class="_titleField">
       <TitleField
         :field_name="'title'"
         class="_title"
@@ -13,10 +18,7 @@
         :instructions="$t('project_title_instructions')"
       />
     </div>
-
-    <br />
-
-    <div class="">
+    <div class="_descriptionField">
       <TitleField
         :field_name="'description'"
         class="_description"
@@ -48,4 +50,20 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._spacePresentation {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  border: 2px solid white;
+  gap: calc(var(--spacing) / 1);
+
+  > * {
+    flex: 1 1 33%;
+  }
+}
+._titleField {
+}
+._descriptionField {
+}
+</style>

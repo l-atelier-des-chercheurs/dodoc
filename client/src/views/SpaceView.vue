@@ -5,28 +5,21 @@
 
       <br />
 
-      <DLabel
-        :str="$t('contributors')"
+      <AuthorField
+        :label="$t('contributors')"
+        :authors_paths="space.$authors"
+        :path="space.$path"
+        :can_edit="can_edit_space"
         :tag="'h2'"
         :instructions="$t('space_contrib_instr')"
       />
-
-      <div class="_contributorsList">
-        <div v-for="contributor in contributors" :key="contributor">
-          <sl-avatar
-            image="https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
-            label="Avatar of a gray tabby kitten looking down"
-          />
-          Pauline
-        </div>
-      </div>
 
       <br /><br />
 
       <DLabel
         :str="$t('list_of_projects')"
         :tag="'h2'"
-        :instructions="$t('space_contrib_instr')"
+        :instructions="$t('project_contrib_instr')"
       />
 
       <button
@@ -90,8 +83,6 @@ export default {
       space: undefined,
       projects: undefined,
       show_create_modal: false,
-
-      contributors: new Array(6).fill(undefined),
     };
   },
   created() {},
