@@ -7,6 +7,7 @@
 
       <DLabel
         :str="$t('contributors')"
+        :tag="'h2'"
         :instructions="$t('space_contrib_instr')"
       />
 
@@ -22,7 +23,11 @@
 
       <br /><br />
 
-      <h2>Les projets</h2>
+      <DLabel
+        :str="$t('list_of_projects')"
+        :tag="'h2'"
+        :instructions="$t('space_contrib_instr')"
+      />
 
       <button
         type="button"
