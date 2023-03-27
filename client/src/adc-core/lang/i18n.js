@@ -59,13 +59,14 @@ export default function () {
         input_url_instr:
           "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
         embed: "Intégrer",
+        from_project: "Depuis le projet",
 
         description: "description",
         no_description: "Pas de description",
         keywords: "Mots-clés",
         add: "ajouter",
         access: "accéder",
-        title: "titre",
+        title: "Titre",
         name: "nom",
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
@@ -297,6 +298,9 @@ export default function () {
         transparent: "Transparent",
 
         space: "Espace",
+        spaces: "Les espaces",
+        spaces_instr: "",
+        create_a_space: "Créer un espace",
 
         watermark: "Habillage",
         watermark_instructions:
@@ -502,10 +506,11 @@ export default function () {
         space_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
-          "Le titre est affiché ici et sur la page d’accueil.",
+          "Le titre est affiché ici et sur la liste des projets.",
         project_desc_instructions:
-          "La description est affichée ici et sur la page d’accueil.",
+          "La description est affichée ici et sur la liste des projets.",
         add_authors: "Ajouter des contributeur·rice·s",
+        no_authors_to_show: "Aucun auteur à afficher",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",
         line: "Ligne",

@@ -1,7 +1,12 @@
 <template>
   <div class="_spacesList">
     <div class="u-sameRow">
-      <h2>Les espaces</h2>
+      <DLabel
+        :str="$t('spaces')"
+        :tag="'h2'"
+        :instructions="$t('spaces_instr')"
+      />
+
       <button
         type="button"
         class="u-button u-button_red u-button_small"
@@ -29,15 +34,16 @@
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
           />
         </svg>
-        {{ $t("create_a_space") }}
+        {{ $t("create") }}
       </button>
     </div>
-
     <CreateSpace
       v-if="show_create_modal"
       @close="show_create_modal = false"
       @openNewSpace="openNewSpace"
     />
+
+    <br />
 
     <div class="_list">
       <SpacePreview v-for="space in spaces" :key="space.$path" :space="space" />
@@ -119,16 +125,16 @@ export default {
 }
 
 ._list {
-  // display: grid;
-  // grid-auto-rows: max-content;
-  // grid-gap: calc(var(--spacing) / 1);
-  // align-items: stretch;
-  // grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: calc(var(--spacing) / 1);
-  margin: calc(var(--spacing) / 1);
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) / 1);
+  align-items: stretch;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  // display: flex;
+  // flex-flow: row wrap;
+  // justify-content: center;
+  // gap: calc(var(--spacing) / 1);
+  // margin: calc(var(--spacing) / 1);
 
   > * {
     background: var(--panel-color);

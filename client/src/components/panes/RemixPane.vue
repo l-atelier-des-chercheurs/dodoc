@@ -572,8 +572,8 @@ export default {
   color: black;
 
   h2 {
-    font-family: "Fira Code";
-    margin: 0;
+    // font-family: "Fira Code";
+    // margin: 0;
   }
 
   p {

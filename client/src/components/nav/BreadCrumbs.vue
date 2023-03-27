@@ -5,7 +5,7 @@
         <img :src="`${$root.publicPath}i_logo.svg`" class="" />
       </router-link>
     </div>
-    <template v-if="$route.path !== '/'">
+    <template v-if="$route.path.includes('/+')">
       <sl-icon name="arrow-right-short" label="" />
       <div>
         <router-link

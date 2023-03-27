@@ -1,7 +1,12 @@
 <template>
-  <div class="">
+  <div class="_dLabel">
     <div class="_labelLine">
-      <label class="u-label">{{ str }}</label>
+      <label v-if="tag === 'label'" class="u-label">
+        {{ str }}
+      </label>
+      <component v-else :is="tag">
+        {{ str }}
+      </component>
       <span v-if="instructions">
         <!-- <sl-button size="small" circle @click="$emit('toggleHelp')">
         <sl-icon name="info-circle" :label="$t('edit')" />
@@ -25,6 +30,10 @@ export default {
   props: {
     str: String,
     instructions: String,
+    tag: {
+      type: String,
+      default: "label",
+    },
   },
   components: {},
   data() {
@@ -41,6 +50,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._dLabel {
+  // margin-bottom: calc(var(--spacing) / 4);
+}
 ._labelLine {
   display: flex;
   align-items: center;
@@ -50,6 +62,7 @@ export default {
     // color: currentColor;
     // margin-bottom: 0;
     // color: currentColor;
+    margin-bottom: 0;
   }
 
   sl-icon-button {

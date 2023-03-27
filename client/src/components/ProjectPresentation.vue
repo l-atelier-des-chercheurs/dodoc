@@ -11,38 +11,13 @@ z
     }"
   >
     <div class="_projectInfos--cover">
-      <div
-        class="_projectInfos--cover--content"
-        :class="{
-          'is--empty': !cover_thumb,
-        }"
-      >
-        <template v-if="cover_thumb">
-          <img :src="cover_thumb" />
-
-          <template v-if="context === 'full'">
-            <FullscreenBtn
-              class="u-floatingFsButton"
-              :icon="'fullscreen'"
-              :label="$t('fullscreen')"
-              @click="show_cover_fullscreen = true"
-            />
-            <FullscreenView
-              v-if="show_cover_fullscreen"
-              :image_src="cover_thumb"
-              @close="show_cover_fullscreen = false"
-            />
-          </template>
-        </template>
-        <div v-else class="_noImage" />
-
-        <CoverField
-          v-if="context === 'full' && can_edit_project"
-          class="_coverPicker"
-          :cover="project.$cover"
-          :path="project.$path"
-        />
-      </div>
+      <CoverField
+        class="_coverPicker"
+        :context="context"
+        :cover="project.$cover"
+        :path="project.$path"
+        :can_edit="can_edit_project"
+      />
     </div>
 
     <div class="_projectInfos--infos">
@@ -199,7 +174,6 @@ export default {
 
       show_meta: true,
       show_description: true,
-      show_cover_fullscreen: false,
     };
   },
   created() {
@@ -212,16 +186,7 @@ export default {
       if (this.$root.is_mobile_view) this.show_meta = true;
     },
   },
-  computed: {
-    cover_thumb() {
-      return this.makeRelativeURLFromThumbs({
-        $thumbs: this.project.$cover,
-        $type: "image",
-        $path: this.project.$path,
-        resolution: this.context === "full" ? 2000 : 640,
-      });
-    },
-  },
+  computed: {},
   methods: {
     async updateProject() {
       this.fetch_status = "pending";
@@ -336,7 +301,7 @@ export default {
 
   .is--list &,
   .is--tiny & {
-    gap: calc(var(--spacing) / 2);
+    gap: calc(var(--spacing) / 4);
     order: 0;
     // position: absolute;
     // bottom: 0;
@@ -349,7 +314,7 @@ export default {
     //   rgba(255, 255, 255, 0.9) 100%
     // );
     // backdrop-filter: blur(12px);
-    padding-top: 0;
+    padding-top: calc(var(--spacing) / 2);
     pointer-events: none;
 
     ._showDescription {
@@ -380,7 +345,7 @@ export default {
   }
 
   .is--list & {
-    // margin: calc(var(--spacing) / 2);
+    padding: 2px;
     width: 100%;
     height: auto;
   }
@@ -390,64 +355,6 @@ export default {
     max-height: 40vh;
     max-width: 40vh;
     height: auto;
-  }
-
-  ._projectInfos--cover--content {
-    position: absolute;
-    inset: 0;
-    margin: calc(var(--spacing) * 1);
-    margin: 2px;
-    overflow: hidden;
-    border-radius: 3px;
-
-    --color1: var(--c-gris);
-    --color2: var(--c-gris_clair);
-  }
-
-  ._projectInfos--cover--content.is--empty {
-    background: radial-gradient(
-        circle,
-        transparent 20%,
-        var(--color1) 20%,
-        var(--color1) 80%,
-        transparent 80%,
-        transparent
-      ),
-      radial-gradient(
-          circle,
-          transparent 20%,
-          var(--color1) 20%,
-          var(--color1) 80%,
-          transparent 80%,
-          transparent
-        )
-        15px 15px,
-      linear-gradient(
-          var(--color2) 1.2000000000000002px,
-          transparent 1.2000000000000002px
-        )
-        0 -0.6000000000000001px,
-      linear-gradient(
-          90deg,
-          var(--color2) 1.2000000000000002px,
-          var(--color1) 1.2000000000000002px
-        ) -0.6000000000000001px 0;
-    background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
-  }
-
-  img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  ::v-deep ._noImage {
-    position: absolute;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    background-color: var(--c-gris_fonce);
   }
 }
 
@@ -517,10 +424,10 @@ export default {
 }
 
 ._coverPicker {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding: calc(var(--spacing) / 1);
+  // position: absolute;
+  // bottom: 0;
+  // right: 0;
+  // padding: calc(var(--spacing) / 1);
 }
 
 ._showMeta {
