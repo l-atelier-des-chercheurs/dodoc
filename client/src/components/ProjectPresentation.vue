@@ -345,7 +345,7 @@ export default {
   }
 
   .is--list & {
-    // margin: calc(var(--spacing) / 2);
+    padding: 2px;
     width: 100%;
     height: auto;
   }

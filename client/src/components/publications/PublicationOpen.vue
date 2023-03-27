@@ -33,8 +33,8 @@
           :can_edit="can_edit_publication"
         /> -->
 
-        <div class="_buttonRow" v-if="can_edit_publication">
-          <div class="">
+        <div class="_buttonRow">
+          <div class="" v-if="can_edit_publication">
             <button
               type="button"
               class="u-buttonLink"
@@ -54,7 +54,11 @@
               {{ $t("share") }}
             </router-link>
           </div>
-          <RemoveMenu :remove_text="$t('remove')" @remove="removePublication" />
+          <RemoveMenu
+            v-if="can_edit_publication"
+            :remove_text="$t('remove')"
+            @remove="removePublication"
+          />
         </div>
       </div>
       <StoryTemplate

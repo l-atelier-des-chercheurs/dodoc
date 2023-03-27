@@ -510,6 +510,7 @@ export default function () {
         project_desc_instructions:
           "La description est affichée ici et sur la liste des projets.",
         add_authors: "Ajouter des contributeur·rice·s",
+        no_authors_to_show: "Aucun auteur à afficher",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",
         line: "Ligne",
