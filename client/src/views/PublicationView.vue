@@ -21,7 +21,7 @@
               <div
                 class="_page"
                 v-if="
-                  display_mode === 'diapo' &&
+                  display_mode !== 'diapo' ||
                   diapo_current_page_or_spread - 1 === page_number
                 "
                 :key="'page-' + page.id"
@@ -46,7 +46,7 @@
                 class="_spread"
                 :key="s_index"
                 v-if="
-                  display_mode === 'diapo' &&
+                  display_mode !== 'diapo' ||
                   diapo_current_page_or_spread - 1 === s_index
                 "
               >
