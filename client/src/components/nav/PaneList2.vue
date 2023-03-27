@@ -7,19 +7,23 @@
     }"
   >
     <span label="Panneaux" class="_paneList2">
-      <button
-        type="button"
-        class="u-button u-button_transparent _projectTitle"
+      <div
+        class="_projectTitle"
         :class="{
           'is--shown': is_stickied_to_top,
         }"
-        @click="scrollToTop"
       >
-        <img v-if="cover_thumb" :src="cover_thumb" />
-        <span>
-          {{ project.title }}
-        </span>
-      </button>
+        <button
+          type="button"
+          class="u-button u-button_transparent"
+          @click="scrollToTop"
+        >
+          <img v-if="cover_thumb" :src="cover_thumb" />
+          <span>
+            {{ project.title }}
+          </span>
+        </button>
+      </div>
       <span placement="top" class="_projectPanes" ref="drawer">
         <SlickList
           v-if="can_edit"
@@ -458,8 +462,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  padding: 0;
-  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
   font-weight: 700;
   opacity: 0;
   transform: translateY(-100%);
@@ -469,6 +472,10 @@ export default {
   &.is--shown {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  > button {
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   }
 
   img {

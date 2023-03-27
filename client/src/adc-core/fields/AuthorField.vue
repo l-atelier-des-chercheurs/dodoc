@@ -35,29 +35,22 @@
     </div>
 
     <div class="_footer" v-if="edit_mode">
-      <!-- <TextInput
-          :content.sync="new_tag_name"
-          :maxlength="maxlength"
-          :required="true"
-          @toggleValidity="($event) => (allow_save_newkeyword = $event)"
-          @onEnter="onEnter"
-        /> -->
-      <!-- <div class="u-wips" /> -->
-
-      <AuthorPicker
-        :current_authors="new_authors_paths"
-        @addAuthor="addAuthor"
-      />
-
-      <div>
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          :allow_save="allow_save"
-          @save="updateAuthors"
-          @cancel="cancel"
+      <BaseModal2 @close="$emit('close')" :title="$t('add_authors')">
+        <AuthorPicker
+          :current_authors="new_authors_paths"
+          @addAuthor="addAuthor"
         />
-      </div>
+
+        <div>
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
+            :allow_save="allow_save"
+            @save="updateAuthors"
+            @cancel="cancel"
+          />
+        </div>
+      </BaseModal2>
     </div>
   </div>
 </template>

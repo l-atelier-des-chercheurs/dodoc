@@ -59,6 +59,7 @@ export default function () {
         input_url_instr:
           "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
         embed: "Intégrer",
+        from_project: "Depuis le projet",
 
         description: "description",
         no_description: "Pas de description",
@@ -505,9 +506,9 @@ export default function () {
         space_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
-          "Le titre est affiché ici et sur la page d’accueil.",
+          "Le titre est affiché ici et sur la liste des projets.",
         project_desc_instructions:
-          "La description est affichée ici et sur la page d’accueil.",
+          "La description est affichée ici et sur la liste des projets.",
         add_authors: "Ajouter des contributeur·rice·s",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",

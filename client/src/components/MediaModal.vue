@@ -157,7 +157,7 @@ export default {
   position: absolute;
   // padding: 1px;
   inset: 0;
-  padding: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 2);
 
   ._mediaModal--overlay {
     background: var(--c-orange);
@@ -169,8 +169,8 @@ export default {
 
   ._mediaModal--content {
     background: var(--c-noir);
-    border-radius: var(--border-radius);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    // border-radius: var(--border-radius);
+    // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
   }
 
