@@ -1,8 +1,10 @@
 <template>
-  <div class="_publicationView">
-    <!-- <pre>
-      {{ $api.store }}
-    </pre> -->
+  <div
+    class="_publicationView"
+    :class="{
+      'is--diapo': display_mode === 'diapo',
+    }"
+  >
     <transition name="fade_fast" mode="out-in">
       <div class="u-divCentered" v-if="!project || !publication" key="loader">
         <LoaderSpinner />
@@ -15,50 +17,98 @@
         publication = {{ publication }} -->
         <div v-if="publication.template === 'page_by_page'" class="_pages">
           <template v-if="!is_spread">
-            <div
-              class="_page"
-              v-for="(page, page_number) in pages"
-              :key="'page-' + page.id"
-            >
-              <SinglePage
-                :context="'full'"
-                :page_modules="getModulesForPage({ modules, page_id: page.id })"
-                :page_color="page.page_color"
-                :hide_pagination="page.hide_pagination === true"
-                :can_edit="false"
-                :page_number="page_number"
-                :pagination="pagination"
-              />
-            </div>
+            <template v-for="(page, page_number) in pages">
+              <div
+                class="_page"
+                v-if="
+                  display_mode === 'diapo' &&
+                  diapo_current_page_or_spread - 1 === page_number
+                "
+                :key="'page-' + page.id"
+              >
+                <SinglePage
+                  :context="'full'"
+                  :page_modules="
+                    getModulesForPage({ modules, page_id: page.id })
+                  "
+                  :page_color="page.page_color"
+                  :hide_pagination="page.hide_pagination === true"
+                  :can_edit="false"
+                  :page_number="page_number"
+                  :pagination="pagination"
+                />
+              </div>
+            </template>
           </template>
           <template v-else>
-            <div
-              class="_spread"
-              v-for="(spread, s_index) in spreads"
-              :key="s_index"
-            >
+            <template v-for="(spread, s_index) in spreads">
               <div
-                v-for="(page, index) in spread"
-                :key="page.id ? page.id : index"
-                class="_spread--page"
+                class="_spread"
+                :key="s_index"
+                v-if="
+                  display_mode === 'diapo' &&
+                  diapo_current_page_or_spread - 1 === s_index
+                "
               >
-                <template v-if="page">
-                  <SinglePage
-                    :context="'full'"
-                    :page_modules="
-                      getModulesForPage({ modules, page_id: page.id })
-                    "
-                    :page_color="page.page_color"
-                    :hide_pagination="page.hide_pagination === true"
-                    :page_number="s_index * 2 + index"
-                    :pagination="pagination"
-                    :can_edit="false"
-                  />
-                </template>
-                <div v-else class="_noPage" />
+                <div
+                  v-for="(page, index) in spread"
+                  :key="page.id ? page.id : index"
+                  class="_spread--page"
+                >
+                  <template v-if="page">
+                    <SinglePage
+                      :context="'full'"
+                      :page_modules="
+                        getModulesForPage({ modules, page_id: page.id })
+                      "
+                      :page_color="page.page_color"
+                      :hide_pagination="page.hide_pagination === true"
+                      :page_number="s_index * 2 + index"
+                      :pagination="pagination"
+                      :can_edit="false"
+                    />
+                  </template>
+                  <div v-else class="_noPage" />
+                </div>
               </div>
-            </div>
+            </template>
           </template>
+        </div>
+
+        <div class="_navBtns" v-if="display_mode === 'diapo'">
+          <span>
+            <button
+              type="button"
+              class="u-button u-button_transparent _navBtn _leftArrow"
+              :disabled="diapo_current_page_or_spread <= 1"
+              @click="updatePageQuery(-1)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+                <path
+                  d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+                  style="fill: var(--c-noir)"
+                />
+              </svg>
+            </button>
+          </span>
+          <span>
+            <button
+              type="button"
+              class="u-button u-button_transparent _navBtn _rightArrow"
+              :disabled="
+                diapo_current_page_or_spread >=
+                (is_spread ? spreads.length : pages.length)
+              "
+              @click="updatePageQuery(+1)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+                <path
+                  d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+                  style="fill: #353535"
+                />
+              </svg>
+            </button>
+          </span>
         </div>
       </div>
     </transition>
@@ -76,12 +126,15 @@ export default {
       fetch_project_error: null,
       project: null,
       publication: null,
-
       projectpanes: [],
+
+      display_mode: "print",
     };
   },
   created() {},
   async mounted() {
+    if (this.$route.query?.display === "diapo") this.display_mode = "diapo";
+
     await this.listProject();
     this.$eventHub.$emit("received.project", this.project);
 
@@ -101,6 +154,10 @@ export default {
   computed: {
     pagination() {
       return this.setPaginationFromPublication(this.publication);
+    },
+    diapo_current_page_or_spread() {
+      if (!this.$route.query?.page) return 1;
+      return +this.$route.query.page;
     },
     project_path() {
       return this.createPath({
@@ -148,6 +205,17 @@ export default {
           this.fetch_publication_error = err.response;
         });
       this.publication = publication;
+    },
+    updatePageQuery(increment) {
+      let query = {};
+
+      if (this.$route.query)
+        query = JSON.parse(JSON.stringify(this.$route.query));
+
+      // if (Object.prototype.hasOwnProperty.call(query, "page"))
+      query.page = this.diapo_current_page_or_spread + increment;
+
+      this.$router.push({ query });
     },
   },
 };
@@ -220,5 +288,12 @@ body {
 ._noPage {
   width: calc(var(--page-width));
   height: calc(var(--page-height));
+}
+
+._navBtns {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 1);
 }
 </style>

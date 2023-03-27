@@ -457,11 +457,6 @@ export default {
 }
 
 ._projectTitle {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-
   padding: calc(var(--spacing) / 4);
   font-weight: 700;
   opacity: 0;
@@ -475,7 +470,11 @@ export default {
   }
 
   > button {
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
   }
 
   img {

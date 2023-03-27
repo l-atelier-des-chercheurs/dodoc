@@ -46,7 +46,10 @@
           </div>
           <div class="">
             <router-link
-              :to="{ path: createURLFromPath(publication.$path) }"
+              :to="{
+                path: createURLFromPath(publication.$path),
+                query: { display: 'diapo' },
+              }"
               target="_blank"
               class="u-buttonLink"
             >
