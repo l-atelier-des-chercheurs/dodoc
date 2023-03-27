@@ -2,7 +2,7 @@
   <div
     class="_publicationView"
     :class="{
-      'is--diapo': display_mode === 'diapo',
+      'is--slides': display_mode === 'slides',
     }"
   >
     <transition name="fade_fast" mode="out-in">
@@ -18,69 +18,81 @@
         <div v-if="publication.template === 'page_by_page'" class="_pages">
           <template v-if="!is_spread">
             <template v-for="(page, page_number) in pages">
-              <div
-                class="_page"
-                v-if="
-                  display_mode !== 'diapo' ||
-                  diapo_current_page_or_spread - 1 === page_number
-                "
+              <transition
+                name="fade_fast"
+                mode="out-in"
                 :key="'page-' + page.id"
               >
-                <SinglePage
-                  :context="'full'"
-                  :page_modules="
-                    getModulesForPage({ modules, page_id: page.id })
+                <div
+                  class="_page"
+                  v-if="
+                    display_mode !== 'slides' ||
+                    slides_current_page_or_spread - 1 === page_number
                   "
-                  :page_color="page.page_color"
-                  :hide_pagination="page.hide_pagination === true"
-                  :can_edit="false"
-                  :page_number="page_number"
-                  :pagination="pagination"
-                />
-              </div>
+                  :key="'page-' + page.id"
+                >
+                  <SinglePage
+                    :context="'full'"
+                    :page_modules="
+                      getModulesForPage({ modules, page_id: page.id })
+                    "
+                    :page_color="page.page_color"
+                    :hide_pagination="page.hide_pagination === true"
+                    :can_edit="false"
+                    :page_number="page_number"
+                    :pagination="pagination"
+                  />
+                </div>
+              </transition>
             </template>
           </template>
           <template v-else>
             <template v-for="(spread, s_index) in spreads">
-              <div
-                class="_spread"
-                :key="s_index"
-                v-if="
-                  display_mode !== 'diapo' ||
-                  diapo_current_page_or_spread - 1 === s_index
-                "
+              <transition
+                name="fade_fast"
+                mode="out-in"
+                :key="'spread-' + s_index"
               >
                 <div
-                  v-for="(page, index) in spread"
-                  :key="page.id ? page.id : index"
-                  class="_spread--page"
+                  class="_spread"
+                  :key="s_index"
+                  v-if="
+                    display_mode !== 'slides' ||
+                    slides_current_page_or_spread - 1 === s_index
+                  "
                 >
-                  <template v-if="page">
-                    <SinglePage
-                      :context="'full'"
-                      :page_modules="
-                        getModulesForPage({ modules, page_id: page.id })
-                      "
-                      :page_color="page.page_color"
-                      :hide_pagination="page.hide_pagination === true"
-                      :page_number="s_index * 2 + index"
-                      :pagination="pagination"
-                      :can_edit="false"
-                    />
-                  </template>
-                  <div v-else class="_noPage" />
+                  <div
+                    v-for="(page, index) in spread"
+                    :key="page.id ? page.id : index"
+                    class="_spread--page"
+                  >
+                    <template v-if="page">
+                      <SinglePage
+                        :context="'full'"
+                        :page_modules="
+                          getModulesForPage({ modules, page_id: page.id })
+                        "
+                        :page_color="page.page_color"
+                        :hide_pagination="page.hide_pagination === true"
+                        :page_number="s_index * 2 + index"
+                        :pagination="pagination"
+                        :can_edit="false"
+                      />
+                    </template>
+                    <div v-else class="_noPage" />
+                  </div>
                 </div>
-              </div>
+              </transition>
             </template>
           </template>
         </div>
 
-        <div class="_navBtns" v-if="display_mode === 'diapo'">
+        <div class="_navBtns" v-if="display_mode === 'slides'">
           <span>
             <button
               type="button"
               class="u-button u-button_transparent u-button_small"
-              :disabled="diapo_current_page_or_spread <= 1"
+              :disabled="slides_current_page_or_spread <= 1"
               @click="updatePageQuery(-1)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
@@ -91,7 +103,7 @@
             </button>
           </span>
           <span class="_pageInd"
-            ><b>{{ diapo_current_page_or_spread }}</b>
+            ><b>{{ slides_current_page_or_spread }}</b>
             /
             {{ is_spread ? spreads.length : pages.length }}</span
           >
@@ -100,7 +112,7 @@
               type="button"
               class="u-button u-button_transparent u-button_small"
               :disabled="
-                diapo_current_page_or_spread >=
+                slides_current_page_or_spread >=
                 (is_spread ? spreads.length : pages.length)
               "
               @click="updatePageQuery(+1)"
@@ -136,7 +148,7 @@ export default {
   },
   created() {},
   async mounted() {
-    if (this.$route.query?.display === "diapo") this.display_mode = "diapo";
+    if (this.$route.query?.display === "slides") this.display_mode = "slides";
 
     await this.listProject();
     this.$eventHub.$emit("received.project", this.project);
@@ -148,17 +160,20 @@ export default {
       --page-height: calc(${this.publication.page_height}cm - 0.2mm);
     `;
 
+    document.addEventListener("keydown", this.keyPressed);
+
     // this.$api.join({ room: this.project.$path });
   },
   beforeDestroy() {
     // this.$api.leave({ room: this.project.$path });
+    document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {},
   computed: {
     pagination() {
       return this.setPaginationFromPublication(this.publication);
     },
-    diapo_current_page_or_spread() {
+    slides_current_page_or_spread() {
       if (!this.$route.query?.page) return 1;
       return +this.$route.query.page;
     },
@@ -188,6 +203,27 @@ export default {
     },
   },
   methods: {
+    keyPressed(event) {
+      if (
+        this.$root.modal_is_opened ||
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor") ||
+        event.target.hasAttribute("contenteditable")
+      )
+        return;
+
+      if (this.display_mode !== "slides") return;
+
+      if (event.key === "ArrowLeft" && this.slides_current_page_or_spread > 1)
+        this.updatePageQuery(-1);
+      if (
+        event.key === "ArrowRight" &&
+        this.slides_current_page_or_spread <
+          (this.is_spread ? this.spreads.length : this.pages.length)
+      )
+        this.updatePageQuery(+1);
+    },
     async listProject() {
       const project = await this.$api
         .getFolder({
@@ -216,7 +252,7 @@ export default {
         query = JSON.parse(JSON.stringify(this.$route.query));
 
       // if (Object.prototype.hasOwnProperty.call(query, "page"))
-      query.page = this.diapo_current_page_or_spread + increment;
+      query.page = this.slides_current_page_or_spread + increment;
 
       this.$router.push({ query });
     },

@@ -48,7 +48,7 @@
             <router-link
               :to="{
                 path: createURLFromPath(publication.$path),
-                query: { display: 'diapo' },
+                query: { display: 'slides' },
               }"
               target="_blank"
               class="u-buttonLink"
