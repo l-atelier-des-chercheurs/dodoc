@@ -56,6 +56,7 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   border: 2px solid white;
+  background: white;
   gap: calc(var(--spacing) / 1);
 
   > * {
