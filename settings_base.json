@@ -426,6 +426,9 @@
                 "pages": {
                   "type": "array"
                 },
+                "layout_mode": {
+                  "type": "string"
+                },
                 "page_width": {
                   "type": "number"
                 },

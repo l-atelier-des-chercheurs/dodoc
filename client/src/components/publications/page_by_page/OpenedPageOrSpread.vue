@@ -47,7 +47,8 @@
                 :scale="scale"
                 :show_grid.sync="show_grid"
                 :snap_to_grid.sync="snap_to_grid"
-                :gridstep_in_cm.sync="gridstep_in_cm"
+                :gridstep_in_mm.sync="gridstep_in_mm"
+                :layout_mode="layout_mode"
                 :page_color="current_page.page_color"
                 :pagination="pagination"
                 :publication_path="publication_path"
@@ -75,11 +76,12 @@
                   "
                   :page_width="page_width"
                   :page_height="page_height"
+                  :layout_mode="layout_mode"
                   :page_color="current_page.page_color"
                   :scale="scale"
                   :show_grid="show_grid"
                   :snap_to_grid="snap_to_grid"
-                  :gridstep_in_cm="gridstep_in_cm"
+                  :gridstep_in_mm="gridstep_in_mm"
                   :margins="margins"
                   :page_number="active_page_number"
                   :pagination="pagination"
@@ -107,11 +109,12 @@
                       "
                       :page_width="page_width"
                       :page_height="page_height"
+                      :layout_mode="layout_mode"
                       :page_color="page.page_color"
                       :scale="scale"
                       :show_grid="show_grid"
                       :snap_to_grid="snap_to_grid"
-                      :gridstep_in_cm="gridstep_in_cm"
+                      :gridstep_in_mm="gridstep_in_mm"
                       :margins="margins"
                       :page_number="active_spread_index * 2 + index"
                       :pagination="pagination"
@@ -155,6 +158,7 @@ export default {
     is_spread: Boolean,
     page_width: Number,
     page_height: Number,
+    layout_mode: String,
     margins: Object,
     pagination: [Boolean, Object],
     can_edit: Boolean,
@@ -170,7 +174,7 @@ export default {
 
       show_grid: true,
       snap_to_grid: false,
-      gridstep_in_cm: 0.5,
+      gridstep_in_mm: 5,
 
       active_module_path: false,
     };

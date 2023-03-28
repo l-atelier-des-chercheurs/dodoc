@@ -155,9 +155,18 @@ export default function () {
         share: "Partager",
         exports_in_progress: "Exportation(s) en cours",
 
+        document_type: "Type de document",
+        print: "Imprimé",
+        print_instr:
+          "Les unités seront exprimées en millimètres. Idéal pour réaliser un livre, une affiche ou tout autre document imprimé.",
+        screen: "Écran",
+        screen_instr:
+          "Les unités seront exprimées en pixel. Idéal pour réaliser une présentation séquencées en diapositives.",
+
         format: "Format",
         format_instructions:
-          "Sélectionnez un format ou définissez les dimensions de la page, en centimètres.",
+          "Sélectionnez un format ou définissez les dimensions de la page, en millimètres.",
+
         A4_portrait: "A4 en portrait",
         A4_landscape: "A4 en paysage",
         A5_portrait: "A5 en portrait",
@@ -187,7 +196,7 @@ export default function () {
         backcover: "Quatrième de couverture",
         margins: "Marges",
         margins_instructions:
-          "Renseignez ici les repères de marge souhaités, en centimètres. Les marges seront dessinées avec un trait violet.",
+          "Renseignez ici les repères de marge souhaités. Les marges seront dessinées avec un trait violet.",
         pagination_instructions:
           "Indiquez ici les règlages souhaités pour l’affichage du numéro de la page.",
         pagination_instructions_spread:

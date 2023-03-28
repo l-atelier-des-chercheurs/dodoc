@@ -45,6 +45,7 @@
         :borderRadius="turnCMtoPX(publimodule.border_radius) || 0"
         :context="'page_by_page'"
         :number_of_max_medias="1"
+        :magnification="magnification"
         @duplicate="onDuplicateModule"
         @contentIsEdited="contentIsEdited"
         @contentIsNotEdited="contentIsNotEdited"

@@ -142,7 +142,7 @@ export default {
           type: "line",
           icon: "dash-lg",
           addtl_meta: {
-            outline_width: 0.1,
+            outline_width: 1,
             outline_color: "#000000",
           },
         },
@@ -150,7 +150,7 @@ export default {
           type: "arrow",
           icon: "arrow-right-square",
           addtl_meta: {
-            outline_width: 0.1,
+            outline_width: 1,
             outline_color: "#000000",
           },
         },

@@ -220,15 +220,9 @@
               :ry="borderRadius / 2 || 0"
             />
             <line
-              :x1="
-                (publimodule.outline_width * $root.page_magnification) / 4 || 0
-              "
+              :x1="(publimodule.outline_width * magnification) / 4 || 0"
               y1="50"
-              :x2="
-                100 -
-                ((publimodule.outline_width * $root.page_magnification) / 4 ||
-                  0)
-              "
+              :x2="100 - ((publimodule.outline_width * magnification) / 4 || 0)"
               y2="50"
               vector-effect="non-scaling-stroke"
             />
@@ -243,15 +237,9 @@
               :ry="borderRadius / 2 || 0"
             />
             <line
-              :x1="
-                (publimodule.outline_width * $root.page_magnification) / 4 || 0
-              "
+              :x1="(publimodule.outline_width * magnification) / 4 || 0"
               y1="50"
-              :x2="
-                100 -
-                ((publimodule.outline_width * $root.page_magnification) / 4 ||
-                  0)
-              "
+              :x2="100 - ((publimodule.outline_width * magnification) / 4 || 0)"
               y2="50"
               vector-effect="non-scaling-stroke"
             />
@@ -259,9 +247,7 @@
             <g
               :transform="`
                 translate(${
-                  100 -
-                  ((publimodule.outline_width * $root.page_magnification) / 4 ||
-                    0)
+                  100 - ((publimodule.outline_width * magnification) / 4 || 0)
                 }, 50)`"
               preserveAspectRatio
             >
@@ -308,6 +294,7 @@ export default {
     publimodule: Object,
     module_position: String,
     can_edit: Boolean,
+    magnification: Number,
     borderRadius: Number,
     context: String,
     number_of_max_medias: {

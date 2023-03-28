@@ -1,12 +1,14 @@
 export default {
   computed: {},
   methods: {
-    calculateZoomToFit({ width, height, desired_largest_dimension }) {
+    calculateZoomToFit({
+      width,
+      height,
+      desired_largest_dimension,
+      magnification,
+    }) {
       const largest_dimension = Math.max(width, height);
-      return (
-        desired_largest_dimension /
-        (largest_dimension * this.$root.page_magnification)
-      );
+      return desired_largest_dimension / (largest_dimension * magnification);
     },
     getModulesForPage({ modules, page_id }) {
       return (
