@@ -199,13 +199,15 @@
             v-if="publimodule.module_type === 'ellipsis'"
             cx="50"
             cy="50"
-            r="50"
+            :r="50 - (publimodule.outline_width * magnification) / 8"
             vector-effect="non-scaling-stroke"
           />
           <rect
             v-else-if="publimodule.module_type === 'rectangle'"
-            width="100"
-            height="100"
+            :x="(publimodule.outline_width * magnification) / 4"
+            :y="(publimodule.outline_width * magnification) / 4"
+            :width="100 - (publimodule.outline_width * magnification) / 2"
+            :height="100 - (publimodule.outline_width * magnification) / 2"
             vector-effect="non-scaling-stroke"
             :rx="borderRadius / 2 || 0"
             :ry="borderRadius / 2 || 0"
@@ -481,7 +483,7 @@ export default {
     ._content,
     svg {
       overflow: visible;
-      stroke-linejoin: bevel;
+      stroke-linejoin: arcs;
       stroke-linecap: round;
     }
     svg {
