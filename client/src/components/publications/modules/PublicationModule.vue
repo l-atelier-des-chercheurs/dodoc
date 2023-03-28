@@ -359,8 +359,11 @@ export default {
         this.publimodule.source_medias.length === 0
       )
         return false;
-      const { path } = this.publimodule.source_medias[0];
-      if (path) return this.getSourceMedia({ source_media_path: path });
+      const source_media = this.publimodule.source_medias[0];
+      if (source_media) {
+        const publication_path = this.getParent(this.publimodule.$path);
+        return this.getSourceMedia({ source_media, publication_path });
+      }
       return false;
     },
     media_styles() {

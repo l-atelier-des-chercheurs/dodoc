@@ -12,7 +12,7 @@
         <div
           class="_mediaGrid--item"
           v-for="(media_with_linked, index) in medias_with_linked"
-          :key="media_with_linked._linked_media.$path"
+          :key="media_with_linked._linked_media.$path || 'none'"
           :style="itemStyle({ media_with_linked })"
         >
           <MediaContent
@@ -135,10 +135,7 @@ export default {
   watch: {},
   computed: {
     publication_path() {
-      return this.publimodule.$path.substring(
-        0,
-        this.publimodule.$path.lastIndexOf("/")
-      );
+      return this.getParent(this.publimodule.$path);
     },
     single_media_displayed_at_full_ratio() {
       if (this.medias_with_linked.length > 1) return false;
@@ -151,12 +148,13 @@ export default {
     },
     medias_with_linked() {
       if (!this.publimodule.source_medias) return [];
-      return this.publimodule.source_medias.map((m) => {
+      return this.publimodule.source_medias.map((source_media) => {
         const _linked_media = this.getSourceMedia({
-          source_media_path: m.path,
+          source_media,
+          publication_path: this.publication_path,
         });
-        const media_with_linked = Object.assign({}, m, { _linked_media });
-        return media_with_linked;
+
+        return Object.assign({}, source_media, { _linked_media });
       });
     },
     is_multiple_medias() {

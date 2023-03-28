@@ -552,9 +552,12 @@ export default {
     firstMedia(page_module) {
       if (!page_module) return false;
       try {
-        const media_path = page_module.source_medias[0].path;
+        const source_media = page_module.source_medias[0];
+        const publication_path = this.getParent(page_module.$path);
+
         return this.getSourceMedia({
-          source_media_path: media_path,
+          source_media,
+          publication_path,
         });
       } catch (err) {
         return false;

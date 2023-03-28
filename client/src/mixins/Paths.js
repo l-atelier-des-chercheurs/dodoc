@@ -14,6 +14,9 @@ export default {
     getParent(path) {
       return path.substring(0, path.lastIndexOf("/"));
     },
+    getFilename(path) {
+      return path.substring(path.lastIndexOf("/") + 1);
+    },
     createURLToSpace(path) {
       return path.split("/").splice(0, 1).join("/");
     },
