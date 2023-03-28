@@ -202,8 +202,8 @@ export default {
       `;
     else
       document.body.style = `
-        --page-width: ${this.publication.page_width}cm;
-        --page-height: calc(${this.publication.page_height}cm - 0.2mm);
+        --page-width: ${this.publication.page_width}mm;
+        --page-height: calc(${this.publication.page_height}mm - 0.2mm);
       `;
 
     document.addEventListener("keydown", this.keyPressed);

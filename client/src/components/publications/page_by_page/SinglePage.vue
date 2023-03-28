@@ -266,7 +266,8 @@ export default {
   position: relative;
   z-index: 0;
 
-  margin: 0 auto;
+  // margin: 0 auto;
+  margin: 0;
   width: var(--page-width, 100mm);
   height: var(--page-height, 100mm);
   background: var(--page-color, white);
