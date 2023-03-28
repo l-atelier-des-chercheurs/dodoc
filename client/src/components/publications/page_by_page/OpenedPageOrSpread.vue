@@ -174,7 +174,7 @@ export default {
 
       show_grid: true,
       snap_to_grid: false,
-      gridstep_in_mm: 5,
+      gridstep_in_mm: 10,
 
       active_module_path: false,
     };
