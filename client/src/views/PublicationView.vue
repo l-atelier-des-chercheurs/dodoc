@@ -195,10 +195,16 @@ export default {
 
     await this.listPublication();
 
-    document.body.style = `
-      --page-width: ${this.publication.page_width}cm;
-      --page-height: calc(${this.publication.page_height}cm - 0.2mm);
-    `;
+    if (this.publication.layout_mode === "screen")
+      document.body.style = `
+        --page-width: ${this.publication.page_width}px;
+        --page-height: ${this.publication.page_height}px;
+      `;
+    else
+      document.body.style = `
+        --page-width: ${this.publication.page_width}cm;
+        --page-height: calc(${this.publication.page_height}cm - 0.2mm);
+      `;
 
     document.addEventListener("keydown", this.keyPressed);
 
