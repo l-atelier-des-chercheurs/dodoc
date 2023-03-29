@@ -82,7 +82,9 @@ export default {
       });
     this.$api.join({ room: this.path });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.path });
+  },
   watch: {},
   computed: {},
   methods: {
