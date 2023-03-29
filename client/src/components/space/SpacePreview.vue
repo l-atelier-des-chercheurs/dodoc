@@ -1,9 +1,10 @@
 <template>
   <div class="_spacePresentation">
-    <img
+    <!-- <img src="" class="_cover" /> -->
+    <!-- <img
       src="https://latelier-des-chercheurs.fr/thumbs/ateliers/chepa-le-journal-pour-tou-te-s/cover-1280x800-q60.jpg"
       class="_cover"
-    />
+    /> -->
 
     <div class="_text">
       <h2>
@@ -40,7 +41,7 @@ export default {
 <style lang="scss" scoped>
 ._spacePresentation {
   width: 100%;
-  aspect-ratio: 3/2;
+  // aspect-ratio: 3/2;
 }
 
 ._cover {
