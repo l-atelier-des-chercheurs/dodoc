@@ -88,23 +88,27 @@ export default {
   created() {},
   async mounted() {
     this.getSpace();
+    this.$api.join({ room: this.space_path });
     this.getProjects();
+    this.$api.join({ room: this.projects_path });
+    this.$eventHub.$on("folder.removed", this.closeOnRemove);
   },
   beforeDestroy() {
     this.$api.leave({ room: this.space_path });
     this.$api.leave({ room: this.projects_path });
+    this.$eventHub.$off("folder.removed", this.closeOnRemove);
   },
   watch: {},
   computed: {
     space_path() {
-      return "spaces/" + this.$route.params.space_slug;
+      return this.createPath({ space_slug: this.$route.params.space_slug });
     },
     projects_path() {
       return this.space_path + "/projects";
     },
     can_edit_space() {
       return this.canLoggedinEditProject({
-        project_authors: this.space.$authors,
+        folder_authors: this.space.$authors,
       });
     },
   },
@@ -117,7 +121,6 @@ export default {
         .catch(() => {
           return;
         });
-      this.$api.join({ room: this.space_path });
     },
     async getProjects() {
       this.projects = await this.$api
@@ -127,7 +130,6 @@ export default {
         .catch(() => {
           return;
         });
-      this.$api.join({ room: this.projects_path });
     },
     openNewProject(new_folder_slug) {
       this.show_create_modal = false;
@@ -135,6 +137,15 @@ export default {
         this.projects_path + "/" + new_folder_slug
       );
       this.$router.push(url);
+    },
+    closeOnRemove({ path }) {
+      if (path === this.space.$path) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t("notifications.space_was_removed"));
+        this.$router.push("/");
+      }
     },
   },
 };
