@@ -147,7 +147,7 @@ export default {
   },
   computed: {
     can_edit_project() {
-      return this.canLoggedinEditProject({
+      return this.canLoggedinEditFolder({
         folder_authors: this.project.$authors,
       });
     },

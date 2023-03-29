@@ -107,7 +107,7 @@ export default {
       return this.space_path + "/projects";
     },
     can_edit_space() {
-      return this.canLoggedinEditProject({
+      return this.canLoggedinEditFolder({
         folder_authors: this.space.$authors,
       });
     },
