@@ -1,9 +1,9 @@
 <template>
   <div class="_spacePresentation">
     <div class="_coverField">
-      <img
+      <!-- <img
         src="https://latelier-des-chercheurs.fr/thumbs/ateliers/chepa-le-journal-pour-tou-te-s/cover-1280x800-q60.jpg"
-      />
+      /> -->
     </div>
     <div class="_titleField">
       <TitleField
@@ -29,6 +29,11 @@
         :can_edit="can_edit"
         :instructions="$t('project_description_instructions')"
       />
+      <RemoveMenu
+        v-if="can_edit"
+        :remove_text="$t('remove_space')"
+        @remove="removeSpace"
+      />
     </div>
   </div>
 </template>
@@ -47,7 +52,23 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    async removeSpace() {
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const response = await this.$api.deleteItem({
+          path: this.space.$path,
+        });
+        this.response = response.data;
+        this.fetch_status = "success";
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
