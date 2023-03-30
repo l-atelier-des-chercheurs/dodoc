@@ -186,8 +186,9 @@ export default {
       };
 
       if (this.new_publication_template === "page_by_page") {
-        additional_meta.page_width = 21;
-        additional_meta.page_height = 29.7;
+        additional_meta.layout_mode = "print";
+        additional_meta.page_width = 210;
+        additional_meta.page_height = 297;
         additional_meta.pages = [{ id: "first_page" }];
       }
 

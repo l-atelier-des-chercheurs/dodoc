@@ -146,13 +146,17 @@ export default {
     page_modules: Array,
     page_width: Number,
     page_height: Number,
+    layout_mode: {
+      type: String,
+      default: "print",
+    },
     page_color: String,
     hide_pagination: Boolean,
     zoom: { type: Number, default: 1 },
     scale: { type: Number, default: 1 },
     show_grid: { type: Boolean, default: false },
     snap_to_grid: { type: Boolean, default: false },
-    gridstep_in_cm: Number,
+    gridstep_in_mm: Number,
     margins: Object,
     page_number: Number,
     pagination: [Boolean, Object],
@@ -183,10 +187,11 @@ export default {
       else return this.margins;
     },
     gridstep() {
-      if (!this.gridstep_in_cm) return 0;
-      return this.magnify(this.gridstep_in_cm);
+      if (!this.gridstep_in_mm) return 0;
+      return this.magnify(this.gridstep_in_mm);
     },
     magnification() {
+      if (this.layout_mode === "screen") return 1;
       return this.$root.page_magnification;
     },
     page_styles() {
@@ -261,9 +266,10 @@ export default {
   position: relative;
   z-index: 0;
 
-  margin: 0 auto;
-  width: var(--page-width, 10cm);
-  height: var(--page-height, 10cm);
+  // margin: 0 auto;
+  margin: 0;
+  width: var(--page-width, 100mm);
+  height: var(--page-height, 100mm);
   background: var(--page-color, white);
 
   overflow: hidden;

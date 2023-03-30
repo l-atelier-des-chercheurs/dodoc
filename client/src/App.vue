@@ -112,6 +112,8 @@ export default {
   --c-bodybg: hsl(48, 19%, 95%);
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
+  --c-bodybg: #f8f8fa;
+
   // --c-bodybg: white;
   --body-bg-pattern-color: hsl(48, 19%, 93%);
   --plyr-color-main: var(--c-bleumarine);
@@ -198,7 +200,7 @@ export default {
   --sl-font-size-x-large: 1.66rem;
   --sl-font-size-xx-large: 2rem;
 
-  --max-column-width: 140ch;
+  --max-column-width: 180ch;
 
   accent-color: var(--c-orange);
 }

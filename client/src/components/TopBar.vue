@@ -17,14 +17,14 @@
       </button>
 
       <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
-    </div>
-    <div class="_subscribeBtn">
-      <button type="button" class="_authorBtn" @click="showAuthorModal">
-        <template v-if="connected_as">
-          {{ connected_as.name }}
-        </template>
-        <template v-else>{{ $t("login") }}</template>
-      </button>
+      <div class="_subscribeBtn">
+        <button type="button" class="_authorBtn" @click="showAuthorModal">
+          <template v-if="connected_as">
+            {{ connected_as.name }}
+          </template>
+          <template v-else>{{ $t("login") }}</template>
+        </button>
+      </div>
     </div>
 
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
@@ -110,7 +110,7 @@ export default {
   }
 
   > ._subscribeBtn {
-    flex-grow: 0;
+    flex: 0 0 auto;
     white-space: nowrap;
   }
 }

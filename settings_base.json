@@ -301,10 +301,10 @@
   "schema": {
     "spaces": {
       "$cover": {
-        "width": 1200,
-        "height": 1200,
+        "width": 2000,
+        "height": 2000,
         "thumbs": {
-          "resolutions": [50, 320, 640, 1200]
+          "resolutions": [50, 320, 640, 2000]
         }
       },
       "fields": {
@@ -398,10 +398,10 @@
             },
             "publications": {
               "$cover": {
-                "width": 1200,
-                "height": 1200,
+                "width": 2000,
+                "height": 2000,
                 "thumbs": {
-                  "resolutions": [50, 320, 640, 1200]
+                  "resolutions": [50, 320, 640, 2000]
                 }
               },
               "fields": {
@@ -425,6 +425,9 @@
                 },
                 "pages": {
                   "type": "array"
+                },
+                "layout_mode": {
+                  "type": "string"
                 },
                 "page_width": {
                   "type": "number"

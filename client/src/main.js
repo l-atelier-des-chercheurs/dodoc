@@ -222,10 +222,9 @@ new Vue({
 
     current_time: "",
 
-    default_new_module_width: 5,
-    default_new_module_height: 5,
-
-    page_magnification: 37.8,
+    default_new_module_width: 50,
+    default_new_module_height: 50,
+    page_magnification: 3.78,
 
     window: {
       innerWidth: window.innerWidth,

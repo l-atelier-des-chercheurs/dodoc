@@ -19,17 +19,17 @@ export default {
       if (!folder_path || !this.$api.store[folder_path]) return false;
       return this.$api.store[folder_path].find((f) => f.$path === author_path);
     },
-    canLoggedinEditProject({ project_authors }) {
+    canLoggedinEditFolder({ folder_authors }) {
       // if admin, or part of authors, or no authors
       if (this.connected_as?.role === "admin") return true;
       if (
-        !project_authors ||
-        !Array.isArray(project_authors) ||
-        project_authors.length === 0
+        !folder_authors ||
+        !Array.isArray(folder_authors) ||
+        folder_authors.length === 0
       )
         return true;
 
-      if (project_authors.includes(this.connected_as?.$path)) return true;
+      if (folder_authors.includes(this.connected_as?.$path)) return true;
       return false;
     },
     canLoggedinSeeProject({ project }) {

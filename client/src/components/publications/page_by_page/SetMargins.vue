@@ -13,7 +13,7 @@
           <DLabel :str="$t('top')" />
           <div class="u-inputGroup">
             <input type="number" v-model.number="top" :disabled="!edit_mode" />
-            <span class="u-suffix">cm</span>
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
         <div class="">
@@ -24,7 +24,7 @@
               v-model.number="bottom"
               :disabled="!edit_mode"
             />
-            <span class="u-suffix">cm</span>
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@
           <DLabel :str="is_spread ? $t('margins_inside') : $t('left')" />
           <div class="u-inputGroup">
             <input type="number" v-model.number="left" :disabled="!edit_mode" />
-            <span class="u-suffix">cm</span>
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
         <br />
@@ -46,7 +46,7 @@
               v-model.number="right"
               :disabled="!edit_mode"
             />
-            <span class="u-suffix">cm</span>
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
       </div>
@@ -88,7 +88,12 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    unit() {
+      if (this.publication.layout_mode === "screen") return "px";
+      else return "mm";
+    },
+  },
   methods: {
     enableEditMode() {
       this.edit_mode = true;

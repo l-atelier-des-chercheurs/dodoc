@@ -87,8 +87,6 @@ export default {
 }
 
 ._homeView {
-  padding: var(--spacing);
-
   min-height: calc(100vh - 60px);
   max-height: -webkit-fill-available;
 
@@ -105,6 +103,7 @@ export default {
   width: 100%;
   min-height: 40vh;
   margin: 0 auto;
+  padding: var(--spacing);
 
   display: flex;
   flex-flow: column nowrap;

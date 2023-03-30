@@ -147,8 +147,8 @@ export default {
   },
   computed: {
     can_edit_project() {
-      return this.canLoggedinEditProject({
-        project_authors: this.project.$authors,
+      return this.canLoggedinEditFolder({
+        folder_authors: this.project.$authors,
       });
     },
   },
@@ -199,7 +199,10 @@ export default {
           .closeLogOnClick(true)
           .delay(4000)
           .log(this.$t("notifications.project_was_removed"));
-        this.$router.push(this.createURLToSpace(this.$route.path));
+
+        this.$router.push(
+          this.getParent(this.createURLFromPath(this.project.$path))
+        );
       }
     },
   },

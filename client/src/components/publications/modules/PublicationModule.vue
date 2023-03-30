@@ -199,13 +199,15 @@
             v-if="publimodule.module_type === 'ellipsis'"
             cx="50"
             cy="50"
-            r="50"
+            :r="50 - (publimodule.outline_width * magnification) / 8"
             vector-effect="non-scaling-stroke"
           />
           <rect
             v-else-if="publimodule.module_type === 'rectangle'"
-            width="100"
-            height="100"
+            :x="(publimodule.outline_width * magnification) / 4"
+            :y="(publimodule.outline_width * magnification) / 4"
+            :width="100 - (publimodule.outline_width * magnification) / 2"
+            :height="100 - (publimodule.outline_width * magnification) / 2"
             vector-effect="non-scaling-stroke"
             :rx="borderRadius / 2 || 0"
             :ry="borderRadius / 2 || 0"
@@ -220,15 +222,9 @@
               :ry="borderRadius / 2 || 0"
             />
             <line
-              :x1="
-                (publimodule.outline_width * $root.page_magnification) / 4 || 0
-              "
+              :x1="(publimodule.outline_width * magnification) / 4 || 0"
               y1="50"
-              :x2="
-                100 -
-                ((publimodule.outline_width * $root.page_magnification) / 4 ||
-                  0)
-              "
+              :x2="100 - ((publimodule.outline_width * magnification) / 4 || 0)"
               y2="50"
               vector-effect="non-scaling-stroke"
             />
@@ -243,15 +239,9 @@
               :ry="borderRadius / 2 || 0"
             />
             <line
-              :x1="
-                (publimodule.outline_width * $root.page_magnification) / 4 || 0
-              "
+              :x1="(publimodule.outline_width * magnification) / 4 || 0"
               y1="50"
-              :x2="
-                100 -
-                ((publimodule.outline_width * $root.page_magnification) / 4 ||
-                  0)
-              "
+              :x2="100 - ((publimodule.outline_width * magnification) / 4 || 0)"
               y2="50"
               vector-effect="non-scaling-stroke"
             />
@@ -259,9 +249,7 @@
             <g
               :transform="`
                 translate(${
-                  100 -
-                  ((publimodule.outline_width * $root.page_magnification) / 4 ||
-                    0)
+                  100 - ((publimodule.outline_width * magnification) / 4 || 0)
                 }, 50)`"
               preserveAspectRatio
             >
@@ -308,6 +296,7 @@ export default {
     publimodule: Object,
     module_position: String,
     can_edit: Boolean,
+    magnification: Number,
     borderRadius: Number,
     context: String,
     number_of_max_medias: {
@@ -370,8 +359,11 @@ export default {
         this.publimodule.source_medias.length === 0
       )
         return false;
-      const { path } = this.publimodule.source_medias[0];
-      if (path) return this.getSourceMedia({ source_media_path: path });
+      const source_media = this.publimodule.source_medias[0];
+      if (source_media) {
+        const publication_path = this.getParent(this.publimodule.$path);
+        return this.getSourceMedia({ source_media, publication_path });
+      }
       return false;
     },
     media_styles() {
@@ -417,29 +409,53 @@ export default {
       // TODO if its source_medias include text modules, copy these medias as well
 
       const new_source_medias = [];
-      for (let { path, ...props } of this.publimodule.source_medias) {
-        let source_path;
-        if (path.includes("/publications/")) {
-          // this media is specific to publications, lets remove it
+      for (let {
+        path,
+        meta_filename_in_project,
+        meta_filename,
+        ...props
+      } of this.publimodule.source_medias) {
+        let new_media_obj = Object.assign({}, props);
+
+        // const publication_path = this.getParent(this.publimodule.$path);
+        // const media = this.getSourceMedia({ source_media, publication_path });
+        meta_filename_in_project;
+        meta_filename;
+
+        if (meta_filename_in_project) {
+          new_media_obj.meta_filename_in_project = meta_filename_in_project;
+        } else if (path && !path.includes("/publications/")) {
+          new_media_obj.path = path;
+        } else if (meta_filename || path.includes("/publications/")) {
+          if (!path)
+            path = this.getSourceMedia({
+              source_media: { meta_filename },
+              publication_path: this.getParent(this.publimodule.$path),
+            }).$path;
+
           const new_file_path = await this.$api.copyFile({
-            path,
+            path: path,
           });
-          source_path =
-            path.substring(0, path.lastIndexOf("/") + 1) + new_file_path;
-        } else {
-          source_path = path;
+          new_media_obj.meta_filename = new_file_path;
         }
 
-        let new_media_obj = {};
-        new_media_obj = Object.assign({}, props, { path: source_path });
-
+        // if (path.includes("/publications/")) {
+        //   // this media is specific to publications, lets remove it
+        //   const new_file_path = await this.$api.copyFile({
+        //     path: path,
+        //   });
+        //   source_path =
+        //     path.substring(0, path.lastIndexOf("/") + 1) + new_file_path;
+        // } else {
+        //   source_path = path;
+        // }
         new_source_medias.push(new_media_obj);
       }
       new_meta.source_medias = new_source_medias;
 
       if (this.context === "page_by_page") {
-        new_meta.x = (this.publimodule.x || 0) + 1;
-        new_meta.y = (this.publimodule.y || 0) + 1;
+        new_meta.x = (this.publimodule.x || 0) + 10;
+        new_meta.y = (this.publimodule.y || 0) + 10;
       }
 
       const meta_filename = await this.$api
@@ -494,7 +510,7 @@ export default {
     ._content,
     svg {
       overflow: visible;
-      stroke-linejoin: bevel;
+      stroke-linejoin: arcs;
       stroke-linecap: round;
     }
     svg {

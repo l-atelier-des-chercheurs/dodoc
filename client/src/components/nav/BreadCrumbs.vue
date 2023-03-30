@@ -9,11 +9,15 @@
       <sl-icon name="arrow-right-short" label="" />
       <div>
         <router-link
-          class="u-buttonLink"
+          class="u-unset"
           :to="{ path: '/+' + $route.params.space_slug }"
           :disabled="$route.name === 'Espace'"
         >
-          {{ $t("space") }}
+          <button type="button" class="u-buttonLink">
+            {{ $t("space") }}
+          </button>
+          <br />
+          Plop
         </router-link>
       </div>
       <template v-if="$route.name === 'Projet'">

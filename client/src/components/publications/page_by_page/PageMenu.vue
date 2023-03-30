@@ -50,10 +50,10 @@
           class="u-spacingBottom"
           :label="$t('scale')"
           :value="Math.round(scale * 100)"
-          :min="25"
+          :min="10"
           :max="200"
           :step="1"
-          :ticks="[25, 50, 100, 200]"
+          :ticks="[10, 25, 50, 100, 200]"
           :default_value="100"
           :suffix="'%'"
           @save="$emit('update:scale', $event / 100)"
@@ -90,14 +90,14 @@
               >
                 <RangeValueInput
                   :label="$t('gridstep')"
-                  :value="gridstep_in_cm * 10"
+                  :value="gridstep_in_mm"
                   :min="1"
                   :max="20"
                   :step="1"
-                  :ticks="[1, 5, 10, 15, 20]"
+                  :ticks="[5, 10, 20, 50]"
                   :default_value="10"
-                  :suffix="'mm'"
-                  @save="$emit('update:gridstep_in_cm', $event / 10)"
+                  :suffix="unit"
+                  @save="$emit('update:gridstep_in_mm', $event)"
                 />
 
                 <ToggleInput
@@ -273,14 +273,14 @@
               class="u-spacingBottom"
               :label="$t('position') + '→'"
               :value="active_module.x"
-              :suffix="'cm'"
+              :suffix="unit"
               @save="updateMediaPubliMeta({ x: $event })"
             />
             <NumberInput
               class="u-spacingBottom"
               :label="$t('position') + '↓'"
               :value="active_module.y"
-              :suffix="'cm'"
+              :suffix="unit"
               @save="updateMediaPubliMeta({ y: $event })"
             />
           </div>
@@ -291,7 +291,7 @@
               :label="$t('width') + '↔'"
               :value="active_module.width"
               :min="0"
-              :suffix="'cm'"
+              :suffix="unit"
               @save="updateMediaPubliMeta({ width: $event })"
             />
             <NumberInput
@@ -299,7 +299,7 @@
               :label="$t('height') + '↕'"
               :value="active_module.height"
               :min="0"
-              :suffix="'cm'"
+              :suffix="unit"
               @save="updateMediaPubliMeta({ height: $event })"
             />
           </div>
@@ -331,13 +331,17 @@
           <RangeValueInput
             class="u-spacingBottom"
             :label="$t('margins')"
-            :value="active_module.margins * 10"
+            :value="active_module.margins"
             :min="0"
             :max="50"
             :step="1"
             :default_value="0"
-            :suffix="'mm'"
-            @save="updateMediaPubliMeta({ margins: $event / 10 })"
+            :suffix="unit"
+            @save="
+              updateMediaPubliMeta({
+                margins: $event,
+              })
+            "
           />
 
           <RangeValueInput
@@ -347,13 +351,17 @@
             "
             class="u-spacingBottom"
             :label="$t('border_radius')"
-            :value="active_module.border_radius * 10"
+            :value="active_module.border_radius"
             :min="0"
             :max="50"
             :step="1"
             :default_value="0"
-            :suffix="'mm'"
-            @save="updateMediaPubliMeta({ border_radius: $event / 10 })"
+            :suffix="unit"
+            @save="
+              updateMediaPubliMeta({
+                border_radius: $event,
+              })
+            "
           />
 
           <RangeValueInput
@@ -379,14 +387,18 @@
           <RangeValueInput
             class="u-spacingBottom"
             :label="$t('outline_width')"
-            :value="active_module.outline_width * 10"
+            :value="active_module.outline_width"
             :min="0"
             :max="20"
             :step="1"
             :ticks="[0, 10, 20]"
             :default_value="0"
-            :suffix="'mm'"
-            @save="updateMediaPubliMeta({ outline_width: $event / 10 })"
+            :suffix="unit"
+            @save="
+              updateMediaPubliMeta({
+                outline_width: $event,
+              })
+            "
           />
           <ColorInput
             v-if="active_module.outline_width > 0"
@@ -455,7 +467,11 @@ export default {
     scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
-    gridstep_in_cm: Number,
+    gridstep_in_mm: Number,
+    layout_mode: {
+      type: String,
+      default: "print",
+    },
     page_color: String,
     pagination: [Boolean, Object],
     publication_path: String,
@@ -501,6 +517,11 @@ export default {
         )
       );
     },
+    unit() {
+      if (this.layout_mode === "screen") return "px";
+      else return "mm";
+    },
+
     has_pagination() {
       return (
         this.active_page_number - this.pagination.pagination_start_on_page >= 0
@@ -515,8 +536,8 @@ export default {
 
       return {
         page_id: this.page_opened_id,
-        x: this.gridstep_in_cm,
-        y: this.gridstep_in_cm,
+        x: this.gridstep_in_mm,
+        y: this.gridstep_in_mm,
         width: this.$root.default_new_module_width,
         height: this.$root.default_new_module_height,
         rotation: 0,
@@ -531,9 +552,12 @@ export default {
     firstMedia(page_module) {
       if (!page_module) return false;
       try {
-        const media_path = page_module.source_medias[0].path;
+        const source_media = page_module.source_medias[0];
+        const publication_path = this.getParent(page_module.$path);
+
         return this.getSourceMedia({
-          source_media_path: media_path,
+          source_media,
+          publication_path,
         });
       } catch (err) {
         return false;

@@ -234,8 +234,8 @@ class Exporter {
     const puppeteer = require("puppeteer");
 
     const document_size = {
-      width: this.instructions.page_width * 10 || 210,
-      height: this.instructions.page_height * 10 || 297,
+      width: this.instructions.page_width * 1 || 210,
+      height: this.instructions.page_height * 1 || 297,
     };
 
     let page_timeout = setTimeout(async () => {

@@ -41,7 +41,7 @@
               v-model.number="right"
               :disabled="!edit_mode"
             />
-            <span class="u-suffix">cm</span>
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
         <div class="">
@@ -52,7 +52,7 @@
               v-model.number="bottom"
               :disabled="!edit_mode"
             />
-            <span class="u-suffix">cm</span>
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
       </div>
@@ -94,7 +94,12 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    unit() {
+      if (this.publication.layout_mode === "screen") return "px";
+      else return "mm";
+    },
+  },
   methods: {
     enableEditMode() {
       this.edit_mode = true;

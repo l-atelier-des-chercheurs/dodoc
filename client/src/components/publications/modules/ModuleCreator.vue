@@ -142,7 +142,7 @@ export default {
           type: "line",
           icon: "dash-lg",
           addtl_meta: {
-            outline_width: 0.1,
+            outline_width: 1,
             outline_color: "#000000",
           },
         },
@@ -150,7 +150,7 @@ export default {
           type: "arrow",
           icon: "arrow-right-square",
           addtl_meta: {
-            outline_width: 0.1,
+            outline_width: 1,
             outline_color: "#000000",
           },
         },
@@ -184,16 +184,24 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async createMosaic({ path_to_source_media }) {
-      let source_medias =
-        this.context === "page_by_page"
-          ? [{ path: path_to_source_media, objectFit: "contain" }]
-          : [{ path: path_to_source_media }];
+    async createMosaic({ meta_filename, path_to_source_media }) {
+      // if meta_filename, file is stored in publication
+      // if path_to_source_media, we get metafilename
+      let source_media = {};
+
+      if (meta_filename) {
+        source_media.meta_filename = meta_filename;
+      } else if (path_to_source_media) {
+        source_media.meta_filename_in_project =
+          this.getFilename(path_to_source_media);
+      }
+      if (this.context === "page_by_page") source_media.objectFit = "contain";
 
       let addtl_meta = {};
       if (this.context === "page_by_page") {
         const media = this.getSourceMedia({
-          source_media_path: path_to_source_media,
+          source_media,
+          publication_path: this.publication_path,
         });
         if (media?.$infos?.ratio)
           addtl_meta.height =
@@ -202,7 +210,7 @@ export default {
 
       await this.createModule({
         module_type: "mosaic",
-        source_medias,
+        source_medias: [source_media],
         addtl_meta,
       });
       this.show_media_picker = false;
@@ -217,10 +225,8 @@ export default {
           $type: "url",
         },
       });
-      const text_meta_path = this.publication_path + "/" + text_meta_filename;
-      // const source_medias = [{ path: text_meta_path }];
 
-      this.createMosaic({ path_to_source_media: text_meta_path });
+      this.createMosaic({ meta_filename: text_meta_filename });
     },
     async createText() {
       const text_meta_filename = await this.$api.uploadText({

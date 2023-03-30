@@ -105,6 +105,8 @@ export default function () {
       },
       leave({ room }) {
         this.socket.emit("leaveRoom", { room });
+        // remove from store
+        this.$delete(this.store, room);
         this.rooms_joined = this.rooms_joined.filter((rj) => rj !== room);
       },
       rejoinRooms() {

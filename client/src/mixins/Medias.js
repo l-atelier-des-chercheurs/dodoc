@@ -28,15 +28,37 @@ export default {
       const full_path = this.makeMediaFilePath({ $path, $media_filename });
       return window.location.origin + "/" + full_path;
     },
-    getSourceMedia({ source_media_path }) {
-      const folder_path = source_media_path.substring(
-        0,
-        source_media_path.lastIndexOf("/")
-      );
+    getSourceMedia({ source_media, publication_path }) {
+      // three cases : source_media contains
+      // - meta_filename, meaning media belongs to publication path
+      // - meta_filename_in_project, meaning media belongs to project path
+      // - path, meaning media has full path to project or publi media (legacy)
+
+      let folder_path = undefined;
+      let meta_filename = undefined;
+
+      if (source_media.meta_filename) {
+        folder_path = publication_path;
+        meta_filename = source_media.meta_filename;
+      } else if (source_media.meta_filename_in_project) {
+        folder_path = this.getParent(this.getParent(publication_path));
+        meta_filename = source_media.meta_filename_in_project;
+      }
+      if (source_media.path) {
+        if (source_media.path.includes("publications")) {
+          folder_path = publication_path;
+        } else {
+          folder_path = this.getParent(this.getParent(publication_path));
+        }
+        meta_filename = this.getFilename(source_media.path);
+      }
+      if (!folder_path) {
+        return this.$alertify.delay(4000).error("couldnt find media");
+      }
+
       return this.$api.store[folder_path]?.$files?.find(
-        ({ $path }) => $path === source_media_path
+        ({ $path }) => $path === folder_path + "/" + meta_filename
       );
-      // const source_project = this.$api.store.find()
     },
 
     transformURL(og_url) {

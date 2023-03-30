@@ -21,6 +21,7 @@
                 :page_modules="getModulesForPage({ modules, page_id: page.id })"
                 :page_width="publication.page_width"
                 :page_height="publication.page_height"
+                :layout_mode="publication.layout_mode"
                 :page_color="page.page_color"
                 :can_edit="false"
               />
@@ -72,6 +73,7 @@
                     "
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
+                    :layout_mode="publication.layout_mode"
                     :page_color="page.page_color"
                     :page_number="index * 2 + iindex"
                     :pagination="pagination"
@@ -130,6 +132,7 @@
         :is_spread="is_spread"
         :page_width="publication.page_width"
         :page_height="publication.page_height"
+        :layout_mode="publication.layout_mode"
         :margins="margins"
         :pagination="pagination"
         :can_edit="can_edit"
@@ -181,6 +184,10 @@ export default {
         width: this.publication.page_width,
         height: this.publication.page_height,
         desired_largest_dimension: 200,
+        magnification:
+          this.publication.layout_mode === "screen"
+            ? 1
+            : this.$root.page_magnification,
       });
     },
     spreads() {

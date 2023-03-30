@@ -55,8 +55,7 @@
 
           <DLabel :str="$t('logo')" />
           <div class="u-wips" />
-
-          <CoverField :cover="settings.logo" :path="'_admin'" />
+          <!-- <CoverField :cover="settings.logo" :path="'_admin'" /> -->
 
           <br />
 

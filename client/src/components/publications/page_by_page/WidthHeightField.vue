@@ -3,20 +3,62 @@
     <fieldset>
       <legend class="u-label">{{ $t("format") }}</legend>
 
-      <select
-        @change="setSizeFromFormat"
-        :value="predefined_format_from_width"
-        :disabled="!edit_mode"
-      >
-        <option
-          v-for="option in format_options"
-          :key="option.key"
-          :value="option.key"
-          v-text="option.text"
-        />
-      </select>
-
+      <DLabel class="_label" :str="$t('document_type')" :tag="'h3'" />
       <br />
+      <div
+        v-for="lmode in [
+          {
+            key: 'print',
+            label: $t('print'),
+            instructions: $t('print_instr'),
+          },
+          {
+            key: 'screen',
+            label: $t('screen'),
+            instructions: $t('screen_instr'),
+          },
+        ]"
+        :key="lmode.key"
+      >
+        <div>
+          <input
+            type="radio"
+            v-model="new_layout_mode"
+            :name="lmode.key"
+            :id="'radioi-lmode-' + lmode.key"
+            :value="lmode.key"
+            :disabled="!edit_mode"
+          />
+          <label :for="'radioi-lmode-' + lmode.key">
+            {{ lmode.label }}<br />
+            <small v-html="lmode.instructions" />
+          </label>
+        </div>
+        <br />
+      </div>
+
+      <DLabel
+        class="_label"
+        :str="$t('format')"
+        :tag="'h3'"
+        :instructions="$t('format_instructions')"
+      />
+      <br />
+      <template v-if="new_layout_mode === 'print'">
+        <select
+          :value="predefined_format_from_width"
+          :disabled="!edit_mode"
+          @change="setSizeFromFormat"
+        >
+          <option
+            v-for="option in format_options"
+            :key="option.key"
+            :value="option.key"
+            v-text="option.text"
+          />
+        </select>
+        <br />
+      </template>
 
       <div class="u-sameRow">
         <div class="">
@@ -27,7 +69,7 @@
               :disabled="!edit_mode"
               v-model.number="new_page_width"
             />
-            <span class="u-suffix">cm</span>
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
         <div class="">
@@ -38,13 +80,9 @@
               :disabled="!edit_mode"
               v-model.number="new_page_height"
             />
-            <span class="u-suffix">cm</span>
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
-      </div>
-
-      <div class="u-instructions">
-        <small>{{ $t("format_instructions") }}</small>
       </div>
 
       <br />
@@ -74,36 +112,37 @@ export default {
       is_saving: false,
       can_edit: true,
 
-      new_page_width: this.publication.page_width,
-      new_page_height: this.publication.page_height,
+      new_layout_mode: undefined,
+      new_page_width: undefined,
+      new_page_height: undefined,
 
       format_options: [
         {
           key: "A4_portrait",
           text: this.$t("A4_portrait"),
-          width: 21,
-          height: 29.7,
+          width: 210,
+          height: 297,
           // instruction: this.$t("A4_portrait_explanations"),
         },
         {
           key: "A4_landscape",
           text: this.$t("A4_landscape"),
-          width: 29.7,
-          height: 21,
+          width: 297,
+          height: 210,
           // instruction: this.$t("A4_landscape_explanations"),
         },
         {
           key: "A5_portrait",
           text: this.$t("A5_portrait"),
-          width: 14.8,
-          height: 21,
+          width: 148,
+          height: 210,
           // instruction: this.$t("A5_portrait_explanations"),
         },
         {
           key: "A5_landscape",
           text: this.$t("A5_landscape"),
-          width: 21,
-          height: 14.8,
+          width: 210,
+          height: 148,
           // instruction: this.$t("A5_landscape_explanations"),
         },
         {
@@ -115,9 +154,21 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.initValues();
+  },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    new_layout_mode() {
+      // if (this.new_layout_mode === "screen") {
+      //   this.new_page_width = 1024;
+      //   this.new_page_height = 768;
+      // } else {
+      //   this.new_page_width = this.publication.page_width;
+      //   this.new_page_height = this.publication.page_height;
+      // }
+    },
+  },
   computed: {
     predefined_format_from_width() {
       const format = this.format_options.find(
@@ -129,8 +180,17 @@ export default {
 
       return "custom";
     },
+    unit() {
+      if (this.new_layout_mode === "screen") return "px";
+      else return "mm";
+    },
   },
   methods: {
+    initValues() {
+      this.new_layout_mode = this.publication.layout_mode || "print";
+      this.new_page_width = this.publication.page_width || 210;
+      this.new_page_height = this.publication.page_height || 297;
+    },
     enableEditMode() {
       this.edit_mode = true;
     },
@@ -146,14 +206,7 @@ export default {
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      this.new_content = this.content;
-
-      this.$nextTick(() => {
-        // this.content = "";
-        // this.$nextTick(() => {
-        // this.content = this.new_content;
-        // });
-      });
+      this.initValues();
       // todo interrupt updateMeta
     },
     async updateSize() {
@@ -161,6 +214,7 @@ export default {
 
       try {
         const new_meta = {
+          layout_mode: this.new_layout_mode,
           page_width: this.new_page_width,
           page_height: this.new_page_height,
         };
