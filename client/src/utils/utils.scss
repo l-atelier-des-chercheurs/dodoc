@@ -153,7 +153,8 @@
   }
 }
 
-button {
+button,
+.u-unset {
   appearance: unset;
 }
 
@@ -469,7 +470,9 @@ sl-button[variant="semitransparent"] {
 sl-button[variant="edit"] {
   &::part(base) {
     // background: var(--c-bleuvert);
-    background: transparent;
+    background: white;
+    // backdrop-filter: blur(5px);
+
     color: var(--c-bleuvert);
     // color: white;
     border: none;

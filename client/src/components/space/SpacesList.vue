@@ -46,18 +46,24 @@
     <br />
 
     <div class="_list">
-      <SpacePreview v-for="space in spaces" :key="space.$path" :space="space" />
+      <SpacePresentation
+        v-for="space in spaces"
+        :key="space.$path"
+        :space="space"
+        :context="'list'"
+        :can_edit="false"
+      />
     </div>
   </div>
 </template>
 <script>
-import SpacePreview from "@/components/space/SpacePreview.vue";
+import SpacePresentation from "@/components/space/SpacePresentation.vue";
 import CreateSpace from "@/components/modals/CreateSpace.vue";
 
 export default {
   props: {},
   components: {
-    SpacePreview,
+    SpacePresentation,
     CreateSpace,
   },
   data() {
@@ -127,21 +133,15 @@ export default {
 }
 
 ._list {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
-  align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-  // display: flex;
-  // flex-flow: row wrap;
-  // justify-content: center;
-  // gap: calc(var(--spacing) / 1);
-  // margin: calc(var(--spacing) / 1);
+  margin: 0 auto;
+  max-width: var(--max-column-width);
 
   > * {
-    background: var(--panel-color);
-    border: var(--panel-borders);
-    box-shadow: var(--panel-shadows);
+    margin: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+    // background: var(--panel-color);
+    // margin-bottom: 2px;
+    // border: var(--panel-borders);
+    // box-shadow: var(--panel-shadows);
     // border-radius: var(--panel-radius);
   }
 }

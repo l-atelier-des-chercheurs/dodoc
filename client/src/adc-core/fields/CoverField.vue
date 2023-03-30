@@ -136,10 +136,7 @@ export default {
 ._coverField {
   position: absolute;
   inset: 0;
-  margin: calc(var(--spacing) * 1);
-  margin: 2px;
   overflow: hidden;
-  border-radius: 3px;
 
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);

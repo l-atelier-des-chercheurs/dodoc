@@ -1,68 +1,78 @@
 <template>
   <div class="_spaceView">
     <div v-if="space">
-      <SpacePresentation :space="space" :can_edit="can_edit_space" />
+      <div class="_topSpace">
+        <SpacePresentation
+          :space="space"
+          :context="'full'"
+          :can_edit="can_edit_space"
+        />
+        <div class="_removeBtn">
+          <RemoveMenu
+            v-if="can_edit_space"
+            :remove_text="$t('remove')"
+            @remove="removeSpace"
+          />
+        </div>
 
-      <br />
+        <div class="_contributors">
+          <AuthorField
+            :label="$t('contributors')"
+            :authors_paths="space.$authors"
+            :path="space.$path"
+            :can_edit="can_edit_space"
+            :tag="'h2'"
+            :instructions="$t('space_contrib_instr')"
+          />
+        </div>
+      </div>
 
-      <AuthorField
-        :label="$t('contributors')"
-        :authors_paths="space.$authors"
-        :path="space.$path"
-        :can_edit="can_edit_space"
-        :tag="'h2'"
-        :instructions="$t('space_contrib_instr')"
-      />
-
-      <br /><br />
-
-      <DLabel
-        :str="$t('list_of_projects')"
-        :tag="'h2'"
-        :instructions="$t('project_contrib_instr')"
-      />
-
-      <button
-        type="button"
-        class="u-button u-button_red u-button_small"
-        v-if="connected_as"
-        @click="show_create_modal = true"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 168 168"
-          style="enable-background: new 0 0 168 168"
-          xml:space="preserve"
-        >
-          <path
-            style="fill: #fc4b60"
-            d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
+      <div class="_projectsList">
+        <div class="u-sameRow">
+          <DLabel :str="$t('list_of_projects')" :tag="'h2'" />
+          <button
+            type="button"
+            class="u-button u-button_red u-button_small"
+            v-if="connected_as"
+            @click="show_create_modal = true"
+          >
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 168 168"
+              style="enable-background: new 0 0 168 168"
+              xml:space="preserve"
+            >
+              <path
+                style="fill: #fc4b60"
+                d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
 		C110.5-8.2,57.5-8.2,24.6,24.4z"
-          />
-          <polygon
-            style="fill: #ffbe32"
-            points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+              />
+              <polygon
+                style="fill: #ffbe32"
+                points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-          />
-        </svg>
-        {{ $t("create_a_project") }}
-      </button>
+              />
+            </svg>
+            {{ $t("create_a_project") }}
+          </button>
+        </div>
 
-      <CreateProject
-        v-if="show_create_modal"
-        :path="projects_path"
-        @close="show_create_modal = false"
-        @openNewProject="openNewProject"
-      />
+        <CreateProject
+          v-if="show_create_modal"
+          :path="projects_path"
+          @close="show_create_modal = false"
+          @openNewProject="openNewProject"
+        />
 
-      <br />
-      <br />
+        <br />
+        <br />
 
-      <ProjectsList v-if="projects" :projects="projects" />
+        <ProjectsList v-if="projects" :projects="projects" />
+      </div>
     </div>
   </div>
 </template>
@@ -147,13 +157,41 @@ export default {
         this.$router.push("/");
       }
     },
+    async removeSpace() {
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const response = await this.$api.deleteItem({
+          path: this.space.$path,
+        });
+        this.response = response.data;
+        this.fetch_status = "success";
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+      }
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._spaceView {
-  max-width: var(--max-column-width);
+  // max-width: var(--max-column-width);
   margin: 0 auto;
+}
+
+._topSpace {
+  max-width: var(--max-column-width);
+  padding: calc(var(--spacing) * 2);
+  margin: 0 auto;
+}
+._removeBtn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+._projectsList {
   padding: calc(var(--spacing) * 2);
 }
 

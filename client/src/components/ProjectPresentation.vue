@@ -94,7 +94,7 @@ z
 
     <transition name="fade">
       <button
-        v-if="context === 'full'"
+        v-if="context === 'full' && false"
         v-show="!$root.is_mobile_view"
         :key="'show_meta-' + show_meta"
         class="u-buttonLink _showMeta"
@@ -364,7 +364,7 @@ export default {
   font-size: 90%;
   overflow-x: hidden;
   overflow-y: auto;
-  background: var(--c-gris_clair);
+  // background: var(--c-gris_clair);
 
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
@@ -385,9 +385,13 @@ export default {
     flex: 0 0 auto;
     min-width: 220px;
 
-    background: white;
-    box-shadow: 0 1px 6px var(--c-gris);
-    border-radius: 8px;
+    padding: calc(var(--spacing) / 2);
+    background: var(--panel-color);
+    border: var(--panel-borders);
+    box-shadow: var(--panel-shadows);
+    border-radius: var(--panel-radius);
+
+    margin-bottom: calc(var(--spacing) / 2);
 
     .is--mobileView & {
       flex: 1 0 220px;
@@ -428,6 +432,9 @@ export default {
   // bottom: 0;
   // right: 0;
   // padding: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) * 1);
+  margin: 2px;
+  border-radius: 3px;
 }
 
 ._showMeta {

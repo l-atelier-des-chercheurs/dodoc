@@ -1,6 +1,16 @@
 <template>
   <div>
+    <TitleField
+      :field_name="'name'"
+      class="_name"
+      :content="author.name"
+      :path="author.$path"
+      :required="true"
+      :maxlength="40"
+      :can_edit="true"
+    />
     <pre>
+
     {{ author }}
     </pre>
   </div>
@@ -19,7 +29,7 @@ export default {
   created() {},
   async mounted() {
     await this.listAuthor();
-    this.$api.join({ room: this.project.$path });
+    this.$api.join({ room: this.author.$path });
   },
   beforeDestroy() {},
   watch: {},
