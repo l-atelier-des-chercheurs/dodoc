@@ -132,7 +132,7 @@ export default {
   padding: 0 calc(var(--spacing) / 2);
 
   button {
-    width: 3rem;
+    // width: 3rem;
     height: 3rem;
     background: transparent;
   }

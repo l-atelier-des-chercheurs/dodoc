@@ -112,7 +112,8 @@ export default {
   --c-bodybg: hsl(48, 19%, 95%);
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
-  --c-bodybg: #f8f8fa;
+  --c-bodybg: hsl(40, 20%, 98%);
+  // --c-bodybg: #f8f8fa;
 
   // --c-bodybg: white;
   --body-bg-pattern-color: hsl(48, 19%, 93%);

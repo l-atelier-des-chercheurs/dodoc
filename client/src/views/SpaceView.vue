@@ -97,15 +97,19 @@ export default {
   },
   created() {},
   async mounted() {
-    this.getSpace();
+    await this.getSpace();
     this.$api.join({ room: this.space_path });
-    this.getProjects();
+    this.$eventHub.$emit("received.space", this.space);
+
+    await this.getProjects();
     this.$api.join({ room: this.projects_path });
+
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
   },
   beforeDestroy() {
     this.$api.leave({ room: this.space_path });
     this.$api.leave({ room: this.projects_path });
+
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
   },
   watch: {},
