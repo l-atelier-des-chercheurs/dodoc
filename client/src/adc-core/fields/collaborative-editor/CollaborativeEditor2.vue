@@ -512,6 +512,7 @@ export default {
 
     updateTextMedia() {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
+      this.is_loading_or_saving = true;
       this.debounce_textUpdate = setTimeout(async () => {
         console.log(
           `CollaborativeEditor • updateTextMedia: saving new snapshot`
