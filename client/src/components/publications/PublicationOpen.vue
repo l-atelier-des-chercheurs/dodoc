@@ -64,6 +64,7 @@
           />
         </div>
       </div>
+
       <StoryTemplate
         v-if="publication.template === 'story'"
         :publication="publication"
