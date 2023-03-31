@@ -582,6 +582,7 @@ export default {
     enableModuleEdit({ meta_filename }) {
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
+        this.$eventHub.$emit(`module.panTo.${meta_filename}`);
       }, 150);
     },
     changeModulePage() {
@@ -597,7 +598,8 @@ export default {
     setActive(path) {
       this.$eventHub.$emit(`module.setActive`, path);
       this.$nextTick(() => {
-        this.$eventHub.$emit(`module.panTo.${path}`);
+        const meta_filename = this.getFilename(path);
+        this.$eventHub.$emit(`module.panTo.${meta_filename}`);
       });
     },
     async updateMediaPubliMeta(val) {
