@@ -329,8 +329,8 @@ sl-icon-button::part(base) {
 }
 
 ._showModuleSelector {
-  position: absolute;
-  right: 100%;
+  // position: absolute;
+  // right: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 

@@ -176,7 +176,7 @@ export default {
   width: 100%;
   background: white;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 1);
-  margin: calc(var(--spacing) / 1) auto;
+  margin: calc(var(--spacing) / 2) auto;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   // max-width: 800px;
 }

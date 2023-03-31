@@ -221,11 +221,6 @@ export default {
   width: 100%;
   height: 100%;
 }
-
-img {
-  max-width: none;
-}
-
 ._mediaContent--iframe {
   position: absolute;
   top: 0;
