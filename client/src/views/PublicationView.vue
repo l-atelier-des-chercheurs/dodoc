@@ -30,10 +30,11 @@
                       getModulesForPage({ modules, page_id: page.id })
                     "
                     :page_color="page.page_color"
+                    :layout_mode="publication.layout_mode"
                     :hide_pagination="page.hide_pagination === true"
-                    :can_edit="false"
                     :page_number="page_number"
                     :pagination="pagination"
+                    :can_edit="false"
                   />
                 </div>
               </template>
@@ -53,6 +54,7 @@
                         })
                       "
                       :page_color="slide_current_page.page_color"
+                      :layout_mode="publication.layout_mode"
                       :hide_pagination="
                         slide_current_page.hide_pagination === true
                       "
@@ -83,6 +85,7 @@
                           getModulesForPage({ modules, page_id: page.id })
                         "
                         :page_color="page.page_color"
+                        :layout_mode="publication.layout_mode"
                         :hide_pagination="page.hide_pagination === true"
                         :page_number="s_index * 2 + index"
                         :pagination="pagination"
@@ -112,6 +115,7 @@
                             getModulesForPage({ modules, page_id: page.id })
                           "
                           :page_color="page.page_color"
+                          :layout_mode="publication.layout_mode"
                           :hide_pagination="page.hide_pagination === true"
                           :page_number="
                             (slides_current_page_or_spread_index - 1) * 2 +
@@ -203,14 +207,14 @@ export default {
     if (this.publication.template === "page_by_page") {
       if (this.publication.layout_mode === "screen")
         document.body.style = `
-        --page-width: ${this.publication.page_width}px;
-        --page-height: ${this.publication.page_height}px;
-      `;
+          --page-width: ${this.publication.page_width}px;
+          --page-height: ${this.publication.page_height}px;
+        `;
       else if (this.publication.layout_mode === "print")
         document.body.style = `
-        --page-width: ${this.publication.page_width}mm;
-        --page-height: calc(${this.publication.page_height}mm - 0.2mm);
-      `;
+          --page-width: ${this.publication.page_width}mm;
+          --page-height: calc(${this.publication.page_height}mm - 0.2mm);
+        `;
       document.addEventListener("keydown", this.keyPressed);
     }
 
