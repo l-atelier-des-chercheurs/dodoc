@@ -208,7 +208,7 @@ export default {
       return props;
     },
     page_number_corrected() {
-      return this.page_number - this.pagination.pagination_start_on_page;
+      return this.page_number - this.pagination.pagination_start_on_page + 1;
     },
     pagination_styles() {
       const props = {};

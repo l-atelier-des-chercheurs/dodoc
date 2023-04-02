@@ -237,6 +237,23 @@ class Exporter {
       width: this.instructions.page_width * 1 || 210,
       height: this.instructions.page_height * 1 || 297,
     };
+    const magnify_factor = this.instructions.layout_mode === "print" ? 3.78 : 1;
+
+    // magnify browser window size if print with css px to mm of 3.78
+    // if screen, browser window size is same as page size
+    const bw_pagesize = {
+      width: Math.floor(document_size.width * magnify_factor),
+      height: Math.floor(document_size.height * magnify_factor) + 25,
+    };
+
+    // print to pdf with size, try to match pagesize with pixels
+    const reduction_factor =
+      this.instructions.layout_mode === "print" ? 1 : 3.78;
+
+    const printToPDF_pagesize = {
+      width: document_size.width / reduction_factor,
+      height: document_size.height / reduction_factor,
+    };
 
     let page_timeout = setTimeout(async () => {
       clearTimeout(page_timeout);
@@ -265,8 +282,8 @@ class Exporter {
 
     // Set screen size
     await page.setViewport({
-      width: Math.floor(document_size.width * 3.7795),
-      height: Math.floor(document_size.height * 3.7795), // totally arbitrary value… will have to find better
+      width: bw_pagesize.width,
+      height: bw_pagesize.height,
       deviceScaleFactor: 2,
     });
 
@@ -285,8 +302,8 @@ class Exporter {
     await page.pdf({
       path: full_path_to_pdf,
       printBackground: true,
-      width: `${document_size.width}mm`,
-      height: `${document_size.height}mm`,
+      width: `${printToPDF_pagesize.width}mm`,
+      height: `${printToPDF_pagesize.height}mm`,
     });
 
     this._notifyProgress(95);

@@ -133,6 +133,7 @@ export default {
         recipe: "pdf",
         page_width: this.publication.page_width,
         page_height: this.publication.page_height,
+        layout_mode: this.publication.layout_mode || "print",
       };
 
       if (this.publication.page_spreads === true) instructions.page_width *= 2;
