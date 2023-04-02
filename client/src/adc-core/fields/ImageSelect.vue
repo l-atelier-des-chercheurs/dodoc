@@ -23,6 +23,7 @@
         <button
           type="button"
           class="u-button u-button_orange"
+          disabled
           @click="show_picker = true"
         >
           <svg
@@ -58,7 +59,7 @@
         </button>
         <PickMediaFromProjects
           v-if="show_picker"
-          :folder_path="folder_path"
+          :path="path"
           @selectMedia="selectMediaFromLib()"
           @close="show_picker = false"
         />
@@ -112,7 +113,7 @@
 export default {
   props: {
     existing_preview: [Boolean, String],
-    folder_path: String,
+    path: String,
     instructions: String,
   },
   components: {

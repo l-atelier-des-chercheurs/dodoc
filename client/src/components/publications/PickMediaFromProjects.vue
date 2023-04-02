@@ -48,7 +48,7 @@ import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 
 export default {
   props: {
-    current_project_path: String,
+    path: String,
   },
   components: {
     MediaLibrary,
@@ -58,14 +58,28 @@ export default {
       projects: [],
       source_project_path: "",
       source_project: undefined,
+      all_space_projects_path: undefined,
 
       media_focused: undefined,
     };
   },
   created() {},
   mounted() {
-    this.source_project_path = this.current_project_path;
-    this.loadProjects();
+    if (this.path) {
+      const props = this.decomposePath(this.path);
+      if (props.space_slug) {
+        this.all_space_projects_path =
+          this.createPath({
+            space_slug: props.space_slug,
+          }) + "/projects";
+        this.loadProjects();
+        if (props.project_slug)
+          this.source_project_path = this.createPath({
+            space_slug: props.space_slug,
+            project_slug: props.project_slug,
+          });
+      }
+    }
   },
   beforeDestroy() {},
   watch: {
@@ -85,9 +99,8 @@ export default {
       this.$emit("close");
     },
     async loadProjects() {
-      const all_projects_path = this.getParent(this.current_project_path);
       this.projects = await this.$api.getFolders({
-        path: all_projects_path,
+        path: this.all_space_projects_path,
       });
     },
     async fetchSelectedProject() {
