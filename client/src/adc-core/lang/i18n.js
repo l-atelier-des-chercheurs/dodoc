@@ -155,6 +155,7 @@ export default function () {
         share: "Partager",
         exports_in_progress: "Exportation(s) en cours",
 
+        story_width: "Largeur du récit",
         responsive: "Fluide",
         responsive_instr:
           "Prendra toute la largeur de la fenêtre sans jamais déborder et en respectant la valeur ci-dessus comme largeur maximale.",
