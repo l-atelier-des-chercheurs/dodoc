@@ -30,7 +30,7 @@
       </template>
     </template>
 
-    <portal-target name="destination" />
+    <portal-target name="destination" multiple />
   </div>
 </template>
 <script>
