@@ -23,6 +23,9 @@
                 :page_height="publication.page_height"
                 :layout_mode="publication.layout_mode"
                 :page_color="page.page_color"
+                :page_number="index"
+                :pagination="pagination"
+                :hide_pagination="page.hide_pagination === true"
                 :can_edit="false"
               />
               <button
