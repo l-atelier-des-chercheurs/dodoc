@@ -1,6 +1,10 @@
 <template>
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        <sl-icon name="arrow-left-short" label="" />
+        {{ $t("close") }}
+      </button>
       <div class="u-spacingBottom _titleRow">
         <div>
           <button
@@ -315,6 +319,7 @@
             :suffix="'°'"
             @save="updateMediaPubliMeta({ rotation: $event })"
           />
+          <br />
           <RangeValueInput
             v-if="firstMedia(active_module).$type === 'text'"
             class="u-spacingBottom"
@@ -376,6 +381,8 @@
             :suffix="'%'"
             @save="updateMediaPubliMeta({ opacity: $event / 100 })"
           />
+
+          <br />
           <ColorInput
             class="u-spacingBottom"
             :label="$t('background_color')"
@@ -408,7 +415,7 @@
             :default_value="'#000000'"
             @save="updateMediaPubliMeta({ outline_color: $event })"
           />
-
+          <br />
           <DepthInput
             class="u-spacingBottom"
             :label="$t('z_index')"
@@ -620,16 +627,20 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pageMenu {
-  text-align: left;
-}
-._pageMenu--pane {
-  padding: calc(var(--spacing) / 2);
   background: var(--panel-color);
   border: var(--panel-borders);
   box-shadow: var(--panel-shadows);
   border-radius: var(--panel-radius);
+  text-align: left;
+}
+._pageMenu--pane {
+  padding: calc(var(--spacing) / 2) 0;
+  margin: 0 calc(var(--spacing) / 2);
 
-  margin-bottom: calc(var(--spacing) / 2);
+  &:not(:last-child) {
+    margin-bottom: calc(var(--spacing) / 2);
+    border-bottom: 1px solid var(--active-color);
+  }
 }
 
 // ::v-deep ._moduleCreator {

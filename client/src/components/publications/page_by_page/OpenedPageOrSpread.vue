@@ -19,7 +19,7 @@
           @click.self="setActiveModule(false)"
         >
           <div class="_sideCont">
-            <div class="u-breadcrumb _breadcrumb">
+            <!-- <div class="u-breadcrumb _breadcrumb">
               <div>
                 <button
                   type="button"
@@ -30,14 +30,9 @@
               </div>
               <sl-icon name="arrow-right-short" label="" />
               <div>
-                <!-- <span v-if="is_spread">
-                  {{ $t("spread") }} {{ active_spread_index }}
-                </span>
-                <span v-else> -->
                 {{ $t("page") }} {{ active_page_number + 1 }}
-                <!-- </span> -->
               </div>
-            </div>
+            </div> -->
             <div class="_content">
               <PageMenu
                 :can_edit="can_edit"
@@ -61,6 +56,7 @@
                 @update:scale="scale = $event"
                 @prevPage="prevPage()"
                 @nextPage="nextPage()"
+                @close="setPageActive(false)"
               />
             </div>
           </div>
@@ -494,7 +490,7 @@ export default {
     // pointer-events: auto;
 
     &._content {
-      margin: 0 calc(var(--spacing) / 2) calc(var(--spacing) * 2);
+      margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) * 4) 0;
     }
   }
 }

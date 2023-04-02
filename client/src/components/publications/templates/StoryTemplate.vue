@@ -1,24 +1,33 @@
 <template>
   <div class="_storyTemplate">
     <div class="_settings">
-      <RangeValueInput
-        class="u-spacingBottom"
-        :label="$t('story_width')"
-        :value="publication.story_width"
-        :min="0"
-        :max="2400"
-        :step="1"
-        :ticks="[320, 480, 800, 1200, 2400]"
-        :default_value="800"
-        :suffix="'px'"
-        @save="updatePubliMeta({ story_width: $event })"
-      />
-      <ToggleInput
-        class="u-spacingBottom"
-        :content="publication.story_is_not_responsive !== true"
-        :label="$t('responsive')"
-        @update:content="updatePubliMeta({ story_is_not_responsive: !$event })"
-      />
+      <details>
+        <summary>{{ $t("settings") }}</summary>
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('story_width')"
+          :value="publication.story_width"
+          :min="0"
+          :max="2400"
+          :step="1"
+          :ticks="[320, 480, 800, 1200, 2400]"
+          :default_value="800"
+          :suffix="'px'"
+          @save="updatePubliMeta({ story_width: $event })"
+        />
+        <ToggleInput
+          class="u-spacingBottom"
+          :content="publication.story_is_not_responsive !== true"
+          :label="$t('responsive')"
+          @update:content="
+            updatePubliMeta({ story_is_not_responsive: !$event })
+          "
+          :options="{
+            true: $t('responsive_instr'),
+            false: $t('not_responsive_instr'),
+          }"
+        />
+      </details>
     </div>
 
     <div class="_storyContainer">
@@ -232,6 +241,12 @@ export default {
 }
 
 ._settings {
+  position: sticky;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  // width: 100%;
   background: white;
   padding: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) * 1) auto;
