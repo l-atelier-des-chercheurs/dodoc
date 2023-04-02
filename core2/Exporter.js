@@ -235,12 +235,30 @@ class Exporter {
         width: this.instructions.page_width * 1 || 210,
         height: this.instructions.page_height * 1 || 297,
       };
+      const magnify_factor =
+        this.instructions.layout_mode === "print" ? 3.78 : 1;
+
+      // magnify browser window size if print with css px to mm of 3.78
+      // if screen, browser window size is same as page size
+      const bw_pagesize = {
+        width: Math.floor(document_size.width * magnify_factor),
+        height: Math.floor(document_size.height * magnify_factor) + 25,
+      };
+
+      // print to pdf with size, try to match pagesize with pixels
+      const reduction_factor =
+        this.instructions.layout_mode === "print" ? 1 : 3.78;
+
+      const printToPDF_pagesize = {
+        width: (document_size.width * 1000) / reduction_factor,
+        height: (document_size.height * 1000) / reduction_factor,
+      };
 
       let win = new BrowserWindow({
         // width: 800,
         // height: 800,
-        width: Math.floor(document_size.width * 3.78),
-        height: Math.floor(document_size.height * 3.78) + 25,
+        width: bw_pagesize.width,
+        height: bw_pagesize.height,
         show: false,
         webPreferences: {
           contextIsolation: true,
@@ -272,10 +290,7 @@ class Exporter {
             marginsType: 1,
             // electron >= 21
             margins: { marginType: "none" },
-            pageSize: {
-              width: document_size.width * 1000,
-              height: document_size.height * 1000,
-            },
+            pageSize: printToPDF_pagesize,
             printBackground: true,
             printSelectionOnly: false,
           })
