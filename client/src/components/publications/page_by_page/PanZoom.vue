@@ -86,7 +86,11 @@ export default {
     },
     panTo({ x, y }) {
       // console.log(`panto ${x} - ${y}`);
-      this.panzoom.pan(-x + 280, -y, { animate: true });
+      this.panzoom.pan(
+        -x + 280 + this.pan_margin_when_moving_to_media,
+        -y + this.pan_margin_when_moving_to_media,
+        { animate: true }
+      );
     },
     panzoomzoom($event) {
       if (this.debounce_zoom) clearTimeout(this.debounce_zoom);

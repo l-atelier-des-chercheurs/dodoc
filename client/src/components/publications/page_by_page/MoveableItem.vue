@@ -125,14 +125,17 @@ export default {
   mounted() {
     // console.log(`MoveableItem / mounted ${this.publimodule.$path}`);
 
-    this.$eventHub.$on(`module.panTo.${this.publimodule.$path}`, this.panTo);
+    this.$eventHub.$on(`module.panTo.${this.module_meta_filename}`, this.panTo);
     this.$eventHub.$on(
       `module.enable_edit.${this.module_meta_filename}`,
       this.setActive
     );
   },
   beforeDestroy() {
-    this.$eventHub.$off(`module.panTo.${this.publimodule.$path}`, this.panTo);
+    this.$eventHub.$off(
+      `module.panTo.${this.module_meta_filename}`,
+      this.panTo
+    );
     this.$eventHub.$off(
       `module.enable_edit.${this.module_meta_filename}`,
       this.setActive

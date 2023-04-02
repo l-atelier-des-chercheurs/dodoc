@@ -26,33 +26,40 @@
 
     <div class="_editingPane" v-if="context === 'full' && can_edit">
       <EditBtn v-if="!edit_mode" @click="enableEditMode" />
-      <div v-else class="_picker">
-        <ImageSelect
-          v-if="edit_mode"
-          :folder_path="path"
-          :existing_preview="existing_preview"
-          @newPreview="
-            (value) => {
-              new_cover_raw = value;
-            }
-          "
-        />
-
-        <div class="_footer">
-          <SaveCancelButtons
-            class="_scb"
-            :is_saving="is_saving"
-            :allow_save="allow_save"
-            @save="updateCover"
-            @cancel="cancel"
+      <BaseModal2
+        v-if="edit_mode"
+        :title="$t('pick_image')"
+        @close="edit_mode = false"
+      >
+        <div class="_picker">
+          <ImageSelect
+            v-if="edit_mode"
+            :path="path"
+            :existing_preview="existing_preview"
+            @newPreview="
+              (value) => {
+                new_cover_raw = value;
+              }
+            "
           />
+
+          <div class="_footer">
+            <SaveCancelButtons
+              class="_scb"
+              :is_saving="is_saving"
+              :allow_save="allow_save"
+              @save="updateCover"
+              @cancel="cancel"
+            />
+          </div>
         </div>
-      </div>
+      </BaseModal2>
     </div>
   </div>
 </template>
 <script>
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
+
 export default {
   props: {
     cover: [Boolean, Object],

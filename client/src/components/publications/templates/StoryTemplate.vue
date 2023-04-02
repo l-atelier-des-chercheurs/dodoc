@@ -1,48 +1,80 @@
 <template>
   <div class="_storyTemplate">
-    <div class="_mediasList">
-      <transition-group tag="div" name="StoryModules" appear :duration="700">
-        <template v-for="(meta_filename, index) in modules_list">
-          <PublicationModule
-            class="_mediaPublication"
-            :key="meta_filename"
-            :publimodule="findModuleFromMetaFilename(meta_filename)"
-            :module_position="
-              modules_list.length === 1
-                ? 'alone'
-                : index === 0
-                ? 'first'
-                : index === modules_list.length - 1
-                ? 'last'
-                : 'inbetween'
-            "
-            :can_edit="can_edit"
-            @resize="resize({ meta_filename, new_size: $event })"
-            @moveUp="moveTo({ meta_filename, dir: -1 })"
-            @moveDown="moveTo({ meta_filename, dir: +1 })"
-            @duplicate="
-              duplicatePublicationMedia({
-                source_meta_filename: meta_filename,
-                copy_meta_filename: $event,
-              })
-            "
-            @remove="removeModuleFromList(meta_filename)"
-          />
-          <div class="_spacer" :key="'mc_' + index">
-            <ModuleCreator
-              v-if="can_edit"
-              :publication_path="publication.$path"
-              @addModule="
-                ({ meta_filename }) =>
-                  insertModuleMetaFilenameToList({
-                    meta_filename,
-                    index: index + 1,
-                  })
+    <div class="_settings">
+      <details>
+        <summary>{{ $t("settings") }}</summary>
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('story_width')"
+          :value="publication.story_width"
+          :min="0"
+          :max="2400"
+          :step="1"
+          :ticks="[320, 480, 800, 1200, 2400]"
+          :default_value="800"
+          :suffix="'px'"
+          @save="updatePubliMeta({ story_width: $event })"
+        />
+        <ToggleInput
+          class="u-spacingBottom"
+          :content="publication.story_is_not_responsive !== true"
+          :label="$t('responsive')"
+          @update:content="
+            updatePubliMeta({ story_is_not_responsive: !$event })
+          "
+          :options="{
+            true: $t('responsive_instr'),
+            false: $t('not_responsive_instr'),
+          }"
+        />
+      </details>
+    </div>
+
+    <div class="_storyContainer">
+      <div class="_storyContent" :style="story_styles">
+        <transition-group tag="div" name="StoryModules" appear :duration="700">
+          <template v-for="(meta_filename, index) in modules_list">
+            <PublicationModule
+              class="_mediaPublication"
+              :key="meta_filename"
+              :publimodule="findModuleFromMetaFilename(meta_filename)"
+              :module_position="
+                modules_list.length === 1
+                  ? 'alone'
+                  : index === 0
+                  ? 'first'
+                  : index === modules_list.length - 1
+                  ? 'last'
+                  : 'inbetween'
               "
+              :can_edit="can_edit"
+              @resize="resize({ meta_filename, new_size: $event })"
+              @moveUp="moveTo({ meta_filename, dir: -1 })"
+              @moveDown="moveTo({ meta_filename, dir: +1 })"
+              @duplicate="
+                duplicatePublicationMedia({
+                  source_meta_filename: meta_filename,
+                  copy_meta_filename: $event,
+                })
+              "
+              @remove="removeModuleFromList(meta_filename)"
             />
-          </div>
-        </template>
-      </transition-group>
+            <div class="_spacer" :key="'mc_' + index">
+              <ModuleCreator
+                v-if="can_edit"
+                :publication_path="publication.$path"
+                @addModule="
+                  ({ meta_filename }) =>
+                    insertModuleMetaFilenameToList({
+                      meta_filename,
+                      index: index + 1,
+                    })
+                "
+              />
+            </div>
+          </template>
+        </transition-group>
+      </div>
     </div>
 
     <ModuleCreator
@@ -76,6 +108,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    story_styles() {
+      const width = (this.publication.story_width || 800) + "px";
+      if (this.publication.story_is_not_responsive === true)
+        return { width, maxWidth: "none" };
+      else return { maxWidth: width };
+    },
     modules_list() {
       if (
         this.publication.modules_list &&
@@ -119,6 +157,12 @@ export default {
         },
       });
       this.toggleNewModuleEdit({ meta_filename });
+    },
+    async updatePubliMeta(new_meta) {
+      return await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta,
+      });
     },
     async updateMeta({ new_meta }) {
       this.fetch_status = "pending";
@@ -178,12 +222,6 @@ export default {
 
       this.response = await this.updatePubliMeta({ modules_list });
     },
-    async updatePubliMeta(new_meta) {
-      return await this.$api.updateMeta({
-        path: this.publication.$path,
-        new_meta,
-      });
-    },
     toggleNewModuleEdit({ meta_filename }) {
       setTimeout(() => {
         console.log(`emit module.enable_edit.${meta_filename}`);
@@ -199,16 +237,31 @@ export default {
   justify-content: center;
   flex-flow: column nowrap;
   align-items: center;
-  background: white;
   margin: 0 auto calc(var(--spacing) * 8);
-  padding: calc(var(--spacing) / 1) 0;
-  max-width: 800px;
-
-  max-width: var(--max-column-width);
 }
 
-._mediasList {
+._settings {
+  position: sticky;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  // width: 100%;
+  background: white;
+  padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) * 1) auto;
+}
+
+._storyContainer {
   width: 100%;
+  overflow: auto;
+}
+._storyContent {
+  width: 100%;
+  background: white;
+  margin: 0 auto;
+  max-width: 800px;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 ._mediaPublication {

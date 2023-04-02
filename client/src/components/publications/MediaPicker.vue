@@ -7,7 +7,7 @@
       </button> -->
     <!-- select from this or another project library -->
     <PickMediaFromProjects
-      :current_project_path="current_project_path"
+      :path="current_project_path"
       @selectMedia="$emit('selectMedia', $event)"
       @close="$emit('close')"
     />

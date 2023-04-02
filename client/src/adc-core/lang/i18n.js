@@ -155,6 +155,13 @@ export default function () {
         share: "Partager",
         exports_in_progress: "Exportation(s) en cours",
 
+        story_width: "Largeur du récit",
+        responsive: "Fluide",
+        responsive_instr:
+          "Prendra toute la largeur de la fenêtre sans jamais déborder et en respectant la valeur ci-dessus comme largeur maximale.",
+        not_responsive_instr:
+          "La largeur du récit sera toujours la même quelle que soit la taille de l'écran. Un ascenseur horizontal sera ajouté si le récit et plus large que la fenêtre.",
+
         document_type: "Type de document",
         print: "Imprimé",
         print_instr:

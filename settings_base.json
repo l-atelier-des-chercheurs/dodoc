@@ -429,6 +429,12 @@
                 "layout_mode": {
                   "type": "string"
                 },
+                "story_width": {
+                  "type": "number"
+                },
+                "story_is_not_responsive": {
+                  "type": "boolean"
+                },
                 "page_width": {
                   "type": "number"
                 },
