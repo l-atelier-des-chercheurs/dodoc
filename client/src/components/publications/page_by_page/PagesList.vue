@@ -16,7 +16,7 @@
           >
             <div class="_preview">
               <SinglePage
-                :context="'list'"
+                :context="'preview'"
                 :zoom="page_preview_zoom"
                 :page_modules="getModulesForPage({ modules, page_id: page.id })"
                 :page_width="publication.page_width"
@@ -69,7 +69,7 @@
               <template v-if="page && page.id">
                 <div class="_preview">
                   <SinglePage
-                    :context="'list'"
+                    :context="'preview'"
                     :zoom="page_preview_zoom"
                     :page_modules="
                       getModulesForPage({ modules, page_id: page.id })
