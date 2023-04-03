@@ -231,7 +231,6 @@
                 @click="duplicateModule"
               >
                 <sl-icon name="file-plus" />
-
                 {{ $t("duplicate") }}
               </button>
             </div>

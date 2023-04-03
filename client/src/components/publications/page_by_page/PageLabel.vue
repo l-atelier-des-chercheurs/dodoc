@@ -22,6 +22,18 @@
           v-text="p"
         />
       </select>
+      <div class="">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="
+            $emit('duplicatePage');
+            edit_mode = false;
+          "
+        >
+          <sl-icon name="clipboard2-plus" />
+        </button>
+      </div>
       <RemoveMenu
         v-if="can_edit"
         :remove_text="$t('remove_page_and_content')"

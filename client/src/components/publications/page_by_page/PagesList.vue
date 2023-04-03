@@ -46,6 +46,7 @@
                   new_position: $event.new_position,
                 })
               "
+              @duplicatePage="duplicatePage(page.id)"
               @removePage="removePage(page.id)"
             />
           </div>
@@ -98,6 +99,7 @@
                       new_position: $event.new_position,
                     })
                   "
+                  @duplicatePage="duplicatePage(page.id)"
                   @removePage="removePage(page.id)"
                 />
 
@@ -225,9 +227,7 @@ export default {
   },
   methods: {
     createPage() {
-      const new_page_id = (
-        Math.random().toString(36) + "00000000000000000"
-      ).slice(2, 2 + 6);
+      const new_page_id = this.generatePageID();
 
       let pages = this.publication.pages ? this.publication.pages.slice() : [];
 
@@ -247,11 +247,42 @@ export default {
         pages,
       });
     },
-    movePage({ old_position, new_position }) {
-      old_position;
-      new_position;
-      console.log("movePage " + old_position + " to " + new_position);
+    async duplicatePage(id) {
+      // get original page
+      let new_page_id = this.generatePageID();
+      const pages = this.publication.pages.reduce((acc, p) => {
+        acc.push(p);
+        if (p.id === id) {
+          const new_page = JSON.parse(JSON.stringify(p));
+          new_page.id = new_page_id;
+          acc.push(new_page);
+        }
+        return acc;
+      }, []);
 
+      await this.updatePubliMeta({
+        pages,
+      });
+
+      const og_modules = this.getModulesForPage({
+        modules: this.modules,
+        page_id: id,
+      });
+      if (og_modules.length === 0) return;
+
+      const addtl_meta_to_module = { page_id: new_page_id };
+      for (const og_module of og_modules) {
+        debugger;
+        await this.duplicateModuleWithSourceMedias({
+          og_module,
+          addtl_meta_to_module,
+        });
+      }
+      // for each module, copy them individually while changing their page_id to new_page_id
+    },
+
+    movePage({ old_position, new_position }) {
+      // console.log("movePage " + old_position + " to " + new_position);
       let pages = this.publication.pages.slice();
 
       function array_move(arr, old_index, new_index) {
@@ -270,6 +301,9 @@ export default {
       this.updatePubliMeta({
         pages,
       });
+    },
+    generatePageID() {
+      return (Math.random().toString(36) + "00000000000000000").slice(2, 2 + 6);
     },
     async updatePageOptions({ page_number, value }) {
       let pages = this.publication.pages.slice();
