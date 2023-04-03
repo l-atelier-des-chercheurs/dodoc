@@ -35,30 +35,19 @@
                 v-html="$t('open')"
               />
             </div>
-            <div class="_label">
-              <b class="">
-                {{ $t("page") }}
-              </b>
 
-              <SelectField
-                :key="'page-' + index"
-                :content="index + 1"
-                :can_edit="can_edit"
-                :options="all_pages_in_select"
-                @update="
-                  movePage({
-                    old_position: index,
-                    new_position: $event - 1,
-                  })
-                "
-              />
-              <RemoveMenu
-                v-if="can_edit"
-                :remove_text="$t('remove_page_and_content')"
-                :show_button_text="false"
-                @remove="removePage(page.id)"
-              />
-            </div>
+            <PageLabel
+              :index="index"
+              :number_of_pages="pages.length"
+              :can_edit="can_edit"
+              @movePage="
+                movePage({
+                  old_position: $event.old_position,
+                  new_position: $event.new_position,
+                })
+              "
+              @removePage="removePage(page.id)"
+            />
           </div>
         </template>
         <template v-else>
@@ -98,7 +87,21 @@
                   />
                   <!-- <div v-else>No preview</div> -->
                 </div>
-                <div class="_label">
+
+                <PageLabel
+                  :index="index * 2 + iindex - 1"
+                  :number_of_pages="pages.length"
+                  :can_edit="can_edit"
+                  @movePage="
+                    movePage({
+                      old_position: $event.old_position,
+                      new_position: $event.new_position,
+                    })
+                  "
+                  @removePage="removePage(page.id)"
+                />
+
+                <!-- <div class="_label">
                   <b>{{ $t("page") }}</b>
                   <SelectField
                     :key="'page-' + index * 2 + iindex"
@@ -118,7 +121,7 @@
                     :show_button_text="false"
                     @remove="removePage(page.id)"
                   />
-                </div>
+                </div> -->
               </template>
             </div>
           </div>
@@ -160,6 +163,7 @@
 <script>
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
 import OpenedPageOrSpread from "@/components/publications/page_by_page/OpenedPageOrSpread.vue";
+import PageLabel from "@/components/publications/page_by_page/PageLabel.vue";
 
 export default {
   props: {
@@ -170,6 +174,7 @@ export default {
   components: {
     SinglePage,
     OpenedPageOrSpread,
+    PageLabel,
   },
   data() {
     return {};
@@ -188,11 +193,7 @@ export default {
     is_spread() {
       return this.publication.page_spreads === true;
     },
-    all_pages_in_select() {
-      return new Array(this.pages.length)
-        .fill(null)
-        .map((i, index) => ({ key: index + 1, text: index + 1 }));
-    },
+
     page_preview_zoom() {
       return this.calculateZoomToFit({
         width: this.publication.page_width,
@@ -249,6 +250,7 @@ export default {
     movePage({ old_position, new_position }) {
       old_position;
       new_position;
+      console.log("movePage " + old_position + " to " + new_position);
 
       let pages = this.publication.pages.slice();
 
@@ -316,17 +318,6 @@ export default {
   min-height: 2em;
   background: rgba(255, 255, 255, 0.2);
 }
-._label {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: calc(var(--spacing) / 4);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 8);
-  margin: calc(var(--spacing) / 8);
-  background: rgba(0, 0, 0, 0.06);
-  border-radius: 4px;
-}
-
 ._openPage {
   position: absolute;
   top: 0;
