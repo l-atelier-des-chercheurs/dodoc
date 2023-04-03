@@ -222,6 +222,7 @@ export default function () {
         pagn_starts_on_page: "Le décompte de page démarre à la page",
         hide_pagination: "Masquer la pagination",
         hide_pagination_instr: "Concerne uniquement cette page",
+        remove_page_and_content: "Supprimer la page et son contenu ?",
         border_radius: "Coins arrondis",
         photo: "Photo",
         remove_this_image: "Supprimer cette image",

@@ -39,6 +39,7 @@
               <b class="">
                 {{ $t("page") }}
               </b>
+
               <SelectField
                 :key="'page-' + index"
                 :content="index + 1"
@@ -51,7 +52,12 @@
                   })
                 "
               />
-              <RemoveMenu v-if="can_edit" @remove="removePage(page.id)" />
+              <RemoveMenu
+                v-if="can_edit"
+                :remove_text="$t('remove_page_and_content')"
+                :show_button_text="false"
+                @remove="removePage(page.id)"
+              />
             </div>
           </div>
         </template>
@@ -106,7 +112,12 @@
                       })
                     "
                   />
-                  <RemoveMenu v-if="can_edit" @remove="removePage(page.id)" />
+                  <RemoveMenu
+                    v-if="can_edit"
+                    :remove_text="$t('remove_page_and_content')"
+                    :show_button_text="false"
+                    @remove="removePage(page.id)"
+                  />
                 </div>
               </template>
             </div>
