@@ -17,7 +17,7 @@
         >
           <MediaContent
             :file="media_with_linked._linked_media"
-            :resolution="context === 'preview' ? 220 : undefined"
+            :resolution="context === 'preview' ? 220 : 1600"
             :context="context"
             :show_fullscreen_button="true"
           />

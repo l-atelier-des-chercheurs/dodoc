@@ -7,7 +7,16 @@
     @dragend="endMediaDrag()"
   >
     <template v-if="file.$type === 'image'">
-      <img :src="thumb" class="_mediaContent--image" loading="eager" />
+      <template v-if="context === 'preview'">
+        <img :src="thumb" class="_mediaContent--image" loading="eager" />
+      </template>
+      <template v-else>
+        <img
+          :src="file_full_path"
+          class="_mediaContent--image"
+          loading="eager"
+        />
+      </template>
       <template v-if="show_fullscreen_button">
         <FullscreenBtn
           class="u-floatingFsButton"
