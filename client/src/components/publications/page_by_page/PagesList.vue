@@ -16,7 +16,7 @@
           >
             <div class="_preview">
               <SinglePage
-                :context="'list'"
+                :context="'preview'"
                 :zoom="page_preview_zoom"
                 :page_modules="getModulesForPage({ modules, page_id: page.id })"
                 :page_width="publication.page_width"
@@ -39,6 +39,7 @@
               <b class="">
                 {{ $t("page") }}
               </b>
+
               <SelectField
                 :key="'page-' + index"
                 :content="index + 1"
@@ -51,7 +52,12 @@
                   })
                 "
               />
-              <RemoveMenu v-if="can_edit" @remove="removePage(page.id)" />
+              <RemoveMenu
+                v-if="can_edit"
+                :remove_text="$t('remove_page_and_content')"
+                :show_button_text="false"
+                @remove="removePage(page.id)"
+              />
             </div>
           </div>
         </template>
@@ -69,7 +75,7 @@
               <template v-if="page && page.id">
                 <div class="_preview">
                   <SinglePage
-                    :context="'list'"
+                    :context="'preview'"
                     :zoom="page_preview_zoom"
                     :page_modules="
                       getModulesForPage({ modules, page_id: page.id })
@@ -106,7 +112,12 @@
                       })
                     "
                   />
-                  <RemoveMenu v-if="can_edit" @remove="removePage(page.id)" />
+                  <RemoveMenu
+                    v-if="can_edit"
+                    :remove_text="$t('remove_page_and_content')"
+                    :show_button_text="false"
+                    @remove="removePage(page.id)"
+                  />
                 </div>
               </template>
             </div>

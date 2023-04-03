@@ -17,8 +17,8 @@
         >
           <MediaContent
             :file="media_with_linked._linked_media"
-            :resolution="1600"
-            :context="'full'"
+            :resolution="context === 'preview' ? 220 : 1600"
+            :context="context"
             :show_fullscreen_button="true"
           />
 
@@ -28,7 +28,7 @@
               class="u-buttonLink"
               v-if="
                 (is_multiple_medias ||
-                  (context === 'page_by_page' &&
+                  (page_template === 'page_by_page' &&
                     !single_media_displayed_at_full_ratio)) &&
                 !(
                   !media_with_linked.objectFit ||
@@ -44,7 +44,7 @@
               class="u-buttonLink"
               v-if="
                 (is_multiple_medias ||
-                  (context === 'page_by_page' &&
+                  (page_template === 'page_by_page' &&
                     !single_media_displayed_at_full_ratio)) &&
                 media_with_linked.objectFit !== 'contain'
               "
@@ -109,7 +109,11 @@ export default {
   props: {
     publimodule: Object,
     can_edit: Boolean,
-    context: String,
+    context: {
+      type: String,
+      default: "full",
+    },
+    page_template: String,
     number_of_max_medias: [Boolean, Number],
   },
   components: {

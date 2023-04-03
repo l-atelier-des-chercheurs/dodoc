@@ -172,7 +172,7 @@
                   class="_preview"
                   v-if="firstMedia(page_module)"
                   :file="firstMedia(page_module)"
-                  :resolution="180"
+                  :resolution="50"
                   :context="'preview'"
                 />
 
@@ -197,7 +197,7 @@
             class="_activeModulePreview"
             v-if="active_module.module_type === 'mosaic'"
             :file="firstMedia(active_module)"
-            :resolution="180"
+            :resolution="50"
             :context="'preview'"
           />
           <span
@@ -627,6 +627,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pageMenu {
+  margin: 2px;
   background: var(--panel-color);
   border: var(--panel-borders);
   box-shadow: var(--panel-shadows);

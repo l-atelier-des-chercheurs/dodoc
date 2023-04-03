@@ -9,7 +9,7 @@
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
-    <MediaContent :file="file" />
+    <MediaContent :file="file" :resolution="220" />
     <span v-if="duration" class="u-meta">{{ duration }}</span>
     <span v-if="file.$type === 'pdf'" class="u-meta">{{ "pdf" }}</span>
     <button

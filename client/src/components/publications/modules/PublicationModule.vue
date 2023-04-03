@@ -5,7 +5,10 @@
       'is--shape': is_shape,
     }"
   >
-    <div class="_sideOptions" v-if="can_edit && context !== 'page_by_page'">
+    <div
+      class="_sideOptions"
+      v-if="can_edit && page_template !== 'page_by_page'"
+    >
       <span>
         <button
           v-if="
@@ -166,6 +169,7 @@
         :publimodule="publimodule"
         :can_edit="can_edit"
         :context="context"
+        :page_template="page_template"
         :number_of_max_medias="number_of_max_medias"
         @updateMeta="updateMeta"
         @remove="removeModule"
@@ -173,6 +177,7 @@
       <ModuleCarousel
         v-else-if="publimodule.module_type === 'carousel'"
         :publimodule="publimodule"
+        :context="context"
         :can_edit="can_edit"
       />
       <CollaborativeEditor2
@@ -299,6 +304,7 @@ export default {
     magnification: Number,
     borderRadius: Number,
     context: String,
+    page_template: String,
     number_of_max_medias: {
       type: [Boolean, Number],
       default: false,
@@ -442,7 +448,7 @@ export default {
       }
       new_meta.source_medias = new_source_medias;
 
-      if (this.context === "page_by_page") {
+      if (this.page_template === "page_by_page") {
         new_meta.x = (this.publimodule.x || 0) + 10;
         new_meta.y = (this.publimodule.y || 0) + 10;
       }
