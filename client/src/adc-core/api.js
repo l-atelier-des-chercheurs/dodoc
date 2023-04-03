@@ -62,6 +62,7 @@ export default function () {
         });
         this.socket.on("disconnect", (reason) => {
           this.$eventHub.$emit("socketio.disconnect", reason);
+          this.socket.disconnect();
         });
 
         this.socket.onAny((eventName, ...args) => {
