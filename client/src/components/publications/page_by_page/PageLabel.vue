@@ -17,23 +17,11 @@
       >
         <option
           v-for="p in number_of_pages"
-          :key="p"
+          :key="p - 1"
           :value="p - 1"
-          v-text="p - 1"
+          v-text="p"
         />
       </select>
-      <!-- <SelectField
-        :key="'page-' + index"
-        :content="index + 1"
-        :can_edit="can_edit"
-        :options="all_pages_in_select"
-        @update="
-          $emit('movePage', {
-            old_position: index,
-            new_position: $event - 1,
-          })
-        "
-      /> -->
       <RemoveMenu
         v-if="can_edit"
         :remove_text="$t('remove_page_and_content')"
