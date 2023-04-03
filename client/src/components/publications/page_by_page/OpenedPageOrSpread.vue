@@ -62,7 +62,7 @@
           </div>
           <div class="_pagePan">
             <PanZoom :scale.sync="scale" :page_opened_id="page_opened_id">
-              <div class="_pageCont">
+              <div class="_pageCont" @click.self="setActiveModule(false)">
                 <SinglePage
                   v-if="!is_spread"
                   class="_spreadNavigator--page is--active"
@@ -95,7 +95,6 @@
                   :class="{
                     'is--active': page.id === page_opened_id,
                   }"
-                  @click.self="setActiveModule(false)"
                 >
                   <template v-if="page">
                     <SinglePage

@@ -19,7 +19,7 @@
             :file="media_with_linked._linked_media"
             :resolution="context === 'preview' ? 220 : 1600"
             :context="context"
-            :show_fullscreen_button="true"
+            :show_fullscreen_button="context !== 'preview'"
           />
 
           <div class="_btnRow" v-if="can_edit">

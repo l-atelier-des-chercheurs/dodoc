@@ -318,6 +318,7 @@ export default function () {
         spaces: "Les espaces",
         spaces_instr: "",
         create_a_space: "Créer un espace",
+        project: "Projet",
 
         watermark: "Habillage",
         watermark_instructions:

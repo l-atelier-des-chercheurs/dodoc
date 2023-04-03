@@ -65,7 +65,10 @@ export default {
   components: {},
   data() {
     return {
-      show_range_input: this.value ? true : false,
+      show_range_input:
+        this.value !== undefined && this.value !== this.default_value
+          ? true
+          : false,
       local_value: this.value || this.default_value,
       previous_value: undefined,
       steplist_id: `steplist_${(
@@ -88,7 +91,10 @@ export default {
     },
     show_range_input() {
       if (!this.show_range_input) this.$emit("save", this.default_value);
-      else this.$emit("save", this.previous_value);
+      else {
+        if (this.previous_value) this.$emit("save", this.previous_value);
+        else if (this.default_value) this.$emit("save", this.default_value);
+      }
     },
   },
   computed: {},

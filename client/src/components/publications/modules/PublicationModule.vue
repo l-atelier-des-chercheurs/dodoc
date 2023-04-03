@@ -411,58 +411,16 @@ export default {
       });
     },
     async duplicateModule() {
-      let new_meta = {};
-
-      const new_source_medias = [];
-      for (let {
-        path,
-        meta_filename_in_project,
-        meta_filename,
-        ...props
-      } of this.publimodule.source_medias) {
-        let new_media_obj = Object.assign({}, props);
-
-        if (path) {
-          // old school path prop: could be either path to text in /publications
-          // or path to media in parent project
-          // now we only extract the meta_filename to make projects and publications portable, independent from the space
-          if (path.includes("/publications/"))
-            meta_filename = this.getFilename(path);
-          else meta_filename_in_project = this.getFilename(path);
-        }
-
-        if (meta_filename) {
-          const og_file_path = this.getSourceMedia({
-            source_media: { meta_filename },
-            publication_path: this.getParent(this.publimodule.$path),
-          }).$path;
-          const copy_file_path = await this.$api.copyFile({
-            path: og_file_path,
-          });
-          new_media_obj.meta_filename = copy_file_path;
-        } else if (meta_filename_in_project) {
-          // linked media in project
-          new_media_obj.meta_filename_in_project = meta_filename_in_project;
-        }
-        new_source_medias.push(new_media_obj);
-      }
-      new_meta.source_medias = new_source_medias;
-
+      let addtl_meta_to_module = {};
       if (this.page_template === "page_by_page") {
-        new_meta.x = (this.publimodule.x || 0) + 10;
-        new_meta.y = (this.publimodule.y || 0) + 10;
+        addtl_meta_to_module.x = (this.publimodule.x || 0) + 10;
+        addtl_meta_to_module.y = (this.publimodule.y || 0) + 10;
       }
 
-      const meta_filename = await this.$api
-        .copyFile({
-          path: this.publimodule.$path,
-          new_meta,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-
+      const meta_filename = await this.duplicateModuleWithSourceMedias({
+        og_module: this.publimodule,
+        addtl_meta_to_module,
+      });
       this.$emit("duplicate", meta_filename);
     },
     async removeModule() {
