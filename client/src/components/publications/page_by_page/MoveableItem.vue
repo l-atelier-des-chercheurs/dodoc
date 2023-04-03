@@ -43,7 +43,8 @@
         :publimodule="publimodule"
         :can_edit="can_edit && is_active"
         :borderRadius="turnCMtoPX(publimodule.border_radius) || 0"
-        :context="'page_by_page'"
+        :context="context"
+        :page_template="'page_by_page'"
         :number_of_max_medias="1"
         :magnification="magnification"
         @duplicate="onDuplicateModule"
@@ -95,6 +96,7 @@ import PublicationModule from "@/components/publications/modules/PublicationModu
 export default {
   name: "app",
   props: {
+    context: String,
     publimodule: Object,
     can_edit: Boolean,
     magnification: Number,

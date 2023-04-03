@@ -2,7 +2,7 @@
   <div
     class="_singlePage"
     :class="{
-      'is--preview': context === 'list',
+      'is--preview': context === 'preview',
       'is--editable': can_edit,
     }"
   >
@@ -54,6 +54,7 @@
         <MoveableItem
           class="_item"
           v-for="publimodule in page_modules"
+          :context="context"
           :key="publimodule.$path"
           :publimodule="publimodule"
           :magnification="magnification"

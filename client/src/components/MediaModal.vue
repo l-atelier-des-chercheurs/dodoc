@@ -17,7 +17,7 @@
     <div class="_mediaModal--content">
       <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
-        <MediaContent :file="file" :resolution="1600" :context="'full'" />
+        <MediaContent :file="file" :context="'full'" />
       </div>
       <div class="_meta" v-if="!select_mode">
         <h3>{{ $t("informations") }}</h3>
