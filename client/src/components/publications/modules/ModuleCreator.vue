@@ -135,7 +135,7 @@ export default {
           type: "rectangle",
           icon: "square-fill",
           addtl_meta: {
-            background_color: "#ff9c33",
+            background_color: "#ffbe32",
           },
         },
         {
