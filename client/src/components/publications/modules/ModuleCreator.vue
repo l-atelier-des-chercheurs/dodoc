@@ -229,7 +229,7 @@ export default {
       this.createMosaic({ meta_filename: text_meta_filename });
     },
     async createText() {
-      const text_meta_filename = await this.$api.uploadText({
+      const meta_filename = await this.$api.uploadText({
         path: this.publication_path,
         filename: "text.txt",
         content: "…",
@@ -238,9 +238,7 @@ export default {
           module_type: this.module_type,
         },
       });
-      const text_meta_path = this.publication_path + "/" + text_meta_filename;
-      const source_medias = [{ path: text_meta_path }];
-
+      const source_medias = [{ meta_filename }];
       await this.createModule({
         module_type: "text",
         source_medias,

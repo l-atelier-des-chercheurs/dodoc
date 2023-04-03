@@ -242,7 +242,12 @@ module.exports = (function () {
     // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
     // todo not very clean, merge with auth.isAuthorIncluded
-    const folder_meta = await folder.getFolder({ path_to_folder });
+    const folder_meta = await folder
+      .getFolder({ path_to_folder })
+      .catch((err) => {
+        if (res) return res.status(404).send({ code: err.code });
+        throw err;
+      });
     if (!folder_meta.$authors || folder_meta.$authors.length === 0)
       return next ? next() : undefined;
 

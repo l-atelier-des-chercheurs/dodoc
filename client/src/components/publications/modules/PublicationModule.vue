@@ -406,7 +406,6 @@ export default {
     },
     async duplicateModule() {
       let new_meta = {};
-      // TODO if its source_medias include text modules, copy these medias as well
 
       const new_source_medias = [];
       for (let {
@@ -417,38 +416,28 @@ export default {
       } of this.publimodule.source_medias) {
         let new_media_obj = Object.assign({}, props);
 
-        // const publication_path = this.getParent(this.publimodule.$path);
-        // const media = this.getSourceMedia({ source_media, publication_path });
-        meta_filename_in_project;
-        meta_filename;
-
-        if (meta_filename_in_project) {
-          new_media_obj.meta_filename_in_project = meta_filename_in_project;
-        } else if (path && !path.includes("/publications/")) {
-          new_media_obj.path = path;
-        } else if (meta_filename || path.includes("/publications/")) {
-          if (!path)
-            path = this.getSourceMedia({
-              source_media: { meta_filename },
-              publication_path: this.getParent(this.publimodule.$path),
-            }).$path;
-
-          const new_file_path = await this.$api.copyFile({
-            path: path,
-          });
-          new_media_obj.meta_filename = new_file_path;
+        if (path) {
+          // old school path prop: could be either path to text in /publications
+          // or path to media in parent project
+          // now we only extract the meta_filename to make projects and publications portable, independent from the space
+          if (path.includes("/publications/"))
+            meta_filename = this.getFilename(path);
+          else meta_filename_in_project = this.getFilename(path);
         }
 
-        // if (path.includes("/publications/")) {
-        //   // this media is specific to publications, lets remove it
-        //   const new_file_path = await this.$api.copyFile({
-        //     path: path,
-        //   });
-        //   source_path =
-        //     path.substring(0, path.lastIndexOf("/") + 1) + new_file_path;
-        // } else {
-        //   source_path = path;
-        // }
+        if (meta_filename) {
+          const og_file_path = this.getSourceMedia({
+            source_media: { meta_filename },
+            publication_path: this.getParent(this.publimodule.$path),
+          }).$path;
+          const copy_file_path = await this.$api.copyFile({
+            path: og_file_path,
+          });
+          new_media_obj.meta_filename = copy_file_path;
+        } else if (meta_filename_in_project) {
+          // linked media in project
+          new_media_obj.meta_filename_in_project = meta_filename_in_project;
+        }
         new_source_medias.push(new_media_obj);
       }
       new_meta.source_medias = new_source_medias;
