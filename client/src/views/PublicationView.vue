@@ -1,186 +1,79 @@
 <template>
-  <div
-    class="_publicationView"
-    :class="{
-      'is--slides': display_mode === 'slides',
-    }"
-  >
-    <transition name="fade_fast" mode="out-in">
-      <div class="u-divCentered" v-if="!project || !publication" key="loader">
-        <LoaderSpinner />
-      </div>
-      <div v-else-if="fetch_project_error" key="err">
-        {{ fetch_project_error }}
-      </div>
-      <div v-else key="publication">
-        <!-- Publication view project = {{ project }} <br />
+  <div class="_publicationView">
+    <div class="u-divCentered" v-if="!project || !publication" key="loader">
+      <LoaderSpinner />
+    </div>
+    <div v-else-if="fetch_project_error" key="err">
+      {{ fetch_project_error }}
+    </div>
+    <template v-else-if="publication.template === 'page_by_page'">
+      <!-- Publication view project = {{ project }} <br />
         publication = {{ publication }} -->
-        <template v-if="publication.template === 'page_by_page'">
-          <div class="_pages">
-            <template v-if="!is_spread">
-              <template v-if="display_mode !== 'slides'">
+      <div class="reveal">
+        <div class="slides">
+          <section>Slide 1</section>
+        </div>
+      </div>
+
+      <div class="reveal" v-if="false">
+        <div class="_pages slides">
+          <template v-if="!is_spread">
+            <section
+              v-for="(page, page_number) in pages"
+              class="_page"
+              :key="'page-' + page.id"
+            >
+              <SinglePage
+                :context="'full'"
+                :page_modules="getModulesForPage({ modules, page_id: page.id })"
+                :page_color="page.page_color"
+                :layout_mode="publication.layout_mode"
+                :hide_pagination="page.hide_pagination === true"
+                :page_number="page_number"
+                :pagination="pagination"
+                :can_edit="false"
+              />
+            </section>
+          </template>
+          <template v-else>
+            <section v-for="(spread, s_index) in spreads" :key="s_index">
+              <div class="_spread">
                 <div
-                  v-for="(page, page_number) in pages"
-                  class="_page"
-                  :key="'page-' + page.id"
+                  v-for="(page, index) in spread"
+                  :key="page.id ? page.id : index"
+                  class="_spread--page"
                 >
-                  <SinglePage
-                    :context="'full'"
-                    :page_modules="
-                      getModulesForPage({ modules, page_id: page.id })
-                    "
-                    :page_color="page.page_color"
-                    :layout_mode="publication.layout_mode"
-                    :hide_pagination="page.hide_pagination === true"
-                    :page_number="page_number"
-                    :pagination="pagination"
-                    :can_edit="false"
-                  />
-                </div>
-              </template>
-              <template v-else>
-                <transition name="fade_fast" mode="out-in">
-                  <div
-                    class="_page"
-                    :key="'page-' + slide_current_page.id"
-                    v-if="slide_current_page"
-                  >
+                  <template v-if="page">
                     <SinglePage
                       :context="'full'"
                       :page_modules="
-                        getModulesForPage({
-                          modules,
-                          page_id: slide_current_page.id,
-                        })
+                        getModulesForPage({ modules, page_id: page.id })
                       "
-                      :page_color="slide_current_page.page_color"
+                      :page_color="page.page_color"
                       :layout_mode="publication.layout_mode"
-                      :hide_pagination="
-                        slide_current_page.hide_pagination === true
-                      "
-                      :page_number="slides_current_page_or_spread_index - 1"
+                      :hide_pagination="page.hide_pagination === true"
+                      :page_number="s_index * 2 + index"
                       :pagination="pagination"
                       :can_edit="false"
                     />
-                  </div>
-                </transition>
-              </template>
-            </template>
-            <template v-else>
-              <template v-if="display_mode !== 'slides'">
-                <div
-                  class="_spread"
-                  :key="s_index"
-                  v-for="(spread, s_index) in spreads"
-                >
-                  <div
-                    v-for="(page, index) in spread"
-                    :key="page.id ? page.id : index"
-                    class="_spread--page"
-                  >
-                    <template v-if="page">
-                      <SinglePage
-                        :context="'full'"
-                        :page_modules="
-                          getModulesForPage({ modules, page_id: page.id })
-                        "
-                        :page_color="page.page_color"
-                        :layout_mode="publication.layout_mode"
-                        :hide_pagination="page.hide_pagination === true"
-                        :page_number="s_index * 2 + index"
-                        :pagination="pagination"
-                        :can_edit="false"
-                      />
-                    </template>
-                    <div v-else class="_noPage" />
-                  </div>
+                  </template>
+                  <div v-else class="_noPage" />
                 </div>
-              </template>
-              <template v-else>
-                <transition name="fade" mode="out-in">
-                  <div
-                    class="_spread"
-                    :key="'spread-' + slides_current_page_or_spread_index"
-                    v-if="slide_current_spread"
-                  >
-                    <div
-                      v-for="(page, index) in slide_current_spread"
-                      :key="page.id ? page.id : index"
-                      class="_spread--page"
-                    >
-                      <template v-if="page">
-                        <SinglePage
-                          :context="'full'"
-                          :page_modules="
-                            getModulesForPage({ modules, page_id: page.id })
-                          "
-                          :page_color="page.page_color"
-                          :layout_mode="publication.layout_mode"
-                          :hide_pagination="page.hide_pagination === true"
-                          :page_number="
-                            (slides_current_page_or_spread_index - 1) * 2 +
-                            index
-                          "
-                          :pagination="pagination"
-                          :can_edit="false"
-                        />
-                      </template>
-                      <div v-else class="_noPage" />
-                    </div>
-                  </div>
-                </transition>
-              </template>
-            </template>
-          </div>
-          <div class="_navBtns" v-if="display_mode === 'slides'">
-            <span>
-              <button
-                type="button"
-                class="u-button u-button_transparent u-button_small"
-                :disabled="slides_current_page_or_spread_index <= 1"
-                @click="updatePageQuery(-1)"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
-                  <path
-                    d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
-                  />
-                </svg>
-              </button>
-            </span>
-            <span class="_pageInd"
-              ><b>{{ slides_current_page_or_spread_index }}</b>
-              /
-              {{ is_spread ? spreads.length : pages.length }}</span
-            >
-            <span>
-              <button
-                type="button"
-                class="u-button u-button_transparent u-button_small"
-                :disabled="
-                  slides_current_page_or_spread_index >=
-                  (is_spread ? spreads.length : pages.length)
-                "
-                @click="updatePageQuery(+1)"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
-                  <path
-                    d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
-                  />
-                </svg>
-              </button>
-            </span>
-          </div>
-        </template>
-        <div v-else-if="publication.template === 'story'">
-          {{ publication }}
+              </div>
+            </section>
+          </template>
         </div>
       </div>
-    </transition>
+    </template>
+    <template v-else-if="publication.template === 'story'">
+      {{ publication }}
+    </template>
   </div>
 </template>
 
 <script>
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
+import Reveal from "reveal.js/js/reveal";
 
 export default {
   props: {},
@@ -216,6 +109,14 @@ export default {
           --page-height: calc(${this.publication.page_height}mm - 0.2mm);
         `;
       document.addEventListener("keydown", this.keyPressed);
+    }
+
+    if (this.display_mode === "slides") {
+      await new Promise((r) => setTimeout(r, 1500));
+      Reveal.initialize({
+        // width: this.publication.page_width,
+        // height: this.publication.page_height,
+      });
     }
 
     // this.$api.join({ room: this.project.$path });
@@ -328,14 +229,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pages {
-  @media screen {
-    display: flex;
-    justify-content: center;
-    flex-flow: column nowrap;
-    align-items: center;
-    gap: calc(var(--spacing) * 2);
-    padding: calc(var(--spacing) * 2);
-  }
+  // @media screen {
+  //   display: flex;
+  //   justify-content: center;
+  //   flex-flow: column nowrap;
+  //   align-items: center;
+  //   gap: calc(var(--spacing) * 2);
+  //   padding: calc(var(--spacing) * 2);
+  // }
 }
 ._page,
 ._spread {
@@ -347,68 +248,65 @@ export default {
   }
 }
 
-._publicationView ::v-deep {
-  ._singlePage {
-    > ._pagecontainer {
-      margin: 0;
+._publicationView {
+  width: 100%;
+  height: 100vh;
+
+  ::v-deep {
+    ._singlePage {
+      > ._pagecontainer {
+        margin: 0;
+      }
     }
   }
 }
 </style>
 <style lang="scss">
-html,
-body {
-  @media print {
-    background: white !important;
-  }
-}
-body {
-  @media print {
-    width: var(--page-width);
-    height: calc(var(--page-height));
-  }
-}
-@page {
-  size: var(--page-width) var(--page-height);
-}
+// @import url("../../node_modules/reveal.js/css/reveal.css");
+// @import url("../../node_modules/reveal.js/css/theme/white.css");
 
-._singlePage ._pagecontent {
-  @media print {
-    box-shadow: none;
-    // fixes in Firefox, but bugs in chrome/puppeteer
-    // overflow: visible;
-  }
-}
+// html,
+// body {
+//   @media print {
+//     background: white !important;
+//   }
+// }
+// body {
+//   @media print {
+//     width: var(--page-width);
+//     height: calc(var(--page-height));
+//   }
+// }
+// @page {
+//   size: var(--page-width) var(--page-height);
+// }
 
-._spread {
-  display: flex;
-  flex-flow: row nowrap;
-  width: max-content;
+// ._singlePage ._pagecontent {
+//   @media print {
+//     box-shadow: none;
+//     // fixes in Firefox, but bugs in chrome/puppeteer
+//     // overflow: visible;
+//   }
+// }
 
-  > * {
-    position: relative;
-    flex: 1 1 50%;
-  }
-}
+// ._spread {
+//   display: flex;
+//   flex-flow: row nowrap;
+//   width: max-content;
 
-._noPage {
-  width: calc(var(--page-width));
-  height: calc(var(--page-height));
-}
+//   > * {
+//     position: relative;
+//     flex: 1 1 50%;
+//   }
+// }
 
-._navBtns {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  margin: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+// ._noPage {
+//   width: calc(var(--page-width));
+//   height: calc(var(--page-height));
+// }
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--spacing) / 2);
-}
-._pageInd {
-  width: 5ch;
-  text-align: center;
-}
+// ._pageInd {
+//   width: 5ch;
+//   text-align: center;
+// }
 </style>

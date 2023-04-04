@@ -25,10 +25,7 @@ const routes = [
   {
     path: "/+:space_slug/:project_slug/publications/:publication_slug",
     name: "Publication",
-    component: () =>
-      import(
-        /* webpackChunkName: "PublicationView" */ "../views/PublicationView.vue"
-      ),
+    component: () => import(/* webpackChunkName: "Pub2" */ "../views/Pub2.vue"),
   },
   {
     path: "/@:author_slug",
