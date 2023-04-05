@@ -335,9 +335,9 @@ export default {
 ._projectInfos--cover {
   position: relative;
   aspect-ratio: 1/1;
-  width: 40vh;
-  height: 40vh;
-  flex: 0 0 40vh;
+  width: 45vh;
+  height: 45vh;
+  flex: 0 0 45vh;
 
   @supports not (aspect-ratio: 1/1) {
     width: 500px;
@@ -369,7 +369,7 @@ export default {
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
-  height: 40vh;
+  height: 45vh;
 
   @include scrollbar(8px, 5px, 6px);
 
