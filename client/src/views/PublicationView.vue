@@ -512,13 +512,12 @@ body {
   bottom: 0;
   right: 0;
   margin: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: calc(var(--spacing) / 2);
-  border: 2px solid transparent;
   border-radius: 8px;
   color: black;
 
@@ -526,7 +525,7 @@ body {
 
   &:hover {
     background-color: rgba(255, 255, 255, 1);
-    border-color: black;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   }
 }
 ._pageInd {
