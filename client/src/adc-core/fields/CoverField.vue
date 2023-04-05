@@ -17,9 +17,10 @@
         />
         <FullscreenView
           v-if="show_cover_fullscreen"
-          :image_src="cover_thumb"
           @close="show_cover_fullscreen = false"
-        />
+        >
+          <img :src="cover_thumb" />
+        </FullscreenView>
       </template>
     </div>
     <div v-else class="_noImage" />

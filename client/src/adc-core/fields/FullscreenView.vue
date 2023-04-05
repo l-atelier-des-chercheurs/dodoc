@@ -1,7 +1,9 @@
 <template>
   <div class="_fullscreenView">
     <transition name="scaleInFade">
-      <img class="_fsImg" v-if="show_img" :src="image_src" />
+      <div class="_fsImg">
+        <slot />
+      </div>
     </transition>
     <FullscreenBtn
       class="u-floatingFsButton"
@@ -62,8 +64,5 @@ export default {
   left: 0;
   height: 100%;
   width: 100%;
-
-  object-fit: contain;
-  object-position: center;
 }
 </style>

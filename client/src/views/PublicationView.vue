@@ -12,11 +12,11 @@
       <div v-else-if="fetch_project_error" key="err">
         {{ fetch_project_error }}
       </div>
-      <div v-else key="publication">
+      <div v-else key="publication" ref="fsContainer">
         <!-- Publication view project = {{ project }} <br />
         publication = {{ publication }} -->
         <template v-if="publication.template === 'page_by_page'">
-          <div class="_pages">
+          <div class="_pages" :style="pages_style">
             <template v-if="!is_spread">
               <template v-if="display_mode !== 'slides'">
                 <div
@@ -39,7 +39,7 @@
                 </div>
               </template>
               <template v-else>
-                <transition name="fade_fast" mode="out-in">
+                <transition name="fade_fast" mode="in-out">
                   <div
                     class="_page"
                     :key="'page-' + slide_current_page.id"
@@ -138,7 +138,7 @@
                 type="button"
                 class="u-button u-button_transparent u-button_small"
                 :disabled="slides_current_page_or_spread_index <= 1"
-                @click="updatePageQuery(-1)"
+                @click="updatePageQuery({ increment: -1 })"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
                   <path
@@ -147,8 +147,32 @@
                 </svg>
               </button>
             </span>
-            <span class="_pageInd"
-              ><b>{{ slides_current_page_or_spread_index }}</b>
+            <span class="_pageInd">
+              <b>
+                <select
+                  class=""
+                  :value="slides_current_page_or_spread_index"
+                  @change="
+                    updatePageQuery({ page_number: $event.target.value })
+                  "
+                >
+                  <option
+                    v-for="(o, page_number) in is_spread
+                      ? spreads.length
+                      : pages.length"
+                    :key="page_number"
+                    :value="page_number + 1"
+                    v-text="page_number + 1"
+                  />
+                </select>
+                <div
+                  v-for="(o, page_number) in is_spread
+                    ? spreads.length
+                    : pages.length"
+                  :key="page_number"
+                  :v-text="page_number"
+                />
+              </b>
               /
               {{ is_spread ? spreads.length : pages.length }}</span
             >
@@ -160,7 +184,7 @@
                   slides_current_page_or_spread_index >=
                   (is_spread ? spreads.length : pages.length)
                 "
-                @click="updatePageQuery(+1)"
+                @click="updatePageQuery({ increment: +1 })"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
                   <path
@@ -169,6 +193,20 @@
                 </svg>
               </button>
             </span>
+            <!-- <input
+              type="range"
+              class="_inputRange"
+              list="zoom_control"
+              :min="1"
+              :max="200"
+              :step="1"
+              v-model.number="page_zoom"
+            />
+            <datalist id="zoom_control">
+              <option v-for="tick in [25, 50, 100, 200]" :key="tick">
+                {{ tick }}
+              </option>
+            </datalist> -->
           </div>
         </template>
         <div v-else-if="publication.template === 'story'">
@@ -180,6 +218,7 @@
 </template>
 
 <script>
+import screenfull from "screenfull";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
 
 export default {
@@ -191,6 +230,9 @@ export default {
       project: null,
       publication: null,
       projectpanes: [],
+      page_zoom: 60,
+
+      is_fullscreen: false,
 
       display_mode: "print",
     };
@@ -218,16 +260,43 @@ export default {
       document.addEventListener("keydown", this.keyPressed);
     }
 
+    this.fitZoomToPage();
+    window.addEventListener("resize", () => {
+      this.fitZoomToPage();
+    });
     // this.$api.join({ room: this.project.$path });
   },
   beforeDestroy() {
     // this.$api.leave({ room: this.project.$path });
     document.removeEventListener("keydown", this.keyPressed);
   },
-  watch: {},
+  watch: {
+    is_fullscreen() {
+      this.$nextTick(() => {
+        this.fitZoomToPage();
+      });
+    },
+  },
   computed: {
+    page_dimensions_to_px() {
+      if (this.publication.layout_mode === "print")
+        return {
+          width: this.publication.page_width * 3.78,
+          height: this.publication.page_height * 3.78,
+        };
+      return {
+        width: this.publication.page_width,
+        height: this.publication.page_height,
+      };
+    },
+
     pagination() {
       return this.setPaginationFromPublication(this.publication);
+    },
+    pages_style() {
+      return {
+        "--page-zoom": this.page_zoom / 100,
+      };
     },
     slides_current_page_or_spread_index() {
       if (!this.$route.query?.page) return 1;
@@ -267,6 +336,29 @@ export default {
     },
   },
   methods: {
+    async openFs() {
+      await screenfull.request(this.$refs.fsContainer);
+      this.is_fullscreen = true;
+      screenfull.onchange(() => {
+        if (!screenfull.isFullscreen) this.is_fullscreen = false;
+      });
+    },
+    async closeFs() {
+      await screenfull.exit();
+      this.is_fullscreen = false;
+    },
+    async toggleFs() {
+      if (this.is_fullscreen) this.closeFs();
+      else this.openFs();
+    },
+    fitZoomToPage() {
+      const margin = 70;
+      let zoom_w =
+        window.innerWidth / (this.page_dimensions_to_px.width + margin);
+      let zoom_h =
+        window.innerHeight / (this.page_dimensions_to_px.height + margin);
+      this.page_zoom = Math.min(zoom_w, zoom_h) * 100;
+    },
     keyPressed(event) {
       if (
         this.$root.modal_is_opened ||
@@ -283,13 +375,16 @@ export default {
         event.key === "ArrowLeft" &&
         this.slides_current_page_or_spread_index > 1
       )
-        this.updatePageQuery(-1);
-      if (
+        this.updatePageQuery({ increment: -1 });
+      else if (
         event.key === "ArrowRight" &&
         this.slides_current_page_or_spread_index <
           (this.is_spread ? this.spreads.length : this.pages.length)
       )
-        this.updatePageQuery(+1);
+        this.updatePageQuery({ increment: +1 });
+      else if (event.key === "p") this.page_zoom += 2;
+      else if (event.key === "m") this.page_zoom -= 2;
+      else if (event.key === "f") this.toggleFs();
     },
     async listProject() {
       const project = await this.$api
@@ -312,14 +407,16 @@ export default {
         });
       this.publication = publication;
     },
-    updatePageQuery(increment) {
+    updatePageQuery({ increment, page_number }) {
       let query = {};
 
       if (this.$route.query)
         query = JSON.parse(JSON.stringify(this.$route.query));
 
       // if (Object.prototype.hasOwnProperty.call(query, "page"))
-      query.page = this.slides_current_page_or_spread_index + increment;
+      if (increment)
+        query.page = this.slides_current_page_or_spread_index + increment;
+      else if (page_number) query.page = page_number;
 
       this.$router.push({ query });
     },
@@ -335,6 +432,10 @@ export default {
     align-items: center;
     gap: calc(var(--spacing) * 2);
     padding: calc(var(--spacing) * 2);
+    height: 100vh;
+    transform: scale(var(--page-zoom));
+
+    transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 ._page,
@@ -352,6 +453,16 @@ export default {
     > ._pagecontainer {
       margin: 0;
     }
+  }
+
+  .u-floatingFsButton {
+    display: none;
+  }
+}
+
+._publicationView.is--slides {
+  ._page {
+    position: absolute;
   }
 }
 </style>
@@ -401,14 +512,33 @@ body {
   bottom: 0;
   right: 0;
   margin: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: calc(var(--spacing) / 2);
+  border-radius: 8px;
+  color: black;
+
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
 }
 ._pageInd {
-  width: 5ch;
+  display: flex;
+  flex-flow: row nowrap;
+  min-width: 5ch;
   text-align: center;
+  // justify-content: center;
+  align-items: center;
+
+  select {
+    background-color: rgba(205, 205, 205, 0.5);
+    width: 6ch;
+  }
 }
 </style>

@@ -5,21 +5,13 @@
       'is--editable': can_edit,
     }"
   >
-    <transition name="fade_fast" mode="out-in">
+    <div class="_spreadNavigator">
       <div
-        :key="
-          is_spread
-            ? 'spread-' + JSON.stringify(active_spread.map((s) => s.id))
-            : 'page-' + page_opened_id
-        "
-        class="_spreadNavigator"
+        class="_spreadNavigator--content"
+        @click.self="setActiveModule(false)"
       >
-        <div
-          class="_spreadNavigator--content"
-          @click.self="setActiveModule(false)"
-        >
-          <div class="_sideCont">
-            <!-- <div class="u-breadcrumb _breadcrumb">
+        <div class="_sideCont">
+          <!-- <div class="u-breadcrumb _breadcrumb">
               <div>
                 <button
                   type="button"
@@ -33,36 +25,45 @@
                 {{ $t("page") }} {{ active_page_number + 1 }}
               </div>
             </div> -->
-            <div class="_content">
-              <PageMenu
-                :can_edit="can_edit"
-                :pages="pages"
-                :active_page_number="active_page_number"
-                :active_spread_index="active_spread_index"
-                :scale="scale"
-                :show_grid.sync="show_grid"
-                :snap_to_grid.sync="snap_to_grid"
-                :gridstep_in_mm.sync="gridstep_in_mm"
-                :layout_mode="layout_mode"
-                :page_color="current_page.page_color"
-                :pagination="pagination"
-                :publication_path="publication_path"
-                :page_opened_id="page_opened_id"
-                :page_modules="
-                  getModulesForPage({ modules, page_id: page_opened_id })
-                "
-                :active_module="active_module"
-                @updatePageOptions="$emit('updatePageOptions', $event)"
-                @update:scale="scale = $event"
-                @prevPage="prevPage()"
-                @nextPage="nextPage()"
-                @close="setPageActive(false)"
-              />
-            </div>
+          <div class="_content">
+            <PageMenu
+              :can_edit="can_edit"
+              :pages="pages"
+              :active_page_number="active_page_number"
+              :active_spread_index="active_spread_index"
+              :scale="scale"
+              :show_grid.sync="show_grid"
+              :snap_to_grid.sync="snap_to_grid"
+              :gridstep_in_mm.sync="gridstep_in_mm"
+              :layout_mode="layout_mode"
+              :page_color="current_page.page_color"
+              :pagination="pagination"
+              :publication_path="publication_path"
+              :page_opened_id="page_opened_id"
+              :page_modules="
+                getModulesForPage({ modules, page_id: page_opened_id })
+              "
+              :active_module="active_module"
+              @updatePageOptions="$emit('updatePageOptions', $event)"
+              @update:scale="scale = $event"
+              @prevPage="prevPage()"
+              @nextPage="nextPage()"
+              @close="setPageActive(false)"
+            />
           </div>
-          <div class="_pagePan">
-            <PanZoom :scale.sync="scale" :page_opened_id="page_opened_id">
-              <div class="_pageCont" @click.self="setActiveModule(false)">
+        </div>
+        <div class="_pagePan">
+          <PanZoom :scale.sync="scale" :page_opened_id="page_opened_id">
+            <transition name="fade_fast" mode="out-in">
+              <div
+                class="_pageCont"
+                @click.self="setActiveModule(false)"
+                :key="
+                  is_spread
+                    ? 'spread-' + JSON.stringify(active_spread.map((s) => s.id))
+                    : 'page-' + page_opened_id
+                "
+              >
                 <SinglePage
                   v-if="!is_spread"
                   class="_spreadNavigator--page is--active"
@@ -130,11 +131,11 @@
                   <div v-else class="_noPage" />
                 </div>
               </div>
-            </PanZoom>
-          </div>
+            </transition>
+          </PanZoom>
         </div>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 <script>

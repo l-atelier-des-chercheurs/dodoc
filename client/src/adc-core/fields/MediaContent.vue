@@ -24,11 +24,9 @@
           :label="$t('fullscreen')"
           @click="show_fullscreen = true"
         />
-        <FullscreenView
-          v-if="show_fullscreen"
-          :image_src="file_full_path"
-          @close="show_fullscreen = false"
-        />
+        <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
+          <img :src="file_full_path" />
+        </FullscreenView>
       </template>
     </template>
     <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
