@@ -1,8 +1,5 @@
 <template>
-  <ProjectCard>
-    <div slot="header">
-      {{ $t("informations") }}
-    </div>
+  <ProjectCard :header="$t('informations')" :icon="'info-square'">
     <DateField :title="$t('date_created')" :date="project.$date_created" />
     <br />
     <DateField :title="$t('date_modified')" :date="project.$date_modified" />

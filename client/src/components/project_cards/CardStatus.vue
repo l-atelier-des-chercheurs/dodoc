@@ -1,9 +1,5 @@
 <template>
-  <ProjectCard>
-    <div slot="header">
-      {{ $t("visibility") }}
-      <sl-icon name="globe" />
-    </div>
+  <ProjectCard :header="$t('visibility')" :icon="'globe'">
     <div>
       {{ $t("visibility_text") }}
     </div>
