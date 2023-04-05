@@ -16,6 +16,7 @@ export default {
     return {
       panzoom: undefined,
       debounce_zoom: undefined,
+      pan_margin_when_moving_to_media: 15,
     };
   },
   created() {},
@@ -35,8 +36,8 @@ export default {
     page_opened_id: {
       handler() {
         this.$nextTick(() => {
-          const { left, top } = this.getActivePagePos();
-          this.panzoom.pan(left, top, { animate: true });
+          // const { left, top } = this.getActivePagePos();
+          // this.panzoom.pan(left, top, { animate: true });
         });
       },
     },
@@ -45,6 +46,8 @@ export default {
   methods: {
     init() {
       const { left, top } = this.getActivePagePos();
+
+      debugger;
 
       this.panzoom = Panzoom(this.$el, {
         maxScale: 5,
@@ -75,12 +78,10 @@ export default {
       const menu_width = document.querySelector("._sideCont").offsetWidth;
 
       // 43 is height of sidecont breadcrumb
-      const distance_to_corner = 43 * 2;
+      const distance_to_corner = this.pan_margin_when_moving_to_media;
 
       const left = -el_left + menu_width + distance_to_corner;
       const top = distance_to_corner;
-
-      // console.log("pan_left " + left + "- pan_top " + top);
 
       return { left, top };
     },
