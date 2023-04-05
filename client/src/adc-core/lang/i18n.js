@@ -67,6 +67,7 @@ export default function () {
         add: "ajouter",
         access: "accéder",
         title: "Titre",
+        subtitle: "Sous-titre",
         name: "nom",
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
