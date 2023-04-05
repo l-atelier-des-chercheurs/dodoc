@@ -312,6 +312,9 @@
           "type": "string",
           "unique": true
         },
+        "subtitle": {
+          "type": "string"
+        },
         "description": {
           "type": "string"
         }

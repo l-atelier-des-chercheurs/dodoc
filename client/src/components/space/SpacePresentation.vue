@@ -13,30 +13,41 @@
       />
       <!-- </div> -->
     </div>
-    <div class="_titleField">
+    <div class="_title">
       <TitleField
         :field_name="'title'"
-        class="_title"
+        class=""
         :tag="'h1'"
+        :label="can_edit ? $t('title') : undefined"
         :content="space.title"
         :path="space.$path"
         :maxlength="280"
         :can_edit="can_edit"
-        :instructions="$t('project_title_instructions')"
       />
-    </div>
-    <div class="_descriptionField">
       <TitleField
-        :field_name="'description'"
-        class="_description"
-        :label="$t('description')"
-        :content="space.description"
+        :field_name="'subtitle'"
+        v-if="can_edit || space.subtitle"
+        class="_subtitle"
+        :label="can_edit ? $t('subtitle') : undefined"
+        :content="space.subtitle"
         :path="space.$path"
-        :maxlength="480"
+        :maxlength="280"
         :can_edit="can_edit"
-        :instructions="$t('project_description_instructions')"
       />
+      <br />
     </div>
+    <TitleField
+      v-if="can_edit || space.description"
+      :field_name="'description'"
+      class="_description"
+      :label="can_edit ? $t('description') : undefined"
+      :content="space.description"
+      :path="space.$path"
+      :maxlength="480"
+      :can_edit="can_edit"
+    />
+    <!-- <div class="_descriptionField">
+    </div> -->
     <div class="_openSpace" v-if="context === 'list' || context === 'tiny'">
       <!-- class="u-button u-button_bleuvert" -->
       <router-link :to="{ path: createURLFromPath(space.$path) }">
@@ -70,9 +81,9 @@ export default {
   position: relative;
 
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   align-items: center;
-  gap: calc(var(--spacing) * 2);
+  // gap: calc(var(--spacing) * 2);
 
   // border: 2px solid white;
   background: white;
@@ -96,15 +107,22 @@ export default {
 
 ._coverField {
   position: relative;
-  // flex: 1 1 50%;
-  width: 120px;
   aspect-ratio: 1/1;
-  flex: 0 0 auto;
+  flex: 0 1 120px;
+  // max-width: 140px;
 }
-._titleField {
-  // position: absolute;
+._title {
+  padding: calc(var(--spacing) / 1);
+  flex: 8 1 33%;
 }
-._descriptionField {
+._subtitle {
+  color: var(--c-gris_fonce);
+  font-weight: 500;
+}
+._description {
+  padding: calc(var(--spacing) / 1);
+  display: block;
+  max-width: 66ch;
 }
 
 ._openSpace {

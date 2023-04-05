@@ -92,23 +92,9 @@
 
   transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
     transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &::part(base) {
-    border: none;
-    box-shadow: none;
-  }
-
-  &::part(header) {
-    margin: 0;
-    font-weight: 700;
-    background-color: var(--c-gris_clair);
-    // color: white;
-    border-bottom: none;
-    // padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
-  }
-  &::part(body) {
-    padding: calc(var(--spacing) / 1);
-  }
+}
+.u-card--header {
+  font-weight: 600;
 }
 
 .u-errorMsg {

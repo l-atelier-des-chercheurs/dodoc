@@ -1,13 +1,8 @@
 <template>
-  <ProjectCard>
-    <div slot="header">
-      {{ $t("files") }}
-      <sl-icon name="file-earmark-arrow-down" />
-    </div>
+  <ProjectCard :header="$t('files')" :icon="'file-earmark-arrow-down'">
     <div class="">
       <ul class="_fileList">
         <li>
-          <sl-icon name="file-earmark-arrow-down" />
           <a
             target="_blank"
             ng-href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"

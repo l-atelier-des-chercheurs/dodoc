@@ -1,8 +1,5 @@
 <template>
-  <ProjectCard>
-    <div slot="header">
-      {{ $t("keywords") }}
-    </div>
+  <ProjectCard :header="$t('keywords')" :icon="'tag'">
     <div class="">
       <TagsField
         :field_name="'keywords'"

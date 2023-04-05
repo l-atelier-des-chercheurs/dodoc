@@ -1,9 +1,5 @@
 <template>
-  <ProjectCard>
-    <div slot="header">
-      {{ $t("license") }}
-      <sl-icon name="file-earmark-spreadsheet" />
-    </div>
+  <ProjectCard :header="$t('license')" :icon="'file-earmark-spreadsheet'">
     <div class="">
       <RadioField
         :field_name="'license'"

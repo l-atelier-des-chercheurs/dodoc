@@ -117,13 +117,13 @@ z
       }"
       v-if="context === 'full'"
     >
+      <CardMachines :project="project" :can_edit_project="can_edit_project" />
       <CardMeta :project="project" :can_edit="can_edit_project" />
       <CardStatus :project="project" :can_edit_project="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
       <CardKeywords :project="project" :can_edit_project="can_edit_project" />
-      <CardMachines :project="project" :can_edit_project="can_edit_project" />
       <!-- <CardLicense :project="project" :can_edit_project="can_edit_project" /> -->
-      <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
+      <CardFiles :project="project" :can_edit_project="can_edit_project" />
     </div>
 
     <div
@@ -146,7 +146,7 @@ import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
 // import CardLicense from "@/components/project_cards/CardLicense.vue";
-// import CardFiles from "@/components/project_cards/CardFiles.vue";
+import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
   props: {
@@ -162,7 +162,7 @@ export default {
     CardMachines,
     CardStatus,
     // CardLicense,
-    // CardFiles,
+    CardFiles,
   },
   data() {
     return {
@@ -335,9 +335,9 @@ export default {
 ._projectInfos--cover {
   position: relative;
   aspect-ratio: 1/1;
-  width: 40vh;
-  height: 40vh;
-  flex: 0 0 40vh;
+  width: 45vh;
+  height: 45vh;
+  flex: 0 0 45vh;
 
   @supports not (aspect-ratio: 1/1) {
     width: 500px;
@@ -366,10 +366,10 @@ export default {
   overflow-y: auto;
   // background: var(--c-gris_clair);
 
-  gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
-  height: 40vh;
+  height: 45vh;
 
   @include scrollbar(8px, 5px, 6px);
 
@@ -384,14 +384,6 @@ export default {
   > * {
     flex: 0 0 auto;
     min-width: 220px;
-
-    padding: calc(var(--spacing) / 2);
-    background: var(--panel-color);
-    border: var(--panel-borders);
-    box-shadow: var(--panel-shadows);
-    border-radius: var(--panel-radius);
-
-    margin-bottom: calc(var(--spacing) / 2);
 
     .is--mobileView & {
       flex: 1 0 220px;
