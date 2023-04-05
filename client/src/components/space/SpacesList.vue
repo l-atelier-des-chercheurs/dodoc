@@ -42,9 +42,6 @@
       @close="show_create_modal = false"
       @openNewSpace="openNewSpace"
     />
-
-    <br />
-
     <div class="_list">
       <SpacePresentation
         v-for="space in spaces"
