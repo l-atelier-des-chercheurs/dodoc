@@ -53,13 +53,13 @@
     <br />
 
     <template v-if="current_mode === 'spaces'">
-      <div class="u-instructions">
+      <div class="u-instructions _content">
         <small v-html="$t('spaces_instr')" />
       </div>
       <SpacesList />
     </template>
     <template v-else-if="current_mode === 'projects'">
-      <div class="u-instructions">
+      <div class="u-instructions _content">
         <small v-html="$t('all_projects_instr')" />
       </div>
       <AllProjects />
@@ -128,24 +128,33 @@ export default {
   min-height: calc(100vh - 60px);
   max-height: -webkit-fill-available;
 
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // flex-flow: column nowrap;
+  // justify-content: center;
+  // align-items: center;
 
-  padding-bottom: 150px;
+  // padding-bottom: 150px;
 }
 
 ._homeView--content {
   max-width: 600px;
   width: 100%;
   min-height: 40vh;
+  min-height: calc(80vh - 60px);
   margin: 0 auto;
   padding: calc(var(--spacing) * 2);
 
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
+}
+
+._content {
+  max-width: 86ch;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 calc(var(--spacing) * 1);
+  text-align: center;
 }
 
 ._panesLeft {
