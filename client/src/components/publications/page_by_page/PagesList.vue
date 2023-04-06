@@ -272,7 +272,6 @@ export default {
 
       const addtl_meta_to_module = { page_id: new_page_id };
       for (const og_module of og_modules) {
-        debugger;
         await this.duplicateModuleWithSourceMedias({
           og_module,
           addtl_meta_to_module,

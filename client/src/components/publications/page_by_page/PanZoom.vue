@@ -47,8 +47,6 @@ export default {
     init() {
       const { left, top } = this.getActivePagePos();
 
-      debugger;
-
       this.panzoom = Panzoom(this.$el, {
         maxScale: 5,
         step: 0.05,

@@ -4,14 +4,14 @@
       <fieldset>
         <legend class="u-label">{{ $t("new_account") }}</legend>
 
-        <ImageSelect
+        <!-- <ImageSelect
           :folder_path="'/authors'"
           @newPreview="
             (value) => {
               new_author_cover_raw = value;
             }
           "
-        />
+        /> -->
 
         <TextInput
           :content.sync="new_author_name"
