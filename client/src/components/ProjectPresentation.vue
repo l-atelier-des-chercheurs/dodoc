@@ -118,11 +118,11 @@ z
       v-if="context === 'full'"
     >
       <CardMachines :project="project" :can_edit="can_edit_project" />
+      <CardKeywords :project="project" :can_edit="can_edit_project" />
       <CardLicense :project="project" :can_edit="can_edit_project" />
       <CardMeta :project="project" :can_edit="can_edit_project" />
       <CardStatus :project="project" :can_edit="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
-      <CardKeywords :project="project" :can_edit="can_edit_project" />
       <CardFiles :project="project" :can_edit="can_edit_project" />
     </div>
 
