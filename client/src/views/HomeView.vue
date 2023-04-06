@@ -10,12 +10,12 @@
     </div> -->
 
     <div class="_homeView--content">
-      <!-- <img :src="`${$root.publicPath}i_logo.svg`" class="_dodoclogo" /> -->
-
       <AdminSettings
         v-if="show_settings_modal"
         @close="show_settings_modal = false"
       />
+
+      <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" />
 
       <h1 v-html="name || $t('welcome_to_dodoc')" />
       <p v-html="description || $t('admins_edit_text_here')" />
@@ -117,9 +117,11 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss">
-._dodoclogo {
-  max-width: 300px;
+<style lang="scss" scoped>
+._logo {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: calc(var(--spacing) * 2);
 }
 
 ._homeView {
@@ -139,7 +141,7 @@ export default {
   width: 100%;
   min-height: 40vh;
   margin: 0 auto;
-  padding: var(--spacing);
+  padding: calc(var(--spacing) * 2);
 
   display: flex;
   flex-flow: column nowrap;
