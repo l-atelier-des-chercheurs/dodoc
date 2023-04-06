@@ -27,6 +27,7 @@
         />
         <CreateAuthor
           v-else-if="current_mode === 'create'"
+          :is_first_user="!authors || authors.length === 0"
           @close="$emit('close')"
         />
         <br />
