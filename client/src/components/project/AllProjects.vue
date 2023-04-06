@@ -5,11 +5,24 @@
       <div v-else>
         <div class="_cont">
           <div class="_sidebar">
-            <input
-              type="text"
-              v-model="search_project"
-              :placeholder="$t('search_by_title')"
-            />
+            <div class="u-sameRow" style="width: 100%">
+              <input
+                type="text"
+                v-model="search_project"
+                :placeholder="$t('search_by_title')"
+              />
+              <button
+                type="button"
+                class="u-button u-button_bleumarine"
+                style="flex: 0 0 auto"
+                v-if="search_project.length > 0"
+                @click="search_project = ''"
+              >
+                <sl-icon name="x-lg" />
+              </button>
+            </div>
+
+            {{ search_project }}
 
             <br />
 
@@ -126,7 +139,7 @@ export default {
     filtered_projects() {
       return this.all_projects.filter((p) => {
         if (!this.active_filters || this.active_filters.length === 0)
-          return true;
+          if (this.search_project.length === 0) return true;
 
         for (const af of this.active_filters) {
           const k = Object.keys(af).at(0);
@@ -135,6 +148,8 @@ export default {
           if (Array.isArray(p[k]) && !p[k].includes(v)) return false;
           else if (typeof p[k] === "string" && p[k] !== v) return false;
         }
+
+        if (this.search_project) return p.title.includes(this.search_project);
 
         return true;
       });
