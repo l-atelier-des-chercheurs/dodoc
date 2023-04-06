@@ -100,7 +100,7 @@ export default {
     return {
       show_settings_modal: false,
       // current_mode: "spaces",
-      current_mode: "projects",
+      current_mode: "spaces",
     };
   },
   computed: {
