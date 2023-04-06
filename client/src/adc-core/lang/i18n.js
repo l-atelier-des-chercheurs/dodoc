@@ -425,6 +425,7 @@ export default function () {
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
         machines_and_materials: "Machines et matériaux",
+        levels_and_competences: "Niveau et compétence",
 
         camera: "Camera",
         sources: "Sources",

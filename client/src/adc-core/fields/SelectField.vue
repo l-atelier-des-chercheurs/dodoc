@@ -2,12 +2,28 @@
   <div class="_selectField">
     <div class="u-sameRow">
       <select v-model="new_content" :disabled="!edit_mode">
-        <option
-          v-for="option in options"
-          :key="option.key"
-          :value="option.key"
-          v-text="option.text"
-        />
+        <template v-if="options">
+          <option
+            v-for="option in options"
+            :key="option.key"
+            :value="option.key"
+            v-text="option.text"
+          />
+        </template>
+        <template v-else-if="grouped_options">
+          <optgroup
+            v-for="(group, index) in grouped_options"
+            :key="index"
+            :label="group.label"
+          >
+            <option
+              v-for="option in group.options"
+              :key="option"
+              :value="option"
+              v-text="option"
+            />
+          </optgroup>
+        </template>
       </select>
 
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
@@ -38,6 +54,9 @@ export default {
     options: {
       type: Array,
     },
+    grouped_options: {
+      type: Array,
+    },
     path: String,
     can_edit: {
       type: Boolean,
@@ -62,6 +81,8 @@ export default {
   },
   computed: {
     instructions() {
+      if (!this.options) return false;
+
       const new_opt = this.options.find((o) => o.key === this.new_content);
       if (new_opt) return new_opt.instruction;
       return false;

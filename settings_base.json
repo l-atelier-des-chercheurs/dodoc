@@ -353,6 +353,9 @@
             },
             "authors_list": {
               "type": "string"
+            },
+            "level": {
+              "type": "string"
             }
           },
           "$files": {

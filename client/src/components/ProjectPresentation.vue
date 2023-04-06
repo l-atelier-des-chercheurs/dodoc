@@ -117,6 +117,7 @@ z
       }"
       v-if="context === 'full'"
     >
+      <CardCompetences :project="project" :can_edit="can_edit_project" />
       <CardMachines :project="project" :can_edit="can_edit_project" />
       <CardKeywords :project="project" :can_edit="can_edit_project" />
       <CardLicense :project="project" :can_edit="can_edit_project" />
@@ -143,6 +144,7 @@ z
 import CardMeta from "@/components/project_cards/CardMeta.vue";
 // import CardAuthor from "@/components/project_cards/CardAuthor.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
+import CardCompetences from "@/components/project_cards/CardCompetences.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
@@ -159,6 +161,7 @@ export default {
     CardMeta,
     // CardAuthor,
     CardKeywords,
+    CardCompetences,
     CardMachines,
     CardStatus,
     CardLicense,
