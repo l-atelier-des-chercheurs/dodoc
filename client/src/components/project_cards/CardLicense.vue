@@ -1,8 +1,5 @@
 <template>
-  <ProjectCard
-    :header="$t('license_and_authors')"
-    :icon="'file-earmark-spreadsheet'"
-  >
+  <ProjectCard :header="$t('license_and_authors')" :icon="'people'">
     <DLabel
       :str="$t('license')"
       :instructions="can_edit ? $t('licence_instructions') : ''"
