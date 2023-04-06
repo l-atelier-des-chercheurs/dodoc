@@ -261,6 +261,10 @@ export default {
   background: white;
   margin: 0 auto;
   max-width: 800px;
+  padding: calc(var(--spacing) * 1) 0;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
