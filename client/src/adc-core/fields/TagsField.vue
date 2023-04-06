@@ -2,7 +2,9 @@
   <div class="_tagsField">
     <DLabel v-if="label" :str="label" />
 
-    <span class="_tagsList" v-if="new_tags.length > 0">
+    <span v-if="new_tags.length === 0 && !can_edit">–</span>
+
+    <span class="_tagsList" v-else-if="new_tags.length > 0">
       <sl-tag
         v-for="tag in new_tags"
         :key="tag"
