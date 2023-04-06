@@ -31,7 +31,39 @@
       </p>
     </div>
 
-    <SpacesList />
+    <!-- <div class="_modeSel">
+      <button type="button" class="u-button" v-if="">{{ $t("spaces") }}</button> /
+      <button type="button" class="u-button">{{ $t("projects") }}</button>
+    </div> -->
+
+    <RadioSwitch
+      :content.sync="current_mode"
+      :options="[
+        {
+          label: $t('spaces'),
+          value: 'spaces',
+        },
+        {
+          label: $t('all_projects'),
+          value: 'projects',
+        },
+      ]"
+    />
+
+    <br />
+
+    <template v-if="current_mode === 'spaces'">
+      <div class="u-instructions">
+        <small v-html="$t('spaces_instr')" />
+      </div>
+      <SpacesList />
+    </template>
+    <template v-else-if="current_mode === 'projects'">
+      <div class="u-instructions">
+        <small v-html="$t('all_projects_instr')" />
+      </div>
+      <AllProjects />
+    </template>
 
     <div class="">
       <small class="_versionNumber">
@@ -55,16 +87,20 @@
 // import SocketStatus from "@/components/.vue";
 import AdminSettings from "@/adc-core/AdminSettings.vue";
 import SpacesList from "@/components/space/SpacesList.vue";
+import AllProjects from "@/components/project/AllProjects.vue";
 
 export default {
   props: {},
   components: {
     AdminSettings,
     SpacesList,
+    AllProjects,
   },
   data() {
     return {
       show_settings_modal: false,
+      // current_mode: "spaces",
+      current_mode: "projects",
     };
   },
   computed: {

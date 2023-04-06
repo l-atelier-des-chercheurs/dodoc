@@ -172,6 +172,8 @@ document.addEventListener(
 
 import FormatDates from "@/mixins/FormatDates";
 Vue.mixin(FormatDates);
+import Props from "@/mixins/Props";
+Vue.mixin(Props);
 import Medias from "@/mixins/Medias";
 Vue.mixin(Medias);
 import Authors from "@/mixins/Authors";

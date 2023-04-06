@@ -1,5 +1,10 @@
 <template>
-  <section>
+  <transition-group
+    tag="section"
+    class="_projectsList"
+    name="StoryModules"
+    appear
+  >
     <div
       v-if="projects.length === 0"
       class="u-instructions _projectsNotice"
@@ -7,13 +12,7 @@
     >
       {{ $t("no_projects") }}
     </div>
-    <transition-group
-      v-else
-      tag="div"
-      class="_projectsList"
-      name="StoryModules"
-      appear
-    >
+    <template v-else>
       <ProjectPresentation
         v-for="project in projects"
         class="_project"
@@ -21,8 +20,8 @@
         context="list"
         :key="project.$path"
       />
-    </transition-group>
-  </section>
+    </template>
+  </transition-group>
 </template>
 <script>
 import ProjectPresentation from "@/components/ProjectPresentation.vue";

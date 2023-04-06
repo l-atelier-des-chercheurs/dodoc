@@ -85,7 +85,7 @@ z
         "
         :content="project.description"
         :path="project.$path"
-        :maxlength="280"
+        :maxlength="1280"
         :can_edit="can_edit_project"
         :instructions="$t('project_desc_instructions')"
       />
