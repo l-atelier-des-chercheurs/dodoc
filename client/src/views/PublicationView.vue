@@ -210,7 +210,7 @@
           </div>
         </template>
         <div v-else-if="publication.template === 'story'">
-          {{ publication }}
+          <div class="u-wips" />
         </div>
       </div>
     </transition>

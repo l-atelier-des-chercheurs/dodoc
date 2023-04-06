@@ -5,21 +5,6 @@
     <DateField :title="$t('date_modified')" :date="project.$date_modified" />
     <br />
 
-    <DLabel
-      :str="$t('license')"
-      :instructions="can_edit ? $t('licence_instructions') : ''"
-    />
-    <div class="">
-      <RadioField
-        :field_name="'license'"
-        :content="project.license"
-        :path="project.$path"
-        :can_edit="can_edit"
-        :options="license_options"
-      />
-    </div>
-    <br />
-
     <div class="">
       <RemoveMenu
         v-if="can_edit"
@@ -41,25 +26,6 @@ export default {
   data() {
     return {
       edit_mode: false,
-
-      license_options: [
-        {
-          key: "creativecommons_by_nc_sa",
-          text: "creativecommons_by_nc_sa_explanations",
-        },
-        {
-          key: "all_rights_reserved",
-          text: "all_rights_reserved_explanations",
-        },
-        {
-          key: "copyleft",
-          text: "copyleft_explanations",
-        },
-        {
-          key: "custom_license",
-          text: "custom_license_explanations",
-        },
-      ],
     };
   },
   created() {},

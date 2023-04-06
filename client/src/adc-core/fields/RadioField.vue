@@ -1,9 +1,12 @@
 <template>
   <div class="_radioField">
-    <template v-if="!edit_mode">
+    <div v-if="!edit_mode">
       {{ $t(new_content) }}
-    </template>
-    <template v-else>
+      <div v-if="instructions">
+        <small v-html="$t(instructions)" />
+      </div>
+    </div>
+    <div v-else>
       <!-- <sl-radio-group
         v-model="new_content"
         label="Select an option"
@@ -26,7 +29,7 @@
         <br />
       </div>
       <!-- </sl-radio-group> -->
-    </template>
+    </div>
 
     <!-- <select v-model="new_content" :disabled="!edit_mode">
         <option
@@ -37,10 +40,6 @@
         />
       </select> -->
     <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
-
-    <div v-if="!edit_mode && instructions">
-      <small v-html="$t(instructions)" />
-    </div>
 
     <div class="_footer" v-if="edit_mode">
       <SaveCancelButtons

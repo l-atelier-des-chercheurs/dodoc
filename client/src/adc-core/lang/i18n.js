@@ -85,6 +85,7 @@ export default function () {
         submitted_password_is_wrong: "Mot de passe erroné",
         account_doesnt_exist: "Ce compte n’existe pas",
         submit: "Valider",
+        search_by_title: "Rechercher par titre",
 
         connection_lost: `Connexion perdue`,
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
@@ -259,6 +260,10 @@ export default function () {
           "Ce projet sera affiché en haut de la page d’accueil.",
 
         show_projects: "Afficher les projets",
+        all_projects: "Tous les projets",
+        all_projects_instr:
+          "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
+
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
         restart_to_apply: "Relancez do•doc pour appliquer",
         restart: "Relancer do•doc",
@@ -273,9 +278,10 @@ export default function () {
         media_duplicated: "Média dupliqué",
 
         CC: "Creative Commons",
+        license_and_authors: "Licence et auteurs",
         license: "Licence",
         licence_instructions:
-          "Indiquez ici les conditions de réutilisation de votre contenu.",
+          "Indiquez ici les conditions de partage et de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
 
@@ -317,7 +323,8 @@ export default function () {
 
         space: "Espace",
         spaces: "Les espaces",
-        spaces_instr: "",
+        spaces_instr:
+          "Chaque espace contient une série de projets liés par un groupe, un événement ou une thématique particulière.",
         create_a_space: "Créer un espace",
         project: "Projet",
 
@@ -424,6 +431,7 @@ export default function () {
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
         machines_and_materials: "Machines et matériaux",
+        levels_and_competences: "Niveau et compétence",
 
         camera: "Camera",
         sources: "Sources",

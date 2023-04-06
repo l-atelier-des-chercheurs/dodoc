@@ -1,16 +1,18 @@
 <template>
-  <ProjectCard :header="$t('machines_and_materials')" :icon="'tools'">
+  <ProjectCard :header="$t('levels_and_competences')" :icon="'bookmark-star'">
     <div class="">
-      <TagsField
-        :field_name="'materials'"
-        :content="project.materials"
+      <SelectField
+        :field_name="'level'"
+        :content="project.level"
         :path="project.$path"
         :can_edit="can_edit"
+        :grouped_options="competences"
       />
     </div>
   </ProjectCard>
 </template>
 <script>
+import competences from "@/utils/competences.json";
 import ProjectCard from "@/components/ProjectCard.vue";
 
 export default {
@@ -20,7 +22,9 @@ export default {
   },
   components: { ProjectCard },
   data() {
-    return {};
+    return {
+      competences,
+    };
   },
   created() {},
   mounted() {},

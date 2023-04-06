@@ -1,0 +1,67 @@
+[
+  {
+    "label": "Cycle 1",
+    "options": [
+      "Mobiliser le langage dans toutes ses dimensions",
+      "Agir, s’exprimer, comprendre à travers l’activité physique Agir, s'exprimer, comprendre à travers les activités artistiques",
+      "Acquérir les premiers outils mathématiques",
+      "Explorer le monde",
+      "Se repérer dans le temps et l'espace",
+
+      "Explorer le monde du vivant, des objets et de la matière",
+      "Utiliser des outils numériques",
+
+      "Apprendre ensemble et vivre ensemble",
+
+      "Domaines complémentaires : Langue vivante 1",
+      "Domaines complémentaires : Langue vivante 2",
+      "Domaines complémentaires : Education à la sécurité routière",
+      "Domaines complémentaires : Formation aux premiers secours",
+      "Compétences transversales"
+    ]
+  },
+  {
+    "label": "Cycle 2 et 3",
+    "options": [
+      "Français : Comprendre et s’exprimer à l’oral",
+      "Français : Lire",
+      "Français : Écrire",
+      "Français : Comprendre le fonctionnement de la langue",
+
+      "Mathématiques : Modéliser",
+      "Mathématiques : Représenter",
+      "Mathématiques : Raisonner",
+      "Mathématiques : Calculer",
+      "Mathématiques : Communiquer",
+      "Nombres et calculs",
+      "Grandeurs et mesures",
+
+      "Espace et géométrie",
+
+      "Education physique et sportive",
+      "Art plastique",
+
+      "Éducation musicale",
+
+      "Histoire des arts",
+
+      "Questionner le monde",
+
+      "Vivant, matières, objets",
+
+      "Espace , temps",
+
+      "Enseignement moral et civique",
+
+      "Langue vivante",
+
+      "Technique d l’information et de la communication",
+
+      "Éducation à la sécurité routière",
+
+      "Éducation aux premiers secours",
+
+      "Compétences transversales"
+    ]
+  }
+]

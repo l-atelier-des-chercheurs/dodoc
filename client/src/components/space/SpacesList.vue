@@ -1,12 +1,6 @@
 <template>
   <div class="_spacesList">
-    <div class="u-sameRow">
-      <DLabel
-        :str="$t('spaces')"
-        :tag="'h2'"
-        :instructions="$t('spaces_instr')"
-      />
-
+    <div class="">
       <button
         type="button"
         class="u-button u-button_red u-button_small"
@@ -127,14 +121,14 @@ export default {
 }
 ._spacesList {
   width: 100%;
+  margin: 0 auto;
+  max-width: var(--max-column-width);
+  padding: calc(var(--spacing) * 1);
 }
 
 ._list {
-  margin: 0 auto;
-  max-width: var(--max-column-width);
-
   > * {
-    margin: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+    margin: calc(var(--spacing) * 1) 0;
     // background: var(--panel-color);
     // margin-bottom: 2px;
     // border: var(--panel-borders);

@@ -34,7 +34,7 @@ import ProjectCard from "@/components/ProjectCard.vue";
 export default {
   props: {
     project: Object,
-    can_edit_project: Boolean,
+    can_edit: Boolean,
   },
   components: { ProjectCard },
   data() {

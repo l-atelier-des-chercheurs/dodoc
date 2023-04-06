@@ -11,32 +11,28 @@
       :tag="'h2'"
       :can_edit="is_self"
     />
-    <small>
-      {{ author.$path }}
-    </small>
-    <br />
 
     <SelectField
+      v-if="author.role === 'admin' || is_self"
       :field_name="'role'"
       :content="author.role"
       :path="author.$path"
-      :can_edit="is_self"
+      :can_edit="true"
       :options="[
         {
           key: 'contributor',
           text: $t('contributor'),
-          instruction: $t('contributor_instructions'),
         },
         {
           key: 'admin',
           text: $t('admin'),
-          instruction: $t('admin_instructions'),
         },
       ]"
     />
+    <div v-else>
+      {{ $t(author.role) }}
+    </div>
 
-    <!-- {{ author.role }} -->
-    <!-- <br /> -->
     <!-- {{ author.email }} -->
     <br />
 

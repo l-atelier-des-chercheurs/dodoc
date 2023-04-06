@@ -1,12 +1,28 @@
 <template>
-  <ProjectCard :header="$t('license')" :icon="'file-earmark-spreadsheet'">
+  <ProjectCard :header="$t('license_and_authors')" :icon="'people'">
+    <DLabel
+      :str="$t('license')"
+      :instructions="can_edit ? $t('licence_instructions') : ''"
+    />
     <div class="">
       <RadioField
         :field_name="'license'"
         :content="project.license"
         :path="project.$path"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
         :options="license_options"
+      />
+    </div>
+
+    <br />
+
+    <div class="">
+      <TitleField
+        :label="$t('authors')"
+        :field_name="'authors_list'"
+        :content="project.authors_list"
+        :path="project.$path"
+        :can_edit="can_edit"
       />
     </div>
   </ProjectCard>
@@ -17,7 +33,7 @@ import ProjectCard from "@/components/ProjectCard.vue";
 export default {
   props: {
     project: Object,
-    can_edit_project: Boolean,
+    can_edit: Boolean,
   },
   components: { ProjectCard },
   data() {

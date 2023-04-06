@@ -205,8 +205,6 @@
   </div>
 </template>
 <script>
-import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
-
 export default {
   props: {
     enable_effects: Boolean,
@@ -214,9 +212,7 @@ export default {
     canvasElement: HTMLCanvasElement,
     project_path: String,
   },
-  components: {
-    ImageSelect,
-  },
+  components: {},
   data() {
     return {
       source_stream_resolution: {

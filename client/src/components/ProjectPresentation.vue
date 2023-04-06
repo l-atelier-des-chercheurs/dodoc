@@ -85,7 +85,7 @@ z
         "
         :content="project.description"
         :path="project.$path"
-        :maxlength="280"
+        :maxlength="1280"
         :can_edit="can_edit_project"
         :instructions="$t('project_desc_instructions')"
       />
@@ -117,13 +117,14 @@ z
       }"
       v-if="context === 'full'"
     >
-      <CardMachines :project="project" :can_edit_project="can_edit_project" />
+      <CardCompetences :project="project" :can_edit="can_edit_project" />
+      <CardMachines :project="project" :can_edit="can_edit_project" />
+      <CardKeywords :project="project" :can_edit="can_edit_project" />
+      <CardLicense :project="project" :can_edit="can_edit_project" />
       <CardMeta :project="project" :can_edit="can_edit_project" />
-      <CardStatus :project="project" :can_edit_project="can_edit_project" />
+      <CardStatus :project="project" :can_edit="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
-      <CardKeywords :project="project" :can_edit_project="can_edit_project" />
-      <!-- <CardLicense :project="project" :can_edit_project="can_edit_project" /> -->
-      <CardFiles :project="project" :can_edit_project="can_edit_project" />
+      <CardFiles :project="project" :can_edit="can_edit_project" />
     </div>
 
     <div
@@ -143,9 +144,10 @@ z
 import CardMeta from "@/components/project_cards/CardMeta.vue";
 // import CardAuthor from "@/components/project_cards/CardAuthor.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
+import CardCompetences from "@/components/project_cards/CardCompetences.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
-// import CardLicense from "@/components/project_cards/CardLicense.vue";
+import CardLicense from "@/components/project_cards/CardLicense.vue";
 import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
@@ -159,9 +161,10 @@ export default {
     CardMeta,
     // CardAuthor,
     CardKeywords,
+    CardCompetences,
     CardMachines,
     CardStatus,
-    // CardLicense,
+    CardLicense,
     CardFiles,
   },
   data() {

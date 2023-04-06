@@ -111,6 +111,8 @@ import DLabel from "@/adc-core/fields/DLabel.vue";
 Vue.component("DLabel", DLabel);
 import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
+import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
+Vue.component("ImageSelect", ImageSelect);
 
 import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
 Vue.component("PickMediaFromProjects", PickMediaFromProjects);
@@ -170,6 +172,8 @@ document.addEventListener(
 
 import FormatDates from "@/mixins/FormatDates";
 Vue.mixin(FormatDates);
+import Props from "@/mixins/Props";
+Vue.mixin(Props);
 import Medias from "@/mixins/Medias";
 Vue.mixin(Medias);
 import Authors from "@/mixins/Authors";

@@ -59,8 +59,6 @@
   </div>
 </template>
 <script>
-import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
-
 export default {
   props: {
     cover: [Boolean, Object],
@@ -68,9 +66,7 @@ export default {
     context: String,
     can_edit: Boolean,
   },
-  components: {
-    ImageSelect,
-  },
+  components: {},
   data() {
     return {
       selected_file: [],

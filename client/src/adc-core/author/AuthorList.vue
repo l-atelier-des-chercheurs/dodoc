@@ -27,6 +27,7 @@
         />
         <CreateAuthor
           v-else-if="current_mode === 'create'"
+          :is_first_user="!authors || authors.length === 0"
           @close="$emit('close')"
         />
         <br />
@@ -56,6 +57,7 @@
         type="button"
         v-else
         class="u-button"
+        :disabled="authors_except_self.length === 0"
         @click="show_authors_list = !show_authors_list"
       >
         {{ $t("show_list") }} ({{ authors_except_self.length }})

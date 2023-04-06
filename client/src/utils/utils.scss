@@ -167,7 +167,7 @@ button,
 
   &[disabled] {
     cursor: not-allowed;
-    color: var(--c-gris);
+    filter: grayscale(50%);
   }
 
   &.is--active {

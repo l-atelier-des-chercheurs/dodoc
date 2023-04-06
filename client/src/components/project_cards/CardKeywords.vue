@@ -5,7 +5,7 @@
         :field_name="'keywords'"
         :content="project.keywords"
         :path="project.$path"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
       />
     </div>
   </ProjectCard>
@@ -16,7 +16,7 @@ import ProjectCard from "@/components/ProjectCard.vue";
 export default {
   props: {
     project: Object,
-    can_edit_project: Boolean,
+    can_edit: Boolean,
   },
   components: { ProjectCard },
   data() {

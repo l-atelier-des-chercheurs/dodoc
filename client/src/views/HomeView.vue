@@ -10,12 +10,12 @@
     </div> -->
 
     <div class="_homeView--content">
-      <!-- <img :src="`${$root.publicPath}i_logo.svg`" class="_dodoclogo" /> -->
-
       <AdminSettings
         v-if="show_settings_modal"
         @close="show_settings_modal = false"
       />
+
+      <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" />
 
       <h1 v-html="name || $t('welcome_to_dodoc')" />
       <p v-html="description || $t('admins_edit_text_here')" />
@@ -31,7 +31,39 @@
       </p>
     </div>
 
-    <SpacesList />
+    <!-- <div class="_modeSel">
+      <button type="button" class="u-button" v-if="">{{ $t("spaces") }}</button> /
+      <button type="button" class="u-button">{{ $t("projects") }}</button>
+    </div> -->
+
+    <RadioSwitch
+      :content.sync="current_mode"
+      :options="[
+        {
+          label: $t('spaces'),
+          value: 'spaces',
+        },
+        {
+          label: $t('all_projects'),
+          value: 'projects',
+        },
+      ]"
+    />
+
+    <br />
+
+    <template v-if="current_mode === 'spaces'">
+      <div class="u-instructions">
+        <small v-html="$t('spaces_instr')" />
+      </div>
+      <SpacesList />
+    </template>
+    <template v-else-if="current_mode === 'projects'">
+      <div class="u-instructions">
+        <small v-html="$t('all_projects_instr')" />
+      </div>
+      <AllProjects />
+    </template>
 
     <div class="">
       <small class="_versionNumber">
@@ -55,16 +87,20 @@
 // import SocketStatus from "@/components/.vue";
 import AdminSettings from "@/adc-core/AdminSettings.vue";
 import SpacesList from "@/components/space/SpacesList.vue";
+import AllProjects from "@/components/project/AllProjects.vue";
 
 export default {
   props: {},
   components: {
     AdminSettings,
     SpacesList,
+    AllProjects,
   },
   data() {
     return {
       show_settings_modal: false,
+      // current_mode: "spaces",
+      current_mode: "projects",
     };
   },
   computed: {
@@ -81,9 +117,11 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss">
-._dodoclogo {
-  max-width: 300px;
+<style lang="scss" scoped>
+._logo {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: calc(var(--spacing) * 2);
 }
 
 ._homeView {
@@ -103,7 +141,7 @@ export default {
   width: 100%;
   min-height: 40vh;
   margin: 0 auto;
-  padding: var(--spacing);
+  padding: calc(var(--spacing) * 2);
 
   display: flex;
   flex-flow: column nowrap;
