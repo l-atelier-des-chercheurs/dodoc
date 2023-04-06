@@ -12,11 +12,8 @@
       :can_edit="is_self"
     />
 
-    <div v-if="!is_self">
-      {{ author.role }}
-    </div>
     <SelectField
-      v-else
+      v-if="author.role === 'admin' || is_self"
       :field_name="'role'"
       :content="author.role"
       :path="author.$path"
@@ -32,9 +29,10 @@
         },
       ]"
     />
+    <div v-else>
+      {{ $t(author.role) }}
+    </div>
 
-    <!-- {{ author.role }} -->
-    <!-- <br /> -->
     <!-- {{ author.email }} -->
     <br />
 
