@@ -350,6 +350,9 @@
               "type": "string",
               "options": ["CC", "all_rights_reserved", "copyleft"],
               "default": "CC"
+            },
+            "authors_list": {
+              "type": "string"
             }
           },
           "$files": {

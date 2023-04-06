@@ -117,13 +117,13 @@ z
       }"
       v-if="context === 'full'"
     >
-      <CardMachines :project="project" :can_edit_project="can_edit_project" />
+      <CardMachines :project="project" :can_edit="can_edit_project" />
+      <CardLicense :project="project" :can_edit="can_edit_project" />
       <CardMeta :project="project" :can_edit="can_edit_project" />
-      <CardStatus :project="project" :can_edit_project="can_edit_project" />
+      <CardStatus :project="project" :can_edit="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
-      <CardKeywords :project="project" :can_edit_project="can_edit_project" />
-      <!-- <CardLicense :project="project" :can_edit_project="can_edit_project" /> -->
-      <CardFiles :project="project" :can_edit_project="can_edit_project" />
+      <CardKeywords :project="project" :can_edit="can_edit_project" />
+      <CardFiles :project="project" :can_edit="can_edit_project" />
     </div>
 
     <div
@@ -145,7 +145,7 @@ import CardMeta from "@/components/project_cards/CardMeta.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
-// import CardLicense from "@/components/project_cards/CardLicense.vue";
+import CardLicense from "@/components/project_cards/CardLicense.vue";
 import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
@@ -161,7 +161,7 @@ export default {
     CardKeywords,
     CardMachines,
     CardStatus,
-    // CardLicense,
+    CardLicense,
     CardFiles,
   },
   data() {

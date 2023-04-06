@@ -7,7 +7,7 @@
         v-for="tag in new_tags"
         :key="tag"
         variant="primary"
-        size="small"
+        size="medium"
         :removable="edit_mode"
         @click="edit_mode ? removeTag(tag) : ''"
       >
@@ -22,7 +22,7 @@
         v-if="edit_mode && create_new_tag === false"
         variant="default"
         class=""
-        size="small"
+        size="medium"
         pill
         @click="create_new_tag = true"
       >

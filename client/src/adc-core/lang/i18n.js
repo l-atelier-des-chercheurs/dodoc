@@ -273,9 +273,10 @@ export default function () {
         media_duplicated: "Média dupliqué",
 
         CC: "Creative Commons",
+        license_and_authors: "Licence et auteurs",
         license: "Licence",
         licence_instructions:
-          "Indiquez ici les conditions de réutilisation de votre contenu.",
+          "Indiquez ici les conditions de partage et de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
 

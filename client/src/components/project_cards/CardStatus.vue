@@ -12,7 +12,7 @@
         :field_name="'$status'"
         :content="project.$status"
         :path="project.$path"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
         :options="status_options"
       />
     </div>
@@ -24,7 +24,7 @@ import ProjectCard from "@/components/ProjectCard.vue";
 export default {
   props: {
     project: Object,
-    can_edit_project: Boolean,
+    can_edit: Boolean,
   },
   components: { ProjectCard },
   data() {
