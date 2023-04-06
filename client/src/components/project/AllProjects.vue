@@ -22,8 +22,6 @@
               </button>
             </div>
 
-            {{ search_project }}
-
             <br />
 
             <DLabel :str="$t('keywords')" />
@@ -64,9 +62,8 @@
             </button>
           </div>
 
-          <div class="_projectsList">
-            <div class="_tagList">
-              <!-- {{ active_filters }} -->
+          <div class="_listOfProjects">
+            <div class="_tagList" v-if="active_filters.length > 0">
               <button
                 type="button"
                 class="u-button u-button_small"
@@ -122,7 +119,7 @@ export default {
       return this.extractArr(this.filtered_projects, "level");
     },
     active_filters() {
-      if (!this.$route.query) return false;
+      if (!this.$route.query) return [];
       return Object.entries(this.$route.query).map(([k, v]) => {
         return { [k]: decodeURI(v) };
       });
@@ -138,7 +135,7 @@ export default {
     },
     filtered_projects() {
       return this.all_projects.filter((p) => {
-        if (!this.active_filters || this.active_filters.length === 0)
+        if (this.active_filters.length === 0)
           if (this.search_project.length === 0) return true;
 
         for (const af of this.active_filters) {
@@ -236,12 +233,13 @@ export default {
     }
   }
 }
-._projectsList {
+._listOfProjects {
   flex: 1 1 auto;
   padding-top: calc(var(--spacing) * 1);
 }
 ._tagList {
   display: flex;
   gap: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) * 1);
 }
 </style>
