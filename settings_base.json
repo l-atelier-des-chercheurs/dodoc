@@ -346,6 +346,9 @@
             "folder": {
               "type": "string"
             },
+            "files": {
+              "type": "array"
+            },
             "license": {
               "type": "string",
               "options": ["CC", "all_rights_reserved", "copyleft"],

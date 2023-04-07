@@ -526,6 +526,7 @@ export default {
     ._mediaContent--image,
     ._mediaContent[data-filetype="video"],
     ._mediaContent[data-filetype="url"],
+    ._mediaContent[data-filetype="pdf"],
     ._mediaContent[data-filetype="audio"] {
       padding: var(--set-margins);
       opacity: var(--set-opacity);

@@ -77,7 +77,7 @@
                   })
                 "
               >
-                {{ Object.values(af)[0] }}
+                {{ Object.values(af)[0] }} <sl-icon name="x" />
               </button>
             </div>
             <!-- {{ filtered_projects.length }} -->
@@ -146,7 +146,10 @@ export default {
           else if (typeof p[k] === "string" && p[k] !== v) return false;
         }
 
-        if (this.search_project) return p.title.includes(this.search_project);
+        if (this.search_project)
+          return p.title
+            .toLowerCase()
+            .includes(this.search_project.toLowerCase());
 
         return true;
       });

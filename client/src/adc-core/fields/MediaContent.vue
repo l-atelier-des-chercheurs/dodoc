@@ -84,7 +84,8 @@
       </template>
     </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
-      <sl-icon name="file-earmark" /> {{ file.$media_filename }}
+      <sl-icon name="file-earmark" /> {{ file.$media_filename }}<br />
+      <DownloadFile v-if="context === 'full'" :file="file" />
     </small>
   </div>
 </template>
@@ -221,19 +222,18 @@ export default {
   &[data-filetype="url"] {
     aspect-ratio: 16/9;
   }
+  &[data-filetype="pdf"] {
+    aspect-ratio: 16/9;
+  }
 }
 
+._mediaContent--iframe,
 ._mediaContent--pdfIframe {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-._mediaContent--iframe {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-
   height: 100%;
+  border: 2px solid #535659;
 }
 </style>

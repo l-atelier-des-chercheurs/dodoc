@@ -1,28 +1,24 @@
 <template>
   <ProjectCard :header="$t('files')" :icon="'file-earmark-arrow-down'">
     <div class="">
+      <!-- <PickMediaFromProjects
+      v-if="show_file_picker"
+        :path="current_project_path"
+        @selectMedia="fileSelect"
+        @close="show_file_picker = false"
+      /> -->
+
       <ul class="_fileList">
-        <li>
-          <a
-            target="_blank"
-            ng-href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-            download="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-            class="ng-binding"
-            href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-            ><i class="fa fa-arrow-circle-o-down"> </i> éléphant.svg</a
-          >
-        </li>
-        <li>
+        <li v-for="(file, i) in files" :key="i">
           <sl-icon name="file-earmark-arrow-down" />
           <a
+            :download="file"
+            :href="$root.publicPath + '/jdle/' + file"
             target="_blank"
-            ng-href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-            download="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-            class="ng-binding"
-            href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-            ><i class="fa fa-arrow-circle-o-down"> </i>
-            éléphant_serre_livre.svg</a
+            class="u-buttonLink"
           >
+            {{ file }}
+          </a>
         </li>
       </ul>
     </div>
@@ -38,7 +34,19 @@ export default {
   },
   components: { ProjectCard },
   data() {
-    return {};
+    return {
+      files: [
+        "middle-def-2.pdf",
+        "cartes-jeu-tolon-ni-kalan.pdf",
+        "dessous-def-3-2.pdf",
+        "dessus-def-4.pdf",
+        "mode-demploi.pdf",
+        "middle-def.ai",
+        "dessus-def.ai",
+        "dessous-def.ai",
+        "complet-v2.ai",
+      ],
+    };
   },
   created() {},
   mounted() {},
