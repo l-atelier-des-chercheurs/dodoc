@@ -72,7 +72,7 @@ export default {
         if (meta_filename) {
           const og_file_path = this.getSourceMedia({
             source_media: { meta_filename },
-            publication_path: this.getParent(og_module.$path),
+            folder_path: this.getParent(og_module.$path),
           }).$path;
           const copy_file_path = await this.$api.copyFile({
             path: og_file_path,

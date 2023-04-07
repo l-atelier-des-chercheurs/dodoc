@@ -120,11 +120,11 @@ z
       <CardCompetences :project="project" :can_edit="can_edit_project" />
       <CardMachines :project="project" :can_edit="can_edit_project" />
       <CardKeywords :project="project" :can_edit="can_edit_project" />
+      <CardFiles :project="project" :can_edit="can_edit_project" />
       <CardLicense :project="project" :can_edit="can_edit_project" />
       <CardMeta :project="project" :can_edit="can_edit_project" />
       <CardStatus :project="project" :can_edit="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
-      <CardFiles :project="project" :can_edit="can_edit_project" />
     </div>
 
     <div
@@ -190,25 +190,7 @@ export default {
     },
   },
   computed: {},
-  methods: {
-    async updateProject() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-
-      try {
-        this.response = await this.$api.updateMeta({
-          path: this.project.$path,
-          new_meta: {
-            title: this.new_title,
-          },
-        });
-        this.fetch_status = "success";
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>

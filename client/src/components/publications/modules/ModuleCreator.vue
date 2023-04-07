@@ -201,7 +201,7 @@ export default {
       if (this.context === "page_by_page") {
         const media = this.getSourceMedia({
           source_media,
-          publication_path: this.publication_path,
+          folder_path: this.publication_path,
         });
         if (media?.$infos?.ratio)
           addtl_meta.height =

@@ -26,7 +26,10 @@
 
         <div class="u-mediaOptions">
           <div>
-            <DownloadFile :file="file" />
+            <DownloadFile :file="file">
+              <sl-icon name="file-earmark-arrow-down" />
+              {{ $t("download") }}
+            </DownloadFile>
           </div>
           <div class="">
             <button type="button" class="u-buttonLink" @click="duplicateMedia">

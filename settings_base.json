@@ -346,7 +346,7 @@
             "folder": {
               "type": "string"
             },
-            "files": {
+            "downloadable_files": {
               "type": "array"
             },
             "license": {

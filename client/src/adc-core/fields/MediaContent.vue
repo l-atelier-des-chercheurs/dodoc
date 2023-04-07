@@ -85,7 +85,10 @@
     </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
       <sl-icon name="file-earmark" /> {{ file.$media_filename }}<br />
-      <DownloadFile v-if="context === 'full'" :file="file" />
+      <DownloadFile v-if="context === 'full'" :file="file">
+        <sl-icon name="file-earmark-arrow-down" />
+        {{ $t("download") }}
+      </DownloadFile>
     </small>
   </div>
 </template>

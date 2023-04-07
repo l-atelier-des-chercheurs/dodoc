@@ -5,8 +5,7 @@
     target="_blank"
     class="u-buttonLink"
   >
-    <sl-icon name="file-earmark-arrow-down" />
-    {{ $t("download") }}
+    <slot />
   </a>
 </template>
 <script>
@@ -24,6 +23,7 @@ export default {
   watch: {},
   computed: {
     file_url() {
+      if (!this.file.$path) return false;
       return this.makeMediaFileURL({
         $path: this.file.$path,
         $media_filename: this.file.$media_filename,

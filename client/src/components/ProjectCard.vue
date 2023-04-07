@@ -59,6 +59,10 @@ export default {
       background-color: var(--c-gris_clair);
     }
   }
+  &[open] summary {
+    background-color: var(--c-gris);
+  }
+
   ._content {
     padding: calc(var(--spacing) / 2);
   }
