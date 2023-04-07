@@ -250,6 +250,7 @@ export default {
   background: white;
   padding: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) * 1) auto;
+  max-width: 240px;
 }
 
 ._storyContainer {

@@ -155,7 +155,7 @@ export default {
       return this.publimodule.source_medias.map((source_media) => {
         const _linked_media = this.getSourceMedia({
           source_media,
-          publication_path: this.publication_path,
+          folder_path: this.publication_path,
         });
 
         return Object.assign({}, source_media, { _linked_media });

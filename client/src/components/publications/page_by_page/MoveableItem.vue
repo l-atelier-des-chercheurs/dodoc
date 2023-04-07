@@ -242,7 +242,7 @@ export default {
 
         return this.getSourceMedia({
           source_media,
-          publication_path,
+          folder_path: publication_path,
         });
       } catch (err) {
         return false;

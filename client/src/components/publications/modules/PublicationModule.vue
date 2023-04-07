@@ -368,7 +368,10 @@ export default {
       const source_media = this.publimodule.source_medias[0];
       if (source_media) {
         const publication_path = this.getParent(this.publimodule.$path);
-        return this.getSourceMedia({ source_media, publication_path });
+        return this.getSourceMedia({
+          source_media,
+          folder_path: publication_path,
+        });
       }
       return false;
     },
