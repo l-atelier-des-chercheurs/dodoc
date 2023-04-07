@@ -226,13 +226,8 @@ export default {
   }
 }
 
+._mediaContent--iframe,
 ._mediaContent--pdfIframe {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 2px solid #535659;
-}
-._mediaContent--iframe {
   position: absolute;
   top: 0;
   left: 0;
