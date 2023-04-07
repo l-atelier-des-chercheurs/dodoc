@@ -29,6 +29,11 @@
           {{ $root.app_infos.contactmail_of_instance }}
         </a>
       </p>
+
+      <img
+        :src="`${$root.publicPath}bandeau-logos-jefabrique.png`"
+        class="_bandeau"
+      />
     </div>
 
     <!-- <div class="_modeSel">
@@ -36,34 +41,36 @@
       <button type="button" class="u-button">{{ $t("projects") }}</button>
     </div> -->
 
-    <RadioSwitch
-      :content.sync="current_mode"
-      :options="[
-        {
-          label: $t('spaces'),
-          value: 'spaces',
-        },
-        {
-          label: $t('all_projects'),
-          value: 'projects',
-        },
-      ]"
-    />
+    <div class="_bottomCont">
+      <RadioSwitch
+        :content.sync="current_mode"
+        :options="[
+          {
+            label: $t('spaces'),
+            value: 'spaces',
+          },
+          {
+            label: $t('all_projects'),
+            value: 'projects',
+          },
+        ]"
+      />
 
-    <br />
+      <br />
 
-    <template v-if="current_mode === 'spaces'">
-      <div class="u-instructions _content">
-        <small v-html="$t('spaces_instr')" />
-      </div>
-      <SpacesList />
-    </template>
-    <template v-else-if="current_mode === 'projects'">
-      <div class="u-instructions _content">
-        <small v-html="$t('all_projects_instr')" />
-      </div>
-      <AllProjects />
-    </template>
+      <template v-if="current_mode === 'spaces'">
+        <div class="u-instructions _content">
+          <small v-html="$t('spaces_instr')" />
+        </div>
+        <SpacesList />
+      </template>
+      <template v-else-if="current_mode === 'projects'">
+        <div class="u-instructions _content">
+          <small v-html="$t('all_projects_instr')" />
+        </div>
+        <AllProjects />
+      </template>
+    </div>
 
     <div class="">
       <small class="_versionNumber">
@@ -118,7 +125,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._logo {
+._logo,
+._bandeau {
   width: 100%;
   max-width: 500px;
   margin-bottom: calc(var(--spacing) * 2);
@@ -187,5 +195,9 @@ export default {
 }
 
 ._settingBtn {
+}
+
+._bottomCont {
+  min-height: 70vh;
 }
 </style>
