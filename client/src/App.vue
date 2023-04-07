@@ -555,7 +555,7 @@ img {
   &-enter-active,
   &-leave-active,
   &-move {
-    transition: 0.7s cubic-bezier(0.19, 1, 0.22, 1) !important;
+    transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
     transition-property: opacity, transform;
     transform-origin: center top;
   }
