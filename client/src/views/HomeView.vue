@@ -15,7 +15,7 @@
         @close="show_settings_modal = false"
       />
 
-      <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" />
+      <!-- <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" /> -->
 
       <h1 v-html="name || $t('welcome_to_dodoc')" />
       <p v-html="description || $t('admins_edit_text_here')" />
@@ -30,10 +30,10 @@
         </a>
       </p>
 
-      <img
+      <!-- <img
         :src="`${$root.publicPath}bandeau-logos-jefabrique.png`"
         class="_bandeau"
-      />
+      /> -->
     </div>
 
     <!-- <div class="_modeSel">
