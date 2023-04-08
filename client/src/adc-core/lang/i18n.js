@@ -524,6 +524,7 @@ export default function () {
 
         add_media: "Ajouter un média",
         add_medias: "Ajouter des médias",
+        add_link: "Ajouter un lien",
         add_text: "Ajouter du texte",
 
         display_as_public: "Afficher la vue publique",

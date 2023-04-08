@@ -44,6 +44,9 @@ class Exporter {
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
       desired_filename = "publication.pdf";
+    } else if (this.instructions.recipe === "png") {
+      full_path_to_file = await this._loadPageAndPrint();
+      desired_filename = "preview.png";
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -242,7 +245,7 @@ class Exporter {
       // if screen, browser window size is same as page size
       const bw_pagesize = {
         width: Math.floor(document_size.width * magnify_factor),
-        height: Math.floor(document_size.height * magnify_factor) + 25,
+        height: Math.floor(document_size.height * magnify_factor) + 25 /*25*/,
       };
 
       // print to pdf with size, try to match pagesize with pixels
@@ -260,9 +263,11 @@ class Exporter {
         width: bw_pagesize.width,
         height: bw_pagesize.height,
         show: false,
+        enableLargerThanScreen: true,
         webPreferences: {
           contextIsolation: true,
           allowRunningInsecureContent: true,
+          offscreen: true,
         },
       });
       win.loadURL(url);
@@ -272,7 +277,6 @@ class Exporter {
 
       let page_timeout = setTimeout(() => {
         clearTimeout(page_timeout);
-        dev.error(`page timeout for ${url}`);
         if (win) win.close();
         return reject(new Error(`page-timeout`));
       }, 60_000);
@@ -281,45 +285,46 @@ class Exporter {
         dev.logverbose("did-finish-load " + url);
         this._notifyProgress(40);
 
-        await new Promise((r) => setTimeout(r, 1000));
-
-        this._notifyProgress(45);
-        win.webContents
-          .printToPDF({
-            // electron < 21
-            marginsType: 1,
-            // electron >= 21
-            margins: { marginType: "none" },
-            pageSize: printToPDF_pagesize,
-            printBackground: true,
-            printSelectionOnly: false,
+        new Promise(function (resolve, reject) {
+          setTimeout(() => resolve(1), 2000);
+        })
+          .then(() => {
+            this._notifyProgress(45);
+            if (this.instructions.recipe === "pdf")
+              return win.webContents.printToPDF({
+                // electron < 21
+                marginsType: 1,
+                // electron >= 21
+                margins: { marginType: "none" },
+                pageSize: printToPDF_pagesize,
+                printBackground: true,
+                printSelectionOnly: false,
+              });
+            else if (this.instructions.recipe === "png")
+              return win.capturePage();
+          })
+          .then((data) => {
+            this._notifyProgress(80);
+            if (win) win.close();
+            clearTimeout(page_timeout);
+            return data;
           })
           .then(async (data) => {
-            this._notifyProgress(80);
-            dev.logverbose("printed-to-pdf " + url);
-
-            if (win) win.close();
-
-            clearTimeout(page_timeout);
-
-            const full_path_to_folder_in_cache =
-              await utils.createFolderInCache("pdf");
-
-            const full_path_to_pdf = path.join(
-              full_path_to_folder_in_cache,
-              "temp.pdf"
-            );
-
-            await writeFileAtomic(full_path_to_pdf, data);
-
-            this._notifyProgress(95);
-
-            return resolve(full_path_to_pdf);
+            if (this.instructions.recipe === "pdf") {
+              const full_path_to_pdf = await this._saveData("pdf", data);
+              this._notifyProgress(95);
+              return resolve(full_path_to_pdf);
+            } else if (this.instructions.recipe === "png") {
+              const full_path_to_image = await this._saveData(
+                "png",
+                data.toPNG(1.0)
+              );
+              return resolve(full_path_to_image);
+            }
           })
           .catch((error) => {
             dev.logverbose("printed-to-pdf " + url);
             if (win) win.close();
-
             this._notifyEnded({
               event: "failed",
             });
@@ -343,6 +348,16 @@ class Exporter {
       );
     });
     // print to pdf
+  }
+
+  async _saveData(type, data) {
+    const full_path_to_folder_in_cache = await utils.createFolderInCache(type);
+    const full_path_to_file = path.join(
+      full_path_to_folder_in_cache,
+      "file." + type
+    );
+    await writeFileAtomic(full_path_to_file, data);
+    return full_path_to_file;
   }
 }
 
