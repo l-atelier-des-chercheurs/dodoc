@@ -4,7 +4,7 @@
       <button
         type="button"
         class="u-button u-button_red u-button_small"
-        v-if="connected_as"
+        v-if="is_admin"
         @click="show_create_modal = true"
       >
         <svg

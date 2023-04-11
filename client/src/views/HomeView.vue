@@ -148,9 +148,9 @@ export default {
   max-width: 600px;
   width: 100%;
   min-height: 40vh;
-  min-height: calc(80vh - 60px);
+  min-height: calc(60vh - 60px);
   margin: 0 auto;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 
   display: flex;
   flex-flow: column nowrap;
@@ -173,9 +173,9 @@ export default {
   // position: absolute;
   // bottom: 0;
   // left: 0;
-  margin-top: calc(var(--spacing) * 4);
+  margin: 0 auto;
   text-align: center;
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) * 4) 0;
 }
 
 ._floatinProjectBtn {
