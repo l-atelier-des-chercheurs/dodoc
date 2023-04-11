@@ -33,7 +33,7 @@
           <button
             type="button"
             class="u-button u-button_red u-button_small"
-            v-if="connected_as"
+            v-if="can_edit_space"
             @click="show_create_modal = true"
           >
             <svg
@@ -67,9 +67,6 @@
           @close="show_create_modal = false"
           @openNewProject="openNewProject"
         />
-
-        <br />
-        <br />
 
         <ProjectsList v-if="projects" :projects="projects" />
       </div>
@@ -196,7 +193,7 @@ export default {
 }
 
 ._projectsList {
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
 }
 
 ._contributorsList {

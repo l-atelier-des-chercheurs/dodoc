@@ -39,7 +39,7 @@
             :existing_preview="existing_preview"
             @newPreview="
               (value) => {
-                new_cover_raw = value;
+                new_cover = value;
               }
             "
           />
@@ -70,7 +70,7 @@ export default {
   data() {
     return {
       selected_file: [],
-      new_cover_raw: "",
+      new_cover: "",
       allow_save: true,
 
       edit_mode: false,
@@ -115,7 +115,7 @@ export default {
       try {
         await this.$api.updateCover({
           path: this.path,
-          rawData: this.new_cover_raw,
+          new_cover_data: this.new_cover,
           // onProgress,
         });
 

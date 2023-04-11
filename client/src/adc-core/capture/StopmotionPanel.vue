@@ -167,7 +167,14 @@
       </template>
 
       <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
-        <PreviewStopmotion :medias="medias" :frame_rate.sync="frame_rate" />
+        <PreviewStopmotion
+          :medias="medias"
+          :frame_rate.sync="frame_rate"
+          :created_stopmotion="created_stopmotion"
+        />
+        <transition name="fade_fast" :duration="150" mode="out-in">
+          <LoaderSpinner v-if="compilation_in_progress" />
+        </transition>
       </div>
 
       <MediaValidationButtons
@@ -212,6 +219,9 @@ export default {
       show_previous_photo: false,
       media_is_being_sent: false,
       show_advanced_menu: false,
+
+      compilation_in_progress: false,
+      created_stopmotion: false,
 
       preview_playing_event: undefined,
     };
@@ -405,10 +415,13 @@ export default {
     backToStopmotion: function () {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
       this.validating_video_preview = false;
+      this.created_stopmotion = false;
       this.$emit("update:show_live_feed", true);
     },
     exportStopmotion: async function () {
-      await this.$api.exportFolder({
+      this.compilation_in_progress = true;
+
+      const current_task_id = await this.$api.exportFolder({
         path: this.current_stopmotion_path,
         instructions: {
           recipe: "stopmotion",
@@ -416,7 +429,25 @@ export default {
           frame_rate: this.frame_rate,
         },
       });
+
       this.$alertify.delay(4000).log(this.$t("compilation_started"));
+
+      const checkIfEnded = ({ task_id, message }) => {
+        if (task_id !== current_task_id) return;
+        setTimeout(() => {
+          this.compilation_in_progress = false;
+          message;
+          // works, but not that useful
+          // this.created_stopmotion = this.getSourceMedia({
+          //   source_media: {
+          //     meta_filename_in_project: this.getFilename(message.path),
+          //   },
+          //   folder_path: this.current_stopmotion_path,
+          // });
+        }, 1000);
+        this.$eventHub.$off("task.ended", checkIfEnded);
+      };
+      this.$eventHub.$on("task.ended", checkIfEnded);
 
       // this.show_previous_photo = false;
       // this.validating_video_preview = false;

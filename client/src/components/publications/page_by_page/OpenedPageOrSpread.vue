@@ -11,20 +11,6 @@
         @click.self="setActiveModule(false)"
       >
         <div class="_sideCont">
-          <!-- <div class="u-breadcrumb _breadcrumb">
-              <div>
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  @click="setPageActive(false)"
-                  v-text="publication_title"
-                />
-              </div>
-              <sl-icon name="arrow-right-short" label="" />
-              <div>
-                {{ $t("page") }} {{ active_page_number + 1 }}
-              </div>
-            </div> -->
           <div class="_content">
             <PageMenu
               :can_edit="can_edit"
@@ -53,8 +39,8 @@
           </div>
         </div>
         <div class="_pagePan">
-          <PanZoom :scale.sync="scale" :page_opened_id="page_opened_id">
-            <transition name="fade_fast" mode="out-in">
+          <PanZoom2 :scale.sync="scale" :page_opened_id="page_opened_id">
+            <transition name="pagechange" mode="out-in">
               <div
                 class="_pageCont"
                 @click.self="setActiveModule(false)"
@@ -132,7 +118,7 @@
                 </div>
               </div>
             </transition>
-          </PanZoom>
+          </PanZoom2>
         </div>
       </div>
     </div>
@@ -141,7 +127,7 @@
 <script>
 import PageMenu from "@/components/publications/page_by_page/PageMenu.vue";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
-import PanZoom from "@/components/publications/page_by_page/PanZoom.vue";
+import PanZoom2 from "@/components/publications/page_by_page/PanZoom2.vue";
 
 export default {
   props: {
@@ -162,7 +148,7 @@ export default {
   components: {
     PageMenu,
     SinglePage,
-    PanZoom,
+    PanZoom2,
   },
   data() {
     return {
@@ -178,6 +164,9 @@ export default {
   created() {
     this.$eventHub.$on(`module.setActive`, this.setActiveModule);
     document.addEventListener("keydown", this.keyPressed);
+
+    this.$root.default_new_module_top = 15;
+    this.$root.default_new_module_left = 15;
   },
   mounted() {},
   beforeDestroy() {

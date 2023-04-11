@@ -64,6 +64,16 @@ module.exports = (function () {
       _authenticateToken,
       _exportToParent
     );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_generatePreview",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_generatePreview",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_generatePreview",
+      ],
+      _generalPasswordCheck,
+      _authenticateToken,
+      _generatePreview
+    );
     app.patch(
       [
         "/_api2/:folder_type/:folder_slug/:meta_filename",
@@ -535,7 +545,7 @@ module.exports = (function () {
     // DISPATCH TASKS
     const task = new Exporter({
       path_to_folder,
-      path_to_parent_folder,
+      folder_to_export_to: path_to_parent_folder,
       instructions: data,
     });
     const task_id = task.id;
@@ -560,6 +570,7 @@ module.exports = (function () {
 
     try {
       const exported_meta_filename_in_parent = await task.start();
+
       const meta = await file.getFile({
         path_to_folder: path_to_parent_folder,
         path_to_meta: path.join(
@@ -567,13 +578,49 @@ module.exports = (function () {
           exported_meta_filename_in_parent
         ),
       });
-
       notifier.emit("fileCreated", path_to_parent_folder, {
         path_to_folder: path_to_parent_folder,
         meta,
       });
     } catch (err) {
       dev.error("Failed to export file: " + err);
+      notifier.emit("taskEnded", task_id, {
+        task_id,
+        message: err,
+      });
+    }
+  }
+  async function _generatePreview(req, res, next) {
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, data });
+
+    // TODO : do not move to parent folder, instead use that file as $cover
+    const task = new Exporter({
+      path_to_folder,
+      folder_to_export_to: path_to_folder,
+      instructions: data,
+    });
+    const task_id = task.id;
+    res.status(200).json({ task_id });
+
+    try {
+      const exported_meta_filename = await task.start();
+      const changed_data = await folder.updateFolder({
+        path_to_folder,
+        data: { meta_filename: exported_meta_filename },
+        update_cover_req: true,
+      });
+
+      notifier.emit("folderUpdated", path_to_folder, {
+        path: path_to_folder,
+        changed_data,
+      });
+      notifier.emit("folderUpdated", path_to_type, {
+        path: path_to_folder,
+        changed_data,
+      });
+    } catch (err) {
+      dev.error("Failed to generate preview: " + err);
 
       notifier.emit("taskEnded", task_id, {
         task_id,

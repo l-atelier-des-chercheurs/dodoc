@@ -540,10 +540,17 @@ export default {
       const z_index =
         Math.max(...this.page_modules.map((pm) => pm.z_index || 0)) + 1;
 
+      let x = this.$root.default_new_module_left;
+      let y = this.$root.default_new_module_top;
+
+      if (this.gridstep_in_mm) {
+        // todo : round to gridstep
+      }
+
       return {
         page_id: this.page_opened_id,
-        x: this.gridstep_in_mm,
-        y: this.gridstep_in_mm,
+        x,
+        y,
         width: this.$root.default_new_module_width,
         height: this.$root.default_new_module_height,
         rotation: 0,

@@ -1,42 +1,52 @@
 <template>
   <div>
     <div class="_player">
-      <MediaContent :file="current_media" :resolution="1600" />
-      <div v-if="!is_playing" class="_miniListPreview">
+      <template v-if="!created_stopmotion">
+        <MediaContent :file="current_media" :resolution="1600" />
+        <div v-if="!is_playing" class="_miniListPreview">
+          <MediaContent
+            v-for="media in medias"
+            :key="'previews-' + media.$path"
+            :file="media"
+            :resolution="1600"
+          />
+        </div>
+
+        <button type="button" class="_playPauseBtn" @click="playPausePreview">
+          <img
+            v-if="!is_playing"
+            :src="`${$root.publicPath}images/i_play.svg`"
+            width="48"
+            height="48"
+            draggable="false"
+          />
+          <!-- {{ $t("play") }} -->
+        </button>
+
+        <transition name="fade">
+          <div class="_fps" v-if="!is_playing">
+            <div class="">
+              <label class="u-label">{{ $t("img_per_second") }}</label>
+              <select v-model.number="new_frame_rate">
+                <option>2</option>
+                <option>4</option>
+                <option>8</option>
+                <option>15</option>
+                <option>24</option>
+                <option>30</option>
+              </select>
+            </div>
+          </div>
+        </transition>
+      </template>
+      <template v-else>
         <MediaContent
-          v-for="media in medias"
-          :key="'previews-' + media.$path"
-          :file="media"
+          :key="created_stopmotion.$path"
+          context="full"
+          :file="created_stopmotion"
           :resolution="1600"
         />
-      </div>
-
-      <button type="button" class="_playPauseBtn" @click="playPausePreview">
-        <img
-          v-if="!is_playing"
-          :src="`${$root.publicPath}images/i_play.svg`"
-          width="48"
-          height="48"
-          draggable="false"
-        />
-        <!-- {{ $t("play") }} -->
-      </button>
-
-      <transition name="fade">
-        <div class="_fps" v-if="!is_playing">
-          <div class="">
-            <label class="u-label">{{ $t("img_per_second") }}</label>
-            <select v-model.number="new_frame_rate">
-              <option>2</option>
-              <option>4</option>
-              <option>8</option>
-              <option>15</option>
-              <option>24</option>
-              <option>30</option>
-            </select>
-          </div>
-        </div>
-      </transition>
+      </template>
     </div>
   </div>
 </template>
@@ -45,6 +55,7 @@ export default {
   props: {
     medias: Array,
     frame_rate: Number,
+    created_stopmotion: [Boolean, Object],
   },
   components: {},
   data() {

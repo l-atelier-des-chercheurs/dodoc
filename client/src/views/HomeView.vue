@@ -15,7 +15,7 @@
         @close="show_settings_modal = false"
       />
 
-      <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" />
+      <!-- <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" /> -->
 
       <h1 v-html="name || $t('welcome_to_dodoc')" />
       <p v-html="description || $t('admins_edit_text_here')" />
@@ -30,10 +30,10 @@
         </a>
       </p>
 
-      <img
+      <!-- <img
         :src="`${$root.publicPath}bandeau-logos-jefabrique.png`"
         class="_bandeau"
-      />
+      /> -->
     </div>
 
     <!-- <div class="_modeSel">
@@ -148,9 +148,9 @@ export default {
   max-width: 600px;
   width: 100%;
   min-height: 40vh;
-  min-height: calc(80vh - 60px);
+  min-height: calc(60vh - 60px);
   margin: 0 auto;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 
   display: flex;
   flex-flow: column nowrap;
@@ -173,9 +173,9 @@ export default {
   // position: absolute;
   // bottom: 0;
   // left: 0;
-  margin-top: calc(var(--spacing) * 4);
+  margin: 0 auto;
   text-align: center;
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) * 4) 0;
 }
 
 ._floatinProjectBtn {

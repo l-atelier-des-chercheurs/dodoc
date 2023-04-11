@@ -149,6 +149,7 @@ export default function () {
 
         publications: "Publications",
         back_to_publications: "Retour aux publications",
+        generate_preview: "Générer un aperçu",
 
         story: "Récit",
         page_by_page: "Document page à page",
@@ -524,6 +525,7 @@ export default function () {
 
         add_media: "Ajouter un média",
         add_medias: "Ajouter des médias",
+        add_link: "Ajouter un lien",
         add_text: "Ajouter du texte",
 
         display_as_public: "Afficher la vue publique",

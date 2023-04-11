@@ -1,10 +1,14 @@
 <template>
   <div class="_taskTracker" v-if="tasks_tracked.length > 0">
-    <DLabel class="u-colorWhite" :str="$t('exports_in_progress')" />
+    <DLabel class="" :str="$t('exports_in_progress')" />
     <div v-for="task in tasks_tracked" class="_task" :key="task.id">
       <div class="u-sameRow">
         <div>{{ formatDateToHuman(task.date_started) }}</div>
-        <div>{{ task.instructions.recipe }}</div>
+        <div>
+          <span v-if="task.instructions">
+            {{ task.instructions.recipe }}
+          </span>
+        </div>
         <div>{{ task.event }}</div>
         <div>
           <b>{{ task.progress }}%</b>
@@ -13,7 +17,7 @@
           type="button"
           v-if="task.progress < 100"
           @click="abortTask(task.id)"
-          class="u-button u-button_black"
+          class="u-button u-button_small u-button_red"
         >
           <sl-icon name="x-octagon" />
         </button>
@@ -21,14 +25,14 @@
           type="button"
           v-else-if="task.progress === 100"
           @click="removeTask(task.id)"
-          class="u-button u-button_black"
+          class="u-button u-button_small u-button_bleuvert"
         >
-          <sl-icon name="x-octagon" />
+          <sl-icon name="check" />
         </button>
       </div>
-      <div v-if="task.path">
+      <!-- <div v-if="task.path">
         {{ task.path }}
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -101,19 +105,20 @@ export default {
   max-height: 200px;
   overflow: auto;
 
+  background: white;
+
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
   margin: calc(var(--spacing) * 3);
   padding: calc(var(--spacing) / 2);
   margin-bottom: 0;
-
-  background: var(--c-noir);
-  color: white;
 }
 ._task {
   // display: flex;
   // flex-flow: row nowrap;
   // justify-content: space-between;
   // align-items: center;
-  background: white;
+  border-left: 2px solid var(--c-gris_fonce);
   margin: calc(var(--spacing) / 2) 0;
   padding: calc(var(--spacing) / 2);
   color: var(--c-noir);

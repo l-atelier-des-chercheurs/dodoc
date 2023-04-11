@@ -230,7 +230,7 @@ export default {
       project: null,
       publication: null,
       projectpanes: [],
-      page_zoom: 60,
+      page_zoom: 100,
 
       is_fullscreen: false,
 
@@ -260,10 +260,12 @@ export default {
       document.addEventListener("keydown", this.keyPressed);
     }
 
-    this.fitZoomToPage();
-    window.addEventListener("resize", () => {
+    if (this.display_mode === "slides") {
       this.fitZoomToPage();
-    });
+      window.addEventListener("resize", () => {
+        this.fitZoomToPage();
+      });
+    }
     // this.$api.join({ room: this.project.$path });
   },
   beforeDestroy() {
@@ -281,8 +283,8 @@ export default {
     page_dimensions_to_px() {
       if (this.publication.layout_mode === "print")
         return {
-          width: this.publication.page_width * 3.78,
-          height: this.publication.page_height * 3.78,
+          width: this.publication.page_width * 3.7952,
+          height: this.publication.page_height * 3.7952,
         };
       return {
         width: this.publication.page_width,
@@ -424,20 +426,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._pages {
-  @media screen {
-    display: flex;
-    justify-content: center;
-    flex-flow: column nowrap;
-    align-items: center;
-    gap: calc(var(--spacing) * 2);
-    padding: calc(var(--spacing) * 2);
-    height: 100vh;
-    transform: scale(var(--page-zoom));
-
-    transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-}
 ._page,
 ._spread {
   page-break-inside: avoid;
@@ -461,12 +449,27 @@ export default {
 }
 
 ._publicationView.is--slides {
+  ._pages {
+    display: flex;
+    justify-content: center;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    padding: calc(var(--spacing) * 2);
+    height: 100vh;
+    transform: scale(var(--page-zoom));
+
+    transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  }
   ._page {
     position: absolute;
   }
 }
 </style>
 <style lang="scss">
+.alertify-logs {
+  display: none !important;
+}
 html,
 body {
   @media print {

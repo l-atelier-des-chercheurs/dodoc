@@ -23,10 +23,10 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
 class Exporter {
-  constructor({ path_to_folder, path_to_parent_folder, instructions }) {
+  constructor({ path_to_folder, folder_to_export_to, instructions }) {
     this.id = uuidv4();
     this.path_to_folder = path_to_folder;
-    this.path_to_parent_folder = path_to_parent_folder;
+    this.folder_to_export_to = folder_to_export_to;
 
     this.instructions = instructions;
     this.status = "ready";
@@ -50,6 +50,9 @@ class Exporter {
         throw new Error(`failed`);
       });
       desired_filename = "publication.pdf";
+    } else if (this.instructions.recipe === "png") {
+      full_path_to_file = await this._loadPageAndPrint();
+      desired_filename = "preview.png";
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -65,12 +68,12 @@ class Exporter {
     const meta_filename = await file.addFileToFolder({
       full_path_to_file,
       desired_filename,
-      path_to_folder: this.path_to_parent_folder,
+      path_to_folder: this.folder_to_export_to,
     });
 
     this._notifyEnded({
       event: "finished",
-      path: path.join(this.path_to_parent_folder, meta_filename),
+      path: path.join(this.folder_to_export_to, meta_filename),
     });
 
     return meta_filename;
@@ -237,7 +240,8 @@ class Exporter {
       width: this.instructions.page_width * 1 || 210,
       height: this.instructions.page_height * 1 || 297,
     };
-    const magnify_factor = this.instructions.layout_mode === "print" ? 3.78 : 1;
+    const magnify_factor =
+      this.instructions.layout_mode === "print" ? 3.7952 : 1;
 
     // magnify browser window size if print with css px to mm of 3.78
     // if screen, browser window size is same as page size
@@ -248,7 +252,7 @@ class Exporter {
 
     // print to pdf with size, try to match pagesize with pixels
     const reduction_factor =
-      this.instructions.layout_mode === "print" ? 1 : 3.78;
+      this.instructions.layout_mode === "print" ? 1 : 3.7952;
 
     const printToPDF_pagesize = {
       width: document_size.width / reduction_factor,
@@ -313,6 +317,16 @@ class Exporter {
 
     return full_path_to_pdf;
     // print to pdf
+  }
+
+  async _saveData(type, data) {
+    const full_path_to_folder_in_cache = await utils.createFolderInCache(type);
+    const full_path_to_file = path.join(
+      full_path_to_folder_in_cache,
+      "file." + type
+    );
+    await writeFileAtomic(full_path_to_file, data);
+    return full_path_to_file;
   }
 }
 
