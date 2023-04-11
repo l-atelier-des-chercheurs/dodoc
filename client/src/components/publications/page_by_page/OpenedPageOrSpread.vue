@@ -40,7 +40,7 @@
         </div>
         <div class="_pagePan">
           <PanZoom2 :scale.sync="scale" :page_opened_id="page_opened_id">
-            <transition name="fade_fast" mode="out-in">
+            <transition name="pagechange" mode="out-in">
               <div
                 class="_pageCont"
                 @click.self="setActiveModule(false)"

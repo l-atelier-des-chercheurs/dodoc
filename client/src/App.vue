@@ -513,6 +513,20 @@ img {
   }
 }
 
+.pagechange {
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(5px);
+    opacity: 0;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
 .slideup {
   &-enter-active,
   &-leave-active {
