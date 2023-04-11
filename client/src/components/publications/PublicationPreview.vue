@@ -10,7 +10,7 @@
         <button
           type="button"
           class="u-button u-button_small u-button_black _generatePreviewBtn"
-          v-if="can_edit"
+          v-if="can_edit && !is_making_preview"
           @click="generatePreview"
         >
           <!-- <sl-icon name="card-image" /> -->
@@ -85,11 +85,17 @@ export default {
       };
 
       this.is_making_preview = true;
-      await this.$api.generatePreviewForPublication({
+      const current_task_id = await this.$api.generatePreviewForPublication({
         path: this.publication.$path,
         instructions,
       });
-      this.is_making_preview = false;
+
+      const checkIfEnded = ({ task_id }) => {
+        if (task_id !== current_task_id) return;
+        this.is_making_preview = false;
+        this.$eventHub.$off("task.ended", checkIfEnded);
+      };
+      this.$eventHub.$on("task.ended", checkIfEnded);
     },
   },
 };

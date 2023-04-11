@@ -455,9 +455,9 @@ export default function () {
             this.onError(err);
             throw err;
           });
-
         const task_id = response.data.task_id;
         this.$eventHub.$emit("task.started", { task_id, instructions });
+        return task_id;
       },
       async generatePreviewForPublication({ path, instructions }) {
         path = `${path}/_generatePreview`;
@@ -471,6 +471,7 @@ export default function () {
 
         const task_id = response.data.task_id;
         this.$eventHub.$emit("task.started", { task_id, instructions });
+        return task_id;
       },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios
