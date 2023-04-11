@@ -37,11 +37,15 @@
           <div class="" v-if="can_edit_publication">
             <button
               type="button"
-              class="u-buttonLink"
+              class="u-buttonLink _exportBtn"
+              :disabled="is_exporting"
               @click="exportPublication"
             >
               <sl-icon name="filetype-pdf" />
               {{ $t("export") }}
+              <transition name="fade_fast" :duration="150" mode="out-in">
+                <LoaderSpinner v-if="is_exporting" />
+              </transition>
             </button>
           </div>
           <div class="">
@@ -99,6 +103,7 @@ export default {
     return {
       publication: null,
       fetch_publication_error: null,
+      is_exporting: false,
     };
   },
   created() {},
@@ -138,11 +143,20 @@ export default {
 
       if (this.publication.page_spreads === true) instructions.page_width *= 2;
 
-      await this.$api.exportFolder({
+      const current_task_id = await this.$api.exportFolder({
         path: this.publication.$path,
         instructions,
       });
       this.$alertify.delay(4000).log(this.$t("compilation_started"));
+
+      this.is_exporting = true;
+
+      const checkIfEnded = ({ task_id }) => {
+        if (task_id !== current_task_id) return;
+        this.is_exporting = false;
+        this.$eventHub.$off("task.ended", checkIfEnded);
+      };
+      this.$eventHub.$on("task.ended", checkIfEnded);
     },
     closeOnRemove({ path }) {
       if (path === this.publication.$path) {
@@ -187,5 +201,9 @@ export default {
   display: flex;
   justify-content: flex-end;
   gap: calc(var(--spacing) / 2);
+}
+
+._exportBtn {
+  position: relative;
 }
 </style>
