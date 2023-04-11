@@ -228,6 +228,9 @@ new Vue({
 
     default_new_module_width: 50,
     default_new_module_height: 50,
+    default_new_module_left: 15,
+    default_new_module_top: 15,
+
     page_magnification: 3.7952,
 
     window: {

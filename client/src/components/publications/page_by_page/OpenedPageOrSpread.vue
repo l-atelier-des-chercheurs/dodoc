@@ -164,6 +164,9 @@ export default {
   created() {
     this.$eventHub.$on(`module.setActive`, this.setActiveModule);
     document.addEventListener("keydown", this.keyPressed);
+
+    this.$root.default_new_module_top = 15;
+    this.$root.default_new_module_left = 15;
   },
   mounted() {},
   beforeDestroy() {

@@ -52,17 +52,25 @@ export default {
         displayVerticalScroll: true,
         displayHorizontalScroll: true,
       },
+
+      scroll_left: undefined,
+      scroll_top: undefined,
+
       debounce_zoom: undefined,
+      debounce_scroll: undefined,
     };
   },
   created() {},
   mounted() {
     this.$nextTick(() => {
-      const ow = document.querySelector("._sideCont").offsetWidth || 280;
-      this.$refs.viewer.scrollTo(-ow, -5);
+      this.scrollToCorner({ animate: false });
     });
+
+    this.$eventHub.$on(`panzoom.panTo`, this.panTo);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(`panzoom.panTo`, this.panTo);
+  },
   watch: {
     scale() {
       this.updateScale(this.scale);
@@ -72,6 +80,11 @@ export default {
   methods: {
     onScroll() {
       // console.log("onScroll");
+      if (this.debounce_scroll) clearTimeout(this.debounce_scroll);
+      this.debounce_scroll = setTimeout(async () => {
+        // this.$root.default_new_module_top = -this.$refs.viewer.getScrollTop();
+        // this.$root.default_new_module_left = -this.$refs.viewer.getScrollLeft();
+      }, 500);
     },
     dragStart() {
       console.log("dragStart");
@@ -94,6 +107,17 @@ export default {
         if (zoom !== this.scale) this.$emit("update:scale", zoom);
       }, 500);
     },
+    panTo({ x, y }) {
+      x;
+      y;
+      this.scrollToCorner({ animate: true });
+    },
+    scrollToCorner({ animate }) {
+      const opt = animate ? { duration: 200 } : undefined;
+      const ow = document.querySelector("._sideCont").offsetWidth || 280;
+      this.$refs.viewer.scrollTo(-ow / this.scale, -5 / this.scale, opt);
+    },
+
     updateScale(scale) {
       if (scale !== this.$refs.viewer.getZoom()) {
         this.$refs.viewer.setZoom(scale, {
