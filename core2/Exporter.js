@@ -263,8 +263,8 @@ class Exporter {
       clearTimeout(page_timeout);
       dev.error(`page timeout for ${url}`);
       if (browser) await browser.close();
-      return reject(new Error(`page-timeout`));
-    }, 20_000);
+      throw new Error(`page-timeout`);
+    }, 30_000);
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -274,6 +274,14 @@ class Exporter {
 
     this._notifyProgress(15);
     const page = await browser.newPage();
+
+    // Set screen size
+    await page.setViewport({
+      width: bw_pagesize.width,
+      height: bw_pagesize.height,
+      deviceScaleFactor: 2,
+    });
+
     this._notifyProgress(30);
     await page
       .goto(url, {
@@ -284,48 +292,49 @@ class Exporter {
       });
     this._notifyProgress(50);
 
-    // Set screen size
-    await page.setViewport({
-      width: bw_pagesize.width,
-      height: bw_pagesize.height,
-      deviceScaleFactor: 2,
-    });
-
     page.emulateMediaType("print");
 
     await new Promise((r) => setTimeout(r, 1000));
     this._notifyProgress(70);
 
-    const full_path_to_folder_in_cache = await utils.createFolderInCache("pdf");
-    const full_path_to_pdf = path.join(
-      full_path_to_folder_in_cache,
-      "temp.pdf"
-    );
-    this._notifyProgress(75);
+    let path_to_temp_file = "";
 
-    await page.pdf({
-      path: full_path_to_pdf,
-      printBackground: true,
-      width: `${printToPDF_pagesize.width}mm`,
-      height: `${printToPDF_pagesize.height}mm`,
-    });
+    if (this.instructions.recipe === "pdf") {
+      path_to_temp_file = await this._saveData("pdf");
+      await page.pdf({
+        path: path_to_temp_file,
+        printBackground: true,
+        width: `${printToPDF_pagesize.width}mm`,
+        height: `${printToPDF_pagesize.height}mm`,
+      });
+
+      return full_path_to_pdf;
+    } else if (this.instructions.recipe === "png") {
+      path_to_temp_file = await this._saveData("png");
+      await page.screenshot({
+        path: path_to_temp_file,
+        clip: {
+          x: 0,
+          y: 0,
+          width: Math.floor(bw_pagesize.width),
+          height: Math.floor(bw_pagesize.height),
+        },
+      });
+    }
 
     this._notifyProgress(95);
     clearTimeout(page_timeout);
-
     if (browser) await browser.close();
 
-    return full_path_to_pdf;
-    // print to pdf
+    return path_to_temp_file;
   }
 
-  async _saveData(type, data) {
+  async _saveData(type) {
     const full_path_to_folder_in_cache = await utils.createFolderInCache(type);
     const full_path_to_file = path.join(
       full_path_to_folder_in_cache,
       "file." + type
     );
-    await writeFileAtomic(full_path_to_file, data);
     return full_path_to_file;
   }
 }
