@@ -112,6 +112,6 @@ export default {
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) * 2);
   align-items: flex-start;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 </style>

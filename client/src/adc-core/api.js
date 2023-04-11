@@ -459,16 +459,18 @@ export default function () {
         const task_id = response.data.task_id;
         this.$eventHub.$emit("task.started", { task_id, instructions });
       },
-      async generatePreviewForPublication({ path, size }) {
+      async generatePreviewForPublication({ path, instructions }) {
         path = `${path}/_generatePreview`;
 
-        const response = await this.$axios.post(path, { size }).catch((err) => {
-          this.onError(err);
-          throw err;
-        });
+        const response = await this.$axios
+          .post(path, instructions)
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
 
         const task_id = response.data.task_id;
-        this.$eventHub.$emit("task.started", { task_id, size });
+        this.$eventHub.$emit("task.started", { task_id, instructions });
       },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios

@@ -149,6 +149,7 @@ export default function () {
 
         publications: "Publications",
         back_to_publications: "Retour aux publications",
+        generate_preview: "Générer un aperçu",
 
         story: "Récit",
         page_by_page: "Document page à page",

@@ -1,12 +1,23 @@
 <template>
   <sl-card class="u-card _publicationPreview">
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
-    <div class="u-instructions">
-      à venir : image d’aperçu prise directement sur le contenu de la
-      publication, générée automatiquement
-      <button type="button" v-if="can_edit" @click="generatePreview">
-        {{ $t("generate_preview") }}
-      </button>
+    <div class="">
+      <div class="_projectInfos--cover">
+        <img :src="cover_thumb" />
+        <transition name="fade_fast" :duration="150" mode="out-in">
+          <LoaderSpinner v-if="is_making_preview" />
+        </transition>
+        <button
+          type="button"
+          class="u-button u-button_small u-button_black _generatePreviewBtn"
+          v-if="can_edit"
+          @click="generatePreview"
+        >
+          <!-- <sl-icon name="card-image" /> -->
+          <sl-icon name="arrow-clockwise" />
+          <!-- {{ $t("generate_preview") }} -->
+        </button>
+      </div>
     </div>
 
     <br />
@@ -43,25 +54,42 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      is_making_preview: false,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    cover_thumb() {
+      return this.makeRelativeURLFromThumbs({
+        $thumbs: this.publication.$cover,
+        $type: "image",
+        $path: this.publication.$path,
+        resolution: 640,
+      });
+    },
+  },
   methods: {
     async removePublication() {
       await this.$api.deleteItem({ path: this.publication.$path });
     },
     async generatePreview() {
+      const instructions = {
+        recipe: "png",
+        page_width: this.publication.page_width,
+        page_height: this.publication.page_height,
+        layout_mode: this.publication.layout_mode || "print",
+      };
+
+      this.is_making_preview = true;
       await this.$api.generatePreviewForPublication({
         path: this.publication.$path,
-        size: {
-          width: this.publication.page_width,
-          height: this.publication.page_height,
-        },
+        instructions,
       });
+      this.is_making_preview = false;
     },
   },
 };
@@ -69,5 +97,14 @@ export default {
 <style lang="scss" scoped>
 ._publicationPreview header {
   cursor: pointer;
+}
+._projectInfos--cover {
+  position: relative;
+}
+._generatePreviewBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 4);
 }
 </style>
