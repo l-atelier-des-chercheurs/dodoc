@@ -1,5 +1,5 @@
 <template>
-  <sl-card class="u-card _publicationPreview">
+  <div class="u-card _publicationPreview">
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
     <div class="">
       <div class="_projectInfos--cover">
@@ -20,9 +20,7 @@
       </div>
     </div>
 
-    <br />
-
-    <header class="" @click="$emit('open')">
+    <header class="_header" @click="$emit('open')">
       <h2>
         {{ publication.title }}
       </h2>
@@ -41,7 +39,7 @@
 
     <!-- {{ publication.title }} -->
     <!-- <button type="button" @click="removePublication">Supprimer</button> -->
-  </sl-card>
+  </div>
 </template>
 <script>
 export default {
@@ -101,11 +99,29 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._publicationPreview {
+  width: 100%;
+  padding: var(--spacing);
+}
 ._publicationPreview header {
   cursor: pointer;
 }
 ._projectInfos--cover {
   position: relative;
+  aspect-ratio: 1/1;
+  background: var(--c-gris);
+  border: 2px solid transparent;
+
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+}
+._header {
+  padding: calc(var(--spacing) / 2) 0;
 }
 ._generatePreviewBtn {
   position: absolute;
