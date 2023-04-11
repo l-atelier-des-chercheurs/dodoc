@@ -108,16 +108,18 @@ export default {
       }, 500);
     },
     panTo({ x, y }) {
-      x;
-      y;
-      this.scrollToCorner({ animate: true });
+      this.scrollToCorner({ x, y, animate: true });
     },
-    scrollToCorner({ animate }) {
+    scrollToCorner({ x, y, animate }) {
       const opt = animate ? { duration: 200 } : undefined;
       const ow = document.querySelector("._sideCont").offsetWidth || 280;
-      this.$refs.viewer.scrollTo(-ow / this.scale, -5 / this.scale, opt);
-    },
 
+      const margin = 10;
+
+      let _x = (x || 0) + -(ow + margin) / this.scale;
+      let _y = (y || 0) + -margin / this.scale;
+      this.$refs.viewer.scrollTo(_x, _y, opt);
+    },
     updateScale(scale) {
       if (scale !== this.$refs.viewer.getZoom()) {
         this.$refs.viewer.setZoom(scale, {
