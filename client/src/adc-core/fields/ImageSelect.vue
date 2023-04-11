@@ -23,7 +23,6 @@
         <button
           type="button"
           class="u-button u-button_orange"
-          disabled
           @click="show_picker = true"
         >
           <svg
@@ -60,7 +59,7 @@
         <PickMediaFromProjects
           v-if="show_picker"
           :path="path"
-          @selectMedia="selectMediaFromLib()"
+          @selectMedia="selectMediaFromLib"
           @close="show_picker = false"
         />
       </div>
@@ -192,8 +191,19 @@ export default {
         }, 20);
       });
     },
-    selectMediaFromLib() {
-      // todo
+    selectMediaFromLib({ path_to_source_media }) {
+      const meta_filename = this.getFilename(path_to_source_media);
+      const file = this.getSourceMedia({
+        source_media: { meta_filename },
+        folder_path: this.path,
+      });
+      this.image = this.makeRelativeURLFromThumbs({
+        $thumbs: file.$thumbs,
+        $type: file.$type,
+        $path: this.path,
+        resolution: 1600,
+      });
+      this.$emit("newPreview", meta_filename);
     },
     createImage(blob) {
       return new Promise((resolve, reject) => {

@@ -459,6 +459,17 @@ export default function () {
         const task_id = response.data.task_id;
         this.$eventHub.$emit("task.started", { task_id, instructions });
       },
+      async generatePreviewForPublication({ path, size }) {
+        path = `${path}/_generatePreview`;
+
+        const response = await this.$axios.post(path, { size }).catch((err) => {
+          this.onError(err);
+          throw err;
+        });
+
+        const task_id = response.data.task_id;
+        this.$eventHub.$emit("task.started", { task_id, size });
+      },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios
           .patch(path, new_meta)
@@ -470,23 +481,32 @@ export default function () {
         return response.data;
       },
 
-      async updateCover({ path, rawData, onProgress }) {
-        let formData = new FormData();
-        if (rawData) formData.append("file", rawData, "cover");
-
+      async updateCover({ path, new_cover_data, onProgress }) {
         path = path + `?cover`;
-
-        await this.$axios
-          .patch(path, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-            onUploadProgress: (progressEvent) => {
-              if (onProgress) onProgress(progressEvent);
-            },
-          })
-          .catch((err) => {
+        if (typeof new_cover_data === "string") {
+          // its a meta filename in that same folder
+          const new_meta = {
+            meta_filename: new_cover_data,
+          };
+          await this.$axios.patch(path, new_meta).catch((err) => {
             this.onError(err);
             throw err;
           });
+        } else if (typeof new_cover_data === "object") {
+          let formData = new FormData();
+          formData.append("file", new_cover_data, "cover");
+          await this.$axios
+            .patch(path, formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+              onUploadProgress: (progressEvent) => {
+                if (onProgress) onProgress(progressEvent);
+              },
+            })
+            .catch((err) => {
+              this.onError(err);
+              throw err;
+            });
+        }
 
         return;
       },

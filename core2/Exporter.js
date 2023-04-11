@@ -23,10 +23,10 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
 class Exporter {
-  constructor({ path_to_folder, path_to_parent_folder, instructions }) {
+  constructor({ path_to_folder, folder_to_export_to, instructions }) {
     this.id = uuidv4();
     this.path_to_folder = path_to_folder;
-    this.path_to_parent_folder = path_to_parent_folder;
+    this.folder_to_export_to = folder_to_export_to;
 
     this.instructions = instructions;
     this.status = "ready";
@@ -62,12 +62,12 @@ class Exporter {
     const meta_filename = await file.addFileToFolder({
       full_path_to_file,
       desired_filename,
-      path_to_folder: this.path_to_parent_folder,
+      path_to_folder: this.folder_to_export_to,
     });
 
     this._notifyEnded({
       event: "finished",
-      path: path.join(this.path_to_parent_folder, meta_filename),
+      path: path.join(this.folder_to_export_to, meta_filename),
     });
 
     return meta_filename;

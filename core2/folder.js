@@ -3,6 +3,7 @@ const path = require("path"),
 
 const utils = require("./utils"),
   thumbs = require("./thumbs"),
+  file = require("./file"),
   cache = require("./cache");
 
 module.exports = (function () {
@@ -160,17 +161,11 @@ module.exports = (function () {
       }, {});
 
       if (update_cover_req) {
-        await thumbs.removeFolderCover({ path_to_folder });
-        await fs.remove(
-          utils.getPathToUserContent(path_to_folder, "meta_cover.jpeg")
-        );
-
-        // TODO improve legibility
-        await API.saveCover({
-          req: update_cover_req,
+        await _updateCover({
           path_to_folder,
-        }).catch((err) => {});
-
+          data,
+          req: update_cover_req,
+        });
         changed_meta.$cover = await _getFolderCover({
           path_to_folder,
         });
@@ -199,44 +194,6 @@ module.exports = (function () {
       } catch (err) {
         throw err;
       }
-    },
-
-    saveCover: async ({ req, path_to_folder }) => {
-      dev.logfunction({ path_to_folder });
-
-      const schema = await utils.parseAndCheckSchema({
-        relative_path: path_to_folder,
-      });
-
-      if (!schema.hasOwnProperty("$cover")) {
-        dev.error(`no cover allowed on ${path_to_folder}`);
-        return;
-      }
-
-      const { path_to_temp_file } = await utils
-        .handleForm({
-          path_to_folder,
-          req,
-        })
-        .catch((err) => {
-          return;
-        });
-
-      const cover_name = "meta_cover.jpeg";
-      const full_path_to_thumb = utils.getPathToUserContent(
-        path_to_folder,
-        cover_name
-      );
-
-      // TODO read filepath with sharp,
-      await utils.makeImageFromPath({
-        full_path: path_to_temp_file,
-        new_path: full_path_to_thumb,
-        resolution: 2000,
-      });
-      await fs.remove(path_to_temp_file);
-
-      return;
     },
 
     login: async ({ path_to_folder, submitted_password }) => {
@@ -295,11 +252,62 @@ module.exports = (function () {
     }
   }
 
+  async function _updateCover({ path_to_folder, data, req }) {
+    const schema = await utils.parseAndCheckSchema({
+      relative_path: path_to_folder,
+    });
+    if (!schema.hasOwnProperty("$cover")) {
+      dev.error(`no cover allowed on ${path_to_folder}`);
+      return;
+    }
+
+    const full_path_to_thumb = utils.getPathToUserContent(
+      path_to_folder,
+      "meta_cover.jpeg"
+    );
+    await thumbs.removeFolderCover({ path_to_folder });
+    await fs.remove(full_path_to_thumb);
+
+    if (data.hasOwnProperty("meta_filename")) {
+      if (data.meta_filename === "") return;
+
+      const meta = await file.getFile({
+        path_to_folder,
+        path_to_meta: path.join(path_to_folder, data.meta_filename),
+      });
+      const path_to_file = utils.getPathToUserContent(
+        path.join(path_to_folder, meta.$media_filename)
+      );
+      await utils.makeImageFromPath({
+        full_path: path_to_file,
+        new_path: full_path_to_thumb,
+        resolution: 2000,
+      });
+    } else if (req) {
+      const { path_to_temp_file } = await utils
+        .handleForm({
+          path_to_folder,
+          req,
+        })
+        .catch((err) => {
+          return;
+        });
+      await utils.makeImageFromPath({
+        full_path: path_to_temp_file,
+        new_path: full_path_to_thumb,
+        resolution: 2000,
+      });
+      await fs.remove(path_to_temp_file);
+    }
+  }
+
   async function _getFolderCover({ schema, path_to_folder }) {
     dev.logfunction({ schema, path_to_folder });
 
-    const cover_name = "meta_cover.jpeg";
-    const cover_path = utils.getPathToUserContent(path_to_folder, cover_name);
+    const cover_path = utils.getPathToUserContent(
+      path_to_folder,
+      "meta_cover.jpeg"
+    );
 
     if (!(await fs.pathExists(cover_path))) return false;
 

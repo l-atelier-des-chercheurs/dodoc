@@ -48,6 +48,7 @@
           <PublicationPreview
             :publication="publication"
             image_name="publi_apercu.png"
+            :can_edit="can_edit"
             @open="openEntry(publication.$path)"
           />
         </div>

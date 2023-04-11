@@ -1,14 +1,17 @@
 <template>
-  <sl-card class="u-card _publicationPreview" @click="$emit('open')">
+  <sl-card class="u-card _publicationPreview">
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
     <div class="u-instructions">
       à venir : image d’aperçu prise directement sur le contenu de la
       publication, générée automatiquement
+      <button type="button" v-if="can_edit" @click="generatePreview">
+        {{ $t("generate_preview") }}
+      </button>
     </div>
 
     <br />
 
-    <header class="">
+    <header class="" @click="$emit('open')">
       <h2>
         {{ publication.title }}
       </h2>
@@ -36,6 +39,7 @@ export default {
     type: String,
     image_name: String,
     publication: Object,
+    can_edit: Boolean,
   },
   components: {},
   data() {
@@ -50,11 +54,20 @@ export default {
     async removePublication() {
       await this.$api.deleteItem({ path: this.publication.$path });
     },
+    async generatePreview() {
+      await this.$api.generatePreviewForPublication({
+        path: this.publication.$path,
+        size: {
+          width: this.publication.page_width,
+          height: this.publication.page_height,
+        },
+      });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-._publicationPreview {
+._publicationPreview header {
   cursor: pointer;
 }
 </style>
