@@ -30,7 +30,6 @@
           <sl-icon name="check" />
         </button>
       </div>
-      {{ task }}
       <!-- <div v-if="task.path">
         {{ task.path }}
       </div> -->

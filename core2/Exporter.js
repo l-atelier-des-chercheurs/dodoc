@@ -279,7 +279,7 @@ class Exporter {
         clearTimeout(page_timeout);
         if (win) win.close();
         return reject(new Error(`page-timeout`));
-      }, 60_000);
+      }, 30_000);
 
       win.webContents.once("did-finish-load", async () => {
         dev.logverbose("did-finish-load " + url);
