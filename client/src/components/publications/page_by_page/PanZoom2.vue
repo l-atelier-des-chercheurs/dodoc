@@ -48,13 +48,20 @@ export default {
         useAutoZoom: true,
         zoomRange: [0.1, 10],
         maxPinchWheel: 10,
-      },
 
+        displayVerticalScroll: true,
+        displayHorizontalScroll: true,
+      },
       debounce_zoom: undefined,
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$nextTick(() => {
+      const ow = document.querySelector("._sideCont").offsetWidth || 280;
+      this.$refs.viewer.scrollTo(-ow, -5);
+    });
+  },
   beforeDestroy() {},
   watch: {
     scale() {
