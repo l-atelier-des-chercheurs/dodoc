@@ -283,8 +283,8 @@ export default {
     page_dimensions_to_px() {
       if (this.publication.layout_mode === "print")
         return {
-          width: this.publication.page_width * 3.78,
-          height: this.publication.page_height * 3.78,
+          width: this.publication.page_width * 3.7952,
+          height: this.publication.page_height * 3.7952,
         };
       return {
         width: this.publication.page_width,

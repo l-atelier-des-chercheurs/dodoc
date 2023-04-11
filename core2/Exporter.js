@@ -239,9 +239,9 @@ class Exporter {
         height: this.instructions.page_height * 1 || 297,
       };
       const magnify_factor =
-        this.instructions.layout_mode === "print" ? 3.78 : 1;
+        this.instructions.layout_mode === "print" ? 3.7952 : 1;
 
-      // magnify browser window size if print with css px to mm of 3.78
+      // magnify browser window size if print with css px to mm of 3.7952
       // if screen, browser window size is same as page size
       const bw_pagesize = {
         width: Math.floor(document_size.width * magnify_factor),
@@ -250,7 +250,7 @@ class Exporter {
 
       // print to pdf with size, try to match pagesize with pixels
       const reduction_factor =
-        this.instructions.layout_mode === "print" ? 1 : 3.78;
+        this.instructions.layout_mode === "print" ? 1 : 3.7952;
 
       const printToPDF_pagesize = {
         width: (document_size.width * 1000) / reduction_factor,
