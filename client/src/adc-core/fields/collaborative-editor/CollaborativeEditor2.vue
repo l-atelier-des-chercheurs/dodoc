@@ -301,9 +301,12 @@ export default {
       if (this.is_collaborative) await this.startCollaborative();
 
       this.editor.enable();
-      // todo set focus
+
       this.editor.focus();
 
+      // todo select latest used font as selected font
+      const fontLastUsed = localStorage.getItem("fontLastUsed");
+      this.editor.format("font", fontLastUsed);
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
       this.$emit(`contentIsEdited`, this.toolbar_el);
@@ -518,6 +521,9 @@ export default {
           `CollaborativeEditor • updateTextMedia: saving new snapshot`
         );
         await this.saveText();
+
+        const { font } = this.editor.getFormat();
+        localStorage.setItem("fontLastUsed", font);
       }, 1000);
     },
 
