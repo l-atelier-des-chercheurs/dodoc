@@ -229,7 +229,9 @@ class Exporter {
         .replace("spaces/", "/+")
         .replace("projects/", "");
 
-      const url = global.appInfos.homeURL + path_without_space;
+      let url = global.appInfos.homeURL + path_without_space;
+      if (this.instructions.page)
+        url += `?page=${this.instructions.page}&make_preview=true`;
 
       // open page https://localhost:8080/projects/hehe/publications/test-pages/
       const { BrowserWindow } = require("electron");
@@ -245,7 +247,8 @@ class Exporter {
       // if screen, browser window size is same as page size
       const bw_pagesize = {
         width: Math.floor(document_size.width * magnify_factor),
-        height: Math.floor(document_size.height * magnify_factor) + 25 /*25*/,
+        height: Math.floor(document_size.height * magnify_factor) + 0 /*25*/,
+        // height: Math.floor(document_size.height * magnify_factor) + 25 /*25*/,
       };
 
       // print to pdf with size, try to match pagesize with pixels
