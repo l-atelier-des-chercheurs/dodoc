@@ -50,7 +50,7 @@ export default {
     align-items: center;
     font-size: var(--sl-font-size-medium);
     padding: calc(var(--spacing) / 2);
-    font-weight: 600;
+    font-weight: 500;
     gap: calc(var(--spacing) / 2);
     cursor: pointer;
 
@@ -69,13 +69,13 @@ export default {
 }
 
 ._icon {
-  font-size: 144%;
+  font-size: 110%;
   background-color: var(--c-gris);
   border-radius: 4px;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   line-height: 0;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
