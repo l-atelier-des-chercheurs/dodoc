@@ -34,7 +34,6 @@
         :maxlength="280"
         :can_edit="can_edit"
       />
-      <br />
     </div>
     <TitleField
       v-if="can_edit || space.description"
@@ -113,7 +112,6 @@ export default {
 }
 ._title {
   padding: calc(var(--spacing) / 1);
-  flex: 8 1 33%;
 }
 ._subtitle {
   color: var(--c-gris_fonce);
@@ -123,6 +121,7 @@ export default {
   padding: calc(var(--spacing) / 1);
   display: block;
   max-width: 66ch;
+  flex: 4 1 33%;
 }
 
 ._openSpace {
