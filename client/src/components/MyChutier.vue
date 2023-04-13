@@ -143,6 +143,10 @@
       :shared_space_path="shared_space_path"
       @updateFocusedMedia="focused_items_slugs = $event"
       @close="focused_items_slugs = []"
+      @stackCreated="
+        focused_items_slugs = [];
+        selected_items_slugs = [];
+      "
     />
   </div>
 </template>

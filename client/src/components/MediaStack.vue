@@ -187,7 +187,7 @@ export default {
         },
       });
 
-      this.$emit("close");
+      this.$emit("stackCreated");
     },
   },
 };
