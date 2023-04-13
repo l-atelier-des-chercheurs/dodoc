@@ -105,7 +105,7 @@ export default {
   },
   data() {
     return {
-      show_settings_modal: true,
+      show_settings_modal: false,
       // current_mode: "spaces",
       current_mode: "spaces",
     };
