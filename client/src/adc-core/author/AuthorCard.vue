@@ -13,7 +13,7 @@
     />
 
     <SelectField
-      v-if="author.role === 'admin' || is_self"
+      v-if="is_self || is_admin"
       :field_name="'role'"
       :content="author.role"
       :path="author.$path"
