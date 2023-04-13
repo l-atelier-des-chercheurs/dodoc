@@ -11,9 +11,9 @@
       :file="file.is_stack ? file._stack_files[0] : file"
       :context="'preview'"
     />
-    <small class="_titleKeywords">
+    <!-- <small class="_titleKeywords">
       {{ file.title }} / {{ file.description }} / {{ file.keywords }}
-    </small>
+    </small> -->
     <!-- <sl-icon-button
       name="trash3"
       circle
