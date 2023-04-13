@@ -16,6 +16,7 @@ export const fonts = [
   "Karla",
   "IBM Plex Serif",
   "IBM Plex Sans",
+  "Raleway",
   "Volkhov",
   "Archivo",
   "Spectral",

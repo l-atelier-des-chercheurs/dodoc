@@ -8,6 +8,9 @@
         <sl-tab slot="nav" panel="access_control">
           {{ $t("access_control") }}
         </sl-tab>
+        <sl-tab slot="nav" panel="fonts">
+          {{ $t("fonts") }}
+        </sl-tab>
         <sl-tab slot="nav" panel="storage">
           {{ $t("storage") }}
         </sl-tab>
@@ -93,6 +96,9 @@
             {{ $t("restart_to_apply") }}
           </div>
         </sl-tab-panel>
+        <sl-tab-panel name="fonts">
+          <FontsPanel />
+        </sl-tab-panel>
         <sl-tab-panel name="storage">
           <PickNativePath
             :field_name="'pathToUserContent'"
@@ -119,9 +125,13 @@
   </BaseModal2>
 </template>
 <script>
+import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
+
 export default {
   props: {},
-  components: {},
+  components: {
+    FontsPanel,
+  },
   data() {
     return {
       path_to_content: undefined,

@@ -3,6 +3,7 @@
     class="_publicationView"
     :class="{
       'is--slides': display_mode === 'slides',
+      'is--serversidepreview': is_serversidepreview,
     }"
   >
     <transition name="fade_fast" mode="out-in">
@@ -20,7 +21,7 @@
             <template v-if="!is_spread">
               <template v-if="display_mode !== 'slides'">
                 <div
-                  v-for="(page, page_number) in pages"
+                  v-for="(page, page_number) in pages_to_show"
                   class="_page"
                   :key="'page-' + page.id"
                 >
@@ -71,7 +72,7 @@
                 <div
                   class="_spread"
                   :key="s_index"
-                  v-for="(spread, s_index) in spreads"
+                  v-for="(spread, s_index) in spreads_to_show"
                 >
                   <div
                     v-for="(page, index) in spread"
@@ -233,6 +234,7 @@ export default {
       page_zoom: 100,
 
       is_fullscreen: false,
+      is_serversidepreview: false,
 
       display_mode: "print",
     };
@@ -240,6 +242,9 @@ export default {
   created() {},
   async mounted() {
     if (this.$route.query?.display === "slides") this.display_mode = "slides";
+
+    if (this.$route.query?.make_preview === "true")
+      this.is_serversidepreview = true;
 
     await this.listProject();
     this.$eventHub.$emit("received.project", this.project);
@@ -291,7 +296,6 @@ export default {
         height: this.publication.page_height,
       };
     },
-
     pagination() {
       return this.setPaginationFromPublication(this.publication);
     },
@@ -322,7 +326,14 @@ export default {
       return `${this.project_path}/publications/${this.$route.params.publication_slug}`;
     },
     pages() {
+      if (!this.publication.pages) return [];
       return this.publication.pages;
+    },
+    pages_to_show() {
+      const page_to_display = +this.$route.query?.page;
+      if (page_to_display)
+        return this.pages.slice(page_to_display - 1, page_to_display);
+      return this.pages;
     },
     modules() {
       return this.publication.$files || [];
@@ -335,6 +346,12 @@ export default {
       return this.makeSpread({
         pages: this.pages,
       });
+    },
+    spreads_to_show() {
+      const spread_to_display = +this.$route.query?.page;
+      if (spread_to_display)
+        return this.spreads.slice(spread_to_display - 1, spread_to_display);
+      return this.spreads;
     },
   },
   methods: {
@@ -487,6 +504,9 @@ body {
 }
 
 ._singlePage ._pagecontent {
+  ._publicationView.is--serversidepreview & {
+    box-shadow: none;
+  }
   @media print {
     box-shadow: none;
     // fixes in Firefox, but bugs in chrome/puppeteer
@@ -508,6 +528,10 @@ body {
 ._noPage {
   width: calc(var(--page-width));
   height: calc(var(--page-height));
+
+  ._publicationView.is--serversidepreview & {
+    display: none;
+  }
 }
 
 ._navBtns {

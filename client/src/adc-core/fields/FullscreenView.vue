@@ -64,5 +64,9 @@ export default {
   left: 0;
   height: 100%;
   width: 100%;
+
+  ::v-deep img {
+    object-fit: scale-down;
+  }
 }
 </style>

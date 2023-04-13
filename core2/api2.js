@@ -337,6 +337,8 @@ module.exports = (function () {
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
 
+    d.custom_fonts = (await _loadCustomFonts()) || {};
+
     res.render("index2", d);
   }
   function loadPerf(rea, res) {
@@ -784,6 +786,20 @@ module.exports = (function () {
     dev.logapi({ data });
     // TODO only available to admins
     notifier.emit("restart");
+  }
+
+  async function _loadCustomFonts() {
+    let custom_fonts = await folder.getFolders({ path_to_type: "fonts" });
+    return custom_fonts.reduce((acc, font) => {
+      if (font.title && font.font_files)
+        acc.push({
+          title: font.title,
+          path: font.$path,
+          font_files: font.font_files,
+        });
+
+      return acc;
+    }, []);
   }
 
   return API;

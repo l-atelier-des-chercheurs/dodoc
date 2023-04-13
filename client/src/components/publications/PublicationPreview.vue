@@ -77,6 +77,7 @@ export default {
     async generatePreview() {
       const instructions = {
         recipe: "png",
+        page: 1,
         page_width: this.publication.page_width,
         page_height: this.publication.page_height,
         layout_mode: this.publication.layout_mode || "print",
