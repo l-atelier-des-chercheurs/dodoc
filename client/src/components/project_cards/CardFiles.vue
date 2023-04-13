@@ -86,7 +86,6 @@ export default {
       this.updateFiles(files);
     },
     async updateFiles(files) {
-      debugger;
       await this.$api.updateMeta({
         path: this.project.$path,
         new_meta: {

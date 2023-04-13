@@ -469,7 +469,7 @@ export default {
   left: 0;
   top: 0;
   z-index: 10;
-  max-height: 100%;
+  height: 100%;
   // padding-right: calc(var(--spacing) / 2);
   overflow: auto;
   // pointer-events: none;

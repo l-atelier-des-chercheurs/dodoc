@@ -576,6 +576,19 @@
           "only_admins_can_edit": true
         }
       }
+    },
+    "fonts": {
+      "fields": {
+        "title": {
+          "type": "string",
+          "required": true,
+          "unique": true
+        },
+        "font_files": {
+          "type": "object"
+        }
+      },
+      "$files": {}
     }
   }
 }

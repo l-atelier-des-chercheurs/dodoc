@@ -42,8 +42,7 @@ export default function () {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
         home: "Accueil",
-        admins_edit_text_here:
-          'Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.',
+        admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
         edit: "modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",
@@ -136,6 +135,10 @@ export default function () {
         sending: "En cours",
         sent: "Envoyé",
         retry: "Réessayer",
+        font_instr: `
+          Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle famille de caractère au format woff2. 
+          Indiquez ensuite pour chaque élément le fichier correspondant.
+        `,
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
@@ -163,7 +166,7 @@ export default function () {
         responsive_instr:
           "Prendra toute la largeur de la fenêtre sans jamais déborder et en respectant la valeur ci-dessus comme largeur maximale.",
         not_responsive_instr:
-          "La largeur du récit sera toujours la même quelle que soit la taille de l'écran. Un ascenseur horizontal sera ajouté si le récit et plus large que la fenêtre.",
+          "La largeur du récit sera toujours la même quelle que soit la taille de l’écran. Un ascenseur horizontal sera ajouté si le récit et plus large que la fenêtre.",
 
         document_type: "Type de document",
         print: "Imprimé",
@@ -210,7 +213,7 @@ export default function () {
         pagination_instructions:
           "Indiquez ici les règlages souhaités pour l’affichage du numéro de la page.",
         pagination_instructions_spread:
-          "Habituellement, les pages de gauche d'un livre sont les pages paires et les pages de droite sont impaires.",
+          "Habituellement, les pages de gauche d’un livre sont les pages paires et les pages de droite sont impaires.",
         distance_to_right: "Distance au bord droit",
         distance_to_bottom: "Distance au bord du bas",
         distance_to_outside: "Distance au bord extérieur",
@@ -303,6 +306,13 @@ export default function () {
           Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
 
         access_control: "Contrôle des accès",
+        fonts: "Famille de caractère",
+        add_font: "Ajouter une famille de caractère",
+        font_name: "Nom de la famille de caractère",
+        font_regular: "Régulier (400)",
+        font_bold: "Gras (700)",
+        font_normal: "Normal",
+        font_italic: "Italique",
         storage: "Stockage",
 
         make_a_video: "Fabriquer une vidéo",

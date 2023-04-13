@@ -1,6 +1,9 @@
 -
 <template>
   <div id="app" class="">
+    <component :is="'style'">
+      {{ custom_fonts_css }}
+    </component>
     <DisconnectModal v-if="show_disconnect_modal" />
 
     <div class="_spinner" v-if="$root.is_loading" key="loader">
@@ -68,7 +71,56 @@ export default {
     );
   },
   watch: {},
-  computed: {},
+  computed: {
+    custom_fonts_css() {
+      const custom_fonts = this.$root.app_infos.custom_fonts;
+
+      return custom_fonts.reduce((acc, font) => {
+        if (!font.font_files) return acc;
+
+        Object.entries(font.font_files).map(([font_props, filename]) => {
+          let font_weight;
+          let font_style;
+
+          if (font_props === "regular-normal") {
+            font_weight = 400;
+            font_style = "normal";
+          } else if (font_props === "regular-italic") {
+            font_weight = 400;
+            font_style = "italic";
+          } else if (font_props === "bold-normal") {
+            font_weight = 700;
+            font_style = "normal";
+          } else if (font_props === "bold-italic") {
+            font_weight = 700;
+            font_style = "italic";
+          }
+
+          const relative_path_to_file = font.path + "/" + filename;
+
+          acc += `
+            @font-face {
+              font-family: ${font.title};
+              font-style: ${font_style};
+              font-weight: ${font_weight};
+              src: url(${relative_path_to_file}) format("woff2");
+            }
+          `;
+        });
+
+        return acc;
+        // @font-face {
+        //   font-family: "Alegreya";
+        //   font-style: italic;
+        //   font-weight: 400;
+        //   src: local("Alegreya Italic"), local("Alegreya-Italic"),
+        //     url("alegreya/alegreya-v13-latin-italic.woff2") format("woff2"),
+        //     /* Chrome 26+, Opera 23+, Firefox 39+ */
+        //       url("alegreya/alegreya-v13-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        // }
+      }, ``);
+    },
+  },
   methods: {
     showDisconnectModal() {
       this.show_disconnect_modal = true;

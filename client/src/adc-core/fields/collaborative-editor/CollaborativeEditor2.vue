@@ -90,11 +90,20 @@ import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
 ShareDB.types.register(require("rich-text").type);
 
-import { toolbar, fonts, formats } from "./imports/defaults.js";
+import {
+  toolbar,
+  fonts as default_fonts,
+  formats,
+} from "./imports/defaults.js";
 
 const FontAttributor = Quill.import("attributors/style/font");
-FontAttributor.whitelist = fonts;
+const custom_fonts_titles = window.app_infos.custom_fonts.map((cf) => cf.title);
+const all_fonts = default_fonts.concat(custom_fonts_titles);
+FontAttributor.whitelist = all_fonts;
 Quill.register(FontAttributor, true);
+
+// update toolbar font list
+toolbar.container[0][0].font = all_fonts;
 
 var BlockEmbed = Quill.import("blots/block/embed");
 class DividerBlot extends BlockEmbed {}
@@ -217,7 +226,7 @@ export default {
   computed: {
     quill_styles() {
       let css = "";
-      for (const font of fonts) {
+      for (const font of all_fonts) {
         css += `
 .ql-picker.ql-font .ql-picker-label[data-value="${font}"]::before,
 .ql-picker.ql-font .ql-picker-item[data-value="${font}"]::before {

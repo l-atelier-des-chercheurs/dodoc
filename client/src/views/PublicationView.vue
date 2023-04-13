@@ -243,7 +243,6 @@ export default {
   async mounted() {
     if (this.$route.query?.display === "slides") this.display_mode = "slides";
 
-    debugger;
     if (this.$route.query?.make_preview === "true")
       this.is_serversidepreview = true;
 
