@@ -314,8 +314,11 @@ export default {
       this.editor.focus();
 
       // todo select latest used font as selected font
-      const fontLastUsed = localStorage.getItem("fontLastUsed");
-      this.editor.format("font", fontLastUsed);
+      if (this.editor.getLength() <= 1) {
+        const fontLastUsed = localStorage.getItem("fontLastUsed");
+        this.editor.format("font", fontLastUsed);
+      }
+
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
       this.$emit(`contentIsEdited`, this.toolbar_el);
