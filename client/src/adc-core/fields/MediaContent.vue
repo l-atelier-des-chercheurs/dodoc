@@ -98,7 +98,7 @@ export default {
     file: Object,
     resolution: {
       type: Number,
-      default: 220,
+      default: 180,
     },
     context: {
       type: String,
