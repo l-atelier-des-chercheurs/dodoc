@@ -109,6 +109,19 @@
           }
         }
       }
+    },
+    "fonts": {
+      "fields": {
+        "title": {
+          "type": "string",
+          "required": true,
+          "unique": true
+        },
+        "font_files": {
+          "type": "object"
+        }
+      },
+      "$files": {}
     }
   }
 }

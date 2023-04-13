@@ -1,22 +1,26 @@
 <template>
   <div class="_radioSwitch">
     <ul class="radio-switch">
-      <li class="radio-switch__item">
+      <li class="radio-switch__item" v-for="i in [0, 1]" :key="i">
         <input
           class="radio-switch__input ri5-sr-only"
           type="radio"
           name="radio-switch-name"
-          id="radio-1"
-          :value="options[0].value"
-          :checked="content === options[0].value"
+          :id="id + '_' + i"
+          :value="options[i].value"
+          :checked="content === options[i].value"
           @input="(event) => $emit('update:content', event.target.value)"
         />
-        <label class="radio-switch__label" for="radio-1">
-          {{ options[0].label }}
+        <label class="radio-switch__label" :for="id + '_' + i">
+          {{ options[i].label }}
         </label>
+        <div
+          v-if="i === 1"
+          aria-hidden="true"
+          class="radio-switch__marker"
+        ></div>
       </li>
-
-      <li class="radio-switch__item">
+      <!-- <li class="radio-switch__item">
         <input
           class="radio-switch__input ri5-sr-only"
           type="radio"
@@ -30,7 +34,7 @@
           {{ options[1].label }}
         </label>
         <div aria-hidden="true" class="radio-switch__marker"></div>
-      </li>
+      </li> -->
     </ul>
   </div>
 </template>
@@ -42,7 +46,9 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
+    };
   },
   created() {},
   mounted() {},

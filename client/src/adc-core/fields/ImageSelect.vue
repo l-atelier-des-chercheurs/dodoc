@@ -20,13 +20,46 @@
       </div>
 
       <div class="_imageselect--fromLib">
-        <button type="button" class="u-button" @click="show_picker = true">
+        <button
+          type="button"
+          class="u-button u-button_orange"
+          @click="show_picker = true"
+        >
+          <svg
+            class="inlineSVG"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 168 168"
+            style="enable-background: new 0 0 168 168"
+            xml:space="preserve"
+          >
+            <path
+              style="fill: var(--c-rouge)"
+              d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
+            />
+            <path style="fill: var(--c-orange)" d="m42 42h21.6v21h-21.6z" />
+            <path style="fill: var(--c-orange)" d="m73.2 42h21.6v21h-21.6z" />
+            <path style="fill: var(--c-orange)" d="m104.4 42h21.6v21h-21.6z" />
+            <path style="fill: var(--c-orange)" d="m42 73.5h21.6v21h-21.6z" />
+            <path style="fill: var(--c-orange)" d="m73.2 73.5h21.6v21h-21.6z" />
+            <path
+              style="fill: var(--c-orange)"
+              d="m104.4 73.5h21.6v21h-21.6z"
+            />
+            <path style="fill: var(--c-orange)" d="m42 105h21.6v21h-21.6z" />
+            <path style="fill: var(--c-orange)" d="m73.2 105h21.6v21h-21.6z" />
+            <path style="fill: var(--c-orange)" d="m104.4 105h21.6v21h-21.6z" />
+          </svg>
+          &nbsp;
           {{ $t("from_project") }}
         </button>
         <PickMediaFromProjects
           v-if="show_picker"
-          :folder_path="folder_path"
-          @selectMedia="selectMediaFromLib()"
+          :path="path"
+          @selectMedia="selectMediaFromLib"
           @close="show_picker = false"
         />
       </div>
@@ -34,7 +67,7 @@
       <div class="_imageselect--takePhoto">
         <button
           type="button"
-          class="u-button"
+          class="u-button u-button_red"
           @click="enable_capture_mode = true"
         >
           <img
@@ -79,7 +112,7 @@
 export default {
   props: {
     existing_preview: [Boolean, String],
-    folder_path: String,
+    path: String,
     instructions: String,
   },
   components: {
@@ -158,8 +191,19 @@ export default {
         }, 20);
       });
     },
-    selectMediaFromLib() {
-      // todo
+    selectMediaFromLib({ path_to_source_media }) {
+      const meta_filename = this.getFilename(path_to_source_media);
+      const file = this.getSourceMedia({
+        source_media: { meta_filename },
+        folder_path: this.path,
+      });
+      this.image = this.makeRelativeURLFromThumbs({
+        $thumbs: file.$thumbs,
+        $type: file.$type,
+        $path: this.path,
+        resolution: 1600,
+      });
+      this.$emit("newPreview", meta_filename);
     },
     createImage(blob) {
       return new Promise((resolve, reject) => {
@@ -227,13 +271,28 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+._imageselect {
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1 1 auto;
+
+  gap: calc(var(--spacing) / 4);
+}
+
 ._imageselect--image {
   width: 200px;
 }
 
-._imageselect--takePhoto {
+._imageselect--upload {
+  ::v-deep label {
+    width: 100%;
+  }
+}
+
+._imageselect--takePhoto,
+._imageselect--fromLib {
   > button {
-    background: var(--c-orange);
+    width: 100%;
   }
 }
 

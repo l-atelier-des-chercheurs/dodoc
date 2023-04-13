@@ -3,60 +3,54 @@
     <DLabel
       v-if="label && (new_authors_paths.length > 0 || can_edit)"
       :str="label"
+      :tag="tag"
       :instructions="can_edit ? instructions : ''"
     />
 
     <div class="_authors">
-      <template v-for="author_path in new_authors_paths">
-        <AuthorTag
-          :path="author_path"
-          :key="author_path"
-          :edit_mode="edit_mode"
-          @remove="removeAuthor(author_path)"
-        />
-      </template>
-      <!-- <sl-button
-        v-if="edit_mode && add_new_author === false"
-        variant="default"
-        class=""
-        size="small"
-        pill
-        @click="add_new_author = true"
-      >
-        <sl-icon name="plus-square" :label="$t('add')" />
-
-      </sl-button> -->
-
-      <template v-if="can_edit">
-        <EditBtn v-if="!edit_mode" @click="enableEditMode" />
-      </template>
+      <AuthorTag
+        v-for="author_path in new_authors_paths"
+        :path="author_path"
+        :key="author_path"
+        :edit_mode="edit_mode"
+        :links_to_author_page="!edit_mode"
+        @remove="removeAuthor(author_path)"
+      />
+      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
 
     <div class="_footer" v-if="edit_mode">
-      <!-- <TextInput
-          :content.sync="new_tag_name"
-          :maxlength="maxlength"
-          :required="true"
-          @toggleValidity="($event) => (allow_save_newkeyword = $event)"
-          @onEnter="onEnter"
-        /> -->
-      <!-- <div class="u-wips" /> -->
+      <BaseModal2 @close="$emit('close')" :title="$t('add_authors')">
+        <DLabel class="_label" :str="$t('authors')" />
+        <div class="_authors">
+          <AuthorTag
+            v-for="author_path in new_authors_paths"
+            :path="author_path"
+            :key="author_path"
+            :edit_mode="edit_mode"
+            :links_to_author_page="!edit_mode"
+            @remove="removeAuthor(author_path)"
+          />
+        </div>
 
-      <DLabel :str="$t('add_authors')" />
-      <AuthorPicker
-        :current_authors="new_authors_paths"
-        @addAuthor="addAuthor"
-      />
+        <br />
 
-      <div>
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          :allow_save="allow_save"
-          @save="updateAuthors"
-          @cancel="cancel"
+        <DLabel class="_label" :str="$t('add_authors')" />
+        <AuthorPicker
+          :current_authors="new_authors_paths"
+          @addAuthor="addAuthor"
         />
-      </div>
+
+        <div>
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
+            :allow_save="allow_save"
+            @save="updateAuthors"
+            @cancel="cancel"
+          />
+        </div>
+      </BaseModal2>
     </div>
   </div>
 </template>
@@ -76,6 +70,7 @@ export default {
       type: String,
       default: "",
     },
+    tag: String,
 
     can_edit: {
       type: Boolean,

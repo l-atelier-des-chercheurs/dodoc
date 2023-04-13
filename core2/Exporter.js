@@ -23,10 +23,10 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
 class Exporter {
-  constructor({ path_to_folder, path_to_parent_folder, instructions }) {
+  constructor({ path_to_folder, folder_to_export_to, instructions }) {
     this.id = uuidv4();
     this.path_to_folder = path_to_folder;
-    this.path_to_parent_folder = path_to_parent_folder;
+    this.folder_to_export_to = folder_to_export_to;
 
     this.instructions = instructions;
     this.status = "ready";
@@ -50,6 +50,9 @@ class Exporter {
         throw new Error(`failed`);
       });
       desired_filename = "publication.pdf";
+    } else if (this.instructions.recipe === "png") {
+      full_path_to_file = await this._loadPageAndPrint();
+      desired_filename = "preview.png";
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -65,12 +68,12 @@ class Exporter {
     const meta_filename = await file.addFileToFolder({
       full_path_to_file,
       desired_filename,
-      path_to_folder: this.path_to_parent_folder,
+      path_to_folder: this.folder_to_export_to,
     });
 
     this._notifyEnded({
       event: "finished",
-      path: path.join(this.path_to_parent_folder, meta_filename),
+      path: path.join(this.folder_to_export_to, meta_filename),
     });
 
     return meta_filename;
@@ -229,21 +232,42 @@ class Exporter {
     const path_without_space = this.path_to_folder
       .replace("spaces/", "/+")
       .replace("projects/", "");
-    const url = global.appInfos.homeURL + path_without_space;
+
+    let url = global.appInfos.homeURL + path_without_space;
+    if (this.instructions.page)
+      url += `?page=${this.instructions.page}&make_preview=true`;
 
     const puppeteer = require("puppeteer");
 
     const document_size = {
-      width: this.instructions.page_width * 10 || 210,
-      height: this.instructions.page_height * 10 || 297,
+      width: this.instructions.page_width * 1 || 210,
+      height: this.instructions.page_height * 1 || 297,
+    };
+    const magnify_factor =
+      this.instructions.layout_mode === "print" ? 3.7952 : 1;
+
+    // magnify browser window size if print with css px to mm of 3.78
+    // if screen, browser window size is same as page size
+    const bw_pagesize = {
+      width: Math.floor(document_size.width * magnify_factor),
+      height: Math.floor(document_size.height * magnify_factor) + 0,
+    };
+
+    // print to pdf with size, try to match pagesize with pixels
+    const reduction_factor =
+      this.instructions.layout_mode === "print" ? 1 : 3.7952;
+
+    const printToPDF_pagesize = {
+      width: document_size.width / reduction_factor,
+      height: document_size.height / reduction_factor,
     };
 
     let page_timeout = setTimeout(async () => {
       clearTimeout(page_timeout);
       dev.error(`page timeout for ${url}`);
       if (browser) await browser.close();
-      return reject(new Error(`page-timeout`));
-    }, 20_000);
+      throw new Error(`page-timeout`);
+    }, 30_000);
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -253,6 +277,14 @@ class Exporter {
 
     this._notifyProgress(15);
     const page = await browser.newPage();
+
+    // Set screen size
+    await page.setViewport({
+      width: bw_pagesize.width,
+      height: bw_pagesize.height,
+      deviceScaleFactor: 2,
+    });
+
     this._notifyProgress(30);
     await page
       .goto(url, {
@@ -263,39 +295,50 @@ class Exporter {
       });
     this._notifyProgress(50);
 
-    // Set screen size
-    await page.setViewport({
-      width: Math.floor(document_size.width * 3.7795),
-      height: Math.floor(document_size.height * 3.7795), // totally arbitrary value… will have to find better
-      deviceScaleFactor: 2,
-    });
-
     page.emulateMediaType("print");
 
     await new Promise((r) => setTimeout(r, 1000));
     this._notifyProgress(70);
 
-    const full_path_to_folder_in_cache = await utils.createFolderInCache("pdf");
-    const full_path_to_pdf = path.join(
-      full_path_to_folder_in_cache,
-      "temp.pdf"
-    );
-    this._notifyProgress(75);
+    let path_to_temp_file = "";
 
-    await page.pdf({
-      path: full_path_to_pdf,
-      printBackground: true,
-      width: `${document_size.width}mm`,
-      height: `${document_size.height}mm`,
-    });
+    if (this.instructions.recipe === "pdf") {
+      path_to_temp_file = await this._saveData("pdf");
+      await page.pdf({
+        path: path_to_temp_file,
+        printBackground: true,
+        width: `${printToPDF_pagesize.width}mm`,
+        height: `${printToPDF_pagesize.height}mm`,
+      });
+
+      return full_path_to_pdf;
+    } else if (this.instructions.recipe === "png") {
+      path_to_temp_file = await this._saveData("png");
+      await page.screenshot({
+        path: path_to_temp_file,
+        clip: {
+          x: 0,
+          y: 0,
+          width: Math.floor(bw_pagesize.width),
+          height: Math.floor(bw_pagesize.height),
+        },
+      });
+    }
 
     this._notifyProgress(95);
     clearTimeout(page_timeout);
-
     if (browser) await browser.close();
 
-    return full_path_to_pdf;
-    // print to pdf
+    return path_to_temp_file;
+  }
+
+  async _saveData(type) {
+    const full_path_to_folder_in_cache = await utils.createFolderInCache(type);
+    const full_path_to_file = path.join(
+      full_path_to_folder_in_cache,
+      "file." + type
+    );
+    return full_path_to_file;
   }
 }
 

@@ -6,7 +6,9 @@
       @click="show_confirm_delete = true"
     >
       <sl-icon name="trash3" />
-      {{ remove_text }}
+      <template v-if="show_button_text">
+        {{ remove_text }}
+      </template>
     </button>
 
     <BaseModal2
@@ -38,6 +40,10 @@
 export default {
   props: {
     remove_text: String,
+    show_button_text: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {},
   data() {

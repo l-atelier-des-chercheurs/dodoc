@@ -7,7 +7,16 @@
     @dragend="endMediaDrag()"
   >
     <template v-if="file.$type === 'image'">
-      <img :src="thumb" class="_mediaContent--image" loading="eager" />
+      <template v-if="context === 'preview'">
+        <img :src="thumb" class="_mediaContent--image" loading="eager" />
+      </template>
+      <template v-else>
+        <img
+          :src="file_full_path"
+          class="_mediaContent--image"
+          loading="eager"
+        />
+      </template>
       <template v-if="show_fullscreen_button">
         <FullscreenBtn
           class="u-floatingFsButton"
@@ -15,11 +24,9 @@
           :label="$t('fullscreen')"
           @click="show_fullscreen = true"
         />
-        <FullscreenView
-          v-if="show_fullscreen"
-          :image_src="file_full_path"
-          @close="show_fullscreen = false"
-        />
+        <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
+          <img :src="file_full_path" />
+        </FullscreenView>
       </template>
     </template>
     <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
@@ -77,7 +84,11 @@
       </template>
     </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
-      <sl-icon name="file-earmark" /> {{ file.$media_filename }}
+      <sl-icon name="file-earmark" /> {{ file.$media_filename }}<br />
+      <DownloadFile v-if="context === 'full'" :file="file">
+        <sl-icon name="file-earmark-arrow-down" />
+        {{ $t("download") }}
+      </DownloadFile>
     </small>
   </div>
 </template>
@@ -87,7 +98,7 @@ export default {
     file: Object,
     resolution: {
       type: Number,
-      default: 180,
+      default: 220,
     },
     context: {
       type: String,
@@ -214,24 +225,18 @@ export default {
   &[data-filetype="url"] {
     aspect-ratio: 16/9;
   }
+  &[data-filetype="pdf"] {
+    aspect-ratio: 16/9;
+  }
 }
 
+._mediaContent--iframe,
 ._mediaContent--pdfIframe {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-img {
-  max-width: none;
-}
-
-._mediaContent--iframe {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-
   height: 100%;
+  border: 2px solid #535659;
 }
 </style>

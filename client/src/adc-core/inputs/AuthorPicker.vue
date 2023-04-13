@@ -1,11 +1,17 @@
 <template>
   <div class="_authorPicker">
-    <div
-      v-for="author_path in all_authors_except_current"
-      :key="author_path"
-      @click="$emit('addAuthor', author_path)"
-    >
-      <AuthorTag :path="author_path" :key="author_path" />
+    <div v-if="all_authors_except_current.length === 0" class="u-instructions">
+      {{ $t("no_authors_to_show") }}
+    </div>
+
+    <div class="_list">
+      <div
+        v-for="author_path in all_authors_except_current"
+        :key="author_path"
+        @click="$emit('addAuthor', author_path)"
+      >
+        <AuthorTag :path="author_path" :key="author_path" />
+      </div>
     </div>
   </div>
 </template>
@@ -44,15 +50,17 @@ export default {
   flex: 0 0 auto;
   padding: calc(var(--spacing) / 4) 0;
 }
+._label {
+}
 
 ._authorPicker {
   // border: 2px solid var(--c-bleumarine);
-  padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 4);
-
+}
+._list {
   display: flex;
   flex-flow: row wrap;
-
+  gap: calc(var(--spacing) / 4);
+  // padding: calc(var(--spacing) / 4);
   > * {
     cursor: pointer;
   }

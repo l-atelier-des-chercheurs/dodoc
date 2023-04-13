@@ -111,6 +111,8 @@ import DLabel from "@/adc-core/fields/DLabel.vue";
 Vue.component("DLabel", DLabel);
 import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
+import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
+Vue.component("ImageSelect", ImageSelect);
 
 Vue.component("EditBtn", {
   name: "EditBtn",
@@ -167,6 +169,8 @@ document.addEventListener(
 
 import FormatDates from "@/mixins/FormatDates";
 Vue.mixin(FormatDates);
+import Props from "@/mixins/Props";
+Vue.mixin(Props);
 import Medias from "@/mixins/Medias";
 Vue.mixin(Medias);
 import Authors from "@/mixins/Authors";
@@ -219,10 +223,12 @@ new Vue({
 
     current_time: "",
 
-    default_new_module_width: 5,
-    default_new_module_height: 5,
+    default_new_module_width: 50,
+    default_new_module_height: 50,
+    default_new_module_left: 15,
+    default_new_module_top: 15,
 
-    page_magnification: 37.8,
+    page_magnification: 3.7952,
 
     window: {
       innerWidth: window.innerWidth,
@@ -260,7 +266,7 @@ new Vue({
   computed: {
     is_mobile_view() {
       // return false;
-      return this.window.innerWidth < 900;
+      return this.window.innerWidth < 1000;
     },
   },
   methods: {

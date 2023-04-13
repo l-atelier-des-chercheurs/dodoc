@@ -81,7 +81,6 @@ export default {
           this.$emit("close");
         })
         .catch((err) => {
-          debugger;
           if (err === "submitted_password_is_wrong") {
             this.$refs.passwordField.$el.querySelector("input").select();
             this.$alertify

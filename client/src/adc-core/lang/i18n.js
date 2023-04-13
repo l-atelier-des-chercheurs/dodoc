@@ -42,8 +42,7 @@ export default function () {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
         home: "Accueil",
-        admins_edit_text_here:
-          'Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.',
+        admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
         edit: "modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",
@@ -59,13 +58,15 @@ export default function () {
         input_url_instr:
           "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
         embed: "Intégrer",
+        from_project: "Depuis le projet",
 
         description: "description",
         no_description: "Pas de description",
         keywords: "Mots-clés",
         add: "ajouter",
         access: "accéder",
-        title: "titre",
+        title: "Titre",
+        subtitle: "Sous-titre",
         name: "nom",
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
@@ -83,6 +84,7 @@ export default function () {
         submitted_password_is_wrong: "Mot de passe erroné",
         account_doesnt_exist: "Ce compte n’existe pas",
         submit: "Valider",
+        search_by_title: "Rechercher par titre",
 
         connection_lost: `Connexion perdue`,
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
@@ -134,6 +136,10 @@ export default function () {
         sending: "En cours",
         sent: "Envoyé",
         retry: "Réessayer",
+        font_instr: `
+          Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle famille de caractère au format woff2. 
+          Indiquez ensuite pour chaque élément le fichier correspondant.
+        `,
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
@@ -147,6 +153,7 @@ export default function () {
 
         publications: "Publications",
         back_to_publications: "Retour aux publications",
+        generate_preview: "Générer un aperçu",
 
         story: "Récit",
         page_by_page: "Document page à page",
@@ -155,9 +162,25 @@ export default function () {
         share: "Partager",
         exports_in_progress: "Exportation(s) en cours",
 
+        story_width: "Largeur du récit",
+        responsive: "Fluide",
+        responsive_instr:
+          "Prendra toute la largeur de la fenêtre sans jamais déborder et en respectant la valeur ci-dessus comme largeur maximale.",
+        not_responsive_instr:
+          "La largeur du récit sera toujours la même quelle que soit la taille de l’écran. Un ascenseur horizontal sera ajouté si le récit et plus large que la fenêtre.",
+
+        document_type: "Type de document",
+        print: "Imprimé",
+        print_instr:
+          "Les unités seront exprimées en millimètres. Idéal pour réaliser un livre, une affiche ou tout autre document imprimé.",
+        screen: "Écran",
+        screen_instr:
+          "Les unités seront exprimées en pixel. Idéal pour réaliser une présentation séquencées en diapositives.",
+
         format: "Format",
         format_instructions:
-          "Sélectionnez un format ou définissez les dimensions de la page, en centimètres.",
+          "Sélectionnez un format ou définissez les dimensions de la page, en millimètres.",
+
         A4_portrait: "A4 en portrait",
         A4_landscape: "A4 en paysage",
         A5_portrait: "A5 en portrait",
@@ -187,11 +210,11 @@ export default function () {
         backcover: "Quatrième de couverture",
         margins: "Marges",
         margins_instructions:
-          "Renseignez ici les repères de marge souhaités, en centimètres. Les marges seront dessinées avec un trait violet.",
+          "Renseignez ici les repères de marge souhaités. Les marges seront dessinées avec un trait violet.",
         pagination_instructions:
           "Indiquez ici les règlages souhaités pour l’affichage du numéro de la page.",
         pagination_instructions_spread:
-          "Habituellement, les pages de gauche d'un livre sont les pages paires et les pages de droite sont impaires.",
+          "Habituellement, les pages de gauche d’un livre sont les pages paires et les pages de droite sont impaires.",
         distance_to_right: "Distance au bord droit",
         distance_to_bottom: "Distance au bord du bas",
         distance_to_outside: "Distance au bord extérieur",
@@ -206,6 +229,7 @@ export default function () {
         pagn_starts_on_page: "Le décompte de page démarre à la page",
         hide_pagination: "Masquer la pagination",
         hide_pagination_instr: "Concerne uniquement cette page",
+        remove_page_and_content: "Supprimer la page et son contenu ?",
         border_radius: "Coins arrondis",
         photo: "Photo",
         remove_this_image: "Supprimer cette image",
@@ -241,6 +265,10 @@ export default function () {
           "Ce projet sera affiché en haut de la page d’accueil.",
 
         show_projects: "Afficher les projets",
+        all_projects: "Tous les projets",
+        all_projects_instr:
+          "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
+
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
         restart_to_apply: "Relancez do•doc pour appliquer",
         restart: "Relancer do•doc",
@@ -255,9 +283,10 @@ export default function () {
         media_duplicated: "Média dupliqué",
 
         CC: "Creative Commons",
+        license_and_authors: "Licence et auteurs",
         license: "Licence",
         licence_instructions:
-          "Indiquez ici les conditions de réutilisation de votre contenu.",
+          "Indiquez ici les conditions de partage et de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
 
@@ -278,6 +307,13 @@ export default function () {
           Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
 
         access_control: "Contrôle des accès",
+        fonts: "Famille de caractère",
+        add_font: "Ajouter une famille de caractère",
+        font_name: "Nom de la famille de caractère",
+        font_regular: "Régulier (400)",
+        font_bold: "Gras (700)",
+        font_normal: "Normal",
+        font_italic: "Italique",
         storage: "Stockage",
 
         make_a_video: "Fabriquer une vidéo",
@@ -298,6 +334,11 @@ export default function () {
         transparent: "Transparent",
 
         space: "Espace",
+        spaces: "Les espaces",
+        spaces_instr:
+          "Chaque espace contient une série de projets liés par un groupe, un événement ou une thématique particulière.",
+        create_a_space: "Créer un espace",
+        project: "Projet",
 
         watermark: "Habillage",
         watermark_instructions:
@@ -402,6 +443,7 @@ export default function () {
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
         machines_and_materials: "Machines et matériaux",
+        levels_and_competences: "Niveau et compétence",
 
         camera: "Camera",
         sources: "Sources",
@@ -494,6 +536,7 @@ export default function () {
 
         add_media: "Ajouter un média",
         add_medias: "Ajouter des médias",
+        add_link: "Ajouter un lien",
         add_text: "Ajouter du texte",
 
         display_as_public: "Afficher la vue publique",
@@ -503,10 +546,11 @@ export default function () {
         space_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
-          "Le titre est affiché ici et sur la page d’accueil.",
+          "Le titre est affiché ici et sur la liste des projets.",
         project_desc_instructions:
-          "La description est affichée ici et sur la page d’accueil.",
+          "La description est affichée ici et sur la liste des projets.",
         add_authors: "Ajouter des contributeur·rice·s",
+        no_authors_to_show: "Aucun auteur à afficher",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",
         line: "Ligne",

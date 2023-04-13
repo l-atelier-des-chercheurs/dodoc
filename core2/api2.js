@@ -64,6 +64,16 @@ module.exports = (function () {
       _authenticateToken,
       _exportToParent
     );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_generatePreview",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_generatePreview",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_generatePreview",
+      ],
+      _generalPasswordCheck,
+      _authenticateToken,
+      _generatePreview
+    );
     app.patch(
       [
         "/_api2/:folder_type/:folder_slug/:meta_filename",
@@ -242,7 +252,12 @@ module.exports = (function () {
     // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
     // todo not very clean, merge with auth.isAuthorIncluded
-    const folder_meta = await folder.getFolder({ path_to_folder });
+    const folder_meta = await folder
+      .getFolder({ path_to_folder })
+      .catch((err) => {
+        if (res) return res.status(404).send({ code: err.code });
+        throw err;
+      });
     if (!folder_meta.$authors || folder_meta.$authors.length === 0)
       return next ? next() : undefined;
 
@@ -321,6 +336,8 @@ module.exports = (function () {
 
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
+
+    d.custom_fonts = (await _loadCustomFonts()) || {};
 
     res.render("index2", d);
   }
@@ -530,7 +547,7 @@ module.exports = (function () {
     // DISPATCH TASKS
     const task = new Exporter({
       path_to_folder,
-      path_to_parent_folder,
+      folder_to_export_to: path_to_parent_folder,
       instructions: data,
     });
     const task_id = task.id;
@@ -555,6 +572,7 @@ module.exports = (function () {
 
     try {
       const exported_meta_filename_in_parent = await task.start();
+
       const meta = await file.getFile({
         path_to_folder: path_to_parent_folder,
         path_to_meta: path.join(
@@ -562,13 +580,49 @@ module.exports = (function () {
           exported_meta_filename_in_parent
         ),
       });
-
       notifier.emit("fileCreated", path_to_parent_folder, {
         path_to_folder: path_to_parent_folder,
         meta,
       });
     } catch (err) {
       dev.error("Failed to export file: " + err);
+      notifier.emit("taskEnded", task_id, {
+        task_id,
+        message: err,
+      });
+    }
+  }
+  async function _generatePreview(req, res, next) {
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, data });
+
+    // TODO : do not move to parent folder, instead use that file as $cover
+    const task = new Exporter({
+      path_to_folder,
+      folder_to_export_to: path_to_folder,
+      instructions: data,
+    });
+    const task_id = task.id;
+    res.status(200).json({ task_id });
+
+    try {
+      const exported_meta_filename = await task.start();
+      const changed_data = await folder.updateFolder({
+        path_to_folder,
+        data: { meta_filename: exported_meta_filename },
+        update_cover_req: true,
+      });
+
+      notifier.emit("folderUpdated", path_to_folder, {
+        path: path_to_folder,
+        changed_data,
+      });
+      notifier.emit("folderUpdated", path_to_type, {
+        path: path_to_folder,
+        changed_data,
+      });
+    } catch (err) {
+      dev.error("Failed to generate preview: " + err);
 
       notifier.emit("taskEnded", task_id, {
         task_id,
@@ -732,6 +786,20 @@ module.exports = (function () {
     dev.logapi({ data });
     // TODO only available to admins
     notifier.emit("restart");
+  }
+
+  async function _loadCustomFonts() {
+    let custom_fonts = await folder.getFolders({ path_to_type: "fonts" });
+    return custom_fonts.reduce((acc, font) => {
+      if (font.title && font.font_files)
+        acc.push({
+          title: font.title,
+          path: font.$path,
+          font_files: font.font_files,
+        });
+
+      return acc;
+    }, []);
   }
 
   return API;

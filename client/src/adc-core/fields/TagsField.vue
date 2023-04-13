@@ -2,12 +2,14 @@
   <div class="_tagsField">
     <DLabel v-if="label" :str="label" />
 
-    <span class="_tagsList" v-if="new_tags.length > 0">
+    <span v-if="new_tags.length === 0 && !can_edit">–</span>
+
+    <span class="_tagsList" v-else-if="new_tags.length > 0">
       <sl-tag
         v-for="tag in new_tags"
         :key="tag"
         variant="primary"
-        size="small"
+        size="medium"
         :removable="edit_mode"
         @click="edit_mode ? removeTag(tag) : ''"
       >
@@ -22,7 +24,7 @@
         v-if="edit_mode && create_new_tag === false"
         variant="default"
         class=""
-        size="small"
+        size="medium"
         pill
         @click="create_new_tag = true"
       >

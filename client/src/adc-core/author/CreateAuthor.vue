@@ -4,6 +4,15 @@
       <fieldset>
         <legend class="u-label">{{ $t("new_account") }}</legend>
 
+        <!-- <ImageSelect
+          :folder_path="'/authors'"
+          @newPreview="
+            (value) => {
+              new_author_cover_raw = value;
+            }
+          "
+        /> -->
+
         <TextInput
           :content.sync="new_author_name"
           :label_str="'name_or_pseudonym'"
@@ -40,7 +49,7 @@
         <br />
 
         <DLabel :str="$t('role')" />
-        <select v-model="new_author_role">
+        <select v-model="new_author_role" :disabled="!is_first_user">
           <option
             v-for="option in author_roles"
             :key="option"
@@ -69,7 +78,9 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    is_first_user: Boolean,
+  },
   components: {},
   data() {
     return {
@@ -77,6 +88,7 @@ export default {
       new_author_name: "",
       new_author_password: "",
       new_author_role: "contributor",
+      new_author_cover_raw: undefined,
 
       author_roles: ["contributor", "admin"],
       is_creating_author: false,
