@@ -244,6 +244,8 @@ export default {
   --max-column-width: 150ch;
 
   accent-color: var(--c-orange);
+
+  --chutier-bg: rgb(37, 39, 41);
 }
 
 * {

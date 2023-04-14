@@ -1,16 +1,16 @@
 <template>
   <div class="_sharedFolderItem">
     <!-- {{ file }} -->
-    <div v-if="file.is_stack" class="_sharedFolderItem--stackSign">
-      <sl-button circle class="">
-        <sl-icon class="" name="files" />
-      </sl-button>
-    </div>
     <MediaContent
       class="_sharedFolderItem--preview"
       :file="file.is_stack ? file._stack_files[0] : file"
       :context="'preview'"
     />
+    <div v-if="file.is_stack" class="_sharedFolderItem--stackSign">
+      <sl-button circle class="">
+        <sl-icon class="" name="files" />
+      </sl-button>
+    </div>
     <!-- <small class="_titleKeywords">
       {{ file.title }} / {{ file.description }} / {{ file.keywords }}
     </small> -->
@@ -52,8 +52,12 @@ export default {
 
   ._sharedFolderItem--stackSign {
     position: absolute;
+
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+
     display: flex;
     justify-content: center;
     align-items: center;

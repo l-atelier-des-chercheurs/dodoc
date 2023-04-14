@@ -3,28 +3,43 @@
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <div class="_panes">
-        <div class="_myContent" :key="'myContent'" v-show="show_chutier">
-          <AuthorList
-            v-if="show_authors_modal"
-            @close="show_authors_modal = false"
-          />
+        <AuthorList
+          v-if="show_authors_modal"
+          @close="show_authors_modal = false"
+        />
+
+        <div
+          v-if="connected_as"
+          class="_myContent"
+          :class="{
+            'is--shown': show_chutier,
+          }"
+          :key="'myContent'"
+        >
           <MyChutier
-            v-if="connected_as"
+            v-show="show_chutier"
             :shared_space_path="shared_folder_path"
             @showAuthorModal="showAuthorModal"
             @close="show_chutier = false"
           />
+          <div class="_chutierBar">
+            <button
+              type="button"
+              class="u-button"
+              @click="show_chutier = !show_chutier"
+            >
+              <sl-icon name="file-earmark-arrow-down" />
+            </button>
+          </div>
         </div>
-        <button
-          type="button"
-          class="u-buttonLink _openChutier"
-          v-if="!show_chutier"
-          @click="show_chutier = true"
-        >
-          {{ $t("chutier") }}
-        </button>
 
-        <div class="_sharedContent" :key="'sharedContent'">
+        <div
+          class="_sharedContent"
+          :class="{
+            'has--chutier': show_chutier,
+          }"
+          :key="'sharedContent'"
+        >
           <SharedFolder :shared_folder_path="shared_folder_path" />
         </div>
       </div>
@@ -64,6 +79,7 @@ export default {
 
     await this.loadFolder();
     // check if necerray to login or create account :
+
     if (!this.connected_as) this.showAuthorModal();
   },
   beforeDestroy() {},
@@ -116,35 +132,62 @@ export default {
 <style lang="scss" scoped>
 ._lumaView {
   height: 100%;
+
+  --chutier-width: 320px;
+  --chutier-bar-width: 40px;
 }
 ._panes {
   height: 100%;
-  display: flex;
-  flex-flow: row nowrap;
 }
 
 ._myContent {
-  position: relative;
+  position: absolute;
   z-index: 1;
-  // width: 550px;
-  // min-height: 550px;
-  flex: 0 0 420px;
 
+  width: var(--chutier-width);
   height: 100%;
-  background: white;
+  background: var(--chutier-bg);
   box-shadow: 0 0px 10px rgb(0 0 0 / 52%);
-  // overflow: auto;
+
+  transform: translate(calc(-1 * var(--chutier-width)), 0);
+
+  transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--shown {
+    transform: translate(0, 0);
+  }
 }
 ._sharedContent {
   height: 100%;
   flex: 1 1 auto;
   overflow: auto;
+  padding-left: var(--chutier-bar-width);
+
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.has--chutier {
+    padding-left: var(--chutier-width);
+  }
 }
 
-._openChutier {
+._chutierBar {
   position: absolute;
+  height: 100%;
   top: 0;
-  left: 0;
-  padding: calc(var(--spacing) / 2);
+  left: 100%;
+  z-index: 1;
+  width: var(--chutier-bar-width);
+  color: white;
+  background: var(--chutier-bg);
+  box-shadow: 0 0px 10px rgb(0 0 0 / 52%);
+
+  transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  ._myContent.is--shown & {
+    left: calc(100% - var(--chutier-bar-width));
+    right: auto;
+    background: transparent;
+    box-shadow: none;
+  }
 }
 </style>

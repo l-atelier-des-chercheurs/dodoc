@@ -33,9 +33,6 @@
           {{ $t("import") }}
         </label>
       </div>
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
-        {{ $t("fold") }}
-      </button>
     </div>
     <UploadFiles
       v-if="selected_files.length > 0"
@@ -309,8 +306,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._myChutier {
-  --chutier-bg: rgb(37, 39, 41);
-
   height: 100%;
   overflow: auto;
   background: #f9f9f9;

@@ -53,25 +53,20 @@
         required
         v-model="title"
         placeholder="Titre"
+        @keydown.esc.prevent="$emit('close')"
       />
       <input
         type="text"
         class="is--dark"
         v-model="description"
         placeholder="Description"
+        @keydown.esc.prevent="$emit('close')"
       />
-      <input
-        type="text"
-        class="is--dark"
-        required
-        v-model="keywords"
-        placeholder="Mot-clé, matériaux, lieux, etc."
+      <KeywordsField
+        :edit_mode="true"
+        :keywords.sync="keywords"
+        @cancelEdit="$emit('close')"
       />
-
-      <span class="u-instructions" v-if="keywords.length === 0">
-        Corrigez ou complétez le titre et les mots-clés pour partager cette
-        pile.
-      </span>
     </div>
 
     <div class="_shareBtn">
@@ -93,13 +88,17 @@
   </div>
 </template>
 <script>
+import KeywordsField from "@/components/KeywordsField.vue";
+
 import ChutierItem from "@/components/ChutierItem.vue";
+
 export default {
   props: {
     files: Array,
     shared_space_path: String,
   },
   components: {
+    KeywordsField,
     ChutierItem,
   },
   data() {
@@ -107,7 +106,7 @@ export default {
       last_clicked: undefined,
       title: "",
       description: "",
-      keywords: "",
+      keywords: [],
     };
   },
   created() {},
