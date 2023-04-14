@@ -691,29 +691,29 @@
   font-family: "Belle Allure CE";
   font-style: normal;
   font-weight: 400;
-  src: url("BelleAllureCE-Fin.woff2") format("woff2"),
-    url("BelleAllureCE-Fin.woff") format("woff");
+  src: url("belle-allure/BelleAllureCE-Fin.woff2") format("woff2"),
+    url("belle-allure/BelleAllureCE-Fin.woff") format("woff");
 }
 @font-face {
   font-family: "Belle Allure CE";
   font-style: normal;
   font-weight: 700;
-  src: url("BelleAllureCE-Gros.woff2") format("woff2"),
-    url("BelleAllureCE-Gros.woff") format("woff");
+  src: url("belle-allure/BelleAllureCE-Gros.woff2") format("woff2"),
+    url("belle-allure/BelleAllureCE-Gros.woff") format("woff");
 }
 @font-face {
   font-family: "Belle Allure CM";
   font-style: normal;
   font-weight: 400;
-  src: url("BelleAllureCM-Fin.woff2") format("woff2"),
-    url("BelleAllureCM-Fin.woff") format("woff");
+  src: url("belle-allure/BelleAllureCM-Fin.woff2") format("woff2"),
+    url("belle-allure/BelleAllureCM-Fin.woff") format("woff");
 }
 @font-face {
   font-family: "Belle Allure CM";
   font-style: normal;
   font-weight: 700;
-  src: url("BelleAllureCM-Gros.woff2") format("woff2"),
-    url("BelleAllureCM-Gros.woff") format("woff");
+  src: url("belle-allure/BelleAllureCM-Gros.woff2") format("woff2"),
+    url("belle-allure/BelleAllureCM-Gros.woff") format("woff");
 }
 
 /* raleway-regular - latin */
