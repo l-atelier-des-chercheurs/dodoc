@@ -30,7 +30,7 @@
         <div class="_titleDateField">
           <div>
             <div class="">
-              <small @click="edit_mode = true">
+              <small>
                 <template v-if="!edit_mode">
                   {{ formatDateToPrecise(date_created_corrected) }}
                 </template>
@@ -44,7 +44,7 @@
               </small>
             </div>
 
-            <div v-if="!edit_mode" @click="edit_mode = true">
+            <div v-if="!edit_mode">
               {{ text_title }}
             </div>
 
@@ -300,5 +300,9 @@ export default {
   display: flex;
   place-content: center;
   cursor: pointer;
+
+  input {
+    cursor: inherit;
+  }
 }
 </style>
