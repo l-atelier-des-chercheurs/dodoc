@@ -1,11 +1,11 @@
 <template>
   <div
-    class="u-chutierItem"
+    class="_chutierRow"
     :class="{
       'is--clicked': is_clicked,
     }"
   >
-    <div class="u-chutierItem--rows">
+    <div class="_chutierRow--rows">
       <div class="u-sameRow _infos">
         <label
           :for="id"
@@ -20,9 +20,9 @@
             :id="id"
           />
         </label>
-        <div class="u-chutierItem--openLarge" @click="show_large = true">
+        <div class="_chutierRow--openLarge" @click="show_large = true">
           <MediaContent
-            class="u-chutierItem--preview"
+            class="_chutierRow--preview"
             :file="file"
             :context="'preview'"
           />
@@ -128,7 +128,7 @@
     </div>
     <div
       v-if="show_large"
-      class="u-chutierItem--largePreview"
+      class="_chutierRow--largePreview"
       @click="show_large = false"
     >
       <MediaContent :file="file" :context="'full'" :resolution="1600" />
@@ -302,12 +302,116 @@ export default {
 
 ._selectBox {
   height: 70px;
+  width: 35px;
   display: flex;
   place-content: center;
   cursor: pointer;
 
+  &:hover {
+    background: black;
+  }
+
   input {
     cursor: inherit;
+  }
+}
+
+._infos {
+  gap: 0;
+}
+
+._chutierRow {
+  width: 100%;
+  // padding: 2px;
+  margin-bottom: 2px;
+  background: rgb(37, 39, 41);
+  box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgb(67, 69, 71);
+
+  &.is--clicked {
+    background: rgb(67, 69, 71);
+  }
+
+  ._chutierRow--openLarge {
+    display: block;
+    cursor: pointer;
+    margin-right: calc(var(--spacing) / 2);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  ._chutierRow--rows {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    // gap: calc(var(--spacing) / 2);
+
+    ._infos {
+      flex: 1 1 auto;
+      display: flex;
+      justify-content: stretch;
+
+      ._titleDateField {
+        flex: 1 1 auto;
+      }
+    }
+  }
+
+  ._chutierRow--preview {
+    position: relative;
+    height: 70px;
+    border-radius: 2px;
+    width: 70px;
+    flex: 0 0 auto;
+    overflow: hidden;
+
+    ::v-deep ._mediaContent--image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  ._chutierRow--largePreview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+
+    // display: flex;
+    // place-content: center;
+    background: black;
+
+    ::v-deep ._mediaContent {
+      width: 100%;
+      height: 100%;
+
+      .u-floatingFsButton {
+        display: none;
+      }
+
+      ._mediaContent--image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+    }
+
+    ._closeBtn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: calc(var(--spacing) / 2);
+    }
   }
 }
 </style>

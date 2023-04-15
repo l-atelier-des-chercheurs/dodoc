@@ -132,7 +132,7 @@
           @click="removeItemsInSelection"
         >
           <sl-icon name="trash3" />
-          Supprimer la sélection
+          Supprimer les éléments
         </button>
       </div>
     </div>
@@ -370,11 +370,10 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  box-shadow: 0 2px 6px 0 black;
-  // background: var(--chutier-bg);
-
+  box-shadow: 0 2px 6px 0 var(--chutier-bg);
+  background: var(--chutier-bg);
   border-top: 2px solid black;
-  background: black;
+  // background: black;
 
   padding: calc(var(--spacing) / 4);
   padding-bottom: calc(var(--spacing) * 2);
@@ -382,8 +381,9 @@ export default {
 ._selectionBar--previews {
   width: 100%;
   display: flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
+  flex-flow: row nowrap;
+  justify-content: center;
+  gap: calc(var(--spacing) / 4);
 
   ::v-deep ._mediaContent--image {
     width: 100%;
@@ -404,7 +404,7 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
-  padding-top: 20px;
+  // padding-top: 20px;
 }
 
 ._uploadFilesList {

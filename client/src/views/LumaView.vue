@@ -207,7 +207,7 @@ export default {
     width: 100%;
     height: 100%;
     color: white;
-    top: 0;
+    top: calc(var(--spacing) / 1);
     left: 0;
     font-size: 1.5rem;
     background: transparent;
