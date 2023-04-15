@@ -1,5 +1,10 @@
 <template>
-  <div class="_lumaView">
+  <div
+    class="_lumaView"
+    :class="{
+      'is--mobile_view': $root.is_mobile_view,
+    }"
+  >
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <div class="_panes">
@@ -22,13 +27,17 @@
             @showAuthorModal="showAuthorModal"
             @close="show_chutier = false"
           />
-          <div class="_chutierBar">
-            <button
-              type="button"
-              class="u-button"
-              @click="show_chutier = !show_chutier"
-            >
-              <sl-icon name="file-earmark-arrow-down" />
+
+          <div
+            class="_chutierBtn"
+            :class="{
+              'is--showingChutier': show_chutier,
+            }"
+          >
+            <button type="button" @click="show_chutier = !show_chutier">
+              <sl-icon
+                :name="show_chutier ? 'arrow-bar-left' : 'arrow-bar-right'"
+              />
             </button>
           </div>
         </div>
@@ -132,9 +141,12 @@ export default {
 <style lang="scss" scoped>
 ._lumaView {
   height: 100%;
-
-  --chutier-width: 320px;
   --chutier-bar-width: 40px;
+  --chutier-width: 420px;
+
+  &.is--mobile_view {
+    --chutier-width: 320px;
+  }
 }
 ._panes {
   height: 100%;
@@ -149,7 +161,10 @@ export default {
   background: var(--chutier-bg);
   box-shadow: 0 0px 10px rgb(0 0 0 / 52%);
 
-  transform: translate(calc(-1 * var(--chutier-width)), 0);
+  transform: translate(
+    calc(-1 * (var(--chutier-width) - var(--chutier-bar-width))),
+    0
+  );
 
   transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -163,31 +178,39 @@ export default {
   overflow: auto;
   padding-left: var(--chutier-bar-width);
 
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  // transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.has--chutier {
     padding-left: var(--chutier-width);
   }
 }
 
-._chutierBar {
+._chutierBtn {
   position: absolute;
-  height: 100%;
+  // height: 100%;
   top: 0;
-  left: 100%;
-  z-index: 1;
+  right: 0;
   width: var(--chutier-bar-width);
-  color: white;
-  background: var(--chutier-bg);
-  box-shadow: 0 0px 10px rgb(0 0 0 / 52%);
+  height: var(--chutier-bar-width);
+  z-index: 1;
+
+  background: transparent;
 
   transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-  ._myContent.is--shown & {
-    left: calc(100% - var(--chutier-bar-width));
-    right: auto;
+  &:not(.is--showingChutier) {
+    // height: 100%;
+  }
+
+  > button {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: white;
+    top: 0;
+    left: 0;
+    font-size: 1.5rem;
     background: transparent;
-    box-shadow: none;
   }
 }
 </style>
