@@ -1,6 +1,12 @@
 -
 <template>
-  <div id="app" class="">
+  <div
+    id="app"
+    class=""
+    :class="{
+      'is--mobile_view': $root.is_mobile_view,
+    }"
+  >
     <component :is="'style'">
       {{ custom_fonts_css }}
     </component>
