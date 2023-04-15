@@ -259,7 +259,7 @@ new Vue({
   computed: {
     is_mobile_view() {
       // return false;
-      return this.window.innerWidth < 1000;
+      return this.window.innerWidth < 800;
     },
   },
   methods: {
