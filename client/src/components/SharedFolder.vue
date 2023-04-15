@@ -69,6 +69,7 @@ export default {
 <style lang="scss" scoped>
 ._sharedFolder {
   padding: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 4);
 }
 
 ._grid {
