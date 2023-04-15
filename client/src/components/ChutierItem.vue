@@ -70,7 +70,7 @@
           </div>
         </div>
         <EditBtn v-if="!edit_mode" @click="edit_mode = true" />
-        <sl-button
+        <!-- <sl-button
           variant="edit"
           v-else
           class="editBtn"
@@ -79,10 +79,10 @@
           @click="$emit('unclicked')"
         >
           <sl-icon name="check-circle" :label="$t('edit')" />
-        </sl-button>
-        <button
+        </sl-button> -->
+        <!-- <button
           type="button"
-          v-if="shared_space_path && !edit_mode"
+          v-if="share_button_is_enabled"
           :key="share_button_is_enabled"
           class="u-buttonLink"
           :class="{
@@ -92,7 +92,7 @@
         >
           Publier&nbsp;
           <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
-        </button>
+        </button> -->
       </div>
     </div>
     <div
@@ -106,10 +106,9 @@
         <div v-if="!edit_mode">
           {{ description }}
         </div>
-        <input
+        <textarea
           v-else
-          type="text"
-          class="is--dark"
+          class="is--dark _descriptionField"
           v-model="description"
           placeholder="Description"
           @keydown.esc.prevent="cancelEdit"
@@ -122,6 +121,19 @@
           :keywords.sync="keywords"
           @cancelEdit="cancelEdit"
         />
+      </div>
+
+      <div class="_publierBtn">
+        <button
+          type="button"
+          :key="share_button_is_enabled"
+          class="u-buttonLink"
+          :disabled="!share_button_is_enabled"
+          @click="shareButtonClicked"
+        >
+          Publier&nbsp;
+          <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
+        </button>
       </div>
     </div>
     <div
@@ -417,5 +429,13 @@ export default {
       margin: calc(var(--spacing) / 2);
     }
   }
+}
+._descriptionField {
+  resize: vertical;
+}
+
+._publierBtn {
+  text-align: center;
+  margin: calc(var(--spacing) / 4) auto;
 }
 </style>

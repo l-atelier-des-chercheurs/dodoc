@@ -27,7 +27,7 @@
         document.
       </span>
 
-      <div class="_suggestions" v-else>
+      <div class="_suggestions" v-else-if="suggested_keywords.length > 0">
         <div class="_keywords">
           <div
             class="_keyword"
@@ -101,8 +101,12 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
+  // margin-bottom: calc(var(--spacing) / 2);
   font-size: var(--input-font-size-small);
+
+  + input {
+    margin-top: calc(var(--spacing) / 2);
+  }
 }
 ._keyword {
   display: flex;

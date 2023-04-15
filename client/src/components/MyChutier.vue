@@ -83,7 +83,7 @@
           </button>
           {{ formatDateToHuman(ci.label) }}
         </div>
-        <transition-group tag="div" name="listComplete" class="">
+        <transition-group tag="div" name="listComplete">
           <div
             v-for="file in ci.files"
             :key="file.$path"

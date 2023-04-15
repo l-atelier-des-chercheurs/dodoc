@@ -137,6 +137,7 @@
 
   &[disabled] {
     cursor: not-allowed;
+    opacity: 0.6;
     text-decoration: none;
   }
 
@@ -320,10 +321,16 @@ input[type="text"],
 input[type="time"],
 input[type="url"],
 input[type="week"],
-select,
-textarea {
+select {
   all: unset;
   box-sizing: border-box;
+}
+
+textarea {
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  min-height: 4.5em;
 }
 
 input[type="color"],
@@ -367,7 +374,7 @@ textarea,
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
-  // border-bottom: 1px solid hsl(0, 0, 64);
+  border-bottom: 1px solid transparent;
 
   transition: all 0.05s;
 

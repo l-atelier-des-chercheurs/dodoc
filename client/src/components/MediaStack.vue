@@ -55,9 +55,8 @@
         placeholder="Titre"
         @keydown.esc.prevent="$emit('close')"
       />
-      <input
-        type="text"
-        class="is--dark"
+      <textarea
+        class="is--dark _descriptionField"
         v-model="description"
         placeholder="Description"
         @keydown.esc.prevent="$emit('close')"
@@ -251,5 +250,8 @@ sl-icon-button::part(base) {
 ._shareBtn {
   display: flex;
   justify-content: center;
+}
+._descriptionField {
+  resize: vertical;
 }
 </style>
