@@ -44,31 +44,34 @@
     />
 
     <div class="_middleContent">
-      <label for="">Éléments à traiter : {{ chutier_items.length }} </label>
+      <label for="">
+        <button
+          type="button"
+          class="u-buttonLink"
+          v-if="chutier_items.length > 0"
+          @click="!all_items_selected ? selectAll() : deselectAll()"
+        >
+          <sl-icon
+            :name="
+              !all_items_selected ? 'plus-square-dotted' : 'dash-square-dotted'
+            "
+          />
+        </button>
+        Éléments à traiter : {{ chutier_items.length }}
+      </label>
       <br />
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="selectAll"
-        v-if="chutier_items.length > 0"
-      >
-        <sl-icon name="plus-square-dotted" />
-        Sélectionner tout
-      </button>
     </div>
 
     <div class="_items">
       <div class="_item" v-for="ci in chutier_items_grouped" :key="ci.label">
         <div class="_item--label">
-          <DateField :date="ci.label" :show_detail_initially="false" />
-
           <button
             v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
             type="button"
             class="u-buttonLink"
             @click="selectRange(ci.files.map((f) => f.$path))"
           >
-            Sélectionner
+            <sl-icon name="plus-square-dotted" />
           </button>
           <button
             v-else
@@ -76,8 +79,9 @@
             class="u-buttonLink"
             @click="deselectRange(ci.files.map((f) => f.$path))"
           >
-            Déselectionner
+            <sl-icon name="dash-square-dotted" />
           </button>
+          {{ formatDateToHuman(ci.label) }}
         </div>
         <transition-group tag="div" name="listComplete" class="">
           <div
@@ -200,6 +204,9 @@ export default {
       return this.selected_items_slugs.map(
         (fis) => this.chutier_items.find((ci) => ci.$path === fis) || false
       );
+    },
+    all_items_selected() {
+      return this.selected_items.length === this.chutier_items.length;
     },
     chutier_items() {
       if (!this.chutier || !this.chutier.$files) return [];
@@ -364,14 +371,18 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   box-shadow: 0 2px 6px 0 black;
-  background: var(--chutier-bg);
-  padding: calc(var(--spacing) / 1);
+  // background: var(--chutier-bg);
+
+  border-top: 2px solid black;
+  background: black;
+
+  padding: calc(var(--spacing) / 4);
   padding-bottom: calc(var(--spacing) * 2);
 }
 ._selectionBar--previews {
   width: 100%;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
 
   ::v-deep ._mediaContent--image {
@@ -382,8 +393,9 @@ export default {
   }
 }
 ._selectionBar--previews--preview {
-  flex: 0 1 50px;
+  flex: 0 1 40px;
   aspect-ratio: 1/1;
+  overflow: hidden;
 }
 ._mediaStack {
   position: absolute;
