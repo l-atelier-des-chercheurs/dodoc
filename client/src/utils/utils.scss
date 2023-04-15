@@ -193,9 +193,10 @@ button {
     background: var(--active-color);
   }
 }
-// .u-button_round {
-//   border-radius: 50%;
-// }
+.u-button_round {
+  padding: calc(var(--spacing) / 1);
+  border-radius: 50%;
+}
 .u-button_inline {
   display: flex;
   flex-flow: row nowrap;
@@ -779,6 +780,9 @@ fieldset {
 }
 
 .u-shareBtn {
+  display: flex;
+  flex-flow: row nowrap;
+
   &.is--disabled {
     opacity: 0.3;
   }

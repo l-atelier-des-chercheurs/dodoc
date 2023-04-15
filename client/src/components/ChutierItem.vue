@@ -6,20 +6,20 @@
     }"
   >
     <div class="_chutierRow--rows">
-      <div class="u-sameRow _infos">
-        <label
-          :for="id"
-          class="_selectBox"
-          v-if="$listeners && $listeners.toggleSelect"
-        >
-          <input
-            type="checkbox"
-            :checked="is_selected"
-            :name="id"
-            @change="$emit('toggleSelect')"
-            :id="id"
-          />
-        </label>
+      <label
+        :for="id"
+        class="_selectBox"
+        v-if="$listeners && $listeners.toggleSelect"
+      >
+        <input
+          type="checkbox"
+          :checked="is_selected"
+          :name="id"
+          @change="$emit('toggleSelect')"
+          :id="id"
+        />
+      </label>
+      <div class="_infos">
         <div class="_chutierRow--openLarge" @click="show_large = true">
           <MediaContent
             class="_chutierRow--preview"
@@ -80,22 +80,20 @@
         >
           <sl-icon name="check-circle" :label="$t('edit')" />
         </sl-button>
-      </div>
-      <transition name="scaleInFade" mode="out-in">
-        <sl-icon-button
-          v-if="shared_space_path"
+        <button
+          type="button"
+          v-if="shared_space_path && !edit_mode"
           :key="share_button_is_enabled"
-          class="u-shareBtn"
+          class="u-buttonLink"
           :class="{
             'is--disabled': !share_button_is_enabled,
           }"
-          name="arrow-right-square"
-          style="font-size: 1rem"
-          :label="$t('share')"
-          circle
           @click="shareButtonClicked"
-        />
-      </transition>
+        >
+          Publier&nbsp;
+          <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
+        </button>
+      </div>
     </div>
     <div
       class="_keywords"
@@ -118,7 +116,7 @@
         />
       </div>
 
-      <div class="" v-if="keywords || edit_mode">
+      <div class="" v-if="(keywords && keywords.length > 0) || edit_mode">
         <KeywordsField
           :edit_mode="edit_mode"
           :keywords.sync="keywords"
@@ -129,18 +127,16 @@
     <div
       v-if="show_large"
       class="_chutierRow--largePreview"
-      @click="show_large = false"
+      @click.self="show_large = false"
     >
       <MediaContent :file="file" :context="'full'" :resolution="1600" />
-      <sl-button
-        variant="default"
-        size="medium"
-        class="_closeBtn"
-        circle
+      <button
+        type="button"
+        class="u-button u-button_round u-button_black _closeBtn"
         @click="show_large = false"
       >
-        <sl-icon name="x-lg" :label="$t('close')"></sl-icon>
-      </sl-button>
+        <sl-icon name="x-lg" :label="$t('close')" />
+      </button>
     </div>
   </div>
 </template>
@@ -308,7 +304,7 @@ export default {
   cursor: pointer;
 
   &:hover {
-    background: black;
+    background: rgb(67, 69, 71);
   }
 
   input {
@@ -317,7 +313,17 @@ export default {
 }
 
 ._infos {
-  gap: 0;
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  // padding-left: 1px;
+  margin-right: calc(var(--spacing) / 2);
+
+  ._titleDateField {
+    flex: 1 1 auto;
+  }
 }
 
 ._chutierRow {
@@ -331,13 +337,13 @@ export default {
   border: 1px solid rgb(67, 69, 71);
 
   &.is--clicked {
-    background: rgb(67, 69, 71);
+    // background: rgb(67, 69, 71);
   }
 
   ._chutierRow--openLarge {
     display: block;
     cursor: pointer;
-    margin-right: calc(var(--spacing) / 2);
+    // margin-right: calc(var(--spacing) / 2);
 
     &:hover {
       opacity: 0.8;
@@ -349,17 +355,6 @@ export default {
     flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
-    // gap: calc(var(--spacing) / 2);
-
-    ._infos {
-      flex: 1 1 auto;
-      display: flex;
-      justify-content: stretch;
-
-      ._titleDateField {
-        flex: 1 1 auto;
-      }
-    }
   }
 
   ._chutierRow--preview {
@@ -393,9 +388,14 @@ export default {
     ::v-deep ._mediaContent {
       width: 100%;
       height: 100%;
+      pointer-events: none;
 
       .u-floatingFsButton {
         display: none;
+      }
+
+      .plyr__control {
+        pointer-events: auto;
       }
 
       ._mediaContent--image {
@@ -403,6 +403,10 @@ export default {
         height: 100%;
         object-fit: contain;
         object-position: center;
+      }
+
+      .plyr__video-wrapper {
+        pointer-events: none;
       }
     }
 

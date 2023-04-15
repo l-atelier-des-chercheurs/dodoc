@@ -71,18 +71,19 @@
 
     <div class="_shareBtn">
       <transition name="scaleInFade" mode="out-in">
-        <sl-icon-button
+        <button
+          type="button"
+          v-if="shared_space_path"
           :key="share_button_is_enabled"
           class="u-shareBtn"
           :class="{
             'is--disabled': !share_button_is_enabled,
           }"
-          name="arrow-right-square"
-          style="font-size: 1rem"
-          :label="$t('share')"
-          circle
           @click="shareButtonClicked"
-        />
+        >
+          Publier
+          <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
+        </button>
       </transition>
     </div>
   </div>
