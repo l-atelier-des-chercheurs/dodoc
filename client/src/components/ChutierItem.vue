@@ -32,7 +32,12 @@
             <div class="">
               <small>
                 <template v-if="!edit_mode">
-                  {{ formatDateToPrecise(date_created_corrected) }}
+                  {{
+                    formatTime(date_created_corrected, {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  }}
                 </template>
                 <template v-else>
                   <input

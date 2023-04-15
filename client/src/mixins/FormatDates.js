@@ -1,6 +1,9 @@
 export default {
   computed: {},
   methods: {
+    formatTime(date, options) {
+      return new Date(date).toLocaleTimeString(undefined, options);
+    },
     formatDateToHuman(date) {
       let options = {
         weekday: "long",
@@ -11,6 +14,17 @@ export default {
       return new Date(date).toLocaleDateString(undefined, options);
     },
     formatDateToPrecise(date) {
+      let options = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      };
+      return new Date(date).toLocaleDateString(undefined, options);
+    },
+    formatDateToHoursMinutesOnly(date) {
       let options = {
         year: "numeric",
         month: "numeric",
