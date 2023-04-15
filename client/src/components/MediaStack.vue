@@ -74,13 +74,11 @@
           type="button"
           v-if="shared_space_path"
           :key="share_button_is_enabled"
-          class="u-shareBtn"
-          :class="{
-            'is--disabled': !share_button_is_enabled,
-          }"
+          class="u-buttonLink"
+          :disabled="!share_button_is_enabled"
           @click="shareButtonClicked"
         >
-          Publier
+          Publier&nbsp;
           <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
         </button>
       </transition>
