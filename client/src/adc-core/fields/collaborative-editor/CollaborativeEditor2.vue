@@ -15,7 +15,10 @@
       @restore="restoreVersion"
     />
 
-    <component :is="`style`" v-html="quill_styles" />
+    <component :is="`style`">
+      {{ quill_styles }}
+    </component>
+
     <div ref="editBtn" class="_btnContainer" v-show="can_edit">
       <small class="_btnRow">
         <sl-button
