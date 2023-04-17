@@ -69,7 +69,6 @@ export default {
   font-variant: small-caps;
   text-transform: uppercase;
   font-weight: 500;
-  font-size: var(--sl-font-size-small);
 
   --c-color: white;
   --bg-color: var(--c-noir);
@@ -81,7 +80,7 @@ export default {
     --bg-color: var(--c-orange);
   }
   &[data-status="finished"] {
-    --bg-color: var(--c-bleuvert);
+    --bg-color: var(--c-bleumarine);
   }
 
   ._tag,
@@ -94,6 +93,7 @@ export default {
     height: var(--input-height-small);
     padding: calc(var(--spacing) / 4);
     border-radius: var(--input-border-radius);
+    font-size: var(--sl-font-size-small);
   }
   select {
     max-width: 13ch;

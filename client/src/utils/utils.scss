@@ -438,6 +438,7 @@ select {
 
   &[size="small"] {
     height: var(--input-height-small);
+    font-size: var(--sl-font-size-small);
     padding: calc(var(--spacing) / 4);
     line-height: 1.2;
   }
