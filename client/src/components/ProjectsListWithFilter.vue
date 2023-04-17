@@ -93,7 +93,6 @@
       </div>
 
       <div class="_listOfProjects">
-        {{ active_filters }}
         <div class="_tagList" v-if="active_filters.length > 0">
           <button
             type="button"
