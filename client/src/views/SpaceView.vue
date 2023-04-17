@@ -68,9 +68,9 @@
           @openNewProject="openNewProject"
         />
 
-        <ProjectsList
-          v-if="sorted_projects.length > 0"
-          :projects="sorted_projects"
+        <ProjectsListWithFilter
+          v-if="projects !== undefined"
+          :projects="projects"
         />
       </div>
     </div>
@@ -78,14 +78,14 @@
 </template>
 <script>
 import CreateProject from "@/components/modals/CreateProject.vue";
-import ProjectsList from "@/components/ProjectsList.vue";
+import ProjectsListWithFilter from "@/components/ProjectsListWithFilter.vue";
 import SpacePresentation from "@/components/space/SpacePresentation.vue";
 
 export default {
   props: {},
   components: {
     CreateProject,
-    ProjectsList,
+    ProjectsListWithFilter,
     SpacePresentation,
   },
   data() {
@@ -124,19 +124,6 @@ export default {
       return this.canLoggedinEditFolder({
         folder_authors: this.space.$authors,
       });
-    },
-    sorted_projects() {
-      if (!this.projects) return [];
-      return this.projects
-        .slice()
-        .filter((p) =>
-          this.canLoggedinSeeFolder({
-            folder: p,
-          })
-        )
-        .sort(
-          (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
-        );
     },
   },
   methods: {

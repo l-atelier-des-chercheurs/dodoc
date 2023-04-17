@@ -2,19 +2,26 @@
   <div class="_toggleInput">
     <div class="_inputLabel">
       <input
+        v-if="can_toggle"
         ref="field"
         :id="id"
         :name="label"
         class="_inputCb"
         type="checkbox"
         :disabled="disabled"
-        :checked="content"
-        @change="$emit('update:content', $event.target.checked)"
+        :checked="show_toggle"
+        @change="$emit('update:show_toggle', $event.target.checked)"
       />
       <label :for="id" class="u-label">{{ label }}</label>
     </div>
 
-    <div class="_toggled" v-if="content">
+    <div
+      class="_toggled"
+      :class="{
+        'can--toggle': can_toggle,
+      }"
+      v-if="show_toggle"
+    >
       <slot />
     </div>
   </div>
@@ -23,7 +30,11 @@
 export default {
   props: {
     label: String,
-    content: {
+    can_toggle: {
+      type: Boolean,
+      default: true,
+    },
+    show_toggle: {
       type: Boolean,
       default: false,
     },
@@ -41,7 +52,9 @@ export default {
       )}`,
     };
   },
-  created() {},
+  created() {
+    if (!this.can_toggle) this.$emit("update:show_toggle", true);
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -69,10 +82,13 @@ export default {
 }
 
 ._toggled {
-  border-left: 2px solid var(--c-orange);
   margin-top: calc(var(--spacing) / 2 * -1);
   padding-top: calc(var(--spacing) / 2);
-  padding-left: calc(var(--spacing) / 2);
-  margin-left: calc(var(--spacing) / 1.5);
+
+  &.can--toggle {
+    border-left: 2px solid var(--c-orange);
+    padding-left: calc(var(--spacing) / 2);
+    margin-left: calc(var(--spacing) / 1.5);
+  }
 }
 </style>

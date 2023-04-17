@@ -65,9 +65,15 @@
               </div>
               <br />
               <div class="m_recipe--buttons">
+                <div>
+                  Pas encore disponible sur do•doc 10 / vous pouvez utiliser
+                  <a href="https://dodoc.fr/">do•doc 9</a> en attendant.
+                </div>
+
                 <button
                   class="u-button u-button_bleumarine"
                   type="button"
+                  disabled
                   @click="createRemix(recipe.key)"
                 >
                   <svg

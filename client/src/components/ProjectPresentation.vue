@@ -18,12 +18,23 @@ z
         :path="project.$path"
         :can_edit="can_edit_project"
       />
-      <StatusTag
-        v-if="context !== 'full'"
-        :status="project.$status"
-        :path="project.$path"
-        :can_edit="can_edit_project"
+
+      <sl-icon
+        v-if="project.$status === 'finished'"
+        name="check-circle-fill"
+        class="_icon _check"
       />
+      <sl-icon
+        v-else-if="project.$status === 'invisible'"
+        name="file-lock2-fill"
+        class="_icon _invisible"
+      />
+      <!-- <sl-icon
+        v-if="project.$status === 'draft'"
+        name="cone-striped"
+        class="_icon _cone"
+      /> -->
+      <!-- <div class="u-wips" /> -->
     </div>
 
     <div class="_projectInfos--infos">
@@ -342,11 +353,17 @@ export default {
     height: auto;
   }
 
-  ._statusTag {
+  ._icon {
     position: absolute;
-    left: 0;
+    top: 0;
+    right: 0;
     margin: calc(var(--spacing) / 1);
-    bottom: 0;
+    font-size: 125%;
+  }
+  ._check {
+    color: var(--c-bleuvert);
+  }
+  ._invisible {
   }
 }
 

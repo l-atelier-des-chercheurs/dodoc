@@ -3,7 +3,7 @@
     <ToggledSection
       class="u-spacingBottom"
       :label="label"
-      :content.sync="show_color_input"
+      :show_toggle.sync="show_color_input"
     >
       <div class="_defaultColors">
         <div

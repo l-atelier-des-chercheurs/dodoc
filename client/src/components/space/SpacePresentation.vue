@@ -11,11 +11,18 @@
         :path="space.$path"
         :can_edit="can_edit"
       />
+      <sl-icon
+        v-if="space.$status === 'invisible'"
+        name="file-lock2-fill"
+        class="_icon _invisible"
+      />
       <!-- </div> -->
     </div>
     <div class="_title">
       <StatusTag
+        v-if="can_edit"
         :status="space.$status"
+        :status_options="['invisible', 'visible']"
         :path="space.$path"
         :can_edit="can_edit"
       />
@@ -147,5 +154,12 @@ export default {
     width: 100%;
     height: 100%;
   }
+}
+
+._icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 1);
 }
 </style>

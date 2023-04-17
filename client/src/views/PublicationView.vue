@@ -380,8 +380,11 @@ export default {
     },
     fitZoomToPage() {
       const margin = 70;
-      let zoom_w =
-        window.innerWidth / (this.page_dimensions_to_px.width + margin);
+
+      let page_width = this.page_dimensions_to_px.width;
+      if (this.is_spread) page_width *= 2;
+
+      let zoom_w = window.innerWidth / (page_width + margin);
       let zoom_h =
         window.innerHeight / (this.page_dimensions_to_px.height + margin);
       this.page_zoom = Math.min(zoom_w, zoom_h) * 100;
@@ -398,20 +401,31 @@ export default {
 
       if (this.display_mode !== "slides") return;
 
-      if (
-        event.key === "ArrowLeft" &&
-        this.slides_current_page_or_spread_index > 1
-      )
-        this.updatePageQuery({ increment: -1 });
-      else if (
-        event.key === "ArrowRight" &&
-        this.slides_current_page_or_spread_index <
-          (this.is_spread ? this.spreads.length : this.pages.length)
-      )
-        this.updatePageQuery({ increment: +1 });
-      else if (event.key === "p") this.page_zoom += 2;
-      else if (event.key === "m") this.page_zoom -= 2;
-      else if (event.key === "f") this.toggleFs();
+      switch (event.key) {
+        case "w":
+        case "z":
+        case "ArrowLeft":
+          if (this.slides_current_page_or_spread_index > 1)
+            this.updatePageQuery({ increment: -1 });
+          break;
+        case "s":
+        case "ArrowRight":
+          if (
+            this.slides_current_page_or_spread_index <
+            (this.is_spread ? this.spreads.length : this.pages.length)
+          )
+            this.updatePageQuery({ increment: +1 });
+          break;
+        case "p":
+          this.page_zoom += 2;
+          break;
+        case "m":
+          this.page_zoom -= 2;
+          break;
+        case "f":
+          this.toggleFs();
+          break;
+      }
     },
     async listProject() {
       const project = await this.$api

@@ -26,22 +26,19 @@
   </div>
 </template>
 <script>
-const status_options = ["invisible", "draft", "finished"];
-
 export default {
   props: {
-    status: {
-      validator: function (value) {
-        return status_options.includes(value);
-      },
-    },
+    status: String,
     path: String,
     can_edit: Boolean,
+    status_options: {
+      type: Array,
+      default: () => ["invisible", "draft", "finished"],
+    },
   },
   components: {},
   data() {
     return {
-      status_options,
       new_status: this.status,
     };
   },
@@ -73,14 +70,19 @@ export default {
   --c-color: white;
   --bg-color: var(--c-noir);
 
+  &[data-status="visible"] {
+    --bg-color: var(--c-gris);
+    --c-color: black;
+  }
   &[data-status="invisible"] {
-    --bg-color: var(--c-gris_fonce);
+    --bg-color: var(--c-noir);
   }
   &[data-status="draft"] {
-    --bg-color: var(--c-orange);
+    --bg-color: var(--c-gris);
+    --c-color: black;
   }
   &[data-status="finished"] {
-    --bg-color: var(--c-bleumarine);
+    --bg-color: var(--c-bleuvert);
   }
 
   ._tag,

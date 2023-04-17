@@ -37,53 +37,57 @@
         <br />
       </div>
 
-      <DLabel
-        class="_label"
-        :str="$t('format')"
-        :tag="'h3'"
-        :instructions="$t('format_instructions')"
-      />
-      <br />
-      <template v-if="new_layout_mode === 'print'">
-        <select
-          :value="predefined_format_from_width"
-          :disabled="!edit_mode"
-          @change="setSizeFromFormat"
-        >
-          <option
-            v-for="option in format_options"
-            :key="option.key"
-            :value="option.key"
-            v-text="option.text"
+      <transition name="fade" mode="out-in">
+        <div :key="new_layout_mode">
+          <DLabel
+            class="_label"
+            :str="$t('format')"
+            :tag="'h3'"
+            :instructions="$t('format_instructions')"
           />
-        </select>
-        <br />
-      </template>
+          <br />
+          <template>
+            <select
+              :value="predefined_format_from_width"
+              :disabled="!edit_mode"
+              @change="setSizeFromFormat"
+            >
+              <option
+                v-for="option in format_options"
+                :key="option.key"
+                :value="option.key"
+                v-text="option.text"
+              />
+            </select>
+            <br />
+          </template>
 
-      <div class="u-sameRow">
-        <div class="">
-          <DLabel :str="$t('width')" />
-          <div class="u-inputGroup">
-            <input
-              type="number"
-              :disabled="!edit_mode"
-              v-model.number="new_page_width"
-            />
-            <span class="u-suffix" v-text="unit" />
+          <div class="u-sameRow">
+            <div class="">
+              <DLabel :str="$t('width')" />
+              <div class="u-inputGroup">
+                <input
+                  type="number"
+                  :disabled="!edit_mode"
+                  v-model.number="new_page_width"
+                />
+                <span class="u-suffix" v-text="unit" />
+              </div>
+            </div>
+            <div class="">
+              <DLabel :str="$t('height')" />
+              <div class="u-inputGroup">
+                <input
+                  type="number"
+                  :disabled="!edit_mode"
+                  v-model.number="new_page_height"
+                />
+                <span class="u-suffix" v-text="unit" />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="">
-          <DLabel :str="$t('height')" />
-          <div class="u-inputGroup">
-            <input
-              type="number"
-              :disabled="!edit_mode"
-              v-model.number="new_page_height"
-            />
-            <span class="u-suffix" v-text="unit" />
-          </div>
-        </div>
-      </div>
+      </transition>
 
       <br />
 
@@ -115,42 +119,6 @@ export default {
       new_layout_mode: undefined,
       new_page_width: undefined,
       new_page_height: undefined,
-
-      format_options: [
-        {
-          key: "A4_portrait",
-          text: this.$t("A4_portrait"),
-          width: 210,
-          height: 297,
-          // instruction: this.$t("A4_portrait_explanations"),
-        },
-        {
-          key: "A4_landscape",
-          text: this.$t("A4_landscape"),
-          width: 297,
-          height: 210,
-          // instruction: this.$t("A4_landscape_explanations"),
-        },
-        {
-          key: "A5_portrait",
-          text: this.$t("A5_portrait"),
-          width: 148,
-          height: 210,
-          // instruction: this.$t("A5_portrait_explanations"),
-        },
-        {
-          key: "A5_landscape",
-          text: this.$t("A5_landscape"),
-          width: 210,
-          height: 148,
-          // instruction: this.$t("A5_landscape_explanations"),
-        },
-        {
-          key: "custom",
-          text: this.$t("custom"),
-          // instruction: this.$t("custom_format_explanations"),
-        },
-      ],
     };
   },
   created() {},
@@ -160,24 +128,81 @@ export default {
   beforeDestroy() {},
   watch: {
     new_layout_mode() {
-      // if (this.new_layout_mode === "screen") {
-      //   this.new_page_width = 1024;
-      //   this.new_page_height = 768;
-      // } else {
-      //   this.new_page_width = this.publication.page_width;
-      //   this.new_page_height = this.publication.page_height;
-      // }
+      const { width, height } = this.format_options[0];
+      this.new_page_width = width;
+      this.new_page_height = height;
     },
   },
   computed: {
+    format_options() {
+      if (this.new_layout_mode === "print")
+        return [
+          {
+            key: "A4_portrait",
+            text: this.$t("A4_portrait"),
+            width: 210,
+            height: 297,
+            // instruction: this.$t("A4_portrait_explanations"),
+          },
+          {
+            key: "A4_landscape",
+            text: this.$t("A4_landscape"),
+            width: 297,
+            height: 210,
+            // instruction: this.$t("A4_landscape_explanations"),
+          },
+          {
+            key: "A5_portrait",
+            text: this.$t("A5_portrait"),
+            width: 148,
+            height: 210,
+            // instruction: this.$t("A5_portrait_explanations"),
+          },
+          {
+            key: "A5_landscape",
+            text: this.$t("A5_landscape"),
+            width: 210,
+            height: 148,
+            // instruction: this.$t("A5_landscape_explanations"),
+          },
+          {
+            key: "custom",
+            text: this.$t("custom"),
+            // instruction: this.$t("custom_format_explanations"),
+          },
+        ];
+      // else if (this.new_layout_mode === "screen")
+      return [
+        {
+          key: "recommended",
+          text: this.$t("recommended"),
+          width: 960,
+          height: 700,
+        },
+        {
+          key: "desktop1080",
+          text: this.$t("desktop_1080"),
+          width: 1920,
+          height: 1080,
+        },
+        {
+          key: "desktop720",
+          text: this.$t("desktop_720"),
+          width: 1280,
+          height: 720,
+        },
+        {
+          key: "custom",
+          text: this.$t("custom"),
+        },
+      ];
+    },
     predefined_format_from_width() {
       const format = this.format_options.find(
         (f) =>
           f.width === this.new_page_width && f.height === this.new_page_height
       );
-
       if (format) return format.key;
-
       return "custom";
     },
     unit() {

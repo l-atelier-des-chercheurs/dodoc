@@ -72,7 +72,9 @@
     content: "en chantier :)";
     font-family: "Fira Code";
     background: var(--c-orange);
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+    font-size: var(--sl-font-size-small);
+
     border-radius: 6px;
     transform: rotate(-6deg);
     position: relative;
@@ -439,8 +441,8 @@ select {
   &[size="small"] {
     height: var(--input-height-small);
     font-size: var(--sl-font-size-small);
-    padding: calc(var(--spacing) / 4);
-    line-height: 1.2;
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+    line-height: 1.5;
   }
 }
 

@@ -37,23 +37,13 @@
         :data-size="pane.size"
         :style="`--color-type: var(--color-${pane.type});`"
       >
-        <transition name="fade">
-          <div
-            class="_floatingMsg"
-            :key="`instructions.pane_${pane.type}`"
-            v-if="show_instructions && can_edit_project"
-            @click.self="closeInstructions"
-          >
-            <div>
-              <span v-html="$t(`instructions.pane.${pane.type}`)"></span>
-              <sl-icon-button
-                name="x-circle-fill"
-                label="Fermer"
-                @click.stop="closeInstructions"
-              />
-            </div>
-          </div>
-        </transition>
+        <InstructionsWindow
+          v-if="can_edit_project"
+          :key="pane.type"
+          :type="pane.type"
+          :path="project.$path"
+          @close="scrollToPanes"
+        />
         <CapturePane
           v-if="pane.type === 'capture'"
           :project="project"
@@ -95,6 +85,7 @@ import CapturePane from "@/components/panes/CapturePane.vue";
 import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 import RemixPane from "@/components/panes/RemixPane.vue";
 import PublierPane from "@/components/panes/PublierPane.vue";
+import InstructionsWindow from "@/components/project/InstructionsWindow.vue";
 
 export default {
   props: {
@@ -109,26 +100,16 @@ export default {
     MediaLibrary,
     RemixPane,
     CapturePane,
+    InstructionsWindow,
   },
   data() {
-    return {
-      show_instructions: true,
-    };
+    return {};
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    panes_enabled(val, oldVal) {
-      if (JSON.stringify(val) !== JSON.stringify(oldVal))
-        this.show_instructions = true;
-    },
-  },
-  computed: {
-    panes_enabled() {
-      return this.projectpanes.map((pp) => pp.type);
-    },
-  },
+  watch: {},
+  computed: {},
   methods: {
     scrollToPanes() {
       this.$el.scrollIntoView({
@@ -145,10 +126,6 @@ export default {
       )
         this.$delete(pane, prop);
       else this.$set(pane, prop, $event);
-    },
-    closeInstructions() {
-      this.show_instructions = false;
-      this.scrollToPanes();
     },
     resized(_projectpanessizes) {
       console.log(`Project / methods: resized`);
@@ -190,45 +167,5 @@ export default {
 }
 ._devNotes {
   // opacity: 0.4;
-}
-
-._floatingMsg {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(5px);
-
-  z-index: 1000;
-  text-align: center;
-  padding: calc(var(--spacing) * 2);
-
-  cursor: pointer;
-
-  > div {
-    position: relative;
-    background: var(--color-type);
-    background: white;
-    max-width: 54ch;
-    padding: calc(var(--spacing) / 2);
-    margin: 0 auto;
-    border: 2px solid var(--c-gris);
-    border-radius: 4px;
-    pointer-events: auto;
-
-    cursor: default;
-  }
-
-  sl-icon-button {
-    position: absolute;
-    top: -1em;
-    right: -1em;
-    color: currentColor;
-
-    &::part(base) {
-      color: currentColor;
-    }
-  }
 }
 </style>
