@@ -198,6 +198,6 @@ export default {
 }
 
 ._bottomCont {
-  min-height: 70vh;
+  min-height: 80vh;
 }
 </style>

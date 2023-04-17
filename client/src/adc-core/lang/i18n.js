@@ -237,6 +237,8 @@ export default function () {
         status: "État",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
+        filters: "Filtres",
+
         draft: "En cours",
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>en cours</i> sur la page d’accueil.",
