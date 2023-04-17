@@ -49,14 +49,7 @@
             </button>
           </div>
           <div class="">
-            <router-link
-              :to="{
-                path: createURLFromPath(publication.$path),
-                query: { display: 'slides' },
-              }"
-              target="_blank"
-              class="u-buttonLink"
-            >
+            <router-link :to="share_path" target="_blank" class="u-buttonLink">
               <sl-icon name="share" />
               {{ $t("share") }}
             </router-link>
@@ -120,6 +113,15 @@ export default {
   computed: {
     can_edit_publication() {
       return this.can_edit;
+    },
+    share_path() {
+      let query = {};
+      if (this.publication.template === "page_by_page")
+        query = { display: "slides" };
+      return {
+        path: this.createURLFromPath(this.publication.$path),
+        query,
+      };
     },
   },
   methods: {

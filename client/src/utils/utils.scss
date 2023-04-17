@@ -758,3 +758,13 @@ fieldset {
     align-items: center;
   }
 }
+
+details {
+  summary {
+    padding: calc(var(--spacing) / 4);
+    cursor: pointer;
+    &:hover {
+      background: var(--c-gris_clair);
+    }
+  }
+}
