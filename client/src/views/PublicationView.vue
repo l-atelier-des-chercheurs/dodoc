@@ -380,8 +380,11 @@ export default {
     },
     fitZoomToPage() {
       const margin = 70;
-      let zoom_w =
-        window.innerWidth / (this.page_dimensions_to_px.width + margin);
+
+      let page_width = this.page_dimensions_to_px.width;
+      if (this.is_spread) page_width *= 2;
+
+      let zoom_w = window.innerWidth / (page_width + margin);
       let zoom_h =
         window.innerHeight / (this.page_dimensions_to_px.height + margin);
       this.page_zoom = Math.min(zoom_w, zoom_h) * 100;
