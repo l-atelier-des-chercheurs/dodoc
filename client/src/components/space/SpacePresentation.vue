@@ -14,6 +14,9 @@
       <!-- </div> -->
     </div>
     <div class="_title">
+      <sl-badge variant="neutral" v-if="space.$status === 'invisible'">
+        {{ $t("invisible") }}
+      </sl-badge>
       <TitleField
         :field_name="'title'"
         class=""

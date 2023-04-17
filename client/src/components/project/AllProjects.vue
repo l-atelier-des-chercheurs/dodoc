@@ -125,16 +125,20 @@ export default {
       });
     },
     sorted_projects() {
-      return (
-        this.all_projects
-          .clone()
-          .sort(
-            (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
-          ) || []
-      ).reverse();
+      if (!this.all_projects) return [];
+      return this.all_projects
+        .slice()
+        .filter((p) =>
+          this.canLoggedinSeeFolder({
+            folder: p,
+          })
+        )
+        .sort(
+          (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
+        );
     },
     filtered_projects() {
-      return this.all_projects.filter((p) => {
+      return this.sorted_projects.filter((p) => {
         if (this.active_filters.length === 0)
           if (this.search_project.length === 0) return true;
 
@@ -157,7 +161,7 @@ export default {
   },
   methods: {
     async loadAllProjects() {
-      const spaces = await this.$api
+      let spaces = await this.$api
         .getFolders({
           path: "spaces",
         })
@@ -166,9 +170,12 @@ export default {
           return;
         });
 
-      if (spaces.length === 0) {
-        return;
-      }
+      spaces = spaces.filter((s) =>
+        this.canLoggedinSeeFolder({
+          folder: s,
+        })
+      );
+      if (spaces.length === 0) return;
 
       for (const space of spaces) {
         const projects = await this.$api.getFolders({

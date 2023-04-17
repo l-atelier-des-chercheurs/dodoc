@@ -183,8 +183,8 @@ export default {
     sorted_projects() {
       let _projects = this.projects.slice();
       _projects = _projects.filter((p) =>
-        this.canLoggedinSeeProject({
-          project: p,
+        this.canLoggedinSeeFolder({
+          folder: p,
         })
       );
 
