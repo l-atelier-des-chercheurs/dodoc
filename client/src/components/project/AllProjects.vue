@@ -60,7 +60,7 @@ export default {
   width: 100%;
   max-width: calc(var(--max-column-width));
   // max-width: calc(var(--max-column-width) + 240px);
-  margin: calc(var(--spacing) * 1) auto;
-  padding: calc(var(--spacing) * 1);
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
 }
 </style>
