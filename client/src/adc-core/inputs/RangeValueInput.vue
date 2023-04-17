@@ -3,7 +3,8 @@
     <ToggledSection
       class="u-spacingBottom"
       :label="label"
-      :content.sync="show_range_input"
+      :can_toggle="can_toggle"
+      :show_toggle.sync="show_range_input"
     >
       <div class="u-sameRow">
         <input
@@ -47,6 +48,10 @@
 <script>
 export default {
   props: {
+    can_toggle: {
+      type: Boolean,
+      default: true,
+    },
     label: String,
     value: Number,
     default_value: {

@@ -52,6 +52,7 @@
       <div class="_scale">
         <RangeValueInput
           class="u-spacingBottom"
+          :can_toggle="false"
           :label="$t('scale')"
           :value="Math.round(scale * 100)"
           :min="10"
@@ -89,8 +90,8 @@
                 v-if="can_edit"
                 class="u-spacingBottom"
                 :label="$t('show_grid')"
-                :content="show_grid"
-                @update:content="$emit('update:show_grid', $event)"
+                :show_toggle="show_grid"
+                @update:show_toggle="$emit('update:show_grid', $event)"
               >
                 <RangeValueInput
                   :label="$t('gridstep')"
