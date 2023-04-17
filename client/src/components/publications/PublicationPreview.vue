@@ -3,7 +3,7 @@
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
     <div class="">
       <div class="_projectInfos--cover">
-        <img :src="cover_thumb" />
+        <img :src="cover_thumb" @click="$emit('open')" />
         <transition name="fade_fast" :duration="150" mode="out-in">
           <LoaderSpinner v-if="is_making_preview" />
         </transition>
@@ -119,6 +119,8 @@ export default {
     height: 100%;
     object-fit: contain;
     object-position: center;
+
+    cursor: pointer;
   }
 }
 ._header {
