@@ -303,7 +303,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 ._paneList {
   // font-size: var(--sl-font-size-large);
   // max-width: 1024px;

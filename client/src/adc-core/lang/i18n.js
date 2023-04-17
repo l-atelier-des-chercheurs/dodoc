@@ -242,6 +242,7 @@ export default function () {
           "Le projet apparaîtra dans la section <i>en cours</i> sur la page d’accueil.",
         listed: "Listé",
         invisible: "Invisible",
+        visible: "Visible",
         visible_status_explanations_projects:
           "Le projet sera affiché avec les autres projets.",
         invisible_status_explanations_projects:
@@ -253,6 +254,7 @@ export default function () {
 
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
+        only_finished: "Que les projets finalisés",
         my_projects: "Mes projets",
 
         finished_projects: "Projets finalisés",

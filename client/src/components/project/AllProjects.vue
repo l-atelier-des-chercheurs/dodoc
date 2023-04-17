@@ -5,6 +5,19 @@
       <div v-else>
         <div class="_cont">
           <div class="_sidebar">
+            <div class="u-switch u-switch-xs">
+              <input
+                id="only_finished"
+                type="checkbox"
+                v-model="show_only_finished"
+              />
+              <label class="u-label" for="only_finished">{{
+                $t("only_finished")
+              }}</label>
+            </div>
+
+            <br />
+
             <div class="u-sameRow" style="width: 100%">
               <input
                 type="text"
@@ -99,6 +112,7 @@ export default {
       all_projects: [],
       is_loading: true,
       search_project: "",
+      show_only_finished: false,
     };
   },
   created() {},
@@ -140,7 +154,13 @@ export default {
     filtered_projects() {
       return this.sorted_projects.filter((p) => {
         if (this.active_filters.length === 0)
-          if (this.search_project.length === 0) return true;
+          if (
+            this.search_project.length === 0 &&
+            this.show_only_finished === false
+          )
+            return true;
+
+        if (this.show_only_finished && p.$status !== "finished") return false;
 
         for (const af of this.active_filters) {
           const k = Object.keys(af).at(0);
