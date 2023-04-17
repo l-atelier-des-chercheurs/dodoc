@@ -184,6 +184,10 @@ export default function () {
         A4_landscape: "A4 en paysage",
         A5_portrait: "A5 en portrait",
         A5_landscape: "A5 en paysage",
+        recommended: "Recommandé",
+        desktop_1080: "Bureau 1080p",
+        desktop_720: "Bureau 720p",
+
         custom: "Personnalisé",
         width: "Largeur",
         height: "Hauteur",
