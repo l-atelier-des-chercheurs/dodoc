@@ -6,13 +6,13 @@
         :content="project.level"
         :path="project.$path"
         :can_edit="can_edit"
-        :grouped_options="competences"
+        :options="basic_competences"
       />
     </div>
   </ProjectCard>
 </template>
 <script>
-import competences from "@/utils/competences.json";
+// import competences from "@/utils/competences.json";
 import ProjectCard from "@/components/ProjectCard.vue";
 
 export default {
@@ -23,7 +23,29 @@ export default {
   components: { ProjectCard },
   data() {
     return {
-      competences,
+      // competences,
+      basic_competences: [
+        {
+          key: "",
+          text: "–",
+        },
+        {
+          key: "beginner",
+          text: this.$t("beginner"),
+        },
+        {
+          key: "intermediate",
+          text: this.$t("intermediate"),
+        },
+        {
+          key: "experienced",
+          text: this.$t("experienced"),
+        },
+        {
+          key: "expert",
+          text: this.$t("novice"),
+        },
+      ],
     };
   },
   created() {},

@@ -80,7 +80,7 @@ export default {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   ._projectCard[open] & {
-    background-color: var(--c-gris_fonce);
+    background-color: white;
   }
 }
 </style>

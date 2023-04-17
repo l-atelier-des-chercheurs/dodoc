@@ -448,6 +448,11 @@ export default function () {
         machines_and_materials: "Machines et matériaux",
         levels_and_competences: "Niveau et compétence",
 
+        beginner: "Novice",
+        intermediate: "Intermédiaire",
+        experienced: "Confirmé",
+        expert: "Expert",
+
         camera: "Camera",
         sources: "Sources",
         "Entire screen": "Écran de l’ordinateur",
