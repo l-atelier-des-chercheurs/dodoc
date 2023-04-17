@@ -38,7 +38,7 @@
     />
     <div class="_list">
       <SpacePresentation
-        v-for="space in spaces"
+        v-for="space in sorted_spaces"
         :key="space.$path"
         :space="space"
         :context="'list'"
@@ -83,7 +83,21 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    sorted_spaces() {
+      if (!this.spaces) return [];
+      return this.spaces
+        .slice()
+        .filter((s) =>
+          this.canLoggedinSeeFolder({
+            folder: s,
+          })
+        )
+        .sort(
+          (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
+        );
+    },
+  },
   methods: {
     getSlug(path) {
       return path.split("/").at(-1);

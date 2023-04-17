@@ -1,6 +1,6 @@
 <template>
   <div class="_storyTemplate">
-    <div class="_settings">
+    <div class="_settings" v-if="can_edit">
       <details>
         <summary>{{ $t("settings") }}</summary>
         <RangeValueInput
@@ -237,7 +237,7 @@ export default {
   justify-content: center;
   flex-flow: column nowrap;
   align-items: center;
-  margin: 0 auto calc(var(--spacing) * 8);
+  margin: 0 auto calc(var(--spacing) * 4);
 }
 
 ._settings {
@@ -249,7 +249,7 @@ export default {
   // width: 100%;
   background: white;
   padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) * 1) auto;
+  margin: calc(var(--spacing) / 2) auto;
   max-width: 240px;
 }
 
@@ -260,9 +260,9 @@ export default {
 ._storyContent {
   width: 100%;
   background: white;
-  margin: 0 auto;
   max-width: 800px;
   padding: calc(var(--spacing) * 1) 0;
+  margin: calc(var(--spacing) / 2) auto;
   border-radius: 6px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 

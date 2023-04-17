@@ -18,21 +18,21 @@ z
         :path="project.$path"
         :can_edit="can_edit_project"
       />
+      <StatusTag
+        v-if="context !== 'full'"
+        :status="project.$status"
+        :path="project.$path"
+        :can_edit="can_edit_project"
+      />
     </div>
 
     <div class="_projectInfos--infos">
-      <sl-badge variant="neutral" v-if="project.$status === 'invisible'">
-        {{ $t("invisible") }}
-      </sl-badge>
-      <!-- <sl-badge variant="success" v-if="project.$status === 'finished'">
-        {{ $t("finished") }}
-      </sl-badge>
-      <sl-badge
-        variant="warning"
-        v-if="project.$status !== 'finished' && project.$status !== 'invisible'"
-      >
-        {{ $t("draft") }}
-      </sl-badge> -->
+      <StatusTag
+        v-if="context === 'full'"
+        :status="project.$status"
+        :path="project.$path"
+        :can_edit="can_edit_project"
+      />
 
       <AuthorField
         v-if="context !== 'tiny' && context !== 'list'"
@@ -308,7 +308,7 @@ export default {
   }
 
   > * {
-    max-width: 56ch;
+    // max-width: 56ch;
   }
 }
 
@@ -340,6 +340,13 @@ export default {
     max-height: 40vh;
     max-width: 40vh;
     height: auto;
+  }
+
+  ._statusTag {
+    position: absolute;
+    left: 0;
+    margin: calc(var(--spacing) / 1);
+    bottom: 0;
   }
 }
 

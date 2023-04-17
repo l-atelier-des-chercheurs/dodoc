@@ -14,21 +14,27 @@
       <!-- </div> -->
     </div>
     <div class="_title">
+      <StatusTag
+        :status="space.$status"
+        :path="space.$path"
+        :can_edit="can_edit"
+      />
+
+      <!-- :label="can_edit ? $t('title') : undefined" -->
       <TitleField
         :field_name="'title'"
         class=""
         :tag="'h1'"
-        :label="can_edit ? $t('title') : undefined"
         :content="space.title"
         :path="space.$path"
         :maxlength="280"
         :can_edit="can_edit"
       />
+      <!-- :label="can_edit ? $t('subtitle') : undefined" -->
       <TitleField
         :field_name="'subtitle'"
         v-if="can_edit || space.subtitle"
         class="_subtitle"
-        :label="can_edit ? $t('subtitle') : undefined"
         :content="space.subtitle"
         :path="space.$path"
         :maxlength="280"
@@ -111,7 +117,7 @@ export default {
   // max-width: 140px;
 }
 ._title {
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 ._subtitle {
   color: var(--c-gris_fonce);

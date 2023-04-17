@@ -211,7 +211,11 @@
           </div>
         </template>
         <div v-else-if="publication.template === 'story'">
-          <div class="u-wips" />
+          <StoryTemplate
+            class="_storyTemplate"
+            :publication="publication"
+            :can_edit="false"
+          />
         </div>
       </div>
     </transition>
@@ -221,10 +225,14 @@
 <script>
 import screenfull from "screenfull";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
+import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
 
 export default {
   props: {},
-  components: { SinglePage },
+  components: {
+    SinglePage,
+    StoryTemplate,
+  },
   data() {
     return {
       fetch_project_error: null,
@@ -567,5 +575,8 @@ body {
     background-color: rgba(205, 205, 205, 0.5);
     width: 6ch;
   }
+}
+._storyTemplate {
+  padding: calc(var(--spacing) / 1);
 }
 </style>

@@ -68,7 +68,10 @@
           @openNewProject="openNewProject"
         />
 
-        <ProjectsList v-if="projects" :projects="projects" />
+        <ProjectsList
+          v-if="sorted_projects.length > 0"
+          :projects="sorted_projects"
+        />
       </div>
     </div>
   </div>
@@ -121,6 +124,19 @@ export default {
       return this.canLoggedinEditFolder({
         folder_authors: this.space.$authors,
       });
+    },
+    sorted_projects() {
+      if (!this.projects) return [];
+      return this.projects
+        .slice()
+        .filter((p) =>
+          this.canLoggedinSeeFolder({
+            folder: p,
+          })
+        )
+        .sort(
+          (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
+        );
     },
   },
   methods: {
