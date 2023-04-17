@@ -62,7 +62,7 @@
 
 <script>
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
-import Reveal from "reveal.js/js/reveal";
+// import Reveal from "reveal.js/js/reveal";
 
 export default {
   name: "app",
@@ -145,10 +145,10 @@ export default {
       );
       document.head.appendChild(link);
       await new Promise((r) => setTimeout(r, 2000));
-      await Reveal.initialize({
-        width: this.publication.page_width,
-        height: this.publication.page_height,
-      });
+      // await Reveal.initialize({
+      //   width: this.publication.page_width,
+      //   height: this.publication.page_height,
+      // });
     },
     async listProject() {
       const project = await this.$api
