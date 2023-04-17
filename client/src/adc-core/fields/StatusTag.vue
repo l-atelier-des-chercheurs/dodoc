@@ -26,22 +26,19 @@
   </div>
 </template>
 <script>
-const status_options = ["invisible", "draft", "finished"];
-
 export default {
   props: {
-    status: {
-      validator: function (value) {
-        return status_options.includes(value);
-      },
-    },
+    status: String,
     path: String,
     can_edit: Boolean,
+    status_options: {
+      type: Array,
+      default: () => ["invisible", "draft", "finished"],
+    },
   },
   components: {},
   data() {
     return {
-      status_options,
       new_status: this.status,
     };
   },

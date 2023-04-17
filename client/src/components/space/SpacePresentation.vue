@@ -15,7 +15,9 @@
     </div>
     <div class="_title">
       <StatusTag
+        v-if="space.$status === 'invisible' || can_edit"
         :status="space.$status"
+        :status_options="['invisible', 'visible']"
         :path="space.$path"
         :can_edit="can_edit"
       />
