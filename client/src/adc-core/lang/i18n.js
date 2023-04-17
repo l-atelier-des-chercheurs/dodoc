@@ -48,6 +48,7 @@ export default function () {
         caption: "légende",
         date_created: "date de création",
         date_modified: "dernière modification",
+        alphabetical: "alphabétique",
         date_uploaded: "date d’envoi",
         cancel: "annuler",
         select: "Sélectionner",

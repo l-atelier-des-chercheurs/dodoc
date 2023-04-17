@@ -1,15 +1,25 @@
 <template>
   <section class="_projectsListWithFilter">
-    <button
-      type="button"
-      class="u-button u-button_small"
-      :class="{
-        'is--active': show_sidebar,
-      }"
-      @click="show_sidebar = !show_sidebar"
-    >
-      {{ $t("filters") }}
-    </button>
+    <div class="_filterSortBar">
+      <button
+        type="button"
+        class="u-button u-button_small u-button_bleumarine"
+        :class="{
+          'is--active': show_sidebar,
+        }"
+        @click="show_sidebar = !show_sidebar"
+      >
+        {{ $t("filters") }}
+      </button>
+      <select size="small" class="_orderSelect" v-model="order_key">
+        <option
+          v-for="opt in order_options"
+          :key="opt.key"
+          :value="opt.key"
+          v-text="opt.text"
+        />
+      </select>
+    </div>
     <div class="_cont">
       <div class="_sidebar" v-if="show_sidebar">
         <div class="u-switch u-switch-xs">
@@ -78,11 +88,12 @@
           :key="kw"
           @click="toggleFilter({ type: 'level', value: kw })"
         >
-          {{ kw }}
+          {{ $t(kw) }}
         </button>
       </div>
 
       <div class="_listOfProjects">
+        {{ active_filters }}
         <div class="_tagList" v-if="active_filters.length > 0">
           <button
             type="button"
@@ -121,6 +132,22 @@ export default {
       show_sidebar: false,
       search_project: "",
       show_only_finished: false,
+
+      order_key: "$date_created",
+      order_options: [
+        {
+          key: "$date_created",
+          text: this.$t("date_created"),
+        },
+        {
+          key: "$date_modified",
+          text: this.$t("date_modified"),
+        },
+        {
+          key: "alphabetical",
+          text: this.$t("alphabetical"),
+        },
+      ],
     };
   },
   created() {},
@@ -152,9 +179,14 @@ export default {
             folder: p,
           })
         )
-        .sort(
-          (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
-        );
+        .sort((a, b) => {
+          if (this.order_key === "$date_created")
+            return +new Date(b.$date_created) - +new Date(a.$date_created);
+          else if (this.order_key === "$date_modified")
+            return +new Date(b.$date_modified) - +new Date(a.$date_modified);
+          else if (this.order_key === "alphabetical")
+            return a.title.localeCompare(b.title);
+        });
     },
     filtered_projects() {
       return this.sorted_projects.filter((p) => {
@@ -238,7 +270,7 @@ export default {
 }
 ._listOfProjects {
   flex: 1 1 auto;
-  margin-top: calc(var(--spacing) / 2);
+  margin-top: calc(var(--spacing) / 1);
 }
 ._tagList {
   display: flex;
@@ -246,5 +278,17 @@ export default {
   margin-bottom: calc(var(--spacing) * 1);
 }
 ._projectsListWithFilter {
+}
+
+._orderSelect {
+  max-width: 22ch;
+}
+
+._filterSortBar {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
 }
 </style>
