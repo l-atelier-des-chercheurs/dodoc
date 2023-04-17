@@ -2,7 +2,7 @@
   <transition-group
     tag="section"
     class="_projectsList"
-    name="StoryModules"
+    name="projectsList"
     appear
   >
     <div

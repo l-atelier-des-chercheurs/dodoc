@@ -737,4 +737,18 @@ img {
     opacity: 0;
   }
 }
+
+.projectsList-move {
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
+}
+.projectsList-enter,
+.projectsList-leave-to {
+  opacity: 0;
+}
+.projectsList-leave-active {
+  position: absolute !important;
+  z-index: 0 !important;
+}
 </style>
