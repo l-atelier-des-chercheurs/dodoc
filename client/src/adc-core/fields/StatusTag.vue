@@ -82,7 +82,7 @@ export default {
     --c-color: black;
   }
   &[data-status="finished"] {
-    --bg-color: var(--c-bleumarine);
+    --bg-color: var(--c-bleuvert);
   }
 
   ._tag,
