@@ -18,9 +18,9 @@
               :active_page_number="active_page_number"
               :active_spread_index="active_spread_index"
               :scale="scale"
-              :show_grid.sync="show_grid"
-              :snap_to_grid.sync="snap_to_grid"
-              :gridstep_in_mm.sync="gridstep_in_mm"
+              :show_grid.sync="page_settings.show_grid"
+              :snap_to_grid.sync="page_settings.snap_to_grid"
+              :gridstep_in_mm.sync="page_settings.gridstep_in_mm"
               :layout_mode="layout_mode"
               :page_color="current_page.page_color"
               :pagination="pagination"
@@ -62,9 +62,9 @@
                   :layout_mode="layout_mode"
                   :page_color="current_page.page_color"
                   :scale="scale"
-                  :show_grid="show_grid"
-                  :snap_to_grid="snap_to_grid"
-                  :gridstep_in_mm="gridstep_in_mm"
+                  :show_grid="page_settings.show_grid"
+                  :snap_to_grid="page_settings.snap_to_grid"
+                  :gridstep_in_mm="page_settings.gridstep_in_mm"
                   :margins="margins"
                   :page_number="active_page_number"
                   :pagination="pagination"
@@ -94,9 +94,9 @@
                       :layout_mode="layout_mode"
                       :page_color="page.page_color"
                       :scale="scale"
-                      :show_grid="show_grid"
-                      :snap_to_grid="snap_to_grid"
-                      :gridstep_in_mm="gridstep_in_mm"
+                      :show_grid="page_settings.show_grid"
+                      :snap_to_grid="page_settings.snap_to_grid"
+                      :gridstep_in_mm="page_settings.gridstep_in_mm"
                       :margins="margins"
                       :page_number="active_spread_index * 2 + index"
                       :pagination="pagination"
@@ -154,9 +154,11 @@ export default {
     return {
       scale: 1,
 
-      show_grid: true,
-      snap_to_grid: false,
-      gridstep_in_mm: 10,
+      page_settings: {
+        show_grid: false,
+        snap_to_grid: false,
+        gridstep_in_mm: 10,
+      },
 
       active_module_path: false,
     };
@@ -167,6 +169,8 @@ export default {
 
     this.$root.default_new_module_top = 15;
     this.$root.default_new_module_left = 15;
+
+    this.loadSettings();
   },
   mounted() {},
   beforeDestroy() {
@@ -194,6 +198,12 @@ export default {
         //     inline: "center",
         //   });
       });
+    },
+    page_settings: {
+      handler() {
+        this.saveSettings();
+      },
+      deep: true,
     },
   },
   computed: {
@@ -232,6 +242,18 @@ export default {
     },
   },
   methods: {
+    loadSettings() {
+      const ls = localStorage.getItem(
+        `publication.page_settings.${this.publication_path}`
+      );
+      if (ls) this.page_settings = JSON.parse(ls);
+    },
+    saveSettings() {
+      localStorage.setItem(
+        `publication.page_settings.${this.publication_path}`,
+        JSON.stringify(this.page_settings)
+      );
+    },
     keyPressed(event) {
       if (
         this.$root.modal_is_opened ||

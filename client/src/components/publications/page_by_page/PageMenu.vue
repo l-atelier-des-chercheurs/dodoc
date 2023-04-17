@@ -95,6 +95,7 @@
               >
                 <RangeValueInput
                   :label="$t('gridstep')"
+                  :can_toggle="false"
                   :value="gridstep_in_mm"
                   :min="1"
                   :max="20"

@@ -202,11 +202,7 @@ export default {
         (f) =>
           f.width === this.new_page_width && f.height === this.new_page_height
       );
-
-      debugger;
-
       if (format) return format.key;
-
       return "custom";
     },
     unit() {

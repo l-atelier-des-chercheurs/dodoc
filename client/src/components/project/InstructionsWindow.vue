@@ -33,7 +33,6 @@ export default {
   created() {
     if (localStorage.getItem(this.local_storage_path) === "true")
       this.show_instructions = false;
-    debugger;
   },
   mounted() {},
   beforeDestroy() {},
