@@ -28,7 +28,11 @@
           @close="show_authors_modal = false"
         />
         <transition name="fade_fast" mode="out-in">
-          <router-view v-slot="{ Component }" :key="$route.path">
+          <router-view
+            v-show="!show_authors_modal"
+            v-slot="{ Component }"
+            :key="$route.path"
+          >
             <component :is="Component" />
           </router-view>
         </transition>
