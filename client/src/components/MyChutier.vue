@@ -343,10 +343,10 @@ export default {
 
 ._items {
   flex: 1 1 auto;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) / 1);
 }
 ._item {
-  margin-bottom: calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) * 2);
 }
 
 ._item--label {
