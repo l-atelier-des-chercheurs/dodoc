@@ -238,6 +238,7 @@ new Vue({
   async mounted() {
     await this.$api.init({ debug_mode });
     this.is_loading = false;
+    if (!this.connected_as) this.$eventHub.$emit(`showAuthorModal`);
 
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);

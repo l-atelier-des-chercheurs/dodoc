@@ -22,6 +22,11 @@
       />
 
       <template v-else>
+        <AuthorList
+          v-if="show_authors_modal"
+          :is_closable="!!connected_as"
+          @close="show_authors_modal = false"
+        />
         <transition name="fade_fast" mode="out-in">
           <router-view v-slot="{ Component }" :key="$route.path">
             <component :is="Component" />
@@ -38,6 +43,7 @@
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
+import AuthorList from "@/adc-core/author/AuthorList.vue";
 
 export default {
   props: {},
@@ -45,11 +51,13 @@ export default {
     GeneralPasswordModal,
     TaskTracker,
     DisconnectModal,
+    AuthorList,
   },
   data() {
     return {
       show_general_password_modal: false,
       show_disconnect_modal: false,
+      show_authors_modal: false,
     };
   },
   created() {
@@ -57,6 +65,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$on(`showAuthorModal`, this.showAuthorModal);
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
   },
   mounted() {},
@@ -65,6 +74,8 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$off(`showAuthorModal`, this.showAuthorModal);
+    this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
   },
   watch: {},
   computed: {
@@ -120,6 +131,9 @@ export default {
   methods: {
     showDisconnectModal() {
       this.show_disconnect_modal = true;
+    },
+    showAuthorModal() {
+      this.show_authors_modal = true;
     },
     promptGeneralPassword() {
       this.show_general_password_modal = true;

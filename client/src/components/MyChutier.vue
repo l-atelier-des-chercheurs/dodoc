@@ -5,7 +5,7 @@
         <button
           type="button"
           class="u-button u-button_bleumarine _authorBtn"
-          @click="$emit('showAuthorModal')"
+          @click="$eventHub.$emit('showAuthorModal')"
         >
           <template v-if="connected_as">
             {{ connected_as.name }}
@@ -273,12 +273,11 @@ export default {
       $event.target.value = "";
     },
     async importedMedias($event) {
-      console.log("selected_items_slugs = " + $event);
-      this.selected_items_slugs = $event.map(
-        (i) => this.connected_as.$path + "/" + i
-      );
-
-      debugger;
+      $event;
+      // console.log("selected_items_slugs = " + $event);
+      // this.selected_items_slugs = $event.map(
+      //   (i) => this.connected_as.$path + "/" + i
+      // );
     },
     selectAll() {
       this.selected_items_slugs = this.chutier_items.map((i) => i.$path);

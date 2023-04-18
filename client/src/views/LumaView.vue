@@ -8,13 +8,7 @@
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <div class="_panes">
-        <AuthorList
-          v-if="show_authors_modal"
-          @close="show_authors_modal = false"
-        />
-
         <div
-          v-if="connected_as"
           class="_myContent"
           :class="{
             'is--shown': show_chutier,
@@ -24,7 +18,6 @@
           <MyChutier
             v-show="show_chutier"
             :shared_space_path="shared_folder_path"
-            @showAuthorModal="showAuthorModal"
             @close="show_chutier = false"
           />
 
@@ -57,8 +50,6 @@
 </template>
 <script>
 // import { Splitpanes, Pane } from "splitpanes";
-
-import AuthorList from "@/adc-core/author/AuthorList.vue";
 import MyChutier from "@/components/MyChutier.vue";
 import SharedFolder from "@/components/SharedFolder.vue";
 
@@ -67,7 +58,6 @@ export default {
   components: {
     // Splitpanes,
     // Pane,
-    AuthorList,
     MyChutier,
     SharedFolder,
   },
@@ -77,7 +67,6 @@ export default {
       folders: undefined,
       shared_folder_path: undefined,
 
-      show_authors_modal: false,
       show_chutier: true,
     };
   },
@@ -88,16 +77,10 @@ export default {
 
     await this.loadFolder();
     // check if necerray to login or create account :
-
-    if (!this.connected_as) this.showAuthorModal();
   },
   beforeDestroy() {},
   watch: {
-    connected_as() {
-      // if (this.connected_as) {
-      // this.show_authors_modal = false;
-      // }
-    },
+    connected_as() {},
   },
   computed: {},
   methods: {
@@ -131,9 +114,6 @@ export default {
         // }, 5000);
         // this.is_creating_project = false;
       }
-    },
-    showAuthorModal() {
-      this.show_authors_modal = true;
     },
   },
 };
