@@ -3,8 +3,7 @@
   font-family: "Alegreya";
   font-style: normal;
   font-weight: 400;
-  src: local("Alegreya Regular"), local("Alegreya-Regular"),
-    url("alegreya/alegreya-v13-latin-regular.woff2") format("woff2"),
+  src: url("alegreya/alegreya-v13-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("alegreya/alegreya-v13-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -14,8 +13,7 @@
   font-family: "Alegreya";
   font-style: italic;
   font-weight: 400;
-  src: local("Alegreya Italic"), local("Alegreya-Italic"),
-    url("alegreya/alegreya-v13-latin-italic.woff2") format("woff2"),
+  src: url("alegreya/alegreya-v13-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("alegreya/alegreya-v13-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -25,8 +23,7 @@
   font-family: "Alegreya";
   font-style: normal;
   font-weight: 700;
-  src: local("Alegreya Bold"), local("Alegreya-Bold"),
-    url("alegreya/alegreya-v13-latin-700.woff2") format("woff2"),
+  src: url("alegreya/alegreya-v13-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("alegreya/alegreya-v13-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -36,8 +33,7 @@
   font-family: "Alegreya";
   font-style: italic;
   font-weight: 700;
-  src: local("Alegreya Bold Italic"), local("Alegreya-BoldItalic"),
-    url("alegreya/alegreya-v13-latin-700italic.woff2") format("woff2"),
+  src: url("alegreya/alegreya-v13-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("alegreya/alegreya-v13-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -47,7 +43,7 @@
   font-family: "Archivo";
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("archivo/archivo-v16-latin-regular.woff2") format("woff2"),
+  src: url("archivo/archivo-v16-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("archivo/archivo-v16-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -57,7 +53,7 @@
   font-family: "Archivo";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("archivo/archivo-v16-latin-700.woff2") format("woff2"),
+  src: url("archivo/archivo-v16-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("archivo/archivo-v16-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -67,7 +63,7 @@
   font-family: "Archivo";
   font-style: italic;
   font-weight: 400;
-  src: local(""), url("archivo/archivo-v16-latin-italic.woff2") format("woff2"),
+  src: url("archivo/archivo-v16-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("archivo/archivo-v16-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -77,8 +73,7 @@
   font-family: "Archivo";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("archivo/archivo-v16-latin-700italic.woff2") format("woff2"),
+  src: url("archivo/archivo-v16-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("archivo/archivo-v16-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -88,8 +83,7 @@
   font-family: "Roboto Mono";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("roboto/roboto-mono-v21-latin-regular.woff2") format("woff2"),
+  src: url("roboto/roboto-mono-v21-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("roboto/roboto-mono-v21-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -99,7 +93,7 @@
   font-family: "Roboto Mono";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("roboto/roboto-mono-v21-latin-700.woff2") format("woff2"),
+  src: url("roboto/roboto-mono-v21-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("roboto/roboto-mono-v21-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -109,8 +103,7 @@
   font-family: "Roboto Mono";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("roboto/roboto-mono-v21-latin-italic.woff2") format("woff2"),
+  src: url("roboto/roboto-mono-v21-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("roboto/roboto-mono-v21-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -120,8 +113,7 @@
   font-family: "Roboto Mono";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("roboto/roboto-mono-v21-latin-700italic.woff2") format("woff2"),
+  src: url("roboto/roboto-mono-v21-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("roboto/roboto-mono-v21-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -131,7 +123,7 @@
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("roboto/roboto-v30-latin-regular.woff2") format("woff2"),
+  src: url("roboto/roboto-v30-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("roboto/roboto-v30-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -141,7 +133,7 @@
   font-family: "Roboto";
   font-style: italic;
   font-weight: 400;
-  src: local(""), url("roboto/roboto-v30-latin-italic.woff2") format("woff2"),
+  src: url("roboto/roboto-v30-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("roboto/roboto-v30-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -151,7 +143,7 @@
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("roboto/roboto-v30-latin-700.woff2") format("woff2"),
+  src: url("roboto/roboto-v30-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("roboto/roboto-v30-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -161,7 +153,7 @@
   font-family: "Roboto";
   font-style: italic;
   font-weight: 700;
-  src: local(""), url("roboto/roboto-v30-latin-700italic.woff2") format("woff2"),
+  src: url("roboto/roboto-v30-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("roboto/roboto-v30-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -171,8 +163,7 @@
   font-family: "Source Sans Pro";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("source-sans-pro/source-sans-pro-v21-latin-regular.woff2")
+  src: url("source-sans-pro/source-sans-pro-v21-latin-regular.woff2")
       format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("source-sans-pro/source-sans-pro-v21-latin-regular.woff")
@@ -184,8 +175,7 @@
   font-family: "Source Sans Pro";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("source-sans-pro/source-sans-pro-v21-latin-italic.woff2")
+  src: url("source-sans-pro/source-sans-pro-v21-latin-italic.woff2")
       format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("source-sans-pro/source-sans-pro-v21-latin-italic.woff")
@@ -197,8 +187,8 @@
   font-family: "Source Sans Pro";
   font-style: normal;
   font-weight: 700;
-  src: local(""),
-    url("source-sans-pro/source-sans-pro-v21-latin-700.woff2") format("woff2"),
+  src: url("source-sans-pro/source-sans-pro-v21-latin-700.woff2")
+      format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("source-sans-pro/source-sans-pro-v21-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -208,8 +198,7 @@
   font-family: "Source Sans Pro";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("source-sans-pro/source-sans-pro-v21-latin-700italic.woff2")
+  src: url("source-sans-pro/source-sans-pro-v21-latin-700italic.woff2")
       format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("source-sans-pro/source-sans-pro-v21-latin-700italic.woff")
@@ -221,8 +210,7 @@
   font-family: "PT Serif";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("pt-serif/pt-serif-v17-latin-regular.woff2") format("woff2"),
+  src: url("pt-serif/pt-serif-v17-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("pt-serif/pt-serif-v17-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -232,7 +220,7 @@
   font-family: "PT Serif";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("pt-serif/pt-serif-v17-latin-700.woff2") format("woff2"),
+  src: url("pt-serif/pt-serif-v17-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("pt-serif/pt-serif-v17-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -242,8 +230,7 @@
   font-family: "PT Serif";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("pt-serif/pt-serif-v17-latin-italic.woff2") format("woff2"),
+  src: url("pt-serif/pt-serif-v17-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("pt-serif/pt-serif-v17-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -253,8 +240,7 @@
   font-family: "PT Serif";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("pt-serif/pt-serif-v17-latin-700italic.woff2") format("woff2"),
+  src: url("pt-serif/pt-serif-v17-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("pt-serif/pt-serif-v17-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -264,8 +250,7 @@
   font-family: "Work Sans";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("work-sans/work-sans-v17-latin-regular.woff2") format("woff2"),
+  src: url("work-sans/work-sans-v17-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("work-sans/work-sans-v17-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -275,7 +260,7 @@
   font-family: "Work Sans";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("work-sans/work-sans-v17-latin-700.woff2") format("woff2"),
+  src: url("work-sans/work-sans-v17-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("work-sans/work-sans-v17-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -285,8 +270,7 @@
   font-family: "Work Sans";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("work-sans/work-sans-v17-latin-italic.woff2") format("woff2"),
+  src: url("work-sans/work-sans-v17-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("work-sans/work-sans-v17-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -296,8 +280,7 @@
   font-family: "Work Sans";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("work-sans/work-sans-v17-latin-700italic.woff2") format("woff2"),
+  src: url("work-sans/work-sans-v17-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("work-sans/work-sans-v17-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -307,7 +290,7 @@
   font-family: "Karla";
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("karla/karla-v22-latin-regular.woff2") format("woff2"),
+  src: url("karla/karla-v22-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("karla/karla-v22-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -317,7 +300,7 @@
   font-family: "Karla";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("karla/karla-v22-latin-700.woff2") format("woff2"),
+  src: url("karla/karla-v22-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("karla/karla-v22-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -327,7 +310,7 @@
   font-family: "Karla";
   font-style: italic;
   font-weight: 400;
-  src: local(""), url("karla/karla-v22-latin-italic.woff2") format("woff2"),
+  src: url("karla/karla-v22-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("karla/karla-v22-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -337,7 +320,7 @@
   font-family: "Karla";
   font-style: italic;
   font-weight: 700;
-  src: local(""), url("karla/karla-v22-latin-700italic.woff2") format("woff2"),
+  src: url("karla/karla-v22-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("karla/karla-v22-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -347,11 +330,9 @@
   font-family: "Source Serif Pro";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("source-serif-prosource-serif-pro-v15-latin-regular.woff2")
+  src: url("source-serif-pro/source-serif-pro-v15-latin-regular.woff2")
       format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("source-serif-prosource-serif-pro-v15-latin-regular.woff")
+    url("source-serif-pro/source-serif-pro-v15-latin-regular.woff")
       format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
@@ -360,11 +341,10 @@
   font-family: "Source Serif Pro";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("source-serif-prosource-serif-pro-v15-latin-italic.woff2")
+  src: url("source-serif-pro/source-serif-pro-v15-latin-italic.woff2")
       format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("source-serif-prosource-serif-pro-v15-latin-italic.woff")
+      url("source-serif-pro/source-serif-pro-v15-latin-italic.woff")
       format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
@@ -373,10 +353,10 @@
   font-family: "Source Serif Pro";
   font-style: normal;
   font-weight: 700;
-  src: local(""),
-    url("source-serif-prosource-serif-pro-v15-latin-700.woff2") format("woff2"),
+  src: url("source-serif-pro/source-serif-pro-v15-latin-700.woff2")
+      format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("source-serif-prosource-serif-pro-v15-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+      url("source-serif-pro/source-serif-pro-v15-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
 /* source-serif-pro-700italic - latin */
@@ -384,11 +364,10 @@
   font-family: "Source Serif Pro";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("source-serif-prosource-serif-pro-v15-latin-700italic.woff2")
+  src: url("source-serif-pro/source-serif-pro-v15-latin-700italic.woff2")
       format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("source-serif-prosource-serif-pro-v15-latin-700italic.woff")
+      url("source-serif-pro/source-serif-pro-v15-latin-700italic.woff")
       format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
@@ -397,8 +376,8 @@
   font-family: "IBM Plex Serif";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("ibm-plex-serif/ibm-plex-serif-v15-latin-regular.woff2") format("woff2"),
+  src: url("ibm-plex-serif/ibm-plex-serif-v15-latin-regular.woff2")
+      format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-serif/ibm-plex-serif-v15-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -408,8 +387,8 @@
   font-family: "IBM Plex Serif";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("ibm-plex-serif/ibm-plex-serif-v15-latin-italic.woff2") format("woff2"),
+  src: url("ibm-plex-serif/ibm-plex-serif-v15-latin-italic.woff2")
+      format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-serif/ibm-plex-serif-v15-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -419,8 +398,7 @@
   font-family: "IBM Plex Serif";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("ibm-plex-serif/ibm-plex-serif-v15-latin-700italic.woff2")
+  src: url("ibm-plex-serif/ibm-plex-serif-v15-latin-700italic.woff2")
       format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-serif/ibm-plex-serif-v15-latin-700italic.woff")
@@ -432,8 +410,7 @@
   font-family: "IBM Plex Serif";
   font-style: normal;
   font-weight: 700;
-  src: local(""),
-    url("ibm-plex-serif/ibm-plex-serif-v15-latin-700.woff2") format("woff2"),
+  src: url("ibm-plex-serif/ibm-plex-serif-v15-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-serif/ibm-plex-serif-v15-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -443,8 +420,8 @@
   font-family: "IBM Plex Mono";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("ibm-plex-mono/ibm-plex-mono-v12-latin-regular.woff2") format("woff2"),
+  src: url("ibm-plex-mono/ibm-plex-mono-v12-latin-regular.woff2")
+      format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-mono/ibm-plex-mono-v12-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -454,8 +431,7 @@
   font-family: "IBM Plex Mono";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("ibm-plex-mono/ibm-plex-mono-v12-latin-italic.woff2") format("woff2"),
+  src: url("ibm-plex-mono/ibm-plex-mono-v12-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-mono/ibm-plex-mono-v12-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -465,8 +441,7 @@
   font-family: "IBM Plex Mono";
   font-style: normal;
   font-weight: 700;
-  src: local(""),
-    url("ibm-plex-mono/ibm-plex-mono-v12-latin-700.woff2") format("woff2"),
+  src: url("ibm-plex-mono/ibm-plex-mono-v12-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-mono/ibm-plex-mono-v12-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -476,8 +451,8 @@
   font-family: "IBM Plex Mono";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("ibm-plex-mono/ibm-plex-mono-v12-latin-700italic.woff2") format("woff2"),
+  src: url("ibm-plex-mono/ibm-plex-mono-v12-latin-700italic.woff2")
+      format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-mono/ibm-plex-mono-v12-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -487,8 +462,8 @@
   font-family: "IBM Plex Sans";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("ibm-plex-sans/ibm-plex-sans-v14-latin-regular.woff2") format("woff2"),
+  src: url("ibm-plex-sans/ibm-plex-sans-v14-latin-regular.woff2")
+      format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-sans/ibm-plex-sans-v14-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -498,8 +473,7 @@
   font-family: "IBM Plex Sans";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("ibm-plex-sans/ibm-plex-sans-v14-latin-italic.woff2") format("woff2"),
+  src: url("ibm-plex-sans/ibm-plex-sans-v14-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-sans/ibm-plex-sans-v14-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -509,8 +483,7 @@
   font-family: "IBM Plex Sans";
   font-style: normal;
   font-weight: 700;
-  src: local(""),
-    url("ibm-plex-sans/ibm-plex-sans-v14-latin-700.woff2") format("woff2"),
+  src: url("ibm-plex-sans/ibm-plex-sans-v14-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-sans/ibm-plex-sans-v14-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -520,8 +493,8 @@
   font-family: "IBM Plex Sans";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("ibm-plex-sans/ibm-plex-sans-v14-latin-700italic.woff2") format("woff2"),
+  src: url("ibm-plex-sans/ibm-plex-sans-v14-latin-700italic.woff2")
+      format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("ibm-plex-sans/ibm-plex-sans-v14-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -531,7 +504,7 @@
   font-family: "Volkhov";
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("volkhov/volkhov-v17-latin-regular.woff2") format("woff2"),
+  src: url("volkhov/volkhov-v17-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("volkhov/volkhov-v17-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -541,7 +514,7 @@
   font-family: "Volkhov";
   font-style: italic;
   font-weight: 400;
-  src: local(""), url("volkhov/volkhov-v17-latin-italic.woff2") format("woff2"),
+  src: url("volkhov/volkhov-v17-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("volkhov/volkhov-v17-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -551,7 +524,7 @@
   font-family: "Volkhov";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("volkhov/volkhov-v17-latin-700.woff2") format("woff2"),
+  src: url("volkhov/volkhov-v17-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("volkhov/volkhov-v17-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -561,8 +534,7 @@
   font-family: "Volkhov";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("volkhov/volkhov-v17-latin-700italic.woff2") format("woff2"),
+  src: url("volkhov/volkhov-v17-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("volkhov/volkhov-v17-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -572,8 +544,7 @@
   font-family: "Spectral";
   font-style: normal;
   font-weight: 400;
-  src: local(""),
-    url("spectral/spectral-v12-latin-regular.woff2") format("woff2"),
+  src: url("spectral/spectral-v12-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("spectral/spectral-v12-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -583,8 +554,7 @@
   font-family: "Spectral";
   font-style: italic;
   font-weight: 400;
-  src: local(""),
-    url("spectral/spectral-v12-latin-italic.woff2") format("woff2"),
+  src: url("spectral/spectral-v12-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("spectral/spectral-v12-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -594,7 +564,7 @@
   font-family: "Spectral";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("spectral/spectral-v12-latin-700.woff2") format("woff2"),
+  src: url("spectral/spectral-v12-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("spectral/spectral-v12-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -604,8 +574,7 @@
   font-family: "Spectral";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("spectral/spectral-v12-latin-700italic.woff2") format("woff2"),
+  src: url("spectral/spectral-v12-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("spectral/spectral-v12-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -615,7 +584,7 @@
   font-family: "Krub";
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("krub/krub-v9-latin-regular.woff2") format("woff2"),
+  src: url("krub/krub-v9-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("krub/krub-v9-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -625,7 +594,7 @@
   font-family: "Krub";
   font-style: italic;
   font-weight: 400;
-  src: local(""), url("krub/krub-v9-latin-italic.woff2") format("woff2"),
+  src: url("krub/krub-v9-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("krub/krub-v9-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -635,7 +604,7 @@
   font-family: "Krub";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("krub/krub-v9-latin-700.woff2") format("woff2"),
+  src: url("krub/krub-v9-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */ url("krub/krub-v9-latin-700.woff")
       format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -645,7 +614,7 @@
   font-family: "Krub";
   font-style: italic;
   font-weight: 700;
-  src: local(""), url("krub/krub-v9-latin-700italic.woff2") format("woff2"),
+  src: url("krub/krub-v9-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("krub/krub-v9-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -654,7 +623,7 @@
   font-family: "OpenDyslexic";
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("OpenDyslexic/OpenDyslexic-Regular.woff2") format("woff2"),
+  src: url("OpenDyslexic/OpenDyslexic-Regular.woff2") format("woff2"),
     url("OpenDyslexic/OpenDyslexic-Regular.woff") format("woff");
 }
 
@@ -662,7 +631,7 @@
   font-family: "OpenDyslexic";
   font-style: italic;
   font-weight: 400;
-  src: local(""), url("OpenDyslexic/OpenDyslexic-Italic.woff2") format("woff2"),
+  src: url("OpenDyslexic/OpenDyslexic-Italic.woff2") format("woff2"),
     url("OpenDyslexic/OpenDyslexic-Italic.woff") format("woff");
 }
 
@@ -670,7 +639,7 @@
   font-family: "OpenDyslexic";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("OpenDyslexic/OpenDyslexic-Bold.woff2") format("woff2"),
+  src: url("OpenDyslexic/OpenDyslexic-Bold.woff2") format("woff2"),
     url("OpenDyslexic/OpenDyslexic-Bold.woff") format("woff");
 }
 
@@ -678,8 +647,7 @@
   font-family: "OpenDyslexic";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("OpenDyslexic/OpenDyslexic-Bold-Italic.woff2") format("woff2"),
+  src: url("OpenDyslexic/OpenDyslexic-Bold-Italic.woff2") format("woff2"),
     url("OpenDyslexic/OpenDyslexic-Bold-Italic.woff") format("woff");
 }
 
@@ -723,29 +691,29 @@
   font-family: "Belle Allure CE";
   font-style: normal;
   font-weight: 400;
-  src: url("BelleAllureCE-Fin.woff2") format("woff2"),
-    url("BelleAllureCE-Fin.woff") format("woff");
+  src: url("belle-allure/BelleAllureCE-Fin.woff2") format("woff2"),
+    url("belle-allure/BelleAllureCE-Fin.woff") format("woff");
 }
 @font-face {
   font-family: "Belle Allure CE";
   font-style: normal;
   font-weight: 700;
-  src: url("BelleAllureCE-Gros.woff2") format("woff2"),
-    url("BelleAllureCE-Gros.woff") format("woff");
+  src: url("belle-allure/BelleAllureCE-Gros.woff2") format("woff2"),
+    url("belle-allure/BelleAllureCE-Gros.woff") format("woff");
 }
 @font-face {
   font-family: "Belle Allure CM";
   font-style: normal;
   font-weight: 400;
-  src: url("BelleAllureCM-Fin.woff2") format("woff2"),
-    url("BelleAllureCM-Fin.woff") format("woff");
+  src: url("belle-allure/BelleAllureCM-Fin.woff2") format("woff2"),
+    url("belle-allure/BelleAllureCM-Fin.woff") format("woff");
 }
 @font-face {
   font-family: "Belle Allure CM";
   font-style: normal;
   font-weight: 700;
-  src: url("BelleAllureCM-Gros.woff2") format("woff2"),
-    url("BelleAllureCM-Gros.woff") format("woff");
+  src: url("belle-allure/BelleAllureCM-Gros.woff2") format("woff2"),
+    url("belle-allure/BelleAllureCM-Gros.woff") format("woff");
 }
 
 /* raleway-regular - latin */
@@ -753,7 +721,7 @@
   font-family: "Raleway";
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("raleway/raleway-v27-latin-regular.woff2") format("woff2"),
+  src: url("raleway/raleway-v27-latin-regular.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("raleway/raleway-v27-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -763,7 +731,7 @@
   font-family: "Raleway";
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("raleway/raleway-v27-latin-700.woff2") format("woff2"),
+  src: url("raleway/raleway-v27-latin-700.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("raleway/raleway-v27-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -773,7 +741,7 @@
   font-family: "Raleway";
   font-style: italic;
   font-weight: 400;
-  src: local(""), url("raleway/raleway-v27-latin-italic.woff2") format("woff2"),
+  src: url("raleway/raleway-v27-latin-italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("raleway/raleway-v27-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
@@ -783,8 +751,7 @@
   font-family: "Raleway";
   font-style: italic;
   font-weight: 700;
-  src: local(""),
-    url("raleway/raleway-v27-latin-700italic.woff2") format("woff2"),
+  src: url("raleway/raleway-v27-latin-700italic.woff2") format("woff2"),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
       url("raleway/raleway-v27-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }

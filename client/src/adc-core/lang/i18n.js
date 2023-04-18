@@ -48,6 +48,7 @@ export default function () {
         caption: "légende",
         date_created: "date de création",
         date_modified: "dernière modification",
+        alphabetical: "alphabétique",
         date_uploaded: "date d’envoi",
         cancel: "annuler",
         select: "Sélectionner",
@@ -185,6 +186,10 @@ export default function () {
         A4_landscape: "A4 en paysage",
         A5_portrait: "A5 en portrait",
         A5_landscape: "A5 en paysage",
+        recommended: "Recommandé",
+        desktop_1080: "Bureau 1080p",
+        desktop_720: "Bureau 720p",
+
         custom: "Personnalisé",
         width: "Largeur",
         height: "Hauteur",
@@ -238,11 +243,14 @@ export default function () {
         status: "État",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
-        draft: "Brouillon",
+        filters: "Filtres",
+
+        draft: "En cours",
         draft_status_explanations:
-          "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
+          "Le projet apparaîtra dans la section <i>en cours</i> sur la page d’accueil.",
         listed: "Listé",
         invisible: "Invisible",
+        visible: "Visible",
         visible_status_explanations_projects:
           "Le projet sera affiché avec les autres projets.",
         invisible_status_explanations_projects:
@@ -254,6 +262,7 @@ export default function () {
 
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
+        only_finished: "Que les projets finalisés",
         my_projects: "Mes projets",
 
         finished_projects: "Projets finalisés",
@@ -444,6 +453,11 @@ export default function () {
 
         machines_and_materials: "Machines et matériaux",
         levels_and_competences: "Niveau et compétence",
+
+        beginner: "Novice",
+        intermediate: "Intermédiaire",
+        experienced: "Confirmé",
+        expert: "Expert",
 
         camera: "Camera",
         sources: "Sources",

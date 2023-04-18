@@ -288,7 +288,7 @@ class Exporter {
     this._notifyProgress(30);
     await page
       .goto(url, {
-        waitUntil: "domcontentloaded",
+        waitUntil: "networkidle0",
       })
       .catch((err) => {
         throw err;
@@ -310,8 +310,6 @@ class Exporter {
         width: `${printToPDF_pagesize.width}mm`,
         height: `${printToPDF_pagesize.height}mm`,
       });
-
-      return full_path_to_pdf;
     } else if (this.instructions.recipe === "png") {
       path_to_temp_file = await this._saveData("png");
       await page.screenshot({

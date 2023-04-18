@@ -52,6 +52,8 @@ import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
 Vue.component("AuthorField", AuthorField);
+import StatusTag from "@/adc-core/fields/StatusTag.vue";
+Vue.component("StatusTag", StatusTag);
 import TagsField from "@/adc-core/fields/TagsField.vue";
 Vue.component("TagsField", TagsField);
 import CoverField from "@/adc-core/fields/CoverField.vue";

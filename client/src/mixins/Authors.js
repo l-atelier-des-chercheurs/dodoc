@@ -32,14 +32,14 @@ export default {
       if (folder_authors.includes(this.connected_as?.$path)) return true;
       return false;
     },
-    canLoggedinSeeProject({ project }) {
+    canLoggedinSeeFolder({ folder }) {
       // if public, if author admin, if author part of $authors
       // todo do this API side
-      if (project.$status !== "invisible") return true;
+      if (folder.$status !== "invisible") return true;
       if (this.connected_as?.role === "admin") return true;
       if (
-        Array.isArray(project.$authors) &&
-        project.$authors.includes(this.connected_as?.$path)
+        Array.isArray(folder.$authors) &&
+        folder.$authors.includes(this.connected_as?.$path)
       )
         return true;
       return false;
