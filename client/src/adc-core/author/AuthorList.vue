@@ -1,5 +1,9 @@
 <template>
-  <BaseModal2 :title="$t('contributors')" @close="$emit('close')">
+  <BaseModal2
+    :title="$t('contributors')"
+    :is_closable="is_closable"
+    @close="$emit('close')"
+  >
     <div>
       <!-- <div class="u-wips" /> -->
 
@@ -78,7 +82,12 @@ import AuthorCard from "@/adc-core/author/AuthorCard.vue";
 import LoginAs from "@/adc-core/author/LoginAs.vue";
 
 export default {
-  props: {},
+  props: {
+    is_closable: {
+      type: Boolean,
+      default: true,
+    },
+  },
   components: {
     CreateAuthor,
     AuthorCard,
