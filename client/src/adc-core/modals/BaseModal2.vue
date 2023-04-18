@@ -64,7 +64,7 @@ export default {
   computed: {},
   methods: {
     handleKeyPress($event) {
-      if ($event.key === "Escape") this.$emit("close");
+      if ($event.key === "Escape") this.closeModal();
     },
     closeModal() {
       if (!this.is_closable) return false;
