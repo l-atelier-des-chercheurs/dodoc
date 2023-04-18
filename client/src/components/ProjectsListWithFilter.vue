@@ -155,13 +155,13 @@ export default {
   watch: {},
   computed: {
     all_keywords() {
-      return this.extractArr(this.projects, "keywords");
+      return this.extractArr(this.sorted_projects, "keywords");
     },
     all_materials() {
-      return this.extractArr(this.projects, "materials");
+      return this.extractArr(this.sorted_projects, "materials");
     },
     all_levels() {
-      return this.extractArr(this.projects, "level");
+      return this.extractArr(this.sorted_projects, "level");
     },
     active_filters() {
       if (!this.$route.query) return [];
