@@ -47,7 +47,7 @@
       <label for="">
         <button
           type="button"
-          class="u-buttonLink"
+          class="u-buttonLink u-selectBtn"
           v-if="chutier_items.length > 0"
           @click="!all_items_selected ? selectAll() : deselectAll()"
         >
@@ -68,7 +68,7 @@
           <button
             v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
             type="button"
-            class="u-buttonLink"
+            class="u-buttonLink u-selectBtn"
             @click="selectRange(ci.files.map((f) => f.$path))"
           >
             <sl-icon name="plus-square-dotted" />
@@ -76,7 +76,7 @@
           <button
             v-else
             type="button"
-            class="u-buttonLink"
+            class="u-buttonLink u-selectBtn"
             @click="deselectRange(ci.files.map((f) => f.$path))"
           >
             <sl-icon name="dash-square-dotted" />
@@ -382,6 +382,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+  background: black;
   gap: calc(var(--spacing) / 4);
 
   ::v-deep ._mediaContent--image {
@@ -392,7 +393,7 @@ export default {
   }
 }
 ._selectionBar--previews--preview {
-  flex: 0 1 40px;
+  flex: 0 1 20px;
   aspect-ratio: 1/1;
   overflow: hidden;
 }

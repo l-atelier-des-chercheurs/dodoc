@@ -806,3 +806,7 @@ fieldset {
     }
   }
 }
+.u-selectBtn {
+  margin-left: calc(var(--spacing) / 2);
+  margin-right: calc(var(--spacing) / 4);
+}

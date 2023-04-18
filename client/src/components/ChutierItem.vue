@@ -3,12 +3,14 @@
     class="_chutierRow"
     :class="{
       'is--clicked': is_clicked,
+      'is--selected': is_selected,
     }"
   >
-    <div class="_chutierRow--rows">
+    <div class="_chutierRow--rows" @click="$emit('toggleSelect')">
       <label
         :for="id"
         class="_selectBox"
+        @click.stop
         v-if="$listeners && $listeners.toggleSelect"
       >
         <input
@@ -20,7 +22,7 @@
         />
       </label>
       <div class="_infos">
-        <div class="_chutierRow--openLarge" @click="show_large = true">
+        <div class="_chutierRow--openLarge" @click.stop="show_large = true">
           <MediaContent
             class="_chutierRow--preview"
             :file="file"
@@ -310,7 +312,7 @@ export default {
 
 ._selectBox {
   height: 70px;
-  width: 35px;
+  width: 25px;
   display: flex;
   place-content: center;
   cursor: pointer;
@@ -342,12 +344,16 @@ export default {
   width: 100%;
   // padding: 2px;
   margin-bottom: 2px;
+  overflow: hidden;
+  border-radius: 4px;
   background: rgb(37, 39, 41);
   box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
-  border-radius: 4px;
-  overflow: hidden;
   border: 1px solid rgb(67, 69, 71);
 
+  &.is--selected {
+    border-color: var(--c-orange);
+    // background: rgb(67, 69, 71);
+  }
   &.is--clicked {
     // background: rgb(67, 69, 71);
   }
