@@ -46,6 +46,9 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
+    status() {
+      this.new_status = this.status;
+    },
     new_status() {
       this.updateMeta({ $status: this.new_status });
     },
