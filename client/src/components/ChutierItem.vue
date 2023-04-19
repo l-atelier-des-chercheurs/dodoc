@@ -4,14 +4,18 @@
     :class="{
       'is--clicked': is_clicked,
       'is--selected': is_selected,
+      'is--edited': edit_mode,
     }"
   >
-    <div class="_chutierRow--rows" @click="$emit('toggleSelect')">
+    <div
+      class="_chutierRow--rows"
+      @click="!edit_mode ? $emit('toggleSelect') : ''"
+    >
       <label
         :for="id"
         class="_selectBox"
         @click.stop
-        v-if="$listeners && $listeners.toggleSelect"
+        v-if="!edit_mode && $listeners && $listeners.toggleSelect"
       >
         <input
           type="checkbox"
@@ -72,29 +76,6 @@
           </div>
         </div>
         <EditBtn v-if="!edit_mode" @click="edit_mode = true" />
-        <!-- <sl-button
-          variant="edit"
-          v-else
-          class="editBtn"
-          size="small"
-          circle
-          @click="$emit('unclicked')"
-        >
-          <sl-icon name="check-circle" :label="$t('edit')" />
-        </sl-button> -->
-        <!-- <button
-          type="button"
-          v-if="share_button_is_enabled"
-          :key="share_button_is_enabled"
-          class="u-buttonLink"
-          :class="{
-            'is--disabled': !share_button_is_enabled,
-          }"
-          @click="shareButtonClicked"
-        >
-          Publier&nbsp;
-          <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
-        </button> -->
       </div>
     </div>
     <div
@@ -311,18 +292,18 @@ export default {
 }
 
 ._selectBox {
-  height: 70px;
-  width: 25px;
+  // height: 70px;
+  width: 20px;
   display: flex;
   place-content: center;
   cursor: pointer;
 
-  &:hover {
-    background: rgb(67, 69, 71);
-  }
-
   input {
     cursor: inherit;
+  }
+
+  &:hover input {
+    border: 2px solid var(--c-orange);
   }
 }
 
@@ -343,12 +324,12 @@ export default {
 ._chutierRow {
   width: 100%;
   // padding: 2px;
+  padding: calc(var(--spacing) / 4) 0;
   margin-bottom: 2px;
   overflow: hidden;
   border-radius: 4px;
-  background: rgb(37, 39, 41);
-  box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
-  border: 1px solid rgb(67, 69, 71);
+  // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
+  border: 1px solid transparent;
 
   &.is--selected {
     border-color: var(--c-orange);
@@ -356,6 +337,10 @@ export default {
   }
   &.is--clicked {
     // background: rgb(67, 69, 71);
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
   }
 
   ._chutierRow--openLarge {
@@ -374,12 +359,15 @@ export default {
     justify-content: space-between;
     align-items: center;
   }
+  &:not(.is--edited) {
+    cursor: pointer;
+  }
 
   ._chutierRow--preview {
     position: relative;
-    height: 70px;
+    height: 60px;
     border-radius: 2px;
-    width: 70px;
+    width: 60px;
     flex: 0 0 auto;
     overflow: hidden;
 
@@ -412,7 +400,8 @@ export default {
         display: none;
       }
 
-      .plyr__control {
+      .plyr__control,
+      ._mediaContent--pdfIframe {
         pointer-events: auto;
       }
 

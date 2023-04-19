@@ -202,7 +202,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 5px;
+  padding: 2px;
 }
 
 ._openLarge {

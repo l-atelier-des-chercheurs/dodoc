@@ -64,21 +64,22 @@
 
     <div class="_items">
       <div class="_item" v-for="ci in chutier_items_grouped" :key="ci.label">
-        <div class="_item--label">
+        <div
+          class="_item--label"
+          @click="
+            rangeIsSelected(ci.files.map((f) => f.$path))
+              ? deselectRange(ci.files.map((f) => f.$path))
+              : selectRange(ci.files.map((f) => f.$path))
+          "
+        >
           <button
             v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
             type="button"
             class="u-buttonLink u-selectBtn"
-            @click="selectRange(ci.files.map((f) => f.$path))"
           >
             <sl-icon name="plus-square-dotted" />
           </button>
-          <button
-            v-else
-            type="button"
-            class="u-buttonLink u-selectBtn"
-            @click="deselectRange(ci.files.map((f) => f.$path))"
-          >
+          <button v-else type="button" class="u-buttonLink u-selectBtn">
             <sl-icon name="dash-square-dotted" />
           </button>
           {{ formatDateToHuman(ci.label) }}
@@ -101,54 +102,58 @@
         </transition-group>
       </div>
     </div>
-    <div class="_selectionBar" v-if="selected_items_slugs.length > 0">
-      <div class="_selectionBar--previews">
-        <template v-for="file in selected_items">
-          <MediaContent
-            v-if="file.$path"
-            :key="file.$path"
-            :file="file"
-            class="_selectionBar--previews--preview"
-            :context="'preview'"
-          />
-        </template>
-      </div>
-      <button
-        type="button"
-        class="u-button u-button_bleuvert"
-        @click="setSelectionAsFocus"
-      >
-        {{ $t("create_stack") }} ({{ selected_items_slugs.length }})
-      </button>
-
-      <div class="u-sameRow">
-        <button type="button" class="u-buttonLink" @click="deselectAll">
-          <sl-icon name="dash-square-dotted" />
-          Déselectionner tout
-        </button>
+    <transition name="slideup">
+      <div class="_selectionBar" v-if="selected_items_slugs.length > 0">
+        <div class="_selectionBar--previews">
+          <template v-for="file in selected_items">
+            <MediaContent
+              v-if="file.$path"
+              :key="file.$path"
+              :file="file"
+              class="_selectionBar--previews--preview"
+              :context="'preview'"
+            />
+          </template>
+        </div>
         <button
           type="button"
-          class="u-buttonLink"
-          @click="removeItemsInSelection"
+          class="u-button u-button_bleuvert"
+          @click="setSelectionAsFocus"
         >
-          <sl-icon name="trash3" />
-          Supprimer les éléments
+          {{ $t("create_stack") }} ({{ selected_items_slugs.length }})
         </button>
-      </div>
-    </div>
 
-    <MediaStack
-      v-if="focused_items.length > 0"
-      class="_mediaStack"
-      :files="focused_items"
-      :shared_space_path="shared_space_path"
-      @updateFocusedMedia="focused_items_slugs = $event"
-      @close="focused_items_slugs = []"
-      @stackCreated="
-        focused_items_slugs = [];
-        selected_items_slugs = [];
-      "
-    />
+        <div class="u-sameRow">
+          <button type="button" class="u-buttonLink" @click="deselectAll">
+            <sl-icon name="dash-square-dotted" />
+            Déselectionner tout
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="removeItemsInSelection"
+          >
+            <sl-icon name="trash3" />
+            Supprimer les éléments
+          </button>
+        </div>
+      </div>
+    </transition>
+
+    <transition name="slideup">
+      <MediaStack
+        v-if="focused_items.length > 0"
+        class="_mediaStack"
+        :files="focused_items"
+        :shared_space_path="shared_space_path"
+        @updateFocusedMedia="focused_items_slugs = $event"
+        @close="focused_items_slugs = []"
+        @stackCreated="
+          focused_items_slugs = [];
+          selected_items_slugs = [];
+        "
+      />
+    </transition>
   </div>
 </template>
 <script>
@@ -351,12 +356,18 @@ export default {
 ._item--label {
   // width: 100%;
   // text-align: center;
+  display: inline-block;
+  cursor: pointer;
   font-weight: 500;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   // display: flex;
   // gap: calc(var(--spacing) / 4);
   // align-items: flex-end;
   // justify-content: space-between;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 ._selectionBar {
@@ -369,7 +380,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  box-shadow: 0 2px 6px 0 var(--chutier-bg);
+  box-shadow: 0 2px 6px 0 black;
   background: var(--chutier-bg);
   border-top: 2px solid black;
   // background: black;
@@ -382,7 +393,8 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  background: black;
+  // border: 1px solid #999;
+  padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 4);
 
   ::v-deep ._mediaContent--image {
