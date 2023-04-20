@@ -1,8 +1,8 @@
 <template>
   <div v-if="shared_folder" class="_sharedFolder">
-    <div class="_floatingTopBtn">
+    <!-- <div class="_floatingTopBtn">
       <div class="">Espace partagé</div>
-    </div>
+    </div> -->
 
     <ItemModal v-if="opened_files" :file="opened_files" @close="closeFile" />
 
