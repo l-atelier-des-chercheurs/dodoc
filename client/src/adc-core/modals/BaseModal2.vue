@@ -1,11 +1,12 @@
 <template>
   <portal to="destination">
-    <transition name="fade">
+    <transition name="fade_fast">
       <div
         class="_baseModal"
         v-if="show_modal"
         @click.self="closeModal"
         ref="modal"
+        :data-size="size"
       >
         <div class="_baseModal--content">
           <header v-if="title">
@@ -19,7 +20,7 @@
           </div>
         </div>
         <div class="_baseModal--closeBtn" v-if="is_closable">
-          <sl-button variant="default" size="medium" circle @click="closeModal">
+          <sl-button variant="neutral" size="medium" circle @click="closeModal">
             <sl-icon name="x-lg" :label="$t('close')"></sl-icon>
           </sl-button>
         </div>
@@ -31,6 +32,7 @@
 export default {
   props: {
     title: String,
+    size: String,
     is_closable: {
       type: Boolean,
       default: true,
@@ -96,11 +98,12 @@ export default {
   background: rgba(231, 231, 231, 0.7);
 
   ._baseModal--content {
+    position: relative;
     // padding: calc(var(--spacing) / 2);
     background: var(--panel-color);
     border: var(--panel-borders);
-    box-shadow: var(--panel-shadows);
-    border-radius: var(--panel-radius);
+    // box-shadow: var(--panel-shadows);
+    // border-radius: var(--panel-radius);
 
     margin: 0 auto;
     max-width: 480px;
@@ -109,12 +112,25 @@ export default {
     max-height: calc(100vh - calc(var(--spacing) * 2));
     overflow: auto;
   }
+
+  &[data-size="full"] ._baseModal--content {
+    max-width: none;
+    max-height: none;
+    border: none;
+
+    --modal-margin: var(--spacing) * 4;
+
+    width: calc(100% - var(--modal-margin));
+    height: calc(100% - var(--modal-margin));
+    margin: calc(var(--modal-margin) / 2);
+  }
 }
 
 ._baseModal--closeBtn {
   position: absolute;
   top: 0;
   right: 0;
+  padding: 2px;
 }
 
 header {
@@ -134,6 +150,10 @@ header {
 
   > *:first-child {
     margin-top: 0;
+  }
+
+  ._baseModal[data-size="full"] & {
+    padding: 0;
   }
 }
 ._footer {

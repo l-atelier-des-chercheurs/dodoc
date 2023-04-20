@@ -4,18 +4,23 @@
       <div class="">Espace partagé</div>
     </div>
 
+    <ItemModal v-if="opened_files" :file="opened_files" @close="closeFile" />
+
     <div class="_grid">
       <SharedFolderItem
-        class="_item"
-        v-for="file in shared_items"
+        class="_file"
+        v-for="file in shared_files"
         :key="file.$path"
         :file="file"
+        :is_opened="opened_files && opened_files.$path === file.$path"
+        @open="openFile(file.$path)"
       />
     </div>
   </div>
 </template>
 <script>
 import SharedFolderItem from "@/components/SharedFolderItem.vue";
+import ItemModal from "@/components/ItemModal.vue";
 
 export default {
   props: {
@@ -23,6 +28,7 @@ export default {
   },
   components: {
     SharedFolderItem,
+    ItemModal,
   },
   data() {
     return {
@@ -39,7 +45,13 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    shared_items() {
+    opened_files() {
+      if (!this.$route.query?.file) return false;
+      return this.shared_files.find(
+        (si) => this.getFilename(si.$path) === this.$route.query.file
+      );
+    },
+    shared_files() {
       if (!this.shared_folder?.$files) return [];
       const _all_medias = JSON.parse(JSON.stringify(this.shared_folder.$files));
 
@@ -63,13 +75,28 @@ export default {
       return _medias_not_in_stacks;
     },
   },
-  methods: {},
+  methods: {
+    openFile(path) {
+      let query = Object.assign({}, this.$route.query) || {};
+      const meta_filename = this.getFilename(path);
+      query.file = meta_filename;
+      this.$router.push({ query });
+    },
+    closeFile() {
+      let query = Object.assign({}, this.$route.query) || {};
+      delete query.file;
+      this.$router.push({ query });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
 ._sharedFolder {
   padding: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 4);
+  background: rgba(240, 240, 240, 1);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 ._grid {
@@ -79,7 +106,7 @@ export default {
   align-items: flex-end;
   gap: calc(var(--spacing) * 4) calc(var(--spacing) * 1);
 }
-._item {
+._file {
   width: 150px;
 }
 
