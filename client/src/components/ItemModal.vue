@@ -69,7 +69,15 @@
           {{ file.description || "–" }}
         </p>
         <hr />
-        <div class="" v-if="file.keywords.length > 0 || edit_mode">
+        <div
+          class=""
+          v-if="
+            (file.keywords &&
+              Array.isArray(file.keywords) &&
+              file.keywords.length > 0) ||
+            edit_mode
+          "
+        >
           <KeywordsField
             :edit_mode="edit_mode"
             :keywords="file.keywords"
