@@ -7,7 +7,11 @@
         </pre> -->
         <div class="_openedFile">
           <transition name="scaleInFade_fast" mode="out-in">
-            <div :key="current_file_shown.$path" class="_openedFile--container">
+            <div
+              v-if="current_file_shown"
+              :key="current_file_shown.$path"
+              class="_openedFile--container"
+            >
               <div class="_openedFile--media">
                 <MediaContent
                   :file="current_file_shown"
