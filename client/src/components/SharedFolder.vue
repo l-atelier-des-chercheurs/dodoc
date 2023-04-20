@@ -16,6 +16,15 @@
         @open="openFile(file.$path)"
       />
     </div>
+
+    <footer class="_footer">
+      <small>
+        <a href="mailto:ckernreuter@luma-arles.org" target="_blank"
+          >aide/contact</a
+        ><br />
+        version {{ $root.app_infos.version }}
+      </small>
+    </footer>
   </div>
 </template>
 <script>
@@ -92,7 +101,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._sharedFolder {
-  padding: calc(var(--spacing) * 1);
+  padding-top: calc(var(--spacing) * 4);
+  padding-left: calc(var(--spacing) * 1);
+  padding-right: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 4);
   background: rgba(240, 240, 240, 1);
   border-radius: 4px;
@@ -133,6 +144,15 @@ export default {
     background: black;
     color: white;
     pointer-events: auto;
+  }
+}
+
+._footer {
+  margin-top: calc(var(--spacing) * 6);
+  text-align: center;
+
+  a {
+    color: inherit;
   }
 }
 </style>
