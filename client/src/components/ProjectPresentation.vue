@@ -217,8 +217,8 @@ export default {
   align-items: stretch;
 
   margin: 0 auto;
-  max-width: 180ch;
-  max-width: var(--max-column-width);
+  // max-width: 180ch;
+  // max-width: var(--max-column-width);
 
   overflow: hidden;
   background: white;
@@ -319,7 +319,7 @@ export default {
   }
 
   > * {
-    // max-width: 56ch;
+    max-width: 56ch;
   }
 }
 

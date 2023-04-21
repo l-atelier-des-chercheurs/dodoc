@@ -95,14 +95,17 @@ export default {
             font_style = "italic";
           }
 
-          const relative_path_to_file = font.path + "/" + filename;
+          const relative_path_to_file = "/" + font.path + "/" + filename;
 
           acc += `
-            @font-face {
-              font-family: ${font.title};
-              font-style: ${font_style};
-              font-weight: ${font_weight};
-              src: url(${relative_path_to_file}) format("woff2");
+@font-face {
+  font-family: "${font.title}";
+  font-style: ${font_style};
+  font-weight: ${font_weight};
+  src: url("${relative_path_to_file}") format("woff2");
+}
+
+          @font-face {
             }
           `;
         });
