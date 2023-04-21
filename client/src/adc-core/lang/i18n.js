@@ -140,6 +140,8 @@ export default function () {
           Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle famille de caractère au format woff2. 
           Indiquez ensuite pour chaque élément le fichier correspondant.
         `,
+        reload_page_to_apply:
+          "Après avoir enregistré ces changements, rechargez cette page.",
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
