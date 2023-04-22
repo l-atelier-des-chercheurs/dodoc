@@ -66,6 +66,16 @@ module.exports = (function () {
     );
     app.post(
       [
+        "/_api2/:folder_type/:folder_slug/_copy",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_copy",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_copy",
+      ],
+      _generalPasswordCheck,
+      _authenticateToken,
+      _copyFolder
+    );
+    app.post(
+      [
         "/_api2/:folder_type/:folder_slug/_generatePreview",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_generatePreview",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_generatePreview",
@@ -592,6 +602,45 @@ module.exports = (function () {
       });
     }
   }
+
+  async function _copyFolder(req, res, next) {
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_type, path_to_folder, data });
+
+    let { path_to_destination_type, new_meta } = data;
+    if (!path_to_destination_type) path_to_destination_type = path_to_type;
+    else {
+      // todo check for auth to copy folder
+    }
+
+    const path_to_source_folder = path_to_folder;
+
+    try {
+      const copy_folder_path = await folder.copyFolder({
+        path_to_source_folder,
+        path_to_destination_type,
+        new_meta,
+      });
+      dev.logpackets({
+        status: `copied folder`,
+        path_to_source_folder,
+        path_to_destination_type,
+      });
+      res.status(200).json({ copy_folder_path });
+
+      const new_folder_meta = await folder.getFolder({
+        path_to_folder: copy_folder_path,
+      });
+      notifier.emit("folderCreated", path_to_type, {
+        path: path_to_type,
+        meta: new_folder_meta,
+      });
+    } catch (err) {
+      dev.error("Failed to copy expected content: " + err);
+      res.status(500).send({ code: err.code });
+    }
+  }
+
   async function _generatePreview(req, res, next) {
     const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, data });

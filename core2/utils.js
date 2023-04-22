@@ -407,6 +407,10 @@ module.exports = (function () {
       });
       return submitted_password_with_salt === stored_password_with_salt;
     },
+
+    getSlugFromPath(path) {
+      return path.split("/").at(-1);
+    },
   };
 
   return API;

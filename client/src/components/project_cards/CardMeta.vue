@@ -5,24 +5,24 @@
     <DateField :title="$t('date_modified')" :date="project.$date_modified" />
     <br />
 
-    <div class="">
-      <RemoveMenu
-        v-if="can_edit"
-        :remove_text="$t('remove_project')"
-        @remove="removeProject"
-      />
+    <div v-if="can_edit">
+      <DuplicateFolder :path="project.$path" :source_title="project.title" />
+    </div>
+    <div v-if="can_edit">
+      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
     </div>
   </ProjectCard>
 </template>
 <script>
 import ProjectCard from "@/components/ProjectCard.vue";
+import DuplicateFolder from "@/components/project/DuplicateFolder.vue";
 
 export default {
   props: {
     project: Object,
     can_edit: Boolean,
   },
-  components: { ProjectCard },
+  components: { ProjectCard, DuplicateFolder },
   data() {
     return {
       edit_mode: false,

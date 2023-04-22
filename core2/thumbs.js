@@ -175,6 +175,15 @@ module.exports = (function () {
       removeFolderCover({ path_to_folder }),
     removeFileThumbs: ({ path_to_folder, meta_filename }) =>
       removeFileThumbs({ path_to_folder, meta_filename }),
+    duplicateThumbFolder: async ({
+      path_to_source_folder,
+      path_to_destination_folder,
+    }) => {
+      duplicateThumbFolder({
+        path_to_source_folder,
+        path_to_destination_folder,
+      });
+    },
   };
 
   async function _makeThumbFor({
@@ -310,6 +319,22 @@ module.exports = (function () {
       path_to_folder,
       media_filename,
     });
+  }
+  async function duplicateThumbFolder({
+    path_to_source_folder,
+    path_to_destination_folder,
+  }) {
+    const path_to_thumb_folder = await _getThumbFolderPath(
+      path_to_source_folder
+    );
+    const path_to_destination_thumb_folder = await _getThumbFolderPath(
+      path_to_destination_folder
+    );
+    await fs.copy(
+      utils.getPathToUserContent(path_to_thumb_folder),
+      utils.getPathToUserContent(path_to_destination_thumb_folder)
+    );
+    return;
   }
 
   async function _removeAllThumbsForFile({ path_to_folder, media_filename }) {

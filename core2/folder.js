@@ -129,7 +129,12 @@ module.exports = (function () {
 
       return folder_slug;
     },
-    updateFolder: async ({ path_to_folder, data, update_cover_req }) => {
+    updateFolder: async ({
+      path_to_folder,
+      data,
+      admin_meta,
+      update_cover_req,
+    }) => {
       dev.logfunction({ path_to_folder, data });
 
       // get folder meta
@@ -146,6 +151,9 @@ module.exports = (function () {
         });
         Object.assign(meta, clean_meta);
       }
+
+      // unchecked properties, not available through API. Used by copyFolder for example
+      if (admin_meta) Object.assign(meta, admin_meta);
 
       meta.$date_modified = utils.getCurrentDate();
       await utils.saveMetaAtPath({
@@ -176,6 +184,48 @@ module.exports = (function () {
       });
 
       return changed_meta;
+    },
+    copyFolder: async ({
+      path_to_source_folder,
+      path_to_destination_type,
+      new_meta,
+    }) => {
+      dev.logfunction({ path_to_source_folder, path_to_destination_type });
+      // find available slug in destination folder
+
+      const source_folder_slug = utils.getSlugFromPath(path_to_source_folder);
+
+      let folder_slug = source_folder_slug + "-copy";
+      folder_slug = await _preventFolderOverride({
+        path_to_type: path_to_destination_type,
+        folder_slug,
+      });
+
+      const path_to_destination_folder = path.join(
+        path_to_destination_type,
+        folder_slug
+      );
+      await fs.copy(
+        utils.getPathToUserContent(path_to_source_folder),
+        utils.getPathToUserContent(path_to_destination_folder)
+      );
+
+      // copy all thumbs
+      await thumbs.duplicateThumbFolder({
+        path_to_source_folder,
+        path_to_destination_folder,
+      });
+
+      // todo update with meta
+      await API.updateFolder({
+        path_to_folder: path_to_destination_folder,
+        admin_meta: {
+          $date_created: utils.getCurrentDate(),
+        },
+        data: new_meta,
+      });
+
+      return path_to_destination_folder;
     },
     removeFolder: async ({ path_to_folder }) => {
       dev.logfunction({ path_to_folder });

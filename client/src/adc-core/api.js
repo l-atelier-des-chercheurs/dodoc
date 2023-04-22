@@ -446,6 +446,20 @@ export default function () {
           });
         return response.data.meta_filename;
       },
+      async copyFolder({
+        path,
+        new_meta = {},
+        destination_path_to_folder = "",
+      }) {
+        path = `${path}/_copy`;
+        const response = await this.$axios
+          .post(path, { new_meta, destination_path_to_folder })
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
+        return response.data.copy_folder_path;
+      },
       async exportFolder({ path, instructions }) {
         path = `${path}/_export`;
 
