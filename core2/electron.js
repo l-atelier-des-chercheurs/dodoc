@@ -7,6 +7,7 @@ const {
   dialog,
 } = require("electron");
 const path = require("path");
+const utils = require("./utils");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
 app.commandLine.appendSwitch("allow-insecure-localhost", "true");
@@ -143,7 +144,8 @@ module.exports = (function () {
       });
 
       ipcMain.on("toMain", (event, args) => {
-        if (args.type === "open_path") shell.openPath(args.path);
+        if (args.type === "open_path")
+          shell.openPath(utils.getPathToUserContent(args.path));
         else if (args.type === "open_external") shell.openExternal(args.url);
         else if (args.type === "get_path") _pickPath();
 

@@ -1,5 +1,18 @@
 <template>
   <ProjectCard :header="$t('informations')" :icon="'info-square'">
+    <div class="">
+      <button
+        type="button"
+        class="u-button u-button_bleumarine u-button_small"
+        @click="openInFinder"
+        :disabled="!$root.is_electron"
+      >
+        {{ project.$path }}
+      </button>
+    </div>
+
+    <br />
+
     <DateField :title="$t('date_created')" :date="project.$date_created" />
     <br />
     <DateField :title="$t('date_modified')" :date="project.$date_modified" />
@@ -34,6 +47,12 @@ export default {
   watch: {},
   computed: {},
   methods: {
+    openInFinder() {
+      window.electronAPI.send("toMain", {
+        type: "open_path",
+        path: this.project.$path,
+      });
+    },
     enableEditMode() {
       this.edit_mode = true;
     },
