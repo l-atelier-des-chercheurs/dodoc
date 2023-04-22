@@ -180,8 +180,6 @@ export default {
   },
   data() {
     return {
-      new_title: this.project.title,
-
       fetch_status: null,
       fetch_error: null,
       response: null,

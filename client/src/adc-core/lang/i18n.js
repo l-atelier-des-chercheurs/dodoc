@@ -453,6 +453,9 @@ export default function () {
         copyleft_explanations: "<i>Explications à ajouter</i>",
         copy_of: "Copie de",
         open_copy: "Accéder à la copie",
+        title_of_copy: "Titre de la copie",
+        source_space: "Espace qui recevra cette copie",
+
         remove_original: "Supprimer l’original",
         remove_original_after_copy: "Supprimer ce projet après la copie",
         keep_original_after_copy: "Conserver ce projet après la copie",

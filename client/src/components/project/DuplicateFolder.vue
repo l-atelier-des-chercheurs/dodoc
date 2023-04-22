@@ -19,34 +19,38 @@
 
         <br />
 
-        <select v-model="destination_space_path">
-          <option
-            v-for="space in spaces"
-            :key="space.$path"
-            :value="space.$path"
-            v-text="space.title"
-            disabled
-          />
-        </select>
+        <div class="">
+          <DLabel :str="$t('source_space')" />
+
+          <select v-model="destination_space_path">
+            <option
+              v-for="space in spaces"
+              :key="space.$path"
+              :value="space.$path"
+              v-text="space.title"
+              disabled
+            />
+          </select>
+        </div>
 
         <br />
 
         <!-- <div class="">todo choix space</div> -->
         <div class="">
-          <TextInput
-            :content.sync="new_title"
-            :maxlength="40"
-            :required="true"
-          />
-
-          new_title = {{ new_title }}
+          <div class="">
+            <DLabel :str="$t('title_of_copy')" />
+            <TextInput
+              :content.sync="new_title"
+              :maxlength="40"
+              :required="true"
+            />
+          </div>
 
           <br />
 
           <div class="">
             <ToggleInput
               :content.sync="remove_original"
-              disabled
               :label="$t('remove_original')"
               :options="{
                 true: $t('remove_original_after_copy'),
@@ -59,26 +63,29 @@
 
       <div class="u-sameRow" slot="footer">
         <template v-if="!url_to_copy">
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="show_modal = false"
-          >
-            {{ $t("cancel") }}
-          </button>
-          <button
-            class="u-button u-button_red"
-            type="button"
-            autofocus
-            @click="confirm"
-          >
-            <template v-if="remove_original">
-              {{ $t("move") }}
-            </template>
-            <template v-else>
-              {{ $t("duplicate") }}
-            </template>
-          </button>
+          <template v-if="!is_copying">
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_modal = false"
+            >
+              {{ $t("cancel") }}
+            </button>
+            <button
+              class="u-button u-button_red"
+              type="button"
+              autofocus
+              @click="confirm"
+            >
+              <template v-if="remove_original">
+                {{ $t("move") }}
+              </template>
+              <template v-else>
+                {{ $t("duplicate") }}
+              </template>
+            </button>
+          </template>
+          <LoaderSpinner v-else />
         </template>
         <template v-else>
           <router-link :to="url_to_copy" class="u-button u-button_bleuvert">
@@ -105,6 +112,8 @@ export default {
       url_to_copy: false,
       remove_original: false,
       new_title: this.$t("copy_of") + " " + this.source_title,
+
+      is_copying: false,
     };
   },
   created() {},
@@ -122,6 +131,9 @@ export default {
   methods: {
     async confirm() {
       // const parent_type = this.getParent(this.path);
+
+      this.is_copying = true;
+
       const copy_folder_path = await this.$api.copyFolder({
         path: this.path,
         // todo set destination
@@ -140,7 +152,9 @@ export default {
 
       if (!this.remove_original) {
         this.url_to_copy = url_to_copy;
+        this.is_copying = false;
       } else {
+        this.is_copying = false;
         await this.$api.deleteItem({
           path: this.path,
         });

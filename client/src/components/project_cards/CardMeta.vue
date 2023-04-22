@@ -1,11 +1,10 @@
 <template>
   <ProjectCard :header="$t('informations')" :icon="'info-square'">
-    <div class="">
+    <div class="" v-if="$root.is_electron && is_admin">
       <button
         type="button"
         class="u-button u-button_bleumarine u-button_small"
         @click="openInFinder"
-        :disabled="!$root.is_electron"
       >
         {{ project.$path }}
       </button>
