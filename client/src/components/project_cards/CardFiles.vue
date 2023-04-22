@@ -8,22 +8,25 @@
         @close="show_file_picker = false"
       /> -->
 
-      <div class="_file" v-for="(file, i) in files" :key="i">
-        <div v-if="file && file.$path" class="u-sameRow">
-          <!-- <MediaContent class="_preview" :file="file" :resolution="50" /> -->
-          <DownloadFile class="_link" :file="file">
-            <sl-icon name="file-earmark-arrow-down" />
-            {{ file.$media_filename }}
-          </DownloadFile>
-        </div>
+      <template v-if="files.length > 0">
+        <div class="_file" v-for="(file, i) in files" :key="i">
+          <div v-if="file && file.$path" class="u-sameRow">
+            <!-- <MediaContent class="_preview" :file="file" :resolution="50" /> -->
+            <DownloadFile class="_link" :file="file">
+              <sl-icon name="file-earmark-arrow-down" />
+              {{ file.$media_filename }}
+            </DownloadFile>
+          </div>
 
-        <sl-icon-button
-          name="x"
-          size="small"
-          v-if="can_edit"
-          @click.prevent="removeFile(i)"
-        />
-      </div>
+          <sl-icon-button
+            name="x"
+            size="small"
+            v-if="can_edit"
+            @click.prevent="removeFile(i)"
+          />
+        </div>
+        <br />
+      </template>
 
       <div class="">
         <button
@@ -140,6 +143,6 @@ export default {
 }
 
 ._addFile {
-  margin-top: calc(var(--spacing) / 2);
+  // margin-top: calc(var(--spacing) / 2);
 }
 </style>
