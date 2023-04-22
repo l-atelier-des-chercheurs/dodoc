@@ -19,21 +19,26 @@
 
         <br />
 
-        <select v-model="destination_space_path">
-          <option
-            v-for="space in spaces"
-            :key="space.$path"
-            :value="space.$path"
-            v-text="space.title"
-            disabled
-          />
-        </select>
+        <div class="">
+          <DLabel :str="$t('source_space')" />
+
+          <select v-model="destination_space_path">
+            <option
+              v-for="space in spaces"
+              :key="space.$path"
+              :value="space.$path"
+              v-text="space.title"
+              disabled
+            />
+          </select>
+        </div>
 
         <br />
 
         <!-- <div class="">todo choix space</div> -->
         <div class="">
           <div class="">
+            <DLabel :str="$t('title_of_copy')" />
             <TextInput
               :content.sync="new_title"
               :maxlength="40"
