@@ -451,6 +451,11 @@ export default function () {
 
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
+        copy_of: "Copie de",
+        open_copy: "Accéder à la copie",
+        remove_original: "Supprimer l’original",
+        remove_original_after_copy: "Supprimer ce projet après la copie",
+        keep_original_after_copy: "Conserver ce projet après la copie",
 
         machines_and_materials: "Machines et matériaux",
         levels_and_competences: "Niveau et compétence",
@@ -581,6 +586,10 @@ export default function () {
         informations: "Informations",
 
         duplicate: "Dupliquer",
+        duplicate_or_move: "Dupliquer ou déplacer",
+        duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
+        dm_instr:
+          "Vers le même espace. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées. À venir : déplacer un projet vers un autre espace.",
         move_to_page: "Déplacer vers une autre page",
         move: "Déplacer",
         unselect: "Déselectionner",

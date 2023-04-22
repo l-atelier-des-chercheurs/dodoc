@@ -1,28 +1,41 @@
 <template>
   <ProjectCard :header="$t('informations')" :icon="'info-square'">
+    <div class="">
+      <button
+        type="button"
+        class="u-button u-button_bleumarine u-button_small"
+        @click="openInFinder"
+        :disabled="!$root.is_electron"
+      >
+        {{ project.$path }}
+      </button>
+    </div>
+
+    <br />
+
     <DateField :title="$t('date_created')" :date="project.$date_created" />
     <br />
     <DateField :title="$t('date_modified')" :date="project.$date_modified" />
     <br />
 
-    <div class="">
-      <RemoveMenu
-        v-if="can_edit"
-        :remove_text="$t('remove_project')"
-        @remove="removeProject"
-      />
+    <div v-if="can_edit">
+      <DuplicateFolder :path="project.$path" :source_title="project.title" />
+    </div>
+    <div v-if="can_edit">
+      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
     </div>
   </ProjectCard>
 </template>
 <script>
 import ProjectCard from "@/components/ProjectCard.vue";
+import DuplicateFolder from "@/components/project/DuplicateFolder.vue";
 
 export default {
   props: {
     project: Object,
     can_edit: Boolean,
   },
-  components: { ProjectCard },
+  components: { ProjectCard, DuplicateFolder },
   data() {
     return {
       edit_mode: false,
@@ -34,6 +47,12 @@ export default {
   watch: {},
   computed: {},
   methods: {
+    openInFinder() {
+      window.electronAPI.send("toMain", {
+        type: "open_path",
+        path: this.project.$path,
+      });
+    },
     enableEditMode() {
       this.edit_mode = true;
     },
