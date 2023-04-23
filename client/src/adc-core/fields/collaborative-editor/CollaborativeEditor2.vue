@@ -97,24 +97,14 @@ import {
   toolbar,
   fonts as default_fonts,
   formats,
+  fontSizeArr,
+  lineHeightArr,
 } from "./imports/defaults.js";
 
 var Parchment = Quill.import("parchment");
 var lineHeightConfig = {
   scope: Parchment.Scope.INLINE,
-  whitelist: [
-    "1.0",
-    "1.2",
-    "1.5",
-    "1.6",
-    "1.8",
-    "2.0",
-    "2.4",
-    "2.8",
-    "3.0",
-    "4.0",
-    "5.0",
-  ],
+  whitelist: lineHeightArr,
 };
 var lineHeightClass = new Parchment.Attributor.Class(
   "lineheight",
@@ -128,6 +118,9 @@ var lineHeightStyle = new Parchment.Attributor.Style(
 );
 Parchment.register(lineHeightClass);
 Parchment.register(lineHeightStyle);
+var Size = Quill.import("attributors/style/size");
+Size.whitelist = fontSizeArr;
+Quill.register(Size, true);
 
 const FontAttributor = Quill.import("attributors/style/font");
 const custom_fonts_titles = window.app_infos.custom_fonts.map((cf) => cf.title);
@@ -783,7 +776,7 @@ export default {
 
   ::v-deep {
     .ql-container {
-      font-size: 110%;
+      font-size: 16px;
       font-family: inherit;
       font-weight: normal;
       background-color: transparent;
@@ -1021,12 +1014,44 @@ export default {
     }
     .ql-picker {
       height: var(--button-size);
+
+      &.ql-size {
+        width: 115px;
+        .ql-picker-label,
+        .ql-picker-item {
+          &::before {
+            content: "Par défaut" !important;
+          }
+          &[data-value],
+          &[data-value] {
+            &::before {
+              content: attr(data-value) !important;
+            }
+          }
+        }
+      }
+      &.ql-lineheight {
+        // width: 115px;
+        .ql-picker-label,
+        .ql-picker-item {
+          &::before {
+            content: "Normal (1.42)" !important;
+          }
+          &[data-value],
+          &[data-value] {
+            &::before {
+              content: attr(data-value) !important;
+            }
+          }
+        }
+      }
     }
     .ql-picker-label {
       text-align: left;
       padding: 4px;
       background: white;
     }
+
     .ql-picker-label::before {
       // line-height: var(--button-size);
     }
