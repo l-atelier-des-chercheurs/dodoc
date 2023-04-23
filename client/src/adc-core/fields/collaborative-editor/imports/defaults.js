@@ -31,7 +31,23 @@ export const toolbar = {
       },
     ],
     [{ header: [false, 1, 2, 3] }],
-    // [{ size: ["75%", false, "150%", "300%"] }],
+    [
+      {
+        lineheight: [
+          "1.0",
+          "1.2",
+          "1.5",
+          "1.6",
+          "1.8",
+          "2.0",
+          "2.4",
+          "2.8",
+          "3.0",
+          "4.0",
+          "5.0",
+        ],
+      },
+    ], // [{ size: ["75%", false, "150%", "300%"] }],
     ["bold", "italic", "underline", "strike", "link", "blockquote"],
     [
       {
@@ -110,6 +126,7 @@ export const toolbar = {
 export const formats = [
   "bold",
   "size",
+  "lineheight",
   "italic",
   "underline",
   "strike",

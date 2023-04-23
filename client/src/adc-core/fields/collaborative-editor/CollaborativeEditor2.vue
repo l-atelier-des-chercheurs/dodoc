@@ -99,6 +99,36 @@ import {
   formats,
 } from "./imports/defaults.js";
 
+var Parchment = Quill.import("parchment");
+var lineHeightConfig = {
+  scope: Parchment.Scope.INLINE,
+  whitelist: [
+    "1.0",
+    "1.2",
+    "1.5",
+    "1.6",
+    "1.8",
+    "2.0",
+    "2.4",
+    "2.8",
+    "3.0",
+    "4.0",
+    "5.0",
+  ],
+};
+var lineHeightClass = new Parchment.Attributor.Class(
+  "lineheight",
+  "ql-line-height",
+  lineHeightConfig
+);
+var lineHeightStyle = new Parchment.Attributor.Style(
+  "lineheight",
+  "line-height",
+  lineHeightConfig
+);
+Parchment.register(lineHeightClass);
+Parchment.register(lineHeightStyle);
+
 const FontAttributor = Quill.import("attributors/style/font");
 const custom_fonts_titles = window.app_infos.custom_fonts.map((cf) => cf.title);
 const all_fonts = default_fonts.concat(custom_fonts_titles);
@@ -935,6 +965,22 @@ export default {
 
   .ql-picker {
     color: currentColor;
+
+    &.ql-lineheight {
+      width: 58px;
+      .ql-picker-label,
+      .ql-picker-item {
+        &::before {
+          content: "Normal (1.42)" !important;
+        }
+        &[data-value],
+        &[data-value] {
+          &::before {
+            content: attr(data-value) !important;
+          }
+        }
+      }
+    }
   }
 
   .ql-picker.ql-font {
