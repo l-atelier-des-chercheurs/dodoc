@@ -103,7 +103,7 @@ import {
 
 var Parchment = Quill.import("parchment");
 var lineHeightConfig = {
-  scope: Parchment.Scope.INLINE,
+  scope: Parchment.Scope.BLOCK,
   whitelist: lineHeightArr,
 };
 var lineHeightClass = new Parchment.Attributor.Class(
