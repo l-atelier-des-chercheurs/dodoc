@@ -920,11 +920,13 @@ export default {
   position: sticky;
   top: 0;
   z-index: 2;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
+  border-radius: 16px;
+  overflow: hidden;
 
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 4);
   justify-content: flex-start;
   align-items: center;
 
@@ -947,6 +949,12 @@ export default {
     color: currentColor;
   }
 
+  button {
+    width: var(--button-size);
+    height: var(--button-size);
+    padding: 6px;
+  }
+
   .ql-fill,
   .ql-stroke.ql-fill {
     fill: currentColor;
@@ -960,7 +968,7 @@ export default {
     color: currentColor;
 
     &.ql-lineheight {
-      width: 58px;
+      width: 78px;
       .ql-picker-label,
       .ql-picker-item {
         &::before {
@@ -990,12 +998,13 @@ export default {
     margin: 0;
     display: flex;
     flex-flow: row nowrap;
-    border: 2px solid var(--c-gris_clair);
+    border: 2px solid var(--toolbar-bg);
     border-radius: 12px;
     background: #fff;
 
     button,
-    > *:not(.ql-size):not(.ql-header):not(.ql-font) .ql-picker-label {
+    > *:not(.ql-size):not(.ql-lineheight):not(.ql-header):not(.ql-font)
+      .ql-picker-label {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1008,9 +1017,11 @@ export default {
 
     .ql-font {
       background: var(--editor-bg);
+      background: transparent;
     }
     .ql-header {
       background: var(--editor-bg);
+      background: transparent;
     }
     .ql-picker {
       height: var(--button-size);
@@ -1031,7 +1042,7 @@ export default {
         }
       }
       &.ql-lineheight {
-        // width: 115px;
+        width: 115px;
         .ql-picker-label,
         .ql-picker-item {
           &::before {
@@ -1049,7 +1060,7 @@ export default {
     .ql-picker-label {
       text-align: left;
       padding: 4px;
-      background: white;
+      // background: white;
     }
 
     .ql-picker-label::before {
