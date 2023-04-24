@@ -325,7 +325,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: calc(var(--spacing) / 1);
 }
 
