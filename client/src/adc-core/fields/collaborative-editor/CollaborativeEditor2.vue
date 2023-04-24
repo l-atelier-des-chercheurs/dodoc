@@ -19,27 +19,22 @@
       {{ quill_styles }}
     </component>
 
-    <div ref="editBtn" class="_btnContainer" v-show="can_edit">
-      <small class="_btnRow">
+    <div ref="editBtn" class="_TEbtnContainer" v-show="can_edit">
+      <div class="">
         <template v-if="editor_is_enabled && !is_disabling_editor">
-          <sl-button
-            variant="edit"
-            class="_editBtn"
-            size="small"
-            pill
-            @click="toggleEdit"
-          >
+          <button type="button" class="_editBtn" @click="toggleEdit">
             <sl-icon name="check-circle-fill" :label="$t('stop_edit')" />
             {{ $t("stop_edit") }}
-          </sl-button>
-          <sl-button
+          </button>
+          <button
+            type="button"
+            class="u-button"
             v-if="editor_is_enabled"
             @click="show_archives = !show_archives"
-            size="small"
           >
             <sl-icon slot="prefix" name="archive" />
             {{ $t("archives") }}
-          </sl-button>
+          </button>
         </template>
 
         <div class="_collabEditorStatus" v-if="editor_is_enabled">
@@ -57,11 +52,10 @@
             </span>
           </transition>
         </div>
-
-        <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
+      </div>
+      <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
           Enregistrer
         </sl-button> -->
-      </small>
     </div>
 
     <sl-button
@@ -442,13 +436,12 @@ export default {
     },
 
     async saveText() {
-      this.is_loading_or_saving = true;
-
       const new_meta = {
         $content: this.getEditorContent(),
       };
 
       try {
+        this.is_loading_or_saving = true;
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
@@ -895,20 +888,6 @@ export default {
   }
 }
 
-._btnRow {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-}
-._collabEditorStatus {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  background-color: var(--c-vert);
-  border-radius: 2em;
-  color: black;
-}
-
 ._floatingEditBtn {
   position: absolute;
   z-index: 101;
@@ -923,8 +902,8 @@ export default {
   --editor-bg: #eee;
   --button-size: 32px;
   --border-size: 4px;
-  --quill-buttons-size: 2.2rem;
-  --quill-options-size: 2.2rem;
+  --quill-buttons-size: 20px;
+  --quill-options-size: 34px;
 
   position: sticky;
   top: 0;
@@ -959,8 +938,10 @@ export default {
     color: currentColor;
   }
 
-  button {
-    width: var(--button-size);
+  button,
+  ._collabEditorStatus {
+    min-width: var(--button-size);
+    width: auto;
     height: var(--button-size);
     padding: 6px;
   }
@@ -1162,12 +1143,33 @@ export default {
   .ql-picker.ql-size .ql-picker-label[data-value]::before {
     font-size: 100% !important;
   }
-  z ._btnContainer {
-    width: 100%;
+}
+
+._TEbtnContainer {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+
+  > * {
+    border: 2px solid var(--toolbar-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
     display: flex;
-    justify-content: center;
+    flex-flow: row wrap;
+    justify-content: space-between;
     align-items: center;
-    // background-color: var(--editor-bg);
+
+    ._editBtn {
+      background-color: var(--c-bleuvert);
+    }
+
+    ._collabEditorStatus {
+      background-color: var(--c-vert);
+    }
   }
+  // background-color: var(--editor-bg);
 }
 </style>
