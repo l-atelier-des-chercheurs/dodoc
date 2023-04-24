@@ -333,6 +333,8 @@ export default {
     async enableEditor() {
       if (this.editor_is_enabled || !this.can_edit) return false;
 
+      console.log(`CollaborativeEditor2 • enableEditor`);
+
       if (this.is_collaborative) await this.startCollaborative();
 
       this.editor.enable();
@@ -350,14 +352,18 @@ export default {
       this.$emit(`contentIsEdited`, this.toolbar_el);
       this.editor_is_enabled = true;
     },
-    disableEditor() {
+    async disableEditor() {
       if (!this.editor_is_enabled) return false;
+
+      console.log(`CollaborativeEditor2 • disableEditor`);
 
       this.editor.setSelection(null);
       this.editor.blur();
       this.updateSelectedLines();
 
       if (this.is_collaborative) this.endCollaborative();
+
+      await this.saveText();
 
       // check if toolbar is away, get it back if it is
       this.getToolbarBack();
