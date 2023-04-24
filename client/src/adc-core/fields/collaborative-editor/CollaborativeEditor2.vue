@@ -21,26 +21,26 @@
 
     <div ref="editBtn" class="_btnContainer" v-show="can_edit">
       <small class="_btnRow">
-        <sl-button
-          variant="edit"
-          class="_editBtn"
-          size="small"
-          pill
-          v-if="editor_is_enabled"
-          @click="toggleEdit"
-        >
-          <sl-icon name="check-circle-fill" :label="$t('stop_edit')" />
-          {{ $t("stop_edit") }}
-        </sl-button>
-
-        <sl-button
-          v-if="editor_is_enabled"
-          @click="show_archives = !show_archives"
-          size="small"
-        >
-          <sl-icon slot="prefix" name="archive" />
-          {{ $t("archives") }}
-        </sl-button>
+        <template v-if="editor_is_enabled && !is_disabling_editor">
+          <sl-button
+            variant="edit"
+            class="_editBtn"
+            size="small"
+            pill
+            @click="toggleEdit"
+          >
+            <sl-icon name="check-circle-fill" :label="$t('stop_edit')" />
+            {{ $t("stop_edit") }}
+          </sl-button>
+          <sl-button
+            v-if="editor_is_enabled"
+            @click="show_archives = !show_archives"
+            size="small"
+          >
+            <sl-icon slot="prefix" name="archive" />
+            {{ $t("archives") }}
+          </sl-button>
+        </template>
 
         <div class="_collabEditorStatus" v-if="editor_is_enabled">
           <transition name="fade_fast" mode="out-in">
@@ -183,6 +183,7 @@ export default {
       doc: undefined,
 
       is_loading_or_saving: false,
+      is_disabling_editor: false,
       show_saved_icon: false,
 
       currently_selected_eles: false,
@@ -356,6 +357,7 @@ export default {
       if (!this.editor_is_enabled) return false;
 
       console.log(`CollaborativeEditor2 • disableEditor`);
+      this.is_disabling_editor = true;
 
       this.editor.setSelection(null);
       this.editor.blur();
@@ -372,6 +374,7 @@ export default {
       this.$nextTick(() => {
         this.editor.disable();
         this.editor_is_enabled = false;
+        this.is_disabling_editor = false;
       });
     },
 
