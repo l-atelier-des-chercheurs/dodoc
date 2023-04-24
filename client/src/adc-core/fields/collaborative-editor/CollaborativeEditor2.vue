@@ -928,7 +928,8 @@ export default {
   z-index: 2;
   padding: calc(var(--spacing) / 4);
   border-radius: 16px;
-  overflow: hidden;
+  // hides select, do not use
+  // overflow: hidden;
 
   display: flex;
   flex-flow: row wrap;
