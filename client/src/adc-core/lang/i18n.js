@@ -563,6 +563,7 @@ export default function () {
         add_text: "Ajouter du texte",
 
         display_as_public: "Afficher la vue publique",
+        preview: "Prévisualiser",
 
         project_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",

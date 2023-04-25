@@ -64,9 +64,17 @@
           @save="$emit('update:scale', $event / 100)"
         />
       </div>
+
+      <div class="">
+        <ToggleInput
+          :content="display_as_public"
+          @update:content="$emit('update:display_as_public', $event)"
+          :label="$t('preview')"
+        />
+      </div>
     </div>
 
-    <template v-if="can_edit">
+    <template v-if="can_edit && !display_as_public">
       <transition name="fade_fast" mode="out-in">
         <div
           v-if="!has_editor_toolbar && !active_module"
@@ -486,6 +494,7 @@ export default {
     page_modules: Array,
     page_opened_id: String,
     active_module: [Boolean, Object],
+    display_as_public: Boolean,
   },
   components: {
     DepthInput,

@@ -2,7 +2,7 @@
   <div
     class="_openedPage"
     :class="{
-      'is--editable': can_edit,
+      'is--editable': can_edit && !display_as_public,
     }"
   >
     <div class="_spreadNavigator">
@@ -30,6 +30,7 @@
                 getModulesForPage({ modules, page_id: page_opened_id })
               "
               :active_module="active_module"
+              :display_as_public.sync="display_as_public"
               @updatePageOptions="$emit('updatePageOptions', $event)"
               @update:scale="scale = $event"
               @prevPage="prevPage()"
@@ -70,7 +71,7 @@
                   :pagination="pagination"
                   :hide_pagination="current_page.hide_pagination === true"
                   :active_module="active_module"
-                  :can_edit="can_edit"
+                  :can_edit="can_edit && !display_as_public"
                   @close="setPageActive(false)"
                 />
 
@@ -103,7 +104,11 @@
                       :hide_pagination="current_page.hide_pagination === true"
                       :active_module="active_module"
                       :page_is_left="index === 0"
-                      :can_edit="can_edit && page.id === page_opened_id"
+                      :can_edit="
+                        can_edit &&
+                        page.id === page_opened_id &&
+                        !display_as_public
+                      "
                       @close="setPageActive(false)"
                     />
                     <template v-if="page.id !== page_opened_id">
@@ -159,6 +164,8 @@ export default {
         snap_to_grid: false,
         gridstep_in_mm: 10,
       },
+
+      display_as_public: false,
 
       active_module_path: false,
     };
