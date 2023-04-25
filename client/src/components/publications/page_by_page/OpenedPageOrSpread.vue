@@ -494,11 +494,11 @@ export default {
   height: 100%;
   // padding-right: calc(var(--spacing) / 2);
   overflow: auto;
-  // pointer-events: none;
+  pointer-events: none;
   @include scrollbar(8px, 5px, 6px);
 
   > * {
-    // pointer-events: auto;
+    pointer-events: auto;
 
     &._content {
       margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) * 4) 0;
