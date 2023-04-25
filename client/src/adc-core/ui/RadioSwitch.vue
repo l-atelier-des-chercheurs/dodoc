@@ -5,7 +5,7 @@
         <input
           class="radio-switch__input ri5-sr-only"
           type="radio"
-          name="radio-switch-name"
+          :name="id"
           :id="id + '_' + i"
           :value="options[i].value"
           :checked="content === options[i].value"
@@ -115,6 +115,7 @@ menu {
   padding: var(--radio-switch-padding);
   border-radius: calc(var(--radio-switch-radius) * 1.4);
   background-color: hsl(var(--ri5-color-bg-darker-hsl));
+  border: 1px solid var(--c-gris);
 }
 .radio-switch:focus-within,
 .radio-switch:active {
@@ -126,6 +127,7 @@ menu {
   display: inline-block;
   height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
   width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
+  margin: -1px;
 }
 
 .radio-switch__label {
