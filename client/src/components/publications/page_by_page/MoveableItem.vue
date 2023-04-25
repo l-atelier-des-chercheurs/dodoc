@@ -176,7 +176,7 @@ export default {
     },
     module_styles() {
       return {
-        "--set-fontSize": (this.publimodule.text_size || 100) + "%",
+        // "--set-fontSize": (this.publimodule.text_size || 100) + "%",
         "--set-margins":
           (this.turnCMtoPX(this.publimodule.margins) || 0) + "px",
         "--set-opacity": this.publimodule.opacity || 1,
@@ -520,7 +520,7 @@ export default {
     // outline-style: solid;
 
     .ql-editor {
-      font-size: var(--set-fontSize);
+      // font-size: var(--set-fontSize);
     }
     .ql-editor,
     ._mediaContent--image,

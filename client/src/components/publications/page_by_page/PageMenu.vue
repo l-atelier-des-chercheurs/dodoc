@@ -321,7 +321,7 @@
             @save="updateMediaPubliMeta({ rotation: $event })"
           />
           <br />
-          <RangeValueInput
+          <!-- <RangeValueInput
             v-if="firstMedia(active_module).$type === 'text'"
             class="u-spacingBottom"
             :label="$t('text_size')"
@@ -333,7 +333,7 @@
             :default_value="100"
             :suffix="'%'"
             @save="updateMediaPubliMeta({ text_size: $event })"
-          />
+          /> -->
           <RangeValueInput
             class="u-spacingBottom"
             :label="$t('margins')"
@@ -433,7 +433,7 @@
       >
         <div ref="editor_toolbar" class="_editorToolbar" />
 
-        <RangeValueInput
+        <!-- <RangeValueInput
           class="u-spacingBottom"
           :label="$t('text_size')"
           :value="active_module.text_size"
@@ -444,7 +444,7 @@
           :default_value="100"
           :suffix="'%'"
           @save="updateMediaPubliMeta({ text_size: $event })"
-        />
+        /> -->
       </div>
     </template>
   </div>
