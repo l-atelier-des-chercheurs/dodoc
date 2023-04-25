@@ -19,28 +19,23 @@
       {{ quill_styles }}
     </component>
 
-    <div ref="editBtn" class="_btnContainer" v-show="can_edit">
-      <small class="_btnRow">
-        <sl-button
-          variant="edit"
-          class="_editBtn"
-          size="small"
-          pill
-          v-if="editor_is_enabled"
-          @click="toggleEdit"
-        >
-          <sl-icon name="check-circle-fill" :label="$t('stop_edit')" />
-          {{ $t("stop_edit") }}
-        </sl-button>
-
-        <sl-button
-          v-if="editor_is_enabled"
-          @click="show_archives = !show_archives"
-          size="small"
-        >
-          <sl-icon slot="prefix" name="archive" />
-          {{ $t("archives") }}
-        </sl-button>
+    <div ref="editBtn" class="_TEbtnContainer" v-show="can_edit">
+      <div class="">
+        <template v-if="editor_is_enabled && !is_disabling_editor">
+          <button type="button" class="_editBtn" @click="toggleEdit">
+            <sl-icon name="check-circle-fill" :label="$t('stop_edit')" />
+            {{ $t("stop_edit") }}
+          </button>
+          <button
+            type="button"
+            class="u-button"
+            v-if="editor_is_enabled"
+            @click="show_archives = !show_archives"
+          >
+            <sl-icon slot="prefix" name="archive" />
+            {{ $t("archives") }}
+          </button>
+        </template>
 
         <div class="_collabEditorStatus" v-if="editor_is_enabled">
           <transition name="fade_fast" mode="out-in">
@@ -57,11 +52,10 @@
             </span>
           </transition>
         </div>
-
-        <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
+      </div>
+      <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
           Enregistrer
         </sl-button> -->
-      </small>
     </div>
 
     <sl-button
@@ -97,7 +91,30 @@ import {
   toolbar,
   fonts as default_fonts,
   formats,
+  fontSizeArr,
+  lineHeightArr,
 } from "./imports/defaults.js";
+
+var Parchment = Quill.import("parchment");
+var lineHeightConfig = {
+  scope: Parchment.Scope.BLOCK,
+  whitelist: lineHeightArr,
+};
+var lineHeightClass = new Parchment.Attributor.Class(
+  "lineheight",
+  "ql-line-height",
+  lineHeightConfig
+);
+var lineHeightStyle = new Parchment.Attributor.Style(
+  "lineheight",
+  "line-height",
+  lineHeightConfig
+);
+Parchment.register(lineHeightClass);
+Parchment.register(lineHeightStyle);
+var Size = Quill.import("attributors/style/size");
+Size.whitelist = fontSizeArr;
+Quill.register(Size, true);
 
 const FontAttributor = Quill.import("attributors/style/font");
 const custom_fonts_titles = window.app_infos.custom_fonts.map((cf) => cf.title);
@@ -160,6 +177,7 @@ export default {
       doc: undefined,
 
       is_loading_or_saving: false,
+      is_disabling_editor: false,
       show_saved_icon: false,
 
       currently_selected_eles: false,
@@ -310,6 +328,8 @@ export default {
     async enableEditor() {
       if (this.editor_is_enabled || !this.can_edit) return false;
 
+      console.log(`CollaborativeEditor2 • enableEditor`);
+
       if (this.is_collaborative) await this.startCollaborative();
 
       this.editor.enable();
@@ -327,14 +347,19 @@ export default {
       this.$emit(`contentIsEdited`, this.toolbar_el);
       this.editor_is_enabled = true;
     },
-    disableEditor() {
+    async disableEditor() {
       if (!this.editor_is_enabled) return false;
+
+      console.log(`CollaborativeEditor2 • disableEditor`);
+      this.is_disabling_editor = true;
 
       this.editor.setSelection(null);
       this.editor.blur();
       this.updateSelectedLines();
 
       if (this.is_collaborative) this.endCollaborative();
+
+      await this.saveText();
 
       // check if toolbar is away, get it back if it is
       this.getToolbarBack();
@@ -343,6 +368,7 @@ export default {
       this.$nextTick(() => {
         this.editor.disable();
         this.editor_is_enabled = false;
+        this.is_disabling_editor = false;
       });
     },
 
@@ -410,13 +436,12 @@ export default {
     },
 
     async saveText() {
-      this.is_loading_or_saving = true;
-
       const new_meta = {
         $content: this.getEditorContent(),
       };
 
       try {
+        this.is_loading_or_saving = true;
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
@@ -753,7 +778,7 @@ export default {
 
   ::v-deep {
     .ql-container {
-      font-size: 110%;
+      font-size: 16px;
       font-family: inherit;
       font-weight: normal;
       background-color: transparent;
@@ -863,20 +888,6 @@ export default {
   }
 }
 
-._btnRow {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-}
-._collabEditorStatus {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  background-color: var(--c-vert);
-  border-radius: 2em;
-  color: black;
-}
-
 ._floatingEditBtn {
   position: absolute;
   z-index: 101;
@@ -891,17 +902,20 @@ export default {
   --editor-bg: #eee;
   --button-size: 32px;
   --border-size: 4px;
-  --quill-buttons-size: 2.2rem;
-  --quill-options-size: 2.2rem;
+  --quill-buttons-size: 20px;
+  --quill-options-size: 34px;
 
   position: sticky;
   top: 0;
   z-index: 2;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
+  border-radius: 16px;
+  // hides select, do not use
+  // overflow: hidden;
 
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 4);
   justify-content: flex-start;
   align-items: center;
 
@@ -924,6 +938,14 @@ export default {
     color: currentColor;
   }
 
+  button,
+  ._collabEditorStatus {
+    min-width: var(--button-size);
+    width: auto;
+    height: var(--button-size);
+    padding: 6px;
+  }
+
   .ql-fill,
   .ql-stroke.ql-fill {
     fill: currentColor;
@@ -935,6 +957,22 @@ export default {
 
   .ql-picker {
     color: currentColor;
+
+    &.ql-lineheight {
+      width: 78px;
+      .ql-picker-label,
+      .ql-picker-item {
+        &::before {
+          content: "Normal (1.42)" !important;
+        }
+        &[data-value],
+        &[data-value] {
+          &::before {
+            content: attr(data-value) !important;
+          }
+        }
+      }
+    }
   }
 
   .ql-picker.ql-font {
@@ -951,12 +989,13 @@ export default {
     margin: 0;
     display: flex;
     flex-flow: row nowrap;
-    border: 2px solid var(--c-gris_clair);
+    border: 2px solid var(--toolbar-bg);
     border-radius: 12px;
     background: #fff;
 
     button,
-    > *:not(.ql-size):not(.ql-header):not(.ql-font) .ql-picker-label {
+    > *:not(.ql-size):not(.ql-lineheight):not(.ql-header):not(.ql-font)
+      .ql-picker-label {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -969,18 +1008,52 @@ export default {
 
     .ql-font {
       background: var(--editor-bg);
+      background: transparent;
     }
     .ql-header {
       background: var(--editor-bg);
+      background: transparent;
     }
     .ql-picker {
       height: var(--button-size);
+
+      &.ql-size {
+        width: 115px;
+        .ql-picker-label,
+        .ql-picker-item {
+          &::before {
+            content: "Par défaut" !important;
+          }
+          &[data-value],
+          &[data-value] {
+            &::before {
+              content: attr(data-value) !important;
+            }
+          }
+        }
+      }
+      &.ql-lineheight {
+        width: 115px;
+        .ql-picker-label,
+        .ql-picker-item {
+          &::before {
+            content: "Normal (1.42)" !important;
+          }
+          &[data-value],
+          &[data-value] {
+            &::before {
+              content: attr(data-value) !important;
+            }
+          }
+        }
+      }
     }
     .ql-picker-label {
       text-align: left;
       padding: 4px;
-      background: white;
+      // background: white;
     }
+
     .ql-picker-label::before {
       // line-height: var(--button-size);
     }
@@ -1070,12 +1143,33 @@ export default {
   .ql-picker.ql-size .ql-picker-label[data-value]::before {
     font-size: 100% !important;
   }
-  z ._btnContainer {
-    width: 100%;
+}
+
+._TEbtnContainer {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+
+  > * {
+    border: 2px solid var(--toolbar-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
     display: flex;
-    justify-content: center;
+    flex-flow: row wrap;
+    justify-content: space-between;
     align-items: center;
-    // background-color: var(--editor-bg);
+
+    ._editBtn {
+      background-color: var(--c-bleuvert);
+    }
+
+    ._collabEditorStatus {
+      background-color: var(--c-vert);
+    }
   }
+  // background-color: var(--editor-bg);
 }
 </style>

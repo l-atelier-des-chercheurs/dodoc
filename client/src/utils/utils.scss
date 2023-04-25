@@ -465,8 +465,9 @@ sl-button[variant="semitransparent"] {
 }
 sl-button[variant="edit"] {
   &::part(base) {
-    background: white;
-    background: transparent;
+    // background: white;
+    // background: transparent;
+    background: rgba(255, 255, 255, 0.6);
 
     color: var(--c-bleuvert);
     // color: white;

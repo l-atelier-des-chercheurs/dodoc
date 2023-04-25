@@ -23,6 +23,33 @@ export const fonts = [
   "Krub",
 ];
 
+export const fontSizeArr = [
+  "8px",
+  "9px",
+  "10px",
+  "12px",
+  "14px",
+  false,
+  "20px",
+  "24px",
+  "32px",
+  "42px",
+  "54px",
+  "68px",
+  "84px",
+  "98px",
+];
+export const lineHeightArr = [
+  "0.6",
+  "0.8",
+  "1",
+  "1.2",
+  false,
+  "1.6",
+  "1.8",
+  "2",
+];
+
 export const toolbar = {
   container: [
     [
@@ -31,7 +58,8 @@ export const toolbar = {
       },
     ],
     [{ header: [false, 1, 2, 3] }],
-    // [{ size: ["75%", false, "150%", "300%"] }],
+    [{ size: fontSizeArr }],
+    [{ lineheight: lineHeightArr }],
     ["bold", "italic", "underline", "strike", "link", "blockquote"],
     [
       {
@@ -104,12 +132,28 @@ export const toolbar = {
         );
       }
     },
+    line_height_select: function (new_line_height) {
+      debugger;
+      new_line_height;
+      // var range = this.quill.getSelection();
+      // if (range) {
+      //   debugger;
+      //   this.quill.format(
+      //     range.index,
+      //     range.length,
+      //     "line-height",
+      //     +new_line_height,
+      //     "user"
+      //   );
+      // }
+    },
   },
 };
 
 export const formats = [
   "bold",
   "size",
+  "lineheight",
   "italic",
   "underline",
   "strike",
