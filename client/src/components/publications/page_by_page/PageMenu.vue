@@ -645,6 +645,7 @@ export default {
 <style lang="scss" scoped>
 ._pageMenu {
   margin: 2px;
+  margin: calc(var(--spacing) / 4);
   background: var(--panel-color);
   border: var(--panel-borders);
   box-shadow: var(--panel-shadows);
