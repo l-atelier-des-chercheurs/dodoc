@@ -19,7 +19,11 @@
       {{ quill_styles }}
     </component>
 
-    <div ref="editBtn" class="_TEbtnContainer" v-show="can_edit">
+    <div
+      ref="editBtn"
+      class="_TEbtnContainer"
+      v-show="can_edit && editor_is_enabled"
+    >
       <div class="">
         <template v-if="editor_is_enabled && !is_disabling_editor">
           <button type="button" class="_editBtn" @click="toggleEdit">
