@@ -45,6 +45,10 @@ export default {
   }
 
   summary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
