@@ -416,9 +416,9 @@ export default {
   }
 
   &.is--editable {
-    ::v-deep .u-floatingFsButton {
-      display: none;
-    }
+    // ::v-deep .u-floatingFsButton {
+    //   display: none;
+    // }
   }
   &.is--editable:not(.is--beingEdited):not(.is--locked) {
     cursor: pointer;

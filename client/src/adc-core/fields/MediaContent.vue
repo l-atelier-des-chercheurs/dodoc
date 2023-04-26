@@ -17,7 +17,7 @@
           loading="eager"
         />
       </template>
-      <template v-if="show_fullscreen_button">
+      <template v-if="show_fs_button">
         <FullscreenBtn
           class="u-floatingFsButton"
           :icon="'fullscreen'"
@@ -109,7 +109,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    show_fullscreen_button: {
+    show_fs_button: {
       type: Boolean,
       default: false,
     },

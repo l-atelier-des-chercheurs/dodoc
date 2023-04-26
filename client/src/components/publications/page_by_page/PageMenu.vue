@@ -328,7 +328,6 @@
             :suffix="'°'"
             @save="updateMediaPubliMeta({ rotation: $event })"
           />
-          <br />
           <!-- <RangeValueInput
             v-if="firstMedia(active_module).$type === 'text'"
             class="u-spacingBottom"
@@ -391,7 +390,6 @@
             @save="updateMediaPubliMeta({ opacity: $event / 100 })"
           />
 
-          <br />
           <ColorInput
             class="u-spacingBottom"
             :label="$t('background_color')"
@@ -424,13 +422,19 @@
             :default_value="'#000000'"
             @save="updateMediaPubliMeta({ outline_color: $event })"
           />
-          <br />
           <DepthInput
             class="u-spacingBottom"
             :label="$t('z_index')"
             :value="active_module.z_index"
             :page_modules="page_modules"
             @save="updateMediaPubliMeta({ z_index: $event })"
+          />
+          <ToggleInput
+            v-if="firstMedia(active_module).$type === 'image'"
+            class="u-spacingBottom"
+            :content="active_module.show_fs_button"
+            :label="$t('show_fs_button')"
+            @update:content="updateMediaPubliMeta({ show_fs_button: $event })"
           />
         </div>
       </transition>
