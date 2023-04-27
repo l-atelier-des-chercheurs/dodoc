@@ -1,6 +1,7 @@
 <template>
   <BaseModal2 :title="$t('settings')" @close="$emit('close')">
     <div class="">
+      {{ settings }}
       <sl-tab-group>
         <sl-tab slot="nav" panel="informations">
           {{ $t("informations") }}
@@ -21,7 +22,7 @@
             :label="$t('name_of_instance')"
             :instructions="$t('name_of_instance_instructions')"
             :content="settings.name_of_instance"
-            :path="'_admin'"
+            :path="path"
             tag="h1"
             :required="true"
             :minlength="3"
@@ -36,7 +37,7 @@
             :label="$t('presentation_of_instance')"
             :instructions="$t('presentation_of_instance_instructions')"
             :content="settings.presentation_of_instance"
-            :path="'_admin'"
+            :path="path"
             :required="false"
             :can_edit="is_admin"
           />
@@ -48,7 +49,7 @@
             :label="$t('contactmail_of_instance')"
             :instructions="$t('contactmail_of_instance_instructions')"
             :content="settings.contactmail_of_instance"
-            :path="'_admin'"
+            :path="path"
             :required="false"
             :input_type="'email'"
             :can_edit="is_admin"
@@ -58,7 +59,15 @@
 
           <DLabel :str="$t('logo')" />
           <div class="u-wips" />
-          <!-- <CoverField :cover="settings.logo" :path="'_admin'" /> -->
+
+          <!-- <CoverField
+            class="_coverPicker"
+            :context="context"
+            :cover="settings.logo"
+            :path="path"
+            :can_edit="is_admin"
+          /> -->
+          <!-- <CoverField :cover="settings.logo" :path="path" /> -->
 
           <br />
 
@@ -72,7 +81,7 @@
             :label="$t('general_password')"
             :instructions="$t('general_password_instructions')"
             :content="settings.general_password"
-            :path="'_admin'"
+            :path="path"
             :input_type="'password'"
             :required="false"
             :can_edit="is_admin"
@@ -85,7 +94,7 @@
             :label="$t('signup_password')"
             :instructions="$t('signup_password_instructions')"
             :content="settings.signup_password"
-            :path="'_admin'"
+            :path="path"
             :required="false"
             :can_edit="is_admin"
           />
@@ -105,7 +114,7 @@
             :label="$t('path_to_content')"
             :instructions="$t('path_to_content_instructions')"
             :content="settings.pathToUserContent"
-            :path="'_admin'"
+            :path="path"
             :required="true"
             :can_edit="is_admin && $root.is_electron"
           />
@@ -134,18 +143,28 @@ export default {
   },
   data() {
     return {
+      path: "",
       path_to_content: undefined,
       new_path_to_content: undefined,
-      settings: {},
+      settings: undefined,
     };
   },
   created() {},
   async mounted() {
-    this.settings = await this.$api.getSettings();
-    this.$api.join({ room: "_admin" });
+    this.settings = await this.$api
+      .getFolders({
+        path: this.path,
+      })
+      .catch((err) => {
+        err;
+        // this.fetch_spaces_error = err.response;
+        // this.is_loading = false;
+        return;
+      });
+    this.$api.join({ room: this.path });
   },
   beforeDestroy() {
-    this.$api.leave({ room: "_admin" });
+    this.$api.leave({ room: this.path });
   },
   watch: {},
   computed: {},

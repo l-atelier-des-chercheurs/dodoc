@@ -141,10 +141,10 @@ module.exports = (function () {
       dev.logfunction({ relative_path, new_meta });
       // todo check fields in schema, make sure user added fields are allowed and with the right formatting
       // merge with validateMeta ?
-      const schema = await API.parseAndCheckSchema({
+      const item_in_schema = API.parseAndCheckSchema({
         relative_path,
       });
-      schema;
+      item_in_schema;
 
       return new_meta;
     },
@@ -291,54 +291,59 @@ module.exports = (function () {
       return await md5File(full_media_path);
     },
 
-    async parseAndCheckSchema({ relative_path }) {
+    parseAndCheckSchema({ relative_path }) {
       dev.logfunction({ relative_path });
 
       const schema = global.settings.schema;
 
-      let items_in_path = relative_path.split("/");
-      items_in_path = items_in_path.filter((i) => i !== "_upload");
+      let items_in_path =
+        relative_path.length === 0 ? [] : relative_path.split("/");
+      // items_in_path = items_in_path.filter((i) => i !== "_upload");
 
-      let obj = {};
+      // –––   / => schema (admin settings)
+      // –––   /image.jpg.meta.txt => schema (admin files)
 
-      // –––   /spaces => schema.spaces
-      // –––   /spaces/tle => schema.spaces
-      // –––   /spaces/tle/image.jpg.meta.txt => schema.spaces
+      // –––   /spaces => schema.$folders.spaces
+      // –––   /spaces/tle => schema.$folders.spaces
+      // –––   /spaces/tle/image.jpg.meta.txt => schema.$folders.spaces
 
-      // –––   /spaces/tle/projects => schema.spaces.$folders.projects
-      // –––   /spaces/tle/projects/mon-projet => schema.spaces.$folders.projects
-      // –––   /spaces/tle/projects/mon-projet/image.jpg.meta.txt => schema.spaces.$folders.projects
+      // –––   /spaces/tle/projects => schema.$folders.spaces.$folders.projects
+      // –––   /spaces/tle/projects/mon-projet => schema.$folders.spaces.$folders.projects
+      // –––   /spaces/tle/projects/mon-projet/image.jpg.meta.txt => schema.$folders.spaces.$folders.projects
 
-      // –––   /spaces/tle/projects/mon-projet/publications => schema.spaces.$folders.projects.$folders.publications
+      // –––   /spaces/tle/projects/mon-projet/publications => schema.$folders.spaces.$folders.projects.$folders.publications
 
-      // –––   /spaces/tle/projects/mon-projet/remixes => schema.spaces.$folders.projects.$folders.remixes
-      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video => schema.spaces.$folders.projects.$folders.remixes
-      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video/media.meta.txt => schema.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/remixes => schema.$folders.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video => schema.$folders.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video/media.meta.txt => schema.$folders.spaces.$folders.projects.$folders.remixes
 
       const checkIfFileOrAction = (str) =>
         str.includes(".") || str.startsWith("_");
 
-      if (items_in_path.length === 0) return false;
+      if (
+        items_in_path.length === 0 ||
+        (items_in_path.length === 1 && checkIfFileOrAction(items_in_path[0]))
+      )
+        return schema;
       else if (
         items_in_path.length === 1 ||
         items_in_path.length === 2 ||
         (items_in_path.length === 3 && checkIfFileOrAction(items_in_path[2]))
       )
-        return schema[items_in_path[0]];
+        return schema.$folders[items_in_path[0]];
       else if (
         items_in_path.length === 3 ||
         items_in_path.length === 4 ||
         (items_in_path.length === 5 && checkIfFileOrAction(items_in_path[4]))
       )
-        return schema[items_in_path[0]].$folders[items_in_path[2]];
+        return schema.$folders[items_in_path[0]].$folders[items_in_path[2]];
       else if (
         items_in_path.length === 5 ||
         items_in_path.length === 6 ||
         (items_in_path.length === 7 && checkIfFileOrAction(items_in_path[6]))
       )
-        return schema[items_in_path[0]].$folders[items_in_path[2]].$folders[
-          items_in_path[4]
-        ];
+        return schema.$folders[items_in_path[0]].$folders[items_in_path[2]]
+          .$folders[items_in_path[4]];
 
       throw new Error(`no_schema_for_folder`);
     },

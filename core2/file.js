@@ -10,10 +10,10 @@ module.exports = (function () {
     importFile: async ({ path_to_folder, req }) => {
       dev.logfunction({ path_to_folder });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
-      const fields = schema.$files.fields;
+      const fields = item_in_schema.$files.fields;
 
       let additional_meta = {};
       let extracted_meta = {};

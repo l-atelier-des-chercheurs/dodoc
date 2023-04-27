@@ -75,7 +75,7 @@ export default {
             status: "draft",
             license: "CC",
             $status:
-              this.new_space_is_invisible === true ? "invisible" : "draft",
+              this.new_space_is_invisible === true ? "invisible" : "visible",
             $authors: [this.$api.tokenpath.token_path],
           },
         });

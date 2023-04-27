@@ -30,8 +30,6 @@ module.exports = (function () {
 
     app.get("/_api2/_ip", _generalPasswordCheck, _getLocalNetworkInfos);
     app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
-    app.get("/_api2/_admin", _getAdminInfos);
-    app.patch("/_api2/_admin", _setAdminInfos);
     app.post("/_api2/_restart", _restart);
 
     /* FILES */
@@ -147,6 +145,7 @@ module.exports = (function () {
 
     app.get(
       [
+        "/_api2/",
         "/_api2/:folder_type/:folder_slug",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
@@ -157,6 +156,7 @@ module.exports = (function () {
 
     app.patch(
       [
+        "/_api2/",
         "/_api2/:folder_type/:folder_slug",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
@@ -262,14 +262,20 @@ module.exports = (function () {
     // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
     // todo not very clean, merge with auth.isAuthorIncluded
-    const folder_meta = await folder
-      .getFolder({ path_to_folder })
-      .catch((err) => {
-        if (res) return res.status(404).send({ code: err.code });
-        throw err;
-      });
-    if (!folder_meta.$authors || folder_meta.$authors.length === 0)
-      return next ? next() : undefined;
+
+    let folder_authors = [];
+    if (path_to_folder) {
+      const folder_meta = await folder
+        .getFolder({ path_to_folder })
+        .catch((err) => {
+          dev.error(err.message);
+          if (res) return res.status(404).send({ code: err.code });
+          throw err;
+        });
+      folder_authors = folder_meta.$authors;
+      if (!folder_authors || folder_authors.length === 0)
+        return next ? next() : undefined;
+    }
 
     if (!req.headers || !req.headers.authorization) {
       const err = new Error("Headers and token missing");
@@ -287,18 +293,27 @@ module.exports = (function () {
 
       auth.checkToken({ token, token_path });
 
-      if (!path_to_folder) {
-        // means we're just checking the validity of the token
-        return next ? next() : undefined;
-      }
       if (await auth.isAuthorAdmin({ author_path: token_path })) {
-        dev.logapi("Author is admin, next");
+        // if token is admin
+        dev.logapi("Token is admin");
         return next ? next() : undefined;
-      }
-      if (path_to_folder === token_path) {
+      } else if (!path_to_folder) {
+        dev.logapi("Token not admin is attempting to edit admin settings");
+        const err = new Error("Token is not admin");
+        err.code = "endpoint_only_allowed_for_admins";
+        throw err;
+      } else if (path_to_folder === token_path) {
         dev.logapi("Token path and folder path are identical, next");
         return next ? next() : undefined;
+      } else if (folder_authors.includes(token_path)) {
+        dev.logapi("Token path is listed in folder authors");
+        return next ? next() : undefined;
       }
+
+      dev.logapi("Failed to auth token");
+      const err = new Error("Failed to auth token");
+      err.code = "failed_to_auth_token";
+      throw err;
 
       // if folder is child/has parent, the parent's authors will determine who can edit this child
       // if (path_to_parent_folder)
@@ -311,9 +326,6 @@ module.exports = (function () {
       //     path_to_folder,
       //     author_path: token_path,
       //   });
-
-      dev.logapi("Author allowed, next");
-      return next ? next() : undefined;
     } catch (err) {
       dev.error(err.message);
       if (res) return res.status(403).send({ code: err.code });
@@ -335,6 +347,7 @@ module.exports = (function () {
       name_of_instance,
       presentation_of_instance,
       contactmail_of_instance,
+      $cover,
       general_password,
       signup_password,
     } = await settings.get();
@@ -343,6 +356,7 @@ module.exports = (function () {
       d.presentation_of_instance = presentation_of_instance;
     if (contactmail_of_instance)
       d.contactmail_of_instance = contactmail_of_instance;
+    if ($cover) d.cover_of_instance = $cover;
 
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
@@ -406,7 +420,7 @@ module.exports = (function () {
   }
 
   async function _getFolder(req, res, next) {
-    const { path_to_folder } = utils.makePathFromReq(req);
+    const { path_to_folder = "" } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
     try {
@@ -426,7 +440,11 @@ module.exports = (function () {
   }
 
   async function _updateFolder(req, res, next) {
-    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    const {
+      path_to_type,
+      path_to_folder = "",
+      data,
+    } = utils.makePathFromReq(req);
     const update_cover = req.query?.hasOwnProperty("cover");
     dev.logapi({ path_to_folder, data, update_cover });
 
@@ -440,15 +458,15 @@ module.exports = (function () {
       res.status(200).json({ status: "ok" });
 
       // TODO if $password is updated successfully, then revoke all tokens except current
-
       notifier.emit("folderUpdated", path_to_folder, {
         path: path_to_folder,
         changed_data,
       });
-      notifier.emit("folderUpdated", path_to_type, {
-        path: path_to_folder,
-        changed_data,
-      });
+      if (path_to_type)
+        notifier.emit("folderUpdated", path_to_type, {
+          path: path_to_folder,
+          changed_data,
+        });
     } catch (err) {
       dev.error("Failed to update folder: " + err.message);
       res.status(500).send({ code: err.code });
@@ -808,29 +826,6 @@ module.exports = (function () {
   }
 
   async function _checkAuth(req, res, next) {}
-
-  async function _getAdminInfos(req, res, next) {
-    // TODO only available to admins
-    dev.logapi();
-    const admin_infos = await settings.get();
-    res.status(200).json(admin_infos);
-  }
-  async function _setAdminInfos(req, res, next) {
-    // TODO only available to admins
-    const { data } = utils.makePathFromReq(req);
-    dev.logapi({ data });
-
-    try {
-      const changed_data = await settings.set({ input_meta: data });
-
-      dev.logpackets({ status: "adminSettings were updated" });
-      res.status(200).json({ status: "ok" });
-
-      notifier.emit("adminSettingsUpdated", "_admin", { changed_data });
-    } catch (err) {
-      res.status(500).send({ code: err.code });
-    }
-  }
   async function _restart(req, res, next) {
     dev.logapi({ data });
     // TODO only available to admins

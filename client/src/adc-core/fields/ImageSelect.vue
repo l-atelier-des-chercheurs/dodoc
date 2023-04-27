@@ -1,7 +1,10 @@
 <template>
   <div class="_imageselect">
     <template v-if="!image">
-      <div class="_imageselect--upload">
+      <div
+        class="_imageselect--upload"
+        v-if="available_options.includes('import')"
+      >
         <input
           type="file"
           accept="image/*"
@@ -19,7 +22,10 @@
         </label>
       </div>
 
-      <div class="_imageselect--fromLib">
+      <div
+        class="_imageselect--fromLib"
+        v-if="available_options.includes('project')"
+      >
         <button
           type="button"
           class="u-button u-button_orange"
@@ -64,7 +70,10 @@
         />
       </div>
 
-      <div class="_imageselect--takePhoto">
+      <div
+        class="_imageselect--takePhoto"
+        v-if="available_options.includes('capture')"
+      >
         <button
           type="button"
           class="u-button u-button_red"
@@ -114,6 +123,10 @@ export default {
     existing_preview: [Boolean, String],
     path: String,
     instructions: String,
+    available_options: {
+      type: Array,
+      default: () => ["import", "project", "capture"],
+    },
   },
   components: {
     CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),

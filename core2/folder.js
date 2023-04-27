@@ -12,7 +12,7 @@ module.exports = (function () {
       dev.logfunction({ path_to_type });
       // TODO cache get all folders
 
-      await utils.parseAndCheckSchema({
+      utils.parseAndCheckSchema({
         relative_path: path_to_type,
       });
 
@@ -37,7 +37,7 @@ module.exports = (function () {
     getFolder: async ({ path_to_folder }) => {
       dev.logfunction({ path_to_folder });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
 
@@ -53,7 +53,7 @@ module.exports = (function () {
         });
       folder_meta.$path = path_to_folder;
 
-      if (schema.$cover) {
+      if (item_in_schema.$cover) {
         let cover = await _getFolderCover({
           path_to_folder,
         });
@@ -64,7 +64,7 @@ module.exports = (function () {
       if (folder_meta.$password && folder_meta.$password.length > 0)
         folder_meta.$password = "_active";
 
-      // TODO get number of files if files in schema
+      // TODO get number of files if files in item_in_schema
       cache.set({
         key: path_to_folder,
         value: folder_meta,
@@ -86,13 +86,13 @@ module.exports = (function () {
         folder_slug,
       });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_type,
       });
 
       let valid_meta = meta
         ? utils.validateMeta({
-            fields: schema.fields,
+            fields: item_in_schema.fields,
             new_meta: meta,
           })
         : {};
@@ -303,10 +303,10 @@ module.exports = (function () {
   }
 
   async function _updateCover({ path_to_folder, data, req }) {
-    const schema = await utils.parseAndCheckSchema({
+    const item_in_schema = utils.parseAndCheckSchema({
       relative_path: path_to_folder,
     });
-    if (!schema.hasOwnProperty("$cover")) {
+    if (!item_in_schema.hasOwnProperty("$cover")) {
       dev.error(`no cover allowed on ${path_to_folder}`);
       return;
     }
@@ -351,8 +351,8 @@ module.exports = (function () {
     }
   }
 
-  async function _getFolderCover({ schema, path_to_folder }) {
-    dev.logfunction({ schema, path_to_folder });
+  async function _getFolderCover({ path_to_folder }) {
+    dev.logfunction({ path_to_folder });
 
     const cover_path = utils.getPathToUserContent(
       path_to_folder,

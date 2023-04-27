@@ -138,6 +138,7 @@ export default {
         this.edit_mode = false;
         this.is_saving = false;
       } catch (e) {
+        debugger;
         this.is_saving = false;
 
         this.$alertify
