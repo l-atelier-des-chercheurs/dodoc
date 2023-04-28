@@ -125,18 +125,18 @@ export default {
   border-radius: 4px;
   background: white;
 
-  display: flex;
-  flex-flow: column nowrap;
+  // display: flex;
+  // flex-flow: column nowrap;
 
   border: 2px dashed var(--c-gris_fonce);
   padding: calc(var(--spacing) / 2);
 
   > * {
-    flex: 0 0 auto;
+    // flex: 0 0 auto;
 
     &._mediaLib {
-      overflow: hidden;
-      flex: 1 1 70vh;
+      // overflow: hidden;
+      // flex: 1 1 70vh;
     }
   }
 }

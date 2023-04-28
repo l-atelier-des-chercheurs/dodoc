@@ -292,7 +292,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 2px;
-  padding: 0 calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 }
 
 ._mediaLibrary--focusPane {
