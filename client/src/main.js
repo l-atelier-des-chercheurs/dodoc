@@ -77,6 +77,8 @@ import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
 Vue.component("RadioSwitch", RadioSwitch);
 import DropZone from "@/adc-core/ui/DropZone.vue";
 Vue.component("DropZone", DropZone);
+import AnimatedCounter from "@/adc-core/ui/AnimatedCounter.vue";
+Vue.component("AnimatedCounter", AnimatedCounter);
 //
 import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);

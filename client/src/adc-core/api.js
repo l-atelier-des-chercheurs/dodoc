@@ -466,7 +466,6 @@ export default function () {
           });
 
         const task_id = response.data.task_id;
-        this.$eventHub.$emit("task.started", { task_id, instructions });
         return task_id;
       },
       async updateMeta({ path, new_meta }) {
