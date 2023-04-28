@@ -234,6 +234,9 @@ If a folder has $creators, only people logged in with a token that matches one o
 
 If a folder has $contributors, people logged in with a token that matches one of these $contributors can not edit this folder's meta but can create/edit/remove subfolders or import/edit/remove files.
 
+If a folder has $contributors set to "all", all users (including anonymous) have contributors' permissions.
+If a folder has $admins set to "all", all users (including anonymous) have admins' permissions.
+
 ## Examples
 
 ### Schema and path
