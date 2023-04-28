@@ -460,6 +460,7 @@ export default {
   }
   &:not(.is--active) {
     // opacity: 0.8;
+    z-index: 2;
 
     ::v-deep {
       ._pagecontent {
