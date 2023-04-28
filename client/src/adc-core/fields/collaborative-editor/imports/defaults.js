@@ -38,6 +38,10 @@ export const fontSizeArr = [
   "68px",
   "84px",
   "98px",
+  "116px",
+  "130px",
+  "144px",
+  "158px",
 ];
 export const lineHeightArr = [
   "0.6",
