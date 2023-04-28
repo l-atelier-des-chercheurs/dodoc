@@ -959,6 +959,11 @@ export default {
     stroke: currentColor;
   }
 
+  .ql-color-picker .ql-picker-options {
+    // to prevent overflow issues with pagemenu overflow
+    width: var(--quill-options-size);
+  }
+
   .ql-picker {
     color: currentColor;
 
