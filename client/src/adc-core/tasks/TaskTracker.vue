@@ -11,7 +11,7 @@
         </div>
         <div>{{ task.event }}</div>
         <div>
-          <b>{{ task.progress }}%</b>
+          <b><AnimatedCounter :value="task.progress" /></b>
         </div>
         <button
           type="button"
@@ -73,10 +73,12 @@ export default {
     },
     status({ task_id, progress }) {
       const task_index = this.tasks_tracked.findIndex((t) => t.id === task_id);
+      if (task_index === -1) return;
       this.tasks_tracked[task_index].progress = progress;
     },
     ended({ task_id, message }) {
       const task_index = this.tasks_tracked.findIndex((t) => t.id === task_id);
+      if (task_index === -1) return;
       this.tasks_tracked[task_index].progress = 100;
       this.tasks_tracked[task_index].event = message.event;
       this.tasks_tracked[task_index].path = message.path;

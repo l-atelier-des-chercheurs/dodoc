@@ -58,18 +58,22 @@
 
       <br />
 
-      <template v-if="current_mode === 'spaces'">
-        <div class="u-instructions _content">
-          <small v-html="$t('spaces_instr')" />
+      <transition name="pagechange" mode="out-in">
+        <div :key="current_mode">
+          <template v-if="current_mode === 'spaces'">
+            <div class="u-instructions _content">
+              <small v-html="$t('spaces_instr')" />
+            </div>
+            <SpacesList />
+          </template>
+          <template v-else-if="current_mode === 'projects'">
+            <div class="u-instructions _content">
+              <small v-html="$t('all_projects_instr')" />
+            </div>
+            <AllProjects />
+          </template>
         </div>
-        <SpacesList />
-      </template>
-      <template v-else-if="current_mode === 'projects'">
-        <div class="u-instructions _content">
-          <small v-html="$t('all_projects_instr')" />
-        </div>
-        <AllProjects />
-      </template>
+      </transition>
     </div>
 
     <div class="">
