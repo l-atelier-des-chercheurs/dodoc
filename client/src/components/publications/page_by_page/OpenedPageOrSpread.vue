@@ -500,7 +500,8 @@ export default {
   z-index: 10;
   height: 100%;
   // padding-right: calc(var(--spacing) / 2);
-  overflow: auto;
+  overflow-x: visible;
+  overflow-y: auto;
   pointer-events: none;
   @include scrollbar(8px, 5px, 6px);
 
@@ -508,7 +509,7 @@ export default {
     pointer-events: auto;
 
     &._content {
-      margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) * 4) 0;
+      margin: 0 0 calc(var(--spacing) * 2) 0;
     }
   }
 }
