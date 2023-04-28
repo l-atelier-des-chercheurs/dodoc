@@ -14,11 +14,11 @@
 
       <div class="">
         <ToggleInput
-          :content.sync="new_space_is_invisible"
-          :label="$t('invisible')"
+          :content.sync="new_space_is_private"
+          :label="$t('private')"
           :options="{
-            true: $t('invisible_status_explanations_spaces'),
-            false: $t('visible_status_explanations_spaces'),
+            true: $t('private_status_explanations_spaces'),
+            false: $t('public_status_explanations_spaces'),
           }"
         />
       </div>
@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       new_space_title: "",
-      new_space_is_invisible: false,
+      new_space_is_private: false,
 
       is_creating_space: false,
       allow_save: false,
@@ -72,10 +72,8 @@ export default {
           additional_meta: {
             title: this.new_space_title,
             requested_slug: this.new_space_title,
-            status: "draft",
             license: "CC",
-            $status:
-              this.new_space_is_invisible === true ? "invisible" : "visible",
+            $status: this.new_space_is_private === true ? "private" : "public",
             $authors: [this.$api.tokenpath.token_path],
           },
         });

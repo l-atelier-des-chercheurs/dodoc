@@ -247,19 +247,30 @@ export default function () {
         filters: "Filtres",
 
         draft: "En cours",
-        draft_status_explanations:
-          "Le projet apparaîtra dans la section <i>en cours</i> sur la page d’accueil.",
         listed: "Listé",
+        private: "Privé",
+        public: "Public",
         invisible: "Invisible",
         visible: "Visible",
-        visible_status_explanations_projects:
-          "Le projet sera affiché avec les autres projets.",
-        invisible_status_explanations_projects:
-          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses auteurs et aux personnes qui possèdent le lien.",
-        visible_status_explanations_publis:
-          "La publication sera visible par tous ceux qui accèdent au projet.",
-        invisible_status_explanations_publis:
-          "La publication ne sera visible qu’aux auteurs du projet.",
+
+        public_status_explanations_spaces:
+          "L’espace sera visible sur la page d’accueil.",
+        private_status_explanations_spaces:
+          "L’espace ne sera visible qu’à ses contributeurs.",
+
+        public_status_explanations_projects:
+          "Le projet sera affiché avec les autres projets sur la page de son espace.",
+        private_status_explanations_projects:
+          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
+        finished_status_explanations:
+          "Ce projet sera marqué avec un pictogramme ✓ et sera accessible à toutes les personnes qui ont accès à son espace.",
+        draft_status_explanations:
+          "Ce projet sera accessible à toutes les personnes qui ont accès à son espace.",
+
+        public_status_explanations_publis:
+          "La publication sera visible à tous ceux qui accèdent au projet.",
+        private_status_explanations_publis:
+          "La publication ne sera visible qu’aux contributeurs du projet.",
 
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
@@ -270,9 +281,6 @@ export default function () {
         projects_in_progress: "Projets en cours",
 
         default_value: "Par défaut",
-
-        finished_status_explanations:
-          "Ce projet sera affiché en haut de la page d’accueil.",
 
         show_projects: "Afficher les projets",
         all_projects: "Tous les projets",

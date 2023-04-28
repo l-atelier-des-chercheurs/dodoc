@@ -41,13 +41,11 @@ export default {
           instruction: this.$t("finished_status_explanations"),
         },
         {
-          key: "invisible",
-          text: this.$t("invisible"),
-          instruction: this.$t("invisible_status_explanations_projects"),
+          key: "private",
+          text: this.$t("private"),
+          instruction: this.$t("private_status_explanations_projects"),
         },
       ],
-      // temp value, that uses
-      visible_value: this.project.status,
     };
   },
   created() {},

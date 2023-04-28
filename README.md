@@ -172,7 +172,7 @@ Default values are:
 - $date_created (Date) = when the folder was created
 - $date_modified (Date) = when the folder was last edited
 - $files (Array) = list of all the files in this folder (see Files below)
-- $status (String) = determines whether the folder gets listed when getFolders is called by non-authors (invisible means not listed, anything else means listed), can be edited by authors
+- $status (String) = determines whether the folder gets listed when getFolders is called by non-authors (private means not listed, anything else means listed), can be edited by authors
 - $password (String, stored as hash) = limit editing to users with password, can be edited by authors
 - $path (String) = path to folder, matches filesystem structure and URL
 - $infos (Object) = data gathered from the folder itself
@@ -192,7 +192,7 @@ Default values are:
 - $media_filename (String) = name of the file
 - $type (String) = type of media file among the following: _image, video, audio, stl, text, pdf, other_
 - $authors (Array) = list of authors paths, can be edited by users
-- $status (String) = determines whether the file gets listed when getFiles is called by non-authors (invisible means not listed, anything else means listed), can be edited by authors
+- $status (String) = determines whether the file gets listed when getFiles is called by non-authors (private means not listed, anything else means listed), can be edited by authors
 - $thumbs (object) = list of possible media image thumbs
 - $content (String) = text content of a file
 - $infos (object) = data gathered from the file itself
@@ -209,7 +209,7 @@ Custom values can be defined in the schema property in settings_base.json.
 
 Each folder and each file have a "$status" property, which defines who can list them using getFolders or getFiles:
 
-- by default, it is set to **invisible**. This folder will only be listed by their respective authors and instance admins.
+- by default, it is set to **private**. This folder will only be listed by their respective authors and instance admins.
 - if set to anything else, all calls will list this folder publicly (editing is still restricted to authors)
 
 If a folder has a $password, then this ressource and its content can only be edited by persons that are logged in to this folder using its password.

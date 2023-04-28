@@ -437,7 +437,7 @@ module.exports = (function () {
     // set status (see readme)
     new_meta.$status = additional_meta.$status
       ? additional_meta.$status
-      : "invisible";
+      : "private";
 
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;

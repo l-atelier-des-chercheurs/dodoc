@@ -103,9 +103,7 @@ module.exports = (function () {
       valid_meta.$date_created = valid_meta.$date_modified =
         utils.getCurrentDate();
 
-      valid_meta.$status = valid_meta.$status
-        ? valid_meta.$status
-        : "invisible";
+      valid_meta.$status = valid_meta.$status ? valid_meta.$status : "private";
 
       if (valid_meta.$password) {
         // encrypt before store

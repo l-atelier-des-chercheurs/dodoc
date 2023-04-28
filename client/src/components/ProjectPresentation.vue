@@ -25,9 +25,9 @@ z
         class="_icon _check"
       />
       <sl-icon
-        v-else-if="project.$status === 'invisible'"
+        v-else-if="project.$status === 'private'"
         name="file-lock2-fill"
-        class="_icon _invisible"
+        class="_icon _private"
       />
       <!-- <sl-icon
         v-if="project.$status === 'draft'"
@@ -361,7 +361,7 @@ export default {
   ._check {
     color: var(--c-bleuvert);
   }
-  ._invisible {
+  ._private {
   }
 }
 

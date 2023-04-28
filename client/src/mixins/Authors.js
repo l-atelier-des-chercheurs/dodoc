@@ -33,9 +33,9 @@ export default {
       return false;
     },
     canLoggedinSeeFolder({ folder }) {
-      // if public, if author admin, if author part of $authors
       // todo do this API side
-      if (folder.$status !== "invisible") return true;
+      if (folder.$status !== "invisible" && folder.$status !== "private")
+        return true;
       if (this.connected_as?.role === "admin") return true;
       if (
         Array.isArray(folder.$authors) &&

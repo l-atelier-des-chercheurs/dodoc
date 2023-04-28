@@ -15,8 +15,8 @@
     </p>
 
     <form @submit.prevent="submitGeneralPassword">
-      <DLabel :str="$t('password')" />
       <TextInput
+        :label_str="'general_password'"
         :content.sync="password_to_submit"
         :required="true"
         :input_type="'password'"

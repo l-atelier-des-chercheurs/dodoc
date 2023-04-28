@@ -12,9 +12,9 @@
         :can_edit="can_edit"
       />
       <sl-icon
-        v-if="space.$status === 'invisible'"
+        v-if="space.$status === 'private'"
         name="file-lock2-fill"
-        class="_icon _invisible"
+        class="_icon _private"
       />
       <!-- </div> -->
     </div>
@@ -22,7 +22,7 @@
       <StatusTag
         v-if="can_edit"
         :status="space.$status"
-        :status_options="['invisible', 'visible']"
+        :status_options="['private', 'public']"
         :path="space.$path"
         :can_edit="can_edit"
       />
