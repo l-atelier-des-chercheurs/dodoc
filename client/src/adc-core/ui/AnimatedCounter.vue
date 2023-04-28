@@ -42,7 +42,6 @@ export default {
         this.current_value = Math.ceil(
           this.current_value * (1 - this.speed) + this.value * this.speed
         );
-        debugger;
         // if (this.current_value !== this.value)
         requestAnimationFrame(animate);
       };

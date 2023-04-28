@@ -2,37 +2,42 @@
   <div class="_taskTracker" v-if="tasks_tracked.length > 0">
     <DLabel class="" :str="$t('exports_in_progress')" />
     <div v-for="task in tasks_tracked" class="_task" :key="task.id">
-      <div class="u-sameRow">
-        <div>{{ formatDateToHuman(task.date_started) }}</div>
-        <div>
-          <span v-if="task.instructions">
-            {{ task.instructions.recipe }}
-          </span>
-        </div>
-        <div>{{ task.event }}</div>
-        <div>
-          <b><AnimatedCounter :value="task.progress" /></b>
-        </div>
+      <div class="">
+        {{ task.instructions.recipe }}
+      </div>
+      <div>
+        <i>
+          {{ task.event }}
+        </i>
+      </div>
+      <div>
+        <b><AnimatedCounter :value="task.progress" /></b>
+      </div>
+      <div v-if="task.path">
         <button
           type="button"
-          v-if="task.progress < 100"
-          @click="abortTask(task.id)"
-          class="u-button u-button_small u-button_red"
+          class="u-button u-button_bleuvert"
+          @click="openMediaModalToExport(task.path)"
         >
-          <sl-icon name="x-octagon" />
-        </button>
-        <button
-          type="button"
-          v-else-if="task.progress === 100"
-          @click="removeTask(task.id)"
-          class="u-button u-button_small u-button_bleuvert"
-        >
-          <sl-icon name="check" />
+          {{ $t("open") }}
         </button>
       </div>
-      <!-- <div v-if="task.path">
-        {{ task.path }}
-      </div> -->
+      <button
+        type="button"
+        v-if="task.progress < 100"
+        @click="abortTask(task.id)"
+        class="u-button u-button_small u-button_red"
+      >
+        <sl-icon name="x-octagon" />
+      </button>
+      <button
+        type="button"
+        v-else-if="task.progress === 100"
+        @click="removeTask(task.id)"
+        class="u-button u-button_small u-button_transparent"
+      >
+        <sl-icon name="x-octagon" />
+      </button>
     </div>
   </div>
 </template>
@@ -86,6 +91,34 @@ export default {
       this.$api.leave({ room: "task_" + task_id });
     },
 
+    openMediaModalToExport(path) {
+      const { space_slug, project_slug } = this.decomposePath(path);
+      const path_to_project = this.createPath({ space_slug, project_slug });
+      const url_to_project = this.createURLFromPath(path_to_project);
+
+      let query = {};
+
+      query.projectpanes = JSON.stringify([
+        {
+          type: "collect",
+          size: 100,
+          focus: this.getFilename(path),
+        },
+      ]);
+      this.$router.push({
+        path: url_to_project,
+        query,
+      });
+
+      // https://localhost:8080/+un-espace-pas-prive/
+      // un-super-projet?
+      // projectpanes=%5B%7B%22type%22%3A%22collect%22,%22size%22%3A100,%22focus%22%3A%22spaces%2Fun-espace-pas-prive%2Fprojects%2Fun-super-projet%2Fpublication-5.pdf.meta.txt%22%7D%5D
+
+      // {
+      //     type: "publish",
+      //     size: 100,
+      //   },
+    },
     abortTask(task_id) {
       task_id;
     },
@@ -116,10 +149,11 @@ export default {
   margin-bottom: 0;
 }
 ._task {
-  // display: flex;
-  // flex-flow: row nowrap;
-  // justify-content: space-between;
-  // align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--c-gris);
   border-left: 2px solid var(--c-gris_fonce);
   margin: calc(var(--spacing) / 2) 0;
   padding: calc(var(--spacing) / 2);

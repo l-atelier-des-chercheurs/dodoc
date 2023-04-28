@@ -59,7 +59,7 @@
           :key="file.$path"
           :project_path="project.$path"
           :file="file"
-          :was_focused="media_just_focused === file.$path"
+          :was_focused="media_just_focused === getFilename(file.$path)"
           :data-filepath="file.$path"
           @toggleMediaFocus="(path) => toggleMediaFocus(path)"
         />
@@ -152,10 +152,10 @@ export default {
     },
     focused_media() {
       if (!this.media_focused) return false;
-
       const _focused_media =
-        this.project.$files.find((f) => f.$path === this.media_focused) ||
-        false;
+        this.project.$files.find(
+          (f) => this.getFilename(f.$path) === this.media_focused
+        ) || false;
       if (_focused_media && this.$refs.mediaTiles)
         this.scrollToMediaTile(_focused_media.$path);
 
@@ -215,11 +215,14 @@ export default {
       //   .success(list_of_added_metas);
     },
     toggleMediaFocus(path) {
-      if (!path || this.media_focused === path) {
+      if (!path) return this.$emit("update:media_focused", undefined);
+
+      const filename = this.getFilename(path);
+      if (this.media_focused === filename) {
         this.$emit("update:media_focused", undefined);
       } else {
-        this.$emit("update:media_focused", path);
-        this.media_just_focused = path;
+        this.$emit("update:media_focused", filename);
+        this.media_just_focused = filename;
       }
     },
     selectMedia(path) {
