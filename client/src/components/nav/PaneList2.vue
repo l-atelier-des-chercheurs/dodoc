@@ -73,7 +73,7 @@
                   @click.stop="removePane(pane.type)"
                 />
               </div>
-              <div
+              <!-- <div
                 v-else-if="project_panes.length > 0 && !$root.is_mobile_view"
                 class="_inlineBtn _addPaneBtn"
               >
@@ -82,7 +82,7 @@
                   label="Ajouter"
                   @click.stop="addPane($event, pane)"
                 />
-              </div>
+              </div> -->
             </div>
           </SlickItem>
         </SlickList>
@@ -389,6 +389,7 @@ export default {
   text-decoration: none;
 
   padding: calc(var(--spacing) / 4);
+  padding-right: calc(var(--spacing) / 2);
   border-radius: 44px;
 
   text-decoration: none;
@@ -400,9 +401,16 @@ export default {
   // border-radius: 4px;
   color: var(--color-active);
 
+  &:hover,
+  &:focus {
+    color: white;
+    background-color: var(--color-active);
+  }
+
   &.is--enabled {
     color: white;
     background-color: var(--color-active);
+    padding-right: calc(var(--spacing) / 4);
   }
 
   sl-icon-button::part(base) {
@@ -413,6 +421,7 @@ export default {
 ._inlineBtn {
   position: relative;
   display: block;
+  --sl-transition-medium: 0;
   // width: var(--height-panebutton);
   // height: var(--height-panebutton);
 
