@@ -581,6 +581,8 @@ export default function () {
           "Le titre est affiché ici et sur la liste des projets.",
         project_desc_instructions:
           "La description est affichée ici et sur la liste des projets.",
+        pick_cover: "Choisissez une image de couverture",
+
         add_authors: "Ajouter des contributeur·rice·s",
         no_authors_to_show: "Aucun auteur à afficher",
         ellipsis: "Ellipse",

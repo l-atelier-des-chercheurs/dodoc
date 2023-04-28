@@ -29,7 +29,7 @@
       <EditBtn v-if="!edit_mode" @click="enableEditMode" />
       <BaseModal2
         v-if="edit_mode"
-        :title="$t('pick_image')"
+        :title="$t('pick_cover')"
         @close="edit_mode = false"
       >
         <div class="_picker">
