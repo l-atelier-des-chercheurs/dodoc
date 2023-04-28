@@ -314,7 +314,7 @@ export default function () {
 
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
-          Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
+          Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
 
         access_control: "Contrôle des accès",
         fonts: "Famille de caractère",

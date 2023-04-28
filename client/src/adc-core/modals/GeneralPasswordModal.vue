@@ -1,16 +1,16 @@
 <template>
   <BaseModal2
-    :title="$root.app_infos.name_of_instance || $t('home')"
+    :title="$root.app_infos.instance_meta.name || $t('home')"
     @close="$emit('close')"
   >
     <p>
       {{ $t("general_password_modal_text") }}
       <br />
       <a
-        :href="'mailto:' + $root.app_infos.contactmail_of_instance"
+        :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
         target="_blank"
       >
-        {{ $root.app_infos.contactmail_of_instance }}
+        {{ $root.app_infos.instance_meta.contactmail }}
       </a>
     </p>
 

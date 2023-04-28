@@ -90,7 +90,6 @@ export default function () {
         this.socket.on("fileUpdated", this.fileUpdated);
         this.socket.on("fileRemoved", this.fileRemoved);
 
-        this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);
       },
@@ -256,17 +255,10 @@ export default function () {
         );
       },
 
-      async getSettings() {
-        const response = await this.$axios.get(`_admin`);
-        const admin_settings = response.data;
-        this.$set(this.store, "_admin", admin_settings);
-        return this.store["_admin"];
-      },
-      adminSettingsUpdated({ changed_data }) {
-        if (this.store["_admin"])
-          Object.entries(changed_data).map(([key, value]) => {
-            this.$set(this.store["_admin"], key, value);
-          });
+      async getStoragePath() {
+        const response = await this.$axios.get(`_storagePath`);
+        const storage_path = response.data.pathToUserContent;
+        return storage_path;
       },
       taskStatus({ task_id, progress }) {
         this.$eventHub.$emit("task.status", { task_id, progress });
@@ -276,16 +268,6 @@ export default function () {
       },
       async restartDodoc() {
         return await this.$axios.post(`_admin`);
-      },
-
-      async editSettings(settings) {
-        const response = await this.$axios
-          .patch(`_admin`, settings)
-          .catch((err) => {
-            this.onError(err);
-            throw err;
-          });
-        return response.data;
       },
       async getFolders({ path }) {
         if (this.store[path]) return this.store[path];

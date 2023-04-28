@@ -30,7 +30,9 @@ module.exports = (function () {
 
     app.get("/_api2/_ip", _generalPasswordCheck, _getLocalNetworkInfos);
     app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
-    app.post("/_api2/_restart", _restart);
+    app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
+    app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
+    app.post("/_api2/_restart", _onlyAdmins, _restart);
 
     /* FILES */
     app.get(
@@ -249,6 +251,11 @@ module.exports = (function () {
     return res.json(response);
   }
 
+  async function _onlyAdmins(req, res, next) {
+    // todo : only tokens for admin accounts are allowed
+    return next ? next() : undefined;
+  }
+
   async function _authenticateToken(req, res, next) {
     const { path_to_folder, path_to_parent_folder } =
       utils.makePathFromReq(req);
@@ -351,13 +358,11 @@ module.exports = (function () {
       general_password,
       signup_password,
     } = await settings.get();
-    if (name_of_instance) d.name_of_instance = name_of_instance;
-    if (presentation_of_instance)
-      d.presentation_of_instance = presentation_of_instance;
-    if (contactmail_of_instance)
-      d.contactmail_of_instance = contactmail_of_instance;
-    if ($cover) d.cover_of_instance = $cover;
 
+    d.name_of_instance = name_of_instance || "";
+    d.presentation_of_instance = presentation_of_instance || "";
+    d.contactmail_of_instance = contactmail_of_instance || "";
+    d.cover_of_instance = $cover || {};
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
 
@@ -429,6 +434,7 @@ module.exports = (function () {
       );
       const files = await file.getFiles({ path_to_folder });
       d.$files = files;
+
       res.setHeader("Access-Control-Allow-Origin", "*");
       dev.logpackets({ d });
       res.json(d);
@@ -827,9 +833,17 @@ module.exports = (function () {
 
   async function _checkAuth(req, res, next) {}
   async function _restart(req, res, next) {
-    dev.logapi({ data });
-    // TODO only available to admins
     notifier.emit("restart");
+  }
+
+  async function _getStoragePath(req, res, next) {
+    res.json({ pathToUserContent: global.pathToUserContent });
+  }
+  async function _setStoragePath(req, res, next) {
+    const { data } = utils.makePathFromReq(req);
+    const new_path = data.new_path;
+    settings.updatePath({ new_path });
+    res.status(200).json({ status: "ok" });
   }
 
   async function _loadCustomFonts() {

@@ -17,36 +17,9 @@ module.exports = (function () {
         });
       return folder_meta;
     },
-    set: async ({ data }) => {
+    updatePath({ new_path }) {
       dev.logfunction();
-
-      let old_meta = await API.get();
-
-      if (input_meta.hasOwnProperty("pathToUserContent")) {
-        const new_pathToUserContent = input_meta.pathToUserContent;
-        _saveNewPathToUserContent({ path: new_pathToUserContent });
-        delete input_meta.pathToUserContent;
-      }
-      // todo store path somewhere else
-
-      let meta = Object.assign({}, old_meta, input_meta);
-      meta.$date_modified = utils.getCurrentDate();
-
-      await utils.saveMetaAtPath({
-        relative_path: "/",
-        file_slug: "settings.txt",
-        meta,
-      });
-
-      let changed_meta = Object.keys(meta).reduce((acc, key) => {
-        if (JSON.stringify(meta[key]) !== JSON.stringify(old_meta[key]))
-          acc[key] = meta[key];
-        return acc;
-      }, {});
-
-      local_cache = undefined;
-
-      return changed_meta;
+      _saveNewPathToUserContent({ path: new_path });
     },
   };
 

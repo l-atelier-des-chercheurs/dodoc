@@ -1,7 +1,6 @@
 <template>
   <BaseModal2 :title="$t('settings')" @close="$emit('close')">
     <div class="">
-      {{ settings }}
       <sl-tab-group>
         <sl-tab slot="nav" panel="informations">
           {{ $t("informations") }}
@@ -21,7 +20,7 @@
             :field_name="'name_of_instance'"
             :label="$t('name_of_instance')"
             :instructions="$t('name_of_instance_instructions')"
-            :content="settings.name_of_instance"
+            :content="settings.name_of_instance || ''"
             :path="path"
             tag="h1"
             :required="true"
@@ -109,15 +108,7 @@
           <FontsPanel />
         </sl-tab-panel>
         <sl-tab-panel name="storage">
-          <PickNativePath
-            :field_name="'pathToUserContent'"
-            :label="$t('path_to_content')"
-            :instructions="$t('path_to_content_instructions')"
-            :content="settings.pathToUserContent"
-            :path="path"
-            :required="true"
-            :can_edit="is_admin && $root.is_electron"
-          />
+          <PickNativePath :can_edit="is_admin && $root.is_electron" />
           <br />
           <div class="u-instructions">
             {{ $t("restart_to_apply") }}
@@ -152,7 +143,7 @@ export default {
   created() {},
   async mounted() {
     this.settings = await this.$api
-      .getFolders({
+      .getFolder({
         path: this.path,
       })
       .catch((err) => {

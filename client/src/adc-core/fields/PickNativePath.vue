@@ -1,9 +1,12 @@
 <template>
   <span class="_pickNativePath">
-    <DLabel :str="label" :instructions="can_edit ? instructions : ''" />
+    <DLabel
+      :str="$t('path_to_content')"
+      :instructions="$t('path_to_content_instructions')"
+    />
 
     <div class="_sameLine">
-      <input type="text" required readonly v-model="new_content" />
+      <input type="text" required readonly v-model="new_path" />
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
 
@@ -27,7 +30,7 @@
             class="_scb"
             :is_saving="is_saving"
             :allow_save="allow_save"
-            @save="updateText"
+            @save="updatePath"
             @cancel="cancel"
           />
         </div>
@@ -38,24 +41,6 @@
 <script>
 export default {
   props: {
-    field_name: String,
-    label: {
-      type: String,
-      default: "",
-    },
-    instructions: {
-      type: String,
-      default: "",
-    },
-    content: {
-      type: String,
-      default: "",
-    },
-    path: String,
-    required: {
-      type: Boolean,
-      default: false,
-    },
     can_edit: {
       type: Boolean,
     },
@@ -63,20 +48,24 @@ export default {
   components: {},
   data() {
     return {
+      field_name: "pathToUserContent",
       edit_mode: false,
       is_saving: false,
-      new_content: this.content,
+      path_to_storage: undefined,
+      new_path: this.path_to_storage,
 
       current_character_count: undefined,
       allow_save: false,
     };
   },
   created() {},
-  mounted() {},
+  async mounted() {
+    this.path_to_storage = await this.$api.getStoragePath();
+  },
   beforeDestroy() {},
   watch: {
-    content() {
-      this.new_content = this.content;
+    path_to_storage() {
+      this.new_path = this.path_to_storage;
     },
   },
   computed: {},
@@ -90,38 +79,36 @@ export default {
       });
       window.electronAPI.receive("fromMain", ({ type, path_to_content }) => {
         if (type === "new_path") {
-          this.new_content = path_to_content;
+          this.new_path = path_to_content;
           this.edit_mode = true;
-          this.allow_save = this.new_content !== this.content;
+          this.allow_save = this.new_path !== this.path_to_storage;
         }
       });
     },
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      this.new_content = this.content;
+      this.new_path = this.path_to_storage;
 
       this.$nextTick(() => {
         // this.content = "";
         // this.$nextTick(() => {
-        // this.content = this.new_content;
+        // this.content = this.new_path;
         // });
       });
 
       // todo interrupt updateMeta
     },
-    async updateText() {
+    async updatePath() {
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
 
       try {
-        const new_meta = {
-          [this.field_name]: this.new_content,
-        };
-
         await this.$api.updateMeta({
-          path: this.path,
-          new_meta,
+          path: "_storagePath",
+          new_meta: {
+            new_path: this.new_path,
+          },
         });
 
         this.edit_mode = false;
