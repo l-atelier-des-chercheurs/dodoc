@@ -66,14 +66,13 @@
                 v-if="project_panes.some((p) => p.type === pane.type)"
                 class="_inlineBtn _removePaneBtn"
               >
-                <!-- name="x-lg" -->
                 <sl-icon-button
                   name="x-circle-fill"
                   label="Fermer"
                   @click.stop="removePane(pane.type)"
                 />
               </div>
-              <div
+              <!-- <div
                 v-else-if="project_panes.length > 0 && !$root.is_mobile_view"
                 class="_inlineBtn _addPaneBtn"
               >
@@ -82,7 +81,7 @@
                   label="Ajouter"
                   @click.stop="addPane($event, pane)"
                 />
-              </div>
+              </div> -->
             </div>
           </SlickItem>
         </SlickList>
