@@ -19,7 +19,7 @@
             :file="media_with_linked._linked_media"
             :resolution="context === 'preview' ? 220 : 1600"
             :context="context"
-            :show_fullscreen_button="context !== 'preview'"
+            :show_fs_button="show_fs_button"
           />
 
           <div class="_btnRow" v-if="can_edit">
@@ -115,6 +115,7 @@ export default {
     },
     page_template: String,
     number_of_max_medias: [Boolean, Number],
+    show_fs_button: Boolean,
   },
   components: {
     // Splitpanes,

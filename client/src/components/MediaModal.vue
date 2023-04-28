@@ -158,7 +158,7 @@ export default {
 <style lang="scss" scoped>
 ._mediaModal {
   position: absolute;
-  // padding: 1px;
+  overflow: hidden;
   inset: 0;
   // padding: calc(var(--spacing) / 2);
 

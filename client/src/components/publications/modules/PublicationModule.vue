@@ -3,6 +3,7 @@
     class="_publicationModule"
     :class="{
       'is--shape': is_shape,
+      'has--fsButton': show_fs_button,
     }"
   >
     <div
@@ -171,6 +172,7 @@
         :context="context"
         :page_template="page_template"
         :number_of_max_medias="number_of_max_medias"
+        :show_fs_button="show_fs_button"
         @updateMeta="updateMeta"
         @remove="removeModule"
       />
@@ -358,6 +360,11 @@ export default {
       return ["ellipsis", "rectangle", "line", "arrow"].includes(
         this.publimodule.module_type
       );
+    },
+    show_fs_button() {
+      if (this.page_template === "page_by_page")
+        return this.publimodule.show_fs_button === true;
+      return true;
     },
     first_media() {
       if (

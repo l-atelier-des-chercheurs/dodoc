@@ -542,6 +542,9 @@
                   },
                   "z_index": {
                     "type": "number"
+                  },
+                  "show_fs_button": {
+                    "type": "boolean"
                   }
                 }
               }
