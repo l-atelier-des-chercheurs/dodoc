@@ -29,7 +29,7 @@ module.exports = (function () {
       dev.logverbose("set new token", { token, path_to_folder });
       return token;
     },
-    checkToken({ token, token_path }) {
+    checkTokenValidity({ token, token_path }) {
       if (!tokens.hasOwnProperty(token))
         throw new Error(`token_does_not_exist`);
       if (tokens[token].token_path !== token_path)

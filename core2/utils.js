@@ -92,7 +92,8 @@ module.exports = (function () {
 
       const predefined_fields = {
         $status: { type: "string" },
-        $authors: { type: "array" },
+        $admins: { type: "array" },
+        $contributors: { type: "array" },
         $password: { type: "string" },
       };
       fields = Object.assign({}, fields, predefined_fields);

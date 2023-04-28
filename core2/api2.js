@@ -51,7 +51,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_upload",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdminsAndContributors,
       _uploadFile
     );
     app.post(
@@ -61,7 +61,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_export",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdmins,
       _exportToParent
     );
     app.post(
@@ -71,7 +71,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_copy",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdmins,
       _copyFolder
     );
     app.post(
@@ -81,7 +81,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_generatePreview",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdmins,
       _generatePreview
     );
     app.patch(
@@ -91,7 +91,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdminsAndContributors,
       _updateFile
     );
     app.delete(
@@ -101,7 +101,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdminsAndContributors,
       _removeFile
     );
     app.post(
@@ -111,7 +111,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_copy",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdminsAndContributors,
       _copyFile
     );
 
@@ -142,6 +142,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type",
       ],
       _generalPasswordCheck,
+      _onlyAdminsLocalAdminsAndContributors,
       _createFolder
     );
 
@@ -164,7 +165,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdmins,
       _updateFolder
     );
     app.delete(
@@ -174,7 +175,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
-      _authenticateToken,
+      _onlyAdminsLocalAdmins,
       _removeFolder
     );
 
@@ -242,7 +243,7 @@ module.exports = (function () {
         err.code = "no_token_submitted";
         throw err;
       }
-      auth.checkToken({ token, token_path });
+      auth.checkTokenValidity({ token, token_path });
       response.token_is_valid = true;
     } catch (err) {
       response.token_is_wrong = err.code;
@@ -256,10 +257,14 @@ module.exports = (function () {
     return next ? next() : undefined;
   }
 
-  async function _authenticateToken(req, res, next) {
-    const { path_to_folder, path_to_parent_folder } =
-      utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder, path_to_parent_folder });
+  async function _onlyAdminsLocalAdmins(req, res, next) {
+    // todo : only tokens for admin accounts are allowed
+    return next ? next() : undefined;
+  }
+
+  async function _onlyAdminsLocalAdminsAndContributors(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
 
     // check if path and token match,
     // and either :
@@ -267,8 +272,6 @@ module.exports = (function () {
     // - or if path is amongst the folder $authors
     // if so, then next(), otherwise return 403
     // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
-
-    // todo not very clean, merge with auth.isAuthorIncluded
 
     let folder_authors = [];
     if (path_to_folder) {
@@ -298,7 +301,7 @@ module.exports = (function () {
         throw err;
       }
 
-      auth.checkToken({ token, token_path });
+      auth.checkTokenValidity({ token, token_path });
 
       if (await auth.isAuthorAdmin({ author_path: token_path })) {
         // if token is admin
@@ -508,7 +511,7 @@ module.exports = (function () {
 
     try {
       // not sure we need to check token before revoking it
-      // auth.checkToken({ token, token_path: path_to_folder });
+      // auth.checkTokenValidity({ token, token_path: path_to_folder });
       await auth.revokeToken({
         token_to_revoke: token,
       });
