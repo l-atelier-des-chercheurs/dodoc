@@ -82,7 +82,7 @@ module.exports = (function () {
     //   }
     //   return true;
     // },
-    async isFolderOpenedToAll({ field, path_to_folder }) {
+    async isFolderOpenedToAll({ field, path_to_folder = "" }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
       return folder_meta[field] === "all";
     },

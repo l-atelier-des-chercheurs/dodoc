@@ -254,8 +254,14 @@ module.exports = (function () {
   }
 
   async function _restrictToContributors(req, res, next) {
-    const { path_to_folder } = utils.makePathFromReq(req);
+    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
+
+    if (!path_to_folder) {
+      // todo : only allow authors to be created by anyone – fonts and spaces only for admins
+      dev.logapi("Root folders can be created by anyone");
+      return next ? next() : undefined;
+    }
 
     try {
       if (
@@ -497,8 +503,6 @@ module.exports = (function () {
   async function _createFolder(req, res, next) {
     const { path_to_type, data } = utils.makePathFromReq(req);
     dev.logapi({ path_to_type });
-
-    const token_path = auth.extrackAndCheckToken({ req });
 
     try {
       const new_folder_slug = await folder.createFolder({

@@ -182,7 +182,7 @@ export default {
         requested_slug: this.new_publication_title,
         $status:
           this.new_publication_is_private === true ? "private" : "public",
-        $admins: "any",
+        $admins: "all",
       };
 
       if (this.new_publication_template === "page_by_page") {

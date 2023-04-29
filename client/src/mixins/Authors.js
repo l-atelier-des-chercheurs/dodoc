@@ -6,8 +6,8 @@ export default {
       return false;
     },
     is_admin() {
-      // if (this.connected_as) return this.connected_as.role === "admin";
-      return true;
+      if (this.connected_as) return this.connected_as.role === "admin";
+      return false;
     },
   },
   methods: {

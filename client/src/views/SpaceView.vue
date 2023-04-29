@@ -28,6 +28,7 @@
           <AuthorField
             :label="$t('contributors')"
             :field="'$contributors'"
+            :authors_paths="space.$contributors"
             :path="space.$path"
             :can_edit="can_edit_space"
             :tag="'h2'"

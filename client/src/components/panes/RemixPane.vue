@@ -489,14 +489,14 @@ export default {
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 2 + 3);
       const title = this.$t(type) + "-" + rnd_suffix;
-      const additional_meta = {
-        type,
-        title,
-        requested_slug: title,
-      };
       const new_folder_slug = await this.$api.createFolder({
         path: `${this.project.$path}/remixes`,
-        additional_meta,
+        additional_meta: {
+          type,
+          title,
+          requested_slug: title,
+          $admins: [this.$api.tokenpath.token_path],
+        },
       });
 
       // const path = `${this.project.$path}/remixes/${new_folder_slug}`;
