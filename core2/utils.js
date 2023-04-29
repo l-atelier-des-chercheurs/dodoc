@@ -92,8 +92,8 @@ module.exports = (function () {
 
       const predefined_fields = {
         $status: { type: "string" },
-        $admins: { type: "array" },
-        $contributors: { type: "array" },
+        $admins: { type: "any" },
+        $contributors: { type: "any" },
         $password: { type: "string" },
       };
       fields = Object.assign({}, fields, predefined_fields);
@@ -128,6 +128,11 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+          } else if (
+            new_meta.hasOwnProperty(field_name) &&
+            opt.type === "any"
+          ) {
+            meta[field_name] = new_meta[field_name];
           } else {
             if (opt.required === true)
               // field is required in schema but not present in user-submitted object

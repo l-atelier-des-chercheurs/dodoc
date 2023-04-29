@@ -47,8 +47,18 @@ z
 
       <AuthorField
         v-if="context !== 'tiny' && context !== 'list'"
+        :label="context === 'full' ? $t('admins') : ''"
+        :field="'$admins'"
+        :authors_paths="project.$admins"
+        :path="project.$path"
+        :can_edit="can_edit_project"
+        :instructions="$t('project_author_instructions')"
+      />
+      <AuthorField
+        v-if="context !== 'tiny' && context !== 'list'"
         :label="context === 'full' ? $t('contributors') : ''"
-        :authors_paths="project.$authors"
+        :field="'$contributors'"
+        :authors_paths="project.$contributors"
         :path="project.$path"
         :can_edit="can_edit_project"
         :instructions="$t('project_author_instructions')"

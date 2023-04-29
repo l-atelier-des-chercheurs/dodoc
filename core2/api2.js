@@ -30,6 +30,7 @@ module.exports = (function () {
 
     app.get("/_api2/_ip", _generalPasswordCheck, _getLocalNetworkInfos);
     app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
+
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restart", _onlyAdmins, _restart);
@@ -51,38 +52,8 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_upload",
       ],
       _generalPasswordCheck,
-      _onlyAdminsLocalAdminsAndContributors,
+      _restrictToContributors,
       _uploadFile
-    );
-    app.post(
-      [
-        "/_api2/:folder_type/:folder_slug/_export",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_export",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_export",
-      ],
-      _generalPasswordCheck,
-      _onlyAdminsLocalAdmins,
-      _exportToParent
-    );
-    app.post(
-      [
-        "/_api2/:folder_type/:folder_slug/_copy",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_copy",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_copy",
-      ],
-      _generalPasswordCheck,
-      _onlyAdminsLocalAdmins,
-      _copyFolder
-    );
-    app.post(
-      [
-        "/_api2/:folder_type/:folder_slug/_generatePreview",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_generatePreview",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_generatePreview",
-      ],
-      _generalPasswordCheck,
-      _onlyAdminsLocalAdmins,
-      _generatePreview
     );
     app.patch(
       [
@@ -91,7 +62,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
-      _onlyAdminsLocalAdminsAndContributors,
+      _restrictToContributors,
       _updateFile
     );
     app.delete(
@@ -101,7 +72,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
-      _onlyAdminsLocalAdminsAndContributors,
+      _restrictToContributors,
       _removeFile
     );
     app.post(
@@ -111,7 +82,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_copy",
       ],
       _generalPasswordCheck,
-      _onlyAdminsLocalAdminsAndContributors,
+      _restrictToContributors,
       _copyFile
     );
 
@@ -142,8 +113,38 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type",
       ],
       _generalPasswordCheck,
-      _onlyAdminsLocalAdminsAndContributors,
+      _restrictToContributors,
       _createFolder
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_export",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_export",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_export",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _exportToParent
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_copy",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_copy",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_copy",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _copyFolder
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_generatePreview",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_generatePreview",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_generatePreview",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _generatePreview
     );
 
     app.get(
@@ -165,7 +166,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
-      _onlyAdminsLocalAdmins,
+      _restrictToLocalAdmins,
       _updateFolder
     );
     app.delete(
@@ -175,7 +176,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
-      _onlyAdminsLocalAdmins,
+      _restrictToLocalAdmins,
       _removeFolder
     );
 
@@ -252,96 +253,192 @@ module.exports = (function () {
     return res.json(response);
   }
 
-  async function _onlyAdmins(req, res, next) {
-    // todo : only tokens for admin accounts are allowed
-    return next ? next() : undefined;
-  }
-
-  async function _onlyAdminsLocalAdmins(req, res, next) {
-    // todo : only tokens for admin accounts are allowed
-    return next ? next() : undefined;
-  }
-
-  async function _onlyAdminsLocalAdminsAndContributors(req, res, next) {
+  async function _restrictToContributors(req, res, next) {
     const { path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
-    // check if path and token match,
-    // and either :
-    // - if path matches the path of the folder that is about to be edited (for example, user authors/louis editing authors/louis)
-    // - or if path is amongst the folder $authors
-    // if so, then next(), otherwise return 403
-    // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
-
-    let folder_authors = [];
-    if (path_to_folder) {
-      const folder_meta = await folder
-        .getFolder({ path_to_folder })
-        .catch((err) => {
-          dev.error(err.message);
-          if (res) return res.status(404).send({ code: err.code });
-          throw err;
-        });
-      folder_authors = folder_meta.$authors;
-      if (!folder_authors || folder_authors.length === 0)
-        return next ? next() : undefined;
-    }
-
-    if (!req.headers || !req.headers.authorization) {
-      const err = new Error("Headers and token missing");
-      err.code = "no_headers_with_token_submitted";
-      throw err;
-    }
-
     try {
-      const { token, token_path } = JSON.parse(req.headers.authorization);
-      if (!token || !token_path) {
-        const err = new Error("Token and/or token_path missing in headers");
-        err.code = "no_token_submitted";
-        throw err;
-      }
-
-      auth.checkTokenValidity({ token, token_path });
-
-      if (await auth.isAuthorAdmin({ author_path: token_path })) {
-        // if token is admin
-        dev.logapi("Token is admin");
-        return next ? next() : undefined;
-      } else if (!path_to_folder) {
-        dev.logapi("Token not admin is attempting to edit admin settings");
-        const err = new Error("Token is not admin");
-        err.code = "endpoint_only_allowed_for_admins";
-        throw err;
-      } else if (path_to_folder === token_path) {
-        dev.logapi("Token path and folder path are identical, next");
-        return next ? next() : undefined;
-      } else if (folder_authors.includes(token_path)) {
-        dev.logapi("Token path is listed in folder authors");
+      if (
+        await auth.isFolderOpenedToAll({
+          field: "$contributors",
+          path_to_folder,
+        })
+      ) {
+        dev.logapi("Folder opened to any contributors");
         return next ? next() : undefined;
       }
 
-      dev.logapi("Failed to auth token");
-      const err = new Error("Failed to auth token");
-      err.code = "failed_to_auth_token";
+      const token_path = auth.extrackAndCheckToken({ req });
+
+      if (token_path === path_to_folder) {
+        dev.logapi("Token editing self");
+        return next ? next() : undefined;
+      }
+      if (await auth.isTokenAdmin({ token_path })) {
+        dev.logapi("Token is instance admin");
+        return next ? next() : undefined;
+      }
+
+      if (
+        await auth.isTokenIncluded({
+          field: "$contributors",
+          path_to_folder,
+          token_path,
+        })
+      ) {
+        dev.logapi("Token is contributor");
+        return next ? next() : undefined;
+      }
+      if (
+        await auth.isTokenIncluded({
+          field: "$admins",
+          path_to_folder,
+          token_path,
+        })
+      ) {
+        dev.logapi("Token is local admin");
+        return next ? next() : undefined;
+      }
+
+      const err = new Error("Token not allowed");
+      err.code = "token_not_allowed_must_be_contributors";
       throw err;
-
-      // if folder is child/has parent, the parent's authors will determine who can edit this child
-      // if (path_to_parent_folder)
-      //   await auth.isAuthorIncluded({
-      //     path_to_folder: path_to_parent_folder,
-      //     author_path: token_path,
-      //   });
-      // else
-      //   await auth.isAuthorIncluded({
-      //     path_to_folder,
-      //     author_path: token_path,
-      //   });
     } catch (err) {
       dev.error(err.message);
       if (res) return res.status(403).send({ code: err.code });
       throw err;
     }
   }
+  async function _restrictToLocalAdmins(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      if (await auth.isFolderOpenedToAll({ field: "$admins", path_to_folder }))
+        return next ? next() : undefined;
+
+      const token_path = auth.extrackAndCheckToken({ req });
+
+      if (token_path === path_to_folder) {
+        dev.logapi("Token editing self");
+        return next ? next() : undefined;
+      }
+      if (await auth.isTokenAdmin({ token_path })) {
+        dev.logapi("Token is instance admin");
+        return next ? next() : undefined;
+      }
+      if (
+        await auth.isTokenIncluded({
+          field: "$admins",
+          path_to_folder,
+          token_path,
+        })
+      ) {
+        dev.logapi("Token is local admin");
+        return next ? next() : undefined;
+      }
+
+      const err = new Error("Token not allowed");
+      err.code = "token_not_allowed_must_be_local_admin";
+      throw err;
+    } catch (err) {
+      dev.error(err.message);
+      if (res) return res.status(403).send({ code: err.code });
+      throw err;
+    }
+  }
+  async function _onlyAdmins(req, res, next) {
+    dev.logapi({ path_to_folder });
+
+    try {
+      const token_path = auth.extrackAndCheckToken({ req });
+
+      if (await auth.isTokenAdmin({ token_path }))
+        return next ? next() : undefined;
+
+      const err = new Error("Token not allowed");
+      err.code = "token_not_allowed_must_admin";
+      throw err;
+    } catch (err) {
+      dev.error(err.message);
+      if (res) return res.status(403).send({ code: err.code });
+      throw err;
+    }
+  }
+
+  // async function _onlyAdminsLocalAdminsAndContributors(req, res, next) {
+  //   const { path_to_folder } = utils.makePathFromReq(req);
+  //   dev.logapi({ path_to_folder });
+
+  //   let folder_authors = [];
+  //   if (path_to_folder) {
+  //     const folder_meta = await folder
+  //       .getFolder({ path_to_folder })
+  //       .catch((err) => {
+  //         dev.error(err.message);
+  //         if (res) return res.status(404).send({ code: err.code });
+  //         throw err;
+  //       });
+  //     folder_authors = folder_meta.$authors;
+  //     if (!folder_authors || folder_authors.length === 0)
+  //       return next ? next() : undefined;
+  //   }
+
+  //   if (!req.headers || !req.headers.authorization) {
+  //     const err = new Error("Headers and token missing");
+  //     err.code = "no_headers_with_token_submitted";
+  //     throw err;
+  //   }
+
+  //   try {
+  //     const { token, token_path } = JSON.parse(req.headers.authorization);
+  //     if (!token || !token_path) {
+  //       const err = new Error("Token and/or token_path missing in headers");
+  //       err.code = "no_token_submitted";
+  //       throw err;
+  //     }
+
+  //     auth.checkTokenValidity({ token, token_path });
+
+  //     if (await auth.isTokenAdmin({ author_path: token_path })) {
+  //       // if token is admin
+  //       dev.logapi("Token is admin");
+  //       return next ? next() : undefined;
+  //     } else if (!path_to_folder) {
+  //       dev.logapi("Token not admin is attempting to edit admin settings");
+  //       const err = new Error("Token is not admin");
+  //       err.code = "endpoint_only_allowed_for_admins";
+  //       throw err;
+  //     } else if (path_to_folder === token_path) {
+  //       dev.logapi("Token path and folder path are identical, next");
+  //       return next ? next() : undefined;
+  //     } else if (folder_authors.includes(token_path)) {
+  //       dev.logapi("Token path is listed in folder authors");
+  //       return next ? next() : undefined;
+  //     }
+
+  //     dev.logapi("Failed to auth token");
+  //     const err = new Error("Failed to auth token");
+  //     err.code = "failed_to_auth_token";
+  //     throw err;
+
+  //     // if folder is child/has parent, the parent's authors will determine who can edit this child
+  //     // if (path_to_parent_folder)
+  //     //   await auth.isTokenIncluded({
+  //     //     path_to_folder: path_to_parent_folder,
+  //     //     author_path: token_path,
+  //     //   });
+  //     // else
+  //     //   await auth.isTokenIncluded({
+  //     //     path_to_folder,
+  //     //     author_path: token_path,
+  //     //   });
+  //   } catch (err) {
+  //     dev.error(err.message);
+  //     if (res) return res.status(403).send({ code: err.code });
+  //     throw err;
+  //   }
+  // }
 
   async function loadIndex(req, res) {
     dev.logapi();
@@ -401,8 +498,7 @@ module.exports = (function () {
     const { path_to_type, data } = utils.makePathFromReq(req);
     dev.logapi({ path_to_type });
 
-    // TODO check if schema allows it
-    // return res.status(422).send(err.message);
+    const token_path = auth.extrackAndCheckToken({ req });
 
     try {
       const new_folder_slug = await folder.createFolder({

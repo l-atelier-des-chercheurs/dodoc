@@ -16,7 +16,7 @@
       </pre> -->
 
         <div class="_topContent">
-          <div class="_displayAsPublic" v-if="can_edit_project">
+          <div class="_displayAsPublic" v-if="can_contribute_to_project">
             <div class="_sticky">
               <div class="_content">
                 <ToggleInput
@@ -38,7 +38,7 @@
         <div class="_projectPanesAndList">
           <PaneList2
             class="_paneList"
-            :can_edit="can_edit_project && !display_as_public"
+            :can_edit="can_contribute_to_project && !display_as_public"
             :project="project"
             :panes.sync="projectpanes"
           />
@@ -46,7 +46,9 @@
             <ProjectPanes
               :projectpanes="projectpanes"
               :project="project"
-              :can_edit_project="can_edit_project && !display_as_public"
+              :can_edit_project="
+                can_contribute_to_project && !display_as_public
+              "
               @update:projectpanes="projectpanes = $event"
             />
           </div>
@@ -147,9 +149,10 @@ export default {
   },
   computed: {
     can_edit_project() {
-      return this.canLoggedinEditFolder({
-        folder_authors: this.project.$authors,
-      });
+      return this.canLoggedinEditFolder({ folder: this.project });
+    },
+    can_contribute_to_project() {
+      return this.canLoggedinContributeToFolder({ folder: this.project });
     },
   },
   methods: {

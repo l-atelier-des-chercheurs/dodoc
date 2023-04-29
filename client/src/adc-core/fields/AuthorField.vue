@@ -61,6 +61,10 @@ export default {
       type: String,
       default: "",
     },
+    field: {
+      type: String,
+      required: true,
+    },
     authors_paths: {
       type: Array,
       default: () => [],
@@ -130,7 +134,7 @@ export default {
 
       try {
         const new_meta = {
-          $authors: this.new_authors_paths,
+          [this.field]: this.new_authors_paths,
         };
 
         await this.$api.updateMeta({

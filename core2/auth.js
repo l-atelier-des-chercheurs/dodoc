@@ -29,6 +29,26 @@ module.exports = (function () {
       dev.logverbose("set new token", { token, path_to_folder });
       return token;
     },
+
+    extrackAndCheckToken({ req }) {
+      if (!req.headers || !req.headers.authorization) {
+        const err = new Error("Headers missing");
+        err.code = "missing_headers";
+        throw err;
+      }
+
+      const { token, token_path } = JSON.parse(req.headers.authorization);
+      if (!token || !token_path) {
+        const err = new Error("Token and/or token_path missing in headers");
+        err.code = "no_token_submitted";
+        throw err;
+      }
+
+      API.checkTokenValidity({ token, token_path });
+
+      return token_path;
+    },
+
     checkTokenValidity({ token, token_path }) {
       if (!tokens.hasOwnProperty(token))
         throw new Error(`token_does_not_exist`);
@@ -49,24 +69,34 @@ module.exports = (function () {
 
       return;
     },
-    async isAuthorIncluded({ path_to_folder, author_path }) {
+    // async isTokenIncluded({ path_to_folder, author_path }) {
+    //   const folder_meta = await folder.getFolder({ path_to_folder });
+    //   // if (!folder_meta.$authors) throw new Error(`no_author_listed`);
+    //   if (!folder_meta.$authors || folder_meta.$authors.length === 0)
+    //     return true;
+    //   if (
+    //     folder_meta.$authors.length > 0 &&
+    //     !folder_meta.$authors.includes(author_path)
+    //   ) {
+    //     throw new Error(`author_not_allowed`);
+    //   }
+    //   return true;
+    // },
+    async isFolderOpenedToAll({ field, path_to_folder }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
-      // if (!folder_meta.$authors) throw new Error(`no_author_listed`);
-      if (!folder_meta.$authors || folder_meta.$authors.length === 0)
-        return true;
-      if (
-        folder_meta.$authors.length > 0 &&
-        !folder_meta.$authors.includes(author_path)
-      ) {
-        throw new Error(`author_not_allowed`);
-      }
-      return true;
+      return folder_meta[field] === "all";
     },
-    async isAuthorAdmin({ author_path }) {
-      const author_meta = await folder.getFolder({
-        path_to_folder: author_path,
+    async isTokenAdmin({ token_path }) {
+      const token_meta = await folder.getFolder({
+        path_to_folder: token_path,
       });
-      return author_meta.role === "admin";
+      // todo: prevent user from declaring self as admin
+      return token_meta.role === "admin";
+    },
+    async isTokenIncluded({ field, path_to_folder, token_path }) {
+      const folder_meta = await folder.getFolder({ path_to_folder });
+      const paths = folder_meta[field];
+      return paths && Array.isArray(paths) && paths.includes(token_path);
     },
     async updateTokensFile() {
       await writeFileAtomic(path_to_tokens, JSON.stringify(tokens, null, 2));

@@ -17,8 +17,17 @@
 
         <div class="_contributors">
           <AuthorField
+            :label="$t('admins')"
+            :field="'$admins'"
+            :authors_paths="space.$admins"
+            :path="space.$path"
+            :can_edit="can_edit_space"
+            :tag="'h2'"
+            :instructions="$t('space_contrib_instr')"
+          />
+          <AuthorField
             :label="$t('contributors')"
-            :authors_paths="space.$authors"
+            :field="'$contributors'"
             :path="space.$path"
             :can_edit="can_edit_space"
             :tag="'h2'"
@@ -33,7 +42,7 @@
           <button
             type="button"
             class="u-button u-button_red u-button_small"
-            v-if="can_edit_space"
+            v-if="can_contribute_to_space"
             @click="show_create_modal = true"
           >
             <svg
@@ -122,9 +131,10 @@ export default {
       return this.space_path + "/projects";
     },
     can_edit_space() {
-      return this.canLoggedinEditFolder({
-        folder_authors: this.space.$authors,
-      });
+      return this.canLoggedinEditFolder({ folder: this.space });
+    },
+    can_contribute_to_space() {
+      return this.canLoggedinContributeToFolder({ folder: this.space });
     },
   },
   methods: {

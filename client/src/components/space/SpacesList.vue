@@ -110,7 +110,7 @@ export default {
           additional_meta: {
             title: this.new_space_title,
             requested_slug: this.new_space_title,
-            $authors: [this.$api.tokenpath.token_path],
+            $admins: [this.$api.tokenpath.token_path],
           },
         });
         new_space_slug;

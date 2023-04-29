@@ -74,7 +74,7 @@ export default {
             requested_slug: this.new_space_title,
             license: "CC",
             $status: this.new_space_is_private === true ? "private" : "public",
-            $authors: [this.$api.tokenpath.token_path],
+            $admins: [this.$api.tokenpath.token_path],
           },
         });
         setTimeout(() => {

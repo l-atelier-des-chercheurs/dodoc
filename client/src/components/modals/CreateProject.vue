@@ -76,7 +76,7 @@ export default {
             requested_slug: this.new_project_title,
             license: "CC",
             $status: this.new_project_is_private === true ? "private" : "draft",
-            $authors: [this.$api.tokenpath.token_path],
+            $admins: [this.$api.tokenpath.token_path],
           },
         });
         setTimeout(() => {
