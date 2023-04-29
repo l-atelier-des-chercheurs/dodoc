@@ -237,6 +237,8 @@ If a folder has $contributors, people logged in with a token that matches one of
 If a folder has $contributors set to "all", all users (including anonymous) have contributors' permissions.
 If a folder has $admins set to "all", all users (including anonymous) have admins' permissions.
 
+If a folder type has the property `$can_be_created_by: "all"`, this overrides the above behaviour and such folder can be create by all visitors even those that are not logged in. This is useful for accounts creation.
+
 ## Examples
 
 ### Schema and path

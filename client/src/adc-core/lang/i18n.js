@@ -69,6 +69,11 @@ export default function () {
         title: "Titre",
         subtitle: "Sous-titre",
         name: "nom",
+        instance_admins_instr:
+          "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
+        instance_contributors_instr:
+          "Les comptes listés ici pourront créer des espaces.",
+
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
           Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
@@ -324,7 +329,8 @@ export default function () {
         path_to_content_instructions: `Attention, fonctionnalité avancée !
           Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
 
-        access_control: "Contrôle des accès",
+        administration_and_access_control:
+          "Administration et contrôle des accès",
         fonts: "Famille de caractère",
         add_font: "Ajouter une famille de caractère",
         font_name: "Nom de la famille de caractère",

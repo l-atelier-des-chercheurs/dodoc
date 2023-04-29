@@ -585,6 +585,7 @@
         }
       },
       "authors": {
+        "$can_be_created_by": "all",
         "$cover": {
           "width": 1200,
           "height": 1200,

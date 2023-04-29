@@ -3,7 +3,8 @@ const crypto = require("crypto"),
   path = require("path"),
   writeFileAtomic = require("write-file-atomic");
 
-const folder = require("./folder");
+const folder = require("./folder"),
+  utils = require("./utils");
 
 module.exports = (function () {
   let tokens = {};
@@ -69,29 +70,22 @@ module.exports = (function () {
 
       return;
     },
-    // async isTokenIncluded({ path_to_folder, author_path }) {
-    //   const folder_meta = await folder.getFolder({ path_to_folder });
-    //   // if (!folder_meta.$authors) throw new Error(`no_author_listed`);
-    //   if (!folder_meta.$authors || folder_meta.$authors.length === 0)
-    //     return true;
-    //   if (
-    //     folder_meta.$authors.length > 0 &&
-    //     !folder_meta.$authors.includes(author_path)
-    //   ) {
-    //     throw new Error(`author_not_allowed`);
-    //   }
-    //   return true;
-    // },
+    canFolderBeCreatedByAll({ path_to_type }) {
+      const { $can_be_created_by } = utils.parseAndCheckSchema({
+        relative_path: path_to_type,
+      });
+      return $can_be_created_by && $can_be_created_by === "all";
+    },
     async isFolderOpenedToAll({ field, path_to_folder = "" }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
       return folder_meta[field] === "all";
     },
-    async isTokenAdmin({ token_path }) {
-      const token_meta = await folder.getFolder({
-        path_to_folder: token_path,
+    async isTokenInstanceAdmin({ token_path }) {
+      return await API.isTokenIncluded({
+        field: "$admins",
+        path_to_folder: "",
+        token_path,
       });
-      // todo: prevent user from declaring self as admin
-      return token_meta.role === "admin";
     },
     async isTokenIncluded({ field, path_to_folder, token_path }) {
       const folder_meta = await folder.getFolder({ path_to_folder });

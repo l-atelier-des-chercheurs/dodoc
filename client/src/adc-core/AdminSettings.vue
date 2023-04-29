@@ -5,8 +5,8 @@
         <sl-tab slot="nav" panel="informations">
           {{ $t("informations") }}
         </sl-tab>
-        <sl-tab slot="nav" panel="access_control">
-          {{ $t("access_control") }}
+        <sl-tab slot="nav" panel="administration_and_access_control">
+          {{ $t("administration_and_access_control") }}
         </sl-tab>
         <sl-tab slot="nav" panel="fonts">
           {{ $t("fonts") }}
@@ -74,7 +74,24 @@
             {{ $t("restart_to_apply") }}
           </div>
         </sl-tab-panel>
-        <sl-tab-panel name="access_control">
+        <sl-tab-panel name="administration_and_access_control">
+          <AuthorField
+            :label="$t('admins')"
+            :field="'$admins'"
+            :authors_paths="settings.$admins"
+            :path="path"
+            :can_edit="is_admin"
+            :instructions="$t('instance_admins_instr')"
+          />
+          <AuthorField
+            :label="$t('contributors')"
+            :field="'$contributors'"
+            :authors_paths="settings.$contributors"
+            :path="path"
+            :can_edit="is_admin"
+            :instructions="$t('instance_contributors_instr')"
+          />
+
           <TitleField
             :field_name="'general_password'"
             :label="$t('general_password')"

@@ -257,9 +257,9 @@ module.exports = (function () {
     const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
-    if (!path_to_folder) {
-      // todo : only allow authors to be created by anyone – fonts and spaces only for admins
-      dev.logapi("Root folders can be created by anyone");
+    // check if path_to_type in schema mentions $can_be_created_by "all"
+    if (auth.canFolderBeCreatedByAll({ path_to_type })) {
+      dev.logapi("Folder can be created by all according to schema");
       return next ? next() : undefined;
     }
 
@@ -280,11 +280,10 @@ module.exports = (function () {
         dev.logapi("Token editing self");
         return next ? next() : undefined;
       }
-      if (await auth.isTokenAdmin({ token_path })) {
+      if (await auth.isTokenInstanceAdmin({ token_path })) {
         dev.logapi("Token is instance admin");
         return next ? next() : undefined;
       }
-
       if (
         await auth.isTokenIncluded({
           field: "$contributors",
@@ -329,7 +328,7 @@ module.exports = (function () {
         dev.logapi("Token editing self");
         return next ? next() : undefined;
       }
-      if (await auth.isTokenAdmin({ token_path })) {
+      if (await auth.isTokenInstanceAdmin({ token_path })) {
         dev.logapi("Token is instance admin");
         return next ? next() : undefined;
       }
@@ -359,7 +358,7 @@ module.exports = (function () {
     try {
       const token_path = auth.extrackAndCheckToken({ req });
 
-      if (await auth.isTokenAdmin({ token_path }))
+      if (await auth.isTokenInstanceAdmin({ token_path }))
         return next ? next() : undefined;
 
       const err = new Error("Token not allowed");
@@ -406,7 +405,7 @@ module.exports = (function () {
 
   //     auth.checkTokenValidity({ token, token_path });
 
-  //     if (await auth.isTokenAdmin({ author_path: token_path })) {
+  //     if (await auth.isTokenInstanceAdmin({ author_path: token_path })) {
   //       // if token is admin
   //       dev.logapi("Token is admin");
   //       return next ? next() : undefined;
