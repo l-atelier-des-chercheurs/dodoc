@@ -48,18 +48,6 @@
 
         <br />
 
-        <DLabel :str="$t('role')" />
-        <select v-model="new_author_role" :disabled="!is_first_user">
-          <option
-            v-for="option in author_roles"
-            :key="option"
-            :value="option"
-            v-text="$t(option)"
-          />
-        </select>
-
-        <br />
-
         <button
           slot="footer"
           :loading="is_creating_author"
@@ -87,10 +75,8 @@ export default {
       new_author_email: "",
       new_author_name: "",
       new_author_password: "",
-      new_author_role: "contributor",
       new_author_cover_raw: undefined,
 
-      author_roles: ["contributor", "admin"],
       is_creating_author: false,
       error_msg: "",
     };
@@ -111,7 +97,6 @@ export default {
             email: this.new_author_email,
             name: this.new_author_name,
             requested_slug: this.new_author_name,
-            role: this.new_author_role,
             $status: "public",
             $password: this.new_author_password,
           },

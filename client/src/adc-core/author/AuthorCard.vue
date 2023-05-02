@@ -11,29 +11,10 @@
       :tag="'h2'"
       :can_edit="is_self"
     />
-
-    <SelectField
-      v-if="is_admin"
-      :field_name="'role'"
-      :content="author.role"
-      :path="author.$path"
-      :can_edit="true"
-      :options="[
-        {
-          key: 'contributor',
-          text: $t('contributor'),
-        },
-        {
-          key: 'admin',
-          text: $t('admin'),
-        },
-      ]"
-    />
-    <div v-else>
-      {{ $t(author.role) }}
+    <div class="u-instructions" v-if="is_instance_admin">
+      <small v-html="$t('admin')" />
     </div>
 
-    <!-- {{ author.email }} -->
     <br />
 
     <RemoveMenu
@@ -61,6 +42,9 @@ export default {
       if (this.connected_as)
         return this.connected_as.$path === this.author.$path;
       return false;
+    },
+    is_instance_admin() {
+      return this.authorIsAdmin({ folder_path: this.author.$path });
     },
   },
   methods: {

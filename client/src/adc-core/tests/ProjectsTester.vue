@@ -44,15 +44,13 @@ export default {
         path: "projects",
         additional_meta: {
           title: "Z test project " + this.$api.socket.userID,
-          $authors: ["sarah"],
+          $admins: "all",
         },
       });
       await new Promise((r) => setTimeout(r, 200));
       await this.$api.updateMeta({
         path: `projects/${new_folder_slug}`,
-        new_meta: {
-          $authors: ["louis", "pauline"],
-        },
+        new_meta: {},
       });
       await new Promise((r) => setTimeout(r, 200));
       await this.$api.updateMeta({

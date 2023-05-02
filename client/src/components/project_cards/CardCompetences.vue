@@ -3,7 +3,7 @@
     <div class="">
       <SelectField
         :field_name="'level'"
-        :content="project.level"
+        :content="project.level || ''"
         :path="project.$path"
         :can_edit="can_edit"
         :options="basic_competences"
@@ -43,7 +43,7 @@ export default {
         },
         {
           key: "expert",
-          text: this.$t("novice"),
+          text: this.$t("expert"),
         },
       ],
     };

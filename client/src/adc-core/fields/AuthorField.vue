@@ -9,18 +9,17 @@
 
     <div class="_authors">
       <AuthorTag
-        v-for="author_path in new_authors_paths"
+        v-for="author_path in authors_paths"
         :path="author_path"
         :key="author_path"
-        :edit_mode="edit_mode"
+        :edit_mode="false"
         :links_to_author_page="!edit_mode"
-        @remove="removeAuthor(author_path)"
       />
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
 
     <div class="_footer" v-if="edit_mode">
-      <BaseModal2 @close="$emit('close')" :title="$t('add_authors')">
+      <BaseModal2 @close="cancel" :title="$t('add_authors')">
         <DLabel class="_label" :str="$t('authors')" />
         <div class="_authors">
           <AuthorTag
@@ -40,6 +39,8 @@
           :current_authors="new_authors_paths"
           @addAuthor="addAuthor"
         />
+
+        <br />
 
         <div>
           <SaveCancelButtons
@@ -61,6 +62,10 @@ export default {
       type: String,
       default: "",
     },
+    field: {
+      type: String,
+      required: true,
+    },
     authors_paths: {
       type: Array,
       default: () => [],
@@ -71,7 +76,6 @@ export default {
       default: "",
     },
     tag: String,
-
     can_edit: {
       type: Boolean,
     },
@@ -130,7 +134,7 @@ export default {
 
       try {
         const new_meta = {
-          $authors: this.new_authors_paths,
+          [this.field]: this.new_authors_paths,
         };
 
         await this.$api.updateMeta({

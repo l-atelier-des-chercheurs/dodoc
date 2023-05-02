@@ -12,7 +12,7 @@ module.exports = (function () {
       dev.logfunction({ path_to_type });
       // TODO cache get all folders
 
-      await utils.parseAndCheckSchema({
+      utils.parseAndCheckSchema({
         relative_path: path_to_type,
       });
 
@@ -37,7 +37,7 @@ module.exports = (function () {
     getFolder: async ({ path_to_folder }) => {
       dev.logfunction({ path_to_folder });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
 
@@ -53,7 +53,7 @@ module.exports = (function () {
         });
       folder_meta.$path = path_to_folder;
 
-      if (schema.$cover) {
+      if (item_in_schema.$cover) {
         let cover = await _getFolderCover({
           path_to_folder,
         });
@@ -64,7 +64,7 @@ module.exports = (function () {
       if (folder_meta.$password && folder_meta.$password.length > 0)
         folder_meta.$password = "_active";
 
-      // TODO get number of files if files in schema
+      // TODO get number of files if files in item_in_schema
       cache.set({
         key: path_to_folder,
         value: folder_meta,
@@ -86,13 +86,13 @@ module.exports = (function () {
         folder_slug,
       });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_type,
       });
 
       let valid_meta = meta
         ? utils.validateMeta({
-            fields: schema.fields,
+            fields: item_in_schema.fields,
             new_meta: meta,
           })
         : {};
@@ -103,9 +103,7 @@ module.exports = (function () {
       valid_meta.$date_created = valid_meta.$date_modified =
         utils.getCurrentDate();
 
-      valid_meta.$status = valid_meta.$status
-        ? valid_meta.$status
-        : "invisible";
+      valid_meta.$status = valid_meta.$status ? valid_meta.$status : "private";
 
       if (valid_meta.$password) {
         // encrypt before store
@@ -303,10 +301,10 @@ module.exports = (function () {
   }
 
   async function _updateCover({ path_to_folder, data, req }) {
-    const schema = await utils.parseAndCheckSchema({
+    const item_in_schema = utils.parseAndCheckSchema({
       relative_path: path_to_folder,
     });
-    if (!schema.hasOwnProperty("$cover")) {
+    if (!item_in_schema.hasOwnProperty("$cover")) {
       dev.error(`no cover allowed on ${path_to_folder}`);
       return;
     }
@@ -318,12 +316,14 @@ module.exports = (function () {
     await thumbs.removeFolderCover({ path_to_folder });
     await fs.remove(full_path_to_thumb);
 
-    if (data.hasOwnProperty("meta_filename")) {
-      if (data.meta_filename === "") return;
+    if (data.hasOwnProperty("path_to_meta")) {
+      if (data.path_to_meta === "") return;
+
+      const path_to_meta = data.path_to_meta;
+      const path_to_folder = utils.getParent(path_to_meta);
 
       const meta = await file.getFile({
-        path_to_folder,
-        path_to_meta: path.join(path_to_folder, data.meta_filename),
+        path_to_meta,
       });
       const path_to_file = utils.getPathToUserContent(
         path.join(path_to_folder, meta.$media_filename)
@@ -351,8 +351,8 @@ module.exports = (function () {
     }
   }
 
-  async function _getFolderCover({ schema, path_to_folder }) {
-    dev.logfunction({ schema, path_to_folder });
+  async function _getFolderCover({ path_to_folder }) {
+    dev.logfunction({ path_to_folder });
 
     const cover_path = utils.getPathToUserContent(
       path_to_folder,

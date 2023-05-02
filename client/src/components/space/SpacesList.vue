@@ -28,6 +28,7 @@
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
           />
         </svg>
+        &nbsp;
         {{ $t("create") }}
       </button>
     </div>
@@ -101,25 +102,6 @@ export default {
   methods: {
     getSlug(path) {
       return path.split("/").at(-1);
-    },
-    async createSpace() {
-      try {
-        const new_space_slug = await this.$api.createFolder({
-          path: this.path,
-          additional_meta: {
-            title: this.new_space_title,
-            requested_slug: this.new_space_title,
-            $authors: [this.$api.tokenpath.token_path],
-          },
-        });
-        new_space_slug;
-      } catch (err) {
-        // this.error_msg = "Error: " + err.message;
-        // setTimeout(() => {
-        //   this.error_msg = "";
-        // }, 5000);
-        // this.is_creating_project = false;
-      }
     },
     openNewSpace(new_folder_slug) {
       this.show_create_modal = false;

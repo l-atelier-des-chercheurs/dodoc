@@ -15,16 +15,12 @@
           />
         </div>
 
-        <div class="_contributors">
-          <AuthorField
-            :label="$t('contributors')"
-            :authors_paths="space.$authors"
-            :path="space.$path"
-            :can_edit="can_edit_space"
-            :tag="'h2'"
-            :instructions="$t('space_contrib_instr')"
-          />
-        </div>
+        <AdminsAndContributorsField
+          :folder="space"
+          :can_edit="can_edit_space"
+          :admin_instructions="$t('space_admin_instructions')"
+          :contrib_instructions="$t('space_contrib_instructions')"
+        />
       </div>
 
       <div class="_projectsList">
@@ -33,7 +29,7 @@
           <button
             type="button"
             class="u-button u-button_red u-button_small"
-            v-if="can_edit_space"
+            v-if="can_contribute_to_space"
             @click="show_create_modal = true"
           >
             <svg
@@ -57,6 +53,7 @@
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
               />
             </svg>
+            &nbsp;
             {{ $t("create_a_project") }}
           </button>
         </div>
@@ -121,9 +118,10 @@ export default {
       return this.space_path + "/projects";
     },
     can_edit_space() {
-      return this.canLoggedinEditFolder({
-        folder_authors: this.space.$authors,
-      });
+      return this.canLoggedinEditFolder({ folder: this.space });
+    },
+    can_contribute_to_space() {
+      return this.canLoggedinContributeToFolder({ folder: this.space });
     },
   },
   methods: {
@@ -197,22 +195,5 @@ export default {
 
 ._projectsList {
   padding: calc(var(--spacing) * 1);
-}
-
-._contributorsList {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 2);
-  align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-
-  > * {
-    background: white;
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    gap: calc(var(--spacing) / 2);
-    padding: calc(var(--spacing) / 1);
-  }
 }
 </style>

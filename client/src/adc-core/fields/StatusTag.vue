@@ -33,7 +33,7 @@ export default {
     can_edit: Boolean,
     status_options: {
       type: Array,
-      default: () => ["invisible", "draft", "finished"],
+      default: () => ["private", "draft", "finished"],
     },
   },
   components: {},
@@ -70,19 +70,12 @@ export default {
   text-transform: uppercase;
   font-weight: 500;
 
-  --c-color: white;
-  --bg-color: var(--c-noir);
+  --bg-color: var(--c-gris);
+  --c-color: black;
 
-  &[data-status="visible"] {
-    --bg-color: var(--c-gris);
-    --c-color: black;
-  }
-  &[data-status="invisible"] {
+  &[data-status="private"] {
+    --c-color: white;
     --bg-color: var(--c-noir);
-  }
-  &[data-status="draft"] {
-    --bg-color: var(--c-gris);
-    --c-color: black;
   }
   &[data-status="finished"] {
     --bg-color: var(--c-bleuvert);

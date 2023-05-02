@@ -20,13 +20,13 @@
       <h1 v-html="name || $t('welcome_to_dodoc')" />
       <p v-html="description || $t('admins_edit_text_here')" />
 
-      <p v-if="$root.app_infos.contactmail_of_instance">
+      <p v-if="$root.app_infos.instance_meta.contactmail">
         {{ $t("contactmail_of_instance") }}
         <a
-          :href="'mailto:' + $root.app_infos.contactmail_of_instance"
+          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
           target="_blank"
         >
-          {{ $root.app_infos.contactmail_of_instance }}
+          {{ $root.app_infos.instance_meta.contactmail }}
         </a>
       </p>
 
@@ -58,18 +58,22 @@
 
       <br />
 
-      <template v-if="current_mode === 'spaces'">
-        <div class="u-instructions _content">
-          <small v-html="$t('spaces_instr')" />
+      <transition name="pagechange" mode="out-in">
+        <div :key="current_mode">
+          <template v-if="current_mode === 'spaces'">
+            <div class="u-instructions _content">
+              <small v-html="$t('spaces_instr')" />
+            </div>
+            <SpacesList />
+          </template>
+          <template v-else-if="current_mode === 'projects'">
+            <div class="u-instructions _content">
+              <small v-html="$t('all_projects_instr')" />
+            </div>
+            <AllProjects />
+          </template>
         </div>
-        <SpacesList />
-      </template>
-      <template v-else-if="current_mode === 'projects'">
-        <div class="u-instructions _content">
-          <small v-html="$t('all_projects_instr')" />
-        </div>
-        <AllProjects />
-      </template>
+      </transition>
     </div>
 
     <div class="">
@@ -112,10 +116,10 @@ export default {
   },
   computed: {
     name() {
-      return this.$root.app_infos.name_of_instance;
+      return this.$root.app_infos.instance_meta.name;
     },
     description() {
-      return this.$root.app_infos.presentation_of_instance.replace(
+      return this.$root.app_infos.instance_meta.presentation.replace(
         /(?:\r\n|\r|\n)/g,
         "<br />"
       );

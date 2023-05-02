@@ -69,6 +69,12 @@ export default function () {
         title: "Titre",
         subtitle: "Sous-titre",
         name: "nom",
+
+        instance_admins_instr:
+          "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
+        instance_contributors_instr:
+          "Les comptes listés ici pourront créer des espaces.",
+
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
           Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
@@ -113,7 +119,7 @@ export default function () {
         name_or_pseudonym: "Nom ou pseudonyme",
         email: "Courriel",
         password: "Mot de passe",
-        role: "Rôle",
+        admins: "Administrateur·rice·s",
         contributors: "Contributeur·rice·s",
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",
@@ -247,19 +253,30 @@ export default function () {
         filters: "Filtres",
 
         draft: "En cours",
-        draft_status_explanations:
-          "Le projet apparaîtra dans la section <i>en cours</i> sur la page d’accueil.",
         listed: "Listé",
+        private: "Privé",
+        public: "Public",
         invisible: "Invisible",
         visible: "Visible",
-        visible_status_explanations_projects:
-          "Le projet sera affiché avec les autres projets.",
-        invisible_status_explanations_projects:
-          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses auteurs et aux personnes qui possèdent le lien.",
-        visible_status_explanations_publis:
-          "La publication sera visible par tous ceux qui accèdent au projet.",
-        invisible_status_explanations_publis:
-          "La publication ne sera visible qu’aux auteurs du projet.",
+
+        public_status_explanations_spaces:
+          "L’espace sera visible sur la page d’accueil.",
+        private_status_explanations_spaces:
+          "L’espace ne sera visible qu’à ses contributeurs.",
+
+        public_status_explanations_projects:
+          "Le projet sera affiché avec les autres projets sur la page de son espace.",
+        private_status_explanations_projects:
+          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
+        finished_status_explanations:
+          "Ce projet sera marqué avec un pictogramme ✓ et sera accessible à toutes les personnes qui ont accès à son espace.",
+        draft_status_explanations:
+          "Ce projet sera accessible à toutes les personnes qui ont accès à son espace.",
+
+        public_status_explanations_publis:
+          "La publication sera visible à tous ceux qui accèdent au projet.",
+        private_status_explanations_publis:
+          "La publication ne sera visible qu’aux contributeurs du projet.",
 
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
@@ -270,9 +287,6 @@ export default function () {
         projects_in_progress: "Projets en cours",
 
         default_value: "Par défaut",
-
-        finished_status_explanations:
-          "Ce projet sera affiché en haut de la page d’accueil.",
 
         show_projects: "Afficher les projets",
         all_projects: "Tous les projets",
@@ -314,9 +328,10 @@ export default function () {
 
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
-          Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
+          Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
 
-        access_control: "Contrôle des accès",
+        administration_and_access_control:
+          "Administration et contrôle des accès",
         fonts: "Famille de caractère",
         add_font: "Ajouter une famille de caractère",
         font_name: "Nom de la famille de caractère",
@@ -565,14 +580,30 @@ export default function () {
         display_as_public: "Afficher la vue publique",
         preview: "Prévisualiser",
 
-        project_author_instructions:
-          "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",
+        instance_admin_instructions:
+          "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, auteurs, etc.). Ils ont accès à ces réglages.",
+        instance_contrib_instructions:
+          "Peuvent uniquement créer des espaces et les administrer.",
+
+        space_admin_instructions:
+          "Ils peuvent modifier ou supprimer cet espace et ses projets (même ceux qui sont privés).",
+        space_contrib_instructions:
+          "Ils peuvent uniquement créer des projets et les administrer.",
+
+        project_admin_instructions:
+          "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",
+        project_contrib_instructions:
+          "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
+
         space_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
         project_desc_instructions:
           "La description est affichée ici et sur la liste des projets.",
+        pick_cover: "Choisissez une image de couverture",
+        remove_image: "Retirer cette image",
+
         add_authors: "Ajouter des contributeur·rice·s",
         no_authors_to_show: "Aucun auteur à afficher",
         ellipsis: "Ellipse",
@@ -585,6 +616,7 @@ export default function () {
         "notifications.no_image_in_clipboard":
           "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
+        "notifications.action_not_authorized": "Cette action n’est pas permise",
 
         more_infos: "Plus d’informations",
         informations: "Informations",

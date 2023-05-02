@@ -90,7 +90,6 @@ export default function () {
         this.socket.on("fileUpdated", this.fileUpdated);
         this.socket.on("fileRemoved", this.fileRemoved);
 
-        this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);
       },
@@ -256,17 +255,10 @@ export default function () {
         );
       },
 
-      async getSettings() {
-        const response = await this.$axios.get(`_admin`);
-        const admin_settings = response.data;
-        this.$set(this.store, "_admin", admin_settings);
-        return this.store["_admin"];
-      },
-      adminSettingsUpdated({ changed_data }) {
-        if (this.store["_admin"])
-          Object.entries(changed_data).map(([key, value]) => {
-            this.$set(this.store["_admin"], key, value);
-          });
+      async getStoragePath() {
+        const response = await this.$axios.get(`_storagePath`);
+        const storage_path = response.data.pathToUserContent;
+        return storage_path;
       },
       taskStatus({ task_id, progress }) {
         this.$eventHub.$emit("task.status", { task_id, progress });
@@ -276,16 +268,6 @@ export default function () {
       },
       async restartDodoc() {
         return await this.$axios.post(`_admin`);
-      },
-
-      async editSettings(settings) {
-        const response = await this.$axios
-          .patch(`_admin`, settings)
-          .catch((err) => {
-            this.onError(err);
-            throw err;
-          });
-        return response.data;
       },
       async getFolders({ path }) {
         if (this.store[path]) return this.store[path];
@@ -484,7 +466,6 @@ export default function () {
           });
 
         const task_id = response.data.task_id;
-        this.$eventHub.$emit("task.started", { task_id, instructions });
         return task_id;
       },
       async updateMeta({ path, new_meta }) {
@@ -503,7 +484,7 @@ export default function () {
         if (typeof new_cover_data === "string") {
           // its a meta filename in that same folder
           const new_meta = {
-            meta_filename: new_cover_data,
+            path_to_meta: new_cover_data,
           };
           await this.$axios.patch(path, new_meta).catch((err) => {
             this.onError(err);
@@ -545,6 +526,7 @@ export default function () {
 
       onError(err) {
         const code = err.response.data?.code;
+
         if (!code) console.error("onError – NO ERROR CODES");
         else console.error("onError – " + code);
 
@@ -556,16 +538,13 @@ export default function () {
           this.$eventHub.$emit("app.prompt_general_password");
         } else if (code === "no_general_password_submitted") {
           this.$eventHub.$emit("app.prompt_general_password");
-        } else if (code === "author_not_allowed") {
-          // invalidate token
-          // this.resetToken();
-          // this.$alertify
-          //   .delay(4000)
-          //   .error(this.$t("notifications.author_not_allowed"));
+        } else if (code === "token_not_allowed_must_be_local_admin") {
+          this.$alertify.delay(4000).error("action_not_allowed");
         }
 
         this.setAuthorizationHeader();
-        this.$alertify.delay(4000).error(err);
+
+        // this.$alertify.delay(4000).error(err);
       },
     },
     computed: {},

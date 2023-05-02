@@ -35,16 +35,18 @@ html
         version: "!{global.appInfos.version}",
         debug_mode: !{debug_mode},
       
-        name_of_instance: `!{name_of_instance}`,
-        presentation_of_instance: `!{presentation_of_instance}`,
-        contactmail_of_instance: `!{contactmail_of_instance}`,
-
-        has_general_password: !{has_general_password},
-        has_signup_password: !{has_signup_password},
-
+        instance_meta: {
+          name: `!{name_of_instance}`,
+          presentation: `!{presentation_of_instance}`,
+          contactmail: `!{contactmail_of_instance}`,
+          $cover: !{JSON.stringify(cover_of_instance)},
+          has_general_password: !{has_general_password},
+          has_signup_password: !{has_signup_password},
+          $admins: !{JSON.stringify($admins)},
+        },
 
         custom_fonts: !{JSON.stringify(custom_fonts, null, 4)}
-      }
+      };
 
 
       /* state contains settings data, time and client specific data */

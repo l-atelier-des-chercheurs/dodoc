@@ -25,9 +25,9 @@ z
         class="_icon _check"
       />
       <sl-icon
-        v-else-if="project.$status === 'invisible'"
+        v-else-if="project.$status === 'private'"
         name="file-lock2-fill"
-        class="_icon _invisible"
+        class="_icon _private"
       />
       <!-- <sl-icon
         v-if="project.$status === 'draft'"
@@ -45,13 +45,12 @@ z
         :can_edit="can_edit_project"
       />
 
-      <AuthorField
+      <AdminsAndContributorsField
         v-if="context !== 'tiny' && context !== 'list'"
-        :label="context === 'full' ? $t('contributors') : ''"
-        :authors_paths="project.$authors"
-        :path="project.$path"
+        :folder="project"
         :can_edit="can_edit_project"
-        :instructions="$t('project_author_instructions')"
+        :admin_instructions="$t('project_admin_instructions')"
+        :contrib_instructions="$t('project_contrib_instructions')"
       />
 
       <!-- <br v-if="context === 'full'" /> -->
@@ -361,7 +360,7 @@ export default {
   ._check {
     color: var(--c-bleuvert);
   }
-  ._invisible {
+  ._private {
   }
 }
 

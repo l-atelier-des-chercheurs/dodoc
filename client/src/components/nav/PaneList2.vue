@@ -66,7 +66,6 @@
                 v-if="project_panes.some((p) => p.type === pane.type)"
                 class="_inlineBtn _removePaneBtn"
               >
-                <!-- name="x-lg" -->
                 <sl-icon-button
                   name="x-circle-fill"
                   label="Fermer"

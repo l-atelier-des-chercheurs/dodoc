@@ -10,10 +10,10 @@ module.exports = (function () {
     importFile: async ({ path_to_folder, req }) => {
       dev.logfunction({ path_to_folder });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
-      const fields = schema.$files.fields;
+      const fields = item_in_schema.$files.fields;
 
       let additional_meta = {};
       let extracted_meta = {};
@@ -131,13 +131,15 @@ module.exports = (function () {
 
       return metas;
     },
-    getFile: async ({ path_to_folder, path_to_meta }) => {
-      dev.logfunction({ path_to_folder, path_to_meta });
+    getFile: async ({ path_to_meta }) => {
+      dev.logfunction({ path_to_meta });
 
       const d = cache.get({
         key: path_to_meta,
       });
       if (d) return d;
+
+      const path_to_folder = utils.getParent(path_to_meta);
 
       let meta = await utils.readMetaFile(path_to_meta);
       meta.$path = path_to_meta;
@@ -437,7 +439,7 @@ module.exports = (function () {
     // set status (see readme)
     new_meta.$status = additional_meta.$status
       ? additional_meta.$status
-      : "invisible";
+      : "private";
 
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;
