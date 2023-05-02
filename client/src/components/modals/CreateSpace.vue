@@ -67,7 +67,7 @@ export default {
       this.is_creating_space = true;
 
       const $admins = this.$api.tokenpath.token_path
-        ? this.$api.tokenpath.token_path
+        ? [this.$api.tokenpath.token_path]
         : "all";
 
       // TODO replace with $api
