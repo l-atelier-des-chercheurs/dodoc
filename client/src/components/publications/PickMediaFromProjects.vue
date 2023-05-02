@@ -10,7 +10,6 @@
           :str="$t('source_project')"
           :instructions="$t('media_pickers_instr')"
         />
-        source_project_path = {{ source_project_path }}
 
         <div
           v-if="projects.length === 0"

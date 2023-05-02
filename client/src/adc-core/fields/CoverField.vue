@@ -179,12 +179,12 @@ export default {
 
 ._picker {
   position: relative;
-  background: var(--c-noir);
-  color: white;
-  padding: calc(var(--spacing) / 4);
-  max-width: 320px;
-  margin: calc(var(--spacing) / 4);
-  border-radius: 4px;
+  // background: var(--c-noir);
+  // color: white;
+  // padding: calc(var(--spacing) / 4);
+  // max-width: 320px;
+  margin: calc(var(--spacing) / 4) auto;
+  // border-radius: 4px;
   display: flex;
   justify-content: center;
   flex-flow: column nowrap;

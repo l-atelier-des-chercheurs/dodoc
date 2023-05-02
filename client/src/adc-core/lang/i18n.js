@@ -602,6 +602,7 @@ export default function () {
         project_desc_instructions:
           "La description est affichée ici et sur la liste des projets.",
         pick_cover: "Choisissez une image de couverture",
+        remove_image: "Retirer cette image",
 
         add_authors: "Ajouter des contributeur·rice·s",
         no_authors_to_show: "Aucun auteur à afficher",
