@@ -18,7 +18,27 @@
       <!-- <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" /> -->
 
       <h1 v-html="name || $t('welcome_to_dodoc')" />
-      <p v-html="description || $t('admins_edit_text_here')" />
+      <div>
+        <template v-if="description">
+          <p v-html="description" />
+        </template>
+        <template v-else>
+          <template v-if="!is_instance_admin">
+            <p v-html="$t('admins_edit_text_here')" />
+          </template>
+          <template v-else>
+            <p v-html="$t('admins_edit_text_below')" />
+            <button
+              type="button"
+              class="u-button u-button_bleuvert"
+              @click="show_settings_modal = !show_settings_modal"
+            >
+              <sl-icon name="gear-fill" />
+              &nbsp;{{ $t("settings") }}
+            </button>
+          </template>
+        </template>
+      </div>
 
       <p v-if="$root.app_infos.instance_meta.contactmail">
         {{ $t("contactmail_of_instance") }}
@@ -140,6 +160,9 @@ export default {
   min-height: calc(100vh - 60px);
   max-height: -webkit-fill-available;
 
+  display: flex;
+  flex-direction: column;
+
   // display: flex;
   // flex-flow: column nowrap;
   // justify-content: center;
@@ -151,8 +174,8 @@ export default {
 ._homeView--content {
   max-width: 600px;
   width: 100%;
-  min-height: 40vh;
-  min-height: calc(60vh - 60px);
+  // min-height: 40vh;
+  // min-height: calc(60vh - 60px);
   margin: 0 auto;
   padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 
@@ -202,6 +225,7 @@ export default {
 }
 
 ._bottomCont {
-  min-height: 80vh;
+  flex: 1;
+  // min-height: 80vh;
 }
 </style>

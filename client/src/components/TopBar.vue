@@ -92,7 +92,7 @@ export default {
   align-items: center;
 
   padding: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) * 1);
+  // padding-bottom: calc(var(--spacing) * 1);
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 

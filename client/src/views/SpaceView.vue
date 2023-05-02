@@ -185,7 +185,7 @@ export default {
 
 ._topSpace {
   max-width: var(--max-column-width);
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
   margin: 0 auto;
 }
 ._removeBtn {
