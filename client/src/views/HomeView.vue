@@ -81,13 +81,13 @@
         <button
           type="button"
           class="u-button u-button_bleuvert"
-          v-if="is_admin"
+          v-if="is_instance_admin"
           @click="show_settings_modal = !show_settings_modal"
         >
           <sl-icon name="gear-fill" />
           &nbsp;{{ $t("settings") }}
         </button>
-        <template v-if="is_admin"> – </template>
+        <template v-if="is_instance_admin"> – </template>
         version {{ $root.app_infos.version }}
       </small>
     </div>

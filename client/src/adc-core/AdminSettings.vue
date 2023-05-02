@@ -30,7 +30,7 @@
               :required="true"
               :minlength="3"
               :maxlength="40"
-              :can_edit="is_admin"
+              :can_edit="is_instance_admin"
             />
 
             <br />
@@ -42,7 +42,7 @@
               :content="settings.presentation_of_instance"
               :path="settings.$path"
               :required="false"
-              :can_edit="is_admin"
+              :can_edit="is_instance_admin"
             />
 
             <br />
@@ -55,7 +55,7 @@
               :path="settings.$path"
               :required="false"
               :input_type="'email'"
-              :can_edit="is_admin"
+              :can_edit="is_instance_admin"
             />
 
             <br />
@@ -68,7 +68,7 @@
             :context="context"
             :cover="settings.logo"
             :path="path"
-            :can_edit="is_admin"
+            :can_edit="is_instance_admin"
           /> -->
             <!-- <CoverField :cover="settings.logo" :path="path" /> -->
 
@@ -81,7 +81,7 @@
           <sl-tab-panel name="administration_and_access_control">
             <AdminsAndContributorsField
               :folder="settings"
-              :can_edit="is_admin"
+              :can_edit="is_instance_admin"
               :admin_instructions="$t('instance_admin_instructions')"
               :contrib_instructions="$t('instance_contrib_instructions')"
             />
@@ -94,7 +94,7 @@
               :path="settings.$path"
               :input_type="'password'"
               :required="false"
-              :can_edit="is_admin"
+              :can_edit="is_instance_admin"
             />
 
             <br />
@@ -106,7 +106,7 @@
               :content="settings.signup_password"
               :path="settings.$path"
               :required="false"
-              :can_edit="is_admin"
+              :can_edit="is_instance_admin"
             />
             <br />
             <div class="u-instructions">
@@ -117,7 +117,9 @@
             <FontsPanel />
           </sl-tab-panel>
           <sl-tab-panel name="storage">
-            <PickNativePath :can_edit="is_admin && $root.is_electron" />
+            <PickNativePath
+              :can_edit="is_instance_admin && $root.is_electron"
+            />
             <br />
             <div class="u-instructions">
               {{ $t("restart_to_apply") }}

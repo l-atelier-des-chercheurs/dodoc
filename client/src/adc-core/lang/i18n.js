@@ -599,6 +599,8 @@ export default function () {
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
+        title_taken: "Ce titre est déjà utilisé",
+
         project_desc_instructions:
           "La description est affichée ici et sur la liste des projets.",
         pick_cover: "Choisissez une image de couverture",

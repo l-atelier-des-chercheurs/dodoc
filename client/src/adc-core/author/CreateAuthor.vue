@@ -91,6 +91,8 @@ export default {
       this.is_creating_author = true;
 
       try {
+        // check existing used author
+
         const author_slug = await this.$api.createFolder({
           path: "/authors",
           additional_meta: {

@@ -78,7 +78,7 @@ module.exports = (function () {
     },
     async isFolderOpenedToAll({ field, path_to_folder = "" }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
-      return folder_meta[field] === "all";
+      return folder_meta.hasOwnProperty(field) && folder_meta[field] === "all";
     },
     async isTokenInstanceAdmin({ token_path }) {
       return await API.isTokenIncluded({

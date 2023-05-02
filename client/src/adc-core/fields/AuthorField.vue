@@ -1,13 +1,17 @@
 <template>
   <div>
     <DLabel
-      v-if="label && (new_authors_paths.length > 0 || can_edit)"
+      v-if="label"
       :str="label"
       :tag="tag"
       :instructions="can_edit ? instructions : ''"
     />
 
     <div class="_authors">
+      <div v-if="authors_paths === 'all'">
+        {{ $t("everyone") }}
+      </div>
+
       <AuthorTag
         v-for="author_path in authors_paths"
         :path="author_path"
@@ -67,8 +71,8 @@ export default {
       required: true,
     },
     authors_paths: {
-      type: Array,
-      default: () => [],
+      type: [String, Array],
+      default: "all",
     },
     path: String,
     instructions: {

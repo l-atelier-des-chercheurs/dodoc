@@ -7,6 +7,7 @@
         :content.sync="new_space_title"
         :maxlength="40"
         :required="true"
+        ref="titleInput"
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
@@ -81,10 +82,10 @@ export default {
           this.$emit("openNewSpace", new_folder_slug);
         }, 50);
       } catch (err) {
-        this.error_msg = "Error: " + err.message;
-        setTimeout(() => {
-          this.error_msg = "";
-        }, 5000);
+        if (err.code === "title_taken") {
+          this.$alertify.delay(4000).error("notifications.title_taken");
+          this.$refs.titleInput.$el.querySelector("input").select();
+        }
         this.is_creating_space = false;
       }
     },

@@ -463,6 +463,7 @@ module.exports = (function () {
       general_password,
       signup_password,
       $admins,
+      $contributors,
     } = await settings.get();
 
     d.name_of_instance = name_of_instance || "";
@@ -471,7 +472,8 @@ module.exports = (function () {
     d.cover_of_instance = $cover || {};
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
-    d.$admins = $admins || [];
+    d.$admins = $admins || "";
+    d.$contributors = $contributors || "";
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
 

@@ -5,13 +5,23 @@ export default {
         return this.$api.store[this.$api.tokenpath.token_path];
       return false;
     },
-    is_admin() {
-      return this.authorIsAdmin({ folder_path: this.connected_as.$path });
+    is_instance_admin() {
+      return this.authorIsAdmin({ folder_path: this.connected_as?.$path });
+    },
+    is_instance_contributor() {
+      return this.authorIsContributor({
+        folder_path: this.connected_as?.$path,
+      });
     },
   },
   methods: {
     authorIsAdmin({ folder_path }) {
-      return this.$root.app_infos.instance_meta.$admins.includes(folder_path);
+      const $admins = this.$root.app_infos.instance_meta.$admins;
+      return $admins.includes(folder_path) || $admins === "all";
+    },
+    authorIsContributor({ folder_path }) {
+      const $contributors = this.$root.app_infos.instance_meta.$contributors;
+      return $contributors.includes(folder_path) || $contributors === "all";
     },
     getAuthor(author_path) {
       const folder_path = author_path.substring(
@@ -22,7 +32,7 @@ export default {
       return this.$api.store[folder_path].find((f) => f.$path === author_path);
     },
     canLoggedinEditFolder({ folder }) {
-      if (this.is_admin) return true;
+      if (this.is_instance_admin) return true;
       if (folder.$admins === "all") return true;
       if (!this.connected_as) return false;
       if (
@@ -51,7 +61,7 @@ export default {
       if (folder.$status !== "invisible" && folder.$status !== "private")
         return true;
       if (!this.connected_as) return false;
-      if (this.is_admin) return true;
+      if (this.is_instance_admin) return true;
       if (
         Array.isArray(folder.$admins) &&
         folder.$admins.includes(this.connected_as.$path)

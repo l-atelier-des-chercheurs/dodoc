@@ -1,6 +1,6 @@
 <template>
   <ProjectCard :header="$t('informations')" :icon="'info-square'">
-    <div class="" v-if="$root.is_electron && is_admin">
+    <div class="" v-if="$root.is_electron && is_instance_admin">
       <button
         type="button"
         class="u-button u-button_bleumarine u-button_small"

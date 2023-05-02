@@ -18,7 +18,7 @@
     <br />
 
     <RemoveMenu
-      v-if="is_self || is_admin"
+      v-if="is_self || is_instance_admin"
       :remove_text="$t('remove')"
       @remove="removeAuthor"
     />
