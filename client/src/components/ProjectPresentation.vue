@@ -45,23 +45,12 @@ z
         :can_edit="can_edit_project"
       />
 
-      <AuthorField
+      <AdminsAndContributorsField
         v-if="context !== 'tiny' && context !== 'list'"
-        :label="context === 'full' ? $t('admins') : ''"
-        :field="'$admins'"
-        :authors_paths="project.$admins"
-        :path="project.$path"
+        :folder="project"
         :can_edit="can_edit_project"
-        :instructions="$t('project_author_instructions')"
-      />
-      <AuthorField
-        v-if="context !== 'tiny' && context !== 'list'"
-        :label="context === 'full' ? $t('contributors') : ''"
-        :field="'$contributors'"
-        :authors_paths="project.$contributors"
-        :path="project.$path"
-        :can_edit="can_edit_project"
-        :instructions="$t('project_author_instructions')"
+        :admin_instructions="$t('project_admin_instructions')"
+        :contrib_instructions="$t('project_contrib_instructions')"
       />
 
       <!-- <br v-if="context === 'full'" /> -->

@@ -15,26 +15,12 @@
           />
         </div>
 
-        <div class="_contributors">
-          <AuthorField
-            :label="$t('admins')"
-            :field="'$admins'"
-            :authors_paths="space.$admins"
-            :path="space.$path"
-            :can_edit="can_edit_space"
-            :tag="'h2'"
-            :instructions="$t('space_contrib_instr')"
-          />
-          <AuthorField
-            :label="$t('contributors')"
-            :field="'$contributors'"
-            :authors_paths="space.$contributors"
-            :path="space.$path"
-            :can_edit="can_edit_space"
-            :tag="'h2'"
-            :instructions="$t('space_contrib_instr')"
-          />
-        </div>
+        <AdminsAndContributorsField
+          :folder="space"
+          :can_edit="can_edit_space"
+          :admin_instructions="$t('space_admin_instructions')"
+          :contrib_instructions="$t('space_contrib_instructions')"
+        />
       </div>
 
       <div class="_projectsList">
@@ -209,22 +195,5 @@ export default {
 
 ._projectsList {
   padding: calc(var(--spacing) * 1);
-}
-
-._contributorsList {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 2);
-  align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-
-  > * {
-    background: white;
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    gap: calc(var(--spacing) / 2);
-    padding: calc(var(--spacing) / 1);
-  }
 }
 </style>
