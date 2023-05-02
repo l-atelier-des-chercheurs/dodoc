@@ -204,19 +204,18 @@ export default {
         }, 20);
       });
     },
-    selectMediaFromLib({ path_to_source_media }) {
-      const meta_filename = this.getFilename(path_to_source_media);
-      const file = this.getSourceMedia({
-        source_media: { meta_filename },
-        folder_path: this.path,
+    selectMediaFromLib({ path_to_meta }) {
+      const file = this.getMediaInFolder({
+        path_to_meta,
       });
+      const path_to_project = this.getParent(file.$path);
       this.image = this.makeRelativeURLFromThumbs({
         $thumbs: file.$thumbs,
         $type: file.$type,
-        $path: this.path,
+        $path: path_to_project,
         resolution: 1600,
       });
-      this.$emit("newPreview", meta_filename);
+      this.$emit("newPreview", path_to_meta);
     },
     createImage(blob) {
       return new Promise((resolve, reject) => {

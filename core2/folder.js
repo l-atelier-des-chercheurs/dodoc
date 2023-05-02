@@ -316,12 +316,14 @@ module.exports = (function () {
     await thumbs.removeFolderCover({ path_to_folder });
     await fs.remove(full_path_to_thumb);
 
-    if (data.hasOwnProperty("meta_filename")) {
-      if (data.meta_filename === "") return;
+    if (data.hasOwnProperty("path_to_meta")) {
+      if (data.path_to_meta === "") return;
+
+      const path_to_meta = data.path_to_meta;
+      const path_to_folder = utils.getParent(path_to_meta);
 
       const meta = await file.getFile({
-        path_to_folder,
-        path_to_meta: path.join(path_to_folder, data.meta_filename),
+        path_to_meta,
       });
       const path_to_file = utils.getPathToUserContent(
         path.join(path_to_folder, meta.$media_filename)

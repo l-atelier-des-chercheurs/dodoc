@@ -484,7 +484,7 @@ export default function () {
         if (typeof new_cover_data === "string") {
           // its a meta filename in that same folder
           const new_meta = {
-            meta_filename: new_cover_data,
+            path_to_meta: new_cover_data,
           };
           await this.$axios.patch(path, new_meta).catch((err) => {
             this.onError(err);

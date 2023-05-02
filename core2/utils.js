@@ -422,6 +422,9 @@ module.exports = (function () {
     getSlugFromPath(path) {
       return path.split("/").at(-1);
     },
+    getParent(path) {
+      return path.substring(0, path.lastIndexOf("/"));
+    },
   };
 
   return API;

@@ -10,8 +10,17 @@
           :str="$t('source_project')"
           :instructions="$t('media_pickers_instr')"
         />
+        source_project_path = {{ source_project_path }}
 
-        <select v-model="source_project_path">
+        <div
+          v-if="projects.length === 0"
+          class="u-instructions _projectsNotice"
+          :key="'noprojects'"
+        >
+          {{ $t("no_projects") }}
+        </div>
+
+        <select v-else v-model="source_project_path">
           <option
             v-for="project in projects"
             :key="project.$path"
@@ -58,28 +67,12 @@ export default {
       projects: [],
       source_project_path: "",
       source_project: undefined,
-      all_space_projects_path: undefined,
-
       media_focused: undefined,
     };
   },
   created() {},
   mounted() {
-    if (this.path) {
-      const props = this.decomposePath(this.path);
-      if (props.space_slug) {
-        this.all_space_projects_path =
-          this.createPath({
-            space_slug: props.space_slug,
-          }) + "/projects";
-        this.loadProjects();
-        if (props.project_slug)
-          this.source_project_path = this.createPath({
-            space_slug: props.space_slug,
-            project_slug: props.project_slug,
-          });
-      }
-    }
+    if (this.path) this.loadProjects();
   },
   beforeDestroy() {},
   watch: {
@@ -94,14 +87,28 @@ export default {
       // TODO if path matches a media that is not in this project,
       // we need to copy this media to this project first then link that media instead
       this.$emit("selectMedia", {
-        path_to_source_media,
+        path_to_meta: path_to_source_media,
       });
       this.$emit("close");
     },
     async loadProjects() {
+      let { space_slug, project_slug } = this.decomposePath(this.path);
+
       this.projects = await this.$api.getFolders({
-        path: this.all_space_projects_path,
+        path:
+          this.createPath({
+            space_slug,
+          }) + "/projects",
       });
+
+      if (project_slug) {
+        this.source_project_path = this.createPath({
+          space_slug,
+          project_slug,
+        });
+      } else if (this.projects.length > 0) {
+        this.source_project_path = this.projects[0].$path;
+      }
     },
     async fetchSelectedProject() {
       this.source_project = await this.$api.getFolder({

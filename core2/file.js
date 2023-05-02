@@ -131,13 +131,15 @@ module.exports = (function () {
 
       return metas;
     },
-    getFile: async ({ path_to_folder, path_to_meta }) => {
-      dev.logfunction({ path_to_folder, path_to_meta });
+    getFile: async ({ path_to_meta }) => {
+      dev.logfunction({ path_to_meta });
 
       const d = cache.get({
         key: path_to_meta,
       });
       if (d) return d;
+
+      const path_to_folder = utils.getParent(path_to_meta);
 
       let meta = await utils.readMetaFile(path_to_meta);
       meta.$path = path_to_meta;

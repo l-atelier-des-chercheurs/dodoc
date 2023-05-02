@@ -668,7 +668,6 @@ module.exports = (function () {
       res.status(200).json({ meta_filename });
 
       const meta = await file.getFile({
-        path_to_folder,
         path_to_meta: path.join(path_to_folder, meta_filename),
       });
       notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
@@ -712,7 +711,6 @@ module.exports = (function () {
       const exported_meta_filename_in_parent = await task.start();
 
       const meta = await file.getFile({
-        path_to_folder: path_to_parent_folder,
         path_to_meta: path.join(
           path_to_parent_folder,
           exported_meta_filename_in_parent
@@ -818,7 +816,6 @@ module.exports = (function () {
 
     try {
       const meta = await file.getFile({
-        path_to_folder,
         path_to_meta,
       });
       const file_archives = await file
@@ -914,7 +911,6 @@ module.exports = (function () {
       res.status(200).json({ meta_filename: copy_meta_filename });
 
       const meta = await file.getFile({
-        path_to_folder: destination_path_to_folder,
         path_to_meta: path.join(destination_path_to_folder, copy_meta_filename),
       });
       notifier.emit("fileCreated", destination_path_to_folder, {
