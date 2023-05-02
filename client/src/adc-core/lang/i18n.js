@@ -69,6 +69,7 @@ export default function () {
         title: "Titre",
         subtitle: "Sous-titre",
         name: "nom",
+
         instance_admins_instr:
           "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
         instance_contributors_instr:
@@ -118,7 +119,7 @@ export default function () {
         name_or_pseudonym: "Nom ou pseudonyme",
         email: "Courriel",
         password: "Mot de passe",
-        role: "Rôle",
+        admins: "Administrateur·rice·s",
         contributors: "Contributeur·rice·s",
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",
@@ -579,8 +580,21 @@ export default function () {
         display_as_public: "Afficher la vue publique",
         preview: "Prévisualiser",
 
-        project_author_instructions:
-          "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",
+        instance_admin_instructions:
+          "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, auteurs, etc.). Ils ont accès à ces réglages.",
+        instance_contrib_instructions:
+          "Peuvent uniquement créer des espaces et les administrer.",
+
+        space_admin_instructions:
+          "Ils peuvent modifier ou supprimer cet espace et ses projets (même ceux qui sont privés).",
+        space_contrib_instructions:
+          "Ils peuvent uniquement créer des projets et les administrer.",
+
+        project_admin_instructions:
+          "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",
+        project_contrib_instructions:
+          "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
+
         space_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:

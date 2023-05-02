@@ -6,11 +6,13 @@ export default {
       return false;
     },
     is_admin() {
-      if (this.connected_as) return this.connected_as.role === "admin";
-      return false;
+      return this.authorIsAdmin({ folder_path: this.connected_as.$path });
     },
   },
   methods: {
+    authorIsAdmin({ folder_path }) {
+      return this.$root.app_infos.instance_meta.$admins.includes(folder_path);
+    },
     getAuthor(author_path) {
       const folder_path = author_path.substring(
         0,

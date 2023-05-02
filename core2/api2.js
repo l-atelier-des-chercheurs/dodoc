@@ -353,7 +353,7 @@ module.exports = (function () {
     }
   }
   async function _onlyAdmins(req, res, next) {
-    dev.logapi({ path_to_folder });
+    dev.logapi();
 
     try {
       const token_path = auth.extrackAndCheckToken({ req });
@@ -462,6 +462,7 @@ module.exports = (function () {
       $cover,
       general_password,
       signup_password,
+      $admins,
     } = await settings.get();
 
     d.name_of_instance = name_of_instance || "";
@@ -470,6 +471,7 @@ module.exports = (function () {
     d.cover_of_instance = $cover || {};
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
+    d.$admins = $admins || [];
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
 
