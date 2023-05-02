@@ -86,16 +86,10 @@ module.exports = (function () {
         folder_slug,
       });
 
-      const item_in_schema = utils.parseAndCheckSchema({
-        relative_path: path_to_type,
+      let valid_meta = await _cleanFields({
+        meta,
+        path_to_type,
       });
-
-      let valid_meta = meta
-        ? utils.validateMeta({
-            fields: item_in_schema.fields,
-            new_meta: meta,
-          })
-        : {};
 
       // todo check for uniqueness (for example project's title, or author's name and email)
       // throw if already exists
@@ -128,6 +122,7 @@ module.exports = (function () {
       return folder_slug;
     },
     updateFolder: async ({
+      path_to_type,
       path_to_folder,
       data,
       admin_meta,
@@ -143,10 +138,14 @@ module.exports = (function () {
 
       // filter new_meta with schema – only keep props present in the schema, not read_only, and respecing the type
       if (new_meta) {
-        const clean_meta = await utils.cleanNewMeta({
-          relative_path: path_to_folder,
-          new_meta,
+        const clean_meta = await _cleanFields({
+          meta: new_meta,
+          path_to_type,
         });
+        // const clean_meta = await utils.cleanNewMeta({
+        //   relative_path: path_to_folder,
+        //   new_meta,
+        // });
         Object.assign(meta, clean_meta);
       }
 
@@ -184,6 +183,7 @@ module.exports = (function () {
       return changed_meta;
     },
     copyFolder: async ({
+      path_to_type,
       path_to_source_folder,
       path_to_destination_type,
       new_meta,
@@ -216,6 +216,7 @@ module.exports = (function () {
 
       // todo update with meta
       await API.updateFolder({
+        path_to_type,
         path_to_folder: path_to_destination_folder,
         admin_meta: {
           $date_created: utils.getCurrentDate(),
@@ -394,6 +395,31 @@ module.exports = (function () {
       throw err;
     }
   }
+
+  async function _cleanFields({ meta, path_to_type }) {
+    if (!meta) return {};
+
+    const { fields = {} } = utils.parseAndCheckSchema({
+      relative_path: path_to_type,
+    });
+
+    if (path_to_type) {
+      // not applicable to instance settings
+      const siblings_folders = await API.getFolders({ path_to_type });
+      if (siblings_folders.length > 0)
+        await utils.checkFieldUniqueness({
+          fields,
+          meta,
+          siblings_folders,
+        });
+    }
+
+    return utils.validateMeta({
+      fields,
+      new_meta: meta,
+    });
+  }
+
   async function _moveFolderToBin({ path_to_folder }) {
     const bin_folder_path =
       path_to_folder.substr(0, path_to_folder.lastIndexOf("/")) +

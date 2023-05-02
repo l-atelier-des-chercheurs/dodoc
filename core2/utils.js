@@ -86,6 +86,29 @@ module.exports = (function () {
       return +Number.parseFloat(h / w).toPrecision(4);
     },
 
+    async checkFieldUniqueness({ fields, meta, siblings_folders }) {
+      dev.logfunction({ fields, meta, siblings_folders });
+      // check if some fields have "unique"
+
+      if (fields)
+        for ([field_name, opt] of Object.entries(fields)) {
+          if (opt.unique === true) {
+            const proposed_value_for_unique_field = meta[field_name];
+            if (
+              siblings_folders.some(
+                (f) => f[field_name] === proposed_value_for_unique_field
+              )
+            ) {
+              const err = new Error(
+                `Field ${field_name} supposed to be unique, is already taken`
+              );
+              err.code = "unique_field_taken";
+              throw err;
+            }
+          }
+        }
+    },
+
     validateMeta({ fields, new_meta }) {
       dev.logfunction({ fields, new_meta });
       let meta = {};
@@ -134,9 +157,14 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
           } else {
-            if (opt.required === true)
+            if (opt.required === true) {
               // field is required in schema but not present in user-submitted object
-              throw new Error(`Required field *${field_name}* is missing`);
+              const err = new Error(
+                "Required field *${field_name}* is missing"
+              );
+              err.code = "required_field_missing";
+              throw err;
+            }
           }
         });
       // see cleanNewMeta
@@ -297,7 +325,7 @@ module.exports = (function () {
       return await md5File(full_media_path);
     },
 
-    parseAndCheckSchema({ relative_path }) {
+    parseAndCheckSchema({ relative_path = "" }) {
       dev.logfunction({ relative_path });
 
       const schema = global.settings.schema;

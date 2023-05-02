@@ -66,6 +66,10 @@ export default {
     async createSpace() {
       this.is_creating_space = true;
 
+      const $admins = this.$api.tokenpath.token_path
+        ? this.$api.tokenpath.token_path
+        : "all";
+
       // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
@@ -75,15 +79,17 @@ export default {
             requested_slug: this.new_space_title,
             license: "CC",
             $status: this.new_space_is_private === true ? "private" : "public",
-            $admins: [this.$api.tokenpath.token_path],
+            $admins,
           },
         });
         setTimeout(() => {
           this.$emit("openNewSpace", new_folder_slug);
         }, 50);
       } catch (err) {
-        if (err.code === "title_taken") {
-          this.$alertify.delay(4000).error("notifications.title_taken");
+        if (err.code === "unique_field_taken") {
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("notifications.title_taken"));
           this.$refs.titleInput.$el.querySelector("input").select();
         }
         this.is_creating_space = false;

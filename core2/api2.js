@@ -562,6 +562,7 @@ module.exports = (function () {
 
     try {
       const changed_data = await folder.updateFolder({
+        path_to_type,
         path_to_folder,
         data,
         update_cover_req: update_cover ? req : false,
@@ -745,6 +746,7 @@ module.exports = (function () {
 
     try {
       const copy_folder_path = await folder.copyFolder({
+        path_to_type,
         path_to_source_folder,
         path_to_destination_type,
         new_meta,

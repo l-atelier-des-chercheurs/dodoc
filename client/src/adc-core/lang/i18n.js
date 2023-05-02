@@ -250,6 +250,7 @@ export default function () {
         status: "État",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
+        none: "Aucun·e",
         filters: "Filtres",
 
         draft: "En cours",
@@ -599,7 +600,6 @@ export default function () {
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
-        title_taken: "Ce titre est déjà utilisé",
 
         project_desc_instructions:
           "La description est affichée ici et sur la liste des projets.",
@@ -619,6 +619,7 @@ export default function () {
           "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
         "notifications.action_not_authorized": "Cette action n’est pas permise",
+        "notifications.title_taken": "Ce titre est déjà utilisé",
 
         more_infos: "Plus d’informations",
         informations: "Informations",

@@ -9,36 +9,56 @@
 
     <div class="_authors">
       <div v-if="authors_paths === 'all'">
-        {{ $t("everyone") }}
+        {{ $t("all") }}
       </div>
 
       <AuthorTag
+        v-else-if="Array.isArray(authors_paths)"
         v-for="author_path in authors_paths"
         :path="author_path"
         :key="author_path"
         :edit_mode="false"
-        :links_to_author_page="!edit_mode"
+        :links_to_author_page="false"
       />
+      <!-- :links_to_author_page="!edit_mode" -->
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
 
     <div class="_footer" v-if="edit_mode">
-      <BaseModal2 @close="cancel" :title="$t('add_authors')">
-        <DLabel class="_label" :str="$t('authors')" />
-        <div class="_authors">
-          <AuthorTag
-            v-for="author_path in new_authors_paths"
-            :path="author_path"
-            :key="author_path"
-            :edit_mode="edit_mode"
-            :links_to_author_page="!edit_mode"
-            @remove="removeAuthor(author_path)"
-          />
+      <BaseModal2 @close="cancel" :title="label">
+        <div
+          v-if="instructions"
+          class="u-instructions _projectsNotice"
+          :key="'noprojects'"
+        >
+          {{ instructions }}
         </div>
 
         <br />
 
-        <DLabel class="_label" :str="$t('add_authors')" />
+        <div class="_authors">
+          <div
+            v-if="new_authors_paths.length === 0"
+            class="u-instructions _projectsNotice"
+            :key="'noprojects'"
+          >
+            {{ $t("none") }}
+          </div>
+          <AuthorTag
+            v-else
+            v-for="author_path in new_authors_paths"
+            :path="author_path"
+            :key="author_path"
+            :edit_mode="edit_mode"
+            :links_to_author_page="false"
+            @remove="removeAuthor(author_path)"
+          />
+          <!-- :links_to_author_page="!edit_mode" -->
+        </div>
+
+        <br />
+
+        <DLabel class="_label" :str="$t('add')" />
         <AuthorPicker
           :current_authors="new_authors_paths"
           @addAuthor="addAuthor"
@@ -89,15 +109,17 @@ export default {
     return {
       edit_mode: false,
       is_saving: false,
-      new_authors_paths: JSON.parse(JSON.stringify(this.authors_paths)),
+      new_authors_paths: [],
     };
   },
-  created() {},
+  created() {
+    this.initAuthorPaths();
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {
     authors_paths() {
-      this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
+      this.initAuthorPaths();
     },
   },
   computed: {
@@ -109,6 +131,13 @@ export default {
     },
   },
   methods: {
+    initAuthorPaths() {
+      if (Array.isArray(this.authors_paths)) {
+        this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
+      } else {
+        this.new_authors_paths = [];
+      }
+    },
     enableEditMode() {
       this.edit_mode = true;
     },
