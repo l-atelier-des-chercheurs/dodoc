@@ -167,10 +167,10 @@ export default {
       );
     },
     focused_media_position_in_list() {
+      if (this.sorted_medias.length === 1) return "alone";
       if (this.focused_media_index === 0) return "first";
       if (this.focused_media_index === this.sorted_medias.length - 1)
         return "last";
-      if (this.sorted_medias.length === 1) return "alone";
       return "none";
     },
   },
