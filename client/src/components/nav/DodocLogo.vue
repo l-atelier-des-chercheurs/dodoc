@@ -69,12 +69,18 @@ export default {
   path,
   ellipse,
   circle {
-    transition: fill 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: fill 5s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   &:hover {
     --color1: var(--c-orange);
     --color2: var(--c-bleuvert);
+
+    path,
+    ellipse,
+    circle {
+      transition: fill 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    }
   }
 }
 </style>
