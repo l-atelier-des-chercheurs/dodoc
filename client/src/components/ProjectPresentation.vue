@@ -4,7 +4,6 @@ z
     class="_projectInfos"
     :class="{
       'is--list': context === 'list',
-      'is--tiny': context === 'tiny',
       'u-card': context === 'list',
       'is--linkToProject': context !== 'full',
       'is--mobileView': $root.is_mobile_view,
@@ -77,7 +76,7 @@ z
         </small>
       </template>
       <TitleField
-        v-if="context !== 'tiny' && show_description"
+        v-if="show_description"
         :field_name="'description'"
         class="_description"
         :label="
@@ -129,10 +128,7 @@ z
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
     </div>
 
-    <div
-      class="_projectInfos--open"
-      v-if="context === 'list' || context === 'tiny'"
-    >
+    <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link :to="{ path: createURLFromPath(project.$path) }">
         <div class="_clickZone" />
         <!-- <div class="u-button u-button_red _openBtn" v-if="context === 'list'">
@@ -222,8 +218,7 @@ export default {
     }
   }
 
-  &.is--list,
-  &.is--tiny {
+  &.is--list {
     // border-bottom: 2px solid #b9b9b9;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
@@ -238,14 +233,6 @@ export default {
 
   &.is--list {
     display: block;
-  }
-  &.is--tiny {
-    // flex-flow: row nowrap;
-
-    // ._projectInfos--open {
-    //   position: absolute;
-    //   inset: 0;
-    // }
   }
 
   &.is--mobileView {
@@ -284,8 +271,7 @@ export default {
 
   transition: all 0.4s;
 
-  .is--list &,
-  .is--tiny & {
+  .is--list & {
     gap: calc(var(--spacing) / 4);
     order: 0;
     // position: absolute;
@@ -422,9 +408,9 @@ export default {
   // bottom: 0;
   // right: 0;
   // padding: calc(var(--spacing) / 1);
-  margin: calc(var(--spacing) * 1);
-  margin: 2px;
-  border-radius: 3px;
+  // margin: calc(var(--spacing) * 1);
+  // margin: 2px;
+  // border-radius: 3px;
 }
 
 ._showMeta {

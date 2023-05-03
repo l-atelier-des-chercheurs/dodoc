@@ -42,7 +42,7 @@ export default function () {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
         home: "Accueil",
-        admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur "se connecter" en haut à droite.`,
+        admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
         admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
         edit: "modifier",
         stop_edit: "Arrêter les modifications",
@@ -283,7 +283,7 @@ export default function () {
 
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
-        only_finished: "Que les projets finalisés",
+        only_finished: "projets finalisés",
         my_projects: "Mes projets",
 
         finished_projects: "Projets finalisés",

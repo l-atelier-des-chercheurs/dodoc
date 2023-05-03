@@ -15,7 +15,6 @@
       >
         {{ current_lang_code }}
       </button>
-
       <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
       <div class="_subscribeBtn">
         <button type="button" class="_authorBtn" @click="showAuthorModal">
@@ -90,11 +89,14 @@ export default {
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
   align-items: center;
+  overflow: hidden;
 
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
   // padding-bottom: calc(var(--spacing) * 1);
   background: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--c-gris);
+
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   // min-height: 60px;
   user-select: none;
@@ -103,6 +105,7 @@ export default {
 
   &.is--homepage {
     background: transparent;
+    border-bottom: 1px solid var(--c-gris);
     box-shadow: none;
   }
 

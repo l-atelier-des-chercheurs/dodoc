@@ -1,4 +1,4 @@
-![do•doc logo](/client/public/images/i_logo.svg)
+![do•doc logo](/client/public/i_logo.svg)
 
 # do•doc
 

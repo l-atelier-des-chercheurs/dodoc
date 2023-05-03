@@ -66,11 +66,8 @@ export default {
     async createSpace() {
       this.is_creating_space = true;
 
-      const $admins = this.$api.tokenpath.token_path
-        ? [this.$api.tokenpath.token_path]
-        : "all";
+      const $admins = this.setDefaultContentAdmins();
 
-      // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
           path: "spaces",

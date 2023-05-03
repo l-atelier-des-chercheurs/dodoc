@@ -123,8 +123,13 @@ export default {
 }
 
 ._list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 2fr));
+  gap: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) * 1) 0;
+
   > * {
-    margin: calc(var(--spacing) * 1) 0;
+    // margin: calc(var(--spacing) * 1) 0;
     // background: var(--panel-color);
     // margin-bottom: 2px;
     // border: var(--panel-borders);

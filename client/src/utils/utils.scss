@@ -757,17 +757,6 @@ fieldset {
     display: none;
   }
 }
-.u-breadcrumb {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-
-  > * {
-    display: flex;
-    align-items: center;
-  }
-}
 
 details {
   summary {

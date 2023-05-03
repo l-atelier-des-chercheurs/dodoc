@@ -66,8 +66,8 @@ export default {
   methods: {
     async createProject() {
       this.is_creating_project = true;
+      const $admins = this.setDefaultContentAdmins();
 
-      // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
           path: this.path,
@@ -76,7 +76,7 @@ export default {
             requested_slug: this.new_project_title,
             license: "CC",
             $status: this.new_project_is_private === true ? "private" : "draft",
-            $admins: [this.$api.tokenpath.token_path],
+            $admins,
           },
         });
         setTimeout(() => {

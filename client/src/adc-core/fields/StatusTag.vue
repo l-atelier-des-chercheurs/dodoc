@@ -28,7 +28,10 @@
 <script>
 export default {
   props: {
-    status: String,
+    status: {
+      type: String,
+      default: "draft",
+    },
     path: String,
     can_edit: Boolean,
     status_options: {

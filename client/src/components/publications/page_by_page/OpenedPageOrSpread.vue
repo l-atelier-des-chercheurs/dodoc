@@ -383,9 +383,6 @@ export default {
   }
 }
 
-._breadcrumb {
-  padding: calc(var(--spacing) / 1);
-}
 ._topMenu {
   position: relative;
   z-index: 10;

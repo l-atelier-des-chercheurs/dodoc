@@ -31,6 +31,10 @@ export default {
       if (!folder_path || !this.$api.store[folder_path]) return false;
       return this.$api.store[folder_path].find((f) => f.$path === author_path);
     },
+    setDefaultContentAdmins() {
+      if (this.connected_as) return [this.$api.tokenpath.token_path];
+      return "all";
+    },
     canLoggedinEditFolder({ folder }) {
       if (this.is_instance_admin) return true;
       if (folder.$admins === "all") return true;

@@ -230,7 +230,11 @@ export default {
   width: 100%;
   gap: calc(var(--spacing) / 1);
 
-  background: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: none;
+  margin: calc(var(--spacing) / 1);
 }
 
 ._mediaModal--content {

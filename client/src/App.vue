@@ -167,7 +167,8 @@ export default {
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
   --c-bodybg: hsl(40, 20%, 98%);
-  // --c-bodybg: #f8f8fa;
+  // --c-bodybg: hsl(40, 20%, 99%);
+  --c-bodybg: white;
 
   // --c-bodybg: white;
   --body-bg-pattern-color: hsl(48, 19%, 93%);
@@ -253,7 +254,7 @@ export default {
 
   --sl-input-color: black;
   --sl-font-size-x-large: 1.66rem;
-  --sl-font-size-xx-large: 2rem;
+  --sl-font-size-xx-large: 3rem;
 
   --max-column-width: 1300px;
 
@@ -391,13 +392,14 @@ strong {
 h1 {
   margin: 0;
   font-size: var(--sl-font-size-xx-large);
+  font-weight: 300;
 }
 h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
   font-style: italic;
   font-weight: 500;
-  line-height: 1.1;
+  // line-height: 1.1;
 }
 h3 {
   margin: 0;
@@ -591,6 +593,20 @@ img {
   &-enter,
   &-leave-to {
     transform: translateY(100%);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
+.slideupFade {
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(100%);
+    opacity: 0;
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
