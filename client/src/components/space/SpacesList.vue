@@ -124,7 +124,7 @@ export default {
 
 ._list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 2fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: calc(var(--spacing) / 1);
   margin: calc(var(--spacing) * 1) 0;
 

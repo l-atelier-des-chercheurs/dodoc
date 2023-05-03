@@ -84,6 +84,7 @@ export default {
   created() {},
   async mounted() {
     await this.listProject();
+    await this.getSpace();
 
     if (!this.can_edit_project)
       this.projectpanes = [
@@ -183,6 +184,21 @@ export default {
       //   this.$router.go("/projects");
 
       this.project = project;
+    },
+    async getSpace() {
+      const path = this.createPath({
+        space_slug: this.$route.params.space_slug,
+      });
+
+      const space = await this.$api
+        .getFolder({
+          path,
+        })
+        .catch(() => {
+          return;
+        });
+
+      this.$eventHub.$emit("received.space", space);
     },
     updateQueryPanes() {
       let query = {};

@@ -69,7 +69,7 @@ export default {
   path,
   ellipse,
   circle {
-    transition: fill 5s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: fill 1s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   &:hover {

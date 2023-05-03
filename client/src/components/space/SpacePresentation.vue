@@ -119,7 +119,7 @@ export default {
   aspect-ratio: 1/1;
   // float: left;
 
-  flex: 1 0 100px;
+  flex: 1 0 80px;
   max-width: 140px;
   border-radius: var(--panel-radius);
   // margin-right: calc(var(--spacing) / 1);

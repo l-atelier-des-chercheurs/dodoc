@@ -6,7 +6,7 @@
       </router-link>
     </div>
 
-    <transition name="slideupFade" mode="out-in">
+    <transition name="fade" mode="out-in">
       <div v-if="$route.path.includes('/+')">
         <sl-icon name="arrow-right-short" label="" />
         <div>
@@ -24,7 +24,7 @@
       </div>
     </transition>
 
-    <transition name="slideupFade" mode="out-in">
+    <transition name="fade" mode="out-in">
       <div v-if="$route.name === 'Projet'">
         <sl-icon name="arrow-right-short" label="" />
         <div>
