@@ -112,10 +112,11 @@ export default {
         });
         this.$emit("close");
       } catch (err) {
-        this.error_msg = "Error: " + err.message;
-        setTimeout(() => {
-          this.error_msg = "";
-        }, 5000);
+        if (err.code === "unique_field_taken") {
+          this.$alertify.delay(4000).error(this.$t("notifications.name_taken"));
+          this.$refs.titleInput.$el.querySelector("input").select();
+        }
+        this.is_creating_space = false;
       }
       this.is_creating_author = false;
     },

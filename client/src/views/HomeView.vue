@@ -108,7 +108,7 @@
           &nbsp;{{ $t("settings") }}
         </button>
         <template v-if="is_instance_admin"> – </template>
-        version {{ $root.app_infos.version }}
+        {{ $t("version") }} {{ $root.app_infos.version }}
       </small>
     </div>
   </div>

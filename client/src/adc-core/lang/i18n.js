@@ -42,7 +42,8 @@ export default function () {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
         home: "Accueil",
-        admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
+        admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur "se connecter" en haut à droite.`,
+        admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
         edit: "modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",
@@ -250,6 +251,7 @@ export default function () {
         status: "État",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
+        no_files: "Aucun fichier",
         none: "Aucun·e",
         filters: "Filtres",
 
@@ -308,12 +310,14 @@ export default function () {
         media_duplicated: "Média dupliqué",
 
         CC: "Creative Commons",
-        license_and_authors: "Licence et auteurs",
+        authors_and_license: "Licence et auteurs",
+        authors: "Auteurs",
         license: "Licence",
         licence_instructions:
           "Indiquez ici les conditions de partage et de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
+        all: "Tout le monde",
 
         close: "Fermer",
         settings: "Réglages",
@@ -620,6 +624,7 @@ export default function () {
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
         "notifications.action_not_authorized": "Cette action n’est pas permise",
         "notifications.title_taken": "Ce titre est déjà utilisé",
+        "notifications.name_taken": "Ce nom est déjà utilisé",
 
         more_infos: "Plus d’informations",
         informations: "Informations",
@@ -656,6 +661,7 @@ export default function () {
         create_a_module: "Créer un module",
         list_of_archives: "Liste des archives",
         restore_this_version: "Restaurer cette version",
+        version: "Version",
 
         general_informations: "Informations sur l’instance",
 

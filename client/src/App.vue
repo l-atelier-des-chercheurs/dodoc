@@ -255,7 +255,7 @@ export default {
   --sl-font-size-x-large: 1.66rem;
   --sl-font-size-xx-large: 2rem;
 
-  --max-column-width: 150ch;
+  --max-column-width: 1300px;
 
   accent-color: var(--c-orange);
 }
@@ -325,6 +325,7 @@ html {
   font-weight: 400;
 
   font-size: 90%;
+  line-height: 1.41;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

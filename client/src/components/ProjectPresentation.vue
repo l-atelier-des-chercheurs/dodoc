@@ -45,14 +45,6 @@ z
         :can_edit="can_edit_project"
       />
 
-      <AdminsAndContributorsField
-        v-if="context !== 'tiny' && context !== 'list'"
-        :folder="project"
-        :can_edit="can_edit_project"
-        :admin_instructions="$t('project_admin_instructions')"
-        :contrib_instructions="$t('project_contrib_instructions')"
-      />
-
       <!-- <br v-if="context === 'full'" /> -->
 
       <TitleField
@@ -127,13 +119,13 @@ z
       }"
       v-if="context === 'full'"
     >
+      <CardLicense :project="project" :can_edit="can_edit_project" />
       <CardCompetences :project="project" :can_edit="can_edit_project" />
+      <CardFiles :project="project" :can_edit="can_edit_project" />
       <CardMachines :project="project" :can_edit="can_edit_project" />
       <CardKeywords :project="project" :can_edit="can_edit_project" />
-      <CardFiles :project="project" :can_edit="can_edit_project" />
-      <CardLicense :project="project" :can_edit="can_edit_project" />
       <CardMeta :project="project" :can_edit="can_edit_project" />
-      <CardStatus :project="project" :can_edit="can_edit_project" />
+      <!-- <CardStatus :project="project" :can_edit="can_edit_project" /> -->
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
     </div>
 
@@ -156,7 +148,7 @@ import CardMeta from "@/components/project_cards/CardMeta.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardCompetences from "@/components/project_cards/CardCompetences.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
-import CardStatus from "@/components/project_cards/CardStatus.vue";
+// import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
 import CardFiles from "@/components/project_cards/CardFiles.vue";
 
@@ -173,7 +165,7 @@ export default {
     CardKeywords,
     CardCompetences,
     CardMachines,
-    CardStatus,
+    // CardStatus,
     CardLicense,
     CardFiles,
   },

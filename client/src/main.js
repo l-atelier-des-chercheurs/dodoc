@@ -67,6 +67,8 @@ Vue.component("SelectField2", SelectField2);
 import ToggleField from "@/adc-core/fields/ToggleField.vue";
 Vue.component("ToggleField", ToggleField);
 import RadioField from "@/adc-core/fields/RadioField.vue";
+Vue.component("FilesModule", FilesModule);
+import FilesModule from "@/adc-core/fields/FilesModule.vue";
 Vue.component("RadioField", RadioField);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);

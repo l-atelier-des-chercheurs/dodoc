@@ -255,7 +255,7 @@ module.exports = (function () {
           throw err;
         });
 
-      // check if folder has a password
+      // check if folder has a password, login can only be used on folders with passwords
       if (
         !folder_meta.hasOwnProperty("$password") ||
         folder_meta.$password === ""

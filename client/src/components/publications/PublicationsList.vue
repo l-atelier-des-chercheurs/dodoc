@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_publicationsList">
     <div class="_topBtn">
       <div class="u-sameRow">
         <DLabel :str="$t('publications')" :tag="'h2'" />
@@ -71,6 +71,7 @@ import PublicationPreview from "@/components/publications/PublicationPreview.vue
 export default {
   props: {
     project_path: String,
+    project_downloadable_files: Array,
     can_edit: Boolean,
   },
   components: {
@@ -115,6 +116,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._publicationsList {
+  width: 100%;
+  max-width: calc(var(--max-column-width));
+  // max-width: calc(var(--max-column-width) + 240px);
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
+}
+
 ._publications--list {
   display: grid;
   grid-auto-rows: max-content;

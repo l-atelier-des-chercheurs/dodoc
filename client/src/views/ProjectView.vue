@@ -37,6 +37,7 @@
 
         <div class="_projectPanesAndList">
           <PaneList2
+            v-if="can_contribute_to_project && !display_as_public"
             class="_paneList"
             :can_edit="can_contribute_to_project && !display_as_public"
             :project="project"

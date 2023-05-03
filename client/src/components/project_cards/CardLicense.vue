@@ -1,5 +1,24 @@
 <template>
-  <ProjectCard :header="$t('license_and_authors')" :icon="'people'">
+  <ProjectCard :header="$t('authors_and_license')" :icon="'people'">
+    <AdminsAndContributorsField
+      :folder="project"
+      :can_edit="can_edit"
+      :admin_instructions="$t('project_admin_instructions')"
+      :contrib_instructions="$t('project_contrib_instructions')"
+    />
+
+    <div class="">
+      <TitleField
+        :label="$t('authors')"
+        :field_name="'authors_list'"
+        :content="project.authors_list"
+        :path="project.$path"
+        :can_edit="can_edit"
+      />
+    </div>
+
+    <br />
+
     <DLabel
       :str="$t('license')"
       :instructions="can_edit ? $t('licence_instructions') : ''"
@@ -11,18 +30,6 @@
         :path="project.$path"
         :can_edit="can_edit"
         :options="license_options"
-      />
-    </div>
-
-    <br />
-
-    <div class="">
-      <TitleField
-        :label="$t('authors')"
-        :field_name="'authors_list'"
-        :content="project.authors_list"
-        :path="project.$path"
-        :can_edit="can_edit"
       />
     </div>
   </ProjectCard>
