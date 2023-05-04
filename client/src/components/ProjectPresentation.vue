@@ -15,7 +15,7 @@ z
         :context="context"
         :cover="project.$cover"
         :path="project.$path"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
       />
 
       <sl-icon
@@ -41,21 +41,23 @@ z
         v-if="context === 'full'"
         :status="project.$status"
         :path="project.$path"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
       />
 
       <!-- <br v-if="context === 'full'" /> -->
 
       <TitleField
         :field_name="'title'"
-        :label="context === 'full' ? $t('title') : ''"
+        :label="
+          context === 'full' && can_edit && !project.title ? $t('title') : ''
+        "
         class="_title"
         :content="project.title"
         :path="project.$path"
         :required="true"
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h3'"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
         :instructions="$t('project_title_instructions')"
       />
 
@@ -80,14 +82,12 @@ z
         :field_name="'description'"
         class="_description"
         :label="
-          context === 'full' && (project.description || can_edit_project)
-            ? $t('description')
-            : ''
+          context === 'full' && !project.description ? $t('description') : ''
         "
         :content="project.description"
         :path="project.$path"
         :maxlength="1280"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
         :instructions="$t('project_desc_instructions')"
       />
       <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
@@ -118,14 +118,14 @@ z
       }"
       v-if="context === 'full'"
     >
-      <CardLicense :project="project" :can_edit="can_edit_project" />
-      <CardCompetences :project="project" :can_edit="can_edit_project" />
-      <CardFiles :project="project" :can_edit="can_edit_project" />
-      <CardMachines :project="project" :can_edit="can_edit_project" />
-      <CardKeywords :project="project" :can_edit="can_edit_project" />
-      <CardMeta :project="project" :can_edit="can_edit_project" />
-      <!-- <CardStatus :project="project" :can_edit="can_edit_project" /> -->
-      <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
+      <CardLicense :project="project" :can_edit="can_edit" />
+      <CardCompetences :project="project" :can_edit="can_edit" />
+      <CardFiles :project="project" :can_edit="can_edit" />
+      <CardMachines :project="project" :can_edit="can_edit" />
+      <CardKeywords :project="project" :can_edit="can_edit" />
+      <CardMeta :project="project" :can_edit="can_edit" />
+      <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
+      <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
     </div>
 
     <div class="_projectInfos--open" v-if="context === 'list'">
@@ -152,7 +152,7 @@ export default {
   props: {
     project: Object,
     context: String,
-    can_edit_project: Boolean,
+    can_edit: Boolean,
     // show_more_informations: Boolean,
   },
   components: {

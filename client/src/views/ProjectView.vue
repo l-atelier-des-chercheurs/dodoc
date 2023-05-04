@@ -31,7 +31,7 @@
           <ProjectPresentation
             :project="project"
             context="full"
-            :can_edit_project="can_edit_project && !display_as_public"
+            :can_edit="can_edit_project && !display_as_public"
           />
         </div>
 
@@ -261,7 +261,6 @@ export default {
 
 ._topContent {
   position: relative;
-  background: white;
 }
 
 ._tabButton {
