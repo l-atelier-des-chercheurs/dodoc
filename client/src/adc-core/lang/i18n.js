@@ -71,6 +71,7 @@ export default function () {
         subtitle: "Sous-titre",
         name: "nom",
 
+        set_admins_and_contributors: "Définir les référents et contributeurs",
         instance_admins_instr:
           "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
         instance_contributors_instr:
@@ -121,6 +122,7 @@ export default function () {
         email: "Courriel",
         password: "Mot de passe",
         admins: "Administrateur·rice·s",
+        referent: "Référent·e·s",
         contributors: "Contributeur·rice·s",
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",

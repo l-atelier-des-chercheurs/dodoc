@@ -54,6 +54,8 @@ import AuthorField from "@/adc-core/fields/AuthorField.vue";
 Vue.component("AuthorField", AuthorField);
 import AdminsAndContributorsField from "@/adc-core/fields/AdminsAndContributorsField.vue";
 Vue.component("AdminsAndContributorsField", AdminsAndContributorsField);
+import EditAdminsAndContributorsField from "@/adc-core/fields/EditAdminsAndContributorsField.vue";
+Vue.component("EditAdminsAndContributorsField", EditAdminsAndContributorsField);
 import StatusTag from "@/adc-core/fields/StatusTag.vue";
 Vue.component("StatusTag", StatusTag);
 import TagsField from "@/adc-core/fields/TagsField.vue";

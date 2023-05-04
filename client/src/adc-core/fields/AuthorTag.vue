@@ -10,7 +10,7 @@
       v-else
       src="https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
     />
-    <span>
+    <span v-if="!show_image_only">
       {{ author.name }}
     </span>
     <sl-icon-button
@@ -30,6 +30,10 @@ export default {
       default: false,
     },
     links_to_author_page: {
+      type: Boolean,
+      default: false,
+    },
+    show_image_only: {
       type: Boolean,
       default: false,
     },

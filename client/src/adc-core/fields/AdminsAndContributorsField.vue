@@ -1,6 +1,29 @@
 <template>
   <div>
-    <AuthorField
+    <div v-if="Array.isArray(all_participants_path)" class="_listOfAvatars">
+      <AuthorTag
+        v-for="participant_path in all_participants_path"
+        :path="participant_path"
+        :key="participant_path"
+        :edit_mode="false"
+        :links_to_author_page="false"
+        :show_image_only="true"
+      />
+    </div>
+
+    <EditBtn v-if="can_edit" @click="edit_mode = true" />
+
+    <EditAdminsAndContributorsField
+      v-if="edit_mode"
+      :folder_path="folder.$path"
+      :admins_path="admins_path"
+      :contributors_path="contributors_path"
+      :admin_instructions="admin_instructions"
+      :contrib_instructions="contrib_instructions"
+      @closeModal="edit_mode = false"
+    />
+
+    <!-- <AuthorField
       :label="$t('admins')"
       :field="'$admins'"
       :authors_paths="folder.$admins"
@@ -15,7 +38,7 @@
       :path="folder.$path"
       :can_edit="can_edit"
       :instructions="contrib_instructions"
-    />
+    /> -->
   </div>
 </template>
 <script>
@@ -28,14 +51,35 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      edit_mode: false,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
-  methods: {},
+  computed: {
+    all_participants_path() {
+      let p = [];
+      if (Array.isArray(this.admins_path)) p = p.concat(this.admins_path);
+      if (Array.isArray(this.contributors_path))
+        p = p.concat(this.contributors_path);
+      p = [...new Set(p)];
+      return p;
+    },
+    admins_path() {
+      return this.folder.$admins;
+    },
+    contributors_path() {
+      return this.folder.$contributors;
+    },
+  },
+  methods: {
+    closeModal() {
+      this.edit_mode = false;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

@@ -253,8 +253,10 @@ export default {
   }
 
   --sl-input-color: black;
+  --sl-font-size-normal: 1rem;
+  --sl-font-size-large: 1.5rem;
   --sl-font-size-x-large: 1.66rem;
-  --sl-font-size-xx-large: 3rem;
+  --sl-font-size-xx-large: 2.8rem;
 
   --max-column-width: 1300px;
 
@@ -399,13 +401,20 @@ h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
   // font-style: italic;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.3;
 }
 h3 {
   margin: 0;
   font-size: var(--sl-font-size-large);
-  line-height: 1.3;
+  line-height: 1.2;
+  font-weight: 400;
+}
+h4 {
+  margin: 0;
+  font-size: var(--sl-font-size-normal);
+  line-height: 1.2;
+  font-weight: 400;
 }
 
 .card-header {

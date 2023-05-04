@@ -9,6 +9,7 @@
     <transition name="fade" mode="out-in">
       <div v-if="$route.path.includes('/+')">
         <sl-icon name="arrow-right-short" label="" />
+        &nbsp;
         <div>
           <router-link
             class="_spaceName"
@@ -27,6 +28,7 @@
     <transition name="fade" mode="out-in">
       <div v-if="$route.name === 'Projet'">
         <sl-icon name="arrow-right-short" label="" />
+        &nbsp;
         <div>
           <router-link
             class="_spaceName"

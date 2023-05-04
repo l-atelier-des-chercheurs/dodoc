@@ -11,7 +11,6 @@
       <div v-if="authors_paths === 'all'">
         {{ $t("all") }}
       </div>
-
       <AuthorTag
         v-else-if="Array.isArray(authors_paths)"
         v-for="author_path in authors_paths"

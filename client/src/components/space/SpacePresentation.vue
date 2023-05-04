@@ -31,7 +31,7 @@
       <TitleField
         :field_name="'title'"
         class="_title"
-        :tag="'h2'"
+        :tag="context === 'full' ? 'h1' : 'h3'"
         :content="space.title"
         :path="space.$path"
         :maxlength="280"
@@ -41,6 +41,7 @@
       <TitleField
         :field_name="'subtitle'"
         v-if="can_edit || space.subtitle"
+        tag="h4"
         class="_subtitle"
         :content="space.subtitle"
         :path="space.$path"
@@ -48,7 +49,7 @@
         :can_edit="can_edit"
       />
       <TitleField
-        v-if="can_edit || space.description"
+        v-if="context === 'full' && (can_edit || space.description)"
         :field_name="'description'"
         class="_description"
         :label="can_edit ? $t('description') : undefined"
@@ -95,18 +96,22 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  // gap: calc(var(--spacing) * 2);
+  gap: calc(var(--spacing) / 2);
 
   // border: 2px solid white;
   // margin: calc(var(--spacing) / 2) 0;
   background: white;
   overflow: hidden;
   background: var(--panel-color);
-  box-shadow: var(--panel-shadows);
+  // box-shadow: var(--panel-shadows);
   // border: var(--panel-borders);
-  border-radius: var(--panel-radius);
 
   // margin-bottom: calc(var(--spacing) / 2);
+
+  &:hover {
+    border-radius: var(--panel-radius);
+    box-shadow: var(--panel-shadows);
+  }
 }
 
 ._topHero {
@@ -128,15 +133,18 @@ export default {
 ._textBloc {
   padding: calc(var(--spacing) / 2);
   flex: 1 1 0;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
 }
 ._subtitle {
   color: var(--c-gris_fonce);
-  font-weight: 500;
+  // font-weight: 400;
 }
 ._description {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   display: block;
-  display: none;
   // max-width: 66ch;
   // flex: 4 1 33%;
   font-size: var(--sl-font-size-small);

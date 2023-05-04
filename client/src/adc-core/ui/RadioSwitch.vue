@@ -119,6 +119,8 @@ menu {
 }
 .radio-switch:focus-within,
 .radio-switch:active {
+  // background: blue;
+  // border-color: var(--active-color);
   // box-shadow: 0 0 0 2px hsla(var(--ri5-color-contrast-higher-hsl), 0.15);
 }
 
