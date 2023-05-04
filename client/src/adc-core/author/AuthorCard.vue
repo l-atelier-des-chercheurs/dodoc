@@ -43,12 +43,6 @@ export default {
         return this.connected_as.$path === this.author.$path;
       return false;
     },
-    is_instance_admin() {
-      return this.authorIsAdmin({
-        field: "$admins",
-        folder_path: this.author.$path,
-      });
-    },
   },
   methods: {
     async removeAuthor() {
