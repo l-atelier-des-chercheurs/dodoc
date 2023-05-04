@@ -69,11 +69,7 @@ export default {
   color: var(--c-noir);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   gap: calc(var(--spacing) / 2);
-
-  &:hover {
-    box-shadow: var(--panel-shadows);
-    color: var(--c-bleumarine);
-  }
+  border: 1px solid var(--c-gris);
 
   img {
     border-radius: 50%;
@@ -96,6 +92,18 @@ export default {
     }
   }
 }
+
+a {
+  ._path {
+    color: var(--active-color);
+  }
+}
+
+a:hover {
+  box-shadow: var(--panel-shadows);
+  color: var(--c-bleumarine);
+}
+
 sl-icon-button::part(base) {
   padding-top: 0;
   padding-bottom: 0;

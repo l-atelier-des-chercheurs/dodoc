@@ -31,6 +31,9 @@
       <div class="">
         <TitleField
           :field_name="'title'"
+          :label="
+            context === 'full' && can_edit && !space.title ? $t('title') : ''
+          "
           class="_title"
           :tag="context === 'full' ? 'h1' : 'h3'"
           :content="space.title"
@@ -42,6 +45,11 @@
         <TitleField
           :field_name="'subtitle'"
           v-if="can_edit || space.subtitle"
+          :label="
+            context === 'full' && can_edit && !space.subtitle
+              ? $t('subtitle')
+              : ''
+          "
           :tag="context === 'full' ? 'h2' : 'h4'"
           class="_subtitle"
           :content="space.subtitle"

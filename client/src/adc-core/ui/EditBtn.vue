@@ -31,7 +31,7 @@ export default {
   --color2: var(--c-bleuvert);
 
   position: relative;
-  display: block;
+  display: inline-block;
   background: var(--color1);
   color: var(--color2);
 
@@ -76,6 +76,7 @@ export default {
     span {
       transform: none;
       opacity: 1;
+      pointer-events: auto;
       transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
     }
   }

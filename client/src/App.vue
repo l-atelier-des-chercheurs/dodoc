@@ -396,14 +396,14 @@ h1 {
   margin: 0;
   font-size: var(--sl-font-size-xx-large);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
   // font-style: italic;
   font-weight: 400;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 h3 {
   margin: 0;

@@ -7,12 +7,18 @@
           :context="'full'"
           :can_edit="can_edit_space"
         />
+
+        <br />
+
+        <h2>Membres de cet espace</h2>
         <AdminsAndContributorsField
           :folder="space"
           :can_edit="can_edit_space"
           :admin_instructions="$t('space_admin_instructions')"
           :contrib_instructions="$t('space_contrib_instructions')"
         />
+
+        <br />
         <div class="_removeBtn">
           <RemoveMenu
             v-if="can_edit_space"

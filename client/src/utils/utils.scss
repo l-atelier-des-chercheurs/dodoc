@@ -363,17 +363,17 @@ textarea,
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
-  border-bottom: 2px solid transparent;
+  border-bottom: 1px solid transparent;
 
   transition: all 0.05s;
 
   &:hover {
     outline: 0;
-    border-bottom: 2px solid var(--input-border-color);
+    border-color: var(--input-border-color);
   }
   &:focus-visible {
     outline: 0;
-    border-bottom: 2px solid var(--input-border-color-focus);
+    border-color: var(--input-border-color-focus);
   }
 
   &.bg-blanc {
