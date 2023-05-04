@@ -32,7 +32,10 @@ export default {
 <style lang="scss" scoped>
 ._projectCard {
   border-bottom: 0px solid var(--c-gris_clair);
-  border-left: 2px solid transparent;
+  // border-left: 2px solid transparent;
+
+  background: white;
+  margin-left: 2px;
 
   &[open] {
     border-left-color: var(--c-gris);

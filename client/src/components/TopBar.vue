@@ -83,13 +83,17 @@ export default {
 ._topbar {
   position: relative;
   z-index: 5;
-  // position: absolute;
-  width: 100%;
+
   display: flex;
   flex-flow: row nowrap;
   gap: calc(var(--spacing) / 2);
   align-items: center;
   overflow: hidden;
+
+  width: 100%;
+  max-width: calc(var(--max-column-width));
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
 
   padding: calc(var(--spacing) / 2) 0;
   // padding-bottom: calc(var(--spacing) * 1);
@@ -132,7 +136,7 @@ export default {
     padding: calc(var(--spacing) / 2);
     border-radius: 4px;
     font-weight: 300;
-    font-size: var(--sl-font-size-large);
+    font-size: var(--sl-font-size-normal);
   }
 }
 

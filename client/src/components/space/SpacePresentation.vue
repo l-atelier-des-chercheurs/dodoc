@@ -69,6 +69,16 @@
         :maxlength="480"
         :can_edit="can_edit"
       />
+
+      <template v-if="context === 'full'">
+        <br />
+        <AdminsAndContributorsField
+          :folder="space"
+          :can_edit="can_edit"
+          :admin_instructions="$t('space_admin_instructions')"
+          :contrib_instructions="$t('space_contrib_instructions')"
+        />
+      </template>
     </div>
     <!-- <div class="_descriptionField">
     </div> -->
@@ -146,7 +156,7 @@ export default {
   align-self: flex-start;
 
   flex: 1 0 80px;
-  max-width: 140px;
+  max-width: 120px;
   border-radius: var(--panel-radius);
   // margin-right: calc(var(--spacing) / 1);
   // margin-bottom: calc(var(--spacing) / 4);

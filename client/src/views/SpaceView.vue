@@ -7,17 +7,6 @@
           :context="'full'"
           :can_edit="can_edit_space"
         />
-
-        <br />
-
-        <h2>Membres de cet espace</h2>
-        <AdminsAndContributorsField
-          :folder="space"
-          :can_edit="can_edit_space"
-          :admin_instructions="$t('space_admin_instructions')"
-          :contrib_instructions="$t('space_contrib_instructions')"
-        />
-
         <br />
         <div class="_removeBtn">
           <RemoveMenu
@@ -29,7 +18,7 @@
       </div>
 
       <div class="_projectsList">
-        <div class="u-sameRow">
+        <div class="u-sameRow u-spacingBottom">
           <DLabel :str="$t('list_of_projects')" :tag="'h2'" />
           <button
             type="button"

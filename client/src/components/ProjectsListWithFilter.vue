@@ -247,6 +247,10 @@ export default {
 <style lang="scss" scoped>
 ._projectsListWithFilter {
   margin-top: calc(var(--spacing) * 1);
+
+  width: 100%;
+  max-width: calc(var(--max-column-width));
+  margin: 0 auto;
 }
 ._cont {
   display: flex;

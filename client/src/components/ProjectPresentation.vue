@@ -190,20 +190,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._project {
-  position: relative;
-  // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-}
-
 ._projectInfos {
   position: relative;
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
 
+  width: 100%;
+  max-width: calc(var(--max-column-width));
   margin: 0 auto;
-  // max-width: 180ch;
-  // max-width: var(--max-column-width);
 
   overflow: hidden;
   background: white;
@@ -348,7 +343,6 @@ export default {
   font-size: 90%;
   overflow-x: hidden;
   overflow-y: auto;
-  // background: var(--c-gris_clair);
 
   // gap: calc(var(--spacing) / 2);
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
