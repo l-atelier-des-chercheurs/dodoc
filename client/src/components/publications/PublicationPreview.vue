@@ -3,7 +3,7 @@
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
     <div class="">
       <div class="_projectInfos--cover">
-        <img :src="cover_thumb" @click="$emit('open')" />
+        <img v-if="cover_thumb" :src="cover_thumb" @click="$emit('open')" />
         <transition name="fade_fast" :duration="150" mode="out-in">
           <div class="_previewProgress" v-if="is_making_preview">
             <AnimatedCounter :value="preview_progress" />
