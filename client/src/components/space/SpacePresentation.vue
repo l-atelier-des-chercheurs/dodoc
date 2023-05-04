@@ -28,26 +28,29 @@
       />
 
       <!-- :label="can_edit ? $t('title') : undefined" -->
-      <TitleField
-        :field_name="'title'"
-        class="_title"
-        :tag="context === 'full' ? 'h1' : 'h3'"
-        :content="space.title"
-        :path="space.$path"
-        :maxlength="280"
-        :can_edit="can_edit"
-      />
-      <!-- :label="can_edit ? $t('subtitle') : undefined" -->
-      <TitleField
-        :field_name="'subtitle'"
-        v-if="can_edit || space.subtitle"
-        tag="h4"
-        class="_subtitle"
-        :content="space.subtitle"
-        :path="space.$path"
-        :maxlength="280"
-        :can_edit="can_edit"
-      />
+      <div class="">
+        <TitleField
+          :field_name="'title'"
+          class="_title"
+          :tag="context === 'full' ? 'h1' : 'h3'"
+          :content="space.title"
+          :path="space.$path"
+          :maxlength="280"
+          :can_edit="can_edit"
+        />
+        <!-- :label="can_edit ? $t('subtitle') : undefined" -->
+        <TitleField
+          :field_name="'subtitle'"
+          v-if="can_edit || space.subtitle"
+          :tag="context === 'full' ? 'h2' : 'h4'"
+          class="_subtitle"
+          :content="space.subtitle"
+          :path="space.$path"
+          :maxlength="280"
+          :can_edit="can_edit"
+        />
+      </div>
+
       <TitleField
         v-if="context === 'full' && (can_edit || space.description)"
         :field_name="'description'"
@@ -96,21 +99,30 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 4);
 
   // border: 2px solid white;
   // margin: calc(var(--spacing) / 2) 0;
-  background: white;
+
+  width: 100%;
+  // max-width: 100ch;
+  margin: 0 auto;
+
+  // background: white;
   overflow: hidden;
   background: var(--panel-color);
   // box-shadow: var(--panel-shadows);
   // border: var(--panel-borders);
 
   // margin-bottom: calc(var(--spacing) / 2);
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-  &:hover {
+  &[data-context="list"]:hover {
     border-radius: var(--panel-radius);
     box-shadow: var(--panel-shadows);
+    background: white;
+
+    gap: calc(var(--spacing) / 2);
   }
 }
 
@@ -122,7 +134,7 @@ export default {
 ._coverField {
   position: relative;
   aspect-ratio: 1/1;
-  // float: left;
+  align-self: flex-start;
 
   flex: 1 0 80px;
   max-width: 140px;
@@ -145,8 +157,9 @@ export default {
 ._description {
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   display: block;
-  // max-width: 66ch;
+  max-width: 88ch;
   // flex: 4 1 33%;
+  margin-top: calc(var(--spacing) / 2);
   font-size: var(--sl-font-size-small);
 }
 
