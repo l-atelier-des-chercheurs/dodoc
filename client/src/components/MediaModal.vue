@@ -64,7 +64,11 @@
         <DateField :title="$t('date_modified')" :date="file.$date_modified" />
       </div>
       <div class="_selectBtn" v-else>
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
+        <button
+          type="button"
+          class="u-buttonLink has--ts"
+          @click="$emit('close')"
+        >
           {{ $t("cancel") }}
         </button>
         <button

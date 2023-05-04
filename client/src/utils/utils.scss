@@ -131,6 +131,9 @@
   &.is--active {
     color: var(--c-bleuvert);
   }
+  &.has--ts {
+    text-shadow: -1px -1px 4px white;
+  }
 
   &:hover,
   &:focus {
