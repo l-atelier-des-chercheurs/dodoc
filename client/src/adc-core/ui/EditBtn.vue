@@ -49,28 +49,29 @@ export default {
   span {
     position: absolute;
     top: 0;
-    left: 50%;
+    left: 0;
+    // left: 50%;
     height: 100%;
 
     background: var(--color2);
     color: var(--color1);
 
     padding: calc(var(--spacing) / 2);
-    padding-left: 50%;
+    padding-left: 100%;
     display: flex;
     align-items: center;
-    border-top-right-radius: 0.9rem;
-    border-bottom-right-radius: 0.9rem;
+    border-radius: 0.9rem;
+    // border-bottom-right-radius: 0.9rem;
 
     pointer-events: none;
-    transform: translateX(-10px);
+    transform: translateX(-5px);
     opacity: 0;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   &:hover,
   &:active {
-    background: var(--color2);
+    // background: var(--color2);
     color: var(--color1);
 
     span {
