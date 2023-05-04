@@ -111,7 +111,7 @@ export default {
 
   // background: white;
   overflow: hidden;
-  background: var(--panel-color);
+  border-radius: var(--panel-radius);
   // box-shadow: var(--panel-shadows);
   // border: var(--panel-borders);
 
@@ -122,9 +122,7 @@ export default {
   }
   &[data-context="list"] {
     &:hover {
-      border-radius: var(--panel-radius);
       box-shadow: var(--panel-shadows);
-      background: white;
     }
   }
 }

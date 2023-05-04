@@ -36,7 +36,7 @@ export default {
     can_edit: Boolean,
     status_options: {
       type: Array,
-      default: () => ["private", "draft", "finished"],
+      default: () => ["draft", "finished", "private"],
     },
   },
   components: {},

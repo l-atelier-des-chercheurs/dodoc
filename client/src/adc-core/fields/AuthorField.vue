@@ -11,19 +11,17 @@
       <div v-if="authors_paths === 'everyone'">
         {{ $t("everyone") }}
       </div>
-      <div
-        v-else-if="Array.isArray(authors_paths) && authors_paths.length === 0"
-      >
-        {{ $t("noone") }}
-      </div>
       <AuthorTag
-        v-else-if="Array.isArray(authors_paths)"
+        v-else-if="Array.isArray(authors_paths) && authors_paths.length > 0"
         v-for="author_path in authors_paths"
         :path="author_path"
         :key="author_path"
         :edit_mode="false"
         :links_to_author_page="false"
       />
+      <div v-else>
+        {{ $t("noone") }}
+      </div>
       <!-- :links_to_author_page="!edit_mode" -->
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
@@ -33,9 +31,6 @@
         <div v-if="instructions" class="u-instructions" :key="'noprojects'">
           {{ instructions }}
         </div>
-
-        {{ new_authors_paths }}
-        {{ Array.isArray(new_authors_paths) }}
 
         <br />
 

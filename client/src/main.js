@@ -127,14 +127,9 @@ Vue.component("ImageSelect", ImageSelect);
 import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
 Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 
-Vue.component("EditBtn", {
-  name: "EditBtn",
-  template: `
-  <sl-button variant="edit" class="editBtn" size="small" circle @click="$emit('click')">
-    <sl-icon name="pencil-fill" :label="$t('edit')" />
-  </sl-button>
-`,
-});
+import EditBtn from "@/adc-core/ui/EditBtn.vue";
+Vue.component("EditBtn", EditBtn);
+
 Vue.component("FullscreenBtn", {
   name: "FullscreenBtn",
   props: ["icon", "label"],

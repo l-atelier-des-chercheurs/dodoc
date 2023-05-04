@@ -193,6 +193,7 @@ export default {
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
+  --input-font-size-x-small: 0.6rem;
   --input-font-size-small: 0.8rem;
   --input-font-size-big: 1.2rem;
   --input-font-weight: inherit;

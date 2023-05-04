@@ -1,17 +1,21 @@
 <template>
   <div>
-    <div v-if="Array.isArray(all_participants_path)" class="_listOfAvatars">
-      <AuthorTag
-        v-for="participant_path in all_participants_path"
-        :path="participant_path"
-        :key="participant_path"
-        :edit_mode="false"
-        :links_to_author_page="true"
-        :show_image_only="false"
-      />
+    <div class="_listOfAvatars">
+      <template v-if="Array.isArray(all_participants_path)">
+        <AuthorTag
+          v-for="participant_path in all_participants_path"
+          :path="participant_path"
+          :key="participant_path"
+          :edit_mode="false"
+          :links_to_author_page="true"
+          :show_image_only="false"
+        />
+      </template>
+      <div v-else :key="'none-' + index">
+        {{ $t("none") }}
+      </div>
+      <EditBtn v-if="can_edit" @click="edit_mode = true" />
     </div>
-
-    <EditBtn v-if="can_edit" @click="edit_mode = true" />
 
     <EditAdminsAndContributorsField
       v-if="edit_mode"

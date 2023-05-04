@@ -12,9 +12,7 @@
     />
     <div v-if="!show_image_only" class="_infos">
       <div class="_name">{{ author.name }}</div>
-      <div class="_path">
-        {{ author.$path }}
-      </div>
+      <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>
     <sl-icon-button
       v-if="edit_mode"
@@ -66,11 +64,16 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   // background: var(--c-bleumarine_clair);
-  border-radius: 2em;
+  border-radius: 4px;
   text-decoration: none;
   color: var(--c-noir);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
 
-  gap: calc(var(--spacing) / 4);
+  &:hover {
+    box-shadow: var(--panel-shadows);
+    color: var(--c-bleumarine);
+  }
 
   img {
     border-radius: 50%;
@@ -78,9 +81,9 @@ export default {
     height: 2em;
   }
   ._infos {
-    line-height: 1;
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1)
-      calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    line-height: 1.2;
+    // padding: calc(var(--spacing) / 4) 0
+    //   calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
     ._name {
       font-size: var(--sl-font-size-normal);
@@ -89,6 +92,7 @@ export default {
     ._path {
       font-size: var(--sl-font-size-small);
       font-weight: 400;
+      // color: var(--c-bleumarine);
     }
   }
 }
