@@ -5,7 +5,7 @@
       'is--homepage': $route.path === '/',
     }"
   >
-    <BreadCrumbs />
+    <BreadCrumbs class="_bc" />
 
     <div class="_topRightButtons">
       <button
@@ -86,12 +86,12 @@ export default {
   // position: absolute;
   width: 100%;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   gap: calc(var(--spacing) / 2);
   align-items: center;
   overflow: hidden;
 
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   // padding-bottom: calc(var(--spacing) * 1);
   background: white;
   border-bottom: 1px solid var(--c-gris);
@@ -110,7 +110,14 @@ export default {
   }
 
   > * {
-    flex: 1 1 0;
+    flex: 1 1 auto;
+
+    &._bc {
+      flex: 1 0 0;
+    }
+    &._topRightButtons {
+      flex: 0 0 auto;
+    }
   }
 
   > ._subscribeBtn {

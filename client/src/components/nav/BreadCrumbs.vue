@@ -1,13 +1,16 @@
 <template>
   <nav aria-label="Fil d’ariane" class="_breadcrumb">
     <div class="_logo">
-      <router-link :to="`/`">
+      <component
+        :is="$route.name !== 'Accueil' ? 'router-link' : 'span'"
+        :to="`/`"
+      >
         <DodocLogo />
-      </router-link>
+      </component>
     </div>
 
     <transition name="fade" mode="out-in">
-      <div v-if="$route.path.includes('/+')">
+      <div v-if="$route.name === 'Projet'">
         <sl-icon name="arrow-right-short" label="" />
         &nbsp;
         <div>
@@ -19,13 +22,13 @@
             <button type="button" class="u-buttonLink">
               {{ $t("space") }}
             </button>
-            <div>{{ (space && space.title) || "–" }}</div>
+            <div class="_name">{{ (space && space.title) || "–" }}</div>
           </router-link>
         </div>
       </div>
     </transition>
 
-    <transition name="fade" mode="out-in">
+    <!-- <transition name="fade" mode="out-in">
       <div v-if="$route.name === 'Projet'">
         <sl-icon name="arrow-right-short" label="" />
         &nbsp;
@@ -43,11 +46,11 @@
             <button type="button" class="u-buttonLink">
               {{ $t("project") }}
             </button>
-            <div>{{ (project && project.title) || "–" }}</div>
+            <div class="_name">{{ (project && project.title) || "–" }}</div>
           </router-link>
         </div>
       </div>
-    </transition>
+    </transition> -->
   </nav>
 </template>
 <script>
@@ -95,7 +98,13 @@ export default {
   > * {
     display: flex;
     align-items: center;
+    overflow: hidden;
   }
+}
+._name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 ._logo {
