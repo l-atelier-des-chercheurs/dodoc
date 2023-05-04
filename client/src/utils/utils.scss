@@ -470,6 +470,12 @@ sl-button[variant="semitransparent"] {
     background: rgba(255, 255, 255, 0.7);
   }
 }
+sl-button[variant="edit"] {
+  &::part(base) {
+    background: var(--c-bleuvert);
+    border: none;
+  }
+}
 
 input[type="file"] {
   width: 0.1px;

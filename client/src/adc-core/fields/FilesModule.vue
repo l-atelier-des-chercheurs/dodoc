@@ -1,12 +1,5 @@
 <template>
   <div class="_fileList">
-    <!-- <PickMediaFromProjects
-      v-if="show_file_picker"
-        :path="current_project_path"
-        @selectMedia="fileSelect"
-        @close="show_file_picker = false"
-      /> -->
-
     <template v-if="!files || files.length === 0">
       {{ $t("no_files") }}
     </template>
@@ -93,8 +86,8 @@ export default {
     },
   },
   methods: {
-    async selectMedia({ path_to_meta }) {
-      const new_file = this.getFilename(path_to_meta);
+    async selectMedia({ path_to_source_media_meta }) {
+      const new_file = this.getFilename(path_to_source_media_meta);
       const files = this.downloadable_files.slice() || [];
       files.push(new_file);
       this.updateFiles(files);
@@ -152,23 +145,33 @@ export default {
       font-weight: 400;
       letter-spacing: 0;
       font-size: var(--sl-font-size-x-small);
+      text-decoration: none;
 
       display: flex;
       flex-flow: row nowrap;
 
       ._preview {
         flex: 0 0 auto;
-        font-size: 110%;
+        font-size: 100%;
 
         width: 25px;
         height: 25px;
         overflow: hidden;
+
+        ::v-deep ._mediaContent--image {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          max-width: none;
+        }
       }
 
       ._link--filename {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
+        // text-overflow: ellipsis;
+        // white-space: nowrap;
+        // overflow: hidden;
+        white-space: break-spaces;
       }
     }
   }

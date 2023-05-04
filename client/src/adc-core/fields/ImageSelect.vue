@@ -204,9 +204,9 @@ export default {
         }, 20);
       });
     },
-    selectMediaFromLib({ path_to_meta }) {
+    selectMediaFromLib({ path_to_source_media_meta }) {
       const file = this.getMediaInFolder({
-        path_to_meta,
+        path_to_source_media_meta,
       });
       const path_to_project = this.getParent(file.$path);
       this.image = this.makeRelativeURLFromThumbs({
@@ -215,7 +215,7 @@ export default {
         $path: path_to_project,
         resolution: 1600,
       });
-      this.$emit("newPreview", path_to_meta);
+      this.$emit("newPreview", path_to_source_media_meta);
     },
     createImage(blob) {
       return new Promise((resolve, reject) => {

@@ -5,7 +5,7 @@
       style="font-size: 1rem; --indicator-color: currentColor"
     />
     <sl-icon v-else name="check-circle-fill" :label="$t('finished')" />
-    {{ current_value }} %
+    {{ current_value }}%
   </span>
 </template>
 <script>
@@ -50,3 +50,15 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+._animatedCounter {
+  display: flex;
+  gap: calc(var(--spacing) / 2);
+  align-items: center;
+
+  background: white;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  border-radius: 5px;
+  border: 1px solid var(--c-gris);
+}
+</style>

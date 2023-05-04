@@ -157,6 +157,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(5px);
 
   padding: calc(var(--spacing) * 1);
   font-family: "Fira Code";
