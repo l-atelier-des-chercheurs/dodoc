@@ -11,14 +11,17 @@
       <div v-if="authors_paths === 'everyone'">
         {{ $t("everyone") }}
       </div>
-      <AuthorTag
+      <template
         v-else-if="Array.isArray(authors_paths) && authors_paths.length > 0"
-        v-for="author_path in authors_paths"
-        :path="author_path"
-        :key="author_path"
-        :edit_mode="false"
-        :links_to_author_page="false"
-      />
+      >
+        <AuthorTag
+          v-for="author_path in authors_paths"
+          :path="author_path"
+          :key="author_path"
+          :edit_mode="false"
+          :links_to_author_page="false"
+        />
+      </template>
       <div v-else>
         {{ $t("noone") }}
       </div>
@@ -34,51 +37,11 @@
 
         <br />
 
-        <div class="u-radio">
-          <label
-            :for="'radioi-lmode-' + lmode.key"
-            v-for="lmode in [
-              {
-                key: 'everyone',
-                label: $t('everyone'),
-                instructions: $t('everyone_instr'),
-              },
-              {
-                key: 'noone',
-                label: $t('noone'),
-                instructions: $t('noone_instr'),
-              },
-              {
-                key: 'restricted',
-                label: $t('restricted'),
-                instructions: $t('restricted_instr'),
-              },
-            ]"
-            :key="lmode.key"
-          >
-            <input
-              type="radio"
-              :name="lmode.key"
-              :id="'radioi-lmode-' + lmode.key"
-              :value="lmode.key"
-              :checked="
-                (lmode.key === 'everyone' &&
-                  new_authors_paths === 'everyone') ||
-                (lmode.key === 'noone' && new_authors_paths === 'noone') ||
-                (lmode.key === 'restricted' &&
-                  Array.isArray(new_authors_paths) &&
-                  new_authors_paths.length > 0)
-              "
-              :disabled="!edit_mode"
-              @input="updateMode"
-            />
-
-            <span>
-              {{ lmode.label }}<br />
-              <small class="u-instructions" v-html="lmode.instructions" />
-            </span>
-          </label>
-        </div>
+        <RadioInput
+          :value.sync="radio_mode"
+          :options="editing_options"
+          :can_edit="edit_mode"
+        />
 
         <div v-if="Array.isArray(new_authors_paths)" class="_listOfAuthors">
           <template v-if="new_authors_paths.length > 0">
@@ -155,6 +118,24 @@ export default {
       is_saving: false,
       new_authors_paths: [],
       new_editing_mode: [],
+
+      editing_options: [
+        {
+          key: "everyone",
+          label: this.$t("everyone"),
+          instructions: this.$t("everyone_instr"),
+        },
+        {
+          key: "noone",
+          label: this.$t("noone"),
+          instructions: this.$t("noone_instr"),
+        },
+        {
+          key: "restricted",
+          label: this.$t("restricted"),
+          instructions: this.$t("restricted_instr"),
+        },
+      ],
     };
   },
   created() {
@@ -168,6 +149,18 @@ export default {
     },
   },
   computed: {
+    radio_mode: {
+      set(value) {
+        if (value === "everyone") this.new_authors_paths = "everyone";
+        else if (value === "noone") this.new_authors_paths = "noone";
+        else if (value === "restricted") this.new_authors_paths = [];
+      },
+      get() {
+        if (this.new_authors_paths === "everyone") return "everyone";
+        if (Array.isArray(this.new_authors_paths)) return "restricted";
+        return "noone";
+      },
+    },
     allow_save() {
       return (
         JSON.stringify(this.new_authors_paths) !==
@@ -176,12 +169,6 @@ export default {
     },
   },
   methods: {
-    updateMode(event) {
-      if (event.target.value === "everyone")
-        this.new_authors_paths = "everyone";
-      else if (event.target.value === "noone") this.new_authors_paths = "noone";
-      else if (event.target.value === "restricted") this.new_authors_paths = [];
-    },
     initAuthorPaths() {
       if (this.authors_paths === "everyone") {
         this.new_authors_paths = "everyone";
