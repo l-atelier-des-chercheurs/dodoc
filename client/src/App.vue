@@ -362,8 +362,9 @@ button {
 }
 
 hr {
-  border-top: 1px solid var(--c-noir);
+  border-top: 1px solid var(--c-gris);
   border-bottom: 0 solid #000;
+  margin: calc(var(--spacing) / 2) 0;
 }
 
 .metaField {

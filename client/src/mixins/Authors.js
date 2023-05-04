@@ -6,24 +6,22 @@ export default {
       return false;
     },
     is_instance_admin() {
-      return this.authorIsAdmin({ folder_path: this.connected_as?.$path });
+      return this.authorIsInstance({
+        field: "$admins",
+        folder_path: this.connected_as?.$path,
+      });
     },
     is_instance_contributor() {
-      return this.authorIsContributor({
+      return this.authorIsInstance({
+        field: "$contributors",
         folder_path: this.connected_as?.$path,
       });
     },
   },
   methods: {
-    authorIsAdmin({ folder_path }) {
-      const $admins = this.$root.app_infos.instance_meta.$admins;
-      return $admins.includes(folder_path) || $admins === "everyone";
-    },
-    authorIsContributor({ folder_path }) {
-      const $contributors = this.$root.app_infos.instance_meta.$contributors;
-      return (
-        $contributors.includes(folder_path) || $contributors === "everyone"
-      );
+    authorIsInstance({ field, folder_path }) {
+      const $ = this.$root.app_infos.instance_meta[field];
+      return $.includes(folder_path) || $ === "everyone";
     },
     getAuthor(author_path) {
       const folder_path = author_path.substring(

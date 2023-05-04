@@ -76,6 +76,7 @@ export default function () {
           "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
         instance_contributors_instr:
           "Les comptes listés ici pourront créer des espaces.",
+        space_members: "Participants à cet espace",
 
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
@@ -602,9 +603,9 @@ export default function () {
           "Peuvent uniquement créer des espaces et les administrer.",
 
         space_admin_instructions:
-          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés).",
+          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés). Ils n’apparaissent pas sur la page de présentation d’un espace.",
         space_contrib_instructions:
-          "Les contributeurs d’un espace peuvent uniquement créer des projets, ils ne peuvent pas modifier ou supprimer cet espace ni les projets qu’ils n’ont pas créé.",
+          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets qu’ils n’ont pas créé. La liste des contributeurs est affichée sur la page de présentation de l’espace.",
 
         project_admin_instructions:
           "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",

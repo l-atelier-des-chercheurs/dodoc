@@ -1,17 +1,23 @@
 <template>
   <div>
+    <DLabel :str="$t('contributors')" />
     <div class="_listOfAvatars">
-      <template v-if="Array.isArray(all_participants_path)">
+      <template
+        v-if="Array.isArray(contributors_path) && contributors_path.length > 0"
+      >
         <AuthorTag
-          v-for="participant_path in all_participants_path"
-          :path="participant_path"
-          :key="participant_path"
+          v-for="contributor_path in contributors_path"
+          :path="contributor_path"
+          :key="contributor_path"
           :edit_mode="false"
           :links_to_author_page="true"
           :show_image_only="false"
         />
       </template>
-      <div v-else :key="'none-' + index">
+      <div v-else-if="contributors_path === 'everyone'" :key="'everyone'">
+        {{ $t("everyone_can_contribute") }}
+      </div>
+      <div v-else :key="'none'">
         {{ $t("none") }}
       </div>
       <EditBtn v-if="can_edit" @click="edit_mode = true" />
@@ -64,14 +70,14 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    all_participants_path() {
-      let p = [];
-      if (Array.isArray(this.admins_path)) p = p.concat(this.admins_path);
-      if (Array.isArray(this.contributors_path))
-        p = p.concat(this.contributors_path);
-      p = [...new Set(p)];
-      return p;
-    },
+    // all_participants_path() {
+    //   let p = [];
+    //   if (Array.isArray(this.admins_path)) p = p.concat(this.admins_path);
+    //   if (Array.isArray(this.contributors_path))
+    //     p = p.concat(this.contributors_path);
+    //   p = [...new Set(p)];
+    //   return p;
+    // },
     admins_path() {
       return this.folder.$admins;
     },
@@ -90,6 +96,7 @@ export default {
 ._listOfAvatars {
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-end;
   gap: calc(var(--spacing) / 4);
 }
 </style>

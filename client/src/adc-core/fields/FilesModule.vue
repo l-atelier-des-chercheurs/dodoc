@@ -12,15 +12,26 @@
     </template>
     <template v-else>
       <div class="_file" v-for="(file, i) in files" :key="i">
-        <div v-if="file && file.$path" class="u-sameRow">
-          <!-- <MediaContent class="_preview" :file="file" :resolution="50" /> -->
-          <DownloadFile class="_link" :file="file">
-            <sl-icon name="file-earmark-arrow-down" />
-            <span class="_link--filename">
-              {{ file.$media_filename }}
-            </span>
-          </DownloadFile>
-        </div>
+        <DownloadFile v-if="file && file.$path" class="_link" :file="file">
+          <MediaContent
+            class="_preview"
+            :file="file"
+            :resolution="50"
+            v-if="
+              ['image', 'video', 'audio', 'pdf', 'stl', 'url'].includes(
+                file.$type
+              )
+            "
+          />
+          <sl-icon
+            name="file-earmark-arrow-down-fill"
+            class="_preview"
+            v-else
+          />
+          <span class="_link--filename">
+            {{ file.$media_filename }}
+          </span>
+        </DownloadFile>
 
         <sl-icon-button
           name="x"
@@ -119,33 +130,40 @@ export default {
     flex-flow: row nowrap;
     justify-content: center;
     word-break: break-word;
-    align-items: center;
+    align-items: stretch;
 
+    padding: calc(var(--spacing) / 4);
     gap: calc(var(--spacing) / 4);
+    border-radius: 4px;
 
     justify-content: space-between;
 
-    > * {
-      width: 100%;
-    }
-
-    ._preview {
-      width: 2rem;
-      aspect-ratio: 1/1;
-
-      flex: 0 0 auto;
+    &:hover {
+      background: var(--c-gris);
     }
 
     ._link {
+      flex: 1 1 auto;
+      overflow: hidden;
+
       display: block;
 
       font-variant: none;
       font-weight: 400;
       letter-spacing: 0;
-      font-size: var(--sl-font-size-small);
+      font-size: var(--sl-font-size-x-small);
 
       display: flex;
       flex-flow: row nowrap;
+
+      ._preview {
+        flex: 0 0 auto;
+        font-size: 110%;
+
+        width: 25px;
+        height: 25px;
+        overflow: hidden;
+      }
 
       ._link--filename {
         text-overflow: ellipsis;

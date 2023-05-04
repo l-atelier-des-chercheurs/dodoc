@@ -18,6 +18,10 @@
       <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
       <div class="_subscribeBtn">
         <button type="button" class="_authorBtn" @click="showAuthorModal">
+          <span class="u-buttonLink _adminInfo" v-if="is_instance_admin">
+            {{ "admin" }}
+          </span>
+
           <template v-if="connected_as">
             {{ connected_as.name }}
           </template>
@@ -132,6 +136,7 @@ export default {
 
 ._subscribeBtn {
   ._authorBtn {
+    position: relative;
     background: var(--c-bleumarine_clair);
     padding: calc(var(--spacing) / 2);
     border-radius: 4px;
@@ -151,5 +156,18 @@ export default {
     height: 3rem;
     background: transparent;
   }
+}
+
+._adminInfo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-weight: normal;
+  text-align: center;
+  width: 100%;
+  justify-content: center;
+  /* right: 0; */
+  text-decoration: none;
+  font-size: 80%;
 }
 </style>

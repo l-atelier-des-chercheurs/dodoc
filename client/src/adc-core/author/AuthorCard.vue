@@ -44,7 +44,10 @@ export default {
       return false;
     },
     is_instance_admin() {
-      return this.authorIsAdmin({ folder_path: this.author.$path });
+      return this.authorIsAdmin({
+        field: "$admins",
+        folder_path: this.author.$path,
+      });
     },
   },
   methods: {

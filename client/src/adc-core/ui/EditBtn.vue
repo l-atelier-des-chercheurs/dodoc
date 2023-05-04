@@ -77,7 +77,8 @@ export default {
       transform: none;
       opacity: 1;
       pointer-events: auto;
-      transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      // transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      transition: all 0.25s 0s cubic-bezier(0.19, 1, 0.22, 1);
     }
   }
 }

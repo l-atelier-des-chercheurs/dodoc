@@ -7,14 +7,6 @@
           :context="'full'"
           :can_edit="can_edit_space"
         />
-        <br />
-        <div class="_removeBtn">
-          <RemoveMenu
-            v-if="can_edit_space"
-            :remove_text="$t('remove_space')"
-            @remove="removeSpace"
-          />
-        </div>
       </div>
 
       <div class="_projectsList">
@@ -153,21 +145,6 @@ export default {
         this.$router.push("/");
       }
     },
-    async removeSpace() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-
-      try {
-        const response = await this.$api.deleteItem({
-          path: this.space.$path,
-        });
-        this.response = response.data;
-        this.fetch_status = "success";
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
   },
 };
 </script>
@@ -181,10 +158,6 @@ export default {
   max-width: var(--max-column-width);
   padding: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
   margin: 0 auto;
-}
-._removeBtn {
-  // display: flex;
-  // justify-content: flex-end;
 }
 
 ._projectsList {

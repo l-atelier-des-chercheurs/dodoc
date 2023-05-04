@@ -10,47 +10,44 @@
     </div>
 
     <transition name="fade" mode="out-in">
-      <div v-if="$route.name === 'Projet'">
+      <div v-if="$route.path.includes('/+')">
         <sl-icon name="arrow-right-short" label="" />
         &nbsp;
         <div>
-          <router-link
+          <component
+            :is="$route.name === 'Projet' ? 'router-link' : 'span'"
             class="_spaceName"
             :to="{ path: '/+' + $route.params.space_slug }"
             :disabled="$route.name === 'Espace'"
           >
-            <button type="button" class="u-buttonLink">
+            <div class="u-buttonLink">
               {{ $t("space") }}
-            </button>
+            </div>
             <div class="_name">{{ (space && space.title) || "–" }}</div>
-          </router-link>
+          </component>
         </div>
       </div>
     </transition>
 
-    <!-- <transition name="fade" mode="out-in">
+    <transition name="fade" mode="out-in">
       <div v-if="$route.name === 'Projet'">
         <sl-icon name="arrow-right-short" label="" />
         &nbsp;
         <div>
-          <router-link
+          <component
+            :is="false ? 'router-link' : 'span'"
             class="_spaceName"
-            :to="{
-              path:
-                '/+' +
-                $route.params.space_slug +
-                '/' +
-                $route.params.project_slug,
-            }"
+            :to="{ path: '/+' + $route.params.space_slug }"
+            :disabled="$route.name === 'Espace'"
           >
-            <button type="button" class="u-buttonLink">
+            <div class="u-buttonLink">
               {{ $t("project") }}
-            </button>
+            </div>
             <div class="_name">{{ (project && project.title) || "–" }}</div>
-          </router-link>
+          </component>
         </div>
       </div>
-    </transition> -->
+    </transition>
   </nav>
 </template>
 <script>
@@ -95,6 +92,7 @@ export default {
   align-items: center;
   padding: 0 calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
+  line-height: 1.1;
 
   > * {
     display: flex;
@@ -117,13 +115,16 @@ export default {
   }
 }
 
-._spaceName {
+a._spaceName {
   color: inherit;
   text-decoration: none;
 
-  ::v-deep a,
-  button {
-    text-decoration: none;
+  &:hover {
+    font-weight: 500;
   }
+}
+
+.u-buttonLink {
+  text-decoration: none;
 }
 </style>

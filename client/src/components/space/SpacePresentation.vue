@@ -71,13 +71,20 @@
       />
 
       <template v-if="context === 'full'">
-        <br />
         <AdminsAndContributorsField
           :folder="space"
           :can_edit="can_edit"
           :admin_instructions="$t('space_admin_instructions')"
           :contrib_instructions="$t('space_contrib_instructions')"
         />
+
+        <div class="_removeBtn">
+          <RemoveMenu
+            v-if="can_edit"
+            :remove_text="$t('remove_space')"
+            @remove="removeSpace"
+          />
+        </div>
       </template>
     </div>
     <!-- <div class="_descriptionField">
@@ -108,7 +115,24 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    async removeSpace() {
+      // this.fetch_status = "pending";
+      // this.fetch_error = null;
+
+      try {
+        const response = await this.$api.deleteItem({
+          path: this.space.$path,
+        });
+        response;
+        // this.response = response.data;
+        // this.fetch_status = "success";
+      } catch (e) {
+        // this.fetch_status = "error";
+        // this.fetch_error = e.response.data;
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -118,13 +142,9 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  // gap: calc(var(--spacing) / 4);
-
-  // border: 2px solid white;
-  // margin: calc(var(--spacing) / 2) 0;
 
   width: 100%;
-  // max-width: 100ch;
+  max-width: 100ch;
   margin: 0 auto;
 
   // background: white;

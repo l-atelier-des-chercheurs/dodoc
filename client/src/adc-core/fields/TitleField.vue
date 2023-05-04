@@ -166,7 +166,7 @@ export default {
 
 ._footer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-flow: row wrap;
   font-size: 1rem;
   font-weight: 400;
