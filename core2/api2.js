@@ -711,13 +711,9 @@ module.exports = (function () {
     // }
 
     try {
-      const exported_meta_filename_in_parent = await task.start();
-
+      const exported_path_to_meta = await task.start();
       const meta = await file.getFile({
-        path_to_meta: path.join(
-          path_to_parent_folder,
-          exported_meta_filename_in_parent
-        ),
+        path_to_meta: exported_path_to_meta,
       });
       notifier.emit("fileCreated", path_to_parent_folder, {
         path_to_folder: path_to_parent_folder,
@@ -785,10 +781,10 @@ module.exports = (function () {
     res.status(200).json({ task_id });
 
     try {
-      const exported_meta_filename = await task.start();
+      const exported_path_to_meta = await task.start();
       const changed_data = await folder.updateFolder({
         path_to_folder,
-        data: { meta_filename: exported_meta_filename },
+        data: { path_to_meta: exported_path_to_meta },
         update_cover_req: true,
       });
 
