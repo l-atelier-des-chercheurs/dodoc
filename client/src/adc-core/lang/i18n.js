@@ -287,6 +287,7 @@ export default function () {
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
         only_finished: "projets finalisés",
+        completed: "Terminé",
         my_projects: "Mes projets",
 
         finished_projects: "Projets finalisés",

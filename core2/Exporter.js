@@ -71,7 +71,7 @@ class Exporter {
     );
 
     this._notifyEnded({
-      event: "finished",
+      event: "completed",
       path: exported_path_to_meta,
     });
 

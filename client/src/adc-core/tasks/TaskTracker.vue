@@ -7,7 +7,7 @@
       </div>
       <div>
         <i>
-          {{ task.event }}
+          {{ $t(task.event) }}
         </i>
       </div>
       <div>
