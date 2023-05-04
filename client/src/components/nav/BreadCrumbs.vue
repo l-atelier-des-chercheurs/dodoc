@@ -13,19 +13,17 @@
       <div v-if="$route.path.includes('/+')">
         <sl-icon name="arrow-right-short" label="" />
         &nbsp;
-        <div>
-          <component
-            :is="$route.name === 'Projet' ? 'router-link' : 'span'"
-            class="_spaceName"
-            :to="{ path: '/+' + $route.params.space_slug }"
-            :disabled="$route.name === 'Espace'"
-          >
-            <div class="u-buttonLink">
-              {{ $t("space") }}
-            </div>
-            <div class="_name">{{ (space && space.title) || "–" }}</div>
-          </component>
-        </div>
+        <component
+          :is="$route.name === 'Projet' ? 'router-link' : 'span'"
+          class="_spaceName"
+          :to="{ path: '/+' + $route.params.space_slug }"
+          :disabled="$route.name === 'Espace'"
+        >
+          <div class="u-buttonLink">
+            {{ $t("space") }}
+          </div>
+          <div class="_name">{{ (space && space.title) || "–" }}</div>
+        </component>
       </div>
     </transition>
 
@@ -33,19 +31,17 @@
       <div v-if="$route.name === 'Projet'">
         <sl-icon name="arrow-right-short" label="" />
         &nbsp;
-        <div>
-          <component
-            :is="false ? 'router-link' : 'span'"
-            class="_spaceName"
-            :to="{ path: '/+' + $route.params.space_slug }"
-            :disabled="$route.name === 'Espace'"
-          >
-            <div class="u-buttonLink">
-              {{ $t("project") }}
-            </div>
-            <div class="_name">{{ (project && project.title) || "–" }}</div>
-          </component>
-        </div>
+        <component
+          :is="false ? 'router-link' : 'span'"
+          class="_spaceName"
+          :to="{ path: '/+' + $route.params.space_slug }"
+          :disabled="$route.name === 'Espace'"
+        >
+          <div class="u-buttonLink">
+            {{ $t("project") }}
+          </div>
+          <div class="_name">{{ (project && project.title) || "–" }}</div>
+        </component>
       </div>
     </transition>
   </nav>
