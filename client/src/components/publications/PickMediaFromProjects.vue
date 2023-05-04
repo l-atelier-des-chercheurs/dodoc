@@ -85,6 +85,7 @@ export default {
     selectMedia(path_to_source_media) {
       // TODO if path matches a media that is not in this project,
       // we need to copy this media to this project first then link that media instead
+      debugger;
       this.$emit("selectMedia", {
         path_to_meta: path_to_source_media,
       });

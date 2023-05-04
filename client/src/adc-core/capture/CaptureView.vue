@@ -1439,7 +1439,7 @@ export default {
           path: `${this.slugFolderName}/stopmotions`,
           additional_meta: {
             name: this.slugFolderName + "-" + new Date().getTime(),
-            $admins: "all",
+            $admins: "everyone",
           },
         });
         this.$emit("openStopmotion", new_stopmotion_slug);

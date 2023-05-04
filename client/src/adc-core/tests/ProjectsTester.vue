@@ -44,7 +44,7 @@ export default {
         path: "projects",
         additional_meta: {
           title: "Z test project " + this.$api.socket.userID,
-          $admins: "all",
+          $admins: "everyone",
         },
       });
       await new Promise((r) => setTimeout(r, 200));

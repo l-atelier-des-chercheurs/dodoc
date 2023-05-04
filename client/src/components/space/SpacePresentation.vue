@@ -64,6 +64,7 @@
     </div>
     <!-- <div class="_descriptionField">
     </div> -->
+
     <div class="_openSpace" v-if="context === 'list'">
       <!-- class="u-button u-button_bleuvert" -->
       <router-link :to="{ path: createURLFromPath(space.$path) }">
@@ -116,13 +117,15 @@ export default {
 
   // margin-bottom: calc(var(--spacing) / 2);
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &[data-context="list"]:hover {
-    border-radius: var(--panel-radius);
-    box-shadow: var(--panel-shadows);
-    background: white;
-
+  &[data-context="full"] {
     gap: calc(var(--spacing) / 2);
+  }
+  &[data-context="list"] {
+    &:hover {
+      border-radius: var(--panel-radius);
+      box-shadow: var(--panel-shadows);
+      background: white;
+    }
   }
 }
 

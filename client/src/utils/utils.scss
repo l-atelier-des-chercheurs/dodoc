@@ -770,3 +770,24 @@ details {
     }
   }
 }
+
+.u-radio {
+  label {
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: center;
+    align-items: center;
+    background: var(--c-gris_clair);
+    padding: calc(var(--spacing) / 2);
+    gap: calc(var(--spacing) / 2);
+    margin-bottom: 4px;
+
+    &:hover {
+      background: var(--c-gris);
+    }
+  }
+
+  input {
+    margin: 0;
+  }
+}

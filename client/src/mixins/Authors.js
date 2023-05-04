@@ -17,11 +17,13 @@ export default {
   methods: {
     authorIsAdmin({ folder_path }) {
       const $admins = this.$root.app_infos.instance_meta.$admins;
-      return $admins.includes(folder_path) || $admins === "all";
+      return $admins.includes(folder_path) || $admins === "everyone";
     },
     authorIsContributor({ folder_path }) {
       const $contributors = this.$root.app_infos.instance_meta.$contributors;
-      return $contributors.includes(folder_path) || $contributors === "all";
+      return (
+        $contributors.includes(folder_path) || $contributors === "everyone"
+      );
     },
     getAuthor(author_path) {
       const folder_path = author_path.substring(
@@ -33,11 +35,11 @@ export default {
     },
     setDefaultContentAdmins() {
       if (this.connected_as) return [this.$api.tokenpath.token_path];
-      return "all";
+      return "everyone";
     },
     canLoggedinEditFolder({ folder }) {
       if (this.is_instance_admin) return true;
-      if (folder.$admins === "all") return true;
+      if (folder.$admins === "everyone") return true;
       if (!this.connected_as) return false;
       if (
         Array.isArray(folder.$admins) &&
@@ -49,7 +51,7 @@ export default {
     canLoggedinContributeToFolder({ folder }) {
       if (this.canLoggedinEditFolder({ folder })) return true;
 
-      if (folder.$contributors === "all") return true;
+      if (folder.$contributors === "everyone") return true;
       if (!this.connected_as) return false;
       if (
         Array.isArray(folder.$contributors) &&

@@ -149,7 +149,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._logo,
 ._bandeau {
   width: 100%;
   max-width: 500px;

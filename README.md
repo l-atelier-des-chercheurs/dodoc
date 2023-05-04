@@ -234,14 +234,14 @@ If a folder has $creators, only people logged in with a token that matches one o
 
 If a folder has $contributors, people logged in with a token that matches one of these $contributors can not edit this folder's meta but can create/edit/remove subfolders or import/edit/remove files.
 
-If a folder has no $contributors list or `$contributors = "all"`, all users (including anonymous, non logged-in users) have contributors' permissions.
-If a folder has no $admins or `$admins = "all"`, all users (including anonymous) have admins' permissions.
+If a folder has no $contributors list or `$contributors = "everyone"`, all users (including anonymous, non logged-in users) have contributors' permissions.
+If a folder has no $admins or `$admins = "everyone"`, all users (including anonymous) have admins' permissions.
 
 These permissions trickle down: an instance admin has admin rights to all the instance contents. A space admin has admin rights to all its projects. A project admin has admin rights to all its content (medias, stopmotions, publications).
 
 An instance contributor, though, only has contributors rights to the direct content it contains. For instance, a contributor to a space can only create a project, but not remove a project he/she is not
 
-If a folder type has the property `$can_be_created_by: "all"`, this overrides the above behaviour and such folder can be create by all visitors even those that are not logged in. This is useful for accounts creation.
+If a folder type has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be create by all visitors even those that are not logged in. This is useful for accounts creation.
 
 ## Examples
 

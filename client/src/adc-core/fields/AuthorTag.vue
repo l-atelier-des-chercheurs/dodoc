@@ -10,9 +10,12 @@
       v-else
       src="https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
     />
-    <span v-if="!show_image_only">
-      {{ author.name }}
-    </span>
+    <div v-if="!show_image_only" class="_infos">
+      <div class="_name">{{ author.name }}</div>
+      <div class="_path">
+        {{ author.$path }}
+      </div>
+    </div>
     <sl-icon-button
       v-if="edit_mode"
       name="x"
@@ -62,18 +65,31 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  background: var(--c-bleumarine_clair);
+  // background: var(--c-bleumarine_clair);
   border-radius: 2em;
-  // gap: calc(var(--spacing) / 4);
+  text-decoration: none;
+  color: var(--c-noir);
+
+  gap: calc(var(--spacing) / 4);
 
   img {
     border-radius: 50%;
-    width: 1.6em;
-    height: 1.6em;
+    width: 2em;
+    height: 2em;
   }
-  span {
+  ._infos {
+    line-height: 1;
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1)
       calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+
+    ._name {
+      font-size: var(--sl-font-size-normal);
+      font-weight: 500;
+    }
+    ._path {
+      font-size: var(--sl-font-size-small);
+      font-weight: 400;
+    }
   }
 }
 sl-icon-button::part(base) {

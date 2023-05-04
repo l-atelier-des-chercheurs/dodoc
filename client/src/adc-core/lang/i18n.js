@@ -299,6 +299,9 @@ export default function () {
           "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
 
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
+        add_accounts: "Rajouter des comptes",
+        list_of_accounts: "Liste des comptes",
+        // only_accounts: "Seulement les comptes suivants",
         restart_to_apply: "Relancez do•doc pour appliquer",
         restart: "Relancer do•doc",
         reveal: "Révéler",
@@ -319,7 +322,13 @@ export default function () {
           "Indiquez ici les conditions de partage et de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
-        all: "Tout le monde",
+        everyone: "Tout le monde",
+        everyone_instr:
+          "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
+        noone: "Personne",
+        noone_instr: "Fermer à tous les comptes non-administrateurs.",
+        restricted: "Uniquement les comptes de la liste",
+        restricted_instr: "Seuls ces comptes seront autorisés.",
 
         close: "Fermer",
         settings: "Réglages",
@@ -588,14 +597,14 @@ export default function () {
         preview: "Prévisualiser",
 
         instance_admin_instructions:
-          "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, auteurs, etc.). Ils ont accès à ces réglages.",
+          "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages.",
         instance_contrib_instructions:
           "Peuvent uniquement créer des espaces et les administrer.",
 
         space_admin_instructions:
-          "Ils peuvent modifier ou supprimer cet espace et ses projets (même ceux qui sont privés).",
+          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés).",
         space_contrib_instructions:
-          "Ils peuvent uniquement créer des projets et les administrer.",
+          "Les contributeurs d’un espace peuvent uniquement créer des projets, ils ne peuvent pas modifier ou supprimer cet espace ni les projets qu’ils n’ont pas créé.",
 
         project_admin_instructions:
           "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",
@@ -613,7 +622,7 @@ export default function () {
         remove_image: "Retirer cette image",
 
         add_authors: "Ajouter des contributeur·rice·s",
-        no_authors_to_show: "Aucun auteur à afficher",
+        no_authors_to_show: "Aucun compte à afficher",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",
         line: "Ligne",
@@ -642,6 +651,8 @@ export default function () {
         remove: "Supprimer",
         remove_project: "Supprimer le projet",
         remove_media: "Supprimer le média",
+        remove_space: "Supprimer cet espace et tous ses contenus",
+
         withdraw_from_page: "Enlever de la page",
         confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",

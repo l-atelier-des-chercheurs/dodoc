@@ -16,7 +16,9 @@
           <!-- <MediaContent class="_preview" :file="file" :resolution="50" /> -->
           <DownloadFile class="_link" :file="file">
             <sl-icon name="file-earmark-arrow-down" />
-            {{ file.$media_filename }}
+            <span class="_link--filename">
+              {{ file.$media_filename }}
+            </span>
           </DownloadFile>
         </div>
 
@@ -53,7 +55,10 @@
 export default {
   props: {
     folder_path: String,
-    downloadable_files: Array,
+    downloadable_files: {
+      type: Array,
+      default: () => [],
+    },
     can_edit: Boolean,
   },
   components: {},
@@ -68,7 +73,6 @@ export default {
   watch: {},
   computed: {
     files() {
-      if (!this.downloadable_files) return [];
       return this.downloadable_files.map((meta_filename) =>
         this.getMediaInFolder({
           folder_path: this.folder_path,
@@ -78,8 +82,8 @@ export default {
     },
   },
   methods: {
-    async selectMedia({ path_to_source_media }) {
-      const new_file = this.getFilename(path_to_source_media);
+    async selectMedia({ path_to_meta }) {
+      const new_file = this.getFilename(path_to_meta);
       const files = this.downloadable_files.slice() || [];
       files.push(new_file);
       this.updateFiles(files);
@@ -121,6 +125,10 @@ export default {
 
     justify-content: space-between;
 
+    > * {
+      width: 100%;
+    }
+
     ._preview {
       width: 2rem;
       aspect-ratio: 1/1;
@@ -130,14 +138,20 @@ export default {
 
     ._link {
       display: block;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
 
       font-variant: none;
       font-weight: 400;
       letter-spacing: 0;
       font-size: var(--sl-font-size-small);
+
+      display: flex;
+      flex-flow: row nowrap;
+
+      ._link--filename {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
     }
   }
 }

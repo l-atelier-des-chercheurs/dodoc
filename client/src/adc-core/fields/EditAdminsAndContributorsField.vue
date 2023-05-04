@@ -29,8 +29,8 @@
     </div> -->
 
     <!-- <div class="_list">
-      <div v-if="admins_path === 'all'">
-        {{ $t("all") }}
+      <div v-if="admins_path === 'everyone'">
+        {{ $t("everyone") }}
       </div>
       <AuthorTag
         v-else-if="Array.isArray(admins_path)"
@@ -50,8 +50,8 @@
     </div> -->
 
     <!-- <div class="_list">
-      <div v-if="contributors_path === 'all'">
-        {{ $t("all") }}
+      <div v-if="contributors_path === 'everyone'">
+        {{ $t("everyone") }}
       </div>
       <AuthorTag
         v-else-if="Array.isArray(contributors_path)"

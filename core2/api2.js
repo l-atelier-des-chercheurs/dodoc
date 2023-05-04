@@ -257,7 +257,7 @@ module.exports = (function () {
     const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
-    // check if path_to_type in schema mentions $can_be_created_by "all"
+    // check if path_to_type in schema mentions $can_be_created_by "everyone"
     if (auth.canFolderBeCreatedByAll({ path_to_type })) {
       dev.logapi("Folder can be created by all according to schema");
       return next ? next() : undefined;

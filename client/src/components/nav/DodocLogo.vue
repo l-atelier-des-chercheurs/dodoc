@@ -4,7 +4,7 @@
       v-if="is_loaded"
       class="_dodocLogo"
       enable-background="new 0 0 515 168"
-      viewBox="0 0 515 168"
+      viewBox="10 0 515 168"
       xmlns="http://www.w3.org/2000/svg"
     >
       <g fill="var(--color1)">

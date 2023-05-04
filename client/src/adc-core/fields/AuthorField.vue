@@ -8,8 +8,13 @@
     />
 
     <div class="_authors">
-      <div v-if="authors_paths === 'all'">
-        {{ $t("all") }}
+      <div v-if="authors_paths === 'everyone'">
+        {{ $t("everyone") }}
+      </div>
+      <div
+        v-else-if="Array.isArray(authors_paths) && authors_paths.length === 0"
+      >
+        {{ $t("noone") }}
       </div>
       <AuthorTag
         v-else-if="Array.isArray(authors_paths)"
@@ -25,43 +30,88 @@
 
     <div class="_footer" v-if="edit_mode">
       <BaseModal2 @close="cancel" :title="label">
-        <div
-          v-if="instructions"
-          class="u-instructions _projectsNotice"
-          :key="'noprojects'"
-        >
+        <div v-if="instructions" class="u-instructions" :key="'noprojects'">
           {{ instructions }}
         </div>
 
+        {{ new_authors_paths }}
+        {{ Array.isArray(new_authors_paths) }}
+
         <br />
 
-        <div class="_authors">
-          <div
-            v-if="new_authors_paths.length === 0"
-            class="u-instructions _projectsNotice"
-            :key="'noprojects'"
+        <div class="u-radio">
+          <label
+            :for="'radioi-lmode-' + lmode.key"
+            v-for="lmode in [
+              {
+                key: 'everyone',
+                label: $t('everyone'),
+                instructions: $t('everyone_instr'),
+              },
+              {
+                key: 'noone',
+                label: $t('noone'),
+                instructions: $t('noone_instr'),
+              },
+              {
+                key: 'restricted',
+                label: $t('restricted'),
+                instructions: $t('restricted_instr'),
+              },
+            ]"
+            :key="lmode.key"
           >
-            {{ $t("none") }}
-          </div>
-          <AuthorTag
-            v-else
-            v-for="author_path in new_authors_paths"
-            :path="author_path"
-            :key="author_path"
-            :edit_mode="edit_mode"
-            :links_to_author_page="false"
-            @remove="removeAuthor(author_path)"
-          />
-          <!-- :links_to_author_page="!edit_mode" -->
+            <input
+              type="radio"
+              :name="lmode.key"
+              :id="'radioi-lmode-' + lmode.key"
+              :value="lmode.key"
+              :checked="
+                (lmode.key === 'everyone' &&
+                  new_authors_paths === 'everyone') ||
+                (lmode.key === 'noone' && new_authors_paths === 'noone') ||
+                (lmode.key === 'restricted' &&
+                  Array.isArray(new_authors_paths) &&
+                  new_authors_paths.length > 0)
+              "
+              :disabled="!edit_mode"
+              @input="updateMode"
+            />
+
+            <span>
+              {{ lmode.label }}<br />
+              <small class="u-instructions" v-html="lmode.instructions" />
+            </span>
+          </label>
         </div>
 
-        <br />
+        <div v-if="Array.isArray(new_authors_paths)" class="_listOfAuthors">
+          <template v-if="new_authors_paths.length > 0">
+            <DLabel class="_label" :str="$t('list_of_accounts')" />
+            <transition-group
+              tag="div"
+              class="_authors"
+              name="projectsList"
+              appear
+            >
+              <AuthorTag
+                v-for="author_path in new_authors_paths"
+                :path="author_path"
+                :key="author_path"
+                :edit_mode="edit_mode"
+                :links_to_author_page="false"
+                @remove="removeAuthor(author_path)"
+              />
+            </transition-group>
+            <br />
+          </template>
 
-        <DLabel class="_label" :str="$t('add')" />
-        <AuthorPicker
-          :current_authors="new_authors_paths"
-          @addAuthor="addAuthor"
-        />
+          <DLabel class="_label" :str="$t('add_accounts')" />
+          <AuthorPicker
+            :current_authors="new_authors_paths"
+            @addAuthor="addAuthor"
+          />
+        </div>
 
         <br />
 
@@ -91,7 +141,7 @@ export default {
     },
     authors_paths: {
       type: [String, Array],
-      default: "all",
+      default: "noone",
     },
     path: String,
     instructions: {
@@ -109,6 +159,7 @@ export default {
       edit_mode: false,
       is_saving: false,
       new_authors_paths: [],
+      new_editing_mode: [],
     };
   },
   created() {
@@ -130,11 +181,22 @@ export default {
     },
   },
   methods: {
+    updateMode(event) {
+      if (event.target.value === "everyone")
+        this.new_authors_paths = "everyone";
+      else if (event.target.value === "noone") this.new_authors_paths = "noone";
+      else if (event.target.value === "restricted") this.new_authors_paths = [];
+    },
     initAuthorPaths() {
-      if (Array.isArray(this.authors_paths)) {
+      if (this.authors_paths === "everyone") {
+        this.new_authors_paths = "everyone";
+      } else if (
+        this.authors_paths === "noone" ||
+        (Array.isArray(this.authors_paths) && this.authors_paths.length === 0)
+      ) {
+        this.new_authors_paths = "noone";
+      } else if (Array.isArray(this.authors_paths)) {
         this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
-      } else {
-        this.new_authors_paths = [];
       }
     },
     enableEditMode() {
@@ -164,9 +226,13 @@ export default {
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
 
+      let _new_authors_paths = undefined;
+      if (this.new_authors_paths === "noone") _new_authors_paths = [];
+      else _new_authors_paths = this.new_authors_paths;
+
       try {
         const new_meta = {
-          [this.field]: this.new_authors_paths,
+          [this.field]: _new_authors_paths,
         };
 
         await this.$api.updateMeta({
@@ -190,6 +256,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._listOfAuthors {
+  padding-left: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) 0;
+  border-left: 2px solid var(--c-gris);
+}
+
 ._authors {
   display: flex;
   flex-flow: row wrap;

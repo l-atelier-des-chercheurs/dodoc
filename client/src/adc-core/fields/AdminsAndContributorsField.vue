@@ -6,8 +6,8 @@
         :path="participant_path"
         :key="participant_path"
         :edit_mode="false"
-        :links_to_author_page="false"
-        :show_image_only="true"
+        :links_to_author_page="true"
+        :show_image_only="false"
       />
     </div>
 
@@ -82,4 +82,10 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._listOfAvatars {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
+}
+</style>

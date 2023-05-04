@@ -93,6 +93,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  padding: 0 calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
 
   > * {

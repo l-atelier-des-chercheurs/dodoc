@@ -7,20 +7,19 @@
           :context="'full'"
           :can_edit="can_edit_space"
         />
-        <div class="_removeBtn">
-          <RemoveMenu
-            v-if="can_edit_space"
-            :remove_text="$t('remove')"
-            @remove="removeSpace"
-          />
-        </div>
-
         <AdminsAndContributorsField
           :folder="space"
           :can_edit="can_edit_space"
           :admin_instructions="$t('space_admin_instructions')"
           :contrib_instructions="$t('space_contrib_instructions')"
         />
+        <div class="_removeBtn">
+          <RemoveMenu
+            v-if="can_edit_space"
+            :remove_text="$t('remove_space')"
+            @remove="removeSpace"
+          />
+        </div>
       </div>
 
       <div class="_projectsList">
@@ -189,8 +188,8 @@ export default {
   margin: 0 auto;
 }
 ._removeBtn {
-  display: flex;
-  justify-content: flex-end;
+  // display: flex;
+  // justify-content: flex-end;
 }
 
 ._projectsList {

@@ -74,11 +74,13 @@ module.exports = (function () {
       const { $can_be_created_by } = utils.parseAndCheckSchema({
         relative_path: path_to_type,
       });
-      return $can_be_created_by && $can_be_created_by === "all";
+      return $can_be_created_by && $can_be_created_by === "everyone";
     },
     async isFolderOpenedToAll({ field, path_to_folder = "" }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
-      return folder_meta.hasOwnProperty(field) && folder_meta[field] === "all";
+      return (
+        folder_meta.hasOwnProperty(field) && folder_meta[field] === "everyone"
+      );
     },
     async isTokenInstanceAdmin({ token_path }) {
       return await API.isTokenIncluded({

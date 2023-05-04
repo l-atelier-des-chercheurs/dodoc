@@ -91,7 +91,7 @@ export default {
   align-items: center;
   overflow: hidden;
 
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) 0;
   // padding-bottom: calc(var(--spacing) * 1);
   background: white;
   border-bottom: 1px solid var(--c-gris);
