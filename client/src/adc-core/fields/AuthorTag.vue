@@ -1,8 +1,8 @@
 <template>
   <component
-    :is="links_to_author_page ? 'a' : 'span'"
+    :is="links_to_author_page ? 'router-link' : 'span'"
     v-if="author"
-    :href="links_to_author_page ? url_to_author : false"
+    :to="links_to_author_page ? url_to_author : false"
     class="_author"
   >
     <img v-if="author.image" :src="author.image" />

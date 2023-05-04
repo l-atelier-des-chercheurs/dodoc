@@ -118,7 +118,7 @@
           </sl-tab-panel>
           <sl-tab-panel name="storage">
             <PickNativePath
-              :can_edit="is_instance_admin && $root.is_electron"
+              :can_edit="is_instance_admin && $root.app_infos.is_electron"
             />
             <br />
             <div class="u-instructions">

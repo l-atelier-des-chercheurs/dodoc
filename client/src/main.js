@@ -39,6 +39,17 @@ Vue.directive("uppercase", {
   },
 });
 
+if (window.app_infos.is_electron)
+  document.body.addEventListener("click", (event) => {
+    event.path.every((item) => {
+      if (item.tagName === "A" && item.target === "_blank")
+        window.electronAPI.send("toMain", {
+          type: "open_external",
+          url: item.href,
+        });
+    });
+  });
+
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
@@ -225,7 +236,6 @@ new Vue({
     app_infos: window.app_infos,
     is_loading: true,
     is_connected: false,
-    is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
     dev_mode: true,
     publicPath: process.env.BASE_URL,
 
