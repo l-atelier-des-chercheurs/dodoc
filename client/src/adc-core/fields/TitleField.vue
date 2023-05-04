@@ -177,9 +177,10 @@ export default {
 
 ._container {
   margin: 0;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: baseline;
+  width: 100%;
+  // display: flex;
+  // flex-flow: row wrap;
+  // align-items: baseline;
 }
 
 ._cont {
