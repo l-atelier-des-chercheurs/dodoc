@@ -5,7 +5,11 @@
     </template> -->
 
     <div v-for="author_section of show_section" :key="author_section">
-      <DLabel :str="$t(author_section)" />
+      <DLabel v-if="author_section === 'admins'" :str="$t('referent')" />
+      <DLabel
+        v-else-if="author_section === 'contributors'"
+        :str="$t('contributors')"
+      />
       <div class="_listOfAvatars">
         <template
           v-if="
