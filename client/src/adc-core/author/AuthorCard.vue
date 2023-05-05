@@ -14,6 +14,9 @@
     <div class="u-instructions" v-if="is_instance_admin">
       <small v-html="$t('admin')" />
     </div>
+    <div v-if="is_instance_admin">
+      <span v-html="author.email" />
+    </div>
 
     <br />
 

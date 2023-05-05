@@ -121,6 +121,8 @@ export default function () {
         logout: "se déconnecter",
         name_or_pseudonym: "Nom ou pseudonyme",
         email: "Courriel",
+        email_instr:
+          "Courriel de contact, uniquement visible aux administrateurs pour complément de contribution.",
         password: "Mot de passe",
         admins: "Administrateur·rice·s",
         referent: "Référent·e·s",
@@ -159,6 +161,8 @@ export default function () {
         show_description: "Afficher la description",
         hide_description: "Masquer la description",
         recover_password: "Récupérer mon de passe",
+        please_contact_to_recover:
+          "Veuillez envoyer un mail à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe.",
 
         visibility: "Visibilité",
         visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -630,6 +634,15 @@ export default function () {
         line: "Ligne",
         arrow: "Flèche",
         for_example: "Par exemple",
+        require_signup_to_contribute:
+          "Les utilisateurs doivent créer un compte pour contribuer à la plate-forme",
+        require_mail_to_signup:
+          "Un compte mail est obligatoire pour s’inscrire",
+
+        you_must_login_to_contribute:
+          "Vous devez vous inscrire ou vous connecter pour contribuer",
+        not_allowed_to_contribute_contact_referent:
+          "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":

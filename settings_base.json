@@ -321,6 +321,12 @@
       },
       "signup_password": {
         "type": "string"
+      },
+      "require_signup_to_contribute": {
+        "type": "boolean"
+      },
+      "require_mail_to_signup": {
+        "type": "boolean"
       }
     },
     "$files": {

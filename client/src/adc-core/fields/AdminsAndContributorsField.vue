@@ -1,44 +1,67 @@
 <template>
-  <div>
+  <div class="_adminsAndContributorsField">
     <!-- <template v-for="author_type of ['contributors', 'admins']">
       {{ author_type }}
     </template> -->
 
-    <div v-for="author_section of show_section" :key="author_section">
-      <DLabel v-if="author_section === 'admins'" :str="$t('referent')" />
-      <DLabel
-        v-else-if="author_section === 'contributors'"
-        :str="$t('contributors')"
-      />
-      <div class="_listOfAvatars">
-        <template
-          v-if="
-            Array.isArray(getCorrespondingPaths(author_section)) &&
-            getCorrespondingPaths(author_section).length > 0
-          "
-        >
-          <AuthorTag
-            v-for="atpath in getCorrespondingPaths(author_section)"
-            :path="atpath"
-            :key="atpath"
-            :edit_mode="false"
-            :links_to_author_page="true"
-            :show_image_only="false"
-          />
-        </template>
-        <div
-          v-else-if="getCorrespondingPaths(author_section) === 'everyone'"
-          :key="'everyone'"
-        >
-          {{ $t("everyone") }}
-        </div>
-        <div v-else :key="'none'">
-          {{ $t("none") }}
-        </div>
-      </div>
+    <div v-if="true" class="u-instructions">
+      <template
+        v-if="
+          $root.app_infos.instance_meta.require_signup_to_contribute &&
+          !connected_as
+        "
+      >
+        {{ $t("you_must_login_to_contribute") }}
+      </template>
+      <template
+        v-else-if="
+          connected_as && !canLoggedinContributeToFolder({ folder: folder })
+        "
+      >
+        {{ $t("not_allowed_to_contribute_contact_referent") }}
+      </template>
     </div>
 
-    <EditBtn v-if="can_edit" @click="edit_mode = true" />
+    <div class="_lists">
+      <div
+        v-for="author_section of show_section"
+        class=""
+        :key="author_section"
+      >
+        <DLabel v-if="author_section === 'admins'" :str="$t('referent')" />
+        <DLabel
+          v-else-if="author_section === 'contributors'"
+          :str="$t('contributors')"
+        />
+        <div class="_listOfAvatars">
+          <template
+            v-if="
+              Array.isArray(getCorrespondingPaths(author_section)) &&
+              getCorrespondingPaths(author_section).length > 0
+            "
+          >
+            <AuthorTag
+              v-for="atpath in getCorrespondingPaths(author_section)"
+              :path="atpath"
+              :key="atpath"
+              :edit_mode="false"
+              :links_to_author_page="true"
+              :show_image_only="false"
+            />
+          </template>
+          <div
+            v-else-if="getCorrespondingPaths(author_section) === 'everyone'"
+            :key="'everyone'"
+          >
+            {{ $t("everyone") }}
+          </div>
+          <div v-else :key="'none'">
+            {{ $t("none") }}
+          </div>
+        </div>
+      </div>
+      <EditBtn v-if="can_edit" @click="edit_mode = true" />
+    </div>
 
     <EditAdminsAndContributorsField
       v-if="edit_mode"
@@ -118,6 +141,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._adminsAndContributorsField {
+  > ._lists {
+    border: 2px solid var(--c-gris);
+    display: inline-flex;
+    flex-flow: row wrap;
+    padding: calc(var(--spacing) / 4);
+    gap: calc(var(--spacing) / 2);
+  }
+}
 ._listOfAvatars {
   display: flex;
   flex-flow: row wrap;

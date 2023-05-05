@@ -204,6 +204,8 @@ export default function () {
           updateProps({ changed_data, folder_to_update: this.store[path] });
         }
 
+        if (path === "") return;
+
         // parent folder path
         const parent_folder_path = path.substr(0, path.lastIndexOf("/"));
         if (

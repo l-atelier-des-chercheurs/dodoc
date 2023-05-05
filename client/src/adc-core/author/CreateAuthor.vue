@@ -27,9 +27,10 @@
         <TextInput
           :content.sync="new_author_email"
           :label_str="'email'"
-          :required="false"
+          :required="$root.app_infos.instance_meta.require_mail_to_signup"
           :input_type="'email'"
           :autocomplete="'email'"
+          :instructions="$t('email_instr')"
           @toggleValidity="($event) => (allow_save = $event)"
         />
 

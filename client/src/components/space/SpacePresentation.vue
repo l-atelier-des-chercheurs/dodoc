@@ -71,8 +71,9 @@
       />
 
       <template v-if="context === 'full'">
+        <br />
+        <!-- :show_section="['contributors']" -->
         <AdminsAndContributorsField
-          :show_section="['contributors']"
           :folder="space"
           :can_edit="can_edit"
           :admin_instructions="$t('space_admin_instructions')"

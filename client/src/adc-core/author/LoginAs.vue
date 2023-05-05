@@ -24,9 +24,26 @@
           @toggleValidity="($event) => (allow_save = $event)"
         />
 
-        <button type="button" class="u-buttonLink">
+        <button
+          type="button"
+          class="u-buttonLink"
+          :class="{
+            'is--active': show_recover_instr,
+          }"
+          @click="show_recover_instr = !show_recover_instr"
+        >
           {{ $t("recover_password") }}
         </button>
+
+        <div class="u-instructions" v-if="show_recover_instr">
+          {{ $t("please_contact_to_recover") }} <br />
+          <a
+            :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+            target="_blank"
+          >
+            {{ $root.app_infos.instance_meta.contactmail }}
+          </a>
+        </div>
 
         <br />
         <br />
@@ -48,6 +65,7 @@ export default {
     return {
       name_of_account: "",
       input_password: "",
+      show_recover_instr: false,
     };
   },
   created() {},

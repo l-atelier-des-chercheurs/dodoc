@@ -54,6 +54,9 @@
         </button>
       </div>
     </div>
+    <div v-if="instructions">
+      <small class="u-instructions" v-html="instructions" />
+    </div>
   </div>
 </template>
 <script>
@@ -76,6 +79,9 @@ export default {
     content: {
       type: String,
       default: "",
+    },
+    instructions: {
+      type: String,
     },
     required: {
       type: Boolean,

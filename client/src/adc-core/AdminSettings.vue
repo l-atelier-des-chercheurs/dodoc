@@ -85,6 +85,25 @@
               :admin_instructions="$t('instance_admin_instructions')"
               :contrib_instructions="$t('instance_contrib_instructions')"
             />
+            <br />
+
+            <ToggleField
+              :label="$t('require_signup_to_contribute')"
+              :field_name="'require_signup_to_contribute'"
+              :content="settings.require_signup_to_contribute === true"
+              :path="settings.$path"
+              :can_edit="is_instance_admin"
+            />
+            <br />
+
+            <ToggleField
+              :label="$t('require_mail_to_signup')"
+              :field_name="'require_mail_to_signup'"
+              :content="settings.require_mail_to_signup === true"
+              :path="settings.$path"
+              :can_edit="is_instance_admin"
+            />
+            <br />
 
             <TitleField
               :field_name="'general_password'"
@@ -96,7 +115,6 @@
               :required="false"
               :can_edit="is_instance_admin"
             />
-
             <br />
 
             <TitleField
@@ -159,11 +177,10 @@ export default {
         path: "",
       })
       .catch((err) => {
-        return err;
-      })
-      .finally(() => {
         this.is_loading = false;
+        return err;
       });
+    this.is_loading = false;
     this.$api.join({ room: this.settings.$path });
   },
   beforeDestroy() {

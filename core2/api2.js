@@ -463,6 +463,8 @@ module.exports = (function () {
       $cover,
       general_password,
       signup_password,
+      require_signup_to_contribute,
+      require_mail_to_signup,
       $admins,
       $contributors,
     } = await settings.get();
@@ -473,6 +475,8 @@ module.exports = (function () {
     d.cover_of_instance = $cover || {};
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
+    d.require_signup_to_contribute = require_signup_to_contribute === true;
+    d.require_mail_to_signup = require_mail_to_signup === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
 
