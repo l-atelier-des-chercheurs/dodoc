@@ -265,10 +265,11 @@ module.exports = (function () {
 
     try {
       if (
-        await auth.isFolderOpenedToAll({
+        (await auth.isFolderOpenedToAll({
           field: "$contributors",
           path_to_folder,
-        })
+        })) ||
+        (await auth.isFolderOpenedToAll({ field: "$admins", path_to_folder }))
       ) {
         dev.logapi("Folder opened to any contributors");
         return next ? next() : undefined;

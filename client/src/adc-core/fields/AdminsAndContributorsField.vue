@@ -26,7 +26,7 @@
           v-else-if="getCorrespondingPaths(author_section) === 'everyone'"
           :key="'everyone'"
         >
-          {{ $t("everyone_can_contribute") }}
+          {{ $t("everyone") }}
         </div>
         <div v-else :key="'none'">
           {{ $t("none") }}
