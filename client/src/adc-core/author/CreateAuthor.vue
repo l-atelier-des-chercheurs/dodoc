@@ -27,9 +27,10 @@
         <TextInput
           :content.sync="new_author_email"
           :label_str="'email'"
-          :required="false"
+          :required="$root.app_infos.instance_meta.require_mail_to_signup"
           :input_type="'email'"
           :autocomplete="'email'"
+          :instructions="$t('email_instr')"
           @toggleValidity="($event) => (allow_save = $event)"
         />
 
@@ -45,18 +46,6 @@
           :autocomplete="'new-password'"
           @toggleValidity="($event) => (allow_save = $event)"
         />
-
-        <br />
-
-        <DLabel :str="$t('role')" />
-        <select v-model="new_author_role" :disabled="!is_first_user">
-          <option
-            v-for="option in author_roles"
-            :key="option"
-            :value="option"
-            v-text="$t(option)"
-          />
-        </select>
 
         <br />
 
@@ -87,10 +76,8 @@ export default {
       new_author_email: "",
       new_author_name: "",
       new_author_password: "",
-      new_author_role: "contributor",
       new_author_cover_raw: undefined,
 
-      author_roles: ["contributor", "admin"],
       is_creating_author: false,
       error_msg: "",
     };
@@ -105,13 +92,14 @@ export default {
       this.is_creating_author = true;
 
       try {
+        // check existing used author
+
         const author_slug = await this.$api.createFolder({
           path: "/authors",
           additional_meta: {
             email: this.new_author_email,
             name: this.new_author_name,
             requested_slug: this.new_author_name,
-            role: this.new_author_role,
             $status: "public",
             $password: this.new_author_password,
           },
@@ -125,10 +113,11 @@ export default {
         });
         this.$emit("close");
       } catch (err) {
-        this.error_msg = "Error: " + err.message;
-        setTimeout(() => {
-          this.error_msg = "";
-        }, 5000);
+        if (err.code === "unique_field_taken") {
+          this.$alertify.delay(4000).error(this.$t("notifications.name_taken"));
+          this.$refs.titleInput.$el.querySelector("input").select();
+        }
+        this.is_creating_space = false;
       }
       this.is_creating_author = false;
     },

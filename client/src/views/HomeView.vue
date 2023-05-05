@@ -18,15 +18,35 @@
       <!-- <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" /> -->
 
       <h1 v-html="name || $t('welcome_to_dodoc')" />
-      <p v-html="description || $t('admins_edit_text_here')" />
+      <div>
+        <template v-if="description">
+          <p v-html="description" />
+        </template>
+        <template v-else>
+          <template v-if="!is_instance_admin">
+            <p v-html="$t('admins_edit_text_here')" />
+          </template>
+          <template v-else>
+            <p v-html="$t('admins_edit_text_below')" />
+            <button
+              type="button"
+              class="u-button u-button_bleuvert"
+              @click="show_settings_modal = !show_settings_modal"
+            >
+              <sl-icon name="gear-fill" />
+              &nbsp;{{ $t("settings") }}
+            </button>
+          </template>
+        </template>
+      </div>
 
-      <p v-if="$root.app_infos.contactmail_of_instance">
+      <p v-if="$root.app_infos.instance_meta.contactmail">
         {{ $t("contactmail_of_instance") }}
         <a
-          :href="'mailto:' + $root.app_infos.contactmail_of_instance"
+          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
           target="_blank"
         >
-          {{ $root.app_infos.contactmail_of_instance }}
+          {{ $root.app_infos.instance_meta.contactmail }}
         </a>
       </p>
 
@@ -58,18 +78,22 @@
 
       <br />
 
-      <template v-if="current_mode === 'spaces'">
-        <div class="u-instructions _content">
-          <small v-html="$t('spaces_instr')" />
+      <transition name="pagechange" mode="out-in">
+        <div :key="current_mode">
+          <template v-if="current_mode === 'spaces'">
+            <div class="u-instructions _content">
+              <small v-html="$t('spaces_instr')" />
+            </div>
+            <SpacesList />
+          </template>
+          <template v-else-if="current_mode === 'projects'">
+            <div class="u-instructions _content">
+              <small v-html="$t('all_projects_instr')" />
+            </div>
+            <AllProjects />
+          </template>
         </div>
-        <SpacesList />
-      </template>
-      <template v-else-if="current_mode === 'projects'">
-        <div class="u-instructions _content">
-          <small v-html="$t('all_projects_instr')" />
-        </div>
-        <AllProjects />
-      </template>
+      </transition>
     </div>
 
     <div class="">
@@ -77,14 +101,14 @@
         <button
           type="button"
           class="u-button u-button_bleuvert"
-          v-if="is_admin"
+          v-if="is_instance_admin"
           @click="show_settings_modal = !show_settings_modal"
         >
           <sl-icon name="gear-fill" />
           &nbsp;{{ $t("settings") }}
         </button>
-        <template v-if="is_admin"> – </template>
-        version {{ $root.app_infos.version }}
+        <template v-if="is_instance_admin"> – </template>
+        {{ $t("version") }} {{ $root.app_infos.version }}
       </small>
     </div>
   </div>
@@ -112,10 +136,10 @@ export default {
   },
   computed: {
     name() {
-      return this.$root.app_infos.name_of_instance;
+      return this.$root.app_infos.instance_meta.name;
     },
     description() {
-      return this.$root.app_infos.presentation_of_instance.replace(
+      return this.$root.app_infos.instance_meta.presentation.replace(
         /(?:\r\n|\r|\n)/g,
         "<br />"
       );
@@ -125,7 +149,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._logo,
 ._bandeau {
   width: 100%;
   max-width: 500px;
@@ -135,6 +158,9 @@ export default {
 ._homeView {
   min-height: calc(100vh - 60px);
   max-height: -webkit-fill-available;
+
+  display: flex;
+  flex-direction: column;
 
   // display: flex;
   // flex-flow: column nowrap;
@@ -147,8 +173,8 @@ export default {
 ._homeView--content {
   max-width: 600px;
   width: 100%;
-  min-height: 40vh;
-  min-height: calc(60vh - 60px);
+  // min-height: 40vh;
+  // min-height: calc(60vh - 60px);
   margin: 0 auto;
   padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 
@@ -198,6 +224,7 @@ export default {
 }
 
 ._bottomCont {
-  min-height: 80vh;
+  flex: 1;
+  // min-height: 80vh;
 }
 </style>

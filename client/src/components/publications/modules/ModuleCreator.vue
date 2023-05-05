@@ -184,16 +184,17 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async createMosaic({ meta_filename, path_to_source_media }) {
+    async createMosaic({ meta_filename, path_to_source_media_meta }) {
       // if meta_filename, file is stored in publication
       // if path_to_source_media, we get metafilename
       let source_media = {};
 
       if (meta_filename) {
         source_media.meta_filename = meta_filename;
-      } else if (path_to_source_media) {
-        source_media.meta_filename_in_project =
-          this.getFilename(path_to_source_media);
+      } else if (path_to_source_media_meta) {
+        source_media.meta_filename_in_project = this.getFilename(
+          path_to_source_media_meta
+        );
       }
       if (this.context === "page_by_page") source_media.objectFit = "contain";
 

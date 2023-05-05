@@ -14,11 +14,11 @@
 
       <div class="">
         <ToggleInput
-          :content.sync="new_project_is_invisible"
-          :label="$t('invisible')"
+          :content.sync="new_project_is_private"
+          :label="$t('private')"
           :options="{
-            true: $t('invisible_status_explanations_projects'),
-            false: $t('visible_status_explanations_projects'),
+            true: $t('private_status_explanations_projects'),
+            false: $t('public_status_explanations_projects'),
           }"
         />
       </div>
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       new_project_title: "",
-      new_project_is_invisible: false,
+      new_project_is_private: false,
 
       is_creating_project: false,
       allow_save: false,
@@ -66,19 +66,17 @@ export default {
   methods: {
     async createProject() {
       this.is_creating_project = true;
+      const $admins = this.setDefaultContentAdmins();
 
-      // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
           path: this.path,
           additional_meta: {
             title: this.new_project_title,
             requested_slug: this.new_project_title,
-            status: "draft",
             license: "CC",
-            $status:
-              this.new_project_is_invisible === true ? "invisible" : "draft",
-            $authors: [this.$api.tokenpath.token_path],
+            $status: this.new_project_is_private === true ? "private" : "draft",
+            $admins,
           },
         });
         setTimeout(() => {

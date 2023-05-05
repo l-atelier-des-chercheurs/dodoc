@@ -3,9 +3,11 @@
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
     <div class="">
       <div class="_projectInfos--cover">
-        <img :src="cover_thumb" @click="$emit('open')" />
-        <transition name="fade_fast" :duration="150" mode="out-in">
-          <LoaderSpinner v-if="is_making_preview" />
+        <img v-if="cover_thumb" :src="cover_thumb" @click="$emit('open')" />
+        <transition name="fade_fast">
+          <div class="_previewProgress" v-if="is_making_preview">
+            <AnimatedCounter :value="preview_progress" />
+          </div>
         </transition>
         <button
           type="button"
@@ -54,6 +56,7 @@ export default {
   data() {
     return {
       is_making_preview: false,
+      preview_progress: 0,
     };
   },
   created() {},
@@ -88,11 +91,23 @@ export default {
         path: this.publication.$path,
         instructions,
       });
+      this.$api.join({ room: "task_" + current_task_id });
+
+      const updateProgressPercent = ({ task_id, progress }) => {
+        if (task_id === current_task_id) this.preview_progress = +progress;
+      };
+      this.$eventHub.$on("task.status", updateProgressPercent);
 
       const checkIfEnded = ({ task_id }) => {
         if (task_id !== current_task_id) return;
-        this.is_making_preview = false;
+        this.preview_progress = 100;
+        setTimeout(() => {
+          this.is_making_preview = false;
+          this.preview_progress = 0;
+        }, 2000);
         this.$eventHub.$off("task.ended", checkIfEnded);
+        this.$eventHub.$off("task.status", updateProgressPercent);
+        this.$api.leave({ room: "task_" + current_task_id });
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
@@ -131,5 +146,20 @@ export default {
   top: 0;
   right: 0;
   margin: calc(var(--spacing) / 4);
+}
+
+._previewProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+
+  padding: calc(var(--spacing) * 1);
+  font-family: "Fira Code";
 }
 </style>

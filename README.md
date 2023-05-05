@@ -1,4 +1,4 @@
-![do•doc logo](/client/public/images/i_logo.svg)
+![do•doc logo](/client/public/i_logo.svg)
 
 # do•doc
 
@@ -167,57 +167,87 @@ Folders contain a meta.txt file and media files (images, videos, audios, 3D/stl,
 
 Default values are:
 
-- $authors (Array) = list of authors paths, can be edited by users
-- $cover (Object) = if a meta_cover.jpeg is present in the root of the folder, can be edited by authors
-- $date_created (Date) = when the folder was created
-- $date_modified (Date) = when the folder was last edited
-- $files (Array) = list of all the files in this folder (see Files below)
-- $status (String) = determines whether the folder gets listed when getFolders is called by non-authors (invisible means not listed, anything else means listed), can be edited by authors
-- $password (String, stored as hash) = limit editing to users with password, can be edited by authors
-- $path (String) = path to folder, matches filesystem structure and URL
-- $infos (Object) = data gathered from the folder itself
-  - size (Number) = size in bytes
+```
+- $admins           (Array, editable)                     list of admins paths
+- $contributors     (Array, editable)                     list of contributors paths
+- $cover            (Object, editable)                    if a meta_cover.jpeg is present in the root of the folder
+- $date_created     (Date)                                when the folder was created
+- $date_modified    (Date)                                when the folder was last edited
+- $files            (Array)                               list of all the files in this folder (see Files below)
+- $status           (String, editable)                    determines whether the folder gets listed
+- $password         (String, editable, stored as hash)    limit editing to users with password
+- $path             (String)                              path to folder, matches filesystem structure and URL
+- $infos            (Object)                              data gathered from the folder itself
+  - size            (Number)                              size in bytes
+```
 
 Custom values can be defined in the schema property in settings_base.json.
+Editable default values and all custom values can only be edited by an $admins.
 
 ### Files
 
 Each file has default values and custom values as well.
 Default values are:
 
-- $path (String) = path to meta text file, matches filesystem structure and URL, can’t be changed
-- $date_created (Date) = when the file was created
-- $date_uploaded (Date) = when the file was uploaded
-- $date_modified (Date) = when the file was last edited
-- $media_filename (String) = name of the file
-- $type (String) = type of media file among the following: _image, video, audio, stl, text, pdf, other_
-- $authors (Array) = list of authors paths, can be edited by users
-- $status (String) = determines whether the file gets listed when getFiles is called by non-authors (invisible means not listed, anything else means listed), can be edited by authors
-- $thumbs (object) = list of possible media image thumbs
-- $content (String) = text content of a file
-- $infos (object) = data gathered from the file itself
-  - mtimems (Date) = last modified time for media file
-  - width (Number) = for images
-  - height (Number) = for images
-  - ratio (Number) = for images
-  - size (Number) = size in bytes
-  - gps (Object)
+```
+- $admins           (Array, editable)                     list of admins paths
+- $contributors     (Array, editable)                     list of contributors paths
+- $path             (String)                              path to meta text file, matches filesystem structure and URL
+- $date_created     (Date)                                when the file was created
+- $date_uploaded    (Date)                                when the file was uploaded
+- $date_modified    (Date)                                when the file was last edited
+- $media_filename   (String)                              name of the file
+- $type             (String)                              type of media file among the following: _image, video, audio, stl, text, pdf, other_
+- $status           (String, editable)                    determines whether the file gets listed when getFiles is called by non-authors
+- $thumbs           (object)                              list of possible media image thumbs
+- $content          (String)                              text content of a file
+- $infos            (object)                              data gathered from the file itself
+  - mtimems         (Date)                                last modified time for media file
+  - duration        (Number)                              for videos and audios
+  - width           (Number)                              for images and videos
+  - height          (Number)                              for images and videos
+  - ratio           (Number)                              for images and videos
+  - size            (Number)                              size in bytes
+  - gps             (Object)
+  - hash            (String)                              file hash (to find duplicates)
+```
 
 Custom values can be defined in the schema property in settings_base.json.
+Editable default values and all custom values can only be edited by an $admins.
 
-## Status and visibility
+## Security and visibility
 
-Each folder and each file have a "$status" property, which defines who can list them using getFolders or getFiles:
+### Status
 
-- by default, it is set to **invisible**. This folder will only be listed by their respective authors and instance admins.
-- if set to anything else, all calls will list this folder publicly (editing is still restricted to authors)
+Each folder and each file have a "$status" property, which defines who can read them using getFolders, getFolder, getFiles and getFile:
 
-If a folder has a $password, then this ressource and its content can only be edited by persons that are logged in to this folder using its password.
-If a folder has $authors, only persons logged in to authors with this path can edit this ressource and its content.
+- by default, it is set to **private**: folder will only be listed by their respective authors and instance admins.
+- otherwise, if set to anything else, they will be listed by anyone (loggedin or not, as long as they have access to dodoc)
 
-## Recursivity
+### Password
 
-Path to ressource is decomposed like this:
+If a folder has a $password, then this ressource and its content can only be edited by people that are logged in to this folder using its password.
+
+### Editing
+
+If a folder has $creators, only people logged in with a token that matches one of these $creator path can edit/remove this folder's meta and its subfolders.
+
+If a folder has $contributors, people logged in with a token that matches one of these $contributors can not edit this folder's meta but can create/edit/remove subfolders or import/edit/remove files.
+
+If a folder has no $contributors list or `$contributors = "everyone"`, all users (including anonymous, non logged-in users) have contributors' permissions.
+If a folder has no $admins or `$admins = "everyone"`, all users (including anonymous) have admins' permissions.
+
+These permissions trickle down: an instance admin has admin rights to all the instance contents. A space admin has admin rights to all its projects. A project admin has admin rights to all its content (medias, stopmotions, publications).
+
+An instance contributor, though, only has contributors rights to the direct content it contains. For instance, a contributor to a space can only create a project, but not remove a project he/she is not
+
+If a folder type has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be create by all visitors even those that are not logged in. This is useful for accounts creation.
+
+## Examples
+
+### Schema and path
+
+The path to a ressource is decomposed like this:
 
 `/type-of-ressource/name-of-ressource/type-of-child-ressource/name-of-child-ressource`
 
@@ -226,41 +256,50 @@ For example, with the following schema:
 ```
 {
   "schema": {
-    "projects": {
-      "$cover": {
-        "width": 1200,
-        "height": 1200,
-        "thumbs": {
-          "resolutions": [50, 320, 640, 1200]
-        }
-      },
-      "fields": {
-        "title": {
-          "type": "string"
-        }
-      },
-      "$files": {
-        "thumbs": {
-          "resolutions": [180, 360, 1600]
+    "$folders": {
+      "spaces": {
+        "$cover": {
+          "width": 1200,
+          "height": 1200,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 1200]
+          }
         },
         "fields": {
-          "caption": {
+          "title": {
             "type": "string"
           }
-        }
-      },
-      "$folders": {
-        "publications": {
-          "$cover": {
-            "width": 1200,
-            "height": 1200,
-            "thumbs": {
-              "resolutions": [50, 320, 640, 1200]
-            }
-          },
-          "fields": {
-            "title": {
-              "type": "string"
+        },
+        "$folders": {
+          "projects": {
+            "$cover": {
+              "width": 2000,
+              "height": 2000,
+              "thumbs": {
+                "resolutions": [50, 320, 640, 2000]
+              }
+            },
+            "fields": {
+              "title": {
+                "type": "string",
+                "unique": true
+              }
+            },
+            "$folders": {
+              "publications": {
+                "$cover": {
+                  "width": 1200,
+                  "height": 1200,
+                  "thumbs": {
+                    "resolutions": [50, 320, 640, 1200]
+                  }
+                },
+                "fields": {
+                  "title": {
+                    "type": "string"
+                  }
+                }
+              }
             }
           }
         }
@@ -272,14 +311,29 @@ For example, with the following schema:
 
 Then the following routes will redirect to:
 
-- /projects
-  --> returns a list of all folders in /projects with their metas
+- /spaces
+  --> returns a list of all folders in /spaces with their metas
 
-- /projects/bonjour
+- /spaces/bonjour
   --> returns the meta of a single "bonjour" folder with a list of all their files with their metas
 
-- /projects/bonjour/publications
-  --> returns a list of all folders in /projects/bonjour/publications with their metas
+- /spaces/bonjour/projects
+  --> returns a list of all folders in /spaces/bonjour/projects with their metas
 
-- /projects/bonjour/publications/first-tutorial
-  --> return the meta of a single "first-tutorial" folder with a list of all their files with their metas
+- /spaces/bonjour/projects/elephant-with-plywood
+  --> return the meta of a single "elephant-with-plywood" folder with a list of all their files with their metas
+
+### Permission
+
+For an existing folder:
+
+```
+Role                  | Edit | Upload file | Create subfolder | Export | Copy | GeneratePreview |
+-------------------------------------------------------------------------------------------------
+Instance admins       |   x  |     x       |        x         |    x   |   x  |        x        |
+Folder $admins        |   x  |     x       |        x         |    x   |   x  |        x        |
+Folder $contributors  |      |     x       |        x         |        |      |                 |
+-------------------------------------------------------------------------------------------------
+```
+
+So, for example for a space /bonjour, its $admins can edit all meta properties while a contributor can only import/edit/remove files, and create projects (of which they'll be $admins by default).

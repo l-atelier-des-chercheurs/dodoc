@@ -299,299 +299,332 @@
     }
   },
   "schema": {
-    "spaces": {
-      "$cover": {
-        "width": 2000,
-        "height": 2000,
-        "thumbs": {
-          "resolutions": [50, 320, 640, 2000]
-        }
+    "$cover": {
+      "width": 2000,
+      "height": 2000,
+      "thumbs": {
+        "resolutions": [50, 320, 640, 2000]
+      }
+    },
+    "fields": {
+      "name_of_instance": {
+        "type": "string"
       },
-      "fields": {
-        "title": {
-          "type": "string",
-          "unique": true
-        },
-        "subtitle": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
+      "presentation_of_instance": {
+        "type": "string"
       },
-      "$files": {},
-      "$folders": {
-        "projects": {
-          "$cover": {
-            "width": 2000,
-            "height": 2000,
-            "thumbs": {
-              "resolutions": [50, 320, 640, 2000]
-            }
+      "contactmail_of_instance": {
+        "type": "string"
+      },
+      "general_password": {
+        "type": "string"
+      },
+      "signup_password": {
+        "type": "string"
+      },
+      "require_signup_to_contribute": {
+        "type": "boolean"
+      },
+      "require_mail_to_signup": {
+        "type": "boolean"
+      }
+    },
+    "$files": {
+      "thumbs": {
+        "resolutions": [50, 220, 1600]
+      },
+      "fields": {}
+    },
+    "$folders": {
+      "spaces": {
+        "$cover": {
+          "width": 2000,
+          "height": 2000,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 2000]
+          }
+        },
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
           },
-          "fields": {
-            "title": {
-              "type": "string",
-              "unique": true
-            },
-            "keywords": {
-              "type": "array"
-            },
-            "materials": {
-              "type": "array"
-            },
-            "description": {
-              "type": "string"
-            },
-            "folder": {
-              "type": "string"
-            },
-            "downloadable_files": {
-              "type": "array"
-            },
-            "license": {
-              "type": "string",
-              "options": ["CC", "all_rights_reserved", "copyleft"],
-              "default": "CC"
-            },
-            "authors_list": {
-              "type": "string"
-            },
-            "level": {
-              "type": "string"
-            }
+          "subtitle": {
+            "type": "string"
           },
-          "$files": {
-            "thumbs": {
-              "resolutions": [50, 220, 1600]
+          "description": {
+            "type": "string"
+          }
+        },
+        "$files": {},
+        "$folders": {
+          "projects": {
+            "$cover": {
+              "width": 2000,
+              "height": 2000,
+              "thumbs": {
+                "resolutions": [50, 320, 640, 2000]
+              }
             },
             "fields": {
-              "caption": {
+              "title": {
+                "type": "string",
+                "unique": true
+              },
+              "keywords": {
+                "type": "array"
+              },
+              "materials": {
+                "type": "array"
+              },
+              "description": {
+                "type": "string"
+              },
+              "folder": {
+                "type": "string"
+              },
+              "downloadable_files": {
+                "type": "array"
+              },
+              "license": {
+                "type": "string",
+                "options": ["CC", "all_rights_reserved", "copyleft"],
+                "default": "CC"
+              },
+              "authors_list": {
+                "type": "string"
+              },
+              "level": {
                 "type": "string"
               }
-            }
-          },
-          "$folders": {
-            "stopmotions": {
-              "fields": {
-                "images_list": {
-                  "type": "array"
-                }
+            },
+            "$files": {
+              "thumbs": {
+                "resolutions": [50, 220, 1600]
               },
-              "$files": {
-                "thumbs": {
-                  "resolutions": [240, 1600]
+              "fields": {
+                "caption": {
+                  "type": "string"
                 }
               }
             },
-            "remixes": {
-              "fields": {
-                "title": {
-                  "type": "string",
-                  "unique": true
-                },
-                "type": {
-                  "type": "string"
-                },
-                "modules_list": {
-                  "type": "array"
-                }
-              },
-              "$files": {
+            "$folders": {
+              "stopmotions": {
                 "fields": {
-                  "module_type": {
-                    "type": "string"
-                  },
-                  "source_medias": {
+                  "images_list": {
                     "type": "array"
                   }
-                }
-              }
-            },
-            "publications": {
-              "$cover": {
-                "width": 2000,
-                "height": 2000,
-                "thumbs": {
-                  "resolutions": [50, 320, 640, 2000]
+                },
+                "$files": {
+                  "thumbs": {
+                    "resolutions": [240, 1600]
+                  }
                 }
               },
-              "fields": {
-                "title": {
-                  "type": "string",
-                  "unique": true
+              "remixes": {
+                "fields": {
+                  "title": {
+                    "type": "string",
+                    "unique": true
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "modules_list": {
+                    "type": "array"
+                  }
                 },
-                "template": {
-                  "type": "string",
-                  "options": [
-                    "page_by_page",
-                    "carreau",
-                    "story",
-                    "face_masks",
-                    "image_tracking"
-                  ],
-                  "default": "page_by_page"
-                },
-                "modules_list": {
-                  "type": "array"
-                },
-                "pages": {
-                  "type": "array"
-                },
-                "layout_mode": {
-                  "type": "string"
-                },
-                "story_width": {
-                  "type": "number"
-                },
-                "story_is_not_responsive": {
-                  "type": "boolean"
-                },
-                "page_width": {
-                  "type": "number"
-                },
-                "page_height": {
-                  "type": "number"
-                },
-                "page_spreads": {
-                  "type": "boolean"
-                },
-                "page_margin_top": {
-                  "type": "number"
-                },
-                "page_margin_bottom": {
-                  "type": "number"
-                },
-                "page_margin_left": {
-                  "type": "number"
-                },
-                "page_margin_right": {
-                  "type": "number"
-                },
-                "enable_pagination": {
-                  "type": "boolean"
-                },
-                "pagn_starts_on_page": {
-                  "type": "number"
-                },
-                "pagn_right": {
-                  "type": "number"
-                },
-                "pagn_bottom": {
-                  "type": "number"
+                "$files": {
+                  "fields": {
+                    "module_type": {
+                      "type": "string"
+                    },
+                    "source_medias": {
+                      "type": "array"
+                    }
+                  }
                 }
               },
-              "$files": {
-                "thumbs": {
-                  "resolutions": [180, 360, 1600]
+              "publications": {
+                "$cover": {
+                  "width": 2000,
+                  "height": 2000,
+                  "thumbs": {
+                    "resolutions": [50, 320, 640, 2000]
+                  }
                 },
                 "fields": {
-                  "module_type": {
-                    "type": "string"
+                  "title": {
+                    "type": "string",
+                    "unique": true
                   },
-                  "source_medias": {
+                  "template": {
+                    "type": "string",
+                    "options": [
+                      "page_by_page",
+                      "carreau",
+                      "story",
+                      "face_masks",
+                      "image_tracking"
+                    ],
+                    "default": "page_by_page"
+                  },
+                  "modules_list": {
                     "type": "array"
                   },
-                  "size": {
-                    "type": "number"
+                  "pages": {
+                    "type": "array"
                   },
-                  "page_id": {
+                  "layout_mode": {
                     "type": "string"
                   },
-                  "align": {
-                    "type": "string"
-                  },
-                  "x": {
+                  "story_width": {
                     "type": "number"
                   },
-                  "y": {
-                    "type": "number"
-                  },
-                  "width": {
-                    "type": "number"
-                  },
-                  "height": {
-                    "type": "number"
-                  },
-                  "rotation": {
-                    "type": "number"
-                  },
-                  "text_size": {
-                    "type": "number"
-                  },
-                  "opacity": {
-                    "type": "number"
-                  },
-                  "margins": {
-                    "type": "number"
-                  },
-                  "background_color": {
-                    "type": "string"
-                  },
-                  "outline_color": {
-                    "type": "string"
-                  },
-                  "outline_width": {
-                    "type": "number"
-                  },
-                  "border_radius": {
-                    "type": "number"
-                  },
-                  "locked": {
+                  "story_is_not_responsive": {
                     "type": "boolean"
                   },
-                  "z_index": {
+                  "page_width": {
                     "type": "number"
                   },
-                  "show_fs_button": {
+                  "page_height": {
+                    "type": "number"
+                  },
+                  "page_spreads": {
                     "type": "boolean"
+                  },
+                  "page_margin_top": {
+                    "type": "number"
+                  },
+                  "page_margin_bottom": {
+                    "type": "number"
+                  },
+                  "page_margin_left": {
+                    "type": "number"
+                  },
+                  "page_margin_right": {
+                    "type": "number"
+                  },
+                  "enable_pagination": {
+                    "type": "boolean"
+                  },
+                  "pagn_starts_on_page": {
+                    "type": "number"
+                  },
+                  "pagn_right": {
+                    "type": "number"
+                  },
+                  "pagn_bottom": {
+                    "type": "number"
+                  }
+                },
+                "$files": {
+                  "thumbs": {
+                    "resolutions": [180, 360, 1600]
+                  },
+                  "fields": {
+                    "module_type": {
+                      "type": "string"
+                    },
+                    "source_medias": {
+                      "type": "array"
+                    },
+                    "size": {
+                      "type": "number"
+                    },
+                    "page_id": {
+                      "type": "string"
+                    },
+                    "align": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
+                    },
+                    "rotation": {
+                      "type": "number"
+                    },
+                    "text_size": {
+                      "type": "number"
+                    },
+                    "opacity": {
+                      "type": "number"
+                    },
+                    "margins": {
+                      "type": "number"
+                    },
+                    "background_color": {
+                      "type": "string"
+                    },
+                    "outline_color": {
+                      "type": "string"
+                    },
+                    "outline_width": {
+                      "type": "number"
+                    },
+                    "border_radius": {
+                      "type": "number"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "z_index": {
+                      "type": "number"
+                    },
+                    "show_fs_button": {
+                      "type": "boolean"
+                    }
                   }
                 }
               }
             }
           }
         }
-      }
-    },
-    "authors": {
-      "$cover": {
-        "width": 1200,
-        "height": 1200,
-        "thumbs": {
-          "resolutions": [50, 320, 640, 1200]
+      },
+      "authors": {
+        "$can_be_created_by": "everyone",
+        "$cover": {
+          "width": 1200,
+          "height": 1200,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 1200]
+          }
+        },
+        "fields": {
+          "email": {
+            "type": "string",
+            "required": false,
+            "unique": true
+          },
+          "name": {
+            "type": "string",
+            "required": true,
+            "unique": true
+          }
         }
       },
-      "fields": {
-        "email": {
-          "type": "string",
-          "required": false,
-          "unique": true
+      "fonts": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true,
+            "unique": true
+          },
+          "font_files": {
+            "type": "object"
+          }
         },
-        "name": {
-          "type": "string",
-          "required": true,
-          "unique": true
-        },
-        "role": {
-          "type": "string",
-          "options": ["contributor", "admin"],
-          "default": "contributor",
-          "only_admins_can_edit": true
-        }
+        "$files": {}
       }
-    },
-    "fonts": {
-      "fields": {
-        "title": {
-          "type": "string",
-          "required": true,
-          "unique": true
-        },
-        "font_files": {
-          "type": "object"
-        }
-      },
-      "$files": {}
     }
   }
 }

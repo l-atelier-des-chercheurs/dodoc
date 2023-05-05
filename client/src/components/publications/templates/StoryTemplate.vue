@@ -16,7 +16,6 @@
           @save="updatePubliMeta({ story_width: $event })"
         />
         <ToggleInput
-          class="u-spacingBottom"
           :content="publication.story_is_not_responsive !== true"
           :label="$t('responsive')"
           @update:content="
@@ -249,7 +248,7 @@ export default {
   // width: 100%;
   background: white;
   padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2) auto;
+  margin: calc(var(--spacing) / 2) auto 0;
   max-width: 240px;
 }
 

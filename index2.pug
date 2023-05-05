@@ -34,17 +34,23 @@ html
         schema: !{JSON.stringify(schema)},
         version: "!{global.appInfos.version}",
         debug_mode: !{debug_mode},
+        is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
       
-        name_of_instance: `!{name_of_instance}`,
-        presentation_of_instance: `!{presentation_of_instance}`,
-        contactmail_of_instance: `!{contactmail_of_instance}`,
-
-        has_general_password: !{has_general_password},
-        has_signup_password: !{has_signup_password},
-
+        instance_meta: {
+          name: `!{name_of_instance}`,
+          presentation: `!{presentation_of_instance}`,
+          contactmail: `!{contactmail_of_instance}`,
+          $cover: !{JSON.stringify(cover_of_instance)},
+          has_general_password: !{has_general_password},
+          has_signup_password: !{has_signup_password},
+          require_signup_to_contribute: !{require_signup_to_contribute},
+          require_mail_to_signup: !{require_mail_to_signup},
+          $admins: !{JSON.stringify($admins)},
+          $contributors: !{JSON.stringify($contributors)},
+        },
 
         custom_fonts: !{JSON.stringify(custom_fonts, null, 4)}
-      }
+      };
 
 
       /* state contains settings data, time and client specific data */

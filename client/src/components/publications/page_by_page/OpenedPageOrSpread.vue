@@ -383,9 +383,6 @@ export default {
   }
 }
 
-._breadcrumb {
-  padding: calc(var(--spacing) / 1);
-}
 ._topMenu {
   position: relative;
   z-index: 10;
@@ -460,6 +457,7 @@ export default {
   }
   &:not(.is--active) {
     // opacity: 0.8;
+    z-index: 2;
 
     ::v-deep {
       ._pagecontent {

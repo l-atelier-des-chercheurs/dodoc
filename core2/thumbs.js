@@ -37,10 +37,10 @@ module.exports = (function () {
         path_to_folder,
       });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
-      const filethumbs_resolutions = schema.$files?.thumbs?.resolutions;
+      const filethumbs_resolutions = item_in_schema.$files?.thumbs?.resolutions;
       if (!filethumbs_resolutions) return false;
 
       const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
@@ -277,10 +277,10 @@ module.exports = (function () {
       cover_name
     );
 
-    const schema = await utils.parseAndCheckSchema({
+    const item_in_schema = utils.parseAndCheckSchema({
       relative_path: path_to_folder,
     });
-    const cover_schema = schema.$cover;
+    const cover_schema = item_in_schema.$cover;
     const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
 
     const paths = await _makeImageThumbsFor({

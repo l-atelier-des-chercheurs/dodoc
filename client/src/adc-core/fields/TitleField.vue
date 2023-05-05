@@ -166,7 +166,7 @@ export default {
 
 ._footer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-flow: row wrap;
   font-size: 1rem;
   font-weight: 400;
@@ -177,6 +177,10 @@ export default {
 
 ._container {
   margin: 0;
+  width: 100%;
+  // display: flex;
+  // flex-flow: row wrap;
+  // align-items: baseline;
 }
 
 ._cont {

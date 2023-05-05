@@ -1,18 +1,19 @@
 <template>
-  <div>
+  <div class="_authorView">
     <TitleField
       :field_name="'name'"
       class="_name"
       :content="author.name"
+      :tag="'h1'"
       :path="author.$path"
       :required="true"
       :maxlength="40"
-      :can_edit="true"
+      :can_edit="false"
     />
-    <pre>
-
+    <!-- // do not allow two author to have the same name -->
+    <!-- <pre>
     {{ author }}
-    </pre>
+    </pre> -->
   </div>
 </template>
 <script>
@@ -53,4 +54,12 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._authorView {
+  width: 100%;
+  max-width: calc(var(--max-column-width));
+  // max-width: calc(var(--max-column-width) + 240px);
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
+}
+</style>

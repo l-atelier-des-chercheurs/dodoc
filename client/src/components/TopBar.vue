@@ -5,7 +5,7 @@
       'is--homepage': $route.path === '/',
     }"
   >
-    <BreadCrumbs />
+    <BreadCrumbs class="_bc" />
 
     <div class="_topRightButtons">
       <button
@@ -15,10 +15,13 @@
       >
         {{ current_lang_code }}
       </button>
-
       <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
       <div class="_subscribeBtn">
         <button type="button" class="_authorBtn" @click="showAuthorModal">
+          <span class="u-buttonLink _adminInfo" v-if="is_instance_admin">
+            {{ "admin" }}
+          </span>
+
           <template v-if="connected_as">
             {{ connected_as.name }}
           </template>
@@ -84,17 +87,24 @@ export default {
 ._topbar {
   position: relative;
   z-index: 5;
-  // position: absolute;
-  width: 100%;
+
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   gap: calc(var(--spacing) / 2);
   align-items: center;
+  overflow: hidden;
 
-  padding: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) * 1);
+  width: 100%;
+  max-width: calc(var(--max-column-width));
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
+
+  padding: calc(var(--spacing) / 2) 0;
+  // padding-bottom: calc(var(--spacing) * 1);
   background: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--c-gris);
+
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   // min-height: 60px;
   user-select: none;
@@ -103,11 +113,19 @@ export default {
 
   &.is--homepage {
     background: transparent;
+    border-bottom: 1px solid var(--c-gris);
     box-shadow: none;
   }
 
   > * {
-    flex: 1 1 0;
+    flex: 1 1 auto;
+
+    &._bc {
+      flex: 1 0 0;
+    }
+    &._topRightButtons {
+      flex: 0 0 auto;
+    }
   }
 
   > ._subscribeBtn {
@@ -118,11 +136,12 @@ export default {
 
 ._subscribeBtn {
   ._authorBtn {
+    position: relative;
     background: var(--c-bleumarine_clair);
     padding: calc(var(--spacing) / 2);
     border-radius: 4px;
     font-weight: 300;
-    font-size: var(--sl-font-size-large);
+    font-size: var(--sl-font-size-normal);
   }
 }
 
@@ -137,5 +156,18 @@ export default {
     height: 3rem;
     background: transparent;
   }
+}
+
+._adminInfo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-weight: normal;
+  text-align: center;
+  width: 100%;
+  justify-content: center;
+  /* right: 0; */
+  text-decoration: none;
+  font-size: 80%;
 }
 </style>

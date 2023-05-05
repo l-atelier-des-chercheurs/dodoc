@@ -167,9 +167,9 @@ export default {
     },
   },
   methods: {
-    selectMedia({ path_to_source_media }) {
+    selectMedia({ path_to_source_media_meta }) {
       const source_medias = this.publimodule.source_medias.slice();
-      source_medias.push({ path: path_to_source_media });
+      source_medias.push({ path: path_to_source_media_meta });
       this.$emit("updateMeta", { source_medias });
       this.show_media_picker = false;
     },

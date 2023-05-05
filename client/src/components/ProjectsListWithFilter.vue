@@ -11,7 +11,12 @@
       >
         {{ $t("filters") }}
       </button>
-      <select size="small" class="_orderSelect" v-model="order_key">
+      <select
+        size="small"
+        class="_orderSelect"
+        v-model="order_key"
+        :disabled="filtered_projects.length <= 1"
+      >
         <option
           v-for="opt in order_options"
           :key="opt.key"
@@ -32,9 +37,6 @@
             $t("only_finished")
           }}</label>
         </div>
-
-        <br />
-
         <div class="u-sameRow" style="width: 100%">
           <input
             type="text"
@@ -52,44 +54,50 @@
           </button>
         </div>
 
-        <br />
+        <div class="">
+          <DLabel :str="$t('keywords')" />
+          <template v-if="all_keywords.length === 0">–</template>
+          <button
+            v-else
+            type="button"
+            class="u-button u-button_orange u-button_small"
+            v-for="kw in all_keywords"
+            :key="kw"
+            @click="toggleFilter({ type: 'keywords', value: kw })"
+          >
+            {{ kw }}
+          </button>
+        </div>
 
-        <DLabel :str="$t('keywords')" />
-        <button
-          type="button"
-          class="u-button u-button_orange u-button_small"
-          v-for="kw in all_keywords"
-          :key="kw"
-          @click="toggleFilter({ type: 'keywords', value: kw })"
-        >
-          {{ kw }}
-        </button>
+        <div class="">
+          <DLabel :str="$t('machines_and_materials')" />
+          <template v-if="all_materials.length === 0">–</template>
+          <button
+            v-else
+            type="button"
+            class="u-button u-button_bleumarine u-button_small"
+            v-for="kw in all_materials"
+            :key="kw"
+            @click="toggleFilter({ type: 'materials', value: kw })"
+          >
+            {{ kw }}
+          </button>
+        </div>
 
-        <br />
-
-        <DLabel :str="$t('machines_and_materials')" />
-        <button
-          type="button"
-          class="u-button u-button_bleumarine u-button_small"
-          v-for="kw in all_materials"
-          :key="kw"
-          @click="toggleFilter({ type: 'materials', value: kw })"
-        >
-          {{ kw }}
-        </button>
-
-        <br />
-
-        <DLabel :str="$t('levels_and_competences')" />
-        <button
-          type="button"
-          class="u-button u-button_bleuvert u-button_small"
-          v-for="kw in all_levels"
-          :key="kw"
-          @click="toggleFilter({ type: 'level', value: kw })"
-        >
-          {{ $t(kw) }}
-        </button>
+        <div class="">
+          <DLabel :str="$t('levels_and_competences')" />
+          <template v-if="all_levels.length === 0">–</template>
+          <button
+            v-else
+            type="button"
+            class="u-button u-button_bleuvert u-button_small"
+            v-for="kw in all_levels"
+            :key="kw"
+            @click="toggleFilter({ type: 'level', value: kw })"
+          >
+            {{ $t(kw) }}
+          </button>
+        </div>
       </div>
 
       <div class="_listOfProjects">
@@ -239,6 +247,10 @@ export default {
 <style lang="scss" scoped>
 ._projectsListWithFilter {
   margin-top: calc(var(--spacing) * 1);
+
+  width: 100%;
+  max-width: calc(var(--max-column-width));
+  margin: 0 auto;
 }
 ._cont {
   display: flex;
@@ -256,7 +268,7 @@ export default {
   justify-content: flex-start;
   // align-items: flex-end;
   align-items: flex-start;
-  gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 2);
   padding-top: calc(var(--spacing) * 1);
 
   ::v-deep {

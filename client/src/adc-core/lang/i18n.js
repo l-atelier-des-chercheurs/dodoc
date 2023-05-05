@@ -42,7 +42,8 @@ export default function () {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
         home: "Accueil",
-        admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
+        admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
+        admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
         edit: "modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",
@@ -69,6 +70,14 @@ export default function () {
         title: "Titre",
         subtitle: "Sous-titre",
         name: "nom",
+
+        set_admins_and_contributors: "Définir les référents et contributeurs",
+        instance_admins_instr:
+          "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
+        instance_contributors_instr:
+          "Les comptes listés ici pourront créer des espaces.",
+        space_members: "Participants à cet espace",
+
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
           Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
@@ -78,7 +87,7 @@ export default function () {
           `,
         general_password: "mot de passe général",
         general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
-        peut afficher un email de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
+        peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
         general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
 
@@ -112,8 +121,11 @@ export default function () {
         logout: "se déconnecter",
         name_or_pseudonym: "Nom ou pseudonyme",
         email: "Courriel",
+        email_instr:
+          "Courriel de contact, uniquement visible aux administrateurs pour complément de contribution.",
         password: "Mot de passe",
-        role: "Rôle",
+        admins: "Administrateur·rice·s",
+        referent: "Référent·e·s",
         contributors: "Contributeur·rice·s",
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",
@@ -149,6 +161,8 @@ export default function () {
         show_description: "Afficher la description",
         hide_description: "Masquer la description",
         recover_password: "Récupérer mon de passe",
+        please_contact_to_recover:
+          "Veuillez envoyer un mail à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe.",
 
         visibility: "Visibilité",
         visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -244,26 +258,40 @@ export default function () {
         status: "État",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
+        no_files: "Aucun fichier",
+        none: "Aucun·e",
         filters: "Filtres",
 
         draft: "En cours",
-        draft_status_explanations:
-          "Le projet apparaîtra dans la section <i>en cours</i> sur la page d’accueil.",
         listed: "Listé",
+        private: "Privé",
+        public: "Public",
         invisible: "Invisible",
         visible: "Visible",
-        visible_status_explanations_projects:
-          "Le projet sera affiché avec les autres projets.",
-        invisible_status_explanations_projects:
-          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses auteurs et aux personnes qui possèdent le lien.",
-        visible_status_explanations_publis:
-          "La publication sera visible par tous ceux qui accèdent au projet.",
-        invisible_status_explanations_publis:
-          "La publication ne sera visible qu’aux auteurs du projet.",
+
+        public_status_explanations_spaces:
+          "L’espace sera visible sur la page d’accueil.",
+        private_status_explanations_spaces:
+          "L’espace ne sera visible qu’à ses contributeurs.",
+
+        public_status_explanations_projects:
+          "Le projet sera affiché avec les autres projets sur la page de son espace.",
+        private_status_explanations_projects:
+          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
+        finished_status_explanations:
+          "Ce projet sera marqué avec un pictogramme ✓ et sera accessible à toutes les personnes qui ont accès à son espace.",
+        draft_status_explanations:
+          "Ce projet sera accessible à toutes les personnes qui ont accès à son espace.",
+
+        public_status_explanations_publis:
+          "La publication sera visible à tous ceux qui accèdent au projet.",
+        private_status_explanations_publis:
+          "La publication ne sera visible qu’aux contributeurs du projet.",
 
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
-        only_finished: "Que les projets finalisés",
+        only_finished: "projets finalisés",
+        completed: "Terminé",
         my_projects: "Mes projets",
 
         finished_projects: "Projets finalisés",
@@ -271,15 +299,15 @@ export default function () {
 
         default_value: "Par défaut",
 
-        finished_status_explanations:
-          "Ce projet sera affiché en haut de la page d’accueil.",
-
         show_projects: "Afficher les projets",
         all_projects: "Tous les projets",
         all_projects_instr:
           "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
 
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
+        add_accounts: "Rajouter des comptes",
+        list_of_accounts: "Liste des comptes",
+        // only_accounts: "Seulement les comptes suivants",
         restart_to_apply: "Relancez do•doc pour appliquer",
         restart: "Relancer do•doc",
         reveal: "Révéler",
@@ -293,12 +321,20 @@ export default function () {
         media_duplicated: "Média dupliqué",
 
         CC: "Creative Commons",
-        license_and_authors: "Licence et auteurs",
+        authors_and_license: "Licence et auteurs",
+        authors: "Auteurs",
         license: "Licence",
         licence_instructions:
           "Indiquez ici les conditions de partage et de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
+        everyone: "Tout le monde",
+        everyone_instr:
+          "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
+        noone: "Personne",
+        noone_instr: "Fermer à tous les comptes non-administrateurs.",
+        restricted: "Uniquement les comptes de la liste",
+        restricted_instr: "Seuls ces comptes seront autorisés.",
 
         close: "Fermer",
         settings: "Réglages",
@@ -314,9 +350,10 @@ export default function () {
 
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
-          Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
+          Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
 
-        access_control: "Contrôle des accès",
+        administration_and_access_control:
+          "Administration et contrôle des accès",
         fonts: "Famille de caractère",
         add_font: "Ajouter une famille de caractère",
         font_name: "Nom de la famille de caractère",
@@ -565,26 +602,55 @@ export default function () {
         display_as_public: "Afficher la vue publique",
         preview: "Prévisualiser",
 
-        project_author_instructions:
-          "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",
+        instance_admin_instructions:
+          "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
+        instance_contrib_instructions:
+          "Peuvent uniquement créer des espaces et les administrer.",
+
+        space_admin_instructions:
+          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés). Ils n’apparaissent pas sur la page de présentation d’un espace.",
+        space_contrib_instructions:
+          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets qu’ils n’ont pas créé. La liste des contributeurs est affichée sur la page de présentation de l’espace.",
+
+        project_admin_instructions:
+          "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",
+        project_contrib_instructions:
+          "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
+
         space_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
+
         project_desc_instructions:
           "La description est affichée ici et sur la liste des projets.",
+        pick_cover: "Choisissez une image de couverture",
+        remove_image: "Retirer cette image",
+
         add_authors: "Ajouter des contributeur·rice·s",
-        no_authors_to_show: "Aucun auteur à afficher",
+        no_authors_to_show: "Aucun compte à afficher",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",
         line: "Ligne",
         arrow: "Flèche",
         for_example: "Par exemple",
+        require_signup_to_contribute:
+          "Les utilisateurs doivent créer un compte pour contribuer à la plate-forme",
+        require_mail_to_signup:
+          "Une adresse courriel est obligatoire pour créer un compte",
+
+        you_must_login_to_contribute:
+          "Vous devez vous inscrire ou vous connecter pour contribuer",
+        not_allowed_to_contribute_contact_referent:
+          "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
           "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
+        "notifications.action_not_authorized": "Cette action n’est pas permise",
+        "notifications.title_taken": "Ce titre est déjà utilisé",
+        "notifications.name_taken": "Ce nom est déjà utilisé",
 
         more_infos: "Plus d’informations",
         informations: "Informations",
@@ -600,6 +666,8 @@ export default function () {
         remove: "Supprimer",
         remove_project: "Supprimer le projet",
         remove_media: "Supprimer le média",
+        remove_space: "Supprimer cet espace et tous ses contenus",
+
         withdraw_from_page: "Enlever de la page",
         confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",
@@ -621,6 +689,7 @@ export default function () {
         create_a_module: "Créer un module",
         list_of_archives: "Liste des archives",
         restore_this_version: "Restaurer cette version",
+        version: "Version",
 
         general_informations: "Informations sur l’instance",
 

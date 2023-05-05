@@ -71,12 +71,17 @@ class Exporter {
       path_to_folder: this.folder_to_export_to,
     });
 
+    const exported_path_to_meta = path.join(
+      this.folder_to_export_to,
+      meta_filename
+    );
+
     this._notifyEnded({
-      event: "finished",
-      path: path.join(this.folder_to_export_to, meta_filename),
+      event: "completed",
+      path: exported_path_to_meta,
     });
 
-    return meta_filename;
+    return exported_path_to_meta;
   }
   abort() {
     if (this.ffmpeg_cmd) this.ffmpeg_cmd.kill();

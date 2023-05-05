@@ -1,51 +1,59 @@
 <template>
-  <nav aria-label="Fil d’ariane" class="u-breadcrumb">
+  <nav aria-label="Fil d’ariane" class="_breadcrumb">
     <div class="_logo">
-      <router-link :to="`/`">
-        <img :src="`${$root.publicPath}i_logo.svg`" class="" />
-      </router-link>
+      <component
+        :is="$route.name !== 'Accueil' ? 'router-link' : 'span'"
+        :to="`/`"
+      >
+        <DodocLogo />
+      </component>
     </div>
-    <template v-if="$route.path.includes('/+')">
-      <sl-icon name="arrow-right-short" label="" />
-      <div>
-        <router-link
+
+    <transition name="fade" mode="out-in">
+      <div v-if="$route.path.includes('/+')">
+        <sl-icon name="arrow-right-short" label="" />
+        &nbsp;
+        <component
+          :is="$route.name === 'Projet' ? 'router-link' : 'span'"
           class="_spaceName"
           :to="{ path: '/+' + $route.params.space_slug }"
           :disabled="$route.name === 'Espace'"
         >
-          <button type="button" class="u-buttonLink">
+          <div class="u-buttonLink">
             {{ $t("space") }}
-          </button>
-          <div>{{ (space && space.title) || "–" }}</div>
-        </router-link>
+          </div>
+          <div class="_name">{{ (space && space.title) || "–" }}</div>
+        </component>
       </div>
-      <template v-if="$route.name === 'Projet'">
+    </transition>
+
+    <transition name="fade" mode="out-in">
+      <div v-if="$route.name === 'Projet'">
         <sl-icon name="arrow-right-short" label="" />
-        <div>
-          <router-link
-            class="_spaceName"
-            :to="{
-              path:
-                '/+' +
-                $route.params.space_slug +
-                '/' +
-                $route.params.project_slug,
-            }"
-          >
-            <button type="button" class="u-buttonLink">
-              {{ $t("project") }}
-            </button>
-            <div>{{ (project && project.title) || "–" }}</div>
-          </router-link>
-        </div>
-      </template>
-    </template>
+        &nbsp;
+        <component
+          :is="false ? 'router-link' : 'span'"
+          class="_spaceName"
+          :to="{ path: '/+' + $route.params.space_slug }"
+          :disabled="$route.name === 'Espace'"
+        >
+          <div class="u-buttonLink">
+            {{ $t("project") }}
+          </div>
+          <div class="_name">{{ (project && project.title) || "–" }}</div>
+        </component>
+      </div>
+    </transition>
   </nav>
 </template>
 <script>
+import DodocLogo from "@/components/nav/DodocLogo.vue";
+
 export default {
   props: {},
-  components: {},
+  components: {
+    DodocLogo,
+  },
   data() {
     return {
       space: undefined,
@@ -74,22 +82,45 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._breadcrumb {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 0 calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
+  line-height: 1.1;
+
+  > * {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+}
+._name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 ._logo {
   flex: 0 0 auto;
 
-  img {
+  svg {
     width: 8em;
     height: 2.6em;
   }
 }
 
-._spaceName {
+a._spaceName {
   color: inherit;
   text-decoration: none;
 
-  ::v-deep a,
-  button {
-    text-decoration: none;
+  &:hover {
+    font-weight: 500;
   }
+}
+
+.u-buttonLink {
+  text-decoration: none;
 }
 </style>

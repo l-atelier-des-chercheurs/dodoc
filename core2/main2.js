@@ -167,7 +167,7 @@ async function contentFolderIsValid(full_path) {
 
   if (!meta.dodoc_version || meta.dodoc_version !== "10") return false;
 
-  // TODO improved here: if folder is not valid, create in a subfolder called dodoc-next
+  // TODO improve here: if folder is not valid, create in a subfolder called dodoc-next
 
   return true;
 }

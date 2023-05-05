@@ -131,6 +131,9 @@
   &.is--active {
     color: var(--c-bleuvert);
   }
+  &.has--ts {
+    text-shadow: -1px -1px 4px white;
+  }
 
   &:hover,
   &:focus {
@@ -284,6 +287,10 @@ button,
   font-size: var(--input-font-size-small);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
+.u-button_verysmall {
+  font-size: var(--input-font-size-x-small);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+}
 .u-button_big {
   font-size: var(--input-font-size-big);
   min-height: 2.9em;
@@ -356,17 +363,17 @@ textarea,
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
-  border-bottom: 2px solid transparent;
+  border-bottom: 1px solid transparent;
 
   transition: all 0.05s;
 
   &:hover {
     outline: 0;
-    border-bottom: 2px solid var(--input-border-color);
+    border-color: var(--input-border-color);
   }
   &:focus-visible {
     outline: 0;
-    border-bottom: 2px solid var(--input-border-color-focus);
+    border-color: var(--input-border-color-focus);
   }
 
   &.bg-blanc {
@@ -465,29 +472,8 @@ sl-button[variant="semitransparent"] {
 }
 sl-button[variant="edit"] {
   &::part(base) {
-    // background: white;
-    // background: transparent;
-    background: rgba(255, 255, 255, 0.6);
-
-    color: var(--c-bleuvert);
-    // color: white;
+    background: var(--c-bleuvert);
     border: none;
-    // border: 1px solid var(--c-bleuvert);
-    // fill: white;
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-
-  &:hover,
-  &:active {
-    &::part(base) {
-      // transform: scale(1.02);
-      background: var(--c-bleuvert);
-      background: var(--c-bleuvert_fonce);
-      color: white;
-
-      // border-color: white;
-      // border: none;
-    }
   }
 }
 
@@ -757,17 +743,6 @@ fieldset {
     display: none;
   }
 }
-.u-breadcrumb {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-
-  > * {
-    display: flex;
-    align-items: center;
-  }
-}
 
 details {
   summary {
@@ -776,5 +751,26 @@ details {
     &:hover {
       background: var(--c-gris_clair);
     }
+  }
+}
+
+.u-radio {
+  label {
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: center;
+    align-items: center;
+    background: var(--c-gris_clair);
+    padding: calc(var(--spacing) / 2);
+    gap: calc(var(--spacing) / 2);
+    margin-bottom: 4px;
+
+    &:hover {
+      background: var(--c-gris);
+    }
+  }
+
+  input {
+    margin: 0;
   }
 }

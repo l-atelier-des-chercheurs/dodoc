@@ -167,7 +167,8 @@ export default {
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
   --c-bodybg: hsl(40, 20%, 98%);
-  // --c-bodybg: #f8f8fa;
+  // --c-bodybg: hsl(40, 20%, 99%);
+  --c-bodybg: white;
 
   // --c-bodybg: white;
   --body-bg-pattern-color: hsl(48, 19%, 93%);
@@ -192,6 +193,7 @@ export default {
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
+  --input-font-size-x-small: 0.6rem;
   --input-font-size-small: 0.8rem;
   --input-font-size-big: 1.2rem;
   --input-font-weight: inherit;
@@ -252,10 +254,12 @@ export default {
   }
 
   --sl-input-color: black;
+  --sl-font-size-normal: 1rem;
+  --sl-font-size-large: 1.5rem;
   --sl-font-size-x-large: 1.66rem;
-  --sl-font-size-xx-large: 2rem;
+  --sl-font-size-xx-large: 2.8rem;
 
-  --max-column-width: 150ch;
+  --max-column-width: 1300px;
 
   accent-color: var(--c-orange);
 }
@@ -325,6 +329,7 @@ html {
   font-weight: 400;
 
   font-size: 90%;
+  line-height: 1.41;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -357,8 +362,9 @@ button {
 }
 
 hr {
-  border-top: 1px solid var(--c-noir);
+  border-top: 1px solid var(--c-gris);
   border-bottom: 0 solid #000;
+  margin: calc(var(--spacing) / 2) 0;
 }
 
 .metaField {
@@ -390,17 +396,27 @@ strong {
 h1 {
   margin: 0;
   font-size: var(--sl-font-size-xx-large);
+  font-weight: 300;
+  line-height: 1.1;
 }
 h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
-  font-style: italic;
-  font-weight: 500;
-  line-height: 1.1;
+  // font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
 }
 h3 {
   margin: 0;
   font-size: var(--sl-font-size-large);
+  line-height: 1.2;
+  font-weight: 400;
+}
+h4 {
+  margin: 0;
+  font-size: var(--sl-font-size-normal);
+  line-height: 1.2;
+  font-weight: 400;
 }
 
 .card-header {
@@ -590,6 +606,20 @@ img {
   &-enter,
   &-leave-to {
     transform: translateY(100%);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
+.slideupFade {
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(100%);
+    opacity: 0;
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }

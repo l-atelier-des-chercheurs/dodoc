@@ -4,7 +4,6 @@ z
     class="_projectInfos"
     :class="{
       'is--list': context === 'list',
-      'is--tiny': context === 'tiny',
       'u-card': context === 'list',
       'is--linkToProject': context !== 'full',
       'is--mobileView': $root.is_mobile_view,
@@ -16,7 +15,7 @@ z
         :context="context"
         :cover="project.$cover"
         :path="project.$path"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
       />
 
       <sl-icon
@@ -25,9 +24,9 @@ z
         class="_icon _check"
       />
       <sl-icon
-        v-else-if="project.$status === 'invisible'"
+        v-else-if="project.$status === 'private'"
         name="file-lock2-fill"
-        class="_icon _invisible"
+        class="_icon _private"
       />
       <!-- <sl-icon
         v-if="project.$status === 'draft'"
@@ -42,30 +41,23 @@ z
         v-if="context === 'full'"
         :status="project.$status"
         :path="project.$path"
-        :can_edit="can_edit_project"
-      />
-
-      <AuthorField
-        v-if="context !== 'tiny' && context !== 'list'"
-        :label="context === 'full' ? $t('contributors') : ''"
-        :authors_paths="project.$authors"
-        :path="project.$path"
-        :can_edit="can_edit_project"
-        :instructions="$t('project_author_instructions')"
+        :can_edit="can_edit"
       />
 
       <!-- <br v-if="context === 'full'" /> -->
 
       <TitleField
         :field_name="'title'"
-        :label="context === 'full' ? $t('title') : ''"
+        :label="
+          context === 'full' && can_edit && !project.title ? $t('title') : ''
+        "
         class="_title"
         :content="project.title"
         :path="project.$path"
         :required="true"
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h3'"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
         :instructions="$t('project_title_instructions')"
       />
 
@@ -81,23 +73,21 @@ z
             !show_description ? $t('show_description') : $t('hide_description')
           "
         />
-        <small v-else class="u-instructions">
+        <!-- <small v-else class="u-instructions">
           {{ $t("no_description") }}
-        </small>
+        </small> -->
       </template>
       <TitleField
-        v-if="context !== 'tiny' && show_description"
+        v-if="show_description"
         :field_name="'description'"
         class="_description"
         :label="
-          context === 'full' && (project.description || can_edit_project)
-            ? $t('description')
-            : ''
+          context === 'full' && !project.description ? $t('description') : ''
         "
         :content="project.description"
         :path="project.$path"
         :maxlength="1280"
-        :can_edit="can_edit_project"
+        :can_edit="can_edit"
         :instructions="$t('project_desc_instructions')"
       />
       <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
@@ -128,20 +118,17 @@ z
       }"
       v-if="context === 'full'"
     >
-      <CardCompetences :project="project" :can_edit="can_edit_project" />
-      <CardMachines :project="project" :can_edit="can_edit_project" />
-      <CardKeywords :project="project" :can_edit="can_edit_project" />
-      <CardFiles :project="project" :can_edit="can_edit_project" />
-      <CardLicense :project="project" :can_edit="can_edit_project" />
-      <CardMeta :project="project" :can_edit="can_edit_project" />
-      <CardStatus :project="project" :can_edit="can_edit_project" />
-      <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
+      <CardLicense :project="project" :can_edit="can_edit" />
+      <CardCompetences :project="project" :can_edit="can_edit" />
+      <CardFiles :project="project" :can_edit="can_edit" />
+      <CardMachines :project="project" :can_edit="can_edit" />
+      <CardKeywords :project="project" :can_edit="can_edit" />
+      <CardMeta :project="project" :can_edit="can_edit" />
+      <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
+      <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
     </div>
 
-    <div
-      class="_projectInfos--open"
-      v-if="context === 'list' || context === 'tiny'"
-    >
+    <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link :to="{ path: createURLFromPath(project.$path) }">
         <div class="_clickZone" />
         <!-- <div class="u-button u-button_red _openBtn" v-if="context === 'list'">
@@ -157,7 +144,7 @@ import CardMeta from "@/components/project_cards/CardMeta.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardCompetences from "@/components/project_cards/CardCompetences.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
-import CardStatus from "@/components/project_cards/CardStatus.vue";
+// import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
 import CardFiles from "@/components/project_cards/CardFiles.vue";
 
@@ -165,7 +152,7 @@ export default {
   props: {
     project: Object,
     context: String,
-    can_edit_project: Boolean,
+    can_edit: Boolean,
     // show_more_informations: Boolean,
   },
   components: {
@@ -174,7 +161,7 @@ export default {
     CardKeywords,
     CardCompetences,
     CardMachines,
-    CardStatus,
+    // CardStatus,
     CardLicense,
     CardFiles,
   },
@@ -203,20 +190,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._project {
-  position: relative;
-  // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-}
-
 ._projectInfos {
   position: relative;
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
 
+  width: 100%;
+  max-width: calc(var(--max-column-width));
   margin: 0 auto;
-  // max-width: 180ch;
-  // max-width: var(--max-column-width);
 
   overflow: hidden;
   background: white;
@@ -231,8 +213,7 @@ export default {
     }
   }
 
-  &.is--list,
-  &.is--tiny {
+  &.is--list {
     // border-bottom: 2px solid #b9b9b9;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
@@ -247,14 +228,6 @@ export default {
 
   &.is--list {
     display: block;
-  }
-  &.is--tiny {
-    // flex-flow: row nowrap;
-
-    // ._projectInfos--open {
-    //   position: absolute;
-    //   inset: 0;
-    // }
   }
 
   &.is--mobileView {
@@ -293,8 +266,7 @@ export default {
 
   transition: all 0.4s;
 
-  .is--list &,
-  .is--tiny & {
+  .is--list & {
     gap: calc(var(--spacing) / 4);
     order: 0;
     // position: absolute;
@@ -361,7 +333,7 @@ export default {
   ._check {
     color: var(--c-bleuvert);
   }
-  ._invisible {
+  ._private {
   }
 }
 
@@ -371,7 +343,6 @@ export default {
   font-size: 90%;
   overflow-x: hidden;
   overflow-y: auto;
-  // background: var(--c-gris_clair);
 
   // gap: calc(var(--spacing) / 2);
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
@@ -431,9 +402,9 @@ export default {
   // bottom: 0;
   // right: 0;
   // padding: calc(var(--spacing) / 1);
-  margin: calc(var(--spacing) * 1);
-  margin: 2px;
-  border-radius: 3px;
+  // margin: calc(var(--spacing) * 1);
+  // margin: 2px;
+  // border-radius: 3px;
 }
 
 ._showMeta {

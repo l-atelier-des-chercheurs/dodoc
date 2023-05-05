@@ -1,31 +1,39 @@
 <template>
-  <div>
+  <div class="_publicationsList">
     <div class="_topBtn">
-      <h2>{{ $t("publications") }}</h2>
-      <button
-        type="button"
-        class="u-button u-button_bleuvert_fonce"
-        v-if="can_edit"
-        @click="show_create_publication = true"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 168 168"
-          style="enable-background: new 0 0 168 168"
-          xml:space="preserve"
+      <div class="u-sameRow">
+        <DLabel :str="$t('publications')" :tag="'h2'" />
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          v-if="can_edit"
+          @click="show_create_publication = true"
         >
-          <polygon
-            style="fill: white"
-            points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 168 168"
+            style="enable-background: new 0 0 168 168"
+            xml:space="preserve"
+          >
+            <path
+              style="fill: var(--color-publish)"
+              d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
+		C110.5-8.2,57.5-8.2,24.6,24.4z"
+            />
+            <polygon
+              style="fill: #ffffff"
+              points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-          />
-        </svg>
-        {{ $t("create") }}
-      </button>
+            />
+          </svg>
+          &nbsp;
+          {{ $t("create") }}
+        </button>
+      </div>
     </div>
     <CreatePublication
       v-if="show_create_publication"
@@ -63,6 +71,7 @@ import PublicationPreview from "@/components/publications/PublicationPreview.vue
 export default {
   props: {
     project_path: String,
+    project_downloadable_files: Array,
     can_edit: Boolean,
   },
   components: {
@@ -107,6 +116,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._publicationsList {
+  width: 100%;
+  max-width: calc(var(--max-column-width));
+  // max-width: calc(var(--max-column-width) + 240px);
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
+}
+
 ._publications--list {
   display: grid;
   grid-auto-rows: max-content;

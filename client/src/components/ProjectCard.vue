@@ -1,5 +1,5 @@
 <template>
-  <details class="_projectCard">
+  <details class="_projectCard" open>
     <summary>
       <div class="_icon">
         <sl-icon v-if="icon" :name="icon" />
@@ -31,12 +31,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectCard {
-  border-bottom: 1px solid var(--c-gris_clair);
-  border-left: 2px solid transparent;
+  border-bottom: 0px solid var(--c-gris_clair);
+  // border-left: 2px solid transparent;
+
+  background: white;
+  margin-left: 2px;
 
   &[open] {
-    border-left-color: var(--c-gris_fonce);
-    margin-bottom: 1px;
+    border-left-color: var(--c-gris);
+    margin-bottom: calc(var(--spacing) / 1);
   }
 
   ::marker {

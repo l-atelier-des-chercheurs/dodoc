@@ -16,7 +16,7 @@
       </pre> -->
 
         <div class="_topContent">
-          <div class="_displayAsPublic" v-if="can_edit_project">
+          <div class="_displayAsPublic" v-if="can_contribute_to_project">
             <div class="_sticky">
               <div class="_content">
                 <ToggleInput
@@ -31,22 +31,26 @@
           <ProjectPresentation
             :project="project"
             context="full"
-            :can_edit_project="can_edit_project && !display_as_public"
+            :can_edit="can_edit_project && !display_as_public"
           />
         </div>
 
         <div class="_projectPanesAndList">
           <PaneList2
+            v-if="can_contribute_to_project && !display_as_public"
             class="_paneList"
-            :can_edit="can_edit_project && !display_as_public"
+            :can_edit="can_contribute_to_project && !display_as_public"
             :project="project"
             :panes.sync="projectpanes"
           />
+          <hr v-else class="_separator" />
           <div class="_panes">
             <ProjectPanes
               :projectpanes="projectpanes"
               :project="project"
-              :can_edit_project="can_edit_project && !display_as_public"
+              :can_edit_project="
+                can_contribute_to_project && !display_as_public
+              "
               @update:projectpanes="projectpanes = $event"
             />
           </div>
@@ -81,6 +85,7 @@ export default {
   created() {},
   async mounted() {
     await this.listProject();
+    await this.getSpace();
 
     if (!this.can_edit_project)
       this.projectpanes = [
@@ -147,9 +152,10 @@ export default {
   },
   computed: {
     can_edit_project() {
-      return this.canLoggedinEditFolder({
-        folder_authors: this.project.$authors,
-      });
+      return this.canLoggedinEditFolder({ folder: this.project });
+    },
+    can_contribute_to_project() {
+      return this.canLoggedinContributeToFolder({ folder: this.project });
     },
   },
   methods: {
@@ -179,6 +185,21 @@ export default {
       //   this.$router.go("/projects");
 
       this.project = project;
+    },
+    async getSpace() {
+      const path = this.createPath({
+        space_slug: this.$route.params.space_slug,
+      });
+
+      const space = await this.$api
+        .getFolder({
+          path,
+        })
+        .catch(() => {
+          return;
+        });
+
+      this.$eventHub.$emit("received.space", space);
     },
     updateQueryPanes() {
       let query = {};
@@ -240,7 +261,6 @@ export default {
 
 ._topContent {
   position: relative;
-  background: white;
 }
 
 ._tabButton {
@@ -290,5 +310,9 @@ export default {
       }
     }
   }
+}
+
+._separator {
+  margin-top: 0;
 }
 </style>

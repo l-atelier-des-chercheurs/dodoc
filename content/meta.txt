@@ -1,1 +1,3 @@
 dodoc_version="10"
+"$admins" = [ "authors/admin" ]
+"$contributors" = "everyone"

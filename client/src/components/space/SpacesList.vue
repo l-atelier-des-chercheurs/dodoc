@@ -4,7 +4,7 @@
       <button
         type="button"
         class="u-button u-button_red u-button_small"
-        v-if="is_admin"
+        v-if="is_instance_admin || is_instance_contributor"
         @click="show_create_modal = true"
       >
         <svg
@@ -28,6 +28,7 @@
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
           />
         </svg>
+        &nbsp;
         {{ $t("create") }}
       </button>
     </div>
@@ -102,25 +103,6 @@ export default {
     getSlug(path) {
       return path.split("/").at(-1);
     },
-    async createSpace() {
-      try {
-        const new_space_slug = await this.$api.createFolder({
-          path: this.path,
-          additional_meta: {
-            title: this.new_space_title,
-            requested_slug: this.new_space_title,
-            $authors: [this.$api.tokenpath.token_path],
-          },
-        });
-        new_space_slug;
-      } catch (err) {
-        // this.error_msg = "Error: " + err.message;
-        // setTimeout(() => {
-        //   this.error_msg = "";
-        // }, 5000);
-        // this.is_creating_project = false;
-      }
-    },
     openNewSpace(new_folder_slug) {
       this.show_create_modal = false;
       const url = this.createURLFromPath(this.path + "/" + new_folder_slug);
@@ -141,8 +123,13 @@ export default {
 }
 
 ._list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) * 1) 0;
+
   > * {
-    margin: calc(var(--spacing) * 1) 0;
+    // margin: calc(var(--spacing) * 1) 0;
     // background: var(--panel-color);
     // margin-bottom: 2px;
     // border: var(--panel-borders);

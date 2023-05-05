@@ -39,6 +39,17 @@ Vue.directive("uppercase", {
   },
 });
 
+if (window.app_infos.is_electron)
+  document.body.addEventListener("click", (event) => {
+    event.path.every((item) => {
+      if (item.tagName === "A" && item.target === "_blank")
+        window.electronAPI.send("toMain", {
+          type: "open_external",
+          url: item.href,
+        });
+    });
+  });
+
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
@@ -52,6 +63,10 @@ import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
 Vue.component("AuthorField", AuthorField);
+import AdminsAndContributorsField from "@/adc-core/fields/AdminsAndContributorsField.vue";
+Vue.component("AdminsAndContributorsField", AdminsAndContributorsField);
+import EditAdminsAndContributorsField from "@/adc-core/fields/EditAdminsAndContributorsField.vue";
+Vue.component("EditAdminsAndContributorsField", EditAdminsAndContributorsField);
 import StatusTag from "@/adc-core/fields/StatusTag.vue";
 Vue.component("StatusTag", StatusTag);
 import TagsField from "@/adc-core/fields/TagsField.vue";
@@ -66,6 +81,10 @@ import ToggleField from "@/adc-core/fields/ToggleField.vue";
 Vue.component("ToggleField", ToggleField);
 import RadioField from "@/adc-core/fields/RadioField.vue";
 Vue.component("RadioField", RadioField);
+import RadioInput from "@/adc-core/inputs/RadioInput.vue";
+Vue.component("RadioInput", RadioInput);
+import FilesModule from "@/adc-core/fields/FilesModule.vue";
+Vue.component("FilesModule", FilesModule);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
 import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
@@ -77,6 +96,8 @@ import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
 Vue.component("RadioSwitch", RadioSwitch);
 import DropZone from "@/adc-core/ui/DropZone.vue";
 Vue.component("DropZone", DropZone);
+import AnimatedCounter from "@/adc-core/ui/AnimatedCounter.vue";
+Vue.component("AnimatedCounter", AnimatedCounter);
 //
 import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
@@ -119,14 +140,9 @@ Vue.component("ImageSelect", ImageSelect);
 import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
 Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 
-Vue.component("EditBtn", {
-  name: "EditBtn",
-  template: `
-  <sl-button variant="edit" class="editBtn" size="small" circle @click="$emit('click')">
-    <sl-icon name="pencil-fill" :label="$t('edit')" />
-  </sl-button>
-`,
-});
+import EditBtn from "@/adc-core/ui/EditBtn.vue";
+Vue.component("EditBtn", EditBtn);
+
 Vue.component("FullscreenBtn", {
   name: "FullscreenBtn",
   props: ["icon", "label"],
@@ -220,7 +236,6 @@ new Vue({
     app_infos: window.app_infos,
     is_loading: true,
     is_connected: false,
-    is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
     dev_mode: true,
     publicPath: process.env.BASE_URL,
 

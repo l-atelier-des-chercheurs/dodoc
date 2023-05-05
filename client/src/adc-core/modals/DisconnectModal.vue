@@ -4,10 +4,10 @@
       <span v-html="$t('connection_lost_reload_to_reconnect')" />
       <br />
       <a
-        :href="'mailto:' + $root.app_infos.contactmail_of_instance"
+        :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
         target="_blank"
       >
-        {{ $root.app_infos.contactmail_of_instance }}
+        {{ $root.app_infos.instance_meta.contactmail }}
       </a>
     </p>
 

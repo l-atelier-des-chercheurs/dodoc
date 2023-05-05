@@ -64,7 +64,11 @@
         <DateField :title="$t('date_modified')" :date="file.$date_modified" />
       </div>
       <div class="_selectBtn" v-else>
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
+        <button
+          type="button"
+          class="u-buttonLink has--ts"
+          @click="$emit('close')"
+        >
           {{ $t("cancel") }}
         </button>
         <button
@@ -230,7 +234,11 @@ export default {
   width: 100%;
   gap: calc(var(--spacing) / 1);
 
-  background: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: none;
+  margin: calc(var(--spacing) / 1);
 }
 
 ._mediaModal--content {

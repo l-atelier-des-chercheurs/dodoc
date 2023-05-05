@@ -11,33 +11,25 @@
       :tag="'h2'"
       :can_edit="is_self"
     />
-
-    <SelectField
-      v-if="is_admin"
-      :field_name="'role'"
-      :content="author.role"
-      :path="author.$path"
-      :can_edit="true"
-      :options="[
-        {
-          key: 'contributor',
-          text: $t('contributor'),
-        },
-        {
-          key: 'admin',
-          text: $t('admin'),
-        },
-      ]"
-    />
-    <div v-else>
-      {{ $t(author.role) }}
+    <div v-if="is_instance_admin">
+      <span v-html="author.email" />
+    </div>
+    <div
+      class="u-instructions"
+      v-if="
+        authorIsInstance({
+          field: '$admins',
+          folder_path: author.$path,
+        })
+      "
+    >
+      <small v-html="$t('admin')" />
     </div>
 
-    <!-- {{ author.email }} -->
     <br />
 
     <RemoveMenu
-      v-if="is_self || is_admin"
+      v-if="is_self || is_instance_admin"
       :remove_text="$t('remove')"
       @remove="removeAuthor"
     />
@@ -77,6 +69,6 @@ export default {
 ._authorCard {
   // background: var(--c-bleumarine_clair);
   // border-left: 2px solid var(--c-bleumarine);
-  padding: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 2);
 }
 </style>

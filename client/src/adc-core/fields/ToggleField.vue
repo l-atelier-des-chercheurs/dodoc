@@ -1,6 +1,6 @@
 <template>
   <div class="_toggleField">
-    <div class="u-sameRow">
+    <div class="_sameLine">
       <ToggleInput
         :content.sync="new_content"
         :label="label"
@@ -104,6 +104,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._toggleField {
+}
+
+._sameLine {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 ._footer {
