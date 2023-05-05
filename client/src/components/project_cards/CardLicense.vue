@@ -1,11 +1,14 @@
 <template>
   <ProjectCard :header="$t('authors_and_license')" :icon="'people'">
     <AdminsAndContributorsField
+      :show_section="['admins', 'contributors']"
       :folder="project"
       :can_edit="can_edit"
       :admin_instructions="$t('project_admin_instructions')"
       :contrib_instructions="$t('project_contrib_instructions')"
     />
+
+    <br />
 
     <div class="">
       <TitleField

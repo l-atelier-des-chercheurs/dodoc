@@ -599,7 +599,7 @@ export default function () {
         preview: "Prévisualiser",
 
         instance_admin_instructions:
-          "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages.",
+          "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
         instance_contrib_instructions:
           "Peuvent uniquement créer des espaces et les administrer.",
 

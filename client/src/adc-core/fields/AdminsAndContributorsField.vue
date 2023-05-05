@@ -1,27 +1,40 @@
 <template>
   <div>
-    <DLabel :str="$t('contributors')" />
-    <div class="_listOfAvatars">
-      <template
-        v-if="Array.isArray(contributors_path) && contributors_path.length > 0"
-      >
-        <AuthorTag
-          v-for="contributor_path in contributors_path"
-          :path="contributor_path"
-          :key="contributor_path"
-          :edit_mode="false"
-          :links_to_author_page="true"
-          :show_image_only="false"
-        />
-      </template>
-      <div v-else-if="contributors_path === 'everyone'" :key="'everyone'">
-        {{ $t("everyone_can_contribute") }}
+    <!-- <template v-for="author_type of ['contributors', 'admins']">
+      {{ author_type }}
+    </template> -->
+
+    <div v-for="author_section of show_section" :key="author_section">
+      <DLabel :str="$t(author_section)" />
+      <div class="_listOfAvatars">
+        <template
+          v-if="
+            Array.isArray(getCorrespondingPaths(author_section)) &&
+            getCorrespondingPaths(author_section).length > 0
+          "
+        >
+          <AuthorTag
+            v-for="atpath in getCorrespondingPaths(author_section)"
+            :path="atpath"
+            :key="atpath"
+            :edit_mode="false"
+            :links_to_author_page="true"
+            :show_image_only="false"
+          />
+        </template>
+        <div
+          v-else-if="getCorrespondingPaths(author_section) === 'everyone'"
+          :key="'everyone'"
+        >
+          {{ $t("everyone_can_contribute") }}
+        </div>
+        <div v-else :key="'none'">
+          {{ $t("none") }}
+        </div>
       </div>
-      <div v-else :key="'none'">
-        {{ $t("none") }}
-      </div>
-      <EditBtn v-if="can_edit" @click="edit_mode = true" />
     </div>
+
+    <EditBtn v-if="can_edit" @click="edit_mode = true" />
 
     <EditAdminsAndContributorsField
       v-if="edit_mode"
@@ -58,6 +71,10 @@ export default {
     can_edit: Boolean,
     admin_instructions: String,
     contrib_instructions: String,
+    show_section: {
+      type: Array,
+      default: () => ["admins", "contributors"],
+    },
   },
   components: {},
   data() {
@@ -88,6 +105,10 @@ export default {
   methods: {
     closeModal() {
       this.edit_mode = false;
+    },
+    getCorrespondingPaths(author_section) {
+      if (author_section === "contributors") return this.contributors_path;
+      if (author_section === "admins") return this.admins_path;
     },
   },
 };

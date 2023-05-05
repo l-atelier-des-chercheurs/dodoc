@@ -4,7 +4,7 @@
     <div class="">
       <div class="_projectInfos--cover">
         <img v-if="cover_thumb" :src="cover_thumb" @click="$emit('open')" />
-        <transition name="fade_fast" :duration="150" mode="out-in">
+        <transition name="fade_fast">
           <div class="_previewProgress" v-if="is_making_preview">
             <AnimatedCounter :value="preview_progress" />
           </div>
@@ -104,7 +104,7 @@ export default {
         setTimeout(() => {
           this.is_making_preview = false;
           this.preview_progress = 0;
-        }, 3000);
+        }, 2000);
         this.$eventHub.$off("task.ended", checkIfEnded);
         this.$eventHub.$off("task.status", updateProgressPercent);
         this.$api.leave({ room: "task_" + current_task_id });
