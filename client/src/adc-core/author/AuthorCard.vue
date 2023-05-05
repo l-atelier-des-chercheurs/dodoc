@@ -11,11 +11,19 @@
       :tag="'h2'"
       :can_edit="is_self"
     />
-    <div class="u-instructions" v-if="is_instance_admin">
-      <small v-html="$t('admin')" />
-    </div>
     <div v-if="is_instance_admin">
       <span v-html="author.email" />
+    </div>
+    <div
+      class="u-instructions"
+      v-if="
+        authorIsInstance({
+          field: '$admins',
+          folder_path: author.$path,
+        })
+      "
+    >
+      <small v-html="$t('admin')" />
     </div>
 
     <br />
@@ -61,6 +69,6 @@ export default {
 ._authorCard {
   // background: var(--c-bleumarine_clair);
   // border-left: 2px solid var(--c-bleumarine);
-  padding: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 2);
 }
 </style>
