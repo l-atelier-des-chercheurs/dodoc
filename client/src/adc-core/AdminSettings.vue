@@ -82,6 +82,7 @@
             <AdminsAndContributorsField
               :folder="settings"
               :can_edit="is_instance_admin"
+              :admin_label="$t('admin')"
               :admin_instructions="$t('instance_admin_instructions')"
               :contrib_instructions="$t('instance_contrib_instructions')"
             />

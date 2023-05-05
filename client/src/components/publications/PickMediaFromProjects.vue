@@ -13,7 +13,7 @@
 
         <div
           v-if="projects.length === 0"
-          class="u-instructions _projectsNotice"
+          class="u-instructions"
           :key="'noprojects'"
         >
           {{ $t("no_projects") }}

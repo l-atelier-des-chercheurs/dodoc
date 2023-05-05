@@ -28,7 +28,7 @@
         class=""
         :key="author_section"
       >
-        <DLabel v-if="author_section === 'admins'" :str="$t('referent')" />
+        <DLabel v-if="author_section === 'admins'" :str="admin_label" />
         <DLabel
           v-else-if="author_section === 'contributors'"
           :str="$t('contributors')"
@@ -52,15 +52,20 @@
           <div
             v-else-if="getCorrespondingPaths(author_section) === 'everyone'"
             :key="'everyone'"
+            class="t-500"
           >
             {{ $t("everyone") }}
           </div>
-          <div v-else :key="'none'">
-            {{ $t("none") }}
+          <div v-else :key="'noone'" class="t-500">
+            {{ $t("noone") }}
           </div>
         </div>
       </div>
-      <EditBtn v-if="can_edit" @click="edit_mode = true" />
+      <EditBtn
+        class="_floatingTopRight"
+        v-if="can_edit"
+        @click="edit_mode = true"
+      />
     </div>
 
     <EditAdminsAndContributorsField
@@ -68,6 +73,7 @@
       :folder_path="folder.$path"
       :admins_path="admins_path"
       :contributors_path="contributors_path"
+      :admin_label="admin_label"
       :admin_instructions="admin_instructions"
       :contrib_instructions="contrib_instructions"
       @closeModal="edit_mode = false"
@@ -96,6 +102,7 @@ export default {
   props: {
     folder: Object,
     can_edit: Boolean,
+    admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,
     show_section: {
@@ -143,11 +150,16 @@ export default {
 <style lang="scss" scoped>
 ._adminsAndContributorsField {
   > ._lists {
-    border: 2px solid var(--c-gris);
-    display: inline-flex;
+    position: relative;
+    // border: 2px solid var(--c-gris);
+    display: flex;
     flex-flow: row wrap;
-    padding: calc(var(--spacing) / 4);
+    // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     gap: calc(var(--spacing) / 2);
+
+    > * {
+      flex: 1 1 200px;
+    }
   }
 }
 ._listOfAvatars {
@@ -155,5 +167,11 @@ export default {
   flex-flow: row wrap;
   align-items: flex-end;
   gap: calc(var(--spacing) / 4);
+}
+
+._floatingTopRight {
+  position: absolute !important;
+  top: 0;
+  right: 0;
 }
 </style>

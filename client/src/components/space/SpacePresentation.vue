@@ -76,6 +76,7 @@
         <AdminsAndContributorsField
           :folder="space"
           :can_edit="can_edit"
+          :admin_label="$t('referent')"
           :admin_instructions="$t('space_admin_instructions')"
           :contrib_instructions="$t('space_contrib_instructions')"
         />
