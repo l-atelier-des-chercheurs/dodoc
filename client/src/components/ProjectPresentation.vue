@@ -73,9 +73,9 @@ z
             !show_description ? $t('show_description') : $t('hide_description')
           "
         />
-        <small v-else class="u-instructions">
+        <!-- <small v-else class="u-instructions">
           {{ $t("no_description") }}
-        </small>
+        </small> -->
       </template>
       <TitleField
         v-if="show_description"
