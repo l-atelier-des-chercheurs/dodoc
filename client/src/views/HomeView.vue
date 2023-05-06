@@ -99,13 +99,13 @@
     <footer class="_bottomFooter">
       <div class="_logoText">
         <DodocLogo class="_logo" />
-        <div class="">
-          {{ $t("version") }} – {{ $root.app_infos.version }} <br />
-          {{ $t("a_foss_made_by") }} <br />
-          {{ $t("more_informations") }} :
-          <a href="https://dodoc.fr" target="_blank">dodoc.fr</a>
+        <div class="_version">
+          {{ $t("version") }} {{ $root.app_infos.version }}
         </div>
       </div>
+      {{ $t("a_foss_made_by") }} <br />
+      {{ $t("more_informations") }} :
+      <a href="https://dodoc.fr" target="_blank">dodoc.fr</a>
     </footer>
   </div>
 </template>
@@ -221,11 +221,23 @@ export default {
 }
 
 ._logoText {
-}
-
-._logo {
-  width: 120px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-end;
+  max-width: 240px;
   margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
+  > * {
+    flex: 0 0 50%;
+
+    &._logo {
+    }
+    &._version {
+      text-align: left;
+      font-weight: 500;
+      padding-bottom: 3px;
+    }
+  }
 }
 
 ._bottomCont {
