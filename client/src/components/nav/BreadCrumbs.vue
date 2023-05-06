@@ -6,7 +6,7 @@
         :to="`/`"
       >
         <DodocLogo v-if="instance_logo === 'dodoc'" />
-        <img v-else :src="instance_logo" />
+        <img class="_customLogo" v-else :src="instance_logo" />
       </component>
     </div>
 
@@ -124,6 +124,12 @@ export default {
     height: 40px;
     object-fit: scale-down;
     object-position: 0 0;
+  }
+  ._customLogo {
+    transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+    &:hover {
+      opacity: 0.7;
+    }
   }
 }
 
