@@ -28,16 +28,16 @@
           </template>
           <template v-else>
             <p v-html="$t('admins_edit_text_below')" />
-            <button
-              type="button"
-              class="u-button u-button_bleuvert"
-              @click="show_settings_modal = !show_settings_modal"
-            >
-              <sl-icon name="gear-fill" />
-              &nbsp;{{ $t("settings") }}
-            </button>
           </template>
         </template>
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          @click="show_settings_modal = !show_settings_modal"
+        >
+          <sl-icon name="gear-fill" />
+          &nbsp;{{ $t("settings") }}
+        </button>
       </div>
 
       <p v-if="$root.app_infos.instance_meta.contactmail">
@@ -96,21 +96,17 @@
       </transition>
     </div>
 
-    <div class="">
-      <small class="_versionNumber">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          v-if="is_instance_admin"
-          @click="show_settings_modal = !show_settings_modal"
-        >
-          <sl-icon name="gear-fill" />
-          &nbsp;{{ $t("settings") }}
-        </button>
-        <template v-if="is_instance_admin"> – </template>
-        {{ $t("version") }} {{ $root.app_infos.version }}
-      </small>
-    </div>
+    <footer class="_bottomFooter">
+      <div class="_logoText">
+        <DodocLogo class="_logo" />
+        <div class="">
+          {{ $t("version") }} – {{ $root.app_infos.version }} <br />
+          {{ $t("a_foss_made_by") }} <br />
+          {{ $t("more_informations") }} :
+          <a href="https://dodoc.fr" target="_blank">dodoc.fr</a>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -119,6 +115,7 @@
 import AdminSettings from "@/adc-core/AdminSettings.vue";
 import SpacesList from "@/components/space/SpacesList.vue";
 import AllProjects from "@/components/project/AllProjects.vue";
+import DodocLogo from "@/components/nav/DodocLogo.vue";
 
 export default {
   props: {},
@@ -126,6 +123,7 @@ export default {
     AdminSettings,
     SpacesList,
     AllProjects,
+    DodocLogo,
   },
   data() {
     return {
@@ -194,14 +192,13 @@ export default {
 ._panesLeft {
 }
 
-._versionNumber {
+._bottomFooter {
   display: block;
-  // position: absolute;
-  // bottom: 0;
-  // left: 0;
   margin: 0 auto;
   text-align: center;
   padding: calc(var(--spacing) * 4) 0;
+  font-size: var(--sl-font-size-x-small);
+  max-width: 65ch;
 }
 
 ._floatinProjectBtn {
@@ -221,6 +218,14 @@ export default {
 }
 
 ._settingBtn {
+}
+
+._logoText {
+}
+
+._logo {
+  width: 120px;
+  margin: 0 auto;
 }
 
 ._bottomCont {

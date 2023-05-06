@@ -473,6 +473,7 @@ module.exports = (function () {
     d.presentation_of_instance = presentation_of_instance || "";
     d.contactmail_of_instance = contactmail_of_instance || "";
     d.cover_of_instance = $cover || {};
+    d.favicon_url = $cover ? `/thumbs/${$cover[640]}` : false;
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
     d.require_signup_to_contribute = require_signup_to_contribute === true;

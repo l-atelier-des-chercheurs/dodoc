@@ -1,10 +1,7 @@
 <template>
   <BaseModal2 @close="$emit('close')">
     <div class="_pickMediaFromProject">
-      <sl-spinner
-        style="--indicator-color: currentColor"
-        v-if="projects.length === 0"
-      />
+      <sl-spinner style="--indicator-color: currentColor" v-if="is_loading" />
       <template v-else>
         <DLabel
           :str="$t('source_project')"
@@ -63,15 +60,18 @@ export default {
   },
   data() {
     return {
-      projects: [],
+      is_loading: false,
+      projects: undefined,
       source_project_path: "",
       source_project: undefined,
       media_focused: undefined,
     };
   },
   created() {},
-  mounted() {
-    if (this.path) this.loadProjects();
+  async mounted() {
+    this.is_loading = true;
+    await this.loadProjects();
+    this.is_loading = false;
   },
   beforeDestroy() {},
   watch: {

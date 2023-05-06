@@ -61,7 +61,14 @@
             <br />
 
             <DLabel :str="$t('logo')" />
-            <div class="u-wips" />
+            <div class="_cover">
+              <CoverField
+                :context="'full'"
+                :cover="settings.$cover"
+                :path="settings.$path"
+                :can_edit="is_instance_admin"
+              />
+            </div>
 
             <!-- <CoverField
             class="_coverPicker"
@@ -197,4 +204,14 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2/1;
+
+  ::v-deep img {
+    object-fit: scale-down;
+  }
+}
+</style>

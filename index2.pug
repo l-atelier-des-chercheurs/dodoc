@@ -12,7 +12,9 @@ html
     title.  
       !{name_of_instance}
 
-    link(href="favicon.ico" id="favicon" rel="icon" type="image/x-icon")
+    if favicon_url
+      link(rel="shortcut icon" href=favicon_url)
+
     style.
       @import "!{path_prefix}_client/fonts/fira.css";
     style.
