@@ -320,7 +320,13 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      if (await auth.isFolderOpenedToAll({ field: "$admins", path_to_folder }))
+      if (
+        (await auth.isFolderOpenedToAll({
+          field: "$admins",
+          path_to_folder,
+        })) ||
+        (await auth.isFolderOpenedToAll({ field: "$admins" }))
+      )
         return next ? next() : undefined;
 
       const token_path = auth.extrackAndCheckToken({ req });
