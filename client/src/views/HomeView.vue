@@ -33,6 +33,7 @@
         <button
           type="button"
           class="u-button u-button_bleuvert"
+          v-if="is_instance_admin"
           @click="show_settings_modal = !show_settings_modal"
         >
           <sl-icon name="gear-fill" />
