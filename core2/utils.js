@@ -265,18 +265,17 @@ module.exports = (function () {
       new_path,
       resolution,
       format = "jpeg",
+      withoutEnlargement = false,
     }) {
       if (format === "png")
         await sharp(full_path)
           .rotate()
           .resize(resolution, resolution, {
             fit: "inside",
-            withoutEnlargement: true,
+            withoutEnlargement,
           })
           .withMetadata()
-          .toFormat("png", {
-            quality: global.settings.mediaThumbQuality,
-          })
+          .toFormat("png", {})
           .toFile(new_path)
           .catch((err) => {
             throw err;
@@ -286,7 +285,7 @@ module.exports = (function () {
           .rotate()
           .resize(resolution, resolution, {
             fit: "inside",
-            withoutEnlargement: true,
+            withoutEnlargement,
           })
           .flatten({ background: "white" })
           .withMetadata()
@@ -454,6 +453,13 @@ module.exports = (function () {
     },
     getParent(path) {
       return path.substring(0, path.lastIndexOf("/"));
+    },
+    isExtensionLosslessImageFormat(filename) {
+      if (filename) {
+        const extension = path.parse(filename).ext?.toLowerCase();
+        if (extension) return [".png", ".svg"].includes(extension);
+      }
+      return false;
     },
   };
 

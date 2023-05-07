@@ -387,8 +387,9 @@ module.exports = (function () {
       resolutions,
     });
 
-    const format =
-      path.parse(media_filename).ext?.toLowerCase() === ".png" ? "png" : "jpeg";
+    const format = utils.isExtensionLosslessImageFormat(originalFilename)
+      ? "png"
+      : "jpeg";
 
     let thumb_paths = {};
 

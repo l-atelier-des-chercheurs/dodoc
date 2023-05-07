@@ -335,7 +335,7 @@ module.exports = (function () {
         resolution: 2000,
       });
     } else if (req) {
-      const { path_to_temp_file } = await utils
+      const { originalFilename, path_to_temp_file } = await utils
         .handleForm({
           path_to_folder,
           req,
@@ -343,10 +343,16 @@ module.exports = (function () {
         .catch((err) => {
           return;
         });
+
+      const format = utils.isExtensionLosslessImageFormat(originalFilename)
+        ? "png"
+        : "jpeg";
+
       await utils.makeImageFromPath({
         full_path: path_to_temp_file,
         new_path: full_path_to_thumb,
         resolution: 2000,
+        format,
       });
       await fs.remove(path_to_temp_file);
     }

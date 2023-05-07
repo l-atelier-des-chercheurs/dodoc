@@ -494,7 +494,10 @@ export default function () {
           });
         } else if (typeof new_cover_data === "object") {
           let formData = new FormData();
-          formData.append("file", new_cover_data, "cover");
+
+          const original_filename = new_cover_data.name || "cover";
+          formData.append("file", new_cover_data, original_filename);
+
           await this.$axios
             .patch(path, formData, {
               headers: { "Content-Type": "multipart/form-data" },
