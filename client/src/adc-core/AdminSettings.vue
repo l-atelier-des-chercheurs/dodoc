@@ -42,6 +42,7 @@
               :content="settings.presentation_of_instance"
               :path="settings.$path"
               :required="false"
+              :markdown="true"
               :can_edit="is_instance_admin"
             />
 
@@ -61,27 +62,35 @@
             <br />
 
             <DLabel :str="$t('logo')" />
-            <div class="u-wips" />
+            <div class="_cover">
+              <CoverField
+                :context="'full'"
+                :cover="settings.$cover"
+                :path="settings.$path"
+                :can_edit="is_instance_admin"
+              />
+            </div>
 
-            <!-- <CoverField
-            class="_coverPicker"
-            :context="context"
-            :cover="settings.logo"
-            :path="path"
-            :can_edit="is_instance_admin"
-          /> -->
-            <!-- <CoverField :cover="settings.logo" :path="path" /> -->
+            <br />
+
+            <ColorInput
+              class="u-spacingBottom"
+              :label="$t('hero_background_color')"
+              :value="settings.hero_background_color"
+              @save="saveNewHeroBgColor"
+            />
 
             <br />
 
             <div class="u-instructions">
-              {{ $t("restart_to_apply") }}
+              {{ $t("refresh_window_to_apply") }}
             </div>
           </sl-tab-panel>
           <sl-tab-panel name="administration_and_access_control">
             <AdminsAndContributorsField
               :folder="settings"
               :can_edit="is_instance_admin"
+              :admin_label="$t('admin')"
               :admin_instructions="$t('instance_admin_instructions')"
               :contrib_instructions="$t('instance_contrib_instructions')"
             />
@@ -193,7 +202,25 @@ export default {
       this.$api.restartDodoc();
     },
     saveNewPathToContent() {},
+    async saveNewHeroBgColor($event) {
+      await this.$api.updateMeta({
+        path: this.settings.$path,
+        new_meta: {
+          hero_background_color: $event || "",
+        },
+      });
+    },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2/1;
+
+  ::v-deep img {
+    object-fit: scale-down;
+  }
+}
+</style>

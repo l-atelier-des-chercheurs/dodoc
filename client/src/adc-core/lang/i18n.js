@@ -41,6 +41,8 @@ export default function () {
     messages: {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
+        a_foss_made_by:
+          "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
         home: "Accueil",
         admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
         admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
@@ -88,7 +90,7 @@ export default function () {
         general_password: "mot de passe général",
         general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
         peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
-        general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
+        general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plateforme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
 
         submitted_password_is_wrong: "Mot de passe erroné",
@@ -107,8 +109,9 @@ export default function () {
         active_media_instr:
           "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
-        contactmail_of_instance: `Adresse e-mail de contact`,
+        contactmail_of_instance: `Contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+        hero_background_color: "Couleur d’arrière plan",
 
         ui_lang_select: "Langue de l’interface",
         lang_updated: "La langue a été mise à jour",
@@ -309,6 +312,7 @@ export default function () {
         list_of_accounts: "Liste des comptes",
         // only_accounts: "Seulement les comptes suivants",
         restart_to_apply: "Relancez do•doc pour appliquer",
+        refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
         restart: "Relancer do•doc",
         reveal: "Révéler",
         choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
@@ -635,7 +639,7 @@ export default function () {
         arrow: "Flèche",
         for_example: "Par exemple",
         require_signup_to_contribute:
-          "Les utilisateurs doivent créer un compte pour contribuer à la plate-forme",
+          "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
         require_mail_to_signup:
           "Une adresse courriel est obligatoire pour créer un compte",
 

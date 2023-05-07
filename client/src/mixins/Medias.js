@@ -16,7 +16,8 @@ export default {
         return false;
       }
 
-      // todo make this work with subfolders
+      if ($path === "") return `/thumbs/${thumb_path}`;
+
       return `/thumbs/${$path}/${thumb_path}`;
     },
     makeMediaFilePath({ $path, $media_filename }) {

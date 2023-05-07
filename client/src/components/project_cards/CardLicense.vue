@@ -4,6 +4,7 @@
       :show_section="['admins', 'contributors']"
       :folder="project"
       :can_edit="can_edit"
+      :admin_label="$t('referent')"
       :admin_instructions="$t('project_admin_instructions')"
       :contrib_instructions="$t('project_contrib_instructions')"
     />

@@ -299,7 +299,7 @@ export default {
 }
 
 ._mediaLibrary--focusPane {
-  // background: var(--c-bleu);
+  // background: var(--c-bleumarine);
 }
 
 ._focusBtns {

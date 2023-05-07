@@ -59,6 +59,8 @@ Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
+import MarkdownField from "@/adc-core/fields/MarkdownField.vue";
+Vue.component("MarkdownField", MarkdownField);
 import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
@@ -89,6 +91,8 @@ import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
 import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
 Vue.component("RemoveMenu", RemoveMenu);
+import KeywordsList from "@/adc-core/ui/KeywordsList.vue";
+Vue.component("KeywordsList", KeywordsList);
 //
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);

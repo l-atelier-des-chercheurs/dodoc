@@ -56,47 +56,32 @@
 
         <div class="">
           <DLabel :str="$t('keywords')" />
-          <template v-if="all_keywords.length === 0">–</template>
-          <button
-            v-else
-            type="button"
-            class="u-button u-button_orange u-button_small"
-            v-for="kw in all_keywords"
-            :key="kw"
-            @click="toggleFilter({ type: 'keywords', value: kw })"
-          >
-            {{ kw }}
-          </button>
+          <KeywordsList
+            :keywords="all_keywords"
+            :kw_type="'keywords'"
+            :clickable="true"
+            @tagClick="toggleFilter({ type: 'keywords', value: $event })"
+          />
         </div>
 
         <div class="">
           <DLabel :str="$t('machines_and_materials')" />
-          <template v-if="all_materials.length === 0">–</template>
-          <button
-            v-else
-            type="button"
-            class="u-button u-button_bleumarine u-button_small"
-            v-for="kw in all_materials"
-            :key="kw"
-            @click="toggleFilter({ type: 'materials', value: kw })"
-          >
-            {{ kw }}
-          </button>
+          <KeywordsList
+            :keywords="all_materials"
+            :kw_type="'materials'"
+            :clickable="true"
+            @tagClick="toggleFilter({ type: 'materials', value: $event })"
+          />
         </div>
 
         <div class="">
           <DLabel :str="$t('levels_and_competences')" />
-          <template v-if="all_levels.length === 0">–</template>
-          <button
-            v-else
-            type="button"
-            class="u-button u-button_bleuvert u-button_small"
-            v-for="kw in all_levels"
-            :key="kw"
-            @click="toggleFilter({ type: 'level', value: kw })"
-          >
-            {{ $t(kw) }}
-          </button>
+          <KeywordsList
+            :keywords="all_levels"
+            :kw_type="'level'"
+            :clickable="true"
+            @tagClick="toggleFilter({ type: 'level', value: $event })"
+          />
         </div>
       </div>
 

@@ -27,18 +27,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: white;
+  --color1: transparent;
+  // --color1: white;
   --color2: var(--c-bleuvert);
+  --color-hover-icon: white;
 
   position: relative;
   display: inline-block;
   background: var(--color1);
   color: var(--color2);
 
-  width: 1.8rem;
-  height: 1.8rem;
-  flex: 0 0 1.8rem;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
 
+  backdrop-filter: blur(5px);
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -72,10 +75,11 @@ export default {
   &:hover,
   &:active {
     // background: var(--color2);
-    color: var(--color1);
+    color: var(--color-hover-icon);
 
     span {
       transform: none;
+      color: inherit;
       opacity: 1;
       pointer-events: auto;
       // transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);

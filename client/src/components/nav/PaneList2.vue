@@ -322,7 +322,7 @@ export default {
 
   background: var(--panel-color);
   // border: var(--panel-borders);
-  box-shadow: var(--panel-shadows);
+  // box-shadow: var(--panel-shadows);
   // border-radius: var(--panel-radius);
 
   &.has--noPanes {

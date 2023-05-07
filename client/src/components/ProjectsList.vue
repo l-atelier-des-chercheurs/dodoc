@@ -7,7 +7,7 @@
   >
     <div
       v-if="projects.length === 0"
-      class="u-instructions _projectsNotice"
+      class="u-instructions"
       :key="'noprojects'"
     >
       {{ $t("no_projects") }}
@@ -43,10 +43,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._projectsNotice {
-  width: 100%;
-  text-align: center;
-}
 ._projectsList {
   display: grid;
   grid-auto-rows: max-content;

@@ -4,7 +4,7 @@
     <!-- <img
         src="https://latelier-des-chercheurs.fr/thumbs/ateliers/chepa-le-journal-pour-tou-te-s/cover-1280x800-q60.jpg"
       /> -->
-    <div class="_coverField">
+    <div class="_spaceCover">
       <CoverField
         :context="context"
         :cover="space.$cover"
@@ -71,11 +71,11 @@
       />
 
       <template v-if="context === 'full'">
-        <br />
         <!-- :show_section="['contributors']" -->
         <AdminsAndContributorsField
           :folder="space"
           :can_edit="can_edit"
+          :admin_label="$t('referent')"
           :admin_instructions="$t('space_admin_instructions')"
           :contrib_instructions="$t('space_contrib_instructions')"
         />
@@ -142,7 +142,7 @@ export default {
   position: relative;
 
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   align-items: center;
 
   width: 100%;
@@ -172,20 +172,22 @@ export default {
   // width: 100%;
 }
 
-._coverField {
+._spaceCover {
   position: relative;
   aspect-ratio: 1/1;
   align-self: flex-start;
+  border: 1px solid var(--c-gris);
 
   flex: 1 0 80px;
-  max-width: 120px;
+  // max-width: 120px;
+  overflow: hidden;
   border-radius: var(--panel-radius);
   // margin-right: calc(var(--spacing) / 1);
   // margin-bottom: calc(var(--spacing) / 4);
 }
 ._textBloc {
   padding: calc(var(--spacing) / 2);
-  flex: 1 1 0;
+  flex: 5 1 0;
 
   display: flex;
   flex-flow: column nowrap;
@@ -200,7 +202,7 @@ export default {
   display: block;
   max-width: 88ch;
   // flex: 4 1 33%;
-  margin-top: calc(var(--spacing) / 2);
+  // margin-top: calc(var(--spacing) / 2);
   font-size: var(--sl-font-size-small);
 }
 

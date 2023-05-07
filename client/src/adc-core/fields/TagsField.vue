@@ -2,35 +2,25 @@
   <div class="_tagsField">
     <DLabel v-if="label" :str="label" />
 
-    <span v-if="new_tags.length === 0 && !can_edit">–</span>
-
-    <span class="_tagsList" v-else-if="new_tags.length > 0">
-      <sl-tag
-        v-for="tag in new_tags"
-        :key="tag"
-        variant="primary"
-        size="medium"
-        :removable="edit_mode"
-        @click="edit_mode ? removeTag(tag) : ''"
-      >
-        {{ tag }}
-      </sl-tag>
-    </span>
+    <KeywordsList
+      :keywords="new_tags"
+      :kw_type="field_name"
+      :removable="edit_mode"
+      @removeClick="removeTag($event)"
+    />
 
     <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
     <template v-if="can_edit">
-      <sl-button
+      <button
+        type="button"
+        class="u-button"
         v-if="edit_mode && create_new_tag === false"
-        variant="default"
-        class=""
-        size="medium"
-        pill
         @click="create_new_tag = true"
       >
         <sl-icon name="plus-square" :label="$t('add')" />
         <!-- {{ $t("add") }} -->
-      </sl-button>
+      </button>
     </template>
 
     <div class="_footer" v-if="edit_mode">

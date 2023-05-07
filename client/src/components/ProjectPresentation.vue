@@ -11,7 +11,6 @@ z
   >
     <div class="_projectInfos--cover">
       <CoverField
-        class="_coverPicker"
         :context="context"
         :cover="project.$cover"
         :path="project.$path"
@@ -395,16 +394,6 @@ export default {
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }
-}
-
-._coverPicker {
-  // position: absolute;
-  // bottom: 0;
-  // right: 0;
-  // padding: calc(var(--spacing) / 1);
-  // margin: calc(var(--spacing) * 1);
-  // margin: 2px;
-  // border-radius: 3px;
 }
 
 ._showMeta {

@@ -125,8 +125,10 @@ module.exports = (function () {
         Object.entries(fields).map(([field_name, opt]) => {
           if (
             new_meta.hasOwnProperty(field_name) &&
-            opt.type === "string" &&
-            new_meta[field_name] !== ""
+            opt.type === "string"
+            // &&
+            // new_meta[field_name] !== ""
+            // should allow empty values
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
@@ -263,18 +265,17 @@ module.exports = (function () {
       new_path,
       resolution,
       format = "jpeg",
+      withoutEnlargement = false,
     }) {
       if (format === "png")
         await sharp(full_path)
           .rotate()
           .resize(resolution, resolution, {
             fit: "inside",
-            withoutEnlargement: true,
+            withoutEnlargement,
           })
           .withMetadata()
-          .toFormat("png", {
-            quality: global.settings.mediaThumbQuality,
-          })
+          .toFormat("png", {})
           .toFile(new_path)
           .catch((err) => {
             throw err;
@@ -284,7 +285,7 @@ module.exports = (function () {
           .rotate()
           .resize(resolution, resolution, {
             fit: "inside",
-            withoutEnlargement: true,
+            withoutEnlargement,
           })
           .flatten({ background: "white" })
           .withMetadata()
@@ -452,6 +453,13 @@ module.exports = (function () {
     },
     getParent(path) {
       return path.substring(0, path.lastIndexOf("/"));
+    },
+    isExtensionLosslessImageFormat(filename) {
+      if (filename) {
+        const extension = path.parse(filename).ext?.toLowerCase();
+        if (extension) return [".png", ".svg"].includes(extension);
+      }
+      return false;
     },
   };
 

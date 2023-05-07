@@ -320,7 +320,13 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      if (await auth.isFolderOpenedToAll({ field: "$admins", path_to_folder }))
+      if (
+        (await auth.isFolderOpenedToAll({
+          field: "$admins",
+          path_to_folder,
+        })) ||
+        (await auth.isFolderOpenedToAll({ field: "$admins" }))
+      )
         return next ? next() : undefined;
 
       const token_path = auth.extrackAndCheckToken({ req });
@@ -461,6 +467,7 @@ module.exports = (function () {
       presentation_of_instance,
       contactmail_of_instance,
       $cover,
+      hero_background_color,
       general_password,
       signup_password,
       require_signup_to_contribute,
@@ -472,7 +479,9 @@ module.exports = (function () {
     d.name_of_instance = name_of_instance || "";
     d.presentation_of_instance = presentation_of_instance || "";
     d.contactmail_of_instance = contactmail_of_instance || "";
-    d.cover_of_instance = $cover || {};
+    d.cover_of_instance = $cover || false;
+    d.hero_background_color = hero_background_color || "";
+    d.favicon_url = $cover ? `/thumbs/${$cover[640]}` : false;
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
     d.require_signup_to_contribute = require_signup_to_contribute === true;

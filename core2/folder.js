@@ -26,7 +26,9 @@ module.exports = (function () {
         const folder_meta = await API.getFolder({
           path_to_folder,
         }).catch((err) => {
-          dev.error(err);
+          if (err.code === "ENOENT")
+            dev.error(`Failed to get folder`, err.message);
+          else throw err;
         });
         if (folder_meta) all_folders_with_meta.push(folder_meta);
       }
@@ -335,7 +337,7 @@ module.exports = (function () {
         resolution: 2000,
       });
     } else if (req) {
-      const { path_to_temp_file } = await utils
+      const { originalFilename, path_to_temp_file } = await utils
         .handleForm({
           path_to_folder,
           req,
@@ -343,10 +345,16 @@ module.exports = (function () {
         .catch((err) => {
           return;
         });
+
+      const format = utils.isExtensionLosslessImageFormat(originalFilename)
+        ? "png"
+        : "jpeg";
+
       await utils.makeImageFromPath({
         full_path: path_to_temp_file,
         new_path: full_path_to_thumb,
         resolution: 2000,
+        format,
       });
       await fs.remove(path_to_temp_file);
     }

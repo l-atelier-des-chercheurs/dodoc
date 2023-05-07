@@ -5,7 +5,8 @@
         :is="$route.name !== 'Accueil' ? 'router-link' : 'span'"
         :to="`/`"
       >
-        <DodocLogo />
+        <DodocLogo v-if="instance_logo === 'dodoc'" />
+        <img class="_customLogo" v-else :src="instance_logo" />
       </component>
     </div>
 
@@ -70,7 +71,19 @@ export default {
     this.$eventHub.$off("received.space", this.setSpace);
   },
   watch: {},
-  computed: {},
+  computed: {
+    instance_logo() {
+      const cover = this.$root.app_infos.instance_meta.$cover;
+      if (cover)
+        return this.makeRelativeURLFromThumbs({
+          $thumbs: cover,
+          $type: "image",
+          $path: "",
+          resolution: 320,
+        });
+      return "dodoc";
+    },
+  },
   methods: {
     setSpace(space) {
       this.space = space;
@@ -106,8 +119,28 @@ export default {
   flex: 0 0 auto;
 
   svg {
-    width: 8em;
-    height: 2.6em;
+    width: 120px;
+  }
+
+  img {
+    width: auto;
+    border-radius: 4px;
+  }
+
+  svg,
+  img {
+    height: 40px;
+    object-fit: scale-down;
+    object-position: 0 0;
+  }
+
+  a {
+    ._customLogo {
+      transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+      &:hover {
+        opacity: 0.7;
+      }
+    }
   }
 }
 

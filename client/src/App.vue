@@ -340,7 +340,7 @@ body {
 }
 
 a {
-  color: var(--c-bleu);
+  color: var(--c-bleumarine);
   text-underline-offset: 0.1em;
 
   &:hover {
@@ -417,6 +417,9 @@ h4 {
   font-size: var(--sl-font-size-normal);
   line-height: 1.2;
   font-weight: 400;
+}
+p {
+  margin: 0;
 }
 
 .card-header {

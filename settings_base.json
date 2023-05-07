@@ -21,7 +21,7 @@
     "timeout": 600
   },
 
-  "mediaThumbQuality": 70,
+  "mediaThumbQuality": 90,
   "maxFileSizeInMoForUpload": 10000,
 
   "regexpMatchFolderNames": "^([^.]+)$",
@@ -327,6 +327,9 @@
       },
       "require_mail_to_signup": {
         "type": "boolean"
+      },
+      "hero_background_color": {
+        "type": "string"
       }
     },
     "$files": {

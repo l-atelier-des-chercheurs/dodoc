@@ -4,7 +4,7 @@
     :title="$t('set_admins_and_contributors')"
   >
     <AuthorField
-      :label="$t('referent')"
+      :label="admin_label"
       class="u-spacingBottom"
       :field="'$admins'"
       :authors_paths="admins_path"
@@ -29,6 +29,7 @@ export default {
     folder_path: String,
     admins_path: [String, Array],
     contributors_path: [String, Array],
+    admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,
   },

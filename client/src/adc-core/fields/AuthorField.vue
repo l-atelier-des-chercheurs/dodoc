@@ -8,7 +8,7 @@
     />
 
     <div class="_authors">
-      <div v-if="authors_paths === 'everyone'">
+      <div v-if="authors_paths === 'everyone'" class="t-500">
         {{ $t("everyone") }}
       </div>
       <template
@@ -22,7 +22,7 @@
           :links_to_author_page="false"
         />
       </template>
-      <div v-else>
+      <div v-else class="t-500">
         {{ $t("noone") }}
       </div>
       <!-- :links_to_author_page="!edit_mode" -->
