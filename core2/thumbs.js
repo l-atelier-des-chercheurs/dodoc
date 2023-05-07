@@ -387,7 +387,7 @@ module.exports = (function () {
       resolutions,
     });
 
-    const format = utils.isExtensionLosslessImageFormat(originalFilename)
+    const format = utils.isExtensionLosslessImageFormat(media_filename)
       ? "png"
       : "jpeg";
 
