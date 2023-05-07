@@ -59,6 +59,8 @@ Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
+import MarkdownField from "@/adc-core/fields/MarkdownField.vue";
+Vue.component("MarkdownField", MarkdownField);
 import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";

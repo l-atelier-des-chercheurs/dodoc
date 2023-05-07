@@ -20,7 +20,7 @@
       <h1 v-html="name || $t('welcome_to_dodoc')" />
       <div>
         <template v-if="description">
-          <p v-html="description" />
+          <MarkdownField :text="description" />
         </template>
         <template v-else>
           <template v-if="!is_instance_admin">

@@ -9,11 +9,10 @@
 
     <component :is="tag" class="_container">
       <template v-if="!can_edit || (can_edit && !edit_mode)">
-        <span
-          class="_content"
-          v-if="content && content !== ' '"
-          v-text="content"
-        />
+        <template v-if="content && content !== ' '">
+          <span v-if="!markdown" class="_content" v-text="content" />
+          <MarkdownField v-else :text="content" />
+        </template>
       </template>
       <TextInput
         v-else
@@ -57,6 +56,10 @@ export default {
     input_type: {
       type: String,
       default: "text",
+    },
+    markdown: {
+      type: Boolean,
+      default: false,
     },
     content: {
       type: String,

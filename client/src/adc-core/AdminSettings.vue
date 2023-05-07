@@ -42,6 +42,7 @@
               :content="settings.presentation_of_instance"
               :path="settings.$path"
               :required="false"
+              :markdown="true"
               :can_edit="is_instance_admin"
             />
 
