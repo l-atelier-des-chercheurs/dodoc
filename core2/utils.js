@@ -125,8 +125,10 @@ module.exports = (function () {
         Object.entries(fields).map(([field_name, opt]) => {
           if (
             new_meta.hasOwnProperty(field_name) &&
-            opt.type === "string" &&
-            new_meta[field_name] !== ""
+            opt.type === "string"
+            // &&
+            // new_meta[field_name] !== ""
+            // should allow empty values
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
