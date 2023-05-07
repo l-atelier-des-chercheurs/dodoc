@@ -39,9 +39,9 @@ html
         is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
       
         instance_meta: {
-          name: `!{name_of_instance}`,
-          presentation: `!{presentation_of_instance}`,
-          contactmail: `!{contactmail_of_instance}`,
+          name: `#{name_of_instance}`,
+          presentation: `#{presentation_of_instance}`,
+          contactmail: `#{contactmail_of_instance}`,
           $cover: !{JSON.stringify(cover_of_instance)},
           has_general_password: !{has_general_password},
           has_signup_password: !{has_signup_password},
