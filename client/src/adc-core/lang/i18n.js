@@ -109,8 +109,9 @@ export default function () {
         active_media_instr:
           "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
-        contactmail_of_instance: `Adresse e-mail de contact`,
+        contactmail_of_instance: `Contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+        hero_background_color: "Couleur d’arrière plan",
 
         ui_lang_select: "Langue de l’interface",
         lang_updated: "La langue a été mise à jour",
@@ -311,6 +312,7 @@ export default function () {
         list_of_accounts: "Liste des comptes",
         // only_accounts: "Seulement les comptes suivants",
         restart_to_apply: "Relancez do•doc pour appliquer",
+        refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
         restart: "Relancer do•doc",
         reveal: "Révéler",
         choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
