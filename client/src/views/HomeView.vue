@@ -17,7 +17,7 @@
 
       <!-- <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" /> -->
 
-      <h1 v-html="name || $t('welcome_to_dodoc')" />
+      <h1 class="_sessionTitle" v-html="name || $t('welcome_to_dodoc')" />
       <div>
         <template v-if="description">
           <MarkdownField :text="description" />
@@ -30,15 +30,18 @@
             <p v-html="$t('admins_edit_text_below')" />
           </template>
         </template>
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          v-if="is_instance_admin"
-          @click="show_settings_modal = !show_settings_modal"
-        >
-          <sl-icon name="gear-fill" />
-          &nbsp;{{ $t("settings") }}
-        </button>
+
+        <template v-if="is_instance_admin">
+          <br />
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="show_settings_modal = !show_settings_modal"
+          >
+            <sl-icon name="gear-fill" />
+            &nbsp;{{ $t("settings") }}
+          </button>
+        </template>
       </div>
 
       <p v-if="$root.app_infos.instance_meta.contactmail">
@@ -138,10 +141,11 @@ export default {
       return this.$root.app_infos.instance_meta.name;
     },
     description() {
-      return this.$root.app_infos.instance_meta.presentation.replace(
-        /(?:\r\n|\r|\n)/g,
-        "<br />"
-      );
+      return this.$root.app_infos.instance_meta.presentation;
+      // return this.$root.app_infos.instance_meta.presentation.replace(
+      //   /(?:\r\n|\r|\n)/g,
+      //   "<br />"
+      // );
     },
   },
   methods: {},
@@ -175,7 +179,7 @@ export default {
   // min-height: 40vh;
   // min-height: calc(60vh - 60px);
   margin: 0 auto;
-  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 6) calc(var(--spacing) * 1);
 
   display: flex;
   flex-flow: column nowrap;
@@ -239,6 +243,14 @@ export default {
       padding-bottom: 3px;
     }
   }
+}
+
+._sessionTitle {
+  display: block;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: -0.015em;
+  margin-bottom: calc(var(--spacing) * 3);
 }
 
 ._bottomCont {
