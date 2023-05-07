@@ -238,16 +238,20 @@ export default {
   ._leftBlock {
     position: relative;
     z-index: 1;
-    overflow: hidden;
   }
   ._rightBlock {
     position: relative;
-    // aspect-ratio: 1;
+
     width: 100%;
 
     img {
-      width: 100%;
+      width: auto;
+      max-height: 50vh;
       transform: rotate(5deg);
+
+      border-radius: var(--panel-radius);
+      box-shadow: var(--panel-shadows);
+      background: white;
     }
   }
 }
@@ -258,8 +262,8 @@ export default {
   max-width: 340px;
   margin-left: auto;
   margin-right: 0;
-  border-radius: 5px;
-  border: 2px dotted var(--c-noir);
+  // border-radius: 5px;
+  // border: 2px dotted var(--c-noir);
 
   padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1);
 }
