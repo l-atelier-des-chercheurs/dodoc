@@ -71,19 +71,17 @@
               />
             </div>
 
-            <!-- <CoverField
-            class="_coverPicker"
-            :context="context"
-            :cover="settings.logo"
-            :path="path"
-            :can_edit="is_instance_admin"
-          /> -->
-            <!-- <CoverField :cover="settings.logo" :path="path" /> -->
+            <ColorInput
+              class="u-spacingBottom"
+              :label="$t('hero_background_color')"
+              :value="settings.hero_background_color"
+              @save="saveNewHeroBgColor"
+            />
 
             <br />
 
             <div class="u-instructions">
-              {{ $t("restart_to_apply") }}
+              {{ $t("refresh_window_to_apply") }}
             </div>
           </sl-tab-panel>
           <sl-tab-panel name="administration_and_access_control">
@@ -202,6 +200,14 @@ export default {
       this.$api.restartDodoc();
     },
     saveNewPathToContent() {},
+    async saveNewHeroBgColor($event) {
+      await this.$api.updateMeta({
+        path: this.path,
+        new_meta: {
+          hero_background_color: $event,
+        },
+      });
+    },
   },
 };
 </script>

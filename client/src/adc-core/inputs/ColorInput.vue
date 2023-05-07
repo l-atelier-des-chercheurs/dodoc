@@ -3,6 +3,7 @@
     <ToggledSection
       class="u-spacingBottom"
       :label="label"
+      :can_toggle="can_toggle"
       :show_toggle.sync="show_color_input"
     >
       <div class="_defaultColors">
@@ -74,6 +75,10 @@
 <script>
 export default {
   props: {
+    can_toggle: {
+      type: Boolean,
+      default: true,
+    },
     label: {
       type: String,
     },

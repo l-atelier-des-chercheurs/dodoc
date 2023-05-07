@@ -1,5 +1,5 @@
 <template>
-  <div class="_homeView">
+  <div class="_homeView" :style="customStyling">
     <!-- <div class="_floatinProjectBtn">
       <router-link
         class="u-button u-button_red u-button_big u-button_floating"
@@ -9,27 +9,46 @@
       </router-link>
     </div> -->
 
-    <div class="_homeView--content">
-      <AdminSettings
-        v-if="show_settings_modal"
-        @close="show_settings_modal = false"
-      />
-
-      <!-- <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" /> -->
-
-      <h1 class="_sessionTitle" v-html="name || $t('welcome_to_dodoc')" />
-      <div>
-        <template v-if="description">
-          <MarkdownField :text="description" />
-        </template>
-        <template v-else>
-          <template v-if="!is_instance_admin">
-            <p v-html="$t('admins_edit_text_here')" />
-          </template>
-          <template v-else>
-            <p v-html="$t('admins_edit_text_below')" />
-          </template>
-        </template>
+    <section class="_homeView--container">
+      <div class="_homeView--content">
+        <!-- <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" /> -->
+        <div class="_leftBlock">
+          <div class="_textContent">
+            <h1 class="_sessionTitle" v-html="name || $t('welcome_to_dodoc')" />
+            <div class="u-spacingBottom">
+              <template v-if="description">
+                <MarkdownField :text="description" />
+              </template>
+              <template v-else>
+                <template v-if="!is_instance_admin">
+                  <p v-html="$t('admins_edit_text_here')" />
+                </template>
+                <template v-else>
+                  <p v-html="$t('admins_edit_text_below')" />
+                </template>
+              </template>
+            </div>
+            <p v-if="$root.app_infos.instance_meta.contactmail">
+              <b>{{ $t("contactmail_of_instance") }}</b>
+              <a
+                :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+                target="_blank"
+              >
+                {{ $root.app_infos.instance_meta.contactmail }}
+              </a>
+            </p>
+          </div>
+        </div>
+        <div class="_rightBlock">
+          <img v-if="cover_thumb" :src="cover_thumb" />
+          <!-- <CoverField
+            class="_homeCover"
+            :context="'full'"
+            :cover="$root.app_infos.instance_meta.$cover"
+            :path="''"
+            :can_edit="is_instance_admin"
+          /> -->
+        </div>
       </div>
 
       <template v-if="is_instance_admin">
@@ -41,23 +60,12 @@
           <sl-icon name="gear-fill" />
           &nbsp;{{ $t("settings") }}
         </button>
+        <AdminSettings
+          v-if="show_settings_modal"
+          @close="show_settings_modal = false"
+        />
       </template>
-
-      <p v-if="$root.app_infos.instance_meta.contactmail">
-        {{ $t("contactmail_of_instance") }}
-        <a
-          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-          target="_blank"
-        >
-          {{ $root.app_infos.instance_meta.contactmail }}
-        </a>
-      </p>
-
-      <!-- <img
-        :src="`${$root.publicPath}bandeau-logos-jefabrique.png`"
-        class="_bandeau"
-      /> -->
-    </div>
+    </section>
 
     <!-- <div class="_modeSel">
       <button type="button" class="u-button" v-if="">{{ $t("spaces") }}</button> /
@@ -66,6 +74,7 @@
 
     <div class="_bottomCont">
       <RadioSwitch
+        class="_switch"
         :content.sync="current_mode"
         :options="[
           {
@@ -78,8 +87,6 @@
           },
         ]"
       />
-
-      <br />
 
       <transition name="pagechange" mode="out-in">
         <div :key="current_mode">
@@ -146,6 +153,21 @@ export default {
       //   "<br />"
       // );
     },
+    cover_thumb() {
+      return this.makeRelativeURLFromThumbs({
+        $thumbs: this.$root.app_infos.instance_meta.$cover,
+        $type: "image",
+        $path: "",
+        resolution: 2000,
+      });
+    },
+    customStyling() {
+      if (this.$root.app_infos.instance_meta.hero_background_color)
+        return {
+          "--hero-bg": this.$root.app_infos.instance_meta.hero_background_color,
+        };
+      return "";
+    },
   },
   methods: {},
 };
@@ -173,17 +195,73 @@ export default {
   // padding-bottom: 150px;
 }
 
-._homeView--content {
-  max-width: 600px;
+._homeView--container {
+  position: relative;
   width: 100%;
-  // min-height: 40vh;
-  // min-height: calc(60vh - 60px);
+
+  background-color: var(--c-gris_clair);
+  padding: calc(var(--spacing) * 6) 0;
+  margin-bottom: calc(var(--spacing) * 3);
+  // background: var(--c-bleumarine);
+  // background: var(--c-bleuvert);
+  background: #f8eb5e;
+  background: var(--hero-bg);
+  // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+  // color: white;
+
+  ._homeCover {
+    background: white;
+
+    ::v-deep img {
+      object-fit: scale-down !important;
+    }
+  }
+}
+
+._homeView--content {
+  position: relative;
+  width: 100%;
+  max-width: calc(var(--max-column-width));
   margin: 0 auto;
-  padding: calc(var(--spacing) * 6) calc(var(--spacing) * 1);
+  padding: 0 calc(var(--spacing) * 1);
 
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+
+  > * {
+    flex: 1 1 0;
+  }
+
+  ._leftBlock {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+  ._rightBlock {
+    position: relative;
+    // aspect-ratio: 1;
+    width: 100%;
+
+    img {
+      width: 100%;
+      transform: rotate(5deg);
+    }
+  }
+}
+
+._textContent {
+  border-radius: 15px;
+  background: white;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: 0;
+  border-radius: 5px;
+  border: 2px dotted var(--c-noir);
+
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1);
 }
 
 ._content {
@@ -192,9 +270,6 @@ export default {
   width: 100%;
   padding: 0 calc(var(--spacing) * 1);
   text-align: center;
-}
-
-._panesLeft {
 }
 
 ._bottomFooter {
@@ -248,14 +323,17 @@ export default {
 ._sessionTitle {
   display: block;
   font-weight: 500;
-  text-align: center;
+  // text-align: center;
   letter-spacing: -0.015em;
-  margin-bottom: calc(var(--spacing) * 3);
+  margin-bottom: calc(var(--spacing) * 1);
 }
 
 ._bottomCont {
   flex: 1;
   // min-height: 80vh;
+}
+._switch {
+  margin-bottom: calc(var(--spacing) * 1);
 }
 
 ._editSettingsBtn {

@@ -327,6 +327,9 @@
       },
       "require_mail_to_signup": {
         "type": "boolean"
+      },
+      "hero_background_color": {
+        "type": "string"
       }
     },
     "$files": {
