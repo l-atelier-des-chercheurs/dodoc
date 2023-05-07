@@ -171,8 +171,8 @@ menu {
   background-color: hsl(var(--ri5-color-primary-hsl));
   height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
   width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
-  box-shadow: 0 0.9px 1.5px rgba(0, 0, 0, 0.03),
-    0 3.1px 5.5px rgba(0, 0, 0, 0.08), 0 14px 25px rgba(0, 0, 0, 0.12);
+  // box-shadow: 0 0.9px 1.5px rgba(0, 0, 0, 0.03),
+  //   0 3.1px 5.5px rgba(0, 0, 0, 0.08), 0 14px 25px rgba(0, 0, 0, 0.12);
   transition: -webkit-transform var(--radio-switch-animation-duration);
   transition: transform var(--radio-switch-animation-duration);
   transition: transform var(--radio-switch-animation-duration),

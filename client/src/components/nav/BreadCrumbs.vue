@@ -124,6 +124,7 @@ export default {
 
   img {
     width: auto;
+    border-radius: 4px;
   }
 
   svg,
@@ -132,10 +133,13 @@ export default {
     object-fit: scale-down;
     object-position: 0 0;
   }
-  ._customLogo {
-    transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-    &:hover {
-      opacity: 0.7;
+
+  a {
+    ._customLogo {
+      transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+      &:hover {
+        opacity: 0.7;
+      }
     }
   }
 }
