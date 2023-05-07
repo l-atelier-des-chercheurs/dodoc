@@ -21,7 +21,7 @@
     "timeout": 600
   },
 
-  "mediaThumbQuality": 70,
+  "mediaThumbQuality": 90,
   "maxFileSizeInMoForUpload": 10000,
 
   "regexpMatchFolderNames": "^([^.]+)$",
