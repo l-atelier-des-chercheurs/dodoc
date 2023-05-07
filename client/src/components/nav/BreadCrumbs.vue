@@ -118,9 +118,16 @@ export default {
 ._logo {
   flex: 0 0 auto;
 
+  svg {
+    width: 120px;
+  }
+
+  img {
+    width: auto;
+  }
+
   svg,
   img {
-    width: 120px;
     height: 40px;
     object-fit: scale-down;
     object-position: 0 0;
