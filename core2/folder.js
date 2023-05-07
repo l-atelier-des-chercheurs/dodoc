@@ -26,7 +26,9 @@ module.exports = (function () {
         const folder_meta = await API.getFolder({
           path_to_folder,
         }).catch((err) => {
-          dev.error(err);
+          if (err.code === "ENOENT")
+            dev.error(`Failed to get folder`, err.message);
+          else throw err;
         });
         if (folder_meta) all_folders_with_meta.push(folder_meta);
       }
