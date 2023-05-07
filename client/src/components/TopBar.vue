@@ -85,7 +85,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topbar {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 5;
 
   display: flex;
@@ -95,11 +96,11 @@ export default {
   overflow: hidden;
 
   width: 100%;
-  max-width: calc(var(--max-column-width));
+  // max-width: calc(var(--max-column-width));
   margin: 0 auto;
   padding: 0 calc(var(--spacing) * 1);
 
-  padding: calc(var(--spacing) / 2) 0;
+  padding: calc(var(--spacing) / 1) 0;
   // padding-bottom: calc(var(--spacing) * 1);
   background: white;
   border-bottom: 1px solid var(--c-gris);
@@ -112,8 +113,8 @@ export default {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--homepage {
-    background: transparent;
-    border-bottom: 1px solid var(--c-gris);
+    // background: transparent;
+    // border-bottom: 1px solid var(--c-gris);
     box-shadow: none;
   }
 

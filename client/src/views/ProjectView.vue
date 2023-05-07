@@ -236,6 +236,7 @@ export default {
 }
 ._projectPanesAndList {
   position: relative;
+  z-index: 6;
   // height: 100vh;
 
   display: flex;
