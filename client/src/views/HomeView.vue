@@ -173,12 +173,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._bandeau {
-  width: 100%;
-  max-width: 500px;
-  margin-bottom: calc(var(--spacing) * 2);
-}
-
 ._homeView {
   position: relative;
   min-height: calc(100vh - 60px);
@@ -232,7 +226,7 @@ export default {
   gap: calc(var(--spacing) * 2);
 
   > * {
-    flex: 1 1 0;
+    flex: 1 1 320px;
   }
 
   ._leftBlock {
@@ -257,9 +251,9 @@ export default {
 }
 
 ._textContent {
-  border-radius: 15px;
-  background: white;
-  max-width: 340px;
+  // border-radius: 15px;
+  // background: white;
+  max-width: 480px;
   margin-left: auto;
   margin-right: 0;
   // border-radius: 5px;
