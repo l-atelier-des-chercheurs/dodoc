@@ -71,6 +71,8 @@
               />
             </div>
 
+            <br />
+
             <ColorInput
               class="u-spacingBottom"
               :label="$t('hero_background_color')"
@@ -202,9 +204,9 @@ export default {
     saveNewPathToContent() {},
     async saveNewHeroBgColor($event) {
       await this.$api.updateMeta({
-        path: this.path,
+        path: this.settings.$path,
         new_meta: {
-          hero_background_color: $event,
+          hero_background_color: $event || "",
         },
       });
     },
