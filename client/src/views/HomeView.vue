@@ -30,19 +30,18 @@
             <p v-html="$t('admins_edit_text_below')" />
           </template>
         </template>
-
-        <template v-if="is_instance_admin">
-          <br />
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="show_settings_modal = !show_settings_modal"
-          >
-            <sl-icon name="gear-fill" />
-            &nbsp;{{ $t("settings") }}
-          </button>
-        </template>
       </div>
+
+      <template v-if="is_instance_admin">
+        <button
+          type="button"
+          class="u-button u-button_bleuvert _editSettingsBtn"
+          @click="show_settings_modal = !show_settings_modal"
+        >
+          <sl-icon name="gear-fill" />
+          &nbsp;{{ $t("settings") }}
+        </button>
+      </template>
 
       <p v-if="$root.app_infos.instance_meta.contactmail">
         {{ $t("contactmail_of_instance") }}
@@ -159,6 +158,7 @@ export default {
 }
 
 ._homeView {
+  position: relative;
   min-height: calc(100vh - 60px);
   max-height: -webkit-fill-available;
 
@@ -256,5 +256,12 @@ export default {
 ._bottomCont {
   flex: 1;
   // min-height: 80vh;
+}
+
+._editSettingsBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 2);
 }
 </style>
