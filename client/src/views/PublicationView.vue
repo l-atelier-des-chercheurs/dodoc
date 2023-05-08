@@ -5,7 +5,6 @@
       'is--slides': display_mode === 'slides',
       'is--serversidepreview': is_serversidepreview,
     }"
-    :data-template="publication.template"
   >
     <transition name="fade_fast" mode="out-in">
       <div class="u-divCentered" v-if="!project || !publication" key="loader">
@@ -482,11 +481,6 @@ export default {
       margin: 0;
     }
   }
-}
-._publicationView[data-template="page_by_page"] ::v-deep {
-  // .u-floatingFsButton {
-  //   display: none;
-  // }
 }
 
 ._publicationView.is--slides {
