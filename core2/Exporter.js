@@ -8,6 +8,7 @@ const path = require("path"),
 const utils = require("./utils"),
   folder = require("./folder"),
   file = require("./file"),
+  settings = require("./settings"),
   notifier = require("./notifier");
 
 const ffmpegPath = require("ffmpeg-static").replace(
@@ -235,8 +236,20 @@ class Exporter {
         .replace("projects/", "");
 
       let url = global.appInfos.homeURL + path_without_space;
-      if (this.instructions.page)
-        url += `?page=${this.instructions.page}&make_preview=true`;
+
+      let query = {};
+      if (this.instructions.page) {
+        query.page = this.instructions.page;
+        query.make_preview = true;
+      }
+
+      const { general_password } = await settings.get();
+      if (!!general_password) query.general_password = general_password;
+
+      if (Object.keys(query).length > 0) {
+        const searchParams = new URLSearchParams(query);
+        url += "?" + searchParams.toString();
+      }
 
       // open page https://localhost:8080/projects/hehe/publications/test-pages/
       const { BrowserWindow } = require("electron");
