@@ -98,7 +98,7 @@ async function setupApp() {
   });
   dev.log("Will store contents in: " + global.pathToUserContent);
 
-  global.session_options = {};
+  // global.session_options = {};
   // await readsession_metaFile();
 
   const port = await portscanner
