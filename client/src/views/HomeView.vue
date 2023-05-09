@@ -52,14 +52,16 @@
       </div>
 
       <template v-if="is_instance_admin">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert _editSettingsBtn"
-          @click="show_settings_modal = !show_settings_modal"
-        >
-          <sl-icon name="gear-fill" />
-          &nbsp;{{ $t("settings") }}
-        </button>
+        <div class="_editSettingsBtn--cont">
+          <button
+            type="button"
+            class="u-button u-button_bleuvert _editSettingsBtn"
+            @click="show_settings_modal = !show_settings_modal"
+          >
+            <sl-icon name="gear-fill" />
+            &nbsp;{{ $t("settings") }}
+          </button>
+        </div>
         <AdminSettings
           v-if="show_settings_modal"
           @close="show_settings_modal = false"
@@ -334,10 +336,14 @@ export default {
   margin-bottom: calc(var(--spacing) * 1);
 }
 
-._editSettingsBtn {
+._editSettingsBtn--cont {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+._editSettingsBtn {
   margin: calc(var(--spacing) / 2);
 }
 </style>

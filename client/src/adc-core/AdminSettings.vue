@@ -70,6 +70,9 @@
                 :can_edit="is_instance_admin"
               />
             </div>
+            <div class="u-instructions">
+              {{ $t("logo_instr") }}
+            </div>
 
             <br />
 
@@ -218,6 +221,7 @@ export default {
   position: relative;
   width: 100%;
   aspect-ratio: 2/1;
+  border: 2px solid var(--c-gris);
 
   ::v-deep img {
     object-fit: scale-down;
