@@ -11,43 +11,33 @@
 
     <section class="_homeView--container">
       <div class="_homeView--content">
-        <!-- <img :src="`${$root.publicPath}logo-je-fabrique.svg`" class="_logo" /> -->
-        <div class="_leftBlock">
-          <div class="_textContent">
-            <h1 class="_sessionTitle" v-html="name || $t('welcome_to_dodoc')" />
-            <div class="u-spacingBottom">
-              <template v-if="description">
-                <MarkdownField :text="description" />
+        <div class="_imageBlock">
+          <img v-if="hero_thumb" :src="hero_thumb" />
+        </div>
+        <div class="_textBlock">
+          <h1 class="_sessionTitle" v-html="name || $t('welcome_to_dodoc')" />
+          <div class="u-spacingBottom">
+            <template v-if="description">
+              <MarkdownField :text="description" />
+            </template>
+            <template v-else>
+              <template v-if="!is_instance_admin">
+                <p v-html="$t('admins_edit_text_here')" />
               </template>
               <template v-else>
-                <template v-if="!is_instance_admin">
-                  <p v-html="$t('admins_edit_text_here')" />
-                </template>
-                <template v-else>
-                  <p v-html="$t('admins_edit_text_below')" />
-                </template>
+                <p v-html="$t('admins_edit_text_below')" />
               </template>
-            </div>
-            <p v-if="$root.app_infos.instance_meta.contactmail">
-              <b>{{ $t("contactmail_of_instance") }}</b>
-              <a
-                :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-                target="_blank"
-              >
-                {{ $root.app_infos.instance_meta.contactmail }}
-              </a>
-            </p>
+            </template>
           </div>
-        </div>
-        <div class="_rightBlock">
-          <img v-if="hero_thumb" :src="hero_thumb" />
-          <!-- <CoverField
-            class="_homeCover"
-            :context="'full'"
-            :cover="$root.app_infos.instance_meta.$cover"
-            :path="''"
-            :can_edit="is_instance_admin"
-          /> -->
+          <p v-if="$root.app_infos.instance_meta.contactmail">
+            <b>{{ $t("contactmail_of_instance") }}</b
+            >&nbsp;
+            <a
+              :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+              target="_blank"
+              >{{ $root.app_infos.instance_meta.contactmail }}</a
+            >
+          </p>
         </div>
       </div>
 
@@ -159,11 +149,14 @@ export default {
       return this.$root.app_infos.instance_meta.hero_thumb || false;
     },
     customStyling() {
+      let obj = {};
       if (this.$root.app_infos.instance_meta.hero_background_color)
-        return {
-          "--hero-bg": this.$root.app_infos.instance_meta.hero_background_color,
-        };
-      return "";
+        obj["--hero-bg"] =
+          this.$root.app_infos.instance_meta.hero_background_color;
+      if (this.$root.app_infos.instance_meta.text_background_color)
+        obj["--text-bg"] =
+          this.$root.app_infos.instance_meta.text_background_color;
+      return obj;
     },
   },
   methods: {},
@@ -191,14 +184,8 @@ export default {
   width: 100%;
 
   background-color: var(--c-gris_clair);
-  padding: calc(var(--spacing) * 6) 0;
   margin-bottom: calc(var(--spacing) * 3);
-  // background: var(--c-bleumarine);
-  // background: var(--c-bleuvert);
-  background: #f8eb5e;
-  background: var(--hero-bg);
-  // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
-  // color: white;
+  background: var(--hero-bg, white);
 
   ._homeCover {
     background: white;
@@ -212,51 +199,49 @@ export default {
 ._homeView--content {
   position: relative;
   width: 100%;
-  max-width: calc(var(--max-column-width));
+  // max-width: calc(var(--max-column-width));
   margin: 0 auto;
-  padding: 0 calc(var(--spacing) * 1);
+  // padding: calc(var(--spacing) * 1);
 
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
+  padding: calc(var(--spacing) * 1);
   gap: calc(var(--spacing) * 2);
 
   > * {
     flex: 1 1 320px;
   }
 
-  ._leftBlock {
+  ._textBlock {
     position: relative;
     z-index: 1;
-  }
-  ._rightBlock {
-    position: relative;
+    flex: 1 1 250px;
+    max-width: 350px;
+    margin: 0 auto;
 
-    width: 100%;
+    border-radius: var(--panel-radius);
+    box-shadow: var(--panel-shadows);
+    padding: calc(var(--spacing) / 1);
+    margin: calc(var(--spacing) / 1);
+
+    background: var(--text-bg, white);
+  }
+  ._imageBlock {
+    position: relative;
+    flex: 4 1 620px;
 
     img {
       width: auto;
-      max-height: 50vh;
-      transform: rotate(5deg);
+      max-height: 80vh;
+      // transform: rotate(-5deg);
 
-      border-radius: var(--panel-radius);
-      box-shadow: var(--panel-shadows);
-      background: white;
+      // border-radius: var(--panel-radius);
+      // box-shadow: var(--panel-shadows);
+      // background: white;
     }
   }
-}
-
-._textContent {
-  // border-radius: 15px;
-  // background: white;
-  max-width: 480px;
-  margin-left: auto;
-  margin-right: 0;
-  // border-radius: 5px;
-  // border: 2px dotted var(--c-noir);
-
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1);
 }
 
 ._content {

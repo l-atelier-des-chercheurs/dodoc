@@ -331,6 +331,9 @@
       "hero_background_color": {
         "type": "string"
       },
+      "text_background_color": {
+        "type": "string"
+      },
       "favicon_image_name": {
         "type": "string"
       },

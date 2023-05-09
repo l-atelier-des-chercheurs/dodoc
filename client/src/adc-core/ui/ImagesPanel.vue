@@ -71,13 +71,23 @@
         <br />
       </div>
     </div>
+
     <br />
 
     <ColorInput
       class="u-spacingBottom"
       :label="$t('hero_background_color')"
       :value="settings.hero_background_color"
-      @save="saveNewHeroBgColor"
+      @save="saveNewHeroBgColor({ $event, field: 'hero_background_color' })"
+    />
+
+    <br />
+
+    <ColorInput
+      class="u-spacingBottom"
+      :label="$t('text_background_color')"
+      :value="settings.text_background_color"
+      @save="saveNewHeroBgColor({ $event, field: 'text_background_color' })"
     />
 
     <div class="u-instructions">
@@ -155,11 +165,11 @@ export default {
     },
   },
   methods: {
-    async saveNewHeroBgColor($event) {
+    async saveNewHeroBgColor({ $event, field }) {
       await this.$api.updateMeta({
         path: this.settings.$path,
         new_meta: {
-          hero_background_color: $event || "",
+          [field]: $event || "",
         },
       });
     },

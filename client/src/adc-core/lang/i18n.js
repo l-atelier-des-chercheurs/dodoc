@@ -111,7 +111,8 @@ export default function () {
 
         contactmail_of_instance: `Contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
-        hero_background_color: "Couleur d’arrière plan",
+        hero_background_color: "Couleur d’arrière plan de l’image",
+        text_background_color: "Couleur d’arrière plan du texte",
 
         favicon_image: "Image favicon",
         favicon_image_instr: "Apparaîtra dans l’onglet du navigateur.",
