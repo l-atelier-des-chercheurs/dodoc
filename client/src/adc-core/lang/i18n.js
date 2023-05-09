@@ -157,6 +157,8 @@ export default function () {
         `,
         reload_page_to_apply:
           "Après avoir enregistré ces changements, rechargez cette page.",
+        feature_not_implemented_yet:
+          "Fonctionnalité à venir, pas encore implémentée",
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",

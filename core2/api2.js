@@ -108,9 +108,9 @@ module.exports = (function () {
     );
     app.post(
       [
-        "/_api2/:folder_type",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type",
+        "/_api2/:folder_type/_create",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_create",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_create",
       ],
       _generalPasswordCheck,
       _restrictToContributors,
@@ -844,7 +844,7 @@ module.exports = (function () {
       dev.logpackets({ meta });
       res.json(meta);
     } catch (err) {
-      dev.error("Failed to upload file: " + err);
+      dev.error("Failed to get file: " + err);
       res.status(500).send({ code: err.code });
     }
   }
