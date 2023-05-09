@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="_rightBlock">
-          <img v-if="cover_thumb" :src="cover_thumb" />
+          <img v-if="hero_thumb" :src="hero_thumb" />
           <!-- <CoverField
             class="_homeCover"
             :context="'full'"
@@ -155,13 +155,8 @@ export default {
       //   "<br />"
       // );
     },
-    cover_thumb() {
-      return this.makeRelativeURLFromThumbs({
-        $thumbs: this.$root.app_infos.instance_meta.$cover,
-        $type: "image",
-        $path: "",
-        resolution: 2000,
-      });
+    hero_thumb() {
+      return this.$root.app_infos.instance_meta.hero_thumb || false;
     },
     customStyling() {
       if (this.$root.app_infos.instance_meta.hero_background_color)

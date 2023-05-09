@@ -42,7 +42,6 @@ html
           name: `#{name_of_instance}`,
           presentation: `#{presentation_of_instance}`,
           contactmail: `#{contactmail_of_instance}`,
-          $cover: !{(cover_of_instance = false ? undefined : JSON.stringify(cover_of_instance) )},
           hero_background_color: `#{hero_background_color}`,
           has_general_password: !{has_general_password},
           has_signup_password: !{has_signup_password},
@@ -50,6 +49,9 @@ html
           require_mail_to_signup: !{require_mail_to_signup},
           $admins: !{JSON.stringify($admins)},
           $contributors: !{JSON.stringify($contributors)},
+
+          topbar_thumb: '!{topbar_thumb}',
+          hero_thumb: '!{hero_thumb}'
         },
 
         custom_fonts: !{JSON.stringify(custom_fonts, null, 4)}

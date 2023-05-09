@@ -140,7 +140,7 @@ export default {
   data() {
     return {
       selected_files: [],
-      id: `font_upload_${(
+      id: `fonts_upload_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
 

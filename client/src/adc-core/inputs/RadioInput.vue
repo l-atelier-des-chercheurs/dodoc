@@ -2,21 +2,28 @@
   <div class="u-radio">
     <label
       v-for="option in options"
-      :for="'radioi-option-' + option.key"
+      :for="id + '-radioi-option-' + option.key"
       :key="option.key"
     >
       <input
         type="radio"
-        :name="option.key"
-        :id="'radioi-option-' + option.key"
+        :name="id + '-radioi-option-' + option.key"
+        :id="id + '-radioi-option-' + option.key"
         :value="option.key"
         :checked="value === option.key"
         :disabled="!can_edit"
         @input="$emit('update:value', $event.target.value)"
       />
-
       <span>
-        {{ option.label }}<br />
+        <img
+          v-if="option.thumb_src"
+          :src="option.thumb_src"
+          class="_option_preview"
+        />
+        <component :is="option.key === '' ? 'i' : 'span'">
+          {{ option.label }}
+        </component>
+        <br />
         <small class="u-instructions" v-html="option.instructions" />
       </span>
     </label>
@@ -31,7 +38,11 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      id: `image_upload_${(
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 3 + 2)}`,
+    };
   },
   created() {},
   mounted() {},

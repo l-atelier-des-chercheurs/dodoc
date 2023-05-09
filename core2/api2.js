@@ -47,6 +47,7 @@ module.exports = (function () {
     );
     app.post(
       [
+        "/_api2/_upload",
         "/_api2/:folder_type/:folder_slug/_upload",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_upload",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_upload",
@@ -466,7 +467,6 @@ module.exports = (function () {
       name_of_instance,
       presentation_of_instance,
       contactmail_of_instance,
-      $cover,
       hero_background_color,
       general_password,
       signup_password,
@@ -474,20 +474,52 @@ module.exports = (function () {
       require_mail_to_signup,
       $admins,
       $contributors,
-    } = await settings.get();
+
+      favicon_image_name,
+      topbar_image_name,
+      hero_image_name,
+      $files = [],
+    } = await settings
+      .get()
+      .catch((err) => dev.error("Error while getting settings", err));
 
     d.name_of_instance = name_of_instance || "";
     d.presentation_of_instance = presentation_of_instance || "";
     d.contactmail_of_instance = contactmail_of_instance || "";
-    d.cover_of_instance = $cover || false;
     d.hero_background_color = hero_background_color || "";
-    d.favicon_url = $cover ? `/thumbs/${$cover[640]}` : false;
     d.has_general_password = !!general_password;
     d.has_signup_password = !!signup_password;
     d.require_signup_to_contribute = require_signup_to_contribute === true;
     d.require_mail_to_signup = require_mail_to_signup === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
+
+    const findMatchingFileThumb = ({ meta_name, resolution }) => {
+      const matching_file = $files.find(
+        (f) => utils.getFilename(f.$path) === meta_name
+      );
+      if (matching_file && matching_file.$thumbs)
+        return matching_file.$thumbs[resolution];
+      return false;
+    };
+
+    const favicon_thumb = findMatchingFileThumb({
+      meta_name: favicon_image_name,
+      resolution: 640,
+    });
+    if (favicon_thumb) d.favicon_url = `/thumbs/${favicon_thumb}`;
+
+    const topbar_thumb = findMatchingFileThumb({
+      meta_name: topbar_image_name,
+      resolution: 320,
+    });
+    if (topbar_thumb) d.topbar_thumb = `/thumbs/${topbar_thumb}`;
+
+    const hero_thumb = findMatchingFileThumb({
+      meta_name: hero_image_name,
+      resolution: 2000,
+    });
+    if (hero_thumb) d.hero_thumb = `/thumbs/${hero_thumb}`;
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
 
@@ -667,7 +699,7 @@ module.exports = (function () {
   }
 
   async function _uploadFile(req, res, next) {
-    const { path_to_folder } = utils.makePathFromReq(req);
+    const { path_to_folder = "" } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
     try {
