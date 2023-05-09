@@ -303,6 +303,7 @@ export default function () {
 
       async createFolder({ path, additional_meta }) {
         try {
+          path = `${path}/_create`;
           const response = await this.$axios.post(path, additional_meta);
           return response.data.new_folder_slug;
         } catch (e) {

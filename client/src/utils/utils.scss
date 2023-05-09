@@ -783,6 +783,13 @@ details {
     &:hover {
       background: var(--c-gris);
     }
+
+    ._option_preview {
+      display: inline-block;
+      vertical-align: middle;
+      height: 1em;
+      aspect-ratio: 1;
+    }
   }
 
   input {

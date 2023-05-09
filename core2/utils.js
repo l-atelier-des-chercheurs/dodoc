@@ -461,6 +461,9 @@ module.exports = (function () {
       }
       return false;
     },
+    getFilename(path) {
+      return path.substring(path.lastIndexOf("/") + 1);
+    },
   };
 
   return API;

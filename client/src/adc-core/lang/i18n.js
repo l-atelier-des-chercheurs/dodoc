@@ -82,7 +82,7 @@ export default function () {
 
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
-          Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
+          Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
         presentation_of_instance: "Présentation de l’instance",
         presentation_of_instance_instructions: `
           Apparaîtra sur la page d’accueil uniquement.
@@ -111,7 +111,16 @@ export default function () {
 
         contactmail_of_instance: `Contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
-        hero_background_color: "Couleur d’arrière plan",
+        hero_background_color: "Couleur d’arrière plan de l’image",
+        text_background_color: "Couleur d’arrière plan du texte",
+
+        favicon_image: "Image favicon",
+        favicon_image_instr: "Apparaîtra dans l’onglet du navigateur.",
+        topbar_image: "Logo dans la barre de navigation",
+        topbar_image_instr:
+          "En haut à gauche de l’écran. Au click, ramène à la page d’accueil.",
+        hero_image: "Visuel page d’accueil",
+        hero_image_instr: "",
 
         ui_lang_select: "Langue de l’interface",
         lang_updated: "La langue a été mise à jour",
@@ -157,6 +166,8 @@ export default function () {
         `,
         reload_page_to_apply:
           "Après avoir enregistré ces changements, rechargez cette page.",
+        feature_not_implemented_yet:
+          "Fonctionnalité à venir, pas encore implémentée",
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
@@ -358,6 +369,7 @@ export default function () {
 
         administration_and_access_control:
           "Administration et contrôle des accès",
+        logo_and_images: "Logo et images",
         fonts: "Famille de caractère",
         add_font: "Ajouter une famille de caractère",
         font_name: "Nom de la famille de caractère",

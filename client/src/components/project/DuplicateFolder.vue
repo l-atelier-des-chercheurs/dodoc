@@ -31,6 +31,11 @@
               disabled
             />
           </select>
+          <div class="u-instructions">
+            <small>
+              {{ $t("feature_not_implemented_yet") }}
+            </small>
+          </div>
         </div>
 
         <br />

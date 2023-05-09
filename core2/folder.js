@@ -42,6 +42,11 @@ module.exports = (function () {
       const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
+      if (!item_in_schema) {
+        const err = new Error("No schema for path");
+        err.code = "missing_schema_for_path";
+        throw err;
+      }
 
       const d = cache.get({
         key: path_to_folder,

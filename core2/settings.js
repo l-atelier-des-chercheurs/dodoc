@@ -1,5 +1,6 @@
 const utils = require("./utils"),
-  folder = require("./folder");
+  folder = require("./folder"),
+  file = require("./file");
 
 module.exports = (function () {
   let local_cache = undefined;
@@ -7,15 +8,14 @@ module.exports = (function () {
   const API = {
     get: async () => {
       dev.logfunction();
-      const folder_meta = await folder
-        .getFolder({
-          path_to_folder: "",
-        })
-        .catch((err) => {
-          dev.error(err);
-          return {};
-        });
-      return folder_meta;
+
+      let d = JSON.parse(
+        JSON.stringify(await folder.getFolder({ path_to_folder: "" }))
+      );
+      const files = await file.getFiles({ path_to_folder: "" });
+      d.$files = files;
+
+      return d;
     },
     updatePath({ new_path }) {
       dev.logfunction();

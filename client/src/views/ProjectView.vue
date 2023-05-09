@@ -314,6 +314,6 @@ export default {
 }
 
 ._separator {
-  margin-top: 0;
+  margin: 0;
 }
 </style>

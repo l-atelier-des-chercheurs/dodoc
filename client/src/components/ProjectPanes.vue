@@ -3,6 +3,7 @@
     class="_projetPanes"
     :class="{
       'has--multiplePanes': can_edit_project,
+      'is--editable': can_edit_project,
     }"
     @click="scrollToPanes"
   >
@@ -145,7 +146,11 @@ export default {
   // width: 100%;
   // height: 100%;
 
-  ::v-deep ._pane > * {
+  &:not(.is--editable) ::v-deep ._pane > * {
+    min-height: 100vh;
+  }
+
+  &.is--editable ::v-deep ._pane > * {
     min-height: calc(100vh - 44px);
   }
 

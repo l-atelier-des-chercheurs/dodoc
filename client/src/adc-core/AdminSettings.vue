@@ -9,6 +9,9 @@
           <sl-tab slot="nav" panel="informations">
             {{ $t("informations") }}
           </sl-tab>
+          <sl-tab slot="nav" panel="logo_and_images">
+            {{ $t("logo_and_images") }}
+          </sl-tab>
           <sl-tab slot="nav" panel="administration_and_access_control">
             {{ $t("administration_and_access_control") }}
           </sl-tab>
@@ -61,30 +64,18 @@
 
             <br />
 
-            <DLabel :str="$t('logo')" />
-            <div class="_cover">
-              <CoverField
-                :context="'full'"
-                :cover="settings.$cover"
-                :path="settings.$path"
-                :can_edit="is_instance_admin"
-              />
-            </div>
-
-            <br />
-
-            <ColorInput
-              class="u-spacingBottom"
-              :label="$t('hero_background_color')"
-              :value="settings.hero_background_color"
-              @save="saveNewHeroBgColor"
-            />
-
-            <br />
-
             <div class="u-instructions">
-              {{ $t("refresh_window_to_apply") }}
+              <button type="button" class="u-buttonLink" @click="reloadPage">
+                {{ $t("refresh_window_to_apply") }}
+              </button>
             </div>
+          </sl-tab-panel>
+          <sl-tab-panel name="logo_and_images">
+            <ImagesPanel
+              :settings="settings"
+              :can_edit="is_instance_admin"
+              @reloadPage="reloadPage"
+            />
           </sl-tab-panel>
           <sl-tab-panel name="administration_and_access_control">
             <AdminsAndContributorsField
@@ -165,11 +156,13 @@
 </template>
 <script>
 import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
+import ImagesPanel from "@/adc-core/ui/ImagesPanel.vue";
 
 export default {
   props: {},
   components: {
     FontsPanel,
+    ImagesPanel,
   },
   data() {
     return {
@@ -201,26 +194,11 @@ export default {
     restartDodoc() {
       this.$api.restartDodoc();
     },
-    saveNewPathToContent() {},
-    async saveNewHeroBgColor($event) {
-      await this.$api.updateMeta({
-        path: this.settings.$path,
-        new_meta: {
-          hero_background_color: $event || "",
-        },
-      });
+    reloadPage() {
+      window.location.reload();
     },
+    saveNewPathToContent() {},
   },
 };
 </script>
-<style lang="scss" scoped>
-._cover {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 2/1;
-
-  ::v-deep img {
-    object-fit: scale-down;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

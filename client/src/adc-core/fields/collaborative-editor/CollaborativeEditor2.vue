@@ -399,7 +399,7 @@ export default {
     },
 
     editorClick($event) {
-      $event.preventDefault();
+      // $event.preventDefault();
       if (
         $event.target.parentElement &&
         $event.target.parentElement.classList &&

@@ -73,15 +73,7 @@ export default {
   watch: {},
   computed: {
     instance_logo() {
-      const cover = this.$root.app_infos.instance_meta.$cover;
-      if (cover)
-        return this.makeRelativeURLFromThumbs({
-          $thumbs: cover,
-          $type: "image",
-          $path: "",
-          resolution: 320,
-        });
-      return "dodoc";
+      return this.$root.app_infos.instance_meta.topbar_thumb || "dodoc";
     },
   },
   methods: {

@@ -367,6 +367,7 @@ export default {
   &:hover,
   &:focus,
   &:active {
+    background: rgba(255, 255, 255, 0.6);
     opacity: 1;
   }
 }

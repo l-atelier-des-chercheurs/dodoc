@@ -330,13 +330,24 @@
       },
       "hero_background_color": {
         "type": "string"
+      },
+      "text_background_color": {
+        "type": "string"
+      },
+      "favicon_image_name": {
+        "type": "string"
+      },
+      "topbar_image_name": {
+        "type": "string"
+      },
+      "hero_image_name": {
+        "type": "string"
       }
     },
     "$files": {
       "thumbs": {
-        "resolutions": [50, 220, 1600]
-      },
-      "fields": {}
+        "resolutions": [50, 320, 640, 2000]
+      }
     },
     "$folders": {
       "spaces": {
