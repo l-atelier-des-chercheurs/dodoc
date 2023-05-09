@@ -11,8 +11,8 @@
 
     <section class="_homeView--container">
       <div class="_homeView--content">
-        <div class="_imageBlock">
-          <img v-if="hero_thumb" :src="hero_thumb" />
+        <div v-if="hero_thumb" class="_imageBlock">
+          <img :src="hero_thumb" />
         </div>
         <div class="_textBlock">
           <h1 class="_sessionTitle" v-html="name || $t('welcome_to_dodoc')" />
