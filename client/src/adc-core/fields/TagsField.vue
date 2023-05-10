@@ -39,10 +39,8 @@
           />
           <div class="">
             <button
+              v-if="allow_save_newkeyword && !new_tag_name_already_exists"
               type="button"
-              :disabled="
-                !(allow_save_newkeyword && !new_tag_name_already_exists)
-              "
               class="u-button u-button_bleuvert _submitBtn"
               @click="onEnter"
             >

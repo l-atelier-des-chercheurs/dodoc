@@ -108,13 +108,7 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.tag === "span") {
-      this.$refs.field.innerText = this.content;
-      this.focusSpanAtEnd();
-    } else if (this.tag === "input") {
-      this.$refs.field.value = this.content;
-      this.$refs.field.focus();
-    }
+    this.initInput();
   },
   beforeDestroy() {},
   watch: {
@@ -123,6 +117,9 @@ export default {
         this.$emit("toggleValidity", this.validity);
       },
       immediate: true,
+    },
+    content() {
+      this.initInput();
     },
   },
   computed: {
@@ -141,6 +138,16 @@ export default {
     },
   },
   methods: {
+    initInput() {
+      if (this.tag === "span") {
+        this.$refs.field.innerText = this.content;
+        this.focusSpanAtEnd();
+      } else if (this.tag === "input") {
+        this.$refs.field.value = this.content;
+        this.$refs.field.focus();
+      }
+    },
+
     focusSpanAtEnd() {
       function placeCaretAtEnd(el) {
         el.focus();

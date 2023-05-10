@@ -2,15 +2,17 @@
   <div>
     <button
       type="button"
+      v-if="new_tag_name.length === 0"
       @click="show_suggestions = !show_suggestions"
       class="u-buttonLink"
     >
       {{ $t("suggestions") }}
     </button>
 
-    <template v-if="new_tag_name > 0 || show_suggestions">
+    <template v-if="new_tag_name.length > 0 || show_suggestions">
       <!-- <DLabel :str="$t('suggestions')" /> -->
       <TagsList
+        v-if="suggestions_list.length > 0"
         :tags="suggestions_list"
         :tag_type="tag_type"
         :addable="true"
@@ -40,6 +42,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
+    new_tag_name() {
+      if (this.new_tag_name === 0) {
+        this.show_suggestions = false;
+      }
+    },
     // suggestions_list(new_suggestions_list, old_suggestions_list) {
     // if (old_suggestions_list.length === 0 && new_suggestions_list.length > 0)
     //   this.show_suggestions = true;

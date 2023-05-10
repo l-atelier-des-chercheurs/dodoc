@@ -1,6 +1,10 @@
 <template>
   <div class="_tagsList">
-    <template v-if="tags.length === 0">{{ $t("none") }}</template>
+    <template v-if="tags.length === 0">
+      <small>
+        {{ $t("none") }}
+      </small>
+    </template>
 
     <transition-group v-else class="_list" name="projectsList" appear>
       <button
