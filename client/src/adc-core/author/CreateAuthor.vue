@@ -17,7 +17,7 @@
         />
         <div>
           <small class="u-instructions">
-            {{ $t("please_contact_to_recover") }}
+            {{ $t("signup_password_users_instructions") }}
             <br />
             <a
               :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
