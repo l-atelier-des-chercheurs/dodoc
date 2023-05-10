@@ -391,6 +391,9 @@
               "materials": {
                 "type": "array"
               },
+              "machines": {
+                "type": "array"
+              },
               "description": {
                 "type": "string"
               },

@@ -516,6 +516,8 @@ export default function () {
         keep_original_after_copy: "Conserver ce projet après la copie",
 
         machines_and_materials: "Machines et matériaux",
+        machines: "Machines",
+        materials: "Matériaux",
         levels_and_competences: "Niveau et compétence",
 
         beginner: "Novice",

@@ -166,6 +166,8 @@ button,
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-radius: var(--input-border-radius);
 
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
   svg,
   .inlineSVG {
     fill: currentColor;

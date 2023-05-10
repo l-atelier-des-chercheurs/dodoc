@@ -2,14 +2,18 @@
   <div class="_tagsField">
     <DLabel v-if="label" :str="label" />
 
-    <KeywordsList
-      :keywords="new_tags"
-      :kw_type="field_name"
+    <TagsList
+      class="u-spacingBottom"
+      :tags="new_tags"
+      :tag_type="field_name"
+      :clickable="false"
       :removable="edit_mode"
       @removeClick="removeTag($event)"
     />
 
-    <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+    <template v-if="can_edit && !edit_mode">
+      <EditBtn @click="enableEditMode" />
+    </template>
 
     <template v-if="can_edit">
       <button
@@ -19,7 +23,6 @@
         @click="create_new_tag = true"
       >
         <sl-icon name="plus-square" :label="$t('add')" />
-        <!-- {{ $t("add") }} -->
       </button>
     </template>
 
@@ -42,6 +45,12 @@
           :save_text="$t('create')"
           @save="newTag"
           @cancel="cancelNewTag"
+        />
+
+        <TagsSuggestion
+          :tag_type="field_name"
+          :new_tag_name="new_tag_name"
+          @newTag="newTag($event)"
         />
       </template>
 
@@ -75,7 +84,9 @@ export default {
     },
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    TagsSuggestion: () => import("@/adc-core/fields/TagsSuggestion.vue"),
+  },
   data() {
     return {
       edit_mode: false,
@@ -105,8 +116,8 @@ export default {
     enableEditMode() {
       this.edit_mode = true;
     },
-    newTag() {
-      this.new_tags.push(this.new_tag_name);
+    newTag(tag = this.new_tag_name) {
+      this.new_tags.push(tag);
       this.new_tag_name = "";
       this.create_new_tag = false;
     },
