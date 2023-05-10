@@ -346,7 +346,7 @@ export default function () {
         everyone: "Tout le monde",
         everyone_instr:
           "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
-        noone: "Personne",
+        noone: "Aucun·e",
         noone_instr: "Fermer à tous les comptes non-administrateurs.",
         restricted: "Uniquement les comptes de la liste",
         restricted_instr: "Seuls ces comptes seront autorisés.",
