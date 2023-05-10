@@ -16,11 +16,19 @@
           :input_type="'password'"
         />
         <div>
-          <small
-            class="u-instructions"
-            v-html="$t('please_contact_to_recover')"
-          />
+          <small class="u-instructions">
+            {{ $t("signup_password_users_instructions") }}
+            <br />
+            <a
+              :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+              target="_blank"
+            >
+              {{ $root.app_infos.instance_meta.contactmail }}
+            </a>
+          </small>
         </div>
+
+        <br />
 
         <button slot="footer" class="u-button u-button_bleuvert" type="submit">
           {{ $t("submit") }}
