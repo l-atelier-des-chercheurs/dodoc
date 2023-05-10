@@ -44,7 +44,7 @@
                 !(allow_save_newkeyword && !new_tag_name_already_exists)
               "
               class="u-button u-button_bleuvert _submitBtn"
-              @click="$emit('save', local_value)"
+              @click="onEnter"
             >
               <sl-icon
                 style="font-size: 1.5em"
