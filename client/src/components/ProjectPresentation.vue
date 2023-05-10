@@ -120,7 +120,7 @@ z
       <CardLicense :project="project" :can_edit="can_edit" />
       <CardCompetences :project="project" :can_edit="can_edit" />
       <CardFiles :project="project" :can_edit="can_edit" />
-      <CardMachines :project="project" :can_edit="can_edit" />
+      <CardMachinesMaterials :project="project" :can_edit="can_edit" />
       <CardKeywords :project="project" :can_edit="can_edit" />
       <CardMeta :project="project" :can_edit="can_edit" />
       <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
@@ -142,7 +142,7 @@ import CardMeta from "@/components/project_cards/CardMeta.vue";
 // import CardAuthor from "@/components/project_cards/CardAuthor.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardCompetences from "@/components/project_cards/CardCompetences.vue";
-import CardMachines from "@/components/project_cards/CardMachines.vue";
+import CardMachinesMaterials from "@/components/project_cards/CardMachinesMaterials.vue";
 // import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
 import CardFiles from "@/components/project_cards/CardFiles.vue";
@@ -159,7 +159,7 @@ export default {
     // CardAuthor,
     CardKeywords,
     CardCompetences,
-    CardMachines,
+    CardMachinesMaterials,
     // CardStatus,
     CardLicense,
     CardFiles,

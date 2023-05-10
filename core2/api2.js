@@ -490,7 +490,9 @@ module.exports = (function () {
     d.hero_background_color = hero_background_color || "";
     d.text_background_color = text_background_color || "";
     d.has_general_password = !!general_password;
-    d.has_signup_password = !!signup_password;
+    d.signup_password_hashed = signup_password
+      ? utils.hashCode(signup_password)
+      : "";
     d.require_signup_to_contribute = require_signup_to_contribute === true;
     d.require_mail_to_signup = require_mail_to_signup === true;
     d.$admins = $admins || "";

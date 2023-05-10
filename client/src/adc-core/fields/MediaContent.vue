@@ -19,7 +19,6 @@
       </template>
       <template v-if="show_fs_button">
         <FullscreenBtn
-          class="u-floatingFsButton"
           :icon="'fullscreen'"
           :label="$t('fullscreen')"
           @click="show_fullscreen = true"

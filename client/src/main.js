@@ -93,8 +93,8 @@ import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
 import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
 Vue.component("RemoveMenu", RemoveMenu);
-import KeywordsList from "@/adc-core/ui/KeywordsList.vue";
-Vue.component("KeywordsList", KeywordsList);
+import TagsList from "@/adc-core/ui/TagsList.vue";
+Vue.component("TagsList", TagsList);
 //
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
@@ -148,16 +148,8 @@ Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
-
-Vue.component("FullscreenBtn", {
-  name: "FullscreenBtn",
-  props: ["icon", "label"],
-  template: `
-    <sl-button variant="neutral" size="small" circle @click="$emit('click')">
-      <sl-icon :name="icon" :label="label" />
-    </sl-button>
-  `,
-});
+import FullscreenBtn from "@/adc-core/ui/FullscreenBtn.vue";
+Vue.component("FullscreenBtn", FullscreenBtn);
 
 Vue.component("SectionLabel", {
   name: "SectionLabel",

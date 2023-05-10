@@ -1,25 +1,20 @@
 <template>
   <button
     type="button"
-    class="u-button u-button_verysmall u-button_bleuvert _editBtn"
+    class="u-button u-button_verysmall u-button_bleuvert u-floatingFsButton"
     @click="$emit('click')"
   >
     <span>
-      {{ btn_label }}
+      {{ $t("edit") }}
     </span>
-    <sl-icon :name="icon" :label="btn_label" />
+    <sl-icon :name="icon" :label="label" />
   </button>
 </template>
 <script>
 export default {
   props: {
-    icon: {
-      type: String,
-      default: "pencil-fill",
-    },
-    label: {
-      type: String,
-    },
+    icon: String,
+    label: String,
   },
   components: {},
   data() {
@@ -29,12 +24,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    btn_label() {
-      if (this.label) return this.label;
-      return this.$t("edit");
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>
@@ -79,7 +69,7 @@ export default {
     display: flex;
     align-items: center;
     border-radius: 0.9rem;
-    white-space: nowrap;
+    // border-bottom-right-radius: 0.9rem;
 
     pointer-events: none;
     transform: translateX(-5px);
@@ -100,6 +90,10 @@ export default {
       // transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
       transition: all 0.25s 0s cubic-bezier(0.19, 1, 0.22, 1);
     }
+  }
+
+  @media print {
+    display: none;
   }
 }
 </style>

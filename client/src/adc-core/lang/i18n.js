@@ -67,7 +67,10 @@ export default function () {
         description: "description",
         no_description: "Pas de description",
         keywords: "Mots-clés",
+
         add: "ajouter",
+        add_item: "Ajouter un élément",
+        suggestions: "Suggestions",
         access: "accéder",
         title: "Titre",
         subtitle: "Sous-titre",
@@ -127,7 +130,9 @@ export default function () {
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
-          "Limiter la création de compte (et donc de projets) aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent se créer un compte et publier des contenus.",
+          "Limiter la création de compte aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent créer un compte.",
+        signup_password_users_instructions:
+          "Si vous ne connaissez pas le mot de passe, vous pouvez le demander par courriel à l’adresse suivante",
 
         login: "se connecter",
         logout: "se déconnecter",
@@ -176,7 +181,7 @@ export default function () {
         hide_description: "Masquer la description",
         recover_password: "Récupérer mon de passe",
         please_contact_to_recover:
-          "Veuillez envoyer un mail à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe.",
+          "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe",
 
         visibility: "Visibilité",
         visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -346,7 +351,7 @@ export default function () {
         everyone: "Tout le monde",
         everyone_instr:
           "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
-        noone: "Personne",
+        noone: "Aucun·e",
         noone_instr: "Fermer à tous les comptes non-administrateurs.",
         restricted: "Uniquement les comptes de la liste",
         restricted_instr: "Seuls ces comptes seront autorisés.",
@@ -514,6 +519,8 @@ export default function () {
         keep_original_after_copy: "Conserver ce projet après la copie",
 
         machines_and_materials: "Machines et matériaux",
+        machines: "Machines",
+        materials: "Matériaux",
         levels_and_competences: "Niveau et compétence",
 
         beginner: "Novice",
