@@ -127,7 +127,9 @@ export default function () {
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
-          "Limiter la création de compte (et donc de projets) aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent se créer un compte et publier des contenus.",
+          "Limiter la création de compte aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent créer un compte.",
+        signup_password_users_instructions:
+          "Si vous ne connaissez pas le mot de passe, vous pouvez le demander par courriel à l’adresse suivante",
 
         login: "se connecter",
         logout: "se déconnecter",
@@ -176,7 +178,7 @@ export default function () {
         hide_description: "Masquer la description",
         recover_password: "Récupérer mon de passe",
         please_contact_to_recover:
-          "Veuillez envoyer un mail à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe.",
+          "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe",
 
         visibility: "Visibilité",
         visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
