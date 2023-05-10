@@ -8,7 +8,7 @@
       {{ $t("suggestions") }}
     </button>
 
-    <template v-if="show_suggestions">
+    <template v-if="new_tag_name > 0 || show_suggestions">
       <!-- <DLabel :str="$t('suggestions')" /> -->
       <TagsList
         :tags="suggestions_list"
@@ -40,10 +40,10 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
-    suggestions_list(new_suggestions_list, old_suggestions_list) {
-      if (old_suggestions_list.length === 0 && new_suggestions_list.length > 0)
-        this.show_suggestions = true;
-    },
+    // suggestions_list(new_suggestions_list, old_suggestions_list) {
+    // if (old_suggestions_list.length === 0 && new_suggestions_list.length > 0)
+    //   this.show_suggestions = true;
+    // },
   },
   computed: {
     suggestions_list() {
