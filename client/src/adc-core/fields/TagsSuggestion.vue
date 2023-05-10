@@ -2,14 +2,14 @@
   <div>
     <button
       type="button"
-      v-if="new_tag_name.length === 0 && show_suggestions === false"
-      @click="show_suggestions = true"
+      @click="show_suggestions = !show_suggestions"
       class="u-buttonLink"
     >
       {{ $t("suggestions") }}
     </button>
-    <template v-else>
-      <DLabel :str="$t('suggestions')" />
+
+    <template v-if="show_suggestions">
+      <!-- <DLabel :str="$t('suggestions')" /> -->
       <TagsList
         :tags="suggestions_list"
         :tag_type="tag_type"
@@ -39,7 +39,12 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    suggestions_list(new_suggestions_list, old_suggestions_list) {
+      if (old_suggestions_list.length === 0 && new_suggestions_list.length > 0)
+        this.show_suggestions = true;
+    },
+  },
   computed: {
     suggestions_list() {
       const local_suggestions = this.suggestions[this.tag_type];
