@@ -15,53 +15,65 @@
       <EditBtn @click="enableEditMode" />
     </template>
 
-    <template v-if="can_edit">
-      <button
-        type="button"
-        class="u-button"
-        v-if="edit_mode && create_new_tag === false"
-        @click="create_new_tag = true"
-      >
-        <sl-icon name="plus-square" :label="$t('add')" />
-      </button>
-    </template>
+    <SaveCancelButtons
+      v-if="can_edit && edit_mode"
+      class="_scb"
+      :is_saving="is_saving"
+      @save="updateTags"
+      @cancel="cancel"
+    />
 
     <div class="_footer" v-if="edit_mode">
-      <template v-if="create_new_tag">
-        <TextInput
-          :content.sync="new_tag_name"
-          :maxlength="maxlength"
-          :required="true"
-          @toggleValidity="($event) => (allow_save_newkeyword = $event)"
-          @onEnter="onEnter"
-        />
+      <fieldset class="_newTagPane" v-if="create_new_tag">
+        <legend class="u-label">{{ $t("add_item") }}</legend>
+
+        <div class="_sameRowBtnInput">
+          <TextInput
+            class="_input"
+            :content.sync="new_tag_name"
+            :maxlength="maxlength"
+            :required="true"
+            :size="'small'"
+            @toggleValidity="($event) => (allow_save_newkeyword = $event)"
+            @onEnter="onEnter"
+          />
+          <div class="">
+            <button
+              type="button"
+              :disabled="
+                !(allow_save_newkeyword && !new_tag_name_already_exists)
+              "
+              class="u-button u-button_bleuvert _submitBtn"
+              @click="$emit('save', local_value)"
+            >
+              <sl-icon
+                style="font-size: 1.5em"
+                name="check"
+                :label="$t('submit')"
+              />
+            </button>
+          </div>
+        </div>
+
         <div v-if="new_tag_name_already_exists" class="fieldCaption u-colorRed">
           {{ $t("already_added") }}
         </div>
-        <SaveCancelButtons
-          class="_scb"
+        <!-- <SaveCancelButtons
+          class="_scb u-spacingBottom"
           :is_saving="is_saving"
           :allow_save="allow_save_newkeyword && !new_tag_name_already_exists"
           :save_text="$t('create')"
           @save="newTag"
           @cancel="cancelNewTag"
-        />
+        /> -->
 
         <TagsSuggestion
           :tag_type="field_name"
           :new_tag_name="new_tag_name"
+          :tags_to_exclude="new_tags"
           @newTag="newTag($event)"
         />
-      </template>
-
-      <div v-else>
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updateTags"
-          @cancel="cancel"
-        />
-      </div>
+      </fieldset>
     </div>
   </div>
 </template>
@@ -94,7 +106,7 @@ export default {
 
       new_tags: this.content,
       new_tag_name: "",
-      create_new_tag: false,
+      create_new_tag: true,
 
       allow_save_newkeyword: false,
     };
@@ -119,11 +131,11 @@ export default {
     newTag(tag = this.new_tag_name) {
       this.new_tags.push(tag);
       this.new_tag_name = "";
-      this.create_new_tag = false;
+      // this.create_new_tag = false;
     },
     cancelNewTag() {
       this.new_tag_name = "";
-      this.create_new_tag = false;
+      // this.create_new_tag = false;
     },
     removeTag(tag) {
       this.new_tags = this.new_tags.filter((t) => t !== tag);
@@ -192,5 +204,29 @@ export default {
 
 ._addNewTagForm {
   padding: calc(var(--spacing) / 4) 0;
+}
+
+._newTagPane {
+  width: 100%;
+}
+
+._scb {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}
+
+._submitBtn {
+  padding: calc(var(--spacing) / 8);
+}
+
+._sameRowBtnInput {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 4);
+
+  > ._input {
+    width: 100%;
+  }
 }
 </style>

@@ -10,6 +10,7 @@
         :id="'_input_' + label_str"
         :autocomplete="autocomplete"
         class=""
+        :size="size"
         :required="required"
         :placeholder="'…'"
         @input="$emit('update:content', $event.target.value)"
@@ -81,6 +82,9 @@ export default {
       default: "",
     },
     instructions: {
+      type: String,
+    },
+    size: {
       type: String,
     },
     required: {

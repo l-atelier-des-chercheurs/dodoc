@@ -303,6 +303,10 @@ button,
 .u-button_small {
   font-size: var(--input-font-size-small);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+
+  sl-icon {
+    font-size: 80%;
+  }
 }
 .u-button_verysmall {
   font-size: var(--input-font-size-x-small);
@@ -425,7 +429,7 @@ textarea,
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 }
 
-input.u-input-small {
+input[size="small"] {
   font-size: var(--input-font-size-small);
   height: var(--input-height-small);
 }

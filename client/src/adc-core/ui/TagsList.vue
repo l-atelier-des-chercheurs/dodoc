@@ -1,7 +1,8 @@
 <template>
   <div class="_tagsList">
     <template v-if="tags.length === 0">{{ $t("none") }}</template>
-    <template v-else>
+
+    <transition-group v-else class="_list" name="projectsList" appear>
       <button
         type="button"
         :class="[
@@ -31,7 +32,7 @@
           <sl-icon name="trash3" />
         </span>
       </button>
-    </template>
+    </transition-group>
   </div>
 </template>
 <script>
@@ -73,7 +74,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._tagsList {
+._list {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 8);
@@ -88,9 +89,13 @@ export default {
 }
 
 ._tagName {
+  text-align: left;
 }
 ._addBtn,
 ._removeBtn {
+  padding: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / -4);
+  margin-left: 0;
   margin-left: calc(var(--spacing) / 4);
   cursor: pointer;
 }
