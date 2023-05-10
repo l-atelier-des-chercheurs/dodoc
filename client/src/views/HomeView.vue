@@ -199,9 +199,8 @@ export default {
 ._homeView--content {
   position: relative;
   width: 100%;
-  // max-width: calc(var(--max-column-width));
   margin: 0 auto;
-  // padding: calc(var(--spacing) * 1);
+  border: 2px solid var(--c-gris_clair);
 
   display: flex;
   flex-flow: row wrap;
