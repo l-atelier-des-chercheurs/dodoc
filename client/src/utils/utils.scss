@@ -748,17 +748,6 @@ fieldset {
   overflow: hidden;
 }
 
-.u-floatingFsButton {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  margin: calc(var(--spacing) / 1);
-
-  @media print {
-    display: none;
-  }
-}
-
 details {
   summary {
     padding: calc(var(--spacing) / 4);

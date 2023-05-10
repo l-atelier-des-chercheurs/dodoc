@@ -9,12 +9,13 @@
       <img :src="cover_thumb" />
 
       <template v-if="context === 'full'">
-        <FullscreenBtn
-          class="u-floatingFsButton"
-          :icon="'fullscreen'"
-          :label="$t('fullscreen')"
-          @click="show_cover_fullscreen = true"
-        />
+        <div class="_fsButton">
+          <EditBtn
+            :icon="'fullscreen'"
+            :label="$t('fullscreen')"
+            @click="show_cover_fullscreen = true"
+          />
+        </div>
         <FullscreenView
           v-if="show_cover_fullscreen"
           @close="show_cover_fullscreen = false"
@@ -215,5 +216,12 @@ export default {
   width: 100%;
   height: 100%;
   background-color: var(--c-gris_fonce);
+}
+
+._fsButton {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: calc(var(--spacing) / 1);
 }
 </style>
