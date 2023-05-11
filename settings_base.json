@@ -404,9 +404,7 @@
                 "type": "array"
               },
               "license": {
-                "type": "string",
-                "options": ["CC", "all_rights_reserved", "copyleft"],
-                "default": "CC"
+                "type": "string"
               },
               "authors_list": {
                 "type": "string"

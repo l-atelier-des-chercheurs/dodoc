@@ -52,19 +52,23 @@ export default {
       license_options: [
         {
           key: "creativecommons_by_nc_sa",
-          text: "creativecommons_by_nc_sa_explanations",
+          label: this.$t("creativecommons_by_nc_sa"),
+          instructions: this.$t("creativecommons_by_nc_sa_explanations"),
         },
         {
           key: "all_rights_reserved",
-          text: "all_rights_reserved_explanations",
+          label: this.$t("all_rights_reserved"),
+          instructions: this.$t("all_rights_reserved_explanations"),
         },
         {
           key: "copyleft",
-          text: "copyleft_explanations",
+          label: this.$t("copyleft"),
+          instructions: this.$t("copyleft_explanations"),
         },
         {
           key: "custom_license",
-          text: "custom_license_explanations",
+          label: this.$t("custom_license"),
+          instructions: this.$t("custom_license_explanations"),
         },
       ],
     };
