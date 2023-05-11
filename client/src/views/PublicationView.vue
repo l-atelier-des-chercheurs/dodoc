@@ -425,6 +425,9 @@ export default {
         case "m":
           this.page_zoom -= 6;
           break;
+        case "r":
+          this.fitZoomToPage();
+          break;
         case "f":
           this.toggleFs();
           break;
