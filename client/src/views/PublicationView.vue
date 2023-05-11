@@ -279,10 +279,13 @@ export default {
         this.fitZoomToPage();
       });
     }
+    // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
+    // this.$api.join({ room: this.publication_path });
   },
   beforeDestroy() {
     // this.$api.leave({ room: this.project.$path });
+    // this.$api.leave({ room: this.publication_path });
     document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {
