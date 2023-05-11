@@ -1,10 +1,13 @@
 <template>
   <div class="_radioField">
     <div v-if="!edit_mode">
-      {{ $t(new_content) }}
-      <div v-if="instructions">
-        <small v-html="$t(instructions)" />
-      </div>
+      <template v-if="current_option">
+        {{ current_option.label }}
+        <div v-if="current_option.instructions" class="u-instructions">
+          <small v-html="current_option.instructions" />
+        </div>
+      </template>
+      <template v-else>–</template>
     </div>
     <div v-else>
       <RadioInput
@@ -12,33 +15,8 @@
         :options="options"
         :can_edit="can_edit"
       />
-
-      <!-- <div v-for="option in options" :key="option.key">
-        <div>
-          <input
-            type="radio"
-            v-model="new_content"
-            :name="option.key"
-            :id="'radioi-' + option.key"
-            :value="option.key"
-          />
-          <label :for="'radioi-' + option.key">{{ $t(option.key) }}</label>
-        </div>
-        <small v-html="$t(option.text)" />
-        <br />
-        <br />
-      </div> -->
-      <!-- </sl-radio-group> -->
     </div>
 
-    <!-- <select v-model="new_content" :disabled="!edit_mode">
-        <option
-          v-for="option in options"
-          :key="option.key"
-          :value="option.key"
-          v-text="$t(option.key)"
-        />
-      </select> -->
     <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
     <div class="_footer" v-if="edit_mode">
@@ -73,7 +51,7 @@ export default {
       edit_mode: false,
       is_saving: false,
 
-      new_content: this.content ? this.content : "draft",
+      new_content: this.content ? this.content : "",
     };
   },
   created() {},
@@ -85,6 +63,9 @@ export default {
     },
   },
   computed: {
+    current_option() {
+      return this.options.find((o) => o.key === this.new_content);
+    },
     instructions() {
       const new_opt = this.options.find((o) => o.key === this.new_content);
       if (new_opt) return new_opt.instructions;

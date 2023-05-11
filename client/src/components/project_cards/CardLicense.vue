@@ -1,5 +1,9 @@
 <template>
-  <ProjectCard :header="$t('authors_and_license')" :icon="'people'">
+  <ProjectCard
+    :header="$t('authors_and_license')"
+    :icon="'people'"
+    :is_filled="project.license"
+  >
     <AdminsAndContributorsField
       :show_section="['admins', 'contributors']"
       :folder="project"
@@ -9,9 +13,9 @@
       :contrib_instructions="$t('project_contrib_instructions')"
     />
 
-    <br />
+    <hr />
 
-    <div class="">
+    <div class="u-spacingBottom">
       <TitleField
         :label="$t('authors')"
         :field_name="'authors_list'"
@@ -21,13 +25,11 @@
       />
     </div>
 
-    <br />
-
-    <DLabel
-      :str="$t('license')"
-      :instructions="can_edit ? $t('licence_instructions') : ''"
-    />
-    <div class="">
+    <div class="u-spacingBottom">
+      <DLabel
+        :str="$t('license')"
+        :instructions="can_edit ? $t('licence_instructions') : ''"
+      />
       <RadioField
         :field_name="'license'"
         :content="project.license"
@@ -50,6 +52,10 @@ export default {
   data() {
     return {
       license_options: [
+        {
+          key: "",
+          label: this.$t("none_f"),
+        },
         {
           key: "creativecommons_by_nc_sa",
           label: this.$t("creativecommons_by_nc_sa"),

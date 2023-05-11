@@ -1,5 +1,9 @@
 <template>
-  <ProjectCard :header="$t('machines_and_materials')" :icon="'tools'">
+  <ProjectCard
+    :header="$t('machines_and_materials')"
+    :icon="'tools'"
+    :is_filled="!!project.materials || !!project.machines"
+  >
     <div class="">
       <TagsField
         :label="$t('materials')"

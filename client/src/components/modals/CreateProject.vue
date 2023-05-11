@@ -74,7 +74,6 @@ export default {
           additional_meta: {
             title: this.new_project_title,
             requested_slug: this.new_project_title,
-            license: "CC",
             $status: this.new_project_is_private === true ? "private" : "draft",
             $admins,
           },

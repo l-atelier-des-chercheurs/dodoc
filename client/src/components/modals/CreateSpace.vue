@@ -74,7 +74,6 @@ export default {
           additional_meta: {
             title: this.new_space_title,
             requested_slug: this.new_space_title,
-            license: "CC",
             $status: this.new_space_is_private === true ? "private" : "public",
             $admins,
           },

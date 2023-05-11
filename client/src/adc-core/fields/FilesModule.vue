@@ -33,10 +33,9 @@
           @click.prevent="removeFile(i)"
         />
       </div>
-      <br />
     </template>
 
-    <div class="">
+    <div class="_addBtn">
       <button
         type="button"
         class="u-button u-button_small u-button_bleuvert _addFile"
@@ -112,6 +111,10 @@ export default {
   padding: 0;
   margin: 0;
 
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 4);
+
   > ._file {
     // margin: calc(var(--spacing) / 4) 0;
     padding: 0;
@@ -125,7 +128,6 @@ export default {
     word-break: break-word;
     align-items: stretch;
 
-    padding: calc(var(--spacing) / 4);
     gap: calc(var(--spacing) / 4);
     border-radius: 4px;
 
@@ -175,5 +177,9 @@ export default {
       }
     }
   }
+}
+
+._addBtn {
+  text-align: center;
 }
 </style>

@@ -1,5 +1,9 @@
 <template>
-  <ProjectCard :header="$t('levels_and_competences')" :icon="'bookmark-star'">
+  <ProjectCard
+    :header="$t('levels_and_competences')"
+    :icon="'bookmark-star'"
+    :is_filled="!!project.level"
+  >
     <div class="">
       <SelectField
         :field_name="'level'"

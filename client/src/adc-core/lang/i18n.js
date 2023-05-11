@@ -278,6 +278,7 @@ export default function () {
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
         no_files: "Aucun fichier",
+        none_f: "Aucune",
         none: "Aucun·e",
         filters: "Filtres",
 

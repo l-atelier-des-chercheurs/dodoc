@@ -1,5 +1,10 @@
 <template>
-  <details class="_projectCard" open>
+  <details
+    class="_projectCard"
+    :class="{
+      'is--filled': is_filled,
+    }"
+  >
     <summary>
       <div class="_icon">
         <sl-icon v-if="icon" :name="icon" />
@@ -16,6 +21,10 @@ export default {
   props: {
     header: String,
     icon: String,
+    is_filled: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {},
   data() {
@@ -32,14 +41,23 @@ export default {
 <style lang="scss" scoped>
 ._projectCard {
   border-bottom: 0px solid var(--c-gris_clair);
-  // border-left: 2px solid transparent;
+  border-left: 2px solid transparent;
 
   background: white;
   margin-left: 2px;
 
   &[open] {
     border-left-color: var(--c-gris);
-    margin-bottom: calc(var(--spacing) / 1);
+    // margin-bottom: calc(var(--spacing) / 1);
+  }
+
+  &.is--filled {
+    summary {
+      // background-color: var(--c-bleumarine);
+    }
+    ._icon {
+      background-color: var(--c-bleumarine_clair);
+    }
   }
 
   ::marker {
@@ -55,8 +73,8 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    font-size: var(--sl-font-size-medium);
-    padding: calc(var(--spacing) / 2);
+    font-size: var(--sl-font-size-small);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
     font-weight: 500;
     gap: calc(var(--spacing) / 2);
     cursor: pointer;
@@ -81,13 +99,13 @@ export default {
   border-radius: 4px;
   padding: calc(var(--spacing) / 2);
   line-height: 0;
-  width: 30px;
-  height: 30px;
+  // width: 30px;
+  // height: 30px;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   ._projectCard[open] & {
-    background-color: white;
+    // background-color: white;
   }
 }
 </style>

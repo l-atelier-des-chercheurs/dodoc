@@ -118,8 +118,8 @@ z
       v-if="context === 'full'"
     >
       <CardLicense :project="project" :can_edit="can_edit" />
-      <CardCompetences :project="project" :can_edit="can_edit" />
       <CardFiles :project="project" :can_edit="can_edit" />
+      <CardCompetences :project="project" :can_edit="can_edit" />
       <CardMachinesMaterials :project="project" :can_edit="can_edit" />
       <CardKeywords :project="project" :can_edit="can_edit" />
       <CardMeta :project="project" :can_edit="can_edit" />
