@@ -9,7 +9,7 @@
         />
 
         <div
-          v-if="projects.length === 0"
+          v-if="projects && Array.isArray(projects) && projects.length === 0"
           class="u-instructions"
           :key="'noprojects'"
         >
