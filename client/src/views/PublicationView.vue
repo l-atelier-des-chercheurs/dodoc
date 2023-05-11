@@ -395,6 +395,7 @@ export default {
     keyPressed(event) {
       if (
         this.$root.modal_is_opened ||
+        event.target.tagName.toLowerCase() === "select" ||
         event.target.tagName.toLowerCase() === "input" ||
         event.target.tagName.toLowerCase() === "textarea" ||
         event.target.className.includes("ql-editor") ||
