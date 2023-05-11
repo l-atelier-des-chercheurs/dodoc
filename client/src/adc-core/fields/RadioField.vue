@@ -7,13 +7,13 @@
       </div>
     </div>
     <div v-else>
-      <!-- <sl-radio-group
-        v-model="new_content"
-        label="Select an option"
-        name="a"
-        value="1"
-      > -->
-      <div v-for="option in options" :key="option.key">
+      <RadioInput
+        :value.sync="new_content"
+        :options="options"
+        :can_edit="can_edit"
+      />
+
+      <!-- <div v-for="option in options" :key="option.key">
         <div>
           <input
             type="radio"
@@ -27,7 +27,7 @@
         <small v-html="$t(option.text)" />
         <br />
         <br />
-      </div>
+      </div> -->
       <!-- </sl-radio-group> -->
     </div>
 
@@ -87,7 +87,7 @@ export default {
   computed: {
     instructions() {
       const new_opt = this.options.find((o) => o.key === this.new_content);
-      if (new_opt) return new_opt.text;
+      if (new_opt) return new_opt.instructions;
       return false;
     },
   },

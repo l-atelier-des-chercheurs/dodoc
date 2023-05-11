@@ -507,6 +507,10 @@ export default function () {
         lightness: "Clarté",
         dotscreen: "Noir et blanc (tramé)",
 
+        custom_license: "Licence spécifique",
+        custom_license_explanations:
+          "À venir, la possibilité d’indiquer une licence spécifique avec un lien vers une page de référence",
+
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
         copy_of: "Copie de",

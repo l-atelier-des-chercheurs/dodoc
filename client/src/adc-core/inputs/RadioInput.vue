@@ -24,7 +24,9 @@
           {{ option.label }}
         </component>
         <br />
-        <small class="u-instructions" v-html="option.instructions" />
+        <div class="u-instructions">
+          <small v-html="option.instructions" />
+        </div>
       </span>
     </label>
   </div>
