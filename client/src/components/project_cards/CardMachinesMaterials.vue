@@ -2,7 +2,7 @@
   <ProjectCard
     :header="$t('machines_and_materials')"
     :icon="'tools'"
-    :is_filled="!!project.materials || !!project.machines"
+    :has_items="!!project.materials || !!project.machines"
   >
     <div class="">
       <TagsField

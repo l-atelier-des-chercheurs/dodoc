@@ -2,7 +2,7 @@
   <ProjectCard
     :header="$t('authors_and_license')"
     :icon="'people'"
-    :is_filled="project.license"
+    :has_items="!!project.license"
   >
     <AdminsAndContributorsField
       :show_section="['admins', 'contributors']"

@@ -1,15 +1,22 @@
 <template>
-  <details
-    class="_projectCard"
-    :class="{
-      'is--filled': is_filled,
-    }"
-  >
+  <details class="_projectCard">
     <summary>
-      <div class="_icon">
+      <div class="_icon" :data-isfilled="has_items">
         <sl-icon v-if="icon" :name="icon" />
       </div>
-      {{ header }}
+
+      <span class="_name">
+        {{ header }}
+      </span>
+
+      <div class="_itemsNut" v-if="has_items">
+        <template v-if="typeof has_items === 'number'">
+          {{ has_items }}
+        </template>
+        <template v-else>
+          <sl-icon name="check" />
+        </template>
+      </div>
     </summary>
     <div class="_content">
       <slot />
@@ -21,8 +28,8 @@ export default {
   props: {
     header: String,
     icon: String,
-    is_filled: {
-      type: Boolean,
+    has_items: {
+      type: [Boolean, Number],
       default: false,
     },
   },
@@ -46,18 +53,72 @@ export default {
   background: white;
   margin-left: 2px;
 
+  display: flex;
+  flex-flow: row nowrap;
+
+  ._icon {
+    font-size: 110%;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    padding: calc(var(--spacing) / 2);
+    background-color: var(--c-gris);
+
+    color: black;
+
+    line-height: 0;
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &:not([data-isfilled]) {
+      ._icon {
+        color: black;
+      }
+
+      // color: var(--c-rouge);
+      // border-bottom: 1px solid var(--c-bleuvert);
+    }
+    ._projectCard[open] & {
+    }
+  }
+
+  ._name {
+    flex: 1 1 auto;
+  }
+
+  ._itemsNut {
+    display: block;
+    width: 20px;
+    height: 20px;
+
+    // font-size: 110%;
+    border-radius: 50%;
+    // color: white;
+    // background-color: var(--c-rouge);
+    background: white;
+
+    font-family: "Fira Code";
+    font-weight: 600;
+
+    background: var(--c-bleuvert);
+    color: white;
+
+    // padding: calc(var(--spacing) / 2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 110%;
+
+    &:empty {
+      // background: var(--c-bleuvert);
+      // width: 0px;
+      // height: 0px;
+    }
+  }
+
   &[open] {
     border-left-color: var(--c-gris);
     // margin-bottom: calc(var(--spacing) / 1);
-  }
-
-  &.is--filled {
-    summary {
-      // background-color: var(--c-bleumarine);
-    }
-    ._icon {
-      background-color: var(--c-bleumarine_clair);
-    }
   }
 
   ::marker {
@@ -90,22 +151,6 @@ export default {
 
   ._content {
     padding: calc(var(--spacing) / 2);
-  }
-}
-
-._icon {
-  font-size: 110%;
-  background-color: var(--c-gris);
-  border-radius: 4px;
-  padding: calc(var(--spacing) / 2);
-  line-height: 0;
-  // width: 30px;
-  // height: 30px;
-
-  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-
-  ._projectCard[open] & {
-    // background-color: white;
   }
 }
 </style>

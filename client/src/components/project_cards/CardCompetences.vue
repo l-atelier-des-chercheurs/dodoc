@@ -2,7 +2,7 @@
   <ProjectCard
     :header="$t('levels_and_competences')"
     :icon="'bookmark-star'"
-    :is_filled="!!project.level"
+    :has_items="!!project.level"
   >
     <div class="">
       <SelectField

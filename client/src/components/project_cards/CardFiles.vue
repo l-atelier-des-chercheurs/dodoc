@@ -2,7 +2,9 @@
   <ProjectCard
     :header="$t('files')"
     :icon="'file-earmark-arrow-down'"
-    :is_filled="downloadable_files && downloadable_files.length > 0"
+    :has_items="
+      downloadable_files.length > 0 ? downloadable_files.length : false
+    "
   >
     <FilesModule
       :folder_path="project.$path"

@@ -2,7 +2,7 @@
   <ProjectCard
     :header="keywords_title"
     :icon="'tag'"
-    :is_filled="!!project.keywords"
+    :has_items="!!project.keywords"
   >
     <div class="">
       <TagsField
