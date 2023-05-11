@@ -417,10 +417,10 @@ export default {
             this.updatePageQuery({ increment: +1 });
           break;
         case "p":
-          this.page_zoom += 2;
+          this.page_zoom += 6;
           break;
         case "m":
-          this.page_zoom -= 2;
+          this.page_zoom -= 6;
           break;
         case "f":
           this.toggleFs();

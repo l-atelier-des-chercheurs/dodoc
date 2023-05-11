@@ -72,7 +72,7 @@
                   @click.stop="removePane(pane.type)"
                 />
               </div>
-              <!-- <div
+              <div
                 v-else-if="project_panes.length > 0 && !$root.is_mobile_view"
                 class="_inlineBtn _addPaneBtn"
               >
@@ -81,7 +81,7 @@
                   label="Ajouter"
                   @click.stop="addPane($event, pane)"
                 />
-              </div> -->
+              </div>
             </div>
           </SlickItem>
         </SlickList>
