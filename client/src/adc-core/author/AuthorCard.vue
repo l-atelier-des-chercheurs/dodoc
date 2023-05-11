@@ -12,7 +12,7 @@
       :can_edit="is_self"
     />
     <div v-if="is_instance_admin">
-      <span v-html="author.email" />
+      <span v-text="author.email" />
     </div>
     <div
       class="u-instructions"

@@ -15,7 +15,7 @@
           <img :src="hero_thumb" />
         </div>
         <div class="_textBlock">
-          <h1 class="_sessionTitle" v-html="name || $t('welcome_to_dodoc')" />
+          <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
           <div class="u-spacingBottom">
             <template v-if="description">
               <MarkdownField :text="description" />

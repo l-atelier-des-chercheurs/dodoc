@@ -21,9 +21,7 @@
             class="_preview"
             v-else
           />
-          <span class="_link--filename">
-            {{ file.$media_filename }}
-          </span>
+          <span class="_link--filename" v-text="file.$media_filename" />
         </DownloadFile>
 
         <sl-icon-button
