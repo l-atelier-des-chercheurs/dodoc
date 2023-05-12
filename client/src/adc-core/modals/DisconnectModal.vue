@@ -1,6 +1,6 @@
 <template>
   <BaseModal2 :title="$t('connection_lost')" :is_closable="false">
-    <p>
+    <p class="u-spacingBottom">
       <span v-html="$t('connection_lost_reload_to_reconnect')" />
       <br />
       <a
