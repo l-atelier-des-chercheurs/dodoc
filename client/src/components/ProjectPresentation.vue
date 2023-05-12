@@ -84,6 +84,7 @@ z
         :content="project.description"
         :path="project.$path"
         :maxlength="1280"
+        :input_type="'markdown'"
         :can_edit="can_edit"
         :instructions="$t('project_desc_instructions')"
       />

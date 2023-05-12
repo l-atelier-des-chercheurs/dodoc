@@ -43,7 +43,7 @@ export default {
       marked.use({ hooks });
 
       // return marked.parse(`<img src="x" onerror="alert('not happening')">`);
-      return marked.parse(this.text);
+      return marked.parse(this.text, { breaks: true });
     },
   },
   methods: {},

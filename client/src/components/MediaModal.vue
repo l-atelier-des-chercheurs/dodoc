@@ -55,6 +55,7 @@
           :field_name="'caption'"
           :content="file.caption"
           :path="file.$path"
+          :input_type="'markdown'"
           :can_edit="true"
         />
         <br />

@@ -9,6 +9,7 @@
         :label="$t('authors')"
         :field_name="'authors_list'"
         :content="project.authors_list"
+        :input_type="'markdown'"
         :path="project.$path"
         :can_edit="can_edit"
       />

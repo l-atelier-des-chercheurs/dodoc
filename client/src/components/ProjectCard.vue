@@ -40,9 +40,7 @@ export default {
     return {};
   },
   created() {},
-  mounted() {
-    debugger;
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {},

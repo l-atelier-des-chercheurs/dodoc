@@ -66,6 +66,7 @@
         :label="can_edit ? $t('description') : undefined"
         :content="space.description"
         :path="space.$path"
+        :input_type="'markdown'"
         :maxlength="480"
         :can_edit="can_edit"
       />
