@@ -522,8 +522,8 @@ export default function () {
         source_space: "Espace qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
-        remove_original_after_copy: "Supprimer ce projet après la copie",
-        keep_original_after_copy: "Conserver ce projet après la copie",
+        remove_original_after_copy: "Ce projet sera supprimé après la copie",
+        keep_original_after_copy: "Ce projet sera conservé après la copie",
 
         machines_and_materials: "Machines et matériaux",
         machines: "Machines",

@@ -60,8 +60,6 @@ z
         :instructions="$t('project_title_instructions')"
       />
 
-      <!-- <br v-if="context === 'full'" /> -->
-
       <template v-if="context === 'list'">
         <button
           v-if="project.description"
@@ -90,7 +88,7 @@ z
         :instructions="$t('project_desc_instructions')"
       />
 
-      <div class="_allTags">
+      <div class="_allTags" v-if="context === 'full'">
         <TagsList
           :tags="project.keywords"
           :tag_type="'keywords'"
@@ -113,9 +111,9 @@ z
       <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
     </div>
 
-    <transition name="fade">
+    <!-- <transition name="fade">
       <button
-        v-if="context === 'full' && false"
+        v-if="context === 'full'"
         v-show="!$root.is_mobile_view"
         :key="'show_meta-' + show_meta"
         class="u-buttonLink _showMeta"
@@ -129,7 +127,7 @@ z
           {{ $t("hide_meta") }}
         </template>
       </button>
-    </transition>
+    </transition> -->
 
     <div
       class="_projectInfos--meta"

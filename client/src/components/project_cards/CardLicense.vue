@@ -4,17 +4,6 @@
     :icon="'people'"
     :has_items="!!project.license"
   >
-    <AdminsAndContributorsField
-      :show_section="['admins', 'contributors']"
-      :folder="project"
-      :can_edit="can_edit"
-      :admin_label="$t('referent')"
-      :admin_instructions="$t('project_admin_instructions')"
-      :contrib_instructions="$t('project_contrib_instructions')"
-    />
-
-    <hr />
-
     <div class="u-spacingBottom">
       <TitleField
         :label="$t('authors')"

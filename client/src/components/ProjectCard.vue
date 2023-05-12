@@ -60,7 +60,7 @@ export default {
     font-size: 110%;
     width: 30px;
     height: 30px;
-    border-radius: 4px;
+    // border-radius: 4px;
     padding: calc(var(--spacing) / 2);
     background-color: var(--c-gris);
 
@@ -98,7 +98,9 @@ export default {
     background: white;
     font-family: "Fira Code";
     padding: calc(var(--spacing) / 16);
-    font-weight: 600;
+    margin: calc(var(--spacing) / 4);
+
+    font-weight: 500;
     background: var(--c-bleuvert);
     color: white;
 
@@ -129,11 +131,15 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    font-size: var(--sl-font-size-small);
+    // font-size: var(--sl-font-size-small);
+    // font-family: "Fira Code";
+
     padding: calc(var(--spacing) / 8);
-    font-weight: 500;
+    // font-weight: 500;
     gap: calc(var(--spacing) / 2);
     cursor: pointer;
+
+    color: black;
 
     &:hover,
     &:focus {

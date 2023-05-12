@@ -1,6 +1,14 @@
 <template>
-  <div class="_cardMeta">
-    <!-- <DLabel :str="$t('informations')" /> -->
+  <ProjectCard :header="$t('informations')" :icon="'info-square'" open>
+    <AdminsAndContributorsField
+      :show_section="['admins', 'contributors']"
+      :folder="project"
+      :can_edit="can_edit"
+      :admin_label="$t('referent')"
+      :admin_instructions="$t('project_admin_instructions')"
+      :contrib_instructions="$t('project_contrib_instructions')"
+    />
+
     <div class="u-spacingBottom" />
 
     <div class="u-spacingBottom">
@@ -8,16 +16,9 @@
       <DateField :title="$t('date_modified')" :date="project.$date_modified" />
     </div>
 
-    <div class="u-mediaOptions">
-      <div v-if="can_edit">
-        <DuplicateFolder :path="project.$path" :source_title="project.title" />
-      </div>
-      <div v-if="can_edit">
-        <RemoveMenu
-          :remove_text="$t('remove_project')"
-          @remove="removeProject"
-        />
-      </div>
+    <div class="u-mediaOptions" v-if="can_edit">
+      <DuplicateFolder :path="project.$path" :source_title="project.title" />
+      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
     </div>
 
     <div
@@ -33,10 +34,10 @@
         {{ project.$path }}
       </button>
     </div>
-  </div>
+  </ProjectCard>
 </template>
 <script>
-// import ProjectCard from "@/components/ProjectCard.vue";
+import ProjectCard from "@/components/ProjectCard.vue";
 import DuplicateFolder from "@/components/project/DuplicateFolder.vue";
 
 export default {
@@ -45,7 +46,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    // ProjectCard,
+    ProjectCard,
     DuplicateFolder,
   },
   data() {
