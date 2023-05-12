@@ -86,26 +86,21 @@ export default {
   }
 
   ._itemsNut {
-    display: block;
-    width: 20px;
-    height: 20px;
-
-    // font-size: 110%;
-    border-radius: 50%;
-    // color: white;
-    // background-color: var(--c-rouge);
-    background: white;
-
-    font-family: "Fira Code";
-    font-weight: 600;
-
-    background: var(--c-bleuvert);
-    color: white;
-
-    // padding: calc(var(--spacing) / 2);
     display: flex;
+    line-height: 1;
     align-items: center;
     justify-content: center;
+
+    min-width: 18px;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: white;
+    font-family: "Fira Code";
+    padding: calc(var(--spacing) / 16);
+    font-weight: 600;
+    background: var(--c-bleuvert);
+    color: white;
 
     font-size: 110%;
 
