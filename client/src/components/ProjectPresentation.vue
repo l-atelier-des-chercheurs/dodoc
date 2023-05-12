@@ -89,6 +89,27 @@ z
         :can_edit="can_edit"
         :instructions="$t('project_desc_instructions')"
       />
+
+      <div class="_allTags">
+        <TagsList
+          :tags="project.keywords"
+          :tag_type="'keywords'"
+          :clickable="false"
+        />
+
+        <TagsList
+          :tags="project.machines"
+          :tag_type="'machines'"
+          :clickable="false"
+        />
+
+        <TagsList
+          :tags="project.materials"
+          :tag_type="'materials'"
+          :clickable="false"
+        />
+      </div>
+
       <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
     </div>
 
@@ -117,12 +138,12 @@ z
       }"
       v-if="context === 'full'"
     >
+      <CardMeta :project="project" :can_edit="can_edit" />
       <CardLicense :project="project" :can_edit="can_edit" />
       <CardFiles :project="project" :can_edit="can_edit" />
       <CardCompetences :project="project" :can_edit="can_edit" />
       <CardMachinesMaterials :project="project" :can_edit="can_edit" />
       <CardKeywords :project="project" :can_edit="can_edit" />
-      <CardMeta :project="project" :can_edit="can_edit" />
       <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
     </div>
@@ -409,5 +430,11 @@ export default {
   z-index: 100;
   padding: 0;
   text-align: left;
+}
+
+._allTags {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 8);
 }
 </style>

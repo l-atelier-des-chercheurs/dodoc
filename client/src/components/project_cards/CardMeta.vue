@@ -1,6 +1,30 @@
 <template>
-  <ProjectCard :header="$t('informations')" :icon="'info-square'">
-    <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
+  <div class="_cardMeta">
+    <!-- <DLabel :str="$t('informations')" /> -->
+    <div class="u-spacingBottom" />
+
+    <div class="u-spacingBottom">
+      <DateField :title="$t('date_created')" :date="project.$date_created" />
+      <DateField :title="$t('date_modified')" :date="project.$date_modified" />
+    </div>
+
+    <div class="u-mediaOptions">
+      <div v-if="can_edit">
+        <DuplicateFolder :path="project.$path" :source_title="project.title" />
+      </div>
+      <div v-if="can_edit">
+        <RemoveMenu
+          :remove_text="$t('remove_project')"
+          @remove="removeProject"
+        />
+      </div>
+    </div>
+
+    <div
+      class="u-spacingBottom"
+      v-if="$root.app_infos.is_electron && is_instance_admin"
+    >
+      <DLabel :str="$t('open_in_finder')" />
       <button
         type="button"
         class="u-button u-button_bleumarine u-button_small"
@@ -9,24 +33,10 @@
         {{ project.$path }}
       </button>
     </div>
-
-    <br />
-
-    <DateField :title="$t('date_created')" :date="project.$date_created" />
-    <br />
-    <DateField :title="$t('date_modified')" :date="project.$date_modified" />
-    <br />
-
-    <div v-if="can_edit">
-      <DuplicateFolder :path="project.$path" :source_title="project.title" />
-    </div>
-    <div v-if="can_edit">
-      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
-    </div>
-  </ProjectCard>
+  </div>
 </template>
 <script>
-import ProjectCard from "@/components/ProjectCard.vue";
+// import ProjectCard from "@/components/ProjectCard.vue";
 import DuplicateFolder from "@/components/project/DuplicateFolder.vue";
 
 export default {
@@ -34,11 +44,12 @@ export default {
     project: Object,
     can_edit: Boolean,
   },
-  components: { ProjectCard, DuplicateFolder },
+  components: {
+    // ProjectCard,
+    DuplicateFolder,
+  },
   data() {
-    return {
-      edit_mode: false,
-    };
+    return {};
   },
   created() {},
   mounted() {},
@@ -51,9 +62,6 @@ export default {
         type: "open_path",
         path: this.project.$path,
       });
-    },
-    enableEditMode() {
-      this.edit_mode = true;
     },
     async removeProject() {
       this.fetch_status = "pending";

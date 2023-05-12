@@ -1,5 +1,5 @@
 <template>
-  <div class="metaField" @click="show_detail = !show_detail">
+  <div class="_metaField" @click="show_detail = !show_detail">
     <DLabel :str="title" />
     <div>
       <template v-if="!show_detail">{{ formatDateToHuman(date) }} </template>
@@ -31,4 +31,11 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+._metaField {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 2);
+}
+</style>

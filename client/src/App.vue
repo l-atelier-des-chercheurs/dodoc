@@ -367,12 +367,6 @@ hr {
   margin: calc(var(--spacing) / 2) 0;
 }
 
-.metaField {
-  // display: flex;
-  // flex-flow: row wrap;
-  // gap: calc(var(--spacing) / 2);
-}
-
 .authorLabel {
   flex-basis: auto;
   display: flex;

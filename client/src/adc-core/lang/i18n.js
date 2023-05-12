@@ -49,8 +49,8 @@ export default function () {
         edit: "modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",
-        date_created: "date de création",
-        date_modified: "dernière modification",
+        date_created: "création",
+        date_modified: "modification",
         alphabetical: "alphabétique",
         date_uploaded: "date d’envoi",
         cancel: "annuler",
@@ -75,6 +75,8 @@ export default function () {
         title: "Titre",
         subtitle: "Sous-titre",
         name: "nom",
+
+        open_in_finder: "ouvrir dans l’explorateur",
 
         set_admins_and_contributors: "Définir les référents et contributeurs",
         instance_admins_instr:

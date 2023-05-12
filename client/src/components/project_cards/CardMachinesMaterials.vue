@@ -2,9 +2,13 @@
   <ProjectCard
     :header="$t('machines_and_materials')"
     :icon="'tools'"
-    :has_items="!!project.materials || !!project.machines"
+    :has_items="
+      machines_materials_items_length > 0
+        ? machines_materials_items_length
+        : false
+    "
   >
-    <div class="">
+    <div class="u-spacingBottom">
       <TagsField
         :label="$t('materials')"
         :field_name="'materials'"
@@ -13,7 +17,6 @@
         :can_edit="can_edit"
       />
     </div>
-    <br />
     <div class="">
       <TagsField
         :label="$t('machines')"
@@ -41,7 +44,18 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    machines_materials_items_length() {
+      let count = 0;
+
+      if (this.project.materials && Array.isArray(this.project.materials))
+        count += this.project.materials.length;
+      if (this.project.machines && Array.isArray(this.project.machines))
+        count += this.project.machines.length;
+
+      return count;
+    },
+  },
   methods: {},
 };
 </script>

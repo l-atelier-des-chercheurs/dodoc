@@ -22,7 +22,6 @@
       <div class="_meta" v-if="!select_mode">
         <h3>{{ $t("informations") }}</h3>
         <small>{{ file.$media_filename }}</small>
-        <hr />
 
         <div class="u-mediaOptions">
           <div>

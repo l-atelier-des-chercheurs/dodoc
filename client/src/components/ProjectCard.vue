@@ -48,10 +48,10 @@ export default {
 <style lang="scss" scoped>
 ._projectCard {
   border-bottom: 0px solid var(--c-gris_clair);
-  border-left: 2px solid transparent;
+  // border-left: 2px solid transparent;
 
   background: white;
-  margin-left: 2px;
+  // margin-left: 2px;
 
   display: flex;
   flex-flow: row nowrap;
@@ -135,7 +135,7 @@ export default {
     flex-flow: row nowrap;
     align-items: center;
     font-size: var(--sl-font-size-small);
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 8);
     font-weight: 500;
     gap: calc(var(--spacing) / 2);
     cursor: pointer;

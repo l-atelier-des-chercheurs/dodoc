@@ -3,7 +3,6 @@
     <DLabel v-if="label" :str="label" />
 
     <TagsList
-      class="u-spacingBottom"
       :tags="new_tags"
       :tag_type="field_name"
       :clickable="false"
@@ -102,7 +101,7 @@ export default {
       edit_mode: false,
       is_saving: false,
 
-      new_tags: this.content,
+      new_tags: this.content.slice(),
       new_tag_name: "",
       create_new_tag: true,
 
@@ -179,12 +178,6 @@ export default {
 <style lang="scss" scoped>
 ._tagsField {
   width: 100%;
-}
-._tagsList {
-  display: inline-flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
-  margin-right: calc(var(--spacing) / 4);
 }
 
 ._footer {
