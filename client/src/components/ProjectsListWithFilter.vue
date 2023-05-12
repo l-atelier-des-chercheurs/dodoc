@@ -57,7 +57,7 @@
         <div class="">
           <DLabel :str="$t('keywords')" />
           <TagsList
-            :keywords="all_keywords"
+            :tags="all_keywords"
             :tag_type="'keywords'"
             :clickable="true"
             @tagClick="toggleFilter({ type: 'keywords', value: $event })"
@@ -67,7 +67,7 @@
         <div class="">
           <DLabel :str="$t('machines_and_materials')" />
           <TagsList
-            :keywords="all_materials"
+            :tags="all_materials"
             :tag_type="'materials'"
             :clickable="true"
             @tagClick="toggleFilter({ type: 'materials', value: $event })"
@@ -77,7 +77,7 @@
         <div class="">
           <DLabel :str="$t('levels_and_competences')" />
           <TagsList
-            :keywords="all_levels"
+            :tags="all_levels"
             :tag_type="'level'"
             :clickable="true"
             @tagClick="toggleFilter({ type: 'level', value: $event })"

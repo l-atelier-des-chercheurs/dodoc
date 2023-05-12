@@ -42,7 +42,10 @@
 <script>
 export default {
   props: {
-    tags: Array,
+    tags: {
+      type: Array,
+      default: () => [],
+    },
     tag_type: String,
     clickable: {
       type: Boolean,
