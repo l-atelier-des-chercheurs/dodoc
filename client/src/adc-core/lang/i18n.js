@@ -411,6 +411,9 @@ export default function () {
         create_a_space: "Créer un espace",
         project: "Projet",
 
+        markdown_instr:
+          "Champ en Markdown : vous pouvez mettre en forme le texte (titres, gras, italique, liens, etc.).",
+
         watermark: "Habillage",
         watermark_instructions:
           "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",

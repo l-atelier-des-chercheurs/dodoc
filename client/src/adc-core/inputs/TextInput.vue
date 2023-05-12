@@ -5,7 +5,7 @@
     <template v-if="tag === 'input'">
       <input
         ref="field"
-        :type="current_input_type"
+        :type="field_input_type_prop"
         :name="label_str"
         :id="'_input_' + label_str"
         :autocomplete="autocomplete"
@@ -13,6 +13,7 @@
         :size="size"
         :required="required"
         :placeholder="'…'"
+        :value="content"
         @input="$emit('update:content', $event.target.value)"
         @keyup.enter="$emit('onEnter')"
       />
@@ -24,9 +25,9 @@
       :contenteditable="true"
       :required="required"
       @input="$emit('update:content', $event.target.innerText)"
-      @keyup.enter="$emit('onEnter')"
-      @paste.prevent="onPaste"
     />
+    <!-- @paste.prevent="onPaste" -->
+    <!-- @keyup.enter="$emit('onEnter')" -->
 
     <div
       class="_notices fieldCaption"
@@ -55,6 +56,10 @@
         </button>
       </div>
     </div>
+
+    <div v-if="input_type === 'markdown'">
+      <small class="u-instructions" v-html="$t('markdown_instr')" />
+    </div>
     <div v-if="instructions">
       <small class="u-instructions" v-html="instructions" />
     </div>
@@ -63,10 +68,6 @@
 <script>
 export default {
   props: {
-    tag: {
-      type: String,
-      default: "input",
-    },
     label_str: {
       type: String,
     },
@@ -118,22 +119,24 @@ export default {
       },
       immediate: true,
     },
-    content() {
-      this.initInput();
-    },
+    content() {},
   },
   computed: {
+    tag() {
+      if (this.input_type === "text" || this.input_type === "markdown")
+        return "span";
+      return "input";
+    },
     validity() {
       if (this.required && this.content.length === 0) return false;
       if (this.minlength && this.content.length < this.minlength) return false;
       if (this.maxlength && this.content.length > this.maxlength) return false;
       return true;
     },
-    current_input_type() {
-      if (this.input_type === "password") {
+    field_input_type_prop() {
+      if (this.input_type === "password")
         if (this.show_password_in_clear) return "text";
         else return "password";
-      }
       return this.input_type;
     },
   },
@@ -143,7 +146,6 @@ export default {
         this.$refs.field.innerText = this.content;
         this.focusSpanAtEnd();
       } else if (this.tag === "input") {
-        this.$refs.field.value = this.content;
         this.$refs.field.focus();
       }
     },

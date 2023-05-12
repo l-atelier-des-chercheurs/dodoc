@@ -24,6 +24,7 @@
 
           <sl-tab-panel name="informations">
             <TitleField
+              class="u-spacingBottom"
               :field_name="'name_of_instance'"
               :label="$t('name_of_instance')"
               :instructions="$t('name_of_instance_instructions')"
@@ -36,22 +37,20 @@
               :can_edit="is_instance_admin"
             />
 
-            <br />
-
             <TitleField
+              class="u-spacingBottom"
               :field_name="'presentation_of_instance'"
               :label="$t('presentation_of_instance')"
               :instructions="$t('presentation_of_instance_instructions')"
               :content="settings.presentation_of_instance"
               :path="settings.$path"
               :required="false"
-              :markdown="true"
+              :input_type="'markdown'"
               :can_edit="is_instance_admin"
             />
 
-            <br />
-
             <TitleField
+              class="u-spacingBottom"
               :field_name="'contactmail_of_instance'"
               :label="$t('contactmail_of_instance')"
               :instructions="$t('contactmail_of_instance_instructions')"
@@ -61,8 +60,6 @@
               :input_type="'email'"
               :can_edit="is_instance_admin"
             />
-
-            <br />
 
             <div class="u-instructions">
               <button type="button" class="u-buttonLink" @click="reloadPage">

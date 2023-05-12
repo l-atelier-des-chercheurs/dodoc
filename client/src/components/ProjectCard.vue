@@ -97,7 +97,7 @@ export default {
 
     font-weight: 500;
 
-    font-size: 110%;
+    // font-size: 110%;
 
     &[data-isfilled] {
       background: var(--c-bleuvert);
