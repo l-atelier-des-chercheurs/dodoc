@@ -90,18 +90,21 @@ z
 
       <div class="_allTags" v-if="context === 'full'">
         <TagsList
+          v-if="project.keywords && project.keywords.length > 0"
           :tags="project.keywords"
           :tag_type="'keywords'"
           :clickable="false"
         />
 
         <TagsList
+          v-if="project.machines && project.machines.length > 0"
           :tags="project.machines"
           :tag_type="'machines'"
           :clickable="false"
         />
 
         <TagsList
+          v-if="project.materials && project.materials.length > 0"
           :tags="project.materials"
           :tag_type="'materials'"
           :clickable="false"
@@ -149,9 +152,6 @@ z
     <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link :to="{ path: createURLFromPath(project.$path) }">
         <div class="_clickZone" />
-        <!-- <div class="u-button u-button_red _openBtn" v-if="context === 'list'">
-          {{ $t("open") }}&nbsp;<sl-icon name="arrow-up-right" />
-        </div> -->
       </router-link>
     </div>
   </div>
@@ -226,7 +226,7 @@ export default {
 
   &.is--linkToProject {
     &:hover {
-      transform: translateY(-12px);
+      transform: translateY(-8px);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }
@@ -399,19 +399,6 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-  }
-
-  ._openBtn {
-    text-decoration: underline;
-    position: relative;
-    margin: calc(var(--spacing) / 2);
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-
-    &:hover,
-    &:focus {
-      transform: translateY(-4px) rotate(-2deg);
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    }
   }
 }
 

@@ -36,6 +36,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 2);
+  align-items: baseline;
+  gap: calc(var(--spacing) / 16);
 }
 </style>

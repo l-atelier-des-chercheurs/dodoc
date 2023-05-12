@@ -124,4 +124,10 @@ export default {
 ._footer {
   margin-top: calc(var(--spacing) / 4);
 }
+
+._scb {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}
 </style>

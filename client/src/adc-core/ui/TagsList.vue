@@ -88,6 +88,7 @@ export default {
 }
 
 ._tag {
+  border-radius: 1em;
   text-transform: none;
 
   &.is--inactive {

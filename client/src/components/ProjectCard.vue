@@ -1,7 +1,7 @@
 <template>
   <details class="_projectCard">
     <summary>
-      <div class="_icon" :data-isfilled="has_items">
+      <div class="_icon">
         <sl-icon v-if="icon" :name="icon" />
       </div>
 
@@ -9,13 +9,18 @@
         {{ header }}
       </span>
 
-      <div class="_itemsNut" v-if="has_items">
+      <div
+        class="_itemsNut"
+        v-if="has_items !== undefined"
+        :data-isfilled="has_items"
+      >
         <template v-if="typeof has_items === 'number'">
           {{ has_items }}
         </template>
-        <template v-else>
+        <template v-else-if="has_items === true">
           <sl-icon name="check" />
         </template>
+        <template v-else>–</template>
       </div>
     </summary>
     <div class="_content">
@@ -28,17 +33,16 @@ export default {
   props: {
     header: String,
     icon: String,
-    has_items: {
-      type: [Boolean, Number],
-      default: false,
-    },
+    has_items: undefined,
   },
   components: {},
   data() {
     return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    debugger;
+  },
   beforeDestroy() {},
   watch: {},
   computed: {},
@@ -69,14 +73,6 @@ export default {
     line-height: 0;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-    &:not([data-isfilled]) {
-      ._icon {
-        color: black;
-      }
-
-      // color: var(--c-rouge);
-      // border-bottom: 1px solid var(--c-bleuvert);
-    }
     ._projectCard[open] & {
     }
   }
@@ -95,16 +91,18 @@ export default {
     height: auto;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: white;
     font-family: "Fira Code";
     padding: calc(var(--spacing) / 16);
     margin: calc(var(--spacing) / 4);
 
     font-weight: 500;
-    background: var(--c-bleuvert);
-    color: white;
 
     font-size: 110%;
+
+    &[data-isfilled] {
+      background: var(--c-bleuvert);
+      color: white;
+    }
 
     &:empty {
       // background: var(--c-bleuvert);
@@ -147,6 +145,7 @@ export default {
     }
   }
   &[open] summary {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     background-color: var(--c-gris);
   }
 

@@ -778,7 +778,10 @@ img {
   opacity: 0;
 }
 .projectsList-leave-active {
+  opacity: 0;
   position: absolute !important;
   z-index: 0 !important;
+
+  transition: none !important;
 }
 </style>
