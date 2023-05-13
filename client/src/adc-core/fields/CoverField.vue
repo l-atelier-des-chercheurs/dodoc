@@ -141,7 +141,7 @@ export default {
 ._coverField {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  overflow: visible;
 
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);
