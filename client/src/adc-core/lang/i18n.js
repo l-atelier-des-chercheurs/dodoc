@@ -74,10 +74,12 @@ export default function () {
         access: "accéder",
         title: "Titre",
         subtitle: "Sous-titre",
-        name: "nom",
+        name: "Nom",
 
         open_in_finder: "ouvrir dans l’explorateur",
 
+        admins_and_contributors: "Référents et contributeurs",
+        // admins_and_contributors_instr: "",
         set_admins_and_contributors: "Définir les référents et contributeurs",
         instance_admins_instr:
           "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
@@ -687,7 +689,6 @@ export default function () {
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.name_taken": "Ce nom est déjà utilisé",
 
-        more_infos: "Plus d’informations",
         informations: "Informations",
 
         duplicate: "Dupliquer",
