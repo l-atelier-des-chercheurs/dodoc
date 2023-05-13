@@ -63,7 +63,7 @@
         :instructions="$t('project_title_instructions')"
       />
 
-      <template v-if="context === 'list'">
+      <!-- <template v-if="context === 'list'">
         <button
           v-if="project.description"
           class="u-buttonLink _showDescription"
@@ -73,10 +73,7 @@
             !show_description ? $t('show_description') : $t('hide_description')
           "
         />
-        <!-- <small v-else class="u-instructions">
-          {{ $t("no_description") }}
-        </small> -->
-      </template>
+      </template> -->
       <TitleField
         v-if="show_description"
         :field_name="'description'"
