@@ -59,7 +59,10 @@
                 v-html="getIcon(pane.type)"
               />
               <!-- <span>{{ $t(pane.type) }}</span> -->
-              <span v-if="paneIsEnabled(pane.type) || !$root.is_mobile_view">
+              <span
+                class="_name"
+                v-if="paneIsEnabled(pane.type) || !$root.is_mobile_view"
+              >
                 {{ index + 1 }} • {{ $t(pane.type) }}
               </span>
               <div
@@ -386,9 +389,6 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   text-decoration: none;
-
-  padding: calc(var(--spacing) / 4);
-  padding-right: calc(var(--spacing) / 2);
   border-radius: 44px;
 
   text-decoration: none;
@@ -409,7 +409,6 @@ export default {
   &.is--enabled {
     color: white;
     background-color: var(--color-active);
-    padding-right: calc(var(--spacing) / 4);
   }
 
   sl-icon-button::part(base) {
@@ -428,14 +427,14 @@ export default {
 
   // padding: 10px;
   border-radius: 50%;
-  // background: rgba(255, 255, 255, 0.3);
+  transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 ._addPaneBtn {
   &:hover,
   &:focus {
-    background: var(--color-active);
-    color: white;
+    background: white;
+    color: var(--color-active);
   }
 }
 ._removePaneBtn {
@@ -450,7 +449,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   cursor: pointer;
 
@@ -462,6 +462,9 @@ export default {
 ._icon {
   width: 2rem;
   height: 2rem;
+}
+._name {
+  padding: 0 calc(var(--spacing) / 2);
 }
 
 ._projectTitle {
