@@ -18,14 +18,21 @@
             <br />
             <br />
             <br />
-            <div class="_devNotes">
+            <DLabel :str="$t('latest_changes_to_project')" />
+            <div class="u-instructions">
+              <small>
+                {{ $t("waiting") }}
+              </small>
+            </div>
+
+            <!-- <div class="_devNotes">
               <div class="u-wips" />
               <small>
-                à venir : afficher un petit menu qui contient un encart pour
+                todo : afficher un petit menu qui contient un encart pour
                 chaque panneau avec les derniers éléments créés ou modifiés, et
                 un lien pour les ouvrir
               </small>
-            </div>
+            </div>-->
           </div>
         </pane>
       </template>

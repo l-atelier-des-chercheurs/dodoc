@@ -1,4 +1,3 @@
-z
 <template>
   <div
     class="_projectInfos"
@@ -421,6 +420,6 @@ export default {
 ._allTags {
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 8);
+  gap: calc(var(--spacing) / 4);
 }
 </style>

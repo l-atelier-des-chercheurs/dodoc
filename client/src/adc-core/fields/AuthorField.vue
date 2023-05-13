@@ -26,7 +26,11 @@
         {{ $t("noone") }}
       </div>
       <!-- :links_to_author_page="!edit_mode" -->
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        class="_editBtn"
+        @click="enableEditMode"
+      />
     </div>
 
     <div class="_footer" v-if="edit_mode">
@@ -247,7 +251,12 @@ export default {
 ._authors {
   display: flex;
   flex-flow: row wrap;
+  align-items: center;
   gap: calc(var(--spacing) / 4);
+
+  ._editBtn {
+    margin: 0;
+  }
 }
 
 ._footer {

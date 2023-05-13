@@ -335,6 +335,8 @@ export default function () {
         restart: "Relancer do•doc",
         reveal: "Révéler",
         choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
+        latest_changes_to_project: "Dernières modifications au projet",
+
         download: "Télécharger",
 
         medias: "Médias",

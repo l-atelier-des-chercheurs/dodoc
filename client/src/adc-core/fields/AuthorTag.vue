@@ -67,7 +67,7 @@ export default {
   border-radius: 4px;
   text-decoration: none;
   color: var(--c-noir);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
   border: 1px solid var(--c-gris);
 
