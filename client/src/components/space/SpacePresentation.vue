@@ -85,12 +85,8 @@
           :contrib_instructions="$t('space_contrib_instructions')"
         />
 
-        <div class="_removeBtn">
-          <RemoveMenu
-            v-if="can_edit"
-            :remove_text="$t('remove_space')"
-            @remove="removeSpace"
-          />
+        <div class="u-mediaOptions" v-if="can_edit">
+          <RemoveMenu :remove_text="$t('remove_space')" @remove="removeSpace" />
         </div>
       </template>
     </div>
