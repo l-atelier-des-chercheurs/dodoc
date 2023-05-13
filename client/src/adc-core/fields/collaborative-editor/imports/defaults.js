@@ -137,7 +137,6 @@ export const toolbar = {
       }
     },
     line_height_select: function (new_line_height) {
-      debugger;
       new_line_height;
       // var range = this.quill.getSelection();
       // if (range) {
