@@ -5,11 +5,14 @@
     :to="links_to_author_page ? url_to_author : false"
     class="_author"
   >
-    <img v-if="author.image" :src="author.image" />
-    <img
-      v-else
-      src="https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
-    />
+    <div class="_cover">
+      <CoverField
+        :context="'preview'"
+        :cover="author.$cover"
+        :path="author.$path"
+        :can_edit="false"
+      />
+    </div>
     <div v-if="!show_image_only" class="_infos">
       <div class="_name">{{ author.name }}</div>
       <div class="_path">@{{ getFilename(author.$path) }}</div>
@@ -71,11 +74,14 @@ export default {
   gap: calc(var(--spacing) / 2);
   border: 1px solid var(--c-gris);
 
-  img {
+  ._cover {
+    position: relative;
+    overflow: hidden;
     border-radius: 50%;
     width: 2em;
     height: 2em;
   }
+
   ._infos {
     line-height: 1.2;
     // padding: calc(var(--spacing) / 4) 0
@@ -95,7 +101,8 @@ export default {
 
 a {
   ._path {
-    color: var(--active-color);
+    // color: var(--active-color);
+    color: var(--label-color);
   }
 }
 
