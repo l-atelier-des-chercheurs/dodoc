@@ -11,11 +11,15 @@
         :path="space.$path"
         :can_edit="can_edit"
       />
-      <sl-icon
-        v-if="space.$status === 'private'"
-        name="file-lock2-fill"
-        class="_icon _private"
-      />
+
+      <transition name="toggleLock" mode="out-in">
+        <sl-icon
+          v-if="space.$status === 'private'"
+          :key="space.$status"
+          name="file-lock2-fill"
+          class="_icon _private"
+        />
+      </transition>
       <!-- </div> -->
     </div>
     <div class="_textBloc">

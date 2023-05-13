@@ -16,16 +16,20 @@
         :can_edit="can_edit"
       />
 
-      <sl-icon
-        v-if="project.$status === 'finished'"
-        name="check-circle-fill"
-        class="_icon _check"
-      />
-      <sl-icon
-        v-else-if="project.$status === 'private'"
-        name="file-lock2-fill"
-        class="_icon _private"
-      />
+      <transition name="toggleLock" mode="out-in">
+        <sl-icon
+          v-if="project.$status === 'finished'"
+          :key="project.$status"
+          name="check-circle-fill"
+          class="_icon _check"
+        />
+        <sl-icon
+          v-else-if="project.$status === 'private'"
+          :key="project.$status"
+          name="file-lock2-fill"
+          class="_icon _private"
+        />
+      </transition>
       <!-- <sl-icon
         v-if="project.$status === 'draft'"
         name="cone-striped"
