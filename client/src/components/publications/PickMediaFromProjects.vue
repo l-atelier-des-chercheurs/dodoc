@@ -93,6 +93,8 @@ export default {
     async loadProjects() {
       let { space_slug, project_slug } = this.decomposePath(this.path);
 
+      if (!space_slug) return false;
+
       this.projects = await this.$api.getFolders({
         path:
           this.createPath({
