@@ -35,10 +35,10 @@
           :links_to_author_page="true"
           :show_image_only="false"
         />
-        <button type="button" class="u-buttonLink" @click="show_modal = true">
-          {{ $t("more_informations") }}
-        </button>
       </div>
+      <button type="button" class="u-buttonLink" @click="show_modal = true">
+        {{ $t("more_informations") }}
+      </button>
     </div>
 
     <EditAdminsAndContributorsField

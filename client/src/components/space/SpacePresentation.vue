@@ -147,7 +147,7 @@ export default {
   align-items: center;
 
   width: 100%;
-  max-width: 100ch;
+  // max-width: 100ch;
   margin: 0 auto;
 
   // background: white;

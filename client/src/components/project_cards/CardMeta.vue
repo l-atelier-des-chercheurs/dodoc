@@ -30,9 +30,8 @@
         type="button"
         class="u-button u-button_bleumarine u-button_small"
         @click="openInFinder"
-      >
-        {{ project.$path }}
-      </button>
+        v-html="project_path_wrappable"
+      />
     </div>
   </ProjectCard>
 </template>
@@ -56,7 +55,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    project_path_wrappable() {
+      return this.project.$path.replaceAll("/", "/<wbr>");
+    },
+  },
   methods: {
     openInFinder() {
       window.electronAPI.send("toMain", {

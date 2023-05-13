@@ -8,6 +8,22 @@
         {{ $t("show_projects") }}&nbsp;<sl-icon name="arrow-up-right" />
       </router-link>
     </div> -->
+    <template v-if="is_instance_admin">
+      <div class="_editSettingsBtn--cont">
+        <button
+          type="button"
+          class="u-button u-button_bleuvert _editSettingsBtn"
+          @click="show_settings_modal = !show_settings_modal"
+        >
+          <sl-icon name="gear-fill" />
+          &nbsp;{{ $t("settings") }}
+        </button>
+      </div>
+      <AdminSettings
+        v-if="show_settings_modal"
+        @close="show_settings_modal = false"
+      />
+    </template>
 
     <section class="_homeView--container">
       <div class="_homeView--content">
@@ -40,23 +56,6 @@
           </p>
         </div>
       </div>
-
-      <template v-if="is_instance_admin">
-        <div class="_editSettingsBtn--cont">
-          <button
-            type="button"
-            class="u-button u-button_bleuvert _editSettingsBtn"
-            @click="show_settings_modal = !show_settings_modal"
-          >
-            <sl-icon name="gear-fill" />
-            &nbsp;{{ $t("settings") }}
-          </button>
-        </div>
-        <AdminSettings
-          v-if="show_settings_modal"
-          @close="show_settings_modal = false"
-        />
-      </template>
     </section>
 
     <!-- <div class="_modeSel">
@@ -316,13 +315,16 @@ export default {
 }
 
 ._editSettingsBtn--cont {
-  position: absolute;
-  top: 0;
+  position: fixed;
+  bottom: 0;
   left: 0;
+  z-index: 100;
   width: 100%;
   text-align: center;
 }
 ._editSettingsBtn {
+  // position: absolute;
+  // top: 0;
   margin: calc(var(--spacing) / 2);
 }
 </style>
