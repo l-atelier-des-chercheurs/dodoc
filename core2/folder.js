@@ -148,6 +148,7 @@ module.exports = (function () {
         const clean_meta = await _cleanFields({
           meta: new_meta,
           path_to_type,
+          context: "update",
         });
         // const clean_meta = await utils.cleanNewMeta({
         //   relative_path: path_to_folder,
@@ -409,7 +410,7 @@ module.exports = (function () {
     }
   }
 
-  async function _cleanFields({ meta, path_to_type }) {
+  async function _cleanFields({ meta, path_to_type, context }) {
     if (!meta) return {};
 
     const { fields = {} } = utils.parseAndCheckSchema({
@@ -430,6 +431,7 @@ module.exports = (function () {
     return utils.validateMeta({
       fields,
       new_meta: meta,
+      context,
     });
   }
 

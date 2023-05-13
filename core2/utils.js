@@ -89,10 +89,11 @@ module.exports = (function () {
     async checkFieldUniqueness({ fields, meta, siblings_folders }) {
       dev.logfunction({ fields, meta, siblings_folders });
       // check if some fields have "unique"
+      if (Object.keys(meta).length === 0) return;
 
       if (fields)
         for ([field_name, opt] of Object.entries(fields)) {
-          if (opt.unique === true) {
+          if (opt.unique === true && meta.hasOwnProperty(field_name)) {
             const proposed_value_for_unique_field = meta[field_name];
             if (
               siblings_folders.some(
@@ -109,7 +110,7 @@ module.exports = (function () {
         }
     },
 
-    validateMeta({ fields, new_meta }) {
+    validateMeta({ fields, new_meta, context = "creation" }) {
       dev.logfunction({ fields, new_meta });
       let meta = {};
 
@@ -159,11 +160,11 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
           } else {
-            if (opt.required === true) {
+            if (opt.required === true && context === "creation") {
               // field is required in schema but not present in user-submitted object
-              const err = new Error(
-                "Required field *${field_name}* is missing"
-              );
+              // only checked for creation, not update
+              // todo: on updates, check that a required field is not blank
+              const err = new Error(`Required field ${field_name} is missing`);
               err.code = "required_field_missing";
               throw err;
             }
