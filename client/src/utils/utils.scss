@@ -236,6 +236,22 @@ button,
     color: var(--c-gris_fonce);
   }
 }
+.u-button_white {
+  background-color: white;
+  color: var(--c-noir);
+
+  &:hover,
+  &:focus,
+  &.is--active {
+    &:not([disabled]) {
+      background-color: var(--c-gris);
+    }
+  }
+
+  &[disabled] {
+    color: var(--c-gris_fonce);
+  }
+}
 .u-button_red {
   background-color: var(--c-rouge);
   color: white;
@@ -763,33 +779,5 @@ details {
     &:hover {
       background: var(--c-gris_clair);
     }
-  }
-}
-
-.u-radio {
-  label {
-    display: flex;
-    flex-flow: row nowrap;
-    align-content: center;
-    align-items: center;
-    background: var(--c-gris_clair);
-    padding: calc(var(--spacing) / 2);
-    gap: calc(var(--spacing) / 2);
-    margin-bottom: 4px;
-
-    &:hover {
-      background: var(--c-gris);
-    }
-
-    ._option_preview {
-      display: inline-block;
-      vertical-align: middle;
-      height: 1em;
-      aspect-ratio: 1;
-    }
-  }
-
-  input {
-    margin: 0;
   }
 }

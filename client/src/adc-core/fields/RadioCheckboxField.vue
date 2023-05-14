@@ -1,22 +1,11 @@
 <template>
-  <div class="_radioField">
-    <div v-if="!edit_mode">
-      <template v-if="current_option">
-        {{ current_option.label }}
-        <div v-if="current_option.instructions" class="u-instructions">
-          <small v-html="current_option.instructions" />
-        </div>
-      </template>
-      <template v-else>–</template>
-    </div>
-    <div v-else>
-      <RadioInput
-        :value.sync="new_content"
-        :options="options"
-        :can_edit="can_edit"
-      />
-    </div>
-
+  <div class="_radioCheckboxField">
+    <RadioCheckboxInput
+      :value.sync="new_content"
+      :input_type="input_type"
+      :options="options"
+      :can_edit="can_edit && edit_mode"
+    />
     <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
     <div class="_footer" v-if="edit_mode">
@@ -37,6 +26,10 @@ export default {
       type: String,
       default: "",
     },
+    input_type: {
+      type: String,
+      default: "radio",
+    },
     options: {
       type: Array,
     },
@@ -50,44 +43,35 @@ export default {
     return {
       edit_mode: false,
       is_saving: false,
-
-      new_content: this.content ? this.content : "",
+      new_content: "",
     };
   },
-  created() {},
+  created() {
+    this.setNewContent();
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {
     content() {
-      this.new_content = this.content;
+      this.setNewContent();
     },
   },
-  computed: {
-    current_option() {
-      return this.options.find((o) => o.key === this.new_content);
-    },
-    instructions() {
-      const new_opt = this.options.find((o) => o.key === this.new_content);
-      if (new_opt) return new_opt.instructions;
-      return false;
-    },
-  },
+  computed: {},
   methods: {
+    setNewContent() {
+      if (this.input_type === "checkbox") {
+        if (this.content)
+          this.new_content = JSON.parse(JSON.stringify(this.content));
+        else this.new_content = [];
+      } else this.new_content = this.content || "";
+    },
     enableEditMode() {
       this.edit_mode = true;
     },
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      this.new_content = this.content;
-
-      this.$nextTick(() => {
-        // this.content = "";
-        // this.$nextTick(() => {
-        // this.content = this.new_content;
-        // });
-      });
-      // todo interrupt updateMeta
+      this.setNewContent();
     },
     async updateSelect() {
       this.is_saving = true;
@@ -118,7 +102,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._radioField {
+._radioCheckboxField {
 }
 
 ._footer {

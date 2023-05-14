@@ -49,7 +49,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectCard {
-  border-bottom: 0px solid var(--c-gris_clair);
+  // border-bottom: 0px solid var(--c-gris_clair);
+  // border: 1px solid transparent;
   // border-left: 2px solid transparent;
 
   background: white;
@@ -64,12 +65,12 @@ export default {
     height: 30px;
     // border-radius: 4px;
     padding: calc(var(--spacing) / 2);
-    background-color: var(--c-gris);
+    // background-color: var(--c-gris);
 
-    color: black;
+    color: currentColor;
 
     line-height: 0;
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    // transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     ._projectCard[open] & {
     }
@@ -109,11 +110,6 @@ export default {
     }
   }
 
-  &[open] {
-    border-left-color: var(--c-gris);
-    // margin-bottom: calc(var(--spacing) / 1);
-  }
-
   ::marker {
     display: none;
     content: "";
@@ -138,17 +134,27 @@ export default {
     color: black;
 
     &:hover,
-    &:focus {
-      background-color: var(--c-gris_clair);
+    &:focus-visible {
+      color: white;
+      background-color: var(--c-gris_fonce);
     }
-  }
-  &[open] summary {
-    // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    background-color: var(--c-gris);
   }
 
   ._content {
     padding: calc(var(--spacing) / 2);
+  }
+
+  &[open] {
+    summary {
+      color: white;
+      // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      background-color: var(--c-noir);
+    }
+
+    ._content {
+      border: 1px solid var(--c-noir);
+      border-top: none;
+    }
   }
 }
 </style>

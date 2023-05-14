@@ -1,0 +1,117 @@
+<template>
+  <div
+    class="_radioCheckboxInput"
+    :class="{
+      'is--editable': can_edit,
+    }"
+  >
+    <template v-for="option in options">
+      <label
+        :for="id + '-radiocheckboxi-option-' + option.key"
+        :key="option.key"
+        v-if="can_edit || optionIsSelected(option.key)"
+        :data-selectable="can_edit"
+      >
+        <input
+          :type="input_type"
+          :name="id + '-radiocheckboxi-option-' + option.key"
+          :id="id + '-radiocheckboxi-option-' + option.key"
+          :value="option.key"
+          :checked="optionIsSelected(option.key)"
+          @input="checkOption(option.key)"
+        />
+        <span>
+          <img
+            v-if="option.thumb_src"
+            :src="option.thumb_src"
+            class="_option_preview"
+          />
+          <component :is="option.key === '' ? 'i' : 'span'">
+            {{ option.label }}
+          </component>
+          <br />
+          <div class="u-instructions">
+            <small v-html="option.instructions" />
+          </div>
+        </span>
+      </label>
+    </template>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    value: [String, Array],
+    input_type: {
+      type: String,
+      default: "radio",
+    },
+    options: Array,
+    can_edit: Boolean,
+  },
+  components: {},
+  data() {
+    return {
+      id: `image_upload_${(
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 3 + 2)}`,
+    };
+  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+  watch: {},
+  computed: {},
+  methods: {
+    optionIsSelected(key) {
+      if (this.input_type === "radio") return this.value === key;
+      else if (this.input_type === "checkbox") return this.value.includes(key);
+    },
+    checkOption(key) {
+      if (this.input_type === "radio") {
+        this.$emit("update:value", key);
+        return;
+      } else if (this.input_type === "checkbox") {
+        let values = this.value.slice();
+        if (values.includes(key)) values = values.filter((v) => v !== key);
+        else values.push(key);
+        return this.$emit("update:value", values);
+      }
+    },
+  },
+};
+</script>
+<style lang="scss" scoped>
+._radioCheckboxInput {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 4px;
+
+  label {
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: center;
+    align-items: center;
+    background: var(--c-gris_clair);
+    padding: calc(var(--spacing) / 2);
+    gap: calc(var(--spacing) / 2);
+
+    ._option_preview {
+      display: inline-block;
+      vertical-align: middle;
+      height: 1em;
+      aspect-ratio: 1;
+    }
+  }
+
+  &.is--editable {
+    label:hover {
+      background: var(--c-gris);
+    }
+  }
+
+  input {
+    margin: 0;
+  }
+}
+</style>

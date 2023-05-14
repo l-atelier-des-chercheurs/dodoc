@@ -20,8 +20,9 @@
         :str="$t('license')"
         :instructions="can_edit ? $t('licence_instructions') : ''"
       />
-      <RadioField
+      <RadioCheckboxField
         :field_name="'license'"
+        :input_type="'radio'"
         :content="project.license"
         :path="project.$path"
         :can_edit="can_edit"

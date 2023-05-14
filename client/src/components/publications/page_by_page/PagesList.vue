@@ -130,7 +130,7 @@
         </template>
         <button
           type="button"
-          class="u-button u-button_bleuvert"
+          class="u-button u-button_white"
           @click="createPage"
           v-if="can_edit"
           key="createPage"

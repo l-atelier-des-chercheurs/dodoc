@@ -41,7 +41,7 @@
 
         <br />
 
-        <RadioInput
+        <RadioCheckboxInput
           :value.sync="radio_mode"
           :options="editing_options"
           :can_edit="edit_mode"

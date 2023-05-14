@@ -341,7 +341,8 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
-  background: var(--c-bodybg);
+  background: var(--c-gris_clair);
+
   --pagemenu-width: 280px;
 
   &.is--editable {

@@ -155,6 +155,7 @@ export default {
   width: 100%;
 
   ._content {
+    display: inline-block;
     white-space: break-spaces;
     margin-right: calc(var(--spacing) / 2);
   }

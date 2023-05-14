@@ -24,6 +24,8 @@ export const fonts = [
 ];
 
 export const fontSizeArr = [
+  "6px",
+  "7px",
   "8px",
   "9px",
   "10px",

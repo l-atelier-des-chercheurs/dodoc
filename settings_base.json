@@ -411,6 +411,9 @@
               },
               "level": {
                 "type": "string"
+              },
+              "target_audience": {
+                "type": "string"
               }
             },
             "$files": {
