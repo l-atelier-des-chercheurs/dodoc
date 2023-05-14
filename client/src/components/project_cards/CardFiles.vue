@@ -1,8 +1,14 @@
 <template>
-  <ProjectCard :header="$t('files')" :icon="'file-earmark-arrow-down'">
+  <ProjectCard
+    :header="$t('files')"
+    :icon="'file-earmark-arrow-down'"
+    :has_items="
+      downloadable_files.length > 0 ? downloadable_files.length : false
+    "
+  >
     <FilesModule
       :folder_path="project.$path"
-      :downloadable_files="project.downloadable_files"
+      :downloadable_files="downloadable_files"
       :can_edit="can_edit"
     />
   </ProjectCard>
@@ -25,7 +31,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    downloadable_files() {
+      return this.project.downloadable_files || [];
+    },
+  },
   methods: {},
 };
 </script>

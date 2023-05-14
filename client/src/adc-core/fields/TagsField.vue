@@ -3,7 +3,7 @@
     <DLabel v-if="label" :str="label" />
 
     <TagsList
-      class="u-spacingBottom"
+      class="_tl"
       :tags="new_tags"
       :tag_type="field_name"
       :clickable="false"
@@ -11,17 +11,19 @@
       @removeClick="removeTag($event)"
     />
 
-    <template v-if="can_edit && !edit_mode">
-      <EditBtn @click="enableEditMode" />
-    </template>
+    <template v-if="can_edit">
+      <template v-if="!edit_mode">
+        <EditBtn @click="enableEditMode" />
+      </template>
 
-    <SaveCancelButtons
-      v-if="can_edit && edit_mode"
-      class="_scb"
-      :is_saving="is_saving"
-      @save="updateTags"
-      @cancel="cancel"
-    />
+      <SaveCancelButtons
+        v-if="edit_mode"
+        class="_scb"
+        :is_saving="is_saving"
+        @save="updateTags"
+        @cancel="cancel"
+      />
+    </template>
 
     <div class="_footer" v-if="edit_mode">
       <fieldset class="_newTagPane" v-if="create_new_tag">
@@ -102,7 +104,7 @@ export default {
       edit_mode: false,
       is_saving: false,
 
-      new_tags: this.content,
+      new_tags: this.content.slice(),
       new_tag_name: "",
       create_new_tag: true,
 
@@ -114,7 +116,7 @@ export default {
   beforeDestroy() {},
   watch: {
     content() {
-      this.new_tags = this.content;
+      this.new_tags = this.content.slice();
     },
   },
   computed: {
@@ -141,7 +143,7 @@ export default {
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      this.new_tags = this.content;
+      this.new_tags = this.content.slice();
 
       // todo interrupt updateMeta
     },
@@ -180,11 +182,9 @@ export default {
 ._tagsField {
   width: 100%;
 }
-._tagsList {
-  display: inline-flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
-  margin-right: calc(var(--spacing) / 4);
+
+._tl {
+  padding-bottom: calc(var(--spacing) / 8);
 }
 
 ._footer {

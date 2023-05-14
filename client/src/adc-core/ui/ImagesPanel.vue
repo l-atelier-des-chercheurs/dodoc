@@ -57,12 +57,16 @@
     <div class="" v-if="settings.$files">
       <div v-for="ptype of possible_types" :key="ptype.key">
         <DLabel :str="ptype.label" />
-        <RadioInput
-          :value="imageSelected(ptype.key)"
-          :options="editing_options"
+
+        <RadioCheckboxField
+          :field_name="ptype.key"
+          :input_type="'radio'"
+          :content="settings[ptype.key]"
+          :path="settings.$path"
           :can_edit="can_edit"
-          @update:value="updateImageField($event, ptype.key)"
+          :options="editing_options"
         />
+
         <div class="u-instructions" v-if="ptype.instructions">
           <small>
             {{ ptype.instructions }}
@@ -98,13 +102,12 @@
   </div>
 </template>
 <script>
-import RadioInput from "../inputs/RadioInput.vue";
 export default {
   props: {
     settings: Object,
     can_edit: Boolean,
   },
-  components: { RadioInput },
+  components: {},
   data() {
     return {
       selected_files: [],

@@ -367,12 +367,6 @@ hr {
   margin: calc(var(--spacing) / 2) 0;
 }
 
-.metaField {
-  // display: flex;
-  // flex-flow: row wrap;
-  // gap: calc(var(--spacing) / 2);
-}
-
 .authorLabel {
   flex-basis: auto;
   display: flex;
@@ -686,6 +680,20 @@ img {
     opacity: 0;
   }
 }
+.toggleLock {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
 .popUp_slow {
   &-enter-active,
   &-leave-active {
@@ -747,7 +755,7 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.08s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter {
     transform: scale(0.95);
@@ -784,7 +792,10 @@ img {
   opacity: 0;
 }
 .projectsList-leave-active {
+  opacity: 0;
   position: absolute !important;
   z-index: 0 !important;
+
+  transition: none !important;
 }
 </style>

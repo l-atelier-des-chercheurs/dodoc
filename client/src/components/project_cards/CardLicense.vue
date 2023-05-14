@@ -1,35 +1,28 @@
 <template>
-  <ProjectCard :header="$t('authors_and_license')" :icon="'people'">
-    <AdminsAndContributorsField
-      :show_section="['admins', 'contributors']"
-      :folder="project"
-      :can_edit="can_edit"
-      :admin_label="$t('referent')"
-      :admin_instructions="$t('project_admin_instructions')"
-      :contrib_instructions="$t('project_contrib_instructions')"
-    />
-
-    <br />
-
-    <div class="">
+  <ProjectCard
+    :header="$t('authors_and_license')"
+    :icon="'people'"
+    :has_items="!!project.license"
+  >
+    <div class="u-spacingBottom">
       <TitleField
         :label="$t('authors')"
         :field_name="'authors_list'"
         :content="project.authors_list"
+        :input_type="'markdown'"
         :path="project.$path"
         :can_edit="can_edit"
       />
     </div>
 
-    <br />
-
-    <DLabel
-      :str="$t('license')"
-      :instructions="can_edit ? $t('licence_instructions') : ''"
-    />
-    <div class="">
-      <RadioField
+    <div class="u-spacingBottom">
+      <DLabel
+        :str="$t('license')"
+        :instructions="can_edit ? $t('licence_instructions') : ''"
+      />
+      <RadioCheckboxField
         :field_name="'license'"
+        :input_type="'radio'"
         :content="project.license"
         :path="project.$path"
         :can_edit="can_edit"
@@ -51,20 +44,28 @@ export default {
     return {
       license_options: [
         {
+          key: "",
+          label: this.$t("none_f"),
+        },
+        {
           key: "creativecommons_by_nc_sa",
-          text: "creativecommons_by_nc_sa_explanations",
+          label: this.$t("creativecommons_by_nc_sa"),
+          instructions: this.$t("creativecommons_by_nc_sa_explanations"),
         },
         {
           key: "all_rights_reserved",
-          text: "all_rights_reserved_explanations",
+          label: this.$t("all_rights_reserved"),
+          instructions: this.$t("all_rights_reserved_explanations"),
         },
         {
           key: "copyleft",
-          text: "copyleft_explanations",
+          label: this.$t("copyleft"),
+          instructions: this.$t("copyleft_explanations"),
         },
         {
           key: "custom_license",
-          text: "custom_license_explanations",
+          label: this.$t("custom_license"),
+          instructions: this.$t("custom_license_explanations"),
         },
       ],
     };

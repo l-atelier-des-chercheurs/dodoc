@@ -46,12 +46,13 @@ export default {
   --color-hover-icon: white;
 
   position: relative;
-  display: inline-block;
+  display: inline-flex;
   background: var(--color1);
   color: var(--color2);
+  border: 1px solid var(--color2);
 
-  margin-top: -0.5rem;
-  margin-bottom: -0.5rem;
+  // margin-top: -0.5rem;
+  // margin-bottom: -0.5rem;
   width: 28px;
   height: 28px;
   flex: 0 0 28px;
@@ -61,24 +62,24 @@ export default {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   sl-icon {
-    font-size: 140%;
+    font-size: 120%;
   }
 
   span {
     position: absolute;
     top: 0;
     left: 0;
-    // left: 50%;
-    height: 100%;
+    height: calc(100% + 2px);
 
     background: var(--color2);
     color: var(--color1);
 
+    margin: -1px;
     padding: calc(var(--spacing) / 2);
     padding-left: 100%;
     display: flex;
     align-items: center;
-    border-radius: 0.9rem;
+    border-radius: 1rem;
     white-space: nowrap;
 
     pointer-events: none;

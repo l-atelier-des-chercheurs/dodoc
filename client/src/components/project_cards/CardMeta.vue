@@ -1,27 +1,34 @@
 <template>
-  <ProjectCard :header="$t('informations')" :icon="'info-square'">
+  <ProjectCard :header="$t('informations')" :icon="'info-square'" open>
+    <AdminsAndContributorsField
+      :show_section="['admins', 'contributors']"
+      :folder="project"
+      :can_edit="can_edit"
+      :admin_label="$t('referent')"
+      :admin_instructions="$t('project_admin_instructions')"
+      :contrib_instructions="$t('project_contrib_instructions')"
+    />
+
+    <div class="u-spacingBottom" />
+
+    <div class="u-spacingBottom">
+      <DateField :title="$t('date_created')" :date="project.$date_created" />
+      <DateField :title="$t('date_modified')" :date="project.$date_modified" />
+    </div>
+
+    <div class="u-mediaOptions" v-if="can_edit">
+      <DuplicateFolder :path="project.$path" :source_title="project.title" />
+      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
+    </div>
+
     <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
+      <DLabel :str="$t('open_in_finder')" />
       <button
         type="button"
         class="u-button u-button_bleumarine u-button_small"
         @click="openInFinder"
-      >
-        {{ project.$path }}
-      </button>
-    </div>
-
-    <br />
-
-    <DateField :title="$t('date_created')" :date="project.$date_created" />
-    <br />
-    <DateField :title="$t('date_modified')" :date="project.$date_modified" />
-    <br />
-
-    <div v-if="can_edit">
-      <DuplicateFolder :path="project.$path" :source_title="project.title" />
-    </div>
-    <div v-if="can_edit">
-      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
+        v-html="project_path_wrappable"
+      />
     </div>
   </ProjectCard>
 </template>
@@ -34,26 +41,28 @@ export default {
     project: Object,
     can_edit: Boolean,
   },
-  components: { ProjectCard, DuplicateFolder },
+  components: {
+    ProjectCard,
+    DuplicateFolder,
+  },
   data() {
-    return {
-      edit_mode: false,
-    };
+    return {};
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    project_path_wrappable() {
+      return this.project.$path.replaceAll("/", "/<wbr>");
+    },
+  },
   methods: {
     openInFinder() {
       window.electronAPI.send("toMain", {
         type: "open_path",
         path: this.project.$path,
       });
-    },
-    enableEditMode() {
-      this.edit_mode = true;
     },
     async removeProject() {
       this.fetch_status = "pending";

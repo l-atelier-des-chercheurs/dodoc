@@ -1,12 +1,39 @@
 <template>
-  <ProjectCard :header="$t('levels_and_competences')" :icon="'bookmark-star'">
-    <div class="">
+  <ProjectCard
+    :header="$t('levels_and_competences')"
+    :icon="'bookmark-star'"
+    :has_items="!!project.level"
+  >
+    <div class="u-spacingBottom">
+      <DLabel :str="$t('fabrication_level')" />
       <SelectField
         :field_name="'level'"
         :content="project.level || '-'"
         :path="project.$path"
         :can_edit="can_edit"
         :options="basic_competences"
+      />
+    </div>
+    <div class="u-spacingBottom">
+      <DLabel :str="$t('target_audience')" />
+      <RadioCheckboxField
+        :field_name="'target_audience'"
+        :input_type="'checkbox'"
+        :content="project.target_audience"
+        :path="project.$path"
+        :can_edit="can_edit"
+        :options="target_audience_options"
+      />
+    </div>
+    <div class="">
+      <DLabel :str="$t('disciplines')" />
+      <RadioCheckboxField
+        :field_name="'discipline'"
+        :input_type="'checkbox'"
+        :content="project.discipline"
+        :path="project.$path"
+        :can_edit="can_edit"
+        :options="discipline_options"
       />
     </div>
   </ProjectCard>
@@ -41,9 +68,97 @@ export default {
           key: "experienced",
           text: this.$t("experienced"),
         },
+      ],
+      target_audience_options: [
         {
-          key: "expert",
-          text: this.$t("expert"),
+          key: "cycle-1",
+          label: this.$t("ta_cycle_1"),
+          instructions: this.$t("ta_cycle_1_instr"),
+        },
+        {
+          key: "cycle-2",
+          label: this.$t("ta_cycle_2"),
+          instructions: this.$t("ta_cycle_2_instr"),
+        },
+        {
+          key: "cycle-3",
+          label: this.$t("ta_cycle_3"),
+          instructions: this.$t("ta_cycle_3_instr"),
+        },
+        {
+          key: "cycle-4",
+          label: this.$t("ta_cycle_4"),
+          instructions: this.$t("ta_cycle_4_instr"),
+        },
+        {
+          key: "ulis",
+          label: this.$t("ta_ulis"),
+        },
+        {
+          key: "cap",
+          label: this.$t("ta_cap"),
+        },
+        {
+          key: "lycee",
+          label: this.$t("ta_lycee"),
+        },
+        {
+          key: "lycee2",
+          label: this.$t("ta_lycee2"),
+        },
+        {
+          key: "post",
+          label: this.$t("ta_post"),
+        },
+      ],
+      discipline_options: [
+        {
+          key: "math",
+          label: this.$t("di_math"),
+        },
+        {
+          key: "french",
+          label: this.$t("di_french"),
+        },
+        {
+          key: "langs",
+          label: this.$t("di_langs"),
+        },
+        {
+          key: "history",
+          label: this.$t("di_history"),
+        },
+        {
+          key: "geography",
+          label: this.$t("di_geography"),
+        },
+        {
+          key: "biology",
+          label: this.$t("di_biology"),
+        },
+        {
+          key: "physics",
+          label: this.$t("di_physics"),
+        },
+        {
+          key: "chemistry",
+          label: this.$t("di_chemistry"),
+        },
+        {
+          key: "sports",
+          label: this.$t("di_sports"),
+        },
+        {
+          key: "civics",
+          label: this.$t("di_civics"),
+        },
+        {
+          key: "arts",
+          label: this.$t("di_arts"),
+        },
+        {
+          key: "transdisciplinary",
+          label: this.$t("di_transdisciplinary"),
         },
       ],
     };

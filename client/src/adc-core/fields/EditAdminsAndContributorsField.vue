@@ -9,7 +9,7 @@
       :field="'$admins'"
       :authors_paths="admins_path"
       :path="folder_path"
-      :can_edit="true"
+      :can_edit="can_edit"
       :instructions="admin_instructions"
     />
 
@@ -18,7 +18,7 @@
       :field="'$contributors'"
       :authors_paths="contributors_path"
       :path="folder_path"
-      :can_edit="true"
+      :can_edit="can_edit"
       :instructions="contrib_instructions"
     />
   </BaseModal2>
@@ -32,6 +32,7 @@ export default {
     admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,
+    can_edit: Boolean,
   },
   components: {},
   data() {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="filtered_suggestions.length > 0">
     <button
       type="button"
       v-if="new_tag_name.length === 0"
@@ -12,8 +12,8 @@
     <template v-if="new_tag_name.length > 0 || show_suggestions">
       <!-- <DLabel :str="$t('suggestions')" /> -->
       <TagsList
-        v-if="suggestions_list.length > 0"
-        :tags="suggestions_list"
+        v-if="filtered_suggestions.length > 0"
+        :tags="filtered_suggestions"
         :tag_type="tag_type"
         :addable="true"
         :clickable="true"
@@ -54,15 +54,15 @@ export default {
   },
   computed: {
     suggestions_list() {
-      const local_suggestions = this.suggestions[this.tag_type];
+      return this.suggestions[this.tag_type] || [];
+    },
 
-      if (local_suggestions)
-        return local_suggestions.filter(
-          (s) =>
-            s.toLowerCase().startsWith(this.new_tag_name.toLowerCase()) &&
-            !this.tags_to_exclude.some((t) => t === s)
-        );
-      return [];
+    filtered_suggestions() {
+      return this.suggestions_list.filter(
+        (s) =>
+          s.toLowerCase().startsWith(this.new_tag_name.toLowerCase()) &&
+          !this.tags_to_exclude.some((t) => t === s)
+      );
     },
   },
   methods: {},

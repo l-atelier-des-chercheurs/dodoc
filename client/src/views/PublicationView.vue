@@ -279,10 +279,13 @@ export default {
         this.fitZoomToPage();
       });
     }
+    // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
+    // this.$api.join({ room: this.publication_path });
   },
   beforeDestroy() {
     // this.$api.leave({ room: this.project.$path });
+    // this.$api.leave({ room: this.publication_path });
     document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {
@@ -392,6 +395,7 @@ export default {
     keyPressed(event) {
       if (
         this.$root.modal_is_opened ||
+        event.target.tagName.toLowerCase() === "select" ||
         event.target.tagName.toLowerCase() === "input" ||
         event.target.tagName.toLowerCase() === "textarea" ||
         event.target.className.includes("ql-editor") ||
@@ -417,10 +421,13 @@ export default {
             this.updatePageQuery({ increment: +1 });
           break;
         case "p":
-          this.page_zoom += 2;
+          this.page_zoom += 6;
           break;
         case "m":
-          this.page_zoom -= 2;
+          this.page_zoom -= 6;
+          break;
+        case "r":
+          this.fitZoomToPage();
           break;
         case "f":
           this.toggleFs();

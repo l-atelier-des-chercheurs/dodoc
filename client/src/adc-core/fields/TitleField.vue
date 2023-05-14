@@ -10,14 +10,17 @@
     <component :is="tag" class="_container">
       <template v-if="!can_edit || (can_edit && !edit_mode)">
         <template v-if="content && content !== ' '">
-          <span v-if="!markdown" class="_content" v-text="content" />
-          <MarkdownField v-else :text="content" />
+          <div class="_content">
+            <MarkdownField
+              v-if="input_type === 'markdown'"
+              :text="content"
+            /><span v-else v-text="content" />
+          </div>
         </template>
       </template>
       <TextInput
         v-else
         :content.sync="new_content"
-        :tag="input_type === 'text' ? 'span' : 'input'"
         :required="required"
         :input_type="input_type"
         :minlength="minlength"
@@ -57,10 +60,6 @@ export default {
       type: String,
       default: "text",
     },
-    markdown: {
-      type: Boolean,
-      default: false,
-    },
     content: {
       type: String,
       default: "",
@@ -68,7 +67,7 @@ export default {
     path: String,
     tag: {
       type: String,
-      default: "p",
+      default: "div",
     },
     required: {
       type: Boolean,
@@ -102,6 +101,8 @@ export default {
   beforeDestroy() {},
   watch: {
     content() {
+      // content was changed somewhere else, let's reload component
+      // todo: do not override content, ask in a modal what to do?
       this.new_content = this.content;
     },
   },
@@ -158,8 +159,12 @@ export default {
   width: 100%;
 
   ._content {
-    white-space: break-spaces;
+    display: inline-block;
     margin-right: calc(var(--spacing) / 2);
+
+    span {
+      white-space: break-spaces;
+    }
   }
 
   &:hover > ._label {

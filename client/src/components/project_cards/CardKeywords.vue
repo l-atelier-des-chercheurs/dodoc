@@ -1,5 +1,9 @@
 <template>
-  <ProjectCard :header="$t('keywords')" :icon="'tag'">
+  <ProjectCard
+    :header="keywords_title"
+    :icon="'tag'"
+    :has_items="!!project.keywords"
+  >
     <div class="">
       <TagsField
         :field_name="'keywords'"
@@ -26,7 +30,13 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    keywords_title() {
+      // if (this.project.keywords && this.project.keywords.length > 0)
+      //   return this.$t("keywords") + ` (${this.project.keywords.length})`;
+      return this.$t("keywords");
+    },
+  },
   methods: {},
 };
 </script>

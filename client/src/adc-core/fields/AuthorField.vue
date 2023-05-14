@@ -19,14 +19,18 @@
           :path="author_path"
           :key="author_path"
           :edit_mode="false"
-          :links_to_author_page="false"
+          :links_to_author_page="!edit_mode"
         />
       </template>
       <div v-else class="t-500">
         {{ $t("noone") }}
       </div>
       <!-- :links_to_author_page="!edit_mode" -->
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        class="_editBtn"
+        @click="enableEditMode"
+      />
     </div>
 
     <div class="_footer" v-if="edit_mode">
@@ -37,7 +41,7 @@
 
         <br />
 
-        <RadioInput
+        <RadioCheckboxInput
           :value.sync="radio_mode"
           :options="editing_options"
           :can_edit="edit_mode"
@@ -57,7 +61,7 @@
                 :path="author_path"
                 :key="author_path"
                 :edit_mode="edit_mode"
-                :links_to_author_page="false"
+                :links_to_author_page="!edit_mode"
                 @remove="removeAuthor(author_path)"
               />
             </transition-group>
@@ -247,7 +251,12 @@ export default {
 ._authors {
   display: flex;
   flex-flow: row wrap;
+  align-items: center;
   gap: calc(var(--spacing) / 4);
+
+  ._editBtn {
+    margin: 0;
+  }
 }
 
 ._footer {

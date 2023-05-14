@@ -9,7 +9,7 @@
         />
 
         <div
-          v-if="projects.length === 0"
+          v-if="projects && Array.isArray(projects) && projects.length === 0"
           class="u-instructions"
           :key="'noprojects'"
         >
@@ -92,6 +92,8 @@ export default {
     },
     async loadProjects() {
       let { space_slug, project_slug } = this.decomposePath(this.path);
+
+      if (!space_slug) return false;
 
       this.projects = await this.$api.getFolders({
         path:

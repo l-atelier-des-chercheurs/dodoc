@@ -2,6 +2,7 @@
   <div class="_pageTemplate">
     <RadioSwitch
       v-if="can_edit"
+      class="_switch"
       :content.sync="current_view"
       :options="[
         {
@@ -17,8 +18,6 @@
         },
       ]"
     />
-
-    <br />
 
     <PageSettings
       v-if="current_view === 'settings' && can_edit"
@@ -61,4 +60,8 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._switch {
+  margin: calc(var(--spacing) * 1) 0;
+}
+</style>

@@ -151,7 +151,7 @@
       </transition>
       <span
         class="m_mediaValidationButtons--overlay--percent"
-        v-html="media_being_sent_percent + '%'"
+        v-text="media_being_sent_percent + '%'"
       />
     </div>
   </div>

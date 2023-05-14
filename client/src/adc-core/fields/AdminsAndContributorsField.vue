@@ -22,61 +22,35 @@
       </template>
     </div>
 
-    <div class="_lists">
-      <div
-        v-for="author_section of show_section"
-        class=""
-        :key="author_section"
-      >
-        <DLabel v-if="author_section === 'admins'" :str="admin_label" />
-        <DLabel
-          v-else-if="author_section === 'contributors'"
-          :str="$t('contributors')"
+    <div class="">
+      <DLabel :str="$t('admins_and_contributors')" />
+      <!-- :instructions="$t('admins_and_contributors_instr')" -->
+
+      <div class="_listOfAvatars">
+        <AuthorTag
+          v-for="atpath in all_participants_path"
+          :path="atpath"
+          :key="atpath"
+          :edit_mode="false"
+          :links_to_author_page="true"
+          :show_image_only="false"
         />
-        <div class="_listOfAvatars">
-          <template
-            v-if="
-              Array.isArray(getCorrespondingPaths(author_section)) &&
-              getCorrespondingPaths(author_section).length > 0
-            "
-          >
-            <AuthorTag
-              v-for="atpath in getCorrespondingPaths(author_section)"
-              :path="atpath"
-              :key="atpath"
-              :edit_mode="false"
-              :links_to_author_page="true"
-              :show_image_only="false"
-            />
-          </template>
-          <div
-            v-else-if="getCorrespondingPaths(author_section) === 'everyone'"
-            :key="'everyone'"
-            class="t-500"
-          >
-            {{ $t("everyone") }}
-          </div>
-          <div v-else :key="'noone'" class="t-500">
-            {{ $t("noone") }}
-          </div>
-        </div>
       </div>
-      <EditBtn
-        class="_floatingTopRight"
-        v-if="can_edit"
-        @click="edit_mode = true"
-      />
+      <button type="button" class="u-buttonLink" @click="show_modal = true">
+        {{ $t("more_informations") }}
+      </button>
     </div>
 
     <EditAdminsAndContributorsField
-      v-if="edit_mode"
+      v-if="show_modal"
       :folder_path="folder.$path"
       :admins_path="admins_path"
       :contributors_path="contributors_path"
       :admin_label="admin_label"
       :admin_instructions="admin_instructions"
       :contrib_instructions="contrib_instructions"
-      @closeModal="edit_mode = false"
+      :can_edit="can_edit"
+      @closeModal="show_modal = false"
     />
 
     <!-- <AuthorField
@@ -114,6 +88,7 @@ export default {
   data() {
     return {
       edit_mode: false,
+      show_modal: false,
     };
   },
   created() {},
@@ -121,14 +96,14 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    // all_participants_path() {
-    //   let p = [];
-    //   if (Array.isArray(this.admins_path)) p = p.concat(this.admins_path);
-    //   if (Array.isArray(this.contributors_path))
-    //     p = p.concat(this.contributors_path);
-    //   p = [...new Set(p)];
-    //   return p;
-    // },
+    all_participants_path() {
+      let p = [];
+      if (Array.isArray(this.admins_path)) p = p.concat(this.admins_path);
+      if (Array.isArray(this.contributors_path))
+        p = p.concat(this.contributors_path);
+      p = [...new Set(p)];
+      return p;
+    },
     admins_path() {
       return this.folder.$admins;
     },
@@ -165,7 +140,6 @@ export default {
 ._listOfAvatars {
   display: flex;
   flex-flow: row wrap;
-  align-items: flex-end;
   gap: calc(var(--spacing) / 4);
 }
 

@@ -11,11 +11,15 @@
         :path="space.$path"
         :can_edit="can_edit"
       />
-      <sl-icon
-        v-if="space.$status === 'private'"
-        name="file-lock2-fill"
-        class="_icon _private"
-      />
+
+      <transition name="toggleLock" mode="out-in">
+        <sl-icon
+          v-if="space.$status === 'private'"
+          :key="space.$status"
+          name="file-lock2-fill"
+          class="_icon _private"
+        />
+      </transition>
       <!-- </div> -->
     </div>
     <div class="_textBloc">
@@ -66,6 +70,7 @@
         :label="can_edit ? $t('description') : undefined"
         :content="space.description"
         :path="space.$path"
+        :input_type="'markdown'"
         :maxlength="480"
         :can_edit="can_edit"
       />
@@ -80,12 +85,8 @@
           :contrib_instructions="$t('space_contrib_instructions')"
         />
 
-        <div class="_removeBtn">
-          <RemoveMenu
-            v-if="can_edit"
-            :remove_text="$t('remove_space')"
-            @remove="removeSpace"
-          />
+        <div class="u-mediaOptions" v-if="can_edit">
+          <RemoveMenu :remove_text="$t('remove_space')" @remove="removeSpace" />
         </div>
       </template>
     </div>
@@ -146,12 +147,11 @@ export default {
   align-items: center;
 
   width: 100%;
-  max-width: 100ch;
   margin: 0 auto;
 
   // background: white;
-  overflow: hidden;
-  border-radius: var(--panel-radius);
+  // overflow: hidden;
+  // border-radius: var(--panel-radius);
   // box-shadow: var(--panel-shadows);
   // border: var(--panel-borders);
 
@@ -161,8 +161,10 @@ export default {
     gap: calc(var(--spacing) / 2);
   }
   &[data-context="list"] {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     &:hover {
-      box-shadow: var(--panel-shadows);
+      box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+      // box-shadow: var(--panel-shadows);
     }
   }
 }
@@ -176,12 +178,12 @@ export default {
   position: relative;
   aspect-ratio: 1/1;
   align-self: flex-start;
-  border: 1px solid var(--c-gris);
+  // border: 1px solid var(--c-gris);
 
   flex: 1 0 80px;
   // max-width: 120px;
-  overflow: hidden;
-  border-radius: var(--panel-radius);
+  // overflow: hidden;
+  // border-radius: var(--panel-radius);
   // margin-right: calc(var(--spacing) / 1);
   // margin-bottom: calc(var(--spacing) / 4);
 }

@@ -1,10 +1,27 @@
 <template>
-  <details class="_projectCard" open>
+  <details class="_projectCard">
     <summary>
       <div class="_icon">
         <sl-icon v-if="icon" :name="icon" />
       </div>
-      {{ header }}
+
+      <span class="_name">
+        {{ header }}
+      </span>
+
+      <div
+        class="_itemsNut"
+        v-if="has_items !== undefined"
+        :data-isfilled="has_items"
+      >
+        <template v-if="typeof has_items === 'number'">
+          {{ has_items }}
+        </template>
+        <template v-else-if="has_items === true">
+          <sl-icon name="check" />
+        </template>
+        <template v-else>–</template>
+      </div>
     </summary>
     <div class="_content">
       <slot />
@@ -16,6 +33,7 @@ export default {
   props: {
     header: String,
     icon: String,
+    has_items: undefined,
   },
   components: {},
   data() {
@@ -31,15 +49,65 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectCard {
-  border-bottom: 0px solid var(--c-gris_clair);
+  // border-bottom: 0px solid var(--c-gris_clair);
+  // border: 1px solid transparent;
   // border-left: 2px solid transparent;
 
   background: white;
-  margin-left: 2px;
+  // margin-left: 2px;
 
-  &[open] {
-    border-left-color: var(--c-gris);
-    margin-bottom: calc(var(--spacing) / 1);
+  display: flex;
+  flex-flow: row nowrap;
+
+  ._icon {
+    font-size: 110%;
+    width: 30px;
+    height: 30px;
+    // border-radius: 4px;
+    padding: calc(var(--spacing) / 2);
+    // background-color: var(--c-gris);
+
+    color: currentColor;
+
+    line-height: 0;
+    // transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+    ._projectCard[open] & {
+    }
+  }
+
+  ._name {
+    flex: 1 1 auto;
+  }
+
+  ._itemsNut {
+    display: flex;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 18px;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    font-family: "Fira Code";
+    padding: calc(var(--spacing) / 16);
+    margin: calc(var(--spacing) / 4);
+
+    font-weight: 500;
+
+    // font-size: 110%;
+
+    &[data-isfilled] {
+      background: var(--c-bleuvert);
+      color: white;
+    }
+
+    &:empty {
+      // background: var(--c-bleuvert);
+      // width: 0px;
+      // height: 0px;
+    }
   }
 
   ::marker {
@@ -55,39 +123,38 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    font-size: var(--sl-font-size-medium);
-    padding: calc(var(--spacing) / 2);
-    font-weight: 500;
+    // font-size: var(--sl-font-size-small);
+    // font-family: "Fira Code";
+
+    padding: calc(var(--spacing) / 8);
+    // font-weight: 500;
     gap: calc(var(--spacing) / 2);
     cursor: pointer;
 
+    color: black;
+
     &:hover,
-    &:focus {
-      background-color: var(--c-gris_clair);
+    &:focus-visible {
+      color: white;
+      background-color: var(--c-gris_fonce);
     }
-  }
-  &[open] summary {
-    background-color: var(--c-gris);
   }
 
   ._content {
     padding: calc(var(--spacing) / 2);
   }
-}
 
-._icon {
-  font-size: 110%;
-  background-color: var(--c-gris);
-  border-radius: 4px;
-  padding: calc(var(--spacing) / 2);
-  line-height: 0;
-  width: 30px;
-  height: 30px;
+  &[open] {
+    summary {
+      color: white;
+      // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      background-color: var(--c-noir);
+    }
 
-  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-
-  ._projectCard[open] & {
-    background-color: white;
+    ._content {
+      border: 1px solid var(--c-noir);
+      border-top: none;
+    }
   }
 }
 </style>

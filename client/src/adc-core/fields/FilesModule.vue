@@ -1,10 +1,10 @@
 <template>
   <div class="_fileList">
-    <template v-if="!files || files.length === 0">
+    <template v-if="listed_files.length === 0">
       {{ $t("no_files") }}
     </template>
     <template v-else>
-      <div class="_file" v-for="(file, i) in files" :key="i">
+      <div class="_file" v-for="(file, i) in listed_files" :key="i">
         <DownloadFile v-if="file && file.$path" class="_link" :file="file">
           <MediaContent
             class="_preview"
@@ -21,9 +21,7 @@
             class="_preview"
             v-else
           />
-          <span class="_link--filename">
-            {{ file.$media_filename }}
-          </span>
+          <span class="_link--filename" v-text="file.$media_filename" />
         </DownloadFile>
 
         <sl-icon-button
@@ -33,10 +31,9 @@
           @click.prevent="removeFile(i)"
         />
       </div>
-      <br />
     </template>
 
-    <div class="">
+    <div class="_addBtn">
       <button
         type="button"
         class="u-button u-button_small u-button_bleuvert _addFile"
@@ -76,13 +73,15 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    files() {
-      return this.downloadable_files.map((meta_filename) =>
-        this.getMediaInFolder({
+    listed_files() {
+      return this.downloadable_files.reduce((acc, meta_filename) => {
+        const m = this.getMediaInFolder({
           folder_path: this.folder_path,
           meta_filename,
-        })
-      );
+        });
+        if (m) acc.push(m);
+        return acc;
+      }, []);
     },
   },
   methods: {
@@ -112,6 +111,10 @@ export default {
   padding: 0;
   margin: 0;
 
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 4);
+
   > ._file {
     // margin: calc(var(--spacing) / 4) 0;
     padding: 0;
@@ -125,7 +128,6 @@ export default {
     word-break: break-word;
     align-items: stretch;
 
-    padding: calc(var(--spacing) / 4);
     gap: calc(var(--spacing) / 4);
     border-radius: 4px;
 
@@ -175,5 +177,9 @@ export default {
       }
     }
   }
+}
+
+._addBtn {
+  text-align: center;
 }
 </style>

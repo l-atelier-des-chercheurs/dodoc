@@ -1,4 +1,3 @@
-z
 <template>
   <div
     class="_projectInfos"
@@ -17,16 +16,20 @@ z
         :can_edit="can_edit"
       />
 
-      <sl-icon
-        v-if="project.$status === 'finished'"
-        name="check-circle-fill"
-        class="_icon _check"
-      />
-      <sl-icon
-        v-else-if="project.$status === 'private'"
-        name="file-lock2-fill"
-        class="_icon _private"
-      />
+      <transition name="toggleLock" mode="out-in">
+        <sl-icon
+          v-if="project.$status === 'finished'"
+          :key="project.$status"
+          name="check-circle-fill"
+          class="_icon _check"
+        />
+        <sl-icon
+          v-else-if="project.$status === 'private'"
+          :key="project.$status"
+          name="file-lock2-fill"
+          class="_icon _private"
+        />
+      </transition>
       <!-- <sl-icon
         v-if="project.$status === 'draft'"
         name="cone-striped"
@@ -60,9 +63,7 @@ z
         :instructions="$t('project_title_instructions')"
       />
 
-      <!-- <br v-if="context === 'full'" /> -->
-
-      <template v-if="context === 'list'">
+      <!-- <template v-if="context === 'list'">
         <button
           v-if="project.description"
           class="u-buttonLink _showDescription"
@@ -72,10 +73,7 @@ z
             !show_description ? $t('show_description') : $t('hide_description')
           "
         />
-        <!-- <small v-else class="u-instructions">
-          {{ $t("no_description") }}
-        </small> -->
-      </template>
+      </template> -->
       <TitleField
         v-if="show_description"
         :field_name="'description'"
@@ -86,15 +84,40 @@ z
         :content="project.description"
         :path="project.$path"
         :maxlength="1280"
+        :input_type="'markdown'"
         :can_edit="can_edit"
         :instructions="$t('project_desc_instructions')"
       />
+
+      <div class="_allTags" v-if="context === 'full'">
+        <TagsList
+          v-if="project.keywords && project.keywords.length > 0"
+          :tags="project.keywords"
+          :tag_type="'keywords'"
+          :clickable="false"
+        />
+
+        <TagsList
+          v-if="project.machines && project.machines.length > 0"
+          :tags="project.machines"
+          :tag_type="'machines'"
+          :clickable="false"
+        />
+
+        <TagsList
+          v-if="project.materials && project.materials.length > 0"
+          :tags="project.materials"
+          :tag_type="'materials'"
+          :clickable="false"
+        />
+      </div>
+
       <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
     </div>
 
-    <transition name="fade">
+    <!-- <transition name="fade">
       <button
-        v-if="context === 'full' && false"
+        v-if="context === 'full'"
         v-show="!$root.is_mobile_view"
         :key="'show_meta-' + show_meta"
         class="u-buttonLink _showMeta"
@@ -108,7 +131,7 @@ z
           {{ $t("hide_meta") }}
         </template>
       </button>
-    </transition>
+    </transition> -->
 
     <div
       class="_projectInfos--meta"
@@ -117,12 +140,12 @@ z
       }"
       v-if="context === 'full'"
     >
+      <CardMeta :project="project" :can_edit="can_edit" />
       <CardLicense :project="project" :can_edit="can_edit" />
-      <CardCompetences :project="project" :can_edit="can_edit" />
       <CardFiles :project="project" :can_edit="can_edit" />
+      <CardCompetences :project="project" :can_edit="can_edit" />
       <CardMachinesMaterials :project="project" :can_edit="can_edit" />
       <CardKeywords :project="project" :can_edit="can_edit" />
-      <CardMeta :project="project" :can_edit="can_edit" />
       <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
     </div>
@@ -130,9 +153,6 @@ z
     <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link :to="{ path: createURLFromPath(project.$path) }">
         <div class="_clickZone" />
-        <!-- <div class="u-button u-button_red _openBtn" v-if="context === 'list'">
-          {{ $t("open") }}&nbsp;<sl-icon name="arrow-up-right" />
-        </div> -->
       </router-link>
     </div>
   </div>
@@ -207,7 +227,7 @@ export default {
 
   &.is--linkToProject {
     &:hover {
-      transform: translateY(-12px);
+      transform: translateY(-8px);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }
@@ -381,19 +401,6 @@ export default {
     width: 100%;
     height: 100%;
   }
-
-  ._openBtn {
-    text-decoration: underline;
-    position: relative;
-    margin: calc(var(--spacing) / 2);
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-
-    &:hover,
-    &:focus {
-      transform: translateY(-4px) rotate(-2deg);
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    }
-  }
 }
 
 ._showMeta {
@@ -409,5 +416,11 @@ export default {
   z-index: 100;
   padding: 0;
   text-align: left;
+}
+
+._allTags {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
 }
 </style>

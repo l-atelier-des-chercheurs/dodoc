@@ -1,11 +1,11 @@
 .u-label {
   display: block;
-  font-variant: small-caps;
-  text-transform: uppercase;
+  // font-variant: small-caps;
+  // text-transform: uppercase;
   font-weight: 500;
 
   font-family: var(--sl-font-mono);
-  font-size: var(--sl-font-size-small);
+  font-size: var(--sl-font-size-x-small);
   // letter-spacing: 0.01em;
   color: var(--label-color);
   // color: var(--c-orange);
@@ -229,6 +229,22 @@ button,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-gris_fonce);
+    }
+  }
+
+  &[disabled] {
+    color: var(--c-gris_fonce);
+  }
+}
+.u-button_white {
+  background-color: white;
+  color: var(--c-noir);
+
+  &:hover,
+  &:focus,
+  &.is--active {
+    &:not([disabled]) {
+      background-color: var(--c-gris);
     }
   }
 
@@ -725,8 +741,10 @@ input[type="file"] {
   border: 2px solid var(--c-gris);
 
   margin: calc(var(--spacing) / 1) 0;
-  padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
+
+  max-width: 50ch;
 }
 
 .u-spacingBottom {
@@ -761,33 +779,5 @@ details {
     &:hover {
       background: var(--c-gris_clair);
     }
-  }
-}
-
-.u-radio {
-  label {
-    display: flex;
-    flex-flow: row nowrap;
-    align-content: center;
-    align-items: center;
-    background: var(--c-gris_clair);
-    padding: calc(var(--spacing) / 2);
-    gap: calc(var(--spacing) / 2);
-    margin-bottom: 4px;
-
-    &:hover {
-      background: var(--c-gris);
-    }
-
-    ._option_preview {
-      display: inline-block;
-      vertical-align: middle;
-      height: 1em;
-      aspect-ratio: 1;
-    }
-  }
-
-  input {
-    margin: 0;
   }
 }

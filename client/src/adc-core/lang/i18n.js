@@ -74,8 +74,12 @@ export default function () {
         access: "accéder",
         title: "Titre",
         subtitle: "Sous-titre",
-        name: "nom",
+        name: "Nom",
 
+        open_in_finder: "ouvrir dans l’explorateur",
+
+        admins_and_contributors: "Référents et contributeurs",
+        // admins_and_contributors_instr: "",
         set_admins_and_contributors: "Définir les référents et contributeurs",
         instance_admins_instr:
           "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
@@ -102,7 +106,7 @@ export default function () {
         search_by_title: "Rechercher par titre",
 
         connection_lost: `Connexion perdue`,
-        connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
+        connection_lost_reload_to_reconnect: `La connexion s’est interrompue. Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez à nouveau cette erreur, contactez `,
         reload_page: "Recharger cette page",
         create_page: "Ajouter une page",
         add_on_page: "Ajouter sur la page",
@@ -278,6 +282,7 @@ export default function () {
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
         no_files: "Aucun fichier",
+        none_f: "Aucune",
         none: "Aucun·e",
         filters: "Filtres",
 
@@ -332,6 +337,8 @@ export default function () {
         restart: "Relancer do•doc",
         reveal: "Révéler",
         choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
+        latest_changes_to_project: "Dernières modifications au projet",
+
         download: "Télécharger",
 
         medias: "Médias",
@@ -407,6 +414,9 @@ export default function () {
           "Chaque espace contient une série de projets liés par un groupe, un événement ou une thématique particulière.",
         create_a_space: "Créer un espace",
         project: "Projet",
+
+        markdown_instr:
+          "Champ en Markdown : vous pouvez mettre en forme le texte (titres, gras, italique, liens, etc.).",
 
         watermark: "Habillage",
         watermark_instructions:
@@ -507,6 +517,10 @@ export default function () {
         lightness: "Clarté",
         dotscreen: "Noir et blanc (tramé)",
 
+        custom_license: "Licence spécifique",
+        custom_license_explanations:
+          "À venir, la possibilité d’indiquer une licence spécifique avec un lien vers une page de référence",
+
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
         copy_of: "Copie de",
@@ -515,18 +529,49 @@ export default function () {
         source_space: "Espace qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
-        remove_original_after_copy: "Supprimer ce projet après la copie",
-        keep_original_after_copy: "Conserver ce projet après la copie",
+        remove_original_after_copy: "Ce projet sera supprimé après la copie",
+        keep_original_after_copy: "Ce projet sera conservé après la copie",
 
         machines_and_materials: "Machines et matériaux",
         machines: "Machines",
         materials: "Matériaux",
         levels_and_competences: "Niveau et compétence",
 
-        beginner: "Novice",
+        fabrication_level: "Niveau de connaissance",
+        beginner: "Débutant",
         intermediate: "Intermédiaire",
-        experienced: "Confirmé",
-        expert: "Expert",
+        experienced: "Avancé",
+
+        target_audience: "Public cible",
+        ta_cycle_1: "Cycle 1",
+        ta_cycle_1_instr: "Maternelle (Fr) (3-5 ans)",
+        ta_cycle_2: "Cycle 2",
+        ta_cycle_2_instr: "CP-CE2 ( Fr) (6-8 ans)",
+        ta_cycle_3: "Cycle 3",
+        ta_cycle_3_instr: "CM1-CM2-6<sup>e</sup> ( collège) (Fr) (9-11 ans)",
+        ta_cycle_4: "Cycle 4",
+        ta_cycle_4_instr: "5<sup>e</sup>-3<sup>e</sup> (fr) (12-14ans)",
+        ta_ulis: "ULIS",
+        ta_cap: "CAP",
+        ta_lycee: "Lycée G&T",
+        ta_lycee2: "Lycée Pro",
+        ta_post: "Supérieur",
+
+        disciplines: "Disciplines",
+        di_math: "Mathématiques",
+        di_french: "Français",
+        di_langs: "Langues",
+        di_history: "Histoire",
+        di_geography: "Géographie",
+        di_biology: "SVT",
+        di_technology: "Technologie",
+        di_physics: "Physique",
+        di_chemistry: "Chimie",
+        di_sports: "EPS",
+        di_civics: "Parcours citoyen",
+        di_arts: "Arts Plastiques",
+        di_music: "Musique",
+        di_transdisciplinary: "Transdisciplinaire",
 
         camera: "Camera",
         sources: "Sources",
@@ -675,7 +720,6 @@ export default function () {
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.name_taken": "Ce nom est déjà utilisé",
 
-        more_infos: "Plus d’informations",
         informations: "Informations",
 
         duplicate: "Dupliquer",
