@@ -21,10 +21,7 @@
       <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
     </div>
 
-    <div
-      class="u-spacingBottom"
-      v-if="$root.app_infos.is_electron && is_instance_admin"
-    >
+    <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
       <DLabel :str="$t('open_in_finder')" />
       <button
         type="button"

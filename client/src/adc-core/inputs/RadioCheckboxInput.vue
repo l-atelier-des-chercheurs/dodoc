@@ -1,5 +1,8 @@
 <template>
-  <div
+  <transition-group
+    tag="section"
+    name="projectsList"
+    appear
     class="_radioCheckboxInput"
     :class="{
       'is--editable': can_edit,
@@ -13,6 +16,7 @@
         :data-selectable="can_edit"
       >
         <input
+          v-if="can_edit"
           :type="input_type"
           :name="id + '-radiocheckboxi-option-' + option.key"
           :id="id + '-radiocheckboxi-option-' + option.key"
@@ -36,7 +40,7 @@
         </span>
       </label>
     </template>
-  </div>
+  </transition-group>
 </template>
 <script>
 export default {
@@ -85,7 +89,7 @@ export default {
 ._radioCheckboxInput {
   display: flex;
   flex-flow: column nowrap;
-  gap: 4px;
+  gap: calc(var(--spacing) / 8);
 
   label {
     display: flex;
@@ -93,9 +97,8 @@ export default {
     align-content: center;
     align-items: center;
     background: var(--c-gris_clair);
-    padding: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     gap: calc(var(--spacing) / 2);
-
     ._option_preview {
       display: inline-block;
       vertical-align: middle;
@@ -105,8 +108,11 @@ export default {
   }
 
   &.is--editable {
-    label:hover {
-      background: var(--c-gris);
+    label {
+      cursor: pointer;
+      &:hover {
+        background: var(--c-gris);
+      }
     }
   }
 

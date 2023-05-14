@@ -414,6 +414,9 @@
               },
               "target_audience": {
                 "type": "string"
+              },
+              "discipline": {
+                "type": "string"
               }
             },
             "$files": {

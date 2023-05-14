@@ -10,8 +10,12 @@
     <component :is="tag" class="_container">
       <template v-if="!can_edit || (can_edit && !edit_mode)">
         <template v-if="content && content !== ' '">
-          <MarkdownField v-if="input_type === 'markdown'" :text="content" />
-          <span v-else class="_content" v-text="content" />
+          <div class="_content">
+            <MarkdownField
+              v-if="input_type === 'markdown'"
+              :text="content"
+            /><span v-else v-text="content" />
+          </div>
         </template>
       </template>
       <TextInput
@@ -156,8 +160,11 @@ export default {
 
   ._content {
     display: inline-block;
-    white-space: break-spaces;
     margin-right: calc(var(--spacing) / 2);
+
+    span {
+      white-space: break-spaces;
+    }
   }
 
   &:hover > ._label {

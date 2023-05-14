@@ -16,7 +16,6 @@
     </div>
     <div class="u-spacingBottom">
       <DLabel :str="$t('target_audience')" />
-
       <RadioCheckboxField
         :field_name="'target_audience'"
         :input_type="'checkbox'"
@@ -25,14 +24,17 @@
         :can_edit="can_edit"
         :options="target_audience_options"
       />
-
-      <!-- <SelectField
-        :field_name="'level'"
-        :content="project.level || '-'"
+    </div>
+    <div class="">
+      <DLabel :str="$t('disciplines')" />
+      <RadioCheckboxField
+        :field_name="'discipline'"
+        :input_type="'checkbox'"
+        :content="project.discipline"
         :path="project.$path"
         :can_edit="can_edit"
-        :options="basic_competences"
-      /> -->
+        :options="discipline_options"
+      />
     </div>
   </ProjectCard>
 </template>
@@ -107,6 +109,56 @@ export default {
         {
           key: "post",
           label: this.$t("ta_post"),
+        },
+      ],
+      discipline_options: [
+        {
+          key: "math",
+          label: this.$t("di_math"),
+        },
+        {
+          key: "french",
+          label: this.$t("di_french"),
+        },
+        {
+          key: "langs",
+          label: this.$t("di_langs"),
+        },
+        {
+          key: "history",
+          label: this.$t("di_history"),
+        },
+        {
+          key: "geography",
+          label: this.$t("di_geography"),
+        },
+        {
+          key: "biology",
+          label: this.$t("di_biology"),
+        },
+        {
+          key: "physics",
+          label: this.$t("di_physics"),
+        },
+        {
+          key: "chemistry",
+          label: this.$t("di_chemistry"),
+        },
+        {
+          key: "sports",
+          label: this.$t("di_sports"),
+        },
+        {
+          key: "civics",
+          label: this.$t("di_civics"),
+        },
+        {
+          key: "arts",
+          label: this.$t("di_arts"),
+        },
+        {
+          key: "transdisciplinary",
+          label: this.$t("di_transdisciplinary"),
         },
       ],
     };

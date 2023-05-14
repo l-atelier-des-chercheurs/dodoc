@@ -95,6 +95,8 @@ import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
 Vue.component("RemoveMenu", RemoveMenu);
 import TagsList from "@/adc-core/ui/TagsList.vue";
 Vue.component("TagsList", TagsList);
+import SingleTag from "@/adc-core/ui/SingleTag.vue";
+Vue.component("SingleTag", SingleTag);
 //
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);

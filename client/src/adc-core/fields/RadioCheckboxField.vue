@@ -6,10 +6,10 @@
       :options="options"
       :can_edit="can_edit && edit_mode"
     />
-    <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
-
-    <div class="_footer" v-if="edit_mode">
+    <div class="_footer">
+      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
       <SaveCancelButtons
+        v-if="edit_mode"
         class="_scb"
         :is_saving="is_saving"
         @save="updateSelect"
@@ -23,7 +23,7 @@ export default {
   props: {
     field_name: String,
     content: {
-      type: String,
+      type: [String, Array],
       default: "",
     },
     input_type: {

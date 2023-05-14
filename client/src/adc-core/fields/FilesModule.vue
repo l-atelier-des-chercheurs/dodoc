@@ -1,10 +1,10 @@
 <template>
   <div class="_fileList">
-    <template v-if="!files || files.length === 0">
+    <template v-if="listed_files.length === 0">
       {{ $t("no_files") }}
     </template>
     <template v-else>
-      <div class="_file" v-for="(file, i) in files" :key="i">
+      <div class="_file" v-for="(file, i) in listed_files" :key="i">
         <DownloadFile v-if="file && file.$path" class="_link" :file="file">
           <MediaContent
             class="_preview"
@@ -73,13 +73,15 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    files() {
-      return this.downloadable_files.map((meta_filename) =>
-        this.getMediaInFolder({
+    listed_files() {
+      return this.downloadable_files.reduce((acc, meta_filename) => {
+        const m = this.getMediaInFolder({
           folder_path: this.folder_path,
           meta_filename,
-        })
-      );
+        });
+        if (m) acc.push(m);
+        return acc;
+      }, []);
     },
   },
   methods: {

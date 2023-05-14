@@ -154,7 +154,9 @@ export default {
       return this.extractArr(this.sorted_projects, "materials");
     },
     all_levels() {
-      return this.extractArr(this.sorted_projects, "level");
+      return this.extractArr(this.sorted_projects, "level").map((kw) =>
+        this.$t(kw)
+      );
     },
     active_filters() {
       if (!this.$route.query) return [];
@@ -212,7 +214,8 @@ export default {
     btnClassForMedia(type) {
       if (type === "keywords") return "u-button_orange";
       if (type === "materials") return "u-button_bleumarine";
-      if (type === "level") return "u-button_bleuvert";
+      if (type === "level") return "u-button_rouge";
+      return "u-button_bleuvert";
     },
     toggleFilter({ type, value }) {
       let query = {};

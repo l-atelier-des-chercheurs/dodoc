@@ -325,7 +325,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: calc(var(--spacing) / 1);
 }
 
@@ -346,7 +346,7 @@ export default {
 ._preview {
   position: relative;
   overflow: hidden;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
   min-width: 2em;
   min-height: 2em;
   background: rgba(255, 255, 255, 0.2);
@@ -357,17 +357,17 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.6) !important;
+  // background: rgba(0, 0, 0, 0.6) !important;
   color: black;
   opacity: 0;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(4px);
 
   transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover,
   &:focus,
   &:active {
-    background: rgba(255, 255, 255, 0.6);
     opacity: 1;
   }
 }
