@@ -61,6 +61,11 @@
           :file="file"
           :was_focused="media_just_focused === getFilename(file.$path)"
           :data-filepath="file.$path"
+          :is_already_selected="
+            meta_filenames_already_present.some((mf) =>
+              file.$path.endsWith('/' + mf)
+            )
+          "
           @toggleMediaFocus="(path) => toggleMediaFocus(path)"
         />
       </transition-group>
@@ -107,6 +112,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    meta_filenames_already_present: { type: Array, default: () => [] },
   },
   components: {
     MediaTile,

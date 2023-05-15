@@ -12,6 +12,10 @@
     <MediaContent :file="file" :resolution="220" />
     <span v-if="duration" class="u-meta">{{ duration }}</span>
     <span v-if="file.$type === 'pdf'" class="u-meta">{{ "pdf" }}</span>
+    <span v-if="is_already_selected" class="_alreadySelected">
+      <sl-icon name="check2-square" />
+    </span>
+
     <button
       type="button"
       class="_focusMediaBtn"
@@ -25,6 +29,7 @@ export default {
     file: Object,
     project_path: String,
     was_focused: Boolean,
+    is_already_selected: Boolean,
   },
   components: {},
   data() {
@@ -132,5 +137,17 @@ export default {
   right: 0;
   background: rgba(255, 255, 255, 0.7);
   padding: 0 calc(var(--spacing) / 4);
+}
+
+._alreadySelected {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: calc(var(--spacing) / 2);
+  background: var(--c-bleuvert);
+  line-height: 0;
+  padding: calc(var(--spacing) / 4);
+  border-radius: 50%;
+  font-size: 80%;
 }
 </style>

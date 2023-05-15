@@ -62,6 +62,7 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
+                :meta_filenames_already_present="meta_filenames_already_present"
                 @addModule="
                   ({ meta_filename }) =>
                     insertModuleMetaFilenameToList({
@@ -131,6 +132,18 @@ export default {
         return modules_list;
       }
       return [];
+    },
+    meta_filenames_already_present() {
+      return this.modules_list.reduce((acc, meta_filename) => {
+        const module = this.findModuleFromMetaFilename(meta_filename);
+        if (module.source_medias) {
+          module.source_medias.map((sm) => {
+            if (sm.meta_filename_in_project)
+              acc.push(sm.meta_filename_in_project);
+          });
+        }
+        return acc;
+      }, []);
     },
   },
   methods: {
@@ -247,7 +260,7 @@ export default {
   justify-content: flex-end;
   // width: 100%;
   background: white;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   margin: calc(var(--spacing) / 2) auto 0;
   max-width: 240px;
 }

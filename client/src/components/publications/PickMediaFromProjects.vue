@@ -39,6 +39,7 @@
               :project="source_project"
               :media_focused="media_focused"
               :select_mode="true"
+              :meta_filenames_already_present="meta_filenames_already_present"
               @update:media_focused="media_focused = $event"
               @selectMedia="selectMedia"
             />
@@ -54,6 +55,7 @@ import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 export default {
   props: {
     path: String,
+    meta_filenames_already_present: Array,
   },
   components: {
     MediaLibrary,
