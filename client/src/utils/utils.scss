@@ -388,10 +388,10 @@ textarea,
   // border: solid var(--input-border-width) var(--input-border-color);
   border-radius: var(--input-border-radius);
   background-color: var(--c-gris);
-  color: var(--c-noir);
+  color: inherit;
 
   // background: white;
-  height: var(--input-height);
+  // height: var(--input-height);
   line-height: var(--input-height);
   line-height: inherit;
 
@@ -577,6 +577,7 @@ input[type="file"] {
 .fieldCaption {
   font-weight: 500;
   font-size: var(--sl-font-size-x-small);
+  font-family: var(--sl-font-mono);
 }
 
 .u-defaultValue {

@@ -20,6 +20,7 @@
       </template>
       <TextInput
         v-else
+        ref="TextInput"
         :content.sync="new_content"
         :required="required"
         :input_type="input_type"
@@ -141,14 +142,13 @@ export default {
 
         this.edit_mode = false;
         this.is_saving = false;
-      } catch (e) {
+      } catch (err) {
         this.is_saving = false;
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("notifications.couldntbesaved"));
-        this.$alertify.closeLogOnClick(true).error(e.response.data);
+        debugger;
+        if (err === "unique_field_taken") {
+          this.$alertify.delay(4000).error(this.$t("notifications.name_taken"));
+          this.$refs.TextInput.$refs.field.select();
+        }
       }
     },
   },

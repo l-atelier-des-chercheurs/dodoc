@@ -1,13 +1,11 @@
 <template>
   <div>
     <DLabel v-if="label_str" :str="$t(label_str)" />
-
     <template v-if="tag === 'input'">
       <input
         ref="field"
         :type="field_input_type_prop"
         :name="label_str"
-        :id="'_input_' + label_str"
         :autocomplete="autocomplete"
         class=""
         :size="size"
@@ -123,8 +121,7 @@ export default {
   },
   computed: {
     tag() {
-      if (this.input_type === "text" || this.input_type === "markdown")
-        return "span";
+      if (this.input_type === "markdown") return "span";
       return "input";
     },
     validity() {
