@@ -125,7 +125,10 @@
             </button>
           </transition-group>
         </transition>
-        <ProjectsList :projects="filtered_projects" />
+        <ProjectsList
+          :projects="filtered_projects"
+          :display_original_space="display_original_space"
+        />
       </div>
     </div>
   </section>
@@ -136,6 +139,7 @@ import ProjectsList from "@/components/ProjectsList.vue";
 export default {
   props: {
     projects: Array,
+    display_original_space: Boolean,
   },
   components: {
     ProjectsList,

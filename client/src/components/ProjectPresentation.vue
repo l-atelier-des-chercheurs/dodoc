@@ -30,6 +30,10 @@
           class="_icon _private"
         />
       </transition>
+
+      <div v-if="display_original_space" class="_originalSpace">
+        +{{ original_space_name }}
+      </div>
       <!-- <sl-icon
         v-if="project.$status === 'draft'"
         name="cone-striped"
@@ -172,6 +176,7 @@ export default {
     project: Object,
     context: String,
     can_edit: Boolean,
+    display_original_space: Boolean,
     // show_more_informations: Boolean,
   },
   components: {
@@ -204,7 +209,14 @@ export default {
       if (this.$root.is_mobile_view) this.show_meta = true;
     },
   },
-  computed: {},
+  computed: {
+    original_space_name() {
+      let { space_slug } = this.decomposePath(this.project.$path);
+      const space_path = this.createPath({ space_slug });
+      const space = this.getSpaceFromCache(space_path);
+      return space.title;
+    },
+  },
   methods: {},
 };
 </script>
@@ -353,6 +365,21 @@ export default {
     color: var(--c-bleuvert);
   }
   ._private {
+  }
+
+  ._originalSpace {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+
+    // background-color: var(--c-noir);
+    // color: white;
+    backdrop-filter: blur(5px);
+    // background: rgba(255, 255, 255, 0.3);
+
+    font-size: var(--sl-font-size-small);
   }
 }
 

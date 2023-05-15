@@ -162,9 +162,10 @@ export default {
   }
   &[data-context="list"] {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    &:hover {
-      box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
-      // box-shadow: var(--panel-shadows);
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-8px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }
 }

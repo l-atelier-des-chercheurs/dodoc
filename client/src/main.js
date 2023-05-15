@@ -192,6 +192,8 @@ import FormatDates from "@/mixins/FormatDates";
 Vue.mixin(FormatDates);
 import Props from "@/mixins/Props";
 Vue.mixin(Props);
+import Spaces from "@/mixins/Spaces";
+Vue.mixin(Spaces);
 import Medias from "@/mixins/Medias";
 Vue.mixin(Medias);
 import Authors from "@/mixins/Authors";
