@@ -64,7 +64,7 @@ export default function () {
         embed: "Intégrer",
         from_project: "Depuis le projet",
 
-        description: "description",
+        description: "Description",
         no_description: "Pas de description",
         keywords: "Mots-clés",
 
@@ -76,7 +76,7 @@ export default function () {
         subtitle: "Sous-titre",
         name: "Nom",
 
-        open_in_finder: "ouvrir dans l’explorateur",
+        open_in_finder: "Ouvrir dans l’explorateur",
 
         admins_and_contributors: "Référents et contributeurs",
         // admins_and_contributors_instr: "",
