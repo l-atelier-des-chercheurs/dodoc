@@ -285,6 +285,7 @@ export default function () {
         none_f: "Aucune",
         none: "Aucun·e",
         filters: "Filtres",
+        reset_all: "Retirer tout",
 
         draft: "En cours",
         listed: "Listé",

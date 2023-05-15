@@ -84,6 +84,7 @@
             :tags="all_levels"
             :tag_type="'level'"
             :clickable="true"
+            :translated="true"
             :tags_active="getActiveTags('level')"
             @tagClick="toggleFilter({ filter_type: 'level', value: $event })"
           />
@@ -113,6 +114,15 @@
                 })
               "
             />
+            <button
+              type="button"
+              v-if="active_filters.length > 1"
+              class="u-buttonLink"
+              @click="resetFilters"
+              :key="'reset_all'"
+            >
+              {{ $t("reset_all") }}
+            </button>
           </transition-group>
         </transition>
         <ProjectsList :projects="filtered_projects" />
@@ -159,20 +169,20 @@ export default {
   watch: {},
   computed: {
     all_keywords() {
-      return this.extractArr(this.sorted_projects, "keywords");
+      return this.extractArr(this.filtered_projects, "keywords");
     },
     all_materials() {
-      return this.extractArr(this.sorted_projects, "materials");
+      return this.extractArr(this.filtered_projects, "materials");
     },
     all_levels() {
-      return this.extractArr(this.sorted_projects, "level").map((kw) =>
-        this.$t(kw)
-      );
+      return this.extractArr(this.filtered_projects, "level");
+      // .map((tag) =>
+      //   this.$t(tag)
+      // );
     },
     active_filters() {
-      if (!this.$route.query?.filters) return [];
-
-      const _filters = JSON.parse(this.$route.query.filters);
+      if (!this.$route.query?.pfilters) return [];
+      const _filters = JSON.parse(this.$route.query.pfilters);
       return _filters.map((f) => {
         return { filter_type: f.filter_type, value: decodeURI(f.value) };
       });
@@ -244,7 +254,7 @@ export default {
       if (this.$route.query)
         query = JSON.parse(JSON.stringify(this.$route.query));
 
-      let _filters = query.filters ? JSON.parse(query.filters) : [];
+      let _filters = query.pfilters ? JSON.parse(query.pfilters) : [];
 
       if (
         value &&
@@ -262,8 +272,16 @@ export default {
             !(f.filter_type === filter_type && f.value === encodeURI(value))
         );
 
-      query.filters = JSON.stringify(_filters);
+      query.pfilters = JSON.stringify(_filters);
       this.$router.push({ query });
+    },
+    resetFilters() {
+      let query = {};
+      if (this.$route.query?.pfilters) {
+        query = JSON.parse(JSON.stringify(this.$route.query));
+        delete query.pfilters;
+        this.$router.push({ query });
+      }
     },
     getActiveTags(type) {
       return this.active_filters.reduce((acc, af) => {

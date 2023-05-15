@@ -11,7 +11,7 @@
         v-for="tag in tags"
         :key="tag"
         :tag_type="tag_type"
-        :name="tag"
+        :name="translated ? $t(tag) : tag"
         :clickable="clickable"
         :addable="addable"
         :removable="removable"
@@ -30,13 +30,17 @@ export default {
       default: () => [],
     },
     tag_type: String,
+    tags_active: {
+      type: Array,
+      default: () => [],
+    },
     clickable: {
       type: Boolean,
       default: false,
     },
-    tags_active: {
-      type: Array,
-      default: () => [],
+    translated: {
+      type: Boolean,
+      default: false,
     },
     addable: {
       type: Boolean,
