@@ -28,7 +28,7 @@
           name="x"
           size="small"
           v-if="can_edit"
-          @click.prevent="removeFile(i)"
+          @click.prevent="removeFile(file.$path)"
         />
       </div>
     </template>
@@ -91,9 +91,10 @@ export default {
       files.push(new_file);
       this.updateFiles(files);
     },
-    async removeFile(i) {
-      const files = this.downloadable_files.slice().splice(i + 1, 1);
-      this.updateFiles(files);
+    async removeFile(path) {
+      let _files = this.downloadable_files.slice();
+      _files = _files.filter((f) => !path.endsWith("/" + f));
+      this.updateFiles(_files);
     },
     async updateFiles(files) {
       await this.$api.updateMeta({
