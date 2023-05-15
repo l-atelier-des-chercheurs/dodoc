@@ -4,7 +4,8 @@
   // text-transform: uppercase;
   font-weight: 500;
 
-  font-family: var(--sl-font-mono);
+  // font-family: var(--sl-font-mono);
+  letter-spacing: 0.03em;
   font-size: var(--sl-font-size-x-small);
   // letter-spacing: 0.01em;
   color: var(--label-color);
@@ -214,7 +215,7 @@ button,
   &[disabled] {
     color: var(--c-gris_fonce);
     &:hover,
-    &:focus,
+    &:focus-visible,
     &.is--active {
       background-color: rgba(0, 0, 0, 0.1);
     }
@@ -225,7 +226,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-gris_fonce);
@@ -241,7 +242,7 @@ button,
   color: var(--c-noir);
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-gris);
@@ -261,7 +262,7 @@ button,
   }
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-rouge_fonce);
@@ -273,7 +274,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-bleuvert_fonce);
@@ -285,7 +286,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-bleuvert);
@@ -297,7 +298,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-orange_fonce);
@@ -309,7 +310,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-bleumarine_fonce);
@@ -387,10 +388,10 @@ textarea,
   // border: solid var(--input-border-width) var(--input-border-color);
   border-radius: var(--input-border-radius);
   background-color: var(--c-gris);
-  color: var(--c-noir);
+  color: inherit;
 
   // background: white;
-  height: var(--input-height);
+  // height: var(--input-height);
   line-height: var(--input-height);
   line-height: inherit;
 
@@ -576,6 +577,7 @@ input[type="file"] {
 .fieldCaption {
   font-weight: 500;
   font-size: var(--sl-font-size-x-small);
+  font-family: var(--sl-font-mono);
 }
 
 .u-defaultValue {

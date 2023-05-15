@@ -148,6 +148,7 @@ module.exports = (function () {
         const clean_meta = await _cleanFields({
           meta: new_meta,
           path_to_type,
+          path_to_folder,
           context: "update",
         });
         // const clean_meta = await utils.cleanNewMeta({
@@ -410,7 +411,7 @@ module.exports = (function () {
     }
   }
 
-  async function _cleanFields({ meta, path_to_type, context }) {
+  async function _cleanFields({ meta, path_to_type, path_to_folder, context }) {
     if (!meta) return {};
 
     const { fields = {} } = utils.parseAndCheckSchema({
@@ -419,7 +420,10 @@ module.exports = (function () {
 
     if (path_to_type) {
       // not applicable to instance settings
-      const siblings_folders = await API.getFolders({ path_to_type });
+      let siblings_folders = await API.getFolders({ path_to_type });
+      siblings_folders = siblings_folders.filter(
+        (sf) => sf.$path !== path_to_folder
+      );
       if (siblings_folders.length > 0)
         await utils.checkFieldUniqueness({
           fields,

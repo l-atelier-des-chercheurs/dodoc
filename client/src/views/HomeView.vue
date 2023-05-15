@@ -133,6 +133,24 @@ export default {
       current_mode: "spaces",
     };
   },
+  created() {
+    if (this.$route.query?.pfilters) this.current_mode = "projects";
+  },
+  mounted() {},
+  beforeDestroy() {},
+
+  watch: {
+    current_mode() {
+      if (this.current_mode === "spaces") {
+        if (this.$route.query?.pfilters) {
+          let query = JSON.parse(JSON.stringify(this.$route.query));
+          delete query.pfilters;
+          this.$router.push({ query });
+        }
+      }
+    },
+  },
+
   computed: {
     name() {
       return this.$root.app_infos.instance_meta.name;

@@ -475,8 +475,9 @@ export default function () {
         const response = await this.$axios
           .patch(path, new_meta)
           .catch((err) => {
-            this.onError(err);
-            throw err;
+            if (err.response.data.code)
+              throw _getErrorMsgFromCode(err.response.data.code);
+            else throw err.response.data;
           });
 
         return response.data;
