@@ -60,7 +60,8 @@
             :tags="all_keywords"
             :tag_type="'keywords'"
             :clickable="true"
-            @tagClick="toggleFilter({ type: 'keywords', value: $event })"
+            :tags_active="getActiveTags('keywords')"
+            @tagClick="toggleFilter({ filter_type: 'keywords', value: $event })"
           />
         </div>
 
@@ -70,7 +71,10 @@
             :tags="all_materials"
             :tag_type="'materials'"
             :clickable="true"
-            @tagClick="toggleFilter({ type: 'materials', value: $event })"
+            :tags_active="getActiveTags('materials')"
+            @tagClick="
+              toggleFilter({ filter_type: 'materials', value: $event })
+            "
           />
         </div>
 
@@ -80,30 +84,37 @@
             :tags="all_levels"
             :tag_type="'level'"
             :clickable="true"
-            @tagClick="toggleFilter({ type: 'level', value: $event })"
+            :tags_active="getActiveTags('level')"
+            @tagClick="toggleFilter({ filter_type: 'level', value: $event })"
           />
         </div>
       </div>
 
       <div class="_listOfProjects">
-        <div class="_tagList" v-if="active_filters.length > 0">
-          <button
-            type="button"
-            class="u-button u-button_small"
-            :class="btnClassForMedia(Object.keys(af)[0])"
-            v-for="af in active_filters"
-            :key="Object.keys(af)[0]"
-            @click="
-              toggleFilter({
-                type: Object.keys(af)[0],
-                value: Object.values(af)[0],
-              })
-            "
+        <transition name="scaleInFade" mode="out-in">
+          <transition-group
+            class="_tagList"
+            v-if="active_filters.length > 0"
+            tag="section"
+            name="projectsList"
+            appear
           >
-            {{ Object.values(af)[0] }} <sl-icon name="x" />
-          </button>
-        </div>
-        <!-- {{ filtered_projects.length }} -->
+            <SingleTag
+              v-for="af in active_filters"
+              :key="af.value"
+              :tag_type="af.filter_type"
+              :name="af.value"
+              :clickable="true"
+              :disableable="true"
+              @tagClick="
+                toggleFilter({
+                  filter_type: af.filter_type,
+                  value: af.value,
+                })
+              "
+            />
+          </transition-group>
+        </transition>
         <ProjectsList :projects="filtered_projects" />
       </div>
     </div>
@@ -159,9 +170,11 @@ export default {
       );
     },
     active_filters() {
-      if (!this.$route.query) return [];
-      return Object.entries(this.$route.query).map(([k, v]) => {
-        return { [k]: decodeURI(v) };
+      if (!this.$route.query?.filters) return [];
+
+      const _filters = JSON.parse(this.$route.query.filters);
+      return _filters.map((f) => {
+        return { filter_type: f.filter_type, value: decodeURI(f.value) };
       });
     },
     sorted_projects() {
@@ -194,11 +207,19 @@ export default {
         if (this.show_only_finished && p.$status !== "finished") return false;
 
         for (const af of this.active_filters) {
-          const k = Object.keys(af).at(0);
-          const v = Object.values(af).at(0);
-          if (!Object.prototype.hasOwnProperty.call(p, k)) return false;
-          if (Array.isArray(p[k]) && !p[k].includes(v)) return false;
-          else if (typeof p[k] === "string" && p[k] !== v) return false;
+          const filter_type = af.filter_type;
+          const value = af.value;
+
+          if (!Object.prototype.hasOwnProperty.call(p, filter_type))
+            return false;
+
+          if (Array.isArray(p[filter_type]) && !p[filter_type].includes(value))
+            return false;
+          else if (
+            typeof p[filter_type] === "string" &&
+            p[filter_type] !== value
+          )
+            return false;
         }
 
         if (this.search_project)
@@ -217,17 +238,38 @@ export default {
       if (type === "level") return "u-button_rouge";
       return "u-button_bleuvert";
     },
-    toggleFilter({ type, value }) {
+    toggleFilter({ filter_type, value }) {
       let query = {};
 
       if (this.$route.query)
         query = JSON.parse(JSON.stringify(this.$route.query));
 
-      if (value && query[type] !== encodeURI(value))
-        query[type] = encodeURI(value);
-      else delete query[type];
+      let _filters = query.filters ? JSON.parse(query.filters) : [];
 
+      if (
+        value &&
+        !_filters.some(
+          (f) => f.filter_type === filter_type && f.value === encodeURI(value)
+        )
+      )
+        _filters.push({
+          filter_type,
+          value: encodeURI(value),
+        });
+      else
+        _filters = _filters.filter(
+          (f) =>
+            !(f.filter_type === filter_type && f.value === encodeURI(value))
+        );
+
+      query.filters = JSON.stringify(_filters);
       this.$router.push({ query });
+    },
+    getActiveTags(type) {
+      return this.active_filters.reduce((acc, af) => {
+        if (af.filter_type === type) acc.push(af.value);
+        return acc;
+      }, []);
     },
   },
 };
@@ -237,6 +279,7 @@ export default {
   margin-top: calc(var(--spacing) * 1);
 
   width: 100%;
+  min-height: 70vh;
   max-width: calc(var(--max-column-width));
   margin: 0 auto;
 }

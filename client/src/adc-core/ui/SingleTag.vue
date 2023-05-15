@@ -4,13 +4,15 @@
     :class="[
       'u-button',
       custom_color,
-      'u-button_small',
       '_tag',
       {
         'is--inactive': !clickable,
       },
+      {
+        'is--active2': disableable,
+      },
     ]"
-    @click="$emit('tagClick', name)"
+    @click="$emit('tagClick')"
   >
     <span class="_tagName">
       {{ name }}
@@ -20,6 +22,9 @@
     </span>
     <span class="_removeBtn" v-if="removable" @click="$emit('removeClick')">
       <sl-icon name="trash3" />
+    </span>
+    <span class="_disableBtn" v-if="disableable">
+      <sl-icon name="x-circle-fill" />
     </span>
   </button>
 </template>
@@ -31,6 +36,7 @@ export default {
     clickable: Boolean,
     addable: Boolean,
     removable: Boolean,
+    disableable: Boolean,
   },
   components: {},
   data() {
@@ -52,4 +58,21 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._tag {
+  // border-radius: 1em;
+  text-transform: none;
+  padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
+
+  &.is--inactive {
+    cursor: default;
+  }
+}
+
+._addBtn,
+._removeBtn,
+._disableBtn {
+  margin-left: 0.5em;
+  line-height: 0.75;
+}
+</style>

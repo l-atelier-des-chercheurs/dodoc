@@ -214,7 +214,7 @@ button,
   &[disabled] {
     color: var(--c-gris_fonce);
     &:hover,
-    &:focus,
+    &:focus-visible,
     &.is--active {
       background-color: rgba(0, 0, 0, 0.1);
     }
@@ -225,7 +225,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-gris_fonce);
@@ -241,7 +241,7 @@ button,
   color: var(--c-noir);
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-gris);
@@ -261,7 +261,7 @@ button,
   }
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-rouge_fonce);
@@ -273,7 +273,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-bleuvert_fonce);
@@ -285,7 +285,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-bleuvert);
@@ -297,7 +297,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-orange_fonce);
@@ -309,7 +309,7 @@ button,
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-bleumarine_fonce);

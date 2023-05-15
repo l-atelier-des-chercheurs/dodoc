@@ -8,15 +8,16 @@
 
     <transition-group v-else class="_list" name="projectsList" appear>
       <SingleTag
-        v-for="kw in tags"
-        :key="kw"
+        v-for="tag in tags"
+        :key="tag"
         :tag_type="tag_type"
-        :name="kw"
+        :name="tag"
         :clickable="clickable"
         :addable="addable"
         :removable="removable"
-        @tagClick="$emit('tagClick')"
-        @removeClick="$emit('removeClick')"
+        :disableable="tags_active.includes(tag)"
+        @tagClick="$emit('tagClick', tag)"
+        @removeClick="$emit('removeClick', tag)"
       />
     </transition-group>
   </div>
@@ -32,6 +33,10 @@ export default {
     clickable: {
       type: Boolean,
       default: false,
+    },
+    tags_active: {
+      type: Array,
+      default: () => [],
     },
     addable: {
       type: Boolean,
@@ -59,15 +64,6 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 8);
-}
-
-._tag {
-  border-radius: 1em;
-  text-transform: none;
-
-  &.is--inactive {
-    cursor: default;
-  }
 }
 
 ._tagName {
