@@ -363,6 +363,7 @@ export default function () {
 
         close: "Fermer",
         settings: "Réglages",
+        admin_settings: "Réglages d’administration",
         list_of_pages: "Liste des pages",
         list_of_spreads: "Liste des planches",
         show_grid: "Afficher la grille",
@@ -388,6 +389,7 @@ export default function () {
         font_normal: "Normal",
         font_italic: "Italique",
         storage: "Stockage",
+        events: "Événements",
 
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
@@ -463,6 +465,7 @@ export default function () {
         add_multiple_images:
           "Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera una video.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.",
         more_informations: "Plus d’informations",
+        images: "Images",
 
         make_an_exhibition: "Créer une exposition",
 

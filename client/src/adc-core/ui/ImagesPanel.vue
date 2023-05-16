@@ -13,7 +13,7 @@
     </div> -->
 
     <DLabel :str="$t('images')" />
-    <div class="">
+    <div class="u-spacingBottom">
       <input
         type="file"
         multiple="multiple"
@@ -37,27 +37,28 @@
         :path="settings.$path"
         @close="selected_files = []"
       />
+    </div>
 
+    <div
+      class="u-spacingBottom _imagesList"
+      v-if="settings.$files && settings.$files.length > 0"
+    >
       <div
-        class="_imagesList"
-        v-if="settings.$files && settings.$files.length > 0"
+        class="_imagesList--image"
+        v-for="image in settings.$files"
+        :key="image.$path"
       >
-        <div
-          class="_imagesList--image"
-          v-for="image in settings.$files"
-          :key="image.$path"
-        >
-          <MediaContent :file="image" :context="'preview'" :resolution="640" />
-        </div>
+        <MediaContent :file="image" :context="'preview'" :resolution="640" />
       </div>
     </div>
 
-    <br />
-
-    <div class="" v-if="settings.$files">
-      <div v-for="ptype of possible_types" :key="ptype.key">
-        <DLabel :str="ptype.label" />
-
+    <div v-if="settings.$files">
+      <div
+        v-for="ptype of possible_types"
+        class="u-spacingBottom"
+        :key="ptype.key"
+      >
+        <DLabel :str="ptype.label" :instructions="ptype.instructions" />
         <RadioCheckboxField
           :field_name="ptype.key"
           :input_type="'radio'"
@@ -66,17 +67,8 @@
           :can_edit="can_edit"
           :options="editing_options"
         />
-
-        <div class="u-instructions" v-if="ptype.instructions">
-          <small>
-            {{ ptype.instructions }}
-          </small>
-        </div>
-        <br />
       </div>
     </div>
-
-    <br />
 
     <ColorInput
       class="u-spacingBottom"
@@ -84,8 +76,6 @@
       :value="settings.hero_background_color"
       @save="saveNewHeroBgColor({ $event, field: 'hero_background_color' })"
     />
-
-    <br />
 
     <ColorInput
       class="u-spacingBottom"

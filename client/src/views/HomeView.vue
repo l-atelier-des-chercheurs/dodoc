@@ -16,7 +16,7 @@
           @click="show_settings_modal = !show_settings_modal"
         >
           <sl-icon name="gear-fill" />
-          &nbsp;{{ $t("settings") }}
+          &nbsp;{{ $t("admin_settings") }}
         </button>
       </div>
       <AdminSettings
@@ -197,12 +197,11 @@ export default {
 }
 
 ._homeView--container {
-  position: relative;
+  // position: sticky;
+  // top: 60px;
   width: 100%;
 
-  background-color: var(--c-gris_clair);
-  margin-bottom: calc(var(--spacing) * 3);
-  background: var(--hero-bg, white);
+  background: var(--hero-bg, var(--c-gris_clair));
 
   ._homeCover {
     background: white;
@@ -325,7 +324,11 @@ export default {
 }
 
 ._bottomCont {
+  position: relative;
+  background: white;
+  z-index: 1;
   flex: 1;
+  padding-top: calc(var(--spacing) * 2);
   // min-height: 80vh;
 }
 ._switch {
@@ -333,11 +336,11 @@ export default {
 }
 
 ._editSettingsBtn--cont {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
   z-index: 100;
-  width: 100%;
+  // width: 100%;
   text-align: center;
 }
 ._editSettingsBtn {

@@ -1,24 +1,19 @@
 <template>
   <div class="_dLabel">
-    <div class="_labelLine">
+    <div class="_labelLine" @click="show_instructions = !show_instructions">
       <label v-if="tag === 'label'" class="u-label">
         {{ str }}
       </label>
       <component v-else :is="tag">
         {{ str }}
       </component>
-      <span v-if="instructions">
-        <!-- <sl-button size="small" circle @click="$emit('toggleHelp')">
-        <sl-icon name="info-circle" :label="$t('edit')" />
-        </sl-button> -->
-        <sl-icon-button
-          :name="!show_instructions ? 'info-circle' : 'info-circle-fill'"
-          :class="{
-            'is--active': show_instructions,
-          }"
-          @click="show_instructions = !show_instructions"
-        />
-      </span>
+      <sl-icon-button
+        v-if="instructions"
+        :name="!show_instructions ? 'info-circle' : 'info-circle-fill'"
+        :class="{
+          'is--active': show_instructions,
+        }"
+      />
     </div>
     <div class="u-instructions" v-if="show_instructions">
       <small v-html="instructions" />
@@ -68,9 +63,10 @@ export default {
   sl-icon-button {
     color: var(--label-color);
     margin: calc(-1 * var(--sl-spacing-x-small)) 0;
+    margin-left: calc(-0.5 * var(--sl-spacing-x-small));
 
     &::part(base) {
-      // padding: calc(var(--spacing) / 4);
+      padding: calc(var(--spacing) / 3);
       color: currentColor;
     }
 
