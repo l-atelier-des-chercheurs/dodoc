@@ -85,8 +85,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topbar {
-  position: sticky;
-  top: 0;
+  // position: sticky;
+  // top: 0;
+  position: relative;
   z-index: 5;
 
   display: flex;
