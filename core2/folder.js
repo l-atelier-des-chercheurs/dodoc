@@ -137,7 +137,6 @@ module.exports = (function () {
     }) => {
       dev.logfunction({ path_to_folder, data });
 
-      // get folder meta
       let meta = await utils.readMetaFile(path_to_folder, "meta.txt");
       const previous_meta = JSON.parse(JSON.stringify(meta));
 
@@ -145,23 +144,27 @@ module.exports = (function () {
 
       // filter new_meta with schema – only keep props present in the schema, not read_only, and respecing the type
       if (new_meta) {
-        const clean_meta = await _cleanFields({
+        const valid_meta = await _cleanFields({
           meta: new_meta,
           path_to_type,
           path_to_folder,
           context: "update",
         });
-        // const clean_meta = await utils.cleanNewMeta({
-        //   relative_path: path_to_folder,
-        //   new_meta,
-        // });
-        Object.assign(meta, clean_meta);
+
+        if (valid_meta.$password)
+          valid_meta.$password = await utils.hashPassword({
+            password: valid_meta.$password,
+          });
+
+        // override existing meta with new valid meta
+        Object.assign(meta, valid_meta);
       }
 
       // unchecked properties, not available through API. Used by copyFolder for example
       if (admin_meta) Object.assign(meta, admin_meta);
 
       meta.$date_modified = utils.getCurrentDate();
+
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
         meta,
