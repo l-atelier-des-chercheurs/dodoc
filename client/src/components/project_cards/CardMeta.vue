@@ -26,7 +26,7 @@
       <button
         type="button"
         class="u-button u-button_bleumarine u-button_small"
-        @click="openInFinder"
+        @click="openInFinder(project.$path)"
         v-html="project_path_wrappable"
       />
     </div>
@@ -58,12 +58,6 @@ export default {
     },
   },
   methods: {
-    openInFinder() {
-      window.electronAPI.send("toMain", {
-        type: "open_path",
-        path: this.project.$path,
-      });
-    },
     async removeProject() {
       this.fetch_status = "pending";
       this.fetch_error = null;
@@ -79,6 +73,12 @@ export default {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
       }
+    },
+    openInFinder(path) {
+      window.electronAPI.send("toMain", {
+        type: "open_path",
+        path,
+      });
     },
   },
 };
