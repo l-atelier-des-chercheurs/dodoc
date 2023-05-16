@@ -328,6 +328,9 @@
       "require_mail_to_signup": {
         "type": "boolean"
       },
+      "enable_events": {
+        "type": "boolean"
+      },
       "hero_background_color": {
         "type": "string"
       },
@@ -642,6 +645,31 @@
           },
           "font_files": {
             "type": "object"
+          }
+        },
+        "$files": {}
+      },
+      "events": {
+        "$cover": {
+          "width": 2000,
+          "height": 2000,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 2000]
+          }
+        },
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          },
+          "presentation": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
           }
         },
         "$files": {}

@@ -63,6 +63,10 @@
       <button type="button" class="u-button">{{ $t("projects") }}</button>
     </div> -->
 
+    <section v-if="$root.app_infos.instance_meta.enable_events">
+      <EventsSection />
+    </section>
+
     <div class="_bottomCont">
       <RadioSwitch
         class="_switch"
@@ -122,6 +126,7 @@ export default {
   props: {},
   components: {
     AdminSettings,
+    EventsSection: () => import("@/components/event/EventsSection.vue"),
     SpacesList,
     AllProjects,
     DodocLogo,
@@ -329,7 +334,7 @@ export default {
   z-index: 1;
   flex: 1;
   padding-top: calc(var(--spacing) * 2);
-  // min-height: 80vh;
+  min-height: 80vh;
 }
 ._switch {
   margin-bottom: calc(var(--spacing) * 1);

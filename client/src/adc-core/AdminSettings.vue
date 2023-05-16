@@ -147,7 +147,16 @@
             <FontsPanel v-if="current_tab === 'fonts'" />
           </sl-tab-panel>
           <sl-tab-panel name="events">
-            <EventsPanel v-if="current_tab === 'events'" />
+            <template v-if="current_tab === 'events'">
+              <div class="">{{ $t("events") }}</div>
+              <ToggleField
+                :label="$t('enable_events')"
+                :field_name="'enable_events'"
+                :content="settings.require_signup_to_contribute === true"
+                :path="settings.$path"
+                :can_edit="is_instance_admin"
+              />
+            </template>
           </sl-tab-panel>
           <sl-tab-panel name="storage">
             <PickNativePath
@@ -172,14 +181,12 @@
 </template>
 <script>
 import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
-import EventsPanel from "@/adc-core/ui/EventsPanel.vue";
 import ImagesPanel from "@/adc-core/ui/ImagesPanel.vue";
 
 export default {
   props: {},
   components: {
     FontsPanel,
-    EventsPanel,
     ImagesPanel,
   },
   data() {
