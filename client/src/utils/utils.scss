@@ -2,7 +2,7 @@
   display: block;
   // font-variant: small-caps;
   // text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 400;
 
   // font-family: var(--sl-font-mono);
   letter-spacing: 0.03em;
@@ -386,6 +386,7 @@ textarea,
   // color: var(--input-color);
   color: inherit;
   // border: solid var(--input-border-width) var(--input-border-color);
+  padding: calc(var(--spacing) / 2);
   border-radius: var(--input-border-radius);
   background-color: var(--c-gris);
   color: inherit;
@@ -397,8 +398,9 @@ textarea,
 
   vertical-align: middle;
 
-  padding-left: calc(var(--spacing) * 0.5);
-  padding-right: calc(var(--spacing) * 0.5);
+  padding: calc(var(--spacing) * 0.5);
+  // padding-left: calc(var(--spacing) * 0.5);
+  // padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
   border-bottom: 1px solid transparent;
@@ -742,7 +744,6 @@ input[type="file"] {
   // background: var(--c-gris);
   border: 2px solid var(--c-gris);
 
-  margin: calc(var(--spacing) / 1) 0;
   padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 4);
 
