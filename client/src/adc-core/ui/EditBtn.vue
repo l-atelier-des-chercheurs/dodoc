@@ -68,22 +68,22 @@ export default {
   span {
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     height: calc(100% + 2px);
 
     background: var(--color2);
     color: var(--color1);
 
     margin: -1px;
-    padding: calc(var(--spacing) / 2);
-    padding-left: 100%;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+    padding-right: 100%;
     display: flex;
     align-items: center;
     border-radius: 1rem;
     white-space: nowrap;
 
     pointer-events: none;
-    transform: translateX(-5px);
+    transform: translateX(5px);
     opacity: 0;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }

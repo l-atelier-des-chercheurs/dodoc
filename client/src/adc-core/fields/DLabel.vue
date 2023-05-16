@@ -63,7 +63,11 @@ export default {
   sl-icon-button {
     color: var(--label-color);
     margin: calc(-1 * var(--sl-spacing-x-small)) 0;
-    margin-left: calc(-0.5 * var(--sl-spacing-x-small));
+
+    &:hover,
+    &:focus-visible {
+      color: var(--active-color);
+    }
 
     &::part(base) {
       padding: calc(var(--spacing) / 3);
