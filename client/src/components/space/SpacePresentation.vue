@@ -194,7 +194,7 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 }
 ._subtitle {
   color: var(--c-gris_fonce);
