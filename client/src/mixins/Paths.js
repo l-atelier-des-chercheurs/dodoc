@@ -39,7 +39,6 @@ export default {
     createPath({ space_slug, project_slug, author_slug, event_slug } = {}) {
       if (author_slug) return `authors/${author_slug}`;
       if (event_slug) return `events/${event_slug}`;
-      if (space_slug) return `spaces/${space_slug}`;
       if (space_slug)
         if (project_slug)
           return `spaces/${space_slug}/projects/${project_slug}`;
