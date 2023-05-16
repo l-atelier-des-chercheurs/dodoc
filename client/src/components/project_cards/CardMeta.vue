@@ -12,8 +12,11 @@
     <div class="u-spacingBottom" />
 
     <div class="u-spacingBottom">
-      <DateField :title="$t('date_created')" :date="project.$date_created" />
-      <DateField :title="$t('date_modified')" :date="project.$date_modified" />
+      <DateDisplay :title="$t('date_created')" :date="project.$date_created" />
+      <DateDisplay
+        :title="$t('date_modified')"
+        :date="project.$date_modified"
+      />
     </div>
 
     <div class="u-mediaOptions" v-if="can_edit">

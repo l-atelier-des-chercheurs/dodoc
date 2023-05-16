@@ -187,7 +187,7 @@
                   :context="'preview'"
                 />
 
-                <DateField
+                <DateDisplay
                   class=""
                   :title="$t('date_uploaded')"
                   :date="page_module.$date_uploaded"

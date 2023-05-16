@@ -6,7 +6,7 @@
 
     <div class="_remixes">
       <div class="_remixes--item" v-for="remix in remixes" :key="remix.$path">
-        <DateField :date="remix.$date_created" />
+        <DateDisplay :date="remix.$date_created" />
         <span>
           {{ $t(remix.type) }}
         </span>

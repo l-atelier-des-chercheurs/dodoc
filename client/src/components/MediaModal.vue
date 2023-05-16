@@ -62,8 +62,14 @@
         </div>
 
         <div>
-          <DateField :title="$t('date_uploaded')" :date="file.$date_uploaded" />
-          <DateField :title="$t('date_modified')" :date="file.$date_modified" />
+          <DateDisplay
+            :title="$t('date_uploaded')"
+            :date="file.$date_uploaded"
+          />
+          <DateDisplay
+            :title="$t('date_modified')"
+            :date="file.$date_modified"
+          />
         </div>
       </div>
       <div class="_selectBtn" v-else>
