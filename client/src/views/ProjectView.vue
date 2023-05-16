@@ -82,8 +82,7 @@ export default {
       projectpanes: [],
     };
   },
-  created() {},
-  async mounted() {
+  async created() {
     await this.listProject();
     await this.getSpace();
 
@@ -100,6 +99,7 @@ export default {
     this.$api.join({ room: this.project.$path });
     //
   },
+  mounted() {},
   beforeDestroy() {
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
     this.$api.leave({ room: this.project.$path });
@@ -203,7 +203,6 @@ export default {
     },
     updateQueryPanes() {
       let query = {};
-
       if (this.projectpanes)
         query.projectpanes = JSON.stringify(this.projectpanes);
       if (
@@ -211,8 +210,7 @@ export default {
         JSON.stringify(this.$route.query) === JSON.stringify(query)
       )
         return false;
-
-      this.$router.push({ query });
+      this.$router.replace({ query });
     },
     closeOnRemove({ path }) {
       if (path === this.project.$path) {
