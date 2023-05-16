@@ -68,7 +68,7 @@ export default {
   span {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     height: calc(100% + 2px);
 
     background: var(--color2);
@@ -76,14 +76,14 @@ export default {
 
     margin: -1px;
     padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-    padding-right: 100%;
+    padding-left: 100%;
     display: flex;
     align-items: center;
     border-radius: 1rem;
     white-space: nowrap;
 
     pointer-events: none;
-    transform: translateX(5px);
+    transform: translateX(15px);
     opacity: 0;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
