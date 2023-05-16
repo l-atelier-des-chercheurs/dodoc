@@ -2,10 +2,10 @@
   display: block;
   // font-variant: small-caps;
   // text-transform: uppercase;
-  font-weight: 400;
+  font-weight: 600;
 
   // font-family: var(--sl-font-mono);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
   font-size: var(--sl-font-size-small);
   // letter-spacing: 0.01em;
   color: var(--label-color);
@@ -751,7 +751,7 @@ input[type="file"] {
 }
 
 .u-spacingBottom {
-  margin-bottom: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing));
 }
 
 fieldset {

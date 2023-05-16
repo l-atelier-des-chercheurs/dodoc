@@ -473,6 +473,7 @@ module.exports = (function () {
       signup_password,
       require_signup_to_contribute,
       require_mail_to_signup,
+      enable_events,
       $admins,
       $contributors,
 
@@ -495,6 +496,7 @@ module.exports = (function () {
       : "";
     d.require_signup_to_contribute = require_signup_to_contribute === true;
     d.require_mail_to_signup = require_mail_to_signup === true;
+    d.enable_events = enable_events === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
 
