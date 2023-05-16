@@ -122,6 +122,8 @@ import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
 Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
+import CreateFolder from "@/adc-core/modals/CreateFolder";
+Vue.component("CreateFolder", CreateFolder);
 //
 
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";

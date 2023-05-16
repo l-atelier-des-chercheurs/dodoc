@@ -32,10 +32,12 @@
         {{ $t("create") }}
       </button>
     </div>
-    <CreateSpace
+    <CreateFolder
       v-if="show_create_modal"
+      :modal_name="$t('create_a_space')"
+      :path="'spaces'"
       @close="show_create_modal = false"
-      @openNewSpace="openNewSpace"
+      @openNew="openNewSpace"
     />
     <div class="_list">
       <SpacePresentation
@@ -50,18 +52,15 @@
 </template>
 <script>
 import SpacePresentation from "@/components/space/SpacePresentation.vue";
-import CreateSpace from "@/components/modals/CreateSpace.vue";
 
 export default {
   props: {},
   components: {
     SpacePresentation,
-    CreateSpace,
   },
   data() {
     return {
       spaces: undefined,
-      new_space_title: "",
       path: "spaces",
       fetch_spaces_error: undefined,
       show_create_modal: false,

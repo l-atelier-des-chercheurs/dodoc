@@ -1,5 +1,12 @@
 <template>
   <div class="_spaceView">
+    <div class="_backBtn">
+      <router-link :to="'/'" class="u-buttonLink">
+        <sl-icon name="arrow-left-short" />
+        {{ $t("home") }}
+      </router-link>
+    </div>
+
     <div v-if="space">
       <div class="_topSpace">
         <SpacePresentation
@@ -44,11 +51,13 @@
           </button>
         </div>
 
-        <CreateProject
+        <CreateFolder
           v-if="show_create_modal"
+          :modal_name="$t('create_a_project')"
           :path="projects_path"
+          :default_folder_status="'draft'"
           @close="show_create_modal = false"
-          @openNewProject="openNewProject"
+          @openNew="openNewProject"
         />
 
         <ProjectsListWithFilter
@@ -60,14 +69,12 @@
   </div>
 </template>
 <script>
-import CreateProject from "@/components/modals/CreateProject.vue";
 import ProjectsListWithFilter from "@/components/ProjectsListWithFilter.vue";
 import SpacePresentation from "@/components/space/SpacePresentation.vue";
 
 export default {
   props: {},
   components: {
-    CreateProject,
     ProjectsListWithFilter,
     SpacePresentation,
   },
@@ -149,6 +156,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._backBtn {
+  margin-top: var(--spacing);
+  margin-left: var(--spacing);
+}
+
 ._spaceView {
   // max-width: var(--max-column-width);
   margin: 0 auto;

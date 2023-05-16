@@ -1,12 +1,12 @@
 <template>
-  <BaseModal2 :title="$t('create_a_project')" @close="$emit('close')">
-    <form class="input-validation-required" @submit.prevent="createProject">
+  <BaseModal2 :title="modal_name" @close="$emit('close')">
+    <form class="input-validation-required" @submit.prevent="createFolder">
       <DLabel :str="$t('title')" />
-
       <TextInput
-        :content.sync="new_project_title"
+        :content.sync="new_folder_title"
         :maxlength="40"
         :required="true"
+        ref="titleInput"
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
@@ -14,22 +14,22 @@
 
       <div class="">
         <ToggleInput
-          :content.sync="new_project_is_private"
+          :content.sync="new_folder_is_private"
           :label="$t('private')"
           :options="{
-            true: $t('private_status_explanations_projects'),
-            false: $t('public_status_explanations_projects'),
+            true: $t('private_status_explanations'),
+            false: $t('public_status_explanations'),
           }"
         />
       </div>
 
       <br />
-      <!-- todo : validate properly -->
+
       <button
         class="u-button u-button_bleuvert"
         type="submit"
         slot="footer"
-        :loading="is_creating_project"
+        :loading="is_creating_folder"
       >
         {{ $t("create_and_open") }}
       </button>
@@ -45,15 +45,17 @@
 <script>
 export default {
   props: {
+    modal_name: String,
     path: String,
+    default_folder_status: { type: String, default: "public" },
   },
   components: {},
   data() {
     return {
-      new_project_title: "",
-      new_project_is_private: false,
+      new_folder_title: "",
+      new_folder_is_private: false,
 
-      is_creating_project: false,
+      is_creating_folder: false,
       allow_save: false,
       error_msg: "",
     };
@@ -64,29 +66,32 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async createProject() {
-      this.is_creating_project = true;
+    async createFolder() {
+      this.is_creating_folder = true;
+
       const $admins = this.setDefaultContentAdmins();
 
       try {
         const new_folder_slug = await this.$api.createFolder({
           path: this.path,
           additional_meta: {
-            title: this.new_project_title,
-            requested_slug: this.new_project_title,
-            $status: this.new_project_is_private === true ? "private" : "draft",
+            title: this.new_folder_title,
+            requested_slug: this.new_folder_title,
+            $status: this.new_folder_is_private === true ? "private" : "public",
             $admins,
           },
         });
         setTimeout(() => {
-          this.$emit("openNewProject", new_folder_slug);
+          this.$emit("openNew", new_folder_slug);
         }, 50);
       } catch (err) {
-        this.error_msg = "Error: " + err.message;
-        setTimeout(() => {
-          this.error_msg = "";
-        }, 5000);
-        this.is_creating_project = false;
+        if (err.code === "unique_field_taken") {
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("notifications.title_taken"));
+          this.$refs.titleInput.$el.querySelector("input").select();
+        }
+        this.is_creating_folder = false;
       }
     },
   },

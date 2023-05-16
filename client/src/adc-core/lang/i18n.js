@@ -44,6 +44,8 @@ export default function () {
         a_foss_made_by:
           "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
         home: "Accueil",
+        go_home: "Retourner à l’accueil",
+        page_not_found: "Cette page n’existe pas",
         admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
         admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
         edit: "Modifier",
@@ -294,13 +296,9 @@ export default function () {
         invisible: "Invisible",
         visible: "Visible",
 
-        public_status_explanations_spaces:
-          "L’espace sera visible sur la page d’accueil.",
-        private_status_explanations_spaces:
-          "L’espace ne sera visible qu’à ses contributeurs.",
+        public_status_explanations: "Sera visible sur la page d’accueil.",
+        private_status_explanations: "Ne sera visible qu’à ses contributeurs.",
 
-        public_status_explanations_projects:
-          "Le projet sera affiché avec les autres projets sur la page de son espace.",
         private_status_explanations_projects:
           "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
         finished_status_explanations:
@@ -661,6 +659,7 @@ export default function () {
         open: "ouvrir",
         create_and_open: "Créer et ouvrir",
         create_a_project: "Créer un projet",
+        create_an_event: "Créer un événement",
         create_a_publication: "Créer une publication",
 
         add_media: "Ajouter un média",
@@ -707,6 +706,7 @@ export default function () {
           "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
         require_mail_to_signup:
           "Une adresse courriel est obligatoire pour créer un compte",
+        enable_events: "Activer la fonctionnalité « événements »",
 
         you_must_login_to_contribute:
           "Vous devez vous inscrire ou vous connecter pour contribuer",
