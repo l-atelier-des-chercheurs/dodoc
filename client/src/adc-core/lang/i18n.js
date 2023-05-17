@@ -722,6 +722,7 @@ export default function () {
           "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
         "notifications.action_not_authorized": "Cette action n’est pas permise",
+        "notifications.event_does_not_exit": "Cet événement n’existe pas",
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.name_taken": "Ce nom est déjà utilisé",
 

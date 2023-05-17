@@ -5,6 +5,13 @@
         <LoaderSpinner />
       </div>
       <template v-else>
+        <div v-if="!event">
+          <router-link :to="'/'" class="u-buttonLink">
+            <sl-icon name="arrow-left-short" />
+            {{ $t("other_events") }}
+          </router-link>
+        </div>
+
         <CoverField
           class="_cover"
           :context="'full'"
@@ -69,7 +76,11 @@ export default {
     };
   },
   async created() {
-    await this.getEvent();
+    await this.getEvent().catch((err) => {
+      if (err.response?.status === 404)
+        this.$alertify.delay(4000).error("notifications.event_does_not_exit");
+      this.$router.replace("/");
+    });
     this.$api.join({ room: this.event_path });
     // await new Promise((r) => setTimeout(r, 1200));
     this.is_loading = false;
@@ -89,13 +100,9 @@ export default {
   },
   methods: {
     async getEvent() {
-      this.event = await this.$api
-        .getFolder({
-          path: this.event_path,
-        })
-        .catch(() => {
-          return;
-        });
+      this.event = await this.$api.getFolder({
+        path: this.event_path,
+      });
     },
     async removeEvent() {
       await this.$api.deleteItem({
