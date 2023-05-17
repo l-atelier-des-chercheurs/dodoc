@@ -60,12 +60,13 @@ export default {
   async created() {
     await this.getEvent();
     this.$api.join({ room: this.event_path });
-
     // await new Promise((r) => setTimeout(r, 1200));
     this.is_loading = false;
   },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.event_path });
+  },
   watch: {},
   computed: {
     event_path() {

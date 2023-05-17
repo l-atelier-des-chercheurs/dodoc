@@ -243,6 +243,7 @@ export default {
     this.$api.join({ room: this.current_stopmotion_path });
   },
   beforeDestroy() {
+    this.$api.leave({ room: this.current_stopmotion_path });
     this.$eventHub.$off("stopmotion.addImage", this.appendToStopMotion);
   },
 

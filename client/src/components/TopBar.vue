@@ -58,10 +58,10 @@ export default {
       path: `authors`,
     });
     this.$api.join({ room: "authors" });
-
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
   },
   beforeDestroy() {
+    this.$api.leave({ room: "authors" });
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
   },
   watch: {
