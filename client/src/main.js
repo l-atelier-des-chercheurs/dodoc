@@ -55,9 +55,6 @@ if (window.app_infos.is_electron)
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
-import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
-Vue.config.ignoredElements = [/^sl-/];
-Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
