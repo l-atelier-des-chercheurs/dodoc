@@ -1,7 +1,7 @@
 <template>
   <div class="_eventsList">
     <div class="u-sameRow u-spacingBottom">
-      <DLabel :str="$t('events')" :tag="'h2'" />
+      <DLabel :str="$t('events')" />
       <button
         type="button"
         class="u-button u-button_orange u-button_small"
@@ -43,7 +43,9 @@
 
     <div class="_list">
       <div v-for="event in sorted_events" :key="event.$path">
-        {{ event.title }}
+        <h3>
+          {{ event.title }}
+        </h3>
         <router-link :to="{ path: createURLFromPath(event.$path) }">
           {{ $t("open") }}
         </router-link>

@@ -535,7 +535,7 @@ export default function () {
         machines_and_materials: "Machines et matériaux",
         machines: "Machines",
         materials: "Matériaux",
-        levels_and_competences: "Niveau et compétence",
+        levels_and_competences: "Niveaux et compétence",
 
         fabrication_level: "Niveau de connaissance",
         beginner: "Débutant",

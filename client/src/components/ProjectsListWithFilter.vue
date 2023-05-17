@@ -54,6 +54,12 @@
           </button>
         </div>
 
+        <div v-if="$root.app_infos.instance_meta.enable_events">
+          <DLabel :str="$t('events')" />
+
+          <!-- <EventField :project="" /> -->
+        </div>
+
         <div class="">
           <DLabel :str="$t('levels_and_competences')" />
           <TagsList
@@ -365,7 +371,7 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   border-top: 2px solid var(--c-gris);
-  padding-top: calc(var(--spacing) * 1);
+  padding-top: calc(var(--spacing) / 2);
   margin-top: calc(var(--spacing) * 1);
 
   ::v-deep {

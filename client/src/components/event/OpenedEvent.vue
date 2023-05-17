@@ -4,6 +4,13 @@
       <LoaderSpinner />
     </div>
     <div v-else>
+      <div class="_backBtn">
+        <router-link :to="'/'" class="u-buttonLink">
+          <sl-icon name="arrow-left-short" />
+          {{ $t("close") }}
+        </router-link>
+      </div>
+
       <div class="u-spacingBottom">
         <TitleField
           :field_name="'title'"
@@ -27,13 +34,14 @@
           :content="event.presentation"
           :path="event.$path"
           :maxlength="1280"
+          :input_type="'markdown'"
           :can_edit="can_edit_event"
         />
       </div>
 
-      <router-link :to="{ path: '/' }">
-        {{ $t("close") }}
-      </router-link>
+      <div class="u-mediaOptions" v-if="can_edit_event">
+        <RemoveMenu :remove_text="$t('remove')" @remove="removeEvent" />
+      </div>
     </div>
   </div>
 </template>
@@ -53,8 +61,7 @@ export default {
     await this.getEvent();
     this.$api.join({ room: this.event_path });
 
-    await new Promise((r) => setTimeout(r, 1200));
-
+    // await new Promise((r) => setTimeout(r, 1200));
     this.is_loading = false;
   },
   mounted() {},
@@ -78,6 +85,12 @@ export default {
           return;
         });
     },
+    async removeEvent() {
+      await this.$api.deleteItem({
+        path: this.event_path,
+      });
+      this.$router.push("/");
+    },
   },
 };
 </script>
@@ -90,5 +103,10 @@ export default {
   margin: 0 auto;
   max-width: var(--max-column-width);
   padding: calc(var(--spacing) * 1);
+}
+
+._backBtn {
+  margin-top: var(--spacing);
+  margin-left: var(--spacing);
 }
 </style>

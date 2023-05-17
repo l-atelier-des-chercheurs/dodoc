@@ -421,6 +421,7 @@
               "disciplines": {
                 "type": "string"
               },
+              "event_linked_slug": {
                 "type": "string"
               }
             },
