@@ -55,9 +55,21 @@
         </div>
 
         <div class="">
+          <DLabel :str="$t('levels_and_competences')" />
+          <TagsList
+            :tags="extractAll('level')"
+            :tag_type="'level'"
+            :clickable="true"
+            :translated="isTranslated('level')"
+            :tags_active="getActiveTags('level')"
+            @tagClick="toggleFilter({ filter_type: 'level', value: $event })"
+          />
+        </div>
+
+        <div class="">
           <DLabel :str="$t('keywords')" />
           <TagsList
-            :tags="all_keywords"
+            :tags="extractAll('keywords')"
             :tag_type="'keywords'"
             :clickable="true"
             :tags_active="getActiveTags('keywords')"
@@ -66,9 +78,9 @@
         </div>
 
         <div class="">
-          <DLabel :str="$t('machines_and_materials')" />
+          <DLabel :str="$t('materials')" />
           <TagsList
-            :tags="all_materials"
+            :tags="extractAll('materials')"
             :tag_type="'materials'"
             :clickable="true"
             :tags_active="getActiveTags('materials')"
@@ -77,16 +89,44 @@
             "
           />
         </div>
+        <div class="">
+          <DLabel :str="$t('machines')" />
+          <TagsList
+            :tags="extractAll('machines')"
+            :tag_type="'machines'"
+            :clickable="true"
+            :tags_active="getActiveTags('machines')"
+            @tagClick="toggleFilter({ filter_type: 'machines', value: $event })"
+          />
+        </div>
 
         <div class="">
-          <DLabel :str="$t('levels_and_competences')" />
+          <DLabel :str="$t('disciplines')" />
           <TagsList
-            :tags="all_levels"
-            :tag_type="'level'"
+            :tags="extractAll('disciplines')"
+            :tag_type="'disciplines'"
             :clickable="true"
-            :translated="true"
-            :tags_active="getActiveTags('level')"
-            @tagClick="toggleFilter({ filter_type: 'level', value: $event })"
+            :translated="isTranslated('disciplines')"
+            :translated_prefix="translatedPrefix('disciplines')"
+            :tags_active="getActiveTags('disciplines')"
+            @tagClick="
+              toggleFilter({ filter_type: 'disciplines', value: $event })
+            "
+          />
+        </div>
+
+        <div class="">
+          <DLabel :str="$t('target_audience')" />
+          <TagsList
+            :tags="extractAll('target_audience')"
+            :tag_type="'target_audience'"
+            :clickable="true"
+            :translated="isTranslated('target_audience')"
+            :translated_prefix="translatedPrefix('target_audience')"
+            :tags_active="getActiveTags('target_audience')"
+            @tagClick="
+              toggleFilter({ filter_type: 'target_audience', value: $event })
+            "
           />
         </div>
       </div>
@@ -104,7 +144,7 @@
               v-for="af in active_filters"
               :key="af.value"
               :tag_type="af.filter_type"
-              :name="af.value"
+              :name="tagName(af.filter_type, af.value)"
               :clickable="true"
               :disableable="true"
               @tagClick="
@@ -172,18 +212,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    all_keywords() {
-      return this.extractArr(this.filtered_projects, "keywords");
-    },
-    all_materials() {
-      return this.extractArr(this.filtered_projects, "materials");
-    },
-    all_levels() {
-      return this.extractArr(this.filtered_projects, "level");
-      // .map((tag) =>
-      //   this.$t(tag)
-      // );
-    },
     active_filters() {
       if (!this.$route.query?.pfilters) return [];
       const _filters = JSON.parse(this.$route.query.pfilters);
@@ -246,11 +274,8 @@ export default {
     },
   },
   methods: {
-    btnClassForMedia(type) {
-      if (type === "keywords") return "u-button_orange";
-      if (type === "materials") return "u-button_bleumarine";
-      if (type === "level") return "u-button_rouge";
-      return "u-button_bleuvert";
+    extractAll(key) {
+      return this.extractArr(this.filtered_projects, key);
     },
     toggleFilter({ filter_type, value }) {
       let query = {};
@@ -293,6 +318,22 @@ export default {
         return acc;
       }, []);
     },
+    isTranslated(key) {
+      return ["level", "disciplines", "target_audience"].includes(key);
+    },
+    translatedPrefix(key) {
+      if (this.isTranslated(key))
+        if (key === "disciplines") return "di_";
+        else if (key === "target_audience") return "ta_";
+      return false;
+    },
+    tagName(type, tag_str) {
+      if (this.isTranslated(type))
+        if (this.translatedPrefix(type))
+          return this.$t(this.translatedPrefix(type) + tag_str);
+        else return this.$t(tag_str);
+      return tag_str;
+    },
   },
 };
 </script>
@@ -322,7 +363,10 @@ export default {
   // align-items: flex-end;
   align-items: flex-start;
   gap: calc(var(--spacing) / 2);
+
+  border-top: 2px solid var(--c-gris);
   padding-top: calc(var(--spacing) * 1);
+  margin-top: calc(var(--spacing) * 1);
 
   ::v-deep {
     button {

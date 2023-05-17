@@ -6,6 +6,7 @@
     }"
   >
     <RadioCheckboxInput
+      v-if="edit_mode || new_content.length > 0"
       :value.sync="new_content"
       :input_type="input_type"
       :options="options"
@@ -109,17 +110,17 @@ export default {
 <style lang="scss" scoped>
 ._radioCheckboxField {
   &:not(.is--beingEdited) {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--spacing) / 1);
+    // display: flex;
+    // align-items: center;
+    // gap: calc(var(--spacing) / 1);
 
-    > * {
-      flex: 1 1 auto;
-    }
+    // > * {
+    //   flex: 1 1 auto;
+    // }
 
-    ._footer {
-      flex: 0 0 auto;
-    }
+    // ._footer {
+    //   flex: 0 0 auto;
+    // }
   }
 }
 

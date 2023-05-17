@@ -52,7 +52,9 @@ export default {
       if (this.tag_type === "materials") return "u-button_bleumarine";
       if (this.tag_type === "machines") return "u-button_bleuvert";
       if (this.tag_type === "keywords") return "u-button_orange";
-      return "u-button_orange";
+      if (this.tag_type === "disciplines") return "u-button_rouge";
+      // return "u-button_orange";
+      return "";
     },
   },
   methods: {},

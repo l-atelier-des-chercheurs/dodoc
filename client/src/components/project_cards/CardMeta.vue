@@ -1,15 +1,22 @@
 <template>
   <ProjectCard :header="$t('informations')" :icon="'info-square'" open>
-    <AdminsAndContributorsField
-      :show_section="['admins', 'contributors']"
-      :folder="project"
-      :can_edit="can_edit"
-      :admin_label="$t('referent')"
-      :admin_instructions="$t('project_admin_instructions')"
-      :contrib_instructions="$t('project_contrib_instructions')"
-    />
+    <div class="u-spacingBottom">
+      <AdminsAndContributorsField
+        :show_section="['admins', 'contributors']"
+        :folder="project"
+        :can_edit="can_edit"
+        :admin_label="$t('referent')"
+        :admin_instructions="$t('project_admin_instructions')"
+        :contrib_instructions="$t('project_contrib_instructions')"
+      />
+    </div>
 
-    <div class="u-spacingBottom" />
+    <EventField
+      class="u-spacingBottom"
+      v-if="$root.app_infos.instance_meta.enable_events"
+      :project="project"
+      :can_edit="can_edit"
+    />
 
     <div class="u-spacingBottom">
       <DateDisplay :title="$t('date_created')" :date="project.$date_created" />
@@ -38,6 +45,7 @@
 <script>
 import ProjectCard from "@/components/ProjectCard.vue";
 import DuplicateFolder from "@/components/project/DuplicateFolder.vue";
+import EventField from "@/components/project/EventField.vue";
 
 export default {
   props: {
@@ -46,6 +54,7 @@ export default {
   },
   components: {
     ProjectCard,
+    EventField,
     DuplicateFolder,
   },
   data() {

@@ -126,11 +126,18 @@ export default {
     object-position: 0 0;
   }
 
+  ._customLogo {
+    border-radius: 2px;
+    border: 2px solid var(--c-gris_clair);
+    transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
   a {
     ._customLogo {
-      transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-      &:hover {
+      &:hover,
+      :focus-visible {
         opacity: 0.7;
+        border-color: var(--c-gris);
       }
     }
   }

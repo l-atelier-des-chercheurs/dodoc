@@ -58,17 +58,6 @@
           </button>
         </transition>
       </div>
-
-      <!-- <div class="u-defaultValue" v-if="value !== default_value.value">
-        {{ $t("default_value") }} =
-        <button
-          type="button"
-          class="u-button u-button_bleumarine u-button_small"
-          @click="$emit('save', default_value.value)"
-        >
-          {{ $t(default_value.label_untranslated) }}
-        </button>
-      </div> -->
     </ToggledSection>
   </div>
 </template>

@@ -11,7 +11,7 @@
         v-for="tag in tags"
         :key="tag"
         :tag_type="tag_type"
-        :name="translated ? $t(tag) : tag"
+        :name="tagName(tag)"
         :clickable="clickable"
         :addable="addable"
         :removable="removable"
@@ -42,6 +42,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    translated_prefix: String,
     addable: {
       type: Boolean,
       default: false,
@@ -60,7 +61,15 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    tagName(tag_str) {
+      if (this.translated)
+        if (this.translated_prefix)
+          return this.$t(this.translated_prefix + tag_str);
+        else return this.$t(tag_str);
+      return tag_str;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

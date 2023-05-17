@@ -418,7 +418,9 @@
               "target_audience": {
                 "type": "string"
               },
-              "discipline": {
+              "disciplines": {
+                "type": "string"
+              },
                 "type": "string"
               }
             },

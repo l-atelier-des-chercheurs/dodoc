@@ -134,10 +134,10 @@ export default {
 
       let _options = [];
 
-      _options.push({
-        key: "",
-        label: this.$t("none"),
-      });
+      // _options.push({
+      //   key: "",
+      //   label: this.$t("none"),
+      // });
 
       this.settings.$files.map((image) => {
         const thumb_src = this.makeRelativeURLFromThumbs({

@@ -28,9 +28,9 @@
     <div class="">
       <DLabel :str="$t('disciplines')" />
       <RadioCheckboxField
-        :field_name="'discipline'"
+        :field_name="'disciplines'"
         :input_type="'checkbox'"
-        :content="project.discipline"
+        :content="project.disciplines"
         :path="project.$path"
         :can_edit="can_edit"
         :options="discipline_options"
@@ -71,24 +71,24 @@ export default {
       ],
       target_audience_options: [
         {
-          key: "cycle-1",
-          label: this.$t("ta_cycle_1"),
-          instructions: this.$t("ta_cycle_1_instr"),
+          key: "cycle1",
+          label: this.$t("ta_cycle1"),
+          instructions: this.$t("ta_cycle1_instr"),
         },
         {
-          key: "cycle-2",
-          label: this.$t("ta_cycle_2"),
-          instructions: this.$t("ta_cycle_2_instr"),
+          key: "cycle2",
+          label: this.$t("ta_cycle2"),
+          instructions: this.$t("ta_cycle2_instr"),
         },
         {
-          key: "cycle-3",
-          label: this.$t("ta_cycle_3"),
-          instructions: this.$t("ta_cycle_3_instr"),
+          key: "cycle3",
+          label: this.$t("ta_cycle3"),
+          instructions: this.$t("ta_cycle3_instr"),
         },
         {
-          key: "cycle-4",
-          label: this.$t("ta_cycle_4"),
-          instructions: this.$t("ta_cycle_4_instr"),
+          key: "cycle4",
+          label: this.$t("ta_cycle4"),
+          instructions: this.$t("ta_cycle4_instr"),
         },
         {
           key: "ulis",

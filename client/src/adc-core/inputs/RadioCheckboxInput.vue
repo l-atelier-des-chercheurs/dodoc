@@ -8,7 +8,7 @@
       'is--editable': can_edit,
     }"
   >
-    <template v-for="option in options">
+    <template v-for="option in adjusted_options">
       <label
         :for="id + '-radiocheckboxi-option-' + option.key"
         :key="option.key"
@@ -65,7 +65,17 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    adjusted_options() {
+      let _options = [];
+      if (this.input_type === "radio")
+        _options.push({
+          key: "",
+          label: "–",
+        });
+      return _options.concat(this.options);
+    },
+  },
   methods: {
     optionIsSelected(key) {
       if (this.input_type === "radio") return this.value === key;
@@ -96,8 +106,10 @@ export default {
     flex-flow: row nowrap;
     align-content: center;
     align-items: center;
-    background: var(--c-gris_clair);
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+
+    background: white;
+    // padding: calc(var(--spacing) / 4) 0;
+
     gap: calc(var(--spacing) / 2);
     ._option_preview {
       display: inline-block;
@@ -109,6 +121,8 @@ export default {
 
   &.is--editable {
     label {
+      background: var(--c-gris_clair);
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
       cursor: pointer;
       &:hover {
         background: var(--c-gris);
