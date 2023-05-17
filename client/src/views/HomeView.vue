@@ -67,39 +67,45 @@
       <EventsSection />
     </section>
 
-    <div class="_bottomCont">
-      <RadioSwitch
-        class="_switch"
-        :content.sync="current_mode"
-        :options="[
-          {
-            label: $t('spaces'),
-            value: 'spaces',
-          },
-          {
-            label: $t('all_projects'),
-            value: 'projects',
-          },
-        ]"
-      />
+    <transition name="pagechange" mode="out-in">
+      <div class="_bottomCont" :key="opened_event">
+        <RadioSwitch
+          v-if="!opened_event"
+          class="_switch"
+          :content.sync="current_mode"
+          :options="[
+            {
+              label: $t('spaces'),
+              value: 'spaces',
+            },
+            {
+              label: $t('all_projects'),
+              value: 'projects',
+            },
+          ]"
+        />
 
-      <transition name="pagechange" mode="out-in">
-        <div :key="current_mode">
-          <template v-if="current_mode === 'spaces'">
-            <div class="u-instructions _content">
-              <small v-html="$t('spaces_instr')" />
-            </div>
-            <SpacesList />
-          </template>
-          <template v-else-if="current_mode === 'projects'">
-            <div class="u-instructions _content">
-              <small v-html="$t('all_projects_instr')" />
-            </div>
-            <AllProjects />
-          </template>
-        </div>
-      </transition>
-    </div>
+        <transition name="pagechange" mode="out-in">
+          <div :key="current_mode">
+            <template v-if="current_mode === 'spaces'">
+              <div class="u-instructions _content">
+                <small v-html="$t('spaces_instr')" />
+              </div>
+              <SpacesList />
+            </template>
+            <template v-else-if="current_mode === 'projects'">
+              <div class="u-instructions _content">
+                <template v-if="opened_event">
+                  <h2>{{ $t("list_of_projects") }}</h2>
+                </template>
+                <small v-else v-html="$t('all_projects_instr')" />
+              </div>
+              <AllProjects />
+            </template>
+          </div>
+        </transition>
+      </div>
+    </transition>
 
     <footer class="_bottomFooter">
       <div class="_logoText">
@@ -139,7 +145,8 @@ export default {
     };
   },
   created() {
-    if (this.$route.query?.pfilters) this.current_mode = "projects";
+    if (this.$route.query?.pfilters || this.opened_event)
+      this.current_mode = "projects";
   },
   mounted() {},
   beforeDestroy() {},
@@ -154,9 +161,17 @@ export default {
         }
       }
     },
+    opened_event: {
+      handler() {
+        if (this.opened_event) this.current_mode = "projects";
+      },
+    },
   },
 
   computed: {
+    opened_event() {
+      return this.$route.hash.substring(1) || false;
+    },
     name() {
       return this.$root.app_infos.instance_meta.name;
     },

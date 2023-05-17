@@ -42,13 +42,33 @@
     </div>
 
     <div class="_list">
-      <div v-for="event in sorted_events" :key="event.$path">
-        <h3>
-          {{ event.title }}
-        </h3>
-        <router-link :to="{ path: createURLFromPath(event.$path) }">
-          {{ $t("open") }}
-        </router-link>
+      <div
+        v-for="event in sorted_events"
+        :key="event.$path"
+        class="_list--item"
+      >
+        <CoverField
+          class="_cover"
+          :context="'preview'"
+          :cover="event.$cover"
+          :path="event.$path"
+          :can_edit="false"
+        />
+        <div class="">
+          <h3>
+            {{ event.title }}
+          </h3>
+          <div class="_openEvent">
+            <router-link
+              :to="{ path: createURLFromPath(event.$path) }"
+              class="u-buttonLink"
+            >
+              <div class="_clickZone" />
+
+              <!-- {{ $t("open") }} -->
+            </router-link>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -109,14 +129,57 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._eventsList {
-  padding: calc(var(--spacing) / 1);
-  padding: calc(var(--spacing) / 1);
+  margin: 0 auto;
+  max-width: var(--max-column-width);
+  padding: calc(var(--spacing) * 1);
 }
 
 ._list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: calc(var(--spacing) / 1);
-  margin: calc(var(--spacing) * 1) 0;
+}
+
+._list--item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 1);
+  border: 1px solid var(--c-gris);
+
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  }
+}
+
+._cover {
+  position: relative;
+  aspect-ratio: 3/2;
+  flex: 0 0 100px;
+  // overflow: hidden;
+}
+
+._openEvent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  ._clickZone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

@@ -388,7 +388,7 @@ textarea,
   // border: solid var(--input-border-width) var(--input-border-color);
   padding: calc(var(--spacing) / 2);
   border-radius: var(--input-border-radius);
-  background-color: var(--c-gris);
+  background-color: var(--c-gris_clair);
   color: inherit;
 
   // background: white;
@@ -403,7 +403,7 @@ textarea,
   // padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
-  border-bottom: 1px solid transparent;
+  border-bottom: 2px solid transparent;
 
   transition: all 0.05s;
 

@@ -164,7 +164,7 @@ export default {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     &:hover,
     &:focus-visible {
-      transform: translateY(-8px);
+      transform: translateY(-6px);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }

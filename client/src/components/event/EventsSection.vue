@@ -1,6 +1,6 @@
 <template>
   <div class="_eventsSection">
-    <transition name="scaleInFade" mode="out-in">
+    <transition name="fade" mode="out-in">
       <EventsList v-if="!opened_event" key="list" />
       <OpenedEvent v-else :event_slug="opened_event" key="event" />
     </transition>

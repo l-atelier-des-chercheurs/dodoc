@@ -323,6 +323,8 @@ export default function () {
         all_projects: "Tous les projets",
         all_projects_instr:
           "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
+        event_projects_instr:
+          "Cette liste affiche l’ensemble des projets documentés pendant cet événement.",
 
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
         add_accounts: "Rajouter des comptes",
@@ -388,6 +390,7 @@ export default function () {
         font_italic: "Italique",
         storage: "Stockage",
         events: "Événements",
+        other_events: "Autres événements",
         created_during: "Créé pendant un événement",
 
         make_a_video: "Fabriquer une vidéo",

@@ -146,20 +146,35 @@
             name="projectsList"
             appear
           >
-            <SingleTag
-              v-for="af in active_filters"
-              :key="af.value"
-              :tag_type="af.filter_type"
-              :name="tagName(af.filter_type, af.value)"
-              :clickable="true"
-              :disableable="true"
-              @tagClick="
-                toggleFilter({
-                  filter_type: af.filter_type,
-                  value: af.value,
-                })
-              "
-            />
+            <template v-for="af in active_filters">
+              <!-- <SingleTag
+                v-if="af.filter_type === 'event_linked_slug'"
+                :key="af.value"
+                :tag_type="af.filter_type"
+                :name="getFromCache('events/' + af.value).title"
+                :clickable="true"
+                :disableable="true"
+                @tagClick="
+                  toggleFilter({
+                    filter_type: af.filter_type,
+                    value: af.value,
+                  })
+                "
+              /> -->
+              <SingleTag
+                :key="af.value"
+                :tag_type="af.filter_type"
+                :name="tagName(af.filter_type, af.value)"
+                :clickable="true"
+                :disableable="true"
+                @tagClick="
+                  toggleFilter({
+                    filter_type: af.filter_type,
+                    value: af.value,
+                  })
+                "
+              />
+            </template>
             <button
               type="button"
               v-if="active_filters.length > 1"
@@ -218,12 +233,22 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    opened_event() {
+      return this.$route.hash.substring(1) || false;
+    },
     active_filters() {
-      if (!this.$route.query?.pfilters) return [];
-      const _filters = JSON.parse(this.$route.query.pfilters);
-      return _filters.map((f) => {
-        return { filter_type: f.filter_type, value: decodeURI(f.value) };
-      });
+      let _filters = [];
+      if (this.$route.query?.pfilters) {
+        const pfilters = JSON.parse(this.$route.query.pfilters);
+        pfilters.map((f) => {
+          _filters.push({
+            filter_type: f.filter_type,
+            value: decodeURI(f.value),
+          });
+        });
+      }
+
+      return _filters;
     },
     sorted_projects() {
       if (!this.projects) return [];
@@ -245,13 +270,6 @@ export default {
     },
     filtered_projects() {
       return this.sorted_projects.filter((p) => {
-        if (this.active_filters.length === 0)
-          if (
-            this.search_project.length === 0 &&
-            this.show_only_finished === false
-          )
-            return true;
-
         if (this.show_only_finished && p.$status !== "finished") return false;
 
         for (const af of this.active_filters) {
@@ -274,6 +292,9 @@ export default {
           return p.title
             .toLowerCase()
             .includes(this.search_project.toLowerCase());
+
+        if (this.opened_event)
+          if (this.opened_event !== p.event_linked_slug) return false;
 
         return true;
       });
@@ -307,16 +328,22 @@ export default {
             !(f.filter_type === filter_type && f.value === encodeURI(value))
         );
 
-      query.pfilters = JSON.stringify(_filters);
-      this.$router.push({ query });
+      const hash = this.$route.hash || false;
+
+      if (_filters.length > 0) query.pfilters = JSON.stringify(_filters);
+      else delete query.pfilters;
+
+      this.$router.push({ query, hash });
     },
     resetFilters() {
       let query = {};
+      const hash = this.$route.hash || false;
+
       if (this.$route.query?.pfilters) {
         query = JSON.parse(JSON.stringify(this.$route.query));
         delete query.pfilters;
-        this.$router.push({ query });
       }
+      this.$router.push({ query, hash });
     },
     getActiveTags(type) {
       return this.active_filters.reduce((acc, af) => {

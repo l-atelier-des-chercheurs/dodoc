@@ -213,7 +213,7 @@ export default {
     original_space_name() {
       let { space_slug } = this.decomposePath(this.project.$path);
       const space_path = this.createPath({ space_slug });
-      const space = this.getSpaceFromCache(space_path);
+      const space = this.getFromCache(space_path);
       return space.title;
     },
   },

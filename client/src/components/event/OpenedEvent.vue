@@ -1,47 +1,58 @@
 <template>
   <div class="_openedEvent">
-    <div class="_spinner" v-if="is_loading" key="loader">
-      <LoaderSpinner />
-    </div>
-    <div v-else>
-      <div class="_backBtn">
-        <router-link :to="'/'" class="u-buttonLink">
-          <sl-icon name="arrow-left-short" />
-          {{ $t("close") }}
-        </router-link>
+    <div class="_openedEvent--cont">
+      <div class="_spinner" v-if="is_loading" key="loader">
+        <LoaderSpinner />
       </div>
-
-      <div class="u-spacingBottom">
-        <TitleField
-          :field_name="'title'"
-          :label="can_edit_event && !event.title ? $t('title') : ''"
-          class="_title"
-          :content="event.title"
+      <template v-else>
+        <CoverField
+          class="_cover"
+          :context="'full'"
+          :cover="event.$cover"
           :path="event.$path"
-          :required="true"
-          :maxlength="40"
-          :tag="'h1'"
           :can_edit="can_edit_event"
         />
-      </div>
-      <div class="u-spacingBottom">
-        <TitleField
-          :field_name="'presentation'"
-          :label="
-            can_edit_event && !event.description ? $t('presentation') : ''
-          "
-          class="_presentation"
-          :content="event.presentation"
-          :path="event.$path"
-          :maxlength="1280"
-          :input_type="'markdown'"
-          :can_edit="can_edit_event"
-        />
-      </div>
+        <div class="_text">
+          <div class="_backBtn">
+            <router-link :to="'/'" class="u-buttonLink">
+              <sl-icon name="arrow-left-short" />
+              {{ $t("other_events") }}
+            </router-link>
+          </div>
 
-      <div class="u-mediaOptions" v-if="can_edit_event">
-        <RemoveMenu :remove_text="$t('remove')" @remove="removeEvent" />
-      </div>
+          <div class="u-spacingBottom">
+            <TitleField
+              :field_name="'title'"
+              :label="can_edit_event && !event.title ? $t('title') : ''"
+              class="_title"
+              :content="event.title"
+              :path="event.$path"
+              :required="true"
+              :maxlength="40"
+              :tag="'h1'"
+              :can_edit="can_edit_event"
+            />
+          </div>
+          <div class="u-spacingBottom">
+            <TitleField
+              :field_name="'presentation'"
+              :label="
+                can_edit_event && !event.description ? $t('presentation') : ''
+              "
+              class="_presentation"
+              :content="event.presentation"
+              :path="event.$path"
+              :maxlength="1280"
+              :input_type="'markdown'"
+              :can_edit="can_edit_event"
+            />
+          </div>
+
+          <div class="u-mediaOptions" v-if="can_edit_event">
+            <RemoveMenu :remove_text="$t('remove')" @remove="removeEvent" />
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -101,13 +112,41 @@ export default {
   position: relative;
 
   min-height: 5em;
-  margin: 0 auto;
-  max-width: var(--max-column-width);
   padding: calc(var(--spacing) * 1);
+  background: var(--c-gris_clair);
+
+  ._openedEvent--cont {
+    position: relative;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+
+    margin: 0 auto;
+    max-width: var(--max-column-width);
+    overflow: hidden;
+    border-radius: 12px;
+
+    background: white;
+
+    ._cover {
+      position: relative;
+      flex: 1 0 300px;
+      aspect-ratio: 3/2;
+    }
+
+    ._text {
+      flex: 1 1 400px;
+      padding: calc(var(--spacing) / 1);
+    }
+  }
 }
 
 ._backBtn {
-  margin-top: var(--spacing);
-  margin-left: var(--spacing);
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // z-index: 1;
+  // margin-top: var(--spacing);
+  // margin-left: var(--spacing);
 }
 </style>
