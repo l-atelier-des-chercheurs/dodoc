@@ -43,10 +43,10 @@ export default {
   data() {
     return {
       license_options: [
-        // {
-        //   key: "",
-        //   label: this.$t("none_f"),
-        // },
+        {
+          key: "",
+          label: this.$t("none_f"),
+        },
         {
           key: "creativecommons_by_nc_sa",
           label: this.$t("creativecommons_by_nc_sa"),

@@ -30,7 +30,7 @@ export default {
           ? html
           : html.replace(
               /^<a /,
-              `<a rel="noreferrer noopener nofollow" data-plop target="_blank" `
+              `<a rel="noreferrer noopener nofollow" target="_blank" `
             );
       };
       marked.use({ renderer });

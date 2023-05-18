@@ -42,10 +42,10 @@ export default {
       if (!this.events) return [];
 
       const _events_options = [
-        // {
-        //   key: "",
-        //   label: this.$t("none"),
-        // },
+        {
+          key: "",
+          label: "–",
+        },
       ];
 
       this.events.map((e) => {

@@ -8,6 +8,11 @@
     <BreadCrumbs class="_bc" />
 
     <div class="_topRightButtons">
+      <button type="button" class="u-button" @click="show_qr_code_modal = true">
+        <sl-icon name="qr-code" />
+      </button>
+      <QRModal v-if="show_qr_code_modal" @close="show_qr_code_modal = false" />
+
       <button
         type="button"
         class="u-button"
@@ -37,6 +42,7 @@
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
+import QRModal from "@/adc-core/modals/QRModal.vue";
 
 export default {
   props: {},
@@ -44,12 +50,14 @@ export default {
     AuthorList,
     LangModal,
     BreadCrumbs,
+    QRModal,
   },
   data() {
     return {
       show_authors_modal: false,
       // show_settings: false,
       show_lang_modal: false,
+      show_qr_code_modal: true,
     };
   },
   created() {},

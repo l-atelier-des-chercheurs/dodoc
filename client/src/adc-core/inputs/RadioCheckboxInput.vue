@@ -68,11 +68,11 @@ export default {
   computed: {
     adjusted_options() {
       let _options = [];
-      if (this.input_type === "radio")
-        _options.push({
-          key: "",
-          label: "–",
-        });
+      // if (this.input_type === "radio")
+      //   _options.push({
+      //     key: "",
+      //     label: "–",
+      //   });
       return _options.concat(this.options);
     },
   },

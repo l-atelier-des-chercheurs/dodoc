@@ -28,7 +28,11 @@ module.exports = (function () {
     app.use("/_api2/*", [cors(_corsCheck)]);
     // app.options("/_api2/*", cors());
 
-    app.get("/_api2/_ip", _generalPasswordCheck, _getLocalNetworkInfos);
+    app.get(
+      "/_api2/_networkInfos",
+      _generalPasswordCheck,
+      _getLocalNetworkInfos
+    );
     app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
 
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
@@ -533,7 +537,7 @@ module.exports = (function () {
   }
   function loadPerf(rea, res) {
     let d = {};
-    d.local_ips = utils.getLocalIP();
+    d.local_ips = utils.getLocalIPs();
     res.render("perf", d);
   }
 
@@ -977,10 +981,16 @@ module.exports = (function () {
 
   function _getLocalNetworkInfos(req, res, next) {
     dev.logapi();
-    const local_ips = utils.getLocalIP();
 
-    dev.logpackets({ local_ips });
-    res.status(200).json(local_ips);
+    const local_ips = utils.getLocalIPs();
+    const protocol = global.settings.protocol;
+    const port = global.appInfos.port;
+
+    res.status(200).json({
+      local_ips,
+      protocol,
+      port,
+    });
   }
 
   async function _checkAuth(req, res, next) {}

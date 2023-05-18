@@ -55,6 +55,8 @@ if (window.app_infos.is_electron)
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
+import VueQrcode from "@chenfengyuan/vue-qrcode";
+Vue.component(VueQrcode.name, VueQrcode);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
@@ -94,6 +96,8 @@ import TagsList from "@/adc-core/ui/TagsList.vue";
 Vue.component("TagsList", TagsList);
 import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
+import QRCodeWithLink from "@/adc-core/ui/QRCodeWithLink.vue";
+Vue.component("QRCodeWithLink", QRCodeWithLink);
 //
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
