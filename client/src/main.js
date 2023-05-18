@@ -42,7 +42,7 @@ Vue.directive("uppercase", {
 if (window.app_infos.is_electron)
   document.body.addEventListener("click", (event) => {
     event.path.every((item) => {
-      if (item.tagName === "A" && item.target === "_blank") {
+      if (item.tagName === "A" && item.target === "_blank" && !item.download) {
         event.preventDefault();
         window.electronAPI.send("toMain", {
           type: "open_external",
