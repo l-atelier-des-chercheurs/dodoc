@@ -144,11 +144,14 @@ module.exports = (function () {
       });
 
       ipcMain.on("toMain", (event, args) => {
-        if (args.type === "open_path")
+        if (args.type === "open_path") {
           if (args.path) shell.openPath(utils.getPathToUserContent(args.path));
           else if (args.absolute_path) shell.openPath(args.absolute_path);
-          else if (args.type === "open_external") shell.openExternal(args.url);
-          else if (args.type === "get_path") _pickPath();
+        } else if (args.type === "open_external") {
+          shell.openExternal(args.url);
+        } else if (args.type === "get_path") {
+          _pickPath();
+        }
 
         // Send result back to renderer process
         // win.webContents.send("fromMain", responseObj);
