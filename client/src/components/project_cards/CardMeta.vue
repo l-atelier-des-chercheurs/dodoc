@@ -1,19 +1,29 @@
 <template>
   <ProjectCard :header="$t('informations')" :icon="'info-square'" open>
-    <AdminsAndContributorsField
-      :show_section="['admins', 'contributors']"
-      :folder="project"
+    <div class="u-spacingBottom">
+      <AdminsAndContributorsField
+        :show_section="['admins', 'contributors']"
+        :folder="project"
+        :can_edit="can_edit"
+        :admin_label="$t('referent')"
+        :admin_instructions="$t('project_admin_instructions')"
+        :contrib_instructions="$t('project_contrib_instructions')"
+      />
+    </div>
+
+    <EventField
+      class="u-spacingBottom"
+      v-if="$root.app_infos.instance_meta.enable_events"
+      :project="project"
       :can_edit="can_edit"
-      :admin_label="$t('referent')"
-      :admin_instructions="$t('project_admin_instructions')"
-      :contrib_instructions="$t('project_contrib_instructions')"
     />
 
-    <div class="u-spacingBottom" />
-
     <div class="u-spacingBottom">
-      <DateField :title="$t('date_created')" :date="project.$date_created" />
-      <DateField :title="$t('date_modified')" :date="project.$date_modified" />
+      <DateDisplay :title="$t('date_created')" :date="project.$date_created" />
+      <DateDisplay
+        :title="$t('date_modified')"
+        :date="project.$date_modified"
+      />
     </div>
 
     <div class="u-mediaOptions" v-if="can_edit">
@@ -22,11 +32,12 @@
     </div>
 
     <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
+      <div class="u-spacingBottom" />
       <DLabel :str="$t('open_in_finder')" />
       <button
         type="button"
         class="u-button u-button_bleumarine u-button_small"
-        @click="openInFinder"
+        @click="openInFinder(project.$path)"
         v-html="project_path_wrappable"
       />
     </div>
@@ -35,6 +46,7 @@
 <script>
 import ProjectCard from "@/components/ProjectCard.vue";
 import DuplicateFolder from "@/components/project/DuplicateFolder.vue";
+import EventField from "@/components/project/EventField.vue";
 
 export default {
   props: {
@@ -43,6 +55,7 @@ export default {
   },
   components: {
     ProjectCard,
+    EventField,
     DuplicateFolder,
   },
   data() {
@@ -58,12 +71,6 @@ export default {
     },
   },
   methods: {
-    openInFinder() {
-      window.electronAPI.send("toMain", {
-        type: "open_path",
-        path: this.project.$path,
-      });
-    },
     async removeProject() {
       this.fetch_status = "pending";
       this.fetch_error = null;
@@ -79,6 +86,12 @@ export default {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
       }
+    },
+    openInFinder(path) {
+      window.electronAPI.send("toMain", {
+        type: "open_path",
+        path,
+      });
     },
   },
 };

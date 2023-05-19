@@ -44,16 +44,18 @@ export default function () {
         a_foss_made_by:
           "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
         home: "Accueil",
+        go_home: "Retourner à l’accueil",
+        page_not_found: "Cette page n’existe pas",
         admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
         admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
-        edit: "modifier",
+        edit: "Modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",
-        date_created: "date de création",
-        date_modified: "dernière modification",
-        alphabetical: "alphabétique",
-        date_uploaded: "date d’envoi",
-        cancel: "annuler",
+        date_created: "Date de création",
+        date_modified: "Dernière modification",
+        alphabetical: "Alphabétique",
+        date_uploaded: "Date d’envoi",
+        cancel: "Annuler",
         select: "Sélectionner",
         back: "retour",
         save: "enregistrer",
@@ -202,6 +204,11 @@ export default function () {
         exports_in_progress: "Exportation(s) en cours",
 
         story_width: "Largeur du récit",
+        summary: "Sommaire",
+        section_title: "Titre de la section",
+        section: "Section",
+        create_section: "Créer une section",
+        untitled: "Sans titre",
         responsive: "Fluide",
         responsive_instr:
           "Prendra toute la largeur de la fenêtre sans jamais déborder et en respectant la valeur ci-dessus comme largeur maximale.",
@@ -294,13 +301,9 @@ export default function () {
         invisible: "Invisible",
         visible: "Visible",
 
-        public_status_explanations_spaces:
-          "L’espace sera visible sur la page d’accueil.",
-        private_status_explanations_spaces:
-          "L’espace ne sera visible qu’à ses contributeurs.",
+        public_status_explanations: "Sera visible sur la page d’accueil.",
+        private_status_explanations: "Ne sera visible qu’à ses contributeurs.",
 
-        public_status_explanations_projects:
-          "Le projet sera affiché avec les autres projets sur la page de son espace.",
         private_status_explanations_projects:
           "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
         finished_status_explanations:
@@ -315,12 +318,9 @@ export default function () {
 
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
-        only_finished: "projets finalisés",
+        only_finished: "Projets finalisés",
         completed: "Terminé",
         my_projects: "Mes projets",
-
-        finished_projects: "Projets finalisés",
-        projects_in_progress: "Projets en cours",
 
         default_value: "Par défaut",
 
@@ -328,6 +328,8 @@ export default function () {
         all_projects: "Tous les projets",
         all_projects_instr:
           "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
+        event_projects_instr:
+          "Cette liste affiche l’ensemble des projets documentés pendant cet événement.",
 
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
         add_accounts: "Rajouter des comptes",
@@ -366,6 +368,7 @@ export default function () {
 
         close: "Fermer",
         settings: "Réglages",
+        admin_settings: "Réglages d’administration",
         list_of_pages: "Liste des pages",
         list_of_spreads: "Liste des planches",
         show_grid: "Afficher la grille",
@@ -391,6 +394,9 @@ export default function () {
         font_normal: "Normal",
         font_italic: "Italique",
         storage: "Stockage",
+        events: "Événements",
+        other_events: "Autres événements",
+        created_during: "Créé pendant un événement",
 
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
@@ -466,6 +472,7 @@ export default function () {
         add_multiple_images:
           "Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera una video.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.",
         more_informations: "Plus d’informations",
+        images: "Images",
 
         make_an_exhibition: "Créer une exposition",
 
@@ -536,7 +543,7 @@ export default function () {
         machines_and_materials: "Machines et matériaux",
         machines: "Machines",
         materials: "Matériaux",
-        levels_and_competences: "Niveau et compétence",
+        levels_and_competences: "Niveaux et compétence",
 
         fabrication_level: "Niveau de connaissance",
         beginner: "Débutant",
@@ -544,14 +551,14 @@ export default function () {
         experienced: "Avancé",
 
         target_audience: "Public cible",
-        ta_cycle_1: "Cycle 1",
-        ta_cycle_1_instr: "Maternelle (Fr) (3-5 ans)",
-        ta_cycle_2: "Cycle 2",
-        ta_cycle_2_instr: "CP-CE2 ( Fr) (6-8 ans)",
-        ta_cycle_3: "Cycle 3",
-        ta_cycle_3_instr: "CM1-CM2-6<sup>e</sup> ( collège) (Fr) (9-11 ans)",
-        ta_cycle_4: "Cycle 4",
-        ta_cycle_4_instr: "5<sup>e</sup>-3<sup>e</sup> (fr) (12-14ans)",
+        ta_cycle1: "Cycle 1",
+        ta_cycle1_instr: "Maternelle (Fr) (3-5 ans)",
+        ta_cycle2: "Cycle 2",
+        ta_cycle2_instr: "CP-CE2 ( Fr) (6-8 ans)",
+        ta_cycle3: "Cycle 3",
+        ta_cycle3_instr: "CM1-CM2-6<sup>e</sup> ( collège) (Fr) (9-11 ans)",
+        ta_cycle4: "Cycle 4",
+        ta_cycle4_instr: "5<sup>e</sup>-3<sup>e</sup> (fr) (12-14ans)",
         ta_ulis: "ULIS",
         ta_cap: "CAP",
         ta_lycee: "Lycée G&T",
@@ -661,12 +668,27 @@ export default function () {
         open: "ouvrir",
         create_and_open: "Créer et ouvrir",
         create_a_project: "Créer un projet",
+        create_an_event: "Créer un événement",
         create_a_publication: "Créer une publication",
 
         add_media: "Ajouter un média",
         add_medias: "Ajouter des médias",
         add_link: "Ajouter un lien",
         add_text: "Ajouter du texte",
+
+        share_link_to_page: "Partager un lien vers cette page",
+        download_this_qr_code: "Télécharger ce code QR",
+        domain: "Avec un domaine",
+        domain_instr:
+          "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine comme https://dodoc.fr.",
+        no_domain_set: "Aucun domaine disponible.",
+        local_network: "Par le réseau local",
+        local_network_instr:
+          "Depuis n’importe quel appareil (ordinateur, smartphone ou tablette) connecté sur le même réseau wifi ou filaire, avec ou sans internet.",
+        no_local_network_set: "Aucun réseau local n’a été trouvé.",
+        local_machine: "Sur la même machine",
+        local_machine_instr:
+          "Sur cet ordinateur, en passant par un navigateur déjà installé.",
 
         display_as_public: "Afficher la vue publique",
         preview: "Prévisualiser",
@@ -690,9 +712,6 @@ export default function () {
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
-
-        project_desc_instructions:
-          "La description est affichée ici et sur la liste des projets.",
         pick_cover: "Choisissez une image de couverture",
         remove_image: "Retirer cette image",
 
@@ -707,6 +726,7 @@ export default function () {
           "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
         require_mail_to_signup:
           "Une adresse courriel est obligatoire pour créer un compte",
+        enable_events: "Activer la fonctionnalité « événements »",
 
         you_must_login_to_contribute:
           "Vous devez vous inscrire ou vous connecter pour contribuer",
@@ -718,6 +738,7 @@ export default function () {
           "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
         "notifications.action_not_authorized": "Cette action n’est pas permise",
+        "notifications.event_does_not_exit": "Cet événement n’existe pas",
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.name_taken": "Ce nom est déjà utilisé",
 

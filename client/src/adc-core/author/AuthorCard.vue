@@ -10,7 +10,7 @@
         />
       </div>
 
-      <div class="">
+      <div class="_text">
         <!-- :label="$t('name')" -->
         <TitleField
           :field_name="'name'"
@@ -22,6 +22,7 @@
           :tag="'h2'"
           :can_edit="can_edit"
         />
+        <div class="_path">@{{ getFilename(author.$path) }}</div>
         <div v-if="is_instance_admin">
           <span v-text="author.email" />
         </div>
@@ -36,6 +37,18 @@
         >
           <small v-html="$t('admin')" />
         </div>
+
+        <TitleField
+          :field_name="'$password'"
+          :label="can_edit ? $t('password') : ''"
+          :content="''"
+          :path="author.$path"
+          :required="true"
+          :minlength="3"
+          :maxlength="20"
+          :input_type="'password'"
+          :can_edit="can_edit"
+        />
       </div>
     </div>
     <div class="u-mediaOptions" v-if="can_edit">
@@ -103,5 +116,11 @@ export default {
 ._cover {
   position: relative;
   overflow: hidden;
+}
+
+._text {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
 }
 </style>

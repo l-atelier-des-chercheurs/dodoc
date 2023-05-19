@@ -8,7 +8,7 @@
         {{ remix.title }}
         {{ remix.$path }}
         {{ remix.type }}
-        <DateField :date="remix.$date_created" />
+        <DateDisplay :date="remix.$date_created" />
         <button type="button" class="u-button" @click="$emit('close')">
           {{ $t("close") }}
         </button>

@@ -144,7 +144,6 @@ export default {
         this.is_saving = false;
       } catch (err) {
         this.is_saving = false;
-        debugger;
         if (err === "unique_field_taken") {
           this.$alertify.delay(4000).error(this.$t("notifications.name_taken"));
           this.$refs.TextInput.$refs.field.select();

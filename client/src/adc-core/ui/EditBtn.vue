@@ -75,7 +75,7 @@ export default {
     color: var(--color1);
 
     margin: -1px;
-    padding: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
     padding-left: 100%;
     display: flex;
     align-items: center;
@@ -83,7 +83,7 @@ export default {
     white-space: nowrap;
 
     pointer-events: none;
-    transform: translateX(-5px);
+    transform: translateX(15px);
     opacity: 0;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }

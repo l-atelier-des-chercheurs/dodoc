@@ -3,12 +3,32 @@
     @close="$emit('closeModal')"
     :title="$t('set_admins_and_contributors')"
   >
+    <div v-if="true" class="u-instructions">
+      <template
+        v-if="
+          $root.app_infos.instance_meta.require_signup_to_contribute &&
+          !connected_as
+        "
+      >
+        {{ $t("you_must_login_to_contribute") }}
+      </template>
+      <template
+        v-else-if="
+          connected_as && !canLoggedinContributeToFolder({ folder: folder })
+        "
+      >
+        {{ $t("not_allowed_to_contribute_contact_referent") }}
+      </template>
+    </div>
+
+    <br />
+
     <AuthorField
       :label="admin_label"
       class="u-spacingBottom"
       :field="'$admins'"
       :authors_paths="admins_path"
-      :path="folder_path"
+      :path="folder.$path"
       :can_edit="can_edit"
       :instructions="admin_instructions"
     />
@@ -17,7 +37,7 @@
       :label="$t('contributors')"
       :field="'$contributors'"
       :authors_paths="contributors_path"
-      :path="folder_path"
+      :path="folder.$path"
       :can_edit="can_edit"
       :instructions="contrib_instructions"
     />
@@ -26,7 +46,7 @@
 <script>
 export default {
   props: {
-    folder_path: String,
+    folder: Object,
     admins_path: [String, Array],
     contributors_path: [String, Array],
     admin_label: String,

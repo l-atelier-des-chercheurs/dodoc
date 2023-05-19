@@ -16,7 +16,7 @@
           @click="show_settings_modal = !show_settings_modal"
         >
           <sl-icon name="gear-fill" />
-          &nbsp;{{ $t("settings") }}
+          &nbsp;{{ $t("admin_settings") }}
         </button>
       </div>
       <AdminSettings
@@ -63,39 +63,49 @@
       <button type="button" class="u-button">{{ $t("projects") }}</button>
     </div> -->
 
-    <div class="_bottomCont">
-      <RadioSwitch
-        class="_switch"
-        :content.sync="current_mode"
-        :options="[
-          {
-            label: $t('spaces'),
-            value: 'spaces',
-          },
-          {
-            label: $t('all_projects'),
-            value: 'projects',
-          },
-        ]"
-      />
+    <section v-if="$root.app_infos.instance_meta.enable_events">
+      <EventsSection />
+    </section>
 
-      <transition name="pagechange" mode="out-in">
-        <div :key="current_mode">
-          <template v-if="current_mode === 'spaces'">
-            <div class="u-instructions _content">
-              <small v-html="$t('spaces_instr')" />
-            </div>
-            <SpacesList />
-          </template>
-          <template v-else-if="current_mode === 'projects'">
-            <div class="u-instructions _content">
-              <small v-html="$t('all_projects_instr')" />
-            </div>
-            <AllProjects />
-          </template>
-        </div>
-      </transition>
-    </div>
+    <transition name="pagechange" mode="out-in">
+      <div class="_bottomCont" :key="opened_event">
+        <RadioSwitch
+          v-if="!opened_event"
+          class="_switch"
+          :content.sync="current_mode"
+          :options="[
+            {
+              label: $t('spaces'),
+              value: 'spaces',
+            },
+            {
+              label: $t('all_projects'),
+              value: 'projects',
+            },
+          ]"
+        />
+
+        <transition name="pagechange" mode="out-in">
+          <div :key="current_mode">
+            <template v-if="current_mode === 'spaces'">
+              <div class="u-instructions _content">
+                <small v-html="$t('spaces_instr')" />
+              </div>
+              <SpacesList />
+            </template>
+            <template v-else-if="current_mode === 'projects'">
+              <div class="u-instructions _content">
+                <template v-if="opened_event">
+                  <h2>{{ $t("list_of_projects") }}</h2>
+                </template>
+                <small v-else v-html="$t('all_projects_instr')" />
+              </div>
+              <AllProjects />
+            </template>
+          </div>
+        </transition>
+      </div>
+    </transition>
 
     <footer class="_bottomFooter">
       <div class="_logoText">
@@ -122,6 +132,7 @@ export default {
   props: {},
   components: {
     AdminSettings,
+    EventsSection: () => import("@/components/event/EventsSection.vue"),
     SpacesList,
     AllProjects,
     DodocLogo,
@@ -134,7 +145,8 @@ export default {
     };
   },
   created() {
-    if (this.$route.query?.pfilters) this.current_mode = "projects";
+    if (this.$route.query?.pfilters || this.opened_event)
+      this.current_mode = "projects";
   },
   mounted() {},
   beforeDestroy() {},
@@ -149,9 +161,17 @@ export default {
         }
       }
     },
+    opened_event: {
+      handler() {
+        if (this.opened_event) this.current_mode = "projects";
+      },
+    },
   },
 
   computed: {
+    opened_event() {
+      return this.$route.hash.substring(1) || false;
+    },
     name() {
       return this.$root.app_infos.instance_meta.name;
     },
@@ -197,12 +217,11 @@ export default {
 }
 
 ._homeView--container {
-  position: relative;
+  // position: sticky;
+  // top: 60px;
   width: 100%;
 
-  background-color: var(--c-gris_clair);
-  margin-bottom: calc(var(--spacing) * 3);
-  background: var(--hero-bg, white);
+  background: var(--hero-bg, var(--c-gris_clair));
 
   ._homeCover {
     background: white;
@@ -325,19 +344,23 @@ export default {
 }
 
 ._bottomCont {
+  position: relative;
+  background: white;
+  z-index: 1;
   flex: 1;
-  // min-height: 80vh;
+  padding-top: calc(var(--spacing) * 2);
+  min-height: 80vh;
 }
 ._switch {
   margin-bottom: calc(var(--spacing) * 1);
 }
 
 ._editSettingsBtn--cont {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
   z-index: 100;
-  width: 100%;
+  // width: 100%;
   text-align: center;
 }
 ._editSettingsBtn {

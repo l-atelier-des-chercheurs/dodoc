@@ -7,6 +7,7 @@ export default {
       const path_without_space = path
         .replace("authors/", "/@")
         .replace("spaces/", "/+")
+        .replace("events/", "/#")
         .replace("projects/", "");
       return path_without_space;
       // return "/" + path;
@@ -35,12 +36,15 @@ export default {
 
       return obj;
     },
-    createPath({ space_slug, project_slug, author_slug } = {}) {
+    createPath({ space_slug, project_slug, author_slug, event_slug } = {}) {
       if (author_slug) return `authors/${author_slug}`;
-      let path = `spaces`;
-      if (space_slug) path += `/${space_slug}`;
-      if (project_slug) path += `/projects/${project_slug}`;
-      return path;
+      if (event_slug) return `events/${event_slug}`;
+      if (space_slug)
+        if (project_slug)
+          return `spaces/${space_slug}/projects/${project_slug}`;
+        else return `spaces/${space_slug}`;
+
+      return false;
     },
   },
 };

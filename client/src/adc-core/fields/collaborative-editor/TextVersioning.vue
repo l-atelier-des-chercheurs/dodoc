@@ -61,7 +61,7 @@
           (archive_shown.content || archive_shown.content === '')
         "
       >
-        <!-- <DateField :show_detail_initially="true" :date="archive_shown.date" /> -->
+        <!-- <DateDisplay :show_detail_initially="true" :date="archive_shown.date" /> -->
         <div class="_archiveText" v-html="archive_shown.content" />
       </div>
     </div>

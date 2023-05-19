@@ -54,10 +54,28 @@
           </button>
         </div>
 
+        <div v-if="$root.app_infos.instance_meta.enable_events">
+          <DLabel :str="$t('events')" />
+
+          <!-- <EventField :project="" /> -->
+        </div>
+
+        <div class="">
+          <DLabel :str="$t('levels_and_competences')" />
+          <TagsList
+            :tags="extractAll('level')"
+            :tag_type="'level'"
+            :clickable="true"
+            :translated="isTranslated('level')"
+            :tags_active="getActiveTags('level')"
+            @tagClick="toggleFilter({ filter_type: 'level', value: $event })"
+          />
+        </div>
+
         <div class="">
           <DLabel :str="$t('keywords')" />
           <TagsList
-            :tags="all_keywords"
+            :tags="extractAll('keywords')"
             :tag_type="'keywords'"
             :clickable="true"
             :tags_active="getActiveTags('keywords')"
@@ -66,9 +84,9 @@
         </div>
 
         <div class="">
-          <DLabel :str="$t('machines_and_materials')" />
+          <DLabel :str="$t('materials')" />
           <TagsList
-            :tags="all_materials"
+            :tags="extractAll('materials')"
             :tag_type="'materials'"
             :clickable="true"
             :tags_active="getActiveTags('materials')"
@@ -77,16 +95,44 @@
             "
           />
         </div>
+        <div class="">
+          <DLabel :str="$t('machines')" />
+          <TagsList
+            :tags="extractAll('machines')"
+            :tag_type="'machines'"
+            :clickable="true"
+            :tags_active="getActiveTags('machines')"
+            @tagClick="toggleFilter({ filter_type: 'machines', value: $event })"
+          />
+        </div>
 
         <div class="">
-          <DLabel :str="$t('levels_and_competences')" />
+          <DLabel :str="$t('disciplines')" />
           <TagsList
-            :tags="all_levels"
-            :tag_type="'level'"
+            :tags="extractAll('disciplines')"
+            :tag_type="'disciplines'"
             :clickable="true"
-            :translated="true"
-            :tags_active="getActiveTags('level')"
-            @tagClick="toggleFilter({ filter_type: 'level', value: $event })"
+            :translated="isTranslated('disciplines')"
+            :translated_prefix="translatedPrefix('disciplines')"
+            :tags_active="getActiveTags('disciplines')"
+            @tagClick="
+              toggleFilter({ filter_type: 'disciplines', value: $event })
+            "
+          />
+        </div>
+
+        <div class="">
+          <DLabel :str="$t('target_audience')" />
+          <TagsList
+            :tags="extractAll('target_audience')"
+            :tag_type="'target_audience'"
+            :clickable="true"
+            :translated="isTranslated('target_audience')"
+            :translated_prefix="translatedPrefix('target_audience')"
+            :tags_active="getActiveTags('target_audience')"
+            @tagClick="
+              toggleFilter({ filter_type: 'target_audience', value: $event })
+            "
           />
         </div>
       </div>
@@ -100,20 +146,35 @@
             name="projectsList"
             appear
           >
-            <SingleTag
-              v-for="af in active_filters"
-              :key="af.value"
-              :tag_type="af.filter_type"
-              :name="af.value"
-              :clickable="true"
-              :disableable="true"
-              @tagClick="
-                toggleFilter({
-                  filter_type: af.filter_type,
-                  value: af.value,
-                })
-              "
-            />
+            <template v-for="af in active_filters">
+              <!-- <SingleTag
+                v-if="af.filter_type === 'event_linked_slug'"
+                :key="af.value"
+                :tag_type="af.filter_type"
+                :name="getFromCache('events/' + af.value).title"
+                :clickable="true"
+                :disableable="true"
+                @tagClick="
+                  toggleFilter({
+                    filter_type: af.filter_type,
+                    value: af.value,
+                  })
+                "
+              /> -->
+              <SingleTag
+                :key="af.value"
+                :tag_type="af.filter_type"
+                :name="tagName(af.filter_type, af.value)"
+                :clickable="true"
+                :disableable="true"
+                @tagClick="
+                  toggleFilter({
+                    filter_type: af.filter_type,
+                    value: af.value,
+                  })
+                "
+              />
+            </template>
             <button
               type="button"
               v-if="active_filters.length > 1"
@@ -125,7 +186,10 @@
             </button>
           </transition-group>
         </transition>
-        <ProjectsList :projects="filtered_projects" />
+        <ProjectsList
+          :projects="filtered_projects"
+          :display_original_space="display_original_space"
+        />
       </div>
     </div>
   </section>
@@ -136,6 +200,7 @@ import ProjectsList from "@/components/ProjectsList.vue";
 export default {
   props: {
     projects: Array,
+    display_original_space: Boolean,
   },
   components: {
     ProjectsList,
@@ -168,24 +233,22 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    all_keywords() {
-      return this.extractArr(this.filtered_projects, "keywords");
-    },
-    all_materials() {
-      return this.extractArr(this.filtered_projects, "materials");
-    },
-    all_levels() {
-      return this.extractArr(this.filtered_projects, "level");
-      // .map((tag) =>
-      //   this.$t(tag)
-      // );
+    opened_event() {
+      return this.$route.hash.substring(1) || false;
     },
     active_filters() {
-      if (!this.$route.query?.pfilters) return [];
-      const _filters = JSON.parse(this.$route.query.pfilters);
-      return _filters.map((f) => {
-        return { filter_type: f.filter_type, value: decodeURI(f.value) };
-      });
+      let _filters = [];
+      if (this.$route.query?.pfilters) {
+        const pfilters = JSON.parse(this.$route.query.pfilters);
+        pfilters.map((f) => {
+          _filters.push({
+            filter_type: f.filter_type,
+            value: decodeURI(f.value),
+          });
+        });
+      }
+
+      return _filters;
     },
     sorted_projects() {
       if (!this.projects) return [];
@@ -207,13 +270,6 @@ export default {
     },
     filtered_projects() {
       return this.sorted_projects.filter((p) => {
-        if (this.active_filters.length === 0)
-          if (
-            this.search_project.length === 0 &&
-            this.show_only_finished === false
-          )
-            return true;
-
         if (this.show_only_finished && p.$status !== "finished") return false;
 
         for (const af of this.active_filters) {
@@ -237,16 +293,16 @@ export default {
             .toLowerCase()
             .includes(this.search_project.toLowerCase());
 
+        if (this.opened_event)
+          if (this.opened_event !== p.event_linked_slug) return false;
+
         return true;
       });
     },
   },
   methods: {
-    btnClassForMedia(type) {
-      if (type === "keywords") return "u-button_orange";
-      if (type === "materials") return "u-button_bleumarine";
-      if (type === "level") return "u-button_rouge";
-      return "u-button_bleuvert";
+    extractAll(key) {
+      return this.extractArr(this.filtered_projects, key);
     },
     toggleFilter({ filter_type, value }) {
       let query = {};
@@ -272,22 +328,44 @@ export default {
             !(f.filter_type === filter_type && f.value === encodeURI(value))
         );
 
-      query.pfilters = JSON.stringify(_filters);
-      this.$router.push({ query });
+      const hash = this.$route.hash || false;
+
+      if (_filters.length > 0) query.pfilters = JSON.stringify(_filters);
+      else delete query.pfilters;
+
+      this.$router.push({ query, hash });
     },
     resetFilters() {
       let query = {};
+      const hash = this.$route.hash || false;
+
       if (this.$route.query?.pfilters) {
         query = JSON.parse(JSON.stringify(this.$route.query));
         delete query.pfilters;
-        this.$router.push({ query });
       }
+      this.$router.push({ query, hash });
     },
     getActiveTags(type) {
       return this.active_filters.reduce((acc, af) => {
         if (af.filter_type === type) acc.push(af.value);
         return acc;
       }, []);
+    },
+    isTranslated(key) {
+      return ["level", "disciplines", "target_audience"].includes(key);
+    },
+    translatedPrefix(key) {
+      if (this.isTranslated(key))
+        if (key === "disciplines") return "di_";
+        else if (key === "target_audience") return "ta_";
+      return false;
+    },
+    tagName(type, tag_str) {
+      if (this.isTranslated(type))
+        if (this.translatedPrefix(type))
+          return this.$t(this.translatedPrefix(type) + tag_str);
+        else return this.$t(tag_str);
+      return tag_str;
     },
   },
 };
@@ -318,7 +396,10 @@ export default {
   // align-items: flex-end;
   align-items: flex-start;
   gap: calc(var(--spacing) / 2);
-  padding-top: calc(var(--spacing) * 1);
+
+  border-top: 2px solid var(--c-gris);
+  padding-top: calc(var(--spacing) / 2);
+  margin-top: calc(var(--spacing) * 1);
 
   ::v-deep {
     button {

@@ -36,6 +36,18 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "AuthorView" */ "../views/AuthorView.vue"),
   },
+  // {
+  //   path: "/=:event_slug",
+  //   name: "Événement",
+  //   component: () =>
+  //     import(/* webpackChunkName: "AuthorView" */ "../views/EventView.vue"),
+  // },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () =>
+      import(/* webpackChunkName: "AuthorView" */ "../views/NotFound.vue"),
+  },
 ];
 
 const router = new VueRouter({

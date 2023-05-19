@@ -328,6 +328,9 @@
       "require_mail_to_signup": {
         "type": "boolean"
       },
+      "enable_events": {
+        "type": "boolean"
+      },
       "hero_background_color": {
         "type": "string"
       },
@@ -415,7 +418,10 @@
               "target_audience": {
                 "type": "string"
               },
-              "discipline": {
+              "disciplines": {
+                "type": "string"
+              },
+              "event_linked_slug": {
                 "type": "string"
               }
             },
@@ -490,6 +496,9 @@
                     ],
                     "default": "page_by_page"
                   },
+                  "sections_list": {
+                    "type": "array"
+                  },
                   "modules_list": {
                     "type": "array"
                   },
@@ -546,6 +555,15 @@
                   "fields": {
                     "module_type": {
                       "type": "string"
+                    },
+                    "section_type": {
+                      "type": "string"
+                    },
+                    "section_title": {
+                      "type": "string"
+                    },
+                    "modules_list": {
+                      "type": "array"
                     },
                     "source_medias": {
                       "type": "array"
@@ -642,6 +660,31 @@
           },
           "font_files": {
             "type": "object"
+          }
+        },
+        "$files": {}
+      },
+      "events": {
+        "$cover": {
+          "width": 2000,
+          "height": 2000,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 2000]
+          }
+        },
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          },
+          "presentation": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
           }
         },
         "$files": {}

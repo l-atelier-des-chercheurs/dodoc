@@ -1,18 +1,16 @@
 <template>
-  <span class="_pickNativePath">
+  <div class="_pickNativePath">
     <DLabel
       :str="$t('path_to_content')"
       :instructions="$t('path_to_content_instructions')"
     />
 
-    <div class="_sameLine">
+    <div class="u-spacingBottom _sameLine">
       <input type="text" required readonly v-model="new_path" />
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
 
-    <br />
-
-    <template v-if="can_edit">
+    <div v-if="can_edit" class="u-spacingBottom">
       <template v-if="edit_mode">
         <button
           type="button"
@@ -35,8 +33,19 @@
           />
         </div>
       </template>
-    </template>
-  </span>
+    </div>
+
+    <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
+      <div class="u-spacingBottom" />
+      <button
+        type="button"
+        class="u-button u-button_bleumarine u-button_small"
+        @click="openInFinder(new_path)"
+      >
+        {{ $t("open_in_finder") }}
+      </button>
+    </div>
+  </div>
 </template>
 <script>
 export default {
@@ -83,6 +92,12 @@ export default {
           this.edit_mode = true;
           this.allow_save = this.new_path !== this.path_to_storage;
         }
+      });
+    },
+    openInFinder(absolute_path) {
+      window.electronAPI.send("toMain", {
+        type: "open_path",
+        absolute_path,
       });
     },
     cancel() {

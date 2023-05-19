@@ -20,10 +20,11 @@
         <MediaContent :file="file" :context="'full'" />
       </div>
       <div class="_meta" v-if="!select_mode">
-        <h3>{{ $t("informations") }}</h3>
-        <small>{{ file.$media_filename }}</small>
-
-        <div class="u-mediaOptions">
+        <div class="u-spacingBottom">
+          <h3>{{ $t("informations") }}</h3>
+          <small class="fieldCaption">{{ file.$media_filename }}</small>
+        </div>
+        <div class="u-mediaOptions u-spacingBottom">
           <div>
             <DownloadFile :file="file">
               <sl-icon name="file-earmark-arrow-down" />
@@ -48,20 +49,28 @@
             @remove="$emit('remove')"
           />
         </div>
-        <br />
 
-        <TitleField
-          :label="$t('caption')"
-          :field_name="'caption'"
-          :content="file.caption"
-          :path="file.$path"
-          :input_type="'markdown'"
-          :can_edit="true"
-        />
-        <br />
-        <DateField :title="$t('date_uploaded')" :date="file.$date_uploaded" />
-        <br />
-        <DateField :title="$t('date_modified')" :date="file.$date_modified" />
+        <div class="u-spacingBottom">
+          <TitleField
+            :label="$t('caption')"
+            :field_name="'caption'"
+            :content="file.caption"
+            :path="file.$path"
+            :input_type="'markdown'"
+            :can_edit="true"
+          />
+        </div>
+
+        <div>
+          <DateDisplay
+            :title="$t('date_uploaded')"
+            :date="file.$date_uploaded"
+          />
+          <DateDisplay
+            :title="$t('date_modified')"
+            :date="file.$date_modified"
+          />
+        </div>
       </div>
       <div class="_selectBtn" v-else>
         <button

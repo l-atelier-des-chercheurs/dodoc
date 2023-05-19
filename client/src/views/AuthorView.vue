@@ -32,7 +32,9 @@ export default {
     await this.listAuthor();
     this.$api.join({ room: this.author.$path });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.author.$path });
+  },
   watch: {},
   computed: {},
   methods: {

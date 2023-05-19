@@ -3,25 +3,6 @@
     <!-- <template v-for="author_type of ['contributors', 'admins']">
       {{ author_type }}
     </template> -->
-
-    <div v-if="true" class="u-instructions">
-      <template
-        v-if="
-          $root.app_infos.instance_meta.require_signup_to_contribute &&
-          !connected_as
-        "
-      >
-        {{ $t("you_must_login_to_contribute") }}
-      </template>
-      <template
-        v-else-if="
-          connected_as && !canLoggedinContributeToFolder({ folder: folder })
-        "
-      >
-        {{ $t("not_allowed_to_contribute_contact_referent") }}
-      </template>
-    </div>
-
     <div class="">
       <DLabel :str="$t('admins_and_contributors')" />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
@@ -43,7 +24,7 @@
 
     <EditAdminsAndContributorsField
       v-if="show_modal"
-      :folder_path="folder.$path"
+      :folder="folder"
       :admins_path="admins_path"
       :contributors_path="contributors_path"
       :admin_label="admin_label"
@@ -114,10 +95,6 @@ export default {
   methods: {
     closeModal() {
       this.edit_mode = false;
-    },
-    getCorrespondingPaths(author_section) {
-      if (author_section === "contributors") return this.contributors_path;
-      if (author_section === "admins") return this.admins_path;
     },
   },
 };

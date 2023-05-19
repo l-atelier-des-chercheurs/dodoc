@@ -42,7 +42,7 @@ Vue.directive("uppercase", {
 if (window.app_infos.is_electron)
   document.body.addEventListener("click", (event) => {
     event.path.every((item) => {
-      if (item.tagName === "A" && item.target === "_blank") {
+      if (item.tagName === "A" && item.target === "_blank" && !item.download) {
         event.preventDefault();
         window.electronAPI.send("toMain", {
           type: "open_external",
@@ -55,9 +55,8 @@ if (window.app_infos.is_electron)
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
-import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
-Vue.config.ignoredElements = [/^sl-/];
-Vue.use(ShoelaceModelDirective);
+import VueQrcode from "@chenfengyuan/vue-qrcode";
+Vue.component(VueQrcode.name, VueQrcode);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
@@ -97,6 +96,11 @@ import TagsList from "@/adc-core/ui/TagsList.vue";
 Vue.component("TagsList", TagsList);
 import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
+
+import QRModal from "@/adc-core/modals/QRModal.vue";
+Vue.component("QRModal", QRModal);
+import QRCodeWithLink from "@/adc-core/ui/QRCodeWithLink.vue";
+Vue.component("QRCodeWithLink", QRCodeWithLink);
 //
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
@@ -122,12 +126,14 @@ import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
 Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
+import CreateFolder from "@/adc-core/modals/CreateFolder";
+Vue.component("CreateFolder", CreateFolder);
 //
 
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
-import DateField from "@/adc-core/fields/DateField.vue";
-Vue.component("DateField", DateField);
+import DateDisplay from "@/adc-core/fields/DateDisplay.vue";
+Vue.component("DateDisplay", DateDisplay);
 import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
 Vue.component("UploadFiles", UploadFiles);
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
@@ -192,6 +198,8 @@ import FormatDates from "@/mixins/FormatDates";
 Vue.mixin(FormatDates);
 import Props from "@/mixins/Props";
 Vue.mixin(Props);
+import Cache from "@/mixins/Cache";
+Vue.mixin(Cache);
 import Medias from "@/mixins/Medias";
 Vue.mixin(Medias);
 import Authors from "@/mixins/Authors";

@@ -16,8 +16,8 @@
           :content.sync="new_publication_is_private"
           :label="$t('private')"
           :options="{
-            true: $t('private_status_explanations_publis'),
-            false: $t('public_status_explanations_publis'),
+            true: $t('private_status_explanations'),
+            false: $t('public_status_explanations'),
           }"
         />
       </div>
@@ -102,7 +102,7 @@ export default {
   data() {
     return {
       new_publication_title: "",
-      new_publication_is_private: true,
+      new_publication_is_private: false,
       new_publication_template: "page_by_page",
 
       is_creating_publication: false,

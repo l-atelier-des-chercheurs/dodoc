@@ -162,9 +162,10 @@ export default {
   }
   &[data-context="list"] {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    &:hover {
-      box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
-      // box-shadow: var(--panel-shadows);
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-6px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }
 }
@@ -193,7 +194,7 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 }
 ._subtitle {
   color: var(--c-gris_fonce);

@@ -2,11 +2,11 @@
   display: block;
   // font-variant: small-caps;
   // text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
 
   // font-family: var(--sl-font-mono);
-  letter-spacing: 0.03em;
-  font-size: var(--sl-font-size-x-small);
+  letter-spacing: 0.05em;
+  font-size: var(--sl-font-size-small);
   // letter-spacing: 0.01em;
   color: var(--label-color);
   // color: var(--c-orange);
@@ -23,8 +23,8 @@
 }
 .u-meta {
   text-transform: uppercase;
-  // font-weight: 500;
 
+  font-family: var(--sl-font-mono);
   font-size: var(--sl-font-size-small);
   letter-spacing: 0.02em;
 }
@@ -386,8 +386,9 @@ textarea,
   // color: var(--input-color);
   color: inherit;
   // border: solid var(--input-border-width) var(--input-border-color);
+  padding: calc(var(--spacing) / 2);
   border-radius: var(--input-border-radius);
-  background-color: var(--c-gris);
+  background-color: var(--c-gris_clair);
   color: inherit;
 
   // background: white;
@@ -397,11 +398,12 @@ textarea,
 
   vertical-align: middle;
 
-  padding-left: calc(var(--spacing) * 0.5);
-  padding-right: calc(var(--spacing) * 0.5);
+  padding: calc(var(--spacing) * 0.5);
+  // padding-left: calc(var(--spacing) * 0.5);
+  // padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
-  border-bottom: 1px solid transparent;
+  border-bottom: 2px solid transparent;
 
   transition: all 0.05s;
 
@@ -742,7 +744,6 @@ input[type="file"] {
   // background: var(--c-gris);
   border: 2px solid var(--c-gris);
 
-  margin: calc(var(--spacing) / 1) 0;
   padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 4);
 
@@ -750,7 +751,7 @@ input[type="file"] {
 }
 
 .u-spacingBottom {
-  margin-bottom: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing));
 }
 
 fieldset {

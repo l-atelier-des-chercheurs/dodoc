@@ -8,6 +8,15 @@
     <BreadCrumbs class="_bc" />
 
     <div class="_topRightButtons">
+      <button type="button" class="u-button" @click="show_qr_code_modal = true">
+        <sl-icon name="qr-code" />
+      </button>
+      <QRModal
+        v-if="show_qr_code_modal"
+        :url_to_access="url_to_page"
+        @close="show_qr_code_modal = false"
+      />
+
       <button
         type="button"
         class="u-button"
@@ -48,8 +57,8 @@ export default {
   data() {
     return {
       show_authors_modal: false,
-      // show_settings: false,
       show_lang_modal: false,
+      show_qr_code_modal: false,
     };
   },
   created() {},
@@ -58,10 +67,10 @@ export default {
       path: `authors`,
     });
     this.$api.join({ room: "authors" });
-
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
   },
   beforeDestroy() {
+    this.$api.leave({ room: "authors" });
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
   },
   watch: {
@@ -75,6 +84,9 @@ export default {
       this.$i18n.availableLocales;
       return this.$i18n.locale;
     },
+    url_to_page() {
+      return window.location.href;
+    },
   },
   methods: {
     showAuthorModal() {
@@ -85,8 +97,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topbar {
-  position: sticky;
-  top: 0;
+  // position: sticky;
+  // top: 0;
+  position: relative;
   z-index: 5;
 
   display: flex;
@@ -149,11 +162,12 @@ export default {
 ._topRightButtons {
   display: flex;
   justify-content: flex-end;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   padding: 0 calc(var(--spacing) / 2);
 
   button {
     // width: 3rem;
+    font-size: inherit;
     height: 3rem;
     background: transparent;
   }

@@ -28,7 +28,7 @@
           name="x"
           size="small"
           v-if="can_edit"
-          @click.prevent="removeFile(i)"
+          @click.prevent="removeFile(file.$path)"
         />
       </div>
     </template>
@@ -46,6 +46,7 @@
       <PickMediaFromProjects
         v-if="show_picker"
         :path="folder_path"
+        :meta_filenames_already_present="meta_filenames_already_present"
         @selectMedia="selectMedia"
         @close="show_picker = false"
       />
@@ -83,6 +84,9 @@ export default {
         return acc;
       }, []);
     },
+    meta_filenames_already_present() {
+      return this.downloadable_files;
+    },
   },
   methods: {
     async selectMedia({ path_to_source_media_meta }) {
@@ -91,9 +95,10 @@ export default {
       files.push(new_file);
       this.updateFiles(files);
     },
-    async removeFile(i) {
-      const files = this.downloadable_files.slice().splice(i + 1, 1);
-      this.updateFiles(files);
+    async removeFile(path) {
+      let _files = this.downloadable_files.slice();
+      _files = _files.filter((f) => !path.endsWith("/" + f));
+      this.updateFiles(_files);
     },
     async updateFiles(files) {
       await this.$api.updateMeta({

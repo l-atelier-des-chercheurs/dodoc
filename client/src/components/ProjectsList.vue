@@ -18,6 +18,7 @@
         class="_project"
         :project="project"
         context="list"
+        :display_original_space="display_original_space"
         :key="project.$path"
       />
     </template>
@@ -29,6 +30,7 @@ import ProjectPresentation from "@/components/ProjectPresentation.vue";
 export default {
   props: {
     projects: Array,
+    display_original_space: Boolean,
   },
   components: { ProjectPresentation },
   data() {

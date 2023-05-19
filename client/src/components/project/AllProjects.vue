@@ -2,7 +2,11 @@
   <div class="_allProjects">
     <transition name="fade_fast" :duration="150" mode="out-in">
       <LoaderSpinner v-if="is_loading" />
-      <ProjectsListWithFilter v-else :projects="all_projects" />
+      <ProjectsListWithFilter
+        v-else
+        :projects="all_projects"
+        :display_original_space="true"
+      />
     </transition>
   </div>
 </template>

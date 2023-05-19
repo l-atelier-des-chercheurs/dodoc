@@ -297,10 +297,12 @@ export default function () {
       },
       async getArchives({ path }) {
         const response = await this.$axios.get(path);
-        const d = response.data;
-        return d;
+        return response.data;
       },
-
+      async getLocalNetworkInfos() {
+        const response = await this.$axios.get("_networkInfos");
+        return response.data;
+      },
       async createFolder({ path, additional_meta }) {
         try {
           path = `${path}/_create`;
