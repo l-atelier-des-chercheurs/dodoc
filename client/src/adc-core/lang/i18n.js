@@ -674,9 +674,10 @@ export default function () {
         add_text: "Ajouter du texte",
 
         link_to_page: "Lien vers cette page",
+        download_this_qr_code: "Télécharger ce code QR",
         domain: "Avec un domaine",
         domain_instr:
-          "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine.",
+          "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine comme https://dodoc.fr.",
         no_domain_set: "Aucun domaine disponible.",
         local_network: "Par un réseau local",
         local_network_instr:
@@ -708,9 +709,6 @@ export default function () {
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
-
-        project_desc_instructions:
-          "La description est affichée ici et sur la liste des projets.",
         pick_cover: "Choisissez une image de couverture",
         remove_image: "Retirer cette image",
 

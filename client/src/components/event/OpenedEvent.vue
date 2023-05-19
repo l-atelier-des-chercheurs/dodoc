@@ -120,7 +120,11 @@ export default {
 
   min-height: 5em;
   padding: calc(var(--spacing) * 1);
-  background: var(--c-gris_clair);
+  // background: var(--c-gris_clair);
+
+  margin: 0 auto;
+  max-width: var(--max-column-width);
+  overflow: hidden;
 
   ._openedEvent--cont {
     position: relative;
@@ -128,12 +132,9 @@ export default {
     flex-flow: row wrap;
     align-items: center;
 
-    margin: 0 auto;
-    max-width: var(--max-column-width);
-    overflow: hidden;
-    border-radius: 12px;
+    // border-radius: 12px;
 
-    background: white;
+    // background: white;
 
     ._cover {
       position: relative;

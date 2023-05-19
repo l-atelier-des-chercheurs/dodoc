@@ -17,14 +17,14 @@
         <qrcode ref="qrCode" :value="url" tag="canvas" :options="qr_options" />
       </FullscreenView>
     </div>
-    <small v-if="canvas_dataurl">
+    <small>
       <a
         :download="'qr_code.png'"
         :href="canvas_dataurl"
         target="_blank"
         class="u-buttonLink"
       >
-        {{ $t("download") }}
+        {{ $t("download_this_qr_code") }}
       </a>
     </small>
   </div>
@@ -39,7 +39,7 @@ export default {
     return {
       qr_options: {
         width: 1200,
-        margin: 2,
+        margin: 4,
       },
       canvas_dataurl: undefined,
       show_fullscreen: false,

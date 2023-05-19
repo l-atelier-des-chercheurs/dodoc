@@ -90,7 +90,6 @@
         :maxlength="1280"
         :input_type="'markdown'"
         :can_edit="can_edit"
-        :instructions="$t('project_desc_instructions')"
       />
 
       <div class="_allTags" v-if="context === 'full'">
@@ -228,7 +227,7 @@ export default {
   align-items: stretch;
 
   width: 100%;
-  max-width: calc(var(--max-column-width));
+  // max-width: calc(var(--max-column-width));
   margin: 0 auto;
 
   overflow: hidden;

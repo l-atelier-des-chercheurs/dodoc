@@ -55,9 +55,8 @@ export default {
   data() {
     return {
       show_authors_modal: false,
-      // show_settings: false,
       show_lang_modal: false,
-      show_qr_code_modal: true,
+      show_qr_code_modal: false,
     };
   },
   created() {},
@@ -158,11 +157,12 @@ export default {
 ._topRightButtons {
   display: flex;
   justify-content: flex-end;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   padding: 0 calc(var(--spacing) / 2);
 
   button {
     // width: 3rem;
+    font-size: inherit;
     height: 3rem;
     background: transparent;
   }
