@@ -79,6 +79,9 @@
         v-if="publication.template === 'story'"
         :publication="publication"
         :can_edit="can_edit_publication"
+        :section_opened_meta="page_opened_id"
+        @toggleSection="$emit('togglePage', $event)"
+        @closePublication="$emit('close')"
       />
       <PageTemplate
         v-else-if="publication.template === 'page_by_page'"

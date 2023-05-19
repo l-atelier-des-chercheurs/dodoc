@@ -496,6 +496,9 @@
                     ],
                     "default": "page_by_page"
                   },
+                  "sections_list": {
+                    "type": "array"
+                  },
                   "modules_list": {
                     "type": "array"
                   },
@@ -552,6 +555,15 @@
                   "fields": {
                     "module_type": {
                       "type": "string"
+                    },
+                    "section_type": {
+                      "type": "string"
+                    },
+                    "section_title": {
+                      "type": "string"
+                    },
+                    "modules_list": {
+                      "type": "array"
                     },
                     "source_medias": {
                       "type": "array"
