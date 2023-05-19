@@ -2,15 +2,23 @@
   <div class="_singleSection">
     <div class="_storyContainer">
       <div class="_storyContent" :style="story_styles">
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
-          {{ $t("close") }}
-        </button>
-        <RemoveMenu
-          :remove_text="$t('remove_section')"
-          @remove="$emit('remove')"
-        />
+        <div class="_topbar">
+          <SectionTitle :section="section" :can_edit="can_edit" />
+          <div class="u-sameRow">
+            <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
+            <div>
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="$emit('close')"
+              >
+                <sl-icon name="x" />
+                {{ $t("close") }}
+              </button>
+            </div>
+          </div>
+        </div>
 
-        <SectionTitle :section="section" :can_edit="can_edit" />
         <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(meta_filename, index) in modules_list">
             <PublicationModule
@@ -271,5 +279,15 @@ export default {
   align-items: center;
   justify-content: center;
   padding: calc(var(--spacing) / 4) 0;
+}
+
+._topbar {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+
+  margin: 0 calc(var(--spacing) / 1) calc(var(--spacing) * 1.5);
+  padding-bottom: calc(var(--spacing) / 1);
+  border-bottom: 2px solid var(--c-gris);
 }
 </style>

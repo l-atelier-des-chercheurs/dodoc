@@ -29,10 +29,4 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped>
-._sectionTitle {
-  margin: 0 calc(var(--spacing) / 1) calc(var(--spacing) * 1.5);
-  padding-bottom: calc(var(--spacing) / 1);
-  border-bottom: 2px solid var(--c-gris);
-}
-</style>
+<style lang="scss" scoped></style>
