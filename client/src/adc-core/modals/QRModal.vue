@@ -21,7 +21,7 @@
         :can_edit="true"
       />
 
-      <hr class="_hr" />
+      <!-- <hr class="_hr" /> -->
 
       <transition name="pagechange" mode="out-in">
         <div class="_qrAndLinks" :key="current_opt">
@@ -48,7 +48,9 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    url_to_access: String,
+  },
   components: {},
   data() {
     return {
@@ -74,7 +76,7 @@ export default {
   },
   computed: {
     urls_to_page() {
-      let current_url = new URL(window.location);
+      let current_url = new URL(this.url_to_access);
 
       let _urls_to_page = {};
 
@@ -94,7 +96,7 @@ export default {
       if (this.network_infos?.local_ips.length > 0) {
         _urls_to_page.local_network = [];
         this.network_infos.local_ips.map((ip) => {
-          let url = new URL(window.location);
+          let url = new URL(this.url_to_access);
           url.hostname = ip;
           _urls_to_page.local_network.push(url.href);
         });
@@ -133,7 +135,7 @@ export default {
 
     // dodoc 9 code
     // url_to_page() {
-    //   let url = new URL(window.location);
+    //   let url = new URL(this.url_to_access);
     //   function isIP(address) {
     //     const r = RegExp(
     //       "((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])"

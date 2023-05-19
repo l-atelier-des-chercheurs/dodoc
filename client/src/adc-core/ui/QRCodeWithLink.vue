@@ -68,6 +68,13 @@ export default {
   align-items: stretch;
 
   gap: calc(var(--spacing) / 2);
+
+  padding: calc(var(--spacing) * 2);
+  aspect-ratio: 21/29.7;
+
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
 }
 
 ._link {
@@ -89,7 +96,7 @@ export default {
 
   canvas {
     display: block;
-    border: 2px solid var(--c-gris);
+    // border: 2px solid var(--c-gris);
     width: 100% !important;
     height: auto !important;
     aspect-ratio: 1;

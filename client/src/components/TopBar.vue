@@ -11,7 +11,11 @@
       <button type="button" class="u-button" @click="show_qr_code_modal = true">
         <sl-icon name="qr-code" />
       </button>
-      <QRModal v-if="show_qr_code_modal" @close="show_qr_code_modal = false" />
+      <QRModal
+        v-if="show_qr_code_modal"
+        :url_to_access="url_to_page"
+        @close="show_qr_code_modal = false"
+      />
 
       <button
         type="button"
@@ -81,6 +85,9 @@ export default {
     current_lang_code() {
       this.$i18n.availableLocales;
       return this.$i18n.locale;
+    },
+    url_to_page() {
+      return window.location.href;
     },
   },
   methods: {

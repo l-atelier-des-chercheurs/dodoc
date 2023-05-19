@@ -36,6 +36,7 @@
     </div>
 
     <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
+      <div class="u-spacingBottom" />
       <button
         type="button"
         class="u-button u-button_bleumarine u-button_small"

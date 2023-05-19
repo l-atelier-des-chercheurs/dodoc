@@ -32,6 +32,7 @@
     </div>
 
     <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
+      <div class="u-spacingBottom" />
       <DLabel :str="$t('open_in_finder')" />
       <button
         type="button"
