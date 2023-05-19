@@ -111,7 +111,8 @@ export default {
           )
         : [];
 
-      if (all_sections.length === 0) return [];
+      if (all_sections.length === 0 || !this.publication.sections_list)
+        return [];
 
       return this.publication.sections_list.map(({ meta_filename }) => {
         return all_sections.find((s) => s.$path.endsWith("/" + meta_filename));
