@@ -1,10 +1,9 @@
 <template>
-  <BaseModal2 :title="$t('give_access')" @close="$emit('close')">
+  <BaseModal2 :title="$t('share_link_to_page')" @close="$emit('close')">
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>
     <div v-else>
-      Accéder à cette page :
       <!-- <select v-if="!urls_to_page.domain" v-model="current_opt">
         <option
           value="local_network"
@@ -34,7 +33,6 @@
             </template>
           </template>
           <template v-else>
-            <DLabel :str="$t('link_to_page')" />
             <QRCodeWithLink
               v-for="qr_url of qr_urls"
               :key="qr_url"

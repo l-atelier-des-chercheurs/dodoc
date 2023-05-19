@@ -79,10 +79,14 @@ export default {
 
 ._link {
   display: block;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
+  width: 100%;
+  text-align: center;
+  word-break: break-word;
+
+  // display: -webkit-box;
+  // -webkit-box-orient: vertical;
+  // -webkit-line-clamp: 1;
+  // overflow: hidden;
 }
 ._qr {
   position: relative;

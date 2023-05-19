@@ -96,6 +96,9 @@ import TagsList from "@/adc-core/ui/TagsList.vue";
 Vue.component("TagsList", TagsList);
 import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
+
+import QRModal from "@/adc-core/modals/QRModal.vue";
+Vue.component("QRModal", QRModal);
 import QRCodeWithLink from "@/adc-core/ui/QRCodeWithLink.vue";
 Vue.component("QRCodeWithLink", QRCodeWithLink);
 //

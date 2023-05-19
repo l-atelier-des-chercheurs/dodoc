@@ -107,8 +107,6 @@ export default function () {
         submit: "Valider",
         search_by_title: "Rechercher par titre",
 
-        give_access: "Partager l’accès",
-
         connection_lost: `Connexion perdue`,
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue. Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez à nouveau cette erreur, contactez `,
         reload_page: "Recharger cette page",
@@ -673,13 +671,13 @@ export default function () {
         add_link: "Ajouter un lien",
         add_text: "Ajouter du texte",
 
-        link_to_page: "Lien vers cette page",
+        share_link_to_page: "Partager un lien vers cette page",
         download_this_qr_code: "Télécharger ce code QR",
         domain: "Avec un domaine",
         domain_instr:
           "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine comme https://dodoc.fr.",
         no_domain_set: "Aucun domaine disponible.",
-        local_network: "Par un réseau local",
+        local_network: "Par le réseau local",
         local_network_instr:
           "Depuis n’importe quel appareil (ordinateur, smartphone ou tablette) connecté sur le même réseau wifi ou filaire, avec ou sans internet.",
         no_local_network_set: "Aucun réseau local n’a été trouvé.",

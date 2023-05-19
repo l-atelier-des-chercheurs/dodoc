@@ -46,7 +46,6 @@
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
-import QRModal from "@/adc-core/modals/QRModal.vue";
 
 export default {
   props: {},
@@ -54,7 +53,6 @@ export default {
     AuthorList,
     LangModal,
     BreadCrumbs,
-    QRModal,
   },
   data() {
     return {

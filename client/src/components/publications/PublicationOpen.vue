@@ -49,10 +49,23 @@
             </button>
           </div>
           <div class="">
-            <router-link :to="share_path" target="_blank" class="u-buttonLink">
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_qr_code_modal = true"
+            >
+              <sl-icon name="qr-code" />
+              {{ $t("share") }}
+            </button>
+            <QRModal
+              v-if="show_qr_code_modal"
+              :url_to_access="share_url"
+              @close="show_qr_code_modal = false"
+            />
+            <!-- <router-link :to="share_path" target="_blank" class="u-buttonLink">
               <sl-icon name="share" />
               {{ $t("share") }}
-            </router-link>
+            </router-link> -->
           </div>
           <RemoveMenu
             v-if="can_edit_publication"
@@ -97,6 +110,7 @@ export default {
       publication: null,
       fetch_publication_error: null,
       is_exporting: false,
+      show_qr_code_modal: false,
     };
   },
   created() {},
@@ -114,14 +128,19 @@ export default {
     can_edit_publication() {
       return this.can_edit;
     },
-    share_path() {
+    share_url() {
       let query = {};
       if (this.publication.template === "page_by_page")
         query = { display: "slides" };
-      return {
+
+      const route = this.$router.resolve({
         path: this.createURLFromPath(this.publication.$path),
         query,
-      };
+      });
+
+      route.href;
+
+      return window.location.origin + route.href;
     },
   },
   methods: {
