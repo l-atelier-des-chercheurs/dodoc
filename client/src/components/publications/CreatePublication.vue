@@ -156,6 +156,13 @@ export default {
                   `,
         },
         {
+          key: "story_with_sections",
+          label: this.$t("story_with_sections"),
+          disabled: false,
+          icon: `
+                  `,
+        },
+        {
           key: "cartography",
           label: this.$t("cartography"),
           disabled: true,

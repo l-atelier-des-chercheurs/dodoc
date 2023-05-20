@@ -491,6 +491,7 @@
                       "page_by_page",
                       "carreau",
                       "story",
+                      "story_with_sections",
                       "face_masks",
                       "image_tracking"
                     ],
