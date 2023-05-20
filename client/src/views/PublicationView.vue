@@ -217,6 +217,14 @@
             :can_edit="false"
           />
         </div>
+        <div v-else-if="publication.template === 'story_with_sections'">
+          <StorySectionTemplate
+            :publication="publication"
+            :can_edit="false"
+            :section_opened_meta="section_opened_meta"
+            @toggleSection="section_opened_meta = $event"
+          />
+        </div>
       </div>
     </transition>
   </div>
@@ -224,14 +232,17 @@
 
 <script>
 import screenfull from "screenfull";
+
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
 import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
+import StorySectionTemplate from "@/components/publications/templates/StorySectionTemplate.vue";
 
 export default {
   props: {},
   components: {
     SinglePage,
     StoryTemplate,
+    StorySectionTemplate,
   },
   data() {
     return {
@@ -240,6 +251,8 @@ export default {
       publication: null,
       projectpanes: [],
       page_zoom: 100,
+
+      section_opened_meta: "",
 
       is_fullscreen: false,
       is_serversidepreview: false,
@@ -282,6 +295,12 @@ export default {
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
     // this.$api.join({ room: this.publication_path });
+
+    if (this.publication.template === "story_with_sections") {
+      if (this.publication.sections_list)
+        this.section_opened_meta =
+          this.publication.sections_list[0].meta_filename;
+    }
   },
   beforeDestroy() {
     // this.$api.leave({ room: this.project.$path });

@@ -4,7 +4,7 @@
       <div class="_storyContent" :style="story_styles">
         <div class="_topbar">
           <SectionTitle :section="section" :can_edit="can_edit" />
-          <div class="u-sameRow">
+          <div class="u-sameRow" v-if="can_edit">
             <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
             <div>
               <button

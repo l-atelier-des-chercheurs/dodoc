@@ -13,7 +13,7 @@
             'is--active': isActive(section.$path),
           }"
         >
-          <span v-handle class="_inlineBtn">
+          <span v-handle class="_inlineBtn" v-if="can_edit">
             <sl-icon-button name="grip-vertical" label="Déplacer" />
           </span>
           <span v-if="section.section_title" class="_title">{{
@@ -56,7 +56,12 @@
           remove
         </button>
       </div> -->
-      <button type="button" class="u-buttonLink" @click="createSection">
+      <button
+        type="button"
+        class="u-buttonLink"
+        v-if="can_edit"
+        @click="createSection"
+      >
         {{ $t("create_section") }}
       </button>
     </div>
