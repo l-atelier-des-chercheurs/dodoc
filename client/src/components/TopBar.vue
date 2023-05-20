@@ -85,6 +85,8 @@ export default {
       return this.$i18n.locale;
     },
     url_to_page() {
+      // for reactivity
+      this.$route.path;
       return window.location.href;
     },
   },
