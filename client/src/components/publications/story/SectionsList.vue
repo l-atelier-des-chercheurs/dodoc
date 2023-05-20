@@ -183,6 +183,10 @@ export default {
           meta_filename: this.getFilename(i.$path),
         };
       });
+
+      if (JSON.stringify(sections_list) === JSON.stringify(this.sections_list))
+        return "no_update_necessary";
+
       this.updatePubliMeta({
         sections_list,
       });
