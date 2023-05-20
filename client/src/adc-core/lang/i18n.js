@@ -684,7 +684,7 @@ export default function () {
         no_domain_set: "Aucun domaine disponible.",
         local_network: "Par le réseau local",
         local_network_instr:
-          "Depuis n’importe quel appareil (ordinateur, smartphone ou tablette) connecté sur le même réseau wifi ou filaire, avec ou sans internet.",
+          "Avec n’importe quel appareil (ordinateur, smartphone ou tablette) connecté sur le même réseau wifi ou filaire, avec ou sans internet.",
         no_local_network_set: "Aucun réseau local n’a été trouvé.",
         local_machine: "Sur la même machine",
         local_machine_instr:

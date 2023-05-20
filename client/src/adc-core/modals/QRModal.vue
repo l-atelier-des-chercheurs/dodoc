@@ -15,6 +15,7 @@
       </select> -->
 
       <RadioCheckboxInput
+        v-if="!urls_to_page.domain"
         :value.sync="current_opt"
         :options="network_options"
         :can_edit="true"
@@ -52,9 +53,8 @@ export default {
   components: {},
   data() {
     return {
-      url: "plop",
       network_infos: undefined,
-      current_opt: "local",
+      current_opt: this.$root.app_infos.is_electron ? "local" : "domain",
       is_loading: true,
     };
   },
@@ -65,11 +65,14 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
-    urls_to_page() {
-      if (this.urls_to_page.domain) this.current_opt = "domain";
-      else if (this.urls_to_page.local_network)
-        this.current_opt = "local_network";
-      else this.current_opt = "local";
+    urls_to_page: {
+      handler() {
+        if (this.urls_to_page.domain) this.current_opt = "domain";
+        else if (this.urls_to_page.local_network)
+          this.current_opt = "local_network";
+        else this.current_opt = "local";
+      },
+      deep: true,
     },
   },
   computed: {

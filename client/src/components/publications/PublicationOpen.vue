@@ -79,6 +79,11 @@
         v-if="publication.template === 'story'"
         :publication="publication"
         :can_edit="can_edit_publication"
+      />
+      <StorySectionTemplate
+        v-if="publication.template === 'story_with_sections'"
+        :publication="publication"
+        :can_edit="can_edit_publication"
         :section_opened_meta="page_opened_id"
         @toggleSection="$emit('togglePage', $event)"
         @closePublication="$emit('close')"
@@ -105,6 +110,8 @@ export default {
   components: {
     StoryTemplate: () =>
       import("@/components/publications/templates/StoryTemplate.vue"),
+    StorySectionTemplate: () =>
+      import("@/components/publications/templates/StorySectionTemplate.vue"),
     PageTemplate: () =>
       import("@/components/publications/templates/PageTemplate.vue"),
   },
