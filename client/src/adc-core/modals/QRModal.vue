@@ -15,6 +15,7 @@
       </select> -->
 
       <RadioCheckboxInput
+        v-if="!urls_to_page.domain"
         :value.sync="current_opt"
         :options="network_options"
         :can_edit="true"
