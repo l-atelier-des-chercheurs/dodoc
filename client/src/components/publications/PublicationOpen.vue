@@ -222,9 +222,11 @@ export default {
   align-items: center;
   width: 100%;
   background: white;
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 1);
+
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  border-radius: 10px;
   margin: calc(var(--spacing) / 2) auto;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
   // max-width: 800px;
 }
 
