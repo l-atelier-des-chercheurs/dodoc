@@ -11,8 +11,7 @@
       <template v-if="context === 'full'">
         <div class="_fsButton">
           <EditBtn
-            :icon="'fullscreen'"
-            :label="$t('fullscreen')"
+            :btn_type="'fullscreen'"
             @click="show_cover_fullscreen = true"
           />
         </div>

@@ -7,11 +7,7 @@
     </transition>
 
     <div class="_fsButton">
-      <EditBtn
-        :icon="'fullscreen-exit'"
-        :label="$t('exit_fullscreen')"
-        @click="closeFs"
-      />
+      <EditBtn :btn_type="'fullscreen-exit'" @click="closeFs" />
     </div>
   </div>
 </template>

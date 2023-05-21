@@ -19,11 +19,7 @@
       </template>
       <template v-if="show_fs_button">
         <div class="_fsButton">
-          <EditBtn
-            :icon="'fullscreen'"
-            :label="$t('fullscreen')"
-            @click="show_fullscreen = true"
-          />
+          <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
         </div>
         <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
           <img :src="file_full_path" />

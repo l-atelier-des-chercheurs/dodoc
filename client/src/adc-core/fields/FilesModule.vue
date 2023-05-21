@@ -56,7 +56,7 @@
 <script>
 export default {
   props: {
-    folder_path: String,
+    path: String,
     downloadable_files: {
       type: Array,
       default: () => [],

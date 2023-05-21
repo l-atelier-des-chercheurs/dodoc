@@ -7,7 +7,8 @@
     "
   >
     <FilesModule
-      :folder_path="project.$path"
+      :path="project.$path"
+      :field="'downloadable_files'"
       :downloadable_files="downloadable_files"
       :can_edit="can_edit"
     />
