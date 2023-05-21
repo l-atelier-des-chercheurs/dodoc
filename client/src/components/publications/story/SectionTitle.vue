@@ -9,6 +9,15 @@
       :tag="'h3'"
       :can_edit="can_edit"
     />
+    <TitleField
+      :field_name="'section_description'"
+      :label="$t('description')"
+      :content="section.section_description"
+      :path="section.$path"
+      :maxlength="1280"
+      :input_type="'markdown'"
+      :can_edit="can_edit"
+    />
   </div>
 </template>
 <script>

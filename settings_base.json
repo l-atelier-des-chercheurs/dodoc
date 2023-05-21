@@ -563,6 +563,9 @@
                     "section_title": {
                       "type": "string"
                     },
+                    "section_description": {
+                      "type": "string"
+                    },
                     "modules_list": {
                       "type": "array"
                     },
