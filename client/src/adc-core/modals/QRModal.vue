@@ -3,7 +3,7 @@
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>
-    <div v-else>
+    <div class="_txt" v-else>
       <!-- <select v-if="!urls_to_page.domain" v-model="current_opt">
         <option
           value="local_network"
@@ -188,7 +188,13 @@ export default {
 ._hr {
   margin: calc(var(--spacing) / 1) auto;
 }
+
+._txt {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 1);
+}
+
 ._qrAndLinks {
-  margin: calc(var(--spacing) / 1) auto 0;
 }
 </style>
