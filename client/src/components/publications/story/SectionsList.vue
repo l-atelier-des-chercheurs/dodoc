@@ -93,13 +93,17 @@ export default {
   },
   directives: { handle: HandleDirective },
   data() {
-    return {
-      opened_section_meta_filename: false,
-      fruits: ["Apples", "Bananas" /* etc. */],
-    };
+    return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.publication.sections_list && !this.section_opened_meta) {
+      this.$emit(
+        "toggleSection",
+        this.publication.sections_list[0].meta_filename
+      );
+    }
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -208,6 +212,15 @@ export default {
 ._dragHandle {
   display: flex;
   cursor: grab;
+  padding: calc(var(--spacing) / 4);
+  background: var(--c-gris);
+  color: black;
+  border-radius: 2px;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent;
+  }
 }
 
 ._list {
