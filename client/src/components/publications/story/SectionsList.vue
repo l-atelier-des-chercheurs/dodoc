@@ -2,39 +2,36 @@
   <div>
     <div class="_summary">
       <DLabel :str="$t('summary')" />
-
-      <SlickList class="_list" axis="y" :value="sections" @input="updateOrder">
+      <SlickList
+        class="_list"
+        axis="y"
+        :value="sections"
+        @input="updateOrder"
+        :useDragHandle="true"
+      >
         <SlickItem
           v-for="(section, index) of sections"
           :key="section.$path"
           :index="index"
-          class="_item"
+          class="_summaryItem"
           :class="{
             'is--active': isActive(section.$path),
           }"
         >
-          <span v-handle class="_inlineBtn" v-if="can_edit">
-            <sl-icon-button name="grip-vertical" label="Déplacer" />
+          <span v-handle class="_dragHandle" v-if="can_edit">
+            <sl-icon name="grip-vertical" label="Déplacer" />
           </span>
-          <span v-if="section.section_title" class="_title">{{
-            section.section_title
-          }}</span>
-          <span
-            v-else
-            class="_title"
-            v-html="'<i>' + $t('untitled') + '</i>'"
-          />
+          <span class="_clickZone" @click="openSection(section.$path)">
+            <h4 class="_title">
+              <span v-if="section.section_title">
+                {{ section.section_title }}
+              </span>
+              <span v-else v-html="'<i>' + $t('untitled') + '</i>'" />
+            </h4>
+          </span>
           <small>
             ({{ section.modules_list ? section.modules_list.length : 0 }})
           </small>
-          <button
-            type="button"
-            class="u-buttonLink"
-            v-if="!isActive(section.$path)"
-            @click="openSection(section.$path)"
-          >
-            {{ $t("open") }}
-          </button>
         </SlickItem>
       </SlickList>
       <hr />
@@ -208,27 +205,50 @@ export default {
   max-width: 60ch;
 }
 
+._dragHandle {
+  display: flex;
+  cursor: grab;
+}
+
 ._list {
   color: black;
 }
+
+._sectionTitle {
+}
 </style>
 <style lang="scss">
-._item {
+// slickitem
+._summaryItem {
   z-index: 10000;
 
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
+
+  padding: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4);
+
+  ._clickZone {
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--c-gris_clair);
+    }
+  }
+
+  ._title {
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+    border-radius: 2px;
+  }
 
   &.is--active {
     ._title {
       background: var(--c-orange);
-      padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
-      border-radius: 4px;
     }
   }
-
   // color: black;
   // background: blue;
 }
