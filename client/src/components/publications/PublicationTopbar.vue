@@ -74,6 +74,7 @@ export default {
   data() {
     return {
       show_qr_code_modal: false,
+      is_exporting: false,
     };
   },
   created() {},
