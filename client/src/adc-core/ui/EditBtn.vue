@@ -1,24 +1,22 @@
 <template>
   <button
     type="button"
-    class="u-button u-button_verysmall u-button_bleuvert _editBtn"
+    class="u-button u-button_verysmall _editBtn"
+    :style="btn_styles"
     @click="$emit('click')"
   >
     <span>
-      {{ btn_label }}
+      {{ label }}
     </span>
-    <sl-icon :name="icon" :label="btn_label" />
+    <sl-icon :name="icon" :label="label" />
   </button>
 </template>
 <script>
 export default {
   props: {
-    icon: {
+    btn_type: {
       type: String,
-      default: "pencil-fill",
-    },
-    label: {
-      type: String,
+      default: "edit",
     },
   },
   components: {},
@@ -30,9 +28,29 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    btn_label() {
-      if (this.label) return this.label;
+    label() {
+      if (this.btn_type === "fullscreen") return this.$t("fullscreen");
+      else if (this.btn_type === "fullscreen-exit")
+        return this.$t("exit_fullscreen");
       return this.$t("edit");
+    },
+    icon() {
+      if (this.btn_type === "fullscreen") return "fullscreen";
+      else if (this.btn_type === "fullscreen-exit")
+        return this.$t("fullscreen-exit");
+      return "pencil-fill";
+    },
+    btn_styles() {
+      if (this.btn_type === "fullscreen")
+        return `
+          --color2: var(--c-noir);
+        `;
+      if (this.btn_type === "fullscreen-exit")
+        return `
+          --color2: white;
+          --color-hover-icon: var(--c-noir);
+        `;
+      return ``;
     },
   },
   methods: {},

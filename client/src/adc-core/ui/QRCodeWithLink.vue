@@ -5,11 +5,7 @@
     </div>
     <div class="_qr">
       <div class="_fsButton">
-        <EditBtn
-          :icon="'fullscreen'"
-          :label="$t('fullscreen')"
-          @click="show_fullscreen = true"
-        />
+        <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
       </div>
 
       <qrcode ref="qrCode" :value="url" tag="canvas" :options="qr_options" />

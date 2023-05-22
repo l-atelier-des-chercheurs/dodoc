@@ -7,8 +7,10 @@
     "
   >
     <FilesModule
-      :folder_path="project.$path"
-      :downloadable_files="downloadable_files"
+      :field_name="'downloadable_files'"
+      :path="project.$path"
+      :content="downloadable_files"
+      :project_path="project.$path"
       :can_edit="can_edit"
     />
   </ProjectCard>

@@ -147,7 +147,7 @@ export default {
   --c-bleuvert: #52c5b9;
   --c-bleuvert_clair: hsl(174, 50%, 81%);
   --c-bleuvert_fonce: hsl(174, 50%, 41%);
-  --c-orange: #ffbe32;
+  --c-orange: hsl(41, 100%, 60%);
   --c-orange_clair: #ffd892;
   --c-orange_fonce: hsl(41, 100%, 45%);
   --c-rouge: #fc4b60;

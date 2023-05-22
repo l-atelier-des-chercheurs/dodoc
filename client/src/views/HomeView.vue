@@ -236,13 +236,13 @@ export default {
   position: relative;
   width: 100%;
   margin: 0 auto;
-  border: 2px solid var(--c-gris_clair);
+  border-bottom: 2px solid var(--c-gris_clair);
 
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  padding: calc(var(--spacing) * 1);
+  // padding: calc(var(--spacing) * 1);
   gap: calc(var(--spacing) * 2);
 
   > * {

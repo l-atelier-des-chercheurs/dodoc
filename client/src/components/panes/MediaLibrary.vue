@@ -319,7 +319,10 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2);
+
+  background: var(--color-collect);
+  z-index: 1;
+  padding: calc(var(--spacing) / 2);
 }
 
 ._mediaCount {

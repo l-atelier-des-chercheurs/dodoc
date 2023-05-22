@@ -156,8 +156,6 @@ Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
-import FullscreenBtn from "@/adc-core/ui/FullscreenBtn.vue";
-Vue.component("FullscreenBtn", FullscreenBtn);
 
 Vue.component("SectionLabel", {
   name: "SectionLabel",

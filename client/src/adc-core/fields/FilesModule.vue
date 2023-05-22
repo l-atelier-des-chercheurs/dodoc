@@ -45,7 +45,7 @@
 
       <PickMediaFromProjects
         v-if="show_picker"
-        :path="folder_path"
+        :path="project_path"
         :meta_filenames_already_present="meta_filenames_already_present"
         @selectMedia="selectMedia"
         @close="show_picker = false"
@@ -56,8 +56,10 @@
 <script>
 export default {
   props: {
-    folder_path: String,
-    downloadable_files: {
+    field_name: String,
+    path: String,
+    project_path: String,
+    content: {
       type: Array,
       default: () => [],
     },
@@ -75,9 +77,9 @@ export default {
   watch: {},
   computed: {
     listed_files() {
-      return this.downloadable_files.reduce((acc, meta_filename) => {
+      return this.content.reduce((acc, meta_filename) => {
         const m = this.getMediaInFolder({
-          folder_path: this.folder_path,
+          folder_path: this.project_path,
           meta_filename,
         });
         if (m) acc.push(m);
@@ -85,26 +87,26 @@ export default {
       }, []);
     },
     meta_filenames_already_present() {
-      return this.downloadable_files;
+      return this.content;
     },
   },
   methods: {
     async selectMedia({ path_to_source_media_meta }) {
       const new_file = this.getFilename(path_to_source_media_meta);
-      const files = this.downloadable_files.slice() || [];
+      const files = this.content.slice() || [];
       files.push(new_file);
       this.updateFiles(files);
     },
     async removeFile(path) {
-      let _files = this.downloadable_files.slice();
+      let _files = this.content.slice();
       _files = _files.filter((f) => !path.endsWith("/" + f));
       this.updateFiles(_files);
     },
     async updateFiles(files) {
       await this.$api.updateMeta({
-        path: this.folder_path,
+        path: this.path,
         new_meta: {
-          downloadable_files: files,
+          [this.field_name]: files,
         },
       });
     },
