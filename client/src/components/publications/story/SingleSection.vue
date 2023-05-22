@@ -245,7 +245,7 @@ export default {
 
 ._storyContainer {
   width: 100%;
-  overflow: auto;
+  // overflow: auto;
 }
 ._storyContent {
   width: 100%;
