@@ -344,7 +344,8 @@ class Exporter {
             }
           })
           .catch((error) => {
-            dev.logverbose("printed-to-pdf " + url);
+            dev.logverbose("Failed to print to pdf " + url);
+            dev.error(error);
             if (win) win.close();
             this._notifyEnded({
               event: "failed",
