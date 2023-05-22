@@ -12,6 +12,8 @@ import i18n from "@/adc-core/lang/i18n.js";
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
 
+Vue.config.ignoredElements = [/sl-/];
+
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
