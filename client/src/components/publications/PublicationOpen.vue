@@ -59,7 +59,6 @@ export default {
     return {
       publication: null,
       fetch_publication_error: null,
-      is_exporting: false,
     };
   },
   created() {},

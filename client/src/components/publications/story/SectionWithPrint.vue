@@ -82,7 +82,7 @@ export default {
 
   @media print {
     margin: 0;
-    padding-top: calc(var(--spacing) * 2);
+    // padding-top: calc(var(--spacing) * 2);
   }
 }
 </style>

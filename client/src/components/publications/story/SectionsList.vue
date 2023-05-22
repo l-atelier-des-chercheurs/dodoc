@@ -36,6 +36,18 @@
           @remove="removeSection(opened_section.$path)"
           @close="closeSection"
         />
+        <div class="_navBtns">
+          <div class="_navBtns--content">
+            <span v-if="prev_section" class="_navbtn" @click="prevSection">
+              <sl-icon name="arrow-left-circle" />
+              {{ prev_section.section_title }}
+            </span>
+            <span v-if="next_section" class="_navbtn" @click="nextSection">
+              {{ next_section.section_title }}
+              <sl-icon name="arrow-right-circle" />
+            </span>
+          </div>
+        </div>
       </div>
     </transition>
   </div>
@@ -90,6 +102,21 @@ export default {
       return this.publication.$files?.find((f) =>
         f.$path.endsWith("/" + this.section_opened_meta)
       );
+    },
+    opened_section_index() {
+      return this.sections.findIndex(
+        (s) => s.$path === this.opened_section.$path
+      );
+    },
+    next_section() {
+      if (this.opened_section_index < this.sections.length - 1)
+        return this.sections[this.opened_section_index + 1];
+      return false;
+    },
+    prev_section() {
+      if (this.opened_section_index > 0)
+        return this.sections[this.opened_section_index - 1];
+      return false;
     },
   },
   methods: {
@@ -156,6 +183,12 @@ export default {
         sections_list,
       });
     },
+    nextSection() {
+      this.openSection(this.next_section.$path);
+    },
+    prevSection() {
+      this.openSection(this.prev_section.$path);
+    },
   },
 };
 </script>
@@ -165,5 +198,34 @@ export default {
 }
 
 ._sectionTitle {
+}
+
+._navBtns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: underline;
+}
+._navBtns--content {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 1);
+}
+
+._navbtn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
+
+  background: white;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--c-gris);
+  }
 }
 </style>
