@@ -1,41 +1,14 @@
 <template>
-  <div>
-    <div class="_summary">
-      <DLabel :str="$t('summary')" />
-      <SlickList
-        class="_list"
-        axis="y"
-        :value="sections"
-        @input="updateOrder"
-        :useDragHandle="true"
-      >
-        <SlickItem
-          v-for="(section, index) of sections"
-          :key="section.$path"
-          :index="index"
-          class="_summaryItem"
-          :class="{
-            'is--active': isActive(section.$path),
-          }"
-        >
-          <span v-handle class="_dragHandle" v-if="can_edit">
-            <sl-icon name="grip-vertical" label="Déplacer" />
-          </span>
-          <span class="_clickZone" @click="openSection(section.$path)">
-            <h4 class="_title">
-              <span v-if="section.section_title">
-                {{ section.section_title }}
-              </span>
-              <span v-else v-html="'<i>' + $t('untitled') + '</i>'" />
-            </h4>
-          </span>
-          <small>
-            ({{ section.modules_list ? section.modules_list.length : 0 }})
-          </small>
-        </SlickItem>
-      </SlickList>
-      <hr />
-      <!-- <div class="" v-for="(section, index) of sections" :key="section.$path">
+  <div class="_sectionsList">
+    <SectionsSummary
+      :sections="sections"
+      :opened_section="opened_section"
+      :can_edit="can_edit"
+      @createSection="createSection"
+      @openSection="openSection"
+      @updateOrder="updateOrder"
+    />
+    <!-- <div class="" v-for="(section, index) of sections" :key="section.$path">
         <button
           type="button"
           class="u-button"
@@ -53,15 +26,6 @@
           remove
         </button>
       </div> -->
-      <button
-        type="button"
-        class="u-buttonLink"
-        v-if="can_edit"
-        @click="createSection"
-      >
-        {{ $t("create_section") }}
-      </button>
-    </div>
 
     <transition name="pagechange" mode="out-in">
       <div v-if="opened_section" :key="opened_section.$path">
@@ -77,8 +41,8 @@
   </div>
 </template>
 <script>
+import SectionsSummary from "@/components/publications/story/SectionsSummary.vue";
 import SingleSection from "@/components/publications/story/SingleSection.vue";
-import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 
 export default {
   props: {
@@ -87,11 +51,9 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    SectionsSummary,
     SingleSection,
-    SlickItem,
-    SlickList,
   },
-  directives: { handle: HandleDirective },
   data() {
     return {};
   },
@@ -173,9 +135,6 @@ export default {
         new_meta,
       });
     },
-    isActive(path) {
-      return this.opened_section && path === this.opened_section.$path;
-    },
     openSection(path) {
       const section_meta_filename = this.getFilename(path);
       this.$emit("toggleSection", section_meta_filename);
@@ -201,68 +160,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._summary {
-  background: white;
-  padding: calc(var(--spacing) / 2);
-
-  margin: 0 auto;
-  max-width: 60ch;
-}
-
-._dragHandle {
-  display: flex;
-  cursor: grab;
-  padding: calc(var(--spacing) / 4);
-  background: var(--c-gris);
-  color: black;
-  border-radius: 2px;
-
-  &:hover,
-  &:focus-visible {
-    background: transparent;
-  }
-}
-
-._list {
-  color: black;
+._sectionsList {
+  position: relative;
 }
 
 ._sectionTitle {
-}
-</style>
-<style lang="scss">
-// slickitem
-._summaryItem {
-  z-index: 10000;
-
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-
-  padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 4);
-
-  ._clickZone {
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover,
-    &:focus-visible {
-      background: var(--c-gris_clair);
-    }
-  }
-
-  ._title {
-    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-    border-radius: 2px;
-  }
-
-  &.is--active {
-    ._title {
-      background: var(--c-orange);
-    }
-  }
-  // color: black;
-  // background: blue;
 }
 </style>

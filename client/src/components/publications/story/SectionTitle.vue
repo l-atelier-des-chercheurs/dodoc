@@ -2,7 +2,7 @@
   <div class="_sectionTitle">
     <TitleField
       :field_name="'section_title'"
-      :label="$t('section_title')"
+      :label="can_edit ? $t('section_title') : ''"
       :content="section.section_title"
       :path="section.$path"
       :maxlength="120"
@@ -11,7 +11,7 @@
     />
     <TitleField
       :field_name="'section_description'"
-      :label="$t('description')"
+      :label="can_edit ? $t('description') : ''"
       :content="section.section_description"
       :path="section.$path"
       :maxlength="1280"

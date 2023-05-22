@@ -135,8 +135,8 @@ export default {
 
     &:hover,
     &:focus-visible {
-      color: white;
-      background-color: var(--c-gris_fonce);
+      // color: white;
+      background-color: var(--c-gris);
     }
   }
 
@@ -146,13 +146,13 @@ export default {
 
   &[open] {
     summary {
-      color: white;
+      // color: white;
       // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-      background-color: var(--c-noir);
+      background-color: var(--c-gris);
     }
 
     ._content {
-      border: 1px solid var(--c-noir);
+      border: 2px solid var(--c-gris);
       border-top: none;
     }
   }

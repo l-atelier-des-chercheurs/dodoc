@@ -13,6 +13,9 @@
         {{ fetch_project_error }}
       </div>
       <div v-else key="publication" ref="fsContainer">
+        <div class="_pubTopbar">
+          <PublicationTopbar :publication="publication" :can_edit="false" />
+        </div>
         <!-- Publication view project = {{ project }} <br />
         publication = {{ publication }} -->
         <template v-if="publication.template === 'page_by_page'">
@@ -30,12 +33,7 @@
           />
         </div>
         <div v-else-if="publication.template === 'story_with_sections'">
-          <StorySectionTemplate
-            :publication="publication"
-            :can_edit="false"
-            :section_opened_meta="section_opened_meta"
-            @toggleSection="section_opened_meta = $event"
-          />
+          <SectionWithPrint :publication="publication" />
         </div>
       </div>
     </transition>
@@ -45,24 +43,24 @@
 <script>
 import screenfull from "screenfull";
 
+import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
 import PageSlides from "@/components/publications/page_by_page/PageSlides.vue";
 import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
-import StorySectionTemplate from "@/components/publications/templates/StorySectionTemplate.vue";
+import SectionWithPrint from "@/components/publications/story/SectionWithPrint.vue";
 
 export default {
   props: {},
   components: {
+    PublicationTopbar,
     PageSlides,
     StoryTemplate,
-    StorySectionTemplate,
+    SectionWithPrint,
   },
   data() {
     return {
       fetch_project_error: null,
       project: null,
       publication: null,
-
-      section_opened_meta: "",
 
       is_fullscreen: false,
       is_serversidepreview: false,
@@ -77,16 +75,9 @@ export default {
     this.$eventHub.$emit("received.project", this.project);
 
     await this.listPublication();
-
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
     // this.$api.join({ room: this.publication_path });
-
-    if (this.publication.template === "story_with_sections") {
-      if (this.publication.sections_list)
-        this.section_opened_meta =
-          this.publication.sections_list[0].meta_filename;
-    }
   },
   beforeDestroy() {
     // this.$api.leave({ room: this.project.$path });
@@ -162,5 +153,24 @@ body {
 }
 ._storyTemplate {
   padding: calc(var(--spacing) / 1);
+}
+
+._pubTopbar {
+  margin: 0 auto;
+  max-width: 86ch;
+
+  @media print {
+    display: none;
+  }
+}
+._sectionsSummary {
+  @media print {
+    display: none;
+  }
+}
+._storyContent {
+  @media print {
+    box-shadow: none !important;
+  }
 }
 </style>

@@ -149,7 +149,6 @@ export default {
   width: 100%;
   margin: 0 auto;
 
-  // background: white;
   // overflow: hidden;
   // border-radius: var(--panel-radius);
   // box-shadow: var(--panel-shadows);
