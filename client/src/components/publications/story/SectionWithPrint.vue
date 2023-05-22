@@ -79,5 +79,10 @@ export default {
   margin: calc(var(--spacing) * 4) 0;
   page-break-inside: avoid;
   page-break-after: always;
+
+  @media print {
+    margin: 0;
+    padding-top: calc(var(--spacing) * 2);
+  }
 }
 </style>
