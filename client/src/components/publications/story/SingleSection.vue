@@ -222,7 +222,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._singleSectionx {
+._singleSection {
+  position: relative;
   display: flex;
   justify-content: center;
   flex-flow: column nowrap;
@@ -250,9 +251,9 @@ export default {
 ._storyContent {
   width: 100%;
   background: white;
-  max-width: 800px;
+  max-width: 86ch;
   padding: calc(var(--spacing) * 1) 0;
-  margin: calc(var(--spacing) / 2) auto;
+  margin: 0 auto;
   border-radius: 6px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
@@ -284,6 +285,7 @@ export default {
 ._topbar {
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-start;
   justify-content: space-between;
 
   margin: 0 calc(var(--spacing) / 1) calc(var(--spacing) * 1.5);

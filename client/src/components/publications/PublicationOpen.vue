@@ -225,7 +225,7 @@ export default {
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
   border-radius: 10px;
-  margin: calc(var(--spacing) / 2) auto;
+  margin: calc(var(--spacing) / 2) auto calc(var(--spacing) / 1);
   box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
   // max-width: 800px;
 }

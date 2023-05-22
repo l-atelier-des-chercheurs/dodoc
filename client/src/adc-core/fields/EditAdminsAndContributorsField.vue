@@ -10,18 +10,20 @@
           !connected_as
         "
       >
-        {{ $t("you_must_login_to_contribute") }}
+        <div class="u-spacingBottom">
+          {{ $t("you_must_login_to_contribute") }}
+        </div>
       </template>
       <template
         v-else-if="
           connected_as && !canLoggedinContributeToFolder({ folder: folder })
         "
       >
-        {{ $t("not_allowed_to_contribute_contact_referent") }}
+        <div class="u-spacingBottom">
+          {{ $t("not_allowed_to_contribute_contact_referent") }}
+        </div>
       </template>
     </div>
-
-    <br />
 
     <AuthorField
       :label="admin_label"

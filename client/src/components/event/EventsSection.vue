@@ -47,5 +47,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._eventsSection {
+  background: white;
 }
 </style>
