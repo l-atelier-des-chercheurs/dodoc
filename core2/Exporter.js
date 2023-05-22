@@ -314,9 +314,10 @@ class Exporter {
             if (this.instructions.recipe === "pdf")
               return win.webContents.printToPDF({
                 // electron < 21
-                marginsType: 1,
+                marginsType: 0,
                 // electron >= 21
-                margins: { marginType: "none" },
+                // margins are set using @page in css
+                margins: { marginType: "default" },
                 pageSize: printToPDF_pagesize,
                 printBackground: true,
                 printSelectionOnly: false,
@@ -345,8 +346,9 @@ class Exporter {
           })
           .catch((error) => {
             dev.logverbose("Failed to print to pdf " + url);
-            dev.error(error);
+            dev.error(error.message);
             if (win) win.close();
+            clearTimeout(page_timeout);
             this._notifyEnded({
               event: "failed",
             });
@@ -359,7 +361,8 @@ class Exporter {
         (event, code, desc, url, isMainFrame) => {
           dev.error(`Failed to load print pdf page ${url}`);
           clearTimeout(page_timeout);
-          dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
+          dev.error("did-fail-load: ");
+          // dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
           if (win) win.close();
 
           this._notifyEnded({

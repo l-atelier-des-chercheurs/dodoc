@@ -5,6 +5,9 @@
       'is--serversidepreview': is_serversidepreview,
     }"
   >
+    <component :is="'style'">
+      {{ set_print_margins }}
+    </component>
     <transition name="fade_fast" mode="out-in">
       <div class="u-divCentered" v-if="!project || !publication" key="loader">
         <LoaderSpinner />
@@ -13,7 +16,7 @@
         {{ fetch_project_error }}
       </div>
       <div v-else key="publication" ref="fsContainer">
-        <div class="_pubTopbar">
+        <div class="_pubTopbar" v-if="!is_serversidepreview">
           <PublicationTopbar :publication="publication" :can_edit="false" />
         </div>
         <!-- Publication view project = {{ project }} <br />
@@ -99,6 +102,16 @@ export default {
     },
     publication_path() {
       return `${this.project_path}/publications/${this.$route.params.publication_slug}`;
+    },
+    set_print_margins() {
+      let margins = 15;
+      if (this.publication && this.publication.template === "page_by_page")
+        margins = 0;
+      return `
+      @page {
+        margin: ${margins}mm;
+      }
+      `;
     },
   },
   methods: {
