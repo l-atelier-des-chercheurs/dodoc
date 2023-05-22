@@ -91,7 +91,6 @@ export default {
   data() {
     return {
       medias: [],
-      fetch_publication_error: null,
     };
   },
   created() {},
@@ -229,19 +228,6 @@ export default {
   flex-flow: column nowrap;
   align-items: center;
   margin: 0 auto calc(var(--spacing) * 4);
-}
-
-._settings {
-  position: relative;
-  top: 0;
-  right: 0;
-  display: flex;
-  justify-content: flex-end;
-  // width: 100%;
-  background: white;
-  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-  margin: calc(var(--spacing) / 2) auto 0;
-  max-width: 240px;
 }
 
 ._storyContainer {
