@@ -45,7 +45,6 @@ export default function () {
         admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
         go_home: "Retourner à l’accueil",
         page_not_found: "Cette page n’existe pas",
-        admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
         admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
         edit: "Modifier",
         stop_edit: "Arrêter les modifications",

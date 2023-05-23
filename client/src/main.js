@@ -152,8 +152,8 @@ import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelect);
-import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";
-Vue.component("PickMediaFromProjects", PickMediaFromProjects);
+// import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";
+// Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
