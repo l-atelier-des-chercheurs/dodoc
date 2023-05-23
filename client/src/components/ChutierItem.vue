@@ -47,6 +47,7 @@
                 </template>
                 <template v-else>
                   <input
+                    class="is--dark"
                     type="datetime-local"
                     v-model="date_created_corrected"
                     step="1"
