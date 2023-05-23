@@ -44,12 +44,11 @@
     />
 
     <div class="_middleContent">
-      <label for="">
+      <label for="" @click="!all_items_selected ? selectAll() : deselectAll()">
         <button
           type="button"
           class="u-buttonLink u-selectBtn"
           v-if="chutier_items.length > 0"
-          @click="!all_items_selected ? selectAll() : deselectAll()"
         >
           <sl-icon
             :name="
