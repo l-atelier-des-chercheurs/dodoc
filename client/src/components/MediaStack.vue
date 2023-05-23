@@ -18,6 +18,13 @@
           :key="file.$path"
           @click.stop="last_clicked = file.$path"
         >
+          <div class="_removeFile">
+            <sl-icon-button
+              name="dash-square-dotted"
+              @click="removeFromSelection(file.$path)"
+            />
+          </div>
+
           <select
             class="is--dark _changeOrderSelect"
             :value="index + 1"
@@ -29,12 +36,6 @@
               v-text="i + 1"
             />
           </select>
-          <div class="_removeFile">
-            <sl-icon-button
-              name="dash-square-dotted"
-              @click="removeFromSelection(file.$path)"
-            />
-          </div>
           <ChutierItem
             :file="file"
             :is_clicked="last_clicked === file.$path"
