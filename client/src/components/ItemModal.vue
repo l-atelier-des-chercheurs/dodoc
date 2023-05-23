@@ -22,7 +22,7 @@
               <div class="_openedFile--title" v-if="file._stack_files">
                 <!-- // todo date title editor -->
                 <div class="_date">
-                  <DateField
+                  <DateDisplay
                     v-if="file.date_created_corrected"
                     :date="file.date_created_corrected"
                   />
@@ -58,7 +58,7 @@
       <div class="_bottomContent">
         <!-- date shown only for single medias, no stack dates -->
         <div v-if="!file._stack_files">
-          <DateField
+          <DateDisplay
             v-if="file.date_created_corrected"
             :date="file.date_created_corrected"
           />
