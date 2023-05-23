@@ -202,6 +202,8 @@ export default {
       selected_items_slugs: [],
       focused_items_slugs: [],
 
+      max_items_selected: 15,
+
       show_confirm_remove_menu: false,
     };
   },
@@ -225,6 +227,25 @@ export default {
         this.show_confirm_remove_menu
       )
         this.show_confirm_remove_menu = false;
+
+      if (this.selected_items_slugs.length > this.max_items_selected) {
+        this.selected_items_slugs = this.selected_items_slugs.slice(
+          0,
+          this.max_items_selected
+        );
+        this.$alertify
+          .delay(4000)
+          .error(this.$t("notifications.too_many_items_selected"));
+        setTimeout(() => {
+          this.$alertify
+            .delay(4000)
+            .error(
+              this.$t("notifications.max_items_is") +
+                " " +
+                this.max_items_selected
+            );
+        }, 500);
+      }
     },
     chutier_items() {
       // check if all items still exist, remove them if that's not the case
