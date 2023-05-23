@@ -35,93 +35,95 @@
   },
 
   "schema": {
-    "folders": {
-      "$files": {
-        "thumbs": {
-          "resolutions": [180, 360, 1600]
-        },
-        "fields": {
-          "title": {
-            "type": "string"
+    "$folders": {
+      "folders": {
+        "$files": {
+          "thumbs": {
+            "resolutions": [180, 360, 1600]
           },
-          "keywords": {
-            "type": "array"
-          },
-          "date_created_corrected": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "caption": {
-            "type": "string"
-          },
-          "belongs_to_stack": {
-            "type": "string"
-          },
-          "is_stack": {
-            "type": "boolean"
-          },
-          "stack_files_metas": {
-            "type": "array"
+          "fields": {
+            "title": {
+              "type": "string"
+            },
+            "keywords": {
+              "type": "array"
+            },
+            "date_created_corrected": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "caption": {
+              "type": "string"
+            },
+            "belongs_to_stack": {
+              "type": "string"
+            },
+            "is_stack": {
+              "type": "boolean"
+            },
+            "stack_files_metas": {
+              "type": "array"
+            }
           }
         }
-      }
-    },
-    "authors": {
-      "fields": {
-        "email": {
-          "type": "string",
-          "required": false,
-          "unique": true
-        },
-        "name": {
-          "type": "string",
-          "required": true,
-          "unique": true
-        },
-        "role": {
-          "type": "string",
-          "options": ["contributor", "admin"],
-          "default": "contributor",
-          "only_admins_can_edit": true
-        }
       },
-      "$files": {
-        "thumbs": {
-          "resolutions": [180, 360, 1600]
-        },
+      "authors": {
         "fields": {
-          "title": {
-            "type": "string"
+          "email": {
+            "type": "string",
+            "required": false,
+            "unique": true
           },
-          "keywords": {
-            "type": "array"
+          "name": {
+            "type": "string",
+            "required": true,
+            "unique": true
           },
-          "date_created_corrected": {
-            "type": "string"
+          "role": {
+            "type": "string",
+            "options": ["contributor", "admin"],
+            "default": "contributor",
+            "only_admins_can_edit": true
+          }
+        },
+        "$files": {
+          "thumbs": {
+            "resolutions": [180, 360, 1600]
           },
-          "description": {
-            "type": "string"
-          },
-          "caption": {
-            "type": "string"
+          "fields": {
+            "title": {
+              "type": "string"
+            },
+            "keywords": {
+              "type": "array"
+            },
+            "date_created_corrected": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "caption": {
+              "type": "string"
+            }
           }
         }
-      }
-    },
-    "fonts": {
-      "fields": {
-        "title": {
-          "type": "string",
-          "required": true,
-          "unique": true
-        },
-        "font_files": {
-          "type": "object"
-        }
       },
-      "$files": {}
+      "fonts": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true,
+            "unique": true
+          },
+          "font_files": {
+            "type": "object"
+          }
+        },
+        "$files": {}
+      }
     }
   }
 }
