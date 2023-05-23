@@ -437,8 +437,6 @@ export default {
     }
   }
 }
-</style>
-<style lang="scss">
 ._navBtns {
   position: fixed;
   bottom: 0;

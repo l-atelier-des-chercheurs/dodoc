@@ -493,8 +493,8 @@ export default {
   top: 0;
   height: 100%;
   right: 100%;
-  // background: rgba(0, 0, 0, 0.05);
   background: var(--active-color);
+  background: rgba(0, 0, 0, 0.05);
 
   pointer-events: none;
 
