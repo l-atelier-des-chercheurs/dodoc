@@ -16,20 +16,20 @@
       :file="file.is_stack ? file._stack_files[0] : file"
       :context="'preview'"
     />
-    <div v-if="file.is_stack" class="_sharedFolderItem--stackSign">
-      <svg
-        fill="none"
-        height="40"
-        viewBox="0 0 33 40"
-        width="33"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="m27.5 0h-17.5c-1.32608 0-2.59785.526784-3.53553 1.46447-.93769.93768-1.46447 2.20945-1.46447 3.53553-1.32608 0-2.59785.52678-3.53553 1.46447-.937686.93768-1.46447 2.20945-1.46447 3.53553v25c0 1.3261.526784 2.5979 1.46447 3.5355.93768.9377 2.20945 1.4645 3.53553 1.4645h17.5c1.3261 0 2.5979-.5268 3.5355-1.4645.9377-.9376 1.4645-2.2094 1.4645-3.5355 1.3261 0 2.5979-.5268 3.5355-1.4645.9377-.9376 1.4645-2.2094 1.4645-3.5355v-25c0-1.32608-.5268-2.59785-1.4645-3.53553-.9376-.937686-2.2094-1.46447-3.5355-1.46447zm0 32.5v-22.5c0-1.32608-.5268-2.59785-1.4645-3.53553-.9376-.93769-2.2094-1.46447-3.5355-1.46447h-15c0-.66304.26339-1.29893.73223-1.76777s1.10473-.73223 1.76777-.73223h17.5c.663 0 1.2989.26339 1.7678.73223.4688.46884.7322 1.10473.7322 1.76777v25c0 .663-.2634 1.2989-.7322 1.7678-.4689.4688-1.1048.7322-1.7678.7322zm-25-22.5c0-.66304.26339-1.29893.73223-1.76777s1.10473-.73223 1.76777-.73223h17.5c.663 0 1.2989.26339 1.7678.73223.4688.46884.7322 1.10473.7322 1.76777v25c0 .663-.2634 1.2989-.7322 1.7678-.4689.4688-1.1048.7322-1.7678.7322h-17.5c-.66304 0-1.29893-.2634-1.76777-.7322-.46884-.4689-.73223-1.1048-.73223-1.7678z"
-          fill="#fff"
-        />
-      </svg>
-    </div>
+    <template v-if="file.is_stack">
+      <MediaContent
+        class="_sharedFolderItem--preview _sharedFolderItem--preview_stacked"
+        v-if="file._stack_files.length > 1"
+        :file="file._stack_files[1]"
+        :context="'preview'"
+      />
+      <MediaContent
+        class="_sharedFolderItem--preview _sharedFolderItem--preview_stacked"
+        v-if="file._stack_files.length > 2"
+        :file="file._stack_files[2]"
+        :context="'preview'"
+      />
+    </template>
   </div>
 </template>
 <script>
@@ -52,6 +52,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._sharedFolderItem {
+  --stack-step: 10px;
+
   position: relative;
   cursor: pointer;
   border-radius: 4px;
@@ -88,39 +90,43 @@ export default {
   &:hover,
   &:focus,
   &.is--opened {
+    z-index: 20;
+    --stack-step: 30px;
+
     ._title {
       transform: translate(0, 0%);
       opacity: 1;
     }
   }
-
-  ._sharedFolderItem--preview {
-    background: white;
-  }
-
-  ._sharedFolderItem--stackSign {
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    > svg {
-      width: 30px;
-      height: auto;
-    }
-  }
+}
+._sharedFolderItem--preview {
+  background: white;
+  z-index: 10;
+  border-top: 2px solid var(--sharedfolder-bg);
 
   ::v-deep ._mediaContent--image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
+  }
+}
+
+._sharedFolderItem--preview_stacked {
+  position: absolute;
+  top: calc(var(--stack-step) * -1);
+  left: calc(var(--stack-step) * 1 / 2);
+  width: calc(100% - var(--stack-step) * 1);
+
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  z-index: 2;
+
+  & + ._sharedFolderItem--preview_stacked {
+    z-index: 1;
+    top: calc(var(--stack-step) * -2);
+    left: calc(var(--stack-step) * 2 / 2);
+    width: calc(100% - var(--stack-step) * 2);
   }
 }
 
