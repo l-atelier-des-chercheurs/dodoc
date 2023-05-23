@@ -137,6 +137,10 @@ export default {
           label: this.$t("di_biology"),
         },
         {
+          key: "technology",
+          label: this.$t("di_technology"),
+        },
+        {
           key: "physics",
           label: this.$t("di_physics"),
         },
@@ -155,6 +159,10 @@ export default {
         {
           key: "arts",
           label: this.$t("di_arts"),
+        },
+        {
+          key: "music",
+          label: this.$t("di_music"),
         },
         {
           key: "transdisciplinary",
