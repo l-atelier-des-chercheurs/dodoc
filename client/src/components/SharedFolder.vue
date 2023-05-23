@@ -105,7 +105,7 @@ export default {
   padding-left: calc(var(--spacing) * 1);
   padding-right: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 4);
-  background: rgba(240, 240, 240, 1);
+  background: var(--sharedfolder-bg);
   border-radius: 4px;
   overflow: hidden;
 }
