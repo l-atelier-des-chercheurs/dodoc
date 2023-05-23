@@ -37,8 +37,8 @@
               >
                 <path
                   d="M0.999812 4.546V4.726C1.87581 5.098 2.67381 5.602 3.39381 6.238C4.11381 6.874 4.77381 7.546 5.37381 8.254L5.75181 7.894C5.53581 7.594 5.30181 7.3 5.04981 7.012C4.78581 6.712 4.51581 6.418 4.23981 6.13C4.07181 5.962 3.98781 5.788 3.98781 5.608C3.98781 5.512 4.02381 5.428 4.09581 5.356C4.16781 5.284 4.28781 5.248 4.45581 5.248H14.5718V8.254H15.5078V1H14.5718V4.024H4.43781C4.26981 4.024 4.14981 3.982 4.07781 3.898C4.00581 3.802 3.96981 3.712 3.96981 3.628C3.96981 3.484 4.05381 3.328 4.22181 3.16C4.48581 2.908 4.75581 2.62 5.03181 2.296C5.29581 1.972 5.52981 1.66 5.73381 1.36L5.35581 1C4.75581 1.696 4.10181 2.368 3.39381 3.016C2.67381 3.664 1.87581 4.174 0.999812 4.546Z"
-                  fill="white"
-                  stroke="white"
+                  fill="currentColor"
+                  stroke="currentColor"
                 />
               </svg>
 
@@ -197,7 +197,9 @@ export default {
     width: 100%;
     height: 100%;
     color: white;
+    border-radius: 50%;
     // top: 0;
+
     // top: calc(var(--spacing) / 2);
     left: 0;
     font-size: 1.5rem;
@@ -205,12 +207,22 @@ export default {
     padding: 0;
     display: flex;
     justify-content: center;
+    align-items: center;
+
+    transform-origin: center;
 
     // transition: transform 0.8s cubic-bezier(0.19, 1, 0.3, 1.32);
-    transition: transform 1.8s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &:hover,
+    &:focus-visible {
+      color: hsl(0, 0, 80%);
+    }
   }
 
   &:not(.is--showingChutier) {
+    height: 100%;
+
     > button {
       // transform: rotate(-540deg);
       transform: rotate(-180deg);
