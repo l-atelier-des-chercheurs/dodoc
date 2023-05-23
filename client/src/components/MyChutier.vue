@@ -101,8 +101,12 @@
         </transition-group>
       </div>
     </div>
-    <transition name="slideup">
-      <div class="_selectionBar" v-if="selected_items_slugs.length > 0">
+    <transition name="slideup" mode="out-in">
+      <div
+        class="_selectionBar"
+        v-if="selected_items.length > 0"
+        key="selection"
+      >
         <div class="_selectionBar--previews">
           <template v-for="file in selected_items">
             <MediaContent
@@ -119,7 +123,7 @@
           class="u-button u-button_bleuvert"
           @click="setSelectionAsFocus"
         >
-          {{ $t("create_stack") }} ({{ selected_items_slugs.length }})
+          {{ $t("create_stack") }} ({{ selected_items.length }})
         </button>
 
         <div class="u-sameRow">
@@ -130,12 +134,31 @@
           <button
             type="button"
             class="u-buttonLink"
-            @click="removeItemsInSelection"
+            @click="show_confirm_remove_menu = true"
           >
             <sl-icon name="trash3" />
             Supprimer les éléments
           </button>
         </div>
+      </div></transition
+    >
+    <transition name="slideup" mode="out-in">
+      <div class="_removeMenu" v-if="show_confirm_remove_menu" key="remove">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="show_confirm_remove_menu = false"
+        >
+          {{ $t("cancel") }}
+        </button>
+        <button
+          class="u-button u-button_red"
+          type="button"
+          autofocus
+          @click="removeItemsInSelection"
+        >
+          {{ $t("confirm_removal") }}
+        </button>
       </div>
     </transition>
 
@@ -178,6 +201,8 @@ export default {
       last_clicked: undefined,
       selected_items_slugs: [],
       focused_items_slugs: [],
+
+      show_confirm_remove_menu: false,
     };
   },
   created() {},
@@ -194,6 +219,24 @@ export default {
     //     (item_path) => this.chutier_items.find((ci) => ci.$path === item_path)
     //   );
     // },
+    selected_items_slugs() {
+      if (
+        // this.selected_items_slugs.length === 0 &&
+        this.show_confirm_remove_menu
+      )
+        this.show_confirm_remove_menu = false;
+    },
+    chutier_items() {
+      // check if all items still exist, remove them if that's not the case
+      const cleaned_up_items = this.selected_items_slugs.filter((fis) =>
+        this.chutier_items.some((ci) => ci.$path === fis)
+      );
+      if (
+        JSON.stringify(this.selected_items_slugs) !==
+        JSON.stringify(cleaned_up_items)
+      )
+        this.selected_items_slugs = cleaned_up_items;
+    },
   },
   computed: {
     path() {
@@ -310,6 +353,7 @@ export default {
       for (const item_path of this.selected_items_slugs) {
         await this.$api.deleteItem({ path: item_path });
       }
+      this.show_confirm_remove_menu = false;
     },
   },
 };
@@ -369,7 +413,8 @@ export default {
   }
 }
 
-._selectionBar {
+._selectionBar,
+._removeMenu {
   position: sticky;
   bottom: 0;
   width: 100%;
@@ -387,6 +432,11 @@ export default {
   padding: calc(var(--spacing) / 4);
   padding-bottom: calc(var(--spacing) * 2);
 }
+._removeMenu {
+  position: absolute;
+  padding-top: calc(var(--spacing) * 2);
+}
+
 ._selectionBar--previews {
   width: 100%;
   display: flex;

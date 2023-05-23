@@ -104,8 +104,8 @@ export default {
   z-index: 10;
   border-radius: 4px;
   overflow: hidden;
-  border: 2px solid white;
-  // border: 1px solid var(--sharedfolder-bg);
+  // border: 2px solid white;
+  border: 2px solid var(--sharedfolder-bg);
 
   ::v-deep ._mediaContent--image {
     width: 100%;

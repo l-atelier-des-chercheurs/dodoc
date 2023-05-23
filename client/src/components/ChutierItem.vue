@@ -6,11 +6,9 @@
       'is--selected': is_selected,
       'is--edited': edit_mode,
     }"
+    @click="!edit_mode ? $emit('toggleSelect') : ''"
   >
-    <div
-      class="_chutierRow--rows"
-      @click="!edit_mode ? $emit('toggleSelect') : ''"
-    >
+    <div class="_chutierRow--rows">
       <label
         :for="id"
         class="_selectBox"
@@ -332,7 +330,10 @@ export default {
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
   border: 1px solid transparent;
 
-  &.is--selected {
+  transition: all 0.05s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--selected,
+  &.is--clicked {
     // border-color: var(--c-orange);
     background: rgba(240, 240, 240, 0.1);
     // background: rgb(67, 69, 71);

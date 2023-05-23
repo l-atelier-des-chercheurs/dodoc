@@ -115,7 +115,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: flex-end;
-  gap: calc(var(--spacing) * 4) calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
 }
 ._file {
   width: 150px;
