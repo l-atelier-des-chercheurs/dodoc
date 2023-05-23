@@ -79,17 +79,7 @@
       :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
       @click="show_module_selector = !show_module_selector"
     >
-      <svg
-        version="1.1"
-        viewBox="0 0 670 670"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        style="fill: currentColor"
-      >
-        <path
-          d="m350 528.89c137.33 0 248.89-111.56 248.89-248.89s-111.56-248.89-248.89-248.89-248.89 111.56-248.89 248.89 111.56 248.89 248.89 248.89zm-161.05-279h130.94v-130.94h60.215v130.94h130.94v60.211h-130.94v130.94h-60.215l0.003906-130.94h-130.94z"
-        />
-      </svg>
+      <sl-icon name="plus-circle" />
     </button>
 
     <transition name="dropzone" :duration="150">
@@ -338,12 +328,16 @@ sl-icon-button::part(base) {
 ._sideBtns {
   --side-width: 24px;
   display: block;
-  width: var(--side-width);
-  height: var(--side-width);
-  padding: 0;
+  // width: var(--side-width);
+  // height: var(--side-width);
+  padding: calc(var(--spacing) / 2);
   border-radius: calc(var(--side-width) / 2);
   background: transparent;
+  font-size: 1.4em;
+
   color: var(--c-noir);
+
+  display: flex;
 
   &:hover,
   &:focus {
