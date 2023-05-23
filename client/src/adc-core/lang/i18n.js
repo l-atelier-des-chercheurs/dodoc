@@ -701,6 +701,9 @@ export default function () {
         "notifications.event_does_not_exit": "Cet événement n’existe pas",
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.name_taken": "Ce nom est déjà utilisé",
+        "notifications.too_many_items_selected":
+          "Trop d’éléments sélectionnés.",
+        "notifications.max_items_is": "Le maximum est de",
 
         informations: "Informations",
 
