@@ -435,6 +435,7 @@ export default {
 ._removeMenu {
   position: absolute;
   padding-top: calc(var(--spacing) * 2);
+  min-height: 130px;
 }
 
 ._selectionBar--previews {
