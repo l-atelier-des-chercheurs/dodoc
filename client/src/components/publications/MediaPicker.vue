@@ -15,12 +15,16 @@
   </div>
 </template>
 <script>
+import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
+
 export default {
   props: {
     publication_path: String,
     meta_filenames_already_present: Array,
   },
-  components: {},
+  components: {
+    PickMediaFromProjects,
+  },
   data() {
     return {};
   },
