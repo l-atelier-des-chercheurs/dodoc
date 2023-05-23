@@ -107,14 +107,17 @@ export default {
             font_style = "italic";
           }
 
-          const relative_path_to_file = font.path + "/" + filename;
+          const relative_path_to_file = "/" + font.path + "/" + filename;
 
           acc += `
-            @font-face {
-              font-family: ${font.title};
-              font-style: ${font_style};
-              font-weight: ${font_weight};
-              src: url(${relative_path_to_file}) format("woff2");
+@font-face {
+  font-family: "${font.title}";
+  font-style: ${font_style};
+  font-weight: ${font_weight};
+  src: url("${relative_path_to_file}") format("woff2");
+}
+
+          @font-face {
             }
           `;
         });
@@ -159,7 +162,7 @@ export default {
   --c-bleuvert: #52c5b9;
   --c-bleuvert_clair: hsl(174, 50%, 81%);
   --c-bleuvert_fonce: hsl(174, 50%, 41%);
-  --c-orange: #ffbe32;
+  --c-orange: hsl(41, 100%, 60%);
   --c-orange_clair: #ffd892;
   --c-orange_fonce: hsl(41, 100%, 45%);
   --c-rouge: #fc4b60;
@@ -175,7 +178,6 @@ export default {
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
-  --c-bodybg: hsl(48, 19%, 95%);
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
   --c-bodybg: white;
@@ -201,6 +203,7 @@ export default {
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
+  --input-font-size-x-small: 0.6rem;
   --input-font-size-small: 0.8rem;
   --input-font-size-big: 1.2rem;
   --input-font-weight: inherit;
@@ -261,10 +264,12 @@ export default {
   }
 
   --sl-input-color: black;
+  --sl-font-size-normal: 1rem;
+  --sl-font-size-large: 1.5rem;
   --sl-font-size-x-large: 1.66rem;
-  --sl-font-size-xx-large: 2rem;
+  --sl-font-size-xx-large: 2.8rem;
 
-  --max-column-width: 150ch;
+  --max-column-width: 1300px;
 
   accent-color: var(--c-orange);
 
@@ -294,34 +299,34 @@ body {
   // );
 
   // cross
-  // background: radial-gradient(
-  //     circle,
-  //     transparent 20%,
-  //     var(--c-bodybg) 20%,
-  //     var(--c-bodybg) 80%,
-  //     transparent 80%,
-  //     transparent
-  //   ),
-  //   radial-gradient(
-  //       circle,
-  //       transparent 20%,
-  //       var(--c-bodybg) 20%,
-  //       var(--c-bodybg) 80%,
-  //       transparent 80%,
-  //       transparent
-  //     )
-  //     15px 15px,
-  //   linear-gradient(
-  //       var(--body-bg-pattern-color) 1.2000000000000002px,
-  //       transparent 1.2000000000000002px
-  //     )
-  //     0 -0.6000000000000001px,
-  //   linear-gradient(
-  //       90deg,
-  //       var(--body-bg-pattern-color) 1.2000000000000002px,
-  //       var(--c-bodybg) 1.2000000000000002px
-  //     ) -0.6000000000000001px 0;
-  // background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+  background: radial-gradient(
+      circle,
+      transparent 20%,
+      var(--c-bodybg) 20%,
+      var(--c-bodybg) 80%,
+      transparent 80%,
+      transparent
+    ),
+    radial-gradient(
+        circle,
+        transparent 20%,
+        var(--c-bodybg) 20%,
+        var(--c-bodybg) 80%,
+        transparent 80%,
+        transparent
+      )
+      15px 15px,
+    linear-gradient(
+        var(--body-bg-pattern-color) 1.2000000000000002px,
+        transparent 1.2000000000000002px
+      )
+      0 -0.6000000000000001px,
+    linear-gradient(
+        90deg,
+        var(--body-bg-pattern-color) 1.2000000000000002px,
+        var(--c-bodybg) 1.2000000000000002px
+      ) -0.6000000000000001px 0;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 }
 
 ::selection {
@@ -336,6 +341,7 @@ html {
   font-weight: 400;
 
   font-size: 90%;
+  line-height: 1.41;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -347,7 +353,7 @@ body {
 }
 
 a {
-  color: var(--c-bleu);
+  color: var(--c-bleumarine);
   text-underline-offset: 0.1em;
 
   &:hover {
@@ -369,14 +375,9 @@ button {
 }
 
 hr {
-  border-top: 1px solid var(--c-noir);
+  border-top: 1px solid var(--c-gris);
   border-bottom: 0 solid #000;
-}
-
-.metaField {
-  // display: flex;
-  // flex-flow: row wrap;
-  // gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) 0;
 }
 
 .authorLabel {
@@ -404,6 +405,17 @@ h2,
 h3 {
   margin: 0;
   font-size: var(--sl-font-size-large);
+  line-height: 1.2;
+  font-weight: 400;
+}
+h4 {
+  margin: 0;
+  font-size: var(--sl-font-size-normal);
+  line-height: 1.2;
+  font-weight: 400;
+}
+p {
+  margin: 0;
 }
 
 .card-header {
@@ -596,6 +608,20 @@ img {
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
+.slideupFade {
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(100%);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
 .slidedown {
   &-enter-active,
   &-leave-active {
@@ -653,6 +679,20 @@ img {
   &-enter,
   &-leave-to {
     transform: scale(0.95);
+    opacity: 0;
+  }
+}
+.toggleLock {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: scale(0.5);
     opacity: 0;
   }
 }
@@ -717,7 +757,7 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.08s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter {
     transform: scale(0.95);
@@ -754,7 +794,10 @@ img {
   opacity: 0;
 }
 .projectsList-leave-active {
+  opacity: 0;
   position: absolute !important;
   z-index: 0 !important;
+
+  transition: none !important;
 }
 </style>

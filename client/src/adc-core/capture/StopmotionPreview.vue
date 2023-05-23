@@ -1,7 +1,7 @@
 <template>
   <div class="_preview" v-if="stopmotion">
     <div class="_topRow">
-      <DateField
+      <DateDisplay
         :title="$t('date_created')"
         :date="stopmotion.$date_created"
         :show_detail_initially="true"

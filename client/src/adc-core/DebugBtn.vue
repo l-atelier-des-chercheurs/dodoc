@@ -1,5 +1,5 @@
 <template>
-  <div v-if="is_admin">
+  <div v-if="is_instance_admin">
     <button type="button" class="u-button" @click="debug_mode = !debug_mode">
       debug
     </button>

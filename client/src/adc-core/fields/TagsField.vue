@@ -2,67 +2,78 @@
   <div class="_tagsField">
     <DLabel v-if="label" :str="label" />
 
-    <span v-if="new_tags.length === 0 && !can_edit">–</span>
-
-    <span class="_tagsList" v-else-if="new_tags.length > 0">
-      <sl-tag
-        v-for="tag in new_tags"
-        :key="tag"
-        variant="primary"
-        size="medium"
-        :removable="edit_mode"
-        @click="edit_mode ? removeTag(tag) : ''"
-      >
-        {{ tag }}
-      </sl-tag>
-    </span>
-
-    <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+    <TagsList
+      class="_tl"
+      :tags="new_tags"
+      :tag_type="field_name"
+      :clickable="false"
+      :removable="edit_mode"
+      @removeClick="removeTag($event)"
+    />
 
     <template v-if="can_edit">
-      <sl-button
-        v-if="edit_mode && create_new_tag === false"
-        variant="default"
-        class=""
-        size="medium"
-        pill
-        @click="create_new_tag = true"
-      >
-        <sl-icon name="plus-square" :label="$t('add')" />
-        <!-- {{ $t("add") }} -->
-      </sl-button>
+      <template v-if="!edit_mode">
+        <EditBtn @click="enableEditMode" />
+      </template>
+
+      <SaveCancelButtons
+        v-if="edit_mode"
+        class="_scb"
+        :is_saving="is_saving"
+        @save="updateTags"
+        @cancel="cancel"
+      />
     </template>
 
     <div class="_footer" v-if="edit_mode">
-      <template v-if="create_new_tag">
-        <TextInput
-          :content.sync="new_tag_name"
-          :maxlength="maxlength"
-          :required="true"
-          @toggleValidity="($event) => (allow_save_newkeyword = $event)"
-          @onEnter="onEnter"
-        />
+      <fieldset class="_newTagPane" v-if="create_new_tag">
+        <legend class="u-label">{{ $t("add_item") }}</legend>
+
+        <div class="_sameRowBtnInput">
+          <TextInput
+            class="_input"
+            :content.sync="new_tag_name"
+            :maxlength="maxlength"
+            :required="true"
+            :size="'small'"
+            @toggleValidity="($event) => (allow_save_newkeyword = $event)"
+            @onEnter="onEnter"
+          />
+          <div class="">
+            <button
+              v-if="allow_save_newkeyword && !new_tag_name_already_exists"
+              type="button"
+              class="u-button u-button_bleuvert _submitBtn"
+              @click="onEnter"
+            >
+              <sl-icon
+                style="font-size: 1.5em"
+                name="check"
+                :label="$t('submit')"
+              />
+            </button>
+          </div>
+        </div>
+
         <div v-if="new_tag_name_already_exists" class="fieldCaption u-colorRed">
           {{ $t("already_added") }}
         </div>
-        <SaveCancelButtons
-          class="_scb"
+        <!-- <SaveCancelButtons
+          class="_scb u-spacingBottom"
           :is_saving="is_saving"
           :allow_save="allow_save_newkeyword && !new_tag_name_already_exists"
           :save_text="$t('create')"
           @save="newTag"
           @cancel="cancelNewTag"
-        />
-      </template>
+        /> -->
 
-      <div v-else>
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updateTags"
-          @cancel="cancel"
+        <TagsSuggestion
+          :tag_type="field_name"
+          :new_tag_name="new_tag_name"
+          :tags_to_exclude="new_tags"
+          @newTag="newTag($event)"
         />
-      </div>
+      </fieldset>
     </div>
   </div>
 </template>
@@ -85,15 +96,17 @@ export default {
     },
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    TagsSuggestion: () => import("@/adc-core/fields/TagsSuggestion.vue"),
+  },
   data() {
     return {
       edit_mode: false,
       is_saving: false,
 
-      new_tags: this.content,
+      new_tags: this.content.slice(),
       new_tag_name: "",
-      create_new_tag: false,
+      create_new_tag: true,
 
       allow_save_newkeyword: false,
     };
@@ -103,7 +116,7 @@ export default {
   beforeDestroy() {},
   watch: {
     content() {
-      this.new_tags = this.content;
+      this.new_tags = this.content.slice();
     },
   },
   computed: {
@@ -115,14 +128,14 @@ export default {
     enableEditMode() {
       this.edit_mode = true;
     },
-    newTag() {
-      this.new_tags.push(this.new_tag_name);
+    newTag(tag = this.new_tag_name) {
+      this.new_tags.push(tag);
       this.new_tag_name = "";
-      this.create_new_tag = false;
+      // this.create_new_tag = false;
     },
     cancelNewTag() {
       this.new_tag_name = "";
-      this.create_new_tag = false;
+      // this.create_new_tag = false;
     },
     removeTag(tag) {
       this.new_tags = this.new_tags.filter((t) => t !== tag);
@@ -130,7 +143,7 @@ export default {
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      this.new_tags = this.content;
+      this.new_tags = this.content.slice();
 
       // todo interrupt updateMeta
     },
@@ -169,11 +182,9 @@ export default {
 ._tagsField {
   width: 100%;
 }
-._tagsList {
-  display: inline-flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
-  margin-right: calc(var(--spacing) / 4);
+
+._tl {
+  padding-bottom: calc(var(--spacing) / 8);
 }
 
 ._footer {
@@ -191,5 +202,29 @@ export default {
 
 ._addNewTagForm {
   padding: calc(var(--spacing) / 4) 0;
+}
+
+._newTagPane {
+  width: 100%;
+}
+
+._scb {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}
+
+._submitBtn {
+  padding: calc(var(--spacing) / 8);
+}
+
+._sameRowBtnInput {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 4);
+
+  > ._input {
+    width: 100%;
+  }
 }
 </style>

@@ -16,7 +16,8 @@ export default {
         return false;
       }
 
-      // todo make this work with subfolders
+      if ($path === "") return `/thumbs/${thumb_path}`;
+
       return `/thumbs/${$path}/${thumb_path}`;
     },
     makeMediaFilePath({ $path, $media_filename }) {
@@ -56,7 +57,15 @@ export default {
       }
       return this.getMediaInFolder({ folder_path: source_path, meta_filename });
     },
-    getMediaInFolder({ folder_path, meta_filename }) {
+    getMediaInFolder({
+      path_to_source_media_meta,
+      folder_path,
+      meta_filename,
+    }) {
+      if (path_to_source_media_meta && !folder_path && !meta_filename) {
+        folder_path = this.getParent(path_to_source_media_meta);
+        meta_filename = this.getFilename(path_to_source_media_meta);
+      }
       return this.$api.store[folder_path]?.$files?.find(
         ({ $path }) => $path === folder_path + "/" + meta_filename
       );

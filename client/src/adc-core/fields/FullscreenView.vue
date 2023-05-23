@@ -5,12 +5,10 @@
         <slot />
       </div>
     </transition>
-    <FullscreenBtn
-      class="u-floatingFsButton"
-      :icon="'fullscreen-exit'"
-      :label="$t('exit_fullscreen')"
-      @click="closeFs"
-    />
+
+    <div class="_fsButton">
+      <EditBtn :btn_type="'fullscreen-exit'" @click="closeFs" />
+    </div>
   </div>
 </template>
 <script>
@@ -62,11 +60,23 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
 
-  ::v-deep img {
-    object-fit: scale-down;
+  ::v-deep {
+    img,
+    canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: scale-down;
+    }
   }
+}
+
+._fsButton {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: calc(var(--spacing) / 1);
 }
 </style>

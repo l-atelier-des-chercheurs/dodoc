@@ -9,12 +9,12 @@
       <img :src="cover_thumb" />
 
       <template v-if="context === 'full'">
-        <FullscreenBtn
-          class="u-floatingFsButton"
-          :icon="'fullscreen'"
-          :label="$t('fullscreen')"
-          @click="show_cover_fullscreen = true"
-        />
+        <div class="_fsButton">
+          <EditBtn
+            :btn_type="'fullscreen'"
+            @click="show_cover_fullscreen = true"
+          />
+        </div>
         <FullscreenView
           v-if="show_cover_fullscreen"
           @close="show_cover_fullscreen = false"
@@ -29,7 +29,7 @@
       <EditBtn v-if="!edit_mode" @click="enableEditMode" />
       <BaseModal2
         v-if="edit_mode"
-        :title="$t('pick_image')"
+        :title="$t('pick_cover')"
         @close="edit_mode = false"
       >
         <div class="_picker">
@@ -140,10 +140,11 @@ export default {
 ._coverField {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  overflow: visible;
 
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);
+  --color2: white;
 
   &.is--empty {
     background: radial-gradient(
@@ -179,12 +180,12 @@ export default {
 
 ._picker {
   position: relative;
-  background: var(--c-noir);
-  color: white;
-  padding: calc(var(--spacing) / 4);
-  max-width: 320px;
-  margin: calc(var(--spacing) / 4);
-  border-radius: 4px;
+  // background: var(--c-noir);
+  // color: white;
+  // padding: calc(var(--spacing) / 4);
+  // max-width: 320px;
+  margin: calc(var(--spacing) / 4) auto;
+  // border-radius: 4px;
   display: flex;
   justify-content: center;
   flex-flow: column nowrap;
@@ -215,5 +216,12 @@ export default {
   width: 100%;
   height: 100%;
   background-color: var(--c-gris_fonce);
+}
+
+._fsButton {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: calc(var(--spacing) / 1);
 }
 </style>

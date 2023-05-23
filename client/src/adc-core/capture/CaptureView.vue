@@ -1428,10 +1428,6 @@ export default {
       this.last_frame_from_video = undefined;
     },
     async addStopmotionImage() {
-      const smdata = {
-        name: this.slugFolderName + "-" + new Date().getTime(),
-      };
-
       this.show_live_feed = true;
       this.$refs.videoElement.pause();
       this.is_sending_image = true;
@@ -1441,7 +1437,10 @@ export default {
         // create stopmotion
         const new_stopmotion_slug = await this.$api.createFolder({
           path: `${this.slugFolderName}/stopmotions`,
-          additional_meta: smdata,
+          additional_meta: {
+            name: this.slugFolderName + "-" + new Date().getTime(),
+            $admins: "everyone",
+          },
         });
         this.$emit("openStopmotion", new_stopmotion_slug);
       }

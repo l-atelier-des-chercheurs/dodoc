@@ -37,10 +37,10 @@ module.exports = (function () {
         path_to_folder,
       });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
-      const filethumbs_resolutions = schema.$files?.thumbs?.resolutions;
+      const filethumbs_resolutions = item_in_schema.$files?.thumbs?.resolutions;
       if (!filethumbs_resolutions) return false;
 
       const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
@@ -175,6 +175,15 @@ module.exports = (function () {
       removeFolderCover({ path_to_folder }),
     removeFileThumbs: ({ path_to_folder, meta_filename }) =>
       removeFileThumbs({ path_to_folder, meta_filename }),
+    duplicateThumbFolder: async ({
+      path_to_source_folder,
+      path_to_destination_folder,
+    }) => {
+      duplicateThumbFolder({
+        path_to_source_folder,
+        path_to_destination_folder,
+      });
+    },
   };
 
   async function _makeThumbFor({
@@ -268,10 +277,10 @@ module.exports = (function () {
       cover_name
     );
 
-    const schema = await utils.parseAndCheckSchema({
+    const item_in_schema = utils.parseAndCheckSchema({
       relative_path: path_to_folder,
     });
-    const cover_schema = schema.$cover;
+    const cover_schema = item_in_schema.$cover;
     const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
 
     const paths = await _makeImageThumbsFor({
@@ -310,6 +319,22 @@ module.exports = (function () {
       path_to_folder,
       media_filename,
     });
+  }
+  async function duplicateThumbFolder({
+    path_to_source_folder,
+    path_to_destination_folder,
+  }) {
+    const path_to_thumb_folder = await _getThumbFolderPath(
+      path_to_source_folder
+    );
+    const path_to_destination_thumb_folder = await _getThumbFolderPath(
+      path_to_destination_folder
+    );
+    await fs.copy(
+      utils.getPathToUserContent(path_to_thumb_folder),
+      utils.getPathToUserContent(path_to_destination_thumb_folder)
+    );
+    return;
   }
 
   async function _removeAllThumbsForFile({ path_to_folder, media_filename }) {
@@ -362,8 +387,9 @@ module.exports = (function () {
       resolutions,
     });
 
-    const format =
-      path.parse(media_filename).ext?.toLowerCase() === ".png" ? "png" : "jpeg";
+    const format = utils.isExtensionLosslessImageFormat(media_filename)
+      ? "png"
+      : "jpeg";
 
     let thumb_paths = {};
 

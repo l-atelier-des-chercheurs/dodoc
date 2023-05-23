@@ -86,13 +86,38 @@ module.exports = (function () {
       return +Number.parseFloat(h / w).toPrecision(4);
     },
 
-    validateMeta({ fields, new_meta }) {
+    async checkFieldUniqueness({ fields, meta, siblings_folders }) {
+      dev.logfunction({ fields, meta, siblings_folders });
+      // check if some fields have "unique"
+      if (Object.keys(meta).length === 0) return;
+
+      if (fields)
+        for ([field_name, opt] of Object.entries(fields)) {
+          if (opt.unique === true && meta.hasOwnProperty(field_name)) {
+            const proposed_value_for_unique_field = meta[field_name];
+            if (
+              siblings_folders.some(
+                (f) => f[field_name] === proposed_value_for_unique_field
+              )
+            ) {
+              const err = new Error(
+                `Field ${field_name} supposed to be unique, is already taken`
+              );
+              err.code = "unique_field_taken";
+              throw err;
+            }
+          }
+        }
+    },
+
+    validateMeta({ fields, new_meta, context = "creation" }) {
       dev.logfunction({ fields, new_meta });
       let meta = {};
 
       const predefined_fields = {
         $status: { type: "string" },
-        $authors: { type: "array" },
+        $admins: { type: "any" },
+        $contributors: { type: "any" },
         $password: { type: "string" },
       };
       fields = Object.assign({}, fields, predefined_fields);
@@ -101,8 +126,10 @@ module.exports = (function () {
         Object.entries(fields).map(([field_name, opt]) => {
           if (
             new_meta.hasOwnProperty(field_name) &&
-            opt.type === "string" &&
-            new_meta[field_name] !== ""
+            opt.type === "string"
+            // &&
+            // new_meta[field_name] !== ""
+            // should allow empty values
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
@@ -127,10 +154,20 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+          } else if (
+            new_meta.hasOwnProperty(field_name) &&
+            opt.type === "any"
+          ) {
+            meta[field_name] = new_meta[field_name];
           } else {
-            if (opt.required === true)
+            if (opt.required === true && context === "creation") {
               // field is required in schema but not present in user-submitted object
-              throw new Error(`Required field *${field_name}* is missing`);
+              // only checked for creation, not update
+              // todo: on updates, check that a required field is not blank
+              const err = new Error(`Required field ${field_name} is missing`);
+              err.code = "required_field_missing";
+              throw err;
+            }
           }
         });
       // see cleanNewMeta
@@ -141,17 +178,17 @@ module.exports = (function () {
       dev.logfunction({ relative_path, new_meta });
       // todo check fields in schema, make sure user added fields are allowed and with the right formatting
       // merge with validateMeta ?
-      const schema = await API.parseAndCheckSchema({
+      const item_in_schema = API.parseAndCheckSchema({
         relative_path,
       });
-      schema;
+      item_in_schema;
 
       return new_meta;
     },
 
-    getLocalIP() {
+    getLocalIPs() {
       const nets = networkInterfaces();
-      const results = Object.create(null); // Or just '{}', an empty object
+      const results = [];
 
       for (const name of Object.keys(nets)) {
         for (const net of nets[name]) {
@@ -159,10 +196,10 @@ module.exports = (function () {
           // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
           const familyV4Value = typeof net.family === "string" ? "IPv4" : 4;
           if (net.family === familyV4Value && !net.internal) {
-            if (!results[name]) {
-              results[name] = [];
-            }
-            results[name].push(net.address);
+            // if (!results[name]) {
+            //   results[name] = [];
+            // }
+            results.push(net.address);
           }
         }
       }
@@ -229,18 +266,17 @@ module.exports = (function () {
       new_path,
       resolution,
       format = "jpeg",
+      withoutEnlargement = false,
     }) {
       if (format === "png")
         await sharp(full_path)
           .rotate()
           .resize(resolution, resolution, {
             fit: "inside",
-            withoutEnlargement: true,
+            withoutEnlargement,
           })
           .withMetadata()
-          .toFormat("png", {
-            quality: global.settings.mediaThumbQuality,
-          })
+          .toFormat("png", {})
           .toFile(new_path)
           .catch((err) => {
             throw err;
@@ -250,7 +286,7 @@ module.exports = (function () {
           .rotate()
           .resize(resolution, resolution, {
             fit: "inside",
-            withoutEnlargement: true,
+            withoutEnlargement,
           })
           .flatten({ background: "white" })
           .withMetadata()
@@ -291,54 +327,59 @@ module.exports = (function () {
       return await md5File(full_media_path);
     },
 
-    async parseAndCheckSchema({ relative_path }) {
+    parseAndCheckSchema({ relative_path = "" }) {
       dev.logfunction({ relative_path });
 
       const schema = global.settings.schema;
 
-      let items_in_path = relative_path.split("/");
-      items_in_path = items_in_path.filter((i) => i !== "_upload");
+      let items_in_path =
+        relative_path.length === 0 ? [] : relative_path.split("/");
+      // items_in_path = items_in_path.filter((i) => i !== "_upload");
 
-      let obj = {};
+      // –––   / => schema (admin settings)
+      // –––   /image.jpg.meta.txt => schema (admin files)
 
-      // –––   /spaces => schema.spaces
-      // –––   /spaces/tle => schema.spaces
-      // –––   /spaces/tle/image.jpg.meta.txt => schema.spaces
+      // –––   /spaces => schema.$folders.spaces
+      // –––   /spaces/tle => schema.$folders.spaces
+      // –––   /spaces/tle/image.jpg.meta.txt => schema.$folders.spaces
 
-      // –––   /spaces/tle/projects => schema.spaces.$folders.projects
-      // –––   /spaces/tle/projects/mon-projet => schema.spaces.$folders.projects
-      // –––   /spaces/tle/projects/mon-projet/image.jpg.meta.txt => schema.spaces.$folders.projects
+      // –––   /spaces/tle/projects => schema.$folders.spaces.$folders.projects
+      // –––   /spaces/tle/projects/mon-projet => schema.$folders.spaces.$folders.projects
+      // –––   /spaces/tle/projects/mon-projet/image.jpg.meta.txt => schema.$folders.spaces.$folders.projects
 
-      // –––   /spaces/tle/projects/mon-projet/publications => schema.spaces.$folders.projects.$folders.publications
+      // –––   /spaces/tle/projects/mon-projet/publications => schema.$folders.spaces.$folders.projects.$folders.publications
 
-      // –––   /spaces/tle/projects/mon-projet/remixes => schema.spaces.$folders.projects.$folders.remixes
-      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video => schema.spaces.$folders.projects.$folders.remixes
-      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video/media.meta.txt => schema.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/remixes => schema.$folders.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video => schema.$folders.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video/media.meta.txt => schema.$folders.spaces.$folders.projects.$folders.remixes
 
       const checkIfFileOrAction = (str) =>
         str.includes(".") || str.startsWith("_");
 
-      if (items_in_path.length === 0) return false;
+      if (
+        items_in_path.length === 0 ||
+        (items_in_path.length === 1 && checkIfFileOrAction(items_in_path[0]))
+      )
+        return schema;
       else if (
         items_in_path.length === 1 ||
         items_in_path.length === 2 ||
         (items_in_path.length === 3 && checkIfFileOrAction(items_in_path[2]))
       )
-        return schema[items_in_path[0]];
+        return schema.$folders[items_in_path[0]];
       else if (
         items_in_path.length === 3 ||
         items_in_path.length === 4 ||
         (items_in_path.length === 5 && checkIfFileOrAction(items_in_path[4]))
       )
-        return schema[items_in_path[0]].$folders[items_in_path[2]];
+        return schema.$folders[items_in_path[0]].$folders[items_in_path[2]];
       else if (
         items_in_path.length === 5 ||
         items_in_path.length === 6 ||
         (items_in_path.length === 7 && checkIfFileOrAction(items_in_path[6]))
       )
-        return schema[items_in_path[0]].$folders[items_in_path[2]].$folders[
-          items_in_path[4]
-        ];
+        return schema.$folders[items_in_path[0]].$folders[items_in_path[2]]
+          .$folders[items_in_path[4]];
 
       throw new Error(`no_schema_for_folder`);
     },
@@ -406,6 +447,32 @@ module.exports = (function () {
         salt,
       });
       return submitted_password_with_salt === stored_password_with_salt;
+    },
+
+    getSlugFromPath(path) {
+      return path.split("/").at(-1);
+    },
+    getParent(path) {
+      return path.substring(0, path.lastIndexOf("/"));
+    },
+    isExtensionLosslessImageFormat(filename) {
+      if (filename) {
+        const extension = path.parse(filename).ext?.toLowerCase();
+        if (extension) return [".png", ".svg"].includes(extension);
+      }
+      return false;
+    },
+    getFilename(path) {
+      return path.substring(path.lastIndexOf("/") + 1);
+    },
+    hashCode(s) {
+      return (
+        "" +
+        s.split("").reduce(function (a, b) {
+          a = (a << 5) - a + b.charCodeAt(0);
+          return a & a;
+        }, 0)
+      );
     },
   };
 

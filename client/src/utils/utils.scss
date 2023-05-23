@@ -22,8 +22,8 @@
 }
 .u-meta {
   text-transform: uppercase;
-  // font-weight: 500;
 
+  font-family: var(--sl-font-mono);
   font-size: var(--sl-font-size-small);
   letter-spacing: 0.02em;
 }
@@ -116,6 +116,9 @@
   font-style: italic;
 }
 
+.t-500 {
+  font-weight: 500;
+}
 .u-buttonLink {
   font-variant: small-caps;
   font-weight: 500;
@@ -143,6 +146,9 @@
 
   &.is--active {
     color: var(--c-bleuvert);
+  }
+  &.has--ts {
+    text-shadow: -1px -1px 4px white;
   }
 
   &:hover,
@@ -172,6 +178,8 @@ button {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-radius: var(--input-border-radius);
 
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
   svg,
   .inlineSVG {
     width: 2em;
@@ -191,7 +199,9 @@ button {
   &:active,
   &:focus-visible,
   &.is--active {
-    background: var(--active-color);
+    &:not([disabled]) {
+      background: var(--active-color);
+    }
   }
 }
 .u-button_round {
@@ -216,7 +226,7 @@ button {
   &[disabled] {
     color: var(--c-gris);
     &:hover,
-    &:focus,
+    &:focus-visible,
     &.is--active {
       background-color: rgba(0, 0, 0, 0.1);
     }
@@ -227,7 +237,7 @@ button {
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       background-color: var(--c-gris_fonce);
@@ -236,6 +246,22 @@ button {
 
   &[disabled] {
     color: var(--c-gris);
+  }
+}
+.u-button_white {
+  background-color: white;
+  color: var(--c-noir);
+
+  &:hover,
+  &:focus-visible,
+  &.is--active {
+    &:not([disabled]) {
+      background-color: var(--c-gris);
+    }
+  }
+
+  &[disabled] {
+    color: var(--c-gris_fonce);
   }
 }
 .u-button_red {
@@ -247,9 +273,11 @@ button {
   }
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
-    background-color: var(--c-rouge_fonce);
+    &:not([disabled]) {
+      background-color: var(--c-rouge_fonce);
+    }
   }
 }
 .u-button_bleuvert {
@@ -257,9 +285,11 @@ button {
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
-    background-color: var(--c-bleuvert_fonce);
+    &:not([disabled]) {
+      background-color: var(--c-bleuvert_fonce);
+    }
   }
 }
 .u-button_bleuvert_fonce {
@@ -267,9 +297,11 @@ button {
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
-    background-color: var(--c-bleuvert);
+    &:not([disabled]) {
+      background-color: var(--c-bleuvert);
+    }
   }
 }
 .u-button_orange {
@@ -277,9 +309,11 @@ button {
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
-    background-color: var(--c-orange_fonce);
+    &:not([disabled]) {
+      background-color: var(--c-orange_fonce);
+    }
   }
 }
 .u-button_bleumarine {
@@ -287,14 +321,24 @@ button {
   color: white;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is--active {
-    background-color: var(--c-bleumarine_fonce);
+    &:not([disabled]) {
+      background-color: var(--c-bleumarine_fonce);
+    }
   }
 }
 .u-button_small {
   font-size: var(--input-font-size-small);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+
+  sl-icon {
+    font-size: 80%;
+  }
+}
+.u-button_verysmall {
+  font-size: var(--input-font-size-x-small);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
 }
 .u-button_big {
   font-size: var(--input-font-size-big);
@@ -364,14 +408,15 @@ textarea,
   color: black;
 
   // background: white;
-  height: var(--input-height);
+  // height: var(--input-height);
   line-height: var(--input-height);
   line-height: inherit;
 
   vertical-align: middle;
 
-  padding-left: calc(var(--spacing) * 0.5);
-  padding-right: calc(var(--spacing) * 0.5);
+  padding: calc(var(--spacing) * 0.5);
+  // padding-left: calc(var(--spacing) * 0.5);
+  // padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
   border-bottom: 1px solid transparent;
@@ -421,7 +466,7 @@ textarea,
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 
-input.u-input-small {
+input[size="small"] {
   font-size: var(--input-font-size-small);
   height: var(--input-height-small);
 }
@@ -486,22 +531,6 @@ sl-button[variant="edit"] {
     color: var(--c-bleuvert);
     // color: white;
     border: none;
-    // border: 1px solid var(--c-bleuvert);
-    // fill: white;
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-
-  &:hover,
-  &:active {
-    &::part(base) {
-      // transform: scale(1.02);
-      background: var(--c-bleuvert);
-      background: var(--c-bleuvert_fonce);
-      color: white;
-
-      // border-color: white;
-      // border: none;
-    }
   }
 }
 
@@ -570,6 +599,7 @@ input[type="file"] {
 .fieldCaption {
   font-weight: 500;
   font-size: var(--sl-font-size-x-small);
+  font-family: var(--sl-font-mono);
 }
 
 .u-defaultValue {
@@ -734,13 +764,14 @@ input[type="file"] {
   // background: var(--c-gris);
   border: 2px solid var(--c-gris);
 
-  margin: calc(var(--spacing) / 1) 0;
-  padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
+
+  max-width: 50ch;
 }
 
 .u-spacingBottom {
-  margin-bottom: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing));
 }
 
 fieldset {

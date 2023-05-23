@@ -2,11 +2,15 @@
   <div>
     <template v-if="!opened_font_item_path">
       <div>
-        <div v-for="font in fonts" :key="font.$path">
-          <FontItem
-            :context="'preview'"
-            :font="font"
-            @toggle="openFontItem(font.$path)"
+        <div v-for="font in fonts" :key="font.$path" class="_fontRow">
+          <h3>
+            {{ font.title }}
+          </h3>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="openFontItem(font.$path)"
+            v-text="$t('open')"
           />
         </div>
       </div>
@@ -55,8 +59,7 @@
     </template>
     <template v-else>
       <FontItem
-        :context="'full'"
-        :font="opened_font_item"
+        :font_path="opened_font_item_path"
         @toggle="opened_font_item_path = false"
       />
     </template>
@@ -107,13 +110,11 @@ export default {
       });
     this.$api.join({ room: this.path });
   },
-  beforeDestroy() {},
-  watch: {},
-  computed: {
-    opened_font_item() {
-      return this.fonts.find((f) => f.$path === this.opened_font_item_path);
-    },
+  beforeDestroy() {
+    this.$api.leave({ room: this.path });
   },
+  watch: {},
+  computed: {},
   methods: {
     async createFont() {
       const font_slug = await this.$api.createFolder({
@@ -132,4 +133,12 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._fontRow {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  border-bottom: 2px solid var(--c-gris);
+  padding: calc(var(--spacing) / 2) 0;
+}
+</style>

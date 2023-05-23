@@ -3,8 +3,7 @@
     <div v-if="all_authors_except_current.length === 0" class="u-instructions">
       {{ $t("no_authors_to_show") }}
     </div>
-
-    <div class="_list">
+    <transition-group tag="div" class="_list" name="projectsList" appear>
       <div
         v-for="author_path in all_authors_except_current"
         :key="author_path"
@@ -12,7 +11,7 @@
       >
         <AuthorTag :path="author_path" :key="author_path" />
       </div>
-    </div>
+    </transition-group>
   </div>
 </template>
 <script>

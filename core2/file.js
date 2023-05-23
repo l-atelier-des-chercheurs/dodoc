@@ -10,10 +10,10 @@ module.exports = (function () {
     importFile: async ({ path_to_folder, req }) => {
       dev.logfunction({ path_to_folder });
 
-      const schema = await utils.parseAndCheckSchema({
+      const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
-      const fields = schema.$files.fields;
+      const fields = item_in_schema.$files.fields;
 
       let additional_meta = {};
       let extracted_meta = {};
@@ -131,13 +131,15 @@ module.exports = (function () {
 
       return metas;
     },
-    getFile: async ({ path_to_folder, path_to_meta }) => {
-      dev.logfunction({ path_to_folder, path_to_meta });
+    getFile: async ({ path_to_meta }) => {
+      dev.logfunction({ path_to_meta });
 
       const d = cache.get({
         key: path_to_meta,
       });
       if (d) return d;
+
+      const path_to_folder = utils.getParent(path_to_meta);
 
       let meta = await utils.readMetaFile(path_to_meta);
       meta.$path = path_to_meta;
@@ -205,47 +207,14 @@ module.exports = (function () {
         Object.assign(meta, clean_meta);
       }
 
-      if (typeof $content !== "undefined") {
-        if (typeof $content !== "string")
-          throw new Error("Content (text) is not a string");
-
-        // check if content is different from previous content, return early if that's the case
-        const previous_content = await utils.readFileContent(
+      if (typeof $content !== "undefined" && meta.$type === "text") {
+        await _updateTextContent({
+          new_content: $content,
           path_to_folder,
-          meta.$media_filename
-        );
-        if (previous_content === $content)
-          throw new Error("content_not_changed");
-
-        dev.logfunction(
-          `Content is supposed to be updated`,
-          { previous_content },
-          { $content },
-          { $type: meta.$type },
-          { $media_filename: meta.$media_filename }
-        );
-
-        if (global.settings.versioning === true)
-          _archiveVersion({
-            path_to_folder,
-            media_filename: meta.$media_filename,
-          });
-
-        // TODO update media (text, image, etc.)
-        if (meta.$type === "text") {
-          const full_path = utils.getPathToUserContent(
-            path_to_folder,
-            meta.$media_filename
-          );
-          await utils
-            .storeContent({
-              full_path,
-              meta: $content,
-            })
-            .catch((err) => {
-              throw err;
-            });
-        }
+          media_filename: meta.$media_filename,
+        }).catch((err) => {
+          if (err.message !== "content_not_changed") throw new Error(err);
+        });
         // TODO remove thumbs
       }
 
@@ -470,7 +439,7 @@ module.exports = (function () {
     // set status (see readme)
     new_meta.$status = additional_meta.$status
       ? additional_meta.$status
-      : "invisible";
+      : "private";
 
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;
@@ -618,6 +587,50 @@ module.exports = (function () {
     dev.logfunction({ paths });
 
     return paths;
+  }
+
+  async function _updateTextContent({
+    new_content,
+    path_to_folder,
+    media_filename,
+  }) {
+    if (typeof new_content !== "string")
+      throw new Error("Content (text) is not a string");
+
+    // check if content is different from previous content, return early if that's the case
+    const previous_content = await utils.readFileContent(
+      path_to_folder,
+      media_filename
+    );
+    if (previous_content === new_content)
+      throw new Error("content_not_changed");
+
+    dev.logfunction(
+      `Content is supposed to be updated`,
+      { previous_content },
+      { new_content },
+      { media_filename }
+    );
+
+    if (global.settings.versioning === true)
+      _archiveVersion({
+        path_to_folder,
+        media_filename,
+      });
+
+    // TODO update media (text, image, etc.)
+    const full_path = utils.getPathToUserContent(
+      path_to_folder,
+      media_filename
+    );
+    await utils
+      .storeContent({
+        full_path,
+        meta: new_content,
+      })
+      .catch((err) => {
+        throw err;
+      });
   }
 
   async function _archiveVersion({ path_to_folder, media_filename }) {

@@ -1,22 +1,22 @@
 <template>
   <BaseModal2
-    :title="$root.app_infos.name_of_instance || $t('home')"
+    :title="$root.app_infos.instance_meta.name || $t('home')"
     @close="$emit('close')"
   >
     <p>
       {{ $t("general_password_modal_text") }}
       <br />
       <a
-        :href="'mailto:' + $root.app_infos.contactmail_of_instance"
+        :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
         target="_blank"
       >
-        {{ $root.app_infos.contactmail_of_instance }}
+        {{ $root.app_infos.instance_meta.contactmail }}
       </a>
     </p>
 
     <form @submit.prevent="submitGeneralPassword">
-      <DLabel :str="$t('password')" />
       <TextInput
+        :label_str="'general_password'"
         :content.sync="password_to_submit"
         :required="true"
         :input_type="'password'"
@@ -56,7 +56,13 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  async mounted() {
+    if (this.$route.query?.general_password) {
+      this.password_to_submit = this.$route.query.general_password;
+      this.remember_on_this_device = false;
+      this.submitGeneralPassword();
+    }
+  },
   beforeDestroy() {},
   watch: {},
   computed: {},

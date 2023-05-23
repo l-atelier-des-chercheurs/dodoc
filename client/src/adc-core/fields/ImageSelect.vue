@@ -1,7 +1,10 @@
 <template>
   <div class="_imageselect">
     <template v-if="!image">
-      <div class="_imageselect--upload">
+      <div
+        class="_imageselect--upload"
+        v-if="available_options.includes('import')"
+      >
         <input
           type="file"
           accept="image/*"
@@ -19,7 +22,10 @@
         </label>
       </div>
 
-      <div class="_imageselect--fromLib">
+      <div
+        class="_imageselect--fromLib"
+        v-if="available_options.includes('project')"
+      >
         <button
           type="button"
           class="u-button u-button_orange"
@@ -64,7 +70,10 @@
         />
       </div>
 
-      <div class="_imageselect--takePhoto">
+      <div
+        class="_imageselect--takePhoto"
+        v-if="available_options.includes('capture')"
+      >
         <button
           type="button"
           class="u-button u-button_red"
@@ -114,6 +123,10 @@ export default {
     existing_preview: [Boolean, String],
     path: String,
     instructions: String,
+    available_options: {
+      type: Array,
+      default: () => ["import", "project", "capture"],
+    },
   },
   components: {
     CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),
@@ -191,19 +204,18 @@ export default {
         }, 20);
       });
     },
-    selectMediaFromLib({ path_to_source_media }) {
-      const meta_filename = this.getFilename(path_to_source_media);
-      const file = this.getSourceMedia({
-        source_media: { meta_filename },
-        folder_path: this.path,
+    selectMediaFromLib({ path_to_source_media_meta }) {
+      const file = this.getMediaInFolder({
+        path_to_source_media_meta,
       });
+      const path_to_project = this.getParent(file.$path);
       this.image = this.makeRelativeURLFromThumbs({
         $thumbs: file.$thumbs,
         $type: file.$type,
-        $path: this.path,
+        $path: path_to_project,
         resolution: 1600,
       });
-      this.$emit("newPreview", meta_filename);
+      this.$emit("newPreview", path_to_source_media_meta);
     },
     createImage(blob) {
       return new Promise((resolve, reject) => {

@@ -1,45 +1,81 @@
 <template>
   <div>
     <DLabel
-      v-if="label && (new_authors_paths.length > 0 || can_edit)"
+      v-if="label"
       :str="label"
       :tag="tag"
       :instructions="can_edit ? instructions : ''"
     />
 
     <div class="_authors">
-      <AuthorTag
-        v-for="author_path in new_authors_paths"
-        :path="author_path"
-        :key="author_path"
-        :edit_mode="edit_mode"
-        :links_to_author_page="!edit_mode"
-        @remove="removeAuthor(author_path)"
+      <div v-if="authors_paths === 'everyone'" class="t-500">
+        {{ $t("everyone") }}
+      </div>
+      <template
+        v-else-if="Array.isArray(authors_paths) && authors_paths.length > 0"
+      >
+        <AuthorTag
+          v-for="author_path in authors_paths"
+          :path="author_path"
+          :key="author_path"
+          :edit_mode="false"
+          :links_to_author_page="!edit_mode"
+        />
+      </template>
+      <div v-else class="t-500">
+        {{ $t("noone") }}
+      </div>
+      <!-- :links_to_author_page="!edit_mode" -->
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        class="_editBtn"
+        @click="enableEditMode"
       />
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
 
     <div class="_footer" v-if="edit_mode">
-      <BaseModal2 @close="$emit('close')" :title="$t('add_authors')">
-        <DLabel class="_label" :str="$t('authors')" />
-        <div class="_authors">
-          <AuthorTag
-            v-for="author_path in new_authors_paths"
-            :path="author_path"
-            :key="author_path"
-            :edit_mode="edit_mode"
-            :links_to_author_page="!edit_mode"
-            @remove="removeAuthor(author_path)"
-          />
+      <BaseModal2 @close="cancel" :title="label">
+        <div v-if="instructions" class="u-instructions" :key="'noprojects'">
+          {{ instructions }}
         </div>
 
         <br />
 
-        <DLabel class="_label" :str="$t('add_authors')" />
-        <AuthorPicker
-          :current_authors="new_authors_paths"
-          @addAuthor="addAuthor"
+        <RadioCheckboxInput
+          :value.sync="radio_mode"
+          :options="editing_options"
+          :can_edit="edit_mode"
         />
+
+        <div v-if="Array.isArray(new_authors_paths)" class="_listOfAuthors">
+          <template v-if="new_authors_paths.length > 0">
+            <DLabel class="_label" :str="$t('list_of_accounts')" />
+            <transition-group
+              tag="div"
+              class="_authors"
+              name="projectsList"
+              appear
+            >
+              <AuthorTag
+                v-for="author_path in new_authors_paths"
+                :path="author_path"
+                :key="author_path"
+                :edit_mode="edit_mode"
+                :links_to_author_page="!edit_mode"
+                @remove="removeAuthor(author_path)"
+              />
+            </transition-group>
+            <br />
+          </template>
+
+          <DLabel class="_label" :str="$t('add_accounts')" />
+          <AuthorPicker
+            :current_authors="new_authors_paths"
+            @addAuthor="addAuthor"
+          />
+        </div>
+
+        <br />
 
         <div>
           <SaveCancelButtons
@@ -61,9 +97,13 @@ export default {
       type: String,
       default: "",
     },
+    field: {
+      type: String,
+      required: true,
+    },
     authors_paths: {
-      type: Array,
-      default: () => [],
+      type: [String, Array],
+      default: "noone",
     },
     path: String,
     instructions: {
@@ -71,7 +111,6 @@ export default {
       default: "",
     },
     tag: String,
-
     can_edit: {
       type: Boolean,
     },
@@ -81,18 +120,51 @@ export default {
     return {
       edit_mode: false,
       is_saving: false,
-      new_authors_paths: JSON.parse(JSON.stringify(this.authors_paths)),
+      new_authors_paths: [],
+      new_editing_mode: [],
+
+      editing_options: [
+        {
+          key: "everyone",
+          label: this.$t("everyone"),
+          instructions: this.$t("everyone_instr"),
+        },
+        {
+          key: "noone",
+          label: this.$t("noone"),
+          instructions: this.$t("noone_instr"),
+        },
+        {
+          key: "restricted",
+          label: this.$t("restricted"),
+          instructions: this.$t("restricted_instr"),
+        },
+      ],
     };
   },
-  created() {},
+  created() {
+    this.initAuthorPaths();
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {
     authors_paths() {
-      this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
+      this.initAuthorPaths();
     },
   },
   computed: {
+    radio_mode: {
+      set(value) {
+        if (value === "everyone") this.new_authors_paths = "everyone";
+        else if (value === "noone") this.new_authors_paths = "noone";
+        else if (value === "restricted") this.new_authors_paths = [];
+      },
+      get() {
+        if (this.new_authors_paths === "everyone") return "everyone";
+        if (Array.isArray(this.new_authors_paths)) return "restricted";
+        return "noone";
+      },
+    },
     allow_save() {
       return (
         JSON.stringify(this.new_authors_paths) !==
@@ -101,6 +173,18 @@ export default {
     },
   },
   methods: {
+    initAuthorPaths() {
+      if (this.authors_paths === "everyone") {
+        this.new_authors_paths = "everyone";
+      } else if (
+        this.authors_paths === "noone" ||
+        (Array.isArray(this.authors_paths) && this.authors_paths.length === 0)
+      ) {
+        this.new_authors_paths = "noone";
+      } else if (Array.isArray(this.authors_paths)) {
+        this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
+      }
+    },
     enableEditMode() {
       this.edit_mode = true;
     },
@@ -128,9 +212,13 @@ export default {
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
 
+      let _new_authors_paths = undefined;
+      if (this.new_authors_paths === "noone") _new_authors_paths = [];
+      else _new_authors_paths = this.new_authors_paths;
+
       try {
         const new_meta = {
-          $authors: this.new_authors_paths,
+          [this.field]: _new_authors_paths,
         };
 
         await this.$api.updateMeta({
@@ -154,10 +242,21 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._listOfAuthors {
+  padding-left: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) 0;
+  border-left: 2px solid var(--c-gris);
+}
+
 ._authors {
   display: flex;
   flex-flow: row wrap;
+  align-items: center;
   gap: calc(var(--spacing) / 4);
+
+  ._editBtn {
+    margin: 0;
+  }
 }
 
 ._footer {

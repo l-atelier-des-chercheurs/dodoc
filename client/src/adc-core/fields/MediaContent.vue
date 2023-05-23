@@ -17,13 +17,10 @@
           loading="eager"
         />
       </template>
-      <template v-if="show_fullscreen_button">
-        <FullscreenBtn
-          class="u-floatingFsButton"
-          :icon="'fullscreen'"
-          :label="$t('fullscreen')"
-          @click="show_fullscreen = true"
-        />
+      <template v-if="show_fs_button">
+        <div class="_fsButton">
+          <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
+        </div>
         <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
           <img :src="file_full_path" />
         </FullscreenView>
@@ -109,7 +106,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    show_fullscreen_button: {
+    show_fs_button: {
       type: Boolean,
       default: false,
     },
@@ -239,5 +236,12 @@ export default {
   height: 100%;
   // border: 2px solid #535659;
   border: none;
+}
+
+._fsButton {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: calc(var(--spacing) / 1);
 }
 </style>

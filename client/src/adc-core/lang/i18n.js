@@ -43,14 +43,18 @@ export default function () {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
         home: "Accueil",
         admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
-        edit: "modifier",
+        go_home: "Retourner à l’accueil",
+        page_not_found: "Cette page n’existe pas",
+        admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
+        admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
+        edit: "Modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",
-        date_created: "date de création",
-        date_modified: "dernière modification",
-        alphabetical: "alphabétique",
-        date_uploaded: "date d’envoi",
-        cancel: "annuler",
+        date_created: "Date de création",
+        date_modified: "Dernière modification",
+        alphabetical: "Alphabétique",
+        date_uploaded: "Date d’envoi",
+        cancel: "Annuler",
         select: "Sélectionner",
         back: "retour",
         save: "enregistrer",
@@ -61,25 +65,40 @@ export default function () {
         embed: "Intégrer",
         from_project: "Depuis le projet",
 
-        description: "description",
+        description: "Description",
         no_description: "Pas de description",
         keywords: "Mots-clés",
+
         add: "ajouter",
+        add_item: "Ajouter un élément",
+        suggestions: "Suggestions",
         access: "accéder",
         title: "Titre",
         subtitle: "Sous-titre",
-        name: "nom",
+        name: "Nom",
+
+        open_in_finder: "Ouvrir dans l’explorateur",
+
+        admins_and_contributors: "Référents et contributeurs",
+        // admins_and_contributors_instr: "",
+        set_admins_and_contributors: "Définir les référents et contributeurs",
+        instance_admins_instr:
+          "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
+        instance_contributors_instr:
+          "Les comptes listés ici pourront créer des espaces.",
+        space_members: "Participants à cet espace",
+
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
-          Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
+          Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
         presentation_of_instance: "Présentation de l’instance",
         presentation_of_instance_instructions: `
           Apparaîtra sur la page d’accueil uniquement.
           `,
         general_password: "mot de passe général",
         general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
-        peut afficher un email de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
-        general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
+        peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
+        general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plateforme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
 
         submitted_password_is_wrong: "Mot de passe erroné",
@@ -88,7 +107,7 @@ export default function () {
         search_by_title: "Rechercher par titre",
 
         connection_lost: `Connexion perdue`,
-        connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
+        connection_lost_reload_to_reconnect: `La connexion s’est interrompue. Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez à nouveau cette erreur, contactez `,
         reload_page: "Recharger cette page",
         create_page: "Ajouter une page",
         add_on_page: "Ajouter sur la page",
@@ -98,7 +117,7 @@ export default function () {
         active_media_instr:
           "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
-        contactmail_of_instance: `Adresse e-mail de contact`,
+        contactmail_of_instance: `Contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
         create_stack: "Créer une pile",
 
@@ -107,14 +126,19 @@ export default function () {
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
-          "Limiter la création de compte (et donc de projets) aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent se créer un compte et publier des contenus.",
+          "Limiter la création de compte aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent créer un compte.",
+        signup_password_users_instructions:
+          "Si vous ne connaissez pas le mot de passe, vous pouvez le demander par courriel à l’adresse suivante",
 
         login: "se connecter",
         logout: "se déconnecter",
         name_or_pseudonym: "Nom ou pseudonyme",
         email: "Courriel",
+        email_instr:
+          "Courriel de contact, uniquement visible aux administrateurs pour complément de contribution.",
         password: "Mot de passe",
-        role: "Rôle",
+        admins: "Administrateur·rice·s",
+        referent: "Référent·e·s",
         contributors: "Contributeur·rice·s",
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",
@@ -141,6 +165,10 @@ export default function () {
           Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle famille de caractère au format woff2. 
           Indiquez ensuite pour chaque élément le fichier correspondant.
         `,
+        reload_page_to_apply:
+          "Après avoir enregistré ces changements, rechargez cette page.",
+        feature_not_implemented_yet:
+          "Fonctionnalité à venir, pas encore implémentée",
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
@@ -148,6 +176,8 @@ export default function () {
         show_description: "Afficher la description",
         hide_description: "Masquer la description",
         recover_password: "Récupérer mon de passe",
+        please_contact_to_recover:
+          "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe",
 
         visibility: "Visibilité",
         visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -157,6 +187,7 @@ export default function () {
         generate_preview: "Générer un aperçu",
 
         story: "Récit",
+        story_with_sections: "Récit en sections",
         page_by_page: "Document page à page",
         cartography: "Cartographie",
         export: "Exporter",
@@ -164,6 +195,11 @@ export default function () {
         exports_in_progress: "Exportation(s) en cours",
 
         story_width: "Largeur du récit",
+        summary: "Sommaire",
+        section_title: "Titre de la section",
+        section: "Section",
+        create_section: "Créer une section",
+        untitled: "Sans titre",
         responsive: "Fluide",
         responsive_instr:
           "Prendra toute la largeur de la fenêtre sans jamais déborder et en respectant la valeur ci-dessus comme largeur maximale.",
@@ -243,46 +279,60 @@ export default function () {
         status: "État",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
+        no_files: "Aucun fichier",
+        none_f: "Aucune",
+        none: "Aucun·e",
         filters: "Filtres",
+        reset_all: "Retirer tout",
 
         draft: "En cours",
-        draft_status_explanations:
-          "Le projet apparaîtra dans la section <i>en cours</i> sur la page d’accueil.",
         listed: "Listé",
+        private: "Privé",
+        public: "Public",
         invisible: "Invisible",
         visible: "Visible",
-        visible_status_explanations_projects:
-          "Le projet sera affiché avec les autres projets.",
-        invisible_status_explanations_projects:
-          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses auteurs et aux personnes qui possèdent le lien.",
-        visible_status_explanations_publis:
-          "La publication sera visible par tous ceux qui accèdent au projet.",
-        invisible_status_explanations_publis:
-          "La publication ne sera visible qu’aux auteurs du projet.",
+
+        public_status_explanations: "Sera visible sur la page d’accueil.",
+        private_status_explanations: "Ne sera visible qu’à ses contributeurs.",
+
+        private_status_explanations_projects:
+          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
+        finished_status_explanations:
+          "Ce projet sera marqué avec un pictogramme ✓ et sera accessible à toutes les personnes qui ont accès à son espace.",
+        draft_status_explanations:
+          "Ce projet sera accessible à toutes les personnes qui ont accès à son espace.",
+
+        public_status_explanations_publis:
+          "La publication sera visible à tous ceux qui accèdent au projet.",
+        private_status_explanations_publis:
+          "La publication ne sera visible qu’aux contributeurs du projet.",
 
         invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
-        only_finished: "Que les projets finalisés",
+        only_finished: "Projets finalisés",
+        completed: "Terminé",
         my_projects: "Mes projets",
 
-        finished_projects: "Projets finalisés",
-        projects_in_progress: "Projets en cours",
-
         default_value: "Par défaut",
-
-        finished_status_explanations:
-          "Ce projet sera affiché en haut de la page d’accueil.",
 
         show_projects: "Afficher les projets",
         all_projects: "Tous les projets",
         all_projects_instr:
           "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
+        event_projects_instr:
+          "Cette liste affiche l’ensemble des projets documentés pendant cet événement.",
 
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
+        add_accounts: "Rajouter des comptes",
+        list_of_accounts: "Liste des comptes",
+        // only_accounts: "Seulement les comptes suivants",
         restart_to_apply: "Relancez do•doc pour appliquer",
+        refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
         restart: "Relancer do•doc",
         reveal: "Révéler",
         choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
+        latest_changes_to_project: "Dernières modifications au projet",
+
         download: "Télécharger",
 
         medias: "Médias",
@@ -292,15 +342,24 @@ export default function () {
         media_duplicated: "Média dupliqué",
 
         CC: "Creative Commons",
-        license_and_authors: "Licence et auteurs",
+        authors_and_license: "Licence et auteurs",
+        authors: "Auteurs",
         license: "Licence",
         licence_instructions:
           "Indiquez ici les conditions de partage et de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
+        everyone: "Tout le monde",
+        everyone_instr:
+          "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
+        noone: "Aucun·e",
+        noone_instr: "Fermer à tous les comptes non-administrateurs.",
+        restricted: "Uniquement les comptes de la liste",
+        restricted_instr: "Seuls ces comptes seront autorisés.",
 
         close: "Fermer",
         settings: "Réglages",
+        admin_settings: "Réglages d’administration",
         list_of_pages: "Liste des pages",
         list_of_spreads: "Liste des planches",
         show_grid: "Afficher la grille",
@@ -313,9 +372,11 @@ export default function () {
 
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
-          Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
+          Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
 
-        access_control: "Contrôle des accès",
+        administration_and_access_control:
+          "Administration et contrôle des accès",
+        logo_and_images: "Logo et images",
         fonts: "Famille de caractère",
         add_font: "Ajouter une famille de caractère",
         font_name: "Nom de la famille de caractère",
@@ -324,6 +385,9 @@ export default function () {
         font_normal: "Normal",
         font_italic: "Italique",
         storage: "Stockage",
+        events: "Événements",
+        other_events: "Autres événements",
+        created_during: "Créé pendant un événement",
 
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
@@ -348,6 +412,9 @@ export default function () {
           "Chaque espace contient une série de projets liés par un groupe, un événement ou une thématique particulière.",
         create_a_space: "Créer un espace",
         project: "Projet",
+
+        markdown_instr:
+          "Champ en Markdown : vous pouvez mettre en forme le texte (titres, gras, italique, liens, etc.).",
 
         watermark: "Habillage",
         watermark_instructions:
@@ -396,6 +463,7 @@ export default function () {
         add_multiple_images:
           "Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera una video.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.",
         more_informations: "Plus d’informations",
+        images: "Images",
 
         make_an_exhibition: "Créer une exposition",
 
@@ -448,13 +516,28 @@ export default function () {
         lightness: "Clarté",
         dotscreen: "Noir et blanc (tramé)",
 
+        custom_license: "Licence spécifique",
+        custom_license_explanations:
+          "À venir, la possibilité d’indiquer une licence spécifique avec un lien vers une page de référence",
+
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
+        copy_of: "Copie de",
+        open_copy: "Accéder à la copie",
+        title_of_copy: "Titre de la copie",
+        source_space: "Espace qui recevra cette copie",
+
+        remove_original: "Supprimer l’original",
+        remove_original_after_copy: "Ce projet sera supprimé après la copie",
+        keep_original_after_copy: "Ce projet sera conservé après la copie",
 
         machines_and_materials: "Machines et matériaux",
-        levels_and_competences: "Niveau et compétence",
+        machines: "Machines",
+        materials: "Matériaux",
+        levels_and_competences: "Niveaux et compétence",
 
-        beginner: "Novice",
+        fabrication_level: "Niveau de connaissance",
+        beginner: "Débutant",
         intermediate: "Intermédiaire",
         experienced: "Confirmé",
         expert: "Expert",
@@ -546,6 +629,7 @@ export default function () {
         open: "ouvrir",
         create_and_open: "Créer et ouvrir",
         create_a_project: "Créer un projet",
+        create_an_event: "Créer un événement",
         create_a_publication: "Créer une publication",
 
         add_media: "Ajouter un média",
@@ -553,39 +637,87 @@ export default function () {
         add_link: "Ajouter un lien",
         add_text: "Ajouter du texte",
 
-        display_as_public: "Afficher la vue publique",
+        share_link_to_page: "Partager un lien vers cette page",
+        download_this_qr_code: "Télécharger ce code QR",
+        domain: "Avec un domaine",
+        domain_instr:
+          "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine comme https://dodoc.fr.",
+        no_domain_set: "Aucun domaine disponible.",
+        local_network: "Par le réseau local",
+        local_network_instr:
+          "Avec n’importe quel appareil (ordinateur, smartphone ou tablette) connecté sur le même réseau wifi ou filaire, avec ou sans internet.",
+        no_local_network_set: "Aucun réseau local n’a été trouvé.",
+        local_machine: "Sur la même machine",
+        local_machine_instr:
+          "Sur cet ordinateur, en passant par un navigateur déjà installé.",
 
-        project_author_instructions:
-          "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",
+        display_as_public: "Afficher la vue publique",
+        preview: "Prévisualiser",
+
+        instance_admin_instructions:
+          "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
+        instance_contrib_instructions:
+          "Peuvent uniquement créer des espaces et les administrer.",
+
+        space_admin_instructions:
+          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés).",
+        space_contrib_instructions:
+          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets qu’ils n’ont pas créé.",
+
+        project_admin_instructions:
+          "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",
+        project_contrib_instructions:
+          "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
+
         space_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
-        project_desc_instructions:
-          "La description est affichée ici et sur la liste des projets.",
+        pick_cover: "Choisissez une image de couverture",
+        remove_image: "Retirer cette image",
+
         add_authors: "Ajouter des contributeur·rice·s",
-        no_authors_to_show: "Aucun auteur à afficher",
+        no_authors_to_show: "Aucun compte à afficher",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",
         line: "Ligne",
         arrow: "Flèche",
         for_example: "Par exemple",
+        require_signup_to_contribute:
+          "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
+        require_mail_to_signup:
+          "Une adresse courriel est obligatoire pour créer un compte",
+        enable_events: "Activer la fonctionnalité « événements »",
+
+        you_must_login_to_contribute:
+          "Vous devez vous inscrire ou vous connecter pour contribuer",
+        not_allowed_to_contribute_contact_referent:
+          "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
           "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
+        "notifications.action_not_authorized": "Cette action n’est pas permise",
+        "notifications.event_does_not_exit": "Cet événement n’existe pas",
+        "notifications.title_taken": "Ce titre est déjà utilisé",
+        "notifications.name_taken": "Ce nom est déjà utilisé",
 
-        more_infos: "Plus d’informations",
         informations: "Informations",
 
         duplicate: "Dupliquer",
+        duplicate_or_move: "Dupliquer ou déplacer",
+        duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
+        dm_instr:
+          "Vers le même espace. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées. À venir : déplacer un projet vers un autre espace.",
         move_to_page: "Déplacer vers une autre page",
         move: "Déplacer",
         unselect: "Déselectionner",
         remove: "Supprimer",
         remove_project: "Supprimer le projet",
         remove_media: "Supprimer le média",
+        remove_space: "Supprimer cet espace et tous ses contenus",
+
         withdraw_from_page: "Enlever de la page",
         confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",
@@ -608,6 +740,7 @@ export default function () {
         create_a_module: "Créer un module",
         list_of_archives: "Liste des archives",
         restore_this_version: "Restaurer cette version",
+        version: "Version",
 
         general_informations: "Informations sur l’instance",
 

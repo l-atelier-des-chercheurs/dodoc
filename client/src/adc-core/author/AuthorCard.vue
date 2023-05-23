@@ -1,46 +1,59 @@
 <template>
   <div class="_authorCard">
-    <TitleField
-      :field_name="'name'"
-      :label="$t('name')"
-      :content="author.name"
-      :path="author.$path"
-      :required="true"
-      :minlength="3"
-      :maxlength="40"
-      :tag="'h2'"
-      :can_edit="is_self"
-    />
+    <div class="_topbar">
+      <div class="_cover">
+        <CoverField
+          :context="context"
+          :cover="author.$cover"
+          :path="author.$path"
+          :can_edit="can_edit"
+        />
+      </div>
 
-    <SelectField
-      v-if="is_admin"
-      :field_name="'role'"
-      :content="author.role"
-      :path="author.$path"
-      :can_edit="true"
-      :options="[
-        {
-          key: 'contributor',
-          text: $t('contributor'),
-        },
-        {
-          key: 'admin',
-          text: $t('admin'),
-        },
-      ]"
-    />
-    <div v-else>
-      {{ $t(author.role) }}
+      <div class="_text">
+        <!-- :label="$t('name')" -->
+        <TitleField
+          :field_name="'name'"
+          :content="author.name"
+          :path="author.$path"
+          :required="true"
+          :minlength="3"
+          :maxlength="40"
+          :tag="'h2'"
+          :can_edit="can_edit"
+        />
+        <div class="_path">@{{ getFilename(author.$path) }}</div>
+        <div v-if="is_instance_admin">
+          <span v-text="author.email" />
+        </div>
+        <div
+          class="u-instructions"
+          v-if="
+            authorIsInstance({
+              field: '$admins',
+              folder_path: author.$path,
+            })
+          "
+        >
+          <small v-html="$t('admin')" />
+        </div>
+
+        <TitleField
+          :field_name="'$password'"
+          :label="can_edit ? $t('password') : ''"
+          :content="''"
+          :path="author.$path"
+          :required="true"
+          :minlength="3"
+          :maxlength="20"
+          :input_type="'password'"
+          :can_edit="can_edit"
+        />
+      </div>
     </div>
-
-    <!-- {{ author.email }} -->
-    <br />
-
-    <RemoveMenu
-      v-if="is_self || is_admin"
-      :remove_text="$t('remove')"
-      @remove="removeAuthor"
-    />
+    <div class="u-mediaOptions" v-if="can_edit">
+      <RemoveMenu :remove_text="$t('remove')" @remove="removeAuthor" />
+    </div>
   </div>
 </template>
 <script>
@@ -57,10 +70,16 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    context() {
+      return this.can_edit ? "full" : "preview";
+    },
     is_self() {
       if (this.connected_as)
         return this.connected_as.$path === this.author.$path;
       return false;
+    },
+    can_edit() {
+      return this.is_self || this.is_instance_admin;
     },
   },
   methods: {
@@ -75,8 +94,33 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._authorCard {
-  // background: var(--c-bleumarine_clair);
-  // border-left: 2px solid var(--c-bleumarine);
-  padding: calc(var(--spacing) / 2);
+}
+
+._topbar {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 1 1 0;
+
+    &._cover {
+      flex: 0 0 140px;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+    }
+  }
+}
+
+._cover {
+  position: relative;
+  overflow: hidden;
+}
+
+._text {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
 }
 </style>

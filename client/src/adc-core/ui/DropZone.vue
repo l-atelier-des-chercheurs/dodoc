@@ -50,9 +50,9 @@ export default {
       if (!$event.dataTransfer.getData("text/plain")) return false;
 
       const file = JSON.parse($event.dataTransfer.getData("text/plain"));
-      const path_to_source_media = file.$path;
+      const path_to_source_media_meta = file.$path;
 
-      this.$emit("mediaDropped", { path_to_source_media });
+      this.$emit("mediaDropped", { path_to_source_media_meta });
     },
   },
 };

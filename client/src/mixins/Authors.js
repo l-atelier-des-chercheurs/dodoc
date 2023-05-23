@@ -5,12 +5,24 @@ export default {
         return this.$api.store[this.$api.tokenpath.token_path];
       return false;
     },
-    is_admin() {
-      if (this.connected_as) return this.connected_as.role === "admin";
-      return false;
+    is_instance_admin() {
+      return this.authorIsInstance({
+        field: "$admins",
+        folder_path: this.connected_as?.$path,
+      });
+    },
+    is_instance_contributor() {
+      return this.authorIsInstance({
+        field: "$contributors",
+        folder_path: this.connected_as?.$path,
+      });
     },
   },
   methods: {
+    authorIsInstance({ field, folder_path }) {
+      const $ = this.$root.app_infos.instance_meta[field];
+      return $.includes(folder_path) || $ === "everyone";
+    },
     getAuthor(author_path) {
       const folder_path = author_path.substring(
         0,
@@ -19,27 +31,49 @@ export default {
       if (!folder_path || !this.$api.store[folder_path]) return false;
       return this.$api.store[folder_path].find((f) => f.$path === author_path);
     },
-    canLoggedinEditFolder({ folder_authors }) {
-      // if admin, or part of authors, or no authors
-      if (this.connected_as?.role === "admin") return true;
+    setDefaultContentAdmins() {
+      if (this.connected_as) return [this.$api.tokenpath.token_path];
+      return "everyone";
+    },
+    canLoggedinEditFolder({ folder }) {
+      if (this.is_instance_admin) return true;
+      if (folder.$admins === "everyone") return true;
+      if (!this.connected_as) return false;
       if (
-        !folder_authors ||
-        !Array.isArray(folder_authors) ||
-        folder_authors.length === 0
+        Array.isArray(folder.$admins) &&
+        folder.$admins.includes(this.connected_as.$path)
+      )
+        return true;
+      return false;
+    },
+    canLoggedinContributeToFolder({ folder }) {
+      if (this.canLoggedinEditFolder({ folder })) return true;
+
+      if (folder.$contributors === "everyone") return true;
+      if (!this.connected_as) return false;
+      if (
+        Array.isArray(folder.$contributors) &&
+        folder.$contributors.includes(this.connected_as.$path)
       )
         return true;
 
-      if (folder_authors.includes(this.connected_as?.$path)) return true;
       return false;
     },
     canLoggedinSeeFolder({ folder }) {
-      // if public, if author admin, if author part of $authors
       // todo do this API side
-      if (folder.$status !== "invisible") return true;
-      if (this.connected_as?.role === "admin") return true;
+      // invisible is the old name for private
+      if (folder.$status !== "invisible" && folder.$status !== "private")
+        return true;
+      if (!this.connected_as) return false;
+      if (this.is_instance_admin) return true;
       if (
-        Array.isArray(folder.$authors) &&
-        folder.$authors.includes(this.connected_as?.$path)
+        Array.isArray(folder.$admins) &&
+        folder.$admins.includes(this.connected_as.$path)
+      )
+        return true;
+      if (
+        Array.isArray(folder.$contributors) &&
+        folder.$contributors.includes(this.connected_as.$path)
       )
         return true;
       return false;

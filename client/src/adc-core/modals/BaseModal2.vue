@@ -138,7 +138,7 @@ header {
   border-bottom: 2px solid #e5e5e5;
   width: 100%;
   h2 {
-    font-weight: 700;
+    font-weight: 600;
     font-size: var(--sl-font-size-x-large);
     margin: 0;
   }

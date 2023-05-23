@@ -9,16 +9,19 @@
 
     <component :is="tag" class="_container">
       <template v-if="!can_edit || (can_edit && !edit_mode)">
-        <span
-          class="_content"
-          v-if="content && content !== ' '"
-          v-text="content"
-        />
+        <template v-if="content && content !== ' '">
+          <div class="_content">
+            <MarkdownField
+              v-if="input_type === 'markdown'"
+              :text="content"
+            /><span v-else v-text="content" />
+          </div>
+        </template>
       </template>
       <TextInput
         v-else
+        ref="TextInput"
         :content.sync="new_content"
-        :tag="input_type === 'text' ? 'span' : 'input'"
         :required="required"
         :input_type="input_type"
         :minlength="minlength"
@@ -65,7 +68,7 @@ export default {
     path: String,
     tag: {
       type: String,
-      default: "p",
+      default: "div",
     },
     required: {
       type: Boolean,
@@ -99,6 +102,8 @@ export default {
   beforeDestroy() {},
   watch: {
     content() {
+      // content was changed somewhere else, let's reload component
+      // todo: do not override content, ask in a modal what to do?
       this.new_content = this.content;
     },
   },
@@ -137,14 +142,12 @@ export default {
 
         this.edit_mode = false;
         this.is_saving = false;
-      } catch (e) {
+      } catch (err) {
         this.is_saving = false;
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("notifications.couldntbesaved"));
-        this.$alertify.closeLogOnClick(true).error(e.response.data);
+        if (err === "unique_field_taken") {
+          this.$alertify.delay(4000).error(this.$t("notifications.name_taken"));
+          this.$refs.TextInput.$refs.field.select();
+        }
       }
     },
   },
@@ -155,8 +158,12 @@ export default {
   width: 100%;
 
   ._content {
-    white-space: break-spaces;
+    display: inline-block;
     margin-right: calc(var(--spacing) / 2);
+
+    span {
+      white-space: break-spaces;
+    }
   }
 
   &:hover > ._label {
@@ -166,7 +173,7 @@ export default {
 
 ._footer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-flow: row wrap;
   font-size: 1rem;
   font-weight: 400;
@@ -177,6 +184,10 @@ export default {
 
 ._container {
   margin: 0;
+  width: 100%;
+  // display: flex;
+  // flex-flow: row wrap;
+  // align-items: baseline;
 }
 
 ._cont {

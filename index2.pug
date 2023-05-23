@@ -12,7 +12,9 @@ html
     title.  
       !{name_of_instance}
 
-    link(href="favicon.ico" id="favicon" rel="icon" type="image/x-icon")
+    if favicon_url
+      link(rel="shortcut icon" href=favicon_url)
+
     style.
       @import "!{path_prefix}_client/fonts/fira.css";
     style.
@@ -34,48 +36,28 @@ html
         schema: !{JSON.stringify(schema)},
         version: "!{global.appInfos.version}",
         debug_mode: !{debug_mode},
+        is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
       
-        name_of_instance: `!{name_of_instance}`,
-        presentation_of_instance: `!{presentation_of_instance}`,
-        contactmail_of_instance: `!{contactmail_of_instance}`,
+        instance_meta: {
+          name: `#{name_of_instance}`,
+          presentation: `#{presentation_of_instance}`,
+          contactmail: `#{contactmail_of_instance}`,
+          hero_background_color: `#{hero_background_color}`,
+          text_background_color: `#{text_background_color}`,
+          has_general_password: !{has_general_password},
+          signup_password_hashed: `!{signup_password_hashed}`,
+          require_signup_to_contribute: !{require_signup_to_contribute},
+          require_mail_to_signup: !{require_mail_to_signup},
+          enable_events: !{enable_events},
+          $admins: !{JSON.stringify($admins)},
+          $contributors: !{JSON.stringify($contributors)},
 
-        has_general_password: !{has_general_password},
-        has_signup_password: !{has_signup_password},
-
+          topbar_thumb: '!{topbar_thumb}',
+          hero_thumb: '!{hero_thumb}'
+        },
 
         custom_fonts: !{JSON.stringify(custom_fonts, null, 4)}
-      }
-
-
-      /* state contains settings data, time and client specific data */
-      //- window.state = {
-      //-   appVersion: "!{global.appInfos.version}",
-      //-   authorsFolder: "!{authorsFolder}",
-      //-   protocol: "!{protocol}",
-      //-   connected: false,
-      //-   authentificated: false,
-      //-   api_domaines_whitelist: "!{global.settings.api.enabled ? global.settings.api.domains_whitelist : ''}",
-
-      //-   local_options: {
-      //-     session_password: "!{global.session_password ? 'has_pass' : ''}",
-      //-     force_login: !{global.session_options.force_login ? global.session_options.force_login : false},
-      //-     simple_login: !{global.session_options.simple_login ? global.session_options.simple_login : false},
-      //-     require_email: !{global.session_options.require_email ? global.session_options.require_email : false},
-      //-     force_author_password: !{global.session_options.force_author_password ? global.session_options.force_author_password : false},
-      //-   },
-
-      //-   localNetworkInfos: {},
-      //-   mode: "!{mode}",
-      //-   dev_mode: "!{ isDebug ? "debug" : "production" }",
-      //-   noticeOfError: "!{noticeOfError}",
-      //-   is_darwin: !!(navigator.userAgent.toLowerCase().indexOf(' electron/') > -1 && ['Macintosh', 'MacIntel'].includes(window.navigator.platform)),
-      //-   clients: [],
-      //-   journal: [],
-      //-   list_authorized_folders: [],
-      //- };
-
-    //-
-      structure: !{JSON.stringify(structure, null, 4)},
+      };
 
   body(data-mode=mode)
     #app

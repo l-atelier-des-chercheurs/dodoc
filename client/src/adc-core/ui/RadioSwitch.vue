@@ -5,7 +5,7 @@
         <input
           class="radio-switch__input ri5-sr-only"
           type="radio"
-          name="radio-switch-name"
+          :name="id"
           :id="id + '_' + i"
           :value="options[i].value"
           :checked="content === options[i].value"
@@ -115,9 +115,12 @@ menu {
   padding: var(--radio-switch-padding);
   border-radius: calc(var(--radio-switch-radius) * 1.4);
   background-color: hsl(var(--ri5-color-bg-darker-hsl));
+  border: 1px solid var(--c-gris);
 }
 .radio-switch:focus-within,
 .radio-switch:active {
+  // background: blue;
+  // border-color: var(--active-color);
   // box-shadow: 0 0 0 2px hsla(var(--ri5-color-contrast-higher-hsl), 0.15);
 }
 
@@ -126,6 +129,7 @@ menu {
   display: inline-block;
   height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
   width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
+  margin: -1px;
 }
 
 .radio-switch__label {
@@ -167,8 +171,8 @@ menu {
   background-color: hsl(var(--ri5-color-primary-hsl));
   height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
   width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
-  box-shadow: 0 0.9px 1.5px rgba(0, 0, 0, 0.03),
-    0 3.1px 5.5px rgba(0, 0, 0, 0.08), 0 14px 25px rgba(0, 0, 0, 0.12);
+  // box-shadow: 0 0.9px 1.5px rgba(0, 0, 0, 0.03),
+  //   0 3.1px 5.5px rgba(0, 0, 0, 0.08), 0 14px 25px rgba(0, 0, 0, 0.12);
   transition: -webkit-transform var(--radio-switch-animation-duration);
   transition: transform var(--radio-switch-animation-duration);
   transition: transform var(--radio-switch-animation-duration),
