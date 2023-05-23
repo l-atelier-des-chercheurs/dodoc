@@ -30,6 +30,7 @@
     <transition name="pagechange" mode="out-in">
       <div v-if="opened_section" :key="opened_section.$path">
         <SingleSection
+          ref="section"
           :publication="publication"
           :section="opened_section"
           :can_edit="can_edit"
@@ -185,9 +186,26 @@ export default {
     },
     nextSection() {
       this.openSection(this.next_section.$path);
+      setTimeout(() => {
+        this.scrollToTop();
+      }, 150);
     },
     prevSection() {
       this.openSection(this.prev_section.$path);
+      setTimeout(() => {
+        this.scrollToTop();
+      }, 150);
+    },
+    scrollToTop() {
+      // if (this.$refs.section)
+      //   this.$refs.section.scrollIntoView({
+      //     behavior: "smooth",
+      //     inline: "nearest",
+      //   });
+      this.$el.scrollIntoView({
+        behavior: "smooth",
+        inline: "nearest",
+      });
     },
   },
 };
