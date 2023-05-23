@@ -118,6 +118,8 @@
   </div>
 </template>
 <script>
+import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
+
 export default {
   props: {
     existing_preview: [Boolean, String],
@@ -129,6 +131,7 @@ export default {
     },
   },
   components: {
+    PickMediaFromProjects,
     CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),
   },
   data() {
