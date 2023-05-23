@@ -255,6 +255,11 @@ export default {
       this.$emit("");
     },
     async saveFields() {
+      // check if date is valid, if not then go back to previous date
+      if (this.date_created_corrected === "")
+        this.date_created_corrected =
+          this.file.date_created_corrected || this.file.$date_created;
+
       await this.$api
         .updateMeta({
           path: this.file.$path,
