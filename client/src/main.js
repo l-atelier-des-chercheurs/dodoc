@@ -152,19 +152,12 @@ import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelect);
+import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";
+Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
 
-Vue.component("SectionLabel", {
-  name: "SectionLabel",
-  props: ["text"],
-  template: `
-  <label for="" class="u-label u-sectionLabel">
-    <span>{{ text }}</span>
-  </label>
-`,
-});
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
   template: `
