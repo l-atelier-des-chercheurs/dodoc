@@ -54,6 +54,8 @@
   </div>
 </template>
 <script>
+import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
+
 export default {
   props: {
     field_name: String,
@@ -65,7 +67,9 @@ export default {
     },
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    PickMediaFromProjects,
+  },
   data() {
     return {
       show_picker: false,
