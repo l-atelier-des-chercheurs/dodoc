@@ -333,7 +333,8 @@ export default {
   border: 1px solid transparent;
 
   &.is--selected {
-    border-color: var(--c-orange);
+    // border-color: var(--c-orange);
+    background: rgba(240, 240, 240, 0.1);
     // background: rgb(67, 69, 71);
   }
   &.is--clicked {
