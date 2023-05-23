@@ -114,9 +114,15 @@ export default {
 
 ._sharedFolderItem--preview_stacked {
   position: absolute;
-  top: calc(var(--stack-step) * -1);
-  left: calc(var(--stack-step) * 1 / 2);
-  width: calc(100% - var(--stack-step) * 1);
+  top: 0;
+  left: 0;
+
+  --back-position: 1;
+  transform: translate(
+    calc(var(--stack-step) * var(--back-position) / 2),
+    calc(var(--stack-step) * -1 * var(--back-position))
+  );
+  width: calc(100% - var(--stack-step) * var(--back-position));
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -124,9 +130,7 @@ export default {
 
   & + ._sharedFolderItem--preview_stacked {
     z-index: 1;
-    top: calc(var(--stack-step) * -2);
-    left: calc(var(--stack-step) * 2 / 2);
-    width: calc(100% - var(--stack-step) * 2);
+    --back-position: 2;
   }
 }
 
