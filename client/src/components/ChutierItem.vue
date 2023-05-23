@@ -5,8 +5,11 @@
       'is--clicked': is_clicked,
       'is--selected': is_selected,
       'is--edited': edit_mode,
+      'is--mousedown': is_mousedown,
     }"
     @click="!edit_mode ? $emit('toggleSelect') : ''"
+    @mousedown="is_mousedown = true"
+    @mouseup="is_mousedown = false"
   >
     <div class="_chutierRow--rows">
       <label
@@ -161,6 +164,7 @@ export default {
     return {
       opened_pane: undefined,
       show_large: false,
+      is_mousedown: false,
       edit_mode: false,
       id: `select_chutier_item_${(
         Math.random().toString(36) + "00000000000000000"
@@ -330,20 +334,25 @@ export default {
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
   border: 1px solid transparent;
 
-  transition: all 0.05s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
-  &.is--selected,
-  &.is--clicked {
+  &:not(.is--selected):hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &.is--mousedown:not(.is--selected) {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  &.is--selected
+  // &.is--clicked
+  {
     // border-color: var(--c-orange);
     background: rgba(240, 240, 240, 0.1);
     // background: rgb(67, 69, 71);
-  }
-  &.is--clicked {
-    // background: rgb(67, 69, 71);
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
   }
 
   ._chutierRow--openLarge {
