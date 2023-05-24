@@ -745,6 +745,7 @@ export default function () {
         "notifications.event_does_not_exit": "Cet événement n’existe pas",
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.name_taken": "Ce nom est déjà utilisé",
+        "notifications.action_not_allowed": "Cette action n’est pas autorisée",
 
         informations: "Informations",
 
