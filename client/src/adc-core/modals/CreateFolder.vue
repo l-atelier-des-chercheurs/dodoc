@@ -87,12 +87,18 @@ export default {
         setTimeout(() => {
           this.$emit("openNew", new_folder_slug);
         }, 50);
-      } catch (err) {
-        if (err.code === "unique_field_taken") {
+      } catch (err_code) {
+        if (err_code === "unique_field_taken") {
           this.$alertify
             .delay(4000)
             .error(this.$t("notifications.title_taken"));
           this.$refs.titleInput.$el.querySelector("input").select();
+        } else if (err_code === "token_not_allowed_must_be_contributors") {
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("notifications.action_not_allowed"));
+        } else {
+          this.$alertify.delay(4000).error(err_code);
         }
         this.is_creating_folder = false;
       }
