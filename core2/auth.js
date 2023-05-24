@@ -79,7 +79,8 @@ module.exports = (function () {
     async isFolderOpenedToAll({ field, path_to_folder = "" }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
       return (
-        folder_meta.hasOwnProperty(field) && folder_meta[field] === "everyone"
+        // anyone can access if no field or field === "everyone"
+        !folder_meta.hasOwnProperty(field) || folder_meta[field] === "everyone"
       );
     },
     async isTokenInstanceAdmin({ token_path }) {
