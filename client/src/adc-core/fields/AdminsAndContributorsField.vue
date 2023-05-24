@@ -60,10 +60,6 @@ export default {
     admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,
-    show_section: {
-      type: Array,
-      default: () => ["admins", "contributors"],
-    },
   },
   components: {},
   data() {
