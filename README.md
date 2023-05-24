@@ -234,8 +234,8 @@ If a folder has $admins, only people logged in with a token that matches one of 
 
 If a folder has $contributors, people logged in with a token that matches one of these $contributors can not edit this folder's meta but can create/edit/remove subfolders or import/edit/remove files.
 
-If a folder has no $contributors list or `$contributors = "everyone"`, all users (including anonymous, non logged-in users) have contributors' permissions.
-If a folder has no $admins or `$admins = "everyone"`, all users (including anonymous) have admins' permissions.
+If a folder has no $contributors property or `$contributors = "everyone"`, all users (including anonymous, non logged-in users) have contributors' permissions.
+If a folder has $admins property or `$admins = "everyone"`, all users (including anonymous) have admins' permissions.
 
 These permissions trickle down: an instance admin has admin rights to all the instance contents. A space admin has admin rights to all its projects. A project admin has admin rights to all its content (medias, stopmotions, publications).
 
