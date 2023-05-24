@@ -1,5 +1,5 @@
 <template>
-  <details class="_projectCard">
+  <details class="_projectCard" :open="is_open_initially">
     <summary>
       <div class="_icon">
         <sl-icon v-if="icon" :name="icon" />
@@ -34,6 +34,7 @@ export default {
     header: String,
     icon: String,
     has_items: undefined,
+    is_open_initially: Boolean,
   },
   components: {},
   data() {

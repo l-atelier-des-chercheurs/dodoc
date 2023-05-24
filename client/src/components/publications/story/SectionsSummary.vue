@@ -4,6 +4,7 @@
       :header="$t('summary')"
       :icon="'file-earmark-arrow-down'"
       :has_items="sections.length > 0 ? sections.length : false"
+      :is_open_initially="sections.length === 0"
     >
       <SlickList
         class="_list"
@@ -38,7 +39,9 @@
         </SlickItem>
       </SlickList>
       <template v-if="can_edit">
-        <hr />
+        <template v-if="sections.length > 0">
+          <hr />
+        </template>
         <button
           type="button"
           class="u-buttonLink"
