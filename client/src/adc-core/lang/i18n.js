@@ -702,7 +702,7 @@ export default function () {
         space_admin_instructions:
           "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés).",
         space_contrib_instructions:
-          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets qu’ils n’ont pas créé.",
+          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets dont ils ne sont pas référents.",
 
         project_admin_instructions:
           "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",
