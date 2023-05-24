@@ -230,7 +230,7 @@ If a folder has a $password, then this ressource and its content can only be edi
 
 ### Editing
 
-If a folder has $creators, only people logged in with a token that matches one of these $creator path can edit/remove this folder's meta and its subfolders.
+If a folder has $admins, only people logged in with a token that matches one of these $admin path can edit/remove this folder's meta and its subfolders.
 
 If a folder has $contributors, people logged in with a token that matches one of these $contributors can not edit this folder's meta but can create/edit/remove subfolders or import/edit/remove files.
 
@@ -239,9 +239,9 @@ If a folder has no $admins or `$admins = "everyone"`, all users (including anony
 
 These permissions trickle down: an instance admin has admin rights to all the instance contents. A space admin has admin rights to all its projects. A project admin has admin rights to all its content (medias, stopmotions, publications).
 
-An instance contributor, though, only has contributors rights to the direct content it contains. For instance, a contributor to a space can only create a project, but not remove a project he/she is not
+An instance contributor, though, only has contributors rights to the direct content it contains. For instance, a contributor to a space can create a project, but not remove a project he/she is not an $admin of.
 
-If a folder type has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be create by all visitors even those that are not logged in. This is useful for accounts creation.
+If a folder type has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be created by all users even those that are not logged in. This is useful for accounts creation.
 
 ## Examples
 
