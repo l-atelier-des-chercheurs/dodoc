@@ -77,7 +77,10 @@ export default {
           additional_meta: {
             title: this.new_folder_title,
             requested_slug: this.new_folder_title,
-            $status: this.new_folder_is_private === true ? "private" : "public",
+            $status:
+              this.new_folder_is_private === true
+                ? "private"
+                : this.default_folder_status,
             $admins,
           },
         });
