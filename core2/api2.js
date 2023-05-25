@@ -315,11 +315,10 @@ module.exports = (function () {
         path_to_folder,
       })
     ) {
-      const parent_folder = utils.getGrandParent(path_to_folder);
-      if (!parent_folder) throw "no_parent";
-      // check if contributor/admin to parent
+      const path_to_parent_folder = utils.getFolderParent(path_to_folder);
+      if (!path_to_parent_folder) return false;
       const allowed = await _canContributeToFolder({
-        path_to_folder: parent_folder,
+        path_to_folder: path_to_parent_folder,
         req,
       });
       // if so, return
@@ -342,6 +341,14 @@ module.exports = (function () {
       )
         return "Token is local admin";
     }
+
+    const path_to_parent_folder = utils.getFolderParent(path_to_folder);
+    if (!path_to_parent_folder) return false;
+    const allowed = await _canAdminFolder({
+      path_to_folder: path_to_parent_folder,
+      req,
+    });
+    if (allowed) return "Parent inheritance: " + allowed;
 
     return false;
   }

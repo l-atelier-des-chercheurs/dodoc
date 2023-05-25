@@ -452,11 +452,16 @@ module.exports = (function () {
     getSlugFromPath(path) {
       return path.split("/").at(-1);
     },
-    getParent(path) {
+    getContainingFolder(path) {
       return path.substring(0, path.lastIndexOf("/"));
     },
-    getGrandParent(path) {
-      return API.getParent(API.getParent(path));
+    getFolderParent(path) {
+      let paths = path.split("/");
+      if (paths.length >= 2) {
+        paths = paths.slice(0, -2);
+        return paths.join("/");
+      }
+      return false;
     },
     isExtensionLosslessImageFormat(filename) {
       if (filename) {

@@ -139,7 +139,7 @@ module.exports = (function () {
       });
       if (d) return d;
 
-      const path_to_folder = utils.getParent(path_to_meta);
+      const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       let meta = await utils.readMetaFile(path_to_meta);
       meta.$path = path_to_meta;

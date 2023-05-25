@@ -333,7 +333,7 @@ module.exports = (function () {
       if (data.path_to_meta === "") return;
 
       const path_to_meta = data.path_to_meta;
-      const path_to_folder = utils.getParent(path_to_meta);
+      const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       const meta = await file.getFile({
         path_to_meta,
