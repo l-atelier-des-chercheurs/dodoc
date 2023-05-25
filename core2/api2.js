@@ -262,7 +262,7 @@ module.exports = (function () {
   async function _canContributeToFolder({ path_to_type, path_to_folder, req }) {
     dev.logapi();
 
-    if (auth.canFolderBeCreatedByAll({ path_to_type }))
+    if (path_to_type && auth.canFolderBeCreatedByAll({ path_to_type }))
       return "Folder contribution allowed to all according to schema";
 
     if (
@@ -288,7 +288,10 @@ module.exports = (function () {
         return "Token is contributor";
     }
 
-    const allowed = await _canAdminFolder({ path_to_folder, req });
+    const allowed = await _canAdminFolder({
+      path_to_folder,
+      req,
+    });
     if (allowed) return allowed;
 
     return false;
@@ -296,8 +299,6 @@ module.exports = (function () {
 
   async function _canAdminFolder({ path_to_folder, req }) {
     dev.logapi();
-
-    // TODO if folder has $admins = "parent", then its permission depends on its direct parent
 
     if (
       (await auth.isFolderOpenedToAll({
@@ -307,6 +308,24 @@ module.exports = (function () {
       (await auth.isInstanceOpenedToAll())
     )
       return "Folder opened to any contributors";
+
+    if (
+      await auth.isFolderInheritingFromParent({
+        field: "$admins",
+        path_to_folder,
+      })
+    ) {
+      const parent_folder = utils.getGrandParent(path_to_folder);
+      if (!parent_folder) throw "no_parent";
+      // check if contributor/admin to parent
+      const allowed = await _canContributeToFolder({
+        path_to_folder: parent_folder,
+        req,
+      });
+      // if so, return
+      if (allowed) return "Parent inheritance: " + allowed;
+      else return false;
+    }
 
     const token_path = auth.extrackAndCheckToken({ req });
 

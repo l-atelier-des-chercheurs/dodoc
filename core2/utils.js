@@ -455,6 +455,9 @@ module.exports = (function () {
     getParent(path) {
       return path.substring(0, path.lastIndexOf("/"));
     },
+    getGrandParent(path) {
+      return API.getParent(API.getParent(path));
+    },
     isExtensionLosslessImageFormat(filename) {
       if (filename) {
         const extension = path.parse(filename).ext?.toLowerCase();

@@ -87,11 +87,18 @@ module.exports = (function () {
       const folder_meta = await folder.getFolder({ path_to_folder });
       return (
         // anyone can access if no field or field === "everyone"
-        !folder_meta.hasOwnProperty(field) || folder_meta[field] === "everyone"
+        folder_meta.hasOwnProperty(field) && folder_meta[field] === "everyone"
       );
     },
     async isInstanceOpenedToAll() {
       return await API.isFolderOpenedToAll({ field: "$admins" });
+    },
+    async isFolderInheritingFromParent({ field, path_to_folder = "" }) {
+      const folder_meta = await folder.getFolder({ path_to_folder });
+      return (
+        folder_meta.hasOwnProperty(field) &&
+        folder_meta[field] === "parent_contributors"
+      );
     },
     async isTokenInstanceAdmin({ token_path }) {
       return await API.isTokenIncluded({
