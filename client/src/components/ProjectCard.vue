@@ -92,12 +92,11 @@ export default {
     aspect-ratio: 1;
     border-radius: 50%;
     font-family: "Fira Code";
-    padding: calc(var(--spacing) / 16);
+    padding: calc(var(--spacing) / 8);
     margin: calc(var(--spacing) / 4);
 
     font-weight: 500;
-
-    // font-size: 110%;
+    font-size: var(--sl-font-size-small);
 
     &[data-isfilled] {
       background: var(--c-bleuvert);
