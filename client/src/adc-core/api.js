@@ -181,8 +181,7 @@ export default function () {
       async getCurrentAuthor() {
         await this.getFolder({
           path: this.tokenpath.token_path,
-        }).catch((err) => {
-          const err_code = this.onError(err);
+        }).catch((err_code) => {
           throw err_code;
           // TODO catch folder no existing: author was removed, for example
         });
@@ -535,7 +534,7 @@ export default function () {
       },
 
       onError(err) {
-        let code = err.response.data?.code;
+        let code = err?.response?.data?.code;
 
         if (!code) console.error("onError – NO ERROR CODES");
         else console.error("onError – " + code);
