@@ -21,8 +21,23 @@
           :path="publication.$path"
           :can_edit="can_edit"
         /> -->
-
     <div class="_buttonRow">
+      <div
+        class=""
+        v-if="can_edit && publication.$admins !== 'parent_contributors'"
+      >
+        <small>
+          <button
+            class="u-buttonLink"
+            type="button"
+            @click="setCorrectPermForAdmins"
+          >
+            set perm to parent
+            <!-- // legacy button -->
+          </button>
+          {{ publication.$admins }}
+        </small>
+      </div>
       <div class="" v-if="can_edit">
         <button
           type="button"
@@ -137,6 +152,14 @@ export default {
         this.fetch_error = e.response.data;
         // this.$alertify.delay(4000).error(err);
       }
+    },
+    async setCorrectPermForAdmins() {
+      await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          $admins: "parent_contributors",
+        },
+      });
     },
   },
 };

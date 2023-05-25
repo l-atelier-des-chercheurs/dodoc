@@ -234,6 +234,7 @@ module.exports = (function () {
 
   async function _checkGeneralPasswordAndToken(req, res, next) {
     dev.logapi();
+
     let response = {};
     try {
       await _generalPasswordCheck(req);
@@ -258,110 +259,133 @@ module.exports = (function () {
     return res.json(response);
   }
 
-  async function _restrictToContributors(req, res, next) {
-    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder });
+  async function _canContributeToFolder({ path_to_type, path_to_folder, req }) {
+    dev.logapi();
 
-    // check if path_to_type in schema mentions $can_be_created_by "everyone"
-    if (auth.canFolderBeCreatedByAll({ path_to_type })) {
-      dev.logapi("Folder can be created by all according to schema");
-      return next ? next() : undefined;
-    }
+    if (path_to_type && auth.canFolderBeCreatedByAll({ path_to_type }))
+      return "Folder contribution allowed to all according to schema";
 
-    try {
-      if (
-        (await auth.isFolderOpenedToAll({
-          field: "$contributors",
-          path_to_folder,
-        })) ||
-        (await auth.isFolderOpenedToAll({ field: "$admins", path_to_folder }))
-      ) {
-        dev.logapi("Folder opened to any contributors");
-        return next ? next() : undefined;
-      }
+    if (
+      (await auth.isFolderOpenedToAll({
+        field: "$contributors",
+        path_to_folder,
+      })) ||
+      (await auth.isFolderOpenedToAll({ field: "$admins", path_to_folder }))
+    )
+      return "Folder opened to any contributors or admins";
 
-      const token_path = auth.extrackAndCheckToken({ req });
+    const token_path = auth.extrackAndCheckToken({ req });
 
-      if (token_path === path_to_folder) {
-        dev.logapi("Token editing self");
-        return next ? next() : undefined;
-      }
-      if (await auth.isTokenInstanceAdmin({ token_path })) {
-        dev.logapi("Token is instance admin");
-        return next ? next() : undefined;
-      }
+    if (token_path) {
+      if (token_path === path_to_folder) return "Token editing self";
       if (
         await auth.isTokenIncluded({
           field: "$contributors",
           path_to_folder,
           token_path,
         })
-      ) {
-        dev.logapi("Token is contributor");
-        return next ? next() : undefined;
-      }
+      )
+        return "Token is contributor";
+    }
+
+    const allowed = await _canAdminFolder({
+      path_to_folder,
+      req,
+    });
+    if (allowed) return allowed;
+
+    return false;
+  }
+
+  async function _canAdminFolder({ path_to_folder, req }) {
+    dev.logapi();
+
+    if (
+      (await auth.isFolderOpenedToAll({
+        field: "$admins",
+        path_to_folder,
+      })) ||
+      (await auth.isInstanceOpenedToAll())
+    )
+      return "Folder opened to any contributors";
+
+    if (
+      await auth.isFolderInheritingFromParent({
+        field: "$admins",
+        path_to_folder,
+      })
+    ) {
+      const path_to_parent_folder = utils.getFolderParent(path_to_folder);
+      if (!path_to_parent_folder) return false;
+      const allowed = await _canContributeToFolder({
+        path_to_folder: path_to_parent_folder,
+        req,
+      });
+      // if so, return
+      if (allowed) return "Parent inheritance: " + allowed;
+      else return false;
+    }
+
+    const token_path = auth.extrackAndCheckToken({ req });
+
+    if (token_path) {
+      if (token_path === path_to_folder) return "Token editing self";
+      if (await auth.isTokenInstanceAdmin({ token_path }))
+        return "Token is instance admin";
       if (
         await auth.isTokenIncluded({
           field: "$admins",
           path_to_folder,
           token_path,
         })
-      ) {
-        dev.logapi("Token is local admin");
-        return next ? next() : undefined;
-      }
+      )
+        return "Token is local admin";
+    }
 
-      const err = new Error("Token not allowed");
-      err.code = "token_not_allowed_must_be_contributors";
-      throw err;
-    } catch (err) {
-      dev.error(err.message);
-      if (res) return res.status(403).send({ code: err.code });
-      throw err;
+    const path_to_parent_folder = utils.getFolderParent(path_to_folder);
+    if (!path_to_parent_folder) return false;
+    const allowed = await _canAdminFolder({
+      path_to_folder: path_to_parent_folder,
+      req,
+    });
+    if (allowed) return "Parent inheritance: " + allowed;
+
+    return false;
+  }
+
+  async function _restrictToContributors(req, res, next) {
+    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    const allowed = await _canContributeToFolder({
+      path_to_type,
+      path_to_folder,
+      req,
+    });
+
+    if (allowed) {
+      dev.log(allowed);
+      return next();
+    } else {
+      dev.log("not allowed to contribute");
+      if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
   async function _restrictToLocalAdmins(req, res, next) {
     const { path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
-    try {
-      if (
-        (await auth.isFolderOpenedToAll({
-          field: "$admins",
-          path_to_folder,
-        })) ||
-        (await auth.isFolderOpenedToAll({ field: "$admins" }))
-      )
-        return next ? next() : undefined;
+    const allowed = await _canAdminFolder({
+      path_to_folder,
+      req,
+    });
 
-      const token_path = auth.extrackAndCheckToken({ req });
-
-      if (token_path === path_to_folder) {
-        dev.logapi("Token editing self");
-        return next ? next() : undefined;
-      }
-      if (await auth.isTokenInstanceAdmin({ token_path })) {
-        dev.logapi("Token is instance admin");
-        return next ? next() : undefined;
-      }
-      if (
-        await auth.isTokenIncluded({
-          field: "$admins",
-          path_to_folder,
-          token_path,
-        })
-      ) {
-        dev.logapi("Token is local admin");
-        return next ? next() : undefined;
-      }
-
-      const err = new Error("Token not allowed");
-      err.code = "token_not_allowed_must_be_local_admin";
-      throw err;
-    } catch (err) {
-      dev.error(err.message);
-      if (res) return res.status(403).send({ code: err.code });
-      throw err;
+    if (allowed) {
+      dev.log(allowed);
+      return next();
+    } else {
+      dev.log("not allowed to contribute");
+      if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
   async function _onlyAdmins(req, res, next) {

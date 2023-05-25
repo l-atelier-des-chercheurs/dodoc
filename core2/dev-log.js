@@ -170,9 +170,15 @@ module.exports = dev = (function () {
     } else if (typeof args === "object") {
       args = Array.prototype.slice.call(args);
       args.map((arg) => {
-        if (typeof arg === "string") content.push(arg);
-        else if (Array.isArray(arg)) content.push(arg.join(", "));
-        else if (typeof arg === "object") content.push(_customStringify(arg));
+        let str = "";
+        if (typeof arg === "string") str = arg;
+        else if (Array.isArray(arg)) str = arg.join(", ");
+        else if (typeof arg === "object") str = _customStringify(arg);
+        if (str.length > 150) {
+          str = str.slice(0, 150);
+          str += "[…]";
+        }
+        content.push(str);
       });
     }
 

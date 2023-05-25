@@ -362,9 +362,12 @@ export default function () {
         everyone: "Tout le monde",
         everyone_instr:
           "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
+        everyone_can_edit:
+          "Contribution, modification et suppression ouverte à tout le monde.",
+        everyone_can_contribute: "Contribution ouverte à tout le monde",
         noone: "Aucun·e",
-        noone_instr: "Fermer à tous les comptes non-administrateurs.",
-        restricted: "Uniquement les comptes de la liste",
+        noone_instr: "Fermer à tous les comptes.",
+        restricted: "Uniquement les comptes de la liste.",
         restricted_instr: "Seuls ces comptes seront autorisés.",
 
         close: "Fermer",
@@ -700,12 +703,12 @@ export default function () {
           "Peuvent uniquement créer des espaces et les administrer.",
 
         space_admin_instructions:
-          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés).",
+          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
         space_contrib_instructions:
-          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets qu’ils n’ont pas créé.",
+          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets dont ils ne sont pas référents.",
 
         project_admin_instructions:
-          "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",
+          "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
         project_contrib_instructions:
           "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
 
@@ -742,6 +745,7 @@ export default function () {
         "notifications.event_does_not_exit": "Cet événement n’existe pas",
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.name_taken": "Ce nom est déjà utilisé",
+        "notifications.action_not_allowed": "Cette action n’est pas autorisée",
 
         informations: "Informations",
 

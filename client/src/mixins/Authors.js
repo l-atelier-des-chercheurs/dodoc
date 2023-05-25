@@ -6,6 +6,7 @@ export default {
       return false;
     },
     is_instance_admin() {
+      // return true;
       return this.authorIsInstance({
         field: "$admins",
         folder_path: this.connected_as?.$path,
@@ -37,19 +38,30 @@ export default {
     },
     canLoggedinEditFolder({ folder }) {
       if (this.is_instance_admin) return true;
-      if (folder.$admins === "everyone") return true;
+      if (
+        !Object.prototype.hasOwnProperty.call(folder, "$admins") ||
+        folder.$admins === "everyone"
+      )
+        return true;
       if (!this.connected_as) return false;
       if (
         Array.isArray(folder.$admins) &&
         folder.$admins.includes(this.connected_as.$path)
       )
         return true;
+
+      // todo : check if parent folder match as well
+
       return false;
     },
     canLoggedinContributeToFolder({ folder }) {
       if (this.canLoggedinEditFolder({ folder })) return true;
 
-      if (folder.$contributors === "everyone") return true;
+      if (
+        !Object.prototype.hasOwnProperty.call(folder, "$contributors") ||
+        folder.$contributors === "everyone"
+      )
+        return true;
       if (!this.connected_as) return false;
       if (
         Array.isArray(folder.$contributors) &&

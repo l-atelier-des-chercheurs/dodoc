@@ -121,7 +121,6 @@ export default {
     openNewEvent(new_folder_slug) {
       this.show_create_modal = false;
       const url = this.createURLFromPath(this.path + "/" + new_folder_slug);
-      debugger;
       this.$router.push(url);
     },
   },

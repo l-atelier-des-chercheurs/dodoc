@@ -2,7 +2,6 @@
   <ProjectCard :header="$t('informations')" :icon="'info-square'" open>
     <div class="u-spacingBottom">
       <AdminsAndContributorsField
-        :show_section="['admins', 'contributors']"
         :folder="project"
         :can_edit="can_edit"
         :admin_label="$t('referent')"

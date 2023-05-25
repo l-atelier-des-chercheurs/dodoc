@@ -33,19 +33,26 @@ module.exports = (function () {
 
     extrackAndCheckToken({ req }) {
       if (!req.headers || !req.headers.authorization) {
-        const err = new Error("Headers missing");
-        err.code = "missing_headers";
-        throw err;
+        // const err = new Error("Headers missing");
+        // err.code = "missing_headers";
+        // throw err;
+        return false;
       }
 
       const { token, token_path } = JSON.parse(req.headers.authorization);
       if (!token || !token_path) {
-        const err = new Error("Token and/or token_path missing in headers");
-        err.code = "no_token_submitted";
-        throw err;
+        // const err = new Error("Token and/or token_path missing in headers");
+        // err.code = "no_token_submitted";
+        // throw err;
+        return false;
       }
 
-      API.checkTokenValidity({ token, token_path });
+      try {
+        API.checkTokenValidity({ token, token_path });
+      } catch (err) {
+        err;
+        return false;
+      }
 
       return token_path;
     },
@@ -80,7 +87,17 @@ module.exports = (function () {
       const folder_meta = await folder.getFolder({ path_to_folder });
       return (
         // anyone can access if no field or field === "everyone"
-        !folder_meta.hasOwnProperty(field) || folder_meta[field] === "everyone"
+        folder_meta.hasOwnProperty(field) && folder_meta[field] === "everyone"
+      );
+    },
+    async isInstanceOpenedToAll() {
+      return await API.isFolderOpenedToAll({ field: "$admins" });
+    },
+    async isFolderInheritingFromParent({ field, path_to_folder = "" }) {
+      const folder_meta = await folder.getFolder({ path_to_folder });
+      return (
+        folder_meta.hasOwnProperty(field) &&
+        folder_meta[field] === "parent_contributors"
       );
     },
     async isTokenInstanceAdmin({ token_path }) {
@@ -90,7 +107,7 @@ module.exports = (function () {
         token_path,
       });
     },
-    async isTokenIncluded({ field, path_to_folder, token_path }) {
+    async isTokenIncluded({ field, path_to_folder = "", token_path }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
       const paths = folder_meta[field];
       return paths && Array.isArray(paths) && paths.includes(token_path);

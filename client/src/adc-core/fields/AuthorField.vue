@@ -1,11 +1,6 @@
 <template>
   <div>
-    <DLabel
-      v-if="label"
-      :str="label"
-      :tag="tag"
-      :instructions="can_edit ? instructions : ''"
-    />
+    <DLabel v-if="label" :str="label" :tag="tag" :instructions="instructions" />
 
     <div class="_authors">
       <div v-if="authors_paths === 'everyone'" class="t-500">
