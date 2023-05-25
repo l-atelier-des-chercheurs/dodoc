@@ -37,7 +37,8 @@ export default function () {
         await this._setAuthFromStorage();
         this.setAuthorizationHeader();
 
-        if (this.tokenpath.token_path) await this.getCurrentAuthor();
+        if (this.tokenpath.token_path)
+          await this.getCurrentAuthor().catch(() => {});
 
         // todo also use token for socketio connection
         this.socket.connect();
