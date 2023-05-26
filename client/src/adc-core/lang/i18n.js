@@ -744,6 +744,8 @@ export default function () {
         "notifications.action_not_authorized": "Cette action n’est pas permise",
         "notifications.event_does_not_exit": "Cet événement n’existe pas",
         "notifications.title_taken": "Ce titre est déjà utilisé",
+        "notifications.not_allowed_to_copy_to_space":
+          "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
         "notifications.name_taken": "Ce nom est déjà utilisé",
         "notifications.action_not_allowed": "Cette action n’est pas autorisée",
 

@@ -828,7 +828,7 @@ module.exports = (function () {
           const err = new Error(
             "Destination folder not open to user contribution"
           );
-          err.code = "not_allowed_to_drop_to_space";
+          err.code = "not_allowed_to_copy_to_space";
           throw err;
         }
       }
