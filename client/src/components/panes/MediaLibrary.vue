@@ -154,7 +154,7 @@ export default {
       show_create_link_field: false,
       url_to: "https://latelier-des-chercheurs.fr/",
 
-      tile_mode: "tiny",
+      tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
 
       media_just_focused: undefined,
 
@@ -172,7 +172,11 @@ export default {
       });
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    tile_mode() {
+      localStorage.setItem("library_tile_mode", this.tile_mode);
+    },
+  },
   computed: {
     medias() {
       return this.project.$files || [];
