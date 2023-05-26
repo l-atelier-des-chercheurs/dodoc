@@ -771,8 +771,13 @@ fieldset {
 .u-textEllipsis {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
   overflow: hidden;
+}
+.u-textEllipsis_3 {
+  -webkit-line-clamp: 3;
+}
+.u-textEllipsis_1 {
+  -webkit-line-clamp: 1;
 }
 
 details {

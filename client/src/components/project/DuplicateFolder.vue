@@ -10,64 +10,65 @@
       :title="$t('duplicate_or_move')"
       @close="show_modal = false"
     >
-      <div class="">
-        <div class="u-instructions">
-          <small>
-            {{ $t("dm_instr") }}
-          </small>
-        </div>
-
-        <br />
-
+      <template v-if="!url_to_copy">
         <div class="">
-          <DLabel :str="$t('source_space')" />
-
-          <select v-model="destination_space_path">
-            <option
-              v-for="space in spaces"
-              :key="space.$path"
-              :value="space.$path"
-              v-text="space.title"
-              disabled
-            />
-          </select>
           <div class="u-instructions">
             <small>
-              {{ $t("feature_not_implemented_yet") }}
+              {{ $t("dm_instr") }}
             </small>
-          </div>
-        </div>
-
-        <br />
-
-        <!-- <div class="">todo choix space</div> -->
-        <div class="">
-          <div class="">
-            <DLabel :str="$t('title_of_copy')" />
-            <TextInput
-              :content.sync="new_title"
-              :maxlength="40"
-              :required="true"
-            />
           </div>
 
           <br />
 
           <div class="">
-            <ToggleInput
-              :content.sync="remove_original"
-              :label="$t('remove_original')"
-              :options="{
-                true: $t('remove_original_after_copy'),
-                false: $t('keep_original_after_copy'),
-              }"
-            />
+            <DLabel :str="$t('destination_space')" />
+
+            <select v-model="destination_space_path">
+              <option
+                v-for="space in spaces"
+                :key="space.$path"
+                :value="space.$path"
+                v-text="space.title"
+              />
+            </select>
+            <div class="u-instructions">
+              <small>
+                {{ $t("feature_not_implemented_yet") }}
+              </small>
+            </div>
+            {{ destination_space_path }}
+          </div>
+
+          <br />
+
+          <!-- <div class="">todo choix space</div> -->
+          <div class="">
+            <div class="">
+              <DLabel :str="$t('title_of_copy')" />
+              <TextInput
+                :content.sync="new_title"
+                :maxlength="40"
+                :required="true"
+                ref="titleInput"
+              />
+            </div>
+
+            <br />
+
+            <div class="">
+              <ToggleInput
+                :content.sync="remove_original"
+                :label="$t('remove_original')"
+                :options="{
+                  true: $t('remove_original_after_copy'),
+                  false: $t('keep_original_after_copy'),
+                }"
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="u-sameRow" slot="footer">
-        <template v-if="!url_to_copy">
+        <div class="u-sameRow" slot="footer">
           <template v-if="!is_copying">
             <button
               type="button"
@@ -91,13 +92,13 @@
             </button>
           </template>
           <LoaderSpinner v-else />
-        </template>
-        <template v-else>
-          <router-link :to="url_to_copy" class="u-button u-button_bleuvert">
-            {{ $t("open_copy") }}
-          </router-link>
-        </template>
-      </div>
+        </div>
+      </template>
+      <template v-else>
+        <router-link :to="url_to_copy" class="u-button u-button_bleumarine">
+          {{ $t("open_copy") }}
+        </router-link>
+      </template>
     </BaseModal2>
   </div>
 </template>
@@ -139,14 +140,33 @@ export default {
 
       this.is_copying = true;
 
-      const copy_folder_path = await this.$api.copyFolder({
-        path: this.path,
-        // todo set destination
-        // destination_path_to_folder: this.destination_path_to_folder,
-        new_meta: {
-          title: this.new_title,
-        },
-      });
+      const path_to_destination_type =
+        this.destination_space_path + "/projects";
+
+      const copy_folder_path = await this.$api
+        .copyFolder({
+          path: this.path,
+          path_to_destination_type,
+          new_meta: {
+            title: this.new_title,
+          },
+        })
+        .catch((err_code) => {
+          if (err_code === "unique_field_taken") {
+            this.$alertify
+              .delay(4000)
+              .error(this.$t("notifications.title_taken"));
+            this.$refs.titleInput.$el.querySelector("input").select();
+          } else if (err_code === "not_allowed_to_copy_to_space") {
+            this.$alertify
+              .delay(4000)
+              .error(this.$t("notifications.not_allowed_to_copy_to_space"));
+            this.$refs.titleInput.$el.querySelector("input").select();
+          }
+
+          this.is_copying = false;
+          throw "fail";
+        });
 
       this.$alertify
         .closeLogOnClick(true)
