@@ -2,54 +2,79 @@
   <div class="_mediaLibrary" @dragover="onDragover">
     <section class="_scrollBox">
       <div class="_topSection">
-        <input
-          type="file"
-          multiple="multiple"
-          :id="id + '-add_file'"
-          name="file"
-          accept=""
-          class="inputfile-2"
-          @change="updateInputFiles($event)"
-        />
-        <label :for="id + '-add_file'">
-          <svg width="20" height="17" viewBox="0 0 20 17">
-            <path
-              d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-            />
-          </svg>
-          {{ $t("import") }}
-        </label>
-        <UploadFiles
-          v-if="selected_files.length > 0"
-          :selected_files="selected_files"
-          :path="project.$path"
-          @importedMedias="mediaJustImported"
-          @close="selected_files = []"
-        />
+        <div class="_topSection--left">
+          <input
+            type="file"
+            multiple="multiple"
+            :id="id + '-add_file'"
+            name="file"
+            accept=""
+            class="inputfile-2"
+            @change="updateInputFiles($event)"
+          />
+          <label :for="id + '-add_file'">
+            <svg width="20" height="17" viewBox="0 0 20 17">
+              <path
+                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+              />
+            </svg>
+            {{ $t("import") }}
+          </label>
+          <UploadFiles
+            v-if="selected_files.length > 0"
+            :selected_files="selected_files"
+            :path="project.$path"
+            @importedMedias="mediaJustImported"
+            @close="selected_files = []"
+          />
 
-        <br />
-
-        <form
-          v-if="show_create_link_field"
-          class="input-validation-required"
-          @submit.prevent="createLink"
-        >
-          <input type="url" required v-model="url_to" />
           <br />
-          <input type="submit" />
-        </form>
 
-        <small v-if="medias.length === 0">
-          {{ $t("no_media_in_project") }}
-        </small>
-        <div v-if="medias.length" class="u-label _mediaCount">
-          {{ $t("number_of_media") }} = {{ medias.length }}
+          <form
+            v-if="show_create_link_field"
+            class="input-validation-required"
+            @submit.prevent="createLink"
+          >
+            <input type="url" required v-model="url_to" />
+            <br />
+            <input type="submit" />
+          </form>
+
+          <small v-if="medias.length === 0">
+            {{ $t("no_media_in_project") }}
+          </small>
+          <div v-if="medias.length" class="u-label _mediaCount">
+            {{ $t("number_of_media") }} = {{ medias.length }}
+          </div>
+        </div>
+        <div class="_topSection--right">
+          <button
+            class="u-button u-button_transparent"
+            type="button"
+            :class="{
+              'is--active': tile_mode === 'tiny',
+            }"
+            @click="tile_mode = 'tiny'"
+          >
+            <sl-icon name="grid-3x2-gap-fill" />
+          </button>
+          <button
+            class="u-button u-button_transparent"
+            type="button"
+            :class="{
+              'is--active': tile_mode === 'medium',
+            }"
+            @click="tile_mode = 'medium'"
+          >
+            <sl-icon name="grid-fill" />
+          </button>
         </div>
       </div>
 
       <transition-group
         tag="div"
         class="_mediaLibrary--lib--grid"
+        :data-tilemode="tile_mode"
         name="StoryModules"
         ref="mediaTiles"
         appear
@@ -61,6 +86,7 @@
           :file="file"
           :was_focused="media_just_focused === getFilename(file.$path)"
           :data-filepath="file.$path"
+          :tile_mode="tile_mode"
           :is_already_selected="
             meta_filenames_already_present.some((mf) =>
               file.$path.endsWith('/' + mf)
@@ -127,6 +153,8 @@ export default {
 
       show_create_link_field: false,
       url_to: "https://latelier-des-chercheurs.fr/",
+
+      tile_mode: "tiny",
 
       media_just_focused: undefined,
 
@@ -302,6 +330,10 @@ export default {
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 2px;
   padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+
+  &[data-tilemode="medium"] {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 }
 
 ._mediaLibrary--focusPane {
@@ -318,11 +350,27 @@ export default {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 2);
 
   background: var(--color-collect);
   z-index: 1;
   padding: calc(var(--spacing) / 2);
+}
+
+._topSection--left {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: calc(var(--spacing) / 2);
+}
+._topSection--right {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: calc(var(--spacing) / 2);
 }
 
 ._mediaCount {
