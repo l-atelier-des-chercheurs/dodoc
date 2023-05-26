@@ -538,7 +538,7 @@ export default function () {
         copy_of: "Copie de",
         open_copy: "Accéder à la copie",
         title_of_copy: "Titre de la copie",
-        source_space: "Espace qui recevra cette copie",
+        destination_space: "Espace qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
         remove_original_after_copy: "Ce projet sera supprimé après la copie",
@@ -753,7 +753,7 @@ export default function () {
         duplicate_or_move: "Dupliquer ou déplacer",
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
         dm_instr:
-          "Vers le même espace. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées. À venir : déplacer un projet vers un autre espace.",
+          "Vers cet espace ou vers un autre ou vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées.",
         move_to_page: "Déplacer vers une autre page",
         move: "Déplacer",
         unselect: "Déselectionner",

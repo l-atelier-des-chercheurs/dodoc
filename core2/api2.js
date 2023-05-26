@@ -812,15 +812,29 @@ module.exports = (function () {
     const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
     dev.logapi({ path_to_type, path_to_folder, data });
 
-    let { path_to_destination_type, new_meta } = data;
-    if (!path_to_destination_type) path_to_destination_type = path_to_type;
-    else {
-      // todo check for auth to copy folder
-    }
-
-    const path_to_source_folder = path_to_folder;
-
     try {
+      let { path_to_destination_type, new_meta } = data;
+      if (!path_to_destination_type) path_to_destination_type = path_to_type;
+      else if (path_to_destination_type !== path_to_type) {
+        // todo check for auth to copy folder
+        const path_to_parent_folder = utils.getContainingFolder(
+          path_to_destination_type
+        );
+        const allowed = await _canContributeToFolder({
+          path_to_folder: path_to_parent_folder,
+          req,
+        });
+        if (!allowed) {
+          const err = new Error(
+            "Destination folder not open to user contribution"
+          );
+          err.code = "not_allowed_to_drop_to_space";
+          throw err;
+        }
+      }
+
+      const path_to_source_folder = path_to_folder;
+
       const copy_folder_path = await folder.copyFolder({
         path_to_type,
         path_to_source_folder,
@@ -837,8 +851,9 @@ module.exports = (function () {
       const new_folder_meta = await folder.getFolder({
         path_to_folder: copy_folder_path,
       });
-      notifier.emit("folderCreated", path_to_type, {
-        path: path_to_type,
+
+      notifier.emit("folderCreated", path_to_destination_type, {
+        path: path_to_destination_type,
         meta: new_folder_meta,
       });
     } catch (err) {

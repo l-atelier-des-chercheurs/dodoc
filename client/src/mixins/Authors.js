@@ -38,11 +38,7 @@ export default {
     },
     canLoggedinEditFolder({ folder }) {
       if (this.is_instance_admin) return true;
-      if (
-        !Object.prototype.hasOwnProperty.call(folder, "$admins") ||
-        folder.$admins === "everyone"
-      )
-        return true;
+      if (folder.$admins === "everyone") return true;
       if (!this.connected_as) return false;
       if (
         Array.isArray(folder.$admins) &&
@@ -57,11 +53,7 @@ export default {
     canLoggedinContributeToFolder({ folder }) {
       if (this.canLoggedinEditFolder({ folder })) return true;
 
-      if (
-        !Object.prototype.hasOwnProperty.call(folder, "$contributors") ||
-        folder.$contributors === "everyone"
-      )
-        return true;
+      if (folder.$contributors === "everyone") return true;
       if (!this.connected_as) return false;
       if (
         Array.isArray(folder.$contributors) &&
