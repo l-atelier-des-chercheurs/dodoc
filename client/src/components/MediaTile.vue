@@ -166,7 +166,12 @@ export default {
   // bottom: 0;
   // background: rgba(240, 240, 240, 0.5);
   width: 100%;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
   font-size: var(--sl-font-size-x-small);
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
 }
 </style>

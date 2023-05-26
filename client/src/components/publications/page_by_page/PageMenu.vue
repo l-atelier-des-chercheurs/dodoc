@@ -213,7 +213,7 @@
           />
           <span
             v-else-if="active_module.module_type === 'text'"
-            class="u-textEllipsis _textExtract"
+            class="u-textEllipsis u-textEllipsis_3 _textExtract"
           >
             <CollaborativeEditor2
               ref="textBloc"
