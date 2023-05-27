@@ -319,7 +319,8 @@ body {
 }
 
 ::selection {
-  background: hsla(211, 63%, 77%, 0.5);
+  // background: hsla(211, 63%, 77%, 0.5);
+  background: hsla(174, 70%, 71%, 0.5);
 }
 
 html {
