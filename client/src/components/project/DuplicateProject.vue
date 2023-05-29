@@ -31,12 +31,6 @@
                 v-text="space.title"
               />
             </select>
-            <div class="u-instructions">
-              <small>
-                {{ $t("feature_not_implemented_yet") }}
-              </small>
-            </div>
-            {{ destination_space_path }}
           </div>
 
           <br />
