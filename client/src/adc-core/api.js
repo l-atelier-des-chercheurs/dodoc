@@ -425,10 +425,10 @@ export default function () {
 
         return res.data.meta_filename;
       },
-      async copyFile({ path, new_meta = {}, destination_path_to_folder = "" }) {
+      async copyFile({ path, new_meta = {}, path_to_destination_folder = "" }) {
         path = `${path}/_copy`;
         const response = await this.$axios
-          .post(path, { new_meta, destination_path_to_folder })
+          .post(path, { new_meta, path_to_destination_folder })
           .catch((err) => {
             const err_code = this.onError(err);
             throw err_code;

@@ -76,6 +76,7 @@
       <DuplicatePublication
         :path="publication.$path"
         :source_title="publication.title"
+        :publication="publication"
       />
       <RemoveMenu
         v-if="can_edit"

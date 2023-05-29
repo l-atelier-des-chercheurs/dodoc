@@ -142,7 +142,7 @@ export default {
               .delay(4000)
               .error(this.$t("notifications.title_taken"));
             this.$refs.titleInput.$el.querySelector("input").select();
-          } else if (err_code === "not_allowed_to_copy_to_space") {
+          } else if (err_code === "not_allowed_to_copy_folder") {
             this.$alertify
               .delay(4000)
               .error(this.$t("notifications.not_allowed_to_copy_to_space"));

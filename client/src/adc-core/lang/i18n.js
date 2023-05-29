@@ -751,6 +751,8 @@ export default function () {
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.not_allowed_to_copy_to_space":
           "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
+        "notifications.not_allowed_to_copy_to_project":
+          "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
         "notifications.name_taken": "Ce nom est déjà utilisé",
         "notifications.action_not_allowed": "Cette action n’est pas autorisée",
 
@@ -759,8 +761,11 @@ export default function () {
         duplicate: "Dupliquer",
         duplicate_or_move: "Dupliquer ou déplacer",
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
+        duplicate_or_move_media: "Dupliquer ou déplacer ce média",
         dm_instr:
           "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées.",
+        dmm_instr:
+          "Dans cet espace ou vers un autre où vous pouvez importer des médias.",
         dmp_instr:
           "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
         move_to_page: "Déplacer vers une autre page",

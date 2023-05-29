@@ -828,7 +828,7 @@ module.exports = (function () {
           const err = new Error(
             "Destination folder not open to user contribution"
           );
-          err.code = "not_allowed_to_copy_to_space";
+          err.code = "not_allowed_to_copy_folder";
           throw err;
         }
       }
@@ -982,17 +982,28 @@ module.exports = (function () {
       utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, path_to_meta, data });
 
-    let { destination_path_to_folder, new_meta } = data;
-    if (!destination_path_to_folder)
-      destination_path_to_folder = path_to_folder;
-    else {
-      // todo check for auth to copy to folder
-    }
-
     try {
+      let { path_to_destination_folder, new_meta } = data;
+      if (!path_to_destination_folder)
+        path_to_destination_folder = path_to_folder;
+      else {
+        // todo check for auth to copy to folder
+        const allowed = await _canContributeToFolder({
+          path_to_folder: path_to_destination_folder,
+          req,
+        });
+        if (!allowed) {
+          const err = new Error(
+            "Destination folder not open to user contribution"
+          );
+          err.code = "not_allowed_to_copy_to_folder";
+          throw err;
+        }
+      }
+
       const copy_meta_filename = await file.copyFile({
         path_to_folder,
-        destination_path_to_folder,
+        path_to_destination_folder,
         meta_filename,
         path_to_meta,
         new_meta,
@@ -1000,16 +1011,16 @@ module.exports = (function () {
       dev.logpackets({
         status: `copied file`,
         path_to_folder,
-        destination_path_to_folder,
+        path_to_destination_folder,
         copy_meta_filename,
       });
       res.status(200).json({ meta_filename: copy_meta_filename });
 
       const meta = await file.getFile({
-        path_to_meta: path.join(destination_path_to_folder, copy_meta_filename),
+        path_to_meta: path.join(path_to_destination_folder, copy_meta_filename),
       });
-      notifier.emit("fileCreated", destination_path_to_folder, {
-        path_to_folder: destination_path_to_folder,
+      notifier.emit("fileCreated", path_to_destination_folder, {
+        path_to_folder: path_to_destination_folder,
         meta,
       });
     } catch (err) {
