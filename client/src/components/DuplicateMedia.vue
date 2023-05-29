@@ -92,7 +92,6 @@ export default {
 
       destination_project_path: undefined,
 
-      url_to_copy: false,
       remove_original: false,
 
       is_copying: false,
@@ -130,7 +129,7 @@ export default {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .success(this.$t("folder_copied"));
+        .success(this.$t("completed"));
 
       let query = {};
       query.projectpanes = JSON.stringify([
@@ -154,7 +153,7 @@ export default {
           path: this.path,
         });
         // close media modal
-        // this.$router.push(navigation);
+        this.$emit("close");
       }
     },
   },

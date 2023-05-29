@@ -10,7 +10,11 @@
         {{ $t("back_to_publications") }}
       </button>
 
-      <PublicationTopbar :publication="publication" :can_edit="can_edit" />
+      <PublicationTopbar
+        :publication="publication"
+        :can_edit="can_edit"
+        @close="$emit('close')"
+      />
 
       <StoryTemplate
         v-if="publication.template === 'story'"

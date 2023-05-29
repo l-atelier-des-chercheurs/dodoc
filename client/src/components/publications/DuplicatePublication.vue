@@ -10,7 +10,7 @@
       :title="$t('duplicate_or_move')"
       @close="show_modal = false"
     >
-      <template v-if="!url_to_copy">
+      <template v-if="!navigation_to_copy">
         <div class="u-spacingBottom">
           <div class="u-instructions">
             <small>
@@ -23,7 +23,7 @@
           <SpaceProjectPicker
             class="u-spacingBottom"
             :path="path"
-            :destination_project_path.sync="destination_project_path"
+            @newProjectSelected="destination_project_path = $event"
           />
 
           <div class="u-spacingBottom">
@@ -47,10 +47,12 @@
             />
           </div>
 
+          <br />
           <details>
             <summary>{{ $t("more_informations") }}</summary>
             <div>
               project_medias_to_copy = {{ project_medias_to_copy.length }}
+              {{ project_medias_to_copy }}
             </div>
           </details>
         </div>
@@ -68,6 +70,7 @@
               class="u-button u-button_red"
               type="button"
               autofocus
+              :disabled="!destination_project_path"
               @click="confirm"
             >
               <template v-if="remove_original">
@@ -82,7 +85,10 @@
         </div>
       </template>
       <template v-else>
-        <router-link :to="url_to_copy" class="u-button u-button_bleumarine">
+        <router-link
+          :to="navigation_to_copy"
+          class="u-button u-button_bleumarine"
+        >
           {{ $t("open_copy") }}
         </router-link>
       </template>
@@ -90,20 +96,22 @@
   </div>
 </template>
 <script>
+import SpaceProjectPicker from "@/components/fields/SpaceProjectPicker.vue";
+
 export default {
   props: {
     path: String,
     source_title: String,
     publication: Object,
   },
-  components: {},
+  components: { SpaceProjectPicker },
   data() {
     return {
+      navigation_to_copy: false,
       show_modal: false,
 
       destination_project_path: undefined,
 
-      url_to_copy: false,
       remove_original: false,
       new_title: this.$t("copy_of") + " " + this.source_title,
 
@@ -140,6 +148,11 @@ export default {
       const path_to_destination_type =
         this.destination_project_path + "/publications";
 
+      // multiple cases :
+      // - same project, copyfolder
+      // - other project, copyfolder then check for included medias, which we'll also copy. If their meta filename needs to be changed
+      // during copy, update all modules that uses it
+
       const copy_folder_path = await this.$api
         .copyFolder({
           path: this.path,
@@ -168,19 +181,30 @@ export default {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .success(this.$t("folder_copied"));
+        .success(this.$t("completed"));
 
-      const url_to_copy = this.createURLFromPath(copy_folder_path);
+      let query = {};
+      query.projectpanes = JSON.stringify([
+        {
+          type: "publish",
+          size: 100,
+          folder: this.getFilename(copy_folder_path),
+        },
+      ]);
+      const navigation = {
+        path: this.createURLFromPath(this.destination_project_path),
+        query,
+      };
 
       if (!this.remove_original) {
-        this.url_to_copy = url_to_copy;
         this.is_copying = false;
+        this.navigation_to_copy = navigation;
       } else {
         this.is_copying = false;
         await this.$api.deleteItem({
           path: this.path,
         });
-        this.$router.push(url_to_copy);
+        this.$emit("close");
       }
     },
   },

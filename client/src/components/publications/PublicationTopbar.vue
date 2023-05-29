@@ -77,6 +77,7 @@
         :path="publication.$path"
         :source_title="publication.title"
         :publication="publication"
+        @close="$emit('close')"
       />
       <RemoveMenu
         v-if="can_edit"

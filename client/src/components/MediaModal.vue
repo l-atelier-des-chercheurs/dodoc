@@ -32,7 +32,7 @@
             </DownloadFile>
           </div>
           <div class="">
-            <DuplicateMedia :path="file.$path" />
+            <DuplicateMedia :path="file.$path" @close="$emit('close')" />
           </div>
 
           <RemoveMenu
