@@ -139,6 +139,10 @@ export default {
       default: "preview",
       // preview, full
     },
+    autoload: {
+      type: Boolean,
+      default: false,
+    },
     is_draggable: {
       type: Boolean,
       default: true,
@@ -158,7 +162,9 @@ export default {
       failed_to_load_iframe: false,
     };
   },
-  created() {},
+  created() {
+    if (this.autoload) this.loadIframe();
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -272,9 +278,12 @@ export default {
 }
 
 ._mediaContent--iframe {
+  position: relative;
   height: 100%;
   ._mediaContent--iframe--preview {
     position: relative;
+    height: 100%;
+    aspect-ratio: 16/9;
 
     button {
       display: block;
@@ -286,6 +295,7 @@ export default {
     resize: vertical;
     display: flex;
     height: 100%;
+    aspect-ratio: 16/9;
 
     ._errMessage {
       position: absolute;
@@ -304,7 +314,7 @@ export default {
   ._mediaContent--iframe--content,
   ._iframeStylePreview {
     width: 100%;
-    aspect-ratio: 16/9;
+    height: 100%;
     border-radius: 4px;
     overflow: hidden;
     border: 2px solid var(--c-gris);

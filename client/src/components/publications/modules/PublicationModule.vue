@@ -102,7 +102,7 @@
             </button>
           </div>
 
-          <div class="_buttonRow">
+          <div class="_buttonRow" v-if="publimodule.size !== 100">
             <button
               type="button"
               class="u-button"
@@ -552,8 +552,11 @@ export default {
   transform: translate(0, -50%);
 
   background: white;
+
   background: var(--active-color);
   padding: calc(var(--spacing) / 2);
+  margin: 2px;
+  border-radius: 4px;
 
   display: flex;
   flex-flow: column nowrap;
