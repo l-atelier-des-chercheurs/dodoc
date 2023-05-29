@@ -23,7 +23,6 @@
             :path="path"
             @newProjectSelected="destination_project_path = $event"
           />
-          {{ destination_project_path }}
 
           <div class="u-spacingBottom">
             <ToggleInput
@@ -50,6 +49,7 @@
               class="u-button u-button_red"
               type="button"
               autofocus
+              :disabled="!destination_project_path"
               @click="confirm"
             >
               <template v-if="remove_original">

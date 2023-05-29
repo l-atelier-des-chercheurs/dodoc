@@ -178,7 +178,8 @@ button,
 
   &[disabled] {
     cursor: not-allowed;
-    // filter: grayscale(50%);
+    filter: grayscale(50%);
+    color: var(--c-gris);
   }
 
   &.is--active {
@@ -232,10 +233,6 @@ button,
       background-color: var(--c-gris_fonce);
     }
   }
-
-  &[disabled] {
-    color: var(--c-gris_fonce);
-  }
 }
 .u-button_white {
   background-color: white;
@@ -247,10 +244,6 @@ button,
     &:not([disabled]) {
       background-color: var(--c-gris);
     }
-  }
-
-  &[disabled] {
-    color: var(--c-gris_fonce);
   }
 }
 .u-button_red {

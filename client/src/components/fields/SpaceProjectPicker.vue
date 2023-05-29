@@ -7,17 +7,29 @@
           v-for="space in spaces"
           :key="space.$path"
           :value="space.$path"
-          v-text="space.title"
+          v-text="makeSpaceTitle(space)"
         />
       </select>
-      <select v-model="destination_project_path">
+
+      <div v-if="!projects" class="_projectLoader">
+        <LoaderSpinner />
+      </div>
+      <select
+        v-else-if="projects.length > 0"
+        v-model="destination_project_path"
+      >
         <option
           v-for="project in projects"
           :key="project.$path"
           :value="project.$path"
-          v-text="project.title"
+          v-text="makeProjectTitle(project)"
         />
       </select>
+      <div v-else-if="projects.length === 0">
+        <small class="u-instructions">
+          {{ $t("no_projects") }}
+        </small>
+      </div>
     </div>
   </div>
 </template>
@@ -33,16 +45,23 @@ export default {
       destination_project_path: undefined,
       spaces: undefined,
       projects: undefined,
+
+      current_space_path: undefined,
+      current_project_path: undefined,
     };
   },
   async created() {
     const { space_slug, project_slug } = this.decomposePath(this.path);
-    this.destination_space_path = this.createPath({ space_slug });
-
-    this.destination_project_path = this.createPath({
+    this.current_space_path = this.destination_space_path = this.createPath({
       space_slug,
-      project_slug,
     });
+
+    this.current_project_path = this.destination_project_path = this.createPath(
+      {
+        space_slug,
+        project_slug,
+      }
+    );
 
     this.spaces = await this.$api.getFolders({
       path: "spaces",
@@ -52,6 +71,7 @@ export default {
   beforeDestroy() {},
   watch: {
     async destination_space_path() {
+      this.projects = undefined;
       this.projects = await this.$api.getFolders({
         path: this.destination_space_path + "/projects",
       });
@@ -67,7 +87,18 @@ export default {
     },
   },
   computed: {},
-  methods: {},
+  methods: {
+    makeSpaceTitle(space) {
+      if (space.$path === this.current_space_path)
+        return space.title + `  (${this.$t("current").toLowerCase()})`;
+      return space.title;
+    },
+    makeProjectTitle(project) {
+      if (project.$path === this.current_project_path)
+        return project.title + `  (${this.$t("current").toLowerCase()})`;
+      return project.title;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -75,11 +106,15 @@ export default {
   ._row {
     display: flex;
     flex-flow: row nowrap;
+    align-items: center;
     gap: calc(var(--spacing) / 2);
 
     > * {
-      flex: 1 1 0;
+      flex: 1 1 50%;
     }
   }
+}
+._projectLoader {
+  position: relative;
 }
 </style>
