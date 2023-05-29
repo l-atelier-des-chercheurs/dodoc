@@ -204,7 +204,7 @@ export default {
     },
 
     loadIframe() {
-      this.is_loading_iframe = true;
+      if (this.url_to_site.type === "any") this.is_loading_iframe = true;
       this.start_iframe = true;
     },
     // async updateCaption() {
@@ -255,7 +255,7 @@ export default {
 }
 
 ._mediaContent--iframe {
-  resize: vertical;
+  height: 100%;
   ._mediaContent--iframe--preview {
     position: relative;
 
@@ -267,6 +267,7 @@ export default {
   ._mediaContent--iframe--content {
     resize: vertical;
     display: flex;
+    height: 100%;
 
     ._errMessage {
       position: absolute;
@@ -284,7 +285,7 @@ export default {
     width: 100%;
     aspect-ratio: 16/9;
     border-radius: 4px;
-    overflow: auto;
+    overflow: hidden;
     border: 2px solid var(--c-gris);
     background-color: var(--c-gris);
     object-fit: cover;
