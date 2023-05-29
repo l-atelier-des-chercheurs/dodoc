@@ -66,8 +66,21 @@
             </button>
           </div>
           <div class="_mediaContent--iframe--content" v-else>
-            <div class="_errMessage" v-if="!is_loading_iframe">
-              {{ $t("page_failed_to_load") }}
+            <div
+              class="_errMessage"
+              v-if="!is_loading_iframe && failed_to_load_iframe"
+            >
+              <div class="">
+                <small>
+                  {{ $t("page_failed_to_load") }}<br />
+                  {{ $t("click_link_to_open_in_tab") }}
+                </small>
+              </div>
+              <!-- <div class="fieldCaption" v-if="file.$type === 'url'">
+                <a :href="file.$content" target="_blank">{{
+                  $t("open_website_new_tab")
+                }}</a>
+              </div> -->
             </div>
             <iframe
               v-if="file.$type === 'pdf'"
@@ -142,6 +155,7 @@ export default {
       show_fullscreen: false,
       start_iframe: false,
       is_loading_iframe: false,
+      failed_to_load_iframe: false,
     };
   },
   created() {},
@@ -201,6 +215,9 @@ export default {
     },
     iframeLoaded() {
       this.is_loading_iframe = false;
+      setTimeout(() => {
+        this.failed_to_load_iframe = true;
+      }, 1000);
     },
 
     loadIframe() {
@@ -265,6 +282,7 @@ export default {
   }
 
   ._mediaContent--iframe--content {
+    position: relative;
     resize: vertical;
     display: flex;
     height: 100%;
@@ -274,9 +292,12 @@ export default {
       width: 100%;
       height: 100%;
       display: flex;
+      flex-flow: column nowrap;
       align-items: center;
       font-family: var(--sl-font-mono);
       justify-content: center;
+
+      padding: calc(var(--spacing) * 2);
     }
   }
 
@@ -287,8 +308,8 @@ export default {
     border-radius: 4px;
     overflow: hidden;
     border: 2px solid var(--c-gris);
-    background-color: var(--c-gris);
-    object-fit: cover;
+    background-color: white;
+    object-fit: contain;
   }
 
   iframe,

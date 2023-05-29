@@ -1,5 +1,5 @@
-import VueI18n from "vue-i18n";
 import Vue from "vue";
+import VueI18n from "vue-i18n";
 
 export default function () {
   Vue.use(VueI18n);
@@ -344,7 +344,10 @@ export default function () {
         latest_changes_to_project: "Dernières modifications au projet",
 
         download: "Télécharger",
-        page_failed_to_load: "Cette page n’a pas pu charger",
+        page_failed_to_load: "Cette page n’a pas pu charger.",
+        open_website_new_tab: "Ouvrir dans un nouvel onglet",
+        click_link_to_open_in_tab:
+          "Cliquez sur le lien ci-dessous pour l’ouvrir dans un nouvel onglet.",
 
         medias: "Médias",
         no_media_in_project: "Aucun média dans ce projet",
