@@ -344,6 +344,7 @@ export default function () {
         latest_changes_to_project: "Dernières modifications au projet",
 
         download: "Télécharger",
+        page_failed_to_load: "Cette page n’a pas pu charger",
 
         medias: "Médias",
         no_media_in_project: "Aucun média dans ce projet",

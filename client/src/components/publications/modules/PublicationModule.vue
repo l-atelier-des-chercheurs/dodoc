@@ -467,7 +467,7 @@ export default {
 <style lang="scss" scoped>
 ._publicationModule {
   position: relative;
-  padding: 0 calc(var(--spacing) * 1);
+  padding: 0 calc(var(--spacing) * 2);
 
   &.is--shape {
     ._content,

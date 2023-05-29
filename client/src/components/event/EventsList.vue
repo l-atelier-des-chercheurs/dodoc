@@ -250,8 +250,8 @@ export default {
 ._eventsDate {
   display: flex;
   align-items: center;
-  padding-bottom: 20px;
-  height: 40px;
+  padding-bottom: 16px;
+  height: 36px;
   font-size: var(--sl-font-size-small);
 
   &::after {
@@ -271,7 +271,8 @@ export default {
   position: relative;
   aspect-ratio: 3/2;
   flex: 0 0 150px;
-  // overflow: hidden;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 ._lineCont {

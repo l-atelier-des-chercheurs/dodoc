@@ -42,42 +42,66 @@
         </vue-plyr>
       </template>
     </template>
-    <template v-else-if="file.$type === 'pdf'">
-      <template v-if="context === 'preview'">
-        <img :src="thumb" class="_mediaContent--image" />
-      </template>
-      <template v-else>
-        <iframe class="_mediaContent--pdfIframe" :src="file_full_path" />
-      </template>
-    </template>
     <template v-else-if="file.$type === 'stl'">
       <img :src="thumb" class="_mediaContent--image" />
     </template>
-    <template v-else-if="file.$type === 'url'">
+    <template v-else-if="['pdf', 'url'].includes(file.$type)">
       <template v-if="context === 'preview'">
         <img :src="thumb" class="_mediaContent--image" />
       </template>
       <template v-else>
-        <template v-if="url_to_site.type === 'any'">
-          <iframe
-            class="_mediaContent--iframe"
-            :src="url_to_site.src"
-            frameborder="0"
-          />
-        </template>
-        <vue-plyr v-else :key="file_full_path">
-          <div class="plyr__video-embed">
-            <iframe
-              :src="url_to_site.src"
-              class="_mediaContent--iframe"
-              allowfullscreen
-              allowtransparency
-              allow="autoplay"
-              :poster="thumb"
-              frameborder="0"
-            />
+        <div class="_mediaContent--iframe">
+          <div v-if="!start_iframe" class="_mediaContent--iframe--preview">
+            <img :src="thumb" class="_iframeStylePreview" />
+            <button
+              type="button"
+              class="plyr__control plyr__control--overlaid"
+              aria-label="Play"
+              @click="loadIframe"
+            >
+              <svg aria-hidden="true" focusable="false">
+                <use xlink:href="/_client/plyr.svg#plyr-play"></use>
+              </svg>
+              <span class="plyr__sr-only">Play</span>
+            </button>
           </div>
-        </vue-plyr>
+          <div class="_mediaContent--iframe--content" v-else>
+            <div class="_errMessage" v-if="!is_loading_iframe">
+              {{ $t("page_failed_to_load") }}
+            </div>
+            <iframe
+              v-if="file.$type === 'pdf'"
+              class=""
+              frameborder="0"
+              :src="file_full_path"
+              @load="iframeLoaded"
+            />
+            <iframe
+              v-else-if="url_to_site.type === 'any'"
+              :src="url_to_site.src"
+              frameborder="0"
+              @load="iframeLoaded"
+            />
+            <vue-plyr v-else :key="file_full_path">
+              <div class="plyr__video-embed">
+                <iframe
+                  :src="url_to_site.src"
+                  allowfullscreen
+                  allowtransparency
+                  allow="autoplay"
+                  :poster="thumb"
+                  frameborder="0"
+                />
+              </div>
+            </vue-plyr>
+            <div class="u-divCentered" v-if="is_loading_iframe" key="loader">
+              <LoaderSpinner />
+            </div>
+          </div>
+          <div class="fieldCaption" v-if="file.$type === 'url'">
+            <a :href="file.$content" target="_blank">{{ file.$content }}</a>
+          </div>
+        </div>
       </template>
     </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
@@ -116,6 +140,8 @@ export default {
     return {
       is_dragged: false,
       show_fullscreen: false,
+      start_iframe: false,
+      is_loading_iframe: false,
     };
   },
   created() {},
@@ -148,7 +174,7 @@ export default {
     },
     url_to_site() {
       if (!this.file.$content) return false;
-      return this.transformURL(this.file.$content);
+      return this.transformURL({ url: this.file.$content, autoplay: true });
     },
   },
   methods: {
@@ -173,7 +199,14 @@ export default {
     videoTimeUpdated(event) {
       this.$emit("media.videoTimeUpdated", event.detail.plyr.media.currentTime);
     },
+    iframeLoaded() {
+      this.is_loading_iframe = false;
+    },
 
+    loadIframe() {
+      this.is_loading_iframe = true;
+      this.start_iframe = true;
+    },
     // async updateCaption() {
     //   this.fetch_status = "pending";
     //   this.fetch_error = null;
@@ -219,23 +252,50 @@ export default {
     align-items: center;
     justify-content: center;
   }
-  &[data-filetype="url"] {
-    aspect-ratio: 16/9;
-  }
-  &[data-filetype="pdf"] {
-    aspect-ratio: 16/9;
-  }
 }
 
-._mediaContent--iframe,
-._mediaContent--pdfIframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  // border: 2px solid #535659;
-  border: none;
+._mediaContent--iframe {
+  resize: vertical;
+  ._mediaContent--iframe--preview {
+    position: relative;
+
+    button {
+      display: block;
+    }
+  }
+
+  ._mediaContent--iframe--content {
+    resize: vertical;
+    display: flex;
+
+    ._errMessage {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-family: var(--sl-font-mono);
+      justify-content: center;
+    }
+  }
+
+  ._mediaContent--iframe--content,
+  ._iframeStylePreview {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 4px;
+    overflow: auto;
+    border: 2px solid var(--c-gris);
+    background-color: var(--c-gris);
+    object-fit: cover;
+  }
+
+  iframe,
+  .plyr {
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 ._fsButton {
