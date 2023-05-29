@@ -177,8 +177,6 @@ export default function () {
         `,
         reload_page_to_apply:
           "Après avoir enregistré ces changements, rechargez cette page.",
-        feature_not_implemented_yet:
-          "Fonctionnalité à venir, pas encore implémentée",
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
@@ -761,7 +759,7 @@ export default function () {
         duplicate_or_move: "Dupliquer ou déplacer",
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
         dm_instr:
-          "Vers cet espace ou vers un autre ou vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées.",
+          "Vers cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées.",
         move_to_page: "Déplacer vers une autre page",
         move: "Déplacer",
         unselect: "Déselectionner",
