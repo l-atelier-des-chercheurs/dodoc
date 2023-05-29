@@ -12,15 +12,13 @@
     >
       <template v-if="!url_to_copy">
         <div class="">
-          <div class="u-instructions">
+          <div class="u-spacingBottom u-instructions">
             <small>
               {{ $t("dm_instr") }}
             </small>
           </div>
 
-          <br />
-
-          <div class="">
+          <div class="u-spacingBottom">
             <DLabel :str="$t('destination_space')" />
 
             <select v-model="destination_space_path">
@@ -33,32 +31,25 @@
             </select>
           </div>
 
-          <br />
+          <div class="u-spacingBottom">
+            <DLabel :str="$t('title_of_copy')" />
+            <TextInput
+              :content.sync="new_title"
+              :maxlength="40"
+              :required="true"
+              ref="titleInput"
+            />
+          </div>
 
-          <!-- <div class="">todo choix space</div> -->
-          <div class="">
-            <div class="">
-              <DLabel :str="$t('title_of_copy')" />
-              <TextInput
-                :content.sync="new_title"
-                :maxlength="40"
-                :required="true"
-                ref="titleInput"
-              />
-            </div>
-
-            <br />
-
-            <div class="">
-              <ToggleInput
-                :content.sync="remove_original"
-                :label="$t('remove_original')"
-                :options="{
-                  true: $t('remove_original_after_copy'),
-                  false: $t('keep_original_after_copy'),
-                }"
-              />
-            </div>
+          <div class="u-spacingBottom">
+            <ToggleInput
+              :content.sync="remove_original"
+              :label="$t('remove_original')"
+              :options="{
+                true: $t('remove_original_after_copy'),
+                false: $t('keep_original_after_copy'),
+              }"
+            />
           </div>
         </div>
 
