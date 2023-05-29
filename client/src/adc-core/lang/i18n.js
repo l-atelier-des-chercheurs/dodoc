@@ -400,6 +400,8 @@ export default function () {
         storage: "Stockage",
         events: "Événements",
         other_events: "Autres événements",
+        start_date: "Date de début",
+        end_date: "Date de fin",
         created_during: "Créé pendant un événement",
 
         make_a_video: "Fabriquer une vidéo",

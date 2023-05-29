@@ -40,6 +40,30 @@
               :can_edit="can_edit_event"
             />
           </div>
+
+          <div class="_eventsDates">
+            <div class="u-spacingBottom">
+              <DateField
+                :field_name="'start_date'"
+                :label="$t('start_date')"
+                :date="event.start_date"
+                :path="event.$path"
+                :input_type="'date'"
+                :can_edit="can_edit_event"
+              />
+            </div>
+            <div class="u-spacingBottom">
+              <DateField
+                :field_name="'end_date'"
+                :label="$t('end_date')"
+                :date="event.end_date"
+                :path="event.$path"
+                :input_type="'date'"
+                :can_edit="can_edit_event"
+              />
+            </div>
+          </div>
+
           <div class="u-spacingBottom">
             <TitleField
               :field_name="'presentation'"
@@ -156,5 +180,10 @@ export default {
   // z-index: 1;
   // margin-top: var(--spacing);
   // margin-left: var(--spacing);
+}
+._eventsDates {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) * 1);
 }
 </style>

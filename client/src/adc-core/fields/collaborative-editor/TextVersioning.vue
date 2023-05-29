@@ -27,7 +27,7 @@
             v-text="
               archive.filename === 'current'
                 ? $t('current')
-                : formatDateToPrecise(archive.date) +
+                : formatDateTimeToPrecise(archive.date) +
                   ' - version ' +
                   (archives.length - index)
             "
@@ -51,7 +51,7 @@
             v-for="archive in archives"
             :value="archive.filename"
             :key="archive.filename"
-            v-text="formatDateToPrecise(archive.date)"
+            v-text="formatDateTimeToPrecise(archive.date)"
           />
         </sl-select> -->
 
