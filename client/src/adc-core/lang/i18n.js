@@ -405,6 +405,7 @@ export default function () {
         start_date: "Date de début",
         end_date: "Date de fin",
         created_during: "Créé pendant un événement",
+        project_can_be_remixed: "Permettre le remix de ce projet",
         remix_this_project: "Remixer ce projet",
 
         make_a_video: "Fabriquer une vidéo",

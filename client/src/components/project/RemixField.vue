@@ -3,6 +3,7 @@
     <!-- <DLabel :str="$t('remix')" /> -->
 
     <ToggleField
+      v-if="can_edit"
       :label="$t('project_can_be_remixed')"
       :field_name="'$can_be_remixed'"
       :content="project.$can_be_remixed === true"
@@ -28,12 +29,12 @@
       @close="show_remix_modal = false"
     />
 
-    <details>
+    <!-- <details>
       <summary>infos</summary>
       Remixes infos
       <pre>{{ project.$list_of_remixes }}</pre>
       <pre>{{ project.$is_remix_of }}</pre>
-    </details>
+    </details> -->
   </div>
 </template>
 <script>
