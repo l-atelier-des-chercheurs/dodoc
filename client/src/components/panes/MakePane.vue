@@ -1,6 +1,6 @@
 <template>
-  <div class="_remixPane">
-    <div v-if="!opened_remix_slug">
+  <div class="_makePane">
+    <div v-if="!opened_make_slug">
       <br />
       <RadioSwitch
         v-if="can_edit"
@@ -74,7 +74,7 @@
                   class="u-button u-button_bleumarine"
                   type="button"
                   disabled
-                  @click="createRemix(recipe.key)"
+                  @click="createMake(recipe.key)"
                 >
                   <svg
                     version="1.1"
@@ -104,16 +104,16 @@
         <RemixesList
           :project_path="project.$path"
           :can_edit="can_edit"
-          @open="openRemix"
+          @open="openMakes"
         />
       </section>
     </div>
     <div v-else>
       <RemixOpen
         :project_path="project.$path"
-        :remix_slug="opened_remix_slug"
-        @remove="removeRemix"
-        @close="$emit('update:opened_remix_slug', false)"
+        :make_slug="opened_make_slug"
+        @remove="removeMake"
+        @close="$emit('update:opened_make_slug', false)"
       />
     </div>
   </div>
@@ -125,7 +125,7 @@ import RemixOpen from "@/components/remixes/RemixOpen.vue";
 export default {
   props: {
     can_edit: Boolean,
-    opened_remix_slug: String,
+    opened_make_slug: String,
     project: Object,
   },
   components: {
@@ -484,13 +484,13 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async createRemix(type) {
+    async createMake(type) {
       const rnd_suffix = (
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 2 + 3);
       const title = this.$t(type) + "-" + rnd_suffix;
       const new_folder_slug = await this.$api.createFolder({
-        path: `${this.project.$path}/remixes`,
+        path: `${this.project.$path}/makes`,
         additional_meta: {
           type,
           title,
@@ -499,21 +499,21 @@ export default {
         },
       });
 
-      // const path = `${this.project.$path}/remixes/${new_folder_slug}`;
-      this.openRemix(new_folder_slug);
+      // const path = `${this.project.$path}/makes/${new_folder_slug}`;
+      this.openMakes(new_folder_slug);
     },
-    openRemix(new_folder_slug) {
-      this.$emit("update:opened_remix_slug", new_folder_slug);
+    openMakes(new_folder_slug) {
+      this.$emit("update:opened_make_slug", new_folder_slug);
     },
-    removeRemix(path) {
+    removeMake(path) {
       path;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-._remixPane {
-  background: var(--color-remix);
+._makePane {
+  background: var(--color-make);
   height: 100%;
   overflow: auto;
   padding: calc(var(--spacing) * 1);
