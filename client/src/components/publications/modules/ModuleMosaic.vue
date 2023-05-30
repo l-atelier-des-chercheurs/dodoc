@@ -9,60 +9,71 @@
       }"
     >
       <div class="_mediaGrid">
-        <div
-          class="_mediaGrid--item"
-          v-for="(media_with_linked, index) in medias_with_linked"
-          :key="media_with_linked._linked_media.$path || 'none'"
-          :style="itemStyle({ media_with_linked })"
-        >
-          <MediaContent
-            :file="media_with_linked._linked_media"
-            :resolution="context === 'preview' ? 220 : 1600"
-            :context="context"
-            :show_fs_button="show_fs_button"
-          />
+        <template v-for="(media_with_linked, index) in medias_with_linked">
+          <div
+            class="_mediaGrid--item"
+            :key="
+              (media_with_linked._linked_media &&
+                media_with_linked._linked_media.$path) ||
+              'no_media_' + index
+            "
+            :style="itemStyle({ media_with_linked })"
+          >
+            <span
+              v-if="!media_with_linked._linked_media"
+              class="_noSourceMedia u-instructions"
+              v-text="$t('source_media_missing')"
+            />
+            <MediaContent
+              v-else
+              :file="media_with_linked._linked_media"
+              :resolution="context === 'preview' ? 220 : 1600"
+              :context="context"
+              :show_fs_button="show_fs_button"
+            />
 
-          <div class="_btnRow" v-if="can_edit">
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="
-                (is_multiple_medias ||
-                  (page_template === 'page_by_page' &&
-                    !single_media_displayed_at_full_ratio)) &&
-                !(
-                  !media_with_linked.objectFit ||
-                  media_with_linked.objectFit === 'cover'
-                )
-              "
-              @click="frameFit({ index, opt: { objectFit: 'cover' } })"
-            >
-              {{ $t("object_fit_cover") }}
-            </button>
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="
-                (is_multiple_medias ||
-                  (page_template === 'page_by_page' &&
-                    !single_media_displayed_at_full_ratio)) &&
-                media_with_linked.objectFit !== 'contain'
-              "
-              @click="frameFit({ index, opt: { objectFit: 'contain' } })"
-            >
-              <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
-              {{ $t("object_fit_contain") }}
-            </button>
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="is_multiple_medias"
-              @click="removeMediaAtIndex(index)"
-            >
-              {{ $t("remove") }}
-            </button>
+            <div class="_btnRow" v-if="can_edit">
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="
+                  (is_multiple_medias ||
+                    (page_template === 'page_by_page' &&
+                      !single_media_displayed_at_full_ratio)) &&
+                  !(
+                    !media_with_linked.objectFit ||
+                    media_with_linked.objectFit === 'cover'
+                  )
+                "
+                @click="frameFit({ index, opt: { objectFit: 'cover' } })"
+              >
+                {{ $t("object_fit_cover") }}
+              </button>
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="
+                  (is_multiple_medias ||
+                    (page_template === 'page_by_page' &&
+                      !single_media_displayed_at_full_ratio)) &&
+                  media_with_linked.objectFit !== 'contain'
+                "
+                @click="frameFit({ index, opt: { objectFit: 'contain' } })"
+              >
+                <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
+                {{ $t("object_fit_contain") }}
+              </button>
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="is_multiple_medias"
+                @click="removeMediaAtIndex(index)"
+              >
+                {{ $t("remove") }}
+              </button>
+            </div>
           </div>
-        </div>
+        </template>
         <div
           class="_mediaPickerTile"
           v-if="
@@ -158,7 +169,6 @@ export default {
           source_media,
           folder_path: this.publication_path,
         });
-
         return Object.assign({}, source_media, { _linked_media });
       });
     },
@@ -301,5 +311,13 @@ export default {
 sl-icon-button::part(base) {
   font-size: 1.5em;
   color: var(--c-bleuvert);
+}
+
+._noSourceMedia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 </style>

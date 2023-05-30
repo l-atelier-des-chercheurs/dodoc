@@ -102,7 +102,7 @@
             </button>
           </div>
 
-          <div class="_buttonRow">
+          <div class="_buttonRow" v-if="publimodule.size !== 100">
             <button
               type="button"
               class="u-button"
@@ -195,8 +195,6 @@
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
       />
       <template v-else-if="is_shape">
-        <!-- :width="`${mediaSize.width}mm`"
-          :height="`${mediaSize.height}mm`" -->
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
@@ -467,7 +465,7 @@ export default {
 <style lang="scss" scoped>
 ._publicationModule {
   position: relative;
-  padding: 0 calc(var(--spacing) * 1);
+  padding: 0 calc(var(--spacing) * 2);
 
   &.is--shape {
     ._content,
@@ -552,8 +550,11 @@ export default {
   transform: translate(0, -50%);
 
   background: white;
+
   background: var(--active-color);
   padding: calc(var(--spacing) / 2);
+  margin: 2px;
+  border-radius: 4px;
 
   display: flex;
   flex-flow: column nowrap;

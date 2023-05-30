@@ -3,7 +3,7 @@
     <DLabel :str="title" />
     <div>
       <template v-if="!show_detail">{{ formatDateToHuman(date) }} </template>
-      <template v-else>{{ formatDateToPrecise(date) }}</template>
+      <template v-else>{{ formatDateTimeToPrecise(date) }}</template>
     </div>
   </div>
 </template>

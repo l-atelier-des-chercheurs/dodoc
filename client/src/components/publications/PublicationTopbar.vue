@@ -38,6 +38,7 @@
           {{ publication.$admins }}
         </small>
       </div>
+
       <div class="" v-if="can_edit">
         <button
           type="button"
@@ -71,6 +72,13 @@
               {{ $t("share") }}
             </router-link> -->
       </div>
+
+      <DuplicatePublication
+        :path="publication.$path"
+        :source_title="publication.title"
+        :publication="publication"
+        @close="$emit('close')"
+      />
       <RemoveMenu
         v-if="can_edit"
         :remove_text="$t('remove')"
@@ -80,12 +88,16 @@
   </div>
 </template>
 <script>
+import DuplicatePublication from "@/components/publications/DuplicatePublication.vue";
+
 export default {
   props: {
     publication: Object,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    DuplicatePublication,
+  },
   data() {
     return {
       show_qr_code_modal: false,

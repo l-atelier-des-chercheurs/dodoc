@@ -47,13 +47,6 @@ module.exports = (function () {
 
         additional_meta = _additional_meta;
 
-        // await this.copyFileToFolderAndCreate({
-        //   additional_meta,
-        //   originalFilename,
-        //   path_to_folder,
-        //   path_to_temp_file,
-        // });
-
         // make url-compatible media filenames
         const { name, ext } = path.parse(originalFilename);
         const slugged_original_filename = utils.slug(name) + ext;
@@ -299,14 +292,14 @@ module.exports = (function () {
     },
     copyFile: async ({
       path_to_folder,
-      destination_path_to_folder,
+      path_to_destination_folder,
       meta_filename,
       path_to_meta,
       new_meta,
     }) => {
       dev.logfunction({
         path_to_folder,
-        destination_path_to_folder,
+        path_to_destination_folder,
         meta_filename,
         path_to_meta,
         new_meta,
@@ -323,7 +316,7 @@ module.exports = (function () {
       if (meta.hasOwnProperty("$media_filename")) {
         // copy media
         let new_filename = await _preventFileOverride({
-          path_to_folder: destination_path_to_folder,
+          path_to_folder: path_to_destination_folder,
           original_filename: meta.$media_filename,
         });
 
@@ -332,7 +325,7 @@ module.exports = (function () {
           meta.$media_filename
         );
         const copy_path = utils.getPathToUserContent(
-          destination_path_to_folder,
+          path_to_destination_folder,
           new_filename
         );
         await fs.copy(og_path, copy_path);
@@ -342,19 +335,19 @@ module.exports = (function () {
       meta.$date_uploaded = utils.getCurrentDate();
 
       const new_meta_filename = await _preventFileOverride({
-        path_to_folder: destination_path_to_folder,
+        path_to_folder: path_to_destination_folder,
         original_filename: meta_filename,
       });
 
       await utils.saveMetaAtPath({
-        relative_path: destination_path_to_folder,
+        relative_path: path_to_destination_folder,
         file_slug: new_meta_filename,
         meta,
       });
 
       await API.updateFile({
-        path_to_folder: destination_path_to_folder,
-        path_to_meta: path.join(destination_path_to_folder, new_meta_filename),
+        path_to_folder: path_to_destination_folder,
+        path_to_meta: path.join(path_to_destination_folder, new_meta_filename),
         data: new_meta,
       });
 

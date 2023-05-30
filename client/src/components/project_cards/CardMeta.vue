@@ -26,7 +26,7 @@
     </div>
 
     <div class="u-mediaOptions" v-if="can_edit">
-      <DuplicateFolder :path="project.$path" :source_title="project.title" />
+      <DuplicateProject :path="project.$path" :source_title="project.title" />
       <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
     </div>
 
@@ -44,7 +44,7 @@
 </template>
 <script>
 import ProjectCard from "@/components/ProjectCard.vue";
-import DuplicateFolder from "@/components/project/DuplicateFolder.vue";
+import DuplicateProject from "@/components/project/DuplicateProject.vue";
 import EventField from "@/components/project/EventField.vue";
 
 export default {
@@ -55,7 +55,7 @@ export default {
   components: {
     ProjectCard,
     EventField,
-    DuplicateFolder,
+    DuplicateProject,
   },
   data() {
     return {};

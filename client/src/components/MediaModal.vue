@@ -17,7 +17,7 @@
     <div class="_mediaModal--content">
       <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
-        <MediaContent :file="file" :context="'full'" />
+        <MediaContent :file="file" :autoload="true" :context="'full'" />
       </div>
       <div class="_meta" v-if="!select_mode">
         <div class="u-spacingBottom">
@@ -32,17 +32,8 @@
             </DownloadFile>
           </div>
           <div class="">
-            <button type="button" class="u-buttonLink" @click="duplicateMedia">
-              <sl-icon name="file-plus" />
-              {{ $t("duplicate") }}
-            </button>
+            <DuplicateMedia :path="file.$path" @close="$emit('close')" />
           </div>
-          <!-- <div class="">
-            <button type="button" class="u-buttonLink" @click="copyMedia">
-              <sl-icon name="file-arrow-up-fill" />
-              {{ $t("copy") }}
-            </button>
-          </div> -->
 
           <RemoveMenu
             :remove_text="$t('remove_media')"
@@ -90,41 +81,45 @@
       </div>
     </div>
 
-    <div class="_navBtns" v-if="position_in_list !== 'alone'">
-      <span>
-        <button
-          type="button"
-          class="u-button u-button_transparent _navBtn _leftArrow"
-          v-if="position_in_list !== 'first'"
-          @click="$emit('prevMedia')"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
-            <path
-              d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
-              style="fill: var(--c-noir)"
-            />
-          </svg>
-        </button>
-      </span>
-      <span>
-        <button
-          type="button"
-          class="u-button u-button_transparent _navBtn _rightArrow"
-          v-show="position_in_list !== 'last'"
-          @click="$emit('nextMedia')"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
-            <path
-              d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
-              style="fill: #353535"
-            />
-          </svg>
-        </button>
-      </span>
-    </div>
+    <transition name="scaleInFade" mode="out-in">
+      <div class="_navBtns" v-if="position_in_list !== 'alone' && show_nav_btn">
+        <span>
+          <button
+            type="button"
+            class="u-button u-button_transparent _navBtn _leftArrow"
+            v-if="position_in_list !== 'first'"
+            @click="$emit('prevMedia')"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+              <path
+                d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+                style="fill: var(--c-noir)"
+              />
+            </svg>
+          </button>
+        </span>
+        <span>
+          <button
+            type="button"
+            class="u-button u-button_transparent _navBtn _rightArrow"
+            v-show="position_in_list !== 'last'"
+            @click="$emit('nextMedia')"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+              <path
+                d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+                style="fill: #353535"
+              />
+            </svg>
+          </button>
+        </span>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
+import DuplicateMedia from "@/components/DuplicateMedia.vue";
+
 export default {
   props: {
     file: Object,
@@ -132,13 +127,20 @@ export default {
     select_mode: Boolean,
     position_in_list: String,
   },
-  components: {},
+  components: {
+    DuplicateMedia,
+  },
   data() {
-    return {};
+    return {
+      show_nav_btn: false,
+    };
   },
   created() {},
   mounted() {
     window.addEventListener("keyup", this.handleKeyPress);
+    setTimeout(() => {
+      this.show_nav_btn = true;
+    }, 200);
   },
   beforeDestroy() {
     window.removeEventListener("keyup", this.handleKeyPress);
@@ -157,13 +159,6 @@ export default {
         return;
 
       if (event.key === "Escape") this.$emit("close");
-    },
-    duplicateMedia() {
-      this.$emit("duplicate");
-    },
-    copyMedia() {
-      const destination_path_to_folder = "spaces/reception/projects/mon-projet";
-      this.$emit("copy", destination_path_to_folder);
     },
   },
 };
@@ -252,8 +247,10 @@ export default {
 
 ._mediaModal--content {
   position: relative;
-  height: 100%;
-  width: 100%;
+  height: calc(100% - 4px);
+  width: calc(100% - 4px);
+  margin-top: 2px;
+  margin-left: 2px;
   display: flex;
   flex-flow: row wrap;
 

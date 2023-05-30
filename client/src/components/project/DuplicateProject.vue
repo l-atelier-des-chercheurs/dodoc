@@ -12,15 +12,13 @@
     >
       <template v-if="!url_to_copy">
         <div class="">
-          <div class="u-instructions">
+          <div class="u-spacingBottom u-instructions">
             <small>
               {{ $t("dm_instr") }}
             </small>
           </div>
 
-          <br />
-
-          <div class="">
+          <div class="u-spacingBottom">
             <DLabel :str="$t('destination_space')" />
 
             <select v-model="destination_space_path">
@@ -31,40 +29,27 @@
                 v-text="space.title"
               />
             </select>
-            <div class="u-instructions">
-              <small>
-                {{ $t("feature_not_implemented_yet") }}
-              </small>
-            </div>
-            {{ destination_space_path }}
           </div>
 
-          <br />
+          <div class="u-spacingBottom">
+            <DLabel :str="$t('title_of_copy')" />
+            <TextInput
+              :content.sync="new_title"
+              :maxlength="40"
+              :required="true"
+              ref="titleInput"
+            />
+          </div>
 
-          <!-- <div class="">todo choix space</div> -->
-          <div class="">
-            <div class="">
-              <DLabel :str="$t('title_of_copy')" />
-              <TextInput
-                :content.sync="new_title"
-                :maxlength="40"
-                :required="true"
-                ref="titleInput"
-              />
-            </div>
-
-            <br />
-
-            <div class="">
-              <ToggleInput
-                :content.sync="remove_original"
-                :label="$t('remove_original')"
-                :options="{
-                  true: $t('remove_original_after_copy'),
-                  false: $t('keep_original_after_copy'),
-                }"
-              />
-            </div>
+          <div class="u-spacingBottom">
+            <ToggleInput
+              :content.sync="remove_original"
+              :label="$t('remove_original')"
+              :options="{
+                true: $t('remove_original_after_copy'),
+                false: $t('keep_original_after_copy'),
+              }"
+            />
           </div>
         </div>
 
@@ -157,13 +142,11 @@ export default {
               .delay(4000)
               .error(this.$t("notifications.title_taken"));
             this.$refs.titleInput.$el.querySelector("input").select();
-          } else if (err_code === "not_allowed_to_copy_to_space") {
+          } else if (err_code === "not_allowed_to_copy_folder") {
             this.$alertify
               .delay(4000)
               .error(this.$t("notifications.not_allowed_to_copy_to_space"));
-            this.$refs.titleInput.$el.querySelector("input").select();
           }
-
           this.is_copying = false;
           throw "fail";
         });

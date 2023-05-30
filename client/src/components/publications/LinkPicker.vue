@@ -77,7 +77,7 @@ export default {
   computed: {
     url_to_site() {
       if (!this.full_url) return false;
-      return this.transformURL(this.full_url);
+      return this.transformURL({ url: this.full_url, autoplay: false });
     },
   },
   methods: {},

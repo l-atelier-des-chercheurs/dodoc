@@ -430,6 +430,9 @@
                 "resolutions": [50, 220, 1600]
               },
               "fields": {
+                "group": {
+                  "type": "string"
+                },
                 "caption": {
                   "type": "string"
                 }

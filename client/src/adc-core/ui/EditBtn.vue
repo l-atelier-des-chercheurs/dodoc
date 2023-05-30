@@ -71,9 +71,9 @@ export default {
 
   // margin-top: -0.5rem;
   // margin-bottom: -0.5rem;
-  width: 28px;
-  height: 28px;
-  flex: 0 0 28px;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
 
   // backdrop-filter: blur(5px);
   border-radius: 50%;

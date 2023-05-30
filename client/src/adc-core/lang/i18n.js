@@ -1,5 +1,5 @@
-import VueI18n from "vue-i18n";
 import Vue from "vue";
+import VueI18n from "vue-i18n";
 
 export default function () {
   Vue.use(VueI18n);
@@ -177,8 +177,6 @@ export default function () {
         `,
         reload_page_to_apply:
           "Après avoir enregistré ces changements, rechargez cette page.",
-        feature_not_implemented_yet:
-          "Fonctionnalité à venir, pas encore implémentée",
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
@@ -344,6 +342,10 @@ export default function () {
         latest_changes_to_project: "Dernières modifications au projet",
 
         download: "Télécharger",
+        page_failed_to_load: "Cette page n’a pas pu charger.",
+        open_website_new_tab: "Ouvrir dans un nouvel onglet",
+        click_link_to_open_in_tab:
+          "Cliquez sur le lien ci-dessous pour l’ouvrir dans un nouvel onglet.",
 
         medias: "Médias",
         no_media_in_project: "Aucun média dans ce projet",
@@ -400,6 +402,8 @@ export default function () {
         storage: "Stockage",
         events: "Événements",
         other_events: "Autres événements",
+        start_date: "Date de début",
+        end_date: "Date de fin",
         created_during: "Créé pendant un événement",
 
         make_a_video: "Fabriquer une vidéo",
@@ -539,6 +543,7 @@ export default function () {
         open_copy: "Accéder à la copie",
         title_of_copy: "Titre de la copie",
         destination_space: "Espace qui recevra cette copie",
+        destination_project: "Projet qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
         remove_original_after_copy: "Ce projet sera supprimé après la copie",
@@ -746,6 +751,8 @@ export default function () {
         "notifications.title_taken": "Ce titre est déjà utilisé",
         "notifications.not_allowed_to_copy_to_space":
           "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
+        "notifications.not_allowed_to_copy_to_project":
+          "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
         "notifications.name_taken": "Ce nom est déjà utilisé",
         "notifications.action_not_allowed": "Cette action n’est pas autorisée",
 
@@ -754,8 +761,13 @@ export default function () {
         duplicate: "Dupliquer",
         duplicate_or_move: "Dupliquer ou déplacer",
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
+        duplicate_or_move_media: "Dupliquer ou déplacer ce média",
         dm_instr:
-          "Vers cet espace ou vers un autre ou vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées.",
+          "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées.",
+        dmm_instr:
+          "Dans cet espace ou vers un autre où vous pouvez importer des médias.",
+        dmp_instr:
+          "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
         move_to_page: "Déplacer vers une autre page",
         move: "Déplacer",
         unselect: "Déselectionner",
@@ -769,6 +781,7 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
+        source_media_missing: "Le média source est manquant",
         media_pickers_instr:
           "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
 
