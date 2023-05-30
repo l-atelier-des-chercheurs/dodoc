@@ -17,6 +17,12 @@
       :can_edit="can_edit"
     />
 
+    <RemixField
+      class="u-spacingBottom"
+      :project="project"
+      :can_edit="can_edit"
+    />
+
     <div class="u-spacingBottom">
       <DateDisplay :title="$t('date_created')" :date="project.$date_created" />
       <DateDisplay
@@ -26,7 +32,16 @@
     </div>
 
     <div class="u-mediaOptions" v-if="can_edit">
-      <DuplicateProject :path="project.$path" :source_title="project.title" />
+      <button type="button" class="u-buttonLink" @click="show_dup_modal = true">
+        <sl-icon name="file-plus" />
+        {{ $t("duplicate_or_move_project") }}
+      </button>
+      <DuplicateOrRemixProject
+        v-if="show_dup_modal"
+        :path="project.$path"
+        :proposed_title="`${$t('copy_of')} ${project.title}`"
+        @close="show_dup_modal = false"
+      />
       <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
     </div>
 
@@ -44,8 +59,9 @@
 </template>
 <script>
 import ProjectCard from "@/components/ProjectCard.vue";
-import DuplicateProject from "@/components/project/DuplicateProject.vue";
+import DuplicateOrRemixProject from "@/components/project/DuplicateOrRemixProject.vue";
 import EventField from "@/components/project/EventField.vue";
+import RemixField from "@/components/project/RemixField.vue";
 
 export default {
   props: {
@@ -55,10 +71,13 @@ export default {
   components: {
     ProjectCard,
     EventField,
-    DuplicateProject,
+    RemixField,
+    DuplicateOrRemixProject,
   },
   data() {
-    return {};
+    return {
+      show_dup_modal: false,
+    };
   },
   created() {},
   mounted() {},

@@ -143,6 +143,15 @@ module.exports = (function () {
     );
     app.post(
       [
+        "/_api2/:folder_type/:folder_slug/_remix",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_remix",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_remix",
+      ],
+      _generalPasswordCheck,
+      _remixFolder
+    );
+    app.post(
+      [
         "/_api2/:folder_type/:folder_slug/_generatePreview",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_generatePreview",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_generatePreview",
@@ -862,6 +871,100 @@ module.exports = (function () {
     }
   }
 
+  async function _remixFolder(req, res, next) {
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_type, path_to_folder, data });
+
+    try {
+      let { path_to_destination_type, new_meta } = data;
+      if (!path_to_destination_type) path_to_destination_type = path_to_type;
+      else if (path_to_destination_type !== path_to_type) {
+        // todo check for auth to copy folder
+        const path_to_parent_folder = utils.getContainingFolder(
+          path_to_destination_type
+        );
+        const allowed = await _canContributeToFolder({
+          path_to_folder: path_to_parent_folder,
+          req,
+        });
+        if (!allowed) {
+          const err = new Error(
+            "Destination folder not open to user contribution"
+          );
+          err.code = "not_allowed_to_remix_folder";
+          throw err;
+        }
+      }
+
+      const path_to_source_folder = path_to_folder;
+      new_meta.$is_remix_of = path_to_source_folder;
+
+      const remix_folder_path = await folder.copyFolder({
+        path_to_type,
+        path_to_source_folder,
+        path_to_destination_type,
+        new_meta,
+      });
+      dev.logpackets({
+        status: `remixed folder`,
+        path_to_source_folder,
+        path_to_destination_type,
+      });
+      res.status(200).json({ remix_folder_path });
+
+      await _updateFolderListOfRemixes({
+        path_to_type,
+        path_to_folder,
+        new_remix_path: remix_folder_path,
+      });
+
+      const new_folder_meta = await folder.getFolder({
+        path_to_folder: remix_folder_path,
+      });
+
+      notifier.emit("folderCreated", path_to_destination_type, {
+        path: path_to_destination_type,
+        meta: new_folder_meta,
+      });
+    } catch (err) {
+      dev.error("Failed to copy expected content: " + err);
+      res.status(500).send({ code: err.code });
+    }
+  }
+
+  async function _updateFolderListOfRemixes({
+    path_to_type,
+    path_to_folder,
+    new_remix_path,
+  }) {
+    dev.logapi({ path_to_type, path_to_folder, new_remix_path });
+
+    const new_folder_meta = await folder.getFolder({
+      path_to_folder,
+    });
+
+    let $list_of_remixes = new_folder_meta.$list_of_remixes || [];
+    $list_of_remixes.push(new_remix_path);
+
+    const data = { $list_of_remixes };
+
+    const changed_data = await folder.updateFolder({
+      path_to_type,
+      path_to_folder,
+      data,
+    });
+
+    notifier.emit("folderUpdated", path_to_folder, {
+      path: path_to_folder,
+      changed_data,
+    });
+    if (path_to_type)
+      notifier.emit("folderUpdated", path_to_type, {
+        path: path_to_folder,
+        changed_data,
+      });
+  }
+
   async function _generatePreview(req, res, next) {
     const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, data });
@@ -893,7 +996,6 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to generate preview: " + err);
-
       notifier.emit("taskEnded", task_id, {
         task_id,
         message: err,

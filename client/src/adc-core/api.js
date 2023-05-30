@@ -445,6 +445,20 @@ export default function () {
           });
         return response.data.copy_folder_path;
       },
+      async remixFolder({
+        path,
+        new_meta = {},
+        path_to_destination_type = "",
+      }) {
+        path = `${path}/_remix`;
+        const response = await this.$axios
+          .post(path, { new_meta, path_to_destination_type })
+          .catch((err) => {
+            const err_code = this.onError(err);
+            throw err_code;
+          });
+        return response.data.remix_folder_path;
+      },
       async exportFolder({ path, instructions }) {
         path = `${path}/_export`;
 

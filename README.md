@@ -243,7 +243,9 @@ These permissions trickle down: an instance admin has admin rights to all the in
 
 An instance contributor, though, only has contributors rights to the direct content it contains. For instance, a contributor to a space can create a project, but not remove a project he/she is not an $admin of.
 
-If a folder type has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be created by all users even those that are not logged in. This is useful for accounts creation.
+If a folder type schema has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be created by all users even those that are not logged in. This is useful for accounts creation.
+
+If a folder has `$can_be_remixed = true`, it can be remixed: duplicated somewhere else to the same level. When it is remixed, the path to the new folder gets appended to the array `$list_of_remixes` and the remix folder gets a `$is_remix_of` string.
 
 ## Examples
 

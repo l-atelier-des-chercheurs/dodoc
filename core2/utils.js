@@ -119,6 +119,9 @@ module.exports = (function () {
         $admins: { type: "any" },
         $contributors: { type: "any" },
         $password: { type: "string" },
+        $can_be_remixed: { type: "boolean" },
+        $is_remix_of: { type: "string" },
+        $list_of_remixes: { type: "array" },
       };
       fields = Object.assign({}, fields, predefined_fields);
 

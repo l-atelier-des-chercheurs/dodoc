@@ -405,6 +405,7 @@ export default function () {
         start_date: "Date de début",
         end_date: "Date de fin",
         created_during: "Créé pendant un événement",
+        remix_this_project: "Remixer ce projet",
 
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
@@ -540,9 +541,13 @@ export default function () {
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
         copy_of: "Copie de",
+        remix_of: "Remix de",
         open_copy: "Accéder à la copie",
         title_of_copy: "Titre de la copie",
+        title_of_remix: "Titre du remix",
+        remix: "Remixer",
         destination_space: "Espace qui recevra cette copie",
+        destination_space_remix: "Espace qui recevra ce projet remixé",
         destination_project: "Projet qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
