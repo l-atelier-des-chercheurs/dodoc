@@ -195,8 +195,6 @@
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
       />
       <template v-else-if="is_shape">
-        <!-- :width="`${mediaSize.width}mm`"
-          :height="`${mediaSize.height}mm`" -->
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"

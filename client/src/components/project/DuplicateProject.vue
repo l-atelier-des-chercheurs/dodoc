@@ -146,9 +146,7 @@ export default {
             this.$alertify
               .delay(4000)
               .error(this.$t("notifications.not_allowed_to_copy_to_space"));
-            this.$refs.titleInput.$el.querySelector("input").select();
           }
-
           this.is_copying = false;
           throw "fail";
         });

@@ -47,14 +47,14 @@
             />
           </div>
 
-          <br />
+          <!-- <br />
           <details>
             <summary>{{ $t("more_informations") }}</summary>
-            <div>
+            <pre>
               project_medias_to_copy = {{ project_medias_to_copy.length }}
               {{ project_medias_to_copy }}
-            </div>
-          </details>
+            </pre>
+          </details> -->
         </div>
 
         <div class="u-sameRow" slot="footer">
@@ -132,7 +132,8 @@ export default {
               source_media,
               folder_path: this.publication.$path,
             });
-            acc.push(_linked_media.$path);
+            if (!acc.includes(_linked_media.$path))
+              acc.push(_linked_media.$path);
           });
         }
         return acc;
@@ -150,10 +151,10 @@ export default {
 
       // multiple cases :
       // - same project, copyfolder
-      // - other project, copyfolder then check for included medias, which we'll also copy. If their meta filename needs to be changed
+      // - other project, copyfolder then check for included medias in project, which we'll also copy. If their meta filename needs to be changed
       // during copy, update all modules that uses it
 
-      const copy_folder_path = await this.$api
+      const copy_publication_path = await this.$api
         .copyFolder({
           path: this.path,
           path_to_destination_type,
@@ -171,24 +172,90 @@ export default {
             this.$alertify
               .delay(4000)
               .error(this.$t("notifications.not_allowed_to_copy_to_space"));
-            this.$refs.titleInput.$el.querySelector("input").select();
           }
-
           this.is_copying = false;
           throw "fail";
         });
 
+      const copy_publication = await this.$api.getFolder({
+        path: copy_publication_path,
+      });
+
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .success(this.$t("completed"));
+        .success("publication_copy_success");
+
+      // publication changed project, so we need to copy medias aswell
+      if (
+        this.getParent(this.path) !==
+        this.destination_project_path + "/publications"
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log("has_linked_media_to_copy");
+        for (let media_path of this.project_medias_to_copy) {
+          const copy_file_meta = await this.$api
+            .copyFile({
+              path: media_path,
+              path_to_destination_folder: this.destination_project_path,
+              new_meta: {},
+            })
+            .catch((err_code) => {
+              this.$alertify.delay(4000).error(err_code);
+            });
+
+          const original_file_meta = this.getFilename(media_path);
+          if (copy_file_meta !== original_file_meta) {
+            // todo: media filename changed, we have to update its link in publi files with source_medias
+            for (let publication_file of copy_publication.$files) {
+              if (
+                !Object.prototype.hasOwnProperty.call(
+                  publication_file,
+                  "source_medias"
+                )
+              )
+                continue;
+
+              if (
+                !publication_file.source_medias.some(
+                  (sm) =>
+                    sm.meta_filename_in_project &&
+                    sm.meta_filename_in_project === original_file_meta
+                )
+              )
+                continue;
+
+              const source_medias = publication_file.source_medias.map((sm) => {
+                if (sm.meta_filename_in_project === original_file_meta) {
+                  sm.meta_filename_in_project = copy_file_meta;
+                }
+                return sm;
+              });
+
+              // update publication file in new folder
+              await this.$api.updateMeta({
+                path: publication_file.$path,
+                new_meta: {
+                  source_medias,
+                },
+              });
+            }
+          }
+        }
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success("linked media copied");
+      }
 
       let query = {};
       query.projectpanes = JSON.stringify([
         {
           type: "publish",
           size: 100,
-          folder: this.getFilename(copy_folder_path),
+          folder: this.getFilename(copy_publication.$path),
         },
       ]);
       const navigation = {
