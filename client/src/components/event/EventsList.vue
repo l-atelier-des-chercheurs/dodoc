@@ -226,9 +226,9 @@ export default {
   min-height: 100px;
   padding: 0 calc(var(--spacing) * 1);
 
-  // border: 1px solid var(--c-gris);
+  max-width: 56ch;
+  width: 100%;
 
-  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover,
