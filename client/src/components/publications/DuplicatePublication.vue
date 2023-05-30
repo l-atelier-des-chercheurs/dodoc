@@ -200,7 +200,9 @@ export default {
             .copyFile({
               path: media_path,
               path_to_destination_folder: this.destination_project_path,
-              new_meta: {},
+              new_meta: {
+                group: "imported_from_" + copy_publication_path,
+              },
             })
             .catch((err_code) => {
               this.$alertify.delay(4000).error(err_code);
