@@ -139,7 +139,7 @@ export default {
           type: "collect",
         },
         {
-          type: "remix",
+          type: "make",
         },
         {
           type: "publish",
@@ -278,7 +278,7 @@ export default {
             <path style="fill:var(--c-orange);" d="m104.4 105h21.6v21h-21.6z"/>
           </svg>
         `;
-      else if (type === "remix")
+      else if (type === "make")
         return `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
             <circle cx="84.13" cy="84" r="84" style="fill: var(--c-bleuvert)"/>

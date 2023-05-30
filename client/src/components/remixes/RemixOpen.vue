@@ -30,7 +30,7 @@ import VideoAssemblage from "@/components/remixes/VideoAssemblage.vue";
 export default {
   props: {
     project_path: String,
-    remix_slug: String,
+    make_slug: String,
   },
   components: {
     VideoAssemblage,
@@ -57,7 +57,7 @@ export default {
     async listRemix() {
       const remix = await this.$api
         .getFolder({
-          path: `${this.project_path}/remixes/${this.remix_slug}`,
+          path: `${this.project_path}/remixes/${this.make_slug}`,
         })
         .catch((err) => {
           this.fetch_remix_error = err.response;

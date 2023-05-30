@@ -201,7 +201,13 @@ module.exports = (function () {
       new_meta,
     }) => {
       dev.logfunction({ path_to_source_folder, path_to_destination_type });
-      // find available slug in destination folder
+
+      // check for field uniqueness
+      await _cleanFields({
+        meta: new_meta,
+        path_to_type,
+        context: "update",
+      });
 
       const source_folder_slug = utils.getSlugFromPath(path_to_source_folder);
 

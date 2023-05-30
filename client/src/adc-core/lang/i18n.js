@@ -405,6 +405,7 @@ export default function () {
         start_date: "Date de début",
         end_date: "Date de fin",
         created_during: "Créé pendant un événement",
+        remix_this_project: "Remixer ce projet",
 
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
@@ -540,9 +541,13 @@ export default function () {
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
         copy_of: "Copie de",
+        remix_of: "Remix de",
         open_copy: "Accéder à la copie",
         title_of_copy: "Titre de la copie",
+        title_of_remix: "Titre du remix",
+        remix: "Remixer",
         destination_space: "Espace qui recevra cette copie",
+        destination_space_remix: "Espace qui recevra ce projet remixé",
         destination_project: "Projet qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
@@ -554,7 +559,7 @@ export default function () {
         materials: "Matériaux",
         levels_and_competences: "Niveaux et compétence",
 
-        fabrication_level: "Niveau de connaissance",
+        skill_level: "Niveau de connaissance",
         beginner: "Débutant",
         intermediate: "Intermédiaire",
         experienced: "Avancé",
@@ -614,8 +619,8 @@ export default function () {
         stop_recording: "Arrêter la capture",
         pause_recording: "Mettre en pause",
         unpause_recording: "Relancer l’enregistrement",
-        record_audio: "Capturer un son",
-        record_video: "Capturer une vidéo",
+        record_audio: "Capter un son",
+        record_video: "Capter une vidéo",
         stopmotion: "animation",
         stopmotion_list: "Liste des animations",
         sure_to_cancel_stopmotion:
@@ -763,7 +768,7 @@ export default function () {
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
         duplicate_or_move_media: "Dupliquer ou déplacer ce média",
         dm_instr:
-          "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées.",
+          "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, fabrications, publications) seront copiées.",
         dmm_instr:
           "Dans cet espace ou vers un autre où vous pouvez importer des médias.",
         dmp_instr:
@@ -803,19 +808,19 @@ export default function () {
         general_informations: "Informations sur l’instance",
 
         panes: "Panneaux",
-        capture: "Capturer",
+        capture: "Capter",
         collect: "Collecter",
-        remix: "Remixer",
+        make: "Fabriquer",
         publish: "Publier",
 
-        remixes_list: "Liste des remixes",
+        make_list: "Liste des fabrications",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
         "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
           <br />
           Vous pouvez aussi importer des fichiers (photos, vidéos, audios, 3D, PDF ou autre) depuis vos appareils.`,
-        "instructions.pane.remix":
+        "instructions.pane.make":
           "Recadrez, raccourcissez, assemblez et annotez vos médias.",
         "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
           <br />

@@ -67,12 +67,12 @@
           :media_focused="pane.focus"
           @update:media_focused="setItem(pane, 'focus', $event)"
         />
-        <RemixPane
-          v-if="pane.type === 'remix'"
+        <MakePane
+          v-if="pane.type === 'make'"
           :project="project"
-          :opened_remix_slug="pane.remix"
+          :opened_make_slug="pane.make"
           :can_edit="can_edit_project"
-          @update:opened_remix_slug="setItem(pane, 'remix', $event)"
+          @update:opened_make_slug="setItem(pane, 'make', $event)"
         />
         <PublierPane
           v-if="pane.type === 'publish'"
@@ -91,7 +91,7 @@
 import { Splitpanes, Pane } from "splitpanes";
 import CapturePane from "@/components/panes/CapturePane.vue";
 import MediaLibrary from "@/components/panes/MediaLibrary.vue";
-import RemixPane from "@/components/panes/RemixPane.vue";
+import MakePane from "@/components/panes/MakePane.vue";
 import PublierPane from "@/components/panes/PublierPane.vue";
 import InstructionsWindow from "@/components/project/InstructionsWindow.vue";
 
@@ -106,7 +106,7 @@ export default {
     Pane,
     PublierPane,
     MediaLibrary,
-    RemixPane,
+    MakePane,
     CapturePane,
     InstructionsWindow,
   },

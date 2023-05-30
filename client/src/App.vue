@@ -223,7 +223,7 @@ export default {
 
   --color-capture: var(--c-rouge);
   --color-collect: var(--c-orange);
-  --color-remix: var(--c-bleumarine);
+  --color-make: var(--c-bleumarine);
   --color-publish: var(--c-bleuvert);
 
   --indicator-color: var(--c-vert) !important;

@@ -5,7 +5,7 @@
     :has_items="!!project.level"
   >
     <div class="u-spacingBottom">
-      <DLabel :str="$t('fabrication_level')" />
+      <DLabel :str="$t('skill_level')" />
       <SelectField
         :field_name="'level'"
         :content="project.level || '-'"

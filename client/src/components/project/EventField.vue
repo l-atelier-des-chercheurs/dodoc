@@ -1,7 +1,6 @@
 <template>
   <div class="">
     <DLabel :str="$t('created_during')" />
-
     <template v-if="!is_loading">
       <RadioCheckboxField
         :field_name="'event_linked_slug'"
