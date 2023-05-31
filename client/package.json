@@ -20,7 +20,6 @@
     "core-js": "^3.26.1",
     "debounce": "^1.2.1",
     "imagetracerjs": "^1.2.6",
-    "vue-flickity": "^1.2.1",
     "isomorphic-dompurify": "^1.5.0",
     "less-loader": "^11.1.0",
     "marked": "^5.0.1",
@@ -37,6 +36,7 @@
     "splitpanes": "^2.4.1",
     "vue": "^2.7.14",
     "vue-cli-plugin-pug": "^2.0.0",
+    "vue-flickity": "^1.2.1",
     "vue-i18n": "^8.28.2",
     "vue-infinite-viewer": "^0.23.0",
     "vue-plyr": "^7.0.0",
@@ -60,6 +60,7 @@
     "sass": "^1.56.1",
     "sass-loader": "^12.6.0",
     "vue-cli-plugin-webpack-bundle-analyzer": "~4.0.0",
+    "vue-reactive-provide": "^0.3.0",
     "vue-template-compiler": "^2.7.14"
   }
 }

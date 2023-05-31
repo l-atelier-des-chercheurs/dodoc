@@ -14,6 +14,9 @@ Vue.prototype.$alertify = alertify;
 
 Vue.config.ignoredElements = [/sl-/];
 
+import ReactiveProvide from "vue-reactive-provide";
+Vue.use(ReactiveProvide);
+
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
@@ -188,6 +191,8 @@ document.addEventListener(
 
 import FormatDates from "@/mixins/FormatDates";
 Vue.mixin(FormatDates);
+import FormatBytes from "@/mixins/FormatBytes";
+Vue.mixin(FormatBytes);
 import Props from "@/mixins/Props";
 Vue.mixin(Props);
 import Cache from "@/mixins/Cache";

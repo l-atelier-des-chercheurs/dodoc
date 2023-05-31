@@ -8,25 +8,6 @@
       @openSection="openSection"
       @updateOrder="updateOrder"
     />
-    <!-- <div class="" v-for="(section, index) of sections" :key="section.$path">
-        <button
-          type="button"
-          class="u-button"
-          @click="openSection(section.$path)"
-        >
-          <span
-            v-html="section.section_title || $t('section') + ' ' + (index + 1)"
-          />
-        </button>
-        <button
-          type="button"
-          class="u-button"
-          @click="removeSection(section.$path)"
-        >
-          remove
-        </button>
-      </div> -->
-
     <transition name="pagechange" mode="out-in">
       <div v-if="opened_section" :key="opened_section.$path">
         <SingleSection
@@ -69,6 +50,12 @@ export default {
   },
   data() {
     return {};
+  },
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
   },
   created() {},
   mounted() {
@@ -118,6 +105,42 @@ export default {
       if (this.opened_section_index > 0)
         return this.sections[this.opened_section_index - 1];
       return false;
+    },
+    meta_filenames_already_present() {
+      const current = [];
+      const other = [];
+
+      this.sections.map((s) => {
+        const is_current_section = s.$path === this.opened_section?.$path;
+
+        if (s.modules_list && Array.isArray(s.modules_list))
+          s.modules_list.map((module_meta) => {
+            const section_module = this.publication.$files.find((f) => {
+              return this.getFilename(f.$path) === module_meta;
+            });
+            if (
+              section_module.source_medias &&
+              Array.isArray(section_module.source_medias)
+            )
+              section_module.source_medias.map((sm) => {
+                if (is_current_section)
+                  current.push(sm.meta_filename_in_project);
+                else other.push(sm.meta_filename_in_project);
+              });
+          });
+      });
+
+      return { current, other };
+      // return this.modules_list.reduce((acc, meta_filename) => {
+      //   const module = this.findModuleFromMetaFilename(meta_filename);
+      //   if (module.source_medias) {
+      //     module.source_medias.map((sm) => {
+      //       if (sm.meta_filename_in_project)
+      //         acc.push(sm.meta_filename_in_project);
+      //     });
+      //   }
+      //   return acc;
+      // }, []);
     },
   },
   methods: {

@@ -10,7 +10,6 @@
       :path="current_project_path"
       :mode="'multiple'"
       :prevent_duplicates="prevent_duplicates"
-      :meta_filenames_already_present="meta_filenames_already_present"
       @addMedias="$emit('addMedias', $event)"
       @close="$emit('close')"
     />
@@ -20,7 +19,6 @@
 export default {
   props: {
     publication_path: String,
-    meta_filenames_already_present: Array,
     prevent_duplicates: Boolean,
   },
   components: {},

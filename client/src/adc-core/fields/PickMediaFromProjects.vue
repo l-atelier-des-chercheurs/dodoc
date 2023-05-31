@@ -1,5 +1,8 @@
 <template>
-  <BaseModal2 @close="$emit('close')">
+  <BaseModal2
+    :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
+    @close="$emit('close')"
+  >
     <div class="_pickMediaFromProject">
       <sl-spinner style="--indicator-color: currentColor" v-if="is_loading" />
       <template v-else>
@@ -56,7 +59,6 @@ import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 export default {
   props: {
     path: String,
-    meta_filenames_already_present: Array,
     prevent_duplicates: {
       type: Boolean,
       default: false,
@@ -69,6 +71,7 @@ export default {
   components: {
     MediaLibrary,
   },
+  inject: ["$getMetaFilenamesAlreadyPresent"],
   data() {
     return {
       is_loading: false,
@@ -91,7 +94,13 @@ export default {
       else this.source_project = undefined;
     },
   },
-  computed: {},
+  computed: {
+    meta_filenames_already_present() {
+      if (this.$getMetaFilenamesAlreadyPresent)
+        return this.$getMetaFilenamesAlreadyPresent();
+      return false;
+    },
+  },
   methods: {
     addMedias(path_to_source_media_metas) {
       // TODO if path matches a media that is not in this project,
@@ -134,21 +143,21 @@ export default {
 ._pickMediaFromProject {
   position: relative;
   display: block;
-  max-width: 480px;
+  // max-width: 480px;
   width: 100%;
 
   // max-height: 50vh;
-  margin: calc(var(--spacing) / 4) 0;
-  padding: calc(var(--spacing) / 4);
+  // margin: calc(var(--spacing) / 4) 0;
+  // padding: calc(var(--spacing) / 4);
   overflow: auto;
-  border-radius: 4px;
+  // border-radius: 4px;
   background: white;
 
   // display: flex;
   // flex-flow: column nowrap;
 
-  border: 2px dashed var(--c-gris_fonce);
-  padding: calc(var(--spacing) / 2);
+  // border: 2px dashed var(--c-gris_fonce);
+  // padding: calc(var(--spacing) / 2);
 
   > * {
     // flex: 0 0 auto;

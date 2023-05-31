@@ -28,7 +28,6 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
-        :meta_filenames_already_present="meta_filenames_already_present"
         @addMedias="createMosaic"
         @close="show_media_picker = false"
       />
@@ -47,7 +46,7 @@
       <MediaPicker
         v-if="show_file_picker"
         :publication_path="publication_path"
-        :meta_filenames_already_present="meta_filenames_already_present"
+        :prevent_duplicates="true"
         @addMedias="createFiles"
         @close="show_file_picker = false"
       />
@@ -112,7 +111,6 @@ import LinkPicker from "@/components/publications/LinkPicker.vue";
 export default {
   props: {
     publication_path: String,
-    meta_filenames_already_present: Array,
     addtl_meta: Object,
     context: String,
     show_shapes: Boolean,

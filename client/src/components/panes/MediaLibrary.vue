@@ -135,7 +135,7 @@ export default {
     media_focused: [Boolean, String],
     select_mode: String,
     prevent_select_duplicates: Boolean,
-    meta_filenames_already_present: { type: Array, default: () => [] },
+    meta_filenames_already_present: [Boolean, Object],
   },
   components: {
     MediaTile,
@@ -224,15 +224,22 @@ export default {
       // });
     },
     mediaTileIsSelectable(path) {
-      if (this.select_mode === "unique") return false;
-      if (this.prevent_select_duplicates)
-        if (this.selected_medias.includes(path)) return false;
+      if (this.select_mode === "single") return false;
+      path;
+      // if (this.prevent_select_duplicates)
       return true;
     },
     mediaTileAlreadySelected(path) {
-      return this.meta_filenames_already_present.some((mf) =>
-        path.endsWith("/" + mf)
-      );
+      if (!this.meta_filenames_already_present) return false;
+      let present = {};
+
+      const meta_filename = this.getFilename(path);
+      if (this.meta_filenames_already_present.current.includes(meta_filename))
+        present.current = true;
+      if (this.meta_filenames_already_present.other.includes(meta_filename))
+        present.other = true;
+
+      return Object.keys(present).length > 0 ? present : false;
     },
     updateInputFiles($event) {
       this.files_to_import = Array.from($event.target.files);

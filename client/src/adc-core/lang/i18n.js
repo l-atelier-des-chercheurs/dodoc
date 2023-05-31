@@ -131,6 +131,11 @@ export default function () {
         hero_image: "Visuel page d’accueil",
         hero_image_instr: "",
 
+        bytes: "octets",
+        kb: "ko",
+        mb: "Mo",
+        gb: "Go",
+
         ui_lang_select: "Langue de l’interface",
         lang_updated: "La langue a été mise à jour",
 
@@ -731,6 +736,8 @@ export default function () {
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
         pick_cover: "Choisissez une image de couverture",
+        pick_media: "Choisissez un média",
+        pick_medias: "Choisissez un ou plusieurs médias",
         remove_image: "Retirer cette image",
 
         add_authors: "Ajouter des contributeur·rice·s",
@@ -795,6 +802,8 @@ export default function () {
         media_pickers_instr:
           "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
         already_present: "Déjà présent",
+        on_this_page: "Sur cette page",
+        on_other_pages: "Sur d’autres pages",
 
         current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",

@@ -47,7 +47,6 @@
         v-if="show_picker"
         :path="project_path"
         :mode="'multiple'"
-        :meta_filenames_already_present="meta_filenames_already_present"
         @addMedias="addMedias"
         @close="show_picker = false"
       />
@@ -86,9 +85,6 @@ export default {
         if (m) acc.push(m);
         return acc;
       }, []);
-    },
-    meta_filenames_already_present() {
-      return this.content;
     },
   },
   methods: {

@@ -18,7 +18,6 @@
             </div>
           </div>
         </div>
-
         <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(meta_filename, index) in modules_list">
             <PublicationModule
@@ -50,7 +49,6 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
-                :meta_filenames_already_present="meta_filenames_already_present"
                 @addModule="
                   ({ meta_filename }) =>
                     insertModuleMetaFilenameToList({
@@ -123,18 +121,6 @@ export default {
       }
       return [];
     },
-    meta_filenames_already_present() {
-      return this.modules_list.reduce((acc, meta_filename) => {
-        const module = this.findModuleFromMetaFilename(meta_filename);
-        if (module.source_medias) {
-          module.source_medias.map((sm) => {
-            if (sm.meta_filename_in_project)
-              acc.push(sm.meta_filename_in_project);
-          });
-        }
-        return acc;
-      }, []);
-    },
   },
   methods: {
     async appendModuleMetaFilenameToList({ meta_filename }) {
@@ -169,7 +155,7 @@ export default {
     findModuleFromMetaFilename(meta_filename) {
       if (!this.publication.$files) return [];
       return this.publication.$files.find((f) => {
-        const _meta_name = f.$path.substring(f.$path.lastIndexOf("/") + 1);
+        const _meta_name = this.getFilename(f.$path);
         return _meta_name === meta_filename;
       });
     },

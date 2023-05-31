@@ -17,10 +17,16 @@
     <span v-if="tile_mode === 'medium'" class="_caption">{{
       file.caption || "–"
     }}</span>
-    <span v-if="is_already_selected" class="_alreadySelected">
-      <sl-icon name="check2-square" />
-      <span>{{ $t("already_present") }}</span>
-    </span>
+    <div v-if="is_already_selected" class="_alreadySelected">
+      <div v-if="is_already_selected.current" class="_currentPage">
+        <!-- <sl-icon name="check2-square" /> -->
+        <span>{{ $t("on_this_page") }}</span>
+      </div>
+      <div v-if="is_already_selected.other" class="_otherPage">
+        <!-- <sl-icon name="check2-square" /> -->
+        <span>{{ $t("on_other_pages") }}</span>
+      </div>
+    </div>
 
     <button
       type="button"
@@ -52,7 +58,7 @@ export default {
     was_focused: Boolean,
     is_selectable: Boolean,
     is_selected: Boolean,
-    is_already_selected: Boolean,
+    is_already_selected: [Boolean, Object],
     tile_mode: {
       type: String,
       default: "tiny",
@@ -183,23 +189,37 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 1;
-  margin: calc(var(--spacing) / 2);
-  background: var(--c-bleuvert);
-
-  font-size: var(--sl-font-size-x-small);
-
-  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-  border-radius: 1em;
-  width: calc(100% - calc(var(--spacing) / 1));
+  margin: calc(var(--spacing) / 4);
+  pointer-events: none;
 
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
+  flex-flow: column nowrap;
   gap: calc(var(--spacing) / 4);
+
+  font-size: var(--sl-font-size-x-small);
+  width: calc(100% - calc(var(--spacing) / 2));
 
   ._mediaTile[data-tilemode="medium"] & {
     bottom: 2em;
+  }
+
+  > ._otherPage,
+  > ._currentPage {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--spacing) / 4);
+
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+    border-radius: 1em;
+  }
+
+  > ._currentPage {
+    background: var(--c-bleuvert);
+  }
+  > ._otherPage {
+    background: var(--c-orange);
   }
 }
 

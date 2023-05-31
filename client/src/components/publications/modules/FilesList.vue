@@ -33,6 +33,13 @@
             class="_link--filename"
             v-text="_linked_media.$media_filename"
           />
+          <template v-if="_linked_media.$infos.size">
+            |&nbsp;
+            <span
+              class="u-instructions _link--filesize"
+              v-text="formatBytes(_linked_media.$infos.size)"
+            />
+          </template>
         </span>
 
         <DownloadFile
@@ -94,7 +101,6 @@ export default {
   computed: {},
   methods: {
     updateOrder($event) {
-      debugger;
       $event;
     },
   },
