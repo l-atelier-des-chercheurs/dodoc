@@ -10,7 +10,7 @@
       :path="current_project_path"
       :mode="'multiple'"
       :meta_filenames_already_present="meta_filenames_already_present"
-      @selectMedias="$emit('selectMedias', $event)"
+      @addMedias="$emit('addMedias', $event)"
       @close="$emit('close')"
     />
   </div>

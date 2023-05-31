@@ -44,15 +44,17 @@ export default {
       $event.preventDefault();
       $event.dataTransfer.dropEffect = "link";
 
-      if ($event.dataTransfer.files?.length > 0)
-        this.$emit("mediaDropped", $event.dataTransfer.files);
-
-      if (!$event.dataTransfer.getData("text/plain")) return false;
-
+      if ($event.dataTransfer.files?.length > 0) this.droppedFiles($event);
+      else if ($event.dataTransfer.getData("text/plain"))
+        this.droppedMediaInDodoc($event);
+    },
+    droppedFiles($event) {
+      this.$emit("fileDropped", $event.dataTransfer.files);
+    },
+    droppedMediaInDodoc($event) {
       const file = JSON.parse($event.dataTransfer.getData("text/plain"));
-      const path_to_source_media_meta = file.$path;
-
-      this.$emit("mediaDropped", { path_to_source_media_meta });
+      const path_to_source_media_metas = [file.$path];
+      this.$emit("mediaDropped", { path_to_source_media_metas });
     },
   },
 };

@@ -168,7 +168,7 @@ export default {
 
 ._alreadySelected {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   margin: calc(var(--spacing) / 2);
   background: var(--c-bleuvert);

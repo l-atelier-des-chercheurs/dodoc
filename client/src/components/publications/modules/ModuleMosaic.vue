@@ -86,16 +86,14 @@
             name="plus-circle-fill"
             class="u-colorBleuvert"
             :label="$t('add_media')"
-            v-if="!show_media_picker"
             @click="show_media_picker = true"
           />
           <MediaPicker
-            v-else
+            v-if="show_media_picker"
             :publication_path="publication_path"
-            @selectMedia="selectMedia"
+            @addMedias="addMedias"
             @close="show_media_picker = false"
           />
-
           <transition name="dropzone" :duration="150">
             <div
               class="_dropzone"
@@ -104,7 +102,7 @@
                 medias_with_linked.length < number_of_max_medias
               "
             >
-              <DropZone @mediaDropped="selectMedia" />
+              <DropZone @mediaDropped="addMedias" />
             </div>
           </transition>
         </div>
@@ -177,9 +175,23 @@ export default {
     },
   },
   methods: {
-    selectMedia({ path_to_source_media_meta }) {
-      const source_medias = this.publimodule.source_medias.slice();
-      source_medias.push({ path: path_to_source_media_meta });
+    addMedias({ path_to_source_media_metas }) {
+      const source_medias_to_append = path_to_source_media_metas.map(
+        (path_to_source_media_meta) => {
+          return {
+            meta_filename_in_project: this.getFilename(
+              path_to_source_media_meta
+            ),
+          };
+        }
+      );
+
+      debugger;
+      const previous_source_medias =
+        this.publimodule.source_medias.slice() || [];
+      const source_medias = previous_source_medias.concat(
+        source_medias_to_append
+      );
       this.$emit("updateMeta", { source_medias });
       this.show_media_picker = false;
     },
@@ -289,8 +301,12 @@ export default {
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
 
+  pointer-events: none;
+
   button {
     // background: white;
+    pointer-events: auto;
+
     border-radius: 4px;
     color: white;
     text-shadow: 0px 0px 4px rgb(0 0 0 / 80%);

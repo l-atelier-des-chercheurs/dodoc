@@ -28,7 +28,7 @@
         v-if="show_media_picker"
         :publication_path="publication_path"
         :meta_filenames_already_present="meta_filenames_already_present"
-        @selectMedias="createMosaic"
+        @addMedias="createMosaic"
         @close="show_media_picker = false"
       />
       <button
@@ -204,7 +204,6 @@ export default {
 
       if (this.context === "page_by_page") {
         for (const source_media of source_medias) {
-          debugger;
           const media = this.getSourceMedia({
             source_media,
             folder_path: this.publication_path,

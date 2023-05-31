@@ -66,7 +66,7 @@
           v-if="show_picker"
           :path="path"
           :mode="'single'"
-          @selectMedias="selectMediaFromLib"
+          @addMedias="addMediaFromLib"
           @close="show_picker = false"
         />
       </div>
@@ -205,7 +205,7 @@ export default {
         }, 20);
       });
     },
-    selectMediaFromLib({ path_to_source_media_metas }) {
+    addMediaFromLib({ path_to_source_media_metas }) {
       // mode === 'unique', so we should get only one file
       const path_to_source_media_meta = path_to_source_media_metas[0];
 
