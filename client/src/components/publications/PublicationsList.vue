@@ -128,7 +128,7 @@ export default {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) * 2);
-  align-items: flex-start;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  align-items: baseline;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
 </style>

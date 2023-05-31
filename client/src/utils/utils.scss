@@ -841,3 +841,23 @@ input[type="checkbox"]:disabled {
   color: var(--form-control-disabled);
   cursor: not-allowed;
 }
+
+.u-addBtn {
+  --side-width: 24px;
+  display: block;
+  // width: var(--side-width);
+  // height: var(--side-width);
+  padding: calc(var(--spacing) / 4);
+  border-radius: 50%;
+  background: transparent;
+  font-size: 1.4em;
+
+  color: var(--c-noir);
+
+  display: flex;
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}

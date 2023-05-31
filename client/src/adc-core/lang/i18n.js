@@ -348,6 +348,7 @@ export default function () {
           "Cliquez sur le lien ci-dessous pour l’ouvrir dans un nouvel onglet.",
 
         medias: "Médias",
+        no_preview_to_show: "Aucun aperçu à afficher pour le moment",
         no_media_in_project: "Aucun média dans ce projet",
         number_of_media: "Nombre de médias",
         media_removed: "Média supprimé",
@@ -789,6 +790,7 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
+        source_files: "Fichiers source",
         source_media_missing: "Le média source est manquant",
         media_pickers_instr:
           "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",

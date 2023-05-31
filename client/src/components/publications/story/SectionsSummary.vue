@@ -1,8 +1,9 @@
 <template>
   <div class="_sectionsSummary">
     <ProjectCard
+      ref="details"
       :header="$t('summary')"
-      :icon="'file-earmark-arrow-down'"
+      :icon="'card-list'"
       :has_items="sections.length > 0 ? sections.length : false"
       :is_open_initially="sections.length === 0"
     >
@@ -25,7 +26,7 @@
           <span v-handle class="_dragHandle" v-if="can_edit">
             <sl-icon name="grip-vertical" label="Déplacer" />
           </span>
-          <span class="_clickZone" @click="$emit('openSection', section.$path)">
+          <span class="_clickZone" @click="openSection(section.$path)">
             <h4 class="_title">
               <span v-if="section.section_title">
                 {{ section.section_title }}
@@ -73,11 +74,28 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on(`sections.open_summary`, this.openSummary);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(`sections.open_summary`, this.openSummary);
+  },
   watch: {},
   computed: {},
   methods: {
+    openSummary() {
+      this.$refs.details.$el.open = true;
+    },
+    closeSummary() {
+      this.$refs.details.$el.open = false;
+    },
+    openSection(path) {
+      // jarring jump in section
+      // setTimeout(() => {
+      //   this.closeSummary();
+      // }, 500);
+      this.$emit("openSection", path);
+    },
     isActive(path) {
       return this.opened_section && path === this.opened_section.$path;
     },

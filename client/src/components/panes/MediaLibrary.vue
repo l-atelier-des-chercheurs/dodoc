@@ -126,7 +126,7 @@
         @nextMedia="nextMedia"
       />
     </transition>
-    <!-- <DropZone @fileDropped="fileDropped" /> -->
+    <DropZone @fileDropped="fileDropped" />
   </div>
 </template>
 <script>
@@ -160,7 +160,6 @@ export default {
 
       media_just_focused: undefined,
 
-      show_dropzone: false,
       hide_dropzone_timeout: undefined,
     };
   },
@@ -233,7 +232,6 @@ export default {
     },
     fileDropped(files) {
       this.files_to_import = Array.from(files);
-      this.show_dropzone = false;
     },
     mediaJustImported(list_of_added_metas) {
       // TODO just imported medias get placed in publication automatically
@@ -375,6 +373,25 @@ export default {
 
   > * {
     pointer-events: auto;
+  }
+}
+._addBtn {
+  --side-width: 24px;
+  display: block;
+  // width: var(--side-width);
+  // height: var(--side-width);
+  padding: calc(var(--spacing) / 4);
+  border-radius: calc(var(--side-width) / 2);
+  background: transparent;
+  font-size: 1.4em;
+
+  color: var(--c-noir);
+
+  display: flex;
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 </style>

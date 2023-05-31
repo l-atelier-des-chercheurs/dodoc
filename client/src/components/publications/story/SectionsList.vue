@@ -168,6 +168,7 @@ export default {
       this.$emit("toggleSection", section_meta_filename);
     },
     closeSection() {
+      this.$eventHub.$emit(`sections.open_summary`);
       this.$emit("toggleSection", false);
     },
     updateOrder(items) {

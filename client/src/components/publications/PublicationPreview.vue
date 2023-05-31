@@ -1,32 +1,32 @@
 <template>
-  <div class="u-card _publicationPreview">
+  <div class="_publicationPreview">
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
-    <div class="">
-      <div class="_projectInfos--cover">
-        <img v-if="cover_thumb" :src="cover_thumb" @click="$emit('open')" />
-        <transition name="fade_fast">
-          <div class="_previewProgress" v-if="is_making_preview">
-            <AnimatedCounter :value="preview_progress" />
-          </div>
-        </transition>
-        <button
-          type="button"
-          class="u-button u-button_small u-button_black _generatePreviewBtn"
-          v-if="can_edit && !is_making_preview"
-          @click="generatePreview"
-        >
-          <!-- <sl-icon name="card-image" /> -->
-          <sl-icon name="arrow-clockwise" />
-          <!-- {{ $t("generate_preview") }} -->
-        </button>
-      </div>
+
+    <div class="_projectInfos--cover">
+      <img v-if="cover_thumb" :src="cover_thumb" @click="$emit('open')" />
+      <div class="_noPreview" v-else />
+      <transition name="fade_fast">
+        <div class="_previewProgress" v-if="is_making_preview">
+          <AnimatedCounter :value="preview_progress" />
+        </div>
+      </transition>
+      <button
+        type="button"
+        class="u-button u-button_small u-button_black _generatePreviewBtn"
+        v-if="can_edit && !is_making_preview"
+        @click="generatePreview"
+      >
+        <!-- <sl-icon name="card-image" /> -->
+        <sl-icon name="arrow-clockwise" />
+        <!-- {{ $t("generate_preview") }} -->
+      </button>
     </div>
 
     <header class="_header" @click="$emit('open')">
+      <small v-if="publication.template" v-html="$t(publication.template)" />
       <h2>
         {{ publication.title }}
       </h2>
-      <small v-if="publication.template" v-html="$t(publication.template)" />
     </header>
     <div class="">
       <!-- <button
@@ -116,28 +116,36 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationPreview {
-  width: 100%;
-  padding: var(--spacing);
+  // width: 100%;
+  // padding: var(--spacing);
 }
 ._publicationPreview header {
   cursor: pointer;
 }
 ._projectInfos--cover {
   position: relative;
-  aspect-ratio: 1/1;
-  background: var(--c-gris);
-  border: 2px solid transparent;
-
-  img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
-
-    cursor: pointer;
-  }
+  border-radius: 2px;
+  overflow: hidden;
+  // border-bottom: 2px solid var(--c-gris);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
 }
+
+// ._projectInfos--cover {
+//   position: relative;
+//   aspect-ratio: 1/1;
+//   background: var(--c-gris);
+//   border: 2px solid transparent;
+
+//   img {
+//     position: absolute;
+//     width: 100%;
+//     height: 100%;
+//     object-fit: contain;
+//     object-position: center;
+
+//     cursor: pointer;
+//   }
+// }
 ._header {
   padding: calc(var(--spacing) / 2) 0;
 }
@@ -161,5 +169,11 @@ export default {
 
   padding: calc(var(--spacing) * 1);
   font-family: "Fira Code";
+}
+
+._noPreview {
+  border: 2px solid white;
+  width: 100%;
+  min-height: 50px;
 }
 </style>

@@ -13,6 +13,7 @@
           :label="$t('add_text')"
         />
       </button>
+
       <button
         type="button"
         class="u-button u-button_bleumarine"
@@ -31,6 +32,26 @@
         @addMedias="createMosaic"
         @close="show_media_picker = false"
       />
+
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="show_file_picker = true"
+      >
+        <sl-icon
+          name="file-earmark-binary-fill"
+          style="font-size: var(--icon-size)"
+          :label="$t('add_files')"
+        />
+      </button>
+      <MediaPicker
+        v-if="show_file_picker"
+        :publication_path="publication_path"
+        :meta_filenames_already_present="meta_filenames_already_present"
+        @addMedias="createFiles"
+        @close="show_file_picker = false"
+      />
+
       <button
         type="button"
         class="u-button u-button_bleumarine"
@@ -73,7 +94,7 @@
 
     <button
       type="button"
-      class="u-button _showModuleSelector _addBtn"
+      class="u-addBtn"
       v-if="is_collapsed"
       :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
       @click="show_module_selector = !show_module_selector"
@@ -81,9 +102,7 @@
       <sl-icon name="plus-circle" />
     </button>
 
-    <transition name="dropzone" :duration="150">
-      <DropZone v-if="show_dropzone" @mediaDropped="createMosaic" />
-    </transition>
+    <DropZone @mediaDropped="createMosaic" />
   </div>
 </template>
 <script>
@@ -110,9 +129,8 @@ export default {
     return {
       show_module_selector: false,
       show_media_picker: false,
+      show_file_picker: false,
       show_link_picker: false,
-
-      show_dropzone: false,
 
       shapes: [
         {
@@ -164,14 +182,8 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.$eventHub.$on(`mediadrag.start`, this.showDropzone);
-    this.$eventHub.$on(`mediadrag.end`, this.hideDropzone);
-  },
-  beforeDestroy() {
-    this.$eventHub.$off(`mediadrag.start`, this.showDropzone);
-    this.$eventHub.$off(`mediadrag.end`, this.hideDropzone);
-  },
+  mounted() {},
+  beforeDestroy() {},
   watch: {},
   computed: {},
   methods: {
@@ -240,6 +252,24 @@ export default {
 
       this.createMosaic({ meta_filename: text_meta_filename });
     },
+    async createFiles({ path_to_source_media_metas }) {
+      let source_medias = [];
+      path_to_source_media_metas.map((path_to_source_media_meta) => {
+        const meta_filename_in_project = this.getFilename(
+          path_to_source_media_meta
+        );
+        source_medias.push({
+          meta_filename_in_project,
+        });
+      });
+
+      await this.createModule({
+        module_type: "files",
+        source_medias,
+      });
+
+      this.show_file_picker = false;
+    },
     async createText() {
       const meta_filename = await this.$api.uploadText({
         path: this.publication_path,
@@ -286,13 +316,6 @@ export default {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
-    },
-
-    showDropzone() {
-      this.show_dropzone = true;
-    },
-    hideDropzone() {
-      this.show_dropzone = false;
     },
   },
 };
@@ -342,25 +365,5 @@ sl-icon-button::part(base) {
   // position: absolute;
   // right: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-._addBtn {
-  --side-width: 24px;
-  display: block;
-  // width: var(--side-width);
-  // height: var(--side-width);
-  padding: calc(var(--spacing) / 2);
-  border-radius: calc(var(--side-width) / 2);
-  background: transparent;
-  font-size: 1.4em;
-
-  color: var(--c-noir);
-
-  display: flex;
-
-  &:hover,
-  &:focus {
-    background: rgba(0, 0, 0, 0.1);
-  }
 }
 </style>

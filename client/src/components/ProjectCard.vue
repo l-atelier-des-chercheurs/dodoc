@@ -99,7 +99,7 @@ export default {
     font-size: var(--sl-font-size-small);
 
     &[data-isfilled] {
-      background: var(--c-bleuvert);
+      background: var(--c-bleumarine);
       color: white;
     }
 
