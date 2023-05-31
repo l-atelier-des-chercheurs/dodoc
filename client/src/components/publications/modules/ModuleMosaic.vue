@@ -99,7 +99,8 @@
               class="_dropzone"
               v-if="
                 show_dropzone &&
-                medias_with_linked.length < number_of_max_medias
+                (!number_of_max_medias ||
+                  medias_with_linked.length < number_of_max_medias)
               "
             >
               <DropZone @mediaDropped="addMedias" />
@@ -185,8 +186,6 @@ export default {
           };
         }
       );
-
-      debugger;
       const previous_source_medias =
         this.publimodule.source_medias.slice() || [];
       const source_medias = previous_source_medias.concat(

@@ -639,13 +639,13 @@ img {
   &-leave-active {
     opacity: 1;
     // transform: translateY(0);
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
   &-leave-to {
     opacity: 0;
-    transform: scale(0.9);
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    // transform: scale(0.9);
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 .StoryModules {

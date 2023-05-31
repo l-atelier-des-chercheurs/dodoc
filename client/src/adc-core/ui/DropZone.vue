@@ -9,7 +9,8 @@
     @dragleave="onDragLeave"
     @drop="onDrop"
   >
-    <div class="u-button u-button_bleuvert _dropNotice">
+    <div class="_dzBg" />
+    <div class="u-button u-button_small u-button_bleuvert _dropNotice">
       {{ $t("drop_here") }}
     </div>
   </div>
@@ -61,6 +62,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._dropZone {
+  --color-1: white;
+  --color-2: var(--c-bleuvert);
+
   position: absolute;
   top: 0;
   left: 0;
@@ -72,9 +76,27 @@ export default {
   align-content: center;
   justify-content: center;
 
-  --color-1: transparent;
-  --color-2: var(--c-bleuvert);
-  // --color-2: var(--c-orange);
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--dragover {
+    --color-1: var(--c-bleuvert);
+    --color-2: white;
+  }
+
+  ._dropNotice {
+    position: relative;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  &.is--dragover ._dropNotice {
+    background: var(--c-bleuvert_fonce);
+  }
+}
+
+._dzBg {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
 
   background: radial-gradient(
       circle,
@@ -103,19 +125,9 @@ export default {
         var(--color-2) 1.2000000000000002px,
         var(--color-1) 1.2000000000000002px
       ) -0.6000000000000001px 0;
-  // background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
-  background-size: 4px;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+  // background-size: 4px;
 
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &.is--dragover {
-    // --color-1: var(--c-bleuvert);
-    // --color-2: white;
-  }
-
-  ._dropNotice {
-    pointer-events: none;
-    white-space: nowrap;
-  }
+  mix-blend-mode: multiply;
 }
 </style>
