@@ -88,7 +88,7 @@ export default {
   &.can--toggle {
     border-left: 2px solid var(--c-orange);
     padding-left: calc(var(--spacing) / 2);
-    margin-left: calc(var(--spacing) / 1.5);
+    margin-left: calc(var(--spacing) / 1.35);
   }
 }
 </style>
