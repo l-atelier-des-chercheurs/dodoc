@@ -102,7 +102,10 @@
             </button>
           </div>
 
-          <div class="_buttonRow" v-if="publimodule.size !== 100">
+          <div
+            class="_buttonRow"
+            v-if="publimodule.size && publimodule.size !== 100"
+          >
             <button
               type="button"
               class="u-button"
@@ -544,7 +547,7 @@ export default {
 
 ._advanced_menu {
   position: absolute;
-  z-index: 10;
+  z-index: 1000;
   left: 100%;
   top: 50%;
   transform: translate(0, -50%);
