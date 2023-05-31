@@ -1,5 +1,5 @@
 <template>
-  <div class="_mediaLibrary" @dragover="onDragover">
+  <div class="_mediaLibrary">
     <section class="_scrollBox">
       <div class="_topSection">
         <div class="_topSection--left">
@@ -117,7 +117,7 @@
         :key="focused_media.$path"
         :file="focused_media"
         :project_path="project.$path"
-        :select_mode="typeof select_mode !== undefined"
+        :select_mode="select_mode"
         :position_in_list="focused_media_position_in_list"
         @remove="removeMedia(focused_media.$path)"
         @close="toggleMediaFocus(focused_media.$path)"
@@ -126,11 +126,7 @@
         @nextMedia="nextMedia"
       />
     </transition>
-    <transition name="dropzone" :duration="150">
-      <div class="_dropzone" v-if="show_dropzone">
-        <DropZone @fileDropped="fileDropped" />
-      </div>
-    </transition>
+    <!-- <DropZone @fileDropped="fileDropped" /> -->
   </div>
 </template>
 <script>
@@ -219,16 +215,6 @@ export default {
     },
   },
   methods: {
-    onDragover($event) {
-      if ($event.dataTransfer.files?.length === 0) return false;
-
-      this.show_dropzone = true;
-
-      clearTimeout(this.hide_dropzone_timeout);
-      this.hide_dropzone_timeout = setTimeout(() => {
-        this.show_dropzone = false;
-      }, 500);
-    },
     scrollToMediaTile(path) {
       path;
       // const focused_tile = this.$refs.mediaTiles.querySelector(
@@ -380,6 +366,7 @@ export default {
   position: absolute;
   bottom: 0;
   left: 0;
+  z-index: 10;
   width: 100%;
   display: flex;
   justify-content: center;
