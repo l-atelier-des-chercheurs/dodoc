@@ -428,7 +428,7 @@ export default function () {
         space: "Espace",
         spaces: "Les espaces",
         spaces_instr:
-          "Chaque espace contient une série de projets liés par un groupe, un événement ou une thématique particulière.",
+          "Chaque espace contient un ensemble de projets lié à un groupe, un lieu ou une thématique particulière.",
         create_a_space: "Créer un espace",
         project: "Projet",
 
