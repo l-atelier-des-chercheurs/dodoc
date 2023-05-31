@@ -168,6 +168,7 @@ export default {
   position: absolute;
   overflow: hidden;
   inset: 0;
+  z-index: 10;
   // padding: calc(var(--spacing) / 2);
 
   ._mediaModal--overlay {
