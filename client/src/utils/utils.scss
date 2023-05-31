@@ -861,3 +861,16 @@ input[type="checkbox"]:disabled {
     background: rgba(0, 0, 0, 0.1);
   }
 }
+.u-dragHandle {
+  display: flex;
+  cursor: grab;
+  padding: calc(var(--spacing) / 4);
+  background: var(--c-gris);
+  color: black;
+  border-radius: 2px;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent;
+  }
+}

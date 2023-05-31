@@ -85,9 +85,15 @@
           medias_with_linked.length < number_of_max_medias)
       "
     >
-      <button type="button" class="u-addBtn" @click="$emit('showMediaPicker')">
+      <button type="button" class="u-addBtn" @click="show_media_picker = true">
         <sl-icon name="plus-circle" />
       </button>
+      <MediaPicker
+        v-if="show_media_picker"
+        :publication_path="publication_path"
+        @addMedias="$emit('addMedias', $event)"
+        @close="show_media_picker = false"
+      />
       <template
         v-if="
           !number_of_max_medias ||
@@ -100,6 +106,8 @@
   </div>
 </template>
 <script>
+import MediaPicker from "@/components/publications/MediaPicker.vue";
+
 export default {
   props: {
     medias_with_linked: Array,
@@ -107,11 +115,16 @@ export default {
     page_template: String,
     show_fs_button: Boolean,
     number_of_max_medias: [Boolean, Number],
+    publication_path: String,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    MediaPicker,
+  },
   data() {
-    return {};
+    return {
+      show_media_picker: false,
+    };
   },
   created() {},
   mounted() {},

@@ -23,7 +23,7 @@
             'is--active': isActive(section.$path),
           }"
         >
-          <span v-handle class="_dragHandle" v-if="can_edit">
+          <span v-handle class="u-dragHandle" v-if="can_edit">
             <sl-icon name="grip-vertical" label="Déplacer" />
           </span>
           <span class="_clickZone" @click="openSection(section.$path)">
@@ -107,19 +107,6 @@ export default {
   max-width: 60ch;
   width: 100%;
   margin: calc(var(--spacing) / 1) auto;
-}
-._dragHandle {
-  display: flex;
-  cursor: grab;
-  padding: calc(var(--spacing) / 4);
-  background: var(--c-gris);
-  color: black;
-  border-radius: 2px;
-
-  &:hover,
-  &:focus-visible {
-    background: transparent;
-  }
 }
 
 ._list {

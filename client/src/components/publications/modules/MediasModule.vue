@@ -12,32 +12,24 @@
         :page_template="page_template"
         :show_fs_button="show_fs_button"
         :number_of_max_medias="number_of_max_medias"
+        :publication_path="publication_path"
         :can_edit="can_edit"
         @addMedias="addMedias"
         @removeMediaAtIndex="removeMediaAtIndex"
-        @showMediaPicker="show_media_picker = true"
         @updateMediaOpt="updateMediaOpt"
       />
       <FilesList
         v-if="publimodule.module_type === 'files'"
         :medias_with_linked="medias_with_linked"
+        :publication_path="publication_path"
         :can_edit="can_edit"
         @addMedias="addMedias"
         @removeMediaAtIndex="removeMediaAtIndex"
-        @showMediaPicker="show_media_picker = true"
-      />
-      <MediaPicker
-        v-if="show_media_picker"
-        :publication_path="publication_path"
-        @addMedias="addMedias"
-        @close="show_media_picker = false"
       />
     </div>
   </transition>
 </template>
 <script>
-// import { Splitpanes, Pane } from "splitpanes";
-import MediaPicker from "@/components/publications/MediaPicker.vue";
 import MosaicMediaGrid from "@/components/publications/modules/MosaicMediaGrid.vue";
 import FilesList from "@/components/publications/modules/FilesList.vue";
 
@@ -56,14 +48,11 @@ export default {
   components: {
     // Splitpanes,
     // Pane,
-    MediaPicker,
     MosaicMediaGrid,
     FilesList,
   },
   data() {
-    return {
-      show_media_picker: false,
-    };
+    return {};
   },
   created() {},
   mounted() {},
@@ -101,7 +90,6 @@ export default {
         source_medias_to_append
       );
       this.$emit("updateMeta", { source_medias });
-      this.show_media_picker = false;
     },
     removeMediaAtIndex(index) {
       const source_medias = this.publimodule.source_medias.slice();

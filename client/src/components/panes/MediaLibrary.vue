@@ -85,15 +85,11 @@
           :project_path="project.$path"
           :file="file"
           :was_focused="media_just_focused === getFilename(file.$path)"
-          :is_selectable="select_mode === 'multiple'"
+          :is_selectable="mediaTileIsSelectable(file.$path)"
           :is_selected="selected_medias.includes(file.$path)"
           :data-filepath="file.$path"
           :tile_mode="tile_mode"
-          :is_already_selected="
-            meta_filenames_already_present.some((mf) =>
-              file.$path.endsWith('/' + mf)
-            )
-          "
+          :is_already_selected="mediaTileAlreadySelected(file.$path)"
           @toggleMediaFocus="toggleMediaFocus(file.$path)"
           @setSelected="(present) => setSelected(present, file.$path)"
         />
@@ -138,6 +134,7 @@ export default {
     project: Object,
     media_focused: [Boolean, String],
     select_mode: String,
+    prevent_select_duplicates: Boolean,
     meta_filenames_already_present: { type: Array, default: () => [] },
   },
   components: {
@@ -225,6 +222,17 @@ export default {
       //   block: "center",
       //   inline: "nearest",
       // });
+    },
+    mediaTileIsSelectable(path) {
+      if (this.select_mode === "unique") return false;
+      if (this.prevent_select_duplicates)
+        if (this.selected_medias.includes(path)) return false;
+      return true;
+    },
+    mediaTileAlreadySelected(path) {
+      return this.meta_filenames_already_present.some((mf) =>
+        path.endsWith("/" + mf)
+      );
     },
     updateInputFiles($event) {
       this.files_to_import = Array.from($event.target.files);

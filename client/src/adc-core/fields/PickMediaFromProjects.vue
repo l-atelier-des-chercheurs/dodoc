@@ -39,6 +39,7 @@
               :project="source_project"
               :media_focused="media_focused"
               :select_mode="mode"
+              :prevent_select_duplicates="prevent_duplicates"
               :meta_filenames_already_present="meta_filenames_already_present"
               @update:media_focused="media_focused = $event"
               @addMedias="addMedias"
@@ -56,6 +57,10 @@ export default {
   props: {
     path: String,
     meta_filenames_already_present: Array,
+    prevent_duplicates: {
+      type: Boolean,
+      default: false,
+    },
     mode: {
       type: String,
       required: true,
