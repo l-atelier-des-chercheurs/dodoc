@@ -36,8 +36,7 @@ export default {
     },
     icon() {
       if (this.btn_type === "fullscreen") return "fullscreen";
-      else if (this.btn_type === "fullscreen-exit")
-        return this.$t("fullscreen-exit");
+      else if (this.btn_type === "fullscreen-exit") return "fullscreen-exit";
       return "pencil-fill";
     },
     btn_styles() {
