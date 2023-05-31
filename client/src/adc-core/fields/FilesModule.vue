@@ -46,8 +46,9 @@
       <PickMediaFromProjects
         v-if="show_picker"
         :path="project_path"
+        :mode="'multiple'"
         :meta_filenames_already_present="meta_filenames_already_present"
-        @selectMedia="selectMedia"
+        @selectMedias="selectMedias"
         @close="show_picker = false"
       />
     </div>
@@ -91,11 +92,14 @@ export default {
     },
   },
   methods: {
-    async selectMedia({ path_to_source_media_meta }) {
-      const new_file = this.getFilename(path_to_source_media_meta);
+    async selectMedias({ path_to_source_media_metas }) {
+      const new_files = path_to_source_media_metas.map(
+        (path_to_source_media_meta) =>
+          this.getFilename(path_to_source_media_meta)
+      );
       const files = this.content.slice() || [];
-      files.push(new_file);
-      this.updateFiles(files);
+      const new_files_list = files.concat(new_files);
+      this.updateFiles(new_files_list);
     },
     async removeFile(path) {
       let _files = this.content.slice();

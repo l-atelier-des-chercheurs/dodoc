@@ -8,8 +8,9 @@
     <!-- select from this or another project library -->
     <PickMediaFromProjects
       :path="current_project_path"
+      :mode="'multiple'"
       :meta_filenames_already_present="meta_filenames_already_present"
-      @selectMedia="$emit('selectMedia', $event)"
+      @selectMedias="$emit('selectMedias', $event)"
       @close="$emit('close')"
     />
   </div>

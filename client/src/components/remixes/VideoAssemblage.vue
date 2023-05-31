@@ -1,32 +1,17 @@
 <template>
   <div class="_videoAssemblage">
-    <StoryTemplate :publication="remix" :can_edit="true" />
-
-    <!-- <button
-        type="button"
-        class="u-button u-button_bleuvert"
-        v-if="!show_media_picker"
-        @click="show_media_picker = true"
-      >
-        {{ $t("add_medias") }}
-      </button>
-      <PickMediaFromProjects
-        v-else
-        :subfolder_path="remix.$path"
-        @selectMedia="$emit('selectMedia', $event)"
-        @close="$emit('close')"
-      /> -->
+    <!-- <StoryTemplate :publication="remix" :can_edit="true" /> -->
   </div>
 </template>
 <script>
-import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
+// import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
 
 export default {
   props: {
     remix: Object,
   },
   components: {
-    StoryTemplate,
+    // StoryTemplate,
   },
   data() {
     return {

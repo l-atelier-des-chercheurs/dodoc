@@ -1,6 +1,6 @@
 <template>
   <div class="_toggleInput">
-    <div class="_inputLabel">
+    <label :for="id" class="u-label _inputLabel">
       <input
         ref="field"
         :id="id"
@@ -11,8 +11,10 @@
         :checked="content"
         @change="$emit('update:content', $event.target.checked)"
       />
-      <label :for="id" class="u-label">{{ label }}</label>
-    </div>
+      <span v-if="label">
+        {{ label }}
+      </span>
+    </label>
 
     <div class="u-instructions" v-if="current_instruction">
       <small>{{ current_instruction }}</small>
@@ -62,6 +64,8 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4);
 }
 ._maxlength {
   flex: 0 0 auto;
@@ -71,6 +75,5 @@ export default {
   margin-bottom: 0;
 }
 ._inputCb {
-  margin-right: calc(var(--spacing) / 4);
 }
 </style>

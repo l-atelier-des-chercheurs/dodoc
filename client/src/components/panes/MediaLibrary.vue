@@ -85,6 +85,8 @@
           :project_path="project.$path"
           :file="file"
           :was_focused="media_just_focused === getFilename(file.$path)"
+          :is_selectable="select_mode === 'multiple'"
+          :is_selected="selected_medias.includes(file.$path)"
           :data-filepath="file.$path"
           :tile_mode="tile_mode"
           :is_already_selected="
@@ -92,9 +94,22 @@
               file.$path.endsWith('/' + mf)
             )
           "
-          @toggleMediaFocus="(path) => toggleMediaFocus(path)"
+          @toggleMediaFocus="toggleMediaFocus(file.$path)"
+          @setSelected="(present) => setSelected(present, file.$path)"
         />
       </transition-group>
+
+      <transition name="slideup">
+        <div v-if="selected_medias.length > 0" class="_selectBtn">
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="selectMedias(selected_medias)"
+          >
+            {{ `${$t("add")} (${selected_medias.length})` }}
+          </button>
+        </div>
+      </transition>
     </section>
     <transition name="mediaModal" mode="in-out">
       <MediaModal
@@ -102,16 +117,15 @@
         :key="focused_media.$path"
         :file="focused_media"
         :project_path="project.$path"
-        :select_mode="select_mode"
+        :select_mode="typeof select_mode !== undefined"
         :position_in_list="focused_media_position_in_list"
         @remove="removeMedia(focused_media.$path)"
         @close="toggleMediaFocus(focused_media.$path)"
-        @select="selectMedia(focused_media.$path)"
+        @select="selectMedias([focused_media.$path])"
         @prevMedia="prevMedia"
         @nextMedia="nextMedia"
       />
     </transition>
-
     <transition name="dropzone" :duration="150">
       <div class="_dropzone" v-if="show_dropzone">
         <DropZone @mediaDropped="mediaDropped" />
@@ -127,10 +141,7 @@ export default {
   props: {
     project: Object,
     media_focused: [Boolean, String],
-    select_mode: {
-      type: Boolean,
-      default: false,
-    },
+    select_mode: String,
     meta_filenames_already_present: { type: Array, default: () => [] },
   },
   components: {
@@ -146,6 +157,8 @@ export default {
 
       show_create_link_field: false,
       url_to: "https://latelier-des-chercheurs.fr/",
+
+      selected_medias: [],
 
       tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
 
@@ -256,8 +269,13 @@ export default {
         this.media_just_focused = filename;
       }
     },
-    selectMedia(path) {
-      this.$emit("selectMedia", path);
+    setSelected(present, path) {
+      if (present) this.selected_medias.push(path);
+      else
+        this.selected_medias = this.selected_medias.filter((sm) => sm !== path);
+    },
+    selectMedias(medias) {
+      this.$emit("selectMedias", medias);
     },
     async removeMedia(path) {
       await this.$api.deleteItem({
@@ -288,7 +306,7 @@ export default {
   background: var(--color-collect);
   height: 100%;
 
-  --active-color: var(--c-vert);
+  // --active-color: var(--c-vert);
 }
 
 ._scrollBox {
@@ -351,5 +369,20 @@ export default {
 ._mediaCount {
   color: black;
   margin-bottom: 0;
+}
+
+._selectBtn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: calc(var(--spacing) / 1);
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 </style>
