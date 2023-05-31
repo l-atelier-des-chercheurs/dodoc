@@ -37,15 +37,4 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped>
-._mediaPicker {
-  width: 100%;
-  // background: var(--c-gris_clair);
-  margin: 0 auto;
-}
-
-._addMediaBtn {
-  text-align: center;
-  padding: calc(var(--spacing) * 1);
-}
-</style>
+<style lang="scss" scoped></style>
