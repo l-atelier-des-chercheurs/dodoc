@@ -66,7 +66,7 @@
       <div class="_selectBtn" v-else>
         <button
           type="button"
-          class="u-buttonLink has--ts"
+          class="u-buttonLink has--whitebg"
           @click="$emit('close')"
         >
           {{ $t("cancel") }}
@@ -76,7 +76,7 @@
           class="u-button u-button_bleuvert"
           @click="$emit('select')"
         >
-          {{ $t("select") }}
+          {{ $t("add") }}
         </button>
       </div>
     </div>

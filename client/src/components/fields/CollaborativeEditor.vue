@@ -962,7 +962,7 @@ html[lang="fr"] .ql-tooltip::before {
   // padding: 0 0.1em;
   color: rgb(27, 39, 41);
 
-  --active-color: black;
+  // --active-color: black;
   --c-popup-bg: var(--c-noir);
   --c-popup-c: white;
 

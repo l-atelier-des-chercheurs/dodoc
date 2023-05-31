@@ -28,7 +28,7 @@
         v-if="show_media_picker"
         :publication_path="publication_path"
         :meta_filenames_already_present="meta_filenames_already_present"
-        @selectMedia="createMosaic"
+        @selectMedias="createMosaic"
         @close="show_media_picker = false"
       />
       <button
@@ -45,7 +45,6 @@
       <LinkPicker
         v-if="show_link_picker"
         :publication_path="publication_path"
-        @selectMedia="createMosaic"
         @embed="createEmbed"
         @close="show_link_picker = false"
       />
@@ -176,36 +175,57 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async createMosaic({ meta_filename, path_to_source_media_meta }) {
+    async createMosaic({ meta_filename, path_to_source_media_metas }) {
       // if meta_filename, file is stored in publication
       // if path_to_source_media, we get metafilename
-      let source_media = {};
+      let source_medias = [];
 
+      // each meta gets it own mosaic
       if (meta_filename) {
-        source_media.meta_filename = meta_filename;
-      } else if (path_to_source_media_meta) {
-        source_media.meta_filename_in_project = this.getFilename(
-          path_to_source_media_meta
-        );
-      }
-      if (this.context === "page_by_page") source_media.objectFit = "contain";
-
-      let addtl_meta = {};
-      if (this.context === "page_by_page") {
-        const media = this.getSourceMedia({
-          source_media,
-          folder_path: this.publication_path,
+        source_medias.push({
+          meta_filename,
         });
-        if (media?.$infos?.ratio)
-          addtl_meta.height =
-            this.$root.default_new_module_width * media.$infos.ratio;
+      } else if (path_to_source_media_metas) {
+        path_to_source_media_metas.map((path_to_source_media_meta) => {
+          const meta_filename_in_project = this.getFilename(
+            path_to_source_media_meta
+          );
+          source_medias.push({
+            meta_filename_in_project,
+          });
+        });
+      }
+      if (this.context === "page_by_page") {
+        source_medias = source_medias.map((sm) => {
+          sm.objectFit = "contain";
+          return sm;
+        });
       }
 
-      await this.createModule({
-        module_type: "mosaic",
-        source_medias: [source_media],
-        addtl_meta,
-      });
+      if (this.context === "page_by_page") {
+        for (const source_media of source_medias) {
+          debugger;
+          const media = this.getSourceMedia({
+            source_media,
+            folder_path: this.publication_path,
+          });
+          let addtl_meta = {};
+          if (media?.$infos?.ratio)
+            addtl_meta.height =
+              this.$root.default_new_module_width * media.$infos.ratio;
+          await this.createModule({
+            module_type: "mosaic",
+            source_medias: [source_media],
+            addtl_meta,
+          });
+        }
+      } else {
+        await this.createModule({
+          module_type: "mosaic",
+          source_medias,
+        });
+      }
+
       this.show_media_picker = false;
     },
     async createEmbed(full_url) {

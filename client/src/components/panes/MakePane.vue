@@ -517,7 +517,7 @@ export default {
   height: 100%;
   overflow: auto;
   padding: calc(var(--spacing) * 1);
-  --active-color: var(--c-bleumarine);
+  // --active-color: var(--c-bleumarine);
 }
 .m_recipes--type {
   // background-color: rgba(51, 51, 51, 0.2);

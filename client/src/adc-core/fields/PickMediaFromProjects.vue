@@ -38,10 +38,10 @@
               class="_mediaLib"
               :project="source_project"
               :media_focused="media_focused"
-              :select_mode="true"
+              :select_mode="mode"
               :meta_filenames_already_present="meta_filenames_already_present"
               @update:media_focused="media_focused = $event"
-              @selectMedia="selectMedia"
+              @selectMedias="selectMedias"
             />
           </template>
         </template>
@@ -56,6 +56,10 @@ export default {
   props: {
     path: String,
     meta_filenames_already_present: Array,
+    mode: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     MediaLibrary,
@@ -84,11 +88,11 @@ export default {
   },
   computed: {},
   methods: {
-    selectMedia(path_to_source_media_meta) {
+    selectMedias(path_to_source_media_metas) {
       // TODO if path matches a media that is not in this project,
       // we need to copy this media to this project first then link that media instead
-      this.$emit("selectMedia", {
-        path_to_source_media_meta,
+      this.$emit("selectMedias", {
+        path_to_source_media_metas,
       });
       this.$emit("close");
     },

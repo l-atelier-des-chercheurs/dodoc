@@ -505,10 +505,12 @@ export default function () {
         archives: "Archives",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
-        creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
+        // todo add explanations
+        creativecommons_by_nc_sa_explanations: "–",
 
         all_rights_reserved: "Tous Droits Réservés",
-        all_rights_reserved_explanations: "<i>Explications à ajouter</i>",
+        // todo add explanations
+        all_rights_reserved_explanations: "–",
 
         drop_here: "Déposer ici",
         enable: "Activer",
@@ -540,7 +542,7 @@ export default function () {
           "À venir, la possibilité d’indiquer une licence spécifique avec un lien vers une page de référence",
 
         copyleft: "Art Libre / Copyleft",
-        copyleft_explanations: "<i>Explications à ajouter</i>",
+        copyleft_explanations: "–",
         copy_of: "Copie de",
         remix_of: "Remix de",
         open_copy: "Accéder à la copie",

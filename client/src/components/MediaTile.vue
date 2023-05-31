@@ -23,8 +23,23 @@
     <button
       type="button"
       class="_focusMediaBtn"
-      @click="$emit('toggleMediaFocus', file.$path)"
+      @click="$emit('toggleMediaFocus')"
     />
+
+    <ToggleInput
+      v-if="is_selectable"
+      class="_selectCb"
+      :content="is_selected"
+      @update:content="$emit('setSelected', $event)"
+    />
+
+    <!-- <input
+      v-if="is_selectable"
+      class="_selectCb"
+      type="checkbox"
+      :checked="is_selected"
+      @change="$emit('setSelected', $event.target.checked)"
+    /> -->
   </div>
 </template>
 <script>
@@ -33,6 +48,8 @@ export default {
     file: Object,
     project_path: String,
     was_focused: Boolean,
+    is_selectable: Boolean,
+    is_selected: Boolean,
     is_already_selected: Boolean,
     tile_mode: {
       type: String,
@@ -173,5 +190,20 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
   -webkit-line-clamp: 1;
+}
+
+._selectCb {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 2);
+  line-height: 0;
+  border-radius: 50%;
+  font-size: 80%;
+  cursor: pointer;
+
+  ::v-deep ._inputLabel {
+    padding: calc(var(--spacing) / 4);
+  }
 }
 </style>
