@@ -153,10 +153,10 @@
 
           <div class="_pageMenu--pane">
             <DLabel
-              :str="$t('list_of_medias')"
+              :str="$t('list_of_medias') + ' (' + page_modules.length + ')'"
               :instructions="$t('list_of_medias_instr')"
             />
-            <div class="u-spacingBottom">
+            <div class="u-spacingBottom" v-if="page_modules.length > 0">
               <button
                 type="button"
                 class="u-buttonLink"

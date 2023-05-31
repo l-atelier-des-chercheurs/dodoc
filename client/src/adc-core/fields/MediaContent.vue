@@ -282,6 +282,7 @@ export default {
   height: 100%;
   ._mediaContent--iframe--preview {
     position: relative;
+    width: 100%;
     height: 100%;
     aspect-ratio: 16/9;
 
@@ -296,6 +297,10 @@ export default {
     display: flex;
     height: 100%;
     aspect-ratio: 16/9;
+
+    > * {
+      flex: 1;
+    }
 
     ._errMessage {
       position: absolute;

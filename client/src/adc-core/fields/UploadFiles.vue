@@ -65,7 +65,7 @@
 <script>
 export default {
   props: {
-    selected_files: Array,
+    files_to_import: Array,
     path: String,
     read_only: {
       type: Boolean,
@@ -75,7 +75,7 @@ export default {
   components: {},
   data() {
     return {
-      files_to_upload: this.selected_files,
+      files_to_upload: this.files_to_import,
       files_to_upload_meta: {},
       upload_percentages: 0,
     };

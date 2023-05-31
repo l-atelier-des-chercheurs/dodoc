@@ -9,7 +9,8 @@
     @dragleave="onDragLeave"
     @drop="onDrop"
   >
-    <div class="u-button u-button_bleuvert _dropNotice">
+    <div class="_dzBg" />
+    <div class="u-button u-button_small u-button_bleuvert _dropNotice">
       {{ $t("drop_here") }}
     </div>
   </div>
@@ -44,21 +45,26 @@ export default {
       $event.preventDefault();
       $event.dataTransfer.dropEffect = "link";
 
-      if ($event.dataTransfer.files?.length > 0)
-        this.$emit("mediaDropped", $event.dataTransfer.files);
-
-      if (!$event.dataTransfer.getData("text/plain")) return false;
-
+      if ($event.dataTransfer.files?.length > 0) this.droppedFiles($event);
+      else if ($event.dataTransfer.getData("text/plain"))
+        this.droppedMediaInDodoc($event);
+    },
+    droppedFiles($event) {
+      this.$emit("fileDropped", $event.dataTransfer.files);
+    },
+    droppedMediaInDodoc($event) {
       const file = JSON.parse($event.dataTransfer.getData("text/plain"));
-      const path_to_source_media_meta = file.$path;
-
-      this.$emit("mediaDropped", { path_to_source_media_meta });
+      const path_to_source_media_metas = [file.$path];
+      this.$emit("mediaDropped", { path_to_source_media_metas });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._dropZone {
+  --color-1: white;
+  --color-2: var(--c-bleuvert);
+
   position: absolute;
   top: 0;
   left: 0;
@@ -70,9 +76,27 @@ export default {
   align-content: center;
   justify-content: center;
 
-  --color-1: transparent;
-  --color-2: var(--c-bleuvert);
-  // --color-2: var(--c-orange);
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--dragover {
+    --color-1: var(--c-bleuvert);
+    --color-2: white;
+  }
+
+  ._dropNotice {
+    position: relative;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  &.is--dragover ._dropNotice {
+    background: var(--c-bleuvert_fonce);
+  }
+}
+
+._dzBg {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
 
   background: radial-gradient(
       circle,
@@ -101,19 +125,9 @@ export default {
         var(--color-2) 1.2000000000000002px,
         var(--color-1) 1.2000000000000002px
       ) -0.6000000000000001px 0;
-  // background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
-  background-size: 4px;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+  // background-size: 4px;
 
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &.is--dragover {
-    // --color-1: var(--c-bleuvert);
-    // --color-2: white;
-  }
-
-  ._dropNotice {
-    pointer-events: none;
-    white-space: nowrap;
-  }
+  mix-blend-mode: multiply;
 }
 </style>

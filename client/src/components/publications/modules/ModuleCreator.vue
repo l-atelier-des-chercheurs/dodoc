@@ -28,7 +28,7 @@
         v-if="show_media_picker"
         :publication_path="publication_path"
         :meta_filenames_already_present="meta_filenames_already_present"
-        @selectMedias="createMosaic"
+        @addMedias="createMosaic"
         @close="show_media_picker = false"
       />
       <button
@@ -73,7 +73,7 @@
 
     <button
       type="button"
-      class="u-button _showModuleSelector _sideBtns"
+      class="u-button _showModuleSelector _addBtn"
       v-if="is_collapsed"
       :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
       @click="show_module_selector = !show_module_selector"
@@ -204,7 +204,6 @@ export default {
 
       if (this.context === "page_by_page") {
         for (const source_media of source_medias) {
-          debugger;
           const media = this.getSourceMedia({
             source_media,
             folder_path: this.publication_path,
@@ -345,7 +344,7 @@ sl-icon-button::part(base) {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-._sideBtns {
+._addBtn {
   --side-width: 24px;
   display: block;
   // width: var(--side-width);

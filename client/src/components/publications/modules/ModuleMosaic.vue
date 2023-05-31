@@ -82,29 +82,30 @@
               medias_with_linked.length < number_of_max_medias)
           "
         >
-          <sl-icon-button
-            name="plus-circle-fill"
-            class="u-colorBleuvert"
-            :label="$t('add_media')"
-            v-if="!show_media_picker"
+          <button
+            type="button"
+            class="u-button _addBtn"
             @click="show_media_picker = true"
-          />
+          >
+            <sl-icon name="plus-circle" />
+          </button>
+
           <MediaPicker
-            v-else
+            v-if="show_media_picker"
             :publication_path="publication_path"
-            @selectMedia="selectMedia"
+            @addMedias="addMedias"
             @close="show_media_picker = false"
           />
-
           <transition name="dropzone" :duration="150">
             <div
               class="_dropzone"
               v-if="
                 show_dropzone &&
-                medias_with_linked.length < number_of_max_medias
+                (!number_of_max_medias ||
+                  medias_with_linked.length < number_of_max_medias)
               "
             >
-              <DropZone @mediaDropped="selectMedia" />
+              <DropZone @mediaDropped="addMedias" />
             </div>
           </transition>
         </div>
@@ -177,9 +178,21 @@ export default {
     },
   },
   methods: {
-    selectMedia({ path_to_source_media_meta }) {
-      const source_medias = this.publimodule.source_medias.slice();
-      source_medias.push({ path: path_to_source_media_meta });
+    addMedias({ path_to_source_media_metas }) {
+      const source_medias_to_append = path_to_source_media_metas.map(
+        (path_to_source_media_meta) => {
+          return {
+            meta_filename_in_project: this.getFilename(
+              path_to_source_media_meta
+            ),
+          };
+        }
+      );
+      const previous_source_medias =
+        this.publimodule.source_medias.slice() || [];
+      const source_medias = previous_source_medias.concat(
+        source_medias_to_append
+      );
       this.$emit("updateMeta", { source_medias });
       this.show_media_picker = false;
     },
@@ -262,8 +275,7 @@ export default {
 ._mediaPickerTile {
   position: absolute;
   top: 0;
-  left: auto;
-  right: 0;
+  left: 100%;
   // background: var(--c-gris);
   // height: 100%;
   display: flex;
@@ -289,8 +301,12 @@ export default {
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
 
+  pointer-events: none;
+
   button {
     // background: white;
+    pointer-events: auto;
+
     border-radius: 4px;
     color: white;
     text-shadow: 0px 0px 4px rgb(0 0 0 / 80%);
@@ -319,5 +335,25 @@ sl-icon-button::part(base) {
   justify-content: center;
   width: 100%;
   height: 100%;
+}
+
+._addBtn {
+  --side-width: 24px;
+  display: block;
+  // width: var(--side-width);
+  // height: var(--side-width);
+  padding: calc(var(--spacing) / 4);
+  border-radius: calc(var(--side-width) / 2);
+  background: transparent;
+  font-size: 1.4em;
+
+  color: var(--c-noir);
+
+  display: flex;
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, 0.1);
+  }
 }
 </style>

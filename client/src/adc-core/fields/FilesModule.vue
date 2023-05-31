@@ -48,7 +48,7 @@
         :path="project_path"
         :mode="'multiple'"
         :meta_filenames_already_present="meta_filenames_already_present"
-        @selectMedias="selectMedias"
+        @addMedias="addMedias"
         @close="show_picker = false"
       />
     </div>
@@ -92,7 +92,7 @@ export default {
     },
   },
   methods: {
-    async selectMedias({ path_to_source_media_metas }) {
+    async addMedias({ path_to_source_media_metas }) {
       const new_files = path_to_source_media_metas.map(
         (path_to_source_media_meta) =>
           this.getFilename(path_to_source_media_meta)

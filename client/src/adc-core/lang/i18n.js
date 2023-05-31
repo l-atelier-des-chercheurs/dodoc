@@ -428,7 +428,7 @@ export default function () {
         space: "Espace",
         spaces: "Les espaces",
         spaces_instr:
-          "Chaque espace contient une série de projets liés par un groupe, un événement ou une thématique particulière.",
+          "Chaque espace contient un ensemble de projets lié à un groupe, un lieu ou une thématique particulière.",
         create_a_space: "Créer un espace",
         project: "Projet",
 
@@ -792,6 +792,7 @@ export default function () {
         source_media_missing: "Le média source est manquant",
         media_pickers_instr:
           "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
+        already_present: "Déjà présent",
 
         current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",

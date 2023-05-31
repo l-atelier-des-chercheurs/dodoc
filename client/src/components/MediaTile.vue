@@ -4,6 +4,7 @@
     :class="{
       'was--focused': was_focused,
       'is--dragged': is_dragged,
+      'is--selected': is_selected,
     }"
     :data-tilemode="tile_mode"
     draggable="true"
@@ -18,6 +19,7 @@
     }}</span>
     <span v-if="is_already_selected" class="_alreadySelected">
       <sl-icon name="check2-square" />
+      <span>{{ $t("already_present") }}</span>
     </span>
 
     <button
@@ -116,6 +118,16 @@ export default {
   &.is--dragged {
     opacity: 0.5;
   }
+  &.is--selected {
+    &::after {
+      content: "";
+      background: var(--c-noir);
+      position: absolute;
+      inset: 0;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+  }
 
   &[data-type="text"],
   &[data-type="other"] {
@@ -168,14 +180,27 @@ export default {
 
 ._alreadySelected {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
+  z-index: 1;
   margin: calc(var(--spacing) / 2);
   background: var(--c-bleuvert);
-  line-height: 0;
-  padding: calc(var(--spacing) / 4);
-  border-radius: 50%;
-  font-size: 80%;
+
+  font-size: var(--sl-font-size-x-small);
+
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+  border-radius: 1em;
+  width: calc(100% - calc(var(--spacing) / 1));
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
+
+  ._mediaTile[data-tilemode="medium"] & {
+    bottom: 2em;
+  }
 }
 
 ._caption {
@@ -196,6 +221,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 1;
   margin: calc(var(--spacing) / 2);
   line-height: 0;
   border-radius: 50%;

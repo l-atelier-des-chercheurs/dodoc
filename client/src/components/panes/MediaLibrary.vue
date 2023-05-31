@@ -1,5 +1,5 @@
 <template>
-  <div class="_mediaLibrary" @dragover="onDragover">
+  <div class="_mediaLibrary">
     <section class="_scrollBox">
       <div class="_topSection">
         <div class="_topSection--left">
@@ -21,11 +21,11 @@
             {{ $t("import") }}
           </label>
           <UploadFiles
-            v-if="selected_files.length > 0"
-            :selected_files="selected_files"
+            v-if="files_to_import.length > 0"
+            :files_to_import="files_to_import"
             :path="project.$path"
             @importedMedias="mediaJustImported"
-            @close="selected_files = []"
+            @close="files_to_import = []"
           />
 
           <br />
@@ -104,7 +104,7 @@
           <button
             type="button"
             class="u-button u-button_bleuvert"
-            @click="selectMedias(selected_medias)"
+            @click="addMedias(selected_medias)"
           >
             {{ `${$t("add")} (${selected_medias.length})` }}
           </button>
@@ -117,20 +117,16 @@
         :key="focused_media.$path"
         :file="focused_media"
         :project_path="project.$path"
-        :select_mode="typeof select_mode !== undefined"
+        :select_mode="select_mode"
         :position_in_list="focused_media_position_in_list"
         @remove="removeMedia(focused_media.$path)"
         @close="toggleMediaFocus(focused_media.$path)"
-        @select="selectMedias([focused_media.$path])"
+        @select="addMedias([focused_media.$path])"
         @prevMedia="prevMedia"
         @nextMedia="nextMedia"
       />
     </transition>
-    <transition name="dropzone" :duration="150">
-      <div class="_dropzone" v-if="show_dropzone">
-        <DropZone @mediaDropped="mediaDropped" />
-      </div>
-    </transition>
+    <!-- <DropZone @fileDropped="fileDropped" /> -->
   </div>
 </template>
 <script>
@@ -150,7 +146,7 @@ export default {
   },
   data() {
     return {
-      selected_files: [],
+      files_to_import: [],
       id: `image_select_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
@@ -219,16 +215,6 @@ export default {
     },
   },
   methods: {
-    onDragover($event) {
-      if ($event.dataTransfer.files?.length === 0) return false;
-
-      this.show_dropzone = true;
-
-      clearTimeout(this.hide_dropzone_timeout);
-      this.hide_dropzone_timeout = setTimeout(() => {
-        this.show_dropzone = false;
-      }, 500);
-    },
     scrollToMediaTile(path) {
       path;
       // const focused_tile = this.$refs.mediaTiles.querySelector(
@@ -242,16 +228,21 @@ export default {
       // });
     },
     updateInputFiles($event) {
-      this.selected_files = Array.from($event.target.files);
+      this.files_to_import = Array.from($event.target.files);
       $event.target.value = "";
     },
-    mediaDropped(files) {
-      this.selected_files = Array.from(files);
+    fileDropped(files) {
+      this.files_to_import = Array.from(files);
       this.show_dropzone = false;
-      // debugger;
     },
     mediaJustImported(list_of_added_metas) {
-      list_of_added_metas;
+      // TODO just imported medias get placed in publication automatically
+
+      const new_medias_path = list_of_added_metas.map(
+        (meta_filename) => this.project.$path + "/" + meta_filename
+      );
+      this.selected_medias = this.selected_medias.concat(new_medias_path);
+
       // todo add focus ring to indicate medias just sent
       // this.$alertify
       //   .closeLogOnClick(true)
@@ -274,8 +265,8 @@ export default {
       else
         this.selected_medias = this.selected_medias.filter((sm) => sm !== path);
     },
-    selectMedias(medias) {
-      this.$emit("selectMedias", medias);
+    addMedias(medias) {
+      this.$emit("addMedias", medias);
     },
     async removeMedia(path) {
       await this.$api.deleteItem({
@@ -375,6 +366,7 @@ export default {
   position: absolute;
   bottom: 0;
   left: 0;
+  z-index: 10;
   width: 100%;
   display: flex;
   justify-content: center;

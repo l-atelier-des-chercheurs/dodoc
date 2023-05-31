@@ -41,7 +41,7 @@
               :select_mode="mode"
               :meta_filenames_already_present="meta_filenames_already_present"
               @update:media_focused="media_focused = $event"
-              @selectMedias="selectMedias"
+              @addMedias="addMedias"
             />
           </template>
         </template>
@@ -88,10 +88,10 @@ export default {
   },
   computed: {},
   methods: {
-    selectMedias(path_to_source_media_metas) {
+    addMedias(path_to_source_media_metas) {
       // TODO if path matches a media that is not in this project,
       // we need to copy this media to this project first then link that media instead
-      this.$emit("selectMedias", {
+      this.$emit("addMedias", {
         path_to_source_media_metas,
       });
       this.$emit("close");

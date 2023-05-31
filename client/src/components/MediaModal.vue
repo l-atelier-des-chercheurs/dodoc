@@ -124,7 +124,7 @@ export default {
   props: {
     file: Object,
     project_path: String,
-    select_mode: Boolean,
+    select_mode: String,
     position_in_list: String,
   },
   components: {
@@ -168,6 +168,7 @@ export default {
   position: absolute;
   overflow: hidden;
   inset: 0;
+  z-index: 10;
   // padding: calc(var(--spacing) / 2);
 
   ._mediaModal--overlay {
