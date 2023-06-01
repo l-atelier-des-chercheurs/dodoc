@@ -8,6 +8,7 @@
   >
     <span label="Panneaux" class="_paneList2">
       <div
+        v-if="!$root.is_mobile_view"
         class="_projectTitle"
         :class="{
           'is--shown': is_stickied_to_top,
