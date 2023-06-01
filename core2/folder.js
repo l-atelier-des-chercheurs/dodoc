@@ -183,9 +183,10 @@ module.exports = (function () {
           data,
           req: update_cover_req,
         });
-        changed_meta.$cover = await _getFolderCover({
+        const cover = await _getFolderCover({
           path_to_folder,
         });
+        if (cover) changed_meta.$cover;
       }
 
       cache.delete({
@@ -387,9 +388,14 @@ module.exports = (function () {
     if (!(await fs.pathExists(cover_path))) return false;
 
     dev.logverbose(`folder has cover`);
-    const thumb_meta = await thumbs.makeFolderCover({
-      path_to_folder,
-    });
+    const thumb_meta = await thumbs
+      .makeFolderCover({
+        path_to_folder,
+      })
+      .catch((err) => {
+        dev.error("couldn’t make cover thumbs, returning false");
+        return false;
+      });
 
     return thumb_meta;
   }
