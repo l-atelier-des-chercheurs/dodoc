@@ -258,12 +258,14 @@ export default {
       this.files_to_import = Array.from(files);
     },
     mediaJustImported(list_of_added_metas) {
-      // TODO just imported medias get placed in publication automatically
+      if (!this.select_mode || this.select_mode === "single") return false;
 
       const new_medias_path = list_of_added_metas.map(
         (meta_filename) => this.project.$path + "/" + meta_filename
       );
-      this.selected_medias = this.selected_medias.concat(new_medias_path);
+
+      if (this.select_mode === "multiple")
+        this.selected_medias = this.selected_medias.concat(new_medias_path);
 
       // todo add focus ring to indicate medias just sent
       // this.$alertify

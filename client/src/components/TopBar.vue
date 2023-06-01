@@ -136,6 +136,7 @@ export default {
 
     &._bc {
       flex: 1 0 0;
+      overflow: hidden;
     }
     &._topRightButtons {
       flex: 0 0 auto;
