@@ -235,7 +235,7 @@ export default {
       // });
     },
     mediaTileIsSelectable() {
-      if (this.select_mode === "single") return false;
+      if (!this.select_mode || this.select_mode === "single") return false;
       return true;
     },
     mediaTileAlreadySelected(path) {

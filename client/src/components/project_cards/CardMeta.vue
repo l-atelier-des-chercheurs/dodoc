@@ -1,5 +1,9 @@
 <template>
-  <ProjectCard :header="$t('informations')" :icon="'info-square'" open>
+  <ProjectCard
+    :header="$t('informations')"
+    :icon="'info-square'"
+    :is_open_initially="true"
+  >
     <div class="u-spacingBottom">
       <AdminsAndContributorsField
         :folder="project"

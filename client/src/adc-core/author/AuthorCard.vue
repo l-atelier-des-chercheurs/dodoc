@@ -100,13 +100,14 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 1);
 
   > * {
     flex: 1 1 0;
 
     &._cover {
-      flex: 0 0 140px;
+      flex: 0 0 100px;
       aspect-ratio: 1/1;
       border-radius: 50%;
     }
@@ -121,6 +122,6 @@ export default {
 ._text {
   display: flex;
   flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
 }
 </style>
