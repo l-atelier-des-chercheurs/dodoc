@@ -383,24 +383,12 @@ export default {
 }
 
 ._projectInfos--meta {
-  display: flex;
-  flex-flow: column nowrap;
-  font-size: 90%;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  // gap: calc(var(--spacing) / 2);
-  // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-
+  // display: flex;
+  // flex-flow: column nowrap;
   height: 45vh;
-
   @include scrollbar(8px, 5px, 6px);
 
   .is--mobileView & {
-    flex-flow: row nowrap;
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
     height: auto;
   }
 
@@ -409,7 +397,7 @@ export default {
     min-width: 220px;
 
     .is--mobileView & {
-      flex: 1 0 220px;
+      // flex: 1 0 220px;
     }
   }
 }
