@@ -30,10 +30,10 @@
         </select>
 
         <ToggleInput
-          v-if="unaddable_medias"
+          v-if="meta_filenames_already_present"
           class="u-spacingBottom"
-          :content.sync="hide_unaddable_medias"
-          :label="$t('hide_unaddable_medias')"
+          :content.sync="hide_already_present_medias"
+          :label="$t('hide_already_present_medias')"
         />
 
         <template v-if="source_project_path">
@@ -48,8 +48,8 @@
               :project="source_project"
               :media_focused="media_focused"
               :select_mode="select_mode"
+              :hide_already_present_medias="hide_already_present_medias"
               :meta_filenames_already_present="meta_filenames_already_present"
-              :unaddable_medias="hide_unaddable_medias ? unaddable_medias : []"
               @update:media_focused="media_focused = $event"
               @addMedias="addMedias"
             />
@@ -73,7 +73,7 @@ export default {
   components: {
     MediaLibrary,
   },
-  inject: ["$getMetaFilenamesAlreadyPresent", "$getUnaddableMedias"],
+  inject: ["$getMetaFilenamesAlreadyPresent"],
   data() {
     return {
       is_loading: false,
@@ -81,7 +81,7 @@ export default {
       source_project_path: "",
       source_project: undefined,
       media_focused: undefined,
-      hide_unaddable_medias: true,
+      hide_already_present_medias: true,
     };
   },
   created() {},
@@ -102,10 +102,6 @@ export default {
       if (this.$getMetaFilenamesAlreadyPresent)
         return this.$getMetaFilenamesAlreadyPresent();
       return false;
-    },
-    unaddable_medias() {
-      if (this.$getUnaddableMedias) return this.$getUnaddableMedias();
-      return [];
     },
   },
   methods: {

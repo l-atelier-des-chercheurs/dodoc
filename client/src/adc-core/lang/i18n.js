@@ -73,7 +73,8 @@ export default function () {
         add: "ajouter",
         add_item: "Ajouter un élément",
         add_files: "Ajouter des fichiers",
-        hide_unaddable_medias: "Masquer les médias déjà inclus",
+        hide_already_present_medias:
+          "Masquer les médias déjà inclus à cette publication",
         suggestions: "Suggestions",
         access: "accéder",
         title: "Titre",

@@ -95,12 +95,6 @@ export default {
     MediaPicker,
   },
   directives: { handle: HandleDirective },
-  provide() {
-    return {
-      $getUnaddableMedias: () =>
-        this.medias_with_linked.map((m) => m.meta_filename_in_project),
-    };
-  },
   data() {
     return {
       show_media_picker: false,

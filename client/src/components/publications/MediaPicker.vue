@@ -9,7 +9,6 @@
     <PickMediaFromProjects
       :path="current_project_path"
       :select_mode="'multiple'"
-      :unaddable_medias="unaddable_medias"
       @addMedias="$emit('addMedias', $event)"
       @close="$emit('close')"
     />
@@ -19,7 +18,6 @@
 export default {
   props: {
     publication_path: String,
-    unaddable_medias: Array,
   },
   components: {},
   data() {

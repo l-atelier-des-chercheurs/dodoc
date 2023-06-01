@@ -134,7 +134,7 @@ export default {
     project: Object,
     media_focused: [Boolean, String],
     select_mode: String,
-    unaddable_medias: Array,
+    hide_already_present_medias: Boolean,
     meta_filenames_already_present: [Boolean, Object],
   },
   components: {
@@ -187,9 +187,12 @@ export default {
       return _medias;
     },
     filtered_medias() {
-      return this.sorted_medias.filter(
-        (m) => !this.unaddable_medias.includes(this.getFilename(m.$path))
-      );
+      const _filtered_medias = this.sorted_medias;
+      if (this.hide_already_present_medias === true)
+        return _filtered_medias.filter(
+          (m) => !this.mediaTileAlreadySelected(m.$path)
+        );
+      return _filtered_medias;
     },
     focused_media() {
       if (!this.media_focused) return false;
