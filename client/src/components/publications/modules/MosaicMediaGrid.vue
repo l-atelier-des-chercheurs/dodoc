@@ -141,11 +141,17 @@ export default {
     single_media_displayed_at_full_ratio() {
       if (this.medias_with_linked.length > 1) return false;
 
-      const ratio = this.medias_with_linked[0]._linked_media.$infos?.ratio;
-      return (
-        Math.round(ratio * 10) ===
-        Math.round((this.publimodule.height / this.publimodule.width) * 10)
-      );
+      const theoretical_ratio =
+        this.medias_with_linked[0]._linked_media.$infos?.ratio;
+      const current_ratio =
+        this.publimodule?.height && this.publimodule?.width
+          ? Math.round(
+              (this.publimodule?.height / this.publimodule?.width) * 10
+            )
+          : false;
+      if (!theoretical_ratio || !current_ratio) return false;
+
+      return Math.round(theoretical_ratio * 10) === current_ratio;
     },
   },
   methods: {
@@ -239,7 +245,8 @@ export default {
 
     border-radius: 4px;
     color: white;
-    text-shadow: 0px 0px 4px rgb(0 0 0 / 80%);
+    background: var(--c-noir);
+    padding: 2px;
     // background: rgba(0, 0, 0, 0.2);
   }
 }

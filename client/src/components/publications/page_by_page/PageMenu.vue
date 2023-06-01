@@ -65,7 +65,7 @@
         />
       </div>
 
-      <div class="">
+      <div class="" v-if="can_edit">
         <ToggleInput
           :content="display_as_public"
           @update:content="$emit('update:display_as_public', $event)"

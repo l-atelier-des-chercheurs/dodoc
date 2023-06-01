@@ -65,7 +65,6 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
-  padding: calc(var(--spacing) / 4);
 }
 ._maxlength {
   flex: 0 0 auto;

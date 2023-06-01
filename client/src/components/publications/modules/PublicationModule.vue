@@ -3,6 +3,7 @@
     class="_publicationModule"
     :class="{
       'is--shape': is_shape,
+      'is--mosaic': is_mosaic,
       'has--fsButton': show_fs_button,
     }"
   >
@@ -351,6 +352,9 @@ export default {
       return ["ellipsis", "rectangle", "line", "arrow"].includes(
         this.publimodule.module_type
       );
+    },
+    is_mosaic() {
+      return this.publimodule.module_type === "mosaic";
     },
     show_fs_button() {
       if (this.page_template === "page_by_page")

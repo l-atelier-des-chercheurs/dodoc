@@ -47,7 +47,7 @@ export default function () {
         go_home: "Retourner à l’accueil",
         page_not_found: "Cette page n’existe pas",
         admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
-        admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
+        admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
         edit: "Modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",

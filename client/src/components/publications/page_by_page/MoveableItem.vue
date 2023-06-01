@@ -477,10 +477,16 @@ export default {
     height: 100%;
     overflow: hidden;
 
-    ._mediasModule,
+    ._mediasModule {
+      height: 100%;
+    }
+
     ._mediaGrid,
-    ._mediaGrid--item,
-    ._mediaContent {
+    ._mediaGrid--item {
+      height: 100%;
+    }
+
+    ._mediaGrid ._mediaContent {
       height: 100%;
     }
     ._mediaContent--image {
@@ -512,7 +518,7 @@ export default {
 
 // custom props
 ._moveableItem ::v-deep {
-  ._publicationModule:not(.is--shape) {
+  ._publicationModule.is--mosaic {
     // border-radius: var(--set-borderRadius);
     // overflow: hidden;
     // outline-color: var(--set-outlineColor);
