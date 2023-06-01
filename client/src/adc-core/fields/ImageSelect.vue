@@ -65,7 +65,7 @@
         <PickMediaFromProjects
           v-if="show_picker"
           :path="path"
-          :mode="'single'"
+          :select_mode="'single'"
           @addMedias="addMediaFromLib"
           @close="show_picker = false"
         />
@@ -206,7 +206,7 @@ export default {
       });
     },
     addMediaFromLib({ path_to_source_media_metas }) {
-      // mode === 'unique', so we should get only one file
+      // mode === 'single', so we should get only one file
       const path_to_source_media_meta = path_to_source_media_metas[0];
 
       const file = this.getMediaInFolder({

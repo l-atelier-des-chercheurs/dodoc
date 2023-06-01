@@ -72,6 +72,9 @@ export default function () {
 
         add: "ajouter",
         add_item: "Ajouter un élément",
+        add_files: "Ajouter des fichiers",
+        hide_already_present_medias:
+          "Masquer les médias déjà inclus à cette publication",
         suggestions: "Suggestions",
         access: "accéder",
         title: "Titre",
@@ -130,6 +133,11 @@ export default function () {
           "En haut à gauche de l’écran. Au click, ramène à la page d’accueil.",
         hero_image: "Visuel page d’accueil",
         hero_image_instr: "",
+
+        bytes: "octets",
+        kb: "ko",
+        mb: "Mo",
+        gb: "Go",
 
         ui_lang_select: "Langue de l’interface",
         lang_updated: "La langue a été mise à jour",
@@ -348,6 +356,7 @@ export default function () {
           "Cliquez sur le lien ci-dessous pour l’ouvrir dans un nouvel onglet.",
 
         medias: "Médias",
+        no_preview_to_show: "Aucun aperçu à afficher pour le moment",
         no_media_in_project: "Aucun média dans ce projet",
         number_of_media: "Nombre de médias",
         media_removed: "Média supprimé",
@@ -730,6 +739,8 @@ export default function () {
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
         pick_cover: "Choisissez une image de couverture",
+        pick_media: "Choisissez un média",
+        pick_medias: "Choisissez un ou plusieurs médias",
         remove_image: "Retirer cette image",
 
         add_authors: "Ajouter des contributeur·rice·s",
@@ -789,10 +800,13 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
+        source_files: "Fichiers source",
         source_media_missing: "Le média source est manquant",
         media_pickers_instr:
           "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
         already_present: "Déjà présent",
+        on_this_page: "Sur cette page",
+        on_other_pages: "Sur d’autres pages",
 
         current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",

@@ -155,6 +155,7 @@ button,
 
 .u-button {
   display: inline-flex;
+  gap: calc(var(--spacing) / 4);
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
@@ -840,4 +841,30 @@ input[type="checkbox"]:disabled {
 
   color: var(--form-control-disabled);
   cursor: not-allowed;
+}
+
+.u-addBtn {
+  padding: calc(var(--spacing) / 2);
+  color: var(--c-noir);
+  border-radius: 2em;
+
+  color: var(--c-noir);
+
+  sl-icon {
+    font-size: 1.4em;
+  }
+}
+.u-dragHandle {
+  display: flex;
+  cursor: grab;
+  padding: calc(var(--spacing) / 2);
+  background: white;
+  color: var(--c-noir);
+  border-radius: 2px;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--c-noir);
+    color: white;
+  }
 }

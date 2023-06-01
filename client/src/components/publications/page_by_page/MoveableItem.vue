@@ -477,7 +477,7 @@ export default {
     height: 100%;
     overflow: hidden;
 
-    ._moduleMosaic,
+    ._mediasModule,
     ._mediaGrid,
     ._mediaGrid--item,
     ._mediaContent {

@@ -168,8 +168,8 @@
     </div>
 
     <div class="_content" :style="media_styles">
-      <ModuleMosaic
-        v-if="publimodule.module_type === 'mosaic'"
+      <MediasModule
+        v-if="['mosaic', 'files'].includes(publimodule.module_type)"
         :publimodule="publimodule"
         :can_edit="can_edit"
         :context="context"
@@ -178,12 +178,6 @@
         :show_fs_button="show_fs_button"
         @updateMeta="updateMeta"
         @remove="removeModule"
-      />
-      <ModuleCarousel
-        v-else-if="publimodule.module_type === 'carousel'"
-        :publimodule="publimodule"
-        :context="context"
-        :can_edit="can_edit"
       />
       <CollaborativeEditor2
         v-else-if="publimodule.module_type === 'text' && first_media"
@@ -294,9 +288,7 @@
   </div>
 </template>
 <script>
-import ModuleMosaic from "@/components/publications/modules/ModuleMosaic.vue";
-import ModuleCarousel from "@/components/publications/modules/ModuleCarousel.vue";
-
+import MediasModule from "@/components/publications/modules/MediasModule.vue";
 // a module is a block for a publication, listed in publication.modules_list
 
 export default {
@@ -314,9 +306,7 @@ export default {
     },
   },
   components: {
-    ModuleMosaic,
-
-    ModuleCarousel,
+    MediasModule,
   },
   data() {
     return {

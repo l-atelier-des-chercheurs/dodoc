@@ -80,20 +80,16 @@
         appear
       >
         <MediaTile
-          v-for="file of sorted_medias"
+          v-for="file of filtered_medias"
           :key="file.$path"
           :project_path="project.$path"
           :file="file"
           :was_focused="media_just_focused === getFilename(file.$path)"
-          :is_selectable="select_mode === 'multiple'"
+          :is_selectable="mediaTileIsSelectable(file.$path)"
           :is_selected="selected_medias.includes(file.$path)"
           :data-filepath="file.$path"
           :tile_mode="tile_mode"
-          :is_already_selected="
-            meta_filenames_already_present.some((mf) =>
-              file.$path.endsWith('/' + mf)
-            )
-          "
+          :is_already_selected="mediaTileAlreadySelected(file.$path)"
           @toggleMediaFocus="toggleMediaFocus(file.$path)"
           @setSelected="(present) => setSelected(present, file.$path)"
         />
@@ -126,7 +122,7 @@
         @nextMedia="nextMedia"
       />
     </transition>
-    <!-- <DropZone @fileDropped="fileDropped" /> -->
+    <DropZone @fileDropped="fileDropped" />
   </div>
 </template>
 <script>
@@ -138,7 +134,8 @@ export default {
     project: Object,
     media_focused: [Boolean, String],
     select_mode: String,
-    meta_filenames_already_present: { type: Array, default: () => [] },
+    hide_already_present_medias: Boolean,
+    meta_filenames_already_present: [Boolean, Object],
   },
   components: {
     MediaTile,
@@ -160,7 +157,6 @@ export default {
 
       media_just_focused: undefined,
 
-      show_dropzone: false,
       hide_dropzone_timeout: undefined,
     };
   },
@@ -190,6 +186,14 @@ export default {
       );
       return _medias;
     },
+    filtered_medias() {
+      const _filtered_medias = this.sorted_medias;
+      if (this.hide_already_present_medias === true)
+        return _filtered_medias.filter(
+          (m) => !this.mediaTileAlreadySelected(m.$path)
+        );
+      return _filtered_medias;
+    },
     focused_media() {
       if (!this.media_focused) return false;
       const _focused_media =
@@ -202,14 +206,14 @@ export default {
       return _focused_media;
     },
     focused_media_index() {
-      return this.sorted_medias.findIndex(
+      return this.filtered_medias.findIndex(
         (m) => m.$path === this.focused_media.$path
       );
     },
     focused_media_position_in_list() {
-      if (this.sorted_medias.length === 1) return "alone";
+      if (this.filtered_medias.length === 1) return "alone";
       if (this.focused_media_index === 0) return "first";
-      if (this.focused_media_index === this.sorted_medias.length - 1)
+      if (this.focused_media_index === this.filtered_medias.length - 1)
         return "last";
       return "none";
     },
@@ -227,13 +231,28 @@ export default {
       //   inline: "nearest",
       // });
     },
+    mediaTileIsSelectable() {
+      if (this.select_mode === "single") return false;
+      return true;
+    },
+    mediaTileAlreadySelected(path) {
+      if (!this.meta_filenames_already_present) return false;
+      let present = {};
+
+      const meta_filename = this.getFilename(path);
+      if (this.meta_filenames_already_present.current.includes(meta_filename))
+        present.current = true;
+      if (this.meta_filenames_already_present.other.includes(meta_filename))
+        present.other = true;
+
+      return Object.keys(present).length > 0 ? present : false;
+    },
     updateInputFiles($event) {
       this.files_to_import = Array.from($event.target.files);
       $event.target.value = "";
     },
     fileDropped(files) {
       this.files_to_import = Array.from(files);
-      this.show_dropzone = false;
     },
     mediaJustImported(list_of_added_metas) {
       // TODO just imported medias get placed in publication automatically
@@ -280,12 +299,12 @@ export default {
     },
     prevMedia() {
       this.toggleMediaFocus(
-        this.sorted_medias[this.focused_media_index - 1].$path
+        this.filtered_medias[this.focused_media_index - 1].$path
       );
     },
     nextMedia() {
       this.toggleMediaFocus(
-        this.sorted_medias[this.focused_media_index + 1].$path
+        this.filtered_medias[this.focused_media_index + 1].$path
       );
     },
   },
@@ -375,6 +394,25 @@ export default {
 
   > * {
     pointer-events: auto;
+  }
+}
+._addBtn {
+  --side-width: 24px;
+  display: block;
+  // width: var(--side-width);
+  // height: var(--side-width);
+  padding: calc(var(--spacing) / 4);
+  border-radius: calc(var(--side-width) / 2);
+  background: transparent;
+  font-size: 1.4em;
+
+  color: var(--c-noir);
+
+  display: flex;
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 </style>

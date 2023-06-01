@@ -46,8 +46,7 @@
       <PickMediaFromProjects
         v-if="show_picker"
         :path="project_path"
-        :mode="'multiple'"
-        :meta_filenames_already_present="meta_filenames_already_present"
+        :select_mode="'multiple'"
         @addMedias="addMedias"
         @close="show_picker = false"
       />
@@ -86,9 +85,6 @@ export default {
         if (m) acc.push(m);
         return acc;
       }, []);
-    },
-    meta_filenames_already_present() {
-      return this.content;
     },
   },
   methods: {
@@ -192,5 +188,6 @@ export default {
 
 ._addBtn {
   text-align: center;
+  padding: calc(var(--spacing) / 4);
 }
 </style>

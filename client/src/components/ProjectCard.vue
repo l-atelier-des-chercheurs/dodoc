@@ -1,5 +1,9 @@
 <template>
-  <details class="_projectCard" :open="is_open_initially">
+  <details
+    class="_projectCard"
+    :open="is_open_initially"
+    @toggle="toggleDetails"
+  >
     <summary>
       <div class="_icon">
         <sl-icon v-if="icon" :name="icon" />
@@ -22,6 +26,10 @@
         </template>
         <template v-else>–</template>
       </div>
+      <sl-icon
+        class="_openIcon"
+        :name="!currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'"
+      />
     </summary>
     <div class="_content">
       <slot />
@@ -38,14 +46,20 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      currently_open: false,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    toggleDetails(event) {
+      this.currently_open = event.currentTarget.open;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -99,7 +113,7 @@ export default {
     font-size: var(--sl-font-size-small);
 
     &[data-isfilled] {
-      background: var(--c-bleuvert);
+      background: var(--c-bleumarine);
       color: white;
     }
 
@@ -108,6 +122,11 @@ export default {
       // width: 0px;
       // height: 0px;
     }
+  }
+
+  ._openIcon {
+    padding: calc(var(--spacing) / 8);
+    margin: calc(var(--spacing) / 4);
   }
 
   ::marker {
@@ -126,9 +145,9 @@ export default {
     // font-size: var(--sl-font-size-small);
     // font-family: "Fira Code";
 
-    padding: calc(var(--spacing) / 8);
+    // padding: calc(var(--spacing) / 8);
     // font-weight: 500;
-    gap: calc(var(--spacing) / 2);
+    // gap: calc(var(--spacing) / 2);
     cursor: pointer;
 
     color: black;

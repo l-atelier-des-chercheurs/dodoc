@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="show_dropzone"
     class="_dropZone"
     :class="{
       'is--dragover': is_dragover,
@@ -21,15 +22,28 @@ export default {
   components: {},
   data() {
     return {
+      show_dropzone: false,
       is_dragover: false,
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on(`mediadrag.start`, this.showDropzone);
+    this.$eventHub.$on(`mediadrag.end`, this.hideDropzone);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(`mediadrag.start`, this.showDropzone);
+    this.$eventHub.$off(`mediadrag.end`, this.hideDropzone);
+  },
   watch: {},
   computed: {},
   methods: {
+    showDropzone() {
+      this.show_dropzone = true;
+    },
+    hideDropzone() {
+      this.show_dropzone = false;
+    },
     onDragover($event) {
       $event.preventDefault();
     },

@@ -85,7 +85,6 @@
               <DLabel :str="$t('add_on_page')" />
               <ModuleCreator
                 :publication_path="publication_path"
-                :meta_filenames_already_present="meta_filenames_already_present"
                 :addtl_meta="new_module_meta"
                 :context="'page_by_page'"
                 :show_shapes="true"
@@ -538,17 +537,6 @@ export default {
           this.active_module.module_type
         )
       );
-    },
-    meta_filenames_already_present() {
-      return this.page_modules.reduce((acc, m) => {
-        if (m.source_medias) {
-          m.source_medias.map((sm) => {
-            if (sm.meta_filename_in_project)
-              acc.push(sm.meta_filename_in_project);
-          });
-        }
-        return acc;
-      }, []);
     },
     unit() {
       if (this.layout_mode === "screen") return "px";

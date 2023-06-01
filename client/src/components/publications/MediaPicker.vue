@@ -8,8 +8,7 @@
     <!-- select from this or another project library -->
     <PickMediaFromProjects
       :path="current_project_path"
-      :mode="'multiple'"
-      :meta_filenames_already_present="meta_filenames_already_present"
+      :select_mode="'multiple'"
       @addMedias="$emit('addMedias', $event)"
       @close="$emit('close')"
     />
@@ -19,7 +18,6 @@
 export default {
   props: {
     publication_path: String,
-    meta_filenames_already_present: Array,
   },
   components: {},
   data() {

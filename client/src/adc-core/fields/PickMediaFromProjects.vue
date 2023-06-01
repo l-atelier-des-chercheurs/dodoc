@@ -1,5 +1,8 @@
 <template>
-  <BaseModal2 @close="$emit('close')">
+  <BaseModal2
+    :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
+    @close="$emit('close')"
+  >
     <div class="_pickMediaFromProject">
       <sl-spinner style="--indicator-color: currentColor" v-if="is_loading" />
       <template v-else>
@@ -16,7 +19,7 @@
           {{ $t("no_projects") }}
         </div>
 
-        <select v-else v-model="source_project_path">
+        <select v-else v-model="source_project_path" class="u-spacingBottom">
           <option
             v-for="project in projects"
             :key="project.$path"
@@ -26,8 +29,14 @@
           />
         </select>
 
+        <ToggleInput
+          v-if="meta_filenames_already_present"
+          class="u-spacingBottom"
+          :content.sync="hide_already_present_medias"
+          :label="$t('hide_already_present_medias')"
+        />
+
         <template v-if="source_project_path">
-          <br />
           <DLabel :str="$t('medias')" />
           <sl-spinner
             style="--indicator-color: currentColor"
@@ -38,7 +47,8 @@
               class="_mediaLib"
               :project="source_project"
               :media_focused="media_focused"
-              :select_mode="mode"
+              :select_mode="select_mode"
+              :hide_already_present_medias="hide_already_present_medias"
               :meta_filenames_already_present="meta_filenames_already_present"
               @update:media_focused="media_focused = $event"
               @addMedias="addMedias"
@@ -55,8 +65,7 @@ import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 export default {
   props: {
     path: String,
-    meta_filenames_already_present: Array,
-    mode: {
+    select_mode: {
       type: String,
       required: true,
     },
@@ -64,6 +73,7 @@ export default {
   components: {
     MediaLibrary,
   },
+  inject: ["$getMetaFilenamesAlreadyPresent"],
   data() {
     return {
       is_loading: false,
@@ -71,6 +81,7 @@ export default {
       source_project_path: "",
       source_project: undefined,
       media_focused: undefined,
+      hide_already_present_medias: true,
     };
   },
   created() {},
@@ -86,7 +97,13 @@ export default {
       else this.source_project = undefined;
     },
   },
-  computed: {},
+  computed: {
+    meta_filenames_already_present() {
+      if (this.$getMetaFilenamesAlreadyPresent)
+        return this.$getMetaFilenamesAlreadyPresent();
+      return false;
+    },
+  },
   methods: {
     addMedias(path_to_source_media_metas) {
       // TODO if path matches a media that is not in this project,
@@ -129,21 +146,21 @@ export default {
 ._pickMediaFromProject {
   position: relative;
   display: block;
-  max-width: 480px;
+  // max-width: 480px;
   width: 100%;
 
   // max-height: 50vh;
-  margin: calc(var(--spacing) / 4) 0;
-  padding: calc(var(--spacing) / 4);
+  // margin: calc(var(--spacing) / 4) 0;
+  // padding: calc(var(--spacing) / 4);
   overflow: auto;
-  border-radius: 4px;
+  // border-radius: 4px;
   background: white;
 
   // display: flex;
   // flex-flow: column nowrap;
 
-  border: 2px dashed var(--c-gris_fonce);
-  padding: calc(var(--spacing) / 2);
+  // border: 2px dashed var(--c-gris_fonce);
+  // padding: calc(var(--spacing) / 2);
 
   > * {
     // flex: 0 0 auto;
