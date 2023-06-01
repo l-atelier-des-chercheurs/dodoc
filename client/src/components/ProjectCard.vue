@@ -31,7 +31,7 @@
         :name="!currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'"
       />
     </summary>
-    <div class="_content">
+    <div class="_content" v-if="currently_open">
       <slot />
     </div>
   </details>
