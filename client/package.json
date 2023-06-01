@@ -60,7 +60,6 @@
     "sass": "^1.56.1",
     "sass-loader": "^12.6.0",
     "vue-cli-plugin-webpack-bundle-analyzer": "~4.0.0",
-    "vue-reactive-provide": "^0.3.0",
     "vue-template-compiler": "^2.7.14"
   }
 }

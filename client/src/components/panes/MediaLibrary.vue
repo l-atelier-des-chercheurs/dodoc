@@ -45,6 +45,9 @@
           </small>
           <div v-if="medias.length" class="u-label _mediaCount">
             {{ $t("number_of_media") }} = {{ medias.length }}
+            <template v-if="filtered_medias.length !== medias.length">
+              ({{ filtered_medias.length }})
+            </template>
           </div>
         </div>
         <div class="_topSection--right">
