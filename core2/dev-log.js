@@ -115,7 +115,7 @@ module.exports = dev = (function () {
       });
 
     if (logToFile) _sendToLogFile(message);
-    if (isDebugMode) _sendToConsole(message, chalk.bgYellow);
+    if (isDebugMode) _sendToConsole(message, chalk.yellow);
   }
   function logfunction() {
     if (!logToFile && !isDebugMode) return;
