@@ -28,6 +28,7 @@
               )
             "
           />
+
           <div class="_preview _preview--none" v-else>
             <sl-icon name="file-earmark-arrow-down" />
           </div>
@@ -110,6 +111,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._filesList {
+  position: relative;
+  z-index: 0;
   text-align: center;
 }
 
@@ -123,7 +126,7 @@ export default {
 }
 
 ._reorderedFile {
-  z-index: 10000;
+  z-index: 10;
   padding: 0;
   border-radius: 2px;
   min-height: 2em;
