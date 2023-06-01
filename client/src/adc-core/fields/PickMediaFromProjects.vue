@@ -19,7 +19,7 @@
           {{ $t("no_projects") }}
         </div>
 
-        <select v-else v-model="source_project_path">
+        <select v-else v-model="source_project_path" class="u-spacingBottom">
           <option
             v-for="project in projects"
             :key="project.$path"
@@ -29,8 +29,14 @@
           />
         </select>
 
+        <ToggleInput
+          v-if="unaddable_medias"
+          class="u-spacingBottom"
+          :content.sync="hide_unaddable_medias"
+          :label="$t('hide_unaddable_medias')"
+        />
+
         <template v-if="source_project_path">
-          <br />
           <DLabel :str="$t('medias')" />
           <sl-spinner
             style="--indicator-color: currentColor"
@@ -41,9 +47,9 @@
               class="_mediaLib"
               :project="source_project"
               :media_focused="media_focused"
-              :select_mode="mode"
-              :prevent_select_duplicates="prevent_duplicates"
+              :select_mode="select_mode"
               :meta_filenames_already_present="meta_filenames_already_present"
+              :unaddable_medias="hide_unaddable_medias ? unaddable_medias : []"
               @update:media_focused="media_focused = $event"
               @addMedias="addMedias"
             />
@@ -59,11 +65,7 @@ import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 export default {
   props: {
     path: String,
-    prevent_duplicates: {
-      type: Boolean,
-      default: false,
-    },
-    mode: {
+    select_mode: {
       type: String,
       required: true,
     },
@@ -71,7 +73,7 @@ export default {
   components: {
     MediaLibrary,
   },
-  inject: ["$getMetaFilenamesAlreadyPresent"],
+  inject: ["$getMetaFilenamesAlreadyPresent", "$getUnaddableMedias"],
   data() {
     return {
       is_loading: false,
@@ -79,6 +81,7 @@ export default {
       source_project_path: "",
       source_project: undefined,
       media_focused: undefined,
+      hide_unaddable_medias: true,
     };
   },
   created() {},
@@ -99,6 +102,10 @@ export default {
       if (this.$getMetaFilenamesAlreadyPresent)
         return this.$getMetaFilenamesAlreadyPresent();
       return false;
+    },
+    unaddable_medias() {
+      if (this.$getUnaddableMedias) return this.$getUnaddableMedias();
+      return [];
     },
   },
   methods: {

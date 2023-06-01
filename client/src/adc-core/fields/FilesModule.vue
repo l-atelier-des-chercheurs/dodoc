@@ -46,7 +46,7 @@
       <PickMediaFromProjects
         v-if="show_picker"
         :path="project_path"
-        :mode="'multiple'"
+        :select_mode="'multiple'"
         @addMedias="addMedias"
         @close="show_picker = false"
       />
@@ -188,5 +188,6 @@ export default {
 
 ._addBtn {
   text-align: center;
+  padding: calc(var(--spacing) / 4);
 }
 </style>

@@ -24,6 +24,7 @@
         :publication_path="publication_path"
         :can_edit="can_edit"
         @addMedias="addMedias"
+        @reorderMedias="reorderMedias"
         @removeMediaAtIndex="removeMediaAtIndex"
       />
     </div>
@@ -96,6 +97,17 @@ export default {
       source_medias.splice(index, 1);
       if (source_medias.length === 0) this.$emit("remove");
       else this.$emit("updateMeta", { source_medias });
+    },
+    reorderMedias(new_order) {
+      const previous_source_medias = this.publimodule.source_medias.slice();
+      const source_medias = new_order.reduce((acc, m) => {
+        const item = previous_source_medias.find(
+          (sm) => sm.meta_filename_in_project === m
+        );
+        if (item) acc.push(item);
+        return acc;
+      }, []);
+      this.$emit("updateMeta", { source_medias });
     },
     updateMediaOpt({ index, opt }) {
       const source_medias = this.publimodule.source_medias.slice();

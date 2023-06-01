@@ -85,7 +85,11 @@
           medias_with_linked.length < number_of_max_medias)
       "
     >
-      <button type="button" class="u-addBtn" @click="show_media_picker = true">
+      <button
+        type="button"
+        class="u-button u-button_transparent u-addBtn"
+        @click="show_media_picker = true"
+      >
         <sl-icon name="plus-circle" />
       </button>
       <MediaPicker

@@ -65,7 +65,7 @@
         <PickMediaFromProjects
           v-if="show_picker"
           :path="path"
-          :mode="'single'"
+          :select_mode="'single'"
           @addMedias="addMediaFromLib"
           @close="show_picker = false"
         />

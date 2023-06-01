@@ -80,7 +80,7 @@
         appear
       >
         <MediaTile
-          v-for="file of sorted_medias"
+          v-for="file of filtered_medias"
           :key="file.$path"
           :project_path="project.$path"
           :file="file"
@@ -134,7 +134,7 @@ export default {
     project: Object,
     media_focused: [Boolean, String],
     select_mode: String,
-    prevent_select_duplicates: Boolean,
+    unaddable_medias: Array,
     meta_filenames_already_present: [Boolean, Object],
   },
   components: {
@@ -186,6 +186,11 @@ export default {
       );
       return _medias;
     },
+    filtered_medias() {
+      return this.sorted_medias.filter(
+        (m) => !this.unaddable_medias.includes(this.getFilename(m.$path))
+      );
+    },
     focused_media() {
       if (!this.media_focused) return false;
       const _focused_media =
@@ -198,14 +203,14 @@ export default {
       return _focused_media;
     },
     focused_media_index() {
-      return this.sorted_medias.findIndex(
+      return this.filtered_medias.findIndex(
         (m) => m.$path === this.focused_media.$path
       );
     },
     focused_media_position_in_list() {
-      if (this.sorted_medias.length === 1) return "alone";
+      if (this.filtered_medias.length === 1) return "alone";
       if (this.focused_media_index === 0) return "first";
-      if (this.focused_media_index === this.sorted_medias.length - 1)
+      if (this.focused_media_index === this.filtered_medias.length - 1)
         return "last";
       return "none";
     },
@@ -223,10 +228,8 @@ export default {
       //   inline: "nearest",
       // });
     },
-    mediaTileIsSelectable(path) {
+    mediaTileIsSelectable() {
       if (this.select_mode === "single") return false;
-      path;
-      // if (this.prevent_select_duplicates)
       return true;
     },
     mediaTileAlreadySelected(path) {
@@ -293,12 +296,12 @@ export default {
     },
     prevMedia() {
       this.toggleMediaFocus(
-        this.sorted_medias[this.focused_media_index - 1].$path
+        this.filtered_medias[this.focused_media_index - 1].$path
       );
     },
     nextMedia() {
       this.toggleMediaFocus(
-        this.sorted_medias[this.focused_media_index + 1].$path
+        this.filtered_medias[this.focused_media_index + 1].$path
       );
     },
   },

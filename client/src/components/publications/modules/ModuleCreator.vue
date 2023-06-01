@@ -46,7 +46,6 @@
       <MediaPicker
         v-if="show_file_picker"
         :publication_path="publication_path"
-        :prevent_duplicates="true"
         @addMedias="createFiles"
         @close="show_file_picker = false"
       />
@@ -93,7 +92,7 @@
 
     <button
       type="button"
-      class="u-addBtn"
+      class="u-button u-button_transparent u-addBtn"
       v-if="is_collapsed"
       :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
       @click="show_module_selector = !show_module_selector"

@@ -4,8 +4,8 @@
     <SlickList
       class="_listOfFiles"
       axis="y"
-      :value="medias_with_linked.map((m, index) => index)"
-      @input="updateOrder"
+      :value="medias_with_linked.map((m) => m.meta_filename_in_project)"
+      @input="$emit('reorderMedias', $event)"
       :useDragHandle="true"
     >
       <SlickItem
@@ -21,20 +21,22 @@
           <MediaContent
             class="_preview"
             :file="_linked_media"
-            :resolution="50"
+            :resolution="220"
             v-if="
               ['image', 'video', 'audio', 'pdf', 'stl', 'url'].includes(
                 _linked_media.$type
               )
             "
           />
-          <sl-icon name="file-earmark-arrow-down" class="_preview" v-else />
+          <div class="_preview _preview--none" v-else>
+            <sl-icon name="file-earmark-arrow-down" />
+          </div>
           <span
             class="_link--filename"
             v-text="_linked_media.$media_filename"
           />
           <template v-if="_linked_media.$infos.size">
-            |&nbsp;
+            <!-- |&nbsp; -->
             <span
               class="u-instructions _link--filesize"
               v-text="formatBytes(_linked_media.$infos.size)"
@@ -58,14 +60,18 @@
       </SlickItem>
     </SlickList>
 
-    <div v-if="can_edit">
-      <button type="button" class="u-addBtn" @click="show_media_picker = true">
+    <div v-if="can_edit" class="_addBtnSection">
+      <button
+        type="button"
+        class="u-button u-button_transparent u-addBtn"
+        @click="show_media_picker = true"
+      >
         <sl-icon name="plus-circle" />
+        {{ $t("add_files") }}
       </button>
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
-        :prevent_duplicates="true"
         @addMedias="$emit('addMedias', $event)"
         @close="show_media_picker = false"
       />
@@ -89,6 +95,12 @@ export default {
     MediaPicker,
   },
   directives: { handle: HandleDirective },
+  provide() {
+    return {
+      $getUnaddableMedias: () =>
+        this.medias_with_linked.map((m) => m.meta_filename_in_project),
+    };
+  },
   data() {
     return {
       show_media_picker: false,
@@ -99,14 +111,14 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {
-    updateOrder($event) {
-      $event;
-    },
-  },
+  methods: {},
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+._filesList {
+  text-align: center;
+}
+
 ._listOfFiles {
   padding: 0;
   margin: 0;
@@ -121,8 +133,8 @@ export default {
   padding: 0;
   border-radius: 2px;
   min-height: 2em;
-  background: var(--c-gris);
-  // border: 1px solid var(--c-gris_fonce);
+  background: white;
+  border: 1px solid var(--c-gris);
 
   display: flex;
   flex-flow: row nowrap;
@@ -130,8 +142,9 @@ export default {
   word-break: break-word;
   align-items: center;
 
-  gap: calc(var(--spacing) / 4);
-  border-radius: 4px;
+  padding: 0 calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
+  border-radius: 2px;
 
   justify-content: space-between;
 
@@ -155,6 +168,10 @@ export default {
     align-items: center;
     gap: calc(var(--spacing) / 1);
 
+    > * {
+      flex: 1 1 50px;
+    }
+
     ._preview {
       flex: 0 0 auto;
       font-size: 100%;
@@ -174,6 +191,14 @@ export default {
         background: white;
       }
 
+      &._preview--none {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        font-size: 150%;
+      }
+
       ::v-deep ._mediaContent--image {
         position: absolute;
         width: 100%;
@@ -187,8 +212,26 @@ export default {
       // text-overflow: ellipsis;
       // white-space: nowrap;
       // overflow: hidden;
+      flex: 1 1 0;
+      text-align: left;
+
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+
       white-space: break-spaces;
     }
+    ._link--filesize {
+      flex: 0 0 50px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+    }
   }
+}
+._addBtnSection {
+  padding: calc(var(--spacing) / 4);
 }
 </style>

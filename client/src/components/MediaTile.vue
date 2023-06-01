@@ -130,7 +130,7 @@ export default {
       background: var(--c-noir);
       position: absolute;
       inset: 0;
-      opacity: 0.2;
+      opacity: 0.4;
       pointer-events: none;
     }
   }
@@ -138,7 +138,7 @@ export default {
   &[data-type="text"],
   &[data-type="other"] {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 
     text-align: center;

@@ -8,8 +8,8 @@
     <!-- select from this or another project library -->
     <PickMediaFromProjects
       :path="current_project_path"
-      :mode="'multiple'"
-      :prevent_duplicates="prevent_duplicates"
+      :select_mode="'multiple'"
+      :unaddable_medias="unaddable_medias"
       @addMedias="$emit('addMedias', $event)"
       @close="$emit('close')"
     />
@@ -19,7 +19,7 @@
 export default {
   props: {
     publication_path: String,
-    prevent_duplicates: Boolean,
+    unaddable_medias: Array,
   },
   components: {},
   data() {
