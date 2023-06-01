@@ -20,7 +20,6 @@
             <div class="_sticky">
               <div class="_content">
                 <ToggleInput
-                  class="u-button"
                   :content.sync="display_as_public"
                   :label="$t('display_as_public')"
                 />
@@ -300,12 +299,16 @@ export default {
     color: white;
 
     > * {
+      // padding: 0;
       padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
     }
 
     ::v-deep {
       .u-label {
         color: white;
+      }
+      ._inputLabel {
+        // padding: 0;
       }
     }
   }

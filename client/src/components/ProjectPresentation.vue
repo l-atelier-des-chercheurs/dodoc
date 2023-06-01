@@ -386,6 +386,7 @@ export default {
   // display: flex;
   // flex-flow: column nowrap;
   height: 45vh;
+  overflow: auto;
   @include scrollbar(8px, 5px, 6px);
 
   .is--mobileView & {
