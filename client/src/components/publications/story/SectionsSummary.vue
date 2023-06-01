@@ -142,7 +142,8 @@ export default {
 
   &.is--active {
     ._title {
-      background: var(--c-orange);
+      background: var(--c-bleumarine);
+      color: white;
     }
   }
   // color: black;
