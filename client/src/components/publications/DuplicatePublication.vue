@@ -210,7 +210,6 @@ export default {
 
           const original_file_meta = this.getFilename(media_path);
           if (copy_file_meta !== original_file_meta) {
-            // todo: media filename changed, we have to update its link in publi files with source_medias
             for (let publication_file of copy_publication.$files) {
               if (
                 !Object.prototype.hasOwnProperty.call(
