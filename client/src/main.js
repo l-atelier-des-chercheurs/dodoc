@@ -14,9 +14,6 @@ Vue.prototype.$alertify = alertify;
 
 Vue.config.ignoredElements = [/sl-/];
 
-import ReactiveProvide from "vue-reactive-provide";
-Vue.use(ReactiveProvide);
-
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 

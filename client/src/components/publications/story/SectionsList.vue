@@ -119,7 +119,7 @@ export default {
               return this.getFilename(f.$path) === module_meta;
             });
             if (
-              section_module.source_medias &&
+              section_module?.source_medias &&
               Array.isArray(section_module.source_medias)
             )
               section_module.source_medias.map((sm) => {
