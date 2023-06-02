@@ -168,6 +168,10 @@ body {
   padding: calc(var(--spacing) / 1);
 }
 
+._pubTopbar ._topbar {
+  margin: var(--spacing) auto;
+}
+
 ._pubTopbar {
   margin: 0 auto;
   max-width: 86ch;
