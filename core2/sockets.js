@@ -124,16 +124,17 @@ module.exports = (function () {
       // );
 
       socket.on("joinRoom", ({ room }) => {
-        dev.logsockets(`ROOMS — socket ${socket.id} is joining ${room}`);
+        dev.logrooms(`ROOMS — socket ${socket.id} is joining ${room}`);
         socket.join("content/" + room);
         // roomStatus(socket);
       });
       socket.on("leaveRoom", ({ room }) => {
-        dev.logsockets(`ROOMS — socket ${socket.id} is leaving ${room}`);
+        dev.logrooms(`ROOMS — socket ${socket.id} is leaving ${room}`);
         socket.leave("content/" + room);
+        dev.logrooms(`ROOMS — socket ${socket.id} is leaving ${room}`);
       });
       socket.on("disconnect", () => {
-        dev.logsockets(`ROOMS — socket ${socket.id} disconnected`);
+        dev.logrooms(`ROOMS — socket ${socket.id} disconnected`);
       });
     });
 
@@ -172,12 +173,10 @@ module.exports = (function () {
   }
 
   function roomStatus(socket) {
-    dev.logverbose("ROOMS — status");
+    dev.logrooms("ROOMS — status");
     for (const [key, value] of socket.adapter.rooms) {
       if (key.startsWith("content/"))
-        dev.logverbose(
-          key + " = " + JSON.stringify(Array.from(value.entries()))
-        );
+        dev.logrooms(key + " = " + JSON.stringify(Array.from(value.entries())));
     }
   }
 

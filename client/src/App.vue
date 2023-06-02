@@ -16,19 +16,14 @@
       />
 
       <template v-else>
-        <transition name="fade" mode="out-in">
-          <div class="">
-            <TopBar v-if="$route.name !== 'Publication'" />
+        <TopBar v-if="$route.name !== 'Publication'" />
 
-            <transition name="fade_fast" mode="out-in">
-              <router-view v-slot="{ Component }" :key="$route.path">
-                <component :is="Component" />
-              </router-view>
-            </transition>
-
-            <TaskTracker />
-          </div>
+        <transition name="fade_fast" mode="out-in">
+          <router-view v-slot="{ Component }" :key="$route.path">
+            <component :is="Component" />
+          </router-view>
         </transition>
+        <TaskTracker />
       </template>
     </template>
 

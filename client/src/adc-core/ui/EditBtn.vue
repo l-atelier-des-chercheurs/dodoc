@@ -106,7 +106,8 @@ export default {
   }
 
   &:hover,
-  &:active {
+  &:active,
+  &:focus-visible {
     // background: var(--color2);
     color: var(--color-hover-icon);
 

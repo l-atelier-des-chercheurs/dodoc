@@ -1,9 +1,11 @@
 <template>
   <component
-    :is="links_to_author_page ? 'router-link' : 'span'"
+    :is="component_tag"
+    :type="component_tag === 'button' ? 'button' : ''"
     v-if="author"
-    :to="links_to_author_page ? url_to_author : false"
+    :to="component_to"
     class="_author"
+    @click="$emit('click')"
   >
     <div class="_cover">
       <CoverField
@@ -57,6 +59,15 @@ export default {
     url_to_author() {
       return this.createURLFromPath(this.path);
     },
+    component_tag() {
+      if (this.links_to_author_page) return "router-link";
+      if (this.$listeners.click) return "button";
+      return "span";
+    },
+    component_to() {
+      if (this.component_tag === "router-link") return this.url_to_author;
+      return false;
+    },
   },
   methods: {},
 };
@@ -72,6 +83,7 @@ export default {
   color: var(--c-noir);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
+  background: transparent;
   border: 1px solid var(--c-gris);
 
   ._cover {
