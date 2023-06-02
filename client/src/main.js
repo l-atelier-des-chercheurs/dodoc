@@ -282,7 +282,7 @@ new Vue({
   },
   watch: {
     "$api.socket.connected": function () {
-      this.is_connected = this.$api.socket.connected;
+      this.is_connected = this.$api.connected;
     },
   },
   computed: {

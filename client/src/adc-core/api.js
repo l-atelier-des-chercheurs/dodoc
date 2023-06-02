@@ -17,6 +17,8 @@ export default function () {
 
       // todo replace is_identified, create route to test
       is_correctly_logged_in: false,
+
+      connected: false,
     },
     created() {},
     watch: {},
@@ -40,11 +42,12 @@ export default function () {
         if (this.tokenpath.token_path)
           await this.getCurrentAuthor().catch(() => {});
 
-        // todo also use token for socketio connection
         this.socket.connect();
 
         // client-side
         this.socket.on("connect", () => {
+          console.log("socket connected");
+          this.connected = true;
           console.log("connect " + this.socket.id);
           this.$eventHub.$emit("socketio.connect", {
             socketid: this.socket.id,
@@ -59,11 +62,16 @@ export default function () {
           this.socket.userID = userID;
         });
         this.socket.on("connect_error", (reason) => {
+          console.log("socket connect error");
           this.$eventHub.$emit("socketio.connect_error", reason);
         });
         this.socket.on("disconnect", (reason) => {
+          console.log("socket disconnected");
+
+          this.connected = false;
           this.$eventHub.$emit("socketio.disconnect", reason);
           this.socket.disconnect();
+          this.emptyStore();
         });
 
         this.socket.onAny((eventName, ...args) => {
@@ -101,22 +109,55 @@ export default function () {
         this.socket.connect();
       },
       join({ room }) {
-        this.socket.emit("joinRoom", { room });
+        // join room only if not tracking
+        if (!this.rooms_joined.includes(room))
+          this.socket.emit("joinRoom", { room });
+        // we push this room anyway, so that when we remove it we keep tracking until all has been removed
         this.rooms_joined.push(room);
       },
       leave({ room }) {
-        this.socket.emit("leaveRoom", { room });
-        // remove from store
-        this.$delete(this.store, room);
-        this.rooms_joined = this.rooms_joined.filter((rj) => rj !== room);
-      },
-      rejoinRooms() {
-        console.log("rejoinRooms" + this.rooms_joined.join(", "));
-
-        this.rooms_joined.map((rj) =>
-          this.socket.emit("joinRoom", { room: rj })
+        const index_to_remove = this.rooms_joined.findIndex(
+          (rj) => rj !== room
         );
+        this.rooms_joined.splice(index_to_remove, 1);
+        // if room isnt tracked anymore
+        if (!this.rooms_joined.includes(room)) {
+          this.socket.emit("leaveRoom", { room });
+          this.$delete(this.store, room);
+        }
       },
+
+      emptyStore() {
+        // called when client disconnects from socket
+        // since we cant be sure of what happens before reconnect, we nuke all store
+        // this.store = {};
+      },
+
+      async rejoinRooms() {
+        // refresh full content of all rooms tracked
+        const paths = this.rooms_joined.filter(
+          (value, index, array) => array.indexOf(value) === index
+        );
+        for (const path of paths) {
+          await this.updateStore(path);
+          this.socket.emit("joinRoom", { room: path });
+        }
+      },
+      // async getAndTrack(path) {
+      //   // getFolders ou getFolder
+      //   const response = await this.$axios.get(path).catch((err) => {
+      //     const err_code = this.onError(err);
+      //     throw err_code;
+      //   });
+      //   const content = response.data;
+      //   // puis join le path en question
+
+      //   // si disconnect, il faut relancer le get, que ça maj
+      //   // l'objet côté component
+      //   // et que ça rejoin la room
+
+      //   return content;
+      // },
 
       async _setAuthFromStorage() {
         let auth = {};
@@ -193,16 +234,20 @@ export default function () {
         this.store[path].push(meta);
         this.$set(this.store, meta.$path, meta);
       },
-      folderUpdated({ path, changed_data }) {
-        const updateProps = ({ changed_data, folder_to_update }) => {
-          Object.entries(changed_data).map(([key, value]) => {
-            this.$set(folder_to_update, key, value);
-          });
-        };
 
+      updateProps({ changed_data, folder_to_update }) {
+        Object.entries(changed_data).map(([key, value]) => {
+          this.$set(folder_to_update, key, value);
+        });
+      },
+
+      folderUpdated({ path, changed_data }) {
         // updated folder $path
         if (Object.prototype.hasOwnProperty.call(this.store, path)) {
-          updateProps({ changed_data, folder_to_update: this.store[path] });
+          this.updateProps({
+            changed_data,
+            folder_to_update: this.store[path],
+          });
         }
 
         if (path === "") return;
@@ -215,7 +260,7 @@ export default function () {
           const folder_to_update = this.store[parent_folder_path].find(
             (f) => f.$path === path
           );
-          updateProps({ changed_data, folder_to_update });
+          this.updateProps({ changed_data, folder_to_update });
         }
       },
       folderRemoved({ path }) {
@@ -272,9 +317,17 @@ export default function () {
       async restartDodoc() {
         return await this.$axios.post(`_admin`);
       },
+      async updateStore(path) {
+        const response = await this.$axios.get(path).catch((err) => {
+          const err_code = this.onError(err);
+          throw err_code;
+        });
+        const content = response.data;
+        this.folderUpdated({ path, changed_data: content });
+        return;
+      },
       async getFolders({ path }) {
         if (this.store[path]) return this.store[path];
-
         const response = await this.$axios.get(path).catch((err) => {
           const err_code = this.onError(err);
           throw err_code;

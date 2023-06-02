@@ -3,7 +3,10 @@
     <component :is="'style'">
       {{ custom_fonts_css }}
     </component>
-    <DisconnectModal v-if="show_disconnect_modal" />
+    <DisconnectModal
+      v-if="show_disconnect_modal"
+      @close="show_disconnect_modal = false"
+    />
 
     <div class="_spinner" v-if="$root.is_loading" key="loader">
       <LoaderSpinner />
@@ -63,6 +66,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
   },
   watch: {},
   computed: {
