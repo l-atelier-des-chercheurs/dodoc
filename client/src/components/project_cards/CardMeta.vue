@@ -1,5 +1,5 @@
 <template>
-  <ProjectCard
+  <DetailsPane
     :header="$t('informations')"
     :icon="'info-square'"
     :is_open_initially="$root.is_mobile_view ? false : true"
@@ -59,10 +59,9 @@
         v-html="project_path_wrappable"
       />
     </div>
-  </ProjectCard>
+  </DetailsPane>
 </template>
 <script>
-import ProjectCard from "@/components/ProjectCard.vue";
 import DuplicateOrRemixProject from "@/components/project/DuplicateOrRemixProject.vue";
 import EventField from "@/components/project/EventField.vue";
 import RemixField from "@/components/project/RemixField.vue";
@@ -73,7 +72,6 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    ProjectCard,
     EventField,
     RemixField,
     DuplicateOrRemixProject,

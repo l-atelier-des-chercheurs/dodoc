@@ -1,6 +1,6 @@
 <template>
   <details
-    class="_projectCard"
+    class="_DetailsPane"
     :open="is_open_initially"
     @toggle="toggleDetails"
   >
@@ -63,7 +63,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._projectCard {
+._DetailsPane {
   // border-bottom: 0px solid var(--c-gris_clair);
   // border: 1px solid transparent;
   // border-left: 2px solid transparent;
@@ -87,7 +87,7 @@ export default {
     line-height: 0;
     // transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-    ._projectCard[open] & {
+    ._DetailsPane[open] & {
     }
   }
 
