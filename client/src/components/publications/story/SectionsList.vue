@@ -219,9 +219,15 @@ export default {
     scrollToTop() {
       const current_height = this.$el.offsetHeight;
       this.$el.setAttribute("style", `height: ${current_height}px`);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      window.setTimeout(() => this.$el.removeAttribute("style"), 500);
 
+      if (this.$route.name === "Projet")
+        this.$el.scrollIntoView({
+          behavior: "smooth",
+          inline: "nearest",
+        });
+      else window.scrollTo({ top: 0, behavior: "smooth" });
+
+      window.setTimeout(() => this.$el.removeAttribute("style"), 1_000);
       // document.body.scrollIntoView({
       //   behavior: "smooth",
       //   inline: "nearest",
