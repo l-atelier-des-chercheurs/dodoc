@@ -64,7 +64,12 @@
           </svg>
         </button>
         <div class="_advanced_menu" v-if="show_advanced_menu">
-          <sl-button variant="default" size="small" pill>
+          <sl-button
+            variant="default"
+            size="small"
+            pill
+            @click="changeModuleType"
+          >
             {{ $t(`module.label.${publimodule.module_type}`) }}
           </sl-button>
 
@@ -290,7 +295,6 @@
 </template>
 <script>
 import MediasModule from "@/components/publications/modules/MediasModule.vue";
-// a module is a block for a publication, listed in publication.modules_list
 
 export default {
   props: {
@@ -414,6 +418,17 @@ export default {
       this.$nextTick(() => {
         if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
       });
+    },
+    changeModuleType() {
+      const module_types = ["mosaic", "files"];
+      const curr_module_type = this.publimodule.module_type;
+      const curr_index = module_types.findIndex(
+        (mt) => mt === curr_module_type
+      );
+      const next_index = (curr_index + 1) % module_types.length;
+      const new_type = module_types[next_index];
+
+      this.updateMeta({ module_type: new_type });
     },
     async duplicateModule() {
       let addtl_meta_to_module = {};

@@ -28,6 +28,7 @@
           </span>
           <span class="_clickZone" @click="openSection(section.$path)">
             <h4 class="_title">
+              {{ index + 1 }}.
               <span v-if="section.section_title">
                 {{ section.section_title }}
               </span>
@@ -125,6 +126,7 @@ export default {
 
   ._clickZone {
     text-decoration: underline;
+    text-underline-offset: 0.2em;
     cursor: pointer;
 
     &:hover,

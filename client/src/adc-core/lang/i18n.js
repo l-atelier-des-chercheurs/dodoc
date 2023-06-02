@@ -821,6 +821,7 @@ export default function () {
         "module.label.text": "Bloc de texte",
         "module.label.mosaic": "Mosaïque de médias",
         "module.label.carousel": "Carrousel",
+        "module.label.files": "Liste de fichiers",
         object_fit_cover: "Remplir le cadre",
         object_fit_contain: "Remplir sans dépasser",
 
