@@ -15,6 +15,7 @@ module.exports = dev = (function () {
     logverbose: logverbose,
     logpackets: logpackets,
     logsockets: logsockets,
+    logrooms: logrooms,
     logapi: logapi,
     logfunction: logfunction,
     error: error,
@@ -31,10 +32,11 @@ module.exports = dev = (function () {
     if (isDebugMode) {
       console.log("Debug mode is enabled");
       console.log("---");
-      dev.logfunction("logfunction = magenta");
-      dev.logapi("logapi = blue");
-      dev.logpackets("logpackets = green");
-      dev.logsockets("logsockets = cyan");
+      dev.logfunction("logfunction");
+      dev.logapi("logapi");
+      dev.logpackets("logpackets");
+      dev.logsockets("logsockets");
+      dev.logrooms("logsockets");
       if (isVerboseMode) {
         dev.logverbose("(dev and verbose) gray for regular parsing data");
       }
@@ -101,6 +103,19 @@ module.exports = dev = (function () {
 
     if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.cyan);
+  }
+  function logrooms() {
+    if (!logToFile && !isVerboseMode) return;
+
+    const message =
+      `¶ ` +
+      _createLogMessage({
+        fct: logsockets,
+        args: arguments,
+      });
+
+    if (logToFile) _sendToLogFile(message);
+    if (isDebugMode) _sendToConsole(message, chalk.yellow);
   }
   function logfunction() {
     if (!logToFile && !isDebugMode) return;
