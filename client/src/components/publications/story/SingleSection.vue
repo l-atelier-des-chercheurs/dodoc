@@ -3,8 +3,8 @@
     <div class="_storyContainer">
       <div class="_storyContent" :style="story_styles">
         <div class="_topbar">
-          <SectionTitle :section="section" :can_edit="can_edit" />
-          <div class="u-sameRow" v-if="can_edit">
+          <SectionTitle class="_text" :section="section" :can_edit="can_edit" />
+          <div class="_buttons" v-if="can_edit">
             <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
             <div>
               <button
@@ -223,9 +223,9 @@ export default {
   width: 100%;
   background: white;
   max-width: 86ch;
-  padding: calc(var(--spacing) * 1) 0;
+  padding: calc(var(--spacing) * 2) 0;
   margin: 0 auto;
-  border-radius: 6px;
+  border-radius: 15px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -250,7 +250,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--spacing) / 4) 0;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) * 2);
 }
 
 ._topbar {
@@ -259,8 +259,21 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
 
-  margin: 0 calc(var(--spacing) / 1) calc(var(--spacing) * 1.5);
-  padding-bottom: calc(var(--spacing) / 1);
+  margin: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
   border-bottom: 2px solid var(--c-gris);
+
+  > * {
+    &._text {
+      flex: 1 1 56ch;
+    }
+    &._buttons {
+      flex: 1 1 auto;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-end;
+      gap: calc(var(--spacing) * 1);
+    }
+  }
 }
 </style>
