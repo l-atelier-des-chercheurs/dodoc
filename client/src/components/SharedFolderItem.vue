@@ -102,10 +102,12 @@ export default {
 ._sharedFolderItem--preview {
   background: white;
   z-index: 10;
-  border-radius: 4px;
+  // border-radius: 4px;
+  border-radius: 4px 4px 0 0;
+
   overflow: hidden;
-  // border: 2px solid white;
-  border: 2px solid var(--sharedfolder-bg);
+  border: 2px solid white;
+  // border: 2px solid var(--sharedfolder-bg);
 
   ::v-deep ._mediaContent--image {
     width: 100%;
