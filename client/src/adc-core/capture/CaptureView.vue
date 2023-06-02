@@ -1104,7 +1104,7 @@ export default {
   mounted() {
     if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
 
-    // document.addEventListener("keyup", this.captureKeyListener);
+    document.addEventListener("keyup", this.captureKeyListener);
 
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
@@ -1136,7 +1136,7 @@ export default {
       this.updateDistantStream
     );
 
-    // document.removeEventListener("keyup", this.captureKeyListener);
+    document.removeEventListener("keyup", this.captureKeyListener);
 
     this.ask_before_leaving_capture = false;
 

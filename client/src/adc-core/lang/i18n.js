@@ -111,8 +111,14 @@ export default function () {
         search_by_title: "Rechercher par titre",
 
         connection_lost: `Connexion perdue`,
-        connection_lost_reload_to_reconnect: `La connexion s’est interrompue. Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez à nouveau cette erreur, contactez `,
+        connection_lost_in: `La connexion au serveur s’est interrompue.`,
+        attempting_to_reconnect_in: `Nouvelle tentative de connexion dans :`,
         reload_page: "Recharger cette page",
+        try_reconnect_now: "Essayer de se reconnecter maintenant",
+        reconnecting: "Tentative de reconnection…",
+        if_issues_contact:
+          "Si vous rencontrez régulièrement cette erreur, veuillez contacter ",
+        connection_back: "La connection est revenue.",
         create_page: "Ajouter une page",
         add_on_page: "Ajouter sur la page",
         page_color: "Couleur de cette page",
