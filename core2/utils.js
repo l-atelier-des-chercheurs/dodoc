@@ -119,6 +119,9 @@ module.exports = (function () {
         $admins: { type: "any" },
         $contributors: { type: "any" },
         $password: { type: "string" },
+        $can_be_remixed: { type: "boolean" },
+        $is_remix_of: { type: "string" },
+        $list_of_remixes: { type: "array" },
       };
       fields = Object.assign({}, fields, predefined_fields);
 
@@ -452,8 +455,16 @@ module.exports = (function () {
     getSlugFromPath(path) {
       return path.split("/").at(-1);
     },
-    getParent(path) {
+    getContainingFolder(path) {
       return path.substring(0, path.lastIndexOf("/"));
+    },
+    getFolderParent(path) {
+      let paths = path.split("/");
+      if (paths.length >= 2) {
+        paths = paths.slice(0, -2);
+        return paths.join("/");
+      }
+      return false;
     },
     isExtensionLosslessImageFormat(filename) {
       if (filename) {

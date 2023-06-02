@@ -46,8 +46,8 @@
       <PickMediaFromProjects
         v-if="show_picker"
         :path="project_path"
-        :meta_filenames_already_present="meta_filenames_already_present"
-        @selectMedia="selectMedia"
+        :select_mode="'multiple'"
+        @addMedias="addMedias"
         @close="show_picker = false"
       />
     </div>
@@ -86,16 +86,16 @@ export default {
         return acc;
       }, []);
     },
-    meta_filenames_already_present() {
-      return this.content;
-    },
   },
   methods: {
-    async selectMedia({ path_to_source_media_meta }) {
-      const new_file = this.getFilename(path_to_source_media_meta);
+    async addMedias({ path_to_source_media_metas }) {
+      const new_files = path_to_source_media_metas.map(
+        (path_to_source_media_meta) =>
+          this.getFilename(path_to_source_media_meta)
+      );
       const files = this.content.slice() || [];
-      files.push(new_file);
-      this.updateFiles(files);
+      const new_files_list = files.concat(new_files);
+      this.updateFiles(new_files_list);
     },
     async removeFile(path) {
       let _files = this.content.slice();
@@ -188,5 +188,6 @@ export default {
 
 ._addBtn {
   text-align: center;
+  padding: calc(var(--spacing) / 4);
 }
 </style>

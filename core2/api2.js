@@ -143,6 +143,15 @@ module.exports = (function () {
     );
     app.post(
       [
+        "/_api2/:folder_type/:folder_slug/_remix",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_remix",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_remix",
+      ],
+      _generalPasswordCheck,
+      _remixFolder
+    );
+    app.post(
+      [
         "/_api2/:folder_type/:folder_slug/_generatePreview",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_generatePreview",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_generatePreview",
@@ -234,6 +243,7 @@ module.exports = (function () {
 
   async function _checkGeneralPasswordAndToken(req, res, next) {
     dev.logapi();
+
     let response = {};
     try {
       await _generalPasswordCheck(req);
@@ -258,110 +268,133 @@ module.exports = (function () {
     return res.json(response);
   }
 
-  async function _restrictToContributors(req, res, next) {
-    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder });
+  async function _canContributeToFolder({ path_to_type, path_to_folder, req }) {
+    dev.logapi();
 
-    // check if path_to_type in schema mentions $can_be_created_by "everyone"
-    if (auth.canFolderBeCreatedByAll({ path_to_type })) {
-      dev.logapi("Folder can be created by all according to schema");
-      return next ? next() : undefined;
-    }
+    if (path_to_type && auth.canFolderBeCreatedByAll({ path_to_type }))
+      return "Folder contribution allowed to all according to schema";
 
-    try {
-      if (
-        (await auth.isFolderOpenedToAll({
-          field: "$contributors",
-          path_to_folder,
-        })) ||
-        (await auth.isFolderOpenedToAll({ field: "$admins", path_to_folder }))
-      ) {
-        dev.logapi("Folder opened to any contributors");
-        return next ? next() : undefined;
-      }
+    if (
+      (await auth.isFolderOpenedToAll({
+        field: "$contributors",
+        path_to_folder,
+      })) ||
+      (await auth.isFolderOpenedToAll({ field: "$admins", path_to_folder }))
+    )
+      return "Folder opened to any contributors or admins";
 
-      const token_path = auth.extrackAndCheckToken({ req });
+    const token_path = auth.extrackAndCheckToken({ req });
 
-      if (token_path === path_to_folder) {
-        dev.logapi("Token editing self");
-        return next ? next() : undefined;
-      }
-      if (await auth.isTokenInstanceAdmin({ token_path })) {
-        dev.logapi("Token is instance admin");
-        return next ? next() : undefined;
-      }
+    if (token_path) {
+      if (token_path === path_to_folder) return "Token editing self";
       if (
         await auth.isTokenIncluded({
           field: "$contributors",
           path_to_folder,
           token_path,
         })
-      ) {
-        dev.logapi("Token is contributor");
-        return next ? next() : undefined;
-      }
+      )
+        return "Token is contributor";
+    }
+
+    const allowed = await _canAdminFolder({
+      path_to_folder,
+      req,
+    });
+    if (allowed) return allowed;
+
+    return false;
+  }
+
+  async function _canAdminFolder({ path_to_folder, req }) {
+    dev.logapi();
+
+    if (
+      (await auth.isFolderOpenedToAll({
+        field: "$admins",
+        path_to_folder,
+      })) ||
+      (await auth.isInstanceOpenedToAll())
+    )
+      return "Folder opened to any contributors";
+
+    if (
+      await auth.isFolderInheritingFromParent({
+        field: "$admins",
+        path_to_folder,
+      })
+    ) {
+      const path_to_parent_folder = utils.getFolderParent(path_to_folder);
+      if (!path_to_parent_folder) return false;
+      const allowed = await _canContributeToFolder({
+        path_to_folder: path_to_parent_folder,
+        req,
+      });
+      // if so, return
+      if (allowed) return "Parent inheritance: " + allowed;
+      else return false;
+    }
+
+    const token_path = auth.extrackAndCheckToken({ req });
+
+    if (token_path) {
+      if (token_path === path_to_folder) return "Token editing self";
+      if (await auth.isTokenInstanceAdmin({ token_path }))
+        return "Token is instance admin";
       if (
         await auth.isTokenIncluded({
           field: "$admins",
           path_to_folder,
           token_path,
         })
-      ) {
-        dev.logapi("Token is local admin");
-        return next ? next() : undefined;
-      }
+      )
+        return "Token is local admin";
+    }
 
-      const err = new Error("Token not allowed");
-      err.code = "token_not_allowed_must_be_contributors";
-      throw err;
-    } catch (err) {
-      dev.error(err.message);
-      if (res) return res.status(403).send({ code: err.code });
-      throw err;
+    const path_to_parent_folder = utils.getFolderParent(path_to_folder);
+    if (!path_to_parent_folder) return false;
+    const allowed = await _canAdminFolder({
+      path_to_folder: path_to_parent_folder,
+      req,
+    });
+    if (allowed) return "Parent inheritance: " + allowed;
+
+    return false;
+  }
+
+  async function _restrictToContributors(req, res, next) {
+    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    const allowed = await _canContributeToFolder({
+      path_to_type,
+      path_to_folder,
+      req,
+    });
+
+    if (allowed) {
+      dev.log(allowed);
+      return next();
+    } else {
+      dev.log("not allowed to contribute");
+      if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
   async function _restrictToLocalAdmins(req, res, next) {
     const { path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
-    try {
-      if (
-        (await auth.isFolderOpenedToAll({
-          field: "$admins",
-          path_to_folder,
-        })) ||
-        (await auth.isFolderOpenedToAll({ field: "$admins" }))
-      )
-        return next ? next() : undefined;
+    const allowed = await _canAdminFolder({
+      path_to_folder,
+      req,
+    });
 
-      const token_path = auth.extrackAndCheckToken({ req });
-
-      if (token_path === path_to_folder) {
-        dev.logapi("Token editing self");
-        return next ? next() : undefined;
-      }
-      if (await auth.isTokenInstanceAdmin({ token_path })) {
-        dev.logapi("Token is instance admin");
-        return next ? next() : undefined;
-      }
-      if (
-        await auth.isTokenIncluded({
-          field: "$admins",
-          path_to_folder,
-          token_path,
-        })
-      ) {
-        dev.logapi("Token is local admin");
-        return next ? next() : undefined;
-      }
-
-      const err = new Error("Token not allowed");
-      err.code = "token_not_allowed_must_be_local_admin";
-      throw err;
-    } catch (err) {
-      dev.error(err.message);
-      if (res) return res.status(403).send({ code: err.code });
-      throw err;
+    if (allowed) {
+      dev.log(allowed);
+      return next();
+    } else {
+      dev.log("not allowed to contribute");
+      if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
   async function _onlyAdmins(req, res, next) {
@@ -788,15 +821,29 @@ module.exports = (function () {
     const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
     dev.logapi({ path_to_type, path_to_folder, data });
 
-    let { path_to_destination_type, new_meta } = data;
-    if (!path_to_destination_type) path_to_destination_type = path_to_type;
-    else {
-      // todo check for auth to copy folder
-    }
-
-    const path_to_source_folder = path_to_folder;
-
     try {
+      let { path_to_destination_type, new_meta } = data;
+      if (!path_to_destination_type) path_to_destination_type = path_to_type;
+      else if (path_to_destination_type !== path_to_type) {
+        // todo check for auth to copy folder
+        const path_to_parent_folder = utils.getContainingFolder(
+          path_to_destination_type
+        );
+        const allowed = await _canContributeToFolder({
+          path_to_folder: path_to_parent_folder,
+          req,
+        });
+        if (!allowed) {
+          const err = new Error(
+            "Destination folder not open to user contribution"
+          );
+          err.code = "not_allowed_to_copy_folder";
+          throw err;
+        }
+      }
+
+      const path_to_source_folder = path_to_folder;
+
       const copy_folder_path = await folder.copyFolder({
         path_to_type,
         path_to_source_folder,
@@ -813,14 +860,109 @@ module.exports = (function () {
       const new_folder_meta = await folder.getFolder({
         path_to_folder: copy_folder_path,
       });
-      notifier.emit("folderCreated", path_to_type, {
-        path: path_to_type,
+
+      notifier.emit("folderCreated", path_to_destination_type, {
+        path: path_to_destination_type,
         meta: new_folder_meta,
       });
     } catch (err) {
       dev.error("Failed to copy expected content: " + err);
       res.status(500).send({ code: err.code });
     }
+  }
+
+  async function _remixFolder(req, res, next) {
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_type, path_to_folder, data });
+
+    try {
+      let { path_to_destination_type, new_meta } = data;
+      if (!path_to_destination_type) path_to_destination_type = path_to_type;
+      else if (path_to_destination_type !== path_to_type) {
+        // todo check for auth to copy folder
+        const path_to_parent_folder = utils.getContainingFolder(
+          path_to_destination_type
+        );
+        const allowed = await _canContributeToFolder({
+          path_to_folder: path_to_parent_folder,
+          req,
+        });
+        if (!allowed) {
+          const err = new Error(
+            "Destination folder not open to user contribution"
+          );
+          err.code = "not_allowed_to_remix_folder";
+          throw err;
+        }
+      }
+
+      const path_to_source_folder = path_to_folder;
+      new_meta.$is_remix_of = path_to_source_folder;
+
+      const remix_folder_path = await folder.copyFolder({
+        path_to_type,
+        path_to_source_folder,
+        path_to_destination_type,
+        new_meta,
+      });
+      dev.logpackets({
+        status: `remixed folder`,
+        path_to_source_folder,
+        path_to_destination_type,
+      });
+      res.status(200).json({ remix_folder_path });
+
+      await _updateFolderListOfRemixes({
+        path_to_type,
+        path_to_folder,
+        new_remix_path: remix_folder_path,
+      });
+
+      const new_folder_meta = await folder.getFolder({
+        path_to_folder: remix_folder_path,
+      });
+
+      notifier.emit("folderCreated", path_to_destination_type, {
+        path: path_to_destination_type,
+        meta: new_folder_meta,
+      });
+    } catch (err) {
+      dev.error("Failed to copy expected content: " + err);
+      res.status(500).send({ code: err.code });
+    }
+  }
+
+  async function _updateFolderListOfRemixes({
+    path_to_type,
+    path_to_folder,
+    new_remix_path,
+  }) {
+    dev.logapi({ path_to_type, path_to_folder, new_remix_path });
+
+    const new_folder_meta = await folder.getFolder({
+      path_to_folder,
+    });
+
+    let $list_of_remixes = new_folder_meta.$list_of_remixes || [];
+    $list_of_remixes.push(new_remix_path);
+
+    const data = { $list_of_remixes };
+
+    const changed_data = await folder.updateFolder({
+      path_to_type,
+      path_to_folder,
+      data,
+    });
+
+    notifier.emit("folderUpdated", path_to_folder, {
+      path: path_to_folder,
+      changed_data,
+    });
+    if (path_to_type)
+      notifier.emit("folderUpdated", path_to_type, {
+        path: path_to_folder,
+        changed_data,
+      });
   }
 
   async function _generatePreview(req, res, next) {
@@ -854,7 +996,6 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to generate preview: " + err);
-
       notifier.emit("taskEnded", task_id, {
         task_id,
         message: err,
@@ -943,17 +1084,28 @@ module.exports = (function () {
       utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, path_to_meta, data });
 
-    let { destination_path_to_folder, new_meta } = data;
-    if (!destination_path_to_folder)
-      destination_path_to_folder = path_to_folder;
-    else {
-      // todo check for auth to copy to folder
-    }
-
     try {
+      let { path_to_destination_folder, new_meta } = data;
+      if (!path_to_destination_folder)
+        path_to_destination_folder = path_to_folder;
+      else {
+        // todo check for auth to copy to folder
+        const allowed = await _canContributeToFolder({
+          path_to_folder: path_to_destination_folder,
+          req,
+        });
+        if (!allowed) {
+          const err = new Error(
+            "Destination folder not open to user contribution"
+          );
+          err.code = "not_allowed_to_copy_to_folder";
+          throw err;
+        }
+      }
+
       const copy_meta_filename = await file.copyFile({
         path_to_folder,
-        destination_path_to_folder,
+        path_to_destination_folder,
         meta_filename,
         path_to_meta,
         new_meta,
@@ -961,16 +1113,16 @@ module.exports = (function () {
       dev.logpackets({
         status: `copied file`,
         path_to_folder,
-        destination_path_to_folder,
+        path_to_destination_folder,
         copy_meta_filename,
       });
       res.status(200).json({ meta_filename: copy_meta_filename });
 
       const meta = await file.getFile({
-        path_to_meta: path.join(destination_path_to_folder, copy_meta_filename),
+        path_to_meta: path.join(path_to_destination_folder, copy_meta_filename),
       });
-      notifier.emit("fileCreated", destination_path_to_folder, {
-        path_to_folder: destination_path_to_folder,
+      notifier.emit("fileCreated", path_to_destination_folder, {
+        path_to_folder: path_to_destination_folder,
         meta,
       });
     } catch (err) {

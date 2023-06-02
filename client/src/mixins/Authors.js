@@ -6,6 +6,7 @@ export default {
       return false;
     },
     is_instance_admin() {
+      // return true;
       return this.authorIsInstance({
         field: "$admins",
         folder_path: this.connected_as?.$path,
@@ -44,6 +45,9 @@ export default {
         folder.$admins.includes(this.connected_as.$path)
       )
         return true;
+
+      // todo : check if parent folder match as well
+
       return false;
     },
     canLoggedinContributeToFolder({ folder }) {

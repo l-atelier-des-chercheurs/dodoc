@@ -6,7 +6,6 @@
     <div class="">
       <DLabel :str="$t('admins_and_contributors')" />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-
       <div class="_listOfAvatars">
         <AuthorTag
           v-for="atpath in all_participants_path"
@@ -17,9 +16,19 @@
           :show_image_only="false"
         />
       </div>
-      <button type="button" class="u-buttonLink" @click="show_modal = true">
-        {{ $t("more_informations") }}
-      </button>
+      <div class="u-instructions">
+        <div v-if="admins_path === 'everyone'">
+          {{ $t("everyone_can_edit") }}
+        </div>
+        <div v-else-if="contributors_path === 'everyone'">
+          {{ $t("everyone_can_contribute") }}
+        </div>
+      </div>
+      <div class="">
+        <button type="button" class="u-buttonLink" @click="show_modal = true">
+          {{ $t("more_informations") }}
+        </button>
+      </div>
     </div>
 
     <EditAdminsAndContributorsField
@@ -60,10 +69,6 @@ export default {
     admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,
-    show_section: {
-      type: Array,
-      default: () => ["admins", "contributors"],
-    },
   },
   components: {},
   data() {
@@ -86,10 +91,12 @@ export default {
       return p;
     },
     admins_path() {
-      return this.folder.$admins;
+      if (this.folder.$admins) return this.folder.$admins;
+      return false;
     },
     contributors_path() {
-      return this.folder.$contributors;
+      if (this.folder.$contributors) return this.folder.$contributors;
+      return false;
     },
   },
   methods: {

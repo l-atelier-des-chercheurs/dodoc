@@ -53,27 +53,34 @@
 
       <template v-if="current_mode === 'login'">
         <br />
-        <DLabel :str="$t('list_of_contributors')" />
+
         <small v-if="authors.length === 0">
           {{ $t("no_accounts_yet") }}
         </small>
 
-        <button
-          type="button"
+        <ProjectCard
           v-else
+          :header="$t('list_of_contributors')"
+          :icon="'person-video2'"
+          :has_items="authors_except_self.length"
+        >
+          <div class="_listOfAuthors">
+            <AuthorCard
+              v-for="author in authors_except_self"
+              :key="author.$path"
+              :author="author"
+            />
+          </div>
+        </ProjectCard>
+
+        <!-- <button
+          type="button"
           class="u-button"
           :disabled="authors_except_self.length === 0"
           @click="show_authors_list = !show_authors_list"
         >
           {{ $t("show_list") }} ({{ authors_except_self.length }})
-        </button>
-        <div class="_listOfAuthors" v-if="show_authors_list">
-          <AuthorCard
-            v-for="author in authors_except_self"
-            :key="author.$path"
-            :author="author"
-          />
-        </div>
+        </button> -->
       </template>
     </div>
   </BaseModal2>
@@ -82,6 +89,7 @@
 import CreateAuthor from "@/adc-core/author/CreateAuthor.vue";
 import AuthorCard from "@/adc-core/author/AuthorCard.vue";
 import LoginAs from "@/adc-core/author/LoginAs.vue";
+import ProjectCard from "@/components/ProjectCard.vue";
 
 export default {
   props: {
@@ -94,6 +102,7 @@ export default {
     CreateAuthor,
     AuthorCard,
     LoginAs,
+    ProjectCard,
   },
   data() {
     return {

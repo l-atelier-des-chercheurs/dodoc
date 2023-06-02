@@ -1,5 +1,5 @@
-import VueI18n from "vue-i18n";
 import Vue from "vue";
+import VueI18n from "vue-i18n";
 
 export default function () {
   Vue.use(VueI18n);
@@ -70,6 +70,9 @@ export default function () {
 
         add: "ajouter",
         add_item: "Ajouter un élément",
+        add_files: "Ajouter des fichiers",
+        hide_already_present_medias:
+          "Masquer les médias déjà inclus à cette publication",
         suggestions: "Suggestions",
         access: "accéder",
         title: "Titre",
@@ -120,6 +123,11 @@ export default function () {
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
         create_stack: "Créer une pile",
 
+        bytes: "octets",
+        kb: "ko",
+        mb: "Mo",
+        gb: "Go",
+
         ui_lang_select: "Langue de l’interface",
         lang_updated: "La langue a été mise à jour",
 
@@ -166,8 +174,6 @@ export default function () {
         `,
         reload_page_to_apply:
           "Après avoir enregistré ces changements, rechargez cette page.",
-        feature_not_implemented_yet:
-          "Fonctionnalité à venir, pas encore implémentée",
 
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
@@ -333,8 +339,13 @@ export default function () {
         latest_changes_to_project: "Dernières modifications au projet",
 
         download: "Télécharger",
+        page_failed_to_load: "Cette page n’a pas pu charger.",
+        open_website_new_tab: "Ouvrir dans un nouvel onglet",
+        click_link_to_open_in_tab:
+          "Cliquez sur le lien ci-dessous pour l’ouvrir dans un nouvel onglet.",
 
         medias: "Médias",
+        no_preview_to_show: "Aucun aperçu à afficher pour le moment",
         no_media_in_project: "Aucun média dans ce projet",
         number_of_media: "Nombre de médias",
         media_removed: "Média supprimé",
@@ -351,9 +362,12 @@ export default function () {
         everyone: "Tout le monde",
         everyone_instr:
           "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
+        everyone_can_edit:
+          "Contribution, modification et suppression ouverte à tout le monde.",
+        everyone_can_contribute: "Contribution ouverte à tout le monde",
         noone: "Aucun·e",
-        noone_instr: "Fermer à tous les comptes non-administrateurs.",
-        restricted: "Uniquement les comptes de la liste",
+        noone_instr: "Fermer à tous les comptes.",
+        restricted: "Uniquement les comptes de la liste.",
         restricted_instr: "Seuls ces comptes seront autorisés.",
 
         close: "Fermer",
@@ -386,7 +400,11 @@ export default function () {
         storage: "Stockage",
         events: "Événements",
         other_events: "Autres événements",
+        start_date: "Date de début",
+        end_date: "Date de fin",
         created_during: "Créé pendant un événement",
+        project_can_be_remixed: "Permettre le remix de ce projet",
+        remix_this_project: "Remixer ce projet",
 
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
@@ -408,7 +426,7 @@ export default function () {
         space: "Espace",
         spaces: "Les espaces",
         spaces_instr:
-          "Chaque espace contient une série de projets liés par un groupe, un événement ou une thématique particulière.",
+          "Chaque espace contient un ensemble de projets lié à un groupe, un lieu ou une thématique particulière.",
         create_a_space: "Créer un espace",
         project: "Projet",
 
@@ -485,10 +503,12 @@ export default function () {
         archives: "Archives",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
-        creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
+        // todo add explanations
+        creativecommons_by_nc_sa_explanations: "–",
 
         all_rights_reserved: "Tous Droits Réservés",
-        all_rights_reserved_explanations: "<i>Explications à ajouter</i>",
+        // todo add explanations
+        all_rights_reserved_explanations: "–",
 
         drop_here: "Déposer ici",
         enable: "Activer",
@@ -520,11 +540,16 @@ export default function () {
           "À venir, la possibilité d’indiquer une licence spécifique avec un lien vers une page de référence",
 
         copyleft: "Art Libre / Copyleft",
-        copyleft_explanations: "<i>Explications à ajouter</i>",
+        copyleft_explanations: "–",
         copy_of: "Copie de",
+        remix_of: "Remix de",
         open_copy: "Accéder à la copie",
         title_of_copy: "Titre de la copie",
-        source_space: "Espace qui recevra cette copie",
+        title_of_remix: "Titre du remix",
+        remix: "Remixer",
+        destination_space: "Espace qui recevra cette copie",
+        destination_space_remix: "Espace qui recevra ce projet remixé",
+        destination_project: "Projet qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
         remove_original_after_copy: "Ce projet sera supprimé après la copie",
@@ -535,7 +560,7 @@ export default function () {
         materials: "Matériaux",
         levels_and_competences: "Niveaux et compétence",
 
-        fabrication_level: "Niveau de connaissance",
+        skill_level: "Niveau de connaissance",
         beginner: "Débutant",
         intermediate: "Intermédiaire",
         experienced: "Confirmé",
@@ -565,8 +590,8 @@ export default function () {
         stop_recording: "Arrêter la capture",
         pause_recording: "Mettre en pause",
         unpause_recording: "Relancer l’enregistrement",
-        record_audio: "Capturer un son",
-        record_video: "Capturer une vidéo",
+        record_audio: "Capter un son",
+        record_video: "Capter une vidéo",
         stopmotion: "animation",
         stopmotion_list: "Liste des animations",
         sure_to_cancel_stopmotion:
@@ -659,12 +684,12 @@ export default function () {
           "Peuvent uniquement créer des espaces et les administrer.",
 
         space_admin_instructions:
-          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés).",
+          "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
         space_contrib_instructions:
-          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets qu’ils n’ont pas créé.",
+          "Les contributeurs d’un espace peuvent uniquement créer des projets dans cet espace. Ils ne peuvent pas modifier ou supprimer cet espace ni les projets dont ils ne sont pas référents.",
 
         project_admin_instructions:
-          "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.).",
+          "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
         project_contrib_instructions:
           "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
 
@@ -673,6 +698,8 @@ export default function () {
         project_title_instructions:
           "Le titre est affiché ici et sur la liste des projets.",
         pick_cover: "Choisissez une image de couverture",
+        pick_media: "Choisissez un média",
+        pick_medias: "Choisissez un ou plusieurs médias",
         remove_image: "Retirer cette image",
 
         add_authors: "Ajouter des contributeur·rice·s",
@@ -700,6 +727,10 @@ export default function () {
         "notifications.action_not_authorized": "Cette action n’est pas permise",
         "notifications.event_does_not_exit": "Cet événement n’existe pas",
         "notifications.title_taken": "Ce titre est déjà utilisé",
+        "notifications.not_allowed_to_copy_to_space":
+          "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
+        "notifications.not_allowed_to_copy_to_project":
+          "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
         "notifications.name_taken": "Ce nom est déjà utilisé",
         "notifications.too_many_items_selected":
           "Trop d’éléments sélectionnés.",
@@ -710,8 +741,13 @@ export default function () {
         duplicate: "Dupliquer",
         duplicate_or_move: "Dupliquer ou déplacer",
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
+        duplicate_or_move_media: "Dupliquer ou déplacer ce média",
         dm_instr:
-          "Vers le même espace. L’ensemble des propriétés et des contenus (médias, remixes, publications) seront copiées. À venir : déplacer un projet vers un autre espace.",
+          "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, fabrications, publications) seront copiées.",
+        dmm_instr:
+          "Dans cet espace ou vers un autre où vous pouvez importer des médias.",
+        dmp_instr:
+          "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
         move_to_page: "Déplacer vers une autre page",
         move: "Déplacer",
         unselect: "Déselectionner",
@@ -725,6 +761,8 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
+        source_files: "Fichiers source",
+        source_media_missing: "Le média source est manquant",
         media_pickers_instr:
           "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord :és dans le projet actuel.",
 
@@ -747,19 +785,19 @@ export default function () {
         general_informations: "Informations sur l’instance",
 
         panes: "Panneaux",
-        capture: "Capturer",
+        capture: "Capter",
         collect: "Collecter",
-        remix: "Remixer",
+        make: "Fabriquer",
         publish: "Publier",
 
-        remixes_list: "Liste des remixes",
+        make_list: "Liste des fabrications",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
         "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
           <br />
           Vous pouvez aussi importer des fichiers (photos, vidéos, audios, 3D, PDF ou autre) depuis vos appareils.`,
-        "instructions.pane.remix":
+        "instructions.pane.make":
           "Recadrez, raccourcissez, assemblez et annotez vos médias.",
         "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
           <br />

@@ -65,7 +65,7 @@
 <script>
 export default {
   props: {
-    selected_files: Array,
+    files_to_import: Array,
     path: String,
     read_only: {
       type: Boolean,
@@ -75,7 +75,7 @@ export default {
   components: {},
   data() {
     return {
-      files_to_upload: this.selected_files,
+      files_to_upload: this.files_to_import,
       files_to_upload_meta: {},
       upload_percentages: 0,
     };
@@ -156,16 +156,6 @@ export default {
     },
     cssStatus(f) {
       return "is--" + this.files_to_upload_meta[f.name].status;
-    },
-    formatBytes(a, b) {
-      if (0 == a) return `0 ${"bytes"}`;
-
-      var e = ["bytes", "kb", "mb", "gb", "TB", "PB", "EB", "ZB", "YB"];
-
-      var c = 1024,
-        d = b || 2,
-        f = Math.floor(Math.log(a) / Math.log(c));
-      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
     },
   },
 };

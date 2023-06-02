@@ -234,7 +234,7 @@ export default {
 
   --color-capture: var(--c-rouge);
   --color-collect: var(--c-orange);
-  --color-remix: var(--c-bleumarine);
+  --color-make: var(--c-bleumarine);
   --color-publish: var(--c-bleuvert);
 
   --indicator-color: var(--c-vert) !important;
@@ -332,7 +332,8 @@ body {
 }
 
 ::selection {
-  background: hsla(211, 63%, 77%, 0.5);
+  // background: hsla(211, 63%, 77%, 0.5);
+  background: hsla(174, 70%, 71%, 0.5);
 }
 
 html {
@@ -641,13 +642,13 @@ img {
   &-leave-active {
     opacity: 1;
     // transform: translateY(0);
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
   &-leave-to {
     opacity: 0;
-    transform: scale(0.9);
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    // transform: scale(0.9);
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 .StoryModules {

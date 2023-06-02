@@ -1,6 +1,14 @@
 <template>
-  <div class="_toggleInput">
-    <div class="_inputLabel">
+  <div class="_toggledSection">
+    <ToggleInput
+      v-if="can_toggle"
+      :content="show_toggle"
+      :label="label"
+      :disabled="disabled"
+      @update:content="$emit('update:show_toggle', $event)"
+    />
+
+    <!-- <label :for="id" class="u-label _inputLabel">
       <input
         v-if="can_toggle"
         ref="field"
@@ -13,7 +21,7 @@
         @change="$emit('update:show_toggle', $event.target.checked)"
       />
       <label :for="id" class="u-label">{{ label }}</label>
-    </div>
+    </div> -->
 
     <div
       class="_toggled"
@@ -63,7 +71,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._toggleInput {
+._toggledSection {
 }
 ._inputLabel {
   display: flex;
@@ -86,9 +94,9 @@ export default {
   padding-top: calc(var(--spacing) / 2);
 
   &.can--toggle {
-    border-left: 2px solid var(--c-orange);
+    border-left: 3px solid var(--c-orange);
     padding-left: calc(var(--spacing) / 2);
-    margin-left: calc(var(--spacing) / 1.5);
+    margin-left: calc(var(--spacing) / 3);
   }
 }
 </style>

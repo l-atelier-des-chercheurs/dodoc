@@ -582,7 +582,7 @@ module.exports = (function () {
     dev.logfunction({ full_media_path, full_path_to_thumb });
 
     // get content for full_media_path
-    const url = await await fs.readFile(full_media_path, "UTF-8");
+    const url = await fs.readFile(full_media_path, "UTF-8");
     if (!url) throw "no url";
 
     const { image } = await _getPageMetadata({ url });
@@ -696,6 +696,7 @@ module.exports = (function () {
 
     const image =
       $('meta[property="og:image"]').attr("content") ||
+      $('meta[property="og:image:url"]').attr("content") ||
       $('meta[name="og:image"]').attr("content") ||
       $('link[rel="shortcut icon"]').attr("href") ||
       $('link[rel="icon"]').attr("href");

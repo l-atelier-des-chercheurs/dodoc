@@ -37,7 +37,8 @@ export default function () {
         await this._setAuthFromStorage();
         this.setAuthorizationHeader();
 
-        if (this.tokenpath.token_path) await this.getCurrentAuthor();
+        if (this.tokenpath.token_path)
+          await this.getCurrentAuthor().catch(() => {});
 
         // todo also use token for socketio connection
         this.socket.connect();
@@ -181,8 +182,8 @@ export default function () {
       async getCurrentAuthor() {
         await this.getFolder({
           path: this.tokenpath.token_path,
-        }).catch((err) => {
-          err;
+        }).catch((err_code) => {
+          throw err_code;
           // TODO catch folder no existing: author was removed, for example
         });
       },
@@ -275,8 +276,8 @@ export default function () {
         if (this.store[path]) return this.store[path];
 
         const response = await this.$axios.get(path).catch((err) => {
-          this.onError(err);
-          throw err;
+          const err_code = this.onError(err);
+          throw err_code;
         });
         const folders = response.data;
         // folders.map((f) => this.$set(this.store, f.$path, f));
@@ -288,8 +289,8 @@ export default function () {
         if (this.store[path]) return this.store[path];
 
         const response = await this.$axios.get(path).catch((err) => {
-          this.onError(err);
-          throw err;
+          const err_code = this.onError(err);
+          throw err_code;
         });
         const folder = response.data;
         this.$set(this.store, folder.$path, folder);
@@ -304,13 +305,14 @@ export default function () {
         return response.data;
       },
       async createFolder({ path, additional_meta }) {
-        try {
-          path = `${path}/_create`;
-          const response = await this.$axios.post(path, additional_meta);
-          return response.data.new_folder_slug;
-        } catch (e) {
-          throw e.response.data;
-        }
+        path = `${path}/_create`;
+        const response = await this.$axios
+          .post(path, additional_meta)
+          .catch((err) => {
+            const err_code = this.onError(err);
+            throw err_code;
+          });
+        return response.data.new_folder_slug;
       },
       async loginToFolder({ path, auth_infos }) {
         try {
@@ -328,8 +330,9 @@ export default function () {
           await this.getCurrentAuthor();
 
           return;
-        } catch (e) {
-          throw _getErrorMsgFromCode(e.response.data.code);
+        } catch (err) {
+          const err_code = this.onError(err);
+          throw err_code;
         }
       },
       async logoutFromFolder() {
@@ -343,10 +346,9 @@ export default function () {
           // remove token on the server
           await this.$axios.post(`${path}/_logout`, auth_infos);
           return;
-        } catch (e) {
-          if (e.response.data.code)
-            throw _getErrorMsgFromCode(e.response.data.code);
-          else throw e.response.data;
+        } catch (err) {
+          const err_code = this.onError(err);
+          throw err_code;
         }
       },
 
@@ -362,8 +364,8 @@ export default function () {
             },
           })
           .catch((err) => {
-            this.onError(err);
-            throw err;
+            const err_code = this.onError(err);
+            throw err_code;
           });
 
         if (remember_on_this_device)
@@ -417,35 +419,45 @@ export default function () {
             },
           })
           .catch((err) => {
-            this.$alertify.delay(4000).error(err);
-            throw err;
+            const err_code = this.onError(err);
+            throw err_code;
           });
 
         return res.data.meta_filename;
       },
-      async copyFile({ path, new_meta = {}, destination_path_to_folder = "" }) {
+      async copyFile({ path, new_meta = {}, path_to_destination_folder = "" }) {
         path = `${path}/_copy`;
         const response = await this.$axios
-          .post(path, { new_meta, destination_path_to_folder })
+          .post(path, { new_meta, path_to_destination_folder })
           .catch((err) => {
-            this.onError(err);
-            throw err;
+            const err_code = this.onError(err);
+            throw err_code;
           });
         return response.data.meta_filename;
       },
-      async copyFolder({
-        path,
-        new_meta = {},
-        destination_path_to_folder = "",
-      }) {
+      async copyFolder({ path, new_meta = {}, path_to_destination_type = "" }) {
         path = `${path}/_copy`;
         const response = await this.$axios
-          .post(path, { new_meta, destination_path_to_folder })
+          .post(path, { new_meta, path_to_destination_type })
           .catch((err) => {
-            this.onError(err);
-            throw err;
+            const err_code = this.onError(err);
+            throw err_code;
           });
         return response.data.copy_folder_path;
+      },
+      async remixFolder({
+        path,
+        new_meta = {},
+        path_to_destination_type = "",
+      }) {
+        path = `${path}/_remix`;
+        const response = await this.$axios
+          .post(path, { new_meta, path_to_destination_type })
+          .catch((err) => {
+            const err_code = this.onError(err);
+            throw err_code;
+          });
+        return response.data.remix_folder_path;
       },
       async exportFolder({ path, instructions }) {
         path = `${path}/_export`;
@@ -453,8 +465,8 @@ export default function () {
         const response = await this.$axios
           .post(path, instructions)
           .catch((err) => {
-            this.onError(err);
-            throw err;
+            const err_code = this.onError(err);
+            throw err_code;
           });
         const task_id = response.data.task_id;
         this.$eventHub.$emit("task.started", { task_id, instructions });
@@ -466,8 +478,8 @@ export default function () {
         const response = await this.$axios
           .post(path, instructions)
           .catch((err) => {
-            this.onError(err);
-            throw err;
+            const err_code = this.onError(err);
+            throw err_code;
           });
 
         const task_id = response.data.task_id;
@@ -477,9 +489,8 @@ export default function () {
         const response = await this.$axios
           .patch(path, new_meta)
           .catch((err) => {
-            if (err.response.data.code)
-              throw _getErrorMsgFromCode(err.response.data.code);
-            else throw err.response.data;
+            const err_code = this.onError(err);
+            throw err_code;
           });
 
         return response.data;
@@ -493,8 +504,8 @@ export default function () {
             path_to_meta: new_cover_data,
           };
           await this.$axios.patch(path, new_meta).catch((err) => {
-            this.onError(err);
-            throw err;
+            const err_code = this.onError(err);
+            throw err_code;
           });
         } else if (typeof new_cover_data === "object") {
           let formData = new FormData();
@@ -510,8 +521,8 @@ export default function () {
               },
             })
             .catch((err) => {
-              this.onError(err);
-              throw err;
+              const err_code = this.onError(err);
+              throw err_code;
             });
         }
 
@@ -520,8 +531,8 @@ export default function () {
 
       async deleteItem({ path }) {
         const response = await this.$axios.delete(path).catch((err) => {
-          this.onError(err);
-          throw err;
+          const err_code = this.onError(err);
+          throw err_code;
         });
 
         return response.data;
@@ -534,7 +545,7 @@ export default function () {
       },
 
       onError(err) {
-        const code = err.response.data?.code;
+        let code = err?.response?.data?.code;
 
         if (!code) console.error("onError – NO ERROR CODES");
         else console.error("onError – " + code);
@@ -548,21 +559,20 @@ export default function () {
         } else if (code === "no_general_password_submitted") {
           this.$eventHub.$emit("app.prompt_general_password");
         } else if (code === "token_not_allowed_must_be_local_admin") {
-          this.$alertify.delay(4000).error("action_not_allowed");
-        }
+          // this.$alertify.delay(4000).error("notifications.action_not_allowed");
+        } else if (code === "token_not_allowed_must_be_contributors") {
+          // this.$alertify.delay(4000).error("notifications.action_not_allowed");
+        } else if (code === "ENOENT") code = "folder_is_missing";
+
+        this.$alertify.delay(4000).error(code);
 
         this.setAuthorizationHeader();
+
+        return code;
 
         // this.$alertify.delay(4000).error(err);
       },
     },
     computed: {},
   });
-}
-
-function _getErrorMsgFromCode(code) {
-  if (code === "ENOENT") return "folder_is_missing";
-  // submitted_password_is_wrong
-
-  return code;
 }

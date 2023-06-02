@@ -62,22 +62,23 @@
         </sl-button> -->
     </div>
 
-    <sl-button
-      variant="edit"
-      class="_floatingEditBtn"
-      :data-action="editor_is_enabled ? 'disable' : 'enable'"
-      size="small"
-      circle
-      v-if="can_edit"
-      @click="toggleEdit"
-    >
-      <sl-icon
-        v-if="!editor_is_enabled"
-        name="pencil-fill"
-        :label="$t('edit')"
-      />
-      <sl-icon v-else name="check-circle-fill" />
-    </sl-button>
+    <div class="_floatingEditBtn">
+      <sl-button
+        variant="edit"
+        :data-action="editor_is_enabled ? 'disable' : 'enable'"
+        size="small"
+        circle
+        v-if="can_edit"
+        @click="toggleEdit"
+      >
+        <sl-icon
+          v-if="!editor_is_enabled"
+          name="pencil-fill"
+          :label="$t('edit')"
+        />
+        <sl-icon v-else name="check-circle-fill" />
+      </sl-button>
+    </div>
 
     <div class="_toolbarAndEditorContainer">
       <div ref="editor" @dragover="onDragover" @drop="onDrop" />
@@ -893,11 +894,17 @@ export default {
 }
 
 ._floatingEditBtn {
-  position: absolute;
+  position: sticky;
   z-index: 101;
-  top: 0;
-  right: 0;
-  margin: calc(var(--spacing) / 4);
+  top: calc(var(--spacing) / 4);
+  margin-left: auto;
+  margin-right: calc(var(--spacing) / 4);
+
+  > * {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 }
 </style>
 <style lang="scss">

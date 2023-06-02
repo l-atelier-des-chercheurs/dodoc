@@ -230,18 +230,22 @@ If a folder has a $password, then this ressource and its content can only be edi
 
 ### Editing
 
-If a folder has $creators, only people logged in with a token that matches one of these $creator path can edit/remove this folder's meta and its subfolders.
+If a folder has $admins, only people logged in with a token that matches one of these $admin path can edit/remove this folder's meta and its subfolders.
 
 If a folder has $contributors, people logged in with a token that matches one of these $contributors can not edit this folder's meta but can create/edit/remove subfolders or import/edit/remove files.
 
-If a folder has no $contributors list or `$contributors = "everyone"`, all users (including anonymous, non logged-in users) have contributors' permissions.
-If a folder has no $admins or `$admins = "everyone"`, all users (including anonymous) have admins' permissions.
+If a folder has `$contributors = "everyone"`, all users (including anonymous, non logged-in users) have contributors' permissions.
+If a folder has `$admins = "everyone"`, all users (including anonymous) have admins' permissions.
+
+If a folder has `$admins = "parent_contributors"` then all parent's $contributors are admins to this folder. This is the same behaviour as files in that parent folder.
 
 These permissions trickle down: an instance admin has admin rights to all the instance contents. A space admin has admin rights to all its projects. A project admin has admin rights to all its content (medias, stopmotions, publications).
 
-An instance contributor, though, only has contributors rights to the direct content it contains. For instance, a contributor to a space can only create a project, but not remove a project he/she is not
+An instance contributor, though, only has contributors rights to the direct content it contains. For instance, a contributor to a space can create a project, but not remove a project he/she is not an $admin of.
 
-If a folder type has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be create by all visitors even those that are not logged in. This is useful for accounts creation.
+If a folder type schema has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be created by all users even those that are not logged in. This is useful for accounts creation.
+
+If a folder has `$can_be_remixed = true`, it can be remixed: duplicated somewhere else to the same level. When it is remixed, the path to the new folder gets appended to the array `$list_of_remixes` and the remix folder gets a `$is_remix_of` string.
 
 ## Examples
 

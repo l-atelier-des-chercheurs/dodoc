@@ -183,9 +183,10 @@ module.exports = (function () {
           data,
           req: update_cover_req,
         });
-        changed_meta.$cover = await _getFolderCover({
+        const cover = await _getFolderCover({
           path_to_folder,
         });
+        if (cover) changed_meta.$cover;
       }
 
       cache.delete({
@@ -201,7 +202,13 @@ module.exports = (function () {
       new_meta,
     }) => {
       dev.logfunction({ path_to_source_folder, path_to_destination_type });
-      // find available slug in destination folder
+
+      // check for field uniqueness
+      await _cleanFields({
+        meta: new_meta,
+        path_to_type,
+        context: "update",
+      });
 
       const source_folder_slug = utils.getSlugFromPath(path_to_source_folder);
 
@@ -333,7 +340,7 @@ module.exports = (function () {
       if (data.path_to_meta === "") return;
 
       const path_to_meta = data.path_to_meta;
-      const path_to_folder = utils.getParent(path_to_meta);
+      const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       const meta = await file.getFile({
         path_to_meta,
@@ -381,9 +388,14 @@ module.exports = (function () {
     if (!(await fs.pathExists(cover_path))) return false;
 
     dev.logverbose(`folder has cover`);
-    const thumb_meta = await thumbs.makeFolderCover({
-      path_to_folder,
-    });
+    const thumb_meta = await thumbs
+      .makeFolderCover({
+        path_to_folder,
+      })
+      .catch((err) => {
+        dev.error("couldn’t make cover thumbs, returning false");
+        return false;
+      });
 
     return thumb_meta;
   }
