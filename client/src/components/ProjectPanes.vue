@@ -120,11 +120,13 @@ export default {
   computed: {},
   methods: {
     scrollToPanes() {
-      this.$el.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
+      if (this.$route.name === "Projet" && this.can_edit_project)
+        // convenient in double scroll mode
+        this.$el.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
     },
     setItem(pane, prop, $event) {
       if (
