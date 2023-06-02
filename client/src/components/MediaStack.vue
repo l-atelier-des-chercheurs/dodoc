@@ -144,7 +144,7 @@ export default {
       this.$emit("updateFocusedMedia", files_path);
     },
     async shareButtonClicked() {
-      const destination_path_to_folder = this.shared_space_path;
+      const path_to_destination_folder = this.shared_space_path;
 
       // get fields
       this.title, this.description, this.keywords;
@@ -159,7 +159,7 @@ export default {
       };
       const stack_meta_filename = await this.$api
         .uploadFile({
-          path: destination_path_to_folder,
+          path: path_to_destination_folder,
           additional_meta,
         })
         .catch((err) => {
@@ -172,7 +172,7 @@ export default {
       for (const file of this.files) {
         const file_meta = await this.$api.copyFile({
           path: file.$path,
-          destination_path_to_folder,
+          path_to_destination_folder,
           new_meta: {
             $authors: [this.connected_as.$path],
             belongs_to_stack: stack_meta_filename,
@@ -184,7 +184,7 @@ export default {
 
       // add file metas to stack meta
       await this.$api.updateMeta({
-        path: destination_path_to_folder + "/" + stack_meta_filename,
+        path: path_to_destination_folder + "/" + stack_meta_filename,
         new_meta: {
           stack_files_metas: file_metas,
         },

@@ -12,21 +12,21 @@
     @mouseup="is_mousedown = false"
   >
     <div class="_chutierRow--rows">
-      <label
-        :for="id"
-        class="_selectBox"
-        @click.stop
-        v-if="!edit_mode && $listeners && $listeners.toggleSelect"
-      >
-        <input
-          type="checkbox"
-          :checked="is_selected"
-          :name="id"
-          @change="$emit('toggleSelect')"
-          :id="id"
-        />
-      </label>
       <div class="_infos">
+        <label
+          :for="id"
+          class="_selectBox"
+          @click.stop
+          v-if="!edit_mode && $listeners && $listeners.toggleSelect"
+        >
+          <input
+            type="checkbox"
+            :checked="is_selected"
+            :name="id"
+            @change="$emit('toggleSelect')"
+            :id="id"
+          />
+        </label>
         <div class="_chutierRow--openLarge" @click.stop="show_large = true">
           <MediaContent
             class="_chutierRow--preview"
@@ -68,7 +68,7 @@
                 autofocus
                 required
                 v-model="text_title"
-                placeholder="Remplir pour partager"
+                placeholder="Titre"
                 @keydown.enter.prevent="
                   context === 'stack' ? $emit('unclicked') : ''
                 "
@@ -81,12 +81,18 @@
       </div>
     </div>
     <div
-      class="_keywords"
+      class="_fields"
       v-if="
         context !== 'stack' &&
         (edit_mode || keywords.length > 0 || description.length > 0)
       "
     >
+      <div v-if="edit_mode">
+        <span class="u-instructions">
+          Corrigez ou complétez le titre et les mots-clés pour partager cette
+          pile.
+        </span>
+      </div>
       <div class="" v-if="description || edit_mode">
         <div v-if="!edit_mode">
           {{ description }}
@@ -209,10 +215,10 @@ export default {
   },
   methods: {
     async moveToSharedSpace() {
-      const destination_path_to_folder = this.shared_space_path;
+      const path_to_destination_folder = this.shared_space_path;
       await this.$api.copyFile({
         path: this.file.$path,
-        destination_path_to_folder,
+        path_to_destination_folder,
         new_meta: {
           $authors: [this.connected_as.$path],
         },
@@ -291,10 +297,10 @@ export default {
   padding: 2px;
 }
 
-._keywords {
+._fields {
   display: flex;
   flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
   justify-content: center;
   padding: calc(var(--spacing) / 2);
 }
@@ -322,7 +328,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
   // padding-left: 1px;
-  margin-right: calc(var(--spacing) / 2);
+  margin: 0 calc(var(--spacing) / 2);
 
   ._titleDateField {
     flex: 1 1 auto;
@@ -337,7 +343,7 @@ export default {
   overflow: hidden;
   border-radius: 4px;
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
-  border: 1px solid transparent;
+  // border: 1px solid transparent;
 
   transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
