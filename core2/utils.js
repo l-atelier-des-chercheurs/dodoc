@@ -459,6 +459,7 @@ module.exports = (function () {
       return path.substring(0, path.lastIndexOf("/"));
     },
     getFolderParent(path) {
+      if (!path) return false;
       let paths = path.split("/");
       if (paths.length >= 2) {
         paths = paths.slice(0, -2);
