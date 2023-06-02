@@ -68,6 +68,8 @@ import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
 Vue.component("AuthorField", AuthorField);
+import DetailsPane from "@/adc-core/ui/DetailsPane.vue";
+Vue.component("DetailsPane", DetailsPane);
 import AdminsAndContributorsField from "@/adc-core/fields/AdminsAndContributorsField.vue";
 Vue.component("AdminsAndContributorsField", AdminsAndContributorsField);
 import EditAdminsAndContributorsField from "@/adc-core/fields/EditAdminsAndContributorsField.vue";
