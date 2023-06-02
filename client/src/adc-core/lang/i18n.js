@@ -671,7 +671,7 @@ export default function () {
         download_this_qr_code: "Télécharger ce code QR",
         domain: "Avec un domaine",
         domain_instr:
-          "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine comme https://dodoc.fr.",
+          "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine.",
         no_domain_set: "Aucun domaine disponible.",
         local_network: "Par le réseau local",
         local_network_instr:
