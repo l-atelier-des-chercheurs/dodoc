@@ -17,7 +17,6 @@
 
       <template v-else>
         <TopBar v-if="$route.name !== 'Publication'" />
-        rooms_joined = {{ $api.rooms_joined }}
 
         <transition name="fade_fast" mode="out-in">
           <router-view v-slot="{ Component }" :key="$route.path">
