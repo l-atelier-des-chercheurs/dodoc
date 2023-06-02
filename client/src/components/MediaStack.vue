@@ -48,6 +48,11 @@
     </div>
 
     <div class="_fields">
+      <span class="u-instructions">
+        Corrigez ou complétez le titre et les mots-clés pour partager cette
+        pile.
+      </span>
+
       <input
         type="text"
         class="is--dark"
@@ -235,7 +240,7 @@ export default {
 }
 
 ._fields {
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 1);

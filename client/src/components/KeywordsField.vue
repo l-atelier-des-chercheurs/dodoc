@@ -22,12 +22,10 @@
         @keydown.esc.prevent="$emit('cancelEdit')"
       />
 
-      <span class="u-instructions" v-if="suggestion.length === 0">
-        Corrigez ou complétez le titre et les mots-clés pour partager ce
-        document.
-      </span>
-
-      <div class="_suggestions" v-else-if="suggested_keywords.length > 0">
+      <div
+        class="_suggestions"
+        v-if="suggestion.length > 0 && suggested_keywords.length > 0"
+      >
         <div class="_keywords">
           <div
             class="_keyword"
