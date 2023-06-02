@@ -203,7 +203,7 @@ export default function () {
         generate_preview: "Générer un aperçu",
 
         story: "Récit",
-        story_with_sections: "Récit en sections",
+        story_with_sections: "Récit",
         page_by_page: "Document page à page",
         cartography: "Cartographie",
         export: "Exporter",
