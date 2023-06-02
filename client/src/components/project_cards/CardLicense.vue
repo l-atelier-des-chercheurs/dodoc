@@ -1,5 +1,5 @@
 <template>
-  <ProjectCard
+  <DetailsPane
     :header="$t('authors_and_license')"
     :icon="'people'"
     :has_items="!!project.license"
@@ -29,17 +29,15 @@
         :options="license_options"
       />
     </div>
-  </ProjectCard>
+  </DetailsPane>
 </template>
 <script>
-import ProjectCard from "@/components/ProjectCard.vue";
-
 export default {
   props: {
     project: Object,
     can_edit: Boolean,
   },
-  components: { ProjectCard },
+  components: {},
   data() {
     return {
       license_options: [

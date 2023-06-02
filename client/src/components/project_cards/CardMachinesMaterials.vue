@@ -1,5 +1,5 @@
 <template>
-  <ProjectCard
+  <DetailsPane
     :header="$t('machines_and_materials')"
     :icon="'tools'"
     :has_items="
@@ -26,17 +26,15 @@
         :can_edit="can_edit"
       />
     </div>
-  </ProjectCard>
+  </DetailsPane>
 </template>
 <script>
-import ProjectCard from "@/components/ProjectCard.vue";
-
 export default {
   props: {
     project: Object,
     can_edit: Boolean,
   },
-  components: { ProjectCard },
+  components: {},
   data() {
     return {};
   },

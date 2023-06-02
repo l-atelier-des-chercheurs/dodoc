@@ -58,7 +58,7 @@
           {{ $t("no_accounts_yet") }}
         </small>
 
-        <ProjectCard
+        <DetailsPane
           v-else
           :header="$t('list_of_contributors')"
           :icon="'person-video2'"
@@ -71,7 +71,7 @@
               :author="author"
             />
           </div>
-        </ProjectCard>
+        </DetailsPane>
 
         <!-- <button
           type="button"
@@ -89,7 +89,6 @@
 import CreateAuthor from "@/adc-core/author/CreateAuthor.vue";
 import AuthorCard from "@/adc-core/author/AuthorCard.vue";
 import LoginAs from "@/adc-core/author/LoginAs.vue";
-import ProjectCard from "@/components/ProjectCard.vue";
 
 export default {
   props: {
@@ -102,7 +101,6 @@ export default {
     CreateAuthor,
     AuthorCard,
     LoginAs,
-    ProjectCard,
   },
   data() {
     return {

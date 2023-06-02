@@ -1,5 +1,5 @@
 <template>
-  <ProjectCard
+  <DetailsPane
     :header="keywords_title"
     :icon="'tag'"
     :has_items="!!project.keywords"
@@ -12,17 +12,15 @@
         :can_edit="can_edit"
       />
     </div>
-  </ProjectCard>
+  </DetailsPane>
 </template>
 <script>
-import ProjectCard from "@/components/ProjectCard.vue";
-
 export default {
   props: {
     project: Object,
     can_edit: Boolean,
   },
-  components: { ProjectCard },
+  components: {},
   data() {
     return {};
   },

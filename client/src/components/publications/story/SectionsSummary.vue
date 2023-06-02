@@ -1,6 +1,6 @@
 <template>
   <div class="_sectionsSummary">
-    <ProjectCard
+    <DetailsPane
       ref="details"
       :header="$t('summary')"
       :icon="'card-list'"
@@ -51,11 +51,10 @@
           {{ $t("create_section") }}
         </button>
       </template>
-    </ProjectCard>
+    </DetailsPane>
   </div>
 </template>
 <script>
-import ProjectCard from "@/components/ProjectCard.vue";
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 
 export default {
@@ -65,7 +64,6 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    ProjectCard,
     SlickItem,
     SlickList,
   },

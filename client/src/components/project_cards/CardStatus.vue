@@ -1,5 +1,5 @@
 <template>
-  <ProjectCard :header="$t('visibility')" :icon="'globe'">
+  <DetailsPane :header="$t('visibility')" :icon="'globe'">
     <div>
       {{ $t("visibility_text") }}
     </div>
@@ -16,17 +16,15 @@
         :options="status_options"
       />
     </div>
-  </ProjectCard>
+  </DetailsPane>
 </template>
 <script>
-import ProjectCard from "@/components/ProjectCard.vue";
-
 export default {
   props: {
     project: Object,
     can_edit: Boolean,
   },
-  components: { ProjectCard },
+  components: {},
   data() {
     return {
       status_options: [
