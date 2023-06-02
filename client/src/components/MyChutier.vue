@@ -33,6 +33,21 @@
           {{ $t("import") }}
         </label>
       </div>
+
+      <div class="">
+        <button
+          type="button"
+          class="u-button u-button_white _qrBtn"
+          @click="show_qr_code_modal = true"
+        >
+          <sl-icon name="qr-code" />
+        </button>
+        <QRModal
+          v-if="show_qr_code_modal"
+          :url_to_access="url_to_page"
+          @close="show_qr_code_modal = false"
+        />
+      </div>
     </div>
     <UploadFiles
       v-if="selected_files.length > 0"
@@ -204,6 +219,7 @@ export default {
 
       max_items_selected: 15,
 
+      show_qr_code_modal: false,
       show_confirm_remove_menu: false,
     };
   },
@@ -262,6 +278,11 @@ export default {
   computed: {
     path() {
       return this.connected_as.$path;
+    },
+    url_to_page() {
+      // for reactivity
+      this.$route.path;
+      return window.location.href;
     },
     focused_items() {
       return this.focused_items_slugs.map((fis) =>
@@ -402,6 +423,11 @@ export default {
   backdrop-filter: blur(6px);
   mask: linear-gradient(black 75%, transparent 100%);
 }
+
+._qrBtn {
+  font-size: 100%;
+}
+
 ._middleContent {
   padding: 0 calc(var(--spacing) / 1);
 }
