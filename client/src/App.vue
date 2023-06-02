@@ -1,5 +1,20 @@
 <template>
   <div id="app" class="">
+    <!-- <button
+      type="button"
+      :disabled="$root.is_connected"
+      @click="$api.reconnectSocket"
+    >
+      connect
+    </button>
+    <button
+      type="button"
+      :disabled="!$root.is_connected"
+      @click="$api.disconnectSocket"
+    >
+      disconnect
+    </button> -->
+
     <component :is="'style'">
       {{ custom_fonts_css }}
     </component>
