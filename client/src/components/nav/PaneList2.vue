@@ -92,24 +92,6 @@
       </span>
       <span v-if="!$root.is_mobile_view" />
     </span>
-    <!-- <sl-icon name="plus-square-fill" label="Panneaux" />
-      <sl-icon name="plus" label="Panneaux" /> -->
-    <!-- <sl-dropdown>
-        <sl-button slot="trigger" variant="primary" circle>
-          <sl-icon name="plus" label="Panneaux" />
-        </sl-button>
-        <sl-menu>
-          <sl-menu-label>Ajouter un panneau</sl-menu-label>
-          <sl-menu-item
-            v-for="pane in possible_project_panes"
-            :key="pane.type"
-            v-html="$t(pane.type)"
-            @click="newPaneSelected(pane)"
-          />
-        </sl-menu>
-      </sl-dropdown> -->
-
-    <!-- // TODO -->
   </div>
 </template>
 <script>

@@ -4,9 +4,7 @@
     class="_modal"
     @close="$emit('close')"
   >
-    <!-- <sl-dialog ref="showArchives" label="Archives" class="" @sl-hide="onHide"> -->
     <div class="_archives" v-if="archives">
-      <!-- not sure why sl-select doesnt work here -->
       <div class="_topbar">
         <sl-button
           variant="default"
@@ -46,15 +44,6 @@
         </sl-button>
       </div>
 
-      <!-- <sl-select v-sl-model="selected_archive_filename">
-          <sl-menu-item
-            v-for="archive in archives"
-            :value="archive.filename"
-            :key="archive.filename"
-            v-text="formatDateTimeToPrecise(archive.date)"
-          />
-        </sl-select> -->
-
       <div
         v-if="
           archive_shown &&
@@ -72,7 +61,6 @@
     >
       {{ $t("restore_this_version") }}
     </sl-button>
-    <!-- </sl-dialog> -->
   </BaseModal2>
 </template>
 <script>
@@ -176,9 +164,5 @@ export default {
   ::v-deep {
     @import "./imports/mainText.scss";
   }
-}
-
-sl-dialog::part(base) {
-  align-items: flex-start;
 }
 </style>

@@ -249,14 +249,6 @@ export default {
   }
 }
 
-.avatar-group sl-avatar:not(:first-of-type) {
-  margin-left: -1rem;
-}
-
-.avatar-group sl-avatar::part(base) {
-  border: solid 2px var(--sl-color-neutral-0);
-}
-
 ._topContent {
   position: relative;
 }
