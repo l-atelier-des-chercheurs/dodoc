@@ -52,7 +52,7 @@
     <UploadFiles
       v-if="selected_files.length > 0"
       class="_uploadFilesList"
-      :selected_files="selected_files"
+      :files_to_import="selected_files"
       :path="path"
       @close="selected_files = []"
       @importedMedias="importedMedias"
