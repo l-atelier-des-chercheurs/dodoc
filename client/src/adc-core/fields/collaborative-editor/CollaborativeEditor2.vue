@@ -807,10 +807,14 @@ export default {
 
       background-color: transparent;
 
-      padding: 2px;
-      padding-bottom: calc(var(--spacing) * 1);
+      padding: 0px;
 
       @import "./imports/mainText.scss";
+
+      &[contenteditable="true"] {
+        padding: 2px;
+        padding-bottom: calc(var(--spacing) * 1);
+      }
 
       > * {
         // counter-increment: listCounter;
