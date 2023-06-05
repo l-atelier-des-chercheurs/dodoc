@@ -879,6 +879,10 @@ export default {
       }
     }
 
+    .ql-tooltip {
+      z-index: 10;
+    }
+
     .ql-container.ql-disabled {
       .ql-editor > * {
         cursor: inherit;
