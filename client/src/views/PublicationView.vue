@@ -16,7 +16,7 @@
         {{ fetch_project_error }}
       </div>
       <div v-else key="publication" ref="fsContainer">
-        <div class="_pubTopbar" v-if="!is_serversidepreview">
+        <div class="_pubTopbar" v-if="!is_serversidepreview && !is_fullscreen">
           <PublicationTopbar :publication="publication" :can_edit="false" />
         </div>
         <!-- Publication view project = {{ project }} <br />
