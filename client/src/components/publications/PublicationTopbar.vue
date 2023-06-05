@@ -1,7 +1,7 @@
 <template>
   <div class="_topbar">
     <TitleField
-      :label="$t('title')"
+      :label="can_edit ? $t('title') : ''"
       :field_name="'title'"
       :tag="'h2'"
       :content="publication.title"
