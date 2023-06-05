@@ -186,7 +186,8 @@ module.exports = (function () {
         const cover = await _getFolderCover({
           path_to_folder,
         });
-        if (cover) changed_meta.$cover;
+        if (cover) changed_meta.$cover = cover;
+        else changed_meta.$cover = false;
       }
 
       cache.delete({
