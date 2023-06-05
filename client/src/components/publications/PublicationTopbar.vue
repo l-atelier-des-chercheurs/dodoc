@@ -74,6 +74,7 @@
       </div>
 
       <DuplicatePublication
+        v-if="can_edit"
         :path="publication.$path"
         :source_title="publication.title"
         :publication="publication"
