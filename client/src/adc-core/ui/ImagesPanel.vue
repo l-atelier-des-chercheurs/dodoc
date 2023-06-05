@@ -33,7 +33,7 @@
       </label>
       <UploadFiles
         v-if="selected_files.length > 0"
-        :selected_files="selected_files"
+        :files_to_import="selected_files"
         :path="settings.$path"
         @close="selected_files = []"
       />
