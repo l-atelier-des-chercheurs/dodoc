@@ -75,7 +75,7 @@ export default {
   components: {},
   data() {
     return {
-      files_to_upload: this.files_to_import,
+      files_to_upload: this.files_to_import || [],
       files_to_upload_meta: {},
       upload_percentages: 0,
     };

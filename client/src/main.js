@@ -4,6 +4,16 @@ import router from "./router";
 
 Vue.config.productionTip = false;
 
+// todo : replace shoelace components
+/*
+  sl-spinner
+  sl-icon
+  sl-icon-button
+  sl-tab
+  sl-tab-group
+  sl-tab-panel
+*/
+
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 

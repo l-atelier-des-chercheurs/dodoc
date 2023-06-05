@@ -11,18 +11,6 @@
         v-text="$t(opt)"
       />
     </select>
-    <!-- <sl-badge variant="neutral" v-if="project.$status === 'invisible'">
-      {{ $t("invisible") }}
-    </sl-badge> -->
-    <!-- <sl-badge variant="success" v-if="project.$status === 'finished'">
-        {{ $t("finished") }}
-      </sl-badge>
-      <sl-badge
-        variant="warning"
-        v-if="project.$status !== 'finished' && project.$status !== 'invisible'"
-      >
-        {{ $t("draft") }}
-      </sl-badge> -->
   </div>
 </template>
 <script>
