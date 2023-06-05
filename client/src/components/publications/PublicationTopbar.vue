@@ -1,7 +1,6 @@
 <template>
   <div class="_topbar">
     <TitleField
-      :label="$t('title')"
       :field_name="'title'"
       :tag="'h2'"
       :content="publication.title"
@@ -74,6 +73,7 @@
       </div>
 
       <DuplicatePublication
+        v-if="can_edit"
         :path="publication.$path"
         :source_title="publication.title"
         :publication="publication"

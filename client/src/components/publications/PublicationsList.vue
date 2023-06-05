@@ -128,7 +128,9 @@ export default {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) * 2);
-  align-items: baseline;
+  align-items: end;
+  // not working for unknown reasons…
+  // align-items: baseline;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
 </style>

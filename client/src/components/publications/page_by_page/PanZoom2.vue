@@ -114,7 +114,7 @@ export default {
       const opt = animate ? { duration: 200 } : undefined;
       const ow = document.querySelector("._sideCont").offsetWidth || 280;
 
-      const margin = 10;
+      const margin = 80;
 
       let _x = (x || 0) + -(ow + margin) / this.scale;
       let _y = (y || 0) + -margin / this.scale;

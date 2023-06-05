@@ -120,6 +120,7 @@ export default {
   // padding: var(--spacing);
 }
 ._publicationPreview header {
+  height: 8em;
   cursor: pointer;
 }
 ._projectInfos--cover {

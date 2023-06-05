@@ -42,7 +42,7 @@ export default function () {
         if (this.tokenpath.token_path)
           await this.getCurrentAuthor().catch(() => {});
 
-        this.socket.connect();
+        await this.socket.connect();
 
         // client-side
         this.socket.on("connect", () => {
@@ -52,7 +52,6 @@ export default function () {
           this.$eventHub.$emit("socketio.connect", {
             socketid: this.socket.id,
           });
-          this.rejoinRooms();
         });
 
         this.socket.on("session", ({ sessionID, userID }) => {
@@ -72,6 +71,9 @@ export default function () {
           this.$eventHub.$emit("socketio.disconnect", reason);
           this.socket.disconnect();
           this.emptyStore();
+          this.socket.once("connect", () => {
+            this.rejoinRooms();
+          });
         });
 
         this.socket.onAny((eventName, ...args) => {
@@ -134,6 +136,7 @@ export default function () {
       },
 
       async rejoinRooms() {
+        console.log("rejoinRooms");
         // refresh full content of all rooms tracked
         const paths = this.rooms_joined.filter(
           (value, index, array) => array.indexOf(value) === index

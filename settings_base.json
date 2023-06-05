@@ -6,6 +6,7 @@
   "cache_content": true,
   "removePermanently": false,
   "versioning": true,
+  "tokenIsValidForXDays": 60,
 
   "cacheDirname": "dodoc_cache",
   "contentPath": "dodoc_next",
