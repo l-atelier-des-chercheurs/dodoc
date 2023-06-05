@@ -88,9 +88,9 @@ export default {
   },
   watch: {
     is_fullscreen() {
-      this.$nextTick(() => {
-        this.fitZoomToPage();
-      });
+      // this.$nextTick(() => {
+      // this.fitZoomToPage();
+      // });
     },
   },
   computed: {
