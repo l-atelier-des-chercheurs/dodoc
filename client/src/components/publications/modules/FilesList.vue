@@ -2,6 +2,7 @@
   <div class="_filesList">
     <DLabel :str="$t('source_files')" />
     <SlickList
+      :key="/* slicklist stays active otherwise */ can_edit"
       class="_listOfFiles"
       axis="y"
       :value="medias_with_linked.map((m) => m.meta_filename_in_project)"
