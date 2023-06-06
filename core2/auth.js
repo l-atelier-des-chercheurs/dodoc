@@ -66,7 +66,8 @@ module.exports = (function () {
       // check if token isn't expired
       const issued = tokens[token].issued;
       // 7 days
-      const expires_after_minutes = 60 * 24 * 7;
+      const expires_after_minutes =
+        60 * 24 * (global.settings.tokenIsValidForXDays || 60);
       const minutes_since_issued = (+new Date() - issued) / (1000 * 60);
 
       if (minutes_since_issued > expires_after_minutes) {
