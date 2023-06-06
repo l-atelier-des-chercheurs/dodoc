@@ -1,129 +1,136 @@
 <template>
   <div class="_myChutier" v-if="chutier" @click="last_clicked = false">
-    <div class="_topContent">
-      <div class="_subscribeBtn">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine _authorBtn"
-          @click="$eventHub.$emit('showAuthorModal')"
-        >
-          <template v-if="connected_as">
-            {{ connected_as.name }}
-          </template>
-          <template v-else>{{ $t("login") }}</template>
-        </button>
-      </div>
+    <div class="_itemsList">
+      <div class="_topContent">
+        <div class="_subscribeBtn">
+          <button
+            type="button"
+            class="u-button u-button_bleumarine _authorBtn"
+            @click="$eventHub.$emit('showAuthorModal')"
+          >
+            <template v-if="connected_as">
+              {{ connected_as.name }}
+            </template>
+            <template v-else>{{ $t("login") }}</template>
+          </button>
+        </div>
 
-      <div class="_importBtn">
-        <input
-          type="file"
-          multiple="multiple"
-          :id="id + '-add_file'"
-          name="file"
-          accept=""
-          class="inputfile-2"
-          @change="updateInputFiles($event)"
-        />
-        <label :for="id + '-add_file'">
-          <!-- <svg width="20" height="17" viewBox="0 0 20 17">
+        <div class="_importBtn">
+          <input
+            type="file"
+            multiple="multiple"
+            :id="id + '-add_file'"
+            name="file"
+            accept=""
+            class="inputfile-2"
+            @change="updateInputFiles($event)"
+          />
+          <label :for="id + '-add_file'">
+            <!-- <svg width="20" height="17" viewBox="0 0 20 17">
             <path
               d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
             />
           </svg> -->
-          {{ $t("import") }}
-        </label>
-      </div>
+            {{ $t("import") }}
+          </label>
+        </div>
 
-      <div class="">
-        <button
-          type="button"
-          class="u-button u-button_white _qrBtn"
-          @click="show_qr_code_modal = true"
-        >
-          <sl-icon name="qr-code" />
-        </button>
-        <QRModal
-          v-if="show_qr_code_modal"
-          :url_to_access="url_to_page"
-          @close="show_qr_code_modal = false"
-        />
-      </div>
-      <div class="">
-        <button
-          type="button"
-          class="u-button u-button_white _qrBtn"
-          @click="show_note_modal = true"
-        >
-          <sl-icon name="file-text" />
-          note
-        </button>
-      </div>
-    </div>
-    <UploadFiles
-      v-if="selected_files.length > 0"
-      class="_uploadFilesList"
-      :files_to_import="selected_files"
-      :path="path"
-      @close="selected_files = []"
-      @importedMedias="importedMedias"
-    />
-
-    <div class="_middleContent">
-      <label for="" @click="!all_items_selected ? selectAll() : deselectAll()">
-        <button
-          type="button"
-          class="u-buttonLink u-selectBtn"
-          v-if="chutier_items.length > 0"
-        >
-          <sl-icon
-            :name="
-              !all_items_selected ? 'plus-square-dotted' : 'dash-square-dotted'
-            "
+        <div class="">
+          <button
+            type="button"
+            class="u-button u-button_white _qrBtn"
+            @click="show_qr_code_modal = true"
+          >
+            <sl-icon name="qr-code" />
+          </button>
+          <QRModal
+            v-if="show_qr_code_modal"
+            :url_to_access="url_to_page"
+            @close="show_qr_code_modal = false"
           />
-        </button>
-        Éléments à traiter : {{ chutier_items.length }}
-      </label>
-      <br />
-    </div>
+        </div>
+        <div class="">
+          <button
+            type="button"
+            class="u-button u-button_white _qrBtn"
+            @click="show_note_modal = true"
+          >
+            <sl-icon name="file-text" />
+            note
+          </button>
+        </div>
+      </div>
+      <UploadFiles
+        v-if="selected_files.length > 0"
+        class="_uploadFilesList"
+        :files_to_import="selected_files"
+        :path="path"
+        @close="selected_files = []"
+        @importedMedias="importedMedias"
+      />
 
-    <div class="_items">
-      <div class="_item" v-for="ci in chutier_items_grouped" :key="ci.label">
-        <div
-          class="_item--label"
-          @click="
-            rangeIsSelected(ci.files.map((f) => f.$path))
-              ? deselectRange(ci.files.map((f) => f.$path))
-              : selectRange(ci.files.map((f) => f.$path))
-          "
+      <div class="_middleContent">
+        <label
+          for=""
+          @click="!all_items_selected ? selectAll() : deselectAll()"
         >
           <button
-            v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
             type="button"
             class="u-buttonLink u-selectBtn"
+            v-if="chutier_items.length > 0"
           >
-            <sl-icon name="plus-square-dotted" />
-          </button>
-          <button v-else type="button" class="u-buttonLink u-selectBtn">
-            <sl-icon name="dash-square-dotted" />
-          </button>
-          {{ formatDateToHuman(ci.label) }}
-        </div>
-        <transition-group tag="div" name="listComplete">
-          <div
-            v-for="file in ci.files"
-            :key="file.$path"
-            @click.stop="last_clicked = file.$path"
-          >
-            <ChutierItem
-              :file="file"
-              :is_clicked="last_clicked === file.$path"
-              :is_selected="selected_items_slugs.includes(file.$path)"
-              :shared_space_path="shared_space_path"
-              @toggleSelect="toggleSelect(file.$path)"
-              @unclicked="last_clicked = false"
+            <sl-icon
+              :name="
+                !all_items_selected
+                  ? 'plus-square-dotted'
+                  : 'dash-square-dotted'
+              "
             />
+          </button>
+          Éléments à traiter : {{ chutier_items.length }}
+        </label>
+        <br />
+      </div>
+
+      <div class="_items">
+        <div class="_item" v-for="ci in chutier_items_grouped" :key="ci.label">
+          <div
+            class="_item--label"
+            @click="
+              rangeIsSelected(ci.files.map((f) => f.$path))
+                ? deselectRange(ci.files.map((f) => f.$path))
+                : selectRange(ci.files.map((f) => f.$path))
+            "
+          >
+            <button
+              v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
+              type="button"
+              class="u-buttonLink u-selectBtn"
+            >
+              <sl-icon name="plus-square-dotted" />
+            </button>
+            <button v-else type="button" class="u-buttonLink u-selectBtn">
+              <sl-icon name="dash-square-dotted" />
+            </button>
+            {{ formatDateToHuman(ci.label) }}
           </div>
-        </transition-group>
+          <transition-group tag="div" name="listComplete">
+            <div
+              v-for="file in ci.files"
+              :key="file.$path"
+              @click.stop="last_clicked = file.$path"
+            >
+              <ChutierItem
+                :file="file"
+                :is_clicked="last_clicked === file.$path"
+                :is_selected="selected_items_slugs.includes(file.$path)"
+                :shared_space_path="shared_space_path"
+                @toggleSelect="toggleSelect(file.$path)"
+                @unclicked="last_clicked = false"
+              />
+            </div>
+          </transition-group>
+        </div>
       </div>
     </div>
     <transition name="slideup" mode="out-in">
@@ -423,16 +430,26 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._myChutier {
+  position: relative;
+  top: 0;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   background: #f9f9f9;
   background: var(--chutier-bg);
   color: white;
 
-  display: flex;
-  flex-flow: column nowrap;
+  // display: flex;
+  // flex-flow: column nowrap;
   // padding: 0 calc(var(--spacing) / 1);
 }
+._itemsList {
+  position: relative;
+  top: 0;
+  height: 100%;
+  overflow: auto;
+  padding-bottom: 100px;
+}
+
 ._topContent {
   position: sticky;
   z-index: 1;
@@ -494,7 +511,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  box-shadow: 0 2px 6px 0 black;
+  // box-shadow: 0 2px 6px 0 black;
   background: var(--chutier-bg);
   border-top: 2px solid black;
   // background: black;
@@ -528,16 +545,6 @@ export default {
   flex: 0 1 20px;
   aspect-ratio: 1/1;
   overflow: hidden;
-}
-._mediaStack,
-._editNote {
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  // padding-top: 20px;
 }
 
 ._uploadFilesList {

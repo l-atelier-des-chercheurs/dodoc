@@ -154,6 +154,7 @@ export default {
   height: 100%;
   background: var(--chutier-bg);
   box-shadow: 0 0px 10px rgb(0 0 0 / 52%);
+  overflow: hidden;
 
   transform: translate(
     calc(-1 * (var(--chutier-width) - var(--chutier-bar-width))),

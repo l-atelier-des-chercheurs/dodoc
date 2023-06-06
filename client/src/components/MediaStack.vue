@@ -1,99 +1,91 @@
 <template>
-  <div class="_mediaFocus" @click="last_clicked = false">
-    <sl-button
-      class="_closeBtn"
-      variant="neutral"
-      size="medium"
-      circle
-      @click="$emit('close')"
-    >
-      <sl-icon name="x-lg" :label="$t('close')"></sl-icon>
-    </sl-button>
+  <ChutierPane @close="$emit('close')">
+    <div class="_mediaFocus" @click="last_clicked = false">
+      <div class="_fileStack">
+        <transition-group tag="div" class="_itemsList" name="listComplete">
+          <div
+            class="u-sameRow"
+            v-for="(file, index) in files"
+            :key="file.$path"
+            @click.stop="last_clicked = file.$path"
+          >
+            <div class="_removeFile">
+              <sl-icon-button
+                name="dash-square-dotted"
+                @click="removeFromSelection(file.$path)"
+              />
+            </div>
 
-    <div class="_fileStack">
-      <transition-group tag="div" class="_itemsList" name="listComplete">
-        <div
-          class="u-sameRow"
-          v-for="(file, index) in files"
-          :key="file.$path"
-          @click.stop="last_clicked = file.$path"
-        >
-          <div class="_removeFile">
-            <sl-icon-button
-              name="dash-square-dotted"
-              @click="removeFromSelection(file.$path)"
+            <select
+              class="is--dark _changeOrderSelect"
+              :value="index + 1"
+              @change="changeMediaOrder(index, +$event.target.value - 1)"
+            >
+              <option
+                v-for="(a, i) in new Array(files.length).fill(null)"
+                :key="i + 1"
+                v-text="i + 1"
+              />
+            </select>
+            <ChutierItem
+              :file="file"
+              :is_clicked="last_clicked === file.$path"
+              :is_selected="false"
+              :context="'stack'"
+              @unclicked="last_clicked = false"
             />
           </div>
+        </transition-group>
+      </div>
 
-          <select
-            class="is--dark _changeOrderSelect"
-            :value="index + 1"
-            @change="changeMediaOrder(index, +$event.target.value - 1)"
+      <div class="_fields">
+        <span class="u-instructions">
+          Corrigez ou complétez le titre et les mots-clés pour partager cette
+          pile.
+        </span>
+
+        <input
+          type="text"
+          class="is--dark"
+          required
+          v-model="title"
+          placeholder="Titre"
+          @keydown.esc.prevent="$emit('close')"
+        />
+        <textarea
+          class="is--dark _descriptionField"
+          v-model="description"
+          placeholder="Description"
+          @keydown.esc.prevent="$emit('close')"
+        />
+        <KeywordsField
+          :edit_mode="true"
+          :keywords.sync="keywords"
+          @cancelEdit="$emit('close')"
+        />
+      </div>
+
+      <div class="_shareBtn">
+        <transition name="scaleInFade" mode="out-in">
+          <button
+            type="button"
+            v-if="shared_space_path"
+            :key="share_button_is_enabled"
+            class="u-buttonLink"
+            :disabled="!share_button_is_enabled"
+            @click="shareButtonClicked"
           >
-            <option
-              v-for="(a, i) in new Array(files.length).fill(null)"
-              :key="i + 1"
-              v-text="i + 1"
-            />
-          </select>
-          <ChutierItem
-            :file="file"
-            :is_clicked="last_clicked === file.$path"
-            :is_selected="false"
-            :context="'stack'"
-            @unclicked="last_clicked = false"
-          />
-        </div>
-      </transition-group>
+            Publier&nbsp;
+            <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
+          </button>
+        </transition>
+      </div>
     </div>
-
-    <div class="_fields">
-      <span class="u-instructions">
-        Corrigez ou complétez le titre et les mots-clés pour partager cette
-        pile.
-      </span>
-
-      <input
-        type="text"
-        class="is--dark"
-        required
-        v-model="title"
-        placeholder="Titre"
-        @keydown.esc.prevent="$emit('close')"
-      />
-      <textarea
-        class="is--dark _descriptionField"
-        v-model="description"
-        placeholder="Description"
-        @keydown.esc.prevent="$emit('close')"
-      />
-      <KeywordsField
-        :edit_mode="true"
-        :keywords.sync="keywords"
-        @cancelEdit="$emit('close')"
-      />
-    </div>
-
-    <div class="_shareBtn">
-      <transition name="scaleInFade" mode="out-in">
-        <button
-          type="button"
-          v-if="shared_space_path"
-          :key="share_button_is_enabled"
-          class="u-buttonLink"
-          :disabled="!share_button_is_enabled"
-          @click="shareButtonClicked"
-        >
-          Publier&nbsp;
-          <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
-        </button>
-      </transition>
-    </div>
-  </div>
+  </ChutierPane>
 </template>
 <script>
+import ChutierPane from "@/components/chutier/ChutierPane.vue";
 import KeywordsField from "@/components/KeywordsField.vue";
-
 import ChutierItem from "@/components/ChutierItem.vue";
 
 export default {
@@ -102,6 +94,7 @@ export default {
     shared_space_path: String,
   },
   components: {
+    ChutierPane,
     KeywordsField,
     ChutierItem,
   },
@@ -203,12 +196,6 @@ export default {
 ._itemsList {
   border: 2px solid #999;
   padding: calc(var(--spacing) / 2);
-}
-._closeBtn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 2px;
 }
 
 ._openLarge {

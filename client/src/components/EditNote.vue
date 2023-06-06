@@ -1,7 +1,17 @@
 <template>
   <ChutierPane @close="$emit('close')">
-    <div class="">
+    <div class="_fields">
+      <input
+        type="text"
+        class="is--dark"
+        autofocus
+        required
+        v-model="note_title"
+        placeholder="Titre de la note"
+      />
+
       <TextInput
+        class="is--dark"
         :content.sync="note_content"
         :required="true"
         :input_type="'markdown'"
@@ -47,6 +57,8 @@ export default {
   data() {
     return {
       note_content: "",
+      note_title: "",
+      keywords: [],
       allow_save: false,
     };
   },
@@ -60,6 +72,10 @@ export default {
       let obj = {
         filename: "note.txt",
         content: this.note_content,
+        additional_meta: {
+          title: this.note_title,
+          keywords: this.keywords,
+        },
       };
 
       if (destination === "shared_space") {
@@ -78,6 +94,14 @@ export default {
 <style lang="scss" scoped>
 ._editNote {
   background: var(--chutier-bg);
+  padding: calc(var(--spacing) / 2);
+}
+
+._fields {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 1);
+  justify-content: center;
   padding: calc(var(--spacing) / 2);
 }
 </style>

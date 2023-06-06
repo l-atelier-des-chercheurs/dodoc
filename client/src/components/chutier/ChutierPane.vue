@@ -29,7 +29,23 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._chutierPane {
+  position: absolute;
+  z-index: 10;
+  top: -2px;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+
   background: var(--chutier-bg);
   padding: calc(var(--spacing) / 2);
+
+  border-top: 2px solid black;
+}
+
+._closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px;
 }
 </style>
