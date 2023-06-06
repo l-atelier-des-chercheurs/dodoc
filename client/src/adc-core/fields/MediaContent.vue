@@ -45,6 +45,9 @@
     <template v-else-if="file.$type === 'stl'">
       <img :src="thumb" class="_mediaContent--image" />
     </template>
+    <template v-else-if="file.$type === 'text'">
+      <CollaborativeEditor2 :content="file.$content" :can_edit="false" />
+    </template>
     <template v-else-if="['pdf', 'url'].includes(file.$type)">
       <template v-if="context === 'preview'">
         <img :src="thumb" class="_mediaContent--image" />
