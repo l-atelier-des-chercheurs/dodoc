@@ -273,7 +273,6 @@ export default {
         filename: "text.txt",
         content: "",
         additional_meta: {
-          caption: "plip",
           module_type: this.module_type,
         },
       });
