@@ -62,13 +62,12 @@
         </sl-button> -->
     </div>
 
-    <div class="_floatingEditBtn">
+    <div class="_floatingEditBtn" v-if="can_edit">
       <sl-button
         variant="edit"
         :data-action="editor_is_enabled ? 'disable' : 'enable'"
         size="small"
         circle
-        v-if="can_edit"
         @click="toggleEdit"
       >
         <sl-icon
