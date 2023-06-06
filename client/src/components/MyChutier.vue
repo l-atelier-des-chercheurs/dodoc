@@ -48,6 +48,16 @@
           @close="show_qr_code_modal = false"
         />
       </div>
+      <div class="">
+        <button
+          type="button"
+          class="u-button u-button_white _qrBtn"
+          @click="show_note_modal = true"
+        >
+          <sl-icon name="file-text" />
+          note
+        </button>
+      </div>
     </div>
     <UploadFiles
       v-if="selected_files.length > 0"
@@ -176,7 +186,15 @@
         </button>
       </div>
     </transition>
-
+    <transition name="slideup">
+      <EditNote
+        v-if="show_note_modal"
+        class="_editNote"
+        :author_path="path"
+        :shared_space_path="shared_space_path"
+        @close="show_note_modal = false"
+      />
+    </transition>
     <transition name="slideup">
       <MediaStack
         v-if="focused_items.length > 0"
@@ -196,6 +214,7 @@
 <script>
 import ChutierItem from "@/components/ChutierItem.vue";
 import MediaStack from "@/components/MediaStack.vue";
+import EditNote from "@/components/EditNote.vue";
 
 export default {
   props: {
@@ -204,6 +223,7 @@ export default {
   components: {
     ChutierItem,
     MediaStack,
+    EditNote,
   },
   data() {
     return {
@@ -220,6 +240,7 @@ export default {
       max_items_selected: 15,
 
       show_qr_code_modal: false,
+      show_note_modal: false,
       show_confirm_remove_menu: false,
     };
   },
@@ -309,7 +330,7 @@ export default {
       const grouped = this.chutier_items.reduce((group, file) => {
         // var key = file.$date_uploaded;
 
-        var dateObj = new Date(file.$date_created);
+        var dateObj = new Date(file.$date_created || file.$date_uploaded);
         var month = dateObj.getUTCMonth() + 1; //months from 1-12
         var day = dateObj.getUTCDate();
         var year = dateObj.getUTCFullYear();
@@ -425,7 +446,9 @@ export default {
 }
 
 ._qrBtn {
-  font-size: 100%;
+  sl-icon {
+    font-size: 100%;
+  }
 }
 
 ._middleContent {
@@ -506,7 +529,8 @@ export default {
   aspect-ratio: 1/1;
   overflow: hidden;
 }
-._mediaStack {
+._mediaStack,
+._editNote {
   position: absolute;
   z-index: 10;
   top: 0;

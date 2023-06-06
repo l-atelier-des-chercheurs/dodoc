@@ -181,6 +181,7 @@ export default {
       date_created_corrected: datetimeLocal(
         this.file.date_created_corrected ||
           this.file.$date_created ||
+          this.file.$date_uploaded ||
           new Date()
       ),
       description: this.file.description || "",
@@ -238,7 +239,10 @@ export default {
       this.text_title =
         this.file.title || this.cleanFilename(this.file.$media_filename) || "";
       this.date_created_corrected =
-        this.file.date_created_corrected || this.file.$date_created || "";
+        this.file.date_created_corrected ||
+        this.file.$date_created ||
+        this.file.$date_uploaded ||
+        "";
       this.description = this.file.description || "";
       this.keywords = this.file.keywords || "";
       this.edit_mode = false;
@@ -264,7 +268,9 @@ export default {
       // check if date is valid, if not then go back to previous date
       if (this.date_created_corrected === "")
         this.date_created_corrected =
-          this.file.date_created_corrected || this.file.$date_created;
+          this.file.date_created_corrected ||
+          this.file.$date_created ||
+          this.file.$date_uploaded;
 
       await this.$api
         .updateMeta({
