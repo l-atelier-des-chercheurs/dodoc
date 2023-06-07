@@ -93,7 +93,11 @@ module.exports = (function () {
 
       if (fields)
         for ([field_name, opt] of Object.entries(fields)) {
-          if (opt.unique === true && meta.hasOwnProperty(field_name)) {
+          if (
+            opt.unique === true &&
+            meta.hasOwnProperty(field_name) &&
+            meta[field_name].length > 0
+          ) {
             const proposed_value_for_unique_field = meta[field_name];
             if (
               siblings_folders.some(
@@ -101,9 +105,10 @@ module.exports = (function () {
               )
             ) {
               const err = new Error(
-                `Field ${field_name} supposed to be unique, is already taken`
+                `Field "${field_name}" supposed to be unique, is already taken`
               );
               err.code = "unique_field_taken";
+              err.err_infos = field_name;
               throw err;
             }
           }
@@ -282,6 +287,8 @@ module.exports = (function () {
           .toFormat("png", {})
           .toFile(new_path)
           .catch((err) => {
+            // todo handle errors better
+            // use cause to keep track throw new Error("Failed in some way", { cause: err });
             throw err;
           });
       else
