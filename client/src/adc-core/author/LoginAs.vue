@@ -4,68 +4,82 @@
       <fieldset>
         <legend class="u-label">{{ $t("your_account") }}</legend>
 
-        <div class="u-spacingBottom">
-          <TextInput
-            :content.sync="name_of_account"
-            ref="nameField"
-            :label_str="'name_or_pseudonym'"
-            :required="true"
-            :input_type="'text'"
-            :autocomplete="'username'"
-            @toggleValidity="($event) => (allow_save = $event)"
-          />
-          <template v-if="!name_matches_account && author_suggestions">
-            <div class="_listOfAvatars">
-              <AuthorTag
-                v-for="atpath in author_suggestions"
-                :key="atpath"
-                :path="atpath"
-                @click="suggestionClick(atpath)"
-              />
-            </div>
-          </template>
-        </div>
-
-        <template v-if="name_matches_account">
-          <div class="u-spacingBottom">
+        <transition name="pagechange" mode="out-in">
+          <div v-if="!author_to_login_to">
             <TextInput
-              :label_str="$t('password')"
-              ref="passwordField"
-              :content.sync="input_password"
+              :content.sync="search_for_author"
+              ref="nameField"
+              :label_str="'name_or_pseudonym'"
               :required="true"
-              :input_type="'password'"
-              :autocomplete="'current-password'"
+              :input_type="'text'"
+              :autocomplete="'username'"
               @toggleValidity="($event) => (allow_save = $event)"
             />
+            <!-- @onEnter="checkAuthor" -->
+            <template v-if="author_suggestions">
+              <div class="_listOfAvatars">
+                <AuthorTag
+                  v-for="atpath in author_suggestions"
+                  :key="atpath"
+                  :path="atpath"
+                  @click="checkAuthor(atpath)"
+                />
+              </div>
+            </template>
           </div>
+          <div v-else>
+            <div class="u-spacingBottom _loginToAuthor">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="author_to_login_to = undefined"
+              >
+                <sl-icon name="arrow-left-short" />
+                {{ $t("back") }}
+              </button>
+              <AuthorTag :path="author_to_login_to.$path" />
+            </div>
 
-          <div class="u-spacingBottom">
-            <button
-              type="button"
-              class="u-buttonLink"
-              :class="{
-                'is--active': show_recover_instr,
-              }"
-              @click="show_recover_instr = !show_recover_instr"
-            >
-              {{ $t("recover_password") }}
+            <div class="u-spacingBottom">
+              <TextInput
+                :label_str="$t('password')"
+                ref="passwordField"
+                :content.sync="input_password"
+                :required="true"
+                :input_type="'password'"
+                :autocomplete="'current-password'"
+                @toggleValidity="($event) => (allow_save = $event)"
+              />
+            </div>
+
+            <div class="u-spacingBottom">
+              <button
+                type="button"
+                class="u-buttonLink"
+                :class="{
+                  'is--active': show_recover_instr,
+                }"
+                @click="show_recover_instr = !show_recover_instr"
+              >
+                {{ $t("recover_password") }}
+              </button>
+            </div>
+            <div class="u-spacingBottom">
+              <div class="u-instructions" v-if="show_recover_instr">
+                {{ $t("please_contact_to_recover") }} <br />
+                <a
+                  :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+                  target="_blank"
+                >
+                  {{ $root.app_infos.instance_meta.contactmail }}
+                </a>
+              </div>
+            </div>
+            <button type="submit" class="u-button u-button_bleuvert">
+              {{ $t("login") }}
             </button>
           </div>
-          <div class="u-spacingBottom">
-            <div class="u-instructions" v-if="show_recover_instr">
-              {{ $t("please_contact_to_recover") }} <br />
-              <a
-                :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-                target="_blank"
-              >
-                {{ $root.app_infos.instance_meta.contactmail }}
-              </a>
-            </div>
-          </div>
-          <button type="submit" class="u-button u-button_bleuvert">
-            {{ $t("login") }}
-          </button>
-        </template>
+        </transition>
       </fieldset>
     </form>
   </div>
@@ -78,33 +92,40 @@ export default {
   components: {},
   data() {
     return {
-      name_of_account: "",
+      search_for_author: "",
+      author_to_login_to: undefined,
+
       input_password: "",
       show_recover_instr: false,
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("login.suggest", this.checkAuthor);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("login.suggest", this.checkAuthor);
+  },
   watch: {},
   computed: {
     author_suggestions() {
-      if (this.name_of_account.length === 0 || this.authors.length === 0)
+      if (this.search_for_author.length === 0 || this.authors.length === 0)
         return false;
 
-      const matching = this.authors.filter((a) =>
-        a.name.toLowerCase().startsWith(this.name_of_account.toLowerCase())
-      );
-      if (matching.length > 3) return false;
+      const matching = this.authors.filter((a) => {
+        const name = a.name.toLowerCase();
+        const slug = `@${this.getFilename(a.$path)}`;
+        return (
+          name.startsWith(this.search_for_author.toLowerCase()) ||
+          slug.startsWith(this.search_for_author.toLowerCase())
+        );
+      });
       return matching.map((m) => m.$path);
-    },
-    name_matches_account() {
-      return this.authors.find((a) => a.name === this.name_of_account);
     },
   },
   methods: {
     async login() {
-      const author = this.name_matches_account;
+      const author = this.author_to_login_to;
       if (!author) {
         this.$refs.nameField.$el.querySelector("input").select();
         this.$alertify.delay(4000).error(this.$t("account_doesnt_exist"));
@@ -137,9 +158,10 @@ export default {
           return;
         });
     },
-    suggestionClick(path) {
+    checkAuthor(path) {
       const a = this.authors.find((a) => a.$path === path);
-      this.name_of_account = a.name;
+      this.search_for_author = "";
+      this.author_to_login_to = a;
     },
   },
 };
