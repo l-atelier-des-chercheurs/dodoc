@@ -78,7 +78,6 @@ export default {
       return this.createURLFromPath(this.path);
     },
     component_tag() {
-      debugger;
       if (this.links_to_author_page) return "router-link";
       if (
         this.$listeners.click ||
