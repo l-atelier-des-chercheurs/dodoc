@@ -5,7 +5,7 @@
         <legend class="u-label">{{ $t("your_account") }}</legend>
 
         <transition name="pagechange" mode="out-in">
-          <div v-if="!author_to_login_to">
+          <div v-if="!author_to_login_to" key="search">
             <TextInput
               :content.sync="search_for_author"
               ref="nameField"
@@ -16,8 +16,21 @@
               @toggleValidity="($event) => (allow_save = $event)"
             />
             <!-- @onEnter="checkAuthor" -->
-            <template v-if="author_suggestions">
-              <div class="_listOfAvatars">
+            <transition name="pagechange" mode="out-in">
+              <div v-if="!author_suggestions" key="none" />
+              <div
+                v-else-if="author_suggestions.length === 0"
+                class="u-instructions _noAuthorNotice"
+                key="no_author"
+              >
+                <sl-icon name="exclamation-triangle-fill" />
+                {{ $t("login_no_author_matches") }}
+              </div>
+              <div
+                class="u-listOfAvatars"
+                key="list"
+                v-else-if="author_suggestions.length > 0"
+              >
                 <AuthorTag
                   v-for="atpath in author_suggestions"
                   :key="atpath"
@@ -25,9 +38,9 @@
                   @click="checkAuthor(atpath)"
                 />
               </div>
-            </template>
+            </transition>
           </div>
-          <div v-else>
+          <div v-else key="login">
             <div class="u-spacingBottom _loginToAuthor">
               <button
                 type="button"
@@ -120,6 +133,7 @@ export default {
           slug.startsWith(this.search_for_author.toLowerCase())
         );
       });
+
       return matching.map((m) => m.$path);
     },
   },
@@ -171,10 +185,7 @@ export default {
   cursor: pointer;
 }
 
-._listOfAvatars {
-  display: flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
+._noAuthorNotice {
   padding: calc(var(--spacing) / 4) 0;
 }
 </style>

@@ -49,8 +49,8 @@
 export default {
   props: {
     folder: Object,
-    admins_path: [String, Array],
-    contributors_path: [String, Array],
+    admins_path: [Boolean, String, Array],
+    contributors_path: [Boolean, String, Array],
     admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,

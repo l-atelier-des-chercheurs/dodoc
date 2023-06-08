@@ -6,7 +6,7 @@
     <div class="">
       <DLabel :str="$t('admins_and_contributors')" />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-      <div class="_listOfAvatars">
+      <div class="u-listOfAvatars">
         <AuthorTag
           v-for="atpath in all_participants_path"
           :path="atpath"
@@ -121,10 +121,8 @@ export default {
     }
   }
 }
-._listOfAvatars {
-  display: flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
+.u-listOfAvatars {
+  padding: 0;
 }
 
 ._floatingTopRight {

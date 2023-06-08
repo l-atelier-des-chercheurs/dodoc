@@ -17,12 +17,30 @@
     </div>
     <div v-if="!show_image_only" class="_infos">
       <div class="_name">{{ author.name }}</div>
+      <div
+        class="u-instructions"
+        v-if="
+          authorIsInstance({
+            field: '$admins',
+            folder_path: author.$path,
+          })
+        "
+      >
+        <small v-html="$t('admin')" />
+      </div>
+
       <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>
     <sl-icon-button
-      v-if="edit_mode"
+      v-if="edit_mode && $listeners.add"
+      name="+"
+      :label="$t('add')"
+      @click="$emit('add', path)"
+    />
+    <sl-icon-button
+      v-if="edit_mode && $listeners.remove"
       name="x"
-      label="Supprimer"
+      :label="$t('remove')"
       @click="$emit('remove', path)"
     />
   </component>
@@ -60,8 +78,14 @@ export default {
       return this.createURLFromPath(this.path);
     },
     component_tag() {
+      debugger;
       if (this.links_to_author_page) return "router-link";
-      if (this.$listeners.click) return "button";
+      if (
+        this.$listeners.click ||
+        this.$listeners.add ||
+        this.$listeners.remove
+      )
+        return "button";
       return "span";
     },
     component_to() {
@@ -84,14 +108,17 @@ export default {
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
   background: transparent;
+  text-align: left;
+
   border: 1px solid var(--c-gris);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
 
   ._cover {
     position: relative;
     overflow: hidden;
     border-radius: 50%;
-    width: 3em;
-    height: 3em;
+    width: 30px;
+    height: 30px;
   }
 
   ._infos {
