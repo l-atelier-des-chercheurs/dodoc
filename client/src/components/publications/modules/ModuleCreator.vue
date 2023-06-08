@@ -3,7 +3,7 @@
     <div v-if="show_module_selector || !is_collapsed" class="_typePicker">
       <button
         type="button"
-        class="u-button u-button_bleumarine"
+        class="u-button u-button_small u-button_bleumarine"
         @click="createText"
       >
         <!-- {{ $t("add_text") }} -->
@@ -16,7 +16,7 @@
 
       <button
         type="button"
-        class="u-button u-button_bleumarine"
+        class="u-button u-button_small u-button_bleumarine"
         @click="show_media_picker = true"
       >
         <sl-icon
@@ -34,7 +34,7 @@
 
       <button
         type="button"
-        class="u-button u-button_bleumarine"
+        class="u-button u-button_small u-button_bleumarine"
         @click="show_file_picker = true"
       >
         <sl-icon
@@ -52,7 +52,7 @@
 
       <button
         type="button"
-        class="u-button u-button_bleumarine"
+        class="u-button u-button_small u-button_bleumarine"
         @click="show_link_picker = true"
       >
         <sl-icon
@@ -72,7 +72,7 @@
           type="button"
           v-for="shape in shapes"
           :key="shape.type"
-          class="u-button u-button_bleumarine"
+          class="u-button u-button_small u-button_bleumarine"
           @click="
             createModule({
               module_type: shape.type,
