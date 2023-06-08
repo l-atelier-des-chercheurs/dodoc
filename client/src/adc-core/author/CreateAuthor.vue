@@ -166,7 +166,9 @@ export default {
         this.$emit("close");
       } catch (err) {
         if (err.code === "unique_field_taken") {
-          this.$alertify.delay(4000).error(this.$t("notifications.name_taken"));
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("notifications.name_taken") + " : " + err.err_infos);
           this.$refs.titleInput.$el.querySelector("input").select();
         }
         this.is_creating_space = false;

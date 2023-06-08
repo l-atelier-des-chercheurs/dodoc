@@ -149,8 +149,7 @@ export default function () {
       // async getAndTrack(path) {
       //   // getFolders ou getFolder
       //   const response = await this.$axios.get(path).catch((err) => {
-      //     const err_code = this.onError(err);
-      //     throw err_code;
+      // throw this.processError(err);
       //   });
       //   const content = response.data;
       //   // puis join le path en question
@@ -226,8 +225,8 @@ export default function () {
       async getCurrentAuthor() {
         await this.getFolder({
           path: this.tokenpath.token_path,
-        }).catch((err_code) => {
-          throw err_code;
+        }).catch((err) => {
+          throw err;
           // TODO catch folder no existing: author was removed, for example
         });
       },
@@ -322,8 +321,7 @@ export default function () {
       },
       async updateStore(path) {
         const response = await this.$axios.get(path).catch((err) => {
-          const err_code = this.onError(err);
-          throw err_code;
+          throw this.processError(err);
         });
         const content = response.data;
         this.folderUpdated({ path, changed_data: content });
@@ -332,8 +330,7 @@ export default function () {
       async getFolders({ path }) {
         if (this.store[path]) return this.store[path];
         const response = await this.$axios.get(path).catch((err) => {
-          const err_code = this.onError(err);
-          throw err_code;
+          throw this.processError(err);
         });
         const folders = response.data;
         // folders.map((f) => this.$set(this.store, f.$path, f));
@@ -345,8 +342,7 @@ export default function () {
         if (this.store[path]) return this.store[path];
 
         const response = await this.$axios.get(path).catch((err) => {
-          const err_code = this.onError(err);
-          throw err_code;
+          throw this.processError(err);
         });
         const folder = response.data;
         this.$set(this.store, folder.$path, folder);
@@ -365,8 +361,7 @@ export default function () {
         const response = await this.$axios
           .post(path, additional_meta)
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
         return response.data.new_folder_slug;
       },
@@ -387,8 +382,7 @@ export default function () {
 
           return;
         } catch (err) {
-          const err_code = this.onError(err);
-          throw err_code;
+          throw this.processError(err);
         }
       },
       async logoutFromFolder() {
@@ -403,8 +397,7 @@ export default function () {
           await this.$axios.post(`${path}/_logout`, auth_infos);
           return;
         } catch (err) {
-          const err_code = this.onError(err);
-          throw err_code;
+          throw this.processError(err);
         }
       },
 
@@ -420,8 +413,7 @@ export default function () {
             },
           })
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
 
         if (remember_on_this_device)
@@ -475,8 +467,7 @@ export default function () {
             },
           })
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
 
         return res.data.meta_filename;
@@ -486,8 +477,7 @@ export default function () {
         const response = await this.$axios
           .post(path, { new_meta, path_to_destination_folder })
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
         return response.data.meta_filename;
       },
@@ -496,8 +486,7 @@ export default function () {
         const response = await this.$axios
           .post(path, { new_meta, path_to_destination_type })
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
         return response.data.copy_folder_path;
       },
@@ -510,8 +499,7 @@ export default function () {
         const response = await this.$axios
           .post(path, { new_meta, path_to_destination_type })
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
         return response.data.remix_folder_path;
       },
@@ -521,8 +509,7 @@ export default function () {
         const response = await this.$axios
           .post(path, instructions)
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
         const task_id = response.data.task_id;
         this.$eventHub.$emit("task.started", { task_id, instructions });
@@ -534,8 +521,7 @@ export default function () {
         const response = await this.$axios
           .post(path, instructions)
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
 
         const task_id = response.data.task_id;
@@ -545,8 +531,7 @@ export default function () {
         const response = await this.$axios
           .patch(path, new_meta)
           .catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
 
         return response.data;
@@ -560,8 +545,7 @@ export default function () {
             path_to_meta: new_cover_data,
           };
           await this.$axios.patch(path, new_meta).catch((err) => {
-            const err_code = this.onError(err);
-            throw err_code;
+            throw this.processError(err);
           });
         } else if (typeof new_cover_data === "object") {
           let formData = new FormData();
@@ -577,8 +561,7 @@ export default function () {
               },
             })
             .catch((err) => {
-              const err_code = this.onError(err);
-              throw err_code;
+              throw this.processError(err);
             });
         }
 
@@ -587,8 +570,7 @@ export default function () {
 
       async deleteItem({ path }) {
         const response = await this.$axios.delete(path).catch((err) => {
-          const err_code = this.onError(err);
-          throw err_code;
+          throw this.processError(err);
         });
 
         return response.data;
@@ -600,32 +582,30 @@ export default function () {
         localStorage.setItem("tokenpath", undefined);
       },
 
-      onError(err) {
-        let code = err?.response?.data?.code;
+      processError(err) {
+        let { code, err_infos } = err?.response?.data;
 
-        if (!code) console.error("onError – NO ERROR CODES");
-        else console.error("onError – " + code);
-
-        if (code === "token_does_not_exist") {
-          this.resetToken();
-        } else if (code === "token_expired") {
-          this.resetToken();
-        } else if (code === "submitted_general_password_is_wrong") {
-          this.$eventHub.$emit("app.prompt_general_password");
-        } else if (code === "no_general_password_submitted") {
-          this.$eventHub.$emit("app.prompt_general_password");
-        } else if (code === "token_not_allowed_must_be_local_admin") {
-          // this.$alertify.delay(4000).error("notifications.action_not_allowed");
-        } else if (code === "token_not_allowed_must_be_contributors") {
-          // this.$alertify.delay(4000).error("notifications.action_not_allowed");
-        } else if (code === "ENOENT") code = "folder_is_missing";
-
-        this.$alertify.delay(4000).error(code);
+        if (code) {
+          if (code === "token_does_not_exist") {
+            this.resetToken();
+          } else if (code === "token_expired") {
+            this.resetToken();
+          } else if (code === "submitted_general_password_is_wrong") {
+            this.$eventHub.$emit("app.prompt_general_password");
+          } else if (code === "no_general_password_submitted") {
+            this.$eventHub.$emit("app.prompt_general_password");
+          } else if (code === "token_not_allowed_must_be_local_admin") {
+            // this.$alertify.delay(4000).error("notifications.action_not_allowed");
+          } else if (code === "token_not_allowed_must_be_contributors") {
+            // this.$alertify.delay(4000).error("notifications.action_not_allowed");
+          } else if (code === "ENOENT") code = "folder_is_missing";
+          this.$alertify.delay(4000).error("Message d’erreur : " + code);
+          console.error("processError – " + code);
+        } else console.error("processError – NO ERROR CODES");
 
         this.setAuthorizationHeader();
 
-        return code;
-
+        return { code, err_infos };
         // this.$alertify.delay(4000).error(err);
       },
     },

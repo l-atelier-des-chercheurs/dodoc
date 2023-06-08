@@ -34,7 +34,6 @@
           :is_first_user="!authors || authors.length === 0"
           @close="$emit('close')"
         />
-        <br />
       </template>
 
       <fieldset v-else-if="connected_as">
@@ -65,10 +64,11 @@
           :has_items="authors_except_self.length"
         >
           <div class="_listOfAuthors">
-            <AuthorCard
+            <AuthorTag
               v-for="author in authors_except_self"
               :key="author.$path"
-              :author="author"
+              :path="author.$path"
+              @click="suggestLogin(author.$path)"
             />
           </div>
         </DetailsPane>
@@ -127,6 +127,9 @@ export default {
     },
   },
   methods: {
+    suggestLogin(path) {
+      this.$eventHub.$emit("login.suggest", path);
+    },
     async logout() {
       try {
         this.reponse = await this.$api.logoutFromFolder();

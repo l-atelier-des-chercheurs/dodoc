@@ -628,7 +628,7 @@ input[type="file"] {
   font-size: var(--switch-font-size);
 
   input {
-    display: none;
+    display: none !important;
   }
 
   input + label {
@@ -868,4 +868,10 @@ input[type="checkbox"]:disabled {
     background: var(--c-noir);
     color: white;
   }
+}
+.u-listOfAvatars {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4) 0;
 }

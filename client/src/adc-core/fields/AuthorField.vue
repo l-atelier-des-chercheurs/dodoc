@@ -2,8 +2,8 @@
   <div>
     <DLabel v-if="label" :str="label" :tag="tag" :instructions="instructions" />
 
-    <div class="_authors">
-      <div v-if="authors_paths === 'everyone'" class="t-500">
+    <transition-group tag="div" class="_authors" name="projectsList" appear>
+      <div v-if="authors_paths === 'everyone'" class="t-500" key="everyone">
         {{ $t("everyone") }}
       </div>
       <template
@@ -14,19 +14,19 @@
           :path="author_path"
           :key="author_path"
           :edit_mode="false"
-          :links_to_author_page="!edit_mode"
+          :links_to_author_page="false"
         />
       </template>
-      <div v-else class="t-500">
+      <div v-else class="t-500" key="noone">
         {{ $t("noone") }}
       </div>
-      <!-- :links_to_author_page="!edit_mode" -->
       <EditBtn
+        key="editbtn"
         v-if="can_edit && !edit_mode"
         class="_editBtn"
         @click="enableEditMode"
       />
-    </div>
+    </transition-group>
 
     <div class="_footer" v-if="edit_mode">
       <BaseModal2 @close="cancel" :title="label">
@@ -97,7 +97,7 @@ export default {
       required: true,
     },
     authors_paths: {
-      type: [String, Array],
+      type: [Boolean, String, Array],
       default: "noone",
     },
     path: String,
