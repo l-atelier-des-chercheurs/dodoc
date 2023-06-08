@@ -1471,29 +1471,31 @@ export default {
       console.log("METHODS • CaptureView: captureKeyListener");
 
       // don’t register if validating a media
-      if (this.media_to_validate || this.is_validating_stopmotion_video) {
+      if (this.media_to_validate || this.is_validating_stopmotion_video)
         return false;
-      }
 
       // TODO : write captcha to prevent writing to interfere with camera
+      // (!event.target.dataset ||
+      //   event.target.dataset.use !== "onionskin")) ||
       if (
-        (event.target.tagName.toLowerCase() === "input" &&
-          (!event.target.dataset ||
-            event.target.dataset.use !== "onionskin")) ||
-        event.target.tagName.toLowerCase() === "textarea"
-      ) {
-        return false;
-      }
+        this.$root.modal_is_opened ||
+        event.target.tagName.toLowerCase() === "select" ||
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor") ||
+        event.target.hasAttribute("contenteditable")
+      )
+        return;
 
       switch (event.key) {
         case "w":
         case "z":
         case "ArrowLeft":
-          // this.previousMode();
+          this.$eventHub.$emit("mode.set.previous");
           break;
         case "s":
         case "ArrowRight":
-          // this.nextMode();
+          this.$eventHub.$emit("mode.set.next");
           break;
         case "a":
         case "q":
