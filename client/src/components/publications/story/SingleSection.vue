@@ -246,11 +246,11 @@ export default {
   }
 }
 ._spacer {
-  min-height: 3rem;
+  min-height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) * 2);
+  padding: 0 calc(var(--spacing) * 2);
 }
 
 ._topbar {
