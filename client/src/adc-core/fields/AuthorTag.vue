@@ -33,7 +33,7 @@
     </div>
     <sl-icon-button
       v-if="edit_mode && $listeners.add"
-      name="+"
+      name="plus-circle"
       :label="$t('add')"
       @click="$emit('add', path)"
     />

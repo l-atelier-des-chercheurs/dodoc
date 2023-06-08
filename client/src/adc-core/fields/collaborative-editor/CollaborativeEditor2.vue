@@ -92,9 +92,8 @@ import Quill from "quill";
 ShareDB.types.register(require("rich-text").type);
 
 import {
-  toolbar,
   fonts as default_fonts,
-  formats,
+  formats as default_formats,
   fontSizeArr,
   lineHeightArr,
 } from "./imports/defaults.js";
@@ -126,9 +125,6 @@ const all_fonts = default_fonts.concat(custom_fonts_titles);
 FontAttributor.whitelist = all_fonts;
 Quill.register(FontAttributor, true);
 
-// update toolbar font list
-toolbar.container[0][0].font = all_fonts;
-
 var BlockEmbed = Quill.import("blots/block/embed");
 class DividerBlot extends BlockEmbed {}
 DividerBlot.blotName = "divider";
@@ -150,6 +146,7 @@ export default {
     path: String,
     content: String,
     scrollingContainer: HTMLElement,
+    custom_formats: Array,
     line_selected: [Boolean, Number],
     can_edit: Boolean,
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
@@ -265,6 +262,8 @@ export default {
   },
   methods: {
     async initEditor() {
+      const toolbar = this.makeToolbar();
+
       this.editor = new Quill(this.$refs.editor, {
         // debug: "info",
         modules: {
@@ -273,7 +272,7 @@ export default {
         },
         bounds: this.$refs.editor,
         theme: "snow",
-        formats,
+        formats: this.custom_formats || default_formats,
         placeholder: "",
         readOnly: !this.editor_is_enabled,
         scrollingContainer: this.scrollingContainer,
@@ -296,6 +295,137 @@ export default {
       });
     },
 
+    makeToolbar() {
+      let container = [];
+      let reference_formats = this.custom_formats || default_formats;
+
+      if (reference_formats.includes("font"))
+        container.push([
+          {
+            font: all_fonts,
+          },
+        ]);
+      if (reference_formats.includes("header"))
+        container.push([{ header: [false, 1, 2, 3] }]);
+      if (reference_formats.includes("size"))
+        container.push([{ size: fontSizeArr }]);
+      if (reference_formats.includes("lineheight"))
+        container.push([{ lineheight: lineHeightArr }]);
+
+      let formatting_opt = [];
+      const basic_formatting = [
+        "bold",
+        "italic",
+        "underline",
+        "strike",
+        "link",
+        "blockquote",
+      ];
+      basic_formatting.map((bf) => {
+        if (reference_formats.includes(bf)) formatting_opt.push(bf);
+      });
+      container.push(formatting_opt);
+
+      if (reference_formats.includes("color"))
+        container.push([
+          {
+            color: [
+              "#000000",
+              "#353535",
+              "#b9b9b9",
+              "#fff",
+              "#1d327f",
+              "#52c5b9",
+              "#ffbe32",
+              "#fc4b60",
+
+              "#ff3333",
+              "#08cc11",
+              "#1c52ee",
+              "#ff9c33",
+              "#000000",
+              "#bdb3b3",
+              "#ae1cee",
+              "#fff933",
+              "#a54a0f",
+            ],
+          },
+        ]);
+      if (reference_formats.includes("background"))
+        container.push([
+          {
+            background: [
+              "transparent",
+              "#f1f1f1",
+              "#b9b9b9",
+              "#bec6e5",
+              "#a5e5da",
+              "#ffd892",
+              "#ff808c",
+
+              "#ff3333",
+              "#08cc11",
+              "#1c52ee",
+              "#ff9c33",
+              "#000000",
+              "#bdb3b3",
+              "#ae1cee",
+              "#fff933",
+              "#a54a0f",
+            ],
+          },
+        ]);
+
+      if (reference_formats.includes("list"))
+        container.push([{ list: "ordered" }, { list: "bullet" }]);
+
+      if (reference_formats.includes("align"))
+        container.push([
+          { align: "" },
+          { align: "center" },
+          { align: "right" },
+          { align: "justify" },
+        ]);
+
+      if (reference_formats.includes("code-block"))
+        container.push(["code-block"]);
+
+      // todo divider
+      container.push(["clean"]);
+
+      let handlers = {
+        divider: function () {
+          var range = this.quill.getSelection();
+          if (range) {
+            this.quill.insertEmbed(
+              range.index,
+              "divider",
+              "null",
+              Quill.sources.USER
+            );
+          }
+        },
+        line_height_select: function (new_line_height) {
+          new_line_height;
+          // var range = this.quill.getSelection();
+          // if (range) {
+          //   debugger;
+          //   this.quill.format(
+          //     range.index,
+          //     range.length,
+          //     "line-height",
+          //     +new_line_height,
+          //     "user"
+          //   );
+          // }
+        },
+      };
+
+      return {
+        container,
+        handlers,
+      };
+    },
     getEditorContent() {
       console.log(`CollaborativeEditor • getEditorContent`);
       if (!this.editor.getText() || this.editor.getText() === "\n") return "";

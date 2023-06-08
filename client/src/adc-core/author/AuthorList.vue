@@ -38,17 +38,15 @@
 
       <fieldset v-else-if="connected_as">
         <legend class="u-label">{{ $t("your_account") }}</legend>
-        <AuthorCard :key="connected_as.$path" :author="connected_as" />
-      </fieldset>
-
-      <template v-if="connected_as">
-        <br />
+        <AuthorCard
+          :key="connected_as.$path"
+          :author="connected_as"
+          class="u-spacingBottom"
+        />
         <button type="button" class="u-button u-button_red" @click="logout">
           {{ $t("logout") }}
         </button>
-        <br />
-        <br />
-      </template>
+      </fieldset>
 
       <template v-if="current_mode === 'login'">
         <br />

@@ -39,7 +39,8 @@
               !(
                 !media_with_linked.objectFit ||
                 media_with_linked.objectFit === 'cover'
-              )
+              ) &&
+              !mediaIsSquare(media_with_linked._linked_media)
             "
             @click="
               $emit('updateMediaOpt', { index, opt: { objectFit: 'cover' } })
@@ -54,7 +55,8 @@
               (is_multiple_medias ||
                 (page_template === 'page_by_page' &&
                   !single_media_displayed_at_full_ratio)) &&
-              media_with_linked.objectFit !== 'contain'
+              media_with_linked.objectFit !== 'contain' &&
+              !mediaIsSquare(media_with_linked._linked_media)
             "
             @click="
               $emit('updateMediaOpt', {
@@ -138,6 +140,7 @@ export default {
     is_multiple_medias() {
       return this.medias_with_linked.length > 1;
     },
+
     single_media_displayed_at_full_ratio() {
       if (this.medias_with_linked.length > 1) return false;
 
@@ -149,6 +152,7 @@ export default {
               (this.publimodule?.height / this.publimodule?.width) * 10
             )
           : false;
+
       if (!theoretical_ratio || !current_ratio) return false;
 
       return Math.round(theoretical_ratio * 10) === current_ratio;
@@ -159,6 +163,9 @@ export default {
       let props = {};
       props["--object-fit"] = media_with_linked.objectFit || "cover";
       return props;
+    },
+    mediaIsSquare(media) {
+      return media.$infos?.ratio === 1;
     },
   },
 };
@@ -244,9 +251,10 @@ export default {
     pointer-events: auto;
 
     border-radius: 4px;
-    color: white;
-    background: var(--c-noir);
-    padding: 2px;
+    color: var(--c-noir);
+    background: rgb(255 255 255 / 40%);
+    backdrop-filter: blur(8px);
+    padding: 4px;
     // background: rgba(0, 0, 0, 0.2);
   }
 }
