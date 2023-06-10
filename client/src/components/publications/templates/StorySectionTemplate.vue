@@ -1,27 +1,7 @@
 <template>
   <div>
-    <!-- <RadioSwitch
-      v-if="can_edit"
-      class="_switch"
-      :content.sync="current_view"
-      :options="[
-        {
-          label: $t('settings'),
-          value: 'settings',
-        },
-        {
-          label: $t('list_of_sections'),
-          value: 'pages',
-        },
-      ]"
-    /> -->
-
-    <StorySettings
-      v-if="current_view === 'settings' && can_edit"
-      :publication="publication"
-    />
+    <StorySettings v-if="can_edit" :publication="publication" />
     <SectionsList
-      v-else
       :publication="publication"
       :section_opened_meta="section_opened_meta"
       :can_edit="can_edit"
@@ -45,9 +25,7 @@ export default {
     SectionsList,
   },
   data() {
-    return {
-      current_view: "section",
-    };
+    return {};
   },
   created() {},
   mounted() {},

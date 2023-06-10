@@ -96,11 +96,10 @@ export default {
   watch: {},
   computed: {
     story_styles() {
-      // const width = (this.publication.story_width || 800) + "px";
-      // if (this.publication.story_is_not_responsive === true)
-      //   return { width, maxWidth: "none" };
-      // else return { maxWidth: width };
-      return "";
+      const width = (this.publication.story_width || 800) + "px";
+      if (this.publication.story_is_not_responsive === true)
+        return { width, maxWidth: "none" };
+      else return { maxWidth: width };
     },
     modules_list() {
       if (
@@ -222,13 +221,13 @@ export default {
 ._storyContent {
   width: 100%;
   background: white;
-  max-width: 86ch;
+  max-width: 800px;
   padding: calc(var(--spacing) * 2) 0;
   margin: 0 auto;
   border-radius: 15px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: width 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 ._mediaPublication {
