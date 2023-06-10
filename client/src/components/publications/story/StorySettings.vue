@@ -4,7 +4,7 @@
       class="u-spacingBottom"
       :label="$t('story_width')"
       :value="publication.story_width"
-      :min="0"
+      :min="320"
       :max="2400"
       :step="1"
       :ticks="[320, 480, 800, 1200, 2400]"
@@ -47,4 +47,10 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._storySettings {
+  max-width: 60ch;
+  width: 100%;
+  margin: calc(var(--spacing) / 1) auto;
+}
+</style>
