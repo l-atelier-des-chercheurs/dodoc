@@ -231,5 +231,6 @@ export default {
 }
 ._addBtnSection {
   padding: calc(var(--spacing) / 4);
+  text-align: left;
 }
 </style>
