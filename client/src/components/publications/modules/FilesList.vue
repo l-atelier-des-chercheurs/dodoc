@@ -140,8 +140,9 @@ export default {
   word-break: break-word;
   align-items: center;
 
-  padding: 0 calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  // padding: 0 calc(var(--spacing) / 2);
+  padding: 0;
+  // gap: calc(var(--spacing) / 2);
   border-radius: 2px;
 
   justify-content: space-between;
