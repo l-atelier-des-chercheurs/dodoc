@@ -107,6 +107,7 @@ export default {
 
   overflow: hidden;
   border: 2px solid white;
+  min-height: 50px;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -130,6 +131,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+  height: 50px;
 
   --back-position: 1;
   transform: translate(
@@ -145,6 +147,12 @@ export default {
   & + ._sharedFolderItem--preview_stacked {
     z-index: 1;
     --back-position: 2;
+  }
+
+  ::v-deep {
+    ._mediaContent--image {
+      object-position: top left;
+    }
   }
 }
 

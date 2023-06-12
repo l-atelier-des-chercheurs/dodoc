@@ -63,8 +63,8 @@
         <div class="_qrOpt">
           <button
             type="button"
-            class="u-button u-button_white _qrBtn"
-            @click="show_url_modal = true"
+            class="u-button u-button_transparent _qrBtn"
+            @click="show_qr_code_modal = true"
           >
             <sl-icon name="qr-code" />
           </button>
