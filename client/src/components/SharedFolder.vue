@@ -1,8 +1,10 @@
 <template>
   <div v-if="shared_folder" class="_sharedFolder">
-    <!-- <div class="_floatingTopBtn">
-      <div class="">Espace partagé</div>
-    </div> -->
+    <div class="_topbar">
+      <div class="_topbar--content">
+        <div class="_title">ESPACE PARTAGÉ / ARCHIVE</div>
+      </div>
+    </div>
 
     <ItemModal v-if="opened_files" :file="opened_files" @close="closeFile" />
 
@@ -101,20 +103,41 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._sharedFolder {
-  padding-top: calc(var(--spacing) * 4);
-  padding-left: calc(var(--spacing) * 1);
-  padding-right: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 4);
   border-radius: 4px;
-  overflow: hidden;
+  // overflow: auto;
+  // height: 100%;
+}
+
+._topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  // margin: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
+  border-bottom: 2px solid white;
+
+  // background: white;
+  backdrop-filter: blur(6px);
+  // mask: linear-gradient(black 75%, transparent 100%);
+  mask: linear-gradient(#000 55%, transparent);
+}
+._topbar--content {
+  padding: calc(var(--spacing) * 1);
+}
+._title {
+  font-size: 1.5em;
+  font-weight: 600;
 }
 
 ._grid {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   align-items: flex-end;
-  gap: calc(var(--spacing) * 4) calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 }
 ._file {
   width: 150px;

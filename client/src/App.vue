@@ -185,7 +185,7 @@ export default {
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
   --c-bodybg: white;
-  --c-bodybg: rgba(240, 240, 240, 1);
+  --c-bodybg: rgba(240, 240, 240, 0.5);
   --body-bg-pattern-color: hsl(48, 19%, 93%);
   --plyr-color-main: var(--c-bleumarine);
 
@@ -245,7 +245,7 @@ export default {
   --indicator-color: var(--c-vert) !important;
   --active-color: var(--c-bleuvert);
 
-  --sl-font-sans: "Fira Sans";
+  --sl-font-sans: "IBM Plex Sans";
   --sl-font-serif: "IBM Plex Serif";
   --sl-font-mono: "Fira Mono";
 
@@ -344,7 +344,7 @@ body {
 html {
   height: 100%;
 
-  font-family: "Fira Sans";
+  font-family: var(--sl-font-sans);
   font-style: normal;
   font-weight: 400;
 

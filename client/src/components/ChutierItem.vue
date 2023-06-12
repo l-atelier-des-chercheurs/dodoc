@@ -120,11 +120,12 @@
             placeholder="Description"
             @keydown.esc.prevent="cancelEdit"
           />
+
           <CollaborativeEditor2
             v-else
             class="_content"
             :path="file.$path"
-            :content="content || ''"
+            :content="file.$content"
             :edit_on_mounted="true"
             :can_edit="true"
             :custom_formats="['bold', 'italic', 'underline', 'link']"
