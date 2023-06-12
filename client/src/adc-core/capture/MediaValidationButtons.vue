@@ -26,7 +26,7 @@
       class="u-button u-button_transparent u-colorWhite"
       @mousedown.stop.prevent="validateButton(0)"
       @touchstart.stop.prevent="validateButton(0)"
-      :class="{ 'is--selected': selected_button === 0 }"
+      :class="{ 'is--active': selected_button === 0 }"
       @mouseover="selected_button = 0"
     >
       <template v-if="cancelButtonIsBackButton">
@@ -56,8 +56,8 @@
     <button
       type="button"
       @click="validateButton(1)"
-      class="u-button u-button_red u-colorOrange"
-      :class="{ 'is--selected': selected_button === 1 }"
+      class="u-button u-button_red"
+      :class="{ 'is--active': selected_button === 1 }"
       @mouseover="selected_button = 1"
     >
       <svg
@@ -96,7 +96,7 @@
       v-if="can_add_to_fav"
       @click="validateButton(2)"
       class="u-button u-button_red u-colorOrange"
-      :class="{ 'is--selected': selected_button === 2 }"
+      :class="{ 'is--active': selected_button === 2 }"
       @mouseover="selected_button = 2"
     >
       <svg

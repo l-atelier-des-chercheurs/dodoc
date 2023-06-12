@@ -106,8 +106,14 @@ export default {
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("mode.set.previous", this.previousMode);
+    this.$eventHub.$on("mode.set.next", this.nextMode);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("mode.set.previous", this.previousMode);
+    this.$eventHub.$off("mode.set.next", this.nextMode);
+  },
   watch: {},
   computed: {},
   methods: {

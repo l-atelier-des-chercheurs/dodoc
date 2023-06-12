@@ -107,7 +107,7 @@ export default {
     flex: 1 1 0;
 
     &._cover {
-      flex: 0 0 100px;
+      flex: 0 0 80px;
       aspect-ratio: 1/1;
       border-radius: 50%;
     }

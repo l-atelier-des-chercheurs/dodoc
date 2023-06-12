@@ -655,7 +655,7 @@ input[type="file"] {
   font-size: var(--switch-font-size);
 
   input {
-    display: none;
+    display: none !important;
   }
 
   input + label {
@@ -841,4 +841,94 @@ fieldset {
 }
 .u-selectBtn {
   padding-left: calc(var(--spacing) / 4 + 1px);
+
+input[type="checkbox"] {
+  --form-background: #ffffff;
+  --form-control-color: var(--active-color);
+  --form-control-disabled: var(--c-gris);
+
+  /* Add if not using autoprefixer */
+  -webkit-appearance: none;
+  /* Remove most all native input styles */
+  appearance: none;
+  /* For iOS < 15 */
+  background-color: var(--form-background);
+  /* Not removed via appearance */
+  margin: 0;
+
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 2px solid currentColor;
+  border-radius: var(--switch-thumb-border-radius);
+  transform: translateY(-0.075em);
+
+  display: grid;
+  place-content: center;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transform-origin: bottom left;
+  transition: 0.12s transform cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: inset 1em 1em var(--form-control-color);
+  /* Windows High Contrast Mode */
+  background-color: CanvasText;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: max(2px, 0.15em) solid currentColor;
+  outline-offset: max(2px, 0.15em);
+}
+
+input[type="checkbox"]:hover {
+  color: var(--form-control-color);
+}
+
+input[type="checkbox"]:disabled {
+  --form-control-color: var(--form-control-disabled);
+
+  color: var(--form-control-disabled);
+  cursor: not-allowed;
+}
+
+.u-addBtn {
+  padding: calc(var(--spacing) / 4);
+  color: var(--c-noir);
+  border-radius: 2em;
+
+  color: var(--c-noir);
+
+  sl-icon {
+    font-size: 1.4em;
+  }
+}
+.u-dragHandle {
+  display: flex;
+  cursor: grab;
+  padding: calc(var(--spacing) / 2);
+  background: white;
+  color: var(--c-noir);
+  border-radius: 2px;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--c-noir);
+    color: white;
+  }
+}
+.u-listOfAvatars {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4) 0;
 }

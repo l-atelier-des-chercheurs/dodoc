@@ -416,80 +416,6 @@ module.exports = (function () {
     }
   }
 
-  // async function _onlyAdminsLocalAdminsAndContributors(req, res, next) {
-  //   const { path_to_folder } = utils.makePathFromReq(req);
-  //   dev.logapi({ path_to_folder });
-
-  //   let folder_authors = [];
-  //   if (path_to_folder) {
-  //     const folder_meta = await folder
-  //       .getFolder({ path_to_folder })
-  //       .catch((err) => {
-  //         dev.error(err.message);
-  //         if (res) return res.status(404).send({ code: err.code });
-  //         throw err;
-  //       });
-  //     folder_authors = folder_meta.$authors;
-  //     if (!folder_authors || folder_authors.length === 0)
-  //       return next ? next() : undefined;
-  //   }
-
-  //   if (!req.headers || !req.headers.authorization) {
-  //     const err = new Error("Headers and token missing");
-  //     err.code = "no_headers_with_token_submitted";
-  //     throw err;
-  //   }
-
-  //   try {
-  //     const { token, token_path } = JSON.parse(req.headers.authorization);
-  //     if (!token || !token_path) {
-  //       const err = new Error("Token and/or token_path missing in headers");
-  //       err.code = "no_token_submitted";
-  //       throw err;
-  //     }
-
-  //     auth.checkTokenValidity({ token, token_path });
-
-  //     if (await auth.isTokenInstanceAdmin({ author_path: token_path })) {
-  //       // if token is admin
-  //       dev.logapi("Token is admin");
-  //       return next ? next() : undefined;
-  //     } else if (!path_to_folder) {
-  //       dev.logapi("Token not admin is attempting to edit admin settings");
-  //       const err = new Error("Token is not admin");
-  //       err.code = "endpoint_only_allowed_for_admins";
-  //       throw err;
-  //     } else if (path_to_folder === token_path) {
-  //       dev.logapi("Token path and folder path are identical, next");
-  //       return next ? next() : undefined;
-  //     } else if (folder_authors.includes(token_path)) {
-  //       dev.logapi("Token path is listed in folder authors");
-  //       return next ? next() : undefined;
-  //     }
-
-  //     dev.logapi("Failed to auth token");
-  //     const err = new Error("Failed to auth token");
-  //     err.code = "failed_to_auth_token";
-  //     throw err;
-
-  //     // if folder is child/has parent, the parent's authors will determine who can edit this child
-  //     // if (path_to_parent_folder)
-  //     //   await auth.isTokenIncluded({
-  //     //     path_to_folder: path_to_parent_folder,
-  //     //     author_path: token_path,
-  //     //   });
-  //     // else
-  //     //   await auth.isTokenIncluded({
-  //     //     path_to_folder,
-  //     //     author_path: token_path,
-  //     //   });
-  //   } catch (err) {
-  //     dev.error(err.message);
-  //     if (res) return res.status(403).send({ code: err.code });
-  //     throw err;
-  //   }
-  // }
-
   async function loadIndex(req, res) {
     dev.logapi();
     let d = {};
@@ -586,8 +512,12 @@ module.exports = (function () {
       dev.logpackets({ d });
       res.json(d);
     } catch (err) {
-      dev.error("Failed to get expected content: " + err);
-      res.status(404).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to get folders: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
 
     cache.printStatus();
@@ -614,8 +544,12 @@ module.exports = (function () {
         meta: new_folder_meta,
       });
     } catch (err) {
-      dev.error("Failed to create folder: " + err.message);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to create folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
 
@@ -634,8 +568,12 @@ module.exports = (function () {
       dev.logpackets({ d });
       res.json(d);
     } catch (err) {
-      dev.error("Failed to get expected content: " + err);
-      res.status(404).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to create folder: " + message);
+      res.status(404).send({
+        code,
+        err_infos,
+      });
     }
     cache.printStatus();
   }
@@ -670,8 +608,12 @@ module.exports = (function () {
           changed_data,
         });
     } catch (err) {
-      dev.error("Failed to update folder: " + err.message);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to update folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
   async function _loginToFolder(req, res, next) {
@@ -693,8 +635,12 @@ module.exports = (function () {
       dev.logpackets({ status: "logged in to folder", path_to_folder, token });
       res.status(200).json({ status: "ok", token });
     } catch (err) {
-      dev.error("Failed to login to folder: " + err.message);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to login to folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
   async function _logoutFromFolder(req, res, next) {
@@ -715,8 +661,12 @@ module.exports = (function () {
       });
       res.status(200).json({ status: "ok" });
     } catch (err) {
-      dev.error("Failed to logout from folder: " + err.message);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to logout to folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
 
@@ -736,8 +686,12 @@ module.exports = (function () {
       notifier.emit("folderRemoved", path_to_folder, { path: path_to_folder });
       notifier.emit("folderRemoved", path_to_type, { path: path_to_folder });
     } catch (err) {
-      dev.error("Failed to remove expected content: " + err);
-      res.status(404).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to remove content: " + message);
+      res.status(404).send({
+        code,
+        err_infos,
+      });
     }
   }
 
@@ -764,8 +718,12 @@ module.exports = (function () {
       });
       notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
     } catch (err) {
-      dev.error("Failed to upload file: " + err);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to upload file: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
   async function _exportToParent(req, res, next) {
@@ -793,11 +751,6 @@ module.exports = (function () {
       task_id,
     });
     res.status(200).json({ task_id });
-
-    // } catch (err) {
-    //   dev.error("Failed to export file: " + err);
-    //   res.status(500).send({ code: err.code });
-    // }
 
     try {
       const exported_path_to_meta = await task.start();
@@ -866,8 +819,12 @@ module.exports = (function () {
         meta: new_folder_meta,
       });
     } catch (err) {
-      dev.error("Failed to copy expected content: " + err);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to copy content: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
 
@@ -927,8 +884,12 @@ module.exports = (function () {
         meta: new_folder_meta,
       });
     } catch (err) {
-      dev.error("Failed to copy expected content: " + err);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to remix folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
 
@@ -1027,8 +988,12 @@ module.exports = (function () {
       dev.logpackets({ meta });
       res.json(meta);
     } catch (err) {
-      dev.error("Failed to get file: " + err);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to get file: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
 
@@ -1051,8 +1016,12 @@ module.exports = (function () {
         changed_data,
       });
     } catch (err) {
-      dev.error("Failed to update content: " + err.message);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to update file: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
 
@@ -1074,8 +1043,12 @@ module.exports = (function () {
         path_to_meta,
       });
     } catch (err) {
-      dev.error("Failed to remove expected content: " + err);
-      res.status(404).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to remove file: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
 
@@ -1126,8 +1099,12 @@ module.exports = (function () {
         meta,
       });
     } catch (err) {
-      dev.error("Failed to copy expected content: " + err);
-      res.status(500).send({ code: err.code });
+      const { message, code, err_infos } = err;
+      dev.error("Failed to copy folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
     }
   }
 

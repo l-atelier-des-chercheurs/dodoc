@@ -710,6 +710,7 @@ export default function () {
 
         add_authors: "Ajouter des contributeur·rice·s",
         no_authors_to_show: "Aucun compte à afficher",
+        login_no_author_matches: "Aucun auteur ne correspond à ce nom.",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",
         line: "Ligne",

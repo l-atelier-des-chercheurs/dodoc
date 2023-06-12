@@ -4,13 +4,13 @@
       {{ $t("no_authors_to_show") }}
     </div>
     <transition-group tag="div" class="_list" name="projectsList" appear>
-      <div
+      <AuthorTag
         v-for="author_path in all_authors_except_current"
+        :edit_mode="true"
+        :path="author_path"
         :key="author_path"
-        @click="$emit('addAuthor', author_path)"
-      >
-        <AuthorTag :path="author_path" :key="author_path" />
-      </div>
+        @add="$emit('addAuthor', author_path)"
+      />
     </transition-group>
   </div>
 </template>
