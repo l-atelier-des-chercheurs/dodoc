@@ -46,7 +46,8 @@
               $emit('updateMediaOpt', { index, opt: { objectFit: 'cover' } })
             "
           >
-            {{ $t("object_fit_cover") }}
+            <sl-icon name="aspect-ratio" />
+            <!-- {{ $t("object_fit_cover") }} -->
           </button>
           <button
             type="button"
@@ -66,15 +67,17 @@
             "
           >
             <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
-            {{ $t("object_fit_contain") }}
+            <!-- {{ $t("object_fit_contain") }} -->
+            <sl-icon name="aspect-ratio-fill" />
           </button>
           <button
             type="button"
             class="u-buttonLink"
-            v-if="is_multiple_medias"
             @click="$emit('removeMediaAtIndex', index)"
           >
-            {{ $t("remove") }}
+            <sl-icon name="trash3" />
+            <!-- v-if="is_multiple_medias" -->
+            <!-- {{ $t("remove") }} -->
           </button>
         </div>
       </div>

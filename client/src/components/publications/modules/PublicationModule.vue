@@ -175,7 +175,7 @@
 
     <div class="_content" :style="media_styles">
       <MediasModule
-        v-if="['mosaic', 'files'].includes(publimodule.module_type)"
+        v-if="['mosaic', 'carousel', 'files'].includes(publimodule.module_type)"
         :publimodule="publimodule"
         :can_edit="can_edit"
         :context="context"
@@ -420,7 +420,7 @@ export default {
       });
     },
     changeModuleType() {
-      const module_types = ["mosaic", "files"];
+      const module_types = ["mosaic", "carousel", "files"];
       const curr_module_type = this.publimodule.module_type;
       const curr_index = module_types.findIndex(
         (mt) => mt === curr_module_type
