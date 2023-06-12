@@ -168,6 +168,7 @@ export default {
   --c-orange: hsl(41, 100%, 60%);
   --c-orange_clair: #ffd892;
   --c-orange_fonce: hsl(41, 100%, 45%);
+  --c-jaune: #ffe800;
   --c-rouge: #fc4b60;
   --c-rouge_clair: #ff808c;
   --c-rouge_fonce: #cc334a;

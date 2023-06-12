@@ -27,7 +27,11 @@
             :id="id"
           />
         </label>
-        <div class="_chutierRow--openLarge" @click.stop="show_large = true">
+        <div
+          class="_chutierRow--openLarge"
+          @click.stop="show_large = true"
+          v-if="!(file.$type === 'text' && edit_mode)"
+        >
           <MediaContent
             class="_chutierRow--preview"
             :file="file"
@@ -97,13 +101,25 @@
         <div v-if="!edit_mode">
           {{ description }}
         </div>
-        <textarea
-          v-else
-          class="is--dark _descriptionField"
-          v-model="description"
-          placeholder="Description"
-          @keydown.esc.prevent="cancelEdit"
-        />
+
+        <template v-else>
+          <textarea
+            v-if="file.$type !== 'text'"
+            class="is--dark _descriptionField"
+            v-model="description"
+            placeholder="Description"
+            @keydown.esc.prevent="cancelEdit"
+          />
+          <CollaborativeEditor2
+            v-else
+            class="_content"
+            :path="file.$path"
+            :content="file.$content || ''"
+            :edit_on_mounted="true"
+            :can_edit="true"
+            :custom_formats="['bold', 'italic', 'underline', 'link']"
+          />
+        </template>
       </div>
 
       <div class="" v-if="(keywords && keywords.length > 0) || edit_mode">
@@ -317,6 +333,7 @@ export default {
   display: flex;
   place-content: center;
   cursor: pointer;
+  color: var(--c-gris);
 
   input {
     cursor: inherit;
@@ -399,12 +416,19 @@ export default {
     width: 60px;
     flex: 0 0 auto;
     overflow: hidden;
+    color: white;
+    font-size: 50%;
 
-    ::v-deep ._mediaContent--image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
+    ::v-deep {
+      ._mediaContent--image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+      .ql-container {
+        font-size: 50%;
+      }
     }
   }
 
@@ -461,5 +485,19 @@ export default {
 ._publierBtn {
   text-align: center;
   margin: calc(var(--spacing) / 4) auto;
+}
+
+._content {
+  ::v-deep {
+    .ql-editor {
+      background-color: hsl(0, 0, 21);
+      border-color: white;
+      color: white;
+      padding: calc(var(--spacing) * 0.5);
+    }
+    ._editBtn {
+      display: none;
+    }
+  }
 }
 </style>

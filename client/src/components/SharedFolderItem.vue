@@ -108,11 +108,21 @@ export default {
   overflow: hidden;
   border: 2px solid white;
 
-  ::v-deep ._mediaContent--image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+
+  ::v-deep {
+    ._mediaContent--image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .ql-container {
+      font-size: 50%;
+    }
   }
 }
 

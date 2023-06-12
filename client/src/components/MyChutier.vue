@@ -194,13 +194,6 @@
       </div>
     </transition>
     <transition name="slideup">
-      <EditNote
-        v-if="opened_note"
-        :note="opened_note"
-        @close="opened_note_meta = false"
-      />
-    </transition>
-    <transition name="slideup">
       <MediaStack
         v-if="focused_items.length > 0"
         class="_mediaStack"
@@ -219,7 +212,7 @@
 <script>
 import ChutierItem from "@/components/ChutierItem.vue";
 import MediaStack from "@/components/MediaStack.vue";
-import EditNote from "@/components/EditNote.vue";
+// import EditNote from "@/components/EditNote.vue";
 
 export default {
   props: {
@@ -228,7 +221,7 @@ export default {
   components: {
     ChutierItem,
     MediaStack,
-    EditNote,
+    // EditNote,
   },
   data() {
     return {
@@ -243,8 +236,6 @@ export default {
       focused_items_slugs: [],
 
       max_items_selected: 15,
-
-      opened_note_meta: false,
 
       show_qr_code_modal: false,
       show_confirm_remove_menu: false,
@@ -311,12 +302,6 @@ export default {
       this.$route.path;
       return window.location.href;
     },
-    opened_note() {
-      if (!this.opened_note_meta) return false;
-      return this.chutier_items.find((i) =>
-        i.$path.endsWith("/" + this.opened_note_meta)
-      );
-    },
     focused_items() {
       return this.focused_items_slugs.map((fis) =>
         this.chutier_items.find((ci) => ci.$path === fis)
@@ -333,16 +318,24 @@ export default {
     chutier_items() {
       if (!this.chutier || !this.chutier.$files) return [];
       const _medias = JSON.parse(JSON.stringify(this.chutier.$files));
-      _medias.sort(
-        (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
-      );
+      _medias.sort((a, b) => {
+        const getDate = (f) =>
+          new Date(
+            f.date_created_corrected || f.$date_created || f.$date_uploaded
+          );
+        return +getDate(b) - +getDate(a);
+      });
       return _medias;
     },
     chutier_items_grouped() {
       const grouped = this.chutier_items.reduce((group, file) => {
         // var key = file.$date_uploaded;
 
-        var dateObj = new Date(file.$date_created || file.$date_uploaded);
+        var dateObj = new Date(
+          file.date_created_corrected ||
+            file.$date_created ||
+            file.$date_uploaded
+        );
         var month = dateObj.getUTCMonth() + 1; //months from 1-12
         var day = dateObj.getUTCDate();
         var year = dateObj.getUTCFullYear();
@@ -356,8 +349,10 @@ export default {
       let ordered = [];
       for (const k in grouped)
         if (!Object.prototype.hasOwnProperty.call(ordered, k)) ordered.push(k);
-      ordered.sort();
-      ordered.reverse();
+      ordered.sort((a, b) => {
+        return +new Date(b) - +new Date(a);
+      });
+      // ordered.reverse();
 
       return ordered.map((o) => {
         return {
