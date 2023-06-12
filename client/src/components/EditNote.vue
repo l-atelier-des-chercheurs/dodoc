@@ -9,16 +9,14 @@
         v-model="note_title"
         placeholder="Titre de la note"
       />
-
-      <TextInput
-        class="is--dark"
-        :content.sync="note_content"
-        :required="true"
-        :input_type="'markdown'"
-        :minlength="1"
-        @toggleValidity="($event) => (allow_save = $event)"
-      />
     </div>
+
+    <CollaborativeEditor2
+      :path="note.$path"
+      :content="note.$content"
+      :line_selected="false"
+      :can_edit="true"
+    />
 
     <div class="_publierBtn">
       <button
@@ -48,17 +46,16 @@ import ChutierPane from "@/components/chutier/ChutierPane.vue";
 
 export default {
   props: {
-    author_path: String,
-    shared_space_path: String,
+    note: Object,
   },
   components: {
     ChutierPane,
   },
   data() {
     return {
-      note_content: "",
-      note_title: "",
+      note_title: this.note.title,
       keywords: [],
+
       allow_save: false,
     };
   },
@@ -69,22 +66,8 @@ export default {
   computed: {},
   methods: {
     async createOrUpdateNote({ destination }) {
-      let obj = {
-        filename: "note.txt",
-        content: this.note_content,
-        additional_meta: {
-          title: this.note_title,
-          keywords: this.keywords,
-        },
-      };
-
-      if (destination === "shared_space") {
-        obj.path = this.shared_space_path;
-      } else if (destination === "chutier") {
-        obj.path = this.author_path;
-      }
-
-      await this.$api.uploadText(obj);
+      // todo save or copy
+      destination;
 
       this.$emit("close");
     },

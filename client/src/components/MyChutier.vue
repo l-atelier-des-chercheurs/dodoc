@@ -53,7 +53,7 @@
           <button
             type="button"
             class="u-button u-button_white _qrBtn"
-            @click="show_note_modal = true"
+            @click="createNote"
           >
             <sl-icon name="file-text" />
             note
@@ -195,11 +195,9 @@
     </transition>
     <transition name="slideup">
       <EditNote
-        v-if="show_note_modal"
-        class="_editNote"
-        :author_path="path"
-        :shared_space_path="shared_space_path"
-        @close="show_note_modal = false"
+        v-if="opened_note"
+        :note="opened_note"
+        @close="opened_note_meta = false"
       />
     </transition>
     <transition name="slideup">
@@ -246,8 +244,9 @@ export default {
 
       max_items_selected: 15,
 
+      opened_note_meta: false,
+
       show_qr_code_modal: false,
-      show_note_modal: false,
       show_confirm_remove_menu: false,
     };
   },
@@ -311,6 +310,12 @@ export default {
       // for reactivity
       this.$route.path;
       return window.location.href;
+    },
+    opened_note() {
+      if (!this.opened_note_meta) return false;
+      return this.chutier_items.find((i) =>
+        i.$path.endsWith("/" + this.opened_note_meta)
+      );
     },
     focused_items() {
       return this.focused_items_slugs.map((fis) =>
@@ -388,6 +393,17 @@ export default {
     updateInputFiles($event) {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
+    },
+    async createNote() {
+      const meta_filename = await this.$api.uploadText({
+        path: this.path,
+        filename: "node.txt",
+        content: "",
+        additional_meta: {
+          title: "Sans titre",
+        },
+      });
+      this.opened_note_meta = meta_filename;
     },
     async importedMedias($event) {
       $event;
