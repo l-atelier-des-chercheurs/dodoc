@@ -145,5 +145,34 @@ export default {
     getSoundcloudEmbedURLFromURL(url) {
       return `https://w.soundcloud.com/player/?url=${url}&color=0066cc`;
     },
+    groupFilesByDay(files) {
+      const grouped = files.reduce((group, file) => {
+        // var key = file.$date_uploaded;
+        var dateObj = new Date(
+          file.date_created_corrected ||
+            file.$date_created ||
+            file.$date_uploaded
+        );
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
+        const key = year + "/" + month + "/" + day;
+        if (!Object.prototype.hasOwnProperty.call(group, key)) group[key] = [];
+        group[key].push(file);
+        return group;
+      }, {});
+      let ordered = [];
+      for (const k in grouped)
+        if (!Object.prototype.hasOwnProperty.call(ordered, k)) ordered.push(k);
+      ordered.sort((a, b) => {
+        return +new Date(b) - +new Date(a);
+      });
+      return ordered.map((o) => {
+        return {
+          label: o,
+          files: grouped[o],
+        };
+      });
+    },
   },
 };

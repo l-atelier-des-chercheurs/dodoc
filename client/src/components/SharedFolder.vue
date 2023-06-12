@@ -3,20 +3,31 @@
     <div class="_topbar">
       <div class="_topbar--content">
         <div class="_title">ESPACE PARTAGÉ / ARCHIVE</div>
+        <div class="">jour | mois | année | date</div>
+        <div class=""></div>
       </div>
     </div>
 
     <ItemModal v-if="opened_files" :file="opened_files" @close="closeFile" />
 
-    <div class="_grid">
-      <SharedFolderItem
-        class="_file"
-        v-for="file in shared_files"
-        :key="file.$path"
-        :file="file"
-        :is_opened="opened_files && opened_files.$path === file.$path"
-        @open="openFile(file.$path)"
-      />
+    <div
+      class="_dayFileSection"
+      v-for="{ label, files } in grouped_files"
+      :key="label"
+    >
+      <div class="_label">
+        {{ formatDateToHuman(label) }}
+      </div>
+      <div class="_grid">
+        <SharedFolderItem
+          class="_file"
+          v-for="file in files"
+          :key="file.$path"
+          :file="file"
+          :is_opened="opened_files && opened_files.$path === file.$path"
+          @open="openFile(file.$path)"
+        />
+      </div>
     </div>
 
     <footer class="_footer">
@@ -85,6 +96,9 @@ export default {
       );
       return _medias_not_in_stacks;
     },
+    grouped_files() {
+      return this.groupFilesByDay(this.shared_files);
+    },
   },
   methods: {
     openFile(path) {
@@ -123,6 +137,10 @@ export default {
   mask: linear-gradient(#000 55%, transparent);
 }
 ._topbar--content {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-end;
   padding: calc(var(--spacing) * 1);
 }
 ._title {
@@ -130,12 +148,24 @@ export default {
   font-weight: 600;
 }
 
+._dayFileSection {
+  padding: calc(var(--spacing) * 2);
+}
+
+._label {
+  position: relative;
+  z-index: 2;
+  padding-bottom: calc(var(--spacing) * 2);
+  font-weight: 600;
+  font-size: var(--sl-font-size-normal);
+}
+
 ._grid {
   position: relative;
   z-index: 1;
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-end;
   gap: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 }
