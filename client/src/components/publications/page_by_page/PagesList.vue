@@ -130,11 +130,13 @@
         </template>
         <button
           type="button"
-          class="u-button u-button_white"
+          class="u-button u-button_transparent"
           @click="createPage"
           v-if="can_edit"
+          :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
           key="createPage"
         >
+          <sl-icon name="plus-circle" />
           {{ $t("create_page") }}
         </button>
       </transition-group>
@@ -179,7 +181,9 @@ export default {
     PageLabel,
   },
   data() {
-    return {};
+    return {
+      is_creating_page: false,
+    };
   },
   created() {},
   mounted() {},
@@ -226,7 +230,9 @@ export default {
     },
   },
   methods: {
-    createPage() {
+    async createPage() {
+      this.is_creating_page = true;
+
       const new_page_id = this.generatePageID();
 
       let pages = this.publication.pages ? this.publication.pages.slice() : [];
@@ -236,9 +242,12 @@ export default {
         page_color: "white",
       });
 
-      this.updatePubliMeta({
+      await this.updatePubliMeta({
         pages,
       });
+
+      await new Promise((r) => setTimeout(r, 500));
+      this.is_creating_page = false;
     },
     removePage(id) {
       let pages = this.publication.pages.slice();
