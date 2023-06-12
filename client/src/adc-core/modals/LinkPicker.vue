@@ -62,9 +62,7 @@
 </template>
 <script>
 export default {
-  props: {
-    publication_path: String,
-  },
+  props: {},
   components: {},
   data() {
     return {

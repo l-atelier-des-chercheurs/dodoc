@@ -63,7 +63,6 @@
       </button>
       <LinkPicker
         v-if="show_link_picker"
-        :publication_path="publication_path"
         @embed="createEmbed"
         @close="show_link_picker = false"
       />
@@ -246,7 +245,6 @@ export default {
           $type: "url",
         },
       });
-
       this.createMosaic({ meta_filename: text_meta_filename });
     },
     async createFiles({ path_to_source_media_metas }) {
