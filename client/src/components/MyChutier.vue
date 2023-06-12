@@ -168,7 +168,7 @@
         <button
           type="button"
           class="u-button u-button_bleuvert"
-          @click="setSelectionAsFocus"
+          @click="show_mediastack_modal = true"
         >
           {{ $t("create_stack") }} ({{ selected_items.length }})
         </button>
@@ -210,16 +210,16 @@
     </transition>
     <transition name="slideup">
       <MediaStack
-        v-if="focused_items.length > 0"
+        v-if="show_mediastack_modal"
         class="_mediaStack"
-        :files="focused_items"
+        :files="selected_items"
         :shared_space_path="shared_space_path"
-        @updateFocusedMedia="focused_items_slugs = $event"
-        @close="focused_items_slugs = []"
+        @updateFocusedMedia="selected_items_slugs = $event"
         @stackCreated="
-          focused_items_slugs = [];
           selected_items_slugs = [];
+          show_mediastack_modal = false;
         "
+        @close="show_mediastack_modal = false"
       />
     </transition>
   </div>
@@ -248,7 +248,7 @@ export default {
 
       last_clicked: undefined,
       selected_items_slugs: [],
-      focused_items_slugs: [],
+      show_mediastack_modal: false,
 
       max_items_selected: 15,
 
@@ -318,11 +318,7 @@ export default {
       this.$route.path;
       return window.location.href;
     },
-    focused_items() {
-      return this.focused_items_slugs.map((fis) =>
-        this.chutier_items.find((ci) => ci.$path === fis)
-      );
-    },
+
     selected_items() {
       return this.selected_items_slugs.map(
         (fis) => this.chutier_items.find((ci) => ci.$path === fis) || false
@@ -395,11 +391,6 @@ export default {
           (i) => i !== path
         );
       else this.selected_items_slugs.push(path);
-    },
-    setSelectionAsFocus() {
-      this.focused_items_slugs = JSON.parse(
-        JSON.stringify(this.selected_items_slugs)
-      );
     },
     updateInputFiles($event) {
       this.selected_files = Array.from($event.target.files);
