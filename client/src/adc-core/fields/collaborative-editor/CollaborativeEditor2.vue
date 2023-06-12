@@ -933,7 +933,7 @@ export default {
       counter-reset: listCounter;
       height: auto;
       overflow: visible;
-      color: #000000;
+      color: inherit;
 
       background-color: transparent;
 

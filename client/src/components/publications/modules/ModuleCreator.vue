@@ -105,7 +105,7 @@
 </template>
 <script>
 import MediaPicker from "@/components/publications/MediaPicker.vue";
-import LinkPicker from "@/components/publications/LinkPicker.vue";
+import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 
 export default {
   props: {
