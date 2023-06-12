@@ -97,11 +97,21 @@
           pile.
         </span>
       </div>
+      <div class="" v-if="file.$type === 'url'">
+        <div>
+          <input
+            type="url"
+            class="is--dark"
+            autofocus
+            :value="file.$content"
+            disabled
+          />
+        </div>
+      </div>
       <div class="" v-if="description || edit_mode">
         <div v-if="!edit_mode">
           {{ description }}
         </div>
-
         <template v-else>
           <textarea
             v-if="file.$type !== 'text'"
@@ -114,7 +124,7 @@
             v-else
             class="_content"
             :path="file.$path"
-            :content="file.$content || ''"
+            :content="content || ''"
             :edit_on_mounted="true"
             :can_edit="true"
             :custom_formats="['bold', 'italic', 'underline', 'link']"
@@ -298,15 +308,17 @@ export default {
           this.file.$date_created ||
           this.file.$date_uploaded;
 
+      let new_meta = {
+        title: this.text_title,
+        date_created_corrected: this.date_created_corrected,
+        description: this.description,
+        keywords: this.keywords,
+      };
+
       await this.$api
         .updateMeta({
           path: this.file.$path,
-          new_meta: {
-            title: this.text_title,
-            date_created_corrected: this.date_created_corrected,
-            description: this.description,
-            keywords: this.keywords,
-          },
+          new_meta,
         })
         .catch((err) => {
           this.$alertify.delay(4000).error(err);
@@ -427,7 +439,8 @@ export default {
     flex: 0 0 auto;
     overflow: hidden;
     color: white;
-    font-size: 50%;
+    background: black;
+    font-size: 70%;
 
     ::v-deep {
       ._mediaContent--image {
