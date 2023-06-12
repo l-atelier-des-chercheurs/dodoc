@@ -20,6 +20,20 @@
         </div>
         <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(meta_filename, index) in modules_list">
+            <div class="_spacer" :key="'mc_' + index">
+              <ModuleCreator
+                v-if="can_edit"
+                :publication_path="publication.$path"
+                @addModule="
+                  ({ meta_filename }) =>
+                    insertModuleMetaFilenameToList({
+                      meta_filename,
+                      index: index,
+                    })
+                "
+              />
+            </div>
+
             <PublicationModule
               class="_mediaPublication"
               :key="meta_filename"
@@ -45,23 +59,10 @@
               "
               @remove="removeModuleFromList(meta_filename)"
             />
-            <div class="_spacer" :key="'mc_' + index">
-              <ModuleCreator
-                v-if="can_edit"
-                :publication_path="publication.$path"
-                @addModule="
-                  ({ meta_filename }) =>
-                    insertModuleMetaFilenameToList({
-                      meta_filename,
-                      index: index + 1,
-                    })
-                "
-              />
-            </div>
           </template>
         </transition-group>
         <ModuleCreator
-          v-if="can_edit && (!modules_list || modules_list.length === 0)"
+          v-if="can_edit"
           :publication_path="publication.$path"
           @addModule="appendModuleMetaFilenameToList"
         />
@@ -258,7 +259,7 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
 
-  margin: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 2);
+  margin: 0 calc(var(--spacing) * 2) 0;
   padding-bottom: calc(var(--spacing) * 2);
   border-bottom: 2px solid var(--c-gris);
 

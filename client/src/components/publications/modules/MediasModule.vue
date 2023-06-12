@@ -5,34 +5,49 @@
       :style="`--number_of_medias: ${medias_with_linked.length}`"
       :key="medias_with_linked.length > 1 ? 'multiple' : 'single'"
     >
-      <MosaicMediaGrid
-        v-if="publimodule.module_type === 'mosaic'"
-        :medias_with_linked="medias_with_linked"
-        :context="context"
-        :page_template="page_template"
-        :show_fs_button="show_fs_button"
-        :number_of_max_medias="number_of_max_medias"
-        :publication_path="publication_path"
-        :can_edit="can_edit"
-        @addMedias="addMedias"
-        @removeMediaAtIndex="removeMediaAtIndex"
-        @updateMediaOpt="updateMediaOpt"
-      />
-      <FilesList
-        v-if="publimodule.module_type === 'files'"
-        :medias_with_linked="medias_with_linked"
-        :publication_path="publication_path"
-        :can_edit="can_edit"
-        @addMedias="addMedias"
-        @reorderMedias="reorderMedias"
-        @removeMediaAtIndex="removeMediaAtIndex"
-      />
+      <transition name="pagechange" mode="out-in">
+        <MosaicMediaGrid
+          v-if="publimodule.module_type === 'mosaic'"
+          :medias_with_linked="medias_with_linked"
+          :context="context"
+          :page_template="page_template"
+          :show_fs_button="show_fs_button"
+          :number_of_max_medias="number_of_max_medias"
+          :publication_path="publication_path"
+          :can_edit="can_edit"
+          @addMedias="addMedias"
+          @removeMediaAtIndex="removeMediaAtIndex"
+          @updateMediaOpt="updateMediaOpt"
+        />
+        <FilesList
+          v-else-if="publimodule.module_type === 'files'"
+          :medias_with_linked="medias_with_linked"
+          :publication_path="publication_path"
+          :can_edit="can_edit"
+          @addMedias="addMedias"
+          @reorderMedias="reorderMedias"
+          @removeMediaAtIndex="removeMediaAtIndex"
+        />
+        <MediaCarousel
+          v-else-if="publimodule.module_type === 'carousel'"
+          :medias_with_linked="medias_with_linked"
+          :context="context"
+          :page_template="page_template"
+          :show_fs_button="show_fs_button"
+          :publication_path="publication_path"
+          :can_edit="can_edit"
+          @addMedias="addMedias"
+          @removeMediaAtIndex="removeMediaAtIndex"
+          @updateMediaOpt="updateMediaOpt"
+        />
+      </transition>
     </div>
   </transition>
 </template>
 <script>
 import MosaicMediaGrid from "@/components/publications/modules/MosaicMediaGrid.vue";
 import FilesList from "@/components/publications/modules/FilesList.vue";
+import MediaCarousel from "@/components/publications/modules/MediaCarousel.vue";
 
 export default {
   props: {
@@ -51,6 +66,7 @@ export default {
     // Pane,
     MosaicMediaGrid,
     FilesList,
+    MediaCarousel,
   },
   data() {
     return {};

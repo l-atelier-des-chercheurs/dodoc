@@ -941,8 +941,8 @@ export default {
       @import "./imports/mainText.scss";
 
       &[contenteditable="true"] {
-        padding: 2px;
-        padding-bottom: calc(var(--spacing) * 1);
+        // padding: 2px;
+        // padding-bottom: calc(var(--spacing) * 1);
       }
 
       > * {
