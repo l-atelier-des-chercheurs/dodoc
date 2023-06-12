@@ -428,13 +428,17 @@ textarea,
     background-color: hsl(0, 0, 21);
     border-color: white;
     color: white;
+
+    &[disabled] {
+      border-color: transparent;
+    }
   }
 
-  &:hover {
+  &:hover:not([disabled]) {
     outline: 0;
     border-bottom: 1px solid var(--input-border-color);
   }
-  &:focus-visible {
+  &:focus-visible:not([disabled]) {
     outline: 0;
     border-bottom: 1px solid var(--input-border-color-focus);
   }
