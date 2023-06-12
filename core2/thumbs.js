@@ -586,8 +586,10 @@ module.exports = (function () {
     if (!url) throw "no url";
 
     const { image } = await _getPageMetadata({ url });
-
     if (image) await _fetchImageAndSave({ url, image, full_path_to_thumb });
+    // else {
+    // if no image, use Electron or Puppeteer to generate screenshot of webpage
+    // }
     else throw new Error("No image to download");
   }
 
