@@ -32,7 +32,7 @@
           </button>
           <button
             type="button"
-            class="u-button"
+            class="u-button _archivesBtn"
             v-if="editor_is_enabled"
             @click="show_archives = !show_archives"
           >
