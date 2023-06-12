@@ -184,10 +184,11 @@ export default {
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
   --c-bodybg: white;
+  --c-bodybg: rgba(240, 240, 240, 1);
   --body-bg-pattern-color: hsl(48, 19%, 93%);
   --plyr-color-main: var(--c-bleumarine);
 
-  --sharedfolder-bg: rgba(240, 240, 240, 1);
+  // --sharedfolder-bg: ;
 
   // from tldraw
   --panel-color: #fefefe;

@@ -107,7 +107,6 @@ export default {
 
   overflow: hidden;
   border: 2px solid white;
-  // border: 2px solid var(--sharedfolder-bg);
 
   ::v-deep ._mediaContent--image {
     width: 100%;

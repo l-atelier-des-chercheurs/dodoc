@@ -480,7 +480,7 @@ export default {
 
 ._qrBtn {
   sl-icon {
-    font-size: 100%;
+    font-size: 130%;
   }
 }
 

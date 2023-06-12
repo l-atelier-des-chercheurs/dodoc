@@ -139,7 +139,7 @@ export default {
   --chutier-width: 420px;
 
   &.is--mobile_view {
-    --chutier-width: 320px;
+    --chutier-width: 100%;
   }
 }
 ._panes {
@@ -148,7 +148,7 @@ export default {
 
 ._myContent {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
 
   width: var(--chutier-width);
   height: 100%;
@@ -161,22 +161,26 @@ export default {
     0
   );
 
-  transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.75s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--shown {
     transform: translate(0, 0);
   }
 }
 ._sharedContent {
+  position: relative;
+  z-index: 1;
   height: 100%;
   flex: 1 1 auto;
   overflow: auto;
-  padding-left: var(--chutier-bar-width);
+  margin-left: var(--chutier-bar-width);
+  width: calc(100% - var(--chutier-bar-width));
 
-  // transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: margin-left 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.has--chutier {
-    padding-left: var(--chutier-width);
+    width: calc(100% - var(--chutier-width));
+    margin-left: var(--chutier-width);
   }
 }
 

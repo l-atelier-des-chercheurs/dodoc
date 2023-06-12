@@ -9,14 +9,15 @@
         v-model="note_title"
         placeholder="Titre de la note"
       />
+      <CollaborativeEditor2
+        class="_content"
+        :path="note.$path"
+        :content="note.$content || ''"
+        :edit_on_mounted="true"
+        :can_edit="true"
+        :custom_formats="['bold', 'italic', 'underline', 'link']"
+      />
     </div>
-
-    <CollaborativeEditor2
-      :path="note.$path"
-      :content="note.$content"
-      :line_selected="false"
-      :can_edit="true"
-    />
 
     <div class="_publierBtn">
       <button
@@ -30,9 +31,9 @@
       </button>
       <button
         type="button"
-        :key="allow_save"
+        :key="share_button_is_enabled"
         class="u-buttonLink"
-        :disabled="!allow_save"
+        :disabled="!share_button_is_enabled"
         @click="createOrUpdateNote({ destination: 'shared_space' })"
       >
         Publier&nbsp;
@@ -63,7 +64,16 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    share_button_is_enabled() {
+      return (
+        this.note_title &&
+        this.note_title.length > 0 &&
+        this.note.$content &&
+        this.note.$content.length > 0
+      );
+    },
+  },
   methods: {
     async createOrUpdateNote({ destination }) {
       // todo save or copy
@@ -86,5 +96,19 @@ export default {
   gap: calc(var(--spacing) / 1);
   justify-content: center;
   padding: calc(var(--spacing) / 2);
+}
+
+._content {
+  ::v-deep .ql-editor {
+    background-color: hsl(0, 0, 21);
+    border-color: white;
+    color: white;
+    padding: calc(var(--spacing) * 0.5);
+  }
+}
+
+._publierBtn {
+  display: flex;
+  gap: calc(var(--spacing) / 2);
 }
 </style>
