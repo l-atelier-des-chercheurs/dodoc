@@ -49,12 +49,16 @@
           <button
             type="button"
             class="u-button u-button_white _qrBtn"
-            @click="createNote"
+            @click="show_link_picker = true"
           >
             <sl-icon name="link-45deg" />
             url
           </button>
-          <!-- <LinkModal /> -->
+          <LinkPicker
+            v-if="show_link_picker"
+            @embed="createEmbed"
+            @close="show_link_picker = false"
+          />
         </div>
         <div class="_qrOpt">
           <button
@@ -221,6 +225,7 @@
   </div>
 </template>
 <script>
+import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 import ChutierItem from "@/components/ChutierItem.vue";
 import MediaStack from "@/components/MediaStack.vue";
 
@@ -229,6 +234,7 @@ export default {
     shared_space_path: String,
   },
   components: {
+    LinkPicker,
     ChutierItem,
     MediaStack,
   },
@@ -246,6 +252,7 @@ export default {
 
       max_items_selected: 15,
 
+      show_link_picker: false,
       show_qr_code_modal: false,
       show_confirm_remove_menu: false,
     };
@@ -401,7 +408,7 @@ export default {
     async createNote() {
       const meta_filename = await this.$api.uploadText({
         path: this.path,
-        filename: "node.txt",
+        filename: "note.txt",
         content: "",
         additional_meta: {
           title: "Sans titre",
@@ -411,6 +418,22 @@ export default {
         this.$eventHub.$emit("chutier.item.edit", meta_filename);
       }, 100);
     },
+    async createEmbed(full_url) {
+      const meta_filename = await this.$api.uploadText({
+        path: this.path,
+        filename: "url.txt",
+        content: full_url,
+        additional_meta: {
+          title: "Titre du lien",
+          $type: "url",
+        },
+      });
+      this.show_link_picker = false;
+      setTimeout(() => {
+        this.$eventHub.$emit("chutier.item.edit", meta_filename);
+      }, 100);
+    },
+
     async importedMedias($event) {
       $event;
       // console.log("selected_items_slugs = " + $event);
