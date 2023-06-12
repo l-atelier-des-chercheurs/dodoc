@@ -518,21 +518,13 @@ export default {
 
 // custom props
 ._moveableItem ::v-deep {
-  ._publicationModule.is--mosaic {
-    // border-radius: var(--set-borderRadius);
-    // overflow: hidden;
-    // outline-color: var(--set-outlineColor);
-    // outline-width: var(--set-outlineWidth);
-    // outline-style: solid;
-
-    .ql-editor {
-      // font-size: var(--set-fontSize);
-    }
+  ._publicationModule[data-type="mosaic"] {
     .ql-editor,
     ._mediaContent--image,
     ._mediaContent[data-filetype="video"],
     ._mediaContent[data-filetype="url"],
     ._mediaContent[data-filetype="pdf"],
+    ._mediaContent[data-filetype="other"],
     ._mediaContent[data-filetype="audio"] {
       padding: var(--set-margins);
       opacity: var(--set-opacity);
@@ -547,8 +539,22 @@ export default {
       border-style: solid;
     }
   }
+  ._publicationModule[data-type="files"],
+  ._publicationModule[data-type="carousel"] {
+    padding: var(--set-margins);
+    opacity: var(--set-opacity);
+    aspect-ratio: unset;
 
-  ._publicationModule.is--shape {
+    border-radius: var(--set-borderRadius);
+    overflow: hidden;
+
+    background: var(--set-backgroundColor);
+    border-color: var(--set-outlineColor);
+    border-width: var(--set-outlineWidth);
+    border-style: solid;
+  }
+
+  ._publicationModule[data-type="shape"] {
     padding: var(--set-margins);
     opacity: var(--set-opacity);
 
