@@ -5,9 +5,9 @@
     :style="btn_styles"
     @click="$emit('click')"
   >
-    <span>
+    <!-- <span>
       {{ label }}
-    </span>
+    </span> -->
     <sl-icon :name="icon" :label="label" />
   </button>
 </template>

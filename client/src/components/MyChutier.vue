@@ -39,7 +39,28 @@
           <button
             type="button"
             class="u-button u-button_white _qrBtn"
-            @click="show_qr_code_modal = true"
+            @click="createNote"
+          >
+            <sl-icon name="file-text" />
+            note
+          </button>
+        </div>
+        <div class="">
+          <button
+            type="button"
+            class="u-button u-button_white _qrBtn"
+            @click="createNote"
+          >
+            <sl-icon name="link-45deg" />
+            url
+          </button>
+          <!-- <LinkModal /> -->
+        </div>
+        <div class="_qrOpt">
+          <button
+            type="button"
+            class="u-button u-button_white _qrBtn"
+            @click="show_url_modal = true"
           >
             <sl-icon name="qr-code" />
           </button>
@@ -48,16 +69,6 @@
             :url_to_access="url_to_page"
             @close="show_qr_code_modal = false"
           />
-        </div>
-        <div class="">
-          <button
-            type="button"
-            class="u-button u-button_white _qrBtn"
-            @click="createNote"
-          >
-            <sl-icon name="file-text" />
-            note
-          </button>
         </div>
       </div>
       <UploadFiles
@@ -212,7 +223,6 @@
 <script>
 import ChutierItem from "@/components/ChutierItem.vue";
 import MediaStack from "@/components/MediaStack.vue";
-// import EditNote from "@/components/EditNote.vue";
 
 export default {
   props: {
@@ -221,7 +231,6 @@ export default {
   components: {
     ChutierItem,
     MediaStack,
-    // EditNote,
   },
   data() {
     return {
@@ -398,7 +407,9 @@ export default {
           title: "Sans titre",
         },
       });
-      this.opened_note_meta = meta_filename;
+      setTimeout(() => {
+        this.$eventHub.$emit("chutier.item.edit", meta_filename);
+      }, 100);
     },
     async importedMedias($event) {
       $event;

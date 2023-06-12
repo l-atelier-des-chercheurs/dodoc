@@ -147,6 +147,7 @@
       v-if="show_large"
       class="_chutierRow--largePreview"
       @click.self="show_large = false"
+      :data-type="file.$type"
     >
       <MediaContent :file="file" :context="'full'" :resolution="1600" />
       <button
@@ -188,6 +189,7 @@ export default {
       show_large: false,
       is_mousedown: false,
       edit_mode: false,
+
       id: `select_chutier_item_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
@@ -205,8 +207,12 @@ export default {
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("chutier.item.edit", this.setEdit);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("chutier.item.edit", this.setEdit);
+  },
   watch: {
     "file.title"() {
       this.text_title = this.file.title;
@@ -231,6 +237,10 @@ export default {
     },
   },
   methods: {
+    setEdit(meta_filename) {
+      const file_meta_filename = this.getFilename(this.file.$path);
+      if (meta_filename === file_meta_filename) this.edit_mode = true;
+    },
     async moveToSharedSpace() {
       const path_to_destination_folder = this.shared_space_path;
       await this.$api.copyFile({
@@ -363,7 +373,7 @@ export default {
   // padding: 2px;
   padding: calc(var(--spacing) / 4) 0;
   margin-bottom: 2px;
-  overflow: hidden;
+  // overflow: hidden;
   border-radius: 4px;
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
   // border: 1px solid transparent;
@@ -439,10 +449,15 @@ export default {
     width: 100%;
     height: 100%;
     z-index: 2;
+    overflow: auto;
 
     // display: flex;
     // place-content: center;
     background: black;
+
+    &[data-type="text"] {
+      padding: calc(var(--spacing));
+    }
 
     ::v-deep ._mediaContent {
       width: 100%;
@@ -497,6 +512,10 @@ export default {
     }
     ._editBtn {
       display: none;
+    }
+    .ql-toolbar.ql-toolbar {
+      top: 50px;
+      border-radius: 8px;
     }
   }
 }
