@@ -148,6 +148,7 @@ export default {
     scrollingContainer: HTMLElement,
     custom_formats: Array,
     line_selected: [Boolean, Number],
+    edit_on_mounted: Boolean,
     can_edit: Boolean,
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
@@ -193,7 +194,7 @@ export default {
   async mounted() {
     await this.initEditor();
     this.toolbar_el = this.$el.querySelector(".ql-toolbar");
-    // this.enableEditor();
+    if (this.edit_on_mounted === true) this.enableEditor();
   },
   beforeDestroy() {
     this.disableEditor();
