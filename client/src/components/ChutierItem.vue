@@ -359,6 +359,9 @@ export default {
 
   input {
     cursor: inherit;
+    --form-background: transparent !important;
+    --form-control-color: var(--c-jaune);
+    border-color: #555;
   }
 
   &:hover input {
