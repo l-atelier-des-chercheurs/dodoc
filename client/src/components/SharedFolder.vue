@@ -97,7 +97,11 @@ export default {
       return _medias_not_in_stacks;
     },
     grouped_files() {
-      return this.groupFilesByDay(this.shared_files);
+      return this.groupFilesByDay(this.shared_files, [
+        "date_created_corrected",
+        "$date_created",
+        "$date_uploaded",
+      ]);
     },
   },
   methods: {
