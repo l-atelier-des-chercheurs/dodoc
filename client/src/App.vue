@@ -173,6 +173,11 @@ export default {
   --c-rouge_clair: #ff808c;
   --c-rouge_fonce: #cc334a;
 
+  --color-vert: #93eea1;
+  --color-rouge: #ee9393;
+  --color-bleu: #2c75c3;
+  --color-jaune: #e7ee93;
+
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);

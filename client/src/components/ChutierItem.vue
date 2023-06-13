@@ -396,15 +396,16 @@ export default {
 
   transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
-  &:not(.is--selected):hover {
+  &:not(.is--selected):not(.is--edited):hover {
     background: rgba(255, 255, 255, 0.05);
   }
 
-  &.is--mousedown:not(.is--selected) {
+  &.is--mousedown:not(.is--selected):not(.is--edited) {
     background: rgba(0, 0, 0, 0.2);
   }
 
-  &.is--selected
+  &.is--selected,
+  &.is--edited
   // &.is--clicked
   {
     // border-color: var(--c-orange);
@@ -460,7 +461,7 @@ export default {
   }
 
   ._chutierRow--largePreview {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
