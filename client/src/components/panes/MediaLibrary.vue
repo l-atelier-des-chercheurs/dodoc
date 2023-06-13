@@ -55,6 +55,16 @@
             class="u-button u-button_transparent"
             type="button"
             :class="{
+              'is--active': tile_mode === 'table',
+            }"
+            @click="tile_mode = 'table'"
+          >
+            <sl-icon name="list-ol" />
+          </button>
+          <button
+            class="u-button u-button_transparent"
+            type="button"
+            :class="{
               'is--active': tile_mode === 'tiny',
             }"
             @click="tile_mode = 'tiny'"
@@ -74,29 +84,42 @@
         </div>
       </div>
 
-      <transition-group
-        tag="div"
-        class="_mediaLibrary--lib--grid"
-        :data-tilemode="tile_mode"
-        name="StoryModules"
-        ref="mediaTiles"
-        appear
+      <div
+        class="_dayFileSection"
+        v-for="{ label, files } in grouped_medias"
+        :key="label"
       >
-        <MediaTile
-          v-for="file of filtered_medias"
-          :key="file.$path"
-          :project_path="project.$path"
-          :file="file"
-          :was_focused="media_just_focused === getFilename(file.$path)"
-          :is_selectable="mediaTileIsSelectable(file.$path)"
-          :is_selected="selected_medias.includes(file.$path)"
-          :data-filepath="file.$path"
-          :tile_mode="tile_mode"
-          :is_already_selected="mediaTileAlreadySelected(file.$path)"
-          @toggleMediaFocus="toggleMediaFocus(file.$path)"
-          @setSelected="(present) => setSelected(present, file.$path)"
-        />
-      </transition-group>
+        <div class="_mediaLibrary--lib--label">
+          <strong>{{ formatDateToHuman(label) }}</strong>
+          <div class="u-nut" data-isfilled>
+            {{ files.length }}
+          </div>
+        </div>
+        <transition-group
+          tag="div"
+          class="_mediaLibrary--lib--grid"
+          :data-tilemode="tile_mode"
+          name="StoryModules"
+          ref="mediaTiles"
+          appear
+        >
+          <MediaTile
+            v-for="file of files"
+            :key="file.$path"
+            :project_path="project.$path"
+            :index="file._index"
+            :file="file"
+            :was_focused="media_just_focused === getFilename(file.$path)"
+            :is_selectable="mediaTileIsSelectable(file.$path)"
+            :is_selected="selected_medias.includes(file.$path)"
+            :data-filepath="file.$path"
+            :tile_mode="tile_mode"
+            :is_already_selected="mediaTileAlreadySelected(file.$path)"
+            @toggleMediaFocus="toggleMediaFocus(file.$path)"
+            @setSelected="(present) => setSelected(present, file.$path)"
+          />
+        </transition-group>
+      </div>
 
       <transition name="slideup">
         <div v-if="selected_medias.length > 0" class="_selectBtn">
@@ -183,10 +206,17 @@ export default {
       return this.project.$files || [];
     },
     sorted_medias() {
-      const _medias = JSON.parse(JSON.stringify(this.medias));
-      _medias.sort(
-        (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
-      );
+      let _medias = JSON.parse(JSON.stringify(this.medias));
+      _medias = _medias
+        .sort(
+          (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+        )
+        .reverse()
+        .map((m, index) => {
+          m._index = index + 1;
+          return m;
+        })
+        .reverse();
       return _medias;
     },
     filtered_medias() {
@@ -196,6 +226,9 @@ export default {
           (m) => !this.mediaTileAlreadySelected(m.$path)
         );
       return _filtered_medias;
+    },
+    grouped_medias() {
+      return this.groupFilesByDay(this.filtered_medias, ["$date_uploaded"]);
     },
     focused_media() {
       if (!this.media_focused) return false;
@@ -333,6 +366,15 @@ export default {
   overflow: auto;
 }
 
+._mediaLibrary--lib--label {
+  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+
+  strong {
+    text-transform: capitalize;
+    // padding: 0 calc(var(--spacing) / 2);
+  }
+}
+
 ._mediaLibrary--lib--grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -341,6 +383,9 @@ export default {
 
   &[data-tilemode="medium"] {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  &[data-tilemode="table"] {
+    display: block;
   }
 }
 

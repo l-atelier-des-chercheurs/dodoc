@@ -1,12 +1,5 @@
 <template>
-  <div
-    class="_publicationModule"
-    :class="{
-      'is--shape': is_shape,
-      'is--mosaic': is_mosaic,
-      'has--fsButton': show_fs_button,
-    }"
-  >
+  <div class="_publicationModule" :data-type="module_type">
     <div
       class="_sideOptions"
       v-if="can_edit && page_template !== 'page_by_page'"
@@ -197,7 +190,7 @@
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
       />
-      <template v-else-if="is_shape">
+      <template v-else-if="module_type === 'shape'">
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
@@ -352,13 +345,15 @@ export default {
     module_meta_filename() {
       return this.publimodule.$path.split("/").at(-1);
     },
-    is_shape() {
-      return ["ellipsis", "rectangle", "line", "arrow"].includes(
-        this.publimodule.module_type
-      );
-    },
-    is_mosaic() {
-      return this.publimodule.module_type === "mosaic";
+
+    module_type() {
+      if (
+        ["ellipsis", "rectangle", "line", "arrow"].includes(
+          this.publimodule.module_type
+        )
+      )
+        return "shape";
+      return this.publimodule.module_type;
     },
     show_fs_button() {
       if (this.page_template === "page_by_page")
@@ -479,7 +474,7 @@ export default {
   position: relative;
   padding: 0 calc(var(--spacing) * 2);
 
-  &.is--shape {
+  &[data-type="shape"] {
     ._content,
     svg {
       overflow: visible;

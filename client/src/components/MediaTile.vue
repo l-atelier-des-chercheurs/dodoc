@@ -11,12 +11,25 @@
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
+    <div class="_index">
+      <div class="u-nut" v-html="index" />
+    </div>
     <MediaContent class="_content" :file="file" :resolution="220" />
-    <span v-if="duration" class="u-meta">{{ duration }}</span>
-    <span v-if="file.$type === 'pdf'" class="u-meta">{{ "pdf" }}</span>
-    <span v-if="tile_mode === 'medium'" class="_caption">{{
-      file.caption || "–"
-    }}</span>
+    <div
+      v-if="tile_mode === 'table'"
+      v-html="formatDateToPrecise(file.$date_uploaded)"
+    />
+    <span v-if="duration" class="_fileType" v-html="duration" />
+    <span
+      v-if="file.$type === 'pdf' || tile_mode === 'table'"
+      class="_fileType"
+      v-html="$t(file.$type)"
+    />
+    <span
+      v-if="tile_mode !== 'tiny'"
+      class="_caption"
+      v-html="file.caption || '–'"
+    />
     <div v-if="is_already_selected" class="_alreadySelected">
       <div v-if="is_already_selected.current" class="_currentPage">
         <!-- <sl-icon name="check2-square" /> -->
@@ -54,6 +67,7 @@
 export default {
   props: {
     file: Object,
+    index: Number,
     project_path: String,
     was_focused: Boolean,
     is_selectable: Boolean,
@@ -109,6 +123,7 @@ export default {
 
   ._content {
     aspect-ratio: 1/1;
+    overflow: hidden;
 
     @supports not (aspect-ratio: 1/1) {
       width: 110px;
@@ -117,9 +132,7 @@ export default {
   }
 
   &.was--focused {
-    // transform: translate3d(0, -5px, 0);
     border: 3px solid var(--active-color);
-    // background: rgba(51, 51, 51, 0.8);
   }
   &.is--dragged {
     opacity: 0.5;
@@ -158,6 +171,35 @@ export default {
       max-width: none;
     }
   }
+
+  &[data-tilemode="table"] {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    // gap: calc(var(--spacing) / 2);
+    background: transparent;
+    border-bottom: 1px solid white;
+
+    // margin-top: 2px;
+    // margin-bottom: 2px;
+    &.was--focused {
+      border: none;
+      border-left: 3px solid var(--active-color);
+    }
+
+    > * {
+      flex: 1 1 0;
+      padding: calc(var(--spacing) / 2);
+
+      &._content,
+      &._index {
+        flex: 0 0 50px;
+      }
+    }
+
+    > *:not(:last-child) {
+    }
+  }
 }
 
 ._focusMediaBtn {
@@ -176,12 +218,15 @@ export default {
   }
 }
 
-.u-meta {
-  position: absolute;
-  bottom: 0;
-  right: 0;
+._fileType {
   background: rgba(255, 255, 255, 0.7);
   padding: 0 calc(var(--spacing) / 4);
+
+  ._mediaTile:not([data-tilemode="table"]) & {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 ._alreadySelected {
@@ -220,6 +265,17 @@ export default {
   }
   > ._otherPage {
     background: var(--c-orange);
+  }
+}
+
+._index {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+
+  ._mediaTile[data-tilemode="table"] & {
+    position: relative;
   }
 }
 

@@ -14,7 +14,7 @@
       </span>
 
       <div
-        class="_itemsNut"
+        class="u-nut"
         v-if="has_items !== undefined"
         :data-isfilled="has_items"
       >
@@ -93,35 +93,6 @@ export default {
 
   ._name {
     flex: 1 1 auto;
-  }
-
-  ._itemsNut {
-    display: flex;
-    line-height: 1;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 18px;
-    height: auto;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    font-family: "Fira Code";
-    padding: calc(var(--spacing) / 8);
-    margin: calc(var(--spacing) / 4);
-
-    font-weight: 500;
-    font-size: var(--sl-font-size-small);
-
-    &[data-isfilled] {
-      background: var(--c-bleumarine);
-      color: white;
-    }
-
-    &:empty {
-      // background: var(--c-bleuvert);
-      // width: 0px;
-      // height: 0px;
-    }
   }
 
   ._openIcon {
