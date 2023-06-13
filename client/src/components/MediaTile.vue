@@ -11,10 +11,16 @@
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
+    <div class="_index">
+      <span>{{ index }}</span>
+    </div>
     <MediaContent class="_content" :file="file" :resolution="220" />
+    <div v-if="tile_mode === 'table'">
+      {{ formatDateToPrecise(file.$date_uploaded) }}
+    </div>
     <span v-if="duration" class="u-meta">{{ duration }}</span>
     <span v-if="file.$type === 'pdf'" class="u-meta">{{ "pdf" }}</span>
-    <span v-if="tile_mode === 'medium'" class="_caption">{{
+    <span v-if="tile_mode !== 'tiny'" class="_caption">{{
       file.caption || "–"
     }}</span>
     <div v-if="is_already_selected" class="_alreadySelected">
@@ -54,6 +60,7 @@
 export default {
   props: {
     file: Object,
+    index: Number,
     project_path: String,
     was_focused: Boolean,
     is_selectable: Boolean,
@@ -109,6 +116,7 @@ export default {
 
   ._content {
     aspect-ratio: 1/1;
+    overflow: hidden;
 
     @supports not (aspect-ratio: 1/1) {
       width: 110px;
@@ -158,6 +166,31 @@ export default {
       max-width: none;
     }
   }
+
+  &[data-tilemode="table"] {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    // gap: calc(var(--spacing) / 2);
+    background: transparent;
+    border-bottom: 1px solid white;
+
+    // margin-top: 2px;
+    // margin-bottom: 2px;
+
+    > * {
+      flex: 1 1 0;
+      padding: calc(var(--spacing) / 2);
+
+      &._content,
+      &._index {
+        flex: 0 0 50px;
+      }
+    }
+
+    > *:not(:last-child) {
+    }
+  }
 }
 
 ._focusMediaBtn {
@@ -177,11 +210,14 @@ export default {
 }
 
 .u-meta {
-  position: absolute;
-  bottom: 0;
-  right: 0;
   background: rgba(255, 255, 255, 0.7);
   padding: 0 calc(var(--spacing) / 4);
+
+  ._mediaTile[data-tilemode="medium"] & {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 ._alreadySelected {
@@ -220,6 +256,38 @@ export default {
   }
   > ._otherPage {
     background: var(--c-orange);
+  }
+}
+
+._index {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+
+  ._mediaTile[data-tilemode="table"] & {
+    position: relative;
+  }
+
+  span {
+    display: flex;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 18px;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    font-family: "Fira Code";
+    padding: calc(var(--spacing) / 8);
+    margin: calc(var(--spacing) / 4);
+
+    // background: white;
+    color: var(--c-noir);
+
+    font-weight: 600;
+    font-size: var(--sl-font-size-small);
   }
 }
 

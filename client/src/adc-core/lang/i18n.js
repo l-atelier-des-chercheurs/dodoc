@@ -50,7 +50,7 @@ export default function () {
         admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
         edit: "Modifier",
         stop_edit: "Arrêter les modifications",
-        caption: "légende",
+        caption: "Légende",
         date_created: "Date de création",
         date_modified: "Dernière modification",
         alphabetical: "Alphabétique",

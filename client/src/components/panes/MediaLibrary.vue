@@ -55,6 +55,16 @@
             class="u-button u-button_transparent"
             type="button"
             :class="{
+              'is--active': tile_mode === 'table',
+            }"
+            @click="tile_mode = 'table'"
+          >
+            <sl-icon name="list-ol" />
+          </button>
+          <button
+            class="u-button u-button_transparent"
+            type="button"
+            :class="{
               'is--active': tile_mode === 'tiny',
             }"
             @click="tile_mode = 'tiny'"
@@ -86,6 +96,7 @@
           v-for="file of filtered_medias"
           :key="file.$path"
           :project_path="project.$path"
+          :index="file._index"
           :file="file"
           :was_focused="media_just_focused === getFilename(file.$path)"
           :is_selectable="mediaTileIsSelectable(file.$path)"
@@ -183,10 +194,17 @@ export default {
       return this.project.$files || [];
     },
     sorted_medias() {
-      const _medias = JSON.parse(JSON.stringify(this.medias));
-      _medias.sort(
-        (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
-      );
+      let _medias = JSON.parse(JSON.stringify(this.medias));
+      _medias = _medias
+        .sort(
+          (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+        )
+        .reverse()
+        .map((m, index) => {
+          m._index = index + 1;
+          return m;
+        })
+        .reverse();
       return _medias;
     },
     filtered_medias() {
@@ -341,6 +359,9 @@ export default {
 
   &[data-tilemode="medium"] {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  &[data-tilemode="table"] {
+    display: block;
   }
 }
 
