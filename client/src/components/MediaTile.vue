@@ -12,17 +12,24 @@
     @dragend="endMediaDrag()"
   >
     <div class="_index">
-      <span>{{ index }}</span>
+      <div class="u-nut" v-html="index" />
     </div>
     <MediaContent class="_content" :file="file" :resolution="220" />
-    <div v-if="tile_mode === 'table'">
-      {{ formatDateToPrecise(file.$date_uploaded) }}
-    </div>
-    <span v-if="duration" class="u-meta">{{ duration }}</span>
-    <span v-if="file.$type === 'pdf'" class="u-meta">{{ "pdf" }}</span>
-    <span v-if="tile_mode !== 'tiny'" class="_caption">{{
-      file.caption || "–"
-    }}</span>
+    <div
+      v-if="tile_mode === 'table'"
+      v-html="formatDateToPrecise(file.$date_uploaded)"
+    />
+    <span v-if="duration" class="_fileType" v-html="duration" />
+    <span
+      v-if="file.$type === 'pdf' || tile_mode === 'table'"
+      class="_fileType"
+      v-html="$t(file.$type)"
+    />
+    <span
+      v-if="tile_mode !== 'tiny'"
+      class="_caption"
+      v-html="file.caption || '–'"
+    />
     <div v-if="is_already_selected" class="_alreadySelected">
       <div v-if="is_already_selected.current" class="_currentPage">
         <!-- <sl-icon name="check2-square" /> -->
@@ -125,9 +132,7 @@ export default {
   }
 
   &.was--focused {
-    // transform: translate3d(0, -5px, 0);
     border: 3px solid var(--active-color);
-    // background: rgba(51, 51, 51, 0.8);
   }
   &.is--dragged {
     opacity: 0.5;
@@ -177,6 +182,10 @@ export default {
 
     // margin-top: 2px;
     // margin-bottom: 2px;
+    &.was--focused {
+      border: none;
+      border-left: 3px solid var(--active-color);
+    }
 
     > * {
       flex: 1 1 0;
@@ -209,11 +218,11 @@ export default {
   }
 }
 
-.u-meta {
+._fileType {
   background: rgba(255, 255, 255, 0.7);
   padding: 0 calc(var(--spacing) / 4);
 
-  ._mediaTile[data-tilemode="medium"] & {
+  ._mediaTile:not([data-tilemode="table"]) & {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -267,27 +276,6 @@ export default {
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
-  }
-
-  span {
-    display: flex;
-    line-height: 1;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 18px;
-    height: auto;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    font-family: "Fira Code";
-    padding: calc(var(--spacing) / 8);
-    margin: calc(var(--spacing) / 4);
-
-    // background: white;
-    color: var(--c-noir);
-
-    font-weight: 600;
-    font-size: var(--sl-font-size-small);
   }
 }
 

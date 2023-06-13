@@ -84,30 +84,42 @@
         </div>
       </div>
 
-      <transition-group
-        tag="div"
-        class="_mediaLibrary--lib--grid"
-        :data-tilemode="tile_mode"
-        name="StoryModules"
-        ref="mediaTiles"
-        appear
+      <div
+        class="_dayFileSection"
+        v-for="{ label, files } in grouped_medias"
+        :key="label"
       >
-        <MediaTile
-          v-for="file of filtered_medias"
-          :key="file.$path"
-          :project_path="project.$path"
-          :index="file._index"
-          :file="file"
-          :was_focused="media_just_focused === getFilename(file.$path)"
-          :is_selectable="mediaTileIsSelectable(file.$path)"
-          :is_selected="selected_medias.includes(file.$path)"
-          :data-filepath="file.$path"
-          :tile_mode="tile_mode"
-          :is_already_selected="mediaTileAlreadySelected(file.$path)"
-          @toggleMediaFocus="toggleMediaFocus(file.$path)"
-          @setSelected="(present) => setSelected(present, file.$path)"
-        />
-      </transition-group>
+        <div class="_mediaLibrary--lib--label">
+          <strong>{{ formatDateToHuman(label) }}</strong>
+          <div class="u-nut" data-isfilled>
+            {{ files.length }}
+          </div>
+        </div>
+        <transition-group
+          tag="div"
+          class="_mediaLibrary--lib--grid"
+          :data-tilemode="tile_mode"
+          name="StoryModules"
+          ref="mediaTiles"
+          appear
+        >
+          <MediaTile
+            v-for="file of files"
+            :key="file.$path"
+            :project_path="project.$path"
+            :index="file._index"
+            :file="file"
+            :was_focused="media_just_focused === getFilename(file.$path)"
+            :is_selectable="mediaTileIsSelectable(file.$path)"
+            :is_selected="selected_medias.includes(file.$path)"
+            :data-filepath="file.$path"
+            :tile_mode="tile_mode"
+            :is_already_selected="mediaTileAlreadySelected(file.$path)"
+            @toggleMediaFocus="toggleMediaFocus(file.$path)"
+            @setSelected="(present) => setSelected(present, file.$path)"
+          />
+        </transition-group>
+      </div>
 
       <transition name="slideup">
         <div v-if="selected_medias.length > 0" class="_selectBtn">
@@ -214,6 +226,9 @@ export default {
           (m) => !this.mediaTileAlreadySelected(m.$path)
         );
       return _filtered_medias;
+    },
+    grouped_medias() {
+      return this.groupFilesByDay(this.filtered_medias, ["$date_uploaded"]);
     },
     focused_media() {
       if (!this.media_focused) return false;
@@ -349,6 +364,15 @@ export default {
 
 ._mediaLibrary--lib {
   overflow: auto;
+}
+
+._mediaLibrary--lib--label {
+  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+
+  strong {
+    text-transform: capitalize;
+    // padding: 0 calc(var(--spacing) / 2);
+  }
 }
 
 ._mediaLibrary--lib--grid {
