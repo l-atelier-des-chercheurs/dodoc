@@ -145,14 +145,15 @@ export default {
     getSoundcloudEmbedURLFromURL(url) {
       return `https://w.soundcloud.com/player/?url=${url}&color=0066cc`;
     },
-    groupFilesByDay(files) {
+    groupFilesByDay(files, fields) {
       const grouped = files.reduce((group, file) => {
         // var key = file.$date_uploaded;
-        var dateObj = new Date(
-          file.date_created_corrected ||
-            file.$date_created ||
-            file.$date_uploaded
+
+        const date_field_to_use = fields.find((field) =>
+          Object.prototype.hasOwnProperty.call(file, field)
         );
+
+        var dateObj = new Date(file[date_field_to_use]);
         var month = dateObj.getUTCMonth() + 1; //months from 1-12
         var day = dateObj.getUTCDate();
         var year = dateObj.getUTCFullYear();

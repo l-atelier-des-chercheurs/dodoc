@@ -134,11 +134,12 @@
       </template>
     </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
-      <sl-icon name="file-earmark" /> {{ file.$media_filename }}<br />
-      <DownloadFile v-if="context === 'full'" :file="file">
+      <sl-icon name="file-earmark" /> {{ file.$media_filename }}
+      <!-- <br /> -->
+      <!-- <DownloadFile v-if="context === 'full'" :file="file">
         <sl-icon name="file-earmark-arrow-down" />
         {{ $t("download") }}
-      </DownloadFile>
+      </DownloadFile> -->
     </small>
   </div>
 </template>
@@ -285,11 +286,12 @@ export default {
 
 ._mediaContent {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 
   &[data-filetype="other"] {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
   }
 }
 

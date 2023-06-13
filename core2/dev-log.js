@@ -189,8 +189,8 @@ module.exports = dev = (function () {
         if (typeof arg === "string") str = arg;
         else if (Array.isArray(arg)) str = arg.join(", ");
         else if (typeof arg === "object") str = _customStringify(arg);
-        if (str.length > 150) {
-          str = str.slice(0, 150);
+        if (str.length > 350) {
+          str = str.slice(0, 350);
           str += "[…]";
         }
         content.push(str);
