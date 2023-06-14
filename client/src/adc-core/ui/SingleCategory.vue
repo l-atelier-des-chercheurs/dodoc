@@ -93,6 +93,7 @@ export default {
     cancel() {
       this.new_list_of_suggestions = this.category.list_of_suggestions;
       this.new_suggestion = "";
+      this.$emit("close");
     },
     async saveNewSuggestion() {
       await this.$api.updateMeta({
@@ -101,6 +102,7 @@ export default {
           list_of_suggestions: this.new_list_of_suggestions,
         },
       });
+      this.$emit("close");
     },
   },
 };
