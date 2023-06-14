@@ -769,7 +769,7 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
-        source_files: "Fichiers source",
+        source_files: "Fichiers sources",
         source_media_missing: "Le média source est manquant",
         media_pickers_instr:
           "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord :és dans le projet actuel.",

@@ -145,6 +145,10 @@ export default {
   props: {
     path: String,
     content: String,
+    field_to_edit: {
+      type: String,
+      default: "$content",
+    },
     scrollingContainer: HTMLElement,
     custom_formats: Array,
     line_selected: [Boolean, Number],
@@ -572,7 +576,7 @@ export default {
 
     async saveText() {
       const new_meta = {
-        $content: this.getEditorContent(),
+        [field_to_edit]: this.getEditorContent(),
       };
 
       try {
