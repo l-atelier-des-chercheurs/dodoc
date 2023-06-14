@@ -5,7 +5,8 @@
         v-for="keyword in keywords"
         :key="keyword"
         :keyword="keyword"
-        @remove="edit_mode ? removeKeyword(keyword) : undefined"
+        :can_remove="edit_mode"
+        @remove="removeKeyword(keyword)"
       />
     </div>
 
@@ -21,6 +22,8 @@
         @keydown.enter.prevent="submitFirstSuggestion"
       />
 
+      <DLabel :str="$t('suggestions')" />
+
       <div class="_categories">
         <button
           type="button"
@@ -29,11 +32,13 @@
             'is--active': suggestion_from_category === category,
           }"
           v-for="category in all_categories"
+          v-show="matchingKeywordsWithCategory(category).length > 0"
           :key="category"
           :data-category="category"
           @click="toggleCategory(category)"
         >
           {{ category }}
+          ({{ matchingKeywordsWithCategory(category).length }})
         </button>
       </div>
       <div class="_suggestions" v-if="suggested_keywords.length > 0">
@@ -45,6 +50,7 @@
               'is--first': index === 0,
             }"
             :keyword="suggested_keyword"
+            :can_add="true"
             @add="addKeyword(suggested_keyword)"
           />
         </div>
@@ -79,7 +85,7 @@ export default {
     all_categories() {
       return Object.keys(categories);
     },
-    list_of_suggestions() {
+    all_keywords() {
       return Object.entries(categories).reduce((acc, [category, items]) => {
         items.map((item) => {
           acc.push(category + "/" + item);
@@ -88,29 +94,27 @@ export default {
       }, []);
     },
     suggested_keywords() {
-      return this.list_of_suggestions.filter((s) => {
+      return this.matchingKeywordsWithCategory(this.suggestion_from_category);
+    },
+  },
+  methods: {
+    matchingKeywordsWithCategory(filter_by_category) {
+      return this.all_keywords.filter((s) => {
         const category = s.split("/").at(0);
         const name = s.split("/").at(1);
 
         if (this.keywords.includes(s)) return false;
 
-        if (
-          this.suggestion_from_category &&
-          this.suggestion_from_category !== category
-        )
-          return false;
+        if (filter_by_category && filter_by_category !== category) return false;
 
-        if (!this.suggestion_from_category && this.user_suggestion.length === 0)
+        if (!filter_by_category && this.user_suggestion.length === 0)
           return false;
 
         return name
           .toLowerCase()
           .startsWith(this.user_suggestion.toLowerCase());
       });
-      // return categories;
     },
-  },
-  methods: {
     toggleCategory(category) {
       if (this.suggestion_from_category === category)
         this.suggestion_from_category = false;

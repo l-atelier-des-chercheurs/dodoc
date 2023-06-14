@@ -36,6 +36,11 @@
   },
 
   "schema": {
+    "fields": {
+      "suggested_keywords": {
+        "type": "array"
+      }
+    },
     "$folders": {
       "folders": {
         "$files": {

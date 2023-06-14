@@ -2,7 +2,7 @@
   <div
     class="_singleKeyword"
     :class="{
-      'is--clickable': $listeners.add,
+      'is--clickable': can_add,
     }"
   >
     <div class="">
@@ -14,14 +14,14 @@
       </div>
     </div>
     <sl-icon-button
-      v-if="$listeners.remove"
+      v-if="can_remove"
       class="_white"
       name="dash-circle"
       @click="$emit('remove')"
     />
     <button
       type="button"
-      v-if="$listeners.add"
+      v-if="can_add"
       class="_addBtn"
       @click="$emit('add')"
     />
@@ -31,6 +31,8 @@
 export default {
   props: {
     keyword: String,
+    can_remove: Boolean,
+    can_add: Boolean,
   },
   components: {},
   data() {

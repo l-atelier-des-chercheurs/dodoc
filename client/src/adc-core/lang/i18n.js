@@ -67,6 +67,7 @@ export default function () {
         description: "Description",
         no_description: "Pas de description",
         keywords: "Mots-clés",
+        suggested_keywords: "Mots-clé suggérés",
 
         add: "ajouter",
         add_item: "Ajouter un élément",

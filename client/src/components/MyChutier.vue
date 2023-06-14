@@ -1,6 +1,18 @@
 <template>
   <div class="_myChutier" v-if="chutier" @click="last_clicked = false">
     <div class="_itemsList">
+      <button
+        type="button"
+        v-if="is_instance_admin"
+        @click="show_admin_settings = true"
+      >
+        {{ $t("admin_settings") }}
+      </button>
+      <AdminLumaSettings
+        v-if="show_admin_settings"
+        @close="show_admin_settings = false"
+      />
+
       <div class="_topContent">
         <div class="_subscribeBtn">
           <button
@@ -228,6 +240,7 @@
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 import ChutierItem from "@/components/ChutierItem.vue";
 import MediaStack from "@/components/MediaStack.vue";
+import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 
 export default {
   props: {
@@ -237,6 +250,7 @@ export default {
     LinkPicker,
     ChutierItem,
     MediaStack,
+    AdminLumaSettings,
   },
   data() {
     return {
@@ -245,6 +259,8 @@ export default {
       id: `image_select_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
+
+      show_admin_settings: false,
 
       last_clicked: undefined,
       selected_items_slugs: [],
