@@ -576,7 +576,7 @@ export default {
 
     async saveText() {
       const new_meta = {
-        [field_to_edit]: this.getEditorContent(),
+        [this.field_to_edit]: this.getEditorContent(),
       };
 
       try {
