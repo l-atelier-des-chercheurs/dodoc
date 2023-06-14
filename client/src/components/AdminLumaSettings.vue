@@ -16,18 +16,18 @@
         </div>
 
         <div class="u-spacingBottom">
-          <AdminSuggestedKeywords :settings="settings" />
+          <SuggestedCategories />
         </div>
       </div>
     </div>
   </BaseModal2>
 </template>
 <script>
-import AdminSuggestedKeywords from "@/components/AdminSuggestedKeywords.vue";
+import SuggestedCategories from "@/adc-core/ui/SuggestedCategories.vue";
 
 export default {
   props: {},
-  components: { AdminSuggestedKeywords },
+  components: { SuggestedCategories },
   data() {
     return {
       settings: undefined,

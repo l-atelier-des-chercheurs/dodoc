@@ -161,7 +161,7 @@ export default {
     0
   );
 
-  transition: transform 0.75s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.275s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--shown {
     transform: translate(0, 0);

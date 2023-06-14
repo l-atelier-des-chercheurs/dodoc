@@ -6,7 +6,7 @@
     }"
   >
     <div class="">
-      <div class="_category" :data-category="category">
+      <div class="_category" v-if="category" :data-category="category">
         {{ category }}
       </div>
       <div class="_name">
@@ -44,10 +44,12 @@ export default {
   watch: {},
   computed: {
     category() {
-      return this.keyword.split("/").at(0);
+      return this.keyword.includes("/") ? this.keyword.split("/").at(0) : false;
     },
     name() {
-      return this.keyword.split("/").at(1);
+      return this.keyword.includes("/")
+        ? this.keyword.split("/").at(1)
+        : this.keyword;
     },
   },
   methods: {},

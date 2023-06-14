@@ -36,11 +36,6 @@
   },
 
   "schema": {
-    "fields": {
-      "suggested_keywords": {
-        "type": "array"
-      }
-    },
     "$folders": {
       "folders": {
         "$files": {
@@ -76,6 +71,7 @@
         }
       },
       "authors": {
+        "$can_be_created_by": "everyone",
         "fields": {
           "email": {
             "type": "string",
@@ -126,6 +122,19 @@
           },
           "font_files": {
             "type": "object"
+          }
+        },
+        "$files": {}
+      },
+      "categories": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true,
+            "unique": true
+          },
+          "list_of_suggestions": {
+            "type": "array"
           }
         },
         "$files": {}

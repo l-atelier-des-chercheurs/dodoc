@@ -144,6 +144,7 @@ Quill.register("modules/cardEditable", CardEditableModule);
 export default {
   props: {
     path: String,
+    sharedb_id: String,
     content: String,
     field_to_edit: {
       type: String,
@@ -604,7 +605,7 @@ export default {
         // });
 
         // const requested_querystring = "?" + params.toString();
-        const path_to_meta = this.path.replaceAll("/", "*");
+        const path_to_meta = this.sharedb_id || this.path.replaceAll("/", "*");
 
         const requested_resource_url =
           (location.protocol === "https:" ? "wss" : "ws") +

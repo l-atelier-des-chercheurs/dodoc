@@ -108,6 +108,13 @@
           />
         </div>
       </div>
+      <div class="" v-if="(keywords && keywords.length > 0) || edit_mode">
+        <KeywordsField
+          :edit_mode="edit_mode"
+          :keywords.sync="keywords"
+          @cancelEdit="cancelEdit"
+        />
+      </div>
       <div class="" v-if="description || edit_mode">
         <div v-if="!edit_mode">
           {{ description }}
@@ -131,14 +138,6 @@
             :custom_formats="['bold', 'italic', 'underline', 'link']"
           />
         </template>
-      </div>
-
-      <div class="" v-if="(keywords && keywords.length > 0) || edit_mode">
-        <KeywordsField
-          :edit_mode="edit_mode"
-          :keywords.sync="keywords"
-          @cancelEdit="cancelEdit"
-        />
       </div>
 
       <div class="_publierBtn">

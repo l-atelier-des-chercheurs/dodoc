@@ -19,10 +19,23 @@
         required
         placeholder="Mot-clé, matériaux, lieux, etc."
         @keydown.esc.prevent="$emit('cancelEdit')"
-        @keydown.enter.prevent="submitFirstSuggestion"
+        @keydown.enter.prevent="newKeyword"
+        @keydown.enter.shift.exact.prevent="submitFirstSuggestion"
       />
+      <div class="u-instructions">
+        <small>
+          <template v-if="suggested_keywords.length > 0">
+            Validez la première suggestion avec SHIFT+ENTRÉE, ou créez un
+            nouveau mot-clé avec ENTRÉE.
+          </template>
+          <template v-else-if="user_suggestion.length > 0"
+            >Créez un nouveau mot-clé avec ENTRÉE.</template
+          >
+        </small>
+      </div>
 
       <DLabel :str="$t('suggestions')" />
+      <!-- v-if="suggested_keywords_from_search.length > 0" -->
 
       <div class="_categories">
         <button
@@ -99,11 +112,11 @@ export default {
   },
   methods: {
     matchingKeywordsWithCategory(filter_by_category) {
-      return this.all_keywords.filter((s) => {
-        const category = s.split("/").at(0);
-        const name = s.split("/").at(1);
+      return this.all_keywords.filter((kw) => {
+        const category = kw.includes("/") ? kw.split("/").at(0) : false;
+        const name = kw.includes("/") ? kw.split("/").at(1) : kw;
 
-        if (this.keywords.includes(s)) return false;
+        if (this.keywords.includes(kw)) return false;
 
         if (filter_by_category && filter_by_category !== category) return false;
 
@@ -126,7 +139,12 @@ export default {
         this.keywords.filter((kw) => kw !== _kw)
       );
     },
+    newKeyword() {
+      if (this.user_suggestion.length > 0)
+        this.addKeyword(this.user_suggestion);
+    },
     submitFirstSuggestion() {
+      if (this.suggested_keywords.length === 0) return false;
       const first_suggestion = this.suggested_keywords.at(0);
       this.addKeyword(first_suggestion);
     },

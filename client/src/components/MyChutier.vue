@@ -1,17 +1,20 @@
 <template>
   <div class="_myChutier" v-if="chutier" @click="last_clicked = false">
     <div class="_itemsList">
-      <button
-        type="button"
-        v-if="is_instance_admin"
-        @click="show_admin_settings = true"
-      >
-        {{ $t("admin_settings") }}
-      </button>
-      <AdminLumaSettings
-        v-if="show_admin_settings"
-        @close="show_admin_settings = false"
-      />
+      <div class="_topBar">
+        <button
+          type="button"
+          class="u-buttonLink _adminBtn"
+          v-if="is_instance_admin"
+          @click="show_admin_settings = true"
+        >
+          {{ $t("admin_settings") }}
+        </button>
+        <AdminLumaSettings
+          v-if="show_admin_settings"
+          @close="show_admin_settings = false"
+        />
+      </div>
 
       <div class="_topContent">
         <div class="_subscribeBtn">
@@ -473,6 +476,11 @@ export default {
   height: 100%;
   overflow: auto;
   padding-bottom: 100px;
+}
+
+._topBar {
+  text-align: center;
+  padding: 0 calc(var(--spacing) / 1);
 }
 
 ._topContent {

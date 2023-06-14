@@ -52,16 +52,16 @@
           placeholder="Titre"
           @keydown.esc.prevent="$emit('close')"
         />
+        <KeywordsField
+          :edit_mode="true"
+          :keywords.sync="keywords"
+          @cancelEdit="$emit('close')"
+        />
         <textarea
           class="is--dark _descriptionField"
           v-model="description"
           placeholder="Description"
           @keydown.esc.prevent="$emit('close')"
-        />
-        <KeywordsField
-          :edit_mode="true"
-          :keywords.sync="keywords"
-          @cancelEdit="$emit('close')"
         />
       </div>
 
