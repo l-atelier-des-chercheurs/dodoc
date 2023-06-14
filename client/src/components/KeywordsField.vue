@@ -161,7 +161,7 @@ export default {
 
   > * {
     &.is--first {
-      border: 2px solid white;
+      border: 2px solid black;
     }
   }
 }
@@ -202,7 +202,7 @@ export default {
   }
 
   &.is--active {
-    background: white;
+    background: black;
   }
 }
 </style>
