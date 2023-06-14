@@ -166,7 +166,8 @@ export default {
   }
 }
 ._suggestions {
-  margin-top: calc(var(--spacing) / 2);
+  padding-top: calc(var(--spacing) / 2);
+  border-top: 2px solid var(--c-noir);
 
   ._keyword {
     cursor: pointer;
