@@ -13,7 +13,7 @@
         :placeholder="'…'"
         :value="content"
         @input="$emit('update:content', $event.target.value)"
-        @keyup.enter="$emit('onEnter')"
+        @keydown.enter.prevent="$emit('onEnter')"
       />
     </template>
     <span

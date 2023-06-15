@@ -14,6 +14,7 @@
               :input_type="'text'"
               :autocomplete="'username'"
               @toggleValidity="($event) => (allow_save = $event)"
+              @onEnter="setFirstSuggestion"
             />
             <!-- @onEnter="checkAuthor" -->
             <transition name="pagechange" mode="out-in">
@@ -55,13 +56,14 @@
 
             <div class="u-spacingBottom">
               <TextInput
-                :label_str="$t('password')"
+                :label_str="'password'"
                 ref="passwordField"
                 :content.sync="input_password"
                 :required="true"
                 :input_type="'password'"
                 :autocomplete="'current-password'"
                 @toggleValidity="($event) => (allow_save = $event)"
+                @onEnter="login"
               />
             </div>
 
@@ -119,7 +121,11 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off("login.suggest", this.checkAuthor);
   },
-  watch: {},
+  watch: {
+    connected_as() {
+      if (this.connected_as) this.$emit("close");
+    },
+  },
   computed: {
     author_suggestions() {
       if (this.search_for_author.length === 0 || this.authors.length === 0)
@@ -138,6 +144,10 @@ export default {
     },
   },
   methods: {
+    setFirstSuggestion() {
+      if (this.author_suggestions.length > 0)
+        this.checkAuthor(this.author_suggestions.at(0));
+    },
     async login() {
       const author = this.author_to_login_to;
       if (!author) {
@@ -159,11 +169,9 @@ export default {
         })
         .then(() => {
           this.$alertify.delay(4000).success(this.$t("logged_in"));
-
-          this.$emit("close");
         })
         .catch((err) => {
-          if (err === "submitted_password_is_wrong") {
+          if (err.code === "submitted_password_is_wrong") {
             this.$refs.passwordField.$el.querySelector("input").select();
             this.$alertify
               .delay(40000)
