@@ -19,7 +19,7 @@
         required
         placeholder="Mot-clé, matériaux, lieux, etc."
         @keydown.esc.prevent="$emit('cancelEdit')"
-        @keydown.enter.prevent="newKeyword"
+        @keydown.enter.exact.prevent="newKeyword"
         @keydown.enter.shift.exact.prevent="submitFirstSuggestion"
       />
       <div class="u-instructions">
@@ -34,38 +34,38 @@
         </small>
       </div>
 
-      <DLabel :str="$t('suggestions')" />
+      <!-- <DLabel :str="$t('suggestions')" /> -->
       <!-- v-if="suggested_keywords_from_search.length > 0" -->
-
-      <div class="_categories">
-        <button
-          type="button"
-          class="u-button _category"
-          :class="{
-            'is--active': suggestion_from_category === category,
-          }"
-          v-for="category in all_categories"
-          v-show="matchingKeywordsWithCategory(category).length > 0"
-          :key="category"
-          :data-category="category"
-          @click="toggleCategory(category)"
-        >
-          {{ category }}
-          ({{ matchingKeywordsWithCategory(category).length }})
-        </button>
-      </div>
-      <div class="_suggestions" v-if="suggested_keywords.length > 0">
-        <div class="_keywords">
-          <SingleKeyword
-            v-for="(suggested_keyword, index) in suggested_keywords"
-            :key="suggested_keyword"
+      <div class="_catSug">
+        <div class="_categories">
+          <button
+            type="button"
+            class="u-button _category"
             :class="{
-              'is--first': index === 0,
+              'is--active': suggestion_from_category === category,
             }"
-            :keyword="suggested_keyword"
-            :can_add="true"
-            @add="addKeyword(suggested_keyword)"
-          />
+            v-for="category in categories_with_keywords"
+            :key="category"
+            :data-category="category"
+            @click="toggleCategory(category)"
+          >
+            {{ category }}
+            ({{ matchingKeywordsWithCategory(category).length }})
+          </button>
+        </div>
+        <div class="_suggestions" v-if="suggested_keywords.length > 0">
+          <div class="_keywords">
+            <SingleKeyword
+              v-for="(suggested_keyword, index) in suggested_keywords"
+              :key="suggested_keyword"
+              :class="{
+                'is--first': index === 0,
+              }"
+              :keyword="suggested_keyword"
+              :can_add="true"
+              @add="addKeyword(suggested_keyword)"
+            />
+          </div>
         </div>
       </div>
     </template>
@@ -95,8 +95,10 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    all_categories() {
-      return Object.keys(categories);
+    categories_with_keywords() {
+      return Object.keys(categories).filter((c) => {
+        return this.matchingKeywordsWithCategory(c).length > 0;
+      });
     },
     all_keywords() {
       return Object.entries(categories).reduce((acc, [category, items]) => {
@@ -194,6 +196,11 @@ export default {
   ._keyword {
     cursor: pointer;
   }
+}
+
+._catSug {
+  border-left: 2px solid black;
+  padding-left: calc(var(--spacing) / 2);
 }
 
 ._categories {
