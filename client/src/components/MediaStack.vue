@@ -121,7 +121,7 @@ export default {
       (f) => f.date_created_corrected || f.$date_created || f.$date_uploaded
     );
     file_dates.sort((a, b) => +new Date(b) - +new Date(a));
-    this.date_created_corrected = file_dates[0];
+    this.date_created_corrected = this.datetimeLocal(file_dates[0]);
   },
   mounted() {},
   beforeDestroy() {},
@@ -162,6 +162,7 @@ export default {
         title: this.title,
         description: this.description,
         keywords: this.keywords,
+        date_created_corrected: this.date_created_corrected,
         requested_slug: "stack",
         is_stack: true,
         stack_files_metas: [],

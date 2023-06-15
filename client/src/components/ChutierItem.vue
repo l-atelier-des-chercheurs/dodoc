@@ -173,12 +173,6 @@
 <script>
 import KeywordsField from "@/components/KeywordsField.vue";
 
-function datetimeLocal(datetime) {
-  const dt = new Date(datetime);
-  dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
-  return dt.toISOString().slice(0, 16);
-}
-
 export default {
   props: {
     file: Object,
@@ -206,7 +200,7 @@ export default {
 
       text_title:
         this.file.title || this.cleanFilename(this.file.$media_filename) || "",
-      date_created_corrected: datetimeLocal(
+      date_created_corrected: this.datetimeLocal(
         this.file.date_created_corrected ||
           this.file.$date_created ||
           this.file.$date_uploaded ||
