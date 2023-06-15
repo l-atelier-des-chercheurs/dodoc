@@ -39,6 +39,15 @@
       </div>
 
       <div class="_fields">
+        <small>
+          <input
+            class="is--dark"
+            type="datetime-local"
+            v-model="date_created_corrected"
+            step="1"
+          />
+        </small>
+
         <span class="u-instructions">
           Corrigez ou complétez le titre et les mots-clés pour partager cette
           pile.
@@ -104,9 +113,16 @@ export default {
       title: "",
       description: "",
       keywords: [],
+      date_created_corrected: "",
     };
   },
-  created() {},
+  created() {
+    const file_dates = this.files.map(
+      (f) => f.date_created_corrected || f.$date_created || f.$date_uploaded
+    );
+    file_dates.sort((a, b) => +new Date(b) - +new Date(a));
+    this.date_created_corrected = file_dates[0];
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
