@@ -63,5 +63,10 @@ export default {
         .filter(Boolean)
         .join(":");
     },
+    datetimeLocal(datetime) {
+      const dt = new Date(datetime);
+      dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+      return dt.toISOString().slice(0, 16);
+    },
   },
 };
