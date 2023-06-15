@@ -393,7 +393,7 @@ export default {
   // padding: 2px;
   padding: calc(var(--spacing) / 4) 0;
   margin-bottom: 2px;
-  // overflow: hidden;
+  overflow: hidden;
   border-radius: 4px;
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
   // border: 1px solid transparent;
@@ -538,6 +538,17 @@ export default {
     .ql-toolbar.ql-toolbar {
       top: 50px;
       border-radius: 8px;
+
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-between;
+
+      ._TEbtnContainer {
+        width: auto;
+        flex: 1 0 auto;
+        display: flex;
+        justify-content: flex-end;
+      }
     }
   }
 }
