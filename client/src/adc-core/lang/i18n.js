@@ -827,7 +827,7 @@ export default function () {
         object_fit_contain: "Remplir sans dépasser",
 
         create_a_module: "Créer un module",
-        list_of_archives: "Liste des archives",
+        list_of_versions: "Liste des versions",
         restore_this_version: "Restaurer cette version",
         version: "Version",
 

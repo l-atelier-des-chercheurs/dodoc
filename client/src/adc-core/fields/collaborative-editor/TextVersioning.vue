@@ -1,6 +1,6 @@
 <template>
   <BaseModal2
-    :title="$t('list_of_archives')"
+    :title="$t('list_of_versions')"
     class="_modal"
     @close="$emit('close')"
   >
