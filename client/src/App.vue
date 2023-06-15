@@ -32,7 +32,7 @@
         />
         <transition name="fade_fast" mode="out-in">
           <router-view
-            v-show="!show_authors_modal"
+            v-if="!show_authors_modal"
             v-slot="{ Component }"
             :key="$route.path"
           >

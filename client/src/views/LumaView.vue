@@ -16,7 +16,7 @@
           :key="'myContent'"
         >
           <MyChutier
-            v-show="show_chutier"
+            v-if="show_chutier"
             :shared_space_path="shared_folder_path"
             @close="show_chutier = false"
           />
@@ -99,6 +99,10 @@ export default {
   computed: {},
   methods: {
     async loadFolder() {
+      await this.$api.getFolders({
+        path: `authors`,
+      });
+
       this.folders = await this.$api
         .getFolders({
           path: this.path,
