@@ -4,10 +4,11 @@
     :class="{
       'is--clickable': can_add,
     }"
+    :style="kw_styles"
   >
     <div class="">
-      <div class="_category" v-if="category" :data-category="category">
-        {{ category }}
+      <div class="_category" v-if="category">
+        {{ category.toUpperCase() }}
       </div>
       <div class="_name">
         {{ name }}
@@ -31,6 +32,7 @@
 export default {
   props: {
     keyword: String,
+    cat_color: String,
     can_remove: Boolean,
     can_add: Boolean,
   },
@@ -51,6 +53,18 @@ export default {
         ? this.keyword.split("/").at(1)
         : this.keyword;
     },
+    kw_styles() {
+      let category_color = false;
+
+      if (this.cat_color) category_color = this.cat_color;
+      else {
+        const category = window.app_infos.custom_suggested_categories.find(
+          (c) => c.title === this.category
+        );
+        category_color = category?.tag_color;
+      }
+      return category_color ? `--cat-color: ${category_color}` : "";
+    },
   },
   methods: {},
 };
@@ -58,7 +72,8 @@ export default {
 <style lang="scss" scoped>
 ._singleKeyword {
   position: relative;
-  background-color: rgba(255, 255, 255, 0.2);
+  // background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(51, 51, 51, 1);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   border-radius: 4px;
   color: white;
@@ -75,25 +90,13 @@ export default {
   }
 
   &.is--clickable:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(41, 41, 41, 1);
   }
 }
 
 ._category {
   font-size: 80%;
-
-  &[data-category="techniques"] {
-    color: var(--color-vert);
-  }
-  &[data-category="gisement"] {
-    color: var(--color-rouge);
-  }
-  &[data-category="lieu"] {
-    color: var(--color-bleu);
-  }
-  &[data-category="domaine"] {
-    color: var(--color-jaune);
-  }
+  color: var(--cat-color);
 }
 ._name {
   font-size: 110%;

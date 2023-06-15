@@ -68,6 +68,7 @@ export default function () {
         no_description: "Pas de description",
         keywords: "Mots-clés",
         suggested_keywords: "Mots-clé suggérés",
+        suggested_cat_kw: "Catégories et mots-clé suggérés",
 
         add: "ajouter",
         add_item: "Ajouter un élément",
@@ -442,6 +443,7 @@ export default function () {
 
         add_category: "Ajouter une catégorie",
         category_name: "Nom de la catégorie",
+        category_title: "Titre de la catégorie",
 
         watermark: "Habillage",
         watermark_instructions:

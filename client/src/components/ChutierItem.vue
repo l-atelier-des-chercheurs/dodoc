@@ -408,10 +408,10 @@ export default {
   // &.is--clicked
   {
     // border-color: var(--c-orange);
-    background: rgba(240, 240, 240, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    // background: rgba(240, 240, 240, 0.1);
     // background: rgb(67, 69, 71);
     &:hover {
-      background: rgba(255, 255, 255, 0.15);
     }
   }
 

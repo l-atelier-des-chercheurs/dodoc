@@ -5,11 +5,11 @@
         <div
           v-for="category in categories"
           :key="category.$path"
-          class="_fontRow"
+          class="_categoryRow"
         >
-          <h3>
+          <div class="_title" :style="categoryStyles(category)">
             {{ category.title }}
-          </h3>
+          </div>
           <button
             type="button"
             class="u-buttonLink"
@@ -19,17 +19,15 @@
         </div>
       </div>
 
-      <br />
-
       <button
         type="button"
-        class="u-button u-button_bleuvert"
+        class="u-buttonLink"
         :class="{
           'is--active': show_create_category,
         }"
         @click="show_create_category = !show_create_category"
       >
-        {{ $t("add") }}
+        {{ $t("add_category") }}
       </button>
 
       <form
@@ -41,14 +39,12 @@
           <legend class="u-label">{{ $t("add_category") }}</legend>
 
           <TextInput
+            class="u-spacingBottom"
             :content.sync="new_category_title"
             :label_str="'category_name'"
             :required="true"
             :input_type="'text'"
           />
-
-          <br />
-          <br />
 
           <button
             slot="footer"
@@ -121,15 +117,28 @@ export default {
     openCategory(path) {
       this.opened_category_path = path;
     },
+    categoryStyles(category) {
+      if (category.tag_color)
+        return `
+        color: ${category.tag_color}
+      `;
+      return "";
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-._fontRow {
+._categoryRow {
   display: flex;
   justify-content: space-between;
   align-content: center;
-  border-bottom: 2px solid var(--c-gris);
-  padding: calc(var(--spacing) / 2) 0;
+  // border-bottom: 2px solid var(--c-gris);
+  padding: calc(var(--spacing) / 8) 0;
+}
+
+._title {
+  background: var(--c-noir);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  border-radius: 4px;
 }
 </style>

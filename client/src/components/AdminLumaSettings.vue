@@ -5,19 +5,28 @@
         <LoaderSpinner />
       </div>
       <div v-else>
-        <div class="u-spacingBottom">
-          <AdminsAndContributorsField
-            :folder="settings"
-            :can_edit="true"
-            :admin_label="$t('admin')"
-            :admin_instructions="$t('instance_admin_instructions')"
-            :contrib_instructions="$t('instance_contrib_instructions')"
-          />
-        </div>
+        <sl-tab-group @sl-tab-show="newTabShown">
+          <sl-tab slot="nav" panel="administration_and_access_control">
+            {{ $t("administration_and_access_control") }}
+          </sl-tab>
+          <sl-tab slot="nav" panel="suggested_cat_kw">
+            {{ $t("suggested_cat_kw") }}
+          </sl-tab>
 
-        <div class="u-spacingBottom">
-          <SuggestedCategories />
-        </div>
+          <sl-tab-panel name="administration_and_access_control">
+            <AdminsAndContributorsField
+              v-if="current_tab === 'administration_and_access_control'"
+              :folder="settings"
+              :can_edit="true"
+              :admin_label="$t('admin')"
+              :admin_instructions="$t('instance_admin_instructions')"
+              :contrib_instructions="$t('instance_contrib_instructions')"
+            />
+          </sl-tab-panel>
+          <sl-tab-panel name="suggested_cat_kw">
+            <SuggestedCategories v-if="current_tab === 'suggested_cat_kw'" />
+          </sl-tab-panel>
+        </sl-tab-group>
       </div>
     </div>
   </BaseModal2>
@@ -32,6 +41,8 @@ export default {
     return {
       settings: undefined,
       is_loading: true,
+
+      current_tab: "administration_and_access_control",
     };
   },
   created() {},
@@ -52,7 +63,11 @@ export default {
   },
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    newTabShown($event) {
+      this.current_tab = $event.detail.name;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

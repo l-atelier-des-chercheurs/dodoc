@@ -133,6 +133,9 @@
             "required": true,
             "unique": true
           },
+          "tag_color": {
+            "type": "string"
+          },
           "list_of_suggestions": {
             "type": "array"
           }

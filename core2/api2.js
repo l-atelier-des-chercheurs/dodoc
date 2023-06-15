@@ -491,6 +491,7 @@ module.exports = (function () {
     if (hero_thumb) d.hero_thumb = `/thumbs/${hero_thumb}`;
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
+    d.custom_suggested_categories = (await _loadCustomCategories()) || {};
 
     res.render("index2", d);
   }
@@ -1147,6 +1148,19 @@ module.exports = (function () {
           font_files: font.font_files,
         });
 
+      return acc;
+    }, []);
+  }
+  async function _loadCustomCategories() {
+    let custom_categories = await folder.getFolders({
+      path_to_type: "categories",
+    });
+    return custom_categories.reduce((acc, category) => {
+      acc.push({
+        title: category.title,
+        tag_color: category.tag_color || "",
+        path: category.$path,
+      });
       return acc;
     }, []);
   }

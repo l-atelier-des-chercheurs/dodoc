@@ -1,65 +1,96 @@
 <template>
   <div>
-    <button
-      type="button"
-      class="u-buttonLink"
-      @click="$emit('close')"
-      v-text="$t('close')"
-    />
+    <button type="button" class="u-buttonLink" @click="$emit('close')">
+      <sl-icon name="arrow-left-short" />
+      {{ $t("back") }}
+    </button>
+    <div class="u-spacingBottom" />
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>
     <div v-else>
-      <TitleField
-        class="_title"
-        :field_name="'title'"
-        :content="category.title"
-        :path="category.$path"
-        tag="h3"
-        :can_edit="true"
-      />
-
-      <div>
-        <div v-for="suggestion in new_list_of_suggestions" :key="suggestion">
-          {{ suggestion }}
-          <sl-icon-button
-            class="_white"
-            name="dash-circle"
-            @click="removeSuggestion(suggestion)"
-          />
-        </div>
-
+      <div class="_top">
         <div class="u-spacingBottom">
-          <input
-            type="text"
-            v-model="new_suggestion"
-            placeholder="Nouveau mot-clé"
-            @keydown.enter.prevent="newKeyword"
+          <TitleField
+            class="_title"
+            :label="$t('category_title')"
+            :field_name="'title'"
+            :content="category.title"
+            :path="category.$path"
+            tag="h3"
+            :required="true"
+            :maxlength="20"
+            :can_edit="false"
           />
-          <div class="u-instructions" v-if="new_suggestion.length > 0">
-            <small
-              >Validez avec la touche entrée. Enregistrez la nouvelle liste avec
-              les boutons ci-dessous.</small
-            >
-          </div>
         </div>
 
-        <SaveCancelButtons
-          class="_scb"
-          v-if="new_suggestion.length === 0"
-          @save="saveNewSuggestion"
-          @cancel="cancel"
+        <ColorInput
+          :label="$t('custom_color')"
+          :default_value="'#ffffff'"
+          :value="category.tag_color"
+          :can_toggle="true"
+          @save="saveNewColor"
         />
       </div>
+
+      <div class="u-spacingBottom _kwSimulation">
+        <SingleKeyword
+          :keyword="category.title + '/couleur'"
+          :cat_color="category.tag_color"
+        />
+      </div>
+
+      <div class="u-spacingBottom u-keywords">
+        <SingleKeyword
+          v-for="suggestion in new_list_of_suggestions"
+          :key="suggestion"
+          :keyword="suggestion"
+          :can_remove="true"
+          @remove="removeSuggestion(suggestion)"
+        />
+      </div>
+
+      <div class="u-spacingBottom">
+        <input
+          type="text"
+          v-model="new_suggestion"
+          placeholder="Nouveau mot-clé"
+          @keydown.enter.exact.prevent="newKeyword"
+        />
+        <div class="u-instructions" v-if="new_keyword_already_exists">
+          <small
+            >Ce mot-clé existe déjà, vous ne pouvez pas l’ajouter. Si vous
+            souhaitez changer la case, supprimez le de la liste puis ajoutez le
+            à nouveau.</small
+          >
+        </div>
+        <div class="u-instructions" v-else-if="new_keyword_contains_slash">
+          <small>Ce mot-clé contient le caractère "/", qui est interdit.</small>
+        </div>
+        <div class="u-instructions" v-else-if="new_suggestion.length > 0">
+          <small>Validez avec la touche entrée.</small>
+        </div>
+      </div>
+
+      <SaveCancelButtons
+        class="_scb"
+        v-if="new_suggestion.length === 0"
+        @save="saveNewSuggestion"
+        @cancel="cancel"
+      />
     </div>
   </div>
 </template>
 <script>
+import SingleKeyword from "@/components/SingleKeyword.vue";
+
 export default {
   props: {
     path: String,
   },
-  components: {},
+  components: {
+    SingleKeyword,
+  },
   data() {
     return {
       category: undefined,
@@ -74,12 +105,28 @@ export default {
     this.category = await this.$api.getFolder({
       path: this.path,
     });
+    this.$api.join({ room: this.path });
+
     this.new_list_of_suggestions = this.category.list_of_suggestions || [];
+    // this.new_list_of_suggestions = this.new_list_of_suggestions.map(
+    //   (s) => this.category.title + "/" + s
+    // );
     this.is_loading = false;
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.path });
+  },
   watch: {},
-  computed: {},
+  computed: {
+    new_keyword_already_exists() {
+      return this.new_list_of_suggestions.some(
+        (s) => s.toLowerCase() === this.new_suggestion.toLowerCase()
+      );
+    },
+    new_keyword_contains_slash() {
+      return this.new_suggestion.includes("/");
+    },
+  },
   methods: {
     removeSuggestion(suggestion) {
       this.new_list_of_suggestions = this.new_list_of_suggestions.filter(
@@ -87,6 +134,12 @@ export default {
       );
     },
     newKeyword() {
+      if (
+        this.new_suggestion.length === 0 ||
+        this.new_keyword_already_exists ||
+        this.new_keyword_contains_slash
+      )
+        return false;
       this.new_list_of_suggestions.push(this.new_suggestion);
       this.new_suggestion = "";
     },
@@ -104,7 +157,25 @@ export default {
       });
       this.$emit("close");
     },
+    async saveNewColor($event) {
+      await this.$api.updateMeta({
+        path: this.path,
+        new_meta: {
+          tag_color: $event || "",
+        },
+      });
+    },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._top {
+  // display: flex;
+  // flex-flow: row nowrap;
+  // justify-content: space-between;
+}
+
+._kwSimulation {
+  display: flex;
+}
+</style>
