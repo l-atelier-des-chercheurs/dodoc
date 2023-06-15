@@ -440,6 +440,9 @@ export default function () {
         markdown_instr:
           "Champ en Markdown : vous pouvez mettre en forme le texte (titres, gras, italique, liens, etc.).",
 
+        add_category: "Ajouter une catégorie",
+        category_name: "Nom de la catégorie",
+
         watermark: "Habillage",
         watermark_instructions:
           "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",

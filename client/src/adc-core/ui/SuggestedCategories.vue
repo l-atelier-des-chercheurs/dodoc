@@ -38,11 +38,11 @@
         @submit.prevent="createCategory"
       >
         <fieldset>
-          <legend class="u-label">{{ $t("add_font") }}</legend>
+          <legend class="u-label">{{ $t("add_category") }}</legend>
 
           <TextInput
             :content.sync="new_category_title"
-            :label_str="'font_name'"
+            :label_str="'category_name'"
             :required="true"
             :input_type="'text'"
           />

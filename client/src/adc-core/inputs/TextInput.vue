@@ -4,7 +4,7 @@
     <template v-if="tag === 'input'">
       <input
         ref="field"
-        class="is--dark"
+        class=""
         :type="field_input_type_prop"
         :name="label_str"
         :autocomplete="autocomplete"
