@@ -372,14 +372,19 @@ export default {
 ._infos {
   flex: 1 1 auto;
   display: flex;
+  flex-flow: row nowrap;
   justify-content: stretch;
   align-items: center;
   gap: calc(var(--spacing) / 2);
   // padding-left: 1px;
-  margin: 0 calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) / 2);
+  width: 100%;
 
   ._titleDateField {
-    flex: 1 1 auto;
+    flex: 1 1 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

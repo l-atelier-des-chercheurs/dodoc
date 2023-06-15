@@ -45,6 +45,9 @@
             :required="true"
             :input_type="'text'"
           />
+          <div class="u-instructions">
+            <small> Tout en majuscule </small>
+          </div>
 
           <button
             slot="footer"
@@ -107,7 +110,7 @@ export default {
       const slug = await this.$api.createFolder({
         path: this.path,
         additional_meta: {
-          title: this.new_category_title,
+          title: this.new_category_title.toUpperCase(),
           requested_slug: this.new_category_title,
           $status: "public",
         },
