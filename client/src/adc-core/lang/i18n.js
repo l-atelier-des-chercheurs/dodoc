@@ -517,7 +517,7 @@ export default function () {
         saving: "Enregistrement…",
         saved: "OK !",
         connected: "Connecté",
-        archives: "Archives",
+        history: "Historique",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         // todo add explanations
