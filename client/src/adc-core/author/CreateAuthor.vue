@@ -76,7 +76,7 @@
 
           <TextInput
             :content.sync="new_author_password"
-            :label_str="$t('password')"
+            :label_str="'password'"
             :minlength="3"
             :maxlength="20"
             :required="true"
