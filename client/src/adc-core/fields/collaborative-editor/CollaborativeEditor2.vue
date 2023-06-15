@@ -37,7 +37,7 @@
             @click="show_archives = !show_archives"
           >
             <sl-icon slot="prefix" name="archive" />
-            {{ $t("archives") }}
+            {{ $t("history") }}
           </button>
         </template>
 
