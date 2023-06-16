@@ -50,7 +50,10 @@ class Exporter {
         });
         throw new Error(`failed`);
       });
-      desired_filename = "publication.pdf";
+      if (this.instructions.suggested_file_name)
+        desired_filename =
+          utils.slug(this.instructions.suggested_file_name) + ".pdf";
+      else desired_filename = "publication.pdf";
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
       desired_filename = "preview.png";

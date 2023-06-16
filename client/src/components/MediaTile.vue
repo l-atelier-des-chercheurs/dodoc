@@ -272,7 +272,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 20;
+  z-index: 2;
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
