@@ -373,6 +373,12 @@ export default {
     text-transform: capitalize;
     // padding: 0 calc(var(--spacing) / 2);
   }
+
+  ::v-deep {
+    .u-nut {
+      background: var(--c-noir);
+    }
+  }
 }
 
 ._mediaLibrary--lib--grid {
