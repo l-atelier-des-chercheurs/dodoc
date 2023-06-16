@@ -5,6 +5,7 @@
     v-if="author"
     :to="component_to"
     class="_author"
+    :data-imageonly="show_image_only"
     @click="$emit('click')"
   >
     <div class="_cover">
@@ -112,12 +113,22 @@ export default {
   border: 1px solid var(--c-gris);
   box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
 
+  &[data-imageonly] {
+    padding: 0;
+    box-shadow: none;
+    border: none;
+  }
+
   ._cover {
     position: relative;
     overflow: hidden;
     border-radius: 50%;
     width: 30px;
     height: 30px;
+  }
+  &[data-imageonly] ._cover {
+    outline: 3px solid white;
+    margin-right: -0.25em;
   }
 
   ._infos {
