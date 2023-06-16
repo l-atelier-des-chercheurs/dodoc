@@ -1,5 +1,6 @@
 export default {
   machines: [
+    "Brodeuse numérique",
     "Découpeuse laser",
     "Découpeuse vinyle",
     "Fraiseuse numérique",
@@ -9,6 +10,8 @@ export default {
     "Imprimante laser couleur",
     "Arduino",
     "micro:bit",
+    "Makey Makey",
+    "Machine à coudre",
     "Raspberry Pi",
     "Capteurs",
     "Actuateurs",
@@ -17,6 +20,7 @@ export default {
     "Perçeuse",
     "Ponçeuse",
     "Scie",
+    "Scie à chantourner",
   ],
   materials: [
     "Vinyle",
@@ -27,6 +31,7 @@ export default {
     "Palettes",
     "Plexi/PMMA",
     "Carton",
+    "Papier",
     "Caoutchouc Tampon",
     "Tissu",
     "Cuir",
