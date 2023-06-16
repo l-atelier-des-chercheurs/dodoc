@@ -13,6 +13,7 @@
         :context="'preview'"
         :cover="author.$cover"
         :path="author.$path"
+        :placeholder="author.name.substring(0, 2)"
         :can_edit="false"
       />
     </div>
