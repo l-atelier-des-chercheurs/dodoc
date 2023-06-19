@@ -6,8 +6,8 @@ const path = require("path"),
   { networkInterfaces } = require("os"),
   sharp = require("sharp"),
   { IncomingForm } = require("formidable"),
-  md5File = require("md5-file");
-crypto = require("crypto");
+  md5File = require("md5-file"),
+  crypto = require("crypto");
 
 sharp.cache(false);
 
