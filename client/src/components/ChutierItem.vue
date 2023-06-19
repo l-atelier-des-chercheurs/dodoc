@@ -44,10 +44,12 @@
               <small>
                 <template v-if="!edit_mode">
                   {{
-                    formatTime(date_created_corrected, {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
+                    context === "stack"
+                      ? formatDateTimeToPrecise(date_created_corrected)
+                      : formatTime(date_created_corrected, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
                   }}
                 </template>
                 <template v-else>
