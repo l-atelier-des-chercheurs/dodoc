@@ -462,8 +462,8 @@ export default {
   top: 0;
   height: 100%;
   overflow: hidden;
-  background: #f9f9f9;
-  background: var(--chutier-bg);
+  // background: #f9f9f9;
+  // background: var(--chutier-bg);
   color: white;
 
   // display: flex;

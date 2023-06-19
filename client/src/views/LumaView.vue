@@ -165,7 +165,7 @@ export default {
   width: var(--chutier-width);
   height: 100%;
   background: var(--chutier-bg);
-  box-shadow: 0 0px 10px rgb(0 0 0 / 52%);
+  box-shadow: -4px 0px 5px inset rgba(0, 0, 0, 0.52);
   overflow: hidden;
 
   transform: translate(
