@@ -142,7 +142,7 @@
             <button v-else type="button" class="u-buttonLink u-selectBtn">
               <sl-icon name="dash-square-dotted" />
             </button>
-            {{ formatDateToHuman(ci.label) }}
+            {{ ci.label }}
           </div>
           <transition-group tag="div" name="listComplete">
             <div
