@@ -62,7 +62,6 @@
           </div> -->
         </div>
         <div class="_rightContent">
-          {{ current_file_shown }}
           <DateDisplay
             v-if="file.date_created_corrected"
             :date="file.date_created_corrected"
@@ -93,7 +92,7 @@
             />
           </div>
 
-          {{ current_file_shown }}
+          <!-- {{ current_file_shown }} -->
 
           <sl-icon-button
             name="trash3"
