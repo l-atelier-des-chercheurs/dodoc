@@ -66,7 +66,7 @@ export default {
   &:focus,
   &.is--opened {
     // background: rgb(67, 69, 71);
-    transform: translateY(-15px);
+    transform: translateY(-10px);
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
@@ -90,7 +90,7 @@ export default {
   &:focus,
   &.is--opened {
     z-index: 20;
-    --stack-step: 30px;
+    --stack-step: 20px;
 
     ._title {
       transform: translate(0, 0%);
@@ -102,10 +102,11 @@ export default {
   background: white;
   z-index: 10;
   // border-radius: 4px;
-  border-radius: 4px 4px 0 0;
+  // border-radius: 4px 4px 0 0;
 
   overflow: hidden;
-  border: 2px solid white;
+  // border: 2px solid white;
+  border-bottom: 1px solid white;
   min-height: 50px;
 
   display: -webkit-box;

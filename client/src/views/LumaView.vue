@@ -27,6 +27,10 @@
               'is--showingChutier': show_chutier,
             }"
           >
+            <!-- <div class="">
+              // todo shown number of items to handle
+            </div> -->
+
             <button type="button" @click="show_chutier = !show_chutier">
               <svg
                 width="17"

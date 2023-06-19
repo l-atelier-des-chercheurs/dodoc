@@ -40,7 +40,9 @@
       </div>
     </div>
 
-    <ItemModal v-if="opened_files" :file="opened_files" @close="closeFile" />
+    <transition name="scaleInFade" mode="out-in">
+      <ItemModal v-if="opened_files" :file="opened_files" @close="closeFile" />
+    </transition>
 
     <!-- <transition-group tag="div" name="projectsList" appear> -->
     <transition name="pagechange" mode="out-in">
@@ -97,11 +99,12 @@ export default {
   data() {
     return {
       shared_folder: undefined,
-      sort_order: "date_created",
+      sort_order: localStorage.getItem("sort_order") || "date_created",
+
       show_backtotop_btn: false,
       current_scroll: 0,
 
-      group_mode: "day",
+      group_mode: localStorage.getItem("group_mode") || "day",
       group_options: [
         {
           key: "day",
@@ -126,7 +129,14 @@ export default {
     this.$api.join({ room: this.shared_folder_path });
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    sort_order() {
+      localStorage.setItem("sort_order", this.sort_order);
+    },
+    group_mode() {
+      localStorage.setItem("group_mode", this.group_mode);
+    },
+  },
   computed: {
     opened_files() {
       if (!this.$route.query?.file) return false;
@@ -147,6 +157,15 @@ export default {
           m._stack_files = m.stack_files_metas.map((sfm) =>
             _stacks_of_medias.find((sm) => sm.$path.endsWith("/" + sfm))
           );
+          // m._stack_files = m._stack_files
+          //   .concat(m._stack_files)
+          //   .concat(m._stack_files);
+          // m._stack_files = m._stack_files
+          //   .concat(m._stack_files)
+          //   .concat(m._stack_files);
+          // m._stack_files = m._stack_files
+          //   .concat(m._stack_files)
+          //   .concat(m._stack_files);
         }
         acc.push(m);
         return acc;
@@ -244,7 +263,7 @@ export default {
   flex-flow: row wrap;
   justify-content: flex-start;
   align-items: flex-end;
-  gap: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
+  gap: calc(var(--spacing) * 3) calc(var(--spacing) * 2);
 }
 ._file {
   width: 150px;
