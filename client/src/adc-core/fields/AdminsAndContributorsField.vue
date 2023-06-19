@@ -13,7 +13,7 @@
           :key="atpath"
           :edit_mode="false"
           :links_to_author_page="true"
-          :show_image_only="false"
+          :show_image_only="true"
         />
       </div>
       <div class="u-instructions">
@@ -88,6 +88,7 @@ export default {
       if (Array.isArray(this.contributors_path))
         p = p.concat(this.contributors_path);
       p = [...new Set(p)];
+      // p = p.concat(p).concat(p);
       return p;
     },
     admins_path() {
@@ -122,7 +123,13 @@ export default {
   }
 }
 .u-listOfAvatars {
+  display: flex;
+  flex-flow: row nowrap;
   padding: 0;
+  overflow: auto;
+  gap: 0;
+
+  @include scrollbar(8px, 5px, 6px);
 }
 
 ._floatingTopRight {

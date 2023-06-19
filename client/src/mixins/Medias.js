@@ -188,9 +188,6 @@ export default {
             month: "long",
           });
         else date_label = o;
-
-        debugger;
-
         return {
           label: date_label,
           files: grouped[o],

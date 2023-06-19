@@ -63,6 +63,9 @@ export default function () {
           "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
         embed: "Intégrer",
         from_project: "Depuis le projet",
+        day: "Jour",
+        month: "Mois",
+        year: "Année",
 
         description: "Description",
         no_description: "Pas de description",

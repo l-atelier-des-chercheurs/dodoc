@@ -54,7 +54,10 @@ export default {
   },
   computed: {
     suggestions_list() {
-      return this.suggestions[this.tag_type] || [];
+      const suggestions_by_type = this.suggestions[this.tag_type] || [];
+      return suggestions_by_type.sort((a, b) => {
+        return a.localeCompare(b);
+      });
     },
 
     filtered_suggestions() {
