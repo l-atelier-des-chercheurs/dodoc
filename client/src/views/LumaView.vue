@@ -81,7 +81,8 @@ export default {
       folders: undefined,
       shared_folder_path: undefined,
 
-      show_chutier: true,
+      show_chutier:
+        localStorage.getItem("show_chutier") === "false" ? false : true,
     };
   },
   created() {},
@@ -95,6 +96,9 @@ export default {
   beforeDestroy() {},
   watch: {
     connected_as() {},
+    show_chutier() {
+      localStorage.setItem("show_chutier", this.show_chutier);
+    },
   },
   computed: {},
   methods: {
