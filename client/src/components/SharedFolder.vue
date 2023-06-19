@@ -1,34 +1,76 @@
 <template>
-  <div v-if="shared_folder" class="_sharedFolder">
+  <div v-if="shared_folder" class="_sharedFolder" @scroll="updatedScroll">
     <div class="_topbar">
       <div class="_topbar--content">
-        <div class="_title">ESPACE PARTAGÉ / ARCHIVE</div>
-        <div class="">jour | mois | année | date</div>
-        <div class=""></div>
+        <div class="_title">
+          <transition name="showBTTBtn">
+            <button
+              type="button"
+              @click="scrollTop"
+              v-if="current_scroll > 100"
+            >
+              <sl-icon name="arrow-up-circle-fill" />
+            </button>
+          </transition>
+          ESPACE PARTAGÉ / ARCHIVE
+        </div>
+        <div class="_groupBy">
+          <div v-for="group_option in group_options" :key="group_option.key">
+            <input
+              type="radio"
+              :id="group_option.key"
+              :value="group_option.key"
+              v-model="group_mode"
+            />
+            <label
+              :for="group_option.key"
+              v-text="group_option.label"
+              :class="{
+                'is--selected': group_option.key === group_mode,
+              }"
+            />
+          </div>
+        </div>
+        <div class="_sortSelect">
+          <select v-model="sort_order">
+            <option value="date_created" v-text="$t('date_created')" />
+            <option value="date_uploaded" v-text="$t('date_uploaded')" />
+          </select>
+        </div>
       </div>
     </div>
 
     <ItemModal v-if="opened_files" :file="opened_files" @close="closeFile" />
 
-    <div
-      class="_dayFileSection"
-      v-for="{ label, files } in grouped_files"
-      :key="label"
-    >
-      <div class="_label">
-        {{ formatDateToHuman(label) }}
-      </div>
-      <div class="_grid">
-        <SharedFolderItem
-          class="_file"
-          v-for="file in files"
-          :key="file.$path"
-          :file="file"
-          :is_opened="opened_files && opened_files.$path === file.$path"
-          @open="openFile(file.$path)"
-        />
-      </div>
-    </div>
+    <!-- <transition-group tag="div" name="projectsList" appear> -->
+    <transition name="pagechange" mode="out-in">
+      <transition-group
+        tag="div"
+        name="projectsList"
+        appear
+        :key="sort_order + '-' + group_mode"
+      >
+        <div
+          class="_dayFileSection"
+          v-for="{ label, files } in grouped_files"
+          :key="label"
+        >
+          <div class="_label">
+            {{ label }}
+          </div>
+          <transition-group tag="div" class="_grid" name="listComplete" appear>
+            <SharedFolderItem
+              class="_file"
+              v-for="file in files"
+              :key="file.$path"
+              :file="file"
+              :is_opened="opened_files && opened_files.$path === file.$path"
+              @open="openFile(file.$path)"
+            />
+          </transition-group>
+        </div>
+      </transition-group>
+    </transition>
 
     <footer class="_footer">
       <small>
@@ -55,6 +97,25 @@ export default {
   data() {
     return {
       shared_folder: undefined,
+      sort_order: "date_created",
+      show_backtotop_btn: false,
+      current_scroll: 0,
+
+      group_mode: "day",
+      group_options: [
+        {
+          key: "day",
+          label: this.$t("day"),
+        },
+        {
+          key: "month",
+          label: this.$t("month"),
+        },
+        {
+          key: "year",
+          label: this.$t("year"),
+        },
+      ],
     };
   },
   created() {},
@@ -97,14 +158,25 @@ export default {
       return _medias_not_in_stacks;
     },
     grouped_files() {
-      return this.groupFilesByDay(this.shared_files, [
-        "date_created_corrected",
-        "$date_created",
-        "$date_uploaded",
-      ]);
+      let order_props;
+      if (this.sort_order === "date_created")
+        order_props = [
+          "date_created_corrected",
+          "$date_created",
+          "$date_uploaded",
+        ];
+      else if (this.sort_order === "date_uploaded")
+        order_props = ["$date_uploaded"];
+      return this.groupFilesBy(this.shared_files, order_props, this.group_mode);
     },
   },
   methods: {
+    updatedScroll() {
+      this.current_scroll = this.$el.scrollTop;
+    },
+    scrollTop() {
+      this.$el.scrollTo({ top: 0, behavior: "smooth" });
+    },
     openFile(path) {
       let query = Object.assign({}, this.$route.query) || {};
       const meta_filename = this.getFilename(path);
@@ -123,8 +195,8 @@ export default {
 ._sharedFolder {
   padding-bottom: calc(var(--spacing) * 4);
   border-radius: 4px;
-  // overflow: auto;
-  // height: 100%;
+  overflow: auto;
+  height: 100%;
 }
 
 ._topbar {
@@ -133,16 +205,17 @@ export default {
   z-index: 10;
   // margin: calc(var(--spacing) * 2);
   padding: calc(var(--spacing) * 1);
-  border-bottom: 2px solid white;
+  // border-bottom: 2px solid white;
 
+  background: var(--c-bodybg);
   // background: white;
-  backdrop-filter: blur(6px);
+  // backdrop-filter: blur(6px);
   // mask: linear-gradient(black 75%, transparent 100%);
-  mask: linear-gradient(#000 55%, transparent);
+  mask: linear-gradient(#000 80%, transparent);
 }
 ._topbar--content {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   justify-content: space-between;
   align-items: flex-end;
   padding: calc(var(--spacing) * 1);
@@ -209,6 +282,32 @@ export default {
 
   a {
     color: inherit;
+  }
+}
+
+._sortSelect {
+  width: 33ch;
+
+  select {
+    background: white;
+  }
+}
+
+._groupBy {
+  display: flex;
+  flex-flow: row nowrap;
+
+  input {
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+  }
+
+  label {
+    cursor: pointer;
+    &.is--selected {
+      font-weight: 600;
+    }
   }
 }
 </style>

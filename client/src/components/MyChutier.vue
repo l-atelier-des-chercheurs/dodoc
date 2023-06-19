@@ -359,11 +359,11 @@ export default {
       return _medias;
     },
     chutier_items_grouped() {
-      return this.groupFilesByDay(this.chutier_items, [
-        "date_created_corrected",
-        "$date_created",
-        "$date_uploaded",
-      ]);
+      return this.groupFilesBy(
+        this.chutier_items,
+        ["date_created_corrected", "$date_created", "$date_uploaded"],
+        "day"
+      );
     },
   },
   methods: {

@@ -10,7 +10,6 @@
     <div class="_title">
       {{ file.title }}
     </div>
-
     <MediaContent
       class="_sharedFolderItem--preview"
       :file="file.is_stack ? file._stack_files[0] : file"

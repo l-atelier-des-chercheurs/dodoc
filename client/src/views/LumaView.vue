@@ -176,7 +176,6 @@ export default {
   z-index: 1;
   height: 100%;
   flex: 1 1 auto;
-  overflow: auto;
   margin-left: var(--chutier-bar-width);
   width: calc(100% - var(--chutier-bar-width));
 

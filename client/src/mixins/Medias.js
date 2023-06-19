@@ -145,7 +145,7 @@ export default {
     getSoundcloudEmbedURLFromURL(url) {
       return `https://w.soundcloud.com/player/?url=${url}&color=0066cc`;
     },
-    groupFilesByDay(files, fields) {
+    groupFilesBy(files, fields, group_by) {
       const grouped = files.reduce((group, file) => {
         // var key = file.$date_uploaded;
 
@@ -154,10 +154,16 @@ export default {
         );
 
         var dateObj = new Date(file[date_field_to_use]);
+
         var month = dateObj.getUTCMonth() + 1; //months from 1-12
         var day = dateObj.getUTCDate();
         var year = dateObj.getUTCFullYear();
-        const key = year + "/" + month + "/" + day;
+
+        let key;
+        if (group_by === "day") key = year + "-" + month + "-" + day;
+        if (group_by === "month") key = year + "-" + month + "-" + "1";
+        if (group_by === "year") key = year;
+
         if (!Object.prototype.hasOwnProperty.call(group, key)) group[key] = [];
         group[key].push(file);
         return group;
@@ -169,8 +175,24 @@ export default {
         return +new Date(b) - +new Date(a);
       });
       return ordered.map((o) => {
+        let date_label;
+        if (group_by === "day")
+          date_label = this.formatDate(o, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        else if (group_by === "month")
+          date_label = this.formatDate(o, {
+            year: "numeric",
+            month: "long",
+          });
+        else date_label = o;
+
+        debugger;
+
         return {
-          label: o,
+          label: date_label,
           files: grouped[o],
         };
       });
