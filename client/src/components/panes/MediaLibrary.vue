@@ -51,75 +51,99 @@
           </div>
         </div>
         <div class="_topSection--right">
-          <button
-            class="u-button u-button_transparent"
-            type="button"
-            :class="{
-              'is--active': tile_mode === 'table',
-            }"
-            @click="tile_mode = 'table'"
-          >
-            <sl-icon name="list-ol" />
-          </button>
-          <button
-            class="u-button u-button_transparent"
-            type="button"
-            :class="{
-              'is--active': tile_mode === 'tiny',
-            }"
-            @click="tile_mode = 'tiny'"
-          >
-            <sl-icon name="grid-3x2-gap-fill" />
-          </button>
-          <button
-            class="u-button u-button_transparent"
-            type="button"
-            :class="{
-              'is--active': tile_mode === 'medium',
-            }"
-            @click="tile_mode = 'medium'"
-          >
-            <sl-icon name="grid-fill" />
-          </button>
+          <div class="_groupBy">
+            <div v-for="group_option in group_options" :key="group_option.key">
+              <input
+                type="radio"
+                :id="group_option.key"
+                :value="group_option.key"
+                v-model="group_mode"
+              />
+              <label
+                :for="group_option.key"
+                v-text="group_option.label"
+                :class="{
+                  'is--selected': group_option.key === group_mode,
+                }"
+              />
+            </div>
+          </div>
+
+          <div class="_tileMode">
+            <button
+              class="u-button u-button_transparent"
+              type="button"
+              :class="{
+                'is--active': tile_mode === 'table',
+              }"
+              @click="tile_mode = 'table'"
+            >
+              <sl-icon name="list-ol" />
+            </button>
+            <button
+              class="u-button u-button_transparent"
+              type="button"
+              :class="{
+                'is--active': tile_mode === 'tiny',
+              }"
+              @click="tile_mode = 'tiny'"
+            >
+              <sl-icon name="grid-3x2-gap-fill" />
+            </button>
+            <button
+              class="u-button u-button_transparent"
+              type="button"
+              :class="{
+                'is--active': tile_mode === 'medium',
+              }"
+              @click="tile_mode = 'medium'"
+            >
+              <sl-icon name="grid-fill" />
+            </button>
+          </div>
         </div>
       </div>
 
-      <div
-        class="_dayFileSection"
-        v-for="{ label, files } in grouped_medias"
-        :key="label"
-      >
-        <div class="_mediaLibrary--lib--label">
-          <strong>{{ formatDateToHuman(label) }}</strong>
-          <div class="u-nut" data-isfilled>
-            {{ files.length }}
+      <transition name="pagechange" mode="out-in">
+        <div :key="group_mode" class="_gridSection">
+          <div
+            class="_dayFileSection"
+            v-for="{ label, files } in grouped_medias"
+            :key="label"
+          >
+            <div class="_mediaLibrary--lib--label">
+              <strong>{{ label }}</strong>
+              <div class="u-nut" data-isfilled>
+                {{ files.length }}
+              </div>
+            </div>
+            <transition-group
+              tag="div"
+              class="_mediaLibrary--lib--grid"
+              :data-tilemode="tile_mode"
+              name="StoryModules"
+              ref="mediaTiles"
+              appear
+            >
+              <MediaTile
+                v-for="file of files"
+                :key="file.$path"
+                :project_path="project.$path"
+                :index="file._index"
+                :file="file"
+                :was_focused="media_just_focused === getFilename(file.$path)"
+                :is_selectable="mediaTileIsSelectable(file.$path)"
+                :is_selected="selected_medias.includes(file.$path)"
+                :data-filepath="file.$path"
+                :tile_mode="tile_mode"
+                :is_already_selected="mediaTileAlreadySelected(file.$path)"
+                @toggleMediaFocus="toggleMediaFocus(file.$path)"
+                @setSelected="(present) => setSelected(present, file.$path)"
+              />
+            </transition-group>
           </div>
         </div>
-        <transition-group
-          tag="div"
-          class="_mediaLibrary--lib--grid"
-          :data-tilemode="tile_mode"
-          name="StoryModules"
-          ref="mediaTiles"
-          appear
-        >
-          <MediaTile
-            v-for="file of files"
-            :key="file.$path"
-            :project_path="project.$path"
-            :index="file._index"
-            :file="file"
-            :was_focused="media_just_focused === getFilename(file.$path)"
-            :is_selectable="mediaTileIsSelectable(file.$path)"
-            :is_selected="selected_medias.includes(file.$path)"
-            :data-filepath="file.$path"
-            :tile_mode="tile_mode"
-            :is_already_selected="mediaTileAlreadySelected(file.$path)"
-            @toggleMediaFocus="toggleMediaFocus(file.$path)"
-            @setSelected="(present) => setSelected(present, file.$path)"
-          />
-        </transition-group>
-      </div>
+      </transition>
 
       <transition name="slideup">
         <div v-if="selected_medias.length > 0" class="_selectBtn">
@@ -184,6 +208,22 @@ export default {
       media_just_focused: undefined,
 
       hide_dropzone_timeout: undefined,
+
+      group_mode: localStorage.getItem("library_group_mode") || "day",
+      group_options: [
+        {
+          key: "day",
+          label: this.$t("day"),
+        },
+        {
+          key: "month",
+          label: this.$t("month"),
+        },
+        {
+          key: "year",
+          label: this.$t("year"),
+        },
+      ],
     };
   },
   created() {},
@@ -199,6 +239,9 @@ export default {
   watch: {
     tile_mode() {
       localStorage.setItem("library_tile_mode", this.tile_mode);
+    },
+    group_mode() {
+      localStorage.setItem("library_group_mode", this.group_mode);
     },
   },
   computed: {
@@ -228,7 +271,11 @@ export default {
       return _filtered_medias;
     },
     grouped_medias() {
-      return this.groupFilesByDay(this.filtered_medias, ["$date_uploaded"]);
+      return this.groupFilesBy(
+        this.filtered_medias,
+        ["$date_uploaded"],
+        this.group_mode
+      );
     },
     focused_media() {
       if (!this.media_focused) return false;
@@ -367,7 +414,11 @@ export default {
 }
 
 ._mediaLibrary--lib--label {
-  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--c-orange);
 
   strong {
     text-transform: capitalize;
@@ -385,7 +436,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 2px;
-  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) / 2);
 
   &[data-tilemode="medium"] {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -432,6 +483,10 @@ export default {
   gap: calc(var(--spacing) / 2);
 }
 
+._gridSection {
+  padding-bottom: calc(var(--spacing) / 2);
+}
+
 ._mediaCount {
   color: black;
   margin-bottom: 0;
@@ -469,6 +524,43 @@ export default {
   &:hover,
   &:focus {
     background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+._groupBy {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
+
+  > * {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  input {
+    accent-color: var(--active-color);
+    // visibility: hidden;
+    // width: 1px;
+    // height: 1px;
+  }
+
+  label {
+    cursor: pointer;
+    &.is--selected {
+      font-weight: 600;
+    }
+  }
+}
+
+._tileMode {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
+
+  button {
+    padding: calc(var(--spacing) / 1.5);
   }
 }
 </style>
