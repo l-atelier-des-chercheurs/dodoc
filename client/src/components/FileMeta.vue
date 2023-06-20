@@ -40,7 +40,7 @@
         :field="'$admins'"
         :authors_paths="file.$admins"
         :path="file.$path"
-        :can_edit="can_edit"
+        :can_edit="false"
         :instructions="$t('media_editing_instructions')"
       />
 
