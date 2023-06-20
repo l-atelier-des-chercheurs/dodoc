@@ -253,7 +253,7 @@ export default {
         path: this.file.$path,
         path_to_destination_folder,
         new_meta: {
-          $authors: [this.connected_as.$path],
+          $admins: [this.connected_as.$path],
         },
       });
       await this.remove();
