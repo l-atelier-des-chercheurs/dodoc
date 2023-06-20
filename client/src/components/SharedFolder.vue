@@ -33,8 +33,8 @@
         </div>
         <div class="_sortSelect">
           <select v-model="sort_order">
-            <option value="date_created" v-text="$t('date_created')" />
             <option value="date_uploaded" v-text="$t('date_uploaded')" />
+            <option value="date_created" v-text="$t('date_created')" />
           </select>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default {
   data() {
     return {
       shared_folder: undefined,
-      sort_order: localStorage.getItem("sort_order") || "date_created",
+      sort_order: localStorage.getItem("sort_order") || "date_uploaded",
 
       show_backtotop_btn: false,
       current_scroll: 0,
@@ -152,6 +152,9 @@ export default {
 
       // remove medias part of stacks
       const _medias_not_in_stacks = _all_medias.reduce((acc, m) => {
+        // if (!m.date_created_corrected)
+        //   m.date_created_corrected = m.$date_created || m.$date_uploaded;
+
         if (m.belongs_to_stack) return acc;
         if (m.is_stack && m.stack_files_metas) {
           m._stack_files = m.stack_files_metas.map((sfm) =>
