@@ -166,7 +166,7 @@ export default {
         requested_slug: "stack",
         is_stack: true,
         stack_files_metas: [],
-        $authors: [this.connected_as.$path],
+        $admins: [this.connected_as.$path],
       };
       const stack_meta_filename = await this.$api
         .uploadFile({
@@ -185,7 +185,7 @@ export default {
           path: file.$path,
           path_to_destination_folder,
           new_meta: {
-            $authors: [this.connected_as.$path],
+            $admins: [this.connected_as.$path],
             belongs_to_stack: stack_meta_filename,
           },
         });
