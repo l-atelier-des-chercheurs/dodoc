@@ -135,6 +135,7 @@ export default function () {
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
         create_stack: "Créer une pile",
         remove_stack: "Supprimer la pile et ses contenus",
+        show_only_my_content: "Seulement mon contenu",
 
         bytes: "octets",
         kb: "ko",

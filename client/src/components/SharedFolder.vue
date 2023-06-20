@@ -14,6 +14,17 @@
           </transition>
           ESPACE PARTAGÉ / ARCHIVE
         </div>
+        <div class="_myContent">
+          <input
+            type="checkbox"
+            id="show_only_my_content"
+            v-model="show_only_my_content"
+          />
+          <label
+            for="show_only_my_content"
+            v-text="$t('show_only_my_content')"
+          />
+        </div>
         <div class="_groupBy">
           <div v-for="group_option in group_options" :key="group_option.key">
             <input
@@ -104,6 +115,9 @@ export default {
       show_backtotop_btn: false,
       current_scroll: 0,
 
+      show_only_my_content:
+        localStorage.getItem("show_only_my_content") === "true",
+
       group_mode: localStorage.getItem("group_mode") || "day",
       group_options: [
         {
@@ -179,6 +193,15 @@ export default {
       );
       return _medias_not_in_stacks;
     },
+    filtered_shared_files() {
+      return this.shared_files.filter((f) => {
+        if (this.show_only_my_content)
+          if (f.$admins && f.$admins.includes(this.connected_as.$path))
+            return true;
+          else return false;
+        return true;
+      });
+    },
     grouped_files() {
       let order_props;
       if (this.sort_order === "date_created")
@@ -189,7 +212,11 @@ export default {
         ];
       else if (this.sort_order === "date_uploaded")
         order_props = ["$date_uploaded"];
-      return this.groupFilesBy(this.shared_files, order_props, this.group_mode);
+      return this.groupFilesBy(
+        this.filtered_shared_files,
+        order_props,
+        this.group_mode
+      );
     },
   },
   methods: {
@@ -313,6 +340,13 @@ export default {
   select {
     background: white;
   }
+}
+
+._myContent {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
 }
 
 ._groupBy {
