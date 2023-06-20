@@ -15,7 +15,6 @@
           @close="show_admin_settings = false"
         />
       </div>
-
       <div class="_topContent">
         <div class="_subscribeBtn">
           <button
@@ -475,12 +474,21 @@ export default {
   top: 0;
   height: 100%;
   overflow: auto;
-  padding-bottom: 100px;
+  padding-bottom: 80px;
+
+  @include scrollbar(4px, 4px, 5px, transparent, white);
 }
 
 ._topBar {
+  position: relative;
   text-align: center;
   padding: 0 calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) / -2);
+  z-index: 11;
+}
+
+._adminBtn {
+  margin-bottom: calc(var(--spacing) / -4);
 }
 
 ._topContent {
