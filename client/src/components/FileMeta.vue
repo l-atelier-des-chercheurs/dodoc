@@ -22,6 +22,7 @@
           :input_type="'datetime-local'"
           :can_edit="can_edit"
         />
+        <!-- cant be edited server-side -->
         <DateField
           :field_name="'$date_uploaded'"
           :label="$t('date_uploaded')"
@@ -34,13 +35,14 @@
 
       <hr />
 
+      <!-- // disabled for now -->
       <AuthorField
         :label="$t('authors')"
         class="u-spacingBottom"
         :field="'$admins'"
         :authors_paths="file.$admins"
         :path="file.$path"
-        :can_edit="false"
+        :can_edit="can_edit"
         :instructions="$t('media_editing_instructions')"
       />
 
