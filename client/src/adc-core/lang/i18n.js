@@ -53,6 +53,7 @@ export default function () {
         date_modified: "Dernière modification",
         alphabetical: "Alphabétique",
         date_uploaded: "Date d’envoi",
+        date_archive: "Date dans l’archive",
         cancel: "Annuler",
         select: "Sélectionner",
         back: "retour",
@@ -133,6 +134,7 @@ export default function () {
         contactmail_of_instance: `Contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
         create_stack: "Créer une pile",
+        remove_stack: "Supprimer la pile et ses contenus",
 
         bytes: "octets",
         kb: "ko",
@@ -806,6 +808,9 @@ export default function () {
         collect: "Collecter",
         make: "Fabriquer",
         publish: "Publier",
+
+        media_editing_instructions:
+          "Indiquer le ou les personnes qui pourront modifier ce contenu",
 
         make_list: "Liste des fabrications",
 
