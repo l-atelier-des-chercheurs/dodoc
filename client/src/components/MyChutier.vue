@@ -484,11 +484,13 @@ export default {
   text-align: center;
   padding: 0 calc(var(--spacing) / 1);
   margin-bottom: calc(var(--spacing) / -2);
-  z-index: 11;
+  z-index: 2;
+  pointer-events: none;
 }
 
 ._adminBtn {
   margin-bottom: calc(var(--spacing) / -4);
+  pointer-events: auto;
 }
 
 ._topContent {
