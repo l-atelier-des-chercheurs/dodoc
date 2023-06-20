@@ -32,7 +32,7 @@
           </div>
 
           <div
-            v-if="file._stack_files"
+            v-if="file.is_stack"
             class="_navMedia"
             :data-layout="current_file_shown ? 'nav' : 'grid'"
           >
@@ -62,43 +62,13 @@
           </div> -->
         </div>
         <div class="_rightContent">
-          <DateDisplay
-            v-if="file.date_created_corrected"
-            :date="file.date_created_corrected"
-          />
-
-          <!-- media title or stack title -->
-          <h1>
-            {{ file.title }}
-          </h1>
-          <hr />
-          <p>
-            {{ file.description || "–" }}
-          </p>
-          <hr />
-          <div
-            class=""
-            v-if="
-              (file.keywords &&
-                Array.isArray(file.keywords) &&
-                file.keywords.length > 0) ||
-              edit_mode
-            "
-          >
-            <KeywordsField
-              :edit_mode="edit_mode"
-              :keywords="file.keywords"
-              @cancelEdit="[]"
-            />
-          </div>
-
-          <!-- {{ current_file_shown }} -->
-
-          <sl-icon-button
-            name="trash3"
-            circle
-            class="_removeBtn"
-            @click="removeMedia(file.$path)"
+          <FileMeta
+            :file="file"
+            :is_stack="file.is_stack"
+            :stack_file_shown="current_file_shown"
+            @removeMain="removeMain"
+            @removeCurrent="removeCurrent"
+            @closeStack="current_file_index_shown = false"
           />
         </div>
       </div>
@@ -106,19 +76,18 @@
   </div>
 </template>
 <script>
-import KeywordsField from "@/components/KeywordsField.vue";
+import FileMeta from "@/components/FileMeta.vue";
 
 export default {
   props: {
     file: Object,
   },
   components: {
-    KeywordsField,
+    FileMeta,
   },
   data() {
     return {
       current_file_index_shown: false,
-      edit_mode: false,
     };
   },
   created() {},
@@ -131,15 +100,40 @@ export default {
   watch: {},
   computed: {
     current_file_shown() {
-      if (this.current_file_index_shown === false) return false;
-      if (this.file._stack_files)
-        return this.file._stack_files[this.current_file_index_shown];
+      if (this.file.is_stack)
+        if (this.current_file_index_shown === false) return false;
+        else return this.file._stack_files[this.current_file_index_shown];
       return this.file;
     },
   },
   methods: {
-    removeMedia(path) {
-      this.$api.deleteItem({ path });
+    async removeMain() {
+      if (this.file.is_stack) {
+        this.current_file_index_shown = false;
+        await this.$api.deleteItem({ path: this.file.$path });
+        for (const file of this.file._stack_files) {
+          await this.$api.deleteItem({ path: file.$path });
+        }
+      } else {
+        // otherwise, just remove media
+        await this.$api.deleteItem({ path: this.file.$path });
+      }
+      this.$emit("close");
+    },
+    async removeCurrent() {
+      // stack_files_metas
+      let _stack_files_metas = this.file.stack_files_metas;
+      _stack_files_metas = _stack_files_metas.filter(
+        (sm) => sm !== this.getFilename(this.current_file_shown.$path)
+      );
+
+      await this.$api.updateMeta({
+        path: this.file.$path,
+        new_meta: {
+          stack_files_metas: _stack_files_metas,
+        },
+      });
+      await this.$api.deleteItem({ path: this.current_file_shown.$path });
     },
     handleKeyPress(event) {
       if (
@@ -169,13 +163,14 @@ export default {
   z-index: 10;
 
   --color-borders: var(--c-gris);
+  --modal-background: #efefef;
 }
 
 ._modalContent {
   // position: absolute;
   // background: white;
 
-  background: #efefef;
+  background: var(--modal-background);
   padding: 0;
   display: flex;
   flex-flow: column nowrap;
@@ -189,16 +184,17 @@ export default {
 
 ._bottomContent {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   align-items: stretch;
   height: 100%;
   overflow: hidden;
 
   > ._leftContent {
-    flex: 10 1 auto;
+    flex: 3 1 0;
   }
   > ._rightContent {
-    flex: 1 0 240px;
+    flex: 1 0 0px;
+    min-width: 240px;
   }
 }
 
@@ -232,6 +228,11 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
+
+    &[data-filetype="text"] {
+      display: block;
+      overflow: auto;
+    }
 
     ._mediaContent--image {
       position: absolute;
@@ -306,12 +307,6 @@ export default {
   }
 }
 
-._date {
-  margin-bottom: calc(var(--spacing) * 1);
-}
-._title {
-}
-
 ._appendMedia {
   display: flex;
   align-content: center;
@@ -320,20 +315,9 @@ export default {
 }
 
 ._rightContent {
-  padding: calc(var(--spacing) * 1);
+  position: relative;
   border-left: 1px solid var(--color-borders);
   height: 100%;
-  overflow: auto;
-
-  h1 {
-    font-weight: 300;
-    font-size: var(--sl-font-size-x-large);
-  }
-  hr {
-    border-color: #cccccc;
-    max-width: 50px;
-    margin: calc(var(--spacing) * 2) 0;
-  }
 }
 
 ._closeButton {
