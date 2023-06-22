@@ -1,6 +1,10 @@
 <template>
   <div class="_authorView">
-    <TitleField
+    <div class="_spinner" v-if="is_loading" key="loader">
+      <LoaderSpinner />
+    </div>
+    <div v-else>
+      <!-- <TitleField
       :field_name="'name'"
       class="_name"
       :content="author.name"
@@ -9,17 +13,23 @@
       :required="true"
       :maxlength="40"
       :can_edit="false"
-    />
-    <!-- // do not allow two author to have the same name -->
-    <!-- <pre>
-    {{ author }}
-    </pre> -->
+    /> -->
+      <AuthorCard
+        :key="author.$path"
+        :author="author"
+        class="u-spacingBottom"
+      />
+    </div>
   </div>
 </template>
 <script>
+import AuthorCard from "@/adc-core/author/AuthorCard.vue";
+
 export default {
   props: {},
-  components: {},
+  components: {
+    AuthorCard,
+  },
   data() {
     return {
       author: undefined,
@@ -51,6 +61,7 @@ export default {
           this.is_loading = false;
         });
 
+      this.is_loading = false;
       this.author = author;
     },
   },
