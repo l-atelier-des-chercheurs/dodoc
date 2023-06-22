@@ -66,7 +66,9 @@
               v-for="author in authors_except_self"
               :key="author.$path"
               :path="author.$path"
+              :links_to_author_page="!!connected_as"
               @click="suggestLogin(author.$path)"
+              @navToPage="$emit('close')"
             />
           </div>
         </DetailsPane>
@@ -116,7 +118,12 @@ export default {
     if (this.authors.length === 0) this.current_mode = "create";
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    $route() {
+      // if navigating to another route, lets close modal
+      this.$emit("close");
+    },
+  },
   computed: {
     authors_except_self() {
       if (this.connected_as)
