@@ -93,11 +93,11 @@ export default {
     },
     admins_path() {
       if (this.folder.$admins) return this.folder.$admins;
-      return false;
+      return "noone";
     },
     contributors_path() {
       if (this.folder.$contributors) return this.folder.$contributors;
-      return false;
+      return "noone";
     },
   },
   methods: {
