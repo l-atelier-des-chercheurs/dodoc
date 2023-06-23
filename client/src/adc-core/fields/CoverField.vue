@@ -227,6 +227,7 @@ export default {
     font-weight: 300;
     font-size: 1.5em;
     color: var(--c-bleumarine);
+    user-select: none;
   }
 }
 
