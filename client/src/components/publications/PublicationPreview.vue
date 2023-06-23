@@ -2,8 +2,8 @@
   <div class="_publicationPreview">
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
 
-    <div class="_projectInfos--cover">
-      <img v-if="cover_thumb" :src="cover_thumb" @click="$emit('open')" />
+    <div class="_publicationPreview--cover" @click="$emit('open')">
+      <img v-if="cover_thumb" :src="cover_thumb" />
       <div class="_noPreview" v-else />
       <transition name="fade_fast">
         <div class="_previewProgress" v-if="is_making_preview">
@@ -123,12 +123,14 @@ export default {
   height: 8em;
   cursor: pointer;
 }
-._projectInfos--cover {
+._publicationPreview--cover {
   position: relative;
   border-radius: 2px;
   overflow: hidden;
   // border-bottom: 2px solid var(--c-gris);
   box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+
+  cursor: pointer;
 }
 
 // ._projectInfos--cover {
@@ -149,6 +151,7 @@ export default {
 // }
 ._header {
   padding: calc(var(--spacing) / 2) 0;
+  cursor: pointer;
 }
 ._generatePreviewBtn {
   position: absolute;
