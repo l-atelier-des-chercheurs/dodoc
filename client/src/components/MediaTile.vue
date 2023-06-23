@@ -195,6 +195,13 @@ export default {
       &._index {
         flex: 0 0 50px;
       }
+      &._alreadySelected {
+        position: relative;
+      }
+      &._selectCb {
+        flex: 0;
+        position: relative;
+      }
     }
 
     > *:not(:last-child) {
