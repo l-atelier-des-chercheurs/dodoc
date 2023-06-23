@@ -1,19 +1,23 @@
 <template>
   <div class="_dLabel">
     <div class="_labelLine" @click="show_instructions = !show_instructions">
-      <label v-if="tag === 'label'" class="u-label">
-        {{ str }}
-      </label>
-      <component v-else :is="tag">
+      <component :is="tag" :class="tag === 'label' ? 'u-label' : ''">
         {{ str }}
       </component>
-      <sl-icon-button
+      &nbsp;
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        :style="icon_styles"
         v-if="instructions"
-        :name="!show_instructions ? 'info-circle' : 'info-circle-fill'"
-        :class="{
-          'is--active': show_instructions,
-        }"
-      />
+      >
+        <b-icon
+          :icon="!show_instructions ? 'info-circle' : 'info-circle-fill'"
+          :class="{
+            'is--active': show_instructions,
+          }"
+        />
+      </button>
     </div>
     <div class="u-instructions" v-if="show_instructions">
       <small v-html="instructions" />
@@ -40,7 +44,12 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    icon_styles() {
+      if (this.tag === "label") return "  color: var(--label-color)";
+      return "";
+    },
+  },
   methods: {},
 };
 </script>
@@ -58,25 +67,6 @@ export default {
     // margin-bottom: 0;
     // color: currentColor;
     margin-bottom: 0;
-  }
-
-  sl-icon-button {
-    color: var(--label-color);
-    margin: calc(-1 * var(--sl-spacing-x-small)) 0;
-
-    &:hover,
-    &:focus-visible {
-      color: var(--active-color);
-    }
-
-    &::part(base) {
-      padding: calc(var(--spacing) / 3);
-      color: currentColor;
-    }
-
-    &.is--active {
-      color: var(--c-bleuvert);
-    }
   }
 }
 </style>

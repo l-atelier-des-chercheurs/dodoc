@@ -58,9 +58,5 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 4);
-  // padding: calc(var(--spacing) / 4);
-  > * {
-    cursor: pointer;
-  }
 }
 </style>

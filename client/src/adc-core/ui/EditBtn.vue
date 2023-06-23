@@ -8,7 +8,8 @@
     <span>
       {{ label }}
     </span>
-    <sl-icon :name="icon" :label="label" />
+    <b-icon :icon="icon" />
+    <!-- <sl-icon :name="icon" :label="label" /> -->
   </button>
 </template>
 <script>
@@ -78,7 +79,8 @@ export default {
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-  sl-icon {
+  i {
+    position: relative;
     font-size: 120%;
   }
 

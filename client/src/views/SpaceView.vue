@@ -2,7 +2,7 @@
   <div class="_spaceView">
     <div class="_backBtn">
       <router-link :to="'/'" class="u-buttonLink">
-        <sl-icon name="arrow-left-short" />
+        <b-icon icon="arrow-left-short" />
         {{ $t("home") }}
       </router-link>
     </div>

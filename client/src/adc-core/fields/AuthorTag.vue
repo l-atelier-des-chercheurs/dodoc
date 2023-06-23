@@ -33,24 +33,31 @@
 
       <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>
-    <sl-icon-button
+
+    <button
+      type="button"
+      class="u-button u-button_icon"
       v-if="$listeners.select"
-      name="box-arrow-in-right"
-      :label="$t('select')"
       @click="$emit('select')"
-    />
-    <sl-icon-button
+    >
+      <b-icon icon="box-arrow-in-right" :aria-label="$t('select')" />
+    </button>
+    <button
+      type="button"
+      class="u-button u-button_icon"
       v-if="$listeners.add"
-      name="plus-circle"
-      :label="$t('add')"
       @click="$emit('add')"
-    />
-    <sl-icon-button
+    >
+      <b-icon icon="plus-circle" :aria-label="$t('add')" />
+    </button>
+    <button
+      type="button"
+      class="u-button u-button_icon"
       v-if="$listeners.remove"
-      name="x"
-      :label="$t('remove')"
       @click="$emit('remove')"
-    />
+    >
+      <b-icon icon="x" :aria-label="$t('remove')" />
+    </button>
   </component>
 </template>
 <script>
@@ -157,11 +164,5 @@ a {
 a:hover {
   box-shadow: var(--panel-shadows);
   color: var(--c-bleumarine);
-}
-
-sl-icon-button::part(base) {
-  padding-top: 0;
-  padding-bottom: 0;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 </style>
