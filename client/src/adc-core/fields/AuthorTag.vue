@@ -33,28 +33,37 @@
 
       <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>
-    <sl-icon-button
-      v-if="edit_mode && $listeners.add"
-      name="plus-circle"
-      :label="$t('add')"
-      @click="$emit('add', path)"
-    />
-    <sl-icon-button
-      v-if="edit_mode && $listeners.remove"
-      name="x"
-      :label="$t('remove')"
-      @click="$emit('remove', path)"
-    />
+
+    <button
+      type="button"
+      class="u-button u-button_icon"
+      v-if="$listeners.select"
+      @click="$emit('select')"
+    >
+      <b-icon icon="box-arrow-in-right" :aria-label="$t('select')" />
+    </button>
+    <button
+      type="button"
+      class="u-button u-button_icon"
+      v-if="$listeners.add"
+      @click="$emit('add')"
+    >
+      <b-icon icon="plus-circle" :aria-label="$t('add')" />
+    </button>
+    <button
+      type="button"
+      class="u-button u-button_icon"
+      v-if="$listeners.remove"
+      @click="$emit('remove')"
+    >
+      <b-icon icon="x" :aria-label="$t('remove')" />
+    </button>
   </component>
 </template>
 <script>
 export default {
   props: {
     path: String,
-    edit_mode: {
-      type: Boolean,
-      default: false,
-    },
     links_to_author_page: {
       type: Boolean,
       default: false,
@@ -81,12 +90,7 @@ export default {
     },
     component_tag() {
       if (this.links_to_author_page) return "router-link";
-      if (
-        this.$listeners.click ||
-        this.$listeners.add ||
-        this.$listeners.remove
-      )
-        return "button";
+      if (this.$listeners.click) return "button";
       return "span";
     },
     component_to() {
@@ -134,6 +138,7 @@ export default {
 
   ._infos {
     line-height: 1.2;
+    flex: 1;
     // padding: calc(var(--spacing) / 4) 0
     //   calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
@@ -159,11 +164,5 @@ a {
 a:hover {
   box-shadow: var(--panel-shadows);
   color: var(--c-bleumarine);
-}
-
-sl-icon-button::part(base) {
-  padding-top: 0;
-  padding-bottom: 0;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 </style>

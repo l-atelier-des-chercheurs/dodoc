@@ -2,7 +2,7 @@
   <div class="_spaceView">
     <div class="_backBtn">
       <router-link :to="'/'" class="u-buttonLink">
-        <sl-icon name="arrow-left-short" />
+        <b-icon icon="arrow-left-short" />
         {{ $t("home") }}
       </router-link>
     </div>
@@ -173,7 +173,7 @@ export default {
   box-shadow: 0 1px 40px rgba(0, 0, 0, 0.1);
   background: white;
 
-  margin: calc(var(--spacing) * 4) auto;
+  margin: 4vw auto;
 }
 
 ._projectsList {

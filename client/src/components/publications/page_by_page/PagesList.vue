@@ -180,6 +180,13 @@ export default {
     OpenedPageOrSpread,
     PageLabel,
   },
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
+  },
+
   data() {
     return {
       is_creating_page: false,
@@ -227,6 +234,36 @@ export default {
     },
     pagination() {
       return this.setPaginationFromPublication(this.publication);
+    },
+    meta_filenames_already_present() {
+      const current = [];
+      const other = [];
+
+      this.pages.map((p) => {
+        const page_id = p.id;
+        const is_current_page = page_id === this.page_opened_id;
+
+        const page_modules = this.getModulesForPage({
+          modules: this.modules,
+          page_id: page_id,
+        });
+
+        page_modules.map((page_module) => {
+          if (
+            page_module?.source_medias &&
+            Array.isArray(page_module.source_medias)
+          )
+            page_module.source_medias.map((sm) => {
+              if (!sm.meta_filename_in_project) return;
+              if (is_current_page) current.push(sm.meta_filename_in_project);
+              else other.push(sm.meta_filename_in_project);
+            });
+        });
+      });
+
+      // TODO
+
+      return { current, other };
     },
   },
   methods: {

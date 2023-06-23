@@ -16,7 +16,10 @@
             @click="firstImage"
             :disabled="image_index_currently_shown === 0 && !show_live_feed"
           >
-            <sl-icon name="chevron-double-left" :label="$t('first_image')" />
+            <b-icon
+              icon="chevron-double-left"
+              :aria-label="$t('first_image')"
+            />
           </button>
           <button
             type="button"
@@ -24,7 +27,7 @@
             @click="prevImage"
             :disabled="image_index_currently_shown === 0 && !show_live_feed"
           >
-            <sl-icon name="chevron-left" :label="$t('previous_image')" />
+            <b-icon icon="chevron-left" :aria-label="$t('previous_image')" />
           </button>
 
           <div class="">
@@ -35,7 +38,7 @@
               :disabled="medias.length <= 1"
               @click="previewPlay"
             >
-              <sl-icon name="play-fill" />
+              <b-icon icon="play-fill" />
               &nbsp;
               {{ $t("play") }}
             </button>
@@ -46,7 +49,7 @@
               :disabled="show_live_feed"
               @click="pausePreview"
             >
-              <sl-icon name="pause-fill" />
+              <b-icon icon="pause-fill" />
               &nbsp;
               {{ $t("pause") }}
             </button>
@@ -57,7 +60,7 @@
             @click="nextImage"
             :disabled="show_live_feed"
           >
-            <sl-icon name="chevron-right" :label="$t('next_image')" />
+            <b-icon icon="chevron-right" :aria-label="$t('next_image')" />
           </button>
           <button
             type="button"
@@ -65,7 +68,10 @@
             @click="lastImage"
             :disabled="show_live_feed"
           >
-            <sl-icon name="chevron-double-right" :label="$t('last_image')" />
+            <b-icon
+              icon="chevron-double-right"
+              :aria-label="$t('last_image')"
+            />
           </button>
 
           <!-- <div class="m_stopmotionpanel--toprowbuttons--counter">
@@ -119,7 +125,7 @@
                 @click="removeMedia(show_previous_photo.$path)"
                 class="u-button u-button_black _removeMedia"
               >
-                <sl-icon name="trash3" />
+                <b-icon icon="trash3" />
               </button>
             </div>
 

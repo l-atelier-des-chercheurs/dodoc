@@ -17,6 +17,7 @@
     "alertify.js": "^1.0.12",
     "axios": "^0.27.2",
     "axios-debug-log": "^0.8.4",
+    "bootstrap-vue": "^2.23.1",
     "core-js": "^3.26.1",
     "debounce": "^1.2.1",
     "flickity-imagesloaded": "^2.0.0",

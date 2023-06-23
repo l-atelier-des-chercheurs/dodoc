@@ -179,7 +179,7 @@ export default {
   align-self: flex-start;
   // border: 1px solid var(--c-gris);
 
-  flex: 1 0 80px;
+  flex: 1 0 180px;
   // max-width: 120px;
   // overflow: hidden;
   // border-radius: var(--panel-radius);
@@ -188,7 +188,8 @@ export default {
 }
 ._textBloc {
   padding: calc(var(--spacing) / 2);
-  flex: 5 1 0;
+  flex: 5 1 180px;
+  overflow: hidden;
 
   display: flex;
   flex-flow: column nowrap;

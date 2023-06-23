@@ -24,7 +24,7 @@
                 class="u-instructions _noAuthorNotice"
                 key="no_author"
               >
-                <sl-icon name="exclamation-triangle-fill" />
+                <b-icon icon="exclamation-triangle-fill" />
                 {{ $t("login_no_author_matches") }}
               </div>
               <div
@@ -36,7 +36,7 @@
                   v-for="atpath in author_suggestions"
                   :key="atpath"
                   :path="atpath"
-                  @click="checkAuthor(atpath)"
+                  @select="checkAuthor(atpath)"
                 />
               </div>
             </transition>
@@ -48,7 +48,7 @@
                 class="u-buttonLink"
                 @click="author_to_login_to = undefined"
               >
-                <sl-icon name="arrow-left-short" />
+                <b-icon icon="arrow-left-short" />
                 {{ $t("back") }}
               </button>
               <AuthorTag :path="author_to_login_to.$path" />

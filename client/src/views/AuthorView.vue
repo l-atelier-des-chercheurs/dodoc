@@ -1,9 +1,16 @@
 <template>
   <div class="_authorView">
+    <div class="_backBtn">
+      <router-link :to="'/'" class="u-buttonLink">
+        <sl-icon name="arrow-left-short" />
+        {{ $t("home") }}
+      </router-link>
+    </div>
+
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>
-    <div v-else>
+    <template v-else>
       <!-- <TitleField
       :field_name="'name'"
       class="_name"
@@ -14,12 +21,14 @@
       :maxlength="40"
       :can_edit="false"
     /> -->
-      <AuthorCard
-        :key="author.$path"
-        :author="author"
-        class="u-spacingBottom"
-      />
-    </div>
+      <div class="_card">
+        <AuthorCard
+          :key="author.$path"
+          :author="author"
+          class="u-spacingBottom"
+        />
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -69,10 +78,25 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._authorView {
-  width: 100%;
-  max-width: calc(var(--max-column-width));
-  // max-width: calc(var(--max-column-width) + 240px);
+  padding: calc(var(--spacing) * 1);
+}
+
+._card {
+  // display: flex;
+  // justify-content: center;
+  max-width: 400px;
   margin: 0 auto;
-  padding: 0 calc(var(--spacing) * 1);
+  // border: 2px solid var(--c-gris);
+
+  ::v-deep {
+    ._topbar {
+      display: block;
+      // background: white;
+      // flex-flow: column nowrap;
+    }
+  }
+}
+
+._backBtn {
 }
 </style>

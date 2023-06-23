@@ -16,20 +16,19 @@
               )
             "
           />
-          <sl-icon
-            name="file-earmark-arrow-down-fill"
-            class="_preview"
-            v-else
-          />
+          <b-icon v-else class="_preview" icon="file-earmark-arrow-down-fill" />
+
           <span class="_link--filename" v-text="file.$media_filename" />
         </DownloadFile>
 
-        <sl-icon-button
-          name="x"
-          size="small"
+        <button
+          type="button"
           v-if="can_edit"
+          class="u-button u-button_icon u-button_small"
           @click.prevent="removeFile(file.$path)"
-        />
+        >
+          <b-icon icon="x" :aria-label="$t('first_image')" />
+        </button>
       </div>
     </template>
 
