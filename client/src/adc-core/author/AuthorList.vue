@@ -66,8 +66,8 @@
               v-for="author in authors_except_self"
               :key="author.$path"
               :path="author.$path"
-              :links_to_author_page="!!connected_as"
-              @click="suggestLogin(author.$path)"
+              :links_to_author_page="true"
+              @select="suggestLogin(author.$path)"
               @navToPage="$emit('close')"
             />
           </div>

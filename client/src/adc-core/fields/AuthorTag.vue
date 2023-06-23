@@ -34,16 +34,22 @@
       <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>
     <sl-icon-button
-      v-if="edit_mode && $listeners.add"
-      name="plus-circle"
-      :label="$t('add')"
-      @click="$emit('add', path)"
+      v-if="$listeners.select"
+      name="box-arrow-in-right"
+      :label="$t('select')"
+      @click="$emit('select')"
     />
     <sl-icon-button
-      v-if="edit_mode && $listeners.remove"
+      v-if="$listeners.add"
+      name="plus-circle"
+      :label="$t('add')"
+      @click="$emit('add')"
+    />
+    <sl-icon-button
+      v-if="$listeners.remove"
       name="x"
       :label="$t('remove')"
-      @click="$emit('remove', path)"
+      @click="$emit('remove')"
     />
   </component>
 </template>
@@ -51,10 +57,6 @@
 export default {
   props: {
     path: String,
-    edit_mode: {
-      type: Boolean,
-      default: false,
-    },
     links_to_author_page: {
       type: Boolean,
       default: false,
@@ -81,12 +83,7 @@ export default {
     },
     component_tag() {
       if (this.links_to_author_page) return "router-link";
-      if (
-        this.$listeners.click ||
-        this.$listeners.add ||
-        this.$listeners.remove
-      )
-        return "button";
+      if (this.$listeners.click) return "button";
       return "span";
     },
     component_to() {
@@ -134,6 +131,7 @@ export default {
 
   ._infos {
     line-height: 1.2;
+    flex: 1;
     // padding: calc(var(--spacing) / 4) 0
     //   calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 

@@ -36,7 +36,7 @@
                   v-for="atpath in author_suggestions"
                   :key="atpath"
                   :path="atpath"
-                  @click="checkAuthor(atpath)"
+                  @select="checkAuthor(atpath)"
                 />
               </div>
             </transition>

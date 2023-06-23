@@ -6,7 +6,6 @@
     <transition-group tag="div" class="_list" name="projectsList" appear>
       <AuthorTag
         v-for="author_path in all_authors_except_current"
-        :edit_mode="true"
         :path="author_path"
         :key="author_path"
         @add="$emit('addAuthor', author_path)"
