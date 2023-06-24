@@ -46,10 +46,10 @@
               class="u-button u-button_bleuvert _submitBtn"
               @click="onEnter"
             >
-              <sl-icon
+              <b-icon
+                icon="check"
                 style="font-size: 1.5em"
-                name="check"
-                :label="$t('submit')"
+                :aria-label="$t('submit')"
               />
             </button>
           </div>

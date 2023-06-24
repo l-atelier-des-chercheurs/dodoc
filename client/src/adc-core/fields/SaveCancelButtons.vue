@@ -6,7 +6,7 @@
       pill
       @click="$emit('cancel')"
     >
-      <sl-icon name="x-circle" />
+      <b-icon icon="x-circle" />
       {{ $t("back") }}
     </sl-button>
     <sl-button
@@ -17,7 +17,7 @@
       :disabled="!allow_save"
       @click="$emit('save')"
     >
-      <sl-icon name="check-circle-fill" />
+      <b-icon icon="check-circle-fill" />
       {{ save_text ? save_text : $t("save") }}
     </sl-button>
   </div>

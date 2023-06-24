@@ -13,7 +13,7 @@
           :disabled="archive_shown_index === 0"
           @click="newerVersion"
         >
-          <sl-icon name="arrow-up" />
+          <b-icon icon="arrow-up" />
           récent
         </sl-button>
 
@@ -39,7 +39,7 @@
           :disabled="archive_shown_index === archives.length - 1"
           @click="olderVersion"
         >
-          <sl-icon name="arrow-down" label="Plus ancien" pill />
+          <b-icon icon="arrow-down" />
           ancient
         </sl-button>
       </div>

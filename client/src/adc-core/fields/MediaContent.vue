@@ -14,7 +14,9 @@
           class="_mediaContent--image"
           loading="eager"
         />
-        <template v-else><sl-icon name="eye-slash" /></template>
+        <template v-else>
+          <b-icon icon="eye-slash" />
+        </template>
       </template>
       <template v-else>
         <img
@@ -36,7 +38,9 @@
     <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
       <template v-if="context === 'preview'">
         <img v-if="thumb" :src="thumb" class="_mediaContent--image" />
-        <template v-else><sl-icon name="eye-slash" /></template>
+        <template v-else>
+          <b-icon icon="eye-slash" />
+        </template>
       </template>
       <template v-else>
         <vue-plyr
@@ -53,7 +57,9 @@
 
     <template v-else-if="file.$type === 'stl'">
       <img v-if="thumb" :src="thumb" class="_mediaContent--image" />
-      <template v-else><sl-icon name="eye-slash" /></template>
+      <template v-else>
+        <b-icon icon="eye-slash" />
+      </template>
     </template>
 
     <template v-else-if="file.$type === 'text'">
@@ -63,7 +69,9 @@
     <template v-else-if="['pdf', 'url'].includes(file.$type)">
       <template v-if="context === 'preview'">
         <img v-if="thumb" :src="thumb" class="_mediaContent--image" />
-        <template v-else><sl-icon name="eye-slash" /></template>
+        <template v-else>
+          <b-icon icon="eye-slash" />
+        </template>
       </template>
       <template v-else>
         <div class="_mediaContent--iframe">
@@ -134,12 +142,7 @@
       </template>
     </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
-      <sl-icon name="file-earmark" /> {{ file.$media_filename }}
-      <!-- <br /> -->
-      <!-- <DownloadFile v-if="context === 'full'" :file="file">
-        <sl-icon name="file-earmark-arrow-down" />
-        {{ $t("download") }}
-      </DownloadFile> -->
+      <b-icon icon="file-earmark" /> {{ file.$media_filename }}
     </small>
   </div>
 </template>
