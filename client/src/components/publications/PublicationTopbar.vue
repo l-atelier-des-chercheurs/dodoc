@@ -1,6 +1,6 @@
 <template>
   <div class="_topbar">
-    <div class="">
+    <div class="_publiTitle">
       <TitleField
         :field_name="'title'"
         :tag="'h2'"
@@ -193,6 +193,10 @@ export default {
   margin: calc(var(--spacing) / 2) auto calc(var(--spacing) / 1);
   box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
   // max-width: 800px;
+}
+
+._publiTitle {
+  flex: 10 1 auto;
 }
 
 ._buttonRow {
