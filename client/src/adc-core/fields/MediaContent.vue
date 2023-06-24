@@ -367,5 +367,9 @@ export default {
   bottom: 0;
   left: 0;
   margin: calc(var(--spacing) / 1);
+
+  @media print {
+    display: none;
+  }
 }
 </style>
