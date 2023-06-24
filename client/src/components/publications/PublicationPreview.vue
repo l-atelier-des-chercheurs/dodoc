@@ -14,7 +14,7 @@
         type="button"
         class="u-button u-button_small u-button_black _generatePreviewBtn"
         v-if="can_edit && !is_making_preview"
-        @click="generatePreview"
+        @click.stop="generatePreview"
       >
         <!-- <sl-icon name="card-image" /> -->
         <sl-icon name="arrow-clockwise" />

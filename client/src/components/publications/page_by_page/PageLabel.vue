@@ -10,6 +10,7 @@
     </div>
     <div class="u-sameRow" v-if="edit_mode">
       <select
+        size="small"
         :value="index"
         @change="
           $emit('movePage', {
