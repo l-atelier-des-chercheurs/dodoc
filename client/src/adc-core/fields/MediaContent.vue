@@ -301,6 +301,8 @@ export default {
 ._mediaContent--iframe {
   position: relative;
   height: 100%;
+  width: 100%;
+
   ._mediaContent--iframe--preview {
     position: relative;
     width: 100%;
@@ -346,6 +348,10 @@ export default {
     border: 2px solid var(--c-gris);
     background-color: white;
     object-fit: contain;
+  }
+
+  iframe {
+    background: white;
   }
 
   iframe,
