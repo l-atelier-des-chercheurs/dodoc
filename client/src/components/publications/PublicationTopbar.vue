@@ -1,12 +1,14 @@
 <template>
   <div class="_topbar">
-    <TitleField
-      :field_name="'title'"
-      :tag="'h2'"
-      :content="publication.title"
-      :path="publication.$path"
-      :can_edit="can_edit"
-    />
+    <div class="">
+      <TitleField
+        :field_name="'title'"
+        :tag="'h2'"
+        :content="publication.title"
+        :path="publication.$path"
+        :can_edit="can_edit"
+      />
+    </div>
     <!-- <TitleField
           :label="$t('template')"
           :field_name="'template'"
@@ -180,6 +182,8 @@ export default {
 <style lang="scss" scoped>
 ._topbar {
   display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) * 1);
   align-items: center;
   width: 100%;
   background: white;
@@ -193,6 +197,9 @@ export default {
 
 ._buttonRow {
   display: flex;
+  flex-flow: row wrap;
+
+  flex: 1 1 auto;
   justify-content: flex-end;
   gap: calc(var(--spacing) / 2);
 }
