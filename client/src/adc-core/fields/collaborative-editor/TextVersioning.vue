@@ -44,15 +44,18 @@
         </sl-button>
       </div>
 
-      <div
-        v-if="
-          archive_shown &&
-          (archive_shown.content || archive_shown.content === '')
-        "
-      >
-        <!-- <DateDisplay :show_detail_initially="true" :date="archive_shown.date" /> -->
-        <div class="_archiveText" v-html="archive_shown.content" />
-      </div>
+      <transition name="pagechange" mode="out-in" appear>
+        <div
+          v-if="
+            archive_shown &&
+            (archive_shown.content || archive_shown.content === '')
+          "
+          :key="selected_archive_filename"
+        >
+          <!-- <DateDisplay :show_detail_initially="true" :date="archive_shown.date" /> -->
+          <div class="_archiveText" v-html="archive_shown.content" />
+        </div>
+      </transition>
     </div>
     <sl-button
       slot="footer"
