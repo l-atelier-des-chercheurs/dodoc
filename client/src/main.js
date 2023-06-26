@@ -4,16 +4,6 @@ import router from "./router";
 
 Vue.config.productionTip = false;
 
-// todo : replace shoelace components
-/*
-  sl-spinner
-  sl-icon
-  sl-icon-button
-  sl-tab
-  sl-tab-group
-  sl-tab-panel
-*/
-
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
@@ -23,6 +13,20 @@ import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
 
 Vue.config.ignoredElements = [/sl-/];
+// todo : replace shoelace components
+/*
+  sl-spinner
+  sl-icon
+  sl-icon-button
+  sl-tab
+  sl-tab-group
+  sl-tab-panel
+*/
+import { IconsPlugin } from "bootstrap-vue";
+Vue.use(IconsPlugin);
+// import { BootstrapVueIcons } from "bootstrap-vue";
+// import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
+// Vue.use(BootstrapVueIcons);
 
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);

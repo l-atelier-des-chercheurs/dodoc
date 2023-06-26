@@ -119,6 +119,11 @@
 .t-500 {
   font-weight: 500;
 }
+
+.b-icon {
+  display: inline-block;
+}
+
 .u-buttonLink {
   font-variant: small-caps;
   font-weight: 500;
@@ -181,6 +186,11 @@ button {
 
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
+  .b-icon.bi {
+    width: 1.35em;
+    height: 1.35em;
+  }
+
   svg,
   .inlineSVG {
     width: 2em;
@@ -208,6 +218,23 @@ button {
 .u-button_round {
   padding: calc(var(--spacing) / 1);
   border-radius: 50%;
+}
+
+.u-button_icon {
+  padding: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / -4);
+  background: transparent;
+  color: inherit;
+
+  &:hover,
+  &:active,
+  &:focus-visible,
+  &.is--active {
+    &:not([disabled]) {
+      color: var(--active-color);
+      background: transparent;
+    }
+  }
 }
 .u-button_inline {
   display: flex;
@@ -333,7 +360,8 @@ button {
   font-size: var(--input-font-size-small);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
-  sl-icon {
+  sl-icon,
+  b-icon {
     font-size: 80%;
   }
 }
@@ -913,7 +941,8 @@ input[type="checkbox"]:disabled {
 
   color: var(--c-noir);
 
-  sl-icon {
+  sl-icon,
+  b-icon {
     font-size: 1.4em;
   }
 }

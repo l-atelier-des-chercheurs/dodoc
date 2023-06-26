@@ -62,12 +62,23 @@
           :has_items="authors_except_self.length"
         >
           <div class="_listOfAuthors">
-            <AuthorTag
-              v-for="author in authors_except_self"
-              :key="author.$path"
-              :path="author.$path"
-              @click="suggestLogin(author.$path)"
-            />
+            <template v-for="author in authors_except_self">
+              <AuthorTag
+                v-if="!connected_as"
+                :key="author.$path"
+                :path="author.$path"
+                :links_to_author_page="true"
+                @select="suggestLogin(author.$path)"
+                @navToPage="$emit('close')"
+              />
+              <AuthorTag
+                v-else
+                :key="author.$path"
+                :path="author.$path"
+                :links_to_author_page="true"
+                @navToPage="$emit('close')"
+              />
+            </template>
           </div>
         </DetailsPane>
 
@@ -116,7 +127,12 @@ export default {
     if (this.authors.length === 0) this.current_mode = "create";
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    $route() {
+      // if navigating to another route, lets close modal
+      this.$emit("close");
+    },
+  },
   computed: {
     authors_except_self() {
       if (this.connected_as)

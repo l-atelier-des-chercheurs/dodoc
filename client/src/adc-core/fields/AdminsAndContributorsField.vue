@@ -11,7 +11,6 @@
           v-for="atpath in all_participants_path"
           :path="atpath"
           :key="atpath"
-          :edit_mode="false"
           :links_to_author_page="true"
           :show_image_only="true"
         />
@@ -42,23 +41,6 @@
       :can_edit="can_edit"
       @closeModal="show_modal = false"
     />
-
-    <!-- <AuthorField
-      :label="$t('admins')"
-      :field="'$admins'"
-      :authors_paths="folder.$admins"
-      :path="folder.$path"
-      :can_edit="can_edit"
-      :instructions="admin_instructions"
-    />
-    <AuthorField
-      :label="$t('contributors')"
-      :field="'$contributors'"
-      :authors_paths="folder.$contributors"
-      :path="folder.$path"
-      :can_edit="can_edit"
-      :instructions="contrib_instructions"
-    /> -->
   </div>
 </template>
 <script>
@@ -93,11 +75,11 @@ export default {
     },
     admins_path() {
       if (this.folder.$admins) return this.folder.$admins;
-      return false;
+      return "noone";
     },
     contributors_path() {
       if (this.folder.$contributors) return this.folder.$contributors;
-      return false;
+      return "noone";
     },
   },
   methods: {

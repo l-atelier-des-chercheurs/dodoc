@@ -13,8 +13,7 @@
           v-for="author_path in authors_paths"
           :path="author_path"
           :key="author_path"
-          :edit_mode="false"
-          :links_to_author_page="false"
+          :links_to_author_page="true"
         />
       </template>
       <div v-else class="t-500" key="noone">
@@ -56,7 +55,7 @@
                 :path="author_path"
                 :key="author_path"
                 :edit_mode="edit_mode"
-                :links_to_author_page="!edit_mode"
+                :links_to_author_page="true"
                 @remove="removeAuthor(author_path)"
               />
             </transition-group>
