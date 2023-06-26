@@ -25,7 +25,11 @@
       v-show="can_edit && editor_is_enabled"
     >
       <div class="">
-        <template v-if="editor_is_enabled && !is_disabling_editor">
+        <template
+          v-if="
+            editor_is_enabled && !is_disabling_editor && !is_loading_or_saving
+          "
+        >
           <button type="button" class="_editBtn" @click="toggleEdit">
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
             {{ $t("stop_edit") }}
@@ -33,7 +37,7 @@
           <button
             type="button"
             class="u-button _archivesBtn"
-            v-if="editor_is_enabled && !is_loading_or_saving"
+            v-if="editor_is_enabled"
             @click="show_archives = !show_archives"
           >
             <b-icon slot="prefix" icon="archive" />
@@ -582,6 +586,7 @@ export default {
 
       try {
         this.is_loading_or_saving = true;
+        await new Promise((r) => setTimeout(r, 500));
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
@@ -695,7 +700,6 @@ export default {
 
     updateTextMedia() {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
-      this.is_loading_or_saving = true;
       this.debounce_textUpdate = setTimeout(async () => {
         console.log(
           `CollaborativeEditor • updateTextMedia: saving new snapshot`
