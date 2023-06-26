@@ -264,10 +264,12 @@ export default {
 }
 ._topbar--content {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
   align-items: flex-end;
   padding: calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) * 1);
+  line-height: 1;
 }
 ._title {
   font-size: 1.5em;
