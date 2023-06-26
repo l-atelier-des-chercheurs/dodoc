@@ -130,7 +130,11 @@ export default {
   },
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    connected_as() {
+      if (this.connected_as) this.$emit("close");
+    },
+  },
   computed: {
     signup_password() {
       return this.$root.app_infos.instance_meta.signup_password_hashed;
@@ -156,6 +160,11 @@ export default {
             $password: this.new_author_password,
           },
         });
+
+        this.$alertify
+          .delay(4000)
+          .success(this.$t("notifications.account_created"));
+
         this.new_author_name = "";
         await this.$api.loginToFolder({
           path: "authors/" + author_slug,
@@ -163,7 +172,8 @@ export default {
             $password: this.new_author_password,
           },
         });
-        this.$emit("close");
+        // not working
+        // this.$emit("close");
       } catch (err) {
         if (err.code === "unique_field_taken") {
           this.$alertify

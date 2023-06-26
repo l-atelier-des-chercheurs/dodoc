@@ -784,6 +784,8 @@ export default function () {
           "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
         "notifications.name_taken": "Ce nom est déjà utilisé",
         "notifications.action_not_allowed": "Cette action n’est pas autorisée",
+        "notifications.account_created": "Votre compte a été créé",
+        "notifications.logged_in": "La connexion au compte est active",
 
         informations: "Informations",
 
