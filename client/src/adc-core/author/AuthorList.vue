@@ -59,10 +59,10 @@
           v-else
           :header="$t('list_of_contributors')"
           :icon="'person-video2'"
-          :has_items="authors_except_self.length"
+          :has_items="authors.length"
         >
           <div class="_listOfAuthors">
-            <template v-for="author in authors_except_self">
+            <template v-for="author in authors">
               <AuthorTag
                 v-if="!connected_as"
                 :key="author.$path"
@@ -81,15 +81,6 @@
             </template>
           </div>
         </DetailsPane>
-
-        <!-- <button
-          type="button"
-          class="u-button"
-          :disabled="authors_except_self.length === 0"
-          @click="show_authors_list = !show_authors_list"
-        >
-          {{ $t("show_list") }} ({{ authors_except_self.length }})
-        </button> -->
       </template>
     </div>
   </BaseModal2>

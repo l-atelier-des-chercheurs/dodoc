@@ -754,6 +754,9 @@ export default function () {
         "notifications.too_many_items_selected":
           "Trop d’éléments sélectionnés.",
         "notifications.max_items_is": "Le maximum est de",
+        "notifications.action_not_allowed": "Cette action n’est pas autorisée",
+        "notifications.account_created": "Votre compte a été créé",
+        "notifications.logged_in": "La connexion au compte est active",
 
         informations: "Informations",
 

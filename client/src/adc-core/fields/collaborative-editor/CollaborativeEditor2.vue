@@ -27,7 +27,7 @@
       <div class="">
         <template v-if="editor_is_enabled && !is_disabling_editor">
           <button type="button" class="_editBtn" @click="toggleEdit">
-            <sl-icon name="check-circle-fill" :label="$t('stop_edit')" />
+            <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
             {{ $t("stop_edit") }}
           </button>
           <button
@@ -36,7 +36,7 @@
             v-if="editor_is_enabled"
             @click="show_archives = !show_archives"
           >
-            <sl-icon slot="prefix" name="archive" />
+            <b-icon slot="prefix" icon="archive" />
             {{ $t("history") }}
           </button>
         </template>
@@ -48,7 +48,7 @@
               {{ $t("saving") }}
             </span>
             <span v-else-if="show_saved_icon" key="saved">
-              <sl-icon name="check-circle" />
+              <b-icon icon="check-circle" />
               {{ $t("saved") }}
             </span>
             <span v-else key="connected">
@@ -70,12 +70,12 @@
         circle
         @click="toggleEdit"
       >
-        <sl-icon
+        <b-icon
           v-if="!editor_is_enabled"
-          name="pencil-fill"
-          :label="$t('edit')"
+          icon="pencil-fill"
+          :aria-label="$t('edit')"
         />
-        <sl-icon v-else name="check-circle-fill" />
+        <b-icon v-else icon="check-circle-fill" />
       </sl-button>
     </div>
 

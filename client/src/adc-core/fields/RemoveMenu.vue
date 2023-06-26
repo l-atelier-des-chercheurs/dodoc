@@ -5,7 +5,7 @@
       class="u-buttonLink"
       @click="show_confirm_delete = true"
     >
-      <sl-icon name="trash3" />
+      <b-icon icon="trash" />
       <template v-if="show_button_text">
         {{ remove_text }}
       </template>
