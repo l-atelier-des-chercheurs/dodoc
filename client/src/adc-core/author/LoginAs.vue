@@ -168,7 +168,9 @@ export default {
           },
         })
         .then(() => {
-          this.$alertify.delay(4000).success(this.$t("logged_in"));
+          this.$alertify
+            .delay(4000)
+            .success(this.$t("notifications.logged_in"));
         })
         .catch((err) => {
           if (err.code === "submitted_password_is_wrong") {

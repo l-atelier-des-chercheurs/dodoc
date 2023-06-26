@@ -155,7 +155,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._titleField {
-  width: 100%;
+  // width: 100%;
 
   ._content {
     display: inline-block;

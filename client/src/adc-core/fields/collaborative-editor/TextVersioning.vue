@@ -13,7 +13,7 @@
           :disabled="archive_shown_index === 0"
           @click="newerVersion"
         >
-          <sl-icon name="arrow-up" />
+          <b-icon icon="arrow-up" />
           récent
         </sl-button>
 
@@ -39,20 +39,23 @@
           :disabled="archive_shown_index === archives.length - 1"
           @click="olderVersion"
         >
-          <sl-icon name="arrow-down" label="Plus ancien" pill />
+          <b-icon icon="arrow-down" />
           ancient
         </sl-button>
       </div>
 
-      <div
-        v-if="
-          archive_shown &&
-          (archive_shown.content || archive_shown.content === '')
-        "
-      >
-        <!-- <DateDisplay :show_detail_initially="true" :date="archive_shown.date" /> -->
-        <div class="_archiveText" v-html="archive_shown.content" />
-      </div>
+      <transition name="pagechange" mode="out-in" appear>
+        <div
+          v-if="
+            archive_shown &&
+            (archive_shown.content || archive_shown.content === '')
+          "
+          :key="selected_archive_filename"
+        >
+          <!-- <DateDisplay :show_detail_initially="true" :date="archive_shown.date" /> -->
+          <div class="_archiveText" v-html="archive_shown.content" />
+        </div>
+      </transition>
     </div>
     <sl-button
       slot="footer"
