@@ -388,9 +388,12 @@ export default {
       $event.target.value = "";
     },
     async createNote() {
+      const date_str = +new Date();
+      const filename = "note-" + date_str + ".txt";
+
       const meta_filename = await this.$api.uploadText({
         path: this.path,
-        filename: "note.txt",
+        filename,
         content: "",
         additional_meta: {
           title: "Sans titre",
@@ -401,9 +404,12 @@ export default {
       }, 100);
     },
     async createEmbed(full_url) {
+      const date_str = +new Date();
+      const filename = "url-" + date_str + ".txt";
+
       const meta_filename = await this.$api.uploadText({
         path: this.path,
-        filename: "url.txt",
+        filename,
         content: full_url,
         additional_meta: {
           title: "Titre du lien",
