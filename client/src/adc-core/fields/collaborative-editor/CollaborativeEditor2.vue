@@ -33,7 +33,7 @@
           <button
             type="button"
             class="u-button _archivesBtn"
-            v-if="editor_is_enabled"
+            v-if="editor_is_enabled && !is_loading_or_saving"
             @click="show_archives = !show_archives"
           >
             <b-icon slot="prefix" icon="archive" />
