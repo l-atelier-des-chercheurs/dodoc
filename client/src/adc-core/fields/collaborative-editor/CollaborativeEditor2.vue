@@ -1335,4 +1335,8 @@ export default {
   }
   // background-color: var(--editor-bg);
 }
+
+._archivesBtn {
+  text-indent: -999px;
+}
 </style>
