@@ -175,6 +175,7 @@ export default {
 ._catSug {
   border-left: 2px solid black;
   padding-left: calc(var(--spacing) / 2);
+  background: var(--c-noir);
 }
 
 ._categories {

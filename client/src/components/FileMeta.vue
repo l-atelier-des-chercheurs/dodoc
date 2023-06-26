@@ -58,10 +58,12 @@
         "
       > -->
       <div class="u-spacingBottom">
-        <DLabel :str="$t('keywords')" />
         <KeywordsField
-          :edit_mode="false"
+          :field_name="'keywords'"
+          :label="$t('keywords')"
+          :path="file.$path"
           :keywords="file.keywords"
+          :can_edit="can_edit"
           @cancelEdit="[]"
         />
       </div>
