@@ -176,8 +176,6 @@ export default {
       });
       return ordered.map((o) => {
         let date_label;
-
-        debugger;
         if (group_by === "day")
           date_label = this.formatDate(o, {
             year: "numeric",
