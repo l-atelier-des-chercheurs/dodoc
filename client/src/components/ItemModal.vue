@@ -2,20 +2,51 @@
   <div class="_itemModal">
     <div class="_mediaModal--overlay" @click="$emit('close')" />
     <div class="_modalContent">
-      <button
-        type="button"
-        class="u-button u-button_transparent _navBtn _closeButton"
-        @click="$emit('close')"
-      >
-        <img
-          :src="`${$root.publicPath}images/i_close_sansfond.svg`"
-          width="2rem"
-          height="2rem"
-          class=""
-        />
-      </button>
+      <div class="_topBar">
+        <button
+          type="button"
+          class="u-button u-button_transparent u-button_icon _leftArrow"
+          :disabled="
+            position_in_list === 'first' || position_in_list === 'alone'
+          "
+          @click="$emit('prevMedia')"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+            <path
+              d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+              style="fill: var(--c-noir)"
+            />
+          </svg>
+        </button>
 
-      <div class="_topBar"></div>
+        <div class="_title">
+          {{ $t("document") }} {{ opened_file_sequence }}
+
+          <button
+            type="button"
+            class="u-button u-button_transparent u-button_icon _closeButton"
+            @click="$emit('close')"
+          >
+            <b-icon icon="x" />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="u-button u-button_transparent u-button_icon _rightArrow"
+          :disabled="
+            position_in_list === 'last' || position_in_list === 'alone'
+          "
+          @click="$emit('nextMedia')"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+            <path
+              d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+              style="fill: #353535"
+            />
+          </svg>
+        </button>
+      </div>
 
       <div class="_bottomContent">
         <div class="_leftContent">
@@ -64,6 +95,7 @@
         <div class="_rightContent">
           <FileMeta
             :file="file"
+            :sequence="file_sequence_in_stack"
             :is_stack="file.is_stack"
             :stack_file_shown="current_file_shown"
             @removeMain="removeMain"
@@ -81,13 +113,15 @@ import FileMeta from "@/components/FileMeta.vue";
 export default {
   props: {
     file: Object,
+    opened_file_sequence: [Boolean, String],
+    position_in_list: String,
   },
   components: {
     FileMeta,
   },
   data() {
     return {
-      current_file_index_shown: false,
+      current_file_index_shown: 0,
     };
   },
   created() {},
@@ -104,6 +138,13 @@ export default {
         if (this.current_file_index_shown === false) return false;
         else return this.file._stack_files[this.current_file_index_shown];
       return this.file;
+    },
+    file_sequence_in_stack() {
+      if (this.file.is_stack)
+        return `${this.current_file_index_shown + 1}/${
+          this.file._stack_files.length
+        }`;
+      return false;
     },
   },
   methods: {
@@ -178,8 +219,14 @@ export default {
 }
 
 ._topBar {
+  position: relative;
   min-height: 50px;
   border-bottom: 1px solid var(--color-borders);
+  padding: calc(var(--spacing) / 2);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 ._bottomContent {
@@ -321,10 +368,10 @@ export default {
 }
 
 ._closeButton {
-  position: absolute;
-  z-index: 10000;
-  top: 0em;
-  right: 0em;
+  // position: absolute;
+  // z-index: 10000;
+  // top: 0em;
+  // right: 0em;
   // color: currentColor;
   // font-size: 200%;
   // background: rgba(255, 255, 255, 0.25);
@@ -334,13 +381,17 @@ export default {
   margin: 0;
 
   img {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   // &:not(:hover) {
   //   margin-top: -10px;
   //   margin-right: -10px;
   // }
+}
+
+._title {
+  display: flex;
 }
 </style>

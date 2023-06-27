@@ -174,14 +174,14 @@ export default {
 
 ._catSug {
   border-left: 2px solid black;
-  padding-left: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
   background: var(--c-noir);
 }
 
 ._categories {
   display: flex;
   flex-flow: row wrap;
-  padding: calc(var(--spacing) / 2) 0;
+  padding: 0;
   gap: calc(var(--spacing) / 2);
 }
 

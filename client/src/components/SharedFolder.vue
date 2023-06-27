@@ -51,8 +51,17 @@
       </div>
     </div>
 
-    <transition name="scaleInFade" mode="out-in">
-      <ItemModal v-if="opened_files" :file="opened_files" @close="closeFile" />
+    <transition name="scaleInFade_fast" mode="in-out">
+      <ItemModal
+        v-if="opened_file"
+        :key="opened_file.$path"
+        :file="opened_file"
+        :opened_file_sequence="opened_file_sequence"
+        :position_in_list="opened_file_position_in_list"
+        @prevMedia="navMedia(-1)"
+        @nextMedia="navMedia(+1)"
+        @close="closeFile"
+      />
     </transition>
 
     <!-- <transition-group tag="div" name="projectsList" appear> -->
@@ -77,7 +86,7 @@
               v-for="file in files"
               :key="file.$path"
               :file="file"
-              :is_opened="opened_files && opened_files.$path === file.$path"
+              :is_opened="opened_file && opened_file.$path === file.$path"
               @open="openFile(file.$path)"
             />
           </transition-group>
@@ -152,12 +161,34 @@ export default {
     },
   },
   computed: {
-    opened_files() {
+    opened_file() {
       if (!this.$route.query?.file) return false;
       return this.shared_files.find(
         (si) => this.getFilename(si.$path) === this.$route.query.file
       );
     },
+    opened_file_position_index() {
+      if (!this.opened_file) return false;
+      return this.filtered_shared_files.findIndex(
+        (fm) => fm.$path === this.opened_file.$path
+      );
+    },
+    opened_file_sequence() {
+      return `${this.opened_file_position_index + 1}/${
+        this.filtered_shared_files.length
+      }`;
+    },
+    opened_file_position_in_list() {
+      const opened_file_index = this.opened_file_position_index;
+      if (opened_file_index === false) return "none";
+
+      if (this.filtered_shared_files.length === 1) return "alone";
+      if (opened_file_index === 0) return "first";
+      if (opened_file_index === this.filtered_shared_files.length - 1)
+        return "last";
+      return "none";
+    },
+
     shared_files() {
       if (!this.shared_folder?.$files) return [];
       const _all_medias = JSON.parse(JSON.stringify(this.shared_folder.$files));
@@ -236,6 +267,11 @@ export default {
       let query = Object.assign({}, this.$route.query) || {};
       delete query.file;
       this.$router.push({ query });
+    },
+    navMedia(dir) {
+      const index = this.opened_file_position_index;
+      const new_media = this.filtered_shared_files[index + dir];
+      if (new_media) this.openFile(new_media.$path);
     },
   },
 };
