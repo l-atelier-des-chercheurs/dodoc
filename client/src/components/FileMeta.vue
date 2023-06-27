@@ -100,6 +100,10 @@
           @click="$emit('closeStack')"
         />
         <div class="_fileMeta--stackItem--content">
+          <div v-if="sequence" class="_sequence">
+            {{ sequence }}
+          </div>
+
           <div class="u-spacingBottom">
             <TitleField
               :field_name="'title'"
@@ -137,6 +141,7 @@ import KeywordsField from "@/components/KeywordsField.vue";
 
 export default {
   props: {
+    sequence: [Boolean, String],
     file: Object,
     is_stack: Boolean,
     stack_file_shown: [Boolean, Object],
