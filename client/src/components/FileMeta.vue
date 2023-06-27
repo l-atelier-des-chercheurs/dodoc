@@ -83,6 +83,10 @@
 
       <hr />
 
+      <DownloadFile :file="file" v-if="!is_stack">
+        <sl-icon name="file-earmark-arrow-down" />
+        {{ $t("download") }}
+      </DownloadFile>
       <RemoveMenu
         :remove_text="is_stack ? $t('remove_stack') : $t('remove')"
         @remove="$emit('removeMain')"
@@ -127,6 +131,10 @@
 
           <hr />
 
+          <DownloadFile :file="stack_file_shown">
+            <sl-icon name="file-earmark-arrow-down" />
+            {{ $t("download") }}
+          </DownloadFile>
           <RemoveMenu
             :remove_text="$t('remove_item_in_stack')"
             @remove="$emit('removeCurrent')"
