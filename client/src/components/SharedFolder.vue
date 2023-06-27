@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <transition name="scaleInFade_fast" mode="in-out">
+    <transition name="scaleInFade_fast" mode="out-in">
       <ItemModal
         v-if="opened_file"
         :key="opened_file.$path"
