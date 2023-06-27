@@ -56,7 +56,7 @@ export default {
 
   position: relative;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -65,7 +65,7 @@ export default {
   &.is--opened {
     // background: rgb(67, 69, 71);
     transform: translateY(-10px);
-    box-shadow: 0 13px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 13px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
