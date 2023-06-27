@@ -113,7 +113,7 @@
       <div class="" v-if="(keywords && keywords.length > 0) || edit_mode">
         <KeywordsField
           :keywords.sync="keywords"
-          :can_edit="true"
+          :can_edit="edit_mode"
           @cancelEdit="cancelEdit"
         />
       </div>
