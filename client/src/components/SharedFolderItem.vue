@@ -14,6 +14,7 @@
       class="_sharedFolderItem--preview"
       :file="file.is_stack ? file._stack_files[0] : file"
       :context="'preview'"
+      :resolution="360"
     />
     <template v-if="file.is_stack">
       <MediaContent
@@ -55,10 +56,7 @@ export default {
 
   position: relative;
   cursor: pointer;
-  border-radius: 4px;
-  // background: rgb(37, 39, 41);
-  box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
-  // border: 1px solid rgb(67, 69, 71);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -67,6 +65,7 @@ export default {
   &.is--opened {
     // background: rgb(67, 69, 71);
     transform: translateY(-10px);
+    box-shadow: 0 13px 10px rgba(0, 0, 0, 0.05);
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
@@ -107,6 +106,7 @@ export default {
   overflow: hidden;
   // border: 2px solid white;
   border-bottom: 1px solid white;
+
   min-height: 50px;
 
   display: -webkit-box;
