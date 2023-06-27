@@ -152,6 +152,12 @@ export default {
 ._header {
   padding: calc(var(--spacing) / 2) 0;
   cursor: pointer;
+
+  h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 ._generatePreviewBtn {
   position: absolute;
