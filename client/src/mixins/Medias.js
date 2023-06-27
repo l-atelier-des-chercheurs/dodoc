@@ -160,8 +160,8 @@ export default {
         var year = dateObj.getUTCFullYear();
 
         let key;
-        if (group_by === "day") key = year + "-" + month + "-" + day;
-        if (group_by === "month") key = year + "-" + month + "-" + "1";
+        if (group_by === "day") key = year + "/" + month + "/" + day;
+        if (group_by === "month") key = year + "/" + month + "/" + "1";
         if (group_by === "year") key = year;
 
         if (!Object.prototype.hasOwnProperty.call(group, key)) group[key] = [];
@@ -176,6 +176,8 @@ export default {
       });
       return ordered.map((o) => {
         let date_label;
+
+        debugger;
         if (group_by === "day")
           date_label = this.formatDate(o, {
             year: "numeric",
