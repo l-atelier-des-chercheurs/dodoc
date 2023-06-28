@@ -1,30 +1,95 @@
 <template>
   <div v-if="shared_folder" class="_sharedFolder" @scroll="updatedScroll">
-    <div class="_topbar">
-      <div class="_topbar--content">
-        <div class="_title">
-          <transition name="showBTTBtn">
+    <div class="_mainContent">
+      <div class="_topbar">
+        <div class="_topbar--content">
+          <div class="_title">
+            <transition name="showBTTBtn">
+              <button
+                type="button"
+                @click="scrollTop"
+                v-if="current_scroll > 100"
+              >
+                <sl-icon name="arrow-up-circle-fill" />
+              </button>
+            </transition>
+            ESPACE PARTAGÉ / ARCHIVE
+          </div>
+          <div class="">
             <button
               type="button"
-              @click="scrollTop"
-              v-if="current_scroll > 100"
+              class="u-buttonLink"
+              :class="{
+                'is--active': show_filter_sort_pane,
+              }"
+              @click="show_filter_sort_pane = !show_filter_sort_pane"
             >
-              <sl-icon name="arrow-up-circle-fill" />
+              Filtrer/Classer
             </button>
-          </transition>
-          ESPACE PARTAGÉ / ARCHIVE
+          </div>
         </div>
-        <div class="_myContent">
-          <input
-            type="checkbox"
-            id="show_only_my_content"
-            v-model="show_only_my_content"
-          />
-          <label
-            for="show_only_my_content"
-            v-text="$t('show_only_my_content')"
-          />
-        </div>
+      </div>
+
+      <transition name="scaleInFade_fast" mode="out-in">
+        <ItemModal
+          v-if="opened_file"
+          :key="opened_file.$path"
+          :file="opened_file"
+          :opened_file_sequence="opened_file_sequence"
+          :position_in_list="opened_file_position_in_list"
+          @prevMedia="navMedia(-1)"
+          @nextMedia="navMedia(+1)"
+          @close="closeFile"
+        />
+      </transition>
+
+      <!-- <transition-group tag="div" name="projectsList" appear> -->
+      <transition name="pagechange" mode="out-in">
+        <transition-group
+          tag="div"
+          name="projectsList"
+          appear
+          :key="sort_order + '-' + group_mode"
+        >
+          <div
+            class="_dayFileSection"
+            v-for="{ label, files } in grouped_files"
+            :key="label"
+          >
+            <div class="_label">
+              {{ label }}
+            </div>
+            <transition-group
+              tag="div"
+              class="_grid"
+              name="listComplete"
+              appear
+            >
+              <SharedFolderItem
+                class="_file"
+                v-for="file in files"
+                :key="file.$path"
+                :file="file"
+                :is_opened="opened_file && opened_file.$path === file.$path"
+                @open="openFile(file.$path)"
+              />
+            </transition-group>
+          </div>
+        </transition-group>
+      </transition>
+
+      <footer class="_footer">
+        <small>
+          <a href="mailto:ckernreuter@luma-arles.org" target="_blank"
+            >aide/contact</a
+          ><br />
+          version {{ $root.app_infos.version }}
+        </small>
+      </footer>
+    </div>
+
+    <transition name="pagechange" mode="out-in">
+      <div class="_filterBar" v-if="show_filter_sort_pane">
         <div class="_groupBy">
           <div v-for="group_option in group_options" :key="group_option.key">
             <input
@@ -42,6 +107,19 @@
             />
           </div>
         </div>
+
+        <div class="_myContent">
+          <input
+            type="checkbox"
+            id="show_only_my_content"
+            v-model="show_only_my_content"
+          />
+          <label
+            for="show_only_my_content"
+            v-text="$t('show_only_my_content')"
+          />
+        </div>
+
         <div class="_sortSelect">
           <select v-model="sort_order">
             <option value="date_uploaded" v-text="$t('date_uploaded')" />
@@ -49,59 +127,7 @@
           </select>
         </div>
       </div>
-    </div>
-
-    <transition name="scaleInFade_fast" mode="out-in">
-      <ItemModal
-        v-if="opened_file"
-        :key="opened_file.$path"
-        :file="opened_file"
-        :opened_file_sequence="opened_file_sequence"
-        :position_in_list="opened_file_position_in_list"
-        @prevMedia="navMedia(-1)"
-        @nextMedia="navMedia(+1)"
-        @close="closeFile"
-      />
     </transition>
-
-    <!-- <transition-group tag="div" name="projectsList" appear> -->
-    <transition name="pagechange" mode="out-in">
-      <transition-group
-        tag="div"
-        name="projectsList"
-        appear
-        :key="sort_order + '-' + group_mode"
-      >
-        <div
-          class="_dayFileSection"
-          v-for="{ label, files } in grouped_files"
-          :key="label"
-        >
-          <div class="_label">
-            {{ label }}
-          </div>
-          <transition-group tag="div" class="_grid" name="listComplete" appear>
-            <SharedFolderItem
-              class="_file"
-              v-for="file in files"
-              :key="file.$path"
-              :file="file"
-              :is_opened="opened_file && opened_file.$path === file.$path"
-              @open="openFile(file.$path)"
-            />
-          </transition-group>
-        </div>
-      </transition-group>
-    </transition>
-
-    <footer class="_footer">
-      <small>
-        <a href="mailto:ckernreuter@luma-arles.org" target="_blank"
-          >aide/contact</a
-        ><br />
-        version {{ $root.app_infos.version }}
-      </small>
-    </footer>
   </div>
 </template>
 <script>
@@ -120,6 +146,8 @@ export default {
     return {
       shared_folder: undefined,
       sort_order: localStorage.getItem("sort_order") || "date_uploaded",
+
+      show_filter_sort_pane: false,
 
       show_backtotop_btn: false,
       current_scroll: 0,
@@ -278,10 +306,33 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._sharedFolder {
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
+
+  > ._mainContent {
+    flex: 1;
+  }
+  > ._filterBar {
+    flex: 0 0 240px;
+    max-width: 240px;
+  }
+}
+
+._mainContent {
+  display: block;
   padding-bottom: calc(var(--spacing) * 4);
-  border-radius: 4px;
   overflow: auto;
   height: 100%;
+}
+
+._filterBar {
+  border-left: 1px solid white;
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) * 1);
 }
 
 ._topbar {
@@ -376,7 +427,7 @@ export default {
   width: 33ch;
 
   select {
-    background: white;
+    background-color: white;
   }
 }
 
