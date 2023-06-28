@@ -9,6 +9,18 @@
       {{ $t("reset") }}
     </button>
 
+    <div class="">
+      <input
+        type="text"
+        :placeholder="$t('search')"
+        :value="search_str"
+        @input="$emit('update:search_str', $event.target.value)"
+      />
+      <div class="u-instructions">
+        {{ $t("search_fields") }}
+      </div>
+    </div>
+
     <div class="_sortSelect">
       <DLabel :str="$t('sort_by')" />
       <select
@@ -103,6 +115,7 @@ export default {
   props: {
     group_mode: String,
     sort_order: String,
+    search_str: String,
     author_path_filter: String,
     keywords_filter: Array,
     available_keywords: Array,
@@ -156,6 +169,7 @@ export default {
       return (
         this.group_mode !== "day" ||
         this.sort_order !== "date_uploaded" ||
+        this.search_str !== "" ||
         this.author_path_filter !== "" ||
         this.keywords_filter.length > 0
       );
@@ -165,6 +179,7 @@ export default {
     resetFilters() {
       this.$emit("update:group_mode", "day");
       this.$emit("update:sort_order", "date_uploaded");
+      this.$emit("update:search_str", "");
       this.$emit("update:author_path_filter", "");
       this.$emit("update:keywords_filter", []);
     },
@@ -188,7 +203,8 @@ export default {
   gap: calc(var(--spacing) * 1);
   padding: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
 
-  select {
+  select,
+  input {
     background-color: white;
   }
 }

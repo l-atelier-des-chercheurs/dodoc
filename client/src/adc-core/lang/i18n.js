@@ -813,6 +813,9 @@ export default function () {
         restore_this_version: "Restaurer cette version",
         version: "Version",
 
+        search: "Rechercher",
+        search_fields: "Dans les champs titre, description ou notes.",
+
         general_informations: "Informations sur l’instance",
 
         panes: "Panneaux",

@@ -101,6 +101,7 @@
         <FilterBar
           :group_mode.sync="group_mode"
           :sort_order.sync="sort_order"
+          :search_str.sync="search_str"
           :author_path_filter.sync="author_path_filter"
           :available_keywords="available_keywords"
           :keywords_filter.sync="keywords_filter"
@@ -131,10 +132,19 @@ export default {
       current_scroll: 0,
 
       show_filter_sort_pane: false,
-      sort_order: localStorage.getItem("sort_order") || "date_uploaded",
-      author_path_filter: localStorage.getItem("author_path_filter") || "",
-      keywords_filter: localStorage.getItem("keywords_filter") || [],
-      group_mode: localStorage.getItem("group_mode") || "day",
+
+      sort_order: "date_uploaded",
+      search_str: "",
+      author_path_filter: "",
+      keywords_filter: [],
+      group_mode: "day",
+
+      // sort_order: localStorage.getItem("sort_order") || "date_uploaded",
+      // search_str: localStorage.getItem("search_str") || "",
+      // author_path_filter: localStorage.getItem("author_path_filter") || "",
+      // // not working
+      // keywords_filter: localStorage.getItem("keywords_filter") ? JSON.parse(localStorage.getItem("keywords_filter")) : [],
+      // group_mode: localStorage.getItem("group_mode") || "day",
     };
   },
   created() {},
@@ -146,12 +156,24 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    sort_order() {
-      localStorage.setItem("sort_order", this.sort_order);
-    },
-    group_mode() {
-      localStorage.setItem("group_mode", this.group_mode);
-    },
+    // sort_order() {
+    //   localStorage.setItem("sort_order", this.sort_order);
+    // },
+    // search_str() {
+    //   localStorage.setItem("search_str", this.search_str);
+    // },
+    // author_path_filter() {
+    //   localStorage.setItem("author_path_filter", this.author_path_filter);
+    // },
+    // keywords_filter() {
+    //   localStorage.setItem(
+    //     "keywords_filter",
+    //     JSON.stringify(this.keywords_filter)
+    //   );
+    // },
+    // group_mode() {
+    //   localStorage.setItem("group_mode", this.group_mode);
+    // },
   },
   computed: {
     opened_file() {
@@ -230,6 +252,19 @@ export default {
             );
           }
           return false;
+        }
+
+        if (this.search_str) {
+          return (
+            (f.title &&
+              f.title.toLowerCase().includes(this.search_str.toLowerCase())) ||
+            (f.description &&
+              f.description
+                .toLowerCase()
+                .includes(this.search_str.toLowerCase())) ||
+            (f.$content &&
+              f.$content.toLowerCase().includes(this.search_str.toLowerCase()))
+          );
         }
 
         return true;
