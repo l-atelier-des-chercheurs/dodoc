@@ -33,8 +33,6 @@
         />
       </div>
 
-      <hr />
-
       <!-- // disabled for now -->
       <AuthorField
         :label="$t('authors')"
@@ -46,17 +44,6 @@
         :instructions="$t('media_editing_instructions')"
       />
 
-      <hr />
-
-      <!-- <div
-        class=""
-        v-if="
-          (file.keywords &&
-            Array.isArray(file.keywords) &&
-            file.keywords.length > 0) ||
-          edit_mode
-        "
-      > -->
       <div class="u-spacingBottom">
         <KeywordsField
           :field_name="'keywords'"
@@ -67,21 +54,18 @@
           @cancelEdit="[]"
         />
       </div>
-      <!-- </div> -->
 
-      <hr />
-
-      <TitleField
-        :field_name="'description'"
-        :label="$t('description')"
-        :content="file.description"
-        :path="file.$path"
-        :maxlength="1280"
-        :input_type="'markdown'"
-        :can_edit="can_edit"
-      />
-
-      <hr />
+      <div class="u-spacingBottom">
+        <TitleField
+          :field_name="'description'"
+          :label="$t('description')"
+          :content="file.description"
+          :path="file.$path"
+          :maxlength="1280"
+          :input_type="'markdown'"
+          :can_edit="can_edit"
+        />
+      </div>
 
       <DownloadFile :file="file" v-if="!is_stack">
         <sl-icon name="file-earmark-arrow-down" />
@@ -120,16 +104,16 @@
 
           <hr />
 
-          <DateField
-            :field_name="'date_created_corrected'"
-            :label="$t('date_created')"
-            :date="stack_file_shown.date_created_corrected"
-            :path="stack_file_shown.$path"
-            :input_type="'datetime-local'"
-            :can_edit="can_edit"
-          />
-
-          <hr />
+          <div class="u-spacingBottom">
+            <DateField
+              :field_name="'date_created_corrected'"
+              :label="$t('date_created')"
+              :date="stack_file_shown.date_created_corrected"
+              :path="stack_file_shown.$path"
+              :input_type="'datetime-local'"
+              :can_edit="can_edit"
+            />
+          </div>
 
           <DownloadFile :file="stack_file_shown">
             <sl-icon name="file-earmark-arrow-down" />
@@ -196,11 +180,11 @@ export default {
 }
 
 ._fileMeta--stackItem {
-  // position: absolute;
-  // top: 0;
-  // bottom: 0;
-  // left: 0;
-  // right: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: transparent;
 
   display: flex;
@@ -231,7 +215,7 @@ export default {
 }
 
 hr {
-  margin: calc(var(--spacing) * 2) 0;
+  margin: calc(var(--spacing) * 1) 0;
 }
 
 .partialSlideupFade {

@@ -91,18 +91,35 @@
               disabled
             />
           </div> -->
+
+          <button
+            type="button"
+            class="u-button u-button_icon _toggleSidebarBtn"
+            @click="toggleSidebar"
+          >
+            <template v-if="show_sidebar">
+              <b-icon icon="list" />
+            </template>
+            <template v-else>
+              <b-icon icon="list" />
+              &nbsp;
+              {{ $t("informations") }}
+            </template>
+          </button>
         </div>
-        <div class="_rightContent">
-          <FileMeta
-            :file="file"
-            :sequence="file_sequence_in_stack"
-            :is_stack="file.is_stack"
-            :stack_file_shown="current_file_shown"
-            @removeMain="removeMain"
-            @removeCurrent="removeCurrent"
-            @closeStack="current_file_index_shown = false"
-          />
-        </div>
+        <transition name="pagechange" mode="out-in">
+          <div class="_rightContent" v-if="show_sidebar">
+            <FileMeta
+              :file="file"
+              :sequence="file_sequence_in_stack"
+              :is_stack="file.is_stack"
+              :stack_file_shown="current_file_shown"
+              @removeMain="removeMain"
+              @removeCurrent="removeCurrent"
+              @closeStack="current_file_index_shown = false"
+            />
+          </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -122,6 +139,7 @@ export default {
   data() {
     return {
       current_file_index_shown: false,
+      show_sidebar: localStorage.getItem("show_sidebar") !== "false",
     };
   },
   created() {},
@@ -131,7 +149,11 @@ export default {
   beforeDestroy() {
     window.removeEventListener("keyup", this.handleKeyPress);
   },
-  watch: {},
+  watch: {
+    show_sidebar() {
+      localStorage.setItem("show_sidebar", this.show_sidebar);
+    },
+  },
   computed: {
     current_file_shown() {
       if (this.file.is_stack)
@@ -175,6 +197,9 @@ export default {
         },
       });
       await this.$api.deleteItem({ path: this.current_file_shown.$path });
+    },
+    toggleSidebar() {
+      this.show_sidebar = !this.show_sidebar;
     },
     handleKeyPress(event) {
       if (
@@ -393,5 +418,16 @@ export default {
 
 ._title {
   display: flex;
+}
+
+._toggleSidebarBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px solid var(--color-borders);
+  border-right: 0;
+  margin: calc(var(--spacing) * 1);
+  margin-right: 0;
+  border-radius: 0;
 }
 </style>
