@@ -16,7 +16,7 @@
           :key="'myContent'"
         >
           <MyChutier
-            v-if="show_chutier"
+            v-show="show_chutier"
             :shared_space_path="shared_folder_path"
             @close="show_chutier = false"
           />
