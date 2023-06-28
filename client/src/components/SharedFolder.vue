@@ -52,29 +52,38 @@
           :key="sort_order + '-' + group_mode"
         >
           <div
-            class="_dayFileSection"
-            v-for="{ label, files } in grouped_files"
-            :key="label"
+            v-if="grouped_files.length === 0"
+            class="u-instructions _noContent"
+            :key="'nocontent'"
           >
-            <div class="_label">
-              {{ label }}
-            </div>
-            <transition-group
-              tag="div"
-              class="_grid"
-              name="listComplete"
-              appear
-            >
-              <SharedFolderItem
-                class="_file"
-                v-for="file in files"
-                :key="file.$path"
-                :file="file"
-                :is_opened="opened_file && opened_file.$path === file.$path"
-                @open="openFile(file.$path)"
-              />
-            </transition-group>
+            {{ $t("no_content") }}
           </div>
+          <template v-else>
+            <div
+              class="_dayFileSection"
+              v-for="{ label, files } in grouped_files"
+              :key="label"
+            >
+              <div class="_label">
+                {{ label }}
+              </div>
+              <transition-group
+                tag="div"
+                class="_grid"
+                name="listComplete"
+                appear
+              >
+                <SharedFolderItem
+                  class="_file"
+                  v-for="file in files"
+                  :key="file.$path"
+                  :file="file"
+                  :is_opened="opened_file && opened_file.$path === file.$path"
+                  @open="openFile(file.$path)"
+                />
+              </transition-group>
+            </div>
+          </template>
         </transition-group>
       </transition>
 
@@ -87,45 +96,15 @@
         </small>
       </footer>
     </div>
-
     <transition name="pagechange" mode="out-in">
       <div class="_filterBar" v-if="show_filter_sort_pane">
-        <div class="_groupBy">
-          <div v-for="group_option in group_options" :key="group_option.key">
-            <input
-              type="radio"
-              :id="group_option.key"
-              :value="group_option.key"
-              v-model="group_mode"
-            />
-            <label
-              :for="group_option.key"
-              v-text="group_option.label"
-              :class="{
-                'is--selected': group_option.key === group_mode,
-              }"
-            />
-          </div>
-        </div>
-
-        <div class="_myContent">
-          <input
-            type="checkbox"
-            id="show_only_my_content"
-            v-model="show_only_my_content"
-          />
-          <label
-            for="show_only_my_content"
-            v-text="$t('show_only_my_content')"
-          />
-        </div>
-
-        <div class="_sortSelect">
-          <select v-model="sort_order">
-            <option value="date_uploaded" v-text="$t('date_uploaded')" />
-            <option value="date_created" v-text="$t('date_created')" />
-          </select>
-        </div>
+        <FilterBar
+          :group_mode.sync="group_mode"
+          :sort_order.sync="sort_order"
+          :author_path_filter.sync="author_path_filter"
+          :available_keywords="available_keywords"
+          :keywords_filter.sync="keywords_filter"
+        />
       </div>
     </transition>
   </div>
@@ -133,6 +112,7 @@
 <script>
 import SharedFolderItem from "@/components/SharedFolderItem.vue";
 import ItemModal from "@/components/ItemModal.vue";
+import FilterBar from "@/components/FilterBar.vue";
 
 export default {
   props: {
@@ -141,35 +121,20 @@ export default {
   components: {
     SharedFolderItem,
     ItemModal,
+    FilterBar,
   },
   data() {
     return {
       shared_folder: undefined,
-      sort_order: localStorage.getItem("sort_order") || "date_uploaded",
-
-      show_filter_sort_pane: false,
 
       show_backtotop_btn: false,
       current_scroll: 0,
 
-      show_only_my_content:
-        localStorage.getItem("show_only_my_content") === "true",
-
+      show_filter_sort_pane: false,
+      sort_order: localStorage.getItem("sort_order") || "date_uploaded",
+      author_path_filter: localStorage.getItem("author_path_filter") || "",
+      keywords_filter: localStorage.getItem("keywords_filter") || [],
       group_mode: localStorage.getItem("group_mode") || "day",
-      group_options: [
-        {
-          key: "day",
-          label: this.$t("day"),
-        },
-        {
-          key: "month",
-          label: this.$t("month"),
-        },
-        {
-          key: "year",
-          label: this.$t("year"),
-        },
-      ],
     };
   },
   created() {},
@@ -254,10 +219,19 @@ export default {
     },
     filtered_shared_files() {
       return this.shared_files.filter((f) => {
-        if (this.show_only_my_content)
-          if (f.$admins && f.$admins.includes(this.connected_as.$path))
-            return true;
-          else return false;
+        if (this.author_path_filter)
+          if (!f.$admins || !f.$admins.includes(this.author_path_filter))
+            return false;
+
+        if (this.keywords_filter.length > 0) {
+          if (f.keywords && Array.isArray(f.keywords)) {
+            return !this.keywords_filter.some(
+              (kwf) => !f.keywords.includes(kwf)
+            );
+          }
+          return false;
+        }
+
         return true;
       });
     },
@@ -276,6 +250,24 @@ export default {
         order_props,
         this.group_mode
       );
+    },
+    available_keywords() {
+      const all_kw = this.filtered_shared_files.reduce((acc, f) => {
+        if (f.keywords && Array.isArray(f.keywords)) {
+          f.keywords.map((kw) => {
+            const item = acc.find((_kw) => _kw.title === kw);
+            if (item) item.count += 1;
+            else acc.push({ title: kw, count: 1 });
+
+            // if (!acc[kw]) acc[kw] = 1;
+            // else acc[kw] += 1;
+          });
+        }
+        return acc;
+      }, []);
+      return all_kw.sort((a, b) => {
+        return b.count - a.count;
+      });
     },
   },
   methods: {
@@ -320,19 +312,15 @@ export default {
 }
 
 ._mainContent {
-  display: block;
   padding-bottom: calc(var(--spacing) * 4);
-  overflow: auto;
   height: 100%;
+  overflow: auto;
 }
 
 ._filterBar {
   border-left: 1px solid white;
-  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
-
-  display: flex;
-  flex-flow: column nowrap;
-  gap: calc(var(--spacing) * 1);
+  height: 100%;
+  overflow: auto;
 }
 
 ._topbar {
@@ -367,6 +355,10 @@ export default {
   padding: calc(var(--spacing) * 2);
 }
 
+._noContent {
+  padding: calc(var(--spacing) * 2);
+}
+
 ._label {
   position: relative;
   z-index: 2;
@@ -395,64 +387,12 @@ export default {
   z-index: 1;
 }
 
-._floatingTopBtn {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: calc(var(--spacing) / 1);
-  pointer-events: none;
-
-  > * {
-    border-radius: 25px;
-    padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
-    background: black;
-    color: white;
-    pointer-events: auto;
-  }
-}
-
 ._footer {
   margin-top: calc(var(--spacing) * 6);
   text-align: center;
 
   a {
     color: inherit;
-  }
-}
-
-._sortSelect {
-  width: 33ch;
-
-  select {
-    background-color: white;
-  }
-}
-
-._myContent {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-}
-
-._groupBy {
-  display: flex;
-  flex-flow: row nowrap;
-
-  input {
-    visibility: hidden;
-    width: 1px;
-    height: 1px;
-  }
-
-  label {
-    cursor: pointer;
-    &.is--selected {
-      font-weight: 600;
-    }
   }
 }
 </style>

@@ -231,7 +231,7 @@ export default {
 
 ._bottomContent {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   align-items: stretch;
   height: 100%;
   overflow: hidden;
@@ -241,7 +241,7 @@ export default {
   }
   > ._rightContent {
     flex: 1 0 0px;
-    min-width: 240px;
+    min-width: 200px;
   }
 }
 
@@ -260,7 +260,7 @@ export default {
   flex: 1 1 auto;
   overflow: hidden;
   position: relative;
-  margin: calc(var(--spacing) * 1);
+  // margin: calc(var(--spacing) * 1);
 }
 
 ._openedFile--media ::v-deep {

@@ -14,6 +14,9 @@
         {{ name }}
       </div>
     </div>
+    <div v-if="count" class="_count">
+      {{ count }}
+    </div>
     <sl-icon-button
       v-if="can_remove"
       class="_white"
@@ -32,6 +35,7 @@
 export default {
   props: {
     keyword: String,
+    count: Number,
     cat_color: String,
     can_remove: Boolean,
     can_add: Boolean,
@@ -110,5 +114,17 @@ export default {
   bottom: 0;
   width: 100%;
   background: transparent;
+}
+
+._count {
+  border: 1px solid white;
+  border-radius: 10px;
+  min-width: 14px;
+  height: 14px;
+  font-size: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
 }
 </style>

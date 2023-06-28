@@ -303,6 +303,14 @@ export default function () {
         none: "Aucun·e",
         filters: "Filtres",
         reset_all: "Retirer tout",
+        reset: "Réinitialiser",
+
+        no_content: "Aucun contenu à afficher",
+
+        group_by_date: "Grouper par date",
+        filter_by_author: "Filtrer par auteur",
+        filter_by_keyword: "Filtrer par mots-clé",
+        sort_by: "Trier par",
 
         draft: "En cours",
         listed: "Listé",
