@@ -121,7 +121,8 @@ export default {
   watch: {
     $route() {
       // if navigating to another route, lets close modal
-      this.$emit("close");
+      // this.$emit("close");
+      // problematic for luma doc
     },
   },
   computed: {
