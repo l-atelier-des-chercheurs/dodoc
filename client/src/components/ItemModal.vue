@@ -121,7 +121,7 @@ export default {
   },
   data() {
     return {
-      current_file_index_shown: 0,
+      current_file_index_shown: false,
     };
   },
   created() {},
