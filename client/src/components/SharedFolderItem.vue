@@ -56,7 +56,7 @@ export default {
 
   position: relative;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
