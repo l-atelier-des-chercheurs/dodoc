@@ -226,12 +226,20 @@ export default {
 }
 
 ._fileType {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--c-gris);
+  // color: var;
+  border-radius: 3px;
+  line-height: 1;
+  font-weight: 600;
+
   padding: 0 calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4);
+  font-size: var(--input-font-size-x-small);
+  text-transform: uppercase;
 
   ._mediaTile:not([data-tilemode="table"]) & {
     position: absolute;
-    bottom: 0;
+    top: 0;
     right: 0;
   }
 }
