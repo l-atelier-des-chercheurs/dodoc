@@ -520,7 +520,7 @@ module.exports = (function () {
       });
     }
 
-    cache.printStatus();
+    // cache.printStatus();
   }
   async function _createFolder(req, res, next) {
     const { path_to_type, data } = utils.makePathFromReq(req);
@@ -575,7 +575,7 @@ module.exports = (function () {
         err_infos,
       });
     }
-    cache.printStatus();
+    // cache.printStatus();
   }
 
   async function _updateFolder(req, res, next) {
