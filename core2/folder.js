@@ -16,22 +16,34 @@ module.exports = (function () {
         relative_path: path_to_type,
       });
 
-      const folders_slugs = await _getFolderSlugs({
+      let folders_slugs = await _getFolderSlugs({
         path_to_type,
       });
 
-      const all_folders_with_meta = [];
-      for (let folder_slug of folders_slugs) {
-        const path_to_folder = path.join(path_to_type, folder_slug);
-        const folder_meta = await API.getFolder({
-          path_to_folder,
-        }).catch((err) => {
-          if (err.code === "ENOENT")
-            dev.error(`Failed to get folder`, err.message);
-          else throw err;
-        });
-        if (folder_meta) all_folders_with_meta.push(folder_meta);
+      let all_folders_with_meta = [];
+
+      // inspired by https://blog.logrocket.com/node-js-multithreading-worker-threads-why-they-matter/
+      async function getFoldersSequentially() {
+        if (folders_slugs.length > 0) {
+          const sub_folders_slugs = folders_slugs.splice(0, 10);
+
+          for (const folder_slug of sub_folders_slugs) {
+            const path_to_folder = path.join(path_to_type, folder_slug);
+            const folder_meta = await API.getFolder({
+              path_to_folder,
+            }).catch((err) => {
+              if (err.code === "ENOENT")
+                dev.error(`Failed to get folder`, err.message);
+              else throw err;
+            });
+            if (folder_meta) all_folders_with_meta.push(folder_meta);
+          }
+
+          await new Promise((r) => setImmediate(r));
+          await getFoldersSequentially();
+        } else return;
       }
+      await getFoldersSequentially();
 
       return all_folders_with_meta;
     },
