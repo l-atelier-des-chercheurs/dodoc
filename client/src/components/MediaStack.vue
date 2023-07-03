@@ -62,7 +62,7 @@
           @keydown.esc.prevent="$emit('close')"
         />
         <KeywordsField
-          :edit_mode="true"
+          :can_edit="true"
           :keywords.sync="keywords"
           @cancelEdit="$emit('close')"
         />
