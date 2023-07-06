@@ -99,39 +99,30 @@ module.exports = (function () {
     getFiles: async ({ path_to_folder }) => {
       dev.logfunction({ path_to_folder });
 
-      let meta_filenames = await _getMetasInFolder({
+      const meta_filenames = await _getMetasInFolder({
         path_to_folder,
       });
 
       // no caching here to get more flexibility with lru cache (busting medias with few access, etc.)
 
-      let all_files_metas = [];
+      const metas = [];
+      for (const meta_filename of meta_filenames) {
+        try {
+          dev.logverbose(`reading ${meta_filename}`);
 
-      async function getFilesSequentially() {
-        if (meta_filenames.length > 0) {
-          const sub_meta_filenames = meta_filenames.splice(0, 10);
+          const path_to_meta = path.join(path_to_folder, meta_filename);
+          const meta = await API.getFile({
+            path_to_folder,
+            path_to_meta,
+          });
 
-          for (const meta_filename of sub_meta_filenames) {
-            try {
-              // dev.logverbose(`reading ${meta_filename}`);
-              const path_to_meta = path.join(path_to_folder, meta_filename);
-              const meta = await API.getFile({
-                path_to_folder,
-                path_to_meta,
-              });
-              all_files_metas.push(meta);
-            } catch (err) {
-              dev.error(err);
-            }
-          }
-
-          await new Promise((r) => setImmediate(r));
-          await getFilesSequentially();
-        } else return;
+          metas.push(meta);
+        } catch (err) {
+          dev.error(err);
+        }
       }
-      await getFilesSequentially();
 
-      return all_files_metas;
+      return metas;
     },
     getFile: async ({ path_to_meta }) => {
       dev.logfunction({ path_to_meta });
