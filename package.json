@@ -96,7 +96,7 @@
     "electron": "11.0.3",
     "electron-builder": "^22.9.1",
     "electron-packager": "^15.1.0",
-    "electron-rebuild": "^2.3.4",
-    "node-gyp": "^7.1.2"
+    "electron-rebuild": "^3.2.9",
+    "node-gyp": "^9.4.0"
   }
 }
