@@ -229,8 +229,9 @@ export default {
   width: 100%;
   background: white;
   max-width: 800px;
-  padding: calc(var(--spacing) * 2) 0;
+  padding: 0;
   margin: 0 auto;
+  padding-bottom: calc(var(--spacing) * 2);
   border-radius: 15px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
@@ -249,6 +250,9 @@ export default {
     ._floatingEditBtn[data-action="disable"] {
       display: none;
     }
+    ._mediaContent--image {
+      border-radius: 6px;
+    }
   }
 }
 ._spacer {
@@ -266,7 +270,7 @@ export default {
   justify-content: space-between;
 
   margin: 0 calc(var(--spacing) * 2) 0;
-  padding-bottom: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1.5) 0;
   border-bottom: 2px solid var(--c-gris);
 
   > * {
