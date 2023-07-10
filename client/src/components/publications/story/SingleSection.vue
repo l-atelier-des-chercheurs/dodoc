@@ -2,7 +2,12 @@
   <div class="_singleSection">
     <div class="_storyContainer">
       <div class="_storyContent" :style="story_styles">
-        <div class="_topbar">
+        <div
+          class="_topbar"
+          v-if="
+            can_edit || section.section_title || section.section_description
+          "
+        >
           <SectionTitle class="_text" :section="section" :can_edit="can_edit" />
           <div class="_buttons" v-if="can_edit">
             <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
@@ -21,6 +26,7 @@
         <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(meta_filename, index) in modules_list">
             <div class="_spacer" :key="'mc_' + index">
+              <!-- v-if="can_edit || index > 0" -->
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
