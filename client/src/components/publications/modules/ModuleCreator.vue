@@ -236,9 +236,11 @@ export default {
       this.show_media_picker = false;
     },
     async createEmbed(full_url) {
+      const filename = "url-" + +new Date() + ".txt";
+
       const text_meta_filename = await this.$api.uploadText({
         path: this.publication_path,
-        filename: "url.txt",
+        filename,
         content: full_url,
         additional_meta: {
           module_type: this.module_type,
@@ -266,9 +268,10 @@ export default {
       this.show_file_picker = false;
     },
     async createText() {
+      const filename = "text-" + +new Date() + ".txt";
       const meta_filename = await this.$api.uploadText({
         path: this.publication_path,
-        filename: "text.txt",
+        filename,
         content: "",
         additional_meta: {
           module_type: this.module_type,
