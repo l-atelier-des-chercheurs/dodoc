@@ -72,7 +72,7 @@
             <img :src="thumb" class="_iframeStylePreview" />
             <button
               type="button"
-              class="plyr__control plyr__control--overlaid"
+              class="plyr__control plyr__control--overlaid _playButton"
               aria-label="Play"
               @click="loadIframe"
             >
@@ -307,8 +307,11 @@ export default {
     height: 100%;
     aspect-ratio: 16/9;
 
-    button {
+    ._playButton {
       display: block;
+      @media print {
+        display: none;
+      }
     }
   }
 
