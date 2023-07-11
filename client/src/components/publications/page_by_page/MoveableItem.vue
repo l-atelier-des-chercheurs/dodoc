@@ -550,6 +550,10 @@ export default {
       border-width: var(--set-outlineWidth);
       border-style: solid;
     }
+
+    ._mediaContent--iframe--content {
+      resize: none;
+    }
   }
   ._publicationModule[data-type="files"],
   ._publicationModule[data-type="carousel"] {
