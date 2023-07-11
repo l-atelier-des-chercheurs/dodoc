@@ -72,7 +72,7 @@
             <img :src="thumb" class="_iframeStylePreview" />
             <button
               type="button"
-              class="plyr__control plyr__control--overlaid"
+              class="plyr__control plyr__control--overlaid _playButton"
               aria-label="Play"
               @click="loadIframe"
             >
@@ -107,16 +107,7 @@
               @load="iframeLoaded"
             />
             <div v-else-if="file.$type === 'stl'">
-              <model-stl
-                :key="file_full_path"
-                :src="file_full_path"
-                :rotation="{
-                  x: Math.PI / 12,
-                  y: -Math.PI / 12,
-                  z: 0,
-                }"
-                :background-color="0xffffff"
-              />
+              <STLPreview :key="file_full_path" :src="file_full_path" />
             </div>
             <iframe
               v-else-if="url_to_site.type === 'any'"
@@ -152,8 +143,6 @@
   </div>
 </template>
 <script>
-import { ModelStl } from "vue-3d-model";
-
 export default {
   props: {
     file: Object,
@@ -179,7 +168,9 @@ export default {
       default: false,
     },
   },
-  components: { ModelStl },
+  components: {
+    STLPreview: () => import("@/adc-core/fields/STLPreview.vue"),
+  },
   data() {
     return {
       is_dragged: false,
@@ -316,8 +307,11 @@ export default {
     height: 100%;
     aspect-ratio: 16/9;
 
-    button {
+    ._playButton {
       display: block;
+      @media print {
+        display: none;
+      }
     }
   }
 
