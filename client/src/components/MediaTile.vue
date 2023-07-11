@@ -11,9 +11,7 @@
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
-    <div class="_index">
-      <div class="u-nut" v-html="index" />
-    </div>
+    <div class="u-nut _index" v-html="index" />
     <MediaContent class="_content" :file="file" :resolution="220" />
     <div
       v-if="tile_mode === 'table'"
@@ -226,12 +224,20 @@ export default {
 }
 
 ._fileType {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--c-gris);
+  // color: var;
+  border-radius: 3px;
+  line-height: 1;
+  font-weight: 600;
+
   padding: 0 calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4);
+  font-size: var(--input-font-size-x-small);
+  text-transform: uppercase;
 
   ._mediaTile:not([data-tilemode="table"]) & {
     position: absolute;
-    bottom: 0;
+    top: 0;
     right: 0;
   }
 }
@@ -280,6 +286,9 @@ export default {
   top: 0;
   left: 0;
   z-index: 2;
+  background: white;
+  font-size: var(--input-font-size-x-small);
+  font-weight: 800;
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;

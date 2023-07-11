@@ -119,7 +119,7 @@ export default function () {
       },
       leave({ room }) {
         const index_to_remove = this.rooms_joined.findIndex(
-          (rj) => rj !== room
+          (rj) => rj === room
         );
         this.rooms_joined.splice(index_to_remove, 1);
         // if room isnt tracked anymore

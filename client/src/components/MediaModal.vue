@@ -17,7 +17,13 @@
     <div class="_mediaModal--content">
       <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
-        <MediaContent :file="file" :autoload="true" :context="'full'" />
+        <MediaContent
+          :file="file"
+          :is_draggable="false"
+          :autoload="false"
+          :resolution="1600"
+          :context="'full'"
+        />
       </div>
       <div class="_meta" v-if="!select_mode">
         <div class="u-spacingBottom">

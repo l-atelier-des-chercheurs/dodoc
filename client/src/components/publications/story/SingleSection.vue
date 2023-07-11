@@ -2,7 +2,12 @@
   <div class="_singleSection">
     <div class="_storyContainer">
       <div class="_storyContent" :style="story_styles">
-        <div class="_topbar">
+        <div
+          class="_topbar"
+          v-if="
+            can_edit || section.section_title || section.section_description
+          "
+        >
           <SectionTitle class="_text" :section="section" :can_edit="can_edit" />
           <div class="_buttons" v-if="can_edit">
             <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
@@ -21,6 +26,7 @@
         <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(meta_filename, index) in modules_list">
             <div class="_spacer" :key="'mc_' + index">
+              <!-- v-if="can_edit || index > 0" -->
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
@@ -223,8 +229,9 @@ export default {
   width: 100%;
   background: white;
   max-width: 800px;
-  padding: calc(var(--spacing) * 2) 0;
+  padding: 0;
   margin: 0 auto;
+  padding-bottom: calc(var(--spacing) * 2);
   border-radius: 15px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
@@ -243,6 +250,9 @@ export default {
     ._floatingEditBtn[data-action="disable"] {
       display: none;
     }
+    ._mediaContent--image {
+      border-radius: 6px;
+    }
   }
 }
 ._spacer {
@@ -260,7 +270,7 @@ export default {
   justify-content: space-between;
 
   margin: 0 calc(var(--spacing) * 2) 0;
-  padding-bottom: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1.5) 0;
   border-bottom: 2px solid var(--c-gris);
 
   > * {

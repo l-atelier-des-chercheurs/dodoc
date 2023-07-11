@@ -210,8 +210,8 @@
             :width="100 - (publimodule.outline_width * magnification) / 2"
             :height="100 - (publimodule.outline_width * magnification) / 2"
             vector-effect="non-scaling-stroke"
-            :rx="borderRadius / 2 || 0"
-            :ry="borderRadius / 2 || 0"
+            :rx="border_radius.x"
+            :ry="border_radius.y"
           />
           <g v-else-if="publimodule.module_type === 'line'">
             <rect
@@ -219,8 +219,8 @@
               height="100"
               vector-effect="non-scaling-stroke"
               stroke="none"
-              :rx="borderRadius / 2 || 0"
-              :ry="borderRadius / 2 || 0"
+              :rx="border_radius.x"
+              :ry="border_radius.y"
             />
             <line
               :x1="(publimodule.outline_width * magnification) / 4 || 0"
@@ -236,8 +236,8 @@
               height="100"
               vector-effect="non-scaling-stroke"
               stroke="none"
-              :rx="borderRadius / 2 || 0"
-              :ry="borderRadius / 2 || 0"
+              :rx="border_radius.x"
+              :ry="border_radius.y"
             />
             <line
               :x1="(publimodule.outline_width * magnification) / 4 || 0"
@@ -295,7 +295,13 @@ export default {
     module_position: String,
     can_edit: Boolean,
     magnification: Number,
-    borderRadius: Number,
+    border_radius: {
+      type: Object,
+      default: () => ({
+        x: 0,
+        y: 0,
+      }),
+    },
     context: String,
     page_template: String,
     number_of_max_medias: {
@@ -484,6 +490,10 @@ export default {
     svg {
       width: 100%;
       height: 100%;
+
+      rect {
+        transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+      }
     }
   }
   ._content {

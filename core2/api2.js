@@ -520,7 +520,7 @@ module.exports = (function () {
       });
     }
 
-    cache.printStatus();
+    // cache.printStatus();
   }
   async function _createFolder(req, res, next) {
     const { path_to_type, data } = utils.makePathFromReq(req);
@@ -557,12 +557,19 @@ module.exports = (function () {
     const { path_to_folder = "" } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
+    const hrstart = process.hrtime();
+
     try {
       let d = JSON.parse(
         JSON.stringify(await folder.getFolder({ path_to_folder }))
       );
       const files = await file.getFiles({ path_to_folder });
       d.$files = files;
+
+      let hrend = process.hrtime(hrstart);
+      dev.performance(
+        `${path_to_folder} – ${hrend[0]}s ${hrend[1] / 1000000}ms`
+      );
 
       res.setHeader("Access-Control-Allow-Origin", "*");
       dev.logpackets({ d });
@@ -575,7 +582,7 @@ module.exports = (function () {
         err_infos,
       });
     }
-    cache.printStatus();
+    // cache.printStatus();
   }
 
   async function _updateFolder(req, res, next) {

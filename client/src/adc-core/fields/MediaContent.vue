@@ -55,18 +55,11 @@
       </template>
     </template>
 
-    <template v-else-if="file.$type === 'stl'">
-      <img v-if="thumb" :src="thumb" class="_mediaContent--image" />
-      <template v-else>
-        <b-icon icon="eye-slash" />
-      </template>
-    </template>
-
     <template v-else-if="file.$type === 'text'">
       <CollaborativeEditor2 :content="file.$content" :can_edit="false" />
     </template>
 
-    <template v-else-if="['pdf', 'url'].includes(file.$type)">
+    <template v-else-if="['pdf', 'url', 'stl'].includes(file.$type)">
       <template v-if="context === 'preview'">
         <img v-if="thumb" :src="thumb" class="_mediaContent--image" />
         <template v-else>
@@ -113,6 +106,18 @@
               :src="file_full_path"
               @load="iframeLoaded"
             />
+            <div v-else-if="file.$type === 'stl'">
+              <model-stl
+                :key="file_full_path"
+                :src="file_full_path"
+                :rotation="{
+                  x: Math.PI / 12,
+                  y: -Math.PI / 12,
+                  z: 0,
+                }"
+                :background-color="0xffffff"
+              />
+            </div>
             <iframe
               v-else-if="url_to_site.type === 'any'"
               :src="url_to_site.src"
@@ -147,6 +152,8 @@
   </div>
 </template>
 <script>
+import { ModelStl } from "vue-3d-model";
+
 export default {
   props: {
     file: Object,
@@ -172,7 +179,7 @@ export default {
       default: false,
     },
   },
-  components: {},
+  components: { ModelStl },
   data() {
     return {
       is_dragged: false,
@@ -320,6 +327,7 @@ export default {
     display: flex;
     height: 100%;
     aspect-ratio: 16/9;
+    color: black;
 
     > * {
       flex: 1;
