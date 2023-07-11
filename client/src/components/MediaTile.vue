@@ -11,9 +11,7 @@
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
-    <div class="_index">
-      <div class="u-nut" v-html="index" />
-    </div>
+    <div class="u-nut _index" v-html="index" />
     <MediaContent class="_content" :file="file" :resolution="220" />
     <div
       v-if="tile_mode === 'table'"
@@ -288,6 +286,9 @@ export default {
   top: 0;
   left: 0;
   z-index: 2;
+  background: white;
+  font-size: var(--input-font-size-x-small);
+  font-weight: 800;
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
