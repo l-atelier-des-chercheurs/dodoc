@@ -178,6 +178,10 @@ export default {
   margin: 0 auto;
 
   padding: calc(var(--spacing) * 2);
+
+  ::v-deep ._labelLine {
+    justify-content: center;
+  }
 }
 ._devNotes {
   // opacity: 0.4;
