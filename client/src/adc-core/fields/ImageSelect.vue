@@ -66,6 +66,7 @@
           v-if="show_picker"
           :path="path"
           :select_mode="'single'"
+          :pick_from_type="'image'"
           @addMedias="addMediaFromLib"
           @close="show_picker = false"
         />
