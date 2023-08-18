@@ -43,15 +43,35 @@
           <small v-if="medias.length === 0">
             {{ $t("no_media_in_project") }}
           </small>
-          <div v-if="medias.length" class="u-label _mediaCount">
-            {{ $t("number_of_media") }} = {{ medias.length }}
-            <template v-if="filtered_medias.length !== medias.length">
-              ({{ filtered_medias.length }})
-            </template>
-          </div>
+          <template v-else-if="medias.length > 0">
+            <div class="u-label _mediaCount">
+              {{ $t("number_of_media") }} = {{ medias.length }}
+              <template v-if="filtered_medias.length !== medias.length">
+                (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
+                  filtered_medias.length
+                }})
+              </template>
+            </div>
+          </template>
         </div>
         <div class="_topSection--right">
           <div class="_groupBy">
+            <select
+              size="small"
+              :disabled="!!show_only_media_type"
+              v-model="type_of_media_to_display"
+              :class="{
+                'is--active': type_of_media_to_display !== 'all',
+              }"
+            >
+              <option
+                v-for="type_of_media in types_of_medias"
+                :key="type_of_media.key"
+                :value="type_of_media.key"
+                v-text="type_of_media.label"
+              />
+            </select>
+
             <div v-for="group_option in group_options" :key="group_option.key">
               <input
                 type="radio"
@@ -186,6 +206,7 @@ export default {
     select_mode: String,
     hide_already_present_medias: Boolean,
     meta_filenames_already_present: [Boolean, Object],
+    show_only_media_type: String,
   },
   components: {
     MediaTile,
@@ -222,6 +243,42 @@ export default {
         {
           key: "year",
           label: this.$t("year"),
+        },
+      ],
+
+      type_of_media_to_display: this.show_only_media_type || "all",
+      types_of_medias: [
+        {
+          key: "all",
+          label: this.$t("all_medias_types"),
+        },
+        {
+          key: "image",
+          label: this.$t("image"),
+        },
+        {
+          key: "video",
+          label: this.$t("video"),
+        },
+        {
+          key: "audio",
+          label: this.$t("audio"),
+        },
+        {
+          key: "text",
+          label: this.$t("text"),
+        },
+        {
+          key: "pdf",
+          label: this.$t("pdf"),
+        },
+        {
+          key: "stl",
+          label: this.$t("stl"),
+        },
+        {
+          key: "other",
+          label: this.$t("other"),
         },
       ],
     };
@@ -263,11 +320,17 @@ export default {
       return _medias;
     },
     filtered_medias() {
-      const _filtered_medias = this.sorted_medias;
+      let _filtered_medias = this.sorted_medias;
       if (this.hide_already_present_medias === true)
-        return _filtered_medias.filter(
+        _filtered_medias = _filtered_medias.filter(
           (m) => !this.mediaTileAlreadySelected(m.$path)
         );
+
+      if (this.type_of_media_to_display !== "all")
+        _filtered_medias = _filtered_medias.filter(
+          (m) => m.$type === this.type_of_media_to_display
+        );
+
       return _filtered_medias;
     },
     grouped_medias() {
@@ -476,6 +539,7 @@ export default {
   gap: calc(var(--spacing) / 2);
 }
 ._topSection--right {
+  flex: 1 1 auto;
   display: flex;
   flex-flow: row wrap;
   align-items: center;

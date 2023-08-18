@@ -368,6 +368,7 @@ export default function () {
         no_preview_to_show: "Aucun aperçu à afficher pour le moment",
         no_media_in_project: "Aucun média dans ce projet",
         number_of_media: "Nombre de médias",
+        "displayed:": "Affichés&nbsp;:",
         media_removed: "Média supprimé",
         media_duplicated: "Média dupliqué",
 
@@ -657,10 +658,17 @@ export default function () {
 
         with_sound: "avec le son",
         update: "Mettre à jour",
-        video: "vidéo",
-        audio: "son",
-        lines: "lignes",
-        vecto: "formes",
+        image: "Image",
+        video: "Vidéo",
+        audio: "Son",
+        text: "Texte",
+        lines: "Lignes",
+        vecto: "Formes",
+        pdf: "PDF",
+        stl: "STL",
+        other: "Autres",
+        all_medias_types: "De tous types",
+
         or_download_media_on_device:
           "ou télécharger ce média sur votre appareil",
 
