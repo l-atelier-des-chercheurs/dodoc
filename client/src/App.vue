@@ -19,8 +19,12 @@
     </div>
 
     <template v-else>
+      <WelcomeModal
+        v-if="show_welcome_modal"
+        @close="show_welcome_modal = false"
+      />
       <GeneralPasswordModal
-        v-if="show_general_password_modal"
+        v-else-if="show_general_password_modal"
         @close="show_general_password_modal = false"
       />
 
@@ -47,6 +51,7 @@
   </div>
 </template>
 <script>
+import WelcomeModal from "@/components/WelcomeModal.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
@@ -55,6 +60,7 @@ import AuthorList from "@/adc-core/author/AuthorList.vue";
 export default {
   props: {},
   components: {
+    WelcomeModal,
     GeneralPasswordModal,
     TaskTracker,
     DisconnectModal,
@@ -63,6 +69,7 @@ export default {
   data() {
     return {
       show_general_password_modal: false,
+      show_welcome_modal: true,
       show_disconnect_modal: false,
       show_authors_modal: false,
     };

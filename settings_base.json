@@ -36,6 +36,20 @@
   },
 
   "schema": {
+    "fields": {
+      "name_of_instance": {
+        "type": "string"
+      },
+      "presentation_of_instance": {
+        "type": "string"
+      },
+      "contactmail_of_instance": {
+        "type": "string"
+      },
+      "general_password": {
+        "type": "string"
+      }
+    },
     "$folders": {
       "folders": {
         "$files": {

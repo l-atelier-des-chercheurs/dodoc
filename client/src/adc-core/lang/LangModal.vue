@@ -27,18 +27,18 @@ export default {
           key: "en",
           text: "English",
         },
-        {
-          key: "de",
-          text: "Deutsch",
-        },
-        {
-          key: "nl",
-          text: "Nederlands",
-        },
-        {
-          key: "oc",
-          text: "Occitan",
-        },
+        // {
+        //   key: "de",
+        //   text: "Deutsch",
+        // },
+        // {
+        //   key: "nl",
+        //   text: "Nederlands",
+        // },
+        // {
+        //   key: "oc",
+        //   text: "Occitan",
+        // },
       ],
     };
   },

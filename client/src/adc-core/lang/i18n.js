@@ -841,6 +841,7 @@ export default function () {
           Elles contiendront du texte et des éléments que vous avez collecté.`,
       },
       en: {
+        home: "Home",
         hello: "hello world",
         edit: "edit",
         caption: "caption",
