@@ -58,7 +58,7 @@
           <div class="_groupBy">
             <select
               size="small"
-              :disabled="!!show_only_media_type"
+              :disabled="show_only_media_type !== 'all'"
               v-model="type_of_media_to_display"
               :class="{
                 'is--active': type_of_media_to_display !== 'all',

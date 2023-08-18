@@ -50,6 +50,7 @@
               :select_mode="select_mode"
               :hide_already_present_medias="hide_already_present_medias"
               :meta_filenames_already_present="meta_filenames_already_present"
+              :show_only_media_type="pick_from_type"
               @update:media_focused="media_focused = $event"
               @addMedias="addMedias"
             />
@@ -68,6 +69,10 @@ export default {
     select_mode: {
       type: String,
       required: true,
+    },
+    pick_from_type: {
+      type: String,
+      default: "all",
     },
   },
   components: {
