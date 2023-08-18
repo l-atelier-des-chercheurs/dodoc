@@ -20,7 +20,7 @@ module.exports = (function () {
         path_to_type,
       });
 
-      const all_folders_with_meta = [];
+      let all_folders_with_meta = [];
       for (let folder_slug of folders_slugs) {
         const path_to_folder = path.join(path_to_type, folder_slug);
         const folder_meta = await API.getFolder({
@@ -31,6 +31,7 @@ module.exports = (function () {
           else throw err;
         });
         if (folder_meta) all_folders_with_meta.push(folder_meta);
+        await new Promise(setImmediate);
       }
 
       return all_folders_with_meta;

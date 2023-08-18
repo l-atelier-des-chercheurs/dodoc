@@ -103,9 +103,7 @@ module.exports = (function () {
         path_to_folder,
       });
 
-      // no caching here to get more flexibility with lru cache (busting medias with few access, etc.)
-
-      const metas = [];
+      let metas = [];
       for (const meta_filename of meta_filenames) {
         try {
           dev.logverbose(`reading ${meta_filename}`);
@@ -117,6 +115,7 @@ module.exports = (function () {
           });
 
           metas.push(meta);
+          await new Promise(setImmediate);
         } catch (err) {
           dev.error(err);
         }

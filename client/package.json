@@ -37,6 +37,7 @@
     "socket.io-client": "^4.6.1",
     "splitpanes": "^2.4.1",
     "vue": "^2.7.14",
+    "vue-3d-model": "^1.4.1",
     "vue-cli-plugin-pug": "^2.0.0",
     "vue-i18n": "^8.28.2",
     "vue-plyr": "^7.0.0",
