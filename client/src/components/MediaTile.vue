@@ -19,7 +19,7 @@
     />
     <span v-if="duration" class="_fileType" v-html="duration" />
     <span
-      v-if="file.$type === 'pdf' || tile_mode === 'table'"
+      v-if="['pdf', 'stl'].includes(file.$type) || tile_mode === 'table'"
       class="_fileType"
       v-html="$t(file.$type)"
     />
@@ -191,7 +191,7 @@ export default {
 
       &._content,
       &._index {
-        flex: 0 0 50px;
+        flex: 0 0 30px;
       }
       &._alreadySelected {
         position: relative;
