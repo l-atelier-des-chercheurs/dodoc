@@ -32,11 +32,7 @@
     "electronVersion": "19.1.9",
     "appId": "dodoc",
     "productName": "do•doc",
-    "asar": true,
     "asarUnpack": [
-      "node_modules/ffmpeg-static/bin/${os}/${arch}/ffmpeg",
-      "node_modules/ffmpeg-static/index.js",
-      "node_modules/ffmpeg-static/package.json",
       "content/"
     ],
     "icon": "build/icon.png",
