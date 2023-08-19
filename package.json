@@ -51,7 +51,6 @@
       "category": "public.app-category.education",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
-      "target": "dir",
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
       "provisioningProfile": "build/dodoc.provisionprofile",
