@@ -78,7 +78,9 @@ export default {
   components: {
     MediaLibrary,
   },
-  inject: ["$getMetaFilenamesAlreadyPresent"],
+  inject: {
+    $getMetaFilenamesAlreadyPresent: undefined,
+  },
   data() {
     return {
       is_loading: false,
