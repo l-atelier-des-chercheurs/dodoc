@@ -79,7 +79,9 @@ export default {
     MediaLibrary,
   },
   inject: {
-    $getMetaFilenamesAlreadyPresent: undefined,
+    $getMetaFilenamesAlreadyPresent: {
+      default: false,
+    },
   },
   data() {
     return {
