@@ -1,21 +1,39 @@
 <template>
   <div class="_make">
+    <button
+      type="button"
+      class="u-buttonLink u-buttonLink_white"
+      @click="$emit('close')"
+    >
+      <b-icon icon="arrow-left-short" />
+      {{ $t("back_to_makes_list") }}
+    </button>
+
     <div v-if="fetch_make_error">
       {{ fetch_make_error }}
     </div>
     <div v-if="make">
       <div class="_topbar">
+        <TitleField
+          :field_name="'title'"
+          :tag="'h2'"
+          :content="make.title"
+          :path="make.$path"
+          :required="true"
+          :minlength="3"
+          :maxlength="40"
+          :can_edit="can_edit"
+        />
+
         <!-- <DateDisplay :date="make.$date_created" /> -->
-        <button type="button" class="u-button" @click="$emit('close')">
-          {{ $t("close") }}
-        </button>
         <button type="button" class="u-button" @click="removeMake">
           {{ $t("remove") }}
         </button>
       </div>
-      <hr />
-      <VideoAssemblage v-if="make.type === 'video_assemblage'" :make="make" />
-      <CropImage v-else-if="make.type === 'edit_image'" :make="make" />
+      <div class="_content">
+        <VideoAssemblage v-if="make.type === 'video_assemblage'" :make="make" />
+        <CropImage v-else-if="make.type === 'edit_image'" :make="make" />
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +45,7 @@ export default {
   props: {
     project_path: String,
     make_slug: String,
+    can_edit: Boolean,
   },
   components: {
     VideoAssemblage,
@@ -90,9 +109,26 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._make {
+  padding: calc(var(--spacing) / 4);
+}
+._topbar {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 1);
+  align-items: center;
+  width: 100%;
   background: white;
-  margin: calc(var(--spacing) * 1) auto;
-  // max-width: 600px;
-  padding: calc(var(--spacing) * 1);
+
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  border-radius: 10px;
+  margin: calc(var(--spacing) / 2) auto calc(var(--spacing) / 1);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
+  // max-width: 800px;
+}
+._content {
+  background: white;
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 1);
+  margin: calc(var(--spacing) / 2) auto;
 }
 </style>

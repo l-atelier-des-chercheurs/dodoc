@@ -112,6 +112,7 @@
       <MakeOpen
         :project_path="project.$path"
         :make_slug="opened_make_slug"
+        :can_edit="can_edit"
         @remove="removeMake"
         @close="$emit('update:opened_make_slug', false)"
       />
@@ -508,7 +509,7 @@ export default {
           type,
           title,
           requested_slug: title,
-          $admins: [this.$api.tokenpath.token_path],
+          $admins: "parent_contributors",
         },
       });
 

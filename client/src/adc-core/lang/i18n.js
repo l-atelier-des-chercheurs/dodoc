@@ -65,6 +65,7 @@ export default function () {
           "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
         embed: "Intégrer",
         from_project: "Depuis le projet",
+        save_to_project: "Enregistrer dans le projet",
         day: "Jour",
         month: "Mois",
         year: "Année",
@@ -630,6 +631,7 @@ export default function () {
 
         pick_a_camera: "Sélectionnez une caméra",
         resolutions: "Résolutions",
+        resolution: "Résolution",
         screen_capture: "Capture d’écran",
         cant_pick_resolution_when_screen_capture:
           "La sélection de la résolution n’est pas compatible avec la capture d’écran.",

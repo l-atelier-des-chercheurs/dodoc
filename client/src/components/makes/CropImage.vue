@@ -40,15 +40,17 @@
           type="button"
           class="u-button u-button_small u-button_bleuvert"
           @click="rotateImage(90)"
+          disabled
         >
           <b-icon icon="arrow-clockwise" />
         </button>
         <button
           type="button"
           class="u-button u-button_small u-button_bleuvert"
-          @click="rotateImage(90)"
+          @click="rotateImage(-90)"
+          disabled
         >
-          <b-icon icon="arrow-clockwise" />
+          <b-icon icon="arrow-counterclockwise" />
         </button>
         <button
           type="button"
@@ -83,9 +85,62 @@
           v-if="show_save_export_modal"
           @close="show_save_export_modal = false"
         >
-          <p>
+          <!-- <p>
             {{ $t("general_password_modal_text") }}
-          </p>
+          </p> -->
+
+          <div class="">
+            {{ $t("resolution") }}: {{ export_width }}×{{ export_height }}
+
+            <div class="">
+              <div class="u-spacingBottom">
+                <a
+                  :download="image_export_name"
+                  :href="export_string"
+                  target="_blank"
+                  class="u-buttonLink"
+                >
+                  {{ $t("download") }}
+                </a>
+              </div>
+
+              <button
+                type="button"
+                class="u-button u-button_red"
+                @click="saveToProject"
+              >
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 168 168"
+                  style="enable-background: new 0 0 168 168"
+                  xml:space="preserve"
+                >
+                  <path
+                    style="fill: var(--c-rouge)"
+                    d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
+                  />
+                  <g style="fill: var(--c-orange)">
+                    <path d="m42 42h21.6v21h-21.6z" />
+                    <path d="m73.2 42h21.6v21h-21.6z" />
+                    <path d="m104.4 42h21.6v21h-21.6z" />
+                    <path d="m42 73.5h21.6v21h-21.6z" />
+                    <path d="m73.2 73.5h21.6v21h-21.6z" />
+                    <path d="m104.4 73.5h21.6v21h-21.6z" />
+                    <path d="m42 105h21.6v21h-21.6z" />
+                    <path d="m73.2 105h21.6v21h-21.6z" />
+                    <path d="m104.4 105h21.6v21h-21.6z" />
+                  </g>
+                </svg>
+                {{ $t("save_to_project") }}
+              </button>
+            </div>
+          </div>
+
+          <br />
 
           <div class="_preview">
             <canvas
@@ -94,6 +149,10 @@
               width="1280"
               height="720"
             />
+          </div>
+
+          <div class="_saveNotice" v-if="finished_saving_to_project">
+            {{ $t("image_saved") }}
           </div>
         </BaseModal2>
       </div>
@@ -116,8 +175,14 @@ export default {
       show_media_picker: false,
       is_clicked: false,
 
+      export_string: false,
+      export_width: 0,
+      export_height: 0,
+
       crop_key: new Date().getTime(),
       aspect_ratio: true,
+
+      finished_saving_to_project: false,
 
       crop_transform: {
         x: 0,
@@ -155,6 +220,12 @@ export default {
           });
         });
     },
+    "$root.window.innerWidth"() {
+      this.setTransformFromMake();
+    },
+    "$root.window.innerHeight"() {
+      this.setTransformFromMake();
+    },
   },
   computed: {
     current_project_path() {
@@ -169,6 +240,9 @@ export default {
           folder_path: this.make.$path,
         });
       return false;
+    },
+    image_export_name() {
+      return this.make.base_media_filename + "_cropped.png";
     },
   },
   methods: {
@@ -267,17 +341,21 @@ export default {
       };
 
       if (Object.prototype.hasOwnProperty.call(transform, "x")) {
-        _transform_pc.x = this.roundToDec(transform.x / preview_width);
+        _transform_pc.x = this.roundToDec(transform.x / preview_width, 4);
       }
       if (Object.prototype.hasOwnProperty.call(transform, "y")) {
-        _transform_pc.y = this.roundToDec(transform.y / preview_height);
+        _transform_pc.y = this.roundToDec(transform.y / preview_height, 4);
       }
       if (Object.prototype.hasOwnProperty.call(transform, "width")) {
-        _transform_pc.width = this.roundToDec(transform.width / preview_width);
+        _transform_pc.width = this.roundToDec(
+          transform.width / preview_width,
+          4
+        );
       }
       if (Object.prototype.hasOwnProperty.call(transform, "height")) {
         _transform_pc.height = this.roundToDec(
-          transform.height / preview_height
+          transform.height / preview_height,
+          4
         );
       }
 
@@ -288,7 +366,6 @@ export default {
     updatePreviewCanvas() {
       const cropCanvas = this.$refs.cropCanvas;
       const previewCanvas = this.$refs.previewCanvas;
-      debugger;
 
       if (!cropCanvas || !previewCanvas) return false;
 
@@ -299,21 +376,8 @@ export default {
       const crop_width = this.make.options?.width * cropCanvas.width;
       const crop_height = this.make.options?.height * cropCanvas.height;
 
-      previewCanvas.width = cropCanvas.width;
-      previewCanvas.height = cropCanvas.height;
-
-      const x_of_crop_in_dest = previewCanvas.width / 2 - crop_width / 2;
-      const y_of_crop_in_dest = previewCanvas.height / 2 - crop_height / 2;
-
-      // console.log(
-      //   "crop options",
-      //   crop_x,
-      //   crop_y,
-      //   crop_width,
-      //   crop_height,
-      //   x_of_crop_in_dest,
-      //   y_of_crop_in_dest
-      // );
+      previewCanvas.width = crop_width;
+      previewCanvas.height = crop_height;
 
       previewCanvasCtx.drawImage(
         cropCanvas,
@@ -321,16 +385,48 @@ export default {
         crop_y,
         crop_width,
         crop_height,
-        x_of_crop_in_dest,
-        y_of_crop_in_dest,
+        0,
+        0,
         crop_width,
         crop_height
       );
+
+      this.export_width = crop_width;
+      this.export_height = crop_height;
+      this.export_string = previewCanvas.toDataURL("image/png");
+    },
+    async saveToProject() {
+      const imageBlob = await new Promise((resolve) => {
+        this.$refs.previewCanvas.toBlob(resolve, "image/jpeg", 0.95);
+      });
+
+      const additional_meta = {};
+      await this.$api
+        .uploadFile({
+          path: this.current_project_path,
+          filename: "image-" + +new Date() + ".jpeg",
+          file: imageBlob,
+          additional_meta,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+
+      this.finished_saving_to_project = true;
+      setTimeout(() => {
+        this.finished_saving_to_project = false;
+      }, 4000);
     },
   },
 };
 </script>
 <style lang="scss" scoped>
+._cropImage {
+  margin: 0 auto;
+  max-width: 90vh;
+  height: auto;
+}
 ._cropWindow {
   position: relative;
   width: 100%;
@@ -338,7 +434,15 @@ export default {
 ._canvas,
 ._previewCanvas {
   width: 100%;
+  margin: 0 auto;
   display: block;
+  outline: 2px solid var(--c-gris);
+}
+
+._previewCanvas {
+  max-width: 100%;
+  max-height: 50vh;
+  width: auto;
 }
 
 ._preview {

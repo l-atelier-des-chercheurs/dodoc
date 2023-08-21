@@ -5,15 +5,18 @@
     </label>
 
     <div class="_makes">
-      <div class="_makes--item" v-for="remix in makes" :key="remix.$path">
-        <DateDisplay :date="remix.$date_created" />
+      <div class="_makes--item" v-for="make in makes" :key="make.$path">
         <span>
-          {{ $t(remix.type) }}
+          {{ make.title }}
+        </span>
+        <DateDisplay :date="make.$date_created" />
+        <span>
+          {{ $t(make.type) }}
         </span>
         <button
           type="button"
           class="u-button"
-          @click="$emit('open', remix.$path.split('/').at(-1))"
+          @click="$emit('open', make.$path.split('/').at(-1))"
         >
           {{ $t("open") }}
         </button>
