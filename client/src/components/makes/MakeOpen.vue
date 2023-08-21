@@ -5,7 +5,7 @@
     </div>
     <div v-if="make">
       <div class="_topbar">
-        <DateDisplay :date="make.$date_created" />
+        <!-- <DateDisplay :date="make.$date_created" /> -->
         <button type="button" class="u-button" @click="$emit('close')">
           {{ $t("close") }}
         </button>

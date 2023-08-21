@@ -12,5 +12,8 @@ export default {
         }, [])
         .filter((value, index, array) => array.indexOf(value) === index);
     },
+    roundToDec(num) {
+      return Math.round((num + Number.EPSILON) * 100) / 100;
+    },
   },
 };

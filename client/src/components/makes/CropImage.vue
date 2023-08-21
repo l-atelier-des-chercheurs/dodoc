@@ -24,26 +24,41 @@
     />
 
     <template v-if="base_media">
-      <p>
+      <p class="_instructions">
         {{ $t("crop_instructions") }}
       </p>
 
-      <button
-        type="button"
-        class="u-button u-button_small u-button_bleuvert"
-        @click="rotateImage(90)"
-      >
-        <b-icon icon="arrow-clockwise" />
-      </button>
-      <button
-        type="button"
-        class="u-button u-button_small u-button_bleuvert"
-        @click="rotateImage(-90)"
-      >
-        <b-icon icon="arrow-counterclockwise" />
-      </button>
-
-      {{ crop_transform }}
+      <div class="_btnRow">
+        <button
+          type="button"
+          class="u-button u-button_small u-button_bleuvert"
+          @click="resetCrop"
+        >
+          {{ $t("reset_crop") }}
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_small u-button_bleuvert"
+          @click="rotateImage(90)"
+        >
+          <b-icon icon="arrow-clockwise" />
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_small u-button_bleuvert"
+          @click="rotateImage(90)"
+        >
+          <b-icon icon="arrow-clockwise" />
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_small u-button_bleumarine"
+          @click="show_save_export_modal = true"
+        >
+          <b-icon icon="check" />
+          {{ $t("save_export") }}
+        </button>
+      </div>
 
       <div class="_cropPreviewPanes">
         <div class="_cropWindow">
@@ -52,6 +67,7 @@
             class="_crop"
             :key="crop_key"
             :value="crop_transform"
+            :rotatable="false"
             :acceptRatio="aspect_ratio"
             :id="'1'"
             :parent="true"
@@ -62,14 +78,24 @@
           />
         </div>
 
-        <div class="_preview">
-          <canvas
-            class="_previewCanvas"
-            ref="previewCanvas"
-            width="1280"
-            height="720"
-          />
-        </div>
+        <BaseModal2
+          :title="$t('save_export_cropped')"
+          v-if="show_save_export_modal"
+          @close="show_save_export_modal = false"
+        >
+          <p>
+            {{ $t("general_password_modal_text") }}
+          </p>
+
+          <div class="_preview">
+            <canvas
+              class="_previewCanvas"
+              ref="previewCanvas"
+              width="1280"
+              height="720"
+            />
+          </div>
+        </BaseModal2>
       </div>
     </template>
   </div>
@@ -92,6 +118,7 @@ export default {
 
       crop_key: new Date().getTime(),
       aspect_ratio: true,
+
       crop_transform: {
         x: 0,
         y: 0,
@@ -99,34 +126,34 @@ export default {
         height: 100,
         rotation: 0,
       },
+
+      show_save_export_modal: false,
     };
   },
-  created() {
-    this.setTransformFromMake();
-  },
+  created() {},
   async mounted() {
     if (this.base_media)
       this.$nextTick(async () => {
         await this.drawImageToCanvas();
-        this.$nextTick(() => {
-          this.updatePreviewCanvas();
-        });
+        this.setTransformFromMake();
       });
   },
   beforeDestroy() {},
   watch: {
-    crop_transform: {
-      handler() {
-        this.updatePreviewCanvas();
-        this.updatePubliMeta({ options: this.crop_transform });
-      },
-      deep: true,
-    },
     "make.options": {
       handler() {
         this.setTransformFromMake();
+        this.updatePreviewCanvas();
       },
       deep: true,
+    },
+    show_save_export_modal() {
+      if (this.show_save_export_modal)
+        this.$nextTick(() => {
+          this.$nextTick(() => {
+            this.updatePreviewCanvas();
+          });
+        });
     },
   },
   computed: {
@@ -159,8 +186,33 @@ export default {
         new_meta,
       });
     },
+    resetCrop() {
+      const default_transform = {
+        x: 0,
+        y: 0,
+        width: 1,
+        height: 1,
+        rotation: 0,
+      };
+      this.updatePubliMeta({
+        options: default_transform,
+      });
+    },
     setTransformFromMake() {
-      if (this.make.options) this.updateCrop(this.make.options);
+      if (this.make.options) {
+        let { x, y, width, height } = this.make.options;
+
+        const cropCanvas = this.$refs.cropCanvas;
+
+        this.crop_transform.x = x * cropCanvas.parentElement.offsetWidth;
+        this.crop_transform.y = y * cropCanvas.parentElement.offsetHeight;
+        this.crop_transform.width =
+          width * cropCanvas.parentElement.offsetWidth;
+        this.crop_transform.height =
+          height * cropCanvas.parentElement.offsetHeight;
+
+        this.crop_key = new Date().getTime();
+      }
     },
     async drawImageToCanvas() {
       const canvas = this.$refs.cropCanvas;
@@ -200,30 +252,52 @@ export default {
       return (this.aspect_ratio = false);
     },
     updateCrop(transform) {
-      ["x", "y", "width", "height"].map((k) => {
-        if (Object.prototype.hasOwnProperty.call(transform, k))
-          this.crop_transform[k] = transform[k];
+      const cropCanvas = this.$refs.cropCanvas;
+      if (!cropCanvas) return false;
+
+      const preview_width = cropCanvas.parentElement.offsetWidth;
+      const preview_height = cropCanvas.parentElement.offsetHeight;
+
+      let _transform_pc = {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+        rotation: 0,
+      };
+
+      if (Object.prototype.hasOwnProperty.call(transform, "x")) {
+        _transform_pc.x = this.roundToDec(transform.x / preview_width);
+      }
+      if (Object.prototype.hasOwnProperty.call(transform, "y")) {
+        _transform_pc.y = this.roundToDec(transform.y / preview_height);
+      }
+      if (Object.prototype.hasOwnProperty.call(transform, "width")) {
+        _transform_pc.width = this.roundToDec(transform.width / preview_width);
+      }
+      if (Object.prototype.hasOwnProperty.call(transform, "height")) {
+        _transform_pc.height = this.roundToDec(
+          transform.height / preview_height
+        );
+      }
+
+      this.updatePubliMeta({
+        options: _transform_pc,
       });
     },
     updatePreviewCanvas() {
-      debugger;
-
       const cropCanvas = this.$refs.cropCanvas;
       const previewCanvas = this.$refs.previewCanvas;
+      debugger;
 
       if (!cropCanvas || !previewCanvas) return false;
 
       const previewCanvasCtx = previewCanvas.getContext("2d");
 
-      const preview_width = cropCanvas.parentElement.offsetWidth;
-      const preview_height = cropCanvas.parentElement.offsetHeight;
-      const crop_x = (this.crop_transform.x / preview_width) * cropCanvas.width;
-      const crop_y =
-        (this.crop_transform.y / preview_height) * cropCanvas.height;
-      const crop_width =
-        (this.crop_transform.width / preview_width) * cropCanvas.width;
-      const crop_height =
-        (this.crop_transform.height / preview_height) * cropCanvas.height;
+      const crop_x = this.make.options?.x * cropCanvas.width;
+      const crop_y = this.make.options?.y * cropCanvas.height;
+      const crop_width = this.make.options?.width * cropCanvas.width;
+      const crop_height = this.make.options?.height * cropCanvas.height;
 
       previewCanvas.width = cropCanvas.width;
       previewCanvas.height = cropCanvas.height;
@@ -270,6 +344,10 @@ export default {
 ._preview {
 }
 
+._instructions {
+  margin-bottom: var(--spacing);
+}
+
 ._cropPreviewPanes {
   display: flex;
   flex-flow: row wrap;
@@ -278,5 +356,11 @@ export default {
   > * {
     flex: 1 1 200px;
   }
+}
+._btnRow {
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--spacing);
+  margin-bottom: var(--spacing);
 }
 </style>
