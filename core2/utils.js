@@ -164,6 +164,11 @@ module.exports = (function () {
             // TODO Validator
           } else if (
             new_meta.hasOwnProperty(field_name) &&
+            opt.type === "object"
+          ) {
+            meta[field_name] = new_meta[field_name];
+          } else if (
+            new_meta.hasOwnProperty(field_name) &&
             opt.type === "any"
           ) {
             meta[field_name] = new_meta[field_name];
@@ -359,9 +364,9 @@ module.exports = (function () {
 
       // –––   /spaces/tle/projects/mon-projet/publications => schema.$folders.spaces.$folders.projects.$folders.publications
 
-      // –––   /spaces/tle/projects/mon-projet/remixes => schema.$folders.spaces.$folders.projects.$folders.remixes
-      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video => schema.$folders.spaces.$folders.projects.$folders.remixes
-      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video/media.meta.txt => schema.$folders.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/makes => schema.$folders.spaces.$folders.projects.$folders.makes
+      // –––   /spaces/tle/projects/mon-projet/makes/montage-video => schema.$folders.spaces.$folders.projects.$folders.makes
+      // –––   /spaces/tle/projects/mon-projet/makes/montage-video/media.meta.txt => schema.$folders.spaces.$folders.projects.$folders.makes
 
       const checkIfFileOrAction = (str) =>
         str.includes(".") || str.startsWith("_");
