@@ -169,7 +169,7 @@ export default function () {
         contributors: "Contributeur·rice·s",
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",
-        create: "créer",
+        create: "Créer",
         existing: "Existant",
         create_account: "créer un compte",
         your_account: "votre compte",
@@ -300,6 +300,9 @@ export default function () {
         photo: "Photo",
         remove_this_image: "Supprimer cette image",
         erase: "Effacer",
+
+        pick_image: "Choisir une image",
+        change_base_image: "Changer l’image de base",
 
         status: "État",
         list_of_projects: "Liste des projets",

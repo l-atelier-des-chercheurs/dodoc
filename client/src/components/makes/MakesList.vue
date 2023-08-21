@@ -1,11 +1,11 @@
 <template>
-  <section class="_remixesList">
+  <section class="_makesList">
     <label class="u-label u-colorWhite">
-      {{ $t("remixes_list") }}
+      {{ $t("makes_list") }}
     </label>
 
-    <div class="_remixes">
-      <div class="_remixes--item" v-for="remix in remixes" :key="remix.$path">
+    <div class="_makes">
+      <div class="_makes--item" v-for="remix in makes" :key="remix.$path">
         <DateDisplay :date="remix.$date_created" />
         <span>
           {{ $t(remix.type) }}
@@ -30,13 +30,13 @@ export default {
   components: {},
   data() {
     return {
-      path: `${this.project_path}/remixes`,
-      remixes: [],
+      path: `${this.project_path}/makes`,
+      makes: [],
     };
   },
   created() {},
   async mounted() {
-    this.remixes = await this.$api.getFolders({
+    this.makes = await this.$api.getFolders({
       path: this.path,
     });
     this.$api.join({ room: this.path });
@@ -50,16 +50,16 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._remixesList {
+._makesList {
   max-width: 800px;
   max-width: var(--max-column-width);
   margin: 0 auto;
 }
 
-._remixes {
+._makes {
 }
 
-._remixes--item {
+._makes--item {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;

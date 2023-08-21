@@ -65,15 +65,15 @@
               </div>
               <br />
               <div class="m_recipe--buttons">
-                <div>
+                <div v-if="recipe.enabled !== true">
                   Pas encore disponible sur do•doc 10 / vous pouvez utiliser
                   <a href="https://dodoc.fr/">do•doc 9</a> en attendant.
                 </div>
 
                 <button
+                  v-else
                   class="u-button u-button_bleumarine"
                   type="button"
-                  disabled
                   @click="createMake(recipe.key)"
                 >
                   <svg
@@ -101,7 +101,7 @@
         </div>
       </section>
       <section v-else-if="current_view === 'existing'">
-        <RemixesList
+        <MakesList
           :project_path="project.$path"
           :can_edit="can_edit"
           @open="openMakes"
@@ -109,7 +109,7 @@
       </section>
     </div>
     <div v-else>
-      <RemixOpen
+      <MakeOpen
         :project_path="project.$path"
         :make_slug="opened_make_slug"
         @remove="removeMake"
@@ -119,8 +119,8 @@
   </div>
 </template>
 <script>
-import RemixesList from "@/components/remixes/RemixesList.vue";
-import RemixOpen from "@/components/remixes/RemixOpen.vue";
+import MakesList from "@/components/makes/MakesList.vue";
+import MakeOpen from "@/components/makes/MakeOpen.vue";
 
 export default {
   props: {
@@ -129,8 +129,8 @@ export default {
     project: Object,
   },
   components: {
-    RemixesList,
-    RemixOpen,
+    MakesList,
+    MakeOpen,
   },
   data() {
     return {
@@ -217,6 +217,19 @@ export default {
         //             },
         // ],
         // },
+        {
+          key: "image",
+          label: "",
+          recipes: [
+            {
+              key: "edit_image",
+              summary: "edit_image",
+              show_instructions: false,
+              icon: ``,
+              enabled: true,
+            },
+          ],
+        },
         {
           key: "video",
           label: "make_a_video",

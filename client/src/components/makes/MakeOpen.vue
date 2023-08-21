@@ -1,31 +1,27 @@
 <template>
-  <div class="_remix">
-    <div v-if="fetch_remix_error">
-      {{ fetch_remix_error }}
+  <div class="_make">
+    <div v-if="fetch_make_error">
+      {{ fetch_make_error }}
     </div>
-    <div v-if="remix">
+    <div v-if="make">
       <div class="_topbar">
-        {{ remix.title }}
-        {{ remix.$path }}
-        {{ remix.type }}
-        <DateDisplay :date="remix.$date_created" />
+        <DateDisplay :date="make.$date_created" />
         <button type="button" class="u-button" @click="$emit('close')">
           {{ $t("close") }}
         </button>
-        <button type="button" class="u-button" @click="removeRemix">
+        <button type="button" class="u-button" @click="removeMake">
           {{ $t("remove") }}
         </button>
-
-        <VideoAssemblage
-          v-if="remix.type === 'video_assemblage'"
-          :remix="remix"
-        />
       </div>
+      <hr />
+      <VideoAssemblage v-if="make.type === 'video_assemblage'" :make="make" />
+      <CropImage v-else-if="make.type === 'edit_image'" :make="make" />
     </div>
   </div>
 </template>
 <script>
-import VideoAssemblage from "@/components/remixes/VideoAssemblage.vue";
+import VideoAssemblage from "@/components/makes/VideoAssemblage.vue";
+import CropImage from "@/components/makes/CropImage.vue";
 
 export default {
   props: {
@@ -34,51 +30,52 @@ export default {
   },
   components: {
     VideoAssemblage,
+    CropImage,
   },
   data() {
     return {
-      remix: null,
-      fetch_remix_error: false,
+      make: null,
+      fetch_make_error: false,
     };
   },
   created() {},
   async mounted() {
-    await this.listRemix();
+    await this.listMake();
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
-    this.$api.join({ room: this.remix.$path });
+    this.$api.join({ room: this.make.$path });
   },
   beforeDestroy() {
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
-    this.$api.leave({ room: this.remix.$path });
+    this.$api.leave({ room: this.make.$path });
   },
   watch: {},
   computed: {},
   methods: {
-    async listRemix() {
-      const remix = await this.$api
+    async listMake() {
+      const make = await this.$api
         .getFolder({
-          path: `${this.project_path}/remixes/${this.make_slug}`,
+          path: `${this.project_path}/makes/${this.make_slug}`,
         })
         .catch((err) => {
-          this.fetch_remix_error = err.response;
+          this.fetch_make_error = err.response;
         });
-      this.remix = remix;
+      this.make = make;
     },
     closeOnRemove({ path }) {
-      if (path === this.remix.$path) {
+      if (path === this.make.$path) {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .log(this.$t("notifications.remix_was_removed"));
+          .log(this.$t("notifications.make_was_removed"));
         this.$emit("close");
       }
     },
-    async removeRemix() {
+    async removeMake() {
       this.fetch_status = "pending";
       this.fetch_error = null;
       try {
         const response = await this.$api.deleteItem({
-          path: this.remix.$path,
+          path: this.make.$path,
         });
         this.response = response.data;
         this.fetch_status = "success";
@@ -92,10 +89,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._remix {
+._make {
   background: white;
   margin: calc(var(--spacing) * 1) auto;
-  max-width: 600px;
+  // max-width: 600px;
   padding: calc(var(--spacing) * 1);
 }
 </style>

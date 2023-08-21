@@ -461,6 +461,12 @@
                   "type": {
                     "type": "string"
                   },
+                  "base_media_filename": {
+                    "type": "string"
+                  },
+                  "options": {
+                    "type": "object"
+                  },
                   "modules_list": {
                     "type": "array"
                   }
