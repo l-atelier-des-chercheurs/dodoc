@@ -438,6 +438,9 @@ export default function () {
         project_can_be_remixed: "Permettre le remix de ce projet",
         remix_this_project: "Remixer ce projet",
 
+        makes_list: "Liste des fabrications",
+        back_to_makes_list: "Retour à la liste",
+
         edit_image: "Modifier une image",
         edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
         make_a_video: "Fabriquer une vidéo",

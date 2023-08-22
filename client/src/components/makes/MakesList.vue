@@ -5,14 +5,22 @@
     </label>
 
     <div class="_makes">
-      <div class="_makes--item" v-for="make in makes" :key="make.$path">
+      <div v-if="makes.length === 0" class="u-instructions">
+        {{ $t("none_f") }}
+      </div>
+      <div class="_makes--item" v-else v-for="make in makes" :key="make.$path">
         <span>
-          {{ make.title }}
+          <b>
+            {{ make.title }}
+          </b>
+          <br />
+          <span>
+            <i>
+              {{ $t(make.type).toLowerCase() }}
+            </i>
+          </span>
         </span>
-        <DateDisplay :date="make.$date_created" />
-        <span>
-          {{ $t(make.type) }}
-        </span>
+        <DateDisplay :title="$t('date_created')" :date="make.$date_created" />
         <button
           type="button"
           class="u-button"
@@ -69,7 +77,7 @@ export default {
   align-items: center;
   background: white;
   margin-bottom: 2px;
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
   gap: calc(var(--spacing) * 1);
 }
 </style>

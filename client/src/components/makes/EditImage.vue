@@ -33,9 +33,12 @@
         <hr />
 
         <template v-if="base_media">
-          <div class="">
-            <DLabel :str="$t('crop')" :instructions="$t('crop_instructions')" />
-
+          <ToggledSection
+            class="u-spacingBottom"
+            :label="$t('crop')"
+            :show_toggle="show_crop"
+            @update:show_toggle="show_crop = $event"
+          >
             <div class="_btnRow">
               <button
                 type="button"
@@ -111,17 +114,20 @@
                 @save="updateFromInputs({ height: $event })"
               />
             </div>
-          </div>
+          </ToggledSection>
 
-          <hr />
-
-          <div class="">
+          <ToggledSection
+            class="u-spacingBottom"
+            :label="$t('adjust')"
+            :show_toggle="show_adjust"
+            @update:show_toggle="show_adjust = $event"
+          >
             <DLabel :str="$t('adjust')" />
 
             <RangeValueInput
               :can_toggle="true"
               :label="$t('brightness')"
-              :value="Math.round(make.image_brightness)"
+              :value="make.image_brightness"
               :min="0"
               :max="200"
               :step="1"
@@ -132,7 +138,7 @@
             <RangeValueInput
               :can_toggle="true"
               :label="$t('contrast')"
-              :value="Math.round(make.image_contrast)"
+              :value="make.image_contrast"
               :min="0"
               :max="200"
               :step="1"
@@ -143,7 +149,7 @@
             <RangeValueInput
               :can_toggle="true"
               :label="$t('saturation')"
-              :value="Math.round(make.image_saturation)"
+              :value="make.image_saturation"
               :min="0"
               :max="200"
               :step="1"
@@ -154,7 +160,7 @@
             <RangeValueInput
               :can_toggle="true"
               :label="$t('blur')"
-              :value="Math.round(make.image_blur)"
+              :value="make.image_blur"
               :min="0"
               :max="100"
               :step="1"
@@ -162,9 +168,7 @@
               :suffix="'px'"
               @save="updatePubliMeta({ image_blur: $event })"
             />
-          </div>
-
-          <hr />
+          </ToggledSection>
 
           <div class="">
             <button
@@ -291,7 +295,7 @@ export default {
   },
   data() {
     return {
-      show_media_picker: false,
+      show_media_picker: !this.make.base_media_filename ? true : false,
       is_clicked: false,
 
       export_string: false,
@@ -303,6 +307,7 @@ export default {
 
       finished_saving_to_project: false,
 
+      show_crop: true,
       crop_transform: {
         x: 0,
         y: 0,
@@ -310,6 +315,8 @@ export default {
         height: 100,
         rotation: 0,
       },
+
+      show_adjust: true,
 
       show_save_export_modal: false,
     };

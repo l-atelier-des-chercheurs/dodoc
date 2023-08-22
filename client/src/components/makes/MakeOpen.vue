@@ -25,10 +25,11 @@
           :can_edit="can_edit"
         />
 
-        <!-- <DateDisplay :date="make.$date_created" /> -->
-        <button type="button" class="u-button" @click="removeMake">
-          {{ $t("remove") }}
-        </button>
+        <RemoveMenu
+          v-if="can_edit"
+          :remove_text="$t('remove')"
+          @remove="removeMake"
+        />
       </div>
       <div class="_content">
         <VideoAssemblage v-if="make.type === 'video_assemblage'" :make="make" />
