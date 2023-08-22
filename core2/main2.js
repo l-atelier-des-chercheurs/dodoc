@@ -87,7 +87,10 @@ async function setupApp() {
   let full_default_path = path.join(`${global.appRoot}`, `content`);
   if (is_electron)
     full_default_path = path.join(
-      `${global.appRoot.replace(`${path.sep}app.asar`, "")}`,
+      `${global.appRoot.replace(
+        `${path.sep}app.asar`,
+        `${path.sep}app.asar.unpacked`
+      )}`,
       `content`
     );
 

@@ -11,6 +11,7 @@ module.exports = (function () {
         maxSize: 1_000_000,
         sizeCalculation: (value) => {
           // if (typeof value === "string") return value.length;
+          // TODO handle TypeError: Do not know how to serialize a BigInt
           if (typeof value === "object") return JSON.stringify(value).length;
           return value.length;
         },

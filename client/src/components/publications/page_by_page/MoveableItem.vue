@@ -243,9 +243,6 @@ export default {
       this.$eventHub.$emit(`module.text_editing_disabled`);
       this.content_is_edited = false;
     },
-    roundToDec(num) {
-      return Math.round((num + Number.EPSILON) * 100) / 100;
-    },
     firstMedia(page_module) {
       if (!page_module) return false;
       try {

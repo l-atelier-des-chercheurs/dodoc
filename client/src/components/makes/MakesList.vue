@@ -1,19 +1,30 @@
 <template>
-  <section class="_remixesList">
+  <section class="_makesList">
     <label class="u-label u-colorWhite">
-      {{ $t("remixes_list") }}
+      {{ $t("makes_list") }}
     </label>
 
-    <div class="_remixes">
-      <div class="_remixes--item" v-for="remix in remixes" :key="remix.$path">
-        <DateDisplay :date="remix.$date_created" />
+    <div class="_makes">
+      <div v-if="makes.length === 0" class="u-instructions">
+        {{ $t("none_f") }}
+      </div>
+      <div class="_makes--item" v-else v-for="make in makes" :key="make.$path">
         <span>
-          {{ $t(remix.type) }}
+          <b>
+            {{ make.title }}
+          </b>
+          <br />
+          <span>
+            <i>
+              {{ $t(make.type).toLowerCase() }}
+            </i>
+          </span>
         </span>
+        <DateDisplay :title="$t('date_created')" :date="make.$date_created" />
         <button
           type="button"
           class="u-button"
-          @click="$emit('open', remix.$path.split('/').at(-1))"
+          @click="$emit('open', make.$path.split('/').at(-1))"
         >
           {{ $t("open") }}
         </button>
@@ -30,13 +41,13 @@ export default {
   components: {},
   data() {
     return {
-      path: `${this.project_path}/remixes`,
-      remixes: [],
+      path: `${this.project_path}/makes`,
+      makes: [],
     };
   },
   created() {},
   async mounted() {
-    this.remixes = await this.$api.getFolders({
+    this.makes = await this.$api.getFolders({
       path: this.path,
     });
     this.$api.join({ room: this.path });
@@ -50,23 +61,23 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._remixesList {
+._makesList {
   max-width: 800px;
   max-width: var(--max-column-width);
   margin: 0 auto;
 }
 
-._remixes {
+._makes {
 }
 
-._remixes--item {
+._makes--item {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
   background: white;
   margin-bottom: 2px;
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
   gap: calc(var(--spacing) * 1);
 }
 </style>
