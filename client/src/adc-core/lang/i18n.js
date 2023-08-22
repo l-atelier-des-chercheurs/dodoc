@@ -363,6 +363,7 @@ export default function () {
         latest_changes_to_project: "Dernières modifications au projet",
 
         download: "Télécharger",
+        download_image: "Télécharger cette image",
         page_failed_to_load: "Cette page n’a pas pu charger.",
         open_website_new_tab: "Ouvrir dans un nouvel onglet",
         click_link_to_open_in_tab:
@@ -375,6 +376,7 @@ export default function () {
         "displayed:": "Affichés&nbsp;:",
         media_removed: "Média supprimé",
         media_duplicated: "Média dupliqué",
+        media_was_saved: "Le média a été ajouté au projet",
 
         CC: "Creative Commons",
         authors_and_license: "Licence et auteurs",

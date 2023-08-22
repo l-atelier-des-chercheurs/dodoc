@@ -54,14 +54,6 @@
             >
               <b-icon icon="arrow-counterclockwise" />
             </button>
-            <button
-              type="button"
-              class="u-button u-button_small u-button_bleumarine"
-              @click="show_save_export_modal = true"
-            >
-              <b-icon icon="check" />
-              {{ $t("save_export") }}
-            </button>
           </div>
 
           <div class="u-spacingBottom _values">
@@ -94,6 +86,17 @@
               @save="updateFromInputs({ height: $event })"
             />
           </div>
+
+          <div class="">
+            <button
+              type="button"
+              class="u-button u-button_small u-button_bleumarine"
+              @click="show_save_export_modal = true"
+            >
+              <b-icon icon="check" />
+              {{ $t("submit") }}
+            </button>
+          </div>
         </template>
       </div>
 
@@ -101,7 +104,7 @@
         <template v-if="base_media">
           <canvas class="_canvas" ref="cropCanvas" width="1280" height="720" />
           <DDR
-            class="_crop"
+            class="_cropFrame"
             :key="crop_key"
             :value="crop_transform"
             :rotatable="false"
@@ -126,70 +129,72 @@
             {{ $t("general_password_modal_text") }}
           </p> -->
 
-      <div class="">
-        {{ $t("resolution") }}: {{ export_width }}×{{ export_height }}
+      <div class="_modalP">
+        <div class="u-spacingBottom _preview">
+          <canvas
+            class="_previewCanvas"
+            ref="previewCanvas"
+            width="1280"
+            height="720"
+          />
+        </div>
 
         <div class="">
-          <div class="u-spacingBottom">
-            <a
-              :download="image_export_name"
-              :href="export_string"
-              target="_blank"
-              class="u-buttonLink"
+          {{ $t("resolution") }}: {{ export_width }}×{{ export_height }}
+
+          <div class="">
+            <div class="u-spacingBottom">
+              <a
+                :download="image_export_name"
+                :href="export_string"
+                target="_blank"
+                class="u-buttonLink"
+              >
+                {{ $t("download_image") }}
+              </a>
+            </div>
+
+            <button
+              type="button"
+              class="u-button u-button_red"
+              @click="saveToProject"
             >
-              {{ $t("download") }}
-            </a>
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                viewBox="0 0 168 168"
+                style="enable-background: new 0 0 168 168"
+                xml:space="preserve"
+              >
+                <path
+                  style="fill: var(--c-rouge)"
+                  d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
+                />
+                <g style="fill: var(--c-orange)">
+                  <path d="m42 42h21.6v21h-21.6z" />
+                  <path d="m73.2 42h21.6v21h-21.6z" />
+                  <path d="m104.4 42h21.6v21h-21.6z" />
+                  <path d="m42 73.5h21.6v21h-21.6z" />
+                  <path d="m73.2 73.5h21.6v21h-21.6z" />
+                  <path d="m104.4 73.5h21.6v21h-21.6z" />
+                  <path d="m42 105h21.6v21h-21.6z" />
+                  <path d="m73.2 105h21.6v21h-21.6z" />
+                  <path d="m104.4 105h21.6v21h-21.6z" />
+                </g>
+              </svg>
+              {{ $t("save_to_project") }}
+            </button>
           </div>
-
-          <button
-            type="button"
-            class="u-button u-button_red"
-            @click="saveToProject"
-          >
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              viewBox="0 0 168 168"
-              style="enable-background: new 0 0 168 168"
-              xml:space="preserve"
-            >
-              <path
-                style="fill: var(--c-rouge)"
-                d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
-              />
-              <g style="fill: var(--c-orange)">
-                <path d="m42 42h21.6v21h-21.6z" />
-                <path d="m73.2 42h21.6v21h-21.6z" />
-                <path d="m104.4 42h21.6v21h-21.6z" />
-                <path d="m42 73.5h21.6v21h-21.6z" />
-                <path d="m73.2 73.5h21.6v21h-21.6z" />
-                <path d="m104.4 73.5h21.6v21h-21.6z" />
-                <path d="m42 105h21.6v21h-21.6z" />
-                <path d="m73.2 105h21.6v21h-21.6z" />
-                <path d="m104.4 105h21.6v21h-21.6z" />
-              </g>
-            </svg>
-            {{ $t("save_to_project") }}
-          </button>
         </div>
-      </div>
 
-      <br />
+        <br />
 
-      <div class="_preview">
-        <canvas
-          class="_previewCanvas"
-          ref="previewCanvas"
-          width="1280"
-          height="720"
-        />
-      </div>
-
-      <div class="_saveNotice" v-if="finished_saving_to_project">
-        {{ $t("image_saved") }}
+        <div class="_saveNotice" v-if="finished_saving_to_project">
+          {{ $t("media_was_saved") }}
+        </div>
       </div>
     </BaseModal2>
   </div>
@@ -413,10 +418,18 @@ export default {
 
       const previewCanvasCtx = previewCanvas.getContext("2d");
 
-      const crop_x = (this.make.options?.x / 100) * cropCanvas.width;
-      const crop_y = (this.make.options?.y / 100) * cropCanvas.height;
-      const crop_width = (this.make.options?.width / 100) * cropCanvas.width;
-      const crop_height = (this.make.options?.height / 100) * cropCanvas.height;
+      const crop_x = Math.round(
+        (this.make.options?.x / 100) * cropCanvas.width
+      );
+      const crop_y = Math.round(
+        (this.make.options?.y / 100) * cropCanvas.height
+      );
+      const crop_width = Math.round(
+        (this.make.options?.width / 100) * cropCanvas.width
+      );
+      const crop_height = Math.round(
+        (this.make.options?.height / 100) * cropCanvas.height
+      );
 
       previewCanvas.width = crop_width;
       previewCanvas.height = crop_height;
@@ -465,7 +478,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._cropImage {
-  margin: 0 auto;
+  margin: 0;
+  background: white;
+  padding: calc(var(--spacing) / 1);
+
   height: auto;
 }
 
@@ -485,6 +501,19 @@ export default {
 ._cropWindow {
   position: relative;
   width: 100%;
+  overflow: hidden;
+}
+._cropFrame {
+  box-shadow: 0 0 0 max(100vh, 100vw) rgba(0, 0, 0, 0.4);
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
+
+  &.ddr-dragging {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: dragging;
+  }
 }
 
 ._canvas {
@@ -500,6 +529,7 @@ export default {
 
 ._previewCanvas {
   max-width: 100%;
+  max-height: 40vh;
   width: auto;
 }
 
@@ -525,5 +555,18 @@ export default {
   width: 100%;
   background: white;
   // max-width: 800px;
+}
+
+._modalP {
+  position: relative;
+}
+
+._saveNotice {
+  position: absolute;
+  inset: -2px;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
