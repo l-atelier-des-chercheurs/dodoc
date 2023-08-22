@@ -464,8 +464,14 @@
                   "base_media_filename": {
                     "type": "string"
                   },
-                  "options": {
+                  "crop_options": {
                     "type": "object"
+                  },
+                  "image_brightness": {
+                    "type": "number"
+                  },
+                  "image_contrast": {
+                    "type": "number"
                   },
                   "modules_list": {
                     "type": "array"

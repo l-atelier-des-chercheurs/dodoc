@@ -4,16 +4,21 @@
       <div class="_leftBtns">
         <button
           type="button"
-          class="u-button u-button_bleumarine"
+          class="u-button u-button_bleuvert"
+          v-if="!base_media"
           @click="show_media_picker = true"
         >
           <b-icon icon="image" />
-          <template v-if="!base_media">
-            {{ $t("pick_image") }}
-          </template>
-          <template v-else>
-            {{ $t("change_base_image") }}
-          </template>
+          {{ $t("pick_image") }}
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_small u-button_red"
+          v-else
+          @click="show_media_picker = true"
+        >
+          <b-icon icon="dash-circle" />
+          {{ $t("change_base_image") }}
         </button>
 
         <PickMediaFromProjects
@@ -25,72 +30,126 @@
           @close="show_media_picker = false"
         />
 
+        <hr />
+
         <template v-if="base_media">
-          <p class="_instructions">
-            {{ $t("crop_instructions") }}
-          </p>
+          <div class="">
+            <DLabel :str="$t('crop')" :instructions="$t('crop_instructions')" />
 
-          <div class="_btnRow">
-            <button
-              type="button"
-              class="u-button u-button_small u-button_bleuvert"
-              @click="resetCrop"
-            >
-              {{ $t("reset_crop") }}
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_small u-button_bleuvert"
-              @click="rotateImage(90)"
-              disabled
-            >
-              <b-icon icon="arrow-clockwise" />
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_small u-button_bleuvert"
-              @click="rotateImage(-90)"
-              disabled
-            >
-              <b-icon icon="arrow-counterclockwise" />
-            </button>
+            <div class="_btnRow">
+              <button
+                type="button"
+                class="u-button u-button_small u-button_bleuvert"
+                @click="resetCrop"
+              >
+                <b-icon icon="plus-square-dotted" />
+                {{ $t("reset_crop") }}
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_small u-button_bleuvert"
+                @click="rotateImage(90)"
+                disabled
+              >
+                <b-icon icon="arrow-clockwise" />
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_small u-button_bleuvert"
+                @click="rotateImage(-90)"
+                disabled
+              >
+                <b-icon icon="arrow-counterclockwise" />
+              </button>
+            </div>
+
+            <div class="_values">
+              <NumberInput
+                :label="'x'"
+                :value="
+                  make.crop_options && make.crop_options.x
+                    ? make.crop_options.x
+                    : 0
+                "
+                :min="0"
+                :suffix="'%'"
+                @save="updateFromInputs({ x: $event })"
+              />
+              <NumberInput
+                :label="'y'"
+                :value="
+                  make.crop_options && make.crop_options.y
+                    ? make.crop_options.y
+                    : 0
+                "
+                :min="0"
+                :suffix="'%'"
+                @save="updateFromInputs({ y: $event })"
+              />
+            </div>
+            <div class="u-spacingBottom _values">
+              <NumberInput
+                :label="$t('width')"
+                :value="
+                  make.crop_options && make.crop_options.width
+                    ? make.crop_options.width
+                    : 30
+                "
+                :min="0"
+                :suffix="'%'"
+                @save="updateFromInputs({ width: $event })"
+              />
+              <NumberInput
+                :label="$t('height')"
+                :value="
+                  make.crop_options && make.crop_options.height
+                    ? make.crop_options.height
+                    : 20
+                "
+                :min="0"
+                :suffix="'%'"
+                @save="updateFromInputs({ height: $event })"
+              />
+            </div>
           </div>
 
-          <div class="u-spacingBottom _values">
-            <NumberInput
-              :label="'x'"
-              :value="make.options.x || 0"
+          <hr />
+
+          <div class="">
+            <DLabel :str="$t('adjust')" />
+
+            <RangeValueInput
+              class="u-spacingBottom"
+              :can_toggle="true"
+              :label="$t('brightness')"
+              :value="Math.round(make.image_brightness)"
               :min="0"
+              :max="100"
+              :step="1"
+              :default_value="100"
               :suffix="'%'"
-              @save="updateFromInputs({ x: $event })"
+              @save="updatePubliMeta({ image_brightness: $event })"
             />
-            <NumberInput
-              :label="'y'"
-              :value="make.options.y || 0"
+            <RangeValueInput
+              class="u-spacingBottom"
+              :can_toggle="true"
+              :label="$t('contrast')"
+              :value="Math.round(make.image_contrast)"
               :min="0"
+              :max="200"
+              :step="1"
+              :default_value="100"
               :suffix="'%'"
-              @save="updateFromInputs({ y: $event })"
-            />
-            <NumberInput
-              :label="'width'"
-              :value="make.options.width || 10"
-              :min="0"
-              :suffix="'%'"
-              @save="updateFromInputs({ width: $event })"
-            />
-            <NumberInput
-              :label="'height'"
-              :value="make.options.height || 10"
-              :min="0"
-              :suffix="'%'"
-              @save="updateFromInputs({ height: $event })"
+              @save="updatePubliMeta({ image_contrast: $event })"
             />
           </div>
+
+          <hr />
 
           <div class="">
             <button
               type="button"
-              class="u-button u-button_small u-button_bleumarine"
+              class="u-button u-button_bleumarine"
               @click="show_save_export_modal = true"
             >
               <b-icon icon="check" />
@@ -111,7 +170,7 @@
             :acceptRatio="aspect_ratio"
             :id="'1'"
             :parent="true"
-            :handlerSize="15"
+            :handlerSize="20"
             @dragend="dragEnd"
             @resizestart="resizeStart"
             @resizeend="dragEnd"
@@ -245,12 +304,25 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "make.options": {
+    "make.crop_options": {
       handler() {
         this.setTransformFromMake();
         this.updatePreviewCanvas();
       },
       deep: true,
+    },
+    "make.image_brightness"() {
+      this.refreshImageSettings();
+    },
+    "make.image_contrast"() {
+      this.refreshImageSettings();
+    },
+    "make.base_media_filename"() {
+      (async () => {
+        await this.drawImageToCanvas();
+        await this.resetCrop();
+        this.updatePreviewCanvas();
+      })();
     },
     show_save_export_modal() {
       if (this.show_save_export_modal)
@@ -290,10 +362,6 @@ export default {
       const path_to_source_media_meta = path_to_source_media_metas[0];
       const base_media_filename = this.getFilename(path_to_source_media_meta);
       await this.updatePubliMeta({ base_media_filename });
-      this.$nextTick(async () => {
-        await this.drawImageToCanvas();
-        this.resetCrop();
-      });
     },
     async updatePubliMeta(new_meta) {
       return await this.$api.updateMeta({
@@ -301,7 +369,7 @@ export default {
         new_meta,
       });
     },
-    resetCrop() {
+    async resetCrop() {
       const default_transform = {
         x: 0,
         y: 0,
@@ -309,13 +377,13 @@ export default {
         height: 100,
         rotation: 0,
       };
-      this.updatePubliMeta({
-        options: default_transform,
+      await this.updatePubliMeta({
+        crop_options: default_transform,
       });
     },
     setTransformFromMake() {
-      if (this.make.options) {
-        let { x, y, width, height } = this.make.options;
+      if (this.make.crop_options) {
+        let { x, y, width, height } = this.make.crop_options;
 
         const cropCanvas = this.$refs.cropCanvas;
 
@@ -351,6 +419,16 @@ export default {
       await img.decode();
 
       const context = canvas.getContext("2d");
+
+      // context.filter = "contrast(1.4) sepia(1) drop-shadow(-9px 9px 3px #e81)";
+      let filter = "";
+
+      if (this.make.image_brightness)
+        filter += `brightness(${this.make.image_brightness}%)`;
+      if (this.make.image_contrast)
+        filter += `contrast(${this.make.image_contrast}%)`;
+      context.filter = filter;
+
       context.drawImage(img, 0, 0, width, height);
     },
 
@@ -401,13 +479,13 @@ export default {
       }
 
       this.updatePubliMeta({
-        options: _transform_pc,
+        crop_options: _transform_pc,
       });
     },
     updateFromInputs(prop) {
-      const _transform_pc = Object.assign({}, this.make.options, prop);
+      const _transform_pc = Object.assign({}, this.make.crop_options, prop);
       this.updatePubliMeta({
-        options: _transform_pc,
+        crop_options: _transform_pc,
       });
     },
     updatePreviewCanvas() {
@@ -419,16 +497,16 @@ export default {
       const previewCanvasCtx = previewCanvas.getContext("2d");
 
       const crop_x = Math.round(
-        (this.make.options?.x / 100) * cropCanvas.width
+        (this.make.crop_options?.x / 100) * cropCanvas.width
       );
       const crop_y = Math.round(
-        (this.make.options?.y / 100) * cropCanvas.height
+        (this.make.crop_options?.y / 100) * cropCanvas.height
       );
       const crop_width = Math.round(
-        (this.make.options?.width / 100) * cropCanvas.width
+        (this.make.crop_options?.width / 100) * cropCanvas.width
       );
       const crop_height = Math.round(
-        (this.make.options?.height / 100) * cropCanvas.height
+        (this.make.crop_options?.height / 100) * cropCanvas.height
       );
 
       previewCanvas.width = crop_width;
@@ -450,6 +528,11 @@ export default {
       this.export_height = crop_height;
       this.export_string = previewCanvas.toDataURL("image/png");
     },
+    async refreshImageSettings() {
+      await this.drawImageToCanvas();
+      this.updatePreviewCanvas();
+    },
+
     async saveToProject() {
       const imageBlob = await new Promise((resolve) => {
         this.$refs.previewCanvas.toBlob(resolve, "image/jpeg", 0.95);
@@ -536,25 +619,26 @@ export default {
 ._preview {
 }
 
-._instructions {
-  margin-bottom: var(--spacing);
-}
-
 ._btnRow {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
+
   gap: var(--spacing);
   margin-bottom: var(--spacing);
 }
 
 ._values {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   gap: calc(var(--spacing) / 2);
   align-items: center;
   width: 100%;
   background: white;
   // max-width: 800px;
+
+  > * {
+    flex: 1 1 0;
+  }
 }
 
 ._modalP {

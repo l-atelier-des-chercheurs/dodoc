@@ -32,14 +32,14 @@
       </div>
       <div class="_content">
         <VideoAssemblage v-if="make.type === 'video_assemblage'" :make="make" />
-        <CropImage v-else-if="make.type === 'edit_image'" :make="make" />
+        <EditImage v-else-if="make.type === 'edit_image'" :make="make" />
       </div>
     </div>
   </div>
 </template>
 <script>
 import VideoAssemblage from "@/components/makes/VideoAssemblage.vue";
-import CropImage from "@/components/makes/CropImage.vue";
+import EditImage from "@/components/makes/EditImage.vue";
 
 export default {
   props: {
@@ -49,7 +49,7 @@ export default {
   },
   components: {
     VideoAssemblage,
-    CropImage,
+    EditImage,
   },
   data() {
     return {

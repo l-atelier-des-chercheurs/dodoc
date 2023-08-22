@@ -304,6 +304,11 @@ export default function () {
 
         pick_image: "Choisir une image",
         change_base_image: "Changer l’image de base",
+        crop: "Recadrer",
+        crop_instructions:
+          "Utilisez les valeurs ci-dessous ou utilisez le cadre à droite pour indiquer la zone à recadrer.",
+        adjust: "Ajuster",
+        reset_crop: "réinitialiser le cadrage",
 
         status: "État",
         list_of_projects: "Liste des projets",
@@ -433,6 +438,8 @@ export default function () {
         project_can_be_remixed: "Permettre le remix de ce projet",
         remix_this_project: "Remixer ce projet",
 
+        edit_image: "Modifier une image",
+        edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
         video_assemblage_summary:
