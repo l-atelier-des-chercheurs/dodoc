@@ -12,7 +12,7 @@ export default {
         }, [])
         .filter((value, index, array) => array.indexOf(value) === index);
     },
-    roundToDec(num, expo = 3) {
+    roundToDec(num, expo = 2) {
       return Math.round((num + Number.EPSILON) * 10 ** expo) / 10 ** expo;
     },
   },

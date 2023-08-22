@@ -1,69 +1,104 @@
 <template>
   <div class="_cropImage">
-    <button
-      type="button"
-      class="u-button u-button_bleumarine"
-      @click="show_media_picker = true"
-    >
-      <b-icon icon="image" />
-      <template v-if="!base_media">
-        {{ $t("pick_image") }}
-      </template>
-      <template v-else>
-        {{ $t("change_base_image") }}
-      </template>
-    </button>
+    <div class="_sidebyside">
+      <div class="_leftBtns">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine"
+          @click="show_media_picker = true"
+        >
+          <b-icon icon="image" />
+          <template v-if="!base_media">
+            {{ $t("pick_image") }}
+          </template>
+          <template v-else>
+            {{ $t("change_base_image") }}
+          </template>
+        </button>
 
-    <PickMediaFromProjects
-      v-if="show_media_picker"
-      :path="current_project_path"
-      :select_mode="'single'"
-      :pick_from_type="'image'"
-      @addMedias="pickMedia"
-      @close="show_media_picker = false"
-    />
+        <PickMediaFromProjects
+          v-if="show_media_picker"
+          :path="current_project_path"
+          :select_mode="'single'"
+          :pick_from_type="'image'"
+          @addMedias="pickMedia"
+          @close="show_media_picker = false"
+        />
 
-    <template v-if="base_media">
-      <p class="_instructions">
-        {{ $t("crop_instructions") }}
-      </p>
+        <template v-if="base_media">
+          <p class="_instructions">
+            {{ $t("crop_instructions") }}
+          </p>
 
-      <div class="_btnRow">
-        <button
-          type="button"
-          class="u-button u-button_small u-button_bleuvert"
-          @click="resetCrop"
-        >
-          {{ $t("reset_crop") }}
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_small u-button_bleuvert"
-          @click="rotateImage(90)"
-          disabled
-        >
-          <b-icon icon="arrow-clockwise" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_small u-button_bleuvert"
-          @click="rotateImage(-90)"
-          disabled
-        >
-          <b-icon icon="arrow-counterclockwise" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_small u-button_bleumarine"
-          @click="show_save_export_modal = true"
-        >
-          <b-icon icon="check" />
-          {{ $t("save_export") }}
-        </button>
+          <div class="_btnRow">
+            <button
+              type="button"
+              class="u-button u-button_small u-button_bleuvert"
+              @click="resetCrop"
+            >
+              {{ $t("reset_crop") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_small u-button_bleuvert"
+              @click="rotateImage(90)"
+              disabled
+            >
+              <b-icon icon="arrow-clockwise" />
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_small u-button_bleuvert"
+              @click="rotateImage(-90)"
+              disabled
+            >
+              <b-icon icon="arrow-counterclockwise" />
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_small u-button_bleumarine"
+              @click="show_save_export_modal = true"
+            >
+              <b-icon icon="check" />
+              {{ $t("save_export") }}
+            </button>
+          </div>
+
+          <div class="u-spacingBottom _values">
+            <NumberInput
+              :label="'x'"
+              :value="make.options.x || 0"
+              :min="0"
+              :suffix="'%'"
+              @save="updateFromInputs({ x: $event })"
+            />
+            <NumberInput
+              :label="'y'"
+              :value="make.options.y || 0"
+              :min="0"
+              :suffix="'%'"
+              @save="updateFromInputs({ y: $event })"
+            />
+            <NumberInput
+              :label="'width'"
+              :value="make.options.width || 10"
+              :min="0"
+              :suffix="'%'"
+              @save="updateFromInputs({ width: $event })"
+            />
+            <NumberInput
+              :label="'height'"
+              :value="make.options.height || 10"
+              :min="0"
+              :suffix="'%'"
+              @save="updateFromInputs({ height: $event })"
+            />
+          </div>
+        </template>
       </div>
 
-      <div class="_cropPreviewPanes">
-        <div class="_cropWindow">
+      <div class="_cropWindow">
+        <template v-if="base_media">
           <canvas class="_canvas" ref="cropCanvas" width="1280" height="720" />
           <DDR
             class="_crop"
@@ -78,85 +113,85 @@
             @resizestart="resizeStart"
             @resizeend="dragEnd"
           />
-        </div>
+        </template>
+      </div>
+    </div>
 
-        <BaseModal2
-          :title="$t('save_export_cropped')"
-          v-if="show_save_export_modal"
-          @close="show_save_export_modal = false"
-        >
-          <!-- <p>
+    <BaseModal2
+      :title="$t('save_export_cropped')"
+      v-if="show_save_export_modal"
+      @close="show_save_export_modal = false"
+    >
+      <!-- <p>
             {{ $t("general_password_modal_text") }}
           </p> -->
 
-          <div class="">
-            {{ $t("resolution") }}: {{ export_width }}×{{ export_height }}
+      <div class="">
+        {{ $t("resolution") }}: {{ export_width }}×{{ export_height }}
 
-            <div class="">
-              <div class="u-spacingBottom">
-                <a
-                  :download="image_export_name"
-                  :href="export_string"
-                  target="_blank"
-                  class="u-buttonLink"
-                >
-                  {{ $t("download") }}
-                </a>
-              </div>
-
-              <button
-                type="button"
-                class="u-button u-button_red"
-                @click="saveToProject"
-              >
-                <svg
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  x="0px"
-                  y="0px"
-                  viewBox="0 0 168 168"
-                  style="enable-background: new 0 0 168 168"
-                  xml:space="preserve"
-                >
-                  <path
-                    style="fill: var(--c-rouge)"
-                    d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
-                  />
-                  <g style="fill: var(--c-orange)">
-                    <path d="m42 42h21.6v21h-21.6z" />
-                    <path d="m73.2 42h21.6v21h-21.6z" />
-                    <path d="m104.4 42h21.6v21h-21.6z" />
-                    <path d="m42 73.5h21.6v21h-21.6z" />
-                    <path d="m73.2 73.5h21.6v21h-21.6z" />
-                    <path d="m104.4 73.5h21.6v21h-21.6z" />
-                    <path d="m42 105h21.6v21h-21.6z" />
-                    <path d="m73.2 105h21.6v21h-21.6z" />
-                    <path d="m104.4 105h21.6v21h-21.6z" />
-                  </g>
-                </svg>
-                {{ $t("save_to_project") }}
-              </button>
-            </div>
+        <div class="">
+          <div class="u-spacingBottom">
+            <a
+              :download="image_export_name"
+              :href="export_string"
+              target="_blank"
+              class="u-buttonLink"
+            >
+              {{ $t("download") }}
+            </a>
           </div>
 
-          <br />
-
-          <div class="_preview">
-            <canvas
-              class="_previewCanvas"
-              ref="previewCanvas"
-              width="1280"
-              height="720"
-            />
-          </div>
-
-          <div class="_saveNotice" v-if="finished_saving_to_project">
-            {{ $t("image_saved") }}
-          </div>
-        </BaseModal2>
+          <button
+            type="button"
+            class="u-button u-button_red"
+            @click="saveToProject"
+          >
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 168 168"
+              style="enable-background: new 0 0 168 168"
+              xml:space="preserve"
+            >
+              <path
+                style="fill: var(--c-rouge)"
+                d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
+              />
+              <g style="fill: var(--c-orange)">
+                <path d="m42 42h21.6v21h-21.6z" />
+                <path d="m73.2 42h21.6v21h-21.6z" />
+                <path d="m104.4 42h21.6v21h-21.6z" />
+                <path d="m42 73.5h21.6v21h-21.6z" />
+                <path d="m73.2 73.5h21.6v21h-21.6z" />
+                <path d="m104.4 73.5h21.6v21h-21.6z" />
+                <path d="m42 105h21.6v21h-21.6z" />
+                <path d="m73.2 105h21.6v21h-21.6z" />
+                <path d="m104.4 105h21.6v21h-21.6z" />
+              </g>
+            </svg>
+            {{ $t("save_to_project") }}
+          </button>
+        </div>
       </div>
-    </template>
+
+      <br />
+
+      <div class="_preview">
+        <canvas
+          class="_previewCanvas"
+          ref="previewCanvas"
+          width="1280"
+          height="720"
+        />
+      </div>
+
+      <div class="_saveNotice" v-if="finished_saving_to_project">
+        {{ $t("image_saved") }}
+      </div>
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -252,6 +287,7 @@ export default {
       await this.updatePubliMeta({ base_media_filename });
       this.$nextTick(async () => {
         await this.drawImageToCanvas();
+        this.resetCrop();
       });
     },
     async updatePubliMeta(new_meta) {
@@ -264,8 +300,8 @@ export default {
       const default_transform = {
         x: 0,
         y: 0,
-        width: 1,
-        height: 1,
+        width: 100,
+        height: 100,
         rotation: 0,
       };
       this.updatePubliMeta({
@@ -278,12 +314,14 @@ export default {
 
         const cropCanvas = this.$refs.cropCanvas;
 
-        this.crop_transform.x = x * cropCanvas.parentElement.offsetWidth;
-        this.crop_transform.y = y * cropCanvas.parentElement.offsetHeight;
+        this.crop_transform.x =
+          (x / 100) * cropCanvas.parentElement.offsetWidth;
+        this.crop_transform.y =
+          (y / 100) * cropCanvas.parentElement.offsetHeight;
         this.crop_transform.width =
-          width * cropCanvas.parentElement.offsetWidth;
+          (width / 100) * cropCanvas.parentElement.offsetWidth;
         this.crop_transform.height =
-          height * cropCanvas.parentElement.offsetHeight;
+          (height / 100) * cropCanvas.parentElement.offsetHeight;
 
         this.crop_key = new Date().getTime();
       }
@@ -341,24 +379,28 @@ export default {
       };
 
       if (Object.prototype.hasOwnProperty.call(transform, "x")) {
-        _transform_pc.x = this.roundToDec(transform.x / preview_width, 4);
+        _transform_pc.x = this.roundToDec((transform.x / preview_width) * 100);
       }
       if (Object.prototype.hasOwnProperty.call(transform, "y")) {
-        _transform_pc.y = this.roundToDec(transform.y / preview_height, 4);
+        _transform_pc.y = this.roundToDec((transform.y / preview_height) * 100);
       }
       if (Object.prototype.hasOwnProperty.call(transform, "width")) {
         _transform_pc.width = this.roundToDec(
-          transform.width / preview_width,
-          4
+          (transform.width / preview_width) * 100
         );
       }
       if (Object.prototype.hasOwnProperty.call(transform, "height")) {
         _transform_pc.height = this.roundToDec(
-          transform.height / preview_height,
-          4
+          (transform.height / preview_height) * 100
         );
       }
 
+      this.updatePubliMeta({
+        options: _transform_pc,
+      });
+    },
+    updateFromInputs(prop) {
+      const _transform_pc = Object.assign({}, this.make.options, prop);
       this.updatePubliMeta({
         options: _transform_pc,
       });
@@ -371,10 +413,10 @@ export default {
 
       const previewCanvasCtx = previewCanvas.getContext("2d");
 
-      const crop_x = this.make.options?.x * cropCanvas.width;
-      const crop_y = this.make.options?.y * cropCanvas.height;
-      const crop_width = this.make.options?.width * cropCanvas.width;
-      const crop_height = this.make.options?.height * cropCanvas.height;
+      const crop_x = (this.make.options?.x / 100) * cropCanvas.width;
+      const crop_y = (this.make.options?.y / 100) * cropCanvas.height;
+      const crop_width = (this.make.options?.width / 100) * cropCanvas.width;
+      const crop_height = (this.make.options?.height / 100) * cropCanvas.height;
 
       previewCanvas.width = crop_width;
       previewCanvas.height = crop_height;
@@ -424,13 +466,29 @@ export default {
 <style lang="scss" scoped>
 ._cropImage {
   margin: 0 auto;
-  max-width: 90vh;
   height: auto;
+}
+
+._sidebyside {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) * 1);
+
+  ._leftBtns {
+    flex: 0 1 250px;
+  }
+  ._cropWindow {
+    flex: 1 1 250px;
+  }
 }
 ._cropWindow {
   position: relative;
   width: 100%;
 }
+
+._canvas {
+}
+
 ._canvas,
 ._previewCanvas {
   width: 100%;
@@ -441,7 +499,6 @@ export default {
 
 ._previewCanvas {
   max-width: 100%;
-  max-height: 50vh;
   width: auto;
 }
 
@@ -452,19 +509,20 @@ export default {
   margin-bottom: var(--spacing);
 }
 
-._cropPreviewPanes {
-  display: flex;
-  flex-flow: row wrap;
-  gap: var(--spacing);
-
-  > * {
-    flex: 1 1 200px;
-  }
-}
 ._btnRow {
   display: flex;
   flex-flow: row wrap;
   gap: var(--spacing);
   margin-bottom: var(--spacing);
+}
+
+._values {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+  align-items: center;
+  width: 100%;
+  background: white;
+  // max-width: 800px;
 }
 </style>
