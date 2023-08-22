@@ -307,21 +307,19 @@ export default {
     "make.crop_options": {
       handler() {
         this.setTransformFromMake();
-        this.updatePreviewCanvas();
       },
       deep: true,
     },
-    "make.image_brightness"() {
-      this.refreshImageSettings();
+    async "make.image_brightness"() {
+      await this.drawImageToCanvas();
     },
-    "make.image_contrast"() {
-      this.refreshImageSettings();
+    async "make.image_contrast"() {
+      await this.drawImageToCanvas();
     },
     "make.base_media_filename"() {
       (async () => {
         await this.drawImageToCanvas();
         await this.resetCrop();
-        this.updatePreviewCanvas();
       })();
     },
     show_save_export_modal() {
@@ -423,9 +421,9 @@ export default {
       // context.filter = "contrast(1.4) sepia(1) drop-shadow(-9px 9px 3px #e81)";
       let filter = "";
 
-      if (this.make.image_brightness)
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_brightness"))
         filter += `brightness(${this.make.image_brightness}%)`;
-      if (this.make.image_contrast)
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_contrast"))
         filter += `contrast(${this.make.image_contrast}%)`;
       context.filter = filter;
 
@@ -528,10 +526,6 @@ export default {
       this.export_height = crop_height;
       this.export_string = previewCanvas.toDataURL("image/png");
     },
-    async refreshImageSettings() {
-      await this.drawImageToCanvas();
-      this.updatePreviewCanvas();
-    },
 
     async saveToProject() {
       const imageBlob = await new Promise((resolve) => {
@@ -553,8 +547,8 @@ export default {
 
       this.finished_saving_to_project = true;
       setTimeout(() => {
-        this.finished_saving_to_project = false;
-      }, 4000);
+        this.show_save_export_modal = false;
+      }, 3000);
     },
   },
 };
