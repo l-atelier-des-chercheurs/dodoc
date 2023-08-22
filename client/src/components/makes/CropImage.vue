@@ -472,6 +472,7 @@ export default {
 ._sidebyside {
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-start;
   gap: calc(var(--spacing) * 1);
 
   ._leftBtns {
