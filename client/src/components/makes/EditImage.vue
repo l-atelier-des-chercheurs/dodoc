@@ -119,19 +119,17 @@
             <DLabel :str="$t('adjust')" />
 
             <RangeValueInput
-              class="u-spacingBottom"
               :can_toggle="true"
               :label="$t('brightness')"
               :value="Math.round(make.image_brightness)"
               :min="0"
-              :max="100"
+              :max="200"
               :step="1"
               :default_value="100"
               :suffix="'%'"
               @save="updatePubliMeta({ image_brightness: $event })"
             />
             <RangeValueInput
-              class="u-spacingBottom"
               :can_toggle="true"
               :label="$t('contrast')"
               :value="Math.round(make.image_contrast)"
@@ -141,6 +139,28 @@
               :default_value="100"
               :suffix="'%'"
               @save="updatePubliMeta({ image_contrast: $event })"
+            />
+            <RangeValueInput
+              :can_toggle="true"
+              :label="$t('saturation')"
+              :value="Math.round(make.image_saturation)"
+              :min="0"
+              :max="200"
+              :step="1"
+              :default_value="100"
+              :suffix="'%'"
+              @save="updatePubliMeta({ image_saturation: $event })"
+            />
+            <RangeValueInput
+              :can_toggle="true"
+              :label="$t('blur')"
+              :value="Math.round(make.image_blur)"
+              :min="0"
+              :max="100"
+              :step="1"
+              :default_value="0"
+              :suffix="'px'"
+              @save="updatePubliMeta({ image_blur: $event })"
             />
           </div>
 
@@ -160,22 +180,22 @@
       </div>
 
       <div class="_cropWindow">
-        <template v-if="base_media">
-          <canvas class="_canvas" ref="cropCanvas" width="1280" height="720" />
-          <DDR
-            class="_cropFrame"
-            :key="crop_key"
-            :value="crop_transform"
-            :rotatable="false"
-            :acceptRatio="aspect_ratio"
-            :id="'1'"
-            :parent="true"
-            :handlerSize="20"
-            @dragend="dragEnd"
-            @resizestart="resizeStart"
-            @resizeend="dragEnd"
-          />
-        </template>
+        <!-- <template v-if="base_media"> -->
+        <canvas class="_canvas" ref="cropCanvas" width="1280" height="720" />
+        <DDR
+          class="_cropFrame"
+          :key="crop_key"
+          :value="crop_transform"
+          :rotatable="false"
+          :acceptRatio="aspect_ratio"
+          :id="'1'"
+          :parent="true"
+          :handlerSize="20"
+          @dragend="dragEnd"
+          @resizestart="resizeStart"
+          @resizeend="dragEnd"
+        />
+        <!-- </template> -->
       </div>
     </div>
 
@@ -316,6 +336,12 @@ export default {
     async "make.image_contrast"() {
       await this.drawImageToCanvas();
     },
+    async "make.image_saturation"() {
+      await this.drawImageToCanvas();
+    },
+    async "make.image_blur"() {
+      await this.drawImageToCanvas();
+    },
     "make.base_media_filename"() {
       (async () => {
         await this.drawImageToCanvas();
@@ -404,8 +430,8 @@ export default {
       const width = this.base_media.$infos?.width || 1280;
       const height = this.base_media.$infos?.height || 720;
 
-      canvas.width = width;
-      canvas.height = height;
+      if (width !== canvas.width) canvas.width = width;
+      if (height !== canvas.height) canvas.height = height;
 
       const image_url = this.makeMediaFileURL({
         $path: this.base_media.$path,
@@ -415,6 +441,7 @@ export default {
       let img = new Image();
       img.src = image_url;
       await img.decode();
+      // await new Promise((r) => setTimeout(r, 2000));
 
       const context = canvas.getContext("2d");
 
@@ -425,6 +452,10 @@ export default {
         filter += `brightness(${this.make.image_brightness}%)`;
       if (Object.prototype.hasOwnProperty.call(this.make, "image_contrast"))
         filter += `contrast(${this.make.image_contrast}%)`;
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_blur"))
+        filter += `blur(${this.make.image_blur}px)`;
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_saturation"))
+        filter += `saturate(${this.make.image_saturation}%)`;
       context.filter = filter;
 
       context.drawImage(img, 0, 0, width, height);

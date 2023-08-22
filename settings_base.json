@@ -473,6 +473,12 @@
                   "image_contrast": {
                     "type": "number"
                   },
+                  "image_blur": {
+                    "type": "number"
+                  },
+                  "image_saturation": {
+                    "type": "number"
+                  },
                   "modules_list": {
                     "type": "array"
                   }

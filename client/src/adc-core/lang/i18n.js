@@ -564,6 +564,7 @@ export default function () {
         flip_vertically: "Retourner verticalement",
         brightness: "Luminosité",
         contrast: "Contraste",
+        blur: "Flou",
         hue: "Teinte",
         saturation: "Saturation",
         lightness: "Clarté",
