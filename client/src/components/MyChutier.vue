@@ -287,10 +287,10 @@ export default {
   created() {},
   mounted() {
     this.listChutier();
-    this.$api.join({ room: this.path });
+    // this.$api.join({ room: this.path });
   },
   beforeDestroy() {
-    this.$api.leave({ room: this.path });
+    // this.$api.leave({ room: this.path });
   },
   watch: {
     // chutier_items() {
