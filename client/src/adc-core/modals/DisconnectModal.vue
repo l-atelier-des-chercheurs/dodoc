@@ -1,6 +1,6 @@
 <template>
   <BaseModal2 :title="$t('connection_lost')" :is_closable="false">
-    <template v-if="!$root.is_connected">
+    <template v-if="!$api.connected">
       <p class="u-spacingBottom">
         <span v-html="$t('connection_lost_in')" /><br />
         <template v-if="!is_reconnecting">
@@ -64,7 +64,7 @@ export default {
         await this.reconnectSocket();
         this.seconds_before_reconnecting = 10;
       }
-      if (!this.$root.is_connected) window.setTimeout(this.countdown, 1000);
+      if (!this.$api.connected) window.setTimeout(this.countdown, 1000);
     })();
   },
   mounted() {},
@@ -72,8 +72,8 @@ export default {
     window.clearTimeout(this.countdown);
   },
   watch: {
-    "$root.is_connected": function () {
-      if (this.$root.is_connected) {
+    "$api.connected": function () {
+      if (this.$api.connected) {
         this.$emit("close");
         this.$alertify
           .closeLogOnClick(true)

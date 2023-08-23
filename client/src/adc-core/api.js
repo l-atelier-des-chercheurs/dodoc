@@ -39,8 +39,10 @@ export default function () {
         await this._setAuthFromStorage();
         this.setAuthorizationHeader();
 
-        if (this.tokenpath.token_path)
+        if (this.tokenpath.token_path) {
           await this.getCurrentAuthor().catch(() => {});
+          this.trackCurrentAuthor();
+        }
 
         await this.socket.connect();
 
@@ -230,6 +232,9 @@ export default function () {
           // TODO catch folder no existing: author was removed, for example
         });
       },
+      trackCurrentAuthor() {
+        this.join({ room: this.tokenpath.token_path });
+      },
 
       folderCreated({ path, meta }) {
         if (!this.store[path]) this.store[path] = new Array();
@@ -386,13 +391,14 @@ export default function () {
         }
       },
       async logoutFromFolder() {
-        const auth_infos = {
-          token: this.tokenpath.token,
-        };
         const path = this.tokenpath.token_path;
+        const auth_infos = {
+          token: path,
+        };
         try {
           // remove token locally
           this.resetToken();
+          this.leave({ room: path });
           // remove token on the server
           await this.$axios.post(`${path}/_logout`, auth_infos);
           return;

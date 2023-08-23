@@ -253,7 +253,6 @@ new Vue({
     store: window.store,
     app_infos: window.app_infos,
     is_loading: true,
-    is_connected: false,
     dev_mode: true,
     publicPath: process.env.BASE_URL,
 
@@ -290,11 +289,7 @@ new Vue({
       this.window.innerHeight = window.innerHeight;
     });
   },
-  watch: {
-    "$api.socket.connected": function () {
-      this.is_connected = this.$api.connected;
-    },
-  },
+  watch: {},
   computed: {
     is_mobile_view() {
       // return false;
