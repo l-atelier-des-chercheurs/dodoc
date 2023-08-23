@@ -2,14 +2,14 @@
   <div id="app" class="">
     <!-- <button
       type="button"
-      :disabled="$root.is_connected"
+      :disabled="$api.connected"
       @click="$api.reconnectSocket"
     >
       connect
     </button>
     <button
       type="button"
-      :disabled="!$root.is_connected"
+      :disabled="!$api.connected"
       @click="$api.disconnectSocket"
     >
       disconnect
