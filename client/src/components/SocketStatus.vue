@@ -2,7 +2,7 @@
   <div
     class="_socketStatus"
     :class="{
-      'is--connected': $root.is_connected,
+      'is--connected': $api.connected,
     }"
   >
     <div class="_socketStatus--content">
@@ -11,7 +11,7 @@
       |
       <button
         type="button"
-        :disabled="$root.is_connected"
+        :disabled="$api.connected"
         @click="$api.reconnectSocket"
       >
         connect
@@ -19,7 +19,7 @@
       |
       <button
         type="button"
-        :disabled="!$root.is_connected"
+        :disabled="!$api.connected"
         @click="$api.disconnectSocket"
       >
         disconnect
