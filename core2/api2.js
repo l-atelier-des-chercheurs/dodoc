@@ -428,7 +428,8 @@ module.exports = (function () {
     // get author creation password
     const {
       name_of_instance,
-      presentation_of_instance,
+      presentation_of_instance_fr,
+      presentation_of_instance_en,
       contactmail_of_instance,
       hero_background_color,
       text_background_color,
@@ -449,7 +450,8 @@ module.exports = (function () {
       .catch((err) => dev.error("Error while getting settings", err));
 
     d.name_of_instance = name_of_instance || "";
-    d.presentation_of_instance = presentation_of_instance || "";
+    d.presentation_of_instance_fr = presentation_of_instance_fr || "";
+    d.presentation_of_instance_en = presentation_of_instance_en || "";
     d.contactmail_of_instance = contactmail_of_instance || "";
     d.hero_background_color = hero_background_color || "";
     d.text_background_color = text_background_color || "";

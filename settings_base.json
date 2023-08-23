@@ -40,7 +40,10 @@
       "name_of_instance": {
         "type": "string"
       },
-      "presentation_of_instance": {
+      "presentation_of_instance_fr": {
+        "type": "string"
+      },
+      "presentation_of_instance_en": {
         "type": "string"
       },
       "contactmail_of_instance": {

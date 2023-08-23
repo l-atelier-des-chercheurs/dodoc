@@ -69,7 +69,8 @@ export default {
   data() {
     return {
       show_general_password_modal: false,
-      show_welcome_modal: true,
+      show_welcome_modal:
+        localStorage.getItem("dont_show_window_again") !== "true",
       show_disconnect_modal: false,
       show_authors_modal: false,
     };
@@ -79,6 +80,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$on(`app.show_welcome_modal`, this.showWelcomeModal);
     this.$eventHub.$on(`showAuthorModal`, this.showAuthorModal);
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
   },
@@ -88,6 +90,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$off(`app.show_welcome_modal`, this.showWelcomeModal);
     this.$eventHub.$off(`showAuthorModal`, this.showAuthorModal);
     this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
   },
@@ -148,6 +151,9 @@ export default {
   methods: {
     showDisconnectModal() {
       this.show_disconnect_modal = true;
+    },
+    showWelcomeModal() {
+      this.show_welcome_modal = true;
     },
     showAuthorModal() {
       this.show_authors_modal = true;

@@ -17,30 +17,45 @@
           </sl-tab>
 
           <sl-tab-panel name="informations">
-            <TitleField
-              class="u-spacingBottom"
-              :field_name="'name_of_instance'"
-              :label="$t('name_of_instance')"
-              :instructions="$t('name_of_instance_instructions')"
-              :content="settings.name_of_instance || ''"
-              :path="settings.$path"
-              tag="h1"
-              :required="true"
-              :minlength="3"
-              :maxlength="40"
-              :can_edit="is_instance_admin"
-            />
+            <div class="u-spacingBottom">
+              <TitleField
+                :field_name="'name_of_instance'"
+                :label="$t('name_of_instance')"
+                :instructions="$t('name_of_instance_instructions')"
+                :content="settings.name_of_instance || ''"
+                :path="settings.$path"
+                tag="h1"
+                :required="true"
+                :minlength="3"
+                :maxlength="40"
+                :can_edit="is_instance_admin"
+              />
+            </div>
 
-            <TitleField
-              :field_name="'presentation_of_instance'"
-              :label="$t('presentation_of_instance')"
-              :instructions="$t('presentation_of_instance_instructions')"
-              :content="settings.presentation_of_instance"
-              :path="settings.$path"
-              :required="false"
-              :input_type="'markdown'"
-              :can_edit="is_instance_admin"
-            />
+            <div class="u-spacingBottom">
+              <TitleField
+                :field_name="'presentation_of_instance_fr'"
+                :label="$t('presentation_of_instance') + ' (en français)'"
+                :instructions="$t('presentation_of_instance_instructions')"
+                :content="settings.presentation_of_instance_fr"
+                :path="settings.$path"
+                :required="false"
+                :input_type="'markdown'"
+                :can_edit="is_instance_admin"
+              />
+            </div>
+            <div class="u-spacingBottom">
+              <TitleField
+                :field_name="'presentation_of_instance_en'"
+                :label="$t('presentation_of_instance') + ' (en anglais)'"
+                :instructions="$t('presentation_of_instance_instructions')"
+                :content="settings.presentation_of_instance_en"
+                :path="settings.$path"
+                :required="false"
+                :input_type="'markdown'"
+                :can_edit="is_instance_admin"
+              />
+            </div>
           </sl-tab-panel>
 
           <sl-tab-panel name="administration_and_access_control">

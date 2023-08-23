@@ -100,7 +100,7 @@ export default function () {
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
           Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
-        presentation_of_instance: "Présentation de l’instance",
+        presentation_of_instance: "Présentation de la plateforme",
         presentation_of_instance_instructions: `
           Apparaîtra sur la page d’accueil uniquement.
           `,
@@ -865,7 +865,11 @@ export default function () {
         "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
           <br />
           Elles contiendront du texte et des éléments que vous avez collecté.`,
+
+        open_app: "Accéder à la plateforme",
+        do_not_show_window_again: "Ne plus afficher cette fenêtre",
       },
+
       en: {
         home: "Home",
         hello: "hello world",

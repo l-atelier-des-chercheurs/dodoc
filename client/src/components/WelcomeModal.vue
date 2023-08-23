@@ -3,28 +3,56 @@
     :title="$root.app_infos.instance_meta.name || $t('home')"
     @close="$emit('close')"
   >
-    <MarkdownField :text="presentation" />
-    <br />
-    <p>
-      <DLabel :str="$t('contactmail_of_instance')" />
-      <a
-        :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-        target="_blank"
+    <div class="u-spacingBottom">
+      <MarkdownField
+        v-if="$i18n.locale === 'fr'"
+        :text="$root.app_infos.instance_meta.presentation_of_instance_fr"
+      />
+      <MarkdownField
+        v-if="$i18n.locale === 'en'"
+        :text="$root.app_infos.instance_meta.presentation_of_instance_en"
+      />
+    </div>
+
+    <div class="u-spacingBottom">
+      <p>
+        <DLabel :str="$t('contactmail_of_instance')" />
+        <a
+          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+          target="_blank"
+        >
+          {{ $root.app_infos.instance_meta.contactmail }}
+        </a>
+      </p>
+    </div>
+
+    <div class="u-spacingBottom">
+      <button
+        type="button"
+        class="u-button u-button_small"
+        @click="show_lang_modal = !show_lang_modal"
       >
-        {{ $root.app_infos.instance_meta.contactmail }}
-      </a>
-    </p>
+        {{ current_lang_code }}
+      </button>
+      <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+    </div>
 
-    <br />
+    <div class="_openBtn">
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="$emit('close')"
+      >
+        {{ $t("open_app") }}
+      </button>
 
-    <button
-      type="button"
-      class="u-button"
-      @click="show_lang_modal = !show_lang_modal"
-    >
-      {{ current_lang_code }}
-    </button>
-    <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+      <br />
+
+      <ToggleInput
+        :content.sync="dont_show_window_again"
+        :label="$t('do_not_show_window_again')"
+      />
+    </div>
   </BaseModal2>
 </template>
 <script>
@@ -36,22 +64,33 @@ export default {
     LangModal,
   },
   data() {
-    return { show_lang_modal: false };
+    return {
+      show_lang_modal: false,
+      dont_show_window_again:
+        localStorage.getItem("dont_show_window_again") === "true",
+    };
   },
   created() {},
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    if (this.dont_show_window_again === true)
+      localStorage.setItem("dont_show_window_again", "true");
+    else localStorage.setItem("dont_show_window_again", "");
+  },
   watch: {},
   computed: {
     current_lang_code() {
       this.$i18n.availableLocales;
       return this.$i18n.locale;
     },
-    presentation() {
-      return this.$root.app_infos.instance_meta.presentation;
-    },
   },
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._openBtn {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+</style>

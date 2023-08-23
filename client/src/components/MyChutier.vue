@@ -88,6 +88,15 @@
             @close="show_qr_code_modal = false"
           />
         </div>
+        <div class="_qrOpt">
+          <button
+            type="button"
+            class="u-button u-button_transparent _qrBtn"
+            @click="$eventHub.$emit(`app.show_welcome_modal`)"
+          >
+            <sl-icon name="question-square" />
+          </button>
+        </div>
       </div>
       <UploadFiles
         v-if="selected_files.length > 0"
