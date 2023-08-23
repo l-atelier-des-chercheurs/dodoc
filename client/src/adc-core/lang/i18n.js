@@ -867,7 +867,8 @@ export default function () {
           Elles contiendront du texte et des éléments que vous avez collecté.`,
 
         open_app: "Accéder à la plateforme",
-        do_not_show_window_again: "Ne plus afficher cette fenêtre",
+        do_not_show_window_again:
+          "Ne plus afficher cette fenêtre à l’ouverture",
       },
 
       en: {
