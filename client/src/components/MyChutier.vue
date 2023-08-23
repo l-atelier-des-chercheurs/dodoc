@@ -77,7 +77,7 @@
         <div class="_qrOpt">
           <button
             type="button"
-            class="u-button u-button_transparent _qrBtn"
+            class="u-button u-button_transparent u-button_small _qrBtn"
             @click="show_qr_code_modal = true"
           >
             <sl-icon name="qr-code" />
@@ -91,7 +91,7 @@
         <div class="_qrOpt">
           <button
             type="button"
-            class="u-button u-button_transparent _qrBtn"
+            class="u-button u-button_transparent u-button_small _qrBtn"
             @click="$eventHub.$emit(`app.show_welcome_modal`)"
           >
             <sl-icon name="question-square" />
@@ -513,6 +513,7 @@ export default {
   z-index: 1;
   display: flex;
   gap: calc(var(--spacing) / 2);
+  align-items: center;
   top: 0;
   padding: calc(var(--spacing) / 1);
 
