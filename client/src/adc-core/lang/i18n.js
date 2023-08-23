@@ -64,6 +64,7 @@ export default function () {
           "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
         embed: "Intégrer",
         from_project: "Depuis le projet",
+        save_to_project: "Enregistrer dans le projet",
         day: "Jour",
         month: "Mois",
         year: "Année",
@@ -163,7 +164,7 @@ export default function () {
         contributors: "Contributeur·rice·s",
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",
-        create: "créer",
+        create: "Créer",
         existing: "Existant",
         create_account: "créer un compte",
         your_account: "votre compte",
@@ -295,6 +296,14 @@ export default function () {
         remove_this_image: "Supprimer cette image",
         erase: "Effacer",
 
+        pick_image: "Choisir une image",
+        change_base_image: "Changer l’image de base",
+        crop: "Recadrer",
+        crop_instructions:
+          "Utilisez les valeurs ci-dessous ou utilisez le cadre à droite pour indiquer la zone à recadrer.",
+        adjust: "Ajuster",
+        reset_crop: "réinitialiser le cadrage",
+
         status: "État",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
@@ -361,6 +370,7 @@ export default function () {
         latest_changes_to_project: "Dernières modifications au projet",
 
         download: "Télécharger",
+        download_image: "Télécharger cette image",
         page_failed_to_load: "Cette page n’a pas pu charger.",
         open_website_new_tab: "Ouvrir dans un nouvel onglet",
         click_link_to_open_in_tab:
@@ -370,8 +380,10 @@ export default function () {
         no_preview_to_show: "Aucun aperçu à afficher pour le moment",
         no_media_in_project: "Aucun média dans ce projet",
         number_of_media: "Nombre de médias",
+        "displayed:": "Affichés&nbsp;:",
         media_removed: "Média supprimé",
         media_duplicated: "Média dupliqué",
+        media_was_saved: "Le média a été ajouté au projet",
 
         CC: "Creative Commons",
         authors_and_license: "Licence et auteurs",
@@ -428,6 +440,11 @@ export default function () {
         project_can_be_remixed: "Permettre le remix de ce projet",
         remix_this_project: "Remixer ce projet",
 
+        makes_list: "Liste des fabrications",
+        back_to_makes_list: "Retour à la liste",
+
+        edit_image: "Modifier une image",
+        edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
         video_assemblage_summary:
@@ -556,6 +573,7 @@ export default function () {
         flip_vertically: "Retourner verticalement",
         brightness: "Luminosité",
         contrast: "Contraste",
+        blur: "Flou",
         hue: "Teinte",
         saturation: "Saturation",
         lightness: "Clarté",
@@ -602,6 +620,7 @@ export default function () {
 
         pick_a_camera: "Sélectionnez une caméra",
         resolutions: "Résolutions",
+        resolution: "Résolution",
         screen_capture: "Capture d’écran",
         cant_pick_resolution_when_screen_capture:
           "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
@@ -633,10 +652,17 @@ export default function () {
 
         with_sound: "avec le son",
         update: "Mettre à jour",
-        video: "vidéo",
-        audio: "son",
-        lines: "lignes",
-        vecto: "formes",
+        image: "Image",
+        video: "Vidéo",
+        audio: "Son",
+        text: "Texte",
+        lines: "Lignes",
+        vecto: "Formes",
+        pdf: "PDF",
+        stl: "STL",
+        other: "Autres",
+        all_medias_types: "De tous types",
+
         or_download_media_on_device:
           "ou télécharger ce média sur votre appareil",
 

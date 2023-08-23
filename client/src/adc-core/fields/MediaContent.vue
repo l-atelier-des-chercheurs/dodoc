@@ -294,6 +294,12 @@ export default {
 
   &[data-filetype="other"] {
   }
+
+  .plyr {
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 ._mediaContent--iframe {
@@ -356,8 +362,7 @@ export default {
     background: white;
   }
 
-  iframe,
-  .plyr {
+  iframe {
     z-index: 0;
     width: 100%;
     height: 100%;

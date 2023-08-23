@@ -1826,6 +1826,8 @@ export default {
         extensions[this.media_to_validate.type]
       }`;
 
+      // TODO merge with uploadFile
+
       const rawData = this.media_to_validate.rawData;
 
       let formData = new FormData();
