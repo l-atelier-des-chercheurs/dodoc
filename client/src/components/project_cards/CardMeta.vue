@@ -52,8 +52,8 @@
         :proposed_title="`${$t('copy_of')} ${project.title}`"
         @close="show_dup_modal = false"
       />
-      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
       <DownloadFolder :path="project.$path" />
+      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
     </div>
 
     <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
