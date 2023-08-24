@@ -386,8 +386,9 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.log("not allowed to contribute");
-      if (res) return res.status(403).send({ code: "not_allowed" });
+      dev.error("not allowed to contribute");
+      if (res) return res.status(401).send({ code: "not_allowed" });
+      return false;
     }
   }
   async function _restrictToLocalAdmins(req, res, next) {
