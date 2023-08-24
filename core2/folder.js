@@ -1,6 +1,5 @@
 const path = require("path"),
-  fs = require("fs-extra"),
-  archiver = require("archiver");
+  fs = require("fs-extra");
 
 const utils = require("./utils"),
   thumbs = require("./thumbs"),
@@ -258,29 +257,6 @@ module.exports = (function () {
       });
 
       return path_to_destination_folder;
-    },
-    prepareDownload: async ({ path_to_folder }) => {
-      dev.logfunction({ path_to_folder });
-
-      const archive = archiver("zip", {
-        zlib: { level: 9 }, // Sets the compression level.
-      });
-
-      archive.on("warning", function (err) {
-        throw err;
-        // if (err.code === "ENOENT") {
-        // } else {
-        //   throw err;
-        // }
-      });
-      archive.on("error", function (err) {
-        throw err;
-      });
-
-      const full_folder_path = utils.getPathToUserContent(path_to_folder);
-      archive.directory(full_folder_path, false);
-
-      return archive;
     },
 
     removeFolder: async ({ path_to_folder }) => {

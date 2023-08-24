@@ -1,13 +1,14 @@
 const cors = require("cors"),
   url = require("url"),
-  path = require("path");
+  path = require("path"),
+  archiver = require("archiver");
 
 const folder = require("./folder"),
   file = require("./file"),
   settings = require("./settings"),
   notifier = require("./notifier"),
   utils = require("./utils"),
-  cache = require("./cache"),
+  thumbs = require("./thumbs"),
   Exporter = require("./Exporter"),
   auth = require("./auth");
 
@@ -849,17 +850,31 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      const archive = await folder.prepareDownload({ path_to_folder });
-
       const folder_slug = utils.getFilename(path_to_folder);
       res.header("Content-Type", "application/zip");
       res.header(
         "Content-Disposition",
         `attachment; filename="${folder_slug}.zip"`
       );
-      // res.header("Content-Length", 1000000);
+      // const { size } = await thumbs.getInfosForFolder({
+      //   path_to_folder,
+      // });
+      // if (size) res.header("Content-Length", size);
 
+      const archive = archiver("zip", {
+        zlib: { level: 0 },
+      });
+      archive.on("warning", (err) => {
+        throw err;
+      });
+      archive.on("error", function (err) {
+        throw err;
+      });
       archive.pipe(res);
+
+      const full_folder_path = utils.getPathToUserContent(path_to_folder);
+      archive.directory(full_folder_path, false);
+
       archive.finalize();
 
       dev.log(`download started`);
