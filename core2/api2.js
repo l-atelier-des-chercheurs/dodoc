@@ -572,9 +572,7 @@ module.exports = (function () {
     const hrstart = process.hrtime();
 
     try {
-      let d = JSON.parse(
-        JSON.stringify(await folder.getFolder({ path_to_folder, detailed }))
-      );
+      let d = await folder.getFolder({ path_to_folder, detailed });
       const files = await file.getFiles({ path_to_folder });
       d.$files = files;
 

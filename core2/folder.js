@@ -45,8 +45,8 @@ module.exports = (function () {
         key: path_to_folder,
       });
       if (d) {
+        d = JSON.parse(JSON.stringify(d));
         if (detailed) {
-          d = JSON.parse(JSON.stringify(d));
           d.$infos = await thumbs.getInfosForFolder({
             path_to_folder,
           });
