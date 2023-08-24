@@ -36,10 +36,16 @@
     </div>
 
     <div class="u-mediaOptions" v-if="can_edit">
-      <button type="button" class="u-buttonLink" @click="show_dup_modal = true">
-        <sl-icon name="file-plus" />
-        {{ $t("duplicate_or_move_project") }}
-      </button>
+      <div class="">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="show_dup_modal = true"
+        >
+          <sl-icon name="file-plus" />
+          {{ $t("duplicate_or_move_project") }}
+        </button>
+      </div>
       <DuplicateOrRemixProject
         v-if="show_dup_modal"
         :path="project.$path"
