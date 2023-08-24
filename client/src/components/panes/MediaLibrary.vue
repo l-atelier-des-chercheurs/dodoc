@@ -68,7 +68,10 @@
                 v-for="type_of_media in types_of_medias"
                 :key="type_of_media.key"
                 :value="type_of_media.key"
-                v-text="type_of_media.label"
+                v-text="
+                  type_of_media.label +
+                  ` (${quantityOfMediaWithType(type_of_media.key)})`
+                "
               />
             </select>
 
@@ -392,6 +395,11 @@ export default {
         present.other = true;
 
       return Object.keys(present).length > 0 ? present : false;
+    },
+    quantityOfMediaWithType(type_of_media_key) {
+      return this.filtered_medias.filter(
+        (m) => type_of_media_key === "all" || m.$type === type_of_media_key
+      ).length;
     },
     updateInputFiles($event) {
       this.files_to_import = Array.from($event.target.files);
