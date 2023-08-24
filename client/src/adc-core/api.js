@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
 import Vue from "vue";
+import saveAs from "file-saver";
 
 export default function () {
   return new Vue({
@@ -495,6 +496,17 @@ export default function () {
             throw this.processError(err);
           });
         return response.data.copy_folder_path;
+      },
+      async downloadFolder({ path, filename }) {
+        path = `${path}.zip`;
+        const response = await this.$axios({
+          url: path,
+          method: "GET",
+          responseType: "blob",
+        }).catch((err) => {
+          throw this.processError(err);
+        });
+        saveAs(response.data, filename);
       },
       async remixFolder({
         path,

@@ -325,19 +325,22 @@ Then the following routes will redirect to:
   --> returns a list of all folders in /spaces/bonjour/projects with their metas
 
 - /spaces/bonjour/projects/elephant-with-plywood
-  --> return the meta of a single "elephant-with-plywood" folder with a list of all their files with their metas
+  --> returns the meta of a single "elephant-with-plywood" folder with a list of all their files with their metas
+
+- /spaces/bonjour/projects/elephant-with-plywood.zip
+  --> downloads a zip file with all the content of that folder
 
 ### Permission
 
 For an existing folder:
 
 ```
-Role                  | Edit | Upload file | Create subfolder | Export | Copy | GeneratePreview |
--------------------------------------------------------------------------------------------------
-Instance admins       |   x  |     x       |        x         |    x   |   x  |        x        |
-Folder $admins        |   x  |     x       |        x         |    x   |   x  |        x        |
-Folder $contributors  |      |     x       |        x         |        |      |                 |
--------------------------------------------------------------------------------------------------
+Role                  | Edit | Upload file | Create subfolder | Export | Copy |  Download | GeneratePreview |
+-------------------------------------------------------------------------------------------------------------
+Instance admins       |   x  |     x       |        x         |    x   |   x  |     x     |        x        |
+Folder $admins        |   x  |     x       |        x         |    x   |   x  |     x     |        x        |
+Folder $contributors  |      |     x       |        x         |        |      |           |                 |
+-------------------------------------------------------------------------------------------------------------
 ```
 
 So, for example for a space /bonjour, its $admins can edit all meta properties while a contributor can only import/edit/remove files, and create projects (of which they'll be $admins by default).

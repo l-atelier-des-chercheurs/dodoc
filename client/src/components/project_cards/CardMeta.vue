@@ -53,6 +53,7 @@
         @close="show_dup_modal = false"
       />
       <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
+      <DownloadFolder :path="project.$path" />
     </div>
 
     <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">

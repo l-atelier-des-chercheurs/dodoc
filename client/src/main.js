@@ -108,6 +108,8 @@ import FilesModule from "@/adc-core/fields/FilesModule.vue";
 Vue.component("FilesModule", FilesModule);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
+import DownloadFolder from "@/adc-core/fields/DownloadFolder.vue";
+Vue.component("DownloadFolder", DownloadFolder);
 import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
 Vue.component("RemoveMenu", RemoveMenu);
 import TagsList from "@/adc-core/ui/TagsList.vue";

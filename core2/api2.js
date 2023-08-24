@@ -141,6 +141,16 @@ module.exports = (function () {
       _restrictToLocalAdmins,
       _copyFolder
     );
+    app.get(
+      [
+        "/_api2/:folder_type/:folder_slug.zip",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug.zip",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug.zip",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _downloadFolder
+    );
     app.post(
       [
         "/_api2/:folder_type/:folder_slug/_remix",
@@ -828,6 +838,34 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to copy content: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+  async function _downloadFolder(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      const archive = await folder.prepareDownload({ path_to_folder });
+
+      const folder_slug = utils.getFilename(path_to_folder);
+      res.header("Content-Type", "application/zip");
+      res.header(
+        "Content-Disposition",
+        `attachment; filename="${folder_slug}.zip"`
+      );
+      // res.header("Content-Length", 1000000);
+
+      archive.pipe(res);
+      archive.finalize();
+
+      dev.log(`download started`);
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to download content: " + message);
       res.status(500).send({
         code,
         err_infos,
