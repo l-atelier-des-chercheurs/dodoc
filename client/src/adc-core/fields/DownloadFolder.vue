@@ -1,18 +1,14 @@
 <template>
   <div>
-    <button
-      type="button"
-      class="u-buttonLink"
-      @click="show_download_folder = true"
-    >
+    <button type="button" class="u-buttonLink" @click="showDownloadModal">
       <b-icon icon="download" />
       {{ $t("download") }}
     </button>
 
     <BaseModal2
-      v-if="show_download_folder"
+      v-if="show_download_modal"
       :title="$t('download')"
-      @close="show_download_folder = false"
+      @close="show_download_modal = false"
     >
       <!-- {{ archive_name }} -->
 
@@ -47,7 +43,7 @@
               {{ err_code }}
             </template>
             <template v-else>
-              {{ $t("downloaded") }}
+              {{ $t("download_ready") }}
             </template>
           </template>
         </template>
@@ -63,7 +59,7 @@ export default {
   components: {},
   data() {
     return {
-      show_download_folder: false,
+      show_download_modal: false,
 
       download_started: false,
       is_downloading: false,
@@ -72,9 +68,7 @@ export default {
       folder_size: undefined,
     };
   },
-  created() {
-    this.getFolderSize();
-  },
+  created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -84,6 +78,15 @@ export default {
     },
   },
   methods: {
+    showDownloadModal() {
+      this.show_download_modal = true;
+      this.download_started = false;
+      this.is_downloading = false;
+      this.err_code = "";
+      this.folder_size = "";
+
+      this.getFolderSize();
+    },
     async getFolderSize() {
       const project = await this.$api
         .getFolder({
