@@ -344,9 +344,9 @@ export default function () {
         // we use the store to trigger updates to array if item is updated
         return this.store[path];
       },
-      async getFolder({ path }) {
-        if (this.store[path]) return this.store[path];
-
+      async getFolder({ path, detailed_infos = false }) {
+        if (!detailed_infos && this.store[path]) return this.store[path];
+        if (detailed_infos) path += `?detailed=true`;
         const response = await this.$axios.get(path).catch((err) => {
           throw this.processError(err);
         });
