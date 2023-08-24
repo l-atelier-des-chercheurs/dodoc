@@ -24,6 +24,10 @@
         v-text="archive_name"
       /> -->
       <div class="_cont">
+        <p class="u-spacingBottom">
+          <span v-html="$t('size:')" /> {{ formatBytes(folder_size) }}
+        </p>
+
         <button
           class="u-button u-button_red"
           type="button"
@@ -64,9 +68,13 @@ export default {
       download_started: false,
       is_downloading: false,
       err_code: "",
+
+      folder_size: undefined,
     };
   },
-  created() {},
+  created() {
+    this.getFolderSize();
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -76,6 +84,18 @@ export default {
     },
   },
   methods: {
+    async getFolderSize() {
+      const project = await this.$api
+        .getFolder({
+          path: `${this.path}`,
+          detailed_infos: true,
+        })
+        .catch((err) => {
+          err;
+          // this.fetch_publication_error = err.response;
+        });
+      this.folder_size = project.$infos?.size;
+    },
     async startDownload() {
       this.download_started = true;
       this.is_downloading = true;

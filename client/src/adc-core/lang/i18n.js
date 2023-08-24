@@ -265,6 +265,7 @@ export default function () {
         move_to_back: "Arrière-plan",
         fullscreen: "Plein-écran",
         exit_fullscreen: "Quitter le plein-écran",
+        "size:": "Poids&nbsp;:",
 
         opacity: "Opacité",
         page_spreads: "Pages en vis-à-vis",

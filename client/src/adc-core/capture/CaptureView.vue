@@ -909,7 +909,7 @@
                   >
                     {{ $t("or_download_media_on_device") }}
                     <template v-if="media_to_validate.rawData">
-                      — {{ $root.formatBytes(media_to_validate.rawData.size) }}
+                      — {{ formatBytes(media_to_validate.rawData.size) }}
                     </template>
                   </a>
                 </small>
