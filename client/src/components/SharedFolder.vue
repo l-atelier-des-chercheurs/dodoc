@@ -93,6 +93,10 @@
             >aide/contact</a
           ><br />
           version {{ $root.app_infos.version }}
+
+          <div v-if="is_instance_admin">
+            <DownloadFolder :path="shared_folder_path" />
+          </div>
         </small>
       </footer>
     </div>
