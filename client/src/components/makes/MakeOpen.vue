@@ -39,9 +39,6 @@
   </div>
 </template>
 <script>
-import VideoAssemblage from "@/components/makes/VideoAssemblage.vue";
-import EditImage from "@/components/makes/EditImage.vue";
-
 export default {
   props: {
     project_path: String,
@@ -49,8 +46,8 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    VideoAssemblage,
-    EditImage,
+    VideoAssemblage: () => import("@/components/makes/VideoAssemblage.vue"),
+    EditImage: () => import("@/components/makes/EditImage.vue"),
   },
   data() {
     return {
