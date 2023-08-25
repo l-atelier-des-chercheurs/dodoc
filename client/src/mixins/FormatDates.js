@@ -2,10 +2,10 @@ export default {
   computed: {},
   methods: {
     formatTime(date, options) {
-      return new Date(date).toLocaleTimeString(undefined, options);
+      return new Date(date).toLocaleTimeString(this.$i18n.locale, options);
     },
     formatDate(date, options) {
-      return new Date(date).toLocaleDateString(undefined, options);
+      return new Date(date).toLocaleDateString(this.$i18n.locale, options);
     },
     formatDateToHuman(date) {
       return this.formatDate(date, {
