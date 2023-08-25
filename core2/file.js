@@ -129,7 +129,7 @@ module.exports = (function () {
       const d = cache.get({
         key: path_to_meta,
       });
-      if (d) return d;
+      if (d) return JSON.parse(JSON.stringify(d));
 
       const path_to_folder = utils.getContainingFolder(path_to_meta);
 

@@ -1,13 +1,14 @@
 const cors = require("cors"),
   url = require("url"),
-  path = require("path");
+  path = require("path"),
+  archiver = require("archiver");
 
 const folder = require("./folder"),
   file = require("./file"),
   settings = require("./settings"),
   notifier = require("./notifier"),
   utils = require("./utils"),
-  cache = require("./cache"),
+  thumbs = require("./thumbs"),
   Exporter = require("./Exporter"),
   auth = require("./auth");
 
@@ -140,6 +141,16 @@ module.exports = (function () {
       _generalPasswordCheck,
       _restrictToLocalAdmins,
       _copyFolder
+    );
+    app.get(
+      [
+        "/_api2/:folder_type/:folder_slug.zip",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug.zip",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug.zip",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _downloadFolder
     );
     app.post(
       [
@@ -376,8 +387,9 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.log("not allowed to contribute");
-      if (res) return res.status(403).send({ code: "not_allowed" });
+      dev.error("not allowed to contribute");
+      if (res) return res.status(401).send({ code: "not_allowed" });
+      return false;
     }
   }
   async function _restrictToLocalAdmins(req, res, next) {
@@ -560,12 +572,11 @@ module.exports = (function () {
     const { path_to_folder = "" } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
+    const detailed = req.query?.detailed === "true";
     const hrstart = process.hrtime();
 
     try {
-      let d = JSON.parse(
-        JSON.stringify(await folder.getFolder({ path_to_folder }))
-      );
+      let d = await folder.getFolder({ path_to_folder, detailed });
       const files = await file.getFiles({ path_to_folder });
       d.$files = files;
 
@@ -831,6 +842,48 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to copy content: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+  async function _downloadFolder(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      const folder_slug = utils.getFilename(path_to_folder);
+      res.header("Content-Type", "application/zip");
+      res.header(
+        "Content-Disposition",
+        `attachment; filename="${folder_slug}.zip"`
+      );
+      // const { size } = await thumbs.getInfosForFolder({
+      //   path_to_folder,
+      // });
+      // if (size) res.header("Content-Length", size);
+
+      const archive = archiver("zip", {
+        zlib: { level: 0 },
+      });
+      archive.on("warning", (err) => {
+        throw err;
+      });
+      archive.on("error", function (err) {
+        throw err;
+      });
+      archive.pipe(res);
+
+      const full_folder_path = utils.getPathToUserContent(path_to_folder);
+      archive.directory(full_folder_path, false);
+
+      archive.finalize();
+
+      dev.log(`download started`);
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to download content: " + message);
       res.status(500).send({
         code,
         err_infos,

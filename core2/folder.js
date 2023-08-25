@@ -37,8 +37,21 @@ module.exports = (function () {
       return all_folders_with_meta;
     },
 
-    getFolder: async ({ path_to_folder }) => {
-      dev.logfunction({ path_to_folder });
+    getFolder: async ({ path_to_folder, detailed }) => {
+      dev.logfunction({ path_to_folder, detailed });
+
+      let d = cache.get({
+        key: path_to_folder,
+      });
+      if (d) {
+        d = JSON.parse(JSON.stringify(d));
+        if (detailed) {
+          d.$infos = await thumbs.getInfosForFolder({
+            path_to_folder,
+          });
+        }
+        return d;
+      }
 
       const item_in_schema = utils.parseAndCheckSchema({
         relative_path: path_to_folder,
@@ -48,11 +61,6 @@ module.exports = (function () {
         err.code = "missing_schema_for_path";
         throw err;
       }
-
-      const d = cache.get({
-        key: path_to_folder,
-      });
-      if (d) return d;
 
       let folder_meta = await utils
         .readMetaFile(path_to_folder, "meta.txt")
@@ -75,8 +83,11 @@ module.exports = (function () {
       // TODO get number of files if files in item_in_schema
       cache.set({
         key: path_to_folder,
-        value: folder_meta,
+        value: JSON.parse(JSON.stringify(folder_meta)),
       });
+
+      if (detailed)
+        folder_meta.$infos = await thumbs.getInfosForFolder({ path_to_folder });
 
       return folder_meta;
     },
@@ -247,6 +258,7 @@ module.exports = (function () {
 
       return path_to_destination_folder;
     },
+
     removeFolder: async ({ path_to_folder }) => {
       dev.logfunction({ path_to_folder });
 
