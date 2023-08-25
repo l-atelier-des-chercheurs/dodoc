@@ -451,6 +451,7 @@ export default {
       // await new Promise((r) => setTimeout(r, 2000));
 
       const context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
 
       // context.filter = "contrast(1.4) sepia(1) drop-shadow(-9px 9px 3px #e81)";
       let filter = "";
