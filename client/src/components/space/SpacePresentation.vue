@@ -85,6 +85,7 @@
         />
 
         <div class="u-mediaOptions" v-if="can_edit">
+          <DownloadFolder :path="space.$path" />
           <RemoveMenu :remove_text="$t('remove_space')" @remove="removeSpace" />
         </div>
       </template>

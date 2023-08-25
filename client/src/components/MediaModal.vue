@@ -67,6 +67,11 @@
             :title="$t('date_modified')"
             :date="file.$date_modified"
           />
+          <SizeDisplay
+            v-if="file.$infos"
+            :title="$t('size')"
+            :size="file.$infos.size"
+          />
         </div>
       </div>
       <div class="_selectBtn" v-else>

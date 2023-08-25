@@ -108,6 +108,8 @@ import FilesModule from "@/adc-core/fields/FilesModule.vue";
 Vue.component("FilesModule", FilesModule);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
+import DownloadFolder from "@/adc-core/fields/DownloadFolder.vue";
+Vue.component("DownloadFolder", DownloadFolder);
 import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
 Vue.component("RemoveMenu", RemoveMenu);
 import TagsList from "@/adc-core/ui/TagsList.vue";
@@ -152,6 +154,8 @@ import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
 import DateDisplay from "@/adc-core/fields/DateDisplay.vue";
 Vue.component("DateDisplay", DateDisplay);
+import SizeDisplay from "@/adc-core/fields/SizeDisplay.vue";
+Vue.component("SizeDisplay", SizeDisplay);
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
 import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
@@ -329,26 +333,6 @@ new Vue({
     modalIsClosed() {
       document.body.style.overflow = "";
       this.modal_is_opened = false;
-    },
-    formatBytes(a, b) {
-      if (0 == a) return `0 ${this.$t("bytes")}`;
-
-      var e = [
-        this.$t("bytes"),
-        this.$t("kb"),
-        this.$t("mb"),
-        this.$t("gb"),
-        "TB",
-        "PB",
-        "EB",
-        "ZB",
-        "YB",
-      ];
-
-      var c = 1024,
-        d = b || 2,
-        f = Math.floor(Math.log(a) / Math.log(c));
-      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
     },
   },
 }).$mount("#app");

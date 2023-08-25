@@ -4,7 +4,9 @@ const path = require("path"),
   exifReader = require("exif-reader"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
-  https = require("https");
+  https = require("https"),
+  { promisify } = require("util"),
+  fastFolderSize = require("fast-folder-size");
 
 const utils = require("./utils");
 
@@ -169,6 +171,23 @@ module.exports = (function () {
       }
       return false;
     },
+    getInfosForFolder: async ({ path_to_folder }) => {
+      dev.logfunction({
+        path_to_folder,
+      });
+
+      let infos = {};
+      const full_folder_path = utils.getPathToUserContent(path_to_folder);
+
+      const fastFolderSizeAsync = promisify(fastFolderSize);
+      const size = await fastFolderSizeAsync(full_folder_path);
+      if (size) infos.size = size;
+
+      // TODO also get quantity of medias
+
+      return infos;
+    },
+
     removeFolderThumbs: ({ path_to_folder }) =>
       removeFolderThumbs({ path_to_folder }),
     removeFolderCover: ({ path_to_folder }) =>
