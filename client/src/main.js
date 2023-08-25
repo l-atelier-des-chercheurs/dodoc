@@ -154,6 +154,8 @@ import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
 import DateDisplay from "@/adc-core/fields/DateDisplay.vue";
 Vue.component("DateDisplay", DateDisplay);
+import SizeDisplay from "@/adc-core/fields/SizeDisplay.vue";
+Vue.component("SizeDisplay", SizeDisplay);
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
 import UploadFiles from "@/adc-core/fields/UploadFiles.vue";

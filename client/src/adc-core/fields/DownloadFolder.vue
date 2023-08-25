@@ -20,9 +20,12 @@
         v-text="archive_name"
       /> -->
       <div class="_cont">
-        <p class="u-spacingBottom">
-          <span v-html="$t('size:')" /> {{ formatBytes(folder_size) }}
-        </p>
+        <SizeDisplay
+          v-if="folder_size"
+          class="u-spacingBottom"
+          :title="$t('size')"
+          :size="folder_size"
+        />
 
         <button
           class="u-button u-button_red"

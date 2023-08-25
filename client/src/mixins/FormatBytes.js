@@ -19,7 +19,8 @@ export default {
       var c = 1024,
         d = b || 2,
         f = Math.floor(Math.log(a) / Math.log(c));
-      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
+      const n = parseFloat((a / Math.pow(c, f)).toFixed(d));
+      return n.toLocaleString(this.$i18n.locale) + " " + e[f];
     },
   },
 };
