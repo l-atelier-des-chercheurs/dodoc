@@ -35,7 +35,6 @@ import { VueInfiniteViewer } from "vue-infinite-viewer";
 export default {
   props: {
     scale: Number,
-    page_opened_id: String,
   },
   components: {
     VueInfiniteViewer,
@@ -112,7 +111,8 @@ export default {
     },
     scrollToCorner({ x, y, animate }) {
       const opt = animate ? { duration: 200 } : undefined;
-      const ow = document.querySelector("._sideCont").offsetWidth || 280;
+
+      const ow = document.querySelector("._sideCont")?.offsetWidth || 280;
 
       const margin = 80;
 
@@ -122,11 +122,12 @@ export default {
     },
     updateScale(scale) {
       if (scale !== this.$refs.viewer.getZoom()) {
+        const ow = document.querySelector("._sideCont")?.offsetWidth || 280;
         this.$refs.viewer.setZoom(scale, {
           // easing: () => 100,
           duration: 200,
           zoomBase: "viewport",
-          zoomOffsetX: document.querySelector("._sideCont").offsetWidth,
+          zoomOffsetX: ow,
           zoomOffsetY: 50,
         });
       }
