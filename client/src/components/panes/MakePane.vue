@@ -38,6 +38,15 @@
 
               <div class="m_recipe--text">
                 <h2 class>{{ $t(recipe.key) }}</h2>
+
+                <p class="margin-vert-small">
+                  <span
+                    v-html="$t(recipe.summary)"
+                    class="margin-vert-verysmall"
+                  />
+                  <br />
+                </p>
+
                 <button
                   v-if="recipe.instructions"
                   type="button"
@@ -50,13 +59,6 @@
                   {{ $t("more_informations") }}
                 </button>
 
-                <p class="margin-vert-small" v-if="false">
-                  <span
-                    v-html="$t(recipe.summary)"
-                    class="margin-vert-verysmall"
-                  />
-                  <br />
-                </p>
                 <template v-if="recipe.show_instructions">
                   <p>
                     <span v-html="$t(recipe.instructions)" />
@@ -66,8 +68,11 @@
               <br />
               <div class="m_recipe--buttons">
                 <div v-if="recipe.enabled !== true">
-                  Pas encore disponible sur do•doc 10 / vous pouvez utiliser
-                  <a href="https://dodoc.fr/">do•doc 9</a> en attendant.
+                  <hr />
+                  <small>
+                    Pas encore disponible sur do•doc 10 / vous pouvez utiliser
+                    <a href="https://dodoc.fr/">do•doc 9</a> en attendant.
+                  </small>
                 </div>
 
                 <button
@@ -225,6 +230,7 @@ export default {
             {
               key: "edit_image",
               summary: "edit_image_summary",
+              instructions: "video_assemblage_instructions",
               show_instructions: false,
               icon: `
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
@@ -251,6 +257,14 @@ export default {
     <rect width="201" height="201" style="fill: none"/>
   </g>
 </svg>
+              `,
+              enabled: true,
+            },
+            {
+              key: "trim_audio",
+              summary: "trim_audio_summary",
+              show_instructions: false,
+              icon: `
               `,
               enabled: true,
             },
