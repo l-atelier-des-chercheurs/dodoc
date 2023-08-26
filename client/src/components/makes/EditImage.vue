@@ -2,36 +2,6 @@
   <div class="_cropImage">
     <div class="_sidebyside">
       <div class="_leftBtns">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          v-if="!base_media"
-          @click="show_media_picker = true"
-        >
-          <b-icon icon="image" />
-          {{ $t("pick_image") }}
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_small u-button_red"
-          v-else
-          @click="show_media_picker = true"
-        >
-          <b-icon icon="dash-circle" />
-          {{ $t("change_base_image") }}
-        </button>
-
-        <PickMediaFromProjects
-          v-if="show_media_picker"
-          :path="current_project_path"
-          :select_mode="'single'"
-          :pick_from_type="'image'"
-          @addMedias="pickMedia"
-          @close="show_media_picker = false"
-        />
-
-        <hr />
-
         <template v-if="base_media">
           <ToggledSection
             class="u-spacingBottom"
@@ -42,7 +12,7 @@
             <div class="_btnRow">
               <button
                 type="button"
-                class="u-button u-button_small u-button_bleuvert"
+                class="u-button u-button_small u-button_orange"
                 @click="resetCrop"
               >
                 <b-icon icon="plus-square-dotted" />
@@ -184,8 +154,12 @@
       </div>
 
       <div class="_cropWindow">
-        <!-- <template v-if="base_media"> -->
         <canvas class="_canvas" ref="cropCanvas" width="1280" height="720" />
+
+        <div class="_mask">
+          <div class="_maskContent" :style="mask_styles" />
+        </div>
+
         <DDR
           class="_cropFrame"
           :key="crop_key"
@@ -195,11 +169,12 @@
           :id="'1'"
           :parent="true"
           :handlerSize="20"
+          @drag="updateMask"
           @dragend="dragEnd"
           @resizestart="resizeStart"
+          @resize="updateMask"
           @resizeend="dragEnd"
         />
-        <!-- </template> -->
       </div>
     </div>
 
@@ -289,14 +264,15 @@ import "yoyoo-ddr/dist/yoyoo-ddr.css";
 export default {
   props: {
     make: Object,
+    project_path: String,
+    base_media: Object,
   },
   components: {
     DDR,
   },
   data() {
     return {
-      show_media_picker: !this.make.base_media_filename ? true : false,
-      is_clicked: false,
+      scale: 1,
 
       export_string: false,
       export_width: 0,
@@ -309,6 +285,13 @@ export default {
 
       show_crop: true,
       crop_transform: {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+        rotation: 0,
+      },
+      mask_prop: {
         x: 0,
         y: 0,
         width: 100,
@@ -349,7 +332,7 @@ export default {
     async "make.image_blur"() {
       await this.drawImageToCanvas();
     },
-    "make.base_media_filename"() {
+    base_media() {
       (async () => {
         await this.drawImageToCanvas();
         await this.resetCrop();
@@ -371,29 +354,19 @@ export default {
     },
   },
   computed: {
-    current_project_path() {
-      const makes_path = this.getParent(this.make.$path);
-      return this.getParent(makes_path);
-    },
-    base_media() {
-      const meta_filename_in_project = this.make.base_media_filename;
-      if (meta_filename_in_project)
-        return this.getSourceMedia({
-          source_media: { meta_filename_in_project },
-          folder_path: this.make.$path,
-        });
-      return false;
-    },
     image_export_name() {
-      return this.make.base_media_filename + "_cropped.png";
+      return this.base_media.$media_filename + "_edited.png";
+    },
+    mask_styles() {
+      return {
+        left: this.mask_prop.x + "px",
+        top: this.mask_prop.y + "px",
+        width: this.mask_prop.width + "px",
+        height: this.mask_prop.height + "px",
+      };
     },
   },
   methods: {
-    async pickMedia({ path_to_source_media_metas }) {
-      const path_to_source_media_meta = path_to_source_media_metas[0];
-      const base_media_filename = this.getFilename(path_to_source_media_meta);
-      await this.updatePubliMeta({ base_media_filename });
-    },
     async updatePubliMeta(new_meta) {
       return await this.$api.updateMeta({
         path: this.make.$path,
@@ -413,22 +386,23 @@ export default {
       });
     },
     setTransformFromMake() {
-      if (this.make.crop_options) {
-        let { x, y, width, height } = this.make.crop_options;
+      let x = this.make.crop_options?.x || 0;
+      let y = this.make.crop_options?.y || 0;
+      let width = this.make.crop_options?.width || 100;
+      let height = this.make.crop_options?.height || 100;
 
-        const cropCanvas = this.$refs.cropCanvas;
+      const cropCanvas = this.$refs.cropCanvas;
+      const cw = cropCanvas.parentElement.offsetWidth;
+      const ch = cropCanvas.parentElement.offsetHeight;
 
-        this.crop_transform.x =
-          (x / 100) * cropCanvas.parentElement.offsetWidth;
-        this.crop_transform.y =
-          (y / 100) * cropCanvas.parentElement.offsetHeight;
-        this.crop_transform.width =
-          (width / 100) * cropCanvas.parentElement.offsetWidth;
-        this.crop_transform.height =
-          (height / 100) * cropCanvas.parentElement.offsetHeight;
+      this.crop_transform.x = (x / 100) * cw;
+      this.crop_transform.y = (y / 100) * ch;
+      this.crop_transform.width = (width / 100) * cw;
+      this.crop_transform.height = (height / 100) * ch;
 
-        this.crop_key = new Date().getTime();
-      }
+      this.setMaskProps(this.crop_transform);
+
+      this.crop_key = new Date().getTime();
     },
     async drawImageToCanvas() {
       const canvas = this.$refs.cropCanvas;
@@ -467,6 +441,17 @@ export default {
       context.filter = filter;
 
       context.drawImage(img, 0, 0, width, height);
+    },
+
+    updateMask(event, transform) {
+      event;
+      this.setMaskProps(transform);
+    },
+    setMaskProps(transform) {
+      this.mask_prop.x = transform.x;
+      this.mask_prop.y = transform.y;
+      this.mask_prop.width = transform.width;
+      this.mask_prop.height = transform.height;
     },
 
     dragEnd(event, transform) {
@@ -574,7 +559,7 @@ export default {
       const additional_meta = {};
       await this.$api
         .uploadFile({
-          path: this.current_project_path,
+          path: this.project_path,
           filename: "image-" + +new Date() + ".jpeg",
           file: imageBlob,
           additional_meta,
@@ -597,6 +582,7 @@ export default {
   margin: 0;
   background: white;
   padding: calc(var(--spacing) / 1);
+  border-radius: 6px;
 
   height: auto;
 }
@@ -617,10 +603,9 @@ export default {
 ._cropWindow {
   position: relative;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 ._cropFrame {
-  box-shadow: 0 0 0 max(100vh, 100vw) rgba(0, 0, 0, 0.4);
   cursor: -webkit-grab;
   cursor: -moz-grab;
   cursor: grab;
@@ -629,6 +614,15 @@ export default {
     cursor: -webkit-grabbing;
     cursor: -moz-grabbing;
     cursor: dragging;
+  }
+
+  ::v-deep {
+    .br,
+    .tr,
+    .tl,
+    .bl {
+      background: var(--c-orange);
+    }
   }
 }
 
@@ -640,7 +634,7 @@ export default {
   width: 100%;
   margin: 0 auto;
   display: block;
-  outline: 2px solid var(--c-gris);
+  // outline: 2px solid var(--c-gris);
 }
 
 ._previewCanvas {
@@ -656,7 +650,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
-  gap: var(--spacing);
+  gap: calc(var(--spacing) / 8);
   margin-bottom: var(--spacing);
 }
 
@@ -685,5 +679,20 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+._mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  ._maskContent {
+    position: absolute;
+    box-shadow: 0 0 0 max(100vh, 100vw) rgba(0, 0, 0, 0.4);
+  }
 }
 </style>
