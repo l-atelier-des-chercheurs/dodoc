@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="_pagePan">
-          <PanZoom2 :scale.sync="scale" :page_opened_id="page_opened_id">
+          <PanZoom2 :scale.sync="scale">
             <transition name="pagechange" mode="out-in">
               <div
                 class="_pageCont"
