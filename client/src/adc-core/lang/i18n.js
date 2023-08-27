@@ -444,6 +444,11 @@ export default function () {
 
         edit_image: "Modifier une image",
         edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
+        trim_audio: "Recouper un son",
+        trim_audio_summary: "Couper la fin ou le début dans un son",
+        trim_video: "Recouper une vidéo",
+        trim_video_summary: "Couper la fin ou le début dans une vidéo",
+
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",
         video_assemblage_summary:
@@ -877,7 +882,7 @@ export default function () {
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
         "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
           <br />
-          Vous pouvez aussi importer des fichiers (photos, vidéos, audios, 3D, PDF ou autre) depuis vos appareils.`,
+          Vous pouvez aussi importer des fichiers (photos, vidéos, sons, 3D, PDF ou autre) depuis vos appareils.`,
         "instructions.pane.make":
           "Recadrez, raccourcissez, assemblez et annotez vos médias.",
         "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.

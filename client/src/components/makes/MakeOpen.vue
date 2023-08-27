@@ -59,8 +59,18 @@
             :project_path="project_path"
             :base_media="base_media"
           />
-          <TrimVideo v-else-if="make.type === 'trim_video'" :make="make" />
-          <TrimAudio v-else-if="make.type === 'trim_audio'" :make="make" />
+          <TrimVideo
+            v-else-if="make.type === 'trim_video'"
+            :make="make"
+            :project_path="project_path"
+            :base_media="base_media"
+          />
+          <TrimAudio
+            v-else-if="make.type === 'trim_audio'"
+            :make="make"
+            :project_path="project_path"
+            :base_media="base_media"
+          />
         </template>
       </div>
     </div>
