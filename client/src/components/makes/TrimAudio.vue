@@ -162,8 +162,10 @@ export default {
       this.current_time = this.formatDurationToHoursMinutesSeconds(time);
     },
     select(start, end) {
-      this.selection.start = start.toFixed(2).toLocaleString(this.$i18n.locale);
-      this.selection.end = end.toFixed(2).toLocaleString(this.$i18n.locale);
+      // this.selection.start = start.toFixed(2).toLocaleString(this.$i18n.locale);
+      // this.selection.end = end.toFixed(2).toLocaleString(this.$i18n.locale);
+      this.selection.start = start;
+      this.selection.end = end;
     },
     audiorenderingstarting() {
       this.is_rendering = true;
@@ -180,66 +182,63 @@ export default {
     async renderAudio() {
       this.src_url = "";
       this.main_wfpl.getEventEmitter().emit("stop");
-      this.main_wfpl
-        .getEventEmitter()
-        .on("audiorenderingstarting", this.audiorenderingstarting);
-      this.main_wfpl
-        .getEventEmitter()
-        .on("audiorenderingfinished", this.audiorenderingfinished);
-      this.main_wfpl.initExporter();
 
-      this.main_wfpl.getEventEmitter().emit("trim");
-      this.main_wfpl
-        .getEventEmitter()
-        .emit("shift", -this.selection.start, this.main_wfpl.tracks[0]);
-      this.main_wfpl.adjustDuration();
-      this.main_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
-
-      // const preview_wfpl = WaveformPlaylist({
-      //   samplesPerPixel: 512,
-      //   container: this.$refs.playlistPreview,
-      //   state: "cursor",
-      //   timescale: true,
-      //   isAutomaticScroll: true,
-      //   zoomLevels: [512, 1024, 2048, 4096],
-      //   controls: {
-      //     show: true,
-      //     width: 150,
-      //     widgets: {
-      //       muteOrSolo: false,
-      //       volume: true,
-      //       stereoPan: false,
-      //       collapse: false,
-      //       remove: false,
-      //     },
-      //   },
-      // });
-
-      // await preview_wfpl.load([
-      //   {
-      //     src: this.base_media_url,
-      //     name: this.base_media.$media_filename,
-      //     selected: {
-      //       start: this.selection.start,
-      //       end: this.selection.end,
-      //     },
-      //   },
-      // ]);
-
-      // preview_wfpl
-      //   .getEventEmitter()
-      //   .on("audiorenderingstarting", this.audiorenderingstarting);
-      // preview_wfpl
-      //   .getEventEmitter()
-      //   .on("audiorenderingfinished", this.audiorenderingfinished);
-      // preview_wfpl.initExporter();
-
-      // preview_wfpl.getEventEmitter().emit("trim");
-      // preview_wfpl.adjustDuration();
+      const preview_wfpl = WaveformPlaylist({
+        samplesPerPixel: 512,
+        container: this.$refs.playlistPreview,
+        state: "select",
+        timescale: true,
+        isAutomaticScroll: true,
+        zoomLevels: [512, 1024, 2048, 4096],
+        states: {
+          cursor: false,
+          fadein: false,
+          fadeout: false,
+          select: true,
+          shift: false,
+        },
+        controls: {
+          show: true,
+          width: 150,
+          widgets: {
+            muteOrSolo: false,
+            volume: true,
+            stereoPan: false,
+            collapse: false,
+            remove: false,
+          },
+        },
+      });
+      await preview_wfpl.load([
+        {
+          src: this.base_media_url,
+          name: this.base_media.$media_filename,
+          selected: {
+            start: this.selection.start,
+            end: this.selection.end,
+          },
+        },
+      ]);
 
       // await new Promise((r) => setTimeout(r, 1000));
-      // preview_wfpl.getEventEmitter().emit("startaudiorendering", "buffer");
-      // preview_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
+
+      preview_wfpl
+        .getEventEmitter()
+        .on("audiorenderingstarting", this.audiorenderingstarting);
+      preview_wfpl
+        .getEventEmitter()
+        .on("audiorenderingfinished", this.audiorenderingfinished);
+      preview_wfpl.initExporter();
+
+      preview_wfpl.getEventEmitter().emit("trim");
+      preview_wfpl
+        .getEventEmitter()
+        .emit("shift", -this.selection.start, preview_wfpl.tracks[0]);
+      // preview_wfpl.adjustDuration();
+      preview_wfpl.duration = this.selection.end - this.selection.start;
+
+      // await new Promise((r) => setTimeout(r, 1000));
+      preview_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
     },
   },
 };
