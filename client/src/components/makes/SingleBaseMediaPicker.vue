@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_singleBaseMediaPicker">
     <button
       type="button"
       class="u-button u-button_bleuvert"

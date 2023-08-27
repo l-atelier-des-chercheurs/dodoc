@@ -448,6 +448,10 @@ export default function () {
         trim_audio_summary: "Couper la fin ou le début dans un son",
         trim_video: "Recouper une vidéo",
         trim_video_summary: "Couper la fin ou le début dans une vidéo",
+        trim_instructions:
+          "Sélectionnez en cliquant/glissant sur la piste ci-dessus la zone à extraire",
+
+        extract_to_export: "Extrait sélectionné",
 
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",

@@ -1,15 +1,60 @@
 <template>
   <div class="_trimAudio">
-    <button type="button" class="u-button u-button_bleuvert" @click="play">
-      <b-icon icon="play-circle-fill" />
-      {{ $t("play") }}
-    </button>
-    <button type="button" class="u-button u-button_orange" @click="pause">
-      <b-icon icon="pause-circle" />
-      {{ $t("pause") }}
-    </button>
+    <div class="_btnRow">
+      <button type="button" class="u-button u-button_bleuvert" @click="play">
+        <b-icon icon="play-circle-fill" />
+        {{ $t("play") }}
+      </button>
+      <button type="button" class="u-button u-button_orange" @click="pause">
+        <b-icon icon="pause-circle" />
+        {{ $t("pause") }}
+      </button>
+    </div>
 
     <div ref="playlist" class="_wfp" />
+    <div ref="playlistPreview" />
+
+    <!-- {{ current_time }}
+    {{ selection }} -->
+
+    <div v-if="!selection_is_ready">
+      <br />
+      <p class="u-instructions">
+        {{ $t("trim_instructions") }}
+      </p>
+    </div>
+    <div v-else>
+      <div class="u-sameRow _extract">
+        <span>
+          {{ $t("extract_to_export") }}
+        </span>
+        <input type="text" :value="selection.start" readonly />
+        <b-icon icon="arrow-right-circle" />
+        <input type="text" :value="selection.end" readonly />
+      </div>
+
+      <div class="u-sameRow _submit">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine"
+          @click="show_save_export_modal = true"
+        >
+          <b-icon icon="check" />
+          {{ $t("submit") }}
+        </button>
+      </div>
+    </div>
+
+    <!-- <button type="button" @click="renderAudio">startaudiorendering</button> -->
+    <!-- is_rendering = {{ is_rendering }} -->
+
+    <BaseModal2
+      :title="$t('save_export_cropped')"
+      v-if="show_save_export_modal"
+      @close="show_save_export_modal = false"
+    >
+      <audio v-if="src_url" class="_player" :src="src_url" controls />
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -24,28 +69,63 @@ export default {
   components: {},
   data() {
     return {
-      WaveformPlaylist: undefined,
+      main_wfpl: undefined,
+
+      current_time: undefined,
+      selection: {
+        start: undefined,
+        end: undefined,
+      },
+
+      is_rendering: false,
+      show_save_export_modal: false,
+      src_url: "",
     };
   },
   created() {},
-  mounted() {
-    this.loadWFP();
+  async mounted() {
+    await this.loadWFP();
   },
   beforeDestroy() {},
-  watch: {},
-  computed: {},
+  watch: {
+    show_save_export_modal() {
+      if (this.show_save_export_modal)
+        this.$nextTick(() => {
+          this.renderAudio();
+        });
+    },
+  },
+  computed: {
+    selection_is_ready() {
+      return (
+        this.selection.start &&
+        this.selection.end &&
+        this.selection.start !== this.selection.end
+      );
+    },
+    base_media_url() {
+      return this.makeMediaFileURL({
+        $path: this.base_media.$path,
+        $media_filename: this.base_media.$media_filename,
+      });
+    },
+  },
   methods: {
-    loadWFP() {
-      this.WaveformPlaylist = WaveformPlaylist({
-        samplesPerPixel: 128,
+    async loadWFP() {
+      this.main_wfpl = WaveformPlaylist({
+        samplesPerPixel: 512,
         container: this.$refs.playlist,
         state: "select",
-        // colors: {
-        //   waveOutlineColor: "#262626",
-        //   timeColor: "#fc4b60",
-        //   fadeColor: "white",
-        // },
-        zoomLevels: [128, 256, 512],
+        timescale: true,
+        isAutomaticScroll: true,
+        zoomLevels: [512, 1024, 2048, 4096],
+        states: {
+          cursor: false,
+          fadein: false,
+          fadeout: false,
+          select: true,
+          shift: false,
+        },
         controls: {
           show: true,
           width: 150,
@@ -59,26 +139,107 @@ export default {
         },
       });
 
-      const audio_url = this.makeMediaFileURL({
-        $path: this.base_media.$path,
-        $media_filename: this.base_media.$media_filename,
-      });
-
-      this.WaveformPlaylist.load([
+      await this.main_wfpl.load([
         {
-          src: audio_url,
-          name: this.$t("track"),
-          // gain: 1,
+          src: this.base_media_url,
+          name: this.base_media.$media_filename,
         },
-      ]).then(function () {
-        // can do stuff with the playlist.
-      });
+      ]);
+
+      this.setListener();
     },
     play() {
-      this.WaveformPlaylist.getEventEmitter().emit("play");
+      this.main_wfpl.getEventEmitter().emit("play");
     },
     pause() {
-      this.WaveformPlaylist.getEventEmitter().emit("pause");
+      this.main_wfpl.getEventEmitter().emit("pause");
+    },
+    setListener() {
+      this.main_wfpl.getEventEmitter().on("timeupdate", this.timeUpdate);
+      this.main_wfpl.getEventEmitter().on("select", this.select);
+    },
+    timeUpdate(time) {
+      this.current_time = this.formatDurationToHoursMinutesSeconds(time);
+    },
+    select(start, end) {
+      this.selection.start = start.toFixed(2).toLocaleString(this.$i18n.locale);
+      this.selection.end = end.toFixed(2).toLocaleString(this.$i18n.locale);
+    },
+    audiorenderingstarting() {
+      this.is_rendering = true;
+    },
+    audiorenderingfinished(type, blob) {
+      type;
+      this.is_rendering = false;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.src_url = e.target.result;
+      };
+      reader.readAsDataURL(blob);
+    },
+    async renderAudio() {
+      this.src_url = "";
+      this.main_wfpl.getEventEmitter().emit("stop");
+      this.main_wfpl
+        .getEventEmitter()
+        .on("audiorenderingstarting", this.audiorenderingstarting);
+      this.main_wfpl
+        .getEventEmitter()
+        .on("audiorenderingfinished", this.audiorenderingfinished);
+      this.main_wfpl.initExporter();
+
+      this.main_wfpl.getEventEmitter().emit("trim");
+      this.main_wfpl
+        .getEventEmitter()
+        .emit("shift", -this.selection.start, this.main_wfpl.tracks[0]);
+      this.main_wfpl.adjustDuration();
+      this.main_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
+
+      // const preview_wfpl = WaveformPlaylist({
+      //   samplesPerPixel: 512,
+      //   container: this.$refs.playlistPreview,
+      //   state: "cursor",
+      //   timescale: true,
+      //   isAutomaticScroll: true,
+      //   zoomLevels: [512, 1024, 2048, 4096],
+      //   controls: {
+      //     show: true,
+      //     width: 150,
+      //     widgets: {
+      //       muteOrSolo: false,
+      //       volume: true,
+      //       stereoPan: false,
+      //       collapse: false,
+      //       remove: false,
+      //     },
+      //   },
+      // });
+
+      // await preview_wfpl.load([
+      //   {
+      //     src: this.base_media_url,
+      //     name: this.base_media.$media_filename,
+      //     selected: {
+      //       start: this.selection.start,
+      //       end: this.selection.end,
+      //     },
+      //   },
+      // ]);
+
+      // preview_wfpl
+      //   .getEventEmitter()
+      //   .on("audiorenderingstarting", this.audiorenderingstarting);
+      // preview_wfpl
+      //   .getEventEmitter()
+      //   .on("audiorenderingfinished", this.audiorenderingfinished);
+      // preview_wfpl.initExporter();
+
+      // preview_wfpl.getEventEmitter().emit("trim");
+      // preview_wfpl.adjustDuration();
+
+      // await new Promise((r) => setTimeout(r, 1000));
+      // preview_wfpl.getEventEmitter().emit("startaudiorendering", "buffer");
+      // preview_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
     },
   },
 };
@@ -96,6 +257,38 @@ export default {
 
 ._wfp {
   position: relative;
-  background: var(--c-bleumarine_fonce);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+  // background: var(--c-bleumarine_fonce);
+}
+
+._btnRow {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
+  align-items: center;
+  width: 100%;
+  background: white;
+
+  // padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  border-radius: 2px;
+  margin: 0 auto calc(var(--spacing) / 1);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+}
+
+._extract {
+  margin: calc(var(--spacing) * 1) auto;
+  input {
+    width: 10ch;
+  }
+}
+._submit {
+  margin: calc(var(--spacing) * 1) auto;
+}
+
+._player {
+  display: block;
+  width: 100%;
+
+  height: 50px;
 }
 </style>

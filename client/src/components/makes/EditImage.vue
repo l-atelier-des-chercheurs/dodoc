@@ -183,10 +183,6 @@
       v-if="show_save_export_modal"
       @close="show_save_export_modal = false"
     >
-      <!-- <p>
-            {{ $t("general_password_modal_text") }}
-          </p> -->
-
       <div class="_modalP">
         <div class="u-spacingBottom _preview">
           <canvas

@@ -1,5 +1,5 @@
 :root {
-  --wp-controls-border-color: #000;
+  --wp-controls-border-color: var(--c-gris);
   --wp-controls-background-color: #fff;
   --wp-mute-solo-color: #343a40;
   --wp-mute-solo-hover-color: #fff;
@@ -23,7 +23,7 @@
   --wp-selection-background-color: rgba(0, 0, 0, 0.1);
   --wp-selection-point-color: red;
   --wp-tracks-container-background-color: #005bbb;
-  --wp-range-slider-label-color: black;
+  --wp-range-slider-label-color: white;
   --wp-range-slider-color: goldenrod;
   --wp-range-slider-focus-color: black;
   --wp-range-slider-background-color: #ddd;
@@ -34,7 +34,7 @@
 }
 
 .playlist {
-  margin: 2em 0;
+  margin: 0 0;
 }
 .playlist *,
 .playlist ::after,
@@ -159,8 +159,8 @@
 .playlist .controls {
   background: var(--wp-controls-background-color);
   text-align: center;
-  border: 1px solid var(--wp-controls-border-color);
-  border-radius: 0.2rem;
+  border: 2px solid var(--wp-controls-border-color);
+  border-radius: 2px;
 }
 .playlist .controls .track-header {
   overflow: hidden;

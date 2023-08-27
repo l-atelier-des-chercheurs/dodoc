@@ -193,11 +193,12 @@ export default {
     align-items: center;
 
     margin: calc(var(--spacing) / 2) auto;
-    background: white;
+    background: var(--c-bleumarine_fonce);
     // max-width: 320px;
     gap: calc(var(--spacing) * 1);
+    gap: calc(var(--spacing) / 4);
     // border: 1px solid ;
-    padding: calc(var(--spacing) / 8);
+    padding: calc(var(--spacing) / 4);
     border-radius: 4px;
 
     ::v-deep ._mediaContent {
