@@ -452,6 +452,7 @@ export default function () {
           "Sélectionnez en cliquant/glissant sur la piste ci-dessus la zone à extraire",
 
         extract_to_export: "Extrait sélectionné",
+        save_export_cropped: "Enregistrer la version retouchée",
 
         make_a_video: "Fabriquer une vidéo",
         video_assemblage: "Montage vidéo",

@@ -12,7 +12,7 @@
     </div>
 
     <div ref="playlist" class="_wfp" />
-    <div ref="playlistPreview" />
+    <div ref="playlistPreview" v-show="false" />
 
     <!-- {{ current_time }}
     {{ selection }} -->
@@ -48,17 +48,28 @@
     <!-- <button type="button" @click="renderAudio">startaudiorendering</button> -->
     <!-- is_rendering = {{ is_rendering }} -->
 
-    <BaseModal2
-      :title="$t('save_export_cropped')"
+    <ExportSaveMakeModal
       v-if="show_save_export_modal"
+      :export_blob="export_blob"
+      :export_name="export_name"
+      :project_path="project_path"
       @close="show_save_export_modal = false"
     >
-      <audio v-if="src_url" class="_player" :src="src_url" controls />
-    </BaseModal2>
+      <p class="u-spacingBottom">
+        {{ $t("duration") }} – {{ export_duration }}
+      </p>
+      <audio
+        v-if="export_src_url"
+        class="_player"
+        :src="export_src_url"
+        controls
+      />
+    </ExportSaveMakeModal>
   </div>
 </template>
 <script>
 import WaveformPlaylist from "waveform-playlist";
+import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
 
 export default {
   props: {
@@ -66,7 +77,9 @@ export default {
     project_path: String,
     base_media: Object,
   },
-  components: {},
+  components: {
+    ExportSaveMakeModal,
+  },
   data() {
     return {
       main_wfpl: undefined,
@@ -79,7 +92,10 @@ export default {
 
       is_rendering: false,
       show_save_export_modal: false,
-      src_url: "",
+
+      export_blob: false,
+      export_src_url: false,
+      export_duration: "",
     };
   },
   created() {},
@@ -96,6 +112,9 @@ export default {
     },
   },
   computed: {
+    export_name() {
+      return this.base_media.$media_filename + "_trim.wav";
+    },
     selection_is_ready() {
       return (
         this.selection.start &&
@@ -161,11 +180,14 @@ export default {
     timeUpdate(time) {
       this.current_time = this.formatDurationToHoursMinutesSeconds(time);
     },
+    roundVal(val) {
+      return Number.parseFloat(val.toFixed(2));
+    },
     select(start, end) {
-      // this.selection.start = start.toFixed(2).toLocaleString(this.$i18n.locale);
-      // this.selection.end = end.toFixed(2).toLocaleString(this.$i18n.locale);
-      this.selection.start = start;
-      this.selection.end = end;
+      this.selection.start = this.roundVal(start);
+      this.selection.end = this.roundVal(end);
+      // this.selection.start = start;
+      // this.selection.end = end;
     },
     audiorenderingstarting() {
       this.is_rendering = true;
@@ -173,41 +195,46 @@ export default {
     audiorenderingfinished(type, blob) {
       type;
       this.is_rendering = false;
+      this.export_blob = blob;
+
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.src_url = e.target.result;
+        this.export_src_url = e.target.result;
       };
       reader.readAsDataURL(blob);
     },
     async renderAudio() {
-      this.src_url = "";
+      this.export_blob = false;
+      this.export_src_url = false;
+      this.export_duration = "";
+
       this.main_wfpl.getEventEmitter().emit("stop");
 
       const preview_wfpl = WaveformPlaylist({
-        samplesPerPixel: 512,
+        // samplesPerPixel: 512,
         container: this.$refs.playlistPreview,
-        state: "select",
-        timescale: true,
-        isAutomaticScroll: true,
-        zoomLevels: [512, 1024, 2048, 4096],
-        states: {
-          cursor: false,
-          fadein: false,
-          fadeout: false,
-          select: true,
-          shift: false,
-        },
-        controls: {
-          show: true,
-          width: 150,
-          widgets: {
-            muteOrSolo: false,
-            volume: true,
-            stereoPan: false,
-            collapse: false,
-            remove: false,
-          },
-        },
+        // state: "select",
+        // timescale: true,
+        // isAutomaticScroll: true,
+        // zoomLevels: [512, 1024, 2048, 4096],
+        // states: {
+        //   cursor: true,
+        //   fadein: false,
+        //   fadeout: false,
+        //   select: false,
+        //   shift: false,
+        // },
+        // controls: {
+        //   show: true,
+        //   width: 150,
+        //   widgets: {
+        //     muteOrSolo: false,
+        //     volume: true,
+        //     stereoPan: false,
+        //     collapse: false,
+        //     remove: false,
+        //   },
+        // },
       });
       await preview_wfpl.load([
         {
@@ -235,9 +262,9 @@ export default {
         .getEventEmitter()
         .emit("shift", -this.selection.start, preview_wfpl.tracks[0]);
       // preview_wfpl.adjustDuration();
-      preview_wfpl.duration = this.selection.end - this.selection.start;
-
-      // await new Promise((r) => setTimeout(r, 1000));
+      const duration = this.selection.end - this.selection.start;
+      preview_wfpl.duration = duration;
+      this.export_duration = this.roundVal(duration);
       preview_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
     },
   },

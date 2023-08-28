@@ -178,84 +178,31 @@
       </div>
     </div>
 
-    <BaseModal2
-      :title="$t('save_export_cropped')"
+    <ExportSaveMakeModal
       v-if="show_save_export_modal"
+      :title="$t('save_export_cropped')"
+      :export_blob="export_blob"
+      :export_name="image_export_name"
+      :project_path="project_path"
       @close="show_save_export_modal = false"
     >
-      <div class="_modalP">
-        <div class="u-spacingBottom _preview">
-          <canvas
-            class="_previewCanvas"
-            ref="previewCanvas"
-            width="1280"
-            height="720"
-          />
-        </div>
-
-        <div class="">
-          {{ $t("resolution") }}: {{ export_width }}×{{ export_height }}
-
-          <div class="">
-            <div class="u-spacingBottom">
-              <a
-                :download="image_export_name"
-                :href="export_string"
-                target="_blank"
-                class="u-buttonLink"
-              >
-                {{ $t("download_image") }}
-              </a>
-            </div>
-
-            <button
-              type="button"
-              class="u-button u-button_red"
-              @click="saveToProject"
-            >
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168"
-                xml:space="preserve"
-              >
-                <path
-                  style="fill: var(--c-rouge)"
-                  d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
-                />
-                <g style="fill: var(--c-orange)">
-                  <path d="m42 42h21.6v21h-21.6z" />
-                  <path d="m73.2 42h21.6v21h-21.6z" />
-                  <path d="m104.4 42h21.6v21h-21.6z" />
-                  <path d="m42 73.5h21.6v21h-21.6z" />
-                  <path d="m73.2 73.5h21.6v21h-21.6z" />
-                  <path d="m104.4 73.5h21.6v21h-21.6z" />
-                  <path d="m42 105h21.6v21h-21.6z" />
-                  <path d="m73.2 105h21.6v21h-21.6z" />
-                  <path d="m104.4 105h21.6v21h-21.6z" />
-                </g>
-              </svg>
-              {{ $t("save_to_project") }}
-            </button>
-          </div>
-        </div>
-
-        <br />
-
-        <div class="_saveNotice" v-if="finished_saving_to_project">
-          {{ $t("media_was_saved") }}
-        </div>
+      <div class="u-spacingBottom _preview">
+        <canvas
+          class="_previewCanvas"
+          ref="previewCanvas"
+          width="1280"
+          height="720"
+        />
       </div>
-    </BaseModal2>
+      {{ $t("resolution") }}: {{ export_width }}×{{ export_height }}
+    </ExportSaveMakeModal>
   </div>
 </template>
 <script>
 import DDR from "@/ddr/index.vue"; // eslint-disable-line
 import "yoyoo-ddr/dist/yoyoo-ddr.css";
+
+import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
 
 export default {
   props: {
@@ -265,19 +212,18 @@ export default {
   },
   components: {
     DDR,
+    ExportSaveMakeModal,
   },
   data() {
     return {
       scale: 1,
 
-      export_string: false,
+      export_blob: false,
       export_width: 0,
       export_height: 0,
 
       crop_key: new Date().getTime(),
       aspect_ratio: true,
-
-      finished_saving_to_project: false,
 
       show_crop: true,
       crop_transform: {
@@ -506,7 +452,7 @@ export default {
         crop_options: _transform_pc,
       });
     },
-    updatePreviewCanvas() {
+    async updatePreviewCanvas() {
       const cropCanvas = this.$refs.cropCanvas;
       const previewCanvas = this.$refs.previewCanvas;
 
@@ -544,31 +490,10 @@ export default {
 
       this.export_width = crop_width;
       this.export_height = crop_height;
-      this.export_string = previewCanvas.toDataURL("image/png");
-    },
 
-    async saveToProject() {
-      const imageBlob = await new Promise((resolve) => {
-        this.$refs.previewCanvas.toBlob(resolve, "image/jpeg", 0.95);
+      this.export_blob = await new Promise((resolve) => {
+        previewCanvas.toBlob(resolve, "image/jpeg", 0.95);
       });
-
-      const additional_meta = {};
-      await this.$api
-        .uploadFile({
-          path: this.project_path,
-          filename: "image-" + +new Date() + ".jpeg",
-          file: imageBlob,
-          additional_meta,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-
-      this.finished_saving_to_project = true;
-      setTimeout(() => {
-        this.show_save_export_modal = false;
-      }, 3000);
     },
   },
 };
@@ -666,15 +591,6 @@ export default {
 
 ._modalP {
   position: relative;
-}
-
-._saveNotice {
-  position: absolute;
-  inset: -2px;
-  background: rgba(255, 255, 255, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 ._mask {
