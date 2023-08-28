@@ -16,6 +16,7 @@
 
     <!-- {{ current_time }}
     {{ selection }} -->
+    <!-- {{ make.selection }} -->
 
     <div v-if="!selection_is_ready">
       <br />
@@ -55,9 +56,9 @@
       :project_path="project_path"
       @close="show_save_export_modal = false"
     >
-      <p class="u-spacingBottom">
+      <!-- <p class="u-spacingBottom">
         {{ $t("duration") }} – {{ export_duration }}
-      </p>
+      </p> -->
       <audio
         v-if="export_src_url"
         class="_player"
@@ -86,12 +87,14 @@ export default {
 
       current_time: undefined,
       selection: {
-        start: undefined,
-        end: undefined,
+        start: this.make.selection?.start || 0,
+        end: this.make.selection?.end || 0,
       },
 
       is_rendering: false,
       show_save_export_modal: false,
+
+      debounce_selection: undefined,
 
       export_blob: false,
       export_src_url: false,
@@ -109,6 +112,12 @@ export default {
         this.$nextTick(() => {
           this.renderAudio();
         });
+    },
+    "make.selection": {
+      handler() {
+        this.setSelect();
+      },
+      deep: true,
     },
   },
   computed: {
@@ -162,6 +171,10 @@ export default {
         {
           src: this.base_media_url,
           name: this.base_media.$media_filename,
+          selected: {
+            start: this.selection.start,
+            end: this.selection.end,
+          },
         },
       ]);
 
@@ -186,9 +199,24 @@ export default {
     select(start, end) {
       this.selection.start = this.roundVal(start);
       this.selection.end = this.roundVal(end);
-      // this.selection.start = start;
-      // this.selection.end = end;
+
+      if (this.debounce_selection) clearTimeout(this.debounce_selection);
+      this.debounce_selection = setTimeout(async () => {
+        await this.$api.updateMeta({
+          path: this.make.$path,
+          new_meta: {
+            selection: this.selection,
+          },
+        });
+      }, 1000);
     },
+    setSelect() {
+      debugger;
+      const { start, end } = this.make.selection;
+      if (start !== this.selection.start || end !== this.selection.end)
+        this.main_wfpl.getEventEmitter().emit("select", start, end);
+    },
+
     audiorenderingstarting() {
       this.is_rendering = true;
     },
@@ -315,6 +343,7 @@ export default {
   display: block;
   width: 100%;
 
-  height: 50px;
+  height: auto;
+  min-height: 40px;
 }
 </style>

@@ -467,6 +467,9 @@
                   "crop_options": {
                     "type": "object"
                   },
+                  "selection": {
+                    "type": "object"
+                  },
                   "image_brightness": {
                     "type": "number"
                   },
