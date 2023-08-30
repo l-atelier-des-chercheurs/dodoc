@@ -1,117 +1,123 @@
 <template>
-  <div v-if="shared_folder" class="_sharedFolder" @scroll="updatedScroll">
-    <div class="_mainContent">
-      <div class="_topbar">
-        <div class="_topbar--content">
-          <div class="_title">
-            <transition name="showBTTBtn">
+  <div class="_sharedFolder">
+    <div class="_spinner" v-if="!shared_folder" key="loader">
+      <LoaderSpinner />
+    </div>
+    <div v-else class="_sharedFolder--content" @scroll="updatedScroll">
+      <div class="_mainContent">
+        <div class="_topbar">
+          <div class="_topbar--content">
+            <div class="_title">
+              <transition name="showBTTBtn">
+                <button
+                  type="button"
+                  @click="scrollTop"
+                  v-if="current_scroll > 100"
+                >
+                  <sl-icon name="arrow-up-circle-fill" />
+                </button>
+              </transition>
+              {{ $t("shared_space_archive") }}
+            </div>
+            <div class="">
               <button
                 type="button"
-                @click="scrollTop"
-                v-if="current_scroll > 100"
+                class="u-buttonLink"
+                :class="{
+                  'is--active': show_filter_sort_pane,
+                }"
+                @click="show_filter_sort_pane = !show_filter_sort_pane"
               >
-                <sl-icon name="arrow-up-circle-fill" />
+                {{ $t("filter_sort") }}
               </button>
-            </transition>
-            ESPACE PARTAGÉ / ARCHIVE
-          </div>
-          <div class="">
-            <button
-              type="button"
-              class="u-buttonLink"
-              :class="{
-                'is--active': show_filter_sort_pane,
-              }"
-              @click="show_filter_sort_pane = !show_filter_sort_pane"
-            >
-              Filtrer/Classer
-            </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <transition name="scaleInFade_fast" mode="out-in">
-        <ItemModal
-          v-if="opened_file"
-          :key="opened_file.$path"
-          :file="opened_file"
-          :opened_file_sequence="opened_file_sequence"
-          :position_in_list="opened_file_position_in_list"
-          @prevMedia="navMedia(-1)"
-          @nextMedia="navMedia(+1)"
-          @close="closeFile"
-        />
-      </transition>
+        <transition name="scaleInFade_fast" mode="out-in">
+          <ItemModal
+            v-if="opened_file"
+            :key="opened_file.$path"
+            :file="opened_file"
+            :opened_file_sequence="opened_file_sequence"
+            :position_in_list="opened_file_position_in_list"
+            @prevMedia="navMedia(-1)"
+            @nextMedia="navMedia(+1)"
+            @close="closeFile"
+          />
+        </transition>
 
-      <!-- <transition-group tag="div" name="projectsList" appear> -->
-      <transition name="pagechange" mode="out-in">
-        <transition-group
-          tag="div"
-          name="projectsList"
-          appear
-          :key="sort_order + '-' + group_mode"
-        >
-          <div
-            v-if="grouped_files.length === 0"
-            class="u-instructions _noContent"
-            :key="'nocontent'"
+        <!-- <transition-group tag="div" name="projectsList" appear> -->
+        <transition name="pagechange" mode="out-in">
+          <transition-group
+            tag="div"
+            name="projectsList"
+            appear
+            :key="sort_order + '-' + group_mode"
           >
-            {{ $t("no_content") }}
-          </div>
-          <template v-else>
             <div
-              class="_dayFileSection"
-              v-for="{ label, files } in grouped_files"
-              :key="label"
+              v-if="grouped_files.length === 0"
+              class="u-instructions _noContent"
+              :key="'nocontent'"
             >
-              <div class="_label">
-                {{ label }}
-              </div>
-              <transition-group
-                tag="div"
-                class="_grid"
-                name="listComplete"
-                appear
-              >
-                <SharedFolderItem
-                  class="_file"
-                  v-for="file in files"
-                  :key="file.$path"
-                  :file="file"
-                  :is_opened="opened_file && opened_file.$path === file.$path"
-                  @open="openFile(file.$path)"
-                />
-              </transition-group>
+              {{ $t("no_content") }}
             </div>
-          </template>
-        </transition-group>
-      </transition>
+            <template v-else>
+              <div
+                class="_dayFileSection"
+                v-for="{ label, files } in grouped_files"
+                :key="label"
+              >
+                <div class="_label">
+                  {{ label }}
+                </div>
+                <transition-group
+                  tag="div"
+                  class="_grid"
+                  name="listComplete"
+                  appear
+                >
+                  <SharedFolderItem
+                    class="_file"
+                    v-for="file in files"
+                    :key="file.$path"
+                    :file="file"
+                    :is_opened="opened_file && opened_file.$path === file.$path"
+                    @open="openFile(file.$path)"
+                  />
+                </transition-group>
+              </div>
+            </template>
+          </transition-group>
+        </transition>
 
-      <footer class="_footer">
-        <small>
-          <a href="mailto:ckernreuter@luma-arles.org" target="_blank"
-            >aide/contact</a
-          ><br />
-          version {{ $root.app_infos.version }}
+        <footer class="_footer">
+          <small>
+            <a href="mailto:ckernreuter@luma-arles.org" target="_blank">{{
+              $t("help_contact")
+            }}</a
+            ><br />
+            {{ $t("version") }} {{ $root.app_infos.version }}
 
-          <div v-if="is_instance_admin">
-            <DownloadFolder :path="shared_folder_path" />
-          </div>
-        </small>
-      </footer>
-    </div>
-    <transition name="pagechange" mode="out-in">
-      <div class="_filterBar" v-if="show_filter_sort_pane">
-        <FilterBar
-          :group_mode.sync="group_mode"
-          :sort_order.sync="sort_order"
-          :search_str.sync="search_str"
-          :author_path_filter.sync="author_path_filter"
-          :available_keywords="available_keywords"
-          :keywords_filter.sync="keywords_filter"
-        />
+            <div v-if="is_instance_admin">
+              <DownloadFolder :path="shared_folder_path" />
+            </div>
+          </small>
+        </footer>
       </div>
-    </transition>
+      <transition name="pagechange" mode="out-in">
+        <div class="_filterBar" v-if="show_filter_sort_pane">
+          <FilterBar
+            :group_mode.sync="group_mode"
+            :sort_order.sync="sort_order"
+            :search_str.sync="search_str"
+            :author_path_filter.sync="author_path_filter"
+            :available_keywords="available_keywords"
+            :keywords_filter.sync="keywords_filter"
+          />
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 <script>
@@ -337,16 +343,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._sharedFolder {
-  display: flex;
-  flex-flow: row nowrap;
   height: 100%;
+  overflow: auto;
 
-  > ._mainContent {
-    flex: 1;
-  }
-  > ._filterBar {
-    flex: 0 0 240px;
-    max-width: 240px;
+  ._sharedFolder--content {
+    display: flex;
+    flex-flow: row nowrap;
+    height: 100%;
+    overflow: auto;
+    > ._mainContent {
+      flex: 1;
+    }
+    > ._filterBar {
+      flex: 0 0 240px;
+      max-width: 240px;
+    }
   }
 }
 
