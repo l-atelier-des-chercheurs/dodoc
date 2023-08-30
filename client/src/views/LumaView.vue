@@ -92,7 +92,7 @@ export default {
   created() {},
   async mounted() {
     // todo add lang selector instead
-    this.$i18n.locale = "fr";
+    // this.$i18n.locale = "fr";
 
     await this.loadFolder();
     // check if necerray to login or create account :
