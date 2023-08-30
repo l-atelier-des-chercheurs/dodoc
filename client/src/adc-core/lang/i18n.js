@@ -214,7 +214,7 @@ export default function () {
 
         story: "Récit",
         story_with_sections: "Récit",
-        page_by_page: "Document page à page",
+        page_by_page: "Page à page",
         cartography: "Cartographie",
         export: "Exporter",
         share: "Partager",
