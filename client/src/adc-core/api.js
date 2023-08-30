@@ -353,7 +353,6 @@ export default function () {
         });
         const folders = response.data.length === 0 ? [] : response.data;
         this.$set(this.store, path, folders);
-        debugger;
         // we use the store to trigger updates to array if item is updated
         return this.store[path];
       },

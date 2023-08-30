@@ -1,0 +1,315 @@
+<template>
+  <div
+    class="m_displayOnMap"
+    :class="{
+      'is--small': is_small,
+    }"
+  >
+    <div id="map" class="map"></div>
+
+    <div id="mouse-position"></div>
+    <div class="_popup" v-if="mouse_coords || pin_infos || pin_coord">
+      <sl-button
+        class="_popup--close"
+        size="small"
+        @click="
+          pin_coord = false;
+          pin_infos = false;
+          mouse_coords = false;
+        "
+      >
+        <sl-icon name="x-circle" />
+      </sl-button>
+
+      <div v-if="mouse_coords">
+        <div class="">
+          <b>{{ $t("mouse_position") }}</b>
+        </div>
+        <span class="complementaryText"> {{ $t("latitude") }} = </span>
+        {{ mouse_coords[1] }}°
+        <span class="complementaryText"> {{ $t("longitude") }} = </span>
+        {{ mouse_coords[0] }}°
+
+        <div v-if="$listeners.newPosition" class="">
+          <sl-button
+            size="small"
+            type="success"
+            @click="
+              $emit('newPosition', {
+                longitude: mouse_coords[0],
+                latitude: mouse_coords[1],
+              })
+            "
+            pill
+          >
+            {{ $t("use") }}
+          </sl-button>
+        </div>
+      </div>
+      <div v-if="pin_coord">
+        <div>
+          <b>{{ $t("pin_position") }}</b>
+        </div>
+
+        <span class="complementaryText">{{ $t("latitude") }} = </span>
+        {{ pin_coord.coordinate.latitude }}°
+        <span class="complementaryText">{{ $t("longitude") }} = </span>
+        {{ pin_coord.coordinate.longitude }}°
+      </div>
+      <div v-if="pin_infos">
+        <div>
+          <b>{{ $t("pin_infos") }}</b>
+        </div>
+        <span class="complementaryText">{{ $t("index") }} = </span>
+        {{ pin_infos.index }}
+        <br />
+        <span class="complementaryText" v-if="pin_infos.label"
+          >{{ $t("label") }} =
+        </span>
+        {{ pin_infos.label }}
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import ol from "ol";
+
+export default {
+  name: "DisplayOnMap",
+  props: {
+    pins: [Boolean, Array],
+    is_small: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  components: {},
+  data() {
+    return {
+      pin_infos: false,
+      pin_coord: false,
+
+      mouse_coords: false,
+
+      map: undefined,
+    };
+  },
+  created() {},
+  mounted() {
+    setTimeout(() => {
+      this.startMap();
+    }, 500);
+  },
+  beforeDestroy() {},
+  watch: {
+    pins: {
+      handler() {
+        this.startMap();
+      },
+      deep: true,
+    },
+  },
+  computed: {},
+  methods: {
+    startMap() {
+      // destroy map if exist
+      if (this.map) {
+        this.map.setTarget(null);
+        this.map = null;
+      }
+
+      debugger;
+
+      const { Circle, Fill, Stroke, Style, Text } = ol.style;
+      const Map = ol.Map;
+      const Overlay = ol.Overlay;
+      const View = ol.View;
+      const { Draw } = ol.interaction;
+
+      ol.proj.useGeographic();
+
+      let features = [];
+      if (this.pins && this.pins.length > 0) {
+        this.pins.map((pin) => {
+          let feature_cont = {
+            geometry: new ol.geom.Point([pin.longitude, pin.latitude]),
+          };
+          feature_cont.index = pin.index;
+          if (pin.label) feature_cont.label = pin.label;
+          if (pin.content) feature_cont.content = pin.content;
+          features.push(new ol.Feature(feature_cont));
+        });
+      }
+
+      let center = [-21.89485815996094, 64.1194386326513];
+      if (this.pins && this.pins.length >= 1)
+        center = [this.pins[0].longitude, this.pins[0].latitude];
+
+      let mouseFeature = new ol.Feature({
+        geometry: new ol.geom.Point([undefined, undefined]),
+      });
+      this.map = new ol.Map({
+        // controls: defaultControls().extend([mousePositionControl]),
+        target: "map",
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM(),
+          }),
+          new ol.layer.Vector({
+            source: new ol.source.Vector({
+              features,
+              wrapX: false,
+            }),
+            style: (feature, resolution) =>
+              this.makePointStyle({
+                feature,
+                resolution,
+              }),
+          }),
+          new ol.layer.Vector({
+            source: new ol.source.Vector({
+              features: [mouseFeature],
+              wrapX: false,
+            }),
+            style: (feature, resolution) =>
+              this.makePointStyle({
+                feature,
+                resolution,
+                fill_color: "hsla(207, 78%, 53%, .7)",
+              }),
+          }),
+        ],
+        view: new ol.View({
+          center,
+          zoom: 12,
+        }),
+      });
+
+      this.map.on("click", (event) => {
+        const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
+
+        this.mouse_coords = false;
+        this.pin_coord = false;
+        this.pin_infos = false;
+
+        if (!feature) {
+          this.mouse_coords = event.coordinate;
+          mouseFeature
+            .getGeometry()
+            .setCoordinates([event.coordinate[0], event.coordinate[1]]);
+        } else {
+          mouseFeature.getGeometry().setCoordinates([undefined, undefined]);
+
+          const coordinate = feature.getGeometry().getCoordinates();
+
+          this.pin_coord = {};
+          this.$set(this.pin_coord, "coordinate", {
+            longitude: coordinate[0],
+            latitude: coordinate[1],
+          });
+
+          this.pin_infos = {};
+          if (feature.get("label"))
+            this.$set(this.pin_infos, "label", feature.get("label"));
+          if (feature.get("index"))
+            this.$set(this.pin_infos, "index", feature.get("index"));
+          if (feature.get("content"))
+            this.$set(this.pin_infos, "content", feature.get("content"));
+        }
+      });
+
+      // function addInteraction() {
+      //   draw = new Draw({
+      //     source: source,
+      //     type: "Point",
+      //   });
+      //   this.map.addInteraction(draw);
+      // }
+      // addInteraction();
+    },
+    makePointStyle({
+      feature,
+      resolution,
+      fill_color = "hsla(36, 96%, 50%, .7)",
+    }) {
+      // see https://openlayers.org/en/latest/examples/vector-labels.html
+      resolution;
+      let style = {};
+      style.image = new ol.style.Circle({
+        radius: 8,
+        fill: new ol.style.Fill({ color: fill_color }),
+        stroke: new ol.style.Stroke({ color: "#232e4a", width: 2 }),
+      });
+      if (feature.get("label")) {
+        const _fs = {
+          italic: "normal",
+          weight: "600",
+          size: "14px",
+          height: 1.2,
+          family: "IBM Plex Mono",
+        };
+
+        style.text = new ol.style.Text({
+          fill: new ol.style.Fill({ color: "#000" }),
+          stroke: new ol.style.Stroke({ color: "#fff" }),
+          // font: "bold 48px serif",
+          font:
+            _fs.italic +
+            " " +
+            _fs.weight +
+            " " +
+            _fs.size +
+            "/" +
+            _fs.height +
+            " " +
+            _fs.family,
+          text: "" + feature.get("label"),
+          textAlign: "start",
+          offsetX: 15,
+        });
+      }
+
+      return new ol.style.Style(style);
+    },
+  },
+};
+</script>
+<style lang="scss" scoped>
+.m_displayOnMap {
+  position: relative;
+  background-color: var(--color-lighter-gray);
+
+  width: 100%;
+  height: 100%;
+
+  &.is--small {
+    height: 600px;
+    max-height: 100%;
+    width: 600px;
+    max-width: 100%;
+    .map {
+    }
+  }
+}
+.map {
+  width: 100%;
+  height: 100%;
+}
+._popup {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: white;
+  border-radius: var(--sl-border-radius-large);
+
+  margin: var(--sl-spacing-small);
+  padding: var(--sl-spacing-xx-small) var(--sl-spacing-x-small);
+  width: calc(100% - var(--sl-spacing-small) * 2);
+}
+._popup--close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: var(--sl-spacing-x-small);
+}
+</style>
