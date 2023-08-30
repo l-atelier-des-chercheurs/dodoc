@@ -16,7 +16,7 @@
   "passphrase": "",
 
   "lruCacheMax": 3000,
-  "lruCacheMaxSize": 1000000,
+  "lruCacheMaxSize": 10000000,
 
   "deletedFolderName": "_bin",
 
