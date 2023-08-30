@@ -72,7 +72,21 @@
   </div>
 </template>
 <script>
-import ol from "ol";
+import OSM from "ol/source/OSM.js";
+import olMap from "ol/Map";
+import olView from "ol/View";
+import olFeature from "ol/Feature";
+import olPoint from "ol/geom/Point";
+import olTileLayer from "ol/layer/Tile";
+import olVectorLayer from "ol/layer/Vector";
+import olSourceVector from "ol/source/Vector";
+import * as olProj from "ol/proj";
+
+import olStyle from "ol/style/Style";
+import olCircleStyle from "ol/style/Circle";
+import olFill from "ol/style/Fill";
+import olStroke from "ol/style/Stroke";
+import olText from "ol/style/Text";
 
 export default {
   name: "DisplayOnMap",
@@ -118,26 +132,23 @@ export default {
         this.map = null;
       }
 
-      debugger;
-
-      const { Circle, Fill, Stroke, Style, Text } = ol.style;
-      const Map = ol.Map;
-      const Overlay = ol.Overlay;
-      const View = ol.View;
-      const { Draw } = ol.interaction;
-
-      ol.proj.useGeographic();
+      // const { Circle, Fill, Stroke, Style, Text } = ol.style;
+      // const Map = ol.Map;
+      // const Overlay = ol.Overlay;
+      // const View = ol.View;
+      // const { Draw } = ol.interaction;
+      olProj.useGeographic();
 
       let features = [];
       if (this.pins && this.pins.length > 0) {
         this.pins.map((pin) => {
           let feature_cont = {
-            geometry: new ol.geom.Point([pin.longitude, pin.latitude]),
+            geometry: new olPoint([pin.longitude, pin.latitude]),
           };
           feature_cont.index = pin.index;
           if (pin.label) feature_cont.label = pin.label;
           if (pin.content) feature_cont.content = pin.content;
-          features.push(new ol.Feature(feature_cont));
+          features.push(new olFeature(feature_cont));
         });
       }
 
@@ -145,18 +156,18 @@ export default {
       if (this.pins && this.pins.length >= 1)
         center = [this.pins[0].longitude, this.pins[0].latitude];
 
-      let mouseFeature = new ol.Feature({
-        geometry: new ol.geom.Point([undefined, undefined]),
+      let mouseFeature = new olFeature({
+        geometry: new olPoint([undefined, undefined]),
       });
-      this.map = new ol.Map({
+      this.map = new olMap({
         // controls: defaultControls().extend([mousePositionControl]),
         target: "map",
         layers: [
-          new ol.layer.Tile({
-            source: new ol.source.OSM(),
+          new olTileLayer({
+            source: new OSM(),
           }),
-          new ol.layer.Vector({
-            source: new ol.source.Vector({
+          new olVectorLayer({
+            source: new olSourceVector({
               features,
               wrapX: false,
             }),
@@ -166,8 +177,8 @@ export default {
                 resolution,
               }),
           }),
-          new ol.layer.Vector({
-            source: new ol.source.Vector({
+          new olVectorLayer({
+            source: new olSourceVector({
               features: [mouseFeature],
               wrapX: false,
             }),
@@ -179,7 +190,7 @@ export default {
               }),
           }),
         ],
-        view: new ol.View({
+        view: new olView({
           center,
           zoom: 12,
         }),
@@ -235,10 +246,10 @@ export default {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
       let style = {};
-      style.image = new ol.style.Circle({
+      style.image = new olCircleStyle({
         radius: 8,
-        fill: new ol.style.Fill({ color: fill_color }),
-        stroke: new ol.style.Stroke({ color: "#232e4a", width: 2 }),
+        fill: new olFill({ color: fill_color }),
+        stroke: new olStroke({ color: "#232e4a", width: 2 }),
       });
       if (feature.get("label")) {
         const _fs = {
@@ -249,9 +260,9 @@ export default {
           family: "IBM Plex Mono",
         };
 
-        style.text = new ol.style.Text({
-          fill: new ol.style.Fill({ color: "#000" }),
-          stroke: new ol.style.Stroke({ color: "#fff" }),
+        style.text = new olText({
+          fill: new olFill({ color: "#000" }),
+          stroke: new olStroke({ color: "#fff" }),
           // font: "bold 48px serif",
           font:
             _fs.italic +
@@ -269,7 +280,7 @@ export default {
         });
       }
 
-      return new ol.style.Style(style);
+      return new olStyle(style);
     },
   },
 };
