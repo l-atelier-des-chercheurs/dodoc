@@ -877,6 +877,9 @@ export default function () {
 
         deselect_all: "Déselectionner tout",
         remove_all: "Supprimer les éléments",
+        shared_space_archive: "ESPACE PARTAGÉ / ARCHIVE",
+        filter_sort: "Filtrer/Classer",
+        help_contact: "aide/contact",
       },
 
       en: {
@@ -911,6 +914,10 @@ export default function () {
         deselect_all: "Deselect all",
         remove_all: "Remove all",
         publish: "Publish",
+        shared_space_archive: "SHARED SPACE / ARCHIVE",
+        filter_sort: "Filter/Sort",
+        help_contact: "help/contact",
+        version: "Version",
       },
       de: {},
       nl: {},
