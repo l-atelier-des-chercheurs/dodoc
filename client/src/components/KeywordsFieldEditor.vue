@@ -6,7 +6,7 @@
       v-model="user_suggestion"
       ref="keywordField"
       required
-      placeholder="Mot-clé, matériaux, lieux, etc."
+      :placeholder="$t('keyword_materials_etc')"
       @keydown.esc.prevent="$emit('cancelEdit')"
       @keydown.enter.exact.prevent="newKeyword"
       @keydown.enter.shift.exact.prevent="submitFirstSuggestion"

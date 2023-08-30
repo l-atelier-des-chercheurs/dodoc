@@ -74,7 +74,7 @@
                 autofocus
                 required
                 v-model="text_title"
-                placeholder="Titre"
+                :placeholder="$t('title')"
                 @keydown.enter.prevent="
                   context === 'stack' ? $emit('unclicked') : ''
                 "
@@ -95,8 +95,7 @@
     >
       <div v-if="edit_mode">
         <span class="u-instructions">
-          Corrigez ou complétez le titre et les mots-clés pour partager cette
-          pile.
+          {{ $t("complete_or_correct_title_kw") }}
         </span>
       </div>
       <div class="" v-if="file.$type === 'url'">
@@ -126,7 +125,7 @@
             v-if="file.$type !== 'text'"
             class="is--dark _descriptionField"
             v-model="description"
-            placeholder="Description"
+            :placeholder="$t('description')"
             @keydown.esc.prevent="cancelEdit"
           />
 
@@ -150,7 +149,7 @@
           :disabled="!share_button_is_enabled"
           @click="shareButtonClicked"
         >
-          Publier&nbsp;
+          {{ $t("publish") }}&nbsp;
           <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
         </button>
       </div>

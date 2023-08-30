@@ -870,6 +870,13 @@ export default function () {
         open_app: "Accéder à la plateforme",
         do_not_show_window_again:
           "Ne plus afficher cette fenêtre à l’ouverture",
+        items_to_share: "Éléments à traiter",
+        keyword_materials_etc: "Mot-clé, matériaux, lieux, etc.",
+        complete_or_correct_title_kw:
+          "Corrigez ou complétez le titre et les mots-clés pour partager cet élément",
+
+        deselect_all: "Déselectionner tout",
+        remove_all: "Supprimer les éléments",
       },
 
       en: {
@@ -879,14 +886,31 @@ export default function () {
         caption: "caption",
         date_created: "created date",
         date_modified: "last edited",
+        date_uploaded: "uploaded on",
         cancel: "cancel",
         save: "save",
         description: "description",
         keywords: "keywords",
         template: "Template",
 
+        contactmail_of_instance: `Contact`,
         ui_lang_select: "Interface language",
         lang_updated: "The lang has been updated",
+        open_app: "Access",
+        items_to_share: "Items to share",
+        do_not_show_window_again: "Do not show this window automatically",
+        admin_settings: "Admin settings",
+        import: "Import",
+        close: "Close",
+        keyword_materials_etc: "Keyword, material, place, etc.",
+        complete_or_correct_title_kw:
+          "Complete or correct title and keywords to share this item",
+        create_stack: "Create stack",
+        remove_stack: "Remove stack and its content",
+        show_only_my_content: "Show only my content",
+        deselect_all: "Deselect all",
+        remove_all: "Remove all",
+        publish: "Publish",
       },
       de: {},
       nl: {},

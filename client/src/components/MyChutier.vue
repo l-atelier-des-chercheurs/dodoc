@@ -125,7 +125,7 @@
               "
             />
           </button>
-          Éléments à traiter : {{ chutier_items.length }}
+          {{ $t("items_to_share") }} • {{ chutier_items.length }}
         </label>
         <br />
       </div>
@@ -199,7 +199,7 @@
         <div class="u-sameRow">
           <button type="button" class="u-buttonLink" @click="deselectAll">
             <sl-icon name="dash-square-dotted" />
-            Déselectionner tout
+            {{ $t("deselect_all") }}
           </button>
           <button
             type="button"
@@ -207,7 +207,7 @@
             @click="show_confirm_remove_menu = true"
           >
             <sl-icon name="trash3" />
-            Supprimer les éléments
+            {{ $t("remove_all") }}
           </button>
         </div>
       </div></transition
