@@ -47,6 +47,7 @@
     "vue-router": "^3.6.5",
     "vue-slicksort": "^1.2.0",
     "vue2-timepicker": "^1.1.6",
+    "waveform-playlist": "^4.3.3",
     "yoyoo-ddr": "^0.6.1"
   },
   "devDependencies": {

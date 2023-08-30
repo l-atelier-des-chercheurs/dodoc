@@ -15,6 +15,9 @@
   "certificatePath": "",
   "passphrase": "",
 
+  "lruCacheMax": 3000,
+  "lruCacheMaxSize": 1000000,
+
   "deletedFolderName": "_bin",
 
   "ffmpeg_options": {
@@ -465,6 +468,9 @@
                     "type": "string"
                   },
                   "crop_options": {
+                    "type": "object"
+                  },
+                  "selection": {
                     "type": "object"
                   },
                   "image_brightness": {

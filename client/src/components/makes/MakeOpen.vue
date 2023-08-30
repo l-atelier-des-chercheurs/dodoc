@@ -31,16 +31,53 @@
           @remove="removeMake"
         />
       </div>
+
+      <div class="_mediaPicker">
+        <div class="_mpContent">
+          <MediaContent
+            :file="base_media"
+            :resolution="220"
+            :context="'preview'"
+          />
+          <SingleBaseMediaPicker
+            :make="make"
+            :project_path="project_path"
+            :media_type_to_pick="media_type_to_pick"
+          />
+        </div>
+      </div>
+
       <div class="_content">
-        <VideoAssemblage v-if="make.type === 'video_assemblage'" :make="make" />
-        <EditImage v-else-if="make.type === 'edit_image'" :make="make" />
+        <template v-if="base_media">
+          <!-- <VideoAssemblage
+            v-if="make.type === 'video_assemblage'"
+            :make="make"
+          /> -->
+          <EditImage
+            v-if="make.type === 'edit_image'"
+            :make="make"
+            :project_path="project_path"
+            :base_media="base_media"
+          />
+          <TrimVideo
+            v-else-if="make.type === 'trim_video'"
+            :make="make"
+            :project_path="project_path"
+            :base_media="base_media"
+          />
+          <TrimAudio
+            v-else-if="make.type === 'trim_audio'"
+            :make="make"
+            :project_path="project_path"
+            :base_media="base_media"
+          />
+        </template>
       </div>
     </div>
   </div>
 </template>
 <script>
-import VideoAssemblage from "@/components/makes/VideoAssemblage.vue";
-import EditImage from "@/components/makes/EditImage.vue";
+import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue"; // eslint-disable-line
 
 export default {
   props: {
@@ -49,8 +86,11 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    VideoAssemblage,
-    EditImage,
+    SingleBaseMediaPicker,
+    // VideoAssemblage: () => import("@/components/makes/VideoAssemblage.vue"),
+    EditImage: () => import("@/components/makes/EditImage.vue"),
+    TrimVideo: () => import("@/components/makes/TrimVideo.vue"),
+    TrimAudio: () => import("@/components/makes/TrimAudio.vue"),
   },
   data() {
     return {
@@ -69,7 +109,23 @@ export default {
     this.$api.leave({ room: this.make.$path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    base_media() {
+      const meta_filename_in_project = this.make.base_media_filename;
+      if (meta_filename_in_project)
+        return this.getSourceMedia({
+          source_media: { meta_filename_in_project },
+          folder_path: this.make.$path,
+        });
+      return false;
+    },
+    media_type_to_pick() {
+      if (this.make.type === "edit_image") return "image";
+      if (this.make.type === "trim_audio") return "audio";
+      if (this.make.type === "trim_video") return "video";
+      return undefined;
+    },
+  },
   methods: {
     async listMake() {
       const make = await this.$api
@@ -126,6 +182,38 @@ export default {
   margin: calc(var(--spacing) / 2) auto 0;
   box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
   // max-width: 800px;
+}
+
+._mediaPicker {
+  display: flex;
+
+  > ._mpContent {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+
+    margin: calc(var(--spacing) / 2) auto;
+    background: var(--c-bleumarine_fonce);
+    // max-width: 320px;
+    gap: calc(var(--spacing) * 1);
+    gap: calc(var(--spacing) / 4);
+    // border: 1px solid ;
+    padding: calc(var(--spacing) / 4);
+    border-radius: 4px;
+
+    ::v-deep ._mediaContent {
+      width: 50px;
+      height: 50px;
+
+      ._mediaContent--image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        max-width: none;
+      }
+    }
+  }
 }
 ._content {
 }
