@@ -15,6 +15,9 @@
   "certificatePath": "",
   "passphrase": "",
 
+  "lruCacheMax": 3000,
+  "lruCacheMaxSize": 1000000,
+
   "deletedFolderName": "_bin",
 
   "ffmpeg_options": {

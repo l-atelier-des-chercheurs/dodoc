@@ -7,8 +7,8 @@ module.exports = (function () {
   return {
     init: () => {
       const options = {
-        max: 3000,
-        maxSize: 1_000_000,
+        max: global.settings.lruCacheMax,
+        maxSize: global.settings.lruCacheMaxSize,
         sizeCalculation: (value) => {
           // if (typeof value === "string") return value.length;
           // TODO handle TypeError: Do not know how to serialize a BigInt
