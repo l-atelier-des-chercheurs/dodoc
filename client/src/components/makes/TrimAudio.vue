@@ -211,7 +211,6 @@ export default {
       }, 1000);
     },
     setSelect() {
-      debugger;
       const { start, end } = this.make.selection;
       if (start !== this.selection.start || end !== this.selection.end)
         this.main_wfpl.getEventEmitter().emit("select", start, end);
