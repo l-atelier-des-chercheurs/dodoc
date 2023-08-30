@@ -131,7 +131,6 @@ module.exports = (function () {
       socket.on("leaveRoom", ({ room }) => {
         dev.logrooms(`ROOMS — socket ${socket.id} is leaving ${room}`);
         socket.leave("content/" + room);
-        dev.logrooms(`ROOMS — socket ${socket.id} is leaving ${room}`);
       });
       socket.on("disconnect", () => {
         dev.logrooms(`ROOMS — socket ${socket.id} disconnected`);
