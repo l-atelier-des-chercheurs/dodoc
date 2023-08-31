@@ -81,6 +81,9 @@ import olTileLayer from "ol/layer/Tile";
 import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
+// incompatibility error ? https://github.com/jonataswalker/ol-geocoder/issues/270
+// TODO FIX later
+// import Geocoder from "ol-geocoder";
 
 import olStyle from "ol/style/Style";
 import olCircleStyle from "ol/style/Circle";
@@ -195,6 +198,17 @@ export default {
           zoom: 12,
         }),
       });
+
+      // const geocoder = new Geocoder("nominatim", {
+      //   provider: "osm",
+      //   //key: '__some_key__',
+      //   lang: "fr-FR",
+      //   placeholder: this.$t("search_for_a_place"),
+      //   targetType: "text-input",
+      //   limit: 5,
+      //   keepOpen: true,
+      // });
+      // this.map.addControl(geocoder);
 
       this.map.on("click", (event) => {
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
