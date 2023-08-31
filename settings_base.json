@@ -576,6 +576,9 @@
                   },
                   "pagn_bottom": {
                     "type": "number"
+                  },
+                  "map_initial_location": {
+                    "type": "string"
                   }
                 },
                 "$files": {

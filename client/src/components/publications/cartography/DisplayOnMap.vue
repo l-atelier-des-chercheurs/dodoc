@@ -143,6 +143,8 @@ export default {
       olProj.useGeographic();
 
       let features = [];
+
+      debugger;
       if (this.pins && this.pins.length > 0) {
         this.pins.map((pin) => {
           let feature_cont = {
@@ -326,16 +328,16 @@ export default {
   bottom: 0;
   left: 0;
   background: white;
-  border-radius: var(--sl-border-radius-large);
+  border-radius: 2px;
 
-  margin: var(--sl-spacing-small);
-  padding: var(--sl-spacing-xx-small) var(--sl-spacing-x-small);
-  width: calc(100% - var(--sl-spacing-small) * 2);
+  margin: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  width: calc(100% - var(--spacing) * 2);
 }
 ._popup--close {
   position: absolute;
   top: 0;
   right: 0;
-  padding: var(--sl-spacing-x-small);
+  padding: calc(var(--spacing) / 2);
 }
 </style>

@@ -19,7 +19,11 @@
       ]"
     />
 
-    <MapSettings v-if="current_view === 'settings'" />
+    <MapSettings
+      v-if="current_view === 'settings'"
+      :publication="publication"
+      :path="publication.$path"
+    />
     <MapView v-else :publication="publication" />
   </div>
 </template>

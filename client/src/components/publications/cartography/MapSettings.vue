@@ -1,16 +1,25 @@
 <template>
   <div class="_mapSettings">
     <div class="">Pick starting point</div>
-    <DisplayOnMap :pins="false" />
+    <PositionPicker
+      :title="'titre'"
+      :format="'gps'"
+      :start_value="publication.map_initial_location || ''"
+      :edit_mode="true"
+      @update="updateBasePosition"
+    />
   </div>
 </template>
 <script>
-import DisplayOnMap from "@/components/publications/cartography/DisplayOnMap.vue";
+import PositionPicker from "@/components/publications/cartography/PositionPicker.vue";
 
 export default {
-  props: {},
+  props: {
+    publication: Object,
+    path: String,
+  },
   components: {
-    DisplayOnMap,
+    PositionPicker,
   },
   data() {
     return {};
@@ -20,7 +29,20 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    async updateBasePosition(val) {
+      await this.updatePubli({
+        map_initial_location: val,
+      });
+    },
+
+    async updatePubli(new_meta) {
+      await this.$api.updateMeta({
+        path: this.path,
+        new_meta,
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
