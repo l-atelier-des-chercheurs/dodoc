@@ -3,10 +3,14 @@
     <div class="_publicationPreview--cover" @click="$emit('open')">
       <div v-if="cover_thumb">
         <img :src="cover_thumb" />
-        <span class="_iconPreview" v-html="template_icon" />
+        <span
+          v-if="template_icon"
+          class="_iconPreview"
+          v-html="template_icon"
+        />
       </div>
       <div v-else class="_noPreview">
-        <span v-html="template_icon" />
+        <span v-if="template_icon" v-html="template_icon" />
       </div>
       <transition name="fade_fast">
         <div class="_previewProgress" v-if="is_making_preview">
@@ -71,9 +75,11 @@ export default {
       });
     },
     template_icon() {
-      return this.template_options.find(
+      const t = this.template_options.find(
         (t) => t.key === this.publication.template
-      ).icon;
+      );
+      if (t) return t.icon;
+      return false;
     },
   },
   methods: {
