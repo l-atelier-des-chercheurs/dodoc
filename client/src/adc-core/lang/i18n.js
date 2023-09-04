@@ -883,6 +883,10 @@ export default function () {
 
         make_list: "Liste des fabrications",
         search_for_a_place: "Rechercher un lieu",
+        latitude: "Latitude",
+        longitude: "Longitude",
+        pick_on_map: "Indiquer sur la carte",
+        current_position: "Position actuelle",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

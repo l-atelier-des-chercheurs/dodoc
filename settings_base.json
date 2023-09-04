@@ -577,6 +577,9 @@
                   "pagn_bottom": {
                     "type": "number"
                   },
+                  "map_mode": {
+                    "type": "string"
+                  },
                   "map_initial_location": {
                     "type": "string"
                   }

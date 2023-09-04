@@ -205,8 +205,14 @@ export default {
 }
 
 ._noPreview {
-  border: 2px solid white;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  // border: 2px solid white;
+  padding: calc(var(--spacing) / 1);
   width: 100%;
+  aspect-ratio: 1;
   min-height: 50px;
 }
 </style>

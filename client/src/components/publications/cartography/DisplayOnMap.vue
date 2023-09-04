@@ -144,7 +144,6 @@ export default {
 
       let features = [];
 
-      debugger;
       if (this.pins && this.pins.length > 0) {
         this.pins.map((pin) => {
           let feature_cont = {

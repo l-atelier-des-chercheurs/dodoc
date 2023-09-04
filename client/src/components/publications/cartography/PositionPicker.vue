@@ -33,31 +33,27 @@
             </div>
           </div>
 
-          <button
-            type="button"
-            class="u-button u-button_small"
-            @click="currentPosition"
-            v-if="format === 'gps' && edit_mode"
-            :loading="is_looking_for_gps_coords"
-          >
-            <!-- :disabled="$root.state.is_electron" -->
-            {{ $t("current_position") }}
-          </button>
-          <button
-            type="button"
-            class="u-button u-button_small"
-            @click="pick_on_map = !pick_on_map"
-            :active="pick_on_map"
-            v-if="format === 'gps' && edit_mode"
-          >
-            {{ $t("pick_on_map") }}
-          </button>
-
-          <DisplayOnMap
-            v-if="pick_on_map"
-            :pins="longlat ? [longlat] : []"
-            @newPosition="newPosition"
-          />
+          <div class="_btnRow">
+            <button
+              type="button"
+              class="u-button u-button_small"
+              @click="currentPosition"
+              v-if="format === 'gps' && edit_mode"
+              :loading="is_looking_for_gps_coords"
+            >
+              <!-- :disabled="$root.state.is_electron" -->
+              {{ $t("current_position") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_small"
+              @click="pick_on_map = !pick_on_map"
+              :active="pick_on_map"
+              v-if="format === 'gps' && edit_mode"
+            >
+              {{ $t("pick_on_map") }}
+            </button>
+          </div>
 
           <sl-alert
             type="warning"
@@ -68,6 +64,12 @@
             <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
             <span v-html="error_message" />
           </sl-alert>
+
+          <DisplayOnMap
+            v-if="pick_on_map"
+            :pins="longlat ? [longlat] : []"
+            @newPosition="newPosition"
+          />
         </template>
         <template v-else>
           <input v-model="value" size="medium" name="address" type="text" />
@@ -103,7 +105,6 @@ const convertDMSToDD = (dms) => {
 
 export default {
   props: {
-    title: String,
     format: String,
     start_value: [Number, String],
     edit_mode: Boolean,
@@ -124,7 +125,7 @@ export default {
 
       value: "",
 
-      pick_on_map: false,
+      pick_on_map: true,
 
       is_looking_for_gps_coords: false,
       error_message: false,
@@ -223,5 +224,12 @@ export default {
 <style lang="scss" scoped>
 ._nowButton {
   margin-top: var(--sl-spacing-xx-small);
+}
+
+._btnRow {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) 0;
 }
 </style>

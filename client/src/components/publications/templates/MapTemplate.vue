@@ -53,4 +53,8 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._switch {
+  margin: calc(var(--spacing) * 1) 0;
+}
+</style>
