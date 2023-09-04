@@ -59,13 +59,13 @@
             :project_path="project_path"
             :base_media="base_media"
           />
-          <TrimVideo
+          <TrimAudioVideo
             v-else-if="make.type === 'trim_video'"
             :make="make"
             :project_path="project_path"
             :base_media="base_media"
           />
-          <TrimAudio
+          <TrimAudioVideo
             v-else-if="make.type === 'trim_audio'"
             :make="make"
             :project_path="project_path"
@@ -89,8 +89,7 @@ export default {
     SingleBaseMediaPicker,
     // VideoAssemblage: () => import("@/components/makes/VideoAssemblage.vue"),
     EditImage: () => import("@/components/makes/EditImage.vue"),
-    TrimVideo: () => import("@/components/makes/TrimVideo.vue"),
-    TrimAudio: () => import("@/components/makes/TrimAudio.vue"),
+    TrimAudioVideo: () => import("@/components/makes/TrimAudioVideo.vue"),
   },
   data() {
     return {
