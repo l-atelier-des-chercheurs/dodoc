@@ -36,12 +36,11 @@
         :field_name="'base_media_filename'"
         :content="make.base_media_filename"
         :path="make.$path"
-        :project_path="project_path"
         :media_type_to_pick="media_type_to_pick"
       />
 
-      <div class="_content">
-        <template v-if="base_media">
+      <div class="_content" v-if="base_media" :key="base_media.$path">
+        <template>
           <!-- <VideoAssemblage
             v-if="make.type === 'video_assemblage'"
             :make="make"

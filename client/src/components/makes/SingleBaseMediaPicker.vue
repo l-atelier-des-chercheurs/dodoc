@@ -2,6 +2,7 @@
   <div class="_mediaPicker">
     <div class="_mpContent">
       <MediaContent
+        v-if="selected_media"
         :file="selected_media"
         :resolution="220"
         :context="'preview'"
@@ -28,7 +29,7 @@
 
         <PickMediaFromProjects
           v-if="show_media_picker"
-          :path="project_path"
+          :path="path"
           :select_mode="'single'"
           :pick_from_type="media_type_to_pick"
           @addMedias="pickMedia"
@@ -47,7 +48,6 @@ export default {
       default: "",
     },
     path: String,
-    project_path: String,
     media_type_to_pick: String,
   },
   components: {},
