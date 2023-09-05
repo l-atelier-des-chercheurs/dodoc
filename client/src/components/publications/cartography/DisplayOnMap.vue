@@ -96,6 +96,17 @@ export default {
   name: "DisplayOnMap",
   props: {
     pins: [Boolean, Array],
+    start_coords: {
+      type: [Boolean, Array],
+      default(rawProps) {
+        if (Array.isArray(rawProps) && rawProps.length === 2) return rawProps;
+        return [5.39057449011251, 43.310173305629576];
+      },
+    },
+    start_zoom: {
+      type: [Boolean, Number],
+      default: 12,
+    },
     is_small: {
       type: Boolean,
       default: true,
@@ -119,13 +130,17 @@ export default {
       },
     },
   },
-  created() {},
+  created() {
+    this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
+  },
   mounted() {
     setTimeout(() => {
       this.startMap();
     }, 500);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
+  },
   watch: {
     pins: {
       handler() {
@@ -164,12 +179,13 @@ export default {
         });
       }
 
-      let center = [5.39057449011251, 43.310173305629576];
-      if (this.pins && this.pins.length >= 1)
-        center = [this.pins[0].longitude, this.pins[0].latitude];
-
       let mouseFeature = new olFeature({
         geometry: new olPoint([undefined, undefined]),
+      });
+
+      this.view = new olView({
+        center: this.start_coords,
+        zoom: this.start_zoom,
       });
       this.map = new olMap({
         // controls: defaultControls().extend([mousePositionControl]),
@@ -202,10 +218,7 @@ export default {
               }),
           }),
         ],
-        view: new olView({
-          center,
-          zoom: 12,
-        }),
+        view: this.view,
       });
 
       // const geocoder = new Geocoder("nominatim", {
@@ -305,6 +318,13 @@ export default {
 
       return new olStyle(style);
     },
+    navigateTo({ center, zoom }) {
+      this.view.animate({
+        center,
+        zoom,
+        // duration: 2000,
+      });
+    },
   },
 };
 </script>
@@ -314,8 +334,7 @@ export default {
   position: relative;
   background-color: var(--c-gris);
 
-  width: 100%;
-  height: 100%;
+  flex: 1 1 320px;
 
   &.is--small {
     width: 600px;

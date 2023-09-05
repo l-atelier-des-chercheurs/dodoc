@@ -10,11 +10,8 @@
           value: 'settings',
         },
         {
-          label:
-            publication.page_spreads === true
-              ? $t('list_of_spreads')
-              : $t('list_of_pages'),
-          value: 'pages',
+          label: $t('map'),
+          value: 'map',
         },
       ]"
     />
@@ -42,7 +39,7 @@ export default {
   },
   data() {
     return {
-      current_view: "settings",
+      current_view: "map",
     };
   },
   created() {},

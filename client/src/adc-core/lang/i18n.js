@@ -216,7 +216,7 @@ export default function () {
         story_with_sections: "Récit",
         page_by_page: "Page à page",
         cartography: "Cartographie",
-        export: "Exporter",
+        export_in_pdf: "Exporter en PDF",
         share: "Partager",
         exports_in_progress: "Exportation(s) en cours",
 
@@ -883,6 +883,7 @@ export default function () {
         search_for_a_place: "Rechercher un lieu",
         latitude: "Latitude",
         longitude: "Longitude",
+        map: "Carte",
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
 
