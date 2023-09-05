@@ -38,6 +38,9 @@
         <div v-else-if="publication.template === 'story_with_sections'">
           <SectionWithPrint :publication="publication" />
         </div>
+        <div v-else-if="publication.template === 'cartography'">
+          <MapView :publication="publication" />
+        </div>
       </div>
     </transition>
   </div>
@@ -50,6 +53,7 @@ import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
 import PageSlides from "@/components/publications/page_by_page/PageSlides.vue";
 import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
 import SectionWithPrint from "@/components/publications/story/SectionWithPrint.vue";
+import MapView from "@/components/publications/cartography/MapView.vue";
 
 export default {
   props: {},
@@ -58,6 +62,7 @@ export default {
     PageSlides,
     StoryTemplate,
     SectionWithPrint,
+    MapView,
   },
   data() {
     return {
