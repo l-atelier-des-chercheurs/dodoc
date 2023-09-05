@@ -33,18 +33,17 @@
             </div>
           </div>
 
-          <div class="_btnRow">
-            <button
-              type="button"
-              class="u-button u-button_small"
-              @click="currentPosition"
-              v-if="format === 'gps' && edit_mode"
-              :loading="is_looking_for_gps_coords"
-            >
-              <!-- :disabled="$root.state.is_electron" -->
-              {{ $t("current_position") }}
-            </button>
-            <button
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="currentPosition"
+            v-if="format === 'gps' && edit_mode"
+            :loading="is_looking_for_gps_coords"
+          >
+            <!-- :disabled="$root.state.is_electron" -->
+            {{ $t("current_position") }}
+          </button>
+          <!-- <button
               type="button"
               class="u-button u-button_small"
               @click="pick_on_map = !pick_on_map"
@@ -52,8 +51,7 @@
               v-if="format === 'gps' && edit_mode"
             >
               {{ $t("pick_on_map") }}
-            </button>
-          </div>
+            </button> -->
 
           <sl-alert
             type="warning"
@@ -65,8 +63,8 @@
             <span v-html="error_message" />
           </sl-alert>
 
+          <!-- v-if="pick_on_map" -->
           <DisplayOnMap
-            v-if="pick_on_map"
             :pins="longlat ? [longlat] : []"
             @newPosition="newPosition"
           />
@@ -125,7 +123,7 @@ export default {
 
       value: "",
 
-      pick_on_map: true,
+      // pick_on_map: true,
 
       is_looking_for_gps_coords: false,
       error_message: false,
@@ -216,7 +214,7 @@ export default {
     newPosition({ longitude, latitude }) {
       this.longitude = longitude;
       this.latitude = latitude;
-      this.pick_on_map = false;
+      // this.pick_on_map = false;
     },
   },
 };

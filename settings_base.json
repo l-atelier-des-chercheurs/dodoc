@@ -582,6 +582,9 @@
                   },
                   "map_initial_location": {
                     "type": "string"
+                  },
+                  "map_basemap": {
+                    "type": "string"
                   }
                 },
                 "$files": {

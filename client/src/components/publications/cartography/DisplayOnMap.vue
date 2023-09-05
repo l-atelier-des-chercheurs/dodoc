@@ -38,11 +38,12 @@
               $emit('newPosition', {
                 longitude: mouse_coords[0],
                 latitude: mouse_coords[1],
-              })
+              });
+              mouse_coords = false;
             "
             pill
           >
-            {{ $t("use") }}
+            {{ $t("submit") }}
           </sl-button>
         </div>
       </div>
@@ -111,6 +112,13 @@ export default {
       map: undefined,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        mouse_position: "Position de la balise",
+      },
+    },
+  },
   created() {},
   mounted() {
     setTimeout(() => {
@@ -156,7 +164,7 @@ export default {
         });
       }
 
-      let center = [-21.89485815996094, 64.1194386326513];
+      let center = [5.39057449011251, 43.310173305629576];
       if (this.pins && this.pins.length >= 1)
         center = [this.pins[0].longitude, this.pins[0].latitude];
 
@@ -304,16 +312,17 @@ export default {
 <style lang="scss" scoped>
 .m_displayOnMap {
   position: relative;
-  background-color: var(--color-lighter-gray);
+  background-color: var(--c-gris);
 
   width: 100%;
   height: 100%;
 
   &.is--small {
-    height: 600px;
-    max-height: 100%;
     width: 600px;
     max-width: 100%;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    overflow: hidden;
     .map {
     }
   }

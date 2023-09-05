@@ -303,8 +303,6 @@ export default function () {
         remove_this_image: "Supprimer cette image",
         erase: "Effacer",
 
-        pick_image: "Choisir une image",
-        change_base_image: "Changer l’image de base",
         crop: "Recadrer",
         crop_instructions:
           "Utilisez les valeurs ci-dessous ou utilisez le cadre à droite pour indiquer la zone à recadrer.",

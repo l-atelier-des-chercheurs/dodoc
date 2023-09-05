@@ -15,7 +15,7 @@
           @click="show_media_picker = true"
         >
           <b-icon icon="image" />
-          {{ $t("pick_image") }}
+          {{ $t("pick_base_image") }}
         </button>
         <button
           type="button"
@@ -24,7 +24,7 @@
           @click="show_media_picker = true"
         >
           <b-icon icon="dash-circle" />
-          {{ $t("change_base_image") }}
+          {{ $t("change_base_media") }}
         </button>
 
         <PickMediaFromProjects
@@ -51,6 +51,14 @@ export default {
     media_type_to_pick: String,
   },
   components: {},
+  i18n: {
+    messages: {
+      fr: {
+        pick_base_image: "Choisir le média de référence",
+        change_base_media: "Changer le média de référence",
+      },
+    },
+  },
   data() {
     return {
       show_media_picker: !this.content ? true : false,
