@@ -268,6 +268,14 @@ export default {
               `,
               enabled: true,
             },
+            {
+              key: "trim_video",
+              summary: "trim_video_summary",
+              show_instructions: false,
+              icon: `
+              `,
+              enabled: false,
+            },
           ],
         },
         {

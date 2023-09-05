@@ -32,23 +32,15 @@
         />
       </div>
 
-      <div class="_mediaPicker">
-        <div class="_mpContent">
-          <MediaContent
-            :file="base_media"
-            :resolution="220"
-            :context="'preview'"
-          />
-          <SingleBaseMediaPicker
-            :make="make"
-            :project_path="project_path"
-            :media_type_to_pick="media_type_to_pick"
-          />
-        </div>
-      </div>
+      <SingleBaseMediaPicker
+        :field_name="'base_media_filename'"
+        :content="make.base_media_filename"
+        :path="make.$path"
+        :media_type_to_pick="media_type_to_pick"
+      />
 
-      <div class="_content">
-        <template v-if="base_media">
+      <div class="_content" v-if="base_media" :key="base_media.$path">
+        <template>
           <!-- <VideoAssemblage
             v-if="make.type === 'video_assemblage'"
             :make="make"
@@ -59,13 +51,13 @@
             :project_path="project_path"
             :base_media="base_media"
           />
-          <TrimVideo
+          <TrimAudioVideo
             v-else-if="make.type === 'trim_video'"
             :make="make"
             :project_path="project_path"
             :base_media="base_media"
           />
-          <TrimAudio
+          <TrimAudioVideo
             v-else-if="make.type === 'trim_audio'"
             :make="make"
             :project_path="project_path"
@@ -89,8 +81,7 @@ export default {
     SingleBaseMediaPicker,
     // VideoAssemblage: () => import("@/components/makes/VideoAssemblage.vue"),
     EditImage: () => import("@/components/makes/EditImage.vue"),
-    TrimVideo: () => import("@/components/makes/TrimVideo.vue"),
-    TrimAudio: () => import("@/components/makes/TrimAudio.vue"),
+    TrimAudioVideo: () => import("@/components/makes/TrimAudioVideo.vue"),
   },
   data() {
     return {
@@ -184,37 +175,6 @@ export default {
   // max-width: 800px;
 }
 
-._mediaPicker {
-  display: flex;
-
-  > ._mpContent {
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-
-    margin: calc(var(--spacing) / 2) auto;
-    background: var(--c-bleumarine_fonce);
-    // max-width: 320px;
-    gap: calc(var(--spacing) * 1);
-    gap: calc(var(--spacing) / 4);
-    // border: 1px solid ;
-    padding: calc(var(--spacing) / 4);
-    border-radius: 4px;
-
-    ::v-deep ._mediaContent {
-      width: 50px;
-      height: 50px;
-
-      ._mediaContent--image {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        max-width: none;
-      }
-    }
-  }
-}
 ._content {
 }
 </style>

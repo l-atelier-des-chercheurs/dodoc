@@ -214,9 +214,9 @@ export default function () {
 
         story: "Récit",
         story_with_sections: "Récit",
-        page_by_page: "Document page à page",
+        page_by_page: "Page à page",
         cartography: "Cartographie",
-        export: "Exporter",
+        export_in_pdf: "Exporter en PDF",
         share: "Partager",
         exports_in_progress: "Exportation(s) en cours",
 
@@ -303,8 +303,6 @@ export default function () {
         remove_this_image: "Supprimer cette image",
         erase: "Effacer",
 
-        pick_image: "Choisir une image",
-        change_base_image: "Changer l’image de base",
         crop: "Recadrer",
         crop_instructions:
           "Utilisez les valeurs ci-dessous ou utilisez le cadre à droite pour indiquer la zone à recadrer.",
@@ -882,6 +880,12 @@ export default function () {
         publish: "Publier",
 
         make_list: "Liste des fabrications",
+        search_for_a_place: "Rechercher un lieu",
+        latitude: "Latitude",
+        longitude: "Longitude",
+        map: "Carte",
+        pick_on_map: "Indiquer sur la carte",
+        current_position: "Position actuelle",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

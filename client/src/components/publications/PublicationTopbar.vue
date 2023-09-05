@@ -40,52 +40,57 @@
         </small>
       </div>
 
-      <div class="" v-if="can_edit">
-        <button
-          type="button"
-          class="u-buttonLink _exportBtn"
-          :disabled="is_exporting"
-          @click="exportPublication"
-        >
-          <sl-icon name="filetype-pdf" />
-          {{ $t("export") }}
-          <transition name="fade_fast" :duration="150" mode="out-in">
-            <LoaderSpinner v-if="is_exporting" />
-          </transition>
-        </button>
-      </div>
-      <div class="">
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="show_qr_code_modal = true"
-        >
-          <sl-icon name="qr-code" />
-          {{ $t("share") }}
-        </button>
-        <QRModal
-          v-if="show_qr_code_modal"
-          :url_to_access="share_url"
-          @close="show_qr_code_modal = false"
-        />
-        <!-- <router-link :to="share_path" target="_blank" class="u-buttonLink">
-              <sl-icon name="share" />
+      <sl-dropdown>
+        <sl-button slot="trigger" caret>{{ $t("menu") }}</sl-button>
+        <sl-menu>
+          <sl-menu-item>
+            <button
+              type="button"
+              class="u-buttonLink _exportBtn"
+              :disabled="!can_edit || is_exporting"
+              @click="exportPublication"
+            >
+              <sl-icon name="filetype-pdf" />
+              {{ $t("export_in_pdf") }}
+              <transition name="fade_fast" :duration="150" mode="out-in">
+                <LoaderSpinner v-if="is_exporting" />
+              </transition>
+            </button>
+          </sl-menu-item>
+          <sl-menu-item>
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_qr_code_modal = true"
+            >
+              <sl-icon name="qr-code" />
               {{ $t("share") }}
-            </router-link> -->
-      </div>
+            </button>
 
-      <DuplicatePublication
-        v-if="can_edit"
-        :path="publication.$path"
-        :source_title="publication.title"
-        :publication="publication"
-        @close="$emit('close')"
-      />
-      <RemoveMenu
-        v-if="can_edit"
-        :remove_text="$t('remove')"
-        @remove="removePublication"
-      />
+            <QRModal
+              v-if="show_qr_code_modal"
+              :url_to_access="share_url"
+              @close="show_qr_code_modal = false"
+            />
+          </sl-menu-item>
+          <sl-menu-item>
+            <DuplicatePublication
+              v-if="can_edit"
+              :path="publication.$path"
+              :source_title="publication.title"
+              :publication="publication"
+              @close="$emit('close')"
+            />
+          </sl-menu-item>
+          <sl-menu-item>
+            <RemoveMenu
+              v-if="can_edit"
+              :remove_text="$t('remove')"
+              @remove="removePublication"
+            />
+          </sl-menu-item>
+        </sl-menu>
+      </sl-dropdown>
     </div>
   </div>
 </template>

@@ -42,8 +42,7 @@
           }"
           :key="template.key"
         >
-          <strong>{{ $t(template.label) }}</strong>
-          <!-- <DLabel class="_label" :str="$t(template.label)" /> -->
+          <strong>{{ template.label }}</strong>
           <div class="" v-html="template.icon" />
           <button
             type="submit"
@@ -97,6 +96,7 @@
 export default {
   props: {
     project_path: String,
+    template_options: Array,
   },
   components: {},
   data() {
@@ -108,85 +108,6 @@ export default {
       is_creating_publication: false,
 
       allow_save: false,
-
-      template_options: [
-        {
-          key: "page_by_page",
-          label: this.$t("page_by_page"),
-          icon: `
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
-        	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
-          <g id="Calque_6" data-name="Calque 6">
-            <g>
-              <rect x="35.68" y="8.83" width="129.64" height="183.35" style="fill: #fff"/>
-              <rect x="46.15" y="31.82" width="39.07" height="27.55" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.0944702326735385px"/>
-              <rect x="118.95" y="68.62" width="35.9" height="53.44" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.9170289512680598px"/>
-              <rect x="46.15" y="68.62" width="63.37" height="53.44" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.161211202864444px"/>
-              <rect x="73.36" y="136.54" width="54.27" height="4.99" style="fill: #353535"/>
-              <rect x="73.36" y="153.02" width="54.27" height="4.99" style="fill: #353535"/>
-              <rect x="73.36" y="144.78" width="54.27" height="4.99" style="fill: #353535"/>
-              <rect x="73.36" y="161.26" width="54.27" height="4.99" style="fill: #353535"/>
-              <line x1="46.15" y1="22.57" x2="154.85" y2="22.57" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.8953584524134504px"/>
-            </g>
-          </g>
-        </svg>
-                  `,
-        },
-        // {
-        //   key: "story",
-        //   label: this.$t("story"),
-        //   icon: `
-        // <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
-        // 	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
-        // 	<g id="Calque_6_2_">
-        // 		<g>
-        // 			<rect x="35.7" y="8.8" class="st1" width="129.6" height="183.4" style="fill: #fff;" />
-        // 		</g>
-        // 	</g>
-        // 	<rect x="64.9" y="46.8" width="71.2" height="53.6" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
-        // 	<rect x="64.9" y="145.2" width="71.2" height="39.8" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
-        // 	<rect x="65" y="108" width="71.1" height="5" style="fill:#353535;" />
-        // 	<rect x="65" y="124.5" class="st3" width="71.1" height="5"  style="fill:#353535;"/>
-        // 	<rect x="65" y="116.2" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        // 	<rect x="65" y="132.7" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        // 	<rect x="64.9" y="25.9" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        // 	<rect x="64.9" y="17.6" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        // 	<rect x="64.9" y="34.1" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        // </svg>
-        //           `,
-        // },
-        {
-          key: "story_with_sections",
-          label: this.$t("story_with_sections"),
-          disabled: false,
-          icon: `
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
-        	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
-        	<g id="Calque_6_2_">
-        		<g>
-        			<rect x="35.7" y="8.8" class="st1" width="129.6" height="183.4" style="fill: #fff;" />
-        		</g>
-        	</g>
-        	<rect x="64.9" y="46.8" width="71.2" height="53.6" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
-        	<rect x="64.9" y="145.2" width="71.2" height="39.8" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
-        	<rect x="65" y="108" width="71.1" height="5" style="fill:#353535;" />
-        	<rect x="65" y="124.5" class="st3" width="71.1" height="5"  style="fill:#353535;"/>
-        	<rect x="65" y="116.2" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        	<rect x="65" y="132.7" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        	<rect x="64.9" y="25.9" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        	<rect x="64.9" y="17.6" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        	<rect x="64.9" y="34.1" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-        </svg>
-                  `,
-        },
-        {
-          key: "cartography",
-          label: this.$t("cartography"),
-          disabled: true,
-          icon: `
-                  `,
-        },
-      ],
 
       error_msg: "",
     };

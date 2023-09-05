@@ -2,7 +2,7 @@
   <div>
     <button
       type="button"
-      class="u-buttonLink"
+      class="u-buttonLink u-buttonLink_red"
       @click="show_confirm_delete = true"
     >
       <b-icon icon="trash" />

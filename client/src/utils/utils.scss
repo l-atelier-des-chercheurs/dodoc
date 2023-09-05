@@ -149,6 +149,9 @@
   &.u-buttonLink_white {
     color: white;
   }
+  &.u-buttonLink_red {
+    color: var(--c-rouge);
+  }
 
   &:hover,
   &:focus {

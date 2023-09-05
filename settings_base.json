@@ -520,6 +520,7 @@
                       "carreau",
                       "story",
                       "story_with_sections",
+                      "cartography",
                       "face_masks",
                       "image_tracking"
                     ],
@@ -575,6 +576,15 @@
                   },
                   "pagn_bottom": {
                     "type": "number"
+                  },
+                  "map_mode": {
+                    "type": "string"
+                  },
+                  "map_initial_location": {
+                    "type": "string"
+                  },
+                  "map_basemap": {
+                    "type": "string"
                   }
                 },
                 "$files": {

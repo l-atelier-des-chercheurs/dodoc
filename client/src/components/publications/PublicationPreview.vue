@@ -1,10 +1,17 @@
 <template>
   <div class="_publicationPreview">
-    <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
-
     <div class="_publicationPreview--cover" @click="$emit('open')">
-      <img v-if="cover_thumb" :src="cover_thumb" />
-      <div class="_noPreview" v-else />
+      <div v-if="cover_thumb">
+        <img :src="cover_thumb" />
+        <span
+          v-if="template_icon"
+          class="_iconPreview"
+          v-html="template_icon"
+        />
+      </div>
+      <div v-else class="_noPreview">
+        <span v-if="template_icon" v-html="template_icon" />
+      </div>
       <transition name="fade_fast">
         <div class="_previewProgress" v-if="is_making_preview">
           <AnimatedCounter :value="preview_progress" />
@@ -38,18 +45,13 @@
         <sl-icon name="arrow-up-right" />
       </button> -->
     </div>
-
-    <!-- {{ publication.title }} -->
-    <!-- <button type="button" @click="removePublication">Supprimer</button> -->
   </div>
 </template>
 <script>
 export default {
   props: {
-    title: String,
-    type: String,
-    image_name: String,
     publication: Object,
+    template_options: Array,
     can_edit: Boolean,
   },
   components: {},
@@ -71,6 +73,13 @@ export default {
         $path: this.publication.$path,
         resolution: 640,
       });
+    },
+    template_icon() {
+      const t = this.template_options.find(
+        (t) => t.key === this.publication.template
+      );
+      if (t) return t.icon;
+      return false;
     },
   },
   methods: {
@@ -164,7 +173,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  margin: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 2);
 }
 
 ._previewProgress {
@@ -182,9 +191,28 @@ export default {
   font-family: "Fira Code";
 }
 
+._iconPreview {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  background: var(--c-bleuvert);
+  margin: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4);
+  border-radius: 4px;
+}
+
 ._noPreview {
-  border: 2px solid white;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  // border: 2px solid white;
+  padding: calc(var(--spacing) / 1);
   width: 100%;
+  aspect-ratio: 1;
   min-height: 50px;
 }
 </style>

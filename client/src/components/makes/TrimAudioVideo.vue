@@ -1,5 +1,9 @@
 <template>
-  <div class="_trimAudio">
+  <div class="_trimAudioVideo">
+    <div v-if="make.type === 'trim_video'" class="_videoPreview">
+      <video :src="base_media_url" muted ref="videoPreview" />
+    </div>
+
     <div class="_btnRow">
       <button type="button" class="u-button u-button_bleuvert" @click="play">
         <b-icon icon="play-circle-fill" />
@@ -14,10 +18,7 @@
     <div ref="playlist" class="_wfp" />
     <div ref="playlistPreview" v-show="false" />
 
-    <!-- {{ current_time }}
-    {{ selection }} -->
-    <!-- {{ make.selection }} -->
-
+    <!-- {{ current_time }} -->
     <div v-if="!selection_is_ready">
       <br />
       <p class="u-instructions">
@@ -85,7 +86,9 @@ export default {
     return {
       main_wfpl: undefined,
 
-      current_time: undefined,
+      current_time: 0,
+
+      is_playing: false,
       selection: {
         start: this.make.selection?.start || 0,
         end: this.make.selection?.end || 0,
@@ -118,6 +121,17 @@ export default {
         this.setSelect();
       },
       deep: true,
+    },
+    current_time() {
+      const videoPreview = this.$refs.videoPreview;
+      if (!videoPreview) return;
+
+      // only sync if necessary
+      const ct = this.roundToDec(this.current_time, 1);
+      const vct = this.roundToDec(videoPreview.currentTime, 1);
+      if (ct !== vct) {
+        videoPreview.currentTime = this.current_time;
+      }
     },
   },
   computed: {
@@ -182,23 +196,42 @@ export default {
     },
     play() {
       this.main_wfpl.getEventEmitter().emit("play");
+      this.playPreviewVideo();
+      this.is_playing = true;
+    },
+    playPreviewVideo() {
+      const videoPreview = this.$refs.videoPreview;
+      if (videoPreview) {
+        videoPreview.currentTime = this.current_time;
+        videoPreview.play();
+      }
     },
     pause() {
       this.main_wfpl.getEventEmitter().emit("pause");
+      this.pausePreviewVideo();
+      this.is_playing = false;
+    },
+    // stop() {
+    //   this.main_wfpl.getEventEmitter().emit("stop");
+    //   this.pausePreviewVideo();
+    //   this.is_playing = false;
+    // },
+    pausePreviewVideo() {
+      const videoPreview = this.$refs.videoPreview;
+      if (videoPreview) videoPreview.pause();
     },
     setListener() {
       this.main_wfpl.getEventEmitter().on("timeupdate", this.timeUpdate);
       this.main_wfpl.getEventEmitter().on("select", this.select);
+      this.main_wfpl.getEventEmitter().on("select", this.select);
+      this.main_wfpl.getEventEmitter().on("finished", this.finished);
     },
     timeUpdate(time) {
-      this.current_time = this.formatDurationToHoursMinutesSeconds(time);
-    },
-    roundVal(val) {
-      return Number.parseFloat(val.toFixed(2));
+      this.current_time = time;
     },
     select(start, end) {
-      this.selection.start = this.roundVal(start);
-      this.selection.end = this.roundVal(end);
+      this.selection.start = this.roundToDec(start);
+      this.selection.end = this.roundToDec(end);
 
       if (this.debounce_selection) clearTimeout(this.debounce_selection);
       this.debounce_selection = setTimeout(async () => {
@@ -211,10 +244,12 @@ export default {
       }, 1000);
     },
     setSelect() {
-      debugger;
       const { start, end } = this.make.selection;
       if (start !== this.selection.start || end !== this.selection.end)
         this.main_wfpl.getEventEmitter().emit("select", start, end);
+    },
+    finished() {
+      // this.pause();
     },
 
     audiorenderingstarting() {
@@ -292,7 +327,7 @@ export default {
       // preview_wfpl.adjustDuration();
       const duration = this.selection.end - this.selection.start;
       preview_wfpl.duration = duration;
-      this.export_duration = this.roundVal(duration);
+      this.export_duration = this.roundToDec(duration);
       preview_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
     },
   },
@@ -300,7 +335,7 @@ export default {
 </script>
 <style src="@/components/makes/waveform-playlist-main.css" />
 <style lang="scss" scoped>
-._trimAudio {
+._trimAudioVideo {
   position: relative;
   width: 100%;
   height: auto;
@@ -345,5 +380,17 @@ export default {
 
   height: auto;
   min-height: 40px;
+}
+
+._videoPreview {
+  height: 100%;
+  width: auto;
+  margin: 0 auto;
+  background: var(--c-noir);
+
+  video {
+    width: 100%;
+    max-height: 50vh;
+  }
 }
 </style>

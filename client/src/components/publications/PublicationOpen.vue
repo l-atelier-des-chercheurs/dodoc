@@ -37,6 +37,12 @@
         @togglePage="$emit('togglePage', $event)"
         @closePublication="$emit('close')"
       />
+      <MapTemplate
+        v-else-if="publication.template === 'cartography'"
+        :publication="publication"
+        :can_edit="can_edit"
+        @closePublication="$emit('close')"
+      />
     </template>
   </div>
 </template>
@@ -58,6 +64,8 @@ export default {
       import("@/components/publications/templates/StorySectionTemplate.vue"),
     PageTemplate: () =>
       import("@/components/publications/templates/PageTemplate.vue"),
+    MapTemplate: () =>
+      import("@/components/publications/templates/MapTemplate.vue"),
   },
   data() {
     return {
