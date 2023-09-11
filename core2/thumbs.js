@@ -469,7 +469,7 @@ module.exports = (function () {
     if (metadata.exif) {
       try {
         const gps = await exifr.gps(full_media_path);
-        if (gps) extracted_metadata.gps = { gps };
+        if (gps) extracted_metadata.gps = gps;
       } catch (err) {}
     }
 
