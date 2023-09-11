@@ -245,7 +245,7 @@ export default {
 
   &.is--list {
     // border-bottom: 2px solid #b9b9b9;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
 
     ._title {

@@ -148,6 +148,7 @@ export default {
 
   width: 100%;
   margin: 0 auto;
+  padding: calc(var(--spacing) / 2);
 
   // overflow: hidden;
   // border-radius: var(--panel-radius);
@@ -160,7 +161,7 @@ export default {
     gap: calc(var(--spacing) / 2);
   }
   &[data-context="list"] {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     &:hover,
     &:focus-visible {
       transform: translateY(-6px);

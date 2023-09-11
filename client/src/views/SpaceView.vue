@@ -170,7 +170,7 @@ export default {
   max-width: var(--max-column-width);
   padding: calc(var(--spacing) * 1);
   max-width: 100ch;
-  box-shadow: 0 1px 40px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 40px rgba(0, 0, 0, 0.1);
   background: white;
 
   margin: 4vw auto;
