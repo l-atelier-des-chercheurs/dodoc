@@ -12,15 +12,13 @@
   </div> -->
 </template>
 <script>
-import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
-
 export default {
   props: {
     title: String,
     gps: Object,
   },
   components: {
-    DisplayOnMap,
+    DisplayOnMap: () => import("@/adc-core/fields/DisplayOnMap.vue"),
   },
   data() {
     return {};

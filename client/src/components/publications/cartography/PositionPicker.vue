@@ -78,8 +78,6 @@
   </div>
 </template>
 <script>
-import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
-
 const convertDMSToDD = (dms) => {
   // eslint-disable-next-line
   let parts = dms.split(/[^\d+(\,\d+)\d+(\.\d+)?\w]+/);
@@ -108,7 +106,7 @@ export default {
     edit_mode: Boolean,
   },
   components: {
-    DisplayOnMap,
+    DisplayOnMap: () => import("@/adc-core/fields/DisplayOnMap.vue"),
   },
   data() {
     return {

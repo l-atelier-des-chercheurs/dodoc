@@ -151,6 +151,13 @@ export default {
       show_nav_btn: false,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        place: "Emplacement",
+      },
+    },
+  },
   created() {},
   mounted() {
     window.addEventListener("keyup", this.handleKeyPress);
@@ -283,7 +290,7 @@ export default {
     &._meta {
       background: white;
       flex: 1 0 0;
-      min-width: 240px;
+      min-width: 280px;
     }
   }
 }
