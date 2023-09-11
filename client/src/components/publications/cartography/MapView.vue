@@ -53,14 +53,12 @@
   </div>
 </template>
 <script>
-import DisplayOnMap from "@/components/publications/cartography/DisplayOnMap.vue";
-
 export default {
   props: {
     publication: Object,
   },
   components: {
-    DisplayOnMap,
+    DisplayOnMap: () => import("@/adc-core/fields/DisplayOnMap.vue"),
   },
   data() {
     return {

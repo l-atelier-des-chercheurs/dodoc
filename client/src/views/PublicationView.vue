@@ -50,19 +50,18 @@
 import screenfull from "screenfull";
 
 import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
-import PageSlides from "@/components/publications/page_by_page/PageSlides.vue";
-import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
-import SectionWithPrint from "@/components/publications/story/SectionWithPrint.vue";
-import MapView from "@/components/publications/cartography/MapView.vue";
 
 export default {
   props: {},
   components: {
     PublicationTopbar,
-    PageSlides,
-    StoryTemplate,
-    SectionWithPrint,
-    MapView,
+    PageSlides: () =>
+      import("@/components/publications/page_by_page/PageSlides.vue"),
+    StoryTemplate: () =>
+      import("@/components/publications/templates/StoryTemplate.vue"),
+    SectionWithPrint: () =>
+      import("@/components/publications/story/SectionWithPrint.vue"),
+    MapView: () => import("@/components/publications/cartography/MapView.vue"),
   },
   data() {
     return {

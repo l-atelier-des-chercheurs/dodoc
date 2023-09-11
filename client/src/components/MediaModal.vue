@@ -68,9 +68,14 @@
             :date="file.$date_modified"
           />
           <SizeDisplay
-            v-if="file.$infos"
+            v-if="file.$infos && file.$infos.size"
             :title="$t('size')"
             :size="file.$infos.size"
+          />
+          <ShowOnMap
+            v-if="file.$infos && file.$infos.gps"
+            :title="$t('place')"
+            :gps="file.$infos.gps"
           />
         </div>
       </div>
@@ -145,6 +150,13 @@ export default {
     return {
       show_nav_btn: false,
     };
+  },
+  i18n: {
+    messages: {
+      fr: {
+        place: "Emplacement",
+      },
+    },
   },
   created() {},
   mounted() {
@@ -277,7 +289,8 @@ export default {
     }
     &._meta {
       background: white;
-      flex: 1 0 240px;
+      flex: 1 0 0;
+      min-width: 280px;
     }
   }
 }
