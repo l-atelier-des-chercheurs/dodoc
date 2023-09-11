@@ -1,7 +1,7 @@
 const path = require("path"),
   fs = require("fs-extra"),
   ffmpeg = require("fluent-ffmpeg"),
-  exifReader = require("exif-reader"),
+  exifr = require("exifr"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
   https = require("https"),
@@ -468,9 +468,8 @@ module.exports = (function () {
 
     if (metadata.exif) {
       try {
-        const exif = exifReader(metadata.exif);
-        dev.logfunction({ exif });
-        if (exif?.gps) extracted_metadata.gps = exif.gps;
+        const gps = await exifr.gps(full_media_path);
+        if (gps) extracted_metadata.gps = { gps };
       } catch (err) {}
     }
 
