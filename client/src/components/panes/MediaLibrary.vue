@@ -75,21 +75,26 @@
               />
             </select>
 
-            <div v-for="group_option in group_options" :key="group_option.key">
-              <input
-                type="radio"
-                :id="group_option.key"
-                :value="group_option.key"
-                v-model="group_mode"
-              />
-              <label
-                :for="group_option.key"
-                v-text="group_option.label"
-                :class="{
-                  'is--selected': group_option.key === group_mode,
-                }"
-              />
-            </div>
+            <template v-if="tile_mode !== 'map'">
+              <div
+                v-for="group_option in group_options"
+                :key="group_option.key"
+              >
+                <input
+                  type="radio"
+                  :id="group_option.key"
+                  :value="group_option.key"
+                  v-model="group_mode"
+                />
+                <label
+                  :for="group_option.key"
+                  v-text="group_option.label"
+                  :class="{
+                    'is--selected': group_option.key === group_mode,
+                  }"
+                />
+              </div>
+            </template>
           </div>
 
           <div class="_tileMode">
@@ -101,7 +106,7 @@
               }"
               @click="tile_mode = 'table'"
             >
-              <sl-icon name="list-ol" />
+              <b-icon icon="list-ol" />
             </button>
             <button
               class="u-button u-button_transparent"
@@ -111,7 +116,7 @@
               }"
               @click="tile_mode = 'tiny'"
             >
-              <sl-icon name="grid-3x2-gap-fill" />
+              <b-icon icon="grid-3x2-gap-fill" />
             </button>
             <button
               class="u-button u-button_transparent"
@@ -121,14 +126,29 @@
               }"
               @click="tile_mode = 'medium'"
             >
-              <sl-icon name="grid-fill" />
+              <b-icon icon="grid-fill" />
+            </button>
+            <button
+              class="u-button u-button_transparent"
+              type="button"
+              :class="{
+                'is--active': tile_mode === 'map',
+              }"
+              @click="tile_mode = 'map'"
+            >
+              <b-icon icon="map-fill" />
             </button>
           </div>
         </div>
       </div>
 
       <transition name="pagechange" mode="out-in">
-        <div :key="group_mode" class="_gridSection">
+        <MediaMap
+          v-if="tile_mode === 'map'"
+          key="mediaMap"
+          :medias="filtered_medias"
+        />
+        <div v-else :key="group_mode" class="_gridSection">
           <div
             class="_dayFileSection"
             v-for="{ label, files } in grouped_medias"
@@ -214,6 +234,7 @@ export default {
   components: {
     MediaTile,
     MediaModal,
+    MediaMap: () => import("@/components/project/MediaMap.vue"),
   },
   data() {
     return {
@@ -397,7 +418,7 @@ export default {
       return Object.keys(present).length > 0 ? present : false;
     },
     quantityOfMediaWithType(type_of_media_key) {
-      return this.filtered_medias.filter(
+      return this.sorted_medias.filter(
         (m) => type_of_media_key === "all" || m.$type === type_of_media_key
       ).length;
     },
@@ -601,13 +622,17 @@ export default {
 
 ._groupBy {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
 
   > * {
     display: flex;
     flex-flow: row nowrap;
+  }
+
+  > select {
+    width: 20ch;
   }
 
   input {

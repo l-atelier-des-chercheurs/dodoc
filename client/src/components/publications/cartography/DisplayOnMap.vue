@@ -98,10 +98,6 @@ export default {
     pins: [Boolean, Array],
     start_coords: {
       type: [Boolean, Array],
-      default(rawProps) {
-        if (Array.isArray(rawProps) && rawProps.length === 2) return rawProps;
-        return [5.39057449011251, 43.310173305629576];
-      },
     },
     start_zoom: {
       type: [Boolean, Number],
@@ -158,6 +154,13 @@ export default {
         this.map = null;
       }
 
+      // default, can be overriden
+      let center = [5.39057449011251, 43.310173305629576];
+      if (this.start_coords) center = this.start_coords;
+      else if (this.pins && this.pins.length > 0) {
+        center = [this.pins[0].longitude, this.pins[0].latitude];
+      }
+
       // const { Circle, Fill, Stroke, Style, Text } = ol.style;
       // const Map = ol.Map;
       // const Overlay = ol.Overlay;
@@ -184,7 +187,7 @@ export default {
       });
 
       this.view = new olView({
-        center: this.start_coords,
+        center,
         zoom: this.start_zoom,
       });
       this.map = new olMap({
@@ -332,6 +335,8 @@ export default {
 <style lang="scss" scoped>
 .m_displayOnMap {
   position: relative;
+  width: 100%;
+  height: 100%;
   background-color: var(--c-gris);
 
   flex: 1 1 320px;
