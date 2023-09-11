@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import DisplayOnMap from "@/components/publications/cartography/DisplayOnMap.vue";
+import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
 
 export default {
   props: {

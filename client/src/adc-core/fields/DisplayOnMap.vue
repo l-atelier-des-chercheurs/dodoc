@@ -331,7 +331,7 @@ export default {
   },
 };
 </script>
-<style src="../../../../node_modules/ol/ol.css"></style>
+<style src="../../../node_modules/ol/ol.css"></style>
 <style lang="scss" scoped>
 .m_displayOnMap {
   position: relative;

@@ -156,6 +156,8 @@ import DateDisplay from "@/adc-core/fields/DateDisplay.vue";
 Vue.component("DateDisplay", DateDisplay);
 import SizeDisplay from "@/adc-core/fields/SizeDisplay.vue";
 Vue.component("SizeDisplay", SizeDisplay);
+Vue.component("ShowOnMap", () => import("@/adc-core/fields/ShowOnMap.vue"));
+
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
 import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
