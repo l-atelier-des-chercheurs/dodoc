@@ -77,8 +77,6 @@
             @click="$emit('removeMediaAtIndex', index)"
           >
             <sl-icon name="trash3" />
-            <!-- v-if="is_multiple_medias" -->
-            <!-- {{ $t("remove") }} -->
           </button>
         </div>
       </div>
