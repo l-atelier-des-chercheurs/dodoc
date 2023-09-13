@@ -431,7 +431,7 @@
             },
             "$files": {
               "thumbs": {
-                "resolutions": [50, 220, 1600]
+                "resolutions": [50, 220, 440, 1600]
               },
               "fields": {
                 "group": {

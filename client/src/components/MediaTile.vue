@@ -12,7 +12,11 @@
     @dragend="endMediaDrag()"
   >
     <div class="u-nut _index" v-html="index" />
-    <MediaContent class="_content" :file="file" :resolution="220" />
+    <MediaContent
+      class="_content"
+      :file="file"
+      :resolution="media_resolution"
+    />
     <div
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
@@ -85,6 +89,10 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    media_resolution() {
+      if (this.tile_mode === "medium") return 440;
+      return 220;
+    },
     duration() {
       if (["video", "audio"].includes(this.file.$type))
         if (this.file.$infos.duration)
