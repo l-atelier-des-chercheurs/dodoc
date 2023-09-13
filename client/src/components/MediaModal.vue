@@ -276,7 +276,7 @@ export default {
   margin-top: 2px;
   margin-left: 2px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 
   > * {
     &._preview {
@@ -291,6 +291,8 @@ export default {
       background: white;
       flex: 1 0 0;
       min-width: 280px;
+      height: 100%;
+      overflow: auto;
     }
   }
 }
