@@ -235,18 +235,25 @@ export default {
 
       if (this.debounce_selection) clearTimeout(this.debounce_selection);
       this.debounce_selection = setTimeout(async () => {
-        await this.$api.updateMeta({
-          path: this.make.$path,
-          new_meta: {
-            selection: this.selection,
-          },
-        });
+        await this.updateSelectionMeta();
       }, 1000);
     },
     setSelect() {
       const { start, end } = this.make.selection;
       if (start !== this.selection.start || end !== this.selection.end)
         this.main_wfpl.getEventEmitter().emit("select", start, end);
+    },
+    async updateSelectionMeta() {
+      if (
+        this.selection.start !== this.make.selection.start ||
+        this.selection.end !== this.make.selection.end
+      )
+        await this.$api.updateMeta({
+          path: this.make.$path,
+          new_meta: {
+            selection: this.selection,
+          },
+        });
     },
     finished() {
       // this.pause();
