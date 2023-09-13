@@ -18,8 +18,20 @@
       />
     </div>
     <div v-if="!show_image_only" class="_infos">
-      <div class="_name">{{ author.name }}</div>
-      <div
+      <div class="_name">
+        {{ author.name }}
+        <b-icon
+          v-if="
+            authorIsInstance({
+              field: '$admins',
+              folder_path: author.$path,
+            })
+          "
+          icon="gear"
+          :aria-label="$t('admin')"
+        />
+      </div>
+      <!-- <div
         class="u-instructions"
         v-if="
           authorIsInstance({
@@ -29,7 +41,7 @@
         "
       >
         <small v-html="$t('admin')" />
-      </div>
+      </div> -->
 
       <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>

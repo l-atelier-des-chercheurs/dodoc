@@ -22,6 +22,7 @@
           :tag="'h2'"
           :can_edit="can_edit"
         />
+
         <div class="_path">@{{ getFilename(author.$path) }}</div>
         <div v-if="is_instance_admin">
           <span v-text="author.email" />
@@ -35,6 +36,7 @@
             })
           "
         >
+          <b-icon icon="gear" :aria-label="$t('admin')" />
           <small v-html="$t('admin')" />
         </div>
 
