@@ -30,9 +30,18 @@
         <span>
           {{ $t("extract_to_export") }}
         </span>
-        <input type="text" :value="selection.start" readonly />
+
+        <NumberInput
+          :value="selection.start"
+          :suffix="'s'"
+          @save="setStartOrEnd({ new_start: $event })"
+        />
         <b-icon icon="arrow-right-circle" />
-        <input type="text" :value="selection.end" readonly />
+        <NumberInput
+          :value="selection.end"
+          :suffix="'s'"
+          @save="setStartOrEnd({ new_end: $event })"
+        />
       </div>
 
       <div class="u-sameRow _submit">
@@ -242,6 +251,17 @@ export default {
       const { start, end } = this.make.selection;
       if (start !== this.selection.start || end !== this.selection.end)
         this.main_wfpl.getEventEmitter().emit("select", start, end);
+    },
+    setStartOrEnd({ new_start, new_end }) {
+      // let { start, end } = this.selection;
+      // if (start !== new_start) start = new_start;
+      // if (end !== new_end) end = new_end;
+
+      const start = new_start || this.selection.start;
+      const end = new_end || this.selection.end;
+
+      debugger;
+      this.main_wfpl.getEventEmitter().emit("select", start, end);
     },
     async updateSelectionMeta() {
       if (
