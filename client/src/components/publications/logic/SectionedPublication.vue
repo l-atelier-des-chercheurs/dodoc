@@ -4,6 +4,7 @@
       :publication="publication"
       :sections="sections"
       :opened_section="opened_section"
+      :opened_section_modules_list="opened_section_modules_list"
       :can_edit="can_edit"
       @toggleSection="$emit('toggleSection', $event)"
       @closePublication="$emit('closePublication')"
@@ -12,6 +13,11 @@
       @updateOrder="updateOrder"
       @openSection="openSection"
       @closeSection="closeSection"
+      @addModule="appendModuleMetaFilenameToList"
+      @insertModule="insertModuleMetaFilenameToList"
+      @moveModuleTo="moveModuleTo"
+      @removeModule="removeModule"
+      @duplicatePublicationMedia="duplicatePublicationMedia"
     />
   </div>
 </template>
@@ -43,7 +49,7 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.sections_list && !this.section_opened_meta) {
+    if (this.sections_list.length > 0 && !this.section_opened_meta) {
       this.$emit("toggleSection", this.sections_list[0].meta_filename);
     }
   },
@@ -74,6 +80,20 @@ export default {
         f.$path.endsWith("/" + this.section_opened_meta)
       );
     },
+    opened_section_modules_list() {
+      if (Array.isArray(this.opened_section?.modules_list)) {
+        const modules_list = this.opened_section.modules_list.reduce(
+          (acc, meta_filename) => {
+            const _module = this.findModuleFromMetaFilename(meta_filename);
+            if (_module) acc.push({ meta_filename, _module });
+            return acc;
+          },
+          []
+        );
+        return modules_list;
+      }
+      return [];
+    },
     meta_filenames_already_present() {
       const current = [];
       const other = [];
@@ -83,9 +103,7 @@ export default {
 
         if (s.modules_list && Array.isArray(s.modules_list))
           s.modules_list.map((module_meta) => {
-            const section_module = this.sections.find((f) => {
-              return this.getFilename(f.$path) === module_meta;
-            });
+            const section_module = this.findModuleFromMetaFilename(module_meta);
             if (
               section_module?.source_medias &&
               Array.isArray(section_module.source_medias)
@@ -162,6 +180,90 @@ export default {
     async updatePubliMeta(new_meta) {
       return await this.$api.updateMeta({
         path: this.publication.$path,
+        new_meta,
+      });
+    },
+
+    findModuleFromMetaFilename(meta_filename) {
+      if (!this.publication.$files) return [];
+      return this.publication.$files.find((f) => {
+        const _meta_name = this.getFilename(f.$path);
+        return _meta_name === meta_filename;
+      });
+    },
+    async appendModuleMetaFilenameToList({ meta_filename }) {
+      let modules_list = this.opened_section_modules_list.map(
+        (m) => m.meta_filename
+      );
+      modules_list.push(meta_filename);
+      await this.updateSectionMeta({ modules_list });
+      this.toggleNewModuleEdit({ meta_filename });
+    },
+    async insertModuleMetaFilenameToList({ meta_filename, index }) {
+      let modules_list = this.opened_section_modules_list.map(
+        (m) => m.meta_filename
+      );
+
+      modules_list.splice(index, 0, meta_filename);
+
+      await this.updateSectionMeta({ modules_list });
+      this.toggleNewModuleEdit({ meta_filename });
+    },
+    async moveModuleTo({ meta_filename, dir }) {
+      let modules_list = this.opened_section_modules_list.map(
+        (m) => m.meta_filename
+      );
+
+      const target_meta_index = modules_list.findIndex(
+        (m) => m === meta_filename
+      );
+      if (target_meta_index + dir < 0) return false;
+      else if (target_meta_index + dir > modules_list.length - 1) return false;
+
+      modules_list.move(target_meta_index, target_meta_index + dir);
+      await this.updateSectionMeta({ modules_list });
+    },
+    async removeModule(meta_filename) {
+      let modules_list = this.opened_section_modules_list.map(
+        (m) => m.meta_filename
+      );
+
+      modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
+      await this.updateSectionMeta({ modules_list });
+    },
+    async duplicatePublicationMedia({
+      source_meta_filename,
+      copy_meta_filename,
+    }) {
+      source_meta_filename;
+      copy_meta_filename;
+
+      let modules_list = this.opened_section_modules_list.map(
+        (m) => m.meta_filename
+      );
+      const position_of_original_media = modules_list.findIndex(
+        (_mf) => _mf === source_meta_filename
+      );
+
+      modules_list.splice(
+        position_of_original_media + 1,
+        0,
+        copy_meta_filename
+      );
+
+      await this.updateSectionMeta({ modules_list });
+    },
+
+    toggleNewModuleEdit({ meta_filename }) {
+      setTimeout(() => {
+        console.log(`emit module.enable_edit.${meta_filename}`);
+        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
+      }, 50);
+    },
+
+    async updateSectionMeta(new_meta) {
+      return await this.$api.updateMeta({
+        path: this.opened_section.$path,
         new_meta,
       });
     },

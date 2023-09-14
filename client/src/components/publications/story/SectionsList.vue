@@ -15,9 +15,17 @@
           ref="section"
           :publication="publication"
           :section="opened_section"
+          :modules_list="opened_section_modules_list"
           :can_edit="can_edit"
           @remove="$emit('removeSection', opened_section.$path)"
           @close="$emit('closeSection')"
+          @addModule="$emit('addModule', $event)"
+          @insertModule="$emit('insertModule', $event)"
+          @moveModuleTo="$emit('moveModuleTo', $event)"
+          @removeModule="$emit('removeModule', $event)"
+          @duplicatePublicationMedia="
+            $emit('duplicatePublicationMedia', $event)
+          "
         />
         <div class="_navBtns">
           <div class="_navBtns--content">
@@ -44,6 +52,8 @@ export default {
     publication: Object,
     sections: Array,
     opened_section: Object,
+    opened_section_modules_list: Array,
+    modules_list: Array,
     can_edit: Boolean,
   },
   components: {
