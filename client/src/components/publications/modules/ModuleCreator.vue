@@ -4,6 +4,7 @@
       <button
         type="button"
         class="u-button u-button_small u-button_bleumarine"
+        v-if="types_available.includes('text')"
         @click="createText"
       >
         <!-- {{ $t("add_text") }} -->
@@ -17,6 +18,7 @@
       <button
         type="button"
         class="u-button u-button_small u-button_bleumarine"
+        v-if="types_available.includes('medias')"
         @click="show_media_picker = true"
       >
         <sl-icon
@@ -35,6 +37,7 @@
       <button
         type="button"
         class="u-button u-button_small u-button_bleumarine"
+        v-if="types_available.includes('files')"
         @click="show_file_picker = true"
       >
         <sl-icon
@@ -53,6 +56,7 @@
       <button
         type="button"
         class="u-button u-button_small u-button_bleumarine"
+        v-if="types_available.includes('link')"
         @click="show_link_picker = true"
       >
         <sl-icon
@@ -66,7 +70,8 @@
         @embed="createEmbed"
         @close="show_link_picker = false"
       />
-      <template v-if="show_shapes === true">
+
+      <template v-if="types_available.includes('shapes')">
         <button
           type="button"
           v-for="shape in shapes"
@@ -111,7 +116,10 @@ export default {
     publication_path: String,
     addtl_meta: Object,
     context: String,
-    show_shapes: Boolean,
+    types_available: {
+      type: Array,
+      default: () => ["text", "medias", "files", "link", "shapes"],
+    },
     is_collapsed: {
       type: Boolean,
       default: true,
@@ -210,16 +218,22 @@ export default {
         });
       }
 
-      if (this.context === "page_by_page") {
+      if (this.context === "page_by_page" || this.context === "cartography") {
         for (const source_media of source_medias) {
           const media = this.getSourceMedia({
             source_media,
             folder_path: this.publication_path,
           });
+
           let addtl_meta = {};
-          if (media?.$infos?.ratio)
-            addtl_meta.height =
-              this.$root.default_new_module_width * media.$infos.ratio;
+          if (this.context === "page_by_page")
+            if (media?.$infos?.ratio)
+              addtl_meta.height =
+                this.$root.default_new_module_width * media.$infos.ratio;
+
+          if (this.context === "cartography")
+            if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+
           await this.createModule({
             module_type: "mosaic",
             source_medias: [source_media],
@@ -301,8 +315,8 @@ export default {
         requested_slug: "module",
       };
 
-      if (this.addtl_meta)
-        Object.assign(additional_meta, this.addtl_meta, addtl_meta);
+      if (this.addtl_meta) Object.assign(additional_meta, this.addtl_meta);
+      if (addtl_meta) Object.assign(additional_meta, addtl_meta);
 
       return await this.$api
         .uploadFile({

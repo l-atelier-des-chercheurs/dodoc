@@ -1,6 +1,27 @@
 <template>
   <div>
     <SectionsList
+      v-if="template === 'story_with_sections'"
+      :publication="publication"
+      :sections="sections"
+      :opened_section="opened_section"
+      :opened_section_modules_list="opened_section_modules_list"
+      :can_edit="can_edit"
+      @toggleSection="$emit('toggleSection', $event)"
+      @closePublication="$emit('closePublication')"
+      @createSection="createSection"
+      @removeSection="removeSection"
+      @updateOrder="updateOrder"
+      @openSection="openSection"
+      @closeSection="closeSection"
+      @addModule="appendModuleMetaFilenameToList"
+      @insertModule="insertModuleMetaFilenameToList"
+      @moveModuleTo="moveModuleTo"
+      @removeModule="removeModule"
+      @duplicatePublicationMedia="duplicatePublicationMedia"
+    />
+    <MapView2
+      v-else-if="template === 'cartography'"
       :publication="publication"
       :sections="sections"
       :opened_section="opened_section"
@@ -23,15 +44,18 @@
 </template>
 <script>
 import SectionsList from "@/components/publications/story/SectionsList.vue";
+import MapView2 from "@/components/publications/cartography/MapView2.vue";
 
 export default {
   props: {
+    template: String,
     publication: Object,
     section_opened_meta: String,
     can_edit: Boolean,
   },
   components: {
     SectionsList,
+    MapView2,
   },
   data() {
     return {};
@@ -119,14 +143,17 @@ export default {
     },
   },
   methods: {
-    async createSection() {
+    async createSection(section_title) {
+      let additional_meta = {
+        section_type: "-",
+        requested_slug: "section",
+      };
+      if (section_title) additional_meta.section_title = section_title;
+
       const section_meta_filename = await this.$api
         .uploadFile({
           path: this.publication.$path,
-          additional_meta: {
-            section_type: "-",
-            requested_slug: "section",
-          },
+          additional_meta,
         })
         .catch((err) => {
           this.$alertify.delay(4000).error(err);

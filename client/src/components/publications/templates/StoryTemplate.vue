@@ -62,6 +62,7 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
+                :types_available="['text', 'medias', 'files', 'link']"
                 @addModule="
                   ({ meta_filename }) =>
                     insertModuleMetaFilenameToList({
@@ -79,6 +80,7 @@
     <ModuleCreator
       v-if="can_edit && (!modules_list || modules_list.length === 0)"
       :publication_path="publication.$path"
+      :types_available="['text', 'medias', 'files', 'link']"
       @addModule="appendModuleMetaFilenameToList"
     />
   </div>

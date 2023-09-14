@@ -1,6 +1,9 @@
 <template>
   <details
-    class="_DetailsPane"
+    class="_detailsPane"
+    :class="{
+      'is--unclosable': !can_be_toggled,
+    }"
     :open="is_open_initially"
     @toggle="toggleDetails"
   >
@@ -27,6 +30,7 @@
         <template v-else>–</template>
       </div>
       <sl-icon
+        v-if="can_be_toggled"
         class="_openIcon"
         :name="!currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'"
       />
@@ -43,11 +47,12 @@ export default {
     icon: String,
     has_items: undefined,
     is_open_initially: Boolean,
+    can_be_toggled: { type: Boolean, default: true },
   },
   components: {},
   data() {
     return {
-      currently_open: false,
+      currently_open: this.is_open_initially || false,
     };
   },
   created() {},
@@ -57,13 +62,14 @@ export default {
   computed: {},
   methods: {
     toggleDetails(event) {
+      if (!this.can_be_toggled) return;
       this.currently_open = event.currentTarget.open;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-._DetailsPane {
+._detailsPane {
   // border-bottom: 0px solid var(--c-gris_clair);
   // border: 1px solid transparent;
   // border-left: 2px solid transparent;
@@ -73,6 +79,10 @@ export default {
 
   display: flex;
   flex-flow: row nowrap;
+
+  &.is--unclosable summary {
+    pointer-events: none;
+  }
 
   ._icon {
     font-size: 110%;
@@ -87,7 +97,7 @@ export default {
     line-height: 0;
     // transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-    ._DetailsPane[open] & {
+    ._detailsPane[open] & {
     }
   }
 

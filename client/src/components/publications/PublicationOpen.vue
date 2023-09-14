@@ -24,8 +24,8 @@
       <StorySectionTemplate
         v-if="publication.template === 'story_with_sections'"
         :publication="publication"
-        :can_edit="can_edit"
         :section_opened_meta="page_opened_id"
+        :can_edit="can_edit"
         @toggleSection="$emit('togglePage', $event)"
         @closePublication="$emit('close')"
       />
@@ -40,7 +40,9 @@
       <MapTemplate
         v-else-if="publication.template === 'cartography'"
         :publication="publication"
+        :section_opened_meta="page_opened_id"
         :can_edit="can_edit"
+        @toggleSection="$emit('togglePage', $event)"
         @closePublication="$emit('close')"
       />
     </template>

@@ -663,6 +663,9 @@
                     },
                     "show_fs_button": {
                       "type": "boolean"
+                    },
+                    "location": {
+                      "type": "object"
                     }
                   }
                 }

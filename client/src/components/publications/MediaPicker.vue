@@ -8,7 +8,7 @@
     <!-- select from this or another project library -->
     <PickMediaFromProjects
       :path="current_project_path"
-      :select_mode="'multiple'"
+      :select_mode="select_mode"
       @addMedias="$emit('addMedias', $event)"
       @close="$emit('close')"
     />
@@ -18,6 +18,10 @@
 export default {
   props: {
     publication_path: String,
+    select_mode: {
+      type: String,
+      default: "multiple",
+    },
   },
   components: {},
   data() {

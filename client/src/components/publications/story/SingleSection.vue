@@ -30,6 +30,7 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
+                :types_available="['text', 'medias', 'files', 'link']"
                 @addModule="$emit('insertModule', $event)"
               />
             </div>
@@ -63,6 +64,7 @@
         <ModuleCreator
           v-if="can_edit"
           :publication_path="publication.$path"
+          :types_available="['text', 'medias', 'files', 'link']"
           @addModule="$emit('addModule', $event)"
         />
       </div>

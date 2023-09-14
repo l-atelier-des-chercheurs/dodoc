@@ -4,9 +4,28 @@
       class="_mapContainer"
       :start_coords="start_coords"
       :start_zoom="start_zoom"
+      :pins="pins"
       :is_small="false"
     />
-    <div class="_textContainer">
+    <LayersPane
+      v-if="can_edit || sections.length > 1"
+      :publication_path="publication.$path"
+      :sections="sections"
+      :opened_section="opened_section"
+      :opened_section_modules_list="opened_section_modules_list"
+      :can_edit="can_edit"
+      @createSection="$emit('createSection', $event)"
+      @openSection="$emit('openSection', $event)"
+      @closeSection="$emit('closeSection')"
+      @updateOrder="$emit('updateOrder', $event)"
+      @addModule="$emit('addModule', $event)"
+      @insertModule="$emit('insertModule', $event)"
+      @moveModuleTo="$emit('moveModuleTo', $event)"
+      @removeModule="$emit('removeModule', $event)"
+      @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
+    />
+
+    <div class="_textContainer" v-if="false">
       <div class="_views">
         <DLabel :str="$t('views_list')" />
 
@@ -53,11 +72,18 @@
   </div>
 </template>
 <script>
+import LayersPane from "@/components/publications/cartography/LayersPane.vue";
+
 export default {
   props: {
     publication: Object,
+    sections: Array,
+    opened_section: Object,
+    opened_section_modules_list: Array,
+    can_edit: Boolean,
   },
   components: {
+    LayersPane,
     DisplayOnMap: () => import("@/adc-core/fields/DisplayOnMap.vue"),
   },
   data() {
@@ -65,8 +91,8 @@ export default {
       views_list: [
         {
           title: "Présentation du territoire",
-          text: `<p>Pellentesque vehicula consequat mi nec efficitur. Etiam nunc massa, congue ut justo ac, cursus fringilla nisi. Aliquam erat volutpat. Integer 
-          vulputate hendrerit sodales. Duis varius, purus sit amet varius dapibus, velit est pellentesque lectus, quis auctor orci urna sed sapien. Curabitur 
+          text: `<p>Pellentesque vehicula consequat mi nec efficitur. Etiam nunc massa, congue ut justo ac, cursus fringilla nisi. Aliquam erat volutpat. Integer
+          vulputate hendrerit sodales. Duis varius, purus sit amet varius dapibus, velit est pellentesque lectus, quis auctor orci urna sed sapien. Curabitur
           at risus quis magna lacinia ultricies. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce fringilla nulla sit amet tempus maximus.
           </p><p>Etiam bibendum nec metus nec pulvinar. Duis tristique, erat eu ornare tincidunt, ante elit blandit dui, sit amet volutpat massa felis mattis lectus. Vestibulum commodo felis libero, eu convallis mi faucibus vestibulum. Pellentesque condimentum ullamcorper interdum. Duis vel varius diam. Nulla aliquam ipsum nisi, sed vestibulum neque porttitor sit amet. Nullam quis consectetur tellus. Pellentesque mattis eget velit ut elementum. Maecenas tincidunt sollicitudin feugiat. Nam eleifend nisl ut erat blandit, quis bibendum ex gravida. Mauris nec feugiat lacus. Vestibulum gravida dapibus condimentum. Sed eu maximus urna, id rutrum ipsum. Nam vitae velit sem.</p>'`,
           map_center: [5.39057449011251, 43.310173305629576],
@@ -115,6 +141,11 @@ export default {
     opened_view() {
       if (this.opened_view_id === false) return false;
       return this.views_list[this.opened_view_id];
+    },
+    pins() {
+      return this.opened_section_modules_list.map(
+        ({ _module }) => _module.location || null
+      );
     },
     // initial_view() {
     //   const il = this.publication.map_initial_location;
