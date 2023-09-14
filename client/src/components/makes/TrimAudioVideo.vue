@@ -260,7 +260,6 @@ export default {
       const start = new_start || this.selection.start;
       const end = new_end || this.selection.end;
 
-      debugger;
       this.main_wfpl.getEventEmitter().emit("select", start, end);
     },
     async updateSelectionMeta() {
