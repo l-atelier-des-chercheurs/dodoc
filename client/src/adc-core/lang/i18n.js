@@ -217,7 +217,9 @@ export default function () {
         page_by_page: "Page à page",
         cartography: "Cartographie",
         export_in_pdf: "Exporter en PDF",
+        direct_link: "Lien direct",
         share: "Partager",
+        options: "Options",
         exports_in_progress: "Exportation(s) en cours",
 
         story_width: "Largeur du récit",
@@ -557,6 +559,7 @@ export default function () {
         all_rights_reserved_explanations: "–",
 
         drop_here: "Déposer ici",
+        or_drag_drop_file_here: "Ou déposer des fichiers ici",
         enable: "Activer",
 
         // effets
