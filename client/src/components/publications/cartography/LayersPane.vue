@@ -77,9 +77,9 @@
             { meta_filename, _module }, index
           ) in opened_section_modules_list"
           :key="meta_filename"
+          class=""
         >
           Média {{ index + 1 }}<br />
-          Localisation ? {{ _module.location }}
 
           <PublicationModule
             class="_mediaPublication"
@@ -212,7 +212,7 @@ export default {
 }
 
 ._openedLayer--content {
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 2);
   height: 100%;
   overflow: auto;
   background: white;
