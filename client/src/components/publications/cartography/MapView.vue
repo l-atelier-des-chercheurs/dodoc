@@ -130,10 +130,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    start_coords() {
-      // return this.views_list[0].map_center;
-      return [5.39057449011251, 43.310173305629576];
-    },
     start_zoom() {
       // return this.views_list[0].map_zoom;
       return 10;
