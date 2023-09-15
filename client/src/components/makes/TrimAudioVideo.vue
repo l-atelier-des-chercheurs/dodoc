@@ -1,10 +1,13 @@
 <template>
   <div class="_trimAudioVideo">
-    <div v-if="make.type === 'trim_video'" class="_videoPreview">
+    <div
+      v-if="make.type === 'trim_video'"
+      class="u-spacingBottom _videoPreview"
+    >
       <video :src="base_media_url" muted ref="videoPreview" />
     </div>
 
-    <div class="_btnRow">
+    <div class="u-spacingBottom _btnRow">
       <button type="button" class="u-button u-button_bleuvert" @click="play">
         <b-icon icon="play-circle-fill" />
         {{ $t("play") }}
@@ -12,6 +15,12 @@
       <button type="button" class="u-button u-button_orange" @click="pause">
         <b-icon icon="pause-circle" />
         {{ $t("pause") }}
+      </button>
+      <button type="button" class="u-button u-button_orange" @click="zoomin">
+        <b-icon icon="zoom-in" />
+      </button>
+      <button type="button" class="u-button u-button_orange" @click="zoomout">
+        <b-icon icon="zoom-out" />
       </button>
     </div>
 
@@ -164,12 +173,12 @@ export default {
   methods: {
     async loadWFP() {
       this.main_wfpl = WaveformPlaylist({
-        samplesPerPixel: 512,
         container: this.$refs.playlist,
+        samplesPerPixel: 256,
         state: "select",
         timescale: true,
         isAutomaticScroll: true,
-        zoomLevels: [512, 1024, 2048, 4096],
+        zoomLevels: [256, 512, 1024, 2048, 4096],
         states: {
           cursor: false,
           fadein: false,
@@ -219,6 +228,12 @@ export default {
       this.main_wfpl.getEventEmitter().emit("pause");
       this.pausePreviewVideo();
       this.is_playing = false;
+    },
+    zoomin() {
+      this.main_wfpl.getEventEmitter().emit("zoomin");
+    },
+    zoomout() {
+      this.main_wfpl.getEventEmitter().emit("zoomout");
     },
     // stop() {
     //   this.main_wfpl.getEventEmitter().emit("stop");
@@ -382,12 +397,15 @@ export default {
   gap: calc(var(--spacing) / 4);
   align-items: center;
   width: 100%;
-  background: white;
+  // background: white;
 
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
-  border-radius: 2px;
+  // border-radius: 2px;
   margin: 0 auto calc(var(--spacing) / 1);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+
+  > * {
+    box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+  }
 }
 
 ._extract {
@@ -412,6 +430,7 @@ export default {
   height: 100%;
   width: auto;
   margin: 0 auto;
+  margin-bottom: calc(var(--spacing) / 1);
   background: var(--c-noir);
 
   video {
