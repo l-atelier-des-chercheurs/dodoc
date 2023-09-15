@@ -1,5 +1,16 @@
 <template>
   <div class="_topbar">
+    <button
+      type="button"
+      class="u-button u-button_icon"
+      @click="$emit('close')"
+    >
+      <b-icon
+        icon="arrow-left-circle-fill"
+        :aria-label="$t('back_to_publications')"
+      />
+    </button>
+
     <div class="_publiTitle">
       <TitleField
         :field_name="'title'"
@@ -40,8 +51,38 @@
         </small>
       </div>
 
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        @click="openSettings"
+      >
+        <b-icon icon="gear" :aria-label="$t('settings')" />
+      </button>
+
       <sl-dropdown>
-        <sl-button slot="trigger" caret>{{ $t("menu") }}</sl-button>
+        <sl-button slot="trigger" caret>{{ $t("options") }}</sl-button>
+        <sl-menu>
+          <sl-menu-item>
+            <DuplicatePublication
+              v-if="can_edit"
+              :path="publication.$path"
+              :source_title="publication.title"
+              :publication="publication"
+              @close="$emit('close')"
+            />
+          </sl-menu-item>
+          <sl-menu-item>
+            <RemoveMenu
+              v-if="can_edit"
+              :remove_text="$t('remove')"
+              @remove="removePublication"
+            />
+          </sl-menu-item>
+        </sl-menu>
+      </sl-dropdown>
+
+      <sl-dropdown>
+        <sl-button slot="trigger" caret>{{ $t("share") }}</sl-button>
         <sl-menu>
           <sl-menu-item>
             <button
@@ -64,29 +105,13 @@
               @click="show_qr_code_modal = true"
             >
               <sl-icon name="qr-code" />
-              {{ $t("share") }}
+              {{ $t("direct_link") }}
             </button>
 
             <QRModal
               v-if="show_qr_code_modal"
               :url_to_access="share_url"
               @close="show_qr_code_modal = false"
-            />
-          </sl-menu-item>
-          <sl-menu-item>
-            <DuplicatePublication
-              v-if="can_edit"
-              :path="publication.$path"
-              :source_title="publication.title"
-              :publication="publication"
-              @close="$emit('close')"
-            />
-          </sl-menu-item>
-          <sl-menu-item>
-            <RemoveMenu
-              v-if="can_edit"
-              :remove_text="$t('remove')"
-              @remove="removePublication"
             />
           </sl-menu-item>
         </sl-menu>
@@ -181,6 +206,7 @@ export default {
         },
       });
     },
+    openSettings() {},
   },
 };
 </script>
@@ -188,14 +214,15 @@ export default {
 ._topbar {
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) / 2);
   align-items: center;
   width: 100%;
   background: white;
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
-  border-radius: 10px;
-  margin: calc(var(--spacing) / 2) auto calc(var(--spacing) / 1);
+  border-radius: 1px;
+  margin: 0;
+
   box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
   // max-width: 800px;
 }

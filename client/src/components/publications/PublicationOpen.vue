@@ -5,11 +5,6 @@
       {{ fetch_publication_error }}
     </div>
     <template v-else>
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <sl-icon name="arrow-left-short" />
-        {{ $t("back_to_publications") }}
-      </button>
-
       <PublicationTopbar
         :publication="publication"
         :can_edit="can_edit"
