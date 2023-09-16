@@ -951,6 +951,7 @@ import LinesMode from "./LinesMode.vue";
 // import adapter from "webrtc-adapter";
 
 import RecordRTC from "recordrtc";
+import ysFixWebmDuration from "fix-webm-duration";
 
 export default {
   props: {
@@ -1618,6 +1619,7 @@ export default {
     },
     stopRecording() {
       if (!this.is_recording) return;
+      const duration = this.timer_recording_in_seconds;
 
       if (this.selected_mode === "stopmotion" && this.timelapse_mode_enabled) {
         this.is_recording = false;
@@ -1635,12 +1637,16 @@ export default {
           this.recorder.destroy();
           this.recorder = null;
 
-          this.media_to_validate = {
-            rawData: video_blob,
-            objectURL: URL.createObjectURL(video_blob),
-            temp_name: "video.webm",
-            type: "video",
-          };
+          ysFixWebmDuration(video_blob, duration * 1000, {
+            logger: false,
+          }).then((fixed_video_blob) => {
+            this.media_to_validate = {
+              rawData: fixed_video_blob,
+              objectURL: URL.createObjectURL(fixed_video_blob),
+              temp_name: "video.webm",
+              type: "video",
+            };
+          });
         });
       } else if (this.selected_mode === "audio") {
         this.recorder.stopRecording(() => {
@@ -1656,13 +1662,18 @@ export default {
           const preview = this.$refs.equalizerElement.$el
             .querySelector("canvas")
             .toDataURL("image/png");
-          this.media_to_validate = {
-            preview,
-            rawData: audio_blob,
-            objectURL: URL.createObjectURL(audio_blob),
-            temp_name: "audio.wav",
-            type: "audio",
-          };
+
+          ysFixWebmDuration(audio_blob, duration * 1000, {
+            logger: false,
+          }).then((fixed_audio_blob) => {
+            this.media_to_validate = {
+              preview,
+              rawData: fixed_audio_blob,
+              objectURL: URL.createObjectURL(fixed_audio_blob),
+              temp_name: "audio.wav",
+              type: "audio",
+            };
+          });
         });
       }
     },
@@ -1680,7 +1691,6 @@ export default {
     },
 
     startTimer() {
-      this.timer_recording_in_seconds = 0;
       this.recording_timer_interval = window.setInterval(() => {
         this.timer_recording_in_seconds = Number(
           Number(this.timer_recording_in_seconds) + 0.1
@@ -1691,11 +1701,7 @@ export default {
       window.clearInterval(this.recording_timer_interval);
     },
     unpauseTimer() {
-      this.recording_timer_interval = window.setInterval(() => {
-        this.timer_recording_in_seconds = Number(
-          Number(this.timer_recording_in_seconds) + 0.1
-        ).toFixed(1);
-      }, 100);
+      this.startTimer();
     },
     eraseTimer() {
       this.timer_recording_in_seconds = false;
@@ -1785,6 +1791,7 @@ export default {
         try {
           this.recorder.startRecording();
           this.is_recording = true;
+          this.timer_recording_in_seconds = 0;
           this.startTimer();
         } catch (err) {
           this.$alertify
