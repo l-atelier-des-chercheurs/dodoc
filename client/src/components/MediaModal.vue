@@ -72,6 +72,11 @@
             :title="$t('size')"
             :size="file.$infos.size"
           />
+          <DurationDisplay
+            v-if="file.$infos && file.$infos.duration"
+            :title="$t('duration')"
+            :duration="file.$infos.duration"
+          />
           <ShowOnMap
             v-if="file.$infos && file.$infos.gps"
             :title="$t('place')"
