@@ -315,13 +315,16 @@ export default {
   created() {},
   mounted() {
     console.log(`MediaLibrary / mounted`);
+    window.addEventListener("paste", this.handlePaste);
 
     if (this.media_focused)
       this.$nextTick(() => {
         // this.scrollToMediaTile(this.media_focused);
       });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    window.removeEventListener("paste", this.handlePaste);
+  },
   watch: {
     tile_mode() {
       localStorage.setItem("library_tile_mode", this.tile_mode);
@@ -405,6 +408,12 @@ export default {
       //   block: "center",
       //   inline: "nearest",
       // });
+    },
+    handlePaste($event) {
+      if (this.$root.modal_is_opened) return;
+
+      if ($event.clipboardData.files?.length > 0)
+        this.files_to_import = Array.from($event.clipboardData.files);
     },
     onDrop($event) {
       if ($event.dataTransfer.files?.length > 0)
