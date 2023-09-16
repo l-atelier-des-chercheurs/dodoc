@@ -4,8 +4,10 @@
       v-if="make.type === 'trim_video'"
       class="u-spacingBottom _videoPreview"
     >
-      <video :src="base_media_url" controls muted ref="videoPreview" />
+      <video :src="base_media_url" muted ref="videoPreview" />
     </div>
+
+    <!-- {{ base_media.$infos }} -->
 
     <div class="u-spacingBottom _btnRow">
       <button type="button" class="u-button u-button_bleuvert" @click="play">
@@ -26,7 +28,7 @@
 
     <div class="_trimSelect"></div>
 
-    <div ref="playlist" class="_wfp" class="u-spacingBottom" />
+    <div ref="playlist" class="u-spacingBottom _wfp" />
     <div ref="playlistPreview" v-show="false" />
 
     <!-- {{ current_time }} -->
@@ -108,6 +110,8 @@
   </div>
 </template>
 <script>
+// import { createSilentAudio } from "create-silent-audio";
+
 import WaveformPlaylist from "waveform-playlist";
 
 import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
@@ -215,6 +219,17 @@ export default {
 
       this.setListener();
 
+      // const silent_audio = createSilentAudio(10, 44100);
+      // await this.main_wfpl.load([
+      //   {
+      //     src: silent_audio,
+      //     name: "silence",
+      //     selected: {
+      //       start: this.selection.start,
+      //       end: this.selection.end,
+      //     },
+      //   },
+      // ]);
       await this.main_wfpl.load([
         {
           src: this.base_media_url,
