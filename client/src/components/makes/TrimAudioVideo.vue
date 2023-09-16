@@ -4,7 +4,7 @@
       v-if="make.type === 'trim_video'"
       class="u-spacingBottom _videoPreview"
     >
-      <video :src="base_media_url" muted ref="videoPreview" />
+      <video :src="base_media_url" controls muted ref="videoPreview" />
     </div>
 
     <div class="u-spacingBottom _btnRow">
@@ -16,53 +16,73 @@
         <b-icon icon="pause-circle" />
         {{ $t("pause") }}
       </button>
-      <button type="button" class="u-button u-button_orange" @click="zoomin">
+      <button type="button" class="u-button u-button_black" @click="zoomin">
         <b-icon icon="zoom-in" />
       </button>
-      <button type="button" class="u-button u-button_orange" @click="zoomout">
+      <button type="button" class="u-button u-button_black" @click="zoomout">
         <b-icon icon="zoom-out" />
       </button>
     </div>
 
-    <div ref="playlist" class="_wfp" />
+    <div class="_trimSelect"></div>
+
+    <div ref="playlist" class="_wfp" class="u-spacingBottom" />
     <div ref="playlistPreview" v-show="false" />
 
     <!-- {{ current_time }} -->
-    <div v-if="!selection_is_ready">
-      <br />
-      <p class="u-instructions">
-        {{ $t("trim_instructions") }}
-      </p>
+    <p class="u-instructions">
+      {{ $t("trim_instructions") }}
+    </p>
+
+    <!-- // not working: wfp uses time selection to move cursor as well, we would need to decouple selection from play -->
+    <!-- <div class="_btnRow" >
+      <div class="">
+        {{ roundToDec(current_time, 2) }}
+      </div>
+
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="setStartOrEnd({ new_start: current_time })"
+      >
+        <b-icon icon="chevron-bar-left" />
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="setStartOrEnd({ new_end: current_time })"
+      >
+        <b-icon icon="chevron-bar-right" />
+      </button>
+    </div> -->
+
+    <div class="u-sameRow _extract">
+      <span>
+        {{ $t("extract_to_export") }}
+      </span>
+
+      <NumberInput
+        :value="selection.start"
+        :suffix="'s'"
+        @save="setStartOrEnd({ new_start: $event })"
+      />
+      <b-icon icon="arrow-right-circle" />
+      <NumberInput
+        :value="selection.end"
+        :suffix="'s'"
+        @save="setStartOrEnd({ new_end: $event })"
+      />
     </div>
-    <div v-else>
-      <div class="u-sameRow _extract">
-        <span>
-          {{ $t("extract_to_export") }}
-        </span>
 
-        <NumberInput
-          :value="selection.start"
-          :suffix="'s'"
-          @save="setStartOrEnd({ new_start: $event })"
-        />
-        <b-icon icon="arrow-right-circle" />
-        <NumberInput
-          :value="selection.end"
-          :suffix="'s'"
-          @save="setStartOrEnd({ new_end: $event })"
-        />
-      </div>
-
-      <div class="u-sameRow _submit">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          @click="show_save_export_modal = true"
-        >
-          <b-icon icon="check" />
-          {{ $t("submit") }}
-        </button>
-      </div>
+    <div class="u-sameRow _submit">
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="show_save_export_modal = true"
+      >
+        <b-icon icon="check" />
+        {{ $t("submit") }}
+      </button>
     </div>
 
     <!-- <button type="button" @click="renderAudio">startaudiorendering</button> -->
@@ -89,6 +109,7 @@
 </template>
 <script>
 import WaveformPlaylist from "waveform-playlist";
+
 import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
 
 export default {
@@ -105,6 +126,7 @@ export default {
       main_wfpl: undefined,
 
       current_time: 0,
+      start_preview_play_from: 0,
 
       is_playing: false,
       selection: {
@@ -141,15 +163,7 @@ export default {
       deep: true,
     },
     current_time() {
-      const videoPreview = this.$refs.videoPreview;
-      if (!videoPreview) return;
-
-      // only sync if necessary
-      const ct = this.roundToDec(this.current_time, 1);
-      const vct = this.roundToDec(videoPreview.currentTime, 1);
-      if (ct !== vct) {
-        videoPreview.currentTime = this.current_time;
-      }
+      this.updatePreviewVideoTime();
     },
   },
   computed: {
@@ -175,10 +189,10 @@ export default {
       this.main_wfpl = WaveformPlaylist({
         container: this.$refs.playlist,
         samplesPerPixel: 256,
-        state: "select",
         timescale: true,
         isAutomaticScroll: true,
         zoomLevels: [256, 512, 1024, 2048, 4096],
+        state: "select",
         states: {
           cursor: false,
           fadein: false,
@@ -199,6 +213,8 @@ export default {
         },
       });
 
+      this.setListener();
+
       await this.main_wfpl.load([
         {
           src: this.base_media_url,
@@ -209,12 +225,19 @@ export default {
           },
         },
       ]);
-
-      this.setListener();
     },
     play() {
+      this.start_preview_play_from = this.current_time;
+
       this.main_wfpl.getEventEmitter().emit("play");
-      this.playPreviewVideo();
+      this.$nextTick(() => {
+        this.$nextTick(() => {
+          this.$nextTick(() => {
+            this.playPreviewVideo();
+          });
+        });
+      });
+
       this.is_playing = true;
     },
     playPreviewVideo() {
@@ -223,6 +246,23 @@ export default {
         videoPreview.currentTime = this.current_time;
         videoPreview.play();
       }
+    },
+    updatePreviewVideoTime() {
+      const videoPreview = this.$refs.videoPreview;
+      if (!videoPreview) return;
+      // only sync if necessary
+      const ct = this.roundToDec(this.current_time, 1);
+      const vct = this.roundToDec(videoPreview.currentTime, 1);
+
+      // console.log("ct", ct, "vct", vct);
+      if (ct !== vct) {
+        console.log("!!! resync vid", vct - ct);
+        // console.log(this.current_time, videoPreview.currentTime);
+        videoPreview.currentTime = this.current_time;
+      }
+      // if (!this.is_playing) {
+      //   videoPreview.currentTime = this.current_time;
+      // }
     },
     pause() {
       this.main_wfpl.getEventEmitter().emit("pause");
@@ -246,21 +286,19 @@ export default {
     },
     setListener() {
       this.main_wfpl.getEventEmitter().on("timeupdate", this.timeUpdate);
-      this.main_wfpl.getEventEmitter().on("select", this.select);
-      this.main_wfpl.getEventEmitter().on("select", this.select);
+      this.main_wfpl.getEventEmitter().on("select", this.updateSelection);
       this.main_wfpl.getEventEmitter().on("finished", this.finished);
+      this.main_wfpl
+        .getEventEmitter()
+        .on("audiosourceserror", this.audiosourceserror);
     },
     timeUpdate(time) {
       this.current_time = time;
     },
-    select(start, end) {
-      this.selection.start = this.roundToDec(start);
-      this.selection.end = this.roundToDec(end);
-
-      if (this.debounce_selection) clearTimeout(this.debounce_selection);
-      this.debounce_selection = setTimeout(async () => {
-        await this.updateSelectionMeta();
-      }, 1000);
+    audiosourceserror(err) {
+      if (err.message === "Unable to decode audio data") {
+        err;
+      }
     },
     setSelect() {
       const { start, end } = this.make.selection;
@@ -277,10 +315,18 @@ export default {
 
       this.main_wfpl.getEventEmitter().emit("select", start, end);
     },
+    updateSelection(start, end) {
+      this.selection.start = this.roundToDec(start);
+      this.selection.end = this.roundToDec(end);
+      if (this.debounce_selection) clearTimeout(this.debounce_selection);
+      this.debounce_selection = setTimeout(async () => {
+        await this.updateSelectionMeta();
+      }, 1000);
+    },
     async updateSelectionMeta() {
       if (
-        this.selection.start !== this.make.selection.start ||
-        this.selection.end !== this.make.selection.end
+        this.selection.start !== this.make.selection?.start ||
+        this.selection.end !== this.make.selection?.end
       )
         await this.$api.updateMeta({
           path: this.make.$path,
@@ -290,7 +336,15 @@ export default {
         });
     },
     finished() {
-      // this.pause();
+      this.pausePreviewVideo();
+      this.is_playing = false;
+
+      // go back to cursor or select
+      // const
+      // this.udpateVideoPreviewTo();
+      // const videoPreview = this.$refs.videoPreview;
+      // if(video)
+      // videoPreview.currentTime = this.current_time;
     },
 
     audiorenderingstarting() {
