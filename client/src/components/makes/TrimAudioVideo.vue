@@ -157,7 +157,8 @@ export default {
     show_save_export_modal() {
       if (this.show_save_export_modal)
         this.$nextTick(() => {
-          this.renderAudio();
+          if (this.make.type === "trim_video") this.renderVideo();
+          else if (this.make.type === "trim_audio") this.renderAudio();
         });
     },
     "make.selection": {
@@ -439,6 +440,33 @@ export default {
       preview_wfpl.duration = duration;
       this.export_duration = this.roundToDec(duration);
       preview_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
+    },
+
+    async renderVideo() {
+      let instructions = {
+        recipe: "trim_video",
+        suggested_file_name: this.base_media.$media_filename + "_trim",
+        selection: this.selection,
+        base_media_path: this.makeMediaFilePath({
+          $path: this.base_media.$path,
+          $media_filename: this.base_media.$media_filename,
+        }),
+      };
+
+      const current_task_id = await this.$api.exportFolder({
+        path: this.make.$path,
+        instructions,
+      });
+      this.$alertify.delay(4000).log(this.$t("compilation_started"));
+
+      this.is_exporting = true;
+
+      const checkIfEnded = ({ task_id }) => {
+        if (task_id !== current_task_id) return;
+        this.is_exporting = false;
+        this.$eventHub.$off("task.ended", checkIfEnded);
+      };
+      this.$eventHub.$on("task.ended", checkIfEnded);
     },
   },
 };

@@ -45,13 +45,18 @@ class Exporter {
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
 
-      if (this.instructions.suggested_file_name)
-        desired_filename =
-          utils.slug(this.instructions.suggested_file_name) + ".pdf";
-      else desired_filename = "publication.pdf";
+      desired_filename = this.instructions.suggested_file_name
+        ? utils.slug(this.instructions.suggested_file_name) + ".pdf"
+        : "publication.pdf";
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
       desired_filename = "preview.png";
+    } else if (this.instructions.recipe === "trim_video") {
+      full_path_to_file = await this._trimVideo();
+
+      desired_filename = this.instructions.suggested_file_name
+        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
+        : "trim_video.mp4";
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -160,14 +165,7 @@ class Exporter {
               ((images.length / frame_rate) * output_frame_rate)) *
             100;
 
-          const remap = function (val, in_min, in_max, out_min, out_max) {
-            return (
-              ((val - in_min) * (out_max - out_min)) / (in_max - in_min) +
-              out_min
-            );
-          };
-
-          const progress_percent = Math.round(remap(adv, 0, 100, 15, 90));
+          const progress_percent = Math.round(utils.remap(adv, 0, 100, 15, 90));
 
           this._notifyProgress(progress_percent);
         })
@@ -377,6 +375,64 @@ class Exporter {
       );
     });
     // print to pdf
+  }
+
+  _trimVideo() {
+    return new Promise(async (resolve, reject) => {
+      this._notifyProgress(5);
+
+      const new_video_name =
+        "video_trim_" +
+        +new Date() +
+        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
+        ".mp4";
+
+      let full_path_to_folder_in_cache = await utils.createFolderInCache(
+        "video"
+      );
+
+      const full_path_to_new_video = path.join(
+        full_path_to_folder_in_cache,
+        new_video_name
+      );
+
+      const base_media_path = utils.getPathToUserContent(
+        this.instructions.base_media_path
+      );
+      const { start, end } = this.instructions.selection;
+
+      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+        .input(base_media_path)
+        .inputOptions([`-ss ${start}`, `-to ${end}`])
+        .withVideoCodec("libx264")
+        .toFormat("mp4")
+        .on("start", (commandLine) => {
+          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+        })
+        .on("progress", (progress) => {
+          const progress_percent = Math.round(
+            utils.remap(progress.percent, 0, 100, 15, 90)
+          );
+          this._notifyProgress(progress_percent);
+        })
+        .on("end", async () => {
+          dev.logverbose("Video ended");
+          this._notifyProgress(95);
+          return resolve(full_path_to_new_video);
+        })
+        .on("error", async (err, stdout, stderr) => {
+          dev.error("An error happened: " + err.message);
+          dev.error("ffmpeg standard output:\n" + stdout);
+          dev.error("ffmpeg standard error:\n" + stderr);
+          this._notifyEnded({
+            event: "failed",
+            info: err.message,
+          });
+
+          return reject(err);
+        })
+        .save(full_path_to_new_video);
+    });
   }
 
   async _saveData(type, data) {

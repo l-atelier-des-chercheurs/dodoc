@@ -274,7 +274,7 @@ export default {
               show_instructions: false,
               icon: `
               `,
-              enabled: false,
+              enabled: true,
             },
           ],
         },
