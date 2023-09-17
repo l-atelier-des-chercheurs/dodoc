@@ -685,7 +685,7 @@ export default {
     max-width: none;
 
     border: 2px dotted white;
-    border-radius: 2px;
+    border-radius: 10px;
     box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
     padding: calc(var(--spacing) / 2);
 
