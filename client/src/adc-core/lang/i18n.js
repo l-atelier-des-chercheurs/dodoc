@@ -449,7 +449,7 @@ export default function () {
         trim_video: "Recouper une vidéo",
         trim_video_summary: "Couper la fin ou le début dans une vidéo",
         trim_instructions:
-          "Sélectionnez en cliquant/glissant sur la piste ci-dessus la zone à extraire ou en indiquant le temps de début et fin.",
+          "Sélectionnez en cliquant/glissant sur la piste ci-dessus la zone à extraire ou en indiquant le temps de début et fin ci-dessous.",
 
         extract_to_export: "Extrait sélectionné",
         save_export_cropped: "Enregistrer la version retouchée",
