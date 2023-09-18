@@ -1584,6 +1584,9 @@ export default {
 
         this.startRecordFeed({
           type: "video",
+          // fix to make sure videos recorded in electron/chrome play on firefox
+          // and to make sure videos with audio tracks can be recorded in firefox
+          // https://github.com/onfido/onfido-sdk-ui/issues/891#issuecomment-572940251
           mimeType: "video/webm;codecs=vp8,opus",
           videoBitsPerSecond: 4112000,
           enable_audio_recording_in_video: this.enable_audio_recording_in_video,
