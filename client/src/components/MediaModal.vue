@@ -97,7 +97,7 @@
           class="u-button u-button_bleuvert"
           @click="$emit('select')"
         >
-          {{ $t("add") }}
+          {{ $t("select") }}
         </button>
       </div>
     </div>
@@ -271,7 +271,9 @@ export default {
   bottom: 0;
   left: 0;
   background: none;
-  margin: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 1);
+
+  backdrop-filter: blur(5px);
 }
 
 ._mediaModal--content {
