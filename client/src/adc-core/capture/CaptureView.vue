@@ -1584,6 +1584,7 @@ export default {
 
         this.startRecordFeed({
           type: "video",
+          mimeType: "video/webm;codecs=vp8,opus",
           videoBitsPerSecond: 4112000,
           enable_audio_recording_in_video: this.enable_audio_recording_in_video,
         });
