@@ -79,10 +79,13 @@ class Exporter {
       this.folder_to_export_to,
       meta_filename
     );
+    const exported_file = await file.getFile({
+      path_to_meta: exported_path_to_meta,
+    });
 
     this._notifyEnded({
       event: "completed",
-      path: exported_path_to_meta,
+      file: exported_file,
     });
 
     return exported_path_to_meta;
@@ -401,6 +404,8 @@ class Exporter {
       );
       const { start, end } = this.instructions.selection;
 
+      this._notifyProgress(10);
+
       this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(base_media_path)
         .inputOptions([`-ss ${start}`, `-to ${end}`])
@@ -410,10 +415,12 @@ class Exporter {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
         })
         .on("progress", (progress) => {
-          const progress_percent = Math.round(
-            utils.remap(progress.percent, 0, 100, 15, 90)
-          );
-          this._notifyProgress(progress_percent);
+          if (progress.percent) {
+            const progress_percent = Math.round(
+              utils.remap(progress.percent, 0, 100, 15, 90)
+            );
+            this._notifyProgress(progress_percent);
+          } else this._notifyProgress(40);
         })
         .on("end", async () => {
           dev.logverbose("Video ended");

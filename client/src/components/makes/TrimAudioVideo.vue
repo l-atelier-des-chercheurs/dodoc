@@ -80,6 +80,7 @@
       <button
         type="button"
         class="u-button u-button_bleumarine"
+        :disabled="selection.start === selection.end"
         @click="show_save_export_modal = true"
       >
         <b-icon icon="check" />
@@ -100,12 +101,27 @@
       <!-- <p class="u-spacingBottom">
         {{ $t("duration") }} – {{ export_duration }}
       </p> -->
-      <audio
-        v-if="export_src_url"
-        class="_player"
-        :src="export_src_url"
-        controls
-      />
+      <template v-if="make.type === 'trim_audio'">
+        <audio
+          v-if="export_src_url"
+          class="_player"
+          :src="export_src_url"
+          controls
+        />
+      </template>
+      <template v-else-if="make.type === 'trim_video'">
+        <div class="_spinner" v-if="is_exporting" key="loader">
+          <LoaderSpinner />
+        </div>
+        <div v-else>
+          <MediaContent
+            class="_preview"
+            :file="trimmed_video"
+            :resolution="1600"
+            :context="'full'"
+          />
+        </div>
+      </template>
     </ExportSaveMakeModal>
   </div>
 </template>
@@ -138,10 +154,13 @@ export default {
         end: this.make.selection?.end || 0,
       },
 
+      trimmed_video: false,
+
       is_rendering: false,
       show_save_export_modal: false,
 
       debounce_selection: undefined,
+      is_exporting: false,
 
       export_blob: false,
       export_src_url: false,
@@ -443,6 +462,8 @@ export default {
     },
 
     async renderVideo() {
+      this.trimmed_video = false;
+
       let instructions = {
         recipe: "trim_video",
         suggested_file_name: this.base_media.$media_filename + "_trim",
@@ -457,14 +478,24 @@ export default {
         path: this.make.$path,
         instructions,
       });
-      this.$alertify.delay(4000).log(this.$t("compilation_started"));
-
+      this.$api.join({ room: "task_" + current_task_id });
       this.is_exporting = true;
 
-      const checkIfEnded = ({ task_id }) => {
+      const checkIfEnded = ({ task_id, message }) => {
         if (task_id !== current_task_id) return;
-        this.is_exporting = false;
         this.$eventHub.$off("task.ended", checkIfEnded);
+        this.$api.leave({ room: "task_" + current_task_id });
+
+        if (message.event === "completed") {
+          message.file;
+          this.trimmed_video = message.file;
+        } else if (message.event === "aborted") {
+          //
+        } else if (message.event === "failed") {
+          message.info;
+        }
+
+        this.is_exporting = false;
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
