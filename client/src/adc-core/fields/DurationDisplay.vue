@@ -13,7 +13,7 @@
 export default {
   props: {
     title: String,
-    duration: String,
+    duration: Number,
   },
   components: {},
   data() {
