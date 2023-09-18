@@ -3,7 +3,7 @@
     <DLabel :str="title" />
     <div>
       <template v-if="duration">
-        {{ formatDurationToHoursMinutesSeconds(duration) }}
+        {{ formatDurationToHoursMinutesSecondsDeciseconds(duration) }}
       </template>
       <template v-else>•:••</template>
     </div>

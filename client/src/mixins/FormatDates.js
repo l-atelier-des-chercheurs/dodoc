@@ -61,6 +61,10 @@ export default {
         .filter(Boolean)
         .join(":");
     },
+    formatDurationToHoursMinutesSecondsDeciseconds(seconds) {
+      const ds = (seconds % 1).toFixed(1).substring(1);
+      return this.formatDurationToHoursMinutesSeconds(seconds) + ds;
+    },
     datetimeLocal(datetime) {
       const dt = new Date(datetime);
       dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
