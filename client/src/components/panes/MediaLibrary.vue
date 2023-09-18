@@ -161,9 +161,9 @@
           >
             <div class="_mediaLibrary--lib--label">
               <strong>{{ label }}</strong>
-              <div class="u-nut" data-isfilled>
+              <!-- <div class="u-nut" data-isfilled>
                 {{ files.length }}
-              </div>
+              </div> -->
             </div>
             <transition-group
               tag="div"
