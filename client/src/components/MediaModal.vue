@@ -77,6 +77,19 @@
             :title="$t('duration')"
             :duration="file.$infos.duration"
           />
+
+          <div class="_metaField" v-if="file.$origin">
+            <DLabel :str="$t('origin')" />
+            <div
+              class="_originInd"
+              :style="`--o-color: var(--color-${file.$origin})`"
+            >
+              <i>
+                {{ $t(file.$origin) }}
+              </i>
+            </div>
+          </div>
+
           <ShowOnMap
             v-if="file.$infos && file.$infos.gps"
             :title="$t('place')"
@@ -356,5 +369,11 @@ export default {
       margin-right: -10px;
     }
   }
+}
+
+._originInd {
+  padding: 2px 4px;
+  color: white;
+  background: var(--o-color);
 }
 </style>

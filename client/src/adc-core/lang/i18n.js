@@ -312,6 +312,7 @@ export default function () {
         reset_crop: "réinitialiser le cadrage",
 
         status: "État",
+        origin: "Origine",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
         no_files: "Aucun fichier",

@@ -87,6 +87,7 @@ export default {
   methods: {
     async saveToProject() {
       const additional_meta = {};
+      additional_meta.$origin = "make";
       await this.$api
         .uploadFile({
           path: this.project_path,

@@ -199,6 +199,7 @@ Default values are:
 - $media_filename   (String)                              name of the file
 - $type             (String)                              type of media file among the following: _image, video, audio, stl, text, pdf, other_
 - $status           (String, editable)                    determines whether the file gets listed when getFiles is called by non-authors
+- $origin           (String)                              used to indicate the origin of the media (capture page, upload, etc.)
 - $thumbs           (object)                              list of possible media image thumbs
 - $content          (String)                              text content of a file
 - $infos            (object)                              data gathered from the file itself

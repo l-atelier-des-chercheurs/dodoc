@@ -11,7 +11,11 @@
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
-    <div class="u-nut _index" v-html="index" />
+    <div
+      class="u-nut _index"
+      :style="`--o-color: var(--color-${file.$origin})`"
+      v-html="index"
+    />
     <MediaContent
       class="_content"
       :file="file"
@@ -294,9 +298,12 @@ export default {
   top: 0;
   left: 0;
   z-index: 2;
-  background: white;
+
   font-size: var(--input-font-size-x-small);
   font-weight: 800;
+
+  background: var(--o-color, black);
+  color: white;
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;

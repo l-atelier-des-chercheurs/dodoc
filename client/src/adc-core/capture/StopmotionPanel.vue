@@ -337,6 +337,7 @@ export default {
   methods: {
     async appendToStopMotion({ imageData }) {
       const additional_meta = {};
+      additional_meta.$origin = "capture";
       const meta_filename = await this.$api
         .uploadFile({
           path: this.current_stopmotion_path,
@@ -434,6 +435,9 @@ export default {
           recipe: "stopmotion",
           field: "images_list",
           frame_rate: this.frame_rate,
+          additional_meta: {
+            $origin: "capture",
+          },
         },
       });
 

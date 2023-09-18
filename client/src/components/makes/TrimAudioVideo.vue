@@ -472,6 +472,9 @@ export default {
           $path: this.base_media.$path,
           $media_filename: this.base_media.$media_filename,
         }),
+        additional_meta: {
+          $origin: "make",
+        },
       };
 
       const current_task_id = await this.$api.exportFolder({

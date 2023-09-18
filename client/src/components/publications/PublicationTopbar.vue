@@ -164,6 +164,9 @@ export default {
         page_height: this.publication.page_height,
         layout_mode: this.publication.layout_mode || "print",
         suggested_file_name: this.publication.title,
+        additional_meta: {
+          $origin: "publish",
+        },
       };
 
       if (this.publication.page_spreads === true) instructions.page_width *= 2;

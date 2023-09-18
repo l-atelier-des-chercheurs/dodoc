@@ -1846,13 +1846,14 @@ export default {
 
       const additional_meta = {
         fav,
+        $origin: "capture",
       };
       formData.append(filename, JSON.stringify(additional_meta));
 
       this.media_is_being_sent = true;
       this.media_being_sent_percent = 0;
 
-      // TODO : possibilité de cancel, merge with uploadFile
+      // TODO : possibilité de cancel, merge with uploadFile dans $api
       let res = await this.$axios
         .post(`${this.path}/_upload`, formData, {
           headers: { "Content-Type": "multipart/form-data" },

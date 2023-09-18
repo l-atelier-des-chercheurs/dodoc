@@ -69,10 +69,13 @@ class Exporter {
       throw new Error(`aborted`);
     }
 
+    const additional_meta = this.instructions.additional_meta || {};
+
     const meta_filename = await file.addFileToFolder({
       full_path_to_file,
       desired_filename,
       path_to_folder: this.folder_to_export_to,
+      additional_meta,
     });
 
     const exported_path_to_meta = path.join(
