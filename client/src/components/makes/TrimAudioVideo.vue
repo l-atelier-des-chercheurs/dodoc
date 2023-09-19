@@ -36,55 +36,68 @@
       {{ $t("trim_instructions") }}
     </p>
 
-    <!-- // not working: wfp uses time selection to move cursor as well, we would need to decouple selection from play -->
-    <!-- <div class="_btnRow" >
-      <div class="">
-        {{ roundToDec(current_time, 2) }}
+    <div class="_currentTime">
+      {{ current_time_displayed }}
+    </div>
+    <div class="_startEndBlock">
+      <!-- // not working: wfp uses time selection to move cursor as well, we would need to decouple selection from play -->
+
+      <div class="_startEndBlock--b" :key="selection.start">
+        <button
+          type="button"
+          class="u-button u-button_red _picto"
+          :disabled="current_time === selection.start"
+          @click="setStartOrEnd({ new_start: current_time })"
+        >
+          <b-icon icon="chevron-bar-left" />
+          {{ $t("start") }}
+        </button>
+        <NumberInput
+          :value="selection.start"
+          :suffix="'s'"
+          :size="'medium'"
+          @save="setStartOrEnd({ new_start: $event })"
+        />
       </div>
 
-      <button
-        type="button"
-        class="u-button u-button_bleumarine"
-        @click="setStartOrEnd({ new_start: current_time })"
-      >
-        <b-icon icon="chevron-bar-left" />
-      </button>
-      <button
-        type="button"
-        class="u-button u-button_bleumarine"
-        @click="setStartOrEnd({ new_end: current_time })"
-      >
-        <b-icon icon="chevron-bar-right" />
-      </button>
-    </div> -->
-
-    <div class="u-sameRow _extract">
-      <span>
-        {{ $t("extract_to_export") }}
-      </span>
-
-      <NumberInput
-        :value="selection.start"
-        :suffix="'s'"
-        @save="setStartOrEnd({ new_start: $event })"
-      />
       <b-icon icon="arrow-right-circle" />
-      <NumberInput
-        :value="selection.end"
-        :suffix="'s'"
-        @save="setStartOrEnd({ new_end: $event })"
-      />
+
+      <div class="_startEndBlock--b">
+        <button
+          type="button"
+          class="u-button u-button_red _picto"
+          :disabled="current_time === selection.end"
+          @click="setStartOrEnd({ new_end: current_time })"
+        >
+          {{ $t("end") }}
+          <b-icon icon="chevron-bar-right" />
+        </button>
+        <NumberInput
+          :value="selection.end"
+          :suffix="'s'"
+          :size="'medium'"
+          @save="setStartOrEnd({ new_end: $event })"
+        />
+      </div>
     </div>
 
-    <div class="u-sameRow _submit">
+    <div class="_submit">
+      <div class="u-instructions">
+        <template v-if="selection.start === selection.end">
+          {{ $t("start_egal_to_end") }}
+        </template>
+        <template v-if="+selection.end < +selection.start">
+          {{ $t("end_before_start") }}
+        </template>
+      </div>
       <button
         type="button"
-        class="u-button u-button_bleumarine"
-        :disabled="selection.start === selection.end"
+        class="u-button u-button_bleuvert"
+        :disabled="selection.end === 0 || selection.start === selection.end"
         @click="show_save_export_modal = true"
       >
         <b-icon icon="check" />
-        {{ $t("submit") }}
+        {{ $t("test_and_export") }}
       </button>
     </div>
 
@@ -194,6 +207,12 @@ export default {
     export_name() {
       return this.base_media.$media_filename + "_trim.wav";
     },
+    current_time_displayed() {
+      // const r = "" + this.roundToDec(this.current_time, 2);
+      // this.formatTime(this.current_time, );
+      // return r.replace(".", ",");
+      return this.current_time.toFixed(2);
+    },
     selection_is_ready() {
       return (
         this.selection.start &&
@@ -218,7 +237,7 @@ export default {
         zoomLevels: [256, 512, 1024, 2048, 4096],
         state: "select",
         states: {
-          cursor: false,
+          cursor: true,
           fadein: false,
           fadeout: false,
           select: true,
@@ -254,10 +273,10 @@ export default {
         {
           src: this.base_media_url,
           name: this.base_media.$media_filename,
-          selected: {
-            start: this.selection.start,
-            end: this.selection.end,
-          },
+          // selected: {
+          //   start: this.selection.start,
+          //   end: this.selection.end,
+          // },
         },
       ]);
     },
@@ -321,18 +340,23 @@ export default {
     },
     setListener() {
       this.main_wfpl.getEventEmitter().on("timeupdate", this.timeUpdate);
-      this.main_wfpl.getEventEmitter().on("select", this.updateSelection);
+      this.main_wfpl.getEventEmitter().on("select", this.select);
       this.main_wfpl.getEventEmitter().on("finished", this.finished);
       this.main_wfpl
         .getEventEmitter()
         .on("audiosourceserror", this.audiosourceserror);
     },
     timeUpdate(time) {
-      this.current_time = time;
+      this.current_time = this.roundToDec(time);
     },
     audiosourceserror(err) {
       if (err.message === "Unable to decode audio data") {
         err;
+      }
+    },
+    select(start, end) {
+      if (start !== end) {
+        this.updateSelection(start, end);
       }
     },
     setSelect() {
@@ -347,8 +371,9 @@ export default {
 
       const start = new_start || this.selection.start;
       const end = new_end || this.selection.end;
+      this.updateSelection(start, end);
 
-      this.main_wfpl.getEventEmitter().emit("select", start, end);
+      // this.main_wfpl.getEventEmitter().emit("select", start, end);
     },
     updateSelection(start, end) {
       this.selection.start = this.roundToDec(start);
@@ -547,6 +572,12 @@ export default {
 }
 ._submit {
   margin: calc(var(--spacing) * 1) auto;
+  text-align: center;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
 }
 
 ._player {
@@ -568,5 +599,33 @@ export default {
     width: 100%;
     max-height: 50vh;
   }
+}
+
+._currentTime {
+  font-size: var(--sl-font-size-x-large);
+  margin: calc(var(--spacing) * 2) auto;
+  text-align: center;
+}
+
+._startEndBlock {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) * 2);
+  margin: calc(var(--spacing) * 2) auto;
+}
+._startEndBlock--b {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+  border: 2px solid var(--c-gris);
+  padding: calc(var(--spacing) / 2);
+}
+
+._picto {
+  // padding: calc(var(--spacing) / 2);
+  // background: var(--c-rouge);
+  // text-align: center;
+  // color: white;
+  width: 100%;
 }
 </style>

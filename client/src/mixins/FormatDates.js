@@ -56,13 +56,16 @@ export default {
     formatDurationToHoursMinutesSeconds(seconds) {
       const h = Math.floor(seconds / 3600);
       const m = Math.floor((seconds % 3600) / 60);
-      const s = Math.round(seconds % 60);
+      const s = Math.floor(seconds % 60);
       return [h, m > 9 ? m : h ? "0" + m : m || "0", s > 9 ? s : "0" + s]
         .filter(Boolean)
         .join(":");
     },
     formatDurationToHoursMinutesSecondsDeciseconds(seconds) {
       const ds = (seconds % 1).toFixed(1).substring(1);
+      // const ds = (
+      //   +(seconds % 1).toFixed(1).toLocaleString(this.$i18n.locale) + ""
+      // ).substring(1);
       return this.formatDurationToHoursMinutesSeconds(seconds) + ds;
     },
     datetimeLocal(datetime) {

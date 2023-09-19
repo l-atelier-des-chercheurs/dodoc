@@ -12,7 +12,7 @@
           type="number"
           :name="label"
           :id="'_input_' + label"
-          size="small"
+          :size="size"
           class="_input"
           :min="min"
           :max="max"
@@ -54,6 +54,10 @@ export default {
     max: Number,
     step: Number,
     suffix: String,
+    size: {
+      type: String,
+      default: "small",
+    },
   },
   components: {},
   data() {
