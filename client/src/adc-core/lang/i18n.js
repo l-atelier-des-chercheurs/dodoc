@@ -217,7 +217,9 @@ export default function () {
         page_by_page: "Page à page",
         cartography: "Cartographie",
         export_in_pdf: "Exporter en PDF",
+        direct_link: "Lien direct",
         share: "Partager",
+        options: "Options",
         exports_in_progress: "Exportation(s) en cours",
 
         story_width: "Largeur du récit",
@@ -310,6 +312,7 @@ export default function () {
         reset_crop: "réinitialiser le cadrage",
 
         status: "État",
+        origin: "Origine",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
         no_files: "Aucun fichier",
@@ -447,7 +450,11 @@ export default function () {
         trim_video: "Recouper une vidéo",
         trim_video_summary: "Couper la fin ou le début dans une vidéo",
         trim_instructions:
-          "Sélectionnez en cliquant/glissant sur la piste ci-dessus la zone à extraire",
+          "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
+        start: "début",
+        end: "fin",
+        copy: "Copier",
+        test_and_export: "Tester et exporter",
 
         extract_to_export: "Extrait sélectionné",
         save_export_cropped: "Enregistrer la version retouchée",
@@ -557,6 +564,7 @@ export default function () {
         all_rights_reserved_explanations: "–",
 
         drop_here: "Déposer ici",
+        or_drag_drop_file_here: "Ou déposer des fichiers ici",
         enable: "Activer",
 
         // effets
@@ -886,6 +894,7 @@ export default function () {
         map: "Carte",
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
+        layers: "Calques",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

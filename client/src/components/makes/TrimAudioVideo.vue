@@ -1,10 +1,15 @@
 <template>
   <div class="_trimAudioVideo">
-    <div v-if="make.type === 'trim_video'" class="_videoPreview">
+    <div
+      v-if="make.type === 'trim_video'"
+      class="u-spacingBottom _videoPreview"
+    >
       <video :src="base_media_url" muted ref="videoPreview" />
     </div>
 
-    <div class="_btnRow">
+    <!-- {{ base_media.$infos }} -->
+
+    <div class="u-spacingBottom _btnRow">
       <button type="button" class="u-button u-button_bleuvert" @click="play">
         <b-icon icon="play-circle-fill" />
         {{ $t("play") }}
@@ -13,38 +18,119 @@
         <b-icon icon="pause-circle" />
         {{ $t("pause") }}
       </button>
+      <button type="button" class="u-button u-button_black" @click="zoomin">
+        <b-icon icon="zoom-in" />
+      </button>
+      <button type="button" class="u-button u-button_black" @click="zoomout">
+        <b-icon icon="zoom-out" />
+      </button>
     </div>
 
-    <div ref="playlist" class="_wfp" />
+    <div class="_trimSelect"></div>
+
+    <div ref="playlist" class="u-spacingBottom _wfp" />
     <div ref="playlistPreview" v-show="false" />
 
     <!-- {{ current_time }} -->
-    <div v-if="!selection_is_ready">
-      <br />
-      <p class="u-instructions">
-        {{ $t("trim_instructions") }}
-      </p>
-    </div>
-    <div v-else>
-      <div class="u-sameRow _extract">
-        <span>
-          {{ $t("extract_to_export") }}
-        </span>
-        <input type="text" :value="selection.start" readonly />
-        <b-icon icon="arrow-right-circle" />
-        <input type="text" :value="selection.end" readonly />
-      </div>
+    <p class="u-instructions">
+      {{ $t("trim_instructions") }}
+    </p>
 
-      <div class="u-sameRow _submit">
+    <div class="_currentTime">
+      {{ current_time_displayed }}
+    </div>
+    <div class="_startEndBlock">
+      <!-- // not working: wfp uses time selection to move cursor as well, we would need to decouple selection from play -->
+
+      <div class="_startEndBlock--b" :key="selection.start">
         <button
           type="button"
-          class="u-button u-button_bleumarine"
-          @click="show_save_export_modal = true"
+          class="u-button u-button_red _picto"
+          :disabled="current_time === selection.start"
+          @click="setStartOrEnd({ new_start: current_time })"
         >
-          <b-icon icon="check" />
-          {{ $t("submit") }}
+          <b-icon icon="chevron-bar-left" />
+          {{ $t("start") }}
         </button>
+        <NumberInput
+          :value="selection.start"
+          :suffix="'s'"
+          :size="'medium'"
+          @save="setStartOrEnd({ new_start: $event })"
+        />
+        <div class="u-sameRow">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_start: selection.start - 0.1 })"
+          >
+            -0.1s
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_start: selection.start + 0.1 })"
+          >
+            +0.1s
+          </button>
+        </div>
       </div>
+
+      <b-icon icon="arrow-right-circle" />
+
+      <div class="_startEndBlock--b">
+        <button
+          type="button"
+          class="u-button u-button_red _picto"
+          :disabled="current_time === selection.end"
+          @click="setStartOrEnd({ new_end: current_time })"
+        >
+          {{ $t("end") }}
+          <b-icon icon="chevron-bar-right" />
+        </button>
+        <NumberInput
+          :value="selection.end"
+          :suffix="'s'"
+          :size="'medium'"
+          @save="setStartOrEnd({ new_end: $event })"
+        />
+        <div class="u-sameRow">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_end: selection.end - 0.1 })"
+          >
+            -0.1s
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_end: selection.end + 0.1 })"
+          >
+            +0.1s
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="_submit">
+      <div class="u-instructions">
+        <template v-if="selection.start === selection.end">
+          {{ $t("start_egal_to_end") }}
+        </template>
+        <template v-if="+selection.end < +selection.start">
+          {{ $t("end_before_start") }}
+        </template>
+      </div>
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        :disabled="selection.end === 0 || selection.start === selection.end"
+        @click="show_save_export_modal = true"
+      >
+        <b-icon icon="check" />
+        {{ $t("test_and_export") }}
+      </button>
     </div>
 
     <!-- <button type="button" @click="renderAudio">startaudiorendering</button> -->
@@ -60,17 +146,35 @@
       <!-- <p class="u-spacingBottom">
         {{ $t("duration") }} – {{ export_duration }}
       </p> -->
-      <audio
-        v-if="export_src_url"
-        class="_player"
-        :src="export_src_url"
-        controls
-      />
+      <template v-if="make.type === 'trim_audio'">
+        <audio
+          v-if="export_src_url"
+          class="_player"
+          :src="export_src_url"
+          controls
+        />
+      </template>
+      <template v-else-if="make.type === 'trim_video'">
+        <div class="_spinner" v-if="is_exporting" key="loader">
+          <LoaderSpinner />
+        </div>
+        <div v-else>
+          <MediaContent
+            class="_preview"
+            :file="trimmed_video"
+            :resolution="1600"
+            :context="'full'"
+          />
+        </div>
+      </template>
     </ExportSaveMakeModal>
   </div>
 </template>
 <script>
+// import { createSilentAudio } from "create-silent-audio";
+
 import WaveformPlaylist from "waveform-playlist";
+
 import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
 
 export default {
@@ -87,6 +191,7 @@ export default {
       main_wfpl: undefined,
 
       current_time: 0,
+      start_preview_play_from: 0,
 
       is_playing: false,
       selection: {
@@ -94,10 +199,13 @@ export default {
         end: this.make.selection?.end || 0,
       },
 
+      trimmed_video: false,
+
       is_rendering: false,
       show_save_export_modal: false,
 
       debounce_selection: undefined,
+      is_exporting: false,
 
       export_blob: false,
       export_src_url: false,
@@ -113,7 +221,8 @@ export default {
     show_save_export_modal() {
       if (this.show_save_export_modal)
         this.$nextTick(() => {
-          this.renderAudio();
+          if (this.make.type === "trim_video") this.renderVideo();
+          else if (this.make.type === "trim_audio") this.renderAudio();
         });
     },
     "make.selection": {
@@ -123,20 +232,20 @@ export default {
       deep: true,
     },
     current_time() {
-      const videoPreview = this.$refs.videoPreview;
-      if (!videoPreview) return;
-
-      // only sync if necessary
-      const ct = this.roundToDec(this.current_time, 1);
-      const vct = this.roundToDec(videoPreview.currentTime, 1);
-      if (ct !== vct) {
-        videoPreview.currentTime = this.current_time;
-      }
+      this.updatePreviewVideoTime();
     },
   },
   computed: {
     export_name() {
       return this.base_media.$media_filename + "_trim.wav";
+    },
+    current_time_displayed() {
+      // const r = "" + this.roundToDec(this.current_time, 2);
+      // this.formatTime(this.current_time, );
+      // return r.replace(".", ",");
+      return parseFloat(this.current_time.toFixed(2)).toLocaleString(
+        this.$i18n.locale
+      );
     },
     selection_is_ready() {
       return (
@@ -155,14 +264,14 @@ export default {
   methods: {
     async loadWFP() {
       this.main_wfpl = WaveformPlaylist({
-        samplesPerPixel: 512,
         container: this.$refs.playlist,
-        state: "select",
+        samplesPerPixel: 256,
         timescale: true,
         isAutomaticScroll: true,
-        zoomLevels: [512, 1024, 2048, 4096],
+        zoomLevels: [256, 512, 1024, 2048, 4096],
+        state: "cursor",
         states: {
-          cursor: false,
+          cursor: true,
           fadein: false,
           fadeout: false,
           select: true,
@@ -181,6 +290,19 @@ export default {
         },
       });
 
+      this.setListener();
+
+      // const silent_audio = createSilentAudio(10, 44100);
+      // await this.main_wfpl.load([
+      //   {
+      //     src: silent_audio,
+      //     name: "silence",
+      //     selected: {
+      //       start: this.selection.start,
+      //       end: this.selection.end,
+      //     },
+      //   },
+      // ]);
       await this.main_wfpl.load([
         {
           src: this.base_media_url,
@@ -191,12 +313,19 @@ export default {
           },
         },
       ]);
-
-      this.setListener();
     },
     play() {
+      this.start_preview_play_from = this.current_time;
+
       this.main_wfpl.getEventEmitter().emit("play");
-      this.playPreviewVideo();
+      this.$nextTick(() => {
+        this.$nextTick(() => {
+          this.$nextTick(() => {
+            this.playPreviewVideo();
+          });
+        });
+      });
+
       this.is_playing = true;
     },
     playPreviewVideo() {
@@ -206,10 +335,33 @@ export default {
         videoPreview.play();
       }
     },
+    updatePreviewVideoTime() {
+      const videoPreview = this.$refs.videoPreview;
+      if (!videoPreview) return;
+      // only sync if necessary
+      const ct = this.roundToDec(this.current_time, 1);
+      const vct = this.roundToDec(videoPreview.currentTime, 1);
+
+      // console.log("ct", ct, "vct", vct);
+      if (ct !== vct) {
+        console.log("!!! resync vid", vct - ct);
+        // console.log(this.current_time, videoPreview.currentTime);
+        videoPreview.currentTime = this.current_time;
+      }
+      // if (!this.is_playing) {
+      //   videoPreview.currentTime = this.current_time;
+      // }
+    },
     pause() {
       this.main_wfpl.getEventEmitter().emit("pause");
       this.pausePreviewVideo();
       this.is_playing = false;
+    },
+    zoomin() {
+      this.main_wfpl.getEventEmitter().emit("zoomin");
+    },
+    zoomout() {
+      this.main_wfpl.getEventEmitter().emit("zoomout");
     },
     // stop() {
     //   this.main_wfpl.getEventEmitter().emit("stop");
@@ -222,34 +374,71 @@ export default {
     },
     setListener() {
       this.main_wfpl.getEventEmitter().on("timeupdate", this.timeUpdate);
-      this.main_wfpl.getEventEmitter().on("select", this.select);
-      this.main_wfpl.getEventEmitter().on("select", this.select);
+      // this.main_wfpl.getEventEmitter().on("select", this.select);
       this.main_wfpl.getEventEmitter().on("finished", this.finished);
+      this.main_wfpl
+        .getEventEmitter()
+        .on("audiosourceserror", this.audiosourceserror);
     },
     timeUpdate(time) {
-      this.current_time = time;
+      this.current_time = this.roundToDec(time);
+    },
+    audiosourceserror(err) {
+      if (err.message === "Unable to decode audio data") {
+        err;
+      }
     },
     select(start, end) {
-      this.selection.start = this.roundToDec(start);
-      this.selection.end = this.roundToDec(end);
-
-      if (this.debounce_selection) clearTimeout(this.debounce_selection);
-      this.debounce_selection = setTimeout(async () => {
-        await this.$api.updateMeta({
-          path: this.make.$path,
-          new_meta: {
-            selection: this.selection,
-          },
-        });
-      }, 1000);
+      if (start !== end) {
+        this.updateSelection(start, end);
+      }
     },
     setSelect() {
       const { start, end } = this.make.selection;
       if (start !== this.selection.start || end !== this.selection.end)
         this.main_wfpl.getEventEmitter().emit("select", start, end);
     },
+    setStartOrEnd({ new_start, new_end }) {
+      // let { start, end } = this.selection;
+      // if (start !== new_start) start = new_start;
+      // if (end !== new_end) end = new_end;
+
+      const start = new_start || this.selection.start;
+      const end = new_end || this.selection.end;
+      this.updateSelection(start, end);
+
+      // this.main_wfpl.getEventEmitter().emit("select", start, end);
+    },
+    updateSelection(start, end) {
+      this.selection.start = this.roundToDec(start);
+      this.selection.end = this.roundToDec(end);
+      if (this.debounce_selection) clearTimeout(this.debounce_selection);
+      this.debounce_selection = setTimeout(async () => {
+        await this.updateSelectionMeta();
+      }, 1000);
+    },
+    async updateSelectionMeta() {
+      if (
+        this.selection.start !== this.make.selection?.start ||
+        this.selection.end !== this.make.selection?.end
+      )
+        await this.$api.updateMeta({
+          path: this.make.$path,
+          new_meta: {
+            selection: this.selection,
+          },
+        });
+    },
     finished() {
-      // this.pause();
+      this.pausePreviewVideo();
+      this.is_playing = false;
+
+      // go back to cursor or select
+      // const
+      // this.udpateVideoPreviewTo();
+      // const videoPreview = this.$refs.videoPreview;
+      // if(video)
+      // videoPreview.currentTime = this.current_time;
     },
 
     audiorenderingstarting() {
@@ -330,6 +519,48 @@ export default {
       this.export_duration = this.roundToDec(duration);
       preview_wfpl.getEventEmitter().emit("startaudiorendering", "wav");
     },
+
+    async renderVideo() {
+      this.trimmed_video = false;
+
+      let instructions = {
+        recipe: "trim_video",
+        suggested_file_name: this.base_media.$media_filename + "_trim",
+        selection: this.selection,
+        base_media_path: this.makeMediaFilePath({
+          $path: this.base_media.$path,
+          $media_filename: this.base_media.$media_filename,
+        }),
+        additional_meta: {
+          $origin: "make",
+        },
+      };
+
+      const current_task_id = await this.$api.exportFolder({
+        path: this.make.$path,
+        instructions,
+      });
+      this.$api.join({ room: "task_" + current_task_id });
+      this.is_exporting = true;
+
+      const checkIfEnded = ({ task_id, message }) => {
+        if (task_id !== current_task_id) return;
+        this.$eventHub.$off("task.ended", checkIfEnded);
+        this.$api.leave({ room: "task_" + current_task_id });
+
+        if (message.event === "completed") {
+          message.file;
+          this.trimmed_video = message.file;
+        } else if (message.event === "aborted") {
+          //
+        } else if (message.event === "failed") {
+          message.info;
+        }
+
+        this.is_exporting = false;
+      };
+      this.$eventHub.$on("task.ended", checkIfEnded);
+    },
   },
 };
 </script>
@@ -356,12 +587,15 @@ export default {
   gap: calc(var(--spacing) / 4);
   align-items: center;
   width: 100%;
-  background: white;
+  // background: white;
 
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
-  border-radius: 2px;
+  // border-radius: 2px;
   margin: 0 auto calc(var(--spacing) / 1);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+
+  > * {
+    box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+  }
 }
 
 ._extract {
@@ -372,6 +606,12 @@ export default {
 }
 ._submit {
   margin: calc(var(--spacing) * 1) auto;
+  text-align: center;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
 }
 
 ._player {
@@ -386,11 +626,40 @@ export default {
   height: 100%;
   width: auto;
   margin: 0 auto;
+  margin-bottom: calc(var(--spacing) / 1);
   background: var(--c-noir);
 
   video {
     width: 100%;
     max-height: 50vh;
   }
+}
+
+._currentTime {
+  font-size: var(--sl-font-size-x-large);
+  margin: calc(var(--spacing) * 2) auto;
+  text-align: center;
+}
+
+._startEndBlock {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) * 2);
+  margin: calc(var(--spacing) * 2) auto;
+}
+._startEndBlock--b {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+  border: 2px solid var(--c-gris);
+  padding: calc(var(--spacing) / 2);
+}
+
+._picto {
+  // padding: calc(var(--spacing) / 2);
+  // background: var(--c-rouge);
+  // text-align: center;
+  // color: white;
+  width: 100%;
 }
 </style>

@@ -156,7 +156,10 @@ import DateDisplay from "@/adc-core/fields/DateDisplay.vue";
 Vue.component("DateDisplay", DateDisplay);
 import SizeDisplay from "@/adc-core/fields/SizeDisplay.vue";
 Vue.component("SizeDisplay", SizeDisplay);
-Vue.component("ShowOnMap", () => import("@/adc-core/fields/ShowOnMap.vue"));
+import DurationDisplay from "@/adc-core/fields/DurationDisplay.vue";
+Vue.component("DurationDisplay", DurationDisplay);
+import ShowOnMap from "@/adc-core/fields/ShowOnMap.vue";
+Vue.component("ShowOnMap", ShowOnMap);
 
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);

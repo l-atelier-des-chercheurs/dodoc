@@ -154,27 +154,27 @@
       </div>
 
       <div class="_cropWindow">
-        <canvas class="_canvas" ref="cropCanvas" width="1280" height="720" />
-
-        <div class="_mask">
-          <div class="_maskContent" :style="mask_styles" />
+        <div class="_canvasContainer" ref="cropCanvasContainer">
+          <canvas class="_canvas" ref="cropCanvas" width="1280" height="720" />
+          <div class="_mask">
+            <div class="_maskContent" :style="mask_styles" />
+          </div>
+          <DDR
+            class="_cropFrame"
+            :key="crop_key"
+            :value="crop_transform"
+            :rotatable="false"
+            :acceptRatio="aspect_ratio"
+            :id="'1'"
+            :parent="true"
+            :handlerSize="20"
+            @drag="updateMask"
+            @dragend="dragEnd"
+            @resizestart="resizeStart"
+            @resize="updateMask"
+            @resizeend="dragEnd"
+          />
         </div>
-
-        <DDR
-          class="_cropFrame"
-          :key="crop_key"
-          :value="crop_transform"
-          :rotatable="false"
-          :acceptRatio="aspect_ratio"
-          :id="'1'"
-          :parent="true"
-          :handlerSize="20"
-          @drag="updateMask"
-          @dragend="dragEnd"
-          @resizestart="resizeStart"
-          @resize="updateMask"
-          @resizeend="dragEnd"
-        />
       </div>
     </div>
 
@@ -347,14 +347,32 @@ export default {
       this.crop_key = new Date().getTime();
     },
     async drawImageToCanvas() {
-      const canvas = this.$refs.cropCanvas;
-      if (!canvas) return false;
+      const cropCanvas = this.$refs.cropCanvas;
+      const cropCanvasContainer = this.$refs.cropCanvasContainer;
+      if (!cropCanvas || !cropCanvasContainer) return false;
 
-      const width = this.base_media.$infos?.width || 1280;
-      const height = this.base_media.$infos?.height || 720;
+      let width = this.base_media.$infos?.width || 1280;
+      let height = this.base_media.$infos?.height || 720;
+      const ratio = width / height;
 
-      if (width !== canvas.width) canvas.width = width;
-      if (height !== canvas.height) canvas.height = height;
+      const max_crop_height = this.$root.window.innerHeight * 0.75;
+      if (height > max_crop_height) {
+        height = max_crop_height;
+        width = height * ratio;
+      }
+
+      const max_crop_width = this.$root.window.innerWidth * 0.75;
+      if (width > max_crop_width) {
+        width = max_crop_width;
+        height = width / ratio;
+      }
+
+      if (width !== cropCanvas.width) cropCanvas.width = width;
+      if (height !== cropCanvas.height) cropCanvas.height = height;
+
+      // cropCanvasContainer.style["aspect-ratio"] = width + "/" + height;
+      cropCanvasContainer.style.width = width + "px";
+      cropCanvasContainer.style.height = height + "px";
 
       const image_url = this.makeMediaFileURL({
         $path: this.base_media.$path,
@@ -366,8 +384,8 @@ export default {
       await img.decode();
       // await new Promise((r) => setTimeout(r, 2000));
 
-      const context = canvas.getContext("2d");
-      context.clearRect(0, 0, canvas.width, canvas.height);
+      const context = cropCanvas.getContext("2d");
+      context.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
 
       // context.filter = "contrast(1.4) sepia(1) drop-shadow(-9px 9px 3px #e81)";
       let filter = "";
@@ -526,6 +544,13 @@ export default {
   width: 100%;
   overflow: visible;
 }
+._canvasContainer {
+  position: relative;
+  canvas {
+    max-width: 100%;
+  }
+}
+
 ._cropFrame {
   cursor: -webkit-grab;
   cursor: -moz-grab;

@@ -258,6 +258,7 @@ module.exports = (function () {
       full_path_to_file,
       desired_filename,
       path_to_folder,
+      additional_meta = {},
     }) => {
       dev.logfunction({ full_path_to_file, path_to_folder });
 
@@ -272,10 +273,10 @@ module.exports = (function () {
       );
       await fs.copy(full_path_to_file, destination_path);
 
+      additional_meta.$date_created = +new Date();
+
       const meta = await _initMeta({
-        additional_meta: {
-          $date_created: +new Date(),
-        },
+        additional_meta,
         filename: new_filename,
       });
 
@@ -416,6 +417,8 @@ module.exports = (function () {
   async function _initMeta({ additional_meta = {}, filename }) {
     dev.logfunction();
 
+    // TODO need to rewrite this to match additional_meta with schema
+
     let new_meta = {};
 
     if (additional_meta.$date_created)
@@ -432,6 +435,9 @@ module.exports = (function () {
     new_meta.$status = additional_meta.$status
       ? additional_meta.$status
       : "private";
+
+    if (additional_meta.$origin && typeof additional_meta.$origin === "string")
+      new_meta.$origin = additional_meta.$origin;
 
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;

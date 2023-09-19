@@ -106,7 +106,7 @@
               :src="file_full_path"
               @load="iframeLoaded"
             />
-            <div v-else-if="file.$type === 'stl'">
+            <div v-else-if="file.$type === 'stl'" class="_stlPreview">
               <STLPreview :key="file_full_path" :src="file_full_path" />
             </div>
             <iframe
@@ -378,5 +378,10 @@ export default {
   @media print {
     display: none;
   }
+}
+
+._stlPreview {
+  width: 100%;
+  height: 100%;
 }
 </style>

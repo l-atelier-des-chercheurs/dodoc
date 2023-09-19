@@ -348,8 +348,10 @@ export default {
 
   .is--mobileView & {
     flex: 1 1 auto;
-    max-height: 40vh;
-    max-width: 40vh;
+    // max-height: 40vh;
+    // max-width: 40vh;
+    max-width: none;
+    max-height: none;
     height: auto;
   }
 

@@ -24,26 +24,21 @@
           </div>
         </div>
         <transition-group tag="div" name="StoryModules" appear :duration="700">
-          <template v-for="(meta_filename, index) in modules_list">
+          <template v-for="({ meta_filename, _module }, index) in modules_list">
             <div class="_spacer" :key="'mc_' + index">
               <!-- v-if="can_edit || index > 0" -->
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
-                @addModule="
-                  ({ meta_filename }) =>
-                    insertModuleMetaFilenameToList({
-                      meta_filename,
-                      index: index,
-                    })
-                "
+                :types_available="['text', 'medias', 'files', 'link']"
+                @addModule="$emit('insertModule', $event)"
               />
             </div>
 
             <PublicationModule
               class="_mediaPublication"
               :key="meta_filename"
-              :publimodule="findModuleFromMetaFilename(meta_filename)"
+              :publimodule="_module"
               :module_position="
                 modules_list.length === 1
                   ? 'alone'
@@ -54,23 +49,23 @@
                   : 'inbetween'
               "
               :can_edit="can_edit"
-              @resize="resize({ meta_filename, new_size: $event })"
-              @moveUp="moveTo({ meta_filename, dir: -1 })"
-              @moveDown="moveTo({ meta_filename, dir: +1 })"
+              @moveUp="$emit('moveModuleTo', { meta_filename, dir: -1 })"
+              @moveDown="$emit('moveModuleTo', { meta_filename, dir: +1 })"
               @duplicate="
-                duplicatePublicationMedia({
+                $emit('duplicatePublicationMedia', {
                   source_meta_filename: meta_filename,
                   copy_meta_filename: $event,
                 })
               "
-              @remove="removeModuleFromList(meta_filename)"
+              @remove="$emit('removeModule', meta_filename)"
             />
           </template>
         </transition-group>
         <ModuleCreator
           v-if="can_edit"
           :publication_path="publication.$path"
-          @addModule="appendModuleMetaFilenameToList"
+          :types_available="['text', 'medias', 'files', 'link']"
+          @addModule="$emit('addModule', $event)"
         />
       </div>
     </div>
@@ -85,6 +80,7 @@ export default {
   props: {
     publication: Object,
     section: Object,
+    modules_list: Array,
     can_edit: Boolean,
   },
   components: {
@@ -108,107 +104,8 @@ export default {
         return { width, maxWidth: "none" };
       else return { maxWidth: width };
     },
-    modules_list() {
-      if (
-        this.section.modules_list &&
-        Array.isArray(this.section.modules_list)
-      ) {
-        const modules_list = this.section.modules_list.reduce(
-          (acc, meta_filename) => {
-            const _module = this.findModuleFromMetaFilename(meta_filename);
-            if (_module) {
-              acc.push(meta_filename);
-            }
-            return acc;
-          },
-          []
-        );
-        return modules_list;
-      }
-      return [];
-    },
   },
-  methods: {
-    async appendModuleMetaFilenameToList({ meta_filename }) {
-      const modules_list = this.modules_list.slice();
-      modules_list.push(meta_filename);
-
-      await this.updateMeta({ modules_list });
-
-      this.toggleNewModuleEdit({ meta_filename });
-    },
-    async insertModuleMetaFilenameToList({ meta_filename, index }) {
-      const modules_list = this.modules_list.slice();
-      modules_list.splice(index, 0, meta_filename);
-
-      await this.updateMeta({ modules_list });
-      this.toggleNewModuleEdit({ meta_filename });
-    },
-    async updateMeta(new_meta) {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-      try {
-        this.response = await this.$api.updateMeta({
-          path: this.section.$path,
-          new_meta,
-        });
-        this.fetch_status = "success";
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
-    findModuleFromMetaFilename(meta_filename) {
-      if (!this.publication.$files) return [];
-      return this.publication.$files.find((f) => {
-        const _meta_name = this.getFilename(f.$path);
-        return _meta_name === meta_filename;
-      });
-    },
-    async moveTo({ meta_filename, dir }) {
-      let modules_list = this.modules_list.slice();
-      const target_meta_index = modules_list.findIndex(
-        (m) => m === meta_filename
-      );
-      if (target_meta_index + dir < 0) return false;
-      else if (target_meta_index + dir > modules_list.length - 1) return false;
-
-      modules_list.move(target_meta_index, target_meta_index + dir);
-      this.response = await this.updateMeta({ modules_list });
-    },
-    async duplicatePublicationMedia({
-      source_meta_filename,
-      copy_meta_filename,
-    }) {
-      source_meta_filename;
-      copy_meta_filename;
-
-      let modules_list = this.modules_list.slice();
-      const position_of_original_media = modules_list.findIndex(
-        (_mf) => _mf === source_meta_filename
-      );
-
-      modules_list.splice(
-        position_of_original_media + 1,
-        0,
-        copy_meta_filename
-      );
-
-      this.response = await this.updateMeta({ modules_list });
-    },
-    async removeModuleFromList(meta_filename) {
-      let modules_list = this.modules_list.slice();
-      modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
-
-      this.response = await this.updateMeta({ modules_list });
-    },
-    toggleNewModuleEdit({ meta_filename }) {
-      setTimeout(() => {
-        console.log(`emit module.enable_edit.${meta_filename}`);
-        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
-      }, 50);
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -250,7 +147,8 @@ export default {
     ._floatingEditBtn[data-action="disable"] {
       display: none;
     }
-    ._mediaContent--image {
+    ._mediaContent--image,
+    .plyr {
       border-radius: 6px;
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <StorySettings v-if="can_edit" :publication="publication" />
-    <SectionsList
+    <SectionedPublication
+      :template="publication.template"
       :publication="publication"
       :section_opened_meta="section_opened_meta"
       :can_edit="can_edit"
@@ -11,8 +11,7 @@
   </div>
 </template>
 <script>
-import StorySettings from "@/components/publications/story/StorySettings.vue";
-import SectionsList from "@/components/publications/story/SectionsList.vue";
+import SectionedPublication from "@/components/publications/logic/SectionedPublication.vue";
 
 export default {
   props: {
@@ -21,8 +20,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    StorySettings,
-    SectionsList,
+    SectionedPublication,
   },
   data() {
     return {};

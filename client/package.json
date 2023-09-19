@@ -21,6 +21,7 @@
     "core-js": "^3.26.1",
     "debounce": "^1.2.1",
     "file-saver": "^2.0.5",
+    "fix-webm-duration": "^1.0.5",
     "flickity-imagesloaded": "^2.0.0",
     "imagetracerjs": "^1.2.6",
     "isomorphic-dompurify": "^1.5.0",

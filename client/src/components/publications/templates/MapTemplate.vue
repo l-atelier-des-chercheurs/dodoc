@@ -1,46 +1,29 @@
 <template>
   <div>
-    <RadioSwitch
-      v-if="can_edit"
-      class="_switch"
-      :content.sync="current_view"
-      :options="[
-        {
-          label: $t('settings'),
-          value: 'settings',
-        },
-        {
-          label: $t('map'),
-          value: 'map',
-        },
-      ]"
-    />
-
-    <MapSettings
-      v-if="current_view === 'settings'"
+    <SectionedPublication
+      :template="publication.template"
       :publication="publication"
-      :path="publication.$path"
+      :section_opened_meta="section_opened_meta"
+      :can_edit="can_edit"
+      @toggleSection="$emit('toggleSection', $event)"
+      @closePublication="$emit('closePublication')"
     />
-    <MapView v-else :publication="publication" />
   </div>
 </template>
 <script>
-import MapSettings from "@/components/publications/cartography/MapSettings.vue";
-import MapView from "@/components/publications/cartography/MapView.vue";
+import SectionedPublication from "@/components/publications/logic/SectionedPublication.vue";
 
 export default {
   props: {
     publication: Object,
+    section_opened_meta: String,
     can_edit: Boolean,
   },
   components: {
-    MapSettings,
-    MapView,
+    SectionedPublication,
   },
   data() {
-    return {
-      current_view: "map",
-    };
+    return {};
   },
   created() {},
   mounted() {},
@@ -50,8 +33,4 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped>
-._switch {
-  margin: calc(var(--spacing) * 1) 0;
-}
-</style>
+<style lang="scss" scoped></style>

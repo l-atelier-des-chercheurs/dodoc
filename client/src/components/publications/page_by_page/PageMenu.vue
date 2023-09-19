@@ -87,7 +87,6 @@
                 :publication_path="publication_path"
                 :addtl_meta="new_module_meta"
                 :context="'page_by_page'"
-                :show_shapes="true"
                 :is_collapsed="false"
                 @addModule="enableModuleEdit"
               />

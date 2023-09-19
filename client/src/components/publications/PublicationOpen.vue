@@ -5,11 +5,6 @@
       {{ fetch_publication_error }}
     </div>
     <template v-else>
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <sl-icon name="arrow-left-short" />
-        {{ $t("back_to_publications") }}
-      </button>
-
       <PublicationTopbar
         :publication="publication"
         :can_edit="can_edit"
@@ -24,8 +19,8 @@
       <StorySectionTemplate
         v-if="publication.template === 'story_with_sections'"
         :publication="publication"
-        :can_edit="can_edit"
         :section_opened_meta="page_opened_id"
+        :can_edit="can_edit"
         @toggleSection="$emit('togglePage', $event)"
         @closePublication="$emit('close')"
       />
@@ -40,7 +35,9 @@
       <MapTemplate
         v-else-if="publication.template === 'cartography'"
         :publication="publication"
+        :section_opened_meta="page_opened_id"
         :can_edit="can_edit"
+        @toggleSection="$emit('togglePage', $event)"
         @closePublication="$emit('close')"
       />
     </template>

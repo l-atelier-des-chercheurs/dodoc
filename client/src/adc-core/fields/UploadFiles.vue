@@ -104,6 +104,7 @@ export default {
       formData.append("file", file, filename);
 
       let additional_meta = {};
+      additional_meta.$origin = "collect";
       if (file.lastModified) additional_meta.$date_created = file.lastModified;
       // if (this.$root.current_author)
       //   additional_meta.authors = [

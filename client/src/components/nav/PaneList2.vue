@@ -8,7 +8,6 @@
   >
     <span label="Panneaux" class="_paneList2">
       <div
-        v-if="!$root.is_mobile_view"
         class="_projectTitle"
         :class="{
           'is--shown': is_stickied_to_top,
@@ -19,7 +18,8 @@
           class="u-button u-button_transparent"
           @click="scrollToTop"
         >
-          <img v-if="cover_thumb" :src="cover_thumb" />
+          <b-icon icon="arrow-up" />
+          <!-- <img v-if="cover_thumb" :src="cover_thumb" /> -->
           <span>
             {{ project.title }}
           </span>

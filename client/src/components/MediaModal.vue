@@ -72,6 +72,24 @@
             :title="$t('size')"
             :size="file.$infos.size"
           />
+          <DurationDisplay
+            v-if="file.$infos && file.$infos.duration"
+            :title="$t('duration')"
+            :duration="file.$infos.duration"
+          />
+
+          <div class="_metaField" v-if="file.$origin">
+            <DLabel :str="$t('origin')" />
+            <div
+              class="_originInd"
+              :style="`--o-color: var(--color-${file.$origin})`"
+            >
+              <i>
+                {{ $t(file.$origin) }}
+              </i>
+            </div>
+          </div>
+
           <ShowOnMap
             v-if="file.$infos && file.$infos.gps"
             :title="$t('place')"
@@ -92,7 +110,7 @@
           class="u-button u-button_bleuvert"
           @click="$emit('select')"
         >
-          {{ $t("add") }}
+          {{ $t("select") }}
         </button>
       </div>
     </div>
@@ -266,7 +284,9 @@ export default {
   bottom: 0;
   left: 0;
   background: none;
-  margin: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 1);
+
+  backdrop-filter: blur(5px);
 }
 
 ._mediaModal--content {
@@ -276,7 +296,7 @@ export default {
   margin-top: 2px;
   margin-left: 2px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 
   > * {
     &._preview {
@@ -291,6 +311,8 @@ export default {
       background: white;
       flex: 1 0 0;
       min-width: 280px;
+      height: 100%;
+      overflow: auto;
     }
   }
 }
@@ -347,5 +369,11 @@ export default {
       margin-right: -10px;
     }
   }
+}
+
+._originInd {
+  padding: 2px 4px;
+  color: white;
+  background: var(--o-color);
 }
 </style>

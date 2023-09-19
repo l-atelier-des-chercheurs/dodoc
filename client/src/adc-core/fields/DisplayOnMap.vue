@@ -172,6 +172,8 @@ export default {
 
       if (this.pins && this.pins.length > 0) {
         this.pins.map((pin) => {
+          if (!pin || !pin.longitude || !pin.latitude) return;
+
           let feature_cont = {
             geometry: new olPoint([pin.longitude, pin.latitude]),
           };
