@@ -58,6 +58,22 @@
           :size="'medium'"
           @save="setStartOrEnd({ new_start: $event })"
         />
+        <div class="u-sameRow">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_start: selection.start - 0.1 })"
+          >
+            -0.1s
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_start: selection.start + 0.1 })"
+          >
+            +0.1s
+          </button>
+        </div>
       </div>
 
       <b-icon icon="arrow-right-circle" />
@@ -78,6 +94,22 @@
           :size="'medium'"
           @save="setStartOrEnd({ new_end: $event })"
         />
+        <div class="u-sameRow">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_end: selection.end - 0.1 })"
+          >
+            -0.1s
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_end: selection.end + 0.1 })"
+          >
+            +0.1s
+          </button>
+        </div>
       </div>
     </div>
 
@@ -211,7 +243,9 @@ export default {
       // const r = "" + this.roundToDec(this.current_time, 2);
       // this.formatTime(this.current_time, );
       // return r.replace(".", ",");
-      return this.current_time.toFixed(2);
+      return parseFloat(this.current_time.toFixed(2)).toLocaleString(
+        this.$i18n.locale
+      );
     },
     selection_is_ready() {
       return (
@@ -235,7 +269,7 @@ export default {
         timescale: true,
         isAutomaticScroll: true,
         zoomLevels: [256, 512, 1024, 2048, 4096],
-        state: "select",
+        state: "cursor",
         states: {
           cursor: true,
           fadein: false,
@@ -273,10 +307,10 @@ export default {
         {
           src: this.base_media_url,
           name: this.base_media.$media_filename,
-          // selected: {
-          //   start: this.selection.start,
-          //   end: this.selection.end,
-          // },
+          selected: {
+            start: this.selection.start,
+            end: this.selection.end,
+          },
         },
       ]);
     },
