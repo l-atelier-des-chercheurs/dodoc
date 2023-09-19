@@ -340,7 +340,7 @@ export default {
     },
     setListener() {
       this.main_wfpl.getEventEmitter().on("timeupdate", this.timeUpdate);
-      this.main_wfpl.getEventEmitter().on("select", this.select);
+      // this.main_wfpl.getEventEmitter().on("select", this.select);
       this.main_wfpl.getEventEmitter().on("finished", this.finished);
       this.main_wfpl
         .getEventEmitter()

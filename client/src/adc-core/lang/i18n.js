@@ -454,7 +454,7 @@ export default function () {
         start: "début",
         end: "fin",
         copy: "Copier",
-        test_and_export: "Tester et valider",
+        test_and_export: "Tester et exporter",
 
         extract_to_export: "Extrait sélectionné",
         save_export_cropped: "Enregistrer la version retouchée",
