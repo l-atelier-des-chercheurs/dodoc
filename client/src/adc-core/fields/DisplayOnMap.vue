@@ -128,6 +128,7 @@ export default {
   },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
+    this.$eventHub.$on("publication.map.openPin", this.openPin);
   },
   mounted() {
     setTimeout(() => {
@@ -136,6 +137,7 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
+    this.$eventHub.$off("publication.map.openPin", this.openPin);
   },
   watch: {
     pins: {
@@ -157,7 +159,13 @@ export default {
       // default, can be overriden
       let center = [5.39057449011251, 43.310173305629576];
       if (this.start_coords) center = this.start_coords;
-      else if (this.pins && this.pins.length > 0) {
+      else if (
+        this.pins &&
+        this.pins.length > 0 &&
+        this.pins[0] &&
+        this.pins[0].longitude &&
+        this.pins[0].latitude
+      ) {
         center = [this.pins[0].longitude, this.pins[0].latitude];
       }
 
@@ -246,6 +254,7 @@ export default {
 
         if (!feature) {
           this.mouse_coords = event.coordinate;
+          this.$eventHub.$emit("publication.map.click", this.mouse_coords);
           mouseFeature
             .getGeometry()
             .setCoordinates([event.coordinate[0], event.coordinate[1]]);
@@ -253,6 +262,7 @@ export default {
           mouseFeature.getGeometry().setCoordinates([undefined, undefined]);
 
           const coordinate = feature.getGeometry().getCoordinates();
+          this.$eventHub.$emit("publication.map.click", coordinate);
 
           this.pin_coord = {};
           this.$set(this.pin_coord, "coordinate", {
@@ -323,11 +333,19 @@ export default {
 
       return new olStyle(style);
     },
-    navigateTo({ center, zoom }) {
+    navigateTo({ center, zoom = this.start_zoom }) {
       this.view.animate({
         center,
         zoom,
         // duration: 2000,
+      });
+    },
+    openPin(index) {
+      if (!this.pins[index]) return;
+
+      const { latitude, longitude } = this.pins[index];
+      this.navigateTo({
+        center: [longitude, latitude],
       });
     },
   },

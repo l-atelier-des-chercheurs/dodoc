@@ -2,7 +2,7 @@
   <div class="_mapView">
     <DisplayOnMap
       class="_mapContainer"
-      :start_coords="start_coords"
+      :start_coords="false"
       :start_zoom="start_zoom"
       :pins="pins"
       :is_small="false"

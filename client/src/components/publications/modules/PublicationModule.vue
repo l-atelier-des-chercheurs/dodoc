@@ -460,7 +460,6 @@ export default {
       //   this.$alertify.delay(4000).error(err);
       //   throw err;
       // }
-
       await this.$api
         .deleteItem({
           path: this.publimodule.$path,
