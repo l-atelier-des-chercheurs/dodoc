@@ -10,6 +10,13 @@ export default {
       const largest_dimension = Math.max(width, height);
       return desired_largest_dimension / (largest_dimension * magnification);
     },
+    findModuleFromMetaFilename({ files, meta_filename }) {
+      if (!files) return [];
+      return files.find((f) => {
+        const _meta_name = this.getFilename(f.$path);
+        return _meta_name === meta_filename;
+      });
+    },
     getModulesForPage({ modules, page_id }) {
       return (
         modules

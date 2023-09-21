@@ -35,6 +35,13 @@
     >
       <b-icon icon="pin-map-fill" />
     </button>
+    <button
+      type="button"
+      class="u-button u-button_transparent u-button_icon"
+      @click="removeModule"
+    >
+      <b-icon icon="trash" />
+    </button>
   </div>
 </template>
 <script>
@@ -72,27 +79,35 @@ export default {
   },
   methods: {
     openPin() {
-      this.$eventHub.$emit("publication.map.openPin", this.index);
+      this.$eventHub.$emit("publication.map.openPin", this.mapmodule.$path);
     },
     removePin() {
-      this.$eventHub.$emit("publication.map.openPin", this.index);
+      this.$eventHub.$emit("publication.map.openPin", this.mapmodule.$path);
+    },
+    async removeModule() {
+      await this.$api
+        .deleteItem({
+          path: this.mapmodule.$path,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+      this.$emit("remove");
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._mapModule {
-  display: flex;
-  gap: calc(var(--spacing) / 2);
-  background: var(--c-gris);
-
-  gap: calc(var(--spacing) / 2);
   background: var(--c-gris);
   border-radius: 2px;
   padding: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 8) 0;
+
   display: flex;
   align-items: center;
+  gap: calc(var(--spacing) / 2);
 
   cursor: pointer;
 

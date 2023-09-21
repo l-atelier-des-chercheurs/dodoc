@@ -598,6 +598,9 @@
                     "section_type": {
                       "type": "string"
                     },
+                    "section_color": {
+                      "type": "string"
+                    },
                     "section_title": {
                       "type": "string"
                     },

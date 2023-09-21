@@ -101,7 +101,7 @@ export default {
     },
     start_zoom: {
       type: [Boolean, Number],
-      default: 12,
+      default: 9,
     },
     is_small: {
       type: Boolean,
@@ -186,8 +186,10 @@ export default {
             geometry: new olPoint([pin.longitude, pin.latitude]),
           };
           feature_cont.index = pin.index;
+          feature_cont.id = pin.$path;
           if (pin.label) feature_cont.label = pin.label;
           if (pin.content) feature_cont.content = pin.content;
+          if (pin.color) feature_cont.fill_color = pin.color;
           features.push(new olFeature(feature_cont));
         });
       }
@@ -297,11 +299,6 @@ export default {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
       let style = {};
-      style.image = new olCircleStyle({
-        radius: 8,
-        fill: new olFill({ color: fill_color }),
-        stroke: new olStroke({ color: "#232e4a", width: 2 }),
-      });
       if (feature.get("label")) {
         const _fs = {
           italic: "normal",
@@ -330,6 +327,15 @@ export default {
           offsetX: 15,
         });
       }
+      if (feature.get("fill_color")) {
+        fill_color = feature.get("fill_color");
+      }
+
+      style.image = new olCircleStyle({
+        radius: 8,
+        fill: new olFill({ color: fill_color }),
+        stroke: new olStroke({ color: "#232e4a", width: 2 }),
+      });
 
       return new olStyle(style);
     },
@@ -340,13 +346,15 @@ export default {
         // duration: 2000,
       });
     },
-    openPin(index) {
-      if (!this.pins[index]) return;
+    openPin(path) {
+      const _pin = this.pins.find((p) => p.path === path);
+      if (!_pin) return;
 
-      const { latitude, longitude } = this.pins[index];
+      const { latitude, longitude } = _pin;
       this.navigateTo({
         center: [longitude, latitude],
       });
+      // TODO highlight pin in map (one at a time)
     },
   },
 };
