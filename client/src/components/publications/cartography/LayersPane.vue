@@ -197,6 +197,8 @@ export default {
       this.is_repicking_location_for = path;
     },
     async setRepickLocation([longitude, latitude]) {
+      if (!this.is_repicking_location_for) return;
+
       await this.$api
         .updateMeta({
           path: this.is_repicking_location_for,
