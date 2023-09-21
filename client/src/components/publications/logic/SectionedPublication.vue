@@ -108,7 +108,10 @@ export default {
       if (Array.isArray(this.opened_section?.modules_list)) {
         const modules_list = this.opened_section.modules_list.reduce(
           (acc, meta_filename) => {
-            const _module = this.findModuleFromMetaFilename(meta_filename);
+            const _module = this.findModuleFromMetaFilename({
+              files: this.publication.$files,
+              meta_filename,
+            });
             if (_module) acc.push({ meta_filename, _module });
             return acc;
           },
@@ -127,7 +130,10 @@ export default {
 
         if (s.modules_list && Array.isArray(s.modules_list))
           s.modules_list.map((module_meta) => {
-            const section_module = this.findModuleFromMetaFilename(module_meta);
+            const section_module = this.findModuleFromMetaFilename({
+              files: this.publication.$files,
+              module_meta,
+            });
             if (
               section_module?.source_medias &&
               Array.isArray(section_module.source_medias)
@@ -211,13 +217,6 @@ export default {
       });
     },
 
-    findModuleFromMetaFilename(meta_filename) {
-      if (!this.publication.$files) return [];
-      return this.publication.$files.find((f) => {
-        const _meta_name = this.getFilename(f.$path);
-        return _meta_name === meta_filename;
-      });
-    },
     async appendModuleMetaFilenameToList({ meta_filename }) {
       let modules_list = this.opened_section_modules_list.map(
         (m) => m.meta_filename

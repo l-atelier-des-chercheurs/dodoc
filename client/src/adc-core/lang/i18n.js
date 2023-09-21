@@ -895,6 +895,7 @@ export default function () {
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
         layers: "Calques",
+        layer_title: "Nom du calque",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

@@ -2,7 +2,7 @@
   <div class="_mapView">
     <DisplayOnMap
       class="_mapContainer"
-      :start_coords="start_coords"
+      :start_coords="false"
       :start_zoom="start_zoom"
       :pins="pins"
       :is_small="false"
@@ -13,6 +13,7 @@
       :sections="sections"
       :opened_section="opened_section"
       :opened_section_modules_list="opened_section_modules_list"
+      :default_layer_color="default_layer_color"
       :can_edit="can_edit"
       @createSection="$emit('createSection', $event)"
       @openSection="$emit('openSection', $event)"
@@ -114,6 +115,7 @@ export default {
         },
       ],
 
+      default_layer_color: "#333",
       opened_view_id: false,
     };
   },
@@ -139,9 +141,30 @@ export default {
       return this.views_list[this.opened_view_id];
     },
     pins() {
-      return this.opened_section_modules_list.map(
-        ({ _module }) => _module.location || null
-      );
+      return this.sections.reduce((acc, s) => {
+        if (!Array.isArray(s.modules_list)) return acc;
+        s.modules_list.map((meta_filename, index) => {
+          const _module = this.findModuleFromMetaFilename({
+            files: this.publication.$files,
+            meta_filename,
+          });
+          if (
+            _module &&
+            _module.location?.longitude &&
+            _module.location?.latitude
+          ) {
+            acc.push({
+              longitude: _module.location.longitude,
+              latitude: _module.location.latitude,
+              index: index,
+              label: this.$t("media") + " " + (index + 1),
+              color: s.section_color || `#333`,
+              path: _module.$path,
+            });
+          }
+        });
+        return acc;
+      }, []);
     },
     // initial_view() {
     //   const il = this.publication.map_initial_location;

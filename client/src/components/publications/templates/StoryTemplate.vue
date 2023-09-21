@@ -36,7 +36,12 @@
             <PublicationModule
               class="_mediaPublication"
               :key="meta_filename"
-              :publimodule="findModuleFromMetaFilename(meta_filename)"
+              :publimodule="
+                findModuleFromMetaFilename({
+                  files: publication.$files,
+                  meta_filename,
+                })
+              "
               :module_position="
                 modules_list.length === 1
                   ? 'alone'
@@ -122,7 +127,10 @@ export default {
       ) {
         const modules_list = this.publication.modules_list.reduce(
           (acc, meta_filename) => {
-            const _module = this.findModuleFromMetaFilename(meta_filename);
+            const _module = this.findModuleFromMetaFilename({
+              files: this.publication.$files,
+              meta_filename,
+            });
             if (_module) {
               acc.push(meta_filename);
             }
@@ -178,13 +186,6 @@ export default {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
       }
-    },
-    findModuleFromMetaFilename(meta_filename) {
-      if (!this.publication.$files) return [];
-      return this.publication.$files.find((f) => {
-        const _meta_name = f.$path.substring(f.$path.lastIndexOf("/") + 1);
-        return _meta_name === meta_filename;
-      });
     },
     async moveTo({ meta_filename, dir }) {
       let modules_list = this.modules_list.slice();

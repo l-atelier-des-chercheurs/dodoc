@@ -27,9 +27,17 @@
           <span v-handle class="u-dragHandle" v-if="can_edit">
             <sl-icon name="grip-vertical" label="Déplacer" />
           </span>
+          <span
+            class="_colorInd"
+            :style="
+              'background-color: ' +
+              (section.section_color || default_layer_color)
+            "
+          >
+          </span>
           <span class="_clickZone" @click="openSection(section.$path)">
             <h4 class="_title">
-              {{ index + 1 }}.
+              <!-- {{ index + 1 }}. -->
               <span v-if="section.section_title">
                 {{ section.section_title }}
               </span>
@@ -64,24 +72,41 @@
       </div>
 
       <div class="_openedLayer--content">
-        <h4 class="_title">
-          <span v-if="opened_section.section_title">
-            {{ opened_section.section_title }}
-          </span>
-          <span v-else v-html="'<i>' + $t('untitled') + '</i>'" />
-          ({{ opened_section_modules_list.length }})
-        </h4>
+        <div class="_title">
+          <TitleField
+            :field_name="'section_title'"
+            :label="can_edit ? $t('layer_title') : ''"
+            :content="opened_section.section_title"
+            :path="opened_section.$path"
+            :maxlength="120"
+            :tag="'h3'"
+            :can_edit="can_edit"
+          />
+          <!-- ({{ opened_section_modules_list.length }}) -->
+        </div>
 
-        <div
+        <div class="_color">
+          <ColorInput
+            class="u-spacingBottom"
+            :label="$t('pins_color')"
+            :can_toggle="false"
+            :default_value="default_layer_color"
+            :value="opened_section.section_color"
+            @save="updateOpenedLayer({ field: 'section_color', value: $event })"
+          />
+        </div>
+
+        <MapModule
           v-for="(
             { meta_filename, _module }, index
           ) in opened_section_modules_list"
           :key="meta_filename"
-          class=""
-        >
-          Média {{ index + 1 }}<br />
-
-          <PublicationModule
+          :index="index"
+          :mapmodule="_module"
+          @repickLocation="repickLocation(_module.$path)"
+          @remove="$emit('removeModule', meta_filename)"
+        />
+        <!-- <PublicationModule
             class="_mediaPublication"
             :key="meta_filename"
             :publimodule="_module"
@@ -104,8 +129,7 @@
               })
             "
             @remove="$emit('removeModule', meta_filename)"
-          />
-        </div>
+          /> -->
 
         <hr />
 
@@ -118,13 +142,26 @@
         />
       </div>
     </div>
+    <div class="_repickNotice" v-if="is_repicking_location_for">
+      {{ $t("click_on_map_to_repick_location_for_media") }}
+      {{ is_repicking_location_for_index }}
+
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="is_repicking_location_for = false"
+      >
+        {{ $t("cancel") }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
-import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
+import MapModule from "@/components/publications/cartography/MapModule.vue";
+// import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
 export default {
   props: {
@@ -132,27 +169,39 @@ export default {
     sections: Array,
     opened_section: [Boolean, Object],
     opened_section_modules_list: Array,
+    default_layer_color: String,
     can_edit: Boolean,
   },
   components: {
     SlickItem,
     SlickList,
     ModuleCreator,
-    PublicationModule,
+    MapModule,
+    // PublicationModule,
   },
   directives: { handle: HandleDirective },
   data() {
-    return {};
+    return {
+      is_repicking_location_for: false,
+    };
   },
   created() {},
   mounted() {
     this.$eventHub.$on(`sections.open_summary`, this.openSummary);
+    this.$eventHub.$on("publication.map.click", this.setRepickLocation);
   },
   beforeDestroy() {
     this.$eventHub.$off(`sections.open_summary`, this.openSummary);
+    this.$eventHub.$off("publication.map.click", this.setRepickLocation);
   },
   watch: {},
-  computed: {},
+  computed: {
+    is_repicking_location_for_index() {
+      return this.opened_section_modules_list.findIndex(
+        ({ _module }) => this.is_repicking_location_for === _module.$path
+      );
+    },
+  },
   methods: {
     openSummary() {
       this.$refs.details.$el.open = true;
@@ -170,18 +219,35 @@ export default {
     isActive(path) {
       return this.opened_section && path === this.opened_section.$path;
     },
-    firstMedia(layer_module) {
-      if (!layer_module) return false;
-      try {
-        const source_media = layer_module.source_medias[0];
-        const publication_path = this.getParent(layer_module.$path);
-        return this.getSourceMedia({
-          source_media,
-          folder_path: publication_path,
+    repickLocation(path) {
+      this.is_repicking_location_for = path;
+    },
+    async setRepickLocation([longitude, latitude]) {
+      if (!this.is_repicking_location_for) return;
+
+      await this.$api
+        .updateMeta({
+          path: this.is_repicking_location_for,
+          new_meta: {
+            location: {
+              longitude,
+              latitude,
+            },
+          },
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
         });
-      } catch (err) {
-        return false;
-      }
+      this.is_repicking_location_for = false;
+    },
+    async updateOpenedLayer({ field, value }) {
+      await this.$api.updateMeta({
+        path: this.opened_section.$path,
+        new_meta: {
+          [field]: value,
+        },
+      });
     },
   },
 };
@@ -212,15 +278,33 @@ export default {
 }
 
 ._openedLayer--content {
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
   height: 100%;
   overflow: auto;
   background: white;
+
+  ._title {
+    margin-bottom: calc(var(--spacing) * 1);
+  }
 }
 ._closeLayerBtn {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+._repickNotice {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  backdrop-filter: blur(5px);
+  background: rgba(231, 231, 231, 0.7);
+
+  padding: calc(var(--spacing) * 1);
 }
 </style>
 <style lang="scss">
@@ -244,6 +328,11 @@ export default {
     &:focus-visible {
       background: var(--c-gris_clair);
     }
+  }
+
+  ._colorInd {
+    width: 1em;
+    height: 1em;
   }
 
   ._title {
