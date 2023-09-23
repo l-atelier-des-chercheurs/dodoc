@@ -349,6 +349,9 @@
       },
       "hero_image_name": {
         "type": "string"
+      },
+      "spaces_pinned": {
+        "type": "array"
       }
     },
     "$files": {

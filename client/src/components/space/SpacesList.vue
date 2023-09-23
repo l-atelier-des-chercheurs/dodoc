@@ -39,13 +39,28 @@
       @close="show_create_modal = false"
       @openNew="openNewSpace"
     />
-    <div class="_list">
+    <div class="_list _pinned">
       <SpacePresentation
-        v-for="space in sorted_spaces"
+        v-for="space in pinned_spaces"
         :key="space.$path"
         :space="space"
         :context="'list'"
         :can_edit="false"
+        @removeFromPins="removeFromPins(space.$path)"
+      />
+      <!-- <div class="_pinDropzone">
+        Glissez ici la tuile d’un espace pour l’ajouter
+      </div> -->
+    </div>
+    <hr />
+    <div class="_list">
+      <SpacePresentation
+        v-for="space in non_pinned_spaces"
+        :key="space.$path"
+        :space="space"
+        :context="'list'"
+        :can_edit="false"
+        @addToPins="addSpaceToPins(space.$path)"
       />
     </div>
   </div>
@@ -60,6 +75,7 @@ export default {
   },
   data() {
     return {
+      settings: undefined,
       spaces: undefined,
       path: "spaces",
       fetch_spaces_error: undefined,
@@ -68,13 +84,21 @@ export default {
   },
   created() {},
   async mounted() {
+    this.settings = await this.$api
+      .getFolder({
+        path: "",
+      })
+      .catch((err) => {
+        return err;
+      });
+    this.$api.join({ room: "" });
+
     this.spaces = await this.$api
       .getFolders({
         path: this.path,
       })
       .catch((err) => {
         this.fetch_spaces_error = err.response;
-        // this.is_loading = false;
         return;
       });
     this.$api.join({ room: this.path });
@@ -97,6 +121,25 @@ export default {
           (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
         );
     },
+    list_of_pins_paths() {
+      if (
+        !this.settings?.spaces_pinned ||
+        !Array.isArray(this.settings.spaces_pinned) ||
+        this.settings.spaces_pinned.length === 0
+      )
+        return [];
+      return this.settings.spaces_pinned;
+    },
+    non_pinned_spaces() {
+      return this.sorted_spaces.filter(
+        (s) => !this.list_of_pins_paths.includes(s.$path)
+      );
+    },
+    pinned_spaces() {
+      return this.sorted_spaces.filter((s) =>
+        this.list_of_pins_paths.includes(s.$path)
+      );
+    },
   },
   methods: {
     getSlug(path) {
@@ -106,6 +149,22 @@ export default {
       this.show_create_modal = false;
       const url = this.createURLFromPath(this.path + "/" + new_folder_slug);
       this.$router.push(url);
+    },
+    async addSpaceToPins(path) {
+      let spaces_pinned = this.list_of_pins_paths.slice();
+      spaces_pinned.push(path);
+      this.updateSettings({ spaces_pinned });
+    },
+    removeFromPins(path) {
+      let spaces_pinned = this.list_of_pins_paths.slice();
+      spaces_pinned = spaces_pinned.filter((sp) => sp !== path);
+      this.updateSettings({ spaces_pinned });
+    },
+    async updateSettings(new_meta) {
+      await this.$api.updateMeta({
+        path: "",
+        new_meta,
+      });
     },
   },
 };
@@ -136,5 +195,15 @@ export default {
     // box-shadow: var(--panel-shadows);
     // border-radius: var(--panel-radius);
   }
+}
+
+._pinned {
+}
+
+._pinDropzone {
+  border: 2px dotted var(--c-noir);
+  border-radius: 10px;
+  box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
+  padding: calc(var(--spacing) / 2);
 }
 </style>
