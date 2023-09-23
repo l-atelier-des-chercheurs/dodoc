@@ -152,7 +152,7 @@
               <ToggleField
                 :label="$t('enable_events')"
                 :field_name="'enable_events'"
-                :content="settings.require_signup_to_contribute === true"
+                :content="settings.enable_events === true"
                 :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
