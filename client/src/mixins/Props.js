@@ -10,7 +10,10 @@ export default {
             else if (Array.isArray(p)) acc = acc.concat(p);
           return acc;
         }, [])
-        .filter((value, index, array) => array.indexOf(value) === index);
+        .filter((value, index, array) => array.indexOf(value) === index)
+        .sort((a, b) => {
+          return a.localeCompare(b);
+        });
     },
     roundToDec(num, expo = 2) {
       return Math.round((num + Number.EPSILON) * 10 ** expo) / 10 ** expo;
