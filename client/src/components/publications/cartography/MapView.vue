@@ -1,12 +1,5 @@
 <template>
   <div class="_mapView">
-    <DisplayOnMap
-      class="_mapContainer"
-      :start_coords="false"
-      :start_zoom="start_zoom"
-      :pins="pins"
-      :is_small="false"
-    />
     <LayersPane
       v-if="can_edit || sections.length > 1"
       :publication_path="publication.$path"
@@ -24,6 +17,13 @@
       @moveModuleTo="$emit('moveModuleTo', $event)"
       @removeModule="$emit('removeModule', $event)"
       @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
+    />
+    <DisplayOnMap
+      class="_mapContainer"
+      :start_coords="false"
+      :start_zoom="start_zoom"
+      :pins="pins"
+      :is_small="false"
     />
 
     <div class="_textContainer" v-if="false">
