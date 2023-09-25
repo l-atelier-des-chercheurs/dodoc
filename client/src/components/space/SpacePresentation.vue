@@ -20,6 +20,31 @@
           class="_icon _private"
         />
       </transition>
+
+      <div class="_icon _pinSpace">
+        <template v-if="is_instance_admin">
+          <button
+            v-if="$listeners.addToPins"
+            type="button"
+            class="u-button u-button_icon"
+            @click="$emit('addToPins')"
+          >
+            <b-icon icon="pin" :aria-label="$t('pin')" />
+          </button>
+          <button
+            v-else-if="$listeners.removeFromPins"
+            type="button"
+            class="u-button u-button_icon"
+            @click="$emit('removeFromPins')"
+          >
+            <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
+          </button>
+        </template>
+        <template v-else-if="$listeners.removeFromPins">
+          <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
+        </template>
+      </div>
+
       <!-- </div> -->
     </div>
     <div class="_textBloc">
@@ -234,5 +259,17 @@ export default {
   top: 0;
   right: 0;
   margin: calc(var(--spacing) / 1);
+}
+
+._pinSpace {
+  left: 0;
+  right: auto;
+  z-index: 100;
+  color: var(--c-bleumarine);
+
+  > button {
+    display: block;
+    pointer-events: auto;
+  }
 }
 </style>
