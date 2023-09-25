@@ -40,9 +40,12 @@
             <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
           </button>
         </template>
-        <template v-else-if="$listeners.removeFromPins">
-          <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
-        </template>
+      </div>
+      <div
+        class="_icon _pinSpace _pinSpace_indicator"
+        v-if="$listeners.removeFromPins"
+      >
+        <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
       </div>
 
       <!-- </div> -->
@@ -271,5 +274,9 @@ export default {
     display: block;
     pointer-events: auto;
   }
+}
+
+._pinSpace_indicator {
+  pointer-events: none;
 }
 </style>
