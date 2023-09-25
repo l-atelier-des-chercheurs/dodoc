@@ -39,20 +39,22 @@
       @close="show_create_modal = false"
       @openNew="openNewSpace"
     />
-    <div class="_list _pinned">
-      <SpacePresentation
-        v-for="space in pinned_spaces"
-        :key="space.$path"
-        :space="space"
-        :context="'list'"
-        :can_edit="false"
-        @removeFromPins="removeFromPins(space.$path)"
-      />
-      <!-- <div class="_pinDropzone">
+    <template v-if="pinned_spaces.length > 0">
+      <div class="_list _pinned">
+        <SpacePresentation
+          v-for="space in pinned_spaces"
+          :key="space.$path"
+          :space="space"
+          :context="'list'"
+          :can_edit="false"
+          @removeFromPins="removeFromPins(space.$path)"
+        />
+        <!-- <div class="_pinDropzone">
         Glissez ici la tuile d’un espace pour l’ajouter
       </div> -->
-    </div>
-    <hr />
+      </div>
+      <hr />
+    </template>
     <div class="_list">
       <SpacePresentation
         v-for="space in non_pinned_spaces"
