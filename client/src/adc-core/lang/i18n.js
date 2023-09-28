@@ -348,6 +348,9 @@ export default function () {
         only_finished: "Projets finalisés",
         completed: "Terminé",
         my_projects: "Mes projets",
+        pinned: "Épinglés",
+        click_on_pin_on_space:
+          "Les projets marqués avec une épingle seront indiqués à tous ici.",
 
         default_value: "Par défaut",
 

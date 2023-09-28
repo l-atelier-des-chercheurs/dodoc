@@ -21,29 +21,48 @@
         />
       </transition>
 
-      <div class="_icon _pinSpace">
-        <template v-if="is_instance_admin">
-          <button
-            v-if="$listeners.addToPins"
-            type="button"
-            class="u-button u-button_icon"
-            @click="$emit('addToPins')"
-          >
-            <b-icon icon="pin" :aria-label="$t('pin')" />
-          </button>
-          <button
-            v-else-if="$listeners.removeFromPins"
-            type="button"
-            class="u-button u-button_icon"
-            @click="$emit('removeFromPins')"
-          >
-            <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
-          </button>
-        </template>
+      <div class="_icon _pinSpace" v-if="is_instance_admin">
+        <button
+          v-if="$listeners.movePin"
+          type="button"
+          class="u-button u-button_icon"
+          :disabled="['alone', 'first'].includes(position_in_list)"
+          @click="$emit('movePin', -1)"
+        >
+          <b-icon icon="arrow-left-circle-fill" :aria-label="$t('move_left')" />
+        </button>
+        <button
+          v-if="$listeners.addToPins"
+          type="button"
+          class="u-button u-button_icon"
+          @click="$emit('addToPins')"
+        >
+          <b-icon icon="pin" :aria-label="$t('pin')" />
+        </button>
+        <button
+          v-if="$listeners.removeFromPins"
+          type="button"
+          class="u-button u-button_icon"
+          @click="$emit('removeFromPins')"
+        >
+          <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
+        </button>
+        <button
+          v-if="$listeners.movePin"
+          type="button"
+          class="u-button u-button_icon"
+          :disabled="['alone', 'last'].includes(position_in_list)"
+          @click="$emit('movePin', +1)"
+        >
+          <b-icon
+            icon="arrow-right-circle-fill"
+            :aria-label="$t('move_right')"
+          />
+        </button>
       </div>
       <div
         class="_icon _pinSpace _pinSpace_indicator"
-        v-if="$listeners.removeFromPins"
+        v-else-if="$listeners.removeFromPins"
       >
         <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
       </div>
@@ -135,6 +154,7 @@ export default {
   props: {
     space: Object,
     context: String,
+    position_in_list: String,
     can_edit: Boolean,
   },
   components: {},
@@ -181,7 +201,8 @@ export default {
   // overflow: hidden;
   // border-radius: var(--panel-radius);
   // box-shadow: var(--panel-shadows);
-  // border: var(--panel-borders);
+  border: 2px solid var(--c-gris_clair);
+  background: white;
 
   // margin-bottom: calc(var(--spacing) / 2);
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -192,6 +213,7 @@ export default {
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     &:hover,
     &:focus-visible {
+      z-index: 1;
       transform: translateY(-6px);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
@@ -269,6 +291,10 @@ export default {
   right: auto;
   z-index: 100;
   color: var(--c-bleumarine);
+
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 2);
 
   > button {
     display: block;

@@ -39,22 +39,28 @@
       @close="show_create_modal = false"
       @openNew="openNewSpace"
     />
-    <template v-if="pinned_spaces.length > 0">
-      <div class="_list _pinned">
+
+    <div class="_pinned" v-if="pinned_spaces.length > 0 || is_instance_admin">
+      <div class="">
+        <DLabel :str="$t('pinned')" />
+        <template v-if="pinned_spaces.length === 0 && is_instance_admin">
+          {{ $t("click_on_pin_on_space") }}
+        </template>
+      </div>
+      <div class="_list">
         <SpacePresentation
-          v-for="space in pinned_spaces"
+          v-for="(space, index) in pinned_spaces"
           :key="space.$path"
           :space="space"
           :context="'list'"
           :can_edit="false"
+          :position_in_list="positionInPinned(space.$path)"
+          @movePin="movePin(index, $event)"
           @removeFromPins="removeFromPins(space.$path)"
         />
-        <!-- <div class="_pinDropzone">
-        Glissez ici la tuile d’un espace pour l’ajouter
-      </div> -->
       </div>
       <hr />
-    </template>
+    </div>
     <div class="_list">
       <SpacePresentation
         v-for="space in non_pinned_spaces"
@@ -138,9 +144,11 @@ export default {
       );
     },
     pinned_spaces() {
-      return this.sorted_spaces.filter((s) =>
-        this.list_of_pins_paths.includes(s.$path)
-      );
+      return this.list_of_pins_paths.reduce((acc, pp) => {
+        const s = this.sorted_spaces.find((sp) => sp.$path === pp);
+        if (s) acc.push(s);
+        return acc;
+      }, []);
     },
   },
   methods: {
@@ -156,6 +164,18 @@ export default {
       let spaces_pinned = this.list_of_pins_paths.slice();
       spaces_pinned.push(path);
       this.updateSettings({ spaces_pinned });
+    },
+    movePin(index, dir) {
+      let spaces_pinned = this.list_of_pins_paths.slice();
+      spaces_pinned.move(index, index + dir);
+      this.updateSettings({ spaces_pinned });
+    },
+    positionInPinned(path) {
+      if (this.pinned_spaces.length === 1) return "alone";
+      const index = this.pinned_spaces.findIndex((ps) => ps.$path === path);
+      if (index === 0) return "first";
+      if (index === this.pinned_spaces.length - 1) return "last";
+      return "none";
     },
     removeFromPins(path) {
       let spaces_pinned = this.list_of_pins_paths.slice();
@@ -187,7 +207,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: calc(var(--spacing) / 1);
-  margin: calc(var(--spacing) * 1) 0;
+  // margin: calc(var(--spacing) * 1) 0;
 
   > * {
     // margin: calc(var(--spacing) * 1) 0;
