@@ -11,7 +11,7 @@
     </div>
 
     <transition name="fade" mode="out-in">
-      <div v-if="$route.path.includes('/+')">
+      <div v-if="show_space_name">
         <sl-icon name="arrow-right-short" label="" />
         &nbsp;
         <component
@@ -29,7 +29,7 @@
     </transition>
 
     <transition name="fade" mode="out-in">
-      <div v-if="$route.name === 'Projet'">
+      <div v-if="show_project_name">
         <sl-icon name="arrow-right-short" label="" />
         &nbsp;
         <component
@@ -70,10 +70,23 @@ export default {
     this.$eventHub.$off("received.project", this.setProject);
     this.$eventHub.$off("received.space", this.setSpace);
   },
-  watch: {},
+  watch: {
+    show_space_name() {
+      if (!this.show_space_name) this.space = undefined;
+    },
+    show_project_name() {
+      if (!this.show_project_name) this.project = undefined;
+    },
+  },
   computed: {
     instance_logo() {
       return this.$root.app_infos.instance_meta.topbar_thumb || "dodoc";
+    },
+    show_space_name() {
+      return this.$route.path.includes("/+");
+    },
+    show_project_name() {
+      return this.$route.name === "Projet";
     },
   },
   methods: {
