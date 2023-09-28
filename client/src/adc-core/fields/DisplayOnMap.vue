@@ -113,6 +113,7 @@ export default {
     return {
       pin_infos: false,
       pin_coord: false,
+      ol_features: undefined,
 
       mouse_coords: false,
 
@@ -143,6 +144,12 @@ export default {
     pins: {
       handler() {
         this.startMap();
+        // this.map;
+        // const features = this.createFeaturesFromPins();
+        // this.ol_features = new olSourceVector({
+        //   features,
+        //   wrapX: false,
+        // });
       },
       deep: true,
     },
@@ -150,14 +157,9 @@ export default {
   computed: {},
   methods: {
     startMap() {
-      // destroy map if exist
-      if (this.map) {
-        this.map.setTarget(null);
-        this.map = null;
-      }
-
-      // default, can be overriden
+      let zoom = this.start_zoom;
       let center = [5.39057449011251, 43.310173305629576];
+
       if (this.start_coords) center = this.start_coords;
       else if (
         this.pins &&
@@ -169,6 +171,15 @@ export default {
         center = [this.pins[0].longitude, this.pins[0].latitude];
       }
 
+      // destroy map if exist
+      if (this.map) {
+        zoom = this.map.getView().getZoom();
+        center = this.map.getView().getCenter();
+
+        this.map.setTarget(null);
+        this.map = null;
+      }
+
       // const { Circle, Fill, Stroke, Style, Text } = ol.style;
       // const Map = ol.Map;
       // const Overlay = ol.Overlay;
@@ -176,23 +187,11 @@ export default {
       // const { Draw } = ol.interaction;
       olProj.useGeographic();
 
-      let features = [];
-
-      if (this.pins && this.pins.length > 0) {
-        this.pins.map((pin) => {
-          if (!pin || !pin.longitude || !pin.latitude) return;
-
-          let feature_cont = {
-            geometry: new olPoint([pin.longitude, pin.latitude]),
-          };
-          feature_cont.index = pin.index;
-          feature_cont.id = pin.$path;
-          if (pin.label) feature_cont.label = pin.label;
-          if (pin.content) feature_cont.content = pin.content;
-          if (pin.color) feature_cont.fill_color = pin.color;
-          features.push(new olFeature(feature_cont));
-        });
-      }
+      const features = this.createFeaturesFromPins();
+      this.ol_features = new olSourceVector({
+        features,
+        wrapX: false,
+      });
 
       let mouseFeature = new olFeature({
         geometry: new olPoint([undefined, undefined]),
@@ -200,7 +199,7 @@ export default {
 
       this.view = new olView({
         center,
-        zoom: this.start_zoom,
+        zoom,
       });
       this.map = new olMap({
         // controls: defaultControls().extend([mousePositionControl]),
@@ -210,10 +209,7 @@ export default {
             source: new OSM(),
           }),
           new olVectorLayer({
-            source: new olSourceVector({
-              features,
-              wrapX: false,
-            }),
+            source: this.ol_features,
             style: (feature, resolution) =>
               this.makePointStyle({
                 feature,
@@ -290,6 +286,25 @@ export default {
       //   this.map.addInteraction(draw);
       // }
       // addInteraction();
+    },
+    createFeaturesFromPins() {
+      let features = [];
+      if (this.pins && this.pins.length > 0) {
+        this.pins.map((pin) => {
+          if (!pin || !pin.longitude || !pin.latitude) return;
+
+          let feature_cont = {
+            geometry: new olPoint([pin.longitude, pin.latitude]),
+          };
+          feature_cont.index = pin.index;
+          feature_cont.id = pin.$path;
+          if (pin.label) feature_cont.label = pin.label;
+          if (pin.content) feature_cont.content = pin.content;
+          if (pin.color) feature_cont.fill_color = pin.color;
+          features.push(new olFeature(feature_cont));
+        });
+      }
+      return features;
     },
     makePointStyle({
       feature,
