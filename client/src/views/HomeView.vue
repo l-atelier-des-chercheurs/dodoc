@@ -108,15 +108,17 @@
     </transition>
 
     <footer class="_bottomFooter">
-      <div class="_logoText">
-        <DodocLogo class="_logo" />
-        <div class="_version">
-          {{ $t("version") }} {{ $root.app_infos.version }}
+      <div class="_bottomFooter--cont">
+        <div class="_logoText">
+          <DodocLogo class="_logo" />
+          <div class="_version">
+            {{ $t("version") }} {{ $root.app_infos.version }}
+          </div>
         </div>
+        {{ $t("a_foss_made_by") }} <br />
+        {{ $t("more_informations") }} :
+        <a href="https://dodoc.fr" target="_blank">dodoc.fr</a>
       </div>
-      {{ $t("a_foss_made_by") }} <br />
-      {{ $t("more_informations") }} :
-      <a href="https://dodoc.fr" target="_blank">dodoc.fr</a>
     </footer>
   </div>
 </template>
@@ -289,11 +291,14 @@ export default {
 
 ._bottomFooter {
   display: block;
-  margin: 0 auto;
   text-align: center;
-  padding: calc(var(--spacing) * 4) 0;
+  padding: calc(var(--spacing) * 2) 0 calc(var(--spacing) * 3);
   font-size: var(--sl-font-size-x-small);
+  background: white;
+}
+._bottomFooter--cont {
   max-width: 65ch;
+  margin: 0 auto;
 }
 
 ._floatinProjectBtn {
