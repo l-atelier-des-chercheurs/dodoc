@@ -545,7 +545,7 @@ export default function () {
             throw this.processError(err);
           });
 
-        return res.data.meta_filename;
+        return res.data.new_folder_slug;
       },
       async remixFolder({
         path,

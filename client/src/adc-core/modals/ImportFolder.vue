@@ -30,7 +30,8 @@
       /> -->
     </div>
     <div v-else>
-      {{ $t("import_in_progress") }}
+      {{ $t("import_in_progress") }}<br />
+      {{ transfer_percent }}%
     </div>
   </BaseModal2>
 </template>
@@ -48,7 +49,9 @@ export default {
       id: `admin_images_upload_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
+
       folder_to_import: undefined,
+      transfer_percent: undefined,
     };
   },
   created() {},
@@ -59,19 +62,30 @@ export default {
   methods: {
     importProject($event) {
       this.folder_to_import = Array.from($event.target.files).at(0);
+      this.transfer_percent = 0;
 
       const additional_meta = {
         $admins: this.setDefaultContentAdmins(),
         $contributors: [],
       };
 
-      this.$api.importFolder({
+      const new_folder_slug = this.$api.importFolder({
         path: this.path,
         filename: this.folder_to_import.name,
         file: this.folder_to_import,
         additional_meta,
-        onprogress: () => {},
+        onProgress: (progressEvent) => {
+          this.transfer_percent = parseInt(
+            Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          );
+        },
       });
+      new_folder_slug;
+      this.transfer_percent = 100;
+
+      setTimeout(() => {
+        this.$emit("close");
+      }, 1000);
     },
   },
 };
