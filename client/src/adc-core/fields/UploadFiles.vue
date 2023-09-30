@@ -100,8 +100,8 @@ export default {
 
       this.files_to_upload_meta[filename].status = "sending";
 
-      let formData = new FormData();
-      formData.append("file", file, filename);
+      // let formData = new FormData();
+      // formData.append("file", file, filename);
 
       let additional_meta = {};
       additional_meta.$origin = "collect";

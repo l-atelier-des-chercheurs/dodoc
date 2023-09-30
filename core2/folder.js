@@ -1,5 +1,6 @@
 const path = require("path"),
-  fs = require("fs-extra");
+  fs = require("fs-extra"),
+  unzipper = require("unzipper");
 
 const utils = require("./utils"),
   thumbs = require("./thumbs"),
@@ -110,9 +111,6 @@ module.exports = (function () {
         path_to_type,
       });
 
-      // todo check for uniqueness (for example project's title, or author's name and email)
-      // throw if already exists
-
       valid_meta.$date_created = valid_meta.$date_modified =
         utils.getCurrentDate();
 
@@ -139,6 +137,64 @@ module.exports = (function () {
       // TODO store cover if it exists
 
       return folder_slug;
+    },
+    importFolder: async ({ path_to_type, req }) => {
+      dev.logfunction({ path_to_type });
+
+      let full_path_to_folder_in_cache = await utils.createFolderInCache(
+        "import"
+      );
+
+      // store zip to cache,
+      const {
+        originalFilename,
+        path_to_temp_file,
+        user_additional_meta: _additional_meta,
+      } = await utils
+        .handleForm({
+          destination_full_folder_path: full_path_to_folder_in_cache,
+          req,
+        })
+        .catch((err) => {
+          dev.error(`Failed to handle form`, err);
+        });
+
+      const directory = await unzipper.Open.file(path_to_temp_file);
+      const meta_file = directory.files.find((f) => f.path === "meta.txt");
+
+      if (!meta_file) {
+        await fs.remove(full_path_to_folder_in_cache);
+        const err = new Error("Imported folder is missing meta.txt");
+        err.code = "imported_folder_not_valid";
+        throw err;
+      }
+
+      const buffer = await meta_file.buffer();
+      const meta = utils.parseMeta(buffer.toString());
+
+      debugger;
+      Object.assign(meta, _additional_meta);
+      let valid_meta = await _cleanFields({
+        meta,
+        path_to_type,
+        handle_duplicates: "correct",
+      }).catch((err) => {
+        // TODO handle err here ?
+      });
+      valid_meta.requested_slug = originalFilename;
+
+      const new_folder_slug = API.createFolder({
+        path_to_type,
+        data: valid_meta,
+      });
+
+      return new_folder_slug;
+
+      // check with _cleanFields if field uniqueness, apprend random strings to fields instead until pass
+      // call createFolder
+      // copy all medias to new folder
+      // remove zip
+      // return folder_slug
     },
     updateFolder: async ({
       path_to_type,
@@ -440,7 +496,13 @@ module.exports = (function () {
     }
   }
 
-  async function _cleanFields({ meta, path_to_type, path_to_folder, context }) {
+  async function _cleanFields({
+    meta,
+    path_to_type,
+    path_to_folder,
+    context,
+    handle_duplicates = "throw",
+  }) {
     if (!meta) return {};
 
     const { fields = {} } = utils.parseAndCheckSchema({
@@ -454,10 +516,11 @@ module.exports = (function () {
         (sf) => sf.$path !== path_to_folder
       );
       if (siblings_folders.length > 0)
-        await utils.checkFieldUniqueness({
+        meta = await utils.checkFieldUniqueness({
           fields,
           meta,
           siblings_folders,
+          handle_duplicates,
         });
     }
 
