@@ -251,9 +251,10 @@ export default function () {
           return;
         }
 
-        if (!this.store[path]) this.store[path] = new Array();
+        if (!Object.prototype.hasOwnProperty.call(this.store, path))
+          this.store[path] = new Array();
         this.store[path].push(meta);
-        this.$set(this.store, meta.$path, meta);
+        // this.$set(this.store, meta.$path, meta);
       },
 
       updateProps({ changed_data, folder_to_update }) {
