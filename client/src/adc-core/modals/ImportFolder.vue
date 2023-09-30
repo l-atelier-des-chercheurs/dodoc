@@ -60,7 +60,7 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    importProject($event) {
+    async importProject($event) {
       this.folder_to_import = Array.from($event.target.files).at(0);
       this.transfer_percent = 0;
 
@@ -69,7 +69,7 @@ export default {
         $contributors: [],
       };
 
-      const new_folder_slug = this.$api.importFolder({
+      const new_folder_slug = await this.$api.importFolder({
         path: this.path,
         filename: this.folder_to_import.name,
         file: this.folder_to_import,
