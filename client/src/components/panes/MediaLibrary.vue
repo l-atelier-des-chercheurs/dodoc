@@ -2,6 +2,7 @@
   <div class="_mediaLibrary">
     <section class="_scrollBox">
       <div class="_importButton">
+        <!-- // TODO create component -->
         <label :for="id + '-add_file'" @drop="onDrop">
           <div class="u-button">
             <svg width="20" height="17" viewBox="0 0 20 17">

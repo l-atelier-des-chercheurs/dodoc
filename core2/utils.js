@@ -86,7 +86,12 @@ module.exports = (function () {
       return +Number.parseFloat(h / w).toPrecision(4);
     },
 
-    async checkFieldUniqueness({ fields, meta, siblings_folders }) {
+    async checkFieldUniqueness({
+      fields,
+      meta,
+      siblings_folders,
+      handle_duplicates,
+    }) {
       dev.logfunction({ fields, meta, siblings_folders });
       // check if some fields have "unique"
       if (Object.keys(meta).length === 0) return;
@@ -98,21 +103,35 @@ module.exports = (function () {
             meta.hasOwnProperty(field_name) &&
             meta[field_name].length > 0
           ) {
-            const proposed_value_for_unique_field = meta[field_name];
-            if (
-              siblings_folders.some(
-                (f) => f[field_name] === proposed_value_for_unique_field
-              )
-            ) {
-              const err = new Error(
-                `Field "${field_name}" supposed to be unique, is already taken`
-              );
-              err.code = "unique_field_taken";
-              err.err_infos = field_name;
-              throw err;
+            let proposed_value_for_unique_field = meta[field_name];
+
+            const valueAlreadyUsed = (val) =>
+              siblings_folders.some((f) => f[field_name] === val);
+
+            if (valueAlreadyUsed(proposed_value_for_unique_field)) {
+              if (handle_duplicates === "throw") {
+                const err = new Error(
+                  `Field "${field_name}" supposed to be unique, is already taken`
+                );
+                err.code = "unique_field_taken";
+                err.err_infos = field_name;
+                throw err;
+              } else if (handle_duplicates === "correct") {
+                // todo while loop to make sure we dont use a
+                let index = 1;
+                let new_proposed_value = `${proposed_value_for_unique_field}-${index}`;
+
+                while (valueAlreadyUsed(new_proposed_value)) {
+                  index++;
+                  new_proposed_value = `${proposed_value_for_unique_field}-${index}`;
+                }
+                meta[field_name] = new_proposed_value;
+              }
             }
           }
         }
+
+      return meta;
     },
 
     validateMeta({ fields, new_meta, context = "creation" }) {
@@ -220,12 +239,17 @@ module.exports = (function () {
       return results;
     },
 
-    async handleForm({ path_to_folder, req }) {
-      return new Promise((resolve, reject) => {
-        dev.logfunction({ path_to_folder });
+    async handleForm({ path_to_folder, destination_full_folder_path, req }) {
+      dev.logfunction({ path_to_folder, destination_full_folder_path });
 
+      if (path_to_folder && !destination_full_folder_path)
+        destination_full_folder_path = API.getPathToUserContent(path_to_folder);
+
+      await fs.ensureDir(destination_full_folder_path);
+
+      return new Promise((resolve, reject) => {
         const form = new IncomingForm({
-          uploadDir: API.getPathToUserContent(path_to_folder),
+          uploadDir: destination_full_folder_path,
           multiples: false,
           maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
         });

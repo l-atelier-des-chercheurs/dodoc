@@ -145,14 +145,19 @@ export default {
               title: this.new_title,
             },
           });
-        else if (this.mode === "remix")
+        else if (this.mode === "remix") {
+          const new_meta = {
+            title: this.new_title,
+            $admins: this.setDefaultContentAdmins(),
+            $contributors: [],
+          };
+
           new_folder_path = await this.$api.remixFolder({
             path: this.path,
             path_to_destination_type,
-            new_meta: {
-              title: this.new_title,
-            },
+            new_meta,
           });
+        }
       } catch (err_code) {
         if (err_code === "unique_field_taken") {
           this.$alertify

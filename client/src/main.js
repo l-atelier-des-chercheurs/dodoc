@@ -148,6 +148,8 @@ import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
 import CreateFolder from "@/adc-core/modals/CreateFolder";
 Vue.component("CreateFolder", CreateFolder);
+import ImportFolder from "@/adc-core/modals/ImportFolder";
+Vue.component("ImportFolder", ImportFolder);
 //
 
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";

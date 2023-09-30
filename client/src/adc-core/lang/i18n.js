@@ -348,6 +348,9 @@ export default function () {
         only_finished: "Projets finalisés",
         completed: "Terminé",
         my_projects: "Mes projets",
+        pinned: "Épinglés",
+        click_on_pin_on_space:
+          "Les projets marqués avec une épingle seront indiqués à tous ici.",
 
         default_value: "Par défaut",
 
@@ -842,7 +845,15 @@ export default function () {
           "Dans cet espace ou vers un autre où vous pouvez importer des médias.",
         dmp_instr:
           "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
+        import_a_project: "Importer un projet",
+        import_a_project_instr: `Vous pouvez ajouter dans cet espace un projet complet (avec tous ses médias, fabrications et publications) 
+        créé dans un autre do•doc version 10. Pour cela, cliquez sur <i>téléchargez</i> sur le projet dans l’autre do•doc pour le récupérez en ZIP
+        puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
+        import_zip: "Importer un projet en ZIP",
+        import_in_progress: "Importation en cours…",
+
         move_to_page: "Déplacer vers une autre page",
+
         move: "Déplacer",
         unselect: "Déselectionner",
         remove: "Supprimer",

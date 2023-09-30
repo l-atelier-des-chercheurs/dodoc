@@ -251,9 +251,10 @@ export default function () {
           return;
         }
 
-        if (!this.store[path]) this.store[path] = new Array();
+        if (!Object.prototype.hasOwnProperty.call(this.store, path))
+          this.store[path] = new Array();
         this.store[path].push(meta);
-        this.$set(this.store, meta.$path, meta);
+        // this.$set(this.store, meta.$path, meta);
       },
 
       updateProps({ changed_data, folder_to_update }) {
@@ -519,6 +520,32 @@ export default function () {
           throw this.processError(err);
         });
         saveAs(response.data, filename);
+      },
+      async importFolder({
+        path,
+        filename,
+        file,
+        additional_meta,
+        onProgress,
+      }) {
+        let data = new FormData();
+        data.append("file", file, filename);
+        if (additional_meta)
+          data.append(filename, JSON.stringify(additional_meta));
+        path = `${path}/_import`;
+
+        let res = await this.$axios
+          .post(path, data, {
+            headers: { "Content-Type": "multipart/form-data" },
+            onUploadProgress: (progressEvent) => {
+              if (onProgress) onProgress(progressEvent);
+            },
+          })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+
+        return res.data.meta_filename;
       },
       async remixFolder({
         path,

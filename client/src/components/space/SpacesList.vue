@@ -1,6 +1,6 @@
 <template>
   <div class="_spacesList">
-    <div class="">
+    <div class="_createBtn">
       <button
         type="button"
         class="u-button u-button_red u-button_small"
@@ -39,21 +39,38 @@
       @close="show_create_modal = false"
       @openNew="openNewSpace"
     />
-    <div class="_list _pinned">
-      <SpacePresentation
-        v-for="space in pinned_spaces"
-        :key="space.$path"
-        :space="space"
-        :context="'list'"
-        :can_edit="false"
-        @removeFromPins="removeFromPins(space.$path)"
-      />
-      <!-- <div class="_pinDropzone">
-        Glissez ici la tuile d’un espace pour l’ajouter
-      </div> -->
+
+    <div class="_pinned" v-if="pinned_spaces.length > 0 || is_instance_admin">
+      <div class="">
+        <DLabel :str="$t('pinned')" />
+        <div
+          v-if="pinned_spaces.length === 0 && is_instance_admin"
+          class="u-instructions"
+        >
+          {{ $t("click_on_pin_on_space") }}
+        </div>
+      </div>
+
+      <transition-group tag="section" class="_list" name="projectsList" appear>
+        <SpacePresentation
+          v-for="(space, index) in pinned_spaces"
+          :key="space.$path"
+          :space="space"
+          :context="'list'"
+          :can_edit="false"
+          :position_in_list="positionInPinned(space.$path)"
+          @movePin="movePin(index, $event)"
+          @removeFromPins="removeFromPins(space.$path)"
+        />
+      </transition-group>
     </div>
-    <hr />
-    <div class="_list">
+
+    <transition-group
+      tag="section"
+      class="_nonpinned _list"
+      name="projectsList"
+      appear
+    >
       <SpacePresentation
         v-for="space in non_pinned_spaces"
         :key="space.$path"
@@ -62,7 +79,7 @@
         :can_edit="false"
         @addToPins="addSpaceToPins(space.$path)"
       />
-    </div>
+    </transition-group>
   </div>
 </template>
 <script>
@@ -136,9 +153,11 @@ export default {
       );
     },
     pinned_spaces() {
-      return this.sorted_spaces.filter((s) =>
-        this.list_of_pins_paths.includes(s.$path)
-      );
+      return this.list_of_pins_paths.reduce((acc, pp) => {
+        const s = this.sorted_spaces.find((sp) => sp.$path === pp);
+        if (s) acc.push(s);
+        return acc;
+      }, []);
     },
   },
   methods: {
@@ -154,6 +173,18 @@ export default {
       let spaces_pinned = this.list_of_pins_paths.slice();
       spaces_pinned.push(path);
       this.updateSettings({ spaces_pinned });
+    },
+    movePin(index, dir) {
+      let spaces_pinned = this.list_of_pins_paths.slice();
+      spaces_pinned.move(index, index + dir);
+      this.updateSettings({ spaces_pinned });
+    },
+    positionInPinned(path) {
+      if (this.pinned_spaces.length === 1) return "alone";
+      const index = this.pinned_spaces.findIndex((ps) => ps.$path === path);
+      if (index === 0) return "first";
+      if (index === this.pinned_spaces.length - 1) return "last";
+      return "none";
     },
     removeFromPins(path) {
       let spaces_pinned = this.list_of_pins_paths.slice();
@@ -178,26 +209,34 @@ export default {
   min-height: 60vh;
   margin: 0 auto;
   max-width: var(--max-column-width);
-  padding: calc(var(--spacing) * 1);
+  // padding: calc(var(--spacing) * 1);
 }
 
 ._list {
   display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) / 1);
+  align-items: stretch;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: calc(var(--spacing) / 1);
-  margin: calc(var(--spacing) * 1) 0;
+}
 
-  > * {
-    // margin: calc(var(--spacing) * 1) 0;
-    // background: var(--panel-color);
-    // margin-bottom: 2px;
-    // border: var(--panel-borders);
-    // box-shadow: var(--panel-shadows);
-    // border-radius: var(--panel-radius);
-  }
+._nonpinned {
+  padding: 0 calc(var(--spacing) / 1);
+}
+
+._createBtn {
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  // margin-bottom: calc(var(--spacing) / 4);
 }
 
 ._pinned {
+  background: var(--c-gris);
+  background: var(--c-bleumarine_clair);
+  border-radius: 4px;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1)
+    calc(var(--spacing) / 1);
+  margin-top: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 2);
 }
 
 ._pinDropzone {
