@@ -172,8 +172,10 @@ module.exports = (function () {
       const buffer = await meta_file.buffer();
       const meta = utils.parseMeta(buffer.toString());
 
-      debugger;
       Object.assign(meta, _additional_meta);
+
+      meta.title = "Import – " + meta.title;
+
       let valid_meta = await _cleanFields({
         meta,
         path_to_type,
@@ -183,18 +185,50 @@ module.exports = (function () {
       });
       valid_meta.requested_slug = originalFilename;
 
-      const new_folder_slug = API.createFolder({
+      const new_folder_slug = await API.createFolder({
         path_to_type,
         data: valid_meta,
       });
 
-      return new_folder_slug;
-
-      // check with _cleanFields if field uniqueness, apprend random strings to fields instead until pass
-      // call createFolder
       // copy all medias to new folder
-      // remove zip
-      // return folder_slug
+      const full_path_to_folder = utils.getPathToUserContent(
+        path_to_type,
+        new_folder_slug
+      );
+
+      // await directory.extract({ path: full_path_to_folder, concurrency: 5 });
+
+      const files_to_copy = directory.files.filter(
+        (f) => f.path !== "meta.txt"
+      );
+
+      function extractFile(file) {
+        return new Promise((resolve, reject) => {
+          const path_to_file = path.join(full_path_to_folder, file.path);
+          if (file.type === "Directory") fs.ensureDir(path_to_file, resolve);
+          else if (file.type === "File")
+            file
+              .stream()
+              .pipe(fs.createWriteStream(path_to_file))
+              .on("error", (err) => {
+                dev.error("Failed to extract", file.path);
+                return reject();
+              })
+              .on("finish", () => {
+                dev.logverbose("Successfully extracted", file.path);
+                return resolve();
+              });
+        });
+      }
+
+      for (let i = 0; i < files_to_copy.length; i++) {
+        dev.logverbose("Extracting", file.path);
+        await extractFile(files_to_copy[i]);
+      }
+
+      await fs.remove(full_path_to_folder_in_cache);
+
+      return new_folder_slug;
     },
     updateFolder: async ({
       path_to_type,
