@@ -1,6 +1,11 @@
 <template>
   <BaseModal2 :title="modal_name" @close="$emit('close')">
-    <div class="u-spacingBottom" v-if="!folder_to_import">
+    <div
+      class="u-instructions u-spacingBottom"
+      v-html="$t('import_a_project_instr')"
+    />
+
+    <div class="" v-if="!folder_to_import">
       <input
         type="file"
         :id="id + '-add_file'"
