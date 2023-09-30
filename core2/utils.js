@@ -118,11 +118,14 @@ module.exports = (function () {
                 throw err;
               } else if (handle_duplicates === "correct") {
                 // todo while loop to make sure we dont use a
-                let index = 0;
-                while (valueAlreadyUsed(proposed_value_for_unique_field)) {
-                  proposed_value_for_unique_field += ` (${index})`;
+                let index = 1;
+                let new_proposed_value = `${proposed_value_for_unique_field}-${index}`;
+
+                while (valueAlreadyUsed(new_proposed_value)) {
+                  index++;
+                  new_proposed_value = `${proposed_value_for_unique_field}-${index}`;
                 }
-                meta[field_name] = proposed_value_for_unique_field;
+                meta[field_name] = new_proposed_value;
               }
             }
           }
