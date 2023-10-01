@@ -51,13 +51,13 @@
         </small>
       </div>
 
-      <button
+      <!-- <button
         type="button"
         class="u-button u-button_icon"
         @click="openSettings"
       >
         <b-icon icon="gear" :aria-label="$t('settings')" />
-      </button>
+      </button> -->
 
       <sl-dropdown>
         <sl-button slot="trigger" caret>{{ $t("options") }}</sl-button>
