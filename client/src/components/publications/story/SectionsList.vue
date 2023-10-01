@@ -129,7 +129,7 @@ export default {
   align-items: center;
   justify-content: center;
   text-decoration: underline;
-  margin-bottom: calc(var(--spacing) * 4);
+  padding-bottom: calc(var(--spacing) * 4);
 }
 ._navBtns--content {
   display: flex;
