@@ -3,9 +3,11 @@
     <template v-if="display_mode === 'section'">
       <SectionsList
         :publication="publication"
+        :sections="sections"
         :can_edit="false"
-        :section_opened_meta="section_opened_meta"
-        @toggleSection="section_opened_meta = $event"
+        :opened_section="opened_section"
+        :opened_section_modules_list="opened_section_modules_list"
+        @openSection="openSection"
       />
     </template>
     <template v-else>
@@ -14,6 +16,12 @@
           <SingleSection
             :publication="publication"
             :section="section"
+            :modules_list="
+              getModulesForSection({
+                publication: publication,
+                section: section,
+              })
+            "
             :can_edit="false"
           />
         </div>
@@ -35,18 +43,22 @@ export default {
   },
   data() {
     return {
-      section_opened_meta: "",
       display_mode: "all",
     };
   },
   created() {
     if (this.$route.query?.display === "section") this.display_mode = "section";
-
-    if (this.publication.sections_list)
-      this.section_opened_meta =
-        this.publication.sections_list[0].meta_filename;
   },
-  mounted() {},
+  mounted() {
+    if (
+      this.display_mode === "section" &&
+      !this.opened_section &&
+      this.sections_list.length > 0
+    ) {
+      const section_meta = this.sections_list[0].meta_filename;
+      this.updatePageQuery({ section_meta });
+    }
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -67,8 +79,41 @@ export default {
         return all_sections.find((s) => s.$path.endsWith("/" + meta_filename));
       });
     },
+    opened_section() {
+      if (this.sections.length === 0) return false;
+      if (!this.$route.query?.section) return false;
+      else {
+        return this.sections.find((s) =>
+          s.$path.endsWith("/" + this.$route.query.section)
+        );
+      }
+    },
+    opened_section_modules_list() {
+      return this.getModulesForSection({
+        publication: this.publication,
+        section: this.opened_section,
+      });
+    },
   },
-  methods: {},
+  methods: {
+    openSection(section_path) {
+      const section_meta = section_path.substring(
+        section_path.lastIndexOf("/") + 1
+      );
+      this.updatePageQuery({ section_meta });
+    },
+    updatePageQuery({ section_meta }) {
+      let query = {};
+
+      if (this.$route.query)
+        query = JSON.parse(JSON.stringify(this.$route.query));
+
+      if (section_meta === false) delete query.section;
+      else if (section_meta) query.section = section_meta;
+
+      this.$router.push({ query });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

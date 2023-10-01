@@ -51,20 +51,19 @@
         </small>
       </div>
 
-      <button
+      <!-- <button
         type="button"
         class="u-button u-button_icon"
         @click="openSettings"
       >
         <b-icon icon="gear" :aria-label="$t('settings')" />
-      </button>
+      </button> -->
 
-      <sl-dropdown>
+      <sl-dropdown v-if="can_edit">
         <sl-button slot="trigger" caret>{{ $t("options") }}</sl-button>
         <sl-menu>
           <sl-menu-item>
             <DuplicatePublication
-              v-if="can_edit"
               :path="publication.$path"
               :source_title="publication.title"
               :publication="publication"
@@ -73,7 +72,6 @@
           </sl-menu-item>
           <sl-menu-item>
             <RemoveMenu
-              v-if="can_edit"
               :remove_text="$t('remove')"
               @remove="removePublication"
             />

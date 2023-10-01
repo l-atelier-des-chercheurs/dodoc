@@ -86,7 +86,7 @@ export default {
       if (task_index === -1) return;
       this.tasks_tracked[task_index].progress = 100;
       this.tasks_tracked[task_index].event = message.event;
-      this.tasks_tracked[task_index].path = message.path;
+      this.tasks_tracked[task_index].path = message.file.$path;
 
       this.$api.leave({ room: "task_" + task_id });
     },

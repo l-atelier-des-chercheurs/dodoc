@@ -26,6 +26,24 @@ export default {
           ) || []
       ).reverse();
     },
+    getModulesForSection({ publication, section }) {
+      if (Array.isArray(section?.modules_list)) {
+        const modules_list = section.modules_list.reduce(
+          (acc, meta_filename) => {
+            const _module = this.findModuleFromMetaFilename({
+              files: publication.$files,
+              meta_filename,
+            });
+            if (_module) acc.push({ meta_filename, _module });
+            return acc;
+          },
+          []
+        );
+        return modules_list;
+      }
+      return [];
+    },
+
     setPaginationFromPublication(publication) {
       if (publication.enable_pagination !== true) return false;
       return {
