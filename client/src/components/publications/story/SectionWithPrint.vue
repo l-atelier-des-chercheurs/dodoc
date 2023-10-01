@@ -3,9 +3,11 @@
     <template v-if="display_mode === 'section'">
       <SectionsList
         :publication="publication"
+        :sections="sections"
         :can_edit="false"
-        :section_opened_meta="section_opened_meta"
-        @toggleSection="section_opened_meta = $event"
+        :opened_section="opened_section"
+        :opened_section_modules_list="opened_section_modules_list"
+        @openSection="openSection"
       />
     </template>
     <template v-else>
@@ -35,16 +37,11 @@ export default {
   },
   data() {
     return {
-      section_opened_meta: "",
       display_mode: "all",
     };
   },
   created() {
     if (this.$route.query?.display === "section") this.display_mode = "section";
-
-    if (this.publication.sections_list)
-      this.section_opened_meta =
-        this.publication.sections_list[0].meta_filename;
   },
   mounted() {},
   beforeDestroy() {},
@@ -67,8 +64,52 @@ export default {
         return all_sections.find((s) => s.$path.endsWith("/" + meta_filename));
       });
     },
+    opened_section() {
+      if (this.sections.length === 0) return false;
+      if (!this.$route.query?.section) return false;
+      else {
+        return this.sections.find((s) =>
+          s.$path.endsWith("/" + this.$route.query.section)
+        );
+      }
+    },
+    opened_section_modules_list() {
+      if (Array.isArray(this.opened_section?.modules_list)) {
+        const modules_list = this.opened_section.modules_list.reduce(
+          (acc, meta_filename) => {
+            const _module = this.findModuleFromMetaFilename({
+              files: this.publication.$files,
+              meta_filename,
+            });
+            if (_module) acc.push({ meta_filename, _module });
+            return acc;
+          },
+          []
+        );
+        return modules_list;
+      }
+      return [];
+    },
   },
-  methods: {},
+  methods: {
+    openSection(section) {
+      this.updatePageQuery({ section });
+    },
+    updatePageQuery({ section }) {
+      let query = {};
+
+      if (this.$route.query)
+        query = JSON.parse(JSON.stringify(this.$route.query));
+
+      debugger;
+
+      if (section === false) delete query.section;
+      else if (section)
+        query.section = section.substring(section.lastIndexOf("/") + 1);
+
+      this.$router.push({ query });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

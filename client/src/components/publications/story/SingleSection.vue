@@ -158,7 +158,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) * 2);
 }
 
 ._topbar {

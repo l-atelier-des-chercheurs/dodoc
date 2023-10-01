@@ -27,7 +27,6 @@
       :opened_section="opened_section"
       :opened_section_modules_list="opened_section_modules_list"
       :can_edit="can_edit"
-      @toggleSection="$emit('toggleSection', $event)"
       @closePublication="$emit('closePublication')"
       @createSection="createSection"
       @removeSection="removeSection"
