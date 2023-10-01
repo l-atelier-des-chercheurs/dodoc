@@ -16,6 +16,12 @@
           <SingleSection
             :publication="publication"
             :section="section"
+            :modules_list="
+              getModulesForSection({
+                publication: publication,
+                section: section,
+              })
+            "
             :can_edit="false"
           />
         </div>
@@ -43,7 +49,16 @@ export default {
   created() {
     if (this.$route.query?.display === "section") this.display_mode = "section";
   },
-  mounted() {},
+  mounted() {
+    if (
+      this.display_mode === "section" &&
+      !this.opened_section &&
+      this.sections_list.length > 0
+    ) {
+      const section_meta = this.sections_list[0].meta_filename;
+      this.updatePageQuery({ section_meta });
+    }
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -74,38 +89,27 @@ export default {
       }
     },
     opened_section_modules_list() {
-      if (Array.isArray(this.opened_section?.modules_list)) {
-        const modules_list = this.opened_section.modules_list.reduce(
-          (acc, meta_filename) => {
-            const _module = this.findModuleFromMetaFilename({
-              files: this.publication.$files,
-              meta_filename,
-            });
-            if (_module) acc.push({ meta_filename, _module });
-            return acc;
-          },
-          []
-        );
-        return modules_list;
-      }
-      return [];
+      return this.getModulesForSection({
+        publication: this.publication,
+        section: this.opened_section,
+      });
     },
   },
   methods: {
-    openSection(section) {
-      this.updatePageQuery({ section });
+    openSection(section_path) {
+      const section_meta = section_path.substring(
+        section_path.lastIndexOf("/") + 1
+      );
+      this.updatePageQuery({ section_meta });
     },
-    updatePageQuery({ section }) {
+    updatePageQuery({ section_meta }) {
       let query = {};
 
       if (this.$route.query)
         query = JSON.parse(JSON.stringify(this.$route.query));
 
-      debugger;
-
-      if (section === false) delete query.section;
-      else if (section)
-        query.section = section.substring(section.lastIndexOf("/") + 1);
+      if (section_meta === false) delete query.section;
+      else if (section_meta) query.section = section_meta;
 
       this.$router.push({ query });
     },
