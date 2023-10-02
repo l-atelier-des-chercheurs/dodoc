@@ -85,27 +85,50 @@
           <!-- ({{ opened_section_modules_list.length }}) -->
         </div>
 
-        <div class="_color">
+        <div class="u-spacingBottom _color">
+          <button
+            v-if="!edit_pin_color"
+            type="button"
+            class="_colorInd"
+            :style="
+              'background-color: ' +
+              (opened_section.section_color || default_layer_color)
+            "
+            @click="edit_pin_color = true"
+          />
           <ColorInput
-            class="u-spacingBottom"
+            v-else
             :label="$t('pins_color')"
             :can_toggle="false"
             :default_value="default_layer_color"
             :value="opened_section.section_color"
-            @save="updateOpenedLayer({ field: 'section_color', value: $event })"
+            @save="
+              updateOpenedLayer({ field: 'section_color', value: $event });
+              edit_pin_color = false;
+            "
           />
         </div>
 
-        <MapModule
-          v-for="(
-            { meta_filename, _module }, index
-          ) in opened_section_modules_list"
-          :key="meta_filename"
-          :index="index"
-          :mapmodule="_module"
-          @repickLocation="repickLocation(_module.$path)"
-          @remove="$emit('removeModule', meta_filename)"
-        />
+        <hr />
+
+        <div class="">
+          <small v-if="opened_section_modules_list.length === 0">
+            {{ $t("nothing_to_show") }}
+          </small>
+          <template v-else>
+            <MapModule
+              v-for="(
+                { meta_filename, _module }, index
+              ) in opened_section_modules_list"
+              :key="meta_filename"
+              :index="index"
+              :mapmodule="_module"
+              @repickLocation="repickLocation(_module.$path)"
+              @remove="$emit('removeModule', meta_filename)"
+            />
+          </template>
+        </div>
+
         <!-- <PublicationModule
             class="_mediaPublication"
             :key="meta_filename"
@@ -183,6 +206,7 @@ export default {
   data() {
     return {
       is_repicking_location_for: false,
+      edit_pin_color: false,
     };
   },
   created() {},
@@ -330,11 +354,6 @@ export default {
     }
   }
 
-  ._colorInd {
-    width: 1em;
-    height: 1em;
-  }
-
   ._title {
     padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
     border-radius: 2px;
@@ -348,5 +367,11 @@ export default {
   }
   // color: black;
   // background: blue;
+}
+
+._colorInd {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
 }
 </style>

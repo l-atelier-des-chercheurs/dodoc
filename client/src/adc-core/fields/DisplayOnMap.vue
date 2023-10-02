@@ -5,7 +5,7 @@
       'is--small': is_small,
     }"
   >
-    <div id="map" class="map"></div>
+    <div id="map" class="map" />
 
     <div id="mouse-position"></div>
     <div class="_popup" v-if="mouse_coords || pin_infos || pin_coord">
