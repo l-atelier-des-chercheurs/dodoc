@@ -906,6 +906,7 @@ export default function () {
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
         layers: "Calques",
+        create_layer: "Créer un calque",
         layer_title: "Nom du calque",
 
         "instructions.pane.capture":
