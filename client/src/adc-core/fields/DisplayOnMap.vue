@@ -115,6 +115,9 @@ export default {
       pin_coord: false,
       ol_features: undefined,
 
+      current_zoom: undefined,
+      current_view: undefined,
+
       mouse_coords: false,
 
       map: undefined,
@@ -257,6 +260,13 @@ export default {
           // f.setStyle(selectStyle);
           // return true;
         });
+      });
+
+      this.current_zoom = zoom;
+      this.current_view = center;
+      this.map.on("moveend", () => {
+        this.current_zoom = this.roundToDec(this.map.getView().getZoom());
+        this.current_view = this.map.getView().getCenter();
       });
 
       this.map.on("click", (event) => {
