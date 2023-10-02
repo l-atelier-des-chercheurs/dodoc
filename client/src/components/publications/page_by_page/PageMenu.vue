@@ -148,7 +148,6 @@
               />
             </div>
           </div>
-
           <div class="_pageMenu--pane">
             <DLabel
               :str="$t('list_of_medias') + ' (' + page_modules.length + ')'"
@@ -421,19 +420,18 @@
             :default_value="'#000000'"
             @save="updateMediaPubliMeta({ outline_color: $event })"
           />
-          <DepthInput
-            class="u-spacingBottom"
-            :label="$t('z_index')"
-            :value="active_module.z_index"
-            :page_modules="page_modules"
-            @save="updateMediaPubliMeta({ z_index: $event })"
-          />
           <ToggleInput
             v-if="firstMedia(active_module).$type === 'image'"
             class="u-spacingBottom"
             :content="active_module.show_fs_button"
             :label="$t('show_fs_button')"
             @update:content="updateMediaPubliMeta({ show_fs_button: $event })"
+          />
+          <DepthInput
+            :label="$t('z_index')"
+            :value="active_module.z_index"
+            :page_modules="page_modules"
+            @save="updateMediaPubliMeta({ z_index: $event })"
           />
         </div>
       </transition>
@@ -525,6 +523,7 @@ export default {
   watch: {},
   computed: {
     module_meta_filename() {
+      if (!this.active_module) return "";
       return this.active_module.$path.substring(
         this.active_module.$path.lastIndexOf("/") + 1
       );
@@ -624,10 +623,11 @@ export default {
     },
     setActive(path) {
       this.$eventHub.$emit(`module.setActive`, path);
-      this.$nextTick(() => {
-        const meta_filename = this.getFilename(path);
-        this.$eventHub.$emit(`module.panTo.${meta_filename}`);
-      });
+      if (path)
+        this.$nextTick(() => {
+          const meta_filename = this.getFilename(path);
+          this.$eventHub.$emit(`module.panTo.${meta_filename}`);
+        });
     },
     async updateMediaPubliMeta(val) {
       if (!this.active_module) return;
@@ -659,9 +659,9 @@ export default {
   padding: calc(var(--spacing) / 2) 0;
   margin: 0 calc(var(--spacing) / 2);
 
-  &:not(:last-child) {
-    margin-bottom: calc(var(--spacing) / 2);
-    border-bottom: 1px solid var(--active-color);
+  &:not(:first-child) {
+    margin-top: calc(var(--spacing) / 2);
+    border-top: 1px solid var(--active-color);
   }
 }
 

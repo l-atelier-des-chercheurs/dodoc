@@ -263,6 +263,7 @@ export default function () {
         outline_color: "Couleur du contour",
         custom_color: "Couleur personnalisée",
         z_index: "Ordre d’empilement",
+        show_fs_button: "Permettre le passage en plein écran",
         move_to_front: "Premier-plan",
         move_to_back: "Arrière-plan",
         fullscreen: "Plein-écran",
