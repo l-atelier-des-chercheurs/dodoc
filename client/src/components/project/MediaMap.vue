@@ -1,6 +1,11 @@
 <template>
   <div class="_mediaMap">
-    <DisplayOnMap class="_mapContainer" :pins="pins" :is_small="false" />
+    <DisplayOnMap
+      class="_mapContainer"
+      :pins="pins"
+      :is_small="false"
+      @pinClicked="pinClicked"
+    />
   </div>
 </template>
 <script>
@@ -39,19 +44,30 @@ export default {
       //     latitude: 43.11,
       //   },
       // ];
-      return this.medias.reduce((acc, m) => {
-        const gps = m.$infos?.gps;
-        if (gps) acc.push(gps);
+      return this.medias.reduce((acc, m, index) => {
+        if (m.$infos?.gps) {
+          const { latitude, longitude } = m.$infos?.gps;
+          if (latitude && longitude)
+            acc.push({
+              latitude,
+              longitude,
+              index,
+            });
+        }
         return acc;
       }, []);
     },
   },
-  methods: {},
+  methods: {
+    pinClicked(index) {
+      this.$emit("toggleMediaFocus", this.medias[index].$path);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
 ._mediaMap {
   width: 100%;
-  height: 100%;
+  height: 90%;
 }
 </style>

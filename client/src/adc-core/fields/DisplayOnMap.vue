@@ -260,7 +260,6 @@ export default {
           mouseFeature.getGeometry().setCoordinates([undefined, undefined]);
 
           const coordinate = feature.getGeometry().getCoordinates();
-          this.$eventHub.$emit("publication.map.click", coordinate);
 
           this.pin_coord = {};
           this.$set(this.pin_coord, "coordinate", {
@@ -271,8 +270,11 @@ export default {
           this.pin_infos = {};
           if (feature.get("label"))
             this.$set(this.pin_infos, "label", feature.get("label"));
-          if (feature.get("index"))
-            this.$set(this.pin_infos, "index", feature.get("index"));
+          if (feature.get("index")) {
+            const index = feature.get("index");
+            this.$set(this.pin_infos, "index", index);
+            this.$emit("pinClicked", index);
+          }
           if (feature.get("content"))
             this.$set(this.pin_infos, "content", feature.get("content"));
         }
