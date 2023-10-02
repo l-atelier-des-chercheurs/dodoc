@@ -243,6 +243,22 @@ export default {
       // });
       // this.map.addControl(geocoder);
 
+      let feature_selected = null;
+      this.map.on("pointermove", (event) => {
+        if (feature_selected !== null) {
+          feature_selected.setStyle(undefined);
+          feature_selected = null;
+        }
+
+        this.map.forEachFeatureAtPixel(event.pixel, (f) => {
+          feature_selected = f;
+          // const selectStyle = this.makePointStyle({});
+          // selectStyle.getFill().setColor(f.get("COLOR") || "#eeeeee");
+          // f.setStyle(selectStyle);
+          // return true;
+        });
+      });
+
       this.map.on("click", (event) => {
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
 
@@ -316,7 +332,7 @@ export default {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
       let style = {};
-      if (feature.get("label")) {
+      if (feature?.get("label")) {
         const _fs = {
           italic: "normal",
           weight: "600",
@@ -344,7 +360,7 @@ export default {
           offsetX: 15,
         });
       }
-      if (feature.get("fill_color")) {
+      if (feature?.get("fill_color")) {
         fill_color = feature.get("fill_color");
       }
 
