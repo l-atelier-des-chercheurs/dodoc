@@ -553,7 +553,8 @@ export default {
     }
   }
   ._publicationModule[data-type="files"],
-  ._publicationModule[data-type="carousel"] {
+  ._publicationModule[data-type="carousel"],
+  ._publicationModule[data-type="text"] {
     padding: var(--set-margins);
     opacity: var(--set-opacity);
     aspect-ratio: unset;
