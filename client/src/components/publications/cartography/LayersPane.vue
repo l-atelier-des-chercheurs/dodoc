@@ -52,7 +52,7 @@
         </template>
         <button
           type="button"
-          class="u-buttonLink"
+          class="u-button u-button_bleuvert u-button_small"
           @click="$emit('createSection')"
         >
           {{ $t("create_layer") }}
