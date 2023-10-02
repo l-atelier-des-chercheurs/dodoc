@@ -621,6 +621,7 @@ export default {
   > * {
     // background: white;
     pointer-events: auto;
+    cursor: pointer;
   }
 }
 </style>

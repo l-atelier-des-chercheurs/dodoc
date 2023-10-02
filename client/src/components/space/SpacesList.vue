@@ -230,9 +230,9 @@ export default {
 }
 
 ._pinned {
-  background: var(--c-gris);
-  background: var(--c-bleumarine_clair);
-  border-radius: 4px;
+  // background: var(--c-bleumarine_clair);
+  background: hsl(173, 47%, 80%);
+  // border-radius: 4px;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1)
     calc(var(--spacing) / 1);
   margin-top: calc(var(--spacing) / 2);
