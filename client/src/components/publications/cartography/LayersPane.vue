@@ -33,8 +33,7 @@
               'background-color: ' +
               (section.section_color || default_layer_color)
             "
-          >
-          </span>
+          />
           <span class="_clickZone" @click="openSection(section.$path)">
             <h4 class="_title">
               <!-- {{ index + 1 }}. -->
@@ -53,6 +52,7 @@
         <button
           type="button"
           class="u-button u-button_bleuvert u-button_small"
+          v-if="can_edit"
           @click="$emit('createSection', new_layer_title)"
         >
           {{ $t("create_layer") }}
@@ -73,6 +73,14 @@
 
       <div class="_openedLayer--content">
         <div class="_title">
+          <span
+            v-if="!can_edit"
+            class="_colorInd"
+            :style="
+              'background-color: ' +
+              (opened_section.section_color || default_layer_color)
+            "
+          />
           <TitleField
             :field_name="'section_title'"
             :label="can_edit ? $t('layer_title') : ''"
@@ -87,6 +95,7 @@
 
         <div class="u-spacingBottom _color">
           <ColorInput
+            v-if="can_edit"
             :label="$t('pins_color')"
             :can_toggle="false"
             :default_value="default_layer_color"
@@ -109,6 +118,7 @@
               :key="meta_filename"
               :index="index"
               :mapmodule="_module"
+              :can_edit="can_edit"
               @repickLocation="repickLocation(_module.$path)"
               @remove="$emit('removeModule', meta_filename)"
             />
@@ -139,16 +149,16 @@
             "
             @remove="$emit('removeModule', meta_filename)"
           /> -->
-
-        <hr />
-
-        <ModuleCreator
-          :publication_path="publication_path"
-          :is_collapsed="false"
-          :context="'cartography'"
-          :types_available="['medias']"
-          @addModule="$emit('addModule', $event)"
-        />
+        <template v-if="can_edit">
+          <hr />
+          <ModuleCreator
+            :publication_path="publication_path"
+            :is_collapsed="false"
+            :context="'cartography'"
+            :types_available="['medias']"
+            @addModule="$emit('addModule', $event)"
+          />
+        </template>
       </div>
     </div>
     <div class="_repickNotice" v-if="is_repicking_location_for">
@@ -316,6 +326,10 @@ export default {
 
   ._title {
     margin-bottom: calc(var(--spacing) * 1);
+    display: flex;
+    flex-flow: row wrap;
+    align-items: baseline;
+    gap: calc(var(--spacing) / 2);
   }
 }
 ._closeLayerBtn {
