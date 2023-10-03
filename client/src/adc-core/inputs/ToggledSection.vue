@@ -7,6 +7,7 @@
       :disabled="disabled"
       @update:content="$emit('update:show_toggle', $event)"
     />
+    <DLabel v-else :str="label" />
 
     <!-- <label :for="id" class="u-label _inputLabel">
       <input

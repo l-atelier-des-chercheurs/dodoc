@@ -86,26 +86,12 @@
         </div>
 
         <div class="u-spacingBottom _color">
-          <button
-            v-if="!edit_pin_color"
-            type="button"
-            class="_colorInd"
-            :style="
-              'background-color: ' +
-              (opened_section.section_color || default_layer_color)
-            "
-            @click="edit_pin_color = true"
-          />
           <ColorInput
-            v-else
             :label="$t('pins_color')"
             :can_toggle="false"
             :default_value="default_layer_color"
             :value="opened_section.section_color"
-            @save="
-              updateOpenedLayer({ field: 'section_color', value: $event });
-              edit_pin_color = false;
-            "
+            @save="updateOpenedLayer({ field: 'section_color', value: $event })"
           />
         </div>
 
@@ -206,9 +192,16 @@ export default {
   data() {
     return {
       is_repicking_location_for: false,
-      edit_pin_color: false,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        pins_color: "Couleur des épingles",
+      },
+    },
+  },
+
   created() {},
   mounted() {
     this.$eventHub.$on(`sections.open_summary`, this.openSummary);
