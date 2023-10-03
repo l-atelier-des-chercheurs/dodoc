@@ -10,19 +10,17 @@
         :can_edit="can_edit"
         @close="$emit('close')"
       />
-
       <StoryTemplate
         v-if="publication.template === 'story'"
         :publication="publication"
         :can_edit="can_edit"
       />
       <StorySectionTemplate
-        v-if="publication.template === 'story_with_sections'"
+        v-else-if="publication.template === 'story_with_sections'"
         :publication="publication"
         :section_opened_meta="page_opened_id"
         :can_edit="can_edit"
         @toggleSection="$emit('togglePage', $event)"
-        @closePublication="$emit('close')"
       />
       <PageTemplate
         v-else-if="publication.template === 'page_by_page'"
@@ -30,7 +28,6 @@
         :can_edit="can_edit"
         :page_opened_id="page_opened_id"
         @togglePage="$emit('togglePage', $event)"
-        @closePublication="$emit('close')"
       />
       <MapTemplate
         v-else-if="publication.template === 'cartography'"
@@ -38,7 +35,6 @@
         :section_opened_meta="page_opened_id"
         :can_edit="can_edit"
         @toggleSection="$emit('togglePage', $event)"
-        @closePublication="$emit('close')"
       />
     </template>
   </div>

@@ -39,7 +39,7 @@
           <SectionWithPrint :publication="publication" />
         </div>
         <div v-else-if="publication.template === 'cartography'">
-          <MapView :publication="publication" />
+          <MapForPrint :publication="publication" />
         </div>
       </div>
     </transition>
@@ -61,7 +61,8 @@ export default {
       import("@/components/publications/templates/StoryTemplate.vue"),
     SectionWithPrint: () =>
       import("@/components/publications/story/SectionWithPrint.vue"),
-    MapView: () => import("@/components/publications/cartography/MapView.vue"),
+    MapForPrint: () =>
+      import("@/components/publications/cartography/MapForPrint.vue"),
   },
   data() {
     return {

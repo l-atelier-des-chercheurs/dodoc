@@ -6,7 +6,6 @@
       :section_opened_meta="section_opened_meta"
       :can_edit="can_edit"
       @toggleSection="$emit('toggleSection', $event)"
-      @closePublication="$emit('closePublication')"
     />
   </div>
 </template>
@@ -16,7 +15,7 @@ import SectionedPublication from "@/components/publications/logic/SectionedPubli
 export default {
   props: {
     publication: Object,
-    section_opened_meta: String,
+    section_opened_meta: [Boolean, String],
     can_edit: Boolean,
   },
   components: {

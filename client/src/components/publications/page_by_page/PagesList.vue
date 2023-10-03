@@ -159,7 +159,6 @@
         :can_edit="can_edit"
         @togglePage="$emit('togglePage', $event)"
         @updatePageOptions="updatePageOptions"
-        @closePublication="$emit('closePublication')"
       />
     </transition>
   </div>
