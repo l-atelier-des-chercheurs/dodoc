@@ -1,108 +1,120 @@
 <template>
   <div>
     <div class="m_fields--content">
-      <template v-if="!raw_mode">
-        <!-- <sl-input v-sl-model="location" size="medium" name="text" type="text" /> -->
-        <template v-if="format === 'gps'">
-          <div class="">
-            <DLabel :str="$t('latitude')" />
-            <div class="u-inputGroup">
-              <input
-                :placeholder="$t('latitude')"
-                v-model="latitude"
-                size="medium"
-                type="text"
-                :disabled="!edit_mode"
-                help-text="Latitude, par exemple : 64.138 ou 64° 8' 16.8&quot; N"
-              />
-              <span class="u-suffix">°</span>
-            </div>
+      <!-- <sl-input v-sl-model="location" size="medium" name="text" type="text" /> -->
+      <div class="u-sameRow _latLong">
+        <div class="">
+          <DLabel :str="$t('latitude')" />
+          <div class="u-inputGroup">
+            <input
+              :placeholder="$t('latitude')"
+              v-model="latitude"
+              size="small"
+              type="text"
+              :disabled="!edit_mode"
+              help-text="Latitude, par exemple : 64.138 ou 64° 8' 16.8&quot; N"
+            />
+            <span class="u-suffix">°</span>
           </div>
-          <div class="">
-            <DLabel :str="$t('longitude')" />
-            <div class="u-inputGroup">
-              <input
-                :placeholder="$t('longitude')"
-                v-model="longitude"
-                size="medium"
-                type="text"
-                :disabled="!edit_mode"
-                help-text="Longitude, par exemple : -21.877 ou 21° 52' 37.199&quot; O"
-              />
-              <span class="u-suffix">°</span>
-            </div>
+        </div>
+        <div class="">
+          <DLabel :str="$t('longitude')" />
+          <div class="u-inputGroup">
+            <input
+              :placeholder="$t('longitude')"
+              v-model="longitude"
+              size="small"
+              type="text"
+              :disabled="!edit_mode"
+              help-text="Longitude, par exemple : -21.877 ou 21° 52' 37.199&quot; O"
+            />
+            <span class="u-suffix">°</span>
           </div>
+        </div>
+      </div>
+      <div class="">
+        <DLabel :str="$t('zoom')" />
+        <div class="">
+          <input
+            :placeholder="$t('zoom')"
+            v-model="zoom"
+            size="small"
+            type="text"
+            :disabled="!edit_mode"
+            help-text="Niveau de zoom"
+          />
+        </div>
+      </div>
 
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="currentPosition"
-            v-if="format === 'gps' && edit_mode"
-            :loading="is_looking_for_gps_coords"
-          >
-            <!-- :disabled="$root.state.is_electron" -->
-            {{ $t("current_position") }}
-          </button>
-          <!-- <button
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="currentPosition"
+        v-if="edit_mode"
+        :loading="is_looking_for_gps_coords"
+      >
+        <!-- :disabled="$root.state.is_electron" -->
+        {{ $t("current_position") }}
+      </button>
+
+      <br />
+
+      <!-- <button
               type="button"
               class="u-button u-button_small"
               @click="pick_on_map = !pick_on_map"
               :active="pick_on_map"
-              v-if="format === 'gps' && edit_mode"
+              v-if="edit_mode"
             >
               {{ $t("pick_on_map") }}
             </button> -->
 
-          <sl-alert
-            type="warning"
-            :open="error_message"
-            @sl-after-hide="error_message = false"
-            closable
-          >
-            <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
-            <span v-html="error_message" />
-          </sl-alert>
+      <sl-alert
+        type="warning"
+        :open="error_message"
+        @sl-after-hide="error_message = false"
+        closable
+      >
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <span v-html="error_message" />
+      </sl-alert>
 
-          <!-- v-if="pick_on_map" -->
-          <DisplayOnMap
-            :pins="longlat ? [longlat] : []"
-            @newPosition="newPosition"
-          />
-        </template>
-        <template v-else>
-          <input v-model="value" size="medium" name="address" type="text" />
-        </template>
-      </template>
-      <pre v-else>{{ location }}</pre>
+      <!-- v-if="pick_on_map" -->
+      <DisplayOnMap
+        :start_coords="start_coords"
+        :pins="center_pin"
+        :start_zoom="start_zoom"
+        @newPosition="newPosition"
+      />
     </div>
   </div>
 </template>
 <script>
-const convertDMSToDD = (dms) => {
-  // eslint-disable-next-line
-  let parts = dms.split(/[^\d+(\,\d+)\d+(\.\d+)?\w]+/);
-  let degrees = parseFloat(parts[0]);
-  let minutes = parseFloat(parts[1]);
-  let seconds = parseFloat(parts[2].replace(",", "."));
-  let direction = parts[3];
+// const convertDMSToDD = (dms) => {
+//   // eslint-disable-next-line
+//   let parts = dms.split(/[^\d+(\,\d+)\d+(\.\d+)?\w]+/);
+//   let degrees = parseFloat(parts[0]);
+//   let minutes = parseFloat(parts[1]);
+//   let seconds = parseFloat(parts[2].replace(",", "."));
+//   let direction = parts[3];
 
-  // console.log("degrees: " + degrees);
-  // console.log("minutes: " + minutes);
-  // console.log("seconds: " + seconds);
-  // console.log("direction: " + direction);
+//   // console.log("degrees: " + degrees);
+//   // console.log("minutes: " + minutes);
+//   // console.log("seconds: " + seconds);
+//   // console.log("direction: " + direction);
 
-  let dd = degrees + minutes / 60 + seconds / (60 * 60);
+//   let dd = degrees + minutes / 60 + seconds / (60 * 60);
 
-  if (direction == "S" || direction == "W" || direction === "O") {
-    dd = dd * -1;
-  } // Don't do anything for N or E
-  return dd;
-};
+//   if (direction == "S" || direction == "W" || direction === "O") {
+//     dd = dd * -1;
+//   } // Don't do anything for N or E
+//   return dd;
+// };
 
 export default {
   props: {
-    format: String,
-    start_value: [Number, String],
+    start_coords: [Boolean, Object],
+    start_zoom: [Boolean, Number],
     edit_mode: Boolean,
   },
   components: {
@@ -114,6 +126,7 @@ export default {
 
       longitude: "",
       latitude: "",
+      zoom: 0,
 
       degrees: "",
       minutes: "",
@@ -128,16 +141,12 @@ export default {
     };
   },
   created() {
-    if (this.start_value) {
-      const start_value = this.start_value.toString();
-      if (this.format === "gps") {
-        if (start_value.split(" ").length > 0) {
-          const long = start_value.split(" ")[0];
-          if (long && long !== "undefined") this.longitude = long;
-          const lat = start_value.split(" ")[1];
-          if (lat && lat !== "undefined") this.latitude = lat;
-        }
-      } else this.value = start_value;
+    if (this.start_coords?.longitude && this.start_coords?.latitude) {
+      this.longitude = this.start_coords.longitude;
+      this.latitude = this.start_coords.latitude;
+    }
+    if (this.start_zoom) {
+      this.zoom = this.start_zoom;
     }
   },
   mounted() {
@@ -146,37 +155,29 @@ export default {
     // });
   },
   beforeDestroy() {},
-  watch: {
-    location() {
-      this.$emit("update", this.location);
-    },
-    value() {
-      this.$emit("update", this.value);
-    },
-  },
+  watch: {},
   computed: {
-    location() {
-      if (!this.longlat) return "";
-      let long = this.longlat.longitude;
-      let lat = this.longlat.latitude;
-      return `${long} ${lat}`;
+    center_pin() {
+      return [
+        {
+          longitude: this.longitude,
+          latitude: this.latitude,
+        },
+      ];
     },
-    longlat() {
-      if (!this.longitude || !this.latitude) return undefined;
-
-      let longitude = this.longitude;
-      let latitude = this.latitude;
-
-      if (typeof longitude === "string" && longitude.includes("°"))
-        longitude = convertDMSToDD(longitude);
-      if (typeof latitude === "string" && latitude.includes("°"))
-        latitude = convertDMSToDD(latitude);
-
-      return {
-        longitude,
-        latitude,
-      };
-    },
+    // longlat() {
+    //   if (!this.longitude || !this.latitude) return undefined;
+    //   let longitude = this.longitude;
+    //   let latitude = this.latitude;
+    //   if (typeof longitude === "string" && longitude.includes("°"))
+    //     longitude = convertDMSToDD(longitude);
+    //   if (typeof latitude === "string" && latitude.includes("°"))
+    //     latitude = convertDMSToDD(latitude);
+    //   return {
+    //     longitude,
+    //     latitude,
+    //   };
+    // },
   },
   methods: {
     currentPosition() {
@@ -193,9 +194,11 @@ export default {
 
         this.is_looking_for_gps_coords = false;
 
-        this.longitude = crd.longitude;
-        this.latitude = crd.latitude;
+        debugger;
 
+        this.latitude = crd.latitude;
+        this.longitude = crd.longitude;
+        this.updateLongLatZoom();
         // console.log("Votre position actuelle est :");
         // console.log(`Latitude : ${crd.latitude}`);
         // console.log(`Longitude : ${crd.longitude}`);
@@ -209,10 +212,21 @@ export default {
 
       navigator.geolocation.getCurrentPosition(success, error, options);
     },
-    newPosition({ longitude, latitude }) {
+    newPosition({ longitude, latitude, zoom }) {
       this.longitude = longitude;
       this.latitude = latitude;
+      this.zoom = zoom;
+      this.updateLongLatZoom();
       // this.pick_on_map = false;
+    },
+    updateLongLatZoom() {
+      this.$emit("update", {
+        location: {
+          longitude: this.longitude,
+          latitude: this.latitude,
+        },
+        zoom: this.zoom,
+      });
     },
   },
 };
@@ -227,5 +241,13 @@ export default {
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 2) 0;
+}
+
+._latLong {
+  justify-content: stretch;
+
+  > * {
+    flex: 1 1 0;
+  }
 }
 </style>

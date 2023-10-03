@@ -52,8 +52,8 @@
         </template>
         <button
           type="button"
-          class="u-buttonLink"
-          @click="$emit('createSection')"
+          class="u-button u-button_bleuvert u-button_small"
+          @click="$emit('createSection', new_layer_title)"
         >
           {{ $t("create_layer") }}
         </button>
@@ -76,7 +76,7 @@
           <TitleField
             :field_name="'section_title'"
             :label="can_edit ? $t('layer_title') : ''"
-            :content="opened_section.section_title"
+            :content="opened_section.section_title || $t('untitled')"
             :path="opened_section.$path"
             :maxlength="120"
             :tag="'h3'"
@@ -85,9 +85,8 @@
           <!-- ({{ opened_section_modules_list.length }}) -->
         </div>
 
-        <div class="_color">
+        <div class="u-spacingBottom _color">
           <ColorInput
-            class="u-spacingBottom"
             :label="$t('pins_color')"
             :can_toggle="false"
             :default_value="default_layer_color"
@@ -96,16 +95,26 @@
           />
         </div>
 
-        <MapModule
-          v-for="(
-            { meta_filename, _module }, index
-          ) in opened_section_modules_list"
-          :key="meta_filename"
-          :index="index"
-          :mapmodule="_module"
-          @repickLocation="repickLocation(_module.$path)"
-          @remove="$emit('removeModule', meta_filename)"
-        />
+        <div class="">
+          <DLabel :str="$t('pins')" />
+
+          <small v-if="opened_section_modules_list.length === 0">
+            {{ $t("nothing_to_show") }}
+          </small>
+          <template v-else>
+            <MapModule
+              v-for="(
+                { meta_filename, _module }, index
+              ) in opened_section_modules_list"
+              :key="meta_filename"
+              :index="index"
+              :mapmodule="_module"
+              @repickLocation="repickLocation(_module.$path)"
+              @remove="$emit('removeModule', meta_filename)"
+            />
+          </template>
+        </div>
+
         <!-- <PublicationModule
             class="_mediaPublication"
             :key="meta_filename"
@@ -143,16 +152,19 @@
       </div>
     </div>
     <div class="_repickNotice" v-if="is_repicking_location_for">
-      {{ $t("click_on_map_to_repick_location_for_media") }}
-      {{ is_repicking_location_for_index }}
-
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="is_repicking_location_for = false"
-      >
-        {{ $t("cancel") }}
-      </button>
+      <div class="_repickNotice--content">
+        <div>
+          {{ $t("click_on_map_to_repick_location_for_media") }}
+          {{ is_repicking_location_for_index + 1 }}
+        </div>
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="is_repicking_location_for = false"
+        >
+          {{ $t("cancel") }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -185,6 +197,16 @@ export default {
       is_repicking_location_for: false,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        pins_color: "Couleur des épingles",
+        click_on_map_to_repick_location_for_media:
+          "Cliquez sur la carte pour sélectionner une nouvelle position pour le média numéro ",
+      },
+    },
+  },
+
   created() {},
   mounted() {
     this.$eventHub.$on(`sections.open_summary`, this.openSummary);
@@ -200,6 +222,15 @@ export default {
       return this.opened_section_modules_list.findIndex(
         ({ _module }) => this.is_repicking_location_for === _module.$path
       );
+    },
+    new_layer_title() {
+      let idx = this.sections.length + 1;
+      let new_layer_title = this.$t("layer") + " " + idx;
+      while (this.sections.section_title === new_layer_title) {
+        idx++;
+        new_layer_title = this.$t("layer") + " " + idx;
+      }
+      return new_layer_title;
     },
   },
   methods: {
@@ -304,7 +335,14 @@ export default {
   backdrop-filter: blur(5px);
   background: rgba(231, 231, 231, 0.7);
 
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2);
+
+  display: flex;
+  flex-flow: column nowrap;
+}
+._repickNotice--content {
+  background: white;
+  padding: calc(var(--spacing) / 2);
 }
 </style>
 <style lang="scss">
@@ -330,11 +368,6 @@ export default {
     }
   }
 
-  ._colorInd {
-    width: 1em;
-    height: 1em;
-  }
-
   ._title {
     padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
     border-radius: 2px;
@@ -348,5 +381,11 @@ export default {
   }
   // color: black;
   // background: blue;
+}
+
+._colorInd {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
 }
 </style>

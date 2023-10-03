@@ -239,7 +239,8 @@ export default {
   justify-content: center;
   flex-flow: column nowrap;
   align-items: center;
-  margin: 0 auto calc(var(--spacing) * 4);
+  margin: 0 auto;
+  padding-bottom: calc(var(--spacing) * 4);
 }
 
 ._settings {

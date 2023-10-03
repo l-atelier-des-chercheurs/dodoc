@@ -153,6 +153,7 @@
           v-if="tile_mode === 'map'"
           key="mediaMap"
           :medias="filtered_medias"
+          @toggleMediaFocus="toggleMediaFocus"
         />
         <div v-else :key="group_mode" class="_gridSection">
           <div

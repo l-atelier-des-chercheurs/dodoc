@@ -211,6 +211,7 @@ export default function () {
         publications: "Publications",
         back_to_publications: "Retour aux publications",
         generate_preview: "Générer un aperçu",
+        nothing_to_show: "Rien à afficher",
 
         story: "Récit",
         story_with_sections: "Récit",
@@ -263,6 +264,7 @@ export default function () {
         outline_color: "Couleur du contour",
         custom_color: "Couleur personnalisée",
         z_index: "Ordre d’empilement",
+        show_fs_button: "Permettre le passage en plein écran",
         move_to_front: "Premier-plan",
         move_to_back: "Arrière-plan",
         fullscreen: "Plein-écran",
@@ -902,10 +904,14 @@ export default function () {
         search_for_a_place: "Rechercher un lieu",
         latitude: "Latitude",
         longitude: "Longitude",
+        zoom: "Zoom",
         map: "Carte",
+        pins: "Épingles",
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
         layers: "Calques",
+        layer: "Calque",
+        create_layer: "Créer un calque",
         layer_title: "Nom du calque",
 
         "instructions.pane.capture":

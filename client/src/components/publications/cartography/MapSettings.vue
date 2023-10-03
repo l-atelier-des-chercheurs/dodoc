@@ -14,10 +14,14 @@
 
     <div class="u-spacingBottom">
       <template v-if="map_mode === 'gps'">
-        <DLabel :str="$t('gps_starting_point')" />
+        <DLabel :str="$t('default_map_framing')" />
+        <div class="u-instructions">
+          {{ $t("default_map_framing_instr") }}
+        </div>
+
         <PositionPicker
-          :format="'gps'"
-          :start_value="publication.map_initial_location || ''"
+          :start_coords="publication.map_initial_location || false"
+          :start_zoom="publication.map_initial_zoom || false"
           :edit_mode="true"
           @update="updateBasePosition"
         />
@@ -72,8 +76,9 @@ export default {
 
         map_mode_gps: "Coordonnées GPS avec un fond de carte OpenStreetMap",
         map_mode_gps_instr: "Pour cartographier un espace extérieur.",
-        gps_starting_point: "Point de référence de la carte",
-
+        default_map_framing: "Cadrage de référence de la carte",
+        default_map_framing_instr:
+          "Cliquez sur la carte sur le point qui sera utilisé pour centrer la carte à l’ouverture. Le niveau de zoom sera aussi conservé.",
         map_mode_image: "Fond de plan image",
         map_mode_image_instr:
           "Pour cartographier un espace intérieur ou très réduit ou un espace non-cartographique.",
@@ -93,9 +98,10 @@ export default {
     },
   },
   methods: {
-    async updateBasePosition(val) {
+    async updateBasePosition({ location, zoom }) {
       await this.updatePubli({
-        map_initial_location: val,
+        map_initial_location: location,
+        map_initial_zoom: zoom,
       });
     },
 

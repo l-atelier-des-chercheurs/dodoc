@@ -6,58 +6,69 @@
       :can_toggle="can_toggle"
       :show_toggle.sync="show_color_input"
     >
-      <div class="_defaultColors">
-        <div
-          v-for="color in default_colors"
-          class="_colorPatch"
-          :class="{
-            'is--active': color === local_value,
-          }"
-          :key="color"
-          :style="`--patch-color: ${color}`"
-          @click="$emit('save', color)"
-        ></div>
-      </div>
-      <div class="u-sameRow" :key="'value-' + value">
-        <div
-          class="_inputField"
-          :class="{
-            'has--novalue': local_value === '',
-          }"
+      <div class="_currentColor" v-if="!edit_mode">
+        <button
+          type="button"
+          class="u-button u-button_small u-button_transparent"
+          @click="edit_mode = true"
         >
-          <label
-            :for="'_input_' + label"
-            class="u-sameRow _inputField--label"
-            :style="`--patch-color: ${local_value}`"
-          >
-            <small>{{ $t("custom_color") }}</small>
-            <span class="_colorPatch" />
-          </label>
-          <input
-            visi
-            ref="field"
-            type="color"
-            :name="label"
-            :id="'_input_' + label"
-            v-model="local_value"
+          <span class="_colorPatch" :style="`--patch-color: ${local_value}`" />
+          {{ $t("edit") }}
+        </button>
+      </div>
+      <template v-else>
+        <div class="_defaultColors">
+          <div
+            v-for="color in default_colors"
+            class="_colorPatch"
+            :class="{
+              'is--active': color === local_value,
+            }"
+            :key="color"
+            :style="`--patch-color: ${color}`"
+            @click="local_value = color"
           />
         </div>
-
+        <div class="u-sameRow" :key="'value-' + value">
+          <div
+            class="_inputField"
+            :class="{
+              'has--novalue': local_value === '',
+            }"
+          >
+            <label
+              :for="'_input_' + label"
+              class="u-button u-button_verysmall _customCol"
+              :style="`--patch-color: ${local_value}`"
+            >
+              <span class="_colorPatch is--active" v-if="is_custom_color" />
+              {{ $t("custom_color") }}
+            </label>
+            <input
+              ref="field"
+              type="color"
+              :name="label"
+              :id="'_input_' + label"
+              v-model="local_value"
+            />
+          </div>
+        </div>
         <transition name="popUp_slow">
           <button
             type="button"
             v-if="value !== local_value"
             class="u-button u-button_bleuvert _submitBtn"
-            @click="$emit('save', local_value)"
+            @click="saveColor(local_value)"
           >
             <sl-icon
               style="font-size: 1.5em"
               name="check"
               :label="$t('submit')"
             />
+            {{ $t("save") }}
           </button>
         </transition>
-      </div>
+      </template>
     </ToggledSection>
   </div>
 </template>
@@ -81,6 +92,7 @@ export default {
   data() {
     return {
       show_color_input: this.value ? true : false,
+      edit_mode: false,
 
       local_value: this.value || this.default_value,
       previous_value: undefined,
@@ -106,18 +118,31 @@ export default {
       this.local_value = this.value;
     },
     show_color_input() {
-      if (!this.show_color_input) this.$emit("save", this.default_value);
-      else this.$emit("save", this.previous_value);
+      if (!this.show_color_input) {
+        this.saveColor(this.default_value);
+      } else {
+        this.saveColor(this.previous_value);
+      }
     },
   },
-  computed: {},
-  methods: {},
+  computed: {
+    is_custom_color() {
+      return !this.default_colors.includes(this.local_value);
+    },
+  },
+  methods: {
+    saveColor(col) {
+      this.$emit("save", col);
+      this.edit_mode = false;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
 ._defaultColors {
   display: flex;
   flex-flow: row wrap;
+  justify-content: center;
 }
 ._defaultColors--item {
   cursor: pointer;
@@ -126,8 +151,8 @@ export default {
 
 ._colorPatch {
   display: block;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 2rem;
+  height: 2rem;
   padding: 0.3rem;
   cursor: pointer;
 
@@ -189,6 +214,6 @@ export default {
 }
 
 ._submitBtn {
-  padding: calc(var(--spacing) / 8);
+  // padding: calc(var(--spacing) / 8);
 }
 </style>

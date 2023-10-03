@@ -20,7 +20,7 @@
     />
     <DisplayOnMap
       class="_mapContainer"
-      :start_coords="false"
+      :start_coords="start_coords"
       :start_zoom="start_zoom"
       :pins="pins"
       :is_small="false"
@@ -132,9 +132,11 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    start_coords() {
+      return this.publication.map_initial_location || false;
+    },
     start_zoom() {
-      // return this.views_list[0].map_zoom;
-      return 10;
+      return this.publication.map_initial_zoom || 10;
     },
     opened_view() {
       if (this.opened_view_id === false) return false;
@@ -166,11 +168,6 @@ export default {
         return acc;
       }, []);
     },
-    // initial_view() {
-    //   const il = this.publication.map_initial_location;
-    //   if (!il) return false;
-    //   return il;
-    // },
   },
   methods: {
     openView(index) {
@@ -183,7 +180,6 @@ export default {
     closeView() {
       this.opened_view_id = false;
       this.$eventHub.$emit("publication.map.navigateTo", {
-        center: this.start_coords,
         zoom: this.start_zoom,
       });
     },

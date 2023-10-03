@@ -5,7 +5,7 @@
       'is--small': is_small,
     }"
   >
-    <div id="map" class="map"></div>
+    <div id="map" class="map" />
 
     <div id="mouse-position"></div>
     <div class="_popup" v-if="mouse_coords || pin_infos || pin_coord">
@@ -38,6 +38,7 @@
               $emit('newPosition', {
                 longitude: mouse_coords[0],
                 latitude: mouse_coords[1],
+                zoom: current_zoom,
               });
               mouse_coords = false;
             "
@@ -97,7 +98,7 @@ export default {
   props: {
     pins: [Boolean, Array],
     start_coords: {
-      type: [Boolean, Array],
+      type: [Boolean, Object],
     },
     start_zoom: {
       type: [Boolean, Number],
@@ -114,6 +115,9 @@ export default {
       pin_infos: false,
       pin_coord: false,
       ol_features: undefined,
+
+      current_zoom: undefined,
+      current_view: undefined,
 
       mouse_coords: false,
 
@@ -157,10 +161,11 @@ export default {
   computed: {},
   methods: {
     startMap() {
-      let zoom = this.start_zoom;
+      let zoom = this.start_zoom || 9;
       let center = [5.39057449011251, 43.310173305629576];
 
-      if (this.start_coords) center = this.start_coords;
+      if (this.start_coords?.longitude && this.start_coords?.latitude)
+        center = [this.start_coords.longitude, this.start_coords.latitude];
       else if (
         this.pins &&
         this.pins.length > 0 &&
@@ -243,6 +248,29 @@ export default {
       // });
       // this.map.addControl(geocoder);
 
+      let feature_selected = null;
+      this.map.on("pointermove", (event) => {
+        if (feature_selected !== null) {
+          feature_selected.setStyle(undefined);
+          feature_selected = null;
+        }
+
+        this.map.forEachFeatureAtPixel(event.pixel, (f) => {
+          feature_selected = f;
+          // const selectStyle = this.makePointStyle({});
+          // selectStyle.getFill().setColor(f.get("COLOR") || "#eeeeee");
+          // f.setStyle(selectStyle);
+          // return true;
+        });
+      });
+
+      this.current_zoom = zoom;
+      this.current_view = center;
+      this.map.on("moveend", () => {
+        this.current_zoom = this.roundToDec(this.map.getView().getZoom());
+        this.current_view = this.map.getView().getCenter();
+      });
+
       this.map.on("click", (event) => {
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
 
@@ -260,7 +288,6 @@ export default {
           mouseFeature.getGeometry().setCoordinates([undefined, undefined]);
 
           const coordinate = feature.getGeometry().getCoordinates();
-          this.$eventHub.$emit("publication.map.click", coordinate);
 
           this.pin_coord = {};
           this.$set(this.pin_coord, "coordinate", {
@@ -271,8 +298,11 @@ export default {
           this.pin_infos = {};
           if (feature.get("label"))
             this.$set(this.pin_infos, "label", feature.get("label"));
-          if (feature.get("index"))
-            this.$set(this.pin_infos, "index", feature.get("index"));
+          if (feature.get("index")) {
+            const index = feature.get("index");
+            this.$set(this.pin_infos, "index", index);
+            this.$emit("pinClicked", index);
+          }
           if (feature.get("content"))
             this.$set(this.pin_infos, "content", feature.get("content"));
         }
@@ -314,7 +344,7 @@ export default {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
       let style = {};
-      if (feature.get("label")) {
+      if (feature?.get("label")) {
         const _fs = {
           italic: "normal",
           weight: "600",
@@ -342,7 +372,7 @@ export default {
           offsetX: 15,
         });
       }
-      if (feature.get("fill_color")) {
+      if (feature?.get("fill_color")) {
         fill_color = feature.get("fill_color");
       }
 

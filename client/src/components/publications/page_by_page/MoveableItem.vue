@@ -417,7 +417,7 @@ export default {
   // transition-duration: 0.15s;
   // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
-  &.is--locked {
+  &.is--locked.is--editable {
     pointer-events: none;
   }
   &.is--active {
@@ -553,7 +553,8 @@ export default {
     }
   }
   ._publicationModule[data-type="files"],
-  ._publicationModule[data-type="carousel"] {
+  ._publicationModule[data-type="carousel"],
+  ._publicationModule[data-type="text"] {
     padding: var(--set-margins);
     opacity: var(--set-opacity);
     aspect-ratio: unset;
@@ -620,6 +621,7 @@ export default {
   > * {
     // background: white;
     pointer-events: auto;
+    cursor: pointer;
   }
 }
 </style>
