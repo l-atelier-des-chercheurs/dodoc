@@ -6,7 +6,6 @@
       :section_opened_meta="section_opened_meta"
       :can_edit="can_edit"
       @toggleSection="$emit('toggleSection', $event)"
-      @closePublication="$emit('closePublication')"
     />
   </div>
 </template>

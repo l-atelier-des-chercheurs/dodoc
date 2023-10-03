@@ -384,10 +384,10 @@ export default {
 
       return new olStyle(style);
     },
-    navigateTo({ center, zoom = this.start_zoom }) {
+    navigateTo({ center }) {
       this.view.animate({
         center,
-        zoom,
+        // zoom,
         // duration: 2000,
       });
     },

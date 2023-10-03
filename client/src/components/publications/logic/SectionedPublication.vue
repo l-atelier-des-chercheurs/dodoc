@@ -8,7 +8,6 @@
       :opened_section_modules_list="opened_section_modules_list"
       :can_edit="can_edit"
       @toggleSection="$emit('toggleSection', $event)"
-      @closePublication="$emit('closePublication')"
       @createSection="createSection"
       @removeSection="removeSection"
       @updateOrder="updateOrder"
@@ -27,7 +26,6 @@
       :opened_section="opened_section"
       :opened_section_modules_list="opened_section_modules_list"
       :can_edit="can_edit"
-      @closePublication="$emit('closePublication')"
       @createSection="createSection"
       @removeSection="removeSection"
       @updateOrder="updateOrder"
@@ -49,7 +47,7 @@ export default {
   props: {
     template: String,
     publication: Object,
-    section_opened_meta: String,
+    section_opened_meta: [Boolean, String],
     can_edit: Boolean,
   },
   components: {
@@ -99,6 +97,7 @@ export default {
       });
     },
     opened_section() {
+      if (!this.section_opened_meta) return false;
       return this.sections.find((f) =>
         f.$path.endsWith("/" + this.section_opened_meta)
       );

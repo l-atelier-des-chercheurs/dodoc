@@ -79,7 +79,7 @@ export default {
   props: {
     publication: Object,
     sections: Array,
-    opened_section: Object,
+    opened_section: [Boolean, Object],
     opened_section_modules_list: Array,
     can_edit: Boolean,
   },

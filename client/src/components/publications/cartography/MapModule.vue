@@ -31,6 +31,7 @@
     </div>
 
     <button
+      v-if="can_edit"
       type="button"
       class="u-button u-button_red u-button_icon"
       @click="$emit('repickLocation')"
@@ -38,6 +39,7 @@
       <b-icon icon="pin-map-fill" />
     </button>
     <button
+      v-if="can_edit"
       type="button"
       class="u-button u-button_transparent u-button_icon"
       @click="removeModule"
@@ -51,6 +53,7 @@ export default {
   props: {
     index: Number,
     mapmodule: Object,
+    can_edit: Boolean,
   },
   components: {},
   data() {
