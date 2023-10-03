@@ -904,6 +904,7 @@ export default function () {
         search_for_a_place: "Rechercher un lieu",
         latitude: "Latitude",
         longitude: "Longitude",
+        zoom: "Zoom",
         map: "Carte",
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",

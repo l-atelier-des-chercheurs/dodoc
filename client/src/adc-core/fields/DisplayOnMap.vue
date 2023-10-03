@@ -38,6 +38,7 @@
               $emit('newPosition', {
                 longitude: mouse_coords[0],
                 latitude: mouse_coords[1],
+                zoom: current_zoom,
               });
               mouse_coords = false;
             "
@@ -97,7 +98,7 @@ export default {
   props: {
     pins: [Boolean, Array],
     start_coords: {
-      type: [Boolean, Array],
+      type: [Boolean, Object],
     },
     start_zoom: {
       type: [Boolean, Number],
@@ -160,10 +161,11 @@ export default {
   computed: {},
   methods: {
     startMap() {
-      let zoom = this.start_zoom;
+      let zoom = this.start_zoom || 9;
       let center = [5.39057449011251, 43.310173305629576];
 
-      if (this.start_coords) center = this.start_coords;
+      if (this.start_coords?.longitude && this.start_coords?.latitude)
+        center = [this.start_coords.longitude, this.start_coords.latitude];
       else if (
         this.pins &&
         this.pins.length > 0 &&

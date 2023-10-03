@@ -584,7 +584,10 @@
                     "type": "string"
                   },
                   "map_initial_location": {
-                    "type": "string"
+                    "type": "object"
+                  },
+                  "map_initial_zoom": {
+                    "type": "number"
                   },
                   "map_basemap": {
                     "type": "string"
