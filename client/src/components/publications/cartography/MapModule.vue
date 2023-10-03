@@ -1,7 +1,9 @@
 <template>
   <div class="_mapModule" @click="openPin">
     <label>
-      {{ index + 1 }}
+      <b>
+        {{ index + 1 }}
+      </b>
     </label>
     <MediaContent
       class="_preview"

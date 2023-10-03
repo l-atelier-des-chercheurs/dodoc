@@ -906,6 +906,7 @@ export default function () {
         longitude: "Longitude",
         zoom: "Zoom",
         map: "Carte",
+        pins: "Épingles",
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
         layers: "Calques",

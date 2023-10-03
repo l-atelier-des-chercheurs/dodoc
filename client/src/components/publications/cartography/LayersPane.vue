@@ -95,9 +95,9 @@
           />
         </div>
 
-        <hr />
-
         <div class="">
+          <DLabel :str="$t('pins')" />
+
           <small v-if="opened_section_modules_list.length === 0">
             {{ $t("nothing_to_show") }}
           </small>
@@ -152,16 +152,19 @@
       </div>
     </div>
     <div class="_repickNotice" v-if="is_repicking_location_for">
-      {{ $t("click_on_map_to_repick_location_for_media") }}
-      {{ is_repicking_location_for_index }}
-
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="is_repicking_location_for = false"
-      >
-        {{ $t("cancel") }}
-      </button>
+      <div class="_repickNotice--content">
+        <div>
+          {{ $t("click_on_map_to_repick_location_for_media") }}
+          {{ is_repicking_location_for_index + 1 }}
+        </div>
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="is_repicking_location_for = false"
+        >
+          {{ $t("cancel") }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -198,6 +201,8 @@ export default {
     messages: {
       fr: {
         pins_color: "Couleur des épingles",
+        click_on_map_to_repick_location_for_media:
+          "Cliquez sur la carte pour sélectionner une nouvelle position pour le média numéro ",
       },
     },
   },
@@ -330,7 +335,14 @@ export default {
   backdrop-filter: blur(5px);
   background: rgba(231, 231, 231, 0.7);
 
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2);
+
+  display: flex;
+  flex-flow: column nowrap;
+}
+._repickNotice--content {
+  background: white;
+  padding: calc(var(--spacing) / 2);
 }
 </style>
 <style lang="scss">
