@@ -53,7 +53,7 @@
         <button
           type="button"
           class="u-button u-button_bleuvert u-button_small"
-          @click="$emit('createSection')"
+          @click="$emit('createSection', new_layer_title)"
         >
           {{ $t("create_layer") }}
         </button>
@@ -76,7 +76,7 @@
           <TitleField
             :field_name="'section_title'"
             :label="can_edit ? $t('layer_title') : ''"
-            :content="opened_section.section_title"
+            :content="opened_section.section_title || $t('untitled')"
             :path="opened_section.$path"
             :maxlength="120"
             :tag="'h3'"
@@ -224,6 +224,15 @@ export default {
       return this.opened_section_modules_list.findIndex(
         ({ _module }) => this.is_repicking_location_for === _module.$path
       );
+    },
+    new_layer_title() {
+      let idx = this.sections.length + 1;
+      let new_layer_title = this.$t("layer") + " " + idx;
+      while (this.sections.section_title === new_layer_title) {
+        idx++;
+        new_layer_title = this.$t("layer") + " " + idx;
+      }
+      return new_layer_title;
     },
   },
   methods: {
