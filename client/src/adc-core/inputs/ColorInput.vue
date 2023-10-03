@@ -9,11 +9,11 @@
       <div class="_currentColor" v-if="!edit_mode">
         <button
           type="button"
-          class="u-button u-button_small"
+          class="u-button u-button_small u-button_transparent"
           @click="edit_mode = true"
         >
           <span class="_colorPatch" :style="`--patch-color: ${local_value}`" />
-          {{ $t("color") }}
+          {{ $t("edit") }}
         </button>
       </div>
       <template v-else>
@@ -38,14 +38,13 @@
           >
             <label
               :for="'_input_' + label"
-              class="u-sameRow _inputField--label"
+              class="u-button u-button_verysmall _customCol"
               :style="`--patch-color: ${local_value}`"
             >
-              <small>{{ $t("custom_color") }}</small>
-              <span class="_colorPatch" />
+              <span class="_colorPatch is--active" v-if="is_custom_color" />
+              {{ $t("custom_color") }}
             </label>
             <input
-              visi
               ref="field"
               type="color"
               :name="label"
@@ -53,23 +52,22 @@
               v-model="local_value"
             />
           </div>
-
-          <transition name="popUp_slow">
-            <button
-              type="button"
-              v-if="value !== local_value"
-              class="u-button u-button_bleuvert _submitBtn"
-              @click="saveColor(local_value)"
-            >
-              <sl-icon
-                style="font-size: 1.5em"
-                name="check"
-                :label="$t('submit')"
-              />
-              {{ $t("save") }}
-            </button>
-          </transition>
         </div>
+        <transition name="popUp_slow">
+          <button
+            type="button"
+            v-if="value !== local_value"
+            class="u-button u-button_bleuvert _submitBtn"
+            @click="saveColor(local_value)"
+          >
+            <sl-icon
+              style="font-size: 1.5em"
+              name="check"
+              :label="$t('submit')"
+            />
+            {{ $t("save") }}
+          </button>
+        </transition>
       </template>
     </ToggledSection>
   </div>
@@ -127,7 +125,11 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    is_custom_color() {
+      return !this.default_colors.includes(this.local_value);
+    },
+  },
   methods: {
     saveColor(col) {
       this.$emit("save", col);
@@ -140,6 +142,7 @@ export default {
 ._defaultColors {
   display: flex;
   flex-flow: row wrap;
+  justify-content: center;
 }
 ._defaultColors--item {
   cursor: pointer;
@@ -148,8 +151,8 @@ export default {
 
 ._colorPatch {
   display: block;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 2rem;
+  height: 2rem;
   padding: 0.3rem;
   cursor: pointer;
 
@@ -211,6 +214,6 @@ export default {
 }
 
 ._submitBtn {
-  padding: calc(var(--spacing) / 8);
+  // padding: calc(var(--spacing) / 8);
 }
 </style>
