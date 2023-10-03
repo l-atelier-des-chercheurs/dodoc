@@ -27,7 +27,7 @@
     </div>
     <div class="_cont">
       <div class="_sidebar" v-if="show_sidebar">
-        <div class="u-switch u-switch-xs">
+        <!-- <div class="u-switch u-switch-xs">
           <input
             id="only_finished"
             type="checkbox"
@@ -36,7 +36,7 @@
           <label class="u-label" for="only_finished">{{
             $t("only_finished")
           }}</label>
-        </div>
+        </div> -->
         <div class="u-sameRow" style="width: 100%">
           <input
             type="text"
@@ -383,7 +383,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) * 2);
 }
 ._sidebar {
   flex: 0 0 240px;
@@ -399,7 +399,8 @@ export default {
 
   border-top: 2px solid var(--c-gris);
   padding-top: calc(var(--spacing) / 2);
-  margin-top: calc(var(--spacing) * 1);
+  padding-right: calc(var(--spacing) / 2);
+  margin-top: 0;
 
   ::v-deep {
     button {
@@ -411,12 +412,12 @@ export default {
 }
 ._listOfProjects {
   flex: 1 1 auto;
-  margin-top: calc(var(--spacing) / 1);
+  margin-top: 0;
 }
 ._tagList {
   display: flex;
   gap: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) * 1);
+  margin-bottom: calc(var(--spacing) / 2);
 }
 ._projectsListWithFilter {
 }
@@ -431,5 +432,6 @@ export default {
   justify-content: flex-start;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 2);
 }
 </style>
