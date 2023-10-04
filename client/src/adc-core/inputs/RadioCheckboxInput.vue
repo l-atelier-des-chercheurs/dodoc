@@ -116,6 +116,7 @@ export default {
       vertical-align: middle;
       height: 1em;
       aspect-ratio: 1;
+      object-fit: cover;
     }
   }
 

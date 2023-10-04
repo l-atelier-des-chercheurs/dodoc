@@ -245,7 +245,7 @@ module.exports = (function () {
       let { ...new_meta } = data;
 
       // filter new_meta with schema – only keep props present in the schema, not read_only, and respecing the type
-      if (new_meta) {
+      if (new_meta && Object.keys(new_meta).length > 0) {
         const valid_meta = await _cleanFields({
           meta: new_meta,
           path_to_type,
