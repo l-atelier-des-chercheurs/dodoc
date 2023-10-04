@@ -194,8 +194,6 @@ export default {
 
         this.is_looking_for_gps_coords = false;
 
-        debugger;
-
         this.latitude = crd.latitude;
         this.longitude = crd.longitude;
         this.updateLongLatZoom();

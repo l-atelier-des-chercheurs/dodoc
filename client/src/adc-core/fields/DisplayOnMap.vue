@@ -98,6 +98,7 @@ export default {
   name: "DisplayOnMap",
   props: {
     pins: [Boolean, Array],
+    lines: [Boolean, Object],
     start_coords: {
       type: [Boolean, Object],
     },
@@ -115,7 +116,6 @@ export default {
     return {
       pin_infos: false,
       pin_coord: false,
-      ol_features: undefined,
 
       current_zoom: undefined,
       current_view: undefined,
@@ -149,12 +149,12 @@ export default {
     pins: {
       handler() {
         this.startMap();
-        // this.map;
-        // const features = this.createFeaturesFromPins();
-        // this.ol_features = new olSourceVector({
-        //   features,
-        //   wrapX: false,
-        // });
+      },
+      deep: true,
+    },
+    lines: {
+      handler() {
+        this.startMap();
       },
       deep: true,
     },
@@ -186,22 +186,7 @@ export default {
         this.map = null;
       }
 
-      // const { Circle, Fill, Stroke, Style, Text } = ol.style;
-      // const Map = ol.Map;
-      // const Overlay = ol.Overlay;
-      // const View = ol.View;
-      // const { Draw } = ol.interaction;
       olProj.useGeographic();
-
-      const features = this.createFeaturesFromPins();
-      this.ol_features = new olSourceVector({
-        features,
-        wrapX: false,
-      });
-
-      let mouseFeature = new olFeature({
-        geometry: new olPoint([undefined, undefined]),
-      });
 
       this.view = new olView({
         center,
@@ -218,10 +203,22 @@ export default {
         view: this.view,
       });
 
-      olVectorLayer;
       this.map.addLayer(
         new olVectorLayer({
-          source: this.ol_features,
+          source: new olSourceVector({
+            features: this.createLineFeaturesFromLines(),
+            wrapX: false,
+          }),
+          style: (feature) => this.makeLineStyle(feature),
+        })
+      );
+
+      this.map.addLayer(
+        new olVectorLayer({
+          source: new olSourceVector({
+            features: this.createPointFeaturesFromPins(),
+            wrapX: false,
+          }),
           style: (feature, resolution) =>
             this.makePointStyle({
               feature,
@@ -230,6 +227,10 @@ export default {
         })
       );
 
+      /////////////////////////////////////////////////////////////// MOUSE
+      let mouseFeature = new olFeature({
+        geometry: new olPoint([undefined, undefined]),
+      });
       this.map.addLayer(
         new olVectorLayer({
           source: new olSourceVector({
@@ -325,9 +326,7 @@ export default {
       // }
       // addInteraction();
     },
-    createFeaturesFromPins() {
-      olLineString;
-
+    createPointFeaturesFromPins() {
       let features = [];
       if (this.pins && this.pins.length > 0) {
         this.pins.map((pin) => {
@@ -341,6 +340,27 @@ export default {
           if (pin.label) feature_cont.label = pin.label;
           if (pin.content) feature_cont.content = pin.content;
           if (pin.color) feature_cont.fill_color = pin.color;
+          features.push(new olFeature(feature_cont));
+        });
+      }
+      return features;
+    },
+    createLineFeaturesFromLines() {
+      let features = [];
+      if (this.lines && Object.keys(this.lines).length > 0) {
+        // const lines = this.pins.reduce((acc, pin) => {
+        //   if (pin.belongs_to_layer) {
+        //   }
+        //   if (pin?.longitude && pin?.latitude)
+        //     acc.push([pin.longitude, pin.latitude]);
+        //   return acc;
+        // }, {});
+        Object.values(this.lines).map(({ color, coordinates }) => {
+          const feature_cont = {
+            geometry: new olLineString(coordinates),
+            name: "Path",
+          };
+          feature_cont.stroke_color = color;
           features.push(new olFeature(feature_cont));
         });
       }
@@ -392,6 +412,15 @@ export default {
         stroke: new olStroke({ color: "#232e4a", width: 2 }),
       });
 
+      return new olStyle(style);
+    },
+    makeLineStyle(feature) {
+      const style = {
+        stroke: new olStroke({
+          color: feature.get("stroke_color"),
+          width: 3,
+        }),
+      };
       return new olStyle(style);
     },
     navigateTo({ center }) {
