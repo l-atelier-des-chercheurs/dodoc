@@ -120,7 +120,7 @@ export default {
     show_color_input() {
       if (!this.show_color_input) {
         this.saveColor(this.default_value);
-      } else {
+      } else if (this.previous_value) {
         this.saveColor(this.previous_value);
       }
     },
