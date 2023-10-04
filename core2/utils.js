@@ -242,7 +242,10 @@ module.exports = (function () {
     async handleForm({ path_to_folder, destination_full_folder_path, req }) {
       dev.logfunction({ path_to_folder, destination_full_folder_path });
 
-      if (path_to_folder && !destination_full_folder_path)
+      if (
+        typeof path_to_folder !== "undefined" &&
+        !destination_full_folder_path
+      )
         destination_full_folder_path = API.getPathToUserContent(path_to_folder);
 
       await fs.ensureDir(destination_full_folder_path);

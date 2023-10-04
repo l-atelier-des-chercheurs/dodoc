@@ -23,6 +23,8 @@
       :start_coords="start_coords"
       :start_zoom="start_zoom"
       :pins="pins"
+      :lines="lines"
+      :link_pins="opened_section_link_pins"
       :is_small="false"
     />
 
@@ -142,6 +144,9 @@ export default {
       if (this.opened_view_id === false) return false;
       return this.views_list[this.opened_view_id];
     },
+    opened_section_link_pins() {
+      return this.opened_section?.link_pins === true;
+    },
     pins() {
       return this.sections.reduce((acc, s) => {
         if (!Array.isArray(s.modules_list)) return acc;
@@ -162,11 +167,28 @@ export default {
               label: this.$t("media") + " " + (index + 1),
               color: s.section_color || `#333`,
               path: _module.$path,
+              belongs_to_layer: s.$path,
+              link_pins: s.link_pins || false,
             });
           }
         });
         return acc;
       }, []);
+    },
+    lines() {
+      if (this.pins.length === 0) return false;
+      return this.pins.reduce((acc, pin) => {
+        if (pin.link_pins) {
+          const layer = pin.belongs_to_layer;
+          if (!Object.prototype.hasOwnProperty.call(acc, layer))
+            acc[layer] = {
+              color: pin.color,
+              coordinates: [],
+            };
+          acc[layer].coordinates.push([pin.longitude, pin.latitude]);
+        }
+        return acc;
+      }, {});
     },
   },
   methods: {

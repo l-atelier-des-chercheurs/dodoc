@@ -532,26 +532,43 @@ module.exports = (function () {
   }) {
     return new Promise(function (resolve, reject) {
       const StlThumbnailer = require("stl-thumbnailer-node");
-      new StlThumbnailer({
-        filePath: full_media_path,
-        requestThumbnails: [
-          {
-            width: 2200,
-            height: 2200,
-            cameraAngle: camera_angle,
-          },
-        ],
-      }).then(function (thumbnails) {
-        // thumbnails is an array (in matching order to your requests) of Canvas objects
-        // you can write them to disk, return them to web users, etc
-        // see node-canvas documentation at https://github.com/Automattic/node-canvas
-        thumbnails[0].toBuffer(async (err, buf) => {
-          if (err) return reject(err);
+      // todo replace with @scalenc/stl-to-png ? does not handle large files…
 
-          await fs.outputFile(full_path_to_thumb, buf);
-          return resolve();
+      fs.stat(full_media_path)
+        .then(({ size }) => {
+          if (size / (1024 * 1024) > 10) {
+            const err = new Error("STL too large");
+            err.code = "stl_too_large";
+            throw err;
+          }
+          return;
+        })
+        .then(() => {
+          return new StlThumbnailer({
+            filePath: full_media_path,
+            requestThumbnails: [
+              {
+                width: 2200,
+                height: 2200,
+                cameraAngle: camera_angle,
+              },
+            ],
+          });
+        })
+        .then((thumbnails) => {
+          // thumbnails is an array (in matching order to your requests) of Canvas objects
+          // you can write them to disk, return them to web users, etc
+          // see node-canvas documentation at https://github.com/Automattic/node-canvas
+          thumbnails[0].toBuffer(async (err, buf) => {
+            if (err) return reject(err);
+
+            await fs.outputFile(full_path_to_thumb, buf);
+            return resolve();
+          });
+        })
+        .catch((err) => {
+          return reject(err);
         });
-      });
     });
   }
 
