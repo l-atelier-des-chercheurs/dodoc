@@ -31,7 +31,10 @@
                 v-if="can_edit"
                 :publication_path="publication.$path"
                 :types_available="['text', 'medias', 'files', 'link']"
-                @addModule="$emit('insertModule', $event)"
+                @addModule="
+                  ({ meta_filename }) =>
+                    $emit('insertModule', { meta_filename, index })
+                "
               />
             </div>
 
