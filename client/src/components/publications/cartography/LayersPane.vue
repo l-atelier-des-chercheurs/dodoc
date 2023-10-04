@@ -93,14 +93,22 @@
           <!-- ({{ opened_section_modules_list.length }}) -->
         </div>
 
-        <div class="u-spacingBottom _color">
+        <div class="u-spacingBottom _color" v-if="can_edit">
           <ColorInput
-            v-if="can_edit"
             :label="$t('pins_color')"
             :can_toggle="false"
             :default_value="default_layer_color"
             :value="opened_section.section_color"
             @save="updateOpenedLayer({ field: 'section_color', value: $event })"
+          />
+        </div>
+        <div class="u-spacingBottom" v-if="can_edit">
+          <ToggleInput
+            :label="$t('link_pins')"
+            :content="opened_section.link_pins"
+            @update:content="
+              updateOpenedLayer({ field: 'link_pins', value: $event })
+            "
           />
         </div>
 
@@ -213,6 +221,7 @@ export default {
         pins_color: "Couleur des épingles",
         click_on_map_to_repick_location_for_media:
           "Cliquez sur la carte pour sélectionner une nouvelle position pour le média numéro ",
+        link_pins: "Relier les épingles",
       },
     },
   },

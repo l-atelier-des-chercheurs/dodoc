@@ -79,6 +79,7 @@ import olMap from "ol/Map";
 import olView from "ol/View";
 import olFeature from "ol/Feature";
 import olPoint from "ol/geom/Point";
+import olLineString from "ol/geom/LineString";
 import olTileLayer from "ol/layer/Tile";
 import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
@@ -213,29 +214,36 @@ export default {
           new olTileLayer({
             source: new OSM(),
           }),
-          new olVectorLayer({
-            source: this.ol_features,
-            style: (feature, resolution) =>
-              this.makePointStyle({
-                feature,
-                resolution,
-              }),
-          }),
-          new olVectorLayer({
-            source: new olSourceVector({
-              features: [mouseFeature],
-              wrapX: false,
-            }),
-            style: (feature, resolution) =>
-              this.makePointStyle({
-                feature,
-                resolution,
-                fill_color: "hsla(207, 78%, 53%, .7)",
-              }),
-          }),
         ],
         view: this.view,
       });
+
+      olVectorLayer;
+      this.map.addLayer(
+        new olVectorLayer({
+          source: this.ol_features,
+          style: (feature, resolution) =>
+            this.makePointStyle({
+              feature,
+              resolution,
+            }),
+        })
+      );
+
+      this.map.addLayer(
+        new olVectorLayer({
+          source: new olSourceVector({
+            features: [mouseFeature],
+            wrapX: false,
+          }),
+          style: (feature, resolution) =>
+            this.makePointStyle({
+              feature,
+              resolution,
+              fill_color: "hsla(207, 78%, 53%, .7)",
+            }),
+        })
+      );
 
       // const geocoder = new Geocoder("nominatim", {
       //   provider: "osm",
@@ -318,6 +326,8 @@ export default {
       // addInteraction();
     },
     createFeaturesFromPins() {
+      olLineString;
+
       let features = [];
       if (this.pins && this.pins.length > 0) {
         this.pins.map((pin) => {

@@ -23,6 +23,7 @@
       :start_coords="start_coords"
       :start_zoom="start_zoom"
       :pins="pins"
+      :link_pins="opened_section_link_pins"
       :is_small="false"
     />
 
@@ -141,6 +142,9 @@ export default {
     opened_view() {
       if (this.opened_view_id === false) return false;
       return this.views_list[this.opened_view_id];
+    },
+    opened_section_link_pins() {
+      return this.opened_section?.link_pins === true;
     },
     pins() {
       return this.sections.reduce((acc, s) => {
