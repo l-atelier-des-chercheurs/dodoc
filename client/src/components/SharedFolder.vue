@@ -32,6 +32,14 @@
               </button>
             </div>
           </div>
+          <div class="_filesIndicator">
+            {{ $t("items") }} = {{ filtered_shared_files.length }}
+            <template
+              v-if="filtered_shared_files.length !== shared_files.length"
+            >
+              /{{ shared_files.length }}
+            </template>
+          </div>
         </div>
 
         <transition name="scaleInFade_fast" mode="out-in">
