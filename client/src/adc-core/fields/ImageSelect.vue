@@ -93,7 +93,8 @@
 
         <CaptureView
           v-if="enable_capture_mode"
-          :available_modes="['photo']"
+          :available_modes="[]"
+          :selected_mode="'photo'"
           :return_temp_media="true"
           :must_validate_media="false"
           @close="enable_capture_mode = false"

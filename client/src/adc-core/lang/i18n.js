@@ -414,6 +414,7 @@ export default function () {
         admin_settings: "Réglages d’administration",
         list_of_pages: "Liste des pages",
         list_of_spreads: "Liste des planches",
+        grid: "Grille",
         show_grid: "Afficher la grille",
         snap_to_grid: "Magnétisme de la grille",
         gridstep: "Pas de la grille",
@@ -849,7 +850,7 @@ export default function () {
           "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
         import_a_project: "Importer un projet",
         import_a_project_instr: `Vous pouvez ajouter dans cet espace un projet complet (avec tous ses médias, fabrications et publications) 
-        créé dans un autre do•doc version 10. Pour cela, cliquez sur <i>téléchargez</i> sur le projet dans l’autre do•doc pour le récupérez en ZIP
+        créé dans un autre do•doc version 10. Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre do•doc pour le récupérer en ZIP
         puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
         import_zip: "Importer un projet en ZIP",
         import_in_progress: "Importation en cours…",
