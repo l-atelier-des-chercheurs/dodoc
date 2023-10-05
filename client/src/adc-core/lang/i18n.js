@@ -320,6 +320,7 @@ export default function () {
         group_by_date: "Grouper par date",
         filter_by_author: "Filtrer par auteur",
         filter_by_keyword: "Filtrer par mots-clé",
+        show_all_keywords: "Afficher tous les mots-clés",
         sort_by: "Trier par",
 
         draft: "En cours",
@@ -880,6 +881,7 @@ export default function () {
         open_app: "Accéder à la plateforme",
         do_not_show_window_again:
           "Ne plus afficher cette fenêtre à l’ouverture",
+        items: "Éléments",
         items_to_share: "Éléments à traiter",
         keyword_materials_etc: "Mot-clé, matériaux, lieux, etc.",
         complete_or_correct_title_kw:
@@ -910,6 +912,7 @@ export default function () {
         ui_lang_select: "Interface language",
         lang_updated: "The lang has been updated",
         open_app: "Access",
+        items: "Éléments",
         items_to_share: "Items to share",
         do_not_show_window_again: "Do not show this window automatically",
         admin_settings: "Admin settings",
@@ -928,6 +931,21 @@ export default function () {
         filter_sort: "Filter/Sort",
         help_contact: "help/contact",
         version: "Version",
+
+        sort_by: "Sort by",
+        group_by_date: "Grouper par date",
+        filter_by_author: "Fitler by author",
+        filter_by_keyword: "Fitler by keyword",
+
+        search: "Search",
+        search_fields: "In title, description or notes fields.",
+        show_all_keywords: "Show all keywords",
+        download: "Download",
+        day: "Day",
+        month: "Month",
+        year: "Year",
+
+        no_content: "No content to show",
       },
       de: {},
       nl: {},
