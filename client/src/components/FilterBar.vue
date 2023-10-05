@@ -1,13 +1,15 @@
 <template>
   <div class="_filterBar">
-    <button
-      type="button"
-      v-if="can_be_reset"
-      class="u-button u-button_black _resetFilters"
-      @click="resetFilters"
-    >
-      {{ $t("reset") }}
-    </button>
+    <transition name="slidedown" mode="out-in">
+      <button
+        type="button"
+        v-if="can_be_reset"
+        class="u-button u-button_black _resetFilters"
+        @click="resetFilters"
+      >
+        {{ $t("reset") }}
+      </button>
+    </transition>
 
     <div class="">
       <input
@@ -243,8 +245,10 @@ export default {
 
 ._resetFilters {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
+  padding: calc(var(--spacing) / 4);
+  border-radius: 0;
 }
 </style>

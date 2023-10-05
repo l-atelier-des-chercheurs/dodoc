@@ -256,16 +256,13 @@ export default {
             return false;
 
         if (this.keywords_filter.length > 0) {
-          if (f.keywords && Array.isArray(f.keywords)) {
-            return !this.keywords_filter.some(
-              (kwf) => !f.keywords.includes(kwf)
-            );
-          }
-          return false;
+          if (!f.keywords || !Array.isArray(f.keywords)) return false;
+          if (this.keywords_filter.some((kwf) => !f.keywords.includes(kwf)))
+            return false;
         }
 
         if (this.search_str) {
-          return (
+          if (
             (f.title &&
               f.title.toLowerCase().includes(this.search_str.toLowerCase())) ||
             (f.description &&
@@ -274,7 +271,9 @@ export default {
                 .includes(this.search_str.toLowerCase())) ||
             (f.$content &&
               f.$content.toLowerCase().includes(this.search_str.toLowerCase()))
-          );
+          )
+            return true;
+          else return false;
         }
 
         return true;
@@ -396,13 +395,17 @@ export default {
   gap: calc(var(--spacing) * 1);
   line-height: 1;
 }
+._filesIndicator {
+  padding: 0 calc(var(--spacing) * 1);
+}
+
 ._title {
   font-size: 1.5em;
   font-weight: 600;
 }
 
 ._dayFileSection {
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2);
 }
 
 ._noContent {
