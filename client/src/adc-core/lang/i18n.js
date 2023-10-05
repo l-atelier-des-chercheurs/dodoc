@@ -852,6 +852,7 @@ export default function () {
         version: "Version",
 
         search: "Rechercher",
+        search_text: "Rechercher du texte",
         search_fields: "Dans les champs titre, description ou notes.",
 
         general_informations: "Informations sur l’instance",
