@@ -414,6 +414,7 @@ export default function () {
         admin_settings: "Réglages d’administration",
         list_of_pages: "Liste des pages",
         list_of_spreads: "Liste des planches",
+        grid: "Grille",
         show_grid: "Afficher la grille",
         snap_to_grid: "Magnétisme de la grille",
         gridstep: "Pas de la grille",
