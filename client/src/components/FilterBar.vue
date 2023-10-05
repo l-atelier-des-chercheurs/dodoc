@@ -14,7 +14,7 @@
     <div class="">
       <input
         type="text"
-        :placeholder="$t('search')"
+        :placeholder="$t('search_text')"
         :value="search_str"
         @input="$emit('update:search_str', $event.target.value)"
       />
@@ -85,6 +85,9 @@
         />
       </div>
 
+      <div class="_searchKW">
+        <input type="text" v-model="kw_search" :placeholder="$t('search')" />
+      </div>
       <div class="u-keywords">
         <SingleKeyword
           v-for="keyword in collapsable_keywords"
@@ -130,6 +133,7 @@ export default {
       all_authors: [],
 
       show_all_keywords: false,
+      kw_search: "",
 
       group_options: [
         {
@@ -157,10 +161,13 @@ export default {
   watch: {},
   computed: {
     available_keywords_except_active() {
-      const _kw = this.available_keywords.filter(
-        (kw) => !this.keywords_filter.includes(kw.title)
-      );
-      return _kw;
+      let _keywords = this.available_keywords.filter((kw) => {
+        if (this.keywords_filter.includes(kw.title)) return false;
+        debugger;
+        if (this.kw_search) return kw.title.includes(this.kw_search);
+        return true;
+      });
+      return _keywords;
     },
     collapsable_keywords() {
       if (!this.show_all_keywords)
@@ -207,7 +214,9 @@ export default {
 
   select,
   input {
-    background-color: white;
+    &:not(.is--dark) {
+      background-color: white;
+    }
   }
 }
 
@@ -240,6 +249,10 @@ export default {
 ._usedKw {
   padding-bottom: calc(var(--spacing) / 2);
   border-bottom: 2px solid white;
+  margin-bottom: calc(var(--spacing) / 2);
+}
+
+._searchKW {
   margin-bottom: calc(var(--spacing) / 2);
 }
 
