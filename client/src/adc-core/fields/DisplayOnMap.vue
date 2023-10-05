@@ -74,7 +74,7 @@
   </div>
 </template>
 <script>
-import OSM from "ol/source/OSM.js";
+import olSourceOSM from "ol/source/OSM.js";
 import olMap from "ol/Map";
 import olView from "ol/View";
 import olFeature from "ol/Feature";
@@ -197,7 +197,10 @@ export default {
         target: "map",
         layers: [
           new olTileLayer({
-            source: new OSM(),
+            source: new olSourceOSM({
+              wrapX: false,
+              noWrap: true,
+            }),
           }),
         ],
         view: this.view,
