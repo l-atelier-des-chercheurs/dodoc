@@ -422,7 +422,7 @@ export default {
 
 ._label {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   padding-bottom: calc(var(--spacing) * 2);
   font-weight: 600;
   font-size: var(--sl-font-size-normal);
@@ -430,7 +430,7 @@ export default {
 
 ._grid {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;

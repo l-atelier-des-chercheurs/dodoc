@@ -64,6 +64,7 @@ export default {
   &:focus,
   &.is--opened {
     // background: rgb(67, 69, 71);
+    z-index: 10;
     transform: translateY(-10px);
     box-shadow: 0 13px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
