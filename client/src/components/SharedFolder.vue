@@ -19,7 +19,7 @@
               </transition>
               {{ $t("shared_space_archive") }}
             </div>
-            <div class="">
+            <div class="_filterSortBtn">
               <button
                 type="button"
                 class="u-buttonLink"
@@ -455,5 +455,10 @@ export default {
   a {
     color: inherit;
   }
+}
+
+._filterSortBtn {
+  padding: calc(var(--spacing) / 2) 0;
+  margin-bottom: calc(var(--spacing) / -2);
 }
 </style>
