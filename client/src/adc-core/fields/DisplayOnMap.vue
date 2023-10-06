@@ -7,7 +7,19 @@
   >
     <div id="map" class="map" />
 
-    <div id="mouse-position"></div>
+    <div ref="popUp" class="ol-popup">
+      <button
+        type="button"
+        class="u-button ol-popup-closer"
+        ref="closePopup"
+        @click="closePopup"
+      />
+      <div>
+        {{ popup_message }}
+      </div>
+    </div>
+    <div id="mouse-position" />
+
     <div class="_popup" v-if="mouse_coords || pin_infos || pin_coord">
       <sl-button
         class="_popup--close"
@@ -84,9 +96,15 @@ import olTileLayer from "ol/layer/Tile";
 import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
+import olOverlay from "ol/Overlay.js";
+import { toLonLat } from "ol/proj.js";
+import { toStringHDMS } from "ol/coordinate.js";
+
 // incompatibility error ? https://github.com/jonataswalker/ol-geocoder/issues/270
 // TODO FIX later
-// import Geocoder from "ol-geocoder";
+
+import Geocoder from "ol-geocoder";
+import "ol-geocoder/dist/ol-geocoder.min.css";
 
 import olStyle from "ol/style/Style";
 import olCircleStyle from "ol/style/Circle";
@@ -116,6 +134,8 @@ export default {
     return {
       pin_infos: false,
       pin_coord: false,
+      overlay: undefined,
+      popup_message: undefined,
 
       current_zoom: undefined,
       current_view: undefined,
@@ -129,6 +149,7 @@ export default {
     messages: {
       fr: {
         mouse_position: "Position de la balise",
+        search_for_a_place: "Rechercher un lieu",
       },
     },
   },
@@ -193,7 +214,6 @@ export default {
         zoom,
       });
       this.map = new olMap({
-        // controls: defaultControls().extend([mousePositionControl]),
         target: "map",
         layers: [
           new olTileLayer({
@@ -249,16 +269,56 @@ export default {
         })
       );
 
-      // const geocoder = new Geocoder("nominatim", {
-      //   provider: "osm",
-      //   //key: '__some_key__',
-      //   lang: "fr-FR",
-      //   placeholder: this.$t("search_for_a_place"),
-      //   targetType: "text-input",
-      //   limit: 5,
-      //   keepOpen: true,
-      // });
-      // this.map.addControl(geocoder);
+      //////////////////////////////////////////////////// SEARCH FIELD
+
+      let lang = "fr-FR";
+      if (this.$i18n.locale === "en") lang = "en-US";
+
+      const geocoder = new Geocoder("nominatim", {
+        provider: "osm",
+        //key: '__some_key__',
+        lang,
+        placeholder: this.$t("search_for_a_place"),
+        // targetType: "text-input",
+        limit: 5,
+        keepOpen: false,
+        preventPanning: true,
+      });
+      this.map.addControl(geocoder);
+      geocoder.on("addresschosen", (evt) => {
+        // const feature = evt.feature,
+        //   address = evt.address;
+        // content.innerHTML = "<p>" + address.formatted + "</p>";
+        if (evt.place?.lon && evt.place?.lat) {
+          // this.navigateTo({
+          //   center: [evt.place.lon, evt.place.lat],
+          //   zoom: 9,
+          // });
+          // const coordinate = [2.214555195288306, 47.1857072668881];
+          const coordinate = [+evt.place.lon, +evt.place.lat];
+
+          // const coordinate = [evt.place.lon, evt.place.lat];
+          // const hdms = toStringHDMS(toLonLat(coordinate));
+          // this.popup_message =
+          //   "<p>You clicked here:</p><code>" + hdms + "</code>";
+          this.popup_message = evt.address.formatted;
+          this.overlay.setPosition(coordinate);
+        }
+      });
+
+      //////////////////////////////////////////////////// OVERLAYS
+
+      this.overlay = new olOverlay({
+        element: this.$refs.popUp,
+        autoPan: {
+          animation: {
+            duration: 250,
+          },
+        },
+      });
+      this.map.addOverlay(this.overlay);
+
+      //////////////////////////////////////////////////// SEARCH FIELD
 
       let feature_selected = null;
       this.map.on("pointermove", (event) => {
@@ -283,7 +343,7 @@ export default {
         this.current_view = this.map.getView().getCenter();
       });
 
-      this.map.on("click", (event) => {
+      this.map.on("singleclick", (event) => {
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
 
         this.mouse_coords = false;
@@ -292,6 +352,12 @@ export default {
 
         if (!feature) {
           this.mouse_coords = event.coordinate;
+
+          debugger;
+
+          this.overlay.setPosition(event.coordinate);
+          this.popup_message = event.coordinate;
+
           this.$eventHub.$emit("publication.map.click", this.mouse_coords);
           mouseFeature
             .getGeometry()
@@ -426,10 +492,10 @@ export default {
       };
       return new olStyle(style);
     },
-    navigateTo({ center }) {
+    navigateTo({ center, zoom = this.current_zoom }) {
       this.view.animate({
         center,
-        // zoom,
+        zoom,
         // duration: 2000,
       });
     },
@@ -442,6 +508,11 @@ export default {
         center: [longitude, latitude],
       });
       // TODO highlight pin in map (one at a time)
+    },
+    closePopup() {
+      this.overlay.setPosition(undefined);
+      this.$refs.closePopup.blur();
+      return false;
     },
   },
 };
@@ -486,5 +557,47 @@ export default {
   top: 0;
   right: 0;
   padding: calc(var(--spacing) / 2);
+}
+
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 280px;
+}
+.ol-popup:after,
+.ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+.ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+.ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+.ol-popup-closer {
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+.ol-popup-closer:after {
+  content: "✖";
 }
 </style>

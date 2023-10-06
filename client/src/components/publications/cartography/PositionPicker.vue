@@ -208,6 +208,9 @@ export default {
         this.is_looking_for_gps_coords = false;
       };
 
+      // not working in Electron
+      // use something like http://ip-api.com/json https://www.reddit.com/r/electronjs/comments/hbxick/comment/fvq96v6/?utm_source=reddit&utm_medium=web2x&context=3
+      // after prompt with user ?
       navigator.geolocation.getCurrentPosition(success, error, options);
     },
     newPosition({ longitude, latitude, zoom }) {
