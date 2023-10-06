@@ -20,7 +20,6 @@
         <MediaContent
           :file="file"
           :is_draggable="false"
-          :autoload="false"
           :resolution="1600"
           :context="'full'"
         />

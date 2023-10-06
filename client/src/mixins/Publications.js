@@ -73,6 +73,20 @@ export default {
       }
       return spreads;
     },
+    firstMedia(page_module) {
+      if (!page_module) return false;
+      try {
+        const source_media = page_module.source_medias[0];
+        const publication_path = this.getParent(page_module.$path);
+
+        return this.getSourceMedia({
+          source_media,
+          folder_path: publication_path,
+        });
+      } catch (err) {
+        return false;
+      }
+    },
     async duplicateModuleWithSourceMedias({ og_module, addtl_meta_to_module }) {
       let new_meta = {};
       const new_source_medias = [];

@@ -169,6 +169,7 @@ export default {
               path: _module.$path,
               belongs_to_layer: s.$path,
               link_pins: s.link_pins || false,
+              file: this.firstMedia(_module),
             });
           }
         });

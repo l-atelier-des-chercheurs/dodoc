@@ -10,79 +10,32 @@
     <div ref="popUp" class="ol-popup">
       <button
         type="button"
-        class="u-button ol-popup-closer"
+        class="u-button u-buttonu-button_icon ol-popup-closer"
         ref="closePopup"
         @click="closePopup"
-      />
-      <div>
-        {{ popup_message }}
+      >
+        <b-icon icon="x-circle" />
+      </button>
+      <div v-if="popup_message" v-html="popup_message" />
+      <div v-if="clicked_location.file">
+        <MediaContent
+          :file="clicked_location.file"
+          :is_draggable="false"
+          :resolution="1600"
+          :context="'full'"
+        />
+      </div>
+      <div class="u-instructions">
+        <small>
+          <span class="complementaryText"> {{ $t("latitude") }} = </span>
+          {{ clicked_location.latitude }}°
+          <br />
+          <span class="complementaryText"> {{ $t("longitude") }} = </span>
+          {{ clicked_location.longitude }}°
+        </small>
       </div>
     </div>
     <div id="mouse-position" />
-
-    <div class="_popup" v-if="mouse_coords || pin_infos || pin_coord">
-      <sl-button
-        class="_popup--close"
-        size="small"
-        @click="
-          pin_coord = false;
-          pin_infos = false;
-          mouse_coords = false;
-        "
-      >
-        <sl-icon name="x-circle" />
-      </sl-button>
-
-      <div v-if="mouse_coords">
-        <div class="">
-          <b>{{ $t("mouse_position") }}</b>
-        </div>
-        <span class="complementaryText"> {{ $t("latitude") }} = </span>
-        {{ mouse_coords[1] }}°
-        <span class="complementaryText"> {{ $t("longitude") }} = </span>
-        {{ mouse_coords[0] }}°
-
-        <div v-if="$listeners.newPosition" class="">
-          <sl-button
-            size="small"
-            type="success"
-            @click="
-              $emit('newPosition', {
-                longitude: mouse_coords[0],
-                latitude: mouse_coords[1],
-                zoom: current_zoom,
-              });
-              mouse_coords = false;
-            "
-            pill
-          >
-            {{ $t("submit") }}
-          </sl-button>
-        </div>
-      </div>
-      <div v-if="pin_coord">
-        <div>
-          <b>{{ $t("pin_position") }}</b>
-        </div>
-
-        <span class="complementaryText">{{ $t("latitude") }} = </span>
-        {{ pin_coord.coordinate.latitude }}°
-        <span class="complementaryText">{{ $t("longitude") }} = </span>
-        {{ pin_coord.coordinate.longitude }}°
-      </div>
-      <div v-if="pin_infos">
-        <div>
-          <b>{{ $t("pin_infos") }}</b>
-        </div>
-        <span class="complementaryText">{{ $t("index") }} = </span>
-        {{ pin_infos.index }}
-        <br />
-        <span class="complementaryText" v-if="pin_infos.label"
-          >{{ $t("label") }} =
-        </span>
-        {{ pin_infos.label }}
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -97,8 +50,6 @@ import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay.js";
-import { toLonLat } from "ol/proj.js";
-import { toStringHDMS } from "ol/coordinate.js";
 
 // incompatibility error ? https://github.com/jonataswalker/ol-geocoder/issues/270
 // TODO FIX later
@@ -135,7 +86,16 @@ export default {
       pin_infos: false,
       pin_coord: false,
       overlay: undefined,
+
       popup_message: undefined,
+      clicked_location: {
+        latitude: undefined,
+        longitude: undefined,
+        file: undefined,
+      },
+
+      pin_features: undefined,
+      mouse_feature: undefined,
 
       current_zoom: undefined,
       current_view: undefined,
@@ -236,10 +196,11 @@ export default {
         })
       );
 
+      this.pin_features = this.createPointFeaturesFromPins();
       this.map.addLayer(
         new olVectorLayer({
           source: new olSourceVector({
-            features: this.createPointFeaturesFromPins(),
+            features: this.pin_features,
             wrapX: false,
           }),
           style: (feature, resolution) =>
@@ -251,13 +212,13 @@ export default {
       );
 
       /////////////////////////////////////////////////////////////// MOUSE
-      let mouseFeature = new olFeature({
+      this.mouse_feature = new olFeature({
         geometry: new olPoint([undefined, undefined]),
       });
       this.map.addLayer(
         new olVectorLayer({
           source: new olSourceVector({
-            features: [mouseFeature],
+            features: [this.mouse_feature],
             wrapX: false,
           }),
           style: (feature, resolution) =>
@@ -286,23 +247,26 @@ export default {
       });
       this.map.addControl(geocoder);
       geocoder.on("addresschosen", (evt) => {
-        debugger;
         // const feature = evt.feature,
         //   address = evt.address;
         // content.innerHTML = "<p>" + address.formatted + "</p>";
         if (evt.place?.lon && evt.place?.lat) {
+          // const coordinate = [2.214555195288306, 47.1857072668881];
+          this.clicked_location.latitude = +evt.place.lat;
+          this.clicked_location.longitude = +evt.place.lon;
+          const coordinate = [
+            this.clicked_location.longitude,
+            this.clicked_location.latitude,
+          ];
+
+          this.popup_message = evt.address.formatted;
+
+          this.overlay.setPosition(coordinate);
+
           this.navigateTo({
             center: [+evt.place.lon, +evt.place.lat],
           });
-          // const coordinate = [2.214555195288306, 47.1857072668881];
-          const coordinate = [+evt.place.lon, +evt.place.lat];
-
-          // const coordinate = [evt.place.lon, evt.place.lat];
-          // const hdms = toStringHDMS(toLonLat(coordinate));
-          // this.popup_message =
-          //   "<p>You clicked here:</p><code>" + hdms + "</code>";
-          this.popup_message = evt.address.formatted;
-          this.overlay.setPosition(coordinate);
+          // this.map.getView().fit(evt.place.bbox);
         }
       });
 
@@ -340,43 +304,22 @@ export default {
       });
 
       this.map.on("singleclick", (event) => {
+        this.closePopup();
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
-
-        this.mouse_coords = false;
-        this.pin_coord = false;
-        this.pin_infos = false;
+        let coordinates = event.coordinate;
 
         if (!feature) {
-          this.mouse_coords = event.coordinate;
-
-          this.overlay.setPosition(event.coordinate);
-          this.popup_message = event.coordinate;
-
-          this.$eventHub.$emit("publication.map.click", this.mouse_coords);
-          mouseFeature
+          this.$eventHub.$emit("publication.map.click", event.coordinate);
+          this.mouse_feature
             .getGeometry()
-            .setCoordinates([event.coordinate[0], event.coordinate[1]]);
+            .setCoordinates([coordinates[0], coordinates[1]]);
+
+          this.overlay.setPosition(coordinates);
+          this.clicked_location.longitude = coordinates[0];
+          this.clicked_location.latitude = coordinates[1];
         } else {
-          mouseFeature.getGeometry().setCoordinates([undefined, undefined]);
-
-          const coordinate = feature.getGeometry().getCoordinates();
-
-          this.pin_coord = {};
-          this.$set(this.pin_coord, "coordinate", {
-            longitude: coordinate[0],
-            latitude: coordinate[1],
-          });
-
-          this.pin_infos = {};
-          if (feature.get("label"))
-            this.$set(this.pin_infos, "label", feature.get("label"));
-          if (feature.get("index")) {
-            const index = feature.get("index");
-            this.$set(this.pin_infos, "index", index);
-            this.$emit("pinClicked", index);
-          }
-          if (feature.get("content"))
-            this.$set(this.pin_infos, "content", feature.get("content"));
+          const path = feature.get("path");
+          this.openPin(path);
         }
       });
 
@@ -398,11 +341,9 @@ export default {
           let feature_cont = {
             geometry: new olPoint([pin.longitude, pin.latitude]),
           };
-          feature_cont.index = pin.index;
-          feature_cont.id = pin.$path;
-          if (pin.label) feature_cont.label = pin.label;
-          if (pin.content) feature_cont.content = pin.content;
+          feature_cont.path = pin.path;
           if (pin.color) feature_cont.fill_color = pin.color;
+          if (pin.file) feature_cont.file = pin.file;
           features.push(new olFeature(feature_cont));
         });
       }
@@ -494,18 +435,35 @@ export default {
       });
     },
     openPin(path) {
-      const _pin = this.pins.find((p) => p.path === path);
-      if (!_pin) return;
+      const _pin_index = this.pins.findIndex((p) => p.path === path);
+      if (_pin_index === -1) return;
+      this.openFeature(_pin_index);
+    },
+    openFeature(index) {
+      const feature = this.pin_features[index];
+      const coordinates = feature.getGeometry().getCoordinates();
+      const f = feature.get("file");
+      this.clicked_location.file = f || undefined;
 
-      const { latitude, longitude } = _pin;
+      this.overlay.setPosition(coordinates);
+      this.clicked_location.longitude = coordinates[0];
+      this.clicked_location.latitude = coordinates[1];
       this.navigateTo({
-        center: [longitude, latitude],
+        center: [
+          this.clicked_location.longitude,
+          this.clicked_location.latitude,
+        ],
       });
-      // TODO highlight pin in map (one at a time)
     },
     closePopup() {
+      this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
+
       this.overlay.setPosition(undefined);
       this.$refs.closePopup.blur();
+      this.clicked_location.longitude = undefined;
+      this.clicked_location.latitude = undefined;
+      this.clicked_location.file = undefined;
+      this.popup_message = undefined;
       return false;
     },
   },
@@ -557,12 +515,15 @@ export default {
   position: absolute;
   background-color: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  border-radius: 10px;
-  border: 1px solid #cccccc;
   bottom: 12px;
   left: -50px;
   min-width: 280px;
+
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadows);
+  padding: calc(var(--spacing) / 2);
+  background: var(--panel-color);
+  border: var(--panel-borders);
 }
 .ol-popup:after,
 .ol-popup:before {
@@ -588,11 +549,9 @@ export default {
 }
 .ol-popup-closer {
   position: absolute;
-  top: 2px;
-  right: 8px;
-}
-.ol-popup-closer:after {
-  content: "✖";
+  z-index: 1000;
+  top: 0;
+  right: 0;
 }
 </style>
 <style lang="scss">
