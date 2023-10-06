@@ -282,18 +282,18 @@ export default {
         // targetType: "text-input",
         limit: 5,
         keepOpen: false,
-        preventPanning: true,
+        preventDefault: true,
       });
       this.map.addControl(geocoder);
       geocoder.on("addresschosen", (evt) => {
+        debugger;
         // const feature = evt.feature,
         //   address = evt.address;
         // content.innerHTML = "<p>" + address.formatted + "</p>";
         if (evt.place?.lon && evt.place?.lat) {
-          // this.navigateTo({
-          //   center: [evt.place.lon, evt.place.lat],
-          //   zoom: 9,
-          // });
+          this.navigateTo({
+            center: [+evt.place.lon, +evt.place.lat],
+          });
           // const coordinate = [2.214555195288306, 47.1857072668881];
           const coordinate = [+evt.place.lon, +evt.place.lat];
 
@@ -310,11 +310,7 @@ export default {
 
       this.overlay = new olOverlay({
         element: this.$refs.popUp,
-        autoPan: {
-          animation: {
-            duration: 250,
-          },
-        },
+        autoPan: false,
       });
       this.map.addOverlay(this.overlay);
 
@@ -352,8 +348,6 @@ export default {
 
         if (!feature) {
           this.mouse_coords = event.coordinate;
-
-          debugger;
 
           this.overlay.setPosition(event.coordinate);
           this.popup_message = event.coordinate;
@@ -599,5 +593,13 @@ export default {
 }
 .ol-popup-closer:after {
   content: "✖";
+}
+</style>
+<style lang="scss">
+.ol-geocoder .gcd-gl-btn {
+  height: 1.375em;
+  width: 1.375em;
+}
+.ol-geocoder .gcd-gl-input {
 }
 </style>
