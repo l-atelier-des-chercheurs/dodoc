@@ -84,7 +84,7 @@
         :start_coords="start_coords"
         :pins="center_pin"
         :start_zoom="start_zoom"
-        @newPosition="newPosition"
+        @newPositionClicked="newPositionClicked"
       />
     </div>
   </div>
@@ -194,9 +194,10 @@ export default {
 
         this.is_looking_for_gps_coords = false;
 
-        this.latitude = crd.latitude;
-        this.longitude = crd.longitude;
-        this.updateLongLatZoom();
+        this.updateLongLatZoom({
+          longitude: crd.longitude,
+          latitude: crd.latitude,
+        });
         // console.log("Votre position actuelle est :");
         // console.log(`Latitude : ${crd.latitude}`);
         // console.log(`Longitude : ${crd.longitude}`);
@@ -213,14 +214,15 @@ export default {
       // after prompt with user ?
       navigator.geolocation.getCurrentPosition(success, error, options);
     },
-    newPosition({ longitude, latitude, zoom }) {
-      this.longitude = longitude;
-      this.latitude = latitude;
-      this.zoom = zoom;
-      this.updateLongLatZoom();
+    newPositionClicked({ longitude, latitude, zoom }) {
+      this.updateLongLatZoom({ longitude, latitude, zoom });
       // this.pick_on_map = false;
     },
-    updateLongLatZoom() {
+    updateLongLatZoom({ longitude, latitude, zoom }) {
+      this.longitude = longitude;
+      this.latitude = latitude;
+      if (zoom) this.zoom = zoom;
+
       this.$emit("update", {
         location: {
           longitude: this.longitude,

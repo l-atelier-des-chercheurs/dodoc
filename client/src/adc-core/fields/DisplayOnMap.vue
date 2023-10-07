@@ -306,17 +306,21 @@ export default {
       this.map.on("singleclick", (event) => {
         this.closePopup();
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
-        let coordinates = event.coordinate;
+        let [longitude, latitude] = event.coordinate;
 
         if (!feature) {
-          this.$eventHub.$emit("publication.map.click", event.coordinate);
+          this.$emit("newPositionClicked", {
+            longitude,
+            latitude,
+            zoom: this.current_zoom,
+          });
           this.mouse_feature
             .getGeometry()
-            .setCoordinates([coordinates[0], coordinates[1]]);
+            .setCoordinates([longitude, latitude]);
 
-          this.overlay.setPosition(coordinates);
-          this.clicked_location.longitude = coordinates[0];
-          this.clicked_location.latitude = coordinates[1];
+          this.overlay.setPosition([longitude, latitude]);
+          this.clicked_location.longitude = longitude;
+          this.clicked_location.latitude = latitude;
         } else {
           const path = feature.get("path");
           this.openPin(path);
@@ -459,7 +463,7 @@ export default {
       this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
 
       this.overlay.setPosition(undefined);
-      this.$refs.closePopup.blur();
+      if (this.$refs.closePopup) this.$refs.closePopup.blur();
       this.clicked_location.longitude = undefined;
       this.clicked_location.latitude = undefined;
       this.clicked_location.file = undefined;
