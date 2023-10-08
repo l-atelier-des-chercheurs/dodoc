@@ -123,6 +123,7 @@ export default {
 <style lang="scss" scoped>
 ._sectionsList {
   position: relative;
+  padding: calc(var(--spacing) / 1);
 }
 
 ._sectionTitle {

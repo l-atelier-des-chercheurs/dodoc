@@ -372,7 +372,7 @@ export default {
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) / 1);
-  margin: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 }
 
 ._page {

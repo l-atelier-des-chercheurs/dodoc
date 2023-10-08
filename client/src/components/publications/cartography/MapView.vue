@@ -256,7 +256,8 @@ export default {
 <style lang="scss" scoped>
 ._mapView {
   width: 100%;
-  height: 80vh;
+  height: calc(100vh - 95px);
+
   background: var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
