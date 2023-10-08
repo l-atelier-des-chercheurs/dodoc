@@ -26,7 +26,28 @@
       :lines="lines"
       :link_pins="opened_section_link_pins"
       :is_small="false"
-    />
+      :can_add_media_to_point="opened_section !== false"
+      @newPositionClicked="newPositionClicked"
+    >
+      <div class="" slot="popup_footer">
+        <div v-if="!opened_section">
+          {{ $t("to_add_media_here_open_matching_layer") }}
+        </div>
+        <div v-else>
+          <div class="">
+            {{ $t("add_media") }}
+          </div>
+          <ModuleCreator
+            :publication_path="publication.$path"
+            :is_collapsed="false"
+            :context="'cartography'"
+            :types_available="['medias']"
+            :post_addtl_meta="new_module_meta"
+            @addModule="$emit('addModule', $event)"
+          />
+        </div>
+      </div>
+    </DisplayOnMap>
 
     <div class="_textContainer" v-if="false">
       <div class="_views">
@@ -75,7 +96,9 @@
   </div>
 </template>
 <script>
+import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
 import LayersPane from "@/components/publications/cartography/LayersPane.vue";
+import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
   props: {
@@ -86,8 +109,9 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    DisplayOnMap,
     LayersPane,
-    DisplayOnMap: () => import("@/adc-core/fields/DisplayOnMap.vue"),
+    ModuleCreator,
   },
   data() {
     return {
@@ -119,12 +143,19 @@ export default {
 
       default_layer_color: "#333",
       opened_view_id: false,
+
+      latest_click: {
+        latitude: undefined,
+        longitude: undefined,
+      },
     };
   },
   i18n: {
     messages: {
       fr: {
         views_list: "Liste des vues",
+        to_add_media_here_open_matching_layer:
+          "Pour ajouter un média à cette position, créez ou ouvrez un calque dans le panneau correspondant.",
       },
     },
   },
@@ -191,8 +222,21 @@ export default {
         return acc;
       }, {});
     },
+    new_module_meta() {
+      return {
+        // todo return location
+        location: {
+          longitude: this.latest_click.longitude,
+          latitude: this.latest_click.latitude,
+        },
+      };
+    },
   },
   methods: {
+    newPositionClicked({ longitude, latitude }) {
+      this.latest_click.longitude = longitude;
+      this.latest_click.latitude = latitude;
+    },
     openView(index) {
       this.opened_view_id = index;
       this.$eventHub.$emit("publication.map.navigateTo", {

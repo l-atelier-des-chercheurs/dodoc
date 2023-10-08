@@ -34,6 +34,7 @@
           {{ clicked_location.longitude }}°
         </small>
       </div>
+      <slot name="popup_footer" v-if="!clicked_location.file" />
     </div>
     <div id="mouse-position" />
   </div>
@@ -78,6 +79,10 @@ export default {
     is_small: {
       type: Boolean,
       default: true,
+    },
+    can_add_media_to_point: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},

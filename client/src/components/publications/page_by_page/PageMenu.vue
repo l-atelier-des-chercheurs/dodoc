@@ -85,7 +85,7 @@
               <DLabel :str="$t('add_on_page')" />
               <ModuleCreator
                 :publication_path="publication_path"
-                :addtl_meta="new_module_meta"
+                :pre_addtl_meta="new_module_meta"
                 :context="'page_by_page'"
                 :is_collapsed="false"
                 @addModule="enableModuleEdit"
