@@ -72,6 +72,12 @@ export default {
   mounted() {
     if (this.sections_list.length > 0 && !this.section_opened_meta) {
       this.$emit("toggleSection", this.sections_list[0].meta_filename);
+    } else if (this.sections_list.length === 0) {
+      let title;
+      if (this.template === "story_with_sections")
+        title = this.$t("section") + " 1";
+      else if (this.template === "cartography") title = this.$t("layer") + " 1";
+      this.createSection(title);
     }
   },
   beforeDestroy() {},
