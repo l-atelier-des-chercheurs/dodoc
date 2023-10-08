@@ -36,7 +36,6 @@
         />
       </template>
     </div>
-    {{ publication.map_basemap }}
   </div>
 </template>
 <script>
@@ -116,10 +115,5 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._mapSettings {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  background: white;
-  padding: calc(var(--spacing) / 1);
 }
 </style>

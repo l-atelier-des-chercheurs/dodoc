@@ -1,30 +1,9 @@
 <template>
   <div class="_pageTemplate">
-    <RadioSwitch
-      v-if="can_edit"
-      class="_switch"
-      :content.sync="current_view"
-      :options="[
-        {
-          label: $t('settings'),
-          value: 'settings',
-        },
-        {
-          label:
-            publication.page_spreads === true
-              ? $t('list_of_spreads')
-              : $t('list_of_pages'),
-          value: 'pages',
-        },
-      ]"
-    />
-
-    <PageSettings
-      v-if="current_view === 'settings' && can_edit"
-      :publication="publication"
-    />
+    <PublicationSettings v-if="can_edit">
+      <PageSettings :publication="publication" />
+    </PublicationSettings>
     <PagesList
-      v-else
       :publication="publication"
       :page_opened_id="page_opened_id"
       :can_edit="can_edit"
@@ -33,6 +12,7 @@
   </div>
 </template>
 <script>
+import PublicationSettings from "@/components/publications/PublicationSettings.vue";
 import PageSettings from "@/components/publications/page_by_page/PageSettings.vue";
 import PagesList from "@/components/publications/page_by_page/PagesList.vue";
 
@@ -43,13 +23,12 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    PublicationSettings,
     PageSettings,
     PagesList,
   },
   data() {
-    return {
-      current_view: "pages",
-    };
+    return {};
   },
   created() {},
   mounted() {},

@@ -1,5 +1,5 @@
 <template>
-  <DetailsPane :header="$t('settings')" :icon="'gear'" class="_storySettings">
+  <div>
     <RangeValueInput
       class="u-spacingBottom"
       :label="$t('story_width')"
@@ -21,7 +21,7 @@
         false: $t('not_responsive_instr'),
       }"
     />
-  </DetailsPane>
+  </div>
 </template>
 <script>
 export default {
@@ -48,9 +48,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._storySettings {
-  max-width: 60ch;
-  width: 100%;
-  margin: calc(var(--spacing) / 1) auto;
-}
+// ._storySettings {
+//   max-width: 60ch;
+//   width: 100%;
+//   margin: calc(var(--spacing) / 1) auto;
+// }
 </style>
