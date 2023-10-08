@@ -314,6 +314,10 @@ export default {
             latitude,
             zoom: this.current_zoom,
           });
+          this.$eventHub.$emit("publication.map.click", {
+            longitude,
+            latitude,
+          });
           this.mouse_feature
             .getGeometry()
             .setCoordinates([longitude, latitude]);
