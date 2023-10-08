@@ -8,33 +8,37 @@
     <div id="map" class="map" />
 
     <div ref="popUp" class="ol-popup">
-      <button
-        type="button"
-        class="u-button u-buttonu-button_icon ol-popup-closer"
-        ref="closePopup"
-        @click="closePopup"
-      >
-        <b-icon icon="x-circle" />
-      </button>
-      <div v-if="popup_message" v-html="popup_message" />
-      <div v-if="clicked_location.file">
-        <MediaContent
-          :file="clicked_location.file"
-          :is_draggable="false"
-          :resolution="1600"
-          :context="'full'"
-        />
+      <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
+        <button
+          type="button"
+          class="u-button u-buttonu-button_icon ol-popup-closer"
+          ref="closePopup"
+          @click="closePopup"
+        >
+          <b-icon icon="x-circle" />
+        </button>
+        <div v-if="popup_message" v-html="popup_message" />
+
+        <div v-if="clicked_location.file" :key="clicked_location.file.$path">
+          <MediaContent
+            :file="clicked_location.file"
+            :is_draggable="false"
+            :resolution="1600"
+            :context="'full'"
+          />
+        </div>
+
+        <div class="u-instructions">
+          <small>
+            <span class="complementaryText"> {{ $t("latitude") }} = </span>
+            {{ clicked_location.latitude }}°
+            <br />
+            <span class="complementaryText"> {{ $t("longitude") }} = </span>
+            {{ clicked_location.longitude }}°
+          </small>
+        </div>
+        <slot name="popup_footer" v-if="!clicked_location.file" />
       </div>
-      <div class="u-instructions">
-        <small>
-          <span class="complementaryText"> {{ $t("latitude") }} = </span>
-          {{ clicked_location.latitude }}°
-          <br />
-          <span class="complementaryText"> {{ $t("longitude") }} = </span>
-          {{ clicked_location.longitude }}°
-        </small>
-      </div>
-      <slot name="popup_footer" v-if="!clicked_location.file" />
     </div>
     <div id="mouse-position" />
   </div>
@@ -526,8 +530,6 @@ export default {
 
 .ol-popup {
   position: absolute;
-  background-color: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   bottom: 12px;
   left: -50px;
   min-width: 280px;
@@ -537,6 +539,8 @@ export default {
   padding: calc(var(--spacing) / 2);
   background: var(--panel-color);
   border: var(--panel-borders);
+
+  overflow: hidden;
 }
 .ol-popup:after,
 .ol-popup:before {
