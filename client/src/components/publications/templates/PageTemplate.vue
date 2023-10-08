@@ -39,7 +39,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._switch {
-  margin: calc(var(--spacing) * 1) 0;
+._pageTemplate {
+  position: relative;
 }
 </style>

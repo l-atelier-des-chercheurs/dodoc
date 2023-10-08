@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_publicationOpen">
     <sl-spinner style="--indicator-color: currentColor" v-if="!publication" />
     <div v-else-if="fetch_publication_error">
       {{ fetch_publication_error }}
@@ -101,4 +101,8 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._publicationOpen {
+  position: relative;
+}
+</style>

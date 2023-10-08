@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_mapTemplate">
     <SectionedPublication
       :template="publication.template"
       :publication="publication"
@@ -32,4 +32,8 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._mapTemplate {
+  position: relative;
+}
+</style>
