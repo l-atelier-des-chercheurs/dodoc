@@ -20,7 +20,7 @@
             tag="h3"
             :required="true"
             :maxlength="20"
-            :can_edit="false"
+            :can_edit="true"
           />
         </div>
 
@@ -78,6 +78,8 @@
         @save="saveNewSuggestion"
         @cancel="cancel"
       />
+
+      <RemoveMenu :remove_text="$t('remove')" @remove="removeCat" />
     </div>
   </div>
 </template>
@@ -164,6 +166,12 @@ export default {
           tag_color: $event || "",
         },
       });
+    },
+    async removeCat() {
+      await this.$api.deleteItem({
+        path: this.path,
+      });
+      this.$emit("close");
     },
   },
 };
