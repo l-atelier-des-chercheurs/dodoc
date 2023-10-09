@@ -137,9 +137,7 @@ export default {
         if (!filter_by_category && this.user_suggestion.length === 0)
           return false;
 
-        return name
-          .toLowerCase()
-          .startsWith(this.user_suggestion.toLowerCase());
+        return this.twoStringsMatch(name, this.user_suggestion);
       });
     },
     toggleCategory(category) {
