@@ -1,6 +1,8 @@
 <template>
   <div class="_sectionsList">
-    <StorySettings v-if="can_edit" :publication="publication" />
+    <PublicationSettings v-if="can_edit">
+      <StorySettings :publication="publication" />
+    </PublicationSettings>
     <SectionsSummary
       v-if="can_edit || sections.length > 1"
       :sections="sections"
@@ -45,6 +47,7 @@
   </div>
 </template>
 <script>
+import PublicationSettings from "@/components/publications/PublicationSettings.vue";
 import StorySettings from "@/components/publications/story/StorySettings.vue";
 import SectionsSummary from "@/components/publications/story/SectionsSummary.vue";
 import SingleSection from "@/components/publications/story/SingleSection.vue";
@@ -59,6 +62,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    PublicationSettings,
     StorySettings,
     SectionsSummary,
     SingleSection,
@@ -119,6 +123,7 @@ export default {
 <style lang="scss" scoped>
 ._sectionsList {
   position: relative;
+  padding: calc(var(--spacing) / 1);
 }
 
 ._sectionTitle {

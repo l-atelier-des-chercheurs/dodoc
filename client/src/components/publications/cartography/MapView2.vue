@@ -1,27 +1,9 @@
 <template>
   <div>
-    <RadioSwitch
-      v-if="can_edit"
-      class="_switch"
-      :content.sync="current_view"
-      :options="[
-        {
-          label: $t('settings'),
-          value: 'settings',
-        },
-        {
-          label: $t('map'),
-          value: 'map',
-        },
-      ]"
-    />
-    <MapSettings
-      v-if="current_view === 'settings'"
-      :publication="publication"
-      :path="publication.$path"
-    />
+    <PublicationSettings v-if="can_edit">
+      <MapSettings :publication="publication" :path="publication.$path" />
+    </PublicationSettings>
     <MapView
-      v-else
       :publication="publication"
       :sections="sections"
       :opened_section="opened_section"
@@ -40,6 +22,7 @@
   </div>
 </template>
 <script>
+import PublicationSettings from "@/components/publications/PublicationSettings.vue";
 import MapSettings from "@/components/publications/cartography/MapSettings.vue";
 import MapView from "@/components/publications/cartography/MapView.vue";
 
@@ -53,13 +36,12 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    PublicationSettings,
     MapSettings,
     MapView,
   },
   data() {
-    return {
-      current_view: "map",
-    };
+    return {};
   },
   i18n: {
     messages: {

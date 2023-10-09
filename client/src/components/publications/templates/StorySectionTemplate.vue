@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_storySectionTemplate">
     <SectionedPublication
       :template="publication.template"
       :publication="publication"
@@ -33,7 +33,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._switch {
-  margin: calc(var(--spacing) * 1) 0;
+._storySectionTemplate {
+  position: relative;
 }
 </style>

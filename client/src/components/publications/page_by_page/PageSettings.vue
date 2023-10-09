@@ -54,10 +54,5 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pageSettings {
-  background: white;
-
-  max-width: 380px;
-  padding: calc(var(--spacing) * 1);
-  margin: 0 auto calc(var(--spacing) * 1);
 }
 </style>

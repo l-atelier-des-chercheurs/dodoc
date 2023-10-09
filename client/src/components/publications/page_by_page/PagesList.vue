@@ -130,7 +130,7 @@
         </template>
         <button
           type="button"
-          class="u-button u-button_transparent"
+          class="u-button u-button_transparent _createPage"
           @click="createPage"
           v-if="can_edit"
           :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
@@ -372,7 +372,7 @@ export default {
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) / 1);
-  margin: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 }
 
 ._page {
@@ -416,5 +416,8 @@ export default {
   &:active {
     opacity: 1;
   }
+}
+._createPage {
+  margin-bottom: calc(var(--spacing) * 3);
 }
 </style>

@@ -902,7 +902,6 @@ export default function () {
         publish: "Publier",
 
         make_list: "Liste des fabrications",
-        search_for_a_place: "Rechercher un lieu",
         latitude: "Latitude",
         longitude: "Longitude",
         zoom: "Zoom",

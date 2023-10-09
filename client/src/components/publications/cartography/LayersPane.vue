@@ -112,6 +112,16 @@
           />
         </div>
 
+        <template v-if="can_edit">
+          <ModuleCreator
+            :publication_path="publication_path"
+            :is_collapsed="false"
+            :context="'cartography'"
+            :types_available="['medias']"
+            @addModule="$emit('addModule', $event)"
+          />
+          <hr />
+        </template>
         <div class="">
           <DLabel :str="$t('pins')" />
 
@@ -157,16 +167,6 @@
             "
             @remove="$emit('removeModule', meta_filename)"
           /> -->
-        <template v-if="can_edit">
-          <hr />
-          <ModuleCreator
-            :publication_path="publication_path"
-            :is_collapsed="false"
-            :context="'cartography'"
-            :types_available="['medias']"
-            @addModule="$emit('addModule', $event)"
-          />
-        </template>
       </div>
     </div>
     <div class="_repickNotice" v-if="is_repicking_location_for">
@@ -272,7 +272,7 @@ export default {
     repickLocation(path) {
       this.is_repicking_location_for = path;
     },
-    async setRepickLocation([longitude, latitude]) {
+    async setRepickLocation({ longitude, latitude }) {
       if (!this.is_repicking_location_for) return;
 
       await this.$api

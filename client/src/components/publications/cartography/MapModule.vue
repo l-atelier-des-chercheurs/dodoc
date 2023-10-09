@@ -34,7 +34,7 @@
       v-if="can_edit"
       type="button"
       class="u-button u-button_red u-button_icon"
-      @click="$emit('repickLocation')"
+      @click.stop="$emit('repickLocation')"
     >
       <b-icon icon="pin-map-fill" />
     </button>

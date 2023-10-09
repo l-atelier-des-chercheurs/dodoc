@@ -155,10 +155,6 @@ export default {
       default: "preview",
       // preview, full
     },
-    autoload: {
-      type: Boolean,
-      default: false,
-    },
     is_draggable: {
       type: Boolean,
       default: true,
@@ -180,9 +176,7 @@ export default {
       failed_to_load_iframe: false,
     };
   },
-  created() {
-    if (this.autoload) this.loadIframe();
-  },
+  created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -300,6 +294,12 @@ export default {
     width: 100%;
     height: 100%;
   }
+
+  ::v-deep {
+    .plyr__control--overlaid {
+      z-index: 10;
+    }
+  }
 }
 
 ._mediaContent--iframe {
@@ -315,6 +315,7 @@ export default {
 
     ._playButton {
       display: block;
+
       @media print {
         display: none;
       }

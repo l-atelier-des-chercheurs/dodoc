@@ -114,7 +114,8 @@ import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 export default {
   props: {
     publication_path: String,
-    addtl_meta: Object,
+    pre_addtl_meta: Object,
+    post_addtl_meta: Object,
     context: String,
     types_available: {
       type: Array,
@@ -315,8 +316,11 @@ export default {
         requested_slug: "module",
       };
 
-      if (this.addtl_meta) Object.assign(additional_meta, this.addtl_meta);
+      if (this.pre_addtl_meta)
+        Object.assign(additional_meta, this.pre_addtl_meta);
       if (addtl_meta) Object.assign(additional_meta, addtl_meta);
+      if (this.post_addtl_meta)
+        Object.assign(additional_meta, this.post_addtl_meta);
 
       return await this.$api
         .uploadFile({

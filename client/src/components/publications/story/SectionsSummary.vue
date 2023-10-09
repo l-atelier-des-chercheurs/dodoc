@@ -105,7 +105,8 @@ export default {
 ._sectionsSummary {
   max-width: 60ch;
   width: 100%;
-  margin: calc(var(--spacing) / 1) auto;
+  margin: 0 auto;
+  margin-bottom: calc(var(--spacing) / 1);
 }
 
 ._list {

@@ -6,7 +6,7 @@
     :to="component_to"
     class="_author"
     :data-imageonly="show_image_only"
-    @click="$emit('click')"
+    @click.native="componentClick"
   >
     <div class="_cover">
       <CoverField
@@ -19,7 +19,6 @@
     </div>
     <div v-if="!show_image_only" class="_infos">
       <div class="_name">
-        {{ author.name }}
         <b-icon
           v-if="
             authorIsInstance({
@@ -30,6 +29,7 @@
           icon="gear"
           :aria-label="$t('admin')"
         />
+        {{ author.name }}
       </div>
       <!-- <div
         class="u-instructions"
@@ -110,7 +110,12 @@ export default {
       return false;
     },
   },
-  methods: {},
+  methods: {
+    componentClick() {
+      debugger;
+      if (this.component_tag === "router-link") this.$emit("navToPage");
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

@@ -36,8 +36,10 @@
             })
           "
         >
-          <b-icon icon="gear" :aria-label="$t('admin')" />
-          <small v-html="$t('admin')" />
+          <small>
+            <b-icon icon="gear" :aria-label="$t('admin')" />
+            {{ $t("admin") }}
+          </small>
         </div>
 
         <TitleField

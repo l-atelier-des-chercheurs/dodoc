@@ -243,20 +243,6 @@ export default {
       this.$eventHub.$emit(`module.text_editing_disabled`);
       this.content_is_edited = false;
     },
-    firstMedia(page_module) {
-      if (!page_module) return false;
-      try {
-        const source_media = page_module.source_medias[0];
-        const publication_path = this.getParent(page_module.$path);
-
-        return this.getSourceMedia({
-          source_media,
-          folder_path: publication_path,
-        });
-      } catch (err) {
-        return false;
-      }
-    },
 
     dragStart() {
       // console.log("dragStart");

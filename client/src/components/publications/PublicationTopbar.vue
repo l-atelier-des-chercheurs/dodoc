@@ -51,13 +51,10 @@
         </small>
       </div>
 
-      <!-- <button
-        type="button"
-        class="u-button u-button_icon"
-        @click="openSettings"
-      >
+      <sl-button @click="openSettings">
         <b-icon icon="gear" :aria-label="$t('settings')" />
-      </button> -->
+        {{ $t("settings") }}
+      </sl-button>
 
       <sl-dropdown v-if="can_edit">
         <sl-button slot="trigger" caret>{{ $t("options") }}</sl-button>
@@ -207,7 +204,9 @@ export default {
         },
       });
     },
-    openSettings() {},
+    openSettings() {
+      this.$eventHub.$emit("publication.toggleSettings");
+    },
   },
 };
 </script>
