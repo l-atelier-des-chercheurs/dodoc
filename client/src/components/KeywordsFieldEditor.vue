@@ -14,12 +14,11 @@
     <div class="u-instructions">
       <small>
         <template v-if="suggested_keywords.length > 0">
-          Validez la première suggestion avec SHIFT+ENTRÉE, ou créez un nouveau
-          mot-clé avec ENTRÉE.
+          {{ $t("validate_with_shift_enter") }}
         </template>
-        <template v-else-if="user_suggestion.length > 0"
-          >Créez un nouveau mot-clé avec ENTRÉE.</template
-        >
+        <template v-else-if="user_suggestion.length > 0">{{
+          $t("create_new_keyword_enter")
+        }}</template>
       </small>
     </div>
 
@@ -76,6 +75,21 @@ export default {
       path: "categories",
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        validate_with_shift_enter:
+          "Validez la première suggestion avec SHIFT+ENTRÉE, ou créez un nouveau mot-clé avec ENTRÉE.",
+        create_new_keyword_enter: "Créez un nouveau mot-clé avec ENTRÉE.",
+      },
+      en: {
+        validate_with_shift_enter:
+          "Add first suggestion with SHIFT+ENTER, or create a new keyword with ENTER.",
+        create_new_keyword_enter: "Create a new keyword with ENTER.",
+      },
+    },
+  },
+
   async created() {
     this.categories = await this.$api.getFolders({
       path: this.path,
