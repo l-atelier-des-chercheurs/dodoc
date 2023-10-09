@@ -10,12 +10,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "LumaView" */ "../views/LumaView.vue"),
   },
-  // {
-  //   path: "/=:event_slug",
-  //   name: "Événement",
-  //   component: () =>
-  //     import(/* webpackChunkName: "AuthorView" */ "../views/EventView.vue"),
-  // },
+  {
+    path: "/@:author_slug",
+    name: "Contributeur",
+    component: () =>
+      import(/* webpackChunkName: "AuthorView" */ "../views/AuthorView.vue"),
+  },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
