@@ -88,7 +88,7 @@
   background-color: #fff;
   border-radius: 0;
   // border-bottom: 2px solid #b9b9b9;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
     transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -162,6 +162,9 @@
   &.u-buttonLink_white {
     color: white;
   }
+  &.u-buttonLink_red {
+    color: var(--c-rouge);
+  }
 
   &:hover,
   &:focus {
@@ -199,8 +202,10 @@ button {
 
   svg,
   .inlineSVG {
-    width: 2em;
-    height: 2em;
+    flex: 0 0 auto;
+    fill: currentColor;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   &[disabled] {
@@ -967,7 +972,7 @@ input[type="checkbox"]:disabled {
 .u-dragHandle {
   display: flex;
   cursor: grab;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
   background: white;
   color: var(--c-noir);
   border-radius: 2px;

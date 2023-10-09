@@ -124,6 +124,16 @@ module.exports = (function () {
     );
     app.post(
       [
+        "/_api2/:folder_type/_import",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_import",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_import",
+      ],
+      _generalPasswordCheck,
+      _restrictToContributors,
+      _importFolder
+    );
+    app.post(
+      [
         "/_api2/:folder_type/:folder_slug/_export",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_export",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_export",
@@ -561,6 +571,36 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to create folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+  async function _importFolder(req, res, next) {
+    const { path_to_type } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_type });
+
+    try {
+      const new_folder_slug = await folder.importFolder({
+        path_to_type,
+        req,
+      });
+      dev.logpackets(`folder was imported with name ${new_folder_slug}`);
+      res.status(200).json({ new_folder_slug });
+
+      const path_to_folder = path.join(path_to_type, new_folder_slug);
+      const new_folder_meta = await folder.getFolder({
+        path_to_folder,
+      });
+
+      notifier.emit("folderCreated", path_to_type, {
+        path: path_to_type,
+        meta: new_folder_meta,
+      });
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to import folder: " + message);
       res.status(500).send({
         code,
         err_infos,

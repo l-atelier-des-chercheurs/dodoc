@@ -148,6 +148,8 @@ import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
 import CreateFolder from "@/adc-core/modals/CreateFolder";
 Vue.component("CreateFolder", CreateFolder);
+import ImportFolder from "@/adc-core/modals/ImportFolder";
+Vue.component("ImportFolder", ImportFolder);
 //
 
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
@@ -156,6 +158,11 @@ import DateDisplay from "@/adc-core/fields/DateDisplay.vue";
 Vue.component("DateDisplay", DateDisplay);
 import SizeDisplay from "@/adc-core/fields/SizeDisplay.vue";
 Vue.component("SizeDisplay", SizeDisplay);
+import DurationDisplay from "@/adc-core/fields/DurationDisplay.vue";
+Vue.component("DurationDisplay", DurationDisplay);
+import ShowOnMap from "@/adc-core/fields/ShowOnMap.vue";
+Vue.component("ShowOnMap", ShowOnMap);
+
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
 import UploadFiles from "@/adc-core/fields/UploadFiles.vue";

@@ -10,6 +10,13 @@ export default {
       const largest_dimension = Math.max(width, height);
       return desired_largest_dimension / (largest_dimension * magnification);
     },
+    findModuleFromMetaFilename({ files, meta_filename }) {
+      if (!files) return [];
+      return files.find((f) => {
+        const _meta_name = this.getFilename(f.$path);
+        return _meta_name === meta_filename;
+      });
+    },
     getModulesForPage({ modules, page_id }) {
       return (
         modules
@@ -19,6 +26,24 @@ export default {
           ) || []
       ).reverse();
     },
+    getModulesForSection({ publication, section }) {
+      if (Array.isArray(section?.modules_list)) {
+        const modules_list = section.modules_list.reduce(
+          (acc, meta_filename) => {
+            const _module = this.findModuleFromMetaFilename({
+              files: publication.$files,
+              meta_filename,
+            });
+            if (_module) acc.push({ meta_filename, _module });
+            return acc;
+          },
+          []
+        );
+        return modules_list;
+      }
+      return [];
+    },
+
     setPaginationFromPublication(publication) {
       if (publication.enable_pagination !== true) return false;
       return {
@@ -47,6 +72,20 @@ export default {
         }
       }
       return spreads;
+    },
+    firstMedia(page_module) {
+      if (!page_module) return false;
+      try {
+        const source_media = page_module.source_medias[0];
+        const publication_path = this.getParent(page_module.$path);
+
+        return this.getSourceMedia({
+          source_media,
+          folder_path: publication_path,
+        });
+      } catch (err) {
+        return false;
+      }
     },
     async duplicateModuleWithSourceMedias({ og_module, addtl_meta_to_module }) {
       let new_meta = {};

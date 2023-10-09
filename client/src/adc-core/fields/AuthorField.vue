@@ -55,7 +55,7 @@
                 :path="author_path"
                 :key="author_path"
                 :edit_mode="edit_mode"
-                :links_to_author_page="true"
+                :links_to_author_page="false"
                 @remove="removeAuthor(author_path)"
               />
             </transition-group>

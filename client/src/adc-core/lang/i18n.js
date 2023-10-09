@@ -205,13 +205,16 @@ export default function () {
         publications: "Publications",
         back_to_publications: "Retour aux publications",
         generate_preview: "Générer un aperçu",
+        nothing_to_show: "Rien à afficher",
 
         story: "Récit",
         story_with_sections: "Récit",
-        page_by_page: "Document page à page",
+        page_by_page: "Page à page",
         cartography: "Cartographie",
-        export: "Exporter",
+        export_in_pdf: "Exporter en PDF",
+        direct_link: "Lien direct",
         share: "Partager",
+        options: "Options",
         exports_in_progress: "Exportation(s) en cours",
 
         story_width: "Largeur du récit",
@@ -255,6 +258,7 @@ export default function () {
         outline_color: "Couleur du contour",
         custom_color: "Couleur personnalisée",
         z_index: "Ordre d’empilement",
+        show_fs_button: "Permettre le passage en plein écran",
         move_to_front: "Premier-plan",
         move_to_back: "Arrière-plan",
         fullscreen: "Plein-écran",
@@ -297,8 +301,6 @@ export default function () {
         remove_this_image: "Supprimer cette image",
         erase: "Effacer",
 
-        pick_image: "Choisir une image",
-        change_base_image: "Changer l’image de base",
         crop: "Recadrer",
         crop_instructions:
           "Utilisez les valeurs ci-dessous ou utilisez le cadre à droite pour indiquer la zone à recadrer.",
@@ -306,6 +308,7 @@ export default function () {
         reset_crop: "réinitialiser le cadrage",
 
         status: "État",
+        origin: "Origine",
         list_of_projects: "Liste des projets",
         no_projects: "Aucun projet à afficher",
         no_files: "Aucun fichier",
@@ -350,6 +353,9 @@ export default function () {
         only_finished: "Projets finalisés",
         completed: "Terminé",
         my_projects: "Mes projets",
+        pinned: "Épinglés",
+        click_on_pin_on_space:
+          "Les projets marqués avec une épingle seront indiqués à tous ici.",
 
         default_value: "Par défaut",
 
@@ -411,6 +417,7 @@ export default function () {
         admin_settings: "Réglages d’administration",
         list_of_pages: "Liste des pages",
         list_of_spreads: "Liste des planches",
+        grid: "Grille",
         show_grid: "Afficher la grille",
         snap_to_grid: "Magnétisme de la grille",
         gridstep: "Pas de la grille",
@@ -452,7 +459,11 @@ export default function () {
         trim_video: "Recouper une vidéo",
         trim_video_summary: "Couper la fin ou le début dans une vidéo",
         trim_instructions:
-          "Sélectionnez en cliquant/glissant sur la piste ci-dessus la zone à extraire",
+          "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
+        start: "début",
+        end: "fin",
+        copy: "Copier",
+        test_and_export: "Tester et exporter",
 
         extract_to_export: "Extrait sélectionné",
         save_export_cropped: "Enregistrer la version retouchée",
@@ -566,6 +577,7 @@ export default function () {
         all_rights_reserved_explanations: "–",
 
         drop_here: "Déposer ici",
+        or_drag_drop_file_here: "Ou déposer des fichiers ici",
         enable: "Activer",
 
         // effets
@@ -816,7 +828,15 @@ export default function () {
           "Dans cet espace ou vers un autre où vous pouvez importer des médias.",
         dmp_instr:
           "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
+        import_a_project: "Importer un projet",
+        import_a_project_instr: `Vous pouvez ajouter dans cet espace un projet complet (avec tous ses médias, fabrications et publications) 
+        créé dans un autre do•doc version 10. Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre do•doc pour le récupérer en ZIP
+        puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
+        import_zip: "Importer un projet en ZIP",
+        import_in_progress: "Importation en cours…",
+
         move_to_page: "Déplacer vers une autre page",
+
         move: "Déplacer",
         unselect: "Déselectionner",
         remove: "Supprimer",
@@ -867,6 +887,17 @@ export default function () {
           "Indiquer le ou les personnes qui pourront modifier ce contenu",
 
         make_list: "Liste des fabrications",
+        latitude: "Latitude",
+        longitude: "Longitude",
+        zoom: "Zoom",
+        map: "Carte",
+        pins: "Épingles",
+        pick_on_map: "Indiquer sur la carte",
+        current_position: "Position actuelle",
+        layers: "Calques",
+        layer: "Calque",
+        create_layer: "Créer un calque",
+        layer_title: "Nom du calque",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

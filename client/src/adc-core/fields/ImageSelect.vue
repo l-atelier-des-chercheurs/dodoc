@@ -93,7 +93,8 @@
 
         <CaptureView
           v-if="enable_capture_mode"
-          :available_modes="['photo']"
+          :available_modes="[]"
+          :selected_mode="'photo'"
           :return_temp_media="true"
           :must_validate_media="false"
           @close="enable_capture_mode = false"
@@ -170,10 +171,12 @@ export default {
     },
   },
   methods: {
-    handlePaste(e) {
-      if (e.clipboardData.files && e.clipboardData.files.length > 0) {
+    handlePaste($event) {
+      if ($event.clipboardData.files && $event.clipboardData.files.length > 0) {
+        $event.preventDefault();
+        $event.stopPropagation();
         console.log(
-          `Story — METHODS • handlePaste: for files.length = ${e.clipboardData.files.length} with size ${e.clipboardData.files[0].size}`
+          `Story — METHODS • handlePaste: for files.length = ${$event.clipboardData.files.length} with size ${$event.clipboardData.files[0].size}`
         );
         this.$alertify
           .closeLogOnClick(true)
@@ -181,7 +184,7 @@ export default {
           .log("Importation depuis presse-papier");
 
         this.$nextTick(() => {
-          const file = e.clipboardData.files[0];
+          const file = $event.clipboardData.files[0];
           this.setNewPreview(file);
         });
       } else {

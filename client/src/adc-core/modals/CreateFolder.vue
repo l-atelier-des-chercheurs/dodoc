@@ -8,6 +8,7 @@
         :required="true"
         ref="titleInput"
         @toggleValidity="($event) => (allow_save = $event)"
+        @onEnter="createFolder"
       />
 
       <br />

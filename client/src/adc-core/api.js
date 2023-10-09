@@ -115,8 +115,12 @@ export default function () {
       },
       join({ room }) {
         // join room only if not tracking
-        if (!this.rooms_joined.includes(room))
+        if (!this.rooms_joined.includes(room)) {
+          // console.log("JOIN – room isnt tracked, joining", room);
           this.socket.emit("joinRoom", { room });
+        } else {
+          // console.log("JOIN – room already tracked", room);
+        }
         // we push this room anyway, so that when we remove it we keep tracking until all has been removed
         this.rooms_joined.push(room);
       },
@@ -127,8 +131,11 @@ export default function () {
         this.rooms_joined.splice(index_to_remove, 1);
         // if room isnt tracked anymore
         if (!this.rooms_joined.includes(room)) {
+          // console.log("LEAVE – room isnt tracked anymore, delete store", room);
           this.socket.emit("leaveRoom", { room });
           this.$delete(this.store, room);
+        } else {
+          // console.log("LEAVE – room still tracked", room);
         }
       },
 
@@ -238,9 +245,16 @@ export default function () {
       },
 
       folderCreated({ path, meta }) {
-        if (!this.store[path]) this.store[path] = new Array();
+        // only update store if content is tracked
+        if (!this.rooms_joined.includes(path)) {
+          // console.log("folderCreated – room isnt tracked, not adding to store");
+          return;
+        }
+
+        if (!Object.prototype.hasOwnProperty.call(this.store, path))
+          this.store[path] = new Array();
         this.store[path].push(meta);
-        this.$set(this.store, meta.$path, meta);
+        // this.$set(this.store, meta.$path, meta);
       },
 
       updateProps({ changed_data, folder_to_update }) {
@@ -338,8 +352,7 @@ export default function () {
         const response = await this.$axios.get(path).catch((err) => {
           throw this.processError(err);
         });
-        const folders = response.data;
-        // folders.map((f) => this.$set(this.store, f.$path, f));
+        const folders = response.data.length === 0 ? [] : response.data;
         this.$set(this.store, path, folders);
         // we use the store to trigger updates to array if item is updated
         return this.store[path];
@@ -507,6 +520,32 @@ export default function () {
           throw this.processError(err);
         });
         saveAs(response.data, filename);
+      },
+      async importFolder({
+        path,
+        filename,
+        file,
+        additional_meta,
+        onProgress,
+      }) {
+        let data = new FormData();
+        data.append("file", file, filename);
+        if (additional_meta)
+          data.append(filename, JSON.stringify(additional_meta));
+        path = `${path}/_import`;
+
+        let res = await this.$axios
+          .post(path, data, {
+            headers: { "Content-Type": "multipart/form-data" },
+            onUploadProgress: (progressEvent) => {
+              if (onProgress) onProgress(progressEvent);
+            },
+          })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+
+        return res.data.new_folder_slug;
       },
       async remixFolder({
         path,

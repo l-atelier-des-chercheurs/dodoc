@@ -100,10 +100,11 @@ export default {
 
       this.files_to_upload_meta[filename].status = "sending";
 
-      let formData = new FormData();
-      formData.append("file", file, filename);
+      // let formData = new FormData();
+      // formData.append("file", file, filename);
 
       let additional_meta = {};
+      additional_meta.$origin = "collect";
       if (file.lastModified) additional_meta.$date_created = file.lastModified;
       // if (this.$root.current_author)
       //   additional_meta.authors = [

@@ -211,7 +211,7 @@ export default {
 
   // from tldraw
   --panel-color: #fefefe;
-  --panel-borders: 1px solid white;
+  --panel-borders: 1px solid var(--panel-color);
   --panel-shadows: rgba(0, 0, 0, 0.05) 0px 0px 16px -1px,
     rgba(0, 0, 0, 0.05) 0px 0px 16px -8px,
     rgba(0, 0, 0, 0.12) 0px 0px 16px -12px, rgba(0, 0, 0, 0.08) 0px 0px 2px 0px;
@@ -783,10 +783,10 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: all 0.08s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.04s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter {
-    transform: scale(0.95);
+    transform: scale(0.98);
     opacity: 0;
   }
   &-leave-to {
