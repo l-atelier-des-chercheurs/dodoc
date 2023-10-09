@@ -63,7 +63,7 @@ export default {
     filtered_suggestions() {
       return this.suggestions_list.filter(
         (s) =>
-          s.toLowerCase().startsWith(this.new_tag_name.toLowerCase()) &&
+          this.twoStringsMatch(s, this.new_tag_name) &&
           !this.tags_to_exclude.some((t) => t === s)
       );
     },
