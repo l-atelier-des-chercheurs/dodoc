@@ -122,10 +122,10 @@ export default {
         const is_current_section = s.$path === this.opened_section?.$path;
 
         if (s.modules_list && Array.isArray(s.modules_list))
-          s.modules_list.map((module_meta) => {
+          s.modules_list.map((meta_filename) => {
             const section_module = this.findModuleFromMetaFilename({
               files: this.publication.$files,
-              module_meta,
+              meta_filename,
             });
             if (
               section_module?.source_medias &&
