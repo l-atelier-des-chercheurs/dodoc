@@ -12,22 +12,20 @@
       :resolution="50"
       :context="'preview'"
     />
-    <div class="">
-      <small>
-        <template
-          v-if="
-            mapmodule.location &&
-            mapmodule.location.latitude &&
-            mapmodule.location.longitude
-          "
-        >
-          {{ mapmodule.location.latitude }} /
-          {{ mapmodule.location.longitude }}
-        </template>
-        <template v-else>
-          {{ $t("no_coordinates") }}
-        </template>
-      </small>
+    <div class="u-meta _text">
+      <template
+        v-if="
+          mapmodule.location &&
+          mapmodule.location.latitude &&
+          mapmodule.location.longitude
+        "
+      >
+        {{ mapmodule.location.latitude }} /
+        {{ mapmodule.location.longitude }}
+      </template>
+      <template v-else>
+        {{ $t("no_coordinates") }}
+      </template>
     </div>
 
     <button
@@ -61,7 +59,9 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        no_coordinates: "Aucunes coordonnées disponibles",
+      },
     },
   },
   created() {},
@@ -105,10 +105,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._mapModule {
-  background: var(--c-gris);
-  border-radius: 2px;
+  // background: var(--c-gris);
+  // border-radius: 2px;
   padding: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 8) 0;
+  border-bottom: 2px solid var(--c-gris);
 
   display: flex;
   align-items: center;
@@ -120,5 +121,8 @@ export default {
   :focus-visible {
     background: transparent;
   }
+}
+
+._text {
 }
 </style>
