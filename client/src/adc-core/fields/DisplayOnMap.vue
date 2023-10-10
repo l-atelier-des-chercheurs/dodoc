@@ -316,6 +316,8 @@ export default {
         this.closePopup();
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
         let [longitude, latitude] = event.coordinate;
+        longitude = this.roundToDec(longitude, 6);
+        latitude = this.roundToDec(latitude, 6);
 
         if (!feature) {
           this.$emit("newPositionClicked", {
