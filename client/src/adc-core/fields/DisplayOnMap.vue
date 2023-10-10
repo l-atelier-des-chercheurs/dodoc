@@ -5,7 +5,7 @@
       'is--small': is_small,
     }"
   >
-    <div id="map" class="map" />
+    <div class="map" ref="map" />
 
     <div ref="popUp" class="ol-popup">
       <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
@@ -189,7 +189,7 @@ export default {
         maxZoom: this.max_zoom,
       });
       this.map = new olMap({
-        target: "map",
+        target: this.$refs.map,
         layers: [
           new olTileLayer({
             source: new olSourceOSM({
