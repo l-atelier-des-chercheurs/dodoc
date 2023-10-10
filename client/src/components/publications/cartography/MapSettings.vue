@@ -14,17 +14,29 @@
 
     <div class="u-spacingBottom">
       <template v-if="map_mode === 'gps'">
-        <DLabel :str="$t('default_map_framing')" />
-        <div class="u-instructions">
-          {{ $t("default_map_framing_instr") }}
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('map_baselayer')" />
+          <SelectField2
+            :value="publication.map_baselayer"
+            :options="map_baselayer_options"
+            :can_edit="true"
+            :hide_validation="false"
+            @update="updateBaselayer"
+          />
         </div>
-
-        <PositionPicker
-          :start_coords="publication.map_initial_location || false"
-          :start_zoom="publication.map_initial_zoom || false"
-          :edit_mode="true"
-          @update="updateBasePosition"
-        />
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('default_map_framing')" />
+          <div class="u-instructions">
+            {{ $t("default_map_framing_instr") }}
+          </div>
+          <PositionPicker
+            :start_coords="publication.map_initial_location || false"
+            :start_zoom="publication.map_initial_zoom || false"
+            :map_baselayer="publication.map_baselayer"
+            :edit_mode="true"
+            @update="updateBasePosition"
+          />
+        </div>
       </template>
       <template v-else-if="map_mode === 'image'">
         <DLabel :str="$t('image_basemap')" />
@@ -65,6 +77,21 @@ export default {
           instructions: this.$t("map_mode_image_instr"),
         },
       ],
+
+      map_baselayer_options: [
+        {
+          key: "OSM",
+          text: this.$t("OSM"),
+        },
+        {
+          key: "IGN_SAT",
+          text: this.$t("IGN_SAT"),
+        },
+        {
+          key: "IGN_MAP",
+          text: this.$t("IGN_MAP"),
+        },
+      ],
     };
   },
   i18n: {
@@ -75,6 +102,8 @@ export default {
 
         map_mode_gps: "Coordonnées GPS avec un fond de carte OpenStreetMap",
         map_mode_gps_instr: "Pour cartographier un espace extérieur.",
+        map_baselayer: "Type de fond de carte",
+
         default_map_framing: "Cadrage de référence de la carte",
         default_map_framing_instr:
           "Cliquez sur la carte sur le point qui sera utilisé pour centrer la carte à l’ouverture. Le niveau de zoom sera aussi conservé.",
@@ -82,6 +111,10 @@ export default {
         map_mode_image_instr:
           "Pour cartographier un espace intérieur ou très réduit ou un espace non-cartographique.",
         image_basemap: "Image utilisée comme fond de carte",
+
+        OSM: "OpenStreetMap",
+        IGN_MAP: "Carte IGN (en France uniquement)",
+        IGN_SAT: "Photos satellite IGN (en France uniquement)",
       },
       en: {},
     },
@@ -103,7 +136,11 @@ export default {
         map_initial_zoom: zoom,
       });
     },
-
+    async updateBaselayer(new_val) {
+      await this.updatePubli({
+        map_baselayer: new_val,
+      });
+    },
     async updatePubli(new_meta) {
       await this.$api.updateMeta({
         path: this.path,

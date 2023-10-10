@@ -1,8 +1,5 @@
 <template>
   <div>
-    <PublicationSettings v-if="can_edit">
-      <MapSettings :publication="publication" :path="publication.$path" />
-    </PublicationSettings>
     <MapView
       :publication="publication"
       :sections="sections"
@@ -19,6 +16,9 @@
       @removeModule="$emit('removeModule', $event)"
       @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
     />
+    <PublicationSettings v-if="can_edit">
+      <MapSettings :publication="publication" :path="publication.$path" />
+    </PublicationSettings>
   </div>
 </template>
 <script>

@@ -1,19 +1,24 @@
 <template>
   <div class="_mapModule" @click="openPin">
-    <label>
+    <!-- <label>
       <b>
         {{ index + 1 }}
       </b>
-    </label>
-    <MediaContent
-      class="_preview"
-      v-if="first_media"
-      :file="first_media"
-      :resolution="50"
+    </label> -->
+    <PublicationModule
+      class="_mediaPublication"
+      :publimodule="mapmodule"
+      :module_position="module_position"
       :context="'preview'"
+      :number_of_max_medias="1"
+      :can_edit="can_edit"
+      @moveUp="$emit('moveUp')"
+      @moveDown="$emit('moveDown')"
+      @duplicate="$emit('duplicate')"
+      @remove="$emit('remove')"
     />
-    <div class="">
-      <small>
+    <DetailsPane :header="$t('infos')" :icon="'map'">
+      <div class="u-meta _text">
         <template
           v-if="
             mapmodule.location &&
@@ -27,41 +32,49 @@
         <template v-else>
           {{ $t("no_coordinates") }}
         </template>
-      </small>
-    </div>
+      </div>
 
-    <button
-      v-if="can_edit"
-      type="button"
-      class="u-button u-button_red u-button_icon"
-      @click.stop="$emit('repickLocation')"
-    >
-      <b-icon icon="pin-map-fill" />
-    </button>
-    <button
-      v-if="can_edit"
-      type="button"
-      class="u-button u-button_transparent u-button_icon"
-      @click="removeModule"
-    >
-      <b-icon icon="trash" />
-    </button>
+      <button
+        v-if="can_edit"
+        type="button"
+        class="u-button u-button_red u-button_icon"
+        @click.stop="$emit('repickLocation')"
+      >
+        <b-icon icon="pin-map-fill" />
+        {{ $t("pick_new_location") }}
+      </button>
+    </DetailsPane>
+    <!-- <MediaContent
+      class="_preview"
+      v-if="first_media"
+      :file="first_media"
+      :resolution="50"
+      :context="'preview'"
+    /> -->
   </div>
 </template>
 <script>
+import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
+
 export default {
   props: {
     index: Number,
     mapmodule: Object,
+    module_position: String,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    PublicationModule,
+  },
   data() {
     return {};
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        no_coordinates: "Aucunes coordonnées disponibles",
+        pick_new_location: "Modifier la position",
+      },
     },
   },
   created() {},
@@ -105,20 +118,45 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._mapModule {
-  background: var(--c-gris);
-  border-radius: 2px;
-  padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 8) 0;
+  // background: var(--c-gris);
+  // border-radius: 2px;
+  padding: 0;
+  margin-left: var(--spacing);
+  margin-bottom: var(--spacing);
+  margin-right: 0;
+  border-bottom: 2px solid var(--c-gris);
 
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
+  // display: flex;
+  // align-items: center;
+  // gap: calc(var(--spacing) / 2);
 
   cursor: pointer;
 
   &:hover,
   :focus-visible {
     background: transparent;
+  }
+}
+
+._text {
+  margin: calc(var(--spacing) / 4) 0;
+}
+
+._mediaPublication {
+  width: 100%;
+  ::v-deep {
+    ._options {
+      display: none;
+    }
+
+    ._mediaContent--image {
+      // position: absolute;
+      width: 100%;
+      aspect-ratio: 4/1;
+      // height: 100%;
+      object-fit: var(--object-fit, cover);
+      object-position: center;
+    }
   }
 }
 </style>

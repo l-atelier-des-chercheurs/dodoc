@@ -6,17 +6,20 @@
     </div>
     <template v-else>
       <PublicationTopbar
+        class="_publicationOpen--topbar"
         :publication="publication"
         :can_edit="can_edit"
         @close="$emit('close')"
       />
       <StoryTemplate
         v-if="publication.template === 'story'"
+        class="_publicationOpen--content"
         :publication="publication"
         :can_edit="can_edit"
       />
       <StorySectionTemplate
         v-else-if="publication.template === 'story_with_sections'"
+        class="_publicationOpen--content"
         :publication="publication"
         :section_opened_meta="page_opened_id"
         :can_edit="can_edit"
@@ -24,6 +27,7 @@
       />
       <PageTemplate
         v-else-if="publication.template === 'page_by_page'"
+        class="_publicationOpen--content"
         :publication="publication"
         :can_edit="can_edit"
         :page_opened_id="page_opened_id"
@@ -31,6 +35,7 @@
       />
       <MapTemplate
         v-else-if="publication.template === 'cartography'"
+        class="_publicationOpen--content"
         :publication="publication"
         :section_opened_meta="page_opened_id"
         :can_edit="can_edit"
@@ -104,5 +109,15 @@ export default {
 <style lang="scss" scoped>
 ._publicationOpen {
   position: relative;
+  min-height: calc(100vh - 44px);
+  display: flex;
+  flex-flow: column nowrap;
+}
+._publicationOpen--topbar {
+  flex: 0 0 auto;
+}
+
+._publicationOpen--content {
+  flex: 1 1 auto;
 }
 </style>

@@ -6,7 +6,6 @@
       :sections="sections"
       :opened_section="opened_section"
       :opened_section_modules_list="opened_section_modules_list"
-      :default_layer_color="default_layer_color"
       :can_edit="can_edit"
       @createSection="$emit('createSection', $event)"
       @openSection="$emit('openSection', $event)"
@@ -22,6 +21,7 @@
       class="_mapContainer"
       :start_coords="start_coords"
       :start_zoom="start_zoom"
+      :map_baselayer="publication.map_baselayer"
       :pins="pins"
       :lines="lines"
       :link_pins="opened_section_link_pins"
@@ -29,7 +29,7 @@
       :can_add_media_to_point="opened_section !== false"
       @newPositionClicked="newPositionClicked"
     >
-      <div class="" slot="popup_footer">
+      <div class="" slot="popup_message">
         <div v-if="!opened_section">
           {{ $t("to_add_media_here_open_matching_layer") }}
         </div>
@@ -141,7 +141,6 @@ export default {
         },
       ],
 
-      default_layer_color: "#333",
       opened_view_id: false,
 
       latest_click: {
@@ -171,6 +170,7 @@ export default {
     start_zoom() {
       return this.publication.map_initial_zoom || 10;
     },
+
     opened_view() {
       if (this.opened_view_id === false) return false;
       return this.views_list[this.opened_view_id];

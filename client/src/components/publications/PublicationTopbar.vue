@@ -51,13 +51,15 @@
         </small>
       </div>
 
-      <sl-button @click="openSettings">
-        <b-icon icon="gear" :aria-label="$t('settings')" />
+      <sl-button v-if="can_edit" @click="openSettings" caret>
+        <b-icon icon="gear" slot="prefix" :aria-label="$t('settings')" />
         {{ $t("settings") }}
       </sl-button>
 
-      <sl-dropdown v-if="can_edit">
-        <sl-button slot="trigger" caret>{{ $t("options") }}</sl-button>
+      <sl-dropdown v-if="can_edit" @sl-show="closeSettings">
+        <sl-button slot="trigger" caret>
+          {{ $t("options") }}
+        </sl-button>
         <sl-menu>
           <sl-menu-item>
             <DuplicatePublication
@@ -76,8 +78,11 @@
         </sl-menu>
       </sl-dropdown>
 
-      <sl-dropdown>
-        <sl-button slot="trigger" caret>{{ $t("share") }}</sl-button>
+      <sl-dropdown @sl-show="closeSettings">
+        <sl-button slot="trigger" caret>
+          <b-icon slot="prefix" icon="box-arrow-up-right" />
+          {{ $t("share") }}
+        </sl-button>
         <sl-menu>
           <sl-menu-item>
             <button
@@ -205,7 +210,10 @@ export default {
       });
     },
     openSettings() {
-      this.$eventHub.$emit("publication.toggleSettings");
+      this.$eventHub.$emit("publication.settings.toggle");
+    },
+    closeSettings() {
+      this.$eventHub.$emit("publication.settings.close");
     },
   },
 };
@@ -219,7 +227,7 @@ export default {
   width: 100%;
   background: white;
 
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2);
   border-radius: 1px;
   margin: 0;
 

@@ -1,8 +1,5 @@
 <template>
   <div class="_sectionsList">
-    <PublicationSettings v-if="can_edit">
-      <StorySettings :publication="publication" />
-    </PublicationSettings>
     <SectionsSummary
       v-if="can_edit || sections.length > 1"
       :sections="sections"
@@ -44,6 +41,9 @@
         </div>
       </div>
     </transition>
+    <PublicationSettings v-if="can_edit">
+      <StorySettings :publication="publication" />
+    </PublicationSettings>
   </div>
 </template>
 <script>

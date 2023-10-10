@@ -4,7 +4,7 @@
 
     <button
       type="button"
-      class="u-button u-button_transparent _navBtn _closeButton"
+      class="u-button u-button_transparent _closeButton"
       @click="$emit('close')"
     >
       <img
@@ -22,6 +22,7 @@
           :is_draggable="false"
           :resolution="1600"
           :context="'full'"
+          :show_fs_button="true"
         />
       </div>
       <div class="_meta" v-if="!select_mode">
@@ -231,6 +232,8 @@ export default {
     background: rgba(255, 255, 255, 0.25);
     pointer-events: auto;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    border-radius: 50%;
+    border: 1px solid currentColor;
 
     &:hover,
     &:focus {
@@ -350,6 +353,8 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+
+  padding: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 5);
   pointer-events: none;
 

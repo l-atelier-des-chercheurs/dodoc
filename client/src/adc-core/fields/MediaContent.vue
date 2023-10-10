@@ -25,14 +25,6 @@
           loading="eager"
         />
       </template>
-      <template v-if="show_fs_button">
-        <div class="_fsButton">
-          <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
-        </div>
-        <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
-          <img :src="file_full_path" />
-        </FullscreenView>
-      </template>
     </template>
 
     <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
@@ -106,9 +98,12 @@
               :src="file_full_path"
               @load="iframeLoaded"
             />
-            <div v-else-if="file.$type === 'stl'" class="_stlPreview">
-              <STLPreview :key="file_full_path" :src="file_full_path" />
-            </div>
+            <STLPreview
+              v-else-if="file.$type === 'stl'"
+              class="_stlPreview"
+              :key="file_full_path"
+              :src="file_full_path"
+            />
             <iframe
               v-else-if="url_to_site.type === 'any'"
               :src="url_to_site.src"
@@ -140,6 +135,21 @@
     <small v-else class="u-fontCode fieldCaption _fileName">
       <b-icon icon="file-earmark" /> {{ file.$media_filename }}
     </small>
+
+    <template v-if="['image', 'stl'].includes(file.$type) && show_fs_button">
+      <div class="_fsButton">
+        <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
+      </div>
+      <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
+        <img v-if="file.$type === 'image'" :src="file_full_path" />
+        <STLPreview
+          v-else-if="file.$type === 'stl'"
+          class="_stlPreview"
+          :key="file_full_path"
+          :src="file_full_path"
+        />
+      </FullscreenView>
+    </template>
   </div>
 </template>
 <script>
