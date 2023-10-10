@@ -84,6 +84,7 @@
         :start_coords="start_coords"
         :pins="center_pin"
         :start_zoom="start_zoom"
+        :map_baselayer="map_baselayer"
         @newPositionClicked="newPositionClicked"
       />
     </div>
@@ -115,6 +116,7 @@ export default {
   props: {
     start_coords: [Boolean, Object],
     start_zoom: [Boolean, Number],
+    map_baselayer: String,
     edit_mode: Boolean,
   },
   components: {

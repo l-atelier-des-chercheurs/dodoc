@@ -21,6 +21,7 @@
       class="_mapContainer"
       :start_coords="start_coords"
       :start_zoom="start_zoom"
+      :map_baselayer="publication.map_baselayer"
       :pins="pins"
       :lines="lines"
       :link_pins="opened_section_link_pins"
@@ -169,6 +170,7 @@ export default {
     start_zoom() {
       return this.publication.map_initial_zoom || 10;
     },
+
     opened_view() {
       if (this.opened_view_id === false) return false;
       return this.views_list[this.opened_view_id];

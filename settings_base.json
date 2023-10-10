@@ -589,7 +589,7 @@
                   "map_initial_zoom": {
                     "type": "number"
                   },
-                  "map_basemap": {
+                  "map_baselayer": {
                     "type": "string"
                   }
                 },

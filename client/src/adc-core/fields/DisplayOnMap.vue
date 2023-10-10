@@ -56,17 +56,19 @@
   </div>
 </template>
 <script>
-import olSourceOSM from "ol/source/OSM.js";
+import olSourceOSM from "ol/source/OSM";
+import olSourceWMTS from "ol/source/WMTS";
 import olMap from "ol/Map";
 import olView from "ol/View";
 import olFeature from "ol/Feature";
 import olPoint from "ol/geom/Point";
 import olLineString from "ol/geom/LineString";
 import olTileLayer from "ol/layer/Tile";
+import olTileGridWMTS from "ol/tilegrid/WMTS";
 import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
-import olOverlay from "ol/Overlay.js";
+import olOverlay from "ol/Overlay";
 
 // incompatibility error ? https://github.com/jonataswalker/ol-geocoder/issues/270
 // TODO FIX later
@@ -91,6 +93,14 @@ export default {
     start_zoom: {
       type: [Boolean, Number],
       default: 9,
+    },
+    map_baselayer: {
+      type: String,
+      default: "OSM",
+      validator(value) {
+        // The value must match one of these strings
+        return ["OSM", "IGN_MAP", "IGN_SAT"].includes(value);
+      },
     },
     is_small: {
       type: Boolean,
@@ -163,6 +173,9 @@ export default {
       },
       deep: true,
     },
+    map_baselayer() {
+      this.startMap();
+    },
   },
   computed: {},
   methods: {
@@ -200,14 +213,14 @@ export default {
         minZoom: this.min_zoom,
         maxZoom: this.max_zoom,
       });
+
+      const source = this.createSource(this.map_baselayer);
+
       this.map = new olMap({
         target: this.$refs.map,
         layers: [
           new olTileLayer({
-            source: new olSourceOSM({
-              wrapX: false,
-              noWrap: true,
-            }),
+            source,
           }),
         ],
         view: this.view,
@@ -368,6 +381,70 @@ export default {
       //   this.map.addInteraction(draw);
       // }
       // addInteraction();
+    },
+    createSource(type) {
+      if (type === "OSM") {
+        return new olSourceOSM({
+          wrapX: false,
+          noWrap: true,
+        });
+      } else if (["IGN_SAT", "IGN_MAP"].includes(type)) {
+        const resolutions = [
+          156543.03392804103, 78271.5169640205, 39135.75848201024,
+          19567.879241005125, 9783.939620502562, 4891.969810251281,
+          2445.9849051256406, 1222.9924525628203, 611.4962262814101,
+          305.74811314070485, 152.87405657035254, 76.43702828517625,
+          38.218514142588134, 19.109257071294063, 9.554628535647034,
+          4.777314267823517, 2.3886571339117584, 1.1943285669558792,
+          0.5971642834779396, 0.29858214173896974, 0.14929107086948493,
+          0.07464553543474241,
+        ];
+
+        let layer, format;
+        if (type === "IGN_MAP") {
+          layer = "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2";
+          format = "image/png";
+        } else if (type === "IGN_SAT") {
+          layer = "ORTHOIMAGERY.ORTHOPHOTOS";
+          format = "image/jpeg";
+        }
+
+        return new olSourceWMTS({
+          url: "https://wxs.ign.fr/decouverte/geoportail/wmts",
+          layer,
+          matrixSet: "PM",
+          format,
+          style: "normal",
+          tileGrid: new olTileGridWMTS({
+            origin: [-20037508, 20037508], // topLeftCorner
+            resolutions, // résolutions
+            matrixIds: [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19",
+            ], // ids des TileMatrix
+          }),
+          wrapX: false,
+          noWrap: true,
+        });
+      }
     },
     createPointFeaturesFromPins() {
       let features = [];
