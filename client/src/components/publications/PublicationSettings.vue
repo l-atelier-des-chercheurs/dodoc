@@ -1,17 +1,19 @@
 <template>
-  <div class="_publicationSettings" v-if="show_settings">
-    <div class="_publicationSettings--closeBtn">
-      <button
-        type="button"
-        class="u-button u-button_icon"
-        @click="show_settings = false"
-      >
-        <b-icon icon="x-circle" :aria-label="$t('close')" />
-      </button>
-    </div>
+  <sl-drawer :label="$t('settings')" contained>
+    <div class="_publicationSettings" v-if="show_settings">
+      <!-- <div class="_publicationSettings--closeBtn">
+        <button
+          type="button"
+          class="u-button u-button_icon"
+          @click="show_settings = false"
+        >
+          <b-icon icon="x-circle" :aria-label="$t('close')" />
+        </button>
+      </div> -->
 
-    <slot />
-  </div>
+      <slot />
+    </div>
+  </sl-drawer>
 </template>
 <script>
 export default {
@@ -21,11 +23,6 @@ export default {
     return {
       show_settings: false,
     };
-  },
-  i18n: {
-    messages: {
-      fr: {},
-    },
   },
   created() {},
   mounted() {
@@ -38,29 +35,35 @@ export default {
   computed: {},
   methods: {
     toggleSettings() {
-      this.show_settings = !this.show_settings;
+      if (this.$el.open) {
+        this.$el.hide();
+        this.show_settings = false;
+      } else {
+        this.$el.show();
+        this.show_settings = true;
+      }
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._publicationSettings {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1000;
-  max-height: 90%;
-  width: calc(100% - var(--spacing));
-  max-width: 380px;
-  background: white;
-  overflow: auto;
+  // position: absolute;
+  // top: 0;
+  // right: 0;
+  // z-index: 1000;
+  // max-height: 90%;
+  // width: calc(100% - var(--spacing));
+  // max-width: 380px;
+  // background: white;
+  // overflow: auto;
 
-  margin: calc(var(--spacing) / 2);
-  border-radius: var(--panel-radius);
-  padding: calc(var(--spacing) / 2);
-  background: var(--panel-color);
-  border: var(--panel-borders);
-  box-shadow: var(--panel-shadows);
+  // margin: calc(var(--spacing) / 2);
+  // border-radius: var(--panel-radius);
+  // padding: calc(var(--spacing) / 2);
+  // background: var(--panel-color);
+  // border: var(--panel-borders);
+  // box-shadow: var(--panel-shadows);
 }
 
 ._publicationSettings--closeBtn {

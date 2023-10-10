@@ -52,12 +52,14 @@
       </div>
 
       <sl-button @click="openSettings">
-        <b-icon icon="gear" :aria-label="$t('settings')" />
+        <b-icon icon="gear" slot="prefix" :aria-label="$t('settings')" />
         {{ $t("settings") }}
       </sl-button>
 
       <sl-dropdown v-if="can_edit">
-        <sl-button slot="trigger" caret>{{ $t("options") }}</sl-button>
+        <sl-button slot="trigger" caret>
+          {{ $t("options") }}
+        </sl-button>
         <sl-menu>
           <sl-menu-item>
             <DuplicatePublication
@@ -77,7 +79,10 @@
       </sl-dropdown>
 
       <sl-dropdown>
-        <sl-button slot="trigger" caret>{{ $t("share") }}</sl-button>
+        <sl-button slot="trigger" caret>
+          <b-icon slot="prefix" icon="box-arrow-up-right" />
+          {{ $t("share") }}
+        </sl-button>
         <sl-menu>
           <sl-menu-item>
             <button

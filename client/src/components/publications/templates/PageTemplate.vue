@@ -1,14 +1,14 @@
 <template>
   <div class="_pageTemplate">
-    <PublicationSettings v-if="can_edit">
-      <PageSettings :publication="publication" />
-    </PublicationSettings>
     <PagesList
       :publication="publication"
       :page_opened_id="page_opened_id"
       :can_edit="can_edit"
       @togglePage="$emit('togglePage', $event)"
     />
+    <PublicationSettings v-if="can_edit">
+      <PageSettings :publication="publication" />
+    </PublicationSettings>
   </div>
 </template>
 <script>
