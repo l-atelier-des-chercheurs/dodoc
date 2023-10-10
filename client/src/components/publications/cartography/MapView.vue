@@ -28,7 +28,7 @@
       :can_add_media_to_point="opened_section !== false"
       @newPositionClicked="newPositionClicked"
     >
-      <div class="" slot="popup_footer">
+      <div class="" slot="popup_message">
         <div v-if="!opened_section">
           {{ $t("to_add_media_here_open_matching_layer") }}
         </div>

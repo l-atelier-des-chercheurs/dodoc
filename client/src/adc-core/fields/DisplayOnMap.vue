@@ -7,11 +7,11 @@
   >
     <div class="map" ref="map" />
 
-    <div ref="popUp" class="ol-popup">
+    <div ref="popUp" class="_popup">
       <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
         <button
           type="button"
-          class="u-button u-buttonu-button_icon ol-popup-closer"
+          class="u-button u-button_icon _popupClose"
           ref="closePopup"
           @click="closePopup"
         >
@@ -19,7 +19,11 @@
         </button>
         <div v-if="popup_message" v-html="popup_message" />
 
-        <div v-if="clicked_location.file" :key="clicked_location.file.$path">
+        <div
+          v-if="clicked_location.file"
+          :key="clicked_location.file.$path"
+          class="_pinContent"
+        >
           <MediaContent
             :file="clicked_location.file"
             :is_draggable="false"
@@ -29,7 +33,7 @@
           />
         </div>
 
-        <div class="u-instructions">
+        <!-- <div class="u-instructions">
           <small>
             <span class="complementaryText"> {{ $t("latitude") }} = </span>
             {{ clicked_location.latitude }}°
@@ -37,8 +41,15 @@
             <span class="complementaryText"> {{ $t("longitude") }} = </span>
             {{ clicked_location.longitude }}°
           </small>
+        </div> -->
+        <div
+          class="_popupMessage"
+          v-if="
+            !clicked_location.file && $slots.hasOwnProperty('popup_message')
+          "
+        >
+          <slot name="popup_message" />
         </div>
-        <slot name="popup_footer" v-if="!clicked_location.file" />
       </div>
     </div>
     <div id="mouse-position" />
@@ -521,63 +532,56 @@ export default {
 }
 ._popup {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  background: white;
-  border-radius: 2px;
-
-  margin: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  width: calc(100% - var(--spacing) * 2);
-}
-._popup--close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: calc(var(--spacing) / 2);
-}
-
-.ol-popup {
-  position: absolute;
   bottom: 12px;
   left: -50px;
   min-width: 280px;
 
-  border-radius: var(--panel-radius);
-  box-shadow: var(--panel-shadows);
-  padding: calc(var(--spacing) / 2);
-  background: var(--panel-color);
-  border: var(--panel-borders);
+  background: white;
 
-  overflow: hidden;
+  border: none;
+  border-radius: var(--panel-radius);
+
+  box-shadow: var(--panel-shadows);
+
+  &:after,
+  &:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  &:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+  }
+  // &:before {
+  //   border-top-color: #cccccc;
+  //   border-width: 11px;
+  //   left: 48px;
+  //   margin-left: -11px;
+  // }
 }
-.ol-popup:after,
-.ol-popup:before {
-  top: 100%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-}
-.ol-popup:after {
-  border-top-color: white;
-  border-width: 10px;
-  left: 48px;
-  margin-left: -10px;
-}
-.ol-popup:before {
-  border-top-color: #cccccc;
-  border-width: 11px;
-  left: 48px;
-  margin-left: -11px;
-}
-.ol-popup-closer {
+._popupClose {
   position: absolute;
   z-index: 1000;
   top: 0;
   right: 0;
+  padding: calc(var(--spacing) / 1);
+}
+
+._pinContent {
+  position: relative;
+  border-radius: var(--panel-radius);
+  overflow: hidden;
+}
+
+._popupMessage {
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 </style>
 <style lang="scss">
