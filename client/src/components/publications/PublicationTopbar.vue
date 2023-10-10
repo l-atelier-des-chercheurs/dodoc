@@ -219,7 +219,7 @@ export default {
   width: 100%;
   background: white;
 
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2);
   border-radius: 1px;
   margin: 0;
 
