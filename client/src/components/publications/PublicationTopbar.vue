@@ -51,7 +51,7 @@
         </small>
       </div>
 
-      <sl-button @click="openSettings">
+      <sl-button @click="openSettings" caret>
         <b-icon icon="gear" slot="prefix" :aria-label="$t('settings')" />
         {{ $t("settings") }}
       </sl-button>
