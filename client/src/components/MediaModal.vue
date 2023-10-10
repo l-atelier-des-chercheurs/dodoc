@@ -4,7 +4,7 @@
 
     <button
       type="button"
-      class="u-button u-button_transparent _navBtn _closeButton"
+      class="u-button u-button_transparent _closeButton"
       @click="$emit('close')"
     >
       <img
@@ -231,6 +231,8 @@ export default {
     background: rgba(255, 255, 255, 0.25);
     pointer-events: auto;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    border-radius: 50%;
+    border: 1px solid currentColor;
 
     &:hover,
     &:focus {
