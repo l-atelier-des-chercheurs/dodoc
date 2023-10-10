@@ -41,6 +41,7 @@
         @click.stop="$emit('repickLocation')"
       >
         <b-icon icon="pin-map-fill" />
+        {{ $t("pick_new_location") }}
       </button>
     </DetailsPane>
     <!-- <MediaContent
@@ -72,6 +73,7 @@ export default {
     messages: {
       fr: {
         no_coordinates: "Aucunes coordonnées disponibles",
+        pick_new_location: "Modifier la position",
       },
     },
   },
@@ -135,5 +137,6 @@ export default {
 }
 
 ._text {
+  margin: calc(var(--spacing) / 4) 0;
 }
 </style>
