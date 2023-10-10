@@ -26,21 +26,32 @@ export default {
   },
   created() {},
   mounted() {
-    this.$eventHub.$on("publication.toggleSettings", this.toggleSettings);
+    this.$eventHub.$on("publication.settings.toggle", this.toggleSettings);
+    this.$eventHub.$on("publication.settings.close", this.closeSettings);
   },
   beforeDestroy() {
-    this.$eventHub.$off("publication.toggleSettings", this.toggleSettings);
+    this.$eventHub.$off("publication.settings.close", this.closeSettings);
   },
   watch: {},
   computed: {},
   methods: {
     toggleSettings() {
       if (this.$el.open) {
-        this.$el.hide();
-        this.show_settings = false;
+        this.closeSettings();
       } else {
+        this.openSettings();
+      }
+    },
+    openSettings() {
+      if (!this.$el.open) {
         this.$el.show();
         this.show_settings = true;
+      }
+    },
+    closeSettings() {
+      if (this.$el.open) {
+        this.$el.hide();
+        this.show_settings = false;
       }
     },
   },

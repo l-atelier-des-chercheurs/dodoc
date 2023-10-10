@@ -56,7 +56,7 @@
         {{ $t("settings") }}
       </sl-button>
 
-      <sl-dropdown v-if="can_edit">
+      <sl-dropdown v-if="can_edit" @sl-show="closeSettings">
         <sl-button slot="trigger" caret>
           {{ $t("options") }}
         </sl-button>
@@ -78,7 +78,7 @@
         </sl-menu>
       </sl-dropdown>
 
-      <sl-dropdown>
+      <sl-dropdown @sl-show="closeSettings">
         <sl-button slot="trigger" caret>
           <b-icon slot="prefix" icon="box-arrow-up-right" />
           {{ $t("share") }}
@@ -210,7 +210,10 @@ export default {
       });
     },
     openSettings() {
-      this.$eventHub.$emit("publication.toggleSettings");
+      this.$eventHub.$emit("publication.settings.toggle");
+    },
+    closeSettings() {
+      this.$eventHub.$emit("publication.settings.close");
     },
   },
 };
