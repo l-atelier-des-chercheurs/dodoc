@@ -120,8 +120,10 @@ export default {
 ._mapModule {
   // background: var(--c-gris);
   // border-radius: 2px;
-  padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 8) 0;
+  padding: 0;
+  margin-left: var(--spacing);
+  margin-bottom: var(--spacing);
+  margin-right: 0;
   border-bottom: 2px solid var(--c-gris);
 
   // display: flex;
@@ -138,5 +140,23 @@ export default {
 
 ._text {
   margin: calc(var(--spacing) / 4) 0;
+}
+
+._mediaPublication {
+  width: 100%;
+  ::v-deep {
+    ._options {
+      display: none;
+    }
+
+    ._mediaContent--image {
+      // position: absolute;
+      width: 100%;
+      aspect-ratio: 4/1;
+      // height: 100%;
+      object-fit: var(--object-fit, cover);
+      object-position: center;
+    }
+  }
 }
 </style>
