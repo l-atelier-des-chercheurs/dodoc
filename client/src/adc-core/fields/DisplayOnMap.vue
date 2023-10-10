@@ -25,6 +25,7 @@
             :is_draggable="false"
             :resolution="1600"
             :context="'full'"
+            :show_fs_button="true"
           />
         </div>
 
