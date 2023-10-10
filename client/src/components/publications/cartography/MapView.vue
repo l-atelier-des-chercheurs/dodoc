@@ -6,7 +6,6 @@
       :sections="sections"
       :opened_section="opened_section"
       :opened_section_modules_list="opened_section_modules_list"
-      :default_layer_color="default_layer_color"
       :can_edit="can_edit"
       @createSection="$emit('createSection', $event)"
       @openSection="$emit('openSection', $event)"
@@ -141,7 +140,6 @@ export default {
         },
       ],
 
-      default_layer_color: "#333",
       opened_view_id: false,
 
       latest_click: {

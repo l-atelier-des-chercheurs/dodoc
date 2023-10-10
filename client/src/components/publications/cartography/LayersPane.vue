@@ -59,116 +59,22 @@
         </button>
       </template>
     </DetailsPane>
-    <div class="_openedLayer" v-if="opened_section">
-      <div class="_closeLayerBtn">
-        <sl-button
-          variant="default"
-          size="medium"
-          circle
-          @click="$emit('closeSection')"
-        >
-          <sl-icon name="x-lg" :label="$t('close')"></sl-icon>
-        </sl-button>
-      </div>
 
-      <div class="_openedLayer--content">
-        <div class="_title">
-          <span
-            v-if="!can_edit"
-            class="_colorInd"
-            :style="
-              'background-color: ' +
-              (opened_section.section_color || default_layer_color)
-            "
-          />
-          <TitleField
-            :field_name="'section_title'"
-            :label="can_edit ? $t('layer_title') : ''"
-            :content="opened_section.section_title || $t('untitled')"
-            :path="opened_section.$path"
-            :maxlength="120"
-            :tag="'h3'"
-            :can_edit="can_edit"
-          />
-          <!-- ({{ opened_section_modules_list.length }}) -->
-        </div>
-
-        <div class="u-spacingBottom _color" v-if="can_edit">
-          <ColorInput
-            :label="$t('pins_color')"
-            :can_toggle="false"
-            :default_value="default_layer_color"
-            :value="opened_section.section_color"
-            @save="updateOpenedLayer({ field: 'section_color', value: $event })"
-          />
-        </div>
-        <div class="u-spacingBottom" v-if="can_edit">
-          <ToggleInput
-            :label="$t('link_pins')"
-            :content="opened_section.link_pins"
-            @update:content="
-              updateOpenedLayer({ field: 'link_pins', value: $event })
-            "
-          />
-        </div>
-
-        <template v-if="can_edit">
-          <ModuleCreator
-            :publication_path="publication_path"
-            :is_collapsed="false"
-            :context="'cartography'"
-            :types_available="['medias']"
-            @addModule="$emit('addModule', $event)"
-          />
-          <hr />
-        </template>
-        <div class="">
-          <DLabel :str="$t('pins')" />
-
-          <small v-if="opened_section_modules_list.length === 0">
-            {{ $t("nothing_to_show") }}
-          </small>
-          <template v-else>
-            <MapModule
-              v-for="(
-                { meta_filename, _module }, index
-              ) in opened_section_modules_list"
-              :key="meta_filename"
-              :index="index"
-              :mapmodule="_module"
-              :can_edit="can_edit"
-              @repickLocation="repickLocation(_module.$path)"
-              @remove="$emit('removeModule', meta_filename)"
-            />
-          </template>
-        </div>
-
-        <!-- <PublicationModule
-            class="_mediaPublication"
-            :key="meta_filename"
-            :publimodule="_module"
-            :module_position="
-              opened_section_modules_list.length === 1
-                ? 'alone'
-                : index === 0
-                ? 'first'
-                : index === opened_section_modules_list.length - 1
-                ? 'last'
-                : 'inbetween'
-            "
-            :can_edit="can_edit"
-            @moveUp="$emit('moveModuleTo', { meta_filename, dir: -1 })"
-            @moveDown="$emit('moveModuleTo', { meta_filename, dir: +1 })"
-            @duplicate="
-              $emit('duplicatePublicationMedia', {
-                source_meta_filename: meta_filename,
-                copy_meta_filename: $event,
-              })
-            "
-            @remove="$emit('removeModule', meta_filename)"
-          /> -->
-      </div>
-    </div>
+    <LayerContent
+      v-if="opened_section"
+      :layer="opened_section"
+      :layer_modules_list="opened_section_modules_list"
+      :default_layer_color="default_layer_color"
+      :publication_path="publication_path"
+      :can_edit="can_edit"
+      @repickLocation="repickLocation"
+      @close="$emit('closeSection')"
+      @addModule="$emit('addModule', $event)"
+      @insertModule="$emit('insertModule', $event)"
+      @moveModuleTo="$emit('moveModuleTo', $event)"
+      @removeModule="$emit('removeModule', $event)"
+      @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
+    />
     <div class="_repickNotice" v-if="is_repicking_location_for">
       <div class="_repickNotice--content">
         <div>
@@ -189,9 +95,7 @@
 <script>
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 
-import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
-import MapModule from "@/components/publications/cartography/MapModule.vue";
-// import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
+import LayerContent from "@/components/publications/cartography/LayerContent.vue";
 
 export default {
   props: {
@@ -199,29 +103,25 @@ export default {
     sections: Array,
     opened_section: [Boolean, Object],
     opened_section_modules_list: Array,
-    default_layer_color: String,
     can_edit: Boolean,
   },
   components: {
     SlickItem,
     SlickList,
-    ModuleCreator,
-    MapModule,
-    // PublicationModule,
+    LayerContent,
   },
   directives: { handle: HandleDirective },
   data() {
     return {
       is_repicking_location_for: false,
+      default_layer_color: "#333",
     };
   },
   i18n: {
     messages: {
       fr: {
-        pins_color: "Couleur des épingles",
         click_on_map_to_repick_location_for_media:
           "Cliquez sur la carte pour sélectionner une nouvelle position pour le média numéro ",
-        link_pins: "Relier les épingles",
       },
     },
   },
@@ -291,14 +191,6 @@ export default {
         });
       this.is_repicking_location_for = false;
     },
-    async updateOpenedLayer({ field, value }) {
-      await this.$api.updateMeta({
-        path: this.opened_section.$path,
-        new_meta: {
-          [field]: value,
-        },
-      });
-    },
   },
 };
 </script>
@@ -310,41 +202,6 @@ export default {
 
 ._list {
   color: black;
-}
-
-._openedLayer {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-
-  backdrop-filter: blur(5px);
-  background: rgba(231, 231, 231, 0.7);
-
-  padding: calc(var(--spacing) * 1);
-}
-
-._openedLayer--content {
-  padding: calc(var(--spacing) * 1);
-  height: 100%;
-  overflow: auto;
-  background: white;
-
-  ._title {
-    margin-bottom: calc(var(--spacing) * 1);
-    display: flex;
-    flex-flow: row wrap;
-    align-items: baseline;
-    gap: calc(var(--spacing) / 2);
-  }
-}
-._closeLayerBtn {
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 
 ._repickNotice {

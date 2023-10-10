@@ -1,59 +1,70 @@
 <template>
   <div class="_mapModule" @click="openPin">
-    <label>
+    <!-- <label>
       <b>
         {{ index + 1 }}
       </b>
-    </label>
-    <MediaContent
+    </label> -->
+    <PublicationModule
+      class="_mediaPublication"
+      :publimodule="mapmodule"
+      :module_position="module_position"
+      :context="'preview'"
+      :number_of_max_medias="1"
+      :can_edit="can_edit"
+      @moveUp="$emit('moveUp')"
+      @moveDown="$emit('moveDown')"
+      @duplicate="$emit('duplicate')"
+      @remove="$emit('remove')"
+    />
+    <DetailsPane :header="$t('infos')" :icon="'map'">
+      <div class="u-meta _text">
+        <template
+          v-if="
+            mapmodule.location &&
+            mapmodule.location.latitude &&
+            mapmodule.location.longitude
+          "
+        >
+          {{ mapmodule.location.latitude }} /
+          {{ mapmodule.location.longitude }}
+        </template>
+        <template v-else>
+          {{ $t("no_coordinates") }}
+        </template>
+      </div>
+
+      <button
+        v-if="can_edit"
+        type="button"
+        class="u-button u-button_red u-button_icon"
+        @click.stop="$emit('repickLocation')"
+      >
+        <b-icon icon="pin-map-fill" />
+      </button>
+    </DetailsPane>
+    <!-- <MediaContent
       class="_preview"
       v-if="first_media"
       :file="first_media"
       :resolution="50"
       :context="'preview'"
-    />
-    <div class="u-meta _text">
-      <template
-        v-if="
-          mapmodule.location &&
-          mapmodule.location.latitude &&
-          mapmodule.location.longitude
-        "
-      >
-        {{ mapmodule.location.latitude }} /
-        {{ mapmodule.location.longitude }}
-      </template>
-      <template v-else>
-        {{ $t("no_coordinates") }}
-      </template>
-    </div>
-
-    <button
-      v-if="can_edit"
-      type="button"
-      class="u-button u-button_red u-button_icon"
-      @click.stop="$emit('repickLocation')"
-    >
-      <b-icon icon="pin-map-fill" />
-    </button>
-    <button
-      v-if="can_edit"
-      type="button"
-      class="u-button u-button_transparent u-button_icon"
-      @click="removeModule"
-    >
-      <b-icon icon="trash" />
-    </button>
+    /> -->
   </div>
 </template>
 <script>
+import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
+
 export default {
   props: {
     index: Number,
     mapmodule: Object,
+    module_position: String,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    PublicationModule,
+  },
   data() {
     return {};
   },
@@ -111,9 +122,9 @@ export default {
   margin: calc(var(--spacing) / 8) 0;
   border-bottom: 2px solid var(--c-gris);
 
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
+  // display: flex;
+  // align-items: center;
+  // gap: calc(var(--spacing) / 2);
 
   cursor: pointer;
 

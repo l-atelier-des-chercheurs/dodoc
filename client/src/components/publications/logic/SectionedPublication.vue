@@ -109,21 +109,10 @@ export default {
       );
     },
     opened_section_modules_list() {
-      if (Array.isArray(this.opened_section?.modules_list)) {
-        const modules_list = this.opened_section.modules_list.reduce(
-          (acc, meta_filename) => {
-            const _module = this.findModuleFromMetaFilename({
-              files: this.publication.$files,
-              meta_filename,
-            });
-            if (_module) acc.push({ meta_filename, _module });
-            return acc;
-          },
-          []
-        );
-        return modules_list;
-      }
-      return [];
+      return this.getModulesForSection({
+        publication: this.publication,
+        section: this.opened_section,
+      });
     },
     meta_filenames_already_present() {
       const current = [];
