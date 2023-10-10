@@ -352,6 +352,8 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+
+  padding: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 5);
   pointer-events: none;
 
