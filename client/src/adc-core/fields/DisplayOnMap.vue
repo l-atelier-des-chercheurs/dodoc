@@ -109,6 +109,9 @@ export default {
       current_zoom: undefined,
       current_view: undefined,
 
+      min_zoom: 3,
+      max_zoom: 22,
+
       mouse_coords: false,
 
       map: undefined,
@@ -152,7 +155,8 @@ export default {
   computed: {},
   methods: {
     startMap() {
-      let zoom = this.start_zoom || 9;
+      let zoom =
+        this.constrainVal(this.start_zoom, this.min_zoom, this.max_zoom) || 9;
       let center = [5.39057449011251, 43.310173305629576];
 
       if (this.start_coords?.longitude && this.start_coords?.latitude)
@@ -181,6 +185,8 @@ export default {
       this.view = new olView({
         center,
         zoom,
+        minZoom: this.min_zoom,
+        maxZoom: this.max_zoom,
       });
       this.map = new olMap({
         target: "map",

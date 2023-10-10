@@ -18,5 +18,8 @@ export default {
     roundToDec(num, expo = 2) {
       return Math.round((num + Number.EPSILON) * 10 ** expo) / 10 ** expo;
     },
+    constrainVal(num, min, max) {
+      return Math.min(Math.max(parseInt(num), min), max);
+    },
   },
 };
