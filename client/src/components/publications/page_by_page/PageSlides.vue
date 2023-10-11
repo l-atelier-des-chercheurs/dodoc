@@ -123,7 +123,12 @@
           type="button"
           class="u-button u-button_transparent u-button_small"
           :disabled="slides_current_page_or_spread_index <= 1"
-          @click="updatePageQuery({ increment: -1 })"
+          @click="
+            updatePageQuery({
+              prop: 'page',
+              val: slides_current_page_or_spread_index - 1,
+            })
+          "
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
             <path
@@ -137,7 +142,12 @@
           <select
             class=""
             :value="slides_current_page_or_spread_index"
-            @change="updatePageQuery({ page_number: $event.target.value })"
+            @change="
+              updatePageQuery({
+                prop: 'page',
+                val: $event.target.value,
+              })
+            "
           >
             <option
               v-for="(o, page_number) in is_spread
@@ -167,7 +177,12 @@
             slides_current_page_or_spread_index >=
             (is_spread ? spreads.length : pages.length)
           "
-          @click="updatePageQuery({ increment: +1 })"
+          @click="
+            updatePageQuery({
+              prop: 'page',
+              val: slides_current_page_or_spread_index + 1,
+            })
+          "
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
             <path
@@ -327,16 +342,24 @@ export default {
         case "w":
         case "z":
         case "ArrowLeft":
-          if (this.slides_current_page_or_spread_index > 1)
-            this.updatePageQuery({ increment: -1 });
+          if (this.slides_current_page_or_spread_index > 1) {
+            this.updatePageQuery({
+              prop: "page",
+              val: this.slides_current_page_or_spread_index - 1,
+            });
+          }
           break;
         case "s":
         case "ArrowRight":
           if (
             this.slides_current_page_or_spread_index <
             (this.is_spread ? this.spreads.length : this.pages.length)
-          )
-            this.updatePageQuery({ increment: +1 });
+          ) {
+            this.updatePageQuery({
+              prop: "page",
+              val: this.slides_current_page_or_spread_index + 1,
+            });
+          }
           break;
         case "p":
           this.page_zoom += 6;
@@ -351,19 +374,6 @@ export default {
           this.$emit("toggleFs");
           break;
       }
-    },
-    updatePageQuery({ increment, page_number }) {
-      let query = {};
-
-      if (this.$route.query)
-        query = JSON.parse(JSON.stringify(this.$route.query));
-
-      // if (Object.prototype.hasOwnProperty.call(query, "page"))
-      if (increment)
-        query.page = this.slides_current_page_or_spread_index + increment;
-      else if (page_number) query.page = page_number;
-
-      this.$router.push({ query });
     },
   },
 };

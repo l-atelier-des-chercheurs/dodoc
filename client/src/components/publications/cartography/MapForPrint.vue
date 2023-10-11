@@ -39,18 +39,7 @@ export default {
   },
   methods: {
     toggleSection(section_meta) {
-      this.updatePageQuery({ section_meta });
-    },
-    updatePageQuery({ section_meta }) {
-      let query = {};
-
-      if (this.$route.query)
-        query = JSON.parse(JSON.stringify(this.$route.query));
-
-      if (section_meta === false) delete query.layer;
-      else if (section_meta) query.layer = section_meta;
-
-      this.$router.push({ query });
+      this.updatePageQuery({ prop: "layer", val: section_meta });
     },
   },
 };
