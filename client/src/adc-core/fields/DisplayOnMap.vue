@@ -610,7 +610,7 @@ export default {
 ._popup {
   position: absolute;
   bottom: 12px;
-  left: -50px;
+  left: -48px;
   min-width: 280px;
 
   background: white;
@@ -658,7 +658,7 @@ export default {
 }
 
 ._popupMessage {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 </style>
 <style lang="scss">
