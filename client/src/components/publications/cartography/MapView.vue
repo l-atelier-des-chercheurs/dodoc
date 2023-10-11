@@ -41,6 +41,7 @@
             :publication_path="publication.$path"
             :is_collapsed="false"
             :context="'cartography'"
+            :select_mode="'single'"
             :types_available="['medias']"
             :post_addtl_meta="new_module_meta"
             @addModule="$emit('addModule', $event)"

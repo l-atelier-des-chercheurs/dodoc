@@ -30,6 +30,7 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
+        :select_mode="select_mode"
         @addMedias="createMosaic"
         @close="show_media_picker = false"
       />
@@ -49,6 +50,7 @@
       <MediaPicker
         v-if="show_file_picker"
         :publication_path="publication_path"
+        :select_mode="select_mode"
         @addMedias="createFiles"
         @close="show_file_picker = false"
       />
@@ -116,6 +118,7 @@ export default {
     publication_path: String,
     pre_addtl_meta: Object,
     post_addtl_meta: Object,
+    select_mode: String,
     context: String,
     types_available: {
       type: Array,
