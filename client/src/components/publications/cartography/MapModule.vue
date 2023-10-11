@@ -14,7 +14,6 @@
       :can_edit="can_edit"
       @moveUp="$emit('moveUp')"
       @moveDown="$emit('moveDown')"
-      @duplicate="$emit('duplicate')"
       @remove="$emit('remove')"
     />
     <DetailsPane :header="$t('infos')" :icon="'map'">
@@ -101,17 +100,6 @@ export default {
     },
     removePin() {
       this.$eventHub.$emit("publication.map.openPin", this.mapmodule.$path);
-    },
-    async removeModule() {
-      await this.$api
-        .deleteItem({
-          path: this.mapmodule.$path,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-      this.$emit("remove");
     },
   },
 };

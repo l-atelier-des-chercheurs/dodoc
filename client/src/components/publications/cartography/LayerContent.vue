@@ -6,7 +6,7 @@
       </sl-button>
     </div>
 
-    <div class="_openedLayer--content">
+    <div class="_openedLayer--content" v-if="layer">
       <div class="_title">
         <span
           v-if="!can_edit"
@@ -48,11 +48,11 @@
 
       <template v-if="can_edit">
         <ModuleCreator
-          :publication_path="publication_path"
+          :publication_path="publication.$path"
           :is_collapsed="false"
           :context="'cartography'"
           :types_available="['medias']"
-          @addModules="$emit('addModules', $event)"
+          @addModules="addModules"
         />
         <hr />
       </template>
@@ -82,19 +82,17 @@
               "
               :can_edit="can_edit"
               @repickLocation="$emit('repickLocation', _module.$path)"
-              @moveUp="$emit('moveModuleTo', { meta_filename, dir: -1 })"
-              @moveDown="$emit('moveModuleTo', { meta_filename, dir: +1 })"
-              @duplicate="
-                $emit('duplicatePublicationMedia', {
-                  source_meta_filename: meta_filename,
-                  copy_meta_filename: $event,
-                })
+              @moveUp="moveModuleTo({ meta_filename, new_position: index - 1 })"
+              @moveDown="
+                moveModuleTo({ meta_filename, new_position: index + 1 })
               "
-              @remove="$emit('removeModule', meta_filename)"
+              @remove="removeModule({ path: _module.$path })"
             />
           </template>
         </template>
       </div>
+
+      <RemoveMenu :remove_text="$t('remove')" @remove="removeLayer" />
     </div>
   </div>
 </template>
@@ -105,8 +103,7 @@ import MapModule from "@/components/publications/cartography/MapModule.vue";
 export default {
   props: {
     layer: Object,
-    layer_modules_list: Array,
-    publication_path: String,
+    publication: Object,
     default_layer_color: String,
     can_edit: Boolean,
   },
@@ -129,7 +126,14 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    layer_modules_list() {
+      return this.getModulesForSection({
+        publication: this.publication,
+        section: this.layer,
+      });
+    },
+  },
   methods: {
     async updateOpenedLayer({ field, value }) {
       await this.$api.updateMeta({
@@ -137,6 +141,37 @@ export default {
         new_meta: {
           [field]: value,
         },
+      });
+    },
+    async removeLayer() {
+      await this.removeSection2({
+        publication: this.publication,
+        group: "layers_list",
+        path: this.layer.$path,
+      });
+      this.$emit("close");
+    },
+    async addModules({ meta_filenames }) {
+      await this.appendModuleMetaFilenamesToList2({
+        publication: this.publication,
+        section: this.layer,
+        meta_filenames,
+      });
+      // todo scroll to last meta_filename
+    },
+    async moveModuleTo({ meta_filename, new_position }) {
+      await this.moveModuleTo2({
+        publication: this.publication,
+        section: this.layer,
+        meta_filename,
+        new_position,
+      });
+    },
+    async removeModule({ path }) {
+      await this.removeModule2({
+        publication: this.publication,
+        section: this.layer,
+        path,
       });
     },
   },

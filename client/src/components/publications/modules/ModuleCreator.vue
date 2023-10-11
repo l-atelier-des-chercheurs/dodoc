@@ -297,9 +297,7 @@ export default {
         source_medias,
         addtl_meta,
       });
-      const meta_filenames = [meta_filename];
-
-      this.$emit("addModules", { meta_filenames });
+      this.$emit("addModules", { meta_filenames: [meta_filename] });
       this.show_module_selector = false;
       return meta_filename;
     },
@@ -320,13 +318,15 @@ export default {
         if (this.context === "cartography")
           if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
 
-        const meta_filename = await this.createModule({
+        const meta_filename = await this.createMetaForModule({
           module_type,
           source_medias: [source_media],
           addtl_meta,
         });
         meta_filenames.push(meta_filename);
       }
+
+      this.show_module_selector = false;
       this.$emit("addModules", { meta_filenames });
     },
     async createMetaForModule({ module_type, source_medias, addtl_meta }) {

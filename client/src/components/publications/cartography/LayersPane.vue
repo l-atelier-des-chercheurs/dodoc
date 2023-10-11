@@ -4,24 +4,24 @@
       ref="details"
       :header="$t('layers')"
       :icon="'card-list'"
-      :has_items="sections.length > 0 ? sections.length : false"
+      :has_items="layers.length > 0 ? layers.length : false"
       :is_open_initially="true"
       :can_be_toggled="false"
     >
       <SlickList
         class="_list"
         axis="y"
-        :value="sections"
-        @input="$emit('updateOrder', $event)"
+        :value="layers"
+        @input="updateOrder($event)"
         :useDragHandle="true"
       >
         <SlickItem
-          v-for="(section, index) of sections"
-          :key="section.$path"
+          v-for="(layer, index) of layers"
+          :key="layer.$path"
           :index="index"
           class="_summaryItem"
           :class="{
-            'is--active': isActive(section.$path),
+            'is--active': isActive(layer.$path),
           }"
         >
           <span v-handle class="u-dragHandle" v-if="can_edit">
@@ -31,14 +31,14 @@
             class="_colorInd"
             :style="
               'background-color: ' +
-              (section.section_color || default_layer_color)
+              (layer.section_color || default_layer_color)
             "
           />
-          <span class="_clickZone" @click="openSection(section.$path)">
+          <span class="_clickZone" @click="openLayer(layer.$path)">
             <h4 class="_title">
               <!-- {{ index + 1 }}. -->
-              <span v-if="section.section_title">
-                {{ section.section_title }}
+              <span v-if="layer.section_title">
+                {{ layer.section_title }}
               </span>
               <span v-else v-html="'<i>' + $t('untitled') + '</i>'" />
             </h4>
@@ -46,14 +46,14 @@
         </SlickItem>
       </SlickList>
       <template v-if="can_edit">
-        <template v-if="sections.length > 0">
+        <template v-if="layers.length > 0">
           <hr />
         </template>
         <button
           type="button"
           class="u-button u-button_bleuvert u-button_small"
           v-if="can_edit"
-          @click="$emit('createSection', new_layer_title)"
+          @click="createLayer"
         >
           {{ $t("create_layer") }}
         </button>
@@ -61,25 +61,18 @@
     </DetailsPane>
 
     <LayerContent
-      v-if="opened_section"
-      :layer="opened_section"
-      :layer_modules_list="opened_section_modules_list"
+      v-if="opened_layer_path"
+      :layer="opened_layer"
       :default_layer_color="default_layer_color"
-      :publication_path="publication_path"
+      :publication="publication"
       :can_edit="can_edit"
       @repickLocation="repickLocation"
-      @close="$emit('closeSection')"
-      @addModules="$emit('addModules', $event)"
-      @insertModules="$emit('insertModules', $event)"
-      @moveModuleTo="$emit('moveModuleTo', $event)"
-      @removeModule="$emit('removeModule', $event)"
-      @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
+      @close="closeLayer"
     />
     <div class="_repickNotice" v-if="is_repicking_location_for">
       <div class="_repickNotice--content">
         <div>
           {{ $t("click_on_map_to_repick_location_for_media") }}
-          {{ is_repicking_location_for_index + 1 }}
         </div>
         <button
           type="button"
@@ -99,10 +92,9 @@ import LayerContent from "@/components/publications/cartography/LayerContent.vue
 
 export default {
   props: {
-    publication_path: String,
-    sections: Array,
-    opened_section: [Boolean, Object],
-    opened_section_modules_list: Array,
+    publication: Object,
+    layers: Array,
+    opened_layer_path: String,
     can_edit: Boolean,
   },
   components: {
@@ -121,31 +113,27 @@ export default {
     messages: {
       fr: {
         click_on_map_to_repick_location_for_media:
-          "Cliquez sur la carte pour sélectionner une nouvelle position pour le média numéro ",
+          "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
       },
     },
   },
 
   created() {},
   mounted() {
-    this.$eventHub.$on(`sections.open_summary`, this.openSummary);
     this.$eventHub.$on("publication.map.click", this.setRepickLocation);
   },
   beforeDestroy() {
-    this.$eventHub.$off(`sections.open_summary`, this.openSummary);
     this.$eventHub.$off("publication.map.click", this.setRepickLocation);
   },
   watch: {},
   computed: {
-    is_repicking_location_for_index() {
-      return this.opened_section_modules_list.findIndex(
-        ({ _module }) => this.is_repicking_location_for === _module.$path
-      );
+    opened_layer() {
+      return this.layers.find((l) => l.$path === this.opened_layer_path);
     },
     new_layer_title() {
-      let idx = this.sections.length + 1;
+      let idx = this.layers.length + 1;
       let new_layer_title = this.$t("layer") + " " + idx;
-      while (this.sections.section_title === new_layer_title) {
+      while (this.layers.section_title === new_layer_title) {
         idx++;
         new_layer_title = this.$t("layer") + " " + idx;
       }
@@ -153,21 +141,38 @@ export default {
     },
   },
   methods: {
-    openSummary() {
-      this.$refs.details.$el.open = true;
+    openLayer(path) {
+      this.$emit("update:opened_layer_path", path);
     },
-    closeSummary() {
-      this.$refs.details.$el.open = false;
+    closeLayer() {
+      this.$emit("update:opened_layer_path", undefined);
     },
-    openSection(path) {
-      // jarring jump in section
-      // setTimeout(() => {
-      //   this.closeSummary();
-      // }, 500);
-      this.$emit("openSection", path);
+    async createLayer() {
+      await this.createSection2({
+        publication: this.publication,
+        type: "layer",
+        group: "layers_list",
+        title: this.new_layer_title,
+      });
     },
+    updateOrder(items) {
+      const layers_list = items.map((i) => {
+        return {
+          meta_filename: this.getFilename(i.$path),
+        };
+      });
+      // if (JSON.stringify(sections_list) === JSON.stringify(this.sections_list))
+      //   return "no_update_necessary";
+      this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          layers_list,
+        },
+      });
+    },
+
     isActive(path) {
-      return this.opened_section && path === this.opened_section.$path;
+      return path === this.opened_layer_path;
     },
     repickLocation(path) {
       this.is_repicking_location_for = path;

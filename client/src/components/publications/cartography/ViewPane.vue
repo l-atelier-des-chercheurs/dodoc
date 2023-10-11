@@ -6,47 +6,42 @@
       <button
         type="button"
         class="_viewPreview"
-        v-for="(view, index) in views_list"
+        v-for="(view, index) in views"
         :key="index"
         @click="openView(index)"
       >
         <sl-badge pill>{{ index + 1 }}</sl-badge>
         <strong>
-          {{ view.title }}
+          {{ view.section_title }}
         </strong>
+      </button>
+
+      <button
+        type="button"
+        class="u-button u-button_bleuvert u-button_small"
+        v-if="can_edit"
+        @click="createView"
+      >
+        {{ $t("create_view") }}
       </button>
     </div>
 
-    <transition name="slideup" :duration="150" mode="out-in">
-      <div class="_openedView" v-if="opened_view_id !== false">
-        <h2>
-          {{ opened_view.title }}
-        </h2>
-
-        <sl-button
-          variant="default"
-          size="medium"
-          circle
-          class="_closeBtn"
-          @click="closeView"
-        >
-          <sl-icon name="x" :label="$t('close')"></sl-icon>
-        </sl-button>
-        <hr />
-
+    <!-- 
         <CollaborativeEditor2
           ref="textBloc"
           :path="''"
           :content="opened_view.text"
           :can_edit="false"
-        />
-      </div>
-    </transition>
+        /> -->
   </div>
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    publication: Object,
+    views: Array,
+    can_edit: Boolean,
+  },
   components: {},
   data() {
     return {
@@ -90,8 +85,27 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
-  methods: {},
+  computed: {
+    new_view_title() {
+      let idx = this.views.length + 1;
+      let new_view_title = this.$t("view") + " " + idx;
+      while (this.views.section_title === new_view_title) {
+        idx++;
+        new_view_title = this.$t("view") + " " + idx;
+      }
+      return new_view_title;
+    },
+  },
+  methods: {
+    async createView() {
+      await this.createSection2({
+        publication: this.publication,
+        type: "view",
+        group: "views_list",
+        title: this.new_view_title,
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

@@ -1,20 +1,10 @@
 <template>
   <div class="_mapView">
     <LayersPane
-      :publication_path="publication.$path"
-      :sections="sections"
-      :opened_section="opened_section"
-      :opened_section_modules_list="opened_section_modules_list"
+      :publication="publication"
+      :layers="layers"
+      :opened_layer_path.sync="opened_layer_path"
       :can_edit="can_edit"
-      @createSection="$emit('createSection', $event)"
-      @openSection="$emit('openSection', $event)"
-      @closeSection="$emit('closeSection')"
-      @updateOrder="$emit('updateOrder', $event)"
-      @addModules="$emit('addModules', $event)"
-      @insertModules="$emit('insertModules', $event)"
-      @moveModuleTo="$emit('moveModuleTo', $event)"
-      @removeModule="$emit('removeModule', $event)"
-      @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
     />
     <DisplayOnMap
       class="_mapContainer"
@@ -23,13 +13,12 @@
       :map_baselayer="publication.map_baselayer"
       :pins="pins"
       :lines="lines"
-      :link_pins="opened_section_link_pins"
       :is_small="false"
-      :can_add_media_to_point="opened_section !== false"
+      :can_add_media_to_point="!!opened_layer_path"
       @newPositionClicked="newPositionClicked"
     >
       <div class="" slot="popup_message">
-        <div v-if="!opened_section">
+        <div v-if="!opened_layer_path">
           {{ $t("to_add_media_here_open_matching_layer") }}
         </div>
         <div v-else>
@@ -43,13 +32,13 @@
             :select_mode="'single'"
             :types_available="['medias']"
             :post_addtl_meta="new_module_meta"
-            @addModules="$emit('addModules', $event)"
+            @addModules="addModules"
           />
         </div>
       </div>
     </DisplayOnMap>
 
-    <ViewPane />
+    <ViewPane :publication="publication" :views="views" :can_edit="can_edit" />
   </div>
 </template>
 <script>
@@ -62,8 +51,6 @@ export default {
   props: {
     publication: Object,
     sections: Array,
-    opened_section: [Boolean, Object],
-    opened_section_modules_list: Array,
     can_edit: Boolean,
   },
   components: {
@@ -78,6 +65,7 @@ export default {
         latitude: undefined,
         longitude: undefined,
       },
+      opened_layer_path: undefined,
     };
   },
   i18n: {
@@ -95,6 +83,18 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    layers() {
+      return this.getSectionsWithProps({
+        publication: this.publication,
+        group: "layers_list",
+      });
+    },
+    views() {
+      return this.getSectionsWithProps({
+        publication: this.publication,
+        group: "views_list",
+      });
+    },
     start_coords() {
       return this.publication.map_initial_location || false;
     },
@@ -105,9 +105,6 @@ export default {
     opened_view() {
       if (this.opened_view_id === false) return false;
       return this.views_list[this.opened_view_id];
-    },
-    opened_section_link_pins() {
-      return this.opened_section?.link_pins === true;
     },
     pins() {
       return this.sections.reduce((acc, s) => {
@@ -180,6 +177,17 @@ export default {
       this.$eventHub.$emit("publication.map.navigateTo", {
         zoom: this.start_zoom,
       });
+    },
+    async addModules({ meta_filenames }) {
+      const opened_layer = this.layers.find(
+        (l) => l.$path === this.opened_layer_path
+      );
+      await this.appendModuleMetaFilenamesToList2({
+        publication: this.publication,
+        section: opened_layer,
+        meta_filenames,
+      });
+      // todo scroll to last meta_filename
     },
   },
 };

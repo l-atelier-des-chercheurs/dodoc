@@ -138,5 +138,132 @@ export default {
         });
       return meta_filename;
     },
+
+    /////////////////////////////////////////////////////
+
+    getSectionsList({ publication, group }) {
+      return Array.isArray(publication[group]) ? this.publication[group] : [];
+    },
+    getSectionsWithProps({ publication, group }) {
+      return this.getSectionsList({
+        publication: publication,
+        group,
+      }).reduce((acc, l) => {
+        const section_module = this.findModuleFromMetaFilename({
+          files: publication.$files,
+          meta_filename: l.meta_filename,
+        });
+        if (section_module) acc.push(section_module);
+        return acc;
+      }, []);
+    },
+    async createSection2({ publication, type, group, title }) {
+      let additional_meta = {
+        section_type: "-",
+        section_title: title,
+        requested_slug: type,
+      };
+
+      const section_meta_filename = await this.$api
+        .uploadFile({
+          path: publication.$path,
+          additional_meta,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+
+      let sections_list = this.getSectionsList({ publication, group }).slice();
+      sections_list.push({
+        meta_filename: section_meta_filename,
+      });
+
+      await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          [group]: sections_list,
+        },
+      });
+
+      return section_meta_filename;
+    },
+    async removeSection2({ publication, group, path }) {
+      const section_meta_filename = this.getFilename(path);
+      let sections_list = this.getSectionsList({ publication, group }).slice();
+      sections_list = sections_list.filter(
+        (f) => f.meta_filename !== section_meta_filename
+      );
+
+      await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          [group]: sections_list,
+        },
+      });
+
+      await this.$api.deleteItem({
+        path,
+      });
+    },
+    async appendModuleMetaFilenamesToList2({
+      publication,
+      section,
+      meta_filenames,
+    }) {
+      const section_modules_list = this.getModulesForSection({
+        publication,
+        section,
+      });
+      let modules_list = section_modules_list.map((m) => m.meta_filename);
+      modules_list = modules_list.concat(meta_filenames);
+
+      await this.$api.updateMeta({
+        path: section.$path,
+        new_meta: {
+          modules_list,
+        },
+      });
+    },
+
+    async moveModuleTo2({ publication, section, meta_filename, new_position }) {
+      let modules_list = this.getModulesForSection({
+        publication,
+        section,
+      }).map((m) => m.meta_filename);
+
+      const target_meta_index = modules_list.findIndex(
+        (m) => m === meta_filename
+      );
+      modules_list.move(target_meta_index, new_position);
+
+      await this.$api.updateMeta({
+        path: section.$path,
+        new_meta: {
+          modules_list,
+        },
+      });
+    },
+
+    async removeModule2({ publication, section, path }) {
+      let modules_list = this.getModulesForSection({
+        publication,
+        section,
+      })
+        .map((m) => m.meta_filename)
+        .slice();
+      const meta_filename = this.getFilename(path);
+      modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
+
+      await this.$api.updateMeta({
+        path: section.$path,
+        new_meta: {
+          modules_list,
+        },
+      });
+      await this.$api.deleteItem({
+        path,
+      });
+    },
   },
 };
