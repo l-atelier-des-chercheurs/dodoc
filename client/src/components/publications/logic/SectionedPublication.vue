@@ -13,8 +13,8 @@
       @updateOrder="updateOrder"
       @openSection="openSection"
       @closeSection="closeSection"
-      @addModule="appendModuleMetaFilenameToList"
-      @insertModule="insertModuleMetaFilenameToList"
+      @addModules="appendModuleMetaFilenamesToList"
+      @insertModules="insertModuleMetaFilenamesToList"
       @moveModuleTo="moveModuleTo"
       @removeModule="removeModule"
       @duplicatePublicationMedia="duplicatePublicationMedia"
@@ -31,8 +31,8 @@
       @updateOrder="updateOrder"
       @openSection="openSection"
       @closeSection="closeSection"
-      @addModule="appendModuleMetaFilenameToList"
-      @insertModule="insertModuleMetaFilenameToList"
+      @addModules="appendModuleMetaFilenamesToList"
+      @insertModules="insertModuleMetaFilenamesToList"
       @moveModuleTo="moveModuleTo"
       @removeModule="removeModule"
       @duplicatePublicationMedia="duplicatePublicationMedia"
@@ -210,22 +210,23 @@ export default {
       });
     },
 
-    async appendModuleMetaFilenameToList({ meta_filename }) {
+    async appendModuleMetaFilenamesToList({ meta_filenames }) {
       let modules_list = this.opened_section_modules_list.map(
         (m) => m.meta_filename
       );
-      modules_list.push(meta_filename);
+      modules_list = modules_list.concat(meta_filenames);
       await this.updateSectionMeta({ modules_list });
+      const meta_filename = meta_filenames.at(-1);
       this.toggleNewModuleEdit({ meta_filename });
     },
-    async insertModuleMetaFilenameToList({ meta_filename, index }) {
+    async insertModuleMetaFilenamesToList({ meta_filenames, index }) {
       let modules_list = this.opened_section_modules_list.map(
         (m) => m.meta_filename
       );
-
-      modules_list.splice(index, 0, meta_filename);
-
+      modules_list.splice(index, 0, ...meta_filenames);
       await this.updateSectionMeta({ modules_list });
+
+      const meta_filename = meta_filenames.at(-1);
       this.toggleNewModuleEdit({ meta_filename });
     },
     async moveModuleTo({ meta_filename, dir }) {

@@ -88,7 +88,7 @@
                 :pre_addtl_meta="new_module_meta"
                 :context="'page_by_page'"
                 :is_collapsed="false"
-                @addModule="enableModuleEdit"
+                @addModules="enableModuleEdit"
               />
             </div>
 
@@ -591,7 +591,9 @@ export default {
     openRemoveModal() {
       this.$refs.removeMenu.show_confirm_delete = true;
     },
-    enableModuleEdit({ meta_filename }) {
+    enableModuleEdit({ meta_filenames }) {
+      // get last
+      const meta_filename = meta_filenames.at(-1);
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
         this.$eventHub.$emit(`module.panTo.${meta_filename}`);

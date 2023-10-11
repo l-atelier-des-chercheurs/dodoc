@@ -11,8 +11,8 @@
       @openSection="$emit('openSection', $event)"
       @closeSection="$emit('closeSection')"
       @updateOrder="$emit('updateOrder', $event)"
-      @addModule="$emit('addModule', $event)"
-      @insertModule="$emit('insertModule', $event)"
+      @addModules="$emit('addModules', $event)"
+      @insertModules="$emit('insertModules', $event)"
       @moveModuleTo="$emit('moveModuleTo', $event)"
       @removeModule="$emit('removeModule', $event)"
       @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
@@ -44,7 +44,7 @@
             :select_mode="'single'"
             :types_available="['medias']"
             :post_addtl_meta="new_module_meta"
-            @addModule="$emit('addModule', $event)"
+            @addModules="$emit('addModules', $event)"
           />
         </div>
       </div>

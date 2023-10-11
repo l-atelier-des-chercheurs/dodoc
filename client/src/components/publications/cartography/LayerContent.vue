@@ -52,7 +52,7 @@
           :is_collapsed="false"
           :context="'cartography'"
           :types_available="['medias']"
-          @addModule="$emit('addModule', $event)"
+          @addModules="$emit('addModules', $event)"
         />
         <hr />
       </template>

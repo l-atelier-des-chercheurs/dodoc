@@ -31,9 +31,9 @@
                 v-if="can_edit"
                 :publication_path="publication.$path"
                 :types_available="['text', 'medias', 'files', 'link']"
-                @addModule="
-                  ({ meta_filename }) =>
-                    $emit('insertModule', { meta_filename, index })
+                @addModules="
+                  ({ meta_filenames }) =>
+                    $emit('insertModules', { meta_filenames, index })
                 "
               />
             </div>
@@ -68,7 +68,7 @@
           v-if="can_edit"
           :publication_path="publication.$path"
           :types_available="['text', 'medias', 'files', 'link']"
-          @addModule="$emit('addModule', $event)"
+          @addModules="$emit('addModules', $event)"
         />
       </div>
     </div>

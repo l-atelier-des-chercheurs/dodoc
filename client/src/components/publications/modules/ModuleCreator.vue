@@ -223,27 +223,10 @@ export default {
       }
 
       if (this.context === "page_by_page" || this.context === "cartography") {
-        for (const source_media of source_medias) {
-          const media = this.getSourceMedia({
-            source_media,
-            folder_path: this.publication_path,
-          });
-
-          let addtl_meta = {};
-          if (this.context === "page_by_page")
-            if (media?.$infos?.ratio)
-              addtl_meta.height =
-                this.$root.default_new_module_width * media.$infos.ratio;
-
-          if (this.context === "cartography")
-            if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
-
-          await this.createModule({
-            module_type: "mosaic",
-            source_medias: [source_media],
-            addtl_meta,
-          });
-        }
+        await this.createMultipleModules({
+          module_type: "mosaic",
+          source_medias,
+        });
       } else {
         await this.createModule({
           module_type: "mosaic",
@@ -314,10 +297,38 @@ export default {
         source_medias,
         addtl_meta,
       });
-      this.$emit("addModule", { meta_filename });
-      this.show_module_selector = false;
-    },
+      const meta_filenames = [meta_filename];
 
+      this.$emit("addModules", { meta_filenames });
+      this.show_module_selector = false;
+      return meta_filename;
+    },
+    async createMultipleModules({ module_type, source_medias = [] }) {
+      let meta_filenames = [];
+      for (const source_media of source_medias) {
+        const media = this.getSourceMedia({
+          source_media,
+          folder_path: this.publication_path,
+        });
+
+        let addtl_meta = {};
+        if (this.context === "page_by_page")
+          if (media?.$infos?.ratio)
+            addtl_meta.height =
+              this.$root.default_new_module_width * media.$infos.ratio;
+
+        if (this.context === "cartography")
+          if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+
+        const meta_filename = await this.createModule({
+          module_type,
+          source_medias: [source_media],
+          addtl_meta,
+        });
+        meta_filenames.push(meta_filename);
+      }
+      this.$emit("addModules", { meta_filenames });
+    },
     async createMetaForModule({ module_type, source_medias, addtl_meta }) {
       let additional_meta = {
         module_type,
