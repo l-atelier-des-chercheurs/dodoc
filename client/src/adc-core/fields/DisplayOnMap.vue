@@ -17,7 +17,6 @@
         >
           <b-icon icon="x-circle" />
         </button>
-        <div v-if="popup_message" v-html="popup_message" />
 
         <div
           v-if="clicked_location.file"
@@ -42,6 +41,11 @@
             {{ clicked_location.longitude }}°
           </small>
         </div> -->
+        <div
+          v-if="popup_message"
+          class="_popupMessage"
+          v-html="popup_message"
+        />
         <div
           class="_popupMessage"
           v-if="
@@ -646,8 +650,8 @@ export default {
 ._popupClose {
   position: absolute;
   z-index: 1000;
-  top: 0;
-  right: 0;
+  top: calc(var(--spacing) / -2);
+  right: calc(var(--spacing) / -2);
   padding: calc(var(--spacing) / 1);
 }
 
@@ -662,10 +666,18 @@ export default {
 }
 </style>
 <style lang="scss">
-.ol-geocoder .gcd-gl-btn {
-  height: 1.375em;
-  width: 1.375em;
+.ol-geocoder {
+  .gcd-gl-btn {
+    height: 1.375em;
+    width: 1.375em;
+  }
+  .gcd-gl-input {
+  }
 }
-.ol-geocoder .gcd-gl-input {
+.gcd-road {
+  font-weight: normal;
+  font-style: italic;
+  font-size: var(--sl-font-size-small);
+  color: inherit;
 }
 </style>
