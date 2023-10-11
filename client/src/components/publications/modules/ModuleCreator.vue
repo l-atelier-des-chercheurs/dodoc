@@ -80,7 +80,7 @@
           :key="shape.type"
           class="u-button u-button_small u-button_bleumarine"
           @click="
-            createModule({
+            createCustomModule({
               module_type: shape.type,
               addtl_meta: shape.addtl_meta,
             })
@@ -284,6 +284,12 @@ export default {
       });
 
       this.show_file_picker = false;
+    },
+    async createCustomModule({ module_type, addtl_meta }) {
+      await this.createModule({
+        module_type,
+        addtl_meta,
+      });
     },
     async createText() {
       const filename = "text-" + +new Date() + ".txt";
