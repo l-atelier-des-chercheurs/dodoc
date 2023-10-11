@@ -1,6 +1,7 @@
 <template>
   <div class="_topbar">
     <button
+      v-if="no_back_button !== true"
       type="button"
       class="u-button u-button_icon"
       @click="$emit('close')"
@@ -125,6 +126,7 @@ import DuplicatePublication from "@/components/publications/DuplicatePublication
 export default {
   props: {
     publication: Object,
+    no_back_button: Boolean,
     can_edit: Boolean,
   },
   components: {
