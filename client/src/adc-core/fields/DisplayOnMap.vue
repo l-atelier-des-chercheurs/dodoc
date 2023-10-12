@@ -167,23 +167,29 @@ export default {
   watch: {
     pins: {
       handler() {
-        this.startMap();
+        this.startMap({ keep_loc_and_zoom: true });
       },
       deep: true,
     },
     lines: {
       handler() {
-        this.startMap();
+        this.startMap({ keep_loc_and_zoom: true });
       },
       deep: true,
     },
     map_baselayer() {
+      this.startMap({ keep_loc_and_zoom: true });
+    },
+    start_coords() {
+      this.startMap();
+    },
+    start_zoom() {
       this.startMap();
     },
   },
   computed: {},
   methods: {
-    startMap() {
+    startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom =
         this.constrainVal(this.start_zoom, this.min_zoom, this.max_zoom) || 9;
       let center = [5.39057449011251, 43.310173305629576];
@@ -202,8 +208,10 @@ export default {
 
       // destroy map if exist
       if (this.map) {
-        zoom = this.map.getView().getZoom();
-        center = this.map.getView().getCenter();
+        if (keep_loc_and_zoom) {
+          zoom = this.map.getView().getZoom();
+          center = this.map.getView().getCenter();
+        }
 
         this.map.setTarget(null);
         this.map = null;
