@@ -1,6 +1,6 @@
 <template>
   <SlickList
-    class="_list"
+    class="_reorderedList"
     axis="y"
     :value="local_items"
     @input="updateOrder($event)"
@@ -10,7 +10,7 @@
       v-for="(item, index) of local_items"
       :key="item.$path"
       :index="index"
-      class="_list--item"
+      class="_reorderedList--item"
       :class="{
         'is--active': isActive(item.$path),
       }"
@@ -114,9 +114,17 @@ export default {
 };
 </script>
 <style lang="scss">
-._list--item {
+._reorderedList {
   position: relative;
-  z-index: 1;
+}
+
+// only target item dragged
+body > ._reorderedList--item {
+  z-index: 10000;
+}
+
+._reorderedList--item {
+  position: relative;
 
   display: flex;
   flex-flow: row wrap;
