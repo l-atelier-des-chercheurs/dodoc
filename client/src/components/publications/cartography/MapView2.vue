@@ -6,15 +6,6 @@
       :opened_section="opened_section"
       :opened_section_modules_list="opened_section_modules_list"
       :can_edit="can_edit"
-      @createSection="$emit('createSection', $event)"
-      @openSection="$emit('openSection', $event)"
-      @closeSection="$emit('closeSection')"
-      @updateOrder="$emit('updateOrder', $event)"
-      @addModules="$emit('addModules', $event)"
-      @insertModules="$emit('insertModules', $event)"
-      @moveModuleTo="$emit('moveModuleTo', $event)"
-      @removeModule="$emit('removeModule', $event)"
-      @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
     />
     <PublicationSettings v-if="can_edit">
       <MapSettings :publication="publication" :path="publication.$path" />

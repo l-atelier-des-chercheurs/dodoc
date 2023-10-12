@@ -26,16 +26,6 @@
       :opened_section="opened_section"
       :opened_section_modules_list="opened_section_modules_list"
       :can_edit="can_edit"
-      @createSection="createSection"
-      @removeSection="removeSection"
-      @updateOrder="updateOrder"
-      @openSection="openSection"
-      @closeSection="closeSection"
-      @addModules="appendModuleMetaFilenamesToList"
-      @insertModules="insertModuleMetaFilenamesToList"
-      @moveModuleTo="moveModuleTo"
-      @removeModule="removeModule"
-      @duplicatePublicationMedia="duplicatePublicationMedia"
     />
   </div>
 </template>
