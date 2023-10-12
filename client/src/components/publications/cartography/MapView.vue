@@ -50,7 +50,6 @@ import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 export default {
   props: {
     publication: Object,
-    sections: Array,
     can_edit: Boolean,
   },
   components: {
@@ -66,6 +65,7 @@ export default {
         longitude: undefined,
       },
       opened_layer_path: undefined,
+      opened_view_path: undefined,
     };
   },
   i18n: {
@@ -107,9 +107,9 @@ export default {
       return this.views_list[this.opened_view_id];
     },
     pins() {
-      return this.sections.reduce((acc, s) => {
-        if (!Array.isArray(s.modules_list)) return acc;
-        s.modules_list.map((meta_filename, index) => {
+      return this.layers.reduce((acc, l) => {
+        if (!Array.isArray(l.modules_list)) return acc;
+        l.modules_list.map((meta_filename, index) => {
           const _module = this.findModuleFromMetaFilename({
             files: this.publication.$files,
             meta_filename,
@@ -124,10 +124,10 @@ export default {
               latitude: _module.location.latitude,
               index: index,
               label: this.$t("media") + " " + (index + 1),
-              color: s.section_color || `#333`,
+              color: l.section_color || `#333`,
               path: _module.$path,
-              belongs_to_layer: s.$path,
-              link_pins: s.link_pins || false,
+              belongs_to_layer: l.$path,
+              link_pins: l.link_pins || false,
               file: this.firstMedia(_module),
             });
           }

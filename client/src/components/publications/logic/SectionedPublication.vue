@@ -19,19 +19,10 @@
       @removeModule="removeModule"
       @duplicatePublicationMedia="duplicatePublicationMedia"
     />
-    <MapView2
-      v-else-if="template === 'cartography'"
-      :publication="publication"
-      :sections="sections"
-      :opened_section="opened_section"
-      :opened_section_modules_list="opened_section_modules_list"
-      :can_edit="can_edit"
-    />
   </div>
 </template>
 <script>
 import SectionsList from "@/components/publications/story/SectionsList.vue";
-import MapView2 from "@/components/publications/cartography/MapView2.vue";
 
 export default {
   props: {
@@ -42,7 +33,6 @@ export default {
   },
   components: {
     SectionsList,
-    MapView2,
   },
   data() {
     return {};

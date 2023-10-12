@@ -1,25 +1,25 @@
 <template>
   <div class="_mapTemplate">
-    <SectionedPublication
-      :template="publication.template"
-      :publication="publication"
-      :section_opened_meta="section_opened_meta"
-      :can_edit="can_edit"
-      @toggleSection="$emit('toggleSection', $event)"
-    />
+    <MapView :publication="publication" :can_edit="can_edit" />
+    <PublicationSettings v-if="can_edit">
+      <MapSettings :publication="publication" :path="publication.$path" />
+    </PublicationSettings>
   </div>
 </template>
 <script>
-import SectionedPublication from "@/components/publications/logic/SectionedPublication.vue";
+import MapView from "@/components/publications/cartography/MapView.vue";
+import PublicationSettings from "@/components/publications/PublicationSettings.vue";
+import MapSettings from "@/components/publications/cartography/MapSettings.vue";
 
 export default {
   props: {
     publication: Object,
-    section_opened_meta: [Boolean, String],
     can_edit: Boolean,
   },
   components: {
-    SectionedPublication,
+    MapView,
+    PublicationSettings,
+    MapSettings,
   },
   data() {
     return {};

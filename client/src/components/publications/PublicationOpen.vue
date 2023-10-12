@@ -4,7 +4,7 @@
     <div v-else-if="fetch_publication_error">
       {{ fetch_publication_error }}
     </div>
-    <template v-else>
+    <template v-else-if="publication">
       <PublicationTopbar
         class="_publicationOpen--topbar"
         :publication="publication"
@@ -37,7 +37,6 @@
         v-else-if="publication.template === 'cartography'"
         class="_publicationOpen--content"
         :publication="publication"
-        :section_opened_meta="page_opened_id"
         :can_edit="can_edit"
         @toggleSection="$emit('togglePage', $event)"
       />
