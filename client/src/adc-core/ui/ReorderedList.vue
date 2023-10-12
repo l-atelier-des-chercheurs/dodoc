@@ -15,15 +15,17 @@
         'is--active': isActive(item.$path),
       }"
     >
-      <transition name="fade_fast" mode="out-in">
-        <span v-handle class="_dragHandle" v-if="can_edit" :key="index">
-          <b-icon icon="grip-vertical" :label="$t('move')" />
-          {{ index + 1 }}
-        </span>
-        <span v-else>
-          {{ index + 1 }}
-        </span>
-      </transition>
+      <span v-handle class="_dragHandle" v-if="can_edit">
+        <b-icon icon="grip-vertical" :label="$t('move')" />
+        <transition name="fade_fast" mode="out-in">
+          <span :key="index">
+            {{ index + 1 }}
+          </span>
+        </transition>
+      </span>
+      <span v-else>
+        {{ index + 1 }}
+      </span>
       <span class="_clickZone" @click="$emit('openItem', item.$path)">
         <h4 class="_title">
           <slot :item="item" :index="index" />
