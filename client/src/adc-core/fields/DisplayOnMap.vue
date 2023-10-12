@@ -5,7 +5,7 @@
       'is--small': is_small,
     }"
   >
-    <div class="map" ref="map" />
+    <div class="_map" ref="map" />
 
     <div ref="popUp" class="_popup">
       <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
@@ -615,7 +615,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: var(--c-gris);
-  font-size: 120%;
+  font-size: 150%;
 
   flex: 1 1 320px;
 
@@ -625,19 +625,36 @@ export default {
     aspect-ratio: 1;
     border-radius: 4px;
     overflow: hidden;
-    .map {
-    }
   }
 }
-.map {
+._map {
   width: 100%;
   height: 100%;
+
+  ::v-deep {
+    .ol-geocoder {
+      .gcd-gl-btn {
+        height: 1.375em;
+        width: 1.375em;
+      }
+      .gcd-gl-input {
+      }
+    }
+    .gcd-road {
+      font-weight: normal;
+      font-style: italic;
+      font-size: var(--sl-font-size-small);
+      color: inherit;
+    }
+  }
 }
 ._popup {
   position: absolute;
   bottom: 12px;
   left: -48px;
   min-width: 280px;
+
+  font-size: var(--sl-font-size-normal);
 
   background: white;
 
@@ -687,19 +704,4 @@ export default {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 </style>
-<style lang="scss">
-.ol-geocoder {
-  .gcd-gl-btn {
-    height: 1.375em;
-    width: 1.375em;
-  }
-  .gcd-gl-input {
-  }
-}
-.gcd-road {
-  font-weight: normal;
-  font-style: italic;
-  font-size: var(--sl-font-size-small);
-  color: inherit;
-}
-</style>
+<style lang="scss"></style>
