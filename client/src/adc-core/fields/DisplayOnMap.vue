@@ -74,9 +74,6 @@ import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
 
-// incompatibility error ? https://github.com/jonataswalker/ol-geocoder/issues/270
-// TODO FIX later
-
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
 
@@ -85,6 +82,7 @@ import olCircleStyle from "ol/style/Circle";
 import olFill from "ol/style/Fill";
 import olStroke from "ol/style/Stroke";
 import olText from "ol/style/Text";
+import { ScaleLine, FullScreen } from "ol/control";
 
 export default {
   name: "DisplayOnMap",
@@ -107,6 +105,10 @@ export default {
       },
     },
     is_small: {
+      type: Boolean,
+      default: true,
+    },
+    show_scale: {
       type: Boolean,
       default: true,
     },
@@ -281,6 +283,14 @@ export default {
             }),
         })
       );
+
+      //////////////////////////////////////////////////// SCALELINE
+      if (this.show_scale) {
+        const scale_line = new ScaleLine({
+          units: "metric",
+        });
+        this.map.addControl(scale_line);
+      }
 
       //////////////////////////////////////////////////// SEARCH FIELD
 
