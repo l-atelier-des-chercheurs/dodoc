@@ -3,18 +3,20 @@
     <div class="_views">
       <DLabel :str="$t('views_list')" />
 
-      <button
-        type="button"
-        class="_viewPreview"
-        v-for="(view, index) in views"
-        :key="index"
-        @click="openView(index)"
+      <ReorderedList
+        :field_name="'views_list'"
+        :items="views"
+        :path="publication.$path"
+        :active_item_path="opened_view_path"
+        :can_edit="can_edit"
+        @openItem="openView"
+        v-slot="slotProps"
       >
-        <sl-badge pill>{{ index + 1 }}</sl-badge>
-        <strong>
-          {{ view.section_title }}
-        </strong>
-      </button>
+        <span v-if="slotProps.item.section_title">
+          {{ slotProps.item.section_title }}
+        </span>
+        <span v-else v-html="`<i>${$t('untitled')}</i>`" />
+      </ReorderedList>
 
       <button
         type="button"
@@ -26,6 +28,14 @@
       </button>
     </div>
 
+    <ViewContent
+      v-if="opened_view"
+      :view="opened_view"
+      :publication="publication"
+      :can_edit="can_edit"
+      @close="closeView"
+    />
+
     <!-- 
         <CollaborativeEditor2
           ref="textBloc"
@@ -36,43 +46,20 @@
   </div>
 </template>
 <script>
+import ViewContent from "@/components/publications/cartography/ViewContent.vue";
+
 export default {
   props: {
     publication: Object,
+    opened_view_path: String,
     views: Array,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    ViewContent,
+  },
   data() {
-    return {
-      views_list: [
-        {
-          title: "Présentation du territoire",
-          text: `<p>Pellentesque vehicula consequat mi nec efficitur. Etiam nunc massa, congue ut justo ac, cursus fringilla nisi. Aliquam erat volutpat. Integer
-          vulputate hendrerit sodales. Duis varius, purus sit amet varius dapibus, velit est pellentesque lectus, quis auctor orci urna sed sapien. Curabitur
-          at risus quis magna lacinia ultricies. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce fringilla nulla sit amet tempus maximus.
-          </p><p>Etiam bibendum nec metus nec pulvinar. Duis tristique, erat eu ornare tincidunt, ante elit blandit dui, sit amet volutpat massa felis mattis lectus. Vestibulum commodo felis libero, eu convallis mi faucibus vestibulum. Pellentesque condimentum ullamcorper interdum. Duis vel varius diam. Nulla aliquam ipsum nisi, sed vestibulum neque porttitor sit amet. Nullam quis consectetur tellus. Pellentesque mattis eget velit ut elementum. Maecenas tincidunt sollicitudin feugiat. Nam eleifend nisl ut erat blandit, quis bibendum ex gravida. Mauris nec feugiat lacus. Vestibulum gravida dapibus condimentum. Sed eu maximus urna, id rutrum ipsum. Nam vitae velit sem.</p>'`,
-          map_center: [5.39057449011251, 43.310173305629576],
-          map_zoom: 12,
-        },
-        {
-          title: "Les point de vue des habitants",
-          text: `<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce fringilla nulla sit amet tempus maximus.
-        </p>'`,
-          map_center: [5.38134192070759, 43.27892369030499],
-          map_zoom: 16,
-        },
-        {
-          title: "Le tissu associatif",
-          text: `<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce fringilla nulla sit amet tempus maximus.
-        </p>'`,
-          map_center: [5.331893135466207, 43.359606738182094],
-          map_zoom: 14,
-        },
-      ],
-
-      opened_view_id: false,
-    };
+    return {};
   },
   i18n: {
     messages: {
@@ -86,6 +73,11 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    opened_view() {
+      return this.views.find(
+        (v) => this.getFilename(v.$path) === this.opened_view_path
+      );
+    },
     new_view_title() {
       let idx = this.views.length + 1;
       let new_view_title = this.$t("view") + " " + idx;
@@ -104,6 +96,12 @@ export default {
         group: "views_list",
         title: this.new_view_title,
       });
+    },
+    openView(path) {
+      this.$emit("toggleView", this.getFilename(path));
+    },
+    closeView() {
+      this.$emit("toggleView", false);
     },
   },
 };

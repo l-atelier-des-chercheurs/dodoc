@@ -37,12 +37,12 @@
         </div>
       </div>
     </DisplayOnMap>
-
     <ViewPane
       :publication="publication"
       :views="views"
       :opened_view_path="opened_view_path"
       :can_edit="can_edit"
+      @toggleView="$emit('toggleView', $event)"
     />
   </div>
 </template>
@@ -55,6 +55,7 @@ import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 export default {
   props: {
     publication: Object,
+    opened_view_path: String,
     can_edit: Boolean,
   },
   components: {
@@ -70,7 +71,6 @@ export default {
         longitude: undefined,
       },
       opened_layer_path: undefined,
-      opened_view_path: undefined,
     };
   },
   i18n: {

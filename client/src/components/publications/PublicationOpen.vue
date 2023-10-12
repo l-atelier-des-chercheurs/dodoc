@@ -37,8 +37,9 @@
         v-else-if="publication.template === 'cartography'"
         class="_publicationOpen--content"
         :publication="publication"
+        :opened_view_path="page_opened_id"
         :can_edit="can_edit"
-        @toggleSection="$emit('togglePage', $event)"
+        @toggleView="$emit('togglePage', $event)"
       />
     </template>
   </div>

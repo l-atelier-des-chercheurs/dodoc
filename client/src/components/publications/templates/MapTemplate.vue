@@ -1,6 +1,11 @@
 <template>
   <div class="_mapTemplate">
-    <MapView :publication="publication" :can_edit="can_edit" />
+    <MapView
+      :publication="publication"
+      :opened_view_path="opened_view_path"
+      :can_edit="can_edit"
+      @toggleView="$emit('toggleView', $event)"
+    />
     <PublicationSettings v-if="can_edit">
       <MapSettings :publication="publication" :path="publication.$path" />
     </PublicationSettings>
@@ -14,6 +19,7 @@ import MapSettings from "@/components/publications/cartography/MapSettings.vue";
 export default {
   props: {
     publication: Object,
+    opened_view_path: String,
     can_edit: Boolean,
   },
   components: {
