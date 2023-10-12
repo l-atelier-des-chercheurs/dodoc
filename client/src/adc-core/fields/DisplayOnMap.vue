@@ -284,6 +284,9 @@ export default {
         })
       );
 
+      const fs_option = new FullScreen();
+      this.map.addControl(fs_option);
+
       //////////////////////////////////////////////////// SCALELINE
       if (this.show_scale) {
         const scale_line = new ScaleLine({
