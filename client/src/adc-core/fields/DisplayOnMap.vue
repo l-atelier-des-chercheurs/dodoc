@@ -312,11 +312,9 @@ export default {
       });
       this.map.addControl(geocoder);
       geocoder.on("addresschosen", (evt) => {
-        // const feature = evt.feature,
-        //   address = evt.address;
-        // content.innerHTML = "<p>" + address.formatted + "</p>";
+        this.resetClickedLocation();
+
         if (evt.place?.lon && evt.place?.lat) {
-          // const coordinate = [2.214555195288306, 47.1857072668881];
           this.clicked_location.latitude = +evt.place.lat;
           this.clicked_location.longitude = +evt.place.lon;
           const coordinate = [
@@ -566,6 +564,12 @@ export default {
       };
       return new olStyle(style);
     },
+    resetClickedLocation() {
+      this.clicked_location.latitude = undefined;
+      this.clicked_location.longitude = undefined;
+      this.clicked_location.file = undefined;
+      this.popup_message = undefined;
+    },
     navigateTo({ center, zoom = this.current_zoom }) {
       this.view.animate({
         center,
@@ -596,13 +600,12 @@ export default {
     },
     closePopup() {
       this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
+      this.resetClickedLocation();
 
       this.overlay.setPosition(undefined);
       if (this.$refs.closePopup) this.$refs.closePopup.blur();
-      this.clicked_location.longitude = undefined;
-      this.clicked_location.latitude = undefined;
-      this.clicked_location.file = undefined;
-      this.popup_message = undefined;
+
+      this.resetClickedLocation();
       return false;
     },
   },
