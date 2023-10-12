@@ -43,6 +43,7 @@ export default {
     },
     async closeFs() {
       await screenfull.exit();
+      this.$emit("close");
     },
   },
 };
