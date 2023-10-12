@@ -17,7 +17,7 @@
         <div class="u-spacingBottom">
           <DLabel :str="$t('map_baselayer')" />
           <SelectField2
-            :value="publication.map_baselayer"
+            :value="publication.map_baselayer || 'OSM'"
             :options="map_baselayer_options"
             :can_edit="true"
             :hide_validation="false"
@@ -125,7 +125,7 @@ export default {
   watch: {},
   computed: {
     map_mode() {
-      return this.publication.map_mode || "gps";
+      return this.publication?.map_mode || "gps";
       // gps or image
     },
   },
