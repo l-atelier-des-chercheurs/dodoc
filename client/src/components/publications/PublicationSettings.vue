@@ -1,5 +1,5 @@
 <template>
-  <sl-drawer :label="$t('settings')" contained>
+  <sl-drawer :label="$t('settings')" no-header contained>
     <div class="_publicationSettings" v-if="show_settings">
       <!-- <div class="_publicationSettings--closeBtn">
         <button
