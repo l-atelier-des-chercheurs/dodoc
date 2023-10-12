@@ -63,7 +63,23 @@
           {{ $t("nothing_to_show") }}
         </small>
         <template v-else>
-          <template
+          <ReorderedList
+            :field_name="'modules_list'"
+            :store_type="'plain_array'"
+            :items="layer_modules_list"
+            :path="layer.$path"
+            :can_edit="can_edit"
+            @openItem="openPin"
+            v-slot="slotProps"
+          >
+            {{ slotProps.item.$path }}
+            <!-- <span v-if="slotProps.item.section_title">
+              {{ slotProps.item.section_title }}
+            </span>
+            <span v-else v-html="`<i>${$t('untitled')}</i>`" /> -->
+          </ReorderedList>
+
+          <!-- <template
             v-for="({ meta_filename, _module }, index) in layer_modules_list"
           >
             <MapModule
@@ -88,7 +104,7 @@
               "
               @remove="removeModule({ path: _module.$path })"
             />
-          </template>
+          </template> -->
         </template>
       </div>
 
@@ -98,7 +114,7 @@
 </template>
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
-import MapModule from "@/components/publications/cartography/MapModule.vue";
+// import MapModule from "@/components/publications/cartography/MapModule.vue";
 
 export default {
   props: {
@@ -109,7 +125,7 @@ export default {
   },
   components: {
     ModuleCreator,
-    MapModule,
+    // MapModule,
   },
   data() {
     return {};
@@ -131,7 +147,7 @@ export default {
       return this.getModulesForSection({
         publication: this.publication,
         section: this.layer,
-      });
+      }).map(({ _module }) => _module);
     },
   },
   methods: {
@@ -159,6 +175,10 @@ export default {
       });
       // todo scroll to last meta_filename
     },
+    openPin(path) {
+      this.$eventHub.$emit("publication.map.openPin", path);
+    },
+
     async moveModuleTo({ meta_filename, new_position }) {
       await this.moveModuleTo2({
         publication: this.publication,

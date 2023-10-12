@@ -1,0 +1,176 @@
+<template>
+  <SlickList
+    class="_list"
+    axis="y"
+    :value="local_items"
+    @input="updateOrder($event)"
+    :useDragHandle="true"
+  >
+    <SlickItem
+      v-for="(item, index) of local_items"
+      :key="item.$path"
+      :index="index"
+      class="_list--item"
+      :class="{
+        'is--active': isActive(item.$path),
+      }"
+    >
+      <transition name="fade_fast" mode="out-in">
+        <span v-handle class="_dragHandle" v-if="can_edit" :key="index">
+          <b-icon icon="grip-vertical" :label="$t('move')" />
+          {{ index + 1 }}
+        </span>
+        <span v-else>
+          {{ index + 1 }}
+        </span>
+      </transition>
+      <span class="_clickZone" @click="$emit('openItem', item.$path)">
+        <h4 class="_title">
+          <slot :item="item" :index="index" />
+        </h4>
+      </span>
+    </SlickItem>
+  </SlickList>
+</template>
+<script>
+import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
+
+export default {
+  props: {
+    field_name: String,
+    store_type: String,
+    items: Array,
+    path: String,
+    active_item_path: String,
+    can_edit: Boolean,
+  },
+  components: {
+    SlickItem,
+    SlickList,
+  },
+  directives: { handle: HandleDirective },
+  data() {
+    return {
+      is_saving_changes: false,
+      local_items: undefined,
+    };
+  },
+  i18n: {
+    messages: {
+      fr: {},
+    },
+  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+  watch: {
+    items: {
+      handler() {
+        this.local_items = this.items;
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+  computed: {},
+  methods: {
+    isActive(path) {
+      return this.active_item_path && this.active_item_path === path;
+    },
+
+    getMetaFilenames(items) {
+      return items.map((i) => {
+        if (this.store_type === "plain_array") {
+          return this.getFilename(i.$path);
+        } else {
+          return {
+            meta_filename: this.getFilename(i.$path),
+          };
+        }
+      });
+    },
+    async updateOrder(items) {
+      this.local_items = items;
+
+      const previous_sections_list = this.getMetaFilenames(this.items);
+      const sections_list = this.getMetaFilenames(items);
+
+      if (
+        JSON.stringify(sections_list) === JSON.stringify(previous_sections_list)
+      )
+        return "no_update_necessary";
+
+      this.is_saving_changes = true;
+
+      await this.$api.updateMeta({
+        path: this.path,
+        new_meta: {
+          [this.field_name]: sections_list,
+        },
+      });
+      this.is_saving_changes = false;
+    },
+  },
+};
+</script>
+<style lang="scss">
+._list--item {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+
+  padding: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4);
+
+  ._clickZone {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      // background: var(--c-gris_clair);
+    }
+  }
+
+  ._title {
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+  }
+
+  &.is--active {
+    background: var(--c-bleumarine);
+    color: white;
+    ._title {
+    }
+  }
+  // color: black;
+  // background: blue;
+}
+._dragHandle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  padding: calc(var(--spacing) / 4);
+  background: white;
+  color: var(--c-noir);
+  border-radius: 2px;
+
+  width: 2em;
+  height: 2em;
+
+  font-size: var(--sl-font-size-small);
+  font-weight: bold;
+  font-family: "Fira Code";
+  background: var(--c-bleuvert_clair);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--c-noir);
+    color: white;
+  }
+}
+</style>

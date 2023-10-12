@@ -116,6 +116,8 @@ import TagsList from "@/adc-core/ui/TagsList.vue";
 Vue.component("TagsList", TagsList);
 import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
+import ReorderedList from "@/adc-core/ui/ReorderedList.vue";
+Vue.component("ReorderedList", ReorderedList);
 
 import QRModal from "@/adc-core/modals/QRModal.vue";
 Vue.component("QRModal", QRModal);

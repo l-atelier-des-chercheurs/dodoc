@@ -2,10 +2,10 @@
   <div class="_sectionsList">
     <SectionsSummary
       v-if="can_edit || sections.length > 1"
+      :publication="publication"
       :sections="sections"
       :opened_section="opened_section"
       :can_edit="can_edit"
-      @createSection="$emit('createSection', $event)"
       @openSection="$emit('openSection', $event)"
       @updateOrder="$emit('updateOrder', $event)"
     />

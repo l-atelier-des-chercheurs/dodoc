@@ -8,43 +8,28 @@
       :is_open_initially="true"
       :can_be_toggled="false"
     >
-      <SlickList
-        class="_list"
-        axis="y"
-        :value="layers"
-        @input="updateOrder($event)"
-        :useDragHandle="true"
+      <ReorderedList
+        :field_name="'layers_list'"
+        :items="layers"
+        :path="publication.$path"
+        :active_item_path="opened_layer_path"
+        :can_edit="can_edit"
+        @openItem="openLayer"
+        v-slot="slotProps"
       >
-        <SlickItem
-          v-for="(layer, index) of layers"
-          :key="layer.$path"
-          :index="index"
-          class="_summaryItem"
-          :class="{
-            'is--active': isActive(layer.$path),
-          }"
-        >
-          <span v-handle class="u-dragHandle" v-if="can_edit">
-            <sl-icon name="grip-vertical" label="Déplacer" />
-          </span>
-          <span
-            class="_colorInd"
-            :style="
-              'background-color: ' +
-              (layer.section_color || default_layer_color)
-            "
-          />
-          <span class="_clickZone" @click="openLayer(layer.$path)">
-            <h4 class="_title">
-              <!-- {{ index + 1 }}. -->
-              <span v-if="layer.section_title">
-                {{ layer.section_title }}
-              </span>
-              <span v-else v-html="'<i>' + $t('untitled') + '</i>'" />
-            </h4>
-          </span>
-        </SlickItem>
-      </SlickList>
+        <span
+          class="_colorInd"
+          :style="
+            'background-color: ' +
+            (slotProps.item.section_color || default_layer_color)
+          "
+        />
+        <span v-if="slotProps.item.section_title">
+          {{ slotProps.item.section_title }}
+        </span>
+        <span v-else v-html="`<i>${$t('untitled')}</i>`" />
+      </ReorderedList>
+
       <template v-if="can_edit">
         <template v-if="layers.length > 0">
           <hr />
@@ -86,8 +71,6 @@
   </div>
 </template>
 <script>
-import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
-
 import LayerContent from "@/components/publications/cartography/LayerContent.vue";
 
 export default {
@@ -98,11 +81,8 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    SlickItem,
-    SlickList,
     LayerContent,
   },
-  directives: { handle: HandleDirective },
   data() {
     return {
       is_repicking_location_for: false,
@@ -133,7 +113,7 @@ export default {
     new_layer_title() {
       let idx = this.layers.length + 1;
       let new_layer_title = this.$t("layer") + " " + idx;
-      while (this.layers.section_title === new_layer_title) {
+      while (this.layers.some((l) => l.section_title === new_layer_title)) {
         idx++;
         new_layer_title = this.$t("layer") + " " + idx;
       }
