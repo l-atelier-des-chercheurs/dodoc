@@ -108,7 +108,9 @@
         </template>
       </div>
 
-      <RemoveMenu :remove_text="$t('remove')" @remove="removeLayer" />
+      <hr />
+
+      <RemoveMenu :remove_text="$t('remove_layer')" @remove="removeLayer" />
     </div>
   </div>
 </template>
@@ -135,6 +137,7 @@ export default {
       fr: {
         pins_color: "Couleur des épingles",
         link_pins: "Relier les épingles",
+        remove_layer: "Supprimer ce calque et son contenu",
       },
     },
   },
