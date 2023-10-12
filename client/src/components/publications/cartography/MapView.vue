@@ -38,7 +38,12 @@
       </div>
     </DisplayOnMap>
 
-    <ViewPane :publication="publication" :views="views" :can_edit="can_edit" />
+    <ViewPane
+      :publication="publication"
+      :views="views"
+      :opened_view_path="opened_view_path"
+      :can_edit="can_edit"
+    />
   </div>
 </template>
 <script>

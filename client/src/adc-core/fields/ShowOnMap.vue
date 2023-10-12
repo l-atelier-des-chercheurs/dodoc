@@ -1,13 +1,10 @@
 <template>
   <DetailsPane :header="title" :icon="'map'">
-    <DisplayOnMap :pins="pins" :is_small="true" />
+    <DisplayOnMap :pins="pins" :is_small="true" :show_scale="false" />
   </DetailsPane>
   <!-- <div class="_metaField">
     <DLabel :str="title" />
     <div>
-
-
-
     </div>
   </div> -->
 </template>
