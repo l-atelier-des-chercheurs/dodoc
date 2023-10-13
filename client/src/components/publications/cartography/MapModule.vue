@@ -15,6 +15,11 @@
       />
     </div>
 
+    <sl-alert v-if="!has_coordinates" type="warning" open>
+      <sl-icon slot="icon" name="exclamation-triangle" />
+      <span v-html="$t('no_coordinates')" />
+    </sl-alert>
+
     <DetailsPane :header="$t('position_on_map')" :icon="'map'">
       <div class="_text">
         <template v-if="has_coordinates">
