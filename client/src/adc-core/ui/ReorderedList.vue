@@ -27,9 +27,7 @@
         {{ index + 1 }}
       </span>
       <span class="_clickZone" @click="$emit('openItem', item.$path)">
-        <h4 class="_title">
-          <slot :item="item" :index="index" />
-        </h4>
+        <slot :item="item" :index="index" />
       </span>
     </SlickItem>
   </SlickList>
@@ -129,15 +127,15 @@ body > ._reorderedList--item {
   position: relative;
 
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   align-items: center;
 
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 4);
 
   ._clickZone {
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+    // text-decoration: underline;
+    // text-underline-offset: 0.2em;
     cursor: pointer;
 
     &:hover,
@@ -146,16 +144,17 @@ body > ._reorderedList--item {
     }
   }
 
-  ._title {
-    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-  }
-
   &.is--active {
     background: var(--c-bleumarine);
     color: white;
     ._title {
     }
   }
+
+  &:has(._dragHandle:hover) {
+    background: var(--c-gris);
+  }
+
   // color: black;
   // background: blue;
 }

@@ -212,41 +212,6 @@ export default {
 </style>
 <style lang="scss">
 // slickitem
-._summaryItem {
-  z-index: 10000;
-
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-
-  padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 4);
-
-  ._clickZone {
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    cursor: pointer;
-
-    &:hover,
-    &:focus-visible {
-      background: var(--c-gris_clair);
-    }
-  }
-
-  ._title {
-    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-    border-radius: 2px;
-  }
-
-  &.is--active {
-    ._title {
-      background: var(--c-bleumarine);
-      color: white;
-    }
-  }
-  // color: black;
-  // background: blue;
-}
 
 ._colorInd {
   display: inline-block;

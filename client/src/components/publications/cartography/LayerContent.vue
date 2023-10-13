@@ -69,42 +69,21 @@
             :items="layer_modules_list"
             :path="layer.$path"
             :can_edit="can_edit"
-            @openItem="openPin"
             v-slot="slotProps"
           >
-            {{ slotProps.item.$path }}
+            <MapModule
+              :key="slotProps.item.$path"
+              :publication="publication"
+              :layer="layer"
+              :mapmodule="slotProps.item"
+              :can_edit="can_edit"
+              @repickLocation="$emit('repickLocation', slotProps.item.$path)"
+            />
             <!-- <span v-if="slotProps.item.section_title">
               {{ slotProps.item.section_title }}
             </span>
             <span v-else v-html="`<i>${$t('untitled')}</i>`" /> -->
           </ReorderedList>
-
-          <!-- <template
-            v-for="({ meta_filename, _module }, index) in layer_modules_list"
-          >
-            <MapModule
-              :key="meta_filename"
-              :index="index"
-              :meta_filename="meta_filename"
-              :mapmodule="_module"
-              :module_position="
-                layer_modules_list.length === 1
-                  ? 'alone'
-                  : index === 0
-                  ? 'first'
-                  : index === layer_modules_list.length - 1
-                  ? 'last'
-                  : 'inbetween'
-              "
-              :can_edit="can_edit"
-              @repickLocation="$emit('repickLocation', _module.$path)"
-              @moveUp="moveModuleTo({ meta_filename, new_position: index - 1 })"
-              @moveDown="
-                moveModuleTo({ meta_filename, new_position: index + 1 })
-              "
-              @remove="removeModule({ path: _module.$path })"
-            />
-          </template> -->
         </template>
       </div>
 
@@ -116,7 +95,7 @@
 </template>
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
-// import MapModule from "@/components/publications/cartography/MapModule.vue";
+import MapModule from "@/components/publications/cartography/MapModule.vue";
 
 export default {
   props: {
@@ -127,7 +106,7 @@ export default {
   },
   components: {
     ModuleCreator,
-    // MapModule,
+    MapModule,
   },
   data() {
     return {};
@@ -180,22 +159,6 @@ export default {
     },
     openPin(path) {
       this.$eventHub.$emit("publication.map.openPin", path);
-    },
-
-    async moveModuleTo({ meta_filename, new_position }) {
-      await this.moveModuleTo2({
-        publication: this.publication,
-        section: this.layer,
-        meta_filename,
-        new_position,
-      });
-    },
-    async removeModule({ path }) {
-      await this.removeModule2({
-        publication: this.publication,
-        section: this.layer,
-        path,
-      });
     },
   },
 };
