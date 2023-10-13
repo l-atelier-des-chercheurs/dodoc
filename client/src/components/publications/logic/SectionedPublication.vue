@@ -8,16 +8,12 @@
       :opened_section_modules_list="opened_section_modules_list"
       :can_edit="can_edit"
       @toggleSection="$emit('toggleSection', $event)"
-      @createSection="createSection"
       @removeSection="removeSection"
       @updateOrder="updateOrder"
-      @openSection="openSection"
-      @closeSection="closeSection"
       @addModules="appendModuleMetaFilenamesToList"
       @insertModules="insertModuleMetaFilenamesToList"
       @moveModuleTo="moveModuleTo"
       @removeModule="removeModule"
-      @duplicatePublicationMedia="duplicatePublicationMedia"
     />
   </div>
 </template>
@@ -49,17 +45,7 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    if (this.sections_list.length > 0 && !this.section_opened_meta) {
-      this.$emit("toggleSection", this.sections_list[0].meta_filename);
-    } else if (this.sections_list.length === 0) {
-      let title;
-      if (this.template === "story_with_sections")
-        title = this.$t("section") + " 1";
-      else if (this.template === "cartography") title = this.$t("layer") + " 1";
-      this.createSection(title);
-    }
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -122,32 +108,6 @@ export default {
     },
   },
   methods: {
-    async createSection(section_title) {
-      let additional_meta = {
-        section_type: "-",
-        requested_slug: "section",
-      };
-      if (section_title) additional_meta.section_title = section_title;
-
-      const section_meta_filename = await this.$api
-        .uploadFile({
-          path: this.publication.$path,
-          additional_meta,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-
-      let sections_list = this.sections_list.slice();
-      sections_list.push({
-        meta_filename: section_meta_filename,
-      });
-      await this.updatePubliMeta({
-        sections_list,
-      });
-      this.$emit("toggleSection", section_meta_filename);
-    },
     async removeSection(path) {
       const section_meta_filename = this.getFilename(path);
       let sections_list = this.sections_list.slice();
@@ -174,14 +134,6 @@ export default {
       this.updatePubliMeta({
         sections_list,
       });
-    },
-    openSection(path) {
-      const section_meta_filename = this.getFilename(path);
-      this.$emit("toggleSection", section_meta_filename);
-    },
-    closeSection() {
-      this.$eventHub.$emit(`sections.open_summary`);
-      this.$emit("toggleSection", false);
     },
     async updatePubliMeta(new_meta) {
       return await this.$api.updateMeta({
@@ -229,28 +181,6 @@ export default {
       );
 
       modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
-      await this.updateSectionMeta({ modules_list });
-    },
-    async duplicatePublicationMedia({
-      source_meta_filename,
-      copy_meta_filename,
-    }) {
-      source_meta_filename;
-      copy_meta_filename;
-
-      let modules_list = this.opened_section_modules_list.map(
-        (m) => m.meta_filename
-      );
-      const position_of_original_media = modules_list.findIndex(
-        (_mf) => _mf === source_meta_filename
-      );
-
-      modules_list.splice(
-        position_of_original_media + 1,
-        0,
-        copy_meta_filename
-      );
-
       await this.updateSectionMeta({ modules_list });
     },
 

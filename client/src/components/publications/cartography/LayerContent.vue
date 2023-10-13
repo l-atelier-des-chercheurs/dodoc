@@ -153,7 +153,7 @@ export default {
       this.$emit("close");
     },
     async addModules({ meta_filenames }) {
-      await this.appendModuleMetaFilenamesToList2({
+      await this.insertModuleMetaFilenamesToList2({
         publication: this.publication,
         section: this.layer,
         meta_filenames,

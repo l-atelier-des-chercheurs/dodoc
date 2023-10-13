@@ -201,7 +201,7 @@ export default {
       const opened_layer = this.layers.find(
         (l) => l.$path === this.opened_layer_path
       );
-      await this.appendModuleMetaFilenamesToList2({
+      await this.insertModuleMetaFilenamesToList2({
         publication: this.publication,
         section: opened_layer,
         meta_filenames,

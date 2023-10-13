@@ -206,9 +206,10 @@ export default {
         path,
       });
     },
-    async appendModuleMetaFilenamesToList2({
+    async insertModuleMetaFilenamesToList2({
       publication,
       section,
+      index,
       meta_filenames,
     }) {
       const section_modules_list = this.getModulesForSection({
@@ -216,7 +217,9 @@ export default {
         section,
       });
       let modules_list = section_modules_list.map((m) => m.meta_filename);
-      modules_list = modules_list.concat(meta_filenames);
+
+      if (!index) modules_list = modules_list.concat(meta_filenames);
+      else modules_list.splice(index, 0, ...meta_filenames);
 
       await this.$api.updateMeta({
         path: section.$path,
@@ -236,6 +239,37 @@ export default {
         (m) => m === meta_filename
       );
       modules_list.move(target_meta_index, new_position);
+
+      await this.$api.updateMeta({
+        path: section.$path,
+        new_meta: {
+          modules_list,
+        },
+      });
+    },
+
+    async duplicatePublicationMedia2({
+      publication,
+      section,
+      source_meta_filename,
+      copy_meta_filename,
+    }) {
+      let modules_list = this.getModulesForSection({
+        publication,
+        section,
+      }).map((m) => m.meta_filename);
+
+      const position_of_original_media = modules_list.findIndex(
+        (_mf) => _mf === source_meta_filename
+      );
+
+      debugger;
+
+      modules_list.splice(
+        position_of_original_media + 1,
+        0,
+        copy_meta_filename
+      );
 
       await this.$api.updateMeta({
         path: section.$path,

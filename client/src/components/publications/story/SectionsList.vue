@@ -6,8 +6,7 @@
       :sections="sections"
       :opened_section="opened_section"
       :can_edit="can_edit"
-      @openSection="$emit('openSection', $event)"
-      @updateOrder="$emit('updateOrder', $event)"
+      @toggleSection="$emit('toggleSection', $event)"
     />
     <transition name="pagechange" mode="out-in">
       <div v-if="opened_section" :key="opened_section.$path">
@@ -17,15 +16,7 @@
           :section="opened_section"
           :modules_list="opened_section_modules_list"
           :can_edit="can_edit"
-          @remove="$emit('removeSection', opened_section.$path)"
-          @close="$emit('closeSection')"
-          @addModules="$emit('addModules', $event)"
-          @insertModules="$emit('insertModules', $event)"
-          @moveModuleTo="$emit('moveModuleTo', $event)"
-          @removeModule="$emit('removeModule', $event)"
-          @duplicatePublicationMedia="
-            $emit('duplicatePublicationMedia', $event)
-          "
+          @close="$emit('toggleSection', undefined)"
         />
         <div class="_navBtns">
           <div class="_navBtns--content">

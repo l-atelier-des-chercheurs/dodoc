@@ -72,16 +72,13 @@ export default {
       this.$refs.details.$el.open = false;
     },
     openSection(path) {
-      // jarring jump in section
-      // setTimeout(() => {
-      //   this.closeSummary();
-      // }, 500);
-      this.$emit("openSection", path);
+      this.$emit("toggleSection", this.getFilename(path));
     },
+
     async createSection() {
       await this.createSection2({
         publication: this.publication,
-        type: "layer",
+        type: "section",
         group: "sections_list",
         title: this.new_section_title,
       });
