@@ -67,6 +67,7 @@
             :field_name="'modules_list'"
             :store_type="'plain_array'"
             :items="layer_modules_list"
+            :active_item_path="opened_pin_path"
             :path="layer.$path"
             :can_edit="can_edit"
             v-slot="slotProps"
@@ -78,6 +79,7 @@
               :mapmodule="slotProps.item"
               :can_edit="can_edit"
               @repickLocation="$emit('repickLocation', slotProps.item.$path)"
+              @open="$emit('openPin', slotProps.item.$path)"
             />
             <!-- <span v-if="slotProps.item.section_title">
               {{ slotProps.item.section_title }}
@@ -101,6 +103,7 @@ export default {
   props: {
     layer: Object,
     publication: Object,
+    opened_pin_path: String,
     default_layer_color: String,
     can_edit: Boolean,
   },
@@ -156,9 +159,6 @@ export default {
         meta_filenames,
       });
       // todo scroll to last meta_filename
-    },
-    openPin(path) {
-      this.$eventHub.$emit("publication.map.openPin", path);
     },
   },
 };

@@ -50,8 +50,10 @@
       :layer="opened_layer"
       :default_layer_color="default_layer_color"
       :publication="publication"
+      :opened_pin_path="opened_pin_path"
       :can_edit="can_edit"
       @repickLocation="repickLocation"
+      @openPin="$emit('update:opened_pin_path', $event)"
       @close="closeLayer"
     />
     <div class="_repickNotice" v-if="is_repicking_location_for">
@@ -78,6 +80,7 @@ export default {
     publication: Object,
     layers: Array,
     opened_layer_path: String,
+    opened_pin_path: String,
     can_edit: Boolean,
   },
   components: {

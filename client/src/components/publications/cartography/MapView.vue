@@ -4,6 +4,7 @@
       :publication="publication"
       :layers="layers"
       :opened_layer_path.sync="opened_layer_path"
+      :opened_pin_path.sync="opened_pin_path"
       :can_edit="can_edit"
     />
     <DisplayOnMap
@@ -14,6 +15,7 @@
       :pins="pins"
       :lines="lines"
       :is_small="false"
+      :opened_pin_path.sync="opened_pin_path"
       :can_add_media_to_point="!!opened_layer_path"
       @newPositionClicked="newPositionClicked"
     >
@@ -71,6 +73,7 @@ export default {
         longitude: undefined,
       },
       opened_layer_path: undefined,
+      opened_pin_path: undefined,
     };
   },
   i18n: {
@@ -86,7 +89,18 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    opened_pin_path() {
+      // open corresponding layer when clicking on pin
+      // if (this.opened_pin_path) {
+      //   const layer = this.layers.find((l) =>
+      //     l.modules_list?.includes(this.getFilename(this.opened_pin_path))
+      //   );
+      //   if (layer) return (this.opened_layer_path = layer.$path);
+      // }
+      // return (this.opened_layer_path = undefined);
+    },
+  },
   computed: {
     layers() {
       return this.getSectionsWithProps({

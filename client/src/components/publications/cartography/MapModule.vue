@@ -117,8 +117,7 @@ export default {
           .delay(4000)
           .error(this.$t("no_coordinates"));
       }
-
-      this.$eventHub.$emit("publication.map.openPin", this.mapmodule.$path);
+      this.$emit("open");
     },
     async removeModule() {
       await this.removeModule2({

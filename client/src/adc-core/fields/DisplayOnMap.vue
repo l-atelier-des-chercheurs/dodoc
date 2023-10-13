@@ -112,6 +112,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    opened_pin_path: String,
     can_add_media_to_point: {
       type: Boolean,
       default: false,
@@ -155,7 +156,6 @@ export default {
   },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
-    this.$eventHub.$on("publication.map.openPin", this.openPin);
   },
   mounted() {
     setTimeout(() => {
@@ -164,7 +164,6 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
-    this.$eventHub.$off("publication.map.openPin", this.openPin);
   },
   watch: {
     pins: {
@@ -187,6 +186,9 @@ export default {
     },
     start_zoom() {
       this.startMap();
+    },
+    opened_pin_path() {
+      this.openFeature(this.opened_pin_path);
     },
   },
   computed: {},
@@ -312,7 +314,7 @@ export default {
       });
       this.map.addControl(geocoder);
       geocoder.on("addresschosen", (evt) => {
-        this.resetClickedLocation();
+        this.closePopup();
 
         if (evt.place?.lon && evt.place?.lat) {
           this.clicked_location.latitude = +evt.place.lat;
@@ -368,6 +370,7 @@ export default {
 
       this.map.on("singleclick", (event) => {
         this.closePopup();
+
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
         let [longitude, latitude] = event.coordinate;
         longitude = this.roundToDec(longitude, 6);
@@ -565,6 +568,7 @@ export default {
       return new olStyle(style);
     },
     resetClickedLocation() {
+      this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
       this.clicked_location.latitude = undefined;
       this.clicked_location.longitude = undefined;
       this.clicked_location.file = undefined;
@@ -578,16 +582,17 @@ export default {
       });
     },
     openPin(path) {
-      const _pin_index = this.pins.findIndex((p) => p.path === path);
-      if (_pin_index === -1) return;
-      this.openFeature(_pin_index);
+      this.$emit("update:opened_pin_path", path);
     },
-    openFeature(index) {
-      const feature = this.pin_features[index];
+    openFeature(path) {
+      const feature = this.pin_features.find((f) => f.get("path") === path);
+      if (!feature) return "no_feature_found";
+
+      this.resetClickedLocation();
+
       const coordinates = feature.getGeometry().getCoordinates();
       const f = feature.get("file");
       this.clicked_location.file = f || undefined;
-
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];
@@ -599,13 +604,12 @@ export default {
       });
     },
     closePopup() {
-      this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
       this.resetClickedLocation();
+      this.$emit("update:opened_pin_path", undefined);
 
       this.overlay.setPosition(undefined);
       if (this.$refs.closePopup) this.$refs.closePopup.blur();
 
-      this.resetClickedLocation();
       return false;
     },
   },
