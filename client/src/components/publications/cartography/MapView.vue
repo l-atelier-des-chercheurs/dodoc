@@ -19,7 +19,7 @@
       :can_add_media_to_point="!!opened_layer_path"
       @newPositionClicked="newPositionClicked"
     >
-      <div class="" slot="popup_message">
+      <div class="" slot="popup_message" v-if="can_edit">
         <div v-if="!opened_layer_path">
           {{ $t("to_add_media_here_open_matching_layer") }}
         </div>

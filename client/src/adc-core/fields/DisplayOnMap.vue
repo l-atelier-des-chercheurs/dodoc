@@ -7,7 +7,11 @@
   >
     <div class="_map" ref="map" />
 
-    <div ref="popUp" class="_popup">
+    <div
+      ref="popUp"
+      class="_popup"
+      v-show="clicked_location.file || $slots.hasOwnProperty('popup_message')"
+    >
       <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
         <button
           type="button"
