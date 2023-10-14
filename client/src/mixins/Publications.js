@@ -218,7 +218,8 @@ export default {
       });
       let modules_list = section_modules_list.map((m) => m.meta_filename);
 
-      if (!index) modules_list = modules_list.concat(meta_filenames);
+      if (typeof index !== "number")
+        modules_list = modules_list.concat(meta_filenames);
       else modules_list.splice(index, 0, ...meta_filenames);
 
       await this.$api.updateMeta({
