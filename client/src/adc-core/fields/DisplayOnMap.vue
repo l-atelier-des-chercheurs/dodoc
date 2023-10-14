@@ -579,10 +579,12 @@ export default {
       this.popup_message = undefined;
     },
     navigateTo({ center, zoom = this.current_zoom }) {
+      // used to stop current animation if there are any
+      // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
+      this.view.setRotation(0);
       this.view.animate({
         center,
         zoom,
-        // duration: 2000,
       });
     },
     openPin(path) {
