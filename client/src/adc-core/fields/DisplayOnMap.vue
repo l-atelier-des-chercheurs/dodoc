@@ -670,6 +670,8 @@ export default {
 
   box-shadow: var(--panel-shadows);
 
+  pointer-events: none;
+
   &:after,
   &:before {
     top: 100%;
@@ -692,6 +694,11 @@ export default {
   //   left: 48px;
   //   margin-left: -11px;
   // }
+
+  ._pinContent,
+  ._popupClose {
+    pointer-events: auto;
+  }
 }
 ._popupClose {
   position: absolute;
