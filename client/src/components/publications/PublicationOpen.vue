@@ -21,7 +21,7 @@
         v-else-if="publication.template === 'story_with_sections'"
         class="_publicationOpen--content"
         :publication="publication"
-        :section_opened_meta="page_opened_id"
+        :opened_section_meta_filename="page_opened_id"
         :can_edit="can_edit"
         @toggleSection="$emit('togglePage', $event)"
       />

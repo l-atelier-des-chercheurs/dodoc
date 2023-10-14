@@ -6,7 +6,6 @@
         :sections="sections"
         :can_edit="false"
         :opened_section="opened_section"
-        :opened_section_modules_list="opened_section_modules_list"
         @openSection="openSection"
       />
     </template>
@@ -88,18 +87,10 @@ export default {
         );
       }
     },
-    opened_section_modules_list() {
-      return this.getModulesForSection({
-        publication: this.publication,
-        section: this.opened_section,
-      });
-    },
   },
   methods: {
     openSection(section_path) {
-      const section_meta = section_path.substring(
-        section_path.lastIndexOf("/") + 1
-      );
+      const section_meta = this.getFilename(section_path);
       this.updatePageQuery({ section_meta });
     },
     updatePageQuery({ section_meta }) {

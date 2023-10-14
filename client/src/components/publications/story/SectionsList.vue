@@ -4,33 +4,20 @@
       v-if="can_edit || sections.length > 1"
       :publication="publication"
       :sections="sections"
-      :opened_section="opened_section"
+      :opened_section_meta_filename="opened_section_meta_filename"
       :can_edit="can_edit"
       @toggleSection="$emit('toggleSection', $event)"
     />
     <transition name="pagechange" mode="out-in">
-      <div v-if="opened_section" :key="opened_section.$path">
-        <SingleSection
-          ref="section"
-          :publication="publication"
-          :section="opened_section"
-          :modules_list="opened_section_modules_list"
-          :can_edit="can_edit"
-          @close="$emit('toggleSection', undefined)"
-        />
-        <div class="_navBtns">
-          <div class="_navBtns--content">
-            <span v-if="prev_section" class="_navbtn" @click="prevSection">
-              <sl-icon name="arrow-left-circle" />
-              {{ prev_section.section_title }}
-            </span>
-            <span v-if="next_section" class="_navbtn" @click="nextSection">
-              {{ next_section.section_title }}
-              <sl-icon name="arrow-right-circle" />
-            </span>
-          </div>
-        </div>
-      </div>
+      <OpenedSection
+        v-if="opened_section_meta_filename"
+        :key="opened_section_meta_filename"
+        :publication="publication"
+        :sections="sections"
+        :opened_section_meta_filename="opened_section_meta_filename"
+        :can_edit="can_edit"
+        @toggleSection="$emit('toggleSection', $event)"
+      />
     </transition>
     <PublicationSettings v-if="can_edit">
       <StorySettings :publication="publication" />
@@ -41,74 +28,72 @@
 import PublicationSettings from "@/components/publications/PublicationSettings.vue";
 import StorySettings from "@/components/publications/story/StorySettings.vue";
 import SectionsSummary from "@/components/publications/story/SectionsSummary.vue";
-import SingleSection from "@/components/publications/story/SingleSection.vue";
+import OpenedSection from "@/components/publications/story/OpenedSection.vue";
 
 export default {
   props: {
     publication: Object,
-    sections: Array,
-    opened_section: [Boolean, Object],
-    opened_section_modules_list: Array,
-    modules_list: Array,
+    opened_section_meta_filename: String,
     can_edit: Boolean,
   },
   components: {
     PublicationSettings,
     StorySettings,
     SectionsSummary,
-    SingleSection,
+    OpenedSection,
   },
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
+  },
+
   data() {
     return {};
   },
+
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
-    opened_section_index() {
-      return this.sections.findIndex(
-        (s) => s.$path === this.opened_section?.$path
-      );
+    sections() {
+      return this.getSectionsWithProps({
+        publication: this.publication,
+        group: "sections_list",
+      });
     },
-    next_section() {
-      if (this.opened_section_index < this.sections.length - 1)
-        return this.sections[this.opened_section_index + 1];
-      return false;
-    },
-    prev_section() {
-      if (this.opened_section_index > 0)
-        return this.sections[this.opened_section_index - 1];
-      return false;
+    meta_filenames_already_present() {
+      const current = [];
+      const other = [];
+
+      // TODO
+
+      this.sections.map((s) => {
+        const is_current_section = s.$path === this.opened_section?.$path;
+
+        if (s.modules_list && Array.isArray(s.modules_list))
+          s.modules_list.map((meta_filename) => {
+            const section_module = this.findModuleFromMetaFilename({
+              files: this.publication.$files,
+              meta_filename,
+            });
+            if (
+              section_module?.source_medias &&
+              Array.isArray(section_module.source_medias)
+            )
+              section_module.source_medias.map((sm) => {
+                if (is_current_section)
+                  current.push(sm.meta_filename_in_project);
+                else other.push(sm.meta_filename_in_project);
+              });
+          });
+      });
+      return { current, other };
     },
   },
-  methods: {
-    nextSection() {
-      this.scrollToTop();
-      this.$emit("openSection", this.next_section.$path);
-    },
-    prevSection() {
-      this.scrollToTop();
-      this.$emit("openSection", this.prev_section.$path);
-    },
-    scrollToTop() {
-      const current_height = this.$el.offsetHeight;
-      this.$el.setAttribute("style", `height: ${current_height}px`);
-
-      if (this.$route.name === "Projet")
-        this.$el.scrollIntoView({
-          behavior: "smooth",
-          inline: "nearest",
-        });
-      else window.scrollTo({ top: 0, behavior: "smooth" });
-
-      window.setTimeout(() => this.$el.removeAttribute("style"), 1_000);
-      // document.body.scrollIntoView({
-      //   behavior: "smooth",
-      //   inline: "nearest",
-      // });
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -118,35 +103,5 @@ export default {
 }
 
 ._sectionTitle {
-}
-
-._navBtns {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: underline;
-  padding-bottom: calc(var(--spacing) * 4);
-}
-._navBtns--content {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) / 1);
-}
-
-._navbtn {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) / 4);
-
-  background: white;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
-
-  &:hover,
-  &:focus-visible {
-    background: var(--c-gris);
-  }
 }
 </style>

@@ -1,25 +1,24 @@
 <template>
   <div class="_storySectionTemplate">
-    <SectionedPublication
-      :template="publication.template"
+    <SectionsList
       :publication="publication"
-      :section_opened_meta="section_opened_meta"
+      :opened_section_meta_filename="opened_section_meta_filename"
       :can_edit="can_edit"
       @toggleSection="$emit('toggleSection', $event)"
     />
   </div>
 </template>
 <script>
-import SectionedPublication from "@/components/publications/logic/SectionedPublication.vue";
+import SectionsList from "@/components/publications/story/SectionsList.vue";
 
 export default {
   props: {
     publication: Object,
-    section_opened_meta: String,
+    opened_section_meta_filename: String,
     can_edit: Boolean,
   },
   components: {
-    SectionedPublication,
+    SectionsList,
   },
   data() {
     return {};

@@ -42,6 +42,7 @@ export default {
     items: Array,
     path: String,
     active_item_path: String,
+    active_item_meta: String,
     can_edit: Boolean,
   },
   components: {
@@ -75,7 +76,11 @@ export default {
   computed: {},
   methods: {
     isActive(path) {
-      return this.active_item_path && this.active_item_path === path;
+      return (
+        (this.active_item_path && this.active_item_path === path) ||
+        (this.active_item_meta &&
+          this.active_item_meta === this.getFilename(path))
+      );
     },
 
     getMetaFilenames(items) {

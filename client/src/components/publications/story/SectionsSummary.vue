@@ -11,7 +11,7 @@
         :field_name="'sections_list'"
         :items="sections"
         :path="publication.$path"
-        :active_item_path="opened_section.$path"
+        :active_item_meta="opened_section_meta_filename"
         :can_edit="can_edit"
         @openItem="openSection"
         v-slot="slotProps"
@@ -38,7 +38,7 @@ export default {
   props: {
     publication: Object,
     sections: Array,
-    opened_section: [Boolean, Object],
+    opened_section_meta_filename: String,
     can_edit: Boolean,
   },
   components: {},
