@@ -24,14 +24,15 @@
           {{ $t("to_add_media_here_open_matching_layer") }}
         </div>
         <div v-else>
-          <div class="">
+          <!-- <div class="">
             {{ $t("add_media") }}
-          </div>
+          </div> -->
           <ModuleCreator
             :publication_path="publication.$path"
             :is_collapsed="false"
             :context="'cartography'"
             :select_mode="'single'"
+            :show_labels="true"
             :types_available="['medias']"
             :post_addtl_meta="new_module_meta"
             @addModules="addModules"
@@ -211,8 +212,6 @@ export default {
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
         this.opened_pin_path = pin_path;
-        // this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
-        // this.$eventHub.$emit(`module.panTo.${meta_filename}`);
       }, 150);
 
       // todo scroll to last meta_filename

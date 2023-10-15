@@ -46,16 +46,6 @@
         />
       </div>
 
-      <template v-if="can_edit">
-        <ModuleCreator
-          :publication_path="publication.$path"
-          :is_collapsed="false"
-          :context="'cartography'"
-          :types_available="['medias']"
-          @addModules="addModules"
-        />
-        <hr />
-      </template>
       <div class="">
         <DLabel :str="$t('pins')" />
 
@@ -87,6 +77,17 @@
             <span v-else v-html="`<i>${$t('untitled')}</i>`" /> -->
           </ReorderedList>
         </template>
+      </div>
+
+      <div v-if="can_edit" class="_bottomBar">
+        <ModuleCreator
+          :publication_path="publication.$path"
+          :is_collapsed="false"
+          :context="'cartography'"
+          :show_labels="true"
+          :types_available="['medias']"
+          @addModules="addModules"
+        />
       </div>
 
       <hr />
@@ -159,6 +160,11 @@ export default {
         meta_filenames,
       });
       // todo scroll to last meta_filename
+      const meta_filename = meta_filenames.at(-1);
+      const pin_path = this.publication.$path + "/" + meta_filename;
+      setTimeout(() => {
+        this.$emit("openPin", pin_path);
+      }, 150);
     },
   },
 };
@@ -180,7 +186,7 @@ export default {
 }
 
 ._openedLayer--content {
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
   height: 100%;
   overflow: auto;
   background: white;
@@ -197,5 +203,14 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+._bottomBar {
+  position: sticky;
+  z-index: 10;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  padding: calc(var(--spacing) * 2);
 }
 </style>

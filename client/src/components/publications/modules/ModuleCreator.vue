@@ -7,7 +7,7 @@
         v-if="types_available.includes('text')"
         @click="createText"
       >
-        <!-- {{ $t("add_text") }} -->
+        <template v-if="show_labels">{{ $t("add_text") }}</template>
         <sl-icon
           name="fonts"
           style="font-size: var(--icon-size)"
@@ -21,6 +21,7 @@
         v-if="types_available.includes('medias')"
         @click="show_media_picker = true"
       >
+        <template v-if="show_labels">{{ $t("add_medias") }}</template>
         <sl-icon
           name="image"
           style="font-size: var(--icon-size)"
@@ -41,6 +42,7 @@
         v-if="types_available.includes('files')"
         @click="show_file_picker = true"
       >
+        <template v-if="show_labels">{{ $t(add_files) }}</template>
         <sl-icon
           name="file-earmark-binary-fill"
           style="font-size: var(--icon-size)"
@@ -61,6 +63,7 @@
         v-if="types_available.includes('link')"
         @click="show_link_picker = true"
       >
+        <template v-if="show_labels">{{ $t("add_link") }}</template>
         <sl-icon
           name="link"
           style="font-size: var(--icon-size)"
@@ -86,6 +89,7 @@
             })
           "
         >
+          <template v-if="show_labels">{{ $t(shape.type) }}</template>
           <sl-icon
             :name="shape.icon"
             style="font-size: var(--icon-size)"
@@ -119,6 +123,10 @@ export default {
     pre_addtl_meta: Object,
     post_addtl_meta: Object,
     select_mode: String,
+    show_labels: {
+      type: Boolean,
+      default: false,
+    },
     context: String,
     types_available: {
       type: Array,
