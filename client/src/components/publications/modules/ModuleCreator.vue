@@ -42,7 +42,7 @@
         v-if="types_available.includes('files')"
         @click="show_file_picker = true"
       >
-        <template v-if="show_labels">{{ $t(add_files) }}</template>
+        <template v-if="show_labels">{{ $t("add_files") }}</template>
         <sl-icon
           name="file-earmark-binary-fill"
           style="font-size: var(--icon-size)"
