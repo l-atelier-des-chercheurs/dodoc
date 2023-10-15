@@ -47,6 +47,10 @@ export default {
   },
   created() {},
   mounted() {
+    if (this.sections.length > 0 && !this.opened_section_meta_filename) {
+      const section_path = this.sections[0].$path;
+      this.openSection(section_path);
+    }
     this.$eventHub.$on(`sections.open_summary`, this.openSummary);
   },
   beforeDestroy() {
