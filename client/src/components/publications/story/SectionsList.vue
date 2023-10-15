@@ -68,27 +68,24 @@ export default {
       const current = [];
       const other = [];
 
-      // TODO
-
       this.sections.map((s) => {
-        const is_current_section = s.$path === this.opened_section?.$path;
+        const is_current_section =
+          this.getFilename(s.$path) === this.opened_section_meta_filename;
 
-        if (s.modules_list && Array.isArray(s.modules_list))
-          s.modules_list.map((meta_filename) => {
-            const section_module = this.findModuleFromMetaFilename({
-              files: this.publication.$files,
-              meta_filename,
+        const modules = this.getModulesForSection({
+          publication: this.publication,
+          section: s,
+        });
+
+        debugger;
+
+        modules.map(({ _module }) => {
+          if (_module?.source_medias && Array.isArray(_module.source_medias))
+            _module.source_medias.map((sm) => {
+              if (is_current_section) current.push(sm.meta_filename_in_project);
+              else other.push(sm.meta_filename_in_project);
             });
-            if (
-              section_module?.source_medias &&
-              Array.isArray(section_module.source_medias)
-            )
-              section_module.source_medias.map((sm) => {
-                if (is_current_section)
-                  current.push(sm.meta_filename_in_project);
-                else other.push(sm.meta_filename_in_project);
-              });
-          });
+        });
       });
       return { current, other };
     },
