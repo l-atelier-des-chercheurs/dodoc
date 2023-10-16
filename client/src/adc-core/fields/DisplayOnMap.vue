@@ -5,9 +5,13 @@
       'is--small': is_small,
     }"
   >
-    <div class="map" ref="map" />
+    <div class="_map" ref="map" />
 
-    <div ref="popUp" class="_popup">
+    <div
+      ref="popUp"
+      class="_popup"
+      v-show="clicked_location.file || $slots.hasOwnProperty('popup_message')"
+    >
       <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
         <button
           type="button"
@@ -17,7 +21,6 @@
         >
           <b-icon icon="x-circle" />
         </button>
-        <div v-if="popup_message" v-html="popup_message" />
 
         <div
           v-if="clicked_location.file"
@@ -42,6 +45,11 @@
             {{ clicked_location.longitude }}°
           </small>
         </div> -->
+        <div
+          v-if="popup_message"
+          class="_popupMessage"
+          v-html="popup_message"
+        />
         <div
           class="_popupMessage"
           v-if="
@@ -70,9 +78,6 @@ import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
 
-// incompatibility error ? https://github.com/jonataswalker/ol-geocoder/issues/270
-// TODO FIX later
-
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
 
@@ -81,6 +86,7 @@ import olCircleStyle from "ol/style/Circle";
 import olFill from "ol/style/Fill";
 import olStroke from "ol/style/Stroke";
 import olText from "ol/style/Text";
+import { ScaleLine, FullScreen } from "ol/control";
 
 export default {
   name: "DisplayOnMap",
@@ -106,6 +112,11 @@ export default {
       type: Boolean,
       default: true,
     },
+    show_scale: {
+      type: Boolean,
+      default: true,
+    },
+    opened_pin_path: String,
     can_add_media_to_point: {
       type: Boolean,
       default: false,
@@ -149,7 +160,6 @@ export default {
   },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
-    this.$eventHub.$on("publication.map.openPin", this.openPin);
   },
   mounted() {
     setTimeout(() => {
@@ -158,28 +168,36 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
-    this.$eventHub.$off("publication.map.openPin", this.openPin);
   },
   watch: {
     pins: {
       handler() {
-        this.startMap();
+        this.startMap({ keep_loc_and_zoom: true });
       },
       deep: true,
     },
     lines: {
       handler() {
-        this.startMap();
+        this.startMap({ keep_loc_and_zoom: true });
       },
       deep: true,
     },
     map_baselayer() {
+      this.startMap({ keep_loc_and_zoom: true });
+    },
+    start_coords() {
       this.startMap();
+    },
+    start_zoom() {
+      this.startMap();
+    },
+    opened_pin_path() {
+      this.openFeature(this.opened_pin_path);
     },
   },
   computed: {},
   methods: {
-    startMap() {
+    startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom =
         this.constrainVal(this.start_zoom, this.min_zoom, this.max_zoom) || 9;
       let center = [5.39057449011251, 43.310173305629576];
@@ -198,8 +216,10 @@ export default {
 
       // destroy map if exist
       if (this.map) {
-        zoom = this.map.getView().getZoom();
-        center = this.map.getView().getCenter();
+        if (keep_loc_and_zoom) {
+          zoom = this.map.getView().getZoom();
+          center = this.map.getView().getCenter();
+        }
 
         this.map.setTarget(null);
         this.map = null;
@@ -270,6 +290,17 @@ export default {
         })
       );
 
+      const fs_option = new FullScreen();
+      this.map.addControl(fs_option);
+
+      //////////////////////////////////////////////////// SCALELINE
+      if (this.show_scale) {
+        const scale_line = new ScaleLine({
+          units: "metric",
+        });
+        this.map.addControl(scale_line);
+      }
+
       //////////////////////////////////////////////////// SEARCH FIELD
 
       let lang = "fr-FR";
@@ -287,11 +318,9 @@ export default {
       });
       this.map.addControl(geocoder);
       geocoder.on("addresschosen", (evt) => {
-        // const feature = evt.feature,
-        //   address = evt.address;
-        // content.innerHTML = "<p>" + address.formatted + "</p>";
+        this.closePopup();
+
         if (evt.place?.lon && evt.place?.lat) {
-          // const coordinate = [2.214555195288306, 47.1857072668881];
           this.clicked_location.latitude = +evt.place.lat;
           this.clicked_location.longitude = +evt.place.lon;
           const coordinate = [
@@ -345,6 +374,7 @@ export default {
 
       this.map.on("singleclick", (event) => {
         this.closePopup();
+
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
         let [longitude, latitude] = event.coordinate;
         longitude = this.roundToDec(longitude, 6);
@@ -541,24 +571,34 @@ export default {
       };
       return new olStyle(style);
     },
+    resetClickedLocation() {
+      this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
+      this.clicked_location.latitude = undefined;
+      this.clicked_location.longitude = undefined;
+      this.clicked_location.file = undefined;
+      this.popup_message = undefined;
+    },
     navigateTo({ center, zoom = this.current_zoom }) {
+      // used to stop current animation if there are any
+      // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
+      this.view.setRotation(0);
       this.view.animate({
         center,
         zoom,
-        // duration: 2000,
       });
     },
     openPin(path) {
-      const _pin_index = this.pins.findIndex((p) => p.path === path);
-      if (_pin_index === -1) return;
-      this.openFeature(_pin_index);
+      this.$emit("update:opened_pin_path", path);
     },
-    openFeature(index) {
-      const feature = this.pin_features[index];
+    openFeature(path) {
+      const feature = this.pin_features.find((f) => f.get("path") === path);
+      if (!feature) return "no_feature_found";
+
+      this.resetClickedLocation();
+
       const coordinates = feature.getGeometry().getCoordinates();
       const f = feature.get("file");
       this.clicked_location.file = f || undefined;
-
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];
@@ -570,14 +610,12 @@ export default {
       });
     },
     closePopup() {
-      this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
+      this.resetClickedLocation();
+      this.$emit("update:opened_pin_path", undefined);
 
       this.overlay.setPosition(undefined);
       if (this.$refs.closePopup) this.$refs.closePopup.blur();
-      this.clicked_location.longitude = undefined;
-      this.clicked_location.latitude = undefined;
-      this.clicked_location.file = undefined;
-      this.popup_message = undefined;
+
       return false;
     },
   },
@@ -590,6 +628,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: var(--c-gris);
+  font-size: 150%;
 
   flex: 1 1 320px;
 
@@ -599,19 +638,36 @@ export default {
     aspect-ratio: 1;
     border-radius: 4px;
     overflow: hidden;
-    .map {
-    }
   }
 }
-.map {
+._map {
   width: 100%;
   height: 100%;
+
+  ::v-deep {
+    .ol-geocoder {
+      .gcd-gl-btn {
+        height: 1.375em;
+        width: 1.375em;
+      }
+      .gcd-gl-input {
+      }
+    }
+    .gcd-road {
+      font-weight: normal;
+      font-style: italic;
+      font-size: var(--sl-font-size-small);
+      color: inherit;
+    }
+  }
 }
 ._popup {
   position: absolute;
   bottom: 12px;
-  left: -50px;
+  left: -48px;
   min-width: 280px;
+
+  font-size: var(--sl-font-size-normal);
 
   background: white;
 
@@ -619,6 +675,8 @@ export default {
   border-radius: var(--panel-radius);
 
   box-shadow: var(--panel-shadows);
+
+  pointer-events: none;
 
   &:after,
   &:before {
@@ -642,12 +700,17 @@ export default {
   //   left: 48px;
   //   margin-left: -11px;
   // }
+
+  ._pinContent,
+  ._popupClose {
+    pointer-events: auto;
+  }
 }
 ._popupClose {
   position: absolute;
   z-index: 1000;
-  top: 0;
-  right: 0;
+  top: calc(var(--spacing) / -2);
+  right: calc(var(--spacing) / -2);
   padding: calc(var(--spacing) / 1);
 }
 
@@ -658,14 +721,7 @@ export default {
 }
 
 ._popupMessage {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 </style>
-<style lang="scss">
-.ol-geocoder .gcd-gl-btn {
-  height: 1.375em;
-  width: 1.375em;
-}
-.ol-geocoder .gcd-gl-input {
-}
-</style>
+<style lang="scss"></style>

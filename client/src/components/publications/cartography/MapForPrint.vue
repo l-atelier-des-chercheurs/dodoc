@@ -1,22 +1,20 @@
 <template>
-  <div>
-    <MapTemplate
-      :publication="publication"
-      :section_opened_meta="layer_opened_meta"
-      :can_edit="false"
-      @toggleSection="toggleSection"
-    />
-  </div>
+  <MapView
+    :publication="publication"
+    :opened_view_path="opened_view_path"
+    :can_edit="can_edit"
+    @toggleView="toggleView"
+  />
 </template>
 <script>
-import MapTemplate from "@/components/publications/templates/MapTemplate.vue";
+import MapView from "@/components/publications/cartography/MapView.vue";
 
 export default {
   props: {
     publication: Object,
   },
   components: {
-    MapTemplate,
+    MapView,
   },
   data() {
     return {
@@ -33,24 +31,13 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    layer_opened_meta() {
-      return this.$route.query?.layer || false;
+    opened_view_path() {
+      return this.$route.query?.view || false;
     },
   },
   methods: {
-    toggleSection(section_meta) {
-      this.updatePageQuery({ section_meta });
-    },
-    updatePageQuery({ section_meta }) {
-      let query = {};
-
-      if (this.$route.query)
-        query = JSON.parse(JSON.stringify(this.$route.query));
-
-      if (section_meta === false) delete query.layer;
-      else if (section_meta) query.layer = section_meta;
-
-      this.$router.push({ query });
+    toggleView(view_meta) {
+      this.updatePageQuery({ prop: "view", val: view_meta });
     },
   },
 };

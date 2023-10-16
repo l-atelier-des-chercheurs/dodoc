@@ -10,7 +10,7 @@
         >
           <SectionTitle class="_text" :section="section" :can_edit="can_edit" />
           <div class="_buttons" v-if="can_edit">
-            <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
+            <RemoveMenu :remove_text="$t('remove')" @remove="removeSection" />
             <div>
               <button
                 type="button"
@@ -24,43 +24,47 @@
           </div>
         </div>
         <transition-group tag="div" name="StoryModules" appear :duration="700">
-          <template v-for="({ meta_filename, _module }, index) in modules_list">
+          <template v-for="(_module, index) in section_modules_list">
             <div class="_spacer" :key="'mc_' + index">
               <!-- v-if="can_edit || index > 0" -->
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
                 :types_available="['text', 'medias', 'files', 'link']"
-                @addModule="
-                  ({ meta_filename }) =>
-                    $emit('insertModule', { meta_filename, index })
+                @addModules="
+                  ({ meta_filenames }) =>
+                    insertModules({ meta_filenames, index })
                 "
               />
             </div>
 
             <PublicationModule
               class="_mediaPublication"
-              :key="meta_filename"
+              :key="_module.$path"
               :publimodule="_module"
               :module_position="
-                modules_list.length === 1
+                section_modules_list.length === 1
                   ? 'alone'
                   : index === 0
                   ? 'first'
-                  : index === modules_list.length - 1
+                  : index === section_modules_list.length - 1
                   ? 'last'
                   : 'inbetween'
               "
               :can_edit="can_edit"
-              @moveUp="$emit('moveModuleTo', { meta_filename, dir: -1 })"
-              @moveDown="$emit('moveModuleTo', { meta_filename, dir: +1 })"
+              @moveUp="
+                moveModuleTo({ path: _module.$path, new_position: index - 1 })
+              "
+              @moveDown="
+                moveModuleTo({ path: _module.$path, new_position: index + 1 })
+              "
               @duplicate="
-                $emit('duplicatePublicationMedia', {
-                  source_meta_filename: meta_filename,
+                duplicatePublicationMedia({
+                  source_module_path: _module.$path,
                   copy_meta_filename: $event,
                 })
               "
-              @remove="$emit('removeModule', meta_filename)"
+              @remove="removeModule(_module.$path)"
             />
           </template>
         </transition-group>
@@ -68,7 +72,7 @@
           v-if="can_edit"
           :publication_path="publication.$path"
           :types_available="['text', 'medias', 'files', 'link']"
-          @addModule="$emit('addModule', $event)"
+          @addModules="addModules"
         />
       </div>
     </div>
@@ -83,7 +87,6 @@ export default {
   props: {
     publication: Object,
     section: Object,
-    modules_list: Array,
     can_edit: Boolean,
   },
   components: {
@@ -101,6 +104,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    section_modules_list() {
+      return this.getModulesForSection({
+        publication: this.publication,
+        section: this.section,
+      }).map(({ _module }) => _module);
+    },
     story_styles() {
       const width = (this.publication.story_width || 800) + "px";
       if (this.publication.story_is_not_responsive === true)
@@ -108,7 +117,70 @@ export default {
       else return { maxWidth: width };
     },
   },
-  methods: {},
+  methods: {
+    async addModules({ meta_filenames }) {
+      await this.insertModuleMetaFilenamesToList2({
+        publication: this.publication,
+        section: this.section,
+        meta_filenames,
+      });
+
+      const meta_filename = meta_filenames.at(-1);
+      this.toggleNewModuleEdit({ meta_filename });
+    },
+    async insertModules({ meta_filenames, index }) {
+      await this.insertModuleMetaFilenamesToList2({
+        publication: this.publication,
+        section: this.section,
+        index,
+        meta_filenames,
+      });
+      const meta_filename = meta_filenames.at(-1);
+      this.toggleNewModuleEdit({ meta_filename });
+    },
+    toggleNewModuleEdit({ meta_filename }) {
+      setTimeout(() => {
+        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
+      }, 50);
+    },
+    async moveModuleTo({ path, new_position }) {
+      await this.moveModuleTo2({
+        publication: this.publication,
+        section: this.section,
+        meta_filename: this.getFilename(path),
+        new_position,
+      });
+    },
+    async duplicatePublicationMedia({
+      source_module_path,
+      copy_meta_filename,
+    }) {
+      const source_meta_filename = this.getFilename(source_module_path);
+      await this.duplicatePublicationMedia2({
+        publication: this.publication,
+        section: this.section,
+        source_meta_filename,
+        copy_meta_filename,
+      });
+    },
+
+    async removeSection() {
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        path: this.section.$path,
+      });
+      this.$emit("close");
+    },
+    async removeModule(path) {
+      // todo deleteitem already called
+      await this.removeModule2({
+        publication: this.publication,
+        section: this.section,
+        path,
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

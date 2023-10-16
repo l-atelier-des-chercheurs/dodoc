@@ -7,7 +7,7 @@
         v-if="types_available.includes('text')"
         @click="createText"
       >
-        <!-- {{ $t("add_text") }} -->
+        <template v-if="show_labels">{{ $t("add_text") }}</template>
         <sl-icon
           name="fonts"
           style="font-size: var(--icon-size)"
@@ -21,6 +21,7 @@
         v-if="types_available.includes('medias')"
         @click="show_media_picker = true"
       >
+        <template v-if="show_labels">{{ $t("add_medias") }}</template>
         <sl-icon
           name="image"
           style="font-size: var(--icon-size)"
@@ -30,6 +31,7 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
+        :select_mode="select_mode"
         @addMedias="createMosaic"
         @close="show_media_picker = false"
       />
@@ -40,6 +42,7 @@
         v-if="types_available.includes('files')"
         @click="show_file_picker = true"
       >
+        <template v-if="show_labels">{{ $t("add_files") }}</template>
         <sl-icon
           name="file-earmark-binary-fill"
           style="font-size: var(--icon-size)"
@@ -49,6 +52,7 @@
       <MediaPicker
         v-if="show_file_picker"
         :publication_path="publication_path"
+        :select_mode="select_mode"
         @addMedias="createFiles"
         @close="show_file_picker = false"
       />
@@ -59,6 +63,7 @@
         v-if="types_available.includes('link')"
         @click="show_link_picker = true"
       >
+        <template v-if="show_labels">{{ $t("add_link") }}</template>
         <sl-icon
           name="link"
           style="font-size: var(--icon-size)"
@@ -78,12 +83,13 @@
           :key="shape.type"
           class="u-button u-button_small u-button_bleumarine"
           @click="
-            createModule({
+            createCustomModule({
               module_type: shape.type,
               addtl_meta: shape.addtl_meta,
             })
           "
         >
+          <template v-if="show_labels">{{ $t(shape.type) }}</template>
           <sl-icon
             :name="shape.icon"
             style="font-size: var(--icon-size)"
@@ -116,6 +122,11 @@ export default {
     publication_path: String,
     pre_addtl_meta: Object,
     post_addtl_meta: Object,
+    select_mode: String,
+    show_labels: {
+      type: Boolean,
+      default: false,
+    },
     context: String,
     types_available: {
       type: Array,
@@ -220,27 +231,10 @@ export default {
       }
 
       if (this.context === "page_by_page" || this.context === "cartography") {
-        for (const source_media of source_medias) {
-          const media = this.getSourceMedia({
-            source_media,
-            folder_path: this.publication_path,
-          });
-
-          let addtl_meta = {};
-          if (this.context === "page_by_page")
-            if (media?.$infos?.ratio)
-              addtl_meta.height =
-                this.$root.default_new_module_width * media.$infos.ratio;
-
-          if (this.context === "cartography")
-            if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
-
-          await this.createModule({
-            module_type: "mosaic",
-            source_medias: [source_media],
-            addtl_meta,
-          });
-        }
+        await this.createMultipleModules({
+          module_type: "mosaic",
+          source_medias,
+        });
       } else {
         await this.createModule({
           module_type: "mosaic",
@@ -282,6 +276,12 @@ export default {
 
       this.show_file_picker = false;
     },
+    async createCustomModule({ module_type, addtl_meta }) {
+      await this.createModule({
+        module_type,
+        addtl_meta,
+      });
+    },
     async createText() {
       const filename = "text-" + +new Date() + ".txt";
       const meta_filename = await this.$api.uploadText({
@@ -305,10 +305,38 @@ export default {
         source_medias,
         addtl_meta,
       });
-      this.$emit("addModule", { meta_filename });
+      this.$emit("addModules", { meta_filenames: [meta_filename] });
       this.show_module_selector = false;
+      return meta_filename;
     },
+    async createMultipleModules({ module_type, source_medias = [] }) {
+      let meta_filenames = [];
+      for (const source_media of source_medias) {
+        const media = this.getSourceMedia({
+          source_media,
+          folder_path: this.publication_path,
+        });
 
+        let addtl_meta = {};
+        if (this.context === "page_by_page")
+          if (media?.$infos?.ratio)
+            addtl_meta.height =
+              this.$root.default_new_module_width * media.$infos.ratio;
+
+        if (this.context === "cartography")
+          if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+
+        const meta_filename = await this.createMetaForModule({
+          module_type,
+          source_medias: [source_media],
+          addtl_meta,
+        });
+        meta_filenames.push(meta_filename);
+      }
+
+      this.show_module_selector = false;
+      this.$emit("addModules", { meta_filenames });
+    },
     async createMetaForModule({ module_type, source_medias, addtl_meta }) {
       let additional_meta = {
         module_type,

@@ -532,6 +532,12 @@
                   "sections_list": {
                     "type": "array"
                   },
+                  "layers_list": {
+                    "type": "array"
+                  },
+                  "views_list": {
+                    "type": "array"
+                  },
                   "modules_list": {
                     "type": "array"
                   },

@@ -68,10 +68,10 @@
                 v-if="can_edit"
                 :publication_path="publication.$path"
                 :types_available="['text', 'medias', 'files', 'link']"
-                @addModule="
-                  ({ meta_filename }) =>
-                    insertModuleMetaFilenameToList({
-                      meta_filename,
+                @addModules="
+                  ({ meta_filenames }) =>
+                    insertModuleMetaFilenamesToList({
+                      meta_filenames,
                       index: index + 1,
                     })
                 "
@@ -86,7 +86,7 @@
       v-if="can_edit && (!modules_list || modules_list.length === 0)"
       :publication_path="publication.$path"
       :types_available="['text', 'medias', 'files', 'link']"
-      @addModule="appendModuleMetaFilenameToList"
+      @addModules="appendModuleMetaFilenameToList"
     />
   </div>
 </template>
@@ -144,7 +144,9 @@ export default {
     },
   },
   methods: {
-    async appendModuleMetaFilenameToList({ meta_filename }) {
+    async appendModuleMetaFilenameToList({ meta_filenames }) {
+      const meta_filename = meta_filenames.at(-1);
+
       const modules_list = this.modules_list.slice();
       modules_list.push(meta_filename);
 
@@ -156,7 +158,8 @@ export default {
 
       this.toggleNewModuleEdit({ meta_filename });
     },
-    async insertModuleMetaFilenameToList({ meta_filename, index }) {
+    async insertModuleMetaFilenamesToList({ meta_filenames, index }) {
+      const meta_filename = meta_filenames.at(-1);
       const modules_list = this.modules_list.slice();
       modules_list.splice(index, 0, meta_filename);
 

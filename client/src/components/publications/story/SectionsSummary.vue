@@ -7,48 +7,26 @@
       :has_items="sections.length > 0 ? sections.length : false"
       :is_open_initially="sections.length === 0"
     >
-      <SlickList
-        class="_list"
-        axis="y"
-        :value="sections"
-        @input="$emit('updateOrder', $event)"
-        :useDragHandle="true"
+      <ReorderedList
+        :field_name="'sections_list'"
+        :items="sections"
+        :path="publication.$path"
+        :active_item_meta="opened_section_meta_filename"
+        :can_edit="can_edit"
+        @openItem="openSection"
+        v-slot="slotProps"
       >
-        <SlickItem
-          v-for="(section, index) of sections"
-          :key="section.$path"
-          :index="index"
-          class="_summaryItem"
-          :class="{
-            'is--active': isActive(section.$path),
-          }"
-        >
-          <span v-handle class="u-dragHandle" v-if="can_edit">
-            <sl-icon name="grip-vertical" label="Déplacer" />
-          </span>
-          <span class="_clickZone" @click="openSection(section.$path)">
-            <h4 class="_title">
-              {{ index + 1 }}.
-              <span v-if="section.section_title">
-                {{ section.section_title }}
-              </span>
-              <span v-else v-html="'<i>' + $t('untitled') + '</i>'" />
-            </h4>
-          </span>
-          <!-- <small>
-            ({{ section.modules_list ? section.modules_list.length : 0 }})
-          </small> -->
-        </SlickItem>
-      </SlickList>
+        <span v-if="slotProps.item.section_title">
+          {{ slotProps.item.section_title }}
+        </span>
+        <span v-else v-html="`<i>${$t('untitled')}</i>`" />
+      </ReorderedList>
+
       <template v-if="can_edit">
         <template v-if="sections.length > 0">
           <hr />
         </template>
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="$emit('createSection')"
-        >
+        <button type="button" class="u-buttonLink" @click="createSection">
           {{ $t("create_section") }}
         </button>
       </template>
@@ -56,31 +34,40 @@
   </div>
 </template>
 <script>
-import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
-
 export default {
   props: {
+    publication: Object,
     sections: Array,
-    opened_section: [Boolean, Object],
+    opened_section_meta_filename: String,
     can_edit: Boolean,
   },
-  components: {
-    SlickItem,
-    SlickList,
-  },
-  directives: { handle: HandleDirective },
+  components: {},
   data() {
     return {};
   },
   created() {},
   mounted() {
+    if (this.sections.length > 0 && !this.opened_section_meta_filename) {
+      const section_path = this.sections[0].$path;
+      this.openSection(section_path);
+    }
     this.$eventHub.$on(`sections.open_summary`, this.openSummary);
   },
   beforeDestroy() {
     this.$eventHub.$off(`sections.open_summary`, this.openSummary);
   },
   watch: {},
-  computed: {},
+  computed: {
+    new_section_title() {
+      let idx = this.sections.length + 1;
+      let new_section_title = this.$t("section") + " " + idx;
+      while (this.sections.some((s) => s.section_title === new_section_title)) {
+        idx++;
+        new_section_title = this.$t("section") + " " + idx;
+      }
+      return new_section_title;
+    },
+  },
   methods: {
     openSummary() {
       this.$refs.details.$el.open = true;
@@ -89,14 +76,16 @@ export default {
       this.$refs.details.$el.open = false;
     },
     openSection(path) {
-      // jarring jump in section
-      // setTimeout(() => {
-      //   this.closeSummary();
-      // }, 500);
-      this.$emit("openSection", path);
+      this.$emit("toggleSection", this.getFilename(path));
     },
-    isActive(path) {
-      return this.opened_section && path === this.opened_section.$path;
+
+    async createSection() {
+      await this.createSection2({
+        publication: this.publication,
+        type: "section",
+        group: "sections_list",
+        title: this.new_section_title,
+      });
     },
   },
 };
@@ -107,47 +96,5 @@ export default {
   width: 100%;
   margin: 0 auto;
   margin-bottom: calc(var(--spacing) / 1);
-}
-
-._list {
-  color: black;
-}
-</style>
-<style lang="scss">
-// slickitem
-._summaryItem {
-  z-index: 10000;
-
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-
-  padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 4);
-
-  ._clickZone {
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    cursor: pointer;
-
-    &:hover,
-    &:focus-visible {
-      background: var(--c-gris_clair);
-    }
-  }
-
-  ._title {
-    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-    border-radius: 2px;
-  }
-
-  &.is--active {
-    ._title {
-      background: var(--c-bleumarine);
-      color: white;
-    }
-  }
-  // color: black;
-  // background: blue;
 }
 </style>

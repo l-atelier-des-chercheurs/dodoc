@@ -1,21 +1,11 @@
 <template>
   <div class="_mapView">
     <LayersPane
-      v-if="can_edit || sections.length > 1"
-      :publication_path="publication.$path"
-      :sections="sections"
-      :opened_section="opened_section"
-      :opened_section_modules_list="opened_section_modules_list"
+      :publication="publication"
+      :layers="layers"
+      :opened_layer_path.sync="opened_layer_path"
+      :opened_pin_path.sync="opened_pin_path"
       :can_edit="can_edit"
-      @createSection="$emit('createSection', $event)"
-      @openSection="$emit('openSection', $event)"
-      @closeSection="$emit('closeSection')"
-      @updateOrder="$emit('updateOrder', $event)"
-      @addModule="$emit('addModule', $event)"
-      @insertModule="$emit('insertModule', $event)"
-      @moveModuleTo="$emit('moveModuleTo', $event)"
-      @removeModule="$emit('removeModule', $event)"
-      @duplicatePublicationMedia="$emit('duplicatePublicationMedia', $event)"
     />
     <DisplayOnMap
       class="_mapContainer"
@@ -24,129 +14,67 @@
       :map_baselayer="publication.map_baselayer"
       :pins="pins"
       :lines="lines"
-      :link_pins="opened_section_link_pins"
       :is_small="false"
-      :can_add_media_to_point="opened_section !== false"
+      :opened_pin_path.sync="opened_pin_path"
+      :can_add_media_to_point="!!opened_layer_path"
       @newPositionClicked="newPositionClicked"
     >
-      <div class="" slot="popup_message">
-        <div v-if="!opened_section">
+      <div class="" slot="popup_message" v-if="can_edit">
+        <div v-if="!opened_layer_path">
           {{ $t("to_add_media_here_open_matching_layer") }}
         </div>
         <div v-else>
-          <div class="">
+          <!-- <div class="">
             {{ $t("add_media") }}
-          </div>
+          </div> -->
           <ModuleCreator
             :publication_path="publication.$path"
             :is_collapsed="false"
             :context="'cartography'"
+            :select_mode="'single'"
+            :show_labels="true"
             :types_available="['medias']"
             :post_addtl_meta="new_module_meta"
-            @addModule="$emit('addModule', $event)"
+            @addModules="addModules"
           />
         </div>
       </div>
     </DisplayOnMap>
-
-    <div class="_textContainer" v-if="false">
-      <div class="_views">
-        <DLabel :str="$t('views_list')" />
-
-        <button
-          type="button"
-          class="_viewPreview"
-          v-for="(view, index) in views_list"
-          :key="index"
-          @click="openView(index)"
-        >
-          <sl-badge pill>{{ index + 1 }}</sl-badge>
-          <strong>
-            {{ view.title }}
-          </strong>
-        </button>
-      </div>
-
-      <transition name="slideup" :duration="150" mode="out-in">
-        <div class="_openedView" v-if="opened_view_id !== false">
-          <h2>
-            {{ opened_view.title }}
-          </h2>
-
-          <sl-button
-            variant="default"
-            size="medium"
-            circle
-            class="_closeBtn"
-            @click="closeView"
-          >
-            <sl-icon name="x" :label="$t('close')"></sl-icon>
-          </sl-button>
-          <hr />
-
-          <CollaborativeEditor2
-            ref="textBloc"
-            :path="''"
-            :content="opened_view.text"
-            :can_edit="false"
-          />
-        </div>
-      </transition>
-    </div>
+    <ViewPane
+      :publication="publication"
+      :views="views"
+      :opened_view_path="opened_view_path"
+      :can_edit="can_edit"
+      @toggleView="$emit('toggleView', $event)"
+    />
   </div>
 </template>
 <script>
-import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
 import LayersPane from "@/components/publications/cartography/LayersPane.vue";
+import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
+import ViewPane from "@/components/publications/cartography/ViewPane.vue";
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
   props: {
     publication: Object,
-    sections: Array,
-    opened_section: [Boolean, Object],
-    opened_section_modules_list: Array,
+    opened_view_path: String,
     can_edit: Boolean,
   },
   components: {
     DisplayOnMap,
     LayersPane,
+    ViewPane,
     ModuleCreator,
   },
   data() {
     return {
-      views_list: [
-        {
-          title: "Présentation du territoire",
-          text: `<p>Pellentesque vehicula consequat mi nec efficitur. Etiam nunc massa, congue ut justo ac, cursus fringilla nisi. Aliquam erat volutpat. Integer
-          vulputate hendrerit sodales. Duis varius, purus sit amet varius dapibus, velit est pellentesque lectus, quis auctor orci urna sed sapien. Curabitur
-          at risus quis magna lacinia ultricies. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce fringilla nulla sit amet tempus maximus.
-          </p><p>Etiam bibendum nec metus nec pulvinar. Duis tristique, erat eu ornare tincidunt, ante elit blandit dui, sit amet volutpat massa felis mattis lectus. Vestibulum commodo felis libero, eu convallis mi faucibus vestibulum. Pellentesque condimentum ullamcorper interdum. Duis vel varius diam. Nulla aliquam ipsum nisi, sed vestibulum neque porttitor sit amet. Nullam quis consectetur tellus. Pellentesque mattis eget velit ut elementum. Maecenas tincidunt sollicitudin feugiat. Nam eleifend nisl ut erat blandit, quis bibendum ex gravida. Mauris nec feugiat lacus. Vestibulum gravida dapibus condimentum. Sed eu maximus urna, id rutrum ipsum. Nam vitae velit sem.</p>'`,
-          map_center: [5.39057449011251, 43.310173305629576],
-          map_zoom: 12,
-        },
-        {
-          title: "Les point de vue des habitants",
-          text: `<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce fringilla nulla sit amet tempus maximus.
-        </p>'`,
-          map_center: [5.38134192070759, 43.27892369030499],
-          map_zoom: 16,
-        },
-        {
-          title: "Le tissu associatif",
-          text: `<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce fringilla nulla sit amet tempus maximus.
-        </p>'`,
-          map_center: [5.331893135466207, 43.359606738182094],
-          map_zoom: 14,
-        },
-      ],
-
-      opened_view_id: false,
-
       latest_click: {
         latitude: undefined,
         longitude: undefined,
       },
+      opened_layer_path: undefined,
+      opened_pin_path: undefined,
     };
   },
   i18n: {
@@ -162,8 +90,31 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    opened_pin_path() {
+      // open corresponding layer when clicking on pin
+      // if (this.opened_pin_path) {
+      //   const layer = this.layers.find((l) =>
+      //     l.modules_list?.includes(this.getFilename(this.opened_pin_path))
+      //   );
+      //   if (layer) return (this.opened_layer_path = layer.$path);
+      // }
+      // return (this.opened_layer_path = undefined);
+    },
+  },
   computed: {
+    layers() {
+      return this.getSectionsWithProps({
+        publication: this.publication,
+        group: "layers_list",
+      });
+    },
+    views() {
+      return this.getSectionsWithProps({
+        publication: this.publication,
+        group: "views_list",
+      });
+    },
     start_coords() {
       return this.publication.map_initial_location || false;
     },
@@ -175,13 +126,10 @@ export default {
       if (this.opened_view_id === false) return false;
       return this.views_list[this.opened_view_id];
     },
-    opened_section_link_pins() {
-      return this.opened_section?.link_pins === true;
-    },
     pins() {
-      return this.sections.reduce((acc, s) => {
-        if (!Array.isArray(s.modules_list)) return acc;
-        s.modules_list.map((meta_filename, index) => {
+      return this.layers.reduce((acc, l) => {
+        if (!Array.isArray(l.modules_list)) return acc;
+        l.modules_list.map((meta_filename, index) => {
           const _module = this.findModuleFromMetaFilename({
             files: this.publication.$files,
             meta_filename,
@@ -196,10 +144,10 @@ export default {
               latitude: _module.location.latitude,
               index: index,
               label: this.$t("media") + " " + (index + 1),
-              color: s.section_color || `#333`,
+              color: l.section_color || `#333`,
               path: _module.$path,
-              belongs_to_layer: s.$path,
-              link_pins: s.link_pins || false,
+              belongs_to_layer: l.$path,
+              link_pins: l.link_pins || false,
               file: this.firstMedia(_module),
             });
           }
@@ -250,6 +198,24 @@ export default {
         zoom: this.start_zoom,
       });
     },
+    async addModules({ meta_filenames }) {
+      const opened_layer = this.layers.find(
+        (l) => l.$path === this.opened_layer_path
+      );
+      await this.insertModuleMetaFilenamesToList2({
+        publication: this.publication,
+        section: opened_layer,
+        meta_filenames,
+      });
+
+      const meta_filename = meta_filenames.at(-1);
+      const pin_path = this.publication.$path + "/" + meta_filename;
+      setTimeout(() => {
+        this.opened_pin_path = pin_path;
+      }, 150);
+
+      // todo scroll to last meta_filename
+    },
   },
 };
 </script>
@@ -267,50 +233,5 @@ export default {
 }
 ._mapContainer {
   height: 100%;
-}
-._textContainer {
-  position: relative;
-
-  height: 100%;
-  flex: 1 1 200px;
-  max-width: 320px;
-  padding: calc(var(--spacing) / 2);
-  background: var(--panel-color);
-  border: var(--panel-borders);
-  box-shadow: var(--panel-shadows);
-  text-align: left;
-}
-
-._views {
-}
-
-._viewPreview {
-  background: var(--c-gris_clair);
-  padding: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
-
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-
-  &:hover {
-    background: var(--c-gris_fonce);
-  }
-}
-._openedView {
-  position: absolute;
-  top: calc(var(--spacing) / 4);
-  left: calc(var(--spacing) / 4);
-  width: calc(100% - calc(var(--spacing) / 2));
-  height: 100%;
-  overflow: auto;
-  background: white;
-  padding: calc(var(--spacing) / 2);
-}
-
-._closeBtn {
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 </style>
