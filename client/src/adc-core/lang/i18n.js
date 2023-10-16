@@ -874,8 +874,6 @@ export default function () {
         media_pickers_instr:
           "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
         already_present: "Déjà présent",
-        on_this_page: "Sur cette page",
-        on_other_pages: "Sur d’autres pages",
 
         current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",
