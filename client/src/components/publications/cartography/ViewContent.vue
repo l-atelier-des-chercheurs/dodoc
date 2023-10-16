@@ -5,7 +5,25 @@
         <sl-icon name="x-lg" :label="$t('close')"></sl-icon>
       </sl-button>
     </div>
-    View = {{ view }}
+
+    <TitleField
+      :field_name="'section_title'"
+      :content="view.section_title"
+      :path="view.$path"
+      :required="true"
+      :minlength="3"
+      :maxlength="40"
+      :tag="'h2'"
+      :can_edit="can_edit"
+    />
+    <!-- 
+    <StorySectionTemplate
+      class="_publicationOpen--content"
+      :publication="publication"
+      :opened_section_meta_filename="page_opened_id"
+      :can_edit="can_edit"
+      @toggleSection="$emit('togglePage', $event)"
+    /> -->
   </div>
 </template>
 <script>

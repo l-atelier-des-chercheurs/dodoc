@@ -1,7 +1,7 @@
 <template>
   <MapView
     :publication="publication"
-    :opened_view_path="opened_view_path"
+    :opened_view_meta_filename="opened_view_meta_filename"
     :can_edit="can_edit"
     @toggleView="toggleView"
   />
@@ -31,7 +31,7 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    opened_view_path() {
+    opened_view_meta_filename() {
       return this.$route.query?.view || false;
     },
   },
