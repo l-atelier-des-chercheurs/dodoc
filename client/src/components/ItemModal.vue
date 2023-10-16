@@ -304,6 +304,7 @@ export default {
     &[data-filetype="text"] {
       display: block;
       overflow: auto;
+      padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
     }
 
     ._mediaContent--image {
