@@ -56,8 +56,6 @@ export default {
   computed: {
     first_file() {
       if (!this.file) return false;
-
-      console.log(this.file.$path);
       return this._is_stack ? this.file._stack_files[0] : this.file;
     },
     _is_stack() {
