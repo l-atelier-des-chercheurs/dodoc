@@ -225,9 +225,9 @@ export default function () {
 
         story_width: "Largeur du récit",
         summary: "Sommaire",
-        section_title: "Titre de la section",
-        section: "Section",
-        create_section: "Créer une section",
+        section_title: "Titre du chapitre",
+        section: "Chapitre",
+        create_section: "Créer un chapitre",
         untitled: "Sans titre",
         responsive: "Fluide",
         responsive_instr:
