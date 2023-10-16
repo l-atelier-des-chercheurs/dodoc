@@ -125,6 +125,11 @@ export default {
     }
     .ql-container {
       font-size: 50%;
+      .ql-editor {
+        > *:not(:first-child) {
+          display: none;
+        }
+      }
     }
   }
 }
