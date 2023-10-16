@@ -136,28 +136,36 @@ body > ._reorderedList--item {
   align-items: center;
 
   padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 2);
+  // border: 1px solid var(--c-gris);
+
+  border-radius: 4px;
 
   ._clickZone {
-    // text-decoration: underline;
-    // text-underline-offset: 0.2em;
+    width: 100%;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
     cursor: pointer;
 
     &:hover,
     &:focus-visible {
+      text-decoration: none;
       // background: var(--c-gris_clair);
     }
   }
 
   &.is--active {
-    background: var(--c-bleumarine);
+    background: var(--c-noir);
     color: white;
+
     ._title {
     }
   }
 
   &:has(._dragHandle:hover) {
+    z-index: 1;
     background: var(--c-gris);
+    box-shadow: var(--panel-shadows);
   }
 
   // color: black;
@@ -179,7 +187,7 @@ body > ._reorderedList--item {
   font-size: var(--sl-font-size-small);
   font-weight: bold;
   font-family: "Fira Code";
-  background: var(--c-bleuvert_clair);
+  background: var(--c-gris_clair);
 
   &:hover,
   &:focus-visible {
