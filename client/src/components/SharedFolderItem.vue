@@ -14,6 +14,7 @@
       class="_sharedFolderItem--preview"
       :file="file.is_stack ? file._stack_files[0] : file"
       :context="'preview'"
+      :img_loading="'lazy'"
       :resolution="360"
     />
     <template v-if="file.is_stack">
@@ -21,12 +22,14 @@
         class="_sharedFolderItem--preview _sharedFolderItem--preview_stacked"
         v-if="file._stack_files.length > 1"
         :file="file._stack_files[1]"
+        :img_loading="'lazy'"
         :context="'preview'"
       />
       <MediaContent
         class="_sharedFolderItem--preview _sharedFolderItem--preview_stacked"
         v-if="file._stack_files.length > 2"
         :file="file._stack_files[2]"
+        :img_loading="'lazy'"
         :context="'preview'"
       />
     </template>
