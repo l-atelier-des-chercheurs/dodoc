@@ -2,7 +2,7 @@
   <div class="_mapTemplate">
     <MapView
       :publication="publication"
-      :opened_view_path="opened_view_path"
+      :opened_view_meta_filename="opened_view_meta_filename"
       :can_edit="can_edit"
       @toggleView="$emit('toggleView', $event)"
     />
@@ -19,7 +19,7 @@ import MapSettings from "@/components/publications/cartography/MapSettings.vue";
 export default {
   props: {
     publication: Object,
-    opened_view_path: String,
+    opened_view_meta_filename: String,
     can_edit: Boolean,
   },
   components: {

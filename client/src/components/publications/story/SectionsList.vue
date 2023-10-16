@@ -19,14 +19,9 @@
         @toggleSection="$emit('toggleSection', $event)"
       />
     </transition>
-    <PublicationSettings v-if="can_edit">
-      <StorySettings :publication="publication" />
-    </PublicationSettings>
   </div>
 </template>
 <script>
-import PublicationSettings from "@/components/publications/PublicationSettings.vue";
-import StorySettings from "@/components/publications/story/StorySettings.vue";
 import SectionsSummary from "@/components/publications/story/SectionsSummary.vue";
 import OpenedSection from "@/components/publications/story/OpenedSection.vue";
 
@@ -37,8 +32,6 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    PublicationSettings,
-    StorySettings,
     SectionsSummary,
     OpenedSection,
   },

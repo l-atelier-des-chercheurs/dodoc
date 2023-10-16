@@ -37,7 +37,7 @@
         v-else-if="publication.template === 'cartography'"
         class="_publicationOpen--content"
         :publication="publication"
-        :opened_view_path="page_opened_id"
+        :opened_view_meta_filename="page_opened_id"
         :can_edit="can_edit"
         @toggleView="$emit('togglePage', $event)"
       />

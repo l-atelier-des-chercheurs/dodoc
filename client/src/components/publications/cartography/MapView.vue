@@ -43,7 +43,7 @@
     <ViewPane
       :publication="publication"
       :views="views"
-      :opened_view_path="opened_view_path"
+      :opened_view_meta_filename="opened_view_meta_filename"
       :can_edit="can_edit"
       @toggleView="$emit('toggleView', $event)"
     />
@@ -58,7 +58,7 @@ import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 export default {
   props: {
     publication: Object,
-    opened_view_path: String,
+    opened_view_meta_filename: String,
     can_edit: Boolean,
   },
   components: {

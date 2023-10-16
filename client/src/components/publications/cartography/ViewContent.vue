@@ -16,14 +16,14 @@
       :tag="'h2'"
       :can_edit="can_edit"
     />
-
+    <!-- 
     <StorySectionTemplate
       class="_publicationOpen--content"
       :publication="publication"
       :opened_section_meta_filename="page_opened_id"
       :can_edit="can_edit"
       @toggleSection="$emit('togglePage', $event)"
-    />
+    /> -->
   </div>
 </template>
 <script>
