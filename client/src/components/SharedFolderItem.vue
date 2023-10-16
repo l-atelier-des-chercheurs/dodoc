@@ -8,27 +8,31 @@
   >
     <!-- {{ file }} -->
     <div class="_title">
-      {{ file.title }}
+      <template v-if="file && file.title">
+        {{ file.title }}
+      </template>
+      <template v-else>-</template>
     </div>
     <MediaContent
       class="_sharedFolderItem--preview"
-      :file="file.is_stack ? file._stack_files[0] : file"
+      v-if="first_file"
+      :file="first_file"
       :context="'preview'"
       :img_loading="'lazy'"
       :resolution="360"
     />
-    <template v-if="file.is_stack">
+    <template v-if="_is_stack">
       <MediaContent
         class="_sharedFolderItem--preview _sharedFolderItem--preview_stacked"
-        v-if="file._stack_files.length > 1"
-        :file="file._stack_files[1]"
+        v-if="_stack_files.length > 1"
+        :file="_stack_files[1]"
         :img_loading="'lazy'"
         :context="'preview'"
       />
       <MediaContent
         class="_sharedFolderItem--preview _sharedFolderItem--preview_stacked"
-        v-if="file._stack_files.length > 2"
-        :file="file._stack_files[2]"
+        v-if="_stack_files.length > 2"
+        :file="_stack_files[2]"
         :img_loading="'lazy'"
         :context="'preview'"
       />
@@ -49,7 +53,26 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    first_file() {
+      if (!this.file) return false;
+
+      console.log(this.file.$path);
+      return this._is_stack ? this.file._stack_files[0] : this.file;
+    },
+    _is_stack() {
+      return (
+        this.file.is_stack &&
+        this.file._stack_files &&
+        Array.isArray(this.file._stack_files) &&
+        this.file._stack_files[0] &&
+        this.file._stack_files[0].$type
+      );
+    },
+    _stack_files() {
+      return this.file?._stack_files;
+    },
+  },
   methods: {},
 };
 </script>
