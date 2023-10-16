@@ -300,5 +300,33 @@ export default {
         path,
       });
     },
+
+    getMediasAlreadyPresentInPublication({
+      publication,
+      sections,
+      opened_section_meta_filename,
+    }) {
+      const current = [];
+      const other = [];
+
+      sections.map((s) => {
+        const is_current_section =
+          this.getFilename(s.$path) === opened_section_meta_filename;
+
+        const modules = this.getModulesForSection({
+          publication,
+          section: s,
+        });
+
+        modules.map(({ _module }) => {
+          if (_module?.source_medias && Array.isArray(_module.source_medias))
+            _module.source_medias.map((sm) => {
+              if (is_current_section) current.push(sm.meta_filename_in_project);
+              else other.push(sm.meta_filename_in_project);
+            });
+        });
+      });
+      return { current, other };
+    },
   },
 };
