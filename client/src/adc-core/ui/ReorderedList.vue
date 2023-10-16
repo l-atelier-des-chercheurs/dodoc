@@ -123,11 +123,6 @@ export default {
   position: relative;
 }
 
-// only target item dragged
-body > ._reorderedList--item {
-  z-index: 10000;
-}
-
 ._reorderedList--item {
   position: relative;
 
@@ -137,7 +132,8 @@ body > ._reorderedList--item {
 
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
-  // border: 1px solid var(--c-gris);
+
+  background: white;
 
   border-radius: 4px;
 
@@ -166,6 +162,16 @@ body > ._reorderedList--item {
     z-index: 1;
     background: var(--c-gris);
     box-shadow: var(--panel-shadows);
+  }
+
+  // only target item dragged
+  body > & {
+    z-index: 10000;
+
+    ._dragHandle {
+      background: var(--c-noir);
+      color: white;
+    }
   }
 
   // color: black;
