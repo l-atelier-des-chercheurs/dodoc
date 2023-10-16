@@ -285,6 +285,7 @@ export default {
   flex: 1 1 auto;
   overflow: hidden;
   position: relative;
+  // background: white;
   // margin: calc(var(--spacing) * 1);
 }
 
@@ -430,5 +431,13 @@ export default {
   margin: calc(var(--spacing) * 1);
   margin-right: 0;
   border-radius: 0;
+  background: var(--c-gris_clair);
+
+  &:hover:not([disabled]),
+  &:active:not([disabled]),
+  &:focus-visible:not([disabled]),
+  &.is--active:not([disabled]) {
+    background: white;
+  }
 }
 </style>
