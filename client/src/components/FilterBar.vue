@@ -56,6 +56,24 @@
       </div>
     </div>
 
+    <div class="_typeFilter">
+      <DLabel :str="$t('filter_by_type')" />
+      <select
+        :value="filetype_filter"
+        @change="$emit('update:filetype_filter', $event.target.value)"
+      >
+        <option
+          v-for="type_of_media in types_of_medias"
+          :key="type_of_media.key"
+          :value="type_of_media.key"
+          v-text="
+            type_of_media.label
+            // + ` (${quantityOfMediaWithType(type_of_media.key)})`
+          "
+        />
+      </select>
+    </div>
+
     <div class="_myContent">
       <DLabel :str="$t('filter_by_author')" />
       <select
@@ -118,9 +136,11 @@ import SingleKeyword from "@/components/SingleKeyword.vue";
 
 export default {
   props: {
+    shared_files: Array,
     group_mode: String,
     sort_order: String,
     search_str: String,
+    filetype_filter: String,
     author_path_filter: String,
     keywords_filter: Array,
     available_keywords: Array,
@@ -147,6 +167,42 @@ export default {
         {
           key: "year",
           label: this.$t("year"),
+        },
+      ],
+
+      type_of_media_to_display: "all",
+      types_of_medias: [
+        {
+          key: "all",
+          label: this.$t("all_medias_types"),
+        },
+        {
+          key: "image",
+          label: this.$t("image"),
+        },
+        {
+          key: "video",
+          label: this.$t("video"),
+        },
+        {
+          key: "audio",
+          label: this.$t("audio"),
+        },
+        {
+          key: "text",
+          label: this.$t("text"),
+        },
+        {
+          key: "pdf",
+          label: this.$t("pdf"),
+        },
+        {
+          key: "stl",
+          label: this.$t("stl"),
+        },
+        {
+          key: "other",
+          label: this.$t("other"),
         },
       ],
     };
@@ -179,6 +235,7 @@ export default {
         this.sort_order !== "date_uploaded" ||
         this.search_str !== "" ||
         this.author_path_filter !== "" ||
+        this.filetype_filter !== "all" ||
         this.keywords_filter.length > 0
       );
     },
@@ -189,6 +246,7 @@ export default {
       this.$emit("update:sort_order", "date_uploaded");
       this.$emit("update:search_str", "");
       this.$emit("update:author_path_filter", "");
+      this.$emit("update:filetype_filter", "all");
       this.$emit("update:keywords_filter", []);
     },
     filterByKeyword(keyword) {
@@ -200,6 +258,12 @@ export default {
       }
       this.$emit("update:keywords_filter", _new_kw);
     },
+    // does not work with stacks, need to update
+    // quantityOfMediaWithType(type_of_media_key) {
+    //   return this.shared_files.filter(
+    //     (m) => type_of_media_key === "all" || m.$type === type_of_media_key
+    //   ).length;
+    // },
   },
 };
 </script>

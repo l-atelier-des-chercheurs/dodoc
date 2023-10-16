@@ -116,9 +116,11 @@
       <transition name="pagechange" mode="out-in">
         <div class="_filterBar" v-if="show_filter_sort_pane">
           <FilterBar
+            :shared_files="shared_files"
             :group_mode.sync="group_mode"
             :sort_order.sync="sort_order"
             :search_str.sync="search_str"
+            :filetype_filter.sync="filetype_filter"
             :author_path_filter.sync="author_path_filter"
             :available_keywords="available_keywords"
             :keywords_filter.sync="keywords_filter"
@@ -153,6 +155,7 @@ export default {
 
       sort_order: "date_uploaded",
       search_str: "",
+      filetype_filter: "all",
       author_path_filter: "",
       keywords_filter: [],
       group_mode: "day",
@@ -268,6 +271,9 @@ export default {
           if (this.keywords_filter.some((kwf) => !f.keywords.includes(kwf)))
             return false;
         }
+        if (this.filetype_filter !== "all")
+          if (!this.fileOrStackContainsType(f, this.filetype_filter))
+            return false;
 
         if (this.search_str) {
           if (
@@ -344,6 +350,13 @@ export default {
       const index = this.opened_file_position_index;
       const new_media = this.filtered_shared_files[index + dir];
       if (new_media) this.openFile(new_media.$path);
+    },
+    fileOrStackContainsType(f, filetype) {
+      if (f.$type && f.$type === filetype) return true;
+      // if one of the media in the stack matches
+      if (f.is_stack && f._stack_files.some((f) => f && f.$type === filetype))
+        return true;
+      return false;
     },
   },
 };

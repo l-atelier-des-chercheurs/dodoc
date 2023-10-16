@@ -321,6 +321,7 @@ export default function () {
         no_content: "Aucun contenu à afficher",
 
         group_by_date: "Grouper par date",
+        filter_by_type: "Filtrer par type",
         filter_by_author: "Filtrer par auteur",
         filter_by_keyword: "Filtrer par mots-clé",
         show_all_keywords: "Afficher tous les mots-clés",
@@ -988,7 +989,8 @@ export default function () {
         version: "Version",
 
         sort_by: "Sort by",
-        group_by_date: "Grouper par date",
+        group_by_date: "Group by date",
+        filter_by_type: "Filtrer par type",
         filter_by_author: "Fitler by author",
         filter_by_keyword: "Fitler by keyword",
 
