@@ -37,14 +37,15 @@
       v-html="file.caption || '–'"
     />
     <div v-if="is_already_selected" class="_alreadySelected">
-      <div v-if="is_already_selected.current" class="_currentPage">
-        <!-- <sl-icon name="check2-square" /> -->
+      <div :style="`--notice-bg: ${is_already_selected.color}`">
+        <span>{{ is_already_selected.label }}</span>
+      </div>
+      <!-- <div v-if="is_already_selected.current" class="_currentPage">
         <span>{{ $t("on_this_page") }}</span>
       </div>
       <div v-if="is_already_selected.other" class="_otherPage">
-        <!-- <sl-icon name="check2-square" /> -->
         <span>{{ $t("on_other_pages") }}</span>
-      </div>
+      </div> -->
     </div>
 
     <button
@@ -273,8 +274,7 @@ export default {
     bottom: 2em;
   }
 
-  > ._otherPage,
-  > ._currentPage {
+  > * {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -283,13 +283,8 @@ export default {
 
     padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
     border-radius: 1em;
-  }
 
-  > ._currentPage {
-    background: var(--c-bleuvert);
-  }
-  > ._otherPage {
-    background: var(--c-orange);
+    background: var(--notice-bg);
   }
 }
 

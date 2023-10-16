@@ -186,7 +186,7 @@ export default {
 }
 
 ._openedLayer--content {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1) 0;
   height: 100%;
   overflow: auto;
   background: white;
@@ -212,5 +212,6 @@ export default {
   width: 100%;
   background: white;
   padding: calc(var(--spacing) * 2);
+  border-top: 2px solid var(--c-bleumarine);
 }
 </style>

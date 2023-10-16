@@ -257,7 +257,7 @@ export default {
         });
       });
 
-      // TODO
+      // TODO match with getMediasAlreadyPresentInPublication
 
       return { current, other };
     },
