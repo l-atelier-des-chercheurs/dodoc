@@ -35,14 +35,6 @@
       :can_edit="can_edit"
       @close="closeView"
     />
-
-    <!-- 
-        <CollaborativeEditor2
-          ref="textBloc"
-          :path="''"
-          :content="opened_view.text"
-          :can_edit="false"
-        /> -->
   </div>
 </template>
 <script>
