@@ -5,30 +5,38 @@
       'is--small': is_small,
     }"
   >
-    <div id="map" class="map" />
+    <div class="_map" ref="map" />
 
-    <div ref="popUp" class="ol-popup">
+    <div
+      ref="popUp"
+      class="_popup"
+      v-show="clicked_location.file || $slots.hasOwnProperty('popup_message')"
+    >
       <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
         <button
           type="button"
-          class="u-button u-buttonu-button_icon ol-popup-closer"
+          class="u-button u-button_icon _popupClose"
           ref="closePopup"
           @click="closePopup"
         >
           <b-icon icon="x-circle" />
         </button>
-        <div v-if="popup_message" v-html="popup_message" />
 
-        <div v-if="clicked_location.file" :key="clicked_location.file.$path">
+        <div
+          v-if="clicked_location.file"
+          :key="clicked_location.file.$path"
+          class="_pinContent"
+        >
           <MediaContent
             :file="clicked_location.file"
             :is_draggable="false"
             :resolution="1600"
             :context="'full'"
+            :show_fs_button="true"
           />
         </div>
 
-        <div class="u-instructions">
+        <!-- <div class="u-instructions">
           <small>
             <span class="complementaryText"> {{ $t("latitude") }} = </span>
             {{ clicked_location.latitude }}°
@@ -36,28 +44,39 @@
             <span class="complementaryText"> {{ $t("longitude") }} = </span>
             {{ clicked_location.longitude }}°
           </small>
+        </div> -->
+        <div
+          v-if="popup_message"
+          class="_popupMessage"
+          v-html="popup_message"
+        />
+        <div
+          class="_popupMessage"
+          v-if="
+            !clicked_location.file && $slots.hasOwnProperty('popup_message')
+          "
+        >
+          <slot name="popup_message" />
         </div>
-        <slot name="popup_footer" v-if="!clicked_location.file" />
       </div>
     </div>
     <div id="mouse-position" />
   </div>
 </template>
 <script>
-import olSourceOSM from "ol/source/OSM.js";
+import olSourceOSM from "ol/source/OSM";
+import olSourceWMTS from "ol/source/WMTS";
 import olMap from "ol/Map";
 import olView from "ol/View";
 import olFeature from "ol/Feature";
 import olPoint from "ol/geom/Point";
 import olLineString from "ol/geom/LineString";
 import olTileLayer from "ol/layer/Tile";
+import olTileGridWMTS from "ol/tilegrid/WMTS";
 import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
-import olOverlay from "ol/Overlay.js";
-
-// incompatibility error ? https://github.com/jonataswalker/ol-geocoder/issues/270
-// TODO FIX later
+import olOverlay from "ol/Overlay";
 
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
@@ -67,6 +86,7 @@ import olCircleStyle from "ol/style/Circle";
 import olFill from "ol/style/Fill";
 import olStroke from "ol/style/Stroke";
 import olText from "ol/style/Text";
+import { ScaleLine, FullScreen } from "ol/control";
 
 export default {
   name: "DisplayOnMap",
@@ -80,10 +100,23 @@ export default {
       type: [Boolean, Number],
       default: 9,
     },
+    map_baselayer: {
+      type: String,
+      default: "OSM",
+      validator(value) {
+        // The value must match one of these strings
+        return ["OSM", "IGN_MAP", "IGN_SAT"].includes(value);
+      },
+    },
     is_small: {
       type: Boolean,
       default: true,
     },
+    show_scale: {
+      type: Boolean,
+      default: true,
+    },
+    opened_pin_path: String,
     can_add_media_to_point: {
       type: Boolean,
       default: false,
@@ -109,6 +142,9 @@ export default {
       current_zoom: undefined,
       current_view: undefined,
 
+      min_zoom: 3,
+      max_zoom: 22,
+
       mouse_coords: false,
 
       map: undefined,
@@ -124,7 +160,6 @@ export default {
   },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
-    this.$eventHub.$on("publication.map.openPin", this.openPin);
   },
   mounted() {
     setTimeout(() => {
@@ -133,26 +168,38 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
-    this.$eventHub.$off("publication.map.openPin", this.openPin);
   },
   watch: {
     pins: {
       handler() {
-        this.startMap();
+        this.startMap({ keep_loc_and_zoom: true });
       },
       deep: true,
     },
     lines: {
       handler() {
-        this.startMap();
+        this.startMap({ keep_loc_and_zoom: true });
       },
       deep: true,
+    },
+    map_baselayer() {
+      this.startMap({ keep_loc_and_zoom: true });
+    },
+    start_coords() {
+      this.startMap();
+    },
+    start_zoom() {
+      this.startMap();
+    },
+    opened_pin_path() {
+      this.openFeature(this.opened_pin_path);
     },
   },
   computed: {},
   methods: {
-    startMap() {
-      let zoom = this.start_zoom || 9;
+    startMap({ keep_loc_and_zoom = false } = {}) {
+      let zoom =
+        this.constrainVal(this.start_zoom, this.min_zoom, this.max_zoom) || 9;
       let center = [5.39057449011251, 43.310173305629576];
 
       if (this.start_coords?.longitude && this.start_coords?.latitude)
@@ -169,8 +216,10 @@ export default {
 
       // destroy map if exist
       if (this.map) {
-        zoom = this.map.getView().getZoom();
-        center = this.map.getView().getCenter();
+        if (keep_loc_and_zoom) {
+          zoom = this.map.getView().getZoom();
+          center = this.map.getView().getCenter();
+        }
 
         this.map.setTarget(null);
         this.map = null;
@@ -181,15 +230,17 @@ export default {
       this.view = new olView({
         center,
         zoom,
+        minZoom: this.min_zoom,
+        maxZoom: this.max_zoom,
       });
+
+      const source = this.createSource(this.map_baselayer);
+
       this.map = new olMap({
-        target: "map",
+        target: this.$refs.map,
         layers: [
           new olTileLayer({
-            source: new olSourceOSM({
-              wrapX: false,
-              noWrap: true,
-            }),
+            source,
           }),
         ],
         view: this.view,
@@ -239,6 +290,17 @@ export default {
         })
       );
 
+      const fs_option = new FullScreen();
+      this.map.addControl(fs_option);
+
+      //////////////////////////////////////////////////// SCALELINE
+      if (this.show_scale) {
+        const scale_line = new ScaleLine({
+          units: "metric",
+        });
+        this.map.addControl(scale_line);
+      }
+
       //////////////////////////////////////////////////// SEARCH FIELD
 
       let lang = "fr-FR";
@@ -256,11 +318,9 @@ export default {
       });
       this.map.addControl(geocoder);
       geocoder.on("addresschosen", (evt) => {
-        // const feature = evt.feature,
-        //   address = evt.address;
-        // content.innerHTML = "<p>" + address.formatted + "</p>";
+        this.closePopup();
+
         if (evt.place?.lon && evt.place?.lat) {
-          // const coordinate = [2.214555195288306, 47.1857072668881];
           this.clicked_location.latitude = +evt.place.lat;
           this.clicked_location.longitude = +evt.place.lon;
           const coordinate = [
@@ -314,8 +374,11 @@ export default {
 
       this.map.on("singleclick", (event) => {
         this.closePopup();
+
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
         let [longitude, latitude] = event.coordinate;
+        longitude = this.roundToDec(longitude, 6);
+        latitude = this.roundToDec(latitude, 6);
 
         if (!feature) {
           this.$emit("newPositionClicked", {
@@ -348,6 +411,70 @@ export default {
       //   this.map.addInteraction(draw);
       // }
       // addInteraction();
+    },
+    createSource(type) {
+      if (type === "OSM") {
+        return new olSourceOSM({
+          wrapX: false,
+          noWrap: true,
+        });
+      } else if (["IGN_SAT", "IGN_MAP"].includes(type)) {
+        const resolutions = [
+          156543.03392804103, 78271.5169640205, 39135.75848201024,
+          19567.879241005125, 9783.939620502562, 4891.969810251281,
+          2445.9849051256406, 1222.9924525628203, 611.4962262814101,
+          305.74811314070485, 152.87405657035254, 76.43702828517625,
+          38.218514142588134, 19.109257071294063, 9.554628535647034,
+          4.777314267823517, 2.3886571339117584, 1.1943285669558792,
+          0.5971642834779396, 0.29858214173896974, 0.14929107086948493,
+          0.07464553543474241,
+        ];
+
+        let layer, format;
+        if (type === "IGN_MAP") {
+          layer = "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2";
+          format = "image/png";
+        } else if (type === "IGN_SAT") {
+          layer = "ORTHOIMAGERY.ORTHOPHOTOS";
+          format = "image/jpeg";
+        }
+
+        return new olSourceWMTS({
+          url: "https://wxs.ign.fr/decouverte/geoportail/wmts",
+          layer,
+          matrixSet: "PM",
+          format,
+          style: "normal",
+          tileGrid: new olTileGridWMTS({
+            origin: [-20037508, 20037508], // topLeftCorner
+            resolutions, // résolutions
+            matrixIds: [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19",
+            ], // ids des TileMatrix
+          }),
+          wrapX: false,
+          noWrap: true,
+        });
+      }
     },
     createPointFeaturesFromPins() {
       let features = [];
@@ -444,24 +571,34 @@ export default {
       };
       return new olStyle(style);
     },
+    resetClickedLocation() {
+      this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
+      this.clicked_location.latitude = undefined;
+      this.clicked_location.longitude = undefined;
+      this.clicked_location.file = undefined;
+      this.popup_message = undefined;
+    },
     navigateTo({ center, zoom = this.current_zoom }) {
+      // used to stop current animation if there are any
+      // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
+      this.view.setRotation(0);
       this.view.animate({
         center,
         zoom,
-        // duration: 2000,
       });
     },
     openPin(path) {
-      const _pin_index = this.pins.findIndex((p) => p.path === path);
-      if (_pin_index === -1) return;
-      this.openFeature(_pin_index);
+      this.$emit("update:opened_pin_path", path);
     },
-    openFeature(index) {
-      const feature = this.pin_features[index];
+    openFeature(path) {
+      const feature = this.pin_features.find((f) => f.get("path") === path);
+      if (!feature) return "no_feature_found";
+
+      this.resetClickedLocation();
+
       const coordinates = feature.getGeometry().getCoordinates();
       const f = feature.get("file");
       this.clicked_location.file = f || undefined;
-
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];
@@ -473,14 +610,12 @@ export default {
       });
     },
     closePopup() {
-      this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
+      this.resetClickedLocation();
+      this.$emit("update:opened_pin_path", undefined);
 
       this.overlay.setPosition(undefined);
       if (this.$refs.closePopup) this.$refs.closePopup.blur();
-      this.clicked_location.longitude = undefined;
-      this.clicked_location.latitude = undefined;
-      this.clicked_location.file = undefined;
-      this.popup_message = undefined;
+
       return false;
     },
   },
@@ -493,6 +628,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: var(--c-gris);
+  font-size: 150%;
 
   flex: 1 1 320px;
 
@@ -502,80 +638,90 @@ export default {
     aspect-ratio: 1;
     border-radius: 4px;
     overflow: hidden;
-    .map {
+  }
+}
+._map {
+  width: 100%;
+  height: 100%;
+
+  ::v-deep {
+    .ol-geocoder {
+      .gcd-gl-btn {
+        height: 1.375em;
+        width: 1.375em;
+      }
+      .gcd-gl-input {
+      }
+    }
+    .gcd-road {
+      font-weight: normal;
+      font-style: italic;
+      font-size: var(--sl-font-size-small);
+      color: inherit;
     }
   }
 }
-.map {
-  width: 100%;
-  height: 100%;
-}
 ._popup {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  background: white;
-  border-radius: 2px;
-
-  margin: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  width: calc(100% - var(--spacing) * 2);
-}
-._popup--close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: calc(var(--spacing) / 2);
-}
-
-.ol-popup {
-  position: absolute;
   bottom: 12px;
-  left: -50px;
+  left: -48px;
   min-width: 280px;
 
-  border-radius: var(--panel-radius);
-  box-shadow: var(--panel-shadows);
-  padding: calc(var(--spacing) / 2);
-  background: var(--panel-color);
-  border: var(--panel-borders);
+  font-size: var(--sl-font-size-normal);
 
-  overflow: hidden;
-}
-.ol-popup:after,
-.ol-popup:before {
-  top: 100%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
+  background: white;
+
+  border: none;
+  border-radius: var(--panel-radius);
+
+  box-shadow: var(--panel-shadows);
+
   pointer-events: none;
+
+  &:after,
+  &:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  &:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+  }
+  // &:before {
+  //   border-top-color: #cccccc;
+  //   border-width: 11px;
+  //   left: 48px;
+  //   margin-left: -11px;
+  // }
+
+  ._pinContent,
+  ._popupClose {
+    pointer-events: auto;
+  }
 }
-.ol-popup:after {
-  border-top-color: white;
-  border-width: 10px;
-  left: 48px;
-  margin-left: -10px;
-}
-.ol-popup:before {
-  border-top-color: #cccccc;
-  border-width: 11px;
-  left: 48px;
-  margin-left: -11px;
-}
-.ol-popup-closer {
+._popupClose {
   position: absolute;
   z-index: 1000;
-  top: 0;
-  right: 0;
+  top: calc(var(--spacing) / -2);
+  right: calc(var(--spacing) / -2);
+  padding: calc(var(--spacing) / 1);
+}
+
+._pinContent {
+  position: relative;
+  border-radius: var(--panel-radius);
+  overflow: hidden;
+}
+
+._popupMessage {
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 </style>
-<style lang="scss">
-.ol-geocoder .gcd-gl-btn {
-  height: 1.375em;
-  width: 1.375em;
-}
-.ol-geocoder .gcd-gl-input {
-}
-</style>
+<style lang="scss"></style>

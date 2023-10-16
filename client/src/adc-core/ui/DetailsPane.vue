@@ -11,11 +11,9 @@
       <div class="_icon">
         <sl-icon v-if="icon" :name="icon" />
       </div>
-
       <span class="_name">
         {{ header }}
       </span>
-
       <div
         class="u-nut"
         v-if="has_items !== undefined"

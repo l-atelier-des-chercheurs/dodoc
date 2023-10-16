@@ -116,6 +116,8 @@ import TagsList from "@/adc-core/ui/TagsList.vue";
 Vue.component("TagsList", TagsList);
 import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
+import ReorderedList from "@/adc-core/ui/ReorderedList.vue";
+Vue.component("ReorderedList", ReorderedList);
 
 import QRModal from "@/adc-core/modals/QRModal.vue";
 Vue.component("QRModal", QRModal);
@@ -233,6 +235,8 @@ import Paths from "@/mixins/Paths";
 Vue.mixin(Paths);
 import Strings from "@/mixins/Strings";
 Vue.mixin(Strings);
+import Queries from "@/mixins/Queries";
+Vue.mixin(Queries);
 
 Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);

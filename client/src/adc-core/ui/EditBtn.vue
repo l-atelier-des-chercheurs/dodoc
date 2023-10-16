@@ -44,6 +44,7 @@ export default {
         `;
       if (this.btn_type === "fullscreen-exit")
         return `
+          --color1: var(--c-noir);
           --color2: white;
           --color-hover-icon: var(--c-noir);
         `;
@@ -65,6 +66,8 @@ export default {
   background: var(--color1);
   color: var(--color2);
   border: 1px solid var(--color2);
+
+  box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
 
   // margin-top: -0.5rem;
   // margin-bottom: -0.5rem;

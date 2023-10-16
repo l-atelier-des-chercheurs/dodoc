@@ -112,7 +112,6 @@ export default {
   },
   methods: {
     componentClick() {
-      debugger;
       if (this.component_tag === "router-link") this.$emit("navToPage");
     },
   },
