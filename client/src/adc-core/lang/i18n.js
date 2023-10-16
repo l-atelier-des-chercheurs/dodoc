@@ -941,6 +941,29 @@ export default function () {
         template: "Template",
 
         contactmail_of_instance: `Contact`,
+
+        space: "Space",
+        spaces: "All spaces",
+        spaces_instr:
+          "Each space contains a set of projects linked to a particular group, place or theme.",
+        create_a_space: "Create a space",
+        project: "Project",
+
+        default_value: "Default value",
+
+        show_projects: "Show projects",
+        all_projects: "All projects",
+        all_projects_instr:
+          "This list shows all the projects documented, amongst all public spaces.",
+        event_projects_instr:
+          "This list show all projects documented during a specific event.",
+        create: "Create",
+        existing: "Existing",
+        create_account: "Create an account",
+        your_account: "Your account",
+        new_account: "New account",
+        show_list: "Show the list",
+
         ui_lang_select: "Interface language",
         lang_updated: "The lang has been updated",
         open_app: "Access",

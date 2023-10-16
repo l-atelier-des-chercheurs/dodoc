@@ -12,7 +12,7 @@
           v-if="thumb"
           :src="thumb"
           class="_mediaContent--image"
-          loading="eager"
+          :loading="img_loading"
         />
         <template v-else>
           <b-icon icon="eye-slash" />
@@ -22,14 +22,19 @@
         <img
           :src="file_full_path"
           class="_mediaContent--image"
-          loading="eager"
+          :loading="img_loading"
         />
       </template>
     </template>
 
     <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
       <template v-if="context === 'preview'">
-        <img v-if="thumb" :src="thumb" class="_mediaContent--image" />
+        <img
+          v-if="thumb"
+          :src="thumb"
+          class="_mediaContent--image"
+          :loading="img_loading"
+        />
         <template v-else>
           <b-icon icon="eye-slash" />
         </template>
@@ -53,7 +58,12 @@
 
     <template v-else-if="['pdf', 'url', 'stl'].includes(file.$type)">
       <template v-if="context === 'preview'">
-        <img v-if="thumb" :src="thumb" class="_mediaContent--image" />
+        <img
+          v-if="thumb"
+          :src="thumb"
+          class="_mediaContent--image"
+          :loading="img_loading"
+        />
         <template v-else>
           <b-icon icon="eye-slash" />
         </template>
@@ -61,7 +71,11 @@
       <template v-else>
         <div class="_mediaContent--iframe">
           <div v-if="!start_iframe" class="_mediaContent--iframe--preview">
-            <img :src="thumb" class="_iframeStylePreview" />
+            <img
+              :src="thumb"
+              class="_iframeStylePreview"
+              :loading="img_loading"
+            />
             <button
               type="button"
               class="plyr__control plyr__control--overlaid _playButton"
@@ -141,7 +155,11 @@
         <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
       </div>
       <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
-        <img v-if="file.$type === 'image'" :src="file_full_path" />
+        <img
+          v-if="file.$type === 'image'"
+          :src="file_full_path"
+          :loading="img_loading"
+        />
         <STLPreview
           v-else-if="file.$type === 'stl'"
           class="_stlPreview"
@@ -172,6 +190,10 @@ export default {
     show_fs_button: {
       type: Boolean,
       default: false,
+    },
+    img_loading: {
+      type: String,
+      default: "eager",
     },
   },
   components: {
