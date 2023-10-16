@@ -67,20 +67,27 @@
             class="_navMedia"
             :data-layout="current_file_shown ? 'nav' : 'grid'"
           >
-            <div
-              v-for="(file, index) in file._stack_files"
-              :key="file.$path"
-              :class="{
-                'is--shown': current_file_index_shown === index,
-              }"
-              @click="toggleFile(index)"
-            >
-              <MediaContent
-                :file="file"
-                :context="'preview'"
-                :resolution="360"
+            <template v-for="(file, index) in file._stack_files">
+              <div
+                v-if="!file || !file.$path"
+                :key="'no-content-' + index"
+                v-text="'error: missing file'"
               />
-            </div>
+              <div
+                v-else
+                :key="file.$path"
+                :class="{
+                  'is--shown': current_file_index_shown === index,
+                }"
+                @click="toggleFile(index)"
+              >
+                <MediaContent
+                  :file="file"
+                  :context="'preview'"
+                  :resolution="360"
+                />
+              </div>
+            </template>
           </div>
 
           <!-- <div class="_otherFromStacks">
@@ -145,7 +152,6 @@ export default {
   created() {},
   mounted() {
     window.addEventListener("keyup", this.handleKeyPress);
-
     this.toggleFile(0);
   },
   beforeDestroy() {
@@ -160,7 +166,16 @@ export default {
     current_file_shown() {
       if (this.file.is_stack)
         if (this.current_file_index_shown === false) return false;
-        else return this.file._stack_files[this.current_file_index_shown];
+        else {
+          const file_to_show =
+            this.file._stack_files[this.current_file_index_shown];
+          if (file_to_show) return file_to_show;
+          else {
+            // eslint-disable-next-line
+            // this.current_file_index_shown = false;
+            return false;
+          }
+        }
       return this.file;
     },
     file_sequence_in_stack() {
