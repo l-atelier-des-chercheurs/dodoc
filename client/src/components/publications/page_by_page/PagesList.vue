@@ -188,6 +188,15 @@ export default {
       is_creating_page: false,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        on_this_page: "Sur cette page",
+        on_other_pages: "Sur d’autres pages",
+      },
+    },
+  },
+
   created() {},
   mounted() {},
   beforeDestroy() {},
@@ -257,9 +266,18 @@ export default {
         });
       });
 
-      // TODO
-
-      return { current, other };
+      return [
+        {
+          label: this.$t("on_this_page"),
+          medias: current,
+          color: "var(--c-orange)",
+        },
+        {
+          label: this.$t("on_other_pages"),
+          medias: other,
+          color: "var(--c-bleuvert)",
+        },
+      ];
     },
   },
   methods: {

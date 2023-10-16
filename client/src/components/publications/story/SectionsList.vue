@@ -52,7 +52,14 @@ export default {
   data() {
     return {};
   },
-
+  i18n: {
+    messages: {
+      fr: {
+        in_this_section: "Dans cette section",
+        in_another_section: "Dans une autre section",
+      },
+    },
+  },
   created() {},
   mounted() {},
   beforeDestroy() {},
@@ -65,11 +72,24 @@ export default {
       });
     },
     meta_filenames_already_present() {
-      return this.getMediasAlreadyPresentInPublication({
+      const { current, other } = this.getMediasAlreadyPresentInPublication({
         publication: this.publication,
         sections: this.sections,
         opened_section_meta_filename: this.opened_section_meta_filename,
       });
+
+      return [
+        {
+          label: this.$t("in_this_section"),
+          medias: current,
+          color: "var(--c-orange)",
+        },
+        {
+          label: this.$t("in_another_section"),
+          medias: other,
+          color: "var(--c-bleuvert)",
+        },
+      ];
     },
   },
   methods: {},

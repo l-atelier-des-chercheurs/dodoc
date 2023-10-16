@@ -235,7 +235,7 @@ export default {
     media_focused: [Boolean, String],
     select_mode: String,
     hide_already_present_medias: Boolean,
-    meta_filenames_already_present: [Boolean, Object],
+    meta_filenames_already_present: [Boolean, Array],
     show_only_media_type: String,
   },
   components: {
@@ -427,15 +427,19 @@ export default {
     },
     mediaTileAlreadySelected(path) {
       if (!this.meta_filenames_already_present) return false;
-      let present = {};
 
       const meta_filename = this.getFilename(path);
-      if (this.meta_filenames_already_present.current.includes(meta_filename))
-        present.current = true;
-      if (this.meta_filenames_already_present.other.includes(meta_filename))
-        present.other = true;
 
-      return Object.keys(present).length > 0 ? present : false;
+      const meta_filename_is_present = this.meta_filenames_already_present.find(
+        (list) => list.medias.includes(meta_filename)
+      );
+
+      if (meta_filename_is_present) {
+        const label = meta_filename_is_present.label;
+        const color = meta_filename_is_present.color;
+        return { label, color };
+      }
+      return false;
     },
     quantityOfMediaWithType(type_of_media_key) {
       return this.sorted_medias.filter(

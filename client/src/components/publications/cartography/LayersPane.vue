@@ -28,6 +28,13 @@
           {{ slotProps.item.section_title }}
         </span>
         <span v-else v-html="`<i>${$t('untitled')}</i>`" />
+        <span class="u-nut">
+          {{
+            Array.isArray(slotProps.item.modules_list)
+              ? slotProps.item.modules_list.length
+              : ""
+          }}
+        </span>
       </ReorderedList>
 
       <template v-if="can_edit">
@@ -86,6 +93,12 @@ export default {
   components: {
     LayerContent,
   },
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
+  },
   data() {
     return {
       is_repicking_location_for: false,
@@ -97,10 +110,11 @@ export default {
       fr: {
         click_on_map_to_repick_location_for_media:
           "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+        on_this_layer: "Sur ce calque",
+        on_another_layer: "Autre calque",
       },
     },
   },
-
   created() {},
   mounted() {
     this.$eventHub.$on("publication.map.click", this.setRepickLocation);
@@ -121,6 +135,28 @@ export default {
         new_layer_title = this.$t("layer") + " " + idx;
       }
       return new_layer_title;
+    },
+    meta_filenames_already_present() {
+      const { current, other } = this.getMediasAlreadyPresentInPublication({
+        publication: this.publication,
+        sections: this.layers,
+        opened_section_meta_filename: this.getFilename(this.opened_layer_path),
+      });
+
+      return [
+        {
+          label: this.$t("on_this_layer"),
+          medias: current,
+          color: "var(--c-orange)",
+          // todo later ?
+          // color: this.opened_layer.section_color || this.default_layer_color,
+        },
+        {
+          label: this.$t("on_another_layer"),
+          medias: other,
+          color: "var(--c-bleuvert)",
+        },
+      ];
     },
   },
   methods: {
