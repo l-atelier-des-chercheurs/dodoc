@@ -46,7 +46,7 @@
         />
       </div>
 
-      <div class="">
+      <div class="_pinContainer">
         <DLabel :str="$t('pins')" />
 
         <small v-if="layer_modules_list.length === 0">
@@ -69,7 +69,7 @@
               :mapmodule="slotProps.item"
               :can_edit="can_edit"
               @repickLocation="$emit('repickLocation', slotProps.item.$path)"
-              @open="$emit('openPin', slotProps.item.$path)"
+              @toggle="$emit('togglePin', slotProps.item.$path)"
             />
             <!-- <span v-if="slotProps.item.section_title">
               {{ slotProps.item.section_title }}
@@ -190,6 +190,8 @@ export default {
   height: 100%;
   overflow: auto;
   background: white;
+  display: flex;
+  flex-flow: column nowrap;
 
   ._title {
     margin-bottom: calc(var(--spacing) * 1);
@@ -197,6 +199,11 @@ export default {
     flex-flow: row wrap;
     align-items: baseline;
     gap: calc(var(--spacing) / 2);
+  }
+
+  ._pinContainer {
+    flex: 1 1 auto;
+    overflow: auto;
   }
 }
 ._closeLayerBtn {
@@ -212,6 +219,6 @@ export default {
   width: 100%;
   background: white;
   padding: calc(var(--spacing) * 2);
-  border-top: 2px solid var(--c-bleumarine);
+  border-top: 1px solid var(--c-gris);
 }
 </style>

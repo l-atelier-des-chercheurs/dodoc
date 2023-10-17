@@ -60,7 +60,7 @@
       :opened_pin_path="opened_pin_path"
       :can_edit="can_edit"
       @repickLocation="repickLocation"
-      @openPin="$emit('update:opened_pin_path', $event)"
+      @togglePin="togglePin"
       @close="closeLayer"
     />
     <div class="_repickNotice" v-if="is_repicking_location_for">
@@ -165,6 +165,11 @@ export default {
     },
     closeLayer() {
       this.$emit("update:opened_layer_path", undefined);
+    },
+    togglePin(pin_path) {
+      if (pin_path === this.opened_pin_path)
+        this.$emit("update:opened_pin_path", undefined);
+      else this.$emit("update:opened_pin_path", pin_path);
     },
     async createLayer() {
       await this.createSection2({

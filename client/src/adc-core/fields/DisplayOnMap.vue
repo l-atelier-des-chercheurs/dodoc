@@ -192,7 +192,8 @@ export default {
       this.startMap();
     },
     opened_pin_path() {
-      this.openFeature(this.opened_pin_path);
+      if (this.opened_pin_path) this.openFeature(this.opened_pin_path);
+      else this.closePopup();
     },
   },
   computed: {},
