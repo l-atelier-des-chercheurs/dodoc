@@ -5,7 +5,7 @@
         {{ index + 1 }}
       </b>
     </label> -->
-    <div class="_topRow" @click="openPin">
+    <div class="_topRow" @click="togglePin">
       <MediaContent
         class="_preview"
         v-if="firstMedia(mapmodule)"
@@ -13,14 +13,32 @@
         :resolution="220"
         :context="'preview'"
       />
+      <div class="_nameOfPin" v-text="mapmodule.pin_name || '-'" />
+      <div class="_navToPin">
+        <button type="button" class="u-button u-button_icon">
+          <b-icon v-if="has_coordinates" icon="pin-map-fill" />
+          <b-icon v-else icon="pin-map" />
+        </button>
+      </div>
     </div>
 
-    <sl-alert v-if="!has_coordinates" type="warning" open>
-      <sl-icon slot="icon" name="exclamation-triangle" />
-      <span v-html="$t('no_coordinates')" />
-    </sl-alert>
+    <!-- <div v-if="!has_coordinates">
+      <small>
+        <sl-icon slot="icon" name="exclamation-triangle" />&nbsp;
+        <span v-html="$t('no_coordinates')" />
+      </small>
+    </div> -->
 
-    <DetailsPane :header="$t('position_on_map')" :icon="'map'">
+    <button
+      v-if="show_details"
+      type="button"
+      class="u-buttonLink"
+      @click="show_details = !show_details"
+    >
+      {{ $t("more_informations") }}
+    </button>
+
+    <!-- <DetailsPane :header="$t('position_on_map')" :icon="'map'">
       <div class="_text">
         <template v-if="has_coordinates">
           {{ mapmodule.location.latitude }} /
@@ -51,7 +69,7 @@
         :show_button_text="true"
         @remove="removeModule"
       />
-    </DetailsPane>
+    </DetailsPane> -->
 
     <!-- </DetailsPane> -->
     <!-- <MediaContent
@@ -73,7 +91,9 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_details: false,
+    };
   },
   i18n: {
     messages: {
@@ -112,7 +132,7 @@ export default {
     },
   },
   methods: {
-    openPin() {
+    togglePin() {
       if (
         !this.mapmodule.location?.latitude ||
         !this.mapmodule.location?.longitude
@@ -122,7 +142,7 @@ export default {
           .delay(4000)
           .error(this.$t("no_coordinates"));
       }
-      this.$emit("open");
+      this.$emit("toggle");
     },
     async removeModule() {
       await this.removeModule2({
@@ -142,7 +162,6 @@ export default {
   // margin-left: var(--spacing);
   // margin-bottom: var(--spacing);
   margin-right: 0;
-  border-bottom: 2px solid var(--c-gris);
 
   cursor: pointer;
 
@@ -160,5 +179,22 @@ export default {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+
+  ._preview {
+    flex: 0 0 auto;
+    width: 50px;
+    height: 50px;
+
+    ::v-deep ._mediaContent--image {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      max-width: none;
+    }
+  }
+  ._nameOfPin {
+    flex: 1 1 200px;
+  }
 }
 </style>
