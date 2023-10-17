@@ -489,6 +489,7 @@ export default {
           feature_cont.path = pin.path;
           if (pin.color) feature_cont.fill_color = pin.color;
           if (pin.file) feature_cont.file = pin.file;
+          if (pin.label) feature_cont.label = pin.label;
           features.push(new olFeature(feature_cont));
         });
       }
@@ -526,10 +527,10 @@ export default {
       if (feature?.get("label")) {
         const _fs = {
           italic: "normal",
-          weight: "600",
-          size: "14px",
+          weight: "500",
+          size: "12.6px",
           height: 1.2,
-          family: "IBM Plex Mono",
+          family: "Fira Sans",
         };
 
         style.text = new olText({

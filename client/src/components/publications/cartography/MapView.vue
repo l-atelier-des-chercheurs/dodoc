@@ -139,11 +139,16 @@ export default {
             _module.location?.longitude &&
             _module.location?.latitude
           ) {
+            let pin_label_items = [];
+            if (l.link_pins) pin_label_items.push(index + 1);
+            if (_module.pin_name) pin_label_items.push(_module.pin_name);
+            const pin_label =
+              pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
+
             acc.push({
               longitude: _module.location.longitude,
               latitude: _module.location.latitude,
-              index: index,
-              label: this.$t("media") + " " + (index + 1),
+              label: pin_label,
               color: l.section_color || `#333`,
               path: _module.$path,
               belongs_to_layer: l.$path,
