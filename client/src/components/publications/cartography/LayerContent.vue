@@ -57,6 +57,7 @@
             :field_name="'modules_list'"
             :store_type="'plain_array'"
             :items="layer_modules_list"
+            :show_index="layer.link_pins === true"
             :active_item_path="opened_pin_path"
             :path="layer.$path"
             :can_edit="can_edit"
@@ -188,7 +189,7 @@ export default {
 
 ._openedLayer--content {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1) 0;
-  // height: 100%;
+  height: 100%;
   // overflow: auto;
   background: white;
   display: flex;

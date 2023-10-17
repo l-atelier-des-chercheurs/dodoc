@@ -263,5 +263,7 @@ export default {
   display: inline-block;
   width: 1em;
   height: 1em;
+  border-radius: 50%;
+  overflow: hidden;
 }
 </style>
