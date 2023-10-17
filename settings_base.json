@@ -622,6 +622,9 @@
                     "section_description": {
                       "type": "string"
                     },
+                    "pin_name": {
+                      "type": "string"
+                    },
                     "modules_list": {
                       "type": "array"
                     },
