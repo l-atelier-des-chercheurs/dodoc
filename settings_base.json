@@ -625,6 +625,9 @@
                     "pin_name": {
                       "type": "string"
                     },
+                    "pin_caption": {
+                      "type": "string"
+                    },
                     "modules_list": {
                       "type": "array"
                     },

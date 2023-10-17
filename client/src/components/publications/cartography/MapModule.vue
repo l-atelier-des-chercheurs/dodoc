@@ -5,22 +5,32 @@
         {{ index + 1 }}
       </b>
     </label> -->
-    <div class="_topRow" @click="togglePin">
-      <MediaContent
-        class="_preview"
-        v-if="firstMedia(mapmodule)"
-        :file="firstMedia(mapmodule)"
-        :resolution="220"
-        :context="'preview'"
-      />
+    <div class="_mapModule--topRow" @click="togglePin">
+      <div class="">
+        <MediaContent
+          class="_preview"
+          v-if="firstMedia(mapmodule)"
+          :file="firstMedia(mapmodule)"
+          :resolution="220"
+          :context="'preview'"
+        />
+      </div>
       <div class="_nameOfPin">
-        <div v-text="mapmodule.pin_name || $t('untitled')"></div>
+        <div>
+          <template v-if="mapmodule.pin_name">
+            {{ mapmodule.pin_name }}
+          </template>
+          <template v-else>
+            <i>{{ $t("untitled") }}</i>
+          </template>
+        </div>
+
         <div>
           <button
             type="button"
             class="u-buttonLink"
             v-if="is_opened"
-            @click="show_details = !show_details"
+            @click.stop="show_details = !show_details"
           >
             {{ $t("more_informations") }}
           </button>
@@ -35,42 +45,48 @@
       </div>
     </div>
 
-    <div v-if="show_details">
-      Quisque pretium, mi id hendrerit semper, justo nunc posuere justo, a
-      pulvinar augue magna nec diam. In tellus odio, tempus ornare mi non,
-      hendrerit facilisis neque. Duis vel posuere mauris. Phasellus quis
-      consectetur tellus, sed bibendum turpis. Sed hendrerit venenatis augue, eu
-      condimentum sapien consectetur nec. Sed faucibus est id dolor faucibus
-      sodales. In porttitor justo nec magna posuere dignissim. Proin ut neque
-      non dolor feugiat elementum ac a diam. Proin et euismod justo, ut
-      scelerisque lectus. Duis risus sem, venenatis at vulputate sit amet,
-      faucibus hendrerit diam. Vestibulum dignissim massa quis dui laoreet
-      efficitur. Praesent sapien ex, suscipit et blandit pretium, aliquet at
-      quam. Sed scelerisque ipsum et nulla facilisis auctor.
-    </div>
+    <div v-if="show_details" class="_mapModule--content">
+      <div class="u-spacingBottom">
+        <TitleField
+          :label="$t('name')"
+          :field_name="'pin_name'"
+          :content="mapmodule.pin_name || $t('untitled')"
+          :path="mapmodule.$path"
+          :required="false"
+          :maxlength="20"
+          :tag="'h4'"
+          :can_edit="can_edit"
+        />
+      </div>
 
-    <!-- <div v-if="!has_coordinates">
-      <small>
-        <sl-icon slot="icon" name="exclamation-triangle" />&nbsp;
-        <span v-html="$t('no_coordinates')" />
-      </small>
-    </div> -->
+      <div class="u-spacingBottom">
+        <TitleField
+          :field_name="'pin_caption'"
+          :label="$t('caption')"
+          :content="mapmodule.pin_caption"
+          :path="mapmodule.$path"
+          :maxlength="1280"
+          :input_type="'markdown'"
+          :can_edit="can_edit"
+        />
+      </div>
 
-    <!-- <DetailsPane :header="$t('position_on_map')" :icon="'map'">
-      <div class="_text">
+      <div class="u-spacingBottom _latlon">
         <template v-if="has_coordinates">
-          {{ mapmodule.location.latitude }} /
-          {{ mapmodule.location.longitude }}
+          <DLabel :str="$t('latitude')" />
+          {{ mapmodule.location.latitude }}°
+          <DLabel :str="$t('longitude')" />
+          {{ mapmodule.location.longitude }}°
         </template>
-        <template v-else>
+        <div v-else>
           {{ $t("no_coordinates") }}
-        </template>
+        </div>
       </div>
 
       <button
         v-if="can_edit"
         type="button"
-        class="u-button u-button_red u-button_icon"
+        class="u-button u-button_red"
         @click.stop="$emit('repickLocation')"
       >
         <b-icon icon="pin-map-fill" />
@@ -87,6 +103,16 @@
         :show_button_text="true"
         @remove="removeModule"
       />
+    </div>
+
+    <!-- <div v-if="!has_coordinates">
+      <small>
+        <sl-icon slot="icon" name="exclamation-triangle" />&nbsp;
+        <span v-html="$t('no_coordinates')" />
+      </small>
+    </div> -->
+
+    <!-- <DetailsPane :header="$t('position_on_map')" :icon="'map'">
     </DetailsPane> -->
 
     <!-- </DetailsPane> -->
@@ -128,7 +154,11 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    is_opened() {
+      if (!this.is_opened) this.show_details = false;
+    },
+  },
   computed: {
     has_coordinates() {
       return (
@@ -182,8 +212,6 @@ export default {
   // margin-bottom: var(--spacing);
   margin-right: 0;
 
-  cursor: pointer;
-
   &:hover,
   :focus-visible {
     background: transparent;
@@ -191,13 +219,14 @@ export default {
 }
 
 ._text {
-  margin: calc(var(--spacing) / 4) 0;
+  // margin: calc(var(--spacing) / 4) 0;
 }
 
-._topRow {
+._mapModule--topRow {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+  cursor: pointer;
 
   ._preview {
     flex: 0 0 auto;
@@ -216,5 +245,15 @@ export default {
   ._nameOfPin {
     flex: 1 1 200px;
   }
+}
+
+._latlon {
+  font-size: var(--sl-font-size-small);
+}
+
+._mapModule--content {
+  color: black;
+  background: white;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 </style>

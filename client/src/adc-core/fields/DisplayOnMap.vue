@@ -719,6 +719,7 @@ export default {
   position: relative;
   border-radius: var(--panel-radius);
   overflow: hidden;
+  min-height: 2em;
 }
 
 ._popupMessage {

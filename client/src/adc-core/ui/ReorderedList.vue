@@ -5,6 +5,9 @@
         v-if="can_edit"
         type="button"
         class="u-buttonLink"
+        :class="{
+          'is--active': change_order,
+        }"
         @click="change_order = !change_order"
       >
         <b-icon icon="arrow-down-up" />
@@ -38,7 +41,14 @@
         <span v-else-if="show_index" class="_index">
           {{ index + 1 }}
         </span>
-        <span class="_clickZone" @click="$emit('openItem', item.$path)">
+        <span
+          class="_clickZone"
+          v-if="$listeners.openItem"
+          @click="$emit('openItem', item.$path)"
+        >
+          <slot :item="item" :index="index" />
+        </span>
+        <span v-else class="_noClickZone">
           <slot :item="item" :index="index" />
         </span>
       </SlickItem>
@@ -163,6 +173,10 @@ export default {
       text-decoration: none;
       // background: var(--c-gris_clair);
     }
+  }
+
+  ._noClickZone {
+    width: 100%;
   }
 
   &.is--active {
