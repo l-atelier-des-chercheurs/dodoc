@@ -151,7 +151,7 @@ export default {
   }
 
   &.is--active {
-    background: var(--c-noir);
+    background: var(--c-gris_fonce);
     color: white;
 
     ._title {

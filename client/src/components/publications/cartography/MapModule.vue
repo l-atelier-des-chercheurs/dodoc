@@ -13,7 +13,20 @@
         :resolution="220"
         :context="'preview'"
       />
-      <div class="_nameOfPin" v-text="mapmodule.pin_name || '-'" />
+      <div class="_nameOfPin">
+        <div v-text="mapmodule.pin_name || $t('untitled')"></div>
+        <div>
+          <button
+            type="button"
+            class="u-buttonLink"
+            v-if="is_opened"
+            @click="show_details = !show_details"
+          >
+            {{ $t("more_informations") }}
+          </button>
+        </div>
+      </div>
+
       <div class="_navToPin">
         <button type="button" class="u-button u-button_icon">
           <b-icon v-if="has_coordinates" icon="pin-map-fill" />
@@ -22,21 +35,26 @@
       </div>
     </div>
 
+    <div v-if="show_details">
+      Quisque pretium, mi id hendrerit semper, justo nunc posuere justo, a
+      pulvinar augue magna nec diam. In tellus odio, tempus ornare mi non,
+      hendrerit facilisis neque. Duis vel posuere mauris. Phasellus quis
+      consectetur tellus, sed bibendum turpis. Sed hendrerit venenatis augue, eu
+      condimentum sapien consectetur nec. Sed faucibus est id dolor faucibus
+      sodales. In porttitor justo nec magna posuere dignissim. Proin ut neque
+      non dolor feugiat elementum ac a diam. Proin et euismod justo, ut
+      scelerisque lectus. Duis risus sem, venenatis at vulputate sit amet,
+      faucibus hendrerit diam. Vestibulum dignissim massa quis dui laoreet
+      efficitur. Praesent sapien ex, suscipit et blandit pretium, aliquet at
+      quam. Sed scelerisque ipsum et nulla facilisis auctor.
+    </div>
+
     <!-- <div v-if="!has_coordinates">
       <small>
         <sl-icon slot="icon" name="exclamation-triangle" />&nbsp;
         <span v-html="$t('no_coordinates')" />
       </small>
     </div> -->
-
-    <button
-      v-if="show_details"
-      type="button"
-      class="u-buttonLink"
-      @click="show_details = !show_details"
-    >
-      {{ $t("more_informations") }}
-    </button>
 
     <!-- <DetailsPane :header="$t('position_on_map')" :icon="'map'">
       <div class="_text">
@@ -87,6 +105,7 @@ export default {
     publication: Object,
     layer: Object,
     mapmodule: Object,
+    is_opened: Boolean,
     can_edit: Boolean,
   },
   components: {},
@@ -184,6 +203,7 @@ export default {
     flex: 0 0 auto;
     width: 50px;
     height: 50px;
+    overflow: hidden;
 
     ::v-deep ._mediaContent--image {
       position: absolute;

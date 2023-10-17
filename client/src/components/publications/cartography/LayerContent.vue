@@ -67,6 +67,7 @@
               :publication="publication"
               :layer="layer"
               :mapmodule="slotProps.item"
+              :is_opened="slotProps.item.$path === opened_pin_path"
               :can_edit="can_edit"
               @repickLocation="$emit('repickLocation', slotProps.item.$path)"
               @toggle="$emit('togglePin', slotProps.item.$path)"
@@ -187,8 +188,8 @@ export default {
 
 ._openedLayer--content {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1) 0;
-  height: 100%;
-  overflow: auto;
+  // height: 100%;
+  // overflow: auto;
   background: white;
   display: flex;
   flex-flow: column nowrap;
