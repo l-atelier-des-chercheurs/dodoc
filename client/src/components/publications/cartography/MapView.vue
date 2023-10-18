@@ -48,7 +48,7 @@
 <script>
 import LayersPane from "@/components/publications/cartography/LayersPane.vue";
 import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
-import ViewPane from "@/components/publications/cartography/ViewPane.vue";
+// import ViewPane from "@/components/publications/cartography/ViewPane.vue";
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
@@ -60,7 +60,7 @@ export default {
   components: {
     DisplayOnMap,
     LayersPane,
-    ViewPane,
+    // ViewPane,
     ModuleCreator,
   },
   data() {
