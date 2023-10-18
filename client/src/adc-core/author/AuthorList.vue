@@ -7,7 +7,7 @@
     <div>
       <!-- <div class="u-wips" /> -->
 
-      <template v-if="!connected_as">
+      <template v-if="!connected_as || is_instance_admin">
         <RadioSwitch
           :content.sync="current_mode"
           :options="[
@@ -36,7 +36,7 @@
         />
       </template>
 
-      <fieldset v-else-if="connected_as">
+      <fieldset v-if="connected_as && current_mode === 'login'">
         <legend class="u-label">{{ $t("your_account") }}</legend>
         <AuthorCard
           :key="connected_as.$path"

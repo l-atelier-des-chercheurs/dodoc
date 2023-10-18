@@ -97,6 +97,10 @@
           </button>
         </fieldset>
 
+        <div v-if="account_created_notice">
+          {{ $t("account_created") }}
+        </div>
+
         <template v-if="error_msg">
           <div class="u-errorMsg" v-text="error_msg" />
         </template>
@@ -123,7 +127,16 @@ export default {
       can_create_author: false,
       submitted_signup_password: "",
       is_submitting_signup_password: false,
+
+      account_created_notice: false,
     };
+  },
+  i18n: {
+    messages: {
+      fr: {
+        account_created: "Ce compte a été créé",
+      },
+    },
   },
   created() {
     if (!this.has_signup_password) this.can_create_author = true;
@@ -166,12 +179,22 @@ export default {
           .success(this.$t("notifications.account_created"));
 
         this.new_author_name = "";
-        await this.$api.loginToFolder({
-          path: "authors/" + author_slug,
-          auth_infos: {
-            $password: this.new_author_password,
-          },
-        });
+
+        // only login if not yet connected
+        if (!this.connected_as) {
+          await this.$api.loginToFolder({
+            path: "authors/" + author_slug,
+            auth_infos: {
+              $password: this.new_author_password,
+            },
+          });
+        } else {
+          this.account_created_notice = true;
+          setTimeout(() => {
+            this.account_created_notice = false;
+          }, 3000);
+        }
+
         // not working
         // this.$emit("close");
       } catch (err) {
