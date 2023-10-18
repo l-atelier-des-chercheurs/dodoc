@@ -50,7 +50,9 @@ export default {
   props: {
     url_to_access: String,
   },
-  components: {},
+  components: {
+    QRCodeWithLink: () => import("@/adc-core/ui/QRCodeWithLink.vue"),
+  },
   data() {
     return {
       network_infos: undefined,
