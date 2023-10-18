@@ -16,7 +16,7 @@
         :sections="sections"
         :opened_section_meta_filename="opened_section_meta_filename"
         :can_edit="can_edit"
-        @toggleSection="$emit('toggleSection', $event)"
+        @toggleSection="toggleSection"
       />
     </transition>
   </div>
@@ -85,7 +85,14 @@ export default {
       ];
     },
   },
-  methods: {},
+  methods: {
+    toggleSection(section_meta_filename) {
+      if (!section_meta_filename)
+        // if closing section with close button in single section pane, open summary
+        this.$eventHub.$emit(`sections.open_summary`);
+      this.$emit("toggleSection", section_meta_filename);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
