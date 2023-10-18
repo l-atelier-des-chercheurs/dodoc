@@ -14,12 +14,6 @@
           <SingleSection
             :publication="publication"
             :section="section"
-            :modules_list="
-              getModulesForSection({
-                publication: publication,
-                section: section,
-              })
-            "
             :can_edit="false"
           />
         </div>
@@ -55,6 +49,12 @@ export default {
       const query = JSON.parse(JSON.stringify(this.$route.query));
       if (query.section) return query.section;
       return "";
+    },
+    sections() {
+      return this.getSectionsWithProps({
+        publication: this.publication,
+        group: "sections_list",
+      });
     },
   },
   methods: {
