@@ -294,7 +294,7 @@ export default {
   left: 0;
   z-index: 2;
 
-  font-size: var(--input-font-size-x-small);
+  font-size: var(--input-font-size-small);
   font-weight: 800;
 
   background: var(--o-color, black);
