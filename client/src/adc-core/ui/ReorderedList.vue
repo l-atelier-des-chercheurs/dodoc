@@ -2,7 +2,7 @@
   <div>
     <div class="_changeOrderBtn">
       <button
-        v-if="can_edit"
+        v-if="can_edit && local_items.length > 1"
         type="button"
         class="u-buttonLink"
         :class="{

@@ -87,7 +87,7 @@
                 :publication_path="publication_path"
                 :pre_addtl_meta="new_module_meta"
                 :context="'page_by_page'"
-                :is_collapsed="false"
+                :start_collapsed="false"
                 @addModules="enableModuleEdit"
               />
             </div>

@@ -38,6 +38,7 @@ export default function () {
   const i18n = new VueI18n({
     locale: lang_settings.current, // set locale
     fallbackLocale: "en",
+    silentFallbackWarn: true,
     messages: {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
@@ -220,6 +221,7 @@ export default function () {
         cartography: "Cartographie",
         export_in_pdf: "Exporter en PDF",
         direct_link: "Lien direct",
+        link: "Lien",
         share: "Partager",
         options: "Options",
         exports_in_progress: "Exportation(s) en cours",
