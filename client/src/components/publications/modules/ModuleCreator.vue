@@ -9,7 +9,7 @@
       <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
-          class="u-button u-button_small u-button_bleumarine"
+          class="u-button u-button_bleumarine"
           v-if="types_available.includes('text')"
           @click="createText"
         >
@@ -23,7 +23,7 @@
 
         <button
           type="button"
-          class="u-button u-button_small u-button_bleumarine"
+          class="u-button u-button_bleumarine"
           v-if="types_available.includes('medias')"
           @click="show_media_picker = true"
         >
@@ -44,7 +44,7 @@
 
         <button
           type="button"
-          class="u-button u-button_small u-button_bleumarine"
+          class="u-button u-button_bleumarine"
           v-if="types_available.includes('files')"
           @click="show_file_picker = true"
         >
@@ -65,7 +65,7 @@
 
         <button
           type="button"
-          class="u-button u-button_small u-button_bleumarine"
+          class="u-button u-button_bleumarine"
           v-if="types_available.includes('link')"
           @click="show_link_picker = true"
         >
@@ -87,7 +87,7 @@
             type="button"
             v-for="shape in shapes"
             :key="shape.type"
-            class="u-button u-button_small u-button_bleumarine"
+            class="u-button u-button_bleumarine"
             @click="
               createCustomModule({
                 module_type: shape.type,
