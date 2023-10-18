@@ -5,105 +5,107 @@
       'is--collapsed': !show_module_selector,
     }"
   >
-    <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
-      <button
-        type="button"
-        class="u-button u-button_small u-button_bleumarine"
-        v-if="types_available.includes('text')"
-        @click="createText"
-      >
-        <template v-if="show_labels">{{ $t("text") }}</template>
-        <sl-icon
-          name="fonts"
-          style="font-size: var(--icon-size)"
-          :label="$t('add_text')"
-        />
-      </button>
-
-      <button
-        type="button"
-        class="u-button u-button_small u-button_bleumarine"
-        v-if="types_available.includes('medias')"
-        @click="show_media_picker = true"
-      >
-        <template v-if="show_labels">{{ $t("medias") }}</template>
-        <sl-icon
-          name="image"
-          style="font-size: var(--icon-size)"
-          :label="$t('add_medias')"
-        />
-      </button>
-      <MediaPicker
-        v-if="show_media_picker"
-        :publication_path="publication_path"
-        :select_mode="select_mode"
-        @addMedias="createMosaic"
-        @close="show_media_picker = false"
-      />
-
-      <button
-        type="button"
-        class="u-button u-button_small u-button_bleumarine"
-        v-if="types_available.includes('files')"
-        @click="show_file_picker = true"
-      >
-        <template v-if="show_labels">{{ $t("files") }}</template>
-        <sl-icon
-          name="file-earmark-binary-fill"
-          style="font-size: var(--icon-size)"
-          :label="$t('add_files')"
-        />
-      </button>
-      <MediaPicker
-        v-if="show_file_picker"
-        :publication_path="publication_path"
-        :select_mode="select_mode"
-        @addMedias="createFiles"
-        @close="show_file_picker = false"
-      />
-
-      <button
-        type="button"
-        class="u-button u-button_small u-button_bleumarine"
-        v-if="types_available.includes('link')"
-        @click="show_link_picker = true"
-      >
-        <template v-if="show_labels">{{ $t("link") }}</template>
-        <sl-icon
-          name="link"
-          style="font-size: var(--icon-size)"
-          :label="$t('add_link')"
-        />
-      </button>
-      <LinkPicker
-        v-if="show_link_picker"
-        @embed="createEmbed"
-        @close="show_link_picker = false"
-      />
-
-      <template v-if="types_available.includes('shapes')">
+    <transition name="scaleInFade" mode="out-in">
+      <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
-          v-for="shape in shapes"
-          :key="shape.type"
           class="u-button u-button_small u-button_bleumarine"
-          @click="
-            createCustomModule({
-              module_type: shape.type,
-              addtl_meta: shape.addtl_meta,
-            })
-          "
+          v-if="types_available.includes('text')"
+          @click="createText"
         >
-          <template v-if="show_labels">{{ $t(shape.type) }}</template>
+          <template v-if="show_labels">{{ $t("text") }}</template>
           <sl-icon
-            :name="shape.icon"
+            name="fonts"
             style="font-size: var(--icon-size)"
-            :label="$t(shape.type)"
+            :label="$t('add_text')"
           />
-          <!-- {{ $t("add_medias") }} -->
         </button>
-      </template>
-    </div>
+
+        <button
+          type="button"
+          class="u-button u-button_small u-button_bleumarine"
+          v-if="types_available.includes('medias')"
+          @click="show_media_picker = true"
+        >
+          <template v-if="show_labels">{{ $t("medias") }}</template>
+          <sl-icon
+            name="image"
+            style="font-size: var(--icon-size)"
+            :label="$t('add_medias')"
+          />
+        </button>
+        <MediaPicker
+          v-if="show_media_picker"
+          :publication_path="publication_path"
+          :select_mode="select_mode"
+          @addMedias="createMosaic"
+          @close="show_media_picker = false"
+        />
+
+        <button
+          type="button"
+          class="u-button u-button_small u-button_bleumarine"
+          v-if="types_available.includes('files')"
+          @click="show_file_picker = true"
+        >
+          <template v-if="show_labels">{{ $t("files") }}</template>
+          <sl-icon
+            name="file-earmark-binary-fill"
+            style="font-size: var(--icon-size)"
+            :label="$t('add_files')"
+          />
+        </button>
+        <MediaPicker
+          v-if="show_file_picker"
+          :publication_path="publication_path"
+          :select_mode="select_mode"
+          @addMedias="createFiles"
+          @close="show_file_picker = false"
+        />
+
+        <button
+          type="button"
+          class="u-button u-button_small u-button_bleumarine"
+          v-if="types_available.includes('link')"
+          @click="show_link_picker = true"
+        >
+          <template v-if="show_labels">{{ $t("link") }}</template>
+          <sl-icon
+            name="link"
+            style="font-size: var(--icon-size)"
+            :label="$t('add_link')"
+          />
+        </button>
+        <LinkPicker
+          v-if="show_link_picker"
+          @embed="createEmbed"
+          @close="show_link_picker = false"
+        />
+
+        <template v-if="types_available.includes('shapes')">
+          <button
+            type="button"
+            v-for="shape in shapes"
+            :key="shape.type"
+            class="u-button u-button_small u-button_bleumarine"
+            @click="
+              createCustomModule({
+                module_type: shape.type,
+                addtl_meta: shape.addtl_meta,
+              })
+            "
+          >
+            <template v-if="show_labels">{{ $t(shape.type) }}</template>
+            <sl-icon
+              :name="shape.icon"
+              style="font-size: var(--icon-size)"
+              :label="$t(shape.type)"
+            />
+            <!-- {{ $t("add_medias") }} -->
+          </button>
+        </template>
+      </div>
+    </transition>
 
     <button
       type="button"
@@ -112,7 +114,7 @@
       :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
       @click="show_module_selector = !show_module_selector"
     >
-      <sl-icon name="plus-circle" />
+      <b-icon icon="plus-circle-fill" />
     </button>
 
     <DropZone @mediaDropped="createMosaic" />
@@ -413,5 +415,9 @@ sl-icon-button::part(base) {
   // position: absolute;
   // right: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.u-addBtn {
+  color: var(--c-noir);
 }
 </style>
