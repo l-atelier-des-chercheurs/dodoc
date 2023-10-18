@@ -98,6 +98,15 @@
         </template>
       </button>
 
+      <!-- <RadioCheckboxField
+        :field_name="'pin_icon'"
+        :input_type="'radio'"
+        :content="mapmodule.pin_icon || ''"
+        :path="mapmodule.$path"
+        :can_edit="can_edit"
+        :options="icon_options"
+      /> -->
+
       <RemoveMenu
         :remove_text="$t('remove_pin')"
         :show_button_text="true"
@@ -138,6 +147,20 @@ export default {
   data() {
     return {
       show_details: false,
+      icon_options: [
+        {
+          key: "",
+          label: this.$t("circle"),
+        },
+        {
+          key: "none",
+          label: this.$t("none"),
+        },
+        {
+          key: "self",
+          label: this.$t("media_preview"),
+        },
+      ],
     };
   },
   i18n: {

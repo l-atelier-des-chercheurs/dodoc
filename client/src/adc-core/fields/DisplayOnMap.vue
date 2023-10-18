@@ -82,6 +82,7 @@ import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
 
 import olStyle from "ol/style/Style";
+import olIcon from "ol/style/Icon";
 import olCircleStyle from "ol/style/Circle";
 import olFill from "ol/style/Fill";
 import olStroke from "ol/style/Stroke";
@@ -490,6 +491,7 @@ export default {
           if (pin.color) feature_cont.fill_color = pin.color;
           if (pin.file) feature_cont.file = pin.file;
           if (pin.label) feature_cont.label = pin.label;
+          if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
           features.push(new olFeature(feature_cont));
         });
       }
@@ -556,11 +558,22 @@ export default {
         fill_color = feature.get("fill_color");
       }
 
-      style.image = new olCircleStyle({
-        radius: 8,
-        fill: new olFill({ color: fill_color }),
-        stroke: new olStroke({ color: "#232e4a", width: 2 }),
-      });
+      const pin_preview = feature.get("pin_preview");
+      if (pin_preview === "circle") {
+        style.image = new olCircleStyle({
+          radius: 8,
+          fill: new olFill({ color: fill_color }),
+          stroke: new olStroke({ color: "#232e4a", width: 2 }),
+        });
+      } else {
+        style.image = new olIcon({
+          anchor: [0.5, 0.5],
+          anchorXUnits: "fraction",
+          anchorYUnits: "fraction",
+          // src: this.$root.publicPath + "maps/icon.png",
+          src: pin_preview,
+        });
+      }
 
       return new olStyle(style);
     },

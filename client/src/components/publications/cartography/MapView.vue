@@ -145,6 +145,16 @@ export default {
             const pin_label =
               pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
 
+            let pin_preview = "circle";
+            if (l.all_pins_icon === "media_preview") {
+              const thumb = this.getFirstThumbURLForMedia({
+                file: this.firstMedia(_module),
+                resolution: 50,
+              });
+              if (thumb) pin_preview = thumb;
+              else pin_preview = "circle";
+            }
+
             acc.push({
               longitude: _module.location.longitude,
               latitude: _module.location.latitude,
@@ -153,6 +163,7 @@ export default {
               path: _module.$path,
               belongs_to_layer: l.$path,
               link_pins: l.link_pins || false,
+              pin_preview,
               file: this.firstMedia(_module),
             });
           }
