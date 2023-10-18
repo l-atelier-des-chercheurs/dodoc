@@ -143,6 +143,7 @@ export default function () {
           "En haut à gauche de l’écran. Au click, ramène à la page d’accueil.",
         hero_image: "Visuel page d’accueil",
         hero_image_instr: "",
+        change_order: "Changer l’ordre",
 
         bytes: "octets",
         kb: "ko",

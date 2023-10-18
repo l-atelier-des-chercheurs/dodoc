@@ -27,26 +27,39 @@
         <!-- ({{ layer_modules_list.length }}) -->
       </div>
 
-      <div class="u-spacingBottom _color" v-if="can_edit">
-        <ColorInput
-          :label="$t('pins_color')"
-          :can_toggle="false"
-          :default_value="default_layer_color"
-          :value="layer.section_color"
-          @save="updateOpenedLayer({ field: 'section_color', value: $event })"
-        />
-      </div>
-      <div class="u-spacingBottom" v-if="can_edit">
-        <ToggleInput
-          :label="$t('link_pins')"
-          :content="layer.link_pins"
-          @update:content="
-            updateOpenedLayer({ field: 'link_pins', value: $event })
-          "
-        />
-      </div>
+      <template v-if="can_edit">
+        <div class="_color">
+          <ColorInput
+            :label="$t('pins_color')"
+            :can_toggle="false"
+            :default_value="default_layer_color"
+            :value="layer.section_color"
+            @save="updateOpenedLayer({ field: 'section_color', value: $event })"
+          />
+        </div>
+        <div class="u-spacingBottom">
+          <ToggleInput
+            :label="$t('link_pins')"
+            :content="layer.link_pins"
+            @update:content="
+              updateOpenedLayer({ field: 'link_pins', value: $event })
+            "
+          />
+        </div>
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('pin_icons')" />
+          <RadioCheckboxField
+            :field_name="'all_pins_icon'"
+            :input_type="'radio'"
+            :content="layer.all_pins_icon || ''"
+            :path="layer.$path"
+            :can_edit="can_edit"
+            :options="icon_options"
+          />
+        </div>
+      </template>
 
-      <div class="">
+      <div class="_pinContainer">
         <DLabel :str="$t('pins')" />
 
         <small v-if="layer_modules_list.length === 0">
@@ -57,6 +70,7 @@
             :field_name="'modules_list'"
             :store_type="'plain_array'"
             :items="layer_modules_list"
+            :show_index="layer.link_pins === true"
             :active_item_path="opened_pin_path"
             :path="layer.$path"
             :can_edit="can_edit"
@@ -67,9 +81,10 @@
               :publication="publication"
               :layer="layer"
               :mapmodule="slotProps.item"
+              :is_opened="slotProps.item.$path === opened_pin_path"
               :can_edit="can_edit"
               @repickLocation="$emit('repickLocation', slotProps.item.$path)"
-              @open="$emit('openPin', slotProps.item.$path)"
+              @toggle="$emit('togglePin', slotProps.item.$path)"
             />
             <!-- <span v-if="slotProps.item.section_title">
               {{ slotProps.item.section_title }}
@@ -113,13 +128,26 @@ export default {
     MapModule,
   },
   data() {
-    return {};
+    return {
+      icon_options: [
+        {
+          key: "",
+          label: this.$t("circle"),
+        },
+        {
+          key: "media_preview",
+          label: this.$t("media_preview"),
+        },
+      ],
+    };
   },
   i18n: {
     messages: {
       fr: {
         pins_color: "Couleur des épingles",
         link_pins: "Relier les épingles",
+        pin_icons: "Apparence des épingles",
+        media_preview: "Image sur la carte",
         remove_layer: "Supprimer ce calque et son contenu",
       },
     },
@@ -188,8 +216,10 @@ export default {
 ._openedLayer--content {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1) 0;
   height: 100%;
-  overflow: auto;
+  // overflow: auto;
   background: white;
+  display: flex;
+  flex-flow: column nowrap;
 
   ._title {
     margin-bottom: calc(var(--spacing) * 1);
@@ -197,6 +227,11 @@ export default {
     flex-flow: row wrap;
     align-items: baseline;
     gap: calc(var(--spacing) / 2);
+  }
+
+  ._pinContainer {
+    flex: 1 1 auto;
+    overflow: auto;
   }
 }
 ._closeLayerBtn {
@@ -212,6 +247,6 @@ export default {
   width: 100%;
   background: white;
   padding: calc(var(--spacing) * 2);
-  border-top: 2px solid var(--c-bleumarine);
+  border-top: 1px solid var(--c-gris);
 }
 </style>

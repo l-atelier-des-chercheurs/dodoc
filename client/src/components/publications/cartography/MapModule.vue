@@ -5,36 +5,88 @@
         {{ index + 1 }}
       </b>
     </label> -->
-    <div class="_topRow" @click="openPin">
-      <MediaContent
-        class="_preview"
-        v-if="firstMedia(mapmodule)"
-        :file="firstMedia(mapmodule)"
-        :resolution="220"
-        :context="'preview'"
-      />
+    <div class="_mapModule--topRow" @click="togglePin">
+      <div class="">
+        <MediaContent
+          class="_preview"
+          v-if="firstMedia(mapmodule)"
+          :file="firstMedia(mapmodule)"
+          :resolution="220"
+          :context="'preview'"
+        />
+      </div>
+      <div class="_nameOfPin">
+        <div>
+          <template v-if="mapmodule.pin_name">
+            {{ mapmodule.pin_name }}
+          </template>
+          <template v-else>
+            <i>{{ $t("untitled") }}</i>
+          </template>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            class="u-buttonLink"
+            v-if="is_opened"
+            @click.stop="show_details = !show_details"
+          >
+            {{ $t("more_informations") }}
+          </button>
+        </div>
+      </div>
+
+      <div class="_navToPin">
+        <button type="button" class="u-button u-button_icon">
+          <b-icon v-if="has_coordinates" icon="pin-map-fill" />
+          <b-icon v-else icon="pin-map" />
+        </button>
+      </div>
     </div>
 
-    <sl-alert v-if="!has_coordinates" type="warning" open>
-      <sl-icon slot="icon" name="exclamation-triangle" />
-      <span v-html="$t('no_coordinates')" />
-    </sl-alert>
+    <div v-if="show_details" class="_mapModule--content">
+      <div class="u-spacingBottom">
+        <TitleField
+          :label="$t('name')"
+          :field_name="'pin_name'"
+          :content="mapmodule.pin_name || $t('untitled')"
+          :path="mapmodule.$path"
+          :required="false"
+          :maxlength="20"
+          :tag="'h4'"
+          :can_edit="can_edit"
+        />
+      </div>
 
-    <DetailsPane :header="$t('position_on_map')" :icon="'map'">
-      <div class="_text">
+      <div class="u-spacingBottom">
+        <TitleField
+          :field_name="'pin_caption'"
+          :label="$t('caption')"
+          :content="mapmodule.pin_caption"
+          :path="mapmodule.$path"
+          :maxlength="1280"
+          :input_type="'markdown'"
+          :can_edit="can_edit"
+        />
+      </div>
+
+      <div class="u-spacingBottom _latlon">
         <template v-if="has_coordinates">
-          {{ mapmodule.location.latitude }} /
-          {{ mapmodule.location.longitude }}
+          <DLabel :str="$t('latitude')" />
+          {{ mapmodule.location.latitude }}°
+          <DLabel :str="$t('longitude')" />
+          {{ mapmodule.location.longitude }}°
         </template>
-        <template v-else>
+        <div v-else>
           {{ $t("no_coordinates") }}
-        </template>
+        </div>
       </div>
 
       <button
         v-if="can_edit"
         type="button"
-        class="u-button u-button_red u-button_icon"
+        class="u-button u-button_red"
         @click.stop="$emit('repickLocation')"
       >
         <b-icon icon="pin-map-fill" />
@@ -46,12 +98,31 @@
         </template>
       </button>
 
+      <!-- <RadioCheckboxField
+        :field_name="'pin_icon'"
+        :input_type="'radio'"
+        :content="mapmodule.pin_icon || ''"
+        :path="mapmodule.$path"
+        :can_edit="can_edit"
+        :options="icon_options"
+      /> -->
+
       <RemoveMenu
         :remove_text="$t('remove_pin')"
         :show_button_text="true"
         @remove="removeModule"
       />
-    </DetailsPane>
+    </div>
+
+    <!-- <div v-if="!has_coordinates">
+      <small>
+        <sl-icon slot="icon" name="exclamation-triangle" />&nbsp;
+        <span v-html="$t('no_coordinates')" />
+      </small>
+    </div> -->
+
+    <!-- <DetailsPane :header="$t('position_on_map')" :icon="'map'">
+    </DetailsPane> -->
 
     <!-- </DetailsPane> -->
     <!-- <MediaContent
@@ -69,11 +140,28 @@ export default {
     publication: Object,
     layer: Object,
     mapmodule: Object,
+    is_opened: Boolean,
     can_edit: Boolean,
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_details: false,
+      icon_options: [
+        {
+          key: "",
+          label: this.$t("circle"),
+        },
+        {
+          key: "none",
+          label: this.$t("none"),
+        },
+        {
+          key: "self",
+          label: this.$t("media_preview"),
+        },
+      ],
+    };
   },
   i18n: {
     messages: {
@@ -89,7 +177,11 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    is_opened() {
+      if (!this.is_opened) this.show_details = false;
+    },
+  },
   computed: {
     has_coordinates() {
       return (
@@ -112,7 +204,7 @@ export default {
     },
   },
   methods: {
-    openPin() {
+    togglePin() {
       if (
         !this.mapmodule.location?.latitude ||
         !this.mapmodule.location?.longitude
@@ -122,7 +214,7 @@ export default {
           .delay(4000)
           .error(this.$t("no_coordinates"));
       }
-      this.$emit("open");
+      this.$emit("toggle");
     },
     async removeModule() {
       await this.removeModule2({
@@ -142,9 +234,6 @@ export default {
   // margin-left: var(--spacing);
   // margin-bottom: var(--spacing);
   margin-right: 0;
-  border-bottom: 2px solid var(--c-gris);
-
-  cursor: pointer;
 
   &:hover,
   :focus-visible {
@@ -153,12 +242,41 @@ export default {
 }
 
 ._text {
-  margin: calc(var(--spacing) / 4) 0;
+  // margin: calc(var(--spacing) / 4) 0;
 }
 
-._topRow {
+._mapModule--topRow {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+  cursor: pointer;
+
+  ._preview {
+    flex: 0 0 auto;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+
+    ::v-deep ._mediaContent--image {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      max-width: none;
+    }
+  }
+  ._nameOfPin {
+    flex: 1 1 200px;
+  }
+}
+
+._latlon {
+  font-size: var(--sl-font-size-small);
+}
+
+._mapModule--content {
+  color: black;
+  background: white;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 </style>

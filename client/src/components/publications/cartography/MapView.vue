@@ -139,15 +139,31 @@ export default {
             _module.location?.longitude &&
             _module.location?.latitude
           ) {
+            let pin_label_items = [];
+            if (l.link_pins) pin_label_items.push(index + 1);
+            if (_module.pin_name) pin_label_items.push(_module.pin_name);
+            const pin_label =
+              pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
+
+            let pin_preview = "circle";
+            if (l.all_pins_icon === "media_preview") {
+              const thumb = this.getFirstThumbURLForMedia({
+                file: this.firstMedia(_module),
+                resolution: 50,
+              });
+              if (thumb) pin_preview = thumb;
+              else pin_preview = "circle";
+            }
+
             acc.push({
               longitude: _module.location.longitude,
               latitude: _module.location.latitude,
-              index: index,
-              label: this.$t("media") + " " + (index + 1),
+              label: pin_label,
               color: l.section_color || `#333`,
               path: _module.$path,
               belongs_to_layer: l.$path,
               link_pins: l.link_pins || false,
+              pin_preview,
               file: this.firstMedia(_module),
             });
           }

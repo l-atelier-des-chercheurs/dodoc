@@ -83,7 +83,7 @@
               @click="loadIframe"
             >
               <svg aria-hidden="true" focusable="false">
-                <use xlink:href="/_client/plyr.svg#plyr-play"></use>
+                <use :xlink:href="$root.publicPath + 'plyr.svg#plyr-play'" />
               </svg>
               <span class="plyr__sr-only">Play</span>
             </button>

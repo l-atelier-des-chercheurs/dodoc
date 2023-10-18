@@ -28,12 +28,8 @@
           {{ slotProps.item.section_title }}
         </span>
         <span v-else v-html="`<i>${$t('untitled')}</i>`" />
-        <span class="u-nut">
-          {{
-            Array.isArray(slotProps.item.modules_list)
-              ? slotProps.item.modules_list.length
-              : ""
-          }}
+        <span class="u-nut" :data-isfilled="layerHasPins(slotProps.item)">
+          {{ getNumberOfPinsInLayer(slotProps.item) }}
         </span>
       </ReorderedList>
 
@@ -60,7 +56,7 @@
       :opened_pin_path="opened_pin_path"
       :can_edit="can_edit"
       @repickLocation="repickLocation"
-      @openPin="$emit('update:opened_pin_path', $event)"
+      @togglePin="togglePin"
       @close="closeLayer"
     />
     <div class="_repickNotice" v-if="is_repicking_location_for">
@@ -166,6 +162,17 @@ export default {
     closeLayer() {
       this.$emit("update:opened_layer_path", undefined);
     },
+    togglePin(pin_path) {
+      if (pin_path === this.opened_pin_path)
+        this.$emit("update:opened_pin_path", undefined);
+      else this.$emit("update:opened_pin_path", pin_path);
+    },
+    layerHasPins(layer) {
+      return this.getNumberOfPinsInLayer(layer) > 0;
+    },
+    getNumberOfPinsInLayer(layer) {
+      return Array.isArray(layer.modules_list) ? layer.modules_list.length : 0;
+    },
     async createLayer() {
       await this.createSection2({
         publication: this.publication,
@@ -256,5 +263,7 @@ export default {
   display: inline-block;
   width: 1em;
   height: 1em;
+  border-radius: 50%;
+  overflow: hidden;
 }
 </style>

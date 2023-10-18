@@ -1,36 +1,59 @@
 <template>
-  <SlickList
-    class="_reorderedList"
-    axis="y"
-    :value="local_items"
-    @input="updateOrder($event)"
-    :useDragHandle="true"
-  >
-    <SlickItem
-      v-for="(item, index) of local_items"
-      :key="item.$path"
-      :index="index"
-      class="_reorderedList--item"
-      :class="{
-        'is--active': isActive(item.$path),
-      }"
+  <div>
+    <div class="_changeOrderBtn">
+      <button
+        v-if="can_edit"
+        type="button"
+        class="u-buttonLink"
+        :class="{
+          'is--active': change_order,
+        }"
+        @click="change_order = !change_order"
+      >
+        <b-icon icon="arrow-down-up" />
+        {{ $t("change_order") }}
+      </button>
+    </div>
+    <SlickList
+      class="_reorderedList"
+      axis="y"
+      :value="local_items"
+      @input="updateOrder($event)"
+      :useDragHandle="true"
     >
-      <span v-handle class="_dragHandle" v-if="can_edit">
-        <b-icon icon="grip-vertical" :label="$t('move')" />
-        <transition name="fade_fast" mode="out-in">
-          <span :key="index">
-            {{ index + 1 }}
-          </span>
-        </transition>
-      </span>
-      <span v-else>
-        {{ index + 1 }}
-      </span>
-      <span class="_clickZone" @click="$emit('openItem', item.$path)">
-        <slot :item="item" :index="index" />
-      </span>
-    </SlickItem>
-  </SlickList>
+      <SlickItem
+        v-for="(item, index) of local_items"
+        :key="item.$path"
+        :index="index"
+        class="_reorderedList--item"
+        :class="{
+          'is--active': isActive(item.$path),
+        }"
+      >
+        <span v-handle class="_dragHandle" v-if="can_edit && change_order">
+          <b-icon icon="grip-vertical" :label="$t('move')" />
+          <transition name="fade_fast" mode="out-in">
+            <span v-if="show_index" :key="index" class="_index">
+              {{ index + 1 }}
+            </span>
+          </transition>
+        </span>
+        <span v-else-if="show_index" class="_index">
+          {{ index + 1 }}
+        </span>
+        <span
+          class="_clickZone"
+          v-if="$listeners.openItem"
+          @click="$emit('openItem', item.$path)"
+        >
+          <slot :item="item" :index="index" />
+        </span>
+        <span v-else class="_noClickZone">
+          <slot :item="item" :index="index" />
+        </span>
+      </SlickItem>
+    </SlickList>
+  </div>
 </template>
 <script>
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
@@ -41,6 +64,7 @@ export default {
     store_type: String,
     items: Array,
     path: String,
+    show_index: Boolean,
     active_item_path: String,
     active_item_meta: String,
     can_edit: Boolean,
@@ -54,6 +78,7 @@ export default {
     return {
       is_saving_changes: false,
       local_items: undefined,
+      change_order: false,
     };
   },
   i18n: {
@@ -150,8 +175,12 @@ export default {
     }
   }
 
+  ._noClickZone {
+    width: 100%;
+  }
+
   &.is--active {
-    background: var(--c-noir);
+    background: var(--c-gris_fonce);
     color: white;
 
     ._title {
@@ -190,9 +219,6 @@ export default {
   width: 2em;
   height: 2em;
 
-  font-size: var(--sl-font-size-small);
-  font-weight: bold;
-  font-family: "Fira Code";
   background: var(--c-gris_clair);
 
   &:hover,
@@ -200,5 +226,13 @@ export default {
     background: var(--c-noir);
     color: white;
   }
+}
+._index {
+  font-size: var(--sl-font-size-small);
+  font-weight: bold;
+  font-family: "Fira Code";
+}
+._changeOrderBtn {
+  text-align: right;
 }
 </style>
