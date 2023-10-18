@@ -148,7 +148,6 @@ export default {
                 resolution: 50,
               });
               if (thumb) pin_preview = thumb;
-              else pin_preview = "circle";
             }
 
             acc.push({
