@@ -228,7 +228,7 @@ export default {
 <style lang="scss" scoped>
 ._layersPane {
   position: relative;
-  width: 320px;
+  width: 520px;
 }
 
 ._list {
