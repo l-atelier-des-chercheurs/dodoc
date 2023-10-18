@@ -220,6 +220,7 @@ export default function () {
         cartography: "Cartographie",
         export_in_pdf: "Exporter en PDF",
         direct_link: "Lien direct",
+        link: "Lien",
         share: "Partager",
         options: "Options",
         exports_in_progress: "Exportation(s) en cours",

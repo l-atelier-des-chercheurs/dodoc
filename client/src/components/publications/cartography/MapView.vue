@@ -29,10 +29,9 @@
           </div> -->
           <ModuleCreator
             :publication_path="publication.$path"
-            :is_collapsed="false"
+            :start_collapsed="false"
             :context="'cartography'"
             :select_mode="'single'"
-            :show_labels="true"
             :types_available="['medias']"
             :post_addtl_meta="new_module_meta"
             @addModules="addModules"

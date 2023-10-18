@@ -30,9 +30,9 @@
             editor_is_enabled && !is_disabling_editor && !is_loading_or_saving
           "
         >
-          <button type="button" class="_editBtn" @click="toggleEdit">
+          <button type="button" class="u-button _editBtn" @click="toggleEdit">
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
-            {{ $t("stop_edit") }}
+            <span>{{ $t("stop_edit") }}</span>
           </button>
           <button
             type="button"
@@ -40,8 +40,8 @@
             v-if="editor_is_enabled"
             @click="show_archives = !show_archives"
           >
-            <b-icon slot="prefix" icon="archive" />
-            {{ $t("history") }}
+            <b-icon icon="archive" />
+            <span>{{ $t("history") }}</span>
           </button>
         </template>
 
@@ -593,7 +593,7 @@ export default {
         });
         this.is_loading_or_saving = false;
         this.show_saved_icon = true;
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 1000));
         this.show_saved_icon = false;
       } catch (err) {
         if (err.message === "content not changed") err;

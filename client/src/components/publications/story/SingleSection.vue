@@ -70,6 +70,8 @@
         </transition-group>
         <ModuleCreator
           v-if="can_edit"
+          class="_lastModule"
+          :start_collapsed="false"
           :publication_path="publication.$path"
           :types_available="['text', 'medias', 'files', 'link']"
           @addModules="addModules"
@@ -233,7 +235,16 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) * 2);
+  padding: 0 calc(var(--spacing) * 2);
+
+  ::v-deep {
+    ._moduleCreator {
+      padding: calc(var(--spacing) / 1);
+      &.is--collapsed {
+        padding: 0;
+      }
+    }
+  }
 }
 
 ._topbar {
@@ -258,5 +269,9 @@ export default {
       gap: calc(var(--spacing) * 1);
     }
   }
+}
+
+._lastModule {
+  margin-top: calc(var(--spacing) * 2);
 }
 </style>

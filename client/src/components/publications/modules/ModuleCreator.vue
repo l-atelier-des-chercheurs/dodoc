@@ -1,13 +1,18 @@
 <template>
-  <div class="_moduleCreator">
-    <div v-if="show_module_selector || !is_collapsed" class="_typePicker">
+  <div
+    class="_moduleCreator"
+    :class="{
+      'is--collapsed': !show_module_selector,
+    }"
+  >
+    <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
       <button
         type="button"
         class="u-button u-button_small u-button_bleumarine"
         v-if="types_available.includes('text')"
         @click="createText"
       >
-        <template v-if="show_labels">{{ $t("add_text") }}</template>
+        <template v-if="show_labels">{{ $t("text") }}</template>
         <sl-icon
           name="fonts"
           style="font-size: var(--icon-size)"
@@ -21,7 +26,7 @@
         v-if="types_available.includes('medias')"
         @click="show_media_picker = true"
       >
-        <template v-if="show_labels">{{ $t("add_medias") }}</template>
+        <template v-if="show_labels">{{ $t("medias") }}</template>
         <sl-icon
           name="image"
           style="font-size: var(--icon-size)"
@@ -42,7 +47,7 @@
         v-if="types_available.includes('files')"
         @click="show_file_picker = true"
       >
-        <template v-if="show_labels">{{ $t("add_files") }}</template>
+        <template v-if="show_labels">{{ $t("files") }}</template>
         <sl-icon
           name="file-earmark-binary-fill"
           style="font-size: var(--icon-size)"
@@ -63,7 +68,7 @@
         v-if="types_available.includes('link')"
         @click="show_link_picker = true"
       >
-        <template v-if="show_labels">{{ $t("add_link") }}</template>
+        <template v-if="show_labels">{{ $t("link") }}</template>
         <sl-icon
           name="link"
           style="font-size: var(--icon-size)"
@@ -103,7 +108,7 @@
     <button
       type="button"
       class="u-button u-button_transparent u-addBtn"
-      v-if="is_collapsed"
+      v-if="start_collapsed"
       :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
       @click="show_module_selector = !show_module_selector"
     >
@@ -125,14 +130,14 @@ export default {
     select_mode: String,
     show_labels: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     context: String,
     types_available: {
       type: Array,
       default: () => ["text", "medias", "files", "link", "shapes"],
     },
-    is_collapsed: {
+    start_collapsed: {
       type: Boolean,
       default: true,
     },
@@ -386,7 +391,7 @@ export default {
 ._typePicker {
   display: flex;
   flex-flow: row wrap;
-  justify-content: flex-start;
+  justify-content: center;
   gap: calc(var(--spacing) / 4);
 
   > * {

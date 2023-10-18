@@ -97,9 +97,8 @@
       <div v-if="can_edit" class="_bottomBar">
         <ModuleCreator
           :publication_path="publication.$path"
-          :is_collapsed="false"
+          :start_collapsed="false"
           :context="'cartography'"
-          :show_labels="true"
           :types_available="['medias']"
           @addModules="addModules"
         />

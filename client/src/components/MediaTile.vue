@@ -324,14 +324,16 @@ export default {
   top: 0;
   right: 0;
   z-index: 1;
-  margin: calc(var(--spacing) / 2);
   line-height: 0;
   border-radius: 50%;
   font-size: 80%;
   cursor: pointer;
 
   ::v-deep ._inputLabel {
-    padding: calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 2);
+    ._mediaTile[data-tilemode="medium"] & {
+      padding: calc(var(--spacing) / 1);
+    }
   }
 }
 </style>
