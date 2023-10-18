@@ -24,28 +24,25 @@
           {{ $t("to_add_media_here_open_matching_layer") }}
         </div>
         <div v-else>
-          <!-- <div class="">
-            {{ $t("add_media") }}
-          </div> -->
           <ModuleCreator
             :publication_path="publication.$path"
             :start_collapsed="false"
             :context="'cartography'"
             :select_mode="'single'"
-            :types_available="['medias']"
+            :types_available="['medias', 'text']"
             :post_addtl_meta="new_module_meta"
             @addModules="addModules"
           />
         </div>
       </div>
     </DisplayOnMap>
-    <ViewPane
+    <!-- <ViewPane
       :publication="publication"
       :views="views"
       :opened_view_meta_filename="opened_view_meta_filename"
       :can_edit="can_edit"
       @toggleView="$emit('toggleView', $event)"
-    />
+    /> -->
   </div>
 </template>
 <script>
