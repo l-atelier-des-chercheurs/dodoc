@@ -27,7 +27,7 @@
         <!-- ({{ layer_modules_list.length }}) -->
       </div>
 
-      <fieldset v-if="can_edit" class="_options">
+      <DetailsPane v-if="can_edit" :header="$t('options')" :icon="'map'">
         <legend class="u-label">{{ $t("options") }}</legend>
 
         <div class="_color">
@@ -59,7 +59,7 @@
             :options="icon_options"
           />
         </div>
-      </fieldset>
+      </DetailsPane>
 
       <hr />
 
@@ -274,11 +274,10 @@ export default {
   flex-flow: column nowrap;
 
   ._title {
-    margin-bottom: calc(var(--spacing) * 1);
-    display: flex;
-    flex-flow: row wrap;
-    align-items: baseline;
-    gap: calc(var(--spacing) / 2);
+    // display: flex;
+    // flex-flow: row wrap;
+    // align-items: baseline;
+    // gap: calc(var(--spacing) / 2);
   }
 
   ._pinContainer {

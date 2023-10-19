@@ -1,52 +1,45 @@
 <template>
   <div class="_layersPane">
-    <DetailsPane
-      ref="details"
-      :header="$t('layers')"
-      :icon="'card-list'"
-      :has_items="layers.length > 0 ? layers.length : false"
-      :is_open_initially="true"
-      :can_be_toggled="false"
-    >
-      <ReorderedList
-        :field_name="'layers_list'"
-        :items="layers"
-        :path="publication.$path"
-        :active_item_path="opened_layer_path"
-        :can_edit="can_edit"
-        @openItem="openLayer"
-        v-slot="slotProps"
-      >
-        <span
-          class="_colorInd"
-          :style="
-            'background-color: ' +
-            (slotProps.item.section_color || default_layer_color)
-          "
-        />
-        <span v-if="slotProps.item.section_title">
-          {{ slotProps.item.section_title }}
-        </span>
-        <span v-else v-html="`<i>${$t('untitled')}</i>`" />
-        <span class="u-nut" :data-isfilled="layerHasPins(slotProps.item)">
-          {{ getNumberOfPinsInLayer(slotProps.item) }}
-        </span>
-      </ReorderedList>
+    <h2>{{ $t("layers") }}</h2>
 
-      <template v-if="can_edit">
-        <template v-if="layers.length > 0">
-          <hr />
-        </template>
-        <button
-          type="button"
-          class="u-button u-button_bleuvert u-button_small"
-          v-if="can_edit"
-          @click="createLayer"
-        >
-          {{ $t("create_layer") }}
-        </button>
+    <ReorderedList
+      :field_name="'layers_list'"
+      :items="layers"
+      :path="publication.$path"
+      :active_item_path="opened_layer_path"
+      :can_edit="can_edit"
+      @openItem="openLayer"
+      v-slot="slotProps"
+    >
+      <span
+        class="_colorInd"
+        :style="
+          'background-color: ' +
+          (slotProps.item.section_color || default_layer_color)
+        "
+      />
+      <span v-if="slotProps.item.section_title">
+        {{ slotProps.item.section_title }}
+      </span>
+      <span v-else v-html="`<i>${$t('untitled')}</i>`" />
+      <span class="u-nut" :data-isfilled="layerHasPins(slotProps.item)">
+        {{ getNumberOfPinsInLayer(slotProps.item) }}
+      </span>
+    </ReorderedList>
+
+    <template v-if="can_edit">
+      <template v-if="layers.length > 0">
+        <hr />
       </template>
-    </DetailsPane>
+      <button
+        type="button"
+        class="u-button u-button_bleuvert u-button_small"
+        v-if="can_edit"
+        @click="createLayer"
+      >
+        {{ $t("create_layer") }}
+      </button>
+    </template>
 
     <LayerContent
       v-if="opened_layer_path"
@@ -228,7 +221,12 @@ export default {
 <style lang="scss" scoped>
 ._layersPane {
   position: relative;
-  width: 520px;
+  width: 100%;
+  height: 100%;
+  padding: calc(var(--spacing) / 2);
+  background: white;
+  // background: var(--c-noir);
+  // color: white;
 }
 
 ._list {
