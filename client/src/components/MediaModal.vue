@@ -200,6 +200,8 @@ export default {
         return;
 
       if (event.key === "Escape") this.$emit("close");
+      if (event.key === "ArrowLeft") this.$emit("prevMedia");
+      if (event.key === "ArrowRight") this.$emit("nextMedia");
     },
   },
 };
