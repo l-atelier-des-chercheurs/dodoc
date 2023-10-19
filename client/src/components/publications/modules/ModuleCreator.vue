@@ -107,7 +107,15 @@
       </div>
     </transition>
 
-    <button
+    <template v-if="start_collapsed">
+      <EditBtn
+        key="addmodule"
+        :btn_type="!show_module_selector ? 'add' : 'close'"
+        class="_addBtn"
+        @click="show_module_selector = !show_module_selector"
+      />
+    </template>
+    <!-- <button
       type="button"
       class="u-button u-button_transparent u-addBtn"
       v-if="start_collapsed"
@@ -115,7 +123,7 @@
       @click="show_module_selector = !show_module_selector"
     >
       <b-icon icon="plus-circle-fill" />
-    </button>
+    </button> -->
 
     <DropZone @mediaDropped="createMosaic" />
   </div>
@@ -378,7 +386,7 @@ export default {
   align-items: center;
   width: 100%;
   pointer-events: none;
-  // padding: 0 calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) / 4); // padding: 0 calc(var(--spacing) * 1);
 
   color: var(--c-bleuvert);
   border-radius: 1rem;
