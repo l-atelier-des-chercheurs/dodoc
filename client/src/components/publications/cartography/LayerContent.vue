@@ -126,7 +126,11 @@
 
       <hr />
 
-      <RemoveMenu :remove_text="$t('remove_layer')" @remove="removeLayer" />
+      <RemoveMenu
+        v-if="can_edit"
+        :remove_text="$t('remove_layer')"
+        @remove="removeLayer"
+      />
     </div>
   </div>
 </template>
