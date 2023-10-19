@@ -25,7 +25,7 @@
           <MediaContent
             v-else
             :file="media_with_linked._linked_media"
-            :resolution="context === 'preview' ? 220 : 2400"
+            :resolution="context === 'preview' ? 220 : 1600"
             :context="context"
             :show_fs_button="show_fs_button"
           />
