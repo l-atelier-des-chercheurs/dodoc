@@ -85,6 +85,7 @@
               :publication="publication"
               :layer="layer"
               :mapmodule="slotProps.item"
+              :ref="'module_' + slotProps.item.$path"
               :is_opened="slotProps.item.$path === opened_pin_path"
               :can_edit="can_edit"
               @repickLocation="$emit('repickLocation', slotProps.item.$path)"
@@ -178,7 +179,18 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    opened_pin_path() {
+      // scrollto
+      const module_in_list = this.$refs["module_" + this.opened_pin_path];
+      if (module_in_list)
+        module_in_list.$el.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        });
+    },
+  },
   computed: {
     layer_modules_list() {
       return this.getModulesForSection({
@@ -214,7 +226,7 @@ export default {
       const meta_filename = meta_filenames.at(-1);
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
-        this.$emit("openPin", pin_path);
+        this.$emit("togglePin", pin_path);
       }, 150);
     },
   },
