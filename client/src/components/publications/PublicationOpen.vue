@@ -112,6 +112,8 @@ export default {
   min-height: calc(100vh - 44px);
   display: flex;
   flex-flow: column nowrap;
+
+  background: white;
 }
 ._publicationOpen--topbar {
   flex: 0 0 auto;

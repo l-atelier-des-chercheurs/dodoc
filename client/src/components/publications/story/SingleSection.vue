@@ -1,7 +1,7 @@
 <template>
   <div class="_singleSection">
     <div class="_storyContainer">
-      <div class="_storyContent" :style="story_styles">
+      <div class="_storyContent" v-if="section" :style="story_styles">
         <div
           class="_topbar"
           v-if="

@@ -77,11 +77,12 @@ export default {
   // gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 4);
-  background: rgba(0, 0, 0, 0.06);
+  background: white;
   border-radius: 4px;
+  // background: rgba(0, 0, 0, 0.06);
 }
 
 ._editBtn {
-  color: white;
+  // color: white;
 }
 </style>

@@ -230,11 +230,9 @@ export default {
   background: white;
 
   padding: calc(var(--spacing) / 2);
-  border-radius: 1px;
   margin: 0;
-
-  box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
-  // max-width: 800px;
+  border-top: 1px solid var(--c-gris);
+  border-bottom: 1px solid var(--c-gris);
 }
 
 ._publiTitle {

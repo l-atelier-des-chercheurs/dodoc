@@ -41,5 +41,6 @@ export default {
 <style lang="scss" scoped>
 ._pageTemplate {
   position: relative;
+  background: var(--c-gris_clair);
 }
 </style>

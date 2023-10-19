@@ -237,7 +237,7 @@ export default {
   width: 100%;
   height: calc(100vh - 95px);
 
-  border-top: 1px solid black;
+  // border-top: 1px solid black;
 
   background: var(--c-gris);
   border-radius: 4px;
