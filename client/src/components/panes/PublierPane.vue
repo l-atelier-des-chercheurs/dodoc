@@ -61,6 +61,7 @@ export default {
   // padding-top: 2px;
   background: white;
   background: var(--c-gris_clair);
+  background-color: var(--c-bodybg);
 
   &.is--editable {
     // background: var(--body-color);

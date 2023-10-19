@@ -22,7 +22,6 @@
       <EditBtn
         key="editbtn"
         v-if="can_edit && !edit_mode"
-        class="_editBtn"
         @click="enableEditMode"
       />
     </transition-group>
@@ -247,10 +246,6 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
-
-  ._editBtn {
-    margin: 0;
-  }
 }
 
 ._footer {

@@ -2,11 +2,7 @@
   <div class="_label">
     <div class="u-sameRow">
       <b class="">{{ $t("page") }} {{ index + 1 }}</b>
-      <EditBtn
-        v-if="can_edit"
-        class="_editBtn"
-        @click="edit_mode = !edit_mode"
-      />
+      <EditBtn v-if="can_edit" @click="edit_mode = !edit_mode" />
     </div>
     <div class="u-sameRow" v-if="edit_mode">
       <select
@@ -80,9 +76,5 @@ export default {
   background: white;
   border-radius: 4px;
   // background: rgba(0, 0, 0, 0.06);
-}
-
-._editBtn {
-  // color: white;
 }
 </style>

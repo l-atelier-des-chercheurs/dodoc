@@ -1031,7 +1031,8 @@ export default {
   position: sticky;
   z-index: 101;
   top: calc(var(--spacing) / 4);
-  margin-left: auto;
+  height: 0;
+  text-align: right;
   margin-right: calc(var(--spacing) / 4);
 
   > * {
@@ -1314,9 +1315,9 @@ export default {
     justify-content: space-between;
     align-items: center;
 
-    ._editBtn {
-      background-color: var(--c-bleuvert);
-    }
+    // ._editBtn {
+    //   background-color: var(--c-bleuvert);
+    // }
 
     ._collabEditorStatus {
       background-color: var(--c-vert);

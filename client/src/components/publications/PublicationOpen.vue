@@ -113,7 +113,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
-  background: white;
+  background-color: var(--c-bodybg);
 }
 ._publicationOpen--topbar {
   flex: 0 0 auto;

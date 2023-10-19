@@ -37,22 +37,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    opened_view() {
-      return this.views.find(
-        (v) => this.getFilename(v.$path) === this.opened_view_meta_filename
-      );
-    },
-    new_view_title() {
-      let idx = this.views.length + 1;
-      let new_view_title = this.$t("view") + " " + idx;
-      while (this.views.section_title === new_view_title) {
-        idx++;
-        new_view_title = this.$t("view") + " " + idx;
-      }
-      return new_view_title;
-    },
-  },
+  computed: {},
   methods: {
     async createView() {
       await this.createSection2({

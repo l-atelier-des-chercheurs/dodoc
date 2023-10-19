@@ -94,7 +94,9 @@ export default {
   height: 24px;
   flex: 0 0 24px;
 
-  // backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.2);
+
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 

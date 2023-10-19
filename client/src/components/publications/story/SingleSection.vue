@@ -113,7 +113,7 @@ export default {
       }).map(({ _module }) => _module);
     },
     story_styles() {
-      const width = (this.publication.story_width || 800) + "px";
+      const width = (this.publication.story_width || 900) + "px";
       if (this.publication.story_is_not_responsive === true)
         return { width, maxWidth: "none" };
       else return { maxWidth: width };
