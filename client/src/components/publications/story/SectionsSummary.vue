@@ -50,6 +50,8 @@ export default {
     if (this.sections.length > 0 && !this.opened_section_meta_filename) {
       const section_path = this.sections[0].$path;
       this.openSection(section_path);
+    } else if (this.sections.length === 0) {
+      this.createSection();
     }
     this.$eventHub.$on(`sections.open_summary`, this.openSummary);
   },
@@ -60,10 +62,12 @@ export default {
   computed: {
     new_section_title() {
       let idx = this.sections.length + 1;
-      let new_section_title = this.$t("section") + " " + idx;
+      const makeTitle = (i) => this.$t("section") + " " + i;
+
+      let new_section_title = makeTitle(idx);
       while (this.sections.some((s) => s.section_title === new_section_title)) {
         idx++;
-        new_section_title = this.$t("section") + " " + idx;
+        new_section_title = makeTitle(idx);
       }
       return new_section_title;
     },
