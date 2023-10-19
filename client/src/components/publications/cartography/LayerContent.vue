@@ -91,6 +91,22 @@
               @repickLocation="$emit('repickLocation', slotProps.item.$path)"
               @toggle="$emit('togglePin', slotProps.item.$path)"
             />
+            <div>
+              <ModuleCreator
+                v-if="can_edit"
+                :publication_path="publication.$path"
+                :start_collapsed="true"
+                :context="'cartography'"
+                :types_available="['medias', 'text']"
+                @addModules="
+                  ({ meta_filenames }) =>
+                    insertModules({
+                      meta_filenames,
+                      index: slotProps.index + 1,
+                    })
+                "
+              />
+            </div>
 
             <!-- <div class="">
               Praesent non feugiat nulla. Sed id sapien vel erat fringilla
@@ -121,7 +137,7 @@
           :start_collapsed="false"
           :context="'cartography'"
           :types_available="['medias']"
-          @addModules="addModules"
+          @addModules="insertModules"
         />
       </div>
 
@@ -216,10 +232,11 @@ export default {
       });
       this.$emit("close");
     },
-    async addModules({ meta_filenames }) {
+    async insertModules({ meta_filenames, index = undefined }) {
       await this.insertModuleMetaFilenamesToList2({
         publication: this.publication,
         section: this.layer,
+        index,
         meta_filenames,
       });
       // todo scroll to last meta_filename
