@@ -229,11 +229,13 @@ export default {
 
   ._navBtn {
     padding: calc(var(--spacing) / 2);
-    background: rgba(255, 255, 255, 0.25);
     pointer-events: auto;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     border-radius: 50%;
-    border: 1px solid currentColor;
+
+    background: rgba(255, 255, 255, 0.5);
+    position: relative;
+    z-index: 100;
 
     &:hover,
     &:focus {
