@@ -36,13 +36,6 @@
         </div>
       </div>
     </DisplayOnMap>
-    <!-- <ViewPane
-      :publication="publication"
-      :views="views"
-      :opened_view_meta_filename="opened_view_meta_filename"
-      :can_edit="can_edit"
-      @toggleView="$emit('toggleView', $event)"
-    /> -->
   </div>
 </template>
 <script>
@@ -54,7 +47,6 @@ import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 export default {
   props: {
     publication: Object,
-    opened_view_meta_filename: String,
     can_edit: Boolean,
   },
   components: {
