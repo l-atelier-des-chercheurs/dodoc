@@ -3,6 +3,7 @@
     class="_mediaContent"
     :data-filetype="file.$type"
     :draggable="is_draggable"
+    :data-context="context"
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
