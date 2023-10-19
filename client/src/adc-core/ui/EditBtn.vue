@@ -100,6 +100,7 @@ export default {
 
   &:hover,
   &:focus-visible {
+    z-index: 10;
     transform: scale(1.2);
   }
 
