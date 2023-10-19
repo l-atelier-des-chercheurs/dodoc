@@ -336,11 +336,6 @@ export default {
     width: 2rem;
     height: 2rem;
   }
-
-  &::part(base) {
-    color: currentColor;
-  }
-
   &:not(:hover) {
     margin-top: -10px;
     margin-right: -10px;
