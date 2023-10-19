@@ -10,13 +10,10 @@
     >
       <span>
         <button
-          v-if="
-            $listeners.hasOwnProperty('moveUp') &&
-            module_position !== 'first' &&
-            module_position !== 'alone'
-          "
+          v-if="$listeners.hasOwnProperty('moveUp')"
+          :disabled="module_position === 'first' || module_position === 'alone'"
           type="button"
-          class="_sideBtns _moveBefore"
+          class="u-button _sideBtns _moveBefore"
           @click="$emit('moveUp')"
         >
           <svg
@@ -34,7 +31,7 @@
       <div class="_options">
         <button
           type="button"
-          class="_sideBtns"
+          class="u-button _sideBtns"
           :class="{
             'is--active': show_advanced_menu,
           }"
@@ -144,13 +141,10 @@
       </div>
       <span>
         <button
-          v-if="
-            $listeners.hasOwnProperty('moveDown') &&
-            module_position !== 'last' &&
-            module_position !== 'alone'
-          "
+          v-if="$listeners.hasOwnProperty('moveDown')"
           type="button"
-          class="_sideBtns _moveAfter"
+          :disabled="module_position === 'last' || module_position === 'alone'"
+          class="u-button _sideBtns _moveAfter"
           @click="$emit('moveDown')"
         >
           <svg
@@ -524,7 +518,7 @@ export default {
   width: var(--side-width);
   border-radius: calc(var(--side-width) / 2);
 
-  opacity: 0.2;
+  opacity: 0.35;
 
   transition: opacity 0.25s linear;
 

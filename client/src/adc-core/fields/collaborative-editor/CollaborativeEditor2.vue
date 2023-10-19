@@ -580,7 +580,7 @@ export default {
         });
         this.is_loading_or_saving = false;
         this.show_saved_icon = true;
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 500));
         this.show_saved_icon = false;
       } catch (err) {
         if (err.message === "content not changed") err;
@@ -934,6 +934,7 @@ export default {
       background-color: transparent;
 
       padding: 0px;
+      padding-bottom: 0.4em;
 
       @import "./imports/mainText.scss";
 
@@ -1299,7 +1300,7 @@ export default {
 }
 
 ._TEbtnContainer {
-  width: 100%;
+  // width: 100%;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
