@@ -206,8 +206,8 @@ export default {
   padding: 0;
   margin: 0 auto;
   padding-bottom: calc(var(--spacing) * 2);
-  border-radius: 15px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  // border-radius: 15px;
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
   transition: width 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 }
