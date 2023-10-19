@@ -98,6 +98,11 @@ export default {
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
+  &:hover,
+  &:focus-visible {
+    transform: scale(1.2);
+  }
+
   ._icon {
     position: relative;
     z-index: 1;

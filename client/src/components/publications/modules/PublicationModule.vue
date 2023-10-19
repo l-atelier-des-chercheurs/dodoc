@@ -1,5 +1,9 @@
 <template>
-  <div class="_publicationModule" :data-type="module_type">
+  <div
+    class="_publicationModule"
+    :data-type="module_type"
+    @mouseleave="show_advanced_menu = false"
+  >
     <div
       class="_sideOptions"
       v-if="can_edit && page_template !== 'page_by_page'"
@@ -65,40 +69,30 @@
           >
             {{ $t(`module.label.${publimodule.module_type}`) }}
           </sl-button>
-
           <div class="_buttonRow">
             <button
               type="button"
               class="u-button"
-              :disabled="!publimodule.size || publimodule.size === 100"
+              :class="{
+                'is--active': !publimodule.size || publimodule.size === 100,
+              }"
               @click="updateMeta({ size: 100 })"
             >
               100%
             </button>
-            <button
-              type="button"
-              class="u-button"
-              :disabled="publimodule.size === 66.6"
-              @click="updateMeta({ size: 66.6 })"
-            >
-              66%
-            </button>
-            <button
-              type="button"
-              class="u-button"
-              :disabled="publimodule.size === 50"
-              @click="updateMeta({ size: 50 })"
-            >
-              50%
-            </button>
-            <button
-              type="button"
-              class="u-button"
-              :disabled="publimodule.size === 33.3"
-              @click="updateMeta({ size: 33.3 })"
-            >
-              33%
-            </button>
+            <template v-for="size in [66.6, 50, 33.3]">
+              <button
+                :key="size"
+                type="button"
+                class="u-button"
+                :class="{
+                  'is--active': publimodule.size === size,
+                }"
+                @click="updateMeta({ size: size })"
+              >
+                {{ size }}%
+              </button>
+            </template>
           </div>
 
           <div
@@ -108,7 +102,10 @@
             <button
               type="button"
               class="u-button"
-              :disabled="!publimodule.align || publimodule.align === 'left'"
+              :class="{
+                'is--active':
+                  !publimodule.align || publimodule.align === 'left',
+              }"
               @click="updateMeta({ align: 'left' })"
             >
               <sl-icon name="align-start" />
@@ -116,7 +113,9 @@
             <button
               type="button"
               class="u-button"
-              :disabled="publimodule.align === 'center'"
+              :class="{
+                'is--active': publimodule.align === 'center',
+              }"
               @click="updateMeta({ align: 'center' })"
             >
               <sl-icon name="align-center" />
@@ -124,7 +123,9 @@
             <button
               type="button"
               class="u-button"
-              :disabled="publimodule.align === 'right'"
+              :class="{
+                'is--active': publimodule.align === 'right',
+              }"
               @click="updateMeta({ align: 'right' })"
             >
               <sl-icon name="align-end" />
@@ -507,10 +508,11 @@ export default {
   top: 0;
   height: 100%;
   right: 100%;
-  background: var(--active-color);
-  background: rgba(0, 0, 0, 0.05);
+  // background: var(--active-color);
+  background: rgba(0, 0, 0, 0.01);
+  background: var(--c-gris_clair);
 
-  pointer-events: none;
+  // pointer-events: none;
 
   // z-index: 100;
 
@@ -521,6 +523,15 @@ export default {
   --side-width: 24px;
   width: var(--side-width);
   border-radius: calc(var(--side-width) / 2);
+
+  opacity: 0.2;
+
+  transition: opacity 0.25s linear;
+
+  ._publicationModule:hover &,
+  ._publicationModule:focus-visible & {
+    opacity: 1;
+  }
 
   &.is--pageByPage {
     display: none;
@@ -567,7 +578,9 @@ export default {
 
   background: white;
 
-  background: var(--active-color);
+  backdrop-filter: blur(5px);
+  background: rgba(231, 231, 231, 0.7);
+
   padding: calc(var(--spacing) / 2);
   margin: 2px;
   border-radius: 4px;

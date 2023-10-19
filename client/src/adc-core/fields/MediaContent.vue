@@ -389,6 +389,7 @@ export default {
     overflow: hidden;
     border: 2px solid var(--c-gris);
     background-color: white;
+    background-color: var(--c-gris);
     object-fit: contain;
   }
 

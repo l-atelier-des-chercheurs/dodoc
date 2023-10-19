@@ -66,21 +66,8 @@
         </sl-button> -->
     </div>
 
-    <div class="_floatingEditBtn" v-if="can_edit">
-      <sl-button
-        variant="edit"
-        :data-action="editor_is_enabled ? 'disable' : 'enable'"
-        size="small"
-        circle
-        @click="toggleEdit"
-      >
-        <b-icon
-          v-if="!editor_is_enabled"
-          icon="pencil-fill"
-          :aria-label="$t('edit')"
-        />
-        <b-icon v-else icon="check-circle-fill" />
-      </sl-button>
+    <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
+      <EditBtn key="editbtn" @click="toggleEdit" />
     </div>
 
     <div class="_toolbarAndEditorContainer">
@@ -1067,6 +1054,7 @@ export default {
   top: 0;
   z-index: 2;
   padding: calc(var(--spacing) / 4);
+  margin-bottom: 0.3em;
   border-radius: 16px;
   // hides select, do not use
   // overflow: hidden;
@@ -1093,6 +1081,7 @@ export default {
   }
   button,
   svg {
+    display: inherit;
     color: currentColor;
   }
 

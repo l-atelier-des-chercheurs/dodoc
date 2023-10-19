@@ -226,7 +226,7 @@ export default {
     }
     ._mediaContent--image,
     .plyr {
-      border-radius: 6px;
+      border-radius: 3px;
     }
   }
 }
