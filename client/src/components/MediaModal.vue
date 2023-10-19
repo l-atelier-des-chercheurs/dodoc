@@ -178,32 +178,14 @@ export default {
   },
   created() {},
   mounted() {
-    window.addEventListener("keyup", this.handleKeyPress);
     setTimeout(() => {
       this.show_nav_btn = true;
     }, 200);
   },
-  beforeDestroy() {
-    window.removeEventListener("keyup", this.handleKeyPress);
-  },
+  beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {
-    handleKeyPress(event) {
-      if (
-        this.$root.modal_is_opened ||
-        event.target.tagName.toLowerCase() === "input" ||
-        event.target.tagName.toLowerCase() === "textarea" ||
-        event.target.className.includes("ql-editor") ||
-        event.target.hasAttribute("contenteditable")
-      )
-        return;
-
-      if (event.key === "Escape") this.$emit("close");
-      if (event.key === "ArrowLeft") this.$emit("prevMedia");
-      if (event.key === "ArrowRight") this.$emit("nextMedia");
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
