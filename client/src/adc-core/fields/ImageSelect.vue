@@ -175,9 +175,6 @@ export default {
       if ($event.clipboardData.files && $event.clipboardData.files.length > 0) {
         $event.preventDefault();
         $event.stopPropagation();
-        console.log(
-          `Story — METHODS • handlePaste: for files.length = ${$event.clipboardData.files.length} with size ${$event.clipboardData.files[0].size}`
-        );
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
