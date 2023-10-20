@@ -27,7 +27,7 @@
           <template v-for="(_module, index) in section_modules_list">
             <div class="_spacer" :key="'mc_' + index">
               <!-- v-if="can_edit || index > 0" -->
-              <ModuleCreator
+              <!-- <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
                 :types_available="['text', 'medias', 'files', 'link']"
@@ -35,7 +35,7 @@
                   ({ meta_filenames }) =>
                     insertModules({ meta_filenames, index })
                 "
-              />
+              /> -->
             </div>
 
             <PublicationModule

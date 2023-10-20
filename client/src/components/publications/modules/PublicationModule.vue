@@ -3,7 +3,7 @@
     <!-- @mouseleave.self="show_advanced_menu = false" -->
     <div
       class="_sideOptions"
-      v-if="can_edit && page_template !== 'page_by_page'"
+      v-if="edit_mode && page_template !== 'page_by_page'"
     >
       <span>
         <button
@@ -178,10 +178,25 @@
     </div>
 
     <div class="_content" :style="media_styles">
+      <div class="_floatingEditBtn" v-if="can_edit">
+        <EditBtn
+          v-if="!edit_mode"
+          key="editbtn"
+          :label_position="'left'"
+          @click="enableEdit"
+        />
+        <EditBtn
+          v-else
+          key="editbtn"
+          :label_position="'left'"
+          @click="disableEdit"
+        />
+      </div>
+
       <MediasModule
         v-if="['mosaic', 'carousel', 'files'].includes(publimodule.module_type)"
         :publimodule="publimodule"
-        :can_edit="can_edit"
+        :can_edit="edit_mode"
         :context="context"
         :page_template="page_template"
         :number_of_max_medias="number_of_max_medias"
@@ -196,7 +211,7 @@
         :content="first_media.$content"
         :scrollingContainer="$el"
         :line_selected="false"
-        :can_edit="can_edit"
+        :can_edit="edit_mode"
         @lineClicked="$emit('lineClicked', $event)"
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
@@ -295,6 +310,8 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>
+
+    <div class="_selectorIndicator" v-if="edit_mode" />
   </div>
 </template>
 <script>
@@ -326,13 +343,14 @@ export default {
   data() {
     return {
       show_advanced_menu: false,
+      edit_mode: false,
     };
   },
   created() {},
   mounted() {
     this.$eventHub.$on(
       `module.enable_edit.${this.module_meta_filename}`,
-      this.enableEditForText
+      this.enableEdit
     );
     this.$eventHub.$on(
       `module.duplicate.${this.module_meta_filename}`,
@@ -346,7 +364,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off(
       `module.enable_edit.${this.module_meta_filename}`,
-      this.enableEditForText
+      this.enableEdit
     );
     this.$eventHub.$off(
       `module.duplicate.${this.module_meta_filename}`,
@@ -421,15 +439,15 @@ export default {
           throw err;
         });
     },
-    enableEditForText() {
-      // this.$el.scrollIntoView({
-      //   behavior: "smooth",
-      //   block: "center",
-      //   inline: "nearest",
-      // });
+    enableEdit() {
+      this.edit_mode = true;
       this.$nextTick(() => {
         if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
       });
+    },
+    disableEdit() {
+      this.edit_mode = false;
+      if (this.$refs.textBloc) this.$refs.textBloc.disableEditor();
     },
     changeModuleType(event) {
       // const module_types = ["mosaic", "carousel", "files"];
@@ -513,6 +531,19 @@ export default {
     margin-left: calc(var(--module-margin-left) * 1%);
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
+}
+
+._selectorIndicator {
+  --highlight-margin: -5px;
+
+  position: absolute;
+  top: var(--highlight-margin);
+  left: var(--highlight-margin);
+  bottom: var(--highlight-margin);
+  right: var(--highlight-margin);
+
+  border: 2px solid var(--c-bleuvert);
+  border-radius: 4px;
 }
 
 ._sideOptions {
@@ -632,5 +663,21 @@ export default {
   display: flex;
   // padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 4);
+}
+
+._floatingEditBtn {
+  position: sticky;
+  z-index: 101;
+  top: calc(var(--spacing) / 4);
+  left: 100%;
+  height: 0;
+  text-align: right;
+  margin-right: calc(var(--spacing) / 4);
+
+  > * {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 }
 </style>
