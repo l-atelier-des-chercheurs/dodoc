@@ -447,7 +447,8 @@ export default {
     },
 
     handlePaste($event) {
-      if (this.$root.modal_is_opened) return;
+      if (!this.$el.closest("._baseModal") && this.$root.modal_is_opened)
+        return;
 
       if ($event.clipboardData.files?.length > 0)
         this.files_to_import = Array.from($event.clipboardData.files);
