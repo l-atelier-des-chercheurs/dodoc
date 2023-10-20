@@ -346,7 +346,7 @@ export default {
   --pagemenu-width: 280px;
 
   &.is--editable {
-    background: var(--color-publish);
+    // background: var(--color-publish);
   }
 
   > ._topMenu {
@@ -496,7 +496,7 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 10;
+  z-index: 1;
   height: 100%;
   // padding-right: calc(var(--spacing) / 2);
   overflow-x: visible;

@@ -1,7 +1,7 @@
 <template>
   <div class="_colorInput">
     <ToggledSection
-      class="u-spacingBottom"
+      class=""
       :label="label"
       :can_toggle="can_toggle"
       :show_toggle.sync="show_color_input"
@@ -29,7 +29,7 @@
             @click="local_value = color"
           />
         </div>
-        <div class="u-sameRow" :key="'value-' + value">
+        <div class="" :key="'value-' + value">
           <div
             class="_inputField"
             :class="{
@@ -53,8 +53,15 @@
             />
           </div>
         </div>
-        <transition name="popUp_slow">
-          <button
+        <transition name="fade_fast">
+          <SaveCancelButtons
+            class="_scb"
+            :allow_save="value !== local_value"
+            @save="saveColor(local_value)"
+            @cancel="cancelColor"
+          />
+
+          <!-- <button
             type="button"
             v-if="value !== local_value"
             class="u-button u-button_bleuvert _submitBtn"
@@ -66,7 +73,7 @@
               :label="$t('submit')"
             />
             {{ $t("save") }}
-          </button>
+          </button> -->
         </transition>
       </template>
     </ToggledSection>
@@ -135,6 +142,10 @@ export default {
       this.$emit("save", col);
       this.edit_mode = false;
     },
+    cancelColor() {
+      this.local_value = this.value;
+      this.edit_mode = false;
+    },
   },
 };
 </script>
@@ -142,7 +153,7 @@ export default {
 ._defaultColors {
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: flex-start;
 }
 ._defaultColors--item {
   cursor: pointer;
@@ -189,6 +200,8 @@ export default {
     width: 1px;
     height: 1px;
     opacity: 0;
+    padding: 0;
+    display: inline-block;
   }
 
   &.has--novalue::after {
@@ -211,6 +224,10 @@ export default {
     background-blend-mode: normal, difference, normal;
     background-size: 2em 2em;
   }
+}
+
+._customCol {
+  margin-bottom: calc(var(--spacing) / 4);
 }
 
 ._submitBtn {

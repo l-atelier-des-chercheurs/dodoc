@@ -5,10 +5,10 @@
     :style="btn_styles"
     @click="$emit('click')"
   >
-    <span>
-      {{ label }}
+    <span class="_label">
+      {{ btn_props.label }}
     </span>
-    <b-icon :icon="icon" />
+    <b-icon class="_icon" :icon="btn_props.icon" />
     <!-- <sl-icon :name="icon" :label="label" /> -->
   </button>
 </template>
@@ -29,16 +29,32 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    label() {
-      if (this.btn_type === "fullscreen") return this.$t("fullscreen");
+    btn_props() {
+      if (this.btn_type === "fullscreen")
+        return {
+          label: this.$t("fullscreen"),
+          icon: "fullscreen",
+        };
       else if (this.btn_type === "fullscreen-exit")
-        return this.$t("exit_fullscreen");
-      return this.$t("edit");
-    },
-    icon() {
-      if (this.btn_type === "fullscreen") return "fullscreen";
-      else if (this.btn_type === "fullscreen-exit") return "fullscreen-exit";
-      return "pencil-fill";
+        return {
+          label: this.$t("exit_fullscreen"),
+          icon: "fullscreen-exit",
+        };
+      else if (this.btn_type === "add")
+        return {
+          label: this.$t("add"),
+          icon: "plus-circle-fill",
+        };
+      else if (this.btn_type === "close")
+        return {
+          label: this.$t("close"),
+          icon: "x-circle",
+        };
+
+      return {
+        label: this.$t("edit"),
+        icon: "pencil-fill",
+      };
     },
     btn_styles() {
       if (this.btn_type === "fullscreen")
@@ -59,7 +75,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: transparent;
+  --color1: rgba(255, 255, 255, 0.2);
   // --color1: white;
   --color2: var(--c-bleuvert);
   --color-hover-icon: white;
@@ -78,16 +94,24 @@ export default {
   height: 24px;
   flex: 0 0 24px;
 
-  // backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.2);
+
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-  i {
-    position: relative;
-    font-size: 120%;
+  &:hover,
+  &:focus-visible {
+    z-index: 10;
+    transform: scale(1.2);
   }
 
-  span {
+  ._icon {
+    position: relative;
+    z-index: 1;
+  }
+
+  ._label {
     position: absolute;
     top: 0;
     left: 0;
@@ -116,7 +140,7 @@ export default {
     // background: var(--color2);
     color: var(--color-hover-icon);
 
-    span {
+    ._label {
       transform: none;
       color: inherit;
       opacity: 1;

@@ -318,6 +318,7 @@ export default {
   mounted() {
     console.log(`MediaLibrary / mounted`);
     window.addEventListener("paste", this.handlePaste);
+    window.addEventListener("keyup", this.handleKeyPress);
 
     if (this.media_focused)
       this.$nextTick(() => {
@@ -326,6 +327,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("paste", this.handlePaste);
+    window.removeEventListener("keyup", this.handleKeyPress);
   },
   watch: {
     tile_mode() {
@@ -411,6 +413,39 @@ export default {
       //   inline: "nearest",
       // });
     },
+    handleKeyPress(event) {
+      if (
+        (!this.$el.closest("._baseModal") && this.$root.modal_is_opened) ||
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor") ||
+        event.target.hasAttribute("contenteditable")
+      )
+        return;
+
+      switch (event.key) {
+        case "Escape":
+          this.toggleMediaFocus();
+          break;
+        case "w":
+        case "z":
+        case "ArrowLeft":
+          this.prevMedia();
+          break;
+        case "s":
+        case "ArrowRight":
+          this.nextMedia();
+          break;
+        // case "a":
+        // case "q":
+        // case " ":
+        //   this.toggleMediaFocus();
+        //   break;
+      }
+
+      return false;
+    },
+
     handlePaste($event) {
       if (this.$root.modal_is_opened) return;
 

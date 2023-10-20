@@ -66,21 +66,8 @@
         </sl-button> -->
     </div>
 
-    <div class="_floatingEditBtn" v-if="can_edit">
-      <sl-button
-        variant="edit"
-        :data-action="editor_is_enabled ? 'disable' : 'enable'"
-        size="small"
-        circle
-        @click="toggleEdit"
-      >
-        <b-icon
-          v-if="!editor_is_enabled"
-          icon="pencil-fill"
-          :aria-label="$t('edit')"
-        />
-        <b-icon v-else icon="check-circle-fill" />
-      </sl-button>
+    <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
+      <EditBtn key="editbtn" @click="toggleEdit" />
     </div>
 
     <div class="_toolbarAndEditorContainer">
@@ -593,7 +580,7 @@ export default {
         });
         this.is_loading_or_saving = false;
         this.show_saved_icon = true;
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 500));
         this.show_saved_icon = false;
       } catch (err) {
         if (err.message === "content not changed") err;
@@ -947,6 +934,7 @@ export default {
       background-color: transparent;
 
       padding: 0px;
+      padding-bottom: 0.4em;
 
       @import "./imports/mainText.scss";
 
@@ -1044,7 +1032,8 @@ export default {
   position: sticky;
   z-index: 101;
   top: calc(var(--spacing) / 4);
-  margin-left: auto;
+  height: 0;
+  text-align: right;
   margin-right: calc(var(--spacing) / 4);
 
   > * {
@@ -1067,6 +1056,7 @@ export default {
   top: 0;
   z-index: 2;
   padding: calc(var(--spacing) / 4);
+  margin-bottom: 0.3em;
   border-radius: 16px;
   // hides select, do not use
   // overflow: hidden;
@@ -1093,6 +1083,7 @@ export default {
   }
   button,
   svg {
+    display: inherit;
     color: currentColor;
   }
 
@@ -1309,7 +1300,7 @@ export default {
 }
 
 ._TEbtnContainer {
-  width: 100%;
+  // width: 100%;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -1325,9 +1316,9 @@ export default {
     justify-content: space-between;
     align-items: center;
 
-    ._editBtn {
-      background-color: var(--c-bleuvert);
-    }
+    // ._editBtn {
+    //   background-color: var(--c-bleuvert);
+    // }
 
     ._collabEditorStatus {
       background-color: var(--c-vert);

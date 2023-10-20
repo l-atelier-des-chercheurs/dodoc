@@ -108,6 +108,7 @@
       /> -->
 
       <RemoveMenu
+        v-if="can_edit"
         :remove_text="$t('remove_pin')"
         :show_button_text="true"
         @remove="removeModule"

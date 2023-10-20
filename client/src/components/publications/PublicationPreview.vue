@@ -19,12 +19,12 @@
       </transition>
       <button
         type="button"
-        class="u-button u-button_small u-button_black _generatePreviewBtn"
+        class="u-button u-button_small u-button_white _generatePreviewBtn"
         v-if="can_edit && !is_making_preview"
         @click.stop="generatePreview"
       >
         <!-- <sl-icon name="card-image" /> -->
-        <sl-icon name="arrow-clockwise" />
+        <b-icon icon="arrow-clockwise" />
         <!-- {{ $t("generate_preview") }} -->
       </button>
     </div>
@@ -134,8 +134,9 @@ export default {
 }
 ._publicationPreview--cover {
   position: relative;
-  border-radius: 2px;
+  // border-radius: 2px;
   overflow: hidden;
+  background: white;
   // border-bottom: 2px solid var(--c-gris);
   box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
 

@@ -26,11 +26,15 @@
   </div>
 </template>
 <script>
+import qrcode from "@chenfengyuan/vue-qrcode";
+
 export default {
   props: {
     url: String,
   },
-  components: {},
+  components: {
+    qrcode,
+  },
   data() {
     return {
       qr_options: {

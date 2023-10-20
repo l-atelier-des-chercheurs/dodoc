@@ -4,7 +4,7 @@
       class="_mapContainer"
       :pins="pins"
       :is_small="false"
-      @pinClicked="pinClicked"
+      @update:opened_pin_path="pinClicked($event)"
     />
   </div>
 </template>
@@ -51,7 +51,8 @@ export default {
             acc.push({
               latitude,
               longitude,
-              index,
+              path: m.$path,
+              label: index,
             });
         }
         return acc;
@@ -59,8 +60,8 @@ export default {
     },
   },
   methods: {
-    pinClicked(index) {
-      this.$emit("toggleMediaFocus", this.medias[index].$path);
+    pinClicked(path) {
+      this.$emit("toggleMediaFocus", path);
     },
   },
 };

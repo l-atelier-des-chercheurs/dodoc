@@ -1,6 +1,11 @@
 <template>
-  <sl-drawer :label="$t('settings')" no-header contained>
-    <div class="_publicationSettings" v-if="show_settings">
+  <sl-drawer
+    :label="$t('settings')"
+    no-header
+    contained
+    class="_publicationSettings"
+  >
+    <div v-if="show_settings">
       <!-- <div class="_publicationSettings--closeBtn">
         <button
           type="button"
@@ -59,6 +64,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationSettings {
+  position: relative;
+  z-index: 1000;
   // position: absolute;
   // top: 0;
   // right: 0;

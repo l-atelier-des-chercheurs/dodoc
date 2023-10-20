@@ -1,18 +1,16 @@
 <template>
   <div class="_publicationModule" :data-type="module_type">
+    <!-- @mouseleave.self="show_advanced_menu = false" -->
     <div
       class="_sideOptions"
       v-if="can_edit && page_template !== 'page_by_page'"
     >
       <span>
         <button
-          v-if="
-            $listeners.hasOwnProperty('moveUp') &&
-            module_position !== 'first' &&
-            module_position !== 'alone'
-          "
+          v-if="$listeners.hasOwnProperty('moveUp')"
+          :disabled="module_position === 'first' || module_position === 'alone'"
           type="button"
-          class="_sideBtns _moveBefore"
+          class="u-button _sideBtns _moveBefore"
           @click="$emit('moveUp')"
         >
           <svg
@@ -30,7 +28,7 @@
       <div class="_options">
         <button
           type="button"
-          class="_sideBtns"
+          class="u-button _sideBtns"
           :class="{
             'is--active': show_advanced_menu,
           }"
@@ -57,48 +55,57 @@
           </svg>
         </button>
         <div class="_advanced_menu" v-if="show_advanced_menu">
-          <sl-button
+          <div>
+            <template v-if="publimodule.module_type === 'text'">
+              {{ $t(`module.label.text`) }}
+            </template>
+            <select
+              v-else
+              :value="publimodule.module_type"
+              @change="changeModuleType"
+            >
+              <option
+                v-for="module_type in ['mosaic', 'carousel', 'files']"
+                :key="module_type"
+                :value="module_type"
+              >
+                {{ $t(`module.label.${module_type}`) }}
+              </option>
+            </select>
+          </div>
+
+          <!-- <sl-button
             variant="default"
             size="small"
             pill
             @click="changeModuleType"
           >
             {{ $t(`module.label.${publimodule.module_type}`) }}
-          </sl-button>
-
+          </sl-button> -->
           <div class="_buttonRow">
             <button
               type="button"
               class="u-button"
-              :disabled="!publimodule.size || publimodule.size === 100"
+              :class="{
+                'is--active': !publimodule.size || publimodule.size === 100,
+              }"
               @click="updateMeta({ size: 100 })"
             >
               100%
             </button>
-            <button
-              type="button"
-              class="u-button"
-              :disabled="publimodule.size === 66.6"
-              @click="updateMeta({ size: 66.6 })"
-            >
-              66%
-            </button>
-            <button
-              type="button"
-              class="u-button"
-              :disabled="publimodule.size === 50"
-              @click="updateMeta({ size: 50 })"
-            >
-              50%
-            </button>
-            <button
-              type="button"
-              class="u-button"
-              :disabled="publimodule.size === 33.3"
-              @click="updateMeta({ size: 33.3 })"
-            >
-              33%
-            </button>
+            <template v-for="size in [66.6, 50, 33.3]">
+              <button
+                :key="size"
+                type="button"
+                class="u-button"
+                :class="{
+                  'is--active': publimodule.size === size,
+                }"
+                @click="updateMeta({ size: size })"
+              >
+                {{ size }}%
+              </button>
+            </template>
           </div>
 
           <div
@@ -108,7 +115,10 @@
             <button
               type="button"
               class="u-button"
-              :disabled="!publimodule.align || publimodule.align === 'left'"
+              :class="{
+                'is--active':
+                  !publimodule.align || publimodule.align === 'left',
+              }"
               @click="updateMeta({ align: 'left' })"
             >
               <sl-icon name="align-start" />
@@ -116,7 +126,9 @@
             <button
               type="button"
               class="u-button"
-              :disabled="publimodule.align === 'center'"
+              :class="{
+                'is--active': publimodule.align === 'center',
+              }"
               @click="updateMeta({ align: 'center' })"
             >
               <sl-icon name="align-center" />
@@ -124,7 +136,9 @@
             <button
               type="button"
               class="u-button"
-              :disabled="publimodule.align === 'right'"
+              :class="{
+                'is--active': publimodule.align === 'right',
+              }"
               @click="updateMeta({ align: 'right' })"
             >
               <sl-icon name="align-end" />
@@ -143,13 +157,10 @@
       </div>
       <span>
         <button
-          v-if="
-            $listeners.hasOwnProperty('moveDown') &&
-            module_position !== 'last' &&
-            module_position !== 'alone'
-          "
+          v-if="$listeners.hasOwnProperty('moveDown')"
           type="button"
-          class="_sideBtns _moveAfter"
+          :disabled="module_position === 'last' || module_position === 'alone'"
+          class="u-button _sideBtns _moveAfter"
           @click="$emit('moveDown')"
         >
           <svg
@@ -420,14 +431,16 @@ export default {
         if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
       });
     },
-    changeModuleType() {
-      const module_types = ["mosaic", "carousel", "files"];
-      const curr_module_type = this.publimodule.module_type;
-      const curr_index = module_types.findIndex(
-        (mt) => mt === curr_module_type
-      );
-      const next_index = (curr_index + 1) % module_types.length;
-      const new_type = module_types[next_index];
+    changeModuleType(event) {
+      // const module_types = ["mosaic", "carousel", "files"];
+      // const curr_module_type = this.publimodule.module_type;
+      // const curr_index = module_types.findIndex(
+      //   (mt) => mt === curr_module_type
+      // );
+      // const next_index = (curr_index + 1) % module_types.length;
+      // const new_type = module_types[next_index];
+
+      const new_type = event.target.value;
 
       this.updateMeta({ module_type: new_type });
     },
@@ -507,10 +520,12 @@ export default {
   top: 0;
   height: 100%;
   right: 100%;
-  background: var(--active-color);
-  background: rgba(0, 0, 0, 0.05);
+  z-index: 10000;
+  // background: var(--active-color);
+  background: rgba(0, 0, 0, 0.01);
+  background: var(--c-gris_clair);
 
-  pointer-events: none;
+  // pointer-events: none;
 
   // z-index: 100;
 
@@ -521,6 +536,15 @@ export default {
   --side-width: 24px;
   width: var(--side-width);
   border-radius: calc(var(--side-width) / 2);
+
+  opacity: 0.45;
+
+  transition: opacity 0.25s linear;
+
+  ._publicationModule:hover &,
+  ._publicationModule:focus-visible & {
+    opacity: 1;
+  }
 
   &.is--pageByPage {
     display: none;
@@ -565,9 +589,9 @@ export default {
   top: 50%;
   transform: translate(0, -50%);
 
-  background: white;
+  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.7);
 
-  background: var(--active-color);
   padding: calc(var(--spacing) / 2);
   margin: 2px;
   border-radius: 4px;
@@ -575,6 +599,10 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 4);
+
+  select {
+    // background-color: white;
+  }
 
   // border: 2px solid var(--c-gris);
 }

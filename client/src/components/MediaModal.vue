@@ -178,30 +178,14 @@ export default {
   },
   created() {},
   mounted() {
-    window.addEventListener("keyup", this.handleKeyPress);
     setTimeout(() => {
       this.show_nav_btn = true;
     }, 200);
   },
-  beforeDestroy() {
-    window.removeEventListener("keyup", this.handleKeyPress);
-  },
+  beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {
-    handleKeyPress(event) {
-      if (
-        this.$root.modal_is_opened ||
-        event.target.tagName.toLowerCase() === "input" ||
-        event.target.tagName.toLowerCase() === "textarea" ||
-        event.target.className.includes("ql-editor") ||
-        event.target.hasAttribute("contenteditable")
-      )
-        return;
-
-      if (event.key === "Escape") this.$emit("close");
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -229,11 +213,13 @@ export default {
 
   ._navBtn {
     padding: calc(var(--spacing) / 2);
-    background: rgba(255, 255, 255, 0.25);
     pointer-events: auto;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     border-radius: 50%;
-    border: 1px solid currentColor;
+
+    background: rgba(255, 255, 255, 0.5);
+    position: relative;
+    z-index: 100;
 
     &:hover,
     &:focus {
@@ -336,11 +322,6 @@ export default {
     width: 2rem;
     height: 2rem;
   }
-
-  &::part(base) {
-    color: currentColor;
-  }
-
   &:not(:hover) {
     margin-top: -10px;
     margin-right: -10px;

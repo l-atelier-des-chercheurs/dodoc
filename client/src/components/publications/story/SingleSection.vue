@@ -1,7 +1,7 @@
 <template>
   <div class="_singleSection">
     <div class="_storyContainer">
-      <div class="_storyContent" :style="story_styles">
+      <div class="_storyContent" v-if="section" :style="story_styles">
         <div
           class="_topbar"
           v-if="
@@ -113,7 +113,7 @@ export default {
       }).map(({ _module }) => _module);
     },
     story_styles() {
-      const width = (this.publication.story_width || 800) + "px";
+      const width = (this.publication.story_width || 900) + "px";
       if (this.publication.story_is_not_responsive === true)
         return { width, maxWidth: "none" };
       else return { maxWidth: width };
@@ -206,8 +206,8 @@ export default {
   padding: 0;
   margin: 0 auto;
   padding-bottom: calc(var(--spacing) * 2);
-  border-radius: 15px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  // border-radius: 15px;
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
   transition: width 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -226,7 +226,7 @@ export default {
     }
     ._mediaContent--image,
     .plyr {
-      border-radius: 6px;
+      border-radius: 3px;
     }
   }
 }

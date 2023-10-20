@@ -1,54 +1,63 @@
 <template>
   <div class="_mapView">
-    <LayersPane
-      :publication="publication"
-      :layers="layers"
-      :opened_layer_path.sync="opened_layer_path"
-      :opened_pin_path.sync="opened_pin_path"
-      :can_edit="can_edit"
-    />
-    <DisplayOnMap
-      class="_mapContainer"
-      :start_coords="start_coords"
-      :start_zoom="start_zoom"
-      :map_baselayer="publication.map_baselayer"
-      :pins="pins"
-      :lines="lines"
-      :is_small="false"
-      :opened_pin_path.sync="opened_pin_path"
-      :can_add_media_to_point="!!opened_layer_path"
-      @newPositionClicked="newPositionClicked"
-    >
-      <div class="" slot="popup_message" v-if="can_edit">
-        <div v-if="!opened_layer_path">
-          {{ $t("to_add_media_here_open_matching_layer") }}
-        </div>
-        <div v-else>
-          <ModuleCreator
-            :publication_path="publication.$path"
-            :start_collapsed="false"
-            :context="'cartography'"
-            :select_mode="'single'"
-            :types_available="['medias', 'text']"
-            :post_addtl_meta="new_module_meta"
-            @addModules="addModules"
-          />
-        </div>
-      </div>
-    </DisplayOnMap>
-    <!-- <ViewPane
-      :publication="publication"
-      :views="views"
-      :opened_view_meta_filename="opened_view_meta_filename"
-      :can_edit="can_edit"
-      @toggleView="$emit('toggleView', $event)"
-    /> -->
+    <splitpanes>
+      <pane min-size="5">
+        <LayersPane
+          :publication="publication"
+          :layers="layers"
+          :opened_layer_path.sync="opened_layer_path"
+          :opened_pin_path.sync="opened_pin_path"
+          :can_edit="can_edit"
+        />
+      </pane>
+      <pane min-size="5">
+        <DisplayOnMap
+          class="_mapContainer"
+          :start_coords="start_coords"
+          :start_zoom="start_zoom"
+          :map_baselayer="publication.map_baselayer"
+          :pins="pins"
+          :lines="lines"
+          :is_small="false"
+          :opened_pin_path.sync="opened_pin_path"
+          :can_add_media_to_point="!!opened_layer_path"
+          @newPositionClicked="newPositionClicked"
+        >
+          <div class="" slot="popup_message" v-if="can_edit">
+            <div v-if="!opened_layer_path">
+              {{ $t("to_add_media_here_open_matching_layer") }}
+            </div>
+            <div v-else>
+              <ModuleCreator
+                :publication_path="publication.$path"
+                :start_collapsed="false"
+                :context="'cartography'"
+                :select_mode="'single'"
+                :types_available="['medias', 'text']"
+                :post_addtl_meta="new_module_meta"
+                @addModules="addModules"
+              />
+            </div>
+          </div>
+        </DisplayOnMap>
+      </pane>
+      <pane min-size="5">
+        <ViewPane
+          :publication="publication"
+          :opened_view_meta_filename="opened_view_meta_filename"
+          :opened_pin_path.sync="opened_pin_path"
+          :can_edit="can_edit"
+          @toggleView="$emit('toggleView', $event)"
+        />
+      </pane>
+    </splitpanes>
   </div>
 </template>
 <script>
+import { Splitpanes, Pane } from "splitpanes";
 import LayersPane from "@/components/publications/cartography/LayersPane.vue";
 import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
-// import ViewPane from "@/components/publications/cartography/ViewPane.vue";
+import ViewPane from "@/components/publications/cartography/ViewPane.vue";
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
@@ -58,9 +67,12 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    Splitpanes,
+    Pane,
+
     DisplayOnMap,
     LayersPane,
-    // ViewPane,
+    ViewPane,
     ModuleCreator,
   },
   data() {
@@ -78,7 +90,7 @@ export default {
       fr: {
         views_list: "Liste des vues",
         to_add_media_here_open_matching_layer:
-          "Pour ajouter un média à cette position, créez ou ouvrez un calque dans le panneau correspondant.",
+          "Pour ajouter un média à cette position, créez ou ouvrez une vue dans le panneau correspondant.",
       },
     },
   },
@@ -148,7 +160,6 @@ export default {
                 resolution: 50,
               });
               if (thumb) pin_preview = thumb;
-              else pin_preview = "circle";
             }
 
             acc.push({
@@ -236,12 +247,14 @@ export default {
   width: 100%;
   height: calc(100vh - 95px);
 
+  // border-top: 1px solid black;
+
   background: var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
 
-  display: flex;
-  flex-flow: row wrap;
+  // display: flex;
+  // flex-flow: row wrap;
 }
 ._mapContainer {
   height: 100%;

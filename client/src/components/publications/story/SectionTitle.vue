@@ -6,7 +6,7 @@
       :content="section.section_title"
       :path="section.$path"
       :maxlength="120"
-      :tag="'h3'"
+      :tag="'h2'"
       :can_edit="can_edit"
     />
     <TitleField

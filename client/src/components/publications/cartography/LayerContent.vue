@@ -27,7 +27,9 @@
         <!-- ({{ layer_modules_list.length }}) -->
       </div>
 
-      <template v-if="can_edit">
+      <DetailsPane v-if="can_edit" :header="$t('options')" :icon="'map'">
+        <legend class="u-label">{{ $t("options") }}</legend>
+
         <div class="_color">
           <ColorInput
             :label="$t('pins_color')"
@@ -37,7 +39,7 @@
             @save="updateOpenedLayer({ field: 'section_color', value: $event })"
           />
         </div>
-        <div class="u-spacingBottom">
+        <div class="">
           <ToggleInput
             :label="$t('link_pins')"
             :content="layer.link_pins"
@@ -46,7 +48,7 @@
             "
           />
         </div>
-        <div class="u-spacingBottom">
+        <div class="">
           <DLabel :str="$t('pin_icons')" />
           <RadioCheckboxField
             :field_name="'all_pins_icon'"
@@ -57,7 +59,9 @@
             :options="icon_options"
           />
         </div>
-      </template>
+      </DetailsPane>
+
+      <hr />
 
       <div class="_pinContainer">
         <DLabel :str="$t('pins')" />
@@ -81,11 +85,44 @@
               :publication="publication"
               :layer="layer"
               :mapmodule="slotProps.item"
+              :ref="'module_' + slotProps.item.$path"
               :is_opened="slotProps.item.$path === opened_pin_path"
               :can_edit="can_edit"
               @repickLocation="$emit('repickLocation', slotProps.item.$path)"
               @toggle="$emit('togglePin', slotProps.item.$path)"
             />
+            <div>
+              <ModuleCreator
+                v-if="can_edit"
+                :publication_path="publication.$path"
+                :start_collapsed="true"
+                :context="'cartography'"
+                :types_available="['medias', 'text']"
+                @addModules="
+                  ({ meta_filenames }) =>
+                    insertModules({
+                      meta_filenames,
+                      index: slotProps.index + 1,
+                    })
+                "
+              />
+            </div>
+
+            <!-- <div class="">
+              Praesent non feugiat nulla. Sed id sapien vel erat fringilla
+              iaculis. Vivamus et libero at dui fermentum sollicitudin. Aliquam
+              placerat tortor at felis cursus, nec tincidunt risus convallis.
+              Nunc efficitur bibendum leo. Proin nec nulla semper lacus dapibus
+              suscipit posuere ac nisl. Etiam tristique, sem nec finibus
+              feugiat, nisi quam ullamcorper dolor, eget imperdiet dolor diam eu
+              nisl. Nunc id tellus lorem. Donec ultrices nisi vitae risus tempus
+              laoreet non in mi. Curabitur interdum sem a posuere bibendum.
+              Nulla facilisi. Praesent metus nisi, sagittis nec elementum
+              feugiat, tincidunt sit amet nunc. Nunc commodo et elit eget
+              facilisis. Pellentesque bibendum iaculis fermentum. Nulla at
+              consectetur nisl.
+            </div> -->
+
             <!-- <span v-if="slotProps.item.section_title">
               {{ slotProps.item.section_title }}
             </span>
@@ -100,13 +137,17 @@
           :start_collapsed="false"
           :context="'cartography'"
           :types_available="['medias']"
-          @addModules="addModules"
+          @addModules="insertModules"
         />
       </div>
 
       <hr />
 
-      <RemoveMenu :remove_text="$t('remove_layer')" @remove="removeLayer" />
+      <RemoveMenu
+        v-if="can_edit"
+        :remove_text="$t('remove_layer')"
+        @remove="removeLayer"
+      />
     </div>
   </div>
 </template>
@@ -154,7 +195,18 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    opened_pin_path() {
+      // scrollto
+      const module_in_list = this.$refs["module_" + this.opened_pin_path];
+      if (module_in_list)
+        module_in_list.$el.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        });
+    },
+  },
   computed: {
     layer_modules_list() {
       return this.getModulesForSection({
@@ -180,17 +232,18 @@ export default {
       });
       this.$emit("close");
     },
-    async addModules({ meta_filenames }) {
+    async insertModules({ meta_filenames, index = undefined }) {
       await this.insertModuleMetaFilenamesToList2({
         publication: this.publication,
         section: this.layer,
+        index,
         meta_filenames,
       });
       // todo scroll to last meta_filename
       const meta_filename = meta_filenames.at(-1);
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
-        this.$emit("openPin", pin_path);
+        this.$emit("togglePin", pin_path);
       }, 150);
     },
   },
@@ -206,31 +259,30 @@ export default {
   bottom: 0;
   overflow: auto;
 
-  backdrop-filter: blur(5px);
-  background: rgba(231, 231, 231, 0.7);
+  // backdrop-filter: blur(5px);
+  // background: rgba(231, 231, 231, 0.7);
 
-  padding: calc(var(--spacing) * 1);
+  // padding: calc(var(--spacing) * 1);
 }
 
 ._openedLayer--content {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1) 0;
-  height: 100%;
+  // height: 100%;
   // overflow: auto;
   background: white;
   display: flex;
   flex-flow: column nowrap;
 
   ._title {
-    margin-bottom: calc(var(--spacing) * 1);
-    display: flex;
-    flex-flow: row wrap;
-    align-items: baseline;
-    gap: calc(var(--spacing) / 2);
+    // display: flex;
+    // flex-flow: row wrap;
+    // align-items: baseline;
+    // gap: calc(var(--spacing) / 2);
   }
 
   ._pinContainer {
     flex: 1 1 auto;
-    overflow: auto;
+    // overflow: auto;
   }
 }
 ._closeLayerBtn {
@@ -239,13 +291,26 @@ export default {
   right: 0;
 }
 
+._options {
+  // background: var(--c-gris);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  // grid-gap: 1px; /* size of the line between cells */
+  // padding: 1px; /* size of the line around the grid */
+
+  > div {
+    padding: calc(var(--spacing) / 2);
+    background-color: #fff; /* cells need a bg color for this to work */
+  }
+}
+
 ._bottomBar {
   position: sticky;
   z-index: 10;
   bottom: 0;
   width: 100%;
   background: white;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
   border-top: 1px solid var(--c-gris);
 }
 </style>

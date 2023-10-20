@@ -559,11 +559,11 @@ export default {
       }
 
       const pin_preview = feature.get("pin_preview");
-      if (pin_preview === "circle") {
+      if (!pin_preview || pin_preview === "circle") {
         style.image = new olCircleStyle({
           radius: 8,
           fill: new olFill({ color: fill_color }),
-          stroke: new olStroke({ color: "#232e4a", width: 2 }),
+          stroke: new olStroke({ color: "#232e4a", width: 1 }),
         });
       } else {
         style.image = new olIcon({

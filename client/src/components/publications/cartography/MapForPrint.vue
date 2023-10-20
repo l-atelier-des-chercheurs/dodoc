@@ -2,7 +2,7 @@
   <MapView
     :publication="publication"
     :opened_view_meta_filename="opened_view_meta_filename"
-    :can_edit="can_edit"
+    :can_edit="false"
     @toggleView="toggleView"
   />
 </template>
@@ -17,9 +17,7 @@ export default {
     MapView,
   },
   data() {
-    return {
-      page_opened_id: false,
-    };
+    return {};
   },
   i18n: {
     messages: {
