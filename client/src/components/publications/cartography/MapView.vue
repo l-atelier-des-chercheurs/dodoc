@@ -1,7 +1,7 @@
 <template>
   <div class="_mapView">
     <splitpanes>
-      <pane min-size="5">
+      <!-- <pane min-size="5">
         <LayersPane
           :publication="publication"
           :layers="layers"
@@ -9,7 +9,7 @@
           :opened_pin_path.sync="opened_pin_path"
           :can_edit="can_edit"
         />
-      </pane>
+      </pane> -->
       <pane min-size="5">
         <DisplayOnMap
           class="_mapContainer"
@@ -20,11 +20,11 @@
           :lines="lines"
           :is_small="false"
           :opened_pin_path.sync="opened_pin_path"
-          :can_add_media_to_point="!!opened_layer_path"
+          :can_add_media_to_point="!!opened_view_meta_filename"
           @newPositionClicked="newPositionClicked"
         >
           <div class="" slot="popup_message" v-if="can_edit">
-            <div v-if="!opened_layer_path">
+            <div v-if="!opened_view_meta_filename">
               {{ $t("to_add_media_here_open_matching_layer") }}
             </div>
             <div v-else>
@@ -55,7 +55,7 @@
 </template>
 <script>
 import { Splitpanes, Pane } from "splitpanes";
-import LayersPane from "@/components/publications/cartography/LayersPane.vue";
+// import LayersPane from "@/components/publications/cartography/LayersPane.vue";
 import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
 import ViewPane from "@/components/publications/cartography/ViewPane.vue";
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
@@ -71,7 +71,7 @@ export default {
     Pane,
 
     DisplayOnMap,
-    LayersPane,
+    // LayersPane,
     ViewPane,
     ModuleCreator,
   },
@@ -81,7 +81,6 @@ export default {
         latitude: undefined,
         longitude: undefined,
       },
-      opened_layer_path: undefined,
       opened_pin_path: undefined,
     };
   },
@@ -111,16 +110,16 @@ export default {
     },
   },
   computed: {
-    layers() {
-      return this.getSectionsWithProps({
-        publication: this.publication,
-        group: "layers_list",
-      });
-    },
+    // layers() {
+    //   return this.getSectionsWithProps({
+    //     publication: this.publication,
+    //     group: "layers_list",
+    //   });
+    // },
     views() {
       return this.getSectionsWithProps({
         publication: this.publication,
-        group: "views_list",
+        group: "sections_list",
       });
     },
     start_coords() {
@@ -129,49 +128,55 @@ export default {
     start_zoom() {
       return this.publication.map_initial_zoom || 10;
     },
-
     opened_view() {
-      if (this.opened_view_id === false) return false;
-      return this.views_list[this.opened_view_id];
+      if (!this.opened_view_meta_filename) return false;
+      return this.views.find(
+        (v) => this.getFilename(v.$path) === this.opened_view_meta_filename
+      );
     },
     pins() {
-      return this.layers.reduce((acc, l) => {
-        if (!Array.isArray(l.modules_list)) return acc;
-        l.modules_list.map((meta_filename, index) => {
-          const _module = this.findModuleFromMetaFilename({
-            files: this.publication.$files,
-            meta_filename,
-          });
+      return this.views.reduce((acc, _view) => {
+        if (this.opened_view_meta_filename)
+          if (this.getFilename(_view.$path) !== this.opened_view_meta_filename)
+            return acc;
+
+        const modules = this.getModulesForSection({
+          publication: this.publication,
+          section: _view,
+        }).map(({ _module }) => _module);
+
+        modules.map((_module, index) => {
           if (
             _module &&
             _module.location?.longitude &&
             _module.location?.latitude
           ) {
             let pin_label_items = [];
-            if (l.link_pins) pin_label_items.push(index + 1);
+            if (_view.link_pins) pin_label_items.push(index + 1);
             if (_module.pin_name) pin_label_items.push(_module.pin_name);
+
             const pin_label =
               pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
 
             let pin_preview = "circle";
-            if (l.all_pins_icon === "media_preview") {
+            if (_view.all_pins_icon === "media_preview") {
               const thumb = this.getFirstThumbURLForMedia({
                 file: this.firstMedia(_module),
                 resolution: 50,
               });
               if (thumb) pin_preview = thumb;
             }
-
             acc.push({
               longitude: _module.location.longitude,
               latitude: _module.location.latitude,
               label: pin_label,
-              color: l.section_color || `#333`,
+              color: _view.section_color || `#333`,
               path: _module.$path,
-              belongs_to_layer: l.$path,
-              link_pins: l.link_pins || false,
+              belongs_to_view: _view.$path,
+              link_pins: _view.link_pins || false,
               pin_preview,
               file: this.firstMedia(_module),
+              module: _module,
             });
           }
         });
@@ -179,19 +184,20 @@ export default {
       }, []);
     },
     lines() {
-      if (this.pins.length === 0) return false;
-      return this.pins.reduce((acc, pin) => {
-        if (pin.link_pins) {
-          const layer = pin.belongs_to_layer;
-          if (!Object.prototype.hasOwnProperty.call(acc, layer))
-            acc[layer] = {
-              color: pin.color,
-              coordinates: [],
-            };
-          acc[layer].coordinates.push([pin.longitude, pin.latitude]);
-        }
-        return acc;
-      }, {});
+      // if (this.pins.length === 0) return false;
+      // return this.pins.reduce((acc, pin) => {
+      //   if (pin.link_pins) {
+      //     const layer = pin.belongs_to_layer;
+      //     if (!Object.prototype.hasOwnProperty.call(acc, layer))
+      //       acc[layer] = {
+      //         color: pin.color,
+      //         coordinates: [],
+      //       };
+      //     acc[layer].coordinates.push([pin.longitude, pin.latitude]);
+      //   }
+      //   return acc;
+      // }, {});
+      return {};
     },
     new_module_meta() {
       return {
@@ -208,26 +214,10 @@ export default {
       this.latest_click.longitude = longitude;
       this.latest_click.latitude = latitude;
     },
-    openView(index) {
-      this.opened_view_id = index;
-      this.$eventHub.$emit("publication.map.navigateTo", {
-        center: this.opened_view.map_center,
-        zoom: this.opened_view.map_zoom,
-      });
-    },
-    closeView() {
-      this.opened_view_id = false;
-      this.$eventHub.$emit("publication.map.navigateTo", {
-        zoom: this.start_zoom,
-      });
-    },
     async addModules({ meta_filenames }) {
-      const opened_layer = this.layers.find(
-        (l) => l.$path === this.opened_layer_path
-      );
       await this.insertModuleMetaFilenamesToList2({
         publication: this.publication,
-        section: opened_layer,
+        section: this.opened_view,
         meta_filenames,
       });
 

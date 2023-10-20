@@ -10,7 +10,7 @@
     <div
       ref="popUp"
       class="_popup"
-      v-show="clicked_location.file || $slots.hasOwnProperty('popup_message')"
+      v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
         <button
@@ -23,17 +23,21 @@
         </button>
 
         <div
-          v-if="clicked_location.file"
-          :key="clicked_location.file.$path"
+          v-if="clicked_location.module"
+          :key="clicked_location.module.$path"
           class="_pinContent"
         >
-          <MediaContent
+          <PublicationModule
+            :publimodule="clicked_location.module"
+            :can_edit="false"
+          />
+          <!-- <MediaContent
             :file="clicked_location.file"
             :is_draggable="false"
             :resolution="1600"
             :context="'full'"
             :show_fs_button="true"
-          />
+          /> -->
         </div>
 
         <!-- <div class="u-instructions">
@@ -53,7 +57,7 @@
         <div
           class="_popupMessage"
           v-if="
-            !clicked_location.file && $slots.hasOwnProperty('popup_message')
+            !clicked_location.module && $slots.hasOwnProperty('popup_message')
           "
         >
           <slot name="popup_message" />
@@ -89,6 +93,8 @@ import olStroke from "ol/style/Stroke";
 import olText from "ol/style/Text";
 import { ScaleLine, FullScreen } from "ol/control";
 
+import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
+
 export default {
   name: "DisplayOnMap",
   props: {
@@ -123,7 +129,9 @@ export default {
       default: false,
     },
   },
-  components: {},
+  components: {
+    PublicationModule,
+  },
   data() {
     return {
       pin_infos: false,
@@ -134,7 +142,7 @@ export default {
       clicked_location: {
         latitude: undefined,
         longitude: undefined,
-        file: undefined,
+        module: undefined,
       },
 
       pin_features: undefined,
@@ -489,7 +497,7 @@ export default {
           };
           feature_cont.path = pin.path;
           if (pin.color) feature_cont.fill_color = pin.color;
-          if (pin.file) feature_cont.file = pin.file;
+          if (pin.module) feature_cont.module = pin.module;
           if (pin.label) feature_cont.label = pin.label;
           if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
           features.push(new olFeature(feature_cont));
@@ -501,7 +509,7 @@ export default {
       let features = [];
       if (this.lines && Object.keys(this.lines).length > 0) {
         // const lines = this.pins.reduce((acc, pin) => {
-        //   if (pin.belongs_to_layer) {
+        //   if (pin.belongs_to_view) {
         //   }
         //   if (pin?.longitude && pin?.latitude)
         //     acc.push([pin.longitude, pin.latitude]);
@@ -590,7 +598,7 @@ export default {
       this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
       this.clicked_location.latitude = undefined;
       this.clicked_location.longitude = undefined;
-      this.clicked_location.file = undefined;
+      this.clicked_location.module = undefined;
       this.popup_message = undefined;
     },
     navigateTo({ center, zoom = this.current_zoom }) {
@@ -612,8 +620,7 @@ export default {
       this.resetClickedLocation();
 
       const coordinates = feature.getGeometry().getCoordinates();
-      const f = feature.get("file");
-      this.clicked_location.file = f || undefined;
+      this.clicked_location.module = feature.get("module") || undefined;
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];

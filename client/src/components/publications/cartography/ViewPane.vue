@@ -6,10 +6,7 @@
       - utiliser le fond de map indiqué
       - les pins ont la couleur indiqué au niveau de la vue
       - au scroll, zoomer sur la pin correspondante au média 
-      
-      
     -->
-
     <SectionsList
       :publication="publication"
       :opened_section_meta_filename="opened_view_meta_filename"

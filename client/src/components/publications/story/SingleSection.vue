@@ -23,10 +23,15 @@
             </div>
           </div>
         </div>
-        <transition-group tag="div" name="StoryModules" appear :duration="700">
+        <transition-group
+          tag="div"
+          class="_storyModules"
+          name="StoryModules"
+          appear
+          :duration="700"
+        >
           <template v-for="(_module, index) in section_modules_list">
             <div class="_spacer" :key="'mc_' + index">
-              <!-- v-if="can_edit || index > 0" -->
               <!-- <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
@@ -42,6 +47,7 @@
               class="_mediaPublication"
               :key="_module.$path"
               :publimodule="_module"
+              :module_being_edited.sync="module_being_edited"
               :module_position="
                 section_modules_list.length === 1
                   ? 'alone'
@@ -99,6 +105,7 @@ export default {
   data() {
     return {
       medias: [],
+      module_being_edited: undefined,
     };
   },
   created() {},
@@ -175,7 +182,7 @@ export default {
       this.$emit("close");
     },
     async removeModule(path) {
-      // todo deleteitem already called
+      // todo deleteitem already called, error thrown
       await this.removeModule2({
         publication: this.publication,
         section: this.section,
@@ -212,10 +219,19 @@ export default {
   transition: width 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
+._storyModules {
+  // display: grid;
+  // grid-template-columns: repeat(12, 1fr);
+  // grid-gap: calc(var(--spacing) / 4);
+}
+
 ._mediaPublication {
   position: relative;
+  // margin-top: calc(var(--spacing) * 2);
   // margin-bottom: calc(var(--spacing) * 2);
-  margin-bottom: 0;
+  // grid-column-end: span 12;
+
+  // margin-bottom: 0;
 
   ::v-deep {
     ._content {
@@ -253,7 +269,7 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
 
-  margin: 0 calc(var(--spacing) * 2) 0;
+  margin: 0;
   padding: calc(var(--spacing) * 1.5) 0;
   border-bottom: 2px solid var(--c-gris);
 

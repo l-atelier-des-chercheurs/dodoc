@@ -59,6 +59,11 @@ export default {
           label: this.$t("login"),
           icon: "box-arrow-in-right",
         };
+      else if (this.btn_type === "check")
+        return {
+          label: this.$t("ok"),
+          icon: "check-lg",
+        };
 
       return {
         label: this.$t("edit"),
@@ -84,7 +89,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: rgba(255, 255, 255, 0.2);
+  --color1: rgba(255, 255, 255, 1);
   // --color1: white;
   --color2: var(--c-bleuvert);
   --color-hover-icon: white;
@@ -104,7 +109,7 @@ export default {
   flex: 0 0 24px;
 
   backdrop-filter: blur(5px);
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color1);
 
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
