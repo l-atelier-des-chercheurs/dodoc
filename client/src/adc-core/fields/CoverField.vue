@@ -1,7 +1,7 @@
 <template>
   <div class="_coverField">
     <div class="_hasImage" v-if="cover_thumb">
-      <img :src="cover_thumb" />
+      <img :src="cover_thumb" :data-isround="is_round === true" />
 
       <template v-if="context === 'full'">
         <div class="_fsButton">
@@ -18,14 +18,23 @@
         </FullscreenView>
       </template>
     </div>
-    <div v-else class="_noImage" :data-placeholder="placeholder === 'pattern'">
+    <div
+      v-else
+      class="_noImage"
+      :data-isround="is_round === true"
+      :data-placeholder="placeholder"
+    >
       <span v-if="placeholder !== 'pattern'" class="_noImage--letter">
         {{ placeholder }}
       </span>
     </div>
 
     <div class="_editingPane" v-if="context === 'full' && can_edit">
-      <EditBtn v-if="!edit_mode" @click="enableEditMode" />
+      <EditBtn
+        v-if="!edit_mode"
+        :label_position="'left'"
+        @click="enableEditMode"
+      />
       <BaseModal2
         v-if="edit_mode"
         :title="$t('pick_cover')"
@@ -36,6 +45,7 @@
             v-if="edit_mode"
             :path="path"
             :existing_preview="existing_preview"
+            :available_options="['import', 'capture']"
             @newPreview="
               (value) => {
                 new_cover = value;
@@ -66,6 +76,10 @@ export default {
     placeholder: {
       type: String,
       default: "pattern",
+    },
+    is_round: {
+      type: Boolean,
+      default: false,
     },
     can_edit: Boolean,
   },
@@ -145,8 +159,8 @@ export default {
   inset: 0;
   overflow: visible;
 
-  --color1: var(--c-gris_clair);
-  --color2: var(--c-gris);
+  --color1: var(--c-gris);
+  // --color2: var(--c-gris_fonce);
   --color2: white;
 }
 
@@ -171,6 +185,11 @@ export default {
   right: 0;
   bottom: 0;
   margin: calc(var(--spacing) / 1);
+}
+
+[data-isround] {
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 ._hasImage {

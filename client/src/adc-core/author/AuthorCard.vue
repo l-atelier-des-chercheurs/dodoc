@@ -1,10 +1,11 @@
 <template>
   <div class="_authorCard">
     <div class="_topbar">
-      <div class="_cover">
+      <div class="u-spacingBottom _cover">
         <CoverField
           :context="context"
           :cover="author.$cover"
+          :is_round="true"
           :path="author.$path"
           :can_edit="can_edit"
         />
@@ -113,7 +114,6 @@ export default {
     &._cover {
       flex: 0 0 80px;
       aspect-ratio: 1/1;
-      border-radius: 50%;
     }
   }
 }

@@ -5,7 +5,7 @@
     :style="btn_styles"
     @click="$emit('click')"
   >
-    <span class="_label">
+    <span class="_label" :data-position="label_position">
       {{ btn_props.label }}
     </span>
     <b-icon class="_icon" :icon="btn_props.icon" />
@@ -18,6 +18,10 @@ export default {
     btn_type: {
       type: String,
       default: "edit",
+    },
+    label_position: {
+      type: String,
+      default: "right",
     },
   },
   components: {},
@@ -49,6 +53,11 @@ export default {
         return {
           label: this.$t("close"),
           icon: "x-circle",
+        };
+      else if (this.btn_type === "select_author")
+        return {
+          label: this.$t("login"),
+          icon: "box-arrow-in-right",
         };
 
       return {
@@ -114,7 +123,6 @@ export default {
   ._label {
     position: absolute;
     top: 0;
-    left: 0;
     height: calc(100% + 2px);
 
     background: var(--color2);
@@ -122,16 +130,26 @@ export default {
 
     margin: -1px;
     padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-    padding-left: 100%;
+
     display: flex;
     align-items: center;
     border-radius: 1rem;
     white-space: nowrap;
 
     pointer-events: none;
-    transform: translateX(15px);
     opacity: 0;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &[data-position="right"] {
+      left: 0;
+      padding-left: 100%;
+      transform: translateX(15px);
+    }
+    &[data-position="left"] {
+      right: 0;
+      padding-right: 100%;
+      transform: translateX(-15px);
+    }
   }
 
   &:hover,
