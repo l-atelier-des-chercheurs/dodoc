@@ -67,7 +67,7 @@
     </div>
 
     <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
-      <EditBtn key="editbtn" @click="toggleEdit" />
+      <EditBtn key="editbtn" :label_position="'left'" @click="toggleEdit" />
     </div>
 
     <div class="_toolbarAndEditorContainer">
