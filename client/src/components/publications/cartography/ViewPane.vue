@@ -1,5 +1,15 @@
 <template>
   <div class="_viewPane">
+    <!-- // TODO 
+      - à l'ouverture d'une vue, afficher sur la carte l'ensemble des
+      médias géolocalisés de cette vue
+      - utiliser le fond de map indiqué
+      - les pins ont la couleur indiqué au niveau de la vue
+      - au scroll, zoomer sur la pin correspondante au média 
+      
+      
+    -->
+
     <SectionsList
       :publication="publication"
       :opened_section_meta_filename="opened_view_meta_filename"
@@ -22,15 +32,11 @@ export default {
     SectionsList,
   },
   data() {
-    return {
-      opened_section_meta_filename: false,
-    };
+    return {};
   },
   i18n: {
     messages: {
-      fr: {
-        views_list: "Liste des vues",
-      },
+      fr: {},
     },
   },
   created() {},
@@ -38,22 +44,7 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {
-    async createView() {
-      await this.createSection2({
-        publication: this.publication,
-        type: "view",
-        group: "views_list",
-        title: this.new_view_title,
-      });
-    },
-    openView(path) {
-      this.$emit("toggleView", this.getFilename(path));
-    },
-    closeView() {
-      this.$emit("toggleView", false);
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -61,16 +52,16 @@ export default {
   position: relative;
 
   height: 100%;
-  width: 50%;
-  max-width: 420px;
+  // width: 50%;
+  // max-width: 420px;
   overflow: auto;
+  padding: calc(var(--spacing) / 1);
+  background: white;
 
-  padding: calc(var(--spacing) / 2);
-
-  background: var(--panel-color);
-  border: var(--panel-borders);
-  box-shadow: var(--panel-shadows);
-  text-align: left;
+  // background: var(--panel-color);
+  // border: var(--panel-borders);
+  // box-shadow: var(--panel-shadows);
+  // text-align: left;
 }
 ._viewPreview {
   background: var(--c-gris_clair);

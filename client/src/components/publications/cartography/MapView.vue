@@ -41,6 +41,15 @@
           </div>
         </DisplayOnMap>
       </pane>
+      <pane min-size="5">
+        <ViewPane
+          :publication="publication"
+          :opened_view_meta_filename="opened_view_meta_filename"
+          :opened_pin_path.sync="opened_pin_path"
+          :can_edit="can_edit"
+          @toggleView="$emit('toggleView', $event)"
+        />
+      </pane>
     </splitpanes>
   </div>
 </template>
@@ -48,12 +57,13 @@
 import { Splitpanes, Pane } from "splitpanes";
 import LayersPane from "@/components/publications/cartography/LayersPane.vue";
 import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
-// import ViewPane from "@/components/publications/cartography/ViewPane.vue";
+import ViewPane from "@/components/publications/cartography/ViewPane.vue";
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
   props: {
     publication: Object,
+    opened_view_meta_filename: String,
     can_edit: Boolean,
   },
   components: {
@@ -62,7 +72,7 @@ export default {
 
     DisplayOnMap,
     LayersPane,
-    // ViewPane,
+    ViewPane,
     ModuleCreator,
   },
   data() {
@@ -80,7 +90,7 @@ export default {
       fr: {
         views_list: "Liste des vues",
         to_add_media_here_open_matching_layer:
-          "Pour ajouter un média à cette position, créez ou ouvrez un calque dans le panneau correspondant.",
+          "Pour ajouter un média à cette position, créez ou ouvrez une vue dans le panneau correspondant.",
       },
     },
   },
