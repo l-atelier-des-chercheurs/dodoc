@@ -13,7 +13,7 @@
     </div>
 
     <div class="u-spacingBottom">
-      <template v-if="map_mode === 'gps'">
+      <!-- <template v-if="map_mode === 'gps'">
         <div class="u-spacingBottom">
           <DLabel :str="$t('map_baselayer')" />
           <SelectField2
@@ -37,8 +37,8 @@
             @update="updateBasePosition"
           />
         </div>
-      </template>
-      <template v-else-if="map_mode === 'image'">
+      </template> -->
+      <template v-if="map_mode === 'image'">
         <DLabel :str="$t('image_basemap')" />
         <SingleBaseMediaPicker
           :field_name="'map_basemap'"
@@ -51,7 +51,7 @@
   </div>
 </template>
 <script>
-import PositionPicker from "@/components/publications/cartography/PositionPicker.vue";
+// import PositionPicker from "@/components/publications/cartography/PositionPicker.vue";
 import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue"; // eslint-disable-line
 
 export default {
@@ -60,7 +60,7 @@ export default {
     path: String,
   },
   components: {
-    PositionPicker,
+    // PositionPicker,
     SingleBaseMediaPicker,
   },
   data() {
