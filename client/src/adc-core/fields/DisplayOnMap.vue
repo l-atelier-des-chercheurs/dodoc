@@ -329,8 +329,10 @@ export default {
         preventDefault: true,
       });
       this.map.addControl(geocoder);
-      geocoder.on("addresschosen", (evt) => {
+      geocoder.on("addresschosen", async (evt) => {
         this.closePopup();
+
+        await this.$nextTick();
 
         if (evt.place?.lon && evt.place?.lat) {
           this.clicked_location.latitude = +evt.place.lat;
@@ -635,7 +637,7 @@ export default {
     },
     closePopup() {
       this.resetClickedLocation();
-      this.$emit("update:opened_pin_path", undefined);
+      if (this.opened_pin_path) this.$emit("update:opened_pin_path", undefined);
 
       this.overlay.setPosition(undefined);
       if (this.$refs.closePopup) this.$refs.closePopup.blur();
