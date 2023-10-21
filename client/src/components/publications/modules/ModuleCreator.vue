@@ -245,7 +245,7 @@ export default {
         });
       }
 
-      if (this.context === "page_by_page" || this.context === "cartography") {
+      if (this.context === "page_by_page") {
         await this.createMultipleModules({
           module_type: "mosaic",
           source_medias,
@@ -315,6 +315,13 @@ export default {
     },
 
     async createModule({ module_type, source_medias = [], addtl_meta = {} }) {
+      // get infos from first media
+      const media = this.getSourceMedia({
+        source_media: source_medias[0],
+        folder_path: this.publication_path,
+      });
+      if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+
       const meta_filename = await this.createMetaForModule({
         module_type,
         source_medias,
@@ -338,8 +345,7 @@ export default {
             addtl_meta.height =
               this.$root.default_new_module_width * media.$infos.ratio;
 
-        if (this.context === "cartography")
-          if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+        if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
 
         const meta_filename = await this.createMetaForModule({
           module_type,

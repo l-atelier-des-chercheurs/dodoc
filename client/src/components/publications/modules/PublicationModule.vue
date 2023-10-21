@@ -12,49 +12,49 @@
       >
         <div class="_sideOptions--content">
           <div class="_options">
-            <div class="">
-              <button
-                v-if="$listeners.hasOwnProperty('moveUp')"
-                :disabled="
-                  module_position === 'first' || module_position === 'alone'
-                "
-                type="button"
-                class="u-button _sideBtns _moveBefore"
-                @click="$emit('moveUp')"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 168 168"
-                  style="transform: rotate(90deg)"
-                >
-                  <path
-                    d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
-                    style="fill: currentColor"
-                  />
-                </svg>
-              </button>
-              <button
-                v-if="$listeners.hasOwnProperty('moveDown')"
-                type="button"
-                :disabled="
-                  module_position === 'last' || module_position === 'alone'
-                "
-                class="u-button _sideBtns _moveAfter"
-                @click="$emit('moveDown')"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 168 168"
-                  style="transform: rotate(90deg)"
-                >
-                  <path
-                    d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
-                    style="fill: currentColor"
-                  />
-                </svg>
-              </button>
-            </div>
             <div class="_advanced_menu">
+              <div class="">
+                <button
+                  v-if="$listeners.hasOwnProperty('moveUp')"
+                  :disabled="
+                    module_position === 'first' || module_position === 'alone'
+                  "
+                  type="button"
+                  class="u-button _sideBtns _moveBefore"
+                  @click="$emit('moveUp')"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 168 168"
+                    style="transform: rotate(90deg)"
+                  >
+                    <path
+                      d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+                      style="fill: currentColor"
+                    />
+                  </svg>
+                </button>
+                <button
+                  v-if="$listeners.hasOwnProperty('moveDown')"
+                  type="button"
+                  :disabled="
+                    module_position === 'last' || module_position === 'alone'
+                  "
+                  class="u-button _sideBtns _moveAfter"
+                  @click="$emit('moveDown')"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 168 168"
+                    style="transform: rotate(90deg)"
+                  >
+                    <path
+                      d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+                      style="fill: currentColor"
+                    />
+                  </svg>
+                </button>
+              </div>
               <div>
                 <template v-if="publimodule.module_type === 'text'">
                   {{ $t(`module.label.text`) }}
@@ -154,53 +154,54 @@
                 </button>
               </div>
             </div>
-          </div>
-          <div class="_carto" v-if="is_asociated_to_map">
-            <div class="_latlon">
-              <div v-if="has_coordinates" class="u-sameRow">
-                <div class="">
-                  <DLabel :str="$t('latitude')" />
-                  {{ publimodule.location.latitude }}°
+            <div class="_carto" v-if="is_associated_to_map">
+              <div class="_latlon" v-if="false">
+                <div v-if="has_coordinates" class="u-sameRow">
+                  <div class="">
+                    <DLabel :str="$t('latitude')" />
+                    {{ publimodule.location.latitude }}°
+                  </div>
+                  <div class="">
+                    <DLabel :str="$t('longitude')" />
+                    {{ publimodule.location.longitude }}°
+                  </div>
                 </div>
-                <div class="">
-                  <DLabel :str="$t('longitude')" />
-                  {{ publimodule.location.longitude }}°
+                <div v-else>
+                  {{ $t("no_coordinates") }}
                 </div>
-                <button
-                  type="button"
-                  class="u-button_small"
-                  @click="eraseCoords"
-                >
-                  {{ $t("erase") }}
-                </button>
               </div>
-              <div v-else>
-                {{ $t("no_coordinates") }}
-              </div>
+
+              <button
+                type="button"
+                class="u-button u-button_red"
+                @click.stop="repickLocation"
+              >
+                <template v-if="!has_coordinates">
+                  <b-icon icon="pin-map" />
+                  {{ $t("place_on_map") }}
+                </template>
+                <template v-else>
+                  <b-icon icon="pin-map-fill" />
+                  {{ $t("change_location") }}
+                </template>
+              </button>
+              <button
+                v-if="has_coordinates"
+                type="button"
+                class="u-buttonLink"
+                @click="eraseCoords"
+              >
+                {{ $t("erase") }}
+              </button>
             </div>
-
-            <button
-              type="button"
-              class="u-button u-button_red"
-              @click.stop="repickLocation"
-            >
-              <b-icon icon="pin-map-fill" />
-              <template v-if="!has_coordinates">
-                {{ $t("place_on_map") }}
-              </template>
-              <template v-else>
-                {{ $t("change_location") }}
-              </template>
-            </button>
+            <div class="_saveBtn">
+              <EditBtn
+                :btn_type="'check'"
+                :label_position="'left'"
+                @click="disableEdit"
+              />
+            </div>
           </div>
-          <div class="">
-            <EditBtn
-              :btn_type="'check'"
-              :label_position="'left'"
-              @click="disableEdit"
-            />
-          </div>
-
           <div class="_repickNotice" v-if="is_repicking_location">
             <div class="_repickNotice--content">
               <div>
@@ -219,7 +220,7 @@
       </div>
     </transition>
 
-    <div v-if="is_asociated_to_map && has_coordinates">
+    <div v-if="is_associated_to_map && has_coordinates">
       <button
         type="button"
         class="u-button _pinButton"
@@ -409,6 +410,7 @@ export default {
         show_on_map: "Afficher sur la carte",
         change_location: "Changer la position",
         remove_pin: "Supprimer cette épingle",
+        cancel_position: "Annuler la position",
         click_on_map_to_repick_location_for_media:
           "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
       },
@@ -469,7 +471,7 @@ export default {
     },
   },
   computed: {
-    is_asociated_to_map() {
+    is_associated_to_map() {
       return this.$getMapOptions;
     },
     is_active_on_map() {
@@ -742,11 +744,11 @@ export default {
 
     border-radius: 2px;
 
-    display: flex;
-    flex-flow: row wrap;
-    gap: calc(var(--spacing) / 2);
-    align-items: center;
-    justify-content: space-between;
+    // display: flex;
+    // flex-flow: row wrap;
+    // gap: calc(var(--spacing) / 4);
+    // align-items: center;
+    // justify-content: space-between;
 
     > * {
       // background: white;
@@ -813,13 +815,20 @@ export default {
 ._options {
   position: relative;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
+  align-items: center;
+
+  > ._saveBtn {
+    flex: 1;
+    text-align: right;
+  }
 }
 
 ._buttonRow {
   display: flex;
   // padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 4);
+  align-items: center;
 }
 
 ._floatingEditBtn {
@@ -857,7 +866,10 @@ export default {
 }
 
 ._carto {
-  background: white;
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) / 4);
+  // background: white;
 }
 
 ._pinButton {

@@ -10,7 +10,7 @@
         <ColorInput
           :label="$t('pins_color')"
           :can_toggle="false"
-          :default_value="'#333333'"
+          :default_value="default_view_color"
           :value="view.section_color"
           @save="updateView({ field: 'section_color', value: $event })"
         />
@@ -40,6 +40,7 @@
 export default {
   props: {
     view: Object,
+    default_view_color: String,
   },
   components: {},
   data() {

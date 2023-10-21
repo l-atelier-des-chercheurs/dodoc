@@ -31,7 +31,6 @@
               <ModuleCreator
                 :publication_path="publication.$path"
                 :start_collapsed="false"
-                :context="'cartography'"
                 :select_mode="'single'"
                 :types_available="['medias', 'text']"
                 :post_addtl_meta="new_module_meta"
@@ -45,6 +44,7 @@
             v-if="opened_view && can_edit"
             :key="opened_view.$path"
             :view="opened_view"
+            :default_view_color="default_view_color"
           />
         </transition>
       </pane>
@@ -93,6 +93,7 @@ export default {
         longitude: undefined,
       },
       opened_pin_path: undefined,
+      default_view_color: "#FFBE33",
     };
   },
   i18n: {
@@ -197,7 +198,7 @@ export default {
             latitude: _module.location.latitude,
             label: pin_label,
             index: index + 1,
-            color: _view.section_color || `#333`,
+            color: _view.section_color || this.default_view_color,
             path: _module.$path,
             belongs_to_view: _view.$path,
             link_pins: _view.link_pins || false,
