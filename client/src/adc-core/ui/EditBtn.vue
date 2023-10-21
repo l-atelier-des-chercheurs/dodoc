@@ -108,7 +108,7 @@ export default {
   height: 24px;
   flex: 0 0 24px;
 
-  backdrop-filter: blur(5px);
+  // backdrop-filter: blur(5px);
   background: var(--color1);
 
   border-radius: 50%;
