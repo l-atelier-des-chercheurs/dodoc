@@ -588,15 +588,6 @@
                   },
                   "map_mode": {
                     "type": "string"
-                  },
-                  "map_initial_location": {
-                    "type": "object"
-                  },
-                  "map_initial_zoom": {
-                    "type": "number"
-                  },
-                  "map_baselayer": {
-                    "type": "string"
                   }
                 },
                 "$files": {
@@ -618,6 +609,9 @@
                     },
                     "all_pins_icon": {
                       "type": "boolean"
+                    },
+                    "map_baselayer": {
+                      "type": "string"
                     },
                     "section_title": {
                       "type": "string"

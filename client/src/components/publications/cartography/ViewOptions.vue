@@ -1,12 +1,12 @@
 <template>
   <div class="_viewSettings">
     <div class="_viewSettings--content">
-      <div class="">
+      <div class="u-spacingBottom">
         <strong>
           {{ view.section_title }}
         </strong>
       </div>
-      <div class="_color">
+      <div class="u-spacingBottom">
         <ColorInput
           :label="$t('pins_color')"
           :can_toggle="false"
@@ -15,14 +15,14 @@
           @save="updateView({ field: 'section_color', value: $event })"
         />
       </div>
-      <div class="">
+      <div class="u-spacingBottom">
         <ToggleInput
           :label="$t('link_pins')"
           :content="view.link_pins"
           @update:content="updateView({ field: 'link_pins', value: $event })"
         />
       </div>
-      <div class="">
+      <div class="u-spacingBottom">
         <DLabel :str="$t('pin_icons')" />
         <RadioCheckboxField
           :field_name="'all_pins_icon'"
@@ -31,6 +31,16 @@
           :path="view.$path"
           :options="icon_options"
           :can_edit="true"
+        />
+      </div>
+      <div class="u-spacingBottom">
+        <DLabel :str="$t('map_baselayer')" />
+        <SelectField2
+          :value="view.map_baselayer || 'OSM'"
+          :options="map_baselayer_options"
+          :can_edit="true"
+          :hide_validation="false"
+          @update="updateView({ field: 'map_baselayer', value: $event })"
         />
       </div>
     </div>
@@ -55,6 +65,20 @@ export default {
           label: this.$t("media_preview"),
         },
       ],
+      map_baselayer_options: [
+        {
+          key: "OSM",
+          text: this.$t("OSM"),
+        },
+        {
+          key: "IGN_SAT",
+          text: this.$t("IGN_SAT"),
+        },
+        {
+          key: "IGN_MAP",
+          text: this.$t("IGN_MAP"),
+        },
+      ],
     };
   },
   i18n: {
@@ -65,6 +89,9 @@ export default {
         pin_icons: "Apparence des épingles",
         media_preview: "Image sur la carte",
         remove_layer: "Supprimer ce calque et son contenu",
+        OSM: "OpenStreetMap",
+        IGN_MAP: "Carte IGN (en France uniquement)",
+        IGN_SAT: "Photos satellite IGN (en France uniquement)",
       },
     },
   },

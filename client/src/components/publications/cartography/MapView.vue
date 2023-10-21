@@ -15,7 +15,7 @@
           class="_mapContainer"
           :start_coords="start_coords"
           :start_zoom="start_zoom"
-          :map_baselayer="publication.map_baselayer"
+          :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
           :pins="pins"
           :lines="lines"
           :is_small="false"
