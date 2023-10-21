@@ -169,6 +169,7 @@ export default {
   },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
+    this.$eventHub.$on("publication.map.openPin", this.openPin);
   },
   mounted() {
     setTimeout(() => {
@@ -177,6 +178,7 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
+    this.$eventHub.$off("publication.map.openPin", this.openPin);
   },
   watch: {
     pins: {

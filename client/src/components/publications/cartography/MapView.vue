@@ -45,9 +45,11 @@
         <ViewPane
           :publication="publication"
           :opened_view_meta_filename="opened_view_meta_filename"
-          :opened_pin_path.sync="opened_pin_path"
+          :opened_pin_path="opened_pin_path"
+          :pins="pins"
           :can_edit="can_edit"
           @toggleView="$emit('toggleView', $event)"
+          @togglePin="opened_pin_path = $event"
         />
       </pane>
     </splitpanes>
@@ -99,14 +101,30 @@ export default {
   beforeDestroy() {},
   watch: {
     opened_pin_path() {
-      // open corresponding layer when clicking on pin
-      // if (this.opened_pin_path) {
-      //   const layer = this.layers.find((l) =>
-      //     l.modules_list?.includes(this.getFilename(this.opened_pin_path))
-      //   );
-      //   if (layer) return (this.opened_layer_path = layer.$path);
-      // }
-      // return (this.opened_layer_path = undefined);
+      // open corresponding view when clicking on pin
+      if (this.opened_pin_path) {
+        const view = this.views.find((l) =>
+          l.modules_list?.includes(this.getFilename(this.opened_pin_path))
+        );
+        if (view) {
+          const view_meta_filename = this.getFilename(view.$path);
+          if (this.opened_view_meta_filename !== view_meta_filename)
+            this.$emit("toggleView", view_meta_filename);
+        }
+      } else {
+        // dont quit view when unselecting pin
+        // if (this.opened_view_meta_filename) this.$emit("toggleView", undefined);
+      }
+
+      this.$nextTick(() => {
+        // scrollto pin in view
+        if (this.opened_pin_path) {
+          const module_meta_filename = this.getFilename(this.opened_pin_path);
+          debugger;
+          module_meta_filename;
+          // this.$eventHub.$emit(`module.show.${module_meta_filename}`);
+        }
+      });
     },
   },
   computed: {
@@ -145,40 +163,40 @@ export default {
           section: _view,
         }).map(({ _module }) => _module);
 
-        modules.map((_module, index) => {
-          if (
-            _module &&
-            _module.location?.longitude &&
-            _module.location?.latitude
-          ) {
-            let pin_label_items = [];
-            if (_view.link_pins) pin_label_items.push(index + 1);
-            if (_module.pin_name) pin_label_items.push(_module.pin_name);
+        let index = 0;
+        modules.map((_module) => {
+          if (!_module.location?.longitude || !_module.location?.latitude)
+            return;
 
-            const pin_label =
-              pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
+          let pin_label_items = [];
+          if (_view.link_pins) pin_label_items.push(index + 1);
+          if (_module.pin_name) pin_label_items.push(_module.pin_name);
 
-            let pin_preview = "circle";
-            if (_view.all_pins_icon === "media_preview") {
-              const thumb = this.getFirstThumbURLForMedia({
-                file: this.firstMedia(_module),
-                resolution: 50,
-              });
-              if (thumb) pin_preview = thumb;
-            }
-            acc.push({
-              longitude: _module.location.longitude,
-              latitude: _module.location.latitude,
-              label: pin_label,
-              color: _view.section_color || `#333`,
-              path: _module.$path,
-              belongs_to_view: _view.$path,
-              link_pins: _view.link_pins || false,
-              pin_preview,
+          const pin_label =
+            pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
+
+          let pin_preview = "circle";
+          if (_view.all_pins_icon === "media_preview") {
+            const thumb = this.getFirstThumbURLForMedia({
               file: this.firstMedia(_module),
-              module: _module,
+              resolution: 50,
             });
+            if (thumb) pin_preview = thumb;
           }
+          acc.push({
+            longitude: _module.location.longitude,
+            latitude: _module.location.latitude,
+            label: pin_label,
+            index: index + 1,
+            color: _view.section_color || `#333`,
+            path: _module.$path,
+            belongs_to_view: _view.$path,
+            link_pins: _view.link_pins || false,
+            pin_preview,
+            file: this.firstMedia(_module),
+            module: _module,
+          });
+          index++;
         });
         return acc;
       }, []);
@@ -226,7 +244,6 @@ export default {
       setTimeout(() => {
         this.opened_pin_path = pin_path;
       }, 150);
-
       // todo scroll to last meta_filename
     },
   },

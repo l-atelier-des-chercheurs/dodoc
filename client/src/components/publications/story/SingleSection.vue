@@ -42,7 +42,6 @@
                 "
               /> -->
             </div>
-
             <PublicationModule
               class="_mediaPublication"
               :key="_module.$path"

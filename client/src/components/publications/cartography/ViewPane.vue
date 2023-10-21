@@ -22,11 +22,21 @@ import SectionsList from "@/components/publications/story/SectionsList.vue";
 export default {
   props: {
     publication: Object,
+    pins: Array,
     opened_view_meta_filename: String,
+    opened_pin_path: String,
     can_edit: Boolean,
   },
   components: {
     SectionsList,
+  },
+  provide() {
+    return {
+      $getMapOptions: () => ({
+        opened_pin_path: this.opened_pin_path,
+        pins_infos: this.pins.map(({ path, index }) => ({ path, index })),
+      }),
+    };
   },
   data() {
     return {};

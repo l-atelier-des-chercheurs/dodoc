@@ -151,7 +151,7 @@
               </div>
             </div>
           </div>
-          <div class="_carto">
+          <div class="_carto" v-if="is_asociated_to_map">
             <div class="_latlon">
               <div v-if="has_coordinates" class="u-sameRow">
                 <div class="">
@@ -207,6 +207,17 @@
         </div>
       </div>
     </transition>
+
+    <div v-if="is_asociated_to_map && has_coordinates">
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click.stop="showModuleOnMap"
+      >
+        <b-icon icon="pin-map-fill" />
+        {{ pin_index }}
+      </button>
+    </div>
 
     <div class="_content" :style="media_styles">
       <div class="_floatingEditBtn" v-if="can_edit">
@@ -345,7 +356,6 @@ export default {
   props: {
     publimodule: Object,
     module_position: String,
-    can_edit: Boolean,
     module_being_edited: String,
     magnification: Number,
     border_radius: {
@@ -361,10 +371,17 @@ export default {
       type: [Boolean, Number],
       default: false,
     },
+    can_edit: Boolean,
   },
   components: {
     MediasModule,
   },
+  inject: {
+    $getMapOptions: {
+      default: false,
+    },
+  },
+
   data() {
     return {
       show_advanced_menu: false,
@@ -377,6 +394,7 @@ export default {
         no_coordinates: "Aucunes coordonnées disponibles",
         position_on_map: "Position sur la carte",
         place_on_map: "Positionner sur la carte",
+        show_on_map: "Afficher sur la carte",
         change_location: "Changer la position",
         remove_pin: "Supprimer cette épingle",
         click_on_map_to_repick_location_for_media:
@@ -399,6 +417,10 @@ export default {
       this.removeModule
     );
     this.$eventHub.$on("publication.map.click", this.setRepickLocation);
+    this.$eventHub.$on(
+      `module.show.${this.module_meta_filename}`,
+      this.scrollToModule
+    );
   },
   beforeDestroy() {
     this.$eventHub.$off(
@@ -414,6 +436,10 @@ export default {
       this.removeModule
     );
     this.$eventHub.$off("publication.map.click", this.setRepickLocation);
+    this.$eventHub.$off(
+      `module.show.${this.module_meta_filename}`,
+      this.scrollToModule
+    );
   },
   watch: {
     edit_mode() {
@@ -425,8 +451,31 @@ export default {
 
       if (!this.edit_mode) this.is_repicking_location = false;
     },
+    is_active: {
+      handler() {
+        if (this.is_active) this.scrollToModule();
+      },
+      immediate: true,
+    },
   },
   computed: {
+    is_asociated_to_map() {
+      return this.$getMapOptions;
+    },
+    is_active() {
+      if (this.$getMapOptions)
+        return this.$getMapOptions().opened_pin_path === this.publimodule.$path;
+      return false;
+    },
+    pin_index() {
+      if (this.$getMapOptions) {
+        const current_pin = this.$getMapOptions().pins_infos.find(
+          ({ path }) => path === this.publimodule.$path
+        );
+        if (current_pin) return current_pin.index;
+      }
+      return false;
+    },
     has_coordinates() {
       return (
         this.publimodule.location?.latitude &&
@@ -502,6 +551,9 @@ export default {
     repickLocation() {
       this.is_repicking_location = true;
     },
+    showModuleOnMap() {
+      this.$eventHub.$emit("publication.map.openPin", this.publimodule.$path);
+    },
     async setRepickLocation({ longitude, latitude }) {
       if (!this.is_repicking_location) return;
 
@@ -521,6 +573,13 @@ export default {
     },
     disableEdit() {
       this.$emit("update:module_being_edited", undefined);
+    },
+    scrollToModule() {
+      this.$el.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
     },
     changeModuleType(event) {
       // const module_types = ["mosaic", "carousel", "files"];
