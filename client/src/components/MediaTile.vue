@@ -15,6 +15,7 @@
       class="u-nut _index"
       :style="`--o-color: var(--color-${file.$origin})`"
       v-html="index"
+      @click="$emit('toggleMediaFocus')"
     />
     <MediaContent
       class="_content"
@@ -303,12 +304,29 @@ export default {
   top: 0;
   left: 0;
   z-index: 2;
+  pointer-events: none;
 
   font-size: var(--input-font-size-small);
   font-weight: 800;
 
   background: var(--o-color, black);
   color: white;
+
+  transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+
+  ._mediaTile[data-tilemode="table"] & {
+    position: relative;
+    z-index: inherit;
+  }
+  ._mediaTile[data-tilemode="medium"] & {
+    font-size: var(--input-font-size);
+  }
+
+  ._mediaTile:hover &,
+  ._mediaTile:focus-visible & {
+    transform: scale(1.5);
+  }
+}
 
 ._hasCoordinates {
   position: absolute;
