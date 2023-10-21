@@ -25,6 +25,11 @@
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
     />
+    <b-icon
+      class="_hasCoordinates"
+      v-if="has_coordinates"
+      icon="pin-map-fill"
+    />
     <span v-if="duration" class="_fileType" v-html="duration" />
     <span
       v-if="['pdf', 'stl'].includes(file.$type) || tile_mode === 'table'"
@@ -98,6 +103,10 @@ export default {
       if (this.tile_mode === "medium") return 440;
       return 220;
     },
+    has_coordinates() {
+      return this.file.$infos?.gps;
+    },
+
     duration() {
       if (["video", "audio"].includes(this.file.$type))
         if (this.file.$infos.duration)
@@ -203,7 +212,8 @@ export default {
       padding: calc(var(--spacing) / 2);
 
       &._content,
-      &._index {
+      &._index,
+      &._hasCoordinates {
         flex: 0 0 30px;
       }
       &._alreadySelected {
@@ -299,6 +309,12 @@ export default {
 
   background: var(--o-color, black);
   color: white;
+
+._hasCoordinates {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: calc(var(--spacing) / 4);
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
