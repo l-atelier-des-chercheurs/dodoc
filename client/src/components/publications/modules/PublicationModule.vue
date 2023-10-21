@@ -1,5 +1,9 @@
 <template>
-  <div class="_publicationModule" :data-type="module_type">
+  <div
+    class="_publicationModule"
+    :data-type="module_type"
+    :data-activeonmap="is_active_on_map"
+  >
     <!-- @mouseleave.self="show_advanced_menu = false" -->
     <transition name="fade_fast" mode="out-in">
       <div
@@ -162,6 +166,13 @@
                   <DLabel :str="$t('longitude')" />
                   {{ publimodule.location.longitude }}°
                 </div>
+                <button
+                  type="button"
+                  class="u-button_small"
+                  @click="eraseCoords"
+                >
+                  {{ $t("erase") }}
+                </button>
               </div>
               <div v-else>
                 {{ $t("no_coordinates") }}
@@ -211,11 +222,12 @@
     <div v-if="is_asociated_to_map && has_coordinates">
       <button
         type="button"
-        class="u-button u-button_bleuvert"
+        class="u-button _pinButton"
+        :style="`--pin-color: ${pin_options.color}`"
         @click.stop="showModuleOnMap"
       >
         <b-icon icon="pin-map-fill" />
-        {{ pin_index }}
+        {{ pin_options.index }}
       </button>
     </div>
 
@@ -443,17 +455,15 @@ export default {
   },
   watch: {
     edit_mode() {
-      debugger;
       if (this.$refs.textBloc)
         if (this.edit_mode)
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
         else this.$refs.textBloc.disableEditor();
-
       if (!this.edit_mode) this.is_repicking_location = false;
     },
-    is_active: {
+    is_active_on_map: {
       handler() {
-        if (this.is_active) this.scrollToModule();
+        if (this.is_active_on_map) this.scrollToModule();
       },
       immediate: true,
     },
@@ -462,17 +472,16 @@ export default {
     is_asociated_to_map() {
       return this.$getMapOptions;
     },
-    is_active() {
+    is_active_on_map() {
       if (this.$getMapOptions)
         return this.$getMapOptions().opened_pin_path === this.publimodule.$path;
       return false;
     },
-    pin_index() {
+    pin_options() {
       if (this.$getMapOptions) {
-        const current_pin = this.$getMapOptions().pins_infos.find(
+        return this.$getMapOptions().pins_infos.find(
           ({ path }) => path === this.publimodule.$path
         );
-        if (current_pin) return current_pin.index;
       }
       return false;
     },
@@ -568,6 +577,14 @@ export default {
       });
       this.is_repicking_location = false;
     },
+    async eraseCoords() {
+      await this.updateMeta({
+        location: {},
+      }).catch((err) => {
+        this.$alertify.delay(4000).error(err);
+        throw err;
+      });
+    },
     enableEdit() {
       this.$emit("update:module_being_edited", this.publimodule.$path);
     },
@@ -577,7 +594,7 @@ export default {
     scrollToModule() {
       this.$el.scrollIntoView({
         behavior: "smooth",
-        block: "center",
+        block: "start",
         inline: "nearest",
       });
     },
@@ -640,6 +657,7 @@ export default {
 <style lang="scss" scoped>
 ._publicationModule {
   position: relative;
+  scroll-margin-top: calc(var(--spacing) / 1);
   // padding: 0 calc(var(--spacing) * 2);
 
   &[data-type="shape"] {
@@ -657,6 +675,9 @@ export default {
         transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
       }
     }
+  }
+  &[data-activeonmap] {
+    background-color: var(--active-color);
   }
   ._content {
     width: calc(var(--module-width) * 1%);
@@ -833,5 +854,13 @@ export default {
 ._repickNotice--content {
   background: white;
   padding: calc(var(--spacing) / 2);
+}
+
+._carto {
+  background: white;
+}
+
+._pinButton {
+  background: var(--pin-color);
 }
 </style>

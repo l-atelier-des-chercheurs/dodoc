@@ -40,6 +40,13 @@
             </div>
           </div>
         </DisplayOnMap>
+        <transition name="pagechange" mode="out-in">
+          <ViewOptions
+            v-if="opened_view && can_edit"
+            :key="opened_view.$path"
+            :view="opened_view"
+          />
+        </transition>
       </pane>
       <pane min-size="5">
         <ViewPane
@@ -60,6 +67,7 @@ import { Splitpanes, Pane } from "splitpanes";
 // import LayersPane from "@/components/publications/cartography/LayersPane.vue";
 import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
 import ViewPane from "@/components/publications/cartography/ViewPane.vue";
+import ViewOptions from "@/components/publications/cartography/ViewOptions.vue";
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
@@ -75,6 +83,7 @@ export default {
     DisplayOnMap,
     // LayersPane,
     ViewPane,
+    ViewOptions,
     ModuleCreator,
   },
   data() {
@@ -202,20 +211,19 @@ export default {
       }, []);
     },
     lines() {
-      // if (this.pins.length === 0) return false;
-      // return this.pins.reduce((acc, pin) => {
-      //   if (pin.link_pins) {
-      //     const layer = pin.belongs_to_layer;
-      //     if (!Object.prototype.hasOwnProperty.call(acc, layer))
-      //       acc[layer] = {
-      //         color: pin.color,
-      //         coordinates: [],
-      //       };
-      //     acc[layer].coordinates.push([pin.longitude, pin.latitude]);
-      //   }
-      //   return acc;
-      // }, {});
-      return {};
+      if (this.pins.length === 0) return false;
+      return this.pins.reduce((acc, pin) => {
+        if (pin.link_pins) {
+          const view = pin.belongs_to_view;
+          if (!Object.prototype.hasOwnProperty.call(acc, view))
+            acc[view] = {
+              color: pin.color,
+              coordinates: [],
+            };
+          acc[view].coordinates.push([pin.longitude, pin.latitude]);
+        }
+        return acc;
+      }, {});
     },
     new_module_meta() {
       return {

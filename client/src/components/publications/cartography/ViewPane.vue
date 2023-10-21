@@ -34,7 +34,11 @@ export default {
     return {
       $getMapOptions: () => ({
         opened_pin_path: this.opened_pin_path,
-        pins_infos: this.pins.map(({ path, index }) => ({ path, index })),
+        pins_infos: this.pins.map(({ path, index, color }) => ({
+          path,
+          index,
+          color,
+        })),
       }),
     };
   },

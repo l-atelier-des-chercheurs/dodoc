@@ -145,7 +145,8 @@ export default {
         module: undefined,
       },
 
-      pin_features: undefined,
+      // pin_features: undefined,
+      // line_features: undefined,
       mouse_feature: undefined,
 
       current_zoom: undefined,
@@ -207,7 +208,14 @@ export default {
       else this.closePopup();
     },
   },
-  computed: {},
+  computed: {
+    line_features() {
+      return this.createLineFeaturesFromLines();
+    },
+    pin_features() {
+      return this.createPointFeaturesFromPins();
+    },
+  },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom =
@@ -247,7 +255,6 @@ export default {
       });
 
       const source = this.createSource(this.map_baselayer);
-
       this.map = new olMap({
         target: this.$refs.map,
         layers: [
@@ -261,14 +268,13 @@ export default {
       this.map.addLayer(
         new olVectorLayer({
           source: new olSourceVector({
-            features: this.createLineFeaturesFromLines(),
+            features: this.line_features,
             wrapX: false,
           }),
           style: (feature) => this.makeLineStyle(feature),
         })
       );
 
-      this.pin_features = this.createPointFeaturesFromPins();
       this.map.addLayer(
         new olVectorLayer({
           source: new olSourceVector({
@@ -386,8 +392,9 @@ export default {
         this.current_view = this.map.getView().getCenter();
       });
 
-      this.map.on("singleclick", (event) => {
+      this.map.on("singleclick", async (event) => {
         this.closePopup();
+        await this.$nextTick();
 
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
         let [longitude, latitude] = event.coordinate;
