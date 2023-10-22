@@ -19,7 +19,7 @@
           ref="closePopup"
           @click="closePopup"
         >
-          <b-icon icon="x-circle" />
+          <b-icon icon="x-circle-fill" />
         </button>
 
         <div
@@ -641,7 +641,7 @@ export default {
     },
     openFeature(path) {
       const feature = this.pin_features.find((f) => f.get("path") === path);
-      const pin = this.pins.find((p) => p.$path === path);
+      const pin = this.pins.find((p) => p.path === path);
       if (!feature) return "no_feature_found";
 
       this.resetClickedLocation();
@@ -768,6 +768,10 @@ export default {
   border-radius: var(--panel-radius);
   overflow: hidden;
   min-height: 2em;
+
+  ::v-deep ._publicationModule[data-type="text"] {
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  }
 }
 
 ._popupMessage {
