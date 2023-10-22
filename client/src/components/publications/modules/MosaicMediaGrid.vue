@@ -207,11 +207,14 @@ export default {
 
     ._mediaContent--image,
     .plyr--video,
-    ._mediaContent--iframe {
+    .plyr__poster,
+    ._mediaContent--iframe,
+    ._iframeStylePreview {
       position: absolute;
       height: 100%;
       width: 100%;
       object-fit: var(--object-fit, cover);
+      background-size: var(--object-fit, cover);
     }
   }
 }

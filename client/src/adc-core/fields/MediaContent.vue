@@ -322,14 +322,13 @@ export default {
   &[data-filetype="other"] {
   }
 
-  .plyr {
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    min-width: 100px;
-  }
-
   ::v-deep {
+    .plyr {
+      // z-index: 0;
+      // width: 100%;
+      // height: 100%;
+      min-width: 100px;
+    }
     .plyr__control--overlaid {
       z-index: 10;
     }

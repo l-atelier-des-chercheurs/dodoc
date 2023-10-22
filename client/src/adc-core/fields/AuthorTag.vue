@@ -3,7 +3,6 @@
     :is="component_tag"
     :type="component_tag === 'button' ? 'button' : ''"
     v-if="author"
-    :to="component_to"
     class="_author"
     :data-imageonly="show_image_only"
     @click.native="componentClick"
@@ -14,6 +13,7 @@
         :cover="author.$cover"
         :path="author.$path"
         :placeholder="author.name.substring(0, 2)"
+        :is_round="true"
         :can_edit="false"
       />
     </div>
@@ -45,6 +45,10 @@
 
       <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>
+
+    <router-link v-if="links_to_author_page" :to="component_to">
+      <b-icon icon="person-lines-fill" :aria-label="$t('page')" />
+    </router-link>
 
     <button
       type="button"
@@ -97,17 +101,13 @@ export default {
     author() {
       return this.getAuthor(this.path);
     },
-    url_to_author() {
-      return this.createURLFromPath(this.path);
-    },
     component_tag() {
-      if (this.links_to_author_page) return "router-link";
+      // if (this.links_to_author_page) return "router-link";
       if (this.$listeners.click) return "button";
       return "span";
     },
     component_to() {
-      if (this.component_tag === "router-link") return this.url_to_author;
-      return false;
+      return this.createURLFromPath(this.path);
     },
   },
   methods: {
@@ -143,7 +143,7 @@ export default {
   ._cover {
     position: relative;
     overflow: hidden;
-    border-radius: 50%;
+    // border-radius: 50%;
     width: 30px;
     height: 30px;
   }

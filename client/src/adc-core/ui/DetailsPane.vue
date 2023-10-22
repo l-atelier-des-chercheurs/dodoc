@@ -9,7 +9,8 @@
   >
     <summary>
       <div class="_icon">
-        <sl-icon v-if="icon" :name="icon" />
+        <b-icon v-if="icon" :icon="icon" />
+        <!-- <sl-icon v-if="icon" :name="icon" /> -->
       </div>
       <span class="_name">
         {{ header }}

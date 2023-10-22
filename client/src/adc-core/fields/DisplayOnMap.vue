@@ -10,7 +10,7 @@
     <div
       ref="popUp"
       class="_popup"
-      v-show="clicked_location.file || $slots.hasOwnProperty('popup_message')"
+      v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
         <button
@@ -19,21 +19,25 @@
           ref="closePopup"
           @click="closePopup"
         >
-          <b-icon icon="x-circle" />
+          <b-icon icon="x-circle-fill" />
         </button>
 
         <div
-          v-if="clicked_location.file"
-          :key="clicked_location.file.$path"
+          v-if="clicked_location.module"
+          :key="clicked_location.module.$path"
           class="_pinContent"
         >
-          <MediaContent
+          <PublicationModule
+            :publimodule="clicked_location.module"
+            :can_edit="false"
+          />
+          <!-- <MediaContent
             :file="clicked_location.file"
             :is_draggable="false"
             :resolution="1600"
             :context="'full'"
             :show_fs_button="true"
-          />
+          /> -->
         </div>
 
         <!-- <div class="u-instructions">
@@ -53,7 +57,7 @@
         <div
           class="_popupMessage"
           v-if="
-            !clicked_location.file && $slots.hasOwnProperty('popup_message')
+            !clicked_location.module && $slots.hasOwnProperty('popup_message')
           "
         >
           <slot name="popup_message" />
@@ -89,6 +93,8 @@ import olStroke from "ol/style/Stroke";
 import olText from "ol/style/Text";
 import { ScaleLine, FullScreen } from "ol/control";
 
+import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
+
 export default {
   name: "DisplayOnMap",
   props: {
@@ -123,7 +129,9 @@ export default {
       default: false,
     },
   },
-  components: {},
+  components: {
+    PublicationModule,
+  },
   data() {
     return {
       pin_infos: false,
@@ -134,10 +142,11 @@ export default {
       clicked_location: {
         latitude: undefined,
         longitude: undefined,
-        file: undefined,
+        module: undefined,
       },
 
       pin_features: undefined,
+      line_features: undefined,
       mouse_feature: undefined,
 
       current_zoom: undefined,
@@ -161,6 +170,7 @@ export default {
   },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
+    this.$eventHub.$on("publication.map.openPin", this.openPin);
   },
   mounted() {
     setTimeout(() => {
@@ -169,28 +179,32 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
+    this.$eventHub.$off("publication.map.openPin", this.openPin);
   },
   watch: {
     pins: {
       handler() {
-        this.startMap({ keep_loc_and_zoom: true });
+        const new_pin_features = this.createPointFeaturesFromPins();
+        if (
+          JSON.stringify(new_pin_features) !== JSON.stringify(this.pin_features)
+        )
+          this.startMap({ keep_loc_and_zoom: true });
       },
       deep: true,
     },
-    lines: {
-      handler() {
-        this.startMap({ keep_loc_and_zoom: true });
-      },
-      deep: true,
-    },
+    // lines: {
+    //   handler() {
+    //     const new_line_features = this.createLineFeaturesFromLines();
+    //     if (
+    //       JSON.stringify(new_line_features) !==
+    //       JSON.stringify(this.line_features)
+    //     )
+    //       this.startMap({ keep_loc_and_zoom: true });
+    //   },
+    //   deep: true,
+    // },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
-    },
-    start_coords() {
-      this.startMap();
-    },
-    start_zoom() {
-      this.startMap();
     },
     opened_pin_path() {
       if (this.opened_pin_path) this.openFeature(this.opened_pin_path);
@@ -237,7 +251,6 @@ export default {
       });
 
       const source = this.createSource(this.map_baselayer);
-
       this.map = new olMap({
         target: this.$refs.map,
         layers: [
@@ -248,10 +261,11 @@ export default {
         view: this.view,
       });
 
+      this.line_features = this.createLineFeaturesFromLines();
       this.map.addLayer(
         new olVectorLayer({
           source: new olSourceVector({
-            features: this.createLineFeaturesFromLines(),
+            features: this.line_features,
             wrapX: false,
           }),
           style: (feature) => this.makeLineStyle(feature),
@@ -270,6 +284,8 @@ export default {
               feature,
               resolution,
             }),
+          // hides pins on map, not ideal
+          // declutter: true,
         })
       );
 
@@ -319,8 +335,10 @@ export default {
         preventDefault: true,
       });
       this.map.addControl(geocoder);
-      geocoder.on("addresschosen", (evt) => {
+      geocoder.on("addresschosen", async (evt) => {
         this.closePopup();
+
+        await this.$nextTick();
 
         if (evt.place?.lon && evt.place?.lat) {
           this.clicked_location.latitude = +evt.place.lat;
@@ -374,8 +392,9 @@ export default {
         this.current_view = this.map.getView().getCenter();
       });
 
-      this.map.on("singleclick", (event) => {
+      this.map.on("singleclick", async (event) => {
         this.closePopup();
+        await this.$nextTick();
 
         const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
         let [longitude, latitude] = event.coordinate;
@@ -489,9 +508,11 @@ export default {
           };
           feature_cont.path = pin.path;
           if (pin.color) feature_cont.fill_color = pin.color;
-          if (pin.file) feature_cont.file = pin.file;
+          // if (pin.module) feature_cont.module = pin.module;
           if (pin.label) feature_cont.label = pin.label;
           if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
+          if (pin.pin_preview_src)
+            feature_cont.pin_preview_src = pin.pin_preview_src;
           features.push(new olFeature(feature_cont));
         });
       }
@@ -501,7 +522,7 @@ export default {
       let features = [];
       if (this.lines && Object.keys(this.lines).length > 0) {
         // const lines = this.pins.reduce((acc, pin) => {
-        //   if (pin.belongs_to_layer) {
+        //   if (pin.belongs_to_view) {
         //   }
         //   if (pin?.longitude && pin?.latitude)
         //     acc.push([pin.longitude, pin.latitude]);
@@ -530,14 +551,14 @@ export default {
         const _fs = {
           italic: "normal",
           weight: "500",
-          size: "12.6px",
+          size: "14px",
           height: 1.2,
           family: "Fira Sans",
         };
 
         style.text = new olText({
           fill: new olFill({ color: "#000" }),
-          stroke: new olStroke({ color: "#fff" }),
+          // stroke: new olStroke({ color: "#fff" }),
           // font: "bold 48px serif",
           font:
             _fs.italic +
@@ -550,8 +571,9 @@ export default {
             " " +
             _fs.family,
           text: "" + feature.get("label"),
-          textAlign: "start",
-          offsetX: 15,
+          textAlign: "center",
+          textBaseline: "bottom",
+          offsetY: -9,
         });
       }
       if (feature?.get("fill_color")) {
@@ -559,19 +581,31 @@ export default {
       }
 
       const pin_preview = feature.get("pin_preview");
+      const pin_preview_src = feature.get("pin_preview_src");
+
       if (!pin_preview || pin_preview === "circle") {
         style.image = new olCircleStyle({
           radius: 8,
           fill: new olFill({ color: fill_color }),
           stroke: new olStroke({ color: "#232e4a", width: 1 }),
         });
-      } else {
+      } else if (pin_preview === "media_preview") {
         style.image = new olIcon({
-          anchor: [0.5, 0.5],
+          anchor: [0.5, 1],
           anchorXUnits: "fraction",
           anchorYUnits: "fraction",
-          // src: this.$root.publicPath + "maps/icon.png",
-          src: pin_preview,
+          src: pin_preview_src,
+        });
+      } else if (pin_preview === "icon") {
+        style.text = undefined;
+        style.image = new olIcon({
+          anchor: [0.5, 1],
+          anchorXUnits: "fraction",
+          anchorYUnits: "fraction",
+          size: [30, 30],
+          // do not use color: it is injected directly in the svg
+          // color: fill_color,
+          src: pin_preview_src,
         });
       }
 
@@ -590,7 +624,7 @@ export default {
       this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
       this.clicked_location.latitude = undefined;
       this.clicked_location.longitude = undefined;
-      this.clicked_location.file = undefined;
+      this.clicked_location.module = undefined;
       this.popup_message = undefined;
     },
     navigateTo({ center, zoom = this.current_zoom }) {
@@ -607,13 +641,13 @@ export default {
     },
     openFeature(path) {
       const feature = this.pin_features.find((f) => f.get("path") === path);
+      const pin = this.pins.find((p) => p.path === path);
       if (!feature) return "no_feature_found";
 
       this.resetClickedLocation();
 
       const coordinates = feature.getGeometry().getCoordinates();
-      const f = feature.get("file");
-      this.clicked_location.file = f || undefined;
+      this.clicked_location.module = pin?.module;
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];
@@ -626,7 +660,7 @@ export default {
     },
     closePopup() {
       this.resetClickedLocation();
-      this.$emit("update:opened_pin_path", undefined);
+      if (this.opened_pin_path) this.$emit("update:opened_pin_path", undefined);
 
       this.overlay.setPosition(undefined);
       if (this.$refs.closePopup) this.$refs.closePopup.blur();
@@ -734,6 +768,10 @@ export default {
   border-radius: var(--panel-radius);
   overflow: hidden;
   min-height: 2em;
+
+  ::v-deep ._publicationModule[data-type="text"] {
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  }
 }
 
 ._popupMessage {

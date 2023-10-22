@@ -114,6 +114,7 @@ export default {
   flex-flow: column nowrap;
 
   background-color: var(--c-bodybg);
+  background-color: white;
 }
 ._publicationOpen--topbar {
   flex: 0 0 auto;

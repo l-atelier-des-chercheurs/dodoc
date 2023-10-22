@@ -5,7 +5,7 @@
     :style="btn_styles"
     @click="$emit('click')"
   >
-    <span class="_label">
+    <span class="_label" :data-position="label_position">
       {{ btn_props.label }}
     </span>
     <b-icon class="_icon" :icon="btn_props.icon" />
@@ -18,6 +18,10 @@ export default {
     btn_type: {
       type: String,
       default: "edit",
+    },
+    label_position: {
+      type: String,
+      default: "right",
     },
   },
   components: {},
@@ -50,6 +54,16 @@ export default {
           label: this.$t("close"),
           icon: "x-circle",
         };
+      else if (this.btn_type === "select_author")
+        return {
+          label: this.$t("login"),
+          icon: "box-arrow-in-right",
+        };
+      else if (this.btn_type === "check")
+        return {
+          label: this.$t("ok"),
+          icon: "check-lg",
+        };
 
       return {
         label: this.$t("edit"),
@@ -75,7 +89,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: rgba(255, 255, 255, 0.2);
+  --color1: rgba(255, 255, 255, 1);
   // --color1: white;
   --color2: var(--c-bleuvert);
   --color-hover-icon: white;
@@ -94,8 +108,8 @@ export default {
   height: 24px;
   flex: 0 0 24px;
 
-  backdrop-filter: blur(5px);
-  background: rgba(255, 255, 255, 0.2);
+  // backdrop-filter: blur(5px);
+  background: var(--color1);
 
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -114,7 +128,6 @@ export default {
   ._label {
     position: absolute;
     top: 0;
-    left: 0;
     height: calc(100% + 2px);
 
     background: var(--color2);
@@ -122,16 +135,26 @@ export default {
 
     margin: -1px;
     padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-    padding-left: 100%;
+
     display: flex;
     align-items: center;
     border-radius: 1rem;
     white-space: nowrap;
 
     pointer-events: none;
-    transform: translateX(15px);
     opacity: 0;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &[data-position="right"] {
+      left: 0;
+      padding-left: 100%;
+      transform: translateX(15px);
+    }
+    &[data-position="left"] {
+      right: 0;
+      padding-right: 100%;
+      transform: translateX(-15px);
+    }
   }
 
   &:hover,

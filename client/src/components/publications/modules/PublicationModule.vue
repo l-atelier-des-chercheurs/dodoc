@@ -1,80 +1,76 @@
 <template>
   <div class="_publicationModule" :data-type="module_type">
     <!-- @mouseleave.self="show_advanced_menu = false" -->
-    <div
-      class="_sideOptions"
-      v-if="can_edit && page_template !== 'page_by_page'"
-    >
-      <span>
-        <button
-          v-if="$listeners.hasOwnProperty('moveUp')"
-          :disabled="module_position === 'first' || module_position === 'alone'"
-          type="button"
-          class="u-button _sideBtns _moveBefore"
-          @click="$emit('moveUp')"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 168 168"
-            style="transform: rotate(90deg)"
-          >
-            <path
-              d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
-              style="fill: currentColor"
-            />
-          </svg>
-        </button>
-      </span>
-      <div class="_options">
-        <button
-          type="button"
-          class="u-button _sideBtns"
-          :class="{
-            'is--active': show_advanced_menu,
-          }"
-          @click.stop="show_advanced_menu = !show_advanced_menu"
-        >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="24"
-            height="24"
-            viewBox="0 0 48 48"
-            xml:space="preserve"
-            style="fill: currentColor"
-          >
-            <!-- <circle cx="12" cy="4" r="2" />
-            <circle cx="12" cy="12" r="2" />
-            <circle cx="12" cy="20" r="2" /> -->
-            <circle cx="12" cy="24" r="4" />
-            <circle cx="24" cy="24" r="4" />
-            <circle cx="36" cy="24" r="4" />
-          </svg>
-        </button>
-        <div class="_advanced_menu" v-if="show_advanced_menu">
-          <div>
-            <template v-if="publimodule.module_type === 'text'">
-              {{ $t(`module.label.text`) }}
-            </template>
-            <select
-              v-else
-              :value="publimodule.module_type"
-              @change="changeModuleType"
-            >
-              <option
-                v-for="module_type in ['mosaic', 'carousel', 'files']"
-                :key="module_type"
-                :value="module_type"
-              >
-                {{ $t(`module.label.${module_type}`) }}
-              </option>
-            </select>
-          </div>
+    <transition name="fade_fast" mode="out-in">
+      <div
+        class="_sideOptions"
+        v-if="edit_mode && page_template !== 'page_by_page'"
+      >
+        <div class="_sideOptions--content">
+          <div class="_options">
+            <div class="_advanced_menu">
+              <div class="">
+                <button
+                  v-if="$listeners.hasOwnProperty('moveUp')"
+                  :disabled="
+                    module_position === 'first' || module_position === 'alone'
+                  "
+                  type="button"
+                  class="u-button _sideBtns _moveBefore"
+                  @click="$emit('moveUp')"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 168 168"
+                    style="transform: rotate(90deg)"
+                  >
+                    <path
+                      d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+                      style="fill: currentColor"
+                    />
+                  </svg>
+                </button>
+                <button
+                  v-if="$listeners.hasOwnProperty('moveDown')"
+                  type="button"
+                  :disabled="
+                    module_position === 'last' || module_position === 'alone'
+                  "
+                  class="u-button _sideBtns _moveAfter"
+                  @click="$emit('moveDown')"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 168 168"
+                    style="transform: rotate(90deg)"
+                  >
+                    <path
+                      d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+                      style="fill: currentColor"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div>
+                <template v-if="publimodule.module_type === 'text'">
+                  {{ $t(`module.label.text`) }}
+                </template>
+                <select
+                  v-else
+                  :value="publimodule.module_type"
+                  @change="changeModuleType"
+                >
+                  <option
+                    v-for="module_type in ['mosaic', 'carousel', 'files']"
+                    :key="module_type"
+                    :value="module_type"
+                  >
+                    {{ $t(`module.label.${module_type}`) }}
+                  </option>
+                </select>
+              </div>
 
-          <!-- <sl-button
+              <!-- <sl-button
             variant="default"
             size="small"
             pill
@@ -82,106 +78,175 @@
           >
             {{ $t(`module.label.${publimodule.module_type}`) }}
           </sl-button> -->
-          <div class="_buttonRow">
-            <button
-              type="button"
-              class="u-button"
-              :class="{
-                'is--active': !publimodule.size || publimodule.size === 100,
-              }"
-              @click="updateMeta({ size: 100 })"
-            >
-              100%
-            </button>
-            <template v-for="size in [66.6, 50, 33.3]">
-              <button
-                :key="size"
-                type="button"
-                class="u-button"
-                :class="{
-                  'is--active': publimodule.size === size,
-                }"
-                @click="updateMeta({ size: size })"
+              <div class="_buttonRow" v-if="false">
+                <button
+                  type="button"
+                  class="u-button"
+                  :class="{
+                    'is--active': !publimodule.size || publimodule.size === 100,
+                  }"
+                  @click="updateMeta({ size: 100 })"
+                >
+                  100%
+                </button>
+                <template v-for="size in [66.6, 50, 33.3]">
+                  <button
+                    :key="size"
+                    type="button"
+                    class="u-button"
+                    :class="{
+                      'is--active': publimodule.size === size,
+                    }"
+                    @click="updateMeta({ size: size })"
+                  >
+                    {{ size }}%
+                  </button>
+                </template>
+              </div>
+
+              <div
+                class="_buttonRow"
+                v-if="publimodule.size && publimodule.size !== 100"
               >
-                {{ size }}%
+                <button
+                  type="button"
+                  class="u-button"
+                  :class="{
+                    'is--active':
+                      !publimodule.align || publimodule.align === 'left',
+                  }"
+                  @click="updateMeta({ align: 'left' })"
+                >
+                  <sl-icon name="align-start" />
+                </button>
+                <button
+                  type="button"
+                  class="u-button"
+                  :class="{
+                    'is--active': publimodule.align === 'center',
+                  }"
+                  @click="updateMeta({ align: 'center' })"
+                >
+                  <sl-icon name="align-center" />
+                </button>
+                <button
+                  type="button"
+                  class="u-button"
+                  :class="{
+                    'is--active': publimodule.align === 'right',
+                  }"
+                  @click="updateMeta({ align: 'right' })"
+                >
+                  <sl-icon name="align-end" />
+                </button>
+              </div>
+
+              <div class="_buttonRow">
+                <button type="button" class="u-button" @click="duplicateModule">
+                  {{ $t("duplicate") }}
+                </button>
+                <button type="button" class="u-button" @click="removeModule">
+                  {{ $t("remove") }}
+                </button>
+              </div>
+            </div>
+            <div class="_carto" v-if="is_associated_to_map">
+              <div class="_latlon" v-if="false">
+                <div v-if="has_coordinates" class="u-sameRow">
+                  <div class="">
+                    <DLabel :str="$t('latitude')" />
+                    {{ publimodule.location.latitude }}°
+                  </div>
+                  <div class="">
+                    <DLabel :str="$t('longitude')" />
+                    {{ publimodule.location.longitude }}°
+                  </div>
+                </div>
+                <div v-else>
+                  {{ $t("no_coordinates") }}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="u-button u-button_red"
+                @click.stop="repickLocation"
+              >
+                <template v-if="!has_coordinates">
+                  <b-icon icon="pin-map" />
+                  {{ $t("place_on_map") }}
+                </template>
+                <template v-else>
+                  <b-icon icon="pin-map-fill" />
+                  {{ $t("change_location") }}
+                </template>
               </button>
-            </template>
+              <button
+                v-if="has_coordinates"
+                type="button"
+                class="u-buttonLink"
+                @click="eraseCoords"
+              >
+                {{ $t("erase") }}
+              </button>
+            </div>
+            <div class="_saveBtn">
+              <EditBtn
+                :btn_type="'check'"
+                :label_position="'left'"
+                @click="disableEdit"
+              />
+            </div>
           </div>
-
-          <div
-            class="_buttonRow"
-            v-if="publimodule.size && publimodule.size !== 100"
-          >
-            <button
-              type="button"
-              class="u-button"
-              :class="{
-                'is--active':
-                  !publimodule.align || publimodule.align === 'left',
-              }"
-              @click="updateMeta({ align: 'left' })"
-            >
-              <sl-icon name="align-start" />
-            </button>
-            <button
-              type="button"
-              class="u-button"
-              :class="{
-                'is--active': publimodule.align === 'center',
-              }"
-              @click="updateMeta({ align: 'center' })"
-            >
-              <sl-icon name="align-center" />
-            </button>
-            <button
-              type="button"
-              class="u-button"
-              :class="{
-                'is--active': publimodule.align === 'right',
-              }"
-              @click="updateMeta({ align: 'right' })"
-            >
-              <sl-icon name="align-end" />
-            </button>
-          </div>
-
-          <div class="_buttonRow">
-            <button type="button" class="u-button" @click="duplicateModule">
-              {{ $t("duplicate") }}
-            </button>
-            <button type="button" class="u-button" @click="removeModule">
-              {{ $t("remove") }}
-            </button>
+          <div class="_repickNotice" v-if="is_repicking_location">
+            <div class="_repickNotice--content">
+              <div>
+                {{ $t("click_on_map_to_repick_location_for_media") }}
+              </div>
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="is_repicking_location = false"
+              >
+                {{ $t("cancel") }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <span>
-        <button
-          v-if="$listeners.hasOwnProperty('moveDown')"
-          type="button"
-          :disabled="module_position === 'last' || module_position === 'alone'"
-          class="u-button _sideBtns _moveAfter"
-          @click="$emit('moveDown')"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 168 168"
-            style="transform: rotate(90deg)"
-          >
-            <path
-              d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
-              style="fill: currentColor"
-            />
-          </svg>
-        </button>
-      </span>
-    </div>
+    </transition>
+
+    <button
+      type="button"
+      class="u-button _pinButton"
+      :style="`--pin-color: ${pin_options.color}`"
+      v-if="is_associated_to_map && has_coordinates"
+      @click.stop="showModuleOnMap"
+    >
+      <img
+        v-if="pin_options.pin_preview === 'icon'"
+        :src="pin_options.pin_preview_src"
+      />
+      <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
+      <!-- <b-icon icon="pin-map-fill" /> -->
+      <!-- <span class="_index">
+          {{ pin_options.index }}
+        </span> -->
+    </button>
 
     <div class="_content" :style="media_styles">
+      <div class="_floatingEditBtn" v-if="can_edit">
+        <EditBtn
+          v-if="!edit_mode"
+          :label_position="'left'"
+          @click="enableEdit"
+        />
+      </div>
+
       <MediasModule
         v-if="['mosaic', 'carousel', 'files'].includes(publimodule.module_type)"
         :publimodule="publimodule"
-        :can_edit="can_edit"
+        :can_edit="edit_mode"
         :context="context"
         :page_template="page_template"
         :number_of_max_medias="number_of_max_medias"
@@ -196,7 +261,7 @@
         :content="first_media.$content"
         :scrollingContainer="$el"
         :line_selected="false"
-        :can_edit="can_edit"
+        :can_edit="edit_mode"
         @lineClicked="$emit('lineClicked', $event)"
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
@@ -295,6 +360,8 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>
+
+    <div class="_selectorIndicator" v-if="edit_mode || is_active_on_map" />
   </div>
 </template>
 <script>
@@ -304,7 +371,7 @@ export default {
   props: {
     publimodule: Object,
     module_position: String,
-    can_edit: Boolean,
+    module_being_edited: String,
     magnification: Number,
     border_radius: {
       type: Object,
@@ -319,20 +386,43 @@ export default {
       type: [Boolean, Number],
       default: false,
     },
+    can_edit: Boolean,
   },
   components: {
     MediasModule,
   },
+  inject: {
+    $getMapOptions: {
+      default: false,
+    },
+  },
+
   data() {
     return {
       show_advanced_menu: false,
+      is_repicking_location: false,
     };
+  },
+  i18n: {
+    messages: {
+      fr: {
+        no_coordinates: "Aucunes coordonnées disponibles",
+        position_on_map: "Position sur la carte",
+        place_on_map: "Positionner sur la carte",
+        show_on_map: "Afficher sur la carte",
+        change_location: "Changer la position",
+        remove_pin: "Supprimer cette épingle",
+        cancel_position: "Annuler la position",
+        click_on_map_to_repick_location_for_media:
+          "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+      },
+    },
   },
   created() {},
   mounted() {
     this.$eventHub.$on(
       `module.enable_edit.${this.module_meta_filename}`,
-      this.enableEditForText
+      this.enableEdit
     );
     this.$eventHub.$on(
       `module.duplicate.${this.module_meta_filename}`,
@@ -341,12 +431,17 @@ export default {
     this.$eventHub.$on(
       `module.remove.${this.module_meta_filename}`,
       this.removeModule
+    );
+    this.$eventHub.$on("publication.map.click", this.setRepickLocation);
+    this.$eventHub.$on(
+      `module.show.${this.module_meta_filename}`,
+      this.scrollToModule
     );
   },
   beforeDestroy() {
     this.$eventHub.$off(
       `module.enable_edit.${this.module_meta_filename}`,
-      this.enableEditForText
+      this.enableEdit
     );
     this.$eventHub.$off(
       `module.duplicate.${this.module_meta_filename}`,
@@ -356,9 +451,54 @@ export default {
       `module.remove.${this.module_meta_filename}`,
       this.removeModule
     );
+    this.$eventHub.$off("publication.map.click", this.setRepickLocation);
+    this.$eventHub.$off(
+      `module.show.${this.module_meta_filename}`,
+      this.scrollToModule
+    );
   },
-  watch: {},
+  watch: {
+    edit_mode() {
+      if (this.$refs.textBloc)
+        if (this.edit_mode)
+          this.$nextTick(() => this.$refs.textBloc.enableEditor());
+        else this.$refs.textBloc.disableEditor();
+      if (!this.edit_mode) this.is_repicking_location = false;
+    },
+    is_active_on_map: {
+      handler() {
+        if (this.is_active_on_map) this.scrollToModule();
+      },
+      immediate: true,
+    },
+  },
   computed: {
+    is_associated_to_map() {
+      return this.$getMapOptions;
+    },
+    is_active_on_map() {
+      if (this.$getMapOptions)
+        return this.$getMapOptions().opened_pin_path === this.publimodule.$path;
+      return false;
+    },
+    pin_options() {
+      if (this.$getMapOptions) {
+        return this.$getMapOptions().pins_infos.find(
+          ({ path }) => path === this.publimodule.$path
+        );
+      }
+      return false;
+    },
+    has_coordinates() {
+      return (
+        this.publimodule.location?.latitude &&
+        this.publimodule.location?.longitude
+      );
+    },
+
+    edit_mode() {
+      return this.module_being_edited === this.publimodule.$path;
+    },
     module_meta_filename() {
       return this.publimodule.$path.split("/").at(-1);
     },
@@ -421,15 +561,47 @@ export default {
           throw err;
         });
     },
-    enableEditForText() {
-      // this.$el.scrollIntoView({
-      //   behavior: "smooth",
-      //   block: "center",
-      //   inline: "nearest",
-      // });
-      this.$nextTick(() => {
-        if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
+    repickLocation() {
+      this.is_repicking_location = true;
+    },
+    showModuleOnMap() {
+      this.$eventHub.$emit("publication.map.openPin", this.publimodule.$path);
+    },
+    async setRepickLocation({ longitude, latitude }) {
+      if (!this.is_repicking_location) return;
+
+      await this.updateMeta({
+        location: {
+          longitude,
+          latitude,
+        },
+      }).catch((err) => {
+        this.$alertify.delay(4000).error(err);
+        throw err;
       });
+      this.is_repicking_location = false;
+    },
+    async eraseCoords() {
+      await this.updateMeta({
+        location: {},
+      }).catch((err) => {
+        this.$alertify.delay(4000).error(err);
+        throw err;
+      });
+    },
+    enableEdit() {
+      this.$emit("update:module_being_edited", this.publimodule.$path);
+    },
+    disableEdit() {
+      this.$emit("update:module_being_edited", undefined);
+    },
+    scrollToModule() {
+      if (this.$el)
+        this.$el.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
     },
     changeModuleType(event) {
       // const module_types = ["mosaic", "carousel", "files"];
@@ -490,7 +662,8 @@ export default {
 <style lang="scss" scoped>
 ._publicationModule {
   position: relative;
-  padding: 0 calc(var(--spacing) * 2);
+  scroll-margin-top: calc(var(--spacing) / 1);
+  // padding: 0 calc(var(--spacing) * 2);
 
   &[data-type="shape"] {
     ._content,
@@ -508,6 +681,9 @@ export default {
       }
     }
   }
+  // &[data-activeonmap] {
+  //   background-color: var(--active-color);
+  // }
   ._content {
     width: calc(var(--module-width) * 1%);
     margin-left: calc(var(--module-margin-left) * 1%);
@@ -515,56 +691,71 @@ export default {
   }
 }
 
-._sideOptions {
+._selectorIndicator {
+  --highlight-margin: calc(var(--spacing) / -2);
+
   position: absolute;
-  top: 0;
-  height: 100%;
-  right: 100%;
-  z-index: 10000;
+  top: var(--highlight-margin);
+  left: var(--highlight-margin);
+  bottom: var(--highlight-margin);
+  right: var(--highlight-margin);
+
+  border: 2px solid var(--c-bleuvert);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+._sideOptions {
+  // position: absolute;
+  // top: 0;
+  // height: 100%;
+  // right: 100%;
+  // z-index: 10000;
   // background: var(--active-color);
-  background: rgba(0, 0, 0, 0.01);
-  background: var(--c-gris_clair);
+  // background: rgba(0, 0, 0, 0.01);
+
+  position: absolute;
+  bottom: 100%;
+  z-index: 1000;
+  padding: calc(var(--spacing) / 4);
+  margin-bottom: calc(var(--spacing) / 2);
+  border-radius: 16px;
+  width: 100%;
 
   // pointer-events: none;
 
   // z-index: 100;
-
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-between;
-
-  --side-width: 24px;
-  width: var(--side-width);
-  border-radius: calc(var(--side-width) / 2);
-
-  opacity: 0.45;
-
   transition: opacity 0.25s linear;
-
-  ._publicationModule:hover &,
-  ._publicationModule:focus-visible & {
-    opacity: 1;
-  }
 
   &.is--pageByPage {
     display: none;
-    // position: absolute;
-    // right: 0;
-    // background: transparent;
-    // top: 0;
-    // height: auto;
-
-    // margin: calc(var(--spacing) / 2);
-
-    // z-index: 10;
-
-    // ._sideBtns {
-    //   background: white;
-    // }
   }
 
-  > * {
-    pointer-events: auto;
+  ._sideOptions--content {
+    // max-width: 320px;
+    width: 100%;
+    margin: 0 auto;
+    // background: var(--c-gris_clair);
+    // border: 2px solid var(--c-gris);
+    padding: calc(var(--spacing) / 4);
+    // background: var(--panel-color);
+    background: var(--active-color);
+    // background: white;
+
+    border: 2px solid var(--active-color);
+    box-shadow: var(--panel-shadows);
+
+    border-radius: 2px;
+
+    // display: flex;
+    // flex-flow: row wrap;
+    // gap: calc(var(--spacing) / 4);
+    // align-items: center;
+    // justify-content: space-between;
+
+    > * {
+      // background: white;
+    }
   }
 }
 
@@ -583,21 +774,21 @@ export default {
 }
 
 ._advanced_menu {
-  position: absolute;
-  z-index: 1000;
-  left: 100%;
-  top: 50%;
-  transform: translate(0, -50%);
+  // position: absolute;
+  // z-index: 1000;
+  // left: 100%;
+  // top: 50%;
+  // transform: translate(0, -50%);
 
-  backdrop-filter: blur(5px);
-  background: rgba(255, 255, 255, 0.7);
+  // backdrop-filter: blur(5px);
+  // background: rgba(255, 255, 255, 0.7);
 
   padding: calc(var(--spacing) / 2);
-  margin: 2px;
-  border-radius: 4px;
+  // margin: 2px;
+  // border-radius: 4px;
 
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   gap: calc(var(--spacing) / 4);
 
   select {
@@ -626,11 +817,85 @@ export default {
 
 ._options {
   position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+
+  > ._saveBtn {
+    flex: 1;
+    text-align: right;
+  }
 }
 
 ._buttonRow {
   display: flex;
   // padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 4);
+  align-items: center;
+}
+
+._floatingEditBtn {
+  position: sticky;
+  z-index: 101;
+  height: 0;
+
+  > * {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: calc(var(--spacing) / 4);
+  }
+}
+
+._repickNotice {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  backdrop-filter: blur(5px);
+  background: rgba(231, 231, 231, 0.7);
+
+  padding: calc(var(--spacing) / 2);
+
+  display: flex;
+  flex-flow: column nowrap;
+}
+._repickNotice--content {
+  background: white;
+  padding: calc(var(--spacing) / 2);
+}
+
+._carto {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) / 4);
+  // background: white;
+}
+
+._pinButton {
+  position: absolute;
+  background: transparent;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  padding: 0;
+  padding: calc(var(--spacing) / 4);
+
+  ._publicationModule[data-type="text"] & {
+    position: relative;
+    float: left;
+    margin-top: calc(var(--spacing) / 4);
+    margin-right: calc(var(--spacing) / 4);
+  }
+
+  img {
+    // background: var(--pin-color);
+  }
+
+  ._index {
+  }
 }
 </style>
