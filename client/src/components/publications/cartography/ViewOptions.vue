@@ -1,48 +1,51 @@
 <template>
   <div class="_viewSettings">
     <div class="_viewSettings--content">
-      <div class="u-spacingBottom">
+      <!-- <div class="u-spacingBottom">
         <strong>
           {{ view.section_title }}
         </strong>
-      </div>
-      <div class="u-spacingBottom">
-        <ColorInput
-          :label="$t('pins_color')"
-          :can_toggle="false"
-          :default_value="default_view_color"
-          :value="view.section_color"
-          @save="updateView({ field: 'section_color', value: $event })"
-        />
-      </div>
-      <div class="u-spacingBottom">
-        <ToggleInput
-          :label="$t('link_pins')"
-          :content="view.link_pins"
-          @update:content="updateView({ field: 'link_pins', value: $event })"
-        />
-      </div>
-      <div class="u-spacingBottom">
-        <DLabel :str="$t('pin_icons')" />
-        <RadioCheckboxField
-          :field_name="'all_pins_icon'"
-          :input_type="'radio'"
-          :content="view.all_pins_icon || 'circle'"
-          :path="view.$path"
-          :options="icon_options"
-          :can_edit="true"
-        />
-      </div>
-      <div class="u-spacingBottom">
-        <DLabel :str="$t('map_baselayer')" />
-        <SelectField2
-          :value="view.map_baselayer || 'OSM'"
-          :options="map_baselayer_options"
-          :can_edit="true"
-          :hide_validation="false"
-          @update="updateView({ field: 'map_baselayer', value: $event })"
-        />
-      </div>
+      </div> -->
+
+      <DetailsPane :header="view.section_title" :icon="'gear'">
+        <div class="u-spacingBottom">
+          <ColorInput
+            :label="$t('pins_color')"
+            :can_toggle="false"
+            :default_value="default_view_color"
+            :value="view.section_color"
+            @save="updateView({ field: 'section_color', value: $event })"
+          />
+        </div>
+        <div class="u-spacingBottom">
+          <ToggleInput
+            :label="$t('link_pins')"
+            :content="view.link_pins"
+            @update:content="updateView({ field: 'link_pins', value: $event })"
+          />
+        </div>
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('pin_icons')" />
+          <RadioCheckboxField
+            :field_name="'all_pins_icon'"
+            :input_type="'radio'"
+            :content="view.all_pins_icon || 'circle'"
+            :path="view.$path"
+            :options="icon_options"
+            :can_edit="true"
+          />
+        </div>
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('map_baselayer')" />
+          <SelectField2
+            :value="view.map_baselayer || 'OSM'"
+            :options="map_baselayer_options"
+            :can_edit="true"
+            :hide_validation="false"
+            @update="updateView({ field: 'map_baselayer', value: $event })"
+          />
+        </div>
+      </DetailsPane>
     </div>
   </div>
 </template>
@@ -59,6 +62,10 @@ export default {
         {
           key: "",
           label: this.$t("circle"),
+        },
+        {
+          key: "icon",
+          label: this.$t("icon"),
         },
         {
           key: "media_preview",
@@ -87,6 +94,7 @@ export default {
         pins_color: "Couleur des épingles",
         link_pins: "Relier les épingles",
         pin_icons: "Apparence des épingles",
+        icon: "Icône",
         media_preview: "Image sur la carte",
         remove_layer: "Supprimer ce calque et son contenu",
         OSM: "OpenStreetMap",
@@ -127,9 +135,10 @@ export default {
   background: white;
   pointer-events: auto;
 
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   // border: 4px solid var(--c-bleuvert);
   // border-bottom: none;
+  overflow: hidden;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }

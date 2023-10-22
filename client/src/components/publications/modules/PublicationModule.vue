@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="_publicationModule"
-    :data-type="module_type"
-    :data-activeonmap="is_active_on_map"
-  >
+  <div class="_publicationModule" :data-type="module_type">
     <!-- @mouseleave.self="show_advanced_menu = false" -->
     <transition name="fade_fast" mode="out-in">
       <div
@@ -227,8 +223,15 @@
         :style="`--pin-color: ${pin_options.color}`"
         @click.stop="showModuleOnMap"
       >
-        <b-icon icon="pin-map-fill" />
-        {{ pin_options.index }}
+        <img
+          v-if="pin_options.pin_preview === 'icon'"
+          :src="pin_options.pin_preview_src"
+        />
+        <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
+        <!-- <b-icon icon="pin-map-fill" /> -->
+        <!-- <span class="_index">
+          {{ pin_options.index }}
+        </span> -->
       </button>
     </div>
 
@@ -359,7 +362,7 @@
       <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>
 
-    <div class="_selectorIndicator" v-if="edit_mode" />
+    <div class="_selectorIndicator" v-if="edit_mode || is_active_on_map" />
   </div>
 </template>
 <script>
@@ -594,11 +597,12 @@ export default {
       this.$emit("update:module_being_edited", undefined);
     },
     scrollToModule() {
-      this.$el.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
+      if (this.$el)
+        this.$el.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
     },
     changeModuleType(event) {
       // const module_types = ["mosaic", "carousel", "files"];
@@ -678,9 +682,9 @@ export default {
       }
     }
   }
-  &[data-activeonmap] {
-    background-color: var(--active-color);
-  }
+  // &[data-activeonmap] {
+  //   background-color: var(--active-color);
+  // }
   ._content {
     width: calc(var(--module-width) * 1%);
     margin-left: calc(var(--module-margin-left) * 1%);
@@ -873,6 +877,15 @@ export default {
 }
 
 ._pinButton {
-  background: var(--pin-color);
+  background: transparent;
+  appearance: none;
+  background: transparent;
+
+  img {
+    // background: var(--pin-color);
+  }
+
+  ._index {
+  }
 }
 </style>

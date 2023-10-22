@@ -130,7 +130,6 @@ export default {
         // scrollto pin in view
         if (this.opened_pin_path) {
           const module_meta_filename = this.getFilename(this.opened_pin_path);
-          debugger;
           module_meta_filename;
           // this.$eventHub.$emit(`module.show.${module_meta_filename}`);
         }
@@ -185,24 +184,54 @@ export default {
           const pin_label =
             pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
 
+          const pin_color = _view.section_color || this.default_view_color;
+
           let pin_preview = "circle";
+          let pin_preview_src;
           if (_view.all_pins_icon === "media_preview") {
             const thumb = this.getFirstThumbURLForMedia({
               file: this.firstMedia(_module),
               resolution: 50,
             });
-            if (thumb) pin_preview = thumb;
+            if (thumb) {
+              pin_preview = "media_preview";
+              pin_preview_src = thumb;
+            }
+          } else if (_view.all_pins_icon === "icon") {
+            // pin_preview = this.$root.publicPath + "maps/icon.png";
+            pin_preview = "icon";
+            // pin_preview_src = this.$root.publicPath + "maps/pin.svg";
+            // pin_preview_src =
+            //   "data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><path d='m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z' fill='var(--pin-color)' stroke='#000' stroke-width='4px' /></svg>";
+            // pin_preview_src =
+            //   "data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='0' x2='200' y2='200' style='stroke:rgb(255,0,0);stroke-width:2'/></svg>";
+
+            const svg = `
+              <svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
+                <path
+                  d="m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z"
+                  fill="${pin_color}" 
+                  stroke="#000" 
+                  stroke-width="4px"
+                />
+                <text x="50" y="55" fill="#000000" text-anchor="middle" font-size="48px" font-weight="500" font-family="Fira Mono">
+                  ${index + 1}  
+                </text>
+              </svg>`;
+            const b64 = btoa(unescape(encodeURIComponent(svg)));
+            pin_preview_src = `data:image/svg+xml;base64, ${b64}`;
           }
           acc.push({
             longitude: _module.location.longitude,
             latitude: _module.location.latitude,
             label: pin_label,
             index: index + 1,
-            color: _view.section_color || this.default_view_color,
             path: _module.$path,
             belongs_to_view: _view.$path,
             link_pins: _view.link_pins || false,
+            color: pin_color,
             pin_preview,
+            pin_preview_src,
             file: this.firstMedia(_module),
             module: _module,
           });

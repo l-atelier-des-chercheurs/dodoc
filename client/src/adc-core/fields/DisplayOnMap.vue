@@ -145,8 +145,8 @@ export default {
         module: undefined,
       },
 
-      // pin_features: undefined,
-      // line_features: undefined,
+      pin_features: undefined,
+      line_features: undefined,
       mouse_feature: undefined,
 
       current_zoom: undefined,
@@ -184,38 +184,34 @@ export default {
   watch: {
     pins: {
       handler() {
-        this.startMap({ keep_loc_and_zoom: true });
+        const new_pin_features = this.createPointFeaturesFromPins();
+        if (
+          JSON.stringify(new_pin_features) !== JSON.stringify(this.pin_features)
+        )
+          this.startMap({ keep_loc_and_zoom: true });
       },
       deep: true,
     },
-    lines: {
-      handler() {
-        this.startMap({ keep_loc_and_zoom: true });
-      },
-      deep: true,
-    },
+    // lines: {
+    //   handler() {
+    //     const new_line_features = this.createLineFeaturesFromLines();
+    //     if (
+    //       JSON.stringify(new_line_features) !==
+    //       JSON.stringify(this.line_features)
+    //     )
+    //       this.startMap({ keep_loc_and_zoom: true });
+    //   },
+    //   deep: true,
+    // },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
-    },
-    start_coords() {
-      this.startMap();
-    },
-    start_zoom() {
-      this.startMap();
     },
     opened_pin_path() {
       if (this.opened_pin_path) this.openFeature(this.opened_pin_path);
       else this.closePopup();
     },
   },
-  computed: {
-    line_features() {
-      return this.createLineFeaturesFromLines();
-    },
-    pin_features() {
-      return this.createPointFeaturesFromPins();
-    },
-  },
+  computed: {},
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom =
@@ -265,6 +261,7 @@ export default {
         view: this.view,
       });
 
+      this.line_features = this.createLineFeaturesFromLines();
       this.map.addLayer(
         new olVectorLayer({
           source: new olSourceVector({
@@ -275,6 +272,7 @@ export default {
         })
       );
 
+      this.pin_features = this.createPointFeaturesFromPins();
       this.map.addLayer(
         new olVectorLayer({
           source: new olSourceVector({
@@ -286,6 +284,8 @@ export default {
               feature,
               resolution,
             }),
+          // hides pins on map, not ideal
+          // declutter: true,
         })
       );
 
@@ -508,9 +508,11 @@ export default {
           };
           feature_cont.path = pin.path;
           if (pin.color) feature_cont.fill_color = pin.color;
-          if (pin.module) feature_cont.module = pin.module;
+          // if (pin.module) feature_cont.module = pin.module;
           if (pin.label) feature_cont.label = pin.label;
           if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
+          if (pin.pin_preview_src)
+            feature_cont.pin_preview_src = pin.pin_preview_src;
           features.push(new olFeature(feature_cont));
         });
       }
@@ -549,14 +551,14 @@ export default {
         const _fs = {
           italic: "normal",
           weight: "500",
-          size: "12.6px",
+          size: "14px",
           height: 1.2,
           family: "Fira Sans",
         };
 
         style.text = new olText({
           fill: new olFill({ color: "#000" }),
-          stroke: new olStroke({ color: "#fff" }),
+          // stroke: new olStroke({ color: "#fff" }),
           // font: "bold 48px serif",
           font:
             _fs.italic +
@@ -569,8 +571,9 @@ export default {
             " " +
             _fs.family,
           text: "" + feature.get("label"),
-          textAlign: "start",
-          offsetX: 15,
+          textAlign: "center",
+          textBaseline: "bottom",
+          offsetY: -9,
         });
       }
       if (feature?.get("fill_color")) {
@@ -578,19 +581,30 @@ export default {
       }
 
       const pin_preview = feature.get("pin_preview");
+      const pin_preview_src = feature.get("pin_preview_src");
+
       if (!pin_preview || pin_preview === "circle") {
         style.image = new olCircleStyle({
           radius: 8,
           fill: new olFill({ color: fill_color }),
           stroke: new olStroke({ color: "#232e4a", width: 1 }),
         });
-      } else {
+      } else if (pin_preview === "media_preview") {
         style.image = new olIcon({
-          anchor: [0.5, 0.5],
+          anchor: [0.5, 1],
           anchorXUnits: "fraction",
           anchorYUnits: "fraction",
-          // src: this.$root.publicPath + "maps/icon.png",
-          src: pin_preview,
+          src: pin_preview_src,
+        });
+      } else if (pin_preview === "icon") {
+        style.text = undefined;
+        style.image = new olIcon({
+          anchor: [0.5, 1],
+          anchorXUnits: "fraction",
+          anchorYUnits: "fraction",
+          // do not use: color is injected directly in the svg
+          // color: fill_color,
+          src: pin_preview_src,
         });
       }
 
@@ -626,12 +640,13 @@ export default {
     },
     openFeature(path) {
       const feature = this.pin_features.find((f) => f.get("path") === path);
+      const pin = this.pins.find((p) => p.$path === path);
       if (!feature) return "no_feature_found";
 
       this.resetClickedLocation();
 
       const coordinates = feature.getGeometry().getCoordinates();
-      this.clicked_location.module = feature.get("module") || undefined;
+      this.clicked_location.module = pin?.module;
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];

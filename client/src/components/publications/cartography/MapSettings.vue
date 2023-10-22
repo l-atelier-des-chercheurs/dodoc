@@ -13,31 +13,6 @@
     </div>
 
     <div class="u-spacingBottom">
-      <!-- <template v-if="map_mode === 'gps'">
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('map_baselayer')" />
-          <SelectField2
-            :value="publication.map_baselayer || 'OSM'"
-            :options="map_baselayer_options"
-            :can_edit="true"
-            :hide_validation="false"
-            @update="updateBaselayer"
-          />
-        </div>
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('default_map_framing')" />
-          <div class="u-instructions">
-            {{ $t("default_map_framing_instr") }}
-          </div>
-          <PositionPicker
-            :start_coords="publication.map_initial_location || false"
-            :start_zoom="publication.map_initial_zoom || false"
-            :map_baselayer="publication.map_baselayer"
-            :edit_mode="true"
-            @update="updateBasePosition"
-          />
-        </div>
-      </template> -->
       <template v-if="map_mode === 'image'">
         <DLabel :str="$t('image_basemap')" />
         <SingleBaseMediaPicker
