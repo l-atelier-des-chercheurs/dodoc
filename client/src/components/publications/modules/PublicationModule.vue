@@ -881,7 +881,14 @@ export default {
   top: 0;
   left: 0;
   z-index: 1;
-  padding: calc(var(--spacing) / 2);
+  padding: 0;
+  margin: calc(var(--spacing) / 4);
+
+  ._publicationModule[data-type="text"] & {
+    position: relative;
+    float: left;
+    margin-top: calc(var(--spacing) / 2);
+  }
 
   img {
     // background: var(--pin-color);
