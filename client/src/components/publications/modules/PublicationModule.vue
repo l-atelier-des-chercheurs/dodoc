@@ -216,24 +216,23 @@
       </div>
     </transition>
 
-    <div v-if="is_associated_to_map && has_coordinates">
-      <button
-        type="button"
-        class="u-button _pinButton"
-        :style="`--pin-color: ${pin_options.color}`"
-        @click.stop="showModuleOnMap"
-      >
-        <img
-          v-if="pin_options.pin_preview === 'icon'"
-          :src="pin_options.pin_preview_src"
-        />
-        <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
-        <!-- <b-icon icon="pin-map-fill" /> -->
-        <!-- <span class="_index">
+    <button
+      type="button"
+      class="u-button _pinButton"
+      :style="`--pin-color: ${pin_options.color}`"
+      v-if="is_associated_to_map && has_coordinates"
+      @click.stop="showModuleOnMap"
+    >
+      <img
+        v-if="pin_options.pin_preview === 'icon'"
+        :src="pin_options.pin_preview_src"
+      />
+      <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
+      <!-- <b-icon icon="pin-map-fill" /> -->
+      <!-- <span class="_index">
           {{ pin_options.index }}
         </span> -->
-      </button>
-    </div>
+    </button>
 
     <div class="_content" :style="media_styles">
       <div class="_floatingEditBtn" v-if="can_edit">
@@ -877,9 +876,12 @@ export default {
 }
 
 ._pinButton {
+  position: absolute;
   background: transparent;
-  appearance: none;
-  background: transparent;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  padding: calc(var(--spacing) / 2);
 
   img {
     // background: var(--pin-color);

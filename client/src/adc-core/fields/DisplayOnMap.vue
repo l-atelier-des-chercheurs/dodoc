@@ -602,7 +602,8 @@ export default {
           anchor: [0.5, 1],
           anchorXUnits: "fraction",
           anchorYUnits: "fraction",
-          // do not use: color is injected directly in the svg
+          size: [30, 30],
+          // do not use color: it is injected directly in the svg
           // color: fill_color,
           src: pin_preview_src,
         });
