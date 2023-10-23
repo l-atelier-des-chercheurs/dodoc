@@ -202,6 +202,7 @@ export default {
               </svg>`;
           const b64 = btoa(unescape(encodeURIComponent(svg)));
           let pin_preview_src = `data:image/svg+xml;base64, ${b64}`;
+          let first_media_thumb = undefined;
 
           if (_view.all_pins_icon === "media_preview") {
             const thumb = this.getFirstThumbURLForMedia({
@@ -210,7 +211,7 @@ export default {
             });
             if (thumb) {
               pin_preview = "media_preview";
-              pin_preview_src = thumb;
+              first_media_thumb = thumb;
             }
           }
 
@@ -225,6 +226,7 @@ export default {
             color: pin_color,
             pin_preview,
             pin_preview_src,
+            first_media_thumb,
             file: this.firstMedia(_module),
             module: _module,
           });

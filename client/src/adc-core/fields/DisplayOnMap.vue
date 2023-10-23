@@ -516,6 +516,8 @@ export default {
             if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
             if (pin.pin_preview_src)
               feature_cont.pin_preview_src = pin.pin_preview_src;
+            if (pin.first_media_thumb)
+              feature_cont.first_media_thumb = pin.first_media_thumb;
             features.push(new olFeature(feature_cont));
           });
       }
@@ -587,20 +589,7 @@ export default {
       const pin_preview = feature.get("pin_preview");
       const pin_preview_src = feature.get("pin_preview_src");
 
-      if (!pin_preview || pin_preview === "circle") {
-        style.image = new olCircleStyle({
-          radius: 8,
-          fill: new olFill({ color: fill_color }),
-          stroke: new olStroke({ color: "#232e4a", width: 1 }),
-        });
-      } else if (pin_preview === "media_preview") {
-        style.image = new olIcon({
-          anchor: [0.5, 1],
-          anchorXUnits: "fraction",
-          anchorYUnits: "fraction",
-          src: pin_preview_src,
-        });
-      } else if (pin_preview === "icon") {
+      if (pin_preview === "icon") {
         style.text = undefined;
         style.image = new olIcon({
           anchor: [0.5, 1],
@@ -610,6 +599,20 @@ export default {
           // do not use color: it is injected directly in the svg
           // color: fill_color,
           src: pin_preview_src,
+        });
+      } else if (pin_preview === "media_preview") {
+        const first_media_thumb = feature.get("first_media_thumb");
+        style.image = new olIcon({
+          anchor: [0.5, 1],
+          anchorXUnits: "fraction",
+          anchorYUnits: "fraction",
+          src: first_media_thumb,
+        });
+      } else {
+        style.image = new olCircleStyle({
+          radius: 8,
+          fill: new olFill({ color: fill_color }),
+          stroke: new olStroke({ color: "#232e4a", width: 1 }),
         });
       }
 

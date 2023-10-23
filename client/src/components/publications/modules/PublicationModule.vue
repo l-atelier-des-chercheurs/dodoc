@@ -236,10 +236,8 @@
       v-if="is_associated_to_map && has_coordinates"
       @click.stop="showModuleOnMap"
     >
-      <img
-        v-if="pin_options.pin_preview === 'icon'"
-        :src="pin_options.pin_preview_src"
-      />
+      <!-- v-if="pin_options.pin_preview === 'icon'" -->
+      <img :src="pin_options.pin_preview_src" />
       <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
       <!-- <b-icon icon="pin-map-fill" /> -->
       <!-- <span class="_index">
