@@ -64,8 +64,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationSettings {
-  position: relative;
-  z-index: 1000;
+  &::part(base) {
+    z-index: 50;
+  }
+
   // position: absolute;
   // top: 0;
   // right: 0;
