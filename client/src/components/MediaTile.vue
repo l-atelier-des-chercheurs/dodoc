@@ -337,6 +337,9 @@ export default {
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
   }
+  ._mediaTile[data-tilemode="medium"] & {
+    bottom: 1.5rem;
+  }
 }
 
 ._caption {
