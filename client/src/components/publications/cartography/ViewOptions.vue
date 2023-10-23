@@ -29,7 +29,7 @@
           <RadioCheckboxField
             :field_name="'all_pins_icon'"
             :input_type="'radio'"
-            :content="view.all_pins_icon || 'circle'"
+            :content="view.all_pins_icon || ''"
             :path="view.$path"
             :options="icon_options"
             :can_edit="true"
@@ -59,12 +59,12 @@ export default {
   data() {
     return {
       icon_options: [
+        // {
+        //   key: "",
+        //   label: this.$t("circle"),
+        // },
         {
           key: "",
-          label: this.$t("circle"),
-        },
-        {
-          key: "icon",
           label: this.$t("icon"),
         },
         {
