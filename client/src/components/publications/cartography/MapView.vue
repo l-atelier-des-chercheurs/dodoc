@@ -188,18 +188,7 @@ export default {
           const pin_color = _view.section_color || this.default_view_color;
 
           let pin_preview = "icon";
-          let pin_preview_src;
-          if (_view.all_pins_icon === "media_preview") {
-            const thumb = this.getFirstThumbURLForMedia({
-              file: this.firstMedia(_module),
-              resolution: 50,
-            });
-            if (thumb) {
-              pin_preview = "media_preview";
-              pin_preview_src = thumb;
-            }
-          } else {
-            const svg = `
+          const svg = `
               <svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
                 <path
                   d="m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z"
@@ -211,9 +200,20 @@ export default {
                   ${index + 1}  
                 </text>
               </svg>`;
-            const b64 = btoa(unescape(encodeURIComponent(svg)));
-            pin_preview_src = `data:image/svg+xml;base64, ${b64}`;
+          const b64 = btoa(unescape(encodeURIComponent(svg)));
+          let pin_preview_src = `data:image/svg+xml;base64, ${b64}`;
+
+          if (_view.all_pins_icon === "media_preview") {
+            const thumb = this.getFirstThumbURLForMedia({
+              file: this.firstMedia(_module),
+              resolution: 50,
+            });
+            if (thumb) {
+              pin_preview = "media_preview";
+              pin_preview_src = thumb;
+            }
           }
+
           acc.push({
             longitude: _module.location.longitude,
             latitude: _module.location.latitude,
