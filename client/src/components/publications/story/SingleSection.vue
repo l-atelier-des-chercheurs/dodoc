@@ -8,7 +8,28 @@
             can_edit || section.section_title || section.section_description
           "
         >
-          <SectionTitle class="_text" :section="section" :can_edit="can_edit" />
+          <div class="_text">
+            <TitleField
+              :field_name="'section_title'"
+              :content="section.section_title || $t('untitled')"
+              :path="section.$path"
+              :required="true"
+              :maxlength="80"
+              :tag="'h2'"
+              :can_edit="can_edit"
+            />
+            <!-- legacy field – only existing description can be edited -->
+            <TitleField
+              v-if="section.section_description"
+              :field_name="'section_description'"
+              :label="can_edit ? $t('description') : ''"
+              :content="section.section_description"
+              :path="section.$path"
+              :maxlength="1280"
+              :input_type="'markdown'"
+              :can_edit="can_edit"
+            />
+          </div>
           <div class="_buttons" v-if="can_edit">
             <RemoveMenu :remove_text="$t('remove')" @remove="removeSection" />
             <div>
@@ -86,7 +107,6 @@
   </div>
 </template>
 <script>
-import SectionTitle from "@/components/publications/story/SectionTitle.vue";
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
@@ -97,7 +117,6 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    SectionTitle,
     ModuleCreator,
     PublicationModule,
   },
@@ -147,9 +166,11 @@ export default {
       this.toggleNewModuleEdit({ meta_filename });
     },
     toggleNewModuleEdit({ meta_filename }) {
+      const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
-      }, 50);
+        this.$eventHub.$emit("publication.map.openPin", pin_path);
+      }, 150);
     },
     async moveModuleTo({ path, new_position }) {
       await this.moveModuleTo2({
@@ -265,7 +286,7 @@ export default {
 ._topbar {
   display: flex;
   flex-flow: row wrap;
-  align-items: flex-start;
+  align-items: baseline;
   justify-content: space-between;
 
   margin: 0;

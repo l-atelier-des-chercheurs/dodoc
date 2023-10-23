@@ -30,11 +30,12 @@ export default {
   watch: {},
   computed: {
     opened_view_meta_filename() {
-      return this.$route.query?.view || false;
+      return this.$route.query?.view || undefined;
     },
   },
   methods: {
     toggleView(view_meta) {
+      if (view_meta === this.opened_view_meta_filename) view_meta = false;
       this.updatePageQuery({ prop: "view", val: view_meta });
     },
   },

@@ -1,6 +1,6 @@
 <template>
-  <div class="_viewSettings">
-    <div class="_viewSettings--content">
+  <div class="_viewOptions">
+    <div class="_viewOptions--content">
       <!-- <div class="u-spacingBottom">
         <strong>
           {{ view.section_title }}
@@ -29,7 +29,7 @@
           <RadioCheckboxField
             :field_name="'all_pins_icon'"
             :input_type="'radio'"
-            :content="view.all_pins_icon || 'circle'"
+            :content="view.all_pins_icon || ''"
             :path="view.$path"
             :options="icon_options"
             :can_edit="true"
@@ -59,12 +59,12 @@ export default {
   data() {
     return {
       icon_options: [
+        // {
+        //   key: "",
+        //   label: this.$t("circle"),
+        // },
         {
           key: "",
-          label: this.$t("circle"),
-        },
-        {
-          key: "icon",
           label: this.$t("icon"),
         },
         {
@@ -91,6 +91,8 @@ export default {
   i18n: {
     messages: {
       fr: {
+        map_baselayer: "Fond de carte",
+
         pins_color: "Couleur des épingles",
         link_pins: "Relier les épingles",
         pin_icons: "Apparence des épingles",
@@ -121,25 +123,24 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._viewSettings {
+._viewOptions {
   position: absolute;
+  top: calc(var(--spacing) / 1);
+  right: calc(var(--spacing) / 1);
   margin: 0 auto;
   width: 100%;
-  bottom: 0;
 
   pointer-events: none;
 }
-._viewSettings--content {
-  width: 320px;
+._viewOptions--content {
+  width: 220px;
   margin: 0 auto;
   background: white;
   pointer-events: auto;
 
-  // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  // border: 4px solid var(--c-bleuvert);
-  // border-bottom: none;
+  margin: calc(var(--spacing) / 2);
+  margin-left: auto;
+
   overflow: hidden;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
 }
 </style>

@@ -294,9 +294,6 @@ export default {
           modules_list,
         },
       });
-      await this.$api.deleteItem({
-        path,
-      });
     },
 
     getMediasAlreadyPresentInPublication({

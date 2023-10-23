@@ -52,6 +52,7 @@
         <ViewPane
           :publication="publication"
           :opened_view_meta_filename="opened_view_meta_filename"
+          :default_view_color="default_view_color"
           :opened_pin_path="opened_pin_path"
           :pins="pins"
           :can_edit="can_edit"
@@ -186,7 +187,7 @@ export default {
 
           const pin_color = _view.section_color || this.default_view_color;
 
-          let pin_preview = "circle";
+          let pin_preview = "icon";
           let pin_preview_src;
           if (_view.all_pins_icon === "media_preview") {
             const thumb = this.getFirstThumbURLForMedia({
@@ -197,15 +198,7 @@ export default {
               pin_preview = "media_preview";
               pin_preview_src = thumb;
             }
-          } else if (_view.all_pins_icon === "icon") {
-            // pin_preview = this.$root.publicPath + "maps/icon.png";
-            pin_preview = "icon";
-            // pin_preview_src = this.$root.publicPath + "maps/pin.svg";
-            // pin_preview_src =
-            //   "data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><path d='m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z' fill='var(--pin-color)' stroke='#000' stroke-width='4px' /></svg>";
-            // pin_preview_src =
-            //   "data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='0' x2='200' y2='200' style='stroke:rgb(255,0,0);stroke-width:2'/></svg>";
-
+          } else {
             const svg = `
               <svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
                 <path
@@ -280,9 +273,11 @@ export default {
       const meta_filename = meta_filenames.at(-1);
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
-        this.opened_pin_path = pin_path;
+        // this.opened_pin_path = pin_path;
+        // this.$eventHub.$emit(`module.show.${meta_filename}`);
+        this.$eventHub.$emit("publication.map.openPin", pin_path);
+        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);
-      // todo scroll to last meta_filename
     },
   },
 };

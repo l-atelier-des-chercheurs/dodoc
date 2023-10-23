@@ -113,9 +113,11 @@ export default {
 
 ._navbtn {
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) / 4);
+
+  max-width: 30ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 
   background: white;
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);

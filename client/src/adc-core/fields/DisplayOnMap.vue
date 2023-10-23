@@ -500,22 +500,26 @@ export default {
     createPointFeaturesFromPins() {
       let features = [];
       if (this.pins && this.pins.length > 0) {
-        this.pins.map((pin) => {
-          if (!pin || !pin.longitude || !pin.latitude) return;
+        this.pins
+          .slice(0)
+          .reverse()
+          .map((pin) => {
+            if (!pin || !pin.longitude || !pin.latitude) return;
 
-          let feature_cont = {
-            geometry: new olPoint([pin.longitude, pin.latitude]),
-          };
-          feature_cont.path = pin.path;
-          if (pin.color) feature_cont.fill_color = pin.color;
-          // if (pin.module) feature_cont.module = pin.module;
-          if (pin.label) feature_cont.label = pin.label;
-          if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
-          if (pin.pin_preview_src)
-            feature_cont.pin_preview_src = pin.pin_preview_src;
-          features.push(new olFeature(feature_cont));
-        });
+            let feature_cont = {
+              geometry: new olPoint([pin.longitude, pin.latitude]),
+            };
+            feature_cont.path = pin.path;
+            if (pin.color) feature_cont.fill_color = pin.color;
+            // if (pin.module) feature_cont.module = pin.module;
+            if (pin.label) feature_cont.label = pin.label;
+            if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
+            if (pin.pin_preview_src)
+              feature_cont.pin_preview_src = pin.pin_preview_src;
+            features.push(new olFeature(feature_cont));
+          });
       }
+      // return features;
       return features;
     },
     createLineFeaturesFromLines() {
@@ -707,6 +711,21 @@ export default {
       font-style: italic;
       font-size: var(--sl-font-size-small);
       color: inherit;
+    }
+
+    .ol-full-screen {
+      top: auto;
+      bottom: calc(var(--spacing) * 3);
+      right: auto;
+      left: calc(var(--spacing) * 1);
+    }
+    .ol-scale-line {
+      bottom: calc(var(--spacing) / 1);
+      left: calc(var(--spacing) / 1);
+      background: white;
+      padding: 0;
+      border-radius: 0;
+      margin: 0;
     }
   }
 }
