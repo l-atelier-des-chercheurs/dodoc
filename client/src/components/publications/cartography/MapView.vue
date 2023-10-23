@@ -1,15 +1,6 @@
 <template>
   <div class="_mapView">
     <splitpanes>
-      <!-- <pane min-size="5">
-        <LayersPane
-          :publication="publication"
-          :layers="layers"
-          :opened_layer_path.sync="opened_layer_path"
-          :opened_pin_path.sync="opened_pin_path"
-          :can_edit="can_edit"
-        />
-      </pane> -->
       <pane min-size="5">
         <DisplayOnMap
           :key="opened_view_meta_filename"
@@ -64,7 +55,6 @@
 </template>
 <script>
 import { Splitpanes, Pane } from "splitpanes";
-// import LayersPane from "@/components/publications/cartography/LayersPane.vue";
 import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
 import ViewPane from "@/components/publications/cartography/ViewPane.vue";
 import ViewOptions from "@/components/publications/cartography/ViewOptions.vue";
@@ -81,7 +71,6 @@ export default {
     Pane,
 
     DisplayOnMap,
-    // LayersPane,
     ViewPane,
     ViewOptions,
     ModuleCreator,
