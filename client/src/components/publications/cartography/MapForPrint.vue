@@ -30,7 +30,7 @@ export default {
   watch: {},
   computed: {
     opened_view_meta_filename() {
-      return this.$route.query?.view || false;
+      return this.$route.query?.view || undefined;
     },
   },
   methods: {
