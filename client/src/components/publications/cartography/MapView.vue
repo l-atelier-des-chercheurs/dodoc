@@ -12,9 +12,8 @@
       </pane> -->
       <pane min-size="5">
         <DisplayOnMap
+          :key="opened_view_meta_filename"
           class="_mapContainer"
-          :start_coords="start_coords"
-          :start_zoom="start_zoom"
           :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
           :pins="pins"
           :lines="lines"
@@ -56,7 +55,7 @@
           :opened_pin_path="opened_pin_path"
           :pins="pins"
           :can_edit="can_edit"
-          @toggleView="$emit('toggleView', $event)"
+          @toggleView="toggleView"
           @togglePin="opened_pin_path = $event"
         />
       </pane>
@@ -111,6 +110,9 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
+    opened_view_meta_filename() {
+      this.opened_pin_path = undefined;
+    },
     opened_pin_path() {
       // open corresponding view when clicking on pin
       if (this.opened_pin_path) {
@@ -149,12 +151,6 @@ export default {
         publication: this.publication,
         group: "sections_list",
       });
-    },
-    start_coords() {
-      return this.publication.map_initial_location || false;
-    },
-    start_zoom() {
-      return this.publication.map_initial_zoom || 10;
     },
     opened_view() {
       if (!this.opened_view_meta_filename) return false;
@@ -264,6 +260,9 @@ export default {
     newPositionClicked({ longitude, latitude }) {
       this.latest_click.longitude = longitude;
       this.latest_click.latitude = latitude;
+    },
+    toggleView(view_meta_filename) {
+      this.$emit("toggleView", view_meta_filename);
     },
     async addModules({ meta_filenames }) {
       await this.insertModuleMetaFilenamesToList2({
