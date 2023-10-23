@@ -168,6 +168,7 @@ export default {
     toggleNewModuleEdit({ meta_filename }) {
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
+        this.$eventHub.$emit(`module.show.${meta_filename}`);
       }, 50);
     },
     async moveModuleTo({ path, new_position }) {
