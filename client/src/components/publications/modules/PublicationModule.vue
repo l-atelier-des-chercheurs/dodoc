@@ -144,10 +144,13 @@
 
               <div class="_buttonRow">
                 <button type="button" class="u-button" @click="duplicateModule">
-                  {{ $t("duplicate") }}
+                  <sl-icon name="file-plus" />
+                  <!-- {{ $t("duplicate") }} -->
                 </button>
                 <button type="button" class="u-button" @click="removeModule">
-                  {{ $t("remove") }}
+                  <sl-icon name="trash3" />
+
+                  <!-- {{ $t("remove") }} -->
                 </button>
               </div>
             </div>
@@ -168,28 +171,36 @@
                 </div>
               </div>
 
-              <button
-                type="button"
-                class="u-button u-button_red"
-                @click.stop="repickLocation"
-              >
-                <template v-if="!has_coordinates">
-                  <b-icon icon="pin-map" />
-                  {{ $t("place_on_map") }}
-                </template>
-                <template v-else>
-                  <b-icon icon="pin-map-fill" />
-                  {{ $t("change_location") }}
-                </template>
-              </button>
-              <button
-                v-if="has_coordinates"
-                type="button"
-                class="u-buttonLink"
-                @click="eraseCoords"
-              >
-                {{ $t("erase") }}
-              </button>
+              <div class="u-instructions" v-if="has_coordinates">
+                {{ $t("placed_on_map") }}
+              </div>
+
+              <div class="">
+                <button
+                  type="button"
+                  class="u-button u-button_red"
+                  @click.stop="repickLocation"
+                >
+                  <template v-if="!has_coordinates">
+                    <b-icon icon="pin-map" />
+                    {{ $t("place_on_map") }}
+                  </template>
+                  <template v-else>
+                    <b-icon icon="pin-map-fill" />
+                    {{ $t("change_location") }}
+                  </template>
+                </button>
+              </div>
+              <div class="">
+                <button
+                  v-if="has_coordinates"
+                  type="button"
+                  class="u-buttonLink"
+                  @click="eraseCoords"
+                >
+                  {{ $t("erase") }}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -411,6 +422,7 @@ export default {
         position_on_map: "Position sur la carte",
         place_on_map: "Positionner sur la carte",
         show_on_map: "Afficher sur la carte",
+        placed_on_map: "Positionné sur la carte",
         change_location: "Changer la position",
         remove_pin: "Supprimer cette épingle",
         cancel_position: "Annuler la position",
@@ -746,10 +758,10 @@ export default {
     box-shadow: var(--panel-shadows);
 
     border-radius: 2px;
-    gap: calc(var(--spacing) / 4);
+    gap: calc(var(--spacing) / 2);
 
     display: flex;
-    align-items: stretch;
+    align-items: center;
   }
 }
 
@@ -815,12 +827,11 @@ export default {
   flex-flow: row wrap;
   align-items: center;
 
-  gap: calc(var(--spacing) / 4);
-
-  > ._saveBtn {
-    flex: 1;
-    text-align: right;
-  }
+  gap: calc(var(--spacing) / 2);
+}
+._saveBtn {
+  flex: 1;
+  text-align: right;
 }
 
 ._buttonRow {
@@ -865,9 +876,9 @@ export default {
 }
 
 ._carto {
-  display: flex;
-  justify-content: center;
-  gap: calc(var(--spacing) / 4);
+  // display: flex;
+  // justify-content: center;
+  // gap: calc(var(--spacing) / 4);
   // background: white;
 }
 
