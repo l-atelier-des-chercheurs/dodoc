@@ -22,7 +22,7 @@
           :style="
             'color: ' + (slotProps.item.section_color || default_view_color)
           "
-          v-text="'⬤'"
+          v-text="'◉'"
         />
         <span v-if="slotProps.item.section_title">
           {{ slotProps.item.section_title }}
