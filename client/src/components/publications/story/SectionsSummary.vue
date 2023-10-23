@@ -60,12 +60,20 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.sections.length > 0 && !this.opened_section_meta_filename) {
-      const section_path = this.sections[0].$path;
-      this.openSection(section_path);
-    } else if (this.sections.length === 0) {
-      this.createSection();
+    if (!this.is_associated_to_map) {
+      if (this.sections.length > 0 && !this.opened_section_meta_filename) {
+        // if there is one or more sections and none opened, open first one
+        const section_path = this.sections[0].$path;
+        this.openSection(section_path);
+      }
     }
+
+    if (this.is_associated_to_map && !this.opened_section_meta_filename) {
+      this.openSummary();
+    }
+
+    if (this.can_edit && this.sections.length === 0) this.createSection();
+
     this.$eventHub.$on(`sections.open_summary`, this.openSummary);
   },
   beforeDestroy() {
