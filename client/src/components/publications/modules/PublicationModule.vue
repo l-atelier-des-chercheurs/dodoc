@@ -396,7 +396,6 @@ export default {
       default: false,
     },
   },
-
   data() {
     return {
       show_advanced_menu: false,

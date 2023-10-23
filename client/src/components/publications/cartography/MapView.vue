@@ -52,6 +52,7 @@
         <ViewPane
           :publication="publication"
           :opened_view_meta_filename="opened_view_meta_filename"
+          :default_view_color="default_view_color"
           :opened_pin_path="opened_pin_path"
           :pins="pins"
           :can_edit="can_edit"

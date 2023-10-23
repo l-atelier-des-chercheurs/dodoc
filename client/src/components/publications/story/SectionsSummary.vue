@@ -16,6 +16,14 @@
         @openItem="openSection"
         v-slot="slotProps"
       >
+        <span
+          v-if="is_associated_to_map"
+          class="_colorInd"
+          :style="
+            'color: ' + (slotProps.item.section_color || default_view_color)
+          "
+          v-text="'⬤'"
+        />
         <span v-if="slotProps.item.section_title">
           {{ slotProps.item.section_title }}
         </span>
@@ -42,6 +50,11 @@ export default {
     can_edit: Boolean,
   },
   components: {},
+  inject: {
+    $getMapOptions: {
+      default: false,
+    },
+  },
   data() {
     return {};
   },
@@ -60,6 +73,12 @@ export default {
   },
   watch: {},
   computed: {
+    is_associated_to_map() {
+      return this.$getMapOptions;
+    },
+    default_view_color() {
+      return this.$getMapOptions().default_view_color;
+    },
     new_section_title() {
       let idx = this.sections.length + 1;
       const makeTitle = (i) => this.$t("section") + " " + i;

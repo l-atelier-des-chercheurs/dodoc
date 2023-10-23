@@ -24,6 +24,7 @@ export default {
     publication: Object,
     pins: Array,
     opened_view_meta_filename: String,
+    default_view_color: String,
     opened_pin_path: String,
     can_edit: Boolean,
   },
@@ -43,6 +44,8 @@ export default {
             pin_preview_src,
           })
         ),
+        // default_view_color: "#FF00FF",
+        default_view_color: this.default_view_color,
       }),
     };
   },
