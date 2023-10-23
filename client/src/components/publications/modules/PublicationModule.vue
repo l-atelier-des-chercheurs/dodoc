@@ -233,6 +233,9 @@
       type="button"
       class="u-button _pinButton"
       :style="`--pin-color: ${pin_options.color}`"
+      :class="{
+        'is--active': is_active_on_map,
+      }"
       v-if="is_associated_to_map && has_coordinates"
       @click.stop="showModuleOnMap"
     >
@@ -372,7 +375,7 @@
       <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>
 
-    <div class="_selectorIndicator" v-if="edit_mode || is_active_on_map" />
+    <div class="_selectorIndicator" v-if="edit_mode" />
   </div>
 </template>
 <script>
@@ -887,7 +890,7 @@ export default {
   top: 0;
   left: 0;
   z-index: 1;
-  padding: 0;
+  margin: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4);
 
   ._publicationModule[data-type="text"] & {
@@ -895,6 +898,10 @@ export default {
     float: left;
     margin-top: calc(var(--spacing) / 4);
     margin-right: calc(var(--spacing) / 4);
+  }
+
+  &.is--active {
+    background: var(--c-bleuvert);
   }
 
   img {
