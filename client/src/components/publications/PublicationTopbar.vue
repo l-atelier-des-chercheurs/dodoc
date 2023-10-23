@@ -34,6 +34,14 @@
           :path="publication.$path"
           :can_edit="can_edit"
         /> -->
+
+    <StatusTag
+      :status="publication.$status || 'public'"
+      :status_options="['public', 'private']"
+      :path="publication.$path"
+      :can_edit="can_edit"
+    />
+
     <div class="_buttonRow">
       <div
         class=""
