@@ -104,25 +104,7 @@ export default {
       // gps or image
     },
   },
-  methods: {
-    async updateBasePosition({ location, zoom }) {
-      await this.updatePubli({
-        map_initial_location: location,
-        map_initial_zoom: zoom,
-      });
-    },
-    async updateBaselayer(new_val) {
-      await this.updatePubli({
-        map_baselayer: new_val,
-      });
-    },
-    async updatePubli(new_meta) {
-      await this.$api.updateMeta({
-        path: this.path,
-        new_meta,
-      });
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
