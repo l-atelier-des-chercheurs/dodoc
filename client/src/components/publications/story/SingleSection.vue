@@ -166,10 +166,11 @@ export default {
       this.toggleNewModuleEdit({ meta_filename });
     },
     toggleNewModuleEdit({ meta_filename }) {
+      const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
-        this.$eventHub.$emit(`module.show.${meta_filename}`);
-      }, 50);
+        this.$eventHub.$emit("publication.map.openPin", pin_path);
+      }, 150);
     },
     async moveModuleTo({ path, new_position }) {
       await this.moveModuleTo2({

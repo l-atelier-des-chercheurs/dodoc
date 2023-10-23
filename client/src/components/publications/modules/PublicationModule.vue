@@ -754,11 +754,12 @@ export default {
     padding: calc(var(--spacing) / 4);
     background: var(--active-color);
 
-    border: 2px solid var(--active-color);
+    // border: 2px solid var(--active-color);
     box-shadow: var(--panel-shadows);
 
-    border-radius: 2px;
+    border-radius: 4px;
     gap: calc(var(--spacing) / 2);
+    border: 2px solid white;
 
     display: flex;
     align-items: center;

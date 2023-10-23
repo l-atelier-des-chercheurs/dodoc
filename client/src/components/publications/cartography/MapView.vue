@@ -273,9 +273,11 @@ export default {
       const meta_filename = meta_filenames.at(-1);
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
-        this.opened_pin_path = pin_path;
+        // this.opened_pin_path = pin_path;
+        // this.$eventHub.$emit(`module.show.${meta_filename}`);
+        this.$eventHub.$emit("publication.map.openPin", pin_path);
+        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);
-      // todo scroll to last meta_filename
     },
   },
 };
