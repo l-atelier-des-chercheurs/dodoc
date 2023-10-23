@@ -272,6 +272,7 @@ export default {
         },
       });
       this.createMosaic({ meta_filename: text_meta_filename });
+      this.show_link_picker = false;
     },
     async createFiles({ path_to_source_media_metas }) {
       let source_medias = [];
