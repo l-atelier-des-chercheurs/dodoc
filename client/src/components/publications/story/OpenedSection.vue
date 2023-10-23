@@ -77,18 +77,44 @@ export default {
       this.scrollToTop();
       this.$emit("toggleSection", this.getFilename(this.prev_section.$path));
     },
-    scrollToTop() {
-      const current_height = this.$el.offsetHeight;
-      this.$el.setAttribute("style", `height: ${current_height}px`);
+    async scrollToTop() {
+      //https://phuoc.ng/collection/html-dom/get-the-first-scrollable-parent-of-an-element/
+      const isScrollable = function (ele) {
+        const hasScrollableContent = ele.scrollHeight > ele.clientHeight;
+        const overflowYStyle = window.getComputedStyle(ele).overflowY;
+        const isOverflowHidden = overflowYStyle.indexOf("hidden") !== -1;
+        return hasScrollableContent && !isOverflowHidden;
+      };
 
-      if (this.$route.name === "Projet")
-        this.$el.scrollIntoView({
-          behavior: "smooth",
-          inline: "nearest",
-        });
-      else window.scrollTo({ top: 0, behavior: "smooth" });
+      const getScrollableParent = function (ele) {
+        return !ele || ele === document.body
+          ? document.body
+          : isScrollable(ele)
+          ? ele
+          : getScrollableParent(ele.parentNode);
+      };
 
-      window.setTimeout(() => this.$el.removeAttribute("style"), 1_000);
+      // const current_height = this.$el.offsetHeight;
+      // this.$el.setAttribute("style", `height: ${current_height}px`);
+
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      const scroll_box = getScrollableParent(this.$el);
+      scroll_box.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+
+      // if (this.$route.name === "Projet")
+      // this.$el.scrollIntoView({
+      //   behavior: "smooth",
+      //   block: "start",
+      //   inline: "nearest",
+      // });
+
+      // else window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // window.setTimeout(() => this.$el.removeAttribute("style"), 1_000);
       // document.body.scrollIntoView({
       //   behavior: "smooth",
       //   inline: "nearest",
