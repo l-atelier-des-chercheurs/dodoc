@@ -10,8 +10,21 @@
         }"
         @click="change_order = !change_order"
       >
-        <b-icon icon="arrow-down-up" />
-        {{ $t("change_order") }}
+        <transition name="fade" mode="out-in">
+          <b-icon v-if="!save_status" :key="'none'" icon="arrow-down-up" />
+          <b-icon
+            v-else-if="save_status === 'saving'"
+            :key="save_status"
+            icon="stopwatch"
+          />
+          <b-icon
+            v-else-if="save_status === 'saved'"
+            :key="save_status"
+            icon="check"
+          />
+        </transition>
+
+        <!-- {{ $t("change_order") }} -->
       </button>
     </div>
     <SlickList
@@ -76,9 +89,10 @@ export default {
   directives: { handle: HandleDirective },
   data() {
     return {
-      is_saving_changes: false,
       local_items: undefined,
       change_order: false,
+
+      save_status: undefined,
     };
   },
   i18n: {
@@ -130,7 +144,7 @@ export default {
       )
         return "no_update_necessary";
 
-      this.is_saving_changes = true;
+      this.save_status = "saving";
 
       await this.$api.updateMeta({
         path: this.path,
@@ -138,7 +152,11 @@ export default {
           [this.field_name]: sections_list,
         },
       });
-      this.is_saving_changes = false;
+      this.save_status = "saved";
+
+      setTimeout(() => {
+        this.save_status = undefined;
+      }, 500);
     },
   },
 };
