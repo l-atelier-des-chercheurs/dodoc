@@ -1,6 +1,6 @@
 <template>
-  <div class="_viewSettings">
-    <div class="_viewSettings--content">
+  <div class="_viewOptions">
+    <div class="_viewOptions--content">
       <!-- <div class="u-spacingBottom">
         <strong>
           {{ view.section_title }}
@@ -121,25 +121,24 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._viewSettings {
+._viewOptions {
   position: absolute;
+  top: calc(var(--spacing) / 1);
+  right: calc(var(--spacing) / 1);
   margin: 0 auto;
   width: 100%;
-  bottom: 0;
 
   pointer-events: none;
 }
-._viewSettings--content {
-  width: 320px;
+._viewOptions--content {
+  width: 220px;
   margin: 0 auto;
   background: white;
   pointer-events: auto;
 
-  // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  // border: 4px solid var(--c-bleuvert);
-  // border-bottom: none;
+  margin: calc(var(--spacing) / 2);
+  margin-left: auto;
+
   overflow: hidden;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
 }
 </style>

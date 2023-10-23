@@ -708,6 +708,21 @@ export default {
       font-size: var(--sl-font-size-small);
       color: inherit;
     }
+
+    .ol-full-screen {
+      top: auto;
+      bottom: calc(var(--spacing) * 3);
+      right: auto;
+      left: calc(var(--spacing) * 1);
+    }
+    .ol-scale-line {
+      bottom: calc(var(--spacing) / 1);
+      left: calc(var(--spacing) / 1);
+      background: white;
+      padding: 0;
+      border-radius: 0;
+      margin: 0;
+    }
   }
 }
 ._popup {
