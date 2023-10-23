@@ -91,6 +91,8 @@ export default {
   i18n: {
     messages: {
       fr: {
+        map_baselayer: "Fond de carte",
+
         pins_color: "Couleur des épingles",
         link_pins: "Relier les épingles",
         pin_icons: "Apparence des épingles",
