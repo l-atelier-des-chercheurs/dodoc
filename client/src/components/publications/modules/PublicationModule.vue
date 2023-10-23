@@ -662,7 +662,7 @@ export default {
 <style lang="scss" scoped>
 ._publicationModule {
   position: relative;
-  scroll-margin-top: calc(var(--spacing) / 1);
+  scroll-margin-top: calc(var(--spacing) * 1.5);
   // padding: 0 calc(var(--spacing) * 2);
 
   &[data-type="shape"] {
@@ -836,7 +836,7 @@ export default {
 
 ._floatingEditBtn {
   position: sticky;
-  z-index: 101;
+  z-index: 5;
   height: 0;
 
   > * {
