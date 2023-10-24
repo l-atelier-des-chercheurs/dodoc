@@ -109,7 +109,7 @@ export default {
     },
     start_zoom: {
       type: [Boolean, Number],
-      default: 9,
+      default: 2,
     },
     map_mode: {
       type: String,
@@ -215,6 +215,9 @@ export default {
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
     },
+    map_base_media() {
+      this.startMap();
+    },
     opened_pin_path() {
       if (this.opened_pin_path) this.openFeature(this.opened_pin_path);
       else this.closePopup();
@@ -223,8 +226,11 @@ export default {
   computed: {},
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
-      let zoom =
-        this.constrainVal(this.start_zoom, this.min_zoom, this.max_zoom) || 9;
+      let zoom = this.constrainVal(
+        this.start_zoom,
+        this.min_zoom,
+        this.max_zoom
+      );
       let center;
 
       if (this.start_coords?.longitude && this.start_coords?.latitude)
@@ -456,9 +462,9 @@ export default {
 
         const extent = [0, 0, img_width, img_height];
         const projection = new olProjection({
-          code: "xkcd-image",
+          code: "custom-image",
           units: "pixels",
-          extent: extent,
+          extent,
         });
         center = center || getCenter(extent);
 
@@ -466,8 +472,7 @@ export default {
           projection: projection,
           center,
           zoom,
-          minZoom: this.min_zoom,
-          maxZoom: this.max_zoom,
+          maxZoom: 8,
         });
         background_layer = new olImageLayer({
           source: new olStatic({
