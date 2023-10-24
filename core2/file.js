@@ -611,7 +611,7 @@ module.exports = (function () {
     );
 
     if (global.settings.versioning === true)
-      _archiveVersion({
+      await _archiveVersion({
         path_to_folder,
         media_filename,
       });
