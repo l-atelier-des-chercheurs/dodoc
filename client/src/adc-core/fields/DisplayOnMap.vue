@@ -12,7 +12,11 @@
       class="_popup"
       v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
-      <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
+      <div class="_popupShadow" />
+      <div
+        class="_popup--content"
+        :key="clicked_location.latitude + '-' + clicked_location.longitude"
+      >
         <button
           type="button"
           class="u-button u-button_icon _popupClose"
@@ -794,7 +798,11 @@ export default {
     .ol-scale-line {
       bottom: calc(var(--spacing) / 1);
       left: calc(var(--spacing) / 1);
-      background: white;
+
+      backdrop-filter: blur(2px);
+      // background: rgba(255, 255, 255, 0.5);
+      background: transparent;
+
       padding: 0;
       border-radius: 0;
       margin: 0;
@@ -809,18 +817,8 @@ export default {
 
   font-size: var(--sl-font-size-normal);
 
-  background: white;
-
-  border: none;
-  border-radius: var(--panel-radius);
-
-  box-shadow: var(--panel-shadows);
-  box-shadow: 0 2px 10px rgb(0 0 0 / 30%);
-
-  pointer-events: none;
-
-  &:after,
-  &:before {
+  &::before,
+  &::after {
     top: 100%;
 
     border: solid transparent;
@@ -834,11 +832,11 @@ export default {
     position: absolute;
     pointer-events: none;
   }
-  &:before {
+  &::before {
     border-top-color: black;
   }
 
-  &:after {
+  &::after {
     border-top-color: white;
     top: 100%;
     border-width: 9px;
@@ -856,6 +854,23 @@ export default {
     pointer-events: auto;
   }
 }
+._popup--content {
+  position: relative;
+  z-index: 1;
+  border-radius: 3px;
+  background: white;
+  overflow: hidden;
+}
+._popupShadow {
+  position: absolute;
+  inset: -2px;
+  background: black;
+  border-radius: 4px;
+  content: "";
+  z-index: -1;
+  opacity: 0.1;
+}
+
 ._popupClose {
   position: absolute;
   z-index: 1000;
@@ -866,7 +881,7 @@ export default {
 
 ._pinContent {
   position: relative;
-  border-radius: var(--panel-radius);
+  // border-radius: var(--panel-radius);
   overflow: hidden;
   min-height: 2em;
 
