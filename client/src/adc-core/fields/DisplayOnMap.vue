@@ -798,7 +798,7 @@ export default {
 }
 ._popup {
   position: absolute;
-  bottom: 12px;
+  bottom: 11px;
   left: -48px;
   min-width: 280px;
 
@@ -810,24 +810,34 @@ export default {
   border-radius: var(--panel-radius);
 
   box-shadow: var(--panel-shadows);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 30%);
 
   pointer-events: none;
 
   &:after,
   &:before {
     top: 100%;
+
     border: solid transparent;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+
     content: " ";
     height: 0;
     width: 0;
     position: absolute;
     pointer-events: none;
   }
+  &:before {
+    border-top-color: black;
+  }
+
   &:after {
     border-top-color: white;
-    border-width: 10px;
-    left: 48px;
-    margin-left: -10px;
+    top: 100%;
+    border-width: 9px;
+    left: 49px;
   }
   // &:before {
   //   border-top-color: #cccccc;
