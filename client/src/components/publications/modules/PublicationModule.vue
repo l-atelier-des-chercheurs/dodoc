@@ -703,6 +703,7 @@ export default {
   //   background-color: var(--active-color);
   // }
   ._content {
+    position: relative;
     width: calc(var(--module-width) * 1%);
     margin-left: calc(var(--module-margin-left) * 1%);
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -726,28 +727,16 @@ export default {
 }
 
 ._sideOptions {
-  // position: absolute;
-  // top: 0;
-  // height: 100%;
-  // right: 100%;
-  // z-index: 10000;
-  // background: var(--active-color);
-  // background: rgba(0, 0, 0, 0.01);
-
   position: absolute;
   bottom: 100%;
-  z-index: 1000;
-  // padding: calc(var(--spacing) / 4);
+  z-index: 1;
+
   margin-bottom: calc(var(--spacing) / 2);
   width: 100%;
 
   margin: 0 calc(var(--spacing) / -2) calc(var(--spacing) / 2);
-  // margin: 0 calc(var(--spacing) / -2) 0;
   width: calc(100% + calc(var(--spacing) / 1));
 
-  // pointer-events: none;
-
-  // z-index: 100;
   transition: opacity 0.25s linear;
 
   &.is--pageByPage {
@@ -813,23 +802,6 @@ export default {
   // padding: calc(var(--spacing) / 4);
 }
 
-._menu {
-  width: 100%;
-
-  padding: calc(var(--spacing) / 2);
-
-  display: flex;
-  justify-content: flex-end;
-  gap: calc(var(--spacing) / 4);
-
-  &.is--overlaid {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 10;
-  }
-}
-
 ._options {
   position: relative;
   display: flex;
@@ -852,7 +824,7 @@ export default {
 
 ._floatingEditBtn {
   position: sticky;
-  z-index: 5;
+  z-index: 1;
   height: 0;
   top: 0;
 
@@ -866,7 +838,7 @@ export default {
 
 ._repickNotice {
   position: absolute;
-  z-index: 1;
+  // z-index: 1;
   top: 0;
   left: 0;
   right: 0;
