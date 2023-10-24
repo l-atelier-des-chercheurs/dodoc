@@ -16,8 +16,8 @@
       <template v-if="map_mode === 'image'">
         <DLabel :str="$t('image_basemap')" />
         <SingleBaseMediaPicker
-          :field_name="'map_basemap'"
-          :content="publication.map_basemap"
+          :field_name="'map_base_media_filename'"
+          :content="publication.map_base_media_filename"
           :path="publication.$path"
           :media_type_to_pick="'image'"
         />
@@ -104,25 +104,7 @@ export default {
       // gps or image
     },
   },
-  methods: {
-    async updateBasePosition({ location, zoom }) {
-      await this.updatePubli({
-        map_initial_location: location,
-        map_initial_zoom: zoom,
-      });
-    },
-    async updateBaselayer(new_val) {
-      await this.updatePubli({
-        map_baselayer: new_val,
-      });
-    },
-    async updatePubli(new_meta) {
-      await this.$api.updateMeta({
-        path: this.path,
-        new_meta,
-      });
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>

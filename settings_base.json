@@ -588,6 +588,9 @@
                   },
                   "map_mode": {
                     "type": "string"
+                  },
+                  "map_base_media_filename": {
+                    "type": "string"
                   }
                 },
                 "$files": {

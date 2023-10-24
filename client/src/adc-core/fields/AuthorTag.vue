@@ -46,7 +46,10 @@
       <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>
 
-    <router-link v-if="links_to_author_page" :to="component_to">
+    <router-link
+      v-if="links_to_author_page && !show_image_only"
+      :to="component_to"
+    >
       <b-icon icon="person-lines-fill" :aria-label="$t('page')" />
     </router-link>
 

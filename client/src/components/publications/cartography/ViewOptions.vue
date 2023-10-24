@@ -7,7 +7,11 @@
         </strong>
       </div> -->
 
-      <DetailsPane :header="view.section_title" :icon="'gear'">
+      <DetailsPane
+        class="_detailsInfo"
+        :header="view.section_title"
+        :icon="'gear'"
+      >
         <div class="u-spacingBottom">
           <ColorInput
             :label="$t('pins_color')"
@@ -133,14 +137,29 @@ export default {
   pointer-events: none;
 }
 ._viewOptions--content {
+  position: relative;
   width: 220px;
   margin: 0 auto;
-  background: white;
   pointer-events: auto;
 
   margin: calc(var(--spacing) / 2);
   margin-left: auto;
 
+  &::before {
+    position: absolute;
+    inset: -1px;
+    background: black;
+    content: "";
+    border-radius: 5px;
+    opacity: 0.1;
+    z-index: 0;
+  }
+}
+
+._detailsInfo {
+  position: relative;
+  border-radius: 4px;
   overflow: hidden;
+  background: white;
 }
 </style>

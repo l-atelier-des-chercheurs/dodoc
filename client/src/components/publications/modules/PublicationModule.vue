@@ -233,13 +233,14 @@
       type="button"
       class="u-button _pinButton"
       :style="`--pin-color: ${pin_options.color}`"
+      :class="{
+        'is--active': is_active_on_map,
+      }"
       v-if="is_associated_to_map && has_coordinates"
       @click.stop="showModuleOnMap"
     >
-      <img
-        v-if="pin_options.pin_preview === 'icon'"
-        :src="pin_options.pin_preview_src"
-      />
+      <!-- v-if="pin_options.pin_preview === 'icon'" -->
+      <img :src="pin_options.pin_preview_src" />
       <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
       <!-- <b-icon icon="pin-map-fill" /> -->
       <!-- <span class="_index">
@@ -374,7 +375,7 @@
       <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>
 
-    <div class="_selectorIndicator" v-if="edit_mode || is_active_on_map" />
+    <div class="_selectorIndicator" v-if="edit_mode" />
   </div>
 </template>
 <script>
@@ -702,6 +703,7 @@ export default {
   //   background-color: var(--active-color);
   // }
   ._content {
+    position: relative;
     width: calc(var(--module-width) * 1%);
     margin-left: calc(var(--module-margin-left) * 1%);
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -718,30 +720,23 @@ export default {
   right: var(--highlight-margin);
 
   border: 2px solid var(--c-bleuvert);
-  border-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+
   pointer-events: none;
 }
 
 ._sideOptions {
-  // position: absolute;
-  // top: 0;
-  // height: 100%;
-  // right: 100%;
-  // z-index: 10000;
-  // background: var(--active-color);
-  // background: rgba(0, 0, 0, 0.01);
-
   position: absolute;
   bottom: 100%;
-  z-index: 1000;
-  padding: calc(var(--spacing) / 4);
+  z-index: 1;
+
   margin-bottom: calc(var(--spacing) / 2);
-  border-radius: 16px;
   width: 100%;
 
-  // pointer-events: none;
+  margin: 0 calc(var(--spacing) / -2) calc(var(--spacing) / 2);
+  width: calc(100% + calc(var(--spacing) / 1));
 
-  // z-index: 100;
   transition: opacity 0.25s linear;
 
   &.is--pageByPage {
@@ -757,9 +752,11 @@ export default {
     // border: 2px solid var(--active-color);
     box-shadow: var(--panel-shadows);
 
-    border-radius: 4px;
+    // border-radius: 4px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
     gap: calc(var(--spacing) / 2);
-    border: 2px solid white;
+    // border: 2px solid white;
 
     display: flex;
     align-items: center;
@@ -805,23 +802,6 @@ export default {
   // padding: calc(var(--spacing) / 4);
 }
 
-._menu {
-  width: 100%;
-
-  padding: calc(var(--spacing) / 2);
-
-  display: flex;
-  justify-content: flex-end;
-  gap: calc(var(--spacing) / 4);
-
-  &.is--overlaid {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 10;
-  }
-}
-
 ._options {
   position: relative;
   display: flex;
@@ -844,8 +824,9 @@ export default {
 
 ._floatingEditBtn {
   position: sticky;
-  z-index: 5;
+  z-index: 1;
   height: 0;
+  top: 0;
 
   > * {
     position: absolute;
@@ -857,7 +838,7 @@ export default {
 
 ._repickNotice {
   position: absolute;
-  z-index: 1;
+  // z-index: 1;
   top: 0;
   left: 0;
   right: 0;
@@ -889,7 +870,7 @@ export default {
   top: 0;
   left: 0;
   z-index: 1;
-  padding: 0;
+  margin: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4);
 
   ._publicationModule[data-type="text"] & {
@@ -897,6 +878,10 @@ export default {
     float: left;
     margin-top: calc(var(--spacing) / 4);
     margin-right: calc(var(--spacing) / 4);
+  }
+
+  &.is--active {
+    background: var(--c-bleuvert);
   }
 
   img {

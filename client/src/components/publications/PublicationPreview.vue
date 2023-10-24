@@ -12,6 +12,21 @@
       <div v-else class="_noPreview">
         <span v-if="template_icon" v-html="template_icon" />
       </div>
+      <transition name="toggleLock" mode="out-in">
+        <sl-icon
+          v-if="publication.$status === 'finished'"
+          :key="publication.$status"
+          name="check-circle-fill"
+          class="_icon _check"
+        />
+        <sl-icon
+          v-else-if="publication.$status === 'private'"
+          :key="publication.$status"
+          name="file-lock2-fill"
+          class="_icon _private"
+        />
+      </transition>
+
       <transition name="fade_fast">
         <div class="_previewProgress" v-if="is_making_preview">
           <AnimatedCounter :value="preview_progress" />
@@ -172,7 +187,7 @@ export default {
 }
 ._generatePreviewBtn {
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
   margin: calc(var(--spacing) / 2);
 }
@@ -215,5 +230,18 @@ export default {
   width: 100%;
   aspect-ratio: 1;
   min-height: 50px;
+}
+
+._icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 1);
+  font-size: 125%;
+}
+._check {
+  color: var(--c-bleuvert);
+}
+._private {
 }
 </style>

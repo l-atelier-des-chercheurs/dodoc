@@ -7,7 +7,7 @@
         :resolution="220"
         :context="'preview'"
       />
-      <div class="">
+      <div class="_changeBtn">
         <button
           type="button"
           class="u-button u-button_bleuvert"
@@ -105,12 +105,10 @@ export default {
     flex-flow: row wrap;
     align-items: center;
 
-    margin: calc(var(--spacing) / 2) auto;
+    margin: 0 auto;
+    width: 100%;
     background: var(--c-bleumarine_fonce);
-    // max-width: 320px;
-    gap: calc(var(--spacing) * 1);
     gap: calc(var(--spacing) / 4);
-    // border: 1px solid ;
     padding: calc(var(--spacing) / 4);
     border-radius: 4px;
 
@@ -124,8 +122,13 @@ export default {
         height: 100%;
         object-fit: cover;
         max-width: none;
+        border-radius: 1px;
       }
     }
   }
+}
+._changeBtn {
+  flex: 1;
+  text-align: center;
 }
 </style>

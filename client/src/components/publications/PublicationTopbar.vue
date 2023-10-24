@@ -16,6 +16,8 @@
       <TitleField
         :field_name="'title'"
         :tag="'h2'"
+        :maxlength="40"
+        :required="true"
         :content="publication.title"
         :path="publication.$path"
         :can_edit="can_edit"
@@ -34,6 +36,14 @@
           :path="publication.$path"
           :can_edit="can_edit"
         /> -->
+
+    <StatusTag
+      :status="publication.$status || 'public'"
+      :status_options="['public', 'private']"
+      :path="publication.$path"
+      :can_edit="can_edit"
+    />
+
     <div class="_buttonRow">
       <div
         class=""

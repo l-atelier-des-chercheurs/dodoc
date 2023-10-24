@@ -272,6 +272,7 @@ export default {
         },
       });
       this.createMosaic({ meta_filename: text_meta_filename });
+      this.show_link_picker = false;
     },
     async createFiles({ path_to_source_media_metas }) {
       let source_medias = [];
@@ -316,11 +317,13 @@ export default {
 
     async createModule({ module_type, source_medias = [], addtl_meta = {} }) {
       // get infos from first media
-      const media = this.getSourceMedia({
-        source_media: source_medias[0],
-        folder_path: this.publication_path,
-      });
-      if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+      if (source_medias.length > 0) {
+        const media = this.getSourceMedia({
+          source_media: source_medias[0],
+          folder_path: this.publication_path,
+        });
+        if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+      }
 
       const meta_filename = await this.createMetaForModule({
         module_type,

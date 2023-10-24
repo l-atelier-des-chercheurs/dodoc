@@ -41,7 +41,7 @@
             @click="show_archives = !show_archives"
           >
             <b-icon icon="archive" />
-            <span>{{ $t("history") }}</span>
+            <!-- <span>{{ $t("history") }}</span> -->
           </button>
         </template>
 
@@ -487,6 +487,10 @@ export default {
       this.editor.setSelection(null);
       this.editor.blur();
       this.updateSelectedLines();
+
+      if (window.getSelection) {
+        window.getSelection().removeAllRanges();
+      }
 
       if (this.is_collaborative) this.endCollaborative();
 
@@ -1057,7 +1061,7 @@ export default {
   z-index: 2;
   padding: calc(var(--spacing) / 4);
   margin-bottom: 0.3em;
-  border-radius: 16px;
+  border-radius: 14px;
   // hides select, do not use
   // overflow: hidden;
 

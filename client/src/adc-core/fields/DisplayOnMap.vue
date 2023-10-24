@@ -12,7 +12,11 @@
       class="_popup"
       v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
-      <div :key="clicked_location.latitude + '-' + clicked_location.longitude">
+      <div class="_popupShadow" />
+      <div
+        class="_popup--content"
+        :key="clicked_location.latitude + '-' + clicked_location.longitude"
+      >
         <button
           type="button"
           class="u-button u-button_icon _popupClose"
@@ -76,11 +80,15 @@ import olFeature from "ol/Feature";
 import olPoint from "ol/geom/Point";
 import olLineString from "ol/geom/LineString";
 import olTileLayer from "ol/layer/Tile";
+import olImageLayer from "ol/layer/Image";
+import olProjection from "ol/proj/Projection";
+import olStatic from "ol/source/ImageStatic";
 import olTileGridWMTS from "ol/tilegrid/WMTS";
 import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
+import { getCenter } from "ol/extent";
 
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
@@ -105,7 +113,11 @@ export default {
     },
     start_zoom: {
       type: [Boolean, Number],
-      default: 9,
+      default: 2,
+    },
+    map_mode: {
+      type: String,
+      default: "map",
     },
     map_baselayer: {
       type: String,
@@ -115,6 +127,7 @@ export default {
         return ["OSM", "IGN_MAP", "IGN_SAT"].includes(value);
       },
     },
+    map_base_media: Object,
     is_small: {
       type: Boolean,
       default: true,
@@ -206,6 +219,9 @@ export default {
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
     },
+    map_base_media() {
+      this.startMap();
+    },
     opened_pin_path() {
       if (this.opened_pin_path) this.openFeature(this.opened_pin_path);
       else this.closePopup();
@@ -214,9 +230,12 @@ export default {
   computed: {},
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
-      let zoom =
-        this.constrainVal(this.start_zoom, this.min_zoom, this.max_zoom) || 9;
-      let center = [5.39057449011251, 43.310173305629576];
+      let zoom = this.constrainVal(
+        this.start_zoom,
+        this.min_zoom,
+        this.max_zoom
+      );
+      let center;
 
       if (this.start_coords?.longitude && this.start_coords?.latitude)
         center = [this.start_coords.longitude, this.start_coords.latitude];
@@ -236,30 +255,25 @@ export default {
           zoom = this.map.getView().getZoom();
           center = this.map.getView().getCenter();
         }
-
         this.map.setTarget(null);
         this.map = null;
       }
 
       olProj.useGeographic();
 
-      this.view = new olView({
+      const { view, background_layer } = this.createViewAndBackgroundLayer({
         center,
         zoom,
-        minZoom: this.min_zoom,
-        maxZoom: this.max_zoom,
       });
+      this.view = view;
 
-      const source = this.createSource(this.map_baselayer);
       this.map = new olMap({
         target: this.$refs.map,
-        layers: [
-          new olTileLayer({
-            source,
-          }),
-        ],
         view: this.view,
+        layers: [background_layer],
       });
+
+      ////////////////////////////////////////////////////////////////////////// CREATE LINES
 
       this.line_features = this.createLineFeaturesFromLines();
       this.map.addLayer(
@@ -271,6 +285,8 @@ export default {
           style: (feature) => this.makeLineStyle(feature),
         })
       );
+
+      ////////////////////////////////////////////////////////////////////////// CREATE PINS
 
       this.pin_features = this.createPointFeaturesFromPins();
       this.map.addLayer(
@@ -289,7 +305,8 @@ export default {
         })
       );
 
-      /////////////////////////////////////////////////////////////// MOUSE
+      ////////////////////////////////////////////////////////////////////////// MOUSE
+
       this.mouse_feature = new olFeature({
         geometry: new olPoint([undefined, undefined]),
       });
@@ -311,7 +328,8 @@ export default {
       const fs_option = new FullScreen();
       this.map.addControl(fs_option);
 
-      //////////////////////////////////////////////////// SCALELINE
+      ////////////////////////////////////////////////////////////////////////// SCALELINE
+
       if (this.show_scale) {
         const scale_line = new ScaleLine({
           units: "metric",
@@ -319,7 +337,7 @@ export default {
         this.map.addControl(scale_line);
       }
 
-      //////////////////////////////////////////////////// SEARCH FIELD
+      ////////////////////////////////////////////////////////////////////////// SEARCH FIELD
 
       let lang = "fr-FR";
       if (this.$i18n.locale === "en") lang = "en-US";
@@ -385,8 +403,6 @@ export default {
         });
       });
 
-      this.current_zoom = zoom;
-      this.current_view = center;
       this.map.on("moveend", () => {
         this.current_zoom = this.roundToDec(this.map.getView().getZoom());
         this.current_view = this.map.getView().getCenter();
@@ -433,6 +449,63 @@ export default {
       // }
       // addInteraction();
     },
+    createViewAndBackgroundLayer({ center, zoom }) {
+      let view, background_layer;
+
+      if (this.map_mode === "image") {
+        if (!this.map_base_media)
+          this.$alertify.delay(4000).error("missing base image");
+
+        const img_width = this.map_base_media.$infos?.width;
+        const img_height = this.map_base_media.$infos?.height;
+        const img_src = this.makeMediaFileURL({
+          $path: this.map_base_media.$path,
+          $media_filename: this.map_base_media.$media_filename,
+        });
+        const attributions = this.map_base_media.caption;
+
+        const extent = [0, 0, img_width, img_height];
+        const projection = new olProjection({
+          code: "custom-image",
+          units: "pixels",
+          extent,
+        });
+        center = center || getCenter(extent);
+
+        view = new olView({
+          projection: projection,
+          center,
+          zoom,
+          maxZoom: 8,
+        });
+        background_layer = new olImageLayer({
+          source: new olStatic({
+            attributions,
+            url: img_src,
+            projection,
+            imageExtent: extent,
+          }),
+        });
+      } else {
+        center = center || [5.39057449011251, 43.310173305629576];
+
+        view = new olView({
+          center,
+          zoom,
+          minZoom: this.min_zoom,
+          maxZoom: this.max_zoom,
+        });
+        const source = this.createSource(this.map_baselayer);
+        background_layer = new olTileLayer({
+          source,
+        });
+      }
+
+      this.current_zoom = zoom;
+      this.current_view = center;
+      return { view, background_layer };
+    },
+
     createSource(type) {
       if (type === "OSM") {
         return new olSourceOSM({
@@ -516,6 +589,8 @@ export default {
             if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
             if (pin.pin_preview_src)
               feature_cont.pin_preview_src = pin.pin_preview_src;
+            if (pin.first_media_thumb)
+              feature_cont.first_media_thumb = pin.first_media_thumb;
             features.push(new olFeature(feature_cont));
           });
       }
@@ -587,20 +662,7 @@ export default {
       const pin_preview = feature.get("pin_preview");
       const pin_preview_src = feature.get("pin_preview_src");
 
-      if (!pin_preview || pin_preview === "circle") {
-        style.image = new olCircleStyle({
-          radius: 8,
-          fill: new olFill({ color: fill_color }),
-          stroke: new olStroke({ color: "#232e4a", width: 1 }),
-        });
-      } else if (pin_preview === "media_preview") {
-        style.image = new olIcon({
-          anchor: [0.5, 1],
-          anchorXUnits: "fraction",
-          anchorYUnits: "fraction",
-          src: pin_preview_src,
-        });
-      } else if (pin_preview === "icon") {
+      if (pin_preview === "icon") {
         style.text = undefined;
         style.image = new olIcon({
           anchor: [0.5, 1],
@@ -610,6 +672,20 @@ export default {
           // do not use color: it is injected directly in the svg
           // color: fill_color,
           src: pin_preview_src,
+        });
+      } else if (pin_preview === "media_preview") {
+        const first_media_thumb = feature.get("first_media_thumb");
+        style.image = new olIcon({
+          anchor: [0.5, 1],
+          anchorXUnits: "fraction",
+          anchorYUnits: "fraction",
+          src: first_media_thumb,
+        });
+      } else {
+        style.image = new olCircleStyle({
+          radius: 8,
+          fill: new olFill({ color: fill_color }),
+          stroke: new olStroke({ color: "#232e4a", width: 1 }),
         });
       }
 
@@ -722,7 +798,11 @@ export default {
     .ol-scale-line {
       bottom: calc(var(--spacing) / 1);
       left: calc(var(--spacing) / 1);
-      background: white;
+
+      backdrop-filter: blur(2px);
+      // background: rgba(255, 255, 255, 0.5);
+      background: transparent;
+
       padding: 0;
       border-radius: 0;
       margin: 0;
@@ -731,36 +811,36 @@ export default {
 }
 ._popup {
   position: absolute;
-  bottom: 12px;
+  bottom: 11px;
   left: -48px;
   min-width: 280px;
 
   font-size: var(--sl-font-size-normal);
 
-  background: white;
-
-  border: none;
-  border-radius: var(--panel-radius);
-
-  box-shadow: var(--panel-shadows);
-
-  pointer-events: none;
-
-  &:after,
-  &:before {
+  &::before,
+  &::after {
     top: 100%;
+
     border: solid transparent;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+
     content: " ";
     height: 0;
     width: 0;
     position: absolute;
     pointer-events: none;
   }
-  &:after {
+  &::before {
+    border-top-color: black;
+  }
+
+  &::after {
     border-top-color: white;
-    border-width: 10px;
-    left: 48px;
-    margin-left: -10px;
+    top: 100%;
+    border-width: 9px;
+    left: 49px;
   }
   // &:before {
   //   border-top-color: #cccccc;
@@ -774,6 +854,23 @@ export default {
     pointer-events: auto;
   }
 }
+._popup--content {
+  position: relative;
+  z-index: 1;
+  border-radius: 3px;
+  background: white;
+  overflow: hidden;
+}
+._popupShadow {
+  position: absolute;
+  inset: -2px;
+  background: black;
+  border-radius: 4px;
+  content: "";
+  z-index: -1;
+  opacity: 0.1;
+}
+
 ._popupClose {
   position: absolute;
   z-index: 1000;
@@ -784,7 +881,7 @@ export default {
 
 ._pinContent {
   position: relative;
-  border-radius: var(--panel-radius);
+  // border-radius: var(--panel-radius);
   overflow: hidden;
   min-height: 2em;
 

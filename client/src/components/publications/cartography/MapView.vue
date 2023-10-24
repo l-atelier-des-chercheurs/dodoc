@@ -1,21 +1,13 @@
 <template>
   <div class="_mapView">
     <splitpanes>
-      <!-- <pane min-size="5">
-        <LayersPane
-          :publication="publication"
-          :layers="layers"
-          :opened_layer_path.sync="opened_layer_path"
-          :opened_pin_path.sync="opened_pin_path"
-          :can_edit="can_edit"
-        />
-      </pane> -->
       <pane min-size="5">
         <DisplayOnMap
+          :key="opened_view_meta_filename"
           class="_mapContainer"
-          :start_coords="start_coords"
-          :start_zoom="start_zoom"
+          :map_mode="publication.map_mode"
           :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
+          :map_base_media="base_media"
           :pins="pins"
           :lines="lines"
           :is_small="false"
@@ -56,7 +48,7 @@
           :opened_pin_path="opened_pin_path"
           :pins="pins"
           :can_edit="can_edit"
-          @toggleView="$emit('toggleView', $event)"
+          @toggleView="toggleView"
           @togglePin="opened_pin_path = $event"
         />
       </pane>
@@ -65,7 +57,6 @@
 </template>
 <script>
 import { Splitpanes, Pane } from "splitpanes";
-// import LayersPane from "@/components/publications/cartography/LayersPane.vue";
 import DisplayOnMap from "@/adc-core/fields/DisplayOnMap.vue";
 import ViewPane from "@/components/publications/cartography/ViewPane.vue";
 import ViewOptions from "@/components/publications/cartography/ViewOptions.vue";
@@ -82,7 +73,6 @@ export default {
     Pane,
 
     DisplayOnMap,
-    // LayersPane,
     ViewPane,
     ViewOptions,
     ModuleCreator,
@@ -111,6 +101,9 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
+    opened_view_meta_filename() {
+      this.opened_pin_path = undefined;
+    },
     opened_pin_path() {
       // open corresponding view when clicking on pin
       if (this.opened_pin_path) {
@@ -150,17 +143,20 @@ export default {
         group: "sections_list",
       });
     },
-    start_coords() {
-      return this.publication.map_initial_location || false;
-    },
-    start_zoom() {
-      return this.publication.map_initial_zoom || 10;
-    },
     opened_view() {
       if (!this.opened_view_meta_filename) return false;
       return this.views.find(
         (v) => this.getFilename(v.$path) === this.opened_view_meta_filename
       );
+    },
+    base_media() {
+      const meta_filename_in_project = this.publication.map_base_media_filename;
+      if (meta_filename_in_project)
+        return this.getSourceMedia({
+          source_media: { meta_filename_in_project },
+          folder_path: this.publication.$path,
+        });
+      return undefined;
     },
     pins() {
       return this.views.reduce((acc, _view) => {
@@ -188,18 +184,7 @@ export default {
           const pin_color = _view.section_color || this.default_view_color;
 
           let pin_preview = "icon";
-          let pin_preview_src;
-          if (_view.all_pins_icon === "media_preview") {
-            const thumb = this.getFirstThumbURLForMedia({
-              file: this.firstMedia(_module),
-              resolution: 50,
-            });
-            if (thumb) {
-              pin_preview = "media_preview";
-              pin_preview_src = thumb;
-            }
-          } else {
-            const svg = `
+          const svg = `
               <svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
                 <path
                   d="m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z"
@@ -211,9 +196,21 @@ export default {
                   ${index + 1}  
                 </text>
               </svg>`;
-            const b64 = btoa(unescape(encodeURIComponent(svg)));
-            pin_preview_src = `data:image/svg+xml;base64, ${b64}`;
+          const b64 = btoa(unescape(encodeURIComponent(svg)));
+          let pin_preview_src = `data:image/svg+xml;base64, ${b64}`;
+          let first_media_thumb = undefined;
+
+          if (_view.all_pins_icon === "media_preview") {
+            const thumb = this.getFirstThumbURLForMedia({
+              file: this.firstMedia(_module),
+              resolution: 50,
+            });
+            if (thumb) {
+              pin_preview = "media_preview";
+              first_media_thumb = thumb;
+            }
           }
+
           acc.push({
             longitude: _module.location.longitude,
             latitude: _module.location.latitude,
@@ -225,6 +222,7 @@ export default {
             color: pin_color,
             pin_preview,
             pin_preview_src,
+            first_media_thumb,
             file: this.firstMedia(_module),
             module: _module,
           });
@@ -262,6 +260,9 @@ export default {
     newPositionClicked({ longitude, latitude }) {
       this.latest_click.longitude = longitude;
       this.latest_click.latitude = latitude;
+    },
+    toggleView(view_meta_filename) {
+      this.$emit("toggleView", view_meta_filename);
     },
     async addModules({ meta_filenames }) {
       await this.insertModuleMetaFilenamesToList2({

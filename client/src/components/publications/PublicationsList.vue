@@ -151,10 +151,16 @@ export default {
   watch: {},
   computed: {
     sorted_publications() {
-      const _publications = this.publications.slice();
-      return _publications.sort(
-        (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
-      );
+      return this.publications
+        .slice()
+        .filter((f) => {
+          if (this.can_edit) return true;
+          if (f.$status !== "invisible" && f.$status !== "private") return true;
+          return false;
+        })
+        .sort(
+          (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
+        );
     },
   },
   methods: {
