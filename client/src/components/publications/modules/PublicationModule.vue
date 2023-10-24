@@ -847,6 +847,7 @@ export default {
   position: sticky;
   z-index: 5;
   height: 0;
+  top: 0;
 
   > * {
     position: absolute;
