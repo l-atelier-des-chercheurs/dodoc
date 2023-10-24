@@ -76,11 +76,15 @@ import olFeature from "ol/Feature";
 import olPoint from "ol/geom/Point";
 import olLineString from "ol/geom/LineString";
 import olTileLayer from "ol/layer/Tile";
+import olImageLayer from "ol/layer/Image";
+import olProjection from "ol/proj/Projection";
+import olStatic from "ol/source/ImageStatic";
 import olTileGridWMTS from "ol/tilegrid/WMTS";
 import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
+import { getCenter } from "ol/extent";
 
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
@@ -106,6 +110,10 @@ export default {
     start_zoom: {
       type: [Boolean, Number],
       default: 9,
+    },
+    map_type: {
+      type: String,
+      default: "map",
     },
     map_baselayer: {
       type: String,
@@ -216,7 +224,7 @@ export default {
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom =
         this.constrainVal(this.start_zoom, this.min_zoom, this.max_zoom) || 9;
-      let center = [5.39057449011251, 43.310173305629576];
+      let center;
 
       if (this.start_coords?.longitude && this.start_coords?.latitude)
         center = [this.start_coords.longitude, this.start_coords.latitude];
@@ -236,30 +244,25 @@ export default {
           zoom = this.map.getView().getZoom();
           center = this.map.getView().getCenter();
         }
-
         this.map.setTarget(null);
         this.map = null;
       }
 
       olProj.useGeographic();
 
-      this.view = new olView({
+      const { view, background_layer } = this.createViewAndBackgroundLayer({
         center,
         zoom,
-        minZoom: this.min_zoom,
-        maxZoom: this.max_zoom,
       });
+      this.view = view;
 
-      const source = this.createSource(this.map_baselayer);
       this.map = new olMap({
         target: this.$refs.map,
-        layers: [
-          new olTileLayer({
-            source,
-          }),
-        ],
         view: this.view,
+        layers: [background_layer],
       });
+
+      ////////////////////////////////////////////////////////////////////////// CREATE LINES
 
       this.line_features = this.createLineFeaturesFromLines();
       this.map.addLayer(
@@ -271,6 +274,8 @@ export default {
           style: (feature) => this.makeLineStyle(feature),
         })
       );
+
+      ////////////////////////////////////////////////////////////////////////// CREATE PINS
 
       this.pin_features = this.createPointFeaturesFromPins();
       this.map.addLayer(
@@ -289,7 +294,8 @@ export default {
         })
       );
 
-      /////////////////////////////////////////////////////////////// MOUSE
+      ////////////////////////////////////////////////////////////////////////// MOUSE
+
       this.mouse_feature = new olFeature({
         geometry: new olPoint([undefined, undefined]),
       });
@@ -311,7 +317,8 @@ export default {
       const fs_option = new FullScreen();
       this.map.addControl(fs_option);
 
-      //////////////////////////////////////////////////// SCALELINE
+      ////////////////////////////////////////////////////////////////////////// SCALELINE
+
       if (this.show_scale) {
         const scale_line = new ScaleLine({
           units: "metric",
@@ -319,7 +326,7 @@ export default {
         this.map.addControl(scale_line);
       }
 
-      //////////////////////////////////////////////////// SEARCH FIELD
+      ////////////////////////////////////////////////////////////////////////// SEARCH FIELD
 
       let lang = "fr-FR";
       if (this.$i18n.locale === "en") lang = "en-US";
@@ -385,8 +392,6 @@ export default {
         });
       });
 
-      this.current_zoom = zoom;
-      this.current_view = center;
       this.map.on("moveend", () => {
         this.current_zoom = this.roundToDec(this.map.getView().getZoom());
         this.current_view = this.map.getView().getCenter();
@@ -432,6 +437,72 @@ export default {
       //   this.map.addInteraction(draw);
       // }
       // addInteraction();
+    },
+    createViewAndBackgroundLayer({ center, zoom }) {
+      const extent = [0, 0, 1024, 968];
+      const projection = new olProjection({
+        code: "xkcd-image",
+        units: "pixels",
+        extent: extent,
+      });
+
+      const view = this.createView({
+        center,
+        zoom,
+        projection,
+        extent,
+      });
+      const background_layer = this.createBackgroundLayer({
+        projection,
+        extent,
+      });
+
+      return { view, background_layer };
+    },
+    createView({ center, zoom = 9, projection, extent }) {
+      if (!center) {
+        if (this.map_type === "map") {
+          center = [5.39057449011251, 43.310173305629576];
+        } else if (this.map_type === "image") {
+          center = getCenter(extent);
+        }
+      }
+
+      this.current_zoom = zoom;
+      this.current_view = center;
+
+      if (this.map_type === "map")
+        return new olView({
+          center,
+          zoom,
+          minZoom: this.min_zoom,
+          maxZoom: this.max_zoom,
+        });
+      else if (this.map_type === "image")
+        return new olView({
+          projection: projection,
+          center,
+          zoom,
+          minZoom: this.min_zoom,
+          maxZoom: this.max_zoom,
+        });
+    },
+    createBackgroundLayer({ projection, extent }) {
+      if (this.map_type === "map") {
+        const source = this.createSource(this.map_baselayer);
+        return new olTileLayer({
+          source,
+        });
+      } else {
+        return new olImageLayer({
+          source: new olStatic({
+            attributions: '© <a href="https://xkcd.com/license.html">xkcd</a>',
+            url: "https://imgs.xkcd.com/comics/online_communities.png",
+            projection,
+            imageExtent: extent,
+          }),
+        });
+      }
     },
     createSource(type) {
       if (type === "OSM") {
