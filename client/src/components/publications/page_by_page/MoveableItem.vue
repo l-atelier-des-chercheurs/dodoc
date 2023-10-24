@@ -41,12 +41,16 @@
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
-        :can_edit="can_edit && is_active"
         :border_radius="scaled_border_radius"
         :context="context"
         :page_template="'page_by_page'"
         :number_of_max_medias="1"
         :magnification="magnification"
+        :can_edit="can_edit && is_active && has_edit_button"
+        :module_being_edited="module_being_edited"
+        @update:module_being_edited="
+          $emit('update:module_being_edited', $event)
+        "
         @duplicate="onDuplicateModule"
         @contentIsEdited="contentIsEdited"
         @contentIsNotEdited="contentIsNotEdited"
@@ -102,6 +106,7 @@ export default {
     magnification: Number,
     gridstep: Number,
     scale: Number,
+    module_being_edited: String,
     is_active: Boolean,
   },
   components: {
@@ -163,8 +168,14 @@ export default {
     },
   },
   computed: {
+    first_media() {
+      return this.firstMedia(this.publimodule);
+    },
     module_meta_filename() {
       return this.publimodule.$path.split("/").at(-1);
+    },
+    has_edit_button() {
+      return this.publimodule.module_type === "text";
     },
     grid() {
       return [this.gridstep, this.gridstep];
@@ -241,6 +252,7 @@ export default {
     },
     contentIsNotEdited() {
       this.$eventHub.$emit(`module.text_editing_disabled`);
+      this.$emit("update:module_being_edited", undefined);
       this.content_is_edited = false;
     },
 
@@ -333,13 +345,12 @@ export default {
     async dblClick() {
       if (!this.is_active) return;
 
-      const first_media = this.firstMedia(this.publimodule);
-      if (!first_media) return;
+      if (!this.first_media) return;
 
-      if (first_media.$type === "text") this.editText();
+      if (this.first_media.$type === "text") this.editText();
       else {
         // resize height to match ratio
-        const media_ratio = first_media.$infos?.ratio;
+        const media_ratio = this.first_media.$infos?.ratio;
         const height = this.publimodule.width * media_ratio;
         await this.updateModuleMeta({
           new_meta: { height },

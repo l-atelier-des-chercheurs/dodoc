@@ -719,7 +719,9 @@ export default {
   right: var(--highlight-margin);
 
   border: 2px solid var(--c-bleuvert);
-  border-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+
   pointer-events: none;
 }
 
@@ -735,10 +737,13 @@ export default {
   position: absolute;
   bottom: 100%;
   z-index: 1000;
-  padding: calc(var(--spacing) / 4);
+  // padding: calc(var(--spacing) / 4);
   margin-bottom: calc(var(--spacing) / 2);
-  border-radius: 16px;
   width: 100%;
+
+  margin: 0 calc(var(--spacing) / -2) calc(var(--spacing) / 2);
+  // margin: 0 calc(var(--spacing) / -2) 0;
+  width: calc(100% + calc(var(--spacing) / 1));
 
   // pointer-events: none;
 
@@ -758,9 +763,11 @@ export default {
     // border: 2px solid var(--active-color);
     box-shadow: var(--panel-shadows);
 
-    border-radius: 4px;
+    // border-radius: 4px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
     gap: calc(var(--spacing) / 2);
-    border: 2px solid white;
+    // border: 2px solid white;
 
     display: flex;
     align-items: center;

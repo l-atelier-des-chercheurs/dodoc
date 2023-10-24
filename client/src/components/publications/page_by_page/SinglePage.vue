@@ -59,6 +59,7 @@
           :publimodule="publimodule"
           :magnification="magnification"
           :gridstep="show_grid && snap_to_grid ? gridstep : 1"
+          :module_being_edited.sync="module_being_edited"
           :scale="scale"
           :can_edit="can_edit"
           :is_active="active_module.$path === publimodule.$path"
@@ -169,7 +170,9 @@ export default {
     MoveableItem,
   },
   data() {
-    return {};
+    return {
+      module_being_edited: undefined,
+    };
   },
   created() {},
   mounted() {},
