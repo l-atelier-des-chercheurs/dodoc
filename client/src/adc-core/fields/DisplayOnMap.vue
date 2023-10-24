@@ -111,7 +111,7 @@ export default {
       type: [Boolean, Number],
       default: 9,
     },
-    map_type: {
+    map_mode: {
       type: String,
       default: "map",
     },
@@ -123,6 +123,7 @@ export default {
         return ["OSM", "IGN_MAP", "IGN_SAT"].includes(value);
       },
     },
+    map_base_media: Object,
     is_small: {
       type: Boolean,
       default: true,
@@ -439,71 +440,63 @@ export default {
       // addInteraction();
     },
     createViewAndBackgroundLayer({ center, zoom }) {
-      const extent = [0, 0, 1024, 968];
-      const projection = new olProjection({
-        code: "xkcd-image",
-        units: "pixels",
-        extent: extent,
-      });
+      let view, background_layer;
 
-      const view = this.createView({
-        center,
-        zoom,
-        projection,
-        extent,
-      });
-      const background_layer = this.createBackgroundLayer({
-        projection,
-        extent,
-      });
+      if (this.map_mode === "image") {
+        if (!this.map_base_media)
+          this.$alertify.delay(4000).error("missing base image");
 
-      return { view, background_layer };
-    },
-    createView({ center, zoom = 9, projection, extent }) {
-      if (!center) {
-        if (this.map_type === "map") {
-          center = [5.39057449011251, 43.310173305629576];
-        } else if (this.map_type === "image") {
-          center = getCenter(extent);
-        }
-      }
-
-      this.current_zoom = zoom;
-      this.current_view = center;
-
-      if (this.map_type === "map")
-        return new olView({
-          center,
-          zoom,
-          minZoom: this.min_zoom,
-          maxZoom: this.max_zoom,
+        const img_width = this.map_base_media.$infos?.width;
+        const img_height = this.map_base_media.$infos?.height;
+        const img_src = this.makeMediaFileURL({
+          $path: this.map_base_media.$path,
+          $media_filename: this.map_base_media.$media_filename,
         });
-      else if (this.map_type === "image")
-        return new olView({
+        const attributions = this.map_base_media.caption;
+
+        const extent = [0, 0, img_width, img_height];
+        const projection = new olProjection({
+          code: "xkcd-image",
+          units: "pixels",
+          extent: extent,
+        });
+        center = center || getCenter(extent);
+
+        view = new olView({
           projection: projection,
           center,
           zoom,
           minZoom: this.min_zoom,
           maxZoom: this.max_zoom,
         });
-    },
-    createBackgroundLayer({ projection, extent }) {
-      if (this.map_type === "map") {
-        const source = this.createSource(this.map_baselayer);
-        return new olTileLayer({
-          source,
-        });
-      } else {
-        return new olImageLayer({
+        background_layer = new olImageLayer({
           source: new olStatic({
-            attributions: '© <a href="https://xkcd.com/license.html">xkcd</a>',
-            url: "https://imgs.xkcd.com/comics/online_communities.png",
+            attributions,
+            url: img_src,
             projection,
             imageExtent: extent,
           }),
         });
+      } else {
+        center = center || [5.39057449011251, 43.310173305629576];
+
+        view = new olView({
+          center,
+          zoom,
+          minZoom: this.min_zoom,
+          maxZoom: this.max_zoom,
+        });
+        const source = this.createSource(this.map_baselayer);
+        background_layer = new olTileLayer({
+          source,
+        });
       }
+
+      this.current_zoom = zoom;
+      this.current_view = center;
+      return { view, background_layer };
     },
+
     createSource(type) {
       if (type === "OSM") {
         return new olSourceOSM({

@@ -16,8 +16,8 @@
       <template v-if="map_mode === 'image'">
         <DLabel :str="$t('image_basemap')" />
         <SingleBaseMediaPicker
-          :field_name="'map_basemap'"
-          :content="publication.map_basemap"
+          :field_name="'map_base_media_filename'"
+          :content="publication.map_base_media_filename"
           :path="publication.$path"
           :media_type_to_pick="'image'"
         />
