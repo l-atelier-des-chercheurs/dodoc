@@ -14,6 +14,7 @@
           :is_small="false"
           :opened_pin_path.sync="opened_pin_path"
           :can_add_media_to_point="!!opened_view_meta_filename"
+          :can_edit="can_edit"
           @newPositionClicked="newPositionClicked"
           @saveGeom="
             updateOpenedView({

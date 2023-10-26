@@ -70,7 +70,7 @@
     </div>
     <div id="mouse-position" />
 
-    <div class="_leftTopMenu">
+    <div class="_leftTopMenu" v-if="can_edit">
       <template v-for="draw_type in draw_types">
         <button
           type="button"
@@ -179,6 +179,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    can_edit: Boolean,
   },
   components: {
     PublicationModule,
