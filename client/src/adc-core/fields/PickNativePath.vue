@@ -7,7 +7,11 @@
 
     <div class="u-spacingBottom _sameLine">
       <input type="text" required readonly v-model="new_path" />
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        :label_position="'left'"
+        @click="enableEditMode"
+      />
     </div>
 
     <div v-if="can_edit" class="u-spacingBottom">
