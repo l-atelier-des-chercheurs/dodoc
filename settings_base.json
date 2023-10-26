@@ -616,6 +616,9 @@
                     "map_baselayer": {
                       "type": "string"
                     },
+                    "map_geom_features": {
+                      "type": "object"
+                    },
                     "section_title": {
                       "type": "string"
                     },

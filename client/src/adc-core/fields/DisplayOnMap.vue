@@ -69,6 +69,28 @@
       </div>
     </div>
     <div id="mouse-position" />
+
+    <div class="_leftTopMenu">
+      <template v-for="draw_type in draw_types">
+        <button
+          type="button"
+          class="u-button"
+          :class="{
+            'is--active': draw_type.key === current_draw_mode,
+          }"
+          :key="draw_type.key"
+          @click="toggleDraw(draw_type.key)"
+        >
+          {{ draw_type.icon }}
+        </button>
+      </template>
+
+      <button type="button" class="u-button" @click="saveGeom">
+        save geom
+      </button>
+
+      <!-- <button type="button" class="" @click="toggleDraw('LinesString')">◯</button> -->
+    </div>
   </div>
 </template>
 <script>
@@ -77,8 +99,6 @@ import olSourceWMTS from "ol/source/WMTS";
 import olMap from "ol/Map";
 import olView from "ol/View";
 import olFeature from "ol/Feature";
-import olPoint from "ol/geom/Point";
-import olLineString from "ol/geom/LineString";
 import olTileLayer from "ol/layer/Tile";
 import olImageLayer from "ol/layer/Image";
 import olProjection from "ol/proj/Projection";
@@ -90,6 +110,14 @@ import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
 import { getCenter } from "ol/extent";
 
+import {
+  Point as olPoint,
+  LineString as olLineString,
+  Circle as olCircle,
+  Polygon as olPolygon,
+} from "ol/geom";
+// import GeoJSON from "ol/format/GeoJSON";
+
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
 
@@ -99,7 +127,16 @@ import olCircleStyle from "ol/style/Circle";
 import olFill from "ol/style/Fill";
 import olStroke from "ol/style/Stroke";
 import olText from "ol/style/Text";
-import { ScaleLine, FullScreen } from "ol/control";
+import {
+  ScaleLine as olScaleLine,
+  FullScreen as olFullScreen,
+} from "ol/control";
+
+import {
+  Draw as olDraw,
+  Modify as olModify,
+  Snap as olSnap,
+} from "ol/interaction";
 
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
@@ -108,6 +145,7 @@ export default {
   props: {
     pins: [Boolean, Array],
     lines: [Boolean, Object],
+    geometries: [Boolean, String],
     start_coords: {
       type: [Boolean, Object],
     },
@@ -147,8 +185,8 @@ export default {
   },
   data() {
     return {
-      pin_infos: false,
-      pin_coord: false,
+      map: undefined,
+
       overlay: undefined,
 
       popup_message: undefined,
@@ -170,7 +208,24 @@ export default {
 
       mouse_coords: false,
 
-      map: undefined,
+      map_modify: undefined,
+      map_draw: undefined,
+      map_snap: undefined,
+
+      draw_vector_source: undefined,
+      current_draw_mode: undefined,
+      draw_types: [
+        {
+          key: "Circle",
+          label: this.$t("circle"),
+          icon: "◯",
+        },
+        {
+          key: "Polygon",
+          label: this.$t("polygon"),
+          icon: "▱",
+        },
+      ],
     };
   },
   i18n: {
@@ -218,6 +273,9 @@ export default {
     // },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
+    },
+    map_mode() {
+      this.startMap();
     },
     map_base_media() {
       this.startMap();
@@ -325,13 +383,13 @@ export default {
         })
       );
 
-      const fs_option = new FullScreen();
+      const fs_option = new olFullScreen();
       this.map.addControl(fs_option);
 
       ////////////////////////////////////////////////////////////////////////// SCALELINE
 
       if (this.show_scale) {
-        const scale_line = new ScaleLine({
+        const scale_line = new olScaleLine({
           units: "metric",
         });
         this.map.addControl(scale_line);
@@ -377,7 +435,7 @@ export default {
         }
       });
 
-      //////////////////////////////////////////////////// OVERLAYS
+      ////////////////////////////////////////////////////////////////////////// OVERLAYS
 
       this.overlay = new olOverlay({
         element: this.$refs.popUp,
@@ -385,7 +443,7 @@ export default {
       });
       this.map.addOverlay(this.overlay);
 
-      //////////////////////////////////////////////////// SEARCH FIELD
+      ////////////////////////////////////////////////////////////////////////// MAP OR FEATURE CLICK
 
       let feature_selected = null;
       this.map.on("pointermove", (event) => {
@@ -440,14 +498,19 @@ export default {
         }
       });
 
-      // function addInteraction() {
-      //   draw = new Draw({
-      //     source: source,
-      //     type: "Point",
-      //   });
-      //   this.map.addInteraction(draw);
-      // }
-      // addInteraction();
+      ////////////////////////////////////////////////////////////////////////// DRAW LAYER
+
+      this.draw_vector_source = new olSourceVector({ wrapX: false });
+      const geom = this.makeFeaturesFromString();
+      if (geom) {
+        this.draw_vector_source.addFeatures(geom);
+      }
+
+      this.map.addLayer(
+        new olVectorLayer({
+          source: this.draw_vector_source,
+        })
+      );
     },
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
@@ -487,6 +550,7 @@ export default {
           }),
         });
       } else {
+        // TODO check if center is contained in extent (see containsXY)
         center = center || [5.39057449011251, 43.310173305629576];
 
         view = new olView({
@@ -747,6 +811,82 @@ export default {
 
       return false;
     },
+    toggleDraw(type) {
+      this.endDraw();
+      if (this.current_draw_mode === type || !type) {
+        this.current_draw_mode = undefined;
+      } else {
+        this.current_draw_mode = type;
+        this.startDrawMode({ type });
+      }
+    },
+    startDrawMode({ type }) {
+      this.map_modify = new olModify({ source: this.draw_vector_source });
+      this.map.addInteraction(this.map_modify);
+
+      this.map_draw = new olDraw({
+        source: this.draw_vector_source,
+        type,
+      });
+      this.map.addInteraction(this.map_draw);
+
+      this.map_snap = new olSnap({ source: this.draw_vector_source });
+      this.map.addInteraction(this.map_snap);
+    },
+    saveGeom() {
+      // https://stackoverflow.com/a/35918210
+      const str = this.formatFeaturesAsString();
+      this.$emit("saveGeom", str);
+    },
+    formatFeaturesAsString() {
+      const features = this.draw_vector_source.getFeatures();
+      const features_to_save = features.reduce((acc, f) => {
+        const type = f.getGeometry().getType();
+
+        if (type === "Polygon") {
+          const coords = f.getGeometry().getCoordinates();
+          acc.push({ type, coords });
+        } else if (type === "Circle") {
+          const center = f.getGeometry().getCenter();
+          const radius = f.getGeometry().getRadius();
+          acc.push({ type, center, radius });
+        }
+
+        return acc;
+      }, []);
+      return JSON.stringify(features_to_save);
+    },
+    makeFeaturesFromString() {
+      if (!this.geometries) return;
+
+      try {
+        let features = [];
+        const parsed = JSON.parse(this.geometries);
+        parsed.map((p) => {
+          if (p.type === "Polygon" && p.coords)
+            features.push(
+              new olFeature({
+                geometry: new olPolygon(p.coords),
+              })
+            );
+          else if (p.type === "Circle" && p.center && p.radius)
+            features.push(new olFeature(new olCircle(p.center, p.radius)));
+        });
+        return features;
+      } catch (err) {
+        this.$alertify.delay(4000).error(err);
+        return false;
+      }
+
+      // new Feature(new Circle([5e6, 7e6], 1e6)));
+      // return newForm.readFeatures(this.geometries);
+    },
+
+    endDraw() {
+      this.map.removeInteraction(this.map_modify);
+      this.map.removeInteraction(this.map_draw);
+      this.map.removeInteraction(this.map_snap);
+    },
   },
 };
 </script>
@@ -892,6 +1032,30 @@ export default {
 
 ._popupMessage {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+}
+
+._leftTopMenu {
+  position: absolute;
+  top: 6.5em;
+  left: 0.5em;
+
+  button {
+    background: white;
+    display: block;
+    margin: 1px;
+    padding: 0;
+    color: var(--ol-subtle-foreground-color);
+    font-weight: bold;
+    text-decoration: none;
+    font-size: inherit;
+    text-align: center;
+    height: 1.375em;
+    width: 1.375em;
+    line-height: 0.4em;
+    background-color: var(--ol-background-color);
+    border: none;
+    border-radius: 2px;
+  }
 }
 </style>
 <style lang="scss"></style>

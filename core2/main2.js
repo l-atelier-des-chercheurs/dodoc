@@ -1,4 +1,3 @@
-const getPath = require("platform-folders");
 const path = require("path");
 const fs = require("fs-extra");
 const portscanner = require("portscanner");
@@ -6,7 +5,8 @@ const portscanner = require("portscanner");
 const server = require("./server"),
   dev = require("./dev-log"),
   cache = require("./cache"),
-  utils = require("./utils");
+  utils = require("./utils"),
+  paths = require("./paths");
 // auth = require("./auth");
 
 const is_electron = process.versions.hasOwnProperty("electron");
@@ -73,7 +73,7 @@ async function setupApp() {
   // dev.logfunction(["un", "array", "de", "valeurs"]);
 
   global.pathToCache = path.join(
-    getPath.getCacheFolder(),
+    paths.getCacheFolder(is_electron),
     global.settings.cacheDirname
   );
   global.ffmpeg_processes = [];
@@ -134,7 +134,7 @@ async function copyAndRenameUserFolder(full_default_path) {
     full_path_to_content = global.settings.contentPath;
   } else {
     // if contentPath is just a name, thats the name of the folder inside /Documents
-    const user_dir_path = getPath.getDocumentsFolder();
+    const user_dir_path = paths.getDocumentsFolder(is_electron);
     full_path_to_content = path.join(
       user_dir_path,
       global.settings.contentPath
