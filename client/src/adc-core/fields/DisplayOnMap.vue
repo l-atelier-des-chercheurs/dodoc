@@ -271,6 +271,9 @@ export default {
     //   },
     //   deep: true,
     // },
+    geometries() {
+      this.drawGeom();
+    },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
     },
@@ -467,15 +470,19 @@ export default {
       });
 
       this.map.on("singleclick", async (event) => {
+        if (this.current_draw_mode) return;
+
         this.closePopup();
         await this.$nextTick();
 
-        const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
+        const features = this.map.getFeaturesAtPixel(event.pixel);
+        const pin = features.find((f) => f.get("path"));
+
         let [longitude, latitude] = event.coordinate;
         longitude = this.roundToDec(longitude, 6);
         latitude = this.roundToDec(latitude, 6);
 
-        if (!feature) {
+        if (!pin) {
           this.$emit("newPositionClicked", {
             longitude,
             latitude,
@@ -493,7 +500,7 @@ export default {
           this.clicked_location.longitude = longitude;
           this.clicked_location.latitude = latitude;
         } else {
-          const path = feature.get("path");
+          const path = pin.get("path");
           this.openPin(path);
         }
       });
@@ -501,11 +508,7 @@ export default {
       ////////////////////////////////////////////////////////////////////////// DRAW LAYER
 
       this.draw_vector_source = new olSourceVector({ wrapX: false });
-      const geom = this.makeFeaturesFromString();
-      if (geom) {
-        this.draw_vector_source.addFeatures(geom);
-      }
-
+      this.drawGeom();
       this.map.addLayer(
         new olVectorLayer({
           source: this.draw_vector_source,
@@ -829,6 +832,11 @@ export default {
         type,
       });
       this.map.addInteraction(this.map_draw);
+      this.map_draw.on("drawend", () => {
+        this.$nextTick(() => {
+          this.saveGeom();
+        });
+      });
 
       this.map_snap = new olSnap({ source: this.draw_vector_source });
       this.map.addInteraction(this.map_snap);
@@ -856,8 +864,10 @@ export default {
       }, []);
       return JSON.stringify(features_to_save);
     },
-    makeFeaturesFromString() {
+    drawGeom() {
       if (!this.geometries) return;
+
+      this.draw_vector_source.clear();
 
       try {
         let features = [];
@@ -872,7 +882,8 @@ export default {
           else if (p.type === "Circle" && p.center && p.radius)
             features.push(new olFeature(new olCircle(p.center, p.radius)));
         });
-        return features;
+        this.draw_vector_source.addFeatures(features);
+        this.draw_vector_source.changed();
       } catch (err) {
         this.$alertify.delay(4000).error(err);
         return false;
