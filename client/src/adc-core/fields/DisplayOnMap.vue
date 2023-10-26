@@ -69,6 +69,23 @@
       </div>
     </div>
     <div id="mouse-position" />
+
+    <div class="_leftTopMenu">
+      <template v-for="draw_type in draw_types">
+        <button
+          type="button"
+          class="u-button"
+          :class="{
+            'is--active': draw_type.key === current_draw_mode,
+          }"
+          :key="draw_type.key"
+          @click="toggleDraw(draw_type.key)"
+        >
+          {{ draw_type.icon }}
+        </button>
+      </template>
+      <!-- <button type="button" class="" @click="toggleDraw('LinesString')">◯</button> -->
+    </div>
   </div>
 </template>
 <script>
@@ -99,7 +116,16 @@ import olCircleStyle from "ol/style/Circle";
 import olFill from "ol/style/Fill";
 import olStroke from "ol/style/Stroke";
 import olText from "ol/style/Text";
-import { ScaleLine, FullScreen } from "ol/control";
+import {
+  ScaleLine as olScaleLine,
+  FullScreen as olFullScreen,
+} from "ol/control";
+
+import {
+  Draw as olDraw,
+  Modify as olModify,
+  Snap as olSnap,
+} from "ol/interaction";
 
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
@@ -147,8 +173,8 @@ export default {
   },
   data() {
     return {
-      pin_infos: false,
-      pin_coord: false,
+      map: undefined,
+
       overlay: undefined,
 
       popup_message: undefined,
@@ -170,7 +196,23 @@ export default {
 
       mouse_coords: false,
 
-      map: undefined,
+      map_modify: undefined,
+      map_draw: undefined,
+      map_snap: undefined,
+
+      current_draw_mode: undefined,
+      draw_types: [
+        {
+          key: "Circle",
+          label: this.$t("circle"),
+          icon: "◯",
+        },
+        {
+          key: "Polygon",
+          label: this.$t("polygon"),
+          icon: "▱",
+        },
+      ],
     };
   },
   i18n: {
@@ -325,13 +367,13 @@ export default {
         })
       );
 
-      const fs_option = new FullScreen();
+      const fs_option = new olFullScreen();
       this.map.addControl(fs_option);
 
       ////////////////////////////////////////////////////////////////////////// SCALELINE
 
       if (this.show_scale) {
-        const scale_line = new ScaleLine({
+        const scale_line = new olScaleLine({
           units: "metric",
         });
         this.map.addControl(scale_line);
@@ -377,7 +419,7 @@ export default {
         }
       });
 
-      //////////////////////////////////////////////////// OVERLAYS
+      ////////////////////////////////////////////////////////////////////////// OVERLAYS
 
       this.overlay = new olOverlay({
         element: this.$refs.popUp,
@@ -385,7 +427,7 @@ export default {
       });
       this.map.addOverlay(this.overlay);
 
-      //////////////////////////////////////////////////// SEARCH FIELD
+      ////////////////////////////////////////////////////////////////////////// MAP OR FEATURE CLICK
 
       let feature_selected = null;
       this.map.on("pointermove", (event) => {
@@ -439,15 +481,6 @@ export default {
           this.openPin(path);
         }
       });
-
-      // function addInteraction() {
-      //   draw = new Draw({
-      //     source: source,
-      //     type: "Point",
-      //   });
-      //   this.map.addInteraction(draw);
-      // }
-      // addInteraction();
     },
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
@@ -747,6 +780,45 @@ export default {
 
       return false;
     },
+    toggleDraw(type) {
+      this.endDraw();
+      if (this.current_draw_mode === type || !type) {
+        this.current_draw_mode = undefined;
+      } else {
+        this.current_draw_mode = type;
+        this.startDraw({ type });
+      }
+    },
+    startDraw({ type }) {
+      const source = new olSourceVector({ wrapX: false });
+      this.map.addLayer(
+        new olVectorLayer({
+          source,
+        })
+      );
+
+      this.map_modify = new olModify({ source });
+      this.map.addInteraction(this.map_modify);
+
+      this.map_draw = new olDraw({
+        source,
+        type,
+      });
+      this.map.addInteraction(this.map_draw);
+
+      this.map_snap = new olSnap({ source });
+      this.map.addInteraction(this.map_snap);
+    },
+    saveDrawings() {
+      // var features = yourLayer.getSource().getFeatures();
+      // var newForm = new ol.format.GeoJSON();
+      // var featColl = newForm.writeFeaturesObject(features);
+    },
+    endDraw() {
+      this.map.removeInteraction(this.map_modify);
+      this.map.removeInteraction(this.map_draw);
+      this.map.removeInteraction(this.map_snap);
+    },
   },
 };
 </script>
@@ -892,6 +964,30 @@ export default {
 
 ._popupMessage {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+}
+
+._leftTopMenu {
+  position: absolute;
+  top: 6.5em;
+  left: 0.5em;
+
+  button {
+    background: white;
+    display: block;
+    margin: 1px;
+    padding: 0;
+    color: var(--ol-subtle-foreground-color);
+    font-weight: bold;
+    text-decoration: none;
+    font-size: inherit;
+    text-align: center;
+    height: 1.375em;
+    width: 1.375em;
+    line-height: 0.4em;
+    background-color: var(--ol-background-color);
+    border: none;
+    border-radius: 2px;
+  }
 }
 </style>
 <style lang="scss"></style>
