@@ -232,11 +232,11 @@
     <button
       type="button"
       class="u-button _pinButton"
-      :style="`--pin-color: ${pin_options.color}`"
+      v-if="is_associated_to_map && has_coordinates"
+      :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
       :class="{
         'is--active': is_active_on_map,
       }"
-      v-if="is_associated_to_map && has_coordinates"
       @click.stop="showModuleOnMap"
     >
       <!-- v-if="pin_options.pin_preview === 'icon'" -->

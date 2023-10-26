@@ -84,6 +84,11 @@
           {{ draw_type.icon }}
         </button>
       </template>
+
+      <button type="button" class="u-button" @click="saveGeom">
+        save geom
+      </button>
+
       <!-- <button type="button" class="" @click="toggleDraw('LinesString')">◯</button> -->
     </div>
   </div>
@@ -94,8 +99,6 @@ import olSourceWMTS from "ol/source/WMTS";
 import olMap from "ol/Map";
 import olView from "ol/View";
 import olFeature from "ol/Feature";
-import olPoint from "ol/geom/Point";
-import olLineString from "ol/geom/LineString";
 import olTileLayer from "ol/layer/Tile";
 import olImageLayer from "ol/layer/Image";
 import olProjection from "ol/proj/Projection";
@@ -106,6 +109,14 @@ import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
 import { getCenter } from "ol/extent";
+
+import {
+  Point as olPoint,
+  LineString as olLineString,
+  Circle as olCircle,
+  Polygon as olPolygon,
+} from "ol/geom";
+// import GeoJSON from "ol/format/GeoJSON";
 
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
@@ -134,6 +145,7 @@ export default {
   props: {
     pins: [Boolean, Array],
     lines: [Boolean, Object],
+    geometries: [Boolean, String],
     start_coords: {
       type: [Boolean, Object],
     },
@@ -200,6 +212,7 @@ export default {
       map_draw: undefined,
       map_snap: undefined,
 
+      draw_vector_source: undefined,
       current_draw_mode: undefined,
       draw_types: [
         {
@@ -260,6 +273,9 @@ export default {
     // },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
+    },
+    map_mode() {
+      this.startMap();
     },
     map_base_media() {
       this.startMap();
@@ -481,6 +497,20 @@ export default {
           this.openPin(path);
         }
       });
+
+      ////////////////////////////////////////////////////////////////////////// DRAW LAYER
+
+      this.draw_vector_source = new olSourceVector({ wrapX: false });
+      const geom = this.makeFeaturesFromString();
+      if (geom) {
+        this.draw_vector_source.addFeatures(geom);
+      }
+
+      this.map.addLayer(
+        new olVectorLayer({
+          source: this.draw_vector_source,
+        })
+      );
     },
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
@@ -520,6 +550,7 @@ export default {
           }),
         });
       } else {
+        // TODO check if center is contained in extent (see containsXY)
         center = center || [5.39057449011251, 43.310173305629576];
 
         view = new olView({
@@ -786,34 +817,71 @@ export default {
         this.current_draw_mode = undefined;
       } else {
         this.current_draw_mode = type;
-        this.startDraw({ type });
+        this.startDrawMode({ type });
       }
     },
-    startDraw({ type }) {
-      const source = new olSourceVector({ wrapX: false });
-      this.map.addLayer(
-        new olVectorLayer({
-          source,
-        })
-      );
-
-      this.map_modify = new olModify({ source });
+    startDrawMode({ type }) {
+      this.map_modify = new olModify({ source: this.draw_vector_source });
       this.map.addInteraction(this.map_modify);
 
       this.map_draw = new olDraw({
-        source,
+        source: this.draw_vector_source,
         type,
       });
       this.map.addInteraction(this.map_draw);
 
-      this.map_snap = new olSnap({ source });
+      this.map_snap = new olSnap({ source: this.draw_vector_source });
       this.map.addInteraction(this.map_snap);
     },
-    saveDrawings() {
-      // var features = yourLayer.getSource().getFeatures();
-      // var newForm = new ol.format.GeoJSON();
-      // var featColl = newForm.writeFeaturesObject(features);
+    saveGeom() {
+      // https://stackoverflow.com/a/35918210
+      const str = this.formatFeaturesAsString();
+      this.$emit("saveGeom", str);
     },
+    formatFeaturesAsString() {
+      const features = this.draw_vector_source.getFeatures();
+      const features_to_save = features.reduce((acc, f) => {
+        const type = f.getGeometry().getType();
+
+        if (type === "Polygon") {
+          const coords = f.getGeometry().getCoordinates();
+          acc.push({ type, coords });
+        } else if (type === "Circle") {
+          const center = f.getGeometry().getCenter();
+          const radius = f.getGeometry().getRadius();
+          acc.push({ type, center, radius });
+        }
+
+        return acc;
+      }, []);
+      return JSON.stringify(features_to_save);
+    },
+    makeFeaturesFromString() {
+      if (!this.geometries) return;
+
+      try {
+        let features = [];
+        const parsed = JSON.parse(this.geometries);
+        parsed.map((p) => {
+          if (p.type === "Polygon" && p.coords)
+            features.push(
+              new olFeature({
+                geometry: new olPolygon(p.coords),
+              })
+            );
+          else if (p.type === "Circle" && p.center && p.radius)
+            features.push(new olFeature(new olCircle(p.center, p.radius)));
+        });
+        return features;
+      } catch (err) {
+        this.$alertify.delay(4000).error(err);
+        return false;
+      }
+
+      // new Feature(new Circle([5e6, 7e6], 1e6)));
+      // return newForm.readFeatures(this.geometries);
+    },
+
     endDraw() {
       this.map.removeInteraction(this.map_modify);
       this.map.removeInteraction(this.map_draw);

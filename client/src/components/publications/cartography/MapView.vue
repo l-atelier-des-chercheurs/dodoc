@@ -10,10 +10,17 @@
           :map_base_media="base_media"
           :pins="pins"
           :lines="lines"
+          :geometries="geometries"
           :is_small="false"
           :opened_pin_path.sync="opened_pin_path"
           :can_add_media_to_point="!!opened_view_meta_filename"
           @newPositionClicked="newPositionClicked"
+          @saveGeom="
+            updateOpenedView({
+              field: 'map_geom_features',
+              value: $event,
+            })
+          "
         >
           <div class="" slot="popup_message" v-if="can_edit">
             <div v-if="!opened_view_meta_filename">
@@ -158,12 +165,15 @@ export default {
         });
       return undefined;
     },
+    views_to_display() {
+      return this.views.filter(
+        (v) =>
+          !this.opened_view_meta_filename ||
+          this.getFilename(v.$path) === this.opened_view_meta_filename
+      );
+    },
     pins() {
-      return this.views.reduce((acc, _view) => {
-        if (this.opened_view_meta_filename)
-          if (this.getFilename(_view.$path) !== this.opened_view_meta_filename)
-            return acc;
-
+      return this.views_to_display.reduce((acc, _view) => {
         const modules = this.getModulesForSection({
           publication: this.publication,
           section: _view,
@@ -246,6 +256,10 @@ export default {
         return acc;
       }, {});
     },
+    geometries() {
+      if (this.opened_view) return this.opened_view.map_geom_features;
+      return false;
+    },
     new_module_meta() {
       return {
         // todo return location
@@ -279,6 +293,14 @@ export default {
         this.$eventHub.$emit("publication.map.openPin", pin_path);
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);
+    },
+    async updateOpenedView({ field, value }) {
+      await this.$api.updateMeta({
+        path: this.opened_view.$path,
+        new_meta: {
+          [field]: value,
+        },
+      });
     },
   },
 };
