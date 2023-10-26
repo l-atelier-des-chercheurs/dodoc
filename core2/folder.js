@@ -313,7 +313,7 @@ module.exports = (function () {
         context: "update",
       });
 
-      const source_folder_slug = utils.getSlugFromPath(path_to_source_folder);
+      const source_folder_slug = path.basename(path_to_source_folder);
 
       let folder_slug = source_folder_slug + "-copy";
       folder_slug = await _preventFolderOverride({
@@ -444,7 +444,7 @@ module.exports = (function () {
       if (data.path_to_meta === "") return;
 
       const path_to_meta = data.path_to_meta;
-      const path_to_folder = utils.getContainingFolder(path_to_meta);
+      const path_to_folder = path.dirname(path_to_meta);
 
       const meta = await file.getFile({
         path_to_meta,
@@ -566,12 +566,11 @@ module.exports = (function () {
   }
 
   async function _moveFolderToBin({ path_to_folder }) {
-    const bin_folder_path =
-      path_to_folder.substr(0, path_to_folder.lastIndexOf("/")) +
-      "/" +
-      global.settings.deletedFolderName +
-      "/" +
-      path_to_folder.substr(path_to_folder.lastIndexOf("/") + 1);
+    const bin_folder_path = path.join(
+      path_to_folder.substr(0, path_to_folder.lastIndexOf(path.sep)),
+      global.settings.deletedFolderName,
+      path_to_folder.substr(path_to_folder.lastIndexOf(path.sep) + 1)
+    );
 
     const full_folder_path = utils.getPathToUserContent(path_to_folder);
     const full_bin_folder_path = utils.getPathToUserContent(bin_folder_path);

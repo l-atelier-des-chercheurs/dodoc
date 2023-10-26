@@ -487,7 +487,7 @@ module.exports = (function () {
 
     const findMatchingFileThumb = ({ meta_name, resolution }) => {
       const matching_file = $files.find(
-        (f) => utils.getFilename(f.$path) === meta_name
+        (f) => path.basename(f.$path) === meta_name
       );
       if (matching_file && matching_file.$thumbs)
         return matching_file.$thumbs[resolution];
@@ -837,9 +837,7 @@ module.exports = (function () {
       if (!path_to_destination_type) path_to_destination_type = path_to_type;
       else if (path_to_destination_type !== path_to_type) {
         // todo check for auth to copy folder
-        const path_to_parent_folder = utils.getContainingFolder(
-          path_to_destination_type
-        );
+        const path_to_parent_folder = path.dirname(path_to_destination_type);
         const allowed = await _canContributeToFolder({
           path_to_folder: path_to_parent_folder,
           req,
@@ -890,7 +888,7 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      const folder_slug = utils.getFilename(path_to_folder);
+      const folder_slug = path.basename(path_to_folder);
       res.header("Content-Type", "application/zip");
       res.header(
         "Content-Disposition",
@@ -937,9 +935,7 @@ module.exports = (function () {
       if (!path_to_destination_type) path_to_destination_type = path_to_type;
       else if (path_to_destination_type !== path_to_type) {
         // todo check for auth to copy folder
-        const path_to_parent_folder = utils.getContainingFolder(
-          path_to_destination_type
-        );
+        const path_to_parent_folder = path.dirname(path_to_destination_type);
         const allowed = await _canContributeToFolder({
           path_to_folder: path_to_parent_folder,
           req,

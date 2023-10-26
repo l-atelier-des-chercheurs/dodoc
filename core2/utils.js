@@ -375,7 +375,7 @@ module.exports = (function () {
       const schema = global.settings.schema;
 
       let items_in_path =
-        relative_path.length === 0 ? [] : relative_path.split("/");
+        relative_path.length === 0 ? [] : relative_path.split(path.sep);
       // items_in_path = items_in_path.filter((i) => i !== "_upload");
 
       // –––   / => schema (admin settings)
@@ -426,12 +426,6 @@ module.exports = (function () {
       throw new Error(`no_schema_for_folder`);
     },
 
-    cleanReqPath(path) {
-      let p = path.substring(7);
-      if (p.endsWith("/")) p = p.slice(0, -1);
-      return p;
-    },
-
     makePathFromReq(req) {
       let {
         folder_type,
@@ -446,31 +440,64 @@ module.exports = (function () {
       const obj = {};
 
       if (subsub_folder_type)
-        obj.path_to_type = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}/${subsub_folder_type}`;
+        obj.path_to_type = path.join(
+          folder_type,
+          folder_slug,
+          sub_folder_type,
+          sub_folder_slug,
+          subsub_folder_type
+        );
       else if (sub_folder_type)
-        obj.path_to_type = `${folder_type}/${folder_slug}/${sub_folder_type}`;
-      else if (folder_type) obj.path_to_type = `${folder_type}`;
+        obj.path_to_type = path.join(folder_type, folder_slug, sub_folder_type);
+      else if (folder_type) obj.path_to_type = path.join(folder_type);
 
       if (subsub_folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}/${subsub_folder_type}/${subsub_folder_slug}`;
+        obj.path_to_folder = path.join(
+          folder_type,
+          folder_slug,
+          sub_folder_type,
+          sub_folder_slug,
+          subsub_folder_type,
+          subsub_folder_slug
+        );
       else if (sub_folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}`;
+        obj.path_to_folder = path.join(
+          folder_type,
+          folder_slug,
+          sub_folder_type,
+          sub_folder_slug
+        );
       else if (folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}`;
+        obj.path_to_folder = path.join(folder_type, folder_slug);
 
       if (subsub_folder_slug)
-        obj.path_to_parent_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}`;
+        obj.path_to_parent_folder = path.join(
+          folder_type,
+          folder_slug,
+          sub_folder_type,
+          sub_folder_slug
+        );
       else if (sub_folder_slug)
-        obj.path_to_parent_folder = `${folder_type}/${folder_slug}`;
+        obj.path_to_parent_folder = path.join(folder_type, folder_slug);
 
       if (meta_filename && meta_filename.includes(".")) {
         obj.meta_filename = meta_filename;
-        obj.path_to_meta = `${obj.path_to_folder}/${meta_filename}`;
+        obj.path_to_meta = path.join(obj.path_to_folder, meta_filename);
       }
 
       if (req.body) obj.data = req.body;
 
       return obj;
+    },
+
+    getFolderParent(current_path) {
+      if (!current_path) return false;
+      let current_paths = current_path.split(path.sep);
+      if (current_paths.length >= 2) {
+        current_paths = current_paths.slice(0, -2);
+        return current_paths.join(path.sep);
+      }
+      return false;
     },
 
     async hashPassword({
@@ -491,30 +518,12 @@ module.exports = (function () {
       return submitted_password_with_salt === stored_password_with_salt;
     },
 
-    getSlugFromPath(path) {
-      return path.split("/").at(-1);
-    },
-    getContainingFolder(path) {
-      return path.substring(0, path.lastIndexOf("/"));
-    },
-    getFolderParent(path) {
-      if (!path) return false;
-      let paths = path.split("/");
-      if (paths.length >= 2) {
-        paths = paths.slice(0, -2);
-        return paths.join("/");
-      }
-      return false;
-    },
     isExtensionLosslessImageFormat(filename) {
       if (filename) {
         const extension = path.parse(filename).ext?.toLowerCase();
         if (extension) return [".png", ".svg"].includes(extension);
       }
       return false;
-    },
-    getFilename(path) {
-      return path.substring(path.lastIndexOf("/") + 1);
     },
     hashCode(s) {
       return (
