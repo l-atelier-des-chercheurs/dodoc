@@ -81,13 +81,9 @@
           :key="draw_type.key"
           @click="toggleDraw(draw_type.key)"
         >
-          {{ draw_type.icon }}
+          <b-icon class="inlineSVG" :icon="draw_type.icon" />
         </button>
       </template>
-
-      <button type="button" class="u-button" @click="saveGeom">
-        save geom
-      </button>
 
       <!-- <button type="button" class="" @click="toggleDraw('LinesString')">◯</button> -->
     </div>
@@ -110,6 +106,8 @@ import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
 import { getCenter } from "ol/extent";
 
+// import { getArea, getLength } from "ol/sphere";
+
 import {
   Point as olPoint,
   LineString as olLineString,
@@ -121,12 +119,16 @@ import {
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
 
-import olStyle from "ol/style/Style";
-import olIcon from "ol/style/Icon";
-import olCircleStyle from "ol/style/Circle";
-import olFill from "ol/style/Fill";
-import olStroke from "ol/style/Stroke";
-import olText from "ol/style/Text";
+import {
+  Circle as olCircleStyle,
+  Fill as olFill,
+  // RegularShape as olRegularShape,
+  Stroke as olStroke,
+  Icon as olIcon,
+  Style as olStyle,
+  Text as olText,
+} from "ol/style";
+
 import {
   ScaleLine as olScaleLine,
   FullScreen as olFullScreen,
@@ -134,7 +136,8 @@ import {
 
 import {
   Draw as olDraw,
-  Modify as olModify,
+  // Modify as olModify,
+  Select as olSelect,
   Snap as olSnap,
 } from "ol/interaction";
 
@@ -145,7 +148,7 @@ export default {
   props: {
     pins: [Boolean, Array],
     lines: [Boolean, Object],
-    geometries: [Boolean, String],
+    geometries: [Boolean, Array],
     start_coords: {
       type: [Boolean, Object],
     },
@@ -215,18 +218,25 @@ export default {
 
       draw_vector_source: undefined,
       current_draw_mode: undefined,
+      show_segments_length: false,
       draw_types: [
         {
           key: "Circle",
           label: this.$t("circle"),
-          icon: "◯",
+          icon: "circle",
         },
         {
           key: "Polygon",
           label: this.$t("polygon"),
-          icon: "▱",
+          icon: "pentagon",
+        },
+        {
+          key: "Remove",
+          label: this.$t("remove"),
+          icon: "x-lg",
         },
       ],
+      map_select_and_remove: undefined,
     };
   },
   i18n: {
@@ -234,6 +244,9 @@ export default {
       fr: {
         mouse_position: "Position de la balise",
         search_for_a_place: "Rechercher un lieu",
+        click_to_start_drawing: "Cliquez pour commencer le tracé",
+        click_to_continue_drawing: "Cliquez pour ajouter des sommets",
+        click_to_define_circle_radius: "Cliquez pour définir le diamètre",
       },
     },
   },
@@ -513,6 +526,7 @@ export default {
       this.map.addLayer(
         new olVectorLayer({
           source: this.draw_vector_source,
+          style: (feature) => this.makeGeomStyle(feature),
         })
       );
     },
@@ -695,28 +709,9 @@ export default {
       resolution;
       let style = {};
       if (feature?.get("label")) {
-        const _fs = {
-          italic: "normal",
-          weight: "500",
-          size: "14px",
-          height: 1.2,
-          family: "Fira Sans",
-        };
-
         style.text = new olText({
           fill: new olFill({ color: "#000" }),
-          // stroke: new olStroke({ color: "#fff" }),
-          // font: "bold 48px serif",
-          font:
-            _fs.italic +
-            " " +
-            _fs.weight +
-            " " +
-            _fs.size +
-            "/" +
-            _fs.height +
-            " " +
-            _fs.family,
+          font: this.makeDefaultFontString(),
           text: "" + feature.get("label"),
           textAlign: "center",
           textBaseline: "bottom",
@@ -759,6 +754,9 @@ export default {
 
       return new olStyle(style);
     },
+    makeDefaultFontString() {
+      return "12px/1.2 Fira Mono,sans-serif";
+    },
     makeLineStyle(feature) {
       const style = {
         stroke: new olStroke({
@@ -767,6 +765,85 @@ export default {
         }),
       };
       return new olStyle(style);
+    },
+    modifyStyle() {
+      return new olStyle({
+        image: new olCircleStyle({
+          radius: 5,
+          stroke: new olStroke({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          fill: new olFill({
+            color: "rgba(0, 0, 0, 0.4)",
+          }),
+        }),
+        text: new olText({
+          text: "Drag to modify",
+          font: this.makeDefaultFontString(),
+          fill: new olFill({
+            color: "rgba(255, 255, 255, 1)",
+          }),
+          backgroundFill: new olFill({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          padding: [2, 2, 2, 2],
+          textAlign: "left",
+          offsetX: 15,
+        }),
+      });
+    },
+    makeGeomStyle(feature, tip) {
+      const styles = [];
+
+      const style = new olStyle({
+        fill: new olFill({
+          color: "rgba(255, 255, 255, 0.2)",
+        }),
+        stroke: new olStroke({
+          color: feature.get("stroke_color"),
+          width: 2,
+          lineDash: [10, 10],
+        }),
+        image: new olCircleStyle({
+          radius: 5,
+          stroke: new olStroke({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          fill: new olFill({
+            color: "rgba(255, 255, 255, 0.2)",
+          }),
+        }),
+      });
+      styles.push(style);
+
+      const geometry = feature.getGeometry();
+      const type = geometry.getType();
+
+      if (
+        tip &&
+        type === "Point"
+        //  &&
+        // !this.map_modify.getOverlay().getSource().getFeatures().length
+      ) {
+        const tipStyle = new olStyle({
+          text: new olText({
+            font: this.makeDefaultFontString(),
+            fill: new olFill({
+              color: "rgba(0, 0, 0, 1)",
+            }),
+            backgroundFill: new olFill({
+              color: "rgba(255, 255, 255, .85)",
+            }),
+            padding: [2, 2, 2, 2],
+            textAlign: "left",
+            offsetX: 15,
+          }),
+        });
+        tipStyle.getText().setText(tip);
+        styles.push(tipStyle);
+      }
+
+      return styles;
     },
     resetClickedLocation() {
       this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
@@ -815,39 +892,224 @@ export default {
 
       return false;
     },
-    toggleDraw(type) {
+    toggleDraw(drawType) {
+      this.closePopup();
+      this.endRemoveMode();
       this.endDraw();
-      if (this.current_draw_mode === type || !type) {
+      if (this.current_draw_mode === drawType || !drawType) {
         this.current_draw_mode = undefined;
       } else {
-        this.current_draw_mode = type;
-        this.startDrawMode({ type });
+        this.current_draw_mode = drawType;
+        if (drawType == "Remove") this.startRemoveMode();
+        else this.startDrawMode({ drawType });
       }
     },
-    startDrawMode({ type }) {
-      this.map_modify = new olModify({ source: this.draw_vector_source });
-      this.map.addInteraction(this.map_modify);
+    startDrawMode({ drawType }) {
+      // this.map_modify = new olModify({
+      //   source: this.draw_vector_source,
+      //   style: this.modifyStyle,
+      // });
+      // this.map.addInteraction(this.map_modify);
 
+      const idleTip = this.$t("click_to_start_drawing");
+      let activeTip;
+      if (drawType === "Polygon")
+        activeTip = this.$t("click_to_continue_drawing");
+      if (drawType === "Circle")
+        activeTip = this.$t("click_to_define_circle_radius");
+
+      let tip = idleTip;
       this.map_draw = new olDraw({
         source: this.draw_vector_source,
-        type,
+        type: drawType,
+        style: (feature) => this.makeGeomStyle(feature, tip),
+        // style: (feature) => {
+        //   return this.styleFunction(
+        //     feature,
+        //     this.show_segments_length,
+        //     drawType,
+        //     tip
+        //   );
+        // },
       });
       this.map.addInteraction(this.map_draw);
+      this.map_draw.on("drawstart", () => {
+        tip = activeTip;
+      });
       this.map_draw.on("drawend", () => {
         this.$nextTick(() => {
           this.saveGeom();
         });
+        tip = idleTip;
       });
 
       this.map_snap = new olSnap({ source: this.draw_vector_source });
       this.map.addInteraction(this.map_snap);
     },
+
+    // styleFunction(feature, segments, drawType, tip) {
+    //   const style = new olStyle({
+    //     fill: new olFill({
+    //       color: "rgba(255, 255, 255, 0.2)",
+    //     }),
+    //     stroke: new olStroke({
+    //       color: "rgba(0, 0, 0, 0.5)",
+    //       lineDash: [10, 10],
+    //       width: 2,
+    //     }),
+    //     image: new olCircleStyle({
+    //       radius: 5,
+    //       stroke: new olStroke({
+    //         color: "rgba(0, 0, 0, 0.7)",
+    //       }),
+    //       fill: new olFill({
+    //         color: "rgba(255, 255, 255, 0.2)",
+    //       }),
+    //     }),
+    //   });
+
+    //   const labelStyle = new olStyle({
+    //     text: new olText({
+    //       font: "14px Calibri,sans-serif",
+    //       fill: new olFill({
+    //         color: "rgba(255, 255, 255, 1)",
+    //       }),
+    //       backgroundFill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.7)",
+    //       }),
+    //       padding: [3, 3, 3, 3],
+    //       textBaseline: "bottom",
+    //       offsetY: -15,
+    //     }),
+    //     image: new olRegularShape({
+    //       radius: 8,
+    //       points: 3,
+    //       angle: Math.PI,
+    //       displacement: [0, 10],
+    //       fill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.7)",
+    //       }),
+    //     }),
+    //   });
+
+    //   const tipStyle = new olStyle({
+    //     text: new olText({
+    //       font: "12px Calibri,sans-serif",
+    //       fill: new olFill({
+    //         color: "rgba(255, 255, 255, 1)",
+    //       }),
+    //       backgroundFill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.4)",
+    //       }),
+    //       padding: [2, 2, 2, 2],
+    //       textAlign: "left",
+    //       offsetX: 15,
+    //     }),
+    //   });
+
+    //   const segmentStyle = new olStyle({
+    //     text: new olText({
+    //       font: "12px Calibri,sans-serif",
+    //       fill: new olFill({
+    //         color: "rgba(255, 255, 255, 1)",
+    //       }),
+    //       backgroundFill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.4)",
+    //       }),
+    //       padding: [2, 2, 2, 2],
+    //       textBaseline: "bottom",
+    //       offsetY: -12,
+    //     }),
+    //     image: new olRegularShape({
+    //       radius: 6,
+    //       points: 3,
+    //       angle: Math.PI,
+    //       displacement: [0, 8],
+    //       fill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.4)",
+    //       }),
+    //     }),
+    //   });
+
+    //   const segmentStyles = [segmentStyle];
+
+    //   const formatLength = function (line) {
+    //     const length = getLength(line);
+    //     let output;
+    //     if (length > 100) {
+    //       output = Math.round((length / 1000) * 100) / 100 + " km";
+    //     } else {
+    //       output = Math.round(length * 100) / 100 + " m";
+    //     }
+    //     return output;
+    //   };
+
+    //   const formatArea = function (polygon) {
+    //     const area = getArea(polygon);
+    //     let output;
+    //     if (area > 10000) {
+    //       output = Math.round((area / 1000000) * 100) / 100 + " km\xB2";
+    //     } else {
+    //       output = Math.round(area * 100) / 100 + " m\xB2";
+    //     }
+    //     return output;
+    //   };
+
+    //   const styles = [];
+    //   const geometry = feature.getGeometry();
+    //   const type = geometry.getType();
+    //   let point, label, line;
+    //   if (!drawType || drawType === type || type === "Point") {
+    //     styles.push(style);
+    //     if (type === "Polygon") {
+    //       point = geometry.getInteriorPoint();
+    //       label = formatArea(geometry);
+    //       line = new olLineString(geometry.getCoordinates()[0]);
+    //     } else if (type === "LineString") {
+    //       point = new olPoint(geometry.getLastCoordinate());
+    //       label = formatLength(geometry);
+    //       line = geometry;
+    //     }
+    //   }
+    //   if (segments && line) {
+    //     let count = 0;
+    //     line.forEachSegment(function (a, b) {
+    //       const segment = new olLineString([a, b]);
+    //       const label = formatLength(segment);
+    //       if (segmentStyles.length - 1 < count) {
+    //         segmentStyles.push(segmentStyle.clone());
+    //       }
+    //       const segmentPoint = new olPoint(segment.getCoordinateAt(0.5));
+    //       segmentStyles[count].setGeometry(segmentPoint);
+    //       segmentStyles[count].getText().setText(label);
+    //       styles.push(segmentStyles[count]);
+    //       count++;
+    //     });
+    //   }
+    //   if (label) {
+    //     labelStyle.setGeometry(point);
+    //     labelStyle.getText().setText(label);
+    //     styles.push(labelStyle);
+    //   }
+    //   if (
+    //     tip &&
+    //     type === "Point"
+    //     //  &&
+    //     // !modify.getOverlay().getSource().getFeatures().length
+    //   ) {
+    //     // tipPoint = geometry;
+    //     tipStyle.getText().setText(tip);
+    //     styles.push(tipStyle);
+    //   }
+    //   return styles;
+    // },
+
     saveGeom() {
       // https://stackoverflow.com/a/35918210
-      const str = this.formatFeaturesAsString();
+      const str = this.formatFeatures();
       this.$emit("saveGeom", str);
     },
-    formatFeaturesAsString() {
+    formatFeatures() {
       const features = this.draw_vector_source.getFeatures();
       const features_to_save = features.reduce((acc, f) => {
         const type = f.getGeometry().getType();
@@ -863,7 +1125,7 @@ export default {
 
         return acc;
       }, []);
-      return JSON.stringify(features_to_save);
+      return features_to_save;
     },
     drawGeom() {
       if (!this.geometries) return;
@@ -872,16 +1134,21 @@ export default {
 
       try {
         let features = [];
-        const parsed = JSON.parse(this.geometries);
-        parsed.map((p) => {
+        this.geometries.map((p) => {
+          let feature_cont;
+
           if (p.type === "Polygon" && p.coords)
-            features.push(
-              new olFeature({
-                geometry: new olPolygon(p.coords),
-              })
-            );
+            feature_cont = {
+              geometry: new olPolygon(p.coords),
+              stroke_color: p.color,
+            };
           else if (p.type === "Circle" && p.center && p.radius)
-            features.push(new olFeature(new olCircle(p.center, p.radius)));
+            feature_cont = {
+              geometry: new olCircle(p.center, p.radius),
+              stroke_color: p.color,
+            };
+
+          features.push(new olFeature(feature_cont));
         });
         this.draw_vector_source.addFeatures(features);
         this.draw_vector_source.changed();
@@ -889,15 +1156,49 @@ export default {
         this.$alertify.delay(4000).error(err);
         return false;
       }
-
-      // new Feature(new Circle([5e6, 7e6], 1e6)));
-      // return newForm.readFeatures(this.geometries);
     },
-
     endDraw() {
       this.map.removeInteraction(this.map_modify);
       this.map.removeInteraction(this.map_draw);
       this.map.removeInteraction(this.map_snap);
+    },
+    startRemoveMode() {
+      const selectStyle = new olStyle({
+        fill: new olFill({
+          color: "#eeeeee",
+        }),
+        stroke: new olStroke({
+          color: "rgba(255, 255, 255, 0.7)",
+          width: 2,
+        }),
+      });
+
+      this.map_select_and_remove = new olSelect({
+        style: selectStyle,
+      });
+      this.map.addInteraction(this.map_select_and_remove);
+      this.map_select_and_remove.on("select", (e) => {
+        if (e.target.getFeatures().getLength() > 0) {
+          const feature_to_remove = e.target.getFeatures().getArray()[0];
+
+          this.draw_vector_source.removeFeature(feature_to_remove);
+          this.$nextTick(() => {
+            this.saveGeom();
+          });
+        }
+
+        // document.getElementById("status").innerHTML =
+        //   "&nbsp;" +
+        //   e.target.getFeatures().getLength() +
+        //   " selected features (last operation selected " +
+        //   e.selected.length +
+        //   " and deselected " +
+        //   e.deselected.length +
+        //   " features)";
+      });
+    },
+    endRemoveMode() {
+      this.map.removeInteraction(this.map_select_and_remove);
     },
   },
 };
@@ -1048,8 +1349,8 @@ export default {
 
 ._leftTopMenu {
   position: absolute;
-  top: 6.5em;
-  left: 0.5em;
+  top: 9.5rem;
+  left: 1rem;
 
   button {
     background: white;
@@ -1057,13 +1358,8 @@ export default {
     margin: 1px;
     padding: 0;
     color: var(--ol-subtle-foreground-color);
-    font-weight: bold;
-    text-decoration: none;
-    font-size: inherit;
-    text-align: center;
-    height: 1.375em;
-    width: 1.375em;
-    line-height: 0.4em;
+    height: 2rem;
+    width: 2rem;
     background-color: var(--ol-background-color);
     border: none;
     border-radius: 2px;

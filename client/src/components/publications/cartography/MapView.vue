@@ -14,7 +14,7 @@
           :is_small="false"
           :opened_pin_path.sync="opened_pin_path"
           :can_add_media_to_point="!!opened_view_meta_filename"
-          :can_edit="can_edit"
+          :can_edit="can_edit && !!opened_view_meta_filename"
           @newPositionClicked="newPositionClicked"
           @saveGeom="
             updateOpenedView({
@@ -192,7 +192,7 @@ export default {
           const pin_label =
             pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
 
-          const pin_color = _view.section_color || this.default_view_color;
+          const pin_color = this.getViewColor(_view);
 
           let pin_preview = "icon";
           const svg = `
@@ -258,8 +258,17 @@ export default {
       }, {});
     },
     geometries() {
-      if (this.opened_view) return this.opened_view.map_geom_features;
-      return false;
+      return this.views_to_display.reduce((acc, _view) => {
+        if (!_view.map_geom_features || !Array.isArray(_view.map_geom_features))
+          return acc;
+
+        const pin_color = this.getViewColor(_view);
+        _view.map_geom_features.map((g) => {
+          Object.assign(g, { color: pin_color });
+          acc.push(g);
+        });
+        return acc;
+      }, []);
     },
     new_module_meta() {
       return {
@@ -278,6 +287,9 @@ export default {
     },
     toggleView(view_meta_filename) {
       this.$emit("toggleView", view_meta_filename);
+    },
+    getViewColor(_view) {
+      return _view.section_color || this.default_view_color;
     },
     async addModules({ meta_filenames }) {
       await this.insertModuleMetaFilenamesToList2({

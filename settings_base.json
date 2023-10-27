@@ -617,7 +617,7 @@
                       "type": "string"
                     },
                     "map_geom_features": {
-                      "type": "object"
+                      "type": "array"
                     },
                     "section_title": {
                       "type": "string"
