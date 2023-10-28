@@ -1182,11 +1182,6 @@ export default {
     },
 
     saveGeom() {
-      // https://stackoverflow.com/a/35918210
-      const str = this.formatFeaturesForSave();
-      this.$emit("saveGeom", str);
-    },
-    formatFeaturesForSave() {
       const features = this.draw_vector_source.getFeatures();
       const features_to_save = features.reduce((acc, f) => {
         const type = f.getGeometry().getType();
@@ -1204,7 +1199,7 @@ export default {
 
         return acc;
       }, []);
-      return features_to_save;
+      this.$emit("saveGeom", features_to_save);
     },
     drawGeom() {
       if (!this.geometries) return;
