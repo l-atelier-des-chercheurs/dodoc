@@ -12,6 +12,9 @@
           :lines="lines"
           :geometries="geometries"
           :is_small="false"
+          :opened_view_color="
+            opened_view ? getViewColor(opened_view) : '#000000'
+          "
           :opened_pin_path.sync="opened_pin_path"
           :can_add_media_to_point="!!opened_view_meta_filename"
           :can_edit="can_edit && !!opened_view_meta_filename"

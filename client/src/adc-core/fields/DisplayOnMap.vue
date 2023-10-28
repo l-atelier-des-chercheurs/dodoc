@@ -89,6 +89,27 @@
         </button>
       </template>
     </div>
+
+    <div
+      class="_finishDrawing"
+      v-if="
+        ['LineString', 'Polygon'].includes(current_draw_mode) &&
+        draw_can_be_finished
+      "
+    >
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="finishDrawing"
+      >
+        {{ $t("finish_drawing") }}
+      </button>
+      <div class="u-instructions">
+        <small>
+          {{ $t("or_double_click") }}
+        </small>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -179,6 +200,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    opened_view_color: String,
     opened_pin_path: String,
     can_add_media_to_point: {
       type: Boolean,
@@ -220,6 +242,7 @@ export default {
 
       draw_vector_source: undefined,
       current_draw_mode: undefined,
+      draw_can_be_finished: undefined,
       show_segments_length: false,
       draw_modes: [
         // {
@@ -230,6 +253,24 @@ export default {
         //   tip: ,
         //   activeTip: ,
         // },
+        {
+          key: "LineString",
+          label: this.$t("linestring"),
+          icon: "dash-lg",
+          olType: "LineString",
+          freehand: false,
+          idleTip: this.$t("click_to_place_first_point"),
+          activeTip: this.$t("click_to_place_point"),
+        },
+        {
+          key: "FreehandLineString",
+          label: this.$t("linestring"),
+          icon: "pen",
+          olType: "LineString",
+          freehand: true,
+          idleTip: this.$t("click_drag_to_draw_line"),
+          activeTip: this.$t("click_drag_to_draw_line"),
+        },
         {
           key: "Circle",
           label: this.$t("circle"),
@@ -249,15 +290,6 @@ export default {
           activeTip: this.$t("click_to_continue_drawing"),
         },
         {
-          key: "FreehandLineString",
-          label: this.$t("linestring"),
-          icon: "pen",
-          olType: "LineString",
-          freehand: true,
-          idleTip: this.$t("click_drag_to_draw_line"),
-          activeTip: this.$t("click_drag_to_draw_line"),
-        },
-        {
           key: "Remove",
           label: this.$t("remove"),
           icon: "x-lg",
@@ -271,12 +303,16 @@ export default {
       fr: {
         mouse_position: "Position de la balise",
         search_for_a_place: "Rechercher un lieu",
-        click_to_start_drawing: "cliquez pour commencer le tracé",
-        click_to_continue_drawing: "cliquez pour ajouter des sommets",
-        click_drag_to_draw: "cliquez-glissez pour dessiner une forme",
-        click_drag_to_draw_line: "cliquez-glissez pour dessiner une ligne",
-        click_to_place_center: "cliquez pour placer le centre",
-        click_to_define_circle_radius: "cliquez pour définir le rayon",
+        click_to_start_drawing: "cliquer pour commencer le tracé",
+        click_to_continue_drawing: "cliquer pour ajouter des sommets",
+        click_drag_to_draw: "cliquer-glisser pour dessiner une forme",
+        click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
+        click_to_place_center: "cliquer pour placer le centre",
+        click_to_define_circle_radius: "cliquer pour définir le rayon",
+        click_to_place_first_point: "cliquer pour placer le premier point",
+        click_to_place_point: "cliquer pour ajouter un sommet",
+        finish_drawing: "Terminer le dessin",
+        or_double_click: "Ou double-cliquez sur la carte",
       },
     },
   },
@@ -332,13 +368,7 @@ export default {
       else this.closePopup();
     },
   },
-  computed: {
-    first_pin_color() {
-      if (this.pins && Array.isArray(this.pins) && this.pins.length > 0)
-        return this.pins[0].color;
-      return false;
-    },
-  },
+  computed: {},
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom = this.constrainVal(
@@ -781,11 +811,7 @@ export default {
           src: first_media_thumb,
         });
       } else {
-        style.image = new olCircleStyle({
-          radius: 8,
-          fill: new olFill({ color: fill_color }),
-          stroke: new olStroke({ color: "#232e4a", width: 1 }),
-        });
+        style.image = this.makePointerStyle(fill_color);
       }
 
       return new olStyle(style);
@@ -836,19 +862,12 @@ export default {
           color: "rgba(255, 255, 255, 0.2)",
         }),
         stroke: new olStroke({
-          color: feature.get("stroke_color") || this.first_pin_color || "#000",
+          color:
+            feature.get("stroke_color") || this.opened_view_color || "#000",
           width: 2,
           lineDash: [10, 5],
         }),
-        image: new olCircleStyle({
-          radius: 5,
-          stroke: new olStroke({
-            color: this.first_pin_color || "#000",
-          }),
-          fill: new olFill({
-            color: "rgba(255, 255, 255, 0.2)",
-          }),
-        }),
+        image: this.makePointerStyle(),
       });
       styles.push(style);
 
@@ -881,6 +900,18 @@ export default {
       }
 
       return styles;
+    },
+    makePointerStyle(fill_color = this.opened_view_color || "#000") {
+      return new olCircleStyle({
+        radius: 5,
+        stroke: new olStroke({
+          width: 2,
+          color: fill_color,
+        }),
+        fill: new olFill({
+          color: "rgba(255, 255, 255, 0.2)",
+        }),
+      });
     },
     resetClickedLocation() {
       if (this.mouse_feature)
@@ -972,12 +1003,18 @@ export default {
       this.map.addInteraction(this.map_draw);
       this.map_draw.on("drawstart", () => {
         if (activeTip) tip = activeTip;
+        this.draw_can_be_finished = true;
+      });
+      this.map_draw.on("drawabort", () => {
+        tip = idleTip;
+        this.draw_can_be_finished = false;
       });
       this.map_draw.on("drawend", () => {
         this.$nextTick(() => {
           this.saveGeom();
         });
         tip = idleTip;
+        this.draw_can_be_finished = false;
       });
 
       this.map_snap = new olSnap({ source: this.draw_vector_source });
@@ -1140,6 +1177,9 @@ export default {
     //   }
     //   return styles;
     // },
+    finishDrawing() {
+      this.map_draw.finishDrawing();
+    },
 
     saveGeom() {
       // https://stackoverflow.com/a/35918210
@@ -1397,6 +1437,20 @@ export default {
       border-color: var(--active-color);
       background-color: var(--ol-background-color);
     }
+  }
+}
+
+._finishDrawing {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: calc(var(--spacing) / 1);
+  text-align: center;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
   }
 }
 </style>
