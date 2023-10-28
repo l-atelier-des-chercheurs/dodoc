@@ -325,15 +325,17 @@ export default {
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$on("publication.map.openPin", this.openPin);
+    document.addEventListener("keydown", this.keyPressed);
   },
   mounted() {
-    setTimeout(() => {
-      this.startMap();
-    }, 500);
+    // setTimeout(() => {
+    this.startMap();
+    // }, 500);
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$off("publication.map.openPin", this.openPin);
+    document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {
     pins: {
@@ -1246,6 +1248,7 @@ export default {
       });
     },
     removeSelected() {
+      if (!this.feature_selected) return false;
       this.draw_vector_source.removeFeature(this.feature_selected);
       this.$nextTick(() => {
         this.saveGeom();
@@ -1254,6 +1257,21 @@ export default {
     endSelectMode() {
       this.map.removeInteraction(this.map_select_mode);
       this.feature_selected = undefined;
+    },
+    keyPressed(event) {
+      if (
+        this.$root.modal_is_opened ||
+        event.target.tagName.toLowerCase() === "select" ||
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor") ||
+        event.target.hasAttribute("contenteditable")
+      )
+        return;
+
+      if (event.key === "Backspace" || event.key === "Delete") {
+        this.removeSelected();
+      }
     },
   },
 };
