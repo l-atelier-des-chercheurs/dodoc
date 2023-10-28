@@ -60,16 +60,17 @@ export default {
   },
   created() {},
   mounted() {
-    if (!this.is_associated_to_map) {
-      if (this.sections.length > 0 && !this.opened_section_meta_filename) {
+    if (this.sections.length > 0 && !this.opened_section_meta_filename) {
+      if (
+        !this.is_associated_to_map ||
+        (this.is_associated_to_map && this.sections.length === 1)
+      ) {
         // if there is one or more sections and none opened, open first one
         const section_path = this.sections[0].$path;
         this.openSection(section_path);
+      } else if (this.is_associated_to_map) {
+        this.openSummary();
       }
-    }
-
-    if (this.is_associated_to_map && !this.opened_section_meta_filename) {
-      this.openSummary();
     }
 
     if (this.can_edit && this.sections.length === 0) this.createSection();

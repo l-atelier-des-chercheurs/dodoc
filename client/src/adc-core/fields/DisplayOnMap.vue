@@ -70,26 +70,50 @@
     </div>
     <div id="mouse-position" />
 
-    <div class="_leftTopMenu">
-      <template v-for="draw_type in draw_types">
+    <div class="_leftTopMenu" v-if="can_edit">
+      <template v-for="draw_mode in draw_modes">
         <button
           type="button"
           class="u-button"
           :class="{
-            'is--active': draw_type.key === current_draw_mode,
+            'is--active': draw_mode.key === current_draw_mode,
           }"
-          :key="draw_type.key"
-          @click="toggleDraw(draw_type.key)"
+          :key="draw_mode.key"
+          @click="
+            toggleDraw({
+              draw_mode,
+            })
+          "
         >
-          {{ draw_type.icon }}
+          <b-icon class="inlineSVG" :icon="draw_mode.icon" />
         </button>
       </template>
+    </div>
 
-      <button type="button" class="u-button" @click="saveGeom">
-        save geom
-      </button>
-
-      <!-- <button type="button" class="" @click="toggleDraw('LinesString')">◯</button> -->
+    <div class="_bottomMenu" v-if="draw_can_be_finished || feature_selected">
+      <template v-if="draw_can_be_finished">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine"
+          @click="finishDrawing"
+        >
+          {{ $t("finish_drawing") }}
+        </button>
+        <div class="u-instructions">
+          <small>
+            {{ $t("or_double_click") }}
+          </small>
+        </div>
+      </template>
+      <template v-else-if="feature_selected">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine"
+          @click="removeSelected"
+        >
+          {{ $t("remove") }}
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -110,6 +134,8 @@ import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
 import { getCenter } from "ol/extent";
 
+// import { getArea, getLength } from "ol/sphere";
+
 import {
   Point as olPoint,
   LineString as olLineString,
@@ -121,12 +147,16 @@ import {
 import Geocoder from "ol-geocoder";
 import "ol-geocoder/dist/ol-geocoder.min.css";
 
-import olStyle from "ol/style/Style";
-import olIcon from "ol/style/Icon";
-import olCircleStyle from "ol/style/Circle";
-import olFill from "ol/style/Fill";
-import olStroke from "ol/style/Stroke";
-import olText from "ol/style/Text";
+import {
+  Circle as olCircleStyle,
+  Fill as olFill,
+  // RegularShape as olRegularShape,
+  Stroke as olStroke,
+  Icon as olIcon,
+  Style as olStyle,
+  Text as olText,
+} from "ol/style";
+
 import {
   ScaleLine as olScaleLine,
   FullScreen as olFullScreen,
@@ -134,7 +164,8 @@ import {
 
 import {
   Draw as olDraw,
-  Modify as olModify,
+  // Modify as olModify,
+  Select as olSelect,
   Snap as olSnap,
 } from "ol/interaction";
 
@@ -145,7 +176,7 @@ export default {
   props: {
     pins: [Boolean, Array],
     lines: [Boolean, Object],
-    geometries: [Boolean, String],
+    geometries: [Boolean, Array],
     start_coords: {
       type: [Boolean, Object],
     },
@@ -174,11 +205,13 @@ export default {
       type: Boolean,
       default: true,
     },
+    opened_view_color: String,
     opened_pin_path: String,
     can_add_media_to_point: {
       type: Boolean,
       default: false,
     },
+    can_edit: Boolean,
   },
   components: {
     PublicationModule,
@@ -214,18 +247,61 @@ export default {
 
       draw_vector_source: undefined,
       current_draw_mode: undefined,
-      draw_types: [
+      draw_can_be_finished: undefined,
+      show_segments_length: false,
+      draw_modes: [
+        // {
+        //   key: "LineString",
+        //   label: this.$t("line"),
+        //   icon: "circle",
+        //   freehand: false,
+        //   tip: ,
+        //   activeTip: ,
+        // },
+        {
+          key: "LineString",
+          label: this.$t("linestring"),
+          icon: "dash-lg",
+          olType: "LineString",
+          freehand: false,
+          idleTip: this.$t("click_to_place_first_point"),
+          activeTip: this.$t("click_to_place_point"),
+        },
+        {
+          key: "FreehandLineString",
+          label: this.$t("linestring"),
+          icon: "pen",
+          olType: "LineString",
+          freehand: true,
+          idleTip: this.$t("click_drag_to_draw_line"),
+          activeTip: this.$t("click_drag_to_draw_line"),
+        },
         {
           key: "Circle",
           label: this.$t("circle"),
-          icon: "◯",
+          icon: "circle",
+          olType: "Circle",
+          freehand: false,
+          idleTip: this.$t("click_to_place_center"),
+          activeTip: this.$t("click_to_define_circle_radius"),
         },
         {
           key: "Polygon",
           label: this.$t("polygon"),
-          icon: "▱",
+          icon: "pentagon",
+          olType: "Polygon",
+          freehand: false,
+          idleTip: this.$t("click_to_start_drawing"),
+          activeTip: this.$t("click_to_continue_drawing"),
+        },
+        {
+          key: "Select",
+          label: this.$t("select"),
+          icon: "border",
         },
       ],
+      map_select_and_remove: undefined,
+      feature_selected: undefined,
     };
   },
   i18n: {
@@ -233,6 +309,16 @@ export default {
       fr: {
         mouse_position: "Position de la balise",
         search_for_a_place: "Rechercher un lieu",
+        click_to_start_drawing: "cliquer pour commencer le tracé",
+        click_to_continue_drawing: "cliquer pour ajouter des sommets",
+        click_drag_to_draw: "cliquer-glisser pour dessiner une forme",
+        click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
+        click_to_place_center: "cliquer pour placer le centre",
+        click_to_define_circle_radius: "cliquer pour définir le rayon",
+        click_to_place_first_point: "cliquer pour placer le premier point",
+        click_to_place_point: "cliquer pour ajouter un sommet",
+        finish_drawing: "Terminer le dessin",
+        or_double_click: "Ou double-cliquez sur la carte",
       },
     },
   },
@@ -271,6 +357,9 @@ export default {
     //   },
     //   deep: true,
     // },
+    geometries() {
+      this.drawGeom();
+    },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
     },
@@ -445,37 +534,25 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// MAP OR FEATURE CLICK
 
-      let feature_selected = null;
-      this.map.on("pointermove", (event) => {
-        if (feature_selected !== null) {
-          feature_selected.setStyle(undefined);
-          feature_selected = null;
-        }
-
-        this.map.forEachFeatureAtPixel(event.pixel, (f) => {
-          feature_selected = f;
-          // const selectStyle = this.makePointStyle({});
-          // selectStyle.getFill().setColor(f.get("COLOR") || "#eeeeee");
-          // f.setStyle(selectStyle);
-          // return true;
-        });
-      });
-
       this.map.on("moveend", () => {
         this.current_zoom = this.roundToDec(this.map.getView().getZoom());
         this.current_view = this.map.getView().getCenter();
       });
 
       this.map.on("singleclick", async (event) => {
+        if (this.current_draw_mode) return;
+
         this.closePopup();
         await this.$nextTick();
 
-        const feature = this.map.getFeaturesAtPixel(event.pixel)[0];
+        const features = this.map.getFeaturesAtPixel(event.pixel);
+        const pin = features.find((f) => f.get("path"));
+
         let [longitude, latitude] = event.coordinate;
         longitude = this.roundToDec(longitude, 6);
         latitude = this.roundToDec(latitude, 6);
 
-        if (!feature) {
+        if (!pin) {
           this.$emit("newPositionClicked", {
             longitude,
             latitude,
@@ -493,7 +570,7 @@ export default {
           this.clicked_location.longitude = longitude;
           this.clicked_location.latitude = latitude;
         } else {
-          const path = feature.get("path");
+          const path = pin.get("path");
           this.openPin(path);
         }
       });
@@ -501,14 +578,11 @@ export default {
       ////////////////////////////////////////////////////////////////////////// DRAW LAYER
 
       this.draw_vector_source = new olSourceVector({ wrapX: false });
-      const geom = this.makeFeaturesFromString();
-      if (geom) {
-        this.draw_vector_source.addFeatures(geom);
-      }
-
+      this.drawGeom();
       this.map.addLayer(
         new olVectorLayer({
           source: this.draw_vector_source,
+          style: (feature) => this.makeGeomStyle(feature),
         })
       );
     },
@@ -691,28 +765,9 @@ export default {
       resolution;
       let style = {};
       if (feature?.get("label")) {
-        const _fs = {
-          italic: "normal",
-          weight: "500",
-          size: "14px",
-          height: 1.2,
-          family: "Fira Sans",
-        };
-
         style.text = new olText({
           fill: new olFill({ color: "#000" }),
-          // stroke: new olStroke({ color: "#fff" }),
-          // font: "bold 48px serif",
-          font:
-            _fs.italic +
-            " " +
-            _fs.weight +
-            " " +
-            _fs.size +
-            "/" +
-            _fs.height +
-            " " +
-            _fs.family,
+          font: this.makeDefaultFontString(),
           text: "" + feature.get("label"),
           textAlign: "center",
           textBaseline: "bottom",
@@ -746,14 +801,13 @@ export default {
           src: first_media_thumb,
         });
       } else {
-        style.image = new olCircleStyle({
-          radius: 8,
-          fill: new olFill({ color: fill_color }),
-          stroke: new olStroke({ color: "#232e4a", width: 1 }),
-        });
+        style.image = this.makePointerStyle(fill_color);
       }
 
       return new olStyle(style);
+    },
+    makeDefaultFontString() {
+      return "12px/1.2 Fira Mono,sans-serif";
     },
     makeLineStyle(feature) {
       const style = {
@@ -764,8 +818,94 @@ export default {
       };
       return new olStyle(style);
     },
+    modifyStyle() {
+      return new olStyle({
+        image: new olCircleStyle({
+          radius: 5,
+          stroke: new olStroke({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          fill: new olFill({
+            color: "rgba(0, 0, 0, 0.4)",
+          }),
+        }),
+        text: new olText({
+          text: "Drag to modify",
+          font: this.makeDefaultFontString(),
+          fill: new olFill({
+            color: "rgba(255, 255, 255, 1)",
+          }),
+          backgroundFill: new olFill({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          padding: [2, 2, 2, 2],
+          textAlign: "left",
+          offsetX: 15,
+        }),
+      });
+    },
+    makeGeomStyle(feature, tip) {
+      const styles = [];
+
+      const style = new olStyle({
+        fill: new olFill({
+          color: "rgba(255, 255, 255, 0.2)",
+        }),
+        stroke: new olStroke({
+          color:
+            feature.get("stroke_color") || this.opened_view_color || "#000",
+          width: 2,
+          lineDash: [10, 5],
+        }),
+        image: this.makePointerStyle(),
+      });
+      styles.push(style);
+
+      const geometry = feature.getGeometry();
+      const type = geometry.getType();
+
+      if (
+        tip &&
+        type === "Point"
+        //  &&
+        // !this.map_modify.getOverlay().getSource().getFeatures().length
+      ) {
+        const tipStyle = new olStyle({
+          text: new olText({
+            font: this.makeDefaultFontString(),
+            fill: new olFill({
+              color: "rgba(0, 0, 0, 1)",
+            }),
+            backgroundFill: new olFill({
+              color: "rgba(255, 255, 255, .85)",
+            }),
+            padding: [2, 2, 2, 2],
+            textAlign: "left",
+            offsetX: 15,
+          }),
+        });
+
+        tipStyle.getText().setText(tip);
+        styles.push(tipStyle);
+      }
+
+      return styles;
+    },
+    makePointerStyle(fill_color = this.opened_view_color || "#000") {
+      return new olCircleStyle({
+        radius: 5,
+        stroke: new olStroke({
+          width: 2,
+          color: fill_color,
+        }),
+        fill: new olFill({
+          color: "rgba(255, 255, 255, 0.2)",
+        }),
+      });
+    },
     resetClickedLocation() {
-      this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
+      if (this.mouse_feature)
+        this.mouse_feature.getGeometry().setCoordinates([undefined, undefined]);
       this.clicked_location.latitude = undefined;
       this.clicked_location.longitude = undefined;
       this.clicked_location.module = undefined;
@@ -811,81 +951,309 @@ export default {
 
       return false;
     },
-    toggleDraw(type) {
+    toggleDraw({ draw_mode }) {
+      this.closePopup();
+      this.endRemoveMode();
       this.endDraw();
-      if (this.current_draw_mode === type || !type) {
+      if (!draw_mode || this.current_draw_mode === draw_mode.key) {
         this.current_draw_mode = undefined;
       } else {
-        this.current_draw_mode = type;
-        this.startDrawMode({ type });
+        this.current_draw_mode = draw_mode.key;
+        if (draw_mode.key === "Remove") this.startRemoveMode();
+        else this.startDrawMode({ draw_mode });
       }
     },
-    startDrawMode({ type }) {
-      this.map_modify = new olModify({ source: this.draw_vector_source });
-      this.map.addInteraction(this.map_modify);
+    startDrawMode({ draw_mode }) {
+      // this.map_modify = new olModify({
+      //   source: this.draw_vector_source,
+      //   style: this.modifyStyle,
+      // });
+      // this.map.addInteraction(this.map_modify);
 
+      let drawType = draw_mode.olType;
+      let freehand = draw_mode.freehand;
+      let idleTip = draw_mode.idleTip;
+      let activeTip = draw_mode.activeTip;
+
+      let tip = idleTip;
       this.map_draw = new olDraw({
         source: this.draw_vector_source,
-        type,
+        type: drawType,
+        freehand,
+        style: (feature) => this.makeGeomStyle(feature, tip),
+        // style: (feature) => {
+        //   return this.styleFunction(
+        //     feature,
+        //     this.show_segments_length,
+        //     drawType,
+        //     tip
+        //   );
+        // },
       });
       this.map.addInteraction(this.map_draw);
+      this.map_draw.on("drawstart", () => {
+        if (activeTip) tip = activeTip;
+        if (["LineString", "Polygon"].includes(this.current_draw_mode))
+          this.draw_can_be_finished = true;
+      });
+      this.map_draw.on("drawabort", () => {
+        tip = idleTip;
+        this.draw_can_be_finished = false;
+      });
+      this.map_draw.on("drawend", () => {
+        this.$nextTick(() => {
+          this.saveGeom();
+        });
+        tip = idleTip;
+        this.draw_can_be_finished = false;
+      });
 
       this.map_snap = new olSnap({ source: this.draw_vector_source });
       this.map.addInteraction(this.map_snap);
     },
-    saveGeom() {
-      // https://stackoverflow.com/a/35918210
-      const str = this.formatFeaturesAsString();
-      this.$emit("saveGeom", str);
+
+    // styleFunction(feature, segments, drawType, tip) {
+    //   const style = new olStyle({
+    //     fill: new olFill({
+    //       color: "rgba(255, 255, 255, 0.2)",
+    //     }),
+    //     stroke: new olStroke({
+    //       color: "rgba(0, 0, 0, 0.5)",
+    //       lineDash: [10, 10],
+    //       width: 2,
+    //     }),
+    //     image: new olCircleStyle({
+    //       radius: 5,
+    //       stroke: new olStroke({
+    //         color: "rgba(0, 0, 0, 0.7)",
+    //       }),
+    //       fill: new olFill({
+    //         color: "rgba(255, 255, 255, 0.2)",
+    //       }),
+    //     }),
+    //   });
+
+    //   const labelStyle = new olStyle({
+    //     text: new olText({
+    //       font: "14px Calibri,sans-serif",
+    //       fill: new olFill({
+    //         color: "rgba(255, 255, 255, 1)",
+    //       }),
+    //       backgroundFill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.7)",
+    //       }),
+    //       padding: [3, 3, 3, 3],
+    //       textBaseline: "bottom",
+    //       offsetY: -15,
+    //     }),
+    //     image: new olRegularShape({
+    //       radius: 8,
+    //       points: 3,
+    //       angle: Math.PI,
+    //       displacement: [0, 10],
+    //       fill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.7)",
+    //       }),
+    //     }),
+    //   });
+
+    //   const tipStyle = new olStyle({
+    //     text: new olText({
+    //       font: "12px Calibri,sans-serif",
+    //       fill: new olFill({
+    //         color: "rgba(255, 255, 255, 1)",
+    //       }),
+    //       backgroundFill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.4)",
+    //       }),
+    //       padding: [2, 2, 2, 2],
+    //       textAlign: "left",
+    //       offsetX: 15,
+    //     }),
+    //   });
+
+    //   const segmentStyle = new olStyle({
+    //     text: new olText({
+    //       font: "12px Calibri,sans-serif",
+    //       fill: new olFill({
+    //         color: "rgba(255, 255, 255, 1)",
+    //       }),
+    //       backgroundFill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.4)",
+    //       }),
+    //       padding: [2, 2, 2, 2],
+    //       textBaseline: "bottom",
+    //       offsetY: -12,
+    //     }),
+    //     image: new olRegularShape({
+    //       radius: 6,
+    //       points: 3,
+    //       angle: Math.PI,
+    //       displacement: [0, 8],
+    //       fill: new olFill({
+    //         color: "rgba(0, 0, 0, 0.4)",
+    //       }),
+    //     }),
+    //   });
+
+    //   const segmentStyles = [segmentStyle];
+
+    //   const formatLength = function (line) {
+    //     const length = getLength(line);
+    //     let output;
+    //     if (length > 100) {
+    //       output = Math.round((length / 1000) * 100) / 100 + " km";
+    //     } else {
+    //       output = Math.round(length * 100) / 100 + " m";
+    //     }
+    //     return output;
+    //   };
+
+    //   const formatArea = function (polygon) {
+    //     const area = getArea(polygon);
+    //     let output;
+    //     if (area > 10000) {
+    //       output = Math.round((area / 1000000) * 100) / 100 + " km\xB2";
+    //     } else {
+    //       output = Math.round(area * 100) / 100 + " m\xB2";
+    //     }
+    //     return output;
+    //   };
+
+    //   const styles = [];
+    //   const geometry = feature.getGeometry();
+    //   const type = geometry.getType();
+    //   let point, label, line;
+    //   if (!drawType || drawType === type || type === "Point") {
+    //     styles.push(style);
+    //     if (type === "Polygon") {
+    //       point = geometry.getInteriorPoint();
+    //       label = formatArea(geometry);
+    //       line = new olLineString(geometry.getCoordinates()[0]);
+    //     } else if (type === "LineString") {
+    //       point = new olPoint(geometry.getLastCoordinate());
+    //       label = formatLength(geometry);
+    //       line = geometry;
+    //     }
+    //   }
+    //   if (segments && line) {
+    //     let count = 0;
+    //     line.forEachSegment(function (a, b) {
+    //       const segment = new olLineString([a, b]);
+    //       const label = formatLength(segment);
+    //       if (segmentStyles.length - 1 < count) {
+    //         segmentStyles.push(segmentStyle.clone());
+    //       }
+    //       const segmentPoint = new olPoint(segment.getCoordinateAt(0.5));
+    //       segmentStyles[count].setGeometry(segmentPoint);
+    //       segmentStyles[count].getText().setText(label);
+    //       styles.push(segmentStyles[count]);
+    //       count++;
+    //     });
+    //   }
+    //   if (label) {
+    //     labelStyle.setGeometry(point);
+    //     labelStyle.getText().setText(label);
+    //     styles.push(labelStyle);
+    //   }
+    //   if (
+    //     tip &&
+    //     type === "Point"
+    //     //  &&
+    //     // !modify.getOverlay().getSource().getFeatures().length
+    //   ) {
+    //     // tipPoint = geometry;
+    //     tipStyle.getText().setText(tip);
+    //     styles.push(tipStyle);
+    //   }
+    //   return styles;
+    // },
+    finishDrawing() {
+      this.map_draw.finishDrawing();
     },
-    formatFeaturesAsString() {
+
+    saveGeom() {
       const features = this.draw_vector_source.getFeatures();
       const features_to_save = features.reduce((acc, f) => {
         const type = f.getGeometry().getType();
 
-        if (type === "Polygon") {
+        if (type === "Polygon" || type === "LineString") {
           const coords = f.getGeometry().getCoordinates();
           acc.push({ type, coords });
         } else if (type === "Circle") {
           const center = f.getGeometry().getCenter();
           const radius = f.getGeometry().getRadius();
           acc.push({ type, center, radius });
+        } else {
+          debugger;
         }
 
         return acc;
       }, []);
-      return JSON.stringify(features_to_save);
+      this.$emit("saveGeom", features_to_save);
     },
-    makeFeaturesFromString() {
+    drawGeom() {
       if (!this.geometries) return;
+
+      this.draw_vector_source.clear();
 
       try {
         let features = [];
-        const parsed = JSON.parse(this.geometries);
-        parsed.map((p) => {
+        this.geometries.map((p) => {
+          let feature_cont;
+
           if (p.type === "Polygon" && p.coords)
-            features.push(
-              new olFeature({
-                geometry: new olPolygon(p.coords),
-              })
-            );
+            feature_cont = {
+              geometry: new olPolygon(p.coords),
+              stroke_color: p.color,
+            };
+          else if (p.type === "LineString" && p.coords)
+            feature_cont = {
+              geometry: new olLineString(p.coords),
+              stroke_color: p.color,
+            };
           else if (p.type === "Circle" && p.center && p.radius)
-            features.push(new olFeature(new olCircle(p.center, p.radius)));
+            feature_cont = {
+              geometry: new olCircle(p.center, p.radius),
+              stroke_color: p.color,
+            };
+
+          features.push(new olFeature(feature_cont));
         });
-        return features;
+        this.draw_vector_source.addFeatures(features);
+        this.draw_vector_source.changed();
       } catch (err) {
         this.$alertify.delay(4000).error(err);
         return false;
       }
-
-      // new Feature(new Circle([5e6, 7e6], 1e6)));
-      // return newForm.readFeatures(this.geometries);
     },
-
     endDraw() {
       this.map.removeInteraction(this.map_modify);
       this.map.removeInteraction(this.map_draw);
       this.map.removeInteraction(this.map_snap);
+    },
+    startRemoveMode() {
+      // const tip = "plop";
+      this.map_select_and_remove = new olSelect({
+        // style: (feature) => this.makeGeomStyle(feature, tip),
+      });
+      this.feature_selected = undefined;
+      this.map.addInteraction(this.map_select_and_remove);
+      this.map_select_and_remove.on("select", (e) => {
+        if (e.target.getFeatures().getLength() > 0) {
+          this.feature_selected = e.target.getFeatures().getArray()[0];
+        } else this.feature_selected = false;
+      });
+    },
+    removeSelected() {
+      this.draw_vector_source.removeFeature(this.feature_selected);
+      this.$nextTick(() => {
+        this.saveGeom();
+      });
+    },
+    endRemoveMode() {
+      this.map.removeInteraction(this.map_select_and_remove);
+      this.feature_selected = undefined;
     },
   },
 };
@@ -1036,25 +1404,43 @@ export default {
 
 ._leftTopMenu {
   position: absolute;
-  top: 6.5em;
-  left: 0.5em;
+  top: 9.5rem;
+  left: 1rem;
 
   button {
     background: white;
     display: block;
-    margin: 1px;
+    // margin: 1px;
     padding: 0;
     color: var(--ol-subtle-foreground-color);
-    font-weight: bold;
-    text-decoration: none;
-    font-size: inherit;
-    text-align: center;
-    height: 1.375em;
-    width: 1.375em;
-    line-height: 0.4em;
+    height: 2rem;
+    width: 2rem;
     background-color: var(--ol-background-color);
-    border: none;
     border-radius: 2px;
+    border: 2px solid transparent;
+
+    &:hover,
+    &:focus-visible {
+    }
+
+    &.is--active {
+      border-color: var(--active-color);
+      background-color: var(--ol-background-color);
+    }
+  }
+}
+
+._bottomMenu {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: calc(var(--spacing) / 1);
+  text-align: center;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
   }
 }
 </style>

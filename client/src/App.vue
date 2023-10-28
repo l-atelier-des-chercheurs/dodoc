@@ -458,6 +458,9 @@ ol {
 small {
   font-size: var(--sl-font-size-small);
 }
+smaller {
+  font-size: var(--sl-font-size-x-small);
+}
 img {
   max-width: 100%;
   height: auto;
