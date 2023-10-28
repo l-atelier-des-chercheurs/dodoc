@@ -300,7 +300,7 @@ export default {
           icon: "border",
         },
       ],
-      map_select_and_remove: undefined,
+      map_select_mode: undefined,
       feature_selected: undefined,
     };
   },
@@ -325,15 +325,17 @@ export default {
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$on("publication.map.openPin", this.openPin);
+    document.addEventListener("keydown", this.keyPressed);
   },
   mounted() {
-    setTimeout(() => {
-      this.startMap();
-    }, 500);
+    // setTimeout(() => {
+    this.startMap();
+    // }, 500);
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$off("publication.map.openPin", this.openPin);
+    document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {
     pins: {
@@ -953,13 +955,13 @@ export default {
     },
     toggleDraw({ draw_mode }) {
       this.closePopup();
-      this.endRemoveMode();
+      this.endSelectMode();
       this.endDraw();
       if (!draw_mode || this.current_draw_mode === draw_mode.key) {
         this.current_draw_mode = undefined;
       } else {
         this.current_draw_mode = draw_mode.key;
-        if (draw_mode.key === "Remove") this.startRemoveMode();
+        if (draw_mode.key === "Select") this.startSelectMode();
         else this.startDrawMode({ draw_mode });
       }
     },
@@ -1232,28 +1234,44 @@ export default {
       this.map.removeInteraction(this.map_draw);
       this.map.removeInteraction(this.map_snap);
     },
-    startRemoveMode() {
+    startSelectMode() {
       // const tip = "plop";
-      this.map_select_and_remove = new olSelect({
+      this.map_select_mode = new olSelect({
         // style: (feature) => this.makeGeomStyle(feature, tip),
       });
       this.feature_selected = undefined;
-      this.map.addInteraction(this.map_select_and_remove);
-      this.map_select_and_remove.on("select", (e) => {
+      this.map.addInteraction(this.map_select_mode);
+      this.map_select_mode.on("select", (e) => {
         if (e.target.getFeatures().getLength() > 0) {
           this.feature_selected = e.target.getFeatures().getArray()[0];
         } else this.feature_selected = false;
       });
     },
     removeSelected() {
+      if (!this.feature_selected) return false;
       this.draw_vector_source.removeFeature(this.feature_selected);
       this.$nextTick(() => {
         this.saveGeom();
       });
     },
-    endRemoveMode() {
-      this.map.removeInteraction(this.map_select_and_remove);
+    endSelectMode() {
+      this.map.removeInteraction(this.map_select_mode);
       this.feature_selected = undefined;
+    },
+    keyPressed(event) {
+      if (
+        this.$root.modal_is_opened ||
+        event.target.tagName.toLowerCase() === "select" ||
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor") ||
+        event.target.hasAttribute("contenteditable")
+      )
+        return;
+
+      if (event.key === "Backspace" || event.key === "Delete") {
+        this.removeSelected();
+      }
     },
   },
 };
