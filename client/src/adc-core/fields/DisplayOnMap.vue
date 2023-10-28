@@ -71,27 +71,23 @@
     <div id="mouse-position" />
 
     <div class="_leftTopMenu" v-if="can_edit">
-      <template v-for="draw_type in draw_types">
+      <template v-for="draw_mode in draw_modes">
         <button
           type="button"
           class="u-button"
           :class="{
-            'is--active':
-              draw_type.key + '/' + draw_type.freehand === current_draw_mode,
+            'is--active': draw_mode.key === current_draw_mode,
           }"
-          :key="draw_type.key"
+          :key="draw_mode.key"
           @click="
             toggleDraw({
-              drawType: draw_type.key,
-              freehand: draw_type.freehand,
+              draw_mode,
             })
           "
         >
-          <b-icon class="inlineSVG" :icon="draw_type.icon" />
+          <b-icon class="inlineSVG" :icon="draw_mode.icon" />
         </button>
       </template>
-
-      <!-- <button type="button" class="" @click="toggleDraw('LinesString')">◯</button> -->
     </div>
   </div>
 </template>
@@ -225,24 +221,41 @@ export default {
       draw_vector_source: undefined,
       current_draw_mode: undefined,
       show_segments_length: false,
-      draw_types: [
+      draw_modes: [
+        // {
+        //   key: "LineString",
+        //   label: this.$t("line"),
+        //   icon: "circle",
+        //   freehand: false,
+        //   tip: ,
+        //   activeTip: ,
+        // },
         {
           key: "Circle",
           label: this.$t("circle"),
           icon: "circle",
+          olType: "Circle",
           freehand: false,
+          idleTip: this.$t("click_to_place_center"),
+          activeTip: this.$t("click_to_define_circle_radius"),
         },
         {
           key: "Polygon",
           label: this.$t("polygon"),
           icon: "pentagon",
+          olType: "Polygon",
           freehand: false,
+          idleTip: this.$t("click_to_start_drawing"),
+          activeTip: this.$t("click_to_continue_drawing"),
         },
         {
-          key: "LineString",
-          label: this.$t("polygon"),
+          key: "FreehandLineString",
+          label: this.$t("linestring"),
           icon: "pen",
+          olType: "LineString",
           freehand: true,
+          idleTip: this.$t("click_drag_to_draw_line"),
+          activeTip: this.$t("click_drag_to_draw_line"),
         },
         {
           key: "Remove",
@@ -917,40 +930,29 @@ export default {
 
       return false;
     },
-    toggleDraw({ drawType, freehand }) {
+    toggleDraw({ draw_mode }) {
       this.closePopup();
       this.endRemoveMode();
       this.endDraw();
-      const new_draw_opt = drawType + "/" + freehand;
-      if (this.current_draw_mode === new_draw_opt || !drawType) {
+      if (!draw_mode || this.current_draw_mode === draw_mode.key) {
         this.current_draw_mode = undefined;
       } else {
-        this.current_draw_mode = new_draw_opt;
-        if (drawType == "Remove") this.startRemoveMode();
-        else this.startDrawMode({ drawType, freehand });
+        this.current_draw_mode = draw_mode.key;
+        if (draw_mode.key === "Remove") this.startRemoveMode();
+        else this.startDrawMode({ draw_mode });
       }
     },
-    startDrawMode({ drawType, freehand }) {
+    startDrawMode({ draw_mode }) {
       // this.map_modify = new olModify({
       //   source: this.draw_vector_source,
       //   style: this.modifyStyle,
       // });
       // this.map.addInteraction(this.map_modify);
 
-      let idleTip, activeTip;
-      if (drawType === "Polygon") {
-        if (!freehand) {
-          idleTip = this.$t("click_to_start_drawing");
-          activeTip = this.$t("click_to_continue_drawing");
-        } else {
-          idleTip = this.$t("click_drag_to_draw");
-        }
-      } else if (drawType === "LineString") {
-        idleTip = this.$t("click_drag_to_draw_line");
-      } else if (drawType === "Circle") {
-        idleTip = this.$t("click_to_place_center");
-        activeTip = this.$t("click_to_define_circle_radius");
-      }
+      let drawType = draw_mode.olType;
+      let freehand = draw_mode.freehand;
+      let idleTip = draw_mode.idleTip;
+      let activeTip = draw_mode.activeTip;
 
       let tip = idleTip;
       this.map_draw = new olDraw({
