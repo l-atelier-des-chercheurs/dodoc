@@ -169,6 +169,7 @@ import {
   Draw as olDraw,
   // Modify as olModify,
   Select as olSelect,
+  Translate as olTranslate,
   Snap as olSnap,
 } from "ol/interaction";
 
@@ -305,6 +306,7 @@ export default {
       ],
       map_select_mode: undefined,
       feature_selected: undefined,
+      map_translate: undefined,
     };
   },
   i18n: {
@@ -1184,8 +1186,12 @@ export default {
     },
 
     saveGeom() {
+      const geom_str = this.convertFeaturesToStr();
+      this.$emit("saveGeom", geom_str);
+    },
+    convertFeaturesToStr() {
       const features = this.draw_vector_source.getFeatures();
-      const features_to_save = features.reduce((acc, f) => {
+      return features.reduce((acc, f) => {
         const type = f.getGeometry().getType();
 
         if (type === "Polygon" || type === "LineString") {
@@ -1201,7 +1207,6 @@ export default {
 
         return acc;
       }, []);
-      this.$emit("saveGeom", features_to_save);
     },
     drawGeom() {
       if (!this.geometries) return;
@@ -1255,6 +1260,16 @@ export default {
           this.feature_selected = e.target.getFeatures().getArray()[0];
         } else this.feature_selected = false;
       });
+
+      this.map_translate = new olTranslate({
+        features: this.map_select_mode.getFeatures(),
+      });
+      this.map.addInteraction(this.map_translate);
+      this.map_translate.on("translateend", () => {
+        this.$nextTick(() => {
+          this.saveGeom();
+        });
+      });
     },
     removeSelected() {
       if (!this.feature_selected) return false;
@@ -1264,6 +1279,7 @@ export default {
       });
     },
     endSelectMode() {
+      this.map.removeInteraction(this.map_translate);
       this.map.removeInteraction(this.map_select_mode);
       this.feature_selected = undefined;
     },
