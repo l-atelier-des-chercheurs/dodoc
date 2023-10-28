@@ -90,25 +90,30 @@
       </template>
     </div>
 
-    <div
-      class="_finishDrawing"
-      v-if="
-        ['LineString', 'Polygon'].includes(current_draw_mode) &&
-        draw_can_be_finished
-      "
-    >
-      <button
-        type="button"
-        class="u-button u-button_bleumarine"
-        @click="finishDrawing"
-      >
-        {{ $t("finish_drawing") }}
-      </button>
-      <div class="u-instructions">
-        <small>
-          {{ $t("or_double_click") }}
-        </small>
-      </div>
+    <div class="_bottomMenu" v-if="draw_can_be_finished || feature_selected">
+      <template v-if="draw_can_be_finished">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine"
+          @click="finishDrawing"
+        >
+          {{ $t("finish_drawing") }}
+        </button>
+        <div class="u-instructions">
+          <small>
+            {{ $t("or_double_click") }}
+          </small>
+        </div>
+      </template>
+      <template v-else-if="feature_selected">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine"
+          @click="removeSelected"
+        >
+          {{ $t("remove") }}
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -290,12 +295,13 @@ export default {
           activeTip: this.$t("click_to_continue_drawing"),
         },
         {
-          key: "Remove",
-          label: this.$t("remove"),
-          icon: "x-lg",
+          key: "Select",
+          label: this.$t("select"),
+          icon: "border",
         },
       ],
       map_select_and_remove: undefined,
+      feature_selected: undefined,
     };
   },
   i18n: {
@@ -527,22 +533,6 @@ export default {
       this.map.addOverlay(this.overlay);
 
       ////////////////////////////////////////////////////////////////////////// MAP OR FEATURE CLICK
-
-      let feature_selected = null;
-      this.map.on("pointermove", (event) => {
-        if (feature_selected !== null) {
-          feature_selected.setStyle(undefined);
-          feature_selected = null;
-        }
-
-        this.map.forEachFeatureAtPixel(event.pixel, (f) => {
-          feature_selected = f;
-          // const selectStyle = this.makePointStyle({});
-          // selectStyle.getFill().setColor(f.get("COLOR") || "#eeeeee");
-          // f.setStyle(selectStyle);
-          // return true;
-        });
-      });
 
       this.map.on("moveend", () => {
         this.current_zoom = this.roundToDec(this.map.getView().getZoom());
@@ -1003,7 +993,8 @@ export default {
       this.map.addInteraction(this.map_draw);
       this.map_draw.on("drawstart", () => {
         if (activeTip) tip = activeTip;
-        this.draw_can_be_finished = true;
+        if (["LineString", "Polygon"].includes(this.current_draw_mode))
+          this.draw_can_be_finished = true;
       });
       this.map_draw.on("drawabort", () => {
         tip = idleTip;
@@ -1242,23 +1233,27 @@ export default {
       this.map.removeInteraction(this.map_snap);
     },
     startRemoveMode() {
-      const tip = "plop";
+      // const tip = "plop";
       this.map_select_and_remove = new olSelect({
-        style: (feature) => this.makeGeomStyle(feature, tip),
+        // style: (feature) => this.makeGeomStyle(feature, tip),
       });
+      this.feature_selected = undefined;
       this.map.addInteraction(this.map_select_and_remove);
       this.map_select_and_remove.on("select", (e) => {
         if (e.target.getFeatures().getLength() > 0) {
-          const feature_to_remove = e.target.getFeatures().getArray()[0];
-          this.draw_vector_source.removeFeature(feature_to_remove);
-          this.$nextTick(() => {
-            this.saveGeom();
-          });
-        }
+          this.feature_selected = e.target.getFeatures().getArray()[0];
+        } else this.feature_selected = false;
+      });
+    },
+    removeSelected() {
+      this.draw_vector_source.removeFeature(this.feature_selected);
+      this.$nextTick(() => {
+        this.saveGeom();
       });
     },
     endRemoveMode() {
       this.map.removeInteraction(this.map_select_and_remove);
+      this.feature_selected = undefined;
     },
   },
 };
@@ -1435,7 +1430,7 @@ export default {
   }
 }
 
-._finishDrawing {
+._bottomMenu {
   position: absolute;
   bottom: 0;
   left: 0;
