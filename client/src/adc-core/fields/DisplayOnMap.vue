@@ -86,6 +86,9 @@
           "
         >
           <b-icon class="inlineSVG" :icon="draw_mode.icon" />
+          <template v-if="draw_mode.key === current_draw_mode">
+            {{ draw_mode.label }}
+          </template>
         </button>
       </template>
     </div>
@@ -260,7 +263,7 @@ export default {
         // },
         {
           key: "LineString",
-          label: this.$t("linestring"),
+          label: this.$t("lines"),
           icon: "dash-lg",
           olType: "LineString",
           freehand: false,
@@ -269,7 +272,7 @@ export default {
         },
         {
           key: "FreehandLineString",
-          label: this.$t("linestring"),
+          label: this.$t("freehand"),
           icon: "pen",
           olType: "LineString",
           freehand: true,
@@ -307,6 +310,12 @@ export default {
   i18n: {
     messages: {
       fr: {
+        lines: "Droites",
+        freehand: "Tracé libre",
+        circle: "Cercle",
+        polygon: "Polygone",
+        select: "Sélection",
+
         mouse_position: "Position de la balise",
         search_for_a_place: "Rechercher un lieu",
         click_to_start_drawing: "cliquer pour commencer le tracé",
@@ -1427,15 +1436,17 @@ export default {
 
   button {
     background: white;
-    display: block;
-    // margin: 1px;
+
     padding: 0;
     color: var(--ol-subtle-foreground-color);
     height: 2rem;
-    width: 2rem;
     background-color: var(--ol-background-color);
     border-radius: 2px;
     border: 2px solid transparent;
+
+    min-width: 2rem;
+    padding: calc(var(--spacing) / 4);
+    display: flex;
 
     &:hover,
     &:focus-visible {
