@@ -1184,6 +1184,9 @@ export default {
     finishDrawing() {
       this.map_draw.finishDrawing();
     },
+    abortDrawing() {
+      this.map_draw.abortDrawing();
+    },
 
     saveGeom() {
       const geom_str = this.convertFeaturesToStr();
@@ -1294,9 +1297,10 @@ export default {
       )
         return;
 
-      if (event.key === "Backspace" || event.key === "Delete") {
+      if (event.key === "Backspace" || event.key === "Delete")
         this.removeSelected();
-      }
+      else if (event.key === "Escape" && this.map_draw) this.abortDrawing();
+      else if (event.key === "Enter" && this.map_draw) this.finishDrawing();
     },
   },
 };
