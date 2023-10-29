@@ -109,7 +109,7 @@
       </div>
     </div>
 
-    <div class="_bottomMenu" v-if="draw_can_be_finished || feature_selected">
+    <div class="_bottomMenu" v-if="draw_can_be_finished || selected_feature_id">
       <template v-if="draw_can_be_finished">
         <button
           type="button"
@@ -124,7 +124,7 @@
           </small>
         </div>
       </template>
-      <template v-else-if="feature_selected">
+      <template v-else-if="selected_feature_id">
         <button
           type="button"
           class="u-button u-button_bleumarine"
@@ -152,7 +152,6 @@ import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
 import { getCenter } from "ol/extent";
-import { getUid } from "ol/util";
 
 // import { getArea, getLength } from "ol/sphere";
 
@@ -324,7 +323,7 @@ export default {
         },
       ],
       map_select_mode: undefined,
-      feature_selected: undefined,
+      selected_feature_id: undefined,
       map_translate: undefined,
     };
   },
@@ -390,7 +389,7 @@ export default {
     //   deep: true,
     // },
     geometries() {
-      this.drawGeom();
+      this.loadGeom();
     },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
@@ -613,7 +612,7 @@ export default {
       ////////////////////////////////////////////////////////////////////////// DRAW LAYER
 
       this.draw_vector_source = new olSourceVector({ wrapX: false });
-      this.drawGeom();
+      this.loadGeom();
       this.map.addLayer(
         new olVectorLayer({
           source: this.draw_vector_source,
@@ -1056,7 +1055,8 @@ export default {
       });
       this.map_draw.on("drawend", (event) => {
         const new_feature = event.feature;
-        var id = getUid(new_feature);
+        const type = new_feature.getGeometry().getType();
+        var id = `${type}-` + this.getRandomString();
         new_feature.setId(id);
 
         this.$nextTick(() => {
@@ -1261,7 +1261,7 @@ export default {
         return acc;
       }, []);
     },
-    drawGeom() {
+    loadGeom() {
       if (!this.geometries) return;
 
       this.draw_vector_source.clear();
@@ -1286,17 +1286,22 @@ export default {
               geometry: new olCircle(p.center, p.radius),
               stroke_color: p.color,
             };
-          if (p.id) feature_cont.id = p.id;
 
-          features.push(new olFeature(feature_cont));
+          const feature = new olFeature(feature_cont);
+          if (p.id) feature.setId(p.id);
+
+          features.push(feature);
         });
         this.draw_vector_source.addFeatures(features);
         this.draw_vector_source.changed();
 
-        if (this.feature_selected) {
-          debugger;
-        }
+        if (
+          this.selected_feature_id &&
+          !this.draw_vector_source.getFeatureById(this.selected_feature_id)
+        )
+          this.selected_feature_id = undefined;
       } catch (err) {
+        debugger;
         this.$alertify.delay(4000).error(err);
         return false;
       }
@@ -1307,26 +1312,19 @@ export default {
       this.map.removeInteraction(this.map_snap);
     },
     startSelectMode() {
-      // const tip = "plop";
-      //       const selected = new Style({
-      //   fill: new Fill({
-      //     color: '#eeeeee',
-      //   }),
-      //   stroke: new Stroke({
-      //     color: 'rgba(255, 255, 255, 0.7)',
-      //     width: 2,
-      //   }),
-      // });
+      this.selected_feature_id = undefined;
 
       this.map_select_mode = new olSelect({
         style: (feature) => this.makeGeomStyle({ feature, is_selected: true }),
       });
-      this.feature_selected = undefined;
       this.map.addInteraction(this.map_select_mode);
       this.map_select_mode.on("select", (e) => {
         if (e.target.getFeatures().getLength() > 0) {
-          this.feature_selected = e.target.getFeatures().getArray()[0];
-        } else this.feature_selected = false;
+          const feature_selected = e.target.getFeatures().getArray()[0];
+          const id = feature_selected.getId();
+          if (id) return (this.selected_feature_id = id);
+        }
+        this.selected_feature_id = undefined;
       });
 
       this.map_translate = new olTranslate({
@@ -1340,8 +1338,11 @@ export default {
       });
     },
     removeSelected() {
-      if (!this.feature_selected) return false;
-      this.draw_vector_source.removeFeature(this.feature_selected);
+      if (!this.selected_feature_id) return false;
+      const feature_to_remove = this.draw_vector_source.getFeatureById(
+        this.selected_feature_id
+      );
+      this.draw_vector_source.removeFeature(feature_to_remove);
       this.$nextTick(() => {
         this.saveGeom();
       });
@@ -1349,7 +1350,7 @@ export default {
     endSelectMode() {
       this.map.removeInteraction(this.map_translate);
       this.map.removeInteraction(this.map_select_mode);
-      this.feature_selected = undefined;
+      this.selected_feature_id = undefined;
     },
     keyPressed(event) {
       if (
