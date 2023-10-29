@@ -582,6 +582,7 @@ export default {
     },
     repickLocation() {
       this.is_repicking_location = true;
+      this.$eventHub.$emit("publication.map.disableTools");
     },
     showModuleOnMap() {
       this.$eventHub.$emit("publication.map.openPin", this.publimodule.$path);
