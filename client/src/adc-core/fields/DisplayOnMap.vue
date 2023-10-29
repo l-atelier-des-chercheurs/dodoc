@@ -70,9 +70,25 @@
     </div>
     <div id="mouse-position" />
 
-    <div class="_leftTopMenu" v-if="can_edit">
-      <template v-for="draw_mode in draw_modes">
+    <div class="_leftTopMenu">
+      <div class="_buttonRow">
+        <button type="button" class="u-button" @click="zoomIn">
+          <b-icon class="inlineSVG" icon="plus" />
+        </button>
+        <button type="button" class="u-button" @click="zoomOut">
+          <b-icon class="inlineSVG" icon="dash" />
+        </button>
+      </div>
+
+      <div class="_buttonRow">
+        <button type="button" class="u-button" @click="toggleSearch">
+          <b-icon class="inlineSVG" icon="search" />
+        </button>
+      </div>
+
+      <div class="_buttonRow" v-if="can_edit">
         <button
+          v-for="draw_mode in draw_modes"
           type="button"
           class="u-button"
           :class="{
@@ -90,7 +106,7 @@
             {{ draw_mode.label }}
           </template>
         </button>
-      </template>
+      </div>
     </div>
 
     <div class="_bottomMenu" v-if="draw_can_be_finished || feature_selected">
@@ -136,6 +152,7 @@ import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
 import { getCenter } from "ol/extent";
+import { getUid } from "ol/util";
 
 // import { getArea, getLength } from "ol/sphere";
 
@@ -172,6 +189,8 @@ import {
   Translate as olTranslate,
   Snap as olSnap,
 } from "ol/interaction";
+
+import { defaults as olDefaultControls } from "ol/control";
 
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
@@ -428,6 +447,9 @@ export default {
       this.view = view;
 
       this.map = new olMap({
+        controls: olDefaultControls({
+          zoom: false,
+        }),
         target: this.$refs.map,
         view: this.view,
         layers: [background_layer],
@@ -595,9 +617,22 @@ export default {
       this.map.addLayer(
         new olVectorLayer({
           source: this.draw_vector_source,
-          style: (feature) => this.makeGeomStyle(feature),
+          style: (feature) => this.makeGeomStyle({ feature }),
         })
       );
+    },
+    zoomIn() {
+      var view = this.map.getView();
+      var zoom = view.getZoom();
+      view.setZoom(zoom + 1);
+    },
+    zoomOut() {
+      var view = this.map.getView();
+      var zoom = view.getZoom();
+      view.setZoom(zoom - 1);
+    },
+    toggleSearch() {
+      this.$el.querySelector("#gcd-button-control").click();
     },
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
@@ -857,18 +892,24 @@ export default {
         }),
       });
     },
-    makeGeomStyle(feature, tip) {
+    makeGeomStyle({ feature, tip, is_selected }) {
       const styles = [];
+
+      const line_dash = is_selected ? undefined : [10, 5];
+      const stroke_width = is_selected ? 3 : 2;
+      const fill_color = is_selected
+        ? "rgba(255, 255, 255, 0.4)"
+        : "rgba(255, 255, 255, 0.2)";
 
       const style = new olStyle({
         fill: new olFill({
-          color: "rgba(255, 255, 255, 0.2)",
+          color: fill_color,
         }),
         stroke: new olStroke({
           color:
             feature.get("stroke_color") || this.opened_view_color || "#000",
-          width: 2,
-          lineDash: [10, 5],
+          width: stroke_width,
+          lineDash: line_dash,
         }),
         image: this.makePointerStyle(),
       });
@@ -879,7 +920,7 @@ export default {
 
       if (
         tip &&
-        type === "Point"
+        (type === "Point" || is_selected)
         //  &&
         // !this.map_modify.getOverlay().getSource().getFeatures().length
       ) {
@@ -993,7 +1034,7 @@ export default {
         source: this.draw_vector_source,
         type: drawType,
         freehand,
-        style: (feature) => this.makeGeomStyle(feature, tip),
+        style: (feature) => this.makeGeomStyle({ feature, tip }),
         // style: (feature) => {
         //   return this.styleFunction(
         //     feature,
@@ -1013,7 +1054,11 @@ export default {
         tip = idleTip;
         this.draw_can_be_finished = false;
       });
-      this.map_draw.on("drawend", () => {
+      this.map_draw.on("drawend", (event) => {
+        const new_feature = event.feature;
+        var id = getUid(new_feature);
+        new_feature.setId(id);
+
         this.$nextTick(() => {
           this.saveGeom();
         });
@@ -1197,16 +1242,21 @@ export default {
       return features.reduce((acc, f) => {
         const type = f.getGeometry().getType();
 
+        let obj = {};
         if (type === "Polygon" || type === "LineString") {
-          const coords = f.getGeometry().getCoordinates();
-          acc.push({ type, coords });
+          obj.type = type;
+          obj.coords = f.getGeometry().getCoordinates();
         } else if (type === "Circle") {
-          const center = f.getGeometry().getCenter();
-          const radius = f.getGeometry().getRadius();
-          acc.push({ type, center, radius });
+          obj.type = type;
+          obj.center = f.getGeometry().getCenter();
+          obj.radius = f.getGeometry().getRadius();
         } else {
-          debugger;
+          return acc;
         }
+
+        const id = f.getId();
+        if (id) obj.id = id;
+        acc.push(obj);
 
         return acc;
       }, []);
@@ -1236,11 +1286,16 @@ export default {
               geometry: new olCircle(p.center, p.radius),
               stroke_color: p.color,
             };
+          if (p.id) feature_cont.id = p.id;
 
           features.push(new olFeature(feature_cont));
         });
         this.draw_vector_source.addFeatures(features);
         this.draw_vector_source.changed();
+
+        if (this.feature_selected) {
+          debugger;
+        }
       } catch (err) {
         this.$alertify.delay(4000).error(err);
         return false;
@@ -1253,8 +1308,18 @@ export default {
     },
     startSelectMode() {
       // const tip = "plop";
+      //       const selected = new Style({
+      //   fill: new Fill({
+      //     color: '#eeeeee',
+      //   }),
+      //   stroke: new Stroke({
+      //     color: 'rgba(255, 255, 255, 0.7)',
+      //     width: 2,
+      //   }),
+      // });
+
       this.map_select_mode = new olSelect({
-        // style: (feature) => this.makeGeomStyle(feature, tip),
+        style: (feature) => this.makeGeomStyle({ feature, is_selected: true }),
       });
       this.feature_selected = undefined;
       this.map.addInteraction(this.map_select_mode);
@@ -1330,11 +1395,33 @@ export default {
 
   ::v-deep {
     .ol-geocoder {
+      position: absolute;
+      top: 6rem;
+      left: calc(var(--spacing) / 1);
+      font-size: 0.8em;
       .gcd-gl-btn {
-        height: 1.375em;
-        width: 1.375em;
+        height: 2rem;
+        width: 2rem;
+      }
+      .gcd-button-control {
+        visibility: hidden;
+        width: 1px;
+        height: 1px;
       }
       .gcd-gl-input {
+        width: calc(14rem);
+        left: 0;
+        top: 0;
+        position: relative;
+      }
+
+      .gcd-gl-control {
+        height: calc(2rem + 2px);
+        width: calc(2rem + 2px);
+
+        &.gcd-gl-expanded {
+          width: calc(16rem + 2px);
+        }
       }
     }
     .gcd-road {
@@ -1451,20 +1538,44 @@ export default {
 
 ._leftTopMenu {
   position: absolute;
-  top: 9.5rem;
-  left: 1rem;
+  top: calc(var(--spacing) / 1);
+  left: calc(var(--spacing) / 1);
+  pointer-events: none;
+
+  > ._buttonRow {
+    position: relative;
+
+    &:not(:last-child) {
+      margin-bottom: calc(var(--spacing) / 1);
+    }
+
+    &::before {
+      position: absolute;
+      inset: 0px;
+      background: black;
+      content: "";
+      width: calc(2rem + 2px);
+      border-radius: 3px;
+      opacity: 0.1;
+      z-index: 0;
+    }
+  }
 
   button {
+    position: relative;
     background: white;
 
     padding: 0;
     color: var(--ol-subtle-foreground-color);
     height: 2rem;
-    background-color: var(--ol-background-color);
-    border-radius: 2px;
-    border: 2px solid transparent;
-
     min-width: 2rem;
+
+    background-color: var(--ol-background-color);
+    border: 2px solid transparent;
+    border-radius: 0;
+    margin: 1px;
+    pointer-events: auto;
+
     padding: calc(var(--spacing) / 4);
     display: flex;
 
@@ -1475,6 +1586,15 @@ export default {
     &.is--active {
       border-color: var(--active-color);
       background-color: var(--ol-background-color);
+    }
+
+    &:first-child {
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+    }
+    &:last-child {
+      border-bottom-left-radius: 2px;
+      border-bottom-right-radius: 2px;
     }
   }
 }
