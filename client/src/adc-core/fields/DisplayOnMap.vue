@@ -91,7 +91,7 @@
         <button
           v-for="draw_mode in draw_modes"
           type="button"
-          class="u-button _isViewColor"
+          class="u-button"
           :class="{
             'is--active': draw_mode.key === current_draw_mode,
           }"
@@ -152,7 +152,7 @@ import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
-import { getCenter } from "ol/extent";
+import { getCenter, extend } from "ol/extent";
 
 // import { getArea, getLength } from "ol/sphere";
 
@@ -200,9 +200,9 @@ export default {
     pins: [Boolean, Array],
     lines: [Boolean, Object],
     geometries: [Boolean, Array],
-    start_coords: {
-      type: [Boolean, Object],
-    },
+    // start_coords: {
+    //   type: [Boolean, Object],
+    // },
     start_zoom: {
       type: [Boolean, Number],
       default: 2,
@@ -415,24 +415,21 @@ export default {
   },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
-      let zoom = this.constrainVal(
-        this.start_zoom,
-        this.min_zoom,
-        this.max_zoom
-      );
+      let zoom = 13;
       let center;
 
-      if (this.start_coords?.longitude && this.start_coords?.latitude)
-        center = [this.start_coords.longitude, this.start_coords.latitude];
-      else if (
-        this.pins &&
-        this.pins.length > 0 &&
-        this.pins[0] &&
-        this.pins[0].longitude &&
-        this.pins[0].latitude
-      ) {
-        center = [this.pins[0].longitude, this.pins[0].latitude];
-      }
+      // if (this.start_coords?.longitude && this.start_coords?.latitude)
+      //   center = [this.start_coords.longitude, this.start_coords.latitude];
+      // else
+      //  if (
+      //   this.pins &&
+      //   this.pins.length > 0 &&
+      //   this.pins[0] &&
+      //   this.pins[0].longitude &&
+      //   this.pins[0].latitude
+      // ) {
+      //   center = [this.pins[0].longitude, this.pins[0].latitude];
+      // }
 
       // destroy map if exist
       if (this.map) {
@@ -477,12 +474,13 @@ export default {
       ////////////////////////////////////////////////////////////////////////// CREATE PINS
 
       this.pin_features = this.createPointFeaturesFromPins();
+      const pin_source = new olSourceVector({
+        features: this.pin_features,
+        wrapX: false,
+      });
       this.map.addLayer(
         new olVectorLayer({
-          source: new olSourceVector({
-            features: this.pin_features,
-            wrapX: false,
-          }),
+          source: pin_source,
           style: (feature, resolution) =>
             this.makePointStyle({
               feature,
@@ -561,7 +559,6 @@ export default {
           this.navigateTo({
             center: [+evt.place.lon, +evt.place.lat],
           });
-          // this.map.getView().fit(evt.place.bbox);
         }
       });
 
@@ -626,6 +623,30 @@ export default {
           style: (feature) => this.makeGeomStyle({ feature }),
         })
       );
+
+      ////////////////////////////////////////////////////////////////////////// SET VIEW
+
+      if (!this.keep_loc_and_zoom) {
+        let extents = [];
+        if (pin_source.getFeatures().length > 0)
+          extents.push(pin_source.getExtent());
+        if (this.draw_vector_source.getFeatures().length > 0)
+          extents.push(this.draw_vector_source.getExtent());
+
+        if (extents.length > 0) {
+          let full_extent;
+          if (extents.length === 1) full_extent = extents[0];
+          else if (extents.length === 2)
+            full_extent = extend(extents[0], extents[1]);
+
+          this.map.getView().fit(full_extent, {
+            padding: [50, 50, 50, 50],
+          });
+          // const zoom = this.map.getView().getZoom();
+          debugger;
+          // if zoom is too narrow, we just unzoom a little bit
+        }
+      }
     },
     zoomIn() {
       var view = this.map.getView();
@@ -684,8 +705,10 @@ export default {
         view = new olView({
           center,
           zoom,
-          minZoom: this.min_zoom,
-          maxZoom: this.max_zoom,
+          minZoom: 3,
+          maxZoom: 18,
+          showFullExtent: true,
+          enableRotation: false,
         });
         const source = this.createSource(this.map_baselayer);
         background_layer = new olTileLayer({
@@ -1308,7 +1331,6 @@ export default {
         )
           this.selected_feature_id = undefined;
       } catch (err) {
-        debugger;
         this.$alertify.delay(4000).error(err);
         return false;
       }
@@ -1607,8 +1629,8 @@ export default {
     }
 
     &.is--active {
-      border-color: var(--active-color);
       background-color: var(--ol-background-color);
+      border-color: var(--current-view-color, --active-color);
     }
 
     &:first-child {
@@ -1618,10 +1640,6 @@ export default {
     &:last-child {
       border-bottom-left-radius: 2px;
       border-bottom-right-radius: 2px;
-    }
-
-    &._isViewColor {
-      color: var(--current-view-color);
     }
   }
 }
