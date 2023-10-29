@@ -38,6 +38,7 @@
         /> -->
 
     <StatusTag
+      v-if="can_edit"
       :status="publication.$status || 'public'"
       :status_options="['public', 'private']"
       :path="publication.$path"

@@ -94,17 +94,9 @@ export default {
       type: String,
       String: "#ffffff",
     },
-  },
-  components: {},
-  data() {
-    return {
-      show_color_input: this.value ? true : false,
-      edit_mode: false,
-
-      local_value: this.value || this.default_value,
-      previous_value: undefined,
-
-      default_colors: [
+    default_colors: {
+      type: Array,
+      default: () => [
         "#000000",
         "#353535",
         "#b9b9b9",
@@ -114,6 +106,16 @@ export default {
         "#ffbe32",
         "#fc4b60",
       ],
+    },
+  },
+  components: {},
+  data() {
+    return {
+      show_color_input: this.value ? true : false,
+      edit_mode: false,
+
+      local_value: this.value || this.default_value,
+      previous_value: undefined,
     };
   },
   created() {},

@@ -97,7 +97,7 @@
           }"
           :key="draw_mode.key"
           @click="
-            toggleDraw({
+            toggleTool({
               draw_mode,
             })
           "
@@ -355,6 +355,7 @@ export default {
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$on("publication.map.openPin", this.openPin);
+    this.$eventHub.$on("publication.map.disableTools", this.disableTools);
     document.addEventListener("keydown", this.keyPressed);
   },
   mounted() {
@@ -365,6 +366,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$off("publication.map.openPin", this.openPin);
+    this.$eventHub.$off("publication.map.disableTools", this.disableTools);
     document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {
@@ -1037,7 +1039,7 @@ export default {
 
       return false;
     },
-    toggleDraw({ draw_mode }) {
+    toggleTool({ draw_mode } = {}) {
       this.closePopup();
       this.endSelectMode();
       this.endDraw();
@@ -1260,12 +1262,14 @@ export default {
     //   return styles;
     // },
     finishDrawing() {
-      this.map_draw.finishDrawing();
+      if (this.map_draw) this.map_draw.finishDrawing();
     },
     abortDrawing() {
-      this.map_draw.abortDrawing();
+      if (this.map_draw) this.map_draw.abortDrawing();
     },
-
+    disableTools() {
+      this.toggleTool();
+    },
     saveGeom() {
       const geom_str = this.convertFeaturesToStr();
       this.$emit("saveGeom", geom_str);
@@ -1339,6 +1343,7 @@ export default {
       }
     },
     endDraw() {
+      this.abortDrawing();
       this.map.removeInteraction(this.map_modify);
       this.map.removeInteraction(this.map_draw);
       this.map.removeInteraction(this.map_snap);

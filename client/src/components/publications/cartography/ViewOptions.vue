@@ -17,6 +17,14 @@
             :label="$t('pins_color')"
             :can_toggle="false"
             :default_value="default_view_color"
+            :default_colors="[
+              '#b9b9b9',
+              '#ffffff',
+              '#B0BDED',
+              '#52c5b9',
+              '#ffbe32',
+              '#fc4b60',
+            ]"
             :value="view.section_color"
             @save="updateView({ field: 'section_color', value: $event })"
           />
