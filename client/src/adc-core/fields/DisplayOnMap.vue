@@ -552,6 +552,12 @@ export default {
             this.clicked_location.latitude,
           ];
 
+          this.$emit("newPositionClicked", {
+            longitude: this.clicked_location.longitude,
+            latitude: this.clicked_location.latitude,
+            zoom: this.current_zoom,
+          });
+
           this.popup_message = evt.address.formatted;
 
           this.overlay.setPosition(coordinate);
