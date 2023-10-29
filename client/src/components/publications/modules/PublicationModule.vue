@@ -147,11 +147,16 @@
                   <sl-icon name="file-plus" />
                   <!-- {{ $t("duplicate") }} -->
                 </button>
-                <button type="button" class="u-button" @click="removeModule">
-                  <sl-icon name="trash3" />
+                <RemoveMenu
+                  v-if="can_edit"
+                  :remove_text="$t('remove')"
+                  :show_button_text="true"
+                  @remove="removeModule"
+                />
 
-                  <!-- {{ $t("remove") }} -->
-                </button>
+                <!-- <button type="button" class="u-button" @click="removeModule">
+                  <sl-icon name="trash3" />
+                </button> -->
               </div>
             </div>
             <div class="_carto" v-if="is_associated_to_map">

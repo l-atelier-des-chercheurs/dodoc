@@ -45,7 +45,7 @@
             v-if="edit_mode"
             :path="path"
             :existing_preview="existing_preview"
-            :available_options="['import', 'capture']"
+            :available_options="['import', 'project', 'capture']"
             @newPreview="
               (value) => {
                 new_cover = value;

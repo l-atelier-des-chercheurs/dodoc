@@ -4,6 +4,7 @@
     :class="{
       'is--small': is_small,
     }"
+    :style="map_styles"
   >
     <div class="_map" ref="map" />
 
@@ -70,9 +71,25 @@
     </div>
     <div id="mouse-position" />
 
-    <div class="_leftTopMenu" v-if="can_edit">
-      <template v-for="draw_mode in draw_modes">
+    <div class="_leftTopMenu">
+      <div class="_buttonRow">
+        <button type="button" class="u-button" @click="zoomIn">
+          <b-icon class="inlineSVG" icon="plus" />
+        </button>
+        <button type="button" class="u-button" @click="zoomOut">
+          <b-icon class="inlineSVG" icon="dash" />
+        </button>
+      </div>
+
+      <div class="_buttonRow">
+        <button type="button" class="u-button" @click="toggleSearch">
+          <b-icon class="inlineSVG" icon="search" />
+        </button>
+      </div>
+
+      <div class="_buttonRow" v-if="can_edit">
         <button
+          v-for="draw_mode in draw_modes"
           type="button"
           class="u-button"
           :class="{
@@ -86,11 +103,14 @@
           "
         >
           <b-icon class="inlineSVG" :icon="draw_mode.icon" />
+          <template v-if="draw_mode.key === current_draw_mode">
+            {{ draw_mode.label }}
+          </template>
         </button>
-      </template>
+      </div>
     </div>
 
-    <div class="_bottomMenu" v-if="draw_can_be_finished || feature_selected">
+    <div class="_bottomMenu" v-if="draw_can_be_finished || selected_feature_id">
       <template v-if="draw_can_be_finished">
         <button
           type="button"
@@ -105,7 +125,7 @@
           </small>
         </div>
       </template>
-      <template v-else-if="feature_selected">
+      <template v-else-if="selected_feature_id">
         <button
           type="button"
           class="u-button u-button_bleumarine"
@@ -132,7 +152,7 @@ import olVectorLayer from "ol/layer/Vector";
 import olSourceVector from "ol/source/Vector";
 import * as olProj from "ol/proj";
 import olOverlay from "ol/Overlay";
-import { getCenter } from "ol/extent";
+import { getCenter, extend } from "ol/extent";
 
 // import { getArea, getLength } from "ol/sphere";
 
@@ -166,8 +186,11 @@ import {
   Draw as olDraw,
   // Modify as olModify,
   Select as olSelect,
+  Translate as olTranslate,
   Snap as olSnap,
 } from "ol/interaction";
+
+import { defaults as olDefaultControls } from "ol/control";
 
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
@@ -177,9 +200,9 @@ export default {
     pins: [Boolean, Array],
     lines: [Boolean, Object],
     geometries: [Boolean, Array],
-    start_coords: {
-      type: [Boolean, Object],
-    },
+    // start_coords: {
+    //   type: [Boolean, Object],
+    // },
     start_zoom: {
       type: [Boolean, Number],
       default: 2,
@@ -260,7 +283,7 @@ export default {
         // },
         {
           key: "LineString",
-          label: this.$t("linestring"),
+          label: this.$t("lines"),
           icon: "dash-lg",
           olType: "LineString",
           freehand: false,
@@ -269,7 +292,7 @@ export default {
         },
         {
           key: "FreehandLineString",
-          label: this.$t("linestring"),
+          label: this.$t("freehand"),
           icon: "pen",
           olType: "LineString",
           freehand: true,
@@ -301,12 +324,19 @@ export default {
         },
       ],
       map_select_mode: undefined,
-      feature_selected: undefined,
+      selected_feature_id: undefined,
+      map_translate: undefined,
     };
   },
   i18n: {
     messages: {
       fr: {
+        lines: "Droites",
+        freehand: "Tracé libre",
+        circle: "Cercle",
+        polygon: "Polygone",
+        select: "Sélection",
+
         mouse_position: "Position de la balise",
         search_for_a_place: "Rechercher un lieu",
         click_to_start_drawing: "cliquer pour commencer le tracé",
@@ -360,7 +390,7 @@ export default {
     //   deep: true,
     // },
     geometries() {
-      this.drawGeom();
+      this.loadGeom();
     },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
@@ -376,27 +406,30 @@ export default {
       else this.closePopup();
     },
   },
-  computed: {},
+  computed: {
+    map_styles() {
+      return {
+        "--current-view-color": this.opened_view_color,
+      };
+    },
+  },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
-      let zoom = this.constrainVal(
-        this.start_zoom,
-        this.min_zoom,
-        this.max_zoom
-      );
+      let zoom = 13;
       let center;
 
-      if (this.start_coords?.longitude && this.start_coords?.latitude)
-        center = [this.start_coords.longitude, this.start_coords.latitude];
-      else if (
-        this.pins &&
-        this.pins.length > 0 &&
-        this.pins[0] &&
-        this.pins[0].longitude &&
-        this.pins[0].latitude
-      ) {
-        center = [this.pins[0].longitude, this.pins[0].latitude];
-      }
+      // if (this.start_coords?.longitude && this.start_coords?.latitude)
+      //   center = [this.start_coords.longitude, this.start_coords.latitude];
+      // else
+      //  if (
+      //   this.pins &&
+      //   this.pins.length > 0 &&
+      //   this.pins[0] &&
+      //   this.pins[0].longitude &&
+      //   this.pins[0].latitude
+      // ) {
+      //   center = [this.pins[0].longitude, this.pins[0].latitude];
+      // }
 
       // destroy map if exist
       if (this.map) {
@@ -417,6 +450,9 @@ export default {
       this.view = view;
 
       this.map = new olMap({
+        controls: olDefaultControls({
+          zoom: false,
+        }),
         target: this.$refs.map,
         view: this.view,
         layers: [background_layer],
@@ -438,12 +474,13 @@ export default {
       ////////////////////////////////////////////////////////////////////////// CREATE PINS
 
       this.pin_features = this.createPointFeaturesFromPins();
+      const pin_source = new olSourceVector({
+        features: this.pin_features,
+        wrapX: false,
+      });
       this.map.addLayer(
         new olVectorLayer({
-          source: new olSourceVector({
-            features: this.pin_features,
-            wrapX: false,
-          }),
+          source: pin_source,
           style: (feature, resolution) =>
             this.makePointStyle({
               feature,
@@ -515,6 +552,12 @@ export default {
             this.clicked_location.latitude,
           ];
 
+          this.$emit("newPositionClicked", {
+            longitude: this.clicked_location.longitude,
+            latitude: this.clicked_location.latitude,
+            zoom: this.current_zoom,
+          });
+
           this.popup_message = evt.address.formatted;
 
           this.overlay.setPosition(coordinate);
@@ -522,7 +565,6 @@ export default {
           this.navigateTo({
             center: [+evt.place.lon, +evt.place.lat],
           });
-          // this.map.getView().fit(evt.place.bbox);
         }
       });
 
@@ -580,13 +622,47 @@ export default {
       ////////////////////////////////////////////////////////////////////////// DRAW LAYER
 
       this.draw_vector_source = new olSourceVector({ wrapX: false });
-      this.drawGeom();
+      this.loadGeom();
       this.map.addLayer(
         new olVectorLayer({
           source: this.draw_vector_source,
-          style: (feature) => this.makeGeomStyle(feature),
+          style: (feature) => this.makeGeomStyle({ feature }),
         })
       );
+
+      ////////////////////////////////////////////////////////////////////////// SET VIEW
+
+      if (!this.keep_loc_and_zoom) {
+        let extents = [];
+        if (pin_source.getFeatures().length > 0)
+          extents.push(pin_source.getExtent());
+        if (this.draw_vector_source.getFeatures().length > 0)
+          extents.push(this.draw_vector_source.getExtent());
+
+        if (extents.length > 0) {
+          let full_extent;
+          if (extents.length === 1) full_extent = extents[0];
+          else if (extents.length === 2)
+            full_extent = extend(extents[0], extents[1]);
+
+          this.map.getView().fit(full_extent, {
+            padding: [50, 50, 50, 50],
+          });
+        }
+      }
+    },
+    zoomIn() {
+      var view = this.map.getView();
+      var zoom = view.getZoom();
+      view.setZoom(zoom + 1);
+    },
+    zoomOut() {
+      var view = this.map.getView();
+      var zoom = view.getZoom();
+      view.setZoom(zoom - 1);
+    },
+    toggleSearch() {
+      this.$el.querySelector("#gcd-button-control").click();
     },
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
@@ -632,8 +708,10 @@ export default {
         view = new olView({
           center,
           zoom,
-          minZoom: this.min_zoom,
-          maxZoom: this.max_zoom,
+          minZoom: 3,
+          maxZoom: 18,
+          showFullExtent: true,
+          enableRotation: false,
         });
         const source = this.createSource(this.map_baselayer);
         background_layer = new olTileLayer({
@@ -846,18 +924,24 @@ export default {
         }),
       });
     },
-    makeGeomStyle(feature, tip) {
+    makeGeomStyle({ feature, tip, is_selected }) {
       const styles = [];
+
+      const line_dash = is_selected ? undefined : [10, 5];
+      const stroke_width = is_selected ? 3 : 2;
+      const fill_color = is_selected
+        ? "rgba(255, 255, 255, 0.4)"
+        : "rgba(255, 255, 255, 0.2)";
 
       const style = new olStyle({
         fill: new olFill({
-          color: "rgba(255, 255, 255, 0.2)",
+          color: fill_color,
         }),
         stroke: new olStroke({
           color:
             feature.get("stroke_color") || this.opened_view_color || "#000",
-          width: 2,
-          lineDash: [10, 5],
+          width: stroke_width,
+          lineDash: line_dash,
         }),
         image: this.makePointerStyle(),
       });
@@ -868,7 +952,7 @@ export default {
 
       if (
         tip &&
-        type === "Point"
+        (type === "Point" || is_selected)
         //  &&
         // !this.map_modify.getOverlay().getSource().getFeatures().length
       ) {
@@ -982,7 +1066,7 @@ export default {
         source: this.draw_vector_source,
         type: drawType,
         freehand,
-        style: (feature) => this.makeGeomStyle(feature, tip),
+        style: (feature) => this.makeGeomStyle({ feature, tip }),
         // style: (feature) => {
         //   return this.styleFunction(
         //     feature,
@@ -1002,7 +1086,12 @@ export default {
         tip = idleTip;
         this.draw_can_be_finished = false;
       });
-      this.map_draw.on("drawend", () => {
+      this.map_draw.on("drawend", (event) => {
+        const new_feature = event.feature;
+        const type = new_feature.getGeometry().getType();
+        var id = `${type}-` + this.getRandomString();
+        new_feature.setId(id);
+
         this.$nextTick(() => {
           this.saveGeom();
         });
@@ -1173,28 +1262,39 @@ export default {
     finishDrawing() {
       this.map_draw.finishDrawing();
     },
+    abortDrawing() {
+      this.map_draw.abortDrawing();
+    },
 
     saveGeom() {
+      const geom_str = this.convertFeaturesToStr();
+      this.$emit("saveGeom", geom_str);
+    },
+    convertFeaturesToStr() {
       const features = this.draw_vector_source.getFeatures();
-      const features_to_save = features.reduce((acc, f) => {
+      return features.reduce((acc, f) => {
         const type = f.getGeometry().getType();
 
+        let obj = {};
         if (type === "Polygon" || type === "LineString") {
-          const coords = f.getGeometry().getCoordinates();
-          acc.push({ type, coords });
+          obj.type = type;
+          obj.coords = f.getGeometry().getCoordinates();
         } else if (type === "Circle") {
-          const center = f.getGeometry().getCenter();
-          const radius = f.getGeometry().getRadius();
-          acc.push({ type, center, radius });
+          obj.type = type;
+          obj.center = f.getGeometry().getCenter();
+          obj.radius = f.getGeometry().getRadius();
         } else {
-          debugger;
+          return acc;
         }
+
+        const id = f.getId();
+        if (id) obj.id = id;
+        acc.push(obj);
 
         return acc;
       }, []);
-      this.$emit("saveGeom", features_to_save);
     },
-    drawGeom() {
+    loadGeom() {
       if (!this.geometries) return;
 
       this.draw_vector_source.clear();
@@ -1220,10 +1320,19 @@ export default {
               stroke_color: p.color,
             };
 
-          features.push(new olFeature(feature_cont));
+          const feature = new olFeature(feature_cont);
+          if (p.id) feature.setId(p.id);
+
+          features.push(feature);
         });
         this.draw_vector_source.addFeatures(features);
         this.draw_vector_source.changed();
+
+        if (
+          this.selected_feature_id &&
+          !this.draw_vector_source.getFeatureById(this.selected_feature_id)
+        )
+          this.selected_feature_id = undefined;
       } catch (err) {
         this.$alertify.delay(4000).error(err);
         return false;
@@ -1235,28 +1344,45 @@ export default {
       this.map.removeInteraction(this.map_snap);
     },
     startSelectMode() {
-      // const tip = "plop";
+      this.selected_feature_id = undefined;
+
       this.map_select_mode = new olSelect({
-        // style: (feature) => this.makeGeomStyle(feature, tip),
+        style: (feature) => this.makeGeomStyle({ feature, is_selected: true }),
       });
-      this.feature_selected = undefined;
       this.map.addInteraction(this.map_select_mode);
       this.map_select_mode.on("select", (e) => {
         if (e.target.getFeatures().getLength() > 0) {
-          this.feature_selected = e.target.getFeatures().getArray()[0];
-        } else this.feature_selected = false;
+          const feature_selected = e.target.getFeatures().getArray()[0];
+          const id = feature_selected.getId();
+          if (id) return (this.selected_feature_id = id);
+        }
+        this.selected_feature_id = undefined;
+      });
+
+      this.map_translate = new olTranslate({
+        features: this.map_select_mode.getFeatures(),
+      });
+      this.map.addInteraction(this.map_translate);
+      this.map_translate.on("translateend", () => {
+        this.$nextTick(() => {
+          this.saveGeom();
+        });
       });
     },
     removeSelected() {
-      if (!this.feature_selected) return false;
-      this.draw_vector_source.removeFeature(this.feature_selected);
+      if (!this.selected_feature_id) return false;
+      const feature_to_remove = this.draw_vector_source.getFeatureById(
+        this.selected_feature_id
+      );
+      this.draw_vector_source.removeFeature(feature_to_remove);
       this.$nextTick(() => {
         this.saveGeom();
       });
     },
     endSelectMode() {
+      this.map.removeInteraction(this.map_translate);
       this.map.removeInteraction(this.map_select_mode);
-      this.feature_selected = undefined;
+      this.selected_feature_id = undefined;
     },
     keyPressed(event) {
       if (
@@ -1269,9 +1395,10 @@ export default {
       )
         return;
 
-      if (event.key === "Backspace" || event.key === "Delete") {
+      if (event.key === "Backspace" || event.key === "Delete")
         this.removeSelected();
-      }
+      else if (event.key === "Escape" && this.map_draw) this.abortDrawing();
+      else if (event.key === "Enter" && this.map_draw) this.finishDrawing();
     },
   },
 };
@@ -1301,11 +1428,48 @@ export default {
 
   ::v-deep {
     .ol-geocoder {
+      position: absolute;
+      top: calc(6rem);
+      left: calc(var(--spacing) / 1 + 2rem + 2px);
+
+      font-size: 0.8em;
+      border-radius: 2px;
+
       .gcd-gl-btn {
-        height: 1.375em;
-        width: 1.375em;
+        height: 2rem;
+        width: 2rem;
+      }
+      #gcd-button-control {
+        visibility: hidden;
+        width: 1px;
+        height: 1px;
+      }
+      .gcd-gl-control {
+        height: auto;
+        width: 0;
+        overflow: hidden;
+        border-radius: 0;
+        margin: 0;
+        background: transparent;
+
+        &.gcd-gl-expanded {
+          width: calc(14rem + 2px);
+        }
       }
       .gcd-gl-input {
+        width: 100%;
+        border-radius: 3px;
+        left: 0;
+        top: 0;
+        padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+        height: calc(2rem + 2px);
+        position: relative;
+        border: 1px solid var(--c-gris_fonce);
+
+        &:focus-visible {
+          box-shadow: none;
+          border-color: var(--active-color);
+        }
       }
     }
     .gcd-road {
@@ -1422,28 +1586,63 @@ export default {
 
 ._leftTopMenu {
   position: absolute;
-  top: 9.5rem;
-  left: 1rem;
+  top: calc(var(--spacing) / 1);
+  left: calc(var(--spacing) / 1);
+  pointer-events: none;
+
+  > ._buttonRow {
+    position: relative;
+
+    &:not(:last-child) {
+      margin-bottom: calc(var(--spacing) / 1);
+    }
+
+    &::before {
+      position: absolute;
+      inset: -1px;
+      background: black;
+      content: "";
+      width: calc(2rem + 2px);
+      border-radius: 3px;
+      opacity: 0.1;
+      z-index: 0;
+    }
+  }
 
   button {
+    position: relative;
     background: white;
-    display: block;
-    // margin: 1px;
+
     padding: 0;
-    color: var(--ol-subtle-foreground-color);
+    color: var(--c-noir);
     height: 2rem;
-    width: 2rem;
-    background-color: var(--ol-background-color);
-    border-radius: 2px;
+    min-width: 2rem;
+
+    background-color: white;
     border: 2px solid transparent;
+    border-radius: 0;
+    margin-bottom: 1px;
+    pointer-events: auto;
+
+    padding: calc(var(--spacing) / 4);
+    display: flex;
 
     &:hover,
     &:focus-visible {
     }
 
     &.is--active {
-      border-color: var(--active-color);
       background-color: var(--ol-background-color);
+      border-color: var(--current-view-color, --active-color);
+    }
+
+    &:first-child {
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+    }
+    &:last-child {
+      border-bottom-left-radius: 2px;
+      border-bottom-right-radius: 2px;
     }
   }
 }
