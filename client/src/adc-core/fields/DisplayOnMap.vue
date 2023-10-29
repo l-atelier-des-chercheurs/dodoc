@@ -4,6 +4,7 @@
     :class="{
       'is--small': is_small,
     }"
+    :style="map_styles"
   >
     <div class="_map" ref="map" />
 
@@ -90,7 +91,7 @@
         <button
           v-for="draw_mode in draw_modes"
           type="button"
-          class="u-button"
+          class="u-button _isViewColor"
           :class="{
             'is--active': draw_mode.key === current_draw_mode,
           }"
@@ -405,7 +406,13 @@ export default {
       else this.closePopup();
     },
   },
-  computed: {},
+  computed: {
+    map_styles() {
+      return {
+        "--current-view-color": this.opened_view_color,
+      };
+    },
+  },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom = this.constrainVal(
@@ -1397,31 +1404,46 @@ export default {
   ::v-deep {
     .ol-geocoder {
       position: absolute;
-      top: 6rem;
-      left: calc(var(--spacing) / 1);
+      top: calc(6rem);
+      left: calc(var(--spacing) / 1 + 2rem + 2px);
+
       font-size: 0.8em;
+      border-radius: 2px;
+
       .gcd-gl-btn {
         height: 2rem;
         width: 2rem;
       }
-      .gcd-button-control {
+      #gcd-button-control {
         visibility: hidden;
         width: 1px;
         height: 1px;
       }
-      .gcd-gl-input {
-        width: calc(14rem);
-        left: 0;
-        top: 0;
-        position: relative;
-      }
-
       .gcd-gl-control {
-        height: calc(2rem + 2px);
-        width: calc(2rem + 2px);
+        height: auto;
+        width: 0;
+        overflow: hidden;
+        border-radius: 0;
+        margin: 0;
+        background: transparent;
 
         &.gcd-gl-expanded {
-          width: calc(16rem + 2px);
+          width: calc(14rem + 2px);
+        }
+      }
+      .gcd-gl-input {
+        width: 100%;
+        border-radius: 3px;
+        left: 0;
+        top: 0;
+        padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+        height: calc(2rem + 2px);
+        position: relative;
+        border: 1px solid var(--c-gris_fonce);
+
+        &:focus-visible {
+          box-shadow: none;
+          border-color: var(--active-color);
         }
       }
     }
@@ -1552,7 +1574,7 @@ export default {
 
     &::before {
       position: absolute;
-      inset: 0px;
+      inset: -1px;
       background: black;
       content: "";
       width: calc(2rem + 2px);
@@ -1567,14 +1589,14 @@ export default {
     background: white;
 
     padding: 0;
-    color: var(--ol-subtle-foreground-color);
+    color: var(--c-noir);
     height: 2rem;
     min-width: 2rem;
 
-    background-color: var(--ol-background-color);
+    background-color: white;
     border: 2px solid transparent;
     border-radius: 0;
-    margin: 1px;
+    margin-bottom: 1px;
     pointer-events: auto;
 
     padding: calc(var(--spacing) / 4);
@@ -1596,6 +1618,10 @@ export default {
     &:last-child {
       border-bottom-left-radius: 2px;
       border-bottom-right-radius: 2px;
+    }
+
+    &._isViewColor {
+      color: var(--current-view-color);
     }
   }
 }
