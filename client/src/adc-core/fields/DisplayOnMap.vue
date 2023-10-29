@@ -642,9 +642,6 @@ export default {
           this.map.getView().fit(full_extent, {
             padding: [50, 50, 50, 50],
           });
-          // const zoom = this.map.getView().getZoom();
-          debugger;
-          // if zoom is too narrow, we just unzoom a little bit
         }
       }
     },
