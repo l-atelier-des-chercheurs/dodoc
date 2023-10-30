@@ -108,12 +108,31 @@
           </template>
         </button>
       </div>
+      <div class="_buttonRow" v-if="can_edit">
+        <button
+          type="button"
+          class="u-button"
+          :class="{
+            'is--active': 'Select' === current_draw_mode,
+          }"
+          @click="
+            toggleTool({
+              draw_mode: { key: 'Select' },
+            })
+          "
+        >
+          <b-icon class="inlineSVG" icon="hand-index" />
+          <template v-if="'Select' === current_draw_mode">
+            {{ $t("select") }}
+          </template>
+        </button>
+      </div>
     </div>
 
     <transition name="slideup">
       <div
         class="_bottomMenu"
-        v-if="draw_can_be_finished || selected_feature_id"
+        v-if="draw_can_be_finished || 'Select' === current_draw_mode"
       >
         <div class="_bottomMenu--content">
           <template v-if="draw_can_be_finished">
@@ -128,14 +147,22 @@
               {{ $t("or_double_click") }}
             </small>
           </template>
-          <template v-else-if="selected_feature_id">
-            <button
-              type="button"
-              class="u-button u-button_bleumarine"
-              @click="removeSelected"
-            >
-              {{ $t("remove") }}
-            </button>
+          <template v-else-if="'Select' === current_draw_mode">
+            <small class="_instr u-instructions" v-if="!selected_feature_id">
+              {{ $t("select_by_clicking") }}
+            </small>
+            <template v-else>
+              <small class="_instr u-instructions">
+                {{ $t("move_drawing") }}
+              </small>
+              <button
+                type="button"
+                class="u-button u-button_bleumarine"
+                @click="removeSelected"
+              >
+                {{ $t("remove") }}
+              </button>
+            </template>
           </template>
         </div>
       </div>
@@ -322,11 +349,6 @@ export default {
           idleTip: this.$t("click_to_start_drawing"),
           activeTip: this.$t("click_to_continue_drawing"),
         },
-        {
-          key: "Select",
-          label: this.$t("select"),
-          icon: "border",
-        },
       ],
       map_select_mode: undefined,
       selected_feature_id: undefined,
@@ -354,6 +376,9 @@ export default {
         click_to_place_point: "cliquer pour ajouter un sommet",
         finish_drawing: "Terminer le dessin",
         or_double_click: "Ou double-cliquez sur la carte",
+
+        select_by_clicking: "sélectionner une forme en cliquant dessus",
+        move_drawing: "cliquer-glisser pour déplacer la forme",
       },
     },
   },
@@ -1669,6 +1694,7 @@ export default {
   display: flex;
 
   ._bottomMenu--content {
+    position: relative;
     pointer-events: auto;
     margin: 0 auto;
     padding: calc(var(--spacing) / 2);
