@@ -102,7 +102,12 @@
             })
           "
         >
-          <b-icon class="inlineSVG" :icon="draw_mode.icon" />
+          <b-icon
+            v-if="draw_mode.icon"
+            class="inlineSVG"
+            :icon="draw_mode.icon"
+          />
+          <span v-else v-html="draw_mode.svg" />
           <template v-if="draw_mode.key === current_draw_mode">
             {{ draw_mode.label }}
           </template>
@@ -316,7 +321,21 @@ export default {
         {
           key: "LineString",
           label: this.$t("lines"),
-          icon: "dash-lg",
+          svg: `
+          <svg
+            viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
+            style="stroke-width: 1px; stroke: currentColor; width: 1.35em; height: 1.35em;"
+          >
+            <line
+              x1="0"
+              y1="100"
+              x2="100"
+              y2="0"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+
+          `,
           olType: "LineString",
           freehand: false,
           idleTip: this.$t("click_to_place_first_point"),
