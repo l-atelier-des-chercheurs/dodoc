@@ -110,31 +110,36 @@
       </div>
     </div>
 
-    <div class="_bottomMenu" v-if="draw_can_be_finished || selected_feature_id">
-      <template v-if="draw_can_be_finished">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          @click="finishDrawing"
-        >
-          {{ $t("finish_drawing") }}
-        </button>
-        <div class="u-instructions">
-          <small>
-            {{ $t("or_double_click") }}
-          </small>
+    <transition name="slideup">
+      <div
+        class="_bottomMenu"
+        v-if="draw_can_be_finished || selected_feature_id"
+      >
+        <div class="_bottomMenu--content">
+          <template v-if="draw_can_be_finished">
+            <button
+              type="button"
+              class="u-button u-button_bleumarine"
+              @click="finishDrawing"
+            >
+              {{ $t("finish_drawing") }}
+            </button>
+            <small class="_instr u-instructions">
+              {{ $t("or_double_click") }}
+            </small>
+          </template>
+          <template v-else-if="selected_feature_id">
+            <button
+              type="button"
+              class="u-button u-button_bleumarine"
+              @click="removeSelected"
+            >
+              {{ $t("remove") }}
+            </button>
+          </template>
         </div>
-      </template>
-      <template v-else-if="selected_feature_id">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          @click="removeSelected"
-        >
-          {{ $t("remove") }}
-        </button>
-      </template>
-    </div>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -1657,12 +1662,33 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: calc(var(--spacing) / 1);
   text-align: center;
   pointer-events: none;
+  padding: calc(var(--spacing) / 2);
 
-  > * {
+  display: flex;
+
+  ._bottomMenu--content {
     pointer-events: auto;
+    margin: 0 auto;
+    padding: calc(var(--spacing) / 2);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 2px;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    &::before {
+      position: absolute;
+      inset: -1px;
+      content: "";
+      width: calc(100%);
+      border-radius: 3px;
+      opacity: 0.1;
+      z-index: 0;
+      border: 1px solid black;
+      pointer-events: none;
+    }
   }
 }
 </style>
