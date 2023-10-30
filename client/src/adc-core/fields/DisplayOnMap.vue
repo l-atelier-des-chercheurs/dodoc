@@ -1555,7 +1555,7 @@ export default {
 }
 ._popup {
   position: absolute;
-  bottom: 11px;
+  bottom: 38px;
   left: -48px;
   min-width: 280px;
 
@@ -1566,8 +1566,8 @@ export default {
     top: 100%;
 
     border: solid transparent;
-    border-width: 10px;
-    left: 48px;
+    border-width: 11px;
+    left: 47px;
     margin-left: -10px;
 
     content: " ";
@@ -1578,6 +1578,7 @@ export default {
   }
   &::before {
     border-top-color: black;
+    opacity: 0.1;
   }
 
   &::after {
