@@ -1,5 +1,9 @@
 <template>
-  <div class="_publicationModule" :data-type="module_type">
+  <div
+    class="_publicationModule"
+    :data-type="module_type"
+    @click="preventClickTraversing"
+  >
     <!-- @mouseleave.self="show_advanced_menu = false" -->
     <transition name="fade_fast" mode="out-in">
       <div
@@ -588,6 +592,10 @@ export default {
     showModuleOnMap() {
       this.$eventHub.$emit("publication.map.openPin", this.publimodule.$path);
     },
+    preventClickTraversing(event) {
+      // stop click event from bubbling and triggering unselect module
+      if (this.edit_mode) event.stopPropagation();
+    },
     async setRepickLocation({ longitude, latitude }) {
       if (!this.is_repicking_location) return;
 
@@ -744,12 +752,6 @@ export default {
   margin: 0 calc(var(--spacing) / -2) calc(var(--spacing) / 2);
   width: calc(100% + calc(var(--spacing) / 1));
 
-  transition: opacity 0.25s linear;
-
-  &.is--pageByPage {
-    display: none;
-  }
-
   ._sideOptions--content {
     width: 100%;
     margin: 0 auto;
@@ -791,25 +793,8 @@ export default {
     background: rgba(0, 0, 0, 0.1);
   }
 }
-
-._advanced_menu {
-  // position: absolute;
-  // z-index: 1000;
-  // left: 100%;
-  // top: 50%;
-  // transform: translate(0, -50%);
-
-  // backdrop-filter: blur(5px);
-  // background: rgba(255, 255, 255, 0.7);
-
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  gap: calc(var(--spacing) / 4);
-  // padding: calc(var(--spacing) / 4);
-}
-
 ._options {
+  flex: 1 1 auto;
   position: relative;
   display: flex;
   flex-flow: row wrap;
@@ -818,8 +803,17 @@ export default {
   gap: calc(var(--spacing) / 2);
 }
 ._saveBtn {
-  flex: 1;
+  flex: 0 0 auto;
   text-align: right;
+}
+
+._advanced_menu,
+._carto {
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
 }
 
 ._buttonRow {
