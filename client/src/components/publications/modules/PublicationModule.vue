@@ -53,16 +53,13 @@
           <div class="_options">
             <div class="_advanced_menu">
               <div>
-                <template v-if="publimodule.module_type === 'text'">
-                  {{ $t(`module.label.text`) }}
-                </template>
                 <select
-                  v-else
                   :value="publimodule.module_type"
                   @change="changeModuleType"
+                  :disabled="available_module_types.length <= 1"
                 >
                   <option
-                    v-for="module_type in ['mosaic', 'carousel', 'files']"
+                    v-for="module_type in available_module_types"
                     :key="module_type"
                     :value="module_type"
                   >
@@ -499,6 +496,10 @@ export default {
       if (this.$getMapOptions)
         return this.$getMapOptions().opened_pin_path === this.publimodule.$path;
       return false;
+    },
+    available_module_types() {
+      if (this.publimodule.module_type === "text") return ["text"];
+      return ["mosaic", "carousel", "files"];
     },
     pin_options() {
       if (this.$getMapOptions) {
