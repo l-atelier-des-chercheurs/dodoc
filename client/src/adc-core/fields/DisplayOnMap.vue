@@ -102,39 +102,76 @@
             })
           "
         >
-          <b-icon class="inlineSVG" :icon="draw_mode.icon" />
+          <b-icon
+            v-if="draw_mode.icon"
+            class="inlineSVG"
+            :icon="draw_mode.icon"
+          />
+          <span v-else v-html="draw_mode.svg" />
           <template v-if="draw_mode.key === current_draw_mode">
             {{ draw_mode.label }}
           </template>
         </button>
       </div>
+      <div class="_buttonRow" v-if="can_edit">
+        <button
+          type="button"
+          class="u-button"
+          :class="{
+            'is--active': 'Select' === current_draw_mode,
+          }"
+          @click="
+            toggleTool({
+              draw_mode: { key: 'Select' },
+            })
+          "
+        >
+          <b-icon class="inlineSVG" icon="hand-index" />
+          <template v-if="'Select' === current_draw_mode">
+            {{ $t("select") }}
+          </template>
+        </button>
+      </div>
     </div>
 
-    <div class="_bottomMenu" v-if="draw_can_be_finished || selected_feature_id">
-      <template v-if="draw_can_be_finished">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          @click="finishDrawing"
-        >
-          {{ $t("finish_drawing") }}
-        </button>
-        <div class="u-instructions">
-          <small>
-            {{ $t("or_double_click") }}
-          </small>
+    <transition name="slideup">
+      <div
+        class="_bottomMenu"
+        v-if="draw_can_be_finished || 'Select' === current_draw_mode"
+      >
+        <div class="_bottomMenu--content">
+          <template v-if="draw_can_be_finished">
+            <button
+              type="button"
+              class="u-button u-button_bleumarine"
+              @click="finishDrawing"
+            >
+              {{ $t("finish_drawing") }}
+            </button>
+            <small class="_instr u-instructions">
+              {{ $t("or_double_click") }}
+            </small>
+          </template>
+          <template v-else-if="'Select' === current_draw_mode">
+            <small class="_instr u-instructions" v-if="!selected_feature_id">
+              {{ $t("select_by_clicking") }}
+            </small>
+            <template v-else>
+              <small class="_instr u-instructions">
+                {{ $t("move_drawing") }}
+              </small>
+              <button
+                type="button"
+                class="u-button u-button_bleumarine"
+                @click="removeSelected"
+              >
+                {{ $t("remove") }}
+              </button>
+            </template>
+          </template>
         </div>
-      </template>
-      <template v-else-if="selected_feature_id">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          @click="removeSelected"
-        >
-          {{ $t("remove") }}
-        </button>
-      </template>
-    </div>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -284,7 +321,21 @@ export default {
         {
           key: "LineString",
           label: this.$t("lines"),
-          icon: "dash-lg",
+          svg: `
+          <svg
+            viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
+            style="stroke-width: 1px; stroke: currentColor; width: 1.35em; height: 1.35em;"
+          >
+            <line
+              x1="0"
+              y1="100"
+              x2="100"
+              y2="0"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+
+          `,
           olType: "LineString",
           freehand: false,
           idleTip: this.$t("click_to_place_first_point"),
@@ -317,11 +368,6 @@ export default {
           idleTip: this.$t("click_to_start_drawing"),
           activeTip: this.$t("click_to_continue_drawing"),
         },
-        {
-          key: "Select",
-          label: this.$t("select"),
-          icon: "border",
-        },
       ],
       map_select_mode: undefined,
       selected_feature_id: undefined,
@@ -349,6 +395,9 @@ export default {
         click_to_place_point: "cliquer pour ajouter un sommet",
         finish_drawing: "Terminer le dessin",
         or_double_click: "Ou double-cliquez sur la carte",
+
+        select_by_clicking: "sélectionner une forme en cliquant dessus",
+        move_drawing: "cliquer-glisser pour déplacer la forme",
       },
     },
   },
@@ -1506,7 +1555,7 @@ export default {
 }
 ._popup {
   position: absolute;
-  bottom: 11px;
+  bottom: 38px;
   left: -48px;
   min-width: 280px;
 
@@ -1517,8 +1566,8 @@ export default {
     top: 100%;
 
     border: solid transparent;
-    border-width: 10px;
-    left: 48px;
+    border-width: 11px;
+    left: 47px;
     margin-left: -10px;
 
     content: " ";
@@ -1529,6 +1578,7 @@ export default {
   }
   &::before {
     border-top-color: black;
+    opacity: 0.1;
   }
 
   &::after {
@@ -1657,12 +1707,34 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: calc(var(--spacing) / 1);
   text-align: center;
   pointer-events: none;
+  padding: calc(var(--spacing) / 2);
 
-  > * {
+  display: flex;
+
+  ._bottomMenu--content {
+    position: relative;
     pointer-events: auto;
+    margin: 0 auto;
+    padding: calc(var(--spacing) / 2);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 2px;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    &::before {
+      position: absolute;
+      inset: -1px;
+      content: "";
+      width: calc(100%);
+      border-radius: 3px;
+      opacity: 0.1;
+      z-index: 0;
+      border: 1px solid black;
+      pointer-events: none;
+    }
   }
 }
 </style>

@@ -1,5 +1,9 @@
 <template>
-  <div class="_publicationModule" :data-type="module_type">
+  <div
+    class="_publicationModule"
+    :data-type="module_type"
+    @click="preventClickTraversing"
+  >
     <!-- @mouseleave.self="show_advanced_menu = false" -->
     <transition name="fade_fast" mode="out-in">
       <div
@@ -53,16 +57,13 @@
           <div class="_options">
             <div class="_advanced_menu">
               <div>
-                <template v-if="publimodule.module_type === 'text'">
-                  {{ $t(`module.label.text`) }}
-                </template>
                 <select
-                  v-else
                   :value="publimodule.module_type"
                   @change="changeModuleType"
+                  :disabled="available_module_types.length <= 1"
                 >
                   <option
-                    v-for="module_type in ['mosaic', 'carousel', 'files']"
+                    v-for="module_type in available_module_types"
                     :key="module_type"
                     :value="module_type"
                   >
@@ -234,26 +235,26 @@
       </div>
     </transition>
 
-    <button
-      type="button"
-      class="u-button _pinButton"
-      v-if="is_associated_to_map && has_coordinates"
-      :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
-      :class="{
-        'is--active': is_active_on_map,
-      }"
-      @click.stop="showModuleOnMap"
-    >
-      <!-- v-if="pin_options.pin_preview === 'icon'" -->
-      <img :src="pin_options.pin_preview_src" />
-      <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
-      <!-- <b-icon icon="pin-map-fill" /> -->
-      <!-- <span class="_index">
+    <div class="_content" :style="media_styles">
+      <button
+        type="button"
+        class="u-button _pinButton"
+        v-if="is_associated_to_map && has_coordinates"
+        :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
+        :class="{
+          'is--active': is_active_on_map,
+        }"
+        @click.stop="showModuleOnMap"
+      >
+        <!-- v-if="pin_options.pin_preview === 'icon'" -->
+        <img :src="pin_options.pin_preview_src" />
+        <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
+        <!-- <b-icon icon="pin-map-fill" /> -->
+        <!-- <span class="_index">
           {{ pin_options.index }}
         </span> -->
-    </button>
+      </button>
 
-    <div class="_content" :style="media_styles">
       <div class="_floatingEditBtn" v-if="can_edit">
         <EditBtn
           v-if="!edit_mode"
@@ -367,14 +368,6 @@
             </g>
           </g>
         </svg>
-      </template>
-      <template v-else-if="publimodule.module_type === 'free_drawing'">
-        <!-- <MediaFreeDrawing
-          :inline_edit_mode="inline_edit_mode"
-          :slugPubliName="slugPubliName"
-          :media="media"
-          :mediaSize="mediaSize"
-        /> -->
       </template>
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
@@ -500,6 +493,10 @@ export default {
         return this.$getMapOptions().opened_pin_path === this.publimodule.$path;
       return false;
     },
+    available_module_types() {
+      if (this.publimodule.module_type === "text") return ["text"];
+      return ["mosaic", "carousel", "files"];
+    },
     pin_options() {
       if (this.$getMapOptions) {
         return this.$getMapOptions().pins_infos.find(
@@ -586,6 +583,10 @@ export default {
     },
     showModuleOnMap() {
       this.$eventHub.$emit("publication.map.openPin", this.publimodule.$path);
+    },
+    preventClickTraversing(event) {
+      // stop click event from bubbling and triggering unselect module
+      if (this.edit_mode) event.stopPropagation();
     },
     async setRepickLocation({ longitude, latitude }) {
       if (!this.is_repicking_location) return;
@@ -720,22 +721,21 @@ export default {
   --highlight-margin: calc(var(--spacing) / -2);
 
   position: absolute;
-  top: var(--highlight-margin);
+  top: 0;
   left: var(--highlight-margin);
   bottom: var(--highlight-margin);
   right: var(--highlight-margin);
 
   border: 2px solid var(--c-bleuvert);
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-radius: 6px;
 
   pointer-events: none;
 }
 
 ._sideOptions {
-  position: absolute;
-  bottom: 100%;
-  z-index: 1;
+  position: relative;
+  // bottom: 100%;
+  // z-index: 1;
 
   margin-bottom: calc(var(--spacing) / 2);
   width: 100%;
@@ -743,17 +743,13 @@ export default {
   margin: 0 calc(var(--spacing) / -2) calc(var(--spacing) / 2);
   width: calc(100% + calc(var(--spacing) / 1));
 
-  transition: opacity 0.25s linear;
-
-  &.is--pageByPage {
-    display: none;
-  }
-
   ._sideOptions--content {
     width: 100%;
     margin: 0 auto;
     padding: calc(var(--spacing) / 4);
     background: var(--active-color);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 
     // border: 2px solid var(--active-color);
     box-shadow: var(--panel-shadows);
@@ -790,25 +786,8 @@ export default {
     background: rgba(0, 0, 0, 0.1);
   }
 }
-
-._advanced_menu {
-  // position: absolute;
-  // z-index: 1000;
-  // left: 100%;
-  // top: 50%;
-  // transform: translate(0, -50%);
-
-  // backdrop-filter: blur(5px);
-  // background: rgba(255, 255, 255, 0.7);
-
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  gap: calc(var(--spacing) / 4);
-  // padding: calc(var(--spacing) / 4);
-}
-
 ._options {
+  flex: 1 1 auto;
   position: relative;
   display: flex;
   flex-flow: row wrap;
@@ -817,8 +796,17 @@ export default {
   gap: calc(var(--spacing) / 2);
 }
 ._saveBtn {
-  flex: 1;
+  flex: 0 0 auto;
   text-align: right;
+}
+
+._advanced_menu,
+._carto {
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
 }
 
 ._buttonRow {

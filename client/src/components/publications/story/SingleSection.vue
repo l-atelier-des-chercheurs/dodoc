@@ -1,5 +1,5 @@
 <template>
-  <div class="_singleSection">
+  <div class="_singleSection" @click="backgroundClick">
     <div class="_storyContainer">
       <div class="_storyContent" v-if="section" :style="story_styles">
         <div
@@ -191,6 +191,9 @@ export default {
         source_meta_filename,
         copy_meta_filename,
       });
+    },
+    backgroundClick() {
+      this.module_being_edited = undefined;
     },
 
     async removeSection() {

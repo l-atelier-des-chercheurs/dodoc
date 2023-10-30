@@ -25,41 +25,42 @@
       v-show="can_edit && editor_is_enabled"
     >
       <div class="">
-        <template
-          v-if="
-            editor_is_enabled && !is_disabling_editor && !is_loading_or_saving
-          "
-        >
-          <button type="button" class="u-button _editBtn" @click="toggleEdit">
+        <template v-if="editor_is_enabled && !is_disabling_editor">
+          <!-- <button type="button" class="u-button _editBtn" @click="toggleEdit">
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
             <span>{{ $t("stop_edit") }}</span>
-          </button>
-          <button
-            type="button"
-            class="u-button _archivesBtn"
-            v-if="editor_is_enabled"
-            @click="show_archives = !show_archives"
-          >
-            <b-icon icon="archive" />
-            <!-- <span>{{ $t("history") }}</span> -->
-          </button>
-        </template>
-
-        <div class="_collabEditorStatus" v-if="editor_is_enabled">
+          </button> -->
           <transition name="fade_fast" mode="out-in">
-            <span v-if="is_loading_or_saving" key="saving">
+            <div
+              class="u-button _savingStatus"
+              v-if="is_loading_or_saving"
+              key="saving"
+            >
               <sl-spinner style="--indicator-color: currentColor" />
               {{ $t("saving") }}
-            </span>
-            <span v-else-if="show_saved_icon" key="saved">
+            </div>
+            <div
+              class="u-button _savedStatus"
+              v-else-if="show_saved_icon"
+              key="saved"
+            >
               <b-icon icon="check-circle" />
               {{ $t("saved") }}
-            </span>
-            <span v-else key="connected">
-              <b>{{ $t(rtc.connection_state) }}</b>
-            </span>
+            </div>
+            <!-- <span v-else key="connected">
+                <b>{{ $t(rtc.connection_state) }}</b>
+              </span> -->
+            <button
+              type="button"
+              class="u-button _archivesBtn"
+              v-else
+              @click="show_archives = !show_archives"
+            >
+              <b-icon icon="archive" />
+              <span>{{ $t("history") }}</span>
+            </button>
           </transition>
-        </div>
+        </template>
       </div>
       <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
           Enregistrer
@@ -1092,11 +1093,22 @@ export default {
   }
 
   button,
-  ._collabEditorStatus {
+  ._savingStatus,
+  ._savedStatus,
+  ._archivesBtn {
     min-width: var(--button-size);
     width: auto;
     height: var(--button-size);
     padding: 6px;
+  }
+
+  ._savingStatus,
+  ._savedStatus,
+  ._archivesBtn {
+    min-width: 9rem;
+  }
+  ._savedStatus {
+    background-color: var(--c-vert);
   }
 
   .ql-fill,
@@ -1323,10 +1335,6 @@ export default {
     // ._editBtn {
     //   background-color: var(--c-bleuvert);
     // }
-
-    ._collabEditorStatus {
-      background-color: var(--c-vert);
-    }
   }
   // background-color: var(--editor-bg);
 }
