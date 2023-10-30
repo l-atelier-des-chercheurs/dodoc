@@ -235,26 +235,26 @@
       </div>
     </transition>
 
-    <button
-      type="button"
-      class="u-button _pinButton"
-      v-if="is_associated_to_map && has_coordinates"
-      :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
-      :class="{
-        'is--active': is_active_on_map,
-      }"
-      @click.stop="showModuleOnMap"
-    >
-      <!-- v-if="pin_options.pin_preview === 'icon'" -->
-      <img :src="pin_options.pin_preview_src" />
-      <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
-      <!-- <b-icon icon="pin-map-fill" /> -->
-      <!-- <span class="_index">
+    <div class="_content" :style="media_styles">
+      <button
+        type="button"
+        class="u-button _pinButton"
+        v-if="is_associated_to_map && has_coordinates"
+        :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
+        :class="{
+          'is--active': is_active_on_map,
+        }"
+        @click.stop="showModuleOnMap"
+      >
+        <!-- v-if="pin_options.pin_preview === 'icon'" -->
+        <img :src="pin_options.pin_preview_src" />
+        <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
+        <!-- <b-icon icon="pin-map-fill" /> -->
+        <!-- <span class="_index">
           {{ pin_options.index }}
         </span> -->
-    </button>
+      </button>
 
-    <div class="_content" :style="media_styles">
       <div class="_floatingEditBtn" v-if="can_edit">
         <EditBtn
           v-if="!edit_mode"
@@ -368,14 +368,6 @@
             </g>
           </g>
         </svg>
-      </template>
-      <template v-else-if="publimodule.module_type === 'free_drawing'">
-        <!-- <MediaFreeDrawing
-          :inline_edit_mode="inline_edit_mode"
-          :slugPubliName="slugPubliName"
-          :media="media"
-          :mediaSize="mediaSize"
-        /> -->
       </template>
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
@@ -729,22 +721,21 @@ export default {
   --highlight-margin: calc(var(--spacing) / -2);
 
   position: absolute;
-  top: var(--highlight-margin);
+  top: 0;
   left: var(--highlight-margin);
   bottom: var(--highlight-margin);
   right: var(--highlight-margin);
 
   border: 2px solid var(--c-bleuvert);
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-radius: 6px;
 
   pointer-events: none;
 }
 
 ._sideOptions {
-  position: absolute;
-  bottom: 100%;
-  z-index: 1;
+  position: relative;
+  // bottom: 100%;
+  // z-index: 1;
 
   margin-bottom: calc(var(--spacing) / 2);
   width: 100%;
@@ -757,6 +748,8 @@ export default {
     margin: 0 auto;
     padding: calc(var(--spacing) / 4);
     background: var(--active-color);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 
     // border: 2px solid var(--active-color);
     box-shadow: var(--panel-shadows);
