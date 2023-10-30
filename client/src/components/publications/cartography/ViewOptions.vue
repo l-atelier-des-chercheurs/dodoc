@@ -47,7 +47,7 @@
             :can_edit="true"
           />
         </div>
-        <div class="u-spacingBottom">
+        <div class="" v-if="map_mode === 'gps'">
           <DLabel :str="$t('map_baselayer')" />
           <SelectField2
             :value="view.map_baselayer || 'OSM'"
