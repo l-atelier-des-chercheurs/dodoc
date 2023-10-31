@@ -11,6 +11,9 @@
     <div
       ref="popUp"
       class="_popup"
+      :class="{
+        'is--pin': clicked_location.module,
+      }"
       v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div class="_popupShadow" />
@@ -1621,6 +1624,7 @@ export default {
 ._popup {
   position: absolute;
   bottom: 38px;
+  bottom: 9px;
   left: -48px;
   min-width: 280px;
 
@@ -1658,6 +1662,9 @@ export default {
   //   left: 48px;
   //   margin-left: -11px;
   // }
+  &.is--pin {
+    bottom: 38px;
+  }
 
   ._pinContent,
   ._popupClose {
