@@ -153,7 +153,7 @@ export default {
 @import "@/utils/utils.scss";
 
 :root {
-  --spacing: var(--sl-spacing-medium);
+  --spacing: var(--sl-spacing-medium, 1rem);
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);
