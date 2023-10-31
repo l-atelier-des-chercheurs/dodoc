@@ -132,6 +132,26 @@
           </template>
         </button>
       </div>
+      <div class="_buttonRow">
+        <button
+          type="button"
+          class="u-button"
+          :class="{
+            'is--active': start_map_print,
+          }"
+          @click="start_map_print = true"
+        >
+          <b-icon class="inlineSVG" icon="printer" />
+          <!-- <template v-if="start_map_print">
+            {{ $t("print") }}
+          </template> -->
+        </button>
+        <PrintMap
+          v-if="start_map_print"
+          :map="map"
+          @close="start_map_print = false"
+        />
+      </div>
     </div>
 
     <transition name="slideup">
@@ -221,7 +241,7 @@ import {
 
 import {
   Draw as olDraw,
-  // Modify as olModify,
+  Modify as olModify,
   Select as olSelect,
   Translate as olTranslate,
   Snap as olSnap,
@@ -275,6 +295,7 @@ export default {
   },
   components: {
     PublicationModule,
+    PrintMap: () => import("@/adc-core/fields/PrintMap.vue"),
   },
   data() {
     return {
@@ -372,6 +393,8 @@ export default {
       map_select_mode: undefined,
       selected_feature_id: undefined,
       map_translate: undefined,
+
+      start_map_print: false,
     };
   },
   i18n: {
@@ -395,6 +418,7 @@ export default {
         click_to_place_point: "cliquer pour ajouter un sommet",
         finish_drawing: "Terminer le dessin",
         or_double_click: "Ou double-cliquez sur la carte",
+        drag_to_modify: "cliquer-glisser pour modifier",
 
         select_by_clicking: "sélectionner une forme en cliquant dessus",
         move_drawing: "cliquer-glisser pour déplacer la forme",
@@ -405,6 +429,7 @@ export default {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$on("publication.map.openPin", this.openPin);
     this.$eventHub.$on("publication.map.disableTools", this.disableTools);
+    this.$eventHub.$on("publication.map.print", this.printMap);
     document.addEventListener("keydown", this.keyPressed);
   },
   mounted() {
@@ -416,6 +441,7 @@ export default {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$off("publication.map.openPin", this.openPin);
     this.$eventHub.$off("publication.map.disableTools", this.disableTools);
+    this.$eventHub.$off("publication.map.print", this.printMap);
     document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {
@@ -557,7 +583,6 @@ export default {
             this.makePointStyle({
               feature,
               resolution,
-              fill_color: "hsla(207, 78%, 53%, .7)",
             }),
         })
       );
@@ -714,6 +739,9 @@ export default {
     },
     toggleSearch() {
       this.$el.querySelector("#gcd-button-control").click();
+    },
+    printMap() {
+      this.start_map_print = true;
     },
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
@@ -887,11 +915,7 @@ export default {
       }
       return features;
     },
-    makePointStyle({
-      feature,
-      resolution,
-      fill_color = "hsla(36, 96%, 50%, .7)",
-    }) {
+    makePointStyle({ feature, resolution, fill_color = "hsl(0, 0%, 15%)" }) {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
       let style = {};
@@ -961,7 +985,33 @@ export default {
           }),
         }),
         text: new olText({
-          text: "Drag to modify",
+          text: this.$t("drag_to_modify"),
+          font: this.makeDefaultFontString(),
+          fill: new olFill({
+            color: "rgba(255, 255, 255, 1)",
+          }),
+          backgroundFill: new olFill({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          padding: [2, 2, 2, 2],
+          textAlign: "left",
+          offsetX: 15,
+        }),
+      });
+    },
+    translateStyle() {
+      return new olStyle({
+        image: new olCircleStyle({
+          radius: 5,
+          stroke: new olStroke({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          fill: new olFill({
+            color: "rgba(0, 0, 0, 0.4)",
+          }),
+        }),
+        text: new olText({
+          text: this.$t("drag_to_modify"),
           font: this.makeDefaultFontString(),
           fill: new olFill({
             color: "rgba(255, 255, 255, 1)",
@@ -1003,9 +1053,9 @@ export default {
 
       if (
         tip &&
-        (type === "Point" || is_selected)
-        //  &&
-        // !this.map_modify.getOverlay().getSource().getFeatures().length
+        (type === "Point" || is_selected) &&
+        (!this.map_modify ||
+          !this.map_modify.getOverlay().getSource().getFeatures().length)
       ) {
         const tipStyle = new olStyle({
           text: new olText({
@@ -1036,7 +1086,7 @@ export default {
           color: fill_color,
         }),
         fill: new olFill({
-          color: "rgba(255, 255, 255, 0.2)",
+          color: "rgba(255, 255, 255, .5)",
         }),
       });
     },
@@ -1101,12 +1151,6 @@ export default {
       }
     },
     startDrawMode({ draw_mode }) {
-      // this.map_modify = new olModify({
-      //   source: this.draw_vector_source,
-      //   style: this.modifyStyle,
-      // });
-      // this.map.addInteraction(this.map_modify);
-
       let drawType = draw_mode.olType;
       let freehand = draw_mode.freehand;
       let idleTip = draw_mode.idleTip;
@@ -1399,7 +1443,6 @@ export default {
     },
     startSelectMode() {
       this.selected_feature_id = undefined;
-
       this.map_select_mode = new olSelect({
         style: (feature) => this.makeGeomStyle({ feature, is_selected: true }),
       });
@@ -1413,6 +1456,11 @@ export default {
         this.selected_feature_id = undefined;
       });
 
+      this.startTranslate();
+      // clashes with translate on linestring
+      // this.startModify();
+    },
+    startTranslate() {
       this.map_translate = new olTranslate({
         features: this.map_select_mode.getFeatures(),
       });
@@ -1422,6 +1470,24 @@ export default {
           this.saveGeom();
         });
       });
+    },
+    endTranslate() {
+      this.map.removeInteraction(this.map_translate);
+    },
+    startModify() {
+      this.map_modify = new olModify({
+        source: this.draw_vector_source,
+        style: this.modifyStyle,
+      });
+      this.map.addInteraction(this.map_modify);
+      this.map_modify.on("modifyend", () => {
+        this.$nextTick(() => {
+          this.saveGeom();
+        });
+      });
+    },
+    endModify() {
+      this.map.removeInteraction(this.map_modify);
     },
     removeSelected() {
       if (!this.selected_feature_id) return false;
@@ -1434,7 +1500,6 @@ export default {
       });
     },
     endSelectMode() {
-      this.map.removeInteraction(this.map_translate);
       this.map.removeInteraction(this.map_select_mode);
       this.selected_feature_id = undefined;
     },
