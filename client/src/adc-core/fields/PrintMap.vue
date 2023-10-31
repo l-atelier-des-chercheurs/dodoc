@@ -13,11 +13,11 @@
     </div>
     <div class="u-spacingBottom">
       <ToggleInput
-        :content="print_with_features"
-        :label="$t('print_with_features')"
-        @update:content="print_with_features = $event"
+        :content="print_only_basemap"
+        :label="$t('print_only_basemap')"
+        @update:content="print_only_basemap = $event"
       />
-      {{ print_with_features }}
+      {{ print_only_basemap }}
     </div>
     <button
       type="button"
@@ -70,13 +70,15 @@ export default {
         },
       ],
 
-      print_with_features: false,
+      print_only_basemap: true,
     };
   },
   i18n: {
     messages: {
       fr: {
         print_map: "Imprimer la carte",
+        print_only_basemap:
+          "Uniquement le fond de carte (masquer les épingles et les dessins)",
       },
     },
   },
@@ -105,12 +107,16 @@ export default {
         mapCanvas.width = width;
         mapCanvas.height = height;
         const mapContext = mapCanvas.getContext("2d");
-        Array.prototype.forEach.call(
-          document.querySelectorAll(".ol-layer canvas"),
-          function (canvas) {
-            if (canvas.width > 0) {
-              // todo return early if feature layer and not desired
 
+        Array.prototype.forEach.call(
+          document.querySelectorAll(".ol-layer"),
+          async (layer) => {
+            debugger;
+            if (this.print_only_basemap)
+              if (!layer.className?.includes("ol-basemap")) return;
+
+            const canvas = layer.querySelector("canvas");
+            if (canvas.width > 0) {
               const opacity = canvas.parentNode.style.opacity;
               mapContext.globalAlpha = opacity === "" ? 1 : Number(opacity);
               const transform = canvas.style.transform;

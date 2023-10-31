@@ -782,6 +782,7 @@ export default {
             projection,
             imageExtent: extent,
           }),
+          className: "ol-layer ol-basemap",
         });
       } else {
         // TODO check if center is contained in extent (see containsXY)
@@ -798,6 +799,7 @@ export default {
         const source = this.createSource(this.map_baselayer);
         background_layer = new olTileLayer({
           source,
+          className: "ol-layer ol-basemap",
         });
       }
 
