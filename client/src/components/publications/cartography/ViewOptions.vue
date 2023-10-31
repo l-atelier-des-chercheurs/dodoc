@@ -65,6 +65,10 @@
 export default {
   props: {
     view: Object,
+    map_mode: {
+      default: "gps",
+      type: String,
+    },
     default_view_color: String,
   },
   components: {},

@@ -47,6 +47,7 @@
             v-if="opened_view && can_edit"
             :key="opened_view.$path"
             :view="opened_view"
+            :map_mode="publication.map_mode"
             :default_view_color="default_view_color"
           />
         </transition>
