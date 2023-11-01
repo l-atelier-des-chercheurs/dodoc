@@ -180,11 +180,24 @@
               {{ $t("select_by_clicking") }}
             </small>
             <template v-else>
-              <div class="">
+              <!-- <div class="">
                 <small class="_instr u-instructions">
                   {{ $t("move_drawing") }}
                 </small>
-              </div>
+              </div> -->
+
+              <ColorInput
+                class="u-spacingBottom"
+                :label="$t('outline_color')"
+                :value="selected_feature.get('stroke_color')"
+                @save="
+                  updateDrawing({
+                    prop: 'stroke_color',
+                    val: $event,
+                  })
+                "
+              />
+
               <RangeValueInput
                 class=""
                 :can_toggle="false"
@@ -1079,6 +1092,8 @@ export default {
 
       // const line_dash = !is_selected ? undefined : [10, 5];
       const stroke_width = feature.get("stroke_width") || 3;
+      const stroke_color =
+        feature.get("stroke_color") || this.opened_view_color || "#000";
       const fill_color = "rgba(255, 255, 255, 0.2)";
 
       if (is_selected) {
@@ -1098,8 +1113,7 @@ export default {
           color: fill_color,
         }),
         stroke: new olStroke({
-          color:
-            feature.get("stroke_color") || this.opened_view_color || "#000",
+          color: stroke_color,
           width: stroke_width,
           // lineDash: line_dash,
         }),
@@ -1469,6 +1483,8 @@ export default {
 
         const stroke_width = f.get("stroke_width");
         if (stroke_width) obj.stroke_width = stroke_width;
+        const stroke_color = f.get("stroke_color");
+        if (stroke_color) obj.stroke_color = stroke_color;
 
         const id = f.getId();
         if (id) obj.id = id;
@@ -1501,8 +1517,8 @@ export default {
               geometry: new olCircle(p.center, p.radius),
             };
 
-          if (p.color) feature_cont.stroke_color = p.color;
           if (p.stroke_width) feature_cont.stroke_width = p.stroke_width;
+          if (p.stroke_color) feature_cont.stroke_color = p.stroke_color;
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
