@@ -19,11 +19,15 @@
       />
       {{ print_only_basemap }}
     </div>
+    <fieldset class="u-spacingBottom _previewCanvas">
+      <legend class="u-label">{{ $t("preview") }}</legend>
+      <canvas ref="previewCanvas" class="" />
+    </fieldset>
     <button
       type="button"
       class="u-button u-button_bleuvert"
       :disabled="is_making_print"
-      @click="startPrint()"
+      @click="printMap()"
     >
       <b-icon class="inlineSVG" icon="printer" />
       {{ $t("export_pdf") }}
@@ -83,25 +87,26 @@ export default {
     },
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.generatePreview();
+  },
   beforeDestroy() {},
   watch: {},
   computed: {},
   methods: {
-    startPrint() {
+    generatePreview() {
       // from https://openlayers.org/en/latest/examples/export-pdf.html
       this.is_making_print = true;
       const format = this.print_format;
       const dim = this.print_formats.find((f) => f.key === format).dimensions;
-      const resolution = 300; // DPI
+      // const resolution = 300; // DPI
       const map = this.map;
 
       // const paper_width = Math.round((dim[0] * resolution) / 25.4);
       // const paper_height = Math.round((dim[1] * resolution) / 25.4);
-      const paper_width = Math.round((dim[0] * resolution) / 25.4);
-      const paper_height = Math.round((dim[1] * resolution) / 25.4);
+      const paper_width = dim[0];
+      const paper_height = dim[1];
       const [current_map_width, current_map_height] = map.getSize();
-
       const viewResolution = map.getView().getResolution();
 
       var hRatio = paper_width / current_map_width;
@@ -111,10 +116,12 @@ export default {
       var centerShift_y = (paper_height - current_map_height * ratio) / 2;
 
       map.once("rendercomplete", () => {
-        const mapCanvas = document.createElement("canvas");
-        mapCanvas.width = paper_width;
-        mapCanvas.height = paper_height;
+        const mapCanvas = this.$refs.previewCanvas;
+        mapCanvas.width = current_map_width;
+        mapCanvas.height = current_map_height;
         const mapContext = mapCanvas.getContext("2d");
+        mapContext.fillStyle = "green";
+        mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
 
         Array.prototype.forEach.call(
           document.querySelectorAll(".ol-layer"),
@@ -145,32 +152,6 @@ export default {
         mapContext.globalAlpha = 1;
         mapContext.setTransform(1, 0, 0, 1, 0, 0);
 
-        const pdf = new jsPDF({
-          orientation: "landscape",
-          unit: "mm",
-          format,
-        });
-
-        debugger;
-
-        // pdf.addImage(
-        //   mapCanvas.toDataURL("image/jpeg"),
-        //   "JPEG",
-        //   centerShift_x,
-        //   centerShift_y,
-        //   current_map_width * ratio,
-        //   current_map_width * ratio
-        // );
-        pdf.addImage(
-          mapCanvas.toDataURL("image/jpeg"),
-          "JPEG",
-          0,
-          0,
-          dim[0],
-          dim[1]
-        );
-
-        pdf.save("map.pdf");
         // Reset original map size
         map.setSize([current_map_width, current_map_height]);
         map.getView().setResolution(viewResolution);
@@ -181,15 +162,43 @@ export default {
       // const map_ratio = current_map_height / current_map_width;
       // const printSize = [paper_width, paper_width * map_ratio];
 
-      // map.setSize([current_map_width * ratio, current_map_height * ratio]);
+      // map.setSize([current_map_width * 2, current_map_height * 2]);
       // map.setSize(printSize);
       // const scaling = Math.min(
       //   paper_width / current_map_width,
       //   paper_height / current_map_height
       // );
-      map.getView().setResolution(viewResolution);
+      map.getView().setResolution(viewResolution + 1);
+    },
+    printMap() {
+      this.$refs.previewCanvas;
+
+      // const pdf = new jsPDF({
+      //   orientation: "landscape",
+      //   unit: "mm",
+      //   format,
+      // });
+
+      // pdf.addImage(
+      //   mapCanvas.toDataURL("image/jpeg"),
+      //   "JPEG",
+      //   centerShift_x,
+      //   centerShift_y,
+      //   current_map_width * ratio,
+      //   current_map_height * ratio
+      // );
+      // pdf.save("map.pdf");
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._previewCanvas canvas {
+  height: 200px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  border: 2px solid var(--c-gris);
+  padding: 2px;
+}
+</style>
