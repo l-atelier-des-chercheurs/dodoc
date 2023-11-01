@@ -104,21 +104,30 @@ export default {
 
       // const paper_width = Math.round((dim[0] * resolution) / 25.4);
       // const paper_height = Math.round((dim[1] * resolution) / 25.4);
-      const paper_width = dim[0];
-      const paper_height = dim[1];
       const [current_map_width, current_map_height] = map.getSize();
+      let orientation, paper_width, paper_height;
+      if (current_map_width <= current_map_height) {
+        orientation = "portrait";
+        paper_width = dim[1];
+        paper_height = dim[0];
+      } else {
+        orientation = "landscape";
+        paper_width = dim[0];
+        paper_height = dim[1];
+      }
       const viewResolution = map.getView().getResolution();
 
       var hRatio = paper_width / current_map_width;
       var vRatio = paper_height / current_map_height;
       var ratio = Math.min(hRatio, vRatio);
+
       var centerShift_x = (paper_width - current_map_width * ratio) / 2;
       var centerShift_y = (paper_height - current_map_height * ratio) / 2;
 
       map.once("rendercomplete", () => {
         const mapCanvas = this.$refs.previewCanvas;
-        mapCanvas.width = current_map_width;
-        mapCanvas.height = current_map_height;
+        mapCanvas.width = current_map_width / ratio;
+        mapCanvas.height = current_map_height / ratio;
         const mapContext = mapCanvas.getContext("2d");
         mapContext.fillStyle = "green";
         mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
@@ -152,43 +161,35 @@ export default {
         mapContext.globalAlpha = 1;
         mapContext.setTransform(1, 0, 0, 1, 0, 0);
 
+        setTimeout(() => {
+          const pdf = new jsPDF({
+            orientation,
+            unit: "mm",
+            format,
+          });
+
+          pdf.addImage(
+            mapCanvas.toDataURL("image/jpeg"),
+            "JPEG",
+            centerShift_x,
+            centerShift_y,
+            current_map_width * ratio,
+            current_map_height * ratio
+          );
+          pdf.save("map.pdf");
+        }, 2000);
+
         // Reset original map size
         map.setSize([current_map_width, current_map_height]);
         map.getView().setResolution(viewResolution);
 
         this.is_making_print = false;
       });
-      // set map size while respecting ratio
-      // const map_ratio = current_map_height / current_map_width;
-      // const printSize = [paper_width, paper_width * map_ratio];
 
-      // map.setSize([current_map_width * 2, current_map_height * 2]);
-      // map.setSize(printSize);
-      // const scaling = Math.min(
-      //   paper_width / current_map_width,
-      //   paper_height / current_map_height
-      // );
-      map.getView().setResolution(viewResolution + 1);
+      map.setSize([current_map_width / ratio, current_map_height / ratio]);
+      map.getView().setResolution(viewResolution * ratio);
     },
-    printMap() {
-      this.$refs.previewCanvas;
-
-      // const pdf = new jsPDF({
-      //   orientation: "landscape",
-      //   unit: "mm",
-      //   format,
-      // });
-
-      // pdf.addImage(
-      //   mapCanvas.toDataURL("image/jpeg"),
-      //   "JPEG",
-      //   centerShift_x,
-      //   centerShift_y,
-      //   current_map_width * ratio,
-      //   current_map_height * ratio
-      // );
-      // pdf.save("map.pdf");
-    },
+    printMap() {},
   },
 };
 </script>
