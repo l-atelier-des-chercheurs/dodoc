@@ -127,13 +127,17 @@ export default {
       var vRatio = paper_height / current_map_height;
       var ratio = Math.min(hRatio, vRatio);
 
-      var centerShift_x = (paper_width - current_map_width * ratio) / 2;
-      var centerShift_y = (paper_height - current_map_height * ratio) / 2;
+      debugger;
+      const new_map_width = current_map_width * ratio;
+      const new_map_height = current_map_height * ratio;
+
+      var centerShift_x = (paper_width - new_map_width) / 2;
+      var centerShift_y = (paper_height - new_map_height) / 2;
 
       map.once("rendercomplete", () => {
         const mapCanvas = this.$refs.mapCanvas;
-        mapCanvas.width = paper_width;
-        mapCanvas.height = paper_height;
+        mapCanvas.width = new_map_width;
+        mapCanvas.height = new_map_height;
         const mapContext = mapCanvas.getContext("2d");
         mapContext.fillStyle = "green";
         mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
@@ -175,8 +179,8 @@ export default {
           mapCanvas,
           centerShift_x,
           centerShift_y,
-          current_map_width * ratio,
-          current_map_height * ratio
+          new_map_width,
+          new_map_height
         );
 
         setTimeout(() => {
@@ -213,7 +217,7 @@ export default {
         paper_height / current_map_height
       );
       map.getView().setResolution(viewResolution / scaling);
-      const printSize = [paper_width, paper_height];
+      const printSize = [new_map_width, new_map_height];
       map.setSize(printSize);
     },
     printMap() {},
