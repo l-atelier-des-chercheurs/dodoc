@@ -47,7 +47,7 @@
             :can_edit="true"
           />
         </div>
-        <div class="u-spacingBottom">
+        <div class="" v-if="map_mode === 'gps'">
           <DLabel :str="$t('map_baselayer')" />
           <SelectField2
             :value="view.map_baselayer || 'OSM'"
@@ -55,6 +55,34 @@
             :can_edit="true"
             :hide_validation="false"
             @update="updateView({ field: 'map_baselayer', value: $event })"
+          />
+        </div>
+        <div class="u-spacingBottom">
+          <RangeValueInput
+            :label="$t('opacity')"
+            :value="view.map_baselayer_opacity"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            :default_value="1"
+            @save="
+              updateView({
+                field: 'map_baselayer_opacity',
+                value: $event,
+              })
+            "
+          />
+        </div>
+        <div class="u-spacingBottom">
+          <ToggleInput
+            :label="$t('bw_filter')"
+            :content="view.map_baselayer_bw"
+            @update:content="
+              updateView({
+                field: 'map_baselayer_bw',
+                value: $event,
+              })
+            "
           />
         </div>
       </DetailsPane>
@@ -65,6 +93,10 @@
 export default {
   props: {
     view: Object,
+    map_mode: {
+      default: "gps",
+      type: String,
+    },
     default_view_color: String,
   },
   components: {},
@@ -103,17 +135,18 @@ export default {
   i18n: {
     messages: {
       fr: {
-        map_baselayer: "Fond de carte",
-
         pins_color: "Couleur des épingles",
         link_pins: "Relier les épingles",
         pin_icons: "Apparence des épingles",
         icon: "Icône",
         media_preview: "Image sur la carte",
         remove_layer: "Supprimer ce calque et son contenu",
+
+        map_baselayer: "Fond de carte",
         OSM: "OpenStreetMap",
         IGN_MAP: "Carte IGN (en France uniquement)",
         IGN_SAT: "Photos satellite IGN (en France uniquement)",
+        bw_filter: "Filtre noir et blanc",
       },
     },
   },

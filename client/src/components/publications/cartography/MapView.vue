@@ -7,6 +7,12 @@
           class="_mapContainer"
           :map_mode="publication.map_mode"
           :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
+          :map_baselayer_bw="
+            opened_view ? opened_view.map_baselayer_bw : undefined
+          "
+          :map_baselayer_opacity="
+            opened_view ? opened_view.map_baselayer_opacity : undefined
+          "
           :map_base_media="base_media"
           :pins="pins"
           :lines="lines"
@@ -47,6 +53,7 @@
             v-if="opened_view && can_edit"
             :key="opened_view.$path"
             :view="opened_view"
+            :map_mode="publication.map_mode"
             :default_view_color="default_view_color"
           />
         </transition>

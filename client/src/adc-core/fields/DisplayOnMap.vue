@@ -11,6 +11,9 @@
     <div
       ref="popUp"
       class="_popup"
+      :class="{
+        'is--pin': clicked_location.module,
+      }"
       v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div class="_popupShadow" />
@@ -132,6 +135,26 @@
           </template>
         </button>
       </div>
+      <div class="_buttonRow">
+        <button
+          type="button"
+          class="u-button"
+          :class="{
+            'is--active': start_map_print,
+          }"
+          @click="start_map_print = true"
+        >
+          <b-icon class="inlineSVG" icon="printer" />
+          <!-- <template v-if="start_map_print">
+            {{ $t("print") }}
+          </template> -->
+        </button>
+        <PrintMap
+          v-if="start_map_print"
+          :map="map"
+          @close="start_map_print = false"
+        />
+      </div>
     </div>
 
     <transition name="slideup">
@@ -221,13 +244,15 @@ import {
 
 import {
   Draw as olDraw,
-  // Modify as olModify,
+  Modify as olModify,
   Select as olSelect,
   Translate as olTranslate,
   Snap as olSnap,
 } from "ol/interaction";
 
 import { defaults as olDefaultControls } from "ol/control";
+
+import olPencilSketch from "ol-ext/filter/PencilSketch";
 
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
@@ -256,6 +281,14 @@ export default {
         return ["OSM", "IGN_MAP", "IGN_SAT"].includes(value);
       },
     },
+    map_baselayer_bw: {
+      type: Boolean,
+      default: false,
+    },
+    map_baselayer_opacity: {
+      type: Number,
+      default: 1,
+    },
     map_base_media: Object,
     is_small: {
       type: Boolean,
@@ -275,6 +308,7 @@ export default {
   },
   components: {
     PublicationModule,
+    PrintMap: () => import("@/adc-core/fields/PrintMap.vue"),
   },
   data() {
     return {
@@ -296,9 +330,6 @@ export default {
       current_zoom: undefined,
       current_view: undefined,
 
-      min_zoom: 3,
-      max_zoom: 22,
-
       mouse_coords: false,
 
       map_modify: undefined,
@@ -318,6 +349,15 @@ export default {
         //   tip: ,
         //   activeTip: ,
         // },
+        {
+          key: "FreehandLineString",
+          label: this.$t("freehand"),
+          icon: "pen",
+          olType: "LineString",
+          freehand: true,
+          idleTip: this.$t("click_drag_to_draw_line"),
+          activeTip: this.$t("click_drag_to_draw_line"),
+        },
         {
           key: "LineString",
           label: this.$t("lines"),
@@ -342,13 +382,13 @@ export default {
           activeTip: this.$t("click_to_place_point"),
         },
         {
-          key: "FreehandLineString",
-          label: this.$t("freehand"),
-          icon: "pen",
-          olType: "LineString",
-          freehand: true,
-          idleTip: this.$t("click_drag_to_draw_line"),
-          activeTip: this.$t("click_drag_to_draw_line"),
+          key: "Polygon",
+          label: this.$t("polygon"),
+          icon: "pentagon",
+          olType: "Polygon",
+          freehand: false,
+          idleTip: this.$t("click_to_start_drawing"),
+          activeTip: this.$t("click_to_continue_drawing"),
         },
         {
           key: "Circle",
@@ -359,19 +399,12 @@ export default {
           idleTip: this.$t("click_to_place_center"),
           activeTip: this.$t("click_to_define_circle_radius"),
         },
-        {
-          key: "Polygon",
-          label: this.$t("polygon"),
-          icon: "pentagon",
-          olType: "Polygon",
-          freehand: false,
-          idleTip: this.$t("click_to_start_drawing"),
-          activeTip: this.$t("click_to_continue_drawing"),
-        },
       ],
       map_select_mode: undefined,
       selected_feature_id: undefined,
       map_translate: undefined,
+
+      start_map_print: false,
     };
   },
   i18n: {
@@ -395,6 +428,7 @@ export default {
         click_to_place_point: "cliquer pour ajouter un sommet",
         finish_drawing: "Terminer le dessin",
         or_double_click: "Ou double-cliquez sur la carte",
+        drag_to_modify: "cliquer-glisser pour modifier",
 
         select_by_clicking: "sélectionner une forme en cliquant dessus",
         move_drawing: "cliquer-glisser pour déplacer la forme",
@@ -405,6 +439,7 @@ export default {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$on("publication.map.openPin", this.openPin);
     this.$eventHub.$on("publication.map.disableTools", this.disableTools);
+    this.$eventHub.$on("publication.map.print", this.printMap);
     document.addEventListener("keydown", this.keyPressed);
   },
   mounted() {
@@ -416,6 +451,7 @@ export default {
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$off("publication.map.openPin", this.openPin);
     this.$eventHub.$off("publication.map.disableTools", this.disableTools);
+    this.$eventHub.$off("publication.map.print", this.printMap);
     document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {
@@ -445,6 +481,12 @@ export default {
     },
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
+    },
+    map_baselayer_bw() {
+      this.setBackgroundLayerOptions();
+    },
+    map_baselayer_opacity() {
+      this.setBackgroundLayerOptions();
     },
     map_mode() {
       this.startMap();
@@ -498,7 +540,10 @@ export default {
         center,
         zoom,
       });
+      this.background_layer = background_layer;
       this.view = view;
+
+      this.setBackgroundLayerOptions();
 
       this.map = new olMap({
         controls: olDefaultControls({
@@ -506,7 +551,7 @@ export default {
         }),
         target: this.$refs.map,
         view: this.view,
-        layers: [background_layer],
+        layers: [this.background_layer],
       });
 
       ////////////////////////////////////////////////////////////////////////// CREATE LINES
@@ -557,7 +602,6 @@ export default {
             this.makePointStyle({
               feature,
               resolution,
-              fill_color: "hsla(207, 78%, 53%, .7)",
             }),
         })
       );
@@ -715,6 +759,9 @@ export default {
     toggleSearch() {
       this.$el.querySelector("#gcd-button-control").click();
     },
+    printMap() {
+      this.start_map_print = true;
+    },
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
 
@@ -751,6 +798,7 @@ export default {
             projection,
             imageExtent: extent,
           }),
+          className: "ol-layer ol-basemap",
         });
       } else {
         // TODO check if center is contained in extent (see containsXY)
@@ -760,13 +808,14 @@ export default {
           center,
           zoom,
           minZoom: 3,
-          maxZoom: 18,
+          maxZoom: 22,
           showFullExtent: true,
           enableRotation: false,
         });
         const source = this.createSource(this.map_baselayer);
         background_layer = new olTileLayer({
           source,
+          className: "ol-layer ol-basemap",
         });
       }
 
@@ -887,11 +936,7 @@ export default {
       }
       return features;
     },
-    makePointStyle({
-      feature,
-      resolution,
-      fill_color = "hsla(36, 96%, 50%, .7)",
-    }) {
+    makePointStyle({ feature, resolution, fill_color = "hsl(0, 0%, 15%)" }) {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
       let style = {};
@@ -961,7 +1006,33 @@ export default {
           }),
         }),
         text: new olText({
-          text: "Drag to modify",
+          text: this.$t("drag_to_modify"),
+          font: this.makeDefaultFontString(),
+          fill: new olFill({
+            color: "rgba(255, 255, 255, 1)",
+          }),
+          backgroundFill: new olFill({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          padding: [2, 2, 2, 2],
+          textAlign: "left",
+          offsetX: 15,
+        }),
+      });
+    },
+    translateStyle() {
+      return new olStyle({
+        image: new olCircleStyle({
+          radius: 5,
+          stroke: new olStroke({
+            color: "rgba(0, 0, 0, 0.7)",
+          }),
+          fill: new olFill({
+            color: "rgba(0, 0, 0, 0.4)",
+          }),
+        }),
+        text: new olText({
+          text: this.$t("drag_to_modify"),
           font: this.makeDefaultFontString(),
           fill: new olFill({
             color: "rgba(255, 255, 255, 1)",
@@ -1003,9 +1074,9 @@ export default {
 
       if (
         tip &&
-        (type === "Point" || is_selected)
-        //  &&
-        // !this.map_modify.getOverlay().getSource().getFeatures().length
+        (type === "Point" || is_selected) &&
+        (!this.map_modify ||
+          !this.map_modify.getOverlay().getSource().getFeatures().length)
       ) {
         const tipStyle = new olStyle({
           text: new olText({
@@ -1036,7 +1107,7 @@ export default {
           color: fill_color,
         }),
         fill: new olFill({
-          color: "rgba(255, 255, 255, 0.2)",
+          color: "rgba(255, 255, 255, .5)",
         }),
       });
     },
@@ -1101,12 +1172,6 @@ export default {
       }
     },
     startDrawMode({ draw_mode }) {
-      // this.map_modify = new olModify({
-      //   source: this.draw_vector_source,
-      //   style: this.modifyStyle,
-      // });
-      // this.map.addInteraction(this.map_modify);
-
       let drawType = draw_mode.olType;
       let freehand = draw_mode.freehand;
       let idleTip = draw_mode.idleTip;
@@ -1319,6 +1384,26 @@ export default {
     disableTools() {
       this.toggleTool();
     },
+    setBackgroundLayerOptions() {
+      if (this.map_baselayer_bw === true) {
+        if (
+          !this.background_layer.getFilters().length ||
+          this.background_layer.getFilters().length === 0
+        ) {
+          var pencil = new olPencilSketch();
+          pencil.set("intensity", 0.7);
+          pencil.set("blur", 15);
+          this.background_layer.addFilter(pencil);
+        }
+      } else {
+        if (this.background_layer.getFilters().length >= 1)
+          this.background_layer.removeFilter();
+      }
+
+      if (this.map_baselayer_opacity < 1)
+        this.background_layer.setOpacity(this.map_baselayer_opacity);
+      else this.background_layer.setOpacity(1);
+    },
     saveGeom() {
       const geom_str = this.convertFeaturesToStr();
       this.$emit("saveGeom", geom_str);
@@ -1399,7 +1484,6 @@ export default {
     },
     startSelectMode() {
       this.selected_feature_id = undefined;
-
       this.map_select_mode = new olSelect({
         style: (feature) => this.makeGeomStyle({ feature, is_selected: true }),
       });
@@ -1413,6 +1497,11 @@ export default {
         this.selected_feature_id = undefined;
       });
 
+      this.startTranslate();
+      // clashes with translate on linestring
+      // this.startModify();
+    },
+    startTranslate() {
       this.map_translate = new olTranslate({
         features: this.map_select_mode.getFeatures(),
       });
@@ -1422,6 +1511,24 @@ export default {
           this.saveGeom();
         });
       });
+    },
+    endTranslate() {
+      this.map.removeInteraction(this.map_translate);
+    },
+    startModify() {
+      this.map_modify = new olModify({
+        source: this.draw_vector_source,
+        style: this.modifyStyle,
+      });
+      this.map.addInteraction(this.map_modify);
+      this.map_modify.on("modifyend", () => {
+        this.$nextTick(() => {
+          this.saveGeom();
+        });
+      });
+    },
+    endModify() {
+      this.map.removeInteraction(this.map_modify);
     },
     removeSelected() {
       if (!this.selected_feature_id) return false;
@@ -1434,7 +1541,6 @@ export default {
       });
     },
     endSelectMode() {
-      this.map.removeInteraction(this.map_translate);
       this.map.removeInteraction(this.map_select_mode);
       this.selected_feature_id = undefined;
     },
@@ -1556,6 +1662,7 @@ export default {
 ._popup {
   position: absolute;
   bottom: 38px;
+  bottom: 9px;
   left: -48px;
   min-width: 280px;
 
@@ -1593,6 +1700,9 @@ export default {
   //   left: 48px;
   //   margin-left: -11px;
   // }
+  &.is--pin {
+    bottom: 38px;
+  }
 
   ._pinContent,
   ._popupClose {
