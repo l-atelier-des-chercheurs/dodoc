@@ -1,5 +1,6 @@
 <template>
   <BaseModal2 :title="$t('print_map')" @close="$emit('close')">
+    <LoaderSpinner v-if="is_making_preview" />
     <div class="u-spacingBottom">
       <DLabel :str="$t('format')" />
       <select v-model="print_format">
@@ -17,14 +18,10 @@
         :label="$t('print_only_basemap')"
         @update:content="print_only_basemap = $event"
       />
-      {{ print_only_basemap }}
     </div>
     <fieldset class="u-spacingBottom _previewCanvas">
-      <legend class="u-label">{{ $t("map") }}</legend>
-      <canvas ref="mapCanvas" class="" />
-    </fieldset>
-    <fieldset class="u-spacingBottom _previewCanvas">
-      <legend class="u-label">{{ $t("page") }}</legend>
+      <legend class="u-label">{{ $t("preview") }}</legend>
+      <canvas v-show="false" ref="mapCanvas" class="" />
       <canvas ref="pageCanvas" class="" />
     </fieldset>
     <button
@@ -48,7 +45,9 @@ export default {
   components: {},
   data() {
     return {
+      is_making_preview: false,
       is_making_print: false,
+      print_options: {},
 
       print_format: "A4",
       print_formats: [
@@ -97,12 +96,19 @@ export default {
     });
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    print_only_basemap() {
+      this.generatePreview();
+    },
+    print_format() {
+      this.generatePreview();
+    },
+  },
   computed: {},
   methods: {
     generatePreview() {
       // from https://openlayers.org/en/latest/examples/export-pdf.html
-      this.is_making_print = true;
+      this.is_making_preview = true;
       const format = this.print_format;
       const dim = this.print_formats.find((f) => f.key === format).dimensions;
       const resolution = 300; // DPI
@@ -139,8 +145,6 @@ export default {
         mapCanvas.width = new_map_width;
         mapCanvas.height = new_map_height;
         const mapContext = mapCanvas.getContext("2d");
-        mapContext.fillStyle = "green";
-        mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
 
         Array.prototype.forEach.call(
           document.querySelectorAll(".ol-layer"),
@@ -175,6 +179,9 @@ export default {
         page_canvas.width = paper_width;
         page_canvas.height = paper_height;
         const page_context = page_canvas.getContext("2d");
+        page_context.fillStyle = "white";
+        page_context.fillRect(0, 0, page_canvas.width, page_canvas.height);
+
         page_context.drawImage(
           mapCanvas,
           centerShift_x,
@@ -183,29 +190,18 @@ export default {
           new_map_height
         );
 
-        setTimeout(() => {
-          const pdf = new jsPDF({
-            orientation,
-            unit: "mm",
-            format,
-          });
-
-          pdf.addImage(
-            page_canvas.toDataURL("image/jpeg"),
-            "JPEG",
-            0,
-            0,
-            paper_width_in_mm,
-            paper_height_in_mm
-          );
-          pdf.save("map.pdf");
-        }, 2000);
+        this.print_options = {
+          orientation,
+          format,
+          paper_width_in_mm,
+          paper_height_in_mm,
+          page_canvas,
+        };
 
         // Reset original map size
-
         map.setSize([current_map_width, current_map_height]);
         map.getView().setResolution(viewResolution);
-        this.is_making_print = false;
+        this.is_making_preview = false;
       });
 
       // ratio = 0.5;
@@ -220,17 +216,48 @@ export default {
       const printSize = [new_map_width, new_map_height];
       map.setSize(printSize);
     },
-    printMap() {},
+    printMap() {
+      this.is_making_print = true;
+
+      const {
+        orientation,
+        format,
+        paper_width_in_mm,
+        paper_height_in_mm,
+        page_canvas,
+      } = this.print_options;
+
+      const pdf = new jsPDF({
+        orientation,
+        unit: "mm",
+        format,
+      });
+
+      pdf.addImage(
+        page_canvas.toDataURL("image/jpeg"),
+        "JPEG",
+        0,
+        0,
+        paper_width_in_mm,
+        paper_height_in_mm
+      );
+      pdf.save("map.pdf");
+
+      this.is_making_print = false;
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-._previewCanvas canvas {
-  height: 500px;
-  width: auto;
-  display: block;
-  margin: 0 auto;
-  border: 2px solid var(--c-gris);
-  padding: 2px;
+._previewCanvas {
+  text-align: center;
+  canvas {
+    height: 200px;
+    width: auto;
+    display: inline-blockk;
+    margin: 0 auto;
+    border: 2px solid var(--c-gris);
+    // padding: 2px;
+  }
 }
 </style>
