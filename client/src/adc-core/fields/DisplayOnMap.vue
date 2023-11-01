@@ -176,13 +176,32 @@
             </small>
           </template>
           <template v-else-if="'Select' === current_draw_mode">
-            <small class="_instr u-instructions" v-if="!selected_feature_id">
+            <small class="_instr u-instructions" v-if="!selected_feature">
               {{ $t("select_by_clicking") }}
             </small>
             <template v-else>
-              <small class="_instr u-instructions">
-                {{ $t("move_drawing") }}
-              </small>
+              <div class="">
+                <small class="_instr u-instructions">
+                  {{ $t("move_drawing") }}
+                </small>
+              </div>
+              <RangeValueInput
+                class=""
+                :can_toggle="false"
+                :label="$t('outline_width')"
+                :value="selected_feature.get('stroke_width')"
+                :min="1"
+                :max="40"
+                :step="1"
+                :ticks="[0, 3, 10, 20, 30, 40]"
+                :default_value="3"
+                @save="
+                  updateDrawing({
+                    prop: 'stroke_width',
+                    val: $event,
+                  })
+                "
+              />
               <button
                 type="button"
                 class="u-button u-button_bleumarine"
@@ -504,6 +523,10 @@ export default {
       return {
         "--current-view-color": this.opened_view_color,
       };
+    },
+    selected_feature() {
+      if (!this.selected_feature_id) return undefined;
+      return this.draw_vector_source?.getFeatureById(this.selected_feature_id);
     },
   },
   methods: {
@@ -1055,7 +1078,7 @@ export default {
       const styles = [];
 
       // const line_dash = !is_selected ? undefined : [10, 5];
-      const stroke_width = 3;
+      const stroke_width = feature.get("stroke_width") || 3;
       const fill_color = "rgba(255, 255, 255, 0.2)";
 
       if (is_selected) {
@@ -1220,7 +1243,7 @@ export default {
       this.map_draw.on("drawend", (event) => {
         const new_feature = event.feature;
         const type = new_feature.getGeometry().getType();
-        var id = `${type}-` + this.getRandomString();
+        var id = this.makeRandomIdForShape(type);
         new_feature.setId(id);
 
         this.$nextTick(() => {
@@ -1390,6 +1413,10 @@ export default {
     //   }
     //   return styles;
     // },
+    makeRandomIdForShape(type) {
+      return `${type}-` + this.getRandomString();
+    },
+
     finishDrawing() {
       if (this.map_draw) this.map_draw.finishDrawing();
     },
@@ -1440,8 +1467,12 @@ export default {
           return acc;
         }
 
+        const stroke_width = f.get("stroke_width");
+        if (stroke_width) obj.stroke_width = stroke_width;
+
         const id = f.getId();
         if (id) obj.id = id;
+
         acc.push(obj);
 
         return acc;
@@ -1460,31 +1491,29 @@ export default {
           if (p.type === "Polygon" && p.coords)
             feature_cont = {
               geometry: new olPolygon(p.coords),
-              stroke_color: p.color,
             };
           else if (p.type === "LineString" && p.coords)
             feature_cont = {
               geometry: new olLineString(p.coords),
-              stroke_color: p.color,
             };
           else if (p.type === "Circle" && p.center && p.radius)
             feature_cont = {
               geometry: new olCircle(p.center, p.radius),
-              stroke_color: p.color,
             };
+
+          if (p.color) feature_cont.stroke_color = p.color;
+          if (p.stroke_width) feature_cont.stroke_width = p.stroke_width;
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
+          else feature.setId(this.makeRandomIdForShape(p.type));
 
           features.push(feature);
         });
         this.draw_vector_source.addFeatures(features);
         this.draw_vector_source.changed();
 
-        if (
-          this.selected_feature_id &&
-          !this.draw_vector_source.getFeatureById(this.selected_feature_id)
-        )
+        if (this.selected_feature_id && !this.selected_feature)
           this.selected_feature_id = undefined;
       } catch (err) {
         this.$alertify.delay(4000).error(err);
@@ -1546,11 +1575,18 @@ export default {
       this.map.removeInteraction(this.map_modify);
     },
     removeSelected() {
-      if (!this.selected_feature_id) return false;
-      const feature_to_remove = this.draw_vector_source.getFeatureById(
+      if (!this.selected_feature) return false;
+      this.draw_vector_source.removeFeature(this.selected_feature);
+      this.$nextTick(() => {
+        this.saveGeom();
+      });
+    },
+    updateDrawing({ prop, val }) {
+      if (!this.selected_feature) return false;
+      const f = this.draw_vector_source.getFeatureById(
         this.selected_feature_id
       );
-      this.draw_vector_source.removeFeature(feature_to_remove);
+      f.set(prop, val);
       this.$nextTick(() => {
         this.saveGeom();
       });
