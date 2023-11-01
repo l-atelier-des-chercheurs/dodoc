@@ -230,8 +230,8 @@ export default {
     //   observer = new IntersectionObserver(handleIntersect, options);
     //   observer.observe(boxElement);
     // },
+    endIntersectionObserver() {},
   },
-  endIntersectionObserver() {},
 };
 </script>
 <style lang="scss" scoped>
