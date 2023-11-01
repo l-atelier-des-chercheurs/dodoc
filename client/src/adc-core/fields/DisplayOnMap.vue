@@ -1051,7 +1051,7 @@ export default {
     makeGeomStyle({ feature, tip, is_selected }) {
       const styles = [];
 
-      const line_dash = is_selected ? undefined : [10, 5];
+      const line_dash = !is_selected ? undefined : [10, 5];
       const stroke_width = is_selected ? 3 : 2;
       const fill_color = is_selected
         ? "rgba(255, 255, 255, 0.4)"
