@@ -585,12 +585,6 @@
                   },
                   "pagn_bottom": {
                     "type": "number"
-                  },
-                  "map_mode": {
-                    "type": "string"
-                  },
-                  "map_base_media_filename": {
-                    "type": "string"
                   }
                 },
                 "$files": {
@@ -612,6 +606,12 @@
                     },
                     "all_pins_icon": {
                       "type": "boolean"
+                    },
+                    "map_mode": {
+                      "type": "string"
+                    },
+                    "map_base_media_filename": {
+                      "type": "string"
                     },
                     "map_baselayer": {
                       "type": "string"

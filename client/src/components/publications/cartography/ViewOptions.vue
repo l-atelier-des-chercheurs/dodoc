@@ -47,6 +47,29 @@
             :can_edit="true"
           />
         </div>
+
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('map_mode')" />
+          <RadioCheckboxField
+            :field_name="'map_mode'"
+            :input_type="'radio'"
+            :content="map_mode"
+            :path="view.$path"
+            :can_edit="true"
+            :options="map_mode_options"
+          />
+        </div>
+
+        <div class="u-spacingBottom" v-if="map_mode === 'image'">
+          <DLabel :str="$t('image_basemap')" />
+          <SingleBaseMediaPicker
+            :field_name="'map_base_media_filename'"
+            :content="view.map_base_media_filename"
+            :path="view.$path"
+            :media_type_to_pick="'image'"
+          />
+        </div>
+
         <div class="u-spacingBottom" v-if="map_mode === 'gps'">
           <DLabel :str="$t('map_baselayer')" />
           <SelectField2
@@ -65,6 +88,7 @@
             </small>
           </div>
         </div>
+
         <div class="u-spacingBottom">
           <RangeValueInput
             :label="$t('opacity')"
@@ -81,6 +105,7 @@
             "
           />
         </div>
+
         <div class="u-spacingBottom">
           <ToggleInput
             :label="$t('bw_filter')"
@@ -98,16 +123,16 @@
   </div>
 </template>
 <script>
+import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue";
+
 export default {
   props: {
     view: Object,
-    map_mode: {
-      default: "gps",
-      type: String,
-    },
     default_view_color: String,
   },
-  components: {},
+  components: {
+    SingleBaseMediaPicker,
+  },
   data() {
     return {
       icon_options: [
@@ -124,6 +149,20 @@ export default {
           label: this.$t("media_preview"),
         },
       ],
+
+      map_mode_options: [
+        {
+          key: "gps",
+          label: this.$t("map_mode_gps"),
+          instructions: this.$t("map_mode_gps_instr"),
+        },
+        {
+          key: "image",
+          label: this.$t("map_mode_image"),
+          instructions: this.$t("map_mode_image_instr"),
+        },
+      ],
+
       map_baselayer_options: [
         {
           key: "OSM",
@@ -148,7 +187,16 @@ export default {
         pin_icons: "Apparence des épingles",
         icon: "Icône",
         media_preview: "Image sur la carte",
-        remove_layer: "Supprimer ce calque et son contenu",
+
+        map_mode: "Mode de cartographie",
+
+        map_mode_gps: "Coordonnées GPS avec un fond de carte OpenStreetMap",
+        map_mode_gps_instr: "Pour cartographier un espace extérieur.",
+
+        map_mode_image: "Fond de plan image",
+        map_mode_image_instr:
+          "Pour cartographier un espace intérieur ou très réduit ou un espace non-cartographique.",
+        image_basemap: "Image utilisée comme fond de carte",
 
         map_baselayer: "Fond de carte",
         OSM: "OpenStreetMap",
@@ -165,7 +213,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    map_mode() {
+      return this.view?.map_mode || "gps";
+    },
+  },
   methods: {
     async updateView({ field, value }) {
       await this.$api.updateMeta({

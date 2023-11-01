@@ -63,7 +63,11 @@
         </small>
       </div>
 
-      <sl-button v-if="can_edit" @click="openSettings" caret>
+      <sl-button
+        v-if="can_edit && publication.template !== 'cartography'"
+        @click="openSettings"
+        caret
+      >
         <b-icon icon="gear" slot="prefix" :aria-label="$t('settings')" />
         {{ $t("settings") }}
       </sl-button>

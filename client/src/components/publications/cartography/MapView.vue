@@ -5,7 +5,7 @@
         <DisplayOnMap
           :key="opened_view_meta_filename"
           class="_mapContainer"
-          :map_mode="publication.map_mode"
+          :map_mode="opened_view ? opened_view.map_mode : 'gps'"
           :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
           :map_baselayer_bw="
             opened_view ? opened_view.map_baselayer_bw : undefined
@@ -51,7 +51,6 @@
             v-if="opened_view && can_edit"
             :key="opened_view.$path"
             :view="opened_view"
-            :map_mode="publication.map_mode"
             :default_view_color="default_view_color"
           />
         </transition>
@@ -166,7 +165,8 @@ export default {
       );
     },
     base_media() {
-      const meta_filename_in_project = this.publication.map_base_media_filename;
+      const meta_filename_in_project =
+        this.opened_view?.map_base_media_filename;
       if (meta_filename_in_project)
         return this.getSourceMedia({
           source_media: { meta_filename_in_project },
