@@ -218,18 +218,18 @@ export default {
       });
     },
 
-    startIntersectionObserver() {
-      let observer;
+    // startIntersectionObserver() {
+    //   let observer;
 
-      let options = {
-        root: null,
-        rootMargin: "0px",
-        threshold: buildThresholdList(),
-      };
+    //   let options = {
+    //     root: null,
+    //     rootMargin: "0px",
+    //     threshold: buildThresholdList(),
+    //   };
 
-      observer = new IntersectionObserver(handleIntersect, options);
-      observer.observe(boxElement);
-    },
+    //   observer = new IntersectionObserver(handleIntersect, options);
+    //   observer.observe(boxElement);
+    // },
   },
   endIntersectionObserver() {},
 };
