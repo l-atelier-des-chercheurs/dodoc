@@ -16,7 +16,10 @@
         {{ fetch_project_error }}
       </div>
       <div v-else key="publication" ref="fsContainer">
-        <div class="_pubTopbar" v-if="!is_serversidepreview && !is_fullscreen">
+        <div
+          class="_pubTopbar"
+          v-if="!is_serversidepreview && !is_fullscreen && false"
+        >
           <PublicationTopbar
             :publication="publication"
             :no_back_button="true"
