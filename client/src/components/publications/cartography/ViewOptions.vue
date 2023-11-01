@@ -47,7 +47,7 @@
             :can_edit="true"
           />
         </div>
-        <div class="" v-if="map_mode === 'gps'">
+        <div class="u-spacingBottom" v-if="map_mode === 'gps'">
           <DLabel :str="$t('map_baselayer')" />
           <SelectField2
             :value="view.map_baselayer || 'OSM'"
@@ -56,6 +56,14 @@
             :hide_validation="false"
             @update="updateView({ field: 'map_baselayer', value: $event })"
           />
+          <div
+            class="u-instructions"
+            v-if="view.map_baselayer && view.map_baselayer.includes('IGN')"
+          >
+            <small class="">
+              {{ $t("IGN_max_zoom_limits") }}
+            </small>
+          </div>
         </div>
         <div class="u-spacingBottom">
           <RangeValueInput
@@ -147,6 +155,9 @@ export default {
         IGN_MAP: "Carte IGN (en France uniquement)",
         IGN_SAT: "Photos satellite IGN (en France uniquement)",
         bw_filter: "Filtre noir et blanc",
+
+        IGN_max_zoom_limits:
+          "Les tuiles fournies par l’IGN ne permettent pas d’afficher la carte à un niveau de zoom maximal. Pour pouvoir travailler à l’échelle la plus fine, il est recommandé de ne pas les utiliser.",
       },
     },
   },

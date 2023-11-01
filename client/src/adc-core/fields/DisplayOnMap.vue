@@ -804,11 +804,13 @@ export default {
         // TODO check if center is contained in extent (see containsXY)
         center = center || [5.39057449011251, 43.310173305629576];
 
+        const maxZoom = this.map_baselayer.includes("IGN") ? 19 : 21;
+
         view = new olView({
           center,
           zoom,
           minZoom: 3,
-          maxZoom: 22,
+          maxZoom,
           showFullExtent: true,
           enableRotation: false,
         });
