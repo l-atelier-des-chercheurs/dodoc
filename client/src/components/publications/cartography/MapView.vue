@@ -136,14 +136,14 @@ export default {
         // if (this.opened_view_meta_filename) this.$emit("toggleView", undefined);
       }
 
-      this.$nextTick(() => {
-        // scrollto pin in view
-        if (this.opened_pin_path) {
-          const module_meta_filename = this.getFilename(this.opened_pin_path);
-          module_meta_filename;
-          // this.$eventHub.$emit(`module.show.${module_meta_filename}`);
-        }
-      });
+      // this.$nextTick(() => {
+      // scrollto pin in view
+      // if (this.opened_pin_path) {
+      // const module_meta_filename = this.getFilename(this.opened_pin_path);
+      // module_meta_filename;
+      // this.$eventHub.$emit(`module.show.${module_meta_filename}`);
+      // }
+      // });
     },
   },
   computed: {
@@ -309,8 +309,6 @@ export default {
       const meta_filename = meta_filenames.at(-1);
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
-        // this.opened_pin_path = pin_path;
-        // this.$eventHub.$emit(`module.show.${meta_filename}`);
         this.$eventHub.$emit("publication.map.openPin", pin_path);
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);

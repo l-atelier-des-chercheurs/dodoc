@@ -488,7 +488,7 @@ export default {
     },
     is_active_on_map: {
       handler() {
-        if (this.is_active_on_map) this.scrollToModule();
+        if (this.is_active_on_map) this.scrollToModule("instant");
       },
       immediate: true,
     },
@@ -629,13 +629,14 @@ export default {
     disableEdit() {
       this.$emit("update:module_being_edited", undefined);
     },
-    scrollToModule() {
-      if (this.$el)
+    scrollToModule(behavior = "smooth") {
+      if (this.$el) {
         this.$el.scrollIntoView({
-          behavior: "smooth",
+          behavior,
           block: "start",
           inline: "nearest",
         });
+      }
     },
     startIntersectionObserver() {
       let callback = (entries, observer) => {
