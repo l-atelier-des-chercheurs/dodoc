@@ -41,5 +41,7 @@ export default {
 <style lang="scss" scoped>
 ._mapTemplate {
   position: relative;
+  width: 100%;
+  height: calc(100vh - 96px);
 }
 </style>

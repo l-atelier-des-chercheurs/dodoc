@@ -327,7 +327,7 @@ export default {
 <style lang="scss" scoped>
 ._mapView {
   width: 100%;
-  height: calc(100vh - 95px);
+  height: 100%;
 
   // border-top: 1px solid black;
 
