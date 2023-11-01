@@ -20,7 +20,11 @@
       {{ print_only_basemap }}
     </div>
     <fieldset class="u-spacingBottom _previewCanvas">
-      <legend class="u-label">{{ $t("preview") }}</legend>
+      <legend class="u-label">{{ $t("map") }}</legend>
+      <canvas ref="mapCanvas" class="" />
+    </fieldset>
+    <fieldset class="u-spacingBottom _previewCanvas">
+      <legend class="u-label">{{ $t("page") }}</legend>
       <canvas ref="pageCanvas" class="" />
     </fieldset>
     <button
@@ -101,23 +105,22 @@ export default {
       this.is_making_print = true;
       const format = this.print_format;
       const dim = this.print_formats.find((f) => f.key === format).dimensions;
-      // const resolution = 300; // DPI
+      const resolution = 300; // DPI
       const map = this.map;
 
-      // const paper_width = Math.round((dim[0] * resolution) / 25.4);
-      // const paper_height = Math.round((dim[1] * resolution) / 25.4);
-
       const [current_map_width, current_map_height] = map.getSize();
-      let orientation, paper_width, paper_height;
+      let orientation, paper_width_in_mm, paper_height_in_mm;
       if (current_map_width <= current_map_height) {
         orientation = "portrait";
-        paper_width = dim[1];
-        paper_height = dim[0];
+        paper_width_in_mm = dim[1];
+        paper_height_in_mm = dim[0];
       } else {
         orientation = "landscape";
-        paper_width = dim[0];
-        paper_height = dim[1];
+        paper_width_in_mm = dim[0];
+        paper_height_in_mm = dim[1];
       }
+      const paper_width = Math.round((paper_width_in_mm * resolution) / 25.4);
+      const paper_height = Math.round((paper_height_in_mm * resolution) / 25.4);
       const viewResolution = map.getView().getResolution();
 
       var hRatio = paper_width / current_map_width;
@@ -128,9 +131,9 @@ export default {
       var centerShift_y = (paper_height - current_map_height * ratio) / 2;
 
       map.once("rendercomplete", () => {
-        const mapCanvas = document.createElement("canvas");
-        mapCanvas.width = current_map_width / ratio;
-        mapCanvas.height = current_map_height / ratio;
+        const mapCanvas = this.$refs.mapCanvas;
+        mapCanvas.width = paper_width;
+        mapCanvas.height = paper_height;
         const mapContext = mapCanvas.getContext("2d");
         mapContext.fillStyle = "green";
         mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
@@ -176,23 +179,23 @@ export default {
           current_map_height * ratio
         );
 
-        // setTimeout(() => {
-        //   const pdf = new jsPDF({
-        //     orientation,
-        //     unit: "mm",
-        //     format,
-        //   });
+        setTimeout(() => {
+          const pdf = new jsPDF({
+            orientation,
+            unit: "mm",
+            format,
+          });
 
-        //   pdf.addImage(
-        //     mapCanvas.toDataURL("image/jpeg"),
-        //     "JPEG",
-        //     centerShift_x,
-        //     centerShift_y,
-        //     current_map_width * ratio,
-        //     current_map_height * ratio
-        //   );
-        //   pdf.save("map.pdf");
-        // }, 2000);
+          pdf.addImage(
+            page_canvas.toDataURL("image/jpeg"),
+            "JPEG",
+            0,
+            0,
+            paper_width_in_mm,
+            paper_height_in_mm
+          );
+          pdf.save("map.pdf");
+        }, 2000);
 
         // Reset original map size
 
@@ -201,8 +204,17 @@ export default {
         this.is_making_print = false;
       });
 
-      map.setSize([current_map_width / ratio, current_map_height / ratio]);
-      map.getView().setResolution(viewResolution * ratio);
+      // ratio = 0.5;
+      // map.setSize([current_map_width * ratio, current_map_height * ratio]);
+      // map.getView().setResolution(viewResolution * ratio);
+
+      const scaling = Math.min(
+        paper_width / current_map_width,
+        paper_height / current_map_height
+      );
+      map.getView().setResolution(viewResolution / scaling);
+      const printSize = [paper_width, paper_height];
+      map.setSize(printSize);
     },
     printMap() {},
   },
@@ -210,7 +222,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._previewCanvas canvas {
-  height: 200px;
+  height: 500px;
   width: auto;
   display: block;
   margin: 0 auto;
