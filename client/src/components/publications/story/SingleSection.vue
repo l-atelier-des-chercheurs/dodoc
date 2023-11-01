@@ -65,7 +65,6 @@
             </div>
             <PublicationModule
               class="_mediaPublication"
-              ref=""
               :key="_module.$path"
               :publimodule="_module"
               :module_being_edited.sync="module_being_edited"
@@ -128,12 +127,8 @@ export default {
     };
   },
   created() {},
-  async mounted() {
-    // this.startIntersectionObserver();
-  },
-  beforeDestroy() {
-    this.endIntersectionObserver();
-  },
+  async mounted() {},
+  beforeDestroy() {},
   watch: {},
   computed: {
     section_modules_list() {
@@ -217,20 +212,6 @@ export default {
         path,
       });
     },
-
-    // startIntersectionObserver() {
-    //   let observer;
-
-    //   let options = {
-    //     root: null,
-    //     rootMargin: "0px",
-    //     threshold: buildThresholdList(),
-    //   };
-
-    //   observer = new IntersectionObserver(handleIntersect, options);
-    //   observer.observe(boxElement);
-    // },
-    endIntersectionObserver() {},
   },
 };
 </script>

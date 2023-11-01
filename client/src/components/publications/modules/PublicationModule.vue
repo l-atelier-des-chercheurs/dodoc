@@ -236,10 +236,12 @@
     </transition>
 
     <div class="_content" :style="media_styles">
+      <div ref="sentinel" />
       <button
         type="button"
         class="u-button _pinButton"
         v-if="is_associated_to_map && has_coordinates"
+        ref="pinButton"
         :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
         :class="{
           'is--active': is_active_on_map,
@@ -415,6 +417,7 @@ export default {
     return {
       show_advanced_menu: false,
       is_repicking_location: false,
+      observer: undefined,
     };
   },
   i18n: {
@@ -452,6 +455,8 @@ export default {
       `module.show.${this.module_meta_filename}`,
       this.scrollToModule
     );
+
+    this.startIntersectionObserver();
   },
   beforeDestroy() {
     this.$eventHub.$off(
@@ -471,6 +476,7 @@ export default {
       `module.show.${this.module_meta_filename}`,
       this.scrollToModule
     );
+    this.endIntersectionObserver();
   },
   watch: {
     edit_mode() {
@@ -630,6 +636,32 @@ export default {
           block: "start",
           inline: "nearest",
         });
+    },
+    startIntersectionObserver() {
+      let callback = (entries, observer) => {
+        observer;
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // entry.target.classList.add('tracked-element--visible');
+            // if (entry.isIntersecting && entry.intersectionRatio === 1) {
+            //   debugger;
+            if (
+              this.is_associated_to_map &&
+              this.has_coordinates &&
+              !this.is_active_on_map
+            )
+              this.showModuleOnMap();
+            // debugger;
+          }
+        });
+      };
+      this.observer = new IntersectionObserver(callback, {
+        rootMargin: "-10% 0% -80% 0%",
+      });
+      this.observer.observe(this.$refs.sentinel);
+    },
+    endIntersectionObserver() {
+      this.observer.unobserve(this.$el);
     },
     changeModuleType(event) {
       // const module_types = ["mosaic", "carousel", "files"];
