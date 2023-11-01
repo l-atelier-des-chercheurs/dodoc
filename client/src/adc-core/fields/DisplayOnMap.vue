@@ -1055,10 +1055,20 @@ export default {
       const styles = [];
 
       // const line_dash = !is_selected ? undefined : [10, 5];
-      const stroke_width = is_selected ? 4 : 3;
-      const fill_color = is_selected
-        ? "rgba(255, 255, 255, 0.4)"
-        : "rgba(255, 255, 255, 0.2)";
+      const stroke_width = 3;
+      const fill_color = "rgba(255, 255, 255, 0.2)";
+
+      if (is_selected) {
+        const style = new olStyle({
+          stroke: new olStroke({
+            color: "white",
+            width: stroke_width + 4,
+            // lineDash: line_dash,
+          }),
+          image: this.makePointerStyle(),
+        });
+        styles.push(style);
+      }
 
       const style = new olStyle({
         fill: new olFill({
