@@ -58,8 +58,24 @@
           />
         </div>
         <div class="u-spacingBottom">
+          <RangeValueInput
+            :label="$t('opacity')"
+            :value="view.map_baselayer_opacity"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            :default_value="1"
+            @save="
+              updateView({
+                field: 'map_baselayer_opacity',
+                value: $event,
+              })
+            "
+          />
+        </div>
+        <div class="u-spacingBottom">
           <ToggleInput
-            :label="$t('map_baselayer_bw')"
+            :label="$t('bw_filter')"
             :content="view.map_baselayer_bw"
             @update:content="
               updateView({
@@ -130,7 +146,7 @@ export default {
         OSM: "OpenStreetMap",
         IGN_MAP: "Carte IGN (en France uniquement)",
         IGN_SAT: "Photos satellite IGN (en France uniquement)",
-        map_baselayer_bw: "Filtre noir et blanc",
+        bw_filter: "Filtre noir et blanc",
       },
     },
   },

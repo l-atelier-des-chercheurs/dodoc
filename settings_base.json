@@ -616,6 +616,9 @@
                     "map_baselayer": {
                       "type": "string"
                     },
+                    "map_baselayer_opacity": {
+                      "type": "boolean"
+                    },
                     "map_baselayer_bw": {
                       "type": "boolean"
                     },

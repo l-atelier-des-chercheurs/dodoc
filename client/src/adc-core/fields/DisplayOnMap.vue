@@ -285,6 +285,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    map_baselayer_opacity: {
+      type: Number,
+      default: 1,
+    },
     map_base_media: Object,
     is_small: {
       type: Boolean,
@@ -482,7 +486,10 @@ export default {
       this.startMap({ keep_loc_and_zoom: true });
     },
     map_baselayer_bw() {
-      this.setBackgroundLayerBW();
+      this.setBackgroundLayerOptions();
+    },
+    map_baselayer_opacity() {
+      this.setBackgroundLayerOptions();
     },
     map_mode() {
       this.startMap();
@@ -539,7 +546,7 @@ export default {
       this.background_layer = background_layer;
       this.view = view;
 
-      this.setBackgroundLayerBW();
+      this.setBackgroundLayerOptions();
 
       this.map = new olMap({
         controls: olDefaultControls({
@@ -1380,18 +1387,25 @@ export default {
     disableTools() {
       this.toggleTool();
     },
-    setBackgroundLayerBW() {
+    setBackgroundLayerOptions() {
       if (this.map_baselayer_bw === true) {
-        if (this.background_layer.getFilters().length >= 1) return;
-        var pencil = new olPencilSketch();
-        pencil.set("intensity", 0.7);
-        // pencil.set("intensity", 0.7);
-        pencil.set("blur", 15);
-        this.background_layer.addFilter(pencil);
+        if (
+          !this.background_layer.getFilters().length ||
+          this.background_layer.getFilters().length === 0
+        ) {
+          var pencil = new olPencilSketch();
+          pencil.set("intensity", 0.7);
+          pencil.set("blur", 15);
+          this.background_layer.addFilter(pencil);
+        }
       } else {
         if (this.background_layer.getFilters().length >= 1)
           this.background_layer.removeFilter();
       }
+
+      if (this.map_baselayer_opacity < 1)
+        this.background_layer.setOpacity(this.map_baselayer_opacity);
+      else this.background_layer.setOpacity(1);
     },
     saveGeom() {
       const geom_str = this.convertFeaturesToStr();
