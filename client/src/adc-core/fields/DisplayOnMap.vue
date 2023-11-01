@@ -603,6 +603,17 @@ export default {
         })
       );
 
+      ////////////////////////////////////////////////////////////////////////// DRAW LAYER
+
+      this.draw_vector_source = new olSourceVector({ wrapX: false });
+      this.loadGeom();
+      this.map.addLayer(
+        new olVectorLayer({
+          source: this.draw_vector_source,
+          style: (feature) => this.makeGeomStyle({ feature }),
+        })
+      );
+
       ////////////////////////////////////////////////////////////////////////// CREATE PINS
 
       this.pin_features = this.createPointFeaturesFromPins();
@@ -749,17 +760,6 @@ export default {
           this.openPin(path);
         }
       });
-
-      ////////////////////////////////////////////////////////////////////////// DRAW LAYER
-
-      this.draw_vector_source = new olSourceVector({ wrapX: false });
-      this.loadGeom();
-      this.map.addLayer(
-        new olVectorLayer({
-          source: this.draw_vector_source,
-          style: (feature) => this.makeGeomStyle({ feature }),
-        })
-      );
 
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
