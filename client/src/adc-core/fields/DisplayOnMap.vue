@@ -176,13 +176,45 @@
             </small>
           </template>
           <template v-else-if="'Select' === current_draw_mode">
-            <small class="_instr u-instructions" v-if="!selected_feature_id">
+            <small class="_instr u-instructions" v-if="!selected_feature">
               {{ $t("select_by_clicking") }}
             </small>
             <template v-else>
-              <small class="_instr u-instructions">
-                {{ $t("move_drawing") }}
-              </small>
+              <!-- <div class="">
+                <small class="_instr u-instructions">
+                  {{ $t("move_drawing") }}
+                </small>
+              </div> -->
+
+              <ColorInput
+                class="u-spacingBottom"
+                :label="$t('outline_color')"
+                :value="selected_feature.get('stroke_color')"
+                @save="
+                  updateDrawing({
+                    prop: 'stroke_color',
+                    val: $event,
+                  })
+                "
+              />
+
+              <RangeValueInput
+                class=""
+                :can_toggle="false"
+                :label="$t('outline_width')"
+                :value="selected_feature.get('stroke_width')"
+                :min="1"
+                :max="40"
+                :step="1"
+                :ticks="[0, 3, 10, 20, 30, 40]"
+                :default_value="3"
+                @save="
+                  updateDrawing({
+                    prop: 'stroke_width',
+                    val: $event,
+                  })
+                "
+              />
               <button
                 type="button"
                 class="u-button u-button_bleumarine"
@@ -505,6 +537,10 @@ export default {
         "--current-view-color": this.opened_view_color,
       };
     },
+    selected_feature() {
+      if (!this.selected_feature_id) return undefined;
+      return this.draw_vector_source?.getFeatureById(this.selected_feature_id);
+    },
   },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
@@ -564,6 +600,17 @@ export default {
             wrapX: false,
           }),
           style: (feature) => this.makeLineStyle(feature),
+        })
+      );
+
+      ////////////////////////////////////////////////////////////////////////// DRAW LAYER
+
+      this.draw_vector_source = new olSourceVector({ wrapX: false });
+      this.loadGeom();
+      this.map.addLayer(
+        new olVectorLayer({
+          source: this.draw_vector_source,
+          style: (feature) => this.makeGeomStyle({ feature }),
         })
       );
 
@@ -714,17 +761,6 @@ export default {
         }
       });
 
-      ////////////////////////////////////////////////////////////////////////// DRAW LAYER
-
-      this.draw_vector_source = new olSourceVector({ wrapX: false });
-      this.loadGeom();
-      this.map.addLayer(
-        new olVectorLayer({
-          source: this.draw_vector_source,
-          style: (feature) => this.makeGeomStyle({ feature }),
-        })
-      );
-
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
       if (!this.keep_loc_and_zoom) {
@@ -804,11 +840,13 @@ export default {
         // TODO check if center is contained in extent (see containsXY)
         center = center || [5.39057449011251, 43.310173305629576];
 
+        const maxZoom = this.map_baselayer.includes("IGN") ? 19 : 21;
+
         view = new olView({
           center,
           zoom,
           minZoom: 3,
-          maxZoom: 22,
+          maxZoom,
           showFullExtent: true,
           enableRotation: false,
         });
@@ -986,10 +1024,13 @@ export default {
       return "12px/1.2 Fira Mono,sans-serif";
     },
     makeLineStyle(feature) {
+      // const line_dash = !is_selected ? undefined : [10, 5];
+
       const style = {
         stroke: new olStroke({
           color: feature.get("stroke_color"),
           width: 3,
+          lineDash: [10, 10],
         }),
       };
       return new olStyle(style);
@@ -1049,21 +1090,32 @@ export default {
     makeGeomStyle({ feature, tip, is_selected }) {
       const styles = [];
 
-      const line_dash = is_selected ? undefined : [10, 5];
-      const stroke_width = is_selected ? 3 : 2;
-      const fill_color = is_selected
-        ? "rgba(255, 255, 255, 0.4)"
-        : "rgba(255, 255, 255, 0.2)";
+      // const line_dash = !is_selected ? undefined : [10, 5];
+      const stroke_width = feature.get("stroke_width") || 3;
+      const stroke_color =
+        feature.get("stroke_color") || this.opened_view_color || "#000";
+      const fill_color = "rgba(255, 255, 255, 0.2)";
+
+      if (is_selected) {
+        const style = new olStyle({
+          stroke: new olStroke({
+            color: "white",
+            width: stroke_width + 4,
+            // lineDash: line_dash,
+          }),
+          image: this.makePointerStyle(),
+        });
+        styles.push(style);
+      }
 
       const style = new olStyle({
         fill: new olFill({
           color: fill_color,
         }),
         stroke: new olStroke({
-          color:
-            feature.get("stroke_color") || this.opened_view_color || "#000",
+          color: stroke_color,
           width: stroke_width,
-          lineDash: line_dash,
+          // lineDash: line_dash,
         }),
         image: this.makePointerStyle(),
       });
@@ -1205,7 +1257,7 @@ export default {
       this.map_draw.on("drawend", (event) => {
         const new_feature = event.feature;
         const type = new_feature.getGeometry().getType();
-        var id = `${type}-` + this.getRandomString();
+        var id = this.makeRandomIdForShape(type);
         new_feature.setId(id);
 
         this.$nextTick(() => {
@@ -1375,6 +1427,10 @@ export default {
     //   }
     //   return styles;
     // },
+    makeRandomIdForShape(type) {
+      return `${type}-` + this.getRandomString();
+    },
+
     finishDrawing() {
       if (this.map_draw) this.map_draw.finishDrawing();
     },
@@ -1425,8 +1481,14 @@ export default {
           return acc;
         }
 
+        const stroke_width = f.get("stroke_width");
+        if (stroke_width) obj.stroke_width = stroke_width;
+        const stroke_color = f.get("stroke_color");
+        if (stroke_color) obj.stroke_color = stroke_color;
+
         const id = f.getId();
         if (id) obj.id = id;
+
         acc.push(obj);
 
         return acc;
@@ -1445,31 +1507,29 @@ export default {
           if (p.type === "Polygon" && p.coords)
             feature_cont = {
               geometry: new olPolygon(p.coords),
-              stroke_color: p.color,
             };
           else if (p.type === "LineString" && p.coords)
             feature_cont = {
               geometry: new olLineString(p.coords),
-              stroke_color: p.color,
             };
           else if (p.type === "Circle" && p.center && p.radius)
             feature_cont = {
               geometry: new olCircle(p.center, p.radius),
-              stroke_color: p.color,
             };
+
+          if (p.stroke_width) feature_cont.stroke_width = p.stroke_width;
+          if (p.stroke_color) feature_cont.stroke_color = p.stroke_color;
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
+          else feature.setId(this.makeRandomIdForShape(p.type));
 
           features.push(feature);
         });
         this.draw_vector_source.addFeatures(features);
         this.draw_vector_source.changed();
 
-        if (
-          this.selected_feature_id &&
-          !this.draw_vector_source.getFeatureById(this.selected_feature_id)
-        )
+        if (this.selected_feature_id && !this.selected_feature)
           this.selected_feature_id = undefined;
       } catch (err) {
         this.$alertify.delay(4000).error(err);
@@ -1531,11 +1591,18 @@ export default {
       this.map.removeInteraction(this.map_modify);
     },
     removeSelected() {
-      if (!this.selected_feature_id) return false;
-      const feature_to_remove = this.draw_vector_source.getFeatureById(
+      if (!this.selected_feature) return false;
+      this.draw_vector_source.removeFeature(this.selected_feature);
+      this.$nextTick(() => {
+        this.saveGeom();
+      });
+    },
+    updateDrawing({ prop, val }) {
+      if (!this.selected_feature) return false;
+      const f = this.draw_vector_source.getFeatureById(
         this.selected_feature_id
       );
-      this.draw_vector_source.removeFeature(feature_to_remove);
+      f.set(prop, val);
       this.$nextTick(() => {
         this.saveGeom();
       });
@@ -1649,12 +1716,10 @@ export default {
       bottom: calc(var(--spacing) / 1);
       left: calc(var(--spacing) / 1);
 
-      backdrop-filter: blur(2px);
-      // background: rgba(255, 255, 255, 0.5);
-      background: transparent;
+      background: white;
 
       padding: 0;
-      border-radius: 0;
+      border-radius: 1px;
       margin: 0;
     }
   }

@@ -18,9 +18,7 @@
           :lines="lines"
           :geometries="geometries"
           :is_small="false"
-          :opened_view_color="
-            opened_view ? getViewColor(opened_view) : '#000000'
-          "
+          :opened_view_color="getViewColor(opened_view)"
           :opened_pin_path.sync="opened_pin_path"
           :can_add_media_to_point="!!opened_view_meta_filename"
           :can_edit="can_edit && !!opened_view_meta_filename"
@@ -102,7 +100,7 @@ export default {
         longitude: undefined,
       },
       opened_pin_path: undefined,
-      default_view_color: "#FFBE33",
+      default_view_color: "#fc4b60",
     };
   },
   i18n: {
