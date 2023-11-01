@@ -21,7 +21,7 @@
     </div>
     <fieldset class="u-spacingBottom _previewCanvas">
       <legend class="u-label">{{ $t("preview") }}</legend>
-      <canvas ref="previewCanvas" class="" />
+      <canvas ref="pageCanvas" class="" />
     </fieldset>
     <button
       type="button"
@@ -88,7 +88,9 @@ export default {
   },
   created() {},
   mounted() {
-    this.generatePreview();
+    this.$nextTick(() => {
+      this.generatePreview();
+    });
   },
   beforeDestroy() {},
   watch: {},
@@ -104,6 +106,7 @@ export default {
 
       // const paper_width = Math.round((dim[0] * resolution) / 25.4);
       // const paper_height = Math.round((dim[1] * resolution) / 25.4);
+
       const [current_map_width, current_map_height] = map.getSize();
       let orientation, paper_width, paper_height;
       if (current_map_width <= current_map_height) {
@@ -125,7 +128,7 @@ export default {
       var centerShift_y = (paper_height - current_map_height * ratio) / 2;
 
       map.once("rendercomplete", () => {
-        const mapCanvas = this.$refs.previewCanvas;
+        const mapCanvas = document.createElement("canvas");
         mapCanvas.width = current_map_width / ratio;
         mapCanvas.height = current_map_height / ratio;
         const mapContext = mapCanvas.getContext("2d");
@@ -161,28 +164,40 @@ export default {
         mapContext.globalAlpha = 1;
         mapContext.setTransform(1, 0, 0, 1, 0, 0);
 
-        setTimeout(() => {
-          const pdf = new jsPDF({
-            orientation,
-            unit: "mm",
-            format,
-          });
+        const page_canvas = this.$refs.pageCanvas;
+        page_canvas.width = paper_width;
+        page_canvas.height = paper_height;
+        const page_context = page_canvas.getContext("2d");
+        page_context.drawImage(
+          mapCanvas,
+          centerShift_x,
+          centerShift_y,
+          current_map_width * ratio,
+          current_map_height * ratio
+        );
 
-          pdf.addImage(
-            mapCanvas.toDataURL("image/jpeg"),
-            "JPEG",
-            centerShift_x,
-            centerShift_y,
-            current_map_width * ratio,
-            current_map_height * ratio
-          );
-          pdf.save("map.pdf");
-        }, 2000);
+        // setTimeout(() => {
+        //   const pdf = new jsPDF({
+        //     orientation,
+        //     unit: "mm",
+        //     format,
+        //   });
+
+        //   pdf.addImage(
+        //     mapCanvas.toDataURL("image/jpeg"),
+        //     "JPEG",
+        //     centerShift_x,
+        //     centerShift_y,
+        //     current_map_width * ratio,
+        //     current_map_height * ratio
+        //   );
+        //   pdf.save("map.pdf");
+        // }, 2000);
 
         // Reset original map size
+
         map.setSize([current_map_width, current_map_height]);
         map.getView().setResolution(viewResolution);
-
         this.is_making_print = false;
       });
 
