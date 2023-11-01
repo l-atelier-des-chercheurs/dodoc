@@ -1651,12 +1651,10 @@ export default {
       bottom: calc(var(--spacing) / 1);
       left: calc(var(--spacing) / 1);
 
-      backdrop-filter: blur(2px);
-      // background: rgba(255, 255, 255, 0.5);
-      background: transparent;
+      background: white;
 
       padding: 0;
-      border-radius: 0;
+      border-radius: 1px;
       margin: 0;
     }
   }
