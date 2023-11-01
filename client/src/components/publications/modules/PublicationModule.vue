@@ -373,7 +373,10 @@
       <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>
 
-    <div class="_selectorIndicator" v-if="edit_mode" />
+    <div
+      class="_selectorIndicator"
+      v-if="edit_mode && page_template !== 'page_by_page'"
+    />
   </div>
 </template>
 <script>
