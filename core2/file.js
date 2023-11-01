@@ -468,6 +468,7 @@ module.exports = (function () {
           break;
         case ".mp3":
         case ".wav":
+        case ".aac":
         case ".m4a":
         case ".ogg":
           new_meta.$type = "audio";
