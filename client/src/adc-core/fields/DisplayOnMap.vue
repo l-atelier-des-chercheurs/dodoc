@@ -988,10 +988,13 @@ export default {
       return "12px/1.2 Fira Mono,sans-serif";
     },
     makeLineStyle(feature) {
+      // const line_dash = !is_selected ? undefined : [10, 5];
+
       const style = {
         stroke: new olStroke({
           color: feature.get("stroke_color"),
           width: 3,
+          lineDash: [10, 10],
         }),
       };
       return new olStyle(style);
@@ -1051,8 +1054,8 @@ export default {
     makeGeomStyle({ feature, tip, is_selected }) {
       const styles = [];
 
-      const line_dash = !is_selected ? undefined : [10, 5];
-      const stroke_width = is_selected ? 3 : 2;
+      // const line_dash = !is_selected ? undefined : [10, 5];
+      const stroke_width = is_selected ? 4 : 3;
       const fill_color = is_selected
         ? "rgba(255, 255, 255, 0.4)"
         : "rgba(255, 255, 255, 0.2)";
@@ -1065,7 +1068,7 @@ export default {
           color:
             feature.get("stroke_color") || this.opened_view_color || "#000",
           width: stroke_width,
-          lineDash: line_dash,
+          // lineDash: line_dash,
         }),
         image: this.makePointerStyle(),
       });
