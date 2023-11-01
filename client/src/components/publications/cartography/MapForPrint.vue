@@ -1,10 +1,12 @@
 <template>
-  <MapView
-    :publication="publication"
-    :opened_view_meta_filename="opened_view_meta_filename"
-    :can_edit="false"
-    @toggleView="toggleView"
-  />
+  <div class="_mapForPrint">
+    <MapView
+      :publication="publication"
+      :opened_view_meta_filename="opened_view_meta_filename"
+      :can_edit="false"
+      @toggleView="toggleView"
+    />
+  </div>
 </template>
 <script>
 import MapView from "@/components/publications/cartography/MapView.vue";
@@ -41,4 +43,8 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._mapForPrint {
+  height: 100vh;
+}
+</style>

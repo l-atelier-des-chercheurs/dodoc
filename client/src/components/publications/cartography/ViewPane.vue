@@ -1,12 +1,5 @@
 <template>
   <div class="_viewPane">
-    <!-- // TODO 
-      - à l'ouverture d'une vue, afficher sur la carte l'ensemble des
-      médias géolocalisés de cette vue
-      - utiliser le fond de map indiqué
-      - les pins ont la couleur indiqué au niveau de la vue
-      - au scroll, zoomer sur la pin correspondante au média 
-    -->
     <SectionsList
       :publication="publication"
       :opened_section_meta_filename="opened_view_meta_filename"
@@ -17,7 +10,6 @@
 </template>
 <script>
 import SectionsList from "@/components/publications/story/SectionsList.vue";
-// import ViewContent from "@/components/publications/cartography/ViewContent.vue";
 
 export default {
   props: {

@@ -5,7 +5,7 @@
         <DisplayOnMap
           :key="opened_view_meta_filename"
           class="_mapContainer"
-          :map_mode="publication.map_mode"
+          :map_mode="opened_view ? opened_view.map_mode : 'gps'"
           :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
           :map_baselayer_bw="
             opened_view ? opened_view.map_baselayer_bw : undefined
@@ -51,7 +51,6 @@
             v-if="opened_view && can_edit"
             :key="opened_view.$path"
             :view="opened_view"
-            :map_mode="publication.map_mode"
             :default_view_color="default_view_color"
           />
         </transition>
@@ -136,14 +135,14 @@ export default {
         // if (this.opened_view_meta_filename) this.$emit("toggleView", undefined);
       }
 
-      this.$nextTick(() => {
-        // scrollto pin in view
-        if (this.opened_pin_path) {
-          const module_meta_filename = this.getFilename(this.opened_pin_path);
-          module_meta_filename;
-          // this.$eventHub.$emit(`module.show.${module_meta_filename}`);
-        }
-      });
+      // this.$nextTick(() => {
+      // scrollto pin in view
+      // if (this.opened_pin_path) {
+      // const module_meta_filename = this.getFilename(this.opened_pin_path);
+      // module_meta_filename;
+      // this.$eventHub.$emit(`module.show.${module_meta_filename}`);
+      // }
+      // });
     },
   },
   computed: {
@@ -166,7 +165,8 @@ export default {
       );
     },
     base_media() {
-      const meta_filename_in_project = this.publication.map_base_media_filename;
+      const meta_filename_in_project =
+        this.opened_view?.map_base_media_filename;
       if (meta_filename_in_project)
         return this.getSourceMedia({
           source_media: { meta_filename_in_project },
@@ -309,8 +309,6 @@ export default {
       const meta_filename = meta_filenames.at(-1);
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
-        // this.opened_pin_path = pin_path;
-        // this.$eventHub.$emit(`module.show.${meta_filename}`);
         this.$eventHub.$emit("publication.map.openPin", pin_path);
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);
@@ -329,7 +327,7 @@ export default {
 <style lang="scss" scoped>
 ._mapView {
   width: 100%;
-  height: calc(100vh - 95px);
+  height: 100%;
 
   // border-top: 1px solid black;
 
