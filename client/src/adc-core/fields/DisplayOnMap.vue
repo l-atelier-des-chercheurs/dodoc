@@ -330,9 +330,6 @@ export default {
       current_zoom: undefined,
       current_view: undefined,
 
-      min_zoom: 3,
-      max_zoom: 22,
-
       mouse_coords: false,
 
       map_modify: undefined,
@@ -811,7 +808,7 @@ export default {
           center,
           zoom,
           minZoom: 3,
-          maxZoom: 18,
+          maxZoom: 22,
           showFullExtent: true,
           enableRotation: false,
         });
