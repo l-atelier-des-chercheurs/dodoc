@@ -488,7 +488,7 @@ export default {
     },
     is_active_on_map: {
       handler() {
-        if (this.is_active_on_map) this.scrollToModule("instant");
+        if (this.is_active_on_map) this.scrollToModule("smooth");
       },
       immediate: true,
     },
