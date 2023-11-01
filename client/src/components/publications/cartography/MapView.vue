@@ -7,6 +7,9 @@
           class="_mapContainer"
           :map_mode="publication.map_mode"
           :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
+          :map_baselayer_bw="
+            opened_view ? opened_view.map_baselayer_bw : undefined
+          "
           :map_base_media="base_media"
           :pins="pins"
           :lines="lines"

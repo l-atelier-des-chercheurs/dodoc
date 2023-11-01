@@ -252,6 +252,8 @@ import {
 
 import { defaults as olDefaultControls } from "ol/control";
 
+import olPencilSketch from "ol-ext/filter/PencilSketch";
+
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
 export default {
@@ -278,6 +280,10 @@ export default {
         // The value must match one of these strings
         return ["OSM", "IGN_MAP", "IGN_SAT"].includes(value);
       },
+    },
+    map_baselayer_bw: {
+      type: Boolean,
+      default: false,
     },
     map_base_media: Object,
     is_small: {
@@ -475,6 +481,9 @@ export default {
     map_baselayer() {
       this.startMap({ keep_loc_and_zoom: true });
     },
+    map_baselayer_bw() {
+      this.setBackgroundLayerBW();
+    },
     map_mode() {
       this.startMap();
     },
@@ -527,7 +536,10 @@ export default {
         center,
         zoom,
       });
+      this.background_layer = background_layer;
       this.view = view;
+
+      this.setBackgroundLayerBW();
 
       this.map = new olMap({
         controls: olDefaultControls({
@@ -535,7 +547,7 @@ export default {
         }),
         target: this.$refs.map,
         view: this.view,
-        layers: [background_layer],
+        layers: [this.background_layer],
       });
 
       ////////////////////////////////////////////////////////////////////////// CREATE LINES
@@ -1367,6 +1379,19 @@ export default {
     },
     disableTools() {
       this.toggleTool();
+    },
+    setBackgroundLayerBW() {
+      if (this.map_baselayer_bw === true) {
+        if (this.background_layer.getFilters().length >= 1) return;
+        var pencil = new olPencilSketch();
+        pencil.set("intensity", 0.7);
+        // pencil.set("intensity", 0.7);
+        pencil.set("blur", 15);
+        this.background_layer.addFilter(pencil);
+      } else {
+        if (this.background_layer.getFilters().length >= 1)
+          this.background_layer.removeFilter();
+      }
     },
     saveGeom() {
       const geom_str = this.convertFeaturesToStr();

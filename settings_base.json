@@ -616,6 +616,9 @@
                     "map_baselayer": {
                       "type": "string"
                     },
+                    "map_baselayer_bw": {
+                      "type": "boolean"
+                    },
                     "map_geom_features": {
                       "type": "array"
                     },

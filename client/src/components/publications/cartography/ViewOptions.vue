@@ -57,6 +57,18 @@
             @update="updateView({ field: 'map_baselayer', value: $event })"
           />
         </div>
+        <div class="u-spacingBottom">
+          <ToggleInput
+            :label="$t('map_baselayer_bw')"
+            :content="view.map_baselayer_bw"
+            @update:content="
+              updateView({
+                field: 'map_baselayer_bw',
+                value: $event,
+              })
+            "
+          />
+        </div>
       </DetailsPane>
     </div>
   </div>
@@ -107,17 +119,18 @@ export default {
   i18n: {
     messages: {
       fr: {
-        map_baselayer: "Fond de carte",
-
         pins_color: "Couleur des épingles",
         link_pins: "Relier les épingles",
         pin_icons: "Apparence des épingles",
         icon: "Icône",
         media_preview: "Image sur la carte",
         remove_layer: "Supprimer ce calque et son contenu",
+
+        map_baselayer: "Fond de carte",
         OSM: "OpenStreetMap",
         IGN_MAP: "Carte IGN (en France uniquement)",
         IGN_SAT: "Photos satellite IGN (en France uniquement)",
+        map_baselayer_bw: "Filtre noir et blanc",
       },
     },
   },
