@@ -96,22 +96,29 @@ export default {
       const resolution = 300; // DPI
       const map = this.map;
 
-      const width = Math.round((dim[0] * resolution) / 25.4);
-      const height = Math.round((dim[1] * resolution) / 25.4);
-      const size = map.getSize();
+      // const paper_width = Math.round((dim[0] * resolution) / 25.4);
+      // const paper_height = Math.round((dim[1] * resolution) / 25.4);
+      const paper_width = Math.round((dim[0] * resolution) / 25.4);
+      const paper_height = Math.round((dim[1] * resolution) / 25.4);
+      const [current_map_width, current_map_height] = map.getSize();
 
       const viewResolution = map.getView().getResolution();
 
+      var hRatio = paper_width / current_map_width;
+      var vRatio = paper_height / current_map_height;
+      var ratio = Math.min(hRatio, vRatio);
+      var centerShift_x = (paper_width - current_map_width * ratio) / 2;
+      var centerShift_y = (paper_height - current_map_height * ratio) / 2;
+
       map.once("rendercomplete", () => {
         const mapCanvas = document.createElement("canvas");
-        mapCanvas.width = width;
-        mapCanvas.height = height;
+        mapCanvas.width = paper_width;
+        mapCanvas.height = paper_height;
         const mapContext = mapCanvas.getContext("2d");
 
         Array.prototype.forEach.call(
           document.querySelectorAll(".ol-layer"),
           async (layer) => {
-            debugger;
             if (this.print_only_basemap)
               if (!layer.className?.includes("ol-basemap")) return;
 
@@ -143,6 +150,17 @@ export default {
           unit: "mm",
           format,
         });
+
+        debugger;
+
+        // pdf.addImage(
+        //   mapCanvas.toDataURL("image/jpeg"),
+        //   "JPEG",
+        //   centerShift_x,
+        //   centerShift_y,
+        //   current_map_width * ratio,
+        //   current_map_width * ratio
+        // );
         pdf.addImage(
           mapCanvas.toDataURL("image/jpeg"),
           "JPEG",
@@ -151,19 +169,25 @@ export default {
           dim[0],
           dim[1]
         );
+
         pdf.save("map.pdf");
         // Reset original map size
-        map.setSize(size);
+        map.setSize([current_map_width, current_map_height]);
         map.getView().setResolution(viewResolution);
 
         this.is_making_print = false;
       });
+      // set map size while respecting ratio
+      // const map_ratio = current_map_height / current_map_width;
+      // const printSize = [paper_width, paper_width * map_ratio];
 
-      // Set print size
-      const printSize = [width, height];
-      map.setSize(printSize);
-      const scaling = Math.min(width / size[0], height / size[1]);
-      map.getView().setResolution(viewResolution / scaling);
+      // map.setSize([current_map_width * ratio, current_map_height * ratio]);
+      // map.setSize(printSize);
+      // const scaling = Math.min(
+      //   paper_width / current_map_width,
+      //   paper_height / current_map_height
+      // );
+      map.getView().setResolution(viewResolution);
     },
   },
 };
