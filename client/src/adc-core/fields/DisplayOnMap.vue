@@ -846,7 +846,7 @@ export default {
           projection: projection,
           center,
           zoom,
-          maxZoom: 8,
+          maxZoom: 6,
         });
         background_layer = new olImageLayer({
           source: new olStatic({
