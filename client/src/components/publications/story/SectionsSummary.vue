@@ -1,44 +1,40 @@
 <template>
   <div class="_sectionsSummary">
-    <DetailsPane
+    <!-- <DetailsPane
       ref="details"
-      :header="$t('summary')"
+      :header="$t('chapters')"
       :icon="'card-list'"
       :has_items="sections.length > 0 ? sections.length : false"
       :is_open_initially="sections.length === 0"
+    > -->
+    <ReorderedList
+      :field_name="'sections_list'"
+      :items="sections"
+      :path="publication.$path"
+      :active_item_meta="opened_section_meta_filename"
+      :can_edit="can_edit"
+      @openItem="openSection"
+      v-slot="slotProps"
     >
-      <ReorderedList
-        :field_name="'sections_list'"
-        :items="sections"
-        :path="publication.$path"
-        :active_item_meta="opened_section_meta_filename"
-        :can_edit="can_edit"
-        @openItem="openSection"
-        v-slot="slotProps"
-      >
-        <span
-          v-if="is_associated_to_map"
-          class="_colorInd"
-          :style="
-            'color: ' + (slotProps.item.section_color || default_view_color)
-          "
-          v-text="'◉'"
-        />
-        <span v-if="slotProps.item.section_title">
-          {{ slotProps.item.section_title }}
-        </span>
-        <span v-else v-html="`<i>${$t('untitled')}</i>`" />
-      </ReorderedList>
+      <span v-if="slotProps.item.section_title">
+        {{ slotProps.item.section_title }}
+      </span>
+      <span v-else v-html="`<i>${$t('untitled')}</i>`" />
+    </ReorderedList>
 
-      <template v-if="can_edit">
-        <template v-if="sections.length > 0">
-          <hr />
-        </template>
-        <button type="button" class="u-buttonLink" @click="createSection">
-          {{ $t("create_section") }}
-        </button>
-      </template>
-    </DetailsPane>
+    <template v-if="can_edit">
+      <!-- <template v-if="sections.length > 0">
+        <hr />
+      </template> -->
+      <button
+        type="button"
+        class="u-buttonLink _createSection"
+        @click="createSection"
+      >
+        {{ $t("create_section") }}
+      </button>
+    </template>
+    <!-- </DetailsPane> -->
   </div>
 </template>
 <script>
@@ -61,16 +57,16 @@ export default {
   created() {},
   mounted() {
     if (this.sections.length > 0 && !this.opened_section_meta_filename) {
-      if (
-        !this.is_associated_to_map ||
-        (this.is_associated_to_map && this.sections.length === 1)
-      ) {
-        // if there is one or more sections and none opened, open first one
-        const section_path = this.sections[0].$path;
-        this.openSection(section_path);
-      } else if (this.is_associated_to_map) {
-        this.openSummary();
-      }
+      // if (
+      //   !this.is_associated_to_map ||
+      //   (this.is_associated_to_map && this.sections.length === 1)
+      // ) {
+      // if there is one or more sections and none opened, open first one
+      const section_path = this.sections[0].$path;
+      this.openSection(section_path);
+      // } else if (this.is_associated_to_map) {
+      //   this.openSummary();
+      // }
     }
 
     if (this.can_edit && this.sections.length === 0) this.createSection();
@@ -125,14 +121,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._sectionsSummary {
-  max-width: 60ch;
+  // max-width: 60ch;
   width: 100%;
   margin: 0 auto;
   margin-bottom: calc(var(--spacing) / 1);
-  padding: 0 calc(var(--spacing) * 1);
+  // padding: 0 calc(var(--spacing) * 1);
 
-  ::v-deep summary {
-    border: 2px solid var(--c-gris);
-  }
+  // ::v-deep summary {
+  // border: 2px solid var(--c-gris);
+  // }
+}
+
+._createSection {
+  padding: calc(var(--spacing) / 4);
 }
 </style>
