@@ -565,7 +565,7 @@ export default {
   },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
-      let zoom = 13;
+      let zoom = 6;
       let center;
 
       // if (this.start_coords?.longitude && this.start_coords?.latitude)
