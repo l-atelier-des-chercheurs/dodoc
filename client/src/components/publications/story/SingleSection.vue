@@ -10,12 +10,13 @@
         >
           <div class="_text">
             <TitleField
+              class="_sectionTitle"
               :field_name="'section_title'"
               :content="section.section_title || $t('untitled')"
               :path="section.$path"
               :required="true"
               :maxlength="80"
-              :tag="'h2'"
+              :tag="'h1'"
               :can_edit="can_edit"
             />
             <!-- legacy field – only existing description can be edited -->
@@ -32,7 +33,7 @@
           </div>
           <div class="_buttons" v-if="can_edit">
             <RemoveMenu :remove_text="$t('remove')" @remove="removeSection" />
-            <div>
+            <!-- <div>
               <button
                 type="button"
                 class="u-buttonLink"
@@ -41,7 +42,7 @@
                 <sl-icon name="x" />
                 {{ $t("close") }}
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
         <transition-group
@@ -97,7 +98,7 @@
         <ModuleCreator
           v-if="can_edit"
           class="_lastModule"
-          :start_collapsed="false"
+          :start_collapsed="true"
           :publication_path="publication.$path"
           :types_available="['text', 'medias', 'files', 'link']"
           @addModules="addModules"
@@ -202,6 +203,7 @@ export default {
         group: "sections_list",
         path: this.section.$path,
       });
+      // todo open first section
       this.$emit("close");
     },
     async removeModule(path) {
@@ -248,6 +250,9 @@ export default {
   // grid-gap: calc(var(--spacing) / 4);
 }
 
+._sectionTitle {
+}
+
 ._mediaPublication {
   position: relative;
   // margin-top: calc(var(--spacing) * 2);
@@ -292,10 +297,9 @@ export default {
   align-items: baseline;
   justify-content: space-between;
 
-  margin: 0;
-  padding: calc(var(--spacing) * 1.5) 0;
-  border-bottom: 2px solid var(--c-gris);
+  margin: calc(var(--spacing) * 2) 0 0;
 
+  // border-bottom: 2px solid var(--c-gris);
   > * {
     &._text {
       flex: 1 1 56ch;
@@ -304,7 +308,7 @@ export default {
       flex: 1 1 auto;
       display: flex;
       flex-flow: row wrap;
-      justify-content: flex-end;
+      // justify-content: flex-end;
       gap: calc(var(--spacing) * 1);
     }
   }
