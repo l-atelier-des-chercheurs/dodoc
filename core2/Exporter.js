@@ -315,7 +315,7 @@ class Exporter {
         this._notifyProgress(40);
 
         new Promise(function (resolve, reject) {
-          setTimeout(() => resolve(1), 2000);
+          setTimeout(() => resolve(1), 4000);
         })
           .then(() => {
             this._notifyProgress(45);
