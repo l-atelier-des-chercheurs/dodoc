@@ -15,7 +15,7 @@
               :content="section.section_title || $t('untitled')"
               :path="section.$path"
               :required="true"
-              :maxlength="80"
+              :maxlength="60"
               :tag="'h1'"
               :can_edit="can_edit"
             />
