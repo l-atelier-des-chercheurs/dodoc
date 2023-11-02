@@ -190,6 +190,7 @@
                 class="u-spacingBottom"
                 :label="$t('outline_color')"
                 :value="selected_feature.get('stroke_color')"
+                :default_value="opened_view_color"
                 @save="
                   updateDrawing({
                     prop: 'stroke_color',
