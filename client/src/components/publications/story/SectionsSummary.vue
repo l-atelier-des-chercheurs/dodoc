@@ -26,13 +26,19 @@
       <!-- <template v-if="sections.length > 0">
         <hr />
       </template> -->
-      <button
-        type="button"
-        class="u-buttonLink _createSection"
-        @click="createSection"
-      >
-        {{ $t("create_section") }}
-      </button>
+      <div class="_buttonRow">
+        <button
+          type="button"
+          class="u-buttonLink _createSection"
+          @click="createSection"
+        >
+          {{ $t("create_section") }}
+        </button>
+        <RemoveMenu
+          :remove_text="$t('remove_section')"
+          @remove="removeSection"
+        />
+      </div>
     </template>
     <!-- </DetailsPane> -->
   </div>
@@ -54,29 +60,30 @@ export default {
   data() {
     return {};
   },
+  i18n: {
+    messages: {
+      fr: {
+        create_section: "Créer un chapitre",
+        remove_section: "Supprimer le chapitre",
+      },
+      en: {
+        create_section: "Create chapter",
+        remove_section: "Remove this chapter",
+      },
+    },
+  },
   created() {},
   mounted() {
-    if (this.sections.length > 0 && !this.opened_section_meta_filename) {
-      // if (
-      //   !this.is_associated_to_map ||
-      //   (this.is_associated_to_map && this.sections.length === 1)
-      // ) {
-      // if there is one or more sections and none opened, open first one
-      const section_path = this.sections[0].$path;
-      this.openSection(section_path);
-      // } else if (this.is_associated_to_map) {
-      //   this.openSummary();
-      // }
-    }
-
     if (this.can_edit && this.sections.length === 0) this.createSection();
-
-    this.$eventHub.$on(`sections.open_summary`, this.openSummary);
+    this.openFirstSectionIfNoneOpened();
+    this.openExistingSectionIfNotExisting();
   },
-  beforeDestroy() {
-    this.$eventHub.$off(`sections.open_summary`, this.openSummary);
+  beforeDestroy() {},
+  watch: {
+    opened_section_meta_filename() {
+      this.openFirstSectionIfNoneOpened();
+    },
   },
-  watch: {},
   computed: {
     is_associated_to_map() {
       return this.$getMapOptions;
@@ -95,16 +102,29 @@ export default {
       }
       return new_section_title;
     },
+    opened_section() {
+      return this.sections.find(
+        (s) => this.getFilename(s.$path) === this.opened_section_meta_filename
+      );
+    },
   },
   methods: {
-    openSummary() {
-      this.$refs.details.$el.open = true;
-    },
-    closeSummary() {
-      this.$refs.details.$el.open = false;
-    },
     openSection(path) {
       this.$emit("toggleSection", this.getFilename(path));
+    },
+    openFirstSectionIfNoneOpened() {
+      if (this.sections.length > 0 && !this.opened_section_meta_filename) {
+        this.openFirstSection();
+      }
+    },
+    openFirstSection() {
+      const section_path = this.sections[0].$path;
+      this.openSection(section_path);
+    },
+    openExistingSectionIfNotExisting() {
+      if (this.opened_section_meta_filename && !this.opened_section) {
+        this.openFirstSection();
+      }
     },
 
     async createSection() {
@@ -115,6 +135,14 @@ export default {
         title: this.new_section_title,
       });
       this.$emit("toggleSection", new_section_meta);
+    },
+    async removeSection() {
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        path: this.opened_section.$path,
+      });
+      // todo open previous section
     },
   },
 };
@@ -134,5 +162,10 @@ export default {
 
 ._createSection {
   padding: calc(var(--spacing) / 4);
+}
+
+._buttonRow {
+  display: flex;
+  flex-flow: row wrap;
 }
 </style>

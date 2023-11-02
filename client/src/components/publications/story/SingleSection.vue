@@ -32,7 +32,6 @@
             />
           </div>
           <div class="_buttons" v-if="can_edit">
-            <RemoveMenu :remove_text="$t('remove')" @remove="removeSection" />
             <!-- <div>
               <button
                 type="button"
@@ -197,15 +196,6 @@ export default {
       this.module_being_edited = undefined;
     },
 
-    async removeSection() {
-      await this.removeSection2({
-        publication: this.publication,
-        group: "sections_list",
-        path: this.section.$path,
-      });
-      // todo open first section
-      this.$emit("close");
-    },
     async removeModule(path) {
       // todo deleteitem already called, error thrown
       await this.removeModule2({
