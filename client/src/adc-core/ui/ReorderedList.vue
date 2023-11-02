@@ -29,7 +29,7 @@
     </div>
     <SlickList
       class="_reorderedList"
-      axis="y"
+      axis="x"
       :value="local_items"
       @input="updateOrder($event)"
       :useDragHandle="true"
@@ -159,16 +159,18 @@ export default {
 <style lang="scss">
 ._reorderedList {
   position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
 }
 
 ._reorderedList--item {
   position: relative;
 
-  display: flex;
+  display: inline-flex;
   flex-flow: row nowrap;
   align-items: center;
 
-  padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
 
   background: white;
@@ -180,6 +182,7 @@ export default {
     text-decoration: underline;
     text-underline-offset: 0.2em;
     cursor: pointer;
+    padding: calc(var(--spacing) / 4);
 
     &:hover,
     &:focus-visible {
@@ -193,8 +196,13 @@ export default {
   }
 
   &.is--active {
-    background: var(--c-gris_fonce);
-    color: white;
+    // background: var(--c-gris_fonce);
+    // color: white;
+    font-weight: 600;
+
+    ._clickZone {
+      text-decoration: none;
+    }
 
     ._title {
     }
