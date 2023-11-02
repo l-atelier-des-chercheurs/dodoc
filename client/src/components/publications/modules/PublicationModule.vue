@@ -177,9 +177,9 @@
                 </div>
               </div>
 
-              <div class="u-instructions" v-if="has_coordinates">
+              <!-- <div class="u-instructions" v-if="has_coordinates">
                 {{ $t("placed_on_map") }}
-              </div>
+              </div> -->
 
               <div class="">
                 <button
