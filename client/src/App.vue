@@ -406,14 +406,14 @@ strong {
 h1 {
   margin: 0;
   font-size: var(--sl-font-size-xx-large);
-  font-weight: 300;
-  line-height: 1.1;
+  font-weight: 700;
+  line-height: 1;
 }
 h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
   // font-style: italic;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.2;
 }
 h3 {
