@@ -302,7 +302,7 @@ export default {
       this.$emit("toggleView", view_meta_filename);
     },
     getViewColor(_view) {
-      return _view.section_color || this.default_view_color;
+      return _view?.section_color || this.default_view_color;
     },
     async addModules({ meta_filenames }) {
       await this.insertModuleMetaFilenamesToList2({
