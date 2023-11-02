@@ -601,8 +601,8 @@ export default {
         //   meta_slug: this.meta_slug,
         // });
 
-        // const requested_querystring = "?" + params.toString();
-        const path_to_meta = this.sharedb_id || this.path.replaceAll("/", "*");
+        // const path_to_meta = this.sharedb_id || this.path.replaceAll("/", "*");
+        const path_to_meta = this.sharedb_id || encodeURIComponent(this.path);
 
         const requested_resource_url =
           (location.protocol === "https:" ? "wss" : "ws") +
