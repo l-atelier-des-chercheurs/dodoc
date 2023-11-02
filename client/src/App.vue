@@ -420,7 +420,7 @@ h3 {
   margin: 0;
   font-size: var(--sl-font-size-large);
   line-height: 1.2;
-  font-weight: 400;
+  font-weight: 500;
 }
 h4 {
   margin: 0;
