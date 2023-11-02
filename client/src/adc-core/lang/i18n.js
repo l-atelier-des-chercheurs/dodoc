@@ -228,6 +228,7 @@ export default function () {
 
         story_width: "Largeur du récit",
         summary: "Sommaire",
+        chapters: "Chapitres",
         section_title: "Titre du chapitre",
         section: "Chapitre",
         create_section: "Créer un chapitre",
