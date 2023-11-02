@@ -2,6 +2,9 @@
   <button
     type="button"
     class="u-button u-button_verysmall _editBtn"
+    :class="{
+      'is--unfolded': is_unfolded,
+    }"
     :style="btn_styles"
     @click="$emit('click')"
   >
@@ -22,6 +25,10 @@ export default {
     label_position: {
       type: String,
       default: "right",
+    },
+    is_unfolded: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},
@@ -47,12 +54,12 @@ export default {
       else if (this.btn_type === "add")
         return {
           label: this.$t("add"),
-          icon: "plus-circle-fill",
+          icon: "plus-lg",
         };
       else if (this.btn_type === "close")
         return {
           label: this.$t("close"),
-          icon: "x-circle",
+          icon: "x-lg",
         };
       else if (this.btn_type === "select_author")
         return {
@@ -159,7 +166,8 @@ export default {
 
   &:hover,
   &:active,
-  &:focus-visible {
+  &:focus-visible,
+  &.is--unfolded {
     // background: var(--color2);
     color: var(--color-hover-icon);
 

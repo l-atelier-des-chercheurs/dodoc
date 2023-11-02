@@ -111,6 +111,7 @@
       <EditBtn
         key="addmodule"
         :btn_type="!show_module_selector ? 'add' : 'close'"
+        :is_unfolded="true"
         class="_addBtn"
         @click="show_module_selector = !show_module_selector"
       />
