@@ -781,22 +781,25 @@ export default {
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
       if (!this.keep_loc_and_zoom) {
-        let extents = [];
-        if (pin_source.getFeatures().length > 0)
-          extents.push(pin_source.getExtent());
-        if (this.draw_vector_source.getFeatures().length > 0)
-          extents.push(this.draw_vector_source.getExtent());
+        let extent = this.map.getView().getProjection().getExtent();
 
-        if (extents.length > 0) {
-          let full_extent;
-          if (extents.length === 1) full_extent = extents[0];
-          else if (extents.length === 2)
-            full_extent = extend(extents[0], extents[1]);
+        if (this.map_baselayer !== "image") {
+          let extents = [];
+          if (pin_source.getFeatures().length > 0)
+            extents.push(pin_source.getExtent());
+          if (this.draw_vector_source.getFeatures().length > 0)
+            extents.push(this.draw_vector_source.getExtent());
 
-          this.map.getView().fit(full_extent, {
-            padding: [50, 50, 50, 50],
-          });
+          if (extents.length > 0) {
+            if (extents.length === 1) extent = extents[0];
+            else if (extents.length === 2)
+              extent = extend(extents[0], extents[1]);
+          }
         }
+
+        this.map.getView().fit(extent, {
+          padding: [50, 50, 50, 50],
+        });
       }
     },
     zoomIn() {
