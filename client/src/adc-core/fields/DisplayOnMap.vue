@@ -836,7 +836,7 @@ export default {
           extent,
         });
         center = center || getCenter(extent);
-        zoom = 0.5;
+        zoom = 1;
 
         view = new olView({
           projection: projection,
