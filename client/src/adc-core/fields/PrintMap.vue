@@ -87,6 +87,11 @@ export default {
         print_only_basemap:
           "Uniquement le fond de carte (masquer les épingles et les dessins)",
       },
+      en: {
+        print_map: "Print the map",
+        print_only_basemap:
+          "Only print the baselayer (do not print pins and drawing)",
+      },
     },
   },
   created() {},

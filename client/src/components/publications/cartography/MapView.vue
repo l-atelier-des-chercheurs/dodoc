@@ -109,6 +109,11 @@ export default {
         to_add_media_here_open_matching_layer:
           "Pour ajouter un média à cette position, créez ou ouvrez une vue dans le panneau correspondant.",
       },
+      en: {
+        views_list: "List of views",
+        to_add_media_here_open_matching_layer:
+          "To add a media in this position, create or open a view in the pane on the right.",
+      },
     },
   },
 

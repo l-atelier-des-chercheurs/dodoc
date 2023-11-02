@@ -136,6 +136,9 @@ export default {
       fr: {
         account_created: "Ce compte a été créé",
       },
+      en: {
+        account_created: "Account created",
+      },
     },
   },
   created() {

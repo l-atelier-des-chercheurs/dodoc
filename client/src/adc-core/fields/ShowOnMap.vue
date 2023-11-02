@@ -20,11 +20,7 @@ export default {
   data() {
     return {};
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
+
   created() {},
   mounted() {},
   beforeDestroy() {},

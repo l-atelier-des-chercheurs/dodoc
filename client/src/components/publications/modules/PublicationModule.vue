@@ -177,9 +177,9 @@
                 </div>
               </div>
 
-              <div class="u-instructions" v-if="has_coordinates">
+              <!-- <div class="u-instructions" v-if="has_coordinates">
                 {{ $t("placed_on_map") }}
-              </div>
+              </div> -->
 
               <div class="">
                 <button
@@ -204,6 +204,7 @@
                   class="u-buttonLink"
                   @click="eraseCoords"
                 >
+                  <b-icon icon="x-circle" />
                   {{ $t("erase") }}
                 </button>
               </div>
@@ -433,6 +434,18 @@ export default {
         cancel_position: "Annuler la position",
         click_on_map_to_repick_location_for_media:
           "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+      },
+      en: {
+        no_coordinates: "No coordinates available",
+        position_on_map: "No position on the map",
+        place_on_map: "Position on map",
+        show_on_map: "Show on map",
+        placed_on_map: "Already positioned positioned on map",
+        change_location: "Change position",
+        remove_pin: "Remove this pin",
+        cancel_position: "Erase position",
+        click_on_map_to_repick_location_for_media:
+          "Click on map to select the new position on the map",
       },
     },
   },

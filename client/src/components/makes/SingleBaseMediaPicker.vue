@@ -57,6 +57,10 @@ export default {
         pick_base_image: "Choisir le média de référence",
         change_base_media: "Changer le média de référence",
       },
+      en: {
+        pick_base_image: "Pick base image",
+        change_base_media: "Change base media",
+      },
     },
   },
   data() {

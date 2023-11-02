@@ -95,11 +95,6 @@ export default {
       save_status: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},
