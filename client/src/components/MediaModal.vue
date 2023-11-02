@@ -174,6 +174,9 @@ export default {
       fr: {
         place: "Emplacement",
       },
+      en: {
+        place: "Place",
+      },
     },
   },
   created() {},

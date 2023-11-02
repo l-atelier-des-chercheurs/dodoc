@@ -190,7 +190,7 @@ export default {
 
         map_mode: "Mode de cartographie",
 
-        map_mode_gps: "Coordonnées GPS avec un fond de carte OpenStreetMap",
+        map_mode_gps: "Coordonnées GPS avec un fond de carte",
         map_mode_gps_instr: "Pour cartographier un espace extérieur.",
 
         map_mode_image: "Fond de plan image",
@@ -203,6 +203,32 @@ export default {
         IGN_MAP: "Carte IGN (en France uniquement)",
         IGN_SAT: "Photos satellite IGN (en France uniquement)",
         bw_filter: "Filtre noir et blanc",
+
+        IGN_max_zoom_limits:
+          "Les tuiles fournies par l’IGN ne permettent pas d’afficher la carte à un niveau de zoom maximal. Pour pouvoir travailler à l’échelle la plus fine, il est recommandé de ne pas les utiliser.",
+      },
+      en: {
+        pins_color: "Pin color",
+        link_pins: "Link pins",
+        pin_icons: "Pin icons",
+        icon: "Icon",
+        media_preview: "Image on map",
+
+        map_mode: "Map mode",
+
+        map_mode_gps: "Map with GPS coordinates",
+        map_mode_gps_instr: "",
+
+        map_mode_image: "Image basemap without GPS",
+        map_mode_image_instr:
+          "Ideal for indoor or small spaces or to map a non-cartographic space.",
+        image_basemap: "Image used as the basemap",
+
+        map_baselayer: "Basemap",
+        OSM: "OpenStreetMap",
+        IGN_MAP: "IGN map (France only)",
+        IGN_SAT: "IGN satellite pictures (France only)",
+        bw_filter: "Black and white filter",
 
         IGN_max_zoom_limits:
           "Les tuiles fournies par l’IGN ne permettent pas d’afficher la carte à un niveau de zoom maximal. Pour pouvoir travailler à l’échelle la plus fine, il est recommandé de ne pas les utiliser.",
