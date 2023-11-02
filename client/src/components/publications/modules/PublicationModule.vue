@@ -706,12 +706,17 @@ export default {
     async removeModule() {
       // todo  remove source medias that are part publications
       // todo also empty sharedb path, since $path can be retaken
-      //       try {
-      //   for (let sm of file.source_medias) {
-      //     if (sm.path.includes("/publications/")) {
-      //       // this media is specific to publications, lets remove it
+      // try {
+      //   for (let source_media of this.publimodule.source_medias) {
+      //     const publication_path = this.getParent(this.publimodule.$path);
+      //     const full_source_media = this.getSourceMedia({
+      //       source_media,
+      //       folder_path: publication_path,
+      //     });
+
+      //     if (full_source_media.$path.includes("/publications/")) {
       //       await this.$api.deleteItem({
-      //         path: sm.path,
+      //         path: full_source_media.$path,
       //       });
       //     }
       //   }
@@ -719,6 +724,7 @@ export default {
       //   this.$alertify.delay(4000).error(err);
       //   throw err;
       // }
+
       await this.$api
         .deleteItem({
           path: this.publimodule.$path,
