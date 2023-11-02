@@ -82,28 +82,19 @@
           </sl-button> -->
               <div class="_buttonRow">
                 <button
+                  v-for="size in [100, 66.6, 50, 33.3]"
+                  :key="size"
                   type="button"
-                  class="u-button"
+                  class="u-buttonLink"
                   :class="{
-                    'is--active': !publimodule.size || publimodule.size === 100,
+                    'is--active':
+                      (!publimodule.size && size === 100) ||
+                      publimodule.size === size,
                   }"
-                  @click="updateMeta({ size: 100 })"
+                  @click="updateMeta({ size: size })"
                 >
-                  100%
+                  {{ size }}%
                 </button>
-                <template v-for="size in [66.6, 50, 33.3]">
-                  <button
-                    :key="size"
-                    type="button"
-                    class="u-button"
-                    :class="{
-                      'is--active': publimodule.size === size,
-                    }"
-                    @click="updateMeta({ size: size })"
-                  >
-                    {{ size }}%
-                  </button>
-                </template>
               </div>
 
               <div
@@ -111,40 +102,29 @@
                 v-if="publimodule.size && publimodule.size !== 100"
               >
                 <button
+                  v-for="align in ['left', 'center', 'right']"
+                  :key="align"
                   type="button"
-                  class="u-button"
+                  class="u-buttonLink"
                   :class="{
                     'is--active':
-                      !publimodule.align || publimodule.align === 'left',
+                      (!publimodule.align && align === 'left') ||
+                      publimodule.align === align,
                   }"
-                  @click="updateMeta({ align: 'left' })"
+                  @click="updateMeta({ align: align })"
                 >
-                  <sl-icon name="align-start" />
-                </button>
-                <button
-                  type="button"
-                  class="u-button"
-                  :class="{
-                    'is--active': publimodule.align === 'center',
-                  }"
-                  @click="updateMeta({ align: 'center' })"
-                >
-                  <sl-icon name="align-center" />
-                </button>
-                <button
-                  type="button"
-                  class="u-button"
-                  :class="{
-                    'is--active': publimodule.align === 'right',
-                  }"
-                  @click="updateMeta({ align: 'right' })"
-                >
-                  <sl-icon name="align-end" />
+                  <sl-icon v-if="align === 'left'" name="align-start" />
+                  <sl-icon v-if="align === 'center'" name="align-center" />
+                  <sl-icon v-if="align === 'right'" name="align-end" />
                 </button>
               </div>
 
               <div class="_buttonRow">
-                <button type="button" class="u-button" @click="duplicateModule">
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click="duplicateModule"
+                >
                   <sl-icon name="file-plus" />
                   <!-- {{ $t("duplicate") }} -->
                 </button>
@@ -869,6 +849,10 @@ export default {
   // padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 4);
   align-items: center;
+
+  .is--active {
+    color: white;
+  }
 }
 
 ._floatingEditBtn {
