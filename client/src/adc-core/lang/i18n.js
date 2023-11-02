@@ -231,7 +231,6 @@ export default function () {
         chapters: "Chapitres",
         section_title: "Titre du chapitre",
         section: "Chapitre",
-        create_section: "Créer un chapitre",
         untitled: "Sans titre",
         responsive: "Fluide",
         responsive_instr:
