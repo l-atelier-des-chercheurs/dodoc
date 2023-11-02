@@ -5,7 +5,6 @@
         <DisplayOnMap
           :key="opened_view_meta_filename"
           class="_mapContainer"
-          :map_mode="opened_view ? opened_view.map_mode : 'gps'"
           :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
           :map_baselayer_bw="
             opened_view ? opened_view.map_baselayer_bw : undefined

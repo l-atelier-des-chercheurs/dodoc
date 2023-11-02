@@ -10,6 +10,7 @@
           v-for="option in options"
           :key="option.key"
           :value="option.key"
+          :disabled="option.disabled === true"
           v-text="option.text"
         />
       </select>

@@ -49,28 +49,6 @@
         </div>
 
         <div class="u-spacingBottom">
-          <DLabel :str="$t('map_mode')" />
-          <RadioCheckboxField
-            :field_name="'map_mode'"
-            :input_type="'radio'"
-            :content="map_mode"
-            :path="view.$path"
-            :can_edit="true"
-            :options="map_mode_options"
-          />
-        </div>
-
-        <div class="u-spacingBottom" v-if="map_mode === 'image'">
-          <DLabel :str="$t('image_basemap')" />
-          <SingleBaseMediaPicker
-            :field_name="'map_base_media_filename'"
-            :content="view.map_base_media_filename"
-            :path="view.$path"
-            :media_type_to_pick="'image'"
-          />
-        </div>
-
-        <div class="u-spacingBottom" v-if="map_mode === 'gps'">
           <DLabel :str="$t('map_baselayer')" />
           <SelectField2
             :value="view.map_baselayer || 'OSM'"
@@ -87,6 +65,16 @@
               {{ $t("IGN_max_zoom_limits") }}
             </small>
           </div>
+        </div>
+
+        <div class="u-spacingBottom" v-if="view.map_baselayer === 'image'">
+          <DLabel :str="$t('image_basemap')" />
+          <SingleBaseMediaPicker
+            :field_name="'map_base_media_filename'"
+            :content="view.map_base_media_filename"
+            :path="view.$path"
+            :media_type_to_pick="'image'"
+          />
         </div>
 
         <div class="u-spacingBottom">
@@ -150,19 +138,6 @@ export default {
         },
       ],
 
-      map_mode_options: [
-        {
-          key: "gps",
-          label: this.$t("map_mode_gps"),
-          instructions: this.$t("map_mode_gps_instr"),
-        },
-        {
-          key: "image",
-          label: this.$t("map_mode_image"),
-          instructions: this.$t("map_mode_image_instr"),
-        },
-      ],
-
       map_baselayer_options: [
         {
           key: "OSM",
@@ -176,6 +151,15 @@ export default {
           key: "IGN_MAP",
           text: this.$t("IGN_MAP"),
         },
+        {
+          key: "---",
+          text: "---",
+          disabled: true,
+        },
+        {
+          key: "image",
+          text: this.$t("image_or_drawing"),
+        },
       ],
     };
   },
@@ -188,20 +172,13 @@ export default {
         icon: "Icône",
         media_preview: "Image sur la carte",
 
-        map_mode: "Mode de cartographie",
-
-        map_mode_gps: "Coordonnées GPS avec un fond de carte",
-        map_mode_gps_instr: "Pour cartographier un espace extérieur.",
-
-        map_mode_image: "Fond de plan image",
-        map_mode_image_instr:
-          "Pour cartographier un espace intérieur ou très réduit ou un espace non-cartographique.",
         image_basemap: "Image utilisée comme fond de carte",
 
         map_baselayer: "Fond de carte",
         OSM: "OpenStreetMap",
         IGN_MAP: "Carte IGN (en France uniquement)",
         IGN_SAT: "Photos satellite IGN (en France uniquement)",
+        image_or_drawing: "Image ou dessin",
         bw_filter: "Filtre noir et blanc",
 
         IGN_max_zoom_limits:
@@ -214,20 +191,13 @@ export default {
         icon: "Icon",
         media_preview: "Image on map",
 
-        map_mode: "Map mode",
-
-        map_mode_gps: "Map with GPS coordinates",
-        map_mode_gps_instr: "",
-
-        map_mode_image: "Image basemap without GPS",
-        map_mode_image_instr:
-          "Ideal for indoor or small spaces or to map a non-cartographic space.",
         image_basemap: "Image used as the basemap",
 
         map_baselayer: "Basemap",
         OSM: "OpenStreetMap",
         IGN_MAP: "IGN map (France only)",
         IGN_SAT: "IGN satellite pictures (France only)",
+        image_or_drawing: "Image or drawing",
         bw_filter: "Black and white filter",
 
         IGN_max_zoom_limits:

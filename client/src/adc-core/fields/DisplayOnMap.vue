@@ -301,16 +301,12 @@ export default {
       type: [Boolean, Number],
       default: 2,
     },
-    map_mode: {
-      type: String,
-      default: "map",
-    },
     map_baselayer: {
       type: String,
       default: "OSM",
       validator(value) {
         // The value must match one of these strings
-        return ["OSM", "IGN_MAP", "IGN_SAT"].includes(value);
+        return ["OSM", "IGN_MAP", "IGN_SAT", "image"].includes(value);
       },
     },
     map_baselayer_bw: {
@@ -532,17 +528,16 @@ export default {
     geometries() {
       this.loadGeom();
     },
-    map_baselayer() {
-      this.startMap({ keep_loc_and_zoom: true });
+    map_baselayer(val, oldVal) {
+      if (val !== oldVal && (val === "image" || oldVal === "image"))
+        this.startMap();
+      else this.startMap({ keep_loc_and_zoom: true });
     },
     map_baselayer_bw() {
       this.setBackgroundLayerOptions();
     },
     map_baselayer_opacity() {
       this.setBackgroundLayerOptions();
-    },
-    map_mode() {
-      this.startMap();
     },
     map_base_media() {
       this.startMap();
@@ -822,7 +817,7 @@ export default {
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
 
-      if (this.map_mode === "image") {
+      if (this.map_baselayer === "image") {
         if (!this.map_base_media)
           this.$alertify.delay(4000).error("missing base image");
 
@@ -841,6 +836,7 @@ export default {
           extent,
         });
         center = center || getCenter(extent);
+        zoom = 0.5;
 
         view = new olView({
           projection: projection,
