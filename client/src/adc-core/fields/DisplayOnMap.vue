@@ -1609,7 +1609,10 @@ export default {
     },
     removeSelected() {
       if (!this.selected_feature) return false;
-      this.draw_vector_source.removeFeature(this.selected_feature);
+      const f = this.draw_vector_source.getFeatureById(
+        this.selected_feature_id
+      );
+      this.draw_vector_source.removeFeature(f);
       this.$nextTick(() => {
         this.saveGeom();
       });
