@@ -167,5 +167,6 @@ export default {
 ._buttonRow {
   display: flex;
   flex-flow: row wrap;
+  justify-content: flex-end;
 }
 </style>
