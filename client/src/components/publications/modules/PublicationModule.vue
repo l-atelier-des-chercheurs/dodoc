@@ -781,8 +781,8 @@ export default {
   bottom: var(--highlight-margin);
   right: var(--highlight-margin);
 
-  border: 2px solid var(--c-bleuvert);
-  border-radius: 6px;
+  // border: 2px solid var(--c-bleuvert);
+  // border-radius: 6px;
 
   pointer-events: none;
 }
