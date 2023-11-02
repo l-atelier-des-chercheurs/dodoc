@@ -223,7 +223,7 @@ export default {
   // top: 60px;
   width: 100%;
 
-  background: var(--hero-bg, transparent);
+  background: var(--hero-bg, #fff);
 
   ._homeCover {
     background: white;
