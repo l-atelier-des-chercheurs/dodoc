@@ -80,7 +80,7 @@
           >
             {{ $t(`module.label.${publimodule.module_type}`) }}
           </sl-button> -->
-              <div class="_buttonRow" v-if="false">
+              <div class="_buttonRow">
                 <button
                   type="button"
                   class="u-button"
