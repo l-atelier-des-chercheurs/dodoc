@@ -57,14 +57,6 @@
             :hide_validation="false"
             @update="updateView({ field: 'map_baselayer', value: $event })"
           />
-          <div
-            class="u-instructions"
-            v-if="view.map_baselayer && view.map_baselayer.includes('IGN')"
-          >
-            <small class="">
-              {{ $t("IGN_max_zoom_limits") }}
-            </small>
-          </div>
         </div>
 
         <div class="u-spacingBottom" v-if="view.map_baselayer === 'image'">
@@ -146,10 +138,12 @@ export default {
         {
           key: "IGN_SAT",
           text: this.$t("IGN_SAT"),
+          instructions: this.$t("IGN_max_zoom_limits"),
         },
         {
           key: "IGN_MAP",
           text: this.$t("IGN_MAP"),
+          instructions: this.$t("IGN_max_zoom_limits"),
         },
         {
           key: "---",
@@ -182,7 +176,7 @@ export default {
         bw_filter: "Filtre noir et blanc",
 
         IGN_max_zoom_limits:
-          "Les tuiles fournies par l’IGN ne permettent pas d’afficher la carte à un niveau de zoom maximal. Pour pouvoir travailler à l’échelle la plus fine, il est recommandé de ne pas les utiliser.",
+          "Les fonds de plan fournies par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
       },
       en: {
         pins_color: "Pin color",
@@ -201,7 +195,7 @@ export default {
         bw_filter: "Black and white filter",
 
         IGN_max_zoom_limits:
-          "Les tuiles fournies par l’IGN ne permettent pas d’afficher la carte à un niveau de zoom maximal. Pour pouvoir travailler à l’échelle la plus fine, il est recommandé de ne pas les utiliser.",
+          "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
       },
     },
   },
