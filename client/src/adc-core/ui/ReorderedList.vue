@@ -31,6 +31,7 @@
       class="_reorderedList"
       axis="x"
       :value="local_items"
+      :useDragHandle="true"
       @input="updateOrder($event)"
     >
       <SlickItem
@@ -184,7 +185,7 @@ export default {
     text-decoration: underline;
     text-underline-offset: 0.2em;
     cursor: pointer;
-    padding: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1.5);
 
     &:hover,
     &:focus-visible {
@@ -210,8 +211,11 @@ export default {
     }
   }
   &.is--redorderable {
-    background: var(--c-gris_clair);
+    // background: var(--c-gris_clair);
     // border: 1px solid black;
+    ._clickZone {
+      text-decoration: none;
+    }
   }
 
   &:has(._dragHandle:hover) {
@@ -225,8 +229,9 @@ export default {
     z-index: 10000;
 
     ._dragHandle {
-      background: var(--c-noir);
-      color: white;
+      // background: var(--c-noir);
+      border-color: var(--c-noir);
+      // color: white;
     }
   }
 
@@ -247,14 +252,14 @@ export default {
   height: 100%;
   height: 2em;
 
-  border: 2px solid var(--c-gris_clair);
   border-radius: 1em;
+  border: 2px solid var(--c-gris);
 
   // background: var(--c-gris_clair);
 
   &:hover,
   &:focus-visible {
-    border-color: black;
+    border-color: var(--c-noir);
     // background: var(--c-noir);
     // color: white;
   }
