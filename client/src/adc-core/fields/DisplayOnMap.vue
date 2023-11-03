@@ -6,6 +6,7 @@
     }"
     :style="map_styles"
   >
+    {{ current_zoom }}
     <div class="_map" ref="map" />
 
     <div
@@ -803,6 +804,10 @@ export default {
           this.map.getView().fit(extent, {
             padding: [50, 50, 50, 50],
           });
+
+        // prevent zoom from being too high (even though it may be correct for the extent)
+        if (this.map_baselayer !== "image" && this.map.getView().getZoom() > 15)
+          this.map.getView().setZoom(15);
       }
     },
     zoomIn() {
@@ -865,7 +870,6 @@ export default {
         center = center || [5.39057449011251, 43.310173305629576];
 
         const maxZoom = this.map_baselayer.includes("IGN") ? 19 : 21;
-
         view = new olView({
           center,
           zoom,
