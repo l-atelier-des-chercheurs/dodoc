@@ -105,7 +105,7 @@ export default {
   display: inline-flex;
   background: var(--color1);
   color: var(--color2);
-  border: 1px solid var(--color2);
+  border: 1px solid var(--color1);
 
   box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
 
