@@ -5,7 +5,7 @@
       'is--collapsed': !show_module_selector,
     }"
   >
-    <transition name="scaleInFade" mode="out-in">
+    <transition name="pagechange" mode="out-in">
       <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
@@ -103,19 +103,24 @@
             />
             <!-- {{ $t("add_medias") }} -->
           </button>
+          <EditBtn
+            key="addmodule"
+            :btn_type="'close'"
+            :is_unfolded="false"
+            @click="show_module_selector = false"
+          />
         </template>
       </div>
-    </transition>
-
-    <template v-if="start_collapsed">
       <EditBtn
+        v-else-if="start_collapsed && !show_module_selector"
         key="addmodule"
-        :btn_type="!show_module_selector ? 'add' : 'close'"
+        :btn_type="'add'"
         :is_unfolded="true"
         class="_addBtn"
-        @click="show_module_selector = !show_module_selector"
+        @click="show_module_selector = true"
       />
-    </template>
+    </transition>
+
     <!-- <button
       type="button"
       class="u-button u-button_transparent u-addBtn"
