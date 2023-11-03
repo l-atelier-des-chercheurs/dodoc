@@ -60,6 +60,11 @@
               <span>{{ $t("history") }}</span>
             </button>
           </transition>
+          <EditBtn
+            :btn_type="'check'"
+            :label_position="'left'"
+            @click="disableEditor"
+          />
         </template>
       </div>
       <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
@@ -460,13 +465,17 @@ export default {
     async enableEditor() {
       if (this.editor_is_enabled || !this.can_edit) return false;
 
+      // min-height to prevents jumps
+      const bloc_height = this.$el.offsetHeight;
+      this.$el.style.setProperty("min-height", bloc_height + "px");
+
       console.log(`CollaborativeEditor2 • enableEditor`);
 
       if (this.is_collaborative) await this.startCollaborative();
 
       this.editor.enable();
 
-      this.editor.focus();
+      // this.editor.focus();
 
       // todo select latest used font as selected font
       if (this.editor.getLength() <= 1) {
@@ -477,6 +486,7 @@ export default {
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
       this.$emit(`contentIsEdited`, this.toolbar_el);
+      this.$el.style.removeProperty("min-height");
       this.editor_is_enabled = true;
     },
     async disableEditor() {
