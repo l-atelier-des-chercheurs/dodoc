@@ -109,7 +109,7 @@ export default {
 }
 
 ._finished {
-  background: hsl(173, 47%, 80%);
+  background: var(--c-pinnedBg);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1)
     calc(var(--spacing) / 1);
   margin-top: calc(var(--spacing) / 2);

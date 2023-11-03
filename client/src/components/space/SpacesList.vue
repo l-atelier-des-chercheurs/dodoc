@@ -231,7 +231,7 @@ export default {
 
 ._pinned {
   // background: var(--c-bleumarine_clair);
-  background: hsl(173, 47%, 80%);
+  background: var(--c-pinnedBg);
   // border-radius: 4px;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1)
     calc(var(--spacing) / 1);
