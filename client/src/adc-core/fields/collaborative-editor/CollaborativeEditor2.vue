@@ -475,7 +475,7 @@ export default {
 
       this.editor.enable();
 
-      // this.editor.focus();
+      this.editor.focus();
 
       // todo select latest used font as selected font
       if (this.editor.getLength() <= 1) {
@@ -582,8 +582,13 @@ export default {
     },
 
     async saveText() {
+      const new_content = this.getEditorContent();
+      if (new_content === this.content) {
+        return "content_not_changed";
+      }
+
       const new_meta = {
-        [this.field_to_edit]: this.getEditorContent(),
+        [this.field_to_edit]: new_content,
       };
 
       try {
