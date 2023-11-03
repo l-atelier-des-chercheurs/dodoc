@@ -285,7 +285,7 @@ import {
 
 import { defaults as olDefaultControls } from "ol/control";
 
-import olPencilSketch from "ol-ext/filter/PencilSketch";
+import olFilterCSS from "ol-ext/filter/CSS";
 
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
@@ -1467,15 +1467,19 @@ export default {
           !this.background_layer.getFilters().length ||
           this.background_layer.getFilters().length === 0
         ) {
-          var pencil = new olPencilSketch();
-          pencil.set("intensity", 0.7);
-          pencil.set("blur", 15);
-          this.background_layer.addFilter(pencil);
+          this.background_layer.addFilter(
+            new olFilterCSS({ filter: "grayscale(1)" })
+          );
         }
       } else {
         if (this.background_layer.getFilters().length >= 1)
           this.background_layer.removeFilter();
+        // this.background_layer.
       }
+
+      debugger;
+
+      // debugger;
 
       if (this.map_baselayer_opacity < 1)
         this.background_layer.setOpacity(this.map_baselayer_opacity);
@@ -1660,7 +1664,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: var(--c-gris);
+  background-color: var(--c-gris_clair);
   font-size: 150%;
 
   flex: 1 1 320px;
