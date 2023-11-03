@@ -491,7 +491,7 @@ export default {
     this.$eventHub.$on("publication.map.openPin", this.openPin);
     this.$eventHub.$on("publication.map.disableTools", this.disableTools);
     this.$eventHub.$on("publication.map.print", this.printMap);
-    document.addEventListener("keydown", this.keyPressed);
+    document.addEventListener("keyup", this.keyPressed);
   },
   mounted() {
     // setTimeout(() => {
@@ -503,7 +503,7 @@ export default {
     this.$eventHub.$off("publication.map.openPin", this.openPin);
     this.$eventHub.$off("publication.map.disableTools", this.disableTools);
     this.$eventHub.$off("publication.map.print", this.printMap);
-    document.removeEventListener("keydown", this.keyPressed);
+    document.removeEventListener("keyup", this.keyPressed);
   },
   watch: {
     pins: {
@@ -1656,6 +1656,16 @@ export default {
         this.removeSelected();
       else if (event.key === "Escape" && this.map_draw) this.abortDrawing();
       else if (event.key === "Enter" && this.map_draw) this.finishDrawing();
+      else if (event.key === " ")
+        this.toggleTool({
+          draw_mode: { key: "Select" },
+        });
+      else if (["1", "2", "3", "4"].includes(event.key)) {
+        const mode_num = Number.parseInt(event.key) - 1;
+        this.toggleTool({
+          draw_mode: this.draw_modes[mode_num],
+        });
+      }
     },
   },
 };
