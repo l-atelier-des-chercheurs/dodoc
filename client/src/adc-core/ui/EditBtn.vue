@@ -141,7 +141,7 @@ export default {
     color: var(--color1);
 
     margin: -1px;
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
     display: flex;
     align-items: center;
