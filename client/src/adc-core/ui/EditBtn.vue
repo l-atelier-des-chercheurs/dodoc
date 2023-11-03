@@ -78,7 +78,7 @@ export default {
       };
     },
     btn_styles() {
-      if (this.btn_type === "fullscreen")
+      if (this.btn_type === "fullscreen" || this.btn_type === "close")
         return `
           --color2: var(--c-noir);
         `;

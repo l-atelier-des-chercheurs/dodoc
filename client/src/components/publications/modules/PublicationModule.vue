@@ -846,8 +846,8 @@ export default {
 
 ._buttonRow {
   display: flex;
-  // padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
   align-items: center;
 
   .is--active {

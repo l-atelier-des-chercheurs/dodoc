@@ -42,7 +42,7 @@
           @close="show_media_picker = false"
         />
 
-        <button
+        <!-- <button
           type="button"
           class="u-button u-button_bleumarine"
           v-if="types_available.includes('files')"
@@ -54,7 +54,7 @@
             style="font-size: var(--icon-size)"
             :label="$t('add_files')"
           />
-        </button>
+        </button> -->
         <MediaPicker
           v-if="show_file_picker"
           :publication_path="publication_path"
@@ -103,13 +103,13 @@
             />
             <!-- {{ $t("add_medias") }} -->
           </button>
-          <EditBtn
-            key="addmodule"
-            :btn_type="'close'"
-            :is_unfolded="false"
-            @click="show_module_selector = false"
-          />
         </template>
+        <EditBtn
+          key="addmodule"
+          :btn_type="'close'"
+          :is_unfolded="false"
+          @click="show_module_selector = false"
+        />
       </div>
       <EditBtn
         v-else-if="start_collapsed && !show_module_selector"
@@ -417,6 +417,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  align-items: center;
   gap: calc(var(--spacing) / 4);
 
   > * {
