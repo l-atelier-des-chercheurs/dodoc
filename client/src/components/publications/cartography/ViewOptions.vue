@@ -176,7 +176,7 @@ export default {
         bw_filter: "Filtre noir et blanc",
 
         IGN_max_zoom_limits:
-          "Les fonds de plan fournies par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
+          "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
       },
       en: {
         pins_color: "Pin color",
