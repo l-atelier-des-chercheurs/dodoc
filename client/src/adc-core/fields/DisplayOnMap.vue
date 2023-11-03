@@ -781,7 +781,7 @@ export default {
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
       if (!this.keep_loc_and_zoom) {
-        let extent = this.map.getView().getProjection().getExtent();
+        let extent;
 
         if (this.map_baselayer !== "image") {
           let extents = [];
@@ -795,11 +795,14 @@ export default {
             else if (extents.length === 2)
               extent = extend(extents[0], extents[1]);
           }
+        } else {
+          extent = this.map.getView().getProjection().getExtent();
         }
 
-        this.map.getView().fit(extent, {
-          padding: [50, 50, 50, 50],
-        });
+        if (extent)
+          this.map.getView().fit(extent, {
+            padding: [50, 50, 50, 50],
+          });
       }
     },
     zoomIn() {
