@@ -105,6 +105,7 @@
           </button>
         </template>
         <EditBtn
+          v-if="start_collapsed"
           key="addmodule"
           :btn_type="'close'"
           :is_unfolded="false"
