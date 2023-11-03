@@ -32,7 +32,6 @@
       axis="x"
       :value="local_items"
       @input="updateOrder($event)"
-      :useDragHandle="true"
     >
       <SlickItem
         v-for="(item, index) of local_items"
@@ -41,10 +40,11 @@
         class="_reorderedList--item"
         :class="{
           'is--active': isActive(item.$path),
+          'is--redorderable': change_order,
         }"
       >
         <span v-handle class="_dragHandle" v-if="can_edit && change_order">
-          <b-icon icon="grip-vertical" :label="$t('move')" />
+          <!-- <b-icon icon="grip-vertical" :label="$t('move')" /> -->
           <transition name="fade_fast" mode="out-in">
             <span v-if="show_index" :key="index" class="_index">
               {{ index + 1 }}
@@ -54,16 +54,15 @@
         <span v-else-if="show_index" class="_index">
           {{ index + 1 }}
         </span>
-        <span
+        <component
+          :is="$listeners.openItem ? 'button' : 'span'"
+          :type="$listeners.openItem ? 'button' : ''"
           class="_clickZone"
           v-if="$listeners.openItem"
           @click="$emit('openItem', item.$path)"
         >
           <slot :item="item" :index="index" />
-        </span>
-        <span v-else class="_noClickZone">
-          <slot :item="item" :index="index" />
-        </span>
+        </component>
       </SlickItem>
     </SlickList>
   </div>
@@ -171,18 +170,21 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
 
-  gap: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
 
   background: white;
 
   border-radius: 4px;
 
   ._clickZone {
+    appearance: none;
+    font-weight: inherit;
+    background: transparent;
     width: 100%;
     text-decoration: underline;
     text-underline-offset: 0.2em;
     cursor: pointer;
-    padding: calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 2);
 
     &:hover,
     &:focus-visible {
@@ -207,6 +209,10 @@ export default {
     ._title {
     }
   }
+  &.is--redorderable {
+    background: var(--c-gris_clair);
+    // border: 1px solid black;
+  }
 
   &:has(._dragHandle:hover) {
     z-index: 1;
@@ -228,24 +234,29 @@ export default {
   // background: blue;
 }
 ._dragHandle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
   cursor: grab;
   padding: calc(var(--spacing) / 4);
-  background: white;
-  color: var(--c-noir);
-  border-radius: 2px;
 
-  width: 2em;
+  background: transparent;
+  // color: var(--c-noir);
+  // border-radius: 2px;
+
+  // margin-right: -1em;
+  width: 100%;
+  height: 100%;
   height: 2em;
 
-  background: var(--c-gris_clair);
+  border: 2px solid var(--c-gris_clair);
+  border-radius: 1em;
+
+  // background: var(--c-gris_clair);
 
   &:hover,
   &:focus-visible {
-    background: var(--c-noir);
-    color: white;
+    border-color: black;
+    // background: var(--c-noir);
+    // color: white;
   }
 }
 ._index {
