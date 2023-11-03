@@ -1474,12 +1474,7 @@ export default {
       } else {
         if (this.background_layer.getFilters().length >= 1)
           this.background_layer.removeFilter();
-        // this.background_layer.
       }
-
-      debugger;
-
-      // debugger;
 
       if (this.map_baselayer_opacity < 1)
         this.background_layer.setOpacity(this.map_baselayer_opacity);
