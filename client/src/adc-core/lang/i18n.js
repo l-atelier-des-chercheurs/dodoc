@@ -58,6 +58,7 @@ export default function () {
         date_uploaded: "Date d’envoi",
         cancel: "Annuler",
         select: "Sélectionner",
+        select_all: "Sélectionner tout",
         back: "retour",
         save: "enregistrer",
         save_as_favorite: "Enregistrer en favori",

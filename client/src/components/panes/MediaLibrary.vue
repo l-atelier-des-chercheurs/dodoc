@@ -36,29 +36,47 @@
 
       <div class="_topSection">
         <div class="_topSection--left">
-          <form
-            v-if="show_create_link_field"
-            class="input-validation-required"
-            @submit.prevent="createLink"
-          >
-            <input type="url" required v-model="url_to" />
-            <br />
-            <input type="submit" />
-          </form>
-
-          <small v-if="medias.length === 0">
-            {{ $t("no_media_in_project") }}
-          </small>
-          <template v-else-if="medias.length > 0">
-            <div class="u-label _mediaCount">
-              {{ $t("number_of_media") }} = {{ medias.length }}
-              <template v-if="filtered_medias.length !== medias.length">
-                (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
-                  filtered_medias.length
-                }})
-              </template>
-            </div>
-          </template>
+          <div class="u-sameRow">
+            <small v-if="medias.length === 0">
+              {{ $t("no_media_in_project") }}
+            </small>
+            <template v-else-if="medias.length > 0">
+              <div class="_mediaCount">
+                {{ $t("number_of_media") }} = {{ medias.length }}
+                <template v-if="filtered_medias.length !== medias.length">
+                  (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
+                    filtered_medias.length
+                  }})
+                </template>
+              </div>
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="!select_mode && !batch_mode"
+                @click="batch_mode = !batch_mode"
+              >
+                <b-icon icon="hand-index" />
+                {{ $t("select") }}
+              </button>
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="batch_mode"
+                @click="cancelSelect"
+              >
+                <b-icon icon="x-circle" />
+                {{ $t("cancel") }}
+              </button>
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="select_mode || batch_mode"
+                @click="selectAllVisibleMedias"
+              >
+                {{ $t("select_all") }}
+              </button>
+            </template>
+          </div>
         </div>
         <div class="_topSection--right">
           <div class="_groupBy">
@@ -197,12 +215,28 @@
 
       <transition name="slideup">
         <div v-if="selected_medias.length > 0" class="_selectBtn">
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="addMedias(selected_medias)"
-          >
-            {{ `${$t("add")} (${selected_medias.length})` }}
+          <template v-if="select_mode">
+            <button
+              type="button"
+              class="u-button u-button_bleuvert"
+              @click="addMedias(selected_medias)"
+            >
+              {{ `${$t("add")} (${selected_medias.length})` }}
+            </button>
+          </template>
+          <template v-else-if="batch_mode">
+            <button
+              type="button"
+              class="u-button u-button_red"
+              @click="removeAllMedias(selected_medias)"
+            >
+              {{ `${$t("remove")} (${selected_medias.length})` }}
+            </button>
+          </template>
+
+          <button type="button" class="u-buttonLink" @click="cancelSelect">
+            <b-icon icon="x-circle" />
+            {{ $t("cancel") }}
           </button>
         </div>
       </transition>
@@ -250,10 +284,10 @@ export default {
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
 
-      show_create_link_field: false,
       url_to: "https://latelier-des-chercheurs.fr/",
 
       selected_medias: [],
+      batch_mode: false,
 
       tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
 
@@ -458,8 +492,7 @@ export default {
         this.files_to_import = Array.from($event.dataTransfer.files);
     },
     mediaTileIsSelectable() {
-      if (!this.select_mode || this.select_mode === "single") return false;
-      return true;
+      return this.select_mode === "multiple" || this.batch_mode;
     },
     mediaTileAlreadySelected(path) {
       if (!this.meta_filenames_already_present) return false;
@@ -476,6 +509,20 @@ export default {
         return { label, color };
       }
       return false;
+    },
+    async removeAllMedias(selected_medias) {
+      for (const path of selected_medias) {
+        await this.removeMedia(path);
+        this.selected_medias = this.selected_medias.filter((p) => p !== path);
+      }
+      this.batch_mode = false;
+    },
+    selectAllVisibleMedias() {
+      this.selected_medias = this.filtered_medias.map((fm) => fm.$path);
+    },
+    cancelSelect() {
+      this.selected_medias = [];
+      if (this.batch_mode) this.batch_mode = false;
     },
     quantityOfMediaWithType(type_of_media_key) {
       return this.sorted_medias.filter(
@@ -617,7 +664,9 @@ export default {
 
   // background: var(--color-collect);
   z-index: 1;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+
+  border-bottom: 2px solid var(--c-orange_clair);
 }
 
 ._topSection--left {
@@ -641,8 +690,8 @@ export default {
 }
 
 ._mediaCount {
-  color: black;
-  margin-bottom: 0;
+  // color: black;
+  // margin-bottom: 0;
 }
 
 ._selectBtn {
