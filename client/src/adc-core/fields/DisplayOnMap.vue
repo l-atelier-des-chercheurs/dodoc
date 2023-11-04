@@ -6,7 +6,6 @@
     }"
     :style="map_styles"
   >
-    {{ current_zoom }}
     <div class="_map" ref="map" />
 
     <div
