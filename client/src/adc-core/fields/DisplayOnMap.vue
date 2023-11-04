@@ -627,7 +627,8 @@ export default {
       this.map.addLayer(
         new olVectorLayer({
           source: this.draw_vector_source,
-          style: (feature) => this.makeGeomStyle({ feature }),
+          style: (feature, resolution) =>
+            this.makeGeomStyle({ feature, resolution }),
         })
       );
 
@@ -1114,11 +1115,18 @@ export default {
         }),
       });
     },
-    makeGeomStyle({ feature, tip, is_selected }) {
+    makeGeomStyle({ feature, resolution, tip, is_selected }) {
       const styles = [];
 
       // const line_dash = !is_selected ? undefined : [10, 5];
-      const stroke_width = feature.get("stroke_width") || 3;
+      let stroke_width = feature.get("stroke_width") || 3;
+      resolution;
+      // TEST
+      // stroke_width =
+      //   (feature.getProperties().value % 50 == 0 ? 3.175 : 1.863) *
+      //   Math.min(1, 2.5 / resolution);
+      // stroke_width = Math.max(3, stroke_width / resolution);
+
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
       const fill_color = "rgba(255, 255, 255, 0.2)";
@@ -1261,7 +1269,8 @@ export default {
         source: this.draw_vector_source,
         type: drawType,
         freehand,
-        style: (feature) => this.makeGeomStyle({ feature, tip }),
+        style: (feature, resolution) =>
+          this.makeGeomStyle({ feature, resolution, tip }),
         // style: (feature) => {
         //   return this.styleFunction(
         //     feature,
@@ -1571,7 +1580,8 @@ export default {
     startSelectMode() {
       this.selected_feature_id = undefined;
       this.map_select_mode = new olSelect({
-        style: (feature) => this.makeGeomStyle({ feature, is_selected: true }),
+        style: (feature, resolution) =>
+          this.makeGeomStyle({ feature, resolution, is_selected: true }),
       });
       this.map.addInteraction(this.map_select_mode);
       this.map_select_mode.on("select", (e) => {
