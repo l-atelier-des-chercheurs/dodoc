@@ -4,6 +4,7 @@
     :class="{
       'is--editable': can_edit,
       'is--editing_is_enabled': editor_is_enabled,
+      'is--mobileView': $root.is_mobile_view,
     }"
     @click="editorClick"
   >
@@ -1071,6 +1072,10 @@ export default {
   --border-size: 4px;
   --quill-buttons-size: 20px;
   --quill-options-size: 34px;
+
+  ._collaborativeEditor.is--mobileView & {
+    --button-size: 28px;
+  }
 
   position: sticky;
   top: 0;
