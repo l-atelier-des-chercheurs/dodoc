@@ -185,6 +185,7 @@ export default {
 
   // --c-bodybg: hsl(48, 19%, 98%);
   --body-bg-pattern-color: hsl(48, 19%, 96%);
+  --c-pinnedBg: var(--c-bleumarine_clair);
 
   // --c-bodybg: white;
   --plyr-color-main: var(--c-bleumarine);
@@ -406,21 +407,21 @@ strong {
 h1 {
   margin: 0;
   font-size: var(--sl-font-size-xx-large);
-  font-weight: 300;
-  line-height: 1.1;
+  font-weight: 700;
+  line-height: 1;
 }
 h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
   // font-style: italic;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.2;
 }
 h3 {
   margin: 0;
   font-size: var(--sl-font-size-large);
   line-height: 1.2;
-  font-weight: 400;
+  font-weight: 500;
 }
 h4 {
   margin: 0;

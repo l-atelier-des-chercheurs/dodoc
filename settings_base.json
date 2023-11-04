@@ -607,13 +607,10 @@
                     "all_pins_icon": {
                       "type": "boolean"
                     },
-                    "map_mode": {
+                    "map_baselayer": {
                       "type": "string"
                     },
                     "map_base_media_filename": {
-                      "type": "string"
-                    },
-                    "map_baselayer": {
                       "type": "string"
                     },
                     "map_baselayer_opacity": {

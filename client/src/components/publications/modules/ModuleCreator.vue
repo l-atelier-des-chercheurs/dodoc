@@ -5,7 +5,7 @@
       'is--collapsed': !show_module_selector,
     }"
   >
-    <transition name="scaleInFade" mode="out-in">
+    <transition name="pagechange" mode="out-in">
       <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
@@ -42,7 +42,7 @@
           @close="show_media_picker = false"
         />
 
-        <button
+        <!-- <button
           type="button"
           class="u-button u-button_bleumarine"
           v-if="types_available.includes('files')"
@@ -54,7 +54,7 @@
             style="font-size: var(--icon-size)"
             :label="$t('add_files')"
           />
-        </button>
+        </button> -->
         <MediaPicker
           v-if="show_file_picker"
           :publication_path="publication_path"
@@ -104,17 +104,24 @@
             <!-- {{ $t("add_medias") }} -->
           </button>
         </template>
+        <EditBtn
+          v-if="start_collapsed"
+          key="addmodule"
+          :btn_type="'close'"
+          :is_unfolded="false"
+          @click="show_module_selector = false"
+        />
       </div>
+      <EditBtn
+        v-else-if="start_collapsed && !show_module_selector"
+        key="addmodule"
+        :btn_type="'add'"
+        :is_unfolded="true"
+        class="_addBtn"
+        @click="show_module_selector = true"
+      />
     </transition>
 
-    <template v-if="start_collapsed">
-      <EditBtn
-        key="addmodule"
-        :btn_type="!show_module_selector ? 'add' : 'close'"
-        class="_addBtn"
-        @click="show_module_selector = !show_module_selector"
-      />
-    </template>
     <!-- <button
       type="button"
       class="u-button u-button_transparent u-addBtn"
@@ -411,6 +418,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  align-items: center;
   gap: calc(var(--spacing) / 4);
 
   > * {

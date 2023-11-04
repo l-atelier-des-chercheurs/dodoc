@@ -28,7 +28,7 @@
           class="u-button u-button_red"
           type="button"
           autofocus
-          @click="$emit('remove')"
+          @click="confirmRemove"
         >
           {{ $t("confirm_removal") }}
         </button>
@@ -56,7 +56,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    confirmRemove() {
+      this.$emit("remove");
+      this.show_confirm_delete = false;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

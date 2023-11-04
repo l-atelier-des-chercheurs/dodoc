@@ -58,6 +58,7 @@ export default function () {
         date_uploaded: "Date d’envoi",
         cancel: "Annuler",
         select: "Sélectionner",
+        select_all: "Sélectionner tout",
         back: "retour",
         save: "enregistrer",
         save_as_favorite: "Enregistrer en favori",
@@ -228,9 +229,9 @@ export default function () {
 
         story_width: "Largeur du récit",
         summary: "Sommaire",
+        chapters: "Chapitres",
         section_title: "Titre du chapitre",
         section: "Chapitre",
-        create_section: "Créer un chapitre",
         untitled: "Sans titre",
         responsive: "Fluide",
         responsive_instr:

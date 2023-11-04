@@ -190,6 +190,7 @@
                 class="u-spacingBottom"
                 :label="$t('outline_color')"
                 :value="selected_feature.get('stroke_color')"
+                :default_value="opened_view_color"
                 @save="
                   updateDrawing({
                     prop: 'stroke_color',
@@ -284,7 +285,7 @@ import {
 
 import { defaults as olDefaultControls } from "ol/control";
 
-import olPencilSketch from "ol-ext/filter/PencilSketch";
+import olFilterCSS from "ol-ext/filter/CSS";
 
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
@@ -301,16 +302,12 @@ export default {
       type: [Boolean, Number],
       default: 2,
     },
-    map_mode: {
-      type: String,
-      default: "map",
-    },
     map_baselayer: {
       type: String,
       default: "OSM",
       validator(value) {
         // The value must match one of these strings
-        return ["OSM", "IGN_MAP", "IGN_SAT"].includes(value);
+        return ["OSM", "IGN_MAP", "IGN_SAT", "image"].includes(value);
       },
     },
     map_baselayer_bw: {
@@ -493,7 +490,7 @@ export default {
     this.$eventHub.$on("publication.map.openPin", this.openPin);
     this.$eventHub.$on("publication.map.disableTools", this.disableTools);
     this.$eventHub.$on("publication.map.print", this.printMap);
-    document.addEventListener("keydown", this.keyPressed);
+    document.addEventListener("keyup", this.keyPressed);
   },
   mounted() {
     // setTimeout(() => {
@@ -505,7 +502,7 @@ export default {
     this.$eventHub.$off("publication.map.openPin", this.openPin);
     this.$eventHub.$off("publication.map.disableTools", this.disableTools);
     this.$eventHub.$off("publication.map.print", this.printMap);
-    document.removeEventListener("keydown", this.keyPressed);
+    document.removeEventListener("keyup", this.keyPressed);
   },
   watch: {
     pins: {
@@ -532,17 +529,16 @@ export default {
     geometries() {
       this.loadGeom();
     },
-    map_baselayer() {
-      this.startMap({ keep_loc_and_zoom: true });
+    map_baselayer(val, oldVal) {
+      if (val !== oldVal && (val === "image" || oldVal === "image"))
+        this.startMap();
+      else this.startMap({ keep_loc_and_zoom: true });
     },
     map_baselayer_bw() {
       this.setBackgroundLayerOptions();
     },
     map_baselayer_opacity() {
       this.setBackgroundLayerOptions();
-    },
-    map_mode() {
-      this.startMap();
     },
     map_base_media() {
       this.startMap();
@@ -565,7 +561,7 @@ export default {
   },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
-      let zoom = 13;
+      let zoom = 6;
       let center;
 
       // if (this.start_coords?.longitude && this.start_coords?.latitude)
@@ -631,7 +627,8 @@ export default {
       this.map.addLayer(
         new olVectorLayer({
           source: this.draw_vector_source,
-          style: (feature) => this.makeGeomStyle({ feature }),
+          style: (feature, resolution) =>
+            this.makeGeomStyle({ feature, resolution }),
         })
       );
 
@@ -785,22 +782,32 @@ export default {
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
       if (!this.keep_loc_and_zoom) {
-        let extents = [];
-        if (pin_source.getFeatures().length > 0)
-          extents.push(pin_source.getExtent());
-        if (this.draw_vector_source.getFeatures().length > 0)
-          extents.push(this.draw_vector_source.getExtent());
+        let extent;
 
-        if (extents.length > 0) {
-          let full_extent;
-          if (extents.length === 1) full_extent = extents[0];
-          else if (extents.length === 2)
-            full_extent = extend(extents[0], extents[1]);
+        if (this.map_baselayer !== "image") {
+          let extents = [];
+          if (pin_source.getFeatures().length > 0)
+            extents.push(pin_source.getExtent());
+          if (this.draw_vector_source.getFeatures().length > 0)
+            extents.push(this.draw_vector_source.getExtent());
 
-          this.map.getView().fit(full_extent, {
+          if (extents.length > 0) {
+            if (extents.length === 1) extent = extents[0];
+            else if (extents.length === 2)
+              extent = extend(extents[0], extents[1]);
+          }
+        } else {
+          extent = this.map.getView().getProjection().getExtent();
+        }
+
+        if (extent)
+          this.map.getView().fit(extent, {
             padding: [50, 50, 50, 50],
           });
-        }
+
+        // prevent zoom from being too high (even though it may be correct for the extent)
+        if (this.map_baselayer !== "image" && this.map.getView().getZoom() > 15)
+          this.map.getView().setZoom(15);
       }
     },
     zoomIn() {
@@ -822,7 +829,7 @@ export default {
     createViewAndBackgroundLayer({ center, zoom }) {
       let view, background_layer;
 
-      if (this.map_mode === "image") {
+      if (this.map_baselayer === "image") {
         if (!this.map_base_media)
           this.$alertify.delay(4000).error("missing base image");
 
@@ -841,12 +848,13 @@ export default {
           extent,
         });
         center = center || getCenter(extent);
+        zoom = 1;
 
         view = new olView({
           projection: projection,
           center,
           zoom,
-          maxZoom: 8,
+          maxZoom: 6,
         });
         background_layer = new olImageLayer({
           source: new olStatic({
@@ -862,7 +870,6 @@ export default {
         center = center || [5.39057449011251, 43.310173305629576];
 
         const maxZoom = this.map_baselayer.includes("IGN") ? 19 : 21;
-
         view = new olView({
           center,
           zoom,
@@ -1108,11 +1115,18 @@ export default {
         }),
       });
     },
-    makeGeomStyle({ feature, tip, is_selected }) {
+    makeGeomStyle({ feature, resolution, tip, is_selected }) {
       const styles = [];
 
       // const line_dash = !is_selected ? undefined : [10, 5];
-      const stroke_width = feature.get("stroke_width") || 3;
+      let stroke_width = feature.get("stroke_width") || 3;
+      resolution;
+      // TEST
+      // stroke_width =
+      //   (feature.getProperties().value % 50 == 0 ? 3.175 : 1.863) *
+      //   Math.min(1, 2.5 / resolution);
+      // stroke_width = Math.max(3, stroke_width / resolution);
+
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
       const fill_color = "rgba(255, 255, 255, 0.2)";
@@ -1255,7 +1269,8 @@ export default {
         source: this.draw_vector_source,
         type: drawType,
         freehand,
-        style: (feature) => this.makeGeomStyle({ feature, tip }),
+        style: (feature, resolution) =>
+          this.makeGeomStyle({ feature, resolution, tip }),
         // style: (feature) => {
         //   return this.styleFunction(
         //     feature,
@@ -1467,10 +1482,9 @@ export default {
           !this.background_layer.getFilters().length ||
           this.background_layer.getFilters().length === 0
         ) {
-          var pencil = new olPencilSketch();
-          pencil.set("intensity", 0.7);
-          pencil.set("blur", 15);
-          this.background_layer.addFilter(pencil);
+          this.background_layer.addFilter(
+            new olFilterCSS({ filter: "grayscale(1)" })
+          );
         }
       } else {
         if (this.background_layer.getFilters().length >= 1)
@@ -1566,7 +1580,8 @@ export default {
     startSelectMode() {
       this.selected_feature_id = undefined;
       this.map_select_mode = new olSelect({
-        style: (feature) => this.makeGeomStyle({ feature, is_selected: true }),
+        style: (feature, resolution) =>
+          this.makeGeomStyle({ feature, resolution, is_selected: true }),
       });
       this.map.addInteraction(this.map_select_mode);
       this.map_select_mode.on("select", (e) => {
@@ -1613,7 +1628,10 @@ export default {
     },
     removeSelected() {
       if (!this.selected_feature) return false;
-      this.draw_vector_source.removeFeature(this.selected_feature);
+      const f = this.draw_vector_source.getFeatureById(
+        this.selected_feature_id
+      );
+      this.draw_vector_source.removeFeature(f);
       this.$nextTick(() => {
         this.saveGeom();
       });
@@ -1647,6 +1665,16 @@ export default {
         this.removeSelected();
       else if (event.key === "Escape" && this.map_draw) this.abortDrawing();
       else if (event.key === "Enter" && this.map_draw) this.finishDrawing();
+      else if (event.key === " ")
+        this.toggleTool({
+          draw_mode: { key: "Select" },
+        });
+      else if (["1", "2", "3", "4"].includes(event.key)) {
+        const mode_num = Number.parseInt(event.key) - 1;
+        this.toggleTool({
+          draw_mode: this.draw_modes[mode_num],
+        });
+      }
     },
   },
 };
@@ -1657,7 +1685,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: var(--c-gris);
+  background-color: var(--c-gris_clair);
   font-size: 150%;
 
   flex: 1 1 320px;

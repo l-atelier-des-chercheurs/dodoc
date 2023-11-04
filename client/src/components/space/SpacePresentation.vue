@@ -101,7 +101,6 @@
               ? $t('subtitle')
               : ''
           "
-          :tag="context === 'full' ? 'h2' : 'h4'"
           class="_subtitle"
           :content="space.subtitle"
           :path="space.$path"
@@ -248,6 +247,7 @@ export default {
 }
 ._subtitle {
   color: var(--c-gris_fonce);
+  font-size: var(--sl-font-size-large);
   // font-weight: 400;
 }
 ._description {

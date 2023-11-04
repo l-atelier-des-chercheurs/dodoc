@@ -48,7 +48,17 @@
           @volumechange="volumeChanged"
           @timeupdate="videoTimeUpdated"
         >
-          <video :poster="thumb" :src="file_full_path" preload="none" />
+          <video
+            v-if="file.$type === 'video'"
+            :poster="thumb"
+            :src="file_full_path"
+            preload="none"
+          />
+          <audio
+            v-else-if="file.$type === 'audio'"
+            :src="file_full_path"
+            preload="none"
+          />
         </vue-plyr>
       </template>
     </template>
@@ -324,10 +334,11 @@ export default {
 
   ::v-deep {
     .plyr {
-      // z-index: 0;
-      // width: 100%;
-      // height: 100%;
+      display: flex;
+      justify-content: center;
       min-width: 100px;
+      --plyr-audio-controls-background: var(--c-noir);
+      --plyr-audio-control-color: white;
     }
     .plyr__control--overlaid {
       z-index: 10;

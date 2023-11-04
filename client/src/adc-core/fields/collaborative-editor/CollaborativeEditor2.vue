@@ -4,6 +4,7 @@
     :class="{
       'is--editable': can_edit,
       'is--editing_is_enabled': editor_is_enabled,
+      'is--mobileView': $root.is_mobile_view,
     }"
     @click="editorClick"
   >
@@ -60,6 +61,11 @@
               <span>{{ $t("history") }}</span>
             </button>
           </transition>
+          <EditBtn
+            :btn_type="'check'"
+            :label_position="'left'"
+            @click="disableEditor"
+          />
         </template>
       </div>
       <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
@@ -460,6 +466,10 @@ export default {
     async enableEditor() {
       if (this.editor_is_enabled || !this.can_edit) return false;
 
+      // min-height to prevents jumps
+      const bloc_height = this.$el.offsetHeight;
+      this.$el.style.setProperty("min-height", bloc_height + "px");
+
       console.log(`CollaborativeEditor2 • enableEditor`);
 
       if (this.is_collaborative) await this.startCollaborative();
@@ -477,6 +487,7 @@ export default {
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
       this.$emit(`contentIsEdited`, this.toolbar_el);
+      this.$el.style.removeProperty("min-height");
       this.editor_is_enabled = true;
     },
     async disableEditor() {
@@ -572,8 +583,13 @@ export default {
     },
 
     async saveText() {
+      const new_content = this.getEditorContent();
+      if (new_content === this.content) {
+        return "content_not_changed";
+      }
+
       const new_meta = {
-        [this.field_to_edit]: this.getEditorContent(),
+        [this.field_to_edit]: new_content,
       };
 
       try {
@@ -1056,6 +1072,10 @@ export default {
   --border-size: 4px;
   --quill-buttons-size: 20px;
   --quill-options-size: 34px;
+
+  ._collaborativeEditor.is--mobileView & {
+    --button-size: 28px;
+  }
 
   position: sticky;
   top: 0;

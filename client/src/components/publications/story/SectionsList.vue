@@ -91,9 +91,6 @@ export default {
   },
   methods: {
     toggleSection(section_meta_filename) {
-      if (!section_meta_filename)
-        // if closing section with close button in single section pane, open summary
-        this.$eventHub.$emit(`sections.open_summary`);
       this.$emit("toggleSection", section_meta_filename);
     },
   },
@@ -103,6 +100,6 @@ export default {
 ._sectionsList {
   position: relative;
   // z-index: 1;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1 + 8%);
 }
 </style>

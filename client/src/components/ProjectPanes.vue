@@ -46,7 +46,7 @@
         :style="`--color-type: var(--color-${pane.type});`"
       >
         <InstructionsWindow
-          v-if="can_edit_project"
+          v-if="can_edit_project && false"
           :key="pane.type"
           :type="pane.type"
           :path="project.$path"

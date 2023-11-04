@@ -1,44 +1,46 @@
 <template>
   <div class="_sectionsSummary">
-    <DetailsPane
+    <!-- <DetailsPane
       ref="details"
-      :header="$t('summary')"
+      :header="$t('chapters')"
       :icon="'card-list'"
       :has_items="sections.length > 0 ? sections.length : false"
       :is_open_initially="sections.length === 0"
+    > -->
+    <ReorderedList
+      :field_name="'sections_list'"
+      :items="sections"
+      :path="publication.$path"
+      :active_item_meta="opened_section_meta_filename"
+      :can_edit="can_edit"
+      @openItem="openSection"
+      v-slot="slotProps"
     >
-      <ReorderedList
-        :field_name="'sections_list'"
-        :items="sections"
-        :path="publication.$path"
-        :active_item_meta="opened_section_meta_filename"
-        :can_edit="can_edit"
-        @openItem="openSection"
-        v-slot="slotProps"
-      >
-        <span
-          v-if="is_associated_to_map"
-          class="_colorInd"
-          :style="
-            'color: ' + (slotProps.item.section_color || default_view_color)
-          "
-          v-text="'◉'"
-        />
-        <span v-if="slotProps.item.section_title">
-          {{ slotProps.item.section_title }}
-        </span>
-        <span v-else v-html="`<i>${$t('untitled')}</i>`" />
-      </ReorderedList>
+      <span v-if="slotProps.item.section_title">
+        {{ slotProps.item.section_title }}
+      </span>
+      <span v-else v-html="`<i>${$t('untitled')}</i>`" />
+    </ReorderedList>
 
-      <template v-if="can_edit">
-        <template v-if="sections.length > 0">
-          <hr />
-        </template>
-        <button type="button" class="u-buttonLink" @click="createSection">
+    <template v-if="can_edit">
+      <!-- <template v-if="sections.length > 0">
+        <hr />
+      </template> -->
+      <div class="_buttonRow">
+        <button
+          type="button"
+          class="u-buttonLink _createSection"
+          @click="createSection"
+        >
           {{ $t("create_section") }}
         </button>
-      </template>
-    </DetailsPane>
+        <RemoveMenu
+          :remove_text="$t('remove_section')"
+          @remove="removeSection"
+        />
+      </div>
+    </template>
+    <!-- </DetailsPane> -->
   </div>
 </template>
 <script>
@@ -58,29 +60,30 @@ export default {
   data() {
     return {};
   },
+  i18n: {
+    messages: {
+      fr: {
+        create_section: "Créer un chapitre",
+        remove_section: "Supprimer le chapitre",
+      },
+      en: {
+        create_section: "Create chapter",
+        remove_section: "Remove this chapter",
+      },
+    },
+  },
   created() {},
   mounted() {
-    if (this.sections.length > 0 && !this.opened_section_meta_filename) {
-      if (
-        !this.is_associated_to_map ||
-        (this.is_associated_to_map && this.sections.length === 1)
-      ) {
-        // if there is one or more sections and none opened, open first one
-        const section_path = this.sections[0].$path;
-        this.openSection(section_path);
-      } else if (this.is_associated_to_map) {
-        this.openSummary();
-      }
-    }
-
     if (this.can_edit && this.sections.length === 0) this.createSection();
-
-    this.$eventHub.$on(`sections.open_summary`, this.openSummary);
+    this.openFirstSectionIfNoneOpened();
+    this.openExistingSectionIfNotExisting();
   },
-  beforeDestroy() {
-    this.$eventHub.$off(`sections.open_summary`, this.openSummary);
+  beforeDestroy() {},
+  watch: {
+    opened_section_meta_filename() {
+      this.openFirstSectionIfNoneOpened();
+    },
   },
-  watch: {},
   computed: {
     is_associated_to_map() {
       return this.$getMapOptions;
@@ -99,16 +102,29 @@ export default {
       }
       return new_section_title;
     },
+    opened_section() {
+      return this.sections.find(
+        (s) => this.getFilename(s.$path) === this.opened_section_meta_filename
+      );
+    },
   },
   methods: {
-    openSummary() {
-      this.$refs.details.$el.open = true;
-    },
-    closeSummary() {
-      this.$refs.details.$el.open = false;
-    },
     openSection(path) {
       this.$emit("toggleSection", this.getFilename(path));
+    },
+    openFirstSectionIfNoneOpened() {
+      if (this.sections.length > 0 && !this.opened_section_meta_filename) {
+        this.openFirstSection();
+      }
+    },
+    openFirstSection() {
+      const section_path = this.sections[0].$path;
+      this.openSection(section_path);
+    },
+    openExistingSectionIfNotExisting() {
+      if (this.opened_section_meta_filename && !this.opened_section) {
+        this.openFirstSection();
+      }
     },
 
     async createSection() {
@@ -120,19 +136,37 @@ export default {
       });
       this.$emit("toggleSection", new_section_meta);
     },
+    async removeSection() {
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        path: this.opened_section.$path,
+      });
+      // todo open previous section
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._sectionsSummary {
-  max-width: 60ch;
+  // max-width: 60ch;
   width: 100%;
   margin: 0 auto;
   margin-bottom: calc(var(--spacing) / 1);
-  padding: 0 calc(var(--spacing) * 1);
+  // padding: 0 calc(var(--spacing) * 1);
 
-  ::v-deep summary {
-    border: 2px solid var(--c-gris);
-  }
+  // ::v-deep summary {
+  // border: 2px solid var(--c-gris);
+  // }
+}
+
+._createSection {
+  padding: calc(var(--spacing) / 4);
+}
+
+._buttonRow {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
 }
 </style>

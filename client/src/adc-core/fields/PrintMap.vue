@@ -138,7 +138,6 @@ export default {
       var vRatio = paper_height / current_map_height;
       var ratio = Math.min(hRatio, vRatio);
 
-      debugger;
       const new_map_width = current_map_width * ratio;
       const new_map_height = current_map_height * ratio;
 
