@@ -2,12 +2,25 @@ const path = require("path"),
   TOML = require("@iarna/toml"),
   slugg = require("slugg"),
   fs = require("fs-extra"),
+  ffmpeg = require("fluent-ffmpeg"),
   writeFileAtomic = require("write-file-atomic"),
   { networkInterfaces } = require("os"),
   sharp = require("sharp"),
   { IncomingForm } = require("formidable"),
   md5File = require("md5-file"),
   crypto = require("crypto");
+
+const ffmpegPath = require("ffmpeg-static").replace(
+  "app.asar",
+  "app.asar.unpacked"
+);
+const ffprobePath = require("ffprobe-static").path.replace(
+  "app.asar",
+  "app.asar.unpacked"
+);
+
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 sharp.cache(false);
 
@@ -315,7 +328,7 @@ module.exports = (function () {
             fit: "inside",
             withoutEnlargement,
           })
-          .withMetadata()
+          // .withMetadata()
           .toFormat("png", {})
           .toFile(new_path)
           .catch((err) => {
@@ -331,7 +344,7 @@ module.exports = (function () {
             withoutEnlargement,
           })
           .flatten({ background: "white" })
-          .withMetadata()
+          // .withMetadata()
           .toFormat("jpeg", {
             quality: global.settings.mediaThumbQuality,
           })
@@ -339,6 +352,22 @@ module.exports = (function () {
           .catch((err) => {
             throw err;
           });
+    },
+    async convertSourceFileToOptimized({ source, destination, resolution }) {
+      // await sharp(source)
+      //   .rotate()
+      //   .flatten({ background: "white" })
+      //   .resize(resolution.width, resolution.height, {
+      //     fit: "contain",
+      //     withoutEnlargement: false,
+      //     background: "black",
+      //   })
+      //   // .withMetadata()
+      //   .toFile(destination)
+      //   .catch((err) => {
+      //     dev.error(`Failed to sharp create image to destination.`);
+      //     throw err;
+      //   });
     },
     async convertAndCopyImage({ source, destination, resolution }) {
       await sharp(source)
@@ -349,7 +378,7 @@ module.exports = (function () {
           withoutEnlargement: false,
           background: "black",
         })
-        .withMetadata()
+        // .withMetadata()
         .toFile(destination)
         .catch((err) => {
           dev.error(`Failed to sharp create image to destination.`);
@@ -364,11 +393,50 @@ module.exports = (function () {
     async imageBufferToFile({ image_buffer, full_path_to_thumb }) {
       return await sharp(image_buffer).toFile(full_path_to_thumb);
     },
-
+    async convertToJpeg({ source, destination }) {
+      await sharp(source)
+        .rotate()
+        .flatten({ background: "white" })
+        .toFormat("jpeg", {
+          quality: global.settings.mediaThumbQuality,
+        })
+        .toFile(destination)
+        .catch((err) => {
+          dev.error(`Failed to sharp create image to destination.`);
+          throw err;
+        });
+    },
+    async convertToPNG({ source, destination }) {
+      await sharp(path_to_temp_file)
+        .rotate()
+        .flatten({ background: "white" })
+        .toFormat("png", {})
+        .toFile(new_path)
+        .catch((err) => {
+          dev.error(`Failed to sharp create image to destination.`);
+          throw err;
+        });
+    },
+    async convertToMP3({ source, destination }) {
+      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+        .input(source)
+        .format("mp3")
+        .audioBitrate("320kbps")
+        .on("start", (commandLine) => {
+          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+        })
+        .on("progress", (progress) => {})
+        .on("end", async () => {
+          return resolve();
+        })
+        .on("error", async (err, stdout, stderr) => {
+          return reject();
+        })
+        .save(destination);
+    },
     async md5FromFile({ full_media_path }) {
       return await md5File(full_media_path);
     },
-
     parseAndCheckSchema({ relative_path = "" }) {
       dev.logfunction({ relative_path });
 
@@ -431,7 +499,11 @@ module.exports = (function () {
       if (p.endsWith("/")) p = p.slice(0, -1);
       return p;
     },
-
+    endsWithAny(suffixes, string) {
+      return suffixes.some(function (suffix) {
+        return string.endsWith(suffix);
+      });
+    },
     makePathFromReq(req) {
       let {
         folder_type,
