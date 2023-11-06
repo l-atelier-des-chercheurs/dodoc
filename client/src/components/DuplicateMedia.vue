@@ -2,7 +2,7 @@
   <div>
     <button type="button" class="u-buttonLink" @click="show_modal = true">
       <sl-icon name="file-plus" />
-      {{ $t("duplicate_or_move_media") }}
+      {{ $t("duplicate_or_move") }}
     </button>
 
     <BaseModal2

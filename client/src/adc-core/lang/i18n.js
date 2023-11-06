@@ -845,7 +845,6 @@ export default function () {
         duplicate: "Dupliquer",
         duplicate_or_move: "Dupliquer ou déplacer",
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
-        duplicate_or_move_media: "Dupliquer ou déplacer ce média",
         dm_instr:
           "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, fabrications, publications) seront copiées.",
         dmm_instr:
