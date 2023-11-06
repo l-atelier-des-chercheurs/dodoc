@@ -702,6 +702,7 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
+  gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 1);
   pointer-events: none;
 
