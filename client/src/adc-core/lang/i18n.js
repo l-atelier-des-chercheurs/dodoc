@@ -944,11 +944,8 @@ export default function () {
       },
 
       en: {
-
         home: "Home",
-        hello: "hello world",
-        edit: "edit",
-        caption: "caption",
+        caption: "Caption",
         date_created: "created date",
         date_modified: "last edited",
         date_uploaded: "uploaded on",
@@ -957,7 +954,6 @@ export default function () {
         // todo translate
         // a_foss_made_by:
         //   "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
-        home: "Home",
         go_home: "Back to home",
         page_not_found: "This page does not exist",
         // admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
@@ -965,15 +961,9 @@ export default function () {
         edit: "Edit",
         description: "description",
         stop_edit: "Stop editing",
-        caption: "Caption",
-        date_created: "Created on",
-        date_modified: "Last edited",
         alphabetical: "Alphabetical",
-        date_uploaded: "Uploaded on",
-        cancel: "Cancel",
         select: "Select",
         back: "back",
-        save: "save",
         save_as_favorite: "save as favorite",
         input_url: "URL to the site to embed",
         // input_url_instr:
@@ -1045,9 +1035,6 @@ export default function () {
         search_fields: "In title, description or notes fields.",
         show_all_keywords: "Show all keywords",
         download: "Download",
-        day: "Day",
-        month: "Month",
-        year: "Year",
 
         no_content: "No content to show",
       },
