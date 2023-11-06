@@ -407,32 +407,34 @@ module.exports = (function () {
         });
     },
     async convertToPNG({ source, destination }) {
-      await sharp(path_to_temp_file)
+      await sharp(source)
         .rotate()
         .flatten({ background: "white" })
         .toFormat("png", {})
-        .toFile(new_path)
+        .toFile(destination)
         .catch((err) => {
           dev.error(`Failed to sharp create image to destination.`);
           throw err;
         });
     },
     async convertToMP3({ source, destination }) {
-      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
-        .input(source)
-        .format("mp3")
-        .audioBitrate("320kbps")
-        .on("start", (commandLine) => {
-          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
-        })
-        .on("progress", (progress) => {})
-        .on("end", async () => {
-          return resolve();
-        })
-        .on("error", async (err, stdout, stderr) => {
-          return reject();
-        })
-        .save(destination);
+      return new Promise(async (resolve, reject) => {
+        this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+          .input(source)
+          .format("mp3")
+          .audioBitrate("320kbps")
+          .on("start", (commandLine) => {
+            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+          })
+          .on("progress", (progress) => {})
+          .on("end", async () => {
+            return resolve();
+          })
+          .on("error", async (err, stdout, stderr) => {
+            return reject();
+          })
+          .save(destination);
+      });
     },
     async md5FromFile({ full_media_path }) {
       return await md5File(full_media_path);
