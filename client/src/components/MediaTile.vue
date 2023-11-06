@@ -248,20 +248,20 @@ export default {
 }
 
 ._fileType {
-  background: var(--c-gris);
-  // color: var;
-  border-radius: 3px;
+  background: var(--c-noir);
+  color: white;
+  border-top-left-radius: 3px;
   line-height: 1;
   font-weight: 600;
 
-  padding: 0 calc(var(--spacing) / 4);
-  margin: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 8);
+  // margin: calc(var(--spacing) / 4);
   font-size: var(--input-font-size-x-small);
   text-transform: uppercase;
 
   ._mediaTile:not([data-tilemode="table"]) & {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
   }
 }
