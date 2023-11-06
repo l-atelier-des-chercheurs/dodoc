@@ -47,13 +47,9 @@ module.exports = (function () {
 
         additional_meta = _additional_meta;
 
-        // make url-compatible media filenames
-        const { name, ext } = path.parse(originalFilename);
-        const slugged_original_filename = utils.slug(name) + ext;
-
-        let { new_path, new_filename } = await _renameUploadedFile({
+        let { new_path, new_filename } = await _convertOrRenameUploadedFile({
           path_to_folder,
-          originalFilename: slugged_original_filename,
+          originalFilename,
           path_to_temp_file,
         }).catch((err) => {
           throw err;
@@ -82,18 +78,18 @@ module.exports = (function () {
       });
       const meta = Object.assign({}, validated_meta, extracted_meta);
 
-      let new_meta_filename = await _preventFileOverride({
-        path_to_folder,
-        original_filename: meta_filename,
-      });
+      // let new_meta_filename = await _preventFileOverride({
+      //   path_to_folder,
+      //   original_filename: meta_filename,
+      // });
 
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
-        file_slug: new_meta_filename,
+        file_slug: meta_filename,
         meta,
       });
 
-      return new_meta_filename;
+      return meta_filename;
     },
 
     getFiles: async ({ path_to_folder }) => {
@@ -355,29 +351,100 @@ module.exports = (function () {
     },
   };
 
-  async function _renameUploadedFile({
+  async function _convertOrRenameUploadedFile({
     path_to_folder,
     originalFilename,
     path_to_temp_file,
   }) {
     dev.logfunction({ path_to_folder, originalFilename, path_to_temp_file });
 
-    // get original filename
-    let original_filename = originalFilename;
+    const instructions_for_formats = [
+      {
+        extensions: [
+          ".jpeg",
+          ".jpg",
+          ".webp",
+          ".tiff",
+          ".tif",
+          ".heic",
+          ".dng",
+        ],
+        dest_ext: ".jpeg",
+        instructions: "convert_to_jpeg",
+      },
+      {
+        extensions: [".png"],
+        dest_ext: ".png",
+        instructions: "convert_to_png",
+      },
+      {
+        extensions: [".amr", ".wav"],
+        dest_ext: ".mp3",
+        instructions: "convert_to_mp3",
+      },
+    ];
 
-    // check if available, create new name if necessary
-    let new_filename = await _preventFileOverride({
+    // make url-compatible media filenames
+    let { name, ext } = path.parse(originalFilename);
+    const filename_without_ext = utils.slug(name);
+
+    const match = instructions_for_formats.find((i) =>
+      i.extensions.includes(ext.toLowerCase())
+    );
+
+    if (global.settings.optimizeFilesOnUpload === true && match) {
+      try {
+        const { new_path, new_filename } = await _convertUploadedFile({
+          path_to_temp_file,
+          path_to_folder,
+          filename_without_ext,
+          match,
+        });
+        await fs.remove(path_to_temp_file);
+        return { new_path, new_filename };
+      } catch (err) {
+        // couldnt convert, lets fall back to just copying source file
+      }
+    }
+
+    const new_filename = await _preventFileOverride({
       path_to_folder,
-      original_filename,
+      original_filename: filename_without_ext + ext,
     });
     const new_path = utils.getPathToUserContent(path_to_folder, new_filename);
 
-    try {
-      await fs.move(path_to_temp_file, new_path, { overwrite: false });
-      return { new_path, new_filename };
-    } catch (err) {
-      throw err;
-    }
+    await fs.move(path_to_temp_file, new_path, { overwrite: false });
+    return { new_path, new_filename };
+  }
+
+  async function _convertUploadedFile({
+    path_to_temp_file,
+    path_to_folder,
+    filename_without_ext,
+    match,
+  }) {
+    const new_filename = await _preventFileOverride({
+      path_to_folder,
+      original_filename: filename_without_ext + match.dest_ext,
+    });
+    const new_path = utils.getPathToUserContent(path_to_folder, new_filename);
+
+    if (match.instructions === "convert_to_jpeg")
+      await utils.convertToJpeg({
+        source: path_to_temp_file,
+        destination: new_path,
+      });
+    else if (match.instructions === "convert_to_png")
+      await utils.convertToPNG({
+        source: path_to_temp_file,
+        destination: new_path,
+      });
+    else if (match.instructions === "convert_to_mp3")
+      await utils.convertToMP3({
+        source: path_to_temp_file,
+        destination: new_path,
+      });
+    return { new_path, new_filename };
   }
 
   async function _preventFileOverride({ path_to_folder, original_filename }) {
@@ -451,7 +518,6 @@ module.exports = (function () {
         case ".gif":
         case ".tiff":
         case ".tif":
-        case ".dng":
         case ".svg":
           new_meta.$type = "image";
           break;
@@ -459,7 +525,6 @@ module.exports = (function () {
         case ".flv":
         case ".mov":
         case ".webm":
-        case ".webp":
         case ".avi":
           new_meta.$type = "video";
           break;
