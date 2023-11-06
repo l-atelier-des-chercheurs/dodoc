@@ -83,7 +83,11 @@
             </template>
           </div>
         </div>
-        <EditBtn v-if="!edit_mode" @click="edit_mode = true" />
+        <EditBtn
+          v-if="!edit_mode"
+          :label_position="'left'"
+          @click="edit_mode = true"
+        />
       </div>
     </div>
     <div
