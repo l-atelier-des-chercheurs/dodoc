@@ -1,7 +1,6 @@
 <template>
   <div class="_makePane">
     <div v-if="!opened_make_slug">
-      <br />
       <RadioSwitch
         v-if="can_edit"
         :content.sync="current_view"
@@ -17,7 +16,7 @@
         ]"
       />
 
-      <br />
+      <div class="u-spacingBottom" />
 
       <section v-if="current_view === 'create'">
         <div
@@ -583,7 +582,7 @@ export default {
 .m_recipes--type {
   // background-color: rgba(51, 51, 51, 0.2);
   // border-radius: 8px;
-  margin-bottom: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 1);
 
   > label {
     // .padding-vert-verysmall;
@@ -635,7 +634,8 @@ export default {
 .m_recipe--text {
   flex-basis: 50%;
   max-width: 44ch;
-  padding: 0;
+  padding: calc(var(--spacing) / 2) 0;
+
   color: black;
 
   h2 {
