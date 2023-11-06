@@ -283,6 +283,7 @@ export default {
 <style lang="scss" scoped>
 ._filterBar {
   position: relative;
+  z-index: 1;
 
   select,
   input {
