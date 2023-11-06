@@ -883,7 +883,7 @@ export default function () {
         will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
         "module.label.text": "Bloc de texte",
-        "module.label.mosaic": "Mosaïque de médias",
+        "module.label.mosaic": "Mosaïque",
         "module.label.carousel": "Carrousel",
         "module.label.files": "Liste de fichiers",
         object_fit_cover: "Remplir le cadre",
