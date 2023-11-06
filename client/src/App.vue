@@ -296,7 +296,7 @@ export default {
 
   --max-column-width: 1300px;
 
-  accent-color: var(--c-orange);
+  accent-color: var(--c-rouge);
 
   --chutier-bg: rgb(37, 39, 41);
 }
