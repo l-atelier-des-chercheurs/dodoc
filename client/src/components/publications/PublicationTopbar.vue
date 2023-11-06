@@ -246,7 +246,7 @@ export default {
 
   padding: calc(var(--spacing) / 2);
   margin: 0;
-  border-top: 1px solid var(--c-gris);
+  // border-top: 1px solid var(--c-gris);
   border-bottom: 1px solid var(--c-gris);
 }
 
