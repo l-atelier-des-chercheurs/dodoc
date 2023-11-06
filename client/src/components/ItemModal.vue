@@ -52,7 +52,7 @@
             />
           </div>
 
-          <div class="_navArrow" v-if="file._stack_files">
+          <div class="_navArrow" v-if="current_file_shown && file._stack_files">
             <button
               type="button"
               class="u-button u-button_icon"
