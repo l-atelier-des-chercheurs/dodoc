@@ -71,9 +71,6 @@ if (window.app_infos.is_electron)
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
-import VueQrcode from "@chenfengyuan/vue-qrcode";
-Vue.component(VueQrcode.name, VueQrcode);
-
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
 import MarkdownField from "@/adc-core/fields/MarkdownField.vue";
@@ -121,8 +118,6 @@ Vue.component("ReorderedList", ReorderedList);
 
 import QRModal from "@/adc-core/modals/QRModal.vue";
 Vue.component("QRModal", QRModal);
-import QRCodeWithLink from "@/adc-core/ui/QRCodeWithLink.vue";
-Vue.component("QRCodeWithLink", QRCodeWithLink);
 //
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);

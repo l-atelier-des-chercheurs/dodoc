@@ -3,6 +3,7 @@
     class="_mediaContent"
     :data-filetype="file.$type"
     :draggable="is_draggable"
+    :data-context="context"
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
@@ -47,7 +48,17 @@
           @volumechange="volumeChanged"
           @timeupdate="videoTimeUpdated"
         >
-          <video :poster="thumb" :src="file_full_path" preload="none" />
+          <video
+            v-if="file.$type === 'video'"
+            :poster="thumb"
+            :src="file_full_path"
+            preload="none"
+          />
+          <audio
+            v-else-if="file.$type === 'audio'"
+            :src="file_full_path"
+            preload="none"
+          />
         </vue-plyr>
       </template>
     </template>
@@ -83,7 +94,7 @@
               @click="loadIframe"
             >
               <svg aria-hidden="true" focusable="false">
-                <use xlink:href="/_client/plyr.svg#plyr-play"></use>
+                <use :xlink:href="$root.publicPath + 'plyr.svg#plyr-play'" />
               </svg>
               <span class="plyr__sr-only">Play</span>
             </button>
@@ -321,13 +332,14 @@ export default {
   &[data-filetype="other"] {
   }
 
-  .plyr {
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-  }
-
   ::v-deep {
+    .plyr {
+      display: flex;
+      justify-content: center;
+      min-width: 100px;
+      --plyr-audio-controls-background: var(--c-noir);
+      --plyr-audio-control-color: white;
+    }
     .plyr__control--overlaid {
       z-index: 10;
     }
@@ -388,6 +400,7 @@ export default {
     overflow: hidden;
     border: 2px solid var(--c-gris);
     background-color: white;
+    background-color: var(--c-gris);
     object-fit: contain;
   }
 

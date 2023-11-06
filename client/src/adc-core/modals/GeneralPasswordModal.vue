@@ -21,6 +21,7 @@
         :required="true"
         :input_type="'password'"
         @toggleValidity="($event) => (allow_send = $event)"
+        @onEnter="submitGeneralPassword"
       />
 
       <!-- <ToggleInput

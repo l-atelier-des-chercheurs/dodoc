@@ -468,6 +468,7 @@ module.exports = (function () {
           break;
         case ".mp3":
         case ".wav":
+        case ".aac":
         case ".m4a":
         case ".ogg":
           new_meta.$type = "audio";
@@ -611,7 +612,7 @@ module.exports = (function () {
     );
 
     if (global.settings.versioning === true)
-      _archiveVersion({
+      await _archiveVersion({
         path_to_folder,
         media_filename,
       });

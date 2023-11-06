@@ -323,7 +323,7 @@ class Exporter {
 
     page.emulateMediaType("print");
 
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 3000));
     this._notifyProgress(70);
 
     let path_to_temp_file = "";

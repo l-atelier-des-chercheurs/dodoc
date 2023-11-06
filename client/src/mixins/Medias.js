@@ -22,6 +22,18 @@ export default {
 
       return `/thumbs/${$path}/${thumb_path}`;
     },
+    getFirstThumbURLForMedia({ file, resolution }) {
+      const path_to_parent = file.$path.substring(
+        0,
+        file.$path.lastIndexOf("/")
+      );
+      return this.makeRelativeURLFromThumbs({
+        $thumbs: file.$thumbs,
+        $type: file.$type,
+        $path: path_to_parent,
+        resolution: resolution,
+      });
+    },
     makeMediaFilePath({ $path, $media_filename }) {
       const path_to_parent_folder = $path.substring(0, $path.lastIndexOf("/"));
       const full_path = path_to_parent_folder + "/" + $media_filename;

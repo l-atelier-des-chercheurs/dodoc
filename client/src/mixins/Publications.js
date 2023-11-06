@@ -264,8 +264,6 @@ export default {
         (_mf) => _mf === source_meta_filename
       );
 
-      debugger;
-
       modules_list.splice(
         position_of_original_media + 1,
         0,
@@ -295,9 +293,6 @@ export default {
         new_meta: {
           modules_list,
         },
-      });
-      await this.$api.deleteItem({
-        path,
       });
     },
 

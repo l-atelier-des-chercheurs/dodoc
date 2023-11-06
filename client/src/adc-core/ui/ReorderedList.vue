@@ -1,36 +1,72 @@
 <template>
-  <SlickList
-    class="_reorderedList"
-    axis="y"
-    :value="local_items"
-    @input="updateOrder($event)"
-    :useDragHandle="true"
-  >
-    <SlickItem
-      v-for="(item, index) of local_items"
-      :key="item.$path"
-      :index="index"
-      class="_reorderedList--item"
-      :class="{
-        'is--active': isActive(item.$path),
-      }"
-    >
-      <span v-handle class="_dragHandle" v-if="can_edit">
-        <b-icon icon="grip-vertical" :label="$t('move')" />
-        <transition name="fade_fast" mode="out-in">
-          <span :key="index">
-            {{ index + 1 }}
-          </span>
+  <div>
+    <div class="_changeOrderBtn">
+      <button
+        v-if="can_edit && local_items.length > 1"
+        type="button"
+        class="u-buttonLink"
+        :class="{
+          'is--active': change_order,
+        }"
+        @click="change_order = !change_order"
+      >
+        <transition name="fade" mode="out-in">
+          <b-icon v-if="!save_status" :key="'none'" icon="arrow-down-up" />
+          <b-icon
+            v-else-if="save_status === 'saving'"
+            :key="save_status"
+            icon="stopwatch"
+          />
+          <b-icon
+            v-else-if="save_status === 'saved'"
+            :key="save_status"
+            icon="check"
+          />
         </transition>
-      </span>
-      <span v-else>
-        {{ index + 1 }}
-      </span>
-      <span class="_clickZone" @click="$emit('openItem', item.$path)">
-        <slot :item="item" :index="index" />
-      </span>
-    </SlickItem>
-  </SlickList>
+
+        <!-- {{ $t("change_order") }} -->
+      </button>
+    </div>
+    <SlickList
+      class="_reorderedList"
+      axis="x"
+      :value="local_items"
+      :useDragHandle="true"
+      @input="updateOrder($event)"
+    >
+      <SlickItem
+        v-for="(item, index) of local_items"
+        :key="item.$path"
+        :index="index"
+        class="_reorderedList--item"
+        :class="{
+          'is--active': isActive(item.$path),
+          'is--redorderable': change_order,
+        }"
+      >
+        <span v-handle class="_dragHandle" v-if="can_edit && change_order">
+          <!-- <b-icon icon="grip-vertical" :label="$t('move')" /> -->
+          <transition name="fade_fast" mode="out-in">
+            <span v-if="show_index" :key="index" class="_index">
+              {{ index + 1 }}
+            </span>
+          </transition>
+        </span>
+        <span v-else-if="show_index" class="_index">
+          {{ index + 1 }}
+        </span>
+        <component
+          :is="$listeners.openItem ? 'button' : 'span'"
+          :type="$listeners.openItem ? 'button' : ''"
+          class="_clickZone"
+          v-if="$listeners.openItem"
+          @click="$emit('openItem', item.$path)"
+        >
+          <slot :item="item" :index="index" />
+        </component>
+      </SlickItem>
+    </SlickList>
+  </div>
 </template>
 <script>
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
@@ -41,6 +77,7 @@ export default {
     store_type: String,
     items: Array,
     path: String,
+    show_index: Boolean,
     active_item_path: String,
     active_item_meta: String,
     can_edit: Boolean,
@@ -52,14 +89,11 @@ export default {
   directives: { handle: HandleDirective },
   data() {
     return {
-      is_saving_changes: false,
       local_items: undefined,
+      change_order: false,
+
+      save_status: undefined,
     };
-  },
-  i18n: {
-    messages: {
-      fr: {},
-    },
   },
   created() {},
   mounted() {},
@@ -105,7 +139,7 @@ export default {
       )
         return "no_update_necessary";
 
-      this.is_saving_changes = true;
+      this.save_status = "saving";
 
       await this.$api.updateMeta({
         path: this.path,
@@ -113,7 +147,11 @@ export default {
           [this.field_name]: sections_list,
         },
       });
-      this.is_saving_changes = false;
+      this.save_status = "saved";
+
+      setTimeout(() => {
+        this.save_status = undefined;
+      }, 500);
     },
   },
 };
@@ -121,31 +159,33 @@ export default {
 <style lang="scss">
 ._reorderedList {
   position: relative;
-}
-
-// only target item dragged
-body > ._reorderedList--item {
-  z-index: 10000;
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
 }
 
 ._reorderedList--item {
   position: relative;
 
-  display: flex;
+  display: inline-flex;
   flex-flow: row nowrap;
   align-items: center;
 
-  padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 2);
-  // border: 1px solid var(--c-gris);
+  // gap: calc(var(--spacing) / 2);
+
+  background: white;
 
   border-radius: 4px;
 
   ._clickZone {
+    appearance: none;
+    font-weight: inherit;
+    background: transparent;
     width: 100%;
     text-decoration: underline;
     text-underline-offset: 0.2em;
     cursor: pointer;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1.5);
 
     &:hover,
     &:focus-visible {
@@ -154,11 +194,27 @@ body > ._reorderedList--item {
     }
   }
 
+  ._noClickZone {
+    width: 100%;
+  }
+
   &.is--active {
-    background: var(--c-noir);
-    color: white;
+    // background: var(--c-gris_fonce);
+    // color: white;
+    font-weight: 600;
+
+    ._clickZone {
+      text-decoration: none;
+    }
 
     ._title {
+    }
+  }
+  &.is--redorderable {
+    // background: var(--c-gris_clair);
+    // border: 1px solid black;
+    ._clickZone {
+      text-decoration: none;
     }
   }
 
@@ -168,31 +224,52 @@ body > ._reorderedList--item {
     box-shadow: var(--panel-shadows);
   }
 
+  // only target item dragged
+  body > & {
+    z-index: 10000;
+
+    ._dragHandle {
+      // background: var(--c-noir);
+      border-color: var(--c-noir);
+      // color: white;
+    }
+  }
+
   // color: black;
   // background: blue;
 }
 ._dragHandle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
   cursor: grab;
   padding: calc(var(--spacing) / 4);
-  background: white;
-  color: var(--c-noir);
-  border-radius: 2px;
 
-  width: 2em;
+  background: transparent;
+  // color: var(--c-noir);
+  // border-radius: 2px;
+
+  // margin-right: -1em;
+  width: 100%;
+  height: 100%;
   height: 2em;
 
-  font-size: var(--sl-font-size-small);
-  font-weight: bold;
-  font-family: "Fira Code";
-  background: var(--c-gris_clair);
+  border-radius: 1em;
+  border: 2px solid var(--c-gris);
+
+  // background: var(--c-gris_clair);
 
   &:hover,
   &:focus-visible {
-    background: var(--c-noir);
-    color: white;
+    border-color: var(--c-noir);
+    // background: var(--c-noir);
+    // color: white;
   }
+}
+._index {
+  font-size: var(--sl-font-size-small);
+  font-weight: bold;
+  font-family: "Fira Code";
+}
+._changeOrderBtn {
+  text-align: right;
 }
 </style>

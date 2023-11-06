@@ -4,6 +4,7 @@
     :class="{
       'is--editable': can_edit,
       'is--editing_is_enabled': editor_is_enabled,
+      'is--mobileView': $root.is_mobile_view,
     }"
     @click="editorClick"
   >
@@ -25,62 +26,55 @@
       v-show="can_edit && editor_is_enabled"
     >
       <div class="">
-        <template
-          v-if="
-            editor_is_enabled && !is_disabling_editor && !is_loading_or_saving
-          "
-        >
-          <button type="button" class="_editBtn" @click="toggleEdit">
+        <template v-if="editor_is_enabled && !is_disabling_editor">
+          <!-- <button type="button" class="u-button _editBtn" @click="toggleEdit">
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
-            {{ $t("stop_edit") }}
-          </button>
-          <button
-            type="button"
-            class="u-button _archivesBtn"
-            v-if="editor_is_enabled"
-            @click="show_archives = !show_archives"
-          >
-            <b-icon slot="prefix" icon="archive" />
-            {{ $t("history") }}
-          </button>
-        </template>
-
-        <div class="_collabEditorStatus" v-if="editor_is_enabled">
+            <span>{{ $t("stop_edit") }}</span>
+          </button> -->
           <transition name="fade_fast" mode="out-in">
-            <span v-if="is_loading_or_saving" key="saving">
+            <div
+              class="u-button _savingStatus"
+              v-if="is_loading_or_saving"
+              key="saving"
+            >
               <sl-spinner style="--indicator-color: currentColor" />
               {{ $t("saving") }}
-            </span>
-            <span v-else-if="show_saved_icon" key="saved">
+            </div>
+            <div
+              class="u-button _savedStatus"
+              v-else-if="show_saved_icon"
+              key="saved"
+            >
               <b-icon icon="check-circle" />
               {{ $t("saved") }}
-            </span>
-            <span v-else key="connected">
-              <b>{{ $t(rtc.connection_state) }}</b>
-            </span>
+            </div>
+            <!-- <span v-else key="connected">
+                <b>{{ $t(rtc.connection_state) }}</b>
+              </span> -->
+            <button
+              type="button"
+              class="u-button _archivesBtn"
+              v-else
+              @click="show_archives = !show_archives"
+            >
+              <b-icon icon="archive" />
+              <span>{{ $t("history") }}</span>
+            </button>
           </transition>
-        </div>
+          <EditBtn
+            :btn_type="'check'"
+            :label_position="'left'"
+            @click="disableEditor"
+          />
+        </template>
       </div>
       <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
           Enregistrer
         </sl-button> -->
     </div>
 
-    <div class="_floatingEditBtn" v-if="can_edit">
-      <sl-button
-        variant="edit"
-        :data-action="editor_is_enabled ? 'disable' : 'enable'"
-        size="small"
-        circle
-        @click="toggleEdit"
-      >
-        <b-icon
-          v-if="!editor_is_enabled"
-          icon="pencil-fill"
-          :aria-label="$t('edit')"
-        />
-        <b-icon v-else icon="check-circle-fill" />
-      </sl-button>
+    <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
+      <EditBtn key="editbtn" :label_position="'left'" @click="toggleEdit" />
     </div>
 
     <div class="_toolbarAndEditorContainer">
@@ -472,6 +466,10 @@ export default {
     async enableEditor() {
       if (this.editor_is_enabled || !this.can_edit) return false;
 
+      // min-height to prevents jumps
+      const bloc_height = this.$el.offsetHeight;
+      this.$el.style.setProperty("min-height", bloc_height + "px");
+
       console.log(`CollaborativeEditor2 • enableEditor`);
 
       if (this.is_collaborative) await this.startCollaborative();
@@ -489,6 +487,7 @@ export default {
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
       this.$emit(`contentIsEdited`, this.toolbar_el);
+      this.$el.style.removeProperty("min-height");
       this.editor_is_enabled = true;
     },
     async disableEditor() {
@@ -500,6 +499,10 @@ export default {
       this.editor.setSelection(null);
       this.editor.blur();
       this.updateSelectedLines();
+
+      if (window.getSelection) {
+        window.getSelection().removeAllRanges();
+      }
 
       if (this.is_collaborative) this.endCollaborative();
 
@@ -580,8 +583,13 @@ export default {
     },
 
     async saveText() {
+      const new_content = this.getEditorContent();
+      if (new_content === this.content) {
+        return "content_not_changed";
+      }
+
       const new_meta = {
-        [this.field_to_edit]: this.getEditorContent(),
+        [this.field_to_edit]: new_content,
       };
 
       try {
@@ -593,7 +601,7 @@ export default {
         });
         this.is_loading_or_saving = false;
         this.show_saved_icon = true;
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 500));
         this.show_saved_icon = false;
       } catch (err) {
         if (err.message === "content not changed") err;
@@ -609,8 +617,8 @@ export default {
         //   meta_slug: this.meta_slug,
         // });
 
-        // const requested_querystring = "?" + params.toString();
-        const path_to_meta = this.sharedb_id || this.path.replaceAll("/", "*");
+        // const path_to_meta = this.sharedb_id || this.path.replaceAll("/", "*");
+        const path_to_meta = this.sharedb_id || encodeURIComponent(this.path);
 
         const requested_resource_url =
           (location.protocol === "https:" ? "wss" : "ws") +
@@ -947,6 +955,7 @@ export default {
       background-color: transparent;
 
       padding: 0px;
+      padding-bottom: 0.4em;
 
       @import "./imports/mainText.scss";
 
@@ -1044,7 +1053,8 @@ export default {
   position: sticky;
   z-index: 101;
   top: calc(var(--spacing) / 4);
-  margin-left: auto;
+  height: 0;
+  text-align: right;
   margin-right: calc(var(--spacing) / 4);
 
   > * {
@@ -1063,11 +1073,16 @@ export default {
   --quill-buttons-size: 20px;
   --quill-options-size: 34px;
 
+  ._collaborativeEditor.is--mobileView & {
+    --button-size: 28px;
+  }
+
   position: sticky;
   top: 0;
   z-index: 2;
   padding: calc(var(--spacing) / 4);
-  border-radius: 16px;
+  margin-bottom: 0.3em;
+  border-radius: 14px;
   // hides select, do not use
   // overflow: hidden;
 
@@ -1093,15 +1108,27 @@ export default {
   }
   button,
   svg {
+    display: inherit;
     color: currentColor;
   }
 
   button,
-  ._collabEditorStatus {
+  ._savingStatus,
+  ._savedStatus,
+  ._archivesBtn {
     min-width: var(--button-size);
     width: auto;
     height: var(--button-size);
     padding: 6px;
+  }
+
+  ._savingStatus,
+  ._savedStatus,
+  ._archivesBtn {
+    min-width: 9rem;
+  }
+  ._savedStatus {
+    background-color: var(--c-vert);
   }
 
   .ql-fill,
@@ -1309,7 +1336,7 @@ export default {
 }
 
 ._TEbtnContainer {
-  width: 100%;
+  // width: 100%;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -1325,13 +1352,9 @@ export default {
     justify-content: space-between;
     align-items: center;
 
-    ._editBtn {
-      background-color: var(--c-bleuvert);
-    }
-
-    ._collabEditorStatus {
-      background-color: var(--c-vert);
-    }
+    // ._editBtn {
+    //   background-color: var(--c-bleuvert);
+    // }
   }
   // background-color: var(--editor-bg);
 }

@@ -12,8 +12,14 @@
       :options="options"
       :can_edit="can_edit && edit_mode"
     />
+    <span v-else>
+      <template v-if="current_option">
+        {{ current_option.label }}
+      </template>
+      <template v-else></template>
+    </span>
+    <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     <div class="_footer">
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
       <SaveCancelButtons
         v-if="edit_mode"
         class="_scb"
@@ -62,7 +68,11 @@ export default {
       this.setNewContent();
     },
   },
-  computed: {},
+  computed: {
+    current_option() {
+      return this.options.find((o) => o.key === this.content);
+    },
+  },
   methods: {
     setNewContent() {
       if (this.input_type === "checkbox") {

@@ -170,7 +170,7 @@ export default {
 @import "@/utils/utils.scss";
 
 :root {
-  --spacing: var(--sl-spacing-medium);
+  --spacing: var(--sl-spacing-medium, 1rem);
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);
@@ -432,7 +432,7 @@ h3 {
   margin: 0;
   font-size: var(--sl-font-size-large);
   line-height: 1.2;
-  font-weight: 400;
+  font-weight: 500;
 }
 h4 {
   margin: 0;
@@ -469,6 +469,9 @@ ol {
 
 small {
   font-size: var(--sl-font-size-small);
+}
+smaller {
+  font-size: var(--sl-font-size-x-small);
 }
 img {
   max-width: 100%;

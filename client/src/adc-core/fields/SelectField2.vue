@@ -10,6 +10,7 @@
           v-for="option in options"
           :key="option.key"
           :value="option.key"
+          :disabled="option.disabled === true"
           v-text="option.text"
         />
       </select>
@@ -63,7 +64,7 @@ export default {
   computed: {
     instructions() {
       const new_opt = this.options.find((o) => o.key === this.new_value);
-      if (new_opt) return new_opt.instruction;
+      if (new_opt) return new_opt.instructions;
       return false;
     },
   },

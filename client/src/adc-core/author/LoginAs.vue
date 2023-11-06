@@ -51,7 +51,13 @@
                 <b-icon icon="arrow-left-short" />
                 {{ $t("back") }}
               </button>
-              <AuthorTag :path="author_to_login_to.$path" />
+
+              <transition name="fade" mode="out-in">
+                <AuthorTag
+                  :key="author_to_login_to.$path"
+                  :path="author_to_login_to.$path"
+                />
+              </transition>
             </div>
 
             <div class="u-spacingBottom">

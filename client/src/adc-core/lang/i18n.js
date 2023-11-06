@@ -38,6 +38,7 @@ export default function () {
   const i18n = new VueI18n({
     locale: lang_settings.current, // set locale
     fallbackLocale: "en",
+    silentFallbackWarn: true,
     messages: {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
@@ -56,6 +57,7 @@ export default function () {
         date_archive: "Date dans l’archive",
         cancel: "Annuler",
         select: "Sélectionner",
+        select_all: "Sélectionner tout",
         back: "retour",
         save: "enregistrer",
         save_as_favorite: "Enregistrer en favori",
@@ -134,9 +136,22 @@ export default function () {
 
         contactmail_of_instance: `Contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+
         create_stack: "Créer une pile",
         remove_stack: "Supprimer la pile et ses contenus",
         show_only_my_content: "Seulement mon contenu",
+
+        hero_background_color: "Couleur d’arrière plan de l’image",
+        text_background_color: "Couleur d’arrière plan du texte",
+
+        favicon_image: "Image favicon",
+        favicon_image_instr: "Apparaîtra dans l’onglet du navigateur.",
+        topbar_image: "Logo dans la barre de navigation",
+        topbar_image_instr:
+          "En haut à gauche de l’écran. Au click, ramène à la page d’accueil.",
+        hero_image: "Visuel page d’accueil",
+        hero_image_instr: "",
+        change_order: "Changer l’ordre",
 
         bytes: "octets",
         kb: "ko",
@@ -213,15 +228,16 @@ export default function () {
         cartography: "Cartographie",
         export_in_pdf: "Exporter en PDF",
         direct_link: "Lien direct",
+        link: "Lien",
         share: "Partager",
         options: "Options",
         exports_in_progress: "Exportation(s) en cours",
 
         story_width: "Largeur du récit",
         summary: "Sommaire",
-        section_title: "Titre de la section",
-        section: "Section",
-        create_section: "Créer une section",
+        chapters: "Chapitres",
+        section_title: "Titre du chapitre",
+        section: "Chapitre",
         untitled: "Sans titre",
         responsive: "Fluide",
         responsive_instr:
@@ -928,6 +944,7 @@ export default function () {
       },
 
       en: {
+
         home: "Home",
         hello: "hello world",
         edit: "edit",
@@ -937,7 +954,37 @@ export default function () {
         date_uploaded: "uploaded on",
         cancel: "cancel",
         save: "save",
+        // todo translate
+        // a_foss_made_by:
+        //   "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
+        home: "Home",
+        go_home: "Back to home",
+        page_not_found: "This page does not exist",
+        // admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
+        // admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
+        edit: "Edit",
         description: "description",
+        stop_edit: "Stop editing",
+        caption: "Caption",
+        date_created: "Created on",
+        date_modified: "Last edited",
+        alphabetical: "Alphabetical",
+        date_uploaded: "Uploaded on",
+        cancel: "Cancel",
+        select: "Select",
+        back: "back",
+        save: "save",
+        save_as_favorite: "save as favorite",
+        input_url: "URL to the site to embed",
+        // input_url_instr:
+        //   "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
+        embed: "Embed",
+        from_project: "From project",
+        save_to_project: "Save in the project",
+        day: "Day",
+        month: "Month",
+        year: "Year",
+
         keywords: "keywords",
         template: "Template",
 
