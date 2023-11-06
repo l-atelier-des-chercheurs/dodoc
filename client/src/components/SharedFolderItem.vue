@@ -88,7 +88,7 @@ export default {
   &:focus,
   &.is--opened {
     // background: rgb(67, 69, 71);
-    z-index: 10;
+    z-index: 100;
     transform: translateY(-10px);
     box-shadow: 0 13px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -105,8 +105,10 @@ export default {
 
     font-size: var(--sl-font-size-small);
 
-    transform: translate(0, -100%);
+    transform: translate(0, -50px);
     opacity: 0;
+
+    pointer-events: none;
 
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -119,6 +121,7 @@ export default {
     ._title {
       transform: translate(0, 0%);
       opacity: 1;
+      pointer-events: auto;
     }
   }
 }
@@ -132,7 +135,7 @@ export default {
   // border: 2px solid white;
   border-bottom: 1px solid white;
 
-  min-height: 50px;
+  min-height: 20px;
   max-height: 150px;
 
   display: -webkit-box;

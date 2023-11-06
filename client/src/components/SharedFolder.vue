@@ -1,5 +1,5 @@
 <template>
-  <div class="_sharedFolder">
+  <div class="_sharedFolder" :style="items_styles">
     <div class="_spinner" v-if="!shared_folder" key="loader">
       <LoaderSpinner />
     </div>
@@ -33,12 +33,48 @@
             </div>
           </div>
           <div class="_filesIndicator">
-            {{ $t("items") }} = {{ filtered_shared_files.length }}
-            <template
-              v-if="filtered_shared_files.length !== shared_files.length"
-            >
-              /{{ shared_files.length }}
-            </template>
+            <div class="">{{ $t("items") }} •</div>
+            <div class="">
+              {{ filtered_shared_files.length }}
+              <template
+                v-if="filtered_shared_files.length !== shared_files.length"
+              >
+                /{{ shared_files.length }}
+              </template>
+            </div>
+            <div class="" />
+            <div class="">{{ $t("zoom") }} •</div>
+
+            <div class="_itemWidthControl">
+              <input
+                class=""
+                type="range"
+                list="'ticks'"
+                :min="50"
+                :max="300"
+                :step="1"
+                v-model.number="item_width"
+              />
+              <datalist id="'ticks'">
+                <option
+                  v-for="tick in [20, 50, 100, 150, 200, 300]"
+                  :key="tick"
+                >
+                  {{ tick }}
+                </option>
+              </datalist>
+            </div>
+            <!-- <RangeValueInput
+              :can_toggle="false"
+              :value="item_width"
+              :min="5"
+              :max="300"
+              :step="1"
+              :default_value="150"
+              :ticks="[10, 50, 100, 150, 200, 300]"
+              :suffix="'px'"
+              @save="item_width = $event"
+            /> -->
           </div>
         </div>
 
@@ -161,6 +197,8 @@ export default {
       keywords_filter: [],
       group_mode: "day",
 
+      item_width: 150,
+
       // sort_order: localStorage.getItem("sort_order") || "date_uploaded",
       // search_str: localStorage.getItem("search_str") || "",
       // author_path_filter: localStorage.getItem("author_path_filter") || "",
@@ -168,6 +206,12 @@ export default {
       // keywords_filter: localStorage.getItem("keywords_filter") ? JSON.parse(localStorage.getItem("keywords_filter")) : [],
       // group_mode: localStorage.getItem("group_mode") || "day",
     };
+  },
+  i18n: {
+    messages: {
+      fr: {},
+      en: {},
+    },
   },
   created() {},
   async mounted() {
@@ -224,6 +268,11 @@ export default {
       if (opened_file_index === this.filtered_shared_files.length - 1)
         return "last";
       return "none";
+    },
+    items_styles() {
+      return {
+        "--items-width": this.item_width + "px",
+      };
     },
 
     shared_files() {
@@ -418,7 +467,22 @@ export default {
   line-height: 1;
 }
 ._filesIndicator {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
   padding: 0 calc(var(--spacing) * 1);
+
+  ._itemWidthControl {
+    width: 250px;
+  }
+
+  ::v-deep ._numberField {
+    flex-grow: 1;
+    input {
+      background: white;
+    }
+  }
 }
 
 ._title {
@@ -450,9 +514,12 @@ export default {
   justify-content: flex-start;
   align-items: flex-end;
   gap: calc(var(--spacing) * 3) calc(var(--spacing) * 2);
+
+  gap: calc(var(--items-width, 150px) / 5 + var(--spacing))
+    calc(var(--items-width, 150px) / 10 + var(--spacing) / 2);
 }
 ._file {
-  width: 150px;
+  width: var(--items-width, 150px);
 }
 
 ._removeBtn {
