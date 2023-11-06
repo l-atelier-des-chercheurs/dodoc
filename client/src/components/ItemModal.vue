@@ -62,6 +62,30 @@
             />
           </div>
 
+          <div class="_navArrow" v-if="file._stack_files">
+            <button
+              type="button"
+              class="u-button u-button_icon"
+              :disabled="current_file_index_shown === 0"
+              @click="prevItemInStack"
+            >
+              <b-icon icon="arrow-left-circle-fill" />
+            </button>
+            <span>
+              {{ file_sequence_in_stack }}
+            </span>
+            <button
+              type="button"
+              class="u-button u-button_icon"
+              :disabled="
+                current_file_index_shown >= file._stack_files.length - 1
+              "
+              @click="nextItemInStack"
+            >
+              <b-icon icon="arrow-right-circle-fill" />
+            </button>
+          </div>
+
           <div
             v-if="file.is_stack"
             class="_navMedia"
@@ -114,19 +138,19 @@
             </template>
           </button>
         </div>
-        <transition name="pagechange" mode="out-in">
-          <div class="_rightContent" v-if="show_sidebar">
-            <FileMeta
-              :file="file"
-              :sequence="file_sequence_in_stack"
-              :is_stack="file.is_stack"
-              :stack_file_shown="current_file_shown"
-              @removeMain="removeMain"
-              @removeCurrent="removeCurrent"
-              @closeStack="current_file_index_shown = false"
-            />
-          </div>
-        </transition>
+        <!-- <transition name="pagechange" mode="out-in"> -->
+        <div class="_rightContent" v-if="show_sidebar">
+          <FileMeta
+            :file="file"
+            :sequence="file_sequence_in_stack"
+            :is_stack="file.is_stack"
+            :stack_file_shown="current_file_shown"
+            @removeMain="removeMain"
+            @removeCurrent="removeCurrent"
+            @closeStack="current_file_index_shown = false"
+          />
+        </div>
+        <!-- </transition> -->
       </div>
     </div>
   </div>
@@ -229,11 +253,21 @@ export default {
         return;
 
       if (event.key === "Escape") this.$emit("close");
+      if (event.key === "ArrowLeft") this.prevItemInStack();
+      if (event.key === "ArrowRight") this.nextItemInStack();
     },
     toggleFile(index) {
       if (this.current_file_index_shown === index)
         this.current_file_index_shown = false;
       else this.current_file_index_shown = index;
+    },
+    prevItemInStack() {
+      const new_index = this.current_file_index_shown - 1;
+      if (new_index >= 0) this.toggleFile(new_index);
+    },
+    nextItemInStack() {
+      const new_index = this.current_file_index_shown + 1;
+      if (new_index < this.file._stack_files.length) this.toggleFile(new_index);
     },
   },
 };
@@ -333,6 +367,22 @@ export default {
       object-fit: contain;
       max-width: none;
     }
+  }
+}
+
+._navArrow {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(var(--spacing) / 4);
+
+  > * {
+    line-height: 0;
+    display: block;
+    // line-height: 1;
+    // width: 2em;
+    // height: 2em;
   }
 }
 
