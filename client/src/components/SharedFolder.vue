@@ -33,36 +33,39 @@
             </div>
           </div>
           <div class="_filesIndicator">
-            <div class="">{{ $t("items") }} •</div>
-            <div class="">
-              {{ filtered_shared_files.length }}
-              <template
-                v-if="filtered_shared_files.length !== shared_files.length"
-              >
-                /{{ shared_files.length }}
-              </template>
+            <div class="u-sameRow">
+              <div class="">{{ $t("items") }} •</div>
+              <div class="">
+                {{ filtered_shared_files.length }}
+                <template
+                  v-if="filtered_shared_files.length !== shared_files.length"
+                >
+                  /{{ shared_files.length }}
+                </template>
+              </div>
             </div>
             <div class="" />
-            <div class="">{{ $t("zoom") }} •</div>
-
-            <div class="_itemWidthControl">
-              <input
-                class=""
-                type="range"
-                list="'ticks'"
-                :min="50"
-                :max="300"
-                :step="1"
-                v-model.number="item_width"
-              />
-              <datalist id="'ticks'">
-                <option
-                  v-for="tick in [20, 50, 100, 150, 200, 300]"
-                  :key="tick"
-                >
-                  {{ tick }}
-                </option>
-              </datalist>
+            <div class="u-sameRow">
+              <div>{{ $t("zoom") }} •</div>
+              <div class="_itemWidthControl">
+                <input
+                  class=""
+                  type="range"
+                  list="'ticks'"
+                  :min="50"
+                  :max="300"
+                  :step="1"
+                  v-model.number="item_width"
+                />
+                <datalist id="'ticks'">
+                  <option
+                    v-for="tick in [20, 50, 100, 150, 200, 300]"
+                    :key="tick"
+                  >
+                    {{ tick }}
+                  </option>
+                </datalist>
+              </div>
             </div>
             <!-- <RangeValueInput
               :can_toggle="false"
