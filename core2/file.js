@@ -78,18 +78,18 @@ module.exports = (function () {
       });
       const meta = Object.assign({}, validated_meta, extracted_meta);
 
-      let new_meta_filename = await _preventFileOverride({
-        path_to_folder,
-        original_filename: meta_filename,
-      });
+      // let new_meta_filename = await _preventFileOverride({
+      //   path_to_folder,
+      //   original_filename: meta_filename,
+      // });
 
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
-        file_slug: new_meta_filename,
+        file_slug: meta_filename,
         meta,
       });
 
-      return new_meta_filename;
+      return meta_filename;
     },
 
     getFiles: async ({ path_to_folder }) => {
@@ -400,6 +400,7 @@ module.exports = (function () {
           filename_without_ext,
           match,
         });
+        await fs.remove(path_to_temp_file);
         return { new_path, new_filename };
       } catch (err) {
         // couldnt convert, lets fall back to just copying source file
