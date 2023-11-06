@@ -133,7 +133,7 @@ export default {
 
   overflow: hidden;
   // border: 2px solid white;
-  border-bottom: 1px solid white;
+  // border-bottom: 1px solid white;
 
   min-height: 20px;
   max-height: 150px;
