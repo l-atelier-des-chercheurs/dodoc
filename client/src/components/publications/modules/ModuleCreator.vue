@@ -116,7 +116,7 @@
         v-else-if="start_collapsed && !show_module_selector"
         key="addmodule"
         :btn_type="'add'"
-        :is_unfolded="true"
+        :is_unfolded="false"
         class="_addBtn"
         @click="show_module_selector = true"
       />
