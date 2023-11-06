@@ -123,13 +123,13 @@ export default {
 
   &:hover,
   &:focus-visible {
-    z-index: 10;
+    // z-index: 10;
     transform: scale(1.2);
   }
 
   ._icon {
     position: relative;
-    z-index: 1;
+    // z-index: 1;
   }
 
   ._label {
