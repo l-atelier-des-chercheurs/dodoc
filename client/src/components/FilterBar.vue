@@ -1,5 +1,16 @@
 <template>
   <div class="_filterBar">
+    <button
+      type="button"
+      class="u-buttonLink _closeBtn"
+      :class="{
+        'is--white': can_be_reset,
+      }"
+      @click="$emit('close')"
+    >
+      <b-icon icon="x-lg" />
+    </button>
+
     <transition name="slidedown" mode="out-in">
       <button
         type="button"
@@ -332,5 +343,15 @@ export default {
   width: 100%;
   padding: calc(var(--spacing) / 2);
   border-radius: 0;
+}
+._closeBtn {
+  position: absolute;
+  right: 0;
+  margin: calc(var(--spacing) / 2);
+  z-index: 100;
+
+  &.is--white {
+    color: white;
+  }
 }
 </style>

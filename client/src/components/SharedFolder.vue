@@ -124,6 +124,7 @@
             :author_path_filter.sync="author_path_filter"
             :available_keywords="available_keywords"
             :keywords_filter.sync="keywords_filter"
+            @close="show_filter_sort_pane = false"
           />
         </div>
       </transition>
