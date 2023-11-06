@@ -35,10 +35,10 @@
           :key="clicked_location.module.$path"
           class="_pinContent"
         >
-          <PublicationModule
+          <!-- <PublicationModule
             :publimodule="clicked_location.module"
             :can_edit="false"
-          />
+          /> -->
           <!-- <MediaContent
             :file="clicked_location.file"
             :is_draggable="false"
@@ -287,7 +287,7 @@ import { defaults as olDefaultControls } from "ol/control";
 
 import olFilterCSS from "ol-ext/filter/CSS";
 
-import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
+// import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
 export default {
   name: "DisplayOnMap",
@@ -336,7 +336,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    PublicationModule,
+    // PublicationModule,
     PrintMap: () => import("@/adc-core/fields/PrintMap.vue"),
   },
   data() {
