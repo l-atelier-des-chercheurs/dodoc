@@ -212,7 +212,8 @@ export default {
   }
 
   ._mediaModal--content {
-    background: var(--c-noir);
+    // background: var(--c-noir);
+    // background: var(--c-gris_clair);
     // border-radius: var(--border-radius);
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -224,7 +225,7 @@ export default {
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.7);
     position: relative;
     z-index: 100;
 
@@ -299,7 +300,8 @@ export default {
       flex: 10 1 320px;
       color: white;
       min-height: 50vh;
-
+      border: 2px solid var(--c-gris);
+      background: var(--c-gris);
       // height: 50%;
     }
     &._meta {
