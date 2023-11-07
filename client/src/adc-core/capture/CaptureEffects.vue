@@ -154,10 +154,17 @@
             </div>
 
             <div v-if="chroma_key_settings.replacement_mode === 'image'">
-              <ImageSelect
-                :folder_path="project_path"
+              <!-- // TODO  -->
+              <small class="_instr u-instructions">
+                pas disponible pour le moment / feature not yet functioning, use
+                dodoc 9
+              </small>
+
+              <!-- <ImageSelect
+                :path="project_path"
+                :available_options="['import', 'project', 'capture']"
                 @newPreview="newChromaKeyImage"
-              />
+              /> -->
               <!-- {{ chroma_key_settings.replacement_image }} -->
             </div>
             <div v-else>
@@ -184,11 +191,7 @@
             >
           </div>
 
-          <div
-            :class="{
-              'is--disabled': !image_filters_settings[name].enable,
-            }"
-          >
+          <div v-if="image_filters_settings[name].enable">
             <input
               class="margin-none"
               type="range"
