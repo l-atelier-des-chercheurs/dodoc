@@ -611,11 +611,11 @@ void main(void) {
     },
     setTogglePickColorFromVideo() {
       if (!this.enable_pick_color_from_video) {
-        this.chroma_key_settings.enable = false;
+        // this.chroma_key_settings.enable = false;
         // this.enable__ = true;
         this.enable_pick_color_from_video = true;
       } else {
-        this.chroma_key_settings.enable = true;
+        // this.chroma_key_settings.enable = true;
         this.enable_pick_color_from_video = false;
       }
     },
