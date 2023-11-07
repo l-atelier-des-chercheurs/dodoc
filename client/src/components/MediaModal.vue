@@ -298,7 +298,6 @@ export default {
     &._preview {
       position: relative;
       flex: 10 1 320px;
-      color: white;
       min-height: 50vh;
       border: 2px solid var(--c-gris);
       background: var(--c-gris);
@@ -344,7 +343,7 @@ export default {
   height: 100%;
 
   padding: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 5);
+  padding-bottom: calc(var(--spacing) * 1);
   pointer-events: none;
 
   display: flex;
