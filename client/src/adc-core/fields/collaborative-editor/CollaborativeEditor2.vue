@@ -1125,7 +1125,7 @@ export default {
   ._savingStatus,
   ._savedStatus,
   ._archivesBtn {
-    min-width: 9rem;
+    min-width: 9.5rem;
   }
   ._savedStatus {
     background-color: var(--c-vert);
