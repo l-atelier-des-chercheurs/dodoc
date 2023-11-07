@@ -807,6 +807,10 @@ export default {
     &:focus-visible,
     &.is--dragover {
       border-color: var(--c-rouge);
+
+      > * {
+        pointer-events: none;
+      }
     }
     &.is--dragover {
       background-color: var(--c-rouge);
