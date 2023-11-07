@@ -1375,6 +1375,7 @@ export default {
         stopmotion_path.lastIndexOf("/") + 1
       );
       this.$emit("openStopmotion", stopmotion_slug);
+      this.show_stopmotion_list = false;
       // this.current_stopmotion_path = slugFolderName;
       // this.ask_before_leaving_capture = true;
     },
@@ -1388,17 +1389,7 @@ export default {
 
     stopStopmotion() {
       // two options : remove or save
-
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sure_to_cancel_stopmotion"),
-          () => {
-            this.closeStopmotionPanel();
-          },
-          () => {}
-        );
+      this.closeStopmotionPanel();
     },
 
     startFrameGrabber() {
