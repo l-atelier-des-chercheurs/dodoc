@@ -575,6 +575,7 @@ export default function () {
 
         drop_here: "Déposer ici",
         or_drag_drop_file_here: "Ou déposer des fichiers ici",
+        drop_to_import: "Déposer pour importer",
         enable: "Activer",
 
         // effets
