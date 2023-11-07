@@ -8,6 +8,7 @@
       <transition name="pagechange" mode="out-in">
         <MosaicMediaGrid
           v-if="publimodule.module_type === 'mosaic'"
+          key="mosaic"
           :medias_with_linked="medias_with_linked"
           :context="context"
           :page_template="page_template"
@@ -21,6 +22,7 @@
         />
         <FilesList
           v-else-if="publimodule.module_type === 'files'"
+          key="filelist"
           :medias_with_linked="medias_with_linked"
           :publication_path="publication_path"
           :can_edit="can_edit"
@@ -35,6 +37,7 @@
           :page_template="page_template"
           :show_fs_button="show_fs_button"
           :publication_path="publication_path"
+          :publi_width="publimodule.size"
           :can_edit="can_edit"
           @addMedias="addMedias"
           @removeMediaAtIndex="removeMediaAtIndex"

@@ -139,6 +139,7 @@ export default {
     show_fs_button: Boolean,
     number_of_max_medias: [Boolean, Number],
     publication_path: String,
+    publi_width: Number,
     can_edit: Boolean,
   },
   components: {
@@ -171,13 +172,18 @@ export default {
     setTimeout(() => {
       // if (this.$refs.flickity) this.$refs.flickity.resize();
       // if (this.$refs.nav) this.$refs.nav.resize();
-    });
+    }, 500);
   },
   beforeDestroy() {},
   watch: {
     // medias_with_linked() {
     // if (this.$refs.flickity) this.$refs.flickity.reloadCells();
     // },
+    publi_width() {
+      setTimeout(() => {
+        if (this.$refs.flickity) this.$refs.flickity.resize();
+      }, 200);
+    },
   },
   computed: {
     slider_key() {
