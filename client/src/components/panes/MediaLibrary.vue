@@ -798,7 +798,7 @@ export default {
     width: 100%;
     max-width: none;
 
-    border: 4px dotted white;
+    border: 3px dotted white;
     border-radius: 10px;
     box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
     padding: calc(var(--spacing) / 2);
