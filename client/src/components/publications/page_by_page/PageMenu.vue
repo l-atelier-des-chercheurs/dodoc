@@ -1,21 +1,23 @@
 <template>
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <sl-icon name="arrow-left-short" label="" />
+      <button
+        type="button"
+        class="u-button u-button_small u-button_black"
+        @click="$emit('close')"
+      >
+        <b-icon icon="arrow-left-short" />
         {{ $t("close") }}
       </button>
       <div class="u-spacingBottom _titleRow">
-        <div>
-          <button
-            type="button"
-            class="u-button u-button_transparent"
-            @click="$emit('prevPage')"
-            :disabled="active_page_number <= 0"
-          >
-            <sl-icon name="arrow-left-circle" />
-          </button>
-        </div>
+        <button
+          type="button"
+          class="u-button u-button_transparent u-button_icon"
+          @click="$emit('prevPage')"
+          :disabled="active_page_number <= 0"
+        >
+          <b-icon icon="arrow-left-circle" />
+        </button>
         <div>
           <transition name="fade_fast" mode="out-in">
             <b :key="active_page_number"
@@ -37,16 +39,14 @@
             </span>
           </transition>
         </div>
-        <div>
-          <button
-            type="button"
-            class="u-button u-button_transparent"
-            @click="$emit('nextPage')"
-            :disabled="active_page_number >= pages.length - 1"
-          >
-            <sl-icon name="arrow-right-circle" />
-          </button>
-        </div>
+        <button
+          type="button"
+          class="u-button u-button_transparent u-button_icon"
+          @click="$emit('nextPage')"
+          :disabled="active_page_number >= pages.length - 1"
+        >
+          <b-icon icon="arrow-right-circle" />
+        </button>
       </div>
 
       <div class="_scale">
@@ -161,7 +161,7 @@
                 v-if="can_edit"
                 @click="show_all_medias = !show_all_medias"
               >
-                <sl-icon name="collection" />
+                <b-icon icon="collection" />
                 <template v-if="!show_all_medias">
                   {{ $t("show") }}
                 </template>
@@ -238,7 +238,7 @@
                 class="u-buttonLink"
                 @click="duplicateModule"
               >
-                <sl-icon name="file-plus" />
+                <b-icon icon="file-plus" />
                 {{ $t("duplicate") }}
               </button>
             </div>
@@ -722,8 +722,10 @@ export default {
   align-items: center;
   justify-content: space-between;
 
+  padding: calc(var(--spacing) / 2) 0;
+
   button {
-    font-size: var(--sl-font-size-large);
+    font-size: var(--sl-font-size-medium);
   }
 }
 </style>

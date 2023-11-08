@@ -3,7 +3,7 @@
     <button
       v-if="no_back_button !== true"
       type="button"
-      class="u-button u-button_icon"
+      class="u-button u-button_icon _backPubli"
       @click="$emit('close')"
     >
       <b-icon
@@ -264,5 +264,9 @@ export default {
 }
 ._exportBtn {
   position: relative;
+}
+
+._backPubli {
+  font-size: 1.1rem;
 }
 </style>
