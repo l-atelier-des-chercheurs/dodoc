@@ -55,13 +55,10 @@
           </div>
 
           <TitleField
+            v-if="context === 'full'"
             :field_name="'presentation'"
             class="_presentation"
-            :label="
-              context === 'full' && can_edit && !author.presentation
-                ? $t('presentation')
-                : ''
-            "
+            :label="can_edit && !author.presentation ? $t('presentation') : ''"
             :content="author.presentation"
             :path="author.$path"
             :maxlength="1280"

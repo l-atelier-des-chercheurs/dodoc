@@ -7,6 +7,8 @@
       </router-link>
     </div>
 
+    <h1 class="_title" v-text="$t('list_of_contributors')" />
+
     <div class="_allAuthors">
       <template v-for="author in authors">
         <AuthorCard
@@ -64,5 +66,9 @@ export default {
 ._allAuthors {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+._title {
+  margin-top: calc(var(--spacing) * 1);
+  margin-bottom: calc(var(--spacing) * 1);
 }
 </style>
