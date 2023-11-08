@@ -48,7 +48,7 @@
 
     <router-link
       v-if="links_to_author_page && !show_image_only"
-      :to="component_to"
+      :to="author_url"
     >
       <b-icon icon="person-lines-fill" :aria-label="$t('page')" />
     </router-link>
@@ -109,7 +109,7 @@ export default {
       if (this.$listeners.click) return "button";
       return "span";
     },
-    component_to() {
+    author_url() {
       return this.createURLFromPath(this.path);
     },
   },

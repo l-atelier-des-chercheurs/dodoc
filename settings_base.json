@@ -462,6 +462,11 @@
             "type": "string",
             "required": true,
             "unique": true
+          },
+          "presentation": {
+            "type": "string",
+            "required": true,
+            "unique": true
           }
         }
       },

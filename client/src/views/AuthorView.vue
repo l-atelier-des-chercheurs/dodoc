@@ -25,6 +25,7 @@
         <AuthorCard
           :key="author.$path"
           :author="author"
+          :context="'full'"
           class="u-spacingBottom"
         />
       </div>

@@ -38,11 +38,20 @@
 
       <fieldset v-if="connected_as && current_mode === 'login'">
         <legend class="u-label">{{ $t("your_account") }}</legend>
-        <AuthorCard
+
+        <AuthorTag
+          :key="connected_as.$path"
+          :path="connected_as.$path"
+          :links_to_author_page="true"
+          @navToPage="$emit('close')"
+        />
+
+        <!-- <AuthorCard
           :key="connected_as.$path"
           :author="connected_as"
+          :context="'preview'"
           class="u-spacingBottom"
-        />
+        /> -->
         <button type="button" class="u-button u-button_red" @click="logout">
           {{ $t("logout") }}
         </button>
@@ -55,7 +64,11 @@
           {{ $t("no_accounts_yet") }}
         </small>
 
-        <DetailsPane
+        <router-link :to="'/@'" class="u-buttonLink">
+          <b-icon icon="person-video2" />
+          {{ $t("list_of_contributors") }}
+        </router-link>
+        <!-- <DetailsPane
           v-else
           :header="$t('list_of_contributors')"
           :icon="'person-video2'"
@@ -80,14 +93,14 @@
               />
             </template>
           </div>
-        </DetailsPane>
+        </DetailsPane> -->
       </template>
     </div>
   </BaseModal2>
 </template>
 <script>
 import CreateAuthor from "@/adc-core/author/CreateAuthor.vue";
-import AuthorCard from "@/adc-core/author/AuthorCard.vue";
+// import AuthorCard from "@/adc-core/author/AuthorCard.vue";
 import LoginAs from "@/adc-core/author/LoginAs.vue";
 
 export default {
@@ -99,7 +112,7 @@ export default {
   },
   components: {
     CreateAuthor,
-    AuthorCard,
+    // AuthorCard,
     LoginAs,
   },
   data() {
@@ -107,17 +120,21 @@ export default {
       current_mode: "login",
       show_authors_list: false,
       authors: [],
+      path: "authors",
     };
   },
   created() {},
   async mounted() {
     this.authors = await this.$api.getFolders({
-      path: `authors`,
+      path: this.path,
     });
+    this.$api.join({ room: this.path });
     // if no authors, then switch to register
     if (this.authors.length === 0) this.current_mode = "create";
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.path });
+  },
   watch: {
     $route() {
       // if navigating to another route, lets close modal

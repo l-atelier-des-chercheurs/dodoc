@@ -24,6 +24,10 @@
           :can_edit="can_edit"
         />
 
+        <router-link v-if="context !== 'full'" :to="author_url">
+          <b-icon icon="person-lines-fill" :aria-label="$t('author_page')" />
+        </router-link>
+
         <div class="_path">@{{ getFilename(author.$path) }}</div>
         <div v-if="is_instance_admin">
           <span v-text="author.email" />
@@ -56,7 +60,7 @@
         />
       </div>
     </div>
-    <div class="u-mediaOptions" v-if="can_edit">
+    <div class="u-mediaOptions" v-if="context === 'full' && can_edit">
       <RemoveMenu :remove_text="$t('remove')" @remove="removeAuthor" />
     </div>
   </div>
@@ -65,6 +69,7 @@
 export default {
   props: {
     author: Object,
+    context: String,
   },
   components: {},
   data() {
@@ -75,9 +80,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    context() {
-      return this.can_edit ? "full" : "preview";
-    },
     is_self() {
       if (this.connected_as)
         return this.connected_as.$path === this.author.$path;
@@ -85,6 +87,9 @@ export default {
     },
     can_edit() {
       return this.is_self || this.is_instance_admin;
+    },
+    author_url() {
+      return this.createURLFromPath(this.author.$path);
     },
   },
   methods: {
@@ -112,7 +117,7 @@ export default {
     flex: 1 1 0;
 
     &._cover {
-      flex: 0 0 80px;
+      flex: 0 0 120px;
       aspect-ratio: 1/1;
     }
   }
