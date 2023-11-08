@@ -441,6 +441,7 @@
         :key="'text-toolbar-' + active_page_number"
       >
         <div ref="editor_toolbar" class="_editorToolbar" />
+        <div ref="editor_tooltip" class="_editorToolbar" />
 
         <!-- <RangeValueInput
           class="u-spacingBottom"
@@ -511,12 +512,18 @@ export default {
   },
   created() {},
   mounted() {
-    this.$eventHub.$on(`module.text_editing_enabled`, this.displayToolbar);
+    this.$eventHub.$on(
+      `module.text_editing_enabled`,
+      this.displayToolbarAndToolTip
+    );
     this.$eventHub.$on(`module.text_editing_disabled`, this.removeToolbar);
     this.$eventHub.$on(`module.open_remove_modal`, this.openRemoveModal);
   },
   beforeDestroy() {
-    this.$eventHub.$off(`module.moveToolbar`, this.displayToolbar);
+    this.$eventHub.$off(
+      `module.text_editing_enabled`,
+      this.displayToolbarAndToolTip
+    );
     this.$eventHub.$off(`module.text_editing_disabled`, this.removeToolbar);
     this.$eventHub.$off(`module.open_remove_modal`, this.openRemoveModal);
   },
@@ -575,10 +582,13 @@ export default {
     },
   },
   methods: {
-    displayToolbar(node) {
+    displayToolbarAndToolTip({ $toolbar, $tooltip }) {
       this.has_editor_toolbar = true;
       this.$nextTick(() => {
-        if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.append(node);
+        if (this.$refs.editor_toolbar)
+          this.$refs.editor_toolbar.append($toolbar);
+        if (this.$refs.editor_tooltip)
+          this.$refs.editor_tooltip.append($tooltip);
       });
 
       // this.$nextTick(() => {
