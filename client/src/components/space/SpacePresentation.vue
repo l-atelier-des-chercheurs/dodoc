@@ -1,5 +1,11 @@
 <template>
-  <div class="_spacePresentation" :data-context="context">
+  <div
+    class="_spacePresentation"
+    :data-context="context"
+    :class="{
+      'u-card2': context === 'list',
+    }"
+  >
     <!-- <div class="_topHero"> -->
     <!-- <img
         src="https://latelier-des-chercheurs.fr/thumbs/ateliers/chepa-le-journal-pour-tou-te-s/cover-1280x800-q60.jpg"
@@ -113,7 +119,7 @@
         v-if="context === 'full' && (can_edit || space.description)"
         :field_name="'description'"
         class="_description"
-        :label="can_edit ? $t('description') : undefined"
+        :label="can_edit && !space.description ? $t('description') : undefined"
         :content="space.description"
         :path="space.$path"
         :input_type="'markdown'"
@@ -200,21 +206,17 @@ export default {
   // overflow: hidden;
   // border-radius: var(--panel-radius);
   // box-shadow: var(--panel-shadows);
-  border: 2px solid var(--c-gris_clair);
+  // border: 2px solid var(--c-gris_clair);
   background: white;
 
   // margin-bottom: calc(var(--spacing) / 2);
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
   &[data-context="full"] {
     gap: calc(var(--spacing) / 2);
   }
   &[data-context="list"] {
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    &:hover,
-    &:focus-visible {
-      transform: translateY(-6px);
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    }
   }
 }
 

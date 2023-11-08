@@ -4,7 +4,7 @@
     :class="{
       'is--list': context === 'list',
       'u-card': context === 'list',
-      'is--linkToProject': context !== 'full',
+      'u-card2': context !== 'full',
       'is--mobileView': $root.is_mobile_view,
     }"
   >
@@ -83,7 +83,9 @@
         :field_name="'description'"
         class="_description"
         :label="
-          context === 'full' && !project.description ? $t('description') : ''
+          context === 'full' && can_edit && !project.description
+            ? $t('description')
+            : ''
         "
         :content="project.description"
         :path="project.$path"
@@ -237,10 +239,6 @@ export default {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--linkToProject {
-    &:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    }
   }
 
   &.is--list {

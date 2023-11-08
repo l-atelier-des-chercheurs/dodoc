@@ -464,9 +464,7 @@
             "unique": true
           },
           "presentation": {
-            "type": "string",
-            "required": true,
-            "unique": true
+            "type": "string"
           }
         }
       },

@@ -38,20 +38,21 @@
 
       <fieldset v-if="connected_as && current_mode === 'login'">
         <legend class="u-label">{{ $t("your_account") }}</legend>
-
+        <!-- 
         <AuthorTag
           :key="connected_as.$path"
           :path="connected_as.$path"
           :links_to_author_page="true"
           @navToPage="$emit('close')"
-        />
+        /> -->
 
-        <!-- <AuthorCard
+        <AuthorCard
           :key="connected_as.$path"
           :author="connected_as"
           :context="'preview'"
           class="u-spacingBottom"
-        /> -->
+          @navToPage="$emit('close')"
+        />
         <button type="button" class="u-button u-button_red" @click="logout">
           {{ $t("logout") }}
         </button>
@@ -64,7 +65,11 @@
           {{ $t("no_accounts_yet") }}
         </small>
 
-        <router-link :to="'/@'" class="u-buttonLink">
+        <router-link
+          :to="'/@'"
+          @click.native="$emit('close')"
+          class="u-buttonLink"
+        >
           <b-icon icon="person-video2" />
           {{ $t("list_of_contributors") }}
         </router-link>
@@ -100,7 +105,7 @@
 </template>
 <script>
 import CreateAuthor from "@/adc-core/author/CreateAuthor.vue";
-// import AuthorCard from "@/adc-core/author/AuthorCard.vue";
+import AuthorCard from "@/adc-core/author/AuthorCard.vue";
 import LoginAs from "@/adc-core/author/LoginAs.vue";
 
 export default {
@@ -112,7 +117,7 @@ export default {
   },
   components: {
     CreateAuthor,
-    // AuthorCard,
+    AuthorCard,
     LoginAs,
   },
   data() {
@@ -138,7 +143,7 @@ export default {
   watch: {
     $route() {
       // if navigating to another route, lets close modal
-      this.$emit("close");
+      // this.$emit("close");
       // problematic for luma doc
     },
   },

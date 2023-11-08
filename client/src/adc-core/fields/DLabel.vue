@@ -4,20 +4,21 @@
       <component :is="tag" :class="tag === 'label' ? 'u-label' : ''">
         {{ str }}
       </component>
-      &nbsp;
-      <button
-        type="button"
-        class="u-button u-button_icon"
-        :style="icon_styles"
-        v-if="instructions"
-      >
-        <b-icon
-          :icon="!show_instructions ? 'info-circle' : 'info-circle-fill'"
-          :class="{
-            'is--active': show_instructions,
-          }"
-        />
-      </button>
+      <template v-if="instructions">
+        &nbsp;
+        <button
+          type="button"
+          class="u-button u-button_icon"
+          :style="icon_styles"
+        >
+          <b-icon
+            :icon="!show_instructions ? 'info-circle' : 'info-circle-fill'"
+            :class="{
+              'is--active': show_instructions,
+            }"
+          />
+        </button>
+      </template>
     </div>
     <div class="u-instructions" v-if="show_instructions">
       <small v-html="instructions" />

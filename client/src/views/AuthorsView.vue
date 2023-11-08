@@ -1,19 +1,28 @@
 <template>
-  <div>
-    <template v-for="author in authors">
-      <AuthorCard
-        v-if="!connected_as"
-        :key="author.$path"
-        :author="author"
-        :links_to_author_page="true"
-      />
-      <AuthorCard
-        v-else
-        :key="author.$path"
-        :author="author"
-        :links_to_author_page="true"
-      />
-    </template>
+  <div class="_authorsView">
+    <div class="_backBtn">
+      <router-link :to="'/'" class="u-buttonLink">
+        <b-icon icon="arrow-left-short" />
+        {{ $t("home") }}
+      </router-link>
+    </div>
+
+    <div class="_allAuthors">
+      <template v-for="author in authors">
+        <AuthorCard
+          v-if="!connected_as"
+          :key="author.$path"
+          :author="author"
+          :links_to_author_page="true"
+        />
+        <AuthorCard
+          v-else
+          :key="author.$path"
+          :author="author"
+          :links_to_author_page="true"
+        />
+      </template>
+    </div>
   </div>
 </template>
 <script>
@@ -48,4 +57,12 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._authorsView {
+  padding: calc(var(--spacing) * 1);
+}
+._allAuthors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+</style>
