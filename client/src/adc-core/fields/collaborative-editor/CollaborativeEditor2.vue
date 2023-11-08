@@ -491,7 +491,7 @@ export default {
       this.editor_is_enabled = true;
     },
     async disableEditor() {
-      if (!this.editor_is_enabled) return false;
+      if (!this.editor_is_enabled || this.is_disabling_editor) return false;
 
       console.log(`CollaborativeEditor2 • disableEditor`);
       this.is_disabling_editor = true;
