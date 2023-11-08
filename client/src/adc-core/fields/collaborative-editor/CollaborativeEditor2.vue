@@ -164,6 +164,7 @@ export default {
       editor: null,
       text_deltas: null,
       toolbar_el: null,
+      tooltip_el: null,
 
       rtc: {
         socket: null,
@@ -197,6 +198,7 @@ export default {
   async mounted() {
     await this.initEditor();
     this.toolbar_el = this.$el.querySelector(".ql-toolbar");
+    this.tooltip_el = this.$el.querySelector(".ql-tooltip");
     if (this.edit_on_mounted === true) this.enableEditor();
   },
   beforeDestroy() {
@@ -486,12 +488,15 @@ export default {
 
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
-      this.$emit(`contentIsEdited`, this.toolbar_el);
+      this.$emit(`contentIsEdited`, {
+        $toolbar: this.toolbar_el,
+        $tooltip: this.tooltip_el,
+      });
       this.$el.style.removeProperty("min-height");
       this.editor_is_enabled = true;
     },
     async disableEditor() {
-      if (!this.editor_is_enabled) return false;
+      if (!this.editor_is_enabled || this.is_disabling_editor) return false;
 
       console.log(`CollaborativeEditor2 • disableEditor`);
       this.is_disabling_editor = true;
@@ -528,6 +533,14 @@ export default {
         this.$el
           .querySelector("._toolbarAndEditorContainer")
           .prepend(this.toolbar_el);
+      if (
+        !this.tooltip_el.parentElement.classList.contains(
+          "_toolbarAndEditorContainer"
+        )
+      )
+        this.$el
+          .querySelector("._toolbarAndEditorContainer")
+          .prepend(this.tooltip_el);
     },
 
     restoreVersion(content) {
@@ -1027,10 +1040,6 @@ export default {
       }
     }
 
-    .ql-tooltip {
-      z-index: 10;
-    }
-
     .ql-container.ql-disabled {
       .ql-editor > * {
         cursor: inherit;
@@ -1125,7 +1134,7 @@ export default {
   ._savingStatus,
   ._savedStatus,
   ._archivesBtn {
-    min-width: 9rem;
+    min-width: 9.5rem;
   }
   ._savedStatus {
     background-color: var(--c-vert);
@@ -1332,6 +1341,35 @@ export default {
 
   .ql-picker.ql-size .ql-picker-label[data-value]::before {
     font-size: 100% !important;
+  }
+}
+
+.ql-tooltip.ql-tooltip {
+  z-index: 10;
+  line-height: 26px;
+  margin-right: 8px;
+
+  &[data-mode="link"]::before {
+    content: "Lien :";
+  }
+
+  &.ql-hidden {
+    display: none;
+  }
+
+  &.ql-editing {
+    a.ql-action::after {
+      border-right: 0px;
+      content: "OK";
+      padding-right: 0px;
+    }
+  }
+
+  a.ql-action::after {
+    border-right: 1px solid #ccc;
+    content: "Modifier";
+    margin-left: 16px;
+    padding-right: 8px;
   }
 }
 

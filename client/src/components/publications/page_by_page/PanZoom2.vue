@@ -41,16 +41,7 @@ export default {
   },
   data() {
     return {
-      viewerOptions: {
-        useMouseDrag: true,
-        useWheelScroll: true,
-        useAutoZoom: true,
-        zoomRange: [0.1, 10],
-        maxPinchWheel: 10,
-
-        displayVerticalScroll: true,
-        displayHorizontalScroll: true,
-      },
+      viewerOptions: {},
 
       scroll_left: undefined,
       scroll_top: undefined,
@@ -59,7 +50,24 @@ export default {
       debounce_scroll: undefined,
     };
   },
-  created() {},
+  created() {
+    this.viewerOptions = {
+      useMouseDrag: true,
+      useWheelScroll: true,
+      useAutoZoom: true,
+      zoomRange: [0.4, 10],
+      maxPinchWheel: 10,
+
+      // does not work well: some elements become inaccessible when zoomed in, the page becomes top left bound on small zooms…
+      // rangeX: this.panzoom_rangex,
+      // rangeY: this.panzoom_rangey,
+      // rangeOffsetX: [-200, +200],
+      // rangeOffsetY: [-200, +200],
+
+      displayVerticalScroll: true,
+      displayHorizontalScroll: true,
+    };
+  },
   mounted() {
     this.$nextTick(() => {
       this.scrollToCorner({ animate: false });
@@ -75,7 +83,16 @@ export default {
       this.updateScale(this.scale);
     },
   },
-  computed: {},
+  computed: {
+    panzoom_rangex() {
+      const amplitude = this.$root.window.innerWidth - 100;
+      return [-amplitude, amplitude];
+    },
+    panzoom_rangey() {
+      const amplitude = this.$root.window.innerHeight - 100;
+      return [-amplitude, amplitude];
+    },
+  },
   methods: {
     onScroll() {
       // console.log("onScroll");

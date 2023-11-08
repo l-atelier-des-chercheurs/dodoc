@@ -1,21 +1,23 @@
 <template>
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <sl-icon name="arrow-left-short" label="" />
+      <button
+        type="button"
+        class="u-button u-button_small u-button_black"
+        @click="$emit('close')"
+      >
+        <b-icon icon="arrow-left-short" />
         {{ $t("close") }}
       </button>
       <div class="u-spacingBottom _titleRow">
-        <div>
-          <button
-            type="button"
-            class="u-button u-button_transparent"
-            @click="$emit('prevPage')"
-            :disabled="active_page_number <= 0"
-          >
-            <sl-icon name="arrow-left-circle" />
-          </button>
-        </div>
+        <button
+          type="button"
+          class="u-button u-button_transparent u-button_icon"
+          @click="$emit('prevPage')"
+          :disabled="active_page_number <= 0"
+        >
+          <b-icon icon="arrow-left-circle" />
+        </button>
         <div>
           <transition name="fade_fast" mode="out-in">
             <b :key="active_page_number"
@@ -37,16 +39,14 @@
             </span>
           </transition>
         </div>
-        <div>
-          <button
-            type="button"
-            class="u-button u-button_transparent"
-            @click="$emit('nextPage')"
-            :disabled="active_page_number >= pages.length - 1"
-          >
-            <sl-icon name="arrow-right-circle" />
-          </button>
-        </div>
+        <button
+          type="button"
+          class="u-button u-button_transparent u-button_icon"
+          @click="$emit('nextPage')"
+          :disabled="active_page_number >= pages.length - 1"
+        >
+          <b-icon icon="arrow-right-circle" />
+        </button>
       </div>
 
       <div class="_scale">
@@ -161,7 +161,7 @@
                 v-if="can_edit"
                 @click="show_all_medias = !show_all_medias"
               >
-                <sl-icon name="collection" />
+                <b-icon icon="collection" />
                 <template v-if="!show_all_medias">
                   {{ $t("show") }}
                 </template>
@@ -238,7 +238,7 @@
                 class="u-buttonLink"
                 @click="duplicateModule"
               >
-                <sl-icon name="file-plus" />
+                <b-icon icon="file-plus" />
                 {{ $t("duplicate") }}
               </button>
             </div>
@@ -441,6 +441,7 @@
         :key="'text-toolbar-' + active_page_number"
       >
         <div ref="editor_toolbar" class="_editorToolbar" />
+        <div ref="editor_tooltip" class="_editorToolbar" />
 
         <!-- <RangeValueInput
           class="u-spacingBottom"
@@ -511,12 +512,18 @@ export default {
   },
   created() {},
   mounted() {
-    this.$eventHub.$on(`module.text_editing_enabled`, this.displayToolbar);
+    this.$eventHub.$on(
+      `module.text_editing_enabled`,
+      this.displayToolbarAndToolTip
+    );
     this.$eventHub.$on(`module.text_editing_disabled`, this.removeToolbar);
     this.$eventHub.$on(`module.open_remove_modal`, this.openRemoveModal);
   },
   beforeDestroy() {
-    this.$eventHub.$off(`module.moveToolbar`, this.displayToolbar);
+    this.$eventHub.$off(
+      `module.text_editing_enabled`,
+      this.displayToolbarAndToolTip
+    );
     this.$eventHub.$off(`module.text_editing_disabled`, this.removeToolbar);
     this.$eventHub.$off(`module.open_remove_modal`, this.openRemoveModal);
   },
@@ -575,10 +582,13 @@ export default {
     },
   },
   methods: {
-    displayToolbar(node) {
+    displayToolbarAndToolTip({ $toolbar, $tooltip }) {
       this.has_editor_toolbar = true;
       this.$nextTick(() => {
-        if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.append(node);
+        if (this.$refs.editor_toolbar)
+          this.$refs.editor_toolbar.append($toolbar);
+        if (this.$refs.editor_tooltip)
+          this.$refs.editor_tooltip.append($tooltip);
       });
 
       // this.$nextTick(() => {
@@ -722,8 +732,10 @@ export default {
   align-items: center;
   justify-content: space-between;
 
+  padding: calc(var(--spacing) / 2) 0;
+
   button {
-    font-size: var(--sl-font-size-large);
+    font-size: var(--sl-font-size-medium);
   }
 }
 </style>

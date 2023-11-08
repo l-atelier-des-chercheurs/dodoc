@@ -36,6 +36,7 @@
     </div>
 
     <div class="u-mediaOptions" v-if="can_edit">
+      <DownloadFolder :path="project.$path" />
       <div class="">
         <button
           type="button"
@@ -52,7 +53,6 @@
         :proposed_title="`${$t('copy_of')} ${project.title}`"
         @close="show_dup_modal = false"
       />
-      <DownloadFolder :path="project.$path" />
       <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
     </div>
 

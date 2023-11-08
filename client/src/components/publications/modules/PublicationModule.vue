@@ -156,11 +156,9 @@
                   {{ $t("no_coordinates") }}
                 </div>
               </div>
-
               <!-- <div class="u-instructions" v-if="has_coordinates">
                 {{ $t("placed_on_map") }}
               </div> -->
-
               <div class="">
                 <button
                   type="button"
@@ -177,13 +175,8 @@
                   </template>
                 </button>
               </div>
-              <div class="">
-                <button
-                  v-if="has_coordinates"
-                  type="button"
-                  class="u-buttonLink"
-                  @click="eraseCoords"
-                >
+              <div class="" v-if="has_coordinates">
+                <button type="button" class="u-buttonLink" @click="eraseCoords">
                   <b-icon icon="x-circle" />
                   {{ $t("erase") }}
                 </button>
@@ -828,7 +821,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
 
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
 }
 ._saveBtn {
   flex: 0 0 auto;
@@ -846,7 +839,7 @@ export default {
 
 ._buttonRow {
   display: flex;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
   align-items: center;
 

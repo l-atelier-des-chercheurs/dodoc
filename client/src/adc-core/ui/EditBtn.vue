@@ -61,11 +61,6 @@ export default {
           label: this.$t("close"),
           icon: "x-lg",
         };
-      else if (this.btn_type === "select_author")
-        return {
-          label: this.$t("login"),
-          icon: "box-arrow-in-right",
-        };
       else if (this.btn_type === "check")
         return {
           label: this.$t("ok"),
@@ -81,6 +76,12 @@ export default {
       if (this.btn_type === "fullscreen" || this.btn_type === "close")
         return `
           --color2: var(--c-noir);
+        `;
+      if (this.btn_type === "add")
+        return `
+          --color1: white;
+          --color2: var(--c-noir);
+          --color-hover-icon: white;
         `;
       if (this.btn_type === "fullscreen-exit")
         return `
@@ -114,9 +115,6 @@ export default {
   width: 24px;
   height: 24px;
   flex: 0 0 24px;
-
-  // backdrop-filter: blur(5px);
-  background: var(--color1);
 
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);

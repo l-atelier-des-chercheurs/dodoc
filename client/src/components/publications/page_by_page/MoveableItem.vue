@@ -246,8 +246,8 @@ export default {
     turnPXtoCM(num) {
       return this.roundToDec(num / this.magnification);
     },
-    contentIsEdited($toolbar) {
-      this.$eventHub.$emit(`module.text_editing_enabled`, $toolbar);
+    contentIsEdited(event) {
+      this.$eventHub.$emit(`module.text_editing_enabled`, event);
       this.content_is_edited = true;
     },
     contentIsNotEdited() {
@@ -563,6 +563,13 @@ export default {
     border-color: var(--set-outlineColor);
     border-width: var(--set-outlineWidth);
     border-style: solid;
+  }
+
+  ._publicationModule[data-type="text"] {
+    // .ql-tooltip {
+    //   position: fixed;
+    //   width: 320px !important;
+    // }
   }
 
   ._publicationModule[data-type="shape"] {

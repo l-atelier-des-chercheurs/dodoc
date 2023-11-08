@@ -31,8 +31,14 @@ const routes = [
       ),
   },
   {
+    path: "/@",
+    name: "Tous les auteurs",
+    component: () =>
+      import(/* webpackChunkName: "AuthorsView" */ "../views/AuthorsView.vue"),
+  },
+  {
     path: "/@:author_slug",
-    name: "Contributeur",
+    name: "Auteur",
     component: () =>
       import(/* webpackChunkName: "AuthorView" */ "../views/AuthorView.vue"),
   },

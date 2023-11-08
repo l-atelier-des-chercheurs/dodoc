@@ -775,10 +775,10 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: all 0.04s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.08s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter {
-    transform: scale(0.98);
+    transform: scale(0.97);
     opacity: 0;
   }
   &-leave-to {

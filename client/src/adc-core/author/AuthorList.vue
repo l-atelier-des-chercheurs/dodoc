@@ -38,10 +38,20 @@
 
       <fieldset v-if="connected_as && current_mode === 'login'">
         <legend class="u-label">{{ $t("your_account") }}</legend>
+        <!-- 
+        <AuthorTag
+          :key="connected_as.$path"
+          :path="connected_as.$path"
+          :links_to_author_page="true"
+          @navToPage="$emit('close')"
+        /> -->
+
         <AuthorCard
           :key="connected_as.$path"
           :author="connected_as"
+          :context="'preview'"
           class="u-spacingBottom"
+          @navToPage="$emit('close')"
         />
         <button type="button" class="u-button u-button_red" @click="logout">
           {{ $t("logout") }}
@@ -55,7 +65,15 @@
           {{ $t("no_accounts_yet") }}
         </small>
 
-        <DetailsPane
+        <router-link
+          :to="'/@'"
+          @click.native="$emit('close')"
+          class="u-buttonLink"
+        >
+          <b-icon icon="person-video2" />
+          {{ $t("list_of_contributors") }}
+        </router-link>
+        <!-- <DetailsPane
           v-else
           :header="$t('list_of_contributors')"
           :icon="'person-video2'"
@@ -80,7 +98,7 @@
               />
             </template>
           </div>
-        </DetailsPane>
+        </DetailsPane> -->
       </template>
     </div>
   </BaseModal2>
@@ -107,21 +125,25 @@ export default {
       current_mode: "login",
       show_authors_list: false,
       authors: [],
+      path: "authors",
     };
   },
   created() {},
   async mounted() {
     this.authors = await this.$api.getFolders({
-      path: `authors`,
+      path: this.path,
     });
+    this.$api.join({ room: this.path });
     // if no authors, then switch to register
     if (this.authors.length === 0) this.current_mode = "create";
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.path });
+  },
   watch: {
     $route() {
       // if navigating to another route, lets close modal
-      this.$emit("close");
+      // this.$emit("close");
       // problematic for luma doc
     },
   },

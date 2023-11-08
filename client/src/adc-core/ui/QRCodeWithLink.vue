@@ -1,25 +1,45 @@
 <template>
   <div class="_QRCodeWithLink">
     <div class="_link">
-      <a :href="url" target="_blank">{{ url }}</a>
-    </div>
-    <div class="_qr">
-      <div class="_fsButton">
-        <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
+      <div class="u-inputGroup">
+        <input type="text" v-model="local_url" ref="urlToCopy" />
+        <button
+          type="button"
+          class="u-button u-button_icon u-suffix _clipboardBtn"
+          @click="copyToClipboard"
+        >
+          <b-icon icon="clipboard" v-if="!is_copied" />
+          <b-icon icon="clipboard-check" v-else />
+        </button>
       </div>
-
-      <qrcode ref="qrCode" :value="url" tag="canvas" :options="qr_options" />
-      <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
-        <qrcode ref="qrCode" :value="url" tag="canvas" :options="qr_options" />
-      </FullscreenView>
+      <a :href="local_url" target="_blank" class="u-buttonLink">
+        {{ $t("open") }} <b-icon slot="prefix" icon="box-arrow-up-right" />
+      </a>
     </div>
+
+    <transition name="pagechange" mode="out-in">
+      <div class="_qr" :key="local_url">
+        <div class="_fsButton">
+          <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
+        </div>
+        <qrcode
+          ref="qrCode"
+          :value="local_url"
+          tag="canvas"
+          :options="qr_options"
+        />
+        <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
+          <qrcode
+            ref="qrCode"
+            :value="local_url"
+            tag="canvas"
+            :options="qr_options"
+          />
+        </FullscreenView>
+      </div>
+    </transition>
     <small>
-      <a
-        :download="'qr_code.png'"
-        :href="canvas_dataurl"
-        target="_blank"
-        class="u-buttonLink"
-      >
+      <a class="u-buttonLink" @click="downloadCanvas">
         {{ $t("download_this_qr_code") }}
       </a>
     </small>
@@ -37,27 +57,60 @@ export default {
   },
   data() {
     return {
+      local_url: this.url,
       qr_options: {
         width: 1200,
         margin: 4,
       },
       canvas_dataurl: undefined,
       show_fullscreen: false,
+
+      is_copied: false,
     };
   },
   created() {},
   mounted() {
     this.$nextTick(() => {
-      setTimeout(() => {
-        if (this.$refs.qrCode)
-          this.canvas_dataurl = this.$refs.qrCode.$el.toDataURL();
-      }, 100);
+      this.createDownloadFromCanvas();
     });
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    local_url() {
+      this.$nextTick(() => {
+        this.createDownloadFromCanvas();
+      });
+    },
+  },
   computed: {},
-  methods: {},
+  methods: {
+    createDownloadFromCanvas() {
+      if (this.$refs.qrCode)
+        this.canvas_dataurl = this.$refs.qrCode.$el.toDataURL();
+    },
+    copyToClipboard() {
+      this.is_copied = false;
+
+      // Get the text field
+      var copyText = this.$refs.urlToCopy;
+
+      // Select the text field
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // For mobile devices
+
+      // Copy the text inside the text field
+      navigator.clipboard.writeText(copyText.value);
+
+      this.is_copied = true;
+    },
+    downloadCanvas() {
+      var link = document.createElement("a");
+      link.download = "qr_code.png";
+      const canvas_dataurl = this.$refs.qrCode.$el.toDataURL();
+      link.href = canvas_dataurl;
+      link.click();
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -112,5 +165,9 @@ export default {
     height: 100% !important;
     aspect-ratio: none;
   }
+}
+
+._clipboardBtn {
+  margin: calc(var(--spacing) / 2);
 }
 </style>

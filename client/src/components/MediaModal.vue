@@ -24,6 +24,45 @@
           :context="'full'"
           :show_fs_button="true"
         />
+
+        <transition name="scaleInFade" mode="out-in">
+          <div
+            class="_navBtns"
+            v-if="position_in_list !== 'alone' && show_nav_btn"
+            :key="file.$path"
+          >
+            <span>
+              <button
+                type="button"
+                class="u-button u-button_transparent _navBtn _leftArrow"
+                v-if="position_in_list !== 'first'"
+                @click="$emit('prevMedia')"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+                  <path
+                    d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+                    style="fill: var(--c-noir)"
+                  />
+                </svg>
+              </button>
+            </span>
+            <span>
+              <button
+                type="button"
+                class="u-button u-button_transparent _navBtn _rightArrow"
+                v-show="position_in_list !== 'last'"
+                @click="$emit('nextMedia')"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+                  <path
+                    d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+                    style="fill: #353535"
+                  />
+                </svg>
+              </button>
+            </span>
+          </div>
+        </transition>
       </div>
       <div class="_meta" v-if="!select_mode">
         <div class="u-spacingBottom">
@@ -114,41 +153,6 @@
         </button>
       </div>
     </div>
-
-    <!-- <transition name="scaleInFade" mode="out-in"> -->
-    <div class="_navBtns" v-if="position_in_list !== 'alone' && show_nav_btn">
-      <span>
-        <button
-          type="button"
-          class="u-button u-button_transparent _navBtn _leftArrow"
-          v-if="position_in_list !== 'first'"
-          @click="$emit('prevMedia')"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
-            <path
-              d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
-              style="fill: var(--c-noir)"
-            />
-          </svg>
-        </button>
-      </span>
-      <span>
-        <button
-          type="button"
-          class="u-button u-button_transparent _navBtn _rightArrow"
-          v-show="position_in_list !== 'last'"
-          @click="$emit('nextMedia')"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
-            <path
-              d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
-              style="fill: #353535"
-            />
-          </svg>
-        </button>
-      </span>
-    </div>
-    <!-- </transition> -->
   </div>
 </template>
 <script>
@@ -208,7 +212,8 @@ export default {
   }
 
   ._mediaModal--content {
-    background: var(--c-noir);
+    // background: var(--c-noir);
+    // background: var(--c-gris_clair);
     // border-radius: var(--border-radius);
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -220,7 +225,7 @@ export default {
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.7);
     position: relative;
     z-index: 100;
 
@@ -282,10 +287,10 @@ export default {
 
 ._mediaModal--content {
   position: relative;
-  height: calc(100% - 4px);
-  width: calc(100% - 4px);
-  margin-top: 2px;
-  margin-left: 2px;
+  border-top: 1px solid var(--c-gris);
+
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-flow: row nowrap;
 
@@ -293,15 +298,14 @@ export default {
     &._preview {
       position: relative;
       flex: 10 1 320px;
-      color: white;
       min-height: 50vh;
-
+      border: 2px solid var(--c-gris);
+      background: var(--c-gris);
       // height: 50%;
     }
     &._meta {
       background: white;
-      flex: 1 0 0;
-      min-width: 280px;
+      flex: 2 0 200px;
       height: 100%;
       overflow: auto;
     }
@@ -326,8 +330,8 @@ export default {
     height: 2rem;
   }
   &:not(:hover) {
-    margin-top: -10px;
-    margin-right: -10px;
+    // margin-top: -10px;
+    // margin-right: -10px;
   }
 }
 
@@ -339,7 +343,7 @@ export default {
   height: 100%;
 
   padding: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 5);
+  padding-bottom: calc(var(--spacing) * 1);
   pointer-events: none;
 
   display: flex;

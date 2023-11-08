@@ -19,17 +19,24 @@
     </div>
     <div v-if="!show_image_only" class="_infos">
       <div class="_name">
-        <b-icon
-          v-if="
-            authorIsInstance({
-              field: '$admins',
-              folder_path: author.$path,
-            })
+        <component
+          :is="
+            links_to_author_page && !show_image_only ? 'router-link' : 'span'
           "
-          icon="gear"
-          :aria-label="$t('admin')"
-        />
-        {{ author.name }}
+          :to="author_url"
+        >
+          <b-icon
+            v-if="
+              authorIsInstance({
+                field: '$admins',
+                folder_path: author.$path,
+              })
+            "
+            icon="gear"
+            :aria-label="$t('admin')"
+          />
+          {{ author.name }}
+        </component>
       </div>
       <!-- <div
         class="u-instructions"
@@ -46,12 +53,12 @@
       <div class="_path">@{{ getFilename(author.$path) }}</div>
     </div>
 
-    <router-link
+    <!-- <router-link
       v-if="links_to_author_page && !show_image_only"
-      :to="component_to"
+      :to="author_url"
     >
       <b-icon icon="person-lines-fill" :aria-label="$t('page')" />
-    </router-link>
+    </router-link> -->
 
     <button
       type="button"
@@ -109,7 +116,7 @@ export default {
       if (this.$listeners.click) return "button";
       return "span";
     },
-    component_to() {
+    author_url() {
       return this.createURLFromPath(this.path);
     },
   },

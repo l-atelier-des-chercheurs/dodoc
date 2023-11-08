@@ -53,7 +53,7 @@
         >
           <template v-for="(_module, index) in section_modules_list">
             <div class="_spacer" :key="'mc_' + index">
-              <!-- <ModuleCreator
+              <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
                 :types_available="['text', 'medias', 'files', 'link']"
@@ -61,7 +61,7 @@
                   ({ meta_filenames }) =>
                     insertModules({ meta_filenames, index })
                 "
-              /> -->
+              />
             </div>
             <PublicationModule
               class="_mediaPublication"
@@ -97,7 +97,7 @@
         <ModuleCreator
           v-if="can_edit"
           class="_lastModule"
-          :start_collapsed="true"
+          :start_collapsed="false"
           :publication_path="publication.$path"
           :types_available="['text', 'medias', 'files', 'link']"
           @addModules="addModules"
@@ -271,9 +271,16 @@ export default {
   justify-content: center;
   padding: 0 calc(var(--spacing) * 2);
 
+  transition: all 0.2s linear;
+
   ::v-deep {
     ._moduleCreator {
-      padding: calc(var(--spacing) / 1);
+      // position: absolute;
+      background: white;
+      padding: calc(var(--spacing) / 4);
+      z-index: 1;
+      border-radius: 0;
+
       &.is--collapsed {
         padding: 0;
       }

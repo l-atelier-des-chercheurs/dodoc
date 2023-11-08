@@ -3,7 +3,16 @@
     <section class="_scrollBox">
       <div class="_importButton">
         <!-- // TODO create component -->
-        <label :for="id + '-add_file'" @drop="onDrop">
+        <label
+          :class="{
+            'is--dragover': is_dragover,
+          }"
+          :for="id + '-add_file'"
+          @dragover="onDragover"
+          @dragenter="onDragEnter"
+          @dragleave="onDragLeave"
+          @drop="onDrop"
+        >
           <div class="u-button">
             <svg width="20" height="17" viewBox="0 0 20 17">
               <path
@@ -288,6 +297,7 @@ export default {
 
       selected_medias: [],
       batch_mode: false,
+      is_dragover: false,
 
       tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
 
@@ -487,7 +497,19 @@ export default {
       if ($event.clipboardData.files?.length > 0)
         this.files_to_import = Array.from($event.clipboardData.files);
     },
+    onDragover($event) {
+      $event.preventDefault();
+    },
+    onDragEnter($event) {
+      $event.preventDefault();
+      this.is_dragover = true;
+    },
+    onDragLeave($event) {
+      $event.preventDefault();
+      this.is_dragover = false;
+    },
     onDrop($event) {
+      this.is_dragover = false;
       if ($event.dataTransfer.files?.length > 0)
         this.files_to_import = Array.from($event.dataTransfer.files);
     },
@@ -635,7 +657,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 2px;
-  padding: 0 calc(var(--spacing) / 2);
+  padding: 0 2px;
 
   &[data-tilemode="medium"] {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -702,6 +724,7 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
+  gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 1);
   pointer-events: none;
 
@@ -775,14 +798,22 @@ export default {
     width: 100%;
     max-width: none;
 
-    border: 2px dotted white;
+    border: 3px dotted white;
     border-radius: 10px;
     box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
     padding: calc(var(--spacing) / 2);
 
     &:hover,
-    &:focus-visible {
+    &:focus-visible,
+    &.is--dragover {
       border-color: var(--c-rouge);
+
+      > * {
+        pointer-events: none;
+      }
+    }
+    &.is--dragover {
+      background-color: var(--c-rouge);
     }
   }
   .u-button {

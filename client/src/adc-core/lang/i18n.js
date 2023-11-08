@@ -105,6 +105,7 @@ export default function () {
         presentation_of_instance_instructions: `
           Apparaîtra sur la page d’accueil uniquement.
           `,
+        presentation: "Présentation",
         general_password: "mot de passe général",
         general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
         peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
@@ -575,6 +576,7 @@ export default function () {
 
         drop_here: "Déposer ici",
         or_drag_drop_file_here: "Ou déposer des fichiers ici",
+        drop_to_import: "Déposer pour importer",
         enable: "Activer",
 
         // effets
@@ -592,8 +594,14 @@ export default function () {
         color: "couleur",
         flip_horizontally: "Retourner horizontalement",
         flip_vertically: "Retourner verticalement",
+        advanced_options: "Options avancées",
+        yes: "Oui",
+
         brightness: "Luminosité",
         contrast: "Contraste",
+        lines_density: "Densité de lignes",
+        lines_angle: "Angle des lignes",
+        number_of_colors: "Nombre de couleurs",
         blur: "Flou",
         hue: "Teinte",
         saturation: "Saturation",
@@ -845,7 +853,6 @@ export default function () {
         duplicate: "Dupliquer",
         duplicate_or_move: "Dupliquer ou déplacer",
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
-        duplicate_or_move_media: "Dupliquer ou déplacer ce média",
         dm_instr:
           "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, fabrications, publications) seront copiées.",
         dmm_instr:
@@ -884,7 +891,7 @@ export default function () {
         will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
         "module.label.text": "Bloc de texte",
-        "module.label.mosaic": "Mosaïque de médias",
+        "module.label.mosaic": "Mosaïque",
         "module.label.carousel": "Carrousel",
         "module.label.files": "Liste de fichiers",
         object_fit_cover: "Remplir le cadre",
