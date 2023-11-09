@@ -156,10 +156,7 @@ export default {
       }).map(({ _module }) => _module);
     },
     story_styles() {
-      const width = (this.publication.story_width || 900) + "px";
-      if (this.publication.story_is_not_responsive === true)
-        return { width, maxWidth: "none" };
-      else return { maxWidth: width };
+      return this.makeStoryStyles({ publication: this.publication });
     },
   },
   methods: {
@@ -322,7 +319,7 @@ export default {
   align-items: baseline;
   justify-content: space-between;
 
-  margin: calc(var(--spacing) * 2) 0 0;
+  margin: calc(var(--spacing) * 1) 0 0;
 
   // border-bottom: 2px solid var(--c-gris);
   > * {
