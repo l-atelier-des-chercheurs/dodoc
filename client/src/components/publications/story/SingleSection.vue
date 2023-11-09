@@ -9,16 +9,24 @@
           "
         >
           <div class="_text">
-            <TitleField
-              class="_sectionTitle"
-              :field_name="'section_title'"
-              :content="section.section_title || $t('untitled')"
-              :path="section.$path"
-              :required="true"
-              :maxlength="60"
-              :tag="'h1'"
-              :can_edit="can_edit"
-            />
+            <div class="_sectionTitle">
+              <TitleField
+                :field_name="'section_title'"
+                :content="section.section_title || $t('untitled')"
+                :path="section.$path"
+                :required="true"
+                :maxlength="60"
+                :tag="'h1'"
+                :can_edit="can_edit"
+              />
+              <RemoveMenu
+                v-if="can_edit"
+                :remove_text="$t('remove_section')"
+                :show_button_text="false"
+                @remove="removeSection"
+              />
+            </div>
+
             <!-- legacy field – only existing description can be edited -->
             <TitleField
               v-if="section.section_description"
@@ -29,12 +37,6 @@
               :maxlength="1280"
               :input_type="'markdown'"
               :can_edit="can_edit"
-            />
-
-            <RemoveMenu
-              v-if="can_edit"
-              :remove_text="$t('remove_section')"
-              @remove="removeSection"
             />
           </div>
           <div class="_buttons" v-if="can_edit">
@@ -132,6 +134,16 @@ export default {
       module_being_edited: undefined,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        remove_section: "Supprimer le chapitre",
+      },
+      en: {
+        remove_section: "Remove this chapter",
+      },
+    },
+  },
   created() {},
   async mounted() {},
   beforeDestroy() {},
@@ -202,12 +214,12 @@ export default {
       this.module_being_edited = undefined;
     },
     async removeSection() {
+      this.$emit("prevSection");
       await this.removeSection2({
         publication: this.publication,
         group: "sections_list",
         path: this.section.$path,
       });
-      // todo open previous section
     },
 
     async removeModule(path) {
@@ -255,6 +267,8 @@ export default {
 }
 
 ._sectionTitle {
+  display: flex;
+  align-items: baseline;
 }
 
 ._mediaPublication {
