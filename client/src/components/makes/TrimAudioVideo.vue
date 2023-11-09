@@ -488,6 +488,9 @@ export default {
         //   },
         // },
       });
+
+      const gain = this.$el.querySelector(".volume-slider").value / 100 || 1;
+
       await preview_wfpl.load([
         {
           src: this.base_media_url,
