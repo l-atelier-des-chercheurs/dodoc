@@ -215,14 +215,15 @@ export default {
       // map.setSize([current_map_width * ratio, current_map_height * ratio]);
       // map.getView().setResolution(viewResolution * ratio);
 
+      const printSize = [new_map_width, new_map_height];
+      map.setSize(printSize);
       const scaling = Math.min(
         paper_width / current_map_width,
         paper_height / current_map_height
       );
       map.getView().setResolution(viewResolution / scaling);
-      const printSize = [new_map_width, new_map_height];
-      map.setSize(printSize);
     },
+
     printMap() {
       this.is_making_print = true;
 
