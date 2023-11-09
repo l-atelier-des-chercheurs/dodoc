@@ -2,7 +2,12 @@
   <div class="_QRCodeWithLink">
     <div class="_link">
       <div class="u-inputGroup">
-        <input type="text" v-model="local_url" ref="urlToCopy" />
+        <input
+          type="text"
+          v-model="local_url"
+          ref="urlToCopy"
+          class="_urlInput"
+        />
         <button
           type="button"
           class="u-button u-button_icon u-suffix _clipboardBtn"
@@ -167,7 +172,13 @@ export default {
   }
 }
 
+._urlInput {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 ._clipboardBtn {
+  font-size: 1rem;
   margin: calc(var(--spacing) / 2);
 }
 </style>
