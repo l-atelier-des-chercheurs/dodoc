@@ -579,6 +579,20 @@ export default {
   position: relative;
   box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
   // background: var(--c-bleumarine_fonce);
+  --wp-range-slider-label-color: var(--c-noir);
+
+  ::v-deep {
+    .playlist .controls label.volume {
+      font-weight: bold;
+      font-family: inherit;
+      &::before {
+        content: "-";
+      }
+      &::after {
+        content: "+";
+      }
+    }
+  }
 }
 
 ._btnRow {
