@@ -45,69 +45,68 @@
 
       <div class="_topSection">
         <div class="_topSection--left">
-          <div class="u-sameRow">
-            <small v-if="medias.length === 0">
-              {{ $t("no_media_in_project") }}
-            </small>
-            <template v-else-if="medias.length > 0">
-              <div class="_mediaCount">
-                {{ $t("number_of_media") }} = {{ medias.length }}
-                <template v-if="filtered_medias.length !== medias.length">
-                  (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
-                    filtered_medias.length
-                  }})
-                </template>
-              </div>
-              <button
-                type="button"
-                class="u-buttonLink"
-                v-if="!select_mode && !batch_mode"
-                @click="batch_mode = !batch_mode"
-              >
-                <b-icon icon="hand-index" />
-                {{ $t("select") }}
-              </button>
-              <button
-                type="button"
-                class="u-buttonLink"
-                v-if="batch_mode"
-                @click="cancelSelect"
-              >
-                <b-icon icon="x-circle" />
-                {{ $t("cancel") }}
-              </button>
-              <button
-                type="button"
-                class="u-buttonLink"
-                v-if="select_mode || batch_mode"
-                @click="selectAllVisibleMedias"
-              >
-                {{ $t("select_all") }}
-              </button>
-            </template>
-          </div>
+          <small v-if="medias.length === 0">
+            {{ $t("no_media_in_project") }}
+          </small>
+          <template v-else-if="medias.length > 0">
+            <div class="_mediaCount">
+              {{ $t("number_of_media") }} = {{ medias.length }}
+              <template v-if="filtered_medias.length !== medias.length">
+                (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
+                  filtered_medias.length
+                }})
+              </template>
+            </div>
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="!select_mode && !batch_mode"
+              @click="batch_mode = !batch_mode"
+            >
+              <b-icon icon="hand-index" />
+              {{ $t("select") }}
+            </button>
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="batch_mode"
+              @click="cancelSelect"
+            >
+              <b-icon icon="x-circle" />
+              {{ $t("cancel") }}
+            </button>
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="select_mode || batch_mode"
+              @click="selectAllVisibleMedias"
+            >
+              {{ $t("select_all") }}
+            </button>
+          </template>
         </div>
         <div class="_topSection--right">
-          <div class="_groupBy">
-            <select
-              size="small"
-              :disabled="show_only_media_type && show_only_media_type !== 'all'"
-              v-model="type_of_media_to_display"
-              :class="{
-                'is--active': type_of_media_to_display !== 'all',
-              }"
-            >
-              <option
-                v-for="type_of_media in types_of_medias"
-                :key="type_of_media.key"
-                :value="type_of_media.key"
-                v-text="
-                  type_of_media.label +
-                  ` (${quantityOfMediaWithType(type_of_media.key)})`
-                "
-              />
-            </select>
+          <select
+            class="_selectMediaType"
+            size="small"
+            :disabled="show_only_media_type && show_only_media_type !== 'all'"
+            v-model="type_of_media_to_display"
+            :class="{
+              'is--active': type_of_media_to_display !== 'all',
+            }"
+          >
+            <option
+              v-for="type_of_media in types_of_medias"
+              :key="type_of_media.key"
+              :value="type_of_media.key"
+              v-text="
+                type_of_media.label +
+                ` (${quantityOfMediaWithType(type_of_media.key)})`
+              "
+            />
+          </select>
 
+          <div class="_groupBy">
             <template v-if="tile_mode !== 'map'">
               <div
                 v-for="group_option in group_options"
@@ -682,7 +681,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
 
   // background: var(--color-collect);
   z-index: 1;
@@ -696,7 +695,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-start;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 }
 ._topSection--right {
   flex: 1 1 auto;
@@ -704,7 +703,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 }
 
 ._gridSection {
@@ -714,6 +713,7 @@ export default {
 ._mediaCount {
   // color: black;
   // margin-bottom: 0;
+  font-weight: 600;
 }
 
 ._selectBtn {
@@ -724,7 +724,7 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 1);
   pointer-events: none;
 
@@ -752,6 +752,10 @@ export default {
   }
 }
 
+._selectMediaType {
+  width: 20ch;
+}
+
 ._groupBy {
   display: flex;
   flex-flow: row wrap;
@@ -761,10 +765,6 @@ export default {
   > * {
     display: flex;
     flex-flow: row nowrap;
-  }
-
-  > select {
-    width: 20ch;
   }
 
   input {
@@ -792,7 +792,7 @@ export default {
     flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    gap: calc(var(--spacing) / 2);
+    gap: calc(var(--spacing) / 4);
     cursor: pointer;
 
     width: 100%;
