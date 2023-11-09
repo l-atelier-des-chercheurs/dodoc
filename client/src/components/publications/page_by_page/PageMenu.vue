@@ -203,13 +203,18 @@
 
           <MediaContent
             class="_activeModulePreview"
-            v-if="active_module.module_type === 'mosaic'"
+            v-if="
+              active_module.module_type === 'mosaic' &&
+              firstMedia(active_module)
+            "
             :file="firstMedia(active_module)"
             :resolution="50"
             :context="'preview'"
           />
           <span
-            v-else-if="active_module.module_type === 'text'"
+            v-else-if="
+              active_module.module_type === 'text' && firstMedia(active_module)
+            "
             class="u-textEllipsis u-textEllipsis_3 _textExtract"
           >
             <CollaborativeEditor2
@@ -421,7 +426,10 @@
             @save="updateMediaPubliMeta({ outline_color: $event })"
           />
           <ToggleInput
-            v-if="firstMedia(active_module).$type === 'image'"
+            v-if="
+              firstMedia(active_module) &&
+              firstMedia(active_module).$type === 'image'
+            "
             class="u-spacingBottom"
             :content="active_module.show_fs_button"
             :label="$t('show_fs_button')"
