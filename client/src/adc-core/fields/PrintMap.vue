@@ -31,7 +31,7 @@
       @click="printMap()"
     >
       <b-icon class="inlineSVG" icon="printer" />
-      {{ $t("export_pdf") }}
+      {{ $t("export_in_pdf") }}
     </button>
   </BaseModal2>
 </template>
