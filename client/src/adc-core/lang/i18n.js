@@ -566,13 +566,11 @@ export default function () {
         connected: "Connecté",
         history: "Historique",
 
-        creativecommons_by_nc_sa: "Creative Commons BY NC SA",
-        // todo add explanations
-        creativecommons_by_nc_sa_explanations: "–",
+        creativecommons_by_sa: "Creative Commons BY SA",
+        creativecommons_by_sa_explanations:
+          "Attribution - Partage dans les Mêmes Conditions",
 
         all_rights_reserved: "Tous Droits Réservés",
-        // todo add explanations
-        all_rights_reserved_explanations: "–",
 
         drop_here: "Déposer ici",
         or_drag_drop_file_here: "Ou déposer des fichiers ici",
@@ -608,12 +606,12 @@ export default function () {
         lightness: "Clarté",
         dotscreen: "Noir et blanc (tramé)",
 
-        custom_license: "Licence spécifique",
-        custom_license_explanations:
-          "À venir, la possibilité d’indiquer une licence spécifique avec un lien vers une page de référence",
+        custom_license: "Autre licence",
+        fill_out_your_license: "Renseignez votre licence ici",
 
         copyleft: "Art Libre / Copyleft",
-        copyleft_explanations: "–",
+        copyleft_explanations:
+          "Voir <a href='https://artlibre.org/' target='_blank'>artlibre.org</a> pour une explication de cette licence",
         copy_of: "Copie de",
         remix_of: "Remix de",
         open_copy: "Accéder à la copie",

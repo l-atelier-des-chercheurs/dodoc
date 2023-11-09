@@ -20,13 +20,25 @@
         :str="$t('license')"
         :instructions="can_edit ? $t('licence_instructions') : ''"
       />
+      <!-- pour plus tard, voir https://github.com/l-atelier-des-chercheurs/dodoc/issues/513 -->
       <RadioCheckboxField
+        v-if="can_edit || (!can_edit && project.license !== 'custom_license')"
         :field_name="'license'"
         :input_type="'radio'"
         :content="project.license"
         :path="project.$path"
         :can_edit="can_edit"
         :options="license_options"
+      />
+
+      <TitleField
+        v-if="project.license === 'custom_license'"
+        :label="can_edit ? $t('custom_license') : undefined"
+        :field_name="'custom_license'"
+        :content="project.custom_license || $t('fill_out_your_license')"
+        :input_type="'markdown'"
+        :path="project.$path"
+        :can_edit="can_edit"
       />
     </div>
   </DetailsPane>
@@ -46,14 +58,13 @@ export default {
           label: this.$t("none_f"),
         },
         {
-          key: "creativecommons_by_nc_sa",
-          label: this.$t("creativecommons_by_nc_sa"),
-          instructions: this.$t("creativecommons_by_nc_sa_explanations"),
+          key: "creativecommons_by_sa",
+          label: this.$t("creativecommons_by_sa"),
+          instructions: this.$t("creativecommons_by_sa_explanations"),
         },
         {
           key: "all_rights_reserved",
           label: this.$t("all_rights_reserved"),
-          instructions: this.$t("all_rights_reserved_explanations"),
         },
         {
           key: "copyleft",
@@ -63,7 +74,6 @@ export default {
         {
           key: "custom_license",
           label: this.$t("custom_license"),
-          instructions: this.$t("custom_license_explanations"),
         },
       ],
     };

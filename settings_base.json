@@ -152,6 +152,9 @@
               "license": {
                 "type": "string"
               },
+              "custom_license": {
+                "type": "string"
+              },
               "authors_list": {
                 "type": "string"
               },
