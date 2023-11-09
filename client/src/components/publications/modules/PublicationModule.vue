@@ -220,7 +220,7 @@
         :class="{
           'is--active': is_active_on_map,
         }"
-        @click.stop="showModuleOnMap"
+        @click.stop="pinButtonClick"
       >
         <!-- v-if="pin_options.pin_preview === 'icon'" -->
         <img :src="pin_options.pin_preview_src" />
@@ -436,6 +436,10 @@ export default {
       `module.remove.${this.module_meta_filename}`,
       this.removeModule
     );
+    this.$eventHub.$on(
+      `publication.story.scrollTo.${this.publimodule.$path}`,
+      this.scrollToModule
+    );
     this.$eventHub.$on("publication.map.click", this.setRepickLocation);
 
     this.startIntersectionObserver();
@@ -453,6 +457,10 @@ export default {
       `module.remove.${this.module_meta_filename}`,
       this.removeModule
     );
+    this.$eventHub.$off(
+      `publication.story.scrollTo.${this.publimodule.$path}`,
+      this.scrollToModule
+    );
     this.$eventHub.$off("publication.map.click", this.setRepickLocation);
     this.endIntersectionObserver();
   },
@@ -463,12 +471,6 @@ export default {
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
         else this.$refs.textBloc.disableEditor();
       if (!this.edit_mode) this.is_repicking_location = false;
-    },
-    is_active_on_map: {
-      handler() {
-        if (this.is_active_on_map) this.scrollToModule("smooth");
-      },
-      immediate: true,
     },
   },
   computed: {
@@ -571,6 +573,9 @@ export default {
     showModuleOnMap() {
       this.$eventHub.$emit("publication.map.openPin", this.publimodule.$path);
     },
+    pinButtonClick() {
+      this.scrollToModule();
+    },
     preventClickTraversing(event) {
       // stop click event from bubbling and triggering unselect module
       if (this.edit_mode) event.stopPropagation();
@@ -609,6 +614,7 @@ export default {
     },
     scrollToModule(behavior = "smooth") {
       if (this.$el) {
+        console.log("scrollToModule " + this.publimodule.$path);
         this.$el.scrollIntoView({
           behavior,
           block: "start",
@@ -634,8 +640,17 @@ export default {
           }
         });
       };
+      debugger;
+      let top = "-10%";
+      try {
+        top = window
+          .getComputedStyle(this.$el)
+          .getPropertyValue("scroll-margin-top");
+      } catch (e) {
+        e;
+      }
       this.observer = new IntersectionObserver(callback, {
-        rootMargin: "-10% 0% -80% 0%",
+        rootMargin: `${top} 0% -80% 0%`,
       });
       this.observer.observe(this.$refs.sentinel);
     },

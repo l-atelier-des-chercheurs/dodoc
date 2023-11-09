@@ -775,6 +775,7 @@ export default {
           this.clicked_location.latitude = latitude;
         } else {
           const path = pin.get("path");
+          this.$eventHub.$emit(`publication.story.scrollTo.${path}`);
           this.openPin(path);
         }
       });
