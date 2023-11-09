@@ -918,10 +918,7 @@ export default function () {
         pins: "Épingles",
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
-        layers: "Calques",
-        layer: "Calque",
-        create_layer: "Créer un calque",
-        layer_title: "Nom du calque",
+        feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
