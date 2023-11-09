@@ -7,6 +7,9 @@
         :resolution="220"
         :context="'preview'"
       />
+      <span v-else-if="content">
+        {{ $t("media_not_found") }}
+      </span>
       <div class="_changeBtn">
         <button
           type="button"
@@ -15,7 +18,7 @@
           @click="show_media_picker = true"
         >
           <b-icon icon="image" />
-          {{ $t("pick_base_image") }}
+          {{ $t("pick_base_media") }}
         </button>
         <button
           type="button"
@@ -23,7 +26,7 @@
           v-else
           @click="show_media_picker = true"
         >
-          <b-icon icon="dash-circle" />
+          <b-icon icon="plus-circle" />
           {{ $t("change_base_media") }}
         </button>
 
@@ -54,11 +57,13 @@ export default {
   i18n: {
     messages: {
       fr: {
-        pick_base_image: "Choisir le média de référence",
+        not_found: "Média introuvable",
+        pick_base_media: "Choisir le média de référence",
         change_base_media: "Changer le média de référence",
       },
       en: {
-        pick_base_image: "Pick base image",
+        not_found: "Media not found",
+        pick_base_media: "Pick base media",
         change_base_media: "Change base media",
       },
     },
@@ -111,6 +116,7 @@ export default {
 
     margin: 0 auto;
     width: 100%;
+    max-width: 320px;
     background: var(--c-bleumarine_fonce);
     gap: calc(var(--spacing) / 4);
     padding: calc(var(--spacing) / 4);
@@ -132,7 +138,7 @@ export default {
   }
 }
 ._changeBtn {
-  flex: 1;
+  flex: 1 0 auto;
   text-align: center;
 }
 </style>
