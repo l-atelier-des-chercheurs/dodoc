@@ -495,6 +495,16 @@ export default {
         {
           src: this.base_media_url,
           name: this.base_media.$media_filename,
+          gain,
+          fadeIn: {
+            shape: "logarithmic",
+            duration: 0.3,
+          },
+          fadeOut: {
+            shape: "logarithmic",
+            duration: 0.3,
+          },
+
           selected: {
             start: this.selection.start,
             end: this.selection.end,
