@@ -194,8 +194,10 @@ export default {
     }
   }
 
-  ._noClickZone {
-    width: 100%;
+  &:first-child {
+    ._clickZone {
+      padding-left: 0;
+    }
   }
 
   &.is--active {
