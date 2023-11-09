@@ -138,15 +138,6 @@ export default {
         // dont quit view when unselecting pin
         // if (this.opened_view_meta_filename) this.$emit("toggleView", undefined);
       }
-
-      // this.$nextTick(() => {
-      // scrollto pin in view
-      // if (this.opened_pin_path) {
-      // const module_meta_filename = this.getFilename(this.opened_pin_path);
-      // module_meta_filename;
-      // this.$eventHub.$emit(`module.show.${module_meta_filename}`);
-      // }
-      // });
     },
   },
   computed: {

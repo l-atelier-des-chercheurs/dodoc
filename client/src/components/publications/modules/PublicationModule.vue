@@ -437,10 +437,6 @@ export default {
       this.removeModule
     );
     this.$eventHub.$on("publication.map.click", this.setRepickLocation);
-    this.$eventHub.$on(
-      `module.show.${this.module_meta_filename}`,
-      this.scrollToModule
-    );
 
     this.startIntersectionObserver();
   },
@@ -458,10 +454,6 @@ export default {
       this.removeModule
     );
     this.$eventHub.$off("publication.map.click", this.setRepickLocation);
-    this.$eventHub.$off(
-      `module.show.${this.module_meta_filename}`,
-      this.scrollToModule
-    );
     this.endIntersectionObserver();
   },
   watch: {
