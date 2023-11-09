@@ -111,9 +111,12 @@ export default {
   },
   computed: {},
   methods: {
-    generatePreview() {
+    async generatePreview() {
       // from https://openlayers.org/en/latest/examples/export-pdf.html
       this.is_making_preview = true;
+
+      await new Promise((r) => setTimeout(r, 500));
+
       const format = this.print_format;
       const dim = this.print_formats.find((f) => f.key === format).dimensions;
       const resolution = 300; // DPI
