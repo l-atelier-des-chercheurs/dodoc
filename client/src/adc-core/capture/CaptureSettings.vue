@@ -287,7 +287,12 @@
       </div>
       <div v-else-if="current_mode === 'RemoteSources'">
         <div>
+          {{ $t("feature_not_yet_implemented") }}
+        </div>
+
+        <div class="u-disabled">
           <!-- <label>{{ $t("remote_access") }}</label> -->
+
           <small>{{ $t("connect_to_other_users") }}</small>
           <div class="padding-vert-small padding-bottom-small">
             <label class="u-label" v-html="$t('name_of_stream')" />
@@ -318,7 +323,7 @@
           <LoaderSpinner v-if="share_this_stream.status.loading" />
         </transition>
 
-        <div class="u-switch u-switch-xs">
+        <!-- <div class="u-switch u-switch-xs">
           <input
             id="shareStream"
             type="checkbox"
@@ -327,7 +332,7 @@
           <label class="u-label" for="shareStream">{{
             $t("share_stream")
           }}</label>
-        </div>
+        </div> -->
 
         <div
           v-if="share_this_stream.enabled"

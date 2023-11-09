@@ -934,3 +934,10 @@ input[type="checkbox"]:disabled {
     color: white;
   }
 }
+
+.u-disabled {
+  pointer-events: none;
+  cursor: disabled !important;
+  filter: grayscale(100%);
+  opacity: 0.8;
+}
