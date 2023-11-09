@@ -30,6 +30,12 @@
               :input_type="'markdown'"
               :can_edit="can_edit"
             />
+
+            <RemoveMenu
+              v-if="can_edit"
+              :remove_text="$t('remove_section')"
+              @remove="removeSection"
+            />
           </div>
           <div class="_buttons" v-if="can_edit">
             <!-- <div>
@@ -194,6 +200,14 @@ export default {
     },
     backgroundClick() {
       this.module_being_edited = undefined;
+    },
+    async removeSection() {
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        path: this.section.$path,
+      });
+      // todo open previous section
     },
 
     async removeModule(path) {

@@ -34,10 +34,6 @@
         >
           {{ $t("create_section") }}
         </button>
-        <RemoveMenu
-          :remove_text="$t('remove_section')"
-          @remove="removeSection"
-        />
       </div>
     </template>
     <!-- </DetailsPane> -->
@@ -135,14 +131,6 @@ export default {
         title: this.new_section_title,
       });
       this.$emit("toggleSection", new_section_meta);
-    },
-    async removeSection() {
-      await this.removeSection2({
-        publication: this.publication,
-        group: "sections_list",
-        path: this.opened_section.$path,
-      });
-      // todo open previous section
     },
   },
 };
