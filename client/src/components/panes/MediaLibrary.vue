@@ -708,7 +708,7 @@ export default {
 }
 
 ._gridSection {
-  padding-bottom: calc(var(--spacing) / 2);
+  padding-bottom: 2px;
 }
 
 ._mediaCount {
