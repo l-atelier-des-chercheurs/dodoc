@@ -681,11 +681,10 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 4);
-
-  // background: var(--color-collect);
-  z-index: 1;
+  gap: calc(var(--spacing) / 8);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+
+  z-index: 1;
 
   border-bottom: 2px solid var(--c-orange_clair);
 }
