@@ -49,12 +49,13 @@
               type="color"
               :name="label"
               :id="'_input_' + label"
-              v-model="local_value"
+              v-model.lazy="local_value"
             />
           </div>
         </div>
         <transition name="fade_fast">
           <SaveCancelButtons
+            v-if="!live_editing"
             class="_scb"
             :allow_save="value !== local_value"
             @save="saveColor(local_value)"
@@ -86,6 +87,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    live_editing: {
+      type: Boolean,
+      default: false,
+    },
     label: {
       type: String,
     },
@@ -112,7 +117,7 @@ export default {
   data() {
     return {
       show_color_input: this.value ? true : false,
-      edit_mode: false,
+      edit_mode: this.live_editing,
 
       local_value: this.value || this.default_value,
       previous_value: undefined,
@@ -125,6 +130,9 @@ export default {
     value() {
       this.previous_value = this.local_value;
       this.local_value = this.value;
+    },
+    local_value() {
+      if (this.live_editing) this.saveColor(this.local_value);
     },
     show_color_input() {
       if (!this.show_color_input) {
@@ -142,11 +150,11 @@ export default {
   methods: {
     saveColor(col) {
       this.$emit("save", col);
-      this.edit_mode = false;
+      if (!this.live_editing) this.edit_mode = false;
     },
     cancelColor() {
       this.local_value = this.value;
-      this.edit_mode = false;
+      if (!this.live_editing) this.edit_mode = false;
     },
   },
 };

@@ -188,6 +188,8 @@
 
               <ColorInput
                 class="u-spacingBottom"
+                :can_toggle="false"
+                :live_editing="true"
                 :label="$t('outline_color')"
                 :value="selected_feature.get('stroke_color')"
                 :default_value="opened_view_color"
