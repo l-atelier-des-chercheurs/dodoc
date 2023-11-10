@@ -294,7 +294,7 @@ export default {
   name: "DisplayOnMap",
   props: {
     pins: Array,
-    lines: [Boolean, Object],
+    lines: Object,
     geometries: Array,
     // start_coords: {
     //   type: [Boolean, Object],
@@ -367,6 +367,7 @@ export default {
       map_snap: undefined,
 
       pins_vector_source: undefined,
+      lines_vector_source: undefined,
       draw_vector_source: undefined,
       current_draw_mode: undefined,
       draw_can_be_finished: undefined,
@@ -513,19 +514,18 @@ export default {
       },
       deep: true,
     },
-    // lines: {
-    //   handler() {
-    //     const new_line_features = this.createLineFeaturesFromLines();
-    //     if (
-    //       JSON.stringify(new_line_features) !==
-    //       JSON.stringify(this.line_features)
-    //     )
-    //       this.startMap({ keep_loc_and_zoom: true });
-    //   },
-    //   deep: true,
-    // },
+    lines: {
+      handler() {
+        this.loadLines();
+      },
+      deep: true,
+    },
     geometries() {
-      this.loadGeom();
+      if (
+        JSON.stringify(this.geometries) !==
+        JSON.stringify(this.convertFeaturesToStr())
+      )
+        this.loadGeom();
     },
     map_baselayer(val, oldVal) {
       if (val !== oldVal && (val === "image" || oldVal === "image"))
@@ -607,14 +607,15 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// CREATE LINES
 
-      this.line_features = this.createLineFeaturesFromLines();
+      this.lines_vector_source = new olSourceVector({
+        wrapX: false,
+      });
+      this.loadLines();
       this.map.addLayer(
         new olVectorLayer({
-          source: new olSourceVector({
-            features: this.line_features,
-            wrapX: false,
-          }),
-          style: (feature) => this.makeLineStyle(feature),
+          source: this.lines_vector_source,
+          style: (feature, resolution) =>
+            this.makeLineStyle({ feature, resolution }),
         })
       );
 
@@ -953,27 +954,6 @@ export default {
         });
       }
     },
-    createLineFeaturesFromLines() {
-      let features = [];
-      if (this.lines && Object.keys(this.lines).length > 0) {
-        // const lines = this.pins.reduce((acc, pin) => {
-        //   if (pin.belongs_to_view) {
-        //   }
-        //   if (pin?.longitude && pin?.latitude)
-        //     acc.push([pin.longitude, pin.latitude]);
-        //   return acc;
-        // }, {});
-        Object.values(this.lines).map(({ color, coordinates }) => {
-          const feature_cont = {
-            geometry: new olLineString(coordinates),
-            name: "Path",
-          };
-          feature_cont.stroke_color = color;
-          features.push(new olFeature(feature_cont));
-        });
-      }
-      return features;
-    },
     makePointStyle({ feature, resolution, fill_color = "hsl(0, 0%, 15%)" }) {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
@@ -1023,9 +1003,8 @@ export default {
     makeDefaultFontString() {
       return "12px/1.2 Fira Mono,sans-serif";
     },
-    makeLineStyle(feature) {
-      // const line_dash = !is_selected ? undefined : [10, 5];
-
+    makeLineStyle({ feature, resolution }) {
+      resolution;
       const style = {
         stroke: new olStroke({
           color: feature.get("stroke_color"),
@@ -1531,6 +1510,25 @@ export default {
           });
         this.pins_vector_source.addFeatures(features);
         this.pins_vector_source.changed();
+      }
+    },
+    loadLines() {
+      this.lines_vector_source.clear();
+
+      let features = [];
+      if (this.lines && Object.keys(this.lines).length > 0) {
+        Object.values(this.lines).map(({ color, coordinates }) => {
+          const feature_cont = {
+            geometry: new olLineString(coordinates),
+            name: "Path",
+          };
+          feature_cont.stroke_color = color;
+          const feature = new olFeature(feature_cont);
+          features.push(feature);
+        });
+
+        this.lines_vector_source.addFeatures(features);
+        this.lines_vector_source.changed();
       }
     },
     loadGeom() {

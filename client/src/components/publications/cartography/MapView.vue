@@ -265,9 +265,7 @@ export default {
         if (!_view.map_geom_features || !Array.isArray(_view.map_geom_features))
           return acc;
 
-        const pin_color = this.getViewColor(_view);
         _view.map_geom_features.map((g) => {
-          Object.assign(g, { color: pin_color });
           acc.push(g);
         });
         return acc;
