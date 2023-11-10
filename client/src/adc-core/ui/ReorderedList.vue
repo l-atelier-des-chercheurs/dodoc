@@ -44,27 +44,27 @@
           'is--redorderable': change_order,
         }"
       >
-        <span v-handle class="_dragHandle" v-if="can_edit && change_order">
-          <!-- <b-icon icon="grip-vertical" :label="$t('move')" /> -->
-          <transition name="fade_fast" mode="out-in">
-            <span v-if="show_index" :key="index" class="_index">
-              {{ index + 1 }}
-            </span>
-          </transition>
-        </span>
-        <span v-else-if="show_index" class="_index">
-          {{ index + 1 }}
-        </span>
-        <component
-          :is="$listeners.openItem ? 'button' : 'span'"
-          :type="$listeners.openItem ? 'button' : ''"
-          class="_clickZone"
-          v-if="$listeners.openItem"
-          @click="$emit('openItem', item.$path)"
+        <span v-handle class="_dragHandle" v-if="can_edit && change_order" />
+        <button
+          type="button"
+          class="_itemButton"
+          @click="
+            !isActive(item.$path) ? $emit('openItem', item.$path) : undefined
+          "
         >
           <slot :item="item" :index="index" />
-        </component>
+        </button>
       </SlickItem>
+      <div class="_reorderedList--item">
+        <EditBtn
+          v-if="can_edit"
+          :btn_type="'add'"
+          @click="$emit('createItem')"
+        />
+        <!-- <button type="button" class="u-buttonLink">
+          <b-icon icon="arrow-left-circle-fill" />
+        </button> -->
+      </div>
     </SlickList>
   </div>
 </template>
@@ -161,7 +161,9 @@ export default {
   position: relative;
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
+  // gap: calc(var(--spacing) / 4);
+
+  margin: 0 calc(var(--spacing) / -2);
 }
 
 ._reorderedList--item {
@@ -177,7 +179,7 @@ export default {
 
   border-radius: 4px;
 
-  ._clickZone {
+  ._itemButton {
     appearance: none;
     font-weight: inherit;
     background: transparent;
@@ -185,7 +187,7 @@ export default {
     text-decoration: underline;
     text-underline-offset: 0.2em;
     cursor: pointer;
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1.5);
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
     &:hover,
     &:focus-visible {
@@ -194,16 +196,12 @@ export default {
     }
   }
 
-  ._noClickZone {
-    width: 100%;
-  }
-
   &.is--active {
     // background: var(--c-gris_fonce);
     // color: white;
     font-weight: 600;
 
-    ._clickZone {
+    ._itemButton {
       text-decoration: none;
     }
 
@@ -213,7 +211,7 @@ export default {
   &.is--redorderable {
     // background: var(--c-gris_clair);
     // border: 1px solid black;
-    ._clickZone {
+    ._itemButton {
       text-decoration: none;
     }
   }

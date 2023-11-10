@@ -15,9 +15,9 @@
         "
         :style="itemStyle({ media_with_linked })"
       >
-        <span
+        <div
           v-if="!media_with_linked._linked_media"
-          class="_noSourceMedia u-instructions"
+          class="u-instructions _noSourceMedia"
           v-text="$t('source_media_missing')"
         />
         <MediaContent
@@ -263,5 +263,11 @@ export default {
     padding: 4px;
     // background: rgba(0, 0, 0, 0.2);
   }
+}
+
+._noSourceMedia {
+  width: 100%;
+  padding: calc(var(--spacing) / 4);
+  text-align: center;
 }
 </style>

@@ -5,7 +5,7 @@
       :publication="publication"
       :section="opened_section"
       :can_edit="can_edit"
-      @close="$emit('toggleSection', undefined)"
+      @prevSection="prevSection"
     />
     <div class="_navBtns">
       <div class="_navBtns--content">

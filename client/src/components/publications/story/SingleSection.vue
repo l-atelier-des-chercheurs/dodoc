@@ -9,16 +9,24 @@
           "
         >
           <div class="_text">
-            <TitleField
-              class="_sectionTitle"
-              :field_name="'section_title'"
-              :content="section.section_title || $t('untitled')"
-              :path="section.$path"
-              :required="true"
-              :maxlength="60"
-              :tag="'h1'"
-              :can_edit="can_edit"
-            />
+            <div class="_sectionTitle">
+              <TitleField
+                :field_name="'section_title'"
+                :content="section.section_title || $t('untitled')"
+                :path="section.$path"
+                :required="true"
+                :maxlength="60"
+                :tag="'h1'"
+                :can_edit="can_edit"
+              />
+              <RemoveMenu
+                v-if="can_edit"
+                :remove_text="$t('remove_section')"
+                :show_button_text="false"
+                @remove="removeSection"
+              />
+            </div>
+
             <!-- legacy field – only existing description can be edited -->
             <TitleField
               v-if="section.section_description"
@@ -126,6 +134,16 @@ export default {
       module_being_edited: undefined,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        remove_section: "Supprimer le chapitre",
+      },
+      en: {
+        remove_section: "Remove this chapter",
+      },
+    },
+  },
   created() {},
   async mounted() {},
   beforeDestroy() {},
@@ -138,10 +156,7 @@ export default {
       }).map(({ _module }) => _module);
     },
     story_styles() {
-      const width = (this.publication.story_width || 900) + "px";
-      if (this.publication.story_is_not_responsive === true)
-        return { width, maxWidth: "none" };
-      else return { maxWidth: width };
+      return this.makeStoryStyles({ publication: this.publication });
     },
   },
   methods: {
@@ -195,6 +210,14 @@ export default {
     backgroundClick() {
       this.module_being_edited = undefined;
     },
+    async removeSection() {
+      this.$emit("prevSection");
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        path: this.section.$path,
+      });
+    },
 
     async removeModule(path) {
       // todo deleteitem already called, error thrown
@@ -241,6 +264,8 @@ export default {
 }
 
 ._sectionTitle {
+  display: flex;
+  align-items: baseline;
 }
 
 ._mediaPublication {
@@ -253,7 +278,7 @@ export default {
 
   ::v-deep {
     ._content {
-      // min-height: calc(24px * 3);
+      min-height: 45px;
     }
     // ._floatingEditBtn[data-action="disable"] {
     //   display: none;
@@ -294,7 +319,7 @@ export default {
   align-items: baseline;
   justify-content: space-between;
 
-  margin: calc(var(--spacing) * 2) 0 0;
+  margin: calc(var(--spacing) * 1) 0 0;
 
   // border-bottom: 2px solid var(--c-gris);
   > * {

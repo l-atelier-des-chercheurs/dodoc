@@ -42,6 +42,7 @@ export default function () {
     messages: {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
+        current_lang_name: "Français",
         a_foss_made_by:
           "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
         home: "Accueil",
@@ -566,13 +567,11 @@ export default function () {
         connected: "Connecté",
         history: "Historique",
 
-        creativecommons_by_nc_sa: "Creative Commons BY NC SA",
-        // todo add explanations
-        creativecommons_by_nc_sa_explanations: "–",
+        creativecommons_by_sa: "Creative Commons BY SA",
+        creativecommons_by_sa_explanations:
+          "Attribution - Partage dans les Mêmes Conditions",
 
         all_rights_reserved: "Tous Droits Réservés",
-        // todo add explanations
-        all_rights_reserved_explanations: "–",
 
         drop_here: "Déposer ici",
         or_drag_drop_file_here: "Ou déposer des fichiers ici",
@@ -608,12 +607,12 @@ export default function () {
         lightness: "Clarté",
         dotscreen: "Noir et blanc (tramé)",
 
-        custom_license: "Licence spécifique",
-        custom_license_explanations:
-          "À venir, la possibilité d’indiquer une licence spécifique avec un lien vers une page de référence",
+        custom_license: "Autre licence",
+        fill_out_your_license: "Renseignez votre licence ici",
 
         copyleft: "Art Libre / Copyleft",
-        copyleft_explanations: "–",
+        copyleft_explanations:
+          "Voir <a href='https://artlibre.org/' target='_blank'>artlibre.org</a> pour une explication de cette licence",
         copy_of: "Copie de",
         remix_of: "Remix de",
         open_copy: "Accéder à la copie",
@@ -846,7 +845,8 @@ export default function () {
         "notifications.name_taken": "Ce nom est déjà utilisé",
         "notifications.action_not_allowed": "Cette action n’est pas autorisée",
         "notifications.account_created": "Votre compte a été créé",
-        "notifications.logged_in": "La connexion au compte est active",
+        "notifications.logged_in":
+          "La connexion au compte est active, rechargement de la page en cours…",
 
         informations: "Informations",
 
@@ -918,10 +918,7 @@ export default function () {
         pins: "Épingles",
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
-        layers: "Calques",
-        layer: "Calque",
-        create_layer: "Créer un calque",
-        layer_title: "Nom du calque",
+        feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
@@ -936,6 +933,7 @@ export default function () {
       },
       en: {
         welcome_to_dodoc: "Welcome to do•doc !",
+        current_lang_name: "English",
         // todo translate
         // a_foss_made_by:
         //   "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",

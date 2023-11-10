@@ -3,12 +3,9 @@
     <div class="_sidebyside">
       <div class="_leftBtns">
         <template v-if="base_media">
-          <ToggledSection
-            class="u-spacingBottom"
-            :label="$t('crop')"
-            :show_toggle="show_crop"
-            @update:show_toggle="show_crop = $event"
-          >
+          <fieldset>
+            <legend class="u-label">{{ $t("crop") }}</legend>
+
             <div class="_btnRow">
               <button
                 type="button"
@@ -84,15 +81,10 @@
                 @save="updateFromInputs({ height: $event })"
               />
             </div>
-          </ToggledSection>
+          </fieldset>
 
-          <ToggledSection
-            class="u-spacingBottom"
-            :label="$t('adjust')"
-            :show_toggle="show_adjust"
-            @update:show_toggle="show_adjust = $event"
-          >
-            <DLabel :str="$t('adjust')" />
+          <fieldset>
+            <legend class="u-label">{{ $t("adjust") }}</legend>
 
             <RangeValueInput
               :can_toggle="true"
@@ -138,7 +130,7 @@
               :suffix="'px'"
               @save="updatePubliMeta({ image_blur: $event })"
             />
-          </ToggledSection>
+          </fieldset>
 
           <div class="">
             <button
@@ -240,8 +232,6 @@ export default {
         height: 100,
         rotation: 0,
       },
-
-      show_adjust: true,
 
       show_save_export_modal: false,
     };

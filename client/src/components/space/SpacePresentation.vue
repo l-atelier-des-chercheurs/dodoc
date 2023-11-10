@@ -216,6 +216,7 @@ export default {
     gap: calc(var(--spacing) / 2);
   }
   &[data-context="list"] {
+    flex-flow: row nowrap;
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
 }

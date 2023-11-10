@@ -1,5 +1,5 @@
 <template>
-  <div class="_sectionsSummary">
+  <div class="_sectionsSummary" :style="story_styles">
     <!-- <DetailsPane
       ref="details"
       :header="$t('chapters')"
@@ -14,6 +14,7 @@
       :active_item_meta="opened_section_meta_filename"
       :can_edit="can_edit"
       @openItem="openSection"
+      @createItem="createSection"
       v-slot="slotProps"
     >
       <span v-if="slotProps.item.section_title">
@@ -22,25 +23,15 @@
       <span v-else v-html="`<i>${$t('untitled')}</i>`" />
     </ReorderedList>
 
-    <template v-if="can_edit">
-      <!-- <template v-if="sections.length > 0">
-        <hr />
-      </template> -->
-      <div class="_buttonRow">
-        <button
-          type="button"
-          class="u-buttonLink _createSection"
-          @click="createSection"
-        >
-          {{ $t("create_section") }}
-        </button>
-        <RemoveMenu
-          :remove_text="$t('remove_section')"
-          @remove="removeSection"
-        />
-      </div>
-    </template>
-    <!-- </DetailsPane> -->
+    <!-- <template v-if="can_edit">
+      <button
+        type="button"
+        class="u-buttonLink _createSection"
+        @click="createSection"
+      >
+        {{ $t("create_section") }}
+      </button>
+    </template> -->
   </div>
 </template>
 <script>
@@ -64,11 +55,9 @@ export default {
     messages: {
       fr: {
         create_section: "Créer un chapitre",
-        remove_section: "Supprimer le chapitre",
       },
       en: {
         create_section: "Create chapter",
-        remove_section: "Remove this chapter",
       },
     },
   },
@@ -90,6 +79,9 @@ export default {
     },
     default_view_color() {
       return this.$getMapOptions().default_view_color;
+    },
+    story_styles() {
+      return this.makeStoryStyles({ publication: this.publication });
     },
     new_section_title() {
       let idx = this.sections.length + 1;
@@ -136,14 +128,6 @@ export default {
       });
       this.$emit("toggleSection", new_section_meta);
     },
-    async removeSection() {
-      await this.removeSection2({
-        publication: this.publication,
-        group: "sections_list",
-        path: this.opened_section.$path,
-      });
-      // todo open previous section
-    },
   },
 };
 </script>
@@ -162,11 +146,5 @@ export default {
 
 ._createSection {
   padding: calc(var(--spacing) / 4);
-}
-
-._buttonRow {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-end;
 }
 </style>

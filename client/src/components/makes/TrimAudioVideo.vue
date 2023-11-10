@@ -488,10 +488,23 @@ export default {
         //   },
         // },
       });
+
+      const gain = this.$el.querySelector(".volume-slider").value / 100 || 1;
+
       await preview_wfpl.load([
         {
           src: this.base_media_url,
           name: this.base_media.$media_filename,
+          gain,
+          fadeIn: {
+            shape: "logarithmic",
+            duration: 0.3,
+          },
+          fadeOut: {
+            shape: "logarithmic",
+            duration: 0.3,
+          },
+
           selected: {
             start: this.selection.start,
             end: this.selection.end,
@@ -579,6 +592,20 @@ export default {
   position: relative;
   box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
   // background: var(--c-bleumarine_fonce);
+  --wp-range-slider-label-color: var(--c-noir);
+
+  ::v-deep {
+    .playlist .controls label.volume {
+      font-weight: bold;
+      font-family: inherit;
+      &::before {
+        content: "-";
+      }
+      &::after {
+        content: "+";
+      }
+    }
+  }
 }
 
 ._btnRow {
