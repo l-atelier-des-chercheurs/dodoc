@@ -347,25 +347,42 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
 
-      <TitleField
-        class="_captionField"
-        v-if="publimodule.caption || edit_mode"
-        :label="!publimodule.caption ? $t('add_caption') : undefined"
-        :field_name="'caption'"
-        :content="publimodule.caption"
-        :path="publimodule.$path"
-        :input_type="'markdown'"
-        :tag="'small'"
-        :can_edit="can_edit"
-      />
-      <!-- <TitleField
-        :label="$t('caption')"
-        :field_name="'caption'"
-        :content="publimodule.caption"
-        :path="publimodule.$path"
-        :input_type="'markdown'"
-        :can_edit="can_edit"
-      /> -->
+      <div class="_captionField">
+        <TitleField
+          v-if="publimodule.caption || edit_mode"
+          :label="!publimodule.caption ? $t('add_caption') : undefined"
+          :field_name="'caption'"
+          :content="publimodule.caption"
+          :path="publimodule.$path"
+          :input_type="'markdown'"
+          :tag="'small'"
+          :can_edit="edit_mode && can_edit"
+        />
+
+        <div
+          class=""
+          v-if="
+            edit_mode &&
+            first_media &&
+            first_media.caption &&
+            !publimodule.caption
+          "
+        >
+          <div class="u-instructions">
+            {{ $t("copy_first_media_caption") }}
+          </div>
+          <button
+            type="button"
+            @click="
+              updateMeta({
+                caption: first_media.caption,
+              })
+            "
+          >
+            {{ first_media.caption }}
+          </button>
+        </div>
+      </div>
     </div>
 
     <div
@@ -426,6 +443,7 @@ export default {
         click_on_map_to_repick_location_for_media:
           "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
         add_caption: "Ajouter une légende",
+        copy_first_media_caption: "Réutiliser la légende du premier média",
       },
       en: {
         no_coordinates: "No coordinates available",
@@ -439,6 +457,7 @@ export default {
         click_on_map_to_repick_location_for_media:
           "Click on map to select the new position on the map",
         add_caption: "Add a caption",
+        copy_first_media_caption: "Reuse first media caption",
       },
     },
   },
@@ -945,5 +964,9 @@ export default {
 
 ._captionField {
   margin-top: calc(var(--spacing) / 2);
+
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) * 1);
 }
 </style>
