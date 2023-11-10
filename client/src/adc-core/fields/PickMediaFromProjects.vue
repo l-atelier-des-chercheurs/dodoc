@@ -1,6 +1,7 @@
 <template>
   <BaseModal2
     :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
+    :size="'large'"
     @close="$emit('close')"
   >
     <div class="_pickMediaFromProject">
