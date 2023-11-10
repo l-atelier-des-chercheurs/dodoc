@@ -74,29 +74,26 @@
             @close="show_link_picker = false"
           />
         </div>
-        <div class="_qrOpt">
-          <button
-            type="button"
-            class="u-button u-button_transparent u-button_small _qrBtn"
-            @click="show_qr_code_modal = true"
-          >
-            <sl-icon name="qr-code" />
-          </button>
-          <QRModal
-            v-if="show_qr_code_modal"
-            :url_to_access="url_to_page"
-            @close="show_qr_code_modal = false"
-          />
-        </div>
-        <div class="_qrOpt">
-          <button
-            type="button"
-            class="u-button u-button_transparent u-button_small _qrBtn"
-            @click="$eventHub.$emit(`app.show_welcome_modal`)"
-          >
-            <sl-icon name="question-square" />
-          </button>
-        </div>
+
+        <button
+          type="button"
+          class="u-button u-button_icon _qrBtn"
+          @click="show_qr_code_modal = true"
+        >
+          <sl-icon name="qr-code" />
+        </button>
+        <QRModal
+          v-if="show_qr_code_modal"
+          :url_to_access="url_to_page"
+          @close="show_qr_code_modal = false"
+        />
+        <button
+          type="button"
+          class="u-button u-button_icon _qrBtn"
+          @click="$eventHub.$emit(`app.show_welcome_modal`)"
+        >
+          <sl-icon name="question-square" />
+        </button>
       </div>
       <UploadFiles
         v-if="selected_files.length > 0"
