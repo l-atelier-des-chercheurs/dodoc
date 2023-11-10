@@ -347,9 +347,8 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
 
-      <div class="_captionField">
+      <div class="_captionField" v-if="publimodule.caption || edit_mode">
         <TitleField
-          v-if="publimodule.caption || edit_mode"
           :label="!publimodule.caption ? $t('add_caption') : undefined"
           :field_name="'caption'"
           :content="publimodule.caption"
@@ -963,7 +962,7 @@ export default {
 }
 
 ._captionField {
-  margin-top: calc(var(--spacing) / 2);
+  margin-top: calc(var(--spacing) / 4);
 
   display: flex;
   flex-flow: row wrap;
