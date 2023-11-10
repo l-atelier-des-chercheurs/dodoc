@@ -1035,6 +1035,7 @@ export default function () {
         search_fields: "In title, description or notes fields.",
         show_all_keywords: "Show all keywords",
         download: "Download",
+        share_link_to_page: "Share a link to this page",
 
         no_content: "No content to show",
       },
