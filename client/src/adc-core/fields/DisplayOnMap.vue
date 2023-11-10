@@ -187,7 +187,6 @@
               </div> -->
 
               <ColorInput
-                class="u-spacingBottom"
                 :can_toggle="false"
                 :live_editing="true"
                 :label="$t('outline_color')"
@@ -202,7 +201,7 @@
               />
 
               <RangeValueInput
-                class=""
+                class="_strokeWidth"
                 :can_toggle="false"
                 :label="$t('outline_width')"
                 :value="selected_feature.get('stroke_width')"
@@ -1944,9 +1943,12 @@ export default {
     position: relative;
     pointer-events: auto;
     margin: 0 auto;
+    width: 100%;
+    max-width: 245px;
+
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.9);
-    border-radius: 2px;
+    border-radius: 4px;
 
     display: flex;
     flex-flow: column nowrap;
