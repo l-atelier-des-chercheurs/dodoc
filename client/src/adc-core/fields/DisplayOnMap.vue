@@ -233,6 +233,7 @@
 </template>
 <script>
 import olSourceOSM from "ol/source/OSM";
+import olSourceStadiaMaps from "ol/source/StadiaMaps";
 import olSourceWMTS from "ol/source/WMTS";
 import olMap from "ol/Map";
 import olView from "ol/View";
@@ -306,10 +307,6 @@ export default {
     map_baselayer: {
       type: String,
       default: "OSM",
-      validator(value) {
-        // The value must match one of these strings
-        return ["OSM", "IGN_MAP", "IGN_SAT", "image"].includes(value);
-      },
     },
     map_baselayer_bw: {
       type: Boolean,
@@ -895,6 +892,26 @@ export default {
         return new olSourceOSM({
           wrapX: false,
           noWrap: true,
+        });
+      } else if (type === "stadia_alidade_smooth") {
+        return new olSourceStadiaMaps({
+          layer: "alidade_smooth",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_alidade_smooth_dark") {
+        return new olSourceStadiaMaps({
+          layer: "alidade_smooth_dark",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_toner") {
+        return new olSourceStadiaMaps({
+          layer: "stamen_toner",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_watercolor") {
+        return new olSourceStadiaMaps({
+          layer: "stamen_watercolor",
+          retina: false,
         });
       } else if (["IGN_SAT", "IGN_MAP"].includes(type)) {
         const resolutions = [

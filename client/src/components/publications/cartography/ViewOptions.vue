@@ -136,6 +136,26 @@ export default {
           text: this.$t("OSM"),
         },
         {
+          key: "stadia_alidade_smooth",
+          text: this.$t("alidade_smooth"),
+          instructions: this.$t("provided_by_stadiamaps"),
+        },
+        {
+          key: "stadia_alidade_smooth_dark",
+          text: this.$t("alidade_smooth_dark"),
+          instructions: this.$t("provided_by_stadiamaps"),
+        },
+        {
+          key: "stadia_toner",
+          text: this.$t("STAMEN_toner"),
+          instructions: this.$t("provided_by_stadiamaps"),
+        },
+        {
+          key: "stadia_watercolor",
+          text: this.$t("STAMEN_watercolor"),
+          instructions: this.$t("provided_by_stadiamaps"),
+        },
+        {
           key: "IGN_SAT",
           text: this.$t("IGN_SAT"),
           instructions: this.$t("IGN_max_zoom_limits"),
@@ -170,6 +190,12 @@ export default {
 
         map_baselayer: "Fond de carte",
         OSM: "OpenStreetMap",
+        alidade_smooth: "Alidade Smooth",
+        alidade_smooth_dark: "Alidade Smooth (nuit)",
+        STAMEN_watercolor: "Aquarelle",
+        STAMEN_toner: "Toner",
+        provided_by_stadiamaps:
+          "Fournis par <a href='https://stadiamaps.com'>StadiaMaps</a>.",
         IGN_MAP: "Carte IGN (en France uniquement)",
         IGN_SAT: "Photos satellite IGN (en France uniquement)",
         image_or_drawing: "Image ou dessin",
