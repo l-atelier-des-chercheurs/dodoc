@@ -19,7 +19,19 @@
               </transition>
               {{ $t("shared_space_archive") }}
             </div>
-            <div class="_filterSortBtn">
+            <div class="_toprightBtns">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="show_lang_modal = !show_lang_modal"
+              >
+                {{ current_lang_code }}
+              </button>
+              <LangModal
+                v-if="show_lang_modal"
+                @close="show_lang_modal = false"
+              />
+
               <button
                 type="button"
                 class="u-buttonLink"
@@ -174,6 +186,7 @@
 import SharedFolderItem from "@/components/SharedFolderItem.vue";
 import ItemModal from "@/components/ItemModal.vue";
 import FilterBar from "@/components/FilterBar.vue";
+import LangModal from "@/adc-core/lang/LangModal.vue";
 
 export default {
   props: {
@@ -183,6 +196,7 @@ export default {
     SharedFolderItem,
     ItemModal,
     FilterBar,
+    LangModal,
   },
   data() {
     return {
@@ -190,6 +204,8 @@ export default {
 
       show_backtotop_btn: false,
       current_scroll: 0,
+
+      show_lang_modal: false,
 
       show_filter_sort_pane: false,
 
@@ -251,6 +267,11 @@ export default {
         (si) => this.getFilename(si.$path) === this.$route.query.file
       );
     },
+    current_lang_code() {
+      this.$i18n.availableLocales;
+      return this.$i18n.locale;
+    },
+
     opened_file_position_index() {
       if (!this.opened_file) return false;
       return this.filtered_shared_files.findIndex(
@@ -541,8 +562,12 @@ export default {
   }
 }
 
-._filterSortBtn {
-  padding: calc(var(--spacing) / 2) 0;
-  margin-bottom: calc(var(--spacing) / -2);
+._toprightBtns {
+  // padding: calc(var(--spacing) / 2) 0;
+  // margin-bottom: calc(var(--spacing) / -2);
+
+  button {
+    padding: calc(var(--spacing) / 2);
+  }
 }
 </style>
