@@ -277,7 +277,7 @@ export default {
   // margin-bottom: 0;
 
   ::v-deep {
-    ._content {
+    > ._content {
       min-height: 45px;
     }
     // ._floatingEditBtn[data-action="disable"] {

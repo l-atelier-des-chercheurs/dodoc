@@ -4,7 +4,6 @@
     :data-type="module_type"
     @click="preventClickTraversing"
   >
-    <!-- @mouseleave.self="show_advanced_menu = false" -->
     <transition name="fade_fast" mode="out-in">
       <div
         class="_sideOptions"
@@ -347,6 +346,26 @@
       </template>
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
+
+      <TitleField
+        class="_captionField"
+        v-if="publimodule.caption || edit_mode"
+        :label="!publimodule.caption ? $t('add_caption') : undefined"
+        :field_name="'caption'"
+        :content="publimodule.caption"
+        :path="publimodule.$path"
+        :input_type="'markdown'"
+        :tag="'small'"
+        :can_edit="can_edit"
+      />
+      <!-- <TitleField
+        :label="$t('caption')"
+        :field_name="'caption'"
+        :content="publimodule.caption"
+        :path="publimodule.$path"
+        :input_type="'markdown'"
+        :can_edit="can_edit"
+      /> -->
     </div>
 
     <div
@@ -389,7 +408,6 @@ export default {
   },
   data() {
     return {
-      show_advanced_menu: false,
       is_repicking_location: false,
       observer: undefined,
     };
@@ -407,6 +425,7 @@ export default {
         cancel_position: "Annuler la position",
         click_on_map_to_repick_location_for_media:
           "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+        add_caption: "Ajouter une légende",
       },
       en: {
         no_coordinates: "No coordinates available",
@@ -419,6 +438,7 @@ export default {
         cancel_position: "Erase position",
         click_on_map_to_repick_location_for_media:
           "Click on map to select the new position on the map",
+        add_caption: "Add a caption",
       },
     },
   },
@@ -921,5 +941,9 @@ export default {
 
   ._index {
   }
+}
+
+._captionField {
+  margin-top: calc(var(--spacing) / 2);
 }
 </style>

@@ -107,13 +107,11 @@
     </transition>
 
     <div class="_mediaPickerTile" v-if="can_edit">
-      <button
-        type="button"
-        class="u-button u-button_transparent u-addBtn"
+      <EditBtn
+        :btn_type="'add'"
+        :is_unfolded="false"
         @click="show_media_picker = true"
-      >
-        <sl-icon name="plus-circle" />
-      </button>
+      />
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
@@ -182,7 +180,7 @@ export default {
     publi_width() {
       setTimeout(() => {
         if (this.$refs.flickity) this.$refs.flickity.resize();
-      }, 200);
+      }, 250);
     },
   },
   computed: {
@@ -244,7 +242,7 @@ export default {
   // padding: calc(var(--spacing) / 4);
   .carousel-cell {
     width: 100%;
-    aspect-ratio: 16/9;
+    aspect-ratio: 1/1;
     margin-right: calc(var(--spacing) * 1);
   }
 
