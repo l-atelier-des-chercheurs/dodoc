@@ -42,6 +42,7 @@ export default function () {
     messages: {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
+        current_lang_name: "Français",
         a_foss_made_by:
           "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
         home: "Accueil",
@@ -932,6 +933,7 @@ export default function () {
       },
       en: {
         welcome_to_dodoc: "Welcome to do•doc !",
+        current_lang_name: "English",
         // todo translate
         // a_foss_made_by:
         //   "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
