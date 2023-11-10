@@ -1188,7 +1188,6 @@ export default {
       });
     },
     openPin(pin_path) {
-      debugger;
       this.$emit("update:opened_pin_path", pin_path);
     },
     openFeature(path) {

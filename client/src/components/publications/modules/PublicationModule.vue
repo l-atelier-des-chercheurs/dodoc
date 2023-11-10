@@ -594,9 +594,8 @@ export default {
       });
       this.is_repicking_location = false;
 
-      this.$nextTick(() => {
-        this.showModuleOnMap();
-      });
+      await new Promise((r) => setTimeout(r, 100));
+      this.showModuleOnMap();
     },
     async eraseCoords() {
       await this.updateMeta({
