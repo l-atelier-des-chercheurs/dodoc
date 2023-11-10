@@ -13,7 +13,7 @@
         :cover="author.$cover"
         :path="author.$path"
         :placeholder="author.name.substring(0, 2)"
-        :is_round="true"
+        :preview_format="'circle'"
         :can_edit="false"
       />
     </div>

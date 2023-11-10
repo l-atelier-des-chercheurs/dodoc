@@ -16,7 +16,7 @@
           <CoverField
             :context="context"
             :cover="author.$cover"
-            :is_round="true"
+            :preview_format="'circle'"
             :path="author.$path"
             :can_edit="can_edit"
           />

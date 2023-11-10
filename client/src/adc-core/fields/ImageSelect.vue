@@ -113,7 +113,12 @@
     </template>
 
     <div class="_imageselect--image" v-else>
-      <img v-if="typeof image === 'string'" :src="image" draggable="false" />
+      <img
+        v-if="typeof image === 'string'"
+        :data-format="preview_format"
+        :src="image"
+        draggable="false"
+      />
       <button class="u-buttonLink" type="button" @click="removeImage">
         {{ $t("remove_image") }}
       </button>
@@ -126,6 +131,7 @@ export default {
     existing_preview: [Boolean, String],
     path: String,
     instructions: String,
+    preview_format: String,
     available_options: {
       type: Array,
       default: () => ["import", "project", "capture"],
@@ -298,6 +304,23 @@ export default {
 
 ._imageselect--image {
   width: 200px;
+
+  img {
+    &[data-format="square"] {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      object-position: center;
+    }
+    &[data-format="circle"] {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      overflow: hidden;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
 }
 
 ._imageselect--upload {
