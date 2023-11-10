@@ -27,6 +27,7 @@
     </div>
 
     <div class="u-spacingBottom">
+      <DLabel :str="$t('ui_lang_select')" />
       <button
         type="button"
         class="u-button u-button_small"
