@@ -137,7 +137,7 @@ export default {
 <style lang="scss" scoped>
 ._mediaTile {
   position: relative;
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
   border-radius: 3px;
   // transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
@@ -191,6 +191,15 @@ export default {
       object-fit: cover;
       max-width: none;
     }
+  }
+  &[data-tilemode="table"] ::v-deep ._mediaContent--image {
+    object-fit: scale-down;
+  }
+  &[data-tilemode="tiny"] ::v-deep ._mediaContent--image {
+    object-fit: cover;
+  }
+  &[data-tilemode="medium"] ::v-deep ._mediaContent--image {
+    object-fit: scale-down;
   }
 
   &[data-tilemode="table"] {
