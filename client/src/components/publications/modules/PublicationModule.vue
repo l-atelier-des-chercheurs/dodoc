@@ -640,7 +640,6 @@ export default {
           }
         });
       };
-      debugger;
       let top = "-10%";
       try {
         top = window
