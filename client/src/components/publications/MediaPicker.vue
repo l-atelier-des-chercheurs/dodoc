@@ -7,6 +7,7 @@
       </button> -->
     <!-- select from this or another project library -->
     <PickMediaFromProjects
+      :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
       :path="current_project_path"
       :select_mode="select_mode"
       @addMedias="$emit('addMedias', $event)"

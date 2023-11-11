@@ -32,6 +32,9 @@
               v-for="recipe in recipe_type.recipes"
               :key="recipe.key"
               class="m_recipe"
+              :class="{
+                'u-disabled': !recipe.enabled,
+              }"
             >
               <div class="m_recipe--icon" v-html="recipe.icon"></div>
 
@@ -229,7 +232,7 @@ export default {
             {
               key: "edit_image",
               summary: "edit_image_summary",
-              instructions: "video_assemblage_instructions",
+              instructions: "",
               show_instructions: false,
               icon: `
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
@@ -465,6 +468,7 @@ export default {
               key: "mix_audio_and_image",
               summary: "mix_audio_and_image_summary",
               show_instructions: false,
+              enabled: true,
               instructions: "mix_audio_and_image_instructions",
 
               icon: `

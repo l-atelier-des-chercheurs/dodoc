@@ -62,9 +62,10 @@
         <div class="u-spacingBottom" v-if="view.map_baselayer === 'image'">
           <DLabel :str="$t('image_basemap')" />
           <SingleBaseMediaPicker
+            :title="$t('choose_image_basemap')"
             :field_name="'map_base_media_filename'"
             :content="view.map_base_media_filename"
-            :path="view.$path"
+            :path="publication_path"
             :media_type_to_pick="'image'"
           />
         </div>
@@ -186,7 +187,8 @@ export default {
         icon: "Icône",
         media_preview: "Image sur la carte",
 
-        image_basemap: "Image utilisée comme fond de carte",
+        image_basemap: "Image en fond de carte",
+        choose_image_basemap: "Choisir le fond de carte",
 
         map_baselayer: "Fond de carte",
         OSM: "OpenStreetMap",
@@ -232,6 +234,9 @@ export default {
   computed: {
     map_mode() {
       return this.view?.map_mode || "gps";
+    },
+    publication_path() {
+      return this.getParent(this.view.$path);
     },
   },
   methods: {

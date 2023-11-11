@@ -33,6 +33,8 @@
       </div>
 
       <SingleBaseMediaPicker
+        v-if="['edit_image', 'trim_video', 'trim_audio'].includes(make.type)"
+        :title="picker_title"
         :field_name="'base_media_filename'"
         :content="make.base_media_filename"
         :path="make.$path"
@@ -63,6 +65,12 @@
             :project_path="project_path"
             :base_media="base_media"
           />
+          <MixAudioAndImage
+            v-else-if="make.type === 'mix_audio_and_image'"
+            :make="make"
+            :project_path="project_path"
+            :base_media="base_media"
+          />
         </template>
       </div>
     </div>
@@ -82,6 +90,7 @@ export default {
     // VideoAssemblage: () => import("@/components/makes/VideoAssemblage.vue"),
     EditImage: () => import("@/components/makes/EditImage.vue"),
     TrimAudioVideo: () => import("@/components/makes/TrimAudioVideo.vue"),
+    MixAudioAndImage: () => import("@/components/makes/MixAudioAndImage.vue"),
   },
   data() {
     return {
@@ -89,6 +98,21 @@ export default {
       fetch_make_error: false,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        image_to_rework: "Image à retravailler",
+        video_to_rework: "Vidéo à recouper",
+        audio_to_rework: "Son à recouper",
+      },
+      en: {
+        image_to_rework: "Image to edit",
+        video_to_rework: "Video to edit",
+        audio_to_rework: "Audio to edit",
+      },
+    },
+  },
+
   created() {},
   async mounted() {
     await this.listMake();
@@ -114,6 +138,12 @@ export default {
       if (this.make.type === "edit_image") return "image";
       if (this.make.type === "trim_audio") return "audio";
       if (this.make.type === "trim_video") return "video";
+      return undefined;
+    },
+    picker_title() {
+      if (this.make.type === "edit_image") return this.$t("image_to_rework");
+      if (this.make.type === "trim_audio") return this.$t("audio_to_rework");
+      if (this.make.type === "trim_video") return this.$t("video_to_rework");
       return undefined;
     },
   },

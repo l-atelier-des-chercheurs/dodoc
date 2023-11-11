@@ -132,6 +132,7 @@ export default function () {
         page_color: "Couleur de cette page",
         position: "Position",
         media: "Média",
+        media_not_found: "Média introuvable",
         active_media_instr:
           "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
@@ -456,7 +457,7 @@ export default function () {
         makes_list: "Liste des fabrications",
         back_to_makes_list: "Retour à la liste",
 
-        edit_image: "Modifier une image",
+        edit_image: "Retravailler une image",
         edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
         trim_audio: "Recouper un son",
         trim_audio_summary: "Couper la fin ou le début dans un son",

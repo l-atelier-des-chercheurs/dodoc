@@ -64,6 +64,7 @@
         </button>
         <PickMediaFromProjects
           v-if="show_picker"
+          :title="$t('pick_media')"
           :path="path"
           :select_mode="'single'"
           :pick_from_type="'image'"

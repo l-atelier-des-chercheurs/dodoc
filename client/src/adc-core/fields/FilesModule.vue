@@ -44,6 +44,7 @@
 
       <PickMediaFromProjects
         v-if="show_picker"
+        :title="$t('pick_medias')"
         :path="project_path"
         :select_mode="'multiple'"
         @addMedias="addMedias"

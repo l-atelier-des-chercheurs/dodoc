@@ -18,7 +18,8 @@
           @click="show_media_picker = true"
         >
           <b-icon icon="image" />
-          {{ $t("pick_base_media") }}
+          <!-- {{ $t("pick_base_media") }} -->
+          {{ title }}
         </button>
         <button
           type="button"
@@ -27,11 +28,13 @@
           @click="show_media_picker = true"
         >
           <b-icon icon="plus-circle" />
-          {{ $t("change_base_media") }}
+          <!-- {{ $t("change_base_media") }} -->
+          {{ title }}
         </button>
 
         <PickMediaFromProjects
           v-if="show_media_picker"
+          :title="title"
           :path="path"
           :select_mode="'single'"
           :pick_from_type="media_type_to_pick"
@@ -45,6 +48,7 @@
 <script>
 export default {
   props: {
+    title: String,
     field_name: String,
     content: {
       type: String,
@@ -80,6 +84,7 @@ export default {
   computed: {
     selected_media() {
       const meta_filename_in_project = this.content;
+      debugger;
       if (meta_filename_in_project)
         return this.getSourceMedia({
           source_media: { meta_filename_in_project },
@@ -117,6 +122,8 @@ export default {
     margin: 0 auto;
     width: 100%;
     max-width: 320px;
+
+    color: white;
     background: var(--c-bleumarine_fonce);
     gap: calc(var(--spacing) / 4);
     padding: calc(var(--spacing) / 4);
