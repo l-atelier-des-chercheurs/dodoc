@@ -370,7 +370,7 @@
                     "pin_name": {
                       "type": "string"
                     },
-                    "pin_caption": {
+                    "caption": {
                       "type": "string"
                     },
                     "pin_icon": {
