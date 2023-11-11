@@ -1,5 +1,5 @@
 <template>
-  <div class="_mediaPicker">
+  <div class="_singleBaseMediaPicker">
     <div class="_mpContent">
       <MediaContent
         v-if="selected_media"
@@ -74,7 +74,7 @@ export default {
   },
   data() {
     return {
-      show_media_picker: !this.content ? true : false,
+      show_media_picker: false,
     };
   },
   created() {},
@@ -84,7 +84,6 @@ export default {
   computed: {
     selected_media() {
       const meta_filename_in_project = this.content;
-      debugger;
       if (meta_filename_in_project)
         return this.getSourceMedia({
           source_media: { meta_filename_in_project },
@@ -111,7 +110,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._mediaPicker {
+._singleBaseMediaPicker {
   display: flex;
 
   > ._mpContent {
@@ -120,7 +119,8 @@ export default {
     align-items: center;
 
     margin: 0 auto;
-    width: 100%;
+    width: auto;
+    // width: 100%;
     max-width: 320px;
 
     color: white;

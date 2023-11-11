@@ -32,14 +32,16 @@
         />
       </div>
 
-      <SingleBaseMediaPicker
-        v-if="['edit_image', 'trim_video', 'trim_audio'].includes(make.type)"
-        :title="picker_title"
-        :field_name="'base_media_filename'"
-        :content="make.base_media_filename"
-        :path="make.$path"
-        :media_type_to_pick="media_type_to_pick"
-      />
+      <div class="_mediaPicker">
+        <SingleBaseMediaPicker
+          v-if="['edit_image', 'trim_video', 'trim_audio'].includes(make.type)"
+          :title="picker_title"
+          :field_name="'base_media_filename'"
+          :content="make.base_media_filename"
+          :path="make.$path"
+          :media_type_to_pick="media_type_to_pick"
+        />
+      </div>
 
       <div class="_content" v-if="base_media" :key="base_media.$path">
         <template>
@@ -203,6 +205,10 @@ export default {
   margin: calc(var(--spacing) / 2) auto 0;
   box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
   // max-width: 800px;
+}
+
+._mediaPicker {
+  padding: calc(var(--spacing) / 1);
 }
 
 ._content {
