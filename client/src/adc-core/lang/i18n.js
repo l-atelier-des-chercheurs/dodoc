@@ -184,6 +184,7 @@ export default function () {
         show: "Afficher",
         hide: "Masquer",
         list_of_contributors: "Liste des contributeur·rice·s",
+        show_all_contributors: "Afficher les contributeur·rice·s",
         upload_from_device: "Importer une image",
         device: "Appareil",
         audioinput: "Entrée audio",
