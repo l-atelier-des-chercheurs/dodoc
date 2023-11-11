@@ -66,6 +66,7 @@ export default {
       default: "file",
     },
     export_blob: [Boolean, Blob],
+    export_href: String,
     project_path: String,
   },
   components: {},
@@ -78,27 +79,24 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    export_href() {
-      if (this.export_blob) return window.URL.createObjectURL(this.export_blob);
-      return false;
-    },
-  },
+  computed: {},
   methods: {
     async saveToProject() {
-      const additional_meta = {};
-      additional_meta.$origin = "make";
-      await this.$api
-        .uploadFile({
-          path: this.project_path,
-          filename: this.export_name,
-          file: this.export_blob,
-          additional_meta,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
+      if (this.export_blob) {
+        const additional_meta = {};
+        additional_meta.$origin = "make";
+        await this.$api
+          .uploadFile({
+            path: this.project_path,
+            filename: this.export_name,
+            file: this.export_blob,
+            additional_meta,
+          })
+          .catch((err) => {
+            this.$alertify.delay(4000).error(err);
+            throw err;
+          });
+      }
 
       this.finished_saving_to_project = true;
       setTimeout(() => {

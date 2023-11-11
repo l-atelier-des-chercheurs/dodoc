@@ -2,147 +2,145 @@
   <div class="_cropImage">
     <div class="_sidebyside">
       <div class="_leftBtns">
-        <template v-if="base_media">
-          <fieldset>
-            <legend class="u-label">{{ $t("crop") }}</legend>
+        <fieldset>
+          <legend class="u-label">{{ $t("crop") }}</legend>
 
-            <div class="_btnRow">
-              <button
-                type="button"
-                class="u-button u-button_small u-button_orange"
-                @click="resetCrop"
-              >
-                <b-icon icon="plus-square-dotted" />
-                {{ $t("reset_crop") }}
-              </button>
-              <button
-                type="button"
-                class="u-button u-button_small u-button_bleuvert"
-                @click="rotateImage(90)"
-                disabled
-              >
-                <b-icon icon="arrow-clockwise" />
-              </button>
-              <button
-                type="button"
-                class="u-button u-button_small u-button_bleuvert"
-                @click="rotateImage(-90)"
-                disabled
-              >
-                <b-icon icon="arrow-counterclockwise" />
-              </button>
-            </div>
-
-            <div class="_values">
-              <NumberInput
-                :label="'x'"
-                :value="
-                  make.crop_options && make.crop_options.x
-                    ? make.crop_options.x
-                    : 0
-                "
-                :min="0"
-                :suffix="'%'"
-                @save="updateFromInputs({ x: $event })"
-              />
-              <NumberInput
-                :label="'y'"
-                :value="
-                  make.crop_options && make.crop_options.y
-                    ? make.crop_options.y
-                    : 0
-                "
-                :min="0"
-                :suffix="'%'"
-                @save="updateFromInputs({ y: $event })"
-              />
-            </div>
-            <div class="u-spacingBottom _values">
-              <NumberInput
-                :label="$t('width')"
-                :value="
-                  make.crop_options && make.crop_options.width
-                    ? make.crop_options.width
-                    : 30
-                "
-                :min="0"
-                :suffix="'%'"
-                @save="updateFromInputs({ width: $event })"
-              />
-              <NumberInput
-                :label="$t('height')"
-                :value="
-                  make.crop_options && make.crop_options.height
-                    ? make.crop_options.height
-                    : 20
-                "
-                :min="0"
-                :suffix="'%'"
-                @save="updateFromInputs({ height: $event })"
-              />
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend class="u-label">{{ $t("adjust") }}</legend>
-
-            <RangeValueInput
-              :can_toggle="true"
-              :label="$t('brightness')"
-              :value="make.image_brightness"
-              :min="0"
-              :max="200"
-              :step="1"
-              :default_value="100"
-              :suffix="'%'"
-              @save="updatePubliMeta({ image_brightness: $event })"
-            />
-            <RangeValueInput
-              :can_toggle="true"
-              :label="$t('contrast')"
-              :value="make.image_contrast"
-              :min="0"
-              :max="200"
-              :step="1"
-              :default_value="100"
-              :suffix="'%'"
-              @save="updatePubliMeta({ image_contrast: $event })"
-            />
-            <RangeValueInput
-              :can_toggle="true"
-              :label="$t('saturation')"
-              :value="make.image_saturation"
-              :min="0"
-              :max="200"
-              :step="1"
-              :default_value="100"
-              :suffix="'%'"
-              @save="updatePubliMeta({ image_saturation: $event })"
-            />
-            <RangeValueInput
-              :can_toggle="true"
-              :label="$t('blur')"
-              :value="make.image_blur"
-              :min="0"
-              :max="100"
-              :step="1"
-              :default_value="0"
-              :suffix="'px'"
-              @save="updatePubliMeta({ image_blur: $event })"
-            />
-          </fieldset>
-
-          <div class="">
+          <div class="_btnRow">
             <button
               type="button"
-              class="u-button u-button_bleumarine"
-              @click="show_save_export_modal = true"
+              class="u-button u-button_small u-button_orange"
+              @click="resetCrop"
             >
-              <b-icon icon="check" />
-              {{ $t("submit") }}
+              <b-icon icon="plus-square-dotted" />
+              {{ $t("reset_crop") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_small u-button_bleuvert"
+              @click="rotateImage(90)"
+              disabled
+            >
+              <b-icon icon="arrow-clockwise" />
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_small u-button_bleuvert"
+              @click="rotateImage(-90)"
+              disabled
+            >
+              <b-icon icon="arrow-counterclockwise" />
             </button>
           </div>
-        </template>
+
+          <div class="_values">
+            <NumberInput
+              :label="'x'"
+              :value="
+                make.crop_options && make.crop_options.x
+                  ? make.crop_options.x
+                  : 0
+              "
+              :min="0"
+              :suffix="'%'"
+              @save="updateFromInputs({ x: $event })"
+            />
+            <NumberInput
+              :label="'y'"
+              :value="
+                make.crop_options && make.crop_options.y
+                  ? make.crop_options.y
+                  : 0
+              "
+              :min="0"
+              :suffix="'%'"
+              @save="updateFromInputs({ y: $event })"
+            />
+          </div>
+          <div class="u-spacingBottom _values">
+            <NumberInput
+              :label="$t('width')"
+              :value="
+                make.crop_options && make.crop_options.width
+                  ? make.crop_options.width
+                  : 30
+              "
+              :min="0"
+              :suffix="'%'"
+              @save="updateFromInputs({ width: $event })"
+            />
+            <NumberInput
+              :label="$t('height')"
+              :value="
+                make.crop_options && make.crop_options.height
+                  ? make.crop_options.height
+                  : 20
+              "
+              :min="0"
+              :suffix="'%'"
+              @save="updateFromInputs({ height: $event })"
+            />
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="u-label">{{ $t("adjust") }}</legend>
+
+          <RangeValueInput
+            :can_toggle="true"
+            :label="$t('brightness')"
+            :value="make.image_brightness"
+            :min="0"
+            :max="200"
+            :step="1"
+            :default_value="100"
+            :suffix="'%'"
+            @save="updatePubliMeta({ image_brightness: $event })"
+          />
+          <RangeValueInput
+            :can_toggle="true"
+            :label="$t('contrast')"
+            :value="make.image_contrast"
+            :min="0"
+            :max="200"
+            :step="1"
+            :default_value="100"
+            :suffix="'%'"
+            @save="updatePubliMeta({ image_contrast: $event })"
+          />
+          <RangeValueInput
+            :can_toggle="true"
+            :label="$t('saturation')"
+            :value="make.image_saturation"
+            :min="0"
+            :max="200"
+            :step="1"
+            :default_value="100"
+            :suffix="'%'"
+            @save="updatePubliMeta({ image_saturation: $event })"
+          />
+          <RangeValueInput
+            :can_toggle="true"
+            :label="$t('blur')"
+            :value="make.image_blur"
+            :min="0"
+            :max="100"
+            :step="1"
+            :default_value="0"
+            :suffix="'px'"
+            @save="updatePubliMeta({ image_blur: $event })"
+          />
+        </fieldset>
+
+        <div class="">
+          <button
+            type="button"
+            class="u-button u-button_bleumarine"
+            @click="show_save_export_modal = true"
+          >
+            <b-icon icon="check" />
+            {{ $t("submit") }}
+          </button>
+        </div>
       </div>
 
       <div class="_cropWindow">

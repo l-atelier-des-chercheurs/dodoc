@@ -32,23 +32,21 @@
         />
       </div>
 
-      <div class="_mediaPicker">
-        <SingleBaseMediaPicker
-          v-if="['edit_image', 'trim_video', 'trim_audio'].includes(make.type)"
-          :title="picker_title"
-          :field_name="'base_media_filename'"
-          :content="make.base_media_filename"
-          :path="make.$path"
-          :media_type_to_pick="media_type_to_pick"
-        />
-      </div>
+      <div
+        v-if="['edit_image', 'trim_video', 'trim_audio'].includes(make.type)"
+      >
+        <div class="_mediaPicker">
+          <SingleBaseMediaPicker
+            :title="picker_title"
+            :field_name="'base_media_filename'"
+            :open_modal_if_empty="true"
+            :content="make.base_media_filename"
+            :path="make.$path"
+            :media_type_to_pick="media_type_to_pick"
+          />
+        </div>
 
-      <div class="_content" v-if="base_media" :key="base_media.$path">
-        <template>
-          <!-- <VideoAssemblage
-            v-if="make.type === 'video_assemblage'"
-            :make="make"
-          /> -->
+        <div v-if="base_media" :key="base_media.$path">
           <EditImage
             v-if="make.type === 'edit_image'"
             :make="make"
@@ -67,14 +65,15 @@
             :project_path="project_path"
             :base_media="base_media"
           />
-          <MixAudioAndImage
-            v-else-if="make.type === 'mix_audio_and_image'"
-            :make="make"
-            :project_path="project_path"
-            :base_media="base_media"
-          />
-        </template>
+        </div>
       </div>
+
+      <MixAudioAndImage
+        v-else-if="make.type === 'mix_audio_and_image'"
+        :make="make"
+        :project_path="project_path"
+        :base_media="base_media"
+      />
     </div>
   </div>
 </template>
@@ -208,9 +207,6 @@ export default {
 }
 
 ._mediaPicker {
-  padding: calc(var(--spacing) / 1);
-}
-
-._content {
+  padding: calc(var(--spacing) / 2);
 }
 </style>

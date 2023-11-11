@@ -209,6 +209,12 @@
                   "base_media_filename": {
                     "type": "string"
                   },
+                  "base_audio_filename": {
+                    "type": "string"
+                  },
+                  "base_image_filename": {
+                    "type": "string"
+                  },
                   "crop_options": {
                     "type": "object"
                   },
