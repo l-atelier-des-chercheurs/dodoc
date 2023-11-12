@@ -658,13 +658,10 @@ export default {
           console.log(`CollaborativeEditor / doc subscribe`);
 
           if (this.doc.type) {
-            console.log(
-              `CollaborativeEditor / doc already exists and doc.data = ${JSON.stringify(
-                this.doc.data
-              )}`
-            );
+            console.log(`CollaborativeEditor / doc already exists`);
             this.editor.setContents(this.doc.data, "init");
           } else {
+            console.log(`CollaborativeEditor / doc does not exists`);
             this.doc.create(this.editor.getContents(), "rich-text");
           }
 
