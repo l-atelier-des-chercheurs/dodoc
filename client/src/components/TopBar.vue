@@ -3,6 +3,7 @@
     class="_topbar"
     :class="{
       'is--homepage': $route.path === '/',
+      'is--mobileView': $root.is_mobile_view,
     }"
   >
     <BreadCrumbs class="_bc" />
@@ -157,7 +158,7 @@ export default {
     background: var(--c-bleumarine_clair);
     padding: calc(var(--spacing) / 2);
     border-radius: 4px;
-    font-weight: 300;
+    font-weight: 500;
     font-size: var(--sl-font-size-normal);
   }
 }
@@ -175,6 +176,10 @@ export default {
     font-size: inherit;
     height: 3rem;
     background: transparent;
+
+    .is--mobileView & {
+      padding: calc(var(--spacing) / 2);
+    }
   }
 }
 
