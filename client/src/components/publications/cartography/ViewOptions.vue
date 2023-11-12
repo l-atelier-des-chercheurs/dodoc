@@ -65,7 +65,8 @@
             :title="$t('choose_image_basemap')"
             :field_name="'map_base_media_filename'"
             :content="view.map_base_media_filename"
-            :path="publication_path"
+            :path="view.$path"
+            :selected_media_path="publication_path"
             :media_type_to_pick="'image'"
           />
         </div>
