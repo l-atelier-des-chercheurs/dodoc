@@ -6,7 +6,7 @@
     class="_author"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
-    @click.native="componentClick"
+    @click="$emit('click')"
   >
     <div class="_cover">
       <CoverField
@@ -126,11 +126,7 @@ export default {
       return this.createURLFromPath(this.path);
     },
   },
-  methods: {
-    componentClick() {
-      if (this.component_tag === "router-link") this.$emit("navToPage");
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>

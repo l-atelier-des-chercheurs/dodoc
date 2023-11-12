@@ -27,15 +27,18 @@
       </button>
       <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
       <div class="_subscribeBtn">
-        <button type="button" class="_authorBtn" @click="showAuthorModal">
-          <span class="u-buttonLink _adminInfo" v-if="is_instance_admin">
-            {{ "admin" }}
-          </span>
-
-          <template v-if="connected_as">
-            {{ connected_as.name }}
-          </template>
-          <template v-else>{{ $t("login") }}</template>
+        <AuthorTag
+          v-if="connected_as"
+          :path="connected_as.$path"
+          @click="showAuthorModal"
+        />
+        <button
+          type="button"
+          class="_authorBtn"
+          v-else
+          @click="showAuthorModal"
+        >
+          {{ $t("login") }}
         </button>
       </div>
     </div>

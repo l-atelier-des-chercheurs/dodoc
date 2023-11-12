@@ -7,7 +7,7 @@
       </router-link>
       <router-link :to="'/@'" class="u-buttonLink">
         <b-icon icon="slash" />
-        {{ $t("authors") }}
+        {{ $t("list_of_contributors") }}
       </router-link>
     </div>
 
