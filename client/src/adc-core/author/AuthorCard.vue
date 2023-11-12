@@ -4,6 +4,8 @@
     :class="{
       'u-card2': context !== 'full',
     }"
+    :data-context="context"
+    :data-isself="is_self"
   >
     <component
       class="_linkTo"
@@ -135,7 +137,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._authorCard {
-  &.is--linkTo {
+  border-radius: 3px;
+
+  &[data-isself]:not([data-context="full"]) {
+    border: 1px solid var(--c-bleumarine);
+    background-color: var(--c-bleumarine_clair);
   }
 }
 

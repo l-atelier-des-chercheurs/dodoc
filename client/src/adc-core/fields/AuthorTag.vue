@@ -4,6 +4,7 @@
     :type="component_tag === 'button' ? 'button' : ''"
     v-if="author"
     class="_author"
+    :data-isself="is_self"
     :data-imageonly="show_image_only"
     @click.native="componentClick"
   >
@@ -111,6 +112,11 @@ export default {
     author() {
       return this.getAuthor(this.path);
     },
+    is_self() {
+      if (this.connected_as)
+        return this.connected_as.$path === this.author.$path;
+      return false;
+    },
     component_tag() {
       // if (this.links_to_author_page) return "router-link";
       if (this.$listeners.click) return "button";
@@ -143,6 +149,11 @@ export default {
 
   border: 1px solid var(--c-gris);
   box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+
+  &[data-isself] {
+    border-color: var(--c-bleumarine);
+    background-color: var(--c-bleumarine_clair);
+  }
 
   &[data-imageonly] {
     padding: 0;
@@ -181,6 +192,8 @@ export default {
 }
 
 a {
+  color: inherit;
+
   ._path {
     // color: var(--active-color);
     color: var(--label-color);
