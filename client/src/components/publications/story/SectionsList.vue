@@ -1,5 +1,5 @@
 <template>
-  <div class="_sectionsList">
+  <div class="_sectionsList" @click="unselectModule">
     <SectionsSummary
       v-show="can_edit || sections.length > 1"
       :publication="publication"
@@ -92,6 +92,9 @@ export default {
   methods: {
     toggleSection(section_meta_filename) {
       this.$emit("toggleSection", section_meta_filename);
+    },
+    unselectModule() {
+      this.$eventHub.$emit("module.none_edited");
     },
   },
 };

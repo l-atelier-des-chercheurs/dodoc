@@ -1,5 +1,5 @@
 <template>
-  <div class="_singleSection" @click="backgroundClick">
+  <div class="_singleSection" @click="unselectModuleEdited">
     <div class="_storyContainer">
       <div class="_storyContent" v-if="section" :style="story_styles">
         <div
@@ -144,9 +144,13 @@ export default {
       },
     },
   },
-  created() {},
+  created() {
+    this.$eventHub.$on("module.none_edited", this.unselectModuleEdited);
+  },
   async mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("module.none_edited", this.unselectModuleEdited);
+  },
   watch: {},
   computed: {
     section_modules_list() {
@@ -207,7 +211,7 @@ export default {
         copy_meta_filename,
       });
     },
-    backgroundClick() {
+    unselectModuleEdited() {
       this.module_being_edited = undefined;
     },
     async removeSection() {
