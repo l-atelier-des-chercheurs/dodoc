@@ -431,6 +431,7 @@ export default {
               key: "mix_audio_and_video",
               summary: "mix_audio_and_video_summary",
               show_instructions: false,
+              enabled: true,
               instructions: "mix_audio_and_video_instructions",
 
               icon: `

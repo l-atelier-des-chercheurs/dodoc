@@ -68,8 +68,10 @@
         </div>
       </div>
 
-      <MixAudioAndImage
-        v-else-if="make.type === 'mix_audio_and_image'"
+      <MixAudioAndImageOrVideo
+        v-else-if="
+          ['mix_audio_and_image', 'mix_audio_and_video'].includes(make.type)
+        "
         :make="make"
         :project_path="project_path"
         :base_media="base_media"
@@ -91,7 +93,8 @@ export default {
     // VideoAssemblage: () => import("@/components/makes/VideoAssemblage.vue"),
     EditImage: () => import("@/components/makes/EditImage.vue"),
     TrimAudioVideo: () => import("@/components/makes/TrimAudioVideo.vue"),
-    MixAudioAndImage: () => import("@/components/makes/MixAudioAndImage.vue"),
+    MixAudioAndImageOrVideo: () =>
+      import("@/components/makes/MixAudioAndImageOrVideo.vue"),
   },
   data() {
     return {

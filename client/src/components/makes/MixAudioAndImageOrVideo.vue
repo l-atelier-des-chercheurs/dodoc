@@ -16,6 +16,7 @@
       </div>
       <div class="">
         <SingleBaseMediaPicker
+          v-if="make.type === 'mix_audio_and_image'"
           :title="$t('pick_image')"
           :context="'full'"
           :field_name="'base_image_filename'"
@@ -23,24 +24,30 @@
           :path="make.$path"
           :media_type_to_pick="'image'"
         />
+        <SingleBaseMediaPicker
+          v-else-if="make.type === 'mix_audio_and_video'"
+          :title="$t('pick_video')"
+          :context="'full'"
+          :field_name="'base_video_filename'"
+          :content="make.base_video_filename"
+          :path="make.$path"
+          :media_type_to_pick="'video'"
+        />
       </div>
     </div>
     <transition name="pagechange" mode="out-in">
-      <div
-        class="_bottomRow"
-        v-if="make.base_audio_filename && make.base_image_filename"
-      >
+      <div class="_bottomRow" v-if="export_is_available">
         <div class="_equationIcon">
           <b-icon icon="chevron-double-down" />
         </div>
         <div class="">
           <button
             type="button"
-            class="u-button u-button_white"
+            class="u-button u-button_bleuvert"
             @click="show_save_export_modal = true"
           >
             <b-icon icon="check" />
-            {{ $t("submit") }}
+            {{ $t("create") }}
           </button>
         </div>
       </div>
@@ -92,13 +99,15 @@ export default {
   i18n: {
     messages: {
       fr: {
-        pick_audio: "Choisissez le son à ajouter",
-        pick_image: "Choisissez l’image à ajouter",
+        pick_audio: "Choisissez le son à utiliser",
+        pick_image: "Choisissez l’image à utiliser",
+        pick_video: "Choisissez la vidéo à utiliser",
         export_mix: "Exporter la composition",
       },
       en: {
         pick_audio: "Pick audio media",
         pick_image: "Pick image media",
+        pick_video: "Pick video media",
         export_mix: "Export composition",
       },
     },
@@ -108,19 +117,27 @@ export default {
   beforeDestroy() {},
   watch: {
     show_save_export_modal() {
-      if (this.show_save_export_modal)
-        if (this.make.type === "mix_audio_and_image") this.renderAudioImage();
+      if (this.show_save_export_modal) this.renderAudioImageOrVideo();
     },
   },
   computed: {
     export_name() {
       if (this.make.type === "mix_audio_and_image")
         return "audio_image_mix.mp4";
+      if (this.make.type === "mix_audio_and_video")
+        return "audio_video_mix.mp4";
       return "untitled";
+    },
+    export_is_available() {
+      if (this.make.type === "mix_audio_and_image")
+        return this.make.base_audio_filename && this.make.base_image_filename;
+      if (this.make.type === "mix_audio_and_video")
+        return this.make.base_audio_filename && this.make.base_video_filename;
+      return false;
     },
   },
   methods: {
-    async renderAudioImage() {
+    async renderAudioImageOrVideo() {
       this.is_exporting = true;
       this.created_video = false;
       this.export_href = undefined;
@@ -132,23 +149,12 @@ export default {
         folder_path: this.make.$path,
       });
 
-      const base_image = this.getSourceMedia({
-        source_media: {
-          meta_filename_in_project: this.make.base_image_filename,
-        },
-        folder_path: this.make.$path,
-      });
-
       let instructions = {
-        recipe: "mix_audio_and_image",
-        suggested_file_name: base_audio.$media_filename + "_mix",
+        recipe: this.make.type,
+        suggested_file_name: this.make.type,
         base_audio_path: this.makeMediaFilePath({
           $path: base_audio.$path,
           $media_filename: base_audio.$media_filename,
-        }),
-        base_image_path: this.makeMediaFilePath({
-          $path: base_image.$path,
-          $media_filename: base_image.$media_filename,
         }),
         output_width: 1280,
         output_height: 720,
@@ -156,6 +162,36 @@ export default {
           $origin: "make",
         },
       };
+
+      if (this.make.type === "mix_audio_and_image") {
+        const base_image = this.getSourceMedia({
+          source_media: {
+            meta_filename_in_project: this.make.base_image_filename,
+          },
+          folder_path: this.make.$path,
+        });
+        instructions.base_image_path = this.makeMediaFilePath({
+          $path: base_image.$path,
+          $media_filename: base_image.$media_filename,
+        });
+      } else if (this.make.type === "mix_audio_and_video") {
+        const base_video = this.getSourceMedia({
+          source_media: {
+            meta_filename_in_project: this.make.base_video_filename,
+          },
+          folder_path: this.make.$path,
+        });
+
+        const duration = this.getMaxDuration(
+          base_video.$infos?.duration,
+          base_audio.$infos?.duration
+        );
+        instructions.duration = duration;
+        instructions.base_video_path = this.makeMediaFilePath({
+          $path: base_video.$path,
+          $media_filename: base_video.$media_filename,
+        });
+      }
 
       const current_task_id = await this.$api.exportFolder({
         path: this.make.$path,
@@ -184,6 +220,12 @@ export default {
         this.is_exporting = false;
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
+    },
+    getMaxDuration() {
+      return Array.prototype.slice.call(arguments).reduce((acc, val) => {
+        if (typeof val === "number" && val > acc) acc = val;
+        return acc;
+      }, 0);
     },
   },
 };

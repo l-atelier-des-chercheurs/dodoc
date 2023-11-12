@@ -212,6 +212,9 @@
                   "base_audio_filename": {
                     "type": "string"
                   },
+                  "base_video_filename": {
+                    "type": "string"
+                  },
                   "base_image_filename": {
                     "type": "string"
                   },
