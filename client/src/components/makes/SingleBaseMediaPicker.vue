@@ -57,6 +57,7 @@ export default {
     },
     open_modal_if_empty: Boolean,
     path: String,
+    selected_media_path: String,
     media_type_to_pick: String,
   },
   components: {},
@@ -91,7 +92,7 @@ export default {
       if (meta_filename_in_project)
         return this.getSourceMedia({
           source_media: { meta_filename_in_project },
-          folder_path: this.path,
+          folder_path: this.selected_media_path || this.path,
         });
       return false;
     },
