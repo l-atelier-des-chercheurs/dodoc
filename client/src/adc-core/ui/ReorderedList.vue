@@ -28,6 +28,7 @@
           <slot :item="item" :index="index" />
         </button>
       </SlickItem>
+      &nbsp;
       <div class="_reorderedList--item">
         <EditBtn
           v-if="can_edit"
@@ -36,6 +37,7 @@
           @click="$emit('createItem')"
         />
       </div>
+      &nbsp;
       <div
         class="_reorderedList--item _changeOrderBtn"
         v-if="can_edit && local_items.length > 1"
