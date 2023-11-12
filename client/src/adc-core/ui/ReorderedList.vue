@@ -51,7 +51,7 @@
           @click="change_order = !change_order"
         >
           <transition name="fade" mode="out-in">
-            <b-icon v-if="!save_status" :key="'none'" icon="arrow-down-up" />
+            <b-icon v-if="!save_status" :key="'none'" icon="arrow-left-right" />
             <b-icon
               v-else-if="save_status === 'saving'"
               :key="save_status"
