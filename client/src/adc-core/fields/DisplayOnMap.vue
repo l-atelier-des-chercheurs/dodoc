@@ -775,7 +775,7 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
-      if (!this.keep_loc_and_zoom) {
+      if (!keep_loc_and_zoom) {
         let extent;
 
         if (this.map_baselayer !== "image") {
