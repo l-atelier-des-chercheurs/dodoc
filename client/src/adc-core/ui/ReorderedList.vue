@@ -1,32 +1,5 @@
 <template>
   <div>
-    <div class="_changeOrderBtn">
-      <button
-        v-if="can_edit && local_items.length > 1"
-        type="button"
-        class="u-buttonLink"
-        :class="{
-          'is--active': change_order,
-        }"
-        @click="change_order = !change_order"
-      >
-        <transition name="fade" mode="out-in">
-          <b-icon v-if="!save_status" :key="'none'" icon="arrow-down-up" />
-          <b-icon
-            v-else-if="save_status === 'saving'"
-            :key="save_status"
-            icon="stopwatch"
-          />
-          <b-icon
-            v-else-if="save_status === 'saved'"
-            :key="save_status"
-            icon="check"
-          />
-        </transition>
-
-        <!-- {{ $t("change_order") }} -->
-      </button>
-    </div>
     <SlickList
       class="_reorderedList"
       axis="x"
@@ -59,11 +32,38 @@
         <EditBtn
           v-if="can_edit"
           :btn_type="'add'"
+          :label_position="'left'"
           @click="$emit('createItem')"
         />
-        <!-- <button type="button" class="u-buttonLink">
-          <b-icon icon="arrow-left-circle-fill" />
-        </button> -->
+      </div>
+      <div
+        class="_reorderedList--item _changeOrderBtn"
+        v-if="can_edit && local_items.length > 1"
+      >
+        <button
+          type="button"
+          class="u-buttonLink"
+          :class="{
+            'is--active': change_order,
+          }"
+          @click="change_order = !change_order"
+        >
+          <transition name="fade" mode="out-in">
+            <b-icon v-if="!save_status" :key="'none'" icon="arrow-down-up" />
+            <b-icon
+              v-else-if="save_status === 'saving'"
+              :key="save_status"
+              icon="stopwatch"
+            />
+            <b-icon
+              v-else-if="save_status === 'saved'"
+              :key="save_status"
+              icon="check"
+            />
+          </transition>
+
+          <!-- {{ $t("change_order") }} -->
+        </button>
       </div>
     </SlickList>
   </div>
@@ -268,6 +268,6 @@ export default {
   font-family: "Fira Code";
 }
 ._changeOrderBtn {
-  text-align: right;
+  // text-align: right;
 }
 </style>
