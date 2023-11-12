@@ -246,7 +246,7 @@ export default {
       }, []);
     },
     lines() {
-      if (this.pins.length === 0) return false;
+      if (this.pins.length === 0) return {};
       return this.pins.reduce((acc, pin) => {
         if (pin.link_pins) {
           const view = pin.belongs_to_view;
