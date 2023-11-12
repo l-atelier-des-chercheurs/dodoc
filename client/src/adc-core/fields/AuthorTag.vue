@@ -19,26 +19,24 @@
       />
     </div>
     <div v-if="!show_image_only" class="_infos">
-      <div class="_name">
-        <component
-          :is="
-            links_to_author_page && !show_image_only ? 'router-link' : 'span'
+      <component
+        :is="links_to_author_page && !show_image_only ? 'router-link' : 'span'"
+        class="_name"
+        :to="author_url"
+      >
+        <b-icon
+          v-if="
+            authorIsInstance({
+              field: '$admins',
+              folder_path: author.$path,
+            })
           "
-          :to="author_url"
-        >
-          <b-icon
-            v-if="
-              authorIsInstance({
-                field: '$admins',
-                folder_path: author.$path,
-              })
-            "
-            icon="gear"
-            :aria-label="$t('admin')"
-          />
-          {{ author.name }}
-        </component>
-      </div>
+          icon="gear"
+          :aria-label="$t('admin')"
+        />
+        {{ author.name }}
+      </component>
+
       <!-- <div
         class="u-instructions"
         v-if="
@@ -51,7 +49,7 @@
         <small v-html="$t('admin')" />
       </div> -->
 
-      <div class="_path">@{{ getFilename(author.$path) }}</div>
+      <!-- <div class="_path">@{{ getFilename(author.$path) }}</div> -->
     </div>
 
     <!-- <router-link
@@ -178,6 +176,10 @@ export default {
     ._name {
       font-size: var(--sl-font-size-normal);
       font-weight: 500;
+
+      display: flex;
+      flex-flow: row nowrap;
+      gap: calc(var(--spacing) / 4);
     }
     ._path {
       font-size: var(--sl-font-size-small);
