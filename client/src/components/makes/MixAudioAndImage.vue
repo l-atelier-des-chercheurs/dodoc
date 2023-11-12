@@ -48,6 +48,7 @@
 
     <ExportSaveMakeModal
       v-if="show_save_export_modal"
+      :title="$t('export_mix')"
       :export_name="export_name"
       :export_href="export_href"
       @close="show_save_export_modal = false"
@@ -93,10 +94,12 @@ export default {
       fr: {
         pick_audio: "Choisissez le son à ajouter",
         pick_image: "Choisissez l’image à ajouter",
+        export_mix: "Exporter la composition",
       },
       en: {
         pick_audio: "Pick audio media",
         pick_image: "Pick image media",
+        export_mix: "Export composition",
       },
     },
   },

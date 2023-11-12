@@ -1,6 +1,9 @@
 <template>
   <div class="_taskTracker" v-if="tasks_tracked.length > 0">
-    <DLabel class="" :str="$t('exports_in_progress')" />
+    <DLabel
+      class=""
+      :str="tasks_tracked.length > 1 ? $t('exports') : $t('export')"
+    />
     <div v-for="task in tasks_tracked" class="_task" :key="task.id">
       <div class="">
         {{ task.instructions.recipe }}

@@ -229,7 +229,8 @@ export default function () {
         link: "Lien",
         share: "Partager",
         options: "Options",
-        exports_in_progress: "Exportation(s) en cours",
+        exports: "Exportations",
+        export: "Exportation",
 
         story_width: "Largeur du récit",
         summary: "Sommaire",
