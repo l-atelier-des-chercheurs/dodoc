@@ -78,7 +78,7 @@
             <button
               type="button"
               class="u-buttonLink"
-              v-if="select_mode || batch_mode"
+              v-if="select_mode === 'multiple' || batch_mode"
               @click="selectAllVisibleMedias"
             >
               {{ $t("select_all") }}
@@ -758,7 +758,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 
 ._gridSection {
