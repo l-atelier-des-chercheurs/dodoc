@@ -197,7 +197,7 @@ export default {
         STAMEN_watercolor: "Aquarelle",
         STAMEN_toner: "Toner",
         provided_by_stadiamaps:
-          "Fournis par <a href='https://stadiamaps.com'>StadiaMaps</a>.",
+          "Fournis par <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
         IGN_MAP: "Carte IGN (en France uniquement)",
         IGN_SAT: "Photos satellite IGN (en France uniquement)",
         image_or_drawing: "Image ou dessin",
