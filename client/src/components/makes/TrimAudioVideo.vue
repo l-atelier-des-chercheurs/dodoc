@@ -138,6 +138,7 @@
 
     <ExportSaveMakeModal
       v-if="show_save_export_modal"
+      :title="export_modal_title"
       :export_blob="export_blob"
       :export_name="export_name"
       :export_href="export_href"
@@ -214,6 +215,19 @@ export default {
       export_duration: "",
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        start_egal_to_end: "Le début est identique à la fin",
+        export_trim_video: "Exporter la vidéo recoupée",
+      },
+      en: {
+        start_egal_to_end: "Start is equal to end",
+        export_trim_audio: "Export trimmed video",
+      },
+    },
+  },
+
   created() {},
   async mounted() {
     await this.loadWFP();
@@ -244,6 +258,11 @@ export default {
       else if (this.make.type === "trim_audio")
         return this.base_media.$media_filename + "_trim.wav";
       return "untitled";
+    },
+    export_modal_title() {
+      if (this.make.type === "trim_video") return this.$t("export_trim_video");
+      else if (this.make.type === "") return this.$t("export_trim_audio");
+      return "";
     },
     current_time_displayed() {
       // const r = "" + this.roundToDec(this.current_time, 2);
