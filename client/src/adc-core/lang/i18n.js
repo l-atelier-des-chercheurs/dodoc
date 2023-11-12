@@ -723,6 +723,7 @@ export default function () {
         stl: "STL",
         other: "Autres",
         all_medias_types: "De tous types",
+        all_origins: "De toutes origines",
 
         or_download_media_on_device:
           "ou télécharger ce média sur votre appareil",
