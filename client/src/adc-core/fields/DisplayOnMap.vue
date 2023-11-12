@@ -825,8 +825,10 @@ export default {
       let view, background_layer;
 
       if (this.map_baselayer === "image") {
-        if (!this.map_base_media)
+        if (!this.map_base_media) {
           this.$alertify.delay(4000).error("missing base image");
+          throw new Error(`missing base image`);
+        }
 
         const img_width = this.map_base_media.$infos?.width;
         const img_height = this.map_base_media.$infos?.height;
