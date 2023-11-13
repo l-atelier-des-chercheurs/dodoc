@@ -186,6 +186,7 @@
       <MediaValidationButtons
         v-if="validating_video_preview"
         :media_is_being_sent="media_is_being_sent"
+        :can_add_to_fav="true"
         :cancelButtonIsBackButton="true"
         @cancel="backToStopmotion"
         @save="exportStopmotion()"

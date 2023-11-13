@@ -26,6 +26,12 @@
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
     />
+    <FavSwitch
+      class="_favSwitch"
+      :fav="file.fav"
+      :path="file.$path"
+      :can_edit="true"
+    />
     <b-icon
       class="_hasCoordinates"
       v-if="has_coordinates"
@@ -338,11 +344,25 @@ export default {
   }
 }
 
-._hasCoordinates {
+// ._hasCoordinates {
+//   position: absolute;
+//   bottom: 0;
+//   left: 0;
+//   margin: calc(var(--spacing) / 4);
+
+//   ._mediaTile[data-tilemode="table"] & {
+//     position: relative;
+//   }
+//   ._mediaTile[data-tilemode="medium"] & {
+//     bottom: 1.5rem;
+//   }
+// }
+._favSwitch {
   position: absolute;
   bottom: 0;
   left: 0;
   margin: calc(var(--spacing) / 4);
+  z-index: 1;
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
