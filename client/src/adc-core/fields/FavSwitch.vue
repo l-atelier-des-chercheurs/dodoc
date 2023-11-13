@@ -1,5 +1,5 @@
 <template>
-  <div class="_favSwitch" :data-status="[new_status]">
+  <div class="_favSwitch">
     <button
       type="button"
       class="u-button u-button_icon"
@@ -37,7 +37,7 @@ export default {
     toggleFav() {
       this.local_fav = !this.local_fav;
       this.updateMeta({
-        fav: !this.local_fav,
+        fav: this.local_fav,
       });
     },
     async updateMeta(new_meta) {

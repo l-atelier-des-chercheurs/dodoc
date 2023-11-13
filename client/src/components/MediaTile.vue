@@ -32,11 +32,11 @@
       :path="file.$path"
       :can_edit="true"
     />
-    <b-icon
+    <!-- <b-icon
       class="_hasCoordinates"
       v-if="has_coordinates"
       icon="pin-map-fill"
-    />
+    /> -->
     <span v-if="duration" class="_fileType" v-html="duration" />
     <span
       v-if="['pdf', 'stl'].includes(file.$type) || tile_mode === 'table'"
