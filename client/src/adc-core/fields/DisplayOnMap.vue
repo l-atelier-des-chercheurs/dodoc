@@ -84,7 +84,7 @@
         </button>
       </div>
 
-      <div class="_buttonRow">
+      <div class="_buttonRow" v-if="map_baselayer !== 'image'">
         <button type="button" class="u-button" @click="toggleSearch">
           <b-icon class="inlineSVG" icon="search" />
         </button>
