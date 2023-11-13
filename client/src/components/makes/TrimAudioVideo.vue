@@ -36,9 +36,7 @@
       {{ $t("trim_instructions") }}
     </p>
 
-    <div class="_currentTime">
-      {{ current_time_displayed }}
-    </div>
+    <div class="_currentTime">{{ current_time_displayed }} s</div>
     <div class="_startEndBlock">
       <!-- // not working: wfp uses time selection to move cursor as well, we would need to decouple selection from play -->
 
@@ -219,10 +217,12 @@ export default {
     messages: {
       fr: {
         start_egal_to_end: "Le début est identique à la fin",
+        end_before_start: "La fin est avant le début",
         export_trim_video: "Exporter la vidéo recoupée",
       },
       en: {
         start_egal_to_end: "Start is equal to end",
+        end_before_start: "End is before start",
         export_trim_audio: "Export trimmed video",
       },
     },
