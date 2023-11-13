@@ -237,6 +237,9 @@ export default function () {
         chapters: "Chapitres",
         section_title: "Titre du chapitre",
         section: "Chapitre",
+        in_this_section: "Dans ce chapitre",
+        in_another_section: "Dans un autre chapitre",
+
         untitled: "Sans titre",
         responsive: "Fluide",
         responsive_instr:
@@ -996,6 +999,14 @@ export default function () {
 
         ui_lang_select: "Interface language",
         lang_updated: "The lang has been updated",
+
+        story_width: "Story width",
+        summary: "Summary",
+        chapters: "Chapters",
+        section_title: "Chapter title",
+        section: "Chapter",
+        in_this_section: "In this chapter",
+        in_another_section: "In another chapter",
       },
       de: {},
       nl: {},

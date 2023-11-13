@@ -176,11 +176,11 @@
                 "resolutions": [50, 220, 440, 1600]
               },
               "fields": {
-                "group": {
-                  "type": "string"
-                },
                 "caption": {
                   "type": "string"
+                },
+                "fav": {
+                  "type": "boolean"
                 }
               }
             },

@@ -91,6 +91,12 @@ export default {
     ViewOptions,
     ModuleCreator,
   },
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
+  },
   data() {
     return {
       latest_click: {
@@ -104,14 +110,12 @@ export default {
   i18n: {
     messages: {
       fr: {
-        views_list: "Liste des vues",
         to_add_media_here_open_matching_layer:
-          "Pour ajouter un média à cette position, créez ou ouvrez une vue dans le panneau correspondant.",
+          "Pour ajouter un média à cette position, créez ou ouvrez un chapitre dans le panneau de droite.",
       },
       en: {
-        views_list: "List of views",
         to_add_media_here_open_matching_layer:
-          "To add a media in this position, create or open a view in the pane on the right.",
+          "To add a media in this position, create or open a chapter in the pane on the right.",
       },
     },
   },
@@ -279,6 +283,27 @@ export default {
           latitude: this.latest_click.latitude,
         },
       };
+    },
+
+    meta_filenames_already_present() {
+      const { current, other } = this.getMediasAlreadyPresentInPublication({
+        publication: this.publication,
+        sections: this.views,
+        opened_section_meta_filename: this.opened_view_meta_filename,
+      });
+
+      return [
+        {
+          label: this.$t("in_this_section"),
+          medias: current,
+          color: "var(--c-orange)",
+        },
+        {
+          label: this.$t("in_another_section"),
+          medias: other,
+          color: "var(--c-bleuvert)",
+        },
+      ];
     },
   },
   methods: {

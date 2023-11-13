@@ -918,6 +918,7 @@
               <MediaValidationButtons
                 :media_is_being_sent="media_is_being_sent"
                 :media_being_sent_percent="media_being_sent_percent"
+                :can_add_to_fav="true"
                 @cancel="cancelValidation()"
                 @save="sendMedia({})"
                 @save_and_fav="sendMedia({ fav: true })"

@@ -14,7 +14,12 @@
         class=""
       />
     </button>
-    <div class="_mediaModal--content">
+    <div
+      class="_mediaModal--content"
+      :class="{
+        'is--mobileView': $root.is_mobile_view,
+      }"
+    >
       <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
         <MediaContent
@@ -66,7 +71,16 @@
       </div>
       <div class="_meta" v-if="!select_mode">
         <div class="u-spacingBottom">
-          <h3>{{ $t("informations") }}</h3>
+          <h3>
+            {{ $t("informations") }}
+
+            <FavSwitch
+              class="_favSwitch"
+              :fav="file.fav"
+              :path="file.$path"
+              :can_edit="true"
+            />
+          </h3>
           <small class="fieldCaption">{{ file.$media_filename }}</small>
         </div>
         <div class="u-mediaOptions u-spacingBottom">
@@ -217,6 +231,14 @@ export default {
     // border-radius: var(--border-radius);
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+
+    &.is--mobileView {
+      flex-flow: column nowrap;
+
+      *._preview {
+        flex: 1 1 320px;
+      }
+    }
   }
 
   ._navBtn {
@@ -367,5 +389,9 @@ export default {
   padding: 2px 4px;
   color: white;
   background: var(--o-color);
+}
+
+._favSwitch {
+  display: inline-block;
 }
 </style>

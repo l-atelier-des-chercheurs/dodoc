@@ -87,6 +87,14 @@
           </template>
         </div>
         <div class="_topSection--right">
+          <button
+            type="button"
+            class="u-button u-button_icon _favFilter"
+            @click="fav_filter = !fav_filter"
+          >
+            <b-icon :icon="fav_filter ? 'star-fill' : 'star'" />
+          </button>
+
           <select
             class="_selectMediaOrigin"
             size="small"
@@ -330,6 +338,8 @@ export default {
 
       hide_dropzone_timeout: undefined,
 
+      fav_filter: false,
+
       group_mode: localStorage.getItem("library_group_mode") || "day",
       group_options: [
         {
@@ -449,23 +459,20 @@ export default {
       return _medias;
     },
     filtered_medias() {
-      let _filtered_medias = this.sorted_medias;
-      if (this.hide_already_present_medias === true)
-        _filtered_medias = _filtered_medias.filter(
-          (m) => !this.mediaTileAlreadySelected(m.$path)
-        );
+      return this.sorted_medias.filter((m) => {
+        if (this.hide_already_present_medias === true)
+          if (this.mediaTileAlreadySelected(m.$path)) return false;
 
-      if (this.type_of_media_to_display !== "all")
-        _filtered_medias = _filtered_medias.filter(
-          (m) => m.$type === this.type_of_media_to_display
-        );
+        if (this.fav_filter === true) if (m.fav !== true) return false;
 
-      if (this.origin_of_media_to_display !== "all")
-        _filtered_medias = _filtered_medias.filter(
-          (m) => m.$origin === this.origin_of_media_to_display
-        );
+        if (this.type_of_media_to_display !== "all")
+          if (m.$type !== this.type_of_media_to_display) return false;
 
-      return _filtered_medias;
+        if (this.origin_of_media_to_display !== "all")
+          if (m.$origin !== this.origin_of_media_to_display) return false;
+
+        return true;
+      });
     },
     grouped_medias() {
       return this.groupFilesBy(
@@ -738,7 +745,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 8);
+  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   z-index: 1;
@@ -893,5 +900,9 @@ export default {
   button {
     padding: calc(var(--spacing) / 1.5);
   }
+}
+
+._favFilter {
+  color: var(--c-rouge);
 }
 </style>

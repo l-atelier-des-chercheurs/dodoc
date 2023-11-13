@@ -147,12 +147,9 @@
         {{ $t("duration") }} – {{ export_duration }}
       </p> -->
       <template v-if="make.type === 'trim_audio'">
-        <audio
-          v-if="export_src_url"
-          class="_player"
-          :src="export_src_url"
-          controls
-        />
+        <vue-plyr v-if="export_src_url">
+          <audio :src="export_src_url" />
+        </vue-plyr>
       </template>
       <template v-else-if="make.type === 'trim_video'">
         <div class="_spinner" v-if="is_exporting" key="loader">
