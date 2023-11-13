@@ -89,7 +89,7 @@
         <div class="_topSection--right">
           <button
             type="button"
-            class="u-button u-button_icon"
+            class="u-button u-button_icon _favFilter"
             @click="fav_filter = !fav_filter"
           >
             <b-icon :icon="fav_filter ? 'star-fill' : 'star'" />
@@ -745,7 +745,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 8);
+  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   z-index: 1;
@@ -900,5 +900,9 @@ export default {
   button {
     padding: calc(var(--spacing) / 1.5);
   }
+}
+
+._favFilter {
+  color: var(--c-rouge);
 }
 </style>
