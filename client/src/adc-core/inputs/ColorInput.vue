@@ -43,14 +43,14 @@
             >
               <span class="_colorPatch is--active" v-if="is_custom_color" />
               {{ $t("custom_color") }}
+              <input
+                ref="field"
+                type="color"
+                :name="label"
+                :id="'_input_' + label"
+                v-model.lazy="local_value"
+              />
             </label>
-            <input
-              ref="field"
-              type="color"
-              :name="label"
-              :id="'_input_' + label"
-              v-model.lazy="local_value"
-            />
           </div>
         </div>
         <transition name="fade_fast">
@@ -237,6 +237,7 @@ export default {
 }
 
 ._customCol {
+  display: flex;
   margin-bottom: calc(var(--spacing) / 4);
 }
 
