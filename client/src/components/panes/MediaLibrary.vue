@@ -72,7 +72,7 @@
               v-if="batch_mode"
               @click="cancelSelect"
             >
-              <b-icon icon="x-circle" />
+              <b-icon icon="x-square" />
               {{ $t("cancel") }}
             </button>
             <button
@@ -81,7 +81,7 @@
               v-if="select_mode === 'multiple' || batch_mode"
               @click="selectAllVisibleMedias"
             >
-              <b-icon icon="plus-square-dotted" />
+              <b-icon icon="plus-square" />
               {{ $t("select_all") }}
             </button>
           </template>
