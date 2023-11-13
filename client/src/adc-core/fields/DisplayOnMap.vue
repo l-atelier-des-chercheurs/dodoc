@@ -201,6 +201,20 @@
                 "
               />
 
+              <ColorInput
+                v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
+                :can_toggle="false"
+                :live_editing="true"
+                :label="$t('background_color')"
+                :value="selected_feature.get('fill_color')"
+                @save="
+                  updateDrawing({
+                    prop: 'fill_color',
+                    val: $event,
+                  })
+                "
+              />
+
               <RangeValueInput
                 class="_strokeWidth"
                 :can_toggle="false"
@@ -238,6 +252,7 @@ import olSourceStadiaMaps from "ol/source/StadiaMaps";
 import olSourceWMTS from "ol/source/WMTS";
 import olMap from "ol/Map";
 import olView from "ol/View";
+import { asArray, asString } from "ol/color";
 import olFeature from "ol/Feature";
 import olTileLayer from "ol/layer/Tile";
 import olImageLayer from "ol/layer/Image";
@@ -550,7 +565,12 @@ export default {
     },
     selected_feature() {
       if (!this.selected_feature_id) return undefined;
+      debugger;
       return this.draw_vector_source?.getFeatureById(this.selected_feature_id);
+    },
+    selected_feature_type() {
+      if (!this.selected_feature) return undefined;
+      return this.selected_feature.getGeometry().getType();
     },
   },
   methods: {
@@ -1098,7 +1118,8 @@ export default {
 
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
-      const fill_color = "rgba(255, 255, 255, 0.2)";
+      let fill_color = feature.get("fill_color") || "rgba(255, 255, 255, 1)";
+      fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
 
       if (is_selected) {
         const style = new olStyle({
@@ -1489,6 +1510,8 @@ export default {
         if (stroke_width) obj.stroke_width = stroke_width;
         const stroke_color = f.get("stroke_color");
         if (stroke_color) obj.stroke_color = stroke_color;
+        const fill_color = f.get("fill_color");
+        if (fill_color) obj.fill_color = fill_color;
 
         const id = f.getId();
         if (id) obj.id = id;
@@ -1572,6 +1595,7 @@ export default {
 
           if (p.stroke_width) feature_cont.stroke_width = p.stroke_width;
           if (p.stroke_color) feature_cont.stroke_color = p.stroke_color;
+          if (p.fill_color) feature_cont.fill_color = p.fill_color;
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
