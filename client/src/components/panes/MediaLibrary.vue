@@ -81,6 +81,7 @@
               v-if="select_mode === 'multiple' || batch_mode"
               @click="selectAllVisibleMedias"
             >
+              <b-icon icon="plus-square-dotted" />
               {{ $t("select_all") }}
             </button>
           </template>
