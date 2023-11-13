@@ -347,7 +347,13 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
 
-      <div class="_captionField" v-if="publimodule.caption || edit_mode">
+      <div
+        class="_captionField"
+        v-if="
+          page_template === 'story_with_sections' &&
+          (publimodule.caption || edit_mode)
+        "
+      >
         <TitleField
           :label="!publimodule.caption ? $t('add_caption') : undefined"
           :field_name="'caption'"
@@ -901,7 +907,7 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
-    margin: calc(var(--spacing) / 4);
+    margin: calc(var(--spacing) / 2);
   }
 }
 

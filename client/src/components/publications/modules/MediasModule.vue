@@ -10,6 +10,7 @@
           v-if="publimodule.module_type === 'mosaic'"
           key="mosaic"
           :medias_with_linked="medias_with_linked"
+          :publimodule="publimodule"
           :context="context"
           :page_template="page_template"
           :show_fs_button="show_fs_button"

@@ -46,7 +46,7 @@
         :page_template="'page_by_page'"
         :number_of_max_medias="1"
         :magnification="magnification"
-        :can_edit="can_edit && is_active && has_edit_button"
+        :can_edit="can_edit && is_active"
         :module_being_edited="module_being_edited"
         @update:module_being_edited="
           $emit('update:module_being_edited', $event)
@@ -164,6 +164,10 @@ export default {
     is_active() {
       if (!this.is_active) {
         this.contentIsNotEdited();
+      } else {
+        if (this.first_media.$type !== "text") {
+          this.$emit("update:module_being_edited", this.publimodule.$path);
+        }
       }
     },
   },
@@ -173,9 +177,6 @@ export default {
     },
     module_meta_filename() {
       return this.publimodule.$path.split("/").at(-1);
-    },
-    has_edit_button() {
-      return this.publimodule.module_type === "text";
     },
     grid() {
       return [this.gridstep, this.gridstep];
