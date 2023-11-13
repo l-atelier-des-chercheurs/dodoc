@@ -3,6 +3,7 @@
     class="m_displayOnMap"
     :class="{
       'is--small': is_small,
+      'is--image': map_baselayer === 'image',
     }"
     :style="map_styles"
   >
@@ -1777,6 +1778,10 @@ export default {
       bottom: calc(var(--spacing) * 3);
       right: auto;
       left: calc(var(--spacing) * 1);
+
+      .m_displayOnMap.is--image & {
+        bottom: calc(var(--spacing) * 1);
+      }
     }
     .ol-scale-line {
       bottom: calc(var(--spacing) / 1);
