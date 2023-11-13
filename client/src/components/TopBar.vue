@@ -3,6 +3,7 @@
     class="_topbar"
     :class="{
       'is--homepage': $route.path === '/',
+      'is--mobileView': $root.is_mobile_view,
     }"
   >
     <BreadCrumbs class="_bc" />
@@ -26,15 +27,18 @@
       </button>
       <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
       <div class="_subscribeBtn">
-        <button type="button" class="_authorBtn" @click="showAuthorModal">
-          <span class="u-buttonLink _adminInfo" v-if="is_instance_admin">
-            {{ "admin" }}
-          </span>
-
-          <template v-if="connected_as">
-            {{ connected_as.name }}
-          </template>
-          <template v-else>{{ $t("login") }}</template>
+        <AuthorTag
+          v-if="connected_as"
+          :path="connected_as.$path"
+          @click="showAuthorModal"
+        />
+        <button
+          type="button"
+          class="_authorBtn"
+          v-else
+          @click="showAuthorModal"
+        >
+          {{ $t("login") }}
         </button>
       </div>
     </div>
@@ -157,7 +161,7 @@ export default {
     background: var(--c-bleumarine_clair);
     padding: calc(var(--spacing) / 2);
     border-radius: 4px;
-    font-weight: 300;
+    font-weight: 500;
     font-size: var(--sl-font-size-normal);
   }
 }
@@ -175,6 +179,10 @@ export default {
     font-size: inherit;
     height: 3rem;
     background: transparent;
+
+    .is--mobileView & {
+      padding: calc(var(--spacing) / 2);
+    }
   }
 }
 

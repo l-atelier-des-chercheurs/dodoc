@@ -62,13 +62,15 @@ export default {
 <style lang="scss" scoped>
 ._authorsView {
   padding: calc(var(--spacing) * 1);
+  max-width: calc(var(--max-column-width));
+  margin: 0 auto;
 }
 ._allAuthors {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 ._title {
-  margin-top: calc(var(--spacing) * 1);
+  margin-top: calc(var(--spacing) * 2);
   margin-bottom: calc(var(--spacing) * 1);
 }
 </style>

@@ -71,7 +71,7 @@
           class="u-buttonLink"
         >
           <b-icon icon="person-video2" />
-          {{ $t("list_of_contributors") }}
+          {{ $t("show_all_contributors") }}
         </router-link>
         <!-- <DetailsPane
           v-else

@@ -1,8 +1,5 @@
 <template>
-  <BaseModal2
-    :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
-    @close="$emit('close')"
-  >
+  <BaseModal2 :title="title" :size="'large'" @close="$emit('close')">
     <div class="_pickMediaFromProject">
       <sl-spinner style="--indicator-color: currentColor" v-if="is_loading" />
       <template v-else>
@@ -65,6 +62,7 @@ import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 
 export default {
   props: {
+    title: String,
     path: String,
     select_mode: {
       type: String,

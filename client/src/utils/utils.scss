@@ -936,8 +936,11 @@ input[type="checkbox"]:disabled {
 }
 
 .u-disabled {
-  pointer-events: none;
-  cursor: disabled !important;
+  cursor: not-allowed;
   filter: grayscale(100%);
   opacity: 0.8;
+
+  > * {
+    // pointer-events: none;
+  }
 }

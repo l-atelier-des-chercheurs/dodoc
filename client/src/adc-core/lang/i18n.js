@@ -132,6 +132,7 @@ export default function () {
         page_color: "Couleur de cette page",
         position: "Position",
         media: "Média",
+        media_not_found: "Média introuvable",
         active_media_instr:
           "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
@@ -184,6 +185,7 @@ export default function () {
         show: "Afficher",
         hide: "Masquer",
         list_of_contributors: "Liste des contributeur·rice·s",
+        show_all_contributors: "Afficher les contributeur·rice·s",
         upload_from_device: "Importer une image",
         device: "Appareil",
         audioinput: "Entrée audio",
@@ -227,7 +229,8 @@ export default function () {
         link: "Lien",
         share: "Partager",
         options: "Options",
-        exports_in_progress: "Exportation(s) en cours",
+        exports: "Exportations",
+        export: "Exportation",
 
         story_width: "Largeur du récit",
         summary: "Sommaire",
@@ -455,7 +458,7 @@ export default function () {
         makes_list: "Liste des fabrications",
         back_to_makes_list: "Retour à la liste",
 
-        edit_image: "Modifier une image",
+        edit_image: "Retravailler une image",
         edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
         trim_audio: "Recouper un son",
         trim_audio_summary: "Couper la fin ou le début dans un son",
@@ -720,6 +723,7 @@ export default function () {
         stl: "STL",
         other: "Autres",
         all_medias_types: "De tous types",
+        all_origins: "De toutes origines",
 
         or_download_media_on_device:
           "ou télécharger ce média sur votre appareil",

@@ -1,11 +1,14 @@
 <template>
   <div class="_taskTracker" v-if="tasks_tracked.length > 0">
-    <DLabel class="" :str="$t('exports_in_progress')" />
+    <DLabel
+      class=""
+      :str="tasks_tracked.length > 1 ? $t('exports') : $t('export')"
+    />
     <div v-for="task in tasks_tracked" class="_task" :key="task.id">
       <div class="">
-        {{ task.instructions.recipe }}
+        {{ $t(task.instructions.recipe) }}
       </div>
-      <div>
+      <div v-if="task.event !== 'completed'">
         <i>
           {{ $t(task.event) }}
         </i>
@@ -22,22 +25,25 @@
           {{ $t("open") }}
         </button>
       </div>
-      <button
-        type="button"
-        v-if="task.progress < 100"
-        @click="abortTask(task.id)"
-        class="u-button u-button_small u-button_red"
-      >
-        <sl-icon name="x-octagon" />
-      </button>
-      <button
-        type="button"
-        v-else-if="task.progress === 100"
-        @click="removeTask(task.id)"
-        class="u-button u-button_small u-button_transparent"
-      >
-        <sl-icon name="x-octagon" />
-      </button>
+      <div class="u-sameRow">
+        <button
+          type="button"
+          v-if="task.progress < 100"
+          @click="abortTask(task.id)"
+          class="u-button u-button_icon u-button_red"
+        >
+          <b-icon icon="x-octagon" />
+          {{ $t("stop") }}
+        </button>
+        <button
+          type="button"
+          v-else-if="task.progress === 100"
+          @click="removeTask(task.id)"
+          class="u-button u-button_icon"
+        >
+          <b-icon icon="x-octagon" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -120,6 +126,7 @@ export default {
       //   },
     },
     abortTask(task_id) {
+      // TODO abort task
       task_id;
     },
     removeTask(task_id) {

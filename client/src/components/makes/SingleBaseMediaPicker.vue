@@ -1,11 +1,11 @@
 <template>
-  <div class="_mediaPicker">
+  <div class="_singleBaseMediaPicker" :data-context="context">
     <div class="_mpContent">
       <MediaContent
         v-if="selected_media"
         :file="selected_media"
         :resolution="220"
-        :context="'preview'"
+        :context="context"
       />
       <span v-else-if="content">
         {{ $t("media_not_found") }}
@@ -18,7 +18,8 @@
           @click="show_media_picker = true"
         >
           <b-icon icon="image" />
-          {{ $t("pick_base_media") }}
+          <!-- {{ $t("pick_base_media") }} -->
+          {{ title }}
         </button>
         <button
           type="button"
@@ -26,12 +27,14 @@
           v-else
           @click="show_media_picker = true"
         >
-          <b-icon icon="plus-circle" />
-          {{ $t("change_base_media") }}
+          <b-icon icon="arrow-left-right" />
+          <!-- {{ $t("change_base_media") }} -->
+          {{ $t("change") }}
         </button>
 
         <PickMediaFromProjects
           v-if="show_media_picker"
+          :title="title"
           :path="path"
           :select_mode="'single'"
           :pick_from_type="media_type_to_pick"
@@ -45,12 +48,16 @@
 <script>
 export default {
   props: {
+    title: String,
+    context: { default: "preview", type: String },
     field_name: String,
     content: {
       type: String,
       default: "",
     },
+    open_modal_if_empty: Boolean,
     path: String,
+    selected_media_path: String,
     media_type_to_pick: String,
   },
   components: {},
@@ -59,18 +66,20 @@ export default {
       fr: {
         not_found: "Média introuvable",
         pick_base_media: "Choisir le média de référence",
-        change_base_media: "Changer le média de référence",
+        change: "Changer",
       },
       en: {
         not_found: "Media not found",
         pick_base_media: "Pick base media",
-        change_base_media: "Change base media",
+        change: "Change",
       },
     },
   },
   data() {
     return {
-      show_media_picker: !this.content ? true : false,
+      show_media_picker: !this.content
+        ? this.open_modal_if_empty === true
+        : false,
     };
   },
   created() {},
@@ -83,7 +92,7 @@ export default {
       if (meta_filename_in_project)
         return this.getSourceMedia({
           source_media: { meta_filename_in_project },
-          folder_path: this.path,
+          folder_path: this.selected_media_path || this.path,
         });
       return false;
     },
@@ -106,7 +115,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._mediaPicker {
+._singleBaseMediaPicker {
   display: flex;
 
   > ._mpContent {
@@ -115,17 +124,17 @@ export default {
     align-items: center;
 
     margin: 0 auto;
-    width: 100%;
+    width: auto;
+    // width: 100%;
     max-width: 320px;
+
+    color: white;
     background: var(--c-bleumarine_fonce);
     gap: calc(var(--spacing) / 4);
     padding: calc(var(--spacing) / 4);
     border-radius: 4px;
 
     ::v-deep ._mediaContent {
-      width: 50px;
-      height: 50px;
-
       ._mediaContent--image {
         position: absolute;
         width: 100%;
@@ -136,8 +145,28 @@ export default {
       }
     }
   }
+
+  &[data-context="full"] {
+    ::v-deep ._mediaContent {
+      width: 320px;
+      height: auto;
+      aspect-ratio: 1/1;
+
+      ._mediaContent--image {
+        object-fit: scale-down;
+      }
+    }
+  }
+  &[data-context="preview"] {
+    ::v-deep ._mediaContent {
+      width: 50px;
+      height: 50px;
+    }
+  }
 }
+
 ._changeBtn {
+  line-height: 1;
   flex: 1 0 auto;
   text-align: center;
 }

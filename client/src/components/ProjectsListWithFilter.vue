@@ -388,7 +388,8 @@ export default {
 ._sidebar {
   flex: 0 0 240px;
   position: sticky;
-  overflow: hidden;
+  overflow: auto;
+  max-height: 100vh;
   top: 0;
   display: flex;
   flex-flow: column nowrap;
@@ -397,9 +398,9 @@ export default {
   align-items: flex-start;
   gap: calc(var(--spacing) / 2);
 
-  border-top: 2px solid var(--c-gris);
-  padding-top: calc(var(--spacing) / 2);
-  padding-right: calc(var(--spacing) / 2);
+  // border-top: 2px solid var(--c-gris);
+  padding: calc(var(--spacing) / 2);
+  padding-left: 0;
   margin-top: 0;
 
   ::v-deep {

@@ -233,6 +233,7 @@
 </template>
 <script>
 import olSourceOSM from "ol/source/OSM";
+import olSourceStadiaMaps from "ol/source/StadiaMaps";
 import olSourceWMTS from "ol/source/WMTS";
 import olMap from "ol/Map";
 import olView from "ol/View";
@@ -306,10 +307,6 @@ export default {
     map_baselayer: {
       type: String,
       default: "OSM",
-      validator(value) {
-        // The value must match one of these strings
-        return ["OSM", "IGN_MAP", "IGN_SAT", "image"].includes(value);
-      },
     },
     map_baselayer_bw: {
       type: Boolean,
@@ -388,7 +385,7 @@ export default {
           olType: "LineString",
           freehand: true,
           idleTip: this.$t("click_drag_to_draw_line"),
-          activeTip: this.$t("click_drag_to_draw_line"),
+          activeTip: "",
         },
         {
           key: "LineString",
@@ -411,7 +408,7 @@ export default {
           olType: "LineString",
           freehand: false,
           idleTip: this.$t("click_to_place_first_point"),
-          activeTip: this.$t("click_to_place_point"),
+          activeTip: this.$t("click_to_continue_drawing"),
         },
         {
           key: "Polygon",
@@ -451,12 +448,11 @@ export default {
         mouse_position: "Position de la balise",
         search_for_a_place: "Rechercher un lieu",
         click_to_start_drawing: "cliquer pour commencer le tracé",
-        click_to_continue_drawing: "cliquer pour ajouter des sommets",
+        click_to_continue_drawing: "cliquez pour ajouter un autre point",
         click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
         click_to_place_center: "cliquer pour placer le centre",
         click_to_define_circle_radius: "cliquer pour définir le rayon",
         click_to_place_first_point: "cliquer pour placer le premier point",
-        click_to_place_point: "cliquer pour ajouter un sommet",
         finish_drawing: "Terminer le dessin",
         or_double_click: "Ou double-cliquez sur la carte",
         drag_to_modify: "cliquer-glisser pour modifier",
@@ -478,7 +474,6 @@ export default {
         click_to_place_center: "click to place center",
         click_to_define_circle_radius: "click to set circle radius",
         click_to_place_first_point: "click to draw first point",
-        click_to_place_point: "click to add segment",
         finish_drawing: "End drawing",
         or_double_click: "Or double click for the last point",
         drag_to_modify: "click and hold to modify",
@@ -780,7 +775,7 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
-      if (!this.keep_loc_and_zoom) {
+      if (!keep_loc_and_zoom) {
         let extent;
 
         if (this.map_baselayer !== "image") {
@@ -830,8 +825,10 @@ export default {
       let view, background_layer;
 
       if (this.map_baselayer === "image") {
-        if (!this.map_base_media)
+        if (!this.map_base_media) {
           this.$alertify.delay(4000).error("missing base image");
+          throw new Error(`missing base image`);
+        }
 
         const img_width = this.map_base_media.$infos?.width;
         const img_height = this.map_base_media.$infos?.height;
@@ -895,6 +892,26 @@ export default {
         return new olSourceOSM({
           wrapX: false,
           noWrap: true,
+        });
+      } else if (type === "stadia_alidade_smooth") {
+        return new olSourceStadiaMaps({
+          layer: "alidade_smooth",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_alidade_smooth_dark") {
+        return new olSourceStadiaMaps({
+          layer: "alidade_smooth_dark",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_toner") {
+        return new olSourceStadiaMaps({
+          layer: "stamen_toner",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_watercolor") {
+        return new olSourceStadiaMaps({
+          layer: "stamen_watercolor",
+          retina: false,
         });
       } else if (["IGN_SAT", "IGN_MAP"].includes(type)) {
         const resolutions = [
@@ -1233,7 +1250,7 @@ export default {
       });
       this.map.addInteraction(this.map_draw);
       this.map_draw.on("drawstart", () => {
-        if (activeTip) tip = activeTip;
+        tip = activeTip;
         if (["LineString", "Polygon"].includes(this.current_draw_mode))
           this.draw_can_be_finished = true;
       });

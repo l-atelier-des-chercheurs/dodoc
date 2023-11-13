@@ -7,7 +7,7 @@
         @click.self="closeModal"
         ref="modal"
       >
-        <div class="_baseModal--content">
+        <div class="_baseModal--content" :data-size="size">
           <header v-if="title">
             <h2>{{ title }}</h2>
           </header>
@@ -31,6 +31,7 @@
 export default {
   props: {
     title: String,
+    size: String,
     is_closable: {
       type: Boolean,
       default: true,
@@ -108,6 +109,10 @@ export default {
     // height: 100%;
     max-height: calc(100vh - calc(var(--spacing) * 2));
     overflow: auto;
+
+    &[data-size="large"] {
+      max-width: 680px;
+    }
   }
 }
 

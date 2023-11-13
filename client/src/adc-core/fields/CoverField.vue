@@ -1,7 +1,7 @@
 <template>
   <div class="_coverField">
     <div class="_hasImage" v-if="cover_thumb">
-      <img :src="cover_thumb" :data-isround="is_round === true" />
+      <img :src="cover_thumb" :data-isround="preview_format === 'circle'" />
 
       <template v-if="context === 'full'">
         <div class="_fsButton">
@@ -21,7 +21,7 @@
     <div
       v-else
       class="_noImage"
-      :data-isround="is_round === true"
+      :data-isround="preview_format === 'circle'"
       :data-placeholder="placeholder"
     >
       <span v-if="placeholder !== 'pattern'" class="_noImage--letter">
@@ -46,6 +46,7 @@
             :path="path"
             :existing_preview="existing_preview"
             :available_options="['import', 'project', 'capture']"
+            :preview_format="preview_format"
             @newPreview="
               (value) => {
                 new_cover = value;
@@ -73,13 +74,13 @@ export default {
     cover: [Boolean, Object],
     path: String,
     context: String,
+    preview_format: {
+      type: String,
+      default: "square",
+    },
     placeholder: {
       type: String,
       default: "pattern",
-    },
-    is_round: {
-      type: Boolean,
-      default: false,
     },
     can_edit: Boolean,
   },
@@ -114,7 +115,7 @@ export default {
         $thumbs: this.cover,
         $type: "image",
         $path: this.path,
-        resolution: 320,
+        resolution: 640,
       });
     },
   },

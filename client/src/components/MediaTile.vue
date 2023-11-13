@@ -137,7 +137,7 @@ export default {
 <style lang="scss" scoped>
 ._mediaTile {
   position: relative;
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
   border-radius: 3px;
   // transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
@@ -191,6 +191,16 @@ export default {
       object-fit: cover;
       max-width: none;
     }
+  }
+  &[data-tilemode="table"] ::v-deep ._mediaContent--image {
+    object-fit: scale-down;
+  }
+  &[data-tilemode="tiny"] ::v-deep ._mediaContent--image {
+    object-fit: cover;
+  }
+  &[data-tilemode="medium"] ::v-deep ._mediaContent--image {
+    object-fit: scale-down;
+    border-radius: 8px;
   }
 
   &[data-tilemode="table"] {
@@ -248,15 +258,15 @@ export default {
 }
 
 ._fileType {
-  background: var(--c-noir);
-  color: white;
-  border-top-left-radius: 3px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--c-noir);
+  border-radius: 2px;
   line-height: 1;
   font-weight: 600;
 
   padding: calc(var(--spacing) / 8);
-  // margin: calc(var(--spacing) / 4);
-  font-size: var(--input-font-size-x-small);
+  margin: calc(var(--spacing) / 8);
+  font-size: var(--input-font-size-small);
   text-transform: uppercase;
 
   ._mediaTile:not([data-tilemode="table"]) & {

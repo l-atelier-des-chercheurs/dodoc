@@ -5,30 +5,36 @@
     </label>
 
     <div class="_makes">
-      <div v-if="makes.length === 0" class="u-instructions">
+      <div v-if="sorted_makes.length === 0" class="u-instructions">
         {{ $t("none_f") }}
       </div>
-      <div class="_makes--item" v-else v-for="make in makes" :key="make.$path">
-        <span>
-          <b>
-            {{ make.title }}
-          </b>
-          <br />
-          <span>
-            <i>
-              {{ $t(make.type).toLowerCase() }}
-            </i>
-          </span>
-        </span>
-        <DateDisplay :title="$t('date_created')" :date="make.$date_created" />
-        <button
-          type="button"
-          class="u-button"
-          @click="$emit('open', make.$path.split('/').at(-1))"
+      <template v-else>
+        <div
+          class="_makes--item"
+          v-for="make in sorted_makes"
+          :key="make.$path"
         >
-          {{ $t("open") }}
-        </button>
-      </div>
+          <span>
+            <b>
+              {{ make.title }}
+            </b>
+            <br />
+            <span>
+              <i>
+                {{ $t(make.type).toLowerCase() }}
+              </i>
+            </span>
+          </span>
+          <DateDisplay :title="$t('date_created')" :date="make.$date_created" />
+          <button
+            type="button"
+            class="u-button"
+            @click="$emit('open', make.$path.split('/').at(-1))"
+          >
+            {{ $t("open") }}
+          </button>
+        </div>
+      </template>
     </div>
   </section>
 </template>
@@ -56,7 +62,15 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    sorted_makes() {
+      return this.makes
+        .slice()
+        .sort(
+          (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
+        );
+    },
+  },
   methods: {},
 };
 </script>

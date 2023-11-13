@@ -59,10 +59,19 @@ class Exporter {
       desired_filename = "preview.png";
     } else if (this.instructions.recipe === "trim_video") {
       full_path_to_file = await this._trimVideo();
-
       desired_filename = this.instructions.suggested_file_name
         ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
         : "trim_video.mp4";
+    } else if (this.instructions.recipe === "mix_audio_and_image") {
+      full_path_to_file = await this._mixAudioAndImage();
+      desired_filename = this.instructions.suggested_file_name
+        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
+        : "mix_video.mp4";
+    } else if (this.instructions.recipe === "mix_audio_and_video") {
+      full_path_to_file = await this._mixAudioAndVideo();
+      desired_filename = this.instructions.suggested_file_name
+        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
+        : "mix_video.mp4";
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -386,6 +395,159 @@ class Exporter {
         .input(base_media_path)
         .inputOptions([`-ss ${start}`, `-to ${end}`])
         .withVideoCodec("libx264")
+        .toFormat("mp4")
+        .on("start", (commandLine) => {
+          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+        })
+        .on("progress", (progress) => {
+          if (progress.percent) {
+            const progress_percent = Math.round(
+              utils.remap(progress.percent, 0, 100, 15, 90)
+            );
+            this._notifyProgress(progress_percent);
+          } else this._notifyProgress(40);
+        })
+        .on("end", async () => {
+          dev.logverbose("Video ended");
+          this._notifyProgress(95);
+          return resolve(full_path_to_new_video);
+        })
+        .on("error", async (err, stdout, stderr) => {
+          dev.error("An error happened: " + err.message);
+          dev.error("ffmpeg standard output:\n" + stdout);
+          dev.error("ffmpeg standard error:\n" + stderr);
+          this._notifyEnded({
+            event: "failed",
+            info: err.message,
+          });
+
+          return reject(err);
+        })
+        .save(full_path_to_new_video);
+    });
+  }
+
+  _mixAudioAndImage() {
+    return new Promise(async (resolve, reject) => {
+      this._notifyProgress(5);
+
+      const new_video_name =
+        "video_mix_" +
+        +new Date() +
+        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
+        ".mp4";
+
+      let full_path_to_folder_in_cache = await utils.createFolderInCache(
+        "video"
+      );
+
+      const full_path_to_new_video = path.join(
+        full_path_to_folder_in_cache,
+        new_video_name
+      );
+
+      const base_audio_path = utils.getPathToUserContent(
+        this.instructions.base_audio_path
+      );
+      const base_image_path = utils.getPathToUserContent(
+        this.instructions.base_image_path
+      );
+
+      const output_width = this.instructions.output_width;
+      const output_height = this.instructions.output_height;
+
+      this._notifyProgress(10);
+
+      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+        .input(base_image_path)
+        .loop()
+        .input(base_audio_path)
+        .withVideoCodec("libx264")
+        .withVideoBitrate("4000k")
+        .addOptions(["-shortest"])
+        .withAudioCodec("aac")
+        .withAudioBitrate("128k")
+        .addOptions(["-tune stillimage", "-pix_fmt yuv420p"])
+        .videoFilters(
+          `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=1,pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`
+        )
+        .outputFPS(30)
+        .toFormat("mp4")
+        .on("start", (commandLine) => {
+          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+        })
+        .on("progress", (progress) => {
+          if (progress.percent) {
+            const progress_percent = Math.round(
+              utils.remap(progress.percent, 0, 100, 15, 90)
+            );
+            this._notifyProgress(progress_percent);
+          } else this._notifyProgress(40);
+        })
+        .on("end", async () => {
+          dev.logverbose("Video ended");
+          this._notifyProgress(95);
+          return resolve(full_path_to_new_video);
+        })
+        .on("error", async (err, stdout, stderr) => {
+          dev.error("An error happened: " + err.message);
+          dev.error("ffmpeg standard output:\n" + stdout);
+          dev.error("ffmpeg standard error:\n" + stderr);
+          this._notifyEnded({
+            event: "failed",
+            info: err.message,
+          });
+
+          return reject(err);
+        })
+        .save(full_path_to_new_video);
+    });
+  }
+  _mixAudioAndVideo() {
+    return new Promise(async (resolve, reject) => {
+      this._notifyProgress(5);
+
+      const new_video_name =
+        "video_mix_" +
+        +new Date() +
+        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
+        ".mp4";
+
+      let full_path_to_folder_in_cache = await utils.createFolderInCache(
+        "video"
+      );
+
+      const full_path_to_new_video = path.join(
+        full_path_to_folder_in_cache,
+        new_video_name
+      );
+
+      const base_audio_path = utils.getPathToUserContent(
+        this.instructions.base_audio_path
+      );
+      const base_video_path = utils.getPathToUserContent(
+        this.instructions.base_video_path
+      );
+
+      const output_width = this.instructions.output_width;
+      const output_height = this.instructions.output_height;
+      const duration = this.instructions.duration;
+
+      this._notifyProgress(10);
+
+      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+        .input(base_video_path)
+        .input(base_audio_path)
+        .duration(duration)
+        // .withVideoCodec('copy')
+        .withVideoCodec("libx264")
+        .withVideoBitrate("4000k")
+        .withAudioCodec("aac")
+        .withAudioBitrate("128k")
+        .addOptions(["-map 0:v:0", "-map 1:a:0"])
+        .videoFilters(
+          `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=1,pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`
+        )
         .toFormat("mp4")
         .on("start", (commandLine) => {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);

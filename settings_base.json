@@ -209,6 +209,15 @@
                   "base_media_filename": {
                     "type": "string"
                   },
+                  "base_audio_filename": {
+                    "type": "string"
+                  },
+                  "base_video_filename": {
+                    "type": "string"
+                  },
+                  "base_image_filename": {
+                    "type": "string"
+                  },
                   "crop_options": {
                     "type": "object"
                   },
@@ -370,7 +379,7 @@
                     "pin_name": {
                       "type": "string"
                     },
-                    "pin_caption": {
+                    "caption": {
                       "type": "string"
                     },
                     "pin_icon": {

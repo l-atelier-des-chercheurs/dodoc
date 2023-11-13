@@ -121,6 +121,7 @@ export default {
   props: {
     medias_with_linked: Array,
     context: String,
+    publimodule: Object,
     page_template: String,
     show_fs_button: Boolean,
     number_of_max_medias: [Boolean, Number],
@@ -151,14 +152,15 @@ export default {
         this.medias_with_linked[0]._linked_media.$infos?.ratio;
       const current_ratio =
         this.publimodule?.height && this.publimodule?.width
-          ? Math.round(
-              (this.publimodule?.height / this.publimodule?.width) * 10
-            )
+          ? this.publimodule?.height / this.publimodule?.width
           : false;
 
       if (!theoretical_ratio || !current_ratio) return false;
 
-      return Math.round(theoretical_ratio * 10) === current_ratio;
+      const dec = 10;
+      return (
+        Math.round(theoretical_ratio * dec) === Math.round(current_ratio * dec)
+      );
     },
   },
   methods: {

@@ -32,19 +32,21 @@
         />
       </div>
 
-      <SingleBaseMediaPicker
-        :field_name="'base_media_filename'"
-        :content="make.base_media_filename"
-        :path="make.$path"
-        :media_type_to_pick="media_type_to_pick"
-      />
+      <div
+        v-if="['edit_image', 'trim_video', 'trim_audio'].includes(make.type)"
+      >
+        <div class="_mediaPicker">
+          <SingleBaseMediaPicker
+            :title="picker_title"
+            :field_name="'base_media_filename'"
+            :open_modal_if_empty="true"
+            :content="make.base_media_filename"
+            :path="make.$path"
+            :media_type_to_pick="media_type_to_pick"
+          />
+        </div>
 
-      <div class="_content" v-if="base_media" :key="base_media.$path">
-        <template>
-          <!-- <VideoAssemblage
-            v-if="make.type === 'video_assemblage'"
-            :make="make"
-          /> -->
+        <div v-if="base_media" :key="base_media.$path">
           <EditImage
             v-if="make.type === 'edit_image'"
             :make="make"
@@ -63,8 +65,17 @@
             :project_path="project_path"
             :base_media="base_media"
           />
-        </template>
+        </div>
       </div>
+
+      <MixAudioAndImageOrVideo
+        v-else-if="
+          ['mix_audio_and_image', 'mix_audio_and_video'].includes(make.type)
+        "
+        :make="make"
+        :project_path="project_path"
+        :base_media="base_media"
+      />
     </div>
   </div>
 </template>
@@ -82,6 +93,8 @@ export default {
     // VideoAssemblage: () => import("@/components/makes/VideoAssemblage.vue"),
     EditImage: () => import("@/components/makes/EditImage.vue"),
     TrimAudioVideo: () => import("@/components/makes/TrimAudioVideo.vue"),
+    MixAudioAndImageOrVideo: () =>
+      import("@/components/makes/MixAudioAndImageOrVideo.vue"),
   },
   data() {
     return {
@@ -89,6 +102,21 @@ export default {
       fetch_make_error: false,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        image_to_rework: "Image à retravailler",
+        video_to_rework: "Vidéo à recouper",
+        audio_to_rework: "Son à recouper",
+      },
+      en: {
+        image_to_rework: "Image to edit",
+        video_to_rework: "Video to edit",
+        audio_to_rework: "Audio to edit",
+      },
+    },
+  },
+
   created() {},
   async mounted() {
     await this.listMake();
@@ -114,6 +142,12 @@ export default {
       if (this.make.type === "edit_image") return "image";
       if (this.make.type === "trim_audio") return "audio";
       if (this.make.type === "trim_video") return "video";
+      return undefined;
+    },
+    picker_title() {
+      if (this.make.type === "edit_image") return this.$t("image_to_rework");
+      if (this.make.type === "trim_audio") return this.$t("audio_to_rework");
+      if (this.make.type === "trim_video") return this.$t("video_to_rework");
       return undefined;
     },
   },
@@ -175,6 +209,7 @@ export default {
   // max-width: 800px;
 }
 
-._content {
+._mediaPicker {
+  padding: calc(var(--spacing) / 2);
 }
 </style>

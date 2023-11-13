@@ -72,20 +72,43 @@
               v-if="batch_mode"
               @click="cancelSelect"
             >
-              <b-icon icon="x-circle" />
+              <b-icon icon="x-square" />
               {{ $t("cancel") }}
             </button>
             <button
               type="button"
               class="u-buttonLink"
-              v-if="select_mode || batch_mode"
+              v-if="select_mode === 'multiple' || batch_mode"
               @click="selectAllVisibleMedias"
             >
+              <b-icon icon="plus-square" />
               {{ $t("select_all") }}
             </button>
           </template>
         </div>
         <div class="_topSection--right">
+          <select
+            class="_selectMediaOrigin"
+            size="small"
+            v-model="origin_of_media_to_display"
+            :class="{
+              'is--active': origin_of_media_to_display !== 'all',
+            }"
+          >
+            <option
+              v-for="origin in origins_of_medias"
+              :key="origin.key"
+              :value="origin.key"
+              v-text="
+                origin.label +
+                quantityOfMediaWithKey({
+                  key: '$origin',
+                  val: origin.key,
+                })
+              "
+            />
+          </select>
+
           <select
             class="_selectMediaType"
             size="small"
@@ -101,7 +124,10 @@
               :value="type_of_media.key"
               v-text="
                 type_of_media.label +
-                ` (${quantityOfMediaWithType(type_of_media.key)})`
+                quantityOfMediaWithKey({
+                  key: '$type',
+                  val: type_of_media.key,
+                })
               "
             />
           </select>
@@ -355,6 +381,30 @@ export default {
           label: this.$t("other"),
         },
       ],
+
+      origin_of_media_to_display: "all",
+      origins_of_medias: [
+        {
+          key: "all",
+          label: this.$t("all_origins"),
+        },
+        {
+          key: "capture",
+          label: "1 • " + this.$t("capture"),
+        },
+        {
+          key: "collect",
+          label: "2 • " + this.$t("collect"),
+        },
+        {
+          key: "make",
+          label: "3 • " + this.$t("make"),
+        },
+        {
+          key: "publish",
+          label: "4 • " + this.$t("publish"),
+        },
+      ],
     };
   },
   created() {},
@@ -408,6 +458,11 @@ export default {
       if (this.type_of_media_to_display !== "all")
         _filtered_medias = _filtered_medias.filter(
           (m) => m.$type === this.type_of_media_to_display
+        );
+
+      if (this.origin_of_media_to_display !== "all")
+        _filtered_medias = _filtered_medias.filter(
+          (m) => m.$origin === this.origin_of_media_to_display
         );
 
       return _filtered_medias;
@@ -545,10 +600,12 @@ export default {
       this.selected_medias = [];
       if (this.batch_mode) this.batch_mode = false;
     },
-    quantityOfMediaWithType(type_of_media_key) {
-      return this.sorted_medias.filter(
-        (m) => type_of_media_key === "all" || m.$type === type_of_media_key
+    quantityOfMediaWithKey({ key, val }) {
+      if (val === "all") return "";
+      const num = this.sorted_medias.filter(
+        (m) => m[key] && m[key] === val
       ).length;
+      return ` (${num})`;
     },
     updateInputFiles($event) {
       this.files_to_import = Array.from($event.target.files);
@@ -681,11 +738,10 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 4);
-
-  // background: var(--color-collect);
-  z-index: 1;
+  gap: calc(var(--spacing) / 8);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+
+  z-index: 1;
 
   border-bottom: 2px solid var(--c-orange_clair);
 }
@@ -703,7 +759,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 
 ._gridSection {
@@ -752,6 +808,7 @@ export default {
   }
 }
 
+._selectMediaOrigin,
 ._selectMediaType {
   width: 20ch;
 }

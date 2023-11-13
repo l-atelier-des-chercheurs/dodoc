@@ -36,9 +36,7 @@
       {{ $t("trim_instructions") }}
     </p>
 
-    <div class="_currentTime">
-      {{ current_time_displayed }}
-    </div>
+    <div class="_currentTime">{{ current_time_displayed }} s</div>
     <div class="_startEndBlock">
       <!-- // not working: wfp uses time selection to move cursor as well, we would need to decouple selection from play -->
 
@@ -138,8 +136,10 @@
 
     <ExportSaveMakeModal
       v-if="show_save_export_modal"
+      :title="export_modal_title"
       :export_blob="export_blob"
       :export_name="export_name"
+      :export_href="export_href"
       :project_path="project_path"
       @close="show_save_export_modal = false"
     >
@@ -208,10 +208,26 @@ export default {
       is_exporting: false,
 
       export_blob: false,
+      export_href: undefined,
       export_src_url: false,
       export_duration: "",
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        start_egal_to_end: "Le début est identique à la fin",
+        end_before_start: "La fin est avant le début",
+        export_trim_video: "Exporter la vidéo recoupée",
+      },
+      en: {
+        start_egal_to_end: "Start is equal to end",
+        end_before_start: "End is before start",
+        export_trim_audio: "Export trimmed video",
+      },
+    },
+  },
+
   created() {},
   async mounted() {
     await this.loadWFP();
@@ -237,7 +253,16 @@ export default {
   },
   computed: {
     export_name() {
-      return this.base_media.$media_filename + "_trim.wav";
+      if (this.make.type === "trim_video")
+        return this.base_media.$media_filename + "_trim.mp4";
+      else if (this.make.type === "trim_audio")
+        return this.base_media.$media_filename + "_trim.wav";
+      return "untitled";
+    },
+    export_modal_title() {
+      if (this.make.type === "trim_video") return this.$t("export_trim_video");
+      else if (this.make.type === "") return this.$t("export_trim_audio");
+      return "";
     },
     current_time_displayed() {
       // const r = "" + this.roundToDec(this.current_time, 2);
@@ -448,6 +473,7 @@ export default {
       type;
       this.is_rendering = false;
       this.export_blob = blob;
+      this.export_href = window.URL.createObjectURL(blob);
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -457,6 +483,7 @@ export default {
     },
     async renderAudio() {
       this.export_blob = false;
+      this.export_href = undefined;
       this.export_src_url = false;
       this.export_duration = "";
 
@@ -535,6 +562,7 @@ export default {
 
     async renderVideo() {
       this.trimmed_video = false;
+      this.export_href = undefined;
 
       let instructions = {
         recipe: "trim_video",
@@ -564,6 +592,11 @@ export default {
         if (message.event === "completed") {
           message.file;
           this.trimmed_video = message.file;
+
+          this.export_href = this.makeMediaFileURL({
+            $path: this.trimmed_video.$path,
+            $media_filename: this.trimmed_video.$media_filename,
+          });
         } else if (message.event === "aborted") {
           //
         } else if (message.event === "failed") {

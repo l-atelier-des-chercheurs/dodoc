@@ -4,7 +4,6 @@
     :data-type="module_type"
     @click="preventClickTraversing"
   >
-    <!-- @mouseleave.self="show_advanced_menu = false" -->
     <transition name="fade_fast" mode="out-in">
       <div
         class="_sideOptions"
@@ -347,6 +346,48 @@
       </template>
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
+
+      <div
+        class="_captionField"
+        v-if="
+          page_template === 'story_with_sections' &&
+          (publimodule.caption || edit_mode)
+        "
+      >
+        <TitleField
+          :label="!publimodule.caption ? $t('add_caption') : undefined"
+          :field_name="'caption'"
+          :content="publimodule.caption"
+          :path="publimodule.$path"
+          :input_type="'markdown'"
+          :tag="'small'"
+          :can_edit="edit_mode && can_edit"
+        />
+
+        <div
+          class=""
+          v-if="
+            edit_mode &&
+            first_media &&
+            first_media.caption &&
+            !publimodule.caption
+          "
+        >
+          <div class="u-instructions">
+            {{ $t("copy_first_media_caption") }}
+          </div>
+          <button
+            type="button"
+            @click="
+              updateMeta({
+                caption: first_media.caption,
+              })
+            "
+          >
+            {{ first_media.caption }}
+          </button>
+        </div>
+      </div>
     </div>
 
     <div
@@ -389,7 +430,6 @@ export default {
   },
   data() {
     return {
-      show_advanced_menu: false,
       is_repicking_location: false,
       observer: undefined,
     };
@@ -407,6 +447,8 @@ export default {
         cancel_position: "Annuler la position",
         click_on_map_to_repick_location_for_media:
           "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+        add_caption: "Ajouter une légende",
+        copy_first_media_caption: "Réutiliser la légende du premier média",
       },
       en: {
         no_coordinates: "No coordinates available",
@@ -419,6 +461,8 @@ export default {
         cancel_position: "Erase position",
         click_on_map_to_repick_location_for_media:
           "Click on map to select the new position on the map",
+        add_caption: "Add a caption",
+        copy_first_media_caption: "Reuse first media caption",
       },
     },
   },
@@ -863,7 +907,7 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
-    margin: calc(var(--spacing) / 4);
+    margin: calc(var(--spacing) / 2);
   }
 }
 
@@ -921,5 +965,13 @@ export default {
 
   ._index {
   }
+}
+
+._captionField {
+  margin-top: calc(var(--spacing) / 4);
+
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) * 1);
 }
 </style>

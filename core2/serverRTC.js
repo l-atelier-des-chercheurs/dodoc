@@ -46,7 +46,13 @@ module.exports = function (server) {
     client.isAlive = true;
     dev.logverbose(`sharewss: a new client ${client.id} connected.`);
 
-    await loadDocFromFile({ url: req.url });
+    if (req.url.startsWith("/isSharedb?path_to_meta=")) {
+      client._path_to_edited_doc = req.url.substring(
+        "/isSharedb?path_to_meta=".length
+      );
+    }
+
+    // await loadDocFromFile({ url: req.url });
 
     var stream = new WebSocketJSONStream(client);
     backend.listen(stream);
@@ -76,12 +82,37 @@ module.exports = function (server) {
   });
 
   setInterval(function () {
+    // check which docs are being edited, remove from temp db those that are not anymore
+    let all_currently_edited_docs = [];
+
     sharewss.clients.forEach(function (client) {
       if (client.isAlive === false) return client.terminate();
       client.isAlive = false;
       client.ping();
-      // dev.logverbose(`sharewss: ping sent for ${client.id}`);
+
+      const _path_to_edited_doc = client._path_to_edited_doc;
+      all_currently_edited_docs.push(_path_to_edited_doc);
     });
+
+    if (backend?.db?.docs?.collaborative_texts) {
+      const all_docs_id = Object.keys(backend.db.docs.collaborative_texts);
+      for (const doc_id of all_docs_id) {
+        if (!all_currently_edited_docs.includes(doc_id)) {
+          dev.logverbose("doc not edited by anyone, destroying : " + doc_id);
+          const doc = connection.get("collaborative_texts", doc_id);
+          if (doc) {
+            doc.fetch(function (err) {
+              if (err) throw err;
+              doc.del();
+              doc.destroy();
+              dev.logverbose("doc destroyed : " + doc_id);
+            });
+          }
+        } else {
+          dev.logverbose("doc still edited : " + doc_id);
+        }
+      }
+    }
   }, 5000);
 
   async function loadDocFromFile({ url }) {
