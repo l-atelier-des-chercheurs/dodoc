@@ -45,18 +45,6 @@ export default {
   data() {
     return {};
   },
-  i18n: {
-    messages: {
-      fr: {
-        in_this_section: "Dans cette section",
-        in_another_section: "Dans une autre section",
-      },
-      en: {
-        in_this_section: "In this section",
-        in_another_section: "In another section",
-      },
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},
