@@ -26,7 +26,6 @@
             :key="project.$path"
             :value="project.$path"
             v-text="project.title"
-            disabled
           />
         </select>
 
@@ -37,14 +36,18 @@
           :label="$t('hide_already_present_medias')"
         />
 
-        <template v-if="source_project_path">
+        <div v-if="source_project_path" class="_projectLib">
           <DLabel :str="$t('medias')" />
-          <sl-spinner
-            style="--indicator-color: currentColor"
-            v-if="!source_project"
-          />
-          <template v-else>
+
+          <transition name="fade_fast">
+            <LoaderSpinner
+              class="_loader"
+              v-if="is_loading_project"
+              key="spinner"
+            />
             <MediaLibrary
+              v-else
+              key="medialib"
               class="_mediaLib"
               :project="source_project"
               :media_focused="media_focused"
@@ -55,8 +58,8 @@
               @update:media_focused="media_focused = $event"
               @addMedias="addMedias"
             />
-          </template>
-        </template>
+          </transition>
+        </div>
       </template>
     </div>
   </BaseModal2>
@@ -90,6 +93,7 @@ export default {
       is_loading: false,
       projects: undefined,
       source_project_path: "",
+      is_loading_project: false,
       source_project: undefined,
       media_focused: undefined,
       hide_already_present_medias: true,
@@ -159,9 +163,11 @@ export default {
       }
     },
     async fetchSelectedProject() {
+      this.is_loading_project = true;
       this.source_project = await this.$api.getFolder({
         path: this.source_project_path,
       });
+      this.is_loading_project = false;
     },
   },
 };
@@ -195,5 +201,9 @@ export default {
       // flex: 1 1 70vh;
     }
   }
+}
+
+._projectLib {
+  position: relative;
 }
 </style>
