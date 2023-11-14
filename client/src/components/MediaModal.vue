@@ -2,18 +2,27 @@
   <div class="_mediaModal">
     <div class="_mediaModal--overlay" @click="$emit('close')" />
 
-    <button
-      type="button"
-      class="u-button u-button_transparent _closeButton"
-      @click="$emit('close')"
-    >
-      <img
-        :src="`${$root.publicPath}images/i_close_sansfond.svg`"
-        width="2rem"
-        height="2rem"
-        class=""
-      />
-    </button>
+    <div class="_topRightBtn">
+      <button
+        type="button"
+        v-if="!$root.is_mobile_view"
+        class="u-button u-button_icon"
+        @click="toggleMeta"
+      >
+        <b-icon
+          :icon="
+            show_meta_sidebar ? 'chevron-double-right' : 'chevron-double-left'
+          "
+        />
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        @click="$emit('close')"
+      >
+        <b-icon icon="x-lg" />
+      </button>
+    </div>
     <div
       class="_mediaModal--content"
       :class="{
@@ -69,7 +78,10 @@
           </div>
         </transition>
       </div>
-      <div class="_meta" v-if="!select_mode">
+      <div
+        class="_meta"
+        v-if="(show_meta_sidebar || $root.is_mobile_view) && !select_mode"
+      >
         <div class="u-spacingBottom">
           <h3>
             {{ $t("media") }}
@@ -185,6 +197,7 @@ export default {
   data() {
     return {
       show_nav_btn: false,
+      show_meta_sidebar: true,
     };
   },
   i18n: {
@@ -197,7 +210,10 @@ export default {
       },
     },
   },
-  created() {},
+  created() {
+    if (localStorage.getItem("show_meta_sidebar") === "false")
+      this.show_meta_sidebar = false;
+  },
   mounted() {
     setTimeout(() => {
       this.show_nav_btn = true;
@@ -206,7 +222,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    toggleMeta() {
+      this.show_meta_sidebar = !this.show_meta_sidebar;
+      localStorage.setItem("show_meta_sidebar", this.show_meta_sidebar);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -247,7 +268,7 @@ export default {
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.4);
     position: relative;
     z-index: 100;
 
@@ -270,6 +291,10 @@ export default {
       height: 100%;
       overflow: hidden;
 
+      &[data-filetype="audio"] {
+        padding: calc(var(--spacing) * 3);
+      }
+
       ._mediaContent--image {
         position: absolute;
         width: 100%;
@@ -284,7 +309,7 @@ export default {
 
 ._meta {
   // margin: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
   background: var(--panel-color);
   border: var(--panel-borders);
   box-shadow: var(--panel-shadows);
@@ -334,23 +359,23 @@ export default {
   }
 }
 
-._closeButton {
+._topRightBtn {
   position: absolute;
-  z-index: 10000;
-  top: 0em;
-  right: 0em;
-  // color: currentColor;
-  // font-size: 200%;
-  // background: rgba(255, 255, 255, 0.25);
-  // border-radius: 50%;
+  top: 0;
+  right: 0;
+  z-index: 1;
 
-  padding: calc(var(--spacing) / 4);
+  display: flex;
+  flex-flow: row wrap;
+
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
   margin: 0;
 
-  img {
-    width: 2rem;
-    height: 2rem;
+  button {
+    font-size: var(--sl-font-size-medium);
   }
+
   &:not(:hover) {
     // margin-top: -10px;
     // margin-right: -10px;
@@ -364,8 +389,8 @@ export default {
   width: 100%;
   height: 100%;
 
-  padding: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 4);
+  // padding-bottom: calc(var(--spacing) * 1);
   pointer-events: none;
 
   display: flex;
