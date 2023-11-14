@@ -192,14 +192,8 @@ export default {
   // border: 2px dashed var(--c-gris_fonce);
   // padding: calc(var(--spacing) / 2);
 
-  > * {
-    // flex: 0 0 auto;
-
-    &._mediaLib {
-      height: 60vh;
-      // overflow: hidden;
-      // flex: 1 1 70vh;
-    }
+  ._mediaLib {
+    height: 60vh;
   }
 }
 
