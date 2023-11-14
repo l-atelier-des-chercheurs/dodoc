@@ -72,8 +72,8 @@
       <div class="_meta" v-if="!select_mode">
         <div class="u-spacingBottom">
           <h3>
-            {{ $t("informations") }}
-
+            {{ $t("media") }}
+            {{ file._index }}
             <FavSwitch
               class="_favSwitch"
               :fav="file.fav"

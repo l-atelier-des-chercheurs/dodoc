@@ -484,7 +484,7 @@ export default {
     focused_media() {
       if (!this.media_focused) return false;
       const _focused_media =
-        this.project.$files.find(
+        this.sorted_medias.find(
           (f) => this.getFilename(f.$path) === this.media_focused
         ) || false;
       if (_focused_media && this.$refs.mediaTiles)
