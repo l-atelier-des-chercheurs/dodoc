@@ -10,7 +10,9 @@
           v-text="makeSpaceTitle(space)"
         />
       </select>
-
+      <div class="_arrowBtn">
+        <b-icon icon="arrow-right-short" label="" />
+      </div>
       <div v-if="!projects" class="_projectLoader">
         <LoaderSpinner />
       </div>
@@ -111,9 +113,14 @@ export default {
 
     > * {
       flex: 1 1 50%;
+
+      &._arrowBtn {
+        flex: 0 0 auto;
+      }
     }
   }
 }
+
 ._projectLoader {
   position: relative;
 }
