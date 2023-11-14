@@ -55,13 +55,13 @@
             :label="$t('add_files')"
           />
         </button> -->
-        <MediaPicker
+        <!-- <MediaPicker
           v-if="show_file_picker"
           :publication_path="publication_path"
           :select_mode="select_mode"
           @addMedias="createFiles"
           @close="show_file_picker = false"
-        />
+        /> -->
 
         <button
           type="button"
@@ -230,20 +230,45 @@ export default {
       // if path_to_source_media, we get metafilename
       let source_medias = [];
 
+      debugger;
+
       // each meta gets it own mosaic
       if (meta_filename) {
         source_medias.push({
           meta_filename,
         });
       } else if (path_to_source_media_metas) {
-        path_to_source_media_metas.map((path_to_source_media_meta) => {
-          const meta_filename_in_project = this.getFilename(
+        for (const path_to_source_media_meta of path_to_source_media_metas) {
+          // check if already in parent project
+          const parent_project_path_for_media = this.getParent(
             path_to_source_media_meta
           );
+          const parent_project_path_for_publi = this.getParent(
+            this.getParent(this.publication_path)
+          );
+
+          let meta_filename_in_project;
+
+          if (parent_project_path_for_media !== parent_project_path_for_publi) {
+            meta_filename_in_project = await this.$api
+              .copyFile({
+                path: path_to_source_media_meta,
+                path_to_destination_folder: parent_project_path_for_publi,
+              })
+              .catch((err_code) => {
+                this.$alertify.delay(4000).error(err_code);
+                throw "fail";
+              });
+          } else {
+            meta_filename_in_project = this.getFilename(
+              path_to_source_media_meta
+            );
+          }
+
           source_medias.push({
             meta_filename_in_project,
           });
-        });
+        }
       }
       if (this.context === "page_by_page") {
         source_medias = source_medias.map((sm) => {

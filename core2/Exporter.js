@@ -544,7 +544,7 @@ class Exporter {
         .withVideoBitrate("4000k")
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
-        .addOptions(["-map 0:v:0", "-map 1:a:0"])
+        .addOptions(["-map 0:v:0", "-map 1:a:0", "-af apad"])
         .videoFilters(
           `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=1,pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`
         )

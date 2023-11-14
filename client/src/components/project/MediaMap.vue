@@ -44,7 +44,7 @@ export default {
       //     latitude: 43.11,
       //   },
       // ];
-      return this.medias.reduce((acc, m, index) => {
+      return this.medias.reduce((acc, m) => {
         if (m.$infos?.gps) {
           const { latitude, longitude } = m.$infos?.gps;
           if (latitude && longitude)
@@ -52,7 +52,6 @@ export default {
               latitude,
               longitude,
               path: m.$path,
-              label: index,
             });
         }
         return acc;

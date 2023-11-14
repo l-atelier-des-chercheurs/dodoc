@@ -563,6 +563,18 @@ export default {
         "--current-view-color": this.opened_view_color,
       };
     },
+    default_pin_svg() {
+      const svg = `<svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
+        <path
+          d="m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z"
+          fill="#fc4b60" 
+          stroke="#000"
+          stroke-width="4px"
+        />
+      </svg>`;
+      const b64 = btoa(unescape(encodeURIComponent(svg)));
+      return `data:image/svg+xml;base64, ${b64}`;
+    },
     selected_feature() {
       if (!this.selected_feature_id) return undefined;
       debugger;
@@ -1031,6 +1043,15 @@ export default {
           anchorXUnits: "fraction",
           anchorYUnits: "fraction",
           src: first_media_thumb,
+        });
+      } else if (pin_preview === "default") {
+        style.text = undefined;
+        style.image = new olIcon({
+          anchor: [0.5, 1],
+          anchorXUnits: "fraction",
+          anchorYUnits: "fraction",
+          size: [30, 30],
+          src: this.default_pin_svg,
         });
       } else {
         style.image = this.makePointerStyle(fill_color);
@@ -1538,7 +1559,7 @@ export default {
             if (pin.color) feature_cont.fill_color = pin.color;
             // if (pin.module) feature_cont.module = pin.module;
             if (pin.label) feature_cont.label = pin.label;
-            if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
+            feature_cont.pin_preview = pin.pin_preview || "default";
             if (pin.pin_preview_src)
               feature_cont.pin_preview_src = pin.pin_preview_src;
             if (pin.first_media_thumb)

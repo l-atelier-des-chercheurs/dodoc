@@ -135,6 +135,36 @@ export default {
           </svg>
           `,
         },
+        // {
+        //   key: "face_masks",
+        //   label: this.$t("face_masks") + " (EXPERIMENTAL)",
+        //   disabled: true,
+        //   icon: `
+        //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+        //     <rect x="67" y="67" width="67" height="67" style="fill: #fff"/>
+        //   </svg>
+        //       `,
+        // },
+        // {
+        //   key: "image_tracking",
+        //   label: this.$t("image_tracking") + " (EXPERIMENTAL)",
+        //   disabled: true,
+        //   icon: `
+        //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+        //     <rect x="67" y="67" width="67" height="67" style="fill: #fff"/>
+        //   </svg>
+        //       `,
+        // },
+        // {
+        //   key: "carreau",
+        //   summary: "carreau_summary",
+        //   show_instructions: false,
+        //   instructions: "carreau_instructions",
+        //   show_all_recipes: false,
+        //   icon: `
+
+        //   `
+        // }
       ],
     };
   },

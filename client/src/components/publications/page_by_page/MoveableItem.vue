@@ -56,6 +56,15 @@
         @contentIsNotEdited="contentIsNotEdited"
         :style="module_styles"
       />
+      <div class="_textOverflowNotice" v-if="can_edit && text_overflows">
+        <button
+          type="button"
+          class="u-button u-button_icon u-button_red"
+          @click="setHeightToTextBloc"
+        >
+          <b-icon icon="text-paragraph" />
+        </button>
+      </div>
     </span>
     <div class="_unlockBtn" v-if="can_edit">
       <button
@@ -116,6 +125,7 @@ export default {
   data() {
     return {
       transform: { x: 0, y: 0, width: 300, height: 300, rotation: 0 },
+      text_overflows: false,
       component_key: 1,
       aspect_ratio: true,
       content_is_edited: false,
@@ -149,6 +159,14 @@ export default {
     );
   },
   watch: {
+    transform: {
+      handler() {
+        if (this.first_media.$type === "text") {
+          this.detectOverflowText();
+        }
+      },
+      deep: true,
+    },
     publimodule: {
       handler() {
         // todo change key to re-render component if coordinates were changed and diff from transform (means it was changed on another client)
@@ -238,7 +256,19 @@ export default {
         }
       });
       return was_updated;
-      // this.$set(this.transform, k, this.publimodule[k]);
+    },
+    detectOverflowText() {
+      const bloc_height = this.transform.height;
+      const text_height = this.$el.querySelector(".ql-editor").offsetHeight;
+      this.text_overflows = text_height > bloc_height;
+    },
+    async setHeightToTextBloc() {
+      const text_height = this.turnPXtoCM(
+        this.$el.querySelector(".ql-editor").offsetHeight + 2
+      );
+      await this.updateModuleMeta({
+        new_meta: { height: text_height },
+      });
     },
     turnCMtoPX(num) {
       if (!num) return false;
@@ -627,6 +657,20 @@ export default {
     // background: white;
     pointer-events: auto;
     cursor: pointer;
+  }
+}
+._textOverflowNotice {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  padding-left: calc(var(--spacing) * 3);
+  bottom: calc(var(--spacing) / -1);
+  z-index: 1;
+  pointer-events: none;
+
+  button {
+    // border: 1px solid black;
+    pointer-events: auto;
   }
 }
 </style>
