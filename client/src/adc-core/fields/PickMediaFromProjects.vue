@@ -9,7 +9,11 @@
         />
 
         <div
-          v-if="projects && Array.isArray(projects) && projects.length === 0"
+          v-if="
+            sorted_projects &&
+            Array.isArray(sorted_projects) &&
+            sorted_projects.length === 0
+          "
           class="u-instructions"
           :key="'noprojects'"
         >
@@ -18,7 +22,7 @@
 
         <select v-else v-model="source_project_path" class="u-spacingBottom">
           <option
-            v-for="project in projects"
+            v-for="project in sorted_projects"
             :key="project.$path"
             :value="project.$path"
             v-text="project.title"
@@ -110,6 +114,19 @@ export default {
         return this.$getMetaFilenamesAlreadyPresent();
       return false;
     },
+    sorted_projects() {
+      if (!this.projects) return [];
+      return this.projects
+        .slice()
+        .filter((p) =>
+          this.canLoggedinSeeFolder({
+            folder: p,
+          })
+        )
+        .sort((a, b) => {
+          return a.title.localeCompare(b.title);
+        });
+    },
   },
   methods: {
     addMedias(path_to_source_media_metas) {
@@ -137,8 +154,8 @@ export default {
           space_slug,
           project_slug,
         });
-      } else if (this.projects.length > 0) {
-        this.source_project_path = this.projects[0].$path;
+      } else if (this.sorted_projects.length > 0) {
+        this.source_project_path = this.sorted_projects[0].$path;
       }
     },
     async fetchSelectedProject() {
