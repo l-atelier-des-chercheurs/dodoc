@@ -66,6 +66,11 @@ class Exporter {
       desired_filename = this.instructions.suggested_file_name
         ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
         : "mix_video.mp4";
+    } else if (this.instructions.recipe === "video_assemblage") {
+      full_path_to_file = await this._videoAssemblage();
+      desired_filename = this.instructions.suggested_file_name
+        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
+        : "assemblage.mp4";
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -604,6 +609,27 @@ class Exporter {
           return reject(err);
         })
         .save(full_path_to_new_video);
+    });
+  }
+
+  _mixAudioAndVideo() {
+    return new Promise(async (resolve, reject) => {
+      this._notifyProgress(5);
+
+      const new_video_name =
+        "video_mix_" +
+        +new Date() +
+        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
+        ".mp4";
+
+      let full_path_to_folder_in_cache = await utils.createFolderInCache(
+        "video"
+      );
+
+      const full_path_to_new_video = path.join(
+        full_path_to_folder_in_cache,
+        new_video_name
+      );
     });
   }
 

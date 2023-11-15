@@ -208,5 +208,14 @@ export default {
         };
       });
     },
+    displayDuration({ media }) {
+      if (["video", "audio"].includes(media.$type))
+        if (media.$infos.duration)
+          return this.formatDurationToHoursMinutesSeconds(
+            media.$infos.duration
+          );
+        else return "•:••";
+      return false;
+    },
   },
 };

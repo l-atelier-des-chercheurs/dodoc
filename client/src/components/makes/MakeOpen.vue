@@ -75,6 +75,9 @@
         :make="make"
       />
 
+      <ImageAndVideoMontage
+        v-else-if="make.type === 'video_assemblage'"
+        :make="make"
       />
     </div>
   </div>
@@ -90,7 +93,8 @@ export default {
   },
   components: {
     SingleBaseMediaPicker,
-    // VideoAssemblage: () => import("@/components/makes/VideoAssemblage.vue"),
+    ImageAndVideoMontage: () =>
+      import("@/components/makes/ImageAndVideoMontage.vue"),
     EditImage: () => import("@/components/makes/EditImage.vue"),
     TrimAudioVideo: () => import("@/components/makes/TrimAudioVideo.vue"),
     MixAudioAndImageOrVideo: () =>
