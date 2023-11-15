@@ -62,7 +62,6 @@ export default function () {
         select_all: "Sélectionner tout",
         back: "retour",
         save: "enregistrer",
-        save_as_favorite: "Enregistrer en favori",
         input_url: "URL vers un site à intégrer",
         input_url_instr:
           "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
@@ -839,6 +838,7 @@ export default function () {
           "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
+        "notifications.media_was_saved": "Média enregistré",
         "notifications.no_image_in_clipboard":
           "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
@@ -961,7 +961,6 @@ export default function () {
         select: "Select",
         back: "back",
         save: "save",
-        save_as_favorite: "save as favorite",
         input_url: "URL to the site to embed",
         // input_url_instr:
         //   "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
