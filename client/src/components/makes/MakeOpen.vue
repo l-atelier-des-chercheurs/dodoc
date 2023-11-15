@@ -73,8 +73,8 @@
           ['mix_audio_and_image', 'mix_audio_and_video'].includes(make.type)
         "
         :make="make"
-        :project_path="project_path"
-        :base_media="base_media"
+      />
+
       />
     </div>
   </div>

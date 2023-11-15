@@ -84,7 +84,6 @@ import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
 export default {
   props: {
     make: Object,
-    project_path: String,
   },
   components: { SingleBaseMediaPicker, ExportSaveMakeModal },
   data() {
