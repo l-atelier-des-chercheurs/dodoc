@@ -148,7 +148,7 @@ export default {
     /////////////////////////////////////////////////////
 
     getSectionsList({ publication, group }) {
-      return Array.isArray(publication[group]) ? this.publication[group] : [];
+      return Array.isArray(publication[group]) ? publication[group] : [];
     },
     getSectionsWithProps({ publication, group }) {
       return this.getSectionsList({
@@ -186,7 +186,7 @@ export default {
       });
 
       await this.$api.updateMeta({
-        path: this.publication.$path,
+        path: publication.$path,
         new_meta: {
           [group]: sections_list,
         },
@@ -202,7 +202,7 @@ export default {
       );
 
       await this.$api.updateMeta({
-        path: this.publication.$path,
+        path: publication.$path,
         new_meta: {
           [group]: sections_list,
         },
