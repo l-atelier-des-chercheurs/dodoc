@@ -20,7 +20,7 @@
               :id="'transition_in_' + makemodule.$path"
               type="checkbox"
               :checked="makemodule.transition_in === 'fade'"
-              @change="toggleTransitionIn"
+              @change="toggleTransition('transition_in')"
             />
             <label class="u-label" :for="'transition_in_' + makemodule.$path">{{
               $t("transition_fade")
@@ -48,6 +48,21 @@
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
       />
+
+      <div class="" v-if="module_position === 'last'">
+        <span class="u-switch u-switch-xs">
+          <input
+            class="switch"
+            :id="'transition_out_' + makemodule.$path"
+            type="checkbox"
+            :checked="makemodule.transition_out === 'fade'"
+            @change="toggleTransition('transition_out')"
+          />
+          <label class="u-label" :for="'transition_out_' + makemodule.$path">{{
+            $t("transition_fade")
+          }}</label>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -56,6 +71,7 @@ export default {
   props: {
     makemodule: Object,
     index: Number,
+    module_position: String,
   },
   components: {},
   data() {
@@ -84,14 +100,14 @@ export default {
     },
   },
   methods: {
-    toggleTransitionIn() {
-      if (this.makemodule.transition_in === "fade")
+    toggleTransition(transition_type) {
+      if (this.makemodule[transition_type] === "fade")
         this.updateMakemodule({
-          transition_in: "none",
+          [transition_type]: "none",
         });
       else
         this.updateMakemodule({
-          transition_in: "fade",
+          [transition_type]: "fade",
         });
     },
     async updateMakemodule(new_meta) {

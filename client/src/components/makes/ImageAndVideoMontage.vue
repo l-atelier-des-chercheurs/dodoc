@@ -21,6 +21,15 @@
           :key="_module.$path"
           :index="index + 1"
           :makemodule="_module"
+          :module_position="
+            section_modules_list.length === 1
+              ? 'alone'
+              : index === 0
+              ? 'first'
+              : index === section_modules_list.length - 1
+              ? 'last'
+              : 'inbetween'
+          "
         />
         <!-- <PublicationModule
           class="_mediaPublication"
