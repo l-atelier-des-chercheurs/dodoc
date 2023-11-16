@@ -136,7 +136,7 @@ export default {
   // border-bottom: 1px solid white;
 
   min-height: 20px;
-  max-height: 150px;
+  max-height: calc(var(--items-width) * 3);
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
