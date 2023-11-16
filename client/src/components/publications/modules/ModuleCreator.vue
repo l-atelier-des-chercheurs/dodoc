@@ -230,8 +230,6 @@ export default {
       // if path_to_source_media, we get metafilename
       let source_medias = [];
 
-      debugger;
-
       // each meta gets it own mosaic
       if (meta_filename) {
         source_medias.push({

@@ -230,12 +230,12 @@ export default {
               $media_filename: media.$media_filename,
             }),
             type: media.$type,
+            transition_in: _module.transition_in,
+            transition_out: _module.transition_out,
           });
         }
         return acc;
       }, []);
-
-      // TODO get all medias in order, create JSON obj with instructions
 
       let instructions = {
         recipe: this.make.type,

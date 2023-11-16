@@ -6,13 +6,27 @@
     </div>
 
     <div class="_preview">
-      <div class="">
+      <div class="_topRow">
         <div class="u-label">
           {{ $t(first_media.$type) }}
+          <template v-if="first_media_duration"
+            >/ {{ first_media_duration }}</template
+          >
         </div>
-        <template v-if="first_media_duration">{{
-          first_media_duration
-        }}</template>
+        <div class="">
+          <span class="u-switch u-switch-xs">
+            <input
+              class="switch"
+              :id="'transition_in_' + makemodule.$path"
+              type="checkbox"
+              :checked="makemodule.transition_in === 'fade'"
+              @change="toggleTransitionIn"
+            />
+            <label class="u-label" :for="'transition_in_' + makemodule.$path">{{
+              $t("transition_fade")
+            }}</label>
+          </span>
+        </div>
       </div>
       <MediaContent
         v-if="first_media.$type !== 'text'"
@@ -49,7 +63,12 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        transition_fade: "Transition : fondu enchaîné",
+      },
+      en: {
+        transition_fade: "Transition: fade",
+      },
     },
   },
   created() {},
@@ -64,7 +83,24 @@ export default {
       return this.displayDuration({ media: this.first_media });
     },
   },
-  methods: {},
+  methods: {
+    toggleTransitionIn() {
+      if (this.makemodule.transition_in === "fade")
+        this.updateMakemodule({
+          transition_in: "none",
+        });
+      else
+        this.updateMakemodule({
+          transition_in: "fade",
+        });
+    },
+    async updateMakemodule(new_meta) {
+      await this.$api.updateMeta({
+        path: this.makemodule.$path,
+        new_meta,
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -121,5 +157,11 @@ export default {
 
 ._lastModule {
   margin-top: calc(var(--spacing) * 2);
+}
+
+._topRow {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
 }
 </style>

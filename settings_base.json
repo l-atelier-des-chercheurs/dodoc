@@ -256,6 +256,12 @@
                     },
                     "modules_list": {
                       "type": "array"
+                    },
+                    "transition_in": {
+                      "type": "string"
+                    },
+                    "transition_out": {
+                      "type": "string"
                     }
                   }
                 }

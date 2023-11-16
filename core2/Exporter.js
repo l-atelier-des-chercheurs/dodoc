@@ -608,28 +608,37 @@ class Exporter {
       for (const [index, media] of this.instructions.montage.entries()) {
         const media_full_path = utils.getPathToUserContent(media.path);
         const media_type = media.type;
+        const transition_in = media.transition_in;
+        const transition_out = media.transition_out;
+
+        let video_path, duration;
 
         if (media_type === "image") {
-          const { video_path, duration } =
-            await tasks.prepareImageForMontageAndWeb({
-              media_full_path,
-              full_path_to_folder_in_cache,
-              resolution,
-              bitrate,
-              ffmpeg_cmd: this.ffmpeg_cmd,
-            });
-          temp_videos_array.push({ video_path, duration });
+          ({ video_path, duration } = await tasks.prepareImageForMontageAndWeb({
+            media_full_path,
+            full_path_to_folder_in_cache,
+            resolution,
+            bitrate,
+            ffmpeg_cmd: this.ffmpeg_cmd,
+          }));
         } else if (media_type === "video") {
-          const { video_path, duration } =
-            await tasks.prepareVideoForMontageAndWeb({
-              media_full_path,
-              full_path_to_folder_in_cache,
-              resolution,
-              bitrate,
-              ffmpeg_cmd: this.ffmpeg_cmd,
-            });
-          temp_videos_array.push({ video_path, duration });
+          ({ video_path, duration } = await tasks.prepareVideoForMontageAndWeb({
+            media_full_path,
+            full_path_to_folder_in_cache,
+            resolution,
+            bitrate,
+            ffmpeg_cmd: this.ffmpeg_cmd,
+          }));
+        } else {
+          continue;
         }
+
+        temp_videos_array.push({
+          video_path,
+          duration,
+          transition_in,
+          transition_out,
+        });
 
         const progress_percent = Math.round(
           utils.remap(index, 0, this.instructions.montage.length, 15, 70)
