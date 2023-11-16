@@ -58,20 +58,7 @@ export default {
   watch: {},
   computed: {
     first_media() {
-      if (
-        !this.makemodule.source_medias ||
-        this.makemodule.source_medias.length === 0
-      )
-        return false;
-      const source_media = this.makemodule.source_medias[0];
-      if (source_media) {
-        const make_path = this.getParent(this.makemodule.$path);
-        return this.getSourceMedia({
-          source_media,
-          folder_path: make_path,
-        });
-      }
-      return false;
+      return this.firstMedia(this.makemodule);
     },
     first_media_duration() {
       return this.displayDuration({ media: this.first_media });

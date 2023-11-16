@@ -567,20 +567,7 @@ export default {
       return true;
     },
     first_media() {
-      if (
-        !this.publimodule.source_medias ||
-        this.publimodule.source_medias.length === 0
-      )
-        return false;
-      const source_media = this.publimodule.source_medias[0];
-      if (source_media) {
-        const publication_path = this.getParent(this.publimodule.$path);
-        return this.getSourceMedia({
-          source_media,
-          folder_path: publication_path,
-        });
-      }
-      return false;
+      return this.firstMedia(this.publimodule);
     },
     media_styles() {
       let margin_left = 0;

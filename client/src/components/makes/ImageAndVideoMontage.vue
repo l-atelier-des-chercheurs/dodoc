@@ -11,7 +11,7 @@
         <div class="_spacer" :key="'mc_' + index">
           <ModuleCreator
             :publication_path="make.$path"
-            :types_available="['medias', 'text']"
+            :types_available="['medias']"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
             "
@@ -55,9 +55,8 @@
     </transition-group>
     <ModuleCreator
       class="_lastModule"
-      :start_collapsed="false"
       :publication_path="make.$path"
-      :types_available="['text', 'medias', 'files', 'link']"
+      :types_available="['medias']"
       @addModules="addModules"
     />
 
@@ -222,13 +221,28 @@ export default {
       this.created_video = false;
       this.export_href = undefined;
 
-      debugger;
+      const montage = this.section_modules_list.reduce((acc, _module) => {
+        const media = this.firstMedia(_module);
+        if (media) {
+          acc.push({
+            path: this.makeMediaFilePath({
+              $path: media.$path,
+              $media_filename: media.$media_filename,
+            }),
+            type: media.$type,
+          });
+        }
+        return acc;
+      }, []);
+
+      // TODO get all medias in order, create JSON obj with instructions
 
       let instructions = {
         recipe: this.make.type,
         suggested_file_name: this.make.type,
         output_width: 1280,
         output_height: 720,
+        montage,
         additional_meta: {
           $origin: "make",
         },
