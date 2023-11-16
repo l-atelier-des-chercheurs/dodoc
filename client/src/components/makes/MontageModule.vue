@@ -12,6 +12,10 @@
           <template v-if="first_media_duration"
             >/ {{ first_media_duration }}</template
           >
+
+          <button type="button" class="u-buttonLink" @click="removeModule">
+            <sl-icon name="trash3" />
+          </button>
         </div>
         <div class="">
           <span class="u-switch u-switch-xs">
@@ -115,6 +119,18 @@ export default {
         path: this.makemodule.$path,
         new_meta,
       });
+    },
+    async removeModule() {
+      await this.$api
+        .deleteItem({
+          path: this.makemodule.$path,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+
+      this.$emit("remove");
     },
   },
 };

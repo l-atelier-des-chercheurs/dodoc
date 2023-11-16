@@ -30,6 +30,7 @@
               ? 'last'
               : 'inbetween'
           "
+          @remove="removeModule(_module.$path)"
         />
         <!-- <PublicationModule
           class="_mediaPublication"
@@ -218,7 +219,6 @@ export default {
       });
     },
     async removeModule(path) {
-      // todo deleteitem already called, error thrown
       await this.removeModule2({
         publication: this.make,
         section: this.first_section,
