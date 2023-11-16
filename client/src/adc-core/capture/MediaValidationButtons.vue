@@ -91,7 +91,7 @@
       <span class="c-rouge">{{ $t("save") }}</span>
     </button>
 
-    <!-- <button
+    <button
       type="button"
       v-if="can_add_to_fav"
       @click="validateButton(2)"
@@ -122,7 +122,7 @@
       <span class>
         {{ $t("save_as_favorite") }}
       </span>
-    </button> -->
+    </button>
 
     <button
       type="button"
@@ -161,6 +161,7 @@ export default {
   props: {
     media_is_being_sent: Boolean,
     media_being_sent_percent: Number,
+    can_add_to_fav: Boolean,
     cancelButtonIsBackButton: {
       type: Boolean,
       default: false,

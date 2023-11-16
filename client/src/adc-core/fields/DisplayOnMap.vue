@@ -3,6 +3,7 @@
     class="m_displayOnMap"
     :class="{
       'is--small': is_small,
+      'is--image': map_baselayer === 'image',
     }"
     :style="map_styles"
   >
@@ -84,7 +85,7 @@
         </button>
       </div>
 
-      <div class="_buttonRow">
+      <div class="_buttonRow" v-if="map_baselayer !== 'image'">
         <button type="button" class="u-button" @click="toggleSearch">
           <b-icon class="inlineSVG" icon="search" />
         </button>
@@ -187,7 +188,8 @@
               </div> -->
 
               <ColorInput
-                class="u-spacingBottom"
+                :can_toggle="false"
+                :live_editing="true"
                 :label="$t('outline_color')"
                 :value="selected_feature.get('stroke_color')"
                 :default_value="opened_view_color"
@@ -199,8 +201,22 @@
                 "
               />
 
+              <ColorInput
+                v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
+                :can_toggle="false"
+                :live_editing="true"
+                :label="$t('background_color')"
+                :value="selected_feature.get('fill_color')"
+                @save="
+                  updateDrawing({
+                    prop: 'fill_color',
+                    val: $event,
+                  })
+                "
+              />
+
               <RangeValueInput
-                class=""
+                class="_strokeWidth"
                 :can_toggle="false"
                 :label="$t('outline_width')"
                 :value="selected_feature.get('stroke_width')"
@@ -232,9 +248,11 @@
 </template>
 <script>
 import olSourceOSM from "ol/source/OSM";
+import olSourceStadiaMaps from "ol/source/StadiaMaps";
 import olSourceWMTS from "ol/source/WMTS";
 import olMap from "ol/Map";
 import olView from "ol/View";
+import { asArray, asString } from "ol/color";
 import olFeature from "ol/Feature";
 import olTileLayer from "ol/layer/Tile";
 import olImageLayer from "ol/layer/Image";
@@ -292,9 +310,9 @@ import olFilterCSS from "ol-ext/filter/CSS";
 export default {
   name: "DisplayOnMap",
   props: {
-    pins: [Boolean, Array],
-    lines: [Boolean, Object],
-    geometries: [Boolean, Array],
+    pins: Array,
+    lines: Object,
+    geometries: Array,
     // start_coords: {
     //   type: [Boolean, Object],
     // },
@@ -305,10 +323,6 @@ export default {
     map_baselayer: {
       type: String,
       default: "OSM",
-      validator(value) {
-        // The value must match one of these strings
-        return ["OSM", "IGN_MAP", "IGN_SAT", "image"].includes(value);
-      },
     },
     map_baselayer_bw: {
       type: Boolean,
@@ -365,6 +379,8 @@ export default {
       map_draw: undefined,
       map_snap: undefined,
 
+      pins_vector_source: undefined,
+      lines_vector_source: undefined,
       draw_vector_source: undefined,
       current_draw_mode: undefined,
       draw_can_be_finished: undefined,
@@ -385,7 +401,7 @@ export default {
           olType: "LineString",
           freehand: true,
           idleTip: this.$t("click_drag_to_draw_line"),
-          activeTip: this.$t("click_drag_to_draw_line"),
+          activeTip: "",
         },
         {
           key: "LineString",
@@ -408,7 +424,7 @@ export default {
           olType: "LineString",
           freehand: false,
           idleTip: this.$t("click_to_place_first_point"),
-          activeTip: this.$t("click_to_place_point"),
+          activeTip: this.$t("click_to_continue_drawing"),
         },
         {
           key: "Polygon",
@@ -448,12 +464,11 @@ export default {
         mouse_position: "Position de la balise",
         search_for_a_place: "Rechercher un lieu",
         click_to_start_drawing: "cliquer pour commencer le tracé",
-        click_to_continue_drawing: "cliquer pour ajouter des sommets",
+        click_to_continue_drawing: "cliquez pour ajouter un autre point",
         click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
         click_to_place_center: "cliquer pour placer le centre",
         click_to_define_circle_radius: "cliquer pour définir le rayon",
         click_to_place_first_point: "cliquer pour placer le premier point",
-        click_to_place_point: "cliquer pour ajouter un sommet",
         finish_drawing: "Terminer le dessin",
         or_double_click: "Ou double-cliquez sur la carte",
         drag_to_modify: "cliquer-glisser pour modifier",
@@ -475,7 +490,6 @@ export default {
         click_to_place_center: "click to place center",
         click_to_define_circle_radius: "click to set circle radius",
         click_to_place_first_point: "click to draw first point",
-        click_to_place_point: "click to add segment",
         finish_drawing: "End drawing",
         or_double_click: "Or double click for the last point",
         drag_to_modify: "click and hold to modify",
@@ -507,27 +521,22 @@ export default {
   watch: {
     pins: {
       handler() {
-        const new_pin_features = this.createPointFeaturesFromPins();
-        if (
-          JSON.stringify(new_pin_features) !== JSON.stringify(this.pin_features)
-        )
-          this.startMap({ keep_loc_and_zoom: true });
+        this.loadPins();
       },
       deep: true,
     },
-    // lines: {
-    //   handler() {
-    //     const new_line_features = this.createLineFeaturesFromLines();
-    //     if (
-    //       JSON.stringify(new_line_features) !==
-    //       JSON.stringify(this.line_features)
-    //     )
-    //       this.startMap({ keep_loc_and_zoom: true });
-    //   },
-    //   deep: true,
-    // },
+    lines: {
+      handler() {
+        this.loadLines();
+      },
+      deep: true,
+    },
     geometries() {
-      this.loadGeom();
+      if (
+        JSON.stringify(this.geometries) !==
+        JSON.stringify(this.convertFeaturesToStr())
+      )
+        this.loadGeom();
     },
     map_baselayer(val, oldVal) {
       if (val !== oldVal && (val === "image" || oldVal === "image"))
@@ -554,9 +563,26 @@ export default {
         "--current-view-color": this.opened_view_color,
       };
     },
+    default_pin_svg() {
+      const svg = `<svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
+        <path
+          d="m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z"
+          fill="#fc4b60" 
+          stroke="#000"
+          stroke-width="4px"
+        />
+      </svg>`;
+      const b64 = btoa(unescape(encodeURIComponent(svg)));
+      return `data:image/svg+xml;base64, ${b64}`;
+    },
     selected_feature() {
       if (!this.selected_feature_id) return undefined;
+      debugger;
       return this.draw_vector_source?.getFeatureById(this.selected_feature_id);
+    },
+    selected_feature_type() {
+      if (!this.selected_feature) return undefined;
+      return this.selected_feature.getGeometry().getType();
     },
   },
   methods: {
@@ -609,14 +635,15 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// CREATE LINES
 
-      this.line_features = this.createLineFeaturesFromLines();
+      this.lines_vector_source = new olSourceVector({
+        wrapX: false,
+      });
+      this.loadLines();
       this.map.addLayer(
         new olVectorLayer({
-          source: new olSourceVector({
-            features: this.line_features,
-            wrapX: false,
-          }),
-          style: (feature) => this.makeLineStyle(feature),
+          source: this.lines_vector_source,
+          style: (feature, resolution) =>
+            this.makeLineStyle({ feature, resolution }),
         })
       );
 
@@ -634,14 +661,13 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// CREATE PINS
 
-      this.pin_features = this.createPointFeaturesFromPins();
-      const pin_source = new olSourceVector({
-        features: this.pin_features,
+      this.pins_vector_source = new olSourceVector({
         wrapX: false,
       });
+      this.loadPins();
       this.map.addLayer(
         new olVectorLayer({
-          source: pin_source,
+          source: this.pins_vector_source,
           style: (feature, resolution) =>
             this.makePointStyle({
               feature,
@@ -750,13 +776,14 @@ export default {
         await this.$nextTick();
 
         const features = this.map.getFeaturesAtPixel(event.pixel);
-        const pin = features.find((f) => f.get("path"));
+        const f = features.find((f) => f.getId());
+        const pin_path = f ? f.getId() : false;
 
         let [longitude, latitude] = event.coordinate;
         longitude = this.roundToDec(longitude, 6);
         latitude = this.roundToDec(latitude, 6);
 
-        if (!pin) {
+        if (!pin_path) {
           this.$emit("newPositionClicked", {
             longitude,
             latitude,
@@ -774,20 +801,21 @@ export default {
           this.clicked_location.longitude = longitude;
           this.clicked_location.latitude = latitude;
         } else {
-          const path = pin.get("path");
-          this.openPin(path);
+          this.$eventHub.$emit(`publication.story.scrollTo.${pin_path}`);
+          this.openPin(pin_path);
         }
       });
 
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
-      if (!this.keep_loc_and_zoom) {
+      if (!keep_loc_and_zoom) {
         let extent;
 
         if (this.map_baselayer !== "image") {
           let extents = [];
-          if (pin_source.getFeatures().length > 0)
-            extents.push(pin_source.getExtent());
+          if (this.pins_vector_source.getFeatures().length > 0)
+            extents.push(this.pins_vector_source.getExtent());
+
           if (this.draw_vector_source.getFeatures().length > 0)
             extents.push(this.draw_vector_source.getExtent());
 
@@ -830,8 +858,10 @@ export default {
       let view, background_layer;
 
       if (this.map_baselayer === "image") {
-        if (!this.map_base_media)
+        if (!this.map_base_media) {
           this.$alertify.delay(4000).error("missing base image");
+          throw new Error(`missing base image`);
+        }
 
         const img_width = this.map_base_media.$infos?.width;
         const img_height = this.map_base_media.$infos?.height;
@@ -896,6 +926,26 @@ export default {
           wrapX: false,
           noWrap: true,
         });
+      } else if (type === "stadia_alidade_smooth") {
+        return new olSourceStadiaMaps({
+          layer: "alidade_smooth",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_alidade_smooth_dark") {
+        return new olSourceStadiaMaps({
+          layer: "alidade_smooth_dark",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_toner") {
+        return new olSourceStadiaMaps({
+          layer: "stamen_toner",
+          retina: true, // Set to false for stamen_watercolor
+        });
+      } else if (type === "stadia_watercolor") {
+        return new olSourceStadiaMaps({
+          layer: "stamen_watercolor",
+          retina: false,
+        });
       } else if (["IGN_SAT", "IGN_MAP"].includes(type)) {
         const resolutions = [
           156543.03392804103, 78271.5169640205, 39135.75848201024,
@@ -954,54 +1004,6 @@ export default {
         });
       }
     },
-    createPointFeaturesFromPins() {
-      let features = [];
-      if (this.pins && this.pins.length > 0) {
-        this.pins
-          .slice(0)
-          .reverse()
-          .map((pin) => {
-            if (!pin || !pin.longitude || !pin.latitude) return;
-
-            let feature_cont = {
-              geometry: new olPoint([pin.longitude, pin.latitude]),
-            };
-            feature_cont.path = pin.path;
-            if (pin.color) feature_cont.fill_color = pin.color;
-            // if (pin.module) feature_cont.module = pin.module;
-            if (pin.label) feature_cont.label = pin.label;
-            if (pin.pin_preview) feature_cont.pin_preview = pin.pin_preview;
-            if (pin.pin_preview_src)
-              feature_cont.pin_preview_src = pin.pin_preview_src;
-            if (pin.first_media_thumb)
-              feature_cont.first_media_thumb = pin.first_media_thumb;
-            features.push(new olFeature(feature_cont));
-          });
-      }
-      // return features;
-      return features;
-    },
-    createLineFeaturesFromLines() {
-      let features = [];
-      if (this.lines && Object.keys(this.lines).length > 0) {
-        // const lines = this.pins.reduce((acc, pin) => {
-        //   if (pin.belongs_to_view) {
-        //   }
-        //   if (pin?.longitude && pin?.latitude)
-        //     acc.push([pin.longitude, pin.latitude]);
-        //   return acc;
-        // }, {});
-        Object.values(this.lines).map(({ color, coordinates }) => {
-          const feature_cont = {
-            geometry: new olLineString(coordinates),
-            name: "Path",
-          };
-          feature_cont.stroke_color = color;
-          features.push(new olFeature(feature_cont));
-        });
-      }
-      return features;
-    },
     makePointStyle({ feature, resolution, fill_color = "hsl(0, 0%, 15%)" }) {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
@@ -1042,6 +1044,15 @@ export default {
           anchorYUnits: "fraction",
           src: first_media_thumb,
         });
+      } else if (pin_preview === "default") {
+        style.text = undefined;
+        style.image = new olIcon({
+          anchor: [0.5, 1],
+          anchorXUnits: "fraction",
+          anchorYUnits: "fraction",
+          size: [30, 30],
+          src: this.default_pin_svg,
+        });
       } else {
         style.image = this.makePointerStyle(fill_color);
       }
@@ -1051,9 +1062,8 @@ export default {
     makeDefaultFontString() {
       return "12px/1.2 Fira Mono,sans-serif";
     },
-    makeLineStyle(feature) {
-      // const line_dash = !is_selected ? undefined : [10, 5];
-
+    makeLineStyle({ feature, resolution }) {
+      resolution;
       const style = {
         stroke: new olStroke({
           color: feature.get("stroke_color"),
@@ -1129,7 +1139,8 @@ export default {
 
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
-      const fill_color = "rgba(255, 255, 255, 0.2)";
+      let fill_color = feature.get("fill_color") || "rgba(255, 255, 255, 1)";
+      fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
 
       if (is_selected) {
         const style = new olStyle({
@@ -1215,11 +1226,11 @@ export default {
         zoom,
       });
     },
-    openPin(path) {
-      this.$emit("update:opened_pin_path", path);
+    openPin(pin_path) {
+      this.$emit("update:opened_pin_path", pin_path);
     },
     openFeature(path) {
-      const feature = this.pin_features.find((f) => f.get("path") === path);
+      const feature = this.pins_vector_source.getFeatureById(path);
       const pin = this.pins.find((p) => p.path === path);
       if (!feature) return "no_feature_found";
 
@@ -1282,7 +1293,7 @@ export default {
       });
       this.map.addInteraction(this.map_draw);
       this.map_draw.on("drawstart", () => {
-        if (activeTip) tip = activeTip;
+        tip = activeTip;
         if (["LineString", "Polygon"].includes(this.current_draw_mode))
           this.draw_can_be_finished = true;
       });
@@ -1520,6 +1531,8 @@ export default {
         if (stroke_width) obj.stroke_width = stroke_width;
         const stroke_color = f.get("stroke_color");
         if (stroke_color) obj.stroke_color = stroke_color;
+        const fill_color = f.get("fill_color");
+        if (fill_color) obj.fill_color = fill_color;
 
         const id = f.getId();
         if (id) obj.id = id;
@@ -1529,9 +1542,58 @@ export default {
         return acc;
       }, []);
     },
-    loadGeom() {
-      if (!this.geometries) return;
+    loadPins() {
+      this.pins_vector_source.clear();
 
+      let features = [];
+      if (this.pins && this.pins.length > 0) {
+        this.pins
+          .slice(0)
+          .reverse()
+          .map((pin) => {
+            if (!pin || !pin.longitude || !pin.latitude) return;
+
+            let feature_cont = {
+              geometry: new olPoint([pin.longitude, pin.latitude]),
+            };
+            if (pin.color) feature_cont.fill_color = pin.color;
+            // if (pin.module) feature_cont.module = pin.module;
+            if (pin.label) feature_cont.label = pin.label;
+            feature_cont.pin_preview = pin.pin_preview || "default";
+            if (pin.pin_preview_src)
+              feature_cont.pin_preview_src = pin.pin_preview_src;
+            if (pin.first_media_thumb)
+              feature_cont.first_media_thumb = pin.first_media_thumb;
+
+            const feature = new olFeature(feature_cont);
+            feature.setId(pin.path);
+
+            features.push(feature);
+          });
+        this.pins_vector_source.addFeatures(features);
+        this.pins_vector_source.changed();
+      }
+    },
+    loadLines() {
+      this.lines_vector_source.clear();
+
+      let features = [];
+      if (this.lines && Object.keys(this.lines).length > 0) {
+        Object.values(this.lines).map(({ color, coordinates }) => {
+          const feature_cont = {
+            geometry: new olLineString(coordinates),
+            name: "Path",
+          };
+          feature_cont.stroke_color = color;
+          const feature = new olFeature(feature_cont);
+          features.push(feature);
+        });
+
+        this.lines_vector_source.addFeatures(features);
+        this.lines_vector_source.changed();
+      }
+    },
+    loadGeom() {
       this.draw_vector_source.clear();
 
       try {
@@ -1554,6 +1616,7 @@ export default {
 
           if (p.stroke_width) feature_cont.stroke_width = p.stroke_width;
           if (p.stroke_color) feature_cont.stroke_color = p.stroke_color;
+          if (p.fill_color) feature_cont.fill_color = p.fill_color;
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
@@ -1760,6 +1823,10 @@ export default {
       bottom: calc(var(--spacing) * 3);
       right: auto;
       left: calc(var(--spacing) * 1);
+
+      .m_displayOnMap.is--image & {
+        bottom: calc(var(--spacing) * 1);
+      }
     }
     .ol-scale-line {
       bottom: calc(var(--spacing) / 1);
@@ -1941,9 +2008,12 @@ export default {
     position: relative;
     pointer-events: auto;
     margin: 0 auto;
+    width: 100%;
+    max-width: 245px;
+
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.9);
-    border-radius: 2px;
+    border-radius: 4px;
 
     display: flex;
     flex-flow: column nowrap;

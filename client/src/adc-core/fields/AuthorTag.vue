@@ -4,8 +4,9 @@
     :type="component_tag === 'button' ? 'button' : ''"
     v-if="author"
     class="_author"
+    :data-isself="is_self"
     :data-imageonly="show_image_only"
-    @click.native="componentClick"
+    @click="$emit('click')"
   >
     <div class="_cover">
       <CoverField
@@ -13,12 +14,16 @@
         :cover="author.$cover"
         :path="author.$path"
         :placeholder="author.name.substring(0, 2)"
-        :is_round="true"
+        :preview_format="'circle'"
         :can_edit="false"
       />
     </div>
     <div v-if="!show_image_only" class="_infos">
-      <div class="_name">
+      <component
+        :is="links_to_author_page && !show_image_only ? 'router-link' : 'span'"
+        class="_name"
+        :to="author_url"
+      >
         <b-icon
           v-if="
             authorIsInstance({
@@ -30,7 +35,8 @@
           :aria-label="$t('admin')"
         />
         {{ author.name }}
-      </div>
+      </component>
+
       <!-- <div
         class="u-instructions"
         v-if="
@@ -43,15 +49,15 @@
         <small v-html="$t('admin')" />
       </div> -->
 
-      <div class="_path">@{{ getFilename(author.$path) }}</div>
+      <!-- <div class="_path">@{{ getFilename(author.$path) }}</div> -->
     </div>
 
-    <router-link
+    <!-- <router-link
       v-if="links_to_author_page && !show_image_only"
-      :to="component_to"
+      :to="author_url"
     >
       <b-icon icon="person-lines-fill" :aria-label="$t('page')" />
-    </router-link>
+    </router-link> -->
 
     <button
       type="button"
@@ -104,20 +110,21 @@ export default {
     author() {
       return this.getAuthor(this.path);
     },
+    is_self() {
+      if (this.connected_as)
+        return this.connected_as.$path === this.author.$path;
+      return false;
+    },
     component_tag() {
       // if (this.links_to_author_page) return "router-link";
       if (this.$listeners.click) return "button";
       return "span";
     },
-    component_to() {
+    author_url() {
       return this.createURLFromPath(this.path);
     },
   },
-  methods: {
-    componentClick() {
-      if (this.component_tag === "router-link") this.$emit("navToPage");
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -136,6 +143,11 @@ export default {
 
   border: 1px solid var(--c-gris);
   box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+
+  &[data-isself] {
+    border-color: var(--c-bleumarine);
+    background-color: var(--c-bleumarine_clair);
+  }
 
   &[data-imageonly] {
     padding: 0;
@@ -164,6 +176,10 @@ export default {
     ._name {
       font-size: var(--sl-font-size-normal);
       font-weight: 500;
+
+      display: flex;
+      flex-flow: row nowrap;
+      gap: calc(var(--spacing) / 4);
     }
     ._path {
       font-size: var(--sl-font-size-small);
@@ -174,6 +190,8 @@ export default {
 }
 
 a {
+  color: inherit;
+
   ._path {
     // color: var(--active-color);
     color: var(--label-color);

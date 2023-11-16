@@ -2,8 +2,12 @@
   <div class="_authorView">
     <div class="_backBtn">
       <router-link :to="'/'" class="u-buttonLink">
-        <sl-icon name="arrow-left-short" />
+        <b-icon icon="arrow-left-short" />
         {{ $t("home") }}
+      </router-link>
+      <router-link :to="'/@'" class="u-buttonLink">
+        <b-icon icon="slash" />
+        {{ $t("list_of_contributors") }}
       </router-link>
     </div>
 
@@ -25,6 +29,7 @@
         <AuthorCard
           :key="author.$path"
           :author="author"
+          :context="'full'"
           class="u-spacingBottom"
         />
       </div>

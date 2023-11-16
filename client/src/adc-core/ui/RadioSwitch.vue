@@ -114,7 +114,7 @@ menu {
   display: inline-flex;
   padding: var(--radio-switch-padding);
   border-radius: calc(var(--radio-switch-radius) * 1.4);
-  background-color: hsl(var(--ri5-color-bg-darker-hsl));
+  background-color: var(--c-gris_clair);
   border: 1px solid var(--c-gris);
 }
 .radio-switch:focus-within,

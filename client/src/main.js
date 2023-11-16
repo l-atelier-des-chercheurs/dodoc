@@ -87,6 +87,8 @@ import EditAdminsAndContributorsField from "@/adc-core/fields/EditAdminsAndContr
 Vue.component("EditAdminsAndContributorsField", EditAdminsAndContributorsField);
 import StatusTag from "@/adc-core/fields/StatusTag.vue";
 Vue.component("StatusTag", StatusTag);
+import FavSwitch from "@/adc-core/fields/FavSwitch.vue";
+Vue.component("FavSwitch", FavSwitch);
 import TagsField from "@/adc-core/fields/TagsField.vue";
 Vue.component("TagsField", TagsField);
 import CoverField from "@/adc-core/fields/CoverField.vue";

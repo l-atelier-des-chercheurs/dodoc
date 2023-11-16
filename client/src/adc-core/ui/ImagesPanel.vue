@@ -1,17 +1,5 @@
 <template>
   <div>
-    <!-- <div class="_cover">
-      <CoverField
-        :context="'full'"
-        :cover="settings.$cover"
-        :path="settings.$path"
-        :can_edit="can_edit"
-      />
-    </div>
-    <div class="u-instructions">
-      {{ $t("logo_instr") }}
-    </div> -->
-
     <DLabel :str="$t('images')" />
     <div class="u-spacingBottom">
       <input

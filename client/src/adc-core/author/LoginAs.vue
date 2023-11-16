@@ -102,6 +102,11 @@
           </div>
         </transition>
       </fieldset>
+
+      <LoaderSpinner v-if="connection_status === 'pending'" />
+      <div class="" v-else-if="connection_status === 'success'">
+        {{ $t("notifications.logged_in") }}
+      </div>
     </form>
   </div>
 </template>
@@ -118,6 +123,7 @@ export default {
 
       input_password: "",
       show_recover_instr: false,
+      connection_status: undefined,
     };
   },
   created() {},
@@ -129,7 +135,7 @@ export default {
   },
   watch: {
     connected_as() {
-      if (this.connected_as) this.$emit("close");
+      // if (this.connected_as) this.$emit("close");
     },
   },
   computed: {
@@ -155,6 +161,8 @@ export default {
         this.checkAuthor(this.author_suggestions.at(0));
     },
     async login() {
+      this.connection_status = "pending";
+
       const author = this.author_to_login_to;
       if (!author) {
         this.$refs.nameField.$el.querySelector("input").select();
@@ -174,11 +182,14 @@ export default {
           },
         })
         .then(() => {
-          this.$alertify
-            .delay(4000)
-            .success(this.$t("notifications.logged_in"));
+          // this.$alertify
+          //   .delay(4000)
+          //   .success(this.$t("notifications.logged_in"));
+          this.connection_status = "success";
+          window.location.reload();
         })
         .catch((err) => {
+          this.connection_status = "failed";
           if (err.code === "submitted_password_is_wrong") {
             this.$refs.passwordField.$el.querySelector("input").select();
             this.$alertify

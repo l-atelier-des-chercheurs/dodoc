@@ -44,6 +44,12 @@ export default {
       return [];
     },
 
+    makeStoryStyles({ publication }) {
+      const width = (publication.story_width || 900) + "px";
+      if (publication.story_is_not_responsive === true)
+        return { width, maxWidth: "none" };
+      else return { maxWidth: width };
+    },
     setPaginationFromPublication(publication) {
       if (publication.enable_pagination !== true) return false;
       return {

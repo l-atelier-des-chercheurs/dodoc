@@ -111,6 +111,16 @@
   }
 }
 
+.u-card2 {
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 3px 6px rgba(51, 51, 51, 0.16);
+  }
+}
+
 .u-errorMsg {
   color: var(--c-rouge);
   font-style: italic;
@@ -234,7 +244,7 @@ button {
 
 .u-button_icon {
   padding: calc(var(--spacing) / 4);
-  margin: calc(var(--spacing) / -4);
+  // margin: calc(var(--spacing) / -4);
   background: transparent;
   color: inherit;
 
@@ -817,13 +827,13 @@ input[type="file"] {
 }
 .u-mediaOptions {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   // justify-content: center;
   // background: var(--c-gris);
   border: 2px solid var(--c-gris);
 
   padding: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   max-width: 50ch;
 }
@@ -1009,5 +1019,15 @@ input[type="checkbox"]:disabled {
     &.is--first {
       border: 2px solid black;
     }
+  }
+}
+
+.u-disabled {
+  cursor: not-allowed;
+  filter: grayscale(100%);
+  opacity: 0.8;
+
+  > * {
+    // pointer-events: none;
   }
 }

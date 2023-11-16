@@ -1,8 +1,5 @@
 <template>
-  <BaseModal2
-    :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
-    @close="$emit('close')"
-  >
+  <BaseModal2 :title="title" :size="'large'" @close="$emit('close')">
     <div class="_pickMediaFromProject">
       <sl-spinner style="--indicator-color: currentColor" v-if="is_loading" />
       <template v-else>
@@ -12,7 +9,11 @@
         />
 
         <div
-          v-if="projects && Array.isArray(projects) && projects.length === 0"
+          v-if="
+            sorted_projects &&
+            Array.isArray(sorted_projects) &&
+            sorted_projects.length === 0
+          "
           class="u-instructions"
           :key="'noprojects'"
         >
@@ -21,11 +22,10 @@
 
         <select v-else v-model="source_project_path" class="u-spacingBottom">
           <option
-            v-for="project in projects"
+            v-for="project in sorted_projects"
             :key="project.$path"
             :value="project.$path"
             v-text="project.title"
-            disabled
           />
         </select>
 
@@ -36,14 +36,18 @@
           :label="$t('hide_already_present_medias')"
         />
 
-        <template v-if="source_project_path">
+        <div v-if="source_project_path" class="_projectLib">
           <DLabel :str="$t('medias')" />
-          <sl-spinner
-            style="--indicator-color: currentColor"
-            v-if="!source_project"
-          />
-          <template v-else>
+
+          <transition name="fade_fast">
+            <LoaderSpinner
+              class="_loader"
+              v-if="is_loading_project"
+              key="spinner"
+            />
             <MediaLibrary
+              v-else
+              key="medialib"
               class="_mediaLib"
               :project="source_project"
               :media_focused="media_focused"
@@ -54,8 +58,8 @@
               @update:media_focused="media_focused = $event"
               @addMedias="addMedias"
             />
-          </template>
-        </template>
+          </transition>
+        </div>
       </template>
     </div>
   </BaseModal2>
@@ -65,6 +69,7 @@ import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 
 export default {
   props: {
+    title: String,
     path: String,
     select_mode: {
       type: String,
@@ -88,6 +93,7 @@ export default {
       is_loading: false,
       projects: undefined,
       source_project_path: "",
+      is_loading_project: false,
       source_project: undefined,
       media_focused: undefined,
       hide_already_present_medias: true,
@@ -111,6 +117,19 @@ export default {
       if (this.$getMetaFilenamesAlreadyPresent)
         return this.$getMetaFilenamesAlreadyPresent();
       return false;
+    },
+    sorted_projects() {
+      if (!this.projects) return [];
+      return this.projects
+        .slice()
+        .filter((p) =>
+          this.canLoggedinSeeFolder({
+            folder: p,
+          })
+        )
+        .sort((a, b) => {
+          return a.title.localeCompare(b.title);
+        });
     },
   },
   methods: {
@@ -139,14 +158,16 @@ export default {
           space_slug,
           project_slug,
         });
-      } else if (this.projects.length > 0) {
-        this.source_project_path = this.projects[0].$path;
+      } else if (this.sorted_projects.length > 0) {
+        this.source_project_path = this.sorted_projects[0].$path;
       }
     },
     async fetchSelectedProject() {
+      this.is_loading_project = true;
       this.source_project = await this.$api.getFolder({
         path: this.source_project_path,
       });
+      this.is_loading_project = false;
     },
   },
 };
@@ -171,14 +192,12 @@ export default {
   // border: 2px dashed var(--c-gris_fonce);
   // padding: calc(var(--spacing) / 2);
 
-  > * {
-    // flex: 0 0 auto;
-
-    &._mediaLib {
-      height: 60vh;
-      // overflow: hidden;
-      // flex: 1 1 70vh;
-    }
+  ._mediaLib {
+    height: 60vh;
   }
+}
+
+._projectLib {
+  position: relative;
 }
 </style>

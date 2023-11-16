@@ -42,15 +42,6 @@
         <fieldset>
           <legend class="u-label">{{ $t("new_account") }}</legend>
 
-          <!-- <ImageSelect
-          :folder_path="'/authors'"
-          @newPreview="
-            (value) => {
-              new_author_cover_raw = value;
-            }
-          "
-        /> -->
-
           <TextInput
             :content.sync="new_author_name"
             :label_str="'name_or_pseudonym'"
@@ -167,7 +158,7 @@ export default {
         // check existing used author
 
         const author_slug = await this.$api.createFolder({
-          path: "/authors",
+          path: "authors",
           additional_meta: {
             email: this.new_author_email,
             name: this.new_author_name,

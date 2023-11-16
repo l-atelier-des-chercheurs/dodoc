@@ -42,6 +42,8 @@ export default function () {
     messages: {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
+        a_foss_made_by:
+          "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
         home: "Accueil",
         admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
         go_home: "Retourner à l’accueil",
@@ -101,11 +103,12 @@ export default function () {
 
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
-          Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
+          Apparaîtra sur la page d’accueil et dans l’onsglet du navigateur.`,
         presentation_of_instance: "Présentation de la plateforme",
         presentation_of_instance_instructions: `
           Apparaîtra sur la page d’accueil uniquement.
           `,
+        presentation: "Présentation",
         general_password: "mot de passe général",
         general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
         peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
@@ -131,6 +134,7 @@ export default function () {
         page_color: "Couleur de cette page",
         position: "Position",
         media: "Média",
+        media_not_found: "Média introuvable",
         active_media_instr:
           "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
@@ -188,6 +192,7 @@ export default function () {
         show: "Afficher",
         hide: "Masquer",
         list_of_contributors: "Liste des contributeur·rice·s",
+        show_all_contributors: "Afficher les contributeur·rice·s",
         upload_from_device: "Importer une image",
         device: "Appareil",
         audioinput: "Entrée audio",
@@ -231,13 +236,17 @@ export default function () {
         link: "Lien",
         share: "Partager",
         options: "Options",
-        exports_in_progress: "Exportation(s) en cours",
+        exports: "Exportations",
+        export: "Exportation",
 
         story_width: "Largeur du récit",
         summary: "Sommaire",
         chapters: "Chapitres",
         section_title: "Titre du chapitre",
         section: "Chapitre",
+        in_this_section: "Dans ce chapitre",
+        in_another_section: "Dans un autre chapitre",
+
         untitled: "Sans titre",
         responsive: "Fluide",
         responsive_instr:
@@ -469,7 +478,7 @@ export default function () {
         makes_list: "Liste des fabrications",
         back_to_makes_list: "Retour à la liste",
 
-        edit_image: "Modifier une image",
+        edit_image: "Retravailler une image",
         edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
         trim_audio: "Recouper un son",
         trim_audio_summary: "Couper la fin ou le début dans un son",
@@ -585,16 +594,15 @@ export default function () {
         connected: "Connecté",
         history: "Historique",
 
-        creativecommons_by_nc_sa: "Creative Commons BY NC SA",
-        // todo add explanations
-        creativecommons_by_nc_sa_explanations: "–",
+        creativecommons_by_sa: "Creative Commons BY SA",
+        creativecommons_by_sa_explanations:
+          "Attribution - Partage dans les Mêmes Conditions",
 
         all_rights_reserved: "Tous Droits Réservés",
-        // todo add explanations
-        all_rights_reserved_explanations: "–",
 
         drop_here: "Déposer ici",
         or_drag_drop_file_here: "Ou déposer des fichiers ici",
+        drop_to_import: "Déposer pour importer",
         enable: "Activer",
 
         // effets
@@ -612,20 +620,26 @@ export default function () {
         color: "couleur",
         flip_horizontally: "Retourner horizontalement",
         flip_vertically: "Retourner verticalement",
+        advanced_options: "Options avancées",
+        yes: "Oui",
+
         brightness: "Luminosité",
         contrast: "Contraste",
+        lines_density: "Densité de lignes",
+        lines_angle: "Angle des lignes",
+        number_of_colors: "Nombre de couleurs",
         blur: "Flou",
         hue: "Teinte",
         saturation: "Saturation",
         lightness: "Clarté",
         dotscreen: "Noir et blanc (tramé)",
 
-        custom_license: "Licence spécifique",
-        custom_license_explanations:
-          "À venir, la possibilité d’indiquer une licence spécifique avec un lien vers une page de référence",
+        custom_license: "Autre licence",
+        fill_out_your_license: "Renseignez votre licence ici",
 
         copyleft: "Art Libre / Copyleft",
-        copyleft_explanations: "–",
+        copyleft_explanations:
+          "Voir <a href='https://artlibre.org/' target='_blank'>artlibre.org</a> pour une explication de cette licence",
         copy_of: "Copie de",
         remix_of: "Remix de",
         open_copy: "Accéder à la copie",
@@ -703,6 +717,7 @@ export default function () {
         stl: "STL",
         other: "Autres",
         all_medias_types: "De tous types",
+        all_origins: "De toutes origines",
 
         or_download_media_on_device:
           "ou télécharger ce média sur votre appareil",
@@ -831,14 +846,14 @@ export default function () {
         "notifications.max_items_is": "Le maximum est de",
         "notifications.action_not_allowed": "Cette action n’est pas autorisée",
         "notifications.account_created": "Votre compte a été créé",
-        "notifications.logged_in": "La connexion au compte est active",
+        "notifications.logged_in":
+          "La connexion au compte est active, rechargement de la page en cours…",
 
         informations: "Informations",
 
         duplicate: "Dupliquer",
         duplicate_or_move: "Dupliquer ou déplacer",
         duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
-        duplicate_or_move_media: "Dupliquer ou déplacer ce média",
         dm_instr:
           "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, fabrications, publications) seront copiées.",
         dmm_instr:
@@ -877,7 +892,7 @@ export default function () {
         fold: "replier",
 
         "module.label.text": "Bloc de texte",
-        "module.label.mosaic": "Mosaïque de médias",
+        "module.label.mosaic": "Mosaïque",
         "module.label.carousel": "Carrousel",
         "module.label.files": "Liste de fichiers",
         object_fit_cover: "Remplir le cadre",
@@ -911,10 +926,7 @@ export default function () {
         pins: "Épingles",
         pick_on_map: "Indiquer sur la carte",
         current_position: "Position actuelle",
-        layers: "Calques",
-        layer: "Calque",
-        create_layer: "Créer un calque",
-        layer_title: "Nom du calque",
+        feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
@@ -926,31 +938,9 @@ export default function () {
         "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
           <br />
           Elles contiendront du texte et des éléments que vous avez collecté.`,
-
-        open_app: "Accéder à la plateforme",
-        do_not_show_window_again:
-          "Ne plus afficher cette fenêtre à l’ouverture",
-        items: "Éléments",
-        items_to_share: "Éléments à traiter",
-        keyword_materials_etc: "Mot-clé, matériaux, lieux, etc.",
-        complete_or_correct_title_kw:
-          "Corrigez ou complétez le titre et les mots-clés pour partager cet élément",
-
-        deselect_all: "Déselectionner tout",
-        remove_all: "Supprimer les éléments",
-        shared_space_archive: "ESPACE PARTAGÉ / ARCHIVE",
-        filter_sort: "Filtrer/Classer",
-        help_contact: "aide/contact",
       },
-
       en: {
-        home: "Home",
-        caption: "Caption",
-        date_created: "created date",
-        date_modified: "last edited",
-        date_uploaded: "uploaded on",
-        cancel: "cancel",
-        save: "save",
+        welcome_to_dodoc: "Welcome to do•doc !",
         // todo translate
         // a_foss_made_by:
         //   "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
@@ -1004,40 +994,6 @@ export default function () {
 
         ui_lang_select: "Interface language",
         lang_updated: "The lang has been updated",
-        open_app: "Access",
-        items: "Éléments",
-        items_to_share: "Items to share",
-        do_not_show_window_again: "Do not show this window automatically",
-        admin_settings: "Admin settings",
-        import: "Import",
-        close: "Close",
-        keyword_materials_etc: "Keyword, material, place, etc.",
-        complete_or_correct_title_kw:
-          "Complete or correct title and keywords to share this item",
-        create_stack: "Create stack",
-        remove_stack: "Remove stack and its content",
-        show_only_my_content: "Show only my content",
-        deselect_all: "Deselect all",
-        remove_all: "Remove all",
-        publish: "Publish",
-        shared_space_archive: "SHARED SPACE / ARCHIVE",
-        filter_sort: "Filter/Sort",
-        help_contact: "help/contact",
-        version: "Version",
-
-        sort_by: "Sort by",
-        group_by_date: "Group by date",
-        filter_by_type: "Filtrer par type",
-        filter_by_author: "Fitler by author",
-        filter_by_keyword: "Fitler by keyword",
-
-        search: "Search",
-        search_fields: "In title, description or notes fields.",
-        show_all_keywords: "Show all keywords",
-        download: "Download",
-        share_link_to_page: "Share a link to this page",
-
-        no_content: "No content to show",
       },
       de: {},
       nl: {},

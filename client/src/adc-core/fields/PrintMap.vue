@@ -31,7 +31,7 @@
       @click="printMap()"
     >
       <b-icon class="inlineSVG" icon="printer" />
-      {{ $t("export_pdf") }}
+      {{ $t("export_in_pdf") }}
     </button>
   </BaseModal2>
 </template>
@@ -111,9 +111,12 @@ export default {
   },
   computed: {},
   methods: {
-    generatePreview() {
+    async generatePreview() {
       // from https://openlayers.org/en/latest/examples/export-pdf.html
       this.is_making_preview = true;
+
+      await new Promise((r) => setTimeout(r, 500));
+
       const format = this.print_format;
       const dim = this.print_formats.find((f) => f.key === format).dimensions;
       const resolution = 300; // DPI
@@ -212,14 +215,15 @@ export default {
       // map.setSize([current_map_width * ratio, current_map_height * ratio]);
       // map.getView().setResolution(viewResolution * ratio);
 
+      const printSize = [new_map_width, new_map_height];
+      map.setSize(printSize);
       const scaling = Math.min(
         paper_width / current_map_width,
         paper_height / current_map_height
       );
       map.getView().setResolution(viewResolution / scaling);
-      const printSize = [new_map_width, new_map_height];
-      map.setSize(printSize);
     },
+
     printMap() {
       this.is_making_print = true;
 

@@ -343,6 +343,9 @@ export default {
     .plyr__control--overlaid {
       z-index: 10;
     }
+    .plyr__controls {
+      border-radius: 4px;
+    }
   }
 }
 
