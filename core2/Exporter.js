@@ -72,6 +72,11 @@ class Exporter {
       desired_filename = this.instructions.suggested_file_name
         ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
         : "mix_video.mp4";
+    } else if (this.instructions.recipe === "video_assemblage") {
+      full_path_to_file = await this._videoAssemblage();
+      desired_filename = this.instructions.suggested_file_name
+        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
+        : "assemblage.mp4";
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -369,20 +374,7 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const new_video_name =
-        "video_trim_" +
-        +new Date() +
-        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-        ".mp4";
-
-      let full_path_to_folder_in_cache = await utils.createFolderInCache(
-        "video"
-      );
-
-      const full_path_to_new_video = path.join(
-        full_path_to_folder_in_cache,
-        new_video_name
-      );
+      const full_path_to_new_video = await _createTempVideoName();
 
       const base_media_path = utils.getPathToUserContent(
         this.instructions.base_media_path
@@ -431,20 +423,7 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const new_video_name =
-        "video_mix_" +
-        +new Date() +
-        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-        ".mp4";
-
-      let full_path_to_folder_in_cache = await utils.createFolderInCache(
-        "video"
-      );
-
-      const full_path_to_new_video = path.join(
-        full_path_to_folder_in_cache,
-        new_video_name
-      );
+      const full_path_to_new_video = await _createTempVideoName();
 
       const base_audio_path = utils.getPathToUserContent(
         this.instructions.base_audio_path
@@ -507,20 +486,7 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const new_video_name =
-        "video_mix_" +
-        +new Date() +
-        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-        ".mp4";
-
-      let full_path_to_folder_in_cache = await utils.createFolderInCache(
-        "video"
-      );
-
-      const full_path_to_new_video = path.join(
-        full_path_to_folder_in_cache,
-        new_video_name
-      );
+      const full_path_to_new_video = await _createTempVideoName();
 
       const base_audio_path = utils.getPathToUserContent(
         this.instructions.base_audio_path
@@ -580,6 +546,14 @@ class Exporter {
     });
   }
 
+  _videoAssemblage() {
+    return new Promise(async (resolve, reject) => {
+      this._notifyProgress(5);
+
+      const full_path_to_new_video = await _createTempVideoName();
+    });
+  }
+
   async _saveData(type) {
     const full_path_to_folder_in_cache = await utils.createFolderInCache(type);
     const full_path_to_file = path.join(
@@ -587,6 +561,17 @@ class Exporter {
       "file." + type
     );
     return full_path_to_file;
+  }
+
+  async _createTempVideoName() {
+    const new_video_name =
+      "video_" +
+      +new Date() +
+      (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
+      ".mp4";
+    let full_path_to_folder_in_cache = await utils.createFolderInCache("video");
+
+    return path.join(full_path_to_folder_in_cache, new_video_name);
   }
 }
 

@@ -238,6 +238,9 @@
                   },
                   "modules_list": {
                     "type": "array"
+                  },
+                  "sections_list": {
+                    "type": "array"
                   }
                 },
                 "$files": {
@@ -246,6 +249,12 @@
                       "type": "string"
                     },
                     "source_medias": {
+                      "type": "array"
+                    },
+                    "section_type": {
+                      "type": "string"
+                    },
+                    "modules_list": {
                       "type": "array"
                     }
                   }

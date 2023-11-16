@@ -289,7 +289,7 @@ export default {
               summary: "video_assemblage_summary",
               show_instructions: false,
               instructions: "video_assemblage_instructions",
-
+              enabled: true,
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <g id="Calque_6" data-name="Calque 6">
@@ -544,6 +544,7 @@ export default {
   height: 100%;
   overflow: auto;
   padding: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 10);
   // --active-color: var(--c-bleumarine);
 }
 .m_recipes--type {

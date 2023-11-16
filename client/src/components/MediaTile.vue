@@ -115,13 +115,7 @@ export default {
     },
 
     duration() {
-      if (["video", "audio"].includes(this.file.$type))
-        if (this.file.$infos.duration)
-          return this.formatDurationToHoursMinutesSeconds(
-            this.file.$infos.duration
-          );
-        else return "•:••";
-      return false;
+      return this.displayDuration({ media: this.file });
     },
   },
   methods: {

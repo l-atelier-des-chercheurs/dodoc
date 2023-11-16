@@ -2,7 +2,7 @@
   <div class="m_mediaValidationButtons">
     <button
       type="button"
-      class="u-button u-button_transparent u-colorOrange _arrows"
+      class="u-button u-button_transparent _arrows"
       @click="selectedMoveLeft"
     >
       <svg
@@ -23,7 +23,7 @@
 
     <button
       type="button"
-      class="u-button u-button_transparent u-colorWhite"
+      class="u-button u-button_black"
       @mousedown.stop.prevent="validateButton(0)"
       @touchstart.stop.prevent="validateButton(0)"
       :class="{ 'is--active': selected_button === 0 }"
@@ -53,76 +53,56 @@
       </template>
     </button>
 
-    <button
-      type="button"
-      @click="validateButton(1)"
-      class="u-button u-button_red"
-      :class="{ 'is--active': selected_button === 1 }"
-      @mouseover="selected_button = 1"
-    >
-      <svg
-        version="1.1"
-        class
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        viewBox="0 0 168 168"
-        style="enable-background: new 0 0 168 168"
-        xml:space="preserve"
+    <div class="_valStarBtns">
+      <button
+        type="button"
+        @click="validateButton(1)"
+        class="u-button u-button_red"
+        :class="{ 'is--active': selected_button === 1 }"
+        @mouseover="selected_button = 1"
       >
-        <rect
-          x="51.4"
-          y="73.1"
-          transform="matrix(0.7071 -0.7071 0.7071 0.7071 -53.857 72.9892)"
-          width="19.5"
-          height="56.8"
-          fill="currentColor"
-        />
-        <rect
-          x="53.2"
-          y="77.3"
-          transform="matrix(0.7071 -0.7071 0.7071 0.7071 -31.6875 97.6563)"
-          width="97.6"
-          height="19.5"
-          fill="currentColor"
-        />
-      </svg>
-      <span class="c-rouge">{{ $t("save") }}</span>
-    </button>
+        <svg
+          version="1.1"
+          class
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 168 168"
+          style="enable-background: new 0 0 168 168"
+          xml:space="preserve"
+        >
+          <rect
+            x="51.4"
+            y="73.1"
+            transform="matrix(0.7071 -0.7071 0.7071 0.7071 -53.857 72.9892)"
+            width="19.5"
+            height="56.8"
+            fill="currentColor"
+          />
+          <rect
+            x="53.2"
+            y="77.3"
+            transform="matrix(0.7071 -0.7071 0.7071 0.7071 -31.6875 97.6563)"
+            width="97.6"
+            height="19.5"
+            fill="currentColor"
+          />
+        </svg>
+        <span class="c-rouge">{{ $t("save") }}</span>
+      </button>
 
-    <button
-      type="button"
-      v-if="can_add_to_fav"
-      @click="validateButton(2)"
-      class="u-button u-button_red u-colorOrange"
-      :class="{ 'is--active': selected_button === 2 }"
-      @mouseover="selected_button = 2"
-    >
-      <svg
-        version="1.1"
-        class="u-padding_verysmall"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-        x="0px"
-        y="0px"
-        width="68.5px"
-        height="80.4px"
-        viewBox="0 0 78.5 106.4"
-        style="enable-background: new 0 0 78.5 106.4"
-        xml:space="preserve"
+      <button
+        type="button"
+        v-if="can_add_to_fav"
+        @click="validateButton(2)"
+        class="u-button u-button_red _favBtn"
+        :class="{ 'is--active': selected_button === 2 }"
+        @mouseover="selected_button = 2"
       >
-        <polygon
-          fill="currentColor"
-          points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"
-        />
-        <polygon fill="currentColor" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
-      </svg>
-      <span class>
-        {{ $t("save_as_favorite") }}
-      </span>
-    </button>
+        <b-icon :icon="selected_button === 2 ? 'star-fill' : 'star'" />
+      </button>
+    </div>
 
     <button
       type="button"
@@ -284,7 +264,7 @@ export default {
   }
 
   button {
-    svg {
+    ::v-deep svg {
       width: 2rem;
       height: 2rem;
     }
@@ -293,5 +273,14 @@ export default {
 
 ._arrows {
   display: none;
+}
+
+._valStarBtns {
+  display: flex;
+  align-items: stretch;
+}
+
+._favBtn {
+  margin-left: -5px;
 }
 </style>

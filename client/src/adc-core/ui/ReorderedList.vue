@@ -264,11 +264,6 @@ export default {
     // color: white;
   }
 }
-._index {
-  font-size: var(--sl-font-size-small);
-  font-weight: bold;
-  font-family: "Fira Code";
-}
 ._changeOrderBtn {
   // text-align: right;
 }

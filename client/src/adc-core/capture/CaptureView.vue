@@ -1877,7 +1877,7 @@ export default {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .success(this.$t("notifications.media_was_sent"));
+        .success(this.$t("notifications.media_was_saved"));
       this.media_is_being_sent = false;
       this.media_to_validate = false;
 
