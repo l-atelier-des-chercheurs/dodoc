@@ -293,10 +293,10 @@ export default {
   }
 }
 ._spacer {
-  min-height: 2rem;
+  min-height: 3rem;
   display: flex;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
   padding: 0 calc(var(--spacing) * 2);
 
   transition: all 0.2s linear;
