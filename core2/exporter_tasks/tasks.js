@@ -484,10 +484,14 @@ module.exports = (function () {
         ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
       else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
 
+      const filter = _makeFilterToPadMatchDurationAudioVideo({ streams });
+      if (filter) ffmpeg_cmd.addOptions([filter]);
+
+      // if (streams?.some((s) => s.codec_type === "audio"))
+
       // if (temp_video_volume) {
       //   ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
       // } else {
-      ffmpeg_cmd.addOptions(["-af apad"]);
       // }
 
       ffmpeg_cmd
@@ -533,6 +537,22 @@ module.exports = (function () {
         return resolve({ duration, streams });
       });
     });
+  }
+
+  function _makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
+    const audio_stream = streams.find((s) => s.codec_type === "audio");
+    const video_stream = streams.find((s) => s.codec_type === "video");
+    if (audio_stream && video_stream) {
+      if (audio_stream.duration > video_stream.duration) {
+        // audio is longer than video, we need to pad video
+        const diff = audio_stream.duration - video_stream.duration;
+        return `-vf tpad=stop_mode=clone:stop_duration=${diff}`;
+      } else if (video_stream.duration > audio_stream.duration) {
+        // video is longer than audio, we need to pad audio
+        return "-af apad";
+      }
+    }
+    return false;
   }
 
   return API;
