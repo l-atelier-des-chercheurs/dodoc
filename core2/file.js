@@ -193,6 +193,15 @@ module.exports = (function () {
           new_meta,
         });
         Object.assign(meta, clean_meta);
+        // todo validateMeta
+
+        if (meta.hasOwnProperty("$media_filename") && meta.$media_filename) {
+          const og_path = utils.getPathToUserContent(
+            path_to_folder,
+            previous_meta.$media_filename
+          );
+          await fs.remove(og_path);
+        }
       }
 
       if (typeof $content !== "undefined" && meta.$type === "text") {

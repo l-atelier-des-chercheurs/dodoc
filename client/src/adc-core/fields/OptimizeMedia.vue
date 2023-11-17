@@ -31,6 +31,10 @@
           :show_fs_button="true"
           :is_draggable="false"
         />
+        <button type="button" class="u-buttonLink" @click="replaceOriginal">
+          <b-icon icon="file-plus" />
+          {{ $t("replace_original") }}
+        </button>
       </div>
     </BaseModal2>
   </div>
@@ -75,6 +79,7 @@ export default {
 
       const instructions = {
         recipe: "convert_to_image",
+        suggested_file_name: this.media.$media_filename,
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
@@ -93,7 +98,6 @@ export default {
         this.$api.leave({ room: "task_" + current_task_id });
 
         if (message.event === "completed") {
-          debugger;
           message.file;
           this.optimize_file = message.file;
         } else if (message.event === "aborted") {
@@ -104,6 +108,25 @@ export default {
         }
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
+    },
+    async replaceOriginal() {
+      await this.$api.updateMeta({
+        path: this.media.$path,
+        new_meta: {
+          $media_filename: this.optimize_file.$media_filename,
+          $type: this.optimize_file.$type,
+        },
+      });
+      await this.$api.updateMeta({
+        path: this.optimize_file.$path,
+        new_meta: {
+          $media_filename: "",
+        },
+      });
+      debugger;
+      await this.$api.deleteItem({
+        path: this.optimize_file.$path,
+      });
     },
   },
 };

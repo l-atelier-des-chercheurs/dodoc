@@ -333,6 +333,7 @@ module.exports = (function () {
 
     let meta = await utils.readMetaFile(path_to_folder, meta_filename);
     const media_filename = meta.$media_filename;
+    if (!media_filename) return;
 
     return await _removeAllThumbsForFile({
       path_to_folder,

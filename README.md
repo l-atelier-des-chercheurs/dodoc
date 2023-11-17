@@ -196,12 +196,12 @@ Default values are:
 - $date_created     (Date)                                when the file was created
 - $date_uploaded    (Date)                                when the file was uploaded
 - $date_modified    (Date)                                when the file was last edited
-- $media_filename   (String)                              name of the file
-- $type             (String)                              type of media file among the following: _image, video, audio, stl, text, pdf, other_
+- $media_filename   (String, editable)                    name of the file
+- $type             (String, editable)                    type of media file among the following: _image, video, audio, stl, text, pdf, other_
 - $status           (String, editable)                    determines whether the file gets listed when getFiles is called by non-authors
 - $origin           (String)                              used to indicate the origin of the media (capture page, upload, etc.)
 - $thumbs           (object)                              list of possible media image thumbs
-- $content          (String)                              text content of a file
+- $content          (String, editable)                    text content of a file
 - $infos            (object)                              data gathered from the file itself
   - mtimems         (Date)                                last modified time for media file
   - duration        (Number)                              for videos and audios
