@@ -629,8 +629,8 @@ export default function () {
         destination_project: "Projet qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
-        remove_original_after_copy: "Ce projet sera supprimé après la copie",
-        keep_original_after_copy: "Ce projet sera conservé après la copie",
+        remove_original_after_copy: "L’original sera supprimé après la copie",
+        keep_original_after_copy: "L’original sera conservé après la copie",
 
         machines_and_materials: "Machines et matériaux",
         machines: "Machines",
