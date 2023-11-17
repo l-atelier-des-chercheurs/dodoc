@@ -147,7 +147,6 @@ export default {
   align-items: flex-start;
 
   width: 100%;
-  max-width: 400px;
   margin: 0 auto;
 
   gap: calc(var(--spacing) / 1);
