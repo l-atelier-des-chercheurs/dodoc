@@ -296,7 +296,7 @@ export default {
 }
 
 ._spacer {
-  min-height: 2rem;
+  min-height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;

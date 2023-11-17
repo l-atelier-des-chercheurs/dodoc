@@ -9,30 +9,30 @@
       <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
-          class="u-button u-button_bleumarine"
+          class="u-button u-button_black"
           v-if="types_available.includes('text')"
           @click="createText"
         >
-          <template v-if="show_labels">{{ $t("text") }}</template>
-          <sl-icon
-            name="fonts"
+          <b-icon
+            icon="fonts"
             style="font-size: var(--icon-size)"
             :label="$t('add_text')"
           />
+          <template v-if="show_labels">{{ $t("text") }}</template>
         </button>
 
         <button
           type="button"
-          class="u-button u-button_bleumarine"
+          class="u-button u-button_black"
           v-if="types_available.includes('medias')"
           @click="show_media_picker = true"
         >
-          <template v-if="show_labels">{{ $t("medias") }}</template>
-          <sl-icon
-            name="image"
+          <b-icon
+            icon="image"
             style="font-size: var(--icon-size)"
             :label="$t('add_medias')"
           />
+          <template v-if="show_labels">{{ $t("medias") }}</template>
         </button>
         <MediaPicker
           v-if="show_media_picker"
@@ -44,7 +44,7 @@
 
         <!-- <button
           type="button"
-          class="u-button u-button_bleumarine"
+          class="u-button u-button_black"
           v-if="types_available.includes('files')"
           @click="show_file_picker = true"
         >
@@ -65,16 +65,16 @@
 
         <button
           type="button"
-          class="u-button u-button_bleumarine"
+          class="u-button u-button_black"
           v-if="types_available.includes('link')"
           @click="show_link_picker = true"
         >
-          <template v-if="show_labels">{{ $t("link") }}</template>
-          <sl-icon
-            name="link"
+          <b-icon
+            icon="link"
             style="font-size: var(--icon-size)"
             :label="$t('add_link')"
           />
+          <template v-if="show_labels">{{ $t("link") }}</template>
         </button>
         <LinkPicker
           v-if="show_link_picker"
@@ -87,7 +87,7 @@
             type="button"
             v-for="shape in shapes"
             :key="shape.type"
-            class="u-button u-button_bleumarine"
+            class="u-button u-button_black"
             @click="
               createCustomModule({
                 module_type: shape.type,
@@ -95,12 +95,12 @@
               })
             "
           >
-            <template v-if="show_labels">{{ $t(shape.type) }}</template>
-            <sl-icon
-              :name="shape.icon"
+            <b-icon
+              :icon="shape.icon"
               style="font-size: var(--icon-size)"
               :label="$t(shape.type)"
             />
+            <template v-if="show_labels">{{ $t(shape.type) }}</template>
             <!-- {{ $t("add_medias") }} -->
           </button>
         </template>
@@ -421,7 +421,7 @@ export default {
 ._moduleCreator {
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   pointer-events: none;
@@ -440,13 +440,12 @@ export default {
 ._typePicker {
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: calc(var(--spacing) / 4);
 
   > * {
     // padding: calc(var(--spacing) / 2);
-    // background: var(--c-gris_clair);
   }
 }
 

@@ -297,17 +297,17 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 0 calc(var(--spacing) * 2);
+  // padding: 0 calc(var(--spacing) * 2);
 
   transition: all 0.2s linear;
 
   ::v-deep {
     ._moduleCreator {
       // position: absolute;
-      background: white;
-      padding: calc(var(--spacing) / 4);
-      z-index: 1;
-      border-radius: 0;
+      // background: white;
+      // padding: calc(var(--spacing) / 4);
+      // z-index: 1;
+      // border-radius: 0;
 
       &.is--collapsed {
         padding: 0;
