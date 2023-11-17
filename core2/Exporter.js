@@ -10,7 +10,8 @@ const utils = require("./utils"),
   file = require("./file"),
   settings = require("./settings"),
   notifier = require("./notifier"),
-  tasks = require("./exporter_tasks/tasks");
+  tasks = require("./exporter_tasks/tasks"),
+  optimizer = require("./exporter_tasks/optimizer");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -43,38 +44,34 @@ class Exporter {
     let full_path_to_file;
     let desired_filename;
 
+    const suggested_file_name = this.instructions.suggested_file_name
+      ? utils.slug(this.instructions.suggested_file_name)
+      : false;
+
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
-      desired_filename = "stopmotion.mp4";
+      desired_filename = (suggested_file_name || "stopmotion") + ".mp4";
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
-
-      desired_filename = this.instructions.suggested_file_name
-        ? utils.slug(this.instructions.suggested_file_name) + ".pdf"
-        : "publication.pdf";
+      desired_filename = (suggested_file_name || "publication") + ".pdf";
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
-      desired_filename = "preview.png";
+      desired_filename = (suggested_file_name || "preview") + ".png";
     } else if (this.instructions.recipe === "trim_video") {
       full_path_to_file = await this._trimVideo();
-      desired_filename = this.instructions.suggested_file_name
-        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
-        : "trim_video.mp4";
+      desired_filename = (suggested_file_name || "trim_video") + ".mp4";
     } else if (this.instructions.recipe === "mix_audio_and_image") {
       full_path_to_file = await this._mixAudioAndImage();
-      desired_filename = this.instructions.suggested_file_name
-        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
-        : "mix_video.mp4";
+      desired_filename = (suggested_file_name || "mix_video") + ".mp4";
     } else if (this.instructions.recipe === "mix_audio_and_video") {
       full_path_to_file = await this._mixAudioAndVideo();
-      desired_filename = this.instructions.suggested_file_name
-        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
-        : "mix_video.mp4";
+      desired_filename = (suggested_file_name || "mix_video") + ".mp4";
     } else if (this.instructions.recipe === "video_assemblage") {
       full_path_to_file = await this._videoAssemblage();
-      desired_filename = this.instructions.suggested_file_name
-        ? utils.slug(this.instructions.suggested_file_name) + ".mp4"
-        : "assemblage.mp4";
+      desired_filename = (suggested_file_name || "assemblage") + ".mp4";
+    } else if (this.instructions.recipe === "convert_to_image") {
+      full_path_to_file = await this._convertToImage();
+      desired_filename = (suggested_file_name || "image") + ".jpeg";
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -408,8 +405,10 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const { full_path_to_folder_in_cache, full_path_to_new_video } =
-        await this._createTempVideoCacheAndName();
+      const {
+        full_path_to_folder_in_cache,
+        full_path_to_new_file: full_path_to_new_video,
+      } = await this._createTempFolderAndName("video", "mp4");
 
       const base_media_path = utils.getPathToUserContent(
         this.instructions.base_media_path
@@ -458,8 +457,10 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const { full_path_to_folder_in_cache, full_path_to_new_video } =
-        await this._createTempVideoCacheAndName();
+      const {
+        full_path_to_folder_in_cache,
+        full_path_to_new_file: full_path_to_new_video,
+      } = await this._createTempFolderAndName("video", "mp4");
 
       const base_audio_path = utils.getPathToUserContent(
         this.instructions.base_audio_path
@@ -522,8 +523,10 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const { full_path_to_folder_in_cache, full_path_to_new_video } =
-        await this._createTempVideoCacheAndName();
+      const {
+        full_path_to_folder_in_cache,
+        full_path_to_new_file: full_path_to_new_video,
+      } = await this._createTempFolderAndName("video", "mp4");
 
       const base_audio_path = utils.getPathToUserContent(
         this.instructions.base_audio_path
@@ -586,8 +589,10 @@ class Exporter {
   async _videoAssemblage() {
     this._notifyProgress(5);
 
-    const { full_path_to_folder_in_cache, full_path_to_new_video } =
-      await this._createTempVideoCacheAndName();
+    const {
+      full_path_to_folder_in_cache,
+      full_path_to_new_file: full_path_to_new_video,
+    } = await this._createTempFolderAndName("video", "mp4");
 
     if (
       !Array.isArray(this.instructions.montage) ||
@@ -669,8 +674,42 @@ class Exporter {
     }
   }
 
+  async _convertToImage() {
+    this._notifyProgress(5);
+
+    let { full_path_to_folder_in_cache, full_path_to_new_file } =
+      await this._createTempFolderAndName("image", "jpeg");
+
+    this._notifyProgress(10);
+
+    try {
+      const base_media_path = utils.getPathToUserContent(
+        this.instructions.base_media_path
+      );
+
+      await optimizer.convertToOptimizedImage({
+        source: base_media_path,
+        destination: full_path_to_new_file,
+      });
+
+      this._notifyProgress(95);
+
+      return full_path_to_new_file;
+    } catch (err) {
+      dev.error("An error happened: " + err.message);
+      await fs.remove(full_path_to_folder_in_cache);
+      this._notifyEnded({
+        event: "failed",
+        info: err.message,
+      });
+      throw err;
+    }
+  }
+
   async _saveData(type, data) {
-    const full_path_to_folder_in_cache = await utils.createFolderInCache(type);
+    const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
+      type
+    );
     const full_path_to_file = path.join(
       full_path_to_folder_in_cache,
       "file." + type
@@ -679,16 +718,16 @@ class Exporter {
     return full_path_to_file;
   }
 
-  async _createTempVideoCacheAndName() {
-    const full_path_to_folder_in_cache = await utils.createFolderInCache(
-      "video"
+  async _createTempFolderAndName(prefix, extension) {
+    const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
+      prefix
     );
-    const new_video_name = utils.createUniqueName("video") + ".mp4";
-    const full_path_to_new_video = path.join(
+    const new_video_name = utils.createUniqueName(prefix) + "." + extension;
+    const full_path_to_new_file = path.join(
       full_path_to_folder_in_cache,
       new_video_name
     );
-    return { full_path_to_folder_in_cache, full_path_to_new_video };
+    return { full_path_to_folder_in_cache, full_path_to_new_file };
   }
 }
 

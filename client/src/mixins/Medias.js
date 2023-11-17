@@ -217,5 +217,9 @@ export default {
         else return "•:••";
       return false;
     },
+    fileShouldBeOptimized({ path }) {
+      const ext = [".heic"];
+      return ext.some((e) => path.toLowerCase().endsWith(e));
+    },
   },
 };

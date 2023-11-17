@@ -36,7 +36,7 @@ module.exports = (function () {
     getPathToCache(...paths) {
       return path.join(global.pathToCache, ...paths);
     },
-    async createFolderInCache(prefix = "folder") {
+    async createUniqueFolderInCache(prefix = "folder") {
       let folder_name = API.createUniqueName(prefix);
       const full_path_to_folder_in_cache = API.getPathToCache(folder_name);
       await fs.ensureDir(full_path_to_folder_in_cache);
@@ -355,22 +355,6 @@ module.exports = (function () {
           .catch((err) => {
             throw err;
           });
-    },
-    async convertSourceFileToOptimized({ source, destination, resolution }) {
-      // await sharp(source)
-      //   .rotate()
-      //   .flatten({ background: "white" })
-      //   .resize(resolution.width, resolution.height, {
-      //     fit: "contain",
-      //     withoutEnlargement: false,
-      //     background: "black",
-      //   })
-      //   // .withMetadata()
-      //   .toFile(destination)
-      //   .catch((err) => {
-      //     dev.error(`Failed to sharp create image to destination.`);
-      //     throw err;
-      //   });
     },
     async convertAndCopyImage({ source, destination, resolution }) {
       await sharp(source)

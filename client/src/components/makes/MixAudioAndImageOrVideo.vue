@@ -203,7 +203,6 @@ export default {
         this.$api.leave({ room: "task_" + current_task_id });
 
         if (message.event === "completed") {
-          message.file;
           this.created_video = message.file;
           this.export_href = this.makeMediaFileURL({
             $path: this.created_video.$path,

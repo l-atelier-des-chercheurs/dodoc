@@ -141,7 +141,7 @@ module.exports = (function () {
     importFolder: async ({ path_to_type, req }) => {
       dev.logfunction({ path_to_type });
 
-      let full_path_to_folder_in_cache = await utils.createFolderInCache(
+      let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
         "import"
       );
 

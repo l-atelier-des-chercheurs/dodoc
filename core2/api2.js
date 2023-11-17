@@ -61,6 +61,16 @@ module.exports = (function () {
       _restrictToContributors,
       _uploadFile
     );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/:meta_filename/_optimize",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename/_optimize",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_optimize",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _exportToParent
+    );
     app.patch(
       [
         "/_api2/:folder_type/:folder_slug/:meta_filename",
@@ -785,14 +795,19 @@ module.exports = (function () {
     }
   }
   async function _exportToParent(req, res, next) {
-    const { path_to_folder, path_to_parent_folder, data } =
+    const { path_to_folder, path_to_parent_folder, meta_filename, data } =
       utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, path_to_parent_folder, data });
+
+    // export to folder if optimizing file, otherwise export to parent
+    const folder_to_export_to = meta_filename
+      ? path_to_folder
+      : path_to_parent_folder;
 
     // DISPATCH TASKS
     const task = new Exporter({
       path_to_folder,
-      folder_to_export_to: path_to_parent_folder,
+      folder_to_export_to,
       instructions: data,
     });
     const task_id = task.id;
@@ -805,7 +820,7 @@ module.exports = (function () {
 
     dev.logpackets({
       status: `task_started`,
-      path_to_parent_folder,
+      folder_to_export_to,
       task_id,
     });
     res.status(200).json({ task_id });
@@ -815,8 +830,8 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta: exported_path_to_meta,
       });
-      notifier.emit("fileCreated", path_to_parent_folder, {
-        path_to_folder: path_to_parent_folder,
+      notifier.emit("fileCreated", folder_to_export_to, {
+        path_to_folder: folder_to_export_to,
         meta,
       });
     } catch (err) {
