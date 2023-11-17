@@ -9,14 +9,29 @@
     />
     <div class="_navBtns">
       <div class="_navBtns--content">
-        <span v-if="prev_section" class="_navbtn" @click="prevSection">
-          <sl-icon name="arrow-left-circle" />
-          {{ prev_section.section_title }}
-        </span>
-        <span v-if="next_section" class="_navbtn" @click="nextSection">
-          {{ next_section.section_title }}
-          <sl-icon name="arrow-right-circle" />
-        </span>
+        <button
+          type="button"
+          class="u-linkList"
+          v-if="prev_section"
+          @click="prevSection"
+        >
+          <b-icon icon="arrow-left-circle" />
+          <span>
+            {{ prev_section.section_title }}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="u-linkList"
+          v-if="next_section"
+          @click="nextSection"
+        >
+          <span>
+            {{ next_section.section_title }}
+          </span>
+          <b-icon icon="arrow-right-circle" />
+        </button>
       </div>
     </div>
   </div>
@@ -123,31 +138,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: underline;
   padding-bottom: calc(var(--spacing) * 4);
 }
 ._navBtns--content {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 1);
-}
-
-._navbtn {
-  cursor: pointer;
-
-  max-width: 30ch;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-
-  background: white;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
-
-  &:hover,
-  &:focus-visible {
-    background: var(--c-gris);
-  }
 }
 </style>
