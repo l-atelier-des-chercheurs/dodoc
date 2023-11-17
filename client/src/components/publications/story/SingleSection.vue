@@ -224,7 +224,6 @@ export default {
     },
 
     async removeModule(path) {
-      // todo deleteitem already called, error thrown
       await this.removeModule2({
         publication: this.publication,
         section: this.section,

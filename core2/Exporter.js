@@ -9,7 +9,8 @@ const utils = require("./utils"),
   folder = require("./folder"),
   file = require("./file"),
   settings = require("./settings"),
-  notifier = require("./notifier");
+  notifier = require("./notifier"),
+  tasks = require("./exporter_tasks/tasks");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -28,12 +29,15 @@ class Exporter {
     this.id = uuidv4();
     this.path_to_folder = path_to_folder;
     this.folder_to_export_to = folder_to_export_to;
+    this.ffmpeg_cmd = null;
 
     this.instructions = instructions;
     this.status = "ready";
   }
 
   async start() {
+    dev.logfunction();
+
     this.status = "started";
 
     let full_path_to_file;
@@ -114,7 +118,10 @@ class Exporter {
     return exported_path_to_meta;
   }
   abort() {
-    if (this.ffmpeg_cmd) this.ffmpeg_cmd.kill();
+    if (this.ffmpeg_cmd) {
+      this.ffmpeg_cmd.kill();
+      this.ffmpeg_cmd = null;
+    }
     this.status = "aborted";
   }
 
@@ -374,7 +381,8 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const full_path_to_new_video = await _createTempVideoName();
+      const { full_path_to_folder_in_cache, full_path_to_new_video } =
+        await this._createTempVideoCacheAndName();
 
       const base_media_path = utils.getPathToUserContent(
         this.instructions.base_media_path
@@ -412,7 +420,7 @@ class Exporter {
             event: "failed",
             info: err.message,
           });
-
+          await fs.remove(full_path_to_folder_in_cache);
           return reject(err);
         })
         .save(full_path_to_new_video);
@@ -423,7 +431,8 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const full_path_to_new_video = await _createTempVideoName();
+      const { full_path_to_folder_in_cache, full_path_to_new_video } =
+        await this._createTempVideoCacheAndName();
 
       const base_audio_path = utils.getPathToUserContent(
         this.instructions.base_audio_path
@@ -476,7 +485,7 @@ class Exporter {
             event: "failed",
             info: err.message,
           });
-
+          await fs.remove(full_path_to_folder_in_cache);
           return reject(err);
         })
         .save(full_path_to_new_video);
@@ -486,7 +495,8 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      const full_path_to_new_video = await _createTempVideoName();
+      const { full_path_to_folder_in_cache, full_path_to_new_video } =
+        await this._createTempVideoCacheAndName();
 
       const base_audio_path = utils.getPathToUserContent(
         this.instructions.base_audio_path
@@ -539,19 +549,97 @@ class Exporter {
             event: "failed",
             info: err.message,
           });
-
+          await fs.remove(full_path_to_folder_in_cache);
           return reject(err);
         })
         .save(full_path_to_new_video);
     });
   }
 
-  _videoAssemblage() {
-    return new Promise(async (resolve, reject) => {
-      this._notifyProgress(5);
+  async _videoAssemblage() {
+    this._notifyProgress(5);
 
-      const full_path_to_new_video = await _createTempVideoName();
-    });
+    const { full_path_to_folder_in_cache, full_path_to_new_video } =
+      await this._createTempVideoCacheAndName();
+
+    if (
+      !Array.isArray(this.instructions.montage) ||
+      this.instructions.montage.length === 0
+    )
+      return reject(new Error(`no-montage-in-instructions`));
+
+    const output_width = this.instructions.output_width;
+    const output_height = this.instructions.output_height;
+    const bitrate = "6000k";
+    const resolution = { width: output_width, height: output_height };
+
+    this._notifyProgress(10);
+
+    try {
+      const temp_videos_array = [];
+
+      for (const [index, media] of this.instructions.montage.entries()) {
+        const media_full_path = utils.getPathToUserContent(media.path);
+        const media_type = media.type;
+        const transition_in = media.transition_in;
+        const transition_out = media.transition_out;
+
+        let video_path, duration;
+
+        if (media_type === "image") {
+          ({ video_path, duration } = await tasks.prepareImageForMontageAndWeb({
+            media_full_path,
+            full_path_to_folder_in_cache,
+            resolution,
+            bitrate,
+            ffmpeg_cmd: this.ffmpeg_cmd,
+          }));
+        } else if (media_type === "video") {
+          ({ video_path, duration } = await tasks.prepareVideoForMontageAndWeb({
+            media_full_path,
+            full_path_to_folder_in_cache,
+            resolution,
+            bitrate,
+            ffmpeg_cmd: this.ffmpeg_cmd,
+          }));
+        } else {
+          continue;
+        }
+
+        temp_videos_array.push({
+          video_path,
+          duration,
+          transition_in,
+          transition_out,
+        });
+
+        const progress_percent = Math.round(
+          utils.remap(index, 0, this.instructions.montage.length, 15, 70)
+        );
+        this._notifyProgress(progress_percent);
+      }
+
+      this._notifyProgress(75);
+
+      await tasks.mergeAllVideos({
+        temp_videos_array,
+        bitrate,
+        ffmpeg_cmd: this.ffmpeg_cmd,
+        full_path_to_new_video,
+      });
+
+      dev.logverbose("Video created");
+      this._notifyProgress(95);
+      return full_path_to_new_video;
+    } catch (err) {
+      dev.error("An error happened: " + err.message);
+      await fs.remove(full_path_to_folder_in_cache);
+      this._notifyEnded({
+        event: "failed",
+        info: err.message,
+      });
+      throw err;
+    }
   }
 
   async _saveData(type) {
@@ -563,15 +651,16 @@ class Exporter {
     return full_path_to_file;
   }
 
-  async _createTempVideoName() {
-    const new_video_name =
-      "video_" +
-      +new Date() +
-      (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-      ".mp4";
-    let full_path_to_folder_in_cache = await utils.createFolderInCache("video");
-
-    return path.join(full_path_to_folder_in_cache, new_video_name);
+  async _createTempVideoCacheAndName() {
+    const full_path_to_folder_in_cache = await utils.createFolderInCache(
+      "video"
+    );
+    const new_video_name = utils.createUniqueName("video") + ".mp4";
+    const full_path_to_new_video = path.join(
+      full_path_to_folder_in_cache,
+      new_video_name
+    );
+    return { full_path_to_folder_in_cache, full_path_to_new_video };
   }
 }
 

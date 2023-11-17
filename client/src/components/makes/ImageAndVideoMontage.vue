@@ -11,7 +11,7 @@
         <div class="_spacer" :key="'mc_' + index">
           <ModuleCreator
             :publication_path="make.$path"
-            :types_available="['medias', 'text']"
+            :types_available="['medias']"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
             "
@@ -21,6 +21,16 @@
           :key="_module.$path"
           :index="index + 1"
           :makemodule="_module"
+          :module_position="
+            section_modules_list.length === 1
+              ? 'alone'
+              : index === 0
+              ? 'first'
+              : index === section_modules_list.length - 1
+              ? 'last'
+              : 'inbetween'
+          "
+          @remove="removeModule(_module.$path)"
         />
         <!-- <PublicationModule
           class="_mediaPublication"
@@ -55,9 +65,8 @@
     </transition-group>
     <ModuleCreator
       class="_lastModule"
-      :start_collapsed="false"
       :publication_path="make.$path"
-      :types_available="['text', 'medias', 'files', 'link']"
+      :types_available="['medias']"
       @addModules="addModules"
     />
 
@@ -210,7 +219,6 @@ export default {
       });
     },
     async removeModule(path) {
-      // todo deleteitem already called, error thrown
       await this.removeModule2({
         publication: this.make,
         section: this.first_section,
@@ -222,13 +230,28 @@ export default {
       this.created_video = false;
       this.export_href = undefined;
 
-      debugger;
+      const montage = this.section_modules_list.reduce((acc, _module) => {
+        const media = this.firstMedia(_module);
+        if (media) {
+          acc.push({
+            path: this.makeMediaFilePath({
+              $path: media.$path,
+              $media_filename: media.$media_filename,
+            }),
+            type: media.$type,
+            transition_in: _module.transition_in,
+            transition_out: _module.transition_out,
+          });
+        }
+        return acc;
+      }, []);
 
       let instructions = {
         recipe: this.make.type,
         suggested_file_name: this.make.type,
         output_width: 1280,
         output_height: 720,
+        montage,
         additional_meta: {
           $origin: "make",
         },

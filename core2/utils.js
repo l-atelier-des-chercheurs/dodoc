@@ -37,12 +37,15 @@ module.exports = (function () {
       return path.join(global.pathToCache, ...paths);
     },
     async createFolderInCache(prefix = "folder") {
-      let folder_name = `${prefix}_${+API.getCurrentDate()}-${(
-        Math.random().toString(36) + "00000000000000000"
-      ).slice(2, 3 + 2)}`;
+      let folder_name = API.createUniqueName(prefix);
       const full_path_to_folder_in_cache = API.getPathToCache(folder_name);
       await fs.ensureDir(full_path_to_folder_in_cache);
       return full_path_to_folder_in_cache;
+    },
+    createUniqueName(prefix = "prefix") {
+      return `${prefix}_${+API.getCurrentDate()}-${(
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 3 + 2)}`;
     },
 
     slug(term) {

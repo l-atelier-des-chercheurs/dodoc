@@ -6,13 +6,31 @@
     </div>
 
     <div class="_preview">
-      <div class="">
+      <div class="_topRow">
         <div class="u-label">
           {{ $t(first_media.$type) }}
+          <template v-if="first_media_duration"
+            >/ {{ first_media_duration }}</template
+          >
+
+          <button type="button" class="u-buttonLink" @click="removeModule">
+            <sl-icon name="trash3" />
+          </button>
         </div>
-        <template v-if="first_media_duration">{{
-          first_media_duration
-        }}</template>
+        <div class="">
+          <span class="u-switch u-switch-xs">
+            <input
+              class="switch"
+              :id="'transition_in_' + makemodule.$path"
+              type="checkbox"
+              :checked="makemodule.transition_in === 'fade'"
+              @change="toggleTransition('transition_in')"
+            />
+            <label class="u-label" :for="'transition_in_' + makemodule.$path">{{
+              $t("transition_fade")
+            }}</label>
+          </span>
+        </div>
       </div>
       <MediaContent
         v-if="first_media.$type !== 'text'"
@@ -34,6 +52,21 @@
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
       />
+
+      <div class="" v-if="module_position === 'last'">
+        <span class="u-switch u-switch-xs">
+          <input
+            class="switch"
+            :id="'transition_out_' + makemodule.$path"
+            type="checkbox"
+            :checked="makemodule.transition_out === 'fade'"
+            @change="toggleTransition('transition_out')"
+          />
+          <label class="u-label" :for="'transition_out_' + makemodule.$path">{{
+            $t("transition_fade")
+          }}</label>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -42,6 +75,7 @@ export default {
   props: {
     makemodule: Object,
     index: Number,
+    module_position: String,
   },
   components: {},
   data() {
@@ -49,7 +83,12 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        transition_fade: "Transition : fondu enchaîné",
+      },
+      en: {
+        transition_fade: "Transition: fade",
+      },
     },
   },
   created() {},
@@ -58,26 +97,42 @@ export default {
   watch: {},
   computed: {
     first_media() {
-      if (
-        !this.makemodule.source_medias ||
-        this.makemodule.source_medias.length === 0
-      )
-        return false;
-      const source_media = this.makemodule.source_medias[0];
-      if (source_media) {
-        const make_path = this.getParent(this.makemodule.$path);
-        return this.getSourceMedia({
-          source_media,
-          folder_path: make_path,
-        });
-      }
-      return false;
+      return this.firstMedia(this.makemodule);
     },
     first_media_duration() {
       return this.displayDuration({ media: this.first_media });
     },
   },
-  methods: {},
+  methods: {
+    toggleTransition(transition_type) {
+      if (this.makemodule[transition_type] === "fade")
+        this.updateMakemodule({
+          [transition_type]: "none",
+        });
+      else
+        this.updateMakemodule({
+          [transition_type]: "fade",
+        });
+    },
+    async updateMakemodule(new_meta) {
+      await this.$api.updateMeta({
+        path: this.makemodule.$path,
+        new_meta,
+      });
+    },
+    async removeModule() {
+      await this.$api
+        .deleteItem({
+          path: this.makemodule.$path,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+
+      this.$emit("remove");
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -134,5 +189,11 @@ export default {
 
 ._lastModule {
   margin-top: calc(var(--spacing) * 2);
+}
+
+._topRow {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
 }
 </style>
