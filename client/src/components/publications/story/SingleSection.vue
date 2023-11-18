@@ -1,5 +1,5 @@
 <template>
-  <div class="_singleSection" @click="unselectModuleEdited">
+  <div class="_singleSection">
     <div class="_storyContainer">
       <div class="_storyContent" v-if="section" :style="story_styles">
         <div
