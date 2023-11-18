@@ -1,6 +1,6 @@
 const { promisify } = require("util"),
   fs = require("fs"),
-  heicConvert = require("heic-convert"),
+  decode = require("heic-decode"),
   sharp = require("sharp");
 
 sharp.cache(false);
@@ -8,14 +8,16 @@ sharp.cache(false);
 module.exports = (function () {
   const API = {
     async convertToOptimizedImage({ source, destination }) {
-      const inputBuffer = await promisify(fs.readFile)(source);
-      const outputBuffer = await heicConvert({
-        buffer: inputBuffer, // the HEIC file buffer
-        format: "JPEG", // output format
-        quality: 1, // the jpeg compression quality, between 0 and 1
-      });
-
-      await sharp(outputBuffer)
+      const buffer = await promisify(fs.readFile)(source);
+      const { width, height, data } = await decode({ buffer });
+      await sharp(new Uint8Array(data), {
+        raw: {
+          width,
+          height,
+          channels: 4,
+          density: 300,
+        },
+      })
         .rotate()
         .toFormat("jpeg", {
           quality: global.settings.mediaThumbQuality,
