@@ -110,20 +110,27 @@ export default {
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
     async replaceOriginal() {
+      const old_source_file = this.media.$media_filename;
+      const new_source_file = this.optimize_file.$media_filename;
+
+      // set original media to new source file
       await this.$api.updateMeta({
         path: this.media.$path,
         new_meta: {
-          $media_filename: this.optimize_file.$media_filename,
+          $media_filename: new_source_file,
           $type: this.optimize_file.$type,
         },
       });
+
+      // CLEAN UP
+      // set optimized media to old source file
       await this.$api.updateMeta({
         path: this.optimize_file.$path,
         new_meta: {
-          $media_filename: "",
+          $media_filename: old_source_file,
         },
       });
-      debugger;
+      // remove optimized media
       await this.$api.deleteItem({
         path: this.optimize_file.$path,
       });
