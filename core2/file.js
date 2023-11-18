@@ -184,7 +184,7 @@ module.exports = (function () {
       let meta = await utils.readMetaFile(path_to_meta);
       const previous_meta = { ...meta };
 
-      let { $content, ...new_meta } = data;
+      let { $content, $media_filename, ...new_meta } = data;
 
       // update meta file
       if (new_meta) {
@@ -195,13 +195,28 @@ module.exports = (function () {
         Object.assign(meta, clean_meta);
 
         // if file has $media_filename
-        // if (meta.hasOwnProperty("$media_filename") && meta.$media_filename) {
+        // if (new.hasOwnProperty("$media_filename") && meta.$media_filename) {
         //   const og_path = utils.getPathToUserContent(
         //     path_to_folder,
         //     previous_meta.$media_filename
         //   );
         //   await fs.remove(og_path);
         // }
+      }
+
+      // if updating source media,
+      if ($media_filename) {
+        meta.$media_filename = $media_filename;
+        const _thumbs = await thumbs
+          .makeThumbForMedia({
+            media_type: meta.$type,
+            media_filename: meta.$media_filename,
+            path_to_folder,
+          })
+          .catch((err) => {
+            dev.error(err);
+          });
+        if (_thumbs) meta.$thumbs = _thumbs;
       }
 
       if (typeof $content !== "undefined" && meta.$type === "text") {
