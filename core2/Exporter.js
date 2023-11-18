@@ -42,7 +42,6 @@ class Exporter {
     this.status = "started";
 
     let full_path_to_file;
-    let desired_filename;
 
     const suggested_file_name = this.instructions.suggested_file_name
       ? utils.slug(this.instructions.suggested_file_name)
@@ -50,28 +49,20 @@ class Exporter {
 
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
-      desired_filename = (suggested_file_name || "stopmotion") + ".mp4";
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
-      desired_filename = (suggested_file_name || "publication") + ".pdf";
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
-      desired_filename = (suggested_file_name || "preview") + ".png";
     } else if (this.instructions.recipe === "trim_video") {
       full_path_to_file = await this._trimVideo();
-      desired_filename = (suggested_file_name || "trim_video") + ".mp4";
     } else if (this.instructions.recipe === "mix_audio_and_image") {
       full_path_to_file = await this._mixAudioAndImage();
-      desired_filename = (suggested_file_name || "mix_video") + ".mp4";
     } else if (this.instructions.recipe === "mix_audio_and_video") {
       full_path_to_file = await this._mixAudioAndVideo();
-      desired_filename = (suggested_file_name || "mix_video") + ".mp4";
     } else if (this.instructions.recipe === "video_assemblage") {
       full_path_to_file = await this._videoAssemblage();
-      desired_filename = (suggested_file_name || "assemblage") + ".mp4";
-    } else if (this.instructions.recipe === "convert_to_image") {
-      full_path_to_file = await this._convertToImage();
-      desired_filename = (suggested_file_name || "image") + ".jpeg";
+    } else if (this.instructions.recipe === "optimize_media") {
+      full_path_to_file = await this._optimizeMedia();
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -88,7 +79,7 @@ class Exporter {
 
     const meta_filename = await file.addFileToFolder({
       full_path_to_file,
-      desired_filename,
+      desired_filename: this.instructions.recipe,
       path_to_folder: this.folder_to_export_to,
       additional_meta,
     });
@@ -482,7 +473,7 @@ class Exporter {
         .withVideoBitrate("4000k")
         .addOptions(["-shortest"])
         .withAudioCodec("aac")
-        .withAudioBitrate("128k")
+        .withAudioBitrate("192k")
         .addOptions(["-tune stillimage", "-pix_fmt yuv420p"])
         .videoFilters(
           `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=1,pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`
@@ -549,7 +540,7 @@ class Exporter {
         .withVideoCodec("libx264")
         .withVideoBitrate("4000k")
         .withAudioCodec("aac")
-        .withAudioBitrate("128k")
+        .withAudioBitrate("192k")
         .addOptions(["-map 0:v:0", "-map 1:a:0", "-af apad"])
         .videoFilters(
           `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=1,pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`
@@ -674,29 +665,48 @@ class Exporter {
     }
   }
 
-  async _convertToImage() {
+  async _optimizeMedia() {
     this._notifyProgress(5);
 
+    let filetype, fileext;
+    if (utils.fileExtensionIs(this.instructions.base_media_path, ".heic")) {
+      filetype = "image";
+      fileext = "jpeg";
+    }
+    if (utils.fileExtensionIs(this.instructions.base_media_path, ".amr")) {
+      filetype = "audio";
+      fileext = "aac";
+    }
     let { full_path_to_folder_in_cache, full_path_to_new_file } =
-      await this._createTempFolderAndName("image", "jpeg");
+      await this._createTempFolderAndName(filetype, fileext);
+
+    const base_media_path = utils.getPathToUserContent(
+      this.instructions.base_media_path
+    );
 
     this._notifyProgress(10);
 
     try {
-      const base_media_path = utils.getPathToUserContent(
-        this.instructions.base_media_path
-      );
-
-      await optimizer.convertToOptimizedImage({
-        source: base_media_path,
-        destination: full_path_to_new_file,
-      });
+      if (utils.fileExtensionIs(this.instructions.base_media_path, ".heic")) {
+        await optimizer.convertHEICToJpeg({
+          source: base_media_path,
+          destination: full_path_to_new_file,
+        });
+      } else if (
+        utils.fileExtensionIs(this.instructions.base_media_path, ".amr")
+      ) {
+        await optimizer.convertAMRToAAC({
+          source: base_media_path,
+          destination: full_path_to_new_file,
+          ffmpeg_cmd: this.ffmpeg_cmd,
+        });
+      } else {
+        throw new Error(`no_conversion_task_found`);
+      }
 
       this._notifyProgress(95);
-
       return full_path_to_new_file;
     } catch (err) {
-      dev.error("An error happened: " + err.message);
       await fs.remove(full_path_to_folder_in_cache);
       this._notifyEnded({
         event: "failed",

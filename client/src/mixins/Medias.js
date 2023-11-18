@@ -218,7 +218,7 @@ export default {
       return false;
     },
     fileShouldBeOptimized({ path }) {
-      const ext = [".heic"];
+      const ext = [".heic", ".amr"];
       return ext.some((e) => path.toLowerCase().endsWith(e));
     },
   },

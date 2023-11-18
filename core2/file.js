@@ -282,6 +282,9 @@ module.exports = (function () {
     }) => {
       dev.logfunction({ full_path_to_file, path_to_folder });
 
+      const ext = path.extname(full_path_to_file);
+      desired_filename = desired_filename + ext;
+
       let new_filename = await _preventFileOverride({
         path_to_folder,
         original_filename: desired_filename,

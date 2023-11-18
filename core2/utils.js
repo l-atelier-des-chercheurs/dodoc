@@ -591,6 +591,10 @@ module.exports = (function () {
         ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min
       );
     },
+    fileExtensionIs(media_path, ext) {
+      const _ext = path.extname(media_path);
+      return _ext.toLowerCase() === ext;
+    },
   };
 
   return API;

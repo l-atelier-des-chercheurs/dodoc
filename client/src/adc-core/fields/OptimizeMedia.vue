@@ -50,8 +50,6 @@ export default {
       show_modal: false,
       is_optimizing: false,
       optimize_file: undefined,
-
-      task_active: "convert_to_image",
     };
   },
   i18n: {
@@ -78,7 +76,7 @@ export default {
       this.is_optimizing = true;
 
       const instructions = {
-        recipe: "convert_to_image",
+        recipe: "optimize_media",
         suggested_file_name: this.media.$media_filename,
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
