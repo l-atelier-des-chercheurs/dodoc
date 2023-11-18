@@ -66,6 +66,7 @@
     <ModuleCreator
       class="_lastModule"
       :publication_path="make.$path"
+      :start_collapsed="false"
       :types_available="['medias']"
       @addModules="addModules"
     />
