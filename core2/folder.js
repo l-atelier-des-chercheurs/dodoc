@@ -198,7 +198,8 @@ module.exports = (function () {
       }).catch((err) => {
         // TODO handle err here ?
       });
-      valid_meta.requested_slug = originalFilename;
+      valid_meta.requested_slug =
+        subfolder_name || path.parse(originalFilename).name;
 
       const new_folder_slug = await API.createFolder({
         path_to_type,
