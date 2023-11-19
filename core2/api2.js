@@ -928,7 +928,7 @@ module.exports = (function () {
       archive.pipe(res);
 
       const full_folder_path = utils.getPathToUserContent(path_to_folder);
-      archive.directory(full_folder_path, false);
+      archive.directory(full_folder_path, folder_slug);
 
       archive.finalize();
 
