@@ -79,7 +79,7 @@ export default {
         `;
       if (this.btn_type === "add")
         return `
-          --color1: transparent;
+          --color1: white;
           --color2: var(--c-noir);
           --color-hover-icon: white;
         `;

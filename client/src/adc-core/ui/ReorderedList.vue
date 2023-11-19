@@ -12,15 +12,15 @@
         :key="item.$path"
         :index="index"
         class="_reorderedList--item"
-        :class="{
-          'is--active': isActive(item.$path),
-          'is--redorderable': change_order,
-        }"
       >
         <span v-handle class="_dragHandle" v-if="can_edit && change_order" />
         <button
           type="button"
-          class="_itemButton"
+          class="u-linkList"
+          :class="{
+            'is--active': isActive(item.$path),
+            'is--redorderable': change_order,
+          }"
           @click="
             !isActive(item.$path) ? $emit('openItem', item.$path) : undefined
           "
@@ -180,43 +180,6 @@ export default {
   background: white;
 
   border-radius: 4px;
-
-  ._itemButton {
-    appearance: none;
-    font-weight: inherit;
-    background: transparent;
-    width: 100%;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    cursor: pointer;
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-
-    &:hover,
-    &:focus-visible {
-      text-decoration: none;
-      // background: var(--c-gris_clair);
-    }
-  }
-
-  &.is--active {
-    // background: var(--c-gris_fonce);
-    // color: white;
-    font-weight: 600;
-
-    ._itemButton {
-      text-decoration: none;
-    }
-
-    ._title {
-    }
-  }
-  &.is--redorderable {
-    // background: var(--c-gris_clair);
-    // border: 1px solid black;
-    ._itemButton {
-      text-decoration: none;
-    }
-  }
 
   &:has(._dragHandle:hover) {
     z-index: 1;

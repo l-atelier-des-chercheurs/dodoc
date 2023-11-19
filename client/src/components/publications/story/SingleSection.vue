@@ -1,5 +1,5 @@
 <template>
-  <div class="_singleSection" @click="unselectModuleEdited">
+  <div class="_singleSection">
     <div class="_storyContainer">
       <div class="_storyContent" v-if="section" :style="story_styles">
         <div
@@ -293,21 +293,21 @@ export default {
   }
 }
 ._spacer {
-  min-height: 2rem;
+  min-height: 3rem;
   display: flex;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
-  padding: 0 calc(var(--spacing) * 2);
+  // padding: 0 calc(var(--spacing) * 2);
 
   transition: all 0.2s linear;
 
   ::v-deep {
     ._moduleCreator {
       // position: absolute;
-      background: white;
-      padding: calc(var(--spacing) / 4);
-      z-index: 1;
-      border-radius: 0;
+      // background: white;
+      // padding: calc(var(--spacing) / 4);
+      // z-index: 1;
+      // border-radius: 0;
 
       &.is--collapsed {
         padding: 0;

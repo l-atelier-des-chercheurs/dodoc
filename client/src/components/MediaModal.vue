@@ -38,6 +38,10 @@
           :context="'full'"
           :show_fs_button="true"
         />
+        <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
+          {{ $t("optimize_to_visualize") }}
+          <OptimizeMedia :media="file" @close="$emit('close')" />
+        </div>
 
         <transition name="scaleInFade" mode="out-in">
           <div
@@ -104,6 +108,9 @@
           </div>
           <div class="">
             <DuplicateMedia :path="file.$path" @close="$emit('close')" />
+          </div>
+          <div v-if="optimization_possible">
+            <OptimizeMedia :media="file" @close="$emit('close')" />
           </div>
 
           <RemoveMenu
@@ -204,9 +211,11 @@ export default {
     messages: {
       fr: {
         place: "Emplacement",
+        optimize_to_visualize: "Optimiser ce fichier pour le visualiser",
       },
       en: {
         place: "Place",
+        optimize_to_visualize: "Optimize to visualize",
       },
     },
   },
@@ -221,7 +230,14 @@ export default {
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    optimization_possible() {
+      return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+    },
+    optimization_strongly_recommended() {
+      return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+    },
+  },
   methods: {
     toggleMeta() {
       this.show_meta_sidebar = !this.show_meta_sidebar;
@@ -418,5 +434,14 @@ export default {
 
 ._favSwitch {
   display: inline-block;
+}
+
+._optimizeNotice {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: calc(var(--spacing) * 1);
 }
 </style>

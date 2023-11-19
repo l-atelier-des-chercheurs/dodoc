@@ -2,31 +2,38 @@
   <div class="_spaceProjectPicker">
     <DLabel :str="$t('destination_project')" />
     <div class="_row">
-      <select v-model="destination_space_path">
-        <option
-          v-for="space in spaces"
-          :key="space.$path"
-          :value="space.$path"
-          v-text="makeSpaceTitle(space)"
-        />
-      </select>
+      <div class="">
+        <div class="u-buttonLink" disabled>
+          {{ $t("space") }}
+        </div>
+        <select v-model="destination_space_path">
+          <option
+            v-for="space in spaces"
+            :key="space.$path"
+            :value="space.$path"
+            v-text="makeSpaceTitle(space)"
+          />
+        </select>
+      </div>
       <div class="_arrowBtn">
         <b-icon icon="arrow-right-short" label="" />
       </div>
       <div v-if="!projects" class="_projectLoader">
         <LoaderSpinner />
       </div>
-      <select
-        v-else-if="projects.length > 0"
-        v-model="destination_project_path"
-      >
-        <option
-          v-for="project in projects"
-          :key="project.$path"
-          :value="project.$path"
-          v-text="makeProjectTitle(project)"
-        />
-      </select>
+      <div v-else-if="projects.length > 0">
+        <div class="u-buttonLink" disabled>
+          {{ $t("project") }}
+        </div>
+        <select v-model="destination_project_path">
+          <option
+            v-for="project in projects"
+            :key="project.$path"
+            :value="project.$path"
+            v-text="makeProjectTitle(project)"
+          />
+        </select>
+      </div>
       <div v-else-if="projects.length === 0">
         <small class="u-instructions">
           {{ $t("no_projects") }}
@@ -91,13 +98,12 @@ export default {
   computed: {},
   methods: {
     makeSpaceTitle(space) {
-      if (space.$path === this.current_space_path)
-        return space.title + `  (${this.$t("current").toLowerCase()})`;
+      if (space.$path === this.current_space_path) return "• " + space.title;
       return space.title;
     },
     makeProjectTitle(project) {
       if (project.$path === this.current_project_path)
-        return project.title + `  (${this.$t("current").toLowerCase()})`;
+        return "• " + project.title;
       return project.title;
     },
   },

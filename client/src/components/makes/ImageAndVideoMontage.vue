@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="_montageModules">
     <transition-group
       tag="div"
-      class="_montageModules"
+      class="_listOfModules"
       name="StoryModules"
       appear
       :duration="700"
@@ -66,6 +66,7 @@
     <ModuleCreator
       class="_lastModule"
       :publication_path="make.$path"
+      :start_collapsed="false"
       :types_available="['medias']"
       @addModules="addModules"
     />
@@ -290,17 +291,34 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._montageModules {
+  padding: calc(var(--spacing) * 2);
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+
+  ::v-deep {
+    ._moduleCreator {
+      justify-content: center;
+    }
+  }
+}
+
+._listOfModules {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
 }
 
+._lastModule {
+  padding: calc(var(--spacing) * 1);
+}
+
 ._spacer {
-  min-height: 2rem;
+  min-height: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
 
   transition: all 0.2s linear;
 

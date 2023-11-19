@@ -1,5 +1,6 @@
 <template>
-  <div class="_sectionsList" @click="unselectModule">
+  <div class="_sectionsList">
+    <!-- @click="unselectModule" -->
     <SectionsSummary
       v-show="can_edit || sections.length > 1"
       :publication="publication"
