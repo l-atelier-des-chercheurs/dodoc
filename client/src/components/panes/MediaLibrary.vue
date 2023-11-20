@@ -84,6 +84,10 @@
               <b-icon icon="plus-square" />
               {{ $t("select_all") }}
             </button>
+            <!-- <button type="button" class="u-buttonLink">
+              <sl-icon name="trash3" />
+              {{ $t("à la corbeille") }} (5)
+            </button> -->
           </template>
         </div>
         <div class="_topSection--right">
