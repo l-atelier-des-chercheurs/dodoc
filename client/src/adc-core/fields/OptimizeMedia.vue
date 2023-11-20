@@ -82,6 +82,9 @@ export default {
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
         }),
+        additional_meta: {
+          $origin: "collect",
+        },
       };
       const current_task_id = await this.$api.optimizeFile({
         path: this.media.$path,
