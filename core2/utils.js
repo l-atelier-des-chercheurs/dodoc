@@ -592,8 +592,9 @@ module.exports = (function () {
       );
     },
     fileExtensionIs(media_path, ext) {
+      const exts = typeof ext === "string" ? [ext] : ext;
       const _ext = path.extname(media_path);
-      return _ext.toLowerCase() === ext;
+      return exts.includes(_ext.toLowerCase());
     },
   };
 

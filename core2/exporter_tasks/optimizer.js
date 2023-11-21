@@ -19,7 +19,7 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
-    async convertHEICToJpeg({ source, destination }) {
+    async convertHEIC({ source, destination }) {
       const buffer = await promisify(fs.readFile)(source);
       const { width, height, data } = await decode({ buffer });
       await sharp(new Uint8Array(data), {
@@ -40,7 +40,31 @@ module.exports = (function () {
           throw err;
         });
     },
-    async convertAMRToAAC({ source, destination, ffmpeg_cmd }) {
+    async convertAudio({ source, destination, ffmpeg_cmd }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+        ffmpeg_cmd
+          .input(source)
+          .withAudioCodec("aac")
+          .withAudioBitrate("192k")
+          .on("start", (commandLine) => {
+            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+          })
+          .on("progress", (progress) => {})
+          .on("end", async () => {
+            return resolve();
+          })
+          .on("error", async (err, stdout, stderr) => {
+            dev.error("An error happened: " + err.message);
+            dev.error("ffmpeg standard output:\n" + stdout);
+            dev.error("ffmpeg standard error:\n" + stderr);
+            return reject(err);
+          })
+          .save(destination);
+      });
+    },
+    async convertWMA({ source, destination, ffmpeg_cmd }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 

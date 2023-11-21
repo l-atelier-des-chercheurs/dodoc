@@ -673,7 +673,9 @@ class Exporter {
       filetype = "image";
       fileext = "jpeg";
     }
-    if (utils.fileExtensionIs(this.instructions.base_media_path, ".amr")) {
+    if (
+      utils.fileExtensionIs(this.instructions.base_media_path, [".amr", ".wma"])
+    ) {
       filetype = "audio";
       fileext = "aac";
     }
@@ -688,14 +690,17 @@ class Exporter {
 
     try {
       if (utils.fileExtensionIs(this.instructions.base_media_path, ".heic")) {
-        await optimizer.convertHEICToJpeg({
+        await optimizer.convertHEIC({
           source: base_media_path,
           destination: full_path_to_new_file,
         });
       } else if (
-        utils.fileExtensionIs(this.instructions.base_media_path, ".amr")
+        utils.fileExtensionIs(this.instructions.base_media_path, [
+          ".amr",
+          ".wma",
+        ])
       ) {
-        await optimizer.convertAMRToAAC({
+        await optimizer.convertAudio({
           source: base_media_path,
           destination: full_path_to_new_file,
           ffmpeg_cmd: this.ffmpeg_cmd,
