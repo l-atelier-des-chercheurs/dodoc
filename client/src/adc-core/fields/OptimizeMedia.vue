@@ -8,7 +8,7 @@
     <BaseModal2
       v-if="show_modal"
       :title="$t('optimize')"
-      :size="'large'"
+      :size="modal_width"
       @close="show_modal = false"
     >
       <LoaderSpinner v-if="is_optimizing" />
@@ -135,7 +135,12 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    modal_width() {
+      if (this.optimized_file) return "large";
+      return undefined;
+    },
+  },
   methods: {
     async optimizeMedia() {
       this.is_optimizing = true;
