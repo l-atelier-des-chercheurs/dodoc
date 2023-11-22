@@ -86,6 +86,7 @@ export default function () {
         title: "Titre",
         subtitle: "Sous-titre",
         name: "Nom",
+        filename: "Nom du fichier",
 
         open_in_finder: "Ouvrir dans l’explorateur",
 

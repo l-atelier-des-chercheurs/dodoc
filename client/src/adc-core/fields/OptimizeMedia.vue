@@ -34,24 +34,36 @@
             :is_draggable="false"
           />
         </div>
-        <div class="">
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('filename')" />
+          <div class="_comp">
+            <span>
+              {{ media.$media_filename }}
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              {{ optimized_file.$media_filename }}
+            </strong>
+          </div>
+        </div>
+        <div class="u-spacingBottom">
           <DLabel :str="$t('size')" />
-          <div>
+          <div class="_comp">
             <span>
               <template v-if="media.$infos && media.$infos.size">
                 {{ formatBytes(media.$infos.size) }}
               </template>
               <template v-else> ? </template>
             </span>
-            <b-icon icon="arrow-right" />
-            <span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
               <template
                 v-if="optimized_file.$infos && optimized_file.$infos.size"
               >
                 {{ formatBytes(optimized_file.$infos.size) }}
               </template>
               <template v-else> ? </template>
-            </span>
+            </strong>
           </div>
         </div>
         <hr />
@@ -206,7 +218,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 2);
 }
 
 ._mediaPreview {
@@ -225,5 +237,11 @@ export default {
       border-radius: 2px;
     }
   }
+}
+._comp {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 1);
 }
 </style>
