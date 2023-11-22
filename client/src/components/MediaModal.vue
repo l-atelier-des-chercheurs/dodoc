@@ -438,10 +438,11 @@ export default {
 
 ._optimizeNotice {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
   text-align: center;
   padding: calc(var(--spacing) * 1);
+  margin-bottom: calc(var(--spacing) * 2);
 }
 </style>
