@@ -31,7 +31,11 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    fav() {
+      this.local_fav = this.fav === true;
+    },
+  },
   computed: {},
   methods: {
     toggleFav() {

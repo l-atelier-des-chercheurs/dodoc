@@ -443,5 +443,6 @@ export default {
   width: 100%;
   text-align: center;
   padding: calc(var(--spacing) * 1);
+  margin-top: calc(var(--spacing) * 2);
 }
 </style>

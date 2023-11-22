@@ -350,8 +350,7 @@
       <div
         class="_captionField"
         v-if="
-          page_template === 'story_with_sections' &&
-          (publimodule.caption || edit_mode)
+          (publimodule.caption || edit_mode) && page_template !== 'page_by_page'
         "
       >
         <TitleField

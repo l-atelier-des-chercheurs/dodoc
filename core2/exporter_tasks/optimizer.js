@@ -19,7 +19,7 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
-    async convertHEICToJpeg({ source, destination }) {
+    async convertHEIC({ source, destination }) {
       const buffer = await promisify(fs.readFile)(source);
       const { width, height, data } = await decode({ buffer });
       await sharp(new Uint8Array(data), {
@@ -40,7 +40,7 @@ module.exports = (function () {
           throw err;
         });
     },
-    async convertAMRToAAC({ source, destination, ffmpeg_cmd }) {
+    async convertAudio({ source, destination, ffmpeg_cmd }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
