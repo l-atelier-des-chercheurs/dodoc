@@ -674,7 +674,12 @@ class Exporter {
       fileext = "jpeg";
     }
     if (
-      utils.fileExtensionIs(this.instructions.base_media_path, [".amr", ".wma"])
+      utils.fileExtensionIs(this.instructions.base_media_path, [
+        ".amr",
+        ".wma",
+        ".aif",
+        ".flac",
+      ])
     ) {
       filetype = "audio";
       fileext = "aac";
@@ -698,6 +703,8 @@ class Exporter {
         utils.fileExtensionIs(this.instructions.base_media_path, [
           ".amr",
           ".wma",
+          ".aif",
+          ".flac",
         ])
       ) {
         await optimizer.convertAudio({
