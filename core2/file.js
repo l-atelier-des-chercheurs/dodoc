@@ -60,7 +60,10 @@ module.exports = (function () {
           filename: new_filename,
         });
 
-        meta_filename = new_filename + ".meta.txt";
+        meta_filename = await _preventFileOverride({
+          path_to_folder,
+          original_filename: new_filename + ".meta.txt",
+        });
 
         dev.log(`New file uploaded to`, { path_to_folder });
         dev.logverbose({
@@ -415,24 +418,23 @@ module.exports = (function () {
     let { name, ext } = path.parse(originalFilename);
     const filename_without_ext = utils.slug(name);
 
-    const match = instructions_for_formats.find((i) =>
-      i.extensions.includes(ext.toLowerCase())
-    );
-
-    if (global.settings.optimizeFilesOnUpload === true && match) {
-      try {
-        const { new_path, new_filename } = await _convertUploadedFile({
-          path_to_temp_file,
-          path_to_folder,
-          filename_without_ext,
-          match,
-        });
-        await fs.remove(path_to_temp_file);
-        return { new_path, new_filename };
-      } catch (err) {
-        // couldnt convert, lets fall back to just copying source file
-      }
-    }
+    // const match = instructions_for_formats.find((i) =>
+    //   i.extensions.includes(ext.toLowerCase())
+    // );
+    // if (global.settings.optimizeFilesOnUpload === true && match) {
+    //   try {
+    //     const { new_path, new_filename } = await _convertUploadedFile({
+    //       path_to_temp_file,
+    //       path_to_folder,
+    //       filename_without_ext,
+    //       match,
+    //     });
+    //     await fs.remove(path_to_temp_file);
+    //     return { new_path, new_filename };
+    //   } catch (err) {
+    //     // couldnt convert, lets fall back to just copying source file
+    //   }
+    // }
 
     const new_filename = await _preventFileOverride({
       path_to_folder,
@@ -484,28 +486,20 @@ module.exports = (function () {
     const getFilenameExt = (filename) =>
       filename.substring(filename.indexOf("."), filename.length);
 
-    let all_files_and_folders_names_without_ext = (
+    let all_files_and_folders_names = (
       await fs.readdir(full_path_to_folder, { withFileTypes: true })
-    ).map(({ name }) => getFilenameWithoutExt(name));
-
-    dev.logverbose({ all_files_and_folders_names_without_ext });
-
-    if (all_files_and_folders_names_without_ext.length === 0)
-      return original_filename;
+    ).map(({ name }) => name);
+    if (all_files_and_folders_names.length === 0) return original_filename;
 
     let index = 0;
-    let original_filename_without_ext =
-      getFilenameWithoutExt(original_filename);
-    let new_filename_without_ext = original_filename_without_ext;
-    let ext = getFilenameExt(original_filename);
+    let new_filename = original_filename;
 
-    while (
-      all_files_and_folders_names_without_ext.includes(new_filename_without_ext)
-    ) {
+    while (all_files_and_folders_names.includes(new_filename)) {
       index++;
-      new_filename_without_ext = `${original_filename_without_ext}-${index}`;
+      const { name, ext } = path.parse(original_filename);
+      new_filename = `${name}-${index}${ext}`;
     }
-    return new_filename_without_ext + ext;
+    return new_filename;
   }
 
   async function _initMeta({ additional_meta = {}, filename }) {
