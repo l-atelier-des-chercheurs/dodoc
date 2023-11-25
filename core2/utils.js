@@ -562,9 +562,13 @@ module.exports = (function () {
       format = "mp4",
       bitrate = "6000k",
       resolution,
+      reportFFMPEGProgress,
     }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+        // https://stackoverflow.com/a/70899710
+        let totalTime;
 
         ffmpeg_cmd.input(source);
         const { duration, streams } = await API.getVideoDurationFromMetadata({
@@ -617,7 +621,16 @@ module.exports = (function () {
           .on("start", function (commandLine) {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
-          .on("progress", (progress) => {})
+          .on("codecData", (data) => {
+            totalTime = parseInt(data.duration.replace(/:/g, ""));
+          })
+          .on("progress", (progress) => {
+            if (reportFFMPEGProgress) {
+              const time = parseInt(progress.timemark.replace(/:/g, ""));
+              const percent = (time / totalTime) * 100;
+              reportFFMPEGProgress(percent);
+            }
+          })
           .on("end", () => {
             return resolve();
           })

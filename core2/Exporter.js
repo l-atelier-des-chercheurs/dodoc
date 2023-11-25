@@ -208,12 +208,10 @@ class Exporter {
     });
   }
   _notifyProgress(progress) {
-    if (typeof progress === "number")
-      notifier.emit("taskStatus", "task_" + this.id, {
-        task_id: this.id,
-        progress,
-      });
-    else debugger;
+    notifier.emit("taskStatus", "task_" + this.id, {
+      task_id: this.id,
+      progress,
+    });
   }
   _notifyEnded(message) {
     notifier.emit("taskEnded", "task_" + this.id, {
@@ -711,6 +709,14 @@ class Exporter {
 
     this._notifyProgress(10);
 
+    const that = this;
+    const reportFFMPEGProgress = (ffmpeg_progress) => {
+      const progress_percent = Math.round(
+        utils.remap(ffmpeg_progress, 0, 100, 15, 90)
+      );
+      that._notifyProgress(progress_percent);
+    };
+
     try {
       if (utils.fileExtensionIs(this.instructions.base_media_path, [".heic"])) {
         await optimizer.convertHEIC({
@@ -740,6 +746,7 @@ class Exporter {
           source: base_media_path,
           destination: full_path_to_new_file,
           ffmpeg_cmd: this.ffmpeg_cmd,
+          reportFFMPEGProgress,
         });
       } else if (
         utils.fileExtensionIs(this.instructions.base_media_path, [
@@ -753,7 +760,7 @@ class Exporter {
           source: base_media_path,
           destination: full_path_to_new_file,
           ffmpeg_cmd: this.ffmpeg_cmd,
-          notifyProgress: this._notifyProgress,
+          reportFFMPEGProgress,
         });
       } else {
         throw new Error(`no_conversion_task_found`);

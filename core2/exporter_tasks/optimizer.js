@@ -54,18 +54,34 @@ module.exports = (function () {
           throw err;
         });
     },
-    async convertAudio({ source, destination, ffmpeg_cmd, notifyProgress }) {
+    async convertAudio({
+      source,
+      destination,
+      ffmpeg_cmd,
+      reportFFMPEGProgress,
+    }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+        // https://stackoverflow.com/a/70899710
+        let totalTime;
 
         ffmpeg_cmd
           .input(source)
           .withAudioCodec("aac")
           .withAudioBitrate("192k")
+
           .on("start", (commandLine) => {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
-          .on("progress", notifyProgress)
+          .on("codecData", (data) => {
+            totalTime = parseInt(data.duration.replace(/:/g, ""));
+          })
+          .on("progress", (progress) => {
+            const time = parseInt(progress.timemark.replace(/:/g, ""));
+            const percent = (time / totalTime) * 100;
+            reportFFMPEGProgress(percent);
+          })
           .on("end", async () => {
             return resolve();
           })
@@ -78,7 +94,12 @@ module.exports = (function () {
           .save(destination);
       });
     },
-    async convertVideo({ source, destination, ffmpeg_cmd }) {
+    async convertVideo({
+      source,
+      destination,
+      ffmpeg_cmd,
+      reportFFMPEGProgress,
+    }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
@@ -86,6 +107,7 @@ module.exports = (function () {
           ffmpeg_cmd,
           source,
           destination,
+          reportFFMPEGProgress,
         });
 
         return resolve();
