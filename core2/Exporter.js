@@ -591,9 +591,9 @@ class Exporter {
     )
       return reject(new Error(`no-montage-in-instructions`));
 
+    const bitrate = "6000k";
     const output_width = this.instructions.output_width;
     const output_height = this.instructions.output_height;
-    const bitrate = "6000k";
     const resolution = { width: output_width, height: output_height };
 
     this._notifyProgress(10);
@@ -608,6 +608,27 @@ class Exporter {
         const transition_out = media.transition_out;
 
         let video_path, duration;
+
+        const that = this;
+        const total_number_of_items_to_process =
+          this.instructions.montage.length;
+        // 50
+        const intval = 100 / total_number_of_items_to_process;
+        const reportFFMPEGProgress = (ffmpeg_progress) => {
+          let progress_percent = Math.round(
+            utils.remap(
+              ffmpeg_progress,
+              0,
+              100,
+              index * intval,
+              index * intval + intval
+            )
+          );
+          progress_percent = Math.round(
+            utils.remap(progress_percent, 0, 100, 15, 75)
+          );
+          that._notifyProgress(progress_percent);
+        };
 
         if (media_type === "image") {
           ({ video_path, duration } = await tasks.prepareImageForMontageAndWeb({
@@ -624,6 +645,7 @@ class Exporter {
             resolution,
             bitrate,
             ffmpeg_cmd: this.ffmpeg_cmd,
+            reportFFMPEGProgress,
           }));
         } else {
           continue;
@@ -635,11 +657,6 @@ class Exporter {
           transition_in,
           transition_out,
         });
-
-        const progress_percent = Math.round(
-          utils.remap(index, 0, this.instructions.montage.length, 15, 70)
-        );
-        this._notifyProgress(progress_percent);
       }
 
       this._notifyProgress(75);

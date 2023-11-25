@@ -79,6 +79,7 @@ module.exports = (function () {
       resolution,
       bitrate,
       ffmpeg_cmd,
+      reportFFMPEGProgress,
     }) => {
       const temp_video_volume = 100;
 
@@ -104,8 +105,10 @@ module.exports = (function () {
           ffmpeg_cmd,
           source: media_full_path,
           destination: temp_video_path,
+          format: "mpegts",
           bitrate,
           resolution,
+          reportFFMPEGProgress,
         });
       }
 
