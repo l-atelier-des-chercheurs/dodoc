@@ -659,7 +659,8 @@ module.exports = (function () {
       const audio_stream = streams.find((s) => s.codec_type === "audio");
       const video_stream = streams.find((s) => s.codec_type === "video");
       if (audio_stream && video_stream) {
-        if (audio_stream.duration > video_stream.duration) {
+        const diff = audio_stream.duration - video_stream.duration;
+        if (diff > 0.2) {
           // audio is longer than video, we need to pad video
           const diff = audio_stream.duration - video_stream.duration;
           return `-vf tpad=stop_mode=clone:stop_duration=${diff}`;
