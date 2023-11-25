@@ -8,11 +8,12 @@
     <div class="_preview">
       <div class="_topRow">
         <div class="u-label">
-          {{ $t(first_media.$type) }}
-          <template v-if="first_media_duration"
-            >/ {{ first_media_duration }}</template
-          >
-
+          <template v-if="first_media">
+            {{ $t(first_media.$type) }}
+            <template v-if="first_media_duration"
+              >/ {{ first_media_duration }}</template
+            >
+          </template>
           <button type="button" class="u-buttonLink" @click="removeModule">
             <sl-icon name="trash3" />
           </button>
@@ -32,41 +33,43 @@
           </span>
         </div>
       </div>
-      <MediaContent
-        v-if="first_media.$type !== 'text'"
-        :file="first_media"
-        :resolution="1600"
-        :context="'full'"
-        :show_fs_button="true"
-        :is_draggable="false"
-      />
-
-      <CollaborativeEditor2
-        v-else
-        ref="textBloc"
-        :path="first_media.$path"
-        :content="first_media.$content"
-        :line_selected="false"
-        :can_edit="true"
-        @lineClicked="$emit('lineClicked', $event)"
-        @contentIsEdited="$emit('contentIsEdited', $event)"
-        @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
-      />
-
-      <div class="" v-if="module_position === 'last'">
-        <span class="u-switch u-switch-xs">
-          <input
-            class="switch"
-            :id="'transition_out_' + makemodule.$path"
-            type="checkbox"
-            :checked="makemodule.transition_out === 'fade'"
-            @change="toggleTransition('transition_out')"
-          />
-          <label class="u-label" :for="'transition_out_' + makemodule.$path">{{
-            $t("transition_fade")
-          }}</label>
-        </span>
-      </div>
+      <template v-if="first_media">
+        <MediaContent
+          v-if="first_media.$type !== 'text'"
+          :file="first_media"
+          :resolution="1600"
+          :context="'full'"
+          :show_fs_button="true"
+          :is_draggable="false"
+        />
+        <CollaborativeEditor2
+          v-else
+          ref="textBloc"
+          :path="first_media.$path"
+          :content="first_media.$content"
+          :line_selected="false"
+          :can_edit="true"
+          @lineClicked="$emit('lineClicked', $event)"
+          @contentIsEdited="$emit('contentIsEdited', $event)"
+          @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
+        />
+        <div class="" v-if="module_position === 'last'">
+          <span class="u-switch u-switch-xs">
+            <input
+              class="switch"
+              :id="'transition_out_' + makemodule.$path"
+              type="checkbox"
+              :checked="makemodule.transition_out === 'fade'"
+              @change="toggleTransition('transition_out')"
+            />
+            <label
+              class="u-label"
+              :for="'transition_out_' + makemodule.$path"
+              >{{ $t("transition_fade") }}</label
+            >
+          </span>
+        </div>
+      </template>
     </div>
   </div>
 </template>
