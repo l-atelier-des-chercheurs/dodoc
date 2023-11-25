@@ -306,7 +306,10 @@ module.exports = (function () {
         filename: new_filename,
       });
 
-      const meta_filename = new_filename + ".meta.txt";
+      const meta_filename = await _preventFileOverride({
+        path_to_folder,
+        original_filename: new_filename + ".meta.txt",
+      });
 
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
@@ -534,19 +537,12 @@ module.exports = (function () {
       switch (ext.toLowerCase()) {
         case ".jpeg":
         case ".jpg":
-        case ".webp":
         case ".png":
         case ".gif":
-        case ".tiff":
-        case ".tif":
         case ".svg":
           new_meta.$type = "image";
           break;
         case ".mp4":
-        case ".flv":
-        case ".mov":
-        case ".webm":
-        case ".avi":
           new_meta.$type = "video";
           break;
         case ".stl":
