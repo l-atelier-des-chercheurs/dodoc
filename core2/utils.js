@@ -380,49 +380,7 @@ module.exports = (function () {
     async imageBufferToFile({ image_buffer, full_path_to_thumb }) {
       return await sharp(image_buffer).toFile(full_path_to_thumb);
     },
-    async convertToJpeg({ source, destination }) {
-      await sharp(source)
-        .rotate()
-        .flatten({ background: "white" })
-        .toFormat("jpeg", {
-          quality: global.settings.mediaThumbQuality,
-        })
-        .toFile(destination)
-        .catch((err) => {
-          dev.error(`Failed to sharp create image to destination.`);
-          throw err;
-        });
-    },
-    async convertToPNG({ source, destination }) {
-      await sharp(source)
-        .rotate()
-        .flatten({ background: "white" })
-        .toFormat("png", {})
-        .toFile(destination)
-        .catch((err) => {
-          dev.error(`Failed to sharp create image to destination.`);
-          throw err;
-        });
-    },
-    async convertToMP3({ source, destination }) {
-      return new Promise(async (resolve, reject) => {
-        this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
-          .input(source)
-          .format("mp3")
-          .audioBitrate("320kbps")
-          .on("start", (commandLine) => {
-            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
-          })
-          .on("progress", (progress) => {})
-          .on("end", async () => {
-            return resolve();
-          })
-          .on("error", async (err, stdout, stderr) => {
-            return reject();
-          })
-          .save(destination);
-      });
-    },
+
     async md5FromFile({ full_media_path }) {
       return await md5File(full_media_path);
     },

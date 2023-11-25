@@ -421,24 +421,6 @@ module.exports = (function () {
     let { name, ext } = path.parse(originalFilename);
     const filename_without_ext = utils.slug(name);
 
-    // const match = instructions_for_formats.find((i) =>
-    //   i.extensions.includes(ext.toLowerCase())
-    // );
-    // if (global.settings.optimizeFilesOnUpload === true && match) {
-    //   try {
-    //     const { new_path, new_filename } = await _convertUploadedFile({
-    //       path_to_temp_file,
-    //       path_to_folder,
-    //       filename_without_ext,
-    //       match,
-    //     });
-    //     await fs.remove(path_to_temp_file);
-    //     return { new_path, new_filename };
-    //   } catch (err) {
-    //     // couldnt convert, lets fall back to just copying source file
-    //   }
-    // }
-
     const new_filename = await _preventFileOverride({
       path_to_folder,
       original_filename: filename_without_ext + ext,
@@ -446,36 +428,6 @@ module.exports = (function () {
     const new_path = utils.getPathToUserContent(path_to_folder, new_filename);
 
     await fs.move(path_to_temp_file, new_path, { overwrite: false });
-    return { new_path, new_filename };
-  }
-
-  async function _convertUploadedFile({
-    path_to_temp_file,
-    path_to_folder,
-    filename_without_ext,
-    match,
-  }) {
-    const new_filename = await _preventFileOverride({
-      path_to_folder,
-      original_filename: filename_without_ext + match.dest_ext,
-    });
-    const new_path = utils.getPathToUserContent(path_to_folder, new_filename);
-
-    if (match.instructions === "convert_to_jpeg")
-      await utils.convertToJpeg({
-        source: path_to_temp_file,
-        destination: new_path,
-      });
-    else if (match.instructions === "convert_to_png")
-      await utils.convertToPNG({
-        source: path_to_temp_file,
-        destination: new_path,
-      });
-    else if (match.instructions === "convert_to_mp3")
-      await utils.convertToMP3({
-        source: path_to_temp_file,
-        destination: new_path,
-      });
     return { new_path, new_filename };
   }
 
