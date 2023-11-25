@@ -43,10 +43,6 @@ class Exporter {
 
     let full_path_to_file;
 
-    const suggested_file_name = this.instructions.suggested_file_name
-      ? utils.slug(this.instructions.suggested_file_name)
-      : false;
-
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
     } else if (this.instructions.recipe === "pdf") {
@@ -77,9 +73,13 @@ class Exporter {
 
     const additional_meta = this.instructions.additional_meta || {};
 
+    const suggested_file_name = this.instructions.suggested_file_name
+      ? utils.slug(this.instructions.suggested_file_name)
+      : this.instructions.recipe;
+
     const meta_filename = await file.addFileToFolder({
       full_path_to_file,
-      desired_filename: this.instructions.recipe,
+      desired_filename: suggested_file_name,
       path_to_folder: this.folder_to_export_to,
       additional_meta,
     });
@@ -208,10 +208,12 @@ class Exporter {
     });
   }
   _notifyProgress(progress) {
-    notifier.emit("taskStatus", "task_" + this.id, {
-      task_id: this.id,
-      progress,
-    });
+    if (typeof progress === "number")
+      notifier.emit("taskStatus", "task_" + this.id, {
+        task_id: this.id,
+        progress,
+      });
+    else debugger;
   }
   _notifyEnded(message) {
     notifier.emit("taskEnded", "task_" + this.id, {
@@ -669,11 +671,27 @@ class Exporter {
     this._notifyProgress(5);
 
     let filetype, fileext;
-    if (utils.fileExtensionIs(this.instructions.base_media_path, ".heic")) {
+    if (
+      utils.fileExtensionIs(this.instructions.base_media_path, [
+        ".heic",
+        ".tif",
+        ".tiff",
+        ".webp",
+      ])
+    ) {
       filetype = "image";
       fileext = "jpeg";
-    }
-    if (
+    } else if (
+      utils.fileExtensionIs(this.instructions.base_media_path, [
+        ".flv",
+        ".mov",
+        ".avi",
+        ".webm",
+      ])
+    ) {
+      filetype = "video";
+      fileext = "mp4";
+    } else if (
       utils.fileExtensionIs(this.instructions.base_media_path, [
         ".amr",
         ".wma",
@@ -694,10 +712,34 @@ class Exporter {
     this._notifyProgress(10);
 
     try {
-      if (utils.fileExtensionIs(this.instructions.base_media_path, ".heic")) {
+      if (utils.fileExtensionIs(this.instructions.base_media_path, [".heic"])) {
         await optimizer.convertHEIC({
           source: base_media_path,
           destination: full_path_to_new_file,
+        });
+      } else if (
+        utils.fileExtensionIs(this.instructions.base_media_path, [
+          ".tif",
+          ".tiff",
+          ".webp",
+        ])
+      ) {
+        await optimizer.convertImage({
+          source: base_media_path,
+          destination: full_path_to_new_file,
+        });
+      } else if (
+        utils.fileExtensionIs(this.instructions.base_media_path, [
+          ".flv",
+          ".mov",
+          ".avi",
+          ".webm",
+        ])
+      ) {
+        await optimizer.convertVideo({
+          source: base_media_path,
+          destination: full_path_to_new_file,
+          ffmpeg_cmd: this.ffmpeg_cmd,
         });
       } else if (
         utils.fileExtensionIs(this.instructions.base_media_path, [
@@ -711,6 +753,7 @@ class Exporter {
           source: base_media_path,
           destination: full_path_to_new_file,
           ffmpeg_cmd: this.ffmpeg_cmd,
+          notifyProgress: this._notifyProgress,
         });
       } else {
         throw new Error(`no_conversion_task_found`);

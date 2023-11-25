@@ -596,6 +596,109 @@ module.exports = (function () {
       const _ext = path.extname(media_path);
       return exts.includes(_ext.toLowerCase());
     },
+
+    convertVideoToStandardFormat({
+      ffmpeg_cmd,
+      source,
+      destination,
+      format = "mp4",
+      bitrate = "6000k",
+      resolution,
+    }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+        ffmpeg_cmd.input(source);
+        const { duration, streams } = await API.getVideoDurationFromMetadata({
+          ffmpeg_cmd,
+          video_path: source,
+        });
+
+        if (duration) ffmpeg_cmd.duration(duration);
+
+        // check if has audio track or not
+        if (streams?.some((s) => s.codec_type === "audio"))
+          ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("192k");
+        else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+
+        const filter = API.makeFilterToPadMatchDurationAudioVideo({ streams });
+        if (filter) ffmpeg_cmd.addOptions([filter]);
+
+        if (resolution)
+          ffmpeg_cmd.videoFilter([
+            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
+          ]);
+
+        // if (streams?.some((s) => s.codec_type === "audio"))
+        // if (temp_video_volume) {
+        //   ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
+        // } else {
+        // }
+
+        let flags = [
+          "-crf 22",
+          "-preset medium",
+          "-shortest",
+          "-bsf:v h264_mp4toannexb",
+          "-pix_fmt yuv420p",
+        ];
+        if (format === "mp4") {
+          flags.push("-movflags +faststart");
+          ffmpeg_cmd.toFormat("mp4");
+        } else if (format === "mpegts") {
+          ffmpeg_cmd.toFormat("mpegts");
+        }
+
+        ffmpeg_cmd
+          .native()
+          .outputFPS(30)
+          .withVideoCodec("libx264")
+          .withVideoBitrate(bitrate)
+          .addOptions(flags)
+          .videoFilter(["setsar=1/1"])
+          .on("start", function (commandLine) {
+            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+          })
+          .on("progress", (progress) => {})
+          .on("end", () => {
+            return resolve();
+          })
+          .on("error", function (err, stdout, stderr) {
+            dev.error("An error happened: " + err.message);
+            dev.error("ffmpeg standard output:\n" + stdout);
+            dev.error("ffmpeg standard error:\n" + stderr);
+            return reject(err);
+          })
+          .save(destination);
+      });
+    },
+    getVideoDurationFromMetadata({ ffmpeg_cmd, video_path }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
+          if (err) return reject(err);
+
+          const duration = metadata.format?.duration;
+          const streams = metadata.streams;
+          return resolve({ duration, streams });
+        });
+      });
+    },
+
+    makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
+      const audio_stream = streams.find((s) => s.codec_type === "audio");
+      const video_stream = streams.find((s) => s.codec_type === "video");
+      if (audio_stream && video_stream) {
+        if (audio_stream.duration > video_stream.duration) {
+          // audio is longer than video, we need to pad video
+          const diff = audio_stream.duration - video_stream.duration;
+          return `-vf tpad=stop_mode=clone:stop_duration=${diff}`;
+        } else if (video_stream.duration > audio_stream.duration) {
+          // video is longer than audio, we need to pad audio
+          return "-af apad";
+        }
+      }
+      return false;
+    },
   };
 
   return API;

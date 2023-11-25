@@ -218,7 +218,22 @@ export default {
       return false;
     },
     fileShouldBeOptimized({ path }) {
-      const ext = [".heic", ".amr", ".wma", ".aif", ".flac"];
+      const ext = [
+        ".heic",
+        ".tif",
+        ".tiff",
+        ".webp",
+
+        ".amr",
+        ".wma",
+        ".aif",
+        ".flac",
+
+        ".flv",
+        ".mov",
+        ".avi",
+        ".webm",
+      ];
       return ext.some((e) => path.toLowerCase().endsWith(e));
     },
   },
