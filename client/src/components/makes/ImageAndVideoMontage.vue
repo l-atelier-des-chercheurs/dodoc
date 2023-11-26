@@ -101,12 +101,41 @@
         <LoaderSpinner />
       </div>
       <div v-else>
-        <MediaContent
-          class="_preview"
-          :file="created_video"
-          :resolution="1600"
-          :context="'full'"
-        />
+        <div v-if="!created_video">
+          <!-- <select v-model="resolution_preset_picked">
+            <option
+              v-for="res in presets"
+              :key="res"
+              v-text="res"
+              :value="res"
+            />
+          </select> -->
+
+          <SelectField2
+            :value="resolution_preset_picked"
+            :options="presets"
+            :can_edit="true"
+            :hide_validation="true"
+            @change="resolution_preset_picked = $event"
+          />
+
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="renderMontage"
+          >
+            <b-icon icon="check" />
+            {{ $t("create") }}
+          </button>
+        </div>
+        <div v-else>
+          <MediaContent
+            class="_preview"
+            :file="created_video"
+            :resolution="1600"
+            :context="'full'"
+          />
+        </div>
       </div>
     </ExportSaveMakeModal>
   </div>
@@ -132,15 +161,69 @@ export default {
       created_video: false,
       export_href: undefined,
       default_image_duration: 2,
+
+      resolution_preset_picked: "high",
+      presets: [
+        {
+          key: "vhigh",
+          text: this.$t("very_high"),
+          instructions: "1920 × 1080",
+          width: 1920,
+          height: 1080,
+        },
+        {
+          key: "high",
+          text: this.$t("high"),
+          instructions: "1280 × 720",
+          width: 1280,
+          height: 720,
+        },
+        {
+          key: "medium",
+          text: this.$t("medium"),
+          instructions: "640 × 480",
+          width: 640,
+          height: 480,
+        },
+        {
+          key: "low",
+          text: this.$t("low"),
+          instructions: "480 × 360",
+          width: 480,
+          height: 360,
+        },
+        {
+          key: "rough",
+          text: "→" + this.$t("rough"),
+          instructions: "360 × 240",
+          width: 360,
+          height: 240,
+        },
+        {
+          key: "custom",
+          text: "↓" + this.$t("custom"),
+          instructions: "512 × 512",
+        },
+      ],
     };
   },
   i18n: {
     messages: {
       fr: {
         export_montage: "Exporter le montage",
+        very_high: "Très élevée",
+        high: "Élevée",
+        medium: "Moyenne",
+        low: "Basse",
+        rough: "Ébauche",
       },
       en: {
         export_montage: "Export montage",
+        very_high: "Very high",
+        high: "High",
+        medium: "Medium",
+        low: "Low",
+        rough: "Draft",
       },
     },
   },
@@ -158,7 +241,13 @@ export default {
   beforeDestroy() {},
   watch: {
     show_save_export_modal() {
-      if (this.show_save_export_modal) this.renderMontage();
+      if (!this.show_save_export_modal) {
+        if (this.created_video)
+          this.$api.deleteItem({
+            path: this.created_video.$path,
+          });
+        this.created_video = false;
+      }
     },
   },
   computed: {
@@ -256,12 +345,16 @@ export default {
       this.created_video = false;
       this.export_href = undefined;
 
+      const { width: output_width, height: output_height } = this.presets.find(
+        (p) => p.key === this.resolution_preset_picked
+      );
+
       let instructions = {
         recipe: this.make.type,
         suggested_file_name: this.make.type,
-        output_width: 1280,
-        output_height: 720,
         montage: this.montage,
+        output_width,
+        output_height,
         additional_meta: {
           $origin: "make",
         },
