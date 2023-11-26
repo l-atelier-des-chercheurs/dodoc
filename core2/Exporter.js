@@ -636,6 +636,7 @@ class Exporter {
             full_path_to_folder_in_cache,
             resolution,
             bitrate,
+            image_duration: media.image_duration,
             ffmpeg_cmd: this.ffmpeg_cmd,
           }));
         } else if (media_type === "video") {

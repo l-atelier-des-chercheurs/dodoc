@@ -22,12 +22,11 @@ module.exports = (function () {
       full_path_to_folder_in_cache,
       resolution,
       bitrate,
+      image_duration = 2,
       ffmpeg_cmd,
     }) => {
       // used to process videos / images before merging them
       dev.logfunction();
-
-      const temp_video_duration = 2;
 
       const image_filename = utils.createUniqueName("image");
       const temp_image_path = path.join(
@@ -38,7 +37,7 @@ module.exports = (function () {
       let temp_video_name =
         image_filename +
         "_dur=" +
-        temp_video_duration +
+        image_duration +
         "_res=" +
         resolution.width +
         "x" +
@@ -61,7 +60,7 @@ module.exports = (function () {
         await _makeVideoFromImage({
           ffmpeg_cmd,
           temp_image_path,
-          temp_video_duration,
+          image_duration,
           temp_video_path,
           bitrate,
           resolution,
@@ -70,7 +69,7 @@ module.exports = (function () {
 
       return {
         video_path: temp_video_path,
-        duration: temp_video_duration,
+        duration: image_duration,
       };
     },
     prepareVideoForMontageAndWeb: async ({
@@ -429,7 +428,7 @@ module.exports = (function () {
   function _makeVideoFromImage({
     ffmpeg_cmd,
     temp_image_path,
-    temp_video_duration,
+    image_duration,
     temp_video_path,
     bitrate,
     resolution,
@@ -437,7 +436,7 @@ module.exports = (function () {
     return new Promise(async (resolve, reject) => {
       ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(temp_image_path)
-        .duration(temp_video_duration)
+        .duration(image_duration)
         .loop()
         .input("anullsrc=channel_layout=stereo:sample_rate=44100")
         .inputFormat("lavfi")

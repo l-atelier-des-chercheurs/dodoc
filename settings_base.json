@@ -262,6 +262,9 @@
                     },
                     "transition_out": {
                       "type": "string"
+                    },
+                    "image_duration": {
+                      "type": "number"
                     }
                   }
                 }

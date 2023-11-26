@@ -53,7 +53,16 @@
           @contentIsEdited="$emit('contentIsEdited', $event)"
           @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
         />
-        <div class="" v-if="module_position === 'last'">
+        <div class="_imageDurationPicker" v-if="first_media.$type === 'image'">
+          <NumberInput
+            :value="makemodule.image_duration || default_image_duration"
+            :suffix="$t('secondes')"
+            :size="'medium'"
+            @save="updateMakemodule({ image_duration: $event })"
+          />
+        </div>
+
+        <div class="_transitionPicker" v-if="module_position === 'last'">
           <span class="u-switch u-switch-xs">
             <input
               class="switch"
@@ -79,6 +88,7 @@ export default {
     makemodule: Object,
     index: Number,
     module_position: String,
+    default_image_duration: Number,
   },
   components: {},
   data() {
@@ -186,16 +196,37 @@ export default {
 }
 
 .u-label {
-  color: white;
+  // color: white;
 }
 
 ._lastModule {
   margin-top: calc(var(--spacing) * 2);
 }
 
+._preview {
+  flex: 1 1 auto;
+  background: white;
+  padding: calc(var(--spacing) / 2);
+  border-radius: 4px;
+  color: var(--c-noir);
+
+  ::v-deep ._mediaContent--image {
+    max-width: none;
+    width: 100%;
+  }
+}
+
 ._topRow {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+}
+._imageDurationPicker {
+  max-width: 18ch;
+  margin: calc(var(--spacing) / 2) auto;
+}
+._transitionPicker {
+  text-align: center;
+  margin: calc(var(--spacing) / 2) auto;
 }
 </style>

@@ -30,6 +30,7 @@
               ? 'last'
               : 'inbetween'
           "
+          :default_image_duration="default_image_duration"
           @remove="removeModule(_module.$path)"
         />
         <!-- <PublicationModule
@@ -130,6 +131,7 @@ export default {
       is_exporting: false,
       created_video: false,
       export_href: undefined,
+      default_image_duration: 2,
     };
   },
   i18n: {
@@ -165,6 +167,29 @@ export default {
     },
     export_is_available() {
       return this.section_modules_list.length > 1;
+    },
+    montage() {
+      return this.section_modules_list.reduce((acc, _module) => {
+        const media = this.firstMedia(_module);
+        if (media) {
+          let instr = {
+            path: this.makeMediaFilePath({
+              $path: media.$path,
+              $media_filename: media.$media_filename,
+            }),
+            type: media.$type,
+            transition_in: _module.transition_in,
+            transition_out: _module.transition_out,
+          };
+
+          if (media.$type === "image")
+            instr.image_duration =
+              _module.image_duration || this.default_image_duration;
+
+          acc.push(instr);
+        }
+        return acc;
+      }, []);
     },
 
     sections() {
@@ -231,28 +256,12 @@ export default {
       this.created_video = false;
       this.export_href = undefined;
 
-      const montage = this.section_modules_list.reduce((acc, _module) => {
-        const media = this.firstMedia(_module);
-        if (media) {
-          acc.push({
-            path: this.makeMediaFilePath({
-              $path: media.$path,
-              $media_filename: media.$media_filename,
-            }),
-            type: media.$type,
-            transition_in: _module.transition_in,
-            transition_out: _module.transition_out,
-          });
-        }
-        return acc;
-      }, []);
-
       let instructions = {
         recipe: this.make.type,
         suggested_file_name: this.make.type,
         output_width: 1280,
         output_height: 720,
-        montage,
+        montage: this.montage,
         additional_meta: {
           $origin: "make",
         },
@@ -347,5 +356,8 @@ export default {
 ._bottomRow {
   margin-top: calc(var(--spacing) * 2);
   text-align: center;
+}
+
+._preview {
 }
 </style>
