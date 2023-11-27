@@ -75,6 +75,7 @@
         :remove_text="is_stack ? $t('remove_stack') : $t('remove')"
         @remove="$emit('removeMain')"
       />
+      <DebugBtn :content="file" />
     </div>
     <transition name="partialSlideupFade" mode="out-in" appear>
       <div

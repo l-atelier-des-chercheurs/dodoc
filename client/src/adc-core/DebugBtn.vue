@@ -1,6 +1,11 @@
 <template>
   <div v-if="is_instance_admin">
-    <button type="button" class="u-button" @click="debug_mode = !debug_mode">
+    <button
+      type="button"
+      class="u-buttonLink"
+      @click="debug_mode = !debug_mode"
+    >
+      <b-icon icon="bug" />
       debug
     </button>
     <div v-if="debug_mode" class="">
