@@ -84,7 +84,7 @@
           </div>
         </div>
         <EditBtn
-          v-if="!edit_mode"
+          v-if="!edit_mode && context === 'stack'"
           :label_position="'left'"
           @click="edit_mode = true"
         />
