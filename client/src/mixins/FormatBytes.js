@@ -2,7 +2,7 @@ export default {
   computed: {},
   methods: {
     formatBytes(a, b) {
-      if (0 == a) return `0 ${this.$t("bytes")}`;
+      if (a === 0) return `0 ${this.$t("bytes")}`;
 
       var e = [
         this.$t("bytes"),

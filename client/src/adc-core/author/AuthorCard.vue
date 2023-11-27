@@ -14,7 +14,7 @@
       @click.native="context !== 'full' ? $emit('navToPage') : ''"
     >
       <div class="_topbar">
-        <div class="u-spacingBottom _cover">
+        <div class="_cover">
           <CoverField
             :context="context"
             :cover="author.$cover"
@@ -143,21 +143,32 @@ export default {
     border: 1px solid var(--c-bleumarine);
     background-color: var(--c-bleumarine_clair);
   }
-}
 
-._topbar {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2);
+  ._topbar {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 2);
 
-  > * {
-    flex: 1 1 0;
+    > * {
+      flex: 1 1 0;
 
-    &._cover {
-      flex: 0 0 100px;
-      aspect-ratio: 1/1;
+      &._cover {
+        flex: 0 0 100px;
+        aspect-ratio: 1/1;
+      }
+    }
+  }
+
+  &[data-context="full"] {
+    ._topbar {
+      flex-flow: column nowrap;
+      align-items: stretch;
+
+      ._cover {
+        flex: 0 0 auto;
+      }
     }
   }
 }

@@ -208,5 +208,33 @@ export default {
         };
       });
     },
+    displayDuration({ media }) {
+      if (["video", "audio"].includes(media.$type))
+        if (media.$infos.duration)
+          return this.formatDurationToHoursMinutesSeconds(
+            media.$infos.duration
+          );
+        else return "•:••";
+      return false;
+    },
+    fileShouldBeOptimized({ path }) {
+      const ext = [
+        ".heic",
+        ".tif",
+        ".tiff",
+        ".webp",
+
+        ".amr",
+        ".wma",
+        ".aif",
+        ".flac",
+
+        ".flv",
+        ".mov",
+        ".avi",
+        ".webm",
+      ];
+      return ext.some((e) => path.toLowerCase().endsWith(e));
+    },
   },
 };

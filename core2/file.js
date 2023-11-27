@@ -60,7 +60,10 @@ module.exports = (function () {
           filename: new_filename,
         });
 
-        meta_filename = new_filename + ".meta.txt";
+        meta_filename = await _preventFileOverride({
+          path_to_folder,
+          original_filename: new_filename + ".meta.txt",
+        });
 
         dev.log(`New file uploaded to`, { path_to_folder });
         dev.logverbose({
@@ -184,7 +187,7 @@ module.exports = (function () {
       let meta = await utils.readMetaFile(path_to_meta);
       const previous_meta = { ...meta };
 
-      let { $content, ...new_meta } = data;
+      let { $content, $media_filename, ...new_meta } = data;
 
       // update meta file
       if (new_meta) {
@@ -193,6 +196,30 @@ module.exports = (function () {
           new_meta,
         });
         Object.assign(meta, clean_meta);
+
+        // if file has $media_filename
+        // if (new.hasOwnProperty("$media_filename") && meta.$media_filename) {
+        //   const og_path = utils.getPathToUserContent(
+        //     path_to_folder,
+        //     previous_meta.$media_filename
+        //   );
+        //   await fs.remove(og_path);
+        // }
+      }
+
+      // if updating source media,
+      if ($media_filename) {
+        meta.$media_filename = $media_filename;
+        const _thumbs = await thumbs
+          .makeThumbForMedia({
+            media_type: meta.$type,
+            media_filename: meta.$media_filename,
+            path_to_folder,
+          })
+          .catch((err) => {
+            dev.error(err);
+          });
+        if (_thumbs) meta.$thumbs = _thumbs;
       }
 
       if (typeof $content !== "undefined" && meta.$type === "text") {
@@ -258,6 +285,9 @@ module.exports = (function () {
     }) => {
       dev.logfunction({ full_path_to_file, path_to_folder });
 
+      const ext = path.extname(full_path_to_file);
+      desired_filename = desired_filename + ext;
+
       let new_filename = await _preventFileOverride({
         path_to_folder,
         original_filename: desired_filename,
@@ -276,7 +306,10 @@ module.exports = (function () {
         filename: new_filename,
       });
 
-      const meta_filename = new_filename + ".meta.txt";
+      const meta_filename = await _preventFileOverride({
+        path_to_folder,
+        original_filename: new_filename + ".meta.txt",
+      });
 
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
@@ -388,25 +421,6 @@ module.exports = (function () {
     let { name, ext } = path.parse(originalFilename);
     const filename_without_ext = utils.slug(name);
 
-    const match = instructions_for_formats.find((i) =>
-      i.extensions.includes(ext.toLowerCase())
-    );
-
-    if (global.settings.optimizeFilesOnUpload === true && match) {
-      try {
-        const { new_path, new_filename } = await _convertUploadedFile({
-          path_to_temp_file,
-          path_to_folder,
-          filename_without_ext,
-          match,
-        });
-        await fs.remove(path_to_temp_file);
-        return { new_path, new_filename };
-      } catch (err) {
-        // couldnt convert, lets fall back to just copying source file
-      }
-    }
-
     const new_filename = await _preventFileOverride({
       path_to_folder,
       original_filename: filename_without_ext + ext,
@@ -414,36 +428,6 @@ module.exports = (function () {
     const new_path = utils.getPathToUserContent(path_to_folder, new_filename);
 
     await fs.move(path_to_temp_file, new_path, { overwrite: false });
-    return { new_path, new_filename };
-  }
-
-  async function _convertUploadedFile({
-    path_to_temp_file,
-    path_to_folder,
-    filename_without_ext,
-    match,
-  }) {
-    const new_filename = await _preventFileOverride({
-      path_to_folder,
-      original_filename: filename_without_ext + match.dest_ext,
-    });
-    const new_path = utils.getPathToUserContent(path_to_folder, new_filename);
-
-    if (match.instructions === "convert_to_jpeg")
-      await utils.convertToJpeg({
-        source: path_to_temp_file,
-        destination: new_path,
-      });
-    else if (match.instructions === "convert_to_png")
-      await utils.convertToPNG({
-        source: path_to_temp_file,
-        destination: new_path,
-      });
-    else if (match.instructions === "convert_to_mp3")
-      await utils.convertToMP3({
-        source: path_to_temp_file,
-        destination: new_path,
-      });
     return { new_path, new_filename };
   }
 
@@ -457,28 +441,20 @@ module.exports = (function () {
     const getFilenameExt = (filename) =>
       filename.substring(filename.indexOf("."), filename.length);
 
-    let all_files_and_folders_names_without_ext = (
+    let all_files_and_folders_names = (
       await fs.readdir(full_path_to_folder, { withFileTypes: true })
-    ).map(({ name }) => getFilenameWithoutExt(name));
-
-    dev.logverbose({ all_files_and_folders_names_without_ext });
-
-    if (all_files_and_folders_names_without_ext.length === 0)
-      return original_filename;
+    ).map(({ name }) => name);
+    if (all_files_and_folders_names.length === 0) return original_filename;
 
     let index = 0;
-    let original_filename_without_ext =
-      getFilenameWithoutExt(original_filename);
-    let new_filename_without_ext = original_filename_without_ext;
-    let ext = getFilenameExt(original_filename);
+    let new_filename = original_filename;
 
-    while (
-      all_files_and_folders_names_without_ext.includes(new_filename_without_ext)
-    ) {
+    while (all_files_and_folders_names.includes(new_filename)) {
       index++;
-      new_filename_without_ext = `${original_filename_without_ext}-${index}`;
+      const { name, ext } = path.parse(original_filename);
+      new_filename = `${name}-${index}${ext}`;
     }
-    return new_filename_without_ext + ext;
+    return new_filename;
   }
 
   async function _initMeta({ additional_meta = {}, filename }) {
@@ -513,19 +489,12 @@ module.exports = (function () {
       switch (ext.toLowerCase()) {
         case ".jpeg":
         case ".jpg":
-        case ".webp":
         case ".png":
         case ".gif":
-        case ".tiff":
-        case ".tif":
         case ".svg":
           new_meta.$type = "image";
           break;
         case ".mp4":
-        case ".flv":
-        case ".mov":
-        case ".webm":
-        case ".avi":
           new_meta.$type = "video";
           break;
         case ".stl":

@@ -141,7 +141,7 @@ module.exports = (function () {
     importFolder: async ({ path_to_type, req }) => {
       dev.logfunction({ path_to_type });
 
-      let full_path_to_folder_in_cache = await utils.createFolderInCache(
+      let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
         "import"
       );
 
@@ -160,7 +160,22 @@ module.exports = (function () {
         });
 
       const directory = await unzipper.Open.file(path_to_temp_file);
-      const meta_file = directory.files.find((f) => f.path === "meta.txt");
+
+      // two cases : either all medias are at root ('meta.txt' and so on)
+      // or they are in a subfolder
+      let subfolder_name = false;
+      let meta_file = directory.files.find((f) => f.path === "meta.txt");
+
+      if (!meta_file) {
+        meta_file = directory.files.find((f) => {
+          const path_splits = f.path.split("/");
+          if (path_splits.length === 2 && path_splits[1] === "meta.txt") {
+            subfolder_name = path_splits[0];
+            return true;
+          }
+          return false;
+        });
+      }
 
       if (!meta_file) {
         await fs.remove(full_path_to_folder_in_cache);
@@ -183,7 +198,8 @@ module.exports = (function () {
       }).catch((err) => {
         // TODO handle err here ?
       });
-      valid_meta.requested_slug = originalFilename;
+      valid_meta.requested_slug =
+        subfolder_name || path.parse(originalFilename).name;
 
       const new_folder_slug = await API.createFolder({
         path_to_type,
@@ -198,24 +214,29 @@ module.exports = (function () {
 
       // await directory.extract({ path: full_path_to_folder, concurrency: 5 });
 
-      const files_to_copy = directory.files.filter(
-        (f) => f.path !== "meta.txt"
-      );
+      const files_to_copy = directory.files.filter((f) => {
+        const path_splits = f.path.split("/");
+        return path_splits.length >= 2 && path_splits[1] !== "meta.txt";
+      });
 
       function extractFile(file) {
         return new Promise((resolve, reject) => {
-          const path_to_file = path.join(full_path_to_folder, file.path);
+          const prepare_filepath = subfolder_name
+            ? file.path.substring(subfolder_name.length + 1)
+            : file.path;
+
+          const path_to_file = path.join(full_path_to_folder, prepare_filepath);
           if (file.type === "Directory") fs.ensureDir(path_to_file, resolve);
           else if (file.type === "File")
             file
               .stream()
               .pipe(fs.createWriteStream(path_to_file))
               .on("error", (err) => {
-                dev.error("Failed to extract", file.path);
-                return reject();
+                dev.error("Failed to extract", prepare_filepath);
+                return reject(err);
               })
               .on("finish", () => {
-                dev.logverbose("Successfully extracted", file.path);
+                dev.logverbose("Successfully extracted", prepare_filepath);
                 return resolve();
               });
         });
@@ -223,7 +244,10 @@ module.exports = (function () {
 
       for (let i = 0; i < files_to_copy.length; i++) {
         dev.logverbose("Extracting", file.path);
-        await extractFile(files_to_copy[i]);
+        await extractFile(files_to_copy[i]).catch((err) => {
+          err;
+          // dont reject, we just go on (error could be hidden files not being extracted, which doesnt matter)
+        });
       }
 
       await fs.remove(full_path_to_folder_in_cache);

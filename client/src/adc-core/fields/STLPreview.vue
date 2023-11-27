@@ -1,5 +1,12 @@
 <template>
-  <div @mousedown.stop @mousewheel.stop>
+  <div
+    @click.stop.prevent
+    @mousedown.stop.prevent
+    @mousewheel.stop.prevent
+    @drag.stop.prevent
+    @dragstart.stop.prevent
+    @dragend.stop.prevent
+  >
     <model-stl
       :src="src"
       :rotation="{

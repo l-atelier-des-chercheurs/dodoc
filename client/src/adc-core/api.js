@@ -572,6 +572,18 @@ export default function () {
         this.$eventHub.$emit("task.started", { task_id, instructions });
         return task_id;
       },
+      async optimizeFile({ path, instructions }) {
+        path = `${path}/_optimize`;
+
+        const response = await this.$axios
+          .post(path, instructions)
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        const task_id = response.data.task_id;
+        this.$eventHub.$emit("task.started", { task_id, instructions });
+        return task_id;
+      },
       async generatePreviewForPublication({ path, instructions }) {
         path = `${path}/_generatePreview`;
 

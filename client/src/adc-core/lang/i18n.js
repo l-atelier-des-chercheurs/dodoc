@@ -62,7 +62,6 @@ export default function () {
         select_all: "Sélectionner tout",
         back: "retour",
         save: "enregistrer",
-        save_as_favorite: "Enregistrer en favori",
         input_url: "URL vers un site à intégrer",
         input_url_instr:
           "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
@@ -89,6 +88,7 @@ export default function () {
         title: "Titre",
         subtitle: "Sous-titre",
         name: "Nom",
+        filename: "Nom du fichier",
 
         open_in_finder: "Ouvrir dans l’explorateur",
 
@@ -651,8 +651,8 @@ export default function () {
         destination_project: "Projet qui recevra cette copie",
 
         remove_original: "Supprimer l’original",
-        remove_original_after_copy: "Ce projet sera supprimé après la copie",
-        keep_original_after_copy: "Ce projet sera conservé après la copie",
+        remove_original_after_copy: "L’original sera supprimé après la copie",
+        keep_original_after_copy: "L’original sera conservé après la copie",
 
         machines_and_materials: "Machines et matériaux",
         machines: "Machines",
@@ -830,6 +830,7 @@ export default function () {
           "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
+        "notifications.media_was_saved": "Média enregistré",
         "notifications.no_image_in_clipboard":
           "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
@@ -946,7 +947,6 @@ export default function () {
         date_modified: "last edited",
         date_uploaded: "uploaded on",
         cancel: "cancel",
-        save: "save",
         // todo translate
         // a_foss_made_by:
         //   "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
@@ -961,6 +961,7 @@ export default function () {
         select: "Select",
         back: "back",
         save_as_favorite: "save as favorite",
+        save: "save",
         input_url: "URL to the site to embed",
         // input_url_instr:
         //   "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",

@@ -577,7 +577,6 @@ export default {
     },
     selected_feature() {
       if (!this.selected_feature_id) return undefined;
-      debugger;
       return this.draw_vector_source?.getFeatureById(this.selected_feature_id);
     },
     selected_feature_type() {

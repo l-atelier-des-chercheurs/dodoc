@@ -1031,3 +1031,36 @@ input[type="checkbox"]:disabled {
     // pointer-events: none;
   }
 }
+
+.u-linkList {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 2);
+
+  appearance: none;
+  font-weight: inherit;
+  background: transparent;
+  width: 100%;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+
+  max-width: 30ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: none;
+    // background: var(--c-gris_clair);
+  }
+  &.is--active {
+    font-weight: 600;
+    text-decoration: none;
+  }
+  &.is--redorderable {
+    text-decoration: none;
+  }
+}
