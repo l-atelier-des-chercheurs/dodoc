@@ -217,7 +217,7 @@ export default {
       filetype_filter: "all",
       author_path_filter: "",
       keywords_filter: [],
-      group_mode: "day",
+      group_mode: "year",
 
       item_width: 150,
 
