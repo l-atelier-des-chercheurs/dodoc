@@ -11,6 +11,12 @@ const routes = [
       import(/* webpackChunkName: "LumaView" */ "../views/LumaView.vue"),
   },
   {
+    path: "/@",
+    name: "Tous les auteurs",
+    component: () =>
+      import(/* webpackChunkName: "AuthorsView" */ "../views/AuthorsView.vue"),
+  },
+  {
     path: "/@:author_slug",
     name: "Contributeur",
     component: () =>
