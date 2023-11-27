@@ -41,6 +41,12 @@
       <div class="_bottomContent">
         <div class="_leftContent">
           <div
+            v-if="file.is_stack && file._stack_files.length === 0"
+            class="u-instructions _noContentNotice"
+          >
+            {{ $t("no_content") }}
+          </div>
+          <div
             v-if="current_file_shown"
             :key="current_file_shown.$path"
             class="_openedFile--media"
@@ -497,5 +503,13 @@ export default {
   &.is--active:not([disabled]) {
     background: white;
   }
+}
+
+._noContentNotice {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  place-content: center;
+  place-items: center;
 }
 </style>
