@@ -46,19 +46,22 @@
           </div>
           <div class="_filesIndicator">
             <div class="u-sameRow">
-              <div class="">{{ $t("items") }} •</div>
               <div class="">
-                {{ filtered_shared_files.length }}
                 <template
-                  v-if="filtered_shared_files.length !== shared_files.length"
+                  v-if="filtered_shared_files.length === shared_files.length"
                 >
-                  /{{ shared_files.length }}
+                  {{ filtered_shared_files.length }}
                 </template>
+                <template v-else>
+                  <b>{{ filtered_shared_files.length }}</b
+                  >/{{ shared_files.length }}
+                </template>
+                {{ $t("items").toLowerCase() }}
               </div>
             </div>
-            <div class="" />
+            <div class="" v-text="'•'" />
             <div class="u-sameRow">
-              <div>{{ $t("zoom") }} •</div>
+              <div>{{ $t("zoom") }}</div>
               <div class="_itemWidthControl">
                 <input
                   class=""
@@ -479,14 +482,15 @@ export default {
   // background: white;
   // backdrop-filter: blur(6px);
   // mask: linear-gradient(black 75%, transparent 100%);
-  mask: linear-gradient(#000 80%, transparent);
+  mask: linear-gradient(#000 75%, transparent);
+  padding-bottom: calc(var(--spacing) * 2);
 }
 ._topbar--content {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  align-items: flex-end;
-  padding: calc(var(--spacing) * 1);
+  align-items: center;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   gap: calc(var(--spacing) * 1);
   line-height: 1;
 }
@@ -499,6 +503,10 @@ export default {
 
   ._itemWidthControl {
     width: 250px;
+
+    input {
+      margin: 0;
+    }
   }
 
   ::v-deep ._numberField {
