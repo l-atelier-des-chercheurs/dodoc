@@ -916,6 +916,7 @@ export default function () {
         collect: "Collecter",
         make: "Fabriquer",
         publish: "Publier",
+        items_to_share: "Éléments à partager",
 
         media_editing_instructions:
           "Indiquer le ou les personnes qui pourront modifier ce contenu",
@@ -961,7 +962,6 @@ export default function () {
         alphabetical: "Alphabetical",
         select: "Select",
         back: "back",
-        items_to_share: "Éléments à partager",
         save_as_favorite: "save as favorite",
         save: "save",
         input_url: "URL to the site to embed",
