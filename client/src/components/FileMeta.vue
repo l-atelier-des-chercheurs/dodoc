@@ -153,6 +153,16 @@ export default {
       ),
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        remove_item_in_stack: "Supprimer cet élément de la pile",
+      },
+      en: {
+        remove_item_in_stack: "Remove this media in the stack",
+      },
+    },
+  },
   created() {},
   mounted() {},
   beforeDestroy() {},
