@@ -22,7 +22,7 @@
             class="u-button u-button_transparent u-button_icon _closeButton"
             @click="$emit('close')"
           >
-            <b-icon icon="x-lg" />
+            <b-icon icon="x-circle" />
           </button>
         </div>
 
