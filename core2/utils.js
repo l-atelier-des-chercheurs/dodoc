@@ -380,49 +380,7 @@ module.exports = (function () {
     async imageBufferToFile({ image_buffer, full_path_to_thumb }) {
       return await sharp(image_buffer).toFile(full_path_to_thumb);
     },
-    async convertToJpeg({ source, destination }) {
-      await sharp(source)
-        .rotate()
-        .flatten({ background: "white" })
-        .toFormat("jpeg", {
-          quality: global.settings.mediaThumbQuality,
-        })
-        .toFile(destination)
-        .catch((err) => {
-          dev.error(`Failed to sharp create image to destination.`);
-          throw err;
-        });
-    },
-    async convertToPNG({ source, destination }) {
-      await sharp(source)
-        .rotate()
-        .flatten({ background: "white" })
-        .toFormat("png", {})
-        .toFile(destination)
-        .catch((err) => {
-          dev.error(`Failed to sharp create image to destination.`);
-          throw err;
-        });
-    },
-    async convertToMP3({ source, destination }) {
-      return new Promise(async (resolve, reject) => {
-        this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
-          .input(source)
-          .format("mp3")
-          .audioBitrate("320kbps")
-          .on("start", (commandLine) => {
-            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
-          })
-          .on("progress", (progress) => {})
-          .on("end", async () => {
-            return resolve();
-          })
-          .on("error", async (err, stdout, stderr) => {
-            return reject();
-          })
-          .save(destination);
-      });
-    },
+
     async md5FromFile({ full_media_path }) {
       return await md5File(full_media_path);
     },
@@ -595,6 +553,123 @@ module.exports = (function () {
       const exts = typeof ext === "string" ? [ext] : ext;
       const _ext = path.extname(media_path);
       return exts.includes(_ext.toLowerCase());
+    },
+
+    convertVideoToStandardFormat({
+      ffmpeg_cmd,
+      source,
+      destination,
+      format = "mp4",
+      bitrate = "6000k",
+      resolution,
+      reportFFMPEGProgress,
+    }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+        // https://stackoverflow.com/a/70899710
+        let totalTime;
+
+        ffmpeg_cmd.input(source);
+        const { duration, streams } = await API.getVideoDurationFromMetadata({
+          ffmpeg_cmd,
+          video_path: source,
+        });
+
+        if (duration) ffmpeg_cmd.duration(duration);
+
+        // check if has audio track or not
+        if (streams?.some((s) => s.codec_type === "audio"))
+          ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("192k");
+        else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+
+        const filter = API.makeFilterToPadMatchDurationAudioVideo({ streams });
+        if (filter) ffmpeg_cmd.addOptions([filter]);
+
+        if (resolution)
+          ffmpeg_cmd.videoFilter([
+            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
+          ]);
+
+        // if (streams?.some((s) => s.codec_type === "audio"))
+        // if (temp_video_volume) {
+        //   ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
+        // } else {
+        // }
+
+        let flags = [
+          "-crf 22",
+          "-preset medium",
+          "-shortest",
+          "-bsf:v h264_mp4toannexb",
+          "-pix_fmt yuv420p",
+        ];
+        if (format === "mp4") {
+          flags.push("-movflags +faststart");
+          ffmpeg_cmd.toFormat("mp4");
+        } else if (format === "mpegts") {
+          ffmpeg_cmd.toFormat("mpegts");
+        }
+
+        ffmpeg_cmd
+          .native()
+          .outputFPS(30)
+          .withVideoCodec("libx264")
+          .withVideoBitrate(bitrate)
+          .addOptions(flags)
+          .videoFilter(["setsar=1/1"])
+          .on("start", function (commandLine) {
+            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+          })
+          .on("codecData", (data) => {
+            totalTime = parseInt(data.duration.replace(/:/g, ""));
+          })
+          .on("progress", (progress) => {
+            if (reportFFMPEGProgress) {
+              const time = parseInt(progress.timemark.replace(/:/g, ""));
+              const percent = (time / totalTime) * 100;
+              reportFFMPEGProgress(percent);
+            }
+          })
+          .on("end", () => {
+            return resolve();
+          })
+          .on("error", function (err, stdout, stderr) {
+            dev.error("An error happened: " + err.message);
+            dev.error("ffmpeg standard output:\n" + stdout);
+            dev.error("ffmpeg standard error:\n" + stderr);
+            return reject(err);
+          })
+          .save(destination);
+      });
+    },
+    getVideoDurationFromMetadata({ ffmpeg_cmd, video_path }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
+          if (err) return reject(err);
+
+          const duration = metadata.format?.duration;
+          const streams = metadata.streams;
+          return resolve({ duration, streams });
+        });
+      });
+    },
+
+    makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
+      const audio_stream = streams.find((s) => s.codec_type === "audio");
+      const video_stream = streams.find((s) => s.codec_type === "video");
+      if (audio_stream && video_stream) {
+        const diff = audio_stream.duration - video_stream.duration;
+        if (diff > 0.2) {
+          // audio is longer than video, we need to pad video
+          const diff = audio_stream.duration - video_stream.duration;
+          return `-vf tpad=stop_mode=clone:stop_duration=${diff}`;
+        } else if (video_stream.duration > audio_stream.duration) {
+          // video is longer than audio, we need to pad audio
+          return "-af apad";
+        }
+      }
+      return false;
     },
   };
 

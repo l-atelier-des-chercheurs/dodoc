@@ -95,7 +95,6 @@ export default {
 
   ::v-deep {
     ._topbar {
-      display: block;
       // background: white;
       // flex-flow: column nowrap;
     }

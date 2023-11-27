@@ -324,12 +324,12 @@ export default {
 
 ._mediaContent {
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 
   &[data-filetype="other"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 
   ::v-deep {
@@ -337,6 +337,7 @@ export default {
       display: flex;
       justify-content: center;
       min-width: 100px;
+      width: 100%;
       --plyr-audio-controls-background: var(--c-noir);
       --plyr-audio-control-color: white;
     }

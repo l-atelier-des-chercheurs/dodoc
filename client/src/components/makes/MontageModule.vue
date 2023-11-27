@@ -8,11 +8,12 @@
     <div class="_preview">
       <div class="_topRow">
         <div class="u-label">
-          {{ $t(first_media.$type) }}
-          <template v-if="first_media_duration"
-            >/ {{ first_media_duration }}</template
-          >
-
+          <template v-if="first_media">
+            {{ $t(first_media.$type) }}
+            <template v-if="first_media_duration"
+              >/ {{ first_media_duration }}</template
+            >
+          </template>
           <button type="button" class="u-buttonLink" @click="removeModule">
             <sl-icon name="trash3" />
           </button>
@@ -32,41 +33,52 @@
           </span>
         </div>
       </div>
-      <MediaContent
-        v-if="first_media.$type !== 'text'"
-        :file="first_media"
-        :resolution="1600"
-        :context="'full'"
-        :show_fs_button="true"
-        :is_draggable="false"
-      />
-
-      <CollaborativeEditor2
-        v-else
-        ref="textBloc"
-        :path="first_media.$path"
-        :content="first_media.$content"
-        :line_selected="false"
-        :can_edit="true"
-        @lineClicked="$emit('lineClicked', $event)"
-        @contentIsEdited="$emit('contentIsEdited', $event)"
-        @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
-      />
-
-      <div class="" v-if="module_position === 'last'">
-        <span class="u-switch u-switch-xs">
-          <input
-            class="switch"
-            :id="'transition_out_' + makemodule.$path"
-            type="checkbox"
-            :checked="makemodule.transition_out === 'fade'"
-            @change="toggleTransition('transition_out')"
+      <template v-if="first_media">
+        <MediaContent
+          v-if="first_media.$type !== 'text'"
+          :file="first_media"
+          :resolution="1600"
+          :context="'full'"
+          :show_fs_button="true"
+          :is_draggable="false"
+        />
+        <CollaborativeEditor2
+          v-else
+          ref="textBloc"
+          :path="first_media.$path"
+          :content="first_media.$content"
+          :line_selected="false"
+          :can_edit="true"
+          @lineClicked="$emit('lineClicked', $event)"
+          @contentIsEdited="$emit('contentIsEdited', $event)"
+          @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
+        />
+        <div class="_imageDurationPicker" v-if="first_media.$type === 'image'">
+          <NumberInput
+            :value="makemodule.image_duration || default_image_duration"
+            :suffix="$t('secondes')"
+            :size="'medium'"
+            @save="updateMakemodule({ image_duration: $event })"
           />
-          <label class="u-label" :for="'transition_out_' + makemodule.$path">{{
-            $t("transition_fade")
-          }}</label>
-        </span>
-      </div>
+        </div>
+
+        <div class="_transitionPicker" v-if="module_position === 'last'">
+          <span class="u-switch u-switch-xs">
+            <input
+              class="switch"
+              :id="'transition_out_' + makemodule.$path"
+              type="checkbox"
+              :checked="makemodule.transition_out === 'fade'"
+              @change="toggleTransition('transition_out')"
+            />
+            <label
+              class="u-label"
+              :for="'transition_out_' + makemodule.$path"
+              >{{ $t("transition_fade") }}</label
+            >
+          </span>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -76,6 +88,7 @@ export default {
     makemodule: Object,
     index: Number,
     module_position: String,
+    default_image_duration: Number,
   },
   components: {},
   data() {
@@ -183,16 +196,37 @@ export default {
 }
 
 .u-label {
-  color: white;
+  // color: white;
 }
 
 ._lastModule {
   margin-top: calc(var(--spacing) * 2);
 }
 
+._preview {
+  flex: 1 1 auto;
+  background: white;
+  padding: calc(var(--spacing) / 2);
+  border-radius: 4px;
+  color: var(--c-noir);
+
+  ::v-deep ._mediaContent--image {
+    max-width: none;
+    width: 100%;
+  }
+}
+
 ._topRow {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+}
+._imageDurationPicker {
+  max-width: 18ch;
+  margin: calc(var(--spacing) / 2) auto;
+}
+._transitionPicker {
+  text-align: center;
+  margin: calc(var(--spacing) / 2) auto;
 }
 </style>

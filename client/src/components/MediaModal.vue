@@ -82,10 +82,25 @@
           </div>
         </transition>
       </div>
-      <div
-        class="_meta"
-        v-if="(show_meta_sidebar || $root.is_mobile_view) && !select_mode"
-      >
+
+      <div class="_selectBtn" v-if="select_mode">
+        <button
+          type="button"
+          class="u-buttonLink has--whitebg"
+          @click="$emit('close')"
+        >
+          {{ $t("cancel") }}
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          @click="$emit('select')"
+        >
+          {{ $t("select") }}
+        </button>
+      </div>
+
+      <div class="_meta" v-else-if="show_meta_sidebar || $root.is_mobile_view">
         <div class="u-spacingBottom">
           <h3>
             {{ $t("media") }}
@@ -168,22 +183,6 @@
             :gps="file.$infos.gps"
           />
         </div>
-      </div>
-      <div class="_selectBtn" v-else>
-        <button
-          type="button"
-          class="u-buttonLink has--whitebg"
-          @click="$emit('close')"
-        >
-          {{ $t("cancel") }}
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="$emit('select')"
-        >
-          {{ $t("select") }}
-        </button>
       </div>
     </div>
   </div>
@@ -362,7 +361,7 @@ export default {
       position: relative;
       flex: 10 1 320px;
       min-height: 50vh;
-      border: 2px solid var(--c-gris);
+      // border: 2px solid var(--c-gris);
       background: var(--c-gris);
       // height: 50%;
     }

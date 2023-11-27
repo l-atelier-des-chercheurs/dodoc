@@ -97,6 +97,7 @@ export default {
   background: rgba(231, 231, 231, 0.7);
 
   ._baseModal--content {
+    position: relative;
     // padding: calc(var(--spacing) / 2);
     background: var(--panel-color);
     border: var(--panel-borders);

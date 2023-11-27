@@ -4,6 +4,8 @@ const { promisify } = require("util"),
   sharp = require("sharp"),
   ffmpeg = require("fluent-ffmpeg");
 
+const utils = require("../utils");
+
 sharp.cache(false);
 
 const ffmpegPath = require("ffmpeg-static").replace(
@@ -40,18 +42,46 @@ module.exports = (function () {
           throw err;
         });
     },
-    async convertAudio({ source, destination, ffmpeg_cmd }) {
+    async convertImage({ source, destination }) {
+      await sharp(source)
+        .rotate()
+        .toFormat("jpeg", {
+          quality: global.settings.mediaThumbQuality,
+        })
+        .toFile(destination)
+        .catch((err) => {
+          dev.error(`Failed to sharp create image to destination.`);
+          throw err;
+        });
+    },
+    async convertAudio({
+      source,
+      destination,
+      ffmpeg_cmd,
+      reportFFMPEGProgress,
+    }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+        // https://stackoverflow.com/a/70899710
+        let totalTime;
 
         ffmpeg_cmd
           .input(source)
           .withAudioCodec("aac")
           .withAudioBitrate("192k")
+
           .on("start", (commandLine) => {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
-          .on("progress", (progress) => {})
+          .on("codecData", (data) => {
+            totalTime = parseInt(data.duration.replace(/:/g, ""));
+          })
+          .on("progress", (progress) => {
+            const time = parseInt(progress.timemark.replace(/:/g, ""));
+            const percent = (time / totalTime) * 100;
+            reportFFMPEGProgress(percent);
+          })
           .on("end", async () => {
             return resolve();
           })
@@ -62,6 +92,25 @@ module.exports = (function () {
             return reject(err);
           })
           .save(destination);
+      });
+    },
+    async convertVideo({
+      source,
+      destination,
+      ffmpeg_cmd,
+      reportFFMPEGProgress,
+    }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+        await utils.convertVideoToStandardFormat({
+          ffmpeg_cmd,
+          source,
+          destination,
+          reportFFMPEGProgress,
+        });
+
+        return resolve();
       });
     },
   };

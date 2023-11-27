@@ -22,12 +22,11 @@ module.exports = (function () {
       full_path_to_folder_in_cache,
       resolution,
       bitrate,
+      image_duration = 2,
       ffmpeg_cmd,
     }) => {
       // used to process videos / images before merging them
       dev.logfunction();
-
-      const temp_video_duration = 2;
 
       const image_filename = utils.createUniqueName("image");
       const temp_image_path = path.join(
@@ -38,7 +37,7 @@ module.exports = (function () {
       let temp_video_name =
         image_filename +
         "_dur=" +
-        temp_video_duration +
+        image_duration +
         "_res=" +
         resolution.width +
         "x" +
@@ -61,7 +60,7 @@ module.exports = (function () {
         await _makeVideoFromImage({
           ffmpeg_cmd,
           temp_image_path,
-          temp_video_duration,
+          image_duration,
           temp_video_path,
           bitrate,
           resolution,
@@ -70,7 +69,7 @@ module.exports = (function () {
 
       return {
         video_path: temp_video_path,
-        duration: temp_video_duration,
+        duration: image_duration,
       };
     },
     prepareVideoForMontageAndWeb: async ({
@@ -79,6 +78,7 @@ module.exports = (function () {
       resolution,
       bitrate,
       ffmpeg_cmd,
+      reportFFMPEGProgress,
     }) => {
       const temp_video_volume = 100;
 
@@ -100,16 +100,18 @@ module.exports = (function () {
       );
 
       if (!(await fs.pathExists(temp_video_path))) {
-        await _convertVideoToStandardFormat({
+        await utils.convertVideoToStandardFormat({
           ffmpeg_cmd,
-          media_full_path,
-          temp_video_path,
+          source: media_full_path,
+          destination: temp_video_path,
+          format: "mpegts",
           bitrate,
           resolution,
+          reportFFMPEGProgress,
         });
       }
 
-      const { duration } = await _getVideoDurationFromMetadata({
+      const { duration } = await utils.getVideoDurationFromMetadata({
         ffmpeg_cmd,
         video_path: temp_video_path,
       });
@@ -426,7 +428,7 @@ module.exports = (function () {
   function _makeVideoFromImage({
     ffmpeg_cmd,
     temp_image_path,
-    temp_video_duration,
+    image_duration,
     temp_video_path,
     bitrate,
     resolution,
@@ -434,7 +436,7 @@ module.exports = (function () {
     return new Promise(async (resolve, reject) => {
       ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(temp_image_path)
-        .duration(temp_video_duration)
+        .duration(image_duration)
         .loop()
         .input("anullsrc=channel_layout=stereo:sample_rate=44100")
         .inputFormat("lavfi")
@@ -446,7 +448,7 @@ module.exports = (function () {
         .autopad()
         .videoFilter(["setsar=1/1"])
         .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
-        .toFormat("mpegts")
+        .toFormat("mp4")
         .on("start", function (commandLine) {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
         })
@@ -461,100 +463,6 @@ module.exports = (function () {
         })
         .save(temp_video_path);
     });
-  }
-
-  function _convertVideoToStandardFormat({
-    ffmpeg_cmd,
-    media_full_path,
-    temp_video_path,
-    bitrate,
-    resolution,
-  }) {
-    return new Promise(async (resolve, reject) => {
-      ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
-
-      ffmpeg_cmd.input(media_full_path);
-      const { duration, streams } = await _getVideoDurationFromMetadata({
-        ffmpeg_cmd,
-        video_path: media_full_path,
-      });
-
-      if (duration) ffmpeg_cmd.duration(duration);
-
-      // check if has audio track or not
-      if (streams?.some((s) => s.codec_type === "audio"))
-        ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
-      else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
-
-      const filter = _makeFilterToPadMatchDurationAudioVideo({ streams });
-      if (filter) ffmpeg_cmd.addOptions([filter]);
-
-      // if (streams?.some((s) => s.codec_type === "audio"))
-
-      // if (temp_video_volume) {
-      //   ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
-      // } else {
-      // }
-
-      ffmpeg_cmd
-        .native()
-        .outputFPS(30)
-        .withVideoCodec("libx264")
-        .withVideoBitrate(bitrate)
-        .videoFilter([
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
-        ])
-        .addOptions([
-          "-crf 22",
-          "-preset fast",
-          "-shortest",
-          "-bsf:v h264_mp4toannexb",
-        ])
-        .videoFilter(["setsar=1/1"])
-        .toFormat("mpegts")
-        .on("start", function (commandLine) {
-          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
-        })
-        .on("progress", (progress) => {})
-        .on("end", () => {
-          return resolve();
-        })
-        .on("error", function (err, stdout, stderr) {
-          dev.error("An error happened: " + err.message);
-          dev.error("ffmpeg standard output:\n" + stdout);
-          dev.error("ffmpeg standard error:\n" + stderr);
-          return reject(err);
-        })
-        .save(temp_video_path);
-    });
-  }
-
-  function _getVideoDurationFromMetadata({ ffmpeg_cmd, video_path }) {
-    return new Promise(async (resolve, reject) => {
-      ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
-        if (err) return reject(err);
-
-        const duration = metadata.format?.duration;
-        const streams = metadata.streams;
-        return resolve({ duration, streams });
-      });
-    });
-  }
-
-  function _makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
-    const audio_stream = streams.find((s) => s.codec_type === "audio");
-    const video_stream = streams.find((s) => s.codec_type === "video");
-    if (audio_stream && video_stream) {
-      if (audio_stream.duration > video_stream.duration) {
-        // audio is longer than video, we need to pad video
-        const diff = audio_stream.duration - video_stream.duration;
-        return `-vf tpad=stop_mode=clone:stop_duration=${diff}`;
-      } else if (video_stream.duration > audio_stream.duration) {
-        // video is longer than audio, we need to pad audio
-        return "-af apad";
-      }
-    }
-    return false;
   }
 
   return API;
