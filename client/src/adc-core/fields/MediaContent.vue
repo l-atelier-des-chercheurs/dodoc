@@ -30,6 +30,7 @@
           v-else
           class="_mediaContent--image"
           :src="file_full_path"
+          :width="img_width"
           :ratio="img_ratio"
         />
       </template>
@@ -176,6 +177,7 @@
         <ImageZoom
           v-if="file.$type === 'image'"
           :src="file_full_path"
+          :width="img_width"
           :ratio="img_ratio"
         />
 
@@ -263,6 +265,9 @@ export default {
     url_to_site() {
       if (!this.file.$content) return false;
       return this.transformURL({ url: this.file.$content, autoplay: true });
+    },
+    img_width() {
+      return this.file.$infos?.width;
     },
     img_ratio() {
       return this.file.$infos?.ratio;

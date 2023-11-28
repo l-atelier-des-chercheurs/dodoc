@@ -26,6 +26,7 @@
 export default {
   props: {
     src: String,
+    width: Number,
     ratio: Number,
   },
   components: {},
@@ -66,7 +67,10 @@ export default {
     },
     image_styles() {
       if (this.is_zoomed) {
-        const zoom_level = 2;
+        const zoom_level = this.width
+          ? Math.max(2, this.width / this.cont_width / 2)
+          : 2;
+
         const new_width = this.cont_width * zoom_level;
         const new_height = new_width * this.ratio;
         const translate_x =
