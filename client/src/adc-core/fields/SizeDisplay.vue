@@ -1,6 +1,6 @@
 <template>
   <div class="_metaField">
-    <DLabel :str="title" />
+    <DLabel :str="$t('size')" />
     <div>
       <template v-if="size">
         {{ formatBytes(size) }}
@@ -12,8 +12,7 @@
 <script>
 export default {
   props: {
-    title: String,
-    size: [Number, undefined],
+    size: Number,
   },
   components: {},
   data() {

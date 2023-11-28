@@ -157,7 +157,6 @@
           />
           <SizeDisplay
             v-if="file.$infos && file.$infos.size"
-            :title="$t('size')"
             :size="file.$infos.size"
           />
           <DurationDisplay

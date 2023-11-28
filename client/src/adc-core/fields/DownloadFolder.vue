@@ -23,7 +23,6 @@
         <SizeDisplay
           v-if="folder_size"
           class="u-spacingBottom"
-          :title="$t('size')"
           :size="folder_size"
         />
 
