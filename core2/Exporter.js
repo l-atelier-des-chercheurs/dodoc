@@ -668,6 +668,15 @@ class Exporter {
         ".tif",
         ".tiff",
         ".webp",
+        ".cr3",
+        ".cr2",
+        ".raf",
+        ".dng",
+        ".rwl",
+        ".nef",
+        ".rw2",
+        ".x3f",
+        ".arw",
       ])
     ) {
       filetype = "image";
@@ -713,6 +722,23 @@ class Exporter {
     try {
       if (utils.fileExtensionIs(this.instructions.base_media_path, [".heic"])) {
         await optimizer.convertHEIC({
+          source: base_media_path,
+          destination: full_path_to_new_file,
+        });
+      } else if (
+        utils.fileExtensionIs(this.instructions.base_media_path, [
+          ".cr3",
+          ".cr2",
+          ".raf",
+          ".dng",
+          ".rwl",
+          ".nef",
+          ".rw2",
+          ".x3f",
+          ".arw",
+        ])
+      ) {
+        await optimizer.convertCameraRAW({
           source: base_media_path,
           destination: full_path_to_new_file,
         });

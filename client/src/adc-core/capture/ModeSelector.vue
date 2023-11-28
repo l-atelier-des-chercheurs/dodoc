@@ -212,7 +212,7 @@ export default {
   input:checked + label {
     background-color: var(--c-orange);
     span {
-      color: white;
+      // color: white;
     }
   }
 
@@ -274,7 +274,7 @@ export default {
     text-transform: uppercase;
     font-weight: 500;
     letter-spacing: 0.05em;
-    color: #666;
+    color: var(--c-noir);
     font-weight: 600;
   }
 }

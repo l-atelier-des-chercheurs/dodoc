@@ -223,6 +223,15 @@ export default {
         ".tif",
         ".tiff",
         ".webp",
+        ".cr3",
+        ".cr2",
+        ".raf",
+        ".dng",
+        ".rwl",
+        ".nef",
+        ".rw2",
+        ".x3f",
+        ".arw",
 
         ".amr",
         ".wma",
@@ -232,8 +241,12 @@ export default {
         ".flv",
         ".mov",
         ".avi",
-        ".webm",
       ];
+      return ext.some((e) => path.toLowerCase().endsWith(e));
+    },
+    fileCanBeOptimized({ path }) {
+      if (this.fileShouldBeOptimized({ path })) return true;
+      const ext = [".webm"];
       return ext.some((e) => path.toLowerCase().endsWith(e));
     },
   },

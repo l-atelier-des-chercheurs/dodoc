@@ -1,9 +1,14 @@
 <template>
   <div class="_metaField">
-    <DLabel :str="$t('size')" />
+    <DLabel :str="$t('resolution')" />
     <div>
-      <template v-if="size">
-        {{ formatBytes(size) }}
+      <template v-if="width">
+        {{ width }}
+      </template>
+      <template v-else> – </template>
+      ×
+      <template v-if="height">
+        {{ height }}
       </template>
       <template v-else> – </template>
     </div>
@@ -12,7 +17,8 @@
 <script>
 export default {
   props: {
-    size: Number,
+    width: Number,
+    height: Number,
   },
   components: {},
   data() {

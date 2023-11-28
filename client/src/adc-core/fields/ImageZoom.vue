@@ -5,8 +5,8 @@
     @click="toggleZoom"
     @mousemove="mouseMoved"
   >
-    <transition name="fade_fast" mode="out-in">
-      <img :src="src" :style="image_styles" :key="is_zoomed" />
+    <transition name="fade_fast" mode="in-out">
+      <img :src="src" :style="image_styles" :key="'zoom-' + is_zoomed" />
     </transition>
     <transition name="slideupFade" mode="out-in">
       <div class="_clickToZoomBtn" v-if="!is_zoomed">
@@ -26,6 +26,7 @@
 export default {
   props: {
     src: String,
+    width: Number,
     ratio: Number,
   },
   components: {},
@@ -66,7 +67,10 @@ export default {
     },
     image_styles() {
       if (this.is_zoomed) {
-        const zoom_level = 2;
+        const zoom_level = this.width
+          ? Math.max(2, this.width / this.cont_width / 2)
+          : 2;
+
         const new_width = this.cont_width * zoom_level;
         const new_height = new_width * this.ratio;
         const translate_x =
@@ -113,6 +117,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   cursor: zoom-in;
 
   img {

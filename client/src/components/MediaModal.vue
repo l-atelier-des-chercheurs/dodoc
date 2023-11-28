@@ -157,8 +157,12 @@
           />
           <SizeDisplay
             v-if="file.$infos && file.$infos.size"
-            :title="$t('size')"
             :size="file.$infos.size"
+          />
+          <ResolutionDisplay
+            v-if="file.$infos"
+            :width="file.$infos.width"
+            :height="file.$infos.height"
           />
           <DurationDisplay
             v-if="file.$infos && file.$infos.duration"
@@ -232,7 +236,7 @@ export default {
   watch: {},
   computed: {
     optimization_possible() {
-      return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+      return this.fileCanBeOptimized({ path: this.file.$media_filename });
     },
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
