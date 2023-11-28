@@ -57,7 +57,7 @@
       <button
         type="button"
         @click="validateButton(1)"
-        class="u-button u-button_red"
+        class="u-button u-button_red _checkBtn"
         :class="{ 'is--active': selected_button === 1 }"
         @mouseover="selected_button = 1"
       >
@@ -282,5 +282,20 @@ export default {
 
 ._favBtn {
   margin-left: -5px;
+}
+
+._checkBtn {
+  rect {
+    fill: transparent;
+    stroke: white;
+    stroke-width: 6px;
+    fill: var(--c-rouge);
+  }
+
+  &.is--active {
+    rect {
+      fill: white;
+    }
+  }
 }
 </style>
