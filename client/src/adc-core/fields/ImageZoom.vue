@@ -1,0 +1,134 @@
+<template>
+  <div
+    class="_imageZoom"
+    :data-zoomed="is_zoomed"
+    @click="toggleZoom"
+    @mousemove="mouseMoved"
+  >
+    <transition name="fade_fast" mode="out-in">
+      <img :src="src" :style="image_styles" :key="is_zoomed" />
+    </transition>
+    <transition name="slideupFade" mode="out-in">
+      <div class="_clickToZoomBtn" v-if="!is_zoomed">
+        <button
+          type="button"
+          class="u-button u-button_white u-button_small"
+          @click.stop="toggleZoom"
+        >
+          <b-icon icon="zoom-in" />
+          {{ $t("click_to_zoom") }}
+        </button>
+      </div>
+    </transition>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    src: String,
+    ratio: Number,
+  },
+  components: {},
+  data() {
+    return {
+      is_zoomed: false,
+
+      cont_width: undefined,
+      cont_height: undefined,
+      pos_x: undefined,
+      pos_y: undefined,
+    };
+  },
+  i18n: {
+    messages: {
+      fr: {},
+    },
+  },
+  created() {},
+  mounted() {
+    this.updateContSize();
+  },
+  beforeDestroy() {},
+  watch: {
+    "$root.window.innerWidth"() {
+      this.updateContSize();
+    },
+    "$root.window.innerHeight"() {
+      this.updateContSize();
+    },
+  },
+  computed: {
+    pos_x_percent() {
+      return this.pos_x / this.cont_width;
+    },
+    pos_y_percent() {
+      return this.pos_y / this.cont_height;
+    },
+    image_styles() {
+      if (this.is_zoomed) {
+        const zoom_level = 2;
+        const new_width = this.cont_width * zoom_level;
+        const new_height = new_width * this.ratio;
+        const translate_x =
+          this.pos_x_percent * -1 * (new_width - this.cont_width);
+        const translate_y =
+          this.pos_y_percent * -1 * (new_height - this.cont_height);
+
+        // en haut à gauche = 0 0 -> 0 0
+        // en haut à droite = 1 0 ->
+        return `
+        max-width: none;
+        width: ${new_width}px;
+        height: ${new_height}px;
+        transform: translate(${translate_x}px, ${translate_y}px);
+        pointer-events: none;
+        `;
+      }
+      return `
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+`;
+    },
+  },
+  methods: {
+    toggleZoom() {
+      this.is_zoomed = !this.is_zoomed;
+    },
+    updateContSize() {
+      this.cont_width = this.$el.offsetWidth;
+      this.cont_height = this.$el.offsetHeight;
+    },
+    mouseMoved(event) {
+      let { offsetX, offsetY } = event.touches ? event.touches[0] : event;
+      this.pos_x = offsetX;
+      this.pos_y = offsetY;
+    },
+  },
+};
+</script>
+<style lang="scss" scoped>
+._imageZoom {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: zoom-in;
+
+  img {
+  }
+
+  &[data-zoomed] {
+    background: var(--c-gris);
+  }
+}
+
+._clickToZoomBtn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: calc(var(--spacing) / 1);
+}
+</style>

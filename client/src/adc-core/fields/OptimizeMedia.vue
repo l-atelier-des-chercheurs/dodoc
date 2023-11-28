@@ -30,6 +30,7 @@
           <MediaContent
             :file="optimized_file"
             :context="'full'"
+            :zoom_on_click="true"
             :show_fs_button="true"
             :is_draggable="false"
           />

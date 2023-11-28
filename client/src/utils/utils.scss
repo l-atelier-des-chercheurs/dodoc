@@ -210,7 +210,7 @@ button,
   &[disabled] {
     cursor: not-allowed;
     filter: grayscale(50%);
-    color: var(--c-gris);
+    color: var(--c-gris_fonce);
   }
 
   &.is--active {

@@ -37,6 +37,7 @@
           :resolution="1600"
           :context="'full'"
           :show_fs_button="true"
+          :zoom_on_click="true"
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           {{ $t("optimize_to_visualize") }}

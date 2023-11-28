@@ -221,7 +221,7 @@ class Exporter {
   }
 
   async _copyToCacheAndRenameImages({ images, resolution }) {
-    let full_path_to_folder_in_cache = await utils.createFolderInCache(
+    let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "stopmotion"
     );
 
