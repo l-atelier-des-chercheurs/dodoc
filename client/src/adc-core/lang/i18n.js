@@ -826,6 +826,7 @@ export default function () {
         rectangle: "Rectangle",
         line: "Ligne",
         arrow: "Flèche",
+        click_to_zoom: "Cliquez pour zoomer",
         for_example: "Par exemple",
         require_signup_to_contribute:
           "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
@@ -1024,6 +1025,7 @@ export default function () {
         none: "None",
         filters: "Filters",
         reset_all: "Reset all",
+        click_to_zoom: "Click to zoom",
       },
       de: {},
       nl: {},

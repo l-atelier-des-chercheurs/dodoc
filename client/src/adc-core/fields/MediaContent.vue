@@ -21,9 +21,16 @@
       </template>
       <template v-else>
         <img
+          v-if="!zoom_on_click"
           :src="file_full_path"
           class="_mediaContent--image"
           :loading="img_loading"
+        />
+        <ImageZoom
+          v-else
+          class="_mediaContent--image"
+          :src="file_full_path"
+          :ratio="img_ratio"
         />
       </template>
     </template>
@@ -166,11 +173,12 @@
         <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
       </div>
       <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
-        <img
+        <ImageZoom
           v-if="file.$type === 'image'"
           :src="file_full_path"
-          :loading="img_loading"
+          :ratio="img_ratio"
         />
+
         <STLPreview
           v-else-if="file.$type === 'stl'"
           class="_stlPreview"
@@ -206,9 +214,14 @@ export default {
       type: String,
       default: "eager",
     },
+    zoom_on_click: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     STLPreview: () => import("@/adc-core/fields/STLPreview.vue"),
+    ImageZoom: () => import("@/adc-core/fields/ImageZoom.vue"),
   },
   data() {
     return {
@@ -250,6 +263,9 @@ export default {
     url_to_site() {
       if (!this.file.$content) return false;
       return this.transformURL({ url: this.file.$content, autoplay: true });
+    },
+    img_ratio() {
+      return this.file.$infos?.ratio;
     },
   },
   methods: {
@@ -433,5 +449,23 @@ export default {
 ._stlPreview {
   width: 100%;
   height: 100%;
+}
+
+._zoomed {
+  ::v-deep {
+    .vh--image.vh--abs {
+      max-width: none;
+    }
+    .vh--outer {
+      height: 200px;
+    }
+    .vh--holder {
+      height: calc(100%);
+    }
+    .height,
+    .vh--holder picture {
+      height: 100%;
+    }
+  }
 }
 </style>
