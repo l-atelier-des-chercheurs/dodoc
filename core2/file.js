@@ -109,7 +109,6 @@ module.exports = (function () {
 
           const path_to_meta = path.join(path_to_folder, meta_filename);
           const meta = await API.getFile({
-            path_to_folder,
             path_to_meta,
           });
 
@@ -207,21 +206,7 @@ module.exports = (function () {
         // }
       }
 
-      // if updating source media,
-      if ($media_filename) {
-        meta.$media_filename = $media_filename;
-        const _thumbs = await thumbs
-          .makeThumbForMedia({
-            media_type: meta.$type,
-            media_filename: meta.$media_filename,
-            path_to_folder,
-          })
-          .catch((err) => {
-            dev.error(err);
-          });
-        if (_thumbs) meta.$thumbs = _thumbs;
-      }
-
+      if ($media_filename) meta.$media_filename = $media_filename;
       if (typeof $content !== "undefined" && meta.$type === "text") {
         await _updateTextContent({
           new_content: $content,
@@ -239,18 +224,24 @@ module.exports = (function () {
         meta,
       });
 
-      // dev.log({ meta, previous_meta });
-      const changed_data = Object.keys(meta).reduce((acc, key) => {
+      cache.delete({
+        key: path_to_meta,
+      });
+
+      let changed_data = Object.keys(meta).reduce((acc, key) => {
         if (JSON.stringify(meta[key]) !== JSON.stringify(previous_meta[key]))
           acc[key] = meta[key];
         return acc;
       }, {});
 
-      if (typeof $content !== "undefined") changed_data.$content = $content;
+      if ($media_filename)
+        // refresh all media, since $thumbs and $infos changed as well
+        changed_data = await API.getFile({
+          path_to_meta,
+        });
 
-      cache.delete({
-        key: path_to_meta,
-      });
+      if (typeof $content !== "undefined" && meta.$type === "text")
+        changed_data.$content = $content;
 
       return changed_data;
     },
