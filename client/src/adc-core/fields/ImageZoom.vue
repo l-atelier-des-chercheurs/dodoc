@@ -5,8 +5,8 @@
     @click="toggleZoom"
     @mousemove="mouseMoved"
   >
-    <transition name="fade_fast" mode="out-in">
-      <img :src="src" :style="image_styles" :key="is_zoomed" />
+    <transition name="fade_fast" mode="in-out">
+      <img :src="src" :style="image_styles" :key="'zoom-' + is_zoomed" />
     </transition>
     <transition name="slideupFade" mode="out-in">
       <div class="_clickToZoomBtn" v-if="!is_zoomed">
