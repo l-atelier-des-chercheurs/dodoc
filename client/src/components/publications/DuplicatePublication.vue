@@ -85,12 +85,15 @@
         </div>
       </template>
       <template v-else>
-        <router-link
+        <a :href="navigation_to_copy" class="u-button u-button_bleumarine">
+          {{ $t("open_copy") }}
+        </a>
+        <!-- <router-link
           :to="navigation_to_copy"
           class="u-button u-button_bleumarine"
         >
           {{ $t("open_copy") }}
-        </router-link>
+        </router-link> -->
       </template>
     </BaseModal2>
   </div>
@@ -121,7 +124,13 @@ export default {
   created() {},
   async mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    show_modal() {
+      if (this.show_modal) {
+        this.navigation_to_copy = undefined;
+      }
+    },
+  },
   computed: {
     project_medias_to_copy() {
       // we get all references medias projects
@@ -266,7 +275,8 @@ export default {
 
       if (!this.remove_original) {
         this.is_copying = false;
-        this.navigation_to_copy = navigation;
+        debugger;
+        this.navigation_to_copy = this.$router.resolve(navigation).href;
       } else {
         this.is_copying = false;
         await this.$api.deleteItem({
