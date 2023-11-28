@@ -391,32 +391,6 @@ module.exports = (function () {
   }) {
     dev.logfunction({ path_to_folder, originalFilename, path_to_temp_file });
 
-    const instructions_for_formats = [
-      {
-        extensions: [
-          ".jpeg",
-          ".jpg",
-          ".webp",
-          ".tiff",
-          ".tif",
-          ".heic",
-          ".dng",
-        ],
-        dest_ext: ".jpeg",
-        instructions: "convert_to_jpeg",
-      },
-      {
-        extensions: [".png"],
-        dest_ext: ".png",
-        instructions: "convert_to_png",
-      },
-      {
-        extensions: [".amr", ".wav"],
-        dest_ext: ".mp3",
-        instructions: "convert_to_mp3",
-      },
-    ];
-
     // make url-compatible media filenames
     let { name, ext } = path.parse(originalFilename);
     const filename_without_ext = utils.slug(name);
