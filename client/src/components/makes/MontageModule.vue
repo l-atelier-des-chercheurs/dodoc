@@ -56,8 +56,10 @@
         <div class="_imageDurationPicker" v-if="first_media.$type === 'image'">
           <NumberInput
             :value="makemodule.image_duration || default_image_duration"
-            :suffix="$t('secondes')"
+            :suffix="$t('seconds')"
             :size="'medium'"
+            :min="0"
+            :max="3600"
             @save="updateMakemodule({ image_duration: $event })"
           />
         </div>
