@@ -241,8 +241,12 @@ export default {
         ".flv",
         ".mov",
         ".avi",
-        ".webm",
       ];
+      return ext.some((e) => path.toLowerCase().endsWith(e));
+    },
+    fileCanBeOptimized({ path }) {
+      if (this.fileShouldBeOptimized({ path })) return true;
+      const ext = [".webm"];
       return ext.some((e) => path.toLowerCase().endsWith(e));
     },
   },

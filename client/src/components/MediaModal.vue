@@ -236,7 +236,7 @@ export default {
   watch: {},
   computed: {
     optimization_possible() {
-      return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+      return this.fileCanBeOptimized({ path: this.file.$media_filename });
     },
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });

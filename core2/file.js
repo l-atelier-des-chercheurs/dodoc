@@ -460,6 +460,7 @@ module.exports = (function () {
           new_meta.$type = "image";
           break;
         case ".mp4":
+        case ".webm":
           new_meta.$type = "video";
           break;
         case ".stl":
