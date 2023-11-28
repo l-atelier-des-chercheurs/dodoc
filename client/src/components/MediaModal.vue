@@ -159,6 +159,11 @@
             v-if="file.$infos && file.$infos.size"
             :size="file.$infos.size"
           />
+          <ResolutionDisplay
+            v-if="file.$infos"
+            :width="file.$infos.width"
+            :height="file.$infos.height"
+          />
           <DurationDisplay
             v-if="file.$infos && file.$infos.duration"
             :title="$t('duration')"
