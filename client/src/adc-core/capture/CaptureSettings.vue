@@ -1,7 +1,10 @@
 <template>
   <div class="m_captureSettings">
     <transition name="fade_fast" :duration="400">
-      <LoaderSpinner v-if="is_loading_available_devices || is_loading_feed" />
+      <LoaderSpinner
+        class="_loader"
+        v-if="is_loading_available_devices || is_loading_feed"
+      />
     </transition>
 
     <div class="_topbar">
@@ -613,10 +616,10 @@ export default {
     },
     selected_devices: {
       handler() {
-        // TODO save selected devices in localstorage
-        // this.$root.settings.capture_options.selected_devices = JSON.parse(
-        //   JSON.stringify(this.selected_devices)
-        // );
+        localStorage.setItem(
+          "selected_devices",
+          JSON.stringify(this.selected_devices)
+        );
       },
       deep: true,
     },
@@ -758,7 +761,6 @@ export default {
 
       if (this.connected_devices.length === 0) return;
 
-      // find in $root.settings.capture_options.selected_devices if video_input_device already exists
       if (this.all_video_input_devices.length > 0)
         this.selected_devices.video_input_device = this.getDefaultDevice({
           key: "video_input_device",
@@ -796,10 +798,18 @@ export default {
       if (this.$root.dev_mode === true)
         console.log(`CaptureSettings • METHODS : getDefaultDevice`);
 
-      // find if this.$root.settings.capture_options.selected_devices has key, and if value is in devices_list
-      // TODO restore last devices
-      const previously_used = false;
-      // this.$root.settings.capture_options.selected_devices;
+      let previously_used = false;
+
+      if (localStorage.getItem("selected_devices")) {
+        try {
+          previously_used = JSON.parse(
+            localStorage.getItem("selected_devices")
+          );
+        } catch (e) {
+          /**/
+        }
+      }
+
       if (previously_used?.[key]) {
         const found_device = devices_list.find(
           (d) => d.deviceId === previously_used[key].deviceId
@@ -1533,5 +1543,10 @@ export default {
     width: 2rem;
     height: 2rem;
   }
+}
+
+._loader {
+  position: absolute;
+  z-index: 1000;
 }
 </style>
