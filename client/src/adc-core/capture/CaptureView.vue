@@ -771,7 +771,10 @@
                   <div v-else class="_stopmotionValidation">
                     <div class="_stopmotionValidation--fpscounter">
                       <label class="u-label">{{ $t("img_per_second") }}</label>
-                      <select v-model.number="stopmotion_frame_rate">
+                      <select
+                        v-model.number="stopmotion_frame_rate"
+                        size="small"
+                      >
                         <option>2</option>
                         <option>4</option>
                         <option>8</option>
@@ -2351,7 +2354,7 @@ export default {
 ._stopmotionValidation {
   // .bg-rouge;
   flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4);
+  // padding: calc(var(--spacing) / 4);
   margin: 0;
   // margin: calc(var(--spacing) / 4);
 
