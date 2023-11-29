@@ -44,7 +44,7 @@ module.exports = (function () {
       });
     },
 
-    async convertCameraRAW({ source, destination }) {
+    async convertCameraRAW({ source, destination, quality_preset }) {
       let infos = await extractd.generate(source, {
         base64: true,
         datauri: true,
@@ -68,12 +68,22 @@ module.exports = (function () {
         quality_preset,
       });
     },
-    async convertAudio({ source, destination, ffmpeg_cmd, reportProgress }) {
+    async convertAudio({
+      source,
+      destination,
+      quality_preset,
+      ffmpeg_cmd,
+      reportProgress,
+    }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         // https://stackoverflow.com/a/70899710
         let totalTime;
+
+        let bitrate = "320k";
+        if (quality_preset === "high") bitrate = "192k";
+        else if (quality_preset === "medium") bitrate = "128k";
 
         ffmpeg_cmd
           .input(source)
@@ -103,14 +113,31 @@ module.exports = (function () {
           .save(destination);
       });
     },
-    async convertVideo({ source, destination, ffmpeg_cmd, reportProgress }) {
+    async convertVideo({
+      source,
+      destination,
+      quality_preset,
+      ffmpeg_cmd,
+      reportProgress,
+    }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
+        let resolution, bitrate;
+        if (quality_preset === "high") {
+          resolution = { width: 1920, height: 1080 };
+          bitrate = "4000k";
+        } else if (quality_preset === "medium") {
+          resolution = { width: 1920, height: 1080 };
+          bitrate = "2000k";
+        }
+
         await utils.convertVideoToStandardFormat({
-          ffmpeg_cmd,
           source,
           destination,
+          resolution,
+          bitrate,
+          ffmpeg_cmd,
           reportProgress,
         });
 

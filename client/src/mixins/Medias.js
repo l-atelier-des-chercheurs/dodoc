@@ -220,9 +220,7 @@ export default {
     fileShouldBeOptimized({ path }) {
       const ext = [
         ".heic",
-        ".tif",
-        ".tiff",
-        ".webp",
+
         ".cr3",
         ".cr2",
         ".raf",
@@ -232,6 +230,10 @@ export default {
         ".rw2",
         ".x3f",
         ".arw",
+
+        ".tif",
+        ".tiff",
+        ".webp",
 
         ".amr",
         ".wma",
@@ -246,7 +248,19 @@ export default {
     },
     fileCanBeOptimized({ path }) {
       if (this.fileShouldBeOptimized({ path })) return true;
-      const ext = [".webm", ".mp4"];
+      const ext = [
+        ".webm",
+        ".mp4",
+
+        ".jpeg",
+        ".jpg",
+
+        ".wav",
+        ".m4a",
+        ".off",
+        ".mp3",
+        ".aac",
+      ];
       return ext.some((e) => path.toLowerCase().endsWith(e));
     },
   },
