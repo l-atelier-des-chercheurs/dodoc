@@ -157,6 +157,8 @@ import DateDisplay from "@/adc-core/fields/DateDisplay.vue";
 Vue.component("DateDisplay", DateDisplay);
 import SizeDisplay from "@/adc-core/fields/SizeDisplay.vue";
 Vue.component("SizeDisplay", SizeDisplay);
+import ResolutionDisplay from "@/adc-core/fields/ResolutionDisplay.vue";
+Vue.component("ResolutionDisplay", ResolutionDisplay);
 import DurationDisplay from "@/adc-core/fields/DurationDisplay.vue";
 Vue.component("DurationDisplay", DurationDisplay);
 import ShowOnMap from "@/adc-core/fields/ShowOnMap.vue";

@@ -30,6 +30,7 @@
           <MediaContent
             :file="optimized_file"
             :context="'full'"
+            :zoom_on_click="true"
             :show_fs_button="true"
             :is_draggable="false"
           />
@@ -61,6 +62,36 @@
                 v-if="optimized_file.$infos && optimized_file.$infos.size"
               >
                 {{ formatBytes(optimized_file.$infos.size) }}
+              </template>
+              <template v-else> ? </template>
+            </strong>
+          </div>
+        </div>
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('resolution')" />
+          <div class="_comp">
+            <span>
+              <template
+                v-if="media.$infos && media.$infos.width && media.$infos.height"
+              >
+                {{ media.$infos.width + "×" + media.$infos.height }}
+              </template>
+              <template v-else> ? </template>
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              <template
+                v-if="
+                  optimized_file.$infos &&
+                  optimized_file.$infos.width &&
+                  optimized_file.$infos.height
+                "
+              >
+                {{
+                  optimized_file.$infos.width +
+                  "×" +
+                  optimized_file.$infos.height
+                }}
               </template>
               <template v-else> ? </template>
             </strong>

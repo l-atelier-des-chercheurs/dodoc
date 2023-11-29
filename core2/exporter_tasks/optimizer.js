@@ -1,6 +1,7 @@
 const { promisify } = require("util"),
   fs = require("fs"),
   decode = require("heic-decode"),
+  extractd = require("extractd"),
   sharp = require("sharp"),
   ffmpeg = require("fluent-ffmpeg");
 
@@ -32,6 +33,28 @@ module.exports = (function () {
           density: 300,
         },
       })
+        .rotate()
+        .toFormat("jpeg", {
+          quality: global.settings.mediaThumbQuality,
+        })
+        .toFile(destination)
+        .catch((err) => {
+          dev.error(`Failed to sharp create image to destination.`);
+          throw err;
+        });
+    },
+    async convertCameraRAW({ source, destination }) {
+      let infos = await extractd.generate(source, {
+        base64: true,
+        datauri: true,
+      });
+
+      if (!infos.preview) throw new Error(`no_preview_detected`);
+
+      // https://stackoverflow.com/a/51957976
+      const uri = infos.preview.split(";base64,").pop();
+      const imgBuffer = Buffer.from(uri, "base64");
+      await sharp(imgBuffer)
         .rotate()
         .toFormat("jpeg", {
           quality: global.settings.mediaThumbQuality,
