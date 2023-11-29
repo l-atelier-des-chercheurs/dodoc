@@ -255,7 +255,7 @@ export default {
   },
   methods: {
     resetFilters() {
-      this.$emit("update:group_mode", "day");
+      this.$emit("update:group_mode", "year");
       this.$emit("update:sort_order", "date_uploaded");
       this.$emit("update:search_str", "");
       this.$emit("update:author_path_filter", "");
