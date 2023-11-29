@@ -44,7 +44,7 @@
           <OptimizeMedia :media="file" @close="$emit('close')" />
         </div>
 
-        <transition name="scaleInFade" mode="out-in">
+        <transition name="scaleOutFade" mode="out-in">
           <div
             class="_navBtns"
             v-if="position_in_list !== 'alone' && show_nav_btn"
