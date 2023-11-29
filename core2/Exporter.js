@@ -614,7 +614,7 @@ class Exporter {
           this.instructions.montage.length;
         // 50
         const intval = 100 / total_number_of_items_to_process;
-        const reportFFMPEGProgress = (ffmpeg_progress) => {
+        const reportProgress = (ffmpeg_progress) => {
           let progress_percent = Math.round(
             utils.remap(
               ffmpeg_progress,
@@ -646,7 +646,7 @@ class Exporter {
             resolution,
             bitrate,
             ffmpeg_cmd: this.ffmpeg_cmd,
-            reportFFMPEGProgress,
+            reportProgress,
           }));
         } else {
           continue;
@@ -735,7 +735,6 @@ class Exporter {
       const handler = ext_handler.find((e) =>
         utils.fileExtensionIs(this.instructions.base_media_path, e.exts)
       );
-
       if (!handler) throw new Error(`no_handler`);
 
       ({ full_path_to_folder_in_cache, full_path_to_new_file } =
@@ -749,10 +748,13 @@ class Exporter {
 
       this._notifyProgress(10);
 
+      const quality_preset = this.instructions.quality_preset || "source";
+      // source high medium
+
       const that = this;
-      const reportFFMPEGProgress = (ffmpeg_progress) => {
+      const reportProgress = (progress) => {
         const progress_percent = Math.round(
-          utils.remap(ffmpeg_progress, 0, 100, 15, 90)
+          utils.remap(progress, 0, 100, 15, 90)
         );
         that._notifyProgress(progress_percent);
       };
@@ -760,8 +762,9 @@ class Exporter {
       await optimizer[handler.task]({
         source: base_media_path,
         destination: full_path_to_new_file,
+        quality_preset,
         ffmpeg_cmd: this.ffmpeg_cmd,
-        reportFFMPEGProgress,
+        reportProgress,
       });
       this._notifyProgress(95);
       return full_path_to_new_file;

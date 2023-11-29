@@ -562,7 +562,7 @@ module.exports = (function () {
       format = "mp4",
       bitrate = "6000k",
       resolution,
-      reportFFMPEGProgress,
+      reportProgress,
     }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
@@ -625,10 +625,10 @@ module.exports = (function () {
             totalTime = parseInt(data.duration.replace(/:/g, ""));
           })
           .on("progress", (progress) => {
-            if (reportFFMPEGProgress) {
+            if (reportProgress) {
               const time = parseInt(progress.timemark.replace(/:/g, ""));
               const percent = (time / totalTime) * 100;
-              reportFFMPEGProgress(percent);
+              reportProgress(percent);
             }
           })
           .on("end", () => {

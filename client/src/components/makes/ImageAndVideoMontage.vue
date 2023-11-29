@@ -211,19 +211,9 @@ export default {
     messages: {
       fr: {
         export_montage: "Exporter le montage",
-        very_high: "Très élevée",
-        high: "Élevée",
-        medium: "Moyenne",
-        low: "Basse",
-        rough: "Ébauche",
       },
       en: {
         export_montage: "Export montage",
-        very_high: "Very high",
-        high: "High",
-        medium: "Medium",
-        low: "Low",
-        rough: "Draft",
       },
     },
   },

@@ -22,67 +22,53 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
-    async convertHEIC({ source, destination }) {
-      const buffer = await promisify(fs.readFile)(source);
-      const { width, height, data } = await decode({ buffer });
-      await sharp(new Uint8Array(data), {
+    async convertHEIC({ source, destination, quality_preset }) {
+      const heic_buffer = await promisify(fs.readFile)(source);
+      const { width, height, data } = await decode({ buffer: heic_buffer });
+
+      const buffer = new Uint8Array(data);
+      const addtl_infos = {
         raw: {
           width,
           height,
           channels: 4,
           density: 300,
         },
-      })
-        .rotate()
-        .toFormat("jpeg", {
-          quality: global.settings.mediaThumbQuality,
-        })
-        .toFile(destination)
-        .catch((err) => {
-          dev.error(`Failed to sharp create image to destination.`);
-          throw err;
-        });
+      };
+
+      await _saveImage({
+        source: buffer,
+        addtl_infos,
+        destination,
+        quality_preset,
+      });
     },
+
     async convertCameraRAW({ source, destination }) {
       let infos = await extractd.generate(source, {
         base64: true,
         datauri: true,
       });
-
       if (!infos.preview) throw new Error(`no_preview_detected`);
 
       // https://stackoverflow.com/a/51957976
       const uri = infos.preview.split(";base64,").pop();
-      const imgBuffer = Buffer.from(uri, "base64");
-      await sharp(imgBuffer)
-        .rotate()
-        .toFormat("jpeg", {
-          quality: global.settings.mediaThumbQuality,
-        })
-        .toFile(destination)
-        .catch((err) => {
-          dev.error(`Failed to sharp create image to destination.`);
-          throw err;
-        });
+      const buffer = Buffer.from(uri, "base64");
+
+      await _saveImage({
+        source: buffer,
+        destination,
+        quality_preset,
+      });
     },
-    async convertImage({ source, destination }) {
-      await sharp(source)
-        .rotate()
-        .toFormat("jpeg", {
-          quality: global.settings.mediaThumbQuality,
-        })
-        .toFile(destination)
-        .catch((err) => {
-          dev.error(`Failed to sharp create image to destination.`);
-          throw err;
-        });
+    async convertImage({ source, destination, quality_preset }) {
+      await _saveImage({
+        source,
+        destination,
+        quality_preset,
+      });
     },
-    async convertAudio({
-      source,
-      destination,
-      ffmpeg_cmd,
-      reportFFMPEGProgress,
-    }) {
+    async convertAudio({ source, destination, ffmpeg_cmd, reportProgress }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
@@ -103,7 +89,7 @@ module.exports = (function () {
           .on("progress", (progress) => {
             const time = parseInt(progress.timemark.replace(/:/g, ""));
             const percent = (time / totalTime) * 100;
-            reportFFMPEGProgress(percent);
+            reportProgress(percent);
           })
           .on("end", async () => {
             return resolve();
@@ -117,12 +103,7 @@ module.exports = (function () {
           .save(destination);
       });
     },
-    async convertVideo({
-      source,
-      destination,
-      ffmpeg_cmd,
-      reportFFMPEGProgress,
-    }) {
+    async convertVideo({ source, destination, ffmpeg_cmd, reportProgress }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
@@ -130,13 +111,52 @@ module.exports = (function () {
           ffmpeg_cmd,
           source,
           destination,
-          reportFFMPEGProgress,
+          reportProgress,
         });
 
         return resolve();
       });
     },
   };
+
+  async function _saveImage({
+    source,
+    addtl_infos = undefined,
+    destination,
+    quality_preset,
+  }) {
+    const sharp_buffer = await sharp(source, addtl_infos)
+      .rotate()
+      .toFormat("jpeg", {
+        quality: global.settings.mediaThumbQuality,
+      })
+      .toBuffer()
+      .catch((err) => {
+        dev.error(`Failed to sharp create image to destination.`);
+        throw err;
+      });
+
+    if (quality_preset === "source")
+      await sharp(sharp_buffer).toFile(destination);
+    else if (quality_preset === "high")
+      await sharp(sharp_buffer)
+        .resize({
+          width: 1920,
+          height: 1920,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .toFile(destination);
+    else if (quality_preset === "medium")
+      await sharp(sharp_buffer)
+        .resize({
+          width: 1280,
+          height: 1280,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .toFile(destination);
+  }
 
   return API;
 })();

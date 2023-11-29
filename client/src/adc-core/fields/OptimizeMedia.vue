@@ -1,7 +1,7 @@
 <template>
   <div>
     <button type="button" class="u-buttonLink" @click="show_modal = true">
-      <b-icon icon="tools" />
+      <b-icon :icon="media.$optimized === true ? 'check2-circle' : 'tools'" />
       {{ $t("optimize") }}
     </button>
 
@@ -13,16 +13,36 @@
     >
       <LoaderSpinner v-if="is_optimizing" />
       <div v-if="!optimized_file">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="optimizeMedia"
+        <div
+          v-if="media.$optimized === true"
+          class="u-spacingBottom u-instructions"
         >
-          <b-icon icon="tools" />
-          {{ $t("preview_optimize") }}
-        </button>
-        <div class="u-instructions">
-          {{ $t("wont_remove_original") }}
+          {{ $t("already_optimized") }}
+        </div>
+        <div class="u-spacingBottom">
+          <SelectField2
+            :value="resolution_preset_picked"
+            :options="presets"
+            :can_edit="true"
+            :hide_validation="true"
+            @change="resolution_preset_picked = $event"
+          />
+        </div>
+
+        <div class="" slot="footer">
+          <div class="u-spacingBottom">
+            <button
+              type="button"
+              class="u-button u-button_bleuvert"
+              @click="optimizeMedia"
+            >
+              <b-icon icon="tools" />
+              {{ $t("preview_optimize") }}
+            </button>
+          </div>
+          <div class="u-instructions">
+            {{ $t("wont_remove_original") }}
+          </div>
         </div>
       </div>
       <div class="" v-else>
@@ -136,12 +156,30 @@ export default {
       show_modal: false,
       is_optimizing: false,
       optimized_file: undefined,
+      resolution_preset_picked: "source",
+
+      presets: [
+        {
+          key: "source",
+          text: this.$t("same_as_source"),
+        },
+        {
+          key: "high",
+          text: this.$t("high"),
+        },
+        {
+          key: "medium",
+          text: this.$t("medium"),
+        },
+      ],
     };
   },
   i18n: {
     messages: {
       fr: {
         optimize: "Optimiser",
+        already_optimized:
+          "Ce média a déjà été optimisé, l’optimiser à nouveau risque de dégrader sa qualité de manière importante.",
         preview_optimize: "Créer une version optimisée",
         wont_remove_original: "Ne supprimera pas l’original",
         add_optimized_to_lib: "Conserver l’original et la nouvelle version",
@@ -175,16 +213,17 @@ export default {
   methods: {
     async optimizeMedia() {
       this.is_optimizing = true;
-
       const instructions = {
         recipe: "optimize_media",
         suggested_file_name: this.media.$media_filename,
+        quality_preset: this.resolution_preset_picked,
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
         }),
         additional_meta: {
           $origin: "collect",
+          $optimized: true,
         },
       };
       const current_task_id = await this.$api.optimizeFile({
@@ -230,6 +269,7 @@ export default {
         new_meta: {
           $media_filename: new_source_file,
           $type: this.optimized_file.$type,
+          $optimized: true,
         },
       });
 
