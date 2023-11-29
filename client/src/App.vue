@@ -700,6 +700,20 @@ img {
     opacity: 0;
   }
 }
+.scaleOutFade {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: scale(1.05);
+    opacity: 0;
+  }
+}
 .toggleLock {
   &-enter-active,
   &-leave-active {
