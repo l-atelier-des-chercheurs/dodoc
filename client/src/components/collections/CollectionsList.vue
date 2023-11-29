@@ -1,48 +1,54 @@
 <template>
-  <BaseModal2 :title="$t('collections')" :size="'full'" @close="$emit('close')">
-    <div class="_cont">
-      <div class="u-instructions u-spacingBottom">
-        {{ $t("coll_instr") }}
-      </div>
+  <!-- <BaseModal2 :title="$t('collections')" :size="'full'" @close="$emit('close')"> -->
+  <div class="_cont">
+    <div class="u-instructions u-spacingBottom">
+      {{ $t("coll_instr") }}
+    </div>
 
-      <div class="_collectionsList">
-        <div class="">
-          <button
-            type="button"
-            class="u-button u-button_black"
-            @click="show_create_coll = true"
-          >
-            <b-icon icon="plus-circle" />&nbsp;
-            {{ $t("create_a_collection") }}
-          </button>
-          <CreateFolder
-            v-if="show_create_coll"
-            :modal_name="$t('create_a_collection')"
-            :path="'collections'"
-            :default_folder_status="'private'"
-            @close="show_create_coll = false"
-            @openNew="openNewCollection"
-          />
-        </div>
-        <div v-for="collection in collections" :key="collection.$path">
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="openCollection({ path: collection.$path })"
-          >
-            {{ collection.title }}
-          </button>
-        </div>
+    <div class="_collectionsList">
+      <div class="">
+        <button
+          type="button"
+          class="u-button u-button_black"
+          @click="show_create_coll = true"
+        >
+          <b-icon icon="plus-circle" />&nbsp;
+          {{ $t("create_a_collection") }}
+        </button>
+        <CreateFolder
+          v-if="show_create_coll"
+          :modal_name="$t('create_a_collection')"
+          :path="'collections'"
+          :default_folder_status="'private'"
+          @close="show_create_coll = false"
+          @openNew="openNewCollection"
+        />
       </div>
+      <div v-for="collection in collections" :key="collection.$path">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="openCollection({ path: collection.$path })"
+        >
+          {{ collection.title }}
+        </button>
+      </div>
+    </div>
 
-      <div class="_openedCollection" v-if="opened_collection">
+    <transition name="slideup" mode="out-in">
+      <div
+        class="_openedCollectionPane"
+        v-if="opened_collection"
+        :key="opened_collection.$path"
+      >
         <OpenedCollection
           :collection="opened_collection"
           @close="closeCollection"
         />
       </div>
-    </div>
-  </BaseModal2>
+    </transition>
+  </div>
+  <!-- </BaseModal2> -->
 </template>
 <script>
 import OpenedCollection from "@/components/collections/OpenedCollection.vue";
@@ -65,7 +71,7 @@ export default {
         collections: "Collections",
         create_a_collection: "Créer une collection",
         coll_instr:
-          "Les collections permettent de sélectionner des éléments de l’espace partagé pour les réunir.",
+          "Les collections permettent de sélectionner des piles dans l’espace partagé pour les réunir et les partager.",
       },
     },
   },
@@ -120,12 +126,17 @@ export default {
 }
 
 ._collectionsList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  // display: grid;
+  // grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  display: flex;
+  flex-flow: row nowrap;
   gap: calc(var(--spacing) / 2);
+  overflow: auto;
 
   > * {
     aspect-ratio: 1;
+    flex: 0 0 150px;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -133,7 +144,7 @@ export default {
   }
 }
 
-._openedCollection {
+._openedCollectionPane {
   position: absolute;
   top: 0;
   left: 0;

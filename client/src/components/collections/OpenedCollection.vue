@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <h1>{{ collection.title }}</h1>
+  <div class="_openedCollection">
     <button type="button" class="u-buttonLink" @click="$emit('close')">
-      <b-icon icon="x-circle" />
-      {{ $t("close") }}
+      <b-icon icon="arrow-left" />
+      {{ $t("back") }}
     </button>
+    <h2>{{ collection.title }}</h2>
   </div>
 </template>
 <script>
@@ -29,4 +29,8 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._openedCollection {
+  text-align: left;
+}
+</style>

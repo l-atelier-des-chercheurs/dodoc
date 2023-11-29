@@ -131,8 +131,8 @@
             </template>
             <template v-else>
               <b-icon icon="list" />
-              &nbsp;
-              {{ $t("informations") }}
+              <!-- &nbsp;
+              {{ $t("informations") }} -->
             </template>
           </button>
         </div>
