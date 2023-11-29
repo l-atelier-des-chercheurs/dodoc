@@ -142,6 +142,9 @@ export default function () {
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
 
         create_stack: "Créer une pile",
+        deselect_all: "Déselectionner tout",
+        remove_all: "Supprimer tout",
+
         remove_stack: "Supprimer la pile et ses contenus",
         show_only_my_content: "Seulement mon contenu",
 
@@ -824,6 +827,7 @@ export default function () {
         require_mail_to_signup:
           "Une adresse courriel est obligatoire pour créer un compte",
         enable_events: "Activer la fonctionnalité « événements »",
+        shared_space_archive: "Espace partagé / Archive",
         filter_sort: "Filtrer/classer",
 
         you_must_login_to_contribute:

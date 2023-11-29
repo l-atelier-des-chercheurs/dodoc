@@ -164,6 +164,9 @@
             <div v-if="is_instance_admin">
               <DownloadFolder :path="shared_folder_path" />
             </div>
+            <div class="">
+              {{ stacked_items_not_in_stack.length }}
+            </div>
           </small>
         </footer>
       </div>
@@ -182,6 +185,20 @@
           />
         </div>
       </transition>
+
+      <div class="_showCollectionsBtn" v-if="is_instance_admin">
+        <button
+          type="button"
+          class="u-button u-button_black"
+          @click="show_collections = true"
+        >
+          {{ $t("collections") }}
+        </button>
+        <CollectionsList
+          v-if="show_collections"
+          @close="show_collections = false"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -190,6 +207,7 @@ import SharedFolderItem from "@/components/SharedFolderItem.vue";
 import ItemModal from "@/components/ItemModal.vue";
 import FilterBar from "@/components/FilterBar.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
+import CollectionsList from "@/components/collections/CollectionsList.vue";
 
 export default {
   props: {
@@ -200,6 +218,7 @@ export default {
     ItemModal,
     FilterBar,
     LangModal,
+    CollectionsList,
   },
   data() {
     return {
@@ -220,6 +239,8 @@ export default {
       group_mode: "year",
 
       item_width: 150,
+
+      show_collections: false,
 
       // sort_order: localStorage.getItem("sort_order") || "date_uploaded",
       // search_str: localStorage.getItem("search_str") || "",
@@ -302,14 +323,16 @@ export default {
       };
     },
 
-    shared_files() {
+    all_files() {
       if (!this.shared_folder?.$files) return [];
-      const _all_medias = JSON.parse(JSON.stringify(this.shared_folder.$files));
-
-      const _stacks_of_medias = _all_medias.filter((m) => m.belongs_to_stack);
-
+      return JSON.parse(JSON.stringify(this.shared_folder.$files));
+    },
+    shared_files() {
+      const _stacks_of_medias = this.all_files.filter(
+        (m) => m.belongs_to_stack
+      );
       // remove medias part of stacks
-      const _medias_not_in_stacks = _all_medias.reduce((acc, m) => {
+      const _medias_not_in_stacks = this.all_files.reduce((acc, m) => {
         // if (!m.date_created_corrected)
         //   m.date_created_corrected = m.$date_created || m.$date_uploaded;
 
@@ -385,6 +408,20 @@ export default {
         order_props,
         this.group_mode
       );
+    },
+    stacked_items_not_in_stack() {
+      return this.all_files.filter((m) => {
+        m;
+        // if belongs to stack but stack does not exist
+        // if (m.belongs_to_stack) {
+        // if() {}
+        // }
+        // this.shared_files._stack_files
+        // if(this.shared_files.some(f => f.stack_files_metas && f.stack_files_metas.some((sfm) =>
+        //   _stacks_of_medias.find((sm) => sm.$path.endsWith("/" + sfm))
+        // )))
+        return false;
+      });
     },
     available_keywords() {
       const all_kw = this.filtered_shared_files.reduce((acc, f) => {
@@ -576,6 +613,22 @@ export default {
 
   button {
     padding: calc(var(--spacing) / 2);
+  }
+}
+
+._showCollectionsBtn {
+  pointer-events: none;
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  padding: calc(var(--spacing) / 1);
+
+  text-align: center;
+
+  > * {
+    pointer-events: auto;
   }
 }
 </style>

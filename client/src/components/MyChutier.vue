@@ -610,5 +610,11 @@ export default {
   right: 0;
   background: var(--chutier-bg);
   z-index: 1;
+
+  ::v-deep {
+    ._uploadFile {
+      background: black !important;
+    }
+  }
 }
 </style>
