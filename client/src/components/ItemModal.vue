@@ -55,6 +55,8 @@
               :file="current_file_shown"
               :context="'full'"
               :resolution="1600"
+              :show_fs_button="true"
+              :zoom_on_click="true"
             />
           </div>
 
