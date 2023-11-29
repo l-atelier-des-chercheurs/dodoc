@@ -246,7 +246,7 @@ export default {
     },
     fileCanBeOptimized({ path }) {
       if (this.fileShouldBeOptimized({ path })) return true;
-      const ext = [".webm"];
+      const ext = [".webm", ".mp4"];
       return ext.some((e) => path.toLowerCase().endsWith(e));
     },
   },
