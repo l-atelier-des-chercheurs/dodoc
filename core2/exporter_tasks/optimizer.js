@@ -1,7 +1,6 @@
 const { promisify } = require("util"),
   fs = require("fs"),
   decode = require("heic-decode"),
-  extractd = require("extractd"),
   sharp = require("sharp"),
   ffmpeg = require("fluent-ffmpeg");
 
@@ -45,7 +44,7 @@ module.exports = (function () {
     },
 
     async convertCameraRAW({ source, destination, quality_preset }) {
-      let infos = await extractd.generate(source, {
+      let infos = await require("extractd").generate(source, {
         base64: true,
         datauri: true,
       });
