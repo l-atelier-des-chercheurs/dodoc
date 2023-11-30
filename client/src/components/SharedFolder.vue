@@ -136,7 +136,7 @@
                   </div>
                   <transition-group
                     tag="div"
-                    class="_grid"
+                    class="itemGrid"
                     name="listComplete"
                     appear
                   >
@@ -148,6 +148,7 @@
                       :is_opened="
                         opened_file && opened_file.$path === file.$path
                       "
+                      :can_be_added_to_coll="!!opened_collection_slug"
                       @open="openFile(file.$path)"
                     />
                   </transition-group>
@@ -200,16 +201,25 @@
       >
         <button
           type="button"
-          class="u-button u-button_black"
-          @click="show_collections = !show_collections"
+          class="u-button u-button_black _openBtn"
+          @click="toggleCollPane"
         >
-          <b-icon :icon="!show_collections ? 'chevron-up' : 'chevron-down'" />
+          <b-icon
+            :icon="
+              !(show_collections || opened_collection_slug)
+                ? 'chevron-up'
+                : 'chevron-down'
+            "
+          />
           &nbsp;
           {{ $t("collections") }}
         </button>
         <CollectionsList
-          v-if="show_collections"
-          @close="show_collections = false"
+          v-if="show_collections || opened_collection_slug"
+          :shared_folder="shared_folder"
+          :shared_files="shared_files"
+          :opened_collection_slug="opened_collection_slug"
+          @toggleCollection="toggleCollection"
         />
       </div>
     </div>
@@ -278,6 +288,12 @@ export default {
   },
   beforeDestroy() {},
   watch: {
+    opened_collection_slug: {
+      handler() {
+        if (this.opened_collection_slug) this.show_collections = true;
+      },
+      immediate: true,
+    },
     // sort_order() {
     //   localStorage.setItem("sort_order", this.sort_order);
     // },
@@ -303,6 +319,10 @@ export default {
       return this.shared_files.find(
         (si) => this.getFilename(si.$path) === this.$route.query.file
       );
+    },
+    opened_collection_slug() {
+      if (!this.$route.query?.collection) return undefined;
+      return this.$route.query.collection;
     },
     current_lang_code() {
       this.$i18n.availableLocales;
@@ -485,6 +505,20 @@ export default {
         return true;
       return false;
     },
+    toggleCollection(slug) {
+      let query = Object.assign({}, this.$route.query) || {};
+      if (slug) query.collection = slug;
+      else delete query.collection;
+      this.$router.push({ query });
+    },
+    toggleCollPane() {
+      if (!this.show_collections) {
+        this.show_collections = true;
+      } else {
+        this.show_collections = false;
+        if (this.opened_collection_slug) this.toggleCollection();
+      }
+    },
   },
 };
 </script>
@@ -595,18 +629,6 @@ export default {
   font-size: var(--sl-font-size-normal);
 }
 
-._grid {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: flex-end;
-  gap: calc(var(--spacing) * 3) calc(var(--spacing) * 2);
-
-  gap: calc(var(--items-width, 150px) / 5 + var(--spacing))
-    calc(var(--items-width, 150px) / 10 + var(--spacing) / 2);
-}
 ._file {
   width: var(--items-width, 150px);
 }
@@ -643,7 +665,6 @@ export default {
   width: 100%;
   bottom: 0;
   left: 0;
-  padding: calc(var(--spacing) / 2);
 
   text-align: center;
 
@@ -655,5 +676,8 @@ export default {
   > * {
     pointer-events: auto;
   }
+}
+._openBtn {
+  margin: calc(var(--spacing) / 2);
 }
 </style>

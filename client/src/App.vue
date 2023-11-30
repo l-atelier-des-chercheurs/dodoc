@@ -467,6 +467,19 @@ ol {
   font-variant: small-caps;
 }
 
+.itemGrid {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: calc(var(--spacing) * 3) calc(var(--spacing) * 2);
+
+  gap: calc(var(--items-width, 150px) / 5 + var(--spacing))
+    calc(var(--items-width, 150px) / 10 + var(--spacing) / 2);
+}
+
 small {
   font-size: var(--sl-font-size-small);
 }

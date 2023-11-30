@@ -1,7 +1,7 @@
 <template>
   <!-- <BaseModal2 :title="$t('collections')" :size="'full'" @close="$emit('close')"> -->
   <div class="_cont">
-    <div class="u-instructions u-spacingBottom">
+    <div class="u-instructions">
       {{ $t("coll_instr") }}
     </div>
 
@@ -28,7 +28,7 @@
         <button
           type="button"
           class="u-buttonLink"
-          @click="openCollection({ path: collection.$path })"
+          @click="$emit('toggleCollection', getFilename(collection.$path))"
         >
           {{ collection.title }}
         </button>
@@ -43,6 +43,7 @@
       >
         <OpenedCollection
           :collection="opened_collection"
+          :files="opened_collection_items"
           @close="closeCollection"
         />
       </div>
@@ -54,7 +55,11 @@
 import OpenedCollection from "@/components/collections/OpenedCollection.vue";
 
 export default {
-  props: {},
+  props: {
+    shared_folder: Object,
+    shared_files: Array,
+    opened_collection_slug: String,
+  },
   components: {
     OpenedCollection,
   },
@@ -80,40 +85,49 @@ export default {
       path: this.path,
     });
     this.$api.join({ room: this.path });
+
+    this.$eventHub.$on("collection.addStack", this.addToStack);
   },
   mounted() {},
   beforeDestroy() {
     this.$api.leave({ room: this.path });
+
+    this.$eventHub.$off("collection.addStack", this.addToStack);
   },
   watch: {},
   computed: {
-    opened_collection_slug() {
-      return this.$route.query?.collection;
-    },
     opened_collection() {
       return this.collections.find(
         (c) => this.getFilename(c.$path) === this.opened_collection_slug
       );
     },
+    opened_collection_items() {
+      if (!this.opened_collection?.stacks_list) return [];
+      return this.opened_collection.stacks_list.reduce((acc, path) => {
+        const item = this.shared_files.find((f) => f.$path === path);
+        if (item) acc.push(item);
+        return acc;
+      }, []);
+    },
   },
   methods: {
     openNewCollection(new_folder_slug) {
       this.show_create_coll = false;
-      this.openCollection({ slug: new_folder_slug });
-    },
-    openCollection({ slug, path }) {
-      if (path) slug = this.getFilename(path);
-
-      let query = this.$route.query
-        ? JSON.parse(JSON.stringify(this.$route.query))
-        : {};
-
-      query.collection = slug;
-
-      this.$router.push({ query });
+      this.$emit("toggleCollection", new_folder_slug);
     },
     closeCollection() {
-      this.$router.push("/");
+      this.$emit("toggleCollection", undefined);
+    },
+    addToStack(stack_path) {
+      const items_paths = this.opened_collection_items.map((i) => i.$path);
+      items_paths.push(stack_path);
+      this.updateOpenedCollection({ stacks_list: items_paths });
+    },
+    async updateOpenedCollection(new_meta) {
+      await this.$api.updateMeta({
+        path: this.opened_collection.$path,
+        new_meta,
+      });
     },
   },
 };
@@ -122,7 +136,7 @@ export default {
 ._collections {
 }
 ._cont {
-  padding: calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 1);
 }
 
 ._collectionsList {
@@ -131,6 +145,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
   overflow: auto;
 
   > * {
@@ -151,6 +166,7 @@ export default {
   background: white;
   height: 100%;
   width: 100%;
+  border-top: 2px solid var(--c-gris);
   padding: calc(var(--spacing) / 1);
 }
 </style>

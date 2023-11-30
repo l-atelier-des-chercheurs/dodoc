@@ -5,14 +5,29 @@
       {{ $t("back") }}
     </button>
     <h2>{{ collection.title }}</h2>
+    <div class="_stackList">
+      <transition-group tag="div" class="itemGrid" name="listComplete" appear>
+        <SharedFolderItem
+          class="_file"
+          v-for="file in files"
+          :key="file.$path"
+          :file="file"
+        />
+      </transition-group>
+    </div>
   </div>
 </template>
 <script>
+import SharedFolderItem from "@/components/SharedFolderItem.vue";
+
 export default {
   props: {
     collection: Object,
+    files: Array,
   },
-  components: {},
+  components: {
+    SharedFolderItem,
+  },
   data() {
     return {};
   },
@@ -32,5 +47,9 @@ export default {
 <style lang="scss" scoped>
 ._openedCollection {
   text-align: left;
+}
+
+._file {
+  width: 100px;
 }
 </style>

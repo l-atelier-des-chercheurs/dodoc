@@ -402,7 +402,7 @@ export default {
     }
 
     &.is--shown {
-      opacity: 0.7;
+      opacity: 0.5;
       background: var(--c-gris);
     }
   }

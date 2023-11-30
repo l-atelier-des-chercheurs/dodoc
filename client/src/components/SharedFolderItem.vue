@@ -21,6 +21,14 @@
       :img_loading="'lazy'"
       :resolution="360"
     />
+    <button
+      type="button"
+      class="u-button u-button_icon"
+      v-if="can_be_added_to_coll"
+      @click.stop="addToColl"
+    >
+      <b-icon icon="plus-circle" :aria-label="$t('add')" />
+    </button>
     <template v-if="_is_stack">
       <MediaContent
         class="_sharedFolderItem--preview _sharedFolderItem--preview_stacked"
@@ -44,6 +52,7 @@ export default {
   props: {
     file: Object,
     is_opened: Boolean,
+    can_be_added_to_coll: Boolean,
   },
   components: {},
   data() {
@@ -71,7 +80,11 @@ export default {
       return this.file?._stack_files;
     },
   },
-  methods: {},
+  methods: {
+    addToColl() {
+      this.$eventHub.$emit("collection.addStack", this.file.$path);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

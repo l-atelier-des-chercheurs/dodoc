@@ -169,7 +169,7 @@
             "required": true,
             "unique": true
           },
-          "stack_list": {
+          "stacks_list": {
             "type": "array"
           }
         },
