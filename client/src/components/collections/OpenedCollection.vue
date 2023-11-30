@@ -5,16 +5,14 @@
       {{ $t("back") }}
     </button>
     <h2>{{ collection.title }}</h2>
-    <div class="_stackList">
-      <transition-group tag="div" class="itemGrid" name="listComplete" appear>
-        <SharedFolderItem
-          class="_file"
-          v-for="file in files"
-          :key="file.$path"
-          :file="file"
-        />
-      </transition-group>
-    </div>
+    <transition-group tag="div" class="itemGrid" name="listComplete" appear>
+      <SharedFolderItem
+        class="_file"
+        v-for="file in files"
+        :key="file.$path"
+        :file="file"
+      />
+    </transition-group>
   </div>
 </template>
 <script>

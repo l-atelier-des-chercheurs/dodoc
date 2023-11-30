@@ -23,7 +23,7 @@
     />
     <button
       type="button"
-      class="u-button u-button_icon"
+      class="u-button u-button_icon _addToColl"
       v-if="can_be_added_to_coll"
       @click.stop="addToColl"
     >
@@ -213,5 +213,13 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
+}
+._addToColl {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
 }
 </style>
