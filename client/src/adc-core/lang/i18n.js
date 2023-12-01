@@ -91,7 +91,6 @@ export default function () {
         open_in_finder: "Ouvrir dans l’explorateur",
 
         admins_and_contributors: "Référents et contributeurs",
-        // admins_and_contributors_instr: "",
         set_admins_and_contributors: "Définir les référents et contributeurs",
         instance_admins_instr:
           "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
@@ -1003,6 +1002,10 @@ export default function () {
         your_account: "Your account",
         new_account: "New account",
         show_list: "Show the list",
+
+        open_in_finder: "Open in finder",
+        admins_and_contributors: "Admins and contributors",
+        set_admins_and_contributors: "Set admins and contributors",
 
         ui_lang_select: "Interface language",
         lang_updated: "The lang has been updated",
