@@ -2,12 +2,12 @@
   <div>
     <button type="button" class="u-buttonLink" @click="show_modal = true">
       <b-icon :icon="media.$optimized === true ? 'check2-circle' : 'tools'" />
-      {{ $t("optimize") }}
+      {{ $t("convert") }}
     </button>
 
     <BaseModal2
       v-if="show_modal"
-      :title="$t('optimize')"
+      :title="$t('convert')"
       :size="modal_width"
       @close="show_modal = false"
     >
@@ -190,16 +190,18 @@ export default {
   i18n: {
     messages: {
       fr: {
-        optimize: "Optimiser",
+        convert: "Convertir",
         already_optimized:
-          "Ce média a déjà été optimisé, l’optimiser à nouveau risque de dégrader sa qualité de manière importante.",
+          "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
         preview_optimize: "Créer une version optimisée",
         wont_remove_original: "Ne supprimera pas l’original",
         add_optimized_to_lib: "Conserver l’original et la nouvelle version",
         replace_original: "Remplacer et supprimer l’original",
       },
       en: {
-        optimize: "Optimize",
+        convert: "Convert",
+        already_optimized:
+          "This media has already been converted, it is not recommended to convert it again.",
         preview_optimize: "Create optimized version",
         wont_remove_original: "Will not remove the original",
         add_optimized_to_lib: "Keep original media and add new version",

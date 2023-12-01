@@ -40,7 +40,7 @@
           :zoom_on_click="true"
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
-          {{ $t("optimize_to_visualize") }}
+          {{ $t("convert_to_format") }}
           <OptimizeMedia :media="file" @close="$emit('close')" />
         </div>
 
@@ -215,11 +215,11 @@ export default {
     messages: {
       fr: {
         place: "Emplacement",
-        optimize_to_visualize: "Optimiser ce fichier pour le visualiser",
+        convert_to_format: "Adapter le format pour la lecture",
       },
       en: {
         place: "Place",
-        optimize_to_visualize: "Optimize to visualize",
+        convert_to_format: "Adapt format for viewing",
       },
     },
   },
