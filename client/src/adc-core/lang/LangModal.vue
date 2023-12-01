@@ -49,14 +49,11 @@ export default {
   computed: {},
   methods: {
     updateLang(new_lang) {
-      this.$i18n.locale = new_lang;
-      localStorage.setItem("language", new_lang);
-
+      this.$i18n.changeLocale(new_lang);
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
         .success(this.$t("lang_updated"));
-
       this.$emit("close");
     },
   },
