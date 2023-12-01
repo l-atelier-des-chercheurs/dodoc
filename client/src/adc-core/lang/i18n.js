@@ -978,6 +978,7 @@ export default function () {
         day: "Day",
         month: "Month",
         year: "Year",
+        admin_settings: "Admin settings",
 
         keywords: "keywords",
         template: "Template",
@@ -1037,6 +1038,13 @@ export default function () {
         medium: "Medium",
         low: "Low",
         rough: "Draft",
+
+        move: "Move",
+        unselect: "Unselect",
+        remove: "Remove",
+        remove_project: "Remove project",
+        remove_media: "Remove media",
+        remove_space: "Remove space and all its content",
       },
       de: {},
       nl: {},
