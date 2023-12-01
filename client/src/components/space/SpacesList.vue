@@ -233,8 +233,7 @@ export default {
   // background: var(--c-bleumarine_clair);
   background: var(--c-pinnedBg);
   // border-radius: 4px;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1)
-    calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 1);
   margin-top: calc(var(--spacing) / 2);
   margin-bottom: calc(var(--spacing) / 2);
 }

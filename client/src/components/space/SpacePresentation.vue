@@ -201,7 +201,8 @@ export default {
 
   width: 100%;
   margin: 0 auto;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
+  border-radius: 7px;
 
   // overflow: hidden;
   // border-radius: var(--panel-radius);
@@ -231,7 +232,8 @@ export default {
   aspect-ratio: 1/1;
   align-self: flex-start;
   // border: 1px solid var(--c-gris);
-
+  border-radius: 4px;
+  overflow: hidden;
   flex: 1 0 180px;
   // max-width: 120px;
   // overflow: hidden;
