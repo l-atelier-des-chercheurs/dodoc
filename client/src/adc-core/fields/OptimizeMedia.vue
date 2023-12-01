@@ -1,7 +1,7 @@
 <template>
   <div>
     <button type="button" class="u-buttonLink" @click="show_modal = true">
-      <b-icon icon="tools" />
+      <b-icon :icon="media.$optimized === true ? 'check2-circle' : 'tools'" />
       {{ $t("optimize") }}
     </button>
 
@@ -11,116 +11,149 @@
       :size="modal_width"
       @close="show_modal = false"
     >
-      <LoaderSpinner v-if="is_optimizing" />
-      <div v-if="!optimized_file">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="optimizeMedia"
-        >
-          <b-icon icon="tools" />
-          {{ $t("preview_optimize") }}
-        </button>
-        <div class="u-instructions">
-          {{ $t("wont_remove_original") }}
-        </div>
-      </div>
-      <div class="" v-else>
-        <div class="u-spacingBottom _mediaPreview">
-          <MediaContent
-            :file="optimized_file"
-            :context="'full'"
-            :zoom_on_click="true"
-            :show_fs_button="true"
-            :is_draggable="false"
-          />
-        </div>
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('filename')" />
-          <div class="_comp">
-            <span>
-              {{ media.$media_filename }}
-            </span>
-            <b-icon icon="arrow-right-circle" />
-            <strong>
-              {{ optimized_file.$media_filename }}
-            </strong>
-          </div>
-        </div>
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('size')" />
-          <div class="_comp">
-            <span>
-              <template v-if="media.$infos && media.$infos.size">
-                {{ formatBytes(media.$infos.size) }}
-              </template>
-              <template v-else> ? </template>
-            </span>
-            <b-icon icon="arrow-right-circle" />
-            <strong>
-              <template
-                v-if="optimized_file.$infos && optimized_file.$infos.size"
-              >
-                {{ formatBytes(optimized_file.$infos.size) }}
-              </template>
-              <template v-else> ? </template>
-            </strong>
-          </div>
-        </div>
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('resolution')" />
-          <div class="_comp">
-            <span>
-              <template
-                v-if="media.$infos && media.$infos.width && media.$infos.height"
-              >
-                {{ media.$infos.width + "×" + media.$infos.height }}
-              </template>
-              <template v-else> ? </template>
-            </span>
-            <b-icon icon="arrow-right-circle" />
-            <strong>
-              <template
-                v-if="
-                  optimized_file.$infos &&
-                  optimized_file.$infos.width &&
-                  optimized_file.$infos.height
-                "
-              >
-                {{
-                  optimized_file.$infos.width +
-                  "×" +
-                  optimized_file.$infos.height
-                }}
-              </template>
-              <template v-else> ? </template>
-            </strong>
-          </div>
-        </div>
-        <hr />
-        <div class="_btnRow">
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="keepBoth"
+      <div class="_cont">
+        <LoaderSpinner v-if="is_optimizing" />
+        <div v-if="!optimized_file">
+          <div
+            v-if="media.$optimized === true"
+            class="u-spacingBottom u-instructions"
           >
-            <b-icon icon="file-plus" />
-            {{ $t("add_optimized_to_lib") }}
-          </button>
-          <button
-            type="button"
-            class="u-button u-button_red"
-            @click="replaceOriginal"
-          >
-            <b-icon icon="save2-fill" />
-            {{ $t("replace_original") }}
-          </button>
-          <button type="button" class="u-buttonLink" @click="cancel">
-            <b-icon icon="x-circle" />
-            {{ $t("cancel") }}
-          </button>
+            {{ $t("already_optimized") }}
+          </div>
+          <div class="u-spacingBottom">
+            <SelectField2
+              :value="resolution_preset_picked"
+              :options="presets"
+              :can_edit="true"
+              :hide_validation="true"
+              @change="resolution_preset_picked = $event"
+            />
+          </div>
+
+          <div class="" slot="footer">
+            <div class="u-spacingBottom">
+              <button
+                type="button"
+                class="u-button u-button_bleuvert"
+                @click="optimizeMedia"
+              >
+                <b-icon icon="tools" />
+                {{ $t("preview_optimize") }}
+              </button>
+            </div>
+            <div class="u-instructions">
+              {{ $t("wont_remove_original") }}
+            </div>
+          </div>
         </div>
-        <div class=""></div>
+        <div class="" v-else>
+          <div
+            class="u-spacingBottom _mediaPreview"
+            :data-type="optimized_file.$type"
+          >
+            <MediaContent
+              :file="optimized_file"
+              :context="'full'"
+              :zoom_on_click="true"
+              :show_fs_button="true"
+              :is_draggable="false"
+            />
+          </div>
+          <div class="u-spacingBottom">
+            <DLabel :str="$t('filename')" />
+            <div class="_comp">
+              <span>
+                {{ media.$media_filename }}
+              </span>
+              <b-icon icon="arrow-right-circle" />
+              <strong>
+                {{ optimized_file.$media_filename }}
+              </strong>
+            </div>
+          </div>
+          <div class="u-spacingBottom">
+            <DLabel :str="$t('size')" />
+            <div class="_comp">
+              <span>
+                <template v-if="media.$infos && media.$infos.size">
+                  {{ formatBytes(media.$infos.size) }}
+                </template>
+                <template v-else> ? </template>
+              </span>
+              <b-icon icon="arrow-right-circle" />
+              <strong>
+                <template
+                  v-if="optimized_file.$infos && optimized_file.$infos.size"
+                >
+                  {{ formatBytes(optimized_file.$infos.size) }}
+                </template>
+                <template v-else> ? </template>
+              </strong>
+            </div>
+          </div>
+          <div
+            class="u-spacingBottom"
+            v-if="
+              optimized_file.$type === 'image' ||
+              optimized_file.$type === 'video'
+            "
+          >
+            <DLabel :str="$t('resolution')" />
+            <div class="_comp">
+              <span>
+                <template
+                  v-if="
+                    media.$infos && media.$infos.width && media.$infos.height
+                  "
+                >
+                  {{ media.$infos.width + "×" + media.$infos.height }}
+                </template>
+                <template v-else> ? </template>
+              </span>
+              <b-icon icon="arrow-right-circle" />
+              <strong>
+                <template
+                  v-if="
+                    optimized_file.$infos &&
+                    optimized_file.$infos.width &&
+                    optimized_file.$infos.height
+                  "
+                >
+                  {{
+                    optimized_file.$infos.width +
+                    "×" +
+                    optimized_file.$infos.height
+                  }}
+                </template>
+                <template v-else> ? </template>
+              </strong>
+            </div>
+          </div>
+          <hr />
+          <div class="_btnRow">
+            <button
+              type="button"
+              class="u-button u-button_bleuvert"
+              @click="keepBoth"
+            >
+              <b-icon icon="file-plus" />
+              {{ $t("add_optimized_to_lib") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_red"
+              @click="replaceOriginal"
+            >
+              <b-icon icon="save2-fill" />
+              {{ $t("replace_original") }}
+            </button>
+            <button type="button" class="u-buttonLink" @click="cancel">
+              <b-icon icon="x-circle" />
+              {{ $t("cancel") }}
+            </button>
+          </div>
+          <div class=""></div>
+        </div>
       </div>
     </BaseModal2>
   </div>
@@ -136,12 +169,30 @@ export default {
       show_modal: false,
       is_optimizing: false,
       optimized_file: undefined,
+      resolution_preset_picked: "source",
+
+      presets: [
+        {
+          key: "source",
+          text: this.$t("same_as_source"),
+        },
+        {
+          key: "high",
+          text: this.$t("high"),
+        },
+        {
+          key: "medium",
+          text: this.$t("medium"),
+        },
+      ],
     };
   },
   i18n: {
     messages: {
       fr: {
         optimize: "Optimiser",
+        already_optimized:
+          "Ce média a déjà été optimisé, l’optimiser à nouveau risque de dégrader sa qualité de manière importante.",
         preview_optimize: "Créer une version optimisée",
         wont_remove_original: "Ne supprimera pas l’original",
         add_optimized_to_lib: "Conserver l’original et la nouvelle version",
@@ -175,16 +226,17 @@ export default {
   methods: {
     async optimizeMedia() {
       this.is_optimizing = true;
-
       const instructions = {
         recipe: "optimize_media",
         suggested_file_name: this.media.$media_filename,
+        quality_preset: this.resolution_preset_picked,
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
         }),
         additional_meta: {
           $origin: "collect",
+          $optimized: true,
         },
       };
       const current_task_id = await this.$api.optimizeFile({
@@ -215,7 +267,8 @@ export default {
       await this.$api.deleteItem({
         path: this.optimized_file.$path,
       });
-      this.show_modal = false;
+      this.optimized_file = undefined;
+      // this.show_modal = false;
     },
     keepBoth() {
       this.show_modal = false;
@@ -230,6 +283,7 @@ export default {
         new_meta: {
           $media_filename: new_source_file,
           $type: this.optimized_file.$type,
+          $optimized: true,
         },
       });
 
@@ -245,6 +299,8 @@ export default {
       await this.$api.deleteItem({
         path: this.optimized_file.$path,
       });
+
+      this.show_modal = false;
     },
   },
 };
@@ -259,6 +315,8 @@ export default {
 
 ._mediaPreview {
   aspect-ratio: 1/1;
+  // &[data-type="image"] {
+  // }
   ::v-deep {
     ._mediaContent {
       height: 100%;
@@ -273,6 +331,10 @@ export default {
       border-radius: 2px;
     }
   }
+}
+
+._cont {
+  position: relative;
 }
 ._comp {
   display: flex;
