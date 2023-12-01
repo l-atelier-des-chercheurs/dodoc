@@ -886,6 +886,10 @@ export default {
   current_position: "Position actuelle",
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
+  show_missing_translations: "Afficher les traductions manquantes",
+  missing_translations: "Traductions manquantes pour la langue :",
+  "to_translate:": "À traduire :",
+
   "instructions.pane.capture":
     "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
   "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.

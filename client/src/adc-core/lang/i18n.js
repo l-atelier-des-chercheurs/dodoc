@@ -1,7 +1,10 @@
 import Vue from "vue";
 import VueI18n from "vue-i18n";
 
-export default function () {
+let changeLocale;
+let findMissingTranslations;
+
+const i18n = () => {
   Vue.use(VueI18n);
 
   let lang_settings = {
@@ -41,17 +44,45 @@ export default function () {
     silentFallbackWarn: true,
   });
 
-  i18n.changeLocale = (new_lang) => {
-    import(
+  changeLocale = async (new_lang) => {
+    const messages = await import(
       /* webpackChunkName: "lang-[request]" */ `@/adc-core/lang/${new_lang}.js`
-    ).then((messages) => {
-      i18n.locale = new_lang;
-      document.querySelector("html").setAttribute("lang", new_lang);
-      i18n.setLocaleMessage(new_lang, messages.default);
-      localStorage.setItem("language", new_lang);
-    });
+    );
+    i18n.locale = new_lang;
+    document.querySelector("html").setAttribute("lang", new_lang);
+    i18n.setLocaleMessage(new_lang, messages.default);
+    localStorage.setItem("language", new_lang);
   };
-  i18n.changeLocale(lang_settings.current);
+  changeLocale(lang_settings.current);
+
+  findMissingTranslations = async () => {
+    let all_translations = {};
+    for (const lang of lang_settings.available) {
+      try {
+        const messages = await import(
+          /* webpackChunkName: "lang-[request]" */ `@/adc-core/lang/${lang}.js`
+        );
+        all_translations[lang] = messages.default;
+      } catch (e) {
+        e;
+      }
+    }
+    const all_translations_by_id = Object.entries(all_translations).reduce(
+      (acc, [lang, messages]) => {
+        const all_messages = Object.entries(messages);
+        all_messages.map(([id, translation]) => {
+          if (!acc[id]) acc[id] = {};
+          acc[id][lang] = translation;
+        });
+        return acc;
+      },
+      {}
+    );
+    return all_translations_by_id;
+    // return "plop";
+  };
 
   return i18n;
-}
+};
+
+export { i18n, changeLocale, findMissingTranslations };
