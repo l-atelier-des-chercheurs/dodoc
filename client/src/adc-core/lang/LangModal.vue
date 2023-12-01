@@ -33,13 +33,58 @@
           :hide_validation="true"
           @change="lang_to_find_missing_str = $event"
         />
+
+        <div
+          class="_translated"
+          v-if="Object.keys(translations_to_share).length > 0"
+        >
+          <pre>{{ translations_to_share }}</pre>
+          <div
+            class="u-instructions"
+            v-html="$t('publish_on_forum_to_add_to_contribute_to_code')"
+          />
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="translations_to_share = {}"
+          >
+            <sl-icon name="trash3" />
+            {{ $t("erase_translations") }}
+          </button>
+        </div>
+
         <div class="">
           {{ $t("to_translate:") }} {{ missing_translations.length }}
         </div>
+        <div class="">
+          <span class="u-switch u-switch-xs">
+            <input
+              class="switch"
+              :id="'hide_already_translated'"
+              type="checkbox"
+              v-model="hide_already_translated"
+            />
+            <label class="u-label" :for="'hide_already_translated'">{{
+              $t("hide_already_translated")
+            }}</label>
+          </span>
+        </div>
+
         <div class="_allMissingTranslations">
           <div class="" v-for="t in missing_translations" :key="t.key">
             <div class="">
               <b>{{ t.key }}</b>
+              &nbsp;
+              <button
+                type="button"
+                class="u-buttonLink"
+                :class="{
+                  'is--active': isAlreadyTranslated(t.key),
+                }"
+                @click="translateStr(t.key)"
+              >
+                {{ $t("translate") }}
+              </button>
             </div>
             <div v-for="[lang, translation] in t.translations" :key="lang">
               <i>{{ lang.toUpperCase() }}</i>
@@ -49,6 +94,32 @@
               {{ translation }}
             </div>
           </div>
+
+          <BaseModal2
+            v-if="will_translate_str"
+            :title="$t('translate')"
+            @close="will_translate_str = false"
+          >
+            <div class="u-spacingBottom">
+              {{ $t("translate") }} ({{ lang_to_find_missing_str }}) =
+              {{ will_translate_str }}
+            </div>
+            <input
+              type="text"
+              class="u-spacingBottom"
+              v-model.trim="new_translation_text"
+              required
+              autofocus="autofocus"
+              @keydown.enter.prevent="submitTranslation"
+            />
+            <button
+              type="button"
+              class="u-button u-button_bleuvert"
+              @click="submitTranslation"
+            >
+              {{ $t("submit") }}
+            </button>
+          </BaseModal2>
         </div>
       </div>
     </div>
@@ -88,31 +159,56 @@ export default {
       show_missing_translations: false,
 
       lang_to_find_missing_str: "en",
+      translations_to_share: {},
+      hide_already_translated: true,
+
+      new_translations: {},
+      will_translate_str: undefined,
+      new_translation_text: "",
     };
   },
-  created() {},
+  created() {
+    const t = localStorage.getItem("translations_to_share");
+    if (t) {
+      try {
+        this.translations_to_share = JSON.parse(t);
+      } catch (e) {
+        /**/
+      }
+    }
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {
     show_missing_translations() {
       if (this.show_missing_translations) this.loadMissingTranslations();
     },
+    translations_to_share: {
+      handler() {
+        localStorage.setItem(
+          "translations_to_share",
+          JSON.stringify(this.translations_to_share)
+        );
+        debugger;
+      },
+      deep: true,
+    },
   },
   computed: {
     missing_translations() {
       if (!this.translations) return false;
-      return Object.entries(this.translations).reduce((acc, [str, val]) => {
-        debugger;
+      return Object.entries(this.translations).reduce((acc, [key, val]) => {
         if (
           !Object.prototype.hasOwnProperty.call(
             val,
             this.lang_to_find_missing_str
           )
         )
-          acc.push({
-            key: str,
-            translations: Object.entries(val),
-          });
+          if (!this.hide_already_translated || !this.isAlreadyTranslated(key))
+            acc.push({
+              key,
+              translations: Object.entries(val),
+            });
         return acc;
       }, []);
     },
@@ -130,6 +226,34 @@ export default {
       const translations = await this.$root.findMissingTranslations();
       this.translations = Object.assign({}, translations);
     },
+    translateStr(str) {
+      this.will_translate_str = str;
+      this.new_translation_text = "";
+    },
+    isAlreadyTranslated(key) {
+      return !!this.translations_to_share[this.lang_to_find_missing_str]?.[key];
+    },
+    submitTranslation() {
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          this.translations_to_share,
+          this.lang_to_find_missing_str
+        )
+      )
+        this.$set(
+          this.translations_to_share,
+          this.lang_to_find_missing_str,
+          {}
+        );
+
+      this.$set(
+        this.translations_to_share[this.lang_to_find_missing_str],
+        this.will_translate_str,
+        this.new_translation_text
+      );
+
+      this.will_translate_str = undefined;
+    },
   },
 };
 </script>
@@ -142,6 +266,16 @@ export default {
 
   > * {
     margin-bottom: calc(var(--spacing) / 1);
+  }
+}
+
+._translated {
+  max-height: 40vh;
+  border: 1px solid black;
+
+  > pre {
+    margin: 0;
+    padding: calc(var(--spacing) / 1);
   }
 }
 </style>

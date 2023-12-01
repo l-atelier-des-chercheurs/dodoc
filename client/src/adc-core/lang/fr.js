@@ -886,9 +886,14 @@ export default {
   current_position: "Position actuelle",
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
+  translate: "Traduire",
   show_missing_translations: "Afficher les traductions manquantes",
   missing_translations: "Traductions manquantes pour la langue :",
+  hide_already_translated: "Masquer les traductions déjà réalisées",
   "to_translate:": "À traduire :",
+  publish_on_forum_to_add_to_contribute_to_code:
+    "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
+  erase_translations: "Effacer toutes les traductions proposées",
 
   "instructions.pane.capture":
     "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
