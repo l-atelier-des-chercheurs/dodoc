@@ -474,8 +474,6 @@ export default {
       let width = img.naturalWidth || 1280;
       let height = img.naturalHeight || 720;
 
-      debugger;
-
       const x = this.make.crop_options?.x || 0;
       const y = this.make.crop_options?.y || 0;
       const w = this.make.crop_options?.width || 100;

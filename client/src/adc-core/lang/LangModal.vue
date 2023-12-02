@@ -189,7 +189,6 @@ export default {
           "translations_to_share",
           JSON.stringify(this.translations_to_share)
         );
-        debugger;
       },
       deep: true,
     },
