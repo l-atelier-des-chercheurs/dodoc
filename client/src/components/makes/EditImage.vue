@@ -375,18 +375,7 @@ export default {
       const context = cropCanvas.getContext("2d");
       context.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
 
-      // context.filter = "contrast(1.4) sepia(1) drop-shadow(-9px 9px 3px #e81)";
-      let filter = "";
-
-      if (Object.prototype.hasOwnProperty.call(this.make, "image_brightness"))
-        filter += `brightness(${this.make.image_brightness}%)`;
-      if (Object.prototype.hasOwnProperty.call(this.make, "image_contrast"))
-        filter += `contrast(${this.make.image_contrast}%)`;
-      if (Object.prototype.hasOwnProperty.call(this.make, "image_blur"))
-        filter += `blur(${this.make.image_blur}px)`;
-      if (Object.prototype.hasOwnProperty.call(this.make, "image_saturation"))
-        filter += `saturate(${this.make.image_saturation}%)`;
-      context.filter = filter;
+      context.filter = this.generateFilters();
 
       context.drawImage(img, 0, 0, width, height);
     },
@@ -400,6 +389,18 @@ export default {
       this.mask_prop.y = transform.y;
       this.mask_prop.width = transform.width;
       this.mask_prop.height = transform.height;
+    },
+    generateFilters() {
+      let filters = "";
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_brightness"))
+        filters += `brightness(${this.make.image_brightness}%)`;
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_contrast"))
+        filters += `contrast(${this.make.image_contrast}%)`;
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_blur"))
+        filters += `blur(${this.make.image_blur}px)`;
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_saturation"))
+        filters += `saturate(${this.make.image_saturation}%)`;
+      return filters;
     },
 
     dragEnd(event, transform) {
@@ -487,6 +488,7 @@ export default {
       previewCanvas.width = crop_width;
       previewCanvas.height = crop_height;
 
+      previewCanvasCtx.filter = this.generateFilters();
       previewCanvasCtx.drawImage(
         img,
         crop_x,
