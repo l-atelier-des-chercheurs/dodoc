@@ -287,6 +287,12 @@ export default {
     image_export_name() {
       return this.base_media.$media_filename + "_edited.png";
     },
+    image_url() {
+      return this.makeMediaFileURL({
+        $path: this.base_media.$path,
+        $media_filename: this.base_media.$media_filename,
+      });
+    },
     mask_styles() {
       return {
         left: this.mask_prop.x + "px",
@@ -339,8 +345,12 @@ export default {
       const cropCanvasContainer = this.$refs.cropCanvasContainer;
       if (!cropCanvas || !cropCanvasContainer) return false;
 
-      let width = this.base_media.$infos?.width || 1280;
-      let height = this.base_media.$infos?.height || 720;
+      let img = new Image();
+      img.src = this.image_url;
+      await img.decode();
+
+      let width = img.naturalWidth || 1280;
+      let height = img.naturalHeight || 720;
       const ratio = width / height;
 
       const max_crop_height = this.$root.window.innerHeight * 0.75;
@@ -361,16 +371,6 @@ export default {
       // cropCanvasContainer.style["aspect-ratio"] = width + "/" + height;
       cropCanvasContainer.style.width = width + "px";
       cropCanvasContainer.style.height = height + "px";
-
-      const image_url = this.makeMediaFileURL({
-        $path: this.base_media.$path,
-        $media_filename: this.base_media.$media_filename,
-      });
-
-      let img = new Image();
-      img.src = image_url;
-      await img.decode();
-      // await new Promise((r) => setTimeout(r, 2000));
 
       const context = cropCanvas.getContext("2d");
       context.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
@@ -466,24 +466,28 @@ export default {
 
       const previewCanvasCtx = previewCanvas.getContext("2d");
 
-      const crop_x = Math.round(
-        (this.make.crop_options?.x / 100) * cropCanvas.width
-      );
-      const crop_y = Math.round(
-        (this.make.crop_options?.y / 100) * cropCanvas.height
-      );
+      // create canvas, same size as source image, crop from this
+      let img = new Image();
+      img.src = this.image_url;
+      await img.decode();
+
+      let width = img.naturalWidth || 1280;
+      let height = img.naturalHeight || 720;
+
+      const crop_x = Math.round((this.make.crop_options?.x / 100) * width);
+      const crop_y = Math.round((this.make.crop_options?.y / 100) * height);
       const crop_width = Math.round(
-        (this.make.crop_options?.width / 100) * cropCanvas.width
+        (this.make.crop_options?.width / 100) * width
       );
       const crop_height = Math.round(
-        (this.make.crop_options?.height / 100) * cropCanvas.height
+        (this.make.crop_options?.height / 100) * height
       );
 
       previewCanvas.width = crop_width;
       previewCanvas.height = crop_height;
 
       previewCanvasCtx.drawImage(
-        cropCanvas,
+        img,
         crop_x,
         crop_y,
         crop_width,
