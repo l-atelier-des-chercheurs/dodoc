@@ -101,7 +101,7 @@
         </button>
       </div>
 
-      <div class="_meta" v-else-if="show_meta_sidebar || $root.is_mobile_view">
+      <div class="_meta" v-if="show_meta_sidebar || $root.is_mobile_view">
         <div class="u-spacingBottom">
           <h3>
             {{ $t("media") }}
@@ -224,7 +224,8 @@ export default {
     },
   },
   created() {
-    if (localStorage.getItem("show_meta_sidebar") === "false")
+    if (this.select_mode) this.show_meta_sidebar = false;
+    else if (localStorage.getItem("show_meta_sidebar") === "false")
       this.show_meta_sidebar = false;
   },
   mounted() {
