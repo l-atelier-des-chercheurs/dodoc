@@ -474,14 +474,17 @@ export default {
       let width = img.naturalWidth || 1280;
       let height = img.naturalHeight || 720;
 
-      const crop_x = Math.round((this.make.crop_options?.x / 100) * width);
-      const crop_y = Math.round((this.make.crop_options?.y / 100) * height);
-      const crop_width = Math.round(
-        (this.make.crop_options?.width / 100) * width
-      );
-      const crop_height = Math.round(
-        (this.make.crop_options?.height / 100) * height
-      );
+      debugger;
+
+      const x = this.make.crop_options?.x || 0;
+      const y = this.make.crop_options?.y || 0;
+      const w = this.make.crop_options?.width || 100;
+      const h = this.make.crop_options?.height || 100;
+
+      const crop_x = Math.round((x / 100) * width);
+      const crop_y = Math.round((y / 100) * height);
+      const crop_width = Math.round((w / 100) * width);
+      const crop_height = Math.round((h / 100) * height);
 
       previewCanvas.width = crop_width;
       previewCanvas.height = crop_height;
