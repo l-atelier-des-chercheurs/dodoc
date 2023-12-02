@@ -2,7 +2,7 @@
   <div class="_cropImage">
     <div class="_sidebyside">
       <div class="_leftBtns">
-        <fieldset>
+        <fieldset class="u-spacingBottom">
           <legend class="u-label">{{ $t("crop") }}</legend>
 
           <div class="_btnRow">
@@ -82,7 +82,7 @@
           </div>
         </fieldset>
 
-        <fieldset>
+        <fieldset class="u-spacingBottom">
           <legend class="u-label">{{ $t("adjust") }}</legend>
 
           <RangeValueInput
@@ -131,7 +131,7 @@
           />
         </fieldset>
 
-        <div class="">
+        <div class="u-spacingBottom">
           <button
             type="button"
             class="u-button u-button_bleumarine"
