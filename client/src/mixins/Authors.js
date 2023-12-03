@@ -27,8 +27,8 @@ export default {
     isOwnFolder({ folder }) {
       if (this.connected_as?.$path)
         return (
-          folder.$admins.includes(this.connected_as.$path) ||
-          folder.$contributors.includes(this.connected_as.$path)
+          folder.$admins?.includes(this.connected_as.$path) ||
+          folder.$contributors?.includes(this.connected_as.$path)
         );
       return false;
     },
