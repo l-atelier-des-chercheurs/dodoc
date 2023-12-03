@@ -3,7 +3,7 @@
     class="_projectInfos"
     :class="{
       'is--list': ['list', 'tiny'].includes(context),
-      'u-card': ['list', 'tiny'].includes(context),
+      'is--own': is_own_project,
       'u-card2': context !== 'full',
       'is--mobileView': $root.is_mobile_view,
     }"
@@ -218,6 +218,9 @@ export default {
       const space = this.getFromCache(space_path);
       return space.title;
     },
+    is_own_project() {
+      return this.isOwnFolder({ folder: this.project });
+    },
   },
   methods: {},
 };
@@ -243,9 +246,16 @@ export default {
   }
 
   &.is--list {
-    // border-bottom: 2px solid #b9b9b9;
-    // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
     border-radius: 4px;
+    border: 1px solid var(--c-gris_clair);
+
+    transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+      transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &.is--own {
+      border-color: var(--c-bleumarine);
+    }
 
     ._title {
       font-size: var(--sl-font-size-small);
@@ -392,15 +402,19 @@ export default {
     position: absolute;
     bottom: 0;
     left: 0;
-    margin: calc(var(--spacing) / 2);
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-
-    // background-color: var(--c-noir);
-    // color: white;
+    margin: calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
-    // background: rgba(255, 255, 255, 0.3);
-
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 15px;
     font-size: var(--sl-font-size-small);
+    /* max-width: 30ch; */
+    max-width: calc(100% - calc(var(--spacing) / 2));
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 }
 
