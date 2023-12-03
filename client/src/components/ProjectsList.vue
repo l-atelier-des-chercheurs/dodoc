@@ -96,7 +96,7 @@ export default {
 
   &[data-context="tiny"] {
     grid-gap: calc(var(--spacing) / 2);
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 
   > * {

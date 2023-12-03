@@ -496,7 +496,7 @@
           "presentation": {
             "type": "string"
           },
-          "latest_edited_projects": {
+          "projects_recently_edited": {
             "type": "array"
           }
         }

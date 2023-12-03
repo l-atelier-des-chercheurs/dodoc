@@ -1,5 +1,6 @@
 <template>
   <div class="_loadSelectedProjects">
+    {{ fetch_err }}
     <LoaderSpinner v-if="is_loading" />
     <ProjectsList
       v-else
@@ -24,6 +25,7 @@ export default {
     return {
       projects: [],
       is_loading: true,
+      fetch_err: undefined,
     };
   },
   i18n: {
@@ -33,8 +35,7 @@ export default {
   },
   created() {},
   async mounted() {
-    const latest_paths = this.paths.slice(-5);
-    await this.loadSelectedProjects(latest_paths);
+    await this.loadSelectedProjects(this.paths);
   },
   beforeDestroy() {},
   watch: {},
@@ -47,7 +48,7 @@ export default {
             path,
           })
           .catch((err) => {
-            this.fetch_stopmotion_error = err.response;
+            this.fetch_err = err.response;
           });
         this.projects.push(project);
       }

@@ -1,13 +1,11 @@
 <template>
   <div>
     <DLabel :str="$t('projects_you_edited_last')" />
-    <div
-      v-if="
-        connected_as.latest_edited_projects &&
-        connected_as.latest_edited_projects.length > 0
-      "
-    >
-      <LoadSelectedProjects :paths="paths" />
+    <div class="" v-if="paths">
+      <!-- disabled because it flashes up/down -->
+      <!-- <transition name="pagechange" mode="in-out"> -->
+      <LoadSelectedProjects :key="paths.join('.')" :paths="paths" />
+      <!-- </transition> -->
     </div>
     <div v-else>
       {{ $t("nothing_to_show") }}
@@ -36,7 +34,8 @@ export default {
   watch: {},
   computed: {
     paths() {
-      return this.connected_as.latest_edited_projects.slice().reverse();
+      if (!this.connected_as?.projects_recently_edited) return false;
+      return this.connected_as.projects_recently_edited.slice().reverse();
     },
   },
   methods: {},

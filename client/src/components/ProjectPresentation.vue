@@ -202,7 +202,7 @@ export default {
     };
   },
   created() {
-    if (this.context === "list") this.show_description = false;
+    if (["list", "tiny"].includes(this.context)) this.show_description = false;
   },
   mounted() {},
   beforeDestroy() {},
@@ -288,7 +288,7 @@ export default {
   place-content: center;
 
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
 
   transition: all 0.4s;
 
