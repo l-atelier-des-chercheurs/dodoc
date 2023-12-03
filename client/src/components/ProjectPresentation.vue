@@ -360,8 +360,29 @@ export default {
   }
   ._check {
     color: var(--c-bleuvert);
+
+    &::before {
+      content: "";
+      position: absolute;
+      width: 90%;
+      height: 90%;
+      margin: 5%;
+      background: white;
+      z-index: -1;
+      border-radius: 50%;
+    }
   }
   ._private {
+    &::before {
+      content: "";
+      position: absolute;
+      width: 60%;
+      margin-left: 20%;
+      height: 100%;
+      background: white;
+      z-index: -1;
+      border-radius: 5px;
+    }
   }
 
   ._originalSpace {
