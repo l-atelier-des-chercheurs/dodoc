@@ -1,8 +1,6 @@
 <template>
   <div class="_trackAuthorChanges">
-    <!-- <pre>
-      {{ latest_edited_projects }}
-    </pre> -->
+    <!-- <pre>{{ projects_recently_edited }}</pre> -->
   </div>
 </template>
 <script>
@@ -11,7 +9,8 @@ export default {
   components: {},
   data() {
     return {
-      all_edited_paths: [],
+      projects_recently_edited: [],
+      max_items_in_memory: 5,
     };
   },
 
@@ -36,69 +35,61 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    latest_edited_projects() {
+    projects_recently_edited() {
       this.updateRecentProjectForAuthor();
     },
-    connected_as: {
+    "connected_as.projects_recently_edited": {
       handler() {
-        if (!this.connected_as?.latest_edited_projects)
-          this.all_edited_paths = [];
-        else
-          this.all_edited_paths =
-            this.connected_as.latest_edited_projects.slice();
+        if (this.connected_as?.projects_recently_edited)
+          this.projects_recently_edited =
+            this.connected_as.projects_recently_edited.slice();
       },
       deep: true,
       immediate: true,
     },
   },
-  computed: {
-    latest_edited_paths() {
-      let list = this.all_edited_paths.slice();
-      list = [...new Set(list)];
-      return list.slice(-5);
-    },
-    latest_edited_projects() {
-      let list = this.all_edited_paths.slice();
-      if (list.length === 0) return [];
-      list = list.reduce((acc, i) => {
-        const { space_slug, project_slug } = this.decomposePath(i);
-        if (space_slug && project_slug) {
-          // push project
-          const path_to_project = this.createPath({
-            space_slug,
-            project_slug,
-          });
-          acc.push(path_to_project);
-        }
-        return acc;
-      }, []);
-      // keep order at the end
-      list.reverse();
-      list = [...new Set(list)];
-      list.reverse();
-      return list.slice(0, 10);
-    },
-  },
+  computed: {},
   methods: {
     newPathEdited({ path }) {
-      this.all_edited_paths.push(path);
+      const { space_slug, project_slug } = this.decomposePath(path);
+      if (space_slug && project_slug)
+        // get project path, only push project
+        path = this.createPath({
+          space_slug,
+          project_slug,
+        });
+      else return;
+
+      // only update if latest is not already this project
+      if (this.projects_recently_edited.at(-1) === path) return;
+
+      let _projects_recently_edited = this.projects_recently_edited.slice();
+      // if updated project before, remove from list
+      _projects_recently_edited = _projects_recently_edited.filter(
+        (p) => p !== path
+      );
+      _projects_recently_edited.push(path);
+      _projects_recently_edited = _projects_recently_edited.slice(
+        -this.max_items_in_memory
+      );
+      this.projects_recently_edited = _projects_recently_edited;
     },
     async updateRecentProjectForAuthor() {
-      if (!this.connected_as || this.latest_edited_projects.length === 0)
+      if (!this.connected_as || this.projects_recently_edited.length === 0)
         return false;
 
       if (
-        JSON.stringify(this.latest_edited_projects) ===
-        JSON.stringify(this.connected_as.latest_edited_projects)
+        JSON.stringify(this.connected_as.projects_recently_edited) ===
+        JSON.stringify(this.projects_recently_edited)
       )
         return false;
 
-      this.$alertify.delay(4000).log("update recent");
+      console.log("UPDATE RECENTLY EDITED");
 
       await this.$api.updateMeta({
         path: this.connected_as.$path,
         new_meta: {
-          latest_edited_projects: this.latest_edited_projects,
+          projects_recently_edited: this.projects_recently_edited,
         },
       });
     },
