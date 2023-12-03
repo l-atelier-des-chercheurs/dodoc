@@ -63,6 +63,8 @@
       <button type="button" class="u-button">{{ $t("projects") }}</button>
     </div> -->
 
+    <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
+
     <section v-if="$root.app_infos.instance_meta.enable_events">
       <EventsSection />
     </section>
@@ -138,6 +140,7 @@ export default {
     SpacesList,
     AllProjects,
     DodocLogo,
+    RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
   },
   data() {
     return {
@@ -372,5 +375,11 @@ export default {
   // position: absolute;
   // top: 0;
   margin: calc(var(--spacing) / 2);
+}
+._recentlyEdited {
+  margin: calc(var(--spacing) / 2) auto;
+  padding: calc(var(--spacing) / 1);
+  max-width: var(--max-column-width);
+  width: 100%;
 }
 </style>

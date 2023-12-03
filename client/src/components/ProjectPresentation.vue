@@ -2,11 +2,12 @@
   <div
     class="_projectInfos"
     :class="{
-      'is--list': context === 'list',
-      'u-card': context === 'list',
+      'is--list': ['list', 'tiny'].includes(context),
+      'u-card': ['list', 'tiny'].includes(context),
       'u-card2': context !== 'full',
       'is--mobileView': $root.is_mobile_view,
     }"
+    :data-context="context"
   >
     <div class="_projectInfos--cover">
       <CoverField
@@ -155,7 +156,7 @@
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
     </div>
 
-    <div class="_projectInfos--open" v-if="context === 'list'">
+    <div class="_projectInfos--open" v-if="['list', 'tiny'].includes(context)">
       <router-link :to="{ path: createURLFromPath(project.$path) }">
         <div class="_clickZone" />
       </router-link>
@@ -247,10 +248,7 @@ export default {
     border-radius: 4px;
 
     ._title {
-      font-size: 90%;
-    }
-    ._description {
-      font-size: 90%;
+      font-size: var(--sl-font-size-small);
     }
   }
 
@@ -289,7 +287,7 @@ export default {
   flex-flow: column nowrap;
   place-content: center;
 
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 1);
 
   transition: all 0.4s;

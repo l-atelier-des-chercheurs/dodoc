@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <div
       v-if="projects.length === 0"
       class="u-instructions"
@@ -8,12 +8,18 @@
       {{ $t("no_projects") }}
     </div>
     <template v-else>
-      <div class="_finished" v-if="finished_projects.length > 0">
+      <div
+        class="_finished"
+        v-if="
+          separate_finished_from_non_finished && finished_projects.length > 0
+        "
+      >
         <div class="">
           <DLabel :str="$t('only_finished')" />
           <transition-group
             tag="section"
             class="_projectsList"
+            :data-context="context"
             name="projectsList"
             appear
           >
@@ -21,7 +27,7 @@
               v-for="project in finished_projects"
               class="_project"
               :project="project"
-              context="list"
+              :context="context"
               :display_original_space="display_original_space"
               :key="project.$path"
             />
@@ -32,6 +38,7 @@
         <transition-group
           tag="section"
           class="_projectsList"
+          :data-context="context"
           name="projectsList"
           appear
         >
@@ -39,7 +46,7 @@
             v-for="project in non_finished_projects"
             class="_project"
             :project="project"
-            context="list"
+            :context="context"
             :display_original_space="display_original_space"
             :key="project.$path"
           />
@@ -54,7 +61,9 @@ import ProjectPresentation from "@/components/ProjectPresentation.vue";
 export default {
   props: {
     projects: Array,
+    context: { default: "list", type: String },
     display_original_space: Boolean,
+    separate_finished_from_non_finished: { default: true, type: Boolean },
   },
   components: { ProjectPresentation },
   data() {
@@ -66,7 +75,9 @@ export default {
   watch: {},
   computed: {
     non_finished_projects() {
-      return this.projects.filter((p) => p.$status !== "finished");
+      if (this.separate_finished_from_non_finished)
+        return this.projects.filter((p) => p.$status !== "finished");
+      return this.projects;
     },
     finished_projects() {
       return this.projects.filter((p) => p.$status === "finished");
@@ -83,13 +94,10 @@ export default {
   align-items: stretch;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 
-  // margin-top: calc(var(--spacing) / 4);
-  // background: white;
-
-  // display: flex;
-  // flex-flow: row wrap;
-  // justify-content: flex-start;
-  // gap: calc(var(--spacing) / 1);
+  &[data-context="tiny"] {
+    grid-gap: calc(var(--spacing) / 2);
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
 
   > * {
     // flex: 0 1 240px;
