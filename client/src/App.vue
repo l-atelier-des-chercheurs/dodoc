@@ -22,7 +22,7 @@
       v-if="show_disconnect_modal"
       @close="show_disconnect_modal = false"
     />
-
+    <TrackAuthorChanges />
     <div class="_spinner" v-if="$root.is_loading" key="loader">
       <LoaderSpinner />
     </div>
@@ -35,7 +35,6 @@
 
       <template v-else>
         <TopBar v-if="$route.name !== 'Publication'" />
-
         <transition name="fade_fast" mode="out-in">
           <router-view v-slot="{ Component }" :key="$route.path">
             <component :is="Component" />
@@ -51,6 +50,7 @@
 <script>
 import TopBar from "@/components/TopBar.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
+import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
 
@@ -59,6 +59,7 @@ export default {
   components: {
     TopBar,
     GeneralPasswordModal,
+    TrackAuthorChanges,
     TaskTracker,
     DisconnectModal,
   },

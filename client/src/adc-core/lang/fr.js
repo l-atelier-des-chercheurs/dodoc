@@ -876,6 +876,8 @@ export default {
   make: "Fabriquer",
   publish: "Publier",
 
+  projects_you_edited_last: "Projets modifiés récemment",
+
   make_list: "Liste des fabrications",
   latitude: "Latitude",
   longitude: "Longitude",

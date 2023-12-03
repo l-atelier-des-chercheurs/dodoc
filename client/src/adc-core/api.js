@@ -376,12 +376,12 @@ export default function () {
         return response.data;
       },
       async createFolder({ path, additional_meta }) {
-        path = `${path}/_create`;
         const response = await this.$axios
-          .post(path, additional_meta)
+          .post(`${path}/_create`, additional_meta)
           .catch((err) => {
             throw this.processError(err);
           });
+        this.$eventHub.$emit("hooks.createFolder", { path });
         return response.data.new_folder_slug;
       },
       async loginToFolder({ path, auth_infos }) {
@@ -478,9 +478,8 @@ export default function () {
         } else {
           data = additional_meta;
         }
-        path = `${path}/_upload`;
         let res = await this.$axios
-          .post(path, data, {
+          .post(`${path}/_upload`, data, {
             headers,
             onUploadProgress: (progressEvent) => {
               if (onProgress) onProgress(progressEvent);
@@ -489,36 +488,36 @@ export default function () {
           .catch((err) => {
             throw this.processError(err);
           });
-
+        this.$eventHub.$emit("hooks.uploadFile", { path });
         return res.data.meta_filename;
       },
       async copyFile({ path, new_meta = {}, path_to_destination_folder = "" }) {
-        path = `${path}/_copy`;
         const response = await this.$axios
-          .post(path, { new_meta, path_to_destination_folder })
+          .post(`${path}/_copy`, { new_meta, path_to_destination_folder })
           .catch((err) => {
             throw this.processError(err);
           });
+        this.$eventHub.$emit("hooks.copyFile", { path });
         return response.data.meta_filename;
       },
       async copyFolder({ path, new_meta = {}, path_to_destination_type = "" }) {
-        path = `${path}/_copy`;
         const response = await this.$axios
-          .post(path, { new_meta, path_to_destination_type })
+          .post(`${path}/_copy`, { new_meta, path_to_destination_type })
           .catch((err) => {
             throw this.processError(err);
           });
+        this.$eventHub.$emit("hooks.copyFolder", { path });
         return response.data.copy_folder_path;
       },
       async downloadFolder({ path, filename }) {
-        path = `${path}.zip`;
         const response = await this.$axios({
-          url: path,
+          url: `${path}.zip`,
           method: "GET",
           responseType: "blob",
         }).catch((err) => {
           throw this.processError(err);
         });
+        this.$eventHub.$emit("hooks.downloadFolder", { path });
         saveAs(response.data, filename);
       },
       async importFolder({
@@ -532,10 +531,9 @@ export default function () {
         data.append("file", file, filename);
         if (additional_meta)
           data.append(filename, JSON.stringify(additional_meta));
-        path = `${path}/_import`;
 
         let res = await this.$axios
-          .post(path, data, {
+          .post(`${path}/_import`, data, {
             headers: { "Content-Type": "multipart/form-data" },
             onUploadProgress: (progressEvent) => {
               if (onProgress) onProgress(progressEvent);
@@ -544,7 +542,7 @@ export default function () {
           .catch((err) => {
             throw this.processError(err);
           });
-
+        this.$eventHub.$emit("hooks.importFolder", { path });
         return res.data.new_folder_slug;
       },
       async remixFolder({
@@ -552,47 +550,43 @@ export default function () {
         new_meta = {},
         path_to_destination_type = "",
       }) {
-        path = `${path}/_remix`;
         const response = await this.$axios
-          .post(path, { new_meta, path_to_destination_type })
+          .post(`${path}/_remix`, { new_meta, path_to_destination_type })
           .catch((err) => {
             throw this.processError(err);
           });
+        this.$eventHub.$emit("hooks.remixFolder", { path });
         return response.data.remix_folder_path;
       },
       async exportFolder({ path, instructions }) {
-        path = `${path}/_export`;
-
         const response = await this.$axios
-          .post(path, instructions)
+          .post(`${path}/_export`, instructions)
           .catch((err) => {
             throw this.processError(err);
           });
         const task_id = response.data.task_id;
         this.$eventHub.$emit("task.started", { task_id, instructions });
+        this.$eventHub.$emit("hooks.exportFolder", { path });
         return task_id;
       },
       async optimizeFile({ path, instructions }) {
-        path = `${path}/_optimize`;
-
         const response = await this.$axios
-          .post(path, instructions)
+          .post(`${path}/_optimize`, instructions)
           .catch((err) => {
             throw this.processError(err);
           });
         const task_id = response.data.task_id;
         this.$eventHub.$emit("task.started", { task_id, instructions });
+        this.$eventHub.$emit("hooks.optimizeFile", { path });
         return task_id;
       },
       async generatePreviewForPublication({ path, instructions }) {
-        path = `${path}/_generatePreview`;
-
         const response = await this.$axios
-          .post(path, instructions)
+          .post(`${path}/_generatePreview`, instructions)
           .catch((err) => {
             throw this.processError(err);
           });
-
+        this.$eventHub.$emit("hooks.generatePreviewForPublication", { path });
         const task_id = response.data.task_id;
         return task_id;
       },
@@ -602,18 +596,17 @@ export default function () {
           .catch((err) => {
             throw this.processError(err);
           });
-
+        this.$eventHub.$emit("hooks.updateMeta", { path });
         return response.data;
       },
 
       async updateCover({ path, new_cover_data, onProgress }) {
-        path = path + `?cover`;
         if (typeof new_cover_data === "string") {
           // its a meta filename in that same folder
           const new_meta = {
             path_to_meta: new_cover_data,
           };
-          await this.$axios.patch(path, new_meta).catch((err) => {
+          await this.$axios.patch(`${path}?cover`, new_meta).catch((err) => {
             throw this.processError(err);
           });
         } else if (typeof new_cover_data === "object") {
@@ -623,7 +616,7 @@ export default function () {
           formData.append("file", new_cover_data, original_filename);
 
           await this.$axios
-            .patch(path, formData, {
+            .patch(`${path}?cover`, formData, {
               headers: { "Content-Type": "multipart/form-data" },
               onUploadProgress: (progressEvent) => {
                 if (onProgress) onProgress(progressEvent);
@@ -633,7 +626,7 @@ export default function () {
               throw this.processError(err);
             });
         }
-
+        this.$eventHub.$emit("hooks.updateCover", { path });
         return;
       },
 
@@ -641,7 +634,7 @@ export default function () {
         const response = await this.$axios.delete(path).catch((err) => {
           throw this.processError(err);
         });
-
+        this.$eventHub.$emit("hooks.deleteItem", path);
         return response.data;
       },
 
