@@ -299,7 +299,7 @@ export default {
   left: 0;
   right: auto;
   z-index: 100;
-  color: var(--c-bleumarine);
+  color: var(--c-orange);
 
   display: flex;
   flex-flow: row nowrap;
