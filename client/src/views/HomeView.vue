@@ -226,7 +226,7 @@ export default {
   // top: 60px;
   width: 100%;
 
-  background: var(--hero-bg, #fff);
+  background: var(--hero-bg, var(--c-gris_clair));
 
   ._homeCover {
     background: white;
@@ -356,7 +356,7 @@ export default {
   background: white;
   z-index: 1;
   flex: 1;
-  padding-top: calc(var(--spacing) * 2);
+  padding-top: calc(var(--spacing) * 1);
   min-height: 80vh;
 }
 ._switch {
