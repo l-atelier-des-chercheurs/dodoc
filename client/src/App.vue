@@ -186,7 +186,7 @@ export default {
 
   // --c-bodybg: hsl(48, 19%, 98%);
   --body-bg-pattern-color: hsl(48, 19%, 96%);
-  --c-pinnedBg: var(--c-bleumarine_clair);
+  --c-pinnedBg: var(--c-orange_clair);
 
   // --c-bodybg: white;
   --plyr-color-main: var(--c-bleumarine);
