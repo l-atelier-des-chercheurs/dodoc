@@ -3,6 +3,7 @@
     class="_spacePresentation"
     :data-context="context"
     :class="{
+      'is--own': is_own_space,
       'u-card2': context === 'list',
     }"
   >
@@ -170,7 +171,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    is_own_space() {
+      return this.isOwnFolder({ folder: this.space });
+    },
+  },
   methods: {
     async removeSpace() {
       // this.fetch_status = "pending";
