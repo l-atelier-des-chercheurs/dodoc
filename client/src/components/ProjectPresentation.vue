@@ -254,6 +254,9 @@ export default {
 
   &.is--list {
     display: block;
+    ._projectInfos--infos {
+      padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
+    }
   }
 
   &.is--mobileView {
@@ -288,7 +291,7 @@ export default {
   place-content: center;
 
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
 
   transition: all 0.4s;
 
