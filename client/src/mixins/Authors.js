@@ -24,11 +24,12 @@ export default {
       const $ = this.$root.app_infos.instance_meta[field];
       return $.includes(folder_path) || $ === "everyone";
     },
-    isOwnFolder({ folder }) {
+    isOwnItem({ folder }) {
       if (this.connected_as?.$path)
         return (
           folder.$admins?.includes(this.connected_as.$path) ||
-          folder.$contributors?.includes(this.connected_as.$path)
+          folder.$contributors?.includes(this.connected_as.$path) ||
+          folder.$authors?.includes(this.connected_as.$path)
         );
       return false;
     },

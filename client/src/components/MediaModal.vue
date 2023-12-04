@@ -146,6 +146,17 @@
           />
         </div>
 
+        <div class="u-spacingBottom">
+          <AuthorField
+            :label="$t('authors')"
+            class="u-spacingBottom"
+            :field="'$authors'"
+            :authors_paths="authors_path"
+            :path="file.$path"
+            :can_edit="true"
+            :instructions="$t('file_author_instructions')"
+          />
+        </div>
         <div>
           <DateDisplay
             :title="$t('date_uploaded')"
@@ -241,6 +252,9 @@ export default {
     },
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+    },
+    authors_path() {
+      return this.file.$authors || "noone";
     },
   },
   methods: {

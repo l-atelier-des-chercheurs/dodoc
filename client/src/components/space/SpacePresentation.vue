@@ -173,7 +173,7 @@ export default {
   watch: {},
   computed: {
     is_own_space() {
-      return this.isOwnFolder({ folder: this.space });
+      return this.isOwnItem({ folder: this.space });
     },
   },
   methods: {

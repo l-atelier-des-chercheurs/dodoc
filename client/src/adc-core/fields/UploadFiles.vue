@@ -106,10 +106,9 @@ export default {
       let additional_meta = {};
       additional_meta.$origin = "collect";
       if (file.lastModified) additional_meta.$date_created = file.lastModified;
-      // if (this.$root.current_author)
-      //   additional_meta.authors = [
-      //     { slugFolderName: this.$root.current_author.slugFolderName },
-      //   ];
+
+      if (this.connected_as?.$path)
+        additional_meta.$authors = [this.connected_as.$path];
 
       const onProgress = (progressEvent) => {
         this.files_to_upload_meta[filename].upload_percentages = parseInt(

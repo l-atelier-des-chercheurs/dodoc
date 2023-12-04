@@ -767,6 +767,9 @@ export default {
   project_contrib_instructions:
     "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
 
+  file_author_instructions:
+    "Cette information est utilisée uniquement à titre indicatif et ne détermine pas qui peut modifier ou supprimer ce contenu.",
+
   space_author_instructions:
     "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
   project_title_instructions:

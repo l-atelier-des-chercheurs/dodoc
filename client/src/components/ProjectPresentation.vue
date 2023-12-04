@@ -219,7 +219,7 @@ export default {
       return space.title;
     },
     is_own_project() {
-      return this.isOwnFolder({ folder: this.project });
+      return this.isOwnItem({ folder: this.project });
     },
   },
   methods: {},

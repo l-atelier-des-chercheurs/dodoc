@@ -1845,7 +1845,7 @@ export default {
       };
 
       if (this.connected_as?.$path)
-        additional_meta.authors = [this.connected_as.$path];
+        additional_meta.$authors = [this.connected_as.$path];
 
       const onProgress = (progressEvent) => {
         console.log(
