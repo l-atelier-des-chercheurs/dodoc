@@ -6,7 +6,11 @@
       'is--selected': is_selected,
       'is--edited': edit_mode,
       'is--mousedown': is_mousedown,
+      'is--dragged': is_dragged,
     }"
+    :draggable="draggable"
+    @dragstart="dragStart"
+    @dragend="dragEnd"
     @click="!edit_mode ? $emit('toggleSelect') : ''"
     @mousedown="is_mousedown = true"
     @mouseup="is_mousedown = false"
@@ -184,6 +188,7 @@ export default {
     is_selected: Boolean,
     is_clicked: Boolean,
     shared_space_path: String,
+    draggable: Boolean,
     context: {
       type: String,
       default: "list",
@@ -198,6 +203,7 @@ export default {
       show_large: false,
       is_mousedown: false,
       edit_mode: false,
+      is_dragged: false,
 
       id: `select_chutier_item_${(
         Math.random().toString(36) + "00000000000000000"
@@ -329,6 +335,17 @@ export default {
       this.edit_mode = false;
       // todo reset
     },
+    dragStart(event) {
+      this.is_dragged = true;
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData(
+        "text/uri-list",
+        JSON.stringify(this.file.$path)
+      );
+    },
+    dragEnd() {
+      this.is_dragged = false;
+    },
   },
 };
 </script>
@@ -355,6 +372,8 @@ export default {
   place-content: center;
   cursor: pointer;
   color: var(--c-gris);
+
+  display: none;
 
   input {
     cursor: inherit;
@@ -405,6 +424,11 @@ export default {
 
   &.is--mousedown:not(.is--selected):not(.is--edited) {
     background: rgba(0, 0, 0, 0.2);
+  }
+
+  &.is--dragged {
+    transform: scale(0.9) rotate(4deg);
+    opacity: 0.8;
   }
 
   &.is--selected,

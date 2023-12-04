@@ -524,11 +524,11 @@ img {
 .splitpanes--vertical > .splitpanes__splitter {
   width: 1px;
   margin-left: -1px;
-  border-right: 1px solid black;
+  border-right: 1px solid white;
 }
 .splitpanes--horizontal > .splitpanes__splitter {
   height: 1px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid white;
 }
 
 .splitpanes__splitter:before {
@@ -582,7 +582,7 @@ img {
   height: 20px;
 
   transition: transform 0.4s;
-  background-color: #000;
+  background-color: var(--c-bleuvert);
   opacity: 1;
   z-index: 11;
 }

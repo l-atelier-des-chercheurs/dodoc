@@ -160,6 +160,7 @@
                 :is_clicked="last_clicked === file.$path"
                 :is_selected="selected_items_slugs.includes(file.$path)"
                 :shared_space_path="shared_space_path"
+                :draggable="true"
                 @toggleSelect="toggleSelect(file.$path)"
                 @unclicked="last_clicked = false"
               />
@@ -168,6 +169,8 @@
         </div>
       </div>
     </div>
+    <DocumentsCreator class="_documentsCreator" />
+
     <transition name="slideup" mode="out-in">
       <div
         class="_selectionBar"
@@ -245,6 +248,7 @@
   </div>
 </template>
 <script>
+import DocumentsCreator from "@/components/DocumentsCreator.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 import ChutierItem from "@/components/ChutierItem.vue";
 import MediaStack from "@/components/MediaStack.vue";
@@ -255,6 +259,7 @@ export default {
     shared_space_path: String,
   },
   components: {
+    DocumentsCreator,
     LinkPicker,
     ChutierItem,
     MediaStack,
@@ -477,11 +482,11 @@ export default {
   // background: var(--chutier-bg);
   color: white;
 
-  // display: flex;
-  // flex-flow: column nowrap;
-  // padding: 0 calc(var(--spacing) / 1);
+  display: flex;
+  flex-flow: row nowrap;
 }
 ._itemsList {
+  flex: 1 1 auto;
   position: relative;
   top: 0;
   height: 100%;
@@ -489,6 +494,9 @@ export default {
   padding-bottom: 80px;
 
   @include scrollbar(4px, 4px, 5px, transparent, white);
+}
+._documentsCreator {
+  flex: 0 0 auto;
 }
 
 ._topBar {
@@ -509,6 +517,7 @@ export default {
   position: sticky;
   z-index: 1;
   display: flex;
+  flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
   align-items: center;
   top: 0;
