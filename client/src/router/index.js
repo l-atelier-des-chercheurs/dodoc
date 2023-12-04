@@ -42,6 +42,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "AuthorView" */ "../views/AuthorView.vue"),
   },
+  {
+    path: "/_ui",
+    name: "UI (dev only)",
+    component: () =>
+      import(/* webpackChunkName: "AuthorView" */ "../views/UIView.vue"),
+  },
   // {
   //   path: "/=:event_slug",
   //   name: "Événement",

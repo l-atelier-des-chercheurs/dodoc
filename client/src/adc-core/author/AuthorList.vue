@@ -38,13 +38,6 @@
 
       <fieldset v-if="connected_as && current_mode === 'login'">
         <legend class="u-label">{{ $t("your_account") }}</legend>
-        <!-- 
-        <AuthorTag
-          :key="connected_as.$path"
-          :path="connected_as.$path"
-          :links_to_author_page="true"
-          @navToPage="$emit('close')"
-        /> -->
 
         <AuthorCard
           :key="connected_as.$path"

@@ -47,7 +47,7 @@
               "
             >
               <small>
-                <b-icon icon="gear" :aria-label="$t('admin')" />
+                <b-icon icon="shield-check" :aria-label="$t('admin')" />
                 {{ $t("admin") }}
               </small>
             </div>
