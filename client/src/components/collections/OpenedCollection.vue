@@ -55,9 +55,14 @@ export default {
 <style lang="scss" scoped>
 ._openedCollection {
   text-align: left;
+  --items-width: 100px;
 }
 
 ._file {
   width: 100px;
+}
+
+.itemGrid {
+  height: calc(var(--items-width) * 2);
 }
 </style>
