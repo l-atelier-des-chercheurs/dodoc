@@ -8,7 +8,8 @@
         v-for="author_path in all_authors_except_current"
         :path="author_path"
         :key="author_path"
-        @add="$emit('addAuthor', author_path)"
+        :mode="'add'"
+        @click="$emit('addAuthor', author_path)"
       />
     </transition-group>
   </div>

@@ -81,7 +81,7 @@ export default {
     },
     component_tag() {
       if (this.mode === "link") return "router-link";
-      else if (["select", "add", "remove"].includes(this.mode)) return "button";
+      else if (this.$listeners.click) return "button";
       return "div";
     },
     author_url() {
@@ -106,10 +106,26 @@ export default {
   background: transparent;
   text-align: left;
 
-  border: 1px solid var(--c-gris);
+  &:where(button, a) {
+    border: 1px solid var(--c-gris);
+  }
+  &:where(button) {
+    &:hover,
+    &:focus-visible {
+      background-color: var(--c-gris_clair);
+    }
+  }
 
   &:where(a) {
+    color: var(--c-bleumarine);
     text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: none;
+    }
   }
 
   // &:where(button) {
@@ -121,7 +137,7 @@ export default {
   //   }
   // }
 
-  &[data-isself] {
+  &[data-isself]:not([data-imageonly]) {
     border-color: var(--c-bleumarine);
     background-color: var(--c-bleumarine_clair);
   }
@@ -140,8 +156,10 @@ export default {
     height: 30px;
   }
   &[data-imageonly] ._cover {
-    outline: 3px solid white;
-    margin-right: -0.25em;
+    border-radius: 50%;
+  }
+  &[data-imageonly][data-isself] ._cover {
+    outline-color: var(--c-bleumarine);
   }
 
   ._infos {

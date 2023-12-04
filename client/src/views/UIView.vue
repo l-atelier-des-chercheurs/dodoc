@@ -13,6 +13,15 @@
         v-for="{ $path } in authors_sublist"
         :key="$path"
         :path="$path"
+        @click="dummy"
+      />
+    </div>
+    <hr />
+    <div class="_authors">
+      <AuthorTag
+        v-for="{ $path } in authors_sublist"
+        :key="$path"
+        :path="$path"
         :mode="'select'"
         @click="dummy"
       />
@@ -47,6 +56,25 @@
       />
     </div>
     <hr />
+    <div class="_authors">
+      <AuthorTag
+        v-for="{ $path } in authors_sublist"
+        :key="$path"
+        :path="$path"
+        :show_image_only="true"
+        :mode="'link'"
+      />
+    </div>
+    <hr />
+    <div class="u-listOfAvatars" key="list">
+      <AuthorTag
+        v-for="{ $path } in authors_sublist"
+        :key="$path"
+        :path="$path"
+        :show_image_only="true"
+        :mode="'link'"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -73,7 +101,7 @@ export default {
   watch: {},
   computed: {
     authors_sublist() {
-      return this.authors.slice(0, 3);
+      return this.authors.slice(0, 5);
     },
   },
   methods: { dummy() {} },

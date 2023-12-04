@@ -248,13 +248,12 @@ export default {
   &.is--list {
     background-color: #fff;
     border-radius: 4px;
-    border: 1px solid var(--c-gris_clair);
 
     transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
       transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &.is--own {
-      border-color: var(--c-bleumarine);
+      border: 1px solid var(--c-bleumarine);
     }
 
     ._title {

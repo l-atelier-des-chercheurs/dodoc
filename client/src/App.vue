@@ -361,7 +361,8 @@ a {
   color: var(--c-bleumarine);
   text-underline-offset: 0.1em;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     text-decoration: none;
   }
 }
