@@ -102,12 +102,6 @@
             "type": "string",
             "required": true,
             "unique": true
-          },
-          "role": {
-            "type": "string",
-            "options": ["contributor", "admin"],
-            "default": "contributor",
-            "only_admins_can_edit": true
           }
         },
         "$files": {
