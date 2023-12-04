@@ -1,9 +1,12 @@
 <template>
   <div class="_openedCollection">
-    <button type="button" class="u-buttonLink" @click="$emit('close')">
-      <b-icon icon="arrow-left" />
-      {{ $t("back") }}
-    </button>
+    <div class="">
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        <b-icon icon="arrow-left" />
+        {{ $t("back") }}
+      </button>
+      <RemoveMenu :remove_text="$t('remove')" @remove="removeColl" />
+    </div>
     <h2>{{ collection.title }}</h2>
     <transition-group tag="div" class="itemGrid" name="listComplete" appear>
       <SharedFolderItem
@@ -39,7 +42,14 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    async removeColl() {
+      await this.$api.deleteItem({
+        path: this.collection.$path,
+      });
+      this.$emit("close");
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
