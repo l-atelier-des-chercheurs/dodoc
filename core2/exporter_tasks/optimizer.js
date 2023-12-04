@@ -80,14 +80,14 @@ module.exports = (function () {
         // https://stackoverflow.com/a/70899710
         let totalTime;
 
-        let bitrate = "320k";
+        let bitrate = "256k";
         if (quality_preset === "high") bitrate = "192k";
         else if (quality_preset === "medium") bitrate = "128k";
 
         ffmpeg_cmd
           .input(source)
           .withAudioCodec("aac")
-          .withAudioBitrate("192k")
+          .withAudioBitrate(bitrate)
 
           .on("start", (commandLine) => {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
