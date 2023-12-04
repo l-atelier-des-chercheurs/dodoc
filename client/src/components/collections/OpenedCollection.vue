@@ -14,6 +14,7 @@
         v-for="file in files"
         :key="file.$path"
         :file="file"
+        @open="$emit('openFile', file.$path)"
       />
     </transition-group>
   </div>

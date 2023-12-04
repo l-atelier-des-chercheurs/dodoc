@@ -220,6 +220,7 @@
           :shared_files="shared_files"
           :opened_collection_slug="opened_collection_slug"
           @toggleCollection="toggleCollection"
+          @openFile="openFile"
         />
       </div>
     </div>

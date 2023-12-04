@@ -44,6 +44,7 @@
         <OpenedCollection
           :collection="opened_collection"
           :files="opened_collection_items"
+          @openFile="$emit('openFile', $event)"
           @close="closeCollection"
         />
       </div>
