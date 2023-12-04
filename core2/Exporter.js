@@ -589,7 +589,7 @@ class Exporter {
           this.instructions.montage.length;
         // 50
         const intval = 100 / total_number_of_items_to_process;
-        const reportFFMPEGProgress = (ffmpeg_progress) => {
+        const reportProgress = (ffmpeg_progress) => {
           let progress_percent = Math.round(
             utils.remap(
               ffmpeg_progress,
@@ -621,7 +621,7 @@ class Exporter {
             resolution,
             bitrate,
             ffmpeg_cmd: this.ffmpeg_cmd,
-            reportFFMPEGProgress,
+            reportProgress,
           }));
         } else {
           continue;
@@ -661,72 +661,17 @@ class Exporter {
   async _optimizeMedia() {
     this._notifyProgress(5);
 
-    let filetype, fileext;
-    if (
-      utils.fileExtensionIs(this.instructions.base_media_path, [
-        ".heic",
-        ".tif",
-        ".tiff",
-        ".webp",
-        ".cr3",
-        ".cr2",
-        ".raf",
-        ".dng",
-        ".rwl",
-        ".nef",
-        ".rw2",
-        ".x3f",
-        ".arw",
-      ])
-    ) {
-      filetype = "image";
-      fileext = "jpeg";
-    } else if (
-      utils.fileExtensionIs(this.instructions.base_media_path, [
-        ".flv",
-        ".mov",
-        ".avi",
-        ".webm",
-      ])
-    ) {
-      filetype = "video";
-      fileext = "mp4";
-    } else if (
-      utils.fileExtensionIs(this.instructions.base_media_path, [
-        ".amr",
-        ".wma",
-        ".aif",
-        ".flac",
-      ])
-    ) {
-      filetype = "audio";
-      fileext = "aac";
-    }
-    let { full_path_to_folder_in_cache, full_path_to_new_file } =
-      await this._createTempFolderAndName(filetype, fileext);
+    let full_path_to_folder_in_cache, full_path_to_new_file;
 
-    const base_media_path = utils.getPathToUserContent(
-      this.instructions.base_media_path
-    );
-
-    this._notifyProgress(10);
-
-    const that = this;
-    const reportFFMPEGProgress = (ffmpeg_progress) => {
-      const progress_percent = Math.round(
-        utils.remap(ffmpeg_progress, 0, 100, 15, 90)
-      );
-      that._notifyProgress(progress_percent);
-    };
-
-    try {
-      if (utils.fileExtensionIs(this.instructions.base_media_path, [".heic"])) {
-        await optimizer.convertHEIC({
-          source: base_media_path,
-          destination: full_path_to_new_file,
-        });
-      } else if (
-        utils.fileExtensionIs(this.instructions.base_media_path, [
+    const ext_handler = [
+      {
+        exts: [".heic"],
+        output_filetype: "image",
+        output_fileext: "jpeg",
+        task: "convertHEIC",
+      },
+      {
+        exts: [
           ".cr3",
           ".cr2",
           ".raf",
@@ -736,59 +681,81 @@ class Exporter {
           ".rw2",
           ".x3f",
           ".arw",
-        ])
-      ) {
-        await optimizer.convertCameraRAW({
-          source: base_media_path,
-          destination: full_path_to_new_file,
-        });
-      } else if (
-        utils.fileExtensionIs(this.instructions.base_media_path, [
-          ".tif",
-          ".tiff",
-          ".webp",
-        ])
-      ) {
-        await optimizer.convertImage({
-          source: base_media_path,
-          destination: full_path_to_new_file,
-        });
-      } else if (
-        utils.fileExtensionIs(this.instructions.base_media_path, [
-          ".flv",
-          ".mov",
-          ".avi",
-          ".webm",
-        ])
-      ) {
-        await optimizer.convertVideo({
-          source: base_media_path,
-          destination: full_path_to_new_file,
-          ffmpeg_cmd: this.ffmpeg_cmd,
-          reportFFMPEGProgress,
-        });
-      } else if (
-        utils.fileExtensionIs(this.instructions.base_media_path, [
+        ],
+        output_filetype: "image",
+        output_fileext: "jpeg",
+        task: "convertCameraRAW",
+      },
+      {
+        exts: [".tif", ".tiff", ".webp", ".jpeg", ".jpg"],
+        output_filetype: "image",
+        output_fileext: "jpeg",
+        task: "convertImage",
+      },
+      {
+        exts: [".flv", ".mov", ".avi", ".webm", ".mp4"],
+        output_filetype: "video",
+        output_fileext: "mp4",
+        task: "convertVideo",
+      },
+      {
+        exts: [
           ".amr",
           ".wma",
           ".aif",
           ".flac",
-        ])
-      ) {
-        await optimizer.convertAudio({
-          source: base_media_path,
-          destination: full_path_to_new_file,
-          ffmpeg_cmd: this.ffmpeg_cmd,
-          reportFFMPEGProgress,
-        });
-      } else {
-        throw new Error(`no_conversion_task_found`);
-      }
+          ".wav",
+          ".m4a",
+          ".off",
+          ".mp3",
+          ".aac",
+        ],
+        output_filetype: "audio",
+        output_fileext: "aac",
+        task: "convertAudio",
+      },
+    ];
 
+    try {
+      const handler = ext_handler.find((e) =>
+        utils.fileExtensionIs(this.instructions.base_media_path, e.exts)
+      );
+      if (!handler) throw new Error(`no_handler`);
+
+      ({ full_path_to_folder_in_cache, full_path_to_new_file } =
+        await this._createTempFolderAndName(
+          handler.output_filetype,
+          handler.output_fileext
+        ));
+      const base_media_path = utils.getPathToUserContent(
+        this.instructions.base_media_path
+      );
+
+      this._notifyProgress(10);
+
+      const quality_preset = this.instructions.quality_preset || "source";
+      // source high medium
+
+      const that = this;
+      const reportProgress = (progress) => {
+        const progress_percent = Math.round(
+          utils.remap(progress, 0, 100, 15, 90)
+        );
+        that._notifyProgress(progress_percent);
+      };
+
+      await optimizer[handler.task]({
+        source: base_media_path,
+        destination: full_path_to_new_file,
+        quality_preset,
+        ffmpeg_cmd: this.ffmpeg_cmd,
+        reportProgress,
+      });
       this._notifyProgress(95);
       return full_path_to_new_file;
     } catch (err) {
-      await fs.remove(full_path_to_folder_in_cache);
+      if (full_path_to_folder_in_cache)
+        await fs.remove(full_path_to_folder_in_cache);
       this._notifyEnded({
         event: "failed",
         info: err.message,

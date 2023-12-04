@@ -828,6 +828,9 @@ module.exports = (function () {
     });
     res.status(200).json({ task_id });
 
+    // wait a bit to make sure that the client has the time to watch task, in case it fails right away
+    await new Promise((r) => setTimeout(r, 100));
+
     try {
       const exported_path_to_meta = await task.start();
       const meta = await file.getFile({
@@ -1056,6 +1059,9 @@ module.exports = (function () {
     });
     const task_id = task.id;
     res.status(200).json({ task_id });
+
+    // wait a bit to make sure that the client has the time to watch task, in case it fails right away
+    await new Promise((r) => setTimeout(r, 100));
 
     try {
       const exported_path_to_meta = await task.start();

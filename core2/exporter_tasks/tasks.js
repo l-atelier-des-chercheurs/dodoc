@@ -78,7 +78,7 @@ module.exports = (function () {
       resolution,
       bitrate,
       ffmpeg_cmd,
-      reportFFMPEGProgress,
+      reportProgress,
     }) => {
       const temp_video_volume = 100;
 
@@ -107,7 +107,7 @@ module.exports = (function () {
           format: "mpegts",
           bitrate,
           resolution,
-          reportFFMPEGProgress,
+          reportProgress,
         });
       }
 
@@ -374,6 +374,7 @@ module.exports = (function () {
 
         ffmpeg_cmd.withVideoBitrate(bitrate);
 
+        // todo set https://trac.ffmpeg.org/wiki/Encode/H.264#Profile ?
         complexFilters.push(
           {
             filter: "concat",

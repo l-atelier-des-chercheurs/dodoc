@@ -124,7 +124,7 @@ export default {
   }
 
   &[data-zoomed] {
-    background: var(--c-gris);
+    // background-color: var(--c-noir);
   }
 }
 
@@ -135,5 +135,6 @@ export default {
   width: 100%;
   text-align: center;
   margin: calc(var(--spacing) / 1);
+  pointer-events: none;
 }
 </style>
