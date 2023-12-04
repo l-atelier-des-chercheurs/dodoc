@@ -1836,33 +1836,35 @@ export default {
 
       const rawData = this.media_to_validate.rawData;
 
-      let formData = new FormData();
-      formData.append("file", rawData, filename);
-
-      const additional_meta = {
-        fav,
-        $origin: "capture",
-      };
-      formData.append(filename, JSON.stringify(additional_meta));
-
       this.media_is_being_sent = true;
       this.media_being_sent_percent = 0;
 
-      // TODO : possibilité de cancel, merge with uploadFile dans $api
-      let res = await this.$axios
-        .post(`${this.path}/_upload`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-          onUploadProgress: function (progressEvent) {
-            console.log(
-              `METHODS • CaptureView: onUploadProgress for name = ${filename} / ${parseInt(
-                Math.round((progressEvent.loaded * 100) / progressEvent.total)
-              )}% `
-            );
-            this.media_being_sent_percent = parseInt(
-              Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            );
-            // this.selected_files_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
-          }.bind(this),
+      let additional_meta = {
+        fav,
+        $origin: "capture",
+      };
+
+      if (this.connected_as?.$path)
+        additional_meta.authors = [this.connected_as.$path];
+
+      const onProgress = (progressEvent) => {
+        console.log(
+          `METHODS • CaptureView: onUploadProgress for name = ${filename} / ${parseInt(
+            Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          )}% `
+        );
+        this.media_being_sent_percent = parseInt(
+          Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        );
+      };
+
+      const meta_filename = await this.$api
+        .uploadFile({
+          path: this.path,
+          filename,
+          file: rawData,
+          additional_meta,
+          onProgress,
         })
         .catch((err) => {
           console.log(
@@ -1881,10 +1883,12 @@ export default {
         .closeLogOnClick(true)
         .delay(4000)
         .success(this.$t("notifications.media_was_saved"));
+
       this.media_is_being_sent = false;
+      this.media_being_sent_percent = 100;
       this.media_to_validate = false;
 
-      this.$emit("insertMedias", res.data.meta_filename);
+      this.$emit("insertMedias", meta_filename);
       return;
     },
     cancelValidation() {
