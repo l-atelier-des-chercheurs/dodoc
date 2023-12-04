@@ -605,7 +605,6 @@ export default function () {
 
         drop_here: "Déposer ici",
         or_drag_drop_file_here: "Ou déposer des fichiers ici",
-        drop_to_import: "Déposer pour importer",
         enable: "Activer",
 
         // effets
@@ -1065,6 +1064,15 @@ export default function () {
         filters: "Filters",
         reset_all: "Reset all",
         click_to_zoom: "Click to zoom",
+
+        name_or_pseudonym: "Name",
+        email: "Email",
+        email_instr: "Contact email, only visible to instance admins.",
+
+        connection_lost: `Connection lost`,
+        connection_lost_in: `The connection has been lost.`,
+        drop_here: "Drop here",
+        or_drag_drop_file_here: "Or déposer des fichiers ici",
       },
       de: {},
       nl: {},
