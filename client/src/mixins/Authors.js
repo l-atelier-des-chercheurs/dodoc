@@ -24,6 +24,15 @@ export default {
       const $ = this.$root.app_infos.instance_meta[field];
       return $.includes(folder_path) || $ === "everyone";
     },
+    isOwnItem({ folder }) {
+      if (this.connected_as?.$path)
+        return (
+          folder.$admins?.includes(this.connected_as.$path) ||
+          folder.$contributors?.includes(this.connected_as.$path) ||
+          folder.$authors?.includes(this.connected_as.$path)
+        );
+      return false;
+    },
     getAuthor(author_path) {
       const folder_path = author_path.substring(
         0,

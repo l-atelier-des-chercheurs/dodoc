@@ -23,19 +23,6 @@
         :can_edit="can_edit"
       />
     </div>
-    <!-- <TitleField
-          :label="$t('template')"
-          :field_name="'template'"
-          :content="publication.template"
-          :path="publication.$path"
-          :can_edit="false"
-        /> -->
-    <!-- <AuthorField
-          :label="$t('contributors')"
-          :authors_paths="publication.$authors"
-          :path="publication.$path"
-          :can_edit="can_edit"
-        /> -->
 
     <StatusTag
       v-if="can_edit"

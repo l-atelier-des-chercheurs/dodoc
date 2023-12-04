@@ -175,14 +175,6 @@ export default {
       // check here if allowed to see project : if project has authors, is not public, and we are not logged in
       // todo remove this, since this will be answered by getfolder
 
-      // if (
-      //   project.$status === false &&
-      //   !this.connected_as &&
-      //   Array.isArray(project.$authors) &&
-      //   project.$authors.length > 0
-      // )
-      //   this.$router.go("/projects");
-
       this.project = project;
     },
     async getSpace() {

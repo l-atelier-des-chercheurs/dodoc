@@ -475,6 +475,8 @@ export default {
         if (this.origin_of_media_to_display !== "all")
           if (m.$origin !== this.origin_of_media_to_display) return false;
 
+        if (this.tile_mode === "map") if (!m.$infos?.gps) return false;
+
         return true;
       });
     },

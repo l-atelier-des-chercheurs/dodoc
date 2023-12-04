@@ -3,6 +3,7 @@
     class="_spacePresentation"
     :data-context="context"
     :class="{
+      'is--own': is_own_space,
       'u-card2': context === 'list',
     }"
   >
@@ -170,7 +171,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    is_own_space() {
+      return this.isOwnItem({ folder: this.space });
+    },
+  },
   methods: {
     async removeSpace() {
       // this.fetch_status = "pending";
@@ -294,7 +299,7 @@ export default {
   left: 0;
   right: auto;
   z-index: 100;
-  color: var(--c-bleumarine);
+  color: var(--c-orange);
 
   display: flex;
   flex-flow: row nowrap;

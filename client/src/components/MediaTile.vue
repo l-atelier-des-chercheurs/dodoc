@@ -5,6 +5,7 @@
       'was--focused': was_focused,
       'is--dragged': is_dragged,
       'is--selected': is_selected,
+      'is--own': is_own_media,
     }"
     :data-tilemode="tile_mode"
     draggable="true"
@@ -113,7 +114,9 @@ export default {
     has_coordinates() {
       return this.file.$infos?.gps;
     },
-
+    is_own_media() {
+      return this.isOwnItem({ folder: this.file });
+    },
     duration() {
       return this.displayDuration({ media: this.file });
     },
@@ -140,7 +143,12 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
   border-radius: 3px;
+  border: 1px solid transparent;
   // transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--own {
+    border-color: var(--c-bleumarine);
+  }
 
   ._content {
     aspect-ratio: 1/1;

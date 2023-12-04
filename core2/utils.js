@@ -158,6 +158,7 @@ module.exports = (function () {
         $status: { type: "string" },
         $admins: { type: "any" },
         $contributors: { type: "any" },
+        $authors: { type: "any" },
         $password: { type: "string" },
         $can_be_remixed: { type: "boolean" },
         $is_remix_of: { type: "string" },

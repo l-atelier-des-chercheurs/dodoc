@@ -7,7 +7,11 @@ Vue.config.productionTip = false;
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
-import i18n from "@/adc-core/lang/i18n.js";
+import {
+  i18n,
+  changeLocale,
+  findMissingTranslations,
+} from "@/adc-core/lang/i18n.js";
 
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
@@ -347,6 +351,13 @@ new Vue({
     modalIsClosed() {
       document.body.style.overflow = "";
       this.modal_is_opened = false;
+    },
+    async changeLocale(lang) {
+      await changeLocale(lang);
+    },
+    async findMissingTranslations() {
+      const translations = await findMissingTranslations();
+      return translations;
     },
   },
 }).$mount("#app");

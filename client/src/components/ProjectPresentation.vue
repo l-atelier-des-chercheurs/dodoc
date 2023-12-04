@@ -2,11 +2,12 @@
   <div
     class="_projectInfos"
     :class="{
-      'is--list': context === 'list',
-      'u-card': context === 'list',
+      'is--list': ['list', 'tiny'].includes(context),
+      'is--own': is_own_project,
       'u-card2': context !== 'full',
       'is--mobileView': $root.is_mobile_view,
     }"
+    :data-context="context"
   >
     <div class="_projectInfos--cover">
       <CoverField
@@ -155,7 +156,7 @@
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
     </div>
 
-    <div class="_projectInfos--open" v-if="context === 'list'">
+    <div class="_projectInfos--open" v-if="['list', 'tiny'].includes(context)">
       <router-link :to="{ path: createURLFromPath(project.$path) }">
         <div class="_clickZone" />
       </router-link>
@@ -201,7 +202,7 @@ export default {
     };
   },
   created() {
-    if (this.context === "list") this.show_description = false;
+    if (["list", "tiny"].includes(this.context)) this.show_description = false;
   },
   mounted() {},
   beforeDestroy() {},
@@ -216,6 +217,9 @@ export default {
       const space_path = this.createPath({ space_slug });
       const space = this.getFromCache(space_path);
       return space.title;
+    },
+    is_own_project() {
+      return this.isOwnItem({ folder: this.project });
     },
   },
   methods: {},
@@ -242,20 +246,27 @@ export default {
   }
 
   &.is--list {
-    // border-bottom: 2px solid #b9b9b9;
-    // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
     border-radius: 4px;
+    border: 1px solid var(--c-gris_clair);
+
+    transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+      transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &.is--own {
+      border-color: var(--c-bleumarine);
+    }
 
     ._title {
-      font-size: 90%;
-    }
-    ._description {
-      font-size: 90%;
+      font-size: var(--sl-font-size-small);
     }
   }
 
   &.is--list {
     display: block;
+    ._projectInfos--infos {
+      padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
+    }
   }
 
   &.is--mobileView {
@@ -289,7 +300,7 @@ export default {
   flex-flow: column nowrap;
   place-content: center;
 
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 1);
 
   transition: all 0.4s;
@@ -362,23 +373,48 @@ export default {
   }
   ._check {
     color: var(--c-bleuvert);
+
+    &::before {
+      content: "";
+      position: absolute;
+      width: 90%;
+      height: 90%;
+      margin: 5%;
+      background: white;
+      z-index: -1;
+      border-radius: 50%;
+    }
   }
   ._private {
+    &::before {
+      content: "";
+      position: absolute;
+      width: 60%;
+      margin-left: 20%;
+      height: 100%;
+      background: white;
+      z-index: -1;
+      border-radius: 5px;
+    }
   }
 
   ._originalSpace {
     position: absolute;
     bottom: 0;
     left: 0;
-    margin: calc(var(--spacing) / 2);
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-
-    // background-color: var(--c-noir);
-    // color: white;
+    margin: calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
-    // background: rgba(255, 255, 255, 0.3);
-
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 15px;
     font-size: var(--sl-font-size-small);
+    /* max-width: 30ch; */
+    max-width: calc(100% - calc(var(--spacing) / 2));
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 }
 

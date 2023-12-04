@@ -84,7 +84,11 @@ export default {
     async saveToProject() {
       if (this.export_blob) {
         const additional_meta = {};
+
         additional_meta.$origin = "make";
+        if (this.connected_as?.$path)
+          additional_meta.$authors = [this.connected_as.$path];
+
         await this.$api
           .uploadFile({
             path: this.project_path,

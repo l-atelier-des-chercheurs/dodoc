@@ -275,7 +275,6 @@ export default {
 
       if (!this.remove_original) {
         this.is_copying = false;
-        debugger;
         this.navigation_to_copy = this.$router.resolve(navigation).href;
       } else {
         this.is_copying = false;

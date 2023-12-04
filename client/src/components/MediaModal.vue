@@ -101,7 +101,7 @@
         </button>
       </div>
 
-      <div class="_meta" v-else-if="show_meta_sidebar || $root.is_mobile_view">
+      <div class="_meta" v-if="show_meta_sidebar || $root.is_mobile_view">
         <div class="u-spacingBottom">
           <h3>
             {{ $t("media") }}
@@ -146,6 +146,17 @@
           />
         </div>
 
+        <div class="u-spacingBottom">
+          <AuthorField
+            :label="$t('authors')"
+            class="u-spacingBottom"
+            :field="'$authors'"
+            :authors_paths="authors_path"
+            :path="file.$path"
+            :can_edit="true"
+            :instructions="$t('file_author_instructions')"
+          />
+        </div>
         <div>
           <DateDisplay
             :title="$t('date_uploaded')"
@@ -224,7 +235,8 @@ export default {
     },
   },
   created() {
-    if (localStorage.getItem("show_meta_sidebar") === "false")
+    if (this.select_mode) this.show_meta_sidebar = false;
+    else if (localStorage.getItem("show_meta_sidebar") === "false")
       this.show_meta_sidebar = false;
   },
   mounted() {
@@ -240,6 +252,9 @@ export default {
     },
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+    },
+    authors_path() {
+      return this.file.$authors || "noone";
     },
   },
   methods: {

@@ -2,7 +2,7 @@
   <div class="_cropImage">
     <div class="_sidebyside">
       <div class="_leftBtns">
-        <fieldset>
+        <fieldset class="u-spacingBottom">
           <legend class="u-label">{{ $t("crop") }}</legend>
 
           <div class="_btnRow">
@@ -82,7 +82,7 @@
           </div>
         </fieldset>
 
-        <fieldset>
+        <fieldset class="u-spacingBottom">
           <legend class="u-label">{{ $t("adjust") }}</legend>
 
           <RangeValueInput
@@ -131,7 +131,7 @@
           />
         </fieldset>
 
-        <div class="">
+        <div class="u-spacingBottom">
           <button
             type="button"
             class="u-button u-button_bleumarine"
@@ -287,6 +287,12 @@ export default {
     image_export_name() {
       return this.base_media.$media_filename + "_edited.png";
     },
+    image_url() {
+      return this.makeMediaFileURL({
+        $path: this.base_media.$path,
+        $media_filename: this.base_media.$media_filename,
+      });
+    },
     mask_styles() {
       return {
         left: this.mask_prop.x + "px",
@@ -339,8 +345,12 @@ export default {
       const cropCanvasContainer = this.$refs.cropCanvasContainer;
       if (!cropCanvas || !cropCanvasContainer) return false;
 
-      let width = this.base_media.$infos?.width || 1280;
-      let height = this.base_media.$infos?.height || 720;
+      let img = new Image();
+      img.src = this.image_url;
+      await img.decode();
+
+      let width = img.naturalWidth || 1280;
+      let height = img.naturalHeight || 720;
       const ratio = width / height;
 
       const max_crop_height = this.$root.window.innerHeight * 0.75;
@@ -362,31 +372,10 @@ export default {
       cropCanvasContainer.style.width = width + "px";
       cropCanvasContainer.style.height = height + "px";
 
-      const image_url = this.makeMediaFileURL({
-        $path: this.base_media.$path,
-        $media_filename: this.base_media.$media_filename,
-      });
-
-      let img = new Image();
-      img.src = image_url;
-      await img.decode();
-      // await new Promise((r) => setTimeout(r, 2000));
-
       const context = cropCanvas.getContext("2d");
       context.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
 
-      // context.filter = "contrast(1.4) sepia(1) drop-shadow(-9px 9px 3px #e81)";
-      let filter = "";
-
-      if (Object.prototype.hasOwnProperty.call(this.make, "image_brightness"))
-        filter += `brightness(${this.make.image_brightness}%)`;
-      if (Object.prototype.hasOwnProperty.call(this.make, "image_contrast"))
-        filter += `contrast(${this.make.image_contrast}%)`;
-      if (Object.prototype.hasOwnProperty.call(this.make, "image_blur"))
-        filter += `blur(${this.make.image_blur}px)`;
-      if (Object.prototype.hasOwnProperty.call(this.make, "image_saturation"))
-        filter += `saturate(${this.make.image_saturation}%)`;
-      context.filter = filter;
+      context.filter = this.generateFilters();
 
       context.drawImage(img, 0, 0, width, height);
     },
@@ -400,6 +389,18 @@ export default {
       this.mask_prop.y = transform.y;
       this.mask_prop.width = transform.width;
       this.mask_prop.height = transform.height;
+    },
+    generateFilters() {
+      let filters = "";
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_brightness"))
+        filters += `brightness(${this.make.image_brightness}%)`;
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_contrast"))
+        filters += `contrast(${this.make.image_contrast}%)`;
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_blur"))
+        filters += `blur(${this.make.image_blur}px)`;
+      if (Object.prototype.hasOwnProperty.call(this.make, "image_saturation"))
+        filters += `saturate(${this.make.image_saturation}%)`;
+      return filters;
     },
 
     dragEnd(event, transform) {
@@ -466,24 +467,30 @@ export default {
 
       const previewCanvasCtx = previewCanvas.getContext("2d");
 
-      const crop_x = Math.round(
-        (this.make.crop_options?.x / 100) * cropCanvas.width
-      );
-      const crop_y = Math.round(
-        (this.make.crop_options?.y / 100) * cropCanvas.height
-      );
-      const crop_width = Math.round(
-        (this.make.crop_options?.width / 100) * cropCanvas.width
-      );
-      const crop_height = Math.round(
-        (this.make.crop_options?.height / 100) * cropCanvas.height
-      );
+      // create canvas, same size as source image, crop from this
+      let img = new Image();
+      img.src = this.image_url;
+      await img.decode();
+
+      let width = img.naturalWidth || 1280;
+      let height = img.naturalHeight || 720;
+
+      const x = this.make.crop_options?.x || 0;
+      const y = this.make.crop_options?.y || 0;
+      const w = this.make.crop_options?.width || 100;
+      const h = this.make.crop_options?.height || 100;
+
+      const crop_x = Math.round((x / 100) * width);
+      const crop_y = Math.round((y / 100) * height);
+      const crop_width = Math.round((w / 100) * width);
+      const crop_height = Math.round((h / 100) * height);
 
       previewCanvas.width = crop_width;
       previewCanvas.height = crop_height;
 
+      previewCanvasCtx.filter = this.generateFilters();
       previewCanvasCtx.drawImage(
-        cropCanvas,
+        img,
         crop_x,
         crop_y,
         crop_width,

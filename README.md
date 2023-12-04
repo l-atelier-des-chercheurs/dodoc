@@ -190,8 +190,9 @@ Each file has default values and custom values as well.
 Default values are:
 
 ```
-- $admins           (Array, editable)                     list of admins paths
-- $contributors     (Array, editable)                     list of contributors paths
+- $admins           (Array, editable)                     list of admins paths (will be used to set file permissions in the future)
+- $contributors     (Array, editable)                     list of contributors paths (will be used to set file permissions in the future)
+- $authors          (Array, editable)                     list of authors paths (information only, not actually used server-side)
 - $path             (String)                              path to meta text file, matches filesystem structure and URL
 - $date_created     (Date)                                when the file was created
 - $date_uploaded    (Date)                                when the file was uploaded
@@ -238,7 +239,6 @@ If a folder has $contributors, people logged in with a token that matches one of
 
 If a folder has `$contributors = "everyone"`, all users (including anonymous, non logged-in users) have contributors' permissions.
 If a folder has `$admins = "everyone"`, all users (including anonymous) have admins' permissions.
-
 If a folder has `$admins = "parent_contributors"` then all parent's $contributors are admins to this folder. This is the same behaviour as files in that parent folder.
 
 These permissions trickle down: an instance admin has admin rights to all the instance contents. A space admin has admin rights to all its projects. A project admin has admin rights to all its content (medias, stopmotions, publications).

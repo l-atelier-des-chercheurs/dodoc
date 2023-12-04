@@ -1597,7 +1597,8 @@ export default {
 
       try {
         let features = [];
-        this.geometries.map((p) => {
+
+        this.geometries?.map((p) => {
           let feature_cont;
 
           if (p.type === "Polygon" && p.coords)
@@ -1623,7 +1624,8 @@ export default {
 
           features.push(feature);
         });
-        this.draw_vector_source.addFeatures(features);
+
+        if (features.length > 0) this.draw_vector_source.addFeatures(features);
         this.draw_vector_source.changed();
 
         if (this.selected_feature_id && !this.selected_feature)

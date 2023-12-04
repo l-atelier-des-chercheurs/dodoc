@@ -230,12 +230,10 @@ export default {
 }
 
 ._pinned {
-  // background: var(--c-bleumarine_clair);
   background: var(--c-pinnedBg);
-  // border-radius: 4px;
-  padding: calc(var(--spacing) / 1);
-  margin-top: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2);
+  border-radius: 14px;
 }
 
 ._pinDropzone {
