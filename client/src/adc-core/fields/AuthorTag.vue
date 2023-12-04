@@ -1,9 +1,13 @@
 <template>
   <component
+    v-if="author"
     :is="component_tag"
     :type="component_tag === 'button' ? 'button' : ''"
-    v-if="author"
+    :to="author_url"
     class="_author"
+    :class="{
+      'u-card2': component_tag === 'button',
+    }"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
     @click="$emit('click')"
@@ -19,11 +23,7 @@
       />
     </div>
     <div v-if="!show_image_only" class="_infos">
-      <component
-        :is="links_to_author_page && !show_image_only ? 'router-link' : 'span'"
-        class="_name"
-        :to="author_url"
-      >
+      <span class="_name">
         <b-icon
           v-if="
             authorIsInstance({
@@ -31,68 +31,32 @@
               folder_path: author.$path,
             })
           "
-          icon="gear"
+          icon="shield-check"
           :aria-label="$t('admin')"
         />
         {{ author.name }}
-      </component>
-
-      <!-- <div
-        class="u-instructions"
-        v-if="
-          authorIsInstance({
-            field: '$admins',
-            folder_path: author.$path,
-          })
-        "
-      >
-        <small v-html="$t('admin')" />
-      </div> -->
-
-      <!-- <div class="_path">@{{ getFilename(author.$path) }}</div> -->
+      </span>
     </div>
 
-    <!-- <router-link
-      v-if="links_to_author_page && !show_image_only"
-      :to="author_url"
-    >
-      <b-icon icon="person-lines-fill" :aria-label="$t('page')" />
-    </router-link> -->
-
-    <button
-      type="button"
-      class="u-button u-button_icon"
-      v-if="$listeners.select"
-      @click="$emit('select')"
-    >
-      <b-icon icon="box-arrow-in-right" :aria-label="$t('select')" />
-    </button>
-    <button
-      type="button"
-      class="u-button u-button_icon"
-      v-if="$listeners.add"
-      @click="$emit('add')"
-    >
-      <b-icon icon="plus-circle" :aria-label="$t('add')" />
-    </button>
-    <button
-      type="button"
-      class="u-button u-button_icon"
-      v-if="$listeners.remove"
-      @click="$emit('remove')"
-    >
-      <b-icon icon="x" :aria-label="$t('remove')" />
-    </button>
+    <b-icon
+      v-if="mode === 'select'"
+      icon="box-arrow-in-right"
+      :aria-label="$t('select')"
+    />
+    <b-icon v-if="mode === 'add'" icon="plus-circle" :aria-label="$t('add')" />
+    <b-icon
+      v-if="mode === 'remove'"
+      icon="x-circle"
+      :aria-label="$t('remove')"
+    />
   </component>
 </template>
 <script>
 export default {
   props: {
     path: String,
-    links_to_author_page: {
-      type: Boolean,
-      default: false,
-    },
+    mode: String,
+
     show_image_only: {
       type: Boolean,
       default: false,
@@ -116,12 +80,13 @@ export default {
       return false;
     },
     component_tag() {
-      // if (this.links_to_author_page) return "router-link";
-      if (this.$listeners.click) return "button";
-      return "span";
+      if (this.mode === "link") return "router-link";
+      else if (["select", "add", "remove"].includes(this.mode)) return "button";
+      return "div";
     },
     author_url() {
-      return this.createURLFromPath(this.path);
+      if (this.mode === "link") return this.createURLFromPath(this.path);
+      return false;
     },
   },
   methods: {},
@@ -142,7 +107,19 @@ export default {
   text-align: left;
 
   border: 1px solid var(--c-gris);
-  box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+
+  &:where(a) {
+    text-decoration: underline;
+  }
+
+  // &:where(button) {
+  //   box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+
+  //   &:hover {
+  //     box-shadow: var(--panel-shadows);
+  //     color: var(--c-bleumarine);
+  //   }
+  // }
 
   &[data-isself] {
     border-color: var(--c-bleumarine);
@@ -196,10 +173,5 @@ a {
     // color: var(--active-color);
     color: var(--label-color);
   }
-}
-
-a:hover {
-  box-shadow: var(--panel-shadows);
-  color: var(--c-bleumarine);
 }
 </style>
