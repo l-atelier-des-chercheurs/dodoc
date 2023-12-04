@@ -53,6 +53,7 @@
 <script>
 import WelcomeModal from "@/components/WelcomeModal.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
+import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
 import AuthorList from "@/adc-core/author/AuthorList.vue";
@@ -62,6 +63,7 @@ export default {
   components: {
     WelcomeModal,
     GeneralPasswordModal,
+    TrackAuthorChanges,
     TaskTracker,
     DisconnectModal,
     AuthorList,

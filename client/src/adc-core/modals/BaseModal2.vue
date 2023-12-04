@@ -8,7 +8,7 @@
         ref="modal"
         :data-size="size"
       >
-        <div class="_baseModal--content" :data-size="size">
+        <div class="_baseModal--content">
           <header v-if="title">
             <h2>{{ title }}</h2>
           </header>
@@ -111,10 +111,21 @@ export default {
     // height: 100%;
     max-height: calc(100vh - calc(var(--spacing) * 2));
     overflow: auto;
+  }
 
-    &[data-size="large"] {
-      max-width: 680px;
-    }
+  &[data-size="full"] ._baseModal--content {
+    max-width: none;
+    max-height: none;
+    border: none;
+
+    --modal-margin: var(--spacing) * 4;
+
+    width: calc(100% - var(--modal-margin));
+    height: calc(100% - var(--modal-margin));
+    margin: calc(var(--modal-margin) / 2);
+  }
+  &[data-size="large"] ._baseModal--content {
+    max-width: 680px;
   }
 
   &[data-size="full"] ._baseModal--content {

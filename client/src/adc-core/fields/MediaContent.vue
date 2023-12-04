@@ -306,35 +306,6 @@ export default {
       if (this.url_to_site.type === "any") this.is_loading_iframe = true;
       this.start_iframe = true;
     },
-    // async updateCaption() {
-    //   this.fetch_status = "pending";
-    //   this.fetch_error = null;
-    //   try {
-    //     const response = await this.$axios.patch(
-    //       `/projects/${this.project_slug}/${this.file.$slug}`,
-    //       {
-    //         caption: this.new_caption,
-    //       }
-    //     );
-    //     this.response = response.data;
-    //     this.fetch_status = "success";
-    //   } catch (e) {
-    //     this.fetch_status = "error";
-    //     this.fetch_error = e.response.data;
-    //   }
-    // },
-    // async removeFile() {
-    //   try {
-    //     const response = await this.$axios.delete(
-    //       `/projects/${this.project_slug}/${this.file.$slug}`
-    //     );
-    //     this.response = response.data;
-    //     this.fetch_status = "success";
-    //   } catch (e) {
-    //     this.fetch_status = "error";
-    //     this.fetch_error = e.response.data;
-    //   }
-    // },
   },
 };
 </script>
