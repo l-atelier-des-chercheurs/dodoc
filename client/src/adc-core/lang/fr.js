@@ -4,10 +4,10 @@ export default {
   a_foss_made_by:
     "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
   home: "Accueil",
+  admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
-  admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
-  admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
+  admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
   edit: "Modifier",
   stop_edit: "Arrêter les modifications",
   caption: "Légende",
@@ -15,6 +15,7 @@ export default {
   date_modified: "Dernière modification",
   alphabetical: "Alphabétique",
   date_uploaded: "Date d’envoi",
+  date_archive: "Date dans l’archive",
   cancel: "Annuler",
   select: "Sélectionner",
   select_all: "Sélectionner tout",
@@ -33,6 +34,8 @@ export default {
   description: "Description",
   no_description: "Pas de description",
   keywords: "Mots-clés",
+  suggested_keywords: "Mots-clé suggérés",
+  suggested_cat_kw: "Catégories et mots-clé suggérés",
 
   add: "ajouter",
   add_item: "Ajouter un élément",
@@ -49,6 +52,7 @@ export default {
   open_in_finder: "Ouvrir dans l’explorateur",
 
   admins_and_contributors: "Référents et contributeurs",
+  // admins_and_contributors_instr: "",
   set_admins_and_contributors: "Définir les référents et contributeurs",
   instance_admins_instr:
     "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
@@ -58,17 +62,17 @@ export default {
 
   name_of_instance: "Nom de l’instance",
   name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
-      Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
-  presentation_of_instance: "Présentation de l’instance",
+    Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
+  presentation_of_instance: "Présentation de la plateforme",
   presentation_of_instance_instructions: `
-      Apparaîtra sur la page d’accueil uniquement.
-      `,
+    Apparaîtra sur la page d’accueil uniquement.
+    `,
   presentation: "Présentation",
   general_password: "mot de passe général",
   general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
-    peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
+  peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
   general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plateforme. 
-    Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
+  Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
 
   submitted_password_is_wrong: "Mot de passe erroné",
   account_doesnt_exist: "Ce compte n’existe pas",
@@ -95,6 +99,14 @@ export default {
 
   contactmail_of_instance: `Contact`,
   contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+
+  create_stack: "Créer une pile",
+  deselect_all: "Déselectionner tout",
+  remove_all: "Supprimer tout",
+
+  remove_stack: "Supprimer la pile et ses contenus",
+  show_only_my_content: "Seulement mon contenu",
+
   hero_background_color: "Couleur d’arrière plan de l’image",
   text_background_color: "Couleur d’arrière plan du texte",
 
@@ -154,9 +166,9 @@ export default {
   sent: "Envoyé",
   retry: "Réessayer",
   font_instr: `
-      Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle famille de caractère au format woff2. 
-      Indiquez ensuite pour chaque élément le fichier correspondant.
-    `,
+    Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle famille de caractère au format woff2. 
+    Indiquez ensuite pour chaque élément le fichier correspondant.
+  `,
   reload_page_to_apply:
     "Après avoir enregistré ces changements, rechargez cette page.",
 
@@ -291,6 +303,16 @@ export default {
   none: "Aucun·e",
   filters: "Filtres",
   reset_all: "Retirer tout",
+  reset: "Réinitialiser",
+
+  no_content: "Aucun contenu à afficher",
+
+  group_by_date: "Grouper par date",
+  filter_by_type: "Filtrer par type",
+  filter_by_author: "Filtrer par auteur",
+  filter_by_keyword: "Filtrer par mots-clé",
+  show_all_keywords: "Afficher tous les mots-clés",
+  sort_by: "Trier par",
 
   draft: "En cours",
   listed: "Listé",
@@ -393,7 +415,7 @@ export default {
 
   path_to_content: "Chemin du stockage des contenus",
   path_to_content_instructions: `Attention, fonctionnalité avancée !
-      Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
+    Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
 
   administration_and_access_control: "Administration et contrôle des accès",
   logo_and_images: "Logo et images",
@@ -459,6 +481,10 @@ export default {
   markdown_instr:
     "Champ en Markdown : vous pouvez mettre en forme le texte (titres, gras, italique, liens, etc.).",
 
+  add_category: "Ajouter une catégorie",
+  category_name: "Nom de la catégorie",
+  category_title: "Titre de la catégorie",
+
   watermark: "Habillage",
   watermark_instructions:
     "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
@@ -518,8 +544,8 @@ export default {
   face_masks: "Les masques",
   face_masks_summary: "Créer une galerie de masques interactifs !",
   face_masks_instructions: `Cette recette utilise un gabarit spécifique à imprimer, puis à dessiner et à prendre en photo. 
-      Ces dessins seront ensuite projetés sur le visage à l’aide de la caméra frontale d’un smartphone, d’une tablette ou d’un ordinateur.
-      <br>Média accepté : des images avec ou sans légende.`,
+    Ces dessins seront ensuite projetés sur le visage à l’aide de la caméra frontale d’un smartphone, d’une tablette ou d’un ordinateur.
+    <br>Média accepté : des images avec ou sans légende.`,
 
   saving: "Enregistrement…",
   saved: "OK !",
@@ -534,7 +560,6 @@ export default {
 
   drop_here: "Déposer ici",
   or_drag_drop_file_here: "Ou déposer des fichiers ici",
-  drop_to_import: "Déposer pour importer",
   enable: "Activer",
 
   // effets
@@ -594,38 +619,8 @@ export default {
   skill_level: "Niveau de connaissance",
   beginner: "Débutant",
   intermediate: "Intermédiaire",
-  experienced: "Avancé",
-
-  target_audience: "Public cible",
-  ta_cycle1: "Cycle 1",
-  ta_cycle1_instr: "Maternelle (Fr) (3-5 ans)",
-  ta_cycle2: "Cycle 2",
-  ta_cycle2_instr: "CP-CE2 ( Fr) (6-8 ans)",
-  ta_cycle3: "Cycle 3",
-  ta_cycle3_instr: "CM1-CM2-6<sup>e</sup> ( collège) (Fr) (9-11 ans)",
-  ta_cycle4: "Cycle 4",
-  ta_cycle4_instr: "5<sup>e</sup>-3<sup>e</sup> (fr) (12-14ans)",
-  ta_ulis: "ULIS",
-  ta_cap: "CAP",
-  ta_lycee: "Lycée G&T",
-  ta_lycee2: "Lycée Pro",
-  ta_post: "Supérieur",
-
-  disciplines: "Disciplines",
-  di_math: "Mathématiques",
-  di_french: "Français",
-  di_langs: "Langues",
-  di_history: "Histoire",
-  di_geography: "Géographie",
-  di_biology: "SVT",
-  di_technology: "Technologie",
-  di_physics: "Physique",
-  di_chemistry: "Chimie",
-  di_sports: "EPS",
-  di_civics: "Parcours citoyen",
-  di_arts: "Arts Plastiques",
-  di_music: "Musique",
-  di_transdisciplinary: "Transdisciplinaire",
+  experienced: "Confirmé",
+  expert: "Expert",
 
   camera: "Camera",
   sources: "Sources",
@@ -739,7 +734,7 @@ export default {
   download_this_qr_code: "Télécharger ce code QR",
   domain: "Avec un domaine",
   domain_instr:
-    "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine comme https://dodoc.fr.",
+    "Avec n’importe quel appareil connecté au même réseau, par le biais d’un domaine.",
   no_domain_set: "Aucun domaine disponible.",
   local_network: "Par le réseau local",
   local_network_instr:
@@ -767,9 +762,6 @@ export default {
   project_contrib_instructions:
     "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
 
-  file_author_instructions:
-    "Cette information est utilisée uniquement à titre indicatif et ne détermine pas qui peut modifier ou supprimer ce contenu.",
-
   space_author_instructions:
     "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
   project_title_instructions:
@@ -793,6 +785,8 @@ export default {
   require_mail_to_signup:
     "Une adresse courriel est obligatoire pour créer un compte",
   enable_events: "Activer la fonctionnalité « événements »",
+  shared_space_archive: "Espace partagé / Archive",
+  filter_sort: "Filtrer/classer",
 
   you_must_login_to_contribute:
     "Vous devez vous inscrire ou vous connecter pour contribuer",
@@ -812,6 +806,8 @@ export default {
   "notifications.not_allowed_to_copy_to_project":
     "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
   "notifications.name_taken": "Ce nom est déjà utilisé",
+  "notifications.too_many_items_selected": "Trop d’éléments sélectionnés.",
+  "notifications.max_items_is": "Le maximum est de",
   "notifications.action_not_allowed": "Cette action n’est pas autorisée",
   "notifications.account_created": "Votre compte a été créé",
   "notifications.logged_in":
@@ -830,8 +826,8 @@ export default {
     "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
   import_a_project: "Importer un projet",
   import_a_project_instr: `Vous pouvez ajouter dans cet espace un projet complet (avec tous ses médias, fabrications et publications) 
-    créé dans un autre do•doc version 10. Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre do•doc pour le récupérer en ZIP
-    puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
+  créé dans un autre do•doc version 10. Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre do•doc pour le récupérer en ZIP
+  puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
 
@@ -852,12 +848,12 @@ export default {
   source_files: "Fichiers sources",
   source_media_missing: "Le média source est manquant",
   media_pickers_instr:
-    "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
-  already_present: "Déjà présent",
+    "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord :és dans le projet actuel.",
 
   current: "Actuel",
   save_on_this_device: "Sauvegarder pour cet appareil",
   will_use_cookies: "Cette fonctionnalité utilise les cookies",
+  fold: "replier",
 
   "module.label.text": "Bloc de texte",
   "module.label.mosaic": "Mosaïque",
@@ -871,6 +867,10 @@ export default {
   restore_this_version: "Restaurer cette version",
   version: "Version",
 
+  search: "Rechercher",
+  search_text: "Rechercher du texte",
+  search_fields: "Dans les champs titre, description ou notes.",
+
   general_informations: "Informations sur l’instance",
 
   panes: "Panneaux",
@@ -878,8 +878,10 @@ export default {
   collect: "Collecter",
   make: "Fabriquer",
   publish: "Publier",
+  items_to_share: "Éléments à partager",
 
-  projects_you_edited_last: "Liste des derniers projets que vous avez modifié",
+  media_editing_instructions:
+    "Indiquer le ou les personnes qui pourront modifier ce contenu",
 
   make_list: "Liste des fabrications",
   latitude: "Latitude",
@@ -903,11 +905,11 @@ export default {
   "instructions.pane.capture":
     "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
   "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
-      <br />
-      Vous pouvez aussi importer des fichiers (photos, vidéos, sons, 3D, PDF ou autre) depuis vos appareils.`,
+    <br />
+    Vous pouvez aussi importer des fichiers (photos, vidéos, sons, 3D, PDF ou autre) depuis vos appareils.`,
   "instructions.pane.make":
     "Recadrez, raccourcissez, assemblez et annotez vos médias.",
   "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
-      <br />
-      Elles contiendront du texte et des éléments que vous avez collecté.`,
+    <br />
+    Elles contiendront du texte et des éléments que vous avez collecté.`,
 };
