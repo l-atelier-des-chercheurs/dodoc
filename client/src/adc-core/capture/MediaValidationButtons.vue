@@ -249,7 +249,7 @@ export default {
     --loader-bg-color: transparent;
     --loader-border-color: var(--c-rouge);
 
-    ._loader {
+    ::v-deep .u-loader {
       background-color: transparent;
     }
 
