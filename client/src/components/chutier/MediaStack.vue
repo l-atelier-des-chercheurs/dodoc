@@ -1,13 +1,12 @@
 <template>
   <ChutierPane @close="$emit('close')">
-    <div class="_mediaFocus" @click="last_clicked = false">
+    <div class="_mediaFocus">
       <div class="_fileStack">
         <transition-group tag="div" class="_itemsList" name="listComplete">
           <div
             class="u-sameRow"
             v-for="(file, index) in files"
             :key="file.$path"
-            @click.stop="last_clicked = file.$path"
           >
             <div class="_removeFile">
               <sl-icon-button
@@ -27,13 +26,7 @@
                 v-text="i + 1"
               />
             </select>
-            <ChutierItem
-              :file="file"
-              :is_clicked="last_clicked === file.$path"
-              :is_selected="false"
-              :context="'stack'"
-              @unclicked="last_clicked = false"
-            />
+            <ChutierItem :file="file" :is_selected="false" :context="'stack'" />
           </div>
         </transition-group>
       </div>
@@ -47,6 +40,15 @@
             step="1"
           />
         </small>
+
+        <DateField
+          :field_name="'date_created_corrected'"
+          :label="$t('date_created')"
+          :date="date_created_corrected"
+          :path="stack.$path"
+          :input_type="'datetime-local'"
+          :can_edit="true"
+        />
 
         <span class="u-instructions">
           {{ $t("complete_or_correct_title_kw") }}
@@ -120,11 +122,14 @@ export default {
 
   data() {
     return {
-      last_clicked: undefined,
       title: "",
       description: "",
       keywords: [],
-      date_created_corrected: "",
+      date_created_corrected: this.datetimeLocal(
+        this.file.date_created_corrected ||
+          this.file.$date_created ||
+          this.file.$date_uploaded
+      ),
     };
   },
   created() {

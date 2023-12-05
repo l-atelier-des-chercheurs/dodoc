@@ -17,9 +17,15 @@
         <!-- <div class="" v-for="file in stack_files" :key="file.$path">
           <MediaContent context="preview" :file="file" />
         </div> -->
-        <template v-if="stack_files && stack_files.at(-1)">
-          <MediaContent context="preview" :file="stack_files.at(-1)" />
-          <div class="_count">{{ stack_files.length }}</div>
+        <template
+          v-if="stack_files_in_order && stack_files_in_order.length > 0"
+        >
+          <MediaContent
+            class="_medias"
+            context="preview"
+            :file="stack_files_in_order.at(-1)"
+          />
+          <div class="_count">{{ stack_files_in_order.length }}</div>
         </template>
       </template>
     </div>
@@ -86,6 +92,9 @@ export default {
       return [];
     },
     stack_files_in_order() {
+      if (this.stack_files.length === 0 || !this.stack?.stack_files_metas)
+        return [];
+
       return this.stack.stack_files_metas.reduce((acc, meta_filename) => {
         const file = this.stack_files.find(
           (f) => this.getFilename(f.$path) === meta_filename
@@ -150,11 +159,15 @@ export default {
         new_meta: {},
       });
       await this.$api.deleteItem({ path: file_path });
+      await new Promise((r) => setTimeout(r, 20));
 
       await this.appendMetaToStack(path_to_destination_folder, file_meta_name);
     },
     async appendMetaToStack(path_to_destination_folder, file_meta_name) {
-      let stack_files_metas = this.stack.stack_files_metas?.slice() || [];
+      let stack_files_metas = [];
+      if (this.stack?.stack_files_metas)
+        stack_files_metas = this.stack.stack_files_metas.slice();
+
       stack_files_metas.push(file_meta_name);
 
       // update folder meta to append file
@@ -177,6 +190,8 @@ export default {
   flex: 0 0 auto;
   margin-bottom: calc(var(--spacing) / 1);
   border-radius: 8px;
+
+  color: #333;
   border: 2px dotted currentColor;
 
   display: flex;
@@ -191,12 +206,13 @@ export default {
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.has--content {
-    border-color: transparent;
-    background: #333;
+    &:hover,
+    &:focus-visible {
+      border-color: transparent;
+      background: currentColor;
+    }
   }
 
-  &:hover,
-  &:focus-visible,
   &.is--draggedOn {
     transform: scale(1.2);
     background: black;
@@ -205,6 +221,9 @@ export default {
   > * {
     pointer-events: none;
   }
+}
+._medias {
+  color: white;
 }
 
 ._count {

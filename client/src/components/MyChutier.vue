@@ -29,49 +29,74 @@
           </button>
         </div>
 
-        <div class="_importBtn">
+        <div class="_importButton">
+          <!-- // TODO create component -->
+          <div
+            class="_importButton--cnt"
+            :class="{
+              'is--dragover': is_dragover,
+            }"
+            @dragover="onDragover"
+            @dragenter="onDragEnter"
+            @dragleave="onDragLeave"
+            @drop="onDrop"
+          >
+            <label
+              :for="id + '-add_file'"
+              class="u-button u-button_red _importButton--btn"
+            >
+              <svg width="20" height="17" viewBox="0 0 20 17">
+                <path
+                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                />
+              </svg>
+              &nbsp;
+              {{ $t("import") }}
+            </label>
+
+            <button
+              type="button"
+              class="u-button u-button_white _qrBtn"
+              @click="createNote"
+            >
+              <sl-icon name="file-text" />
+              &nbsp; note
+            </button>
+
+            <button
+              type="button"
+              class="u-button u-button_white _qrBtn"
+              @click="show_link_picker = true"
+            >
+              <sl-icon name="link-45deg" />
+              &nbsp; url
+            </button>
+            <LinkPicker
+              v-if="show_link_picker"
+              @embed="createEmbed"
+              @close="show_link_picker = false"
+            />
+
+            <!-- <div class="u-instructions">
+              {{ $t("or_drag_drop_file_here").toLowerCase() }}
+            </div> -->
+          </div>
           <input
             type="file"
             multiple="multiple"
             :id="id + '-add_file'"
             name="file"
             accept=""
-            class="inputfile-2"
+            class=""
             @change="updateInputFiles($event)"
           />
-          <label :for="id + '-add_file'">
-            <!-- <svg width="20" height="17" viewBox="0 0 20 17">
-            <path
-              d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-            />
-          </svg> -->
-            {{ $t("import") }}
-          </label>
-        </div>
-
-        <div class="">
-          <button
-            type="button"
-            class="u-button u-button_white _qrBtn"
-            @click="createNote"
-          >
-            <sl-icon name="file-text" />
-            note
-          </button>
-        </div>
-        <div class="">
-          <button
-            type="button"
-            class="u-button u-button_white _qrBtn"
-            @click="show_link_picker = true"
-          >
-            <sl-icon name="link-45deg" />
-            url
-          </button>
-          <LinkPicker
-            v-if="show_link_picker"
-            @embed="createEmbed"
-            @close="show_link_picker = false"
+          <UploadFiles
+            v-if="files_to_import.length > 0"
+            class="_uploadFilesList"
+            :files_to_import="files_to_import"
+            :path="author_path"
+            @importedMedias="importedMedias"
+            @close="files_to_import = []"
           />
         </div>
 
@@ -95,14 +120,6 @@
           <sl-icon name="question-square" />
         </button>
       </div>
-      <UploadFiles
-        v-if="selected_files.length > 0"
-        class="_uploadFilesList"
-        :files_to_import="selected_files"
-        :path="author_path"
-        @close="selected_files = []"
-        @importedMedias="importedMedias"
-      />
 
       <div class="_middleContent">
         <label
@@ -262,7 +279,8 @@ export default {
     return {
       chutier: undefined,
 
-      selected_files: [],
+      is_dragover: false,
+      files_to_import: [],
       id: `image_select_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
@@ -390,7 +408,7 @@ export default {
       else this.selected_items_slugs.push(path);
     },
     updateInputFiles($event) {
-      this.selected_files = Array.from($event.target.files);
+      this.files_to_import = Array.from($event.target.files);
       $event.target.value = "";
     },
     async createNote() {
@@ -435,6 +453,24 @@ export default {
       //   (i) => this.connected_as.$path + "/" + i
       // );
     },
+
+    onDragover($event) {
+      $event.preventDefault();
+    },
+    onDragEnter($event) {
+      $event.preventDefault();
+      this.is_dragover = true;
+    },
+    onDragLeave($event) {
+      $event.preventDefault();
+      this.is_dragover = false;
+    },
+    onDrop($event) {
+      this.is_dragover = false;
+      if ($event.dataTransfer.files?.length > 0)
+        this.files_to_import = Array.from($event.dataTransfer.files);
+    },
+
     selectAll() {
       this.selected_items_slugs = this.chutier_items.map((i) => i.$path);
     },
@@ -509,8 +545,8 @@ export default {
 }
 
 ._topContent {
-  position: sticky;
-  z-index: 1;
+  // position: sticky;
+  // z-index: 1;
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
@@ -518,8 +554,8 @@ export default {
   top: 0;
   padding: calc(var(--spacing) / 1);
 
-  backdrop-filter: blur(6px);
-  mask: linear-gradient(black 75%, transparent 100%);
+  // backdrop-filter: blur(6px);
+  // mask: linear-gradient(black 75%, transparent 100%);
 }
 
 ._qrBtn {
@@ -619,6 +655,59 @@ export default {
     ._uploadFile {
       background: black !important;
     }
+  }
+}
+
+._importButton {
+  width: 100%;
+  // padding: calc(var(--spacing) / 2);
+  padding-bottom: 0;
+
+  ._importButton--cnt {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+
+    width: 100%;
+    max-width: none;
+
+    border: 2px dotted var(--c-rouge);
+    border-radius: 10px;
+    box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
+    padding: calc(var(--spacing) / 1);
+
+    &.is--dragover {
+      border-color: white;
+
+      > * {
+        // pointer-events: none;
+      }
+    }
+    &.is--dragover {
+      background-color: var(--c-rouge);
+    }
+  }
+  .u-button {
+    flex: 1 1 0;
+
+    &._importButton--btn {
+      flex-basis: 100%;
+    }
+
+    // display: flex;
+    // flex-flow: row nowrap;
+    // background: var(--c-rouge);
+    // color: white;
+    // cursor: pointer;
+    svg {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+  .u-instructions {
+    color: white;
   }
 }
 </style>

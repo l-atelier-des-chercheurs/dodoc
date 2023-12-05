@@ -66,8 +66,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._documentsCreator {
-  color: #999;
   background: #222;
+  color: white;
   padding: calc(var(--spacing) / 1);
   width: auto;
 
