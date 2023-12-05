@@ -24,7 +24,9 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    path: String,
+  },
   components: {},
   data() {
     return {
@@ -41,43 +43,44 @@ export default {
       this.routine_is_started = true;
 
       const new_folder_slug = await this.$api.createFolder({
-        path: "projects",
+        path: this.path,
         additional_meta: {
-          title: "Z test project " + this.$api.socket.userID,
+          title: "Z test project " + +new Date(),
           $admins: "everyone",
         },
       });
-      await new Promise((r) => setTimeout(r, 200));
-      await this.$api.updateMeta({
-        path: `projects/${new_folder_slug}`,
-        new_meta: {},
-      });
-      await new Promise((r) => setTimeout(r, 200));
-      await this.$api.updateMeta({
-        path: `/projects/${new_folder_slug}`,
-        new_meta: {
-          title: "Nouveau titre " + this.$api.socket.userID,
-        },
-      });
-      await new Promise((r) => setTimeout(r, 200));
-      await this.$api.updateMeta({
-        path: `projects/${new_folder_slug}`,
-        new_meta: {
-          keywords: ["plop"],
-        },
-      });
-      await new Promise((r) => setTimeout(r, 200));
-      await this.$api.updateMeta({
-        path: `projects/${new_folder_slug}`,
-        new_meta: {
-          keywords: ["plip"],
-        },
-      });
-      await new Promise((r) => setTimeout(r, 500));
-      await this.$api.deleteItem({
-        path: `projects/${new_folder_slug}`,
-      });
-      await new Promise((r) => setTimeout(r, 250));
+      new_folder_slug;
+      // await new Promise((r) => setTimeout(r, 200));
+      // await this.$api.updateMeta({
+      //   path: `projects/${new_folder_slug}`,
+      //   new_meta: {},
+      // });
+      // await new Promise((r) => setTimeout(r, 200));
+      // await this.$api.updateMeta({
+      //   path: `/projects/${new_folder_slug}`,
+      //   new_meta: {
+      //     title: "Nouveau titre " + this.$api.socket.userID,
+      //   },
+      // });
+      // await new Promise((r) => setTimeout(r, 200));
+      // await this.$api.updateMeta({
+      //   path: `projects/${new_folder_slug}`,
+      //   new_meta: {
+      //     keywords: ["plop"],
+      //   },
+      // });
+      // await new Promise((r) => setTimeout(r, 200));
+      // await this.$api.updateMeta({
+      //   path: `projects/${new_folder_slug}`,
+      //   new_meta: {
+      //     keywords: ["plip"],
+      //   },
+      // });
+      // await new Promise((r) => setTimeout(r, 500));
+      // await this.$api.deleteItem({
+      //   path: `projects/${new_folder_slug}`,
+      // });
+      // await new Promise((r) => setTimeout(r, 250));
 
       if (this.routine_is_started) this.startRoutine();
     },

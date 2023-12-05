@@ -16,6 +16,8 @@
         />
       </div>
 
+      <ProjectsTester v-if="false" :path="projects_path" />
+
       <div class="_projectsList">
         <div class="u-sameRow u-spacingBottom">
           <DLabel :str="$t('list_of_projects')" :tag="'h2'" />
@@ -99,6 +101,7 @@ export default {
   components: {
     ProjectsListWithFilter,
     SpacePresentation,
+    ProjectsTester: () => import("@/adc-core/tests/ProjectsTester.vue"),
   },
   data() {
     return {
