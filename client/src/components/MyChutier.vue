@@ -99,7 +99,7 @@
         v-if="selected_files.length > 0"
         class="_uploadFilesList"
         :files_to_import="selected_files"
-        :path="path"
+        :path="author_path"
         @close="selected_files = []"
         @importedMedias="importedMedias"
       />
@@ -169,12 +169,15 @@
         </div>
       </div>
     </div>
-    <DocumentsCreator class="_documentsCreator" />
+    <DocumentsCreator
+      class="_documentsCreator"
+      :author_stacks_path="author_stacks_path"
+    />
 
     <transition name="slideup" mode="out-in">
       <div
         class="_selectionBar"
-        v-if="selected_items.length > 0"
+        v-if="false && selected_items.length > 0"
         key="selection"
       >
         <div class="_selectionBar--previews">
@@ -268,6 +271,7 @@ export default {
   data() {
     return {
       chutier: undefined,
+
       selected_files: [],
       id: `image_select_${(
         Math.random().toString(36) + "00000000000000000"
@@ -289,11 +293,8 @@ export default {
   created() {},
   mounted() {
     this.listChutier();
-    // this.$api.join({ room: this.path });
   },
-  beforeDestroy() {
-    // this.$api.leave({ room: this.path });
-  },
+  beforeDestroy() {},
   watch: {
     // chutier_items() {
     //   this.selected_items_slugs = this.selected_items_slugs.filter(
@@ -339,15 +340,17 @@ export default {
     },
   },
   computed: {
-    path() {
+    author_path() {
       return this.connected_as.$path;
+    },
+    author_stacks_path() {
+      return this.author_path + "/stacks";
     },
     url_to_page() {
       // for reactivity
       this.$route.path;
       return window.location.href;
     },
-
     selected_items() {
       return this.selected_items_slugs.map(
         (fis) => this.chutier_items.find((ci) => ci.$path === fis) || false
@@ -358,14 +361,16 @@ export default {
     },
     chutier_items() {
       if (!this.chutier || !this.chutier.$files) return [];
-      const _medias = JSON.parse(JSON.stringify(this.chutier.$files));
-      _medias.sort((a, b) => {
-        const getDate = (f) =>
-          new Date(
-            f.date_created_corrected || f.$date_created || f.$date_uploaded
-          );
-        return +getDate(b) - +getDate(a);
-      });
+      let _medias = JSON.parse(JSON.stringify(this.chutier.$files));
+      _medias = _medias
+        .filter((m) => m.is_stack !== true && m.$media_filename)
+        .sort((a, b) => {
+          const getDate = (f) =>
+            new Date(
+              f.date_created_corrected || f.$date_created || f.$date_uploaded
+            );
+          return +getDate(b) - +getDate(a);
+        });
       return _medias;
     },
     chutier_items_grouped() {
@@ -380,7 +385,7 @@ export default {
     async listChutier() {
       this.chutier = await this.$api
         .getFolder({
-          path: this.path,
+          path: this.author_path,
         })
         .catch((err) => {
           this.fetch_project_error = err.response;
@@ -403,7 +408,7 @@ export default {
       const filename = "note-" + date_str + ".txt";
 
       const meta_filename = await this.$api.uploadText({
-        path: this.path,
+        path: this.author_path,
         filename,
         content: "",
         additional_meta: {
@@ -419,7 +424,7 @@ export default {
       const filename = "url-" + date_str + ".txt";
 
       const meta_filename = await this.$api.uploadText({
-        path: this.path,
+        path: this.author_path,
         filename,
         content: full_url,
         additional_meta: {
