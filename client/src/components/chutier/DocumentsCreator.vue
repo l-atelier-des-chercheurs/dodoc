@@ -3,29 +3,35 @@
     <!-- <span>
       {{ $t("publier") }}
     </span> -->
-    <template v-for="(a, index) in new Array(3).fill(null)">
-      <DocumentSpot
-        class="_spot"
-        :key="index"
-        :index="index + 1"
-        :author_stacks_path="author_stacks_path"
-        :stack_path="stackPathForIndex(index + 1)"
-      />
-    </template>
+    <DocumentSpot
+      v-for="stack in all_stacks"
+      :key="stack.$path"
+      class="_spot"
+      :author_stacks_path="author_stacks_path"
+      :stack_path="stack.$path"
+    />
+    <DocumentSpot
+      :author_stacks_path="author_stacks_path"
+      :key="'empty'"
+      class="_spot"
+    />
   </div>
 </template>
 <script>
-import DocumentSpot from "@/components/DocumentSpot.vue";
+import DocumentSpot from "@/components/chutier/DocumentSpot.vue";
 
 export default {
-  props: { author_stacks_path: String },
+  props: {
+    author_stacks_path: String,
+    has_items_selected: Boolean,
+  },
   components: {
     DocumentSpot,
   },
   data() {
     return {
       is_loading: true,
-      stacks: [],
+      all_stacks: [],
     };
   },
   i18n: {
@@ -46,7 +52,7 @@ export default {
   computed: {},
   methods: {
     async listStacks() {
-      this.stacks = await this.$api
+      this.all_stacks = await this.$api
         .getFolders({
           path: this.author_stacks_path,
         })
@@ -54,11 +60,6 @@ export default {
           this.fetch_project_error = err.response;
           this.is_loading = false;
         });
-    },
-    stackPathForIndex(index) {
-      const stack = this.stacks.find((s) => s.stack_spot === index);
-      if (stack) return stack.$path;
-      return undefined;
     },
   },
 };
@@ -72,7 +73,7 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100%;
   overflow: auto;
 

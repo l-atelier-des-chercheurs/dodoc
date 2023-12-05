@@ -1,19 +1,13 @@
 .u-label {
   display: block;
-  // font-variant: small-caps;
-  // text-transform: uppercase;
-  // font-weight: 500;
 
-  // font-family: var(--sl-font-mono);
+  font-family: var(--sl-font-mono);
   font-size: var(--sl-font-size-small);
-  // letter-spacing: 0.02em;
-  // color: var(--label-color);
-  // color: var(--c-gris_fonce);
+  font-weight: 700;
+  font-style: italic;
+  text-transform: lowercase;
 
   margin-bottom: calc(var(--spacing) / 4);
-
-  // line-height: 1;
-  // margin-right: calc(var(--spacing) / 4);
 
   sl-icon-button::part(base) {
     padding: 0;

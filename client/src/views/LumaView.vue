@@ -8,7 +8,7 @@
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <splitpanes>
-        <pane min-size="0" size="25">
+        <pane min-size="0" size="50">
           <div
             class="_myContent"
             :class="{
@@ -19,7 +19,7 @@
             <MyChutier
               class="_myContent--chutier"
               v-show="show_chutier"
-              :shared_space_path="shared_folder_path"
+              :shared_folder_path="shared_folder_path"
               @close="show_chutier = false"
             />
 
@@ -56,7 +56,7 @@
             </div>
           </div>
         </pane>
-        <pane min-size="5" size="75">
+        <pane min-size="5" size="50">
           <div
             class="_sharedContent"
             :class="{

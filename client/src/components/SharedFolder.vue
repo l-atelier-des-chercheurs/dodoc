@@ -32,17 +32,6 @@
                   v-if="show_lang_modal"
                   @close="show_lang_modal = false"
                 />
-
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  :class="{
-                    'is--active': show_filter_sort_pane,
-                  }"
-                  @click="show_filter_sort_pane = !show_filter_sort_pane"
-                >
-                  {{ $t("filter_sort") }}
-                </button>
               </div>
             </div>
             <div class="_filesIndicator">
@@ -83,18 +72,34 @@
                   </datalist>
                 </div>
               </div>
-              <!-- <RangeValueInput
-              :can_toggle="false"
-              :value="item_width"
-              :min="5"
-              :max="300"
-              :step="1"
-              :default_value="150"
-              :ticks="[10, 50, 100, 150, 200, 300]"
-              :suffix="'px'"
-              @save="item_width = $event"
-            /> -->
             </div>
+
+            <button
+              type="button"
+              class="u-buttonLink"
+              :class="{
+                'is--active': show_filter_sort_pane,
+              }"
+              @click="show_filter_sort_pane = !show_filter_sort_pane"
+            >
+              {{ $t("filter_sort") }}
+            </button>
+
+            <transition name="pagechange" mode="out-in">
+              <div class="_filterBar" v-if="show_filter_sort_pane">
+                <FilterBar
+                  :shared_files="shared_files"
+                  :group_mode.sync="group_mode"
+                  :sort_order.sync="sort_order"
+                  :search_str.sync="search_str"
+                  :filetype_filter.sync="filetype_filter"
+                  :author_path_filter.sync="author_path_filter"
+                  :available_keywords="available_keywords"
+                  :keywords_filter.sync="keywords_filter"
+                  @close="show_filter_sort_pane = false"
+                />
+              </div>
+            </transition>
           </div>
 
           <transition name="scaleInFade_fast" mode="out-in">
@@ -174,21 +179,6 @@
             </small>
           </footer>
         </div>
-        <transition name="pagechange" mode="out-in">
-          <div class="_filterBar" v-if="show_filter_sort_pane">
-            <FilterBar
-              :shared_files="shared_files"
-              :group_mode.sync="group_mode"
-              :sort_order.sync="sort_order"
-              :search_str.sync="search_str"
-              :filetype_filter.sync="filetype_filter"
-              :author_path_filter.sync="author_path_filter"
-              :available_keywords="available_keywords"
-              :keywords_filter.sync="keywords_filter"
-              @close="show_filter_sort_pane = false"
-            />
-          </div>
-        </transition>
       </div>
 
       <div

@@ -174,7 +174,7 @@ export default {
   created() {},
   mounted() {
     window.addEventListener("keyup", this.handleKeyPress);
-    this.toggleFile(0);
+    // this.toggleFile(0);
   },
   beforeDestroy() {
     window.removeEventListener("keyup", this.handleKeyPress);

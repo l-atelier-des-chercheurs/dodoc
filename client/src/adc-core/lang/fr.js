@@ -50,6 +50,8 @@ export default {
   filename: "Nom du fichier",
 
   open_in_finder: "Ouvrir dans l’explorateur",
+  complete_or_correct_title_kw:
+    "Complétez ou corrigez ce titre et mots-clés pour partager cet élément",
 
   admins_and_contributors: "Référents et contributeurs",
   // admins_and_contributors_instr: "",

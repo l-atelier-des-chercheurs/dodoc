@@ -52,24 +52,30 @@
           {{ $t("complete_or_correct_title_kw") }}
         </span>
 
-        <input
-          type="text"
-          class="is--dark"
-          required
-          v-model="title"
-          :placeholder="$t('title')"
-          @keydown.esc.prevent="$emit('close')"
-        />
-        <KeywordsField
+        <TitleField
+          :label="$t('title')"
+          :field_name="'title'"
+          :content="stack.title"
+          :path="stack.$path"
+          :input_type="'markdown'"
           :can_edit="true"
-          :keywords.sync="keywords"
-          @cancelEdit="$emit('close')"
         />
-        <textarea
-          class="is--dark _descriptionField"
-          v-model="description"
-          :placeholder="$t('description')"
-          @keydown.esc.prevent="$emit('close')"
+
+        <KeywordsField
+          :label="$t('keywords')"
+          :field_name="'keywords'"
+          :content="stack.keywords"
+          :path="stack.$path"
+          :can_edit="true"
+        />
+
+        <TitleField
+          :label="$t('description')"
+          :field_name="'description'"
+          :content="stack.description"
+          :path="stack.$path"
+          :input_type="'markdown'"
+          :can_edit="true"
         />
       </div>
 
@@ -77,7 +83,7 @@
         <transition name="scaleInFade" mode="out-in">
           <button
             type="button"
-            v-if="shared_space_path"
+            v-if="shared_folder_path"
             :key="share_button_is_enabled"
             class="u-buttonLink"
             :disabled="!share_button_is_enabled"
@@ -94,18 +100,24 @@
 <script>
 import ChutierPane from "@/components/chutier/ChutierPane.vue";
 import KeywordsField from "@/components/KeywordsField.vue";
-import ChutierItem from "@/components/ChutierItem.vue";
+import ChutierItem from "@/components/chutier/ChutierItem.vue";
 
 export default {
   props: {
+    stack: Object,
     files: Array,
-    shared_space_path: String,
   },
   components: {
     ChutierPane,
     KeywordsField,
     ChutierItem,
   },
+  inject: {
+    $sharedFolderPath: {
+      default: false,
+    },
+  },
+
   data() {
     return {
       last_clicked: undefined,
@@ -127,12 +139,17 @@ export default {
   watch: {},
   computed: {
     share_button_is_enabled() {
-      return this.title.length > 0 && this.keywords.length > 0;
+      return this.stack.title?.length > 0 && this.stack.keywords?.length > 0;
+    },
+    shared_folder_path() {
+      if (this.$sharedFolderPath) return this.$sharedFolderPath();
+      return false;
     },
   },
   methods: {
-    changeMediaOrder(old_position, new_position) {
-      let files_path = this.files.map((f) => f.$path);
+    async changeMediaOrder(old_position, new_position) {
+      let meta_filenames = this.files.map((f) => this.getFilename(f.$path));
+
       function array_move(arr, old_index, new_index) {
         if (new_index >= arr.length) {
           var k = new_index - arr.length + 1;
@@ -143,8 +160,13 @@ export default {
         arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
         return arr; // for testing
       }
-      array_move(files_path, old_position, new_position);
-      this.$emit("updateFocusedMedia", files_path);
+      array_move(meta_filenames, old_position, new_position);
+      await this.$api.updateMeta({
+        path: this.stack.$path,
+        new_meta: {
+          stack_files_metas: meta_filenames,
+        },
+      });
     },
     removeFromSelection(path) {
       let files_path = this.files.map((f) => f.$path);
@@ -152,62 +174,20 @@ export default {
       this.$emit("updateFocusedMedia", files_path);
     },
     async shareButtonClicked() {
-      const path_to_destination_folder = this.shared_space_path;
-
-      // get fields
-      this.title, this.description, this.keywords;
-
-      const additional_meta = {
-        title: this.title,
-        description: this.description,
-        keywords: this.keywords,
-        date_created_corrected: this.date_created_corrected,
-        requested_slug: "stack",
-        is_stack: true,
-        stack_files_metas: [],
-        $admins: [this.connected_as.$path],
-      };
-      const stack_meta_filename = await this.$api
-        .uploadFile({
-          path: path_to_destination_folder,
-          additional_meta,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-
-      const file_metas = [];
-      // copy each file to shared space, with a flag to indicate they are part of a stack
-      for (const file of this.files) {
-        const file_meta = await this.$api.copyFile({
-          path: file.$path,
-          path_to_destination_folder,
-          new_meta: {
-            $admins: [this.connected_as.$path],
-            belongs_to_stack: stack_meta_filename,
-          },
-        });
-        file_metas.push(file_meta);
-        await this.$api.deleteItem({ path: file.$path });
-      }
-
-      // add file metas to stack meta
-      await this.$api.updateMeta({
-        path: path_to_destination_folder + "/" + stack_meta_filename,
-        new_meta: {
-          stack_files_metas: file_metas,
-        },
+      const path_to_destination_type = this.shared_folder_path + "/stacks";
+      await this.$api.copyFolder({
+        path: this.path,
+        path_to_destination_type,
+        new_meta: {},
       });
-
-      this.$emit("stackCreated");
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._mediaFocus {
-  background: var(--chutier-bg);
+  // background: var(--chutier-bg);
+  background: transparent;
   padding: calc(var(--spacing) / 2);
 }
 ._itemsList {

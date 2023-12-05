@@ -34,8 +34,10 @@ export default {
   top: -2px;
   width: 100%;
   height: 100%;
+  left: 0;
   overflow: auto;
 
+  // background: var(--chutier-bg);
   background: var(--chutier-bg);
   padding: calc(var(--spacing) / 2);
 

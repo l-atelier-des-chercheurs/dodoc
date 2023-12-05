@@ -159,7 +159,6 @@
                 :file="file"
                 :is_clicked="last_clicked === file.$path"
                 :is_selected="selected_items_slugs.includes(file.$path)"
-                :shared_space_path="shared_space_path"
                 :draggable="true"
                 @toggleSelect="toggleSelect(file.$path)"
                 @unclicked="last_clicked = false"
@@ -172,7 +171,9 @@
     <DocumentsCreator
       class="_documentsCreator"
       :author_stacks_path="author_stacks_path"
+      :has_items_selected="selected_items.length > 0"
     />
+    <!-- v-if="selected_items.length > 0" -->
 
     <transition name="slideup" mode="out-in">
       <div
@@ -234,39 +235,28 @@
         </button>
       </div>
     </transition>
-    <transition name="slideup">
-      <MediaStack
-        v-if="show_mediastack_modal"
-        class="_mediaStack"
-        :files="selected_items"
-        :shared_space_path="shared_space_path"
-        @updateFocusedMedia="selected_items_slugs = $event"
-        @stackCreated="
-          selected_items_slugs = [];
-          show_mediastack_modal = false;
-        "
-        @close="show_mediastack_modal = false"
-      />
-    </transition>
   </div>
 </template>
 <script>
-import DocumentsCreator from "@/components/DocumentsCreator.vue";
+import DocumentsCreator from "@/components/chutier/DocumentsCreator.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
-import ChutierItem from "@/components/ChutierItem.vue";
-import MediaStack from "@/components/MediaStack.vue";
+import ChutierItem from "@/components/chutier/ChutierItem.vue";
 import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 
 export default {
   props: {
-    shared_space_path: String,
+    shared_folder_path: String,
   },
   components: {
     DocumentsCreator,
     LinkPicker,
     ChutierItem,
-    MediaStack,
     AdminLumaSettings,
+  },
+  provide() {
+    return {
+      $sharedFolderPath: () => this.shared_folder_path,
+    };
   },
   data() {
     return {

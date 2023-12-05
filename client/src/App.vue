@@ -267,7 +267,7 @@ export default {
 
   --sl-font-sans: "IBM Plex Sans";
   --sl-font-serif: "IBM Plex Serif";
-  --sl-font-mono: "Fira Mono";
+  --sl-font-mono: "IBM Plex Mono";
 
   --padding: var(--spacing);
 

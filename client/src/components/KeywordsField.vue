@@ -9,8 +9,8 @@
         :can_remove="edit_mode"
         @remove="removeKeyword(keyword)"
       />
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
+    <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
     <template v-if="edit_mode">
       <KeywordsFieldEditor
@@ -37,8 +37,8 @@ import SingleKeyword from "@/components/SingleKeyword.vue";
 export default {
   props: {
     field_name: String,
-    path: String,
     label: String,
+    path: String,
     keywords: Array,
     can_edit: Boolean,
   },
@@ -48,7 +48,7 @@ export default {
   },
   data() {
     return {
-      new_keywords: this.keywords,
+      new_keywords: this.keywords || [],
       edit_mode: this.can_edit && !this.path && !this.field_name,
       is_saving: false,
     };

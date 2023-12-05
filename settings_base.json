@@ -109,19 +109,10 @@
             "resolutions": [180, 360, 1600]
           },
           "fields": {
-            "title": {
+            "caption": {
               "type": "string"
-            },
-            "keywords": {
-              "type": "array"
             },
             "date_created_corrected": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "caption": {
               "type": "string"
             }
           }
@@ -162,7 +153,14 @@
               "thumbs": {
                 "resolutions": [180, 360, 1600]
               },
-              "fields": {}
+              "fields": {
+                "caption": {
+                  "type": "string"
+                },
+                "date_created_corrected": {
+                  "type": "string"
+                }
+              }
             }
           }
         }

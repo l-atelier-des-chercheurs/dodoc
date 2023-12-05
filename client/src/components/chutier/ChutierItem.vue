@@ -87,11 +87,21 @@
             </template>
           </div>
         </div>
-        <EditBtn
-          v-if="!edit_mode && context === 'stack'"
-          :label_position="'left'"
-          @click="edit_mode = true"
-        />
+        <template v-if="context === 'stack'">
+          <transition name="slideup" mode="out-in">
+            <EditBtn
+              v-if="!edit_mode"
+              :label_position="'left'"
+              @click="edit_mode = true"
+            />
+            <EditBtn
+              v-else
+              :label_position="'left'"
+              :btn_type="'check'"
+              @click="saveFields"
+            />
+          </transition>
+        </template>
       </div>
     </div>
     <div
@@ -187,7 +197,6 @@ export default {
     file: Object,
     is_selected: Boolean,
     is_clicked: Boolean,
-    shared_space_path: String,
     draggable: Boolean,
     context: {
       type: String,
@@ -236,7 +245,6 @@ export default {
       if (!this.is_clicked && this.edit_mode) {
         // todo save
         this.saveFields();
-        this.edit_mode = false;
       }
     },
     edit_mode() {
@@ -255,17 +263,6 @@ export default {
     setEdit(meta_filename) {
       const file_meta_filename = this.getFilename(this.file.$path);
       if (meta_filename === file_meta_filename) this.edit_mode = true;
-    },
-    async moveToSharedSpace() {
-      const path_to_destination_folder = this.shared_space_path;
-      await this.$api.copyFile({
-        path: this.file.$path,
-        path_to_destination_folder,
-        new_meta: {
-          $admins: [this.connected_as.$path],
-        },
-      });
-      await this.remove();
     },
     async remove() {
       this.$api.deleteItem({ path: this.file.$path });
@@ -306,6 +303,8 @@ export default {
       this.$emit("");
     },
     async saveFields() {
+      this.edit_mode = false;
+
       // check if date is valid, if not then go back to previous date
       if (this.date_created_corrected === "")
         this.date_created_corrected =
@@ -395,7 +394,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
   // padding-left: 1px;
-  padding: 0 calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) / 4);
   width: 100%;
 
   ._titleDateField {
@@ -413,6 +412,7 @@ export default {
   margin-bottom: 2px;
   overflow: hidden;
   border-radius: 4px;
+  border: 1px dashed transparent;
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
   // border: 1px solid transparent;
 
@@ -435,10 +435,9 @@ export default {
   &.is--edited
   // &.is--clicked
   {
-    // border-color: var(--c-orange);
-    background: rgba(255, 255, 255, 0.15);
-    // background: rgba(240, 240, 240, 0.1);
-    // background: rgb(67, 69, 71);
+    border-color: var(--c-orange);
+    // background-color: var(--c-orange_clair);
+    // background: rgba(255, 255, 255, 0.15);
     &:hover {
     }
   }
