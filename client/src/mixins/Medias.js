@@ -257,7 +257,7 @@ export default {
 
         ".wav",
         ".m4a",
-        ".off",
+        ".ogg",
         ".mp3",
         ".aac",
       ];
