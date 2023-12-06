@@ -6,12 +6,13 @@
         'is--draggedOn': is_draggedOn,
         'has--content': stack_files.length > 0,
         'is--expectingDrag': is_expecting_drag,
+        'is--expectingClick': selected_items && selected_items.length > 0,
       }"
       @dragenter="dragEnter"
       @dragover="dragOver"
       @dragleave="dragLeave"
-      @drop="drop"
       @click="openOrAddToStack"
+      @drop="drop"
     >
       <template v-if="!stack">+</template>
       <template v-else>
@@ -29,10 +30,22 @@
           <div class="_count">{{ stack_files_in_order.length }}</div>
         </template>
       </template>
-      <div v-if="selected_items && selected_items.length > 0" class="_addTo">
-        +
-      </div>
-      <div class="anim_backgroundPosition" v-if="is_expecting_drag" />
+      <template
+        v-if="
+          is_expecting_drag || (selected_items && selected_items.length > 0)
+        "
+      >
+        <div class="anim_backgroundPosition" />
+        <div
+          class="_addTo"
+          v-if="
+            !stack || !stack_files_in_order || stack_files_in_order.length === 0
+          "
+        >
+          <!-- <b-icon icon="file-earmark-plus" /> -->
+          +
+        </div>
+      </template>
     </div>
 
     <!-- <OpenStack
@@ -137,20 +150,26 @@ export default {
     async drop(event) {
       event.preventDefault();
       this.is_draggedOn = false;
+
+      debugger;
       const file_path = event.dataTransfer.getData("text/uri-list");
-      if (file_path) {
+
+      if (this.selected_items.length > 0) await this.addSelectedToStack();
+      else if (file_path) {
         const file_paths = [JSON.parse(file_path)];
         await this.createOrAppendToStack(file_paths);
       }
     },
+    async addSelectedToStack() {
+      const file_paths = this.selected_items.map((f) => f.$path);
+      await this.createOrAppendToStack(file_paths);
+    },
     async openOrAddToStack() {
-      if (this.selected_items.length > 0) {
-        const file_paths = this.selected_items.map((f) => f.$path);
-        await this.createOrAppendToStack(file_paths);
-      } else this.openStack();
+      if (this.selected_items.length > 0) await this.addSelectedToStack();
+      else this.openStack();
     },
     openStack() {
-      this.show_mediastack_modal = true;
+      if (this.stack) this.show_mediastack_modal = true;
     },
     async createOrAppendToStack(file_paths) {
       let path_to_destination_folder;
@@ -209,18 +228,26 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._touchTarget {
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+
+  > * {
+    // pointer-events: none;
+  }
+}
 ._documentSpot {
   position: relative;
 
   width: 60px;
   height: 60px;
   flex: 0 0 auto;
-  margin-bottom: calc(var(--spacing) / 1);
   border-radius: 8px;
   overflow: hidden;
 
+  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
+
   color: #666;
-  border: 2px dotted currentColor;
+  background: black;
 
   display: flex;
   justify-content: center;
@@ -228,25 +255,34 @@ export default {
 
   font-size: var(--sl-font-size-x-large);
   font-weight: bolder;
-
-  cursor: pointer;
+  cursor: default;
 
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
+  &:not(.has--content) {
+    border: 1px dashed currentColor;
+  }
   &.has--content {
+    cursor: pointer;
+
     &:hover,
     &:focus-visible {
       border-color: transparent;
       background: currentColor;
     }
   }
+  &.is--expectingClick {
+    cursor: pointer;
+  }
 
   &.is--draggedOn {
+    cursor: pointer;
     transform: scale(1.2);
     background: black;
   }
 
   &.is--expectingDrag {
+    cursor: pointer;
     color: white;
   }
 
@@ -262,22 +298,23 @@ export default {
   position: absolute;
   z-index: 1;
   color: white;
-  bottom: 0;
-  right: 0;
-  font-size: var(--sl-font-size-small);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--sl-font-size-x-large);
 }
 
 .anim_backgroundPosition {
   position: absolute;
   width: 100%;
   height: 100%;
-  color: white;
+  color: black;
 }
 
 ._addTo {
   color: white;
   position: absolute;
-  background: rgba(0, 0, 0, 0.5);
+  // background: rgba(255, 255, 255, 0.7);
   width: 100%;
   height: 100%;
   display: flex;

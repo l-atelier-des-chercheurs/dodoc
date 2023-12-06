@@ -56,7 +56,7 @@
             </div>
           </div>
         </pane>
-        <pane min-size="5" size="25">
+        <pane min-size="5" size="25" v-if="!$root.is_mobile_view">
           <div
             class="_sharedContent"
             :class="{
@@ -67,7 +67,7 @@
             <SharedFolder :shared_folder_path="shared_folder_path" />
           </div>
         </pane>
-        <pane min-size="5" size="10">
+        <pane min-size="5" size="10" v-if="!$root.is_mobile_view">
           <strong>Formats</strong>
         </pane>
       </splitpanes>

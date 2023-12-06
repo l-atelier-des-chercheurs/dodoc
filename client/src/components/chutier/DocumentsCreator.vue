@@ -68,9 +68,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._documentsCreator {
-  background: #222;
   color: white;
-  padding: calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 1);
   width: auto;
 
   display: flex;
@@ -79,6 +78,7 @@ export default {
 
   height: 100%;
   overflow: auto;
+  border-left: 1px solid #777;
 
   > span {
   }

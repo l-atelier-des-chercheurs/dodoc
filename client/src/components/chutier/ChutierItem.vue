@@ -180,7 +180,7 @@
     <div
       v-if="show_large"
       class="_chutierRow--largePreview"
-      @click.self="show_large = false"
+      @click.self="file.$type !== 'text' ? (show_large = false) : ''"
       :data-type="file.$type"
     >
       <MediaContent :file="file" :context="'full'" :resolution="1600" />
@@ -425,13 +425,15 @@ export default {
 
   transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
-  &:not(.is--selected):not(.is--edited):hover {
-    background: rgba(255, 255, 255, 0.05);
+  @media (hover: hover) and (pointer: fine) {
+    &:not(.is--selected):not(.is--edited):hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
   }
 
-  &.is--mousedown:not(.is--selected):not(.is--edited) {
-    background: rgba(0, 0, 0, 0.2);
-  }
+  // &.is--mousedown:not(.is--selected):not(.is--edited) {
+  //   background: rgba(0, 0, 0, 0.2);
+  // }
 
   &.is--dragged {
     transform: scale(0.95) rotate(1deg);
@@ -442,7 +444,7 @@ export default {
   &.is--edited
   // &.is--clicked
   {
-    border-color: var(--c-orange);
+    border-color: #666;
     // background-color: var(--c-orange_clair);
     // background: rgba(255, 255, 255, 0.15);
     &:hover {
@@ -580,5 +582,8 @@ export default {
       }
     }
   }
+}
+._dragBtn {
+  color: #666;
 }
 </style>

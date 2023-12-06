@@ -82,8 +82,8 @@
       </div>
 
       <div class="_shareBtn">
+        <RemoveMenu @remove="removeStack" />
         <transition name="scaleInFade" mode="out-in">
-          <RemoveMenu @remove="removeStack" />
           <button
             type="button"
             v-if="shared_folder_path"

@@ -1,6 +1,6 @@
 <template>
   <div class="_myChutier" v-if="chutier" @click="last_clicked = false">
-    <div class="_itemsList">
+    <div class="_itemsList" @click.self="selected_items_slugs = []">
       <div class="_topBar"></div>
       <div class="_topContent">
         <div class="_subscribeBtn">
@@ -138,8 +138,13 @@
         </template>
       </div>
 
-      <div class="_items">
-        <div class="_item" v-for="ci in chutier_items_grouped" :key="ci.label">
+      <div class="_items" @click.self="selected_items_slugs = []">
+        <div
+          class="_item"
+          v-for="ci in chutier_items_grouped"
+          :key="ci.label"
+          @click.self="selected_items_slugs = []"
+        >
           <div
             class="_item--label"
             @click="
@@ -147,6 +152,11 @@
                 ? deselectRange(ci.files.map((f) => f.$path))
                 : selectRange(ci.files.map((f) => f.$path))
             "
+            :class="{
+              'is--fullySelected': rangeIsSelected(
+                ci.files.map((f) => f.$path)
+              ),
+            }"
           >
             <button
               v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
@@ -189,7 +199,7 @@
     <transition name="slideup" mode="out-in">
       <div
         class="_selectionBar"
-        v-if="false && selected_items.length > 0"
+        v-if="selected_items.length > 0"
         key="selection"
       >
         <div class="_selectionBar--previews">
@@ -203,26 +213,30 @@
             />
           </template>
         </div>
-        <button
+        <!-- <button
           type="button"
           class="u-button u-button_bleuvert"
           @click="show_mediastack_modal = true"
         >
           {{ $t("create_stack") }} ({{ selected_items.length }})
-        </button>
+        </button> -->
 
         <div class="u-sameRow">
-          <button type="button" class="u-buttonLink" @click="deselectAll">
+          <button
+            type="button"
+            class="u-button u-button_black"
+            @click="deselectAll"
+          >
             <sl-icon name="dash-square-dotted" />
             {{ $t("deselect_all") }}
           </button>
           <button
             type="button"
-            class="u-buttonLink"
+            class="u-button u-button_black"
             @click="show_confirm_remove_menu = true"
           >
             <sl-icon name="trash3" />
-            {{ $t("remove_all") }}
+            {{ $t("remove_select") }}
           </button>
         </div>
       </div></transition
@@ -598,16 +612,22 @@ export default {
   // gap: calc(var(--spacing) / 4);
   // align-items: flex-end;
   // justify-content: space-between;
+  opacity: 0.4;
 
   &:hover {
     opacity: 0.9;
+  }
+
+  &.is--fullySelected {
+    opacity: 1;
   }
 }
 
 ._selectionBar,
 ._removeMenu {
-  position: sticky;
+  position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
@@ -616,7 +636,7 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   // box-shadow: 0 2px 6px 0 black;
-  background: var(--chutier-bg);
+  background: black;
   border-top: 2px solid black;
   // background: black;
 

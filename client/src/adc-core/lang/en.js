@@ -80,6 +80,7 @@ export default {
   show_only_my_content: "Show only my content",
   deselect_all: "Deselect all",
   remove_all: "Remove all",
+  remove_select: "Remove selection",
   publish: "Publish",
   shared_space_archive: "SHARED SPACE / ARCHIVE",
   filter_sort: "Filter/Sort",
