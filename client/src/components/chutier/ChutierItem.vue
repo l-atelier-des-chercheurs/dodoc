@@ -343,8 +343,7 @@ export default {
       this.is_dragged = true;
       this.$eventHub.$emit("chutierItem.startDrag");
       event.dataTransfer.effectAllowed = "move";
-      debugger;
-      event.dataTransfer.setData("text", JSON.stringify(this.file.$path));
+      event.dataTransfer.setData("text/plain", JSON.stringify(this.file.$path));
     },
     dragEnd() {
       this.is_dragged = false;

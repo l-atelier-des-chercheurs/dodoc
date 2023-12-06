@@ -142,8 +142,7 @@ export default {
       this.is_expecting_drag = false;
     },
     dragEnter(event) {
-      const file_path = event.dataTransfer.getData("text");
-      debugger;
+      const file_path = event.dataTransfer?.types[0] === "text/plain";
       if (file_path) this.is_draggedOn = true;
     },
     dragOver(event) {

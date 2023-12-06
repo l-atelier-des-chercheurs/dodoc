@@ -197,7 +197,6 @@ export default {
       this.$emit("updateFocusedMedia", files_path);
     },
     async shareButtonClicked() {
-      debugger;
       const path_to_destination_type = this.shared_folder_path + "/stacks";
       await this.$api.copyFolder({
         path: this.stack.$path,

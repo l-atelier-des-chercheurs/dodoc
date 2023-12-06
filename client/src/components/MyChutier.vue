@@ -175,20 +175,17 @@
             {{ ci.label }}
           </div>
           <transition-group tag="div" name="listComplete">
-            <div
+            <ChutierItem
               v-for="file in ci.files"
               :key="file.$path"
+              :file="file"
+              :is_clicked="last_clicked === file.$path"
+              :is_selected="selected_items_slugs.includes(file.$path)"
+              :draggable="true"
+              @toggleSelect="toggleSelect(file.$path)"
+              @unclicked="last_clicked = false"
               @click.stop="last_clicked = file.$path"
-            >
-              <ChutierItem
-                :file="file"
-                :is_clicked="last_clicked === file.$path"
-                :is_selected="selected_items_slugs.includes(file.$path)"
-                :draggable="true"
-                @toggleSelect="toggleSelect(file.$path)"
-                @unclicked="last_clicked = false"
-              />
-            </div>
+            />
           </transition-group>
         </div>
       </div>
@@ -698,7 +695,7 @@ export default {
     flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    gap: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+    gap: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
 
     width: 100%;
     max-width: none;
