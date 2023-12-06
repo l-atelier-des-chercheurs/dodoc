@@ -102,6 +102,11 @@
             />
           </transition>
         </template>
+        <template v-else>
+          <button type="button" class="u-button_icon _dragBtn">
+            <b-icon :icon="'grid3x2-gap-fill'" rotate="90" />
+          </button>
+        </template>
       </div>
     </div>
     <div
@@ -336,6 +341,7 @@ export default {
     },
     dragStart(event) {
       this.is_dragged = true;
+      this.$eventHub.$emit("chutierItem.startDrag");
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.setData(
         "text/uri-list",
@@ -344,6 +350,7 @@ export default {
     },
     dragEnd() {
       this.is_dragged = false;
+      this.$eventHub.$emit("chutierItem.endDrag");
     },
   },
 };
@@ -428,7 +435,7 @@ export default {
 
   &.is--dragged {
     transform: scale(0.95) rotate(1deg);
-    opacity: 0.8;
+    opacity: 0.6;
   }
 
   &.is--selected,

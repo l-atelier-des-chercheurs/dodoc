@@ -858,4 +858,30 @@ img {
 
   transition: none !important;
 }
+
+@keyframes background-position {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
+.anim_backgroundPosition {
+  background-image: linear-gradient(
+    135deg,
+    transparent 25%,
+    currentColor 25%,
+    currentColor 50%,
+    transparent 50%,
+    transparent 75%,
+    currentColor 75%,
+    currentColor
+  );
+  background-size: 7px 7px;
+  animation: background-position 3s infinite;
+  animation-timing-function: linear;
+  background-position: 0 0;
+  opacity: 0.3;
+}
 </style>

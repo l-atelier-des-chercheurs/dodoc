@@ -173,9 +173,19 @@
               <div v-if="is_instance_admin">
                 <DownloadFolder :path="shared_folder_path" />
               </div>
-              <div class="">
-                {{ stacked_items_not_in_stack.length }}
-              </div>
+
+              <button
+                type="button"
+                class="u-buttonLink _adminBtn"
+                v-if="is_instance_admin"
+                @click="show_admin_settings = true"
+              >
+                {{ $t("admin_settings") }}
+              </button>
+              <AdminLumaSettings
+                v-if="show_admin_settings"
+                @close="show_admin_settings = false"
+              />
             </small>
           </footer>
         </div>
@@ -222,6 +232,7 @@ import ItemModal from "@/components/ItemModal.vue";
 import FilterBar from "@/components/FilterBar.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
 import CollectionsList from "@/components/collections/CollectionsList.vue";
+import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 
 export default {
   props: {
@@ -233,6 +244,7 @@ export default {
     FilterBar,
     LangModal,
     CollectionsList,
+    AdminLumaSettings,
   },
   data() {
     return {
@@ -255,6 +267,8 @@ export default {
       item_width: 150,
 
       show_collections: false,
+
+      show_admin_settings: false,
 
       // sort_order: localStorage.getItem("sort_order") || "date_uploaded",
       // search_str: localStorage.getItem("search_str") || "",

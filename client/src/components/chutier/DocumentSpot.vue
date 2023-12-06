@@ -5,12 +5,13 @@
       :class="{
         'is--draggedOn': is_draggedOn,
         'has--content': stack_files.length > 0,
+        'is--expectingDrag': is_expecting_drag,
       }"
       @dragenter="dragEnter"
       @dragover="dragOver"
       @dragleave="dragLeave"
       @drop="drop"
-      @click="openStack"
+      @click="openOrAddToStack"
     >
       <template v-if="!stack">+</template>
       <template v-else>
@@ -28,6 +29,10 @@
           <div class="_count">{{ stack_files_in_order.length }}</div>
         </template>
       </template>
+      <div v-if="selected_items && selected_items.length > 0" class="_addTo">
+        +
+      </div>
+      <div class="anim_backgroundPosition" v-if="is_expecting_drag" />
     </div>
 
     <!-- <OpenStack
@@ -54,6 +59,7 @@ export default {
   props: {
     index: Number,
     author_stacks_path: String,
+    selected_items: Array,
     stack_path: String,
   },
   components: {
@@ -62,13 +68,20 @@ export default {
   data() {
     return {
       stack: undefined,
+      is_expecting_drag: false,
       is_draggedOn: false,
       show_mediastack_modal: false,
     };
   },
   created() {},
-  async mounted() {},
+  async mounted() {
+    this.$eventHub.$on("chutierItem.startDrag", this.startDragItem);
+    this.$eventHub.$on("chutierItem.endDrag", this.endDragItem);
+  },
   beforeDestroy() {
+    this.$eventHub.$off("chutierItem.startDrag", this.startDragItem);
+    this.$eventHub.$off("chutierItem.endDrag", this.endDragItem);
+
     if (this.stack?.$path) this.$api.leave({ room: this.stack.$path });
   },
   watch: {
@@ -105,7 +118,12 @@ export default {
     },
   },
   methods: {
-    async listStack() {},
+    startDragItem() {
+      this.is_expecting_drag = true;
+    },
+    endDragItem() {
+      this.is_expecting_drag = false;
+    },
     dragEnter(event) {
       const file_path = event.dataTransfer.getData("text/uri-list");
       if (file_path) this.is_draggedOn = true;
@@ -121,13 +139,20 @@ export default {
       this.is_draggedOn = false;
       const file_path = event.dataTransfer.getData("text/uri-list");
       if (file_path) {
-        await this.createOrAppendToStack(JSON.parse(file_path));
+        const file_paths = [JSON.parse(file_path)];
+        await this.createOrAppendToStack(file_paths);
       }
+    },
+    async openOrAddToStack() {
+      if (this.selected_items.length > 0) {
+        const file_paths = this.selected_items.map((f) => f.$path);
+        await this.createOrAppendToStack(file_paths);
+      } else this.openStack();
     },
     openStack() {
       this.show_mediastack_modal = true;
     },
-    async createOrAppendToStack(file_path) {
+    async createOrAppendToStack(file_paths) {
       let path_to_destination_folder;
       if (this.stack?.$path) {
         path_to_destination_folder = this.stack.$path;
@@ -153,30 +178,32 @@ export default {
       }
 
       // copy file to folder
-      const file_meta_name = await this.$api.copyFile({
-        path: file_path,
-        path_to_destination_folder,
-        new_meta: {},
-      });
-      await this.$api.deleteItem({ path: file_path });
-      await new Promise((r) => setTimeout(r, 20));
 
-      await this.appendMetaToStack(path_to_destination_folder, file_meta_name);
-    },
-    async appendMetaToStack(path_to_destination_folder, file_meta_name) {
+      await new Promise((r) => setTimeout(r, 100));
+
       let stack_files_metas = [];
-      if (this.stack?.stack_files_metas)
-        stack_files_metas = this.stack.stack_files_metas.slice();
+      if (
+        this.stack?.stack_files_metas &&
+        Array.isArray(this.stack?.stack_files_metas)
+      )
+        stack_files_metas = this.stack?.stack_files_metas.slice();
 
-      stack_files_metas.push(file_meta_name);
+      for (const file_path of file_paths) {
+        const file_meta_name = await this.$api.copyFile({
+          path: file_path,
+          path_to_destination_folder,
+          new_meta: {},
+        });
+        await this.$api.deleteItem({ path: file_path });
 
-      // update folder meta to append file
-      await this.$api.updateMeta({
-        path: path_to_destination_folder,
-        new_meta: {
-          stack_files_metas,
-        },
-      });
+        stack_files_metas.push(file_meta_name);
+        await this.$api.updateMeta({
+          path: path_to_destination_folder,
+          new_meta: {
+            stack_files_metas,
+          },
+        });
+      }
     },
   },
 };
@@ -190,8 +217,9 @@ export default {
   flex: 0 0 auto;
   margin-bottom: calc(var(--spacing) / 1);
   border-radius: 8px;
+  overflow: hidden;
 
-  color: #333;
+  color: #666;
   border: 2px dotted currentColor;
 
   display: flex;
@@ -218,6 +246,10 @@ export default {
     background: black;
   }
 
+  &.is--expectingDrag {
+    color: white;
+  }
+
   > * {
     pointer-events: none;
   }
@@ -228,9 +260,28 @@ export default {
 
 ._count {
   position: absolute;
+  z-index: 1;
   color: white;
   bottom: 0;
   right: 0;
   font-size: var(--sl-font-size-small);
+}
+
+.anim_backgroundPosition {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  color: white;
+}
+
+._addTo {
+  color: white;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -7,12 +7,14 @@
       v-for="stack in all_stacks"
       :key="stack.$path"
       class="_spot"
+      :selected_items="selected_items"
       :author_stacks_path="author_stacks_path"
       :stack_path="stack.$path"
     />
     <DocumentSpot
       :author_stacks_path="author_stacks_path"
       :key="'empty'"
+      :selected_items="selected_items"
       class="_spot"
     />
   </div>
@@ -23,7 +25,7 @@ import DocumentSpot from "@/components/chutier/DocumentSpot.vue";
 export default {
   props: {
     author_stacks_path: String,
-    has_items_selected: Boolean,
+    selected_items: Array,
   },
   components: {
     DocumentSpot,

@@ -8,7 +8,7 @@
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <splitpanes>
-        <pane min-size="0" size="50">
+        <pane min-size="0" size="25">
           <div
             class="_myContent"
             :class="{
@@ -56,7 +56,7 @@
             </div>
           </div>
         </pane>
-        <pane min-size="5" size="50">
+        <pane min-size="5" size="25">
           <div
             class="_sharedContent"
             :class="{
@@ -66,6 +66,9 @@
           >
             <SharedFolder :shared_folder_path="shared_folder_path" />
           </div>
+        </pane>
+        <pane min-size="5" size="10">
+          <strong>Formats</strong>
         </pane>
       </splitpanes>
     </template>

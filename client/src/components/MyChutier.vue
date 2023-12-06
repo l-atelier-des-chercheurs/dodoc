@@ -1,31 +1,38 @@
 <template>
   <div class="_myChutier" v-if="chutier" @click="last_clicked = false">
     <div class="_itemsList">
-      <div class="_topBar">
-        <button
-          type="button"
-          class="u-buttonLink _adminBtn"
-          v-if="is_instance_admin"
-          @click="show_admin_settings = true"
-        >
-          {{ $t("admin_settings") }}
-        </button>
-        <AdminLumaSettings
-          v-if="show_admin_settings"
-          @close="show_admin_settings = false"
-        />
-      </div>
+      <div class="_topBar"></div>
       <div class="_topContent">
         <div class="_subscribeBtn">
           <button
             type="button"
-            class="u-button u-button_bleumarine _authorBtn"
+            class="u-button u-buttonLink _authorBtn"
             @click="$eventHub.$emit('showAuthorModal')"
           >
             <template v-if="connected_as">
               {{ connected_as.name }}
             </template>
             <template v-else>{{ $t("login") }}</template>
+          </button>
+
+          <button
+            type="button"
+            class="u-button u-button_icon _qrBtn"
+            @click="show_qr_code_modal = true"
+          >
+            <sl-icon name="qr-code" />
+          </button>
+          <QRModal
+            v-if="show_qr_code_modal"
+            :url_to_access="url_to_page"
+            @close="show_qr_code_modal = false"
+          />
+          <button
+            type="button"
+            class="u-button u-button_icon _qrBtn"
+            @click="$eventHub.$emit(`app.show_welcome_modal`)"
+          >
+            <sl-icon name="question-square" />
           </button>
         </div>
 
@@ -53,6 +60,23 @@
               &nbsp;
               {{ $t("import") }}
             </label>
+            <input
+              type="file"
+              multiple="multiple"
+              :id="id + '-add_file'"
+              name="file"
+              accept=""
+              class=""
+              @change="updateInputFiles($event)"
+            />
+            <UploadFiles
+              v-if="files_to_import.length > 0"
+              class="_uploadFilesList"
+              :files_to_import="files_to_import"
+              :path="author_path"
+              @importedMedias="importedMedias"
+              @close="files_to_import = []"
+            />
 
             <button
               type="button"
@@ -81,67 +105,37 @@
               {{ $t("or_drag_drop_file_here").toLowerCase() }}
             </div> -->
           </div>
-          <input
-            type="file"
-            multiple="multiple"
-            :id="id + '-add_file'"
-            name="file"
-            accept=""
-            class=""
-            @change="updateInputFiles($event)"
-          />
-          <UploadFiles
-            v-if="files_to_import.length > 0"
-            class="_uploadFilesList"
-            :files_to_import="files_to_import"
-            :path="author_path"
-            @importedMedias="importedMedias"
-            @close="files_to_import = []"
-          />
         </div>
-
-        <button
-          type="button"
-          class="u-button u-button_icon _qrBtn"
-          @click="show_qr_code_modal = true"
-        >
-          <sl-icon name="qr-code" />
-        </button>
-        <QRModal
-          v-if="show_qr_code_modal"
-          :url_to_access="url_to_page"
-          @close="show_qr_code_modal = false"
-        />
-        <button
-          type="button"
-          class="u-button u-button_icon _qrBtn"
-          @click="$eventHub.$emit(`app.show_welcome_modal`)"
-        >
-          <sl-icon name="question-square" />
-        </button>
       </div>
 
       <div class="_middleContent">
-        <label
-          for=""
-          @click="!all_items_selected ? selectAll() : deselectAll()"
+        <div
+          v-if="!chutier_items || chutier_items.length === 0"
+          class="u-instructions"
         >
-          <button
-            type="button"
-            class="u-buttonLink u-selectBtn"
-            v-if="chutier_items.length > 0"
+          {{ $t("imported_docs") }}
+        </div>
+        <template v-else>
+          <label
+            for=""
+            @click="!all_items_selected ? selectAll() : deselectAll()"
           >
-            <sl-icon
-              :name="
-                !all_items_selected
-                  ? 'plus-square-dotted'
-                  : 'dash-square-dotted'
-              "
-            />
-          </button>
-          {{ $t("items_to_share") }} • {{ chutier_items.length }}
-        </label>
-        <br />
+            <button
+              type="button"
+              class="u-buttonLink u-selectBtn"
+              v-if="chutier_items.length > 0"
+            >
+              <sl-icon
+                :name="
+                  !all_items_selected
+                    ? 'plus-square-dotted'
+                    : 'dash-square-dotted'
+                "
+              />
+            </button>
+            {{ $t("items_to_share") }} • {{ chutier_items.length }}
+          </label>
+        </template>
       </div>
 
       <div class="_items">
@@ -188,7 +182,7 @@
     <DocumentsCreator
       class="_documentsCreator"
       :author_stacks_path="author_stacks_path"
-      :has_items_selected="selected_items.length > 0"
+      :selected_items="selected_items"
     />
     <!-- v-if="selected_items.length > 0" -->
 
@@ -258,7 +252,6 @@
 import DocumentsCreator from "@/components/chutier/DocumentsCreator.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
-import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 
 export default {
   props: {
@@ -268,12 +261,23 @@ export default {
     DocumentsCreator,
     LinkPicker,
     ChutierItem,
-    AdminLumaSettings,
   },
   provide() {
     return {
       $sharedFolderPath: () => this.shared_folder_path,
     };
+  },
+  i18n: {
+    messages: {
+      fr: {
+        imported_docs:
+          "Les médias importés apparaîtront ici. Ils sont et resteront privés tant que vous ne les ajoutez pas à un document partagé.",
+      },
+      en: {
+        imported_docs:
+          "Imported medias will appear here. They will stay private until they are added to a shared document.",
+      },
+    },
   },
   data() {
     return {
@@ -284,8 +288,6 @@ export default {
       id: `image_select_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
-
-      show_admin_settings: false,
 
       last_clicked: undefined,
       selected_items_slugs: [],
@@ -558,6 +560,12 @@ export default {
   // mask: linear-gradient(black 75%, transparent 100%);
 }
 
+._subscribeBtn {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 ._qrBtn {
   sl-icon {
     font-size: 130%;
@@ -687,6 +695,10 @@ export default {
     }
     &.is--dragover {
       background-color: var(--c-rouge);
+    }
+
+    .u-button {
+      padding: calc(var(--spacing) / 1);
     }
   }
   .u-button {

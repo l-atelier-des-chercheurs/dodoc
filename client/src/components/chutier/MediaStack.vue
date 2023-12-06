@@ -83,6 +83,7 @@
 
       <div class="_shareBtn">
         <transition name="scaleInFade" mode="out-in">
+          <RemoveMenu @remove="removeStack" />
           <button
             type="button"
             v-if="shared_folder_path"
@@ -126,9 +127,9 @@ export default {
       description: "",
       keywords: [],
       date_created_corrected: this.datetimeLocal(
-        this.file.date_created_corrected ||
-          this.file.$date_created ||
-          this.file.$date_uploaded
+        this.stack.date_created_corrected ||
+          this.stack.$date_created ||
+          this.stack.$date_uploaded
       ),
     };
   },
@@ -185,6 +186,10 @@ export default {
         path_to_destination_type,
         new_meta: {},
       });
+    },
+    async removeStack() {
+      await this.$api.deleteItem({ path: this.stack.$path });
+      this.$emit("close");
     },
   },
 };

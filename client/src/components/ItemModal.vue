@@ -39,6 +39,18 @@
       </div>
 
       <div class="_bottomContent">
+        <div class="_rightContent" v-if="show_sidebar">
+          <FileMeta
+            :file="file"
+            :sequence="file_sequence_in_stack"
+            :is_stack="file.is_stack"
+            :stack_file_shown="current_file_shown"
+            @removeMain="removeMain"
+            @removeCurrent="removeCurrent"
+            @closeStack="current_file_index_shown = false"
+          />
+        </div>
+
         <div class="_leftContent">
           <div
             v-if="file.is_stack && file._stack_files.length === 0"
@@ -137,17 +149,6 @@
           </button>
         </div>
         <!-- <transition name="pagechange" mode="out-in"> -->
-        <div class="_rightContent" v-if="show_sidebar">
-          <FileMeta
-            :file="file"
-            :sequence="file_sequence_in_stack"
-            :is_stack="file.is_stack"
-            :stack_file_shown="current_file_shown"
-            @removeMain="removeMain"
-            @removeCurrent="removeCurrent"
-            @closeStack="current_file_index_shown = false"
-          />
-        </div>
         <!-- </transition> -->
       </div>
     </div>
