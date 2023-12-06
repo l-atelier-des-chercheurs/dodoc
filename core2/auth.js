@@ -79,10 +79,16 @@ module.exports = (function () {
       return;
     },
     canFolderBeCreatedByAll({ path_to_type }) {
-      const { $can_be_created_by } = utils.parseAndCheckSchema({
-        relative_path: path_to_type,
-      });
-      return $can_be_created_by && $can_be_created_by === "everyone";
+      try {
+        const item_in_schema = utils.parseAndCheckSchema({
+          relative_path: path_to_type,
+        });
+        if (item_in_schema && item_in_schema.$can_be_created_by === "everyone")
+          return true;
+      } catch (err) {
+        err;
+      }
+      return false;
     },
     async isFolderOpenedToAll({ field, path_to_folder = "" }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
