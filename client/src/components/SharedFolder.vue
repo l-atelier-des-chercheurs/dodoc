@@ -18,7 +18,6 @@
                     <sl-icon name="arrow-up-circle-fill" />
                   </button>
                 </transition>
-                {{ $t("shared_space_archive") }}
               </div>
               <div class="_toprightBtns">
                 <button

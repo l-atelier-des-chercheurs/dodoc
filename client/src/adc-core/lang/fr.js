@@ -788,7 +788,6 @@ export default {
   require_mail_to_signup:
     "Une adresse courriel est obligatoire pour créer un compte",
   enable_events: "Activer la fonctionnalité « événements »",
-  shared_space_archive: "Espace partagé / Archive",
   filter_sort: "Filtrer/classer",
 
   you_must_login_to_contribute:

@@ -82,7 +82,6 @@ export default {
   remove_all: "Remove all",
   remove_select: "Remove selection",
   publish: "Publish",
-  shared_space_archive: "SHARED SPACE / ARCHIVE",
   filter_sort: "Filter/Sort",
   help_contact: "help/contact",
   version: "Version",

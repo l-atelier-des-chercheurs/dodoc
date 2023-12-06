@@ -30,7 +30,7 @@ export default {
 <style lang="scss" scoped>
 ._chutierPane {
   position: absolute;
-  z-index: 10;
+  z-index: 100;
   top: -2px;
   width: 100%;
   height: 100%;

@@ -409,6 +409,19 @@ hr {
   margin: calc(var(--spacing) / 2) 0;
 }
 
+.topBarIndication {
+  height: 20px;
+  padding: 2px 4px;
+  line-height: 1;
+  font-weight: bold;
+  font-family: "IBM Plex Mono";
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  border-bottom: 1px solid #ccc;
+}
+
 .authorLabel {
   flex-basis: auto;
   display: flex;
@@ -525,11 +538,11 @@ img {
 .splitpanes--vertical > .splitpanes__splitter {
   width: 1px;
   margin-left: -1px;
-  border-right: 1px solid white;
+  border-right: 1px solid #ccc;
 }
 .splitpanes--horizontal > .splitpanes__splitter {
   height: 1px;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid #ccc;
 }
 
 .splitpanes__splitter:before {
@@ -583,7 +596,7 @@ img {
   height: 20px;
 
   transition: transform 0.4s;
-  background-color: var(--c-bleuvert);
+  background-color: var(--c-noir);
   opacity: 1;
   z-index: 11;
 }
