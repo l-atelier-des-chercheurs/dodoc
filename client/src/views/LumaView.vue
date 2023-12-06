@@ -8,7 +8,7 @@
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <TopNav />
-      <splitpanes>
+      <splitpanes class="_splitpanes">
         <pane min-size="0" size="25">
           <div
             class="_myContent"
@@ -205,6 +205,9 @@ export default {
   }
 }
 
+._splitpanes {
+  height: calc(100% - 20px);
+}
 ._chutierBtn {
   position: absolute;
   // height: 100%;

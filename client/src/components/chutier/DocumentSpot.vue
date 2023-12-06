@@ -14,16 +14,12 @@
       @click="openOrAddToStack"
       @drop="drop"
     >
-      <template v-if="!stack">+</template>
-      <template v-else>
-        <!-- <div class="" v-for="file in stack_files" :key="file.$path">
-          <MediaContent context="preview" :file="file" />
-        </div> -->
-        <template
-          v-if="stack_files_in_order && stack_files_in_order.length > 0"
-        >
+      <div class="_topContent">
+        <template v-if="!stack">+</template>
+        <template v-else>
           <MediaContent
-            class="_medias"
+            v-if="stack_files_in_order && stack_files_in_order.at(-1)"
+            class="_mediaPreview"
             context="preview"
             :file="stack_files_in_order.at(-1)"
           />
@@ -31,24 +27,30 @@
             {{ stack_files_in_order.length }}
           </div>
         </template>
-      </template>
-      <template
-        v-if="
-          is_expecting_drag || (selected_items && selected_items.length > 0)
-        "
-      >
-        <div class="anim_backgroundPosition" />
-        <div
-          class="_addTo"
+
+        <template
           v-if="
-            !stack || !stack_files_in_order || stack_files_in_order.length === 0
+            is_expecting_drag || (selected_items && selected_items.length > 0)
           "
         >
-          <!-- <b-icon icon="file-earmark-plus" /> -->
-          +
-        </div>
-      </template>
-      <LoaderSpinner v-if="is_adding_to_stack" />
+          <div class="anim_backgroundPosition" />
+          <div
+            class="_addTo"
+            v-if="
+              !stack ||
+              !stack_files_in_order ||
+              stack_files_in_order.length === 0
+            "
+          >
+            <!-- <b-icon icon="file-earmark-plus" /> -->
+            +
+          </div>
+        </template>
+        <LoaderSpinner v-if="is_adding_to_stack" />
+      </div>
+      <div class="_stackTitle" v-if="stack && stack.title">
+        {{ stack.title }}
+      </div>
     </div>
 
     <!-- <OpenStack
@@ -63,6 +65,7 @@
         class="_mediaStack"
         :stack="stack"
         :files="stack_files_in_order"
+        @removeMediaFromStack="removeMediaFromStack"
         @close="show_mediastack_modal = false"
       />
     </transition>
@@ -152,12 +155,14 @@ export default {
       this.is_draggedOn = false;
     },
     async drop(event) {
+      this.$alertify.delay(4000).success("dropped item");
+
       event.preventDefault();
       this.is_draggedOn = false;
 
       if (this.selected_items.length > 0) await this.addSelectedToStack();
       else {
-        const file_path = event.dataTransfer.getData("text/plain");
+        const file_path = event.dataTransfer?.getData("text/plain");
         if (file_path) {
           const file_paths = [JSON.parse(file_path)];
           await this.createOrAppendToStack(file_paths);
@@ -171,6 +176,23 @@ export default {
     async openOrAddToStack() {
       if (this.selected_items.length > 0) await this.addSelectedToStack();
       else this.openStack();
+    },
+    async removeMediaFromStack(file_path) {
+      await this.$api.copyFile({
+        path: file_path,
+        path_to_destination_folder: this.connected_as.$path,
+        new_meta: {},
+      });
+      await this.$api.deleteItem({ path: file_path });
+
+      let stack_files_metas = this.stack?.stack_files_metas.slice();
+      stack_files_metas = stack_files_metas.filter((m) => m !== file_path);
+      await this.$api.updateMeta({
+        path: this.stack.$path,
+        new_meta: {
+          stack_files_metas,
+        },
+      });
     },
     openStack() {
       if (this.stack) this.show_mediastack_modal = true;
@@ -226,8 +248,6 @@ export default {
           path: path_to_destination_folder,
           new_meta: {
             stack_files_metas,
-            $admins: "everyone",
-            $authors: [this.connected_as.$path],
           },
         });
       }
@@ -241,14 +261,55 @@ export default {
 ._documentSpot {
   position: relative;
 
-  width: 60px;
-  height: 60px;
   flex: 0 0 auto;
-  border-radius: 8px;
-  overflow: hidden;
+  width: 60px;
 
   margin: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 
+  cursor: default;
+
+  > * {
+    pointer-events: none;
+  }
+
+  &:not(.has--content) {
+    ._topContent {
+      border: 1px dashed currentColor;
+    }
+  }
+  &.has--content {
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      ._topContent {
+        border-color: transparent;
+        opacity: 0.8;
+      }
+    }
+  }
+  &.is--expectingClick {
+    cursor: pointer;
+  }
+
+  &.is--draggedOn {
+    ._topContent {
+      cursor: pointer;
+      transform: scale(1.2);
+      background: black;
+    }
+  }
+
+  &.is--expectingDrag {
+    cursor: pointer;
+    color: white;
+  }
+}
+._topContent {
+  position: relative;
+
+  border-radius: 8px;
+  overflow: hidden;
   color: #666;
   background: black;
 
@@ -258,43 +319,17 @@ export default {
 
   font-size: var(--sl-font-size-x-large);
   font-weight: bolder;
-  cursor: default;
+
+  width: 60px;
+  height: 60px;
 
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-
-  > * {
-    pointer-events: none;
-  }
-
-  &:not(.has--content) {
-    border: 1px dashed currentColor;
-  }
-  &.has--content {
-    cursor: pointer;
-
-    &:hover,
-    &:focus-visible {
-      border-color: transparent;
-      background: currentColor;
-      opacity: 0.8;
-    }
-  }
-  &.is--expectingClick {
-    cursor: pointer;
-  }
-
-  &.is--draggedOn {
-    cursor: pointer;
-    transform: scale(1.2);
-    background: black;
-  }
-
-  &.is--expectingDrag {
-    cursor: pointer;
-    color: white;
-  }
 }
-._medias {
+._stackTitle {
+  font-size: var(--sl-font-size-x-small);
+}
+
+._mediaPreview {
   color: white;
 }
 
@@ -302,6 +337,8 @@ export default {
   position: absolute;
   z-index: 1;
   color: white;
+  text-shadow: #000 1px 0 10px;
+
   display: flex;
   justify-content: center;
   align-items: center;

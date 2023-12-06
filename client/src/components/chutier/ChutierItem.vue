@@ -192,6 +192,7 @@
         <sl-icon name="x-lg" :label="$t('close')" />
       </button>
     </div>
+    <div class="anim_backgroundPosition" v-if="is_selected && false" />
   </div>
 </template>
 <script>
@@ -343,6 +344,23 @@ export default {
       this.is_dragged = true;
       this.$eventHub.$emit("chutierItem.startDrag");
       event.dataTransfer.effectAllowed = "move";
+
+      var img = document.createElement("img");
+      // img.src = this.makeMediaFileURL({
+      //   $path: this.file.$path,
+      //   $media_filename: this.file.$media_filename,
+      // });
+
+      img.src = this.makeURLFromThumbs({
+        $thumbs: this.file.$thumbs,
+        $type: this.file.$type,
+        $path: this.getParent(this.file.$path),
+        resolution: 180,
+      });
+      debugger;
+
+      event.dataTransfer.setDragImage(img, 0, 0, 50, 50);
+
       event.dataTransfer.setData("text/plain", JSON.stringify(this.file.$path));
     },
     dragEnd() {
@@ -410,6 +428,8 @@ export default {
 }
 
 ._chutierRow {
+  position: relative;
+
   width: 100%;
   // padding: 2px;
   padding: calc(var(--spacing) / 4) 0;
@@ -582,5 +602,13 @@ export default {
 }
 ._dragBtn {
   color: #666;
+}
+
+.anim_backgroundPosition {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

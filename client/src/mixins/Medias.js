@@ -22,6 +22,17 @@ export default {
 
       return `/thumbs/${$path}/${thumb_path}`;
     },
+    makeURLFromThumbs({ $type, $path, $thumbs, resolution }) {
+      if (!$thumbs) return false;
+      const relative_url = this.makeRelativeURLFromThumbs({
+        $type,
+        $path,
+        $thumbs,
+        resolution,
+      });
+      return window.location.origin + relative_url;
+    },
+
     getFirstThumbURLForMedia({ file, resolution }) {
       const path_to_parent = file.$path.substring(
         0,

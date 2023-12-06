@@ -80,11 +80,19 @@ export default {
 
   > span {
   }
-}
 
-@supports (justify-content: safe) {
-  ._documentsCreator {
-    justify-content: safe center;
+  ::v-deep > *:only-child {
+    height: 50%;
+    ._documentSpot {
+      height: 100%;
+    }
   }
 }
+
+// no working in safari :(
+// @supports (justify-content: safe center) {
+//   ._documentsCreator {
+//     justify-content: safe center;
+//   }
+// }
 </style>

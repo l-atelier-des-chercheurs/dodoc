@@ -192,9 +192,7 @@ export default {
       });
     },
     removeFromSelection(path) {
-      let files_path = this.files.map((f) => f.$path);
-      files_path = files_path.filter((fp) => fp !== path);
-      this.$emit("updateFocusedMedia", files_path);
+      this.$emit("removeMediaFromStack", path);
     },
     async shareButtonClicked() {
       const path_to_destination_type = this.shared_folder_path + "/stacks";
