@@ -308,6 +308,10 @@ button {
       background-color: var(--c-bleuvert_fonce);
     }
   }
+
+  &[disabled] {
+    background-color: var(--c-gris_fonce);
+  }
 }
 .u-button_bleuvert_fonce {
   background-color: var(--c-bleuvert_fonce);

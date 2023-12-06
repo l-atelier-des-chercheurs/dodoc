@@ -7,6 +7,7 @@
   >
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
+      <TopNav />
       <splitpanes>
         <pane min-size="0" size="25">
           <div
@@ -67,9 +68,9 @@
             <SharedFolder :shared_folder_path="shared_folder_path" />
           </div>
         </pane>
-        <pane min-size="5" size="10" v-if="!$root.is_mobile_view">
+        <!-- <pane min-size="5" size="10" v-if="!$root.is_mobile_view">
           <strong>Formats</strong>
-        </pane>
+        </pane> -->
       </splitpanes>
     </template>
   </div>
@@ -78,10 +79,12 @@
 import { Splitpanes, Pane } from "splitpanes";
 import MyChutier from "@/components/MyChutier.vue";
 import SharedFolder from "@/components/SharedFolder.vue";
+import TopNav from "@/components/TopNav.vue";
 
 export default {
   props: {},
   components: {
+    TopNav,
     Splitpanes,
     Pane,
     MyChutier,

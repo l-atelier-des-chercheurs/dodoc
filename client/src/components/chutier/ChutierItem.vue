@@ -164,7 +164,7 @@
         </template>
       </div>
 
-      <div class="_publierBtn">
+      <div class="_publierBtn" v-if="false">
         <button
           type="button"
           :key="share_button_is_enabled"
@@ -343,10 +343,8 @@ export default {
       this.is_dragged = true;
       this.$eventHub.$emit("chutierItem.startDrag");
       event.dataTransfer.effectAllowed = "move";
-      event.dataTransfer.setData(
-        "text/uri-list",
-        JSON.stringify(this.file.$path)
-      );
+      debugger;
+      event.dataTransfer.setData("text", JSON.stringify(this.file.$path));
     },
     dragEnd() {
       this.is_dragged = false;
@@ -416,7 +414,7 @@ export default {
   width: 100%;
   // padding: 2px;
   padding: calc(var(--spacing) / 4) 0;
-  margin-bottom: 2px;
+  margin-bottom: -1px;
   overflow: hidden;
   border-radius: 4px;
   border: 1px dashed transparent;

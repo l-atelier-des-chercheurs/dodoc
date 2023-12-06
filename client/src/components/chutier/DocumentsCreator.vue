@@ -6,7 +6,6 @@
     <DocumentSpot
       v-for="stack in all_stacks"
       :key="stack.$path"
-      class="_spot"
       :selected_items="selected_items"
       :author_stacks_path="author_stacks_path"
       :stack_path="stack.$path"
@@ -15,7 +14,6 @@
       :author_stacks_path="author_stacks_path"
       :key="'empty'"
       :selected_items="selected_items"
-      class="_spot"
     />
   </div>
 </template>
@@ -74,13 +72,19 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
-  justify-content: safe center;
+  justify-content: flex-start;
 
   height: 100%;
   overflow: auto;
   border-left: 1px solid #777;
 
   > span {
+  }
+}
+
+@supports (justify-content: safe) {
+  ._documentsCreator {
+    justify-content: safe center;
   }
 }
 </style>

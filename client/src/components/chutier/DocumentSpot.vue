@@ -27,7 +27,9 @@
             context="preview"
             :file="stack_files_in_order.at(-1)"
           />
-          <div class="_count">{{ stack_files_in_order.length }}</div>
+          <div class="_count">
+            {{ stack_files_in_order.length }}
+          </div>
         </template>
       </template>
       <template
@@ -46,6 +48,7 @@
           +
         </div>
       </template>
+      <LoaderSpinner v-if="is_adding_to_stack" />
     </div>
 
     <!-- <OpenStack
@@ -84,10 +87,18 @@ export default {
       is_expecting_drag: false,
       is_draggedOn: false,
       show_mediastack_modal: false,
+      is_adding_to_stack: false,
     };
   },
   created() {},
   async mounted() {
+    if (this.stack_path) {
+      this.stack = await this.$api.getFolder({
+        path: this.stack_path,
+      });
+      this.$api.join({ room: this.stack_path });
+    }
+
     this.$eventHub.$on("chutierItem.startDrag", this.startDragItem);
     this.$eventHub.$on("chutierItem.endDrag", this.endDragItem);
   },
@@ -95,18 +106,11 @@ export default {
     this.$eventHub.$off("chutierItem.startDrag", this.startDragItem);
     this.$eventHub.$off("chutierItem.endDrag", this.endDragItem);
 
-    if (this.stack?.$path) this.$api.leave({ room: this.stack.$path });
+    if (this.stack_path) this.$api.leave({ room: this.stack_path });
   },
   watch: {
     stack_path: {
-      async handler() {
-        if (!this.stack && this.stack_path) {
-          this.stack = await this.$api.getFolder({
-            path: this.stack_path,
-          });
-          this.$api.join({ room: this.stack.$path });
-        }
-      },
+      async handler() {},
       immediate: true,
       deep: true,
     },
@@ -138,7 +142,8 @@ export default {
       this.is_expecting_drag = false;
     },
     dragEnter(event) {
-      const file_path = event.dataTransfer.getData("text/uri-list");
+      const file_path = event.dataTransfer.getData("text");
+      debugger;
       if (file_path) this.is_draggedOn = true;
     },
     dragOver(event) {
@@ -151,13 +156,13 @@ export default {
       event.preventDefault();
       this.is_draggedOn = false;
 
-      debugger;
-      const file_path = event.dataTransfer.getData("text/uri-list");
-
       if (this.selected_items.length > 0) await this.addSelectedToStack();
-      else if (file_path) {
-        const file_paths = [JSON.parse(file_path)];
-        await this.createOrAppendToStack(file_paths);
+      else {
+        const file_path = event.dataTransfer.getData("text/plain");
+        if (file_path) {
+          const file_paths = [JSON.parse(file_path)];
+          await this.createOrAppendToStack(file_paths);
+        }
       }
     },
     async addSelectedToStack() {
@@ -172,6 +177,8 @@ export default {
       if (this.stack) this.show_mediastack_modal = true;
     },
     async createOrAppendToStack(file_paths) {
+      this.is_adding_to_stack = true;
+
       let path_to_destination_folder;
       if (this.stack?.$path) {
         path_to_destination_folder = this.stack.$path;
@@ -220,21 +227,18 @@ export default {
           path: path_to_destination_folder,
           new_meta: {
             stack_files_metas,
+            $admins: "everyone",
+            $authors: [this.connected_as.$path],
           },
         });
       }
+
+      this.is_adding_to_stack = false;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-._touchTarget {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-
-  > * {
-    // pointer-events: none;
-  }
-}
 ._documentSpot {
   position: relative;
 
@@ -244,7 +248,7 @@ export default {
   border-radius: 8px;
   overflow: hidden;
 
-  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 
   color: #666;
   background: black;
@@ -259,6 +263,10 @@ export default {
 
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
+  > * {
+    pointer-events: none;
+  }
+
   &:not(.has--content) {
     border: 1px dashed currentColor;
   }
@@ -269,6 +277,7 @@ export default {
     &:focus-visible {
       border-color: transparent;
       background: currentColor;
+      opacity: 0.8;
     }
   }
   &.is--expectingClick {
@@ -284,10 +293,6 @@ export default {
   &.is--expectingDrag {
     cursor: pointer;
     color: white;
-  }
-
-  > * {
-    pointer-events: none;
   }
 }
 ._medias {

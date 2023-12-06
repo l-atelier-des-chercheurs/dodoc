@@ -118,6 +118,10 @@
         <template v-else>
           <label
             for=""
+            class="_item--label"
+            :class="{
+              'is--fullySelected': all_items_selected,
+            }"
             @click="!all_items_selected ? selectAll() : deselectAll()"
           >
             <button
@@ -608,11 +612,9 @@ export default {
   cursor: pointer;
   font-weight: 500;
   margin-bottom: 4px;
-  // display: flex;
-  // gap: calc(var(--spacing) / 4);
-  // align-items: flex-end;
-  // justify-content: space-between;
-  opacity: 0.4;
+
+  opacity: 0.6;
+  transition: all 0.25s ease-out;
 
   &:hover {
     opacity: 0.9;

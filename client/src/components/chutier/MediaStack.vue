@@ -82,13 +82,12 @@
       </div>
 
       <div class="_shareBtn">
-        <RemoveMenu @remove="removeStack" />
         <transition name="scaleInFade" mode="out-in">
           <button
             type="button"
             v-if="shared_folder_path"
             :key="share_button_is_enabled"
-            class="u-buttonLink"
+            class="u-button u-button_bleuvert"
             :disabled="!share_button_is_enabled"
             @click="shareButtonClicked"
           >
@@ -96,6 +95,15 @@
             <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
           </button>
         </transition>
+      </div>
+
+      <hr />
+
+      <div class="_shareBtn">
+        <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          {{ $t("save_as_draft") }}
+        </button>
       </div>
     </div>
   </ChutierPane>
@@ -120,7 +128,16 @@ export default {
       default: false,
     },
   },
-
+  i18n: {
+    messages: {
+      fr: {
+        save_as_draft: "Enregistrer en brouillon",
+      },
+      en: {
+        save_as_draft: "Save draft",
+      },
+    },
+  },
   data() {
     return {
       title: "",
@@ -180,9 +197,10 @@ export default {
       this.$emit("updateFocusedMedia", files_path);
     },
     async shareButtonClicked() {
+      debugger;
       const path_to_destination_type = this.shared_folder_path + "/stacks";
       await this.$api.copyFolder({
-        path: this.path,
+        path: this.stack.$path,
         path_to_destination_type,
         new_meta: {},
       });
@@ -248,6 +266,8 @@ sl-icon-button::part(base) {
 ._shareBtn {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
 }
 ._descriptionField {
   resize: vertical;
