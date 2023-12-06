@@ -791,10 +791,12 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to upload file: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      try {
+        res.status(500).send({
+          code,
+          err_infos,
+        });
+      } catch (e) {}
     }
   }
   async function _exportToParent(req, res, next) {
