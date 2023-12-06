@@ -188,7 +188,7 @@ module.exports = (function () {
       return infos;
     },
 
-    removeFolderThumbs: ({ path_to_folder }) =>
+    removeFolderThumbs: async ({ path_to_folder }) =>
       removeFolderThumbs({ path_to_folder }),
     removeFolderCover: ({ path_to_folder }) =>
       removeFolderCover({ path_to_folder }),
@@ -313,10 +313,14 @@ module.exports = (function () {
   }
 
   async function removeFolderThumbs({ path_to_folder }) {
-    dev.logfunction({ path_to_folder });
-    return await fs.remove(
-      utils.getPathToUserContent("thumbs", path_to_folder)
-    );
+    try {
+      dev.logfunction({ path_to_folder });
+      return await fs.remove(
+        utils.getPathToUserContent("thumbs", path_to_folder)
+      );
+    } catch (err) {
+      return false;
+    }
   }
   async function removeFolderCover({ path_to_folder }) {
     dev.logfunction({ path_to_folder });
