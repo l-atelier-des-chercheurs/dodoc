@@ -75,7 +75,8 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
-  justify-content: flex-start;
+  justify-content: safe center;
+
   height: 100%;
   overflow: auto;
 
