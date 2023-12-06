@@ -561,7 +561,7 @@ module.exports = (function () {
     context,
     handle_duplicates = "throw",
   }) {
-    if (!meta) return {};
+    if (!meta || Object.keys(meta).length === 0) return {};
 
     const { fields = {} } = utils.parseAndCheckSchema({
       relative_path: path_to_type,
