@@ -706,7 +706,7 @@ class Exporter {
           ".flac",
           ".wav",
           ".m4a",
-          ".off",
+          ".ogg",
           ".mp3",
           ".aac",
         ],

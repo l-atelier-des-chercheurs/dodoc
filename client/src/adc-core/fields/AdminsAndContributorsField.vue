@@ -11,8 +11,8 @@
           v-for="atpath in all_participants_path"
           :path="atpath"
           :key="atpath"
-          :links_to_author_page="true"
           :show_image_only="true"
+          :mode="'link'"
         />
       </div>
       <div class="u-instructions">
