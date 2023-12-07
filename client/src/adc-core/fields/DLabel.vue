@@ -1,7 +1,11 @@
 <template>
   <div class="_dLabel">
     <div class="_labelLine" @click="show_instructions = !show_instructions">
-      <component :is="tag" :class="tag === 'label' ? 'u-label' : ''">
+      <component
+        :is="tag"
+        :class="tag === 'label' ? 'u-label' : ''"
+        :for="for_input"
+      >
         {{ str }}
       </component>
       <template v-if="instructions">
@@ -34,6 +38,7 @@ export default {
       type: String,
       default: "label",
     },
+    for_input: String,
   },
   components: {},
   data() {

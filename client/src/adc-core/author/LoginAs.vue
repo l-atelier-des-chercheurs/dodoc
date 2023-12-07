@@ -6,17 +6,6 @@
 
         <transition name="pagechange" mode="out-in">
           <div v-if="!author_to_login_to" key="search">
-            <TextInput
-              :content.sync="search_for_author"
-              ref="nameField"
-              :label_str="'name_or_pseudonym'"
-              :required="true"
-              :input_type="'text'"
-              :autocomplete="'username'"
-              @toggleValidity="($event) => (allow_save = $event)"
-              @onEnter="setFirstSuggestion"
-            />
-            <!-- @onEnter="checkAuthor" -->
             <transition name="pagechange" mode="out-in">
               <div v-if="!author_suggestions" key="none" />
               <div
@@ -41,6 +30,17 @@
                 />
               </div>
             </transition>
+            <TextInput
+              :content.sync="search_for_author"
+              ref="nameField"
+              :label_str="'name_or_pseudonym'"
+              :required="true"
+              :input_type="'text'"
+              :autocomplete="'username'"
+              @toggleValidity="($event) => (allow_save = $event)"
+              @onEnter="setFirstSuggestion"
+            />
+            <!-- @onEnter="checkAuthor" -->
           </div>
           <div v-else key="login">
             <div class="u-spacingBottom _loginToAuthor">
@@ -59,6 +59,13 @@
                   :path="author_to_login_to.$path"
                 />
               </transition>
+
+              <input
+                style="display: none"
+                id="name_or_pseudonym"
+                type="text"
+                :value="author_to_login_to.name"
+              />
             </div>
 
             <div class="u-spacingBottom">
