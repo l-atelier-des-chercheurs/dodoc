@@ -7,29 +7,40 @@
   >
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
-      <splitpanes class="_topBarIndication" watch-slots @resized="resizedPane">
-        <pane :min-size="min_toppane_width" :size="chutier_width">
-          <div class="_topBarIndication--item" @click="toggleChutier">
-            <b-icon icon="layout-sidebar-inset" />
-            CHUTIER
-          </div>
-        </pane>
-        <pane :min-size="min_toppane_width" :size="archive_width">
-          <div class="_topBarIndication--item" @click="toggleArchive">
-            <b-icon icon="grid3x3-gap" />
-            ARCHIVE
-          </div>
-        </pane>
-        <pane :min-size="min_toppane_width" :size="format_width">
-          <div class="_topBarIndication--item" @click="toggleFormat">
-            <b-icon icon="layout-sidebar-inset-reverse" />
-            FORMAT
-          </div>
-        </pane>
-      </splitpanes>
+      <div class="_topBarIndication">
+        <div
+          class="_topBarIndication--item"
+          :style="setTopbarWidth('chutier')"
+          @click="togglePane('chutier')"
+        >
+          <b-icon icon="layout-sidebar-inset" />
+          CHUTIER
+        </div>
+        <div
+          class="_topBarIndication--item"
+          :style="setTopbarWidth('archive')"
+          @click="togglePane('archive')"
+        >
+          <b-icon icon="grid3x3-gap" />
+          ARCHIVE
+        </div>
+        <div
+          class="_topBarIndication--item"
+          :style="setTopbarWidth('format')"
+          @click="togglePane('format')"
+        >
+          <b-icon icon="layout-sidebar-inset-reverse" />
+          FORMAT
+        </div>
+      </div>
 
-      <splitpanes class="_splitpanes" watch-slots @resized="resizedPane">
-        <pane :min-size="min_toppane_width" :size="chutier_width">
+      <splitpanes
+        class="_splitpanes"
+        watch-slots
+        @resize="resizeTopPane"
+        @resized="resizedPane"
+      >
+        <pane :min-size="min_toppane_width" :size="panes_width.chutier">
           <div
             class="_myContent"
             :class="{
@@ -79,7 +90,7 @@
         </pane>
         <pane
           :min-size="min_toppane_width"
-          :size="archive_width"
+          :size="panes_width.archive"
           v-if="!$root.is_mobile_view"
         >
           <div class="_sharedContent" :key="'sharedContent'">
@@ -89,7 +100,7 @@
         </pane>
         <pane
           :min-size="min_toppane_width"
-          :size="format_width"
+          :size="panes_width.format"
           v-if="!$root.is_mobile_view"
         >
           <div class="u-instructions">à venir…</div>
@@ -117,9 +128,17 @@ export default {
       folders: undefined,
       shared_folder_path: undefined,
 
-      chutier_width: 33,
-      archive_width: 33,
-      format_width: 33,
+      top_panes_width: {
+        chutier: 33,
+        archive: 33,
+        format: 33,
+      },
+
+      panes_width: {
+        chutier: 33,
+        archive: 33,
+        format: 33,
+      },
 
       show_chutier:
         localStorage.getItem("show_chutier") === "false" ? false : true,
@@ -139,10 +158,19 @@ export default {
     show_chutier() {
       localStorage.setItem("show_chutier", this.show_chutier);
     },
+    panes_width: {
+      handler() {
+        Object.entries(this.panes_width).map(
+          ([pane, w]) => (this.top_panes_width[pane] = w)
+        );
+      },
+      deep: true,
+    },
   },
   computed: {
     min_toppane_width() {
-      return (20 / this.$root.window.innerWidth) * 100;
+      // return (20 / this.$root.window.innerWidth) * 100;
+      return 0;
     },
   },
   methods: {
@@ -181,28 +209,51 @@ export default {
         // this.is_creating_project = false;
       }
     },
-    resizedPane(panes_sizes) {
+    resizeTopPane(panes_sizes) {
+      // real time resize
       panes_sizes.map((ps, index) => {
         const pane_width = Number(ps.size.toFixed(1));
-        if (index === 0) this.chutier_width = pane_width;
-        if (index === 1) this.archive_width = pane_width;
-        if (index === 2) this.format_width = pane_width;
+        if (index === 0) this.top_panes_width.chutier = pane_width;
+        if (index === 1) this.top_panes_width.archive = pane_width;
+        if (index === 2) this.top_panes_width.format = pane_width;
       });
     },
-    toggleChutier() {
-      if (this.chutier_width > 0) this.chutier_width = 0;
-      else this.chutier_width = 25;
-      this.archive_width = this.format_width = (100 - this.chutier_width) / 2;
+    resizedPane(panes_sizes) {
+      // when resize end
+      panes_sizes.map((ps, index) => {
+        const pane_width = Number(ps.size.toFixed(1));
+        if (index === 0) this.panes_width.chutier = pane_width;
+        if (index === 1) this.panes_width.archive = pane_width;
+        if (index === 2) this.panes_width.format = pane_width;
+      });
     },
-    toggleArchive() {
-      if (this.archive_width > 0) this.archive_width = 0;
-      else this.archive_width = 25;
-      this.chutier_width = this.format_width = (100 - this.archive_width) / 2;
+    setTopbarWidth(pane) {
+      const w = this.top_panes_width[pane];
+      return `
+        --topPane-width: ${w}%;
+      `;
     },
-    toggleFormat() {
-      if (this.format_width > 0) this.format_width = 0;
-      else this.format_width = 25;
-      this.chutier_width = this.archive_width = (100 - this.format_width) / 2;
+    togglePane(pane) {
+      if (this.panes_width[pane] > 0) this.panes_width[pane] = 0;
+      else this.panes_width[pane] = 25;
+      this.distributePanes();
+    },
+    distributePanes() {
+      const active_panes = Object.values(this.panes_width).filter(
+        (w) => w > 0
+      ).length;
+      // if no pane active, set all to active
+      if (active_panes === 0) {
+        Object.keys(this.panes_width).map(
+          (p) =>
+            (this.panes_width[p] = 100 / Object.keys(this.panes_width).length)
+        );
+      } else {
+        const new_width = 100 / active_panes;
+        Object.entries(this.panes_width).map(([p, w]) =>
+          w > 0 ? (this.panes_width[p] = new_width) : ""
+        );
+      }
     },
   },
 };
@@ -297,9 +348,15 @@ export default {
 
 ._splitpanes {
   height: calc(100% - 20px);
+
+  > * {
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  }
 }
 
 ._topBarIndication {
+  display: flex;
+  flex-flow: row nowrap;
   height: 20px;
 
   ._topBarIndication--item {
@@ -312,10 +369,14 @@ export default {
     align-items: center;
     gap: calc(var(--spacing) / 2);
     white-space: nowrap;
+    overflow: hidden;
+    min-width: 20px;
+    flex: 1 1 var(--topPane-width);
 
     border-bottom: 1px solid #ccc;
 
     cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     &:hover,
     &:focus-visible {

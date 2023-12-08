@@ -903,15 +903,4 @@ export default {
   publish_on_forum_to_add_to_contribute_to_code:
     "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Effacer toutes les traductions proposées",
-
-  "instructions.pane.capture":
-    "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
-  "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
-    <br />
-    Vous pouvez aussi importer des fichiers (photos, vidéos, sons, 3D, PDF ou autre) depuis vos appareils.`,
-  "instructions.pane.make":
-    "Recadrez, raccourcissez, assemblez et annotez vos médias.",
-  "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
-    <br />
-    Elles contiendront du texte et des éléments que vous avez collecté.`,
 };

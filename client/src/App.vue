@@ -505,7 +505,7 @@ img {
   // overflow: hidden;
   position: relative;
   height: auto;
-  transition: none !important;
+  // transition: none !important;
 }
 
 .splitpanes .splitpanes__splitter {
