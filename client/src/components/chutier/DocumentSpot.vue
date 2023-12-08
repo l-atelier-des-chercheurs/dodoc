@@ -18,14 +18,17 @@
         <template v-if="!stack">+</template>
         <template v-else>
           <MediaContent
-            v-if="stack_files_in_order && stack_files_in_order.at(-1)"
+            v-if="stack_files_in_order && stack_files_in_order.at(0)"
             class="_mediaPreview"
             context="preview"
-            :file="stack_files_in_order.at(-1)"
+            :file="stack_files_in_order.at(0)"
           />
-          <div class="_count">
-            {{ stack_files_in_order.length }}
-          </div>
+
+          <transition name="pagechange" mode="out-in">
+            <div class="_count" :key="stack_files_in_order.length">
+              {{ stack_files_in_order.length }}
+            </div>
+          </transition>
         </template>
 
         <template
@@ -252,6 +255,8 @@ export default {
         });
       }
 
+      await new Promise((r) => setTimeout(r, 300));
+
       this.is_adding_to_stack = false;
     },
   },
@@ -335,7 +340,7 @@ export default {
 
 ._count {
   position: absolute;
-  z-index: 1;
+  z-index: 10;
   color: white;
   text-shadow: #000 1px 0 10px;
 
@@ -366,6 +371,6 @@ export default {
 ._loader {
   background: black;
   color: var(--c-rouge);
-  z-index: 1;
+  z-index: 2;
 }
 </style>
