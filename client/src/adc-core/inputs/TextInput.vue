@@ -1,10 +1,10 @@
 <template>
   <div>
-    <DLabel v-if="label_str" :str="$t(label_str)" />
+    <DLabel v-if="label_str" :str="$t(label_str)" :for_input="label_str" />
     <template v-if="tag === 'input'">
       <input
         ref="field"
-        class=""
+        :id="label_str"
         :type="field_input_type_prop"
         :name="label_str"
         :autocomplete="autocomplete"
