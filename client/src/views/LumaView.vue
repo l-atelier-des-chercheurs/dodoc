@@ -258,6 +258,7 @@ export default {
 <style lang="scss" scoped>
 ._lumaView {
   height: 100%;
+  overflow: hidden;
 }
 ._panes {
   height: 100%;
@@ -350,10 +351,11 @@ export default {
     gap: calc(var(--spacing) / 2);
     white-space: nowrap;
     overflow: hidden;
-    min-width: 20px;
+    min-width: 23px;
     flex: 1 1 var(--topPane-width);
 
     border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
 
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
