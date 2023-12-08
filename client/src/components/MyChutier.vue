@@ -476,6 +476,7 @@ export default {
     },
     onDragEnter($event) {
       $event.preventDefault();
+      // const has_files = Array.from($event.target.files).length > 0;
       this.is_dragover = true;
     },
     onDragLeave($event) {
@@ -705,11 +706,19 @@ export default {
     box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
     padding: calc(var(--spacing) / 1);
 
+    transition: all 0.15 cubic-bezier(0.19, 1, 0.22, 1);
+
     &.is--dragover {
-      border-color: white;
+      // border-color: transparent;
+      border: 2px dashed white;
+      // border-width: 0px;
 
       > * {
-        // pointer-events: none;
+        pointer-events: none;
+
+        &:not(._importButton--btn) {
+          opacity: 0;
+        }
       }
     }
     &.is--dragover {

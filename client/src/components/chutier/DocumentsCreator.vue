@@ -77,6 +77,7 @@ export default {
   height: 100%;
   overflow: auto;
   border-left: 1px solid #777;
+  padding: calc(var(--spacing) / 2) 0;
 
   > span {
   }

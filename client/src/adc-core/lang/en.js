@@ -91,7 +91,7 @@ export default {
   filter_by_author: "Fitler by author",
   filter_by_keyword: "Fitler by keyword",
   search: "Search",
-  search_fields: "In title, description or notes fields.",
+  search_fields: "In titles or descriptions of documents.",
   show_all_keywords: "Show all keywords",
   download: "Download",
   share_link_to_page: "Share a link to this page",

@@ -82,19 +82,20 @@
       </div>
 
       <div class="_shareBtn">
-        <transition name="scaleInFade" mode="out-in">
-          <button
-            type="button"
-            v-if="shared_folder_path"
-            :key="share_button_is_enabled"
-            class="u-button u-button_bleuvert"
-            :disabled="!share_button_is_enabled"
-            @click="shareButtonClicked"
-          >
-            {{ $t("publish") }}&nbsp;
-            <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
-          </button>
-        </transition>
+        <div v-if="!shared_folder_path">
+          ERREUR : le dossier des contenus n'est pas disponible
+        </div>
+        <button
+          type="button"
+          v-else
+          :key="share_button_is_enabled"
+          class="u-button u-button_bleuvert"
+          @click="shareButtonClicked"
+        >
+          <!-- :disabled="!share_button_is_enabled" -->
+          {{ $t("publish") }}&nbsp;
+          <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
+        </button>
       </div>
 
       <hr />
@@ -156,13 +157,21 @@ export default {
     );
     file_dates.sort((a, b) => +new Date(b) - +new Date(a));
     this.date_created_corrected = this.datetimeLocal(file_dates[0]);
+
+    this.$eventHub.$on("folder.removed", this.closeOnRemove);
   },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("folder.removed", this.closeOnRemove);
+  },
   watch: {},
   computed: {
     share_button_is_enabled() {
-      return this.stack.title?.length > 0 && this.stack.keywords?.length > 0;
+      return (
+        this.stack.title?.length > 0 &&
+        this.stack.keywords?.length > 0 &&
+        this.files.length > 0
+      );
     },
     shared_folder_path() {
       if (this.$sharedFolderPath) return this.$sharedFolderPath();
@@ -196,15 +205,32 @@ export default {
     },
     async shareButtonClicked() {
       const path_to_destination_type = this.shared_folder_path + "/stacks";
-      await this.$api.copyFolder({
+
+      const copy_folder_path = await this.$api.copyFolder({
         path: this.stack.$path,
         path_to_destination_type,
         new_meta: {},
       });
+      await this.$api.updateCover({
+        path: copy_folder_path,
+        new_cover_data: this.files.at(0).$path,
+        // onProgress,
+      });
+      await this.$api.deleteItem({ path: this.stack.$path });
+      this.$emit("close");
     },
     async removeStack() {
       await this.$api.deleteItem({ path: this.stack.$path });
       this.$emit("close");
+    },
+    closeOnRemove({ path }) {
+      if (path === this.stack.$path) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t("notifications.stack_was_removed"));
+        this.$emit("close");
+      }
     },
   },
 };

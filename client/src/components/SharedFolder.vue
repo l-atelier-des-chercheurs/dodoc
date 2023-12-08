@@ -285,12 +285,14 @@ export default {
   },
   created() {},
   async mounted() {
-    this.shared_folder = await this.$api.getFolder({
-      path: this.shared_folder_path,
+    this.shared_folder = await this.$api.getFolders({
+      path: this.stack_shared_folder_path,
     });
-    this.$api.join({ room: this.shared_folder_path });
+    this.$api.join({ room: this.stack_shared_folder_path });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.stack_shared_folder_path });
+  },
   watch: {
     opened_collection_slug: {
       handler() {
@@ -318,6 +320,9 @@ export default {
     // },
   },
   computed: {
+    stack_shared_folder_path() {
+      return this.shared_folder_path + "/stacks";
+    },
     opened_file() {
       if (!this.$route.query?.file) return false;
       return this.shared_files.find(

@@ -409,19 +409,6 @@ hr {
   margin: calc(var(--spacing) / 2) 0;
 }
 
-.topBarIndication {
-  height: 20px;
-  padding: 2px 4px;
-  line-height: 1;
-  font-weight: bold;
-  font-family: "IBM Plex Mono";
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-
-  border-bottom: 1px solid #ccc;
-}
-
 .authorLabel {
   flex-basis: auto;
   display: flex;
@@ -486,14 +473,10 @@ ol {
 .itemGrid {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: flex-end;
-  gap: calc(var(--spacing) * 3) calc(var(--spacing) * 2);
 
-  gap: calc(var(--items-width, 150px) / 5 + var(--spacing))
-    calc(var(--items-width, 150px) / 10 + var(--spacing) / 2);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 2px;
 }
 
 small {
@@ -590,13 +573,14 @@ img {
   pointer-events: none;
   // top: 50%;
 
-  transform: rotate(90deg);
+  transform: rotate(0deg);
 
-  width: 3px;
+  width: 5px;
   height: 20px;
+  left: -2px;
 
   transition: transform 0.4s;
-  background-color: var(--c-noir);
+  background-color: var(--c-bleuvert);
   opacity: 1;
   z-index: 11;
 }

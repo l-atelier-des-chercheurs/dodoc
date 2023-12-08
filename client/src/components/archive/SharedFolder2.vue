@@ -1,0 +1,240 @@
+<template>
+  <div class="_sharedFolder">
+    <div class="">SharedFolder2</div>
+
+    <button
+      type="button"
+      class="u-buttonLink"
+      :class="{
+        'is--active': show_filter_sort_pane,
+      }"
+      @click="show_filter_sort_pane = !show_filter_sort_pane"
+    >
+      {{ $t("filter_sort") }}
+    </button>
+
+    <transition name="pagechange" mode="out-in">
+      <div class="_filterBar" v-if="show_filter_sort_pane">
+        <FilterBar
+          :group_mode.sync="group_mode"
+          :sort_order.sync="sort_order"
+          :search_str.sync="search_str"
+          :filetype_filter.sync="filetype_filter"
+          :author_path_filter.sync="author_path_filter"
+          :available_keywords="available_keywords"
+          :keywords_filter.sync="keywords_filter"
+          @close="show_filter_sort_pane = false"
+        />
+      </div>
+    </transition>
+
+    <transition name="pagechange" mode="out-in">
+      <transition-group
+        tag="div"
+        name="projectsList"
+        appear
+        :key="sort_order + '-' + group_mode"
+      >
+        <div
+          v-if="grouped_stacks.length === 0"
+          class="u-instructions _noContent"
+          :key="'nocontent'"
+        >
+          {{ $t("no_content") }}
+        </div>
+        <template v-else>
+          <div
+            class="_dayFileSection"
+            v-for="{ label, files: stacks } in grouped_stacks"
+            :key="label"
+          >
+            <div class="_label">
+              {{ label }}
+            </div>
+            <transition-group
+              tag="div"
+              class="itemGrid"
+              name="listComplete"
+              appear
+            >
+              <StackPreview
+                v-for="stack in stacks"
+                class="_stackPreview"
+                :key="stack.$path"
+                :stack="stack"
+              />
+              <!-- <SharedFolderItem
+                class="_file"
+                v-for="stack in stacks"
+                :key="stack.$path"
+                :file="file"
+                :is_opened="opened_file && opened_file.$path === file.$path"
+                :can_be_added_to_coll="!!opened_collection_slug"
+                @open="openFile(file.$path)"
+              /> -->
+            </transition-group>
+          </div>
+        </template>
+      </transition-group>
+    </transition>
+
+    <footer class="_footer">
+      <small>
+        <a
+          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+          target="_blank"
+        >
+          {{ $t("help_contact") }}
+        </a>
+        <br />
+        {{ $t("version") }} {{ $root.app_infos.version }}
+
+        <div v-if="is_instance_admin">
+          <DownloadFolder :path="shared_folder_path" />
+        </div>
+
+        <button
+          type="button"
+          class="u-buttonLink _adminBtn"
+          v-if="is_instance_admin"
+          @click="show_admin_settings = true"
+        >
+          {{ $t("admin_settings") }}
+        </button>
+        <AdminLumaSettings
+          v-if="show_admin_settings"
+          @close="show_admin_settings = false"
+        />
+      </small>
+    </footer>
+  </div>
+</template>
+<script>
+import FilterBar from "@/components/archive/FilterBar.vue";
+import StackPreview from "@/components/archive/StackPreview.vue";
+import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
+
+export default {
+  props: {
+    shared_folder_path: String,
+  },
+  components: {
+    FilterBar,
+    StackPreview,
+    AdminLumaSettings,
+  },
+  data() {
+    return {
+      all_stacks: [],
+
+      show_admin_settings: false,
+
+      show_filter_sort_pane: false,
+      sort_order: "date_modified",
+      search_str: "",
+      filetype_filter: "all",
+      author_path_filter: "",
+      keywords_filter: [],
+      group_mode: "year",
+    };
+  },
+  i18n: {
+    messages: {
+      fr: {},
+    },
+  },
+  async created() {
+    this.all_stacks = await this.$api.getFolders({
+      path: this.stack_shared_folder_path,
+    });
+    this.$api.join({ room: this.stack_shared_folder_path });
+  },
+  mounted() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.stack_shared_folder_path });
+  },
+  watch: {},
+  computed: {
+    stack_shared_folder_path() {
+      return this.shared_folder_path + "/stacks";
+    },
+    filtered_stacks() {
+      return this.all_stacks.filter((f) => {
+        if (this.author_path_filter)
+          if (!f.$admins || !f.$admins.includes(this.author_path_filter))
+            return false;
+
+        if (this.keywords_filter.length > 0) {
+          if (!f.keywords || !Array.isArray(f.keywords)) return false;
+          if (this.keywords_filter.some((kwf) => !f.keywords.includes(kwf)))
+            return false;
+        }
+        // if (this.filetype_filter !== "all")
+        //   if (!this.fileOrStackContainsType(f, this.filetype_filter))
+        //     return false;
+
+        if (this.search_str) {
+          if (
+            (f.title &&
+              f.title.toLowerCase().includes(this.search_str.toLowerCase())) ||
+            (f.description &&
+              f.description
+                .toLowerCase()
+                .includes(this.search_str.toLowerCase()))
+          )
+            return true;
+          else return false;
+        }
+
+        return true;
+      });
+    },
+    grouped_stacks() {
+      let order_props;
+      if (this.sort_order === "date_created")
+        order_props = [
+          "date_created_corrected",
+          "$date_created",
+          "$date_uploaded",
+        ];
+      else if (this.sort_order === "date_modified")
+        order_props = ["$date_modified"];
+      return this.groupFilesBy(
+        this.filtered_stacks,
+        order_props,
+        this.group_mode
+      );
+    },
+    available_keywords() {
+      const all_kw = this.filtered_stacks.reduce((acc, f) => {
+        if (f.keywords && Array.isArray(f.keywords)) {
+          f.keywords.map((kw) => {
+            const item = acc.find((_kw) => _kw.title === kw);
+            if (item) item.count += 1;
+            else acc.push({ title: kw, count: 1 });
+            // if (!acc[kw]) acc[kw] = 1;
+            // else acc[kw] += 1;
+          });
+        }
+        return acc;
+      }, []);
+      return all_kw.sort((a, b) => {
+        return b.count - a.count;
+      });
+    },
+  },
+  methods: {},
+};
+</script>
+<style lang="scss" scoped>
+._sharedFolder {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+
+  padding: calc(var(--spacing) / 1);
+}
+._stackPreview {
+  // width: 150px;
+}
+</style>

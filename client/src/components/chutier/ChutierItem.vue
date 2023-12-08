@@ -78,7 +78,7 @@
                 autofocus
                 required
                 v-model="text_title"
-                :placeholder="$t('title')"
+                :placeholder="$t('caption')"
                 @keydown.enter.prevent="
                   context === 'stack' ? $emit('unclicked') : ''
                 "
@@ -351,16 +351,16 @@ export default {
       //   $media_filename: this.file.$media_filename,
       // });
 
-      img.src = this.makeURLFromThumbs({
+      const img_src = this.makeURLFromThumbs({
         $thumbs: this.file.$thumbs,
         $type: this.file.$type,
         $path: this.getParent(this.file.$path),
         resolution: 180,
       });
-      debugger;
-
-      event.dataTransfer.setDragImage(img, 0, 0, 50, 50);
-
+      if (img_src) {
+        img.src = img_src;
+        event.dataTransfer.setDragImage(img, 0, 0, 50, 50);
+      }
       event.dataTransfer.setData("text/plain", JSON.stringify(this.file.$path));
     },
     dragEnd() {

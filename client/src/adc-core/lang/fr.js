@@ -871,7 +871,7 @@ export default {
 
   search: "Rechercher",
   search_text: "Rechercher du texte",
-  search_fields: "Dans les champs titre, description ou notes.",
+  search_fields: "Dans les champs titre et description des documents.",
 
   general_informations: "Informations sur l’instance",
 

@@ -7,9 +7,29 @@
   >
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
-      <TopNav />
-      <splitpanes class="_splitpanes">
-        <pane min-size="0" size="25">
+      <splitpanes class="_topBarIndication" watch-slots @resized="resizedPane">
+        <pane :min-size="min_toppane_width" :size="chutier_width">
+          <div class="_topBarIndication--item" @click="toggleChutier">
+            <b-icon icon="layout-sidebar-inset" />
+            CHUTIER
+          </div>
+        </pane>
+        <pane :min-size="min_toppane_width" :size="archive_width">
+          <div class="_topBarIndication--item" @click="toggleArchive">
+            <b-icon icon="grid3x3-gap" />
+            ARCHIVE
+          </div>
+        </pane>
+        <pane :min-size="min_toppane_width" :size="format_width">
+          <div class="_topBarIndication--item" @click="toggleFormat">
+            <b-icon icon="layout-sidebar-inset-reverse" />
+            FORMAT
+          </div>
+        </pane>
+      </splitpanes>
+
+      <splitpanes class="_splitpanes" watch-slots @resized="resizedPane">
+        <pane :min-size="min_toppane_width" :size="chutier_width">
           <div
             class="_myContent"
             :class="{
@@ -57,20 +77,23 @@
             </div>
           </div>
         </pane>
-        <pane min-size="5" size="25" v-if="!$root.is_mobile_view">
-          <div
-            class="_sharedContent"
-            :class="{
-              'has--chutier': show_chutier,
-            }"
-            :key="'sharedContent'"
-          >
-            <SharedFolder :shared_folder_path="shared_folder_path" />
+        <pane
+          :min-size="min_toppane_width"
+          :size="archive_width"
+          v-if="!$root.is_mobile_view"
+        >
+          <div class="_sharedContent" :key="'sharedContent'">
+            <!-- <SharedFolder :shared_folder_path="shared_folder_path" /> -->
+            <SharedFolder2 :shared_folder_path="shared_folder_path" />
           </div>
         </pane>
-        <!-- <pane min-size="5" size="10" v-if="!$root.is_mobile_view">
-          <strong>Formats</strong>
-        </pane> -->
+        <pane
+          :min-size="min_toppane_width"
+          :size="format_width"
+          v-if="!$root.is_mobile_view"
+        >
+          <div class="u-instructions">à venir…</div>
+        </pane>
       </splitpanes>
     </template>
   </div>
@@ -78,23 +101,25 @@
 <script>
 import { Splitpanes, Pane } from "splitpanes";
 import MyChutier from "@/components/MyChutier.vue";
-import SharedFolder from "@/components/SharedFolder.vue";
-import TopNav from "@/components/TopNav.vue";
+import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
 
 export default {
   props: {},
   components: {
-    TopNav,
     Splitpanes,
     Pane,
     MyChutier,
-    SharedFolder,
+    SharedFolder2,
   },
   data() {
     return {
       path: "folders",
       folders: undefined,
       shared_folder_path: undefined,
+
+      chutier_width: 33,
+      archive_width: 33,
+      format_width: 33,
 
       show_chutier:
         localStorage.getItem("show_chutier") === "false" ? false : true,
@@ -115,7 +140,11 @@ export default {
       localStorage.setItem("show_chutier", this.show_chutier);
     },
   },
-  computed: {},
+  computed: {
+    min_toppane_width() {
+      return (20 / this.$root.window.innerWidth) * 100;
+    },
+  },
   methods: {
     async loadFolder() {
       await this.$api.getFolders({
@@ -151,6 +180,29 @@ export default {
         // }, 5000);
         // this.is_creating_project = false;
       }
+    },
+    resizedPane(panes_sizes) {
+      panes_sizes.map((ps, index) => {
+        const pane_width = Number(ps.size.toFixed(1));
+        if (index === 0) this.chutier_width = pane_width;
+        if (index === 1) this.archive_width = pane_width;
+        if (index === 2) this.format_width = pane_width;
+      });
+    },
+    toggleChutier() {
+      if (this.chutier_width > 0) this.chutier_width = 0;
+      else this.chutier_width = 25;
+      this.archive_width = this.format_width = (100 - this.chutier_width) / 2;
+    },
+    toggleArchive() {
+      if (this.archive_width > 0) this.archive_width = 0;
+      else this.archive_width = 25;
+      this.chutier_width = this.format_width = (100 - this.archive_width) / 2;
+    },
+    toggleFormat() {
+      if (this.format_width > 0) this.format_width = 0;
+      else this.format_width = 25;
+      this.chutier_width = this.archive_width = (100 - this.format_width) / 2;
     },
   },
 };
@@ -192,22 +244,9 @@ export default {
 ._sharedContent {
   position: relative;
   z-index: 1;
-  height: 100%;
-  flex: 1 1 auto;
-  margin-left: 0;
-  width: calc(100%);
-
-  transition: margin-left 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &.has--chutier {
-    // width: calc(100% - var(--chutier-width));
-    // margin-left: var(--chutier-width);
-  }
-}
-
-._splitpanes {
   height: calc(100% - 20px);
 }
+
 ._chutierBtn {
   position: absolute;
   // height: 100%;
@@ -216,8 +255,6 @@ export default {
   width: var(--chutier-bar-width);
   height: var(--chutier-bar-width);
   z-index: 1;
-
-  background: transparent;
 
   transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -232,7 +269,6 @@ export default {
     // top: calc(var(--spacing) / 2);
     left: 0;
     font-size: 1.5rem;
-    background: transparent;
     padding: 0;
     display: flex;
     justify-content: center;
@@ -255,6 +291,35 @@ export default {
     > button {
       // transform: rotate(-540deg);
       transform: rotate(-180deg);
+    }
+  }
+}
+
+._splitpanes {
+  height: calc(100% - 20px);
+}
+
+._topBarIndication {
+  height: 20px;
+
+  ._topBarIndication--item {
+    height: 20px;
+    padding: 2px 4px;
+    line-height: 1;
+    font-weight: bold;
+    font-family: "IBM Plex Mono";
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
+    white-space: nowrap;
+
+    border-bottom: 1px solid #ccc;
+
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: #ccc;
     }
   }
 }

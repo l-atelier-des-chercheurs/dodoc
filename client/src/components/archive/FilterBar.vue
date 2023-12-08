@@ -68,7 +68,8 @@
         </div>
       </div>
 
-      <div class="_typeFilter">
+      <div class="_typeFilter" v-if="false">
+        <!-- // not simple to do with stacks in folders… -->
         <DLabel :str="$t('filter_by_type')" />
         <select
           :value="filetype_filter"
@@ -271,12 +272,6 @@ export default {
       }
       this.$emit("update:keywords_filter", _new_kw);
     },
-    // does not work with stacks, need to update
-    // quantityOfMediaWithType(type_of_media_key) {
-    //   return this.shared_files.filter(
-    //     (m) => type_of_media_key === "all" || m.$type === type_of_media_key
-    //   ).length;
-    // },
   },
 };
 </script>

@@ -46,7 +46,7 @@
             +
           </div>
         </template>
-        <LoaderSpinner v-if="is_adding_to_stack" />
+        <LoaderSpinner v-if="is_adding_to_stack" class="_loader" />
       </div>
       <div class="_stackTitle" v-if="stack && stack.title">
         {{ stack.title }}
@@ -145,8 +145,8 @@ export default {
       this.is_expecting_drag = false;
     },
     dragEnter(event) {
-      const file_path = event.dataTransfer?.types[0] === "text/plain";
-      if (file_path) this.is_draggedOn = true;
+      const drag_types = event.dataTransfer?.types[0] === "text/plain";
+      if (drag_types) this.is_draggedOn = true;
     },
     dragOver(event) {
       event.preventDefault();
@@ -361,5 +361,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+._loader {
+  background: black;
+  color: var(--c-rouge);
+  z-index: 1;
 }
 </style>
