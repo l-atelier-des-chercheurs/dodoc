@@ -88,21 +88,13 @@
             </div>
           </div>
         </pane>
-        <pane
-          :min-size="min_toppane_width"
-          :size="panes_width.archive"
-          v-if="!$root.is_mobile_view"
-        >
+        <pane :min-size="min_toppane_width" :size="panes_width.archive">
           <div class="_sharedContent" :key="'sharedContent'">
             <!-- <SharedFolder :shared_folder_path="shared_folder_path" /> -->
             <SharedFolder2 :shared_folder_path="shared_folder_path" />
           </div>
         </pane>
-        <pane
-          :min-size="min_toppane_width"
-          :size="panes_width.format"
-          v-if="!$root.is_mobile_view"
-        >
+        <pane :min-size="min_toppane_width" :size="panes_width.format">
           <div class="u-instructions">à venir…</div>
         </pane>
       </splitpanes>
@@ -148,6 +140,11 @@ export default {
   async mounted() {
     // todo add lang selector instead
     // this.$i18n.locale = "fr";
+    if (this.$root.is_mobile_view) {
+      this.panes_width.chutier = 100;
+      this.panes_width.archive = 0;
+      this.panes_width.format = 0;
+    }
 
     await this.loadFolder();
     // check if necerray to login or create account :
@@ -261,12 +258,6 @@ export default {
 <style lang="scss" scoped>
 ._lumaView {
   height: 100%;
-  --chutier-bar-width: 40px;
-  --chutier-width: 100%;
-
-  &.is--mobile_view {
-    --chutier-width: 100%;
-  }
 }
 ._panes {
   height: 100%;
@@ -276,21 +267,11 @@ export default {
   position: absolute;
   z-index: 2;
 
-  width: var(--chutier-width);
+  width: 100%;
   height: 100%;
   background: var(--chutier-bg);
   box-shadow: -4px 0px 5px inset rgba(0, 0, 0, 0.52);
   overflow: hidden;
-  transform: translate(
-    calc(-1 * (var(--chutier-width) - var(--chutier-bar-width))),
-    0
-  );
-
-  transition: transform 0.275s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &.is--shown {
-    transform: translate(0, 0);
-  }
 }
 ._sharedContent {
   position: relative;
@@ -303,8 +284,7 @@ export default {
   // height: 100%;
   top: 0;
   right: 0;
-  width: var(--chutier-bar-width);
-  height: var(--chutier-bar-width);
+
   z-index: 1;
 
   transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1);
