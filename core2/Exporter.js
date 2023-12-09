@@ -366,7 +366,7 @@ class Exporter {
 
       return path_to_temp_file;
     } catch (err) {
-      dev.error(err);
+      dev.error(`err for puppeteer ${err}`);
       clearTimeout(page_timeout);
       this._notifyEnded({
         event: "failed",
