@@ -208,12 +208,14 @@ class Exporter {
     });
   }
   _notifyProgress(progress) {
+    dev.logverbose("Task " + this.id + " progress = " + progress);
     notifier.emit("taskStatus", "task_" + this.id, {
       task_id: this.id,
       progress,
     });
   }
   _notifyEnded(message) {
+    dev.logverbose("Task " + this.id + " end");
     notifier.emit("taskEnded", "task_" + this.id, {
       task_id: this.id,
       message,
@@ -298,6 +300,9 @@ class Exporter {
         clearTimeout(page_timeout);
         dev.error(`page timeout for ${url}`);
         if (browser) await browser.close();
+        this._notifyEnded({
+          event: "failed",
+        });
         throw new Error(`page-timeout`);
       }, 30_000);
 
