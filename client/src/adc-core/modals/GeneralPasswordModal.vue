@@ -57,13 +57,7 @@ export default {
     };
   },
   created() {},
-  async mounted() {
-    if (this.$route.query?.general_password) {
-      this.password_to_submit = this.$route.query.general_password;
-      this.remember_on_this_device = false;
-      this.submitGeneralPassword();
-    }
-  },
+  async mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {},
