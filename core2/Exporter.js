@@ -344,8 +344,8 @@ class Exporter {
           })
           .then((data) => {
             this._notifyProgress(80);
-            if (win) win.close();
             clearTimeout(page_timeout);
+            if (win) win.close();
             return data;
           })
           .then(async (data) => {
@@ -364,8 +364,8 @@ class Exporter {
           .catch((error) => {
             dev.logverbose("Failed to print to pdf " + url);
             dev.error(error.message);
-            if (win) win.close();
             clearTimeout(page_timeout);
+            if (win) win.close();
             this._notifyEnded({
               event: "failed",
             });
