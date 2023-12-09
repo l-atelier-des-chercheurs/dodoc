@@ -292,6 +292,8 @@ class Exporter {
         height: document_size.height / reduction_factor,
       };
 
+      let browser;
+
       let page_timeout = setTimeout(async () => {
         clearTimeout(page_timeout);
         dev.error(`page timeout for ${url}`);
@@ -299,7 +301,7 @@ class Exporter {
         throw new Error(`page-timeout`);
       }, 30_000);
 
-      const browser = await puppeteer.launch({
+      browser = await puppeteer.launch({
         headless: true,
         ignoreHTTPSErrors: true,
         args: ["--no-sandbox", "--font-render-hinting=none"],
