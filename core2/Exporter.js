@@ -208,12 +208,14 @@ class Exporter {
     });
   }
   _notifyProgress(progress) {
+    dev.logverbose("Task " + this.id + " progress = " + progress);
     notifier.emit("taskStatus", "task_" + this.id, {
       task_id: this.id,
       progress,
     });
   }
   _notifyEnded(message) {
+    dev.logverbose("Task " + this.id + " end");
     notifier.emit("taskEnded", "task_" + this.id, {
       task_id: this.id,
       message,
@@ -316,6 +318,9 @@ class Exporter {
       let page_timeout = setTimeout(() => {
         clearTimeout(page_timeout);
         if (win) win.close();
+        this._notifyEnded({
+          event: "failed",
+        });
         return reject(new Error(`page-timeout`));
       }, 30_000);
 
@@ -381,7 +386,6 @@ class Exporter {
           dev.error("did-fail-load: ");
           // dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
           if (win) win.close();
-
           this._notifyEnded({
             event: "failed",
           });
