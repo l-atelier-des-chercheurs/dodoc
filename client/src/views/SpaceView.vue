@@ -190,6 +190,7 @@ export default {
 ._spaceView {
   // max-width: var(--max-column-width);
   margin: 0 auto;
+  padding-bottom: calc(var(--spacing) * 6);
 }
 
 ._topSpace {

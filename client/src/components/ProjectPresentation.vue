@@ -237,12 +237,11 @@ export default {
   &.is--list {
     background-color: #fff;
     border-radius: 4px;
-    border: 1px solid transparent;
 
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     &.is--own {
-      border-bottom: 1px solid var(--c-bleumarine);
+      border-bottom-color: var(--c-bleumarine);
     }
 
     ._title {

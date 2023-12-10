@@ -107,7 +107,7 @@ export default {
 }
 
 ._project {
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   // width: 100%;
   cursor: pointer;
 

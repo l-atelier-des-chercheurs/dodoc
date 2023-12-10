@@ -35,7 +35,7 @@
 
       <template v-else>
         <TopBar v-if="$route.name !== 'Publication'" />
-        <transition name="fade_fast" mode="out-in">
+        <transition name="pagechange">
           <router-view v-slot="{ Component }" :key="$route.path">
             <component :is="Component" />
           </router-view>
