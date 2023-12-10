@@ -64,7 +64,6 @@ export default {
   background-color: var(--c-bodybg);
 
   &.is--editable {
-    // background: var(--body-color);
     background: var(--color-publish);
   }
 }

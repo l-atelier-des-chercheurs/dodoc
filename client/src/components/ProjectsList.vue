@@ -92,7 +92,7 @@ export default {
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
   align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 
   &[data-context="tiny"] {
     grid-gap: calc(var(--spacing) / 2);

@@ -1,3 +1,4 @@
+x
 <template>
   <div
     class="_projectInfos"
@@ -67,18 +68,6 @@
         :can_edit="can_edit"
         :instructions="$t('project_title_instructions')"
       />
-
-      <!-- <template v-if="context === 'list'">
-        <button
-          v-if="project.description"
-          class="u-buttonLink _showDescription"
-          type="button"
-          @click="show_description = !show_description"
-          v-html="
-            !show_description ? $t('show_description') : $t('hide_description')
-          "
-        />
-      </template> -->
       <TitleField
         v-if="show_description"
         :field_name="'description'"
@@ -95,7 +84,7 @@
         :can_edit="can_edit"
       />
 
-      <div class="_allTags" v-if="context === 'full'">
+      <div class="_allTags">
         <TagsList
           v-if="project.keywords && project.keywords.length > 0"
           :tags="project.keywords"
@@ -202,7 +191,7 @@ export default {
     };
   },
   created() {
-    if (["list", "tiny"].includes(this.context)) this.show_description = false;
+    // if (["list", "tiny"].includes(this.context)) this.show_description = false;
   },
   mounted() {},
   beforeDestroy() {},
@@ -248,23 +237,34 @@ export default {
   &.is--list {
     background-color: #fff;
     border-radius: 4px;
+    border: 1px solid transparent;
 
-    transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
-      transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     &.is--own {
-      border: 1px solid var(--c-bleumarine);
+      border-bottom: 1px solid var(--c-bleumarine);
     }
 
     ._title {
+      h3 {
+        font-size: var(--sl-font-size-medium);
+      }
+    }
+    ._description {
       font-size: var(--sl-font-size-small);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
     }
   }
 
   &.is--list {
     display: block;
     ._projectInfos--infos {
-      padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
+      padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
     }
   }
 

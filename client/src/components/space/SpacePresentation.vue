@@ -257,7 +257,7 @@ export default {
 }
 ._subtitle {
   color: var(--c-gris_fonce);
-  font-size: var(--sl-font-size-large);
+  font-size: var(--sl-font-size-medium);
   // font-weight: 400;
 }
 ._description {
