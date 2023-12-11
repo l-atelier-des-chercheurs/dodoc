@@ -157,6 +157,7 @@ module.exports = (function () {
       const predefined_fields = {
         $status: { type: "string" },
         $admins: { type: "any" },
+        $preview: { type: "string" },
         $contributors: { type: "any" },
         $authors: { type: "any" },
         $password: { type: "string" },
