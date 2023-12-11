@@ -187,7 +187,6 @@ export default {
       response: null,
 
       show_meta: true,
-      show_description: true,
     };
   },
   created() {},
