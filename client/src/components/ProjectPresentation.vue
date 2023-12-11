@@ -84,7 +84,7 @@ x
         :can_edit="can_edit"
       />
 
-      <div class="_allTags">
+      <div class="_allTags" v-if="!['tiny'].includes(context)">
         <TagsList
           v-if="project.keywords && project.keywords.length > 0"
           :tags="project.keywords"
