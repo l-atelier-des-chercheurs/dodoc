@@ -68,6 +68,7 @@ export default {
 ._allAuthors {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: calc(var(--spacing) / 1);
 }
 ._title {
   margin-top: calc(var(--spacing) * 2);

@@ -6,7 +6,7 @@
     :to="author_url"
     class="_author"
     :class="{
-      'u-card2': component_tag === 'button',
+      'u-card2': component_tag === 'button' || component_tag === 'link',
     }"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
@@ -146,6 +146,13 @@ export default {
     padding: 0;
     box-shadow: none;
     border: none;
+
+    &:where(a) {
+      &:hover,
+      &:focus-visible {
+        opacity: 0.8;
+      }
+    }
   }
 
   ._cover {
@@ -157,6 +164,7 @@ export default {
   }
   &[data-imageonly] ._cover {
     border-radius: 50%;
+    outline: 2px solid white;
   }
   &[data-imageonly][data-isself] ._cover {
     outline-color: var(--c-bleumarine);

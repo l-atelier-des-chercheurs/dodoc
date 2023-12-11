@@ -178,8 +178,6 @@ export default {
   import_instructions: "Importer depuis un autre appareil",
   show_meta: "Afficher les métadonnées",
   hide_meta: "Masquer les métadonnées",
-  show_description: "Afficher la description",
-  hide_description: "Masquer la description",
   recover_password: "Récupérer le mot de passe",
   please_contact_to_recover:
     "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe",

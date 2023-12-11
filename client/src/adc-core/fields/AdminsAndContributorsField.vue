@@ -105,11 +105,10 @@ export default {
   }
 }
 .u-listOfAvatars {
-  display: flex;
   flex-flow: row nowrap;
   padding: 0;
-  overflow: auto;
   gap: 0;
+  overflow: auto;
 
   @include scrollbar(8px, 5px, 6px);
 }

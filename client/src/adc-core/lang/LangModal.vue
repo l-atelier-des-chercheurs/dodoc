@@ -54,7 +54,7 @@
         </div>
 
         <div class="">
-          {{ $t("to_translate:") }} {{ missing_translations.length }}
+          <b> {{ $t("to_translate:") }} {{ missing_translations.length }} </b>
         </div>
         <div class="">
           <span class="u-switch u-switch-xs">
@@ -261,7 +261,7 @@ export default {
   border: 2px solid var(--c-gris);
   background: var(--c-gris_clair);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) auto;
 
   > * {
     margin-bottom: calc(var(--spacing) / 1);
@@ -271,6 +271,10 @@ export default {
 ._translated {
   max-height: 40vh;
   border: 1px solid black;
+  padding: calc(var(--spacing) / 4);
+  background: var(--c-gris_clair);
+  border-radius: 4px;
+  margin: calc(var(--spacing) / 2) 0;
 
   > pre {
     margin: 0;
