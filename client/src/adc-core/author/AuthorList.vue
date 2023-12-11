@@ -66,32 +66,6 @@
           <b-icon icon="person-video2" />
           {{ $t("show_all_contributors") }}
         </router-link>
-        <!-- <DetailsPane
-          v-else
-          :header="$t('list_of_contributors')"
-          :icon="'person-video2'"
-          :has_items="authors.length"
-        >
-          <div class="_listOfAuthors">
-            <template v-for="author in authors">
-              <AuthorTag
-                v-if="!connected_as"
-                :key="author.$path"
-                :path="author.$path"
-                :links_to_author_page="true"
-                @select="suggestLogin(author.$path)"
-                @navToPage="$emit('close')"
-              />
-              <AuthorTag
-                v-else
-                :key="author.$path"
-                :path="author.$path"
-                :links_to_author_page="true"
-                @navToPage="$emit('close')"
-              />
-            </template>
-          </div>
-        </DetailsPane> -->
       </template>
     </div>
   </BaseModal2>
@@ -163,11 +137,4 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-._listOfAuthors {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 4);
-  margin: calc(var(--spacing) / 4) 0;
-}
-</style>
+<style lang="scss" scoped></style>

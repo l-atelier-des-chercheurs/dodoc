@@ -171,6 +171,7 @@ Default values are:
 - $admins           (Array, editable)                     list of admins paths
 - $contributors     (Array, editable)                     list of contributors paths
 - $cover            (Object, editable)                    if a meta_cover.jpeg is present in the root of the folder
+- $preview          (String, editable)                    if set, search for a meta filename in this folder and read it when reading folder (useful for advanced cover of this folder)
 - $date_created     (Date)                                when the folder was created
 - $date_modified    (Date)                                when the folder was last edited
 - $files            (Array)                               list of all the files in this folder (see Files below)

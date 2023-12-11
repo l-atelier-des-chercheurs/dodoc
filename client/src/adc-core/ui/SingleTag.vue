@@ -63,8 +63,10 @@ export default {
 <style lang="scss" scoped>
 ._tag {
   // border-radius: 1em;
+  font-weight: 400;
+  font-size: var(--sl-font-size-small);
   text-transform: none;
-  padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 6) calc(var(--spacing) / 3);
 
   &.is--inactive {
     cursor: default;

@@ -226,7 +226,7 @@ export default {
   // top: 60px;
   width: 100%;
 
-  background: var(--hero-bg, var(--c-gris_clair));
+  background: var(--hero-bg, transparent);
 
   ._homeCover {
     background: white;
@@ -241,7 +241,7 @@ export default {
   position: relative;
   width: 100%;
   margin: 0 auto;
-  border-bottom: 2px solid var(--c-gris_clair);
+  // border-bottom: 2px solid var(--c-gris_clair);
 
   display: flex;
   flex-flow: row wrap;
@@ -264,7 +264,7 @@ export default {
     border-radius: var(--panel-radius);
     box-shadow: var(--panel-shadows);
     padding: calc(var(--spacing) / 1);
-    margin: calc(var(--spacing) / 1);
+    margin: calc(var(--spacing) * 4) calc(var(--spacing) / 1);
 
     background: var(--text-bg, white);
   }
@@ -297,7 +297,7 @@ export default {
   text-align: center;
   padding: calc(var(--spacing) * 2) 0 calc(var(--spacing) * 3);
   font-size: var(--sl-font-size-x-small);
-  background: white;
+  // background: white;
 }
 ._bottomFooter--cont {
   max-width: 65ch;
@@ -353,7 +353,7 @@ export default {
 
 ._bottomCont {
   position: relative;
-  background: white;
+  // background: white;
   z-index: 1;
   flex: 1;
   padding-top: calc(var(--spacing) * 1);

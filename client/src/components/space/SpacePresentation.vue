@@ -207,7 +207,7 @@ export default {
   width: 100%;
   margin: 0 auto;
   padding: calc(var(--spacing) / 4);
-  border-radius: 7px;
+  border-radius: 6px;
 
   // overflow: hidden;
   // border-radius: var(--panel-radius);
@@ -257,7 +257,7 @@ export default {
 }
 ._subtitle {
   color: var(--c-gris_fonce);
-  font-size: var(--sl-font-size-large);
+  font-size: var(--sl-font-size-medium);
   // font-weight: 400;
 }
 ._description {
