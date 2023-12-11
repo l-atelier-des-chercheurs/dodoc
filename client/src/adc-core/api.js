@@ -183,8 +183,11 @@ export default function () {
           err;
         }
 
-        const general_password = localStorage.getItem("general_password");
-        if (general_password) auth.general_password = general_password;
+        const search_params = new URLSearchParams(location.href);
+        if (search_params && search_params.has("general_password"))
+          auth.general_password = search_params.get("general_password");
+        else if (localStorage.getItem("general_password"))
+          auth.general_password = localStorage.getItem("general_password");
 
         if (Object.keys(auth).length === 0) return;
 

@@ -145,7 +145,7 @@ module.exports = dev = (function () {
   }
   function error() {
     const message =
-      `~ ` +
+      `! ` +
       _createLogMessage({
         fct: logfunction,
         args: arguments,

@@ -208,12 +208,14 @@ class Exporter {
     });
   }
   _notifyProgress(progress) {
+    dev.logverbose("Task " + this.id + " progress = " + progress);
     notifier.emit("taskStatus", "task_" + this.id, {
       task_id: this.id,
       progress,
     });
   }
   _notifyEnded(message) {
+    dev.logverbose("Task " + this.id + " end");
     notifier.emit("taskEnded", "task_" + this.id, {
       task_id: this.id,
       message,
@@ -292,14 +294,19 @@ class Exporter {
         height: document_size.height / reduction_factor,
       };
 
+      let browser;
+
       let page_timeout = setTimeout(async () => {
         clearTimeout(page_timeout);
         dev.error(`page timeout for ${url}`);
         if (browser) await browser.close();
+        this._notifyEnded({
+          event: "failed",
+        });
         throw new Error(`page-timeout`);
       }, 30_000);
 
-      const browser = await puppeteer.launch({
+      browser = await puppeteer.launch({
         headless: true,
         ignoreHTTPSErrors: true,
         args: ["--no-sandbox", "--font-render-hinting=none"],
@@ -359,7 +366,8 @@ class Exporter {
 
       return path_to_temp_file;
     } catch (err) {
-      dev.error(err);
+      dev.error(`err for puppeteer ${err}`);
+      clearTimeout(page_timeout);
       this._notifyEnded({
         event: "failed",
       });
