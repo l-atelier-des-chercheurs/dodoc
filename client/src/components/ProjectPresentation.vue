@@ -69,7 +69,7 @@ x
         :instructions="$t('project_title_instructions')"
       />
       <TitleField
-        v-if="show_description"
+        v-if="context !== 'tiny'"
         :field_name="'description'"
         class="_description"
         :label="
@@ -190,9 +190,7 @@ export default {
       show_description: true,
     };
   },
-  created() {
-    // if (["list", "tiny"].includes(this.context)) this.show_description = false;
-  },
+  created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {
