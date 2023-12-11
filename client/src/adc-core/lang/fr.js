@@ -892,6 +892,7 @@ export default {
   pick_on_map: "Indiquer sur la carte",
   current_position: "Position actuelle",
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
+  help_contact: "aide/contact",
 
   translate: "Traduire",
   show_missing_translations: "Afficher les traductions manquantes",

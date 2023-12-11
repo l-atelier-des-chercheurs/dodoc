@@ -49,5 +49,6 @@ export default {
   top: 0;
   right: 0;
   padding: 4px;
+  z-index: 2;
 }
 </style>

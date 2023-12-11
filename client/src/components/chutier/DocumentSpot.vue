@@ -4,7 +4,7 @@
       class="_documentSpot"
       :class="{
         'is--draggedOn': is_draggedOn,
-        'has--content': stack_files.length > 0,
+        'has--content': stack_path,
         'is--expectingDrag': is_expecting_drag,
         'is--expectingClick': selected_items && selected_items.length > 0,
       }"
@@ -18,15 +18,17 @@
         <template v-if="!stack">+</template>
         <template v-else>
           <MediaContent
-            v-if="stack_files_in_order && stack_files_in_order.at(0)"
+            v-if="stack.$preview"
+            :file="stack.$preview"
             class="_mediaPreview"
-            context="preview"
-            :file="stack_files_in_order.at(0)"
           />
+          <div v-else class="_mediaPreview">
+            {{ $t("no_preview_to_show") }}
+          </div>
 
           <transition name="pagechange" mode="out-in">
-            <div class="_count" :key="stack_files_in_order.length">
-              {{ stack_files_in_order.length }}
+            <div class="_count" :key="stack.stack_files_metas.length">
+              {{ stack.stack_files_metas.length }}
             </div>
           </transition>
         </template>
@@ -37,14 +39,7 @@
           "
         >
           <div class="anim_backgroundPosition" />
-          <div
-            class="_addTo"
-            v-if="
-              !stack ||
-              !stack_files_in_order ||
-              stack_files_in_order.length === 0
-            "
-          >
+          <div class="_addTo" v-if="!stack">
             <!-- <b-icon icon="file-earmark-plus" /> -->
             +
           </div>
@@ -66,9 +61,7 @@
       <MediaStack
         v-if="show_mediastack_modal"
         class="_mediaStack"
-        :stack="stack"
-        :files="stack_files_in_order"
-        @removeMediaFromStack="removeMediaFromStack"
+        :stack_path="stack.$path"
         @close="show_mediastack_modal = false"
       />
     </transition>
@@ -82,14 +75,13 @@ export default {
     index: Number,
     author_stacks_path: String,
     selected_items: Array,
-    stack_path: String,
+    stack: Object,
   },
   components: {
     MediaStack,
   },
   data() {
     return {
-      stack: undefined,
       is_expecting_drag: false,
       is_draggedOn: false,
       show_mediastack_modal: false,
@@ -98,48 +90,15 @@ export default {
   },
   created() {},
   async mounted() {
-    if (this.stack_path) {
-      this.stack = await this.$api.getFolder({
-        path: this.stack_path,
-      });
-      this.$api.join({ room: this.stack_path });
-    }
-
     this.$eventHub.$on("chutierItem.startDrag", this.startDragItem);
     this.$eventHub.$on("chutierItem.endDrag", this.endDragItem);
   },
   beforeDestroy() {
     this.$eventHub.$off("chutierItem.startDrag", this.startDragItem);
     this.$eventHub.$off("chutierItem.endDrag", this.endDragItem);
-
-    if (this.stack_path) this.$api.leave({ room: this.stack_path });
   },
-  watch: {
-    stack_path: {
-      async handler() {},
-      immediate: true,
-      deep: true,
-    },
-  },
-  computed: {
-    stack_files() {
-      if (this.stack?.$files && this.stack.$files.length > 0)
-        return this.stack.$files;
-      return [];
-    },
-    stack_files_in_order() {
-      if (this.stack_files.length === 0 || !this.stack?.stack_files_metas)
-        return [];
-
-      return this.stack.stack_files_metas.reduce((acc, meta_filename) => {
-        const file = this.stack_files.find(
-          (f) => this.getFilename(f.$path) === meta_filename
-        );
-        if (file) acc.push(file);
-        return acc;
-      }, []);
-    },
-  },
+  watch: {},
+  computed: {},
   methods: {
     startDragItem() {
       this.is_expecting_drag = true;
@@ -180,23 +139,6 @@ export default {
       if (this.selected_items.length > 0) await this.addSelectedToStack();
       else this.openStack();
     },
-    async removeMediaFromStack(file_path) {
-      await this.$api.copyFile({
-        path: file_path,
-        path_to_destination_folder: this.connected_as.$path,
-        new_meta: {},
-      });
-      await this.$api.deleteItem({ path: file_path });
-
-      let stack_files_metas = this.stack?.stack_files_metas.slice();
-      stack_files_metas = stack_files_metas.filter((m) => m !== file_path);
-      await this.$api.updateMeta({
-        path: this.stack.$path,
-        new_meta: {
-          stack_files_metas,
-        },
-      });
-    },
     openStack() {
       if (this.stack) this.show_mediastack_modal = true;
     },
@@ -205,13 +147,18 @@ export default {
 
       let path_to_destination_folder;
       if (this.stack?.$path) {
-        path_to_destination_folder = this.stack.$path;
+        path_to_destination_folder = this.stack?.$path;
       } else {
-        const additional_meta = {
+        let additional_meta = {
           requested_slug: "stack",
           stack_spot: this.index,
           $admins: [this.connected_as.$path],
         };
+
+        if (file_paths.length > 0) {
+          const preview_meta_filename = this.getFilename(file_paths.at(0));
+          additional_meta.$preview = preview_meta_filename;
+        }
 
         const new_folder_slug = await this.$api
           .createFolder({
@@ -232,11 +179,12 @@ export default {
       await new Promise((r) => setTimeout(r, 100));
 
       let stack_files_metas = [];
+
       if (
-        this.stack?.stack_files_metas &&
-        Array.isArray(this.stack?.stack_files_metas)
+        this.stack.stack_files_metas &&
+        Array.isArray(this.stack.stack_files_metas)
       )
-        stack_files_metas = this.stack?.stack_files_metas.slice();
+        stack_files_metas = this.stack.stack_files_metas.slice();
 
       for (const file_path of file_paths) {
         const file_meta_name = await this.$api.copyFile({
@@ -256,7 +204,6 @@ export default {
       }
 
       await new Promise((r) => setTimeout(r, 300));
-
       this.is_adding_to_stack = false;
     },
   },

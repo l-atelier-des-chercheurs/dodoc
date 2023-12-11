@@ -1,17 +1,24 @@
 <template>
   <ChutierPane @close="$emit('close')">
-    <div class="_mediaFocus">
+    <LoaderSpinner v-if="!stack" class="_loader" />
+    <div v-else class="_mediaFocus">
+      <MediaContent
+        v-if="stack.$preview"
+        :file="stack.$preview"
+        context="preview"
+      />
+
       <div class="_fileStack">
         <transition-group tag="div" class="_itemsList" name="listComplete">
           <div
             class="u-sameRow"
-            v-for="(file, index) in files"
+            v-for="(file, index) in stack_files_in_order"
             :key="file.$path"
           >
             <div class="_removeFile">
               <sl-icon-button
                 name="dash-square-dotted"
-                @click="removeFromSelection(file.$path)"
+                @click="removeMediaFromStack(file.$path)"
               />
             </div>
 
@@ -21,7 +28,9 @@
               @change="changeMediaOrder(index, +$event.target.value - 1)"
             >
               <option
-                v-for="(a, i) in new Array(files.length).fill(null)"
+                v-for="(a, i) in new Array(stack_files_in_order.length).fill(
+                  null
+                )"
                 :key="i + 1"
                 v-text="i + 1"
               />
@@ -116,8 +125,7 @@ import ChutierItem from "@/components/chutier/ChutierItem.vue";
 
 export default {
   props: {
-    stack: Object,
-    files: Array,
+    stack_path: String,
   },
   components: {
     ChutierPane,
@@ -141,36 +149,63 @@ export default {
   },
   data() {
     return {
+      stack: undefined,
       title: "",
       description: "",
       keywords: [],
-      date_created_corrected: this.datetimeLocal(
-        this.stack.date_created_corrected ||
-          this.stack.$date_created ||
-          this.stack.$date_uploaded
-      ),
+      date_created_corrected: undefined,
     };
   },
-  created() {
-    const file_dates = this.files.map(
-      (f) => f.date_created_corrected || f.$date_created || f.$date_uploaded
-    );
-    file_dates.sort((a, b) => +new Date(b) - +new Date(a));
-    this.date_created_corrected = this.datetimeLocal(file_dates[0]);
+  async created() {
+    this.stack = await this.$api.getFolder({
+      path: this.stack_path,
+    });
+    this.$api.join({ room: this.stack_path });
 
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
+
+    this.date_created_corrected = this.datetimeLocal(
+      this.stack.date_created_corrected ||
+        this.stack.$date_created ||
+        this.stack.$date_uploaded
+    );
   },
-  mounted() {},
+  mounted() {
+    // const file_dates = this.stack_files_in_order.map(
+    //   (f) => f.date_created_corrected || f.$date_created || f.$date_uploaded
+    // );
+    // file_dates.sort((a, b) => +new Date(b) - +new Date(a));
+    // this.date_created_corrected = this.datetimeLocal(file_dates[0]);
+  },
   beforeDestroy() {
+    this.$api.leave({ room: this.stack_path });
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
   },
   watch: {},
   computed: {
+    stack_files() {
+      if (this.stack?.$files && this.stack.$files.length > 0)
+        return this.stack.$files;
+      return [];
+    },
+    stack_files_in_order() {
+      if (this.stack_files.length === 0 || !this.stack?.stack_files_metas)
+        return [];
+
+      return this.stack.stack_files_metas.reduce((acc, meta_filename) => {
+        const file = this.stack_files.find(
+          (f) => this.getFilename(f.$path) === meta_filename
+        );
+        if (file) acc.push(file);
+        return acc;
+      }, []);
+    },
+
     share_button_is_enabled() {
       return (
         this.stack.title?.length > 0 &&
         this.stack.keywords?.length > 0 &&
-        this.files.length > 0
+        this.stack_files_in_order.length > 0
       );
     },
     shared_folder_path() {
@@ -180,7 +215,9 @@ export default {
   },
   methods: {
     async changeMediaOrder(old_position, new_position) {
-      let meta_filenames = this.files.map((f) => this.getFilename(f.$path));
+      let meta_filenames = this.stack_files_in_order.map((f) =>
+        this.getFilename(f.$path)
+      );
 
       function array_move(arr, old_index, new_index) {
         if (new_index >= arr.length) {
@@ -193,16 +230,41 @@ export default {
         return arr; // for testing
       }
       array_move(meta_filenames, old_position, new_position);
+
+      let new_meta = {
+        stack_files_metas: meta_filenames,
+      };
+
+      if (
+        !this.stack.$preview?.$path ||
+        this.getFilename(this.stack.$preview?.$path) !== meta_filenames.at(0)
+      )
+        new_meta.$preview = meta_filenames.at(0);
+
+      await this.$api.updateMeta({
+        path: this.stack.$path,
+        new_meta,
+      });
+    },
+
+    async removeMediaFromStack(file_path) {
+      await this.$api.copyFile({
+        path: file_path,
+        path_to_destination_folder: this.connected_as.$path,
+        new_meta: {},
+      });
+      await this.$api.deleteItem({ path: file_path });
+
+      let stack_files_metas = this.stack?.stack_files_metas.slice();
+      stack_files_metas = stack_files_metas.filter((m) => m !== file_path);
       await this.$api.updateMeta({
         path: this.stack.$path,
         new_meta: {
-          stack_files_metas: meta_filenames,
+          stack_files_metas,
         },
       });
     },
-    removeFromSelection(path) {
-      this.$emit("removeMediaFromStack", path);
-    },
+
     async shareButtonClicked() {
       const path_to_destination_type = this.shared_folder_path + "/stacks";
 
@@ -213,8 +275,6 @@ export default {
       });
       await this.$api.updateCover({
         path: copy_folder_path,
-        new_cover_data: this.files.at(0).$path,
-        // onProgress,
       });
       await this.$api.deleteItem({ path: this.stack.$path });
       this.$emit("close");

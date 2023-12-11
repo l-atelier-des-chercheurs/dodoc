@@ -1,20 +1,20 @@
 <template>
   <div class="_documentsCreator">
-    <!-- <span>
-      {{ $t("publier") }}
-    </span> -->
-    <DocumentSpot
-      v-for="stack in all_stacks"
-      :key="stack.$path"
-      :selected_items="selected_items"
-      :author_stacks_path="author_stacks_path"
-      :stack_path="stack.$path"
-    />
-    <DocumentSpot
-      :author_stacks_path="author_stacks_path"
-      :key="'empty'"
-      :selected_items="selected_items"
-    />
+    <transition-group tag="div" name="projectsList">
+      <DocumentSpot
+        v-for="stack in all_stacks"
+        :key="stack.$path"
+        :selected_items="selected_items"
+        :author_stacks_path="author_stacks_path"
+        :stack_path="stack.$path"
+        :stack="stack"
+      />
+      <DocumentSpot
+        :author_stacks_path="author_stacks_path"
+        :key="'empty'"
+        :selected_items="selected_items"
+      />
+    </transition-group>
   </div>
 </template>
 <script>
@@ -31,6 +31,7 @@ export default {
   data() {
     return {
       is_loading: true,
+      fetch_stack_err: undefined,
       all_stacks: [],
     };
   },
@@ -57,7 +58,7 @@ export default {
           path: this.author_stacks_path,
         })
         .catch((err) => {
-          this.fetch_project_error = err.response;
+          this.fetch_stack_err = err.response;
           this.is_loading = false;
         });
     },

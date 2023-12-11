@@ -80,10 +80,9 @@
                     stroke="currentColor"
                   />
                 </svg>
-
                 <!-- <sl-icon
-                :name="show_chutier ? 'arrow-bar-left' : 'arrow-bar-right'"
-              /> -->
+                  :name="show_chutier ? 'arrow-bar-left' : 'arrow-bar-right'"
+                /> -->
               </button>
             </div>
           </div>
@@ -269,6 +268,7 @@ export default {
   z-index: 2;
 
   width: 100%;
+  min-width: 250px;
   height: 100%;
   background: var(--chutier-bg);
   box-shadow: -4px 0px 5px inset rgba(0, 0, 0, 0.52);
