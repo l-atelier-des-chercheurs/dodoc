@@ -83,7 +83,7 @@ module.exports = (function () {
           meta_filename: folder_meta.$preview,
         });
         if (preview_file) folder_meta.$preview = preview_file;
-        else folder_meta.$preview = "failed_to_find_media";
+        else delete folder_meta.$preview;
       }
 
       // remove $password from this object
@@ -323,6 +323,15 @@ module.exports = (function () {
         });
         if (cover) changed_meta.$cover = cover;
         else changed_meta.$cover = false;
+      }
+
+      if (changed_meta.$preview) {
+        let preview_file = await _getFolderPreview({
+          path_to_folder,
+          meta_filename: changed_meta.$preview,
+        });
+        if (preview_file) changed_meta.$preview = preview_file;
+        else delete changed_meta.$preview;
       }
 
       cache.delete({
