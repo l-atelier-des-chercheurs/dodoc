@@ -77,6 +77,15 @@ module.exports = (function () {
         if (cover) folder_meta.$cover = cover;
       }
 
+      if (folder_meta.$preview) {
+        let preview_file = await _getFolderPreview({
+          path_to_folder,
+          meta_filename: folder_meta.$preview,
+        });
+        if (preview_file) folder_meta.$preview = preview_file;
+        else folder_meta.$preview = "failed_to_find_media";
+      }
+
       // remove $password from this object
       if (folder_meta.$password && folder_meta.$password.length > 0)
         folder_meta.$password = "_active";
@@ -526,6 +535,19 @@ module.exports = (function () {
       });
 
     return thumb_meta;
+  }
+  async function _getFolderPreview({ path_to_folder, meta_filename }) {
+    dev.logfunction({ path_to_folder, meta_filename });
+
+    try {
+      const path_to_meta = path.join(path_to_folder, meta_filename);
+      return await file.getFile({
+        path_to_meta,
+      });
+    } catch (e) {
+      // failed to get preview media
+      return false;
+    }
   }
 
   async function _preventFolderOverride({ path_to_type, folder_slug }) {
