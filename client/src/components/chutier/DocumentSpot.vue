@@ -4,7 +4,7 @@
       class="_documentSpot"
       :class="{
         'is--draggedOn': is_draggedOn,
-        'has--content': stack_path,
+        'has--content': stack,
         'is--expectingDrag': is_expecting_drag,
         'is--expectingClick': selected_items && selected_items.length > 0,
       }"

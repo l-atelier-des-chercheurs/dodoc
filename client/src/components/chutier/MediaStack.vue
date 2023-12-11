@@ -2,11 +2,11 @@
   <ChutierPane @close="$emit('close')">
     <LoaderSpinner v-if="!stack" class="_loader" />
     <div v-else class="_mediaFocus">
-      <MediaContent
+      <!-- <MediaContent
         v-if="stack.$preview"
         :file="stack.$preview"
         context="preview"
-      />
+      /> -->
 
       <div class="_fileStack">
         <transition-group tag="div" class="_itemsList" name="listComplete">
