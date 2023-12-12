@@ -27,7 +27,11 @@
           </div>
 
           <transition name="pagechange" mode="out-in">
-            <div class="_count" :key="stack.stack_files_metas.length">
+            <div
+              class="_count"
+              v-if="stack && stack.stack_files_metas"
+              :key="stack.stack_files_metas.length"
+            >
               {{ stack.stack_files_metas.length }}
             </div>
           </transition>
@@ -155,11 +159,6 @@ export default {
           $admins: [this.connected_as.$path],
         };
 
-        if (file_paths.length > 0) {
-          const preview_meta_filename = this.getFilename(file_paths.at(0));
-          additional_meta.$preview = preview_meta_filename;
-        }
-
         const new_folder_slug = await this.$api
           .createFolder({
             path: this.author_stacks_path,
@@ -176,11 +175,12 @@ export default {
 
       // copy file to folder
 
-      await new Promise((r) => setTimeout(r, 100));
+      await new Promise((r) => setTimeout(r, 250));
 
       let stack_files_metas = [];
 
       if (
+        this.stack &&
         this.stack.stack_files_metas &&
         Array.isArray(this.stack.stack_files_metas)
       )
@@ -195,11 +195,14 @@ export default {
         await this.$api.deleteItem({ path: file_path });
 
         stack_files_metas.push(file_meta_name);
+        let new_meta = {
+          stack_files_metas,
+        };
+        if (stack_files_metas.length === 1) new_meta.$preview = file_meta_name;
+
         await this.$api.updateMeta({
           path: path_to_destination_folder,
-          new_meta: {
-            stack_files_metas,
-          },
+          new_meta,
         });
       }
 
