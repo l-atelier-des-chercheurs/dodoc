@@ -344,8 +344,9 @@ export default {
     height: 20px;
     padding: 2px 4px;
     line-height: 1;
-    font-weight: bold;
+    font-size: var(--sl-font-size-small);
     font-family: "IBM Plex Mono";
+
     display: flex;
     align-items: center;
     gap: calc(var(--spacing) / 2);
