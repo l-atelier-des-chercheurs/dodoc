@@ -5,7 +5,7 @@
         :is="$route.name !== 'Accueil' ? 'router-link' : 'span'"
         :to="`/`"
       >
-        <DodocLogo v-if="instance_logo === 'dodoc'" />
+        <DodocLogo class="_dodocLogo" v-if="instance_logo === 'dodoc'" />
         <img class="_customLogo" v-else :src="instance_logo" />
       </component>
     </div>
@@ -146,10 +146,11 @@ export default {
   }
 
   a {
+    ._dodocLogo,
     ._customLogo {
       &:hover,
       :focus-visible {
-        opacity: 0.7;
+        opacity: 0.9;
         border-color: var(--c-gris);
       }
     }
