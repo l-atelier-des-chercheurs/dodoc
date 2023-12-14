@@ -1,9 +1,7 @@
 <template>
   <div class="_loadSelectedProjects">
-    {{ fetch_err }}
-    <LoaderSpinner v-if="is_loading" />
+    <!-- {{ fetch_err }} -->
     <ProjectsList
-      v-else
       :projects="projects"
       :context="'tiny'"
       :display_original_space="true"
@@ -51,8 +49,8 @@ export default {
             this.fetch_err = err.response;
           });
         this.projects.push(project);
+        this.is_loading = false;
       }
-      this.is_loading = false;
     },
   },
 };
