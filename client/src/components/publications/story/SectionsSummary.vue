@@ -136,7 +136,7 @@ export default {
   // max-width: 60ch;
   width: 100%;
   margin: 0 auto;
-  margin-bottom: calc(var(--spacing) * 3);
+  margin-bottom: calc(var(--spacing) * 2);
   // padding: 0 calc(var(--spacing) * 1);
 
   // ::v-deep summary {
