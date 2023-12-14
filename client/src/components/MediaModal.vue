@@ -165,7 +165,11 @@
           </sl-menu>
         </sl-dropdown>
 
-        <DetailsPane :header="$t('informations')" :icon="'info-square'">
+        <DetailsPane
+          :header="$t('informations')"
+          :icon="'info-square'"
+          class="u-spacingBottom"
+        >
           <DateDisplay
             :title="$t('date_uploaded')"
             :date="file.$date_uploaded"
