@@ -205,22 +205,22 @@
             class="_activeModulePreview"
             v-if="
               active_module.module_type === 'mosaic' &&
-              firstMedia(active_module)
+              active_module_first_media
             "
-            :file="firstMedia(active_module)"
+            :file="active_module_first_media"
             :resolution="50"
             :context="'preview'"
           />
           <span
             v-else-if="
-              active_module.module_type === 'text' && firstMedia(active_module)
+              active_module.module_type === 'text' && active_module_first_media
             "
             class="u-textEllipsis u-textEllipsis_3 _textExtract"
           >
             <CollaborativeEditor2
               ref="textBloc"
-              :path="firstMedia(active_module).$path"
-              :content="firstMedia(active_module).$content"
+              :path="active_module_first_media.$path"
+              :content="active_module_first_media.$content"
               :can_edit="false"
             />
           </span>
@@ -427,8 +427,8 @@
           />
           <ToggleInput
             v-if="
-              firstMedia(active_module) &&
-              firstMedia(active_module).$type === 'image'
+              active_module_first_media &&
+              active_module_first_media.$type === 'image'
             "
             class="u-spacingBottom"
             :content="active_module.show_fs_button"
@@ -542,6 +542,9 @@ export default {
       return this.active_module.$path.substring(
         this.active_module.$path.lastIndexOf("/") + 1
       );
+    },
+    active_module_first_media() {
+      return this.firstMedia(this.active_module);
     },
     is_shape() {
       return (
