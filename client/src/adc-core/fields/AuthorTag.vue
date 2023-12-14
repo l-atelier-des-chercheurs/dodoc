@@ -164,10 +164,9 @@ export default {
   }
   &[data-imageonly] ._cover {
     border-radius: 50%;
-    outline: 2px solid white;
   }
   &[data-imageonly][data-isself] ._cover {
-    outline-color: var(--c-bleumarine);
+    border: 2px solid var(--c-bleumarine);
   }
 
   ._infos {
