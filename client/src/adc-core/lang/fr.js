@@ -584,6 +584,10 @@ export default {
   remove_original_after_copy: "L’original sera supprimé après la copie",
   keep_original_after_copy: "L’original sera conservé après la copie",
 
+  remove_author: "Supprimer ce compte",
+  remove_author_expl:
+    "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
+
   machines_and_materials: "Machines et matériaux",
   machines: "Machines",
   materials: "Matériaux",
