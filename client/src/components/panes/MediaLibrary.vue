@@ -292,7 +292,6 @@
         v-if="focused_media"
         :key="focused_media.$path"
         :file="focused_media"
-        :project_path="project.$path"
         :select_mode="select_mode"
         :position_in_list="focused_media_position_in_list"
         @remove="removeMedia(focused_media.$path)"

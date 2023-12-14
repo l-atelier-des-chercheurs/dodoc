@@ -221,7 +221,6 @@ import DuplicateMedia from "@/components/DuplicateMedia.vue";
 export default {
   props: {
     file: Object,
-    project_path: String,
     select_mode: String,
     position_in_list: String,
   },
