@@ -223,7 +223,7 @@
           {{ $t("create_stack") }} ({{ selected_items.length }})
         </button> -->
 
-        <div class="u-sameRow">
+        <div class="u-sameRow _dbleBtns">
           <button
             type="button"
             class="u-button u-button_black"
@@ -626,7 +626,8 @@ export default {
 
 ._selectionBar,
 ._removeMenu {
-  position: fixed;
+  position: absolute;
+  z-index: 10;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -642,7 +643,7 @@ export default {
   // background: black;
 
   padding: calc(var(--spacing) / 4);
-  padding-bottom: calc(var(--spacing) * 2);
+  // padding-bottom: calc(var(--spacing) * 2);
 }
 ._removeMenu {
   position: absolute;
@@ -666,10 +667,26 @@ export default {
     object-position: center;
   }
 }
+
 ._selectionBar--previews--preview {
   flex: 0 1 20px;
   aspect-ratio: 1/1;
   overflow: hidden;
+}
+
+._dbleBtns {
+  gap: calc(var(--spacing) / 10);
+  display: flex;
+  flex-flow: row wrap;
+  align-content: stretch;
+  align-items: stretch;
+  width: 100%;
+}
+._dbleBtns > * {
+  flex: 1 1 120px;
+  gap: calc(var(--spacing) / 4);
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 ._uploadFilesList {
