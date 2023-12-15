@@ -462,8 +462,7 @@ export default {
   // &.is--clicked
   {
     border-color: #666;
-    // background-color: var(--c-orange_clair);
-    // background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
     &:hover {
     }
   }
