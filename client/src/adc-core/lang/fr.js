@@ -9,6 +9,7 @@ export default {
   admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
   admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
   edit: "Modifier",
+  edit_source: "Modifier la source",
   stop_edit: "Arrêter les modifications",
   caption: "Légende",
   date_created: "Date de création",

@@ -156,7 +156,7 @@
             <sl-menu-item>
               <DuplicateMedia :path="file.$path" @close="$emit('close')" />
             </sl-menu-item>
-            <sl-menu-item>
+            <sl-menu-item v-if="$listeners.remove">
               <RemoveMenu
                 :remove_text="$t('remove_media')"
                 @remove="$emit('remove')"
@@ -282,6 +282,7 @@ export default {
   overflow: hidden;
   inset: 0;
   z-index: 10;
+  text-align: left;
   // padding: calc(var(--spacing) / 2);
 
   ._mediaModal--overlay {

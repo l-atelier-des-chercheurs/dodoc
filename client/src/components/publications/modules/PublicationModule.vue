@@ -347,14 +347,15 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
 
-      <div
-        class="_captionField"
-        v-if="
-          (publimodule.caption || edit_mode) && page_template !== 'page_by_page'
-        "
-      >
+      <div class="_captionField" v-if="publimodule.caption || edit_mode">
         <TitleField
-          :label="!publimodule.caption ? $t('add_caption') : undefined"
+          :label="
+            edit_mode &&
+            !publimodule.caption &&
+            page_template !== 'page_by_page'
+              ? $t('add_caption')
+              : undefined
+          "
           :field_name="'caption'"
           :content="publimodule.caption"
           :path="publimodule.$path"
@@ -369,7 +370,8 @@
             edit_mode &&
             first_media &&
             first_media.caption &&
-            !publimodule.caption
+            !publimodule.caption &&
+            page_template !== 'page_by_page'
           "
         >
           <div class="u-instructions">

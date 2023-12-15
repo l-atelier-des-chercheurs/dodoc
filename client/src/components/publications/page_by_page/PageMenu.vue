@@ -229,6 +229,17 @@
           </span>
 
           <div class="u-mediaOptions">
+            <div>
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="openMediaModal"
+              >
+                <b-icon icon="pencil" />
+                {{ $t("edit_source") }}
+              </button>
+            </div>
+
             <MoveToPage
               :pages="pages"
               :current_page_id="pages[active_page_number].id"
@@ -284,16 +295,16 @@
             />
           </div>
 
+          <div class="u-spacingBottom" />
+
           <div class="u-sameRow">
             <NumberInput
-              class="u-spacingBottom"
               :label="$t('position') + '→'"
               :value="active_module.x"
               :suffix="unit"
               @save="updateMediaPubliMeta({ x: $event })"
             />
             <NumberInput
-              class="u-spacingBottom"
               :label="$t('position') + '↓'"
               :value="active_module.y"
               :suffix="unit"
@@ -303,7 +314,6 @@
 
           <div class="u-sameRow">
             <NumberInput
-              class="u-spacingBottom"
               :label="$t('width') + '↔'"
               :value="active_module.width"
               :min="0"
@@ -311,7 +321,6 @@
               @save="updateMediaPubliMeta({ width: $event })"
             />
             <NumberInput
-              class="u-spacingBottom"
               :label="$t('height') + '↕'"
               :value="active_module.height"
               :min="0"
@@ -319,6 +328,9 @@
               @save="updateMediaPubliMeta({ height: $event })"
             />
           </div>
+
+          <div class="u-spacingBottom" />
+
           <RangeValueInput
             class="u-spacingBottom"
             :label="$t('angle')"
@@ -637,6 +649,9 @@ export default {
           const meta_filename = this.getFilename(path);
           this.$eventHub.$emit(`module.panTo.${meta_filename}`);
         });
+    },
+    openMediaModal() {
+      this.$eventHub.$emit("publication.openModal");
     },
     async updateMediaPubliMeta(val) {
       if (!this.active_module) return;
