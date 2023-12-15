@@ -347,3 +347,15 @@ Folder $contributors  |      |     x       |        x         |        |      | 
 ```
 
 So, for example for a space /bonjour, its $admins can edit all meta properties while a contributor can only import/edit/remove files, and create projects (of which they'll be $admins by default).
+
+---
+
+WIPS
+list of cookies
+
+- identification anonyme de la connexion
+- mot de passe général (pour rester connecter en cas de rechargement de l'onglet)
+- jeton d'accès d'identification à un compte (pour que l'utilisateur reste connecté à son compte en cas de rechargement de l'onglet)
+- page de capture : dernier micro, caméra et sortie audio utilisée
+- dernière famille de caractère utilisée dans un bloc de texte qui permet d'en changer
+- dernière langue utilisée, si

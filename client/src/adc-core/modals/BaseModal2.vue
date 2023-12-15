@@ -99,16 +99,13 @@ export default {
 
   ._baseModal--content {
     position: relative;
-    // padding: calc(var(--spacing) / 2);
     background: var(--panel-color);
-    border: var(--panel-borders);
-    // box-shadow: var(--panel-shadows);
-    // border-radius: var(--panel-radius);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
 
     margin: 0 auto;
     max-width: 480px;
     width: 100%;
-    // height: 100%;
     max-height: calc(100vh - calc(var(--spacing) * 2));
     overflow: auto;
   }

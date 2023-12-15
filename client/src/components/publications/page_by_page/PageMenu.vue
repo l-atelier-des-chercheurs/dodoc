@@ -205,22 +205,22 @@
             class="_activeModulePreview"
             v-if="
               active_module.module_type === 'mosaic' &&
-              firstMedia(active_module)
+              active_module_first_media
             "
-            :file="firstMedia(active_module)"
+            :file="active_module_first_media"
             :resolution="50"
             :context="'preview'"
           />
           <span
             v-else-if="
-              active_module.module_type === 'text' && firstMedia(active_module)
+              active_module.module_type === 'text' && active_module_first_media
             "
             class="u-textEllipsis u-textEllipsis_3 _textExtract"
           >
             <CollaborativeEditor2
               ref="textBloc"
-              :path="firstMedia(active_module).$path"
-              :content="firstMedia(active_module).$content"
+              :path="active_module_first_media.$path"
+              :content="active_module_first_media.$content"
               :can_edit="false"
             />
           </span>
@@ -229,6 +229,17 @@
           </span>
 
           <div class="u-mediaOptions">
+            <div>
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="openMediaModal"
+              >
+                <b-icon icon="pencil" />
+                {{ $t("edit_source") }}
+              </button>
+            </div>
+
             <MoveToPage
               :pages="pages"
               :current_page_id="pages[active_page_number].id"
@@ -284,16 +295,57 @@
             />
           </div>
 
+          <div class="u-spacingBottom" />
+
+          <template v-if="!is_shape">
+            <TitleField
+              :label="
+                !active_module.caption ? $t('add_caption') : $t('caption')
+              "
+              :field_name="'caption'"
+              :content="active_module.caption"
+              :path="active_module.$path"
+              :input_type="'markdown'"
+              :can_edit="true"
+            />
+
+            <div class="u-spacingBottom" />
+
+            <div
+              class=""
+              v-if="
+                active_module_first_media &&
+                active_module_first_media.caption &&
+                !active_module.caption
+              "
+            >
+              <div class="u-instructions">
+                {{ $t("copy_first_media_caption") }}
+              </div>
+              <button
+                type="button"
+                class="u-buttonLink _firstMediaCaption"
+                @click="
+                  updateMediaPubliMeta({
+                    caption: active_module_first_media.caption,
+                  })
+                "
+              >
+                {{ active_module_first_media.caption }}
+              </button>
+            </div>
+
+            <div class="u-spacingBottom" />
+          </template>
+
           <div class="u-sameRow">
             <NumberInput
-              class="u-spacingBottom"
               :label="$t('position') + '→'"
               :value="active_module.x"
               :suffix="unit"
               @save="updateMediaPubliMeta({ x: $event })"
             />
             <NumberInput
-              class="u-spacingBottom"
               :label="$t('position') + '↓'"
               :value="active_module.y"
               :suffix="unit"
@@ -303,7 +355,6 @@
 
           <div class="u-sameRow">
             <NumberInput
-              class="u-spacingBottom"
               :label="$t('width') + '↔'"
               :value="active_module.width"
               :min="0"
@@ -311,7 +362,6 @@
               @save="updateMediaPubliMeta({ width: $event })"
             />
             <NumberInput
-              class="u-spacingBottom"
               :label="$t('height') + '↕'"
               :value="active_module.height"
               :min="0"
@@ -319,6 +369,9 @@
               @save="updateMediaPubliMeta({ height: $event })"
             />
           </div>
+
+          <div class="u-spacingBottom" />
+
           <RangeValueInput
             class="u-spacingBottom"
             :label="$t('angle')"
@@ -427,8 +480,8 @@
           />
           <ToggleInput
             v-if="
-              firstMedia(active_module) &&
-              firstMedia(active_module).$type === 'image'
+              active_module_first_media &&
+              active_module_first_media.$type === 'image'
             "
             class="u-spacingBottom"
             :content="active_module.show_fs_button"
@@ -543,6 +596,9 @@ export default {
         this.active_module.$path.lastIndexOf("/") + 1
       );
     },
+    active_module_first_media() {
+      return this.firstMedia(this.active_module);
+    },
     is_shape() {
       return (
         this.active_module &&
@@ -634,6 +690,9 @@ export default {
           const meta_filename = this.getFilename(path);
           this.$eventHub.$emit(`module.panTo.${meta_filename}`);
         });
+    },
+    openMediaModal() {
+      this.$eventHub.$emit("publication.openModal");
     },
     async updateMediaPubliMeta(val) {
       if (!this.active_module) return;
@@ -745,5 +804,12 @@ export default {
   button {
     font-size: var(--sl-font-size-medium);
   }
+}
+
+._firstMediaCaption {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
 }
 </style>

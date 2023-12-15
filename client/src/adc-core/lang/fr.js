@@ -9,6 +9,7 @@ export default {
   admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
   admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
   edit: "Modifier",
+  edit_source: "Modifier la source",
   stop_edit: "Arrêter les modifications",
   caption: "Légende",
   date_created: "Date de création",
@@ -584,6 +585,10 @@ export default {
   remove_original_after_copy: "L’original sera supprimé après la copie",
   keep_original_after_copy: "L’original sera conservé après la copie",
 
+  remove_author: "Supprimer ce compte",
+  remove_author_expl:
+    "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
+
   machines_and_materials: "Machines et matériaux",
   machines: "Machines",
   materials: "Matériaux",
@@ -908,4 +913,17 @@ export default {
   "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
       <br />
       Elles contiendront du texte et des éléments que vous avez collecté.`,
+
+  no_coordinates: "Aucunes coordonnées disponibles",
+  position_on_map: "Position sur la carte",
+  place_on_map: "Positionner sur la carte",
+  show_on_map: "Afficher sur la carte",
+  placed_on_map: "Positionné sur la carte",
+  change_location: "Changer la position",
+  remove_pin: "Supprimer cette épingle",
+  cancel_position: "Annuler la position",
+  click_on_map_to_repick_location_for_media:
+    "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+  add_caption: "Ajouter une légende",
+  copy_first_media_caption: "Réutiliser la légende du premier média",
 };

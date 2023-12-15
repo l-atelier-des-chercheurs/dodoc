@@ -115,25 +115,6 @@
           </h3>
           <small class="fieldCaption">{{ file.$media_filename }}</small>
         </div>
-        <div class="u-mediaOptions u-spacingBottom">
-          <div>
-            <DownloadFile :file="file">
-              <sl-icon name="file-earmark-arrow-down" />
-              {{ $t("download") }}
-            </DownloadFile>
-          </div>
-          <div class="">
-            <DuplicateMedia :path="file.$path" @close="$emit('close')" />
-          </div>
-          <div v-if="optimization_possible">
-            <OptimizeMedia :media="file" @close="$emit('close')" />
-          </div>
-
-          <RemoveMenu
-            :remove_text="$t('remove_media')"
-            @remove="$emit('remove')"
-          />
-        </div>
 
         <div class="u-spacingBottom">
           <TitleField
@@ -157,7 +138,38 @@
             :instructions="$t('file_author_instructions')"
           />
         </div>
-        <div>
+
+        <sl-dropdown>
+          <sl-button slot="trigger" caret>
+            {{ $t("options") }}
+          </sl-button>
+          <sl-menu>
+            <sl-menu-item>
+              <DownloadFile :file="file">
+                <sl-icon name="file-earmark-arrow-down" />
+                {{ $t("download") }}
+              </DownloadFile>
+            </sl-menu-item>
+            <sl-menu-item v-if="optimization_possible">
+              <OptimizeMedia :media="file" @close="$emit('close')" />
+            </sl-menu-item>
+            <sl-menu-item>
+              <DuplicateMedia :path="file.$path" @close="$emit('close')" />
+            </sl-menu-item>
+            <sl-menu-item v-if="$listeners.remove">
+              <RemoveMenu
+                :remove_text="$t('remove_media')"
+                @remove="$emit('remove')"
+              />
+            </sl-menu-item>
+          </sl-menu>
+        </sl-dropdown>
+
+        <DetailsPane
+          :header="$t('informations')"
+          :icon="'info-square'"
+          class="u-spacingBottom"
+        >
           <DateDisplay
             :title="$t('date_uploaded')"
             :date="file.$date_uploaded"
@@ -192,13 +204,13 @@
               </i>
             </div>
           </div>
+        </DetailsPane>
 
-          <ShowOnMap
-            v-if="file.$infos && file.$infos.gps"
-            :title="$t('place')"
-            :gps="file.$infos.gps"
-          />
-        </div>
+        <ShowOnMap
+          v-if="file.$infos && file.$infos.gps"
+          :title="$t('place')"
+          :gps="file.$infos.gps"
+        />
       </div>
     </div>
   </div>
@@ -209,7 +221,6 @@ import DuplicateMedia from "@/components/DuplicateMedia.vue";
 export default {
   props: {
     file: Object,
-    project_path: String,
     select_mode: String,
     position_in_list: String,
   },
@@ -271,6 +282,7 @@ export default {
   overflow: hidden;
   inset: 0;
   z-index: 10;
+  text-align: left;
   // padding: calc(var(--spacing) / 2);
 
   ._mediaModal--overlay {

@@ -350,11 +350,19 @@
       <div
         class="_captionField"
         v-if="
-          (publimodule.caption || edit_mode) && page_template !== 'page_by_page'
+          (publimodule.caption || edit_mode) &&
+          module_type !== 'shape' &&
+          module_type !== 'text'
         "
       >
         <TitleField
-          :label="!publimodule.caption ? $t('add_caption') : undefined"
+          :label="
+            edit_mode &&
+            !publimodule.caption &&
+            page_template !== 'page_by_page'
+              ? $t('add_caption')
+              : undefined
+          "
           :field_name="'caption'"
           :content="publimodule.caption"
           :path="publimodule.$path"
@@ -369,7 +377,8 @@
             edit_mode &&
             first_media &&
             first_media.caption &&
-            !publimodule.caption
+            !publimodule.caption &&
+            page_template !== 'page_by_page'
           "
         >
           <div class="u-instructions">
@@ -435,34 +444,8 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {
-        no_coordinates: "Aucunes coordonnées disponibles",
-        position_on_map: "Position sur la carte",
-        place_on_map: "Positionner sur la carte",
-        show_on_map: "Afficher sur la carte",
-        placed_on_map: "Positionné sur la carte",
-        change_location: "Changer la position",
-        remove_pin: "Supprimer cette épingle",
-        cancel_position: "Annuler la position",
-        click_on_map_to_repick_location_for_media:
-          "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
-        add_caption: "Ajouter une légende",
-        copy_first_media_caption: "Réutiliser la légende du premier média",
-      },
-      en: {
-        no_coordinates: "No coordinates available",
-        position_on_map: "No position on the map",
-        place_on_map: "Position on map",
-        show_on_map: "Show on map",
-        placed_on_map: "Already positioned positioned on map",
-        change_location: "Change position",
-        remove_pin: "Remove this pin",
-        cancel_position: "Erase position",
-        click_on_map_to_repick_location_for_media:
-          "Click on map to select the new position on the map",
-        add_caption: "Add a caption",
-        copy_first_media_caption: "Reuse first media caption",
-      },
+      fr: {},
+      en: {},
     },
   },
   created() {},
@@ -954,6 +937,7 @@ export default {
 }
 
 ._captionField {
+  text-align: left;
   margin-top: calc(var(--spacing) / 4);
 
   display: flex;

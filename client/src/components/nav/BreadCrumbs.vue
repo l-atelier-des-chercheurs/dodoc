@@ -1,11 +1,20 @@
 <template>
   <nav aria-label="Fil d’ariane" class="_breadcrumb">
+    <button
+      type="button"
+      class="u-button u-button_icon _backButton"
+      v-if="$root.app_infos.is_electron"
+      @click="goBack"
+    >
+      <b-icon icon="chevron-left" />
+    </button>
+
     <div class="_logo">
       <component
         :is="$route.name !== 'Accueil' ? 'router-link' : 'span'"
         :to="`/`"
       >
-        <DodocLogo v-if="instance_logo === 'dodoc'" />
+        <DodocLogo class="_dodocLogo" v-if="instance_logo === 'dodoc'" />
         <img class="_customLogo" v-else :src="instance_logo" />
       </component>
     </div>
@@ -96,6 +105,9 @@ export default {
     setProject(project) {
       this.project = project;
     },
+    goBack() {
+      window.history.back();
+    },
   },
 };
 </script>
@@ -114,6 +126,10 @@ export default {
     overflow: hidden;
   }
 }
+
+._backButton {
+}
+
 ._name {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -146,10 +162,11 @@ export default {
   }
 
   a {
+    ._dodocLogo,
     ._customLogo {
       &:hover,
       :focus-visible {
-        opacity: 0.7;
+        opacity: 0.9;
         border-color: var(--c-gris);
       }
     }

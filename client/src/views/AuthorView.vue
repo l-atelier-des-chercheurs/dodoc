@@ -84,6 +84,7 @@ export default {
 <style lang="scss" scoped>
 ._authorView {
   padding: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 6);
 }
 
 ._card {

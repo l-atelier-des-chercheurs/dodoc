@@ -79,20 +79,29 @@
           />
         </div>
       </div>
-      <div class="u-mediaOptions" v-if="can_edit">
-        <TitleField
-          :field_name="'$password'"
-          :label="$t('password')"
-          :content="''"
-          :path="author.$path"
-          :required="true"
-          :minlength="3"
-          :maxlength="20"
-          :input_type="'password'"
-          :can_edit="can_edit"
-        />
-        <RemoveMenu :remove_text="$t('remove')" @remove="removeAuthor" />
-      </div>
+
+      <DetailsPane :header="$t('options')" :icon="'gear'" v-if="can_edit">
+        <div class="u-spacingBottom">
+          <TitleField
+            :field_name="'$password'"
+            :label="$t('password')"
+            :content="''"
+            :path="author.$path"
+            :required="true"
+            :minlength="3"
+            :maxlength="20"
+            :input_type="'password'"
+            :can_edit="can_edit"
+          />
+        </div>
+        <div class="">
+          <RemoveMenu
+            :remove_text="$t('remove_author')"
+            :remove_expl="$t('remove_author_expl')"
+            @remove="removeAuthor"
+          />
+        </div>
+      </DetailsPane>
     </component>
   </div>
 </template>
@@ -131,6 +140,7 @@ export default {
         path: this.author.$path,
       });
       if (this.is_self) await this.$api.logoutFromFolder();
+      this.$router.push("/@");
     },
   },
 };
