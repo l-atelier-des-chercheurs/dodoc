@@ -9,6 +9,7 @@ export default {
   page_not_found: "Cette page n’existe pas",
   admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
   edit: "Modifier",
+  edit_source: "Modifier la source",
   stop_edit: "Arrêter les modifications",
   caption: "Légende",
   date_created: "Date de création",
@@ -612,6 +613,10 @@ export default {
   remove_original_after_copy: "L’original sera supprimé après la copie",
   keep_original_after_copy: "L’original sera conservé après la copie",
 
+  remove_author: "Supprimer ce compte",
+  remove_author_expl:
+    "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
+
   machines_and_materials: "Machines et matériaux",
   machines: "Machines",
   materials: "Matériaux",
@@ -902,4 +907,17 @@ export default {
   publish_on_forum_to_add_to_contribute_to_code:
     "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Effacer toutes les traductions proposées",
+
+  no_coordinates: "Aucunes coordonnées disponibles",
+  position_on_map: "Position sur la carte",
+  place_on_map: "Positionner sur la carte",
+  show_on_map: "Afficher sur la carte",
+  placed_on_map: "Positionné sur la carte",
+  change_location: "Changer la position",
+  remove_pin: "Supprimer cette épingle",
+  cancel_position: "Annuler la position",
+  click_on_map_to_repick_location_for_media:
+    "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+  add_caption: "Ajouter une légende",
+  copy_first_media_caption: "Réutiliser la légende du premier média",
 };

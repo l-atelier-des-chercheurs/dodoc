@@ -16,6 +16,9 @@
       :title="remove_text"
       @close="show_confirm_delete = false"
     >
+      <div v-if="remove_expl">
+        {{ remove_expl }}
+      </div>
       <div class="u-sameRow" slot="footer">
         <button
           type="button"
@@ -40,6 +43,7 @@
 export default {
   props: {
     remove_text: String,
+    remove_expl: String,
     show_button_text: {
       type: Boolean,
       default: true,
