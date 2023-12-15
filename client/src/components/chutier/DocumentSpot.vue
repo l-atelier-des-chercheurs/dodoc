@@ -305,6 +305,7 @@ export default {
   width: 100%;
   height: 100%;
   color: black;
+  z-index: 11;
 }
 
 ._addTo {
