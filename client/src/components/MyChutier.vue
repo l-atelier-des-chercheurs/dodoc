@@ -642,7 +642,7 @@ export default {
   border-top: 2px solid black;
   // background: black;
 
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
   // padding-bottom: calc(var(--spacing) * 2);
 }
 ._removeMenu {
