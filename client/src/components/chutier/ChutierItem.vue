@@ -239,9 +239,13 @@ export default {
   created() {},
   mounted() {
     this.$eventHub.$on("chutier.item.edit", this.setEdit);
+    this.$eventHub.$on("chutierItem.startDrag", this.itemDragged);
+    this.$eventHub.$on("chutierItem.endDrag", this.itemStoppedDrag);
   },
   beforeDestroy() {
     this.$eventHub.$off("chutier.item.edit", this.setEdit);
+    this.$eventHub.$off("chutierItem.startDrag", this.itemDragged);
+    this.$eventHub.$off("chutierItem.endDrag", this.itemStoppedDrag);
   },
   watch: {
     "file.title"() {
@@ -367,6 +371,12 @@ export default {
       this.is_dragged = false;
       this.$eventHub.$emit("chutierItem.endDrag");
     },
+    itemDragged() {
+      if (this.is_selected) this.is_dragged = true;
+    },
+    itemStoppedDrag() {
+      this.is_dragged = false;
+    },
   },
 };
 </script>
@@ -435,7 +445,7 @@ export default {
   padding: calc(var(--spacing) / 4) 0;
   margin-bottom: -1px;
   overflow: hidden;
-  border-radius: 4px;
+  // border-radius: 4px;
   border: 1px dashed transparent;
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
   // border: 1px solid transparent;
