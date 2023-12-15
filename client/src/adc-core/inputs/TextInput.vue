@@ -8,10 +8,9 @@
         :type="field_input_type_prop"
         :name="label_str"
         :autocomplete="autocomplete"
-        class=""
         :size="size"
         :required="required"
-        :placeholder="'…'"
+        :placeholder="placeholder"
         :value="content"
         @input="$emit('update:content', $event.target.value)"
         @keydown.enter.prevent="$emit('onEnter')"
@@ -80,6 +79,10 @@ export default {
     content: {
       type: String,
       default: "",
+    },
+    placeholder: {
+      type: String,
+      default: "…",
     },
     instructions: {
       type: String,
