@@ -108,4 +108,17 @@ export default {
   stop_timelapse: "Stop timelapse",
   quality: "Quality",
   duration: "Duration",
+
+  no_coordinates: "No coordinates available",
+  position_on_map: "No position on the map",
+  place_on_map: "Position on map",
+  show_on_map: "Show on map",
+  placed_on_map: "Already positioned positioned on map",
+  change_location: "Change position",
+  remove_pin: "Remove this pin",
+  cancel_position: "Erase position",
+  click_on_map_to_repick_location_for_media:
+    "Click on map to select the new position on the map",
+  add_caption: "Add a caption",
+  copy_first_media_caption: "Reuse first media caption",
 };

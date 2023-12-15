@@ -913,4 +913,17 @@ export default {
   "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
       <br />
       Elles contiendront du texte et des éléments que vous avez collecté.`,
+
+  no_coordinates: "Aucunes coordonnées disponibles",
+  position_on_map: "Position sur la carte",
+  place_on_map: "Positionner sur la carte",
+  show_on_map: "Afficher sur la carte",
+  placed_on_map: "Positionné sur la carte",
+  change_location: "Changer la position",
+  remove_pin: "Supprimer cette épingle",
+  cancel_position: "Annuler la position",
+  click_on_map_to_repick_location_for_media:
+    "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+  add_caption: "Ajouter une légende",
+  copy_first_media_caption: "Réutiliser la légende du premier média",
 };

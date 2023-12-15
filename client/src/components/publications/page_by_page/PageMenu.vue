@@ -297,6 +297,47 @@
 
           <div class="u-spacingBottom" />
 
+          <template v-if="!is_shape">
+            <TitleField
+              :label="
+                !active_module.caption ? $t('add_caption') : $t('caption')
+              "
+              :field_name="'caption'"
+              :content="active_module.caption"
+              :path="active_module.$path"
+              :input_type="'markdown'"
+              :can_edit="true"
+            />
+
+            <div class="u-spacingBottom" />
+
+            <div
+              class=""
+              v-if="
+                active_module_first_media &&
+                active_module_first_media.caption &&
+                !active_module.caption
+              "
+            >
+              <div class="u-instructions">
+                {{ $t("copy_first_media_caption") }}
+              </div>
+              <button
+                type="button"
+                class="u-buttonLink _firstMediaCaption"
+                @click="
+                  updateMediaPubliMeta({
+                    caption: active_module_first_media.caption,
+                  })
+                "
+              >
+                {{ active_module_first_media.caption }}
+              </button>
+            </div>
+
+            <div class="u-spacingBottom" />
+          </template>
+
           <div class="u-sameRow">
             <NumberInput
               :label="$t('position') + '→'"
@@ -763,5 +804,12 @@ export default {
   button {
     font-size: var(--sl-font-size-medium);
   }
+}
+
+._firstMediaCaption {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
 }
 </style>

@@ -512,7 +512,8 @@ export default {
 
   ::v-deep ._content {
     height: 100%;
-    overflow: hidden;
+    // disabled to see caption
+    // overflow: hidden;
 
     ._mediasModule {
       height: 100%;
