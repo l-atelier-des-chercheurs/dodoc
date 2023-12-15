@@ -113,7 +113,7 @@ export default {
   position_on_map: "No position on the map",
   place_on_map: "Position on map",
   show_on_map: "Show on map",
-  placed_on_map: "Already positioned positioned on map",
+  placed_on_map: "Already positioned on map",
   change_location: "Change position",
   remove_pin: "Remove this pin",
   cancel_position: "Erase position",
