@@ -346,6 +346,7 @@ export default {
     },
     dragStart(event) {
       this.is_dragged = true;
+      if (!this.is_selected) this.$emit("toggleSelect");
       this.$eventHub.$emit("chutierItem.startDrag");
       event.dataTransfer.effectAllowed = "move";
 
@@ -463,7 +464,7 @@ export default {
   // }
 
   &.is--dragged {
-    transform: scale(0.95) rotate(1deg);
+    transform: scale(0.93) rotate(1deg);
     opacity: 0.6;
   }
 
