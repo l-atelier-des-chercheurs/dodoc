@@ -61,18 +61,19 @@
       :stack="stack"
       @close="show_stack = false"
     /> -->
-    <transition name="slideup">
-      <MediaStack
+    <transition name="slideup" mode="out-in">
+      <StackDisplay
         v-if="show_mediastack_modal"
-        class="_mediaStack"
+        class="_stackModal"
         :stack_path="stack.$path"
+        :context="'chutier'"
         @close="show_mediastack_modal = false"
       />
     </transition>
   </div>
 </template>
 <script>
-import MediaStack from "@/components/chutier/MediaStack.vue";
+import StackDisplay from "@/components/StackDisplay";
 
 export default {
   props: {
@@ -82,7 +83,7 @@ export default {
     stack: Object,
   },
   components: {
-    MediaStack,
+    StackDisplay,
   },
   data() {
     return {
@@ -323,5 +324,10 @@ export default {
   background: black;
   color: var(--c-rouge);
   z-index: 2;
+}
+
+._stackModal {
+  background: var(--c-gris_fonce);
+  color: white;
 }
 </style>

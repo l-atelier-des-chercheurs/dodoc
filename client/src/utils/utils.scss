@@ -3,10 +3,11 @@
 
   font-family: var(--sl-font-mono);
   font-size: var(--sl-font-size-small);
-  font-weight: 700;
-  font-style: italic;
-  text-transform: lowercase;
-
+  font-weight: 400;
+  // font-style: italic;
+  // text-transform: lowercase;
+  color: inherit;
+  opacity: 0.8;
   margin-bottom: calc(var(--spacing) / 4);
 
   sl-icon-button::part(base) {

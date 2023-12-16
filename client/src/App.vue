@@ -198,7 +198,7 @@ export default {
   --c-noir: hsl(0, 0%, 15%);
   --c-gris: hsl(195, 14%, 83%);
   --c-gris_clair: hsl(195, 14%, 97%);
-  --c-gris_fonce: hsl(195, 14%, 45%);
+  --c-gris_fonce: hsl(257, 3%, 47%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
@@ -469,6 +469,10 @@ img {
   position: relative;
   height: auto;
   // transition: none !important;
+}
+
+.splitpanes:not(.splitpanes--dragging) {
+  transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .splitpanes .splitpanes__splitter {

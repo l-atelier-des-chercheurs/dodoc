@@ -1,6 +1,17 @@
 <template>
   <div class="_sharedFolder">
-    <div class="">SharedFolder2</div>
+    <transition name="slideup" mode="out-in">
+      <StackDisplay
+        v-if="opened_stack"
+        class="_stackModal"
+        :key="opened_stack.$path"
+        :stack_path="opened_stack.$path"
+        :context="'archive'"
+        @prevMedia="navMedia(-1)"
+        @nextMedia="navMedia(+1)"
+        @close="closeStack"
+      />
+    </transition>
 
     <button
       type="button"
@@ -62,6 +73,7 @@
                 class="_stackPreview"
                 :key="stack.$path"
                 :stack="stack"
+                @openStack="openStack"
               />
               <!-- <SharedFolderItem
                 class="_file"
@@ -113,6 +125,7 @@
 import FilterBar from "@/components/archive/FilterBar.vue";
 import StackPreview from "@/components/archive/StackPreview.vue";
 import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
+import StackDisplay from "@/components/StackDisplay";
 
 export default {
   props: {
@@ -122,6 +135,7 @@ export default {
     FilterBar,
     StackPreview,
     AdminLumaSettings,
+    StackDisplay,
   },
   data() {
     return {
@@ -222,8 +236,25 @@ export default {
         return b.count - a.count;
       });
     },
+    opened_stack() {
+      if (!this.$route.query?.stack) return false;
+      return this.all_stacks.find(
+        (s) => this.getFilename(s.$path) === this.$route.query.stack
+      );
+    },
   },
-  methods: {},
+  methods: {
+    openStack(stack_slug) {
+      let query = Object.assign({}, this.$route.query) || {};
+      query.stack = stack_slug;
+      this.$router.push({ query });
+    },
+    closeStack() {
+      let query = Object.assign({}, this.$route.query) || {};
+      delete query.stack;
+      this.$router.push({ query });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -232,9 +263,18 @@ export default {
   height: 100%;
   overflow: auto;
 
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 }
 ._stackPreview {
   // width: 150px;
+}
+
+._label {
+  font-weight: 600;
+}
+
+._stackModal {
+  background: var(--c-gris_clair);
+  color: var(--c-noir);
 }
 </style>

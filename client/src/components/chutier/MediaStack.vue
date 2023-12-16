@@ -2,44 +2,6 @@
   <ChutierPane @close="$emit('close')">
     <LoaderSpinner v-if="!stack" class="_loader" />
     <div v-else class="_mediaFocus">
-      <!-- <MediaContent
-        v-if="stack.$preview"
-        :file="stack.$preview"
-        context="preview"
-      /> -->
-
-      <div class="_fileStack">
-        <transition-group tag="div" class="_itemsList" name="listComplete">
-          <div
-            class="u-sameRow"
-            v-for="(file, index) in stack_files_in_order"
-            :key="file.$path"
-          >
-            <div class="_removeFile">
-              <sl-icon-button
-                name="dash-square-dotted"
-                @click="removeMediaFromStack(file.$path)"
-              />
-            </div>
-
-            <select
-              class="is--dark _changeOrderSelect"
-              :value="index + 1"
-              @change="changeMediaOrder(index, +$event.target.value - 1)"
-            >
-              <option
-                v-for="(a, i) in new Array(stack_files_in_order.length).fill(
-                  null
-                )"
-                :key="i + 1"
-                v-text="i + 1"
-              />
-            </select>
-            <ChutierItem :file="file" :is_selected="false" :context="'stack'" />
-          </div>
-        </transition-group>
-      </div>
-
       <div class="_fields">
         <small>
           <input
@@ -88,6 +50,38 @@
           :input_type="'markdown'"
           :can_edit="true"
         />
+      </div>
+
+      <div class="_fileStack">
+        <transition-group tag="div" class="_itemsList" name="listComplete">
+          <div
+            class="u-sameRow"
+            v-for="(file, index) in stack_files_in_order"
+            :key="file.$path"
+          >
+            <div class="_removeFile">
+              <sl-icon-button
+                name="dash-square-dotted"
+                @click="removeMediaFromStack(file.$path)"
+              />
+            </div>
+
+            <select
+              class="is--dark _changeOrderSelect"
+              :value="index + 1"
+              @change="changeMediaOrder(index, +$event.target.value - 1)"
+            >
+              <option
+                v-for="(a, i) in new Array(stack_files_in_order.length).fill(
+                  null
+                )"
+                :key="i + 1"
+                v-text="i + 1"
+              />
+            </select>
+            <ChutierItem :file="file" :is_selected="false" :context="'stack'" />
+          </div>
+        </transition-group>
       </div>
 
       <div class="_shareBtn">

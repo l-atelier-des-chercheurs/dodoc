@@ -1,7 +1,15 @@
 <template>
   <div class="u-card2 _stackPreview">
-    <div class="_preview">
-      <img v-if="cover_thumb" :src="cover_thumb" />
+    <div class="_preview" @click="openStack">
+      <MediaContent
+        v-if="stack.$preview"
+        :file="stack.$preview"
+        class="_mediaPreview"
+      />
+      <small v-else v-text="'–'" />
+    </div>
+    <div class="">
+      {{ stack.title }}
     </div>
   </div>
 </template>
@@ -23,17 +31,13 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    cover_thumb() {
-      return this.makeRelativeURLFromThumbs({
-        $thumbs: this.stack.$cover,
-        $type: "image",
-        $path: this.stack.$path,
-        resolution: 640,
-      });
+  computed: {},
+  methods: {
+    openStack() {
+      const stack_slug = this.getFilename(this.stack.$path);
+      this.$emit("openStack", stack_slug);
     },
   },
-  methods: {},
 };
 </script>
 <style lang="scss" scoped>

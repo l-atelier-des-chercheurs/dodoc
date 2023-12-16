@@ -13,6 +13,8 @@ export default {
   stop_edit: "Arrêter les modifications",
   caption: "Légende",
   date_created: "Date de création",
+  created: "Création",
+  date_sent: "Envoi",
   date_modified: "Dernière modification",
   alphabetical: "Alphabétique",
   date_uploaded: "Date d’envoi",
