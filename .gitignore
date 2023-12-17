@@ -38,4 +38,5 @@ Temporary Items
 changelog.csv
 access.csv
 client/dist/report.html
+client/dist/*.hot-update.js
 tokens.json
