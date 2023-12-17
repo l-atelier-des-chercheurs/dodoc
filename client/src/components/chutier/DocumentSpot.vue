@@ -5,7 +5,7 @@
       :class="{
         'is--draggedOn': is_draggedOn,
         'has--content': stack,
-        'is--expectingDrag': is_expecting_drag,
+        'is--expectingDrag': mode === 'add',
         'is--expectingClick': selected_items && selected_items.length > 0,
       }"
       @dragenter="dragEnter"
@@ -30,24 +30,18 @@
             <div
               class="_count"
               v-if="stack && stack.stack_files_metas"
-              :key="stack.stack_files_metas.length"
+              :key="stack.stack_files_metas.length + '_' + mode"
             >
+              <template v-if="mode === 'add'">+</template>
               {{ stack.stack_files_metas.length }}
             </div>
           </transition>
         </template>
 
-        <template
-          v-if="
-            is_expecting_drag || (selected_items && selected_items.length > 0)
-          "
-        >
-          <div class="anim_backgroundPosition" />
-          <div class="_addTo" v-if="!stack">
-            <!-- <b-icon icon="file-earmark-plus" /> -->
-            +
-          </div>
-        </template>
+        <transition name="fade_fast">
+          <div class="anim_backgroundPosition" v-if="mode === 'add'" />
+        </transition>
+
         <LoaderSpinner v-if="is_adding_to_stack" class="_loader" />
       </div>
       <div class="_stackTitle" v-if="stack && stack.title">
@@ -80,6 +74,7 @@ export default {
     index: Number,
     author_stacks_path: String,
     selected_items: Array,
+    mode: String,
     stack: Object,
   },
   components: {
@@ -87,30 +82,17 @@ export default {
   },
   data() {
     return {
-      is_expecting_drag: false,
       is_draggedOn: false,
       show_mediastack_modal: false,
       is_adding_to_stack: false,
     };
   },
   created() {},
-  async mounted() {
-    this.$eventHub.$on("chutierItem.startDrag", this.startDragItem);
-    this.$eventHub.$on("chutierItem.endDrag", this.endDragItem);
-  },
-  beforeDestroy() {
-    this.$eventHub.$off("chutierItem.startDrag", this.startDragItem);
-    this.$eventHub.$off("chutierItem.endDrag", this.endDragItem);
-  },
+  async mounted() {},
+  beforeDestroy() {},
   watch: {},
   computed: {},
   methods: {
-    startDragItem() {
-      this.is_expecting_drag = true;
-    },
-    endDragItem() {
-      this.is_expecting_drag = false;
-    },
     dragEnter(event) {
       const drag_types = event.dataTransfer?.types[0] === "text/plain";
       if (drag_types) this.is_draggedOn = true;

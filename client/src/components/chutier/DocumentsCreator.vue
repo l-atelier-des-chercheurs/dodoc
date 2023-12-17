@@ -6,14 +6,19 @@
         :key="stack.$path"
         :selected_items="selected_items"
         :author_stacks_path="author_stacks_path"
+        :mode="spot_mode"
         :stack_path="stack.$path"
         :stack="stack"
       />
-      <DocumentSpot
-        :author_stacks_path="author_stacks_path"
-        :key="'empty'"
-        :selected_items="selected_items"
-      />
+      <div :key="'empty'">
+        <transition name="slideupFade">
+          <DocumentSpot
+            v-if="spot_mode === 'add'"
+            :author_stacks_path="author_stacks_path"
+            :selected_items="selected_items"
+          />
+        </transition>
+      </div>
     </transition-group>
   </div>
 </template>
@@ -33,6 +38,7 @@ export default {
       is_loading: true,
       fetch_stack_err: undefined,
       all_stacks: [],
+      is_expecting_drag: false,
     };
   },
   i18n: {
@@ -40,18 +46,37 @@ export default {
       fr: {},
     },
   },
-  created() {},
-  mounted() {
-    this.listStacks();
+  async created() {
+    await this.listStacks();
     this.$api.join({ room: this.author_stacks_path });
     this.is_loading = false;
+
+    this.$eventHub.$on("chutierItem.startDrag", this.startDragItem);
+    this.$eventHub.$on("chutierItem.endDrag", this.endDragItem);
   },
+  mounted() {},
   beforeDestroy() {
     this.$api.leave({ room: this.author_stacks_path });
+
+    this.$eventHub.$off("chutierItem.startDrag", this.startDragItem);
+    this.$eventHub.$off("chutierItem.endDrag", this.endDragItem);
   },
   watch: {},
-  computed: {},
+  computed: {
+    spot_mode() {
+      if (this.is_expecting_drag || this.selected_items?.length > 0)
+        return "add";
+      return "open";
+    },
+  },
   methods: {
+    startDragItem() {
+      this.is_expecting_drag = true;
+    },
+    endDragItem() {
+      this.is_expecting_drag = false;
+    },
+
     async listStacks() {
       this.all_stacks = await this.$api
         .getFolders({

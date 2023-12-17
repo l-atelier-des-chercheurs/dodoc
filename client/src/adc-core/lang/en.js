@@ -77,6 +77,7 @@ export default {
     "Complete or correct title and keywords to share this item",
   create_stack: "Create stack",
   remove_stack: "Remove stack and its content",
+  selected_items: "Selected medias:",
   show_only_my_content: "Show only my content",
   deselect_all: "Deselect all",
   remove_all: "Remove all",

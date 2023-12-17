@@ -204,7 +204,8 @@
         v-if="selected_items.length > 0"
         key="selection"
       >
-        <div class="_selectionBar--previews">
+        {{ $t("selected_items") }} {{ selected_items.length }}
+        <!-- <div class="_selectionBar--previews">
           <template v-for="file in selected_items">
             <MediaContent
               v-if="file.$path"
@@ -214,7 +215,7 @@
               :context="'preview'"
             />
           </template>
-        </div>
+        </div> -->
         <!-- <button
           type="button"
           class="u-button u-button_bleuvert"
@@ -638,7 +639,7 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   // box-shadow: 0 2px 6px 0 black;
-  background: black;
+  background: var(--c-noir);
   border-top: 2px solid black;
   // background: black;
 
