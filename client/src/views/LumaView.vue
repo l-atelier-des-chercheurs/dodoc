@@ -135,19 +135,23 @@ export default {
         localStorage.getItem("show_chutier") === "false" ? false : true,
     };
   },
-  created() {},
-  async mounted() {
+  async created() {
     // todo add lang selector instead
     // this.$i18n.locale = "fr";
     if (this.$root.is_mobile_view) {
       this.panes_width.chutier = 100;
       this.panes_width.archive = 0;
       this.panes_width.format = 0;
+    } else {
+      this.panes_width.chutier = 50;
+      this.panes_width.archive = 50;
+      this.panes_width.format = 0;
     }
 
     await this.loadFolder();
     // check if necerray to login or create account :
   },
+  async mounted() {},
   beforeDestroy() {},
   watch: {
     connected_as() {},

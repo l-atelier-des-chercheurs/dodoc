@@ -314,8 +314,9 @@ html,
 body {
   // background: white;
   // background-color: var(--c-bodybg);
-  background: linear-gradient(180deg, #fff, var(--c-bodybg));
+  // background: linear-gradient(180deg, #fff, var(--c-bodybg));
   // background: linear-gradient(180deg, var(--c-bodybg), var(--c-gris));
+  background: var(--c-bodybg);
   scroll-behavior: smooth;
 }
 
@@ -431,15 +432,6 @@ ol {
 ._boldBtn {
   font-weight: 700;
   font-variant: small-caps;
-}
-
-.itemGrid {
-  position: relative;
-  z-index: 2;
-
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 2px;
 }
 
 small {

@@ -90,7 +90,6 @@
                 />
               </select>
               <ChutierItem
-                v-if="context === 'chutier'"
                 :file="file"
                 :is_selected="false"
                 :context="'stack'"
@@ -100,13 +99,11 @@
         </div>
       </div>
 
-      <div class="">
-        <div class="_shareBtn">
-          <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
-          <button type="button" class="u-buttonLink" @click="$emit('close')">
-            {{ $t("save_as_draft") }}
-          </button>
-        </div>
+      <div class="_bottomBtns">
+        <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          {{ $t("save_as_draft") }}
+        </button>
       </div>
     </template>
   </div>
@@ -151,6 +148,19 @@ export default {
         this.stack.$date_created ||
         this.stack.$date_uploaded
     );
+
+    // check if $preview is set to first image
+    if (this.stack_files_in_order.length > 0) {
+      const first_file_path = this.stack_files_in_order[0].$path;
+      if (this.stack.$preview?.$path !== first_file_path) {
+        await this.$api.updateMeta({
+          path: this.stack.$path,
+          new_meta: {
+            $preview: this.getFilename(first_file_path),
+          },
+        });
+      }
+    }
   },
   mounted() {},
   beforeDestroy() {},
@@ -248,10 +258,21 @@ export default {
 <style lang="scss" scoped>
 ._stackDisplay {
   position: absolute;
-  overflow: hidden;
   inset: 0;
   z-index: 100;
-  padding: calc(var(--spacing) * 2);
+
+  display: flex;
+  flex-flow: column nowrap;
+
+  > ._allFields {
+    overflow: auto;
+    flex: 1 1 0;
+    padding: calc(var(--spacing) * 2);
+  }
+  > ._bottomBtns {
+    flex: 0 0 auto;
+    padding: calc(var(--spacing) * 2);
+  }
 }
 ._allFields {
   > * {
