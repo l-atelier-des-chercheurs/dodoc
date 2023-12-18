@@ -2,12 +2,11 @@
   <div class="_stackDisplay">
     <LoaderSpinner v-if="is_loading" />
     <template v-else>
-      <button
-        class="u-button u-button_icon _closeStack"
-        @click="$emit('close')"
-      >
-        <b-icon icon="x-lg" :label="$t('close')" />
-      </button>
+      <div class="_closeStack">
+        <button class="u-button u-button_icon" @click="$emit('close')">
+          <b-icon icon="x-lg" :label="$t('close')" />
+        </button>
+      </div>
 
       <StackCarousel
         v-if="context === 'archive'"
@@ -107,20 +106,36 @@
           </div>
         </transition-group>
 
-        <template v-if="can_edit">
+        <div v-if="can_edit" class="u-sameRow">
           <DownloadFolder :path="stack.$path" />
           <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
-        </template>
+        </div>
       </div>
 
       <div class="_bottomBtns" v-if="context === 'chutier'">
-        <button
-          type="button"
-          class="u-button u-button_red"
-          @click="$emit('close')"
-        >
-          {{ $t("publish") }}
-        </button>
+        <transition name="pagechange" mode="out-in">
+          <button
+            type="button"
+            :key="share_button_is_enabled"
+            class="u-button u-button_red _btn"
+            :disabled="!share_button_is_enabled"
+            @click="publishStack"
+          >
+            {{ $t("publish") }}&nbsp;
+            <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
+          </button>
+        </transition>
+        <div class="u-instructions">
+          <div v-if="!stack.title || stack.title.length === 0">
+            {{ $t("fill_title") }}
+          </div>
+          <div v-if="!stack.keywords || stack.keywords.length === 0">
+            {{ $t("fill_keywords") }}
+          </div>
+          <div v-if="stack_files_in_order.length === 0">
+            {{ $t("files_missing") }}
+          </div>
+        </div>
       </div>
     </template>
   </div>
@@ -152,7 +167,11 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        fill_title: "Veuillez remplir le champ Titre",
+        fill_keywords: "Veuillez remplir le champ Mots-clés",
+        files_missing: "Veuillez ajouter des médias à ce document",
+      },
     },
   },
   async created() {
@@ -205,6 +224,17 @@ export default {
         if (file) acc.push(file);
         return acc;
       }, []);
+    },
+    shared_folder_path() {
+      if (this.$sharedFolderPath) return this.$sharedFolderPath();
+      return false;
+    },
+    share_button_is_enabled() {
+      return (
+        this.stack.title?.length > 0 &&
+        this.stack.keywords?.length > 0 &&
+        this.stack_files_in_order.length > 0
+      );
     },
   },
   methods: {
@@ -271,6 +301,16 @@ export default {
         this.$emit("close");
       }
     },
+    async publishStack() {
+      const path_to_destination_type = this.shared_folder_path + "/stacks";
+      await this.$api.copyFolder({
+        path: this.stack.$path,
+        path_to_destination_type,
+        new_meta: {},
+      });
+      await this.$api.deleteItem({ path: this.stack.$path });
+      this.$emit("close");
+    },
   },
 };
 </script>
@@ -279,6 +319,7 @@ export default {
   position: absolute;
   inset: 0;
   z-index: 100;
+  overflow: auto;
 
   background: var(--sd-bg);
   color: var(--sd-textcolor);
@@ -286,24 +327,30 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
+  --carousel-height: 70vh;
+
   > ._allFields {
-    overflow: auto;
     flex: 1 1 0;
     padding: calc(var(--spacing) * 2);
+    background: var(--sd-bg);
   }
   > ._bottomBtns {
     flex: 0 0 auto;
-    padding: calc(var(--spacing) * 2);
   }
 }
 
 ._topCarousel {
-  height: 60vh;
+  position: sticky;
+  top: 0;
+
+  flex: 0 0 var(--carousel-height);
+  height: var(--carousel-height);
   width: 100%;
   background: white;
 }
 
-._allFields > * {
+._allFields {
+  position: relative;
   // padding-bottom: calc(var(--spacing) * 2);
 }
 
@@ -323,9 +370,17 @@ hr {
 ._closeStack {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
+  width: 100%;
   z-index: 2;
-  padding: calc(var(--spacing) / 1);
+  text-align: center;
+  pointer-events: none;
+
+  > button {
+    padding: calc(var(--spacing) / 2);
+    width: 50px;
+    pointer-events: auto;
+  }
 }
 
 ._fileStack {
@@ -336,5 +391,20 @@ hr {
 
 ._changeOrderSelect {
   flex: 0 0 50px;
+}
+
+._bottomBtns {
+  position: sticky;
+  bottom: 0;
+
+  text-align: center;
+  background: var(--c-noir);
+  padding: calc(var(--spacing) * 2);
+
+  ._btn {
+    width: 100%;
+    border-radius: 4px;
+    max-width: 320px;
+  }
 }
 </style>

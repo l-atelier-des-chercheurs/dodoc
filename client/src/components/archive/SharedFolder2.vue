@@ -182,8 +182,16 @@ export default {
     stack_shared_folder_path() {
       return this.shared_folder_path + "/stacks";
     },
+
+    sorted_stacks() {
+      return this.all_stacks
+        .slice()
+        .sort(
+          (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+        );
+    },
     filtered_stacks() {
-      return this.all_stacks.filter((f) => {
+      return this.sorted_stacks.filter((f) => {
         if (this.author_path_filter)
           if (!f.$admins || !f.$admins.includes(this.author_path_filter))
             return false;

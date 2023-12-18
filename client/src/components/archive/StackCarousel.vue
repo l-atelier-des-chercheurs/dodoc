@@ -80,6 +80,9 @@ export default {
   }
 }
 
+._list {
+  background: var(--c-gris_clair);
+}
 ._preview {
   width: 50px;
   height: 50px;
@@ -98,6 +101,7 @@ export default {
 
   &[data-iscurrent] {
     opacity: 0.5;
+    pointer-events: none;
   }
 
   ._mediaContent {

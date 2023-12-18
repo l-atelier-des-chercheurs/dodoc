@@ -646,9 +646,6 @@ export default {
 
   // box-shadow: 0 2px 6px 0 black;
   background: var(--c-noir);
-  border-top: 2px solid black;
-  // background: black;
-
   padding: calc(var(--spacing) / 2);
   // padding-bottom: calc(var(--spacing) * 2);
 }
