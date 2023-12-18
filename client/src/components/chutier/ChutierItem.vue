@@ -177,21 +177,25 @@
         </button>
       </div>
     </div>
-    <div
-      v-if="show_large"
-      class="_chutierRow--largePreview"
-      @click.self="file.$type !== 'text' ? (show_large = false) : ''"
-      :data-type="file.$type"
-    >
-      <MediaContent :file="file" :context="'full'" :resolution="1600" />
-      <button
-        type="button"
-        class="u-button u-button_round u-button_black _closeBtn"
-        @click="show_large = false"
-      >
-        <sl-icon name="x-lg" :label="$t('close')" />
-      </button>
-    </div>
+
+    <template v-if="show_large">
+      <portal to="destination">
+        <div
+          class="_chutierRow--largePreview"
+          @click.self="file.$type !== 'text' ? (show_large = false) : ''"
+          :data-type="file.$type"
+        >
+          <MediaContent :file="file" :context="'full'" :resolution="1600" />
+          <button
+            type="button"
+            class="u-button u-button_round u-button_black _closeBtn"
+            @click="show_large = false"
+          >
+            <sl-icon name="x-lg" :label="$t('close')" />
+          </button>
+        </div>
+      </portal>
+    </template>
     <div class="anim_backgroundPosition" v-if="is_selected && false" />
   </div>
 </template>
@@ -521,57 +525,6 @@ export default {
       }
     }
   }
-
-  ._chutierRow--largePreview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    overflow: auto;
-
-    // display: flex;
-    // place-content: center;
-    background: black;
-
-    &[data-type="text"] {
-      padding: calc(var(--spacing));
-    }
-
-    ::v-deep ._mediaContent {
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-
-      .u-floatingFsButton {
-        display: none;
-      }
-
-      .plyr__control,
-      ._mediaContent--pdfIframe {
-        pointer-events: auto;
-      }
-
-      ._mediaContent--image {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        object-position: center;
-      }
-
-      .plyr__video-wrapper {
-        pointer-events: none;
-      }
-    }
-
-    ._closeBtn {
-      position: absolute;
-      top: 0;
-      right: 0;
-      margin: calc(var(--spacing) / 2);
-    }
-  }
 }
 ._descriptionField {
   resize: vertical;
@@ -620,5 +573,62 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+}
+</style>
+<style lang="scss">
+._chutierRow--largePreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  overflow: auto;
+
+  // display: flex;
+  // place-content: center;
+  background: black;
+  color: white;
+
+  &[data-type="text"] {
+    padding: calc(var(--spacing));
+  }
+
+  ._mediaContent {
+    pointer-events: none;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .u-floatingFsButton {
+      display: none;
+    }
+
+    .plyr__control,
+    ._mediaContent--pdfIframe {
+      pointer-events: auto;
+    }
+
+    ._mediaContent--image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .plyr__video-wrapper {
+      pointer-events: none;
+    }
+  }
+
+  ._closeBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: calc(var(--spacing) / 2);
+  }
 }
 </style>

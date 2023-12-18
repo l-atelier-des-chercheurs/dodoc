@@ -1,12 +1,14 @@
 <template>
   <div class="_stackPreview">
-    <div
+    <button
+      type="button"
       class="_stackPreview--content"
       :class="{
         'is--selected': is_selected,
       }"
+      @click="openStack"
     >
-      <div class="_preview" @click="openStack">
+      <div class="_preview">
         <MediaContent
           v-if="stack.$preview"
           :file="stack.$preview"
@@ -17,7 +19,7 @@
       <div class="_title">
         {{ stack.title }}
       </div>
-    </div>
+    </button>
   </div>
 </template>
 <script>
@@ -54,20 +56,27 @@ export default {
   flex-flow: column nowrap;
   justify-content: flex-end;
   align-items: stretch;
-
-  font-size: var(--sl-font-size-x-small);
-
   padding: 0px;
 }
 
 ._stackPreview--content {
+  appearance: none;
+  padding: 0;
+  text-align: left;
+  font-size: var(--sl-font-size-x-small);
+
   position: relative;
   // box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   background: #fff;
   border: 2px solid var(--c-bodybg);
+  cursor: pointer;
 
   transform-origin: center calc(100% - 2em);
   transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+
+  > * {
+    pointer-events: none;
+  }
 
   &.is--selected {
     border-color: var(--c-rouge);
@@ -111,8 +120,8 @@ export default {
 }
 
 ._title {
-  height: 2em;
-  padding: calc(var(--spacing) / 6) calc(var(--spacing) / 2);
+  height: 1.5em;
+  padding: 0 calc(var(--spacing) / 4);
 
   text-overflow: ellipsis;
   white-space: nowrap;
