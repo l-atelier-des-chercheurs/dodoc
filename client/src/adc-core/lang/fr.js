@@ -108,6 +108,7 @@ export default {
   create_stack: "Créer une pile",
   deselect_all: "Déselectionner tout",
   selected_items: "Médias sélectionnés :",
+  selected_item: "Média sélectionné :",
   remove_all: "Supprimer tout",
   remove_select: "Supprimer la sélection",
 

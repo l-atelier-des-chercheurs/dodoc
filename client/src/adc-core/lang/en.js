@@ -78,6 +78,7 @@ export default {
   create_stack: "Create stack",
   remove_stack: "Remove stack and its content",
   selected_items: "Selected medias:",
+  selected_item: "Selected media:",
   show_only_my_content: "Show only my content",
   deselect_all: "Deselect all",
   remove_all: "Remove all",

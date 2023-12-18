@@ -321,13 +321,14 @@ export default {
 }
 
 ._loader {
-  background: black;
+  background: #424146;
   color: var(--c-rouge);
   z-index: 2;
 }
 
 ._stackModal {
-  background: var(--c-gris_fonce);
-  color: white;
+  --sd-separator: #424146;
+  --sd-textcolor: white;
+  --sd-bg: #77757c;
 }
 </style>

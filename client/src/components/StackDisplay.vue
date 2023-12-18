@@ -9,6 +9,8 @@
         <b-icon icon="x-lg" :label="$t('close')" />
       </button>
 
+      <div class="_topCarousel">PLOP</div>
+
       <div class="_allFields">
         <div class="_dateFields">
           <div class="">
@@ -32,6 +34,9 @@
             />
           </div>
         </div>
+
+        <hr />
+
         <div class="">
           <TitleField
             :label="$t('title')"
@@ -42,15 +47,21 @@
             :can_edit="can_edit"
           />
         </div>
+
+        <hr />
+
         <div class="">
           <KeywordsField
             :label="$t('keywords')"
             :field_name="'keywords'"
-            :content="stack.keywords"
+            :keywords="stack.keywords"
             :path="stack.$path"
             :can_edit="can_edit"
           />
         </div>
+
+        <hr />
+
         <div>
           <TitleField
             :label="$t('description')"
@@ -62,47 +73,48 @@
           />
         </div>
 
-        <div class="_fileStack">
-          <transition-group tag="div" class="_itemsList" name="listComplete">
-            <div
-              class="u-sameRow"
-              v-for="(file, index) in stack_files_in_order"
-              :key="file.$path"
-            >
-              <div class="_removeFile">
-                <sl-icon-button
-                  name="dash-square-dotted"
-                  @click="removeMediaFromStack(file.$path)"
-                />
-              </div>
-
-              <select
-                class="is--dark _changeOrderSelect"
-                :value="index + 1"
-                @change="changeMediaOrder(index, +$event.target.value - 1)"
-              >
-                <option
-                  v-for="(a, i) in new Array(stack_files_in_order.length).fill(
-                    null
-                  )"
-                  :key="i + 1"
-                  v-text="i + 1"
-                />
-              </select>
-              <ChutierItem
-                :file="file"
-                :is_selected="false"
-                :context="'stack'"
+        <transition-group tag="div" class="_fileStack" name="listComplete">
+          <div
+            class="u-sameRow"
+            v-for="(file, index) in stack_files_in_order"
+            :key="file.$path"
+          >
+            <div class="_removeFile">
+              <sl-icon-button
+                name="dash-square-dotted"
+                @click="removeMediaFromStack(file.$path)"
               />
             </div>
-          </transition-group>
-        </div>
+
+            <select
+              class="is--dark _changeOrderSelect"
+              :value="index + 1"
+              @change="changeMediaOrder(index, +$event.target.value - 1)"
+            >
+              <option
+                v-for="(a, i) in new Array(stack_files_in_order.length).fill(
+                  null
+                )"
+                :key="i + 1"
+                v-text="i + 1"
+              />
+            </select>
+            <ChutierItem :file="file" :is_selected="false" :context="'stack'" />
+          </div>
+        </transition-group>
+
+        <hr />
+
+        <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
       </div>
 
-      <div class="_bottomBtns">
-        <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
-          {{ $t("save_as_draft") }}
+      <div class="_bottomBtns" v-if="context === 'chutier'">
+        <button
+          type="button"
+          class="u-button u-button_red"
+          @click="$emit('close')"
+        >
+          {{ $t("publish") }}
         </button>
       </div>
     </template>
@@ -261,6 +273,9 @@ export default {
   inset: 0;
   z-index: 100;
 
+  background: var(--sd-bg);
+  color: var(--sd-textcolor);
+
   display: flex;
   flex-flow: column nowrap;
 
@@ -274,12 +289,13 @@ export default {
     padding: calc(var(--spacing) * 2);
   }
 }
-._allFields {
-  > * {
-    margin-bottom: calc(var(--spacing) * 2);
-    padding-bottom: calc(var(--spacing) * 2);
-    border-bottom: 2px solid hsl(257, 4%, 35%);
-  }
+
+._allFields > * {
+  // padding-bottom: calc(var(--spacing) * 2);
+}
+
+hr {
+  border-color: var(--sd-separator);
 }
 ._dateFields {
   display: flex;
@@ -298,9 +314,10 @@ export default {
   padding: calc(var(--spacing) / 1);
 }
 
-._itemsList {
-  border: 2px solid #999;
+._fileStack {
+  border: 2px solid var(--sd-separator);
   padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) * 2) 0;
 }
 
 ._changeOrderSelect {

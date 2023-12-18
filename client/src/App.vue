@@ -300,7 +300,8 @@ export default {
 
   accent-color: var(--c-rouge);
 
-  --chutier-bg: rgb(37, 39, 41);
+  // --chutier-bg: rgb(37, 39, 41);
+  --chutier-bg: #77757c;
 }
 
 * {
@@ -368,9 +369,10 @@ button {
 }
 
 hr {
-  border-top: 1px solid var(--c-gris);
-  border-bottom: 0 solid #000;
-  margin: calc(var(--spacing) / 2) 0;
+  margin-top: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 2);
+  border: none;
+  border-top: 2px solid var(--c-gris_fonce);
 }
 
 .authorLabel {

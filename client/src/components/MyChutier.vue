@@ -204,7 +204,13 @@
         v-if="selected_items.length > 0"
         key="selection"
       >
-        {{ $t("selected_items") }} {{ selected_items.length }}
+        <template v-if="selected_items.length === 1">
+          {{ $t("selected_item") }}
+        </template>
+        <template v-else>
+          {{ $t("selected_items") }}
+        </template>
+        {{ selected_items.length }}
         <!-- <div class="_selectionBar--previews">
           <template v-for="file in selected_items">
             <MediaContent

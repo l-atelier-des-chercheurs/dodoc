@@ -294,7 +294,8 @@ export default {
 }
 
 ._stackModal {
-  background: var(--c-gris_clair);
-  color: var(--c-noir);
+  --sd-separator: rgb(209, 209, 209);
+  --sd-textcolor: #333;
+  --sd-bg: rgb(245, 245, 245);
 }
 </style>

@@ -294,7 +294,7 @@ export default {
   min-width: 250px;
   height: 100%;
   background: var(--chutier-bg);
-  box-shadow: -4px 0px 5px inset rgba(0, 0, 0, 0.52);
+  // box-shadow: -4px 0px 5px inset rgba(0, 0, 0, 0.52);
   overflow: hidden;
 }
 ._sharedContent {
