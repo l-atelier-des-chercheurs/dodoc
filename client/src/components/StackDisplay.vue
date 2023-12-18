@@ -9,7 +9,11 @@
         <b-icon icon="x-lg" :label="$t('close')" />
       </button>
 
-      <div class="_topCarousel">PLOP</div>
+      <StackCarousel
+        v-if="context === 'archive'"
+        class="_topCarousel"
+        :files="stack_files_in_order"
+      />
 
       <div class="_allFields">
         <div class="_dateFields">
@@ -103,9 +107,10 @@
           </div>
         </transition-group>
 
-        <hr />
-
-        <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
+        <template v-if="can_edit">
+          <DownloadFolder :path="stack.$path" />
+          <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
+        </template>
       </div>
 
       <div class="_bottomBtns" v-if="context === 'chutier'">
@@ -123,6 +128,7 @@
 <script>
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
 import KeywordsField from "@/components/KeywordsField.vue";
+import StackCarousel from "@/components/archive/StackCarousel.vue";
 
 export default {
   props: {
@@ -132,6 +138,7 @@ export default {
   components: {
     ChutierItem,
     KeywordsField,
+    StackCarousel,
   },
   inject: {
     $sharedFolderPath: {
@@ -290,6 +297,12 @@ export default {
   }
 }
 
+._topCarousel {
+  height: 60vh;
+  width: 100%;
+  background: white;
+}
+
 ._allFields > * {
   // padding-bottom: calc(var(--spacing) * 2);
 }
@@ -311,6 +324,7 @@ hr {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 2;
   padding: calc(var(--spacing) / 1);
 }
 
