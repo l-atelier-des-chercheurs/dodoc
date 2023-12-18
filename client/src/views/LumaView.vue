@@ -138,14 +138,19 @@ export default {
   async created() {
     // todo add lang selector instead
     // this.$i18n.locale = "fr";
-    if (this.$root.is_mobile_view) {
-      this.panes_width.chutier = 100;
-      this.panes_width.archive = 0;
-      this.panes_width.format = 0;
-    } else {
-      this.panes_width.chutier = 50;
-      this.panes_width.archive = 50;
-      this.panes_width.format = 0;
+
+    const saved_panes_width = this.loadPanesWidthFromStorage();
+    if (saved_panes_width) this.panes_width = saved_panes_width;
+    else {
+      if (this.$root.is_mobile_view) {
+        this.panes_width.chutier = 100;
+        this.panes_width.archive = 0;
+        this.panes_width.format = 0;
+      } else {
+        this.panes_width.chutier = 50;
+        this.panes_width.archive = 50;
+        this.panes_width.format = 0;
+      }
     }
 
     await this.loadFolder();
@@ -163,6 +168,8 @@ export default {
         Object.entries(this.panes_width).map(
           ([pane, w]) => (this.top_panes_width[pane] = w)
         );
+
+        this.savePanesWidthToStorage();
       },
       deep: true,
     },
@@ -254,6 +261,18 @@ export default {
           w > 0 ? (this.panes_width[p] = new_width) : ""
         );
       }
+    },
+    savePanesWidthToStorage() {
+      localStorage.setItem("panes_width", JSON.stringify(this.panes_width));
+    },
+    loadPanesWidthFromStorage() {
+      try {
+        const _panes_width = localStorage.getItem("panes_width");
+        if (_panes_width) return JSON.parse(_panes_width);
+      } catch (e) {
+        e;
+      }
+      return false;
     },
   },
 };
