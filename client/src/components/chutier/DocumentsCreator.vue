@@ -2,7 +2,7 @@
   <div class="_documentsCreator">
     <transition-group tag="div" name="projectsList">
       <DocumentSpot
-        v-for="stack in all_stacks"
+        v-for="stack in sorted_stacks"
         :key="stack.$path"
         :selected_items="selected_items"
         :author_stacks_path="author_stacks_path"
@@ -67,6 +67,13 @@ export default {
       if (this.is_expecting_drag || this.selected_items?.length > 0)
         return "add";
       return "open";
+    },
+    sorted_stacks() {
+      return this.all_stacks
+        .slice()
+        .sort(
+          (a, b) => +new Date(a.$date_created) - +new Date(b.$date_created)
+        );
     },
   },
   methods: {

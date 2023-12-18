@@ -42,10 +42,11 @@
 
         <div class="">
           <TitleField
-            :label="$t('title')"
+            :label="!stack.title ? $t('title') : ''"
             :field_name="'title'"
             :content="stack.title"
             :path="stack.$path"
+            :required="true"
             :tag="'h1'"
             :can_edit="can_edit"
           />
@@ -105,6 +106,25 @@
             <ChutierItem :file="file" :is_selected="false" :context="'stack'" />
           </div>
         </transition-group>
+
+        <AuthorField
+          v-if="context === 'chutier'"
+          :label="$t('admins')"
+          class="u-spacingBottom"
+          :field="'$admins'"
+          :authors_paths="stack.$admins"
+          :path="stack.$path"
+          :can_edit="can_edit"
+        />
+        <AuthorField
+          v-else-if="context === 'archive'"
+          :label="$t('contributors')"
+          class="u-spacingBottom"
+          :field="'$authors'"
+          :authors_paths="stack.$authors"
+          :path="stack.$path"
+          :can_edit="can_edit"
+        />
 
         <div v-if="can_edit" class="u-sameRow">
           <DownloadFolder :path="stack.$path" />
@@ -303,10 +323,14 @@ export default {
     },
     async publishStack() {
       const path_to_destination_type = this.shared_folder_path + "/stacks";
+
       await this.$api.copyFolder({
         path: this.stack.$path,
         path_to_destination_type,
-        new_meta: {},
+        new_meta: {
+          $admins: "everyone",
+          $authors: this.stack.$admins,
+        },
       });
       await this.$api.deleteItem({ path: this.stack.$path });
       this.$emit("close");
@@ -368,18 +392,14 @@ hr {
 }
 
 ._closeStack {
-  position: absolute;
+  position: sticky;
+  height: 0;
   top: 0;
   left: 0;
-  width: 100%;
+  // width: 100%;
   z-index: 2;
-  text-align: center;
-  pointer-events: none;
 
   > button {
-    padding: calc(var(--spacing) / 2);
-    width: 50px;
-    pointer-events: auto;
   }
 }
 
