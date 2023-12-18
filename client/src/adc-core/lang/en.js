@@ -96,6 +96,13 @@ export default {
   low: "Low",
   rough: "Draft",
 
+  download: "Download",
+  download_ready: "The download is ready",
+  download_image: "Download image",
+  page_failed_to_load: "This page could not load.",
+  open_website_new_tab: "Open in a new tab",
+  click_link_to_open_in_tab: "Click on link below to open in new tab.",
+
   move: "Move",
   unselect: "Unselect",
   remove: "Remove",
