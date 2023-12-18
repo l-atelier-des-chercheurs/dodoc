@@ -22,7 +22,7 @@
             :file="stack.$preview"
             class="_mediaPreview"
           />
-          <div v-else class="_mediaPreview">
+          <div v-else class="_mediaPreview _noPreview">
             {{ $t("no_preview_to_show") }}
           </div>
 
@@ -39,7 +39,11 @@
         </template>
 
         <transition name="fade_fast">
-          <div class="anim_backgroundPosition" v-if="mode === 'add'" />
+          <div
+            class="anim_backgroundPosition"
+            :key="mode"
+            v-if="mode === 'add'"
+          />
         </transition>
 
         <LoaderSpinner v-if="is_adding_to_stack" class="_loader" />
@@ -268,7 +272,21 @@ export default {
 }
 
 ._mediaPreview {
-  color: white;
+  width: 100%;
+  height: 100%;
+
+  &._noPreview {
+    font-size: 30%;
+    padding: calc(var(--spacing) / 4);
+  }
+
+  ::v-deep ._mediaContent--image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: none;
+  }
 }
 
 ._count {
