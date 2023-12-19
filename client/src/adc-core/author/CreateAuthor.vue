@@ -51,7 +51,7 @@
             @toggleValidity="($event) => (allow_save = $event)"
           />
 
-          <br />
+          <div class="u-spacingBottom" />
 
           <TextInput
             :content.sync="new_author_email"
@@ -63,7 +63,22 @@
             @toggleValidity="($event) => (allow_save = $event)"
           />
 
-          <br />
+          <div class="u-spacingBottom" />
+
+          <div class="">
+            <DLabel :str="$t('pick_portrait')" />
+            <ImageSelect
+              :available_options="['import', 'capture']"
+              :preview_format="'circle'"
+              @newPreview="
+                (value) => {
+                  new_cover = value;
+                }
+              "
+            />
+          </div>
+
+          <div class="u-spacingBottom" />
 
           <TextInput
             :content.sync="new_author_password"
@@ -76,7 +91,7 @@
             @toggleValidity="($event) => (allow_save = $event)"
           />
 
-          <br />
+          <div class="u-spacingBottom" />
 
           <button
             slot="footer"
@@ -120,6 +135,8 @@ export default {
       is_submitting_signup_password: false,
 
       account_created_notice: false,
+
+      new_cover: undefined,
     };
   },
   i18n: {
@@ -183,10 +200,20 @@ export default {
             },
           });
         } else {
+          // otherwise we are instance admins
           this.account_created_notice = true;
           setTimeout(() => {
             this.account_created_notice = false;
           }, 3000);
+        }
+
+        const author_page = `authors/${author_slug}`;
+        if (this.new_cover) {
+          await this.$api.updateCover({
+            path: author_page,
+            new_cover_data: this.new_cover,
+            // onProgress,
+          });
         }
 
         // not working
