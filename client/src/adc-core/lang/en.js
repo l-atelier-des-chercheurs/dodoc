@@ -2,8 +2,8 @@ export default {
   welcome_to_dodoc: "Welcome to do•doc !",
   current_lang_name: "English",
   // todo translate
-  // a_foss_made_by:
-  //   "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
+  a_foss_made_by:
+    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers, …!",
   home: "Home",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
@@ -47,8 +47,6 @@ export default {
   name: "Name",
   filename: "Filename",
 
-  open_in_finder: "Open in finder",
-
   space: "Space",
   spaces: "All spaces",
   spaces_instr:
@@ -83,7 +81,13 @@ export default {
   set_admins_and_contributors: "Set admins and contributors",
 
   ui_lang_select: "Interface language",
-  lang_updated: "The lang has been updated",
+  lang_updated: "The lang has been changed",
+
+  signup_password: "signup password",
+  signup_password_instructions: "Require a password to create an account.",
+  signup_password_users_instructions:
+    "If you don’t know this password, you can request it with a mail to",
+  more_informations: "More informations",
 
   already_added: "Already added",
   open: "open",
@@ -91,6 +95,11 @@ export default {
   create_a_project: "Create a project",
   create_an_event: "Create an event",
   create_a_publication: "Create a publication",
+  import_a_project: "Import a project",
+  import_a_project_instr: `
+  You can import a project with all its medias, makes and publications to this space, even if it has been created on another do•doc instance as long
+  as it is running version 10. To do so, click on <i>download</i> on that project on the other do•doc instance to get a ZIP file and choose this file
+  after clicking the button below. It will automatically be added to this space with your account as the admin.`,
 
   story_width: "Story width",
   summary: "Summary",
@@ -109,6 +118,8 @@ export default {
   none: "None",
   filters: "Filters",
   reset_all: "Reset all",
+  "sort:": "Sort:",
+
   click_to_zoom: "Click to zoom",
   same_as_source: "Same as source",
   very_high: "Very high",
@@ -165,7 +176,6 @@ export default {
   licence_instructions:
     "Indicate here the conditions for sharing and reusing your content.",
   files: "Files",
-  template: "Template",
   everyone: "Everyone",
   everyone_instr: "Open to everyone that can see this content.",
   everyone_can_edit: "Contributing, editing and removing open to everyone.",

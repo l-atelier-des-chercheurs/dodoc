@@ -290,6 +290,7 @@ export default {
   none: "Aucun·e",
   filters: "Filtres",
   reset_all: "Retirer tout",
+  "sort:": "Trier&nbsp;:",
 
   draft: "En cours",
   listed: "Listé",
