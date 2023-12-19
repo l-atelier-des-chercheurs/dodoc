@@ -35,13 +35,13 @@ export default {
   no_description: "Pas de description",
   keywords: "Mots-clés",
 
-  add: "ajouter",
+  add: "Ajouter",
   add_item: "Ajouter un élément",
   add_files: "Ajouter des fichiers",
   hide_already_present_medias:
     "Masquer les médias déjà inclus à cette publication",
   suggestions: "Suggestions",
-  access: "accéder",
+  access: "Accéder",
   title: "Titre",
   subtitle: "Sous-titre",
   name: "Nom",
@@ -313,14 +313,12 @@ export default {
   private_status_explanations_publis:
     "La publication ne sera visible qu’aux contributeurs du projet.",
 
-  invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
   finished: "Finalisé",
   only_finished: "Projets finalisés",
   completed: "Terminé",
   my_projects: "Mes projets",
   pinned: "Épinglés",
-  click_on_pin_on_space:
-    "Les projets marqués avec une épingle seront indiqués à tous ici.",
+  click_on_pin_on_space: "Les espaces marqués d’une épingle seront placés ici.",
 
   default_value: "Par défaut",
 
@@ -374,7 +372,7 @@ export default {
   everyone_can_contribute: "Contribution ouverte à tout le monde",
   noone: "Aucun·e",
   noone_instr: "Fermer à tous les comptes.",
-  restricted: "Uniquement les comptes de la liste.",
+  restricted: "Uniquement les comptes de la liste",
   restricted_instr: "Seuls ces comptes seront autorisés.",
 
   close: "Fermer",

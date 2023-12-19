@@ -35,12 +35,33 @@ export default {
   keywords: "keywords",
   template: "Template",
 
+  add: "Add",
+  add_item: "Add item",
+  add_files: "Add files",
+  hide_already_present_medias:
+    "Hide medias already included in this publication ",
+  suggestions: "Suggestions",
+  access: "Access",
+  title: "Title",
+  subtitle: "Subtitle",
+  name: "Name",
+  filename: "Filename",
+
+  open_in_finder: "Open in finder",
+
   space: "Space",
   spaces: "All spaces",
   spaces_instr:
     "Each space contains a set of projects linked to a particular group, place or theme.",
   create_a_space: "Create a space",
   project: "Project",
+
+  finished: "Finished",
+  only_finished: "Finished projects",
+  completed: "Completed",
+  my_projects: "My projects",
+  pinned: "Pinned",
+  click_on_pin_on_space: "Pinned spaces will be placed here",
 
   default_value: "Default value",
 
@@ -128,4 +149,34 @@ export default {
     "Click on map to select the new position on the map",
   add_caption: "Add a caption",
   copy_first_media_caption: "Reuse first media caption",
+
+  panes: "Panes",
+  capture: "Capture",
+  collect: "Collect",
+  make: "Make",
+  publish: "Publish",
+
+  projects_you_edited_last: "Projects you edited last",
+
+  CC: "Creative Commons",
+  authors_and_license: "License and authors",
+  authors: "Authors",
+  license: "License",
+  licence_instructions:
+    "Indicate here the conditions for sharing and reusing your content.",
+  files: "Files",
+  template: "Template",
+  everyone: "Everyone",
+  everyone_instr: "Open to everyone that can see this content.",
+  everyone_can_edit: "Contributing, editing and removing open to everyone.",
+  everyone_can_contribute: "Contributing open to everyone",
+  noone: "Noone",
+  noone_instr: "Unavailable for all accounts except admins.",
+  restricted: "Only those accounts",
+  restricted_instr: "Restricted to this list.",
+
+  contactmail_of_instance: `Contact`,
+  contactmail_of_instance_instructions: `Displayed to visitors to get more informations, recover the password to an account or ask for the general password if there is one.`,
+  hero_background_color: "Background color of the image",
+  text_background_color: "Background color of the text",
 };
