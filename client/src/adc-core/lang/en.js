@@ -189,4 +189,14 @@ export default {
   contactmail_of_instance_instructions: `Displayed to visitors to get more informations, recover the password to an account or ask for the general password if there is one.`,
   hero_background_color: "Background color of the image",
   text_background_color: "Background color of the text",
+
+  space_author_instructions:
+    "They will be the only ones allowed to add, edit or remove this space and its content.",
+  project_title_instructions:
+    "The title is displayed here and on the projects list.",
+  pick_cover: "Pick a cover image",
+  pick_portrait: "Pick an image for this account",
+  pick_media: "Pick one media",
+  pick_medias: "Pick one or more medias",
+  remove_image: "Remove this image",
 };

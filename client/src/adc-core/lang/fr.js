@@ -778,6 +778,7 @@ export default {
   project_title_instructions:
     "Le titre est affiché ici et sur la liste des projets.",
   pick_cover: "Choisissez une image de couverture",
+  pick_portrait: "Choisissez une image pour ce compte",
   pick_media: "Choisissez un média",
   pick_medias: "Choisissez un ou plusieurs médias",
   remove_image: "Retirer cette image",
