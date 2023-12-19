@@ -1,29 +1,35 @@
 <template>
   <section class="_projectsListWithFilter">
     <div class="_filterSortBar">
-      <button
-        type="button"
-        class="u-button u-button_small u-button_bleumarine"
-        :class="{
-          'is--active': show_sidebar,
-        }"
-        @click="show_sidebar = !show_sidebar"
-      >
-        {{ $t("filters") }}
-      </button>
-      <select
-        size="small"
-        class="_orderSelect"
-        v-model="order_key"
-        :disabled="filtered_projects.length <= 1"
-      >
-        <option
-          v-for="opt in order_options"
-          :key="opt.key"
-          :value="opt.key"
-          v-text="opt.text"
-        />
-      </select>
+      <div class="">
+        <button
+          type="button"
+          class="u-button u-button_small u-button_bleumarine"
+          :class="{
+            'is--active': show_sidebar,
+          }"
+          @click="show_sidebar = !show_sidebar"
+        >
+          {{ $t("filters") }}
+        </button>
+      </div>
+      <div class="u-sameRow">
+        <span v-html="$t('sort:')" />
+
+        <select
+          size="small"
+          class="_orderSelect"
+          v-model="order_key"
+          :disabled="filtered_projects.length <= 1"
+        >
+          <option
+            v-for="opt in order_options"
+            :key="opt.key"
+            :value="opt.key"
+            v-text="opt.text"
+          />
+        </select>
+      </div>
     </div>
     <div class="_cont">
       <div class="_sidebar" v-if="show_sidebar">
@@ -430,9 +436,8 @@ export default {
 ._filterSortBar {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   gap: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
 }
 </style>
