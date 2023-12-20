@@ -2,8 +2,18 @@
   <BaseModal2 @close="$emit('close')">
     <div class="_linkPicker">
       <div class="_urlBox">
-        <DLabel :str="$t('input_url')" :instructions="$t('input_url_instr')" />
-        <input type="url" v-model="full_url" placeholder="https://" />
+        <!-- <DLabel :str="$t('input_url')" :instructions="$t('input_url_instr')" /> -->
+        <TextInput
+          :label_str="$t('input_url')"
+          :instructions="$t('input_url_instr')"
+          :content.sync="full_url"
+          :placeholder="'https://'"
+          :required="true"
+          :input_type="'url'"
+          @toggleValidity="($event) => (allow_save = $event)"
+        />
+
+        <!-- <input type="url" v-model="full_url" placeholder="https://" /> -->
       </div>
 
       <div class="u-instructions">
@@ -66,7 +76,7 @@ export default {
   components: {},
   data() {
     return {
-      full_url: "https://",
+      full_url: "",
     };
   },
   async created() {},
