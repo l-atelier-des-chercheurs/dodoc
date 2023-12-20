@@ -115,8 +115,13 @@ export default {
         this.panes_width.archive = 0;
         this.panes_width.format = 0;
       } else {
-        this.panes_width.chutier = 50;
-        this.panes_width.archive = 50;
+        // max chutier width on first open is 320px
+        const chutier_width = Math.min(
+          (400 / this.$root.window.innerWidth) * 100,
+          50
+        );
+        this.panes_width.chutier = chutier_width;
+        this.panes_width.archive = 100 - chutier_width;
         this.panes_width.format = 0;
       }
     }
