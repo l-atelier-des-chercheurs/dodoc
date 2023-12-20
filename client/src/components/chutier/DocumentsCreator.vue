@@ -16,6 +16,7 @@
             v-if="spot_mode === 'add'"
             :author_stacks_path="author_stacks_path"
             :selected_items="selected_items"
+            :mode="'add'"
           />
         </transition>
       </div>

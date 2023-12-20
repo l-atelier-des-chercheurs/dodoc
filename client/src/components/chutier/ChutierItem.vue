@@ -452,10 +452,12 @@ export default {
   overflow: hidden;
   // border-radius: 4px;
   border: 1px dashed transparent;
+  color: hsl(257, 3%, 81%);
+
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
   // border: 1px solid transparent;
 
-  transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   @media (hover: hover) and (pointer: fine) {
     &:not(.is--selected):not(.is--edited):hover {
@@ -476,9 +478,12 @@ export default {
   &.is--edited
   // &.is--clicked
   {
-    border-color: #666;
-    background: rgba(255, 255, 255, 0.05);
+    color: hsl(257, 3%, 95%);
+    border-color: hsl(257, 3%, 61%);
+    background: hsl(257, 3%, 52%);
+
     &:hover {
+      background: hsl(257, 3%, 55%);
     }
   }
 
@@ -564,7 +569,7 @@ export default {
   }
 }
 ._dragBtn {
-  color: #666;
+  color: currentColor;
 }
 
 .anim_backgroundPosition {

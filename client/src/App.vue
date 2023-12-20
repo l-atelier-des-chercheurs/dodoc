@@ -841,6 +841,5 @@ img {
   animation: background-position 3s infinite;
   animation-timing-function: linear;
   background-position: 0 0;
-  opacity: 0.3;
 }
 </style>

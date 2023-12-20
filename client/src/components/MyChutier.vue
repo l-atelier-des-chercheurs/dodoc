@@ -204,13 +204,17 @@
         v-if="selected_items.length > 0"
         key="selection"
       >
-        <template v-if="selected_items.length === 1">
-          {{ $t("selected_item") }}
-        </template>
-        <template v-else>
-          {{ $t("selected_items") }}
-        </template>
-        {{ selected_items.length }}
+        <transition name="slideupFade" mode="out-in">
+          <div :key="selected_items.length">
+            <template v-if="selected_items.length === 1">
+              {{ $t("selected_item") }}
+            </template>
+            <template v-else>
+              {{ $t("selected_items") }}
+            </template>
+            {{ selected_items.length }}
+          </div>
+        </transition>
         <!-- <div class="_selectionBar--previews">
           <template v-for="file in selected_items">
             <MediaContent

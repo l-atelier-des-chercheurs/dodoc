@@ -400,6 +400,7 @@ hr {
   z-index: 2;
 
   > button {
+    padding: calc(var(--spacing) / 2);
   }
 }
 

@@ -38,12 +38,10 @@
           </transition>
         </template>
 
-        <transition name="fade_fast">
-          <div
-            class="anim_backgroundPosition"
-            :key="mode"
-            v-if="mode === 'add'"
-          />
+        <transition name="slideupFade" mode="out-in">
+          <div class="" v-if="mode === 'add'">
+            <div class="anim_backgroundPosition" :key="mode" />
+          </div>
         </transition>
 
         <LoaderSpinner v-if="is_adding_to_stack" class="_loader" />
@@ -305,8 +303,10 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  color: black;
-  z-index: 11;
+  color: rgba(0, 0, 0, 0.3);
+  z-index: 9;
+  top: 0;
+  left: 0;
 }
 
 ._addTo {
