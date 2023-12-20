@@ -725,7 +725,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 2px;
-  padding: 0 2px;
+  padding: 0 calc(var(--spacing) / 2);
 
   &[data-tilemode="medium"] {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -775,7 +775,7 @@ export default {
 }
 
 ._gridSection {
-  padding-bottom: 2px;
+  padding-bottom: calc(var(--spacing) / 2);
 }
 
 ._mediaCount {
