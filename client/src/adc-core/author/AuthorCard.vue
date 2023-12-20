@@ -18,6 +18,7 @@
           <CoverField
             :context="context"
             :cover="author.$cover"
+            :title="$t('pick_portrait')"
             :preview_format="'circle'"
             :path="author.$path"
             :can_edit="can_edit"

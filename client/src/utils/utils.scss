@@ -587,11 +587,10 @@ input[type="file"] {
     display: inline-flex;
     flex-direction: row nowrap;
     align-items: center;
-    justify-content: space-around;
-    line-height: normal;
+    justify-content: center;
 
     // width: 100%;
-    max-width: 380px;
+    // max-width: 380px;
     text-align: center;
 
     cursor: pointer;

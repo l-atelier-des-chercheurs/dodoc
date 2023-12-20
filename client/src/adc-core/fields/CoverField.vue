@@ -37,7 +37,7 @@
       />
       <BaseModal2
         v-if="edit_mode"
-        :title="$t('pick_cover')"
+        :title="label_title"
         @close="edit_mode = false"
       >
         <div class="_picker">
@@ -72,6 +72,7 @@
 export default {
   props: {
     cover: [Boolean, Object],
+    title: String,
     path: String,
     context: String,
     preview_format: {
@@ -101,6 +102,10 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    label_title() {
+      if (this.title) return this.title;
+      return this.$t("pick_cover");
+    },
     cover_thumb() {
       return this.makeRelativeURLFromThumbs({
         $thumbs: this.cover,
@@ -177,6 +182,7 @@ export default {
   justify-content: center;
   flex-flow: column nowrap;
   place-items: center;
+  width: 100%;
 
   gap: calc(var(--spacing) / 2);
 }

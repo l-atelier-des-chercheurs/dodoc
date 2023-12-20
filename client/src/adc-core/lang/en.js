@@ -6,9 +6,8 @@ export default {
   date_uploaded: "uploaded on",
   cancel: "cancel",
   // todo translate
-  // a_foss_made_by:
-  //   "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
-
+  a_foss_made_by:
+    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers, …!",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
   // admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
@@ -34,7 +33,17 @@ export default {
   keywords: "keywords",
   template: "Template",
 
-  contactmail_of_instance: `Contact`,
+  add: "Add",
+  add_item: "Add item",
+  add_files: "Add files",
+  hide_already_present_medias:
+    "Hide medias already included in this publication ",
+  suggestions: "Suggestions",
+  access: "Access",
+  title: "Title",
+  subtitle: "Subtitle",
+  name: "Name",
+  filename: "Filename",
 
   space: "Space",
   spaces: "All spaces",
@@ -42,6 +51,13 @@ export default {
     "Each space contains a set of projects linked to a particular group, place or theme.",
   create_a_space: "Create a space",
   project: "Project",
+
+  finished: "Finished",
+  only_finished: "Finished projects",
+  completed: "Completed",
+  my_projects: "My projects",
+  pinned: "Pinned",
+  click_on_pin_on_space: "Pinned spaces will be placed here",
 
   default_value: "Default value",
 
@@ -63,7 +79,13 @@ export default {
   set_admins_and_contributors: "Set admins and contributors",
 
   ui_lang_select: "Interface language",
-  lang_updated: "The lang has been updated",
+  lang_updated: "The lang has been changed",
+
+  signup_password: "signup password",
+  signup_password_instructions: "Require a password to create an account.",
+  signup_password_users_instructions:
+    "If you don’t know this password, you can request it with a mail to",
+  more_informations: "More informations",
 
   open_app: "Access",
   items: "Éléments",
@@ -104,6 +126,11 @@ export default {
   create_a_project: "Create a project",
   create_an_event: "Create an event",
   create_a_publication: "Create a publication",
+  import_a_project: "Import a project",
+  import_a_project_instr: `
+  You can import a project with all its medias, makes and publications to this space, even if it has been created on another do•doc instance as long
+  as it is running version 10. To do so, click on <i>download</i> on that project on the other do•doc instance to get a ZIP file and choose this file
+  after clicking the button below. It will automatically be added to this space with your account as the admin.`,
 
   story_width: "Story width",
   summary: "Summary",
@@ -122,6 +149,8 @@ export default {
   none: "None",
   filters: "Filters",
   reset_all: "Reset all",
+  "sort:": "Sort:",
+
   click_to_zoom: "Click to zoom",
   same_as_source: "Same as source",
   very_high: "Very high",
@@ -129,6 +158,13 @@ export default {
   medium: "Medium",
   low: "Low",
   rough: "Draft",
+
+  download: "Download",
+  download_ready: "The download is ready",
+  download_image: "Download image",
+  page_failed_to_load: "This page could not load.",
+  open_website_new_tab: "Open in a new tab",
+  click_link_to_open_in_tab: "Click on link below to open in new tab.",
 
   move: "Move",
   unselect: "Unselect",
@@ -155,4 +191,43 @@ export default {
     "Click on map to select the new position on the map",
   add_caption: "Add a caption",
   copy_first_media_caption: "Reuse first media caption",
+
+  panes: "Panes",
+  capture: "Capture",
+  collect: "Collect",
+  make: "Make",
+  publish: "Publish",
+
+  projects_you_edited_last: "Projects you edited last",
+
+  CC: "Creative Commons",
+  authors_and_license: "License and authors",
+  authors: "Authors",
+  license: "License",
+  licence_instructions:
+    "Indicate here the conditions for sharing and reusing your content.",
+  files: "Files",
+  everyone: "Everyone",
+  everyone_instr: "Open to everyone that can see this content.",
+  everyone_can_edit: "Contributing, editing and removing open to everyone.",
+  everyone_can_contribute: "Contributing open to everyone",
+  noone: "Noone",
+  noone_instr: "Unavailable for all accounts except admins.",
+  restricted: "Only those accounts",
+  restricted_instr: "Restricted to this list.",
+
+  contactmail_of_instance: `Contact`,
+  contactmail_of_instance_instructions: `Displayed to visitors to get more informations, recover the password to an account or ask for the general password if there is one.`,
+  hero_background_color: "Background color of the image",
+  text_background_color: "Background color of the text",
+
+  space_author_instructions:
+    "They will be the only ones allowed to add, edit or remove this space and its content.",
+  project_title_instructions:
+    "The title is displayed here and on the projects list.",
+  pick_cover: "Pick a cover image",
+  pick_portrait: "Pick an image for this account",
+  pick_media: "Pick one media",
+  pick_medias: "Pick one or more medias",
+  remove_image: "Remove this image",
 };
