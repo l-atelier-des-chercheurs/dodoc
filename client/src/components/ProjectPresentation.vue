@@ -84,24 +84,32 @@ x
         :can_edit="can_edit"
       />
 
-      <div class="_allTags" v-if="!['tiny'].includes(context)">
+      <div
+        class="_allTags"
+        v-if="
+          context !== 'tiny' &&
+          (p_keywords.length > 0 ||
+            p_machines.length > 0 ||
+            p_materials.length > 0)
+        "
+      >
         <TagsList
-          v-if="project.keywords && project.keywords.length > 0"
-          :tags="project.keywords"
+          v-if="p_keywords.length > 0"
+          :tags="p_keywords"
           :tag_type="'keywords'"
           :clickable="false"
         />
 
         <TagsList
-          v-if="project.machines && project.machines.length > 0"
-          :tags="project.machines"
+          v-if="p_machines.length > 0"
+          :tags="p_machines"
           :tag_type="'machines'"
           :clickable="false"
         />
 
         <TagsList
-          v-if="project.materials && project.materials.length > 0"
-          :tags="project.materials"
+          v-if="p_materials.length > 0"
+          :tags="p_materials"
           :tag_type="'materials'"
           :clickable="false"
         />
@@ -207,8 +215,23 @@ export default {
     is_own_project() {
       return this.isOwnItem({ folder: this.project });
     },
+    p_keywords() {
+      return this.getKw("keywords");
+    },
+    p_materials() {
+      return this.getKw("materials");
+    },
+    p_machines() {
+      return this.getKw("machines");
+    },
   },
-  methods: {},
+  methods: {
+    getKw(type) {
+      return this.project[type] && Array.isArray(this.project[type])
+        ? this.project[type]
+        : [];
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

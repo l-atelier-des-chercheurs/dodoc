@@ -35,13 +35,13 @@ export default {
   no_description: "Pas de description",
   keywords: "Mots-clés",
 
-  add: "ajouter",
+  add: "Ajouter",
   add_item: "Ajouter un élément",
   add_files: "Ajouter des fichiers",
   hide_already_present_medias:
     "Masquer les médias déjà inclus à cette publication",
   suggestions: "Suggestions",
-  access: "accéder",
+  access: "Accéder",
   title: "Titre",
   subtitle: "Sous-titre",
   name: "Nom",
@@ -290,6 +290,7 @@ export default {
   none: "Aucun·e",
   filters: "Filtres",
   reset_all: "Retirer tout",
+  "sort:": "Trier&nbsp;:",
 
   draft: "En cours",
   listed: "Listé",
@@ -313,14 +314,12 @@ export default {
   private_status_explanations_publis:
     "La publication ne sera visible qu’aux contributeurs du projet.",
 
-  invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
   finished: "Finalisé",
   only_finished: "Projets finalisés",
   completed: "Terminé",
   my_projects: "Mes projets",
   pinned: "Épinglés",
-  click_on_pin_on_space:
-    "Les projets marqués avec une épingle seront indiqués à tous ici.",
+  click_on_pin_on_space: "Les espaces marqués d’une épingle seront placés ici.",
 
   default_value: "Par défaut",
 
@@ -343,6 +342,7 @@ export default {
   latest_changes_to_project: "Dernières modifications au projet",
 
   download: "Télécharger",
+  download_ready: "Le téléchargement est prêt",
   download_image: "Télécharger cette image",
   page_failed_to_load: "Cette page n’a pas pu charger.",
   open_website_new_tab: "Ouvrir dans un nouvel onglet",
@@ -373,7 +373,7 @@ export default {
   everyone_can_contribute: "Contribution ouverte à tout le monde",
   noone: "Aucun·e",
   noone_instr: "Fermer à tous les comptes.",
-  restricted: "Uniquement les comptes de la liste.",
+  restricted: "Uniquement les comptes de la liste",
   restricted_instr: "Seuls ces comptes seront autorisés.",
 
   close: "Fermer",
@@ -778,6 +778,7 @@ export default {
   project_title_instructions:
     "Le titre est affiché ici et sur la liste des projets.",
   pick_cover: "Choisissez une image de couverture",
+  pick_portrait: "Choisissez une image pour ce compte",
   pick_media: "Choisissez un média",
   pick_medias: "Choisissez un ou plusieurs médias",
   remove_image: "Retirer cette image",
