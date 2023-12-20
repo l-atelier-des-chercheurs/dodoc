@@ -30,55 +30,17 @@
         @resized="resizedPane"
       >
         <pane :min-size="min_toppane_width" :size="panes_width.chutier">
-          <div
-            class="_myContent"
-            :class="{
-              'is--shown': show_chutier,
-            }"
-            :key="'myContent'"
-          >
+          <div class="_myContent" :key="'myContent'">
             <MyChutier
               class="_myContent--chutier"
               v-show="show_chutier"
               :shared_folder_path="shared_folder_path"
               @close="show_chutier = false"
             />
-
-            <div
-              class="_chutierBtn"
-              v-if="false"
-              :class="{
-                'is--showingChutier': show_chutier,
-              }"
-            >
-              <!-- <div class="">
-              // todo shown number of items to handle
-            </div> -->
-
-              <button type="button" @click="show_chutier = !show_chutier">
-                <svg
-                  width="17"
-                  height="9"
-                  viewBox="0 0 17 9"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M0.999812 4.546V4.726C1.87581 5.098 2.67381 5.602 3.39381 6.238C4.11381 6.874 4.77381 7.546 5.37381 8.254L5.75181 7.894C5.53581 7.594 5.30181 7.3 5.04981 7.012C4.78581 6.712 4.51581 6.418 4.23981 6.13C4.07181 5.962 3.98781 5.788 3.98781 5.608C3.98781 5.512 4.02381 5.428 4.09581 5.356C4.16781 5.284 4.28781 5.248 4.45581 5.248H14.5718V8.254H15.5078V1H14.5718V4.024H4.43781C4.26981 4.024 4.14981 3.982 4.07781 3.898C4.00581 3.802 3.96981 3.712 3.96981 3.628C3.96981 3.484 4.05381 3.328 4.22181 3.16C4.48581 2.908 4.75581 2.62 5.03181 2.296C5.29581 1.972 5.52981 1.66 5.73381 1.36L5.35581 1C4.75581 1.696 4.10181 2.368 3.39381 3.016C2.67381 3.664 1.87581 4.174 0.999812 4.546Z"
-                    fill="currentColor"
-                    stroke="currentColor"
-                  />
-                </svg>
-                <!-- <sl-icon
-                  :name="show_chutier ? 'arrow-bar-left' : 'arrow-bar-right'"
-                /> -->
-              </button>
-            </div>
           </div>
         </pane>
         <pane :min-size="min_toppane_width" :size="panes_width.archive">
           <div class="_sharedContent" :key="'sharedContent'">
-            <!-- <SharedFolder :shared_folder_path="shared_folder_path" /> -->
             <SharedFolder2 :shared_folder_path="shared_folder_path" />
           </div>
         </pane>
