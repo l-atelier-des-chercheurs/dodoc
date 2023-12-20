@@ -9,28 +9,17 @@
     <template v-else>
       <div class="_topBarIndication">
         <div
+          v-for="pane of possible_panes"
+          :key="pane.key"
           class="_topBarIndication--item"
-          :style="setTopbarWidth('chutier')"
-          @click="togglePane('chutier')"
+          :style="setTopbarWidth(pane.key)"
+          @click="togglePane(pane.key)"
         >
-          <b-icon icon="layout-sidebar-inset" />
-          CHUTIER
-        </div>
-        <div
-          class="_topBarIndication--item"
-          :style="setTopbarWidth('archive')"
-          @click="togglePane('archive')"
-        >
-          <b-icon icon="grid3x3-gap" />
-          ARCHIVE
-        </div>
-        <div
-          class="_topBarIndication--item"
-          :style="setTopbarWidth('format')"
-          @click="togglePane('format')"
-        >
-          <b-icon icon="layout-sidebar-inset-reverse" />
-          FORMAT
+          <span>
+            <b-icon :icon="pane.icon" />
+            {{ pane.label }}
+          </span>
+          <!-- <b-icon icon="x-circle" /> -->
         </div>
       </div>
 
@@ -119,6 +108,23 @@ export default {
       folders: undefined,
       shared_folder_path: undefined,
 
+      possible_panes: [
+        {
+          key: "chutier",
+          label: "CHUTIER",
+          icon: "layout-sidebar-inset",
+        },
+        {
+          key: "archive",
+          label: "ARCHIVE",
+          icon: "grid3x3-gap",
+        },
+        {
+          key: "format",
+          label: "FORMAT",
+          icon: "layout-sidebar-inset-reverse",
+        },
+      ],
       top_panes_width: {
         chutier: 33,
         archive: 33,
@@ -368,6 +374,8 @@ export default {
 
     display: flex;
     align-items: center;
+    justify-content: space-between;
+
     gap: calc(var(--spacing) / 2);
     white-space: nowrap;
     overflow: hidden;
