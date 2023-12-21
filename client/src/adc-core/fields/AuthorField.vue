@@ -107,6 +107,10 @@ export default {
     can_edit: {
       type: Boolean,
     },
+    no_options: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {},
   data() {
@@ -115,24 +119,6 @@ export default {
       is_saving: false,
       new_authors_paths: [],
       new_editing_mode: [],
-
-      editing_options: [
-        {
-          key: "everyone",
-          label: this.$t("everyone"),
-          instructions: this.$t("everyone_instr"),
-        },
-        {
-          key: "noone",
-          label: this.$t("noone"),
-          instructions: this.$t("noone_instr"),
-        },
-        {
-          key: "restricted",
-          label: this.$t("restricted"),
-          instructions: this.$t("restricted_instr"),
-        },
-      ],
     };
   },
   created() {
@@ -163,6 +149,38 @@ export default {
         JSON.stringify(this.new_authors_paths) !==
         JSON.stringify(this.authors_paths)
       );
+    },
+    editing_options() {
+      if (this.no_options)
+        return [
+          {
+            key: "noone",
+            label: this.$t("noone"),
+            instructions: this.$t("noone_instr"),
+          },
+          {
+            key: "restricted",
+            label: this.$t("restricted"),
+            instructions: this.$t("restricted_instr"),
+          },
+        ];
+      return [
+        {
+          key: "everyone",
+          label: this.$t("everyone"),
+          instructions: this.$t("everyone_instr"),
+        },
+        {
+          key: "noone",
+          label: this.$t("noone"),
+          instructions: this.$t("noone_instr"),
+        },
+        {
+          key: "restricted",
+          label: this.$t("restricted"),
+          instructions: this.$t("restricted_instr"),
+        },
+      ];
     },
   },
   methods: {

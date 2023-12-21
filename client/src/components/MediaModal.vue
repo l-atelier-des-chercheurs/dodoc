@@ -204,6 +204,7 @@
             :path="file.$path"
             :can_edit="true"
             :instructions="$t('file_author_instructions')"
+            :no_options="true"
           />
         </div>
 
