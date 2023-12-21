@@ -2,12 +2,17 @@ export default {
   methods: {
     twoStringsMatch(ref, input) {
       // if (input === "") return true;
-      const _ref = this.normalizeStringForSuggestions(ref);
-      const _input = this.normalizeStringForSuggestions(input);
+      const _ref = this.normalizeStringForSearch(ref);
+      const _input = this.normalizeStringForSearch(input);
       return _ref.startsWith(_input);
     },
-
-    normalizeStringForSuggestions(str) {
+    twoStringsSearch(ref, input) {
+      // if (input === "") return true;
+      const _ref = this.normalizeStringForSearch(ref);
+      const _input = this.normalizeStringForSearch(input);
+      return _ref.includes(_input);
+    },
+    normalizeStringForSearch(str) {
       return str
         .toLowerCase()
         .normalize("NFD")
