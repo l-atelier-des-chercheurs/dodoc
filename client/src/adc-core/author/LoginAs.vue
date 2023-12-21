@@ -31,7 +31,7 @@
               </div>
             </transition>
             <TextInput
-              :content.sync="search_for_author"
+              :content.sync="search_author_name"
               ref="nameField"
               :label_str="'name_or_pseudonym'"
               :required="true"
@@ -126,7 +126,7 @@ export default {
   components: {},
   data() {
     return {
-      search_for_author: "",
+      search_author_name: "",
       author_to_login_to: undefined,
 
       input_password: "",
@@ -148,16 +148,11 @@ export default {
   },
   computed: {
     author_suggestions() {
-      if (this.search_for_author.length === 0 || this.authors.length === 0)
+      if (this.search_author_name.length === 0 || this.authors.length === 0)
         return false;
 
       const matching = this.authors.filter((a) => {
-        const name = a.name.toLowerCase();
-        const slug = `@${this.getFilename(a.$path)}`;
-        return (
-          name.startsWith(this.search_for_author.toLowerCase()) ||
-          slug.startsWith(this.search_for_author.toLowerCase())
-        );
+        return this.twoStringsSearch(a.name, this.search_author_name);
       });
 
       return matching.map((m) => m.$path);
@@ -209,7 +204,7 @@ export default {
     },
     checkAuthor(path) {
       const a = this.authors.find((a) => a.$path === path);
-      this.search_for_author = "";
+      this.search_author_name = "";
       this.author_to_login_to = a;
     },
   },
