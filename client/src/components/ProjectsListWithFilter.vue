@@ -45,7 +45,7 @@
         </div> -->
         <div class="u-sameRow" style="width: 100%">
           <input
-            type="text"
+            type="search"
             v-model="search_project"
             :placeholder="$t('search_by_title')"
           />
