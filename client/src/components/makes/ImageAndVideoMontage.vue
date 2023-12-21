@@ -95,6 +95,7 @@
       :title="$t('export_montage')"
       :export_name="export_name"
       :export_href="export_href"
+      :enable_options="created_video !== false"
       @close="show_save_export_modal = false"
     >
       <div class="_spinner" v-if="is_exporting" key="loader">
@@ -119,6 +120,8 @@
             @change="resolution_preset_picked = $event"
           />
 
+          <br />
+
           <button
             type="button"
             class="u-button u-button_bleuvert"
@@ -129,6 +132,12 @@
           </button>
         </div>
         <div v-else>
+          <button type="button" class="u-buttonLink" @click="cancelExport">
+            <b-icon icon="arrow-left-short" />
+            {{ $t("back") }}
+          </button>
+          <br />
+
           <MediaContent
             class="_preview"
             :file="created_video"
@@ -232,11 +241,7 @@ export default {
   watch: {
     show_save_export_modal() {
       if (!this.show_save_export_modal) {
-        if (this.created_video)
-          this.$api.deleteItem({
-            path: this.created_video.$path,
-          });
-        this.created_video = false;
+        if (this.created_video) this.created_video = false;
       }
     },
   },
@@ -330,6 +335,12 @@ export default {
         path,
       });
     },
+    async cancelExport() {
+      this.$api.deleteItem({
+        path: this.created_video.$path,
+      });
+      this.created_video = false;
+    },
     async renderMontage() {
       this.is_exporting = true;
       this.created_video = false;
@@ -339,15 +350,18 @@ export default {
         (p) => p.key === this.resolution_preset_picked
       );
 
+      const additional_meta = {};
+      additional_meta.$origin = "make";
+      if (this.connected_as?.$path)
+        additional_meta.$authors = [this.connected_as.$path];
+
       let instructions = {
         recipe: this.make.type,
         suggested_file_name: this.make.type,
         montage: this.montage,
         output_width,
         output_height,
-        additional_meta: {
-          $origin: "make",
-        },
+        additional_meta,
       };
 
       const current_task_id = await this.$api.exportFolder({
@@ -383,8 +397,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._montageModules {
-  padding: calc(var(--spacing) * 2);
-  max-width: 600px;
+  padding: calc(var(--spacing) * 1);
+  max-width: 680px;
   margin: 0 auto;
   width: 100%;
 

@@ -5,7 +5,7 @@
         <slot />
       </div>
 
-      <div class="">
+      <div v-if="enable_options">
         <div class="u-sameRow">
           <a
             :disabled="!export_href"
@@ -68,6 +68,10 @@ export default {
     export_blob: [Boolean, Blob],
     export_href: String,
     project_path: String,
+    enable_options: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {},
   data() {
