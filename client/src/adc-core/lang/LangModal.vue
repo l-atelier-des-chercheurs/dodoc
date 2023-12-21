@@ -1,8 +1,7 @@
 <template>
   <BaseModal2 :title="$t('ui_lang_select')" @close="$emit('close')">
-    <div class="" :key="$i18n.locale">
+    <div class="_langSelect" :key="$i18n.locale">
       <SelectField
-        :field_name="'status'"
         :content="current_lang"
         :can_edit="true"
         :options="lang_options"
@@ -257,6 +256,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._langSelect {
+  max-width: 30ch;
+}
+
 ._allMissingTranslations {
   border: 2px solid var(--c-gris);
   background: var(--c-gris_clair);
