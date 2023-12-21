@@ -47,6 +47,12 @@ export default {
   name: "Name",
   filename: "Filename",
 
+  submitted_password_is_wrong: "The submitted password is wrong",
+  account_doesnt_exist: "This account does not exist",
+  submit: "Submit",
+  search_by_title: "Search by title",
+  search_by_name: "Search by name",
+
   space: "Space",
   spaces: "All spaces",
   spaces_instr:

@@ -75,6 +75,7 @@ export default {
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
   search_by_title: "Rechercher par titre",
+  search_by_name: "Rechercher par nom",
 
   connection_lost: `Connexion perdue`,
   connection_lost_in: `La connexion au serveur s’est interrompue.`,

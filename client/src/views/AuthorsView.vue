@@ -9,21 +9,29 @@
 
     <h1 class="_title" v-text="$t('list_of_contributors')" />
 
-    <div class="_allAuthors">
-      <template v-for="author in sorted_authors">
-        <AuthorCard
-          v-if="!connected_as"
-          :key="author.$path"
-          :author="author"
-          :links_to_author_page="true"
-        />
-        <AuthorCard
-          v-else
-          :key="author.$path"
-          :author="author"
-          :links_to_author_page="true"
-        />
-      </template>
+    <div class="u-spacingBottom _searchField">
+      <input
+        type="search"
+        :placeholder="$t('search_by_name')"
+        v-model="search_author_name"
+      />
+    </div>
+
+    <transition-group
+      tag="section"
+      class="_allAuthors"
+      name="projectsList"
+      appear
+    >
+      <AuthorCard
+        v-for="author in filtered_authors"
+        :key="author.$path"
+        :author="author"
+        :links_to_author_page="true"
+      />
+    </transition-group>
+    <div v-if="filtered_authors.length === 0">
+      {{ $t("no_authors_to_show") }}
     </div>
   </div>
 </template>
@@ -39,6 +47,7 @@ export default {
     return {
       path: "authors",
       authors: [],
+      search_author_name: "",
     };
   },
   i18n: {
@@ -57,9 +66,15 @@ export default {
   watch: {},
   computed: {
     sorted_authors() {
-      debugger;
       return this.authors.slice().sort((a, b) => {
         return a.name.localeCompare(b.name);
+      });
+    },
+    filtered_authors() {
+      return this.sorted_authors.filter((a) => {
+        if (this.search_author_name)
+          return this.twoStringsSearch(a.name, this.search_author_name);
+        return true;
       });
     },
   },
@@ -80,5 +95,9 @@ export default {
 ._title {
   margin-top: calc(var(--spacing) * 2);
   margin-bottom: calc(var(--spacing) * 1);
+}
+
+._searchField {
+  max-width: 30ch;
 }
 </style>
