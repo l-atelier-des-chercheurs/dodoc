@@ -55,7 +55,7 @@
                 :key="author_path"
                 :edit_mode="edit_mode"
                 :mode="'remove'"
-                @click="removeAuthor(atpath)"
+                @click="removeAuthor(author_path)"
               />
             </transition-group>
             <br />
