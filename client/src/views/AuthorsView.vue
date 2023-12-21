@@ -10,7 +10,7 @@
     <h1 class="_title" v-text="$t('list_of_contributors')" />
 
     <div class="_allAuthors">
-      <template v-for="author in authors">
+      <template v-for="author in sorted_authors">
         <AuthorCard
           v-if="!connected_as"
           :key="author.$path"
@@ -55,7 +55,14 @@ export default {
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    sorted_authors() {
+      debugger;
+      return this.authors.slice().sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+    },
+  },
   methods: {},
 };
 </script>
