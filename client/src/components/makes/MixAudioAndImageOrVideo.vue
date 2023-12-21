@@ -147,6 +147,11 @@ export default {
         folder_path: this.make.$path,
       });
 
+      const additional_meta = {};
+      additional_meta.$origin = "make";
+      if (this.connected_as?.$path)
+        additional_meta.$authors = [this.connected_as.$path];
+
       let instructions = {
         recipe: this.make.type,
         suggested_file_name: this.make.type,
@@ -156,9 +161,7 @@ export default {
         }),
         output_width: 1280,
         output_height: 720,
-        additional_meta: {
-          $origin: "make",
-        },
+        additional_meta,
       };
 
       if (this.make.type === "mix_audio_and_image") {

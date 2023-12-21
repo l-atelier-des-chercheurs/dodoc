@@ -430,15 +430,18 @@ export default {
     exportStopmotion: async function () {
       this.compilation_in_progress = true;
 
+      const additional_meta = {};
+      additional_meta.$origin = "capture";
+      if (this.connected_as?.$path)
+        additional_meta.$authors = [this.connected_as.$path];
+
       const current_task_id = await this.$api.exportFolder({
         path: this.current_stopmotion_path,
         instructions: {
           recipe: "stopmotion",
           field: "images_list",
           frame_rate: this.frame_rate,
-          additional_meta: {
-            $origin: "capture",
-          },
+          additional_meta,
         },
       });
 

@@ -162,15 +162,18 @@ export default {
   },
   methods: {
     async exportPublication() {
+      const additional_meta = {};
+      additional_meta.$origin = "publish";
+      if (this.connected_as?.$path)
+        additional_meta.$authors = [this.connected_as.$path];
+
       let instructions = {
         recipe: "pdf",
         page_width: this.publication.page_width,
         page_height: this.publication.page_height,
         layout_mode: this.publication.layout_mode || "print",
         suggested_file_name: this.publication.title,
-        additional_meta: {
-          $origin: "publish",
-        },
+        additional_meta,
       };
 
       if (this.publication.page_spreads === true) instructions.page_width *= 2;
