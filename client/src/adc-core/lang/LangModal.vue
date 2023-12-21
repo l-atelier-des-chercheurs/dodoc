@@ -257,7 +257,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._langSelect {
-  max-width: 30ch;
+  max-width: 35ch;
 }
 
 ._allMissingTranslations {
