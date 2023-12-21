@@ -31,6 +31,12 @@
               : 'inbetween'
           "
           :default_image_duration="default_image_duration"
+          @moveUp="
+            moveModuleTo({ path: _module.$path, new_position: index - 1 })
+          "
+          @moveDown="
+            moveModuleTo({ path: _module.$path, new_position: index + 1 })
+          "
           @remove="removeModule(_module.$path)"
         />
         <!-- <PublicationModule
