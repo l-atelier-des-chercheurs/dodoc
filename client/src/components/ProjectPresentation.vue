@@ -69,7 +69,7 @@ x
         :instructions="$t('project_title_instructions')"
       />
       <TitleField
-        v-if="context !== 'tiny'"
+        v-if="context !== 'tiny' || (context === 'list' && project.description)"
         :field_name="'description'"
         class="_description"
         :label="
