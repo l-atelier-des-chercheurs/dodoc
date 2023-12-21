@@ -134,6 +134,16 @@ export default {
   low: "Low",
   rough: "Draft",
 
+  no_accounts_yet: "No accounts created yet",
+  add_accounts: "Add accounts",
+  list_of_accounts: "List of accounts",
+  restart_to_apply: "Restart do•doc to apply",
+  refresh_window_to_apply: "Refresh the window to apply",
+  restart: "Restart do•doc",
+  reveal: "Reveal",
+  choose_a_pane: "Choose a pane to start!",
+  latest_changes_to_project: "Latest changes to project",
+
   download: "Download",
   download_ready: "The download is ready",
   download_image: "Download image",

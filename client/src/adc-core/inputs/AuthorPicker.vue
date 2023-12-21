@@ -1,15 +1,24 @@
 <template>
   <div class="_authorPicker">
-    <div v-if="all_authors_except_current.length === 0" class="u-instructions">
+    <div class="u-spacingBottom _searchField">
+      <input
+        type="search"
+        size="small"
+        :placeholder="$t('search_by_name')"
+        v-model="search_author_name"
+      />
+    </div>
+
+    <div v-if="filtered_authors.length === 0" class="u-instructions">
       {{ $t("no_authors_to_show") }}
     </div>
     <transition-group tag="div" class="_list" name="projectsList" appear>
       <AuthorTag
-        v-for="author_path in all_authors_except_current"
-        :path="author_path"
-        :key="author_path"
+        v-for="{ $path } in filtered_authors"
+        :path="$path"
+        :key="$path"
         :mode="'add'"
-        @click="$emit('addAuthor', author_path)"
+        @click="$emit('addAuthor', $path)"
       />
     </transition-group>
   </div>
@@ -22,29 +31,47 @@ export default {
   components: {},
   data() {
     return {
-      all_authors_path: [],
+      all_authors: [],
+      search_author_name: "",
     };
   },
   async created() {
-    const all_authors = await this.$api.getFolders({
+    this.all_authors = await this.$api.getFolders({
       path: `authors`,
     });
-    this.all_authors_path = all_authors.map(({ $path }) => $path);
   },
   async mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
     all_authors_except_current() {
-      return this.all_authors_path.filter(
-        (a) => !this.current_authors.includes(a)
-      );
+      return this.all_authors.filter((a) => {
+        if (this.current_authors.length > 0)
+          return !this.current_authors.includes(a.$path);
+        return true;
+      });
+    },
+    sorted_authors() {
+      return this.all_authors_except_current.slice().sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+    },
+    filtered_authors() {
+      return this.sorted_authors.filter((a) => {
+        if (this.search_author_name)
+          return this.twoStringsSearch(a.name, this.search_author_name);
+        return true;
+      });
     },
   },
   methods: {},
 };
 </script>
 <style lang="scss" scoped>
+._searchField {
+  margin-bottom: calc(var(--spacing) / 4);
+  max-width: 20ch;
+}
 ._maxlength {
   flex: 0 0 auto;
   padding: calc(var(--spacing) / 4) 0;

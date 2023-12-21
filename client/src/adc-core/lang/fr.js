@@ -334,7 +334,6 @@ export default {
   no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
   add_accounts: "Rajouter des comptes",
   list_of_accounts: "Liste des comptes",
-  // only_accounts: "Seulement les comptes suivants",
   restart_to_apply: "Relancez do•doc pour appliquer",
   refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
   restart: "Relancer do•doc",
