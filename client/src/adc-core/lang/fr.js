@@ -75,6 +75,7 @@ export default {
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
   search_by_title: "Rechercher par titre",
+  search_by_name: "Rechercher par nom",
 
   connection_lost: `Connexion perdue`,
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
@@ -333,7 +334,6 @@ export default {
   no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
   add_accounts: "Rajouter des comptes",
   list_of_accounts: "Liste des comptes",
-  // only_accounts: "Seulement les comptes suivants",
   restart_to_apply: "Relancez do•doc pour appliquer",
   refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
   restart: "Relancer do•doc",

@@ -69,7 +69,7 @@ x
         :instructions="$t('project_title_instructions')"
       />
       <TitleField
-        v-if="context !== 'tiny'"
+        v-if="context !== 'tiny' || (context === 'list' && project.description)"
         :field_name="'description'"
         class="_description"
         :label="
@@ -271,12 +271,21 @@ export default {
     }
     ._description {
       font-size: var(--sl-font-size-small);
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
 
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
+      ::v-deep ._content {
+        display: block;
+        width: 100%;
+
+        p:first-child {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        p:not(:first-child) {
+          display: none;
+        }
+      }
     }
   }
 

@@ -47,6 +47,12 @@ export default {
   name: "Name",
   filename: "Filename",
 
+  submitted_password_is_wrong: "The submitted password is wrong",
+  account_doesnt_exist: "This account does not exist",
+  submit: "Submit",
+  search_by_title: "Search by title",
+  search_by_name: "Search by name",
+
   space: "Space",
   spaces: "All spaces",
   spaces_instr:
@@ -128,6 +134,16 @@ export default {
   low: "Low",
   rough: "Draft",
 
+  no_accounts_yet: "No accounts created yet",
+  add_accounts: "Add accounts",
+  list_of_accounts: "List of accounts",
+  restart_to_apply: "Restart do•doc to apply",
+  refresh_window_to_apply: "Refresh the window to apply",
+  restart: "Restart do•doc",
+  reveal: "Reveal",
+  choose_a_pane: "Choose a pane to start!",
+  latest_changes_to_project: "Latest changes to project",
+
   download: "Download",
   download_ready: "The download is ready",
   download_image: "Download image",
@@ -152,7 +168,7 @@ export default {
   position_on_map: "No position on the map",
   place_on_map: "Position on map",
   show_on_map: "Show on map",
-  placed_on_map: "Already positioned positioned on map",
+  placed_on_map: "Already positioned on map",
   change_location: "Change position",
   remove_pin: "Remove this pin",
   cancel_position: "Erase position",

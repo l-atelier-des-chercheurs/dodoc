@@ -561,6 +561,11 @@ export default {
       this.trimmed_video = false;
       this.export_href = undefined;
 
+      const additional_meta = {};
+      additional_meta.$origin = "make";
+      if (this.connected_as?.$path)
+        additional_meta.$authors = [this.connected_as.$path];
+
       let instructions = {
         recipe: "trim_video",
         suggested_file_name: this.base_media.$media_filename + "_trim",
@@ -569,9 +574,7 @@ export default {
           $path: this.base_media.$path,
           $media_filename: this.base_media.$media_filename,
         }),
-        additional_meta: {
-          $origin: "make",
-        },
+        additional_meta,
       };
 
       const current_task_id = await this.$api.exportFolder({

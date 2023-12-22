@@ -2,7 +2,27 @@
   <div class="_montageModule">
     <div class="_line" />
     <div class="_index">
-      {{ index }}
+      <div class="_btns">
+        <button
+          type="button"
+          class="u-button u-button_icon"
+          :disabled="module_position === 'alone' || module_position === 'first'"
+          @click="$emit('moveUp')"
+        >
+          <sl-icon name="chevron-up" />
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_icon"
+          :disabled="module_position === 'alone' || module_position === 'last'"
+          @click="$emit('moveDown')"
+        >
+          <sl-icon name="chevron-down" />
+        </button>
+      </div>
+      <span class="_num">
+        {{ index }}
+      </span>
     </div>
 
     <div class="_preview">
@@ -179,7 +199,7 @@ export default {
   background: white;
   width: 4px;
   height: calc(100% + 3rem);
-  margin-left: 1.5rem;
+  margin-left: 3.1rem;
   margin-top: 2px;
   z-index: 0;
   top: 0;
@@ -188,13 +208,35 @@ export default {
 ._index {
   position: sticky;
   top: 0;
-  font-size: 5rem;
   font-family: Fira Mono;
   text-transform: uppercase;
   line-height: 1;
   font-weight: 600;
   z-index: 1;
   background-color: var(--c-bleumarine);
+
+  margin-top: -9px;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  ._btns {
+    display: flex;
+    flex-flow: column nowrap;
+
+    > .u-button {
+      font-size: 140%;
+    }
+  }
+
+  ._num {
+    font-size: 5rem;
+  }
+
+  > .u-button {
+    font-size: 50%;
+  }
 }
 
 .u-label {

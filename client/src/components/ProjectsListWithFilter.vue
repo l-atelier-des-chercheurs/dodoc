@@ -45,7 +45,7 @@
         </div> -->
         <div class="u-sameRow" style="width: 100%">
           <input
-            type="text"
+            type="search"
             v-model="search_project"
             :placeholder="$t('search_by_title')"
           />
@@ -295,9 +295,7 @@ export default {
         }
 
         if (this.search_project)
-          return p.title
-            .toLowerCase()
-            .includes(this.search_project.toLowerCase());
+          return this.twoStringsSearch(p.title, this.search_project);
 
         if (this.opened_event)
           if (this.opened_event !== p.event_linked_slug) return false;

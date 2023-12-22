@@ -143,11 +143,23 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
   border-radius: 3px;
-  border: 1px solid transparent;
+  // border: 1px solid transparent;
   // transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--own {
-    border-color: var(--c-bleumarine);
+    // border-color: var(--c-bleumarine);
+    &::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: var(--c-bleumarine);
+      position: absolute;
+      z-index: 4;
+      bottom: 0;
+      left: 0;
+      margin: calc(var(--spacing) / 2);
+      border-radius: 50%;
+    }
   }
 
   ._content {
@@ -169,7 +181,7 @@ export default {
   &.is--selected {
     &::after {
       content: "";
-      background: var(--c-noir);
+      background: var(--c-bleumarine);
       position: absolute;
       inset: 0;
       opacity: 0.4;
@@ -361,10 +373,14 @@ export default {
 // }
 ._favSwitch {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  margin: calc(var(--spacing) / 4);
+  top: 0;
+  right: 0;
+  // margin: calc(var(--spacing) / 4);
   z-index: 1;
+
+  .u-button_icon {
+    padding: calc(var(--spacing) / 3);
+  }
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
