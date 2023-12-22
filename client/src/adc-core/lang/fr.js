@@ -683,6 +683,7 @@ export default {
   other: "Autres",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",
+  all_authors: "De tous les auteurs",
 
   or_download_media_on_device: "ou télécharger ce média sur votre appareil",
 

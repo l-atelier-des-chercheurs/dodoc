@@ -215,4 +215,5 @@ export default {
   pick_media: "Pick one media",
   pick_medias: "Pick one or more medias",
   remove_image: "Remove this image",
+  all_authors: "From all authors",
 };

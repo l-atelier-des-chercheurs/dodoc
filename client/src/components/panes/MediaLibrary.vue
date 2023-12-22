@@ -144,6 +144,26 @@
             />
           </select>
 
+          <select
+            class="_selectMediaAuthor"
+            size="small"
+            v-model="author_of_media_to_display"
+            :class="{
+              'is--active': author_of_media_to_display !== 'all',
+            }"
+          >
+            <option key="all" value="all" v-text="$t('all_authors')" />
+            <option
+              v-for="author_of_media in authors_of_medias"
+              :key="author_of_media.$path"
+              :value="author_of_media.$path"
+              v-text="
+                author_of_media.name +
+                quantityOfMediaWithAuthor(author_of_media.$path)
+              "
+            />
+          </select>
+
           <div class="_groupBy">
             <template v-if="tile_mode !== 'map'">
               <div
@@ -418,6 +438,8 @@ export default {
           label: "4 • " + this.$t("publish"),
         },
       ],
+
+      author_of_media_to_display: "all",
     };
   },
   created() {},
@@ -474,6 +496,10 @@ export default {
         if (this.origin_of_media_to_display !== "all")
           if (m.$origin !== this.origin_of_media_to_display) return false;
 
+        if (this.author_of_media_to_display !== "all")
+          if (!m.$authors?.includes(this.author_of_media_to_display))
+            return false;
+
         if (this.tile_mode === "map") if (!m.$infos?.gps) return false;
 
         return true;
@@ -508,6 +534,17 @@ export default {
       if (this.focused_media_index === this.filtered_medias.length - 1)
         return "last";
       return "none";
+    },
+    authors_of_medias() {
+      return this.sorted_medias.reduce((acc, m) => {
+        m.$authors?.map((a_path) => {
+          if (!acc.some((a) => a.$path === a_path)) {
+            const a = this.getAuthor(a_path);
+            acc.push(a);
+          }
+        });
+        return acc;
+      }, []);
     },
   },
   methods: {
@@ -616,6 +653,12 @@ export default {
       if (val === "all") return "";
       const num = this.sorted_medias.filter(
         (m) => m[key] && m[key] === val
+      ).length;
+      return ` (${num})`;
+    },
+    quantityOfMediaWithAuthor(author_path) {
+      const num = this.sorted_medias.filter((m) =>
+        m.$authors?.includes(author_path)
       ).length;
       return ` (${num})`;
     },
@@ -821,7 +864,8 @@ export default {
 }
 
 ._selectMediaOrigin,
-._selectMediaType {
+._selectMediaType,
+._selectMediaAuthor {
   width: 20ch;
 }
 
