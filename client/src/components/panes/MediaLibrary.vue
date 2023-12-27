@@ -111,9 +111,15 @@
               v-for="origin in origins_of_medias"
               :key="origin.key"
               :value="origin.key"
+              :disabled="
+                quantityOfMediaWithKey({
+                  key: '$origin',
+                  val: origin.key,
+                }) === 0
+              "
               v-text="
                 origin.label +
-                quantityOfMediaWithKey({
+                formattedQuantity({
                   key: '$origin',
                   val: origin.key,
                 })
@@ -134,9 +140,15 @@
               v-for="type_of_media in types_of_medias"
               :key="type_of_media.key"
               :value="type_of_media.key"
+              :disabled="
+                quantityOfMediaWithKey({
+                  key: '$type',
+                  val: type_of_media.key,
+                }) === 0
+              "
               v-text="
                 type_of_media.label +
-                quantityOfMediaWithKey({
+                formattedQuantity({
                   key: '$type',
                   val: type_of_media.key,
                 })
@@ -157,9 +169,10 @@
               v-for="author_of_media in authors_of_medias"
               :key="author_of_media.$path"
               :value="author_of_media.$path"
+              :disabled="quantityOfMediaWithAuthor(author_of_media.$path) === 0"
               v-text="
                 author_of_media.name +
-                quantityOfMediaWithAuthor(author_of_media.$path)
+                formattedQuantityWithAuthor(author_of_media.$path)
               "
             />
           </select>
@@ -410,6 +423,10 @@ export default {
           label: this.$t("stl"),
         },
         {
+          key: "obj",
+          label: this.$t("obj"),
+        },
+        {
           key: "other",
           label: this.$t("other"),
         },
@@ -650,17 +667,27 @@ export default {
       if (this.batch_mode) this.batch_mode = false;
     },
     quantityOfMediaWithKey({ key, val }) {
-      if (val === "all") return "";
+      if (val === "all") return false;
       const num = this.sorted_medias.filter(
         (m) => m[key] && m[key] === val
       ).length;
-      return ` (${num})`;
+      return num;
+    },
+    formattedQuantity({ key, val }) {
+      const qty = this.quantityOfMediaWithKey({ key, val });
+      if (qty === false) return "";
+      return ` (${qty})`;
     },
     quantityOfMediaWithAuthor(author_path) {
       const num = this.sorted_medias.filter((m) =>
         m.$authors?.includes(author_path)
       ).length;
-      return ` (${num})`;
+      return num;
+    },
+    formattedQuantityWithAuthor(author_path) {
+      const qty = this.quantityOfMediaWithAuthor(author_path);
+      if (qty === false) return "";
+      return ` (${qty})`;
     },
     updateInputFiles($event) {
       this.files_to_import = Array.from($event.target.files);
