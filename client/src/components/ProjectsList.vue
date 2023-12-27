@@ -34,7 +34,7 @@
           </transition-group>
         </div>
       </div>
-      <div class="">
+      <div class="_notFinished">
         <transition-group
           tag="section"
           class="_projectsList"
@@ -116,12 +116,16 @@ export default {
   }
 }
 
+._finished,
+._notFinished {
+  margin-top: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 1);
+}
+
 ._finished {
   background: var(--c-pinnedBg);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1)
     calc(var(--spacing) / 1);
-  margin-top: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 1);
   margin-left: calc(var(--spacing) / -1);
   margin-right: calc(var(--spacing) / -1);
 }
