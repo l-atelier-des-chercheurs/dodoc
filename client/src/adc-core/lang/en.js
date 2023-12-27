@@ -244,6 +244,7 @@ export default {
   vecto: "Shapes",
   pdf: "PDF",
   stl: "STL",
+  obj: "OBJ",
   other: "Other",
   all_medias_types: "Of all types",
   all_origins: "From all origins",

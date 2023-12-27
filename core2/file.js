@@ -466,6 +466,9 @@ module.exports = (function () {
         case ".webm":
           new_meta.$type = "video";
           break;
+        case ".obj":
+          new_meta.$type = "obj";
+          break;
         case ".stl":
           new_meta.$type = "stl";
           break;

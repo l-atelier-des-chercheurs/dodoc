@@ -36,7 +36,9 @@
                 (page_template === 'page_by_page' &&
                   !single_media_displayed_at_full_ratio)) &&
               !mediaIsSquare(media_with_linked._linked_media) &&
-              media_with_linked._linked_media.$type !== 'stl'
+              media_with_linked._linked_media.$type !== 'stl' &&
+              media_with_linked._linked_media.$type !== 'obj' &&
+              media_with_linked._linked_media.$type !== 'other'
             "
           >
             <button

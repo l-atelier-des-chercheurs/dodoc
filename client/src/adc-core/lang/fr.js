@@ -680,6 +680,7 @@ export default {
   vecto: "Formes",
   pdf: "PDF",
   stl: "STL",
+  obj: "OBJ",
   other: "Autre",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",
