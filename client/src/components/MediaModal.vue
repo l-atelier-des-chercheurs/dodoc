@@ -2,27 +2,6 @@
   <div class="_mediaModal">
     <div class="_mediaModal--overlay" @click="$emit('close')" />
 
-    <div class="_topRightBtn">
-      <button
-        type="button"
-        v-if="!$root.is_mobile_view"
-        class="u-button u-button_icon"
-        @click="toggleMeta"
-      >
-        <b-icon
-          :icon="
-            show_meta_sidebar ? 'chevron-double-right' : 'chevron-double-left'
-          "
-        />
-      </button>
-      <button
-        type="button"
-        class="u-button u-button_icon"
-        @click="$emit('close')"
-      >
-        <b-icon icon="x-lg" />
-      </button>
-    </div>
     <div
       class="_mediaModal--content"
       :class="{
@@ -82,23 +61,6 @@
             </span>
           </div>
         </transition>
-      </div>
-
-      <div class="_selectBtn" v-if="select_mode">
-        <button
-          type="button"
-          class="u-buttonLink has--whitebg"
-          @click="$emit('close')"
-        >
-          {{ $t("cancel") }}
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="$emit('select')"
-        >
-          {{ $t("select") }}
-        </button>
       </div>
 
       <div class="_meta" v-if="show_meta_sidebar || $root.is_mobile_view">
@@ -215,6 +177,45 @@
         />
       </div>
     </div>
+
+    <div class="_selectBtn" v-if="select_mode">
+      <button
+        type="button"
+        class="u-buttonLink has--whitebg"
+        @click="$emit('close')"
+      >
+        {{ $t("cancel") }}
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="$emit('select')"
+      >
+        {{ $t("select") }}
+      </button>
+    </div>
+
+    <div class="_topRightBtn">
+      <button
+        type="button"
+        v-if="!$root.is_mobile_view"
+        class="u-button u-button_icon"
+        @click="toggleMeta"
+      >
+        <b-icon
+          :icon="
+            show_meta_sidebar ? 'chevron-double-right' : 'chevron-double-left'
+          "
+        />
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        @click="$emit('close')"
+      >
+        <b-icon icon="x-lg" />
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -248,8 +249,9 @@ export default {
     },
   },
   created() {
-    if (this.select_mode) this.show_meta_sidebar = false;
-    else if (localStorage.getItem("show_meta_sidebar") === "false")
+    // if (this.select_mode) this.show_meta_sidebar = false;
+    // else
+    if (localStorage.getItem("show_meta_sidebar") === "false")
       this.show_meta_sidebar = false;
   },
   mounted() {
@@ -293,22 +295,6 @@ export default {
     inset: 0;
     opacity: 0.6;
     cursor: pointer;
-  }
-
-  ._mediaModal--content {
-    // background: var(--c-noir);
-    // background: var(--c-gris_clair);
-    // border-radius: var(--border-radius);
-    // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-
-    &.is--mobileView {
-      flex-flow: column nowrap;
-
-      *._preview {
-        flex: 1 1 320px;
-      }
-    }
   }
 
   ._navBtn {
@@ -366,44 +352,63 @@ export default {
 }
 
 ._selectBtn {
+  position: sticky;
   display: flex;
   place-items: center;
   justify-content: center;
   width: 100%;
   gap: calc(var(--spacing) / 1);
 
-  position: absolute;
+  z-index: 100;
+
   bottom: 0;
   left: 0;
   background: none;
   padding: calc(var(--spacing) / 1);
 
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
 }
 
 ._mediaModal--content {
   position: relative;
   border-top: 1px solid var(--c-gris);
-
-  height: 100%;
   width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
+  height: 100%;
+  background: white;
 
-  > * {
-    &._preview {
-      position: relative;
+  > ._preview {
+    position: relative;
+    background: var(--c-gris);
+    overflow: hidden;
+  }
+
+  // large view, side by side
+  &:not(.is--mobileView) {
+    display: flex;
+    flex-flow: row nowrap;
+    overflow: hidden;
+    height: 100%;
+
+    > ._preview {
+      top: 0;
       flex: 10 1 320px;
-      min-height: 50vh;
-      // border: 2px solid var(--c-gris);
-      background: var(--c-gris);
-      // height: 50%;
     }
-    &._meta {
+    > ._meta {
+      position: relative;
+      z-index: 2;
       background: white;
       flex: 2 0 200px;
-      height: 100%;
       overflow: auto;
+    }
+  }
+  &.is--mobileView {
+    overflow: auto;
+
+    > ._preview {
+      height: 70vh;
+    }
+    > ._meta {
     }
   }
 }
@@ -412,7 +417,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 1;
+  z-index: 100;
 
   display: flex;
   flex-flow: row wrap;
