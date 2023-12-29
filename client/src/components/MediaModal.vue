@@ -344,7 +344,8 @@ export default {
 
 ._meta {
   // margin: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) / 1)
+    calc(var(--spacing) / 1);
   background: var(--panel-color);
   border: var(--panel-borders);
   box-shadow: var(--panel-shadows);
