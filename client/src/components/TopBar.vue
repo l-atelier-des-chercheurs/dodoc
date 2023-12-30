@@ -164,6 +164,7 @@ export default {
     border-radius: 4px;
     font-weight: 500;
     font-size: var(--sl-font-size-normal);
+    color: inherit;
   }
 }
 
