@@ -447,6 +447,9 @@ module.exports = (function () {
     if (additional_meta.$origin && typeof additional_meta.$origin === "string")
       new_meta.$origin = additional_meta.$origin;
 
+    if (additional_meta.$authors && Array.isArray(additional_meta.$authors))
+      new_meta.$authors = additional_meta.$authors;
+
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;
     } else if (filename) {
@@ -462,6 +465,9 @@ module.exports = (function () {
         case ".mp4":
         case ".webm":
           new_meta.$type = "video";
+          break;
+        case ".obj":
+          new_meta.$type = "obj";
           break;
         case ".stl":
           new_meta.$type = "stl";

@@ -2,33 +2,25 @@
   <div class="_mediaModal">
     <div class="_mediaModal--overlay" @click="$emit('close')" />
 
-    <div class="_topRightBtn">
-      <button
-        type="button"
-        v-if="!$root.is_mobile_view"
-        class="u-button u-button_icon"
-        @click="toggleMeta"
-      >
-        <b-icon
-          :icon="
-            show_meta_sidebar ? 'chevron-double-right' : 'chevron-double-left'
-          "
-        />
-      </button>
-      <button
-        type="button"
-        class="u-button u-button_icon"
-        @click="$emit('close')"
-      >
-        <b-icon icon="x-lg" />
-      </button>
-    </div>
     <div
       class="_mediaModal--content"
       :class="{
         'is--mobileView': $root.is_mobile_view,
       }"
     >
+      <!-- // specific mobile only close btn -->
+      <div class="_stickyClose" v-if="$root.is_mobile_view">
+        <div class="_stickyClose--content">
+          <button
+            type="button"
+            class="u-button u-button_icon u-button_transparent _navBtn"
+            @click="$emit('close')"
+          >
+            <b-icon icon="x-lg" />
+          </button>
+        </div>
+      </div>
+
       <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
         <MediaContent
@@ -44,6 +36,29 @@
           <OptimizeMedia :media="file" @close="$emit('close')" />
         </div>
 
+        <div class="_topRightBtn" v-if="!$root.is_mobile_view">
+          <button
+            type="button"
+            class="u-button u-button_icon u-button_transparent _navBtn"
+            @click="toggleMeta"
+          >
+            <b-icon
+              :icon="
+                show_meta_sidebar
+                  ? 'chevron-double-right'
+                  : 'chevron-double-left'
+              "
+            />
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_icon u-button_transparent _navBtn"
+            @click="$emit('close')"
+          >
+            <b-icon icon="x-lg" />
+          </button>
+        </div>
+
         <transition name="scaleOutFade" mode="out-in">
           <div
             class="_navBtns"
@@ -57,12 +72,14 @@
                 v-if="position_in_list !== 'first'"
                 @click="$emit('prevMedia')"
               >
+                <b-icon icon="arrow-left-short" />
+                <!-- 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
                   <path
                     d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
                     style="fill: var(--c-noir)"
                   />
-                </svg>
+                </svg> -->
               </button>
             </span>
             <span>
@@ -72,33 +89,17 @@
                 v-show="position_in_list !== 'last'"
                 @click="$emit('nextMedia')"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+                <b-icon icon="arrow-right-short" />
+                <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
                   <path
                     d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
                     style="fill: #353535"
                   />
-                </svg>
+                </svg> -->
               </button>
             </span>
           </div>
         </transition>
-      </div>
-
-      <div class="_selectBtn" v-if="select_mode">
-        <button
-          type="button"
-          class="u-buttonLink has--whitebg"
-          @click="$emit('close')"
-        >
-          {{ $t("cancel") }}
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="$emit('select')"
-        >
-          {{ $t("select") }}
-        </button>
       </div>
 
       <div class="_meta" v-if="show_meta_sidebar || $root.is_mobile_view">
@@ -146,6 +147,7 @@
         <DetailsPane
           :header="$t('informations')"
           :icon="'info-square'"
+          :is_open_initially="true"
           class="u-spacingBottom"
         >
           <DateDisplay
@@ -215,6 +217,23 @@
         />
       </div>
     </div>
+
+    <div class="_selectBtn" v-if="select_mode">
+      <button
+        type="button"
+        class="u-buttonLink has--whitebg"
+        @click="$emit('close')"
+      >
+        {{ $t("cancel") }}
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="$emit('select')"
+      >
+        {{ $t("select") }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -248,8 +267,9 @@ export default {
     },
   },
   created() {
-    if (this.select_mode) this.show_meta_sidebar = false;
-    else if (localStorage.getItem("show_meta_sidebar") === "false")
+    // if (this.select_mode) this.show_meta_sidebar = false;
+    // else
+    if (localStorage.getItem("show_meta_sidebar") === "false")
       this.show_meta_sidebar = false;
   },
   mounted() {
@@ -295,38 +315,6 @@ export default {
     cursor: pointer;
   }
 
-  ._mediaModal--content {
-    // background: var(--c-noir);
-    // background: var(--c-gris_clair);
-    // border-radius: var(--border-radius);
-    // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-
-    &.is--mobileView {
-      flex-flow: column nowrap;
-
-      *._preview {
-        flex: 1 1 320px;
-      }
-    }
-  }
-
-  ._navBtn {
-    padding: calc(var(--spacing) / 2);
-    pointer-events: auto;
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    border-radius: 50%;
-
-    background: rgba(255, 255, 255, 0.4);
-    position: relative;
-    z-index: 100;
-
-    &:hover,
-    &:focus {
-      background: rgba(255, 255, 255, 1);
-    }
-  }
-
   ::v-deep {
     ._mediaContent {
       // position: absolute;
@@ -356,9 +344,27 @@ export default {
   }
 }
 
+._navBtn {
+  padding: calc(var(--spacing) / 2);
+  pointer-events: auto;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.4);
+  position: relative;
+  z-index: 100;
+
+  font-size: var(--sl-font-size-medium);
+
+  &:hover,
+  &:focus {
+    background: rgba(255, 255, 255, 1);
+  }
+}
+
 ._meta {
   // margin: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) / 1);
   background: var(--panel-color);
   border: var(--panel-borders);
   box-shadow: var(--panel-shadows);
@@ -366,69 +372,88 @@ export default {
 }
 
 ._selectBtn {
+  position: sticky;
   display: flex;
   place-items: center;
   justify-content: center;
   width: 100%;
   gap: calc(var(--spacing) / 1);
 
-  position: absolute;
+  z-index: 100;
+
   bottom: 0;
   left: 0;
   background: none;
   padding: calc(var(--spacing) / 1);
 
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
 }
 
 ._mediaModal--content {
   position: relative;
   border-top: 1px solid var(--c-gris);
-
-  height: 100%;
   width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
+  height: 100%;
+  background: white;
 
-  > * {
-    &._preview {
-      position: relative;
+  > ._preview {
+    position: relative;
+    background: var(--c-gris);
+    overflow: hidden;
+  }
+
+  // large view, side by side
+  &:not(.is--mobileView) {
+    display: flex;
+    flex-flow: row nowrap;
+    overflow: hidden;
+    height: 100%;
+
+    > ._preview {
+      top: 0;
       flex: 10 1 320px;
-      min-height: 50vh;
-      // border: 2px solid var(--c-gris);
-      background: var(--c-gris);
-      // height: 50%;
     }
-    &._meta {
+    > ._meta {
+      position: relative;
+      z-index: 2;
       background: white;
       flex: 2 0 200px;
-      height: 100%;
       overflow: auto;
     }
   }
+  &.is--mobileView {
+    overflow: auto;
+
+    > ._preview {
+      height: 70vh;
+    }
+    > ._meta {
+    }
+  }
+}
+
+._topRightBtn,
+._stickyClose--content {
+  padding: calc(var(--spacing) / 2);
+}
+
+._stickyClose {
+  position: sticky;
+  top: 0;
+  right: 0;
+  height: 0;
+  z-index: 100;
+  text-align: right;
 }
 
 ._topRightBtn {
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 1;
-
   display: flex;
   flex-flow: row wrap;
-
-  padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
-  margin: 0;
-
-  button {
-    font-size: var(--sl-font-size-medium);
-  }
-
-  &:not(:hover) {
-    // margin-top: -10px;
-    // margin-right: -10px;
-  }
 }
 
 ._navBtns {
@@ -438,7 +463,7 @@ export default {
   width: 100%;
   height: 100%;
 
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
   // padding-bottom: calc(var(--spacing) * 1);
   pointer-events: none;
 
@@ -483,6 +508,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 1);
 }
 </style>

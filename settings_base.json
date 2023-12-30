@@ -4,13 +4,13 @@
   "desired_port": 8080,
   "redirect_port": "",
   "cache_content": true,
+  "bonjour_domain": false,
   "removePermanently": false,
   "versioning": true,
   "tokenIsValidForXDays": 60,
 
   "cacheDirname": "dodoc_cache",
   "contentPath": "dodoc_next",
-  "optimizeFilesOnUpload": false,
 
   "privateKeyPath": "",
   "certificatePath": "",

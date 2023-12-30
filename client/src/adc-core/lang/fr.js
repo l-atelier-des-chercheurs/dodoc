@@ -654,7 +654,7 @@ export default {
 
   stop_recording: "Arrêter la capture",
   pause_recording: "Mettre en pause",
-  unpause_recording: "Relancer l’enregistrement",
+  unpause_recording: "Continuer l’enregistrement",
   record_audio: "Capter un son",
   record_video: "Capter une vidéo",
   stopmotion: "animation",
@@ -680,9 +680,11 @@ export default {
   vecto: "Formes",
   pdf: "PDF",
   stl: "STL",
-  other: "Autres",
+  obj: "OBJ",
+  other: "Autre",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",
+  all_authors: "De tous les auteurs",
 
   or_download_media_on_device: "ou télécharger ce média sur votre appareil",
 
