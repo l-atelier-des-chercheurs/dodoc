@@ -2,7 +2,7 @@ const { Bonjour: BonjourService } = require("bonjour-service");
 
 module.exports = (function () {
   return {
-    init: async ({ name, protocol, port, host = "dodoc.local" }) => {
+    init: async ({ name, protocol, port, host }) => {
       dev.logfunction({ name, protocol, port, host });
 
       let bonjour = new BonjourService();
