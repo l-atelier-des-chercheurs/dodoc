@@ -63,7 +63,7 @@ export default {
 ._allProjects {
   position: relative;
   width: 100%;
-  max-width: calc(var(--max-column-width));
+  // max-width: calc(var(--max-column-width));
   // max-width: calc(var(--max-column-width) + 240px);
   margin: 0 auto;
   padding: calc(var(--spacing) * 1);
