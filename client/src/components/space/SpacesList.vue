@@ -40,54 +40,40 @@
       @openNew="openNewSpace"
     />
 
-    <div class="_pinned" v-if="pinned_spaces.length > 0 || is_instance_admin">
-      <div class="">
-        <DLabel :str="$t('pinned')" />
-        <div
-          v-if="pinned_spaces.length === 0 && is_instance_admin"
-          class="u-instructions"
-        >
-          {{ $t("click_on_pin_on_space") }}
-        </div>
-      </div>
+    <!-- <TitleField
+          :label="$t('description')"
+          :field_name="'description'"
+          :content="stack.description"
+          :path="stack.$path"
+          :input_type="'markdown'"
+          :can_edit="true"
+        /> -->
 
-      <transition-group tag="section" class="_list" name="projectsList" appear>
-        <SpacePresentation
-          v-for="(space, index) in pinned_spaces"
-          :key="space.$path"
-          :space="space"
-          :context="'list'"
-          :can_edit="false"
-          :position_in_list="positionInPinned(space.$path)"
-          @movePin="movePin(index, $event)"
-          @removeFromPins="removeFromPins(space.$path)"
-        />
-      </transition-group>
-    </div>
-
-    <transition-group
-      tag="section"
-      class="_nonpinned _list"
-      name="projectsList"
-      appear
+    <PinnedNonpinnedFolder
+      v-if="!is_loading"
+      :field_name="'spaces_pinned'"
+      :content="settings.spaces_pinned"
+      :path="''"
+      :folders="sorted_spaces"
+      :can_edit="is_instance_admin"
+      v-slot="slotProps"
     >
       <SpacePresentation
-        v-for="space in non_pinned_spaces"
-        :key="space.$path"
-        :space="space"
+        :space="slotProps.item"
         :context="'list'"
         :can_edit="false"
-        @addToPins="addSpaceToPins(space.$path)"
       />
-    </transition-group>
+    </PinnedNonpinnedFolder>
   </div>
 </template>
 <script>
+import PinnedNonpinnedFolder from "@/adc-core/ui/PinnedNonpinnedFolder.vue";
 import SpacePresentation from "@/components/space/SpacePresentation.vue";
 
 export default {
   props: {},
   components: {
+    PinnedNonpinnedFolder,
     SpacePresentation,
   },
   data() {
@@ -97,6 +83,7 @@ export default {
       path: "spaces",
       fetch_spaces_error: undefined,
       show_create_modal: false,
+      is_loading: true,
     };
   },
   created() {},
@@ -119,6 +106,8 @@ export default {
         return;
       });
     this.$api.join({ room: this.path });
+
+    this.is_loading = false;
   },
   beforeDestroy() {
     this.$api.leave({ room: this.path });
@@ -138,27 +127,6 @@ export default {
           (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
         );
     },
-    list_of_pins_paths() {
-      if (
-        !this.settings?.spaces_pinned ||
-        !Array.isArray(this.settings.spaces_pinned) ||
-        this.settings.spaces_pinned.length === 0
-      )
-        return [];
-      return this.settings.spaces_pinned;
-    },
-    non_pinned_spaces() {
-      return this.sorted_spaces.filter(
-        (s) => !this.list_of_pins_paths.includes(s.$path)
-      );
-    },
-    pinned_spaces() {
-      return this.list_of_pins_paths.reduce((acc, pp) => {
-        const s = this.sorted_spaces.find((sp) => sp.$path === pp);
-        if (s) acc.push(s);
-        return acc;
-      }, []);
-    },
   },
   methods: {
     getSlug(path) {
@@ -168,34 +136,6 @@ export default {
       this.show_create_modal = false;
       const url = this.createURLFromPath(this.path + "/" + new_folder_slug);
       this.$router.push(url);
-    },
-    async addSpaceToPins(path) {
-      let spaces_pinned = this.list_of_pins_paths.slice();
-      spaces_pinned.push(path);
-      this.updateSettings({ spaces_pinned });
-    },
-    movePin(index, dir) {
-      let spaces_pinned = this.list_of_pins_paths.slice();
-      spaces_pinned.move(index, index + dir);
-      this.updateSettings({ spaces_pinned });
-    },
-    positionInPinned(path) {
-      if (this.pinned_spaces.length === 1) return "alone";
-      const index = this.pinned_spaces.findIndex((ps) => ps.$path === path);
-      if (index === 0) return "first";
-      if (index === this.pinned_spaces.length - 1) return "last";
-      return "none";
-    },
-    removeFromPins(path) {
-      let spaces_pinned = this.list_of_pins_paths.slice();
-      spaces_pinned = spaces_pinned.filter((sp) => sp !== path);
-      this.updateSettings({ spaces_pinned });
-    },
-    async updateSettings(new_meta) {
-      await this.$api.updateMeta({
-        path: "",
-        new_meta,
-      });
     },
   },
 };
@@ -212,28 +152,9 @@ export default {
   // padding: calc(var(--spacing) * 1);
 }
 
-._list {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
-  align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-}
-
-._nonpinned {
-  padding: 0 calc(var(--spacing) / 1);
-}
-
 ._createBtn {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   // margin-bottom: calc(var(--spacing) / 4);
-}
-
-._pinned {
-  background: var(--c-pinnedBg);
-  padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2);
-  border-radius: 14px;
 }
 
 ._pinDropzone {
