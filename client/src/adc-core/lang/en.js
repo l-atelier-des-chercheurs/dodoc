@@ -65,7 +65,7 @@ export default {
   completed: "Completed",
   my_projects: "My projects",
   pinned: "Pinned",
-  click_on_pin_on_space: "Pinned spaces will be placed here",
+  click_to_pin: "Click on the yellow pin icon to add here.",
 
   default_value: "Default value",
 

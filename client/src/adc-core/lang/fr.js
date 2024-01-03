@@ -320,7 +320,7 @@ export default {
   completed: "Terminé",
   my_projects: "Mes projets",
   pinned: "Épinglés",
-  click_on_pin_on_space: "Les espaces marqués d’une épingle seront placés ici.",
+  click_to_pin: "Cliquez sur l’épingle jaune pour ajouter le contenu ici.",
 
   default_value: "Par défaut",
 

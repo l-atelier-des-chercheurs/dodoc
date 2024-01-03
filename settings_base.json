@@ -114,6 +114,9 @@
           },
           "description": {
             "type": "string"
+          },
+          "projects_pinned": {
+            "type": "array"
           }
         },
         "$files": {},

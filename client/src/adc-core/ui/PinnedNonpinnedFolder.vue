@@ -7,7 +7,7 @@
           v-if="pinned_folders.length === 0 && can_edit"
           class="u-instructions"
         >
-          {{ $t("click_on_pin_on_space") }}
+          {{ $t("click_to_pin") }}
         </div>
       </div>
 
@@ -205,6 +205,9 @@ export default {
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
   align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--item-width, 320px), 1fr)
+  );
 }
 </style>

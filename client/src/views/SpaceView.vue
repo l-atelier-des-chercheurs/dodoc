@@ -86,7 +86,10 @@
 
         <ProjectsListWithFilter
           v-if="projects !== undefined"
+          :projects_pinned="space.projects_pinned"
+          :space_path="space.$path"
           :projects="projects"
+          :can_edit="can_edit_space"
         />
       </div>
     </div>

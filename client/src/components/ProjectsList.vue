@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="_projectsList">
     <div
       v-if="projects.length === 0"
       class="u-instructions"
@@ -8,64 +8,42 @@
       {{ $t("no_projects") }}
     </div>
     <template v-else>
-      <div
-        class="_finished"
-        v-if="
-          separate_finished_from_non_finished && finished_projects.length > 0
-        "
+      <PinnedNonpinnedFolder
+        v-if="!is_loading"
+        :field_name="'projects_pinned'"
+        :content="projects_pinned"
+        :path="path"
+        :folders="projects"
+        :can_edit="can_edit"
+        v-slot="slotProps"
       >
-        <div class="">
-          <DLabel :str="$t('only_finished')" />
-          <transition-group
-            tag="section"
-            class="_projectsList"
-            :data-context="context"
-            name="projectsList"
-            appear
-          >
-            <ProjectPresentation
-              v-for="project in finished_projects"
-              class="_project"
-              :project="project"
-              :context="context"
-              :display_original_space="display_original_space"
-              :key="project.$path"
-            />
-          </transition-group>
-        </div>
-      </div>
-      <div class="_notFinished">
-        <transition-group
-          tag="section"
-          class="_projectsList"
-          :data-context="context"
-          name="projectsList"
-          appear
-        >
-          <ProjectPresentation
-            v-for="project in non_finished_projects"
-            class="_project"
-            :project="project"
-            :context="context"
-            :display_original_space="display_original_space"
-            :key="project.$path"
-          />
-        </transition-group>
-      </div>
+        <ProjectPresentation
+          :project="slotProps.item"
+          :context="'list'"
+          :display_original_space="display_original_space"
+          :can_edit="false"
+        />
+      </PinnedNonpinnedFolder>
     </template>
   </div>
 </template>
 <script>
 import ProjectPresentation from "@/components/ProjectPresentation.vue";
+import PinnedNonpinnedFolder from "@/adc-core/ui/PinnedNonpinnedFolder.vue";
 
 export default {
   props: {
     projects: Array,
+    projects_pinned: {
+      type: Array,
+      default: () => [],
+    },
+    path: String,
     context: { default: "list", type: String },
     display_original_space: Boolean,
-    separate_finished_from_non_finished: { default: true, type: Boolean },
+    can_edit: Boolean,
   },
-  components: { ProjectPresentation },
+  components: { ProjectPresentation, PinnedNonpinnedFolder },
   data() {
     return {};
   },
@@ -73,60 +51,8 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    non_finished_projects() {
-      if (this.separate_finished_from_non_finished)
-        return this.projects.filter((p) => p.$status !== "finished");
-      return this.projects;
-    },
-    finished_projects() {
-      return this.projects.filter((p) => p.$status === "finished");
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>
-<style lang="scss" scoped>
-._projectsList {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
-  align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-
-  &[data-context="tiny"] {
-    grid-gap: calc(var(--spacing) / 2);
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-
-  > * {
-    // flex: 0 1 240px;
-    // max-width: 240px;
-    margin: 0;
-  }
-}
-
-._project {
-  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  // width: 100%;
-  cursor: pointer;
-
-  ::v-deep ._projectInfos {
-    min-height: 100%;
-  }
-}
-
-._finished,
-._notFinished {
-  margin-top: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 1);
-}
-
-._finished {
-  background: var(--c-pinnedBg);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1)
-    calc(var(--spacing) / 1);
-  margin-left: calc(var(--spacing) / -1);
-  margin-right: calc(var(--spacing) / -1);
-}
-</style>
+<style lang="scss" scoped></style>
