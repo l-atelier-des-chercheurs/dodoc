@@ -147,19 +147,24 @@ export default {
   // transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--own {
-    // border-color: var(--c-bleumarine);
-    &::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      background: var(--c-bleumarine);
-      position: absolute;
-      z-index: 4;
-      bottom: 0;
-      left: 0;
-      margin: calc(var(--spacing) / 2);
-      border-radius: 50%;
+    // border-bottom: 2px solid var(--c-bleumarine);
+
+    ._index {
+      border: 2px solid var(--c-bleumarine);
     }
+
+    // &::before {
+    //   content: "";
+    //   width: 100%;
+    //   height: 2px;
+    //   background: var(--c-bleumarine);
+    //   position: absolute;
+    //   z-index: 4;
+    //   bottom: 0;
+    //   left: 0;
+    //   // margin: calc(var(--spacing) / 2);
+    //   // border-radius: 50%;
+    // }
   }
 
   ._content {
