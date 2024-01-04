@@ -144,7 +144,7 @@ export default {
   // padding: var(--spacing);
 }
 ._publicationPreview header {
-  min-height: 7rem;
+  // min-height: 7rem;
   cursor: pointer;
 }
 ._publicationPreview--cover {

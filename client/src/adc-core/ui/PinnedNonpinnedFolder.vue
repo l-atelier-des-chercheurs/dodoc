@@ -170,7 +170,7 @@ export default {
 <style lang="scss" scoped>
 ._pinned {
   padding: calc(var(--spacing) / 4) 0;
-  margin: calc(var(--spacing) / 2) 0;
+  margin: calc(var(--spacing) / 1) 0 calc(var(--spacing) / 1);
 }
 ._nonpinned {
   padding: 0;

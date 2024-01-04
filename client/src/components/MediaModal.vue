@@ -163,7 +163,7 @@
             :size="file.$infos.size"
           />
           <ResolutionDisplay
-            v-if="file.$infos"
+            v-if="file.$infos && (file.$infos.width || file.$infos.height)"
             :width="file.$infos.width"
             :height="file.$infos.height"
           />
