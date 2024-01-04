@@ -9,55 +9,60 @@
         >
           {{ $t("click_to_pin") }}
         </div>
-      </div>
-
-      <transition-group tag="section" class="_list" name="projectsList" appear>
-        <div
-          v-for="(folder, index) in pinned_folders"
-          :key="folder.$path"
-          class="_item"
+        <transition-group
+          v-else
+          tag="section"
+          class="_list _list_pinned"
+          name="projectsList"
+          appear
         >
-          <slot :item="folder" />
-          <div class="_pinSpace" v-if="can_edit">
-            <button
-              type="button"
-              class="u-button u-button_icon"
-              :disabled="
-                ['alone', 'first'].includes(positionInPinned(folder.$path))
-              "
-              @click="movePin(index, -1)"
-            >
-              <b-icon
-                icon="arrow-left-circle-fill"
-                :aria-label="$t('move_left')"
-              />
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_icon"
-              @click="removeFromPins(folder.$path)"
-            >
-              <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_icon"
-              :disabled="
-                ['alone', 'last'].includes(positionInPinned(folder.$path))
-              "
-              @click="movePin(index, +1)"
-            >
-              <b-icon
-                icon="arrow-right-circle-fill"
-                :aria-label="$t('move_right')"
-              />
-            </button>
+          <div
+            v-for="(folder, index) in pinned_folders"
+            :key="folder.$path"
+            class="_item"
+          >
+            <slot :item="folder" />
+            <div class="_pinSpace" v-if="can_edit">
+              <button
+                type="button"
+                class="u-button u-button_icon"
+                :disabled="
+                  ['alone', 'first'].includes(positionInPinned(folder.$path))
+                "
+                @click="movePin(index, -1)"
+              >
+                <b-icon
+                  icon="arrow-left-circle-fill"
+                  :aria-label="$t('move_left')"
+                />
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_icon"
+                @click="removeFromPins(folder.$path)"
+              >
+                <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_icon"
+                :disabled="
+                  ['alone', 'last'].includes(positionInPinned(folder.$path))
+                "
+                @click="movePin(index, +1)"
+              >
+                <b-icon
+                  icon="arrow-right-circle-fill"
+                  :aria-label="$t('move_right')"
+                />
+              </button>
+            </div>
+            <div class="_pinSpace _pinSpace_indicator" v-else>
+              <b-icon icon="pin-fill" :aria-label="$t('pinned')" />
+            </div>
           </div>
-          <div class="_pinSpace _pinSpace_indicator" v-else>
-            <b-icon icon="pin-fill" :aria-label="$t('pinned')" />
-          </div>
-        </div>
-      </transition-group>
+        </transition-group>
+      </div>
     </div>
 
     <transition-group
@@ -164,13 +169,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pinned {
-  background: var(--c-pinnedBg);
-  padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2);
-  border-radius: 14px;
+  padding: calc(var(--spacing) / 4) 0;
+  margin: calc(var(--spacing) / 2) 0;
 }
 ._nonpinned {
-  padding: 0 calc(var(--spacing) / 1);
+  padding: 0;
+  margin: calc(var(--spacing) / 2) 0;
 }
 
 ._item {
@@ -204,10 +208,17 @@ export default {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
-  align-items: stretch;
+  align-items: flex-end;
   grid-template-columns: repeat(
     auto-fill,
     minmax(var(--item-width, 320px), 1fr)
   );
+}
+._list_pinned {
+  // border-radius: 3px;
+  background-image: radial-gradient(rgba(51, 51, 51, 0.2) 2px, transparent 2px);
+  background-size: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+
+  padding: calc(var(--spacing) / 1);
 }
 </style>

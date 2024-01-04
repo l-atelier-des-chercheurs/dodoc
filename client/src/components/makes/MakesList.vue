@@ -76,7 +76,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._makesList {
-  max-width: 800px;
   max-width: var(--max-column-width);
   margin: 0 auto;
 }

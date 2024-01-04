@@ -9,7 +9,6 @@
     </div>
     <template v-else>
       <PinnedNonpinnedFolder
-        v-if="!is_loading"
         :field_name="'projects_pinned'"
         :content="projects_pinned"
         :path="path"

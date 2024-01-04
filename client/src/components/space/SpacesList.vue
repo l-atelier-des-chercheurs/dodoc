@@ -40,15 +40,6 @@
       @openNew="openNewSpace"
     />
 
-    <!-- <TitleField
-          :label="$t('description')"
-          :field_name="'description'"
-          :content="stack.description"
-          :path="stack.$path"
-          :input_type="'markdown'"
-          :can_edit="true"
-        /> -->
-
     <PinnedNonpinnedFolder
       v-if="!is_loading"
       :field_name="'spaces_pinned'"
@@ -153,7 +144,7 @@ export default {
 }
 
 ._createBtn {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 2) 0;
   // margin-bottom: calc(var(--spacing) / 4);
 }
 

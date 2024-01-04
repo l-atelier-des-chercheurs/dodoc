@@ -57,7 +57,7 @@
           :publication="slotProps.item"
           :template_options="template_options"
           :can_edit="can_edit"
-          @open="openEntry(publication.$path)"
+          @open="openEntry(slotProps.item.$path)"
         />
       </PinnedNonpinnedFolder>
     </div>
@@ -208,10 +208,8 @@ export default {
   --item-width: 140px;
 
   width: 100%;
-  max-width: calc(var(--max-column-width));
-  // max-width: calc(var(--max-column-width) + 240px);
+  max-width: var(--max-column-width);
   margin: 0 auto;
-  padding: calc(var(--spacing) * 1);
 }
 
 ._publications--list {
