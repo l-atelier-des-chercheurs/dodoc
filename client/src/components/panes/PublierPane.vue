@@ -7,7 +7,7 @@
   >
     <PublicationsList
       v-if="!publication_opened"
-      :project_path="project.$path"
+      :project="project"
       :can_edit="can_edit"
       @togglePubli="$emit('update:publication_opened', $event)"
     />
