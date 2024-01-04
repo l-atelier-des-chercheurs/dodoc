@@ -36,7 +36,7 @@
                 'u-disabled': !recipe.enabled,
               }"
             >
-              <div class="m_recipe--icon" v-html="recipe.icon"></div>
+              <div class="m_recipe--icon" v-html="recipe.icon" />
 
               <div class="m_recipe--text">
                 <h2 class>{{ $t(recipe.key) }}</h2>
@@ -586,6 +586,7 @@ export default {
   background: var(--c-bleumarine);
   flex: 0 1 160px;
   min-width: 120px;
+  height: 160px;
   // .margin-top-small;
   margin: 0;
   padding: 0;
