@@ -208,7 +208,7 @@ export default {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
-  align-items: flex-end;
+  align-items: stretch;
   grid-template-columns: repeat(
     auto-fill,
     minmax(var(--item-width, 320px), 1fr)

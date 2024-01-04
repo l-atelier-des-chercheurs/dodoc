@@ -47,7 +47,7 @@
             context === 'full' && can_edit && !space.title ? $t('title') : ''
           "
           class="_title"
-          :tag="context === 'full' ? 'h1' : 'h3'"
+          :tag="context === 'full' ? 'h1' : 'h2'"
           :content="space.title"
           :path="space.$path"
           :maxlength="280"
@@ -193,7 +193,7 @@ export default {
   // border: 1px solid var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
-  flex: 1 0 180px;
+  flex: 1 0 120px;
   // max-width: 120px;
   // overflow: hidden;
   // border-radius: var(--panel-radius);

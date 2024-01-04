@@ -132,10 +132,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._create {
-  max-width: 400px;
-}
 ._spacesList {
+  --item-width: 300px;
+
   width: 100%;
   min-height: 60vh;
   margin: 0 auto;

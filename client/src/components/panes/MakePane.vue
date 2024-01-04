@@ -67,7 +67,6 @@
                   </p>
                 </template>
               </div>
-              <br />
               <div class="m_recipe--buttons">
                 <div v-if="recipe.enabled !== true">
                   <hr />
@@ -576,6 +575,10 @@ export default {
   background: white;
   padding: calc(var(--spacing) / 2);
   border-radius: var(--button-radius);
+
+  > *:not(:last-child) {
+    margin-bottom: calc(var(--spacing) / 2);
+  }
 }
 
 .m_recipe--icon {
@@ -602,7 +605,6 @@ export default {
 .m_recipe--text {
   flex-basis: 50%;
   max-width: 44ch;
-  padding: calc(var(--spacing) / 2) 0;
 
   color: black;
 

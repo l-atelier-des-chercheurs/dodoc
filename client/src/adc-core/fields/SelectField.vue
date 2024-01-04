@@ -26,7 +26,11 @@
         </template>
       </select>
 
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        :label_position="'left'"
+        @click="enableEditMode"
+      />
     </div>
 
     <div class="u-instructions" v-if="instructions">
