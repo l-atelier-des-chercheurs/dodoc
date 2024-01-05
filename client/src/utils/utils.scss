@@ -951,10 +951,12 @@ input[type="checkbox"]:disabled {
   cursor: pointer;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
-  max-width: 30ch;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  span {
+    max-width: 34ch;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
   &:hover,
   &:focus-visible {
