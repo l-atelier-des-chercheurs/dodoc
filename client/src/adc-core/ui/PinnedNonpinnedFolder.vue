@@ -3,65 +3,68 @@
     <div class="_pinned" v-if="pinned_folders.length > 0 || can_edit">
       <div class="">
         <DLabel :str="$t('pinned')" />
-        <div
-          v-if="pinned_folders.length === 0 && can_edit"
-          class="u-instructions"
-        >
-          {{ $t("click_to_pin") }}
-        </div>
-        <transition-group
-          v-else
-          tag="section"
-          class="_list _list_pinned"
-          name="projectsList"
-          appear
-        >
+
+        <transition name="pagechange" mode="out-in">
           <div
-            v-for="(folder, index) in pinned_folders"
-            :key="folder.$path"
-            class="_item"
+            v-if="pinned_folders.length === 0 && can_edit"
+            class="u-instructions"
           >
-            <slot :item="folder" />
-            <div class="_pinSpace" v-if="can_edit">
-              <button
-                type="button"
-                class="u-button u-button_icon"
-                :disabled="
-                  ['alone', 'first'].includes(positionInPinned(folder.$path))
-                "
-                @click="movePin(index, -1)"
-              >
-                <b-icon
-                  icon="arrow-left-circle-fill"
-                  :aria-label="$t('move_left')"
-                />
-              </button>
-              <button
-                type="button"
-                class="u-button u-button_icon"
-                @click="removeFromPins(folder.$path)"
-              >
-                <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
-              </button>
-              <button
-                type="button"
-                class="u-button u-button_icon"
-                :disabled="
-                  ['alone', 'last'].includes(positionInPinned(folder.$path))
-                "
-                @click="movePin(index, +1)"
-              >
-                <b-icon
-                  icon="arrow-right-circle-fill"
-                  :aria-label="$t('move_right')"
-                />
-              </button>
-            </div>
-            <div class="_pinSpace _pinSpace_indicator" v-else>
-              <b-icon icon="pin-fill" :aria-label="$t('pinned')" />
-            </div>
+            {{ $t("click_to_pin") }}
           </div>
-        </transition-group>
+          <transition-group
+            v-else
+            tag="section"
+            class="_list _list_pinned"
+            name="projectsList"
+            appear
+          >
+            <div
+              v-for="(folder, index) in pinned_folders"
+              :key="folder.$path"
+              class="_item"
+            >
+              <slot :item="folder" />
+              <div class="_pinSpace" v-if="can_edit">
+                <button
+                  type="button"
+                  class="u-button u-button_icon"
+                  :disabled="
+                    ['alone', 'first'].includes(positionInPinned(folder.$path))
+                  "
+                  @click="movePin(index, -1)"
+                >
+                  <b-icon
+                    icon="arrow-left-circle-fill"
+                    :aria-label="$t('move_left')"
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="u-button u-button_icon"
+                  @click="removeFromPins(folder.$path)"
+                >
+                  <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
+                </button>
+                <button
+                  type="button"
+                  class="u-button u-button_icon"
+                  :disabled="
+                    ['alone', 'last'].includes(positionInPinned(folder.$path))
+                  "
+                  @click="movePin(index, +1)"
+                >
+                  <b-icon
+                    icon="arrow-right-circle-fill"
+                    :aria-label="$t('move_right')"
+                  />
+                </button>
+              </div>
+              <div class="_pinSpace _pinSpace_indicator" v-else>
+                <b-icon icon="pin-fill" :aria-label="$t('pinned')" />
+              </div>
+            </div>
+          </transition-group>
+        </transition>
       </div>
     </div>
 
