@@ -12,8 +12,9 @@
       @close="show_modal = false"
     >
       <div class="_cont">
-        <LoaderSpinner v-if="is_optimizing" />
+        <LoaderSpinner v-if="is_optimizing" class="_loader" />
         <div v-if="!optimized_file">
+          <DLabel :str="$t('quality')" />
           <div
             v-if="media.$optimized === true"
             class="u-spacingBottom u-instructions"
@@ -31,18 +32,20 @@
           </div>
 
           <div class="" slot="footer">
-            <div class="u-spacingBottom">
-              <button
-                type="button"
-                class="u-button u-button_bleuvert"
-                @click="optimizeMedia"
-              >
-                <b-icon icon="tools" />
-                {{ $t("preview_optimize") }}
-              </button>
-            </div>
-            <div class="u-instructions">
-              {{ $t("wont_remove_original") }}
+            <div class="_convertBtns">
+              <div class="">
+                <button
+                  type="button"
+                  class="u-button u-button_bleuvert"
+                  @click="optimizeMedia"
+                >
+                  <b-icon icon="tools" />
+                  {{ $t("preview_optimize") }}
+                </button>
+              </div>
+              <div class="u-instructions">
+                {{ $t("wont_remove_original") }}
+              </div>
             </div>
           </div>
         </div>
@@ -131,6 +134,10 @@
           </div>
           <hr />
           <div class="_btnRow">
+            <button type="button" class="u-buttonLink" @click="cancel">
+              <b-icon icon="arrow-left-short" />
+              {{ $t("back") }}
+            </button>
             <button
               type="button"
               class="u-button u-button_bleuvert"
@@ -146,10 +153,6 @@
             >
               <b-icon icon="save2-fill" />
               {{ $t("replace_original") }}
-            </button>
-            <button type="button" class="u-buttonLink" @click="cancel">
-              <b-icon icon="x-circle" />
-              {{ $t("cancel") }}
             </button>
           </div>
           <div class=""></div>
@@ -170,21 +173,6 @@ export default {
       is_optimizing: false,
       optimized_file: undefined,
       resolution_preset_picked: "source",
-
-      presets: [
-        {
-          key: "source",
-          text: this.$t("same_as_source"),
-        },
-        {
-          key: "high",
-          text: this.$t("high"),
-        },
-        {
-          key: "medium",
-          text: this.$t("medium"),
-        },
-      ],
     };
   },
   i18n: {
@@ -224,13 +212,54 @@ export default {
       if (this.optimized_file) return "large";
       return undefined;
     },
+    presets() {
+      if (this.media.$type === "audio")
+        return [
+          {
+            key: "source",
+            text: this.$t("close_to_source"),
+            instructions: "256k",
+          },
+          {
+            key: "high",
+            text: this.$t("high"),
+            instructions: "192k",
+          },
+          {
+            key: "medium",
+            text: this.$t("medium"),
+            instructions: "128k",
+          },
+        ];
+      return [
+        {
+          key: "source",
+          text: this.$t("close_to_source"),
+        },
+        {
+          key: "high",
+          text: this.$t("high"),
+        },
+        {
+          key: "medium",
+          text: this.$t("medium"),
+        },
+      ];
+    },
   },
   methods: {
     async optimizeMedia() {
       this.is_optimizing = true;
+
+      let suggested_file_name = "converted";
+      if (this.media.$media_filename)
+        suggested_file_name = this.getFilenameWithoutExt(
+          this.media.$media_filename
+        );
+
       const instructions = {
         recipe: "optimize_media",
-        suggested_file_name: this.media.$media_filename,
+        suggested_file_name,
         quality_preset: this.resolution_preset_picked,
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
@@ -316,9 +345,10 @@ export default {
 }
 
 ._mediaPreview {
-  aspect-ratio: 1/1;
-  // &[data-type="image"] {
-  // }
+  &[data-type="image"],
+  &[data-type="video"] {
+    aspect-ratio: 1/1;
+  }
   ::v-deep {
     ._mediaContent {
       height: 100%;
@@ -343,5 +373,13 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 1);
+}
+
+._convertBtns {
+  text-align: center;
+}
+
+._loader {
+  z-index: 150;
 }
 </style>
