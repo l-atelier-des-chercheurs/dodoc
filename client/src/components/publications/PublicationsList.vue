@@ -210,6 +210,7 @@ export default {
   width: 100%;
   max-width: var(--max-column-width);
   margin: 0 auto;
+  padding-top: calc(var(--spacing) * 1);
 }
 
 ._publications--list {
