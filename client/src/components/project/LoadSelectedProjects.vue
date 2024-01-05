@@ -50,7 +50,7 @@ export default {
           .catch((err) => {
             this.fetch_err = err.response;
           });
-        this.projects.push(project);
+        if (project) this.projects.push(project);
         this.is_loading = false;
       }
     },
