@@ -637,7 +637,7 @@ export default function () {
         const response = await this.$axios.delete(path).catch((err) => {
           throw this.processError(err);
         });
-        this.$eventHub.$emit("hooks.deleteItem", path);
+        this.$eventHub.$emit("hooks.deleteItem", { path });
         return response.data;
       },
 
