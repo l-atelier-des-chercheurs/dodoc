@@ -119,6 +119,7 @@ export default {
   origin: "Origin",
   list_of_projects: "List of projects",
   no_projects: "No project to show",
+  no_publications: "No publications to show",
   no_files: "No file",
   none_f: "None",
   none: "None",

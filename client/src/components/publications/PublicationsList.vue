@@ -45,7 +45,15 @@
     <br />
 
     <div class="_publications">
+      <div
+        v-if="sorted_publications.length === 0"
+        class="u-instructions"
+        :key="'nopublis'"
+      >
+        {{ $t("no_publications") }}
+      </div>
       <PinnedNonpinnedFolder
+        v-else
         :field_name="'publications_pinned'"
         :content="project.publications_pinned"
         :path="project.$path"
