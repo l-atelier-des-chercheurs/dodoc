@@ -272,6 +272,8 @@ export default {
           })
         )
         .sort((a, b) => {
+          if (a.$status !== "finished" && b.$status === "finished") return 1;
+          if (a.$status === "finished" && b.$status !== "finished") return -1;
           if (this.order_key === "$date_created")
             return +new Date(b.$date_created) - +new Date(a.$date_created);
           else if (this.order_key === "$date_modified")
