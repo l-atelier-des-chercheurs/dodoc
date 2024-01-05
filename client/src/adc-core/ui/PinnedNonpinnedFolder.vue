@@ -116,33 +116,35 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    list_of_pins_paths() {
+    list_of_pins_metas() {
       if (this.content.length === 0) return [];
-      return this.content;
-    },
-    non_pinned_folders() {
-      return this.folders.filter(
-        (s) => !this.list_of_pins_paths.includes(s.$path)
+      return this.content.filter((c) =>
+        this.folders.some((f) => this.getFilename(f.$path) === c)
       );
     },
     pinned_folders() {
-      return this.list_of_pins_paths.reduce((acc, pp) => {
-        const s = this.folders.find((sp) => sp.$path === pp);
+      return this.list_of_pins_metas.reduce((acc, pm) => {
+        const s = this.folders.find((sp) => this.getFilename(sp.$path) === pm);
         if (s) acc.push(s);
         return acc;
       }, []);
     },
+    non_pinned_folders() {
+      return this.folders.filter(
+        (f) => !this.list_of_pins_metas.includes(this.getFilename(f.$path))
+      );
+    },
   },
   methods: {
     async addSpaceToPins(path) {
-      let pins_paths = this.list_of_pins_paths.slice();
-      pins_paths.push(path);
-      this.updateList({ pins_paths });
+      let pins_metas = this.list_of_pins_metas.slice();
+      pins_metas.push(this.getFilename(path));
+      this.updateList({ pins_metas });
     },
     movePin(index, dir) {
-      let pins_paths = this.list_of_pins_paths.slice();
-      pins_paths.move(index, index + dir);
-      this.updateList({ pins_paths });
+      let pins_metas = this.list_of_pins_metas.slice();
+      pins_metas.move(index, index + dir);
+      this.updateList({ pins_metas });
     },
     positionInPinned(path) {
       if (this.pinned_folders.length === 1) return "alone";
@@ -152,15 +154,15 @@ export default {
       return "none";
     },
     removeFromPins(path) {
-      let pins_paths = this.list_of_pins_paths.slice();
-      pins_paths = pins_paths.filter((sp) => sp !== path);
-      this.updateList({ pins_paths });
+      let pins_metas = this.list_of_pins_metas.slice();
+      pins_metas = pins_metas.filter((sp) => sp !== this.getFilename(path));
+      this.updateList({ pins_metas });
     },
-    async updateList({ pins_paths }) {
+    async updateList({ pins_metas }) {
       await this.$api.updateMeta({
         path: this.path,
         new_meta: {
-          [this.field_name]: pins_paths,
+          [this.field_name]: pins_metas,
         },
       });
     },
