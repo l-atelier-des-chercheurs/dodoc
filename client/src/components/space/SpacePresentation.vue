@@ -163,13 +163,10 @@ export default {
   padding: calc(var(--spacing) / 4);
   border-radius: 6px;
 
-  // overflow: hidden;
-  // border-radius: var(--panel-radius);
-  // box-shadow: var(--panel-shadows);
-  // border: 2px solid var(--c-gris_clair);
+  border-bottom: 2px solid var(--c-gris);
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
 
-  // margin-bottom: calc(var(--spacing) / 2);
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-context="full"] {
