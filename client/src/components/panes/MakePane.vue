@@ -1,127 +1,131 @@
 <template>
   <div class="_makePane">
-    <div v-if="!opened_make_slug">
-      <RadioSwitch
-        v-if="can_edit"
-        :content.sync="current_view"
-        :options="[
-          {
-            label: $t('create'),
-            value: 'create',
-          },
-          {
-            label: $t('existing'),
-            value: 'existing',
-          },
-        ]"
-      />
+    <div class="_makePane--content">
+      <div v-if="!opened_make_slug">
+        <RadioSwitch
+          v-if="can_edit"
+          :content.sync="current_view"
+          :options="[
+            {
+              label: $t('create'),
+              value: 'create',
+            },
+            {
+              label: $t('existing'),
+              value: 'existing',
+            },
+          ]"
+        />
 
-      <div class="u-spacingBottom" />
+        <div class="u-spacingBottom" />
 
-      <section v-if="current_view === 'create'">
-        <div
-          class="m_recipes--type"
-          v-for="recipe_type in recipe_types"
-          :key="recipe_type.key"
-        >
-          <div class="u-label u-colorWhite">
-            {{ $t(recipe_type.label) }}
-          </div>
-          <div class="m_recipes--type--grid">
-            <div
-              v-for="recipe in recipe_type.recipes"
-              :key="recipe.key"
-              class="m_recipe"
-              :class="{
-                'u-disabled': !recipe.enabled,
-              }"
-            >
-              <div class="m_recipe--icon" v-html="recipe.icon" />
+        <section v-if="current_view === 'create'">
+          <div
+            class="m_recipes--type"
+            v-for="recipe_type in recipe_types"
+            :key="recipe_type.key"
+          >
+            <div class="u-label u-colorWhite">
+              {{ $t(recipe_type.label) }}
+            </div>
+            <div class="m_recipes--type--grid">
+              <div
+                v-for="recipe in recipe_type.recipes"
+                :key="recipe.key"
+                class="u-card2 m_recipe"
+                :class="{
+                  'u-disabled': !recipe.enabled,
+                }"
+              >
+                <div class="m_recipe--icon" v-html="recipe.icon" />
 
-              <div class="m_recipe--text">
-                <h2 class>{{ $t(recipe.key) }}</h2>
+                <div class="m_recipe--text">
+                  <h2 class>{{ $t(recipe.key) }}</h2>
 
-                <p class="margin-vert-small">
-                  <span
-                    v-html="$t(recipe.summary)"
-                    class="margin-vert-verysmall"
-                  />
-                  <br />
-                </p>
-
-                <button
-                  v-if="recipe.instructions"
-                  type="button"
-                  class="u-buttonLink"
-                  :class="{
-                    'is--active': recipe.show_instructions,
-                  }"
-                  @click="recipe.show_instructions = !recipe.show_instructions"
-                >
-                  {{ $t("more_informations") }}
-                </button>
-
-                <template v-if="recipe.show_instructions">
-                  <p>
-                    <span v-html="$t(recipe.instructions)" />
-                  </p>
-                </template>
-              </div>
-              <div class="m_recipe--buttons">
-                <div v-if="recipe.enabled !== true">
-                  <hr />
-                  <small>
-                    Pas encore disponible sur do•doc 10 / vous pouvez utiliser
-                    <a href="https://dodoc.fr/">do•doc 9</a> en attendant.
-                  </small>
-                </div>
-
-                <button
-                  v-else
-                  class="u-button u-button_bleumarine"
-                  type="button"
-                  @click="createMake(recipe.key)"
-                >
-                  <svg
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    viewBox="0 0 168 168"
-                    style="enable-background: new 0 0 168 168"
-                    xml:space="preserve"
-                  >
-                    <polygon
-                      style="fill: white"
-                      points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
-		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
+                  <p class="margin-vert-small">
+                    <span
+                      v-html="$t(recipe.summary)"
+                      class="margin-vert-verysmall"
                     />
-                  </svg>
+                    <br />
+                  </p>
 
-                  <span>{{ $t("create") }}</span>
-                </button>
+                  <button
+                    v-if="recipe.instructions"
+                    type="button"
+                    class="u-buttonLink"
+                    :class="{
+                      'is--active': recipe.show_instructions,
+                    }"
+                    @click="
+                      recipe.show_instructions = !recipe.show_instructions
+                    "
+                  >
+                    {{ $t("more_informations") }}
+                  </button>
+
+                  <template v-if="recipe.show_instructions">
+                    <p>
+                      <span v-html="$t(recipe.instructions)" />
+                    </p>
+                  </template>
+                </div>
+                <div class="m_recipe--buttons">
+                  <div v-if="recipe.enabled !== true">
+                    <hr />
+                    <small>
+                      Pas encore disponible sur do•doc 10 / vous pouvez utiliser
+                      <a href="https://dodoc.fr/">do•doc 9</a> en attendant.
+                    </small>
+                  </div>
+
+                  <button
+                    v-else
+                    class="u-button u-button_bleumarine"
+                    type="button"
+                    @click="createMake(recipe.key)"
+                  >
+                    <svg
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="0px"
+                      viewBox="0 0 168 168"
+                      style="enable-background: new 0 0 168 168"
+                      xml:space="preserve"
+                    >
+                      <polygon
+                        style="fill: white"
+                        points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
+                      />
+                    </svg>
+
+                    <span>{{ $t("create") }}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      <section v-else-if="current_view === 'existing'">
-        <MakesList
+        </section>
+        <section v-else-if="current_view === 'existing'">
+          <MakesList
+            :project_path="project.$path"
+            :can_edit="can_edit"
+            @open="openMakes"
+          />
+        </section>
+      </div>
+      <div v-else>
+        <MakeOpen
           :project_path="project.$path"
+          :make_slug="opened_make_slug"
           :can_edit="can_edit"
-          @open="openMakes"
+          @remove="removeMake"
+          @close="$emit('update:opened_make_slug', false)"
         />
-      </section>
-    </div>
-    <div v-else>
-      <MakeOpen
-        :project_path="project.$path"
-        :make_slug="opened_make_slug"
-        :can_edit="can_edit"
-        @remove="removeMake"
-        @close="$emit('update:opened_make_slug', false)"
-      />
+      </div>
     </div>
   </div>
 </template>
@@ -542,10 +546,16 @@ export default {
   background: var(--color-make);
   height: 100%;
   overflow: auto;
-  padding: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 10);
   // --active-color: var(--c-bleumarine);
 }
+._makePane--content {
+  width: 100%;
+  max-width: var(--max-column-width);
+  margin: 0 auto;
+  padding-top: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 10);
+}
+
 .m_recipes--type {
   // background-color: rgba(51, 51, 51, 0.2);
   // border-radius: 8px;
@@ -574,7 +584,7 @@ export default {
   border-radius: 8px;
   background: white;
   padding: calc(var(--spacing) / 2);
-  border-radius: var(--button-radius);
+  border-radius: 8px;
 
   > *:not(:last-child) {
     margin-bottom: calc(var(--spacing) / 2);

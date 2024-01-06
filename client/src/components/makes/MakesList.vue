@@ -76,8 +76,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._makesList {
-  max-width: var(--max-column-width);
-  margin: 0 auto;
 }
 
 ._makes {
