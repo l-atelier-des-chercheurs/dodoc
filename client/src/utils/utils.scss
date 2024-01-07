@@ -2,6 +2,7 @@
   display: block;
   color: var(--label-color);
   margin-bottom: calc(var(--spacing) / 4);
+  font-size: var(--sl-font-size-small);
 
   sl-icon-button::part(base) {
     padding: 0;
