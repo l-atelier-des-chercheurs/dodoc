@@ -24,7 +24,7 @@
         </button>
       </template>
     </div>
-    <div class="u-instructions" v-if="show_instructions">
+    <div class="u-instructions _instr" v-if="show_instructions">
       <small v-html="instructions" />
     </div>
   </div>
@@ -74,5 +74,8 @@ export default {
     // color: currentColor;
     margin-bottom: 0;
   }
+}
+._instr {
+  margin-bottom: calc(var(--spacing) / 2);
 }
 </style>
