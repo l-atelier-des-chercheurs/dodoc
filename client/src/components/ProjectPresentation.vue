@@ -459,6 +459,7 @@ export default {
   > * {
     flex: 0 0 auto;
     min-width: 220px;
+    margin: calc(var(--spacing) / 4);
 
     .is--mobileView & {
       // flex: 1 0 220px;
