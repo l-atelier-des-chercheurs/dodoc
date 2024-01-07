@@ -1,25 +1,27 @@
 <template>
   <div class="_saveCancelBtns">
-    <sl-button
+    <button
       :size="pill_size"
       variant="default"
       pill
+      class="u-button u-button_white"
       @click="$emit('cancel')"
     >
       <b-icon icon="x-circle" />
       {{ $t("back") }}
-    </sl-button>
-    <sl-button
+    </button>
+    <button
       :size="pill_size"
       variant="success"
       pill
+      class="u-button u-button_bleuvert"
       :loading="is_saving"
       :disabled="!allow_save"
       @click="$emit('save')"
     >
       <b-icon icon="check-circle-fill" />
       {{ save_text ? save_text : $t("save") }}
-    </sl-button>
+    </button>
   </div>
 </template>
 <script>
