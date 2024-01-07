@@ -40,11 +40,11 @@
       </transition>
     </summary>
     <div class="">
-      <div class="_content" ref="content">
-        <transition name="fade_fast" mode="out-in">
-          <slot v-if="currently_open" />
-        </transition>
-      </div>
+      <transition name="fade_fast" mode="out-in">
+        <div v-if="currently_open" class="_content" ref="content">
+          <slot />
+        </div>
+      </transition>
     </div>
   </details>
 </template>
@@ -96,13 +96,11 @@ export default {
         }
       );
 
-      // When the animation is complete, call onAnimationFinish()
       animation.onfinish = () => {
-        this.$refs.content.style.height = "";
+        if (this.$refs.content) this.$refs.content.style.height = "";
       };
-      // If the animation is cancelled, isClosing variable is set to false
       animation.oncancel = () => {
-        this.$refs.content.style.height = "";
+        if (this.$refs.content) this.$refs.content.style.height = "";
       };
     },
   },
