@@ -3,6 +3,8 @@
     :header="$t('levels_and_competences')"
     :icon="'bookmark-star'"
     :has_items="!!project.level"
+    :is_open_initially="true"
+    :can_be_toggled="false"
   >
     <div class="u-spacingBottom">
       <DLabel :str="$t('skill_level')" />

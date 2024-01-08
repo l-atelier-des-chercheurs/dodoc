@@ -3,6 +3,8 @@
     :header="$t('authors_and_license')"
     :icon="'people'"
     :has_items="!!project.license"
+    :is_open_initially="true"
+    :can_be_toggled="false"
   >
     <div class="u-spacingBottom">
       <TitleField

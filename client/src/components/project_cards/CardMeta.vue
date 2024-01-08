@@ -2,7 +2,8 @@
   <DetailsPane
     :header="$t('informations')"
     :icon="'info-square'"
-    :is_open_initially="$root.is_mobile_view ? false : true"
+    :is_open_initially="true"
+    :can_be_toggled="false"
   >
     <div class="u-spacingBottom">
       <AdminsAndContributorsField
@@ -35,27 +36,6 @@
       />
     </div>
 
-    <div class="u-mediaOptions" v-if="can_edit">
-      <DownloadFolder :path="project.$path" />
-      <div class="">
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="show_dup_modal = true"
-        >
-          <sl-icon name="file-plus" />
-          {{ $t("duplicate_or_move_project") }}
-        </button>
-      </div>
-      <DuplicateOrRemixProject
-        v-if="show_dup_modal"
-        :path="project.$path"
-        :proposed_title="`${$t('copy_of')} ${project.title}`"
-        @close="show_dup_modal = false"
-      />
-      <RemoveMenu :remove_text="$t('remove_project')" @remove="removeProject" />
-    </div>
-
     <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
       <div class="u-spacingBottom" />
       <DLabel :str="$t('open_in_finder')" />
@@ -69,7 +49,6 @@
   </DetailsPane>
 </template>
 <script>
-import DuplicateOrRemixProject from "@/components/project/DuplicateOrRemixProject.vue";
 import EventField from "@/components/project/EventField.vue";
 import RemixField from "@/components/project/RemixField.vue";
 
@@ -81,7 +60,6 @@ export default {
   components: {
     EventField,
     RemixField,
-    DuplicateOrRemixProject,
   },
   data() {
     return {
