@@ -292,7 +292,7 @@ export default {
   &.is--list {
     display: block;
     ._projectInfos--infos {
-      padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+      padding: calc(var(--spacing) / 2);
     }
   }
 
@@ -366,7 +366,7 @@ export default {
 
 ._projectInfos--cover {
   position: relative;
-  aspect-ratio: 1/1;
+  aspect-ratio: 3/2;
   width: 45vh;
   height: 45vh;
   flex: 0 0 45vh;
@@ -459,6 +459,7 @@ export default {
   > * {
     flex: 0 0 auto;
     min-width: 220px;
+    margin: calc(var(--spacing) / 4);
 
     .is--mobileView & {
       // flex: 1 0 220px;

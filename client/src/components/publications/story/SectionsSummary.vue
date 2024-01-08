@@ -17,10 +17,12 @@
       @createItem="createSection"
       v-slot="slotProps"
     >
-      <span v-if="slotProps.item.section_title">
+      <template v-if="slotProps.item.section_title">
         {{ slotProps.item.section_title }}
-      </span>
-      <span v-else v-html="`<i>${$t('untitled')}</i>`" />
+      </template>
+      <template v-else>
+        <i>{{ $t("untitled") }}</i>
+      </template>
     </ReorderedList>
 
     <!-- <template v-if="can_edit">

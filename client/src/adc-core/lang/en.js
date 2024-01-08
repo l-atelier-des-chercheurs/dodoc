@@ -65,7 +65,7 @@ export default {
   completed: "Completed",
   my_projects: "My projects",
   pinned: "Pinned",
-  click_on_pin_on_space: "Pinned spaces will be placed here",
+  click_to_pin: "Click on the yellow pin icon to add here.",
 
   default_value: "Default value",
 
@@ -119,6 +119,7 @@ export default {
   origin: "Origin",
   list_of_projects: "List of projects",
   no_projects: "No project to show",
+  no_publications: "No publications to show",
   no_files: "No file",
   none_f: "None",
   none: "None",
@@ -127,7 +128,7 @@ export default {
   "sort:": "Sort:",
 
   click_to_zoom: "Click to zoom",
-  same_as_source: "Same as source",
+  close_to_source: "Similar to source media",
   very_high: "Very high",
   high: "High",
   medium: "Medium",

@@ -1,23 +1,25 @@
 <template>
   <div class="_loadSelectedProjects">
     <!-- {{ fetch_err }} -->
-    <ProjectsList
-      :projects="projects"
-      :context="'tiny'"
-      :display_original_space="true"
-      :separate_finished_from_non_finished="false"
-    />
+    <div v-for="project in projects" :key="project.$path">
+      <ProjectPresentation
+        :project="project"
+        :context="'tiny'"
+        :display_original_space="true"
+        :can_edit="false"
+      />
+    </div>
   </div>
 </template>
 <script>
-import ProjectsList from "@/components/ProjectsList.vue";
+import ProjectPresentation from "@/components/ProjectPresentation.vue";
 
 export default {
   props: {
     paths: Array,
   },
   components: {
-    ProjectsList,
+    ProjectPresentation,
   },
   data() {
     return {
@@ -48,7 +50,7 @@ export default {
           .catch((err) => {
             this.fetch_err = err.response;
           });
-        this.projects.push(project);
+        if (project) this.projects.push(project);
         this.is_loading = false;
       }
     },
@@ -59,5 +61,11 @@ export default {
 ._loadSelectedProjects {
   position: relative;
   margin-bottom: calc(var(--spacing) / 2);
+
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) / 1);
+  align-items: stretch;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 }
 </style>

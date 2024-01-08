@@ -32,8 +32,10 @@
           :zoom_on_click="true"
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
-          {{ $t("convert_to_format") }}
-          <OptimizeMedia :media="file" @close="$emit('close')" />
+          <div class="">
+            {{ $t("convert_to_format") }}
+            <OptimizeMedia :media="file" @close="$emit('close')" />
+          </div>
         </div>
 
         <div class="_topRightBtn" v-if="!$root.is_mobile_view">
@@ -163,7 +165,7 @@
             :size="file.$infos.size"
           />
           <ResolutionDisplay
-            v-if="file.$infos"
+            v-if="file.$infos && (file.$infos.width || file.$infos.height)"
             :width="file.$infos.width"
             :height="file.$infos.height"
           />
@@ -502,6 +504,16 @@ export default {
   text-align: center;
   padding: calc(var(--spacing) * 1);
   margin-top: calc(var(--spacing) * 2);
+
+  > * {
+    margin: 0 auto;
+    padding: calc(var(--spacing) / 2);
+    max-width: 320px;
+    width: 100%;
+    background: var(--c-bleuvert_clair);
+    border-radius: 8px;
+    box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
+  }
 }
 
 ._topbar {

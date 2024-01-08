@@ -378,7 +378,7 @@ export default {
 }
 ._recentlyEdited {
   margin: calc(var(--spacing) / 2) auto;
-  padding: calc(var(--spacing) / 1);
+  padding: 0;
   max-width: var(--max-column-width);
   width: 100%;
 }

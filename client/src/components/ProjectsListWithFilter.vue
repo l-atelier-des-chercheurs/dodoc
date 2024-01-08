@@ -194,7 +194,10 @@
         </transition>
         <ProjectsList
           :projects="filtered_projects"
+          :projects_pinned="projects_pinned"
+          :path="space_path"
           :display_original_space="display_original_space"
+          :can_edit="can_edit"
         />
       </div>
     </div>
@@ -206,7 +209,10 @@ import ProjectsList from "@/components/ProjectsList.vue";
 export default {
   props: {
     projects: Array,
+    projects_pinned: Array,
+    space_path: String,
     display_original_space: Boolean,
+    can_edit: Boolean,
   },
   components: {
     ProjectsList,
@@ -266,6 +272,8 @@ export default {
           })
         )
         .sort((a, b) => {
+          if (a.$status !== "finished" && b.$status === "finished") return 1;
+          if (a.$status === "finished" && b.$status !== "finished") return -1;
           if (this.order_key === "$date_created")
             return +new Date(b.$date_created) - +new Date(a.$date_created);
           else if (this.order_key === "$date_modified")
@@ -376,6 +384,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectsListWithFilter {
+  --item-width: 240px;
+
   margin-top: calc(var(--spacing) * 1);
 
   width: 100%;

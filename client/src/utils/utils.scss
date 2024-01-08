@@ -1,19 +1,8 @@
 .u-label {
   display: block;
-  // font-variant: small-caps;
-  // text-transform: uppercase;
-  font-weight: 500;
-
-  letter-spacing: 0.02em;
-  font-size: var(--sl-font-size-small);
-  // letter-spacing: 0.01em;
   color: var(--label-color);
-  // color: var(--c-orange);
-
   margin-bottom: calc(var(--spacing) / 4);
-
-  // line-height: 1;
-  // margin-right: calc(var(--spacing) / 4);
+  font-size: var(--sl-font-size-small);
 
   sl-icon-button::part(base) {
     padding: 0;
@@ -92,13 +81,22 @@
 
 .u-card2 {
   border-bottom: 2px solid var(--c-gris);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+    0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+    0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
+    0 3.5px 6px hsla(230, 13%, 9%, 0.09);
 
   &:hover,
   &:focus-visible {
-    transform: translateY(-4px);
-    box-shadow: 0 3px 6px rgba(51, 51, 51, 0.16);
+    // transform: translateY(-4px);
+
+    box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+      0 0.9px 1.25px hsla(230, 13%, 9%, 0.025),
+      0 3px 5px hsla(230, 13%, 9%, 0.05), 0 12px 20px hsla(230, 13%, 9%, 0.09);
+    // box-shadow: 0 3px 6px rgba(51, 51, 51, 0.16);
   }
 }
 
@@ -816,16 +814,6 @@ fieldset {
   -webkit-line-clamp: 1;
 }
 
-details {
-  summary {
-    padding: calc(var(--spacing) / 4);
-    cursor: pointer;
-    &:hover {
-      background: var(--c-gris_clair);
-    }
-  }
-}
-
 input[type="checkbox"] {
   --form-background: #ffffff;
   --form-control-color: var(--active-color);
@@ -951,10 +939,12 @@ input[type="checkbox"]:disabled {
   cursor: pointer;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
-  max-width: 30ch;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  span {
+    max-width: 34ch;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
   &:hover,
   &:focus-visible {

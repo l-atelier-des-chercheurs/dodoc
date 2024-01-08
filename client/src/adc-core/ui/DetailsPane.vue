@@ -28,14 +28,23 @@
         </template>
         <template v-else>–</template>
       </div>
-      <sl-icon
-        v-if="can_be_toggled"
-        class="_openIcon"
-        :name="!currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'"
-      />
+
+      <transition name="fade_fast" mode="out-in">
+        <sl-icon
+          v-if="can_be_toggled"
+          class="_openIcon"
+          :name="
+            !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
+          "
+        />
+      </transition>
     </summary>
-    <div class="_content" v-if="currently_open">
-      <slot />
+    <div class="">
+      <transition name="fade_fast" mode="out-in">
+        <div v-if="currently_open" class="_content" ref="content">
+          <slot />
+        </div>
+      </transition>
     </div>
   </details>
 </template>
@@ -62,22 +71,46 @@ export default {
   methods: {
     toggleDetails(event) {
       if (!this.can_be_toggled) return;
-      this.currently_open = event.currentTarget.open;
+      if (event.currentTarget.open) {
+        this.currently_open = true;
+        this.$nextTick(() => {
+          this.animateDetails("0px", this.$refs.content.offsetHeight + "px");
+        });
+      } else {
+        this.animateDetails(this.$refs.content.offsetHeight + "px", "0px");
+        setTimeout(() => {
+          this.currently_open = false;
+        }, 250);
+      }
+    },
+    animateDetails(start, end) {
+      // Start a WAAPI animation
+
+      const animation = this.$refs.content.animate(
+        {
+          height: [start, end],
+        },
+        {
+          duration: 250,
+          easing: "ease-out",
+        }
+      );
+
+      animation.onfinish = () => {
+        if (this.$refs.content) this.$refs.content.style.height = "";
+      };
+      animation.oncancel = () => {
+        if (this.$refs.content) this.$refs.content.style.height = "";
+      };
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._detailsPane {
-  // border-bottom: 0px solid var(--c-gris_clair);
-  // border: 1px solid transparent;
-  // border-left: 2px solid transparent;
-
   background: white;
-  // margin-left: 2px;
-
-  display: flex;
-  flex-flow: row nowrap;
+  border-radius: 2px;
+  overflow: hidden;
 
   &.is--unclosable summary {
     pointer-events: none;
@@ -122,15 +155,12 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    // font-size: var(--sl-font-size-small);
-    // font-family: "Fira Code";
+    border-radius: 2px;
 
-    // padding: calc(var(--spacing) / 8);
-    // font-weight: 500;
-    // gap: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 4);
     cursor: pointer;
-
-    color: black;
+    border: 2px solid var(--c-gris);
+    border-radius: 4px;
 
     &:hover,
     &:focus-visible {
@@ -140,19 +170,24 @@ export default {
   }
 
   ._content {
-    padding: calc(var(--spacing) / 2);
   }
 
   &[open] {
     summary {
-      // color: white;
-      // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       background-color: var(--c-gris);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom: none;
     }
 
     ._content {
+      padding: calc(var(--spacing) / 2);
       border: 2px solid var(--c-gris);
       border-top: none;
+
+      border-radius: 4px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
     }
   }
 }

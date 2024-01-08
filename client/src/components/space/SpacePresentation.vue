@@ -28,52 +28,6 @@
         />
       </transition>
 
-      <div class="_icon _pinSpace" v-if="is_instance_admin">
-        <button
-          v-if="$listeners.movePin"
-          type="button"
-          class="u-button u-button_icon"
-          :disabled="['alone', 'first'].includes(position_in_list)"
-          @click="$emit('movePin', -1)"
-        >
-          <b-icon icon="arrow-left-circle-fill" :aria-label="$t('move_left')" />
-        </button>
-        <button
-          v-if="$listeners.addToPins"
-          type="button"
-          class="u-button u-button_icon"
-          @click="$emit('addToPins')"
-        >
-          <b-icon icon="pin" :aria-label="$t('pin')" />
-        </button>
-        <button
-          v-if="$listeners.removeFromPins"
-          type="button"
-          class="u-button u-button_icon"
-          @click="$emit('removeFromPins')"
-        >
-          <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
-        </button>
-        <button
-          v-if="$listeners.movePin"
-          type="button"
-          class="u-button u-button_icon"
-          :disabled="['alone', 'last'].includes(position_in_list)"
-          @click="$emit('movePin', +1)"
-        >
-          <b-icon
-            icon="arrow-right-circle-fill"
-            :aria-label="$t('move_right')"
-          />
-        </button>
-      </div>
-      <div
-        class="_icon _pinSpace _pinSpace_indicator"
-        v-else-if="$listeners.removeFromPins"
-      >
-        <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
-      </div>
-
       <!-- </div> -->
     </div>
     <div class="_textBloc">
@@ -93,7 +47,7 @@
             context === 'full' && can_edit && !space.title ? $t('title') : ''
           "
           class="_title"
-          :tag="context === 'full' ? 'h1' : 'h3'"
+          :tag="context === 'full' ? 'h1' : 'h2'"
           :content="space.title"
           :path="space.$path"
           :maxlength="280"
@@ -209,13 +163,10 @@ export default {
   padding: calc(var(--spacing) / 4);
   border-radius: 6px;
 
-  // overflow: hidden;
-  // border-radius: var(--panel-radius);
-  // box-shadow: var(--panel-shadows);
-  // border: 2px solid var(--c-gris_clair);
+  border-bottom: 2px solid var(--c-gris);
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
 
-  // margin-bottom: calc(var(--spacing) / 2);
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-context="full"] {
@@ -239,7 +190,7 @@ export default {
   // border: 1px solid var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
-  flex: 1 0 180px;
+  flex: 1 0 120px;
   // max-width: 120px;
   // overflow: hidden;
   // border-radius: var(--panel-radius);
@@ -293,25 +244,5 @@ export default {
   top: 0;
   right: 0;
   margin: calc(var(--spacing) / 1);
-}
-
-._pinSpace {
-  left: 0;
-  right: auto;
-  z-index: 100;
-  color: var(--c-orange);
-
-  display: flex;
-  flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 2);
-
-  > button {
-    display: block;
-    pointer-events: auto;
-  }
-}
-
-._pinSpace_indicator {
-  pointer-events: none;
 }
 </style>

@@ -15,7 +15,7 @@
       />
     </div>
 
-    <div class="u-spacingBottom">
+    <div class="">
       <DLabel
         :str="$t('license')"
         :instructions="can_edit ? $t('licence_instructions') : ''"

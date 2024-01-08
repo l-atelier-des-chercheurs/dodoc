@@ -46,9 +46,9 @@
 
     <header class="_header" @click="$emit('open')">
       <small v-if="publication.template" v-html="$t(publication.template)" />
-      <h2>
+      <h3>
         {{ publication.title }}
-      </h2>
+      </h3>
     </header>
     <div class="">
       <!-- <button
@@ -144,7 +144,7 @@ export default {
   // padding: var(--spacing);
 }
 ._publicationPreview header {
-  height: 8em;
+  // min-height: 7rem;
   cursor: pointer;
 }
 ._publicationPreview--cover {

@@ -287,6 +287,7 @@ export default {
   list_of_projects: "Liste des projets",
   no_projects: "Aucun projet à afficher",
   no_files: "Aucun fichier",
+  no_publications: "Aucune publication à afficher",
   none_f: "Aucune",
   none: "Aucun·e",
   filters: "Filtres",
@@ -320,7 +321,7 @@ export default {
   completed: "Terminé",
   my_projects: "Mes projets",
   pinned: "Épinglés",
-  click_on_pin_on_space: "Les espaces marqués d’une épingle seront placés ici.",
+  click_to_pin: "Cliquez sur l’épingle jaune pour ajouter des éléments ici.",
 
   default_value: "Par défaut",
 
@@ -691,9 +692,9 @@ export default {
   interval_between_pictures: "Intervalle entre chaque photo",
   start_timelapse: "Démarrer le time-lapse",
   stop_timelapse: "Interrompre le time-lapse",
-  quality: "qualité",
+  quality: "Qualité",
   duration: "Durée",
-  same_as_source: "Identique à la source",
+  close_to_source: "Au plus proche du média original",
   very_high: "Très élevée",
   high: "Élevée",
   medium: "Moyenne",

@@ -773,7 +773,7 @@ export default {
 }
 
 ._mediaLibrary--lib--label {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
   position: sticky;
   top: 0;
   z-index: 10;

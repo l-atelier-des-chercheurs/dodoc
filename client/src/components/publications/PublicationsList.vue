@@ -37,7 +37,7 @@
     </div>
     <CreatePublication
       v-if="show_create_publication"
-      :project_path="project_path"
+      :project_path="project.$path"
       :template_options="template_options"
       @close="show_create_publication = false"
       @openPubli="$emit('togglePubli', $event)"
@@ -45,43 +45,50 @@
     <br />
 
     <div class="_publications">
-      <transition-group
-        tag="div"
-        class="_publications--list"
-        name="listComplete"
+      <div
+        v-if="sorted_publications.length === 0"
+        class="u-instructions"
+        :key="'nopublis'"
       >
-        <div
-          v-for="publication in sorted_publications"
-          :key="publication.$path"
-        >
-          <PublicationPreview
-            :publication="publication"
-            :template_options="template_options"
-            :can_edit="can_edit"
-            @open="openEntry(publication.$path)"
-          />
-        </div>
-      </transition-group>
+        {{ $t("no_publications") }}
+      </div>
+      <PinnedNonpinnedFolder
+        v-else
+        :field_name="'publications_pinned'"
+        :content="project.publications_pinned"
+        :path="project.$path"
+        :folders="sorted_publications"
+        :can_edit="can_edit"
+        v-slot="slotProps"
+      >
+        <PublicationPreview
+          :publication="slotProps.item"
+          :template_options="template_options"
+          :can_edit="can_edit"
+          @open="openEntry(slotProps.item.$path)"
+        />
+      </PinnedNonpinnedFolder>
     </div>
   </div>
 </template>
 <script>
 import CreatePublication from "@/components/publications/CreatePublication.vue";
 import PublicationPreview from "@/components/publications/PublicationPreview.vue";
+import PinnedNonpinnedFolder from "@/adc-core/ui/PinnedNonpinnedFolder.vue";
 
 export default {
   props: {
-    project_path: String,
-    project_downloadable_files: Array,
+    project: Object,
     can_edit: Boolean,
   },
   components: {
     CreatePublication,
     PublicationPreview,
+    PinnedNonpinnedFolder,
   },
   data() {
     return {
-      path: `${this.project_path}/publications`,
+      path: `${this.project.$path}/publications`,
       show_create_publication: false,
       publications: [],
 
@@ -206,11 +213,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationsList {
+  --item-width: 140px;
+
   width: 100%;
-  max-width: calc(var(--max-column-width));
-  // max-width: calc(var(--max-column-width) + 240px);
+  max-width: var(--max-column-width);
   margin: 0 auto;
-  padding: calc(var(--spacing) * 1);
+  padding-top: calc(var(--spacing) * 1);
 }
 
 ._publications--list {

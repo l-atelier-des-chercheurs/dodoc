@@ -25,7 +25,9 @@
             !isActive(item.$path) ? $emit('openItem', item.$path) : undefined
           "
         >
-          <slot :item="item" :index="index" />
+          <span>
+            <slot :item="item" :index="index" />
+          </span>
         </button>
       </SlickItem>
       &nbsp;
