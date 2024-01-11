@@ -330,6 +330,7 @@ export default {
 
     ._projectInfos--topContent {
       padding: 0;
+      margin: 0;
       gap: 0;
       max-width: none;
     }
