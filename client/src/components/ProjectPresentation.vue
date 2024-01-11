@@ -47,20 +47,52 @@ x
       </div>
 
       <div class="_projectInfos--infos">
-        <StatusTag
-          v-if="context === 'full'"
-          :status="project.$status"
-          :path="project.$path"
-          :can_edit="can_edit"
-        />
-
-        <!-- <br v-if="context === 'full'" /> -->
+        <div class="_projectInfos--infos--settings">
+          <StatusTag
+            v-if="context === 'full'"
+            :status="project.$status"
+            :path="project.$path"
+            :can_edit="can_edit"
+          />
+          <sl-dropdown v-if="context === 'full' && can_edit">
+            <sl-button slot="trigger" caret>
+              {{ $t("options") }}
+            </sl-button>
+            <sl-menu>
+              <sl-menu-item>
+                <DownloadFolder :path="project.$path" />
+              </sl-menu-item>
+              <sl-menu-item>
+                <div class="">
+                  <button
+                    type="button"
+                    class="u-buttonLink"
+                    @click="show_dup_modal = true"
+                  >
+                    <sl-icon name="file-plus" />
+                    {{ $t("duplicate_or_move_project") }}
+                  </button>
+                </div>
+                <DuplicateOrRemixProject
+                  v-if="show_dup_modal"
+                  :path="project.$path"
+                  :proposed_title="`${$t('copy_of')} ${project.title}`"
+                  @close="show_dup_modal = false"
+                />
+              </sl-menu-item>
+              <sl-menu-item>
+                <RemoveMenu
+                  :remove_text="$t('remove_project')"
+                  @remove="removeProject"
+                />
+              </sl-menu-item>
+            </sl-menu>
+          </sl-dropdown>
+        </div>
 
         <TitleField
           :field_name="'title'"
-          :label="
-            context === 'full' && can_edit && !project.title ? $t('title') : ''
-          "
+          :label="can_edit ? $t('title') : ''"
           class="_title"
           :content="project.title"
           :path="project.$path"
@@ -71,52 +103,13 @@ x
           :instructions="$t('project_title_instructions')"
         />
 
-        <sl-dropdown v-if="context === 'full' && can_edit">
-          <sl-button slot="trigger" caret>
-            {{ $t("options") }}
-          </sl-button>
-          <sl-menu>
-            <sl-menu-item>
-              <DownloadFolder :path="project.$path" />
-            </sl-menu-item>
-            <sl-menu-item>
-              <div class="">
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  @click="show_dup_modal = true"
-                >
-                  <sl-icon name="file-plus" />
-                  {{ $t("duplicate_or_move_project") }}
-                </button>
-              </div>
-              <DuplicateOrRemixProject
-                v-if="show_dup_modal"
-                :path="project.$path"
-                :proposed_title="`${$t('copy_of')} ${project.title}`"
-                @close="show_dup_modal = false"
-              />
-            </sl-menu-item>
-            <sl-menu-item>
-              <RemoveMenu
-                :remove_text="$t('remove_project')"
-                @remove="removeProject"
-              />
-            </sl-menu-item>
-          </sl-menu>
-        </sl-dropdown>
-
         <TitleField
           v-if="
             context !== 'tiny' || (context === 'list' && project.description)
           "
           :field_name="'description'"
           class="_description"
-          :label="
-            context === 'full' && can_edit && !project.description
-              ? $t('description')
-              : ''
-          "
+          :label="can_edit ? $t('description') : ''"
           :content="project.description"
           :path="project.$path"
           :maxlength="1280"
@@ -124,10 +117,21 @@ x
           :can_edit="can_edit"
         />
 
+        <AdminsAndContributorsField
+          v-if="context === 'full'"
+          class="u-spacingBottom"
+          :folder="project"
+          :can_edit="can_edit"
+          :admin_label="$t('referent')"
+          :admin_instructions="$t('project_admin_instructions')"
+          :contrib_instructions="$t('project_contrib_instructions')"
+        />
+
         <div
           class="_allTags"
           v-if="
             context !== 'tiny' &&
+            context !== 'full' &&
             (p_keywords.length > 0 ||
               p_machines.length > 0 ||
               p_materials.length > 0)
@@ -154,8 +158,6 @@ x
             :clickable="false"
           />
         </div>
-
-        <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
       </div>
     </div>
 
@@ -282,6 +284,22 @@ export default {
         ? this.project[type]
         : [];
     },
+    async removeProject() {
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const response = await this.$api.deleteItem({
+          path: this.project.$path,
+        });
+        this.response = response.data;
+        this.fetch_status = "success";
+        // this.$router.push("/projects");
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+      }
+    },
   },
 };
 </script>
@@ -377,8 +395,7 @@ export default {
 
 ._projectInfos--topContent {
   max-width: var(--max-column-width);
-  margin: 0 auto;
-  padding: calc(var(--spacing) * 2) 0;
+  margin: calc(var(--spacing) * 1) auto;
 
   display: flex;
   flex-flow: row wrap;
@@ -427,6 +444,13 @@ export default {
   }
 }
 
+._projectInfos--infos--settings {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
 ._imageSelect {
   background: white;
   position: relative;
@@ -453,13 +477,17 @@ export default {
 
   ._cover {
     position: relative;
-    // max-width: 520px;
+    max-width: 520px;
     aspect-ratio: 3/2;
     border-radius: 4px;
     overflow: hidden;
 
     margin-right: 0;
     margin-left: auto;
+
+    .is--mobileView & {
+      max-width: none;
+    }
   }
 
   ._icon {
@@ -504,8 +532,10 @@ export default {
     padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
     color: white;
+    font-weight: 700;
+
     border-radius: 15px;
     font-size: var(--sl-font-size-small);
     /* max-width: 30ch; */
@@ -517,13 +547,10 @@ export default {
 }
 
 ._projectInfos--meta {
-  // display: flex;
-  // flex-flow: row wrap;
-  // overflow: auto;
-  // @include scrollbar(8px, 5px, 6px);
   max-width: var(--max-column-width);
-  margin: 0 auto;
-  padding-top: calc(var(--spacing) * 1);
+  margin: calc(var(--spacing) * 1) auto;
+  padding: 0 calc(var(--spacing) * 1);
+  // padding-top: calc(var(--spacing) * 1);
 
   .is--mobileView & {
     height: auto;
@@ -531,9 +558,10 @@ export default {
 
   ._card {
     width: 240px;
-    min-height: 240px;
-    overflow: hidden;
-    margin: 0 calc(var(--spacing) / 2);
+    height: 240px;
+    overflow: auto;
+    margin: calc(var(--spacing) / 2);
+    @include scrollbar(8px, 5px, 6px);
 
     .is--mobileView & {
       // flex: 1 0 220px;

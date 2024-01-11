@@ -5,16 +5,6 @@
     :is_open_initially="true"
     :can_be_toggled="false"
   >
-    <div class="u-spacingBottom">
-      <AdminsAndContributorsField
-        :folder="project"
-        :can_edit="can_edit"
-        :admin_label="$t('referent')"
-        :admin_instructions="$t('project_admin_instructions')"
-        :contrib_instructions="$t('project_contrib_instructions')"
-      />
-    </div>
-
     <EventField
       class="u-spacingBottom"
       v-if="$root.app_infos.instance_meta.enable_events"
@@ -76,22 +66,6 @@ export default {
     },
   },
   methods: {
-    async removeProject() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-
-      try {
-        const response = await this.$api.deleteItem({
-          path: this.project.$path,
-        });
-        this.response = response.data;
-        this.fetch_status = "success";
-        // this.$router.push("/projects");
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
     openInFinder(path) {
       window.electronAPI.send("toMain", {
         type: "open_path",

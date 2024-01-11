@@ -4,7 +4,7 @@
       {{ author_type }}
     </template> -->
     <div class="">
-      <DLabel :str="$t('admins_and_contributors')" />
+      <DLabel v-if="show_labels" :str="$t('admins_and_contributors')" />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
       <div class="u-listOfAvatars">
         <AuthorTag
@@ -51,6 +51,10 @@ export default {
     admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,
+    show_labels: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {},
   data() {
