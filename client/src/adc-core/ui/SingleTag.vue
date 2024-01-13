@@ -1,32 +1,28 @@
 <template>
-  <button
-    type="button"
-    :class="[
-      'u-button',
-      custom_color,
-      '_tag',
-      {
-        'is--inactive': !clickable,
-      },
-      {
-        'is--active2': disableable,
-      },
-    ]"
+  <div
+    class="_tag"
+    :class="{
+      'is--inactive': !clickable,
+      'is--active2': disableable,
+    }"
+    :data-tagtype="tag_type"
     @click="$emit('tagClick')"
   >
+    <b-icon class="_picto" :icon="icon_to_show" />
+
     <span class="_tagName">
       {{ name }}
     </span>
     <span class="_addBtn" v-if="addable">
-      <sl-icon name="plus-circle" />
+      <b-icon icon="plus-circle" />
     </span>
     <span class="_removeBtn" v-if="removable" @click="$emit('removeClick')">
-      <sl-icon name="trash3" />
+      <b-icon icon="x-circle" />
     </span>
     <span class="_disableBtn" v-if="disableable">
-      <sl-icon name="x-circle-fill" />
+      <b-icon icon="x-circle-fill" />
     </span>
-  </button>
+  </div>
 </template>
 <script>
 export default {
@@ -53,7 +49,14 @@ export default {
       if (this.tag_type === "machines") return "u-button_bleuvert";
       if (this.tag_type === "keywords") return "u-button_orange";
       if (this.tag_type === "disciplines") return "u-button_rouge";
-      // return "u-button_orange";
+      return "";
+    },
+    icon_to_show() {
+      if (this.tag_type === "level") return "puzzle";
+      if (this.tag_type === "materials") return "bricks";
+      if (this.tag_type === "machines") return "gear-wide-connected";
+      if (this.tag_type === "keywords") return "tag";
+      if (this.tag_type === "disciplines") return "book";
       return "";
     },
   },
@@ -62,15 +65,49 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._tag {
-  // border-radius: 1em;
-  font-weight: 400;
-  font-size: var(--sl-font-size-small);
-  text-transform: none;
-  padding: calc(var(--spacing) / 6) calc(var(--spacing) / 3);
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
 
-  &.is--inactive {
-    cursor: default;
+  border-radius: 1em;
+  font-weight: 400;
+  font-size: var(--sl-font-size-medium);
+  text-transform: none;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 3);
+  background-color: var(--c-gris_clair);
+
+  &:not(.is--inactive) {
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      opacity: 0.8;
+    }
   }
+
+  &[data-tagtype="level"] {
+    background-color: var(--c-rouge_clair);
+  }
+  &[data-tagtype="disciplines"] {
+    background-color: var(--c-rouge_clair);
+  }
+  &[data-tagtype="keywords"] {
+    background-color: var(--c-orange_clair);
+  }
+  &[data-tagtype="machines"] {
+    background-color: var(--c-bleuvert_clair);
+  }
+  &[data-tagtype="materials"] {
+    background-color: var(--c-bleumarine_clair);
+  }
+}
+
+._picto {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  color: black;
 }
 
 ._addBtn,

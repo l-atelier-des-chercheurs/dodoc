@@ -47,14 +47,13 @@ x
       </div>
 
       <div class="_projectInfos--infos">
-        <div class="_projectInfos--infos--settings">
+        <div class="_projectInfos--infos--settings" v-if="context === 'full'">
           <StatusTag
-            v-if="context === 'full'"
             :status="project.$status"
             :path="project.$path"
             :can_edit="can_edit"
           />
-          <sl-dropdown v-if="context === 'full' && can_edit">
+          <sl-dropdown v-if="can_edit">
             <sl-button slot="trigger" caret>
               {{ $t("options") }}
             </sl-button>
@@ -143,7 +142,6 @@ x
             :tag_type="'keywords'"
             :clickable="false"
           />
-
           <TagsList
             v-if="p_machines.length > 0"
             :tags="p_machines"
@@ -462,7 +460,7 @@ export default {
   width: 100%;
 
   .is--list & {
-    padding: 2px;
+    // padding: 2px;
     width: 100%;
     height: auto;
   }
@@ -530,7 +528,7 @@ export default {
     bottom: 0;
     left: 0;
     margin: calc(var(--spacing) / 4);
-    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 16) calc(var(--spacing) / 4);
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     background: rgba(0, 0, 0, 0.2);
