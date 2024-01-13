@@ -140,20 +140,16 @@ x
             v-if="p_keywords.length > 0"
             :tags="p_keywords"
             :tag_type="'keywords'"
-            :clickable="false"
           />
           <TagsList
             v-if="p_machines.length > 0"
             :tags="p_machines"
             :tag_type="'machines'"
-            :clickable="false"
           />
-
           <TagsList
             v-if="p_materials.length > 0"
             :tags="p_materials"
             :tag_type="'materials'"
-            :clickable="false"
           />
         </div>
       </div>

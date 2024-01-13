@@ -2,8 +2,7 @@
   <div
     class="_tag"
     :class="{
-      'is--inactive': !clickable,
-      'is--active2': disableable,
+      'is--inactive': mode === 'inactive',
     }"
     :data-tagtype="tag_type"
     @click="$emit('tagClick')"
@@ -13,13 +12,13 @@
     <span class="_tagName">
       {{ name }}
     </span>
-    <span class="_addBtn" v-if="addable">
+    <span class="_addBtn" v-if="mode === 'add'">
       <b-icon icon="plus-circle" />
     </span>
-    <span class="_removeBtn" v-if="removable" @click="$emit('removeClick')">
+    <span class="_removeBtn" v-if="mode === 'remove'">
       <b-icon icon="x-circle" />
     </span>
-    <span class="_disableBtn" v-if="disableable">
+    <span class="_disableBtn" v-if="mode === 'disable'">
       <b-icon icon="x-circle-fill" />
     </span>
   </div>
@@ -29,10 +28,7 @@ export default {
   props: {
     tag_type: String,
     name: String,
-    clickable: Boolean,
-    addable: Boolean,
-    removable: Boolean,
-    disableable: Boolean,
+    mode: String,
   },
   components: {},
   data() {

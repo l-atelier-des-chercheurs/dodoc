@@ -6,9 +6,8 @@
       class="_tl"
       :tags="new_tags"
       :tag_type="field_name"
-      :clickable="false"
-      :removable="edit_mode"
-      @removeClick="removeTag($event)"
+      :mode="edit_mode ? 'remove' : 'inactive'"
+      @tagClick="removeTag($event)"
     />
 
     <template v-if="can_edit">

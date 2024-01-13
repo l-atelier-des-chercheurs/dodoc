@@ -81,7 +81,6 @@
               <TagsList
                 :tags="extractAll('level')"
                 :tag_type="'level'"
-                :clickable="true"
                 :translated="isTranslated('level')"
                 :tags_active="getActiveTags('level')"
                 @tagClick="
@@ -193,8 +192,7 @@
                 :key="af.value"
                 :tag_type="af.filter_type"
                 :name="tagName(af.filter_type, af.value)"
-                :clickable="true"
-                :disableable="true"
+                :mode="'disable'"
                 @tagClick="
                   toggleFilter({
                     filter_type: af.filter_type,

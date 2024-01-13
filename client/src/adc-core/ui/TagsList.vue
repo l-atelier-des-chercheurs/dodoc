@@ -12,12 +12,8 @@
         :key="tag"
         :tag_type="tag_type"
         :name="tagName(tag)"
-        :clickable="clickable"
-        :addable="addable"
-        :removable="removable"
-        :disableable="tags_active.includes(tag)"
+        :mode="tagMode(tag)"
         @tagClick="$emit('tagClick', tag)"
-        @removeClick="$emit('removeClick', tag)"
       />
     </transition-group>
   </div>
@@ -34,23 +30,12 @@ export default {
       type: Array,
       default: () => [],
     },
-    clickable: {
-      type: Boolean,
-      default: false,
-    },
+    mode: String,
     translated: {
       type: Boolean,
       default: false,
     },
     translated_prefix: String,
-    addable: {
-      type: Boolean,
-      default: false,
-    },
-    removable: {
-      type: Boolean,
-      default: false,
-    },
   },
   components: {},
   data() {
@@ -68,6 +53,13 @@ export default {
           return this.$t(this.translated_prefix + tag_str);
         else return this.$t(tag_str);
       return tag_str;
+    },
+    tagMode(tag) {
+      if (this.mode) return this.mode;
+      if (this.tags_active)
+        if (this.tags_active.includes(tag)) return "disable";
+        else return "select";
+      return "inactive";
     },
   },
 };
