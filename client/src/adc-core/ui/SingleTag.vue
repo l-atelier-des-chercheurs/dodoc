@@ -10,7 +10,7 @@
     <b-icon class="_picto" :icon="icon_to_show" />
 
     <span class="_tagName">
-      {{ name }}
+      {{ tag_name }}
     </span>
 
     <transition name="pagechange" mode="out-in">
@@ -24,7 +24,7 @@
 export default {
   props: {
     tag_type: String,
-    name: String,
+    tag_str: String,
     mode: String,
   },
   components: {},
@@ -36,15 +36,21 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    custom_color() {
-      if (this.tag_type === "level") return "u-button_red";
-      if (this.tag_type === "materials") return "u-button_bleumarine";
-      if (this.tag_type === "machines") return "u-button_bleuvert";
-      if (this.tag_type === "keywords") return "u-button_orange";
-      if (this.tag_type === "disciplines") return "u-button_rouge";
-      return "";
+    translated() {
+      return this.isTranslated(this.tag_type);
+    },
+    translated_prefix() {
+      return this.translatedPrefix(this.tag_type);
+    },
+    tag_name() {
+      if (this.translated)
+        if (this.translated_prefix)
+          return this.$t(this.translated_prefix + this.tag_str);
+        else return this.$t(this.tag_str);
+      return this.tag_str;
     },
     icon_to_show() {
+      if (this.tag_type === "target_audience") return "people-fill";
       if (this.tag_type === "level") return "puzzle";
       if (this.tag_type === "materials") return "bricks";
       if (this.tag_type === "machines") return "gear-wide-connected";
@@ -83,6 +89,10 @@ export default {
     }
   }
 
+  &[data-tagtype="target_audience"] {
+    background-color: var(--c-gris_fonce);
+    color: white;
+  }
   &[data-tagtype="level"] {
     background-color: var(--c-rouge_clair);
   }
@@ -106,6 +116,6 @@ export default {
   height: 0.9rem;
   min-width: 0;
   min-height: 0;
-  color: black;
+  color: currentColor;
 }
 </style>

@@ -242,6 +242,8 @@ import Strings from "@/mixins/Strings";
 Vue.mixin(Strings);
 import Queries from "@/mixins/Queries";
 Vue.mixin(Queries);
+import Tags from "@/mixins/Tags";
+Vue.mixin(Tags);
 import Electron from "@/mixins/Electron";
 Vue.mixin(Electron);
 

@@ -128,29 +128,17 @@ x
 
         <div
           class="_allTags"
-          v-if="
-            context !== 'tiny' &&
-            context !== 'full' &&
-            (p_keywords.length > 0 ||
-              p_machines.length > 0 ||
-              p_materials.length > 0)
-          "
+          v-if="context !== 'tiny' && context !== 'full' && all_tags.length > 0"
         >
-          <TagsList
-            v-if="p_keywords.length > 0"
-            :tags="p_keywords"
-            :tag_type="'keywords'"
-          />
-          <TagsList
-            v-if="p_machines.length > 0"
-            :tags="p_machines"
-            :tag_type="'machines'"
-          />
-          <TagsList
-            v-if="p_materials.length > 0"
-            :tags="p_materials"
-            :tag_type="'materials'"
-          />
+          <template v-for="tags in all_tags">
+            <SingleTag
+              v-for="tag in tags.list"
+              :key="tag"
+              :tag_type="tags.type"
+              :tag_str="tag"
+              :mode="'inactive'"
+            />
+          </template>
         </div>
       </div>
     </div>
@@ -262,14 +250,35 @@ export default {
     is_own_project() {
       return this.isOwnItem({ folder: this.project });
     },
-    p_keywords() {
-      return this.getKw("keywords");
-    },
-    p_materials() {
-      return this.getKw("materials");
-    },
-    p_machines() {
-      return this.getKw("machines");
+    all_tags() {
+      const _all_tags = [];
+
+      debugger;
+
+      [
+        "target_audience",
+        "disciplines",
+        "level",
+        "keywords",
+        "machines",
+        "materials",
+      ].map((tag_type) => {
+        if (tag_type === "level") {
+          _all_tags.push({
+            type: "level",
+            list: [this.project.level],
+          });
+        } else {
+          const kw = this.getKw(tag_type);
+          if (kw.length > 0)
+            _all_tags.push({
+              type: tag_type,
+              list: kw,
+            });
+        }
+      });
+
+      return _all_tags;
     },
   },
   methods: {
@@ -598,5 +607,8 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 4);
+
+  > * {
+  }
 }
 </style>

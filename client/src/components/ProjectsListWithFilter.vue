@@ -81,7 +81,6 @@
               <TagsList
                 :tags="extractAll('level')"
                 :tag_type="'level'"
-                :translated="isTranslated('level')"
                 :tags_active="getActiveTags('level')"
                 @tagClick="
                   toggleFilter({ filter_type: 'level', value: $event })
@@ -94,7 +93,6 @@
               <TagsList
                 :tags="extractAll('keywords')"
                 :tag_type="'keywords'"
-                :clickable="true"
                 :tags_active="getActiveTags('keywords')"
                 @tagClick="
                   toggleFilter({ filter_type: 'keywords', value: $event })
@@ -107,7 +105,6 @@
               <TagsList
                 :tags="extractAll('materials')"
                 :tag_type="'materials'"
-                :clickable="true"
                 :tags_active="getActiveTags('materials')"
                 @tagClick="
                   toggleFilter({ filter_type: 'materials', value: $event })
@@ -120,7 +117,6 @@
               <TagsList
                 :tags="extractAll('machines')"
                 :tag_type="'machines'"
-                :clickable="true"
                 :tags_active="getActiveTags('machines')"
                 @tagClick="
                   toggleFilter({ filter_type: 'machines', value: $event })
@@ -133,9 +129,6 @@
               <TagsList
                 :tags="extractAll('disciplines')"
                 :tag_type="'disciplines'"
-                :clickable="true"
-                :translated="isTranslated('disciplines')"
-                :translated_prefix="translatedPrefix('disciplines')"
                 :tags_active="getActiveTags('disciplines')"
                 @tagClick="
                   toggleFilter({ filter_type: 'disciplines', value: $event })
@@ -148,9 +141,6 @@
               <TagsList
                 :tags="extractAll('target_audience')"
                 :tag_type="'target_audience'"
-                :clickable="true"
-                :translated="isTranslated('target_audience')"
-                :translated_prefix="translatedPrefix('target_audience')"
                 :tags_active="getActiveTags('target_audience')"
                 @tagClick="
                   toggleFilter({
@@ -174,24 +164,10 @@
             appear
           >
             <template v-for="af in active_filters">
-              <!-- <SingleTag
-                v-if="af.filter_type === 'event_linked_slug'"
-                :key="af.value"
-                :tag_type="af.filter_type"
-                :name="getFromCache('events/' + af.value).title"
-                :clickable="true"
-                :disableable="true"
-                @tagClick="
-                  toggleFilter({
-                    filter_type: af.filter_type,
-                    value: af.value,
-                  })
-                "
-              /> -->
               <SingleTag
                 :key="af.value"
                 :tag_type="af.filter_type"
-                :name="tagName(af.filter_type, af.value)"
+                :tag_str="af.value"
                 :mode="'disable'"
                 @tagClick="
                   toggleFilter({
@@ -382,22 +358,6 @@ export default {
         if (af.filter_type === type) acc.push(af.value);
         return acc;
       }, []);
-    },
-    isTranslated(key) {
-      return ["level", "disciplines", "target_audience"].includes(key);
-    },
-    translatedPrefix(key) {
-      if (this.isTranslated(key))
-        if (key === "disciplines") return "di_";
-        else if (key === "target_audience") return "ta_";
-      return false;
-    },
-    tagName(type, tag_str) {
-      if (this.isTranslated(type))
-        if (this.translatedPrefix(type))
-          return this.$t(this.translatedPrefix(type) + tag_str);
-        else return this.$t(tag_str);
-      return tag_str;
     },
   },
 };
