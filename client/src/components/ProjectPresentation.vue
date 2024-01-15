@@ -91,7 +91,7 @@ x
 
         <TitleField
           :field_name="'title'"
-          :label="can_edit ? $t('title') : ''"
+          :label="context === 'full' ? $t('title') : ''"
           class="_title"
           :content="project.title"
           :path="project.$path"
@@ -99,7 +99,9 @@ x
           :maxlength="40"
           :tag="context === 'full' ? 'h1' : 'h3'"
           :can_edit="can_edit"
-          :instructions="$t('project_title_instructions')"
+          :instructions="
+            can_edit ? $t('project_title_instructions') : undefined
+          "
         />
 
         <TitleField
@@ -108,7 +110,7 @@ x
           "
           :field_name="'description'"
           class="_description"
-          :label="can_edit ? $t('description') : ''"
+          :label="context === 'full' ? $t('description') : ''"
           :content="project.description"
           :path="project.$path"
           :maxlength="1280"

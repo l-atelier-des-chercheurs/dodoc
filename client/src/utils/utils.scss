@@ -428,12 +428,11 @@ textarea,
 
   vertical-align: middle;
 
-  padding: calc(var(--spacing) * 0.5);
-  // padding-left: calc(var(--spacing) * 0.5);
-  // padding-right: calc(var(--spacing) * 0.5);
+  // padding: calc(var(--spacing) * 0.5);
+  padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
   margin: 0;
 
-  border-bottom: 2px solid transparent;
+  border-bottom: 2px solid hsl(195, 14%, 83%);
 
   transition: all 0.05s;
 

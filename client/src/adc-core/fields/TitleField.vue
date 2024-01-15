@@ -159,7 +159,7 @@ export default {
   // width: 100%;
 
   ._content {
-    display: inline;
+    display: inline-block;
     margin-right: calc(var(--spacing) / 2);
 
     span {

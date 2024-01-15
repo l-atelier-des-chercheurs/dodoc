@@ -43,21 +43,27 @@
             $t("only_finished")
           }}</label>
         </div>
-        <div class="u-sameRow" style="width: 100%">
-          <input
-            type="search"
-            v-model="search_project"
-            :placeholder="$t('search_by_title')"
-          />
-          <button
-            type="button"
-            class="u-button u-button_bleumarine"
-            style="flex: 0 0 auto"
-            v-if="search_project.length > 0"
-            @click="search_project = ''"
-          >
-            <sl-icon name="x-lg" />
-          </button>
+        <div>
+          <div class="u-sameRow" style="width: 100%">
+            <input
+              type="search"
+              v-model="search_project"
+              :placeholder="$t('search')"
+            />
+
+            <button
+              type="button"
+              class="u-button u-button_bleumarine"
+              style="flex: 0 0 auto"
+              v-if="search_project.length > 0"
+              @click="search_project = ''"
+            >
+              <sl-icon name="x-lg" />
+            </button>
+          </div>
+          <div class="u-instructions">
+            <small v-html="$t('search_in_title_desc_kw')" />
+          </div>
         </div>
 
         <div v-if="$root.app_infos.instance_meta.enable_events">
@@ -298,8 +304,7 @@ export default {
             return false;
         }
 
-        if (this.search_project)
-          return this.twoStringsSearch(p.title, this.search_project);
+        if (this.search_project) return this.searchInProject(p);
 
         if (this.opened_event)
           if (this.opened_event !== p.event_linked_slug) return false;
@@ -358,6 +363,29 @@ export default {
         if (af.filter_type === type) acc.push(af.value);
         return acc;
       }, []);
+    },
+    searchInProject(project) {
+      if (
+        project.title &&
+        this.twoStringsSearch(project.title, this.search_project)
+      )
+        return true;
+      if (
+        project.description &&
+        this.twoStringsSearch(project.description, this.search_project)
+      )
+        return true;
+
+      for (const kw of ["keywords", "machines", "materials"]) {
+        if (
+          project[kw] &&
+          project[kw].some((kw) =>
+            this.twoStringsSearch(kw, this.search_project)
+          )
+        )
+          return true;
+      }
+      return false;
     },
   },
 };

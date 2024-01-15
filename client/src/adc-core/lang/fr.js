@@ -74,7 +74,8 @@ export default {
   submitted_password_is_wrong: "Mot de passe erroné",
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
-  search_by_title: "Rechercher par titre",
+  search_in_title_desc_kw:
+    "Dans les titres, descriptions, mots-clés, machines et matériaux.",
   search_by_name: "Rechercher par nom",
 
   connection_lost: `Connexion perdue`,

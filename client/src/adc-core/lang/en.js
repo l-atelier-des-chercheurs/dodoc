@@ -50,7 +50,8 @@ export default {
   submitted_password_is_wrong: "The submitted password is wrong",
   account_doesnt_exist: "This account does not exist",
   submit: "Submit",
-  search_by_title: "Search by title",
+  search_in_title_desc_kw:
+    "In titles, descriptions, keywords, machines and materials.",
   search_by_name: "Search by name",
 
   space: "Space",
