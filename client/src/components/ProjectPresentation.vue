@@ -163,7 +163,7 @@ x
       v-if="context === 'full'"
       :options="flickityOptions"
     >
-      <CardMeta class="_card" :project="project" :can_edit="can_edit" />
+      <!-- <CardMeta class="_card" :project="project" :can_edit="can_edit" /> -->
       <CardLicense class="_card" :project="project" :can_edit="can_edit" />
       <CardFiles class="_card" :project="project" :can_edit="can_edit" />
       <CardCompetences class="_card" :project="project" :can_edit="can_edit" />
@@ -187,7 +187,7 @@ x
 <script>
 import Flickity from "vue-flickity";
 
-import CardMeta from "@/components/project_cards/CardMeta.vue";
+// import CardMeta from "@/components/project_cards/CardMeta.vue";
 // import CardAuthor from "@/components/project_cards/CardAuthor.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardCompetences from "@/components/project_cards/CardCompetences.vue";
@@ -210,7 +210,7 @@ export default {
     Flickity,
     DuplicateOrRemixProject,
 
-    CardMeta,
+    // CardMeta,
     // CardAuthor,
     CardKeywords,
     CardCompetences,

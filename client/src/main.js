@@ -242,6 +242,8 @@ import Strings from "@/mixins/Strings";
 Vue.mixin(Strings);
 import Queries from "@/mixins/Queries";
 Vue.mixin(Queries);
+import Electron from "@/mixins/Electron";
+Vue.mixin(Electron);
 
 Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);

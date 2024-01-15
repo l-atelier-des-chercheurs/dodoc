@@ -18,6 +18,19 @@
     </div>
 
     <div class="">
+      <EventField
+        class="u-spacingBottom"
+        v-if="$root.app_infos.instance_meta.enable_events"
+        :project="project"
+        :can_edit="can_edit"
+      />
+
+      <RemixField
+        class="u-spacingBottom"
+        :project="project"
+        :can_edit="can_edit"
+      />
+
       <DLabel
         :str="$t('license')"
         :instructions="can_edit ? $t('licence_instructions') : ''"
@@ -46,12 +59,18 @@
   </DetailsPane>
 </template>
 <script>
+import EventField from "@/components/project/EventField.vue";
+import RemixField from "@/components/project/RemixField.vue";
+
 export default {
   props: {
     project: Object,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    EventField,
+    RemixField,
+  },
   data() {
     return {
       license_options: [

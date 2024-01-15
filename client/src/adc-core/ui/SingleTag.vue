@@ -12,15 +12,12 @@
     <span class="_tagName">
       {{ name }}
     </span>
-    <span class="_addBtn" v-if="mode === 'add'">
-      <b-icon icon="plus-circle" />
-    </span>
-    <span class="_removeBtn" v-if="mode === 'remove'">
-      <b-icon icon="x-circle" />
-    </span>
-    <span class="_disableBtn" v-if="mode === 'disable'">
-      <b-icon icon="x-circle-fill" />
-    </span>
+
+    <transition name="pagechange" mode="out-in">
+      <b-icon v-if="mode === 'add'" icon="plus-circle" :key="mode" />
+      <b-icon v-else-if="mode === 'remove'" icon="x-circle" :key="mode" />
+      <b-icon v-else-if="mode === 'disable'" icon="x-circle-fill" :key="mode" />
+    </transition>
   </div>
 </template>
 <script>
@@ -64,13 +61,17 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: calc(var(--spacing) / 4);
+
+  gap: calc(var(--spacing) / 8);
 
   border-radius: 1em;
   font-weight: 400;
-  font-size: var(--sl-font-size-medium);
+  // font-size: var(--sl-font-size-medium);
+  font-size: var(--sl-font-size-small);
+
   text-transform: none;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 3);
+
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 3);
   background-color: var(--c-gris_clair);
 
   &:not(.is--inactive) {
@@ -101,15 +102,10 @@ export default {
 
 ._picto {
   display: inline-block;
-  width: 1rem;
-  height: 1rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  min-width: 0;
+  min-height: 0;
   color: black;
-}
-
-._addBtn,
-._removeBtn,
-._disableBtn {
-  margin-left: 0.5em;
-  line-height: 0.75;
 }
 </style>
