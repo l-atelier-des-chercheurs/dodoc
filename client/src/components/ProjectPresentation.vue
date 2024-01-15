@@ -253,8 +253,6 @@ export default {
     all_tags() {
       const _all_tags = [];
 
-      debugger;
-
       [
         "target_audience",
         "disciplines",
@@ -263,7 +261,7 @@ export default {
         "machines",
         "materials",
       ].map((tag_type) => {
-        if (tag_type === "level") {
+        if (tag_type === "level" && this.project.level) {
           _all_tags.push({
             type: "level",
             list: [this.project.level],
@@ -368,6 +366,18 @@ export default {
     ._projectInfos--infos {
       padding: calc(var(--spacing) / 2);
       width: 100%;
+      place-content: flex-start;
+      max-height: 12rem;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background: linear-gradient(transparent, white);
+      }
     }
   }
 
@@ -405,7 +415,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) * 2);
+  gap: calc(var(--spacing) * 1);
 
   > * {
     flex: 1 1 420px;
@@ -491,6 +501,11 @@ export default {
 
     .is--mobileView & {
       max-width: none;
+    }
+
+    .is--list & {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
   }
 
