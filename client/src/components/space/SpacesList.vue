@@ -174,6 +174,9 @@ export default {
 ._createSearch {
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-end;
+
+  gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 2) 0;
   // margin-bottom: calc(var(--spacing) / 4);
 }
@@ -183,5 +186,11 @@ export default {
   border-radius: 10px;
   box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
   padding: calc(var(--spacing) / 2);
+}
+
+._searchField {
+  ::v-deep ._searchInput {
+    max-width: 30ch;
+  }
 }
 </style>

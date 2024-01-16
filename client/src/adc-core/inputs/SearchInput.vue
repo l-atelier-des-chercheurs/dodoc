@@ -4,7 +4,7 @@
     <div class="u-inputGroup">
       <input
         type="text"
-        class="_searchField"
+        class="_searchInput"
         size="small"
         :value="value"
         @input="$emit('input', $event.target.value)"
@@ -46,7 +46,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._searchField {
+._searchInput {
   width: 55ch;
 }
 </style>
