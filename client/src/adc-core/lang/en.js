@@ -54,7 +54,7 @@ export default {
   submit: "Submit",
   search_in_title_desc_kw:
     "In titles, descriptions, keywords, machines and materials.",
-  search_by_name: "Search by name",
+  search_by_name: "In names or ",
   search: "Search",
   "search:": "Search:",
 
@@ -91,6 +91,13 @@ export default {
   new_account: "New account",
   show_list: "Show the list",
 
+  login: "login",
+  logout: "logout",
+  name_or_pseudonym: "Name or nickname",
+  email: "Email",
+  email_instr: "Contact email, only visible to admins.",
+  password: "Password",
+
   open_in_finder: "Open in finder",
   admins_and_contributors: "Admins and contributors",
   set_admins_and_contributors: "Set admins and contributors",
@@ -101,7 +108,7 @@ export default {
   signup_password: "signup password",
   signup_password_instructions: "Require a password to create an account.",
   signup_password_users_instructions:
-    "If you don’t know this password, you can request it with a mail to",
+    "If you don’t know this password, you can request it in a mail to",
   more_informations: "More informations",
 
   already_added: "Already added",

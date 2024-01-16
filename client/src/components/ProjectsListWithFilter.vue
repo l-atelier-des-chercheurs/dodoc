@@ -16,25 +16,10 @@
           />
         </div>
         <div class="">
-          <DLabel :str="$t('search')" />
-          <div class="u-inputGroup">
-            <input
-              type="text"
-              class="_searchField"
-              size="small"
-              v-model="search_project"
-              :placeholder="$t('search_in_title_desc_kw')"
-            />
-            <button
-              type="button"
-              class="u-suffix u-button u-button_bleumarine"
-              style="flex: 0 0 auto"
-              v-if="search_project.length > 0"
-              @click="search_project = ''"
-            >
-              <b-icon icon="x-lg" />
-            </button>
-          </div>
+          <SearchInput
+            v-model="search_project"
+            :search_placeholder="$t('search_in_title_desc_kw')"
+          />
         </div>
       </div>
       <div class="">
@@ -168,7 +153,7 @@
             class="_tagList"
             v-if="active_filters.length > 0"
             tag="section"
-            name="projectsList"
+            name="listComplete"
             appear
           >
             <template v-for="af in active_filters">
@@ -436,7 +421,7 @@ export default {
   }
 }
 ._listOfProjects {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   margin-top: 0;
 }
 ._tagList {
@@ -457,9 +442,5 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: calc(var(--spacing) / 2);
-}
-
-._searchField {
-  width: 50ch;
 }
 </style>

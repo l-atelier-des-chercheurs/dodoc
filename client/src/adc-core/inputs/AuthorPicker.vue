@@ -12,7 +12,7 @@
     <div v-if="filtered_authors.length === 0" class="u-instructions">
       {{ $t("no_authors_to_show") }}
     </div>
-    <transition-group tag="div" class="_list" name="projectsList" appear>
+    <transition-group tag="div" class="_list" name="listComplete" appear>
       <AuthorTag
         v-for="{ $path } in filtered_authors"
         :path="$path"
@@ -68,10 +68,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._searchField {
-  margin-bottom: calc(var(--spacing) / 4);
-  max-width: 20ch;
-}
 ._maxlength {
   flex: 0 0 auto;
   padding: calc(var(--spacing) / 4) 0;

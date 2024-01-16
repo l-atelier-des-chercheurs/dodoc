@@ -6,7 +6,7 @@
       </small>
     </template>
 
-    <transition-group v-else class="_list" name="projectsList" appear>
+    <transition-group v-else class="_list" name="listComplete" appear>
       <SingleTag
         v-for="tag in tags_list"
         :key="tag"

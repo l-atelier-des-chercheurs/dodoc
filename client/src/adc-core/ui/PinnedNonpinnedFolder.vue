@@ -15,7 +15,7 @@
             v-else
             tag="section"
             class="_list _list_pinned"
-            name="projectsList"
+            name="listComplete"
             appear
           >
             <div
@@ -71,7 +71,7 @@
     <transition-group
       tag="section"
       class="_nonpinned _list"
-      name="projectsList"
+      name="listComplete"
       appear
     >
       <div

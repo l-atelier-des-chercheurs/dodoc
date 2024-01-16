@@ -77,7 +77,7 @@ export default {
   submit: "Valider",
   search_in_title_desc_kw:
     "Dans les titres, descriptions, mots-clés, machines et matériaux.",
-  search_by_name: "Rechercher par nom",
+  search_by_name: "Dans les noms ou pseudonymes",
   search: "Rechercher",
   "search:": "Rechercher&nbsp;:",
 

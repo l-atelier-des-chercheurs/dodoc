@@ -43,7 +43,10 @@ export default {
     display_original_space: Boolean,
     can_edit: Boolean,
   },
-  components: { ProjectPresentation, PinnedNonpinnedFolder },
+  components: {
+    ProjectPresentation,
+    PinnedNonpinnedFolder,
+  },
   data() {
     return {};
   },
