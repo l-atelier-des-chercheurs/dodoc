@@ -33,6 +33,8 @@ export default {
   admin_settings: "Admin settings",
 
   keywords: "keywords",
+  show_all: "Show all",
+
   template: "Template",
 
   add: "Add",

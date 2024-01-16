@@ -7,6 +7,7 @@
           <div class="u-inputGroup">
             <input
               type="text"
+              class="_searchField"
               size="small"
               v-model="search_project"
               :placeholder="$t('search_in_title_desc_kw')"
@@ -457,5 +458,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+}
+
+._searchField {
+  width: 50ch;
 }
 </style>

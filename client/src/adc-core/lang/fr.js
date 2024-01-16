@@ -34,6 +34,7 @@ export default {
   description: "Description",
   no_description: "Pas de description",
   keywords: "Mots-clés",
+  show_all: "Afficher tout",
 
   add: "Ajouter",
   add_item: "Ajouter un élément",

@@ -8,7 +8,7 @@
 
     <transition-group v-else class="_list" name="projectsList" appear>
       <SingleTag
-        v-for="tag in tags"
+        v-for="tag in tags_list"
         :key="tag"
         :tag_type="tag_type"
         :tag_str="tag"
@@ -16,6 +16,22 @@
         @tagClick="$emit('tagClick', tag)"
       />
     </transition-group>
+
+    <div class="">
+      <button
+        type="button"
+        class="u-buttonLink"
+        v-if="show_subset"
+        @click="toggleSubset"
+      >
+        <b-icon icon="arrow-down-short" />
+        {{ $t("show_all") }}
+      </button>
+      <button type="button" class="u-buttonLink" v-else @click="toggleSubset">
+        <b-icon icon="arrow-up-short" />
+        {{ $t("hide") }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -34,14 +50,25 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_subset: true,
+      show_at_first: 5,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    tags_list() {
+      if (this.show_subset) return this.tags.slice(0, this.show_at_first);
+      return this.tags;
+    },
+  },
   methods: {
+    toggleSubset() {
+      this.show_subset = !this.show_subset;
+    },
     tagMode(tag) {
       if (this.mode) return this.mode;
       if (this.tags_active)
