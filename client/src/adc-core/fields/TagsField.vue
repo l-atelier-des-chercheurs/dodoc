@@ -7,6 +7,7 @@
       :tags="new_tags"
       :tag_type="field_name"
       :mode="edit_mode ? 'remove' : 'inactive'"
+      :shorten_if_too_long="edit_mode ? false : true"
       @tagClick="removeTag($event)"
     />
 

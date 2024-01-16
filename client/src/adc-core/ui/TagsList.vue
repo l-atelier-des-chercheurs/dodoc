@@ -17,8 +17,20 @@
       />
     </transition-group>
 
-    <div class="">
+    <div class="" v-if="shorten_tag_list">
       <button
+        type="button"
+        class="u-buttonLink"
+        v-if="show_subset"
+        @click="toggleSubset"
+      >
+        + {{ tags.length - show_at_first }}
+      </button>
+      <button type="button" class="u-buttonLink" v-else @click="toggleSubset">
+        <b-icon icon="arrow-up-short" />
+        {{ $t("hide") }}
+      </button>
+      <!-- <button
         type="button"
         class="u-buttonLink"
         v-if="show_subset"
@@ -30,7 +42,7 @@
       <button type="button" class="u-buttonLink" v-else @click="toggleSubset">
         <b-icon icon="arrow-up-short" />
         {{ $t("hide") }}
-      </button>
+      </button> -->
     </div>
   </div>
 </template>
@@ -47,12 +59,16 @@ export default {
       default: () => [],
     },
     mode: String,
+    shorten_if_too_long: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {},
   data() {
     return {
       show_subset: true,
-      show_at_first: 5,
+      show_at_first: 3,
     };
   },
   created() {},
@@ -60,8 +76,14 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    shorten_tag_list() {
+      if (!this.shorten_if_too_long) return false;
+      if (this.tags.length <= this.show_at_first) return false;
+      return true;
+    },
     tags_list() {
-      if (this.show_subset) return this.tags.slice(0, this.show_at_first);
+      if (this.shorten_tag_list && this.show_subset)
+        return this.tags.slice(0, this.show_at_first);
       return this.tags;
     },
   },
