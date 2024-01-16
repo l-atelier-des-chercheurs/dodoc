@@ -2,7 +2,7 @@
   <div>
     <div class="_pinned" v-if="pinned_folders.length > 0 || can_edit">
       <div class="">
-        <DLabel :str="$t('pinned')" />
+        <DLabel :str="label" />
 
         <transition name="pagechange" mode="out-in">
           <div
@@ -97,6 +97,7 @@
 export default {
   props: {
     field_name: String,
+    label: String,
     content: {
       type: Array,
       default: () => [],

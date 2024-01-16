@@ -43,6 +43,7 @@
     <PinnedNonpinnedFolder
       v-if="!is_loading"
       :field_name="'spaces_pinned'"
+      :label="$t('spaces_pinned')"
       :content="settings.spaces_pinned"
       :path="''"
       :folders="sorted_spaces"

@@ -3,6 +3,19 @@
     <div class="_filterSortBar">
       <div class="u-sameRow">
         <div class="">
+          <DLabel :str="$t('filter')" />
+          <button
+            type="button"
+            size="small"
+            class="u-button u-button_small u-button_bleumarine"
+            :class="{
+              'is--active': show_sidebar,
+            }"
+            @click="show_sidebar = !show_sidebar"
+            v-text="!show_sidebar ? $t('show') : $t('hide')"
+          />
+        </div>
+        <div class="">
           <DLabel :str="$t('search')" />
           <div class="u-inputGroup">
             <input
@@ -22,20 +35,6 @@
               <b-icon icon="x-lg" />
             </button>
           </div>
-        </div>
-
-        <div class="">
-          <button
-            type="button"
-            size="small"
-            class="u-button u-button_small u-button_bleumarine"
-            :class="{
-              'is--active': show_sidebar,
-            }"
-            @click="show_sidebar = !show_sidebar"
-          >
-            {{ $t("filters") }}
-          </button>
         </div>
       </div>
       <div class="">

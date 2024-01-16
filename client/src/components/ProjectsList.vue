@@ -10,6 +10,7 @@
     <template v-else>
       <PinnedNonpinnedFolder
         :field_name="'projects_pinned'"
+        :label="$t('projects_pinned')"
         :content="projects_pinned"
         :path="path"
         :folders="projects"

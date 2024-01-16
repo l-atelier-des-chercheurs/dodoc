@@ -70,6 +70,10 @@ export default {
   completed: "Completed",
   my_projects: "My projects",
   pinned: "Pinned",
+  spaces_pinned: "Spaces pinned",
+  projects_pinned: "Projects pinned",
+  publications_pinned: "Publications pinned",
+
   click_to_pin: "Click on the yellow pin icon to add here.",
 
   default_value: "Default value",
@@ -128,8 +132,9 @@ export default {
   no_files: "No file",
   none_f: "None",
   none: "None",
-  filters: "Filters",
+
   reset_all: "Reset all",
+  filter: "Filter",
   sort: "Sort",
 
   click_to_zoom: "Click to zoom",

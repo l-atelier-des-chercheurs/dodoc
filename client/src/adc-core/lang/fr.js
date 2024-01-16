@@ -294,8 +294,8 @@ export default {
   no_publications: "Aucune publication à afficher",
   none_f: "Aucune",
   none: "Aucun·e",
-  filters: "Filtres",
   reset_all: "Retirer tout",
+  filter: "Filtrer",
   sort: "Trier",
 
   draft: "En cours",
@@ -325,6 +325,9 @@ export default {
   completed: "Terminé",
   my_projects: "Mes projets",
   pinned: "Épinglés",
+  spaces_pinned: "Espaces épinglés",
+  projects_pinned: "Projets épinglés",
+  publications_pinned: "Publications épinglées",
   click_to_pin: "Cliquez sur l’épingle jaune pour ajouter des éléments ici.",
 
   default_value: "Par défaut",
