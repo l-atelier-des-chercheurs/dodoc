@@ -623,7 +623,7 @@ export default {
 ._allTags {
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 8);
 
   > * {
   }

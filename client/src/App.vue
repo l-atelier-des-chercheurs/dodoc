@@ -782,20 +782,20 @@ img {
   }
 }
 
-.projectsList-move {
-  position: relative;
-  transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
-    opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
-}
-.projectsList-enter,
-.projectsList-leave-to {
-  opacity: 0;
-}
-.projectsList-leave-active {
-  opacity: 0;
-  position: absolute !important;
-  z-index: 0 !important;
+.listComplete {
+  &-move {
+    position: relative;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+      opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
+  }
 
-  transition: none !important;
+  &-leave-active {
+    position: absolute !important;
+    z-index: 0 !important;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+  }
 }
 </style>

@@ -77,6 +77,8 @@ export default {
   search_in_title_desc_kw:
     "Dans les titres, descriptions, mots-clés, machines et matériaux.",
   search_by_name: "Rechercher par nom",
+  search: "Rechercher",
+  "search:": "Rechercher&nbsp;:",
 
   connection_lost: `Connexion perdue`,
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
@@ -293,7 +295,7 @@ export default {
   none: "Aucun·e",
   filters: "Filtres",
   reset_all: "Retirer tout",
-  "sort:": "Trier&nbsp;:",
+  sort: "Trier",
 
   draft: "En cours",
   listed: "Listé",

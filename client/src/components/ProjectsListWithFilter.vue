@@ -1,21 +1,45 @@
 <template>
   <section class="_projectsListWithFilter">
     <div class="_filterSortBar">
-      <div class="">
-        <button
-          type="button"
-          class="u-button u-button_small u-button_bleumarine"
-          :class="{
-            'is--active': show_sidebar,
-          }"
-          @click="show_sidebar = !show_sidebar"
-        >
-          {{ $t("filters") }}
-        </button>
-      </div>
       <div class="u-sameRow">
-        <span v-html="$t('sort:')" />
+        <div class="">
+          <DLabel :str="$t('search')" />
+          <div class="u-inputGroup">
+            <input
+              type="text"
+              size="small"
+              v-model="search_project"
+              :placeholder="$t('search_in_title_desc_kw')"
+            />
+            <button
+              type="button"
+              class="u-suffix u-button u-button_bleumarine"
+              style="flex: 0 0 auto"
+              v-if="search_project.length > 0"
+              @click="search_project = ''"
+            >
+              <b-icon icon="x-lg" />
+            </button>
+          </div>
+        </div>
 
+        <div class="">
+          <button
+            type="button"
+            size="small"
+            class="u-button u-button_small u-button_bleumarine"
+            :class="{
+              'is--active': show_sidebar,
+            }"
+            @click="show_sidebar = !show_sidebar"
+          >
+            {{ $t("filters") }}
+          </button>
+        </div>
+      </div>
+      <div class="">
+        <DLabel :str="$t('sort')" />
+        <!-- <span v-html="$t('sort:')" /> -->
         <select
           size="small"
           class="_orderSelect"
@@ -42,28 +66,6 @@
           <label class="u-label" for="only_finished">{{
             $t("only_finished")
           }}</label>
-        </div>
-        <div>
-          <div class="u-sameRow" style="width: 100%">
-            <input
-              type="search"
-              v-model="search_project"
-              :placeholder="$t('search')"
-            />
-
-            <button
-              type="button"
-              class="u-button u-button_bleumarine"
-              style="flex: 0 0 auto"
-              v-if="search_project.length > 0"
-              @click="search_project = ''"
-            >
-              <sl-icon name="x-lg" />
-            </button>
-          </div>
-          <div class="u-instructions">
-            <small v-html="$t('search_in_title_desc_kw')" />
-          </div>
         </div>
 
         <div v-if="$root.app_infos.instance_meta.enable_events">
@@ -439,8 +441,8 @@ export default {
 }
 ._tagList {
   display: flex;
-  gap: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 8);
+  margin: calc(var(--spacing) / 2) 0;
 }
 ._projectsListWithFilter {
 }

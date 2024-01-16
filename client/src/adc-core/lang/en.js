@@ -53,6 +53,8 @@ export default {
   search_in_title_desc_kw:
     "In titles, descriptions, keywords, machines and materials.",
   search_by_name: "Search by name",
+  search: "Search",
+  "search:": "Search:",
 
   space: "Space",
   spaces: "All spaces",
@@ -126,7 +128,7 @@ export default {
   none: "None",
   filters: "Filters",
   reset_all: "Reset all",
-  "sort:": "Sort:",
+  sort: "Sort",
 
   click_to_zoom: "Click to zoom",
   close_to_source: "Similar to source media",
