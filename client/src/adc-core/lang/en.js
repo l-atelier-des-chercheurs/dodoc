@@ -54,7 +54,9 @@ export default {
   submit: "Submit",
   search_in_title_desc_kw:
     "In titles, descriptions, keywords, machines and materials.",
-  search_by_name: "In names or ",
+  search_by_name: "In names or nicknames",
+  search_by_title_or_subtitle: "In titles and subtitles",
+
   search: "Search",
   "search:": "Search:",
 

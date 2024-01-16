@@ -291,7 +291,7 @@ export default {
             return false;
         }
 
-        if (this.search_project) return this.searchInProject(p);
+        if (this.search_project && !this.searchInProject(p)) return false;
 
         if (this.opened_event)
           if (this.opened_event !== p.event_linked_slug) return false;
