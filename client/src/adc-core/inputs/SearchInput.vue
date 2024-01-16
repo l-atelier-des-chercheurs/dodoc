@@ -47,6 +47,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._searchField {
-  width: 50ch;
+  width: 55ch;
 }
 </style>

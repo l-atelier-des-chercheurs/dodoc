@@ -1,11 +1,9 @@
 <template>
   <div class="_authorPicker">
     <div class="u-spacingBottom _searchField">
-      <input
-        type="search"
-        size="small"
-        :placeholder="$t('search_by_name')"
+      <SearchInput
         v-model="search_author_name"
+        :search_placeholder="$t('search_by_name')"
       />
     </div>
 
