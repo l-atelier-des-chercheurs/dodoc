@@ -5,7 +5,8 @@
       'is--inactive': mode === 'inactive',
     }"
     :data-tagtype="tag_type"
-    @click="$emit('tagClick')"
+    :data-mode="mode"
+    @click="mode !== 'inactive' ? $emit('tagClick') : ''"
   >
     <b-icon class="_picto" :icon="icon_to_show" />
 
