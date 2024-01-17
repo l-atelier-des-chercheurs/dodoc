@@ -39,8 +39,7 @@ export default {
   add: "Ajouter",
   add_item: "Ajouter un élément",
   add_files: "Ajouter des fichiers",
-  hide_already_present_medias:
-    "Masquer les médias déjà inclus à cette publication",
+  hide_already_present_medias: "Masquer les médias déjà inclus",
   suggestions: "Suggestions",
   access: "Accéder",
   title: "Titre",
