@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       show_subset: true,
-      show_at_first: 3,
+      show_at_first: 5,
     };
   },
   created() {},
