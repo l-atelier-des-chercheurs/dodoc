@@ -220,7 +220,7 @@ export default {
 
       flickityOptions: {
         initialIndex: 0,
-        groupCells: false,
+        groupCells: true,
         imagesLoaded: true,
         pageDots: false,
         resize: true,
@@ -568,9 +568,9 @@ export default {
 }
 
 ._projectInfos--meta {
-  max-width: var(--max-column-width);
+  // max-width: var(--max-column-width);
   margin: calc(var(--spacing) * 1) auto;
-  padding: 0 calc(var(--spacing) * 1);
+  padding: 0;
   // padding-top: calc(var(--spacing) * 1);
 
   .is--mobileView & {
