@@ -106,7 +106,8 @@ x
 
         <TitleField
           v-if="
-            context !== 'tiny' || (context === 'list' && project.description)
+            (context === 'list' && project.description) ||
+            (context === 'full' && (project.description || can_edit))
           "
           :field_name="'description'"
           class="_description"
@@ -120,7 +121,6 @@ x
 
         <AdminsAndContributorsField
           v-if="context === 'full'"
-          class="u-spacingBottom"
           :folder="project"
           :can_edit="can_edit"
           :admin_label="$t('referent')"

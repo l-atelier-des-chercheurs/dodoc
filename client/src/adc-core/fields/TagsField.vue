@@ -2,28 +2,26 @@
   <div class="_tagsField">
     <DLabel v-if="label" :str="label" />
 
-    <TagsList
-      class="_tl"
-      :tags="new_tags"
-      :tag_type="field_name"
-      :mode="edit_mode ? 'remove' : 'inactive'"
-      :shorten_if_too_long="edit_mode ? false : true"
-      @tagClick="removeTag($event)"
-    />
-
-    <template v-if="can_edit">
-      <template v-if="!edit_mode">
+    <div class="_tl">
+      <TagsList
+        :tags="new_tags"
+        :tag_type="field_name"
+        :mode="edit_mode ? 'remove' : 'inactive'"
+        :shorten_if_too_long="edit_mode ? false : true"
+        @tagClick="removeTag($event)"
+      />
+      <template v-if="can_edit && !edit_mode">
         <EditBtn @click="enableEditMode" />
       </template>
+    </div>
 
-      <SaveCancelButtons
-        v-if="edit_mode"
-        class="_scb"
-        :is_saving="is_saving"
-        @save="updateTags"
-        @cancel="cancel"
-      />
-    </template>
+    <SaveCancelButtons
+      v-if="edit_mode"
+      class="_scb"
+      :is_saving="is_saving"
+      @save="updateTags"
+      @cancel="cancel"
+    />
 
     <div class="_footer" v-if="edit_mode">
       <fieldset class="_newTagPane" v-if="create_new_tag">
@@ -184,7 +182,8 @@ export default {
 }
 
 ._tl {
-  padding-bottom: calc(var(--spacing) / 8);
+  display: flex;
+  flex-flow: row wrap;
 }
 
 ._footer {
