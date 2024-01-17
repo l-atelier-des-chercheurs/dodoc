@@ -1,7 +1,7 @@
 <template>
   <transition-group
     tag="section"
-    name="projectsList"
+    name="listComplete"
     appear
     class="_radioCheckboxInput"
     :class="{

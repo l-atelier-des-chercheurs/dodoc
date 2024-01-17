@@ -33,6 +33,8 @@ export default {
   admin_settings: "Admin settings",
 
   keywords: "keywords",
+  show_all: "Show all",
+
   template: "Template",
 
   add: "Add",
@@ -50,8 +52,13 @@ export default {
   submitted_password_is_wrong: "The submitted password is wrong",
   account_doesnt_exist: "This account does not exist",
   submit: "Submit",
-  search_by_title: "Search by title",
-  search_by_name: "Search by name",
+  search_in_title_desc_kw:
+    "In titles, descriptions, keywords, machines and materials.",
+  search_by_name: "In names or nicknames",
+  search_by_title_or_subtitle: "In titles and subtitles",
+
+  search: "Search",
+  "search:": "Search:",
 
   space: "Space",
   spaces: "All spaces",
@@ -65,6 +72,10 @@ export default {
   completed: "Completed",
   my_projects: "My projects",
   pinned: "Pinned",
+  spaces_pinned: "Spaces pinned",
+  projects_pinned: "Projects pinned",
+  publications_pinned: "Publications pinned",
+
   click_to_pin: "Click on the yellow pin icon to add here.",
 
   default_value: "Default value",
@@ -82,6 +93,13 @@ export default {
   new_account: "New account",
   show_list: "Show the list",
 
+  login: "login",
+  logout: "logout",
+  name_or_pseudonym: "Name or nickname",
+  email: "Email",
+  email_instr: "Contact email, only visible to admins.",
+  password: "Password",
+
   open_in_finder: "Open in finder",
   admins_and_contributors: "Admins and contributors",
   set_admins_and_contributors: "Set admins and contributors",
@@ -92,7 +110,7 @@ export default {
   signup_password: "signup password",
   signup_password_instructions: "Require a password to create an account.",
   signup_password_users_instructions:
-    "If you don’t know this password, you can request it with a mail to",
+    "If you don’t know this password, you can request it in a mail to",
   more_informations: "More informations",
 
   already_added: "Already added",
@@ -123,9 +141,10 @@ export default {
   no_files: "No file",
   none_f: "None",
   none: "None",
-  filters: "Filters",
+
   reset_all: "Reset all",
-  "sort:": "Sort:",
+  filter: "Filter",
+  sort: "Sort",
 
   click_to_zoom: "Click to zoom",
   close_to_source: "Similar to source media",

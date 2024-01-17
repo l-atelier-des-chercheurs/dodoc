@@ -1,21 +1,30 @@
 <template>
   <section class="_projectsListWithFilter">
-    <div class="_filterSortBar">
-      <div class="">
-        <button
-          type="button"
-          class="u-button u-button_small u-button_bleumarine"
-          :class="{
-            'is--active': show_sidebar,
-          }"
-          @click="show_sidebar = !show_sidebar"
-        >
-          {{ $t("filters") }}
-        </button>
-      </div>
+    <div class="_filterSortBar" v-if="sorted_projects.length > 0">
       <div class="u-sameRow">
-        <span v-html="$t('sort:')" />
-
+        <div class="">
+          <DLabel :str="$t('filter')" />
+          <button
+            type="button"
+            size="small"
+            class="u-button u-button_small u-button_bleumarine"
+            :class="{
+              'is--active': show_sidebar,
+            }"
+            @click="show_sidebar = !show_sidebar"
+            v-text="!show_sidebar ? $t('show') : $t('hide')"
+          />
+        </div>
+        <div class="">
+          <SearchInput
+            v-model="search_project"
+            :search_placeholder="$t('search_in_title_desc_kw')"
+          />
+        </div>
+      </div>
+      <div class="">
+        <DLabel :str="$t('sort')" />
+        <!-- <span v-html="$t('sort:')" /> -->
         <select
           size="small"
           class="_orderSelect"
@@ -33,7 +42,7 @@
     </div>
     <div class="_cont">
       <div class="_sidebar" v-if="show_sidebar">
-        <!-- <div class="u-switch u-switch-xs">
+        <div class="u-switch u-switch-xs">
           <input
             id="only_finished"
             type="checkbox"
@@ -42,105 +51,100 @@
           <label class="u-label" for="only_finished">{{
             $t("only_finished")
           }}</label>
-        </div> -->
-        <div class="u-sameRow" style="width: 100%">
-          <input
-            type="search"
-            v-model="search_project"
-            :placeholder="$t('search_by_title')"
-          />
-          <button
-            type="button"
-            class="u-button u-button_bleumarine"
-            style="flex: 0 0 auto"
-            v-if="search_project.length > 0"
-            @click="search_project = ''"
-          >
-            <sl-icon name="x-lg" />
-          </button>
         </div>
 
         <div v-if="$root.app_infos.instance_meta.enable_events">
           <DLabel :str="$t('events')" />
-
           <!-- <EventField :project="" /> -->
         </div>
 
-        <div class="">
-          <DLabel :str="$t('levels_and_competences')" />
-          <TagsList
-            :tags="extractAll('level')"
-            :tag_type="'level'"
-            :clickable="true"
-            :translated="isTranslated('level')"
-            :tags_active="getActiveTags('level')"
-            @tagClick="toggleFilter({ filter_type: 'level', value: $event })"
-          />
-        </div>
+        <template
+          v-for="filter in [
+            'target_audience',
+            'disciplines',
+            'level',
+            'keywords',
+            'machines',
+            'materials',
+          ]"
+        >
+          <div v-if="extractAll(filter).length > 0" :key="filter">
+            <template v-if="filter === 'level'">
+              <DLabel :str="$t('levels_and_competences')" />
+              <TagsList
+                :tags="extractAll('level')"
+                :tag_type="'level'"
+                :tags_active="getActiveTags('level')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'level', value: $event })
+                "
+              />
+            </template>
 
-        <div class="">
-          <DLabel :str="$t('keywords')" />
-          <TagsList
-            :tags="extractAll('keywords')"
-            :tag_type="'keywords'"
-            :clickable="true"
-            :tags_active="getActiveTags('keywords')"
-            @tagClick="toggleFilter({ filter_type: 'keywords', value: $event })"
-          />
-        </div>
+            <template v-else-if="filter === 'keywords'">
+              <DLabel :str="$t('keywords')" />
+              <TagsList
+                :tags="extractAll('keywords')"
+                :tag_type="'keywords'"
+                :tags_active="getActiveTags('keywords')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'keywords', value: $event })
+                "
+              />
+            </template>
 
-        <div class="">
-          <DLabel :str="$t('materials')" />
-          <TagsList
-            :tags="extractAll('materials')"
-            :tag_type="'materials'"
-            :clickable="true"
-            :tags_active="getActiveTags('materials')"
-            @tagClick="
-              toggleFilter({ filter_type: 'materials', value: $event })
-            "
-          />
-        </div>
-        <div class="">
-          <DLabel :str="$t('machines')" />
-          <TagsList
-            :tags="extractAll('machines')"
-            :tag_type="'machines'"
-            :clickable="true"
-            :tags_active="getActiveTags('machines')"
-            @tagClick="toggleFilter({ filter_type: 'machines', value: $event })"
-          />
-        </div>
+            <template v-else-if="filter === 'materials'">
+              <DLabel :str="$t('materials')" />
+              <TagsList
+                :tags="extractAll('materials')"
+                :tag_type="'materials'"
+                :tags_active="getActiveTags('materials')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'materials', value: $event })
+                "
+              />
+            </template>
 
-        <div class="">
-          <DLabel :str="$t('disciplines')" />
-          <TagsList
-            :tags="extractAll('disciplines')"
-            :tag_type="'disciplines'"
-            :clickable="true"
-            :translated="isTranslated('disciplines')"
-            :translated_prefix="translatedPrefix('disciplines')"
-            :tags_active="getActiveTags('disciplines')"
-            @tagClick="
-              toggleFilter({ filter_type: 'disciplines', value: $event })
-            "
-          />
-        </div>
+            <template v-else-if="filter === 'machines'">
+              <DLabel :str="$t('machines')" />
+              <TagsList
+                :tags="extractAll('machines')"
+                :tag_type="'machines'"
+                :tags_active="getActiveTags('machines')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'machines', value: $event })
+                "
+              />
+            </template>
 
-        <div class="">
-          <DLabel :str="$t('target_audience')" />
-          <TagsList
-            :tags="extractAll('target_audience')"
-            :tag_type="'target_audience'"
-            :clickable="true"
-            :translated="isTranslated('target_audience')"
-            :translated_prefix="translatedPrefix('target_audience')"
-            :tags_active="getActiveTags('target_audience')"
-            @tagClick="
-              toggleFilter({ filter_type: 'target_audience', value: $event })
-            "
-          />
-        </div>
+            <template v-else-if="filter === 'disciplines'">
+              <DLabel :str="$t('disciplines')" />
+              <TagsList
+                :tags="extractAll('disciplines')"
+                :tag_type="'disciplines'"
+                :tags_active="getActiveTags('disciplines')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'disciplines', value: $event })
+                "
+              />
+            </template>
+
+            <template v-else-if="filter === 'target_audience'">
+              <DLabel :str="$t('target_audience')" />
+              <TagsList
+                :tags="extractAll('target_audience')"
+                :tag_type="'target_audience'"
+                :tags_active="getActiveTags('target_audience')"
+                @tagClick="
+                  toggleFilter({
+                    filter_type: 'target_audience',
+                    value: $event,
+                  })
+                "
+              />
+            </template>
+          </div>
+        </template>
       </div>
 
       <div class="_listOfProjects">
@@ -149,30 +153,15 @@
             class="_tagList"
             v-if="active_filters.length > 0"
             tag="section"
-            name="projectsList"
+            name="listComplete"
             appear
           >
             <template v-for="af in active_filters">
-              <!-- <SingleTag
-                v-if="af.filter_type === 'event_linked_slug'"
-                :key="af.value"
-                :tag_type="af.filter_type"
-                :name="getFromCache('events/' + af.value).title"
-                :clickable="true"
-                :disableable="true"
-                @tagClick="
-                  toggleFilter({
-                    filter_type: af.filter_type,
-                    value: af.value,
-                  })
-                "
-              /> -->
               <SingleTag
                 :key="af.value"
                 :tag_type="af.filter_type"
-                :name="tagName(af.filter_type, af.value)"
-                :clickable="true"
-                :disableable="true"
+                :tag_str="af.value"
+                :mode="'disable'"
                 @tagClick="
                   toggleFilter({
                     filter_type: af.filter_type,
@@ -302,8 +291,7 @@ export default {
             return false;
         }
 
-        if (this.search_project)
-          return this.twoStringsSearch(p.title, this.search_project);
+        if (this.search_project && !this.searchInProject(p)) return false;
 
         if (this.opened_event)
           if (this.opened_event !== p.event_linked_slug) return false;
@@ -363,21 +351,28 @@ export default {
         return acc;
       }, []);
     },
-    isTranslated(key) {
-      return ["level", "disciplines", "target_audience"].includes(key);
-    },
-    translatedPrefix(key) {
-      if (this.isTranslated(key))
-        if (key === "disciplines") return "di_";
-        else if (key === "target_audience") return "ta_";
+    searchInProject(project) {
+      if (
+        project.title &&
+        this.twoStringsSearch(project.title, this.search_project)
+      )
+        return true;
+      if (
+        project.description &&
+        this.twoStringsSearch(project.description, this.search_project)
+      )
+        return true;
+
+      for (const kw of ["keywords", "machines", "materials"]) {
+        if (
+          project[kw] &&
+          project[kw].some((kw) =>
+            this.twoStringsSearch(kw, this.search_project)
+          )
+        )
+          return true;
+      }
       return false;
-    },
-    tagName(type, tag_str) {
-      if (this.isTranslated(type))
-        if (this.translatedPrefix(type))
-          return this.$t(this.translatedPrefix(type) + tag_str);
-        else return this.$t(tag_str);
-      return tag_str;
     },
   },
 };
@@ -426,13 +421,13 @@ export default {
   }
 }
 ._listOfProjects {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   margin-top: 0;
 }
 ._tagList {
   display: flex;
-  gap: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 8);
+  margin: calc(var(--spacing) / 2) 0;
 }
 ._projectsListWithFilter {
 }

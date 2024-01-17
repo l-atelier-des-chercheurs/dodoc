@@ -34,12 +34,12 @@ export default {
   description: "Description",
   no_description: "Pas de description",
   keywords: "Mots-clés",
+  show_all: "Afficher tout",
 
   add: "Ajouter",
   add_item: "Ajouter un élément",
   add_files: "Ajouter des fichiers",
-  hide_already_present_medias:
-    "Masquer les médias déjà inclus à cette publication",
+  hide_already_present_medias: "Masquer les médias déjà inclus",
   suggestions: "Suggestions",
   access: "Accéder",
   title: "Titre",
@@ -74,8 +74,12 @@ export default {
   submitted_password_is_wrong: "Mot de passe erroné",
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
-  search_by_title: "Rechercher par titre",
-  search_by_name: "Rechercher par nom",
+  search_in_title_desc_kw:
+    "Dans les titres, descriptions, mots-clés, machines et matériaux.",
+  search_by_name: "Dans les noms ou pseudonymes",
+  search_by_title_or_subtitle: "Dans les titres ou sous-titres",
+  search: "Rechercher",
+  "search:": "Rechercher&nbsp;:",
 
   connection_lost: `Connexion perdue`,
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
@@ -290,9 +294,9 @@ export default {
   no_publications: "Aucune publication à afficher",
   none_f: "Aucune",
   none: "Aucun·e",
-  filters: "Filtres",
   reset_all: "Retirer tout",
-  "sort:": "Trier&nbsp;:",
+  filter: "Filtrer",
+  sort: "Trier",
 
   draft: "En cours",
   listed: "Listé",
@@ -321,6 +325,9 @@ export default {
   completed: "Terminé",
   my_projects: "Mes projets",
   pinned: "Épinglés",
+  spaces_pinned: "Espaces épinglés",
+  projects_pinned: "Projets épinglés",
+  publications_pinned: "Publications épinglées",
   click_to_pin: "Cliquez sur l’épingle jaune pour ajouter des éléments ici.",
 
   default_value: "Par défaut",

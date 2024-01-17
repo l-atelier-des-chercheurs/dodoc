@@ -43,9 +43,7 @@
       <div class="">
         <TitleField
           :field_name="'title'"
-          :label="
-            context === 'full' && can_edit && !space.title ? $t('title') : ''
-          "
+          :label="context === 'full' ? $t('title') : ''"
           class="_title"
           :tag="context === 'full' ? 'h1' : 'h2'"
           :content="space.title"
@@ -71,10 +69,10 @@
       </div>
 
       <TitleField
-        v-if="context === 'full' && (can_edit || space.description)"
+        v-if="context === 'full' && (space.description || can_edit)"
         :field_name="'description'"
         class="_description"
-        :label="can_edit && !space.description ? $t('description') : undefined"
+        :label="context === 'full' ? $t('description') : ''"
         :content="space.description"
         :path="space.$path"
         :input_type="'markdown'"

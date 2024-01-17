@@ -53,6 +53,10 @@ export default {
 ._markdownField {
   ::v-deep p {
     margin: 0;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
   }
 }
 </style>

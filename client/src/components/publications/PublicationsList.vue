@@ -55,6 +55,7 @@
       <PinnedNonpinnedFolder
         v-else
         :field_name="'publications_pinned'"
+        :label="$t('publications_pinned')"
         :content="project.publications_pinned"
         :path="project.$path"
         :folders="sorted_publications"

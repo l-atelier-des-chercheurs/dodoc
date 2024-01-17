@@ -1,6 +1,6 @@
 <template>
   <div class="_dLabel">
-    <div class="_labelLine" @click="show_instructions = !show_instructions">
+    <div class="_labelLine" @click="toggleInstructions">
       <component
         :is="tag"
         :class="tag === 'label' ? 'u-label' : ''"
@@ -56,7 +56,11 @@ export default {
       return "";
     },
   },
-  methods: {},
+  methods: {
+    toggleInstructions() {
+      if (this.instructions) this.show_instructions = !this.show_instructions;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

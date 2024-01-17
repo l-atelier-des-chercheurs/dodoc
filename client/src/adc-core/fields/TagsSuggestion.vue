@@ -15,8 +15,7 @@
         v-if="filtered_suggestions.length > 0"
         :tags="filtered_suggestions"
         :tag_type="tag_type"
-        :addable="true"
-        :clickable="true"
+        :mode="'add'"
         @tagClick="$emit('newTag', $event)"
       />
     </template>

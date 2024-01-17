@@ -10,17 +10,16 @@
     <h1 class="_title" v-text="$t('list_of_contributors')" />
 
     <div class="u-spacingBottom _searchField">
-      <input
-        type="search"
-        :placeholder="$t('search_by_name')"
+      <SearchInput
         v-model="search_author_name"
+        :search_placeholder="$t('search_by_name')"
       />
     </div>
 
     <transition-group
       tag="section"
       class="_allAuthors"
-      name="projectsList"
+      name="listComplete"
       appear
     >
       <AuthorCard
