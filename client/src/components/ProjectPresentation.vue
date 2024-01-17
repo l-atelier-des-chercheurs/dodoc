@@ -229,8 +229,8 @@ export default {
         selectedAttraction: 0.2,
         percentPosition: false,
         friction: 0.8,
-        cellAlign: "left",
-        contain: true,
+        cellAlign: "center",
+        contain: false,
       },
     };
   },
