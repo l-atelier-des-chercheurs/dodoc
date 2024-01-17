@@ -118,14 +118,14 @@ export default {
   }
 
   ._icon {
-    font-size: 140%;
+    font-size: 150%;
     width: auto;
     height: auto;
-    // border-radius: 4px;
+    margin: calc(var(--spacing) / 4);
     padding: calc(var(--spacing) / 2);
-    // background-color: var(--c-gris);
-
-    color: currentColor;
+    background-color: var(--c-noir);
+    border-radius: 50%;
+    color: white;
 
     line-height: 0;
     // transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
