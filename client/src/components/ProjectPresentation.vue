@@ -154,8 +154,6 @@ x
       :options="flickityOptions"
     >
       <!-- <CardMeta class="_card" :project="project" :can_edit="can_edit" /> -->
-      <CardLicense class="_card" :project="project" :can_edit="can_edit" />
-      <CardFiles class="_card" :project="project" :can_edit="can_edit" />
       <CardCompetences class="_card" :project="project" :can_edit="can_edit" />
       <CardMachinesMaterials
         class="_card"
@@ -165,6 +163,8 @@ x
       <CardKeywords class="_card" :project="project" :can_edit="can_edit" />
       <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
+      <CardLicense class="_card" :project="project" :can_edit="can_edit" />
+      <CardFiles class="_card" :project="project" :can_edit="can_edit" />
     </flickity>
 
     <div class="_projectInfos--open" v-if="['list', 'tiny'].includes(context)">
