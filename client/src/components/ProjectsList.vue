@@ -2,7 +2,7 @@
   <div class="_projectsList">
     <div
       v-if="projects.length === 0"
-      class="u-instructions"
+      class="u-instructions _noProjects"
       :key="'noprojects'"
     >
       {{ $t("no_projects") }}
@@ -58,4 +58,9 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._noProjects {
+  margin: calc(var(--spacing) / 2) 0 calc(var(--spacing) / 2);
+  text-align: center;
+}
+</style>

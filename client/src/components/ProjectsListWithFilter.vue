@@ -1,6 +1,6 @@
 <template>
   <section class="_projectsListWithFilter">
-    <div class="_filterSortBar">
+    <div class="_filterSortBar" v-if="sorted_projects.length > 0">
       <div class="u-sameRow">
         <div class="">
           <DLabel :str="$t('filter')" />
