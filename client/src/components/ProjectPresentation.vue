@@ -411,7 +411,7 @@ export default {
 
 ._projectInfos--topContent {
   max-width: var(--max-column-width);
-  margin: calc(var(--spacing) * 1) auto;
+  margin: calc(var(--spacing) / 2) auto 0;
 
   display: flex;
   flex-flow: row wrap;
@@ -569,7 +569,7 @@ export default {
 
 ._projectInfos--meta {
   // max-width: var(--max-column-width);
-  margin: calc(var(--spacing) * 1) auto;
+  margin: 0 auto;
   padding: 0;
   // padding-top: calc(var(--spacing) * 1);
 
