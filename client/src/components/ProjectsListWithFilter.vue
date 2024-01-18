@@ -33,7 +33,7 @@
     </div>
     <div class="_cont">
       <div class="_sidebar" v-if="show_sidebar">
-        <!-- <div class="u-switch u-switch-xs">
+        <div class="u-switch u-switch-xs">
           <input
             id="only_finished"
             type="checkbox"
@@ -42,7 +42,7 @@
           <label class="u-label" for="only_finished">{{
             $t("only_finished")
           }}</label>
-        </div> -->
+        </div>
         <div class="u-sameRow" style="width: 100%">
           <input
             type="search"
@@ -62,85 +62,107 @@
 
         <div v-if="$root.app_infos.instance_meta.enable_events">
           <DLabel :str="$t('events')" />
-
           <!-- <EventField :project="" /> -->
         </div>
 
-        <div class="">
-          <DLabel :str="$t('levels_and_competences')" />
-          <TagsList
-            :tags="extractAll('level')"
-            :tag_type="'level'"
-            :clickable="true"
-            :translated="isTranslated('level')"
-            :tags_active="getActiveTags('level')"
-            @tagClick="toggleFilter({ filter_type: 'level', value: $event })"
-          />
-        </div>
+        <template
+          v-for="filter in [
+            'target_audience',
+            'disciplines',
+            'level',
+            'keywords',
+            'machines',
+            'materials',
+          ]"
+        >
+          <div v-if="extractAll(filter).length > 0" :key="filter">
+            <template v-if="filter === 'level'">
+              <DLabel :str="$t('levels_and_competences')" />
+              <TagsList
+                :tags="extractAll('level')"
+                :tag_type="'level'"
+                :clickable="true"
+                :translated="isTranslated('level')"
+                :tags_active="getActiveTags('level')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'level', value: $event })
+                "
+              />
+            </template>
 
-        <div class="">
-          <DLabel :str="$t('keywords')" />
-          <TagsList
-            :tags="extractAll('keywords')"
-            :tag_type="'keywords'"
-            :clickable="true"
-            :tags_active="getActiveTags('keywords')"
-            @tagClick="toggleFilter({ filter_type: 'keywords', value: $event })"
-          />
-        </div>
+            <template v-else-if="filter === 'keywords'">
+              <DLabel :str="$t('keywords')" />
+              <TagsList
+                :tags="extractAll('keywords')"
+                :tag_type="'keywords'"
+                :clickable="true"
+                :tags_active="getActiveTags('keywords')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'keywords', value: $event })
+                "
+              />
+            </template>
 
-        <div class="">
-          <DLabel :str="$t('materials')" />
-          <TagsList
-            :tags="extractAll('materials')"
-            :tag_type="'materials'"
-            :clickable="true"
-            :tags_active="getActiveTags('materials')"
-            @tagClick="
-              toggleFilter({ filter_type: 'materials', value: $event })
-            "
-          />
-        </div>
-        <div class="">
-          <DLabel :str="$t('machines')" />
-          <TagsList
-            :tags="extractAll('machines')"
-            :tag_type="'machines'"
-            :clickable="true"
-            :tags_active="getActiveTags('machines')"
-            @tagClick="toggleFilter({ filter_type: 'machines', value: $event })"
-          />
-        </div>
+            <template v-else-if="filter === 'materials'">
+              <DLabel :str="$t('materials')" />
+              <TagsList
+                :tags="extractAll('materials')"
+                :tag_type="'materials'"
+                :clickable="true"
+                :tags_active="getActiveTags('materials')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'materials', value: $event })
+                "
+              />
+            </template>
 
-        <div class="">
-          <DLabel :str="$t('disciplines')" />
-          <TagsList
-            :tags="extractAll('disciplines')"
-            :tag_type="'disciplines'"
-            :clickable="true"
-            :translated="isTranslated('disciplines')"
-            :translated_prefix="translatedPrefix('disciplines')"
-            :tags_active="getActiveTags('disciplines')"
-            @tagClick="
-              toggleFilter({ filter_type: 'disciplines', value: $event })
-            "
-          />
-        </div>
+            <template v-else-if="filter === 'machines'">
+              <DLabel :str="$t('machines')" />
+              <TagsList
+                :tags="extractAll('machines')"
+                :tag_type="'machines'"
+                :clickable="true"
+                :tags_active="getActiveTags('machines')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'machines', value: $event })
+                "
+              />
+            </template>
 
-        <div class="">
-          <DLabel :str="$t('target_audience')" />
-          <TagsList
-            :tags="extractAll('target_audience')"
-            :tag_type="'target_audience'"
-            :clickable="true"
-            :translated="isTranslated('target_audience')"
-            :translated_prefix="translatedPrefix('target_audience')"
-            :tags_active="getActiveTags('target_audience')"
-            @tagClick="
-              toggleFilter({ filter_type: 'target_audience', value: $event })
-            "
-          />
-        </div>
+            <template v-else-if="filter === 'disciplines'">
+              <DLabel :str="$t('disciplines')" />
+              <TagsList
+                :tags="extractAll('disciplines')"
+                :tag_type="'disciplines'"
+                :clickable="true"
+                :translated="isTranslated('disciplines')"
+                :translated_prefix="translatedPrefix('disciplines')"
+                :tags_active="getActiveTags('disciplines')"
+                @tagClick="
+                  toggleFilter({ filter_type: 'disciplines', value: $event })
+                "
+              />
+            </template>
+
+            <template v-else-if="filter === 'target_audience'">
+              <DLabel :str="$t('target_audience')" />
+              <TagsList
+                :tags="extractAll('target_audience')"
+                :tag_type="'target_audience'"
+                :clickable="true"
+                :translated="isTranslated('target_audience')"
+                :translated_prefix="translatedPrefix('target_audience')"
+                :tags_active="getActiveTags('target_audience')"
+                @tagClick="
+                  toggleFilter({
+                    filter_type: 'target_audience',
+                    value: $event,
+                  })
+                "
+              />
+            </template>
+          </div>
+        </template>
       </div>
 
       <div class="_listOfProjects">

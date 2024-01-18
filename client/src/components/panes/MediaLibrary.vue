@@ -557,7 +557,8 @@ export default {
         m.$authors?.map((a_path) => {
           if (!acc.some((a) => a.$path === a_path)) {
             const a = this.getAuthor(a_path);
-            acc.push(a);
+            // if author is found, add
+            if (a) acc.push(a);
           }
         });
         return acc;
