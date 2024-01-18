@@ -166,6 +166,11 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+._publicationView {
+  background: white;
+}
+</style>
 <style lang="scss">
 .alertify-logs {
   display: none !important;
