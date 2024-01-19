@@ -1,37 +1,47 @@
 <template>
   <div class="_spacesList">
-    <div class="_createBtn">
-      <button
-        type="button"
-        class="u-button u-button_red u-button_small"
-        v-if="is_instance_admin || is_instance_contributor"
-        @click="show_create_modal = true"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 168 168"
-          style="enable-background: new 0 0 168 168"
-          xml:space="preserve"
+    <div class="_createSearch">
+      <div class="">
+        <button
+          type="button"
+          class="u-button u-button_red u-button_small"
+          v-if="is_instance_admin || is_instance_contributor"
+          @click="show_create_modal = true"
         >
-          <path
-            style="fill: #fc4b60"
-            d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 168 168"
+            style="enable-background: new 0 0 168 168"
+            xml:space="preserve"
+          >
+            <path
+              style="fill: #fc4b60"
+              d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
 		C110.5-8.2,57.5-8.2,24.6,24.4z"
-          />
-          <polygon
-            style="fill: #ffffff"
-            points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+            />
+            <polygon
+              style="fill: #ffffff"
+              points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-          />
-        </svg>
-        &nbsp;
-        {{ $t("create") }}
-      </button>
+            />
+          </svg>
+          &nbsp;
+          {{ $t("create") }}
+        </button>
+      </div>
+
+      <div class="_searchField">
+        <SearchInput
+          v-model="search_space"
+          :search_placeholder="$t('search_by_title_or_subtitle')"
+        />
+      </div>
     </div>
+
     <CreateFolder
       v-if="show_create_modal"
       :modal_name="$t('create_a_space')"
@@ -43,9 +53,10 @@
     <PinnedNonpinnedFolder
       v-if="!is_loading"
       :field_name="'spaces_pinned'"
+      :label="$t('spaces_pinned')"
       :content="settings.spaces_pinned"
       :path="''"
-      :folders="sorted_spaces"
+      :folders="filtered_spaces"
       :can_edit="is_instance_admin"
       v-slot="slotProps"
     >
@@ -75,6 +86,8 @@ export default {
       fetch_spaces_error: undefined,
       show_create_modal: false,
       is_loading: true,
+
+      search_space: "",
     };
   },
   created() {},
@@ -118,6 +131,12 @@ export default {
           (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
         );
     },
+    filtered_spaces() {
+      return this.sorted_spaces.filter((s) => {
+        if (this.search_space && !this.searchInSpace(s)) return false;
+        return true;
+      });
+    },
   },
   methods: {
     getSlug(path) {
@@ -127,6 +146,16 @@ export default {
       this.show_create_modal = false;
       const url = this.createURLFromPath(this.path + "/" + new_folder_slug);
       this.$router.push(url);
+    },
+    searchInSpace(space) {
+      if (space.title && this.twoStringsSearch(space.title, this.search_space))
+        return true;
+      if (
+        space.subtitle &&
+        this.twoStringsSearch(space.subtitle, this.search_space)
+      )
+        return true;
+      return false;
     },
   },
 };
@@ -142,7 +171,12 @@ export default {
   // padding: calc(var(--spacing) * 1);
 }
 
-._createBtn {
+._createSearch {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-end;
+
+  gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 2) 0;
   // margin-bottom: calc(var(--spacing) / 4);
 }
@@ -152,5 +186,11 @@ export default {
   border-radius: 10px;
   box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
   padding: calc(var(--spacing) / 2);
+}
+
+._searchField {
+  ::v-deep ._searchInput {
+    max-width: 30ch;
+  }
 }
 </style>

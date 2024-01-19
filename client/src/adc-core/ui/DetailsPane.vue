@@ -1,6 +1,6 @@
 <template>
   <details
-    class="_detailsPane"
+    class="u-card2 _detailsPane"
     :class="{
       'is--unclosable': !can_be_toggled,
     }"
@@ -109,7 +109,8 @@ export default {
 <style lang="scss" scoped>
 ._detailsPane {
   background: white;
-  border-radius: 2px;
+  border-bottom: none;
+  border-radius: 8px;
   overflow: hidden;
 
   &.is--unclosable summary {
@@ -117,14 +118,14 @@ export default {
   }
 
   ._icon {
-    font-size: 110%;
-    width: 30px;
-    height: 30px;
-    // border-radius: 4px;
+    font-size: 150%;
+    width: auto;
+    height: auto;
+    margin: calc(var(--spacing) / 4);
     padding: calc(var(--spacing) / 2);
-    // background-color: var(--c-gris);
-
-    color: currentColor;
+    background-color: var(--c-gris);
+    border-radius: 50%;
+    color: var(--c-noir);
 
     line-height: 0;
     // transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -159,13 +160,13 @@ export default {
 
     padding: calc(var(--spacing) / 4);
     cursor: pointer;
-    border: 2px solid var(--c-gris);
+    background: white;
     border-radius: 4px;
 
     &:hover,
     &:focus-visible {
       // color: white;
-      background-color: var(--c-gris);
+      // background-color: var(--c-gris);
     }
   }
 
@@ -174,7 +175,7 @@ export default {
 
   &[open] {
     summary {
-      background-color: var(--c-gris);
+      // background-color: var(--c-gris);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
       border-bottom: none;
@@ -182,7 +183,7 @@ export default {
 
     ._content {
       padding: calc(var(--spacing) / 2);
-      border: 2px solid var(--c-gris);
+      // border: 2px solid var(--c-gris);
       border-top: none;
 
       border-radius: 4px;

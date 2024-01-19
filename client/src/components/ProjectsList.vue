@@ -2,7 +2,7 @@
   <div class="_projectsList">
     <div
       v-if="projects.length === 0"
-      class="u-instructions"
+      class="u-instructions _noProjects"
       :key="'noprojects'"
     >
       {{ $t("no_projects") }}
@@ -10,6 +10,7 @@
     <template v-else>
       <PinnedNonpinnedFolder
         :field_name="'projects_pinned'"
+        :label="$t('projects_pinned')"
         :content="projects_pinned"
         :path="path"
         :folders="projects"
@@ -42,7 +43,10 @@ export default {
     display_original_space: Boolean,
     can_edit: Boolean,
   },
-  components: { ProjectPresentation, PinnedNonpinnedFolder },
+  components: {
+    ProjectPresentation,
+    PinnedNonpinnedFolder,
+  },
   data() {
     return {};
   },
@@ -54,4 +58,9 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._noProjects {
+  margin: calc(var(--spacing) / 2) 0 calc(var(--spacing) / 2);
+  text-align: center;
+}
+</style>

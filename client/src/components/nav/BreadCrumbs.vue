@@ -21,7 +21,7 @@
 
     <transition name="fade" mode="out-in">
       <div v-if="show_space_name">
-        <sl-icon name="arrow-right-short" label="" />
+        <sl-icon name="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
         <component
           :is="$route.name === 'Projet' ? 'router-link' : 'span'"
@@ -39,7 +39,7 @@
 
     <transition name="fade" mode="out-in">
       <div v-if="show_project_name">
-        <sl-icon name="arrow-right-short" label="" />
+        <sl-icon name="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
         <component
           :is="false ? 'router-link' : 'span'"
@@ -184,5 +184,9 @@ a._spaceName {
 
 .u-buttonLink {
   text-decoration: none;
+}
+
+._arrowRight {
+  flex: 0 0 auto;
 }
 </style>
