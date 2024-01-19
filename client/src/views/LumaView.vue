@@ -179,6 +179,10 @@ export default {
       try {
         const new_space_slug = await this.$api.createFolder({
           path: this.path,
+          additional_meta: {
+            title: "default",
+            $admins: "everyone",
+          },
         });
         return new_space_slug;
       } catch (err) {

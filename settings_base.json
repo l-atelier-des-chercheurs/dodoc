@@ -58,6 +58,11 @@
     },
     "$folders": {
       "folders": {
+        "fields": {
+          "title": {
+            "type": "string"
+          }
+        },
         "$files": {
           "thumbs": {
             "resolutions": [180, 360, 1600]
