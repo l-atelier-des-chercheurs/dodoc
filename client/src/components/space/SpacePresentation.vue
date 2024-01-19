@@ -31,13 +31,31 @@
       <!-- </div> -->
     </div>
     <div class="_textBloc">
-      <StatusTag
-        v-if="can_edit"
-        :status="space.$status || 'public'"
-        :status_options="['public', 'private']"
-        :path="space.$path"
-        :can_edit="can_edit"
-      />
+      <div class="_statusOptions">
+        <StatusTag
+          v-if="can_edit"
+          :status="space.$status || 'public'"
+          :status_options="['public', 'private']"
+          :path="space.$path"
+          :can_edit="can_edit"
+        />
+        <sl-dropdown v-if="can_edit">
+          <sl-button slot="trigger" caret>
+            {{ $t("options") }}
+          </sl-button>
+          <sl-menu>
+            <sl-menu-item>
+              <DownloadFolder :path="space.$path" />
+            </sl-menu-item>
+            <sl-menu-item>
+              <RemoveMenu
+                :remove_text="$t('remove_space')"
+                @remove="removeSpace"
+              />
+            </sl-menu-item>
+          </sl-menu>
+        </sl-dropdown>
+      </div>
 
       <!-- :label="can_edit ? $t('title') : undefined" -->
       <div class="">
@@ -88,11 +106,6 @@
           :admin_instructions="$t('space_admin_instructions')"
           :contrib_instructions="$t('space_contrib_instructions')"
         />
-
-        <div class="u-mediaOptions" v-if="can_edit">
-          <DownloadFolder :path="space.$path" />
-          <RemoveMenu :remove_text="$t('remove_space')" @remove="removeSpace" />
-        </div>
       </template>
     </div>
     <!-- <div class="_descriptionField">
@@ -242,5 +255,12 @@ export default {
   top: 0;
   right: 0;
   margin: calc(var(--spacing) / 1);
+}
+
+._statusOptions {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 </style>
