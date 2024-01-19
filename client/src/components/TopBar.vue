@@ -118,7 +118,7 @@ export default {
   width: 100%;
   // max-width: calc(var(--max-column-width));
   margin: 0 auto;
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   // padding-bottom: calc(var(--spacing) * 1);
   background: white;
   border-bottom: 1px solid var(--c-gris);
@@ -157,6 +157,10 @@ export default {
 ._subscribeBtn {
   margin-left: calc(var(--spacing) / 2);
 
+  .is--mobileView & {
+    margin-left: 0;
+  }
+
   ._authorBtn {
     position: relative;
     background: var(--c-bleumarine_clair);
@@ -175,6 +179,10 @@ export default {
   padding: 0 calc(var(--spacing) / 2);
   // crispy crisp sl-icons
   font-size: 111%;
+
+  .is--mobileView & {
+    padding: 0;
+  }
 
   button {
     // width: 3rem;
