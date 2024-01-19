@@ -6,20 +6,44 @@
       </small>
     </template>
 
-    <transition-group v-else class="_list" name="projectsList" appear>
+    <transition-group v-else class="_list" name="listComplete" appear>
       <SingleTag
-        v-for="tag in tags"
+        v-for="tag in tags_list"
         :key="tag"
         :tag_type="tag_type"
-        :name="tagName(tag)"
-        :clickable="clickable"
-        :addable="addable"
-        :removable="removable"
-        :disableable="tags_active.includes(tag)"
+        :tag_str="tag"
+        :mode="tagMode(tag)"
         @tagClick="$emit('tagClick', tag)"
-        @removeClick="$emit('removeClick', tag)"
       />
     </transition-group>
+
+    <div class="" v-if="shorten_tag_list">
+      <button
+        type="button"
+        class="u-buttonLink"
+        v-if="show_subset"
+        @click="toggleSubset"
+      >
+        + {{ tags.length - show_at_first }}
+      </button>
+      <button type="button" class="u-buttonLink" v-else @click="toggleSubset">
+        <b-icon icon="arrow-up-short" />
+        {{ $t("hide") }}
+      </button>
+      <!-- <button
+        type="button"
+        class="u-buttonLink"
+        v-if="show_subset"
+        @click="toggleSubset"
+      >
+        <b-icon icon="arrow-down-short" />
+        {{ $t("show_all") }}
+      </button>
+      <button type="button" class="u-buttonLink" v-else @click="toggleSubset">
+        <b-icon icon="arrow-up-short" />
+        {{ $t("hide") }}
+      </button> -->
+    </div>
   </div>
 </template>
 <script>
@@ -34,40 +58,45 @@ export default {
       type: Array,
       default: () => [],
     },
-    clickable: {
+    mode: String,
+    shorten_if_too_long: {
       type: Boolean,
-      default: false,
-    },
-    translated: {
-      type: Boolean,
-      default: false,
-    },
-    translated_prefix: String,
-    addable: {
-      type: Boolean,
-      default: false,
-    },
-    removable: {
-      type: Boolean,
-      default: false,
+      default: true,
     },
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_subset: true,
+      show_at_first: 5,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    shorten_tag_list() {
+      if (!this.shorten_if_too_long) return false;
+      if (this.tags.length <= this.show_at_first) return false;
+      return true;
+    },
+    tags_list() {
+      if (this.shorten_tag_list && this.show_subset)
+        return this.tags.slice(0, this.show_at_first);
+      return this.tags;
+    },
+  },
   methods: {
-    tagName(tag_str) {
-      if (this.translated)
-        if (this.translated_prefix)
-          return this.$t(this.translated_prefix + tag_str);
-        else return this.$t(tag_str);
-      return tag_str;
+    toggleSubset() {
+      this.show_subset = !this.show_subset;
+    },
+    tagMode(tag) {
+      if (this.mode) return this.mode;
+      if (this.tags_active)
+        if (this.tags_active.includes(tag)) return "disable";
+        else return "select";
+      return "inactive";
     },
   },
 };
@@ -77,10 +106,6 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 8);
-}
-
-._tagName {
-  text-align: left;
 }
 ._addBtn,
 ._removeBtn {

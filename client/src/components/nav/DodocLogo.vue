@@ -79,7 +79,7 @@ export default {
     path,
     ellipse,
     circle {
-      transition: fill 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+      transition: fill 0.15s cubic-bezier(0.19, 1, 0.22, 1);
     }
   }
 }

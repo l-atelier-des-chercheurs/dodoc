@@ -44,7 +44,7 @@
       <button
         type="button"
         class="u-button u-button_bleumarine u-button_small"
-        @click="openInFinder(new_path)"
+        @click="openInFinder({ absolute_path: new_path })"
       >
         {{ $t("open_in_finder") }}
       </button>
@@ -96,12 +96,6 @@ export default {
           this.edit_mode = true;
           this.allow_save = this.new_path !== this.path_to_storage;
         }
-      });
-    },
-    openInFinder(absolute_path) {
-      window.electronAPI.send("toMain", {
-        type: "open_path",
-        absolute_path,
       });
     },
     cancel() {

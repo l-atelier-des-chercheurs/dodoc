@@ -10,148 +10,162 @@ x
     }"
     :data-context="context"
   >
-    <div class="_projectInfos--cover">
-      <CoverField
-        :context="context"
-        :cover="project.$cover"
-        :path="project.$path"
-        :can_edit="can_edit"
-      />
-
-      <transition name="toggleLock" mode="out-in">
-        <sl-icon
-          v-if="project.$status === 'finished'"
-          :key="project.$status"
-          name="check-circle-fill"
-          class="_icon _check"
+    <div class="_projectInfos--topContent">
+      <div class="_projectInfos--cover">
+        <CoverField
+          class="_cover"
+          :context="context"
+          :cover="project.$cover"
+          :path="project.$path"
+          :can_edit="can_edit"
         />
-        <sl-icon
-          v-else-if="project.$status === 'private'"
-          :key="project.$status"
-          name="file-lock2-fill"
-          class="_icon _private"
-        />
-      </transition>
 
-      <div v-if="display_original_space" class="_originalSpace">
-        +{{ original_space_name }}
-      </div>
-      <!-- <sl-icon
+        <transition name="toggleLock" mode="out-in">
+          <sl-icon
+            v-if="project.$status === 'finished'"
+            :key="project.$status"
+            name="check-circle-fill"
+            class="_icon _check"
+          />
+          <sl-icon
+            v-else-if="project.$status === 'private'"
+            :key="project.$status"
+            name="file-lock2-fill"
+            class="_icon _private"
+          />
+        </transition>
+
+        <div v-if="display_original_space" class="_originalSpace">
+          +{{ original_space_name }}
+        </div>
+        <!-- <sl-icon
         v-if="project.$status === 'draft'"
         name="cone-striped"
         class="_icon _cone"
       /> -->
-      <!-- <div class="u-wips" /> -->
-    </div>
-
-    <div class="_projectInfos--infos">
-      <StatusTag
-        v-if="context === 'full'"
-        :status="project.$status"
-        :path="project.$path"
-        :can_edit="can_edit"
-      />
-
-      <!-- <br v-if="context === 'full'" /> -->
-
-      <TitleField
-        :field_name="'title'"
-        :label="
-          context === 'full' && can_edit && !project.title ? $t('title') : ''
-        "
-        class="_title"
-        :content="project.title"
-        :path="project.$path"
-        :required="true"
-        :maxlength="40"
-        :tag="context === 'full' ? 'h1' : 'h3'"
-        :can_edit="can_edit"
-        :instructions="$t('project_title_instructions')"
-      />
-      <TitleField
-        v-if="context !== 'tiny' || (context === 'list' && project.description)"
-        :field_name="'description'"
-        class="_description"
-        :label="
-          context === 'full' && can_edit && !project.description
-            ? $t('description')
-            : ''
-        "
-        :content="project.description"
-        :path="project.$path"
-        :maxlength="1280"
-        :input_type="'markdown'"
-        :can_edit="can_edit"
-      />
-
-      <div
-        class="_allTags"
-        v-if="
-          context !== 'tiny' &&
-          (p_keywords.length > 0 ||
-            p_machines.length > 0 ||
-            p_materials.length > 0)
-        "
-      >
-        <TagsList
-          v-if="p_keywords.length > 0"
-          :tags="p_keywords"
-          :tag_type="'keywords'"
-          :clickable="false"
-        />
-
-        <TagsList
-          v-if="p_machines.length > 0"
-          :tags="p_machines"
-          :tag_type="'machines'"
-          :clickable="false"
-        />
-
-        <TagsList
-          v-if="p_materials.length > 0"
-          :tags="p_materials"
-          :tag_type="'materials'"
-          :clickable="false"
-        />
+        <!-- <div class="u-wips" /> -->
       </div>
 
-      <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
+      <div class="_projectInfos--infos">
+        <div class="_projectInfos--infos--settings" v-if="context === 'full'">
+          <StatusTag
+            :status="project.$status"
+            :path="project.$path"
+            :can_edit="can_edit"
+          />
+          <sl-dropdown v-if="can_edit">
+            <sl-button slot="trigger" caret>
+              {{ $t("options") }}
+            </sl-button>
+            <sl-menu>
+              <sl-menu-item>
+                <DownloadFolder :path="project.$path" />
+              </sl-menu-item>
+              <sl-menu-item>
+                <div class="">
+                  <button
+                    type="button"
+                    class="u-buttonLink"
+                    @click="show_dup_modal = true"
+                  >
+                    <sl-icon name="file-plus" />
+                    {{ $t("duplicate_or_move_project") }}
+                  </button>
+                </div>
+                <DuplicateOrRemixProject
+                  v-if="show_dup_modal"
+                  :path="project.$path"
+                  :proposed_title="`${$t('copy_of')} ${project.title}`"
+                  @close="show_dup_modal = false"
+                />
+              </sl-menu-item>
+              <sl-menu-item>
+                <RemoveMenu
+                  :remove_text="$t('remove_project')"
+                  @remove="removeProject"
+                />
+              </sl-menu-item>
+            </sl-menu>
+          </sl-dropdown>
+        </div>
+
+        <TitleField
+          :field_name="'title'"
+          :label="context === 'full' ? $t('title') : ''"
+          class="_title"
+          :content="project.title"
+          :path="project.$path"
+          :required="true"
+          :maxlength="40"
+          :tag="context === 'full' ? 'h1' : 'h3'"
+          :can_edit="can_edit"
+          :instructions="
+            can_edit ? $t('project_title_instructions') : undefined
+          "
+        />
+
+        <TitleField
+          v-if="
+            (context === 'list' && project.description) ||
+            (context === 'full' && (project.description || can_edit))
+          "
+          :field_name="'description'"
+          class="_description"
+          :label="context === 'full' ? $t('description') : ''"
+          :content="project.description"
+          :path="project.$path"
+          :maxlength="1280"
+          :input_type="'markdown'"
+          :can_edit="can_edit"
+        />
+
+        <AdminsAndContributorsField
+          v-if="context === 'full'"
+          :folder="project"
+          :can_edit="can_edit"
+          :admin_label="$t('referent')"
+          :admin_instructions="$t('project_admin_instructions')"
+          :contrib_instructions="$t('project_contrib_instructions')"
+        />
+
+        <div
+          class="_allTags"
+          v-if="context !== 'tiny' && context !== 'full' && all_tags.length > 0"
+        >
+          <template v-for="tags in all_tags">
+            <SingleTag
+              v-for="tag in tags.list"
+              :key="tag"
+              :tag_type="tags.type"
+              :tag_str="tag"
+              :mode="'inactive'"
+            />
+          </template>
+        </div>
+      </div>
     </div>
 
-    <!-- <transition name="fade">
-      <button
-        v-if="context === 'full'"
-        v-show="!$root.is_mobile_view"
-        :key="'show_meta-' + show_meta"
-        class="u-buttonLink _showMeta"
-        type="button"
-        @click="show_meta = !show_meta"
-      >
-        <template v-if="!show_meta">
-          {{ $t("show_meta") }}
-        </template>
-        <template v-else>
-          {{ $t("hide_meta") }}
-        </template>
-      </button>
-    </transition> -->
-
-    <div
+    <flickity
       class="_projectInfos--meta"
       :class="{
         'is--hidden': !show_meta,
       }"
       v-if="context === 'full'"
+      :options="flickityOptions"
     >
-      <CardMeta :project="project" :can_edit="can_edit" />
-      <CardLicense :project="project" :can_edit="can_edit" />
-      <CardFiles :project="project" :can_edit="can_edit" />
-      <CardCompetences :project="project" :can_edit="can_edit" />
-      <CardMachinesMaterials :project="project" :can_edit="can_edit" />
-      <CardKeywords :project="project" :can_edit="can_edit" />
+      <!-- <CardMeta class="_card" :project="project" :can_edit="can_edit" /> -->
+      <CardCompetences class="_card" :project="project" :can_edit="can_edit" />
+      <CardMachinesMaterials
+        class="_card"
+        :project="project"
+        :can_edit="can_edit"
+      />
+      <CardKeywords class="_card" :project="project" :can_edit="can_edit" />
       <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
-    </div>
+      <CardLicense class="_card" :project="project" :can_edit="can_edit" />
+      <CardFiles class="_card" :project="project" :can_edit="can_edit" />
+    </flickity>
 
     <div class="_projectInfos--open" v-if="['list', 'tiny'].includes(context)">
       <router-link :to="{ path: createURLFromPath(project.$path) }">
@@ -161,7 +175,9 @@ x
   </div>
 </template>
 <script>
-import CardMeta from "@/components/project_cards/CardMeta.vue";
+import Flickity from "vue-flickity";
+
+// import CardMeta from "@/components/project_cards/CardMeta.vue";
 // import CardAuthor from "@/components/project_cards/CardAuthor.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardCompetences from "@/components/project_cards/CardCompetences.vue";
@@ -169,6 +185,8 @@ import CardMachinesMaterials from "@/components/project_cards/CardMachinesMateri
 // import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
 import CardFiles from "@/components/project_cards/CardFiles.vue";
+
+import DuplicateOrRemixProject from "@/components/project/DuplicateOrRemixProject.vue";
 
 export default {
   props: {
@@ -179,7 +197,10 @@ export default {
     // show_more_informations: Boolean,
   },
   components: {
-    CardMeta,
+    Flickity,
+    DuplicateOrRemixProject,
+
+    // CardMeta,
     // CardAuthor,
     CardKeywords,
     CardCompetences,
@@ -195,6 +216,22 @@ export default {
       response: null,
 
       show_meta: true,
+      show_dup_modal: false,
+
+      flickityOptions: {
+        initialIndex: 0,
+        groupCells: true,
+        imagesLoaded: true,
+        pageDots: false,
+        resize: true,
+        // arrowShape:
+        //   "M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z",
+        selectedAttraction: 0.2,
+        percentPosition: false,
+        friction: 0.8,
+        cellAlign: "center",
+        contain: false,
+      },
     };
   },
   created() {},
@@ -215,14 +252,33 @@ export default {
     is_own_project() {
       return this.isOwnItem({ folder: this.project });
     },
-    p_keywords() {
-      return this.getKw("keywords");
-    },
-    p_materials() {
-      return this.getKw("materials");
-    },
-    p_machines() {
-      return this.getKw("machines");
+    all_tags() {
+      const _all_tags = [];
+
+      [
+        "target_audience",
+        "disciplines",
+        "level",
+        "keywords",
+        "machines",
+        "materials",
+      ].map((tag_type) => {
+        if (tag_type === "level" && this.project.level) {
+          _all_tags.push({
+            type: "level",
+            list: [this.project.level],
+          });
+        } else {
+          const kw = this.getKw(tag_type);
+          if (kw.length > 0)
+            _all_tags.push({
+              type: tag_type,
+              list: kw,
+            });
+        }
+      });
+
+      return _all_tags;
     },
   },
   methods: {
@@ -231,19 +287,30 @@ export default {
         ? this.project[type]
         : [];
     },
+    async removeProject() {
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const response = await this.$api.deleteItem({
+          path: this.project.$path,
+        });
+        this.response = response.data;
+        this.fetch_status = "success";
+        // this.$router.push("/projects");
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+      }
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._projectInfos {
   position: relative;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: stretch;
 
   width: 100%;
-  // max-width: calc(var(--max-column-width));
-  margin: 0 auto;
 
   overflow: hidden;
   background: white;
@@ -262,6 +329,13 @@ export default {
 
     &.is--own {
       border-bottom-color: var(--c-bleumarine);
+    }
+
+    ._projectInfos--topContent {
+      padding: 0;
+      margin: 0;
+      gap: 0;
+      max-width: none;
     }
 
     ._title {
@@ -293,6 +367,19 @@ export default {
     display: block;
     ._projectInfos--infos {
       padding: calc(var(--spacing) / 2);
+      width: 100%;
+      place-content: flex-start;
+      max-height: 12rem;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1.5rem;
+        background: linear-gradient(transparent, white);
+      }
     }
   }
 
@@ -322,13 +409,27 @@ export default {
   }
 }
 
+._projectInfos--topContent {
+  max-width: var(--max-column-width);
+  margin: calc(var(--spacing) / 2) auto 0;
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) * 1);
+
+  > * {
+    flex: 1 1 420px;
+  }
+}
+
 ._projectInfos--infos {
   display: flex;
   flex-flow: column nowrap;
   place-content: center;
 
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 1);
 
   transition: all 0.4s;
 
@@ -359,6 +460,13 @@ export default {
   }
 }
 
+._projectInfos--infos--settings {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
 ._imageSelect {
   background: white;
   position: relative;
@@ -366,18 +474,10 @@ export default {
 
 ._projectInfos--cover {
   position: relative;
-  aspect-ratio: 3/2;
-  width: 45vh;
-  height: 45vh;
-  flex: 0 0 45vh;
-
-  @supports not (aspect-ratio: 1/1) {
-    width: 500px;
-    height: 500px;
-  }
+  width: 100%;
 
   .is--list & {
-    padding: 2px;
+    // padding: 2px;
     width: 100%;
     height: auto;
   }
@@ -389,6 +489,26 @@ export default {
     max-width: none;
     max-height: none;
     height: auto;
+  }
+
+  ._cover {
+    position: relative;
+    max-width: 520px;
+    aspect-ratio: 3/2;
+    border-radius: 4px;
+    overflow: hidden;
+
+    margin-right: 0;
+    margin-left: auto;
+
+    .is--mobileView & {
+      max-width: none;
+    }
+
+    .is--list & {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
 
   ._icon {
@@ -430,11 +550,13 @@ export default {
     bottom: 0;
     left: 0;
     margin: calc(var(--spacing) / 4);
-    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 16) calc(var(--spacing) / 4);
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
     color: white;
+    font-weight: 700;
+
     border-radius: 15px;
     font-size: var(--sl-font-size-small);
     /* max-width: 30ch; */
@@ -446,20 +568,21 @@ export default {
 }
 
 ._projectInfos--meta {
-  // display: flex;
-  // flex-flow: column nowrap;
-  height: 45vh;
-  overflow: auto;
-  @include scrollbar(8px, 5px, 6px);
+  // max-width: var(--max-column-width);
+  margin: 0 auto;
+  padding: 0;
+  // padding-top: calc(var(--spacing) * 1);
 
   .is--mobileView & {
     height: auto;
   }
 
-  > * {
-    flex: 0 0 auto;
-    min-width: 220px;
-    margin: calc(var(--spacing) / 4);
+  ._card {
+    width: 240px;
+    height: 240px;
+    overflow: auto;
+    margin: calc(var(--spacing) / 2);
+    @include scrollbar(8px, 5px, 6px);
 
     .is--mobileView & {
       // flex: 1 0 220px;
@@ -500,6 +623,9 @@ export default {
 ._allTags {
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 8);
+
+  > * {
+  }
 }
 </style>

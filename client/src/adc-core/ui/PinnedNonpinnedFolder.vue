@@ -2,7 +2,7 @@
   <div>
     <div class="_pinned" v-if="pinned_folders.length > 0 || can_edit">
       <div class="">
-        <DLabel :str="$t('pinned')" />
+        <DLabel :str="label" />
 
         <transition name="pagechange" mode="out-in">
           <div
@@ -15,7 +15,7 @@
             v-else
             tag="section"
             class="_list _list_pinned"
-            name="projectsList"
+            name="listComplete"
             appear
           >
             <div
@@ -71,7 +71,7 @@
     <transition-group
       tag="section"
       class="_nonpinned _list"
-      name="projectsList"
+      name="listComplete"
       appear
     >
       <div
@@ -97,6 +97,7 @@
 export default {
   props: {
     field_name: String,
+    label: String,
     content: {
       type: Array,
       default: () => [],
@@ -174,7 +175,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pinned {
-  padding: calc(var(--spacing) / 4) 0;
+  padding: 0;
   margin: calc(var(--spacing) / 2) 0 calc(var(--spacing) / 2);
 }
 ._nonpinned {

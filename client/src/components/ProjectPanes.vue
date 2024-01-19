@@ -11,12 +11,39 @@
       <template v-if="projectpanes.length === 0">
         <pane>
           <div class="_msg">
-            <span class="u-instructions">
+            <div class="u-sameRow u-instructions">
+              <b-icon icon="arrow-up-short" />
               {{ $t("choose_a_pane") }}
-            </span>
+              <b-icon icon="arrow-up-short" />
+            </div>
             <br />
             <br />
             <br />
+            <div class="u-spacingBottom">
+              <DateDisplay
+                :title="$t('date_created')"
+                :date="project.$date_created"
+              />
+              <DateDisplay
+                :title="$t('date_modified')"
+                :date="project.$date_modified"
+              />
+            </div>
+
+            <div
+              class=""
+              v-if="$root.app_infos.is_electron && is_instance_admin"
+            >
+              <div class="u-spacingBottom" />
+              <DLabel :str="$t('open_in_finder')" />
+              <button
+                type="button"
+                class="u-button u-button_bleumarine u-button_small"
+                @click="openInFinder({ path: project.$path })"
+                v-html="project_path_wrappable"
+              />
+            </div>
+
             <br />
             <DLabel :str="$t('latest_changes_to_project')" />
             <div class="u-instructions">
@@ -117,7 +144,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    project_path_wrappable() {
+      return this.project.$path.replaceAll("/", "/<wbr>");
+    },
+  },
   methods: {
     scrollToPanes() {
       if (this.$route.name === "Projet" && this.can_edit_project)
@@ -174,7 +205,7 @@ export default {
   // place-content: center;
 
   text-align: center;
-  max-width: 50ch;
+  max-width: 70ch;
   margin: 0 auto;
 
   padding: calc(var(--spacing) * 2);

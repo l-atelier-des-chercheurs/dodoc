@@ -1,7 +1,9 @@
 <template>
   <div class="_fileList">
     <template v-if="listed_files.length === 0">
-      {{ $t("no_files") }}
+      <div class="u-instructions">
+        {{ $t("no_files") }}
+      </div>
     </template>
     <template v-else>
       <div class="_file" v-for="(file, i) in listed_files" :key="i">
@@ -66,6 +68,12 @@ export default {
     can_edit: Boolean,
   },
   components: {},
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
+  },
   data() {
     return {
       show_picker: false,
@@ -85,6 +93,21 @@ export default {
         if (m) acc.push(m);
         return acc;
       }, []);
+    },
+    meta_filenames_already_present() {
+      const current = [];
+
+      this.listed_files.map((lf) => {
+        current.push(this.getFilename(lf.$path));
+      });
+
+      return [
+        {
+          label: this.$t("on_this_list"),
+          medias: current,
+          color: "var(--c-orange)",
+        },
+      ];
     },
   },
   methods: {
