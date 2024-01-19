@@ -1,7 +1,7 @@
 <template>
   <div class="_selectField">
     <div class="u-sameRow">
-      <select v-model="new_content" :disabled="!edit_mode">
+      <select v-model="new_content" :disabled="!edit_mode" :size="size">
         <template v-if="options">
           <option
             v-for="option in options"
@@ -65,6 +65,7 @@ export default {
     can_edit: {
       type: Boolean,
     },
+    size: String,
   },
   components: {},
   data() {

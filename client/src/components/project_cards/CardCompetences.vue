@@ -8,18 +8,43 @@
   >
     <div class="u-spacingBottom">
       <DLabel :str="$t('skill_level')" />
+
+      <!-- <TagsList
+        :tags="project.level ? [project.level] : []"
+        :tag_type="'level'"
+      /> -->
+      <!-- <TagsField
+        :label="$t('level')"
+        :field_name="'level'"
+        :content="project.level ? [project.level] : []"
+        :path="project.$path"
+        :can_edit="can_edit"
+      /> -->
+
+      <TagsList
+        v-if="project.level"
+        :tags="project.level ? [project.level] : []"
+        :tag_type="'level'"
+      />
+
       <SelectField
         :field_name="'level'"
         :content="project.level || ''"
         :path="project.$path"
         :can_edit="can_edit"
         :options="basic_competences"
+        :size="'small'"
       />
-
-      project.level= {{ project.level }}
     </div>
     <div class="u-spacingBottom">
       <DLabel :str="$t('target_audience')" />
+
+      <TagsList
+        v-if="project.target_audience"
+        :tags="project.target_audience"
+        :tag_type="'target_audience'"
+      />
+
       <RadioCheckboxField
         :field_name="'target_audience'"
         :input_type="'checkbox'"
@@ -31,6 +56,13 @@
     </div>
     <div class="">
       <DLabel :str="$t('disciplines')" />
+
+      <TagsList
+        v-if="project.disciplines"
+        :tags="project.disciplines"
+        :tag_type="'disciplines'"
+      />
+
       <RadioCheckboxField
         :field_name="'disciplines'"
         :input_type="'checkbox'"
