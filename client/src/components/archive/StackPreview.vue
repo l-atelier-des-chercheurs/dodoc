@@ -7,6 +7,8 @@
         'is--selected': is_selected,
       }"
       @click="openStack"
+      @mouseover="startSlide"
+      @mouseend="endSlide"
     >
       <div class="_preview">
         <MediaContent
@@ -15,6 +17,9 @@
           class="_mediaPreview"
         />
         <b-icon v-else icon="eye-slash" />
+        <div class="_count">
+          {{ number_of_medias_in_stack }}
+        </div>
       </div>
       <div class="_title">
         {{ stack.title }}
@@ -41,12 +46,24 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    number_of_medias_in_stack() {
+      return this.stack.stack_files_metas?.length || 0;
+    },
+  },
   methods: {
     openStack() {
       const stack_slug = this.getFilename(this.stack.$path);
       this.$emit("openStack", stack_slug);
     },
+    startSlide() {
+      this.start_slide = true;
+      this.loadFiles();
+    },
+    endSlide() {
+      this.start_slide = false;
+    },
+    loadFiles() {},
   },
 };
 </script>
@@ -57,6 +74,7 @@ export default {
   justify-content: flex-end;
   align-items: stretch;
   padding: 0px;
+  min-height: 8rem;
 }
 
 ._stackPreview--content {
@@ -67,9 +85,13 @@ export default {
 
   position: relative;
   // box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-  background: #fff;
+  background: transparent;
   border: 2px solid var(--c-bodybg);
   cursor: pointer;
+
+  border-radius: 2px;
+  overflow: hidden;
+  padding: 2px;
 
   transform-origin: center calc(100% - 2em);
   transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
@@ -85,7 +107,8 @@ export default {
   &:hover,
   &:focus-visible {
     z-index: 2;
-    border-color: var(--c-gris_fonce);
+    // border-color: var(--c-gris_fonce);
+    background: var(--c-gris);
     // transform: scale(1.05);
   }
 }
@@ -93,7 +116,9 @@ export default {
 ._preview {
   position: relative;
   width: 100%;
-  aspect-ratio: 1/1;
+  min-height: 2rem;
+  max-height: 10rem;
+
   overflow: hidden;
 
   cursor: pointer;
@@ -113,7 +138,7 @@ export default {
         height: 100%;
         width: 100%;
         object-fit: contain;
-        object-position: bottom;
+        object-position: left bottom;
       }
     }
   }
@@ -127,5 +152,16 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
+}
+
+._count {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 2);
+  font-weight: 600;
+  text-shadow: #000 1px 0 10px;
+  color: white;
+  line-height: 1;
 }
 </style>

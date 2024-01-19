@@ -306,4 +306,9 @@ export default {
   --sd-textcolor: #333;
   --sd-bg: rgb(245, 245, 245);
 }
+
+._footer {
+  text-align: center;
+  margin: calc(var(--spacing) * 2) auto;
+}
 </style>
