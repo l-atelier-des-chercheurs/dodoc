@@ -72,7 +72,7 @@ export default {
       edit_mode: false,
       is_saving: false,
 
-      new_content: this.content ? this.content : "draft",
+      new_content: this.content !== undefined ? this.content : "draft",
     };
   },
   created() {},

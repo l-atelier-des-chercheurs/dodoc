@@ -10,11 +10,13 @@
       <DLabel :str="$t('skill_level')" />
       <SelectField
         :field_name="'level'"
-        :content="project.level || '-'"
+        :content="project.level || ''"
         :path="project.$path"
         :can_edit="can_edit"
         :options="basic_competences"
       />
+
+      project.level= {{ project.level }}
     </div>
     <div class="u-spacingBottom">
       <DLabel :str="$t('target_audience')" />
@@ -54,7 +56,7 @@ export default {
       // competences,
       basic_competences: [
         {
-          key: "-",
+          key: "",
           text: "–",
         },
         {
