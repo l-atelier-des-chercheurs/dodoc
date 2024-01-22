@@ -221,7 +221,9 @@ export default {
     }
   },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.stack.$path });
+  },
   watch: {},
   computed: {
     can_edit() {
