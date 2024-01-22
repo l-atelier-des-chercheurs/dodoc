@@ -117,8 +117,6 @@ export default {
   position: relative;
   width: 100%;
   min-height: 2rem;
-  max-height: 10rem;
-
   overflow: hidden;
 
   cursor: pointer;
@@ -137,6 +135,7 @@ export default {
       ._mediaContent--image {
         height: 100%;
         width: 100%;
+        max-height: 10rem;
         object-fit: contain;
         object-position: left bottom;
       }
@@ -157,11 +156,11 @@ export default {
 ._count {
   position: absolute;
   bottom: 0;
-  right: 0;
-  margin: calc(var(--spacing) / 2);
+  left: 0;
+  margin: calc(var(--spacing) / 4);
   font-weight: 600;
-  text-shadow: #000 1px 0 10px;
-  color: white;
+  text-shadow: white 0px 0px 3px;
+  color: black;
   line-height: 1;
 }
 </style>
