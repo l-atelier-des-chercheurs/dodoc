@@ -1,6 +1,6 @@
 <template>
   <div class="_dLabel">
-    <div class="_labelLine" @click="show_instructions = !show_instructions">
+    <div class="_labelLine" @click="toggleInstructions">
       <component
         :is="tag"
         :class="tag === 'label' ? 'u-label' : ''"
@@ -24,7 +24,7 @@
         </button>
       </template>
     </div>
-    <div class="u-instructions" v-if="show_instructions">
+    <div class="u-instructions _instr" v-if="show_instructions">
       <small v-html="instructions" />
     </div>
   </div>
@@ -56,7 +56,11 @@ export default {
       return "";
     },
   },
-  methods: {},
+  methods: {
+    toggleInstructions() {
+      if (this.instructions) this.show_instructions = !this.show_instructions;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -74,5 +78,8 @@ export default {
     // color: currentColor;
     margin-bottom: 0;
   }
+}
+._instr {
+  margin-bottom: calc(var(--spacing) / 2);
 }
 </style>

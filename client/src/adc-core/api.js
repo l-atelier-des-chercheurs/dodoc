@@ -302,7 +302,8 @@ export default function () {
           const folder_index = this.store[parent_folder_path].findIndex(
             (f) => f.$path === path
           );
-          this.store[parent_folder_path].splice(folder_index, 1);
+          if (folder_index !== -1)
+            this.store[parent_folder_path].splice(folder_index, 1);
         }
 
         this.$eventHub.$emit("folder.removed", { path });
@@ -637,7 +638,7 @@ export default function () {
         const response = await this.$axios.delete(path).catch((err) => {
           throw this.processError(err);
         });
-        this.$eventHub.$emit("hooks.deleteItem", path);
+        this.$eventHub.$emit("hooks.deleteItem", { path });
         return response.data;
       },
 

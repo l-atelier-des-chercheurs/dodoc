@@ -1,7 +1,7 @@
 <template>
   <div class="_selectField">
     <div class="u-sameRow">
-      <select v-model="new_content" :disabled="!edit_mode">
+      <select v-model="new_content" :disabled="!edit_mode" :size="size">
         <template v-if="options">
           <option
             v-for="option in options"
@@ -26,7 +26,11 @@
         </template>
       </select>
 
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        :label_position="'left'"
+        @click="enableEditMode"
+      />
     </div>
 
     <div class="u-instructions" v-if="instructions">
@@ -61,6 +65,7 @@ export default {
     can_edit: {
       type: Boolean,
     },
+    size: String,
   },
   components: {},
   data() {
@@ -68,7 +73,7 @@ export default {
       edit_mode: false,
       is_saving: false,
 
-      new_content: this.content ? this.content : "draft",
+      new_content: this.content !== undefined ? this.content : "draft",
     };
   },
   created() {},

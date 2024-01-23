@@ -480,8 +480,9 @@ img {
 }
 
 .splitpanes--vertical > .splitpanes__splitter {
-  width: 1px;
+  width: 2px;
   margin-left: -1px;
+
   border-right: 1px solid #ccc;
 }
 .splitpanes--horizontal > .splitpanes__splitter {
@@ -761,7 +762,7 @@ img {
   }
 
   &-leave-active {
-    position: absolute;
+    position: absolute !important;
     z-index: 0 !important;
   }
   &-enter,

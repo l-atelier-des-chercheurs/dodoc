@@ -229,6 +229,7 @@ export default {
       return false;
     },
     fileShouldBeOptimized({ path }) {
+      if (!path) return false;
       const ext = [
         ".heic",
 
@@ -258,6 +259,7 @@ export default {
       return ext.some((e) => path.toLowerCase().endsWith(e));
     },
     fileCanBeOptimized({ path }) {
+      if (!path) return false;
       if (this.fileShouldBeOptimized({ path })) return true;
       const ext = [
         ".webm",

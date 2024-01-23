@@ -31,6 +31,8 @@ export default {
   year: "Year",
 
   keywords: "keywords",
+  show_all: "Show all",
+
   template: "Template",
 
   add: "Add",
@@ -45,6 +47,17 @@ export default {
   name: "Name",
   filename: "Filename",
 
+  submitted_password_is_wrong: "The submitted password is wrong",
+  account_doesnt_exist: "This account does not exist",
+  submit: "Submit",
+  search_in_title_desc_kw:
+    "In titles, descriptions, keywords, machines and materials.",
+  search_by_name: "In names or nicknames",
+  search_by_title_or_subtitle: "In titles and subtitles",
+
+  search: "Search",
+  "search:": "Search:",
+
   space: "Space",
   spaces: "All spaces",
   spaces_instr:
@@ -57,7 +70,11 @@ export default {
   completed: "Completed",
   my_projects: "My projects",
   pinned: "Pinned",
-  click_on_pin_on_space: "Pinned spaces will be placed here",
+  spaces_pinned: "Spaces pinned",
+  projects_pinned: "Projects pinned",
+  publications_pinned: "Publications pinned",
+
+  click_to_pin: "Click on the yellow pin icon to add here.",
 
   default_value: "Default value",
 
@@ -74,6 +91,13 @@ export default {
   new_account: "New account",
   show_list: "Show the list",
 
+  login: "login",
+  logout: "logout",
+  name_or_pseudonym: "Name or nickname",
+  email: "Email",
+  email_instr: "Contact email, only visible to admins.",
+  password: "Password",
+
   open_in_finder: "Open in finder",
   admins_and_contributors: "Admins and contributors",
   set_admins_and_contributors: "Set admins and contributors",
@@ -84,7 +108,7 @@ export default {
   signup_password: "signup password",
   signup_password_instructions: "Require a password to create an account.",
   signup_password_users_instructions:
-    "If you don’t know this password, you can request it with a mail to",
+    "If you don’t know this password, you can request it in a mail to",
   more_informations: "More informations",
 
   open_app: "Access",
@@ -142,20 +166,32 @@ export default {
   origin: "Origin",
   list_of_projects: "List of projects",
   no_projects: "No project to show",
+  no_publications: "No publications to show",
   no_files: "No file",
   none_f: "None",
   none: "None",
-  filters: "Filters",
+
   reset_all: "Reset all",
-  "sort:": "Sort:",
+  filter: "Filter",
+  sort: "Sort",
 
   click_to_zoom: "Click to zoom",
-  same_as_source: "Same as source",
+  close_to_source: "Similar to source media",
   very_high: "Very high",
   high: "High",
   medium: "Medium",
   low: "Low",
   rough: "Draft",
+
+  no_accounts_yet: "No accounts created yet",
+  add_accounts: "Add accounts",
+  list_of_accounts: "List of accounts",
+  restart_to_apply: "Restart do•doc to apply",
+  refresh_window_to_apply: "Refresh the window to apply",
+  restart: "Restart do•doc",
+  reveal: "Reveal",
+  choose_a_pane: "Choose a pane to start!",
+  latest_changes_to_project: "Latest changes to project",
 
   download: "Download",
   download_ready: "The download is ready",
@@ -181,7 +217,7 @@ export default {
   position_on_map: "No position on the map",
   place_on_map: "Position on map",
   show_on_map: "Show on map",
-  placed_on_map: "Already positioned positioned on map",
+  placed_on_map: "Already positioned on map",
   change_location: "Change position",
   remove_pin: "Remove this pin",
   cancel_position: "Erase position",
@@ -228,4 +264,40 @@ export default {
   pick_media: "Pick one media",
   pick_medias: "Pick one or more medias",
   remove_image: "Remove this image",
+
+  stop_recording: "Stop recording",
+  pause_recording: "Pause recording",
+  unpause_recording: "Resume recording",
+  record_audio: "Record audio",
+  record_video: "Record video",
+  stopmotion: "stopmotion",
+  stopmotion_list: "Stopmotion list",
+  sure_to_cancel_stopmotion:
+    "Are you sure you want to cancel this stopmotion? You will be able to find it again in the menu <i>Stopmotions List</i>",
+  play: "Play",
+  stop: "Stop",
+  pause: "Pause",
+  first_image: "First image",
+  previous_image: "Previous image",
+  next_image: "Next image",
+  last_image: "Last image",
+  assemble: "Assemble",
+
+  with_sound: "with sound",
+  update: "Update",
+  image: "Image",
+  video: "Video",
+  audio: "Audio",
+  text: "Text",
+  lines: "Lines",
+  vecto: "Shapes",
+  pdf: "PDF",
+  stl: "STL",
+  obj: "OBJ",
+  other: "Other",
+  all_medias_types: "Of all types",
+  all_origins: "From all origins",
+  all_authors: "From all authors",
+
+  or_download_media_on_device: "or download this media to your device",
 };

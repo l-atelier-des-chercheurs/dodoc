@@ -26,7 +26,7 @@
 
         <LoginAs
           v-if="current_mode === 'login'"
-          :authors="authors"
+          :authors="sorted_authors"
           @close="$emit('close')"
         />
         <CreateAuthor
@@ -115,10 +115,10 @@ export default {
     },
   },
   computed: {
-    authors_except_self() {
-      if (this.connected_as)
-        return this.authors.filter((a) => a.$path !== this.connected_as.$path);
-      return this.authors;
+    sorted_authors() {
+      return this.authors.slice().sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
     },
   },
   methods: {

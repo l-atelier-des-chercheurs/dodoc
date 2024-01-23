@@ -140,6 +140,8 @@ import NumberInput from "@/adc-core/inputs/NumberInput.vue";
 Vue.component("NumberInput", NumberInput);
 import ColorInput from "@/adc-core/inputs/ColorInput.vue";
 Vue.component("ColorInput", ColorInput);
+import SearchInput from "@/adc-core/inputs/SearchInput.vue";
+Vue.component("SearchInput", SearchInput);
 
 import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 Vue.component("ToggleInput", ToggleInput);
@@ -242,6 +244,10 @@ import Strings from "@/mixins/Strings";
 Vue.mixin(Strings);
 import Queries from "@/mixins/Queries";
 Vue.mixin(Queries);
+import Tags from "@/mixins/Tags";
+Vue.mixin(Tags);
+import Electron from "@/mixins/Electron";
+Vue.mixin(Electron);
 
 import Stacks from "@/mixins/Stacks";
 Vue.mixin(Stacks);

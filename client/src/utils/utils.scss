@@ -4,8 +4,6 @@
   font-family: var(--sl-font-mono);
   font-size: var(--sl-font-size-small);
   font-weight: 400;
-  // font-style: italic;
-  // text-transform: lowercase;
   color: inherit;
   opacity: 0.8;
   margin-bottom: calc(var(--spacing) / 4);
@@ -81,13 +79,22 @@
 
 .u-card2 {
   border-bottom: 2px solid var(--c-gris);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+    0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+    0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
+    0 3.5px 6px hsla(230, 13%, 9%, 0.09);
 
   &:hover,
   &:focus-visible {
-    transform: translateY(-4px);
-    box-shadow: 0 3px 6px rgba(51, 51, 51, 0.16);
+    // transform: translateY(-4px);
+
+    box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+      0 0.9px 1.25px hsla(230, 13%, 9%, 0.025),
+      0 3px 5px hsla(230, 13%, 9%, 0.05), 0 12px 20px hsla(230, 13%, 9%, 0.09);
+    // box-shadow: 0 3px 6px rgba(51, 51, 51, 0.16);
   }
 }
 
@@ -104,6 +111,7 @@
   display: inline-block;
   min-width: 1em;
   min-height: 1em;
+  max-width: none;
 }
 
 .u-buttonLink {
@@ -439,9 +447,8 @@ textarea,
 
   vertical-align: middle;
 
-  padding: calc(var(--spacing) * 0.5);
-  // padding-left: calc(var(--spacing) * 0.5);
-  // padding-right: calc(var(--spacing) * 0.5);
+  // padding: calc(var(--spacing) * 0.5);
+  padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
   margin: 0;
 
   border-bottom: 1px solid transparent;
@@ -1019,10 +1026,12 @@ input[type="checkbox"]:disabled {
   cursor: pointer;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
-  max-width: 30ch;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  span {
+    max-width: 34ch;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
   &:hover,
   &:focus-visible {

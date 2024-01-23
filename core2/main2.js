@@ -53,6 +53,15 @@ module.exports = async function () {
 
   server();
 
+  if (global.settings.bonjour_domain !== false) {
+    await require("./bonjour").init({
+      name: "do•doc",
+      protocol: global.settings.protocol,
+      port: global.appInfos.port,
+      host: global.settings.bonjour_domain,
+    });
+  }
+
   if (is_electron) {
     dev.log(`MAIN — opening URL in electron : ${global.appInfos.homeURL}`);
     win.loadURL(global.appInfos.homeURL);

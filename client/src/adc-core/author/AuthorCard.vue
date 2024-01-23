@@ -21,6 +21,7 @@
             :title="$t('pick_portrait')"
             :preview_format="'circle'"
             :path="author.$path"
+            :placeholder="author.name.substring(0, 2)"
             :can_edit="can_edit"
           />
         </div>

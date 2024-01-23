@@ -4,6 +4,7 @@
     :data-filetype="file.$type"
     :draggable="is_draggable"
     :data-context="context"
+    :data-novisual="!thumb"
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
@@ -36,7 +37,7 @@
       </template>
     </template>
 
-    <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
+    <template v-else-if="['video', 'audio'].includes(file.$type)">
       <template v-if="context === 'preview'">
         <img
           v-if="thumb"
@@ -75,7 +76,7 @@
       <CollaborativeEditor2 :content="file.$content" :can_edit="false" />
     </template>
 
-    <template v-else-if="['pdf', 'url', 'stl'].includes(file.$type)">
+    <template v-else-if="['pdf', 'url', 'stl', 'obj'].includes(file.$type)">
       <template v-if="context === 'preview'">
         <img
           v-if="thumb"
@@ -83,9 +84,9 @@
           class="_mediaContent--image"
           :loading="img_loading"
         />
-        <template v-else>
-          <b-icon icon="eye-slash" />
-        </template>
+        <small v-else class="u-fontCode fieldCaption _fileName">
+          <b-icon icon="eye-slash" /> {{ file.$media_filename }}
+        </small>
       </template>
       <template v-else>
         <div class="_mediaContent--iframe">
@@ -131,10 +132,11 @@
               :src="file_full_path"
               @load="iframeLoaded"
             />
-            <STLPreview
-              v-else-if="file.$type === 'stl'"
-              class="_stlPreview"
+            <ThreeDPreview
+              v-else-if="['stl', 'obj'].includes(file.$type)"
+              class="_threeDPreview"
               :key="file_full_path"
+              :file_type="file.$type"
               :src="file_full_path"
             />
             <iframe
@@ -169,7 +171,9 @@
       <b-icon icon="file-earmark" /> {{ file.$media_filename }}
     </small>
 
-    <template v-if="['image', 'stl'].includes(file.$type) && show_fs_button">
+    <template
+      v-if="['image', 'stl', 'obj'].includes(file.$type) && show_fs_button"
+    >
       <div class="_fsButton">
         <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
       </div>
@@ -180,11 +184,11 @@
           :width="img_width"
           :ratio="img_ratio"
         />
-
-        <STLPreview
-          v-else-if="file.$type === 'stl'"
-          class="_stlPreview"
+        <ThreeDPreview
+          v-else-if="['stl', 'obj'].includes(file.$type)"
+          class="_threeDPreview"
           :key="file_full_path"
+          :file_type="file.$type"
           :src="file_full_path"
         />
       </FullscreenView>
@@ -222,7 +226,7 @@ export default {
     },
   },
   components: {
-    STLPreview: () => import("@/adc-core/fields/STLPreview.vue"),
+    ThreeDPreview: () => import("@/adc-core/fields/ThreeDPreview.vue"),
     ImageZoom: () => import("@/adc-core/fields/ImageZoom.vue"),
   },
   data() {
@@ -312,12 +316,15 @@ export default {
 <style lang="scss" scoped>
 ._fileName {
   padding: calc(var(--spacing) / 4);
+
+  display: flex;
+  gap: calc(var(--spacing) / 8);
 }
 
 ._mediaContent {
   position: relative;
 
-  &[data-filetype="other"] {
+  &[data-novisual] {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -422,7 +429,7 @@ export default {
   }
 }
 
-._stlPreview {
+._threeDPreview {
   width: 100%;
   height: 100%;
 }

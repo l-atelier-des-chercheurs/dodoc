@@ -18,6 +18,9 @@ export default {
     getFilename(path) {
       return path.substring(path.lastIndexOf("/") + 1);
     },
+    getFilenameWithoutExt(filename) {
+      return filename.substring(0, filename.lastIndexOf("."));
+    },
     createURLToSpace(url) {
       return url.split("/").splice(0, 1).join("/");
     },
