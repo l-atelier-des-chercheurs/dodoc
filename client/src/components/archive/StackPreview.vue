@@ -7,19 +7,45 @@
         'is--selected': is_selected,
       }"
       @click="openStack"
-      @mouseover="startSlide"
-      @mouseend="endSlide"
+      @mouseenter="startSlide"
+      @mousemove="updateMousePos"
+      @mouseleave="endSlide"
     >
       <div class="_preview">
-        <MediaContent
-          v-if="stack.$preview"
-          :file="stack.$preview"
-          class="_mediaPreview"
-        />
-        <b-icon v-else icon="eye-slash" />
-        <div class="_count">
-          {{ number_of_medias_in_stack }}
+        <div
+          key="preview"
+          class="_mainPreview"
+          :class="{
+            'is--showingSlides': slide_file_to_show,
+          }"
+        >
+          <MediaContent
+            v-if="stack.$preview"
+            :file="stack.$preview"
+            class="_mediaPreview"
+          />
+          <b-icon v-else icon="eye-slash" />
         </div>
+
+        <!-- <transition name="pagechange" mode="in-out"> -->
+        <div
+          class="_slide"
+          v-if="slide_file_to_show"
+          :key="slide_file_to_show.$path"
+        >
+          <MediaContent :file="slide_file_to_show" class="_mediaPreview" />
+        </div>
+        <!-- </transition> -->
+
+        <transition name="pagechange" mode="out-in">
+          <div class="_count" v-if="!slide_file_to_show" key="preview">
+            {{ number_of_medias_in_stack }}
+          </div>
+          <div class="_count" v-else key="slide">
+            {{ index_of_slide_file_to_show + 1 }} /
+            {{ number_of_medias_in_stack }}
+          </div>
+        </transition>
       </div>
       <div class="_title">
         {{ stack.title }}
@@ -35,7 +61,11 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      start_slide: false,
+      stack_files: undefined,
+      index_of_slide_file_to_show: undefined,
+    };
   },
   i18n: {
     messages: {
@@ -50,25 +80,50 @@ export default {
     number_of_medias_in_stack() {
       return this.stack.stack_files_metas?.length || 0;
     },
+    slide_file_to_show() {
+      return this.stack_files && this.index_of_slide_file_to_show !== undefined
+        ? this.stack_files[this.index_of_slide_file_to_show]
+        : false;
+    },
   },
   methods: {
     openStack() {
       const stack_slug = this.getFilename(this.stack.$path);
       this.$emit("openStack", stack_slug);
     },
-    startSlide() {
+    async startSlide(event) {
       this.start_slide = true;
-      this.loadFiles();
+      const files = await this.loadFiles();
+      this.stack_files = files;
+      this.updateMousePos(event);
+    },
+    updateMousePos(event) {
+      const { pageX } = event;
+      const { x, width } = event.target.getBoundingClientRect();
+      const move_percent = (pageX - x) / width;
+      this.index_of_slide_file_to_show = Math.floor(
+        move_percent * this.number_of_medias_in_stack
+      );
     },
     endSlide() {
       this.start_slide = false;
+      this.stack_files = undefined;
+      this.index_of_slide_file_to_show = undefined;
     },
-    loadFiles() {},
+    async loadFiles() {
+      const stack = await this.$api.getFolder({
+        path: this.stack.$path,
+      });
+      return this.getStackFilesInOrder({
+        stack,
+      });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._stackPreview {
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-end;
@@ -116,7 +171,7 @@ export default {
 ._preview {
   position: relative;
   width: 100%;
-  min-height: 2rem;
+  min-height: 3rem;
   overflow: hidden;
 
   cursor: pointer;
@@ -142,6 +197,17 @@ export default {
     }
   }
 }
+._slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
 
 ._title {
   height: 1.5em;
@@ -162,5 +228,14 @@ export default {
   text-shadow: white 0px 0px 3px;
   color: black;
   line-height: 1;
+}
+
+._mainPreview {
+  width: 100%;
+  opacity: 1;
+  transition: all 0.25s ease-out;
+  &.is--showingSlides {
+    opacity: 0;
+  }
 }
 </style>

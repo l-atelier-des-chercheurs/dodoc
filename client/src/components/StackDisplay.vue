@@ -230,22 +230,10 @@ export default {
       if (!this.stack) return false;
       return this.canLoggedinEditFolder({ folder: this.stack });
     },
-    stack_files() {
-      if (this.stack?.$files && this.stack.$files.length > 0)
-        return this.stack.$files;
-      return [];
-    },
     stack_files_in_order() {
-      if (this.stack_files.length === 0 || !this.stack?.stack_files_metas)
-        return [];
-
-      return this.stack.stack_files_metas.reduce((acc, meta_filename) => {
-        const file = this.stack_files.find(
-          (f) => this.getFilename(f.$path) === meta_filename
-        );
-        if (file) acc.push(file);
-        return acc;
-      }, []);
+      return this.getStackFilesInOrder({
+        stack: this.stack,
+      });
     },
     shared_folder_path() {
       if (this.$sharedFolderPath) return this.$sharedFolderPath();
