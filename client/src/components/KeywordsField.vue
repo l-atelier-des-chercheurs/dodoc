@@ -86,7 +86,7 @@ export default {
       }
     },
     cancel() {
-      this.new_keywords = this.keywords;
+      this.new_keywords = this.keywords || [];
       this.edit_mode = false;
     },
 
