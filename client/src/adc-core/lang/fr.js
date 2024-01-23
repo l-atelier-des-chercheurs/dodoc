@@ -86,7 +86,7 @@ export default {
     "Dans les titres, descriptions, mots-clés, machines et matériaux.",
   search_by_name: "Dans les noms ou pseudonymes",
   search_by_title_or_subtitle: "Dans les titres ou sous-titres",
-  search: "Rechercher",
+
   "search:": "Rechercher&nbsp;:",
 
   connection_lost: `Connexion perdue`,
