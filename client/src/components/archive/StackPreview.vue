@@ -26,7 +26,6 @@
           />
           <b-icon v-else icon="eye-slash" />
         </div>
-
         <!-- <transition name="pagechange" mode="in-out"> -->
         <div
           class="_slide"
@@ -36,7 +35,6 @@
           <MediaContent :file="slide_file_to_show" class="_mediaPreview" />
         </div>
         <!-- </transition> -->
-
         <transition name="pagechange" mode="out-in">
           <div
             class="_count"
@@ -55,6 +53,17 @@
         {{ stack.title }}
       </div>
     </button>
+    <div class="">
+      <button
+        type="button"
+        class="u-button u-button_icon _addToColl"
+        v-if="can_be_added_to_fav"
+        @click.stop="$emit('toggleFav')"
+      >
+        <b-icon v-if="!is_favorite" icon="star" :aria-label="$t('add')" />
+        <b-icon v-else icon="star-fill" :aria-label="$t('remove')" />
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -62,6 +71,8 @@ export default {
   props: {
     stack: Object,
     is_selected: Boolean,
+    is_favorite: Boolean,
+    can_be_added_to_fav: Boolean,
   },
   components: {},
   data() {
@@ -171,7 +182,7 @@ export default {
 
   &:hover,
   &:focus-visible {
-    z-index: 2;
+    // z-index: 2;
     // border-color: var(--c-gris_fonce);
     background: var(--c-gris);
     // transform: scale(1.05);
@@ -247,5 +258,14 @@ export default {
   &.is--showingSlides {
     opacity: 0;
   }
+}
+
+._addToColl {
+  position: absolute;
+  top: 0;
+  right: 0;
+  // z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
 }
 </style>

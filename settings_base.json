@@ -155,6 +155,9 @@
             "type": "string",
             "required": true,
             "unique": true
+          },
+          "favorites": {
+            "type": "array"
           }
         },
         "$files": {

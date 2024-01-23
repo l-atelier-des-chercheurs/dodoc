@@ -74,6 +74,9 @@
                   :key="stack.$path"
                   :stack="stack"
                   :is_selected="stack.$path === last_selected_stack_path"
+                  :can_be_added_to_fav="can_be_added_to_fav"
+                  :is_favorite="isFavorite(stack.$path)"
+                  @toggleFav="toggleFav(stack.$path)"
                   @openStack="openStack"
                 />
                 <!-- <SharedFolderItem
@@ -182,7 +185,9 @@ export default {
     stack_shared_folder_path() {
       return this.shared_folder_path + "/stacks";
     },
-
+    can_be_added_to_fav() {
+      return this.connected_as && this.connected_as?.$path !== undefined;
+    },
     sorted_stacks() {
       return this.all_stacks
         .slice()
@@ -266,6 +271,36 @@ export default {
       let query = Object.assign({}, this.$route.query) || {};
       query.stack = stack_slug;
       this.$router.push({ query });
+    },
+    isFavorite(stack_path) {
+      if (
+        !this.connected_as?.favorites ||
+        this.connected_as.favorites.length === 0
+      )
+        return false;
+      return this.connected_as.favorites.some(
+        (f) => f.stack_path === stack_path
+      );
+    },
+    async toggleFav(stack_path) {
+      let favorites = this.connected_as?.favorites
+        ? this.connected_as.favorites.slice()
+        : [];
+
+      if (this.isFavorite(stack_path))
+        favorites = favorites.filter((f) => f.stack_path !== stack_path);
+      else
+        favorites.push({
+          stack_path,
+          added: +new Date(),
+        });
+
+      await this.$api.updateMeta({
+        path: this.connected_as.$path,
+        new_meta: {
+          favorites,
+        },
+      });
     },
     closeStack() {
       let query = Object.assign({}, this.$route.query) || {};
