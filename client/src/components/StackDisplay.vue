@@ -220,8 +220,11 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    window.addEventListener("keyup", this.handleKeyPress);
+  },
   beforeDestroy() {
+    window.removeEventListener("keyup", this.handleKeyPress);
     this.$api.leave({ room: this.stack.$path });
   },
   watch: {},
@@ -324,6 +327,12 @@ export default {
       });
       await this.$api.deleteItem({ path: this.stack.$path });
       this.$emit("close");
+    },
+    handleKeyPress($event) {
+      if ($event.key === "Escape") {
+        this.$emit("close");
+        return false;
+      }
     },
   },
 };
