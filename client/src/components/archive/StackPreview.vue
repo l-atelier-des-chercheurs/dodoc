@@ -85,9 +85,7 @@ export default {
       return this.stack.stack_files_metas?.length || 0;
     },
     slide_file_to_show() {
-      return this.stack_files &&
-        this.index_of_slide_file_to_show !== undefined &&
-        this.index_of_slide_file_to_show > 0
+      return this.stack_files && this.index_of_slide_file_to_show !== undefined
         ? this.stack_files[this.index_of_slide_file_to_show]
         : false;
     },
@@ -245,7 +243,7 @@ export default {
 ._mainPreview {
   width: 100%;
   opacity: 1;
-  transition: all 0.25s ease-out;
+  // transition: all 0.05s ease-out;
   &.is--showingSlides {
     opacity: 0;
   }
