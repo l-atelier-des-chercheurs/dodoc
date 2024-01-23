@@ -38,7 +38,11 @@
         <!-- </transition> -->
 
         <transition name="pagechange" mode="out-in">
-          <div class="_count" v-if="!slide_file_to_show" key="preview">
+          <div
+            class="_count"
+            v-if="index_of_slide_file_to_show === undefined"
+            key="preview"
+          >
             {{ number_of_medias_in_stack }}
           </div>
           <div class="_count" v-else key="slide">
@@ -81,7 +85,9 @@ export default {
       return this.stack.stack_files_metas?.length || 0;
     },
     slide_file_to_show() {
-      return this.stack_files && this.index_of_slide_file_to_show !== undefined
+      return this.stack_files &&
+        this.index_of_slide_file_to_show !== undefined &&
+        this.index_of_slide_file_to_show > 0
         ? this.stack_files[this.index_of_slide_file_to_show]
         : false;
     },
@@ -93,11 +99,17 @@ export default {
     },
     async startSlide(event) {
       this.start_slide = true;
-      const files = await this.loadFiles();
-      this.stack_files = files;
-      this.updateMousePos(event);
+      setTimeout(async () => {
+        if (this.start_slide) {
+          const files = await this.loadFiles();
+          this.stack_files = files;
+          this.updateMousePos(event);
+        }
+      }, 500);
     },
     updateMousePos(event) {
+      if (!this.stack_files) return;
+
       const { pageX } = event;
       const { x, width } = event.target.getBoundingClientRect();
       const move_percent = (pageX - x) / width;
