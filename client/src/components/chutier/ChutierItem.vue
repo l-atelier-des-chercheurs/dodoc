@@ -179,7 +179,7 @@
     </div>
 
     <template v-if="show_large">
-      <portal to="destination">
+      <portal to="largemedia">
         <div
           class="_chutierRow--largePreview"
           @click.self="file.$type !== 'text' ? (show_large = false) : ''"
@@ -590,9 +590,8 @@ export default {
   z-index: 2000;
   overflow: auto;
 
-  // display: flex;
-  // place-content: center;
-  background: black;
+  background-color: var(--c-gris);
+  padding: calc(var(--spacing) / 2);
   color: white;
 
   &[data-type="text"] {

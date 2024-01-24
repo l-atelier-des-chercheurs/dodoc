@@ -1,5 +1,7 @@
 <template>
   <div class="_myChutier" v-if="chutier" @click="last_clicked = false">
+    <portal-target name="largemedia" multiple />
+
     <div class="_itemsList" @click.self="selected_items_slugs = []">
       <div class="_topBar"></div>
       <div class="_topContent">
