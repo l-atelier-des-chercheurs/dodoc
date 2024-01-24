@@ -10,31 +10,6 @@
       <div class="_panes">
         <div class="_infos">
           <div class="_allFields">
-            <div class="_dateFields">
-              <div class="">
-                <DateField
-                  :label="$t('created')"
-                  :field_name="'date_created_corrected'"
-                  :date="date_created_corrected"
-                  :path="stack.$path"
-                  :input_type="'datetime-local'"
-                  :can_edit="can_edit"
-                />
-              </div>
-              <div class="">
-                <DateField
-                  :label="$t('date_sent')"
-                  :field_name="'date_modified'"
-                  :date="stack.$date_modified"
-                  :path="stack.$path"
-                  :input_type="'datetime-local'"
-                  :can_edit="false"
-                />
-              </div>
-            </div>
-
-            <hr />
-
             <div class="_titleRow">
               <TitleField
                 :label="!stack.title ? $t('title') : ''"
@@ -62,18 +37,6 @@
 
             <hr />
 
-            <div class="">
-              <KeywordsField
-                :label="$t('keywords')"
-                :field_name="'keywords'"
-                :keywords="stack.keywords"
-                :path="stack.$path"
-                :can_edit="can_edit"
-              />
-            </div>
-
-            <hr />
-
             <div>
               <TitleField
                 :label="$t('description')"
@@ -81,6 +44,18 @@
                 :content="stack.description"
                 :path="stack.$path"
                 :input_type="'markdown'"
+                :can_edit="can_edit"
+              />
+            </div>
+
+            <hr />
+
+            <div class="">
+              <KeywordsField
+                :label="$t('keywords')"
+                :field_name="'keywords'"
+                :keywords="stack.keywords"
+                :path="stack.$path"
                 :can_edit="can_edit"
               />
             </div>
@@ -118,6 +93,31 @@
                 />
               </div>
             </transition-group>
+
+            <div class="_dateFields">
+              <div class="">
+                <DateField
+                  :label="$t('created')"
+                  :field_name="'date_created_corrected'"
+                  :date="date_created_corrected"
+                  :path="stack.$path"
+                  :input_type="'datetime-local'"
+                  :can_edit="can_edit"
+                />
+              </div>
+              <div class="">
+                <DateField
+                  :label="$t('date_sent')"
+                  :field_name="'date_modified'"
+                  :date="stack.$date_modified"
+                  :path="stack.$path"
+                  :input_type="'datetime-local'"
+                  :can_edit="false"
+                />
+              </div>
+            </div>
+
+            <hr />
 
             <AuthorField
               v-if="context === 'chutier'"
