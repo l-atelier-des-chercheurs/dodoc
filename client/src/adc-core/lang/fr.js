@@ -936,4 +936,6 @@ export default {
     "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
   add_caption: "Ajouter une légende",
   copy_first_media_caption: "Réutiliser la légende du premier média",
+
+  only_my_fav: "Que les favoris",
 };

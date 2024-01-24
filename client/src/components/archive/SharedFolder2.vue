@@ -40,6 +40,12 @@
         </div>
       </transition>
 
+      <div>
+        <ToggleInput :content.sync="fav_filter" :label="$t('only_my_fav')" />
+      </div>
+
+      <hr />
+
       <transition name="pagechange" mode="out-in">
         <transition-group
           tag="div"
@@ -157,6 +163,8 @@ export default {
       author_path_filter: "",
       keywords_filter: [],
       group_mode: "year",
+
+      fav_filter: false,
     };
   },
   i18n: {
@@ -197,6 +205,8 @@ export default {
     },
     filtered_stacks() {
       return this.sorted_stacks.filter((f) => {
+        if (this.fav_filter) if (!this.isFavorite(f.$path)) return false;
+
         if (this.author_path_filter)
           if (!f.$admins || !f.$admins.includes(this.author_path_filter))
             return false;
@@ -321,7 +331,8 @@ export default {
   height: 100%;
   overflow: auto;
 
-  padding: 1px;
+  padding: 2px;
+  padding: 0 calc(var(--spacing) / 2);
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 }
@@ -333,7 +344,8 @@ export default {
 }
 
 ._label {
-  font-weight: 600;
+  font-weight: 400;
+  font-size: var(--sl-font-size-x-large);
 }
 
 ._stackModal {

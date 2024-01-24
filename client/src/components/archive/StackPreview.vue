@@ -167,7 +167,7 @@ export default {
 
   border-radius: 2px;
   overflow: hidden;
-  padding: 2px;
+  padding: 1px;
 
   transform-origin: center calc(100% - 2em);
   transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
@@ -264,8 +264,10 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  margin: 4px;
   // z-index: 1000;
   background-color: rgba(255, 255, 255, 0.8);
+  color: var(--c-rouge);
   border-radius: 50%;
 }
 </style>

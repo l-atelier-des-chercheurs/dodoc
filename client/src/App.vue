@@ -763,7 +763,7 @@ img {
 
   &-leave-active {
     position: absolute !important;
-    z-index: 0 !important;
+    z-index: -1 !important;
   }
   &-enter,
   &-leave-to {
