@@ -1,5 +1,5 @@
 <template>
-  <div class="_stackDisplay">
+  <div class="_stackDisplay" :data-context="context">
     <LoaderSpinner v-if="is_loading" />
     <template v-else>
       <div class="_closeStack">
@@ -7,155 +7,180 @@
           <b-icon icon="x-lg" :label="$t('close')" />
         </button>
       </div>
+      <div class="_panes">
+        <div class="_infos">
+          <div class="_allFields">
+            <div class="_dateFields">
+              <div class="">
+                <DateField
+                  :label="$t('created')"
+                  :field_name="'date_created_corrected'"
+                  :date="date_created_corrected"
+                  :path="stack.$path"
+                  :input_type="'datetime-local'"
+                  :can_edit="can_edit"
+                />
+              </div>
+              <div class="">
+                <DateField
+                  :label="$t('date_sent')"
+                  :field_name="'date_modified'"
+                  :date="stack.$date_modified"
+                  :path="stack.$path"
+                  :input_type="'datetime-local'"
+                  :can_edit="false"
+                />
+              </div>
+            </div>
 
-      <StackCarousel
-        v-if="context === 'archive'"
-        class="_topCarousel"
-        :files="stack_files_in_order"
-      />
+            <hr />
 
-      <div class="_allFields">
-        <div class="_dateFields">
-          <div class="">
-            <DateField
-              :label="$t('created')"
-              :field_name="'date_created_corrected'"
-              :date="date_created_corrected"
-              :path="stack.$path"
-              :input_type="'datetime-local'"
-              :can_edit="can_edit"
-            />
-          </div>
-          <div class="">
-            <DateField
-              :label="$t('date_sent')"
-              :field_name="'date_modified'"
-              :date="stack.$date_modified"
-              :path="stack.$path"
-              :input_type="'datetime-local'"
-              :can_edit="false"
-            />
-          </div>
-        </div>
+            <div class="_titleRow">
+              <TitleField
+                :label="!stack.title ? $t('title') : ''"
+                :field_name="'title'"
+                :content="stack.title"
+                :path="stack.$path"
+                :required="true"
+                :tag="'h1'"
+                :can_edit="can_edit"
+              />
+              <button
+                type="button"
+                class="u-button u-button_icon _addToColl"
+                v-if="can_be_added_to_fav"
+                @click.stop="$emit('toggleFav')"
+              >
+                <b-icon
+                  v-if="!is_favorite"
+                  icon="star"
+                  :aria-label="$t('add')"
+                />
+                <b-icon v-else icon="star-fill" :aria-label="$t('remove')" />
+              </button>
+            </div>
 
-        <hr />
+            <hr />
 
-        <div class="">
-          <TitleField
-            :label="!stack.title ? $t('title') : ''"
-            :field_name="'title'"
-            :content="stack.title"
-            :path="stack.$path"
-            :required="true"
-            :tag="'h1'"
-            :can_edit="can_edit"
-          />
-        </div>
-
-        <hr />
-
-        <div class="">
-          <KeywordsField
-            :label="$t('keywords')"
-            :field_name="'keywords'"
-            :keywords="stack.keywords"
-            :path="stack.$path"
-            :can_edit="can_edit"
-          />
-        </div>
-
-        <hr />
-
-        <div>
-          <TitleField
-            :label="$t('description')"
-            :field_name="'description'"
-            :content="stack.description"
-            :path="stack.$path"
-            :input_type="'markdown'"
-            :can_edit="can_edit"
-          />
-        </div>
-
-        <transition-group tag="div" class="_fileStack" name="listComplete">
-          <div
-            class="u-sameRow"
-            v-for="(file, index) in stack_files_in_order"
-            :key="file.$path"
-          >
-            <div class="_removeFile">
-              <sl-icon-button
-                name="dash-square-dotted"
-                @click="removeMediaFromStack(file.$path)"
+            <div class="">
+              <KeywordsField
+                :label="$t('keywords')"
+                :field_name="'keywords'"
+                :keywords="stack.keywords"
+                :path="stack.$path"
+                :can_edit="can_edit"
               />
             </div>
 
-            <select
-              class="is--dark _changeOrderSelect"
-              :value="index + 1"
-              @change="changeMediaOrder(index, +$event.target.value - 1)"
-            >
-              <option
-                v-for="(a, i) in new Array(stack_files_in_order.length).fill(
-                  null
-                )"
-                :key="i + 1"
-                v-text="i + 1"
+            <hr />
+
+            <div>
+              <TitleField
+                :label="$t('description')"
+                :field_name="'description'"
+                :content="stack.description"
+                :path="stack.$path"
+                :input_type="'markdown'"
+                :can_edit="can_edit"
               />
-            </select>
-            <ChutierItem :file="file" :is_selected="false" :context="'stack'" />
+            </div>
+
+            <transition-group tag="div" class="_fileStack" name="listComplete">
+              <div
+                class="u-sameRow"
+                v-for="(file, index) in stack_files_in_order"
+                :key="file.$path"
+              >
+                <div class="_removeFile">
+                  <sl-icon-button
+                    name="dash-square-dotted"
+                    @click="removeMediaFromStack(file.$path)"
+                  />
+                </div>
+
+                <select
+                  class="is--dark _changeOrderSelect"
+                  :value="index + 1"
+                  @change="changeMediaOrder(index, +$event.target.value - 1)"
+                >
+                  <option
+                    v-for="(a, i) in new Array(
+                      stack_files_in_order.length
+                    ).fill(null)"
+                    :key="i + 1"
+                    v-text="i + 1"
+                  />
+                </select>
+                <ChutierItem
+                  :file="file"
+                  :is_selected="false"
+                  :context="'stack'"
+                />
+              </div>
+            </transition-group>
+
+            <AuthorField
+              v-if="context === 'chutier'"
+              :label="$t('admins')"
+              class="u-spacingBottom"
+              :field="'$admins'"
+              :authors_paths="stack.$admins"
+              :path="stack.$path"
+              :can_edit="can_edit"
+            />
+            <AuthorField
+              v-else-if="context === 'archive'"
+              :label="$t('contributors')"
+              class="u-spacingBottom"
+              :field="'$authors'"
+              :authors_paths="stack.$authors"
+              :path="stack.$path"
+              :can_edit="can_edit"
+            />
+
+            <div v-if="can_edit" class="u-sameRow">
+              <DownloadFolder :path="stack.$path" />
+              <RemoveMenu
+                :remove_text="$t('remove_stack')"
+                @remove="removeStack"
+              />
+            </div>
           </div>
-        </transition-group>
-
-        <AuthorField
-          v-if="context === 'chutier'"
-          :label="$t('admins')"
-          class="u-spacingBottom"
-          :field="'$admins'"
-          :authors_paths="stack.$admins"
-          :path="stack.$path"
-          :can_edit="can_edit"
-        />
-        <AuthorField
-          v-else-if="context === 'archive'"
-          :label="$t('contributors')"
-          class="u-spacingBottom"
-          :field="'$authors'"
-          :authors_paths="stack.$authors"
-          :path="stack.$path"
-          :can_edit="can_edit"
-        />
-
-        <div v-if="can_edit" class="u-sameRow">
-          <DownloadFolder :path="stack.$path" />
-          <RemoveMenu :remove_text="$t('remove_stack')" @remove="removeStack" />
+          <div class="_bottomBtns" v-if="context === 'chutier'">
+            <transition name="pagechange" mode="out-in">
+              <button
+                type="button"
+                :key="share_button_is_enabled"
+                class="u-button u-button_red _btn"
+                :disabled="!share_button_is_enabled"
+                @click="publishStack"
+              >
+                {{ $t("publish") }}&nbsp;
+                <sl-icon
+                  name="arrow-right-square"
+                  style="font-size: 1rem"
+                  circle
+                />
+              </button>
+            </transition>
+            <div class="u-instructions">
+              <div v-if="!stack.title || stack.title.length === 0">
+                {{ $t("fill_title") }}
+              </div>
+              <div v-if="!stack.keywords || stack.keywords.length === 0">
+                {{ $t("fill_keywords") }}
+              </div>
+              <div v-if="stack_files_in_order.length === 0">
+                {{ $t("files_missing") }}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="_bottomBtns" v-if="context === 'chutier'">
-        <transition name="pagechange" mode="out-in">
-          <button
-            type="button"
-            :key="share_button_is_enabled"
-            class="u-button u-button_red _btn"
-            :disabled="!share_button_is_enabled"
-            @click="publishStack"
-          >
-            {{ $t("publish") }}&nbsp;
-            <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
-          </button>
-        </transition>
-        <div class="u-instructions">
-          <div v-if="!stack.title || stack.title.length === 0">
-            {{ $t("fill_title") }}
-          </div>
-          <div v-if="!stack.keywords || stack.keywords.length === 0">
-            {{ $t("fill_keywords") }}
-          </div>
-          <div v-if="stack_files_in_order.length === 0">
-            {{ $t("files_missing") }}
-          </div>
-        </div>
+        <StackCarousel
+          v-if="context === 'archive'"
+          class="_topCarousel"
+          :files="stack_files_in_order"
+        />
       </div>
     </template>
   </div>
@@ -169,6 +194,8 @@ export default {
   props: {
     stack_path: String,
     context: String,
+    is_favorite: Boolean,
+    can_be_added_to_fav: Boolean,
   },
   components: {
     ChutierItem,
@@ -342,7 +369,6 @@ export default {
   position: absolute;
   inset: 0;
   z-index: 100;
-  overflow: auto;
 
   background: var(--sd-bg);
   color: var(--sd-textcolor);
@@ -350,7 +376,35 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
-  --carousel-height: 70vh;
+  ._closeStack {
+    flex: 0 0 auto;
+  }
+  ._panes {
+    flex: 1 1 auto;
+  }
+}
+
+._panes {
+  display: flex;
+  flex-flow: row wrap;
+  overflow: auto;
+
+  > ._infos {
+    flex: 1 1 320px;
+
+    [data-context="archive"] & {
+      max-width: 320px;
+    }
+  }
+  > ._topCarousel {
+    flex: 1 1 220px;
+  }
+}
+
+._infos {
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: auto;
 
   > ._allFields {
     flex: 1 1 0;
@@ -366,8 +420,7 @@ export default {
   position: sticky;
   top: 0;
 
-  flex: 0 0 var(--carousel-height);
-  height: var(--carousel-height);
+  height: 100%;
   width: 100%;
   background: white;
 }
@@ -391,14 +444,19 @@ hr {
 }
 
 ._closeStack {
-  position: sticky;
-  height: 0;
-  top: 0;
-  left: 0;
+  position: relative;
+  // height: 0;
+  // top: 0;
+  // left: 0;
   // width: 100%;
+
+  border-bottom: 1px solid #ccc;
   z-index: 2;
+  text-align: right;
 
   > button {
+    width: 100%;
+    justify-content: flex-end;
     padding: calc(var(--spacing) / 2);
   }
 }
@@ -426,5 +484,11 @@ hr {
     border-radius: 4px;
     max-width: 320px;
   }
+}
+
+._titleRow {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
 }
 </style>
