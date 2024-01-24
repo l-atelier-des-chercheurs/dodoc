@@ -56,7 +56,7 @@
     <div class="">
       <button
         type="button"
-        class="u-button u-button_icon _addToColl"
+        class="u-button u-button_icon _addToFav"
         v-if="can_be_added_to_fav"
         @click.stop="$emit('toggleFav')"
       >
@@ -193,6 +193,7 @@ export default {
   position: relative;
   width: 100%;
   min-height: 3rem;
+  aspect-ratio: 1/1;
   overflow: hidden;
 
   cursor: pointer;
@@ -253,6 +254,7 @@ export default {
 
 ._mainPreview {
   width: 100%;
+  height: 100%;
   opacity: 1;
   // transition: all 0.05s ease-out;
   &.is--showingSlides {
@@ -260,7 +262,7 @@ export default {
   }
 }
 
-._addToColl {
+._addToFav {
   position: absolute;
   top: 0;
   right: 0;
