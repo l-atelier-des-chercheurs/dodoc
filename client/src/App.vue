@@ -612,6 +612,18 @@ img {
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
+.slideleft {
+  &-enter-active,
+  &-leave-active {
+    transform: translateX(0);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateX(-100%);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
 .slideupFade {
   &-enter-active,
   &-leave-active {

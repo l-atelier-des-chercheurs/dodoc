@@ -8,179 +8,206 @@
         </button>
       </div>
       <div class="_panes">
-        <div class="_infos">
-          <div class="_allFields">
-            <div class="_titleRow">
-              <TitleField
-                :label="!stack.title ? $t('title') : ''"
-                :field_name="'title'"
-                :content="stack.title"
-                :path="stack.$path"
-                :required="true"
-                :tag="'h1'"
-                :can_edit="can_edit"
-              />
-              <button
-                type="button"
-                class="u-button u-button_icon _addToColl"
-                v-if="can_be_added_to_fav"
-                @click.stop="$emit('toggleFav')"
-              >
-                <b-icon
-                  v-if="!is_favorite"
-                  icon="star"
-                  :aria-label="$t('add')"
-                />
-                <b-icon v-else icon="star-fill" :aria-label="$t('remove')" />
-              </button>
-            </div>
+        <button
+          type="button"
+          class="u-button u-button_icon u-button_black _showSidebar"
+          @click.stop="show_sidebar = true"
+        >
+          <b-icon icon="list-ul" :aria-label="$t('show_sidebar')" />
+        </button>
 
-            <hr />
-
-            <div>
-              <TitleField
-                :label="$t('description')"
-                :field_name="'description'"
-                :content="stack.description"
-                :path="stack.$path"
-                :input_type="'markdown'"
-                :can_edit="can_edit"
-              />
-            </div>
-
-            <hr />
-
-            <div class="">
-              <KeywordsField
-                :label="$t('keywords')"
-                :field_name="'keywords'"
-                :keywords="stack.keywords"
-                :path="stack.$path"
-                :can_edit="can_edit"
-              />
-            </div>
-
-            <transition-group tag="div" class="_fileStack" name="listComplete">
-              <div
-                class="u-sameRow"
-                v-for="(file, index) in stack_files_in_order"
-                :key="file.$path"
-              >
-                <div class="_removeFile">
-                  <sl-icon-button
-                    name="dash-square-dotted"
-                    @click="removeMediaFromStack(file.$path)"
-                  />
-                </div>
-
-                <select
-                  class="is--dark _changeOrderSelect"
-                  :value="index + 1"
-                  @change="changeMediaOrder(index, +$event.target.value - 1)"
-                >
-                  <option
-                    v-for="(a, i) in new Array(
-                      stack_files_in_order.length
-                    ).fill(null)"
-                    :key="i + 1"
-                    v-text="i + 1"
-                  />
-                </select>
-                <ChutierItem
-                  :file="file"
-                  :is_selected="false"
-                  :context="'stack'"
-                />
-              </div>
-            </transition-group>
-
-            <div class="_dateFields">
-              <div class="">
-                <DateField
-                  :label="$t('created')"
-                  :field_name="'date_created_corrected'"
-                  :date="date_created_corrected"
+        <transition name="slideleft" mode="out-in">
+          <div class="_infos" v-if="show_sidebar">
+            <div class="_allFields">
+              <div class="_titleRow">
+                <TitleField
+                  :label="!stack.title ? $t('title') : ''"
+                  :field_name="'title'"
+                  :content="stack.title"
                   :path="stack.$path"
-                  :input_type="'datetime-local'"
+                  :required="true"
+                  :tag="'h1'"
+                  :can_edit="can_edit"
+                />
+                <button
+                  type="button"
+                  class="u-button u-button_icon _addToColl"
+                  v-if="can_be_added_to_fav"
+                  @click.stop="$emit('toggleFav')"
+                >
+                  <b-icon
+                    v-if="!is_favorite"
+                    icon="star"
+                    :aria-label="$t('add')"
+                  />
+                  <b-icon v-else icon="star-fill" :aria-label="$t('remove')" />
+                </button>
+              </div>
+
+              <hr />
+
+              <div>
+                <TitleField
+                  :label="$t('description')"
+                  :field_name="'description'"
+                  :content="stack.description"
+                  :path="stack.$path"
+                  :input_type="'markdown'"
                   :can_edit="can_edit"
                 />
               </div>
+
+              <hr />
+
               <div class="">
-                <DateField
-                  :label="$t('date_sent')"
-                  :field_name="'date_modified'"
-                  :date="stack.$date_modified"
+                <KeywordsField
+                  :label="$t('keywords')"
+                  :field_name="'keywords'"
+                  :keywords="stack.keywords"
                   :path="stack.$path"
-                  :input_type="'datetime-local'"
-                  :can_edit="false"
+                  :can_edit="can_edit"
                 />
               </div>
-            </div>
 
-            <hr />
-
-            <AuthorField
-              v-if="context === 'chutier'"
-              :label="$t('admins')"
-              class="u-spacingBottom"
-              :field="'$admins'"
-              :authors_paths="stack.$admins"
-              :path="stack.$path"
-              :can_edit="can_edit"
-            />
-            <AuthorField
-              v-else-if="context === 'archive'"
-              :label="$t('contributors')"
-              class="u-spacingBottom"
-              :field="'$authors'"
-              :authors_paths="stack.$authors"
-              :path="stack.$path"
-              :can_edit="can_edit"
-            />
-
-            <div v-if="can_edit" class="u-sameRow">
-              <DownloadFolder :path="stack.$path" />
-              <RemoveMenu
-                :remove_text="$t('remove_stack')"
-                @remove="removeStack"
-              />
-            </div>
-          </div>
-          <div class="_bottomBtns" v-if="context === 'chutier'">
-            <transition name="pagechange" mode="out-in">
-              <button
-                type="button"
-                :key="share_button_is_enabled"
-                class="u-button u-button_red _btn"
-                :disabled="!share_button_is_enabled"
-                @click="publishStack"
+              <transition-group
+                tag="div"
+                class="_fileStack"
+                name="listComplete"
               >
-                {{ $t("publish") }}&nbsp;
-                <sl-icon
-                  name="arrow-right-square"
-                  style="font-size: 1rem"
-                  circle
+                <div
+                  class="u-sameRow"
+                  v-for="(file, index) in stack_files_in_order"
+                  :key="file.$path"
+                >
+                  <div class="_removeFile">
+                    <sl-icon-button
+                      name="dash-square-dotted"
+                      @click="removeMediaFromStack(file.$path)"
+                    />
+                  </div>
+
+                  <select
+                    class="is--dark _changeOrderSelect"
+                    :value="index + 1"
+                    @change="changeMediaOrder(index, +$event.target.value - 1)"
+                  >
+                    <option
+                      v-for="(a, i) in new Array(
+                        stack_files_in_order.length
+                      ).fill(null)"
+                      :key="i + 1"
+                      v-text="i + 1"
+                    />
+                  </select>
+                  <ChutierItem
+                    :file="file"
+                    :is_selected="false"
+                    :context="'stack'"
+                  />
+                </div>
+              </transition-group>
+
+              <div class="_dateFields">
+                <div class="">
+                  <DateField
+                    :label="$t('created')"
+                    :field_name="'date_created_corrected'"
+                    :date="date_created_corrected"
+                    :path="stack.$path"
+                    :input_type="'datetime-local'"
+                    :can_edit="can_edit"
+                  />
+                </div>
+                <div class="">
+                  <DateField
+                    :label="$t('date_sent')"
+                    :field_name="'date_modified'"
+                    :date="stack.$date_modified"
+                    :path="stack.$path"
+                    :input_type="'datetime-local'"
+                    :can_edit="false"
+                  />
+                </div>
+              </div>
+
+              <hr />
+
+              <AuthorField
+                v-if="context === 'chutier'"
+                :label="$t('admins')"
+                class="u-spacingBottom"
+                :field="'$admins'"
+                :authors_paths="stack.$admins"
+                :path="stack.$path"
+                :can_edit="can_edit"
+              />
+              <AuthorField
+                v-else-if="context === 'archive'"
+                :label="$t('contributors')"
+                class="u-spacingBottom"
+                :field="'$authors'"
+                :authors_paths="stack.$authors"
+                :path="stack.$path"
+                :can_edit="can_edit"
+              />
+
+              <div v-if="can_edit" class="u-sameRow">
+                <DownloadFolder :path="stack.$path" />
+                <RemoveMenu
+                  :remove_text="$t('remove_stack')"
+                  @remove="removeStack"
                 />
-              </button>
-            </transition>
-            <div class="u-instructions">
-              <div v-if="!stack.title || stack.title.length === 0">
-                {{ $t("fill_title") }}
-              </div>
-              <div v-if="!stack.keywords || stack.keywords.length === 0">
-                {{ $t("fill_keywords") }}
-              </div>
-              <div v-if="stack_files_in_order.length === 0">
-                {{ $t("files_missing") }}
               </div>
             </div>
+            <div class="_bottomBtns" v-if="context === 'chutier'">
+              <transition name="pagechange" mode="out-in">
+                <button
+                  type="button"
+                  :key="share_button_is_enabled"
+                  class="u-button u-button_red _btn"
+                  :disabled="!share_button_is_enabled"
+                  @click="publishStack"
+                >
+                  {{ $t("publish") }}&nbsp;
+                  <sl-icon
+                    name="arrow-right-square"
+                    style="font-size: 1rem"
+                    circle
+                  />
+                </button>
+              </transition>
+              <div class="u-instructions">
+                <div v-if="!stack.title || stack.title.length === 0">
+                  {{ $t("fill_title") }}
+                </div>
+                <div v-if="!stack.keywords || stack.keywords.length === 0">
+                  {{ $t("fill_keywords") }}
+                </div>
+                <div v-if="stack_files_in_order.length === 0">
+                  {{ $t("files_missing") }}
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_black _hideSidebar"
+              @click.stop="show_sidebar = false"
+            >
+              <b-icon icon="arrow-left" :aria-label="$t('hide_sidebar')" />
+            </button>
           </div>
-        </div>
-        <StackCarousel
-          v-if="context === 'archive'"
-          class="_topCarousel"
-          :files="stack_files_in_order"
-        />
+        </transition>
+
+        <transition name="fade" mode="out-in">
+          <div
+            v-if="show_sidebar"
+            class="_overlay"
+            @click="show_sidebar = false"
+          />
+        </transition>
+
+        <StackCarousel class="_topCarousel" :files="stack_files_in_order" />
       </div>
     </template>
   </div>
@@ -210,6 +237,7 @@ export default {
   data() {
     return {
       is_loading: true,
+      show_sidebar: true,
     };
   },
   i18n: {
@@ -385,26 +413,34 @@ export default {
 }
 
 ._panes {
-  display: flex;
-  flex-flow: row wrap;
-  overflow: auto;
+  position: relative;
+  // display: flex;
+  // flex-flow: row wrap;
+  // overflow: auto;
 
   > ._infos {
-    flex: 1 1 320px;
+    // flex: 1 1 320px;
 
     [data-context="archive"] & {
       max-width: 320px;
     }
   }
   > ._topCarousel {
-    flex: 1 1 220px;
+    // flex: 1 1 220px;
   }
 }
 
 ._infos {
+  position: absolute;
   display: flex;
   flex-flow: column nowrap;
   overflow: auto;
+  z-index: 10;
+  height: 100%;
+  width: 100%;
+  max-width: 360px;
+
+  border-right: 1px solid var(--sd-separator);
 
   > ._allFields {
     flex: 1 1 0;
@@ -416,6 +452,26 @@ export default {
   }
 }
 
+._overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // background-color: rgba(119, 117, 124, 0.95);
+  z-index: 9;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.8;
+    background-color: var(--sd-bg);
+  }
+}
+
 ._topCarousel {
   position: sticky;
   top: 0;
@@ -423,6 +479,7 @@ export default {
   height: 100%;
   width: 100%;
   background: white;
+  background: var(--sd-bg);
 }
 
 ._allFields {
@@ -450,7 +507,7 @@ hr {
   // left: 0;
   // width: 100%;
 
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--sd-separator);
   z-index: 2;
   text-align: right;
 
@@ -490,5 +547,21 @@ hr {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+}
+
+._showSidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: calc(var(--spacing) / 4);
+  z-index: 8;
+}
+
+._hideSidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: calc(var(--spacing) / 4);
+  z-index: 8;
 }
 </style>

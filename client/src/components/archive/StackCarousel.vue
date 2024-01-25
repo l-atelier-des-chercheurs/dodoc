@@ -64,7 +64,7 @@ export default {
 <style lang="scss" scoped>
 ._stackCarousel {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
 
   > ._single {
     flex: 1 1 150px;
@@ -81,13 +81,14 @@ export default {
 }
 
 ._list {
-  background: var(--c-gris_clair);
+  display: flex;
+  // background: var(--c-gris_clair);
 }
 ._preview {
-  width: 50px;
-  height: 50px;
+  width: 10vh;
+  height: 10vh;
   overflow: hidden;
-  background: var(--c-gris_clair);
+  // background: var(--c-gris_clair);
   margin: 5px;
   border-radius: 5px;
   cursor: pointer;
