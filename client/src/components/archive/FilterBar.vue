@@ -41,7 +41,7 @@
           :value="sort_order"
           @change="$emit('update:sort_order', $event.target.value)"
         >
-          <option value="date_uploaded" v-text="$t('date_uploaded')" />
+          <option value="date_modified" v-text="$t('date_modified')" />
           <option value="date_created" v-text="$t('date_created')" />
         </select>
       </div>
@@ -246,7 +246,7 @@ export default {
     can_be_reset() {
       return (
         this.group_mode !== "day" ||
-        this.sort_order !== "date_uploaded" ||
+        this.sort_order !== "date_modified" ||
         this.search_str !== "" ||
         this.author_path_filter !== "" ||
         this.filetype_filter !== "all" ||
@@ -257,7 +257,7 @@ export default {
   methods: {
     resetFilters() {
       this.$emit("update:group_mode", "year");
-      this.$emit("update:sort_order", "date_uploaded");
+      this.$emit("update:sort_order", "date_modified");
       this.$emit("update:search_str", "");
       this.$emit("update:author_path_filter", "");
       this.$emit("update:filetype_filter", "all");

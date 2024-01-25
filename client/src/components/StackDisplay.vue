@@ -120,7 +120,7 @@
                 </div>
                 <div class="">
                   <DateField
-                    :label="$t('date_sent')"
+                    :label="$t('date_modified')"
                     :field_name="'date_modified'"
                     :date="stack.$date_modified"
                     :path="stack.$path"

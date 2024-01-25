@@ -203,7 +203,7 @@ export default {
       return this.all_stacks
         .slice()
         .sort(
-          (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+          (a, b) => +new Date(b.$date_modified) - +new Date(a.$date_modified)
         );
     },
     filtered_stacks() {
