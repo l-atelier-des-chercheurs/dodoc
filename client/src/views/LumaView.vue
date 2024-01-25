@@ -45,7 +45,9 @@
           </div>
         </pane>
         <pane :min-size="min_toppane_width" :size="panes_width.format">
-          <div class="u-instructions">à venir…</div>
+          <div class="_format">
+            <div class="u-instructions">à venir…</div>
+          </div>
         </pane>
       </splitpanes>
     </template>
@@ -364,5 +366,9 @@ export default {
       background: #ccc;
     }
   }
+}
+
+._format {
+  margin: calc(var(--spacing) / 2);
 }
 </style>
