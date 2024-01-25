@@ -440,6 +440,8 @@ export default {
   width: 100%;
   max-width: 360px;
 
+  @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
+
   border-right: 1px solid var(--sd-separator);
 
   > ._allFields {
