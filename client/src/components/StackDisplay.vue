@@ -348,7 +348,9 @@ export default {
       await this.$api.deleteItem({ path: file_path });
 
       let stack_files_metas = this.stack?.stack_files_metas.slice();
-      stack_files_metas = stack_files_metas.filter((m) => m !== file_path);
+      stack_files_metas = stack_files_metas.filter(
+        (m) => m !== this.getFilename(file_path)
+      );
       await this.$api.updateMeta({
         path: this.stack.$path,
         new_meta: {
