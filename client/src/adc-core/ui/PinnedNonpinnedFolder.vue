@@ -176,11 +176,11 @@ export default {
 <style lang="scss" scoped>
 ._pinned {
   padding: 0;
-  margin: calc(var(--spacing) / 2) 0 calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 1) 0;
 }
 ._nonpinned {
   padding: 0;
-  margin: calc(var(--spacing) / 2) 0;
+  margin: calc(var(--spacing) / 1) 0;
 }
 
 ._item {
