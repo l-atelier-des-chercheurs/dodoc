@@ -6,6 +6,10 @@
     <div v-else class="_mainView" @scroll="updatedScroll">
       <div class="_topContent">
         <div class="_mainContent">
+          <button class="u-button u-button_red" @click="migrateAllFolders">
+            MIGRATION
+          </button>
+
           <div class="_topbar">
             <div class="_topbar--content">
               <div class="_title">
@@ -477,6 +481,53 @@ export default {
     },
   },
   methods: {
+    async migrateAllFolders() {
+      const stack = this.shared_files[0];
+      await this.convertToFolder(stack);
+    },
+    async convertToFolder(stack) {
+      const additional_meta = {};
+
+      if (stack.title) {
+        additional_meta.title = stack.title;
+        additional_meta.requested_slug = stack.title;
+      }
+      if (stack.keywords) additional_meta.keywords = stack.keywords;
+      if (stack.date_created_corrected)
+        additional_meta.date_created_corrected = stack.date_created_corrected;
+      if (stack.description) additional_meta.description = stack.description;
+      if (stack.stack_files_metas && stack.stack_files_metas.length > 0) {
+        additional_meta.stack_files_metas = stack.stack_files_metas;
+        additional_meta.$preview = stack.stack_files_metas[0];
+      }
+
+      additional_meta.$admins = "everyone";
+
+      if (stack.$admins) additional_meta.$authors = stack.$admins;
+
+      const slug = await this.$api.createFolder({
+        path: "/folders/untitled/stacks",
+        additional_meta,
+      });
+      slug;
+
+      if (stack.stack_files_metas && stack.stack_files_metas.length > 0) {
+        const path_to_destination_folder =
+          this.getParent(stack.$path) + "/stacks/" + slug;
+
+        // copy all medias to folder
+        for (const meta of stack.stack_files_metas) {
+          const path_to_meta = this.getParent(stack.$path) + "/" + meta;
+          await this.$api.copyFile({
+            path: path_to_meta,
+            path_to_destination_folder,
+          });
+        }
+      }
+
+      this.$alertify.delay(4000).success("MIGRATION " + stack.$path + " OK");
+    },
+
     updatedScroll() {
       this.current_scroll = this.$el.scrollTop;
     },

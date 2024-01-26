@@ -81,6 +81,9 @@
               },
               "stack_files_metas": {
                 "type": "array"
+              },
+              "$preview": {
+                "type": "string"
               }
             },
             "$files": {

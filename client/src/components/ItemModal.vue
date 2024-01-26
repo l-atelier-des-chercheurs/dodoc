@@ -271,56 +271,6 @@ export default {
       const new_index = this.current_file_index_shown + 1;
       if (new_index < this.file._stack_files.length) this.toggleFile(new_index);
     },
-    async convertToFolder() {
-      const additional_meta = {};
-
-      if (this.file.title) {
-        additional_meta.title = this.file.title;
-        additional_meta.requested_slug = this.file.title;
-      }
-      if (this.file.keywords) additional_meta.keywords = this.file.keywords;
-      if (this.file.date_created_corrected)
-        additional_meta.date_created_corrected =
-          this.file.date_created_corrected;
-      if (this.file.description)
-        additional_meta.description = this.file.description;
-      if (
-        this.file.stack_files_metas &&
-        this.file.stack_files_metas.length > 0
-      ) {
-        additional_meta.stack_files_metas = this.file.stack_files_metas;
-        additional_meta.$preview = this.file.stack_files_metas[0];
-      }
-
-      additional_meta.$admins = "everyone";
-
-      if (this.file.$admins) additional_meta.$authors = this.file.$admins;
-
-      const slug = await this.$api.createFolder({
-        path: "/folders/untitled/stacks",
-        additional_meta,
-      });
-      slug;
-
-      if (
-        this.file.stack_files_metas &&
-        this.file.stack_files_metas.length > 0
-      ) {
-        const path_to_destination_folder =
-          this.getParent(this.file.$path) + "/stacks/" + slug;
-
-        // copy all medias to folder
-        for (const meta of this.file.stack_files_metas) {
-          const path_to_meta = this.getParent(this.file.$path) + "/" + meta;
-          await this.$api.copyFile({
-            path: path_to_meta,
-            path_to_destination_folder,
-          });
-        }
-      }
-
-      this.$alertify.delay(4000).success("MIGRATION OK");
-    },
   },
 };
 </script>
