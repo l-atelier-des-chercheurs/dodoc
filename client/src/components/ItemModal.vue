@@ -284,8 +284,13 @@ export default {
           this.file.date_created_corrected;
       if (this.file.description)
         additional_meta.description = this.file.description;
-      if (this.file.stack_files_metas)
+      if (
+        this.file.stack_files_metas &&
+        this.file.stack_files_metas.length > 0
+      ) {
         additional_meta.stack_files_metas = this.file.stack_files_metas;
+        additional_meta.$preview = this.file.stack_files_metas[0];
+      }
 
       additional_meta.$admins = "everyone";
 
