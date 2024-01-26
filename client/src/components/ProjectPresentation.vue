@@ -138,7 +138,8 @@ x
               :key="tag"
               :tag_type="tags.type"
               :tag_str="tag"
-              :mode="'inactive'"
+              :mode="'active'"
+              @tagClick="$emit('tagClick', { type: tags.type, value: tag })"
             />
           </template>
         </div>
@@ -253,7 +254,7 @@ export default {
       return this.isOwnItem({ folder: this.project });
     },
     all_tags() {
-      const _all_tags = [];
+      let _all_tags = [];
 
       [
         "target_audience",
@@ -369,7 +370,7 @@ export default {
       padding: calc(var(--spacing) / 2);
       width: 100%;
       place-content: flex-start;
-      max-height: 12rem;
+      // max-height: 12rem;
 
       &::after {
         content: "";
@@ -448,7 +449,7 @@ export default {
     // );
     // backdrop-filter: blur(12px);
     padding-top: calc(var(--spacing) / 2);
-    pointer-events: none;
+    // pointer-events: none;
 
     ._showDescription {
       pointer-events: auto;
@@ -602,6 +603,14 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &:hover,
+    &:focus-visible {
+      opacity: 0.2;
+    }
   }
 }
 
@@ -621,6 +630,8 @@ export default {
 }
 
 ._allTags {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 8);

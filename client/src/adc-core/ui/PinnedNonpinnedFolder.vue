@@ -185,6 +185,7 @@ export default {
 
 ._item {
   position: relative;
+  z-index: 1;
 }
 
 ._pinSpace {

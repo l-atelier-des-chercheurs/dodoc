@@ -22,6 +22,12 @@
           :context="'list'"
           :display_original_space="display_original_space"
           :can_edit="false"
+          @tagClick="
+            $emit('toggleFilter', {
+              filter_type: $event.type,
+              value: $event.value,
+            })
+          "
         />
       </PinnedNonpinnedFolder>
     </template>

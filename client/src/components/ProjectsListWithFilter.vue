@@ -187,6 +187,7 @@
           :path="space_path"
           :display_original_space="display_original_space"
           :can_edit="can_edit"
+          @toggleFilter="toggleFilter($event)"
         />
       </div>
     </div>
