@@ -296,7 +296,25 @@ export default {
         additional_meta,
       });
       slug;
-      debugger;
+
+      if (
+        this.file.stack_files_metas &&
+        this.file.stack_files_metas.length > 0
+      ) {
+        const path_to_destination_folder =
+          this.getParent(this.file.$path) + "/stacks/" + slug;
+
+        // copy all medias to folder
+        for (const meta of this.file.stack_files_metas) {
+          const path_to_meta = this.getParent(this.file.$path) + "/" + meta;
+          await this.$api.copyFile({
+            path: path_to_meta,
+            path_to_destination_folder,
+          });
+        }
+      }
+
+      this.$alertify.delay(4000).success("MIGRATION OK");
     },
   },
 };
