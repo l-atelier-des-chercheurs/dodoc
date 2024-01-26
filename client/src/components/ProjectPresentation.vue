@@ -21,18 +21,42 @@ x
         />
 
         <transition name="toggleLock" mode="out-in">
-          <sl-icon
-            v-if="project.$status === 'finished'"
+          <StatusTag
+            v-if="
+              project.$status === 'finished' || project.$status === 'private'
+            "
+            class="_icon"
             :key="project.$status"
-            name="check-circle-fill"
-            class="_icon _check"
+            :show_label="false"
+            :status="project.$status"
+            :can_edit="false"
+            :mode="context === 'list' ? 'button' : 'inactive'"
+            @click="
+              $emit('toggleFilter', {
+                filter_type: '$status',
+                value: project.$status,
+              })
+            "
           />
-          <sl-icon
+
+          <!-- <button
             v-else-if="project.$status === 'private'"
             :key="project.$status"
-            name="file-lock2-fill"
+            class="u-button u-button_bleuvert u-button_small _icon _private"
+            @click="
+              $emit('toggleFilter', { filter_type: 'status', value: 'private' })
+            "
+          >
+            {{ $t("private") }}
+            <sl-icon name="file-lock2-fill" class="" />
+          </button> -->
+
+          <!-- <sl-icon
+            v-else-if="project.$status === 'private'"
+            :key="project.$status"
+            name=""
             class="_icon _private"
-          />
+          /> -->
         </transition>
 
         <div v-if="display_original_space" class="_originalSpace">
@@ -59,9 +83,14 @@ x
             :can_edit="can_edit"
           />
           <sl-dropdown v-if="can_edit">
-            <sl-button slot="trigger" caret>
+            <button
+              type="button"
+              class="u-button u-button_small"
+              slot="trigger"
+            >
               {{ $t("options") }}
-            </sl-button>
+              <b-icon icon="caret-down-fill" />
+            </button>
             <sl-menu>
               <sl-menu-item>
                 <DownloadFolder :path="project.$path" />
@@ -144,7 +173,9 @@ x
               :tag_type="tags.type"
               :tag_str="tag"
               :mode="'active'"
-              @tagClick="$emit('tagClick', { type: tags.type, value: tag })"
+              @tagClick="
+                $emit('toggleFilter', { filter_type: tags.type, value: tag })
+              "
             />
           </template>
         </div>
@@ -534,26 +565,28 @@ export default {
 
   ._icon {
     position: absolute;
+    z-index: 1;
     top: 0;
     right: 0;
     margin: calc(var(--spacing) / 1);
-    font-size: 125%;
+    // font-size: 125%;
   }
-  ._check {
-    color: var(--c-bleuvert);
 
-    &::before {
-      content: "";
-      position: absolute;
-      width: 90%;
-      height: 90%;
-      margin: 5%;
-      background: white;
-      z-index: -1;
-      border-radius: 50%;
-    }
+  ._check {
+    // color: var(--c-bleuvert);
+    // &::before {
+    //   content: "";
+    //   position: absolute;
+    //   width: 90%;
+    //   height: 90%;
+    //   margin: 5%;
+    //   background: white;
+    //   z-index: -1;
+    //   border-radius: 50%;
+    // }
   }
   ._private {
+    font-size: 125%;
     &::before {
       content: "";
       position: absolute;

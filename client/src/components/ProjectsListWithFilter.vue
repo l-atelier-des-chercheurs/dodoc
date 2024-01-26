@@ -42,15 +42,18 @@
     </div>
     <div class="_cont">
       <div class="_sidebar" v-if="show_sidebar">
-        <div class="u-switch u-switch-xs">
-          <input
-            id="only_finished"
-            type="checkbox"
-            v-model="show_only_finished"
-          />
-          <label class="u-label" for="only_finished">{{
-            $t("only_finished")
-          }}</label>
+        <div>
+          <DLabel :str="$t('status')" />
+          <div class="_statusList">
+            <StatusTag
+              v-for="status in extractAll('$status')"
+              :key="status"
+              :status="status"
+              :can_edit="false"
+              :mode="'button'"
+              @click="toggleFilter({ filter_type: '$status', value: status })"
+            />
+          </div>
         </div>
 
         <div v-if="$root.app_infos.instance_meta.enable_events">
@@ -157,7 +160,21 @@
             appear
           >
             <template v-for="af in active_filters">
+              <StatusTag
+                v-if="af.filter_type === '$status'"
+                :key="af.value"
+                :status="af.value"
+                :can_edit="false"
+                :mode="'button'"
+                @click="
+                  toggleFilter({
+                    filter_type: '$status',
+                    value: af.value,
+                  })
+                "
+              />
               <SingleTag
+                v-else
                 :key="af.value"
                 :tag_type="af.filter_type"
                 :tag_str="af.value"
@@ -211,7 +228,6 @@ export default {
     return {
       show_sidebar: false,
       search_project: "",
-      show_only_finished: false,
 
       order_key: "$date_created",
       order_options: [
@@ -274,8 +290,6 @@ export default {
     },
     filtered_projects() {
       return this.sorted_projects.filter((p) => {
-        if (this.show_only_finished && p.$status !== "finished") return false;
-
         for (const af of this.active_filters) {
           const filter_type = af.filter_type;
           const value = af.value;
@@ -428,7 +442,7 @@ export default {
 ._tagList {
   display: flex;
   gap: calc(var(--spacing) / 8);
-  margin: calc(var(--spacing) / 2) 0;
+  margin: calc(var(--spacing) / 1) 0;
 }
 ._projectsListWithFilter {
 }
@@ -443,5 +457,11 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+}
+
+._statusList {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 8);
 }
 </style>

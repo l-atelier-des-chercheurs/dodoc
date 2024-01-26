@@ -40,9 +40,10 @@
           :can_edit="can_edit"
         />
         <sl-dropdown v-if="can_edit">
-          <sl-button slot="trigger" caret>
+          <button type="button" class="u-button u-button_small" slot="trigger">
             {{ $t("options") }}
-          </sl-button>
+            <b-icon icon="caret-down-fill" />
+          </button>
           <sl-menu>
             <sl-menu-item>
               <DownloadFolder :path="space.$path" />

@@ -263,7 +263,7 @@ export default {
   z-index: 1000;
 
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: flex-start;
 
   pointer-events: none;
@@ -272,14 +272,14 @@ export default {
     position: sticky;
     top: 0;
     left: 0;
-    padding: calc(var(--spacing) / 1);
+    // padding: calc(var(--spacing) / 1);
   }
 
   ._content {
     pointer-events: auto;
     background: var(--c-bleuvert);
     border: 2px solid var(--c-bleuvert_fonce);
-    border-radius: 8px;
+    // border-radius: 8px;
     color: white;
 
     > * {
