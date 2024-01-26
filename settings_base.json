@@ -9,7 +9,7 @@
   "tokenIsValidForXDays": 60,
 
   "cacheDirname": "luma_cache",
-  "contentPath": "luma_next",
+  "contentPath": "luma_next_old",
 
   "privateKeyPath": "",
   "certificatePath": "",
@@ -58,6 +58,9 @@
     },
     "$folders": {
       "folders": {
+        "$folders": {
+          "stacks": {}
+        },
         "$files": {
           "thumbs": {
             "resolutions": [180, 360, 1600]
