@@ -46,7 +46,12 @@ x
         <!-- <div class="u-wips" /> -->
       </div>
 
-      <div class="_projectInfos--infos">
+      <div
+        class="_projectInfos--infos"
+        :class="{
+          'is--short': is_compacted,
+        }"
+      >
         <div class="_projectInfos--infos--settings" v-if="context === 'full'">
           <StatusTag
             :status="project.$status"
@@ -143,6 +148,17 @@ x
             />
           </template>
         </div>
+
+        <div
+          v-if="is_compacted"
+          class="_compactExpandButton"
+          @click="toggleCompacted"
+        >
+          <button type="button" class="u-button u-button_icon u-button_black">
+            <b-icon v-if="short_project_view" icon="chevron-down" />
+            <b-icon v-else icon="chevron-up" />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -218,6 +234,7 @@ export default {
 
       show_meta: true,
       show_dup_modal: false,
+      short_project_view: true,
 
       flickityOptions: {
         initialIndex: 0,
@@ -249,6 +266,9 @@ export default {
       const space_path = this.createPath({ space_slug });
       const space = this.getFromCache(space_path);
       return space.title;
+    },
+    is_compacted() {
+      return this.context === "list" && this.short_project_view;
     },
     is_own_project() {
       return this.isOwnItem({ folder: this.project });
@@ -303,6 +323,9 @@ export default {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
       }
+    },
+    toggleCompacted() {
+      this.short_project_view = !this.short_project_view;
     },
   },
 };
@@ -371,16 +394,6 @@ export default {
       width: 100%;
       place-content: flex-start;
       // max-height: 12rem;
-
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 1.5rem;
-        background: linear-gradient(transparent, white);
-      }
     }
   }
 
@@ -426,6 +439,9 @@ export default {
 }
 
 ._projectInfos--infos {
+  --short-project-height: 8rem;
+
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   place-content: center;
@@ -454,6 +470,10 @@ export default {
     ._showDescription {
       pointer-events: auto;
     }
+  }
+
+  &.is--short {
+    max-height: var(--short-project-height);
   }
 
   > * {
@@ -609,7 +629,7 @@ export default {
 
     &:hover,
     &:focus-visible {
-      opacity: 0.2;
+      opacity: 0.32;
     }
   }
 }
@@ -637,6 +657,23 @@ export default {
   gap: calc(var(--spacing) / 8);
 
   > * {
+  }
+}
+
+._compactExpandButton {
+  --expand-button-height: 1.5rem;
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--short-project-height) - var(--expand-button-height));
+  height: var(--expand-button-height);
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, white);
+  text-align: center;
+  pointer-events: none;
+
+  > button {
+    pointer-events: auto;
   }
 }
 </style>
