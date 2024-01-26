@@ -482,8 +482,13 @@ export default {
   },
   methods: {
     async migrateAllFolders() {
-      const stack = this.shared_files[0];
-      await this.convertToFolder(stack);
+      for (const stack of this.shared_files) {
+        try {
+          await this.convertToFolder(stack);
+        } catch (err) {
+          debugger;
+        }
+      }
     },
     async convertToFolder(stack) {
       const additional_meta = {};
