@@ -117,6 +117,7 @@
                     :input_type="'datetime-local'"
                     :can_edit="can_edit"
                   />
+                  {{ date_created_corrected }}
                 </div>
                 <div class="">
                   <DateField
@@ -236,6 +237,7 @@ export default {
   },
   data() {
     return {
+      stack: undefined,
       is_loading: true,
       show_sidebar: true,
     };
@@ -282,7 +284,13 @@ export default {
     window.removeEventListener("keyup", this.handleKeyPress);
     this.$api.leave({ room: this.stack.$path });
   },
-  watch: {},
+  watch: {
+    "stack.date_created_corrected"() {
+      this.date_created_corrected = this.datetimeLocal(
+        this.stack.date_created_corrected
+      );
+    },
+  },
   computed: {
     can_edit() {
       if (!this.stack) return false;
