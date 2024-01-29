@@ -8,9 +8,9 @@
     @click="mode === 'button' ? $emit('click') : ''"
   >
     <div v-if="!can_edit" class="_tag">
-      <template v-if="show_label">{{ $t(status) }}</template>
       <b-icon v-if="status === 'finished'" icon="check-circle-fill" />
       <b-icon v-else-if="status === 'private'" icon="file-lock2-fill" />
+      <template v-if="show_label">{{ $t(status) }}</template>
     </div>
     <select v-else size="small" v-model="new_status">
       <option
@@ -98,6 +98,16 @@ export default {
     background-color: var(--bg-color);
     color: var(--c-color);
   }
+
+  &:where(button) {
+    ._tag {
+      &:hover,
+      &:focus-visible {
+        background-color: var(--c-gris);
+      }
+    }
+  }
+
   ._tag {
     display: flex;
     flex-flow: row nowrap;
