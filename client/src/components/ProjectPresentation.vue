@@ -185,9 +185,9 @@ x
           class="_compactExpandButton"
           @click="toggleCompacted"
         >
-          <button type="button" class="u-button u-button_icon u-button_black">
-            <b-icon v-if="short_project_view" icon="chevron-down" />
-            <b-icon v-else icon="chevron-up" />
+          <button type="button" class="u-button u-button_icon">
+            <b-icon v-if="short_project_view" icon="arrow-down-short" />
+            <b-icon v-else icon="arrow-up-short" />
           </button>
         </div>
       </div>
@@ -694,7 +694,7 @@ export default {
 }
 
 ._compactExpandButton {
-  --expand-button-height: 1.5rem;
+  --expand-button-height: 2rem;
   position: absolute;
   z-index: 2;
   top: calc(var(--short-project-height) - var(--expand-button-height));
@@ -702,11 +702,21 @@ export default {
   left: 0;
   right: 0;
   background: linear-gradient(transparent, white);
-  text-align: center;
+  text-align: right;
   pointer-events: none;
 
   > button {
     pointer-events: auto;
+
+    font-size: var(--sl-font-size-medium);
+    background: rgba(255, 255, 255, 0.4);
+    color: black;
+    border-radius: 50%;
+
+    &:hover,
+    &:focus {
+      background: rgba(255, 255, 255, 1);
+    }
   }
 }
 </style>
