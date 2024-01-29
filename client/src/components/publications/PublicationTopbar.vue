@@ -24,14 +24,6 @@
       />
     </div>
 
-    <StatusTag
-      v-if="can_edit"
-      :status="publication.$status || 'public'"
-      :status_options="['public', 'private']"
-      :path="publication.$path"
-      :can_edit="can_edit"
-    />
-
     <div class="_buttonRow">
       <div
         class=""
@@ -49,6 +41,14 @@
           {{ publication.$admins }}
         </small>
       </div>
+
+      <StatusTag
+        v-if="can_edit"
+        :status="publication.$status || 'public'"
+        :status_options="['public', 'private']"
+        :path="publication.$path"
+        :can_edit="can_edit"
+      />
 
       <button
         type="button"
@@ -77,10 +77,10 @@
       </DropDown>
 
       <DropDown @show="closeSettings">
-        <span slot="trigger">
+        <template slot="trigger">
           <b-icon icon="box-arrow-up-right" />
           {{ $t("share") }}
-        </span>
+        </template>
         <button
           slot="item1"
           type="button"
