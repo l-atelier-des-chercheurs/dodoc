@@ -50,76 +50,68 @@
         </small>
       </div>
 
-      <sl-button
+      <button
+        type="button"
         v-if="can_edit && publication.template !== 'cartography'"
         @click="openSettings"
         caret
+        class="u-button u-button_small"
       >
         <b-icon icon="gear" slot="prefix" :aria-label="$t('settings')" />
         {{ $t("settings") }}
-      </sl-button>
+      </button>
 
-      <sl-dropdown v-if="can_edit" @sl-show="closeSettings">
-        <button type="button" class="u-button u-button_small" slot="trigger">
-          {{ $t("options") }}
-          <b-icon icon="caret-down-fill" />
-        </button>
-        <sl-menu>
-          <sl-menu-item>
-            <DuplicatePublication
-              :path="publication.$path"
-              :source_title="publication.title"
-              :publication="publication"
-              @close="$emit('close')"
-            />
-          </sl-menu-item>
-          <sl-menu-item>
-            <RemoveMenu
-              :remove_text="$t('remove')"
-              @remove="removePublication"
-            />
-          </sl-menu-item>
-        </sl-menu>
-      </sl-dropdown>
+      <DropDown v-if="can_edit" @show="closeSettings">
+        <DuplicatePublication
+          slot="item1"
+          :path="publication.$path"
+          :source_title="publication.title"
+          :publication="publication"
+          @close="$emit('close')"
+        />
+        <RemoveMenu
+          slot="item2"
+          :remove_text="$t('remove')"
+          @remove="removePublication"
+        />
+      </DropDown>
 
-      <sl-dropdown @sl-show="closeSettings">
-        <sl-button slot="trigger" caret>
-          <b-icon slot="prefix" icon="box-arrow-up-right" />
+      <DropDown @show="closeSettings">
+        <span slot="trigger">
+          <b-icon icon="box-arrow-up-right" />
           {{ $t("share") }}
-        </sl-button>
-        <sl-menu>
-          <sl-menu-item>
-            <button
-              type="button"
-              class="u-buttonLink _exportBtn"
-              :disabled="!can_edit || is_exporting"
-              @click="exportPublication"
-            >
-              <sl-icon name="filetype-pdf" />
-              {{ $t("export_in_pdf") }}
-              <transition name="fade_fast" :duration="150" mode="out-in">
-                <LoaderSpinner v-if="is_exporting" />
-              </transition>
-            </button>
-          </sl-menu-item>
-          <sl-menu-item>
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_qr_code_modal = true"
-            >
-              <sl-icon name="qr-code" />
-              {{ $t("direct_link") }}
-            </button>
+        </span>
+        <button
+          slot="item1"
+          type="button"
+          class="u-buttonLink _exportBtn"
+          :disabled="!can_edit || is_exporting"
+          @click="exportPublication"
+        >
+          <sl-icon name="filetype-pdf" />
+          {{ $t("export_in_pdf") }}
+          <transition name="fade_fast" :duration="150" mode="out-in">
+            <LoaderSpinner v-if="is_exporting" />
+          </transition>
+        </button>
 
-            <QRModal
-              v-if="show_qr_code_modal"
-              :url_to_access="share_url"
-              @close="show_qr_code_modal = false"
-            />
-          </sl-menu-item>
-        </sl-menu>
-      </sl-dropdown>
+        <div slot="item2">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="show_qr_code_modal = true"
+          >
+            <sl-icon name="qr-code" />
+            {{ $t("direct_link") }}
+          </button>
+
+          <QRModal
+            v-if="show_qr_code_modal"
+            :url_to_access="share_url"
+            @close="show_qr_code_modal = false"
+          />
+        </div>
+      </DropDown>
     </div>
   </div>
 </template>

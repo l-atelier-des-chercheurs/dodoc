@@ -42,26 +42,16 @@
           :can_edit="can_edit"
         />
 
-        <sl-dropdown>
-          <button type="button" class="u-button u-button_small" slot="trigger">
-            {{ $t("options") }}
-            <b-icon icon="caret-down-fill" />
-          </button>
-          <sl-menu>
-            <sl-menu-item>
-              <DownloadFolder :path="space.$path" />
-            </sl-menu-item>
-            <sl-menu-item>
-              <RemoveMenu
-                :remove_text="$t('remove_space')"
-                @remove="removeSpace"
-              />
-            </sl-menu-item>
-          </sl-menu>
-        </sl-dropdown>
+        <DropDown>
+          <DownloadFolder slot="item1" :path="space.$path" />
+          <RemoveMenu
+            slot="item2"
+            :remove_text="$t('remove_space')"
+            @remove="removeSpace"
+          />
+        </DropDown>
       </div>
 
-      <!-- :label="can_edit ? $t('title') : undefined" -->
       <div class="">
         <TitleField
           :field_name="'title'"

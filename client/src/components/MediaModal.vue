@@ -118,36 +118,29 @@
               />
             </h3>
 
-            <sl-dropdown class="">
-              <button
-                type="button"
-                class="u-button u-button_small"
-                slot="trigger"
-              >
-                {{ $t("options") }}
-                <b-icon icon="caret-down-fill" />
-              </button>
-              <sl-menu>
-                <sl-menu-item>
-                  <DownloadFile :file="file">
-                    <sl-icon name="file-earmark-arrow-down" />
-                    {{ $t("download") }}
-                  </DownloadFile>
-                </sl-menu-item>
-                <sl-menu-item v-if="optimization_possible">
-                  <OptimizeMedia :media="file" @close="$emit('close')" />
-                </sl-menu-item>
-                <sl-menu-item>
-                  <DuplicateMedia :path="file.$path" @close="$emit('close')" />
-                </sl-menu-item>
-                <sl-menu-item v-if="$listeners.remove">
-                  <RemoveMenu
-                    :remove_text="$t('remove_media')"
-                    @remove="$emit('remove')"
-                  />
-                </sl-menu-item>
-              </sl-menu>
-            </sl-dropdown>
+            <DropDown>
+              <DownloadFile slot="item1" :file="file">
+                <sl-icon name="file-earmark-arrow-down" />
+                {{ $t("download") }}
+              </DownloadFile>
+              <OptimizeMedia
+                v-if="optimization_possible"
+                slot="item2"
+                :media="file"
+                @close="$emit('close')"
+              />
+              <DuplicateMedia
+                slot="item3"
+                :path="file.$path"
+                @close="$emit('close')"
+              />
+              <RemoveMenu
+                slot="item4"
+                v-if="$listeners.remove"
+                :remove_text="$t('remove_media')"
+                @remove="$emit('remove')"
+              />
+            </DropDown>
           </div>
           <small class="fieldCaption">{{ file.$media_filename }}</small>
         </div>

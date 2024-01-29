@@ -82,45 +82,31 @@ x
             :path="project.$path"
             :can_edit="can_edit"
           />
-          <sl-dropdown v-if="can_edit">
-            <button
-              type="button"
-              class="u-button u-button_small"
-              slot="trigger"
-            >
-              {{ $t("options") }}
-              <b-icon icon="caret-down-fill" />
-            </button>
-            <sl-menu>
-              <sl-menu-item>
-                <DownloadFolder :path="project.$path" />
-              </sl-menu-item>
-              <sl-menu-item>
-                <div class="">
-                  <button
-                    type="button"
-                    class="u-buttonLink"
-                    @click="show_dup_modal = true"
-                  >
-                    <sl-icon name="file-plus" />
-                    {{ $t("duplicate_or_move_project") }}
-                  </button>
-                </div>
-                <DuplicateOrRemixProject
-                  v-if="show_dup_modal"
-                  :path="project.$path"
-                  :proposed_title="`${$t('copy_of')} ${project.title}`"
-                  @close="show_dup_modal = false"
-                />
-              </sl-menu-item>
-              <sl-menu-item>
-                <RemoveMenu
-                  :remove_text="$t('remove_project')"
-                  @remove="removeProject"
-                />
-              </sl-menu-item>
-            </sl-menu>
-          </sl-dropdown>
+
+          <DropDown v-if="can_edit">
+            <DownloadFolder slot="item1" :path="project.$path" />
+            <div class="" slot="item2">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="show_dup_modal = true"
+              >
+                <sl-icon name="file-plus" />
+                {{ $t("duplicate_or_move_project") }}
+              </button>
+              <DuplicateOrRemixProject
+                v-if="show_dup_modal"
+                :path="project.$path"
+                :proposed_title="`${$t('copy_of')} ${project.title}`"
+                @close="show_dup_modal = false"
+              />
+            </div>
+            <RemoveMenu
+              slot="item4"
+              :remove_text="$t('remove_project')"
+              @remove="removeProject"
+            />
+          </DropDown>
         </div>
 
         <TitleField
