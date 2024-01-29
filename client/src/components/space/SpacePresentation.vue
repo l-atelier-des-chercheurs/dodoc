@@ -20,26 +20,29 @@
       />
 
       <transition name="toggleLock" mode="out-in">
-        <sl-icon
+        <StatusTag
           v-if="space.$status === 'private'"
+          class="_icon"
           :key="space.$status"
-          name="file-lock2-fill"
-          class="_icon _private"
+          :show_label="false"
+          :status="space.$status"
+          :can_edit="false"
+          :mode="'inactive'"
         />
       </transition>
 
       <!-- </div> -->
     </div>
     <div class="_textBloc">
-      <div class="_statusOptions">
+      <div class="_statusOptions" v-if="can_edit">
         <StatusTag
-          v-if="can_edit"
           :status="space.$status || 'public'"
           :status_options="['public', 'private']"
           :path="space.$path"
           :can_edit="can_edit"
         />
-        <sl-dropdown v-if="can_edit">
+
+        <sl-dropdown>
           <button type="button" class="u-button u-button_small" slot="trigger">
             {{ $t("options") }}
             <b-icon icon="caret-down-fill" />
