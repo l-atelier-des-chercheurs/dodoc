@@ -6,7 +6,7 @@
     <div class="">
       <DLabel v-if="show_labels" :str="$t('admins_and_contributors')" />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-      <div class="u-listOfAvatars">
+      <div class="u-listOfAvatars" v-if="all_participants_path.length > 0">
         <AuthorTag
           v-for="atpath in all_participants_path"
           :path="atpath"
