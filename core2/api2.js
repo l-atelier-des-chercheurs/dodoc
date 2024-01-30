@@ -8,7 +8,6 @@ const folder = require("./folder"),
   settings = require("./settings"),
   notifier = require("./notifier"),
   utils = require("./utils"),
-  thumbs = require("./thumbs"),
   Exporter = require("./Exporter"),
   auth = require("./auth");
 
