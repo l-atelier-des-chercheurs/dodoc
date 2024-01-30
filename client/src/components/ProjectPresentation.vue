@@ -60,7 +60,7 @@ x
         </transition>
 
         <div v-if="display_original_space" class="_originalSpace">
-          +{{ original_space_name }}
+          +&thinsp;{{ original_space_name }}
         </div>
         <!-- <sl-icon
         v-if="project.$status === 'draft'"
@@ -117,7 +117,7 @@ x
           :path="project.$path"
           :required="true"
           :maxlength="40"
-          :tag="context === 'full' ? 'h1' : 'h3'"
+          :tag="context === 'full' ? 'h1' : context === 'list' ? 'h3' : 'h5'"
           :can_edit="can_edit"
           :instructions="
             can_edit ? $t('project_title_instructions') : undefined
@@ -414,6 +414,12 @@ export default {
     }
   }
 
+  &[data-context="tiny"] {
+    ._projectInfos--infos {
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    }
+  }
+
   &.is--mobileView {
     flex-flow: row wrap;
   }
@@ -590,7 +596,7 @@ export default {
     bottom: 0;
     left: 0;
     margin: calc(var(--spacing) / 4);
-    padding: calc(var(--spacing) / 16) calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 16) calc(var(--spacing) / 2);
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     background: rgba(0, 0, 0, 0.2);
