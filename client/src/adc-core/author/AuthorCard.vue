@@ -53,6 +53,28 @@
                 {{ $t("admin") }}
               </small>
             </div>
+            <div v-else-if="is_instance_admin && context === 'full'">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="show_settings_modal = true"
+              >
+                {{ $t("add_to_instance_admin") }}
+              </button>
+              <!-- <button
+                type="button"
+                class="u-button u-button_verysmall u-button_bleuvert"
+                @click="show_settings_modal = true"
+              >
+                {{ $t("add_to_instance_admin") }}
+              </button> -->
+
+              <AdminSettings
+                v-if="show_settings_modal"
+                :starting_tab="'administration_and_access_control'"
+                @close="show_settings_modal = false"
+              />
+            </div>
           </div>
 
           <!-- <div class="_path">@{{ getFilename(author.$path) }}</div> -->
@@ -108,14 +130,20 @@
   </div>
 </template>
 <script>
+import AdminSettings from "@/adc-core/AdminSettings.vue";
+
 export default {
   props: {
     author: Object,
     context: String,
   },
-  components: {},
+  components: {
+    AdminSettings,
+  },
   data() {
-    return {};
+    return {
+      show_settings_modal: false,
+    };
   },
   created() {},
   mounted() {},

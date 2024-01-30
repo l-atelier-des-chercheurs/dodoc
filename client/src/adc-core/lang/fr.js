@@ -49,6 +49,7 @@ export default {
 
   open_in_finder: "Ouvrir dans l’explorateur",
 
+  instance_admins_and_admins: "Administrateurs d’instance et contributeurs",
   admins_and_contributors: "Référents et contributeurs",
   set_admins_and_contributors: "Définir les référents et contributeurs",
   instance_admins_instr:
@@ -765,6 +766,7 @@ export default {
   display_as_public: "Afficher la vue publique",
   preview: "Prévisualiser",
 
+  add_to_instance_admin: "Ajouter comme administrateur d’instance",
   instance_admin_instructions:
     "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
   instance_contrib_instructions:
