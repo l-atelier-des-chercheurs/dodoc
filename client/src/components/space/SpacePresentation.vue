@@ -193,7 +193,7 @@ export default {
   // border: 1px solid var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
-  flex: 2 1 240px;
+  flex: 1 2 240px;
   // max-width: 120px;
   // overflow: hidden;
   // border-radius: var(--panel-radius);
@@ -202,7 +202,7 @@ export default {
 }
 ._textBloc {
   // padding: calc(var(--spacing) / 2);
-  flex: 2 1 240px;
+  flex: 3 1 240px;
   overflow: hidden;
 
   display: flex;
