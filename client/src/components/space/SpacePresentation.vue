@@ -42,13 +42,9 @@
           :can_edit="can_edit"
         />
 
-        <DropDown>
-          <DownloadFolder slot="item1" :path="space.$path" />
-          <RemoveMenu
-            slot="item2"
-            :remove_text="$t('remove_space')"
-            @remove="removeSpace"
-          />
+        <DropDown :right="true">
+          <DownloadFolder :path="space.$path" />
+          <RemoveMenu :remove_text="$t('remove_space')" @remove="removeSpace" />
         </DropDown>
       </div>
 

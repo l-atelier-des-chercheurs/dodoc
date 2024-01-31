@@ -63,17 +63,12 @@
 
       <DropDown v-if="can_edit" @show="closeSettings">
         <DuplicatePublication
-          slot="item1"
           :path="publication.$path"
           :source_title="publication.title"
           :publication="publication"
           @close="$emit('close')"
         />
-        <RemoveMenu
-          slot="item2"
-          :remove_text="$t('remove')"
-          @remove="removePublication"
-        />
+        <RemoveMenu :remove_text="$t('remove')" @remove="removePublication" />
       </DropDown>
 
       <DropDown @show="closeSettings">
@@ -82,7 +77,6 @@
           {{ $t("share") }}
         </template>
         <button
-          slot="item1"
           type="button"
           class="u-buttonLink _exportBtn"
           :disabled="!can_edit || is_exporting"
@@ -94,23 +88,19 @@
             <LoaderSpinner v-if="is_exporting" />
           </transition>
         </button>
-
-        <div slot="item2">
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="show_qr_code_modal = true"
-          >
-            <sl-icon name="qr-code" />
-            {{ $t("direct_link") }}
-          </button>
-
-          <QRModal
-            v-if="show_qr_code_modal"
-            :url_to_access="share_url"
-            @close="show_qr_code_modal = false"
-          />
-        </div>
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="show_qr_code_modal = true"
+        >
+          <sl-icon name="qr-code" />
+          {{ $t("direct_link") }}
+        </button>
+        <QRModal
+          v-if="show_qr_code_modal"
+          :url_to_access="share_url"
+          @close="show_qr_code_modal = false"
+        />
       </DropDown>
     </div>
   </div>

@@ -84,25 +84,22 @@ x
           />
 
           <DropDown v-if="can_edit">
-            <DownloadFolder slot="item1" :path="project.$path" />
-            <div class="" slot="item2">
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="show_dup_modal = true"
-              >
-                <sl-icon name="file-plus" />
-                {{ $t("duplicate_or_move_project") }}
-              </button>
-              <DuplicateOrRemixProject
-                v-if="show_dup_modal"
-                :path="project.$path"
-                :proposed_title="`${$t('copy_of')} ${project.title}`"
-                @close="show_dup_modal = false"
-              />
-            </div>
+            <DownloadFolder :path="project.$path" />
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_dup_modal = true"
+            >
+              <sl-icon name="file-plus" />
+              {{ $t("duplicate_or_move_project") }}
+            </button>
+            <DuplicateOrRemixProject
+              v-if="show_dup_modal"
+              :path="project.$path"
+              :proposed_title="`${$t('copy_of')} ${project.title}`"
+              @close="show_dup_modal = false"
+            />
             <RemoveMenu
-              slot="item4"
               :remove_text="$t('remove_project')"
               @remove="removeProject"
             />

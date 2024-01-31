@@ -1,57 +1,175 @@
 <template>
-  <sl-dropdown class="_dropDown" @sl-show="$emit('show')">
-    <button type="button" class="u-button" slot="trigger">
+  <div
+    class="_dropDown"
+    :class="{ dropup: top }"
+    @mouseleave="mouseLeave"
+    @mouseover="mouseOver"
+    @mouseenter="mouseEnter"
+    @click="toggleMenu"
+  >
+    <button type="button" class="u-button">
       <template v-if="$slots.hasOwnProperty('trigger')">
         <slot name="trigger" />
       </template>
       <template v-else>
         {{ $t("options") }}
       </template>
-      <!-- <b-icon icon="caret-down" /> -->
       <span class="b-icon bi _caret" />
     </button>
-    <sl-menu>
-      <sl-menu-item v-if="$slots.hasOwnProperty('item1')">
-        <slot name="item1" />
-      </sl-menu-item>
-      <sl-menu-item v-if="$slots.hasOwnProperty('item2')">
-        <slot name="item2" />
-      </sl-menu-item>
-      <sl-menu-item v-if="$slots.hasOwnProperty('item3')">
-        <slot name="item3" />
-      </sl-menu-item>
-      <sl-menu-item v-if="$slots.hasOwnProperty('item4')">
-        <slot name="item4" />
-      </sl-menu-item>
-    </sl-menu>
-  </sl-dropdown>
+    <transition name="fade_fast">
+      <div
+        v-show="show_dropdown"
+        class="_dropDown--content"
+        :class="{ '_dropDown--content_right': right }"
+        :style="styles"
+        @mouseleave="startTimer"
+        @mouseenter="stopTimer"
+        @click.stop
+        ref="dropdown"
+      >
+        <slot />
+      </div>
+    </transition>
+  </div>
 </template>
+
 <script>
 export default {
-  props: {},
-  components: {},
-  data() {
-    return {};
-  },
-  i18n: {
-    messages: {
-      fr: {},
+  props: {
+    right: {
+      type: Boolean,
+      default: false,
+    },
+    hover: {
+      type: Boolean,
+      default: false,
+    },
+    hover_time: {
+      type: Number,
+      default: 100,
+    },
+    hover_timeout: {
+      type: Number,
+      default: 500,
+    },
+    styles: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    interactive: {
+      //whether should stay open until clicked outside
+      type: Boolean,
+      default: true,
+    },
+    closeOnClickOutside: {
+      type: Boolean,
+      default: true,
     },
   },
-  created() {},
-  mounted() {},
-  beforeDestroy() {},
-  watch: {},
-  computed: {},
-  methods: {},
+  data() {
+    return {
+      show_dropdown: false,
+      hovering: false,
+      top: false,
+    };
+  },
+  destroyed() {
+    document.body.removeEventListener("click", this.closeMenu);
+  },
+  methods: {
+    mouseEnter() {
+      // console.log('mouseEnter', $event.target)
+      this.stopTimer();
+      if (this.hover && this.hover_time > 0 && !this.show_dropdown) {
+        // console.log('start open timer', this.hover_time)
+        this.hoverOpenTimer = setTimeout(() => {
+          this.show_dropdown = true;
+
+          //disable for a moment
+          this.hovering = true;
+          setTimeout(() => {
+            this.hovering = false;
+          }, this.hover_timeout);
+        }, this.hover_time);
+      }
+
+      if (this.hover && !this.show_dropdown && this.hover_time === 0) {
+        this.hovering = true;
+        setTimeout(() => {
+          this.hovering = false;
+        }, this.hover_timeout);
+        this.show_dropdown = true;
+      }
+    },
+    mouseLeave() {
+      // console.log('mouseLeave', $event.target)
+      if (!this.hoverTimer) {
+        //left the link and no time active
+        this.startTimer();
+      }
+
+      if (this.hover_time > 0 && this.hover) {
+        // console.log('clear hover timer')
+        clearTimeout(this.hoverOpenTimer);
+      }
+    },
+    mouseOver() {
+      this.stopTimer();
+      // console.log('mouseOver')
+    },
+    closeMenu($event) {
+      if (!$event || !this.$el.contains($event.target)) {
+        if (this.show_dropdown && this.closeOnClickOutside) {
+          this.show_dropdown = false;
+        }
+      }
+    },
+    toggleMenu() {
+      if (this.hovering) return;
+      if (this.show_dropdown && this.hover) return;
+      this.show_dropdown = !this.show_dropdown;
+    },
+    stopTimer() {
+      // console.log('stop timer')
+      clearTimeout(this.hoverTimer);
+      this.hoverTimer = null;
+    },
+    startTimer() {
+      // console.log('start timer')
+      if (!this.interactive)
+        this.hoverTimer = setTimeout(this.closeMenu, this.hover_timeout);
+    },
+  },
+  watch: {
+    show_dropdown(v) {
+      if (v) {
+        let vm = this;
+        this.top = false;
+        this.$nextTick(() => {
+          let rect = vm.$refs.dropdown.getBoundingClientRect();
+          let window_height =
+            window.innerHeight || document.documentElement.clientHeight;
+          this.top = rect.bottom > window_height && rect.top >= rect.height;
+        });
+      }
+    },
+    interactive: {
+      handler(value) {
+        if (typeof document === "object")
+          value
+            ? document.body.addEventListener("click", this.closeMenu)
+            : document.body.removeEventListener("click", this.closeMenu);
+      },
+      immediate: true,
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
 ._dropDown {
-  &::part(panel) {
-    background: white;
-    background: var(--c-gris);
-  }
+  position: relative;
 }
 
 ._caret {
@@ -59,5 +177,30 @@ export default {
   background-position: 50% 55%;
   background-repeat: no-repeat;
   background-size: 0.75rem;
+}
+
+._dropDown--content {
+  position: absolute;
+  z-index: 9999;
+  left: 0;
+
+  padding: calc(var(--spacing) / 4) 0;
+  background: white;
+  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+    0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+    0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
+    0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+
+  ::v-deep > * {
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    max-width: 50ch;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+._dropDown--content_right {
+  left: auto;
+  right: 0;
 }
 </style>

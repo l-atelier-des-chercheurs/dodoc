@@ -119,23 +119,17 @@
             </h3>
 
             <DropDown>
-              <DownloadFile slot="item1" :file="file">
+              <DownloadFile :file="file">
                 <sl-icon name="file-earmark-arrow-down" />
                 {{ $t("download") }}
               </DownloadFile>
               <OptimizeMedia
                 v-if="optimization_possible"
-                slot="item2"
                 :media="file"
                 @close="$emit('close')"
               />
-              <DuplicateMedia
-                slot="item3"
-                :path="file.$path"
-                @close="$emit('close')"
-              />
+              <DuplicateMedia :path="file.$path" @close="$emit('close')" />
               <RemoveMenu
-                slot="item4"
                 v-if="$listeners.remove"
                 :remove_text="$t('remove_media')"
                 @remove="$emit('remove')"
