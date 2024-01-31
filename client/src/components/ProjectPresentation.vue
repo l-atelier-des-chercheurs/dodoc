@@ -6,7 +6,6 @@ x
       'is--list': ['list', 'tiny'].includes(context),
       'is--own': is_own_project,
       'u-card2': context !== 'full',
-      'is--mobileView': $root.is_mobile_view,
     }"
     :data-context="context"
   >
@@ -417,10 +416,6 @@ export default {
     }
   }
 
-  &.is--mobileView {
-    flex-flow: row wrap;
-  }
-
   > * {
     flex: 10 1 320px;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -437,10 +432,6 @@ export default {
       }
     }
   }
-
-  &.is--mobileView ._projectInfos--meta {
-    flex: 0 0 100%;
-  }
 }
 
 ._projectInfos--topContent {
@@ -454,7 +445,7 @@ export default {
   gap: calc(var(--spacing) * 1);
 
   > * {
-    flex: 1 1 420px;
+    flex: 1 1 320px;
   }
 }
 
@@ -534,17 +525,13 @@ export default {
 
   ._cover {
     position: relative;
-    max-width: 520px;
+
     aspect-ratio: 3/2;
     border-radius: 4px;
     overflow: hidden;
 
     margin-right: 0;
     margin-left: auto;
-
-    .is--mobileView & {
-      max-width: none;
-    }
 
     .is--list & {
       border-bottom-left-radius: 0;

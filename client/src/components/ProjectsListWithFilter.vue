@@ -396,12 +396,8 @@ export default {
 ._projectsListWithFilter {
   --item-width: 240px;
 
-  margin-top: calc(var(--spacing) * 1);
-
   width: 100%;
   min-height: 70vh;
-  max-width: calc(var(--max-column-width));
-  margin: 0 auto;
 }
 ._cont {
   display: flex;

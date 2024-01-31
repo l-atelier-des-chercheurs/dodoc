@@ -166,8 +166,6 @@ export default {
 
   width: 100%;
   min-height: 60vh;
-  margin: 0 auto;
-  max-width: var(--max-column-width);
   // padding: calc(var(--spacing) * 1);
 }
 

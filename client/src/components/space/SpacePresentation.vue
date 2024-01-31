@@ -160,7 +160,6 @@ export default {
   align-items: center;
 
   width: 100%;
-  margin: 0 auto;
   padding: calc(var(--spacing) / 4);
   border-radius: 6px;
 

@@ -209,16 +209,6 @@ export default {
   position: relative;
   min-height: calc(100vh - 60px);
   max-height: -webkit-fill-available;
-
-  display: flex;
-  flex-direction: column;
-
-  // display: flex;
-  // flex-flow: column nowrap;
-  // justify-content: center;
-  // align-items: center;
-
-  // padding-bottom: 150px;
 }
 
 ._homeView--container {
@@ -356,7 +346,10 @@ export default {
   // background: white;
   z-index: 1;
   flex: 1;
-  padding-top: calc(var(--spacing) * 2);
+
+  max-width: var(--max-column-width);
+  margin: calc(var(--spacing) * 2) auto 0;
+
   min-height: 80vh;
 }
 ._switch {
