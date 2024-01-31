@@ -1,12 +1,5 @@
 <template>
   <div class="_spaceView">
-    <div class="_backBtn">
-      <router-link :to="'/'" class="u-buttonLink">
-        <b-icon icon="arrow-left-short" />
-        {{ $t("home") }}
-      </router-link>
-    </div>
-
     <div v-if="space">
       <div class="_topSpace">
         <SpacePresentation

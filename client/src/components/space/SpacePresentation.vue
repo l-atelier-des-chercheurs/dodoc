@@ -158,8 +158,11 @@ export default {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  gap: calc(var(--spacing) / 1);
 
   width: 100%;
+  max-width: 120ch;
+
   padding: calc(var(--spacing) / 4);
   border-radius: 6px;
 
@@ -170,7 +173,7 @@ export default {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-context="full"] {
-    gap: calc(var(--spacing) / 2);
+    margin: calc(var(--spacing) * 2) auto;
   }
   &[data-context="list"] {
     flex-flow: row nowrap;
@@ -190,7 +193,7 @@ export default {
   // border: 1px solid var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
-  flex: 1 0 120px;
+  flex: 2 1 240px;
   // max-width: 120px;
   // overflow: hidden;
   // border-radius: var(--panel-radius);
@@ -198,8 +201,8 @@ export default {
   // margin-bottom: calc(var(--spacing) / 4);
 }
 ._textBloc {
-  padding: calc(var(--spacing) / 2);
-  flex: 5 1 180px;
+  // padding: calc(var(--spacing) / 2);
+  flex: 2 1 240px;
   overflow: hidden;
 
   display: flex;
