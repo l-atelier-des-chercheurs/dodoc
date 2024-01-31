@@ -172,7 +172,7 @@ export default {
 ._eventsList {
   margin: 0 auto;
   // max-width: var(--max-column-width);
-  padding: calc(var(--spacing) * 1) 0;
+  padding: calc(var(--spacing) * 2) 0;
 }
 
 ._list {

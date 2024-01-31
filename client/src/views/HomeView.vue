@@ -356,7 +356,7 @@ export default {
   // background: white;
   z-index: 1;
   flex: 1;
-  padding-top: calc(var(--spacing) * 1);
+  padding-top: calc(var(--spacing) * 2);
   min-height: 80vh;
 }
 ._switch {
