@@ -86,11 +86,14 @@ export default {
   // background: var(--c-gris_clair);
 }
 ._preview {
-  width: 10vh;
-  height: 10vh;
-  flex: 0 0 10vh;
+  --thumb-size: 15vh;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  flex: 0 0 var(--thumb-size);
+
   overflow: hidden;
   margin: 2px;
+  border-radius: 2px;
   cursor: pointer;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -98,6 +101,7 @@ export default {
   &:hover,
   &:focus-visible {
     transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   &[data-iscurrent] {
