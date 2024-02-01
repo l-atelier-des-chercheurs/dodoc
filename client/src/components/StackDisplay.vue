@@ -586,6 +586,7 @@ hr {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+  align-items: flex-start;
 }
 
 ._showSidebar {
@@ -599,8 +600,12 @@ hr {
 ._hideSidebar {
   position: absolute;
   top: 0;
-  left: 0;
-  margin: calc(var(--spacing) / 4);
+  right: 0;
+  margin: calc(var(--spacing) / 2);
   z-index: 8;
+}
+
+._addToColl {
+  padding: calc(var(--spacing) / 2);
 }
 </style>
