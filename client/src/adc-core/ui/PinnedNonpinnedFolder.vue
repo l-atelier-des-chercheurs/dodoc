@@ -205,6 +205,10 @@ export default {
     display: block;
     pointer-events: auto;
   }
+
+  svg {
+    filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.3));
+  }
 }
 
 ._pinSpace_indicator {
