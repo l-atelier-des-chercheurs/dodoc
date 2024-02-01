@@ -101,8 +101,9 @@ export default {
         format: 33,
       },
 
-      show_chutier:
-        localStorage.getItem("show_chutier") === "false" ? false : true,
+      // show_chutier:
+      //   localStorage.getItem("show_chutier") === "false" ? false : true,
+      show_chutier: true,
     };
   },
   async created() {
@@ -136,7 +137,7 @@ export default {
   watch: {
     connected_as() {},
     show_chutier() {
-      localStorage.setItem("show_chutier", this.show_chutier);
+      // localStorage.setItem("show_chutier", this.show_chutier);
     },
     panes_width: {
       handler() {
