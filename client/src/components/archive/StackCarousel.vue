@@ -45,7 +45,20 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    active_file_index() {
+      this.$nextTick(() => {
+        const current_file = this.$el.querySelector(
+          "._preview[data-iscurrent]"
+        );
+        current_file.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+      });
+    },
+  },
   computed: {
     current_file_shown() {
       if (this.active_file_index !== false)
