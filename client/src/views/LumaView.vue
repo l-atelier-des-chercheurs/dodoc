@@ -15,11 +15,10 @@
           :style="setTopbarWidth(pane.key)"
           @click="togglePane(pane.key)"
         >
-          <span>
+          <span class="_topBarIndication--item--names">
             <b-icon :icon="pane.icon" />
             {{ pane.label }}
           </span>
-          <!-- <b-icon icon="x-circle" /> -->
         </div>
       </div>
 
@@ -338,35 +337,52 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   height: 20px;
+}
 
-  ._topBarIndication--item {
-    height: 20px;
-    padding: 2px 4px;
-    line-height: 1;
-    font-size: var(--sl-font-size-small);
-    font-family: "IBM Plex Mono";
+._topBarIndication--item {
+  height: 20px;
+  padding: 2px 5px;
+  line-height: 1;
+  font-size: var(--sl-font-size-small);
+  font-family: "IBM Plex Mono";
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    gap: calc(var(--spacing) / 2);
-    white-space: nowrap;
-    overflow: hidden;
-    min-width: 23px;
-    flex: 1 1 var(--topPane-width);
+  gap: calc(var(--spacing) / 2);
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 23px;
+  flex: 1 1 var(--topPane-width);
 
-    border-bottom: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-    &:hover,
-    &:focus-visible {
-      background: #ccc;
+  &::after {
+    content: "✕";
+    position: relative;
+    opacity: 0;
+    transition: all 0.05s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: #ccc;
+
+    &::after {
+      opacity: 1;
     }
   }
+}
+
+._topBarIndication--item--names {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 4px;
 }
 
 ._format {
