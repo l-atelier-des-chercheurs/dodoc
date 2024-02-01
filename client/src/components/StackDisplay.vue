@@ -243,8 +243,7 @@ export default {
     return {
       stack: undefined,
       is_loading: true,
-      show_sidebar: true,
-
+      show_sidebar: localStorage.getItem("show_sidebar") !== "false",
       pane_width: undefined,
       ro: undefined,
     };
@@ -300,6 +299,9 @@ export default {
       this.date_created_corrected = this.datetimeLocal(
         this.stack.date_created_corrected
       );
+    },
+    show_sidebar() {
+      localStorage.setItem("show_sidebar", this.show_sidebar);
     },
   },
   computed: {
