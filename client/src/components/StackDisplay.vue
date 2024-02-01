@@ -202,13 +202,17 @@
 
         <transition name="fade" mode="out-in">
           <div
-            v-if="show_sidebar"
+            v-if="show_sidebar && !dual_display"
             class="_overlay"
             @click="show_sidebar = false"
           />
         </transition>
 
-        <StackCarousel class="_topCarousel" :files="stack_files_in_order" />
+        <StackCarousel
+          class="_topCarousel"
+          :data-dualdisplay="dual_display"
+          :files="stack_files_in_order"
+        />
       </div>
     </template>
   </div>
@@ -240,6 +244,9 @@ export default {
       stack: undefined,
       is_loading: true,
       show_sidebar: true,
+
+      pane_width: undefined,
+      ro: undefined,
     };
   },
   i18n: {
@@ -278,9 +285,13 @@ export default {
     }
   },
   mounted() {
+    this.updatePaneWidth();
+    this.ro = new ResizeObserver(this.updatePaneWidth);
+    this.ro.observe(this.$el);
     window.addEventListener("keyup", this.handleKeyPress);
   },
   beforeDestroy() {
+    this.ro.unobserve(this.$el);
     window.removeEventListener("keyup", this.handleKeyPress);
     this.$api.leave({ room: this.stack.$path });
   },
@@ -312,8 +323,15 @@ export default {
         this.stack_files_in_order.length > 0
       );
     },
+    dual_display() {
+      if (this.show_sidebar && this.pane_width > 800) return true;
+      return false;
+    },
   },
   methods: {
+    updatePaneWidth() {
+      this.pane_width = this.$el.offsetWidth;
+    },
     async changeMediaOrder(old_position, new_position) {
       let meta_filenames = this.stack_files_in_order.map((f) =>
         this.getFilename(f.$path)
@@ -485,13 +503,20 @@ export default {
 }
 
 ._topCarousel {
-  position: sticky;
+  position: relative;
+  z-index: 1;
   top: 0;
 
   height: 100%;
   width: 100%;
   background: white;
   background: var(--sd-bg);
+
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &[data-dualdisplay] {
+    padding-left: 360px;
+  }
 }
 
 ._allFields {
