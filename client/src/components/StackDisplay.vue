@@ -326,7 +326,7 @@ export default {
       );
     },
     dual_display() {
-      if (this.show_sidebar && this.pane_width > 800) return true;
+      if (this.show_sidebar && this.pane_width > 360 * 2) return true;
       return false;
     },
   },
