@@ -160,8 +160,8 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 1);
 
-  width: 100%;
-  max-width: 120ch;
+  // width: 100%;
+  // max-width: 120ch;
 
   padding: calc(var(--spacing) / 4);
   border-radius: 6px;

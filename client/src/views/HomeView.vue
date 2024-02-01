@@ -8,6 +8,7 @@
         {{ $t("show_projects") }}&nbsp;<sl-icon name="arrow-up-right" />
       </router-link>
     </div> -->
+
     <template v-if="is_instance_admin">
       <div class="_editSettingsBtn--cont">
         <button
@@ -26,35 +27,41 @@
     </template>
 
     <section class="_homeView--container">
-      <div class="_homeView--content">
-        <div v-if="hero_thumb" class="_imageBlock">
-          <img :src="hero_thumb" />
-        </div>
-        <div class="_textBlock">
-          <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
-          <div class="u-spacingBottom">
-            <template v-if="description">
-              <MarkdownField :text="description" />
-            </template>
-            <template v-else>
-              <template v-if="!is_instance_admin">
-                <p v-html="$t('admins_edit_text_here')" />
+      <div class="_homeView--content" :data-layout="text_image_layout">
+        <template v-for="layout in custom_layout">
+          <div v-if="layout === 'text'" :key="layout" class="_textBlock">
+            <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
+            <div class="u-spacingBottom">
+              <template v-if="description">
+                <MarkdownField :text="description" />
               </template>
               <template v-else>
-                <p v-html="$t('admins_edit_text_below')" />
+                <template v-if="!is_instance_admin">
+                  <p v-html="$t('admins_edit_text_here')" />
+                </template>
+                <template v-else>
+                  <p v-html="$t('admins_edit_text_below')" />
+                </template>
               </template>
-            </template>
+            </div>
+            <p v-if="$root.app_infos.instance_meta.contactmail">
+              <b>{{ $t("contactmail_of_instance") }}</b
+              >&nbsp;
+              <a
+                :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+                target="_blank"
+                >{{ $root.app_infos.instance_meta.contactmail }}</a
+              >
+            </p>
           </div>
-          <p v-if="$root.app_infos.instance_meta.contactmail">
-            <b>{{ $t("contactmail_of_instance") }}</b
-            >&nbsp;
-            <a
-              :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-              target="_blank"
-              >{{ $root.app_infos.instance_meta.contactmail }}</a
-            >
-          </p>
-        </div>
+          <div
+            v-if="layout === 'image' && hero_thumb"
+            :key="layout"
+            class="_imageBlock"
+          >
+            <img :src="hero_thumb" />
+          </div>
+        </template>
       </div>
     </section>
 
@@ -200,6 +207,17 @@ export default {
           this.$root.app_infos.instance_meta.text_background_color;
       return obj;
     },
+    text_image_layout() {
+      return (
+        this.$root.app_infos.instance_meta.text_image_layout || "image_text"
+      );
+    },
+    custom_layout() {
+      if (this.text_image_layout === "text_image") return ["text", "image"];
+      else if (this.text_image_layout === "image_text")
+        return ["image", "text"];
+      return ["text", "image"];
+    },
   },
   methods: {},
 };
@@ -215,8 +233,7 @@ export default {
   // position: sticky;
   // top: 60px;
   width: 100%;
-
-  background: var(--hero-bg, transparent);
+  background: var(--hero-bg, var(--c-gris_clair));
 
   ._homeCover {
     background: white;
@@ -231,17 +248,20 @@ export default {
   position: relative;
   width: 100%;
   margin: 0 auto;
-  // border-bottom: 2px solid var(--c-gris_clair);
 
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  // padding: calc(var(--spacing) * 1);
-  gap: calc(var(--spacing) * 2);
+  overflow: hidden;
 
   > * {
     flex: 1 1 320px;
+  }
+
+  &[data-layout="image_text_overlay"] {
+    min-height: 50vh;
+    justify-content: flex-start;
   }
 
   ._textBlock {
@@ -254,22 +274,31 @@ export default {
     border-radius: var(--panel-radius);
     box-shadow: var(--panel-shadows);
     padding: calc(var(--spacing) / 1);
-    margin: calc(var(--spacing) * 4) calc(var(--spacing) / 1);
+    margin: 5%;
 
     background: var(--text-bg, white);
+  }
+  &[data-layout="image_text_overlay"] ._textBlock {
   }
   ._imageBlock {
     position: relative;
     flex: 4 1 620px;
+    width: 100%;
 
     img {
       width: auto;
-      max-height: 80vh;
-      // transform: rotate(-5deg);
-
-      // border-radius: var(--panel-radius);
-      // box-shadow: var(--panel-shadows);
-      // background: white;
+      max-height: 90vh;
+    }
+  }
+  &[data-layout="image_text_overlay"] ._imageBlock {
+    position: absolute;
+    height: 100%;
+    img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      max-height: none;
     }
   }
 }
@@ -348,7 +377,7 @@ export default {
   flex: 1;
 
   max-width: var(--max-column-width);
-  margin: calc(var(--spacing) * 2) auto 0;
+  margin: calc(var(--spacing) * 2) auto;
 
   min-height: 80vh;
 }
@@ -370,9 +399,7 @@ export default {
   margin: calc(var(--spacing) / 2);
 }
 ._recentlyEdited {
-  margin: calc(var(--spacing) / 2) auto;
-  padding: 0;
   max-width: var(--max-column-width);
-  width: 100%;
+  margin: calc(var(--spacing) * 2) auto;
 }
 </style>
