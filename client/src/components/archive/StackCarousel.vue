@@ -82,22 +82,22 @@ export default {
 
 ._list {
   display: flex;
+  overflow: auto;
   // background: var(--c-gris_clair);
 }
 ._preview {
   width: 10vh;
   height: 10vh;
+  flex: 0 0 10vh;
   overflow: hidden;
-  // background: var(--c-gris_clair);
-  margin: 5px;
-  border-radius: 5px;
+  margin: 2px;
   cursor: pointer;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover,
   &:focus-visible {
-    transform: scale(0.98);
+    transform: scale(0.95);
   }
 
   &[data-iscurrent] {
