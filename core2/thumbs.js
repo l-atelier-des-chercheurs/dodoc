@@ -463,13 +463,29 @@ module.exports = (function () {
     dev.logverbose(`Gotten metadata`, { metadata });
 
     let extracted_metadata = {};
-    if (metadata.width) extracted_metadata.width = metadata.width;
-    if (metadata.height) extracted_metadata.height = metadata.height;
-    if (extracted_metadata.width && extracted_metadata.height)
-      extracted_metadata.ratio = utils.makeRatio({
-        w: extracted_metadata.width,
-        h: extracted_metadata.height,
-      });
+
+    try {
+      if (!metadata.width || !metadata.height)
+        throw new Error(`no width or height for image`);
+
+      let w = metadata.width;
+      let h = metadata.height;
+
+      if (metadata.orientation === 6 || metadata.orientation === 8) {
+        const _w = w;
+        w = h;
+        h = _w;
+      }
+
+      extracted_metadata.width = w;
+      extracted_metadata.height = h;
+
+      if (w && h)
+        extracted_metadata.ratio = utils.makeRatio({
+          w,
+          h,
+        });
+    } catch (err) {}
 
     if (metadata.exif) {
       try {

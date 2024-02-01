@@ -220,6 +220,9 @@ button {
   border-radius: 50%;
 }
 
+.u-button_nopadding {
+}
+
 .u-button_icon {
   padding: calc(var(--spacing) / 4);
   // margin: calc(var(--spacing) / -4);

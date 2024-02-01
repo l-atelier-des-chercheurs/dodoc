@@ -254,6 +254,7 @@ export default {
   contactmail_of_instance_instructions: `Displayed to visitors to get more informations, recover the password to an account or ask for the general password if there is one.`,
   hero_background_color: "Background color of the image",
   text_background_color: "Background color of the text",
+  text_image_layout: "Text and image layout",
 
   space_author_instructions:
     "They will be the only ones allowed to add, edit or remove this space and its content.",

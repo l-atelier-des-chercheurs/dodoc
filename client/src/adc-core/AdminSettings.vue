@@ -5,7 +5,7 @@
         <LoaderSpinner />
       </div>
       <div v-else>
-        <sl-tab-group @sl-tab-show="newTabShown">
+        <sl-tab-group ref="tabgroup" @sl-tab-show="newTabShown">
           <sl-tab slot="nav" panel="informations">
             {{ $t("informations") }}
           </sl-tab>
@@ -90,6 +90,7 @@
               <AdminsAndContributorsField
                 :folder="settings"
                 :can_edit="is_instance_admin"
+                :custom_label="$t('instance_admins_and_admins')"
                 :admin_label="$t('admin')"
                 :admin_instructions="$t('instance_admin_instructions')"
                 :contrib_instructions="$t('instance_contrib_instructions')"
@@ -182,7 +183,9 @@ import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
 import ImagesPanel from "@/adc-core/ui/ImagesPanel.vue";
 
 export default {
-  props: {},
+  props: {
+    starting_tab: String,
+  },
   components: {
     FontsPanel,
     ImagesPanel,
@@ -208,6 +211,13 @@ export default {
         return err;
       });
     this.is_loading = false;
+
+    if (this.starting_tab) {
+      setTimeout(() => {
+        this.$refs.tabgroup.show(this.starting_tab);
+      }, 100);
+    }
+
     this.$api.join({ room: this.settings.$path });
   },
   beforeDestroy() {
