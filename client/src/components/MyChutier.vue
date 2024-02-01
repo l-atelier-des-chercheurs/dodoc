@@ -3,12 +3,11 @@
     <portal-target name="largemedia" multiple />
 
     <div class="_itemsList" @click.self="selected_items_slugs = []">
-      <div class="_topBar"></div>
       <div class="_topContent">
         <div class="_subscribeBtn">
           <button
             type="button"
-            class="u-button u-buttonLink _authorBtn"
+            class="u-buttonLink _authorBtn"
             @click="$eventHub.$emit('showAuthorModal')"
           >
             <template v-if="connected_as">
@@ -562,15 +561,6 @@ export default {
   flex: 0 0 auto;
 }
 
-._topBar {
-  position: relative;
-  text-align: center;
-  padding: 0 calc(var(--spacing) / 1);
-  margin-bottom: calc(var(--spacing) / -2);
-  z-index: 2;
-  pointer-events: none;
-}
-
 ._adminBtn {
   margin-bottom: calc(var(--spacing) / -4);
   pointer-events: auto;
@@ -584,7 +574,7 @@ export default {
   gap: calc(var(--spacing) / 2);
   align-items: center;
   top: 0;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 
   // backdrop-filter: blur(6px);
   // mask: linear-gradient(black 75%, transparent 100%);
@@ -594,6 +584,9 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+
+  padding: 0 calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
 }
 
 ._qrBtn {
@@ -732,7 +725,7 @@ export default {
     border: 2px dotted var(--c-rouge);
     border-radius: 10px;
     box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
-    padding: calc(var(--spacing) / 1);
+    padding: calc(var(--spacing) / 2);
 
     transition: all 0.15 cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -754,7 +747,8 @@ export default {
     }
 
     .u-button {
-      padding: calc(var(--spacing) / 1);
+      padding: calc(var(--spacing) / 1.5);
+      border-radius: 5px;
     }
   }
   .u-button {
