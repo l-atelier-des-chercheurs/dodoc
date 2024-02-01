@@ -26,15 +26,16 @@
           />
           <b-icon v-else icon="eye-slash" />
         </div>
-        <!-- <transition name="pagechange" mode="in-out"> -->
-        <div
-          class="_slide"
-          v-if="slide_file_to_show"
-          :key="slide_file_to_show.$path"
-        >
-          <MediaContent :file="slide_file_to_show" class="_mediaPreview" />
-        </div>
-        <!-- </transition> -->
+
+        <transition name="slideview" mode="in-out">
+          <div
+            class="_slide"
+            v-if="slide_file_to_show"
+            :key="slide_file_to_show.$path"
+          >
+            <MediaContent :file="slide_file_to_show" class="_mediaPreview" />
+          </div>
+        </transition>
         <transition name="pagechange" mode="out-in">
           <div
             class="_count"
@@ -271,5 +272,20 @@ export default {
   background-color: rgba(255, 255, 255, 0.8);
   color: var(--c-rouge);
   border-radius: 50%;
+}
+
+.slideview {
+  transition: all 0.02s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(5px);
+    opacity: 0;
+  }
 }
 </style>
