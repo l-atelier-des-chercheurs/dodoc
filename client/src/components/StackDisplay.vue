@@ -452,7 +452,7 @@ export default {
     // flex: 1 1 320px;
 
     [data-context="archive"] & {
-      max-width: 320px;
+      max-width: 360px;
     }
   }
   > ._topCarousel {
@@ -578,7 +578,7 @@ hr {
   ._btn {
     width: 100%;
     border-radius: 4px;
-    max-width: 320px;
+    max-width: 360px;
   }
 }
 
