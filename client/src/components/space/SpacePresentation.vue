@@ -20,44 +20,34 @@
       />
 
       <transition name="toggleLock" mode="out-in">
-        <sl-icon
+        <StatusTag
           v-if="space.$status === 'private'"
+          class="_icon"
           :key="space.$status"
-          name="file-lock2-fill"
-          class="_icon _private"
+          :show_label="false"
+          :status="space.$status"
+          :can_edit="false"
+          :mode="'inactive'"
         />
       </transition>
 
       <!-- </div> -->
     </div>
     <div class="_textBloc">
-      <div class="_statusOptions">
+      <div class="_statusOptions" v-if="can_edit">
         <StatusTag
-          v-if="can_edit"
           :status="space.$status || 'public'"
           :status_options="['public', 'private']"
           :path="space.$path"
           :can_edit="can_edit"
         />
-        <sl-dropdown v-if="can_edit">
-          <sl-button slot="trigger" caret>
-            {{ $t("options") }}
-          </sl-button>
-          <sl-menu>
-            <sl-menu-item>
-              <DownloadFolder :path="space.$path" />
-            </sl-menu-item>
-            <sl-menu-item>
-              <RemoveMenu
-                :remove_text="$t('remove_space')"
-                @remove="removeSpace"
-              />
-            </sl-menu-item>
-          </sl-menu>
-        </sl-dropdown>
+
+        <DropDown :right="true">
+          <DownloadFolder :path="space.$path" />
+          <RemoveMenu :remove_text="$t('remove_space')" @remove="removeSpace" />
+        </DropDown>
       </div>
 
-      <!-- :label="can_edit ? $t('title') : undefined" -->
       <div class="">
         <TitleField
           :field_name="'title'"
@@ -168,9 +158,11 @@ export default {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  gap: calc(var(--spacing) / 1);
 
-  width: 100%;
-  margin: 0 auto;
+  // width: 100%;
+  // max-width: 120ch;
+
   padding: calc(var(--spacing) / 4);
   border-radius: 6px;
 
@@ -181,7 +173,7 @@ export default {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-context="full"] {
-    gap: calc(var(--spacing) / 2);
+    margin: calc(var(--spacing) * 2) auto;
   }
   &[data-context="list"] {
     flex-flow: row nowrap;
@@ -201,7 +193,7 @@ export default {
   // border: 1px solid var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
-  flex: 1 0 120px;
+  flex: 1 2 240px;
   // max-width: 120px;
   // overflow: hidden;
   // border-radius: var(--panel-radius);
@@ -209,8 +201,8 @@ export default {
   // margin-bottom: calc(var(--spacing) / 4);
 }
 ._textBloc {
-  padding: calc(var(--spacing) / 2);
-  flex: 5 1 180px;
+  // padding: calc(var(--spacing) / 2);
+  flex: 3 1 240px;
   overflow: hidden;
 
   display: flex;

@@ -6,7 +6,6 @@ x
       'is--list': ['list', 'tiny'].includes(context),
       'is--own': is_own_project,
       'u-card2': context !== 'full',
-      'is--mobileView': $root.is_mobile_view,
     }"
     :data-context="context"
   >
@@ -21,22 +20,46 @@ x
         />
 
         <transition name="toggleLock" mode="out-in">
-          <sl-icon
-            v-if="project.$status === 'finished'"
+          <StatusTag
+            v-if="
+              project.$status === 'finished' || project.$status === 'private'
+            "
+            class="_icon"
             :key="project.$status"
-            name="check-circle-fill"
-            class="_icon _check"
+            :show_label="false"
+            :status="project.$status"
+            :can_edit="false"
+            :mode="context === 'list' ? 'button' : 'inactive'"
+            @click="
+              $emit('toggleFilter', {
+                filter_type: '$status',
+                value: project.$status,
+              })
+            "
           />
-          <sl-icon
+
+          <!-- <button
             v-else-if="project.$status === 'private'"
             :key="project.$status"
-            name="file-lock2-fill"
+            class="u-button u-button_bleuvert u-button_small _icon _private"
+            @click="
+              $emit('toggleFilter', { filter_type: 'status', value: 'private' })
+            "
+          >
+            {{ $t("private") }}
+            <sl-icon name="file-lock2-fill" class="" />
+          </button> -->
+
+          <!-- <sl-icon
+            v-else-if="project.$status === 'private'"
+            :key="project.$status"
+            name=""
             class="_icon _private"
-          />
+          /> -->
         </transition>
 
         <div v-if="display_original_space" class="_originalSpace">
-          +{{ original_space_name }}
+          +&thinsp;{{ original_space_name }}
         </div>
         <!-- <sl-icon
         v-if="project.$status === 'draft'"
@@ -46,47 +69,40 @@ x
         <!-- <div class="u-wips" /> -->
       </div>
 
-      <div class="_projectInfos--infos">
+      <div
+        class="_projectInfos--infos"
+        :class="{
+          'is--short': is_compacted,
+        }"
+      >
         <div class="_projectInfos--infos--settings" v-if="context === 'full'">
           <StatusTag
             :status="project.$status"
             :path="project.$path"
             :can_edit="can_edit"
           />
-          <sl-dropdown v-if="can_edit">
-            <sl-button slot="trigger" caret>
-              {{ $t("options") }}
-            </sl-button>
-            <sl-menu>
-              <sl-menu-item>
-                <DownloadFolder :path="project.$path" />
-              </sl-menu-item>
-              <sl-menu-item>
-                <div class="">
-                  <button
-                    type="button"
-                    class="u-buttonLink"
-                    @click="show_dup_modal = true"
-                  >
-                    <sl-icon name="file-plus" />
-                    {{ $t("duplicate_or_move_project") }}
-                  </button>
-                </div>
-                <DuplicateOrRemixProject
-                  v-if="show_dup_modal"
-                  :path="project.$path"
-                  :proposed_title="`${$t('copy_of')} ${project.title}`"
-                  @close="show_dup_modal = false"
-                />
-              </sl-menu-item>
-              <sl-menu-item>
-                <RemoveMenu
-                  :remove_text="$t('remove_project')"
-                  @remove="removeProject"
-                />
-              </sl-menu-item>
-            </sl-menu>
-          </sl-dropdown>
+
+          <DropDown v-if="can_edit">
+            <DownloadFolder :path="project.$path" />
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_dup_modal = true"
+            >
+              <sl-icon name="file-plus" />
+              {{ $t("duplicate_or_move_project") }}
+            </button>
+            <DuplicateOrRemixProject
+              v-if="show_dup_modal"
+              :path="project.$path"
+              :proposed_title="`${$t('copy_of')} ${project.title}`"
+              @close="show_dup_modal = false"
+            />
+            <RemoveMenu
+              :remove_text="$t('remove_project')"
+              @remove="removeProject"
+            />
+          </DropDown>
         </div>
 
         <TitleField
@@ -97,7 +113,7 @@ x
           :path="project.$path"
           :required="true"
           :maxlength="40"
-          :tag="context === 'full' ? 'h1' : 'h3'"
+          :tag="context === 'full' ? 'h1' : context === 'list' ? 'h3' : 'h5'"
           :can_edit="can_edit"
           :instructions="
             can_edit ? $t('project_title_instructions') : undefined
@@ -138,9 +154,23 @@ x
               :key="tag"
               :tag_type="tags.type"
               :tag_str="tag"
-              :mode="'inactive'"
+              :mode="'active'"
+              @tagClick="
+                $emit('toggleFilter', { filter_type: tags.type, value: tag })
+              "
             />
           </template>
+        </div>
+
+        <div
+          v-if="is_compacted"
+          class="_compactExpandButton"
+          @click="toggleCompacted"
+        >
+          <button type="button" class="u-button u-button_icon u-button_black">
+            <b-icon v-if="short_project_view" icon="arrow-down-short" />
+            <b-icon v-else icon="arrow-up-short" />
+          </button>
         </div>
       </div>
     </div>
@@ -217,6 +247,7 @@ export default {
 
       show_meta: true,
       show_dup_modal: false,
+      short_project_view: true,
 
       flickityOptions: {
         initialIndex: 0,
@@ -249,11 +280,14 @@ export default {
       const space = this.getFromCache(space_path);
       return space.title;
     },
+    is_compacted() {
+      return this.context === "list" && this.short_project_view;
+    },
     is_own_project() {
       return this.isOwnItem({ folder: this.project });
     },
     all_tags() {
-      const _all_tags = [];
+      let _all_tags = [];
 
       [
         "target_audience",
@@ -302,6 +336,9 @@ export default {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
       }
+    },
+    toggleCompacted() {
+      this.short_project_view = !this.short_project_view;
     },
   },
 };
@@ -369,22 +406,14 @@ export default {
       padding: calc(var(--spacing) / 2);
       width: 100%;
       place-content: flex-start;
-      max-height: 12rem;
-
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 1.5rem;
-        background: linear-gradient(transparent, white);
-      }
+      // max-height: 12rem;
     }
   }
 
-  &.is--mobileView {
-    flex-flow: row wrap;
+  &[data-context="tiny"] {
+    ._projectInfos--infos {
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    }
   }
 
   > * {
@@ -403,10 +432,6 @@ export default {
       }
     }
   }
-
-  &.is--mobileView ._projectInfos--meta {
-    flex: 0 0 100%;
-  }
 }
 
 ._projectInfos--topContent {
@@ -420,11 +445,14 @@ export default {
   gap: calc(var(--spacing) * 1);
 
   > * {
-    flex: 1 1 420px;
+    flex: 1 1 320px;
   }
 }
 
 ._projectInfos--infos {
+  --short-project-height: 8rem;
+
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   place-content: center;
@@ -448,11 +476,15 @@ export default {
     // );
     // backdrop-filter: blur(12px);
     padding-top: calc(var(--spacing) / 2);
-    pointer-events: none;
+    // pointer-events: none;
 
     ._showDescription {
       pointer-events: auto;
     }
+  }
+
+  &.is--short {
+    max-height: var(--short-project-height);
   }
 
   > * {
@@ -493,17 +525,13 @@ export default {
 
   ._cover {
     position: relative;
-    max-width: 520px;
+
     aspect-ratio: 3/2;
     border-radius: 4px;
     overflow: hidden;
 
     margin-right: 0;
     margin-left: auto;
-
-    .is--mobileView & {
-      max-width: none;
-    }
 
     .is--list & {
       border-bottom-left-radius: 0;
@@ -513,26 +541,28 @@ export default {
 
   ._icon {
     position: absolute;
+    z-index: 1;
     top: 0;
     right: 0;
     margin: calc(var(--spacing) / 1);
-    font-size: 125%;
+    // font-size: 125%;
   }
-  ._check {
-    color: var(--c-bleuvert);
 
-    &::before {
-      content: "";
-      position: absolute;
-      width: 90%;
-      height: 90%;
-      margin: 5%;
-      background: white;
-      z-index: -1;
-      border-radius: 50%;
-    }
+  ._check {
+    // color: var(--c-bleuvert);
+    // &::before {
+    //   content: "";
+    //   position: absolute;
+    //   width: 90%;
+    //   height: 90%;
+    //   margin: 5%;
+    //   background: white;
+    //   z-index: -1;
+    //   border-radius: 50%;
+    // }
   }
   ._private {
+    font-size: 125%;
     &::before {
       content: "";
       position: absolute;
@@ -550,7 +580,7 @@ export default {
     bottom: 0;
     left: 0;
     margin: calc(var(--spacing) / 4);
-    padding: calc(var(--spacing) / 16) calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 16) calc(var(--spacing) / 2);
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     background: rgba(0, 0, 0, 0.2);
@@ -602,6 +632,14 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &:hover,
+    &:focus-visible {
+      opacity: 0.32;
+    }
   }
 }
 
@@ -621,11 +659,42 @@ export default {
 }
 
 ._allTags {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 8);
 
   > * {
+  }
+}
+
+._compactExpandButton {
+  --expand-button-height: 2rem;
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--short-project-height) - var(--expand-button-height));
+  height: var(--expand-button-height);
+  left: 0;
+  right: 0;
+
+  padding: calc(var(--spacing) / 4);
+
+  background: linear-gradient(transparent, white);
+  text-align: right;
+  pointer-events: none;
+
+  > button {
+    pointer-events: auto;
+    // font-size: var(--sl-font-size-medium);
+    // background: rgba(255, 255, 255, 0.4);
+    // color: black;
+    border-radius: 50%;
+
+    // &:hover,
+    // &:focus {
+    //   background: rgba(255, 255, 255, 1);
+    // }
   }
 }
 </style>

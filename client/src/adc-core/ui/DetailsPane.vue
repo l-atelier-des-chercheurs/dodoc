@@ -162,6 +162,7 @@ export default {
     cursor: pointer;
     background: white;
     border-radius: 4px;
+    line-height: 1.21;
 
     &:hover,
     &:focus-visible {

@@ -4,9 +4,12 @@
       {{ author_type }}
     </template> -->
     <div class="">
-      <DLabel v-if="show_labels" :str="$t('admins_and_contributors')" />
+      <DLabel
+        v-if="show_labels"
+        :str="custom_label ? custom_label : $t('admins_and_contributors')"
+      />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-      <div class="u-listOfAvatars">
+      <div class="u-listOfAvatars" v-if="all_participants_path.length > 0">
         <AuthorTag
           v-for="atpath in all_participants_path"
           :path="atpath"
@@ -48,6 +51,7 @@ export default {
   props: {
     folder: Object,
     can_edit: Boolean,
+    custom_label: String,
     admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,

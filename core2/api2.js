@@ -8,7 +8,6 @@ const folder = require("./folder"),
   settings = require("./settings"),
   notifier = require("./notifier"),
   utils = require("./utils"),
-  thumbs = require("./thumbs"),
   Exporter = require("./Exporter"),
   auth = require("./auth");
 
@@ -464,6 +463,7 @@ module.exports = (function () {
       contactmail_of_instance,
       hero_background_color,
       text_background_color,
+      text_image_layout,
       general_password,
       signup_password,
       require_signup_to_contribute,
@@ -485,6 +485,7 @@ module.exports = (function () {
     d.contactmail_of_instance = contactmail_of_instance || "";
     d.hero_background_color = hero_background_color || "";
     d.text_background_color = text_background_color || "";
+    d.text_image_layout = text_image_layout || "";
     d.has_general_password = !!general_password;
     d.signup_password_hashed = signup_password
       ? utils.hashCode(signup_password)

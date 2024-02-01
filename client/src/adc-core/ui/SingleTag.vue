@@ -5,6 +5,7 @@
       'is--inactive': mode === 'inactive',
     }"
     :data-tagtype="tag_type"
+    :data-tagvalue="tag_str"
     :data-mode="mode"
     @click="mode !== 'inactive' ? $emit('tagClick') : ''"
   >
@@ -57,6 +58,9 @@ export default {
       if (this.tag_type === "machines") return "gear-wide-connected";
       if (this.tag_type === "keywords") return "tag";
       if (this.tag_type === "disciplines") return "book";
+      if (this.tag_type === "status")
+        if (this.tag_str === "finished") return "check-circle-fill";
+        else if (this.tag_str === "private") return "file-lock2-fill";
       return "";
     },
   },
@@ -108,6 +112,15 @@ export default {
   }
   &[data-tagtype="materials"] {
     background-color: var(--c-bleumarine_clair);
+  }
+  &[data-tagtype="status"] {
+    &[data-tagvalue="finished"] {
+      background-color: var(--c-bleuvert);
+    }
+    &[data-tagvalue="private"] {
+      background-color: var(--c-noir);
+      color: white;
+    }
   }
 }
 

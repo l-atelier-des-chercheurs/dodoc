@@ -13,7 +13,7 @@
 
           <select v-model="destination_space_path">
             <option
-              v-for="space in spaces"
+              v-for="space in sorted_spaces"
               :key="space.$path"
               :value="space.$path"
               v-text="space.title"
@@ -114,7 +114,7 @@ export default {
   computed: {
     modal_title() {
       if (this.mode === "remix") return this.$t("remix_this_project");
-      return this.$t("duplicate_or_move");
+      return this.$t("duplicate_or_move_project");
     },
     destination_space_label() {
       if (this.mode === "remix") return this.$t("destination_space_remix");
@@ -123,6 +123,19 @@ export default {
     new_title_label() {
       if (this.mode === "remix") return this.$t("title_of_remix");
       return this.$t("title_of_copy");
+    },
+    sorted_spaces() {
+      if (!this.spaces) return [];
+      return this.spaces
+        .slice()
+        .filter((s) =>
+          this.canLoggedinSeeFolder({
+            folder: s,
+          })
+        )
+        .sort((a, b) => {
+          return a.title.localeCompare(b.title);
+        });
     },
   },
   methods: {

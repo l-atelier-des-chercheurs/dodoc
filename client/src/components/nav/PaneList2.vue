@@ -9,6 +9,7 @@
     <span label="Panneaux" class="_paneList2">
       <div
         class="_projectTitle"
+        v-if="!$root.is_mobile_view"
         :class="{
           'is--shown': is_stickied_to_top,
         }"
@@ -321,6 +322,8 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   overflow: hidden;
+
+  min-height: 44px;
 
   > * {
     flex: 1 1 0;

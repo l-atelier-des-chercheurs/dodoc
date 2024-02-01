@@ -72,6 +72,18 @@
       @save="saveNewHeroBgColor({ $event, field: 'text_background_color' })"
     />
 
+    <div class="u-spacingBottom">
+      <DLabel :str="$t('text_image_layout')" />
+      <RadioCheckboxField
+        :field_name="'text_image_layout'"
+        :input_type="'radio'"
+        :content="settings['text_image_layout']"
+        :path="settings.$path"
+        :can_edit="can_edit"
+        :options="layout_options"
+      />
+    </div>
+
     <div class="u-instructions">
       <button type="button" class="u-buttonLink" @click="$emit('reloadPage')">
         {{ $t("refresh_window_to_apply") }}
@@ -108,6 +120,21 @@ export default {
           key: "hero_image_name",
           label: this.$t("hero_image"),
           instructions: this.$t("hero_image_instr"),
+        },
+      ],
+
+      layout_options: [
+        {
+          key: "image_text",
+          label: "Image + texte",
+        },
+        {
+          key: "text_image",
+          label: "Texte + image",
+        },
+        {
+          key: "image_text_overlay",
+          label: "Image et texte superposés",
         },
       ],
     };

@@ -105,8 +105,8 @@
       </div>
 
       <div class="_meta" v-if="show_meta_sidebar || $root.is_mobile_view">
-        <div class="u-spacingBottom _topbar">
-          <div class="">
+        <div class="u-spacingBottom">
+          <div class="_topbar">
             <h3>
               {{ $t("media") }}
               {{ file._index }}
@@ -117,33 +117,26 @@
                 :can_edit="true"
               />
             </h3>
-            <small class="fieldCaption">{{ file.$media_filename }}</small>
+
+            <DropDown>
+              <DownloadFile :file="file">
+                <sl-icon name="file-earmark-arrow-down" />
+                {{ $t("download") }}
+              </DownloadFile>
+              <OptimizeMedia
+                v-if="optimization_possible"
+                :media="file"
+                @close="$emit('close')"
+              />
+              <DuplicateMedia :path="file.$path" @close="$emit('close')" />
+              <RemoveMenu
+                v-if="$listeners.remove"
+                :remove_text="$t('remove_media')"
+                @remove="$emit('remove')"
+              />
+            </DropDown>
           </div>
-          <sl-dropdown class="">
-            <sl-button slot="trigger" caret>
-              {{ $t("options") }}
-            </sl-button>
-            <sl-menu>
-              <sl-menu-item>
-                <DownloadFile :file="file">
-                  <sl-icon name="file-earmark-arrow-down" />
-                  {{ $t("download") }}
-                </DownloadFile>
-              </sl-menu-item>
-              <sl-menu-item v-if="optimization_possible">
-                <OptimizeMedia :media="file" @close="$emit('close')" />
-              </sl-menu-item>
-              <sl-menu-item>
-                <DuplicateMedia :path="file.$path" @close="$emit('close')" />
-              </sl-menu-item>
-              <sl-menu-item v-if="$listeners.remove">
-                <RemoveMenu
-                  :remove_text="$t('remove_media')"
-                  @remove="$emit('remove')"
-                />
-              </sl-menu-item>
-            </sl-menu>
-          </sl-dropdown>
+          <small class="fieldCaption">{{ file.$media_filename }}</small>
         </div>
 
         <DetailsPane

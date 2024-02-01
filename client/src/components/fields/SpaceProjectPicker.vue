@@ -8,7 +8,7 @@
         </div>
         <select v-model="destination_space_path">
           <option
-            v-for="space in spaces"
+            v-for="space in sorted_spaces"
             :key="space.$path"
             :value="space.$path"
             v-text="makeSpaceTitle(space)"
@@ -27,14 +27,14 @@
         </div>
         <select v-model="destination_project_path">
           <option
-            v-for="project in projects"
+            v-for="project in sorted_projects"
             :key="project.$path"
             :value="project.$path"
             v-text="makeProjectTitle(project)"
           />
         </select>
       </div>
-      <div v-else-if="projects.length === 0">
+      <div v-else-if="sorted_projects.length === 0">
         <small class="u-instructions">
           {{ $t("no_projects") }}
         </small>
@@ -84,18 +84,47 @@ export default {
       this.projects = await this.$api.getFolders({
         path: this.destination_space_path + "/projects",
       });
-      if (this.projects.length === 0) this.destination_project_path = "";
+      if (this.sorted_projects.length === 0) this.destination_project_path = "";
       else if (
-        this.projects.length > 0 &&
-        !this.projects.some((p) => p.$path === this.destination_project_path)
+        this.sorted_projects.length > 0 &&
+        !this.sorted_projects.some(
+          (p) => p.$path === this.destination_project_path
+        )
       )
-        this.destination_project_path = this.projects[0].$path;
+        this.destination_project_path = this.sorted_projects[0].$path;
     },
     destination_project_path() {
       this.$emit("newProjectSelected", this.destination_project_path);
     },
   },
-  computed: {},
+  computed: {
+    sorted_spaces() {
+      if (!this.spaces) return [];
+      return this.spaces
+        .slice()
+        .filter((s) =>
+          this.canLoggedinSeeFolder({
+            folder: s,
+          })
+        )
+        .sort((a, b) => {
+          return a.title.localeCompare(b.title);
+        });
+    },
+    sorted_projects() {
+      if (!this.projects) return [];
+      return this.projects
+        .slice()
+        .filter((p) =>
+          this.canLoggedinSeeFolder({
+            folder: p,
+          })
+        )
+        .sort((a, b) => {
+          return a.title.localeCompare(b.title);
+        });
+    },
+  },
   methods: {
     makeSpaceTitle(space) {
       if (space.$path === this.current_space_path) return "• " + space.title;
