@@ -554,6 +554,11 @@ hr {
     width: 100%;
     justify-content: flex-end;
     padding: calc(var(--spacing) / 2);
+
+    &:hover,
+    &:focus {
+      background: var(--sd-separator);
+    }
   }
 }
 
