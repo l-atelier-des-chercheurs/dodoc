@@ -203,6 +203,19 @@ module.exports = (function () {
         path_to_destination_folder,
       });
     },
+    copyThumbFiles: async ({
+      path_to_folder,
+      media_filename,
+      path_to_destination_folder,
+      new_filename,
+    }) => {
+      copyThumbFiles({
+        path_to_folder,
+        media_filename,
+        path_to_destination_folder,
+        new_filename,
+      });
+    },
   };
 
   async function _makeThumbFor({
@@ -361,6 +374,45 @@ module.exports = (function () {
     return;
   }
 
+  async function copyThumbFiles({
+    path_to_folder,
+    media_filename,
+    path_to_destination_folder,
+    new_filename,
+  }) {
+    const full_path_to_thumb = utils.getPathToUserContent(
+      "thumbs",
+      path_to_folder
+    );
+    const full_path_to_new_thumb = utils.getPathToUserContent(
+      "thumbs",
+      path_to_destination_folder
+    );
+
+    try {
+      const files = await _getAllThumbsForFile({
+        full_path_to_thumb,
+        media_filename,
+      });
+
+      for (const filename of files) {
+        // copy to destination folder with new name
+        const new_filename_with_suffix = filename.replace(
+          media_filename,
+          new_filename
+        );
+        await fs.copy(
+          path.join(full_path_to_thumb, filename),
+          path.join(full_path_to_new_thumb, new_filename_with_suffix)
+        );
+      }
+      return;
+    } catch (err) {
+      dev.logverbose("No thumbs to remove");
+      return;
+    }
+  }
+
   async function _removeAllThumbsForFile({ path_to_folder, media_filename }) {
     const full_path_to_thumb = utils.getPathToUserContent(
       "thumbs",
@@ -368,16 +420,10 @@ module.exports = (function () {
     );
 
     try {
-      dev.logfunction(`Looking for thumbs starting with ${media_filename}`);
-      let files = (
-        await fs.readdir(full_path_to_thumb, { withFileTypes: true })
-      )
-        .filter(
-          (dirent) =>
-            !dirent.isDirectory() && dirent.name.startsWith(media_filename)
-        )
-        .map((dirent) => dirent.name);
-      dev.logfunction({ files });
+      const files = await _getAllThumbsForFile({
+        full_path_to_thumb,
+        media_filename,
+      });
 
       for (const filename of files) {
         await fs.remove(path.join(full_path_to_thumb, filename));
@@ -387,6 +433,15 @@ module.exports = (function () {
       dev.logverbose("No thumbs to remove");
       return;
     }
+  }
+
+  async function _getAllThumbsForFile({ full_path_to_thumb, media_filename }) {
+    return (await fs.readdir(full_path_to_thumb, { withFileTypes: true }))
+      .filter(
+        (dirent) =>
+          !dirent.isDirectory() && dirent.name.startsWith(media_filename)
+      )
+      .map((dirent) => dirent.name);
   }
 
   async function _getThumbFolderPath(...paths) {

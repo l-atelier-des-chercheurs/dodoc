@@ -350,6 +350,14 @@ module.exports = (function () {
         );
         await fs.copy(og_path, copy_path);
 
+        // if thumbs, copy thumbs as well
+        await thumbs.copyThumbFiles({
+          path_to_folder,
+          media_filename: meta.$media_filename,
+          path_to_destination_folder,
+          new_filename,
+        });
+
         meta.$media_filename = new_filename;
       }
       meta.$date_uploaded = utils.getCurrentDate();

@@ -82,7 +82,7 @@ x
             :can_edit="can_edit"
           />
 
-          <DropDown v-if="can_edit">
+          <DropDown v-if="can_edit" :right="true">
             <DownloadFolder :path="project.$path" />
             <button
               type="button"
