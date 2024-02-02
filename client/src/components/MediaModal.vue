@@ -119,10 +119,12 @@
             </h3>
 
             <DropDown :right="true">
-              <DownloadFile :file="file">
-                <sl-icon name="file-earmark-arrow-down" />
-                {{ $t("download") }}
-              </DownloadFile>
+              <div>
+                <DownloadFile :file="file">
+                  <sl-icon name="file-earmark-arrow-down" />
+                  {{ $t("download") }}
+                </DownloadFile>
+              </div>
               <OptimizeMedia
                 v-if="optimization_possible"
                 :media="file"

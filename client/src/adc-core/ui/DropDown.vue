@@ -184,16 +184,24 @@ export default {
   z-index: 9999;
   left: 0;
 
+  display: flex;
+  flex-flow: column nowrap;
+
+  margin-top: 2px;
   padding: calc(var(--spacing) / 4) 0;
   background: white;
+  border: 2px solid var(--c-gris);
+  border-radius: 4px;
+
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
     0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
     0 3.5px 6px hsla(230, 13%, 9%, 0.09);
 
   ::v-deep > * {
+    display: block;
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-    max-width: 50ch;
+    max-width: 40ch;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
