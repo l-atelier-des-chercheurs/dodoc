@@ -87,20 +87,24 @@ export default {
   },
   data() {
     return {
-      navigation_to_copy: false,
       show_modal: false,
 
+      navigation_to_copy: false,
       destination_project_path: undefined,
-
       remove_original: false,
-
       is_copying: false,
     };
   },
   created() {},
   async mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    show_modal() {
+      this.navigation_to_copy = false;
+      this.destination_project_path = undefined;
+      this.is_copying = false;
+    },
+  },
   computed: {},
   methods: {
     async confirm() {
