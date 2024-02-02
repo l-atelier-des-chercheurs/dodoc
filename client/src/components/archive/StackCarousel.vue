@@ -95,7 +95,9 @@ export default {
 
 ._list {
   display: flex;
+  gap: 2px;
   overflow: auto;
+  margin: 2px;
   // background: var(--c-gris_clair);
 }
 ._preview {
@@ -104,9 +106,10 @@ export default {
   height: var(--thumb-size);
   flex: 0 0 var(--thumb-size);
 
+  background-color: rgba(0, 0, 0, 0.2);
+
   overflow: hidden;
-  margin: 2px;
-  border-radius: 2px;
+  border-radius: 4px;
   cursor: pointer;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -114,7 +117,7 @@ export default {
   &:hover,
   &:focus-visible {
     transform: scale(0.95);
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
   }
 
   &[data-iscurrent] {
