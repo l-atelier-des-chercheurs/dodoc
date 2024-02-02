@@ -118,7 +118,7 @@
               />
             </h3>
 
-            <DropDown>
+            <DropDown :right="true">
               <DownloadFile :file="file">
                 <sl-icon name="file-earmark-arrow-down" />
                 {{ $t("download") }}
