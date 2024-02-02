@@ -44,9 +44,7 @@
           </div>
         </pane>
         <pane :min-size="min_toppane_width" :size="panes_width.format">
-          <div class="_format">
-            <div class="u-instructions">à venir…</div>
-          </div>
+          <FormatsList />
         </pane>
       </splitpanes>
     </template>
@@ -56,6 +54,7 @@
 import { Splitpanes, Pane } from "splitpanes";
 import MyChutier from "@/components/MyChutier.vue";
 import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
+import FormatsList from "@/components/formats/FormatsList.vue";
 
 export default {
   props: {},
@@ -64,6 +63,7 @@ export default {
     Pane,
     MyChutier,
     SharedFolder2,
+    FormatsList,
   },
   data() {
     return {
@@ -383,9 +383,5 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   gap: 4px;
-}
-
-._format {
-  margin: calc(var(--spacing) / 2);
 }
 </style>
