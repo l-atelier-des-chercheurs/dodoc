@@ -2,11 +2,8 @@
   <div
     class="_mediaContent"
     :data-filetype="file.$type"
-    :draggable="is_draggable"
     :data-context="context"
     :data-novisual="!thumb"
-    @dragstart="startMediaDrag($event)"
-    @dragend="endMediaDrag()"
   >
     <template v-if="file.$type === 'image'">
       <template v-if="context === 'preview'">
@@ -208,10 +205,6 @@ export default {
       default: "preview",
       // preview, full
     },
-    is_draggable: {
-      type: Boolean,
-      default: true,
-    },
     show_fs_button: {
       type: Boolean,
       default: false,
@@ -231,7 +224,6 @@ export default {
   },
   data() {
     return {
-      is_dragged: false,
       show_fullscreen: false,
       start_iframe: false,
       is_loading_iframe: false,
@@ -278,20 +270,6 @@ export default {
     },
   },
   methods: {
-    startMediaDrag($event) {
-      console.log(`MediaContent / startMediaDrag`);
-
-      this.is_dragged = true;
-      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
-      $event.dataTransfer.effectAllowed = "link";
-      this.$eventHub.$emit(`mediadrag.start`);
-    },
-    endMediaDrag() {
-      this.is_dragged = false;
-      console.log(`MediaContent / endMediaDrag`);
-      this.$eventHub.$emit(`mediadrag.end`);
-    },
-
     volumeChanged(event) {
       const vol = Math.round(Number(event.detail.plyr.volume) * 100);
       this.$emit("media.volumeChanged", vol);
