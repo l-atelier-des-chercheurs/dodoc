@@ -140,6 +140,13 @@ export default {
   data() {
     return {};
   },
+  provide() {
+    return {
+      $projectPanes: () => ({
+        projectpanes: this.projectpanes,
+      }),
+    };
+  },
   created() {},
   mounted() {},
   beforeDestroy() {},

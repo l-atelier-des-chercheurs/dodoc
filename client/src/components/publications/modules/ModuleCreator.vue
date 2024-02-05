@@ -427,8 +427,8 @@ export default {
   pointer-events: none;
   gap: calc(var(--spacing) / 4); // padding: 0 calc(var(--spacing) * 1);
 
-  color: var(--c-bleuvert);
-  border-radius: 1rem;
+  // color: var(--c-bleuvert);
+  // border-radius: 1rem;
 
   --icon-size: 1.2rem;
 
@@ -454,8 +454,8 @@ export default {
 }
 
 sl-icon-button::part(base) {
-  font-size: 1.5em;
-  color: var(--c-bleuvert);
+  // font-size: 1.5em;
+  // color: var(--c-bleuvert);
 }
 
 ._showModuleSelector {

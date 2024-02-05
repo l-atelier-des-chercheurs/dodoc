@@ -1,20 +1,27 @@
 <template>
-  <div
-    v-if="show_dropzone"
-    class="_dropZone"
-    :class="{
-      'is--dragover': is_dragover,
-    }"
-    @dragover="onDragover"
-    @dragenter="onDragEnter"
-    @dragleave="onDragLeave"
-    @drop="onDrop"
-  >
-    <div class="_dzBg" />
-    <div class="u-button u-button_small u-button_bleuvert _dropNotice">
-      {{ $t("drop_here") }}
+  <transition name="pagechange">
+    <div
+      v-if="show_dropzone"
+      class="_dropZone"
+      :class="{
+        'is--dragover': is_dragover,
+      }"
+      @dragover="onDragover"
+      @dragenter="onDragEnter"
+      @dragleave="onDragLeave"
+      @drop="onDrop"
+    >
+      <div
+        class="u-dropzone _dzBg"
+        :class="{
+          'is--dragover': is_dragover,
+        }"
+      />
+      <div class="u-button u-button_small u-button_transparent _dropNotice">
+        {{ $t("drop_here") }}
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 <script>
 export default {
@@ -28,12 +35,12 @@ export default {
   },
   created() {},
   mounted() {
-    this.$eventHub.$on(`mediadrag.start`, this.showDropzone);
-    this.$eventHub.$on(`mediadrag.end`, this.hideDropzone);
+    this.$eventHub.$on(`mediatile.start`, this.showDropzone);
+    this.$eventHub.$on(`mediatile.end`, this.hideDropzone);
   },
   beforeDestroy() {
-    this.$eventHub.$off(`mediadrag.start`, this.showDropzone);
-    this.$eventHub.$off(`mediadrag.end`, this.hideDropzone);
+    this.$eventHub.$off(`mediatile.start`, this.showDropzone);
+    this.$eventHub.$off(`mediatile.end`, this.hideDropzone);
   },
   watch: {},
   computed: {},
@@ -56,6 +63,7 @@ export default {
       this.is_dragover = false;
     },
     async onDrop($event) {
+      this.is_dragover = false;
       $event.preventDefault();
       $event.dataTransfer.dropEffect = "link";
 
@@ -76,14 +84,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._dropZone {
-  --color-1: white;
-  --color-2: var(--c-bleuvert);
+  // --color-1: white;
+  // --color-2: var(--c-bleuvert);
 
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  padding: calc(var(--spacing) / 1);
 
   display: flex;
   flex-flow: row wrap;
@@ -93,8 +102,8 @@ export default {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--dragover {
-    --color-1: var(--c-bleuvert);
-    --color-2: white;
+    // --color-1: var(--c-bleuvert);
+    // --color-2: white;
   }
 
   ._dropNotice {
@@ -103,7 +112,6 @@ export default {
     white-space: nowrap;
   }
   &.is--dragover ._dropNotice {
-    background: var(--c-bleuvert_fonce);
   }
 }
 
@@ -111,37 +119,5 @@ export default {
   position: absolute;
   z-index: 0;
   inset: 0;
-
-  background: radial-gradient(
-      circle,
-      transparent 20%,
-      var(--color-1) 20%,
-      var(--color-1) 80%,
-      transparent 80%,
-      transparent
-    ),
-    radial-gradient(
-        circle,
-        transparent 20%,
-        var(--color-1) 20%,
-        var(--color-1) 80%,
-        transparent 80%,
-        transparent
-      )
-      15px 15px,
-    linear-gradient(
-        var(--color-2) 1.2000000000000002px,
-        transparent 1.2000000000000002px
-      )
-      0 -0.6000000000000001px,
-    linear-gradient(
-        90deg,
-        var(--color-2) 1.2000000000000002px,
-        var(--color-1) 1.2000000000000002px
-      ) -0.6000000000000001px 0;
-  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
-  // background-size: 4px;
-
-  mix-blend-mode: multiply;
 }
 </style>

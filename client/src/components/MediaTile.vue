@@ -8,9 +8,6 @@
       'is--own': is_own_media,
     }"
     :data-tilemode="tile_mode"
-    draggable="true"
-    @dragstart="startMediaDrag($event)"
-    @dragend="endMediaDrag()"
   >
     <div
       class="u-nut _index"
@@ -64,6 +61,9 @@
     <button
       type="button"
       class="_focusMediaBtn"
+      :draggable="project_panes_include_draggable"
+      @dragstart="startMediaDrag($event)"
+      @dragend="endMediaDrag()"
       @click="$emit('toggleMediaFocus')"
     />
 
@@ -100,13 +100,28 @@ export default {
   },
   components: {},
   data() {
-    return { is_dragged: false };
+    return {
+      is_dragged: false,
+    };
   },
+  inject: {
+    $projectPanes: {
+      default: false,
+    },
+  },
+
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
+    project_panes_include_draggable() {
+      if (this.$projectPanes)
+        return this.$projectPanes().projectpanes.some((pp) =>
+          ["make", "publish"].includes(pp.type)
+        );
+      return false;
+    },
     media_resolution() {
       if (this.tile_mode === "medium") return 440;
       return 220;
@@ -127,12 +142,12 @@ export default {
       this.is_dragged = true;
       $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
       $event.dataTransfer.effectAllowed = "move";
-      this.$eventHub.$emit(`mediadrag.start`);
+      this.$eventHub.$emit(`mediatile.start`);
     },
     endMediaDrag() {
-      this.is_dragged = false;
       console.log(`MediaFocus / endMediaDrag`);
-      this.$eventHub.$emit(`mediadrag.end`);
+      this.is_dragged = false;
+      this.$eventHub.$emit(`mediatile.end`);
     },
   },
 };

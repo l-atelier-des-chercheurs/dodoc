@@ -4,6 +4,7 @@
       <div class="_importButton">
         <!-- // TODO create component -->
         <label
+          class="u-dropzone"
           :class="{
             'is--dragover': is_dragover,
           }"
@@ -334,7 +335,6 @@
         @nextMedia="nextMedia"
       />
     </transition>
-    <DropZone @fileDropped="fileDropped" />
   </div>
 </template>
 <script>
@@ -939,9 +939,8 @@ export default {
     width: 100%;
     max-width: none;
 
-    border: 3px dotted white;
-    border-radius: 10px;
-    box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
+    --antcolor: white;
+    background-color: var(--c-orange);
     padding: calc(var(--spacing) / 2);
 
     &:hover,
