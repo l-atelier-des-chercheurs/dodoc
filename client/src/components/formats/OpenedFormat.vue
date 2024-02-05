@@ -20,27 +20,27 @@
           <div class="_cont">
             <h2>{{ format.title }}</h2>
 
-            <div v-if="!format.$files || format.$files.length === 0">
-              no files
-            </div>
-
-            <transition-group
-              tag="div"
-              class="itemGrid"
-              name="listComplete"
-              appear
-            >
-              <div v-for="file in format.$files" :key="file.$path">
-                {{ file.$path }}
+            <div class="">
+              <div v-if="!format.$files || format.$files.length === 0">
+                no files
               </div>
-              <!-- <SharedFolderItem
-              class="_file"
-              v-for="file in files"
-              :key="file.$path"
-              :file="file"
-              @open="$emit('openFile', file.$path)"
-            /> -->
-            </transition-group>
+
+              <transition-group
+                tag="div"
+                class="_items"
+                name="listComplete"
+                appear
+              >
+                <div
+                  v-for="file in format.$files"
+                  :key="file.$path"
+                  class="_items--item"
+                >
+                  {{ file.$path }}
+                </div>
+                <div class="_dragHere"></div>
+              </transition-group>
+            </div>
           </div>
         </div>
       </div>
@@ -130,5 +130,14 @@ export default {
 
 ._cont {
   margin: calc(var(--spacing) / 2) 0;
+}
+
+._items {
+}
+
+._items--item {
+  width: 100%;
+  min-height: 2rem;
+  margin-bottom: calc(var(--spacing) / 2);
 }
 </style>
