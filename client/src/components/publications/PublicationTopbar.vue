@@ -76,26 +76,30 @@
           <b-icon icon="box-arrow-up-right" />
           {{ $t("share") }}
         </template>
-        <button
-          type="button"
-          class="u-buttonLink _exportBtn"
-          :disabled="!can_edit || is_exporting"
-          @click="exportPublication"
-        >
-          <sl-icon name="filetype-pdf" />
-          {{ $t("export_in_pdf") }}
-          <transition name="fade_fast" :duration="150" mode="out-in">
-            <LoaderSpinner v-if="is_exporting" />
-          </transition>
-        </button>
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="show_qr_code_modal = true"
-        >
-          <sl-icon name="qr-code" />
-          {{ $t("direct_link") }}
-        </button>
+        <div class="">
+          <button
+            type="button"
+            class="u-buttonLink _exportBtn"
+            :disabled="!can_edit || is_exporting"
+            @click="exportPublication"
+          >
+            <sl-icon name="filetype-pdf" />
+            {{ $t("export_in_pdf") }}
+            <transition name="fade_fast" :duration="150" mode="out-in">
+              <LoaderSpinner v-if="is_exporting" />
+            </transition>
+          </button>
+        </div>
+        <div class="">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="show_qr_code_modal = true"
+          >
+            <sl-icon name="qr-code" />
+            {{ $t("direct_link") }}
+          </button>
+        </div>
         <QRModal
           v-if="show_qr_code_modal"
           :url_to_access="share_url"
