@@ -124,7 +124,7 @@ export default {
   }
 
   &[data-zoomed] {
-    // background-color: var(--c-noir);
+    cursor: zoom-out;
   }
 }
 
