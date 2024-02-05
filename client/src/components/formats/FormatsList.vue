@@ -40,7 +40,6 @@
 export default {
   props: {
     shared_folder: Object,
-    shared_files: Array,
   },
   components: {},
   data() {
@@ -71,7 +70,11 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    can_edit() {
+      return this.canLoggedinEditFolder({ folder: this.stack });
+    },
+  },
   methods: {
     openNewFormat(new_folder_slug) {
       this.show_create_format = false;

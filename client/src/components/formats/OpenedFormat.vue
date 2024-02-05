@@ -20,7 +20,14 @@
           <div class="_cont">
             <h2>{{ format.title }}</h2>
 
-            <div class="">
+            <SectionsList
+              :publication="format"
+              :opened_section_meta_filename="opened_section_meta_filename"
+              :can_edit="can_edit"
+              @toggleSection="opened_section_meta_filename = $event"
+            />
+
+            <!-- <div class="">
               <div v-if="!format.$files || format.$files.length === 0">
                 no files
               </div>
@@ -40,7 +47,7 @@
                 </div>
                 <div class="_dragHere"></div>
               </transition-group>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -48,16 +55,21 @@
   </div>
 </template>
 <script>
+import SectionsList from "@/components/publications/story/SectionsList.vue";
+
 export default {
   props: {
     opened_format_slug: String,
   },
-  components: {},
+  components: {
+    SectionsList,
+  },
   data() {
     return {
       is_loading: true,
       format: undefined,
       path: "formats/" + this.opened_format_slug,
+      opened_section_meta_filename: "",
     };
   },
   i18n: {
@@ -86,9 +98,8 @@ export default {
   },
   watch: {},
   computed: {
-    files() {
-      //
-      return [];
+    can_edit() {
+      return this.canLoggedinEditFolder({ folder: this.format });
     },
   },
   methods: {

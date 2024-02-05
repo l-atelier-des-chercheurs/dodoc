@@ -1,7 +1,6 @@
 <template>
   <div class="_formats">
     <FormatsList
-      :shared_files="shared_files"
       :opened_format_slug="opened_format_slug"
       @toggleFormat="toggleFormat"
     />
@@ -20,9 +19,7 @@ export default {
   props: {},
   components: { FormatsList, OpenedFormat },
   data() {
-    return {
-      shared_files: [],
-    };
+    return {};
   },
   i18n: {
     messages: {
