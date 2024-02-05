@@ -947,7 +947,6 @@ export default {
     &:focus-visible,
     &.is--dragover {
       border-color: var(--c-rouge);
-
       > * {
         pointer-events: none;
       }

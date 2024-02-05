@@ -12,7 +12,7 @@
       @drop="onDrop"
     >
       <div
-        class="u-dropzone _dzBg"
+        class="u-dropzone is--active _dzBg"
         :class="{
           'is--dragover': is_dragover,
         }"
