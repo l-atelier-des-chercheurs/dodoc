@@ -143,6 +143,34 @@
           }
         }
       },
+      "formats": {
+        "fields": {
+          "title": {
+            "type": "string"
+          },
+          "template": {
+            "type": "string"
+          }
+        },
+        "$files": {
+          "thumbs": {
+            "resolutions": [180, 360, 1600]
+          },
+          "fields": {
+            "thumbs": {
+              "resolutions": [180, 360, 1600]
+            },
+            "fields": {
+              "caption": {
+                "type": "string"
+              },
+              "date_created_corrected": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
       "authors": {
         "$can_be_created_by": "everyone",
         "fields": {
