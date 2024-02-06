@@ -1,7 +1,7 @@
 <template>
   <div>
     <button type="button" class="u-buttonLink" @click="show_modal = true">
-      <sl-icon name="file-plus" />
+      <b-icon icon="file-plus" />
       {{ $t("duplicate_or_move") }}
     </button>
 

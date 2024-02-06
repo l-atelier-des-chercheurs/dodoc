@@ -964,8 +964,8 @@ input[type="checkbox"]:disabled {
 }
 
 .u-dropzone {
-  --antlength: 8px;
-  --antwidth: 8px;
+  --antlength: 6px;
+  --antwidth: 6px;
   --antcolor: var(--c-orange);
 
   background-color: white;
@@ -979,14 +979,16 @@ input[type="checkbox"]:disabled {
     var(--antwidth) var(--antlength);
   background-position: 0 0, var(--antlength) 100%, 0 var(--antlength), 100% 0;
 
-  // padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   border-radius: 10px;
 
   &.is--active {
     animation: marching-ants 400ms infinite linear;
   }
 
-  &.is--dragover {
+  &.is--dragover,
+  &:hover,
+  &:focus {
     --antcolor: white;
     background-color: var(--c-orange);
   }
