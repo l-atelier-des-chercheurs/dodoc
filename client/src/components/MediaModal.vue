@@ -38,6 +38,8 @@
           </div>
         </div>
 
+        <DragFile class="_dragFile" :file="file" />
+
         <div class="_topRightBtn" v-if="!$root.is_mobile_view">
           <button
             type="button"
@@ -292,6 +294,16 @@ export default {
       this.show_meta_sidebar = !this.show_meta_sidebar;
       localStorage.setItem("show_meta_sidebar", this.show_meta_sidebar);
     },
+    startMediaDrag($event) {
+      this.is_dragged = true;
+      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
+      $event.dataTransfer.effectAllowed = "move";
+      this.$eventHub.$emit(`mediatile.drag.start`);
+    },
+    endMediaDrag() {
+      this.is_dragged = false;
+      this.$eventHub.$emit(`mediatile.drag.end`);
+    },
   },
 };
 </script>
@@ -517,5 +529,14 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: calc(var(--spacing) / 1);
+}
+
+._dragFile {
+  position: absolute;
+  top: auto;
+  bottom: calc(var(--spacing) / 1);
+  right: calc(var(--spacing) / 1);
+  width: 2rem;
+  height: 2rem;
 }
 </style>

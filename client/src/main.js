@@ -85,6 +85,8 @@ import AuthorField from "@/adc-core/fields/AuthorField.vue";
 Vue.component("AuthorField", AuthorField);
 import DetailsPane from "@/adc-core/ui/DetailsPane.vue";
 Vue.component("DetailsPane", DetailsPane);
+import DragFile from "@/adc-core/ui/DragFile.vue";
+Vue.component("DragFile", DragFile);
 import DropDown from "@/adc-core/ui/DropDown.vue";
 Vue.component("DropDown", DropDown);
 import AdminsAndContributorsField from "@/adc-core/fields/AdminsAndContributorsField.vue";
