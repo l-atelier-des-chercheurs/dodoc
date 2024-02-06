@@ -931,32 +931,7 @@ export default {
   cursor: pointer;
 
   .u-dropzone {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    gap: calc(var(--spacing) / 4);
-    cursor: pointer;
-
-    width: 100%;
-    max-width: none;
-
-    --antcolor: white;
-    background-color: var(--c-orange);
-    // padding: calc(var(--spacing) / 2);
-
-    &:hover,
-    &:focus-visible,
-    &.is--dragover {
-      --antcolor: white;
-      background-color: var(--c-rouge);
-
-      > * {
-        pointer-events: none;
-      }
-    }
-    &.is--dragover {
-    }
+    --dropzone-color2: var(--c-rouge);
   }
   .u-button {
     // display: flex;

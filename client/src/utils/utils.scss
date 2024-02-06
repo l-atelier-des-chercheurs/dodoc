@@ -964,55 +964,56 @@ input[type="checkbox"]:disabled {
 }
 
 .u-dropzone {
-  --antlength: 6px;
-  --antwidth: 6px;
-  --antcolor: var(--c-orange);
+  --dropzone-color1: transparent;
+  --dropzone-color2: var(--c-orange);
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
+
+  width: 100%;
 
   background-color: white;
   color: var(--c-noir);
 
   padding: calc(var(--spacing) / 2);
-  // border: 3px dotted var(--antcolor);
-  // background-image: radial-gradient(var(--antcolor) 30%, transparent 50%),
-  //   radial-gradient(var(--antcolor) 30%, transparent 50%),
-  //   radial-gradient(var(--antcolor) 30%, transparent 50%),
-  //   radial-gradient(var(--antcolor) 30%, transparent 50%);
-  // background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-  // background-size: var(--antlength) var(--antwidth),
-  //   var(--antlength) var(--antwidth), var(--antwidth) var(--antlength),
-  //   var(--antwidth) var(--antlength);
-  // background-position: 0 0, var(--antlength) 100%, 0 var(--antlength), 100% 0;
 
-  border-style: dotted;
-  border-color: var(--antcolor);
-  border-width: 8px;
-  border-image-source: url('data:image/svg+xml,<svg width="25px" height="25px" viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><g id="Artboard-1" sketch:type="MSArtboardGroup" transform="translate(-140.000000, -154.000000)" fill="#D57E00"><g id="dots" sketch:type="MSLayerGroup" transform="translate(140.000000, 154.000000)"><g id="dot" sketch:type="MSShapeGroup"><g><circle cx="2.5" cy="2.5" r="2.5"></circle></g></g><g id="dot" transform="translate(0.000000, 20.000000)" sketch:type="MSShapeGroup"><g><circle cx="2.5" cy="2.5" r="2.5"></circle></g></g><g id="dot" transform="translate(0.000000, 10.000000)" sketch:type="MSShapeGroup"><g><circle cx="2.5" cy="2.5" r="2.5"></circle></g></g><g id="dot" transform="translate(10.000000, 0.000000)" sketch:type="MSShapeGroup"><g><circle cx="2.5" cy="2.5" r="2.5"></circle></g></g><g id="dot" transform="translate(10.000000, 20.000000)" sketch:type="MSShapeGroup"><g><circle cx="2.5" cy="2.5" r="2.5"></circle></g></g><g id="dot" transform="translate(20.000000, 0.000000)" sketch:type="MSShapeGroup"><g><circle cx="2.5" cy="2.5" r="2.5"></circle></g></g><g id="dot" transform="translate(20.000000, 20.000000)" sketch:type="MSShapeGroup"><g><circle cx="2.5" cy="2.5" r="2.5"></circle></g></g><g id="dot" transform="translate(20.000000, 10.000000)" sketch:type="MSShapeGroup"><g><circle cx="2.5" cy="2.5" r="2.5"></circle></g></g></g></g></g></svg>');
-  // border-image-source: url("https://cl.ly/3c2J3c0l3r0P/dots.svg");
+  // border-image-source: url(./utils/border-circle.svg);
+  // border-image-slice: 33% 33%;
+  // border-image-repeat: round;
+  // border-width: 8px;
 
-  border-image-slice: 33% 33%;
-  border-image-repeat: round;
+  border: 4px dotted white;
+  border-radius: 10px;
 
-  border-radius: 6px;
+  border-color: var(--dropzone-color2);
+  background-color: var(--dropzone-color1);
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--active {
-    animation: marching-ants 400ms infinite linear;
+    animation: flashbackground 1000ms infinite alternate linear;
   }
 
   &.is--dragover,
   &:hover,
   &:focus {
-    --antcolor: white;
-    background-color: var(--c-orange);
+    border-color: var(--dropzone-color1);
+    background-color: var(--dropzone-color2);
+  }
+
+  > * {
+    pointer-events: none;
   }
 }
 
-@keyframes marching-ants {
+@keyframes flashbackground {
   0% {
-    background-position: 0 0, var(--antlength) 100%, 0 var(--antlength), 100% 0;
+    background-color: var(--dropzone-color2);
   }
   100% {
-    background-position: var(--antlength) 0, 0 100%, 0 0, 100% var(--antlength);
+    background-color: var(--dropzone-color1);
   }
 }

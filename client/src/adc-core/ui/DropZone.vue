@@ -39,8 +39,6 @@ export default {
     // avec les contraintes (que les images, que les images et vidéos, etc.)
     this.$eventHub.$on(`mediatile.drag.start`, this.showDropzone);
     this.$eventHub.$on(`mediatile.drag.end`, this.hideDropzone);
-
-    debugger;
   },
   beforeDestroy() {
     this.$eventHub.$off(`mediatile.drag.start`, this.showDropzone);
@@ -112,6 +110,9 @@ export default {
 }
 
 ._dzBg {
+  --dropzone-color1: white;
+  --dropzone-color2: var(--c-bleuvert);
+
   position: absolute;
   z-index: 0;
   inset: 0;
