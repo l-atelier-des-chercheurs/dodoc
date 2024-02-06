@@ -991,29 +991,30 @@ input[type="checkbox"]:disabled {
   border-color: var(--dropzone-color2);
   background-color: var(--dropzone-color1);
 
-  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--active {
     animation: flashbackground 1000ms infinite alternate linear;
+
+    @keyframes flashbackground {
+      0% {
+        background-color: var(--dropzone-color2);
+      }
+      100% {
+        background-color: var(--dropzone-color1);
+      }
+    }
   }
 
   &.is--dragover,
   &:hover,
   &:focus {
-    border-color: var(--dropzone-color1);
-    background-color: var(--dropzone-color2);
+    // override possible is--active
+    border-color: var(--dropzone-color1) !important;
+    background-color: var(--dropzone-color2) !important;
   }
 
   > * {
     pointer-events: none;
-  }
-}
-
-@keyframes flashbackground {
-  0% {
-    background-color: var(--dropzone-color2);
-  }
-  100% {
-    background-color: var(--dropzone-color1);
   }
 }
