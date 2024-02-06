@@ -66,7 +66,7 @@
       <pane
         v-for="pane in projectpanes"
         class="_pane"
-        :key="pane.index"
+        :key="pane.type"
         min-size="5"
         :size="pane.size"
         :data-size="pane.size"
