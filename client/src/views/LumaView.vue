@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="_lumaView"
-    :class="{
-      'is--mobile_view': $root.is_mobile_view,
-    }"
-  >
+  <div class="_lumaView">
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <div class="_topBarIndication">
