@@ -4,8 +4,10 @@
       <div class="_importButton">
         <!-- // TODO create component -->
         <label
+          class="u-dropzone"
           :class="{
             'is--dragover': is_dragover,
+            'is--active': $root.has_file_dragover_on_window,
           }"
           :for="id + '-add_file'"
           @dragover="onDragover"
@@ -13,7 +15,7 @@
           @dragleave="onDragLeave"
           @drop="onDrop"
         >
-          <div class="u-button">
+          <div class="u-button u-button_red">
             <svg width="20" height="17" viewBox="0 0 20 17">
               <path
                 d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
@@ -334,7 +336,6 @@
         @nextMedia="nextMedia"
       />
     </transition>
-    <DropZone @fileDropped="fileDropped" />
   </div>
 </template>
 <script>
@@ -623,7 +624,7 @@ export default {
     },
     onDragEnter($event) {
       $event.preventDefault();
-      this.is_dragover = true;
+      if ($event.dataTransfer.types.includes("Files")) this.is_dragover = true;
     },
     onDragLeave($event) {
       $event.preventDefault();
@@ -927,41 +928,16 @@ export default {
   width: 100%;
   padding: calc(var(--spacing) / 2);
   padding-bottom: 0;
+  cursor: pointer;
 
-  label {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    gap: calc(var(--spacing) / 4);
-    cursor: pointer;
-
-    width: 100%;
-    max-width: none;
-
-    border: 3px dotted white;
-    border-radius: 10px;
-    box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
-    padding: calc(var(--spacing) / 2);
-
-    &:hover,
-    &:focus-visible,
-    &.is--dragover {
-      border-color: var(--c-rouge);
-
-      > * {
-        pointer-events: none;
-      }
-    }
-    &.is--dragover {
-      background-color: var(--c-rouge);
-    }
+  .u-dropzone {
+    --dropzone-color2: var(--c-rouge);
   }
   .u-button {
-    display: flex;
-    flex-flow: row nowrap;
-    background: var(--c-rouge);
-    color: white;
+    // display: flex;
+    // flex-flow: row nowrap;
+    // background: var(--c-rouge);
+    // color: white;
   }
   .u-instructions {
     color: white;

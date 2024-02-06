@@ -124,7 +124,7 @@
                   class="u-buttonLink"
                   @click="duplicateModule"
                 >
-                  <sl-icon name="file-plus" />
+                  <b-icon icon="file-plus" />
                   <!-- {{ $t("duplicate") }} -->
                 </button>
                 <RemoveMenu
