@@ -964,15 +964,15 @@ input[type="checkbox"]:disabled {
 }
 
 .u-dropzone {
-  --antlength: 5px;
-  --antwidth: 5px;
+  --antlength: 8px;
+  --antwidth: 8px;
   --antcolor: var(--c-orange);
 
   background-color: white;
-  background-image: radial-gradient(var(--antcolor) 50%, transparent 50%),
-    radial-gradient(var(--antcolor) 50%, transparent 50%),
-    radial-gradient(var(--antcolor) 50%, transparent 50%),
-    radial-gradient(var(--antcolor) 50%, transparent 50%);
+  background-image: radial-gradient(var(--antcolor) 30%, transparent 50%),
+    radial-gradient(var(--antcolor) 30%, transparent 50%),
+    radial-gradient(var(--antcolor) 30%, transparent 50%),
+    radial-gradient(var(--antcolor) 30%, transparent 50%);
   background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
   background-size: var(--antlength) var(--antwidth),
     var(--antlength) var(--antwidth), var(--antwidth) var(--antlength),
