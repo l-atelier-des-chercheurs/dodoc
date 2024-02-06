@@ -931,6 +931,7 @@ export default {
   cursor: pointer;
 
   .u-dropzone {
+    --dropzone-color1: var(--c-orange);
     --dropzone-color2: var(--c-rouge);
   }
   .u-button {
