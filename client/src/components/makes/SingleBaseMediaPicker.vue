@@ -42,6 +42,8 @@
           @close="show_media_picker = false"
         />
       </div>
+
+      <DropZone @mediaDropped="pickMedia" />
     </div>
   </div>
 </template>
@@ -119,6 +121,8 @@ export default {
   display: flex;
 
   > ._mpContent {
+    position: relative;
+
     display: flex;
     flex-flow: row wrap;
     align-items: center;
