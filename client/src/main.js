@@ -302,6 +302,8 @@ new Vue({
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
     },
+
+    dropzones: [],
   },
   created() {
     const getTime = () => new Date().getTime();
@@ -379,6 +381,21 @@ new Vue({
     async findMissingTranslations() {
       const translations = await findMissingTranslations();
       return translations;
+    },
+    registerDropzone({ id, allowed_types }) {
+      this.dropzones.push({ id, allowed_types });
+    },
+    unregisterDropzone({ id: id_to_unregister }) {
+      this.dropzones = this.dropzones.filter(
+        ({ id }) => id !== id_to_unregister
+      );
+    },
+    fileCanBeDragged({ type }) {
+      // never enable drag when a modal is opened
+      if (this.modal_is_opened) return false;
+      return this.dropzones.some(
+        ({ allowed_types }) => !allowed_types || allowed_types.includes(type)
+      );
     },
   },
 }).$mount("#app");

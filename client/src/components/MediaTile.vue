@@ -64,9 +64,9 @@
       @click="$emit('toggleMediaFocus')"
     />
     <div
-      v-if="project_panes_include_draggable"
+      v-if="can_be_dragged"
       class="_dragTile"
-      :draggable="project_panes_include_draggable"
+      draggable="true"
       @dragstart="startMediaDrag($event)"
       @dragend="endMediaDrag()"
     >
@@ -112,23 +112,15 @@ export default {
       is_dragged: false,
     };
   },
-  inject: {
-    $projectPanes: {
-      default: false,
-    },
-  },
-
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
-    project_panes_include_draggable() {
-      if (this.$projectPanes)
-        return this.$projectPanes().projectpanes.some((pp) =>
-          ["make", "publish"].includes(pp.type)
-        );
-      return false;
+    can_be_dragged() {
+      return this.$root.fileCanBeDragged({
+        type: this.file.$type,
+      });
     },
     media_resolution() {
       if (this.tile_mode === "medium") return 440;
@@ -464,6 +456,7 @@ export default {
   pointer-events: none;
 
   > * {
+    display: block;
     pointer-events: auto;
 
     cursor: -webkit-grab;
@@ -475,6 +468,11 @@ export default {
       cursor: -webkit-grabbing;
       cursor: -moz-grabbing;
       cursor: dragging;
+    }
+
+    ::v-deep svg {
+      stroke: var(--c-noir);
+      stroke-width: 1px;
     }
   }
 }

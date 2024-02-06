@@ -43,7 +43,12 @@
         />
       </div>
 
-      <DropZone @mediaDropped="pickMedia" />
+      <DropZone
+        :media_types_allowed="
+          media_type_to_pick ? [media_type_to_pick] : undefined
+        "
+        @mediaDropped="pickMedia"
+      />
     </div>
   </div>
 </template>
