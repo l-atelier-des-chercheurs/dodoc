@@ -290,6 +290,7 @@ new Vue({
     publicPath: process.env.BASE_URL,
 
     modal_is_opened: false,
+    has_file_dragover_on_window: false,
 
     current_time: "",
 
@@ -320,6 +321,18 @@ new Vue({
     window.addEventListener("resize", () => {
       this.window.innerWidth = window.innerWidth;
       this.window.innerHeight = window.innerHeight;
+    });
+
+    let debounce_dragover = undefined;
+
+    window.addEventListener("dragover", ($event) => {
+      if (!$event.dataTransfer?.types?.includes("Files")) return;
+
+      if (debounce_dragover) clearTimeout(debounce_dragover);
+      this.has_file_dragover_on_window = true;
+      debounce_dragover = setTimeout(async () => {
+        this.has_file_dragover_on_window = false;
+      }, 200);
     });
   },
   watch: {},

@@ -1,11 +1,20 @@
 <template>
-  <div
-    id="app"
-    class=""
-    :class="{
-      'is--mobile_view': $root.is_mobile_view,
-    }"
-  >
+  <div id="app">
+    <!-- <button
+      type="button"
+      :disabled="$api.connected"
+      @click="$api.reconnectSocket"
+    >
+      connect
+    </button>
+    <button
+      type="button"
+      :disabled="!$api.connected"
+      @click="$api.disconnectSocket"
+    >
+      disconnect
+    </button> -->
+
     <component :is="'style'">
       {{ custom_fonts_css }}
     </component>

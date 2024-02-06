@@ -1049,3 +1049,59 @@ input[type="checkbox"]:disabled {
     text-decoration: none;
   }
 }
+
+.u-dropzone {
+  --dropzone-color1: transparent;
+  --dropzone-color2: var(--c-orange);
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
+
+  width: 100%;
+
+  background-color: white;
+  color: var(--c-noir);
+
+  padding: calc(var(--spacing) / 2);
+
+  // border-image-source: url(./utils/border-circle.svg);
+  // border-image-slice: 33% 33%;
+  // border-image-repeat: round;
+  // border-width: 8px;
+
+  border: 4px dotted white;
+  border-radius: 10px;
+
+  border-color: var(--dropzone-color2);
+  background-color: var(--dropzone-color1);
+
+  transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--active {
+    animation: flashbackground 1000ms infinite alternate linear;
+
+    @keyframes flashbackground {
+      0% {
+        background-color: var(--dropzone-color2);
+      }
+      100% {
+        background-color: var(--dropzone-color1);
+      }
+    }
+  }
+
+  &.is--dragover,
+  &:hover,
+  &:focus {
+    // override possible is--active
+    border-color: var(--dropzone-color1) !important;
+    background-color: var(--dropzone-color2) !important;
+  }
+
+  > * {
+    pointer-events: none;
+  }
+}
