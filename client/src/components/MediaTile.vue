@@ -142,12 +142,12 @@ export default {
       this.is_dragged = true;
       $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
       $event.dataTransfer.effectAllowed = "move";
-      this.$eventHub.$emit(`mediatile.start`);
+      this.$eventHub.$emit(`mediatile.drag.start`);
     },
     endMediaDrag() {
       console.log(`MediaFocus / endMediaDrag`);
       this.is_dragged = false;
-      this.$eventHub.$emit(`mediatile.end`);
+      this.$eventHub.$emit(`mediatile.drag.end`);
     },
   },
 };

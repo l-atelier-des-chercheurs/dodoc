@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="">
+  <div id="app">
     <!-- <button
       type="button"
       :disabled="$api.connected"

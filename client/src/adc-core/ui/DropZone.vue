@@ -17,8 +17,8 @@
           'is--dragover': is_dragover,
         }"
       />
-      <div class="u-button u-button_small u-button_transparent _dropNotice">
-        {{ $t("drop_here") }}
+      <div class="u-instructions _dropNotice">
+        <small v-html="$t('drop_here')" />
       </div>
     </div>
   </transition>
@@ -35,12 +35,16 @@ export default {
   },
   created() {},
   mounted() {
-    this.$eventHub.$on(`mediatile.start`, this.showDropzone);
-    this.$eventHub.$on(`mediatile.end`, this.hideDropzone);
+    // détecter côté mediatile qu'une dropzone est ouverte,
+    // avec les contraintes (que les images, que les images et vidéos, etc.)
+    this.$eventHub.$on(`mediatile.drag.start`, this.showDropzone);
+    this.$eventHub.$on(`mediatile.drag.end`, this.hideDropzone);
+
+    debugger;
   },
   beforeDestroy() {
-    this.$eventHub.$off(`mediatile.start`, this.showDropzone);
-    this.$eventHub.$off(`mediatile.end`, this.hideDropzone);
+    this.$eventHub.$off(`mediatile.drag.start`, this.showDropzone);
+    this.$eventHub.$off(`mediatile.drag.end`, this.hideDropzone);
   },
   watch: {},
   computed: {},
@@ -105,19 +109,16 @@ export default {
     // --color-1: var(--c-bleuvert);
     // --color-2: white;
   }
-
-  ._dropNotice {
-    position: relative;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  &.is--dragover ._dropNotice {
-  }
 }
 
 ._dzBg {
   position: absolute;
   z-index: 0;
   inset: 0;
+}
+
+._dropNotice {
+  position: relative;
+  pointer-events: none;
 }
 </style>
