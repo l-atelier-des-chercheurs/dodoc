@@ -61,11 +61,19 @@
     <button
       type="button"
       class="_focusMediaBtn"
+      @click="$emit('toggleMediaFocus')"
+    />
+    <div
+      v-if="project_panes_include_draggable"
+      class="_dragTile"
       :draggable="project_panes_include_draggable"
       @dragstart="startMediaDrag($event)"
       @dragend="endMediaDrag()"
-      @click="$emit('toggleMediaFocus')"
-    />
+    >
+      <div class="u-button u-button_icon">
+        <b-icon icon="hand-index-fill" />
+      </div>
+    </div>
 
     <ToggleInput
       v-if="is_selectable"
@@ -438,6 +446,35 @@ export default {
     padding: calc(var(--spacing) / 2);
     ._mediaTile[data-tilemode="medium"] & {
       padding: calc(var(--spacing) / 1);
+    }
+  }
+}
+
+._dragTile {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+
+    &:hover,
+    &:focus {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+      cursor: dragging;
     }
   }
 }
