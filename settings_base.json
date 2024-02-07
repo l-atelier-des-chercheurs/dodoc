@@ -167,6 +167,15 @@
               "resolutions": [180, 360, 1600]
             },
             "fields": {
+              "module_type": {
+                "type": "string"
+              },
+              "section_type": {
+                "type": "string"
+              },
+              "section_color": {
+                "type": "string"
+              },
               "section_title": {
                 "type": "string"
               },
@@ -178,6 +187,12 @@
               },
               "modules_list": {
                 "type": "array"
+              },
+              "source_medias": {
+                "type": "array"
+              },
+              "size": {
+                "type": "number"
               }
             }
           }
