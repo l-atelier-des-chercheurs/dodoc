@@ -708,9 +708,10 @@ export default {
               folder_path: publication_path,
             });
 
-            await this.$api.deleteItem({
-              path: full_source_media.$path,
-            });
+            if (full_source_media)
+              await this.$api.deleteItem({
+                path: full_source_media.$path,
+              });
           }
         }
       } catch (err) {
