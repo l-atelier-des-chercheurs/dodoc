@@ -150,6 +150,12 @@
           },
           "template": {
             "type": "string"
+          },
+          "modules_list": {
+            "type": "array"
+          },
+          "sections_list": {
+            "type": "array"
           }
         },
         "$files": {
@@ -161,11 +167,17 @@
               "resolutions": [180, 360, 1600]
             },
             "fields": {
+              "section_title": {
+                "type": "string"
+              },
               "caption": {
                 "type": "string"
               },
               "date_created_corrected": {
                 "type": "string"
+              },
+              "modules_list": {
+                "type": "array"
               }
             }
           }
