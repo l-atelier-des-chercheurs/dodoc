@@ -772,8 +772,6 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      dev.logapi({ path_to_folder });
-
       const meta_filename = await file.importFile({
         path_to_folder,
         req,

@@ -458,13 +458,7 @@ export default function () {
       },
 
       async uploadText({ path, filename, content = "", additional_meta }) {
-        let formData = new FormData();
-
         const file = new Blob([content], { type: "text/plain" });
-
-        if (additional_meta)
-          formData.append(filename, JSON.stringify(additional_meta));
-
         return await this.uploadFile({
           path,
           filename,
@@ -486,6 +480,7 @@ export default function () {
         } else {
           data = additional_meta;
         }
+        debugger;
         let res = await this.$axios
           .post(`${path}/_upload`, data, {
             headers,
