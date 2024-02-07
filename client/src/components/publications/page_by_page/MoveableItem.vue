@@ -69,7 +69,7 @@
     <div class="_unlockBtn" v-if="can_edit">
       <button
         type="button"
-        class="u-button u-button_orange u-button_small u-button_round u-colorBlack"
+        class="u-button u-button_orange u-button_small u-colorBlack"
         v-if="publimodule.locked === true"
         @click="unlock()"
       >
@@ -77,7 +77,7 @@
       </button>
       <button
         type="button"
-        class="u-button u-button_orange u-button_small u-button_round u-colorBlack"
+        class="u-button u-button_orange u-button_small u-colorBlack"
         v-if="
           can_edit &&
           is_active &&
