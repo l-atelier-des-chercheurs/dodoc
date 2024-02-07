@@ -297,7 +297,6 @@ export default {
         filename,
         content: full_url,
         additional_meta: {
-          module_type: this.module_type,
           $type: "url",
         },
       });
@@ -334,9 +333,6 @@ export default {
         path: this.publication_path,
         filename,
         content: "",
-        additional_meta: {
-          module_type: this.module_type,
-        },
       });
       const source_medias = [{ meta_filename }];
       await this.createModule({
