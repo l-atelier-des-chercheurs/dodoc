@@ -85,13 +85,17 @@ export default {
     },
     medias_with_linked() {
       if (!this.publimodule.source_medias) return [];
-      return this.publimodule.source_medias.map((source_media) => {
+      return this.publimodule.source_medias.reduce((acc, source_media) => {
         const _linked_media = this.getSourceMedia({
           source_media,
           folder_path: this.publication_path,
         });
-        return Object.assign({}, source_media, { _linked_media });
-      });
+        if (_linked_media) {
+          const obj = Object.assign({}, source_media, { _linked_media });
+          acc.push(obj);
+        }
+        return acc;
+      }, []);
     },
   },
   methods: {
@@ -127,15 +131,10 @@ export default {
       }
     },
     reorderMedias(new_order) {
-      const previous_source_medias = this.publimodule.source_medias.slice();
-      // TODO publication_include_mode
-      const source_medias = new_order.reduce((acc, m) => {
-        const item = previous_source_medias.find(
-          (sm) => sm.meta_filename_in_project === m
-        );
-        if (item) acc.push(item);
-        return acc;
-      }, []);
+      const source_medias = new_order.map((m) => {
+        delete m._linked_media;
+        return m;
+      });
       this.$emit("updateMeta", { source_medias });
     },
     updateMediaOpt({ index, opt }) {
