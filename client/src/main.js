@@ -306,6 +306,8 @@ new Vue({
     },
 
     dropzones: [],
+
+    publication_include_mode: "link",
   },
   created() {
     const getTime = () => new Date().getTime();

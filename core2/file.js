@@ -326,6 +326,7 @@ module.exports = (function () {
       });
 
       let meta = await utils.readMetaFile(path_to_meta);
+      let desired_meta_filename = meta_filename;
 
       // todo copy all related meta (archives as well)
       // const _all_file_paths = await _getAllFilesRelatedToMeta({
@@ -359,13 +360,19 @@ module.exports = (function () {
         });
 
         meta.$media_filename = new_filename;
+        desired_meta_filename = meta.$media_filename + ".meta.txt";
       }
       meta.$date_uploaded = utils.getCurrentDate();
 
       const new_meta_filename = await _preventFileOverride({
         path_to_folder: path_to_destination_folder,
-        original_filename: meta_filename,
+        original_filename: desired_meta_filename,
       });
+
+      // meta_filename = await _preventFileOverride({
+      //   path_to_folder,
+      //   original_filename: new_filename + ".meta.txt",
+      // });
 
       await utils.saveMetaAtPath({
         relative_path: path_to_destination_folder,
@@ -409,10 +416,11 @@ module.exports = (function () {
 
     const full_path_to_folder = utils.getPathToUserContent(path_to_folder);
 
-    const getFilenameWithoutExt = (filename) =>
-      filename.substring(0, filename.indexOf("."));
-    const getFilenameExt = (filename) =>
-      filename.substring(filename.indexOf("."), filename.length);
+    const parseFilename = (filename) => {
+      const name = filename.substring(0, filename.indexOf("."));
+      const ext = filename.substring(filename.indexOf("."), filename.length);
+      return { name, ext };
+    };
 
     let all_files_and_folders_names = (
       await fs.readdir(full_path_to_folder, { withFileTypes: true })
@@ -424,7 +432,8 @@ module.exports = (function () {
 
     while (all_files_and_folders_names.includes(new_filename)) {
       index++;
-      const { name, ext } = path.parse(original_filename);
+      const { name, ext } = parseFilename(original_filename);
+      // todo increment index instead of -1-1-1
       new_filename = `${name}-${index}${ext}`;
     }
     return new_filename;

@@ -695,26 +695,28 @@ export default {
       this.$emit("duplicate", meta_filename);
     },
     async removeModule() {
-      // todo  remove source medias that are part publications
       // todo also empty sharedb path, since $path can be retaken
-      // try {
-      //   for (let source_media of this.publimodule.source_medias) {
-      //     const publication_path = this.getParent(this.publimodule.$path);
-      //     const full_source_media = this.getSourceMedia({
-      //       source_media,
-      //       folder_path: publication_path,
-      //     });
+      try {
+        for (let source_media of this.publimodule.source_medias) {
+          // do not remove linked medias, only those in this specific folder
+          if (
+            Object.prototype.hasOwnProperty.call(source_media, "meta_filename")
+          ) {
+            const publication_path = this.getParent(this.publimodule.$path);
+            const full_source_media = this.getSourceMedia({
+              source_media,
+              folder_path: publication_path,
+            });
 
-      //     if (full_source_media.$path.includes("/publications/")) {
-      //       await this.$api.deleteItem({
-      //         path: full_source_media.$path,
-      //       });
-      //     }
-      //   }
-      // } catch (err) {
-      //   this.$alertify.delay(4000).error(err);
-      //   throw err;
-      // }
+            await this.$api.deleteItem({
+              path: full_source_media.$path,
+            });
+          }
+        }
+      } catch (err) {
+        this.$alertify.delay(4000).error(err);
+        throw err;
+      }
 
       await this.$api
         .deleteItem({
