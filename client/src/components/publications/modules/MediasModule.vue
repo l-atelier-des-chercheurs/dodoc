@@ -107,15 +107,24 @@ export default {
       }
       this.$emit("updateMeta", { source_medias });
     },
-    removeMediaAtIndex(index) {
+    async removeMediaAtIndex(index) {
       const source_medias = this.publimodule.source_medias.slice();
 
-      // if media is local, remove it as well
-      debugger;
+      const source_media = source_medias[index];
 
       source_medias.splice(index, 1);
       if (source_medias.length === 0) this.$emit("remove");
       else this.$emit("updateMeta", { source_medias });
+
+      if (Object.prototype.hasOwnProperty.call(source_media, "meta_filename")) {
+        const media = this.getSourceMedia({
+          source_media: { meta_filename: source_media.meta_filename },
+          folder_path: this.publication_path,
+        });
+        await this.$api.deleteItem({
+          path: media.$path,
+        });
+      }
     },
     reorderMedias(new_order) {
       const previous_source_medias = this.publimodule.source_medias.slice();

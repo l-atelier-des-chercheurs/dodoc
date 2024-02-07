@@ -285,15 +285,15 @@ export default {
     },
 
     async removeModule2({ publication, section, path }) {
+      const meta_filename = this.getFilename(path);
+
       let modules_list = this.getModulesForSection({
         publication,
         section,
       })
         .map((m) => m.meta_filename)
-        .slice();
-      const meta_filename = this.getFilename(path);
-      modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
-
+        .slice()
+        .filter((_mf) => _mf !== meta_filename);
       await this.$api.updateMeta({
         path: section.$path,
         new_meta: {
