@@ -64,7 +64,9 @@
       @click="$emit('toggleMediaFocus')"
     />
 
-    <DragFile :file="file" :is_dragged.sync="is_dragged" />
+    <div class="_dragFile">
+      <DragFile :file="file" :is_dragged.sync="is_dragged" />
+    </div>
 
     <ToggleInput
       v-if="is_selectable"
@@ -381,6 +383,24 @@ export default {
   }
   ._mediaTile[data-tilemode="medium"] & {
     bottom: 1.5rem;
+  }
+}
+
+._dragFile {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+
+  display: flex;
+  place-content: center;
+  place-items: center;
+
+  > * {
+    pointer-events: auto;
   }
 }
 

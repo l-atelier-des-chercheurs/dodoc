@@ -1,16 +1,21 @@
 <template>
-  <div v-if="can_be_dragged" class="_dragTile">
-    <div
+  <!-- not a <button> because buttons cant be draggable on Firefox -->
+  <div
+    v-if="can_be_dragged"
+    class="_dragFile"
+    draggable="true"
+    @dragstart="startMediaDrag($event)"
+    @dragend="endMediaDrag()"
+  >
+    <button
+      type="button"
       class="u-button u-button_icon"
       :class="{
         'is--dragged': is_dragged,
       }"
-      draggable="true"
-      @dragstart="startMediaDrag($event)"
-      @dragend="endMediaDrag()"
     >
-      <b-icon icon="hand-index-fill" />
-    </div>
+      <b-icon icon="hand-index-thumb" />
+    </button>
   </div>
 </template>
 <script>
@@ -56,38 +61,19 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._dragTile {
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: white;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+._dragFile {
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
 
-  pointer-events: none;
+  &:hover,
+  &:focus {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: dragging;
+  }
 
-  > * {
-    display: block;
-    pointer-events: auto;
-
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-    cursor: grab;
-
-    &:hover,
-    &:focus {
-      cursor: -webkit-grabbing;
-      cursor: -moz-grabbing;
-      cursor: dragging;
-    }
-
-    ::v-deep svg {
-      stroke: var(--c-noir);
-      stroke-width: 1px;
-    }
+  ::v-deep svg {
   }
 }
 </style>

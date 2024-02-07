@@ -38,9 +38,9 @@
           </div>
         </div>
 
-        <DragFile class="_dragFile" :file="file" />
-
         <div class="_topRightBtn" v-if="!$root.is_mobile_view">
+          <DragFile class="_dragFile" :file="file" />
+
           <button
             type="button"
             class="u-button u-button_icon _navBtn"
@@ -521,11 +521,5 @@ export default {
 }
 
 ._dragFile {
-  position: absolute;
-  top: auto;
-  bottom: calc(var(--spacing) / 1);
-  right: calc(var(--spacing) / 1);
-  width: 2rem;
-  height: 2rem;
 }
 </style>

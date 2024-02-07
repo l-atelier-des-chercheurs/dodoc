@@ -2,7 +2,7 @@
   <div class="_favSwitch">
     <button
       type="button"
-      class="u-button u-button_icon"
+      class="u-button u-button_icon u-button_transparent"
       :disabled="!can_edit"
       @click="toggleFav"
     >
