@@ -166,34 +166,32 @@
             "thumbs": {
               "resolutions": [180, 360, 1600]
             },
-            "fields": {
-              "module_type": {
-                "type": "string"
-              },
-              "section_type": {
-                "type": "string"
-              },
-              "section_color": {
-                "type": "string"
-              },
-              "section_title": {
-                "type": "string"
-              },
-              "caption": {
-                "type": "string"
-              },
-              "date_created_corrected": {
-                "type": "string"
-              },
-              "modules_list": {
-                "type": "array"
-              },
-              "source_medias": {
-                "type": "array"
-              },
-              "size": {
-                "type": "number"
-              }
+            "module_type": {
+              "type": "string"
+            },
+            "section_type": {
+              "type": "string"
+            },
+            "section_color": {
+              "type": "string"
+            },
+            "section_title": {
+              "type": "string"
+            },
+            "caption": {
+              "type": "string"
+            },
+            "date_created_corrected": {
+              "type": "string"
+            },
+            "modules_list": {
+              "type": "array"
+            },
+            "source_medias": {
+              "type": "array"
+            },
+            "size": {
+              "type": "number"
             }
           }
         }
