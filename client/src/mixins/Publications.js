@@ -329,5 +329,63 @@ export default {
       });
       return { current, other };
     },
+
+    async prepareMediaForPublication({
+      path_to_source_media_meta,
+      publication_path,
+    }) {
+      if (this.$root.publication_include_mode === "link") {
+        // check if already in parent project
+        const parent_project_path_for_media = this.getParent(
+          path_to_source_media_meta
+        );
+        const parent_project_path_for_publi = this.getParent(
+          this.getParent(publication_path)
+        );
+
+        let meta_filename_in_project;
+
+        // if media is not in parent project, we'll copy it first to the project
+        if (parent_project_path_for_media !== parent_project_path_for_publi) {
+          meta_filename_in_project = await this.$api
+            .copyFile({
+              path: path_to_source_media_meta,
+              path_to_destination_folder: parent_project_path_for_publi,
+            })
+            .catch((err_code) => {
+              this.$alertify.delay(4000).error(err_code);
+              throw "fail";
+            });
+        } else {
+          meta_filename_in_project = this.getFilename(
+            path_to_source_media_meta
+          );
+        }
+
+        return { meta_filename_in_project };
+      } else if (this.$root.publication_include_mode === "copy") {
+        // if copy, we copy media to the local folder and append meta_filename
+        const parent_project_path_for_media = this.getParent(
+          path_to_source_media_meta
+        );
+
+        let meta_filename;
+        if (parent_project_path_for_media !== publication_path) {
+          meta_filename = await this.$api
+            .copyFile({
+              path: path_to_source_media_meta,
+              path_to_destination_folder: publication_path,
+            })
+            .catch((err_code) => {
+              this.$alertify.delay(4000).error(err_code);
+              throw "fail";
+            });
+        } else {
+          meta_filename = this.getFilename(path_to_source_media_meta);
+        }
+
+        return { meta_filename };
+      }
+    },
   },
 };

@@ -237,35 +237,12 @@ export default {
         });
       } else if (path_to_source_media_metas) {
         for (const path_to_source_media_meta of path_to_source_media_metas) {
-          // check if already in parent project
-          const parent_project_path_for_media = this.getParent(
-            path_to_source_media_meta
-          );
-          const parent_project_path_for_publi = this.getParent(
-            this.getParent(this.publication_path)
-          );
-
-          let meta_filename_in_project;
-
-          if (parent_project_path_for_media !== parent_project_path_for_publi) {
-            meta_filename_in_project = await this.$api
-              .copyFile({
-                path: path_to_source_media_meta,
-                path_to_destination_folder: parent_project_path_for_publi,
-              })
-              .catch((err_code) => {
-                this.$alertify.delay(4000).error(err_code);
-                throw "fail";
-              });
-          } else {
-            meta_filename_in_project = this.getFilename(
-              path_to_source_media_meta
-            );
-          }
-
-          source_medias.push({
-            meta_filename_in_project,
+          // if link, then we use medias stored in parent project and link to them
+          const new_entry = await this.prepareMediaForPublication({
+            path_to_source_media_meta,
+            publication_path: this.publication_path,
           });
+          source_medias.push(new_entry);
         }
       }
       if (this.context === "page_by_page") {
@@ -304,6 +281,7 @@ export default {
       this.show_link_picker = false;
     },
     async createFiles({ path_to_source_media_metas }) {
+      // not used, need to update
       let source_medias = [];
       path_to_source_media_metas.map((path_to_source_media_meta) => {
         const meta_filename_in_project = this.getFilename(

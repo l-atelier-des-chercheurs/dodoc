@@ -95,31 +95,31 @@ export default {
     },
   },
   methods: {
-    addMedias({ path_to_source_media_metas }) {
-      const source_medias_to_append = path_to_source_media_metas.map(
-        (path_to_source_media_meta) => {
-          return {
-            meta_filename_in_project: this.getFilename(
-              path_to_source_media_meta
-            ),
-          };
-        }
-      );
-      const previous_source_medias =
-        this.publimodule.source_medias.slice() || [];
-      const source_medias = previous_source_medias.concat(
-        source_medias_to_append
-      );
+    async addMedias({ path_to_source_media_metas }) {
+      let source_medias = this.publimodule.source_medias.slice() || [];
+      for (const path_to_source_media_meta of path_to_source_media_metas) {
+        // if link, then we use medias stored in parent project and link to them
+        const new_entry = await this.prepareMediaForPublication({
+          path_to_source_media_meta,
+          publication_path: this.publication_path,
+        });
+        source_medias.push(new_entry);
+      }
       this.$emit("updateMeta", { source_medias });
     },
     removeMediaAtIndex(index) {
       const source_medias = this.publimodule.source_medias.slice();
+
+      // if media is local, remove it as well
+      debugger;
+
       source_medias.splice(index, 1);
       if (source_medias.length === 0) this.$emit("remove");
       else this.$emit("updateMeta", { source_medias });
     },
     reorderMedias(new_order) {
       const previous_source_medias = this.publimodule.source_medias.slice();
+      // TODO publication_include_mode
       const source_medias = new_order.reduce((acc, m) => {
         const item = previous_source_medias.find(
           (sm) => sm.meta_filename_in_project === m
