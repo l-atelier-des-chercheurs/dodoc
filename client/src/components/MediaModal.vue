@@ -13,7 +13,7 @@
         <div class="_stickyClose--content">
           <button
             type="button"
-            class="u-button u-button_icon u-button_transparent _navBtn"
+            class="u-button u-button_icon _navBtn"
             @click="$emit('close')"
           >
             <b-icon icon="x-lg" />
@@ -39,9 +39,11 @@
         </div>
 
         <div class="_topRightBtn" v-if="!$root.is_mobile_view">
+          <DragFile class="_dragFile" :file="file" />
+
           <button
             type="button"
-            class="u-button u-button_icon u-button_transparent _navBtn"
+            class="u-button u-button_icon _navBtn"
             @click="toggleMeta"
           >
             <b-icon
@@ -54,7 +56,7 @@
           </button>
           <button
             type="button"
-            class="u-button u-button_icon u-button_transparent _navBtn"
+            class="u-button u-button_icon _navBtn"
             @click="$emit('close')"
           >
             <b-icon icon="x-lg" />
@@ -70,7 +72,7 @@
             <span>
               <button
                 type="button"
-                class="u-button u-button_transparent _navBtn _leftArrow"
+                class="u-button u-button_icon _navBtn _leftArrow"
                 v-if="position_in_list !== 'first'"
                 @click="$emit('prevMedia')"
               >
@@ -87,7 +89,7 @@
             <span>
               <button
                 type="button"
-                class="u-button u-button_transparent _navBtn _rightArrow"
+                class="u-button u-button_icon _navBtn _rightArrow"
                 v-show="position_in_list !== 'last'"
                 @click="$emit('nextMedia')"
               >
@@ -292,6 +294,16 @@ export default {
       this.show_meta_sidebar = !this.show_meta_sidebar;
       localStorage.setItem("show_meta_sidebar", this.show_meta_sidebar);
     },
+    startMediaDrag($event) {
+      this.is_dragged = true;
+      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
+      $event.dataTransfer.effectAllowed = "move";
+      this.$eventHub.$emit(`mediatile.drag.start`);
+    },
+    endMediaDrag() {
+      this.is_dragged = false;
+      this.$eventHub.$emit(`mediatile.drag.end`);
+    },
   },
 };
 </script>
@@ -342,21 +354,10 @@ export default {
 }
 
 ._navBtn {
-  padding: calc(var(--spacing) / 2);
   pointer-events: auto;
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-  border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.4);
   position: relative;
   z-index: 100;
-
-  font-size: var(--sl-font-size-medium);
-
-  &:hover,
-  &:focus {
-    background: rgba(255, 255, 255, 1);
-  }
 }
 
 ._meta {
@@ -517,5 +518,8 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: calc(var(--spacing) / 1);
+}
+
+._dragFile {
 }
 </style>

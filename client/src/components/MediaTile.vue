@@ -63,16 +63,9 @@
       class="_focusMediaBtn"
       @click="$emit('toggleMediaFocus')"
     />
-    <div
-      v-if="can_be_dragged"
-      class="_dragTile"
-      draggable="true"
-      @dragstart="startMediaDrag($event)"
-      @dragend="endMediaDrag()"
-    >
-      <div class="u-button u-button_icon">
-        <b-icon icon="hand-index-fill" />
-      </div>
+
+    <div class="_dragFileIcon">
+      <DragFile :file="file" :is_dragged.sync="is_dragged" />
     </div>
 
     <ToggleInput
@@ -117,11 +110,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    can_be_dragged() {
-      return this.$root.fileCanBeDragged({
-        type: this.file.$type,
-      });
-    },
     media_resolution() {
       if (this.tile_mode === "medium") return 440;
       return 220;
@@ -136,20 +124,7 @@ export default {
       return this.displayDuration({ media: this.file });
     },
   },
-  methods: {
-    startMediaDrag($event) {
-      console.log(`MediaFocus / startMediaDrag`);
-      this.is_dragged = true;
-      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
-      $event.dataTransfer.effectAllowed = "move";
-      this.$eventHub.$emit(`mediatile.drag.start`);
-    },
-    endMediaDrag() {
-      console.log(`MediaFocus / endMediaDrag`);
-      this.is_dragged = false;
-      this.$eventHub.$emit(`mediatile.drag.end`);
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -159,7 +134,7 @@ export default {
   overflow: hidden;
   border-radius: 3px;
   // border: 1px solid transparent;
-  // transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--own {
     // border-bottom: 2px solid var(--c-bleumarine);
@@ -196,7 +171,8 @@ export default {
     border: 3px solid var(--active-color);
   }
   &.is--dragged {
-    opacity: 0.5;
+    opacity: 0.9;
+    transform: rotate(5deg) scale(0.9);
   }
   &.is--selected {
     &::after {
@@ -410,6 +386,24 @@ export default {
   }
 }
 
+._dragFileIcon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+
+  display: flex;
+  place-content: center;
+  place-items: center;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
 ._caption {
   // position: absolute;
   // bottom: 0;
@@ -438,41 +432,6 @@ export default {
     padding: calc(var(--spacing) / 2);
     ._mediaTile[data-tilemode="medium"] & {
       padding: calc(var(--spacing) / 1);
-    }
-  }
-}
-
-._dragTile {
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: white;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  pointer-events: none;
-
-  > * {
-    display: block;
-    pointer-events: auto;
-
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-    cursor: grab;
-
-    &:hover,
-    &:focus {
-      cursor: -webkit-grabbing;
-      cursor: -moz-grabbing;
-      cursor: dragging;
-    }
-
-    ::v-deep svg {
-      stroke: var(--c-noir);
-      stroke-width: 1px;
     }
   }
 }
