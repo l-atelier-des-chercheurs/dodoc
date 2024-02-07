@@ -64,7 +64,7 @@
       @click="$emit('toggleMediaFocus')"
     />
 
-    <div class="_dragFile">
+    <div class="_dragFileIcon">
       <DragFile :file="file" :is_dragged.sync="is_dragged" />
     </div>
 
@@ -386,7 +386,7 @@ export default {
   }
 }
 
-._dragFile {
+._dragFileIcon {
   position: absolute;
   left: 0;
   top: 0;
