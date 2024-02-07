@@ -326,7 +326,7 @@ module.exports = (function () {
       });
 
       let meta = await utils.readMetaFile(path_to_meta);
-      desired_filename = meta_filename;
+      let desired_meta_filename = meta_filename;
 
       // todo copy all related meta (archives as well)
       // const _all_file_paths = await _getAllFilesRelatedToMeta({
@@ -360,13 +360,13 @@ module.exports = (function () {
         });
 
         meta.$media_filename = new_filename;
-        // desired_filename = new_filename;
+        desired_meta_filename = meta.$media_filename + ".meta.txt";
       }
       meta.$date_uploaded = utils.getCurrentDate();
 
       const new_meta_filename = await _preventFileOverride({
         path_to_folder: path_to_destination_folder,
-        original_filename: desired_filename,
+        original_filename: desired_meta_filename,
       });
 
       // meta_filename = await _preventFileOverride({
