@@ -13,16 +13,8 @@
         />
       </transition>
 
-      <div
-        v-if="enable_drag"
-        class="_dragTile"
-        draggable="true"
-        @dragstart="startMediaDrag($event)"
-        @dragend="endMediaDrag()"
-      >
-        <div class="u-button u-button_icon">
-          <b-icon :icon="'grid3x2-gap-fill'" rotate="90" />
-        </div>
+      <div class="_dragFileIcon">
+        <DragFile :file="stack" :is_dragged.sync="is_dragged" />
       </div>
     </div>
     <div class="_list">
@@ -169,7 +161,7 @@ export default {
   }
 }
 
-._dragTile {
+._dragFileIcon {
   position: absolute;
   top: 0;
   right: 0;

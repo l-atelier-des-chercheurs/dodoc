@@ -553,7 +553,7 @@ hr {
   > button {
     width: 100%;
     justify-content: flex-end;
-    padding: calc(var(--spacing) / 2);
+    border-radius: 0;
 
     &:hover,
     &:focus {
