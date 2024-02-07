@@ -15,14 +15,14 @@
         :index="index"
         class="_reorderedFile"
       >
-        <!-- <div class="u-dragHandle" > -->
-        <b-icon
-          v-if="can_edit"
-          v-handle
-          icon="grip-vertical"
-          :label="$t('move')"
-        />
-        <!-- </div> -->
+        <button type="button" class="u-button u-button_icon">
+          <b-icon
+            v-if="can_edit"
+            v-handle
+            icon="hand-index-thumb"
+            :label="$t('move')"
+          />
+        </button>
         <span v-if="_linked_media && _linked_media.$path" class="_link">
           <MediaContent
             class="_preview"
