@@ -18,7 +18,10 @@
           </div>
 
           <div class="_cont">
-            <h2>{{ format.title }}</h2>
+            <!-- <pre>
+      {{ format }}
+    </pre
+            > -->
 
             <SectionsList
               :publication="format"
@@ -87,13 +90,13 @@ export default {
       });
 
     this.is_loading = false;
-    this.$api.join({ room: this.format });
+    this.$api.join({ room: this.path });
 
     this.$eventHub.$on("format.addStack", this.addToStack);
   },
   mounted() {},
   beforeDestroy() {
-    this.$api.leave({ room: this.format });
+    this.$api.leave({ room: this.path });
     this.$eventHub.$off("format.addStack", this.addToStack);
   },
   watch: {},
@@ -126,7 +129,7 @@ export default {
   background: var(--c-gris_clair);
   height: 100%;
   width: 100%;
-  // border-top: 2px solid var(--c-gris);
+  overflow: auto;
   padding: calc(var(--spacing) / 1);
 }
 ._spinner {

@@ -12,6 +12,18 @@
           :zoom_on_click="true"
         />
       </transition>
+
+      <div
+        v-if="enable_drag"
+        class="_dragTile"
+        draggable="true"
+        @dragstart="startMediaDrag($event)"
+        @dragend="endMediaDrag()"
+      >
+        <div class="u-button u-button_icon">
+          <b-icon :icon="'grid3x2-gap-fill'" rotate="90" />
+        </div>
+      </div>
     </div>
     <div class="_list">
       <div
@@ -35,6 +47,7 @@ export default {
   data() {
     return {
       active_file_index: 0,
+      is_dragged: false,
     };
   },
   i18n: {
@@ -60,6 +73,12 @@ export default {
     },
   },
   computed: {
+    enable_drag() {
+      // hacky but it works
+      return (
+        typeof this.$eventHub._events["mediatile.drag.end"] !== "undefined"
+      );
+    },
     current_file_shown() {
       if (this.active_file_index !== false)
         return this.files[this.active_file_index];
@@ -70,6 +89,16 @@ export default {
     toggleFile(index) {
       if (this.active_file_index === index) this.active_file_index = false;
       else this.active_file_index = index;
+    },
+    startMediaDrag($event) {
+      this.is_dragged = true;
+      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
+      $event.dataTransfer.effectAllowed = "copy";
+      this.$eventHub.$emit(`mediatile.drag.start`);
+    },
+    endMediaDrag() {
+      this.is_dragged = false;
+      this.$eventHub.$emit(`mediatile.drag.end`);
     },
   },
 };
@@ -88,6 +117,8 @@ export default {
 }
 
 ._single {
+  position: relative;
+
   ._mediaContent {
     height: 100%;
   }
@@ -136,5 +167,11 @@ export default {
       max-width: none;
     }
   }
+}
+
+._dragTile {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 </style>
