@@ -433,6 +433,7 @@ module.exports = (function () {
     while (all_files_and_folders_names.includes(new_filename)) {
       index++;
       const { name, ext } = parseFilename(original_filename);
+      // todo increment index instead of -1-1-1
       new_filename = `${name}-${index}${ext}`;
     }
     return new_filename;
