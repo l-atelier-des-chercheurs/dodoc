@@ -689,7 +689,7 @@ img {
     opacity: 1;
   }
   &-leave-active {
-    position: absolute;
+    position: absolute !important;
   }
 }
 

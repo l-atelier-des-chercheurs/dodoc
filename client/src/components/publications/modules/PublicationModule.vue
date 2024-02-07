@@ -4,7 +4,7 @@
     :data-type="module_type"
     @click="preventClickTraversing"
   >
-    <transition name="scaleInFade" mode="out-in">
+    <transition name="toggleLock" mode="out-in">
       <div
         class="_sideOptions"
         v-if="edit_mode && page_template !== 'page_by_page'"

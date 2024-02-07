@@ -1,0 +1,79 @@
+<template>
+  <!-- not a <button> because buttons cant be draggable on Firefox -->
+  <div
+    v-if="can_be_dragged"
+    class="_dragFile"
+    draggable="true"
+    @dragstart="startMediaDrag($event)"
+    @dragend="endMediaDrag()"
+  >
+    <button
+      type="button"
+      class="u-button u-button_icon"
+      :class="{
+        'is--dragged': is_dragged,
+      }"
+    >
+      <b-icon icon="hand-index-thumb" />
+    </button>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    file: Object,
+    is_dragged: Boolean,
+  },
+  components: {},
+  data() {
+    return {};
+  },
+  i18n: {
+    messages: {
+      fr: {},
+    },
+  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+  watch: {},
+  computed: {
+    can_be_dragged() {
+      return this.$root.fileCanBeDragged({
+        type: this.file.$type,
+      });
+    },
+  },
+  methods: {
+    startMediaDrag($event) {
+      console.log(`MediaFocus / startMediaDrag`);
+      this.$emit("update:is_dragged", true);
+      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
+      $event.dataTransfer.effectAllowed = "move";
+      this.$eventHub.$emit(`mediatile.drag.start`);
+    },
+    endMediaDrag() {
+      console.log(`MediaFocus / endMediaDrag`);
+      this.$emit("update:is_dragged", false);
+      this.$eventHub.$emit(`mediatile.drag.end`);
+    },
+  },
+};
+</script>
+<style lang="scss" scoped>
+._dragFile {
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
+
+  &:hover,
+  &:focus {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: dragging;
+  }
+
+  ::v-deep svg {
+  }
+}
+</style>

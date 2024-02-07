@@ -224,10 +224,18 @@ button {
 }
 
 .u-button_icon {
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
   // margin: calc(var(--spacing) / -4);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+
+  font-size: var(--sl-font-size-medium);
+
   color: inherit;
+
+  > svg {
+    display: block;
+  }
 
   &:hover,
   &:active,
@@ -235,7 +243,7 @@ button {
   &.is--active {
     &:not([disabled]) {
       color: var(--active-color);
-      background: transparent;
+      background: rgba(255, 255, 255, 1);
     }
   }
 }
@@ -1072,7 +1080,7 @@ input[type="checkbox"]:disabled {
   // border-image-repeat: round;
   // border-width: 8px;
 
-  border: 4px dotted white;
+  border: 3px dotted white;
   border-radius: 10px;
 
   border-color: var(--dropzone-color2);

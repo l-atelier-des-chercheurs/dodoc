@@ -25,22 +25,36 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    media_types_allowed: Array,
+  },
   components: {},
   data() {
     return {
       show_dropzone: false,
       is_dragover: false,
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
     };
   },
   created() {},
   mounted() {
     // détecter côté mediatile qu'une dropzone est ouverte,
     // avec les contraintes (que les images, que les images et vidéos, etc.)
+    this.media_types_allowed;
+
+    let dz = {
+      id: this.id,
+    };
+    if (this.media_types_allowed) dz.allowed_types = this.media_types_allowed;
+
+    this.$root.registerDropzone(dz);
     this.$eventHub.$on(`mediatile.drag.start`, this.showDropzone);
     this.$eventHub.$on(`mediatile.drag.end`, this.hideDropzone);
   },
   beforeDestroy() {
+    this.$root.unregisterDropzone({
+      id: this.id,
+    });
     this.$eventHub.$off(`mediatile.drag.start`, this.showDropzone);
     this.$eventHub.$off(`mediatile.drag.end`, this.hideDropzone);
   },
