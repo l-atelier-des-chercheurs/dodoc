@@ -1,24 +1,41 @@
 <template>
-  <div>Mediapicker</div>
+  <div class="_mediaPicker">
+    <!-- <PickMediaFromProjects
+      :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
+      :path="current_project_path"
+      :select_mode="select_mode"
+      @addMedias="$emit('addMedias', $event)"
+      @close="$emit('close')"
+    /> -->
+  </div>
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    publication_path: String,
+    select_mode: {
+      type: String,
+      default: "multiple",
+    },
+  },
   components: {},
   data() {
     return {};
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
-  created() {},
-  mounted() {},
+  async created() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    // current_project_path() {
+    //   const all_publications_path = this.getParent(this.publication_path);
+    //   return this.getParent(all_publications_path);
+    // },
+  },
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._mediaPicker {
+  position: absolute;
+}
+</style>

@@ -847,6 +847,10 @@ export default {
 ._saveBtn {
   flex: 0 0 auto;
   text-align: right;
+
+  ::v-deep ._editBtn {
+    --color1: white;
+  }
 }
 
 ._advanced_menu,
