@@ -16,7 +16,7 @@
         {{ fetch_project_error }}
       </div>
       <div v-else key="publication" ref="fsContainer">
-        <div
+        <!-- <div
           class="_pubTopbar"
           v-if="!is_serversidepreview && !is_fullscreen && false"
         >
@@ -25,9 +25,7 @@
             :no_back_button="true"
             :can_edit="false"
           />
-        </div>
-        <!-- Publication view project = {{ project }} <br />
-        publication = {{ publication }} -->
+        </div> -->
         <template v-if="publication.template === 'page_by_page'">
           <PageSlides
             :publication="publication"
@@ -56,12 +54,12 @@
 <script>
 import screenfull from "screenfull";
 
-import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
+// import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
 
 export default {
   props: {},
   components: {
-    PublicationTopbar,
+    // PublicationTopbar,
     PageSlides: () =>
       import("@/components/publications/page_by_page/PageSlides.vue"),
     StoryTemplate: () =>
@@ -86,10 +84,14 @@ export default {
     if (this.$route.query?.make_preview === "true")
       this.is_serversidepreview = true;
 
-    await this.listProject();
-    this.$eventHub.$emit("received.project", this.project);
+    // this.publication = await this.$api
+    //   .getFolder({
+    //     path: this.publication_path,
+    //   })
+    //   .catch((err) => {
+    //     this.fetch_publication_error = err.response;
+    //   });
 
-    await this.listPublication();
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
     // this.$api.join({ room: this.publication_path });
@@ -141,27 +143,6 @@ export default {
     async toggleFs() {
       if (this.is_fullscreen) this.closeFs();
       else this.openFs();
-    },
-    async listProject() {
-      const project = await this.$api
-        .getFolder({
-          path: this.project_path,
-        })
-        .catch((err) => {
-          this.fetch_project_error = err.response;
-          this.is_loading = false;
-        });
-      this.project = project;
-    },
-    async listPublication() {
-      const publication = await this.$api
-        .getFolder({
-          path: this.publication_path,
-        })
-        .catch((err) => {
-          this.fetch_publication_error = err.response;
-        });
-      this.publication = publication;
     },
   },
 };

@@ -12,7 +12,7 @@
         &nbsp;
         <button
           type="button"
-          class="u-button u-button_icon"
+          class="u-button u-button_icon _icon"
           :style="icon_styles"
         >
           <b-icon
@@ -70,7 +70,7 @@ export default {
 ._labelLine {
   display: flex;
   align-items: center;
-  // gap: calc(var(--spacing) / 8);
+  font-size: var(--sl-font-size-small);
 
   .u-label {
     // color: currentColor;
@@ -78,6 +78,11 @@ export default {
     // color: currentColor;
     margin-bottom: 0;
   }
+}
+
+._icon {
+  padding-bottom: 0;
+  padding-top: 0;
 }
 ._instr {
   margin-bottom: calc(var(--spacing) / 2);

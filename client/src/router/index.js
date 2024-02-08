@@ -25,6 +25,10 @@ const routes = [
   {
     path: "/+:space_slug/:project_slug/publications/:publication_slug",
     name: "Publication",
+    meta: {
+      /* do not load full UI */
+      static: true,
+    },
     component: () =>
       import(
         /* webpackChunkName: "PublicationView" */ "../views/PublicationView.vue"

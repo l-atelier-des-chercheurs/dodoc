@@ -18,72 +18,36 @@
     <component :is="'style'">
       {{ custom_fonts_css }}
     </component>
-    <DisconnectModal
-      v-if="show_disconnect_modal"
-      @close="show_disconnect_modal = false"
-    />
-    <TrackAuthorChanges />
-    <div class="_spinner" v-if="$root.is_loading" key="loader">
-      <LoaderSpinner />
-    </div>
 
-    <template v-else>
-      <GeneralPasswordModal
-        v-if="show_general_password_modal"
-        @close="show_general_password_modal = false"
-      />
+    <!-- static UI, no live update -->
+    <router-view
+      v-if="$route.meta && $route.meta.static === true"
+      v-slot="{ Component }"
+      :key="$route.path"
+    >
+      <component :is="Component" />
+    </router-view>
 
-      <template v-else>
-        <TopBar v-if="$route.name !== 'Publication'" />
-        <transition name="pagechange" mode="out-in">
-          <router-view v-slot="{ Component }" :key="$route.path">
-            <component :is="Component" />
-          </router-view>
-        </transition>
-        <TaskTracker />
-      </template>
-    </template>
+    <!-- dynamic, regular app with live updates and logging in -->
+    <FullUI v-else />
 
     <portal-target name="destination" multiple />
   </div>
 </template>
 <script>
-import TopBar from "@/components/TopBar.vue";
-import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
-import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
-import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
-import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
+import FullUI from "@/FullUI.vue";
 
 export default {
   props: {},
   components: {
-    TopBar,
-    GeneralPasswordModal,
-    TrackAuthorChanges,
-    TaskTracker,
-    DisconnectModal,
+    FullUI,
   },
   data() {
-    return {
-      show_general_password_modal: false,
-      show_disconnect_modal: false,
-    };
+    return {};
   },
-  created() {
-    this.$eventHub.$on(
-      `app.prompt_general_password`,
-      this.promptGeneralPassword
-    );
-    this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
-  },
+  created() {},
   mounted() {},
-  beforeDestroy() {
-    this.$eventHub.$off(
-      `app.prompt_general_password`,
-      this.promptGeneralPassword
-    );
-    this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
-  },
+  beforeDestroy() {},
   watch: {},
   computed: {
     custom_fonts_css() {
@@ -138,14 +102,7 @@ export default {
       }, ``);
     },
   },
-  methods: {
-    showDisconnectModal() {
-      this.show_disconnect_modal = true;
-    },
-    promptGeneralPassword() {
-      this.show_general_password_modal = true;
-    },
-  },
+  methods: {},
 };
 </script>
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>

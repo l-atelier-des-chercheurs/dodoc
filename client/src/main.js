@@ -284,8 +284,8 @@ new Vue({
   data: {
     store: window.store,
     app_infos: window.app_infos,
-    is_loading: true,
-    dev_mode: true,
+    debug_mode,
+
     publicPath: process.env.BASE_URL,
 
     modal_is_opened: false,
@@ -315,17 +315,8 @@ new Vue({
     setInterval(() => (this.current_time = getTime()), 1000);
   },
   async mounted() {
-    await this.$api.init({ debug_mode });
-    this.is_loading = false;
-
-    this.$eventHub.$on("socketio.connect", this.socketConnected);
-    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
-    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
-    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
     this.$eventHub.$on("modal.is_opened", this.modalIsOpened);
     this.$eventHub.$on("modal.is_closed", this.modalIsClosed);
-    const html = document.documentElement; // returns the html tag
-    html.setAttribute("lang", "fr");
 
     window.addEventListener("resize", () => {
       this.window.innerWidth = window.innerWidth;
@@ -352,25 +343,6 @@ new Vue({
     },
   },
   methods: {
-    socketConnected() {
-      if (this.debug_mode)
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(`Connected or reconnected with id ${this.$api.socket.id}`);
-    },
-    socketDisconnected(reason) {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(`Disconnected ${reason}`);
-    },
-    socketConnectError(reason) {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(`Connect error ${reason}`);
-    },
     modalIsOpened() {
       document.body.style.overflow = "hidden";
       this.modal_is_opened = true;
