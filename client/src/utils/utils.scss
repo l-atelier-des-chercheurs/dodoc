@@ -1002,6 +1002,7 @@ input[type="checkbox"]:disabled {
   transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--active {
+    border-color: var(--dropzone-color1) !important;
     animation: flashbackground 1000ms infinite alternate linear;
 
     @keyframes flashbackground {
@@ -1018,7 +1019,7 @@ input[type="checkbox"]:disabled {
   &:hover,
   &:focus {
     // override possible is--active
-    border-color: var(--dropzone-color1) !important;
+    border-color: transparent !important;
     background-color: var(--dropzone-color2) !important;
   }
 

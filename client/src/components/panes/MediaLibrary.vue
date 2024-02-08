@@ -933,6 +933,11 @@ export default {
   .u-dropzone {
     --dropzone-color1: var(--c-orange);
     --dropzone-color2: var(--c-rouge);
+
+    &.is--dragover,
+    &:hover,
+    &:focus {
+    }
   }
   .u-button {
     // display: flex;
