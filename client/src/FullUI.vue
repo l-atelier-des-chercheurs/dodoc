@@ -5,7 +5,8 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
-    <div class="_spinner" v-if="is_loading" key="loader">
+
+    <div class="_spinner" v-if="$root.is_loading" key="loader">
       <LoaderSpinner />
     </div>
 
@@ -47,7 +48,6 @@ export default {
     return {
       show_general_password_modal: false,
       show_disconnect_modal: false,
-      is_loading: true,
     };
   },
   i18n: {
@@ -56,6 +56,8 @@ export default {
     },
   },
   async created() {
+    console.log("Loading FullUI");
+
     await this.$api.init({ debug_mode: this.$root.debug_mode });
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
@@ -68,7 +70,7 @@ export default {
     );
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
 
-    this.is_loading = false;
+    this.$root.is_loading = false;
   },
   mounted() {},
   beforeDestroy() {

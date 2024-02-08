@@ -284,6 +284,7 @@ new Vue({
   data: {
     store: window.store,
     app_infos: window.app_infos,
+    is_loading: true,
     debug_mode,
 
     publicPath: process.env.BASE_URL,
@@ -314,7 +315,7 @@ new Vue({
     this.current_time = getTime();
     setInterval(() => (this.current_time = getTime()), 1000);
   },
-  async mounted() {
+  mounted() {
     this.$eventHub.$on("modal.is_opened", this.modalIsOpened);
     this.$eventHub.$on("modal.is_closed", this.modalIsClosed);
 

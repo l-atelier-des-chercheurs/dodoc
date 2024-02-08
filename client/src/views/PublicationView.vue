@@ -9,11 +9,8 @@
       {{ set_print_margins }}
     </component>
     <transition name="fade_fast" mode="out-in">
-      <div class="u-divCentered" v-if="!project || !publication" key="loader">
+      <div class="u-divCentered" v-if="$root.is_loading" key="loader">
         <LoaderSpinner />
-      </div>
-      <div v-else-if="fetch_project_error" key="err">
-        {{ fetch_project_error }}
       </div>
       <div v-else key="publication" ref="fsContainer">
         <!-- <div
@@ -71,7 +68,6 @@ export default {
   },
   data() {
     return {
-      fetch_project_error: null,
       project: null,
       publication: null,
 
@@ -79,22 +75,26 @@ export default {
       is_serversidepreview: false,
     };
   },
-  created() {},
+  created() {
+    console.log("Loading PublicationView");
+  },
   async mounted() {
     if (this.$route.query?.make_preview === "true")
       this.is_serversidepreview = true;
 
-    // this.publication = await this.$api
-    //   .getFolder({
-    //     path: this.publication_path,
-    //   })
-    //   .catch((err) => {
-    //     this.fetch_publication_error = err.response;
-    //   });
+    this.publication = await this.$api
+      .getFolder({
+        path: this.publication_path,
+      })
+      .catch((err) => {
+        this.fetch_publication_error = err.response;
+      });
 
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
     // this.$api.join({ room: this.publication_path });
+
+    this.$root.is_loading = false;
   },
   beforeDestroy() {
     // this.$api.leave({ room: this.project.$path });

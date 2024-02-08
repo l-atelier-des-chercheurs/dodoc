@@ -19,17 +19,21 @@
       {{ custom_fonts_css }}
     </component>
 
-    <!-- static UI, no live update -->
-    <router-view
-      v-if="$route.meta && $route.meta.static === true"
-      v-slot="{ Component }"
-      :key="$route.path"
-    >
-      <component :is="Component" />
-    </router-view>
-
-    <!-- dynamic, regular app with live updates and logging in -->
-    <FullUI v-else />
+    <div class="_spinner" v-if="!router_is_loading" key="loader">
+      <LoaderSpinner />
+    </div>
+    <template v-else>
+      <!-- static UI, no live update -->
+      <router-view
+        v-if="$route.meta && $route.meta.static === true"
+        v-slot="{ Component }"
+        :key="$route.path"
+      >
+        <component :is="Component" />
+      </router-view>
+      <!-- dynamic, regular app with live updates and logging in -->
+      <FullUI v-else />
+    </template>
 
     <portal-target name="destination" multiple />
   </div>
@@ -43,10 +47,16 @@ export default {
     FullUI,
   },
   data() {
-    return {};
+    return {
+      router_is_loading: false,
+    };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      this.router_is_loading = true;
+    }, 200);
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
