@@ -27,7 +27,7 @@
               :publication="format"
               :opened_section_meta_filename="opened_section_meta_filename"
               :can_edit="can_edit"
-              @toggleSection="opened_section_meta_filename = $event"
+              @toggleSection="toggleSection"
             />
 
             <!-- <div class="">
@@ -109,6 +109,9 @@ export default {
     addToStack() {
       //
     },
+    toggleSection(section_meta_filename) {
+      this.opened_section_meta_filename = section_meta_filename;
+    },
     async updateOpenedCollection() {
       //
     },
@@ -126,7 +129,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  background: var(--c-gris_clair);
+  background: white;
   height: 100%;
   width: 100%;
   overflow: auto;
