@@ -13,7 +13,6 @@
         <LoaderSpinner />
       </div>
       <div v-else key="publication" ref="fsContainer">
-        {{ publication }}
         <!-- <div
           class="_pubTopbar"
           v-if="!is_serversidepreview && !is_fullscreen && false"

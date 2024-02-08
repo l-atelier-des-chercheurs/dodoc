@@ -372,7 +372,9 @@ export default function () {
           .catch((err) => {
             throw this.processError(err);
           });
-        return response.data;
+        const folder = response.data;
+        this.$set(this.store, folder.$path, folder);
+        return this.store[folder.$path];
       },
 
       async getArchives({ path }) {
