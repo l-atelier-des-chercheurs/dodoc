@@ -57,7 +57,7 @@
     <div class="">
       <button
         type="button"
-        class="u-button u-button_icon _addToFav"
+        class="u-button u-button_icon u-button_transparent _addToFav"
         v-if="can_be_added_to_fav"
         @click.stop="$emit('toggleFav')"
       >
@@ -268,10 +268,6 @@ export default {
   top: 0;
   right: 0;
   margin: 4px;
-  // z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.8);
-  color: var(--c-rouge);
-  border-radius: 50%;
 }
 
 .slideview {
