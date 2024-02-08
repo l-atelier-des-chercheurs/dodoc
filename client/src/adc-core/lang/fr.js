@@ -712,6 +712,7 @@ export default {
   medium: "Moyenne",
   low: "Basse",
   rough: "Ébauche",
+  optimize_media: "Optimiser le média",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
