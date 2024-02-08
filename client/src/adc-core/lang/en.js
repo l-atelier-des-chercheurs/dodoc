@@ -153,6 +153,7 @@ export default {
   medium: "Medium",
   low: "Low",
   rough: "Draft",
+  optimize_media: "Optimize the media",
 
   no_accounts_yet: "No accounts created yet",
   add_accounts: "Add accounts",

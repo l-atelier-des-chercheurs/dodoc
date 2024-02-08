@@ -4,8 +4,12 @@
       <p class="u-spacingBottom">
         <span v-html="$t('connection_lost_in')" /><br />
         <template v-if="!is_reconnecting">
-          <span v-html="$t('attempting_to_reconnect_in')" />&nbsp;<strong
-            >{{ seconds_before_reconnecting }}s</strong
+          <span v-html="$t('attempting_to_reconnect_in')" />&nbsp;<strong>
+            <transition name="fade_fast" mode="out-in">
+              <span :key="seconds_before_reconnecting">
+                {{ seconds_before_reconnecting }}s
+              </span>
+            </transition></strong
           >
         </template>
       </p>
@@ -62,7 +66,6 @@ export default {
       this.seconds_before_reconnecting -= 1;
       if (this.seconds_before_reconnecting === 0) {
         await this.reconnectSocket();
-        this.seconds_before_reconnecting = 10;
       }
       if (!this.$api.connected) window.setTimeout(this.countdown, 1000);
     })();
@@ -88,8 +91,9 @@ export default {
       this.is_reconnecting = true;
       this.$api.reconnectSocket();
 
-      await new Promise((r) => setTimeout(r, 2000));
+      await new Promise((r) => setTimeout(r, 1000));
       this.is_reconnecting = false;
+      this.seconds_before_reconnecting = 10;
     },
   },
 };
