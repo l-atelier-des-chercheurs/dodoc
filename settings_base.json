@@ -364,7 +364,7 @@
                 },
                 "$files": {
                   "thumbs": {
-                    "resolutions": [180, 360, 1600, 2400]
+                    "resolutions": [50, 220, 440, 1600]
                   },
                   "fields": {
                     "module_type": {
