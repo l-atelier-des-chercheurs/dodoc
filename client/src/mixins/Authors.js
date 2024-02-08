@@ -91,5 +91,11 @@ export default {
         return true;
       return false;
     },
+    canPublicSeeFolder({ folder }) {
+      // if instance is protected by general password, we need to make sur that the folder has $public: true
+      if (this.$root.app_infos.instance_meta.has_general_password)
+        return folder.$public === true;
+      return true;
+    },
   },
 };

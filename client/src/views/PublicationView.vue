@@ -13,6 +13,7 @@
         <LoaderSpinner />
       </div>
       <div v-else key="publication" ref="fsContainer">
+        {{ publication }}
         <!-- <div
           class="_pubTopbar"
           v-if="!is_serversidepreview && !is_fullscreen && false"
@@ -83,11 +84,12 @@ export default {
       this.is_serversidepreview = true;
 
     this.publication = await this.$api
-      .getFolder({
+      .getPublicFolder({
         path: this.publication_path,
       })
       .catch((err) => {
         this.fetch_publication_error = err.response;
+        this.$root.is_loading = false;
       });
 
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
