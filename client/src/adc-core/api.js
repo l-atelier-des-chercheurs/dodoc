@@ -480,7 +480,6 @@ export default function () {
         } else {
           data = additional_meta;
         }
-        debugger;
         let res = await this.$axios
           .post(`${path}/_upload`, data, {
             headers,

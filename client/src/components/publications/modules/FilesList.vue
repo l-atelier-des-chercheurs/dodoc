@@ -5,7 +5,7 @@
       :key="/* slicklist stays active otherwise */ can_edit"
       class="_listOfFiles"
       axis="y"
-      :value="medias_with_linked.map((m) => m.meta_filename_in_project)"
+      :value="medias_with_linked"
       @input="$emit('reorderMedias', $event)"
       :useDragHandle="true"
     >
@@ -15,9 +15,14 @@
         :index="index"
         class="_reorderedFile"
       >
-        <span v-handle class="u-dragHandle" v-if="can_edit">
-          <sl-icon name="grip-vertical" label="Déplacer" />
-        </span>
+        <button type="button" class="u-button u-button_icon">
+          <b-icon
+            v-if="can_edit"
+            v-handle
+            icon="hand-index-thumb"
+            :label="$t('move')"
+          />
+        </button>
         <span v-if="_linked_media && _linked_media.$path" class="_link">
           <MediaContent
             class="_preview"
