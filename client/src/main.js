@@ -303,7 +303,7 @@ new Vue({
 
     dropzones: [],
 
-    publication_include_mode: "link",
+    publication_include_mode: "copy",
   },
   created() {
     const getTime = () => new Date().getTime();
