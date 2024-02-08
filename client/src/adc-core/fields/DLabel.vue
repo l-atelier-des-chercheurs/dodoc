@@ -81,8 +81,9 @@ export default {
 }
 
 ._icon {
-  padding-bottom: 0;
-  padding-top: 0;
+  font-size: var(--sl-font-size-x-small);
+  padding: 0;
+  padding-left: calc(var(--spacing) / 4);
 }
 ._instr {
   margin-bottom: calc(var(--spacing) / 2);
