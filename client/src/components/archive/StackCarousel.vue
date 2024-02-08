@@ -14,7 +14,7 @@
       </transition>
 
       <div class="_dragFileIcon">
-        <DragFile :file="stack" :is_dragged.sync="is_dragged" />
+        <DragFile :file="current_file_shown" :is_dragged.sync="is_dragged" />
       </div>
     </div>
     <div class="_list">
