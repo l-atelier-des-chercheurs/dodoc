@@ -133,7 +133,7 @@ export default {
           this.stack_files = files;
           this.updateMousePos(event);
         }
-      }, 500);
+      }, 400);
     },
     updateMousePos(event) {
       if (!this.stack_files) return;
