@@ -9,7 +9,7 @@
   "tokenIsValidForXDays": 60,
 
   "cacheDirname": "luma_cache",
-  "contentPath": "luma_next_old",
+  "contentPath": "luma_next",
 
   "privateKeyPath": "",
   "certificatePath": "",
