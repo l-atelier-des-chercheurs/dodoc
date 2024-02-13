@@ -21,7 +21,7 @@
 
     <transition name="fade" mode="out-in">
       <div v-if="show_space_name">
-        <sl-icon name="arrow-right-short" label="" class="_arrowRight" />
+        <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
         <component
           :is="$route.name === 'Projet' ? 'router-link' : 'span'"
@@ -29,7 +29,7 @@
           :to="{ path: '/+' + $route.params.space_slug }"
           :disabled="$route.name === 'Espace'"
         >
-          <div class="u-buttonLink">
+          <div class="u-label">
             {{ $t("space") }}
           </div>
           <div class="_name">{{ (space && space.title) || "–" }}</div>
@@ -39,7 +39,7 @@
 
     <transition name="fade" mode="out-in">
       <div v-if="show_project_name">
-        <sl-icon name="arrow-right-short" label="" class="_arrowRight" />
+        <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
         <component
           :is="false ? 'router-link' : 'span'"
@@ -47,7 +47,7 @@
           :to="{ path: '/+' + $route.params.space_slug }"
           :disabled="$route.name === 'Espace'"
         >
-          <div class="u-buttonLink">
+          <div class="u-label">
             {{ $t("project") }}
           </div>
           <div class="_name">{{ (project && project.title) || "–" }}</div>
@@ -175,14 +175,14 @@ export default {
 
 a._spaceName {
   color: inherit;
-  text-decoration: none;
+  // text-decoration: none;
 
   &:hover {
     font-weight: 500;
   }
 }
 
-.u-buttonLink {
+.u-label {
   text-decoration: none;
 }
 
