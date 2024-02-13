@@ -16,79 +16,83 @@
       />
     </transition>
 
-    <div class="_sharedFolder--content">
-      <button
-        type="button"
-        class="u-buttonLink"
-        :class="{
-          'is--active': show_filter_sort_pane,
-        }"
-        @click="show_filter_sort_pane = !show_filter_sort_pane"
-      >
-        {{ $t("filter_sort") }}
-      </button>
-
-      <transition name="pagechange" mode="out-in">
-        <div class="_filterBar" v-if="show_filter_sort_pane">
-          <FilterBar
-            :group_mode.sync="group_mode"
-            :sort_order.sync="sort_order"
-            :search_str.sync="search_str"
-            :filetype_filter.sync="filetype_filter"
-            :author_path_filter.sync="author_path_filter"
-            :available_keywords="available_keywords"
-            :keywords_filter.sync="keywords_filter"
-            @close="show_filter_sort_pane = false"
-          />
-        </div>
-      </transition>
-
-      <div>
-        <ToggleInput :content.sync="fav_filter" :label="$t('only_my_fav')" />
+    <transition name="fade_fast" mode="out-in">
+      <div class="_loader" v-if="is_loading_folder">
+        <LoaderSpinner />
       </div>
-
-      <hr />
-
-      <transition name="pagechange" mode="out-in">
-        <transition-group
-          tag="div"
-          name="projectsList"
-          appear
-          :key="sort_order + '-' + group_mode"
+      <div v-else class="_sharedFolder--content">
+        <button
+          type="button"
+          class="u-buttonLink"
+          :class="{
+            'is--active': show_filter_sort_pane,
+          }"
+          @click="show_filter_sort_pane = !show_filter_sort_pane"
         >
-          <div
-            v-if="grouped_stacks.length === 0"
-            class="u-instructions _noContent"
-            :key="'nocontent'"
-          >
-            {{ $t("no_content") }}
+          {{ $t("filter_sort") }}
+        </button>
+
+        <transition name="pagechange" mode="out-in">
+          <div class="_filterBar" v-if="show_filter_sort_pane">
+            <FilterBar
+              :group_mode.sync="group_mode"
+              :sort_order.sync="sort_order"
+              :search_str.sync="search_str"
+              :filetype_filter.sync="filetype_filter"
+              :author_path_filter.sync="author_path_filter"
+              :available_keywords="available_keywords"
+              :keywords_filter.sync="keywords_filter"
+              @close="show_filter_sort_pane = false"
+            />
           </div>
-          <template v-else>
+        </transition>
+
+        <div>
+          <ToggleInput :content.sync="fav_filter" :label="$t('only_my_fav')" />
+        </div>
+
+        <hr />
+
+        <transition name="pagechange" mode="out-in">
+          <transition-group
+            tag="div"
+            name="projectsList"
+            appear
+            :key="sort_order + '-' + group_mode"
+          >
             <div
-              class="_dayFileSection"
-              v-for="{ label, files: stacks } in grouped_stacks"
-              :key="label"
+              v-if="grouped_stacks.length === 0"
+              class="u-instructions _noContent"
+              :key="'nocontent'"
             >
-              <div class="_label">
-                {{ label }}
-              </div>
-              <transition-group
-                tag="div"
-                class="_itemGrid"
-                name="listComplete"
-                appear
+              {{ $t("no_content") }}
+            </div>
+            <template v-else>
+              <div
+                class="_dayFileSection"
+                v-for="{ label, files: stacks } in grouped_stacks"
+                :key="label"
               >
-                <StackPreview
-                  v-for="stack in stacks"
-                  :key="stack.$path"
-                  :stack="stack"
-                  :is_selected="stack.$path === last_selected_stack_path"
-                  :can_be_added_to_fav="can_be_added_to_fav"
-                  :is_favorite="isFavorite(stack.$path)"
-                  @toggleFav="toggleFav(stack.$path)"
-                  @openStack="openStack"
-                />
-                <!-- <SharedFolderItem
+                <div class="_label">
+                  {{ label }}
+                </div>
+                <transition-group
+                  tag="div"
+                  class="_itemGrid"
+                  name="listComplete"
+                  appear
+                >
+                  <StackPreview
+                    v-for="stack in stacks"
+                    :key="stack.$path"
+                    :stack="stack"
+                    :is_selected="stack.$path === last_selected_stack_path"
+                    :can_be_added_to_fav="can_be_added_to_fav"
+                    :is_favorite="isFavorite(stack.$path)"
+                    @toggleFav="toggleFav(stack.$path)"
+                    @openStack="openStack"
+                  />
+                  <!-- <SharedFolderItem
                 class="_file"
                 v-for="stack in stacks"
                 :key="stack.$path"
@@ -97,42 +101,43 @@
                 :can_be_added_to_coll="!!opened_collection_slug"
                 @open="openFile(file.$path)"
               /> -->
-              </transition-group>
-            </div>
-          </template>
-        </transition-group>
-      </transition>
+                </transition-group>
+              </div>
+            </template>
+          </transition-group>
+        </transition>
+      </div>
+    </transition>
 
-      <footer class="_footer">
-        <small>
-          <a
-            :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-            target="_blank"
-          >
-            {{ $t("help_contact") }}
-          </a>
-          <br />
-          {{ $t("version") }} {{ $root.app_infos.version }}
+    <footer class="_footer">
+      <small>
+        <a
+          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+          target="_blank"
+        >
+          {{ $t("help_contact") }}
+        </a>
+        <br />
+        {{ $t("version") }} {{ $root.app_infos.version }}
 
-          <div v-if="is_instance_admin">
-            <DownloadFolder :path="shared_folder_path" />
-          </div>
+        <!-- <div v-if="is_instance_admin">
+          <DownloadFolder :path="shared_folder_path" />
+        </div> -->
 
-          <button
-            type="button"
-            class="u-buttonLink _adminBtn"
-            v-if="is_instance_admin"
-            @click="show_admin_settings = true"
-          >
-            {{ $t("admin_settings") }}
-          </button>
-          <AdminLumaSettings
-            v-if="show_admin_settings"
-            @close="show_admin_settings = false"
-          />
-        </small>
-      </footer>
-    </div>
+        <button
+          type="button"
+          class="u-buttonLink _adminBtn"
+          v-if="is_instance_admin"
+          @click="show_admin_settings = true"
+        >
+          {{ $t("admin_settings") }}
+        </button>
+        <AdminLumaSettings
+          v-if="show_admin_settings"
+          @close="show_admin_settings = false"
+        />
+      </small>
+    </footer>
   </div>
 </template>
 <script>
@@ -155,6 +160,7 @@ export default {
     return {
       all_stacks: [],
 
+      is_loading_folder: true,
       show_admin_settings: false,
 
       last_selected_stack_path: undefined,
@@ -175,13 +181,14 @@ export default {
       fr: {},
     },
   },
-  async created() {
+  async created() {},
+  async mounted() {
     this.all_stacks = await this.$api.getFolders({
       path: this.stack_shared_folder_path,
     });
     this.$api.join({ room: this.stack_shared_folder_path });
+    this.is_loading_folder = false;
   },
-  mounted() {},
   beforeDestroy() {
     this.$api.leave({ room: this.stack_shared_folder_path });
   },
@@ -335,7 +342,7 @@ export default {
   overflow: auto;
 
   padding: 2px;
-  padding: 0 calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) / 1);
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 }
@@ -343,12 +350,12 @@ export default {
 ._itemGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0px;
+  gap: calc(var(--spacing) / 1);
 }
 
 ._label {
-  font-weight: 400;
-  font-size: var(--sl-font-size-x-large);
+  font-weight: 500;
+  font-size: var(--sl-font-size-large);
 }
 
 ._stackModal {
@@ -360,5 +367,10 @@ export default {
 ._footer {
   text-align: center;
   margin: calc(var(--spacing) * 2) auto;
+}
+
+._loader {
+  position: relative;
+  min-height: 80vh;
 }
 </style>

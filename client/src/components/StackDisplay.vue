@@ -192,7 +192,7 @@
 
             <button
               type="button"
-              class="u-button u-button_icon u-button_black _hideSidebar"
+              class="u-button u-button_icon u-button_transparent _hideSidebar"
               @click.stop="show_sidebar = false"
             >
               <b-icon icon="arrow-left" :aria-label="$t('hide_sidebar')" />
@@ -606,7 +606,7 @@ hr {
   position: absolute;
   top: 0;
   right: 0;
-  margin: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 4);
   z-index: 8;
 }
 

@@ -1,5 +1,10 @@
 <template>
-  <div class="_stackPreview">
+  <div
+    class="_stackPreview"
+    @mouseenter="startSlide"
+    @mousemove="updateMousePos"
+    @mouseleave="endSlide"
+  >
     <button
       type="button"
       class="_stackPreview--content"
@@ -7,9 +12,6 @@
         'is--selected': is_selected,
       }"
       @click="openStack"
-      @mouseenter="startSlide"
-      @mousemove="updateMousePos"
-      @mouseleave="endSlide"
     >
       <div class="_preview">
         <div
@@ -54,17 +56,33 @@
         {{ stack.title }}
       </div>
     </button>
-    <div class="">
-      <button
-        type="button"
-        class="u-button u-button_icon u-button_transparent _addToFav"
-        v-if="can_be_added_to_fav"
-        @click.stop="$emit('toggleFav')"
-      >
-        <b-icon v-if="!is_favorite" icon="star" :aria-label="$t('add')" />
-        <b-icon v-else icon="star-fill" :aria-label="$t('remove')" />
-      </button>
-    </div>
+
+    <transition name="fade_fast" mode="out-in">
+      <div v-if="can_be_added_to_fav && (is_favorite || start_slide)">
+        <button
+          type="button"
+          class="u-button u-button_icon u-button_transparent _addToFav"
+          :data-isfav="is_favorite"
+          @click.stop="$emit('toggleFav')"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.38174 1.75501C7.59507 1.19234 8.40241 1.19234 8.61641 1.75501L9.99641 5.57767C10.0931 5.83101 10.3391 5.99967 10.6137 5.99967H14.0051C14.6317 5.99967 14.9051 6.77967 14.4124 7.16167L11.9991 9.33301C11.891 9.41611 11.812 9.53132 11.7734 9.66211C11.7348 9.7929 11.7387 9.93255 11.7844 10.061L12.6657 13.7963C12.8804 14.3963 12.1857 14.9117 11.6604 14.5423L8.38241 12.4623C8.27015 12.3834 8.13628 12.3411 7.99907 12.3411C7.86187 12.3411 7.728 12.3834 7.61574 12.4623L4.33774 14.5423C3.81307 14.9117 3.11774 14.3957 3.33241 13.7963L4.21374 10.061C4.25946 9.93255 4.26331 9.7929 4.22475 9.66211C4.18618 9.53132 4.10718 9.41611 3.99907 9.33301L1.58574 7.16167C1.09241 6.77967 1.36707 5.99967 1.99241 5.99967H5.38374C5.51727 6.00012 5.64778 5.96001 5.75802 5.88466C5.86825 5.8093 5.95301 5.70225 6.00107 5.57767L7.38107 1.75501H7.38174Z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          <!-- <b-icon v-if="!is_favorite" icon="star" :aria-label="$t('add')" />
+          <b-icon v-else icon="star-fill" :aria-label="$t('remove')" /> -->
+        </button>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -121,7 +139,7 @@ export default {
       if (!this.stack_files) return;
 
       const { pageX } = event;
-      const { x, width } = event.target.getBoundingClientRect();
+      const { x, width } = this.$el.getBoundingClientRect();
       const move_percent = (pageX - x) / width;
       this.index_of_slide_file_to_show = Math.floor(
         move_percent * this.number_of_medias_in_stack
@@ -162,13 +180,13 @@ export default {
 
   position: relative;
   // box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-  background: transparent;
+  background: white;
   border: 2px solid var(--c-bodybg);
   cursor: pointer;
 
   border-radius: 2px;
   overflow: hidden;
-  padding: 1px;
+  padding: 2px;
 
   transform-origin: center calc(100% - 2em);
   transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
@@ -185,7 +203,7 @@ export default {
   &:focus-visible {
     // z-index: 2;
     // border-color: var(--c-gris_fonce);
-    background: var(--c-gris);
+    // background: var(--c-gris);
     // transform: scale(1.05);
   }
 }
@@ -194,7 +212,7 @@ export default {
   position: relative;
   width: 100%;
   min-height: 3rem;
-  aspect-ratio: 1/1;
+  aspect-ratio: 135/150;
   overflow: hidden;
 
   cursor: pointer;
@@ -215,7 +233,7 @@ export default {
         width: 100%;
         max-height: 10rem;
         object-fit: contain;
-        object-position: left bottom;
+        object-position: center;
       }
     }
   }
@@ -233,6 +251,10 @@ export default {
 }
 
 ._title {
+  position: absolute;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+
   height: 1.5em;
   padding: 0 calc(var(--spacing) / 4);
 
@@ -244,11 +266,11 @@ export default {
 
 ._count {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   margin: calc(var(--spacing) / 4);
-  font-weight: 600;
-  text-shadow: white 0px 0px 3px;
+  font-weight: 400;
+  background: white;
   color: black;
   line-height: 1;
 }
@@ -267,7 +289,18 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  margin: 4px;
+  margin: 0px;
+  color: transparent;
+  stroke: var(--c-noir);
+
+  &[data-isfav] {
+    color: var(--c-noir);
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
 }
 
 .slideview {
