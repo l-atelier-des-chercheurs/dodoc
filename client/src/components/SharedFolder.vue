@@ -111,6 +111,7 @@
               @prevMedia="navMedia(-1)"
               @nextMedia="navMedia(+1)"
               @close="closeFile"
+              @convertToFolder="convertToFolder(opened_file)"
             />
           </transition>
 
@@ -501,10 +502,6 @@ export default {
       if (stack.date_created_corrected)
         additional_meta.date_created_corrected = stack.date_created_corrected;
       if (stack.description) additional_meta.description = stack.description;
-      if (stack.stack_files_metas && stack.stack_files_metas.length > 0) {
-        additional_meta.stack_files_metas = stack.stack_files_metas;
-        additional_meta.$preview = stack.stack_files_metas[0];
-      }
 
       additional_meta.$admins = "everyone";
 
@@ -514,21 +511,43 @@ export default {
         path: "/folders/untitled/stacks",
         additional_meta,
       });
-      slug;
 
+      const path_to_destination_folder =
+        this.getParent(stack.$path) + "/stacks/" + slug;
+      let stack_files_metas = [];
+
+      // multi medias stack
       if (stack.stack_files_metas && stack.stack_files_metas.length > 0) {
-        const path_to_destination_folder =
-          this.getParent(stack.$path) + "/stacks/" + slug;
-
         // copy all medias to folder
         for (const meta of stack.stack_files_metas) {
           const path_to_meta = this.getParent(stack.$path) + "/" + meta;
-          await this.$api.copyFile({
+          const meta_filename = await this.$api.copyFile({
             path: path_to_meta,
             path_to_destination_folder,
           });
+          stack_files_metas.push(meta_filename);
         }
       }
+
+      // single media
+      else if (stack.$media_filename) {
+        const meta_filename = await this.$api.copyFile({
+          path: stack.$path,
+          path_to_destination_folder,
+        });
+        stack_files_metas.push(meta_filename);
+      }
+
+      let new_meta = {};
+      if (stack_files_metas.length > 0) {
+        new_meta.stack_files_metas = stack_files_metas;
+        new_meta.$preview = stack_files_metas[0];
+      }
+
+      await this.$api.updateMeta({
+        path: path_to_destination_folder,
+        new_meta,
+      });
 
       this.$alertify.delay(4000).success("MIGRATION " + stack.$path + " OK");
     },

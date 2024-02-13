@@ -138,7 +138,10 @@
         </div>
         <!-- <transition name="pagechange" mode="out-in"> -->
         <div class="_rightContent" v-if="show_sidebar">
-          <button class="u-button u-button_red" @click="convertToFolder">
+          <button
+            class="u-button u-button_red"
+            @click="$emit('convertToFolder')"
+          >
             CONVERTIR
           </button>
 
