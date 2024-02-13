@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('settings')" @close="$emit('close')">
+  <BaseModal2 :title="$t('admin_settings')" @close="$emit('close')">
     <div class="">
       <div class="_spinner" v-if="is_loading" key="loader">
         <LoaderSpinner />
