@@ -14,7 +14,7 @@
         class="u-button u-button_transparent"
         @click="show_qr_code_modal = true"
       >
-        <b-icon icon="qr-code" :aria-label="$t('share_link_to_page')" />
+        <sl-icon name="qr-code" :aria-label="$t('share_link_to_page')" />
       </button>
       <QRModal
         v-if="show_qr_code_modal"

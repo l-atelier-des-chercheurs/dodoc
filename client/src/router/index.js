@@ -47,6 +47,12 @@ const routes = [
       import(/* webpackChunkName: "AuthorView" */ "../views/AuthorView.vue"),
   },
   {
+    path: "/p/:page_slug",
+    name: "Page",
+    component: () =>
+      import(/* webpackChunkName: "Page" */ "../views/PageView.vue"),
+  },
+  {
     path: "/_ui",
     name: "UI (dev only)",
     component: () =>
