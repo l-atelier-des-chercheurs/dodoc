@@ -34,7 +34,7 @@
       @submit.prevent="createPage"
     >
       <fieldset>
-        <legend class="u-label">{{ $t("add_page") }}</legend>
+        <legend class="u-label">{{ $t("create_page") }}</legend>
 
         <TextInput
           :content.sync="new_page_title"
