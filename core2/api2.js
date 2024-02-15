@@ -39,6 +39,16 @@ module.exports = (function () {
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restart", _onlyAdmins, _restart);
 
+    /* PUBLIC FILES */
+    app.get(
+      [
+        "/_api2/:folder_type/:folder_slug/_public",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_public",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_public",
+      ],
+      _getPublicFolder
+    );
+
     /* FILES */
     app.get(
       [
@@ -190,7 +200,6 @@ module.exports = (function () {
       _restrictToLocalAdmins,
       _generatePreview
     );
-
     app.get(
       [
         "/_api2/",
@@ -648,6 +657,37 @@ module.exports = (function () {
       });
     }
     // cache.printStatus();
+  }
+
+  async function _getPublicFolder(req, res, next) {
+    const { path_to_folder = "" } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      let d = await folder.getFolder({ path_to_folder });
+
+      // make sure $public === true
+      if (d.$public !== true) {
+        const err = new Error("Folder is not public");
+        err.code = "folder_not_public";
+        throw err;
+      }
+
+      const files = await file.getFiles({ path_to_folder, embed_source: true });
+
+      d.$files = files;
+
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      dev.logpackets({ d });
+      res.json(d);
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to create folder: " + message);
+      res.status(404).send({
+        code,
+        err_infos,
+      });
+    }
   }
 
   async function _updateFolder(req, res, next) {

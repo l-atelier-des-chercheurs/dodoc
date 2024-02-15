@@ -18,93 +18,46 @@
     <component :is="'style'">
       {{ custom_fonts_css }}
     </component>
-    <DisconnectModal
-      v-if="show_disconnect_modal"
-      @close="show_disconnect_modal = false"
-    />
 
-    <div class="_spinner" v-if="$root.is_loading" key="loader">
+    <div class="_spinner" v-if="!router_is_loading" key="loader">
       <LoaderSpinner />
     </div>
-
     <template v-else>
-      <WelcomeModal
-        v-if="show_welcome_modal"
-        @close="show_welcome_modal = false"
-      />
-      <GeneralPasswordModal
-        v-else-if="show_general_password_modal"
-        @close="show_general_password_modal = false"
-      />
-
-      <template v-else>
-        <AuthorList
-          v-if="show_authors_modal"
-          :is_closable="!!connected_as"
-          @close="show_authors_modal = false"
-        />
-        <transition name="fade_fast" mode="out-in">
-          <router-view
-            v-if="!show_authors_modal"
-            v-slot="{ Component }"
-            :key="$route.path"
-          >
-            <component :is="Component" />
-          </router-view>
-        </transition>
-        <TaskTracker />
-      </template>
+      <!-- static UI, no live update -->
+      <router-view
+        v-if="$route.meta && $route.meta.static === true"
+        v-slot="{ Component }"
+        :key="$route.path"
+      >
+        <component :is="Component" />
+      </router-view>
+      <!-- dynamic, regular app with live updates and logging in -->
+      <FullUI v-else />
     </template>
 
     <portal-target name="destination" multiple />
   </div>
 </template>
 <script>
-import WelcomeModal from "@/components/WelcomeModal.vue";
-import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
-import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
-import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
-import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
-import AuthorList from "@/adc-core/author/AuthorList.vue";
+import FullUI from "@/FullUI.vue";
 
 export default {
   props: {},
   components: {
-    WelcomeModal,
-    GeneralPasswordModal,
-    TrackAuthorChanges,
-    TaskTracker,
-    DisconnectModal,
-    AuthorList,
+    FullUI,
   },
   data() {
     return {
-      show_general_password_modal: false,
-      show_welcome_modal:
-        localStorage.getItem("dont_show_window_again") !== "true",
-      show_disconnect_modal: false,
-      show_authors_modal: false,
+      router_is_loading: false,
     };
   },
-  created() {
-    this.$eventHub.$on(
-      `app.prompt_general_password`,
-      this.promptGeneralPassword
-    );
-    this.$eventHub.$on(`app.show_welcome_modal`, this.showWelcomeModal);
-    this.$eventHub.$on(`showAuthorModal`, this.showAuthorModal);
-    this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
+  created() {},
+  mounted() {
+    setTimeout(() => {
+      this.router_is_loading = true;
+    }, 200);
   },
-  mounted() {},
-  beforeDestroy() {
-    this.$eventHub.$off(
-      `app.prompt_general_password`,
-      this.promptGeneralPassword
-    );
-    this.$eventHub.$off(`app.show_welcome_modal`, this.showWelcomeModal);
-    this.$eventHub.$off(`showAuthorModal`, this.showAuthorModal);
-    this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
-  },
+  beforeDestroy() {},
   watch: {},
   computed: {
     custom_fonts_css() {
@@ -159,20 +112,7 @@ export default {
       }, ``);
     },
   },
-  methods: {
-    showDisconnectModal() {
-      this.show_disconnect_modal = true;
-    },
-    showWelcomeModal() {
-      this.show_welcome_modal = true;
-    },
-    showAuthorModal() {
-      this.show_authors_modal = true;
-    },
-    promptGeneralPassword() {
-      this.show_general_password_modal = true;
-    },
-  },
+  methods: {},
 };
 </script>
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
@@ -300,6 +240,9 @@ export default {
   }
 
   --sl-input-color: black;
+
+  --sl-font-size-x-small: 0.9rem;
+  --sl-font-size-small: 0.95rem;
   --sl-font-size-normal: 1rem;
   --sl-font-size-large: 1.5rem;
   --sl-font-size-x-large: 1.66rem;

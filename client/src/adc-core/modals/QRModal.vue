@@ -4,6 +4,8 @@
       <LoaderSpinner />
     </div>
     <div class="_txt" v-else>
+      <slot />
+
       <!-- <select v-if="!urls_to_page.domain" v-model="current_opt">
         <option
           value="local_network"

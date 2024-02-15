@@ -115,24 +115,26 @@
 }
 
 .u-buttonLink {
-  font-variant: small-caps;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 400;
   text-transform: lowercase;
   background: transparent;
+
   line-height: 1;
   padding: 0;
-
   color: currentColor;
   text-decoration: underline;
-  text-underline-offset: 0.2em;
+  text-decoration-thickness: auto;
+  text-underline-offset: 0.1em;
   cursor: pointer;
-
   display: inline-flex;
   align-items: center;
   flex-flow: row nowrap;
   white-space: nowrap;
   gap: calc(var(--spacing) / 4);
+  // font-size: var(--sl-font-size-small);
+  font-size: var(--sl-font-size-x-small);
+
+  text-decoration-thickness: 0.07em;
 
   &[disabled] {
     cursor: not-allowed;
@@ -160,6 +162,10 @@
   }
   &:focus-visible {
     background-color: var(--active-color);
+  }
+
+  svg {
+    pointer-events: none;
   }
 }
 
@@ -1089,6 +1095,7 @@ input[type="checkbox"]:disabled {
   transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--active {
+    border-color: var(--dropzone-color1) !important;
     animation: flashbackground 1000ms infinite alternate linear;
 
     @keyframes flashbackground {
@@ -1105,7 +1112,7 @@ input[type="checkbox"]:disabled {
   &:hover,
   &:focus {
     // override possible is--active
-    border-color: var(--dropzone-color1) !important;
+    border-color: transparent !important;
     background-color: var(--dropzone-color2) !important;
   }
 

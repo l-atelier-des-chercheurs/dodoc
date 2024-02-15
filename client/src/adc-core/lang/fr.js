@@ -49,6 +49,7 @@ export default {
   access: "Accéder",
   title: "Titre",
   subtitle: "Sous-titre",
+  content: "Contenu",
   name: "Nom",
   filename: "Nom du fichier",
 
@@ -268,6 +269,7 @@ export default {
   opacity: "Opacité",
   page_spreads: "Pages en vis-à-vis",
   page: "Page",
+  page_content: "Contenu de la page…",
   lock: "Verrouiller",
   unlock: "Déverrouiller",
   page_options: "Options de page",
@@ -446,6 +448,7 @@ export default {
   storage: "Stockage",
   events: "Événements",
   other_events: "Autres événements",
+  pages: "Pages",
   start_date: "Date de début",
   end_date: "Date de fin",
   created_during: "Créé pendant un événement",

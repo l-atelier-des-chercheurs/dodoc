@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('settings')" @close="$emit('close')">
+  <BaseModal2 :title="$t('admin_settings')" @close="$emit('close')">
     <div class="">
       <div class="_spinner" v-if="is_loading" key="loader">
         <LoaderSpinner />
@@ -20,6 +20,9 @@
           </sl-tab>
           <sl-tab slot="nav" panel="events">
             {{ $t("events") }}
+          </sl-tab>
+          <sl-tab slot="nav" panel="pages">
+            {{ $t("pages") }}
           </sl-tab>
           <sl-tab slot="nav" panel="storage">
             {{ $t("storage") }}
@@ -157,6 +160,12 @@
               />
             </template>
           </sl-tab-panel>
+          <sl-tab-panel name="pages">
+            <PagesPanel
+              v-if="current_tab === 'pages'"
+              @close="$emit('close')"
+            />
+          </sl-tab-panel>
           <sl-tab-panel name="storage">
             <PickNativePath
               v-if="current_tab === 'storage'"
@@ -181,6 +190,7 @@
 <script>
 import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
 import ImagesPanel from "@/adc-core/ui/ImagesPanel.vue";
+import PagesPanel from "@/adc-core/ui/PagesPanel.vue";
 
 export default {
   props: {
@@ -189,6 +199,7 @@ export default {
   components: {
     FontsPanel,
     ImagesPanel,
+    PagesPanel,
   },
   data() {
     return {

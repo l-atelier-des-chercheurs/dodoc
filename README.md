@@ -176,6 +176,7 @@ Default values are:
 - $date_modified    (Date)                                when the folder was last edited
 - $files            (Array)                               list of all the files in this folder (see Files below)
 - $status           (String, editable)                    determines whether the folder gets listed
+- $public           (Boolean, editable)                   if true, return that folder, its files, and its source medias even when request is not auth
 - $password         (String, editable, stored as hash)    limit editing to users with password
 - $path             (String)                              path to folder, matches filesystem structure and URL
 - $infos            (Object)                              data gathered from the folder itself (only available when url is appended with ?detailed=true)

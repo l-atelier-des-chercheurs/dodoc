@@ -95,8 +95,8 @@ module.exports = (function () {
       return meta_filename;
     },
 
-    getFiles: async ({ path_to_folder }) => {
-      dev.logfunction({ path_to_folder });
+    getFiles: async ({ path_to_folder, embed_source }) => {
+      dev.logfunction({ path_to_folder, embed_source });
 
       const meta_filenames = await _getMetasInFolder({
         path_to_folder,
@@ -108,9 +108,12 @@ module.exports = (function () {
           dev.logverbose(`reading ${meta_filename}`);
 
           const path_to_meta = path.join(path_to_folder, meta_filename);
-          const meta = await API.getFile({
+          let meta = await API.getFile({
             path_to_meta,
+            embed_source,
           });
+
+          if (embed_source) meta = await _embedSourceMedias({ meta });
 
           metas.push(meta);
           await new Promise(setImmediate);
@@ -121,7 +124,7 @@ module.exports = (function () {
 
       return metas;
     },
-    getFile: async ({ path_to_meta }) => {
+    getFile: async ({ path_to_meta, embed_source }) => {
       dev.logfunction({ path_to_meta });
 
       const d = cache.get({
@@ -735,6 +738,28 @@ module.exports = (function () {
 
   function _getArchivePath(media_filename) {
     return "_archives_" + path.parse(media_filename).name;
+  }
+
+  async function _embedSourceMedias({ meta }) {
+    if (!meta.hasOwnProperty("source_medias")) return meta;
+
+    const source_folder = utils.getFolderParent(
+      utils.getContainingFolder(meta.$path)
+    );
+
+    for (const [index, source_media] of meta.source_medias.entries()) {
+      if (source_media.hasOwnProperty("meta_filename_in_project")) {
+        const path_to_meta = path.join(
+          source_folder,
+          source_media.meta_filename_in_project
+        );
+        const source_media_meta = await API.getFile({
+          path_to_meta,
+        });
+        meta.source_medias[index]._media = source_media_meta;
+      }
+    }
+    return meta;
   }
 
   return API;

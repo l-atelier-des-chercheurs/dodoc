@@ -27,7 +27,8 @@
         <ImageZoom
           v-else
           class="_mediaContent--image"
-          :src="file_full_path"
+          :small_img="full_thumb"
+          :large_img="file_full_path"
           :width="img_width"
           :ratio="img_ratio"
         />
@@ -177,7 +178,8 @@
       <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
         <ImageZoom
           v-if="file.$type === 'image'"
-          :src="file_full_path"
+          :small_img="full_thumb"
+          :large_img="file_full_path"
           :width="img_width"
           :ratio="img_ratio"
         />
@@ -246,6 +248,10 @@ export default {
         $path: path_to_parent,
         resolution: this.resolution,
       });
+    },
+    full_thumb() {
+      if (this.resolution) return this.thumb;
+      return this.file_full_path;
     },
     file_full_path() {
       const p = this.makeMediaFilePath({
