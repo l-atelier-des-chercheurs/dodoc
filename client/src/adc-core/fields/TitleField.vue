@@ -166,10 +166,6 @@ export default {
       white-space: break-spaces;
     }
   }
-
-  &:hover > ._label {
-    color: var(--c-bleuvert);
-  }
 }
 
 ._footer {

@@ -357,6 +357,10 @@ export default {
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
+  &:last-child {
+    border-right: none;
+  }
+
   &::after {
     content: "✕";
     position: relative;
