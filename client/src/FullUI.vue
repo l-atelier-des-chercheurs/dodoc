@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_fullUI">
     <DisconnectModal
       v-if="show_disconnect_modal"
       @close="show_disconnect_modal = false"
@@ -112,4 +112,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._fullUI {
+}
+</style>
