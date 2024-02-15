@@ -17,50 +17,58 @@
         <DragFile :file="current_file_shown" :is_dragged.sync="is_dragged" />
       </div>
     </div>
-    <div class="_infos">
-      <div class="u-spacingBottom">
-        <TitleField
-          :field_name="'caption'"
-          class="_caption"
-          :label="$t('caption')"
-          :content="current_file_shown.caption"
-          :path="current_file_shown.$path"
-          :maxlength="1280"
-          :input_type="'markdown'"
-          :can_edit="can_edit"
+
+    <div class="_unfoldBtn">
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        @click="show_infos = !show_infos"
+      >
+        <b-icon
+          v-if="show_infos"
+          icon="chevron-compact-down"
+          :aria-label="$t('close')"
         />
-      </div>
-
-      <div class="_btnRow">
-        <div class="_removeFile">
-          <sl-icon-button
-            name="dash-square-dotted"
-            @click="$emit('removeMediaFromStack', current_file_shown.$path)"
-          />
-          {{ $t("remove") }}
-        </div>
-
-        <select
-          class="is--dark _changeOrderSelect"
-          :value="active_file_index + 1"
-          @change="
-            $emit(
-              'changeMediaOrder',
-              active_file_index,
-              +$event.target.value - 1
-            )
-          "
-        >
-          <option
-            v-for="(a, i) in new Array(files.length).fill(null)"
-            :key="i + 1"
-            v-text="i + 1"
-          />
-        </select>
-      </div>
-
-      // remove media // reorder media // modifier légende // modifier sources
+        <b-icon v-else icon="chevron-compact-up" :aria-label="$t('open')" />
+        <b-icon icon="file-earmark-text" />
+      </button>
     </div>
+
+    <transition name="pagechange" mode="out-in">
+      <div
+        class="_infos"
+        :data-hide="!show_infos"
+        :key="current_file_shown.$path"
+      >
+        <div class="_infos--content">
+          <div class="u-spacingBottom">
+            <TitleField
+              :field_name="'caption'"
+              class="_caption"
+              :label="$t('caption')"
+              :content="current_file_shown.caption"
+              :path="current_file_shown.$path"
+              :maxlength="1280"
+              :input_type="'markdown'"
+              :can_edit="can_edit"
+            />
+          </div>
+
+          <div class="u-spacingBottom">
+            <TitleField
+              :field_name="'credits'"
+              class="_credits"
+              :label="$t('credits/source')"
+              :content="current_file_shown.credits"
+              :path="current_file_shown.$path"
+              :maxlength="1280"
+              :input_type="'markdown'"
+              :can_edit="can_edit"
+            />
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <transition-group tag="div" class="_list" name="listComplete">
       <div
@@ -71,6 +79,28 @@
         @click="toggleFile(index)"
       >
         <MediaContent :file="file" :context="'preview'" :resolution="360" />
+
+        <transition name="pagechange" mode="out-in">
+          <div class="_btnRow" v-if="current_file_shown.$path === file.$path">
+            <RemoveMenu
+              :remove_text="$t('remove')"
+              @remove="$emit('removeMediaFromStack', current_file_shown.$path)"
+            />
+          </div>
+        </transition>
+
+        <select
+          class="_changeOrderSelect"
+          size="small"
+          :value="index + 1"
+          @change="$emit('changeMediaOrder', index, +$event.target.value - 1)"
+        >
+          <option
+            v-for="(a, i) in new Array(files.length).fill(null)"
+            :key="i + 1"
+            v-text="i + 1"
+          />
+        </select>
       </div>
     </transition-group>
   </div>
@@ -86,11 +116,17 @@ export default {
     return {
       active_file_index: 0,
       is_dragged: false,
+      show_infos: true,
     };
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        "credits/source": "Crédits/source",
+      },
+      en: {
+        "credits/source": "Credits/source",
+      },
     },
   },
   created() {},
@@ -167,8 +203,38 @@ export default {
   }
 }
 
+._unfoldBtn {
+  width: 100%;
+  border-top: 1px solid var(--sd-separator);
+  z-index: 2;
+  text-align: right;
+
+  > button {
+    width: 100%;
+    justify-content: flex-end;
+    border-radius: 0;
+
+    &:hover,
+    &:focus {
+      background: var(--sd-separator);
+    }
+  }
+}
+
 ._infos {
-  padding: calc(var(--spacing) * 2);
+  position: relative;
+  border-top: 1px solid var(--sd-separator);
+  border-bottom: 1px solid var(--sd-separator);
+  max-height: 50vh;
+  overflow: auto;
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+
+  transition: all 0.02s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &[data-hide] {
+    max-height: 0;
+    padding: 0 calc(var(--spacing) / 1);
+  }
 }
 
 ._list {
@@ -179,6 +245,8 @@ export default {
   // background: var(--c-gris_clair);
 }
 ._preview {
+  position: relative;
+
   --thumb-size: 15vh;
   width: var(--thumb-size);
   height: var(--thumb-size);
@@ -199,8 +267,8 @@ export default {
   }
 
   &[data-iscurrent] {
-    opacity: 0.5;
-    pointer-events: none;
+    // opacity: 0.25;
+    // pointer-events: none;
   }
 
   ._mediaContent {
@@ -220,5 +288,26 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+._btnRow {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+._changeOrderSelect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+
+  width: 5ch;
 }
 </style>

@@ -71,45 +71,6 @@
 
               <hr />
 
-              <!-- <transition-group
-                v-if="false"
-                tag="div"
-                class="_fileStack"
-                name="listComplete"
-              >
-                <div
-                  class="u-sameRow"
-                  v-for="(file, index) in stack_files_in_order"
-                  :key="file.$path"
-                >
-                  <div class="_removeFile">
-                    <sl-icon-button
-                      name="dash-square-dotted"
-                      @click="removeMediaFromStack(file.$path)"
-                    />
-                  </div>
-
-                  <select
-                    class="is--dark _changeOrderSelect"
-                    :value="index + 1"
-                    @change="changeMediaOrder(index, +$event.target.value - 1)"
-                  >
-                    <option
-                      v-for="(a, i) in new Array(
-                        stack_files_in_order.length
-                      ).fill(null)"
-                      :key="i + 1"
-                      v-text="i + 1"
-                    />
-                  </select>
-                  <ChutierItem
-                    :file="file"
-                    :is_selected="false"
-                    :context="'stack'"
-                  />
-                </div>
-              </transition-group> -->
-
               <div class="_dateFields">
                 <div class="">
                   <DateField
@@ -574,10 +535,6 @@ hr {
   border: 2px solid var(--sd-separator);
   padding: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) * 2) 0;
-}
-
-._changeOrderSelect {
-  flex: 0 0 50px;
 }
 
 ._bottomBtns {

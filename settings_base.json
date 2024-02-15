@@ -263,6 +263,9 @@
                 "caption": {
                   "type": "string"
                 },
+                "credits": {
+                  "type": "string"
+                },
                 "date_created_corrected": {
                   "type": "string"
                 }
