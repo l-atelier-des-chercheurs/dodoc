@@ -38,7 +38,7 @@
             <MediaContent :file="slide_file_to_show" class="_mediaPreview" />
           </div>
         </transition>
-        <transition name="pagechange" mode="out-in">
+        <transition name="fade_fast" mode="out-in">
           <div
             class="_count"
             v-if="index_of_slide_file_to_show === undefined"
@@ -180,7 +180,7 @@ export default {
 
   position: relative;
   // box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-  background: white;
+  background: transparent;
   border: 2px solid var(--c-bodybg);
   cursor: pointer;
 
@@ -251,9 +251,9 @@ export default {
 }
 
 ._title {
-  position: absolute;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
+  // position: absolute;
+  // bottom: 0;
+  // background: rgba(255, 255, 255, 0.9);
 
   height: 1.5em;
   padding: 0 calc(var(--spacing) / 4);
@@ -269,6 +269,7 @@ export default {
   top: 0;
   left: 0;
   margin: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   font-weight: 400;
   background: white;
   color: black;

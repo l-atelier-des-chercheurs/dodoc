@@ -17,7 +17,52 @@
         <DragFile :file="current_file_shown" :is_dragged.sync="is_dragged" />
       </div>
     </div>
-    <div class="_list">
+    <div class="_infos">
+      <div class="u-spacingBottom">
+        <TitleField
+          :field_name="'caption'"
+          class="_caption"
+          :label="$t('caption')"
+          :content="current_file_shown.caption"
+          :path="current_file_shown.$path"
+          :maxlength="1280"
+          :input_type="'markdown'"
+          :can_edit="can_edit"
+        />
+      </div>
+
+      <div class="_btnRow">
+        <div class="_removeFile">
+          <sl-icon-button
+            name="dash-square-dotted"
+            @click="$emit('removeMediaFromStack', current_file_shown.$path)"
+          />
+          {{ $t("remove") }}
+        </div>
+
+        <select
+          class="is--dark _changeOrderSelect"
+          :value="active_file_index + 1"
+          @change="
+            $emit(
+              'changeMediaOrder',
+              active_file_index,
+              +$event.target.value - 1
+            )
+          "
+        >
+          <option
+            v-for="(a, i) in new Array(files.length).fill(null)"
+            :key="i + 1"
+            v-text="i + 1"
+          />
+        </select>
+      </div>
+
+      // remove media // reorder media // modifier légende // modifier sources
+    </div>
+
+    <transition-group tag="div" class="_list" name="listComplete">
       <div
         v-for="(file, index) in files"
         class="_preview"
@@ -27,13 +72,14 @@
       >
         <MediaContent :file="file" :context="'preview'" :resolution="360" />
       </div>
-    </div>
+    </transition-group>
   </div>
 </template>
 <script>
 export default {
   props: {
     files: Array,
+    can_edit: Boolean,
   },
   components: {},
   data() {
@@ -102,7 +148,12 @@ export default {
 
   > ._single {
     flex: 1 1 150px;
+    height: 100px;
   }
+  > ._infos {
+    flex: 0 0 auto;
+  }
+
   > ._list {
     flex: 0 0 auto;
   }
@@ -114,6 +165,10 @@ export default {
   ._mediaContent {
     height: 100%;
   }
+}
+
+._infos {
+  padding: calc(var(--spacing) * 2);
 }
 
 ._list {

@@ -330,5 +330,6 @@ export default {
   --sd-separator: #424146;
   --sd-textcolor: white;
   --sd-bg: #77757c;
+  --active-color: white;
 }
 </style>

@@ -69,7 +69,10 @@
                 />
               </div>
 
-              <transition-group
+              <hr />
+
+              <!-- <transition-group
+                v-if="false"
                 tag="div"
                 class="_fileStack"
                 name="listComplete"
@@ -105,7 +108,7 @@
                     :context="'stack'"
                   />
                 </div>
-              </transition-group>
+              </transition-group> -->
 
               <div class="_dateFields">
                 <div class="">
@@ -212,13 +215,16 @@
           class="_topCarousel"
           :data-dualdisplay="dual_display"
           :files="stack_files_in_order"
+          :can_edit="can_edit"
+          @removeMediaFromStack="removeMediaFromStack"
+          @changeMediaOrder="changeMediaOrder"
         />
       </div>
     </template>
   </div>
 </template>
 <script>
-import ChutierItem from "@/components/chutier/ChutierItem.vue";
+// import ChutierItem from "@/components/chutier/ChutierItem.vue";
 import KeywordsField from "@/components/KeywordsField.vue";
 import StackCarousel from "@/components/archive/StackCarousel.vue";
 
@@ -230,7 +236,7 @@ export default {
     can_be_added_to_fav: Boolean,
   },
   components: {
-    ChutierItem,
+    // ChutierItem,
     KeywordsField,
     StackCarousel,
   },
@@ -334,6 +340,7 @@ export default {
     updatePaneWidth() {
       this.pane_width = this.$el.offsetWidth;
     },
+
     async changeMediaOrder(old_position, new_position) {
       let meta_filenames = this.stack_files_in_order.map((f) =>
         this.getFilename(f.$path)
@@ -444,6 +451,7 @@ export default {
 
 ._panes {
   position: relative;
+  overflow: hidden;
   // display: flex;
   // flex-flow: row wrap;
   // overflow: auto;
