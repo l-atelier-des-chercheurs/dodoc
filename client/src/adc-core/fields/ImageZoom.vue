@@ -6,7 +6,18 @@
     @mousemove="mouseMoved"
   >
     <transition name="fade_fast" mode="in-out">
-      <img :src="src" :style="image_styles" :key="'zoom-' + is_zoomed" />
+      <img
+        v-if="!is_zoomed"
+        :src="small_img"
+        :style="image_styles"
+        :key="'zoom-' + is_zoomed"
+      />
+      <img
+        v-else
+        :src="large_img"
+        :style="image_styles"
+        :key="'zoom-' + is_zoomed"
+      />
     </transition>
     <transition name="slideupFade" mode="out-in">
       <div class="_clickToZoomBtn" v-if="!is_zoomed">
@@ -25,7 +36,8 @@
 <script>
 export default {
   props: {
-    src: String,
+    small_img: String,
+    large_img: String,
     width: Number,
     ratio: Number,
   },
@@ -38,6 +50,8 @@ export default {
       cont_height: undefined,
       pos_x: undefined,
       pos_y: undefined,
+
+      padding: 150,
     };
   },
   i18n: {
@@ -70,13 +84,19 @@ export default {
         const zoom_level = this.width
           ? Math.max(2, this.width / this.cont_width / 2)
           : 2;
-
         const new_width = this.cont_width * zoom_level;
         const new_height = new_width * this.ratio;
+
         const translate_x =
-          this.pos_x_percent * -1 * (new_width - this.cont_width);
+          this.pos_x_percent *
+            -1 *
+            (new_width - this.cont_width + this.padding) +
+          this.padding / 2;
         const translate_y =
-          this.pos_y_percent * -1 * (new_height - this.cont_height);
+          this.pos_y_percent *
+            -1 *
+            (new_height - this.cont_height + this.padding) +
+          this.padding / 2;
 
         // en haut à gauche = 0 0 -> 0 0
         // en haut à droite = 1 0 ->
