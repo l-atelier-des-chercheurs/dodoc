@@ -262,8 +262,9 @@ export default {
 
   &:hover,
   &:focus-visible {
-    transform: scale(0.95);
+    // transform: scale(0.95);
     background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(255, 255, 255, 0.4);
   }
 
   &[data-iscurrent] {
