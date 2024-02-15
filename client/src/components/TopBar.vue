@@ -9,8 +9,12 @@
     <BreadCrumbs class="_bc" />
 
     <div class="_topRightButtons">
-      <button type="button" class="u-button" @click="show_qr_code_modal = true">
-        <sl-icon name="qr-code" />
+      <button
+        type="button"
+        class="u-button u-button_transparent"
+        @click="show_qr_code_modal = true"
+      >
+        <sl-icon name="qr-code" :aria-label="$t('share_link_to_page')" />
       </button>
       <QRModal
         v-if="show_qr_code_modal"
@@ -20,7 +24,7 @@
 
       <button
         type="button"
-        class="u-button"
+        class="u-button u-button_transparent"
         @click="show_lang_modal = !show_lang_modal"
       >
         {{ current_lang_code }}
@@ -42,12 +46,27 @@
           {{ $t("login") }}
         </button>
       </div>
+
+      <template v-if="is_instance_admin">
+        <button
+          type="button"
+          class="u-button u-button_transparent"
+          @click="show_settings_modal = !show_settings_modal"
+        >
+          <b-icon icon="gear" :aria-label="$t('admin_settings')" />
+        </button>
+        <AdminSettings
+          v-if="show_settings_modal"
+          @close="show_settings_modal = false"
+        />
+      </template>
     </div>
 
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
   </div>
 </template>
 <script>
+import AdminSettings from "@/adc-core/AdminSettings.vue";
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
@@ -55,6 +74,7 @@ import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 export default {
   props: {},
   components: {
+    AdminSettings,
     AuthorList,
     LangModal,
     BreadCrumbs,
@@ -64,6 +84,7 @@ export default {
       show_authors_modal: false,
       show_lang_modal: false,
       show_qr_code_modal: false,
+      show_settings_modal: false,
     };
   },
   created() {},
@@ -155,11 +176,10 @@ export default {
 }
 
 ._subscribeBtn {
-  margin-left: calc(var(--spacing) / 2);
-
-  .is--mobileView & {
-    margin-left: 0;
-  }
+  // margin-left: calc(var(--spacing) / 2);
+  // .is--mobileView & {
+  //   margin-left: 0;
+  // }
 
   ._authorBtn {
     position: relative;
@@ -188,7 +208,6 @@ export default {
     // width: 3rem;
     font-size: inherit;
     height: 3rem;
-    background: transparent;
 
     .is--mobileView & {
       padding: calc(var(--spacing) / 2);

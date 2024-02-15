@@ -9,23 +9,6 @@
       </router-link>
     </div> -->
 
-    <template v-if="is_instance_admin">
-      <div class="_editSettingsBtn--cont">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert _editSettingsBtn"
-          @click="show_settings_modal = !show_settings_modal"
-        >
-          <sl-icon name="gear-fill" />
-          &nbsp;{{ $t("admin_settings") }}
-        </button>
-      </div>
-      <AdminSettings
-        v-if="show_settings_modal"
-        @close="show_settings_modal = false"
-      />
-    </template>
-
     <section class="_homeView--container">
       <div class="_homeView--content" :data-layout="text_image_layout">
         <template v-for="layout in custom_layout">
@@ -134,7 +117,6 @@
 
 <script>
 // import SocketStatus from "@/components/.vue";
-import AdminSettings from "@/adc-core/AdminSettings.vue";
 import SpacesList from "@/components/space/SpacesList.vue";
 import AllProjects from "@/components/project/AllProjects.vue";
 import DodocLogo from "@/components/nav/DodocLogo.vue";
@@ -142,7 +124,6 @@ import DodocLogo from "@/components/nav/DodocLogo.vue";
 export default {
   props: {},
   components: {
-    AdminSettings,
     EventsSection: () => import("@/components/event/EventsSection.vue"),
     SpacesList,
     AllProjects,
@@ -151,7 +132,6 @@ export default {
   },
   data() {
     return {
-      show_settings_modal: false,
       // current_mode: "spaces",
       current_mode: "spaces",
     };
@@ -385,19 +365,6 @@ export default {
   margin-bottom: calc(var(--spacing) * 1);
 }
 
-._editSettingsBtn--cont {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 100;
-  // width: 100%;
-  text-align: center;
-}
-._editSettingsBtn {
-  // position: absolute;
-  // top: 0;
-  margin: calc(var(--spacing) / 2);
-}
 ._recentlyEdited {
   max-width: var(--max-column-width);
   margin: calc(var(--spacing) * 2) auto;

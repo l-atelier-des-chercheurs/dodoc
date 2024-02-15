@@ -8,6 +8,7 @@ export default {
         .replace("authors/", "/@")
         .replace("spaces/", "/+")
         .replace("events/", "/#")
+        .replace("pages/", "/p/")
         .replace("projects/", "");
       return path_without_space;
       // return "/" + path;
@@ -39,14 +40,20 @@ export default {
 
       return obj;
     },
-    createPath({ space_slug, project_slug, author_slug, event_slug } = {}) {
+    createPath({
+      space_slug,
+      project_slug,
+      author_slug,
+      event_slug,
+      page_slug,
+    } = {}) {
       if (author_slug) return `authors/${author_slug}`;
       if (event_slug) return `events/${event_slug}`;
       if (space_slug)
         if (project_slug)
           return `spaces/${space_slug}/projects/${project_slug}`;
         else return `spaces/${space_slug}`;
-
+      if (page_slug) return `pages/${page_slug}`;
       return false;
     },
     getRandomString() {

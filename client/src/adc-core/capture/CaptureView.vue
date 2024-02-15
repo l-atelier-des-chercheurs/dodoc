@@ -1332,7 +1332,7 @@ export default {
           this.actual_camera_resolution.height = height;
         })
         .catch((err) => {
-          if (this.$root.dev_mode === true)
+          if (this.$root.debug_mode === true)
             console.log(
               `CaptureView • METHODS : refreshVideoActualSize — couldnt get video size: ` +
                 err
@@ -1398,7 +1398,7 @@ export default {
 
     startFrameGrabber() {
       const getFrame = () => {
-        if (this.$root.dev_mode === true)
+        if (this.$root.debug_mode === true)
           console.log(`CaptureView • METHODS : startFrameGrabber`);
         // this.frameGrabber();
 
@@ -1417,7 +1417,7 @@ export default {
       this.frameGrabber = window.setInterval(getFrame, 300);
     },
     stopFrameGrabber() {
-      if (this.$root.dev_mode === true)
+      if (this.$root.debug_mode === true)
         console.log(`CaptureView • METHODS : stopFrameGrabber  `);
 
       if (this.frameGrabber) window.clearInterval(this.frameGrabber);
@@ -1502,7 +1502,7 @@ export default {
       }
     },
     setCaptureInit() {
-      if (this.$root.dev_mode === true)
+      if (this.$root.debug_mode === true)
         console.log(`CaptureView / setCaptureInit`);
 
       this.ask_before_leaving_capture = true;
@@ -1730,7 +1730,7 @@ export default {
       height,
       from_element = this.$refs.videoElement,
     } = {}) {
-      if (this.$root.dev_mode === true)
+      if (this.$root.debug_mode === true)
         console.log(`CaptureView • METHODS : getStaticImageFromVideoElement`);
 
       if (!from_element) throw new Error("missing video element");
@@ -1807,7 +1807,7 @@ export default {
 
     async sendMedia({ fav = false }) {
       console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
-      if (this.$root.dev_mode === true)
+      if (this.$root.debug_mode === true)
         console.log(`METHODS • CaptureView / sendMedia`);
 
       if (this.return_temp_media) {

@@ -176,7 +176,7 @@ export default {
         this.is_processing_image = false;
 
         var t1 = performance.now();
-        if (this.$root.dev_mode === true)
+        if (this.$root.debug_mode === true)
           console.log(
             "Lines • METHODS : drawBlobToImage = took " +
               (t1 - t0) +

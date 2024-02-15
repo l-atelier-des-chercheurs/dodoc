@@ -1,0 +1,115 @@
+<template>
+  <div>
+    <DisconnectModal
+      v-if="show_disconnect_modal"
+      @close="show_disconnect_modal = false"
+    />
+    <TrackAuthorChanges />
+
+    <div class="_spinner" v-if="$root.is_loading" key="loader">
+      <LoaderSpinner />
+    </div>
+
+    <template v-else>
+      <GeneralPasswordModal
+        v-if="show_general_password_modal"
+        @close="show_general_password_modal = false"
+      />
+
+      <template v-else>
+        <TopBar />
+        <transition name="pagechange" mode="out-in">
+          <router-view v-slot="{ Component }" :key="$route.path">
+            <component :is="Component" />
+          </router-view>
+        </transition>
+        <TaskTracker />
+      </template>
+    </template>
+  </div>
+</template>
+<script>
+import TopBar from "@/components/TopBar.vue";
+import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
+import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
+import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
+import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
+
+export default {
+  props: {},
+  components: {
+    TopBar,
+    GeneralPasswordModal,
+    TrackAuthorChanges,
+    TaskTracker,
+    DisconnectModal,
+  },
+  data() {
+    return {
+      show_general_password_modal: false,
+      show_disconnect_modal: false,
+    };
+  },
+  i18n: {
+    messages: {
+      fr: {},
+    },
+  },
+  async created() {
+    console.log("Loading FullUI");
+
+    await this.$api.init({ debug_mode: this.$root.debug_mode });
+    this.$eventHub.$on("socketio.connect", this.socketConnected);
+    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
+
+    this.$eventHub.$on(
+      `app.prompt_general_password`,
+      this.promptGeneralPassword
+    );
+    this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
+
+    this.$root.is_loading = false;
+  },
+  mounted() {},
+  beforeDestroy() {
+    this.$eventHub.$off(
+      `app.prompt_general_password`,
+      this.promptGeneralPassword
+    );
+    this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
+  },
+  watch: {},
+  computed: {},
+  methods: {
+    socketConnected() {
+      if (this.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(`Connected or reconnected with id ${this.$api.socket.id}`);
+    },
+    socketDisconnected(reason) {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(`Disconnected ${reason}`);
+    },
+    socketConnectError(reason) {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(`Connect error ${reason}`);
+    },
+
+    showDisconnectModal() {
+      this.show_disconnect_modal = true;
+    },
+    promptGeneralPassword() {
+      this.show_general_password_modal = true;
+    },
+  },
+};
+</script>
+<style lang="scss" scoped></style>

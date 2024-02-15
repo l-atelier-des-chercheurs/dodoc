@@ -52,7 +52,8 @@ export default {
       let source_path = undefined;
       let meta_filename = undefined;
 
-      if (source_media.meta_filename) {
+      if (source_media._media) return source_media._media;
+      else if (source_media.meta_filename) {
         source_path = folder_path;
         meta_filename = source_media.meta_filename;
       } else if (source_media.meta_filename_in_project) {

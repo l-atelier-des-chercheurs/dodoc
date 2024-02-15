@@ -156,20 +156,6 @@ export default function () {
           this.socket.emit("joinRoom", { room: path });
         }
       },
-      // async getAndTrack(path) {
-      //   // getFolders ou getFolder
-      //   const response = await this.$axios.get(path).catch((err) => {
-      // throw this.processError(err);
-      //   });
-      //   const content = response.data;
-      //   // puis join le path en question
-
-      //   // si disconnect, il faut relancer le get, que ça maj
-      //   // l'objet côté component
-      //   // et que ça rejoin la room
-
-      //   return content;
-      // },
 
       async _setAuthFromStorage() {
         let auth = {};
@@ -367,7 +353,11 @@ export default function () {
       },
       async getFolder({ path, detailed_infos = false }) {
         if (!detailed_infos && this.store[path]) return this.store[path];
-        if (detailed_infos) path += `?detailed=true`;
+
+        let queries = [];
+        if (detailed_infos) queries.push("detailed=true");
+        if (queries.length > 0) path += `?${queries.join("&")}`;
+
         const response = await this.$axios.get(path).catch((err) => {
           throw this.processError(err);
         });
@@ -375,6 +365,18 @@ export default function () {
         this.$set(this.store, folder.$path, folder);
         return this.store[folder.$path];
       },
+
+      async getPublicFolder({ path }) {
+        const response = await this.$axios
+          .get(`${path}/_public`)
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        const folder = response.data;
+        this.$set(this.store, folder.$path, folder);
+        return this.store[folder.$path];
+      },
+
       async getArchives({ path }) {
         const response = await this.$axios.get(path);
         return response.data;

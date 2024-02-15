@@ -25,6 +25,10 @@ const routes = [
   {
     path: "/+:space_slug/:project_slug/publications/:publication_slug",
     name: "Publication",
+    meta: {
+      /* do not load full UI */
+      static: true,
+    },
     component: () =>
       import(
         /* webpackChunkName: "PublicationView" */ "../views/PublicationView.vue"
@@ -41,6 +45,12 @@ const routes = [
     name: "Auteur",
     component: () =>
       import(/* webpackChunkName: "AuthorView" */ "../views/AuthorView.vue"),
+  },
+  {
+    path: "/p/:page_slug",
+    name: "Page",
+    component: () =>
+      import(/* webpackChunkName: "Page" */ "../views/PageView.vue"),
   },
   {
     path: "/_ui",

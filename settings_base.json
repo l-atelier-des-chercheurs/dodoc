@@ -547,6 +547,22 @@
           }
         },
         "$files": {}
+      },
+      "pages": {
+        "$cover": {
+          "width": 2000,
+          "height": 2000,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 2000]
+          }
+        },
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          }
+        },
+        "$files": {}
       }
     }
   }

@@ -567,7 +567,7 @@ export default {
       const svg = `<svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
         <path
           d="m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z"
-          fill="#fc4b60" 
+          fill="#fc4b60"
           stroke="#000"
           stroke-width="4px"
         />
@@ -782,7 +782,13 @@ export default {
         longitude = this.roundToDec(longitude, 6);
         latitude = this.roundToDec(latitude, 6);
 
-        if (!pin_path) {
+        let type_of_pin;
+        if (f) type_of_pin = f.get("type_of_pin");
+
+        if (pin_path && type_of_pin === "media") {
+          this.$eventHub.$emit(`publication.story.scrollTo.${pin_path}`);
+          this.openPin(pin_path);
+        } else {
           this.$emit("newPositionClicked", {
             longitude,
             latitude,
@@ -799,9 +805,6 @@ export default {
           this.overlay.setPosition([longitude, latitude]);
           this.clicked_location.longitude = longitude;
           this.clicked_location.latitude = latitude;
-        } else {
-          this.$eventHub.$emit(`publication.story.scrollTo.${pin_path}`);
-          this.openPin(pin_path);
         }
       });
 
@@ -1305,6 +1308,7 @@ export default {
         const type = new_feature.getGeometry().getType();
         var id = this.makeRandomIdForShape(type);
         new_feature.setId(id);
+        new_feature.set("type_of_pin", "geometry");
 
         this.$nextTick(() => {
           this.saveGeom();
@@ -1566,6 +1570,7 @@ export default {
 
             const feature = new olFeature(feature_cont);
             feature.setId(pin.path);
+            feature.set("type_of_pin", "media");
 
             features.push(feature);
           });
@@ -1621,6 +1626,7 @@ export default {
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
           else feature.setId(this.makeRandomIdForShape(p.type));
+          feature.set("type_of_pin", "geometry");
 
           features.push(feature);
         });
