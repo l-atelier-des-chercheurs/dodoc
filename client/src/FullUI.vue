@@ -126,5 +126,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._fullUI {
+  height: 100%;
 }
 </style>
