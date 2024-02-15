@@ -21,7 +21,6 @@
         <div class="_loader" v-if="is_loading_folder">
           <LoaderSpinner />
         </div>
-
         <div v-else>
           <button
             type="button"
@@ -112,37 +111,37 @@
             </transition-group>
           </transition>
         </div>
+      </transition>
 
-        <footer class="_footer">
-          <small>
-            <a
-              :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-              target="_blank"
-            >
-              {{ $t("help_contact") }}
-            </a>
-            <br />
-            {{ $t("version") }} {{ $root.app_infos.version }}
+      <footer class="_footer">
+        <small>
+          <a
+            :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+            target="_blank"
+          >
+            {{ $t("help_contact") }}
+          </a>
+          <br />
+          {{ $t("version") }} {{ $root.app_infos.version }}
 
-            <!-- <div v-if="is_instance_admin">
+          <!-- <div v-if="is_instance_admin">
           <DownloadFolder :path="shared_folder_path" />
         </div> -->
 
-            <button
-              type="button"
-              class="u-buttonLink _adminBtn"
-              v-if="is_instance_admin"
-              @click="show_admin_settings = true"
-            >
-              {{ $t("admin_settings") }}
-            </button>
-            <AdminLumaSettings
-              v-if="show_admin_settings"
-              @close="show_admin_settings = false"
-            />
-          </small>
-        </footer>
-      </transition>
+          <button
+            type="button"
+            class="u-buttonLink _adminBtn"
+            v-if="is_instance_admin"
+            @click="show_admin_settings = true"
+          >
+            {{ $t("admin_settings") }}
+          </button>
+          <AdminLumaSettings
+            v-if="show_admin_settings"
+            @close="show_admin_settings = false"
+          />
+        </small>
+      </footer>
     </div>
   </div>
 </template>
