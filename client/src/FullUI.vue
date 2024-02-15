@@ -17,7 +17,11 @@
       />
 
       <template v-else>
-        <TopBar />
+        <AuthorList
+          v-if="show_authors_modal"
+          :is_closable="!!connected_as"
+          @close="show_authors_modal = false"
+        />
         <transition name="pagechange" mode="out-in">
           <router-view v-slot="{ Component }" :key="$route.path">
             <component :is="Component" />
@@ -29,7 +33,7 @@
   </div>
 </template>
 <script>
-import TopBar from "@/components/TopBar.vue";
+// import TopBar from "@/components/TopBar.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
@@ -38,7 +42,7 @@ import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
 export default {
   props: {},
   components: {
-    TopBar,
+    // TopBar,
     GeneralPasswordModal,
     TrackAuthorChanges,
     TaskTracker,
@@ -48,6 +52,7 @@ export default {
     return {
       show_general_password_modal: false,
       show_disconnect_modal: false,
+      show_authors_modal: false,
     };
   },
   i18n: {
@@ -68,6 +73,8 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$on(`app.show_welcome_modal`, this.showWelcomeModal);
+    this.$eventHub.$on(`showAuthorModal`, this.showAuthorModal);
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
 
     this.$root.is_loading = false;
@@ -78,6 +85,8 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$off(`app.show_welcome_modal`, this.showWelcomeModal);
+    this.$eventHub.$off(`showAuthorModal`, this.showAuthorModal);
     this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
   },
   watch: {},
@@ -108,6 +117,9 @@ export default {
     },
     promptGeneralPassword() {
       this.show_general_password_modal = true;
+    },
+    showAuthorModal() {
+      this.show_authors_modal = true;
     },
   },
 };

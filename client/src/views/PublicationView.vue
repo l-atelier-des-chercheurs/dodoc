@@ -23,7 +23,7 @@
             :can_edit="false"
           />
         </div> -->
-        <template v-if="publication.template === 'page_by_page'">
+        <!-- <template v-if="publication.template === 'page_by_page'">
           <PageSlides
             :publication="publication"
             :is_serversidepreview="is_serversidepreview"
@@ -36,13 +36,13 @@
             :publication="publication"
             :can_edit="false"
           />
-        </div>
-        <div v-else-if="publication.template === 'story_with_sections'">
+        </div> -->
+        <div v-if="publication.template === 'story_with_sections'">
           <SectionWithPrint :publication="publication" />
         </div>
-        <div v-else-if="publication.template === 'cartography'">
+        <!-- <div v-else-if="publication.template === 'cartography'">
           <MapForPrint :publication="publication" />
-        </div>
+        </div> -->
       </div>
     </transition>
   </div>
@@ -57,14 +57,14 @@ export default {
   props: {},
   components: {
     // PublicationTopbar,
-    PageSlides: () =>
-      import("@/components/publications/page_by_page/PageSlides.vue"),
-    StoryTemplate: () =>
-      import("@/components/publications/templates/StoryTemplate.vue"),
+    // PageSlides: () =>
+    //   import("@/components/publications/page_by_page/PageSlides.vue"),
+    // StoryTemplate: () =>
+    //   import("@/components/publications/templates/StoryTemplate.vue"),
     SectionWithPrint: () =>
       import("@/components/publications/story/SectionWithPrint.vue"),
-    MapForPrint: () =>
-      import("@/components/publications/cartography/MapForPrint.vue"),
+    // MapForPrint: () =>
+    //   import("@/components/publications/cartography/MapForPrint.vue"),
   },
   data() {
     return {
