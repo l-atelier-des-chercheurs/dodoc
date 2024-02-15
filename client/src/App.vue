@@ -239,8 +239,8 @@ export default {
 
   --sl-input-color: black;
 
-  --sl-font-size-x-small: 0.9rem;
-  --sl-font-size-small: 0.95rem;
+  // --sl-font-size-x-small: 0.9rem;
+  // --sl-font-size-small: 0.95rem;
   --sl-font-size-normal: 1rem;
   --sl-font-size-large: 1.5rem;
   --sl-font-size-x-large: 1.66rem;
