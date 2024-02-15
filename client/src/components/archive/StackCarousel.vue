@@ -76,31 +76,32 @@
         class="_preview"
         :data-iscurrent="current_file_shown.$path === file.$path"
         :key="file.$path"
-        @click="toggleFile(index)"
+        @click="openFile(index)"
       >
         <MediaContent :file="file" :context="'preview'" :resolution="360" />
 
-        <transition name="pagechange" mode="out-in">
+        <transition name="fade_fast" mode="out-in">
           <div class="_btnRow" v-if="current_file_shown.$path === file.$path">
             <RemoveMenu
               :remove_text="$t('remove')"
               @remove="$emit('removeMediaFromStack', current_file_shown.$path)"
             />
+            <select
+              class="_changeOrderSelect"
+              size="small"
+              :value="index + 1"
+              @change="
+                $emit('changeMediaOrder', index, +$event.target.value - 1)
+              "
+            >
+              <option
+                v-for="(a, i) in new Array(files.length).fill(null)"
+                :key="i + 1"
+                v-text="i + 1"
+              />
+            </select>
           </div>
         </transition>
-
-        <select
-          class="_changeOrderSelect"
-          size="small"
-          :value="index + 1"
-          @change="$emit('changeMediaOrder', index, +$event.target.value - 1)"
-        >
-          <option
-            v-for="(a, i) in new Array(files.length).fill(null)"
-            :key="i + 1"
-            v-text="i + 1"
-          />
-        </select>
       </div>
     </transition-group>
   </div>
@@ -163,6 +164,9 @@ export default {
     toggleFile(index) {
       if (this.active_file_index === index) this.active_file_index = false;
       else this.active_file_index = index;
+    },
+    openFile(index) {
+      this.active_file_index = index;
     },
     startMediaDrag($event) {
       this.is_dragged = true;
@@ -263,8 +267,7 @@ export default {
   &:hover,
   &:focus-visible {
     // transform: scale(0.95);
-    background-color: rgba(0, 0, 0, 0.4);
-    background-color: rgba(255, 255, 255, 0.4);
+    background: transparent;
   }
 
   &[data-iscurrent] {
@@ -294,7 +297,9 @@ export default {
 ._btnRow {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
