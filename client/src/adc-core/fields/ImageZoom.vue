@@ -51,7 +51,7 @@ export default {
       pos_x: undefined,
       pos_y: undefined,
 
-      padding: 150,
+      padding: 100,
     };
   },
   i18n: {

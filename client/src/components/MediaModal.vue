@@ -40,7 +40,6 @@
 
         <div class="_topRightBtn" v-if="!$root.is_mobile_view">
           <DragFile class="_dragFile" :file="file" />
-
           <button
             type="button"
             class="u-button u-button_icon _navBtn"
@@ -433,25 +432,19 @@ export default {
 
 ._topRightBtn,
 ._stickyClose--content {
-  padding: calc(var(--spacing) / 2);
-}
-
-._stickyClose {
-  position: sticky;
-  top: 0;
-  right: 0;
-  height: 0;
-  z-index: 100;
-  text-align: right;
-}
-
-._topRightBtn {
   position: absolute;
   top: 0;
   right: 0;
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
+}
+
+._stickyClose {
+  position: sticky;
+  height: 0;
+  z-index: 100;
 }
 
 ._navBtns {
