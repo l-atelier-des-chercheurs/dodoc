@@ -45,6 +45,7 @@ export default {
   data() {
     return {
       is_zoomed: false,
+      ro: undefined,
 
       cont_width: undefined,
       cont_height: undefined,
@@ -62,16 +63,13 @@ export default {
   created() {},
   mounted() {
     this.updateContSize();
+    this.ro = new ResizeObserver(this.updateContSize);
+    this.ro.observe(this.$el);
   },
-  beforeDestroy() {},
-  watch: {
-    "$root.window.innerWidth"() {
-      this.updateContSize();
-    },
-    "$root.window.innerHeight"() {
-      this.updateContSize();
-    },
+  beforeDestroy() {
+    this.ro.unobserve(this.$el);
   },
+  watch: {},
   computed: {
     pos_x_percent() {
       return this.pos_x / this.cont_width;
