@@ -21,7 +21,7 @@
     <div class="_unfoldBtn">
       <button
         type="button"
-        class="u-button u-button_icon"
+        class="u-button u-button_icon u-button_transparent"
         @click="show_infos = !show_infos"
       >
         <b-icon

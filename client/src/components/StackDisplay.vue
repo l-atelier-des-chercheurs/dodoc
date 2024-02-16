@@ -3,7 +3,10 @@
     <LoaderSpinner v-if="is_loading" />
     <template v-else>
       <div class="_closeStack">
-        <button class="u-button u-button_icon" @click="$emit('close')">
+        <button
+          class="u-button u-button_icon u-button_transparent"
+          @click="$emit('close')"
+        >
           <b-icon icon="x-lg" :label="$t('close')" />
         </button>
       </div>
