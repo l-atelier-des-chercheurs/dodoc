@@ -23,8 +23,12 @@
         @resize="resizeTopPane"
         @resized="resizedPane"
       >
-        <pane :min-size="min_toppane_width" :size="panes_width.chutier">
-          <div class="_myContent" :key="'myContent'">
+        <pane
+          v-for="pane_type in ['chutier', 'archive', 'format']"
+          :size="panes_width[pane_type]"
+          :key="pane_type"
+        >
+          <div v-if="pane_type === 'chutier'" class="_myContent">
             <MyChutier
               class="_myContent--chutier"
               v-show="show_chutier"
@@ -32,14 +36,10 @@
               @close="show_chutier = false"
             />
           </div>
-        </pane>
-        <pane :min-size="min_toppane_width" :size="panes_width.archive">
-          <div class="_sharedContent" :key="'sharedContent'">
+          <div v-else-if="pane_type === 'archive'" class="_sharedContent">
             <SharedFolder2 :shared_folder_path="shared_folder_path" />
           </div>
-        </pane>
-        <pane :min-size="min_toppane_width" :size="panes_width.format">
-          <FormatsPane />
+          <FormatsPane v-else-if="pane_type === 'formats'" />
         </pane>
       </splitpanes>
     </template>
@@ -265,7 +265,7 @@ export default {
   z-index: 2;
 
   width: 100%;
-  min-width: 250px;
+  min-width: 100px;
   height: 100%;
   background: var(--chutier-bg);
   // box-shadow: -4px 0px 5px inset rgba(0, 0, 0, 0.52);
