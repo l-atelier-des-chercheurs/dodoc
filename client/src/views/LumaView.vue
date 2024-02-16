@@ -39,7 +39,7 @@
           <div v-else-if="pane_type === 'archive'" class="_sharedContent">
             <SharedFolder2 :shared_folder_path="shared_folder_path" />
           </div>
-          <FormatsPane v-else-if="pane_type === 'formats'" />
+          <FormatsPane v-else-if="pane_type === 'format'" />
         </pane>
       </splitpanes>
     </template>

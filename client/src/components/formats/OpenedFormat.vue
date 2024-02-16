@@ -14,7 +14,37 @@
               <b-icon icon="arrow-left" />
               {{ $t("back") }}
             </button>
-            <RemoveMenu :remove_text="$t('remove')" @remove="removeFormat" />
+            <div class="">
+              <DropDown v-if="can_edit">
+                <div class="">
+                  <button
+                    type="button"
+                    class="u-buttonLink"
+                    @click="show_qr_code_modal = true"
+                  >
+                    <sl-icon name="qr-code" />
+                    {{ $t("direct_link") }}
+                  </button>
+                </div>
+                <QRModal
+                  v-if="show_qr_code_modal"
+                  :url_to_access="share_url"
+                  @close="show_qr_code_modal = false"
+                >
+                  <ToggleField
+                    :label="$t('make_format_public')"
+                    :field_name="'$public'"
+                    :content="format.$public === true"
+                    :path="format.$path"
+                    :can_edit="can_edit"
+                  />
+                </QRModal>
+                <RemoveMenu
+                  :remove_text="$t('remove')"
+                  @remove="removeFormat"
+                />
+              </DropDown>
+            </div>
           </div>
 
           <div class="_cont">
@@ -73,11 +103,18 @@ export default {
       format: undefined,
       path: "formats/" + this.opened_format_slug,
       opened_section_meta_filename: "",
+      show_qr_code_modal: false,
     };
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        make_format_public: "Accès public (sans mot de passe ou compte)",
+      },
+      en: {
+        make_format_public:
+          "Allow access to everyone (without password or account)",
+      },
     },
   },
   async created() {
@@ -103,6 +140,20 @@ export default {
   computed: {
     can_edit() {
       return this.canLoggedinEditFolder({ folder: this.format });
+    },
+    share_url() {
+      let query = {};
+      // if (this.publication.template === "page_by_page")
+      //   query = { display: "slides" };
+      // else if (this.publication.template === "story_with_sections")
+      query = { display: "section" };
+
+      const route = this.$router.resolve({
+        path: this.createURLFromPath(this.format.$path),
+        query,
+      });
+
+      return window.location.origin + route.href;
     },
   },
   methods: {

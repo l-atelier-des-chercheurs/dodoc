@@ -11,16 +11,14 @@ const routes = [
       import(/* webpackChunkName: "LumaView" */ "../views/LumaView.vue"),
   },
   {
-    path: "/+:space_slug/:project_slug/publications/:publication_slug",
-    name: "Publication",
+    path: "/formats/:format_slug",
+    name: "Format",
     meta: {
       /* do not load full UI */
       static: true,
     },
     component: () =>
-      import(
-        /* webpackChunkName: "PublicationView" */ "../views/PublicationView.vue"
-      ),
+      import(/* webpackChunkName: "FormatView" */ "../views/FormatView.vue"),
   },
   {
     path: "/@",
