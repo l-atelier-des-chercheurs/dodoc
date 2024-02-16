@@ -1,9 +1,20 @@
 <template>
   <div class="_storySectionTemplate">
+    <div class="u-displayAsPublic" v-if="can_edit">
+      <div class="_sticky">
+        <div class="_content">
+          <ToggleInput
+            :content.sync="display_as_public"
+            :label="$t('preview')"
+          />
+        </div>
+      </div>
+    </div>
+
     <SectionsList
       :publication="publication"
       :opened_section_meta_filename="opened_section_meta_filename"
-      :can_edit="can_edit"
+      :can_edit="can_edit && !display_as_public"
       @toggleSection="$emit('toggleSection', $event)"
     />
     <PublicationSettings v-if="can_edit">
@@ -28,7 +39,9 @@ export default {
     StorySettings,
   },
   data() {
-    return {};
+    return {
+      display_as_public: false,
+    };
   },
   created() {},
   mounted() {},
