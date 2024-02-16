@@ -293,7 +293,7 @@ export default {
   }
 }
 ._spacer {
-  min-height: 1.5rem;
+  height: 2rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;

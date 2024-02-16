@@ -399,7 +399,8 @@ export default {
   align-items: center;
   width: 100%;
   pointer-events: none;
-  gap: calc(var(--spacing) / 4); // padding: 0 calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2) 0;
 
   // color: var(--c-bleuvert);
   // border-radius: 1rem;
