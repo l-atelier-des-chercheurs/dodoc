@@ -48,39 +48,15 @@
           </div>
 
           <div class="_cont">
-            <!-- <pre>
-      {{ format }}
-    </pre
-            > -->
-
-            <SectionsList
+            <StorySectionTemplate
+              v-if="
+                !format.template || format.template === '`story_with_sections`'
+              "
               :publication="format"
               :opened_section_meta_filename="opened_section_meta_filename"
               :can_edit="can_edit"
               @toggleSection="toggleSection"
             />
-
-            <!-- <div class="">
-              <div v-if="!format.$files || format.$files.length === 0">
-                no files
-              </div>
-
-              <transition-group
-                tag="div"
-                class="_items"
-                name="listComplete"
-                appear
-              >
-                <div
-                  v-for="file in format.$files"
-                  :key="file.$path"
-                  class="_items--item"
-                >
-                  {{ file.$path }}
-                </div>
-                <div class="_dragHere"></div>
-              </transition-group>
-            </div> -->
           </div>
         </div>
       </div>
@@ -88,14 +64,13 @@
   </div>
 </template>
 <script>
-import SectionsList from "@/components/publications/story/SectionsList.vue";
-
 export default {
   props: {
     opened_format_slug: String,
   },
   components: {
-    SectionsList,
+    StorySectionTemplate: () =>
+      import("@/components/publications/templates/StorySectionTemplate.vue"),
   },
   data() {
     return {
