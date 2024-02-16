@@ -11,8 +11,13 @@
     </div>
 
     <template v-else>
+      <WelcomeModal
+        v-if="show_welcome_modal"
+        @close="show_welcome_modal = false"
+      />
+
       <GeneralPasswordModal
-        v-if="show_general_password_modal"
+        v-else-if="show_general_password_modal"
         @close="show_general_password_modal = false"
       />
 
@@ -23,7 +28,11 @@
           @close="show_authors_modal = false"
         />
         <transition name="pagechange" mode="out-in">
-          <router-view v-slot="{ Component }" :key="$route.path">
+          <router-view
+            v-if="!show_authors_modal"
+            v-slot="{ Component }"
+            :key="$route.path"
+          >
             <component :is="Component" />
           </router-view>
         </transition>
@@ -33,26 +42,30 @@
   </div>
 </template>
 <script>
-// import TopBar from "@/components/TopBar.vue";
+import WelcomeModal from "@/components/WelcomeModal.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
+import AuthorList from "@/adc-core/author/AuthorList.vue";
 
 export default {
   props: {},
   components: {
     // TopBar,
+    WelcomeModal,
     GeneralPasswordModal,
     TrackAuthorChanges,
     TaskTracker,
     DisconnectModal,
+    AuthorList,
   },
   data() {
     return {
       show_general_password_modal: false,
       show_disconnect_modal: false,
       show_authors_modal: false,
+      show_welcome_modal: false,
     };
   },
   i18n: {
@@ -111,12 +124,14 @@ export default {
         .delay(4000)
         .error(`Connect error ${reason}`);
     },
-
     showDisconnectModal() {
       this.show_disconnect_modal = true;
     },
     promptGeneralPassword() {
       this.show_general_password_modal = true;
+    },
+    showWelcomeModal() {
+      this.show_welcome_modal = true;
     },
     showAuthorModal() {
       this.show_authors_modal = true;

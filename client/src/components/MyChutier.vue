@@ -707,6 +707,9 @@ export default {
   }
 }
 
+._authorBtn {
+  text-transform: none;
+}
 ._importButton {
   width: 100%;
   // padding: calc(var(--spacing) / 2);

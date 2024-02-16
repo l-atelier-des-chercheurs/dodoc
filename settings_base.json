@@ -64,37 +64,6 @@
             "type": "string"
           }
         },
-        "$files": {
-          "thumbs": {
-            "resolutions": [220, 360, 1600]
-          },
-          "fields": {
-            "title": {
-              "type": "string"
-            },
-            "keywords": {
-              "type": "array"
-            },
-            "date_created_corrected": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "caption": {
-              "type": "string"
-            },
-            "belongs_to_stack": {
-              "type": "string"
-            },
-            "is_stack": {
-              "type": "boolean"
-            },
-            "stack_files_metas": {
-              "type": "array"
-            }
-          }
-        },
         "$folders": {
           "stacks": {
             "$cover": {
@@ -298,19 +267,6 @@
             "type": "string"
           },
           "list_of_suggestions": {
-            "type": "array"
-          }
-        },
-        "$files": {}
-      },
-      "collections": {
-        "fields": {
-          "title": {
-            "type": "string",
-            "required": true,
-            "unique": true
-          },
-          "stacks_list": {
             "type": "array"
           }
         },
