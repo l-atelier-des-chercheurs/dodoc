@@ -169,7 +169,7 @@ x
           class="_compactExpandButton"
           @click="toggleCompacted"
         >
-          <button type="button" class="u-button u-button_icon u-button_black">
+          <button type="button" class="u-button u-button_icon">
             <b-icon v-if="short_project_view" icon="arrow-down-short" />
             <b-icon v-else icon="arrow-up-short" />
           </button>

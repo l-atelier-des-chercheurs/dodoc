@@ -281,7 +281,7 @@ export default {
 
   ::v-deep {
     > ._content {
-      min-height: 45px;
+      min-height: 1.5rem;
     }
     // ._floatingEditBtn[data-action="disable"] {
     //   display: none;
@@ -293,7 +293,7 @@ export default {
   }
 }
 ._spacer {
-  min-height: 3rem;
+  min-height: 1.5rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
