@@ -14,37 +14,35 @@
               <b-icon icon="arrow-left" />
               {{ $t("back") }}
             </button>
-            <div class="">
-              <DropDown v-if="can_edit">
-                <div class="">
-                  <button
-                    type="button"
-                    class="u-buttonLink"
-                    @click="show_qr_code_modal = true"
-                  >
-                    <sl-icon name="qr-code" />
-                    {{ $t("direct_link") }}
-                  </button>
-                </div>
-                <QRModal
-                  v-if="show_qr_code_modal"
-                  :url_to_access="share_url"
-                  @close="show_qr_code_modal = false"
-                >
-                  <ToggleField
-                    :label="$t('make_format_public')"
-                    :field_name="'$public'"
-                    :content="format.$public === true"
-                    :path="format.$path"
-                    :can_edit="can_edit"
-                  />
-                </QRModal>
-                <RemoveMenu
-                  :remove_text="$t('remove')"
-                  @remove="removeFormat"
-                />
-              </DropDown>
-            </div>
+            <RemoveMenu
+              v-if="can_edit"
+              :remove_text="$t('remove')"
+              @remove="removeFormat"
+            />
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_qr_code_modal = true"
+            >
+              <sl-icon name="qr-code" />
+              {{ $t("direct_link") }}
+            </button>
+            <QRModal
+              v-if="show_qr_code_modal"
+              :url_to_access="share_url"
+              @close="show_qr_code_modal = false"
+            >
+              <ToggleField
+                :label="$t('make_format_public')"
+                :field_name="'$public'"
+                :content="format.$public === true"
+                :path="format.$path"
+                :can_edit="can_edit"
+              />
+            </QRModal>
+
+            <!-- <DropDown v-if="can_edit"> -->
+            <!-- </DropDown> -->
           </div>
 
           <div class="_cont">
