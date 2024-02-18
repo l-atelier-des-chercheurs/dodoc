@@ -92,6 +92,6 @@ export default {
 ._sectionsList {
   position: relative;
   // z-index: 1;
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1 + 8%);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) * 1 + 8%);
 }
 </style>

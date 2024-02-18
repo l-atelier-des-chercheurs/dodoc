@@ -803,10 +803,9 @@ export default {
     // border: 2px solid var(--active-color);
     box-shadow: var(--panel-shadows);
 
-    // border-radius: 4px;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    gap: calc(var(--spacing) / 2);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    gap: calc(var(--spacing) / 4);
     // border: 2px solid white;
 
     display: flex;
