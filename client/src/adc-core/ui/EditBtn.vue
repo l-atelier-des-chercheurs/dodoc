@@ -56,6 +56,11 @@ export default {
           label: this.$t("add"),
           icon: "plus-lg",
         };
+      else if (this.btn_type === "order")
+        return {
+          label: this.$t("change_order"),
+          icon: "arrow-left-right",
+        };
       else if (this.btn_type === "close")
         return {
           label: this.$t("close"),
@@ -77,12 +82,12 @@ export default {
         return `
           --color2: var(--c-noir);
         `;
-      if (this.btn_type === "add")
-        return `
-          --color1: white;
-          --color2: var(--c-noir);
-          --color-hover-icon: white;
-        `;
+      // if (this.btn_type === "add")
+      //   return `
+      //     --color1: white;
+      //     --color2: var(--c-noir);
+      //     --color-hover-icon: white;
+      //   `;
       if (this.btn_type === "fullscreen-exit")
         return `
           --color1: var(--c-noir);
