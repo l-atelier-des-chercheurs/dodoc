@@ -1,9 +1,9 @@
 <template>
   <div class="_formatsList">
-    <div class="u-instructions">
+    <div class="u-spacingBottom u-instructions">
       {{ $t("format_instr") }}
     </div>
-    <div class="">
+    <div class="u-spacingBottom">
       <button
         type="button"
         class="u-button u-button_white"
@@ -22,17 +22,38 @@
       />
     </div>
 
-    <div class="_list">
-      <div v-for="format in formats" :key="format.$path">
-        <button
-          type="button"
-          class="u-button u-button_black"
-          @click="$emit('toggleFormat', getFilename(format.$path))"
-        >
-          {{ format.title }}
-        </button>
-      </div>
-    </div>
+    <table class="_list">
+      <!-- <thead>
+    <tr>
+      <th colspan="2">The table header</th>
+    </tr>
+  </thead> -->
+      <tbody>
+        <tr v-for="format in sorted_formats" :key="format.$path">
+          <td>
+            <h3>{{ format.title }}</h3>
+          </td>
+          <td>
+            <AuthorTag
+              v-for="atpath in format.$admins"
+              :key="atpath"
+              :path="atpath"
+              :mode="'link'"
+            />
+          </td>
+          <td>
+            <button
+              type="button"
+              class="u-button u-button_black"
+              @click="$emit('toggleFormat', getFilename(format.$path))"
+            >
+              {{ $t("open") }}
+              <!-- <AdminsAndContributorsField :folder="format" :can_edit="can_edit" /> -->
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <!-- </BaseModal2> -->
 </template>
@@ -74,6 +95,11 @@ export default {
     can_edit() {
       return this.canLoggedinEditFolder({ folder: this.stack });
     },
+    sorted_formats() {
+      return this.formats.slice().sort((a, b) => {
+        return a.title.localeCompare(b.title);
+      });
+    },
   },
   methods: {
     openNewFormat(new_folder_slug) {
@@ -86,16 +112,19 @@ export default {
 <style lang="scss" scoped>
 ._formatsList {
   > * {
-    margin-bottom: calc(var(--spacing) / 2);
   }
 }
 ._list {
-  display: flex;
-  flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 2);
-  overflow: auto;
+  width: 100%;
 
-  > * {
+  tr:nth-child(2n) {
+    // background-color: var(--c-gris);
+  }
+  tr:nth-child(2n + 1) {
+    // background-color: var(--c-gris_clair);
+  }
+  tr > td:last-child {
+    text-align: right;
   }
 }
 </style>
