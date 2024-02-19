@@ -44,9 +44,13 @@ export default {
     if (this.$route.query?.make_preview === "true")
       this.is_serversidepreview = true;
 
+    let superadmintoken = undefined;
+    if (this.$route.query?.sat) superadmintoken = this.$route.query.sat;
+
     this.format = await this.$api
       .getPublicFolder({
         path: this.format_path,
+        superadmintoken,
       })
       .catch((err) => {
         this.fetch_format_error = err.response;
@@ -81,5 +85,6 @@ export default {
 <style lang="scss" scoped>
 ._formatView {
   background: white;
+  min-height: 100%;
 }
 </style>
