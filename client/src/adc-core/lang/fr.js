@@ -183,6 +183,7 @@ export default {
   back_to_publications: "Retour aux publications",
   generate_preview: "Générer un aperçu",
   nothing_to_show: "Rien à afficher",
+  make_publication_public: "Rendre la publication visible à tous",
 
   story: "Récit",
   story_with_sections: "Récit",
