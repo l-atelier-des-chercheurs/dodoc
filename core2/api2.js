@@ -662,12 +662,13 @@ module.exports = (function () {
 
     try {
       let d = await folder.getFolder({ path_to_folder });
-
-      // make sure $public === true
       if (d.$public !== true) {
-        const err = new Error("Folder is not public");
-        err.code = "folder_not_public";
-        throw err;
+        // only allow queries with superadmintoken
+        if (!auth.checkSuperadminToken(req.query?.sat)) {
+          const err = new Error("Folder is not public");
+          err.code = "folder_not_public";
+          throw err;
+        }
       }
 
       const files = await file.getFiles({ path_to_folder, embed_source: true });

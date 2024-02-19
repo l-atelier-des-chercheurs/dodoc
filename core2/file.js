@@ -110,7 +110,6 @@ module.exports = (function () {
           const path_to_meta = path.join(path_to_folder, meta_filename);
           let meta = await API.getFile({
             path_to_meta,
-            embed_source,
           });
 
           if (embed_source) meta = await _embedSourceMedias({ meta });
@@ -124,7 +123,7 @@ module.exports = (function () {
 
       return metas;
     },
-    getFile: async ({ path_to_meta, embed_source }) => {
+    getFile: async ({ path_to_meta }) => {
       dev.logfunction({ path_to_meta });
 
       const d = cache.get({

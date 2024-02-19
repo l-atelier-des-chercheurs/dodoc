@@ -10,6 +10,7 @@ const utils = require("./utils"),
   file = require("./file"),
   settings = require("./settings"),
   notifier = require("./notifier"),
+  auth = require("./auth"),
   tasks = require("./exporter_tasks/tasks"),
   optimizer = require("./exporter_tasks/optimizer");
 
@@ -261,8 +262,9 @@ class Exporter {
         query.make_preview = true;
       }
 
-      const { general_password } = await settings.get();
-      if (!!general_password) query.general_password = general_password;
+      // use superamdin token
+      const sat = auth.getSuperadminToken();
+      query.sat = sat;
 
       if (Object.keys(query).length > 0) {
         const searchParams = new URLSearchParams(query);
