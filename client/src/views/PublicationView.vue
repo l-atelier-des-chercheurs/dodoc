@@ -12,7 +12,10 @@
       <div class="u-divCentered" v-if="$root.is_loading" key="loader">
         <LoaderSpinner />
       </div>
-      <div v-else key="publication" ref="fsContainer">
+      <div v-else-if="fetch_publication_error">
+        {{ fetch_publication_error }}
+      </div>
+      <div v-else-if="publication" key="publication" ref="fsContainer">
         <!-- <div
           class="_pubTopbar"
           v-if="!is_serversidepreview && !is_fullscreen && false"
@@ -70,6 +73,7 @@ export default {
     return {
       project: null,
       publication: null,
+      fetch_publication_error: undefined,
 
       is_fullscreen: false,
       is_serversidepreview: false,
@@ -87,8 +91,7 @@ export default {
         path: this.publication_path,
       })
       .catch((err) => {
-        this.fetch_publication_error = err.response;
-        this.$root.is_loading = false;
+        this.fetch_publication_error = err.code;
       });
 
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
