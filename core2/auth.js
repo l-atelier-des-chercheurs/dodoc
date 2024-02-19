@@ -8,6 +8,8 @@ const folder = require("./folder"),
 
 module.exports = (function () {
   let tokens = {};
+  let superadmintoken = undefined;
+
   const path_to_tokens = path.join(global.appRoot, "tokens.json");
   (async () => {
     try {
@@ -31,6 +33,15 @@ module.exports = (function () {
       return token;
     },
 
+    createSuperadminToken() {
+      superadmintoken = crypto.randomBytes(32).toString("hex");
+    },
+    getSuperadminToken() {
+      return superadmintoken;
+    },
+    checkSuperadminToken(t) {
+      return superadmintoken === t;
+    },
     extrackAndCheckToken({ req }) {
       if (!req.headers || !req.headers.authorization) {
         // const err = new Error("Headers missing");

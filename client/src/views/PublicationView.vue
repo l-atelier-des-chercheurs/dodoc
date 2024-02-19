@@ -86,9 +86,13 @@ export default {
     if (this.$route.query?.make_preview === "true")
       this.is_serversidepreview = true;
 
+    let superadmintoken = undefined;
+    if (this.$route.query?.sat) superadmintoken = this.$route.query.sat;
+
     this.publication = await this.$api
       .getPublicFolder({
         path: this.publication_path,
+        superadmintoken,
       })
       .catch((err) => {
         this.fetch_publication_error = err.code;
