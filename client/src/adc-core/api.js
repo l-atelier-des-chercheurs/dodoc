@@ -366,12 +366,16 @@ export default function () {
         return this.store[folder.$path];
       },
 
-      async getPublicFolder({ path }) {
-        const response = await this.$axios
-          .get(`${path}/_public`)
-          .catch((err) => {
-            throw this.processError(err);
-          });
+      async getPublicFolder({ path, superadmintoken }) {
+        path += "/_public";
+
+        let queries = [];
+        if (superadmintoken) queries.push("sat=" + superadmintoken);
+        if (queries.length > 0) path += `?${queries.join("&")}`;
+
+        const response = await this.$axios.get(`${path}`).catch((err) => {
+          throw this.processError(err);
+        });
         const folder = response.data;
         this.$set(this.store, folder.$path, folder);
         return this.store[folder.$path];

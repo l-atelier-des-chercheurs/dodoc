@@ -6,8 +6,8 @@ const server = require("./server"),
   dev = require("./dev-log"),
   cache = require("./cache"),
   utils = require("./utils"),
-  paths = require("./paths");
-// auth = require("./auth");
+  paths = require("./paths"),
+  auth = require("./auth");
 
 const is_electron = process.versions.hasOwnProperty("electron");
 
@@ -112,6 +112,7 @@ async function setupApp() {
 
   // global.session_options = {};
   // await readsession_metaFile();
+  auth.createSuperadminToken();
 
   const port = await portscanner
     .findAPortNotInUse(
