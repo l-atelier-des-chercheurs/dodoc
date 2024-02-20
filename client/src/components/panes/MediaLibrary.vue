@@ -354,7 +354,7 @@ export default {
   components: {
     MediaTile,
     MediaModal,
-    MediaMap: () => import("@/components/project/MediaMap.vue"),
+    MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
   },
   data() {
     return {
