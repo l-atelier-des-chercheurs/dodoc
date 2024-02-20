@@ -45,8 +45,8 @@ export default {
       //   },
       // ];
       return this.medias.reduce((acc, m) => {
-        if (m.$infos?.gps) {
-          const { latitude, longitude } = m.$infos?.gps;
+        if (m.$location) {
+          const { latitude, longitude } = m.$location;
           if (latitude && longitude)
             acc.push({
               latitude,

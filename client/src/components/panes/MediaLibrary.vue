@@ -518,7 +518,7 @@ export default {
           if (!m.$authors?.includes(this.author_of_media_to_display))
             return false;
 
-        if (this.tile_mode === "map") if (!m.$infos?.gps) return false;
+        if (this.tile_mode === "map") if (!m.$location) return false;
 
         return true;
       });
