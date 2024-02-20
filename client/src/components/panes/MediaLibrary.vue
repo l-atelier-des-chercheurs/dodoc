@@ -928,11 +928,11 @@ export default {
   width: 100%;
   padding: calc(var(--spacing) / 2);
   padding-bottom: 0;
-  cursor: pointer;
 
   .u-dropzone {
     --dropzone-color1: var(--c-orange);
     --dropzone-color2: var(--c-rouge);
+    cursor: pointer;
 
     &.is--dragover,
     &:hover,
