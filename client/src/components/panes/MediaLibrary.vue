@@ -518,7 +518,7 @@ export default {
           if (!m.$authors?.includes(this.author_of_media_to_display))
             return false;
 
-        if (this.tile_mode === "map") if (!m.$infos?.gps) return false;
+        if (this.tile_mode === "map") if (!m.$location) return false;
 
         return true;
       });
@@ -928,11 +928,11 @@ export default {
   width: 100%;
   padding: calc(var(--spacing) / 2);
   padding-bottom: 0;
-  cursor: pointer;
 
   .u-dropzone {
     --dropzone-color1: var(--c-orange);
     --dropzone-color2: var(--c-rouge);
+    cursor: pointer;
 
     &.is--dragover,
     &:hover,

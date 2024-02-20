@@ -8,6 +8,7 @@ const path = require("path"),
   sharp = require("sharp"),
   { IncomingForm } = require("formidable"),
   md5File = require("md5-file"),
+  exifr = require("exifr"),
   crypto = require("crypto");
 
 const ffmpegPath = require("ffmpeg-static").replace(
@@ -673,6 +674,10 @@ module.exports = (function () {
         }
       }
       return false;
+    },
+
+    async getGPSFromFile(full_media_path) {
+      return await exifr.gps(full_media_path);
     },
   };
 

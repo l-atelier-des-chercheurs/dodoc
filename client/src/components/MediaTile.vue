@@ -168,7 +168,8 @@ export default {
   }
 
   &.was--focused {
-    border: 3px solid var(--active-color);
+    border: 2px solid var(--c-noir);
+    padding: 2px;
   }
   &.is--dragged {
     opacity: 0.9;
@@ -350,7 +351,7 @@ export default {
 
   ._mediaTile:hover &,
   ._mediaTile:focus-visible & {
-    transform: scale(1.5);
+    transform: scale(1.25);
   }
 }
 

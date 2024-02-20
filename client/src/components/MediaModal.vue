@@ -142,6 +142,30 @@
           <small class="fieldCaption">{{ file.$media_filename }}</small>
         </div>
 
+        <div class="u-spacingBottom">
+          <TitleField
+            :label="$t('caption')"
+            :field_name="'caption'"
+            :content="file.caption"
+            :path="file.$path"
+            :input_type="'markdown'"
+            :can_edit="true"
+          />
+        </div>
+
+        <div class="u-spacingBottom">
+          <AuthorField
+            :label="$t('authors')"
+            class="u-spacingBottom"
+            :field="'$authors'"
+            :authors_paths="authors_path"
+            :path="file.$path"
+            :can_edit="true"
+            :instructions="$t('file_author_instructions')"
+            :no_options="true"
+          />
+        </div>
+
         <DetailsPane
           :header="$t('informations')"
           :icon="'info-square'"
@@ -184,35 +208,14 @@
           </div>
         </DetailsPane>
 
-        <div class="u-spacingBottom">
-          <TitleField
-            :label="$t('caption')"
-            :field_name="'caption'"
-            :content="file.caption"
-            :path="file.$path"
-            :input_type="'markdown'"
-            :can_edit="true"
-          />
-        </div>
-
-        <div class="u-spacingBottom">
-          <AuthorField
-            :label="$t('authors')"
-            class="u-spacingBottom"
-            :field="'$authors'"
-            :authors_paths="authors_path"
+        <DetailsPane :header="$t('location')" :icon="'map'">
+          <PositionPicker
+            :field_name="'$location'"
+            :content="file.$location"
             :path="file.$path"
             :can_edit="true"
-            :instructions="$t('file_author_instructions')"
-            :no_options="true"
           />
-        </div>
-
-        <ShowOnMap
-          v-if="file.$infos && file.$infos.gps"
-          :title="$t('place')"
-          :gps="file.$infos.gps"
-        />
+        </DetailsPane>
       </div>
     </div>
 

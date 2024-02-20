@@ -1,8 +1,40 @@
 <template>
   <div>
     <div class="m_fields--content">
-      <!-- <sl-input v-sl-model="location" size="medium" name="text" type="text" /> -->
-      <div class="u-sameRow _latLong">
+      <DisplayOnMap
+        v-if="pins.length > 0 || edit_mode"
+        :key="map_key"
+        :pins="pins"
+        :start_zoom="zoom"
+        @newPositionClicked="newPositionClicked"
+        @zoomUpdated="zoomUpdated"
+      />
+      <div v-else class="u-instructions">
+        {{ $t("no_position") }}
+      </div>
+
+      <button
+        type="button"
+        class="u-buttonLink"
+        v-if="edit_mode"
+        @click="currentPosition"
+        :loading="is_looking_for_gps_coords"
+      >
+        <!-- :disabled="$root.state.is_electron" -->
+        {{ $t("current_position") }}
+      </button>
+
+      <sl-alert
+        type="warning"
+        :open="error_message"
+        @sl-after-hide="error_message = false"
+        closable
+      >
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <span v-html="error_message" />
+      </sl-alert>
+
+      <div class="u-sameRow _latLong" v-if="pins.length > 0 || edit_mode">
         <div class="">
           <DLabel :str="$t('latitude')" />
           <div class="u-inputGroup">
@@ -31,8 +63,44 @@
             <span class="u-suffix">°</span>
           </div>
         </div>
+        <div class="">
+          <DLabel :str="$t('zoom')" />
+          <div class="u-inputGroup">
+            <input
+              :placeholder="$t('zoom')"
+              v-model="zoom"
+              size="small"
+              type="text"
+              :disabled="!edit_mode"
+              help-text="Niveau de zoom"
+            />
+          </div>
+        </div>
       </div>
-      <div class="">
+
+      <div class="u-instructions" v-if="edit_mode">
+        {{ $t("click_on_map_to_repick_location_for_media") }}
+      </div>
+
+      <template v-if="can_edit">
+        <div class="_footer">
+          <EditBtn
+            v-if="!edit_mode"
+            :is_unfolded="true"
+            @click="enableEditMode"
+          />
+          <template v-else>
+            <SaveCancelButtons
+              class="_scb"
+              :allow_save="allow_save"
+              @save="updateLongLatZoom"
+              @cancel="cancel"
+            />
+          </template>
+        </div>
+      </template>
+
+      <!-- <div class="">
         <DLabel :str="$t('zoom')" />
         <div class="">
           <input
@@ -44,49 +112,7 @@
             help-text="Niveau de zoom"
           />
         </div>
-      </div>
-
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="currentPosition"
-        v-if="edit_mode"
-        :loading="is_looking_for_gps_coords"
-      >
-        <!-- :disabled="$root.state.is_electron" -->
-        {{ $t("current_position") }}
-      </button>
-
-      <br />
-
-      <!-- <button
-              type="button"
-              class="u-button u-button_small"
-              @click="pick_on_map = !pick_on_map"
-              :active="pick_on_map"
-              v-if="edit_mode"
-            >
-              {{ $t("pick_on_map") }}
-            </button> -->
-
-      <sl-alert
-        type="warning"
-        :open="error_message"
-        @sl-after-hide="error_message = false"
-        closable
-      >
-        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
-        <span v-html="error_message" />
-      </sl-alert>
-
-      <!-- v-if="pick_on_map" -->
-      <DisplayOnMap
-        :start_coords="start_coords"
-        :pins="center_pin"
-        :start_zoom="start_zoom"
-        :map_baselayer="map_baselayer"
-        @newPositionClicked="newPositionClicked"
-      />
+      </div> -->
     </div>
   </div>
 </template>
@@ -114,42 +140,33 @@
 
 export default {
   props: {
-    start_coords: [Boolean, Object],
-    start_zoom: [Boolean, Number],
-    map_baselayer: String,
-    edit_mode: Boolean,
+    field_name: String,
+    content: Object,
+    path: String,
+    can_edit: Boolean,
   },
   components: {
     DisplayOnMap: () => import("@/adc-core/fields/DisplayOnMap.vue"),
   },
   data() {
     return {
-      raw_mode: false,
+      // raw_mode: false,
+      edit_mode: false,
 
       longitude: "",
       latitude: "",
       zoom: 0,
 
-      degrees: "",
-      minutes: "",
-      seconds: "",
-
-      value: "",
-
-      // pick_on_map: true,
+      // degrees: "",
+      // minutes: "",
+      // seconds: "",
 
       is_looking_for_gps_coords: false,
       error_message: false,
     };
   },
   created() {
-    if (this.start_coords?.longitude && this.start_coords?.latitude) {
-      this.longitude = this.start_coords.longitude;
-      this.latitude = this.start_coords.latitude;
-    }
-    if (this.start_zoom) {
-      this.zoom = this.start_zoom;
-    }
+    this.initLongLatZoom();
   },
   mounted() {
     // this.$el.addEventListener("sl-hide", (event) => {
@@ -159,13 +176,23 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    center_pin() {
-      return [
-        {
-          longitude: this.longitude,
-          latitude: this.latitude,
-        },
-      ];
+    allow_save() {
+      return (
+        this.longitude !== this.content?.longitude ||
+        this.latitude !== this.content?.latitude ||
+        this.zoom !== this.content?.zoom
+      );
+    },
+    pins() {
+      if (this.content) {
+        const { longitude, latitude } = this.content;
+        if (longitude && latitude) return [{ longitude, latitude }];
+      }
+      return [];
+    },
+    map_key() {
+      if (this.content) return JSON.stringify(this.content);
+      return "k";
     },
     // longlat() {
     //   if (!this.longitude || !this.latitude) return undefined;
@@ -182,6 +209,10 @@ export default {
     // },
   },
   methods: {
+    enableEditMode() {
+      this.edit_mode = true;
+    },
+
     currentPosition() {
       this.is_looking_for_gps_coords = true;
 
@@ -196,10 +227,8 @@ export default {
 
         this.is_looking_for_gps_coords = false;
 
-        this.updateLongLatZoom({
-          longitude: crd.longitude,
-          latitude: crd.latitude,
-        });
+        this.longitude = crd.longitude;
+        this.latitude = crd.latitude;
         // console.log("Votre position actuelle est :");
         // console.log(`Latitude : ${crd.latitude}`);
         // console.log(`Longitude : ${crd.longitude}`);
@@ -217,21 +246,39 @@ export default {
       navigator.geolocation.getCurrentPosition(success, error, options);
     },
     newPositionClicked({ longitude, latitude, zoom }) {
-      this.updateLongLatZoom({ longitude, latitude, zoom });
-      // this.pick_on_map = false;
-    },
-    updateLongLatZoom({ longitude, latitude, zoom }) {
       this.longitude = longitude;
       this.latitude = latitude;
-      if (zoom) this.zoom = zoom;
-
-      this.$emit("update", {
-        location: {
+      this.zoom = zoom;
+    },
+    zoomUpdated(zoom) {
+      this.zoom = zoom;
+    },
+    async updateLongLatZoom() {
+      const new_meta = {
+        [this.field_name]: {
           longitude: this.longitude,
           latitude: this.latitude,
+          zoom: this.zoom,
         },
-        zoom: this.zoom,
+      };
+
+      await this.$api.updateMeta({
+        path: this.path,
+        new_meta,
       });
+
+      this.edit_mode = false;
+    },
+    initLongLatZoom() {
+      if (this.content?.longitude && this.content?.latitude) {
+        this.longitude = this.content.longitude;
+        this.latitude = this.content.latitude;
+      }
+      this.zoom = this.content?.zoom || 2;
+    },
+    cancel() {
+      this.initLongLatZoom();
+      this.edit_mode = false;
     },
   },
 };
@@ -254,5 +301,8 @@ export default {
   > * {
     flex: 1 1 0;
   }
+}
+._footer {
+  margin-top: calc(var(--spacing) / 4);
 }
 </style>

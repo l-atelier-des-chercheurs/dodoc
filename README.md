@@ -206,6 +206,7 @@ Default values are:
 - $optimized        (Boolean, editable)                   used to indicate whether the media has been optimized or not
 - $thumbs           (object)                              list of possible media image thumbs
 - $content          (String, editable)                    text content of a file
+- $location         (Object, editable)                    GPS location for file
 - $infos            (object)                              data gathered from the file itself
   - mtimems         (Date)                                last modified time for media file
   - duration        (Number)                              for videos and audios
