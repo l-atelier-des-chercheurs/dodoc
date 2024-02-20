@@ -910,7 +910,9 @@ export default {
   map: "Carte",
   pins: "Épingles",
   pick_on_map: "Indiquer sur la carte",
+  location: "Localisation",
   current_position: "Position actuelle",
+  no_position: "Aucune position à afficher",
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
   translate: "Traduire",

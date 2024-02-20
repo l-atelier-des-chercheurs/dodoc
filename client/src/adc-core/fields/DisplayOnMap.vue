@@ -7,6 +7,7 @@
     }"
     :style="map_styles"
   >
+    {{ current_zoom }}
     <div class="_map" ref="map" />
 
     <div
@@ -313,9 +314,6 @@ export default {
     pins: Array,
     lines: Object,
     geometries: Array,
-    // start_coords: {
-    //   type: [Boolean, Object],
-    // },
     start_zoom: {
       type: [Boolean, Number],
       default: 2,
@@ -552,6 +550,9 @@ export default {
       if (this.opened_pin_path) this.openFeature(this.opened_pin_path);
       else this.closePopup();
     },
+    current_zoom() {
+      this.$emit("zoomUpdated", this.current_zoom);
+    },
   },
   computed: {
     map_styles() {
@@ -584,19 +585,6 @@ export default {
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom = 6;
       let center;
-
-      // if (this.start_coords?.longitude && this.start_coords?.latitude)
-      //   center = [this.start_coords.longitude, this.start_coords.latitude];
-      // else
-      //  if (
-      //   this.pins &&
-      //   this.pins.length > 0 &&
-      //   this.pins[0] &&
-      //   this.pins[0].longitude &&
-      //   this.pins[0].latitude
-      // ) {
-      //   center = [this.pins[0].longitude, this.pins[0].latitude];
-      // }
 
       // destroy map if exist
       if (this.map) {
