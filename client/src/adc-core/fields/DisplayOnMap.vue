@@ -313,9 +313,6 @@ export default {
     pins: Array,
     lines: Object,
     geometries: Array,
-    // start_coords: {
-    //   type: [Boolean, Object],
-    // },
     start_zoom: {
       type: [Boolean, Number],
       default: 2,
@@ -343,10 +340,6 @@ export default {
     },
     opened_view_color: String,
     opened_pin_path: String,
-    can_add_media_to_point: {
-      type: Boolean,
-      default: false,
-    },
     can_edit: Boolean,
   },
   components: {
@@ -556,6 +549,9 @@ export default {
       if (this.opened_pin_path) this.openFeature(this.opened_pin_path);
       else this.closePopup();
     },
+    current_zoom() {
+      this.$emit("zoomUpdated", this.current_zoom);
+    },
   },
   computed: {
     map_styles() {
@@ -588,19 +584,6 @@ export default {
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom = 6;
       let center;
-
-      // if (this.start_coords?.longitude && this.start_coords?.latitude)
-      //   center = [this.start_coords.longitude, this.start_coords.latitude];
-      // else
-      //  if (
-      //   this.pins &&
-      //   this.pins.length > 0 &&
-      //   this.pins[0] &&
-      //   this.pins[0].longitude &&
-      //   this.pins[0].latitude
-      // ) {
-      //   center = [this.pins[0].longitude, this.pins[0].latitude];
-      // }
 
       // destroy map if exist
       if (this.map) {
@@ -836,7 +819,11 @@ export default {
           });
 
         // prevent zoom from being too high (even though it may be correct for the extent)
-        if (this.map_baselayer !== "image" && this.map.getView().getZoom() > 15)
+        if (this.start_zoom) this.map.getView().setZoom(this.start_zoom);
+        else if (
+          this.map_baselayer !== "image" &&
+          this.map.getView().getZoom() > 15
+        )
           this.map.getView().setZoom(15);
       }
     },

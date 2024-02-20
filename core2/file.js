@@ -58,6 +58,7 @@ module.exports = (function () {
         extracted_meta = await _initMeta({
           additional_meta,
           filename: new_filename,
+          path_to_media: new_path,
         });
 
         meta_filename = await _preventFileOverride({
@@ -164,7 +165,12 @@ module.exports = (function () {
           media_filename,
           path_to_folder,
         });
-        if (file_infos) meta.$infos = file_infos;
+        if (file_infos) {
+          if (!meta.$location && file_infos.gps)
+            meta.$location = file_infos.gps;
+          if (file_infos.gps) delete file_infos.gps;
+          meta.$infos = file_infos;
+        }
       }
 
       cache.set({
@@ -441,13 +447,14 @@ module.exports = (function () {
     return new_filename;
   }
 
-  async function _initMeta({ additional_meta = {}, filename }) {
+  async function _initMeta({ additional_meta = {}, filename, path_to_media }) {
     dev.logfunction();
 
     // TODO need to rewrite this to match additional_meta with schema
 
     let new_meta = {};
 
+    // set date created (see readme)
     if (additional_meta.$date_created)
       new_meta.$date_created = utils.parseDate(additional_meta.$date_created);
     else {
@@ -455,6 +462,7 @@ module.exports = (function () {
       // await fs.stat(filepath);
     }
 
+    // set date uploaded (see readme)
     new_meta.$date_uploaded = new_meta.$date_modified = utils.getCurrentDate();
     if (filename) new_meta.$media_filename = filename;
 
@@ -463,12 +471,15 @@ module.exports = (function () {
       ? additional_meta.$status
       : "private";
 
+    // set origin
     if (additional_meta.$origin && typeof additional_meta.$origin === "string")
       new_meta.$origin = additional_meta.$origin;
 
+    // set authors
     if (additional_meta.$authors && Array.isArray(additional_meta.$authors))
       new_meta.$authors = additional_meta.$authors;
 
+    // set type
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;
     } else if (filename) {
@@ -510,6 +521,20 @@ module.exports = (function () {
           new_meta.$type = "other";
       }
       dev.logfunction(`Type determined to be ${new_meta.$type}`);
+    }
+
+    if (
+      additional_meta.$location &&
+      additional_meta.$location.latitude &&
+      additional_meta.$location.longitude
+    ) {
+      new_meta.$location = additional_meta.$location;
+    } else {
+      // for images, check if exif
+      if (new_meta.$type === "image" && path_to_media) {
+        const gps = await utils.getGPSFromFile(path_to_media);
+        if (gps) new_meta.$location = gps;
+      }
     }
 
     return new_meta;

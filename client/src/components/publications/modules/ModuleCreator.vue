@@ -326,7 +326,7 @@ export default {
           source_media: source_medias[0],
           folder_path: this.publication_path,
         });
-        if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+        if (media?.$location) addtl_meta.location = media.$location;
       }
 
       const meta_filename = await this.createMetaForModule({
@@ -352,7 +352,7 @@ export default {
             addtl_meta.height =
               this.$root.default_new_module_width * media.$infos.ratio;
 
-        if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+        if (media?.$location) addtl_meta.location = media.$location;
 
         const meta_filename = await this.createMetaForModule({
           module_type,
