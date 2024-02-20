@@ -166,10 +166,9 @@ module.exports = (function () {
           path_to_folder,
         });
         if (file_infos) {
-          if (!meta.$location && file_infos.gps) {
+          if (!meta.$location && file_infos.gps)
             meta.$location = file_infos.gps;
-            delete file_infos.gps;
-          }
+          if (file_infos.gps) delete file_infos.gps;
           meta.$infos = file_infos;
         }
       }
