@@ -13,14 +13,6 @@
         {{ $t("no_position") }}
       </div>
 
-      <div class="">
-        <EditBtn
-          v-if="can_edit && !edit_mode"
-          :is_unfolded="true"
-          @click="enableEditMode"
-        />
-      </div>
-
       <button
         type="button"
         class="u-buttonLink"
@@ -91,13 +83,20 @@
       </div>
 
       <template v-if="can_edit">
-        <div class="_footer" v-if="edit_mode">
-          <SaveCancelButtons
-            class="_scb"
-            :allow_save="allow_save"
-            @save="updateLongLatZoom"
-            @cancel="cancel"
+        <div class="_footer">
+          <EditBtn
+            v-if="!edit_mode"
+            :is_unfolded="true"
+            @click="enableEditMode"
           />
+          <template v-else>
+            <SaveCancelButtons
+              class="_scb"
+              :allow_save="allow_save"
+              @save="updateLongLatZoom"
+              @cancel="cancel"
+            />
+          </template>
         </div>
       </template>
 
@@ -302,5 +301,8 @@ export default {
   > * {
     flex: 1 1 0;
   }
+}
+._footer {
+  margin-top: calc(var(--spacing) / 4);
 }
 </style>
