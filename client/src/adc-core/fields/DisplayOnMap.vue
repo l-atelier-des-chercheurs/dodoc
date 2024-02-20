@@ -7,7 +7,6 @@
     }"
     :style="map_styles"
   >
-    {{ current_zoom }}
     <div class="_map" ref="map" />
 
     <div
@@ -820,7 +819,11 @@ export default {
           });
 
         // prevent zoom from being too high (even though it may be correct for the extent)
-        if (this.map_baselayer !== "image" && this.map.getView().getZoom() > 15)
+        if (this.start_zoom) this.map.getView().setZoom(this.start_zoom);
+        else if (
+          this.map_baselayer !== "image" &&
+          this.map.getView().getZoom() > 15
+        )
           this.map.getView().setZoom(15);
       }
     },
