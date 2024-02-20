@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="m_fields--content">
-      {{ zoom }}
       <DisplayOnMap
         v-if="pins.length > 0 || edit_mode"
         :key="map_key"
@@ -70,6 +69,19 @@
               help-text="Longitude, par exemple : -21.877 ou 21° 52' 37.199&quot; O"
             />
             <span class="u-suffix">°</span>
+          </div>
+        </div>
+        <div class="">
+          <DLabel :str="$t('zoom')" />
+          <div class="u-inputGroup">
+            <input
+              :placeholder="$t('zoom')"
+              v-model="zoom"
+              size="small"
+              type="text"
+              :disabled="!edit_mode"
+              help-text="Niveau de zoom"
+            />
           </div>
         </div>
       </div>
