@@ -343,10 +343,6 @@ export default {
     },
     opened_view_color: String,
     opened_pin_path: String,
-    can_add_media_to_point: {
-      type: Boolean,
-      default: false,
-    },
     can_edit: Boolean,
   },
   components: {
