@@ -22,16 +22,50 @@
           <LoaderSpinner />
         </div>
         <div v-else>
-          <button
-            type="button"
-            class="u-buttonLink"
-            :class="{
-              'is--active': show_filter_sort_pane,
-            }"
-            @click="show_filter_sort_pane = !show_filter_sort_pane"
-          >
-            {{ $t("filter_sort") }}
-          </button>
+          <div class="_topBtn u-spacingBottom">
+            <div class="">
+              <button
+                type="button"
+                class="u-buttonLink"
+                :class="{
+                  'is--active': show_filter_sort_pane,
+                }"
+                @click="show_filter_sort_pane = !show_filter_sort_pane"
+              >
+                {{ $t("filter_sort") }}
+              </button>
+            </div>
+
+            <div class="">
+              <ToggleInput
+                :content.sync="fav_filter"
+                :label="$t('only_my_fav')"
+              />
+            </div>
+
+            <div class="">
+              <button
+                class="u-button u-button_icon"
+                type="button"
+                :class="{
+                  'is--active': view_mode === 'map',
+                }"
+                @click="view_mode = 'map'"
+              >
+                <b-icon icon="map-fill" />
+              </button>
+              <button
+                class="u-button u-button_icon"
+                type="button"
+                :class="{
+                  'is--active': view_mode === 'list',
+                }"
+                @click="view_mode = 'list'"
+              >
+                <b-icon icon="grid-3x2-gap-fill" />
+              </button>
+            </div>
+          </div>
 
           <transition name="pagechange" mode="out-in">
             <div class="_filterBar" v-if="show_filter_sort_pane">
@@ -48,14 +82,7 @@
             </div>
           </transition>
 
-          <div>
-            <ToggleInput
-              :content.sync="fav_filter"
-              :label="$t('only_my_fav')"
-            />
-          </div>
-
-          <hr />
+          <!-- <hr /> -->
 
           <transition name="pagechange" mode="out-in">
             <transition-group
@@ -72,41 +99,40 @@
                 {{ $t("no_content") }}
               </div>
               <template v-else>
-                <div
-                  class="_dayFileSection"
-                  v-for="{ label, files: stacks } in grouped_stacks"
-                  :key="label"
-                >
-                  <div class="_label">
-                    {{ label }}
-                  </div>
-                  <transition-group
-                    tag="div"
-                    class="_itemGrid"
-                    name="listComplete"
-                    appear
+                <template v-if="view_mode === 'list'">
+                  <div
+                    class="_dayFileSection"
+                    v-for="{ label, files: stacks } in grouped_stacks"
+                    :key="label"
                   >
-                    <StackPreview
-                      v-for="stack in stacks"
-                      :key="stack.$path"
-                      :stack="stack"
-                      :is_selected="stack.$path === last_selected_stack_path"
-                      :can_be_added_to_fav="can_be_added_to_fav"
-                      :is_favorite="isFavorite(stack.$path)"
-                      @toggleFav="toggleFav(stack.$path)"
-                      @openStack="openStack"
-                    />
-                    <!-- <SharedFolderItem
-                class="_file"
-                v-for="stack in stacks"
-                :key="stack.$path"
-                :file="file"
-                :is_opened="opened_file && opened_file.$path === file.$path"
-                :can_be_added_to_coll="!!opened_collection_slug"
-                @open="openFile(file.$path)"
-              /> -->
-                  </transition-group>
-                </div>
+                    <div class="_label">
+                      {{ label }}
+                    </div>
+                    <transition-group
+                      tag="div"
+                      class="_itemGrid"
+                      name="listComplete"
+                      appear
+                    >
+                      <StackPreview
+                        v-for="stack in stacks"
+                        :key="stack.$path"
+                        :stack="stack"
+                        :is_selected="stack.$path === last_selected_stack_path"
+                        :can_be_added_to_fav="can_be_added_to_fav"
+                        :is_favorite="isFavorite(stack.$path)"
+                        @toggleFav="toggleFav(stack.$path)"
+                        @openStack="openStack"
+                      />
+                    </transition-group>
+                  </div>
+                </template>
+                <MediaMap
+                  v-else-if="view_mode === 'map'"
+                  key="mediaMap"
+                  :medias="filtered_stacks"
+                  @toggleMediaFocus="toggleMediaFocus"
+                />
               </template>
             </transition-group>
           </transition>
@@ -160,6 +186,7 @@ export default {
     StackPreview,
     AdminLumaSettings,
     StackDisplay,
+    MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
   },
   data() {
     return {
@@ -169,6 +196,7 @@ export default {
       show_admin_settings: false,
 
       last_selected_stack_path: undefined,
+      view_mode: "list",
 
       show_filter_sort_pane: false,
       sort_order: "date_modified",
@@ -292,6 +320,10 @@ export default {
     },
   },
   methods: {
+    toggleMediaFocus(path) {
+      const slug = this.getFilename(path);
+      this.openStack(slug);
+    },
     openStack(stack_slug) {
       let query = Object.assign({}, this.$route.query) || {};
       query.stack = stack_slug;
@@ -347,9 +379,22 @@ export default {
   overflow: auto;
 
   padding: 2px;
-  padding: 0 calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
+}
+
+._topBtn {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 2);
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 0 0 auto;
+  }
 }
 
 ._itemGrid {
