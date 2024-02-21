@@ -275,7 +275,6 @@ export default {
     },
     stream: {
       handler() {
-        // debugger;
         // if (this.stream && this.$refs.videoElement) {
         //   if ("srcObject" in this.$refs.videoElement)
         //     this.$refs.videoElement.srcObject = this.stream;
