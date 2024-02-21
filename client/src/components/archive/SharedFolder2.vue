@@ -48,21 +48,21 @@
                 class="u-button u-button_icon"
                 type="button"
                 :class="{
-                  'is--active': view_mode === 'map',
-                }"
-                @click="view_mode = 'map'"
-              >
-                <b-icon icon="map-fill" />
-              </button>
-              <button
-                class="u-button u-button_icon"
-                type="button"
-                :class="{
                   'is--active': view_mode === 'list',
                 }"
                 @click="view_mode = 'list'"
               >
                 <b-icon icon="grid-3x2-gap-fill" />
+              </button>
+              <button
+                class="u-button u-button_icon"
+                type="button"
+                :class="{
+                  'is--active': view_mode === 'map',
+                }"
+                @click="view_mode = 'map'"
+              >
+                <b-icon icon="map-fill" />
               </button>
             </div>
           </div>
@@ -127,12 +127,16 @@
                     </transition-group>
                   </div>
                 </template>
-                <MediaMap
+                <div
                   v-else-if="view_mode === 'map'"
                   key="mediaMap"
-                  :medias="filtered_stacks"
-                  @toggleMediaFocus="toggleMediaFocus"
-                />
+                  class="_mediamapContainer"
+                >
+                  <MediaMap
+                    :medias="filtered_stacks"
+                    @toggleMediaFocus="toggleMediaFocus"
+                  />
+                </div>
               </template>
             </transition-group>
           </transition>
@@ -422,5 +426,9 @@ export default {
 ._loader {
   position: relative;
   min-height: 80vh;
+}
+
+._mediamapContainer {
+  height: 90vh;
 }
 </style>
