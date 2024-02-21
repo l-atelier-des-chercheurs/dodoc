@@ -22,7 +22,7 @@
           <LoaderSpinner />
         </div>
         <div v-else>
-          <div class="_topBtn u-spacingBottom">
+          <div class="_topBtn">
             <div class="">
               <button
                 type="button"
@@ -383,7 +383,6 @@ export default {
   overflow: auto;
 
   padding: 2px;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 }
@@ -392,13 +391,18 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 2);
   align-items: center;
   gap: calc(var(--spacing) / 2);
+
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
   > * {
     flex: 0 0 auto;
   }
+}
+
+._dayFileSection {
+  margin: 0 calc(var(--spacing) / 2);
 }
 
 ._itemGrid {

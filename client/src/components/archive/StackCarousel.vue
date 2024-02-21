@@ -66,6 +66,12 @@
               :can_edit="can_edit"
             />
           </div>
+
+          <div class="u-instructions" v-if="current_file_shown.$location">
+            {{ $t("latitude") }} : {{ current_file_shown.$location.latitude }}
+            <br />
+            {{ $t("longitude") }} : {{ current_file_shown.$location.longitude }}
+          </div>
         </div>
       </div>
     </transition>

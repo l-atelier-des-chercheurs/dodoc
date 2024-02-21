@@ -5,7 +5,7 @@
         <LoaderSpinner />
       </div>
       <div v-else>
-        <sl-tab-group @sl-tab-show="newTabShown">
+        <sl-tab-group ref="tabgroup" @sl-tab-show="newTabShown">
           <sl-tab slot="nav" panel="informations">
             {{ $t("informations") }}
           </sl-tab>
@@ -103,7 +103,9 @@
 import SuggestedCategories from "@/adc-core/ui/SuggestedCategories.vue";
 
 export default {
-  props: {},
+  props: {
+    starting_tab: String,
+  },
   components: { SuggestedCategories },
   data() {
     return {
@@ -124,6 +126,13 @@ export default {
         return err;
       });
     this.is_loading = false;
+
+    if (this.starting_tab) {
+      setTimeout(() => {
+        this.$refs.tabgroup.show(this.starting_tab);
+      }, 100);
+    }
+
     this.$api.join({ room: this.settings.$path });
   },
   beforeDestroy() {

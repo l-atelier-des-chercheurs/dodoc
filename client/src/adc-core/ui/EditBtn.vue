@@ -102,8 +102,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: rgba(255, 255, 255, 0);
-  // --color1: white;
+  --color1: rgba(255, 255, 255, 1);
   --color2: var(--active-color);
   --color-hover-icon: white;
 

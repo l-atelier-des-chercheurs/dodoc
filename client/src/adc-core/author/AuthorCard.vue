@@ -69,7 +69,7 @@
                 {{ $t("add_to_instance_admin") }}
               </button> -->
 
-              <AdminSettings
+              <AdminLumaSettings
                 v-if="show_settings_modal"
                 :starting_tab="'administration_and_access_control'"
                 @close="show_settings_modal = false"
@@ -155,7 +155,7 @@
   </div>
 </template>
 <script>
-import AdminSettings from "@/adc-core/AdminSettings.vue";
+import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 
 export default {
   props: {
@@ -163,7 +163,7 @@ export default {
     context: String,
   },
   components: {
-    AdminSettings,
+    AdminLumaSettings,
   },
   data() {
     return {

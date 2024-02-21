@@ -35,6 +35,18 @@
           >
             <sl-icon name="question-square" />
           </button>
+
+          <button
+            type="button"
+            class="u-button u-button_icon _qrBtn"
+            @click="show_admin_settings = !show_admin_settings"
+          >
+            <b-icon icon="gear" :aria-label="$t('admin_settings')" />
+          </button>
+          <AdminLumaSettings
+            v-if="show_admin_settings"
+            @close="show_admin_settings = false"
+          />
         </div>
 
         <div class="_importButton">
@@ -280,6 +292,7 @@
 import DocumentsCreator from "@/components/chutier/DocumentsCreator.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
+import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 
 export default {
   props: {
@@ -289,6 +302,7 @@ export default {
     DocumentsCreator,
     LinkPicker,
     ChutierItem,
+    AdminLumaSettings,
   },
   provide() {
     return {
@@ -310,6 +324,7 @@ export default {
   data() {
     return {
       chutier: undefined,
+      show_admin_settings: false,
 
       is_dragover: false,
       files_to_import: [],
