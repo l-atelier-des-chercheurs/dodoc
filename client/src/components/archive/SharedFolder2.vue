@@ -408,7 +408,7 @@ export default {
 ._itemGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
 }
 
 ._label {

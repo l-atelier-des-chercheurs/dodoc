@@ -9,6 +9,7 @@
       type="button"
       class="_stackPreview--content"
       :class="{
+        'is--slider': start_slide,
         'is--selected': is_selected,
       }"
       @click="openStack"
@@ -197,6 +198,9 @@ export default {
 
   &.is--selected {
     border-color: var(--c-rouge);
+  }
+  &.is--slider {
+    background: var(--c-gris);
   }
 
   &:hover,
