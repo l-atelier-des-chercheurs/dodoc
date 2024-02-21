@@ -13,17 +13,6 @@
       <div v-else class="u-instructions">
         {{ $t("no_position") }}
       </div>
-
-      <sl-alert
-        type="warning"
-        :open="error_message"
-        @sl-after-hide="error_message = false"
-        closable
-      >
-        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
-        <span v-html="error_message" />
-      </sl-alert>
-
       <details v-if="pins.length > 0 || edit_mode">
         <summary class="u-buttonLink">
           {{ $t("more_informations") }}

@@ -370,6 +370,8 @@ export default {
         module: undefined,
       },
 
+      is_looking_for_gps_coords: false,
+
       pin_features: undefined,
       line_features: undefined,
       mouse_feature: undefined,
@@ -723,27 +725,57 @@ export default {
 
         await this.$nextTick();
 
-        if (evt.place?.lon && evt.place?.lat) {
-          this.clicked_location.latitude = +evt.place.lat;
-          this.clicked_location.longitude = +evt.place.lon;
-          const coordinate = [
-            this.clicked_location.longitude,
-            this.clicked_location.latitude,
-          ];
+        const place = evt.place;
 
-          this.$emit("newPositionClicked", {
-            longitude: this.clicked_location.longitude,
-            latitude: this.clicked_location.latitude,
-            zoom: this.current_zoom,
+        if (place?.lon && place?.lat) {
+          const longitude = +place.lon;
+          const latitude = +place.lat;
+          await this.setClickBtn({
+            longitude,
+            latitude,
           });
+
+          // not working, but should
+
+          let { bbox } = place;
+          if (bbox) {
+            const feature1 = new olFeature({
+              geometry: new olPoint([parseFloat(bbox[3]), parseFloat(bbox[0])]),
+            });
+            const feature2 = new olFeature({
+              geometry: new olPoint([parseFloat(bbox[2]), parseFloat(bbox[1])]),
+            });
+            const features = new olSourceVector({
+              wrapX: false,
+            });
+            features.addFeature(feature1);
+            features.addFeature(feature2);
+
+            const extent = features.getExtent();
+            // 1 2 0 3
+
+            // bbox = olProj.transformExtent(
+            //   [parseFloat(bbox[2]), parseFloat(bbox[1])], // SNWE -> WSEN
+            //   "EPSG:4326",
+            //   projection
+            // );
+            // this.map.getView().fit(bbox, {
+            //   padding: [50, 50, 50, 50],
+            // });
+
+            this.map
+              .getView()
+
+              .fit(extent, {
+                padding: [50, 50, 50, 50],
+              });
+          } else {
+            this.navigateTo({
+              center: [longitude, latitude],
+            });
+          }
 
           this.popup_message = evt.address.formatted;
-
-          this.overlay.setPosition(coordinate);
-
-          this.navigateTo({
-            center: [+evt.place.lon, +evt.place.lat],
-          });
         }
       });
 
@@ -836,7 +868,7 @@ export default {
       var zoom = view.getZoom();
       view.setZoom(zoom - 1);
     },
-    setClickBtn({ longitude, latitude }) {
+    async setClickBtn({ longitude, latitude }) {
       this.$emit("newPositionClicked", {
         longitude,
         latitude,
@@ -851,12 +883,6 @@ export default {
       this.overlay.setPosition([longitude, latitude]);
       this.clicked_location.longitude = longitude;
       this.clicked_location.latitude = latitude;
-
-      setTimeout(async () => {
-        this.navigateTo({
-          center: [longitude, latitude],
-        });
-      }, 25);
     },
     getCurrentPosition() {
       this.is_looking_for_gps_coords = true;
@@ -865,16 +891,23 @@ export default {
         timeout: 5000,
         maximumAge: 0,
       };
-      const success = (pos) => {
+      const success = async (pos) => {
         var crd = pos.coords;
         this.is_looking_for_gps_coords = false;
-        this.setClickBtn({
+        await this.setClickBtn({
           longitude: crd.longitude,
           latitude: crd.latitude,
         });
+        this.navigateTo({
+          center: [crd.longitude, crd.latitude],
+        });
       };
       const error = (err) => {
-        this.error_message = `Échec de la localisation de votre appareil.<br>(${err.code}): ${err.message}`;
+        this.$alertify
+          .delay(4000)
+          .error(
+            `Échec de la localisation de votre appareil.<br>(${err.code}): ${err.message}`
+          );
         this.is_looking_for_gps_coords = false;
       };
       // not working in Electron, use something like http://ip-api.com/json https://www.reddit.com/r/electronjs/comments/hbxick/comment/fvq96v6/?utm_source=reddit&utm_medium=web2x&context=3 ?
