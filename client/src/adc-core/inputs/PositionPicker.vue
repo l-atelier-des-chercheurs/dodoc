@@ -1,6 +1,13 @@
 <template>
-  <div>
-    <div class="m_fields--content">
+  <div class="_positionPicker">
+    <DLabel
+      v-if="label"
+      class="_label"
+      :str="label"
+      :instructions="can_edit ? instructions : ''"
+    />
+
+    <div class="">
       <DisplayOnMap
         v-if="pins.length > 0 || edit_mode"
         :key="map_key"
@@ -90,6 +97,10 @@
 export default {
   props: {
     field_name: String,
+    label: {
+      type: String,
+      default: "",
+    },
     content: Object,
     path: String,
     can_edit: Boolean,
