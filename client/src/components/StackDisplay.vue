@@ -73,6 +73,24 @@
               </div>
 
               <hr />
+              <!-- 
+              <DetailsPane
+                v-if="context === 'full'"
+                :header="$t('location')"
+                :is_open_initially="true"
+                :icon="'map'"
+                class="u-spacingBottom"
+              > -->
+              <PositionPicker
+                :field_name="'$location'"
+                :label="$t('location')"
+                :content="stack.$location"
+                :path="stack.$path"
+                :can_edit="can_edit"
+              />
+              <!-- </DetailsPane> -->
+
+              <hr />
 
               <div class="_dateFields">
                 <div class="">
