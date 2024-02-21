@@ -143,11 +143,6 @@ export default {
     margin: calc(var(--spacing) / 4);
   }
 
-  ::marker {
-    display: none;
-    content: "";
-  }
-
   summary {
     position: sticky;
     top: 0;
@@ -168,6 +163,11 @@ export default {
     &:focus-visible {
       // color: white;
       // background-color: var(--c-gris);
+    }
+
+    &::marker {
+      display: none;
+      content: "";
     }
   }
 

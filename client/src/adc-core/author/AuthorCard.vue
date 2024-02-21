@@ -78,7 +78,12 @@
           </div>
 
           <!-- <div class="_path">@{{ getFilename(author.$path) }}</div> -->
-          <div v-if="is_instance_admin || is_self">
+          <div
+            v-if="
+              (is_instance_admin || is_self) &&
+              (context === 'full' || author.email)
+            "
+          >
             <TitleField
               :field_name="'email'"
               :label="context === 'full' ? $t('email') : undefined"
@@ -94,7 +99,11 @@
             v-if="context === 'full'"
             :field_name="'presentation'"
             class="_presentation"
-            :label="can_edit && !author.presentation ? $t('presentation') : ''"
+            :label="
+              context === 'full' && (author.presentation || can_edit)
+                ? $t('presentation')
+                : undefined
+            "
             :content="author.presentation"
             :path="author.$path"
             :maxlength="1280"
@@ -102,30 +111,45 @@
             :can_edit="can_edit"
           />
         </div>
-      </div>
 
-      <DetailsPane :header="$t('options')" :icon="'gear'" v-if="can_edit">
-        <div class="u-spacingBottom">
-          <TitleField
-            :field_name="'$password'"
-            :label="$t('password')"
-            :content="''"
+        <DetailsPane
+          v-if="context === 'full'"
+          :header="$t('location')"
+          :is_open_initially="true"
+          :icon="'map'"
+          class="u-spacingBottom"
+        >
+          <PositionPicker
+            :field_name="'$location'"
+            :content="author.$location"
             :path="author.$path"
-            :required="true"
-            :minlength="3"
-            :maxlength="20"
-            :input_type="'password'"
             :can_edit="can_edit"
           />
-        </div>
-        <div class="">
-          <RemoveMenu
-            :remove_text="$t('remove_author')"
-            :remove_expl="$t('remove_author_expl')"
-            @remove="removeAuthor"
-          />
-        </div>
-      </DetailsPane>
+        </DetailsPane>
+
+        <DetailsPane :header="$t('options')" :icon="'gear'" v-if="can_edit">
+          <div class="u-spacingBottom">
+            <TitleField
+              :field_name="'$password'"
+              :label="$t('password')"
+              :content="''"
+              :path="author.$path"
+              :required="true"
+              :minlength="3"
+              :maxlength="20"
+              :input_type="'password'"
+              :can_edit="can_edit"
+            />
+          </div>
+          <div class="">
+            <RemoveMenu
+              :remove_text="$t('remove_author')"
+              :remove_expl="$t('remove_author_expl')"
+              @remove="removeAuthor"
+            />
+          </div>
+        </DetailsPane>
+      </div>
     </component>
   </div>
 </template>
@@ -192,7 +216,7 @@ export default {
     padding: calc(var(--spacing) / 2);
 
     > * {
-      flex: 1 1 0;
+      flex: 1 1 auto;
 
       &._cover {
         flex: 0 0 100px;
