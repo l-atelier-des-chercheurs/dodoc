@@ -76,7 +76,8 @@
     <div id="mouse-position" />
 
     <div class="_leftTopMenu">
-      <div class="_buttonRow">
+      <div class="_buttonRow" v-if="!$root.app_infos.is_electron">
+        <!-- hidden if electron, need to find alternative strategy -->
         <button type="button" class="u-button" @click="getCurrentPosition">
           <b-icon class="inlineSVG" icon="disc-fill" />
         </button>
