@@ -415,7 +415,6 @@ export default {
           new_line_height;
           // var range = this.quill.getSelection();
           // if (range) {
-          //   debugger;
           //   this.quill.format(
           //     range.index,
           //     range.length,

@@ -103,5 +103,6 @@ export default {
 }
 
 ._backBtn {
+  margin-bottom: calc(var(--spacing) * 2);
 }
 </style>
