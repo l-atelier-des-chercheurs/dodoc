@@ -249,11 +249,14 @@ export default {
     background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
   }
 
+  container-type: inline-size;
   ._noImage--letter {
-    font-weight: 300;
+    font-weight: 200;
     font-size: 1.5em;
     color: var(--c-bleumarine);
     user-select: none;
+
+    font-size: 55cqw;
   }
 }
 

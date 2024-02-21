@@ -134,7 +134,6 @@ export default {
   created() {
     // if (this.publimodule.x)
     this.setTransformFromPubli();
-    // else debugger;
     // todo get ratio from linked image, set initial transform based on that
 
     this.setNewComponentKey();

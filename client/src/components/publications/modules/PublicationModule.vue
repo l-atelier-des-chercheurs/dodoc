@@ -641,14 +641,12 @@ export default {
           if (entry.isIntersecting) {
             // entry.target.classList.add('tracked-element--visible');
             // if (entry.isIntersecting && entry.intersectionRatio === 1) {
-            //   debugger;
             if (
               this.is_associated_to_map &&
               this.has_coordinates &&
               !this.is_active_on_map
             )
               this.showModuleOnMap();
-            // debugger;
           }
         });
       };

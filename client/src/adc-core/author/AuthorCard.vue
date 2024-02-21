@@ -116,6 +116,7 @@
           v-if="context === 'full'"
           :header="$t('location')"
           :is_open_initially="true"
+          :has_items="!!author.$location"
           :icon="'map'"
           class="u-spacingBottom"
         >
