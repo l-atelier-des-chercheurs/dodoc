@@ -750,18 +750,7 @@ export default {
             });
             features.addFeature(feature1);
             features.addFeature(feature2);
-
             const extent = features.getExtent();
-            // 1 2 0 3
-
-            // bbox = olProj.transformExtent(
-            //   [parseFloat(bbox[2]), parseFloat(bbox[1])], // SNWE -> WSEN
-            //   "EPSG:4326",
-            //   projection
-            // );
-            // this.map.getView().fit(bbox, {
-            //   padding: [50, 50, 50, 50],
-            // });
 
             this.map
               .getView()
