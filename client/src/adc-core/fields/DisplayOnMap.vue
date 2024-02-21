@@ -77,6 +77,12 @@
 
     <div class="_leftTopMenu">
       <div class="_buttonRow">
+        <button type="button" class="u-button" @click="getCurrentPosition">
+          <b-icon class="inlineSVG" icon="disc-fill" />
+        </button>
+      </div>
+
+      <div class="_buttonRow">
         <button type="button" class="u-button" @click="zoomIn">
           <b-icon class="inlineSVG" icon="plus" />
         </button>
@@ -776,22 +782,10 @@ export default {
           this.$eventHub.$emit(`publication.story.scrollTo.${pin_path}`);
           this.openPin(pin_path);
         } else if (this.can_click) {
-          this.$emit("newPositionClicked", {
-            longitude,
-            latitude,
-            zoom: this.current_zoom,
-          });
-          this.$eventHub.$emit("publication.map.click", {
+          this.setClickBtn({
             longitude,
             latitude,
           });
-          this.mouse_feature
-            .getGeometry()
-            .setCoordinates([longitude, latitude]);
-
-          this.overlay.setPosition([longitude, latitude]);
-          this.clicked_location.longitude = longitude;
-          this.clicked_location.latitude = latitude;
         }
       });
 
@@ -840,6 +834,50 @@ export default {
       var view = this.map.getView();
       var zoom = view.getZoom();
       view.setZoom(zoom - 1);
+    },
+    setClickBtn({ longitude, latitude }) {
+      this.$emit("newPositionClicked", {
+        longitude,
+        latitude,
+        zoom: this.current_zoom,
+      });
+      this.$eventHub.$emit("publication.map.click", {
+        longitude,
+        latitude,
+      });
+      this.mouse_feature.getGeometry().setCoordinates([longitude, latitude]);
+
+      this.overlay.setPosition([longitude, latitude]);
+      this.clicked_location.longitude = longitude;
+      this.clicked_location.latitude = latitude;
+
+      setTimeout(async () => {
+        this.navigateTo({
+          center: [longitude, latitude],
+        });
+      }, 25);
+    },
+    getCurrentPosition() {
+      this.is_looking_for_gps_coords = true;
+      var options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      };
+      const success = (pos) => {
+        var crd = pos.coords;
+        this.is_looking_for_gps_coords = false;
+        this.setClickBtn({
+          longitude: crd.longitude,
+          latitude: crd.latitude,
+        });
+      };
+      const error = (err) => {
+        this.error_message = `Échec de la localisation de votre appareil.<br>(${err.code}): ${err.message}`;
+        this.is_looking_for_gps_coords = false;
+      };
+      // not working in Electron, use something like http://ip-api.com/json https://www.reddit.com/r/electronjs/comments/hbxick/comment/fvq96v6/?utm_source=reddit&utm_medium=web2x&context=3 ?
+      navigator.geolocation.getCurrentPosition(success, error, options);
     },
     toggleSearch() {
       this.$el.querySelector("#gcd-button-control").click();
@@ -1216,6 +1254,7 @@ export default {
       this.view.setRotation(0);
       this.view.animate({
         center,
+        duration: 600,
         zoom,
       });
     },
