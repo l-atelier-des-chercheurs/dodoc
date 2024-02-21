@@ -208,7 +208,11 @@
           </div>
         </DetailsPane>
 
-        <DetailsPane :header="$t('location')" :icon="'map'">
+        <DetailsPane
+          :header="$t('location')"
+          :icon="'map'"
+          :has_items="!!file.$location"
+        >
           <PositionPicker
             :field_name="'$location'"
             :content="file.$location"
