@@ -30,7 +30,11 @@
         :key="edit_mode + content"
         @toggleValidity="($event) => (allow_save = $event)"
       />
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        class="_edit"
+        @click="enableEditMode"
+      />
     </component>
 
     <template v-if="can_edit">
@@ -212,5 +216,9 @@ export default {
     visibility: hidden;
     white-space: break-spaces;
   }
+}
+
+._edit {
+  margin-top: -4px;
 }
 </style>

@@ -340,6 +340,10 @@ export default {
     },
     opened_view_color: String,
     opened_pin_path: String,
+    can_click: {
+      type: Boolean,
+      default: true,
+    },
     can_edit: Boolean,
   },
   components: {
@@ -771,7 +775,7 @@ export default {
         if (pin_path && type_of_pin === "media") {
           this.$eventHub.$emit(`publication.story.scrollTo.${pin_path}`);
           this.openPin(pin_path);
-        } else {
+        } else if (this.can_click) {
           this.$emit("newPositionClicked", {
             longitude,
             latitude,
