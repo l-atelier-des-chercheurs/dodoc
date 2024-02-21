@@ -160,6 +160,7 @@ module.exports = (function () {
         $public: { type: "boolean" },
         $admins: { type: "any" },
         $preview: { type: "string" },
+        $location: { type: "object" },
         $contributors: { type: "any" },
         $authors: { type: "any" },
         $password: { type: "string" },

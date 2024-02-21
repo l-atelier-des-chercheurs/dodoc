@@ -6,6 +6,7 @@
         :key="map_key"
         :pins="pins"
         :start_zoom="zoom"
+        :can_click="edit_mode"
         @newPositionClicked="newPositionClicked"
         @zoomUpdated="zoomUpdated"
       />
@@ -34,49 +35,54 @@
         <span v-html="error_message" />
       </sl-alert>
 
-      <div class="u-sameRow _latLong" v-if="pins.length > 0 || edit_mode">
-        <div class="">
-          <DLabel :str="$t('latitude')" />
-          <div class="u-inputGroup">
-            <input
-              :placeholder="$t('latitude')"
-              v-model="latitude"
-              size="small"
-              type="text"
-              :disabled="!edit_mode"
-              help-text="Latitude, par exemple : 64.138 ou 64° 8' 16.8&quot; N"
-            />
-            <span class="u-suffix">°</span>
+      <details v-if="pins.length > 0 || edit_mode">
+        <summary class="u-buttonLink">
+          {{ $t("more_informations") }}
+        </summary>
+        <div class="u-sameRow">
+          <div class="">
+            <DLabel :str="$t('latitude')" />
+            <div class="u-inputGroup">
+              <input
+                :placeholder="$t('latitude')"
+                v-model="latitude"
+                size="small"
+                type="text"
+                :disabled="!edit_mode"
+                help-text="Latitude, par exemple : 64.138 ou 64° 8' 16.8&quot; N"
+              />
+              <span class="u-suffix">°</span>
+            </div>
+          </div>
+          <div class="">
+            <DLabel :str="$t('longitude')" />
+            <div class="u-inputGroup">
+              <input
+                :placeholder="$t('longitude')"
+                v-model="longitude"
+                size="small"
+                type="text"
+                :disabled="!edit_mode"
+                help-text="Longitude, par exemple : -21.877 ou 21° 52' 37.199&quot; O"
+              />
+              <span class="u-suffix">°</span>
+            </div>
+          </div>
+          <div class="">
+            <DLabel :str="$t('zoom')" />
+            <div class="u-inputGroup">
+              <input
+                :placeholder="$t('zoom')"
+                v-model="zoom"
+                size="small"
+                type="text"
+                :disabled="!edit_mode"
+                help-text="Niveau de zoom"
+              />
+            </div>
           </div>
         </div>
-        <div class="">
-          <DLabel :str="$t('longitude')" />
-          <div class="u-inputGroup">
-            <input
-              :placeholder="$t('longitude')"
-              v-model="longitude"
-              size="small"
-              type="text"
-              :disabled="!edit_mode"
-              help-text="Longitude, par exemple : -21.877 ou 21° 52' 37.199&quot; O"
-            />
-            <span class="u-suffix">°</span>
-          </div>
-        </div>
-        <div class="">
-          <DLabel :str="$t('zoom')" />
-          <div class="u-inputGroup">
-            <input
-              :placeholder="$t('zoom')"
-              v-model="zoom"
-              size="small"
-              type="text"
-              :disabled="!edit_mode"
-              help-text="Niveau de zoom"
-            />
-          </div>
-        </div>
-      </div>
+      </details>
 
       <div class="u-instructions" v-if="edit_mode">
         {{ $t("click_on_map_to_repick_location_for_media") }}
@@ -165,16 +171,22 @@ export default {
       error_message: false,
     };
   },
-  created() {
-    this.initLongLatZoom();
-  },
+  created() {},
   mounted() {
     // this.$el.addEventListener("sl-hide", (event) => {
     //   if (event.target.tagName === "SL-ALERT") event.stopPropagation();
     // });
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    content: {
+      handler() {
+        this.initLongLatZoom();
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   computed: {
     allow_save() {
       return (

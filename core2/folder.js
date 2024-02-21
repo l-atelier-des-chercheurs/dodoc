@@ -600,6 +600,7 @@ module.exports = (function () {
 
     if (path_to_type) {
       // not applicable to instance settings
+      // TODO check for impact on performance
       let siblings_folders = await API.getFolders({ path_to_type });
       siblings_folders = siblings_folders.filter(
         (sf) => sf.$path !== path_to_folder
