@@ -39,19 +39,17 @@
             <MediaContent :file="slide_file_to_show" class="_mediaPreview" />
           </div>
         </transition>
-        <transition name="fade_fast" mode="out-in">
-          <div
-            class="_count"
-            v-if="index_of_slide_file_to_show === undefined"
-            key="preview"
-          >
+        <transition-group name="projectsList" class="_count">
+          <template v-if="index_of_slide_file_to_show !== undefined">
+            <div key="slide">
+              {{ index_of_slide_file_to_show + 1 }}
+            </div>
+            <div key="slash">/</div>
+          </template>
+          <div key="preview">
             {{ number_of_medias_in_stack }}
           </div>
-          <div class="_count" v-else key="slide">
-            {{ index_of_slide_file_to_show + 1 }} /
-            {{ number_of_medias_in_stack }}
-          </div>
-        </transition>
+        </transition-group>
       </div>
       <div class="_title">
         {{ stack.title }}
@@ -270,6 +268,9 @@ export default {
 
 ._count {
   position: absolute;
+  display: flex;
+  gap: calc(var(--spacing) / 8);
+  flex-flow: row nowrap;
   top: 0;
   left: 0;
   margin: calc(var(--spacing) / 4);
@@ -278,6 +279,10 @@ export default {
   background: white;
   color: black;
   line-height: 1;
+
+  > * {
+    background: white;
+  }
 }
 
 ._mainPreview {
