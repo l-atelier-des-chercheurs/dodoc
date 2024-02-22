@@ -12,6 +12,7 @@ export default {
   edit_source: "Modifier la source",
   stop_edit: "Arrêter les modifications",
   caption: "Légende",
+  "credits/source": "Crédits et sources",
   date_created: "Date de création",
   created: "Création",
   date_sent: "Envoi",
@@ -649,6 +650,7 @@ export default {
 
   camera: "Camera",
   sources: "Sources",
+
   "Entire screen": "Écran de l’ordinateur",
   no_stopmotion_created_yet:
     "Les animations créées apparaîtront dans ce panneau.",
