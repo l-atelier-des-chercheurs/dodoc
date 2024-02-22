@@ -2,7 +2,7 @@
   <div class="_fileShown">
     <div class="_single">
       <transition name="pagechange" mode="out-in">
-        <div v-if="file">
+        <template v-if="file">
           <div class="_textEditor" v-if="file.$type === 'text'">
             <CollaborativeEditor2
               :path="file.$path"
@@ -20,7 +20,7 @@
             :show_fs_button="true"
             :zoom_on_click="false"
           />
-        </div>
+        </template>
       </transition>
 
       <div class="_dragEditBtn">
@@ -62,9 +62,12 @@
     <transition name="pagechange" mode="out-in">
       <div class="_infos" :data-hide="!show_infos" :key="file.$path">
         <div class="_infos--content">
-          <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
+          <div
+            v-if="optimization_strongly_recommended"
+            class="u-spacingBottom _optimizeNotice"
+          >
             <div class="">
-              {{ $t("convert_to_format") }}
+              <!-- {{ $t("convert_to_format") }} -->
               <OptimizeMedia :media="file" @close="$emit('close')" />
             </div>
           </div>
@@ -87,7 +90,7 @@
             />
           </div>
 
-          <div class="u-spacingBottom">
+          <div class="">
             <TitleField
               :field_name="'credits'"
               class="_credits"
@@ -100,11 +103,15 @@
             />
           </div>
 
-          <div class="u-instructions" v-if="file.$location">
-            {{ $t("latitude") }} : {{ file.$location.latitude }}
-            <br />
-            {{ $t("longitude") }} : {{ file.$location.longitude }}
-          </div>
+          <template v-if="file.$location">
+            <div class="u-spacingBottom" />
+
+            <div class="u-instructions">
+              {{ $t("latitude") }} : {{ file.$location.latitude }}
+              <br />
+              {{ $t("longitude") }} : {{ file.$location.longitude }}
+            </div>
+          </template>
         </div>
       </div>
     </transition>
@@ -155,10 +162,24 @@ export default {
 
 ._single {
   position: relative;
-  flex: 1 0 50px;
+  flex: 1 1 auto;
+  overflow: hidden;
 
-  ._mediaContent {
-    height: 100%;
+  ::v-deep {
+    ._mediaContent {
+      width: 100%;
+      height: 100%;
+    }
+
+    ._mediaContent--image {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: scale-down;
+      max-width: none;
+      // background-color: var(--c-gris);
+      // border-radius: 2px;
+    }
   }
 }
 
@@ -189,6 +210,7 @@ export default {
 }
 
 ._infos {
+  flex: 0 0 auto;
   position: relative;
   border-top: 1px solid var(--sd-separator);
   border-bottom: 1px solid var(--sd-separator);
