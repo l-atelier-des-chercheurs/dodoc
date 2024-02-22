@@ -2,18 +2,28 @@
   <div class="_fileShown">
     <div class="_single">
       <transition name="pagechange" mode="out-in">
-        <MediaContent
-          v-if="file"
-          :key="file.$path"
-          :file="file"
-          :context="'full'"
-          :resolution="1600"
-          :show_fs_button="true"
-          :zoom_on_click="true"
-        />
+        <div v-if="file">
+          <div class="_textEditor" v-if="file.$type === 'text'">
+            <CollaborativeEditor2
+              :path="file.$path"
+              :content="file.$content"
+              :custom_formats="['bold', 'italic', 'underline', 'link']"
+              :can_edit="can_edit"
+            />
+          </div>
+          <MediaContent
+            v-else
+            :key="file.$path"
+            :file="file"
+            :context="'full'"
+            :resolution="1600"
+            :show_fs_button="true"
+            :zoom_on_click="false"
+          />
+        </div>
       </transition>
 
-      <div class="_dragFileIcon">
+      <div class="_dragEditBtn">
         <DragFile :file="file" :is_dragged.sync="is_dragged" />
       </div>
     </div>
@@ -111,6 +121,7 @@ export default {
     return {
       show_infos: true,
       is_dragged: false,
+      edit_mode: false,
     };
   },
   i18n: {
@@ -193,9 +204,18 @@ export default {
   }
 }
 
-._dragFileIcon {
+._dragEditBtn {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+._textEditor {
+  padding: calc(var(--spacing) / 2);
+
+  ::v-deep .ql-container {
+    padding: calc(var(--spacing) / 2);
+    border-left: 2px solid var(--sd-textcolor);
+  }
 }
 </style>

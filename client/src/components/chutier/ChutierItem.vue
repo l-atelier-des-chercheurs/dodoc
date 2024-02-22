@@ -17,25 +17,7 @@
   >
     <div class="_chutierRow--rows">
       <div class="_infos">
-        <label
-          :for="id"
-          class="_selectBox"
-          @click.stop
-          v-if="!edit_mode && $listeners && $listeners.toggleSelect"
-        >
-          <input
-            type="checkbox"
-            :checked="is_selected"
-            :name="id"
-            @change="$emit('toggleSelect')"
-            :id="id"
-          />
-        </label>
-        <div
-          class="_chutierRow--openLarge"
-          @click.stop="show_large = true"
-          v-if="!(file.$type === 'text' && edit_mode)"
-        >
+        <div class="_chutierRow--openLarge" @click.stop="show_large = true">
           <MediaContent
             class="_chutierRow--preview"
             :file="file"
@@ -46,137 +28,34 @@
           <div>
             <div class="">
               <small>
-                <template v-if="!edit_mode">
-                  {{
-                    context === "stack"
-                      ? formatDateTimeToPrecise(date_created_corrected)
-                      : formatTime(date_created_corrected, {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
-                  }}
-                </template>
-                <template v-else>
-                  <input
-                    class="is--dark"
-                    type="datetime-local"
-                    v-model="date_created_corrected"
-                    step="1"
-                  />
-                </template>
+                {{
+                  context === "stack"
+                    ? formatDateTimeToPrecise(date_created_corrected)
+                    : formatTime(date_created_corrected, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                }}
               </small>
             </div>
-
-            <div v-if="!edit_mode">
-              {{ text_title }}
-            </div>
-
-            <template v-else>
-              <input
-                type="text"
-                class="is--dark"
-                autofocus
-                required
-                v-model="text_title"
-                :placeholder="$t('caption')"
-                @keydown.enter.prevent="
-                  context === 'stack' ? $emit('unclicked') : ''
-                "
-                @keydown.esc.prevent="cancelEdit"
-              />
-            </template>
+            <div v-if="file.caption" v-text="file.caption" />
+            <div v-else v-text="file.$media_filename" />
           </div>
         </div>
-        <template v-if="context === 'stack'">
-          <transition name="slideup" mode="out-in">
-            <EditBtn
-              v-if="!edit_mode"
-              :label_position="'left'"
-              @click="edit_mode = true"
-            />
-            <EditBtn
-              v-else
-              :label_position="'left'"
-              :btn_type="'check'"
-              @click="saveFields"
-            />
-          </transition>
-        </template>
-        <template v-else>
-          <button type="button" class="u-button_icon _dragBtn">
-            <b-icon :icon="'grid3x2-gap-fill'" rotate="90" />
-          </button>
-        </template>
+        <button type="button" class="u-button_icon _dragBtn">
+          <b-icon :icon="'grid3x2-gap-fill'" rotate="90" />
+        </button>
       </div>
     </div>
-    <div
-      class="_fields"
-      v-if="
-        context !== 'stack' &&
-        (edit_mode || keywords.length > 0 || description.length > 0)
-      "
-    >
-      <div v-if="edit_mode">
-        <span class="u-instructions">
-          {{ $t("complete_or_correct_title_kw") }}
-        </span>
-      </div>
-      <div class="" v-if="file.$type === 'url'">
-        <div>
-          <input
-            type="url"
-            class="is--dark"
-            autofocus
-            :value="file.$content"
-            disabled
-          />
-        </div>
-      </div>
-      <div class="" v-if="(keywords && keywords.length > 0) || edit_mode">
-        <KeywordsField
-          :keywords.sync="keywords"
-          :can_edit="edit_mode"
-          @cancelEdit="cancelEdit"
-        />
-      </div>
-      <div class="" v-if="description || edit_mode">
-        <div v-if="!edit_mode">
-          {{ description }}
-        </div>
-        <template v-else>
-          <textarea
-            v-if="file.$type !== 'text'"
-            class="is--dark _descriptionField"
-            v-model="description"
-            :placeholder="$t('description')"
-            @keydown.esc.prevent="cancelEdit"
-          />
-
-          <CollaborativeEditor2
-            v-else
+    <!-- <CollaborativeEditor2
+          v-if="file.$type === 'text'"
             class="_content"
             :path="file.$path"
             :content="file.$content"
             :edit_on_mounted="true"
             :can_edit="true"
             :custom_formats="['bold', 'italic', 'underline', 'link']"
-          />
-        </template>
-      </div>
-
-      <div class="_publierBtn" v-if="false">
-        <button
-          type="button"
-          :key="share_button_is_enabled"
-          class="u-buttonLink"
-          :disabled="!share_button_is_enabled"
-          @click="shareButtonClicked"
-        >
-          {{ $t("publish") }}&nbsp;
-          <sl-icon name="arrow-right-square" style="font-size: 1rem" circle />
-        </button>
-      </div>
-    </div>
+          /> -->
 
     <template v-if="show_large">
       <portal to="largemedia">
@@ -202,7 +81,6 @@
   </div>
 </template>
 <script>
-import KeywordsField from "@/components/KeywordsField.vue";
 import FileShown from "@/components/archive/FileShown.vue";
 
 export default {
@@ -217,7 +95,6 @@ export default {
     },
   },
   components: {
-    KeywordsField,
     FileShown,
   },
   data() {
