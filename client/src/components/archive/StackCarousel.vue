@@ -1,80 +1,11 @@
 <template>
   <div class="_stackCarousel">
-    <div class="_single">
-      <transition name="pagechange" mode="out-in">
-        <MediaContent
-          v-if="current_file_shown"
-          :key="current_file_shown.$path"
-          :file="current_file_shown"
-          :context="'full'"
-          :resolution="1600"
-          :show_fs_button="true"
-          :zoom_on_click="true"
-        />
-      </transition>
-
-      <div class="_dragFileIcon">
-        <DragFile :file="current_file_shown" :is_dragged.sync="is_dragged" />
-      </div>
-    </div>
-
-    <div class="_unfoldBtn">
-      <button
-        type="button"
-        class="u-button u-button_icon u-button_transparent"
-        @click="show_infos = !show_infos"
-      >
-        <b-icon
-          v-if="show_infos"
-          icon="chevron-compact-down"
-          :aria-label="$t('close')"
-        />
-        <b-icon v-else icon="chevron-compact-up" :aria-label="$t('open')" />
-        <b-icon icon="file-earmark-text" />
-      </button>
-    </div>
-
-    <transition name="pagechange" mode="out-in">
-      <div
-        class="_infos"
-        :data-hide="!show_infos"
-        :key="current_file_shown.$path"
-      >
-        <div class="_infos--content">
-          <div class="u-spacingBottom">
-            <TitleField
-              :field_name="'caption'"
-              class="_caption"
-              :label="$t('caption')"
-              :content="current_file_shown.caption"
-              :path="current_file_shown.$path"
-              :maxlength="1280"
-              :input_type="'markdown'"
-              :can_edit="can_edit"
-            />
-          </div>
-
-          <div class="u-spacingBottom">
-            <TitleField
-              :field_name="'credits'"
-              class="_credits"
-              :label="$t('credits/source')"
-              :content="current_file_shown.credits"
-              :path="current_file_shown.$path"
-              :maxlength="1280"
-              :input_type="'markdown'"
-              :can_edit="can_edit"
-            />
-          </div>
-
-          <div class="u-instructions" v-if="current_file_shown.$location">
-            {{ $t("latitude") }} : {{ current_file_shown.$location.latitude }}
-            <br />
-            {{ $t("longitude") }} : {{ current_file_shown.$location.longitude }}
-          </div>
-        </div>
-      </div>
-    </transition>
+    <FileShown
+      class="_stackCarousel--fileshown"
+      :key="current_file_shown.$path"
+      :file="current_file_shown"
+      :can_edit="can_edit"
+    />
 
     <transition-group tag="div" class="_list" name="listComplete">
       <div
@@ -115,17 +46,20 @@
   </div>
 </template>
 <script>
+import FileShown from "@/components/archive/FileShown.vue";
+
 export default {
   props: {
     files: Array,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    FileShown,
+  },
   data() {
     return {
       active_file_index: 0,
       is_dragged: false,
-      show_infos: true,
     };
   },
   i18n: {
@@ -176,16 +110,6 @@ export default {
     openFile(index) {
       this.active_file_index = index;
     },
-    startMediaDrag($event) {
-      this.is_dragged = true;
-      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
-      $event.dataTransfer.effectAllowed = "copy";
-      this.$eventHub.$emit(`mediatile.drag.start`);
-    },
-    endMediaDrag() {
-      this.is_dragged = false;
-      this.$eventHub.$emit(`mediatile.drag.end`);
-    },
   },
 };
 </script>
@@ -194,58 +118,12 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
-  > ._single {
-    flex: 1 1 150px;
-    height: 100px;
-  }
-  > ._infos {
-    flex: 0 0 auto;
+  > ._stackCarousel--fileshown {
+    flex: 1 1 auto;
   }
 
   > ._list {
     flex: 0 0 auto;
-  }
-}
-
-._single {
-  position: relative;
-
-  ._mediaContent {
-    height: 100%;
-  }
-}
-
-._unfoldBtn {
-  width: 100%;
-  border-top: 1px solid var(--sd-separator);
-  z-index: 2;
-  text-align: right;
-
-  > button {
-    width: 100%;
-    justify-content: flex-end;
-    border-radius: 0;
-
-    &:hover,
-    &:focus {
-      background: var(--sd-separator);
-    }
-  }
-}
-
-._infos {
-  position: relative;
-  border-top: 1px solid var(--sd-separator);
-  border-bottom: 1px solid var(--sd-separator);
-  max-height: 50vh;
-  overflow: auto;
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
-
-  transition: all 0.02s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &[data-hide] {
-    max-height: 0;
-    padding: 0 calc(var(--spacing) / 1);
   }
 }
 
@@ -294,12 +172,6 @@ export default {
       max-width: none;
     }
   }
-}
-
-._dragFileIcon {
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 
 ._btnRow {
