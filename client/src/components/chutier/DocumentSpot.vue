@@ -327,8 +327,5 @@ export default {
 }
 
 ._stackModal {
-  --sd-separator: #424146;
-  --sd-textcolor: white;
-  --sd-bg: #77757c;
 }
 </style>

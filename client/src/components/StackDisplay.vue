@@ -522,11 +522,6 @@ hr {
 
 ._closeStack {
   position: relative;
-  // height: 0;
-  // top: 0;
-  // left: 0;
-  // width: 100%;
-
   border-bottom: 1px solid var(--sd-separator);
   z-index: 2;
   text-align: right;

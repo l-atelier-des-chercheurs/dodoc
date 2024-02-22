@@ -139,6 +139,7 @@ export default {
 ._fileShown {
   display: flex;
   flex-flow: column nowrap;
+  overflow: hidden;
 }
 
 ._single {

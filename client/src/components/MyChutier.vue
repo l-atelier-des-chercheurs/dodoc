@@ -569,6 +569,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._myChutier {
+  --sd-separator: #424146;
+  --sd-textcolor: white;
+  --sd-bg: #77757c;
+
   position: relative;
   top: 0;
   height: 100%;

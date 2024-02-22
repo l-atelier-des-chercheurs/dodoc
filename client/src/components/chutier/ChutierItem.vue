@@ -180,19 +180,21 @@
 
     <template v-if="show_large">
       <portal to="largemedia">
-        <div
-          class="_chutierRow--largePreview"
-          @click.self="file.$type !== 'text' ? (show_large = false) : ''"
-          :data-type="file.$type"
-        >
-          <MediaContent :file="file" :context="'full'" :resolution="1600" />
-          <button
-            type="button"
-            class="u-button u-button_round u-button_black _closeBtn"
-            @click="show_large = false"
-          >
-            <sl-icon name="x-lg" :label="$t('close')" />
-          </button>
+        <div class="_largePreview">
+          <div class="_closeLarge">
+            <button
+              class="u-button u-button_icon u-button_transparent"
+              @click="show_large = false"
+            >
+              <b-icon icon="x-lg" :label="$t('close')" />
+            </button>
+          </div>
+          <FileShown
+            class="_fileLarge"
+            :key="file.$path"
+            :file="file"
+            :can_edit="true"
+          />
         </div>
       </portal>
     </template>
@@ -201,6 +203,7 @@
 </template>
 <script>
 import KeywordsField from "@/components/KeywordsField.vue";
+import FileShown from "@/components/archive/FileShown.vue";
 
 export default {
   props: {
@@ -215,6 +218,7 @@ export default {
   },
   components: {
     KeywordsField,
+    FileShown,
   },
   data() {
     return {
@@ -386,13 +390,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._catBtn {
-  background: #ffbe32;
-  border-radius: 5px;
-  margin: 2px;
-  padding: 2px;
-}
-
 ._fields {
   display: flex;
   flex-flow: column nowrap;
@@ -581,7 +578,7 @@ export default {
 }
 </style>
 <style lang="scss">
-._chutierRow--largePreview {
+._largePreview {
   position: absolute;
   top: 0;
   left: 0;
@@ -590,49 +587,34 @@ export default {
   z-index: 2000;
   overflow: auto;
 
-  background-color: var(--c-gris);
-  padding: calc(var(--spacing) / 2);
-  color: white;
+  background-color: var(--chutier-bg);
 
-  &[data-type="text"] {
-    padding: calc(var(--spacing));
+  display: flex;
+  flex-flow: column nowrap;
+
+  > ._closeLarge {
+    flex: 0 0 auto;
+  }
+  > ._fileLarge {
+    flex: 1 1 auto;
   }
 
-  ._mediaContent {
-    pointer-events: none;
+  ._closeLarge {
     position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border-bottom: 1px solid var(--sd-separator);
+    z-index: 2;
+    text-align: right;
 
-    .u-floatingFsButton {
-      display: none;
-    }
-
-    .plyr__control,
-    ._mediaContent--pdfIframe {
-      pointer-events: auto;
-    }
-
-    ._mediaContent--image {
+    > button {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center;
-    }
+      justify-content: flex-end;
+      border-radius: 0;
 
-    .plyr__video-wrapper {
-      pointer-events: none;
+      &:hover,
+      &:focus {
+        background: var(--sd-separator);
+      }
     }
-  }
-
-  ._closeBtn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: calc(var(--spacing) / 2);
   }
 }
 </style>
