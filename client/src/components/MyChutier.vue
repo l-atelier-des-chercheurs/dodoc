@@ -15,7 +15,7 @@
             </template>
             <template v-else>{{ $t("login") }}</template>
           </button>
-
+          <div class="_separator" />
           <button
             type="button"
             class="u-button u-button_icon _qrBtn"
@@ -39,6 +39,16 @@
           <button
             type="button"
             class="u-button u-button_icon _qrBtn"
+            @click="show_lang_modal = !show_lang_modal"
+          >
+            {{ current_lang_code }}
+          </button>
+          <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+
+          <button
+            type="button"
+            class="u-button u-button_icon _qrBtn"
+            v-if="is_instance_admin"
             @click="show_admin_settings = !show_admin_settings"
           >
             <b-icon icon="gear" :aria-label="$t('admin_settings')" />
@@ -293,6 +303,7 @@ import DocumentsCreator from "@/components/chutier/DocumentsCreator.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
 import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
+import LangModal from "@/adc-core/lang/LangModal.vue";
 
 export default {
   props: {
@@ -303,6 +314,7 @@ export default {
     LinkPicker,
     ChutierItem,
     AdminLumaSettings,
+    LangModal,
   },
   provide() {
     return {
@@ -340,6 +352,7 @@ export default {
 
       show_link_picker: false,
       show_qr_code_modal: false,
+      show_lang_modal: false,
       show_confirm_remove_menu: false,
     };
   },
@@ -399,6 +412,11 @@ export default {
     author_stacks_path() {
       return this.author_path + "/stacks";
     },
+    current_lang_code() {
+      this.$i18n.availableLocales;
+      return this.$i18n.locale;
+    },
+
     url_to_page() {
       // for reactivity
       this.$route.path;
@@ -597,11 +615,16 @@ export default {
 
 ._subscribeBtn {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
 
   padding: 0 calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
+
+  ._separator {
+    flex: 1 1 auto;
+  }
 }
 
 ._qrBtn {
