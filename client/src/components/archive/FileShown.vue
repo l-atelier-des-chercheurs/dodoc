@@ -9,6 +9,7 @@
               :content="file.$content"
               :custom_formats="['bold', 'italic', 'underline', 'link']"
               :can_edit="can_edit"
+              :edit_on_mounted="context === 'chutier'"
             />
           </div>
           <MediaContent
@@ -121,6 +122,7 @@
 export default {
   props: {
     file: Object,
+    context: String,
     can_edit: Boolean,
   },
   components: {},
@@ -235,8 +237,8 @@ export default {
 ._textEditor {
   padding: calc(var(--spacing) / 2);
 
-  ::v-deep .ql-container {
-    padding: calc(var(--spacing) / 2);
+  ::v-deep .ql-editor {
+    padding: 0 calc(var(--spacing) / 2);
     border-left: 2px solid var(--sd-textcolor);
   }
 }

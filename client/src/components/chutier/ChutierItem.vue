@@ -71,6 +71,7 @@
           <FileShown
             class="_fileLarge"
             :key="file.$path"
+            :context="'chutier'"
             :file="file"
             :can_edit="true"
           />
@@ -99,7 +100,6 @@ export default {
   },
   data() {
     return {
-      opened_pane: undefined,
       show_large: false,
       is_mousedown: false,
       edit_mode: false,
@@ -109,8 +109,6 @@ export default {
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
 
-      text_title:
-        this.file.title || this.cleanFilename(this.file.$media_filename) || "",
       date_created_corrected: this.datetimeLocal(
         this.file.date_created_corrected ||
           this.file.$date_created ||
@@ -123,111 +121,31 @@ export default {
   },
   created() {},
   mounted() {
-    this.$eventHub.$on("chutier.item.edit", this.setEdit);
+    this.$eventHub.$on("chutierItem.editText", this.editText);
     this.$eventHub.$on("chutierItem.startDrag", this.itemDragged);
     this.$eventHub.$on("chutierItem.endDrag", this.itemStoppedDrag);
   },
   beforeDestroy() {
-    this.$eventHub.$off("chutier.item.edit", this.setEdit);
+    this.$eventHub.$off("chutierItem.editText", this.editText);
     this.$eventHub.$off("chutierItem.startDrag", this.itemDragged);
     this.$eventHub.$off("chutierItem.endDrag", this.itemStoppedDrag);
   },
-  watch: {
-    "file.title"() {
-      this.text_title = this.file.title;
-    },
-    is_clicked() {
-      if (!this.is_clicked && this.edit_mode) {
-        // todo save
-        this.saveFields();
-      }
-    },
-    edit_mode() {
-      if (this.edit_mode)
-        this.$nextTick(() => {
-          this.$el.querySelector("[autofocus]").select();
-        });
-    },
-  },
-  computed: {
-    share_button_is_enabled() {
-      return this.text_title.length > 0 && this.keywords.length > 0;
-    },
-  },
+  watch: {},
+  computed: {},
   methods: {
-    setEdit(meta_filename) {
-      const file_meta_filename = this.getFilename(this.file.$path);
-      if (meta_filename === file_meta_filename) this.edit_mode = true;
-    },
-    async remove() {
-      this.$api.deleteItem({ path: this.file.$path });
-    },
     cleanFilename() {
       return this.file.$media_filename.substring(
         0,
         this.file.$media_filename.lastIndexOf(".")
       );
     },
-    cancelEdit() {
-      this.text_title =
-        this.file.title || this.cleanFilename(this.file.$media_filename) || "";
-      this.date_created_corrected =
-        this.file.date_created_corrected ||
-        this.file.$date_created ||
-        this.file.$date_uploaded ||
-        "";
-      this.description = this.file.description || "";
-      this.keywords = this.file.keywords || "";
-      this.edit_mode = false;
-    },
-    async shareButtonClicked() {
-      if (this.share_button_is_enabled) {
-        if (this.edit_mode) {
-          await this.saveFields();
-          await this.moveToSharedSpace();
-          return;
-        } else {
-          await this.moveToSharedSpace();
-        }
-      } else {
-        this.edit_mode = true;
-      }
-    },
-
-    openLarge() {
-      this.$emit("");
-    },
-    async saveFields() {
-      this.edit_mode = false;
-
-      // check if date is valid, if not then go back to previous date
-      if (this.date_created_corrected === "")
-        this.date_created_corrected =
-          this.file.date_created_corrected ||
-          this.file.$date_created ||
-          this.file.$date_uploaded;
-
-      let new_meta = {
-        title: this.text_title,
-        date_created_corrected: this.date_created_corrected,
-        description: this.description,
-        keywords: this.keywords,
-      };
-
-      await this.$api
-        .updateMeta({
-          path: this.file.$path,
-          new_meta,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
+    editText(meta_filename) {
+      if (this.getFilename(this.file.$path) === meta_filename) {
+        this.show_large = true;
+        this.$nextTick(() => {
+          //
         });
-    },
-    save() {},
-    cancel() {
-      this.edit_mode = false;
-      // todo reset
+      }
     },
     dragStart(event) {
       this.is_dragged = true;
