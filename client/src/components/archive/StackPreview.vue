@@ -30,15 +30,16 @@
           <b-icon v-else icon="eye-slash" />
         </div>
 
-        <transition name="slideview" mode="in-out">
-          <div
-            class="_slide"
-            v-if="slide_file_to_show"
-            :key="slide_file_to_show.$path"
-          >
-            <MediaContent :file="slide_file_to_show" class="_mediaPreview" />
-          </div>
-        </transition>
+        <div
+          v-for="slide_file in stack_files"
+          class="_slide"
+          :class="{
+            'is--shown': slide_file.$path === slide_file_to_show.$path,
+          }"
+          :key="slide_file.$path"
+        >
+          <MediaContent :file="slide_file" class="_mediaPreview" />
+        </div>
         <transition-group name="projectsList" class="_count">
           <template v-if="index_of_slide_file_to_show !== undefined">
             <div key="slide">
@@ -250,6 +251,17 @@ export default {
   display: flex;
   align-content: center;
   align-items: center;
+
+  opacity: 0;
+  z-index: 2;
+
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--shown {
+    z-index: 1;
+    opacity: 1;
+    transition: none;
+  }
 }
 
 ._title {
@@ -268,6 +280,7 @@ export default {
 
 ._count {
   position: absolute;
+  z-index: 3;
   display: flex;
   gap: calc(var(--spacing) / 8);
   flex-flow: row nowrap;
