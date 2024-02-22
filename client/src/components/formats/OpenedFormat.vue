@@ -19,6 +19,18 @@
               :remove_text="$t('remove')"
               @remove="removeFormat"
             />
+
+            <AuthorField
+              class="_admins"
+              :label="$t('admins')"
+              :instructions="$t('media_editing_instructions')"
+              :field="'$admins'"
+              :authors_paths="format.$admins"
+              :path="format.$path"
+              :can_edit="can_edit"
+              :show_image_only="true"
+            />
+
             <button
               type="button"
               class="u-buttonLink"
@@ -157,7 +169,6 @@ export default {
   height: 100%;
   width: 100%;
   overflow: auto;
-  padding: calc(var(--spacing) / 1);
 }
 ._spinner {
   padding: calc(var(--spacing) * 2);
@@ -167,6 +178,10 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  align-items: center;
+
+  padding: calc(var(--spacing) / 1);
+  border-bottom: 1px solid var(--c-gris);
 }
 
 ._cont {
@@ -180,5 +195,11 @@ export default {
   width: 100%;
   min-height: 2rem;
   margin-bottom: calc(var(--spacing) / 2);
+}
+
+._admins {
+  ::v-deep ._dLabel {
+    display: none;
+  }
 }
 </style>

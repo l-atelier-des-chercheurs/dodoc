@@ -31,13 +31,16 @@
       <tbody>
         <tr v-for="format in sorted_formats" :key="format.$path">
           <td>
-            <h3>{{ format.title }}</h3>
+            <p>
+              <strong>{{ format.title }}</strong>
+            </p>
           </td>
           <td>
             <AuthorTag
               v-for="atpath in format.$admins"
               :key="atpath"
               :path="atpath"
+              :show_image_only="true"
               :mode="'link'"
             />
           </td>
@@ -48,7 +51,6 @@
               @click="$emit('toggleFormat', getFilename(format.$path))"
             >
               {{ $t("open") }}
-              <!-- <AdminsAndContributorsField :folder="format" :can_edit="can_edit" /> -->
             </button>
           </td>
         </tr>
@@ -116,6 +118,13 @@ export default {
 }
 ._list {
   width: 100%;
+  // background: var(--c-gris);
+  // padding: 1px;
+
+  tr {
+    padding: calc(var(--spacing) / 2);
+    background: white;
+  }
 
   tr:nth-child(2n) {
     // background-color: var(--c-gris);
@@ -125,6 +134,10 @@ export default {
   }
   tr > td:last-child {
     text-align: right;
+  }
+
+  td {
+    padding: calc(var(--spacing) / 4);
   }
 }
 </style>

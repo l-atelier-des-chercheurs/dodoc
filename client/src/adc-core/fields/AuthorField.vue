@@ -14,6 +14,7 @@
           :path="author_path"
           :key="author_path"
           :mode="'link'"
+          :show_image_only="show_image_only"
         />
       </template>
       <div v-else class="t-500" key="noone">
@@ -111,6 +112,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    show_image_only: Boolean,
   },
   components: {},
   data() {
