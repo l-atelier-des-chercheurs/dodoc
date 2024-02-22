@@ -37,6 +37,18 @@
     <transition name="pagechange" mode="out-in">
       <div class="_infos" :data-hide="!show_infos" :key="file.$path">
         <div class="_infos--content">
+          <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
+            <div class="">
+              {{ $t("convert_to_format") }}
+              <OptimizeMedia :media="file" @close="$emit('close')" />
+            </div>
+          </div>
+          <!-- <OptimizeMedia
+            v-if="optimization_possible"
+            :media="file"
+            @close="$emit('close')"
+          /> -->
+
           <div class="u-spacingBottom">
             <TitleField
               :field_name="'caption'"
@@ -97,7 +109,14 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    optimization_possible() {
+      return this.fileCanBeOptimized({ path: this.file.$media_filename });
+    },
+    optimization_strongly_recommended() {
+      return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+    },
+  },
   methods: {},
 };
 </script>
