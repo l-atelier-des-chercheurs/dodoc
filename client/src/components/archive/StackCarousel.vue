@@ -89,7 +89,9 @@
         <transition name="fade_fast" mode="out-in">
           <div class="_btnRow" v-if="current_file_shown.$path === file.$path">
             <RemoveMenu
+              class="_removeBtn"
               :remove_text="$t('remove')"
+              :show_button_text="false"
               @remove="$emit('removeMediaFromStack', current_file_shown.$path)"
             />
             <select
@@ -313,10 +315,16 @@ export default {
   align-items: center;
 }
 
-._changeOrderSelect {
+._removeBtn {
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
+}
+
+._changeOrderSelect {
+  // position: absolute;
+  // top: 0;
+  // left: 0;
   margin: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
 
