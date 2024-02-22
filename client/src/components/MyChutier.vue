@@ -472,7 +472,7 @@ export default {
         },
       });
       setTimeout(() => {
-        this.$eventHub.$emit("chutier.item.edit", meta_filename);
+        this.$eventHub.$emit("chutierItem.editText", meta_filename);
       }, 100);
     },
     async createEmbed(full_url) {
@@ -490,7 +490,7 @@ export default {
       });
       this.show_link_picker = false;
       setTimeout(() => {
-        this.$eventHub.$emit("chutier.item.edit", meta_filename);
+        this.$eventHub.$emit("chutierItem.editText", meta_filename);
       }, 100);
     },
 
