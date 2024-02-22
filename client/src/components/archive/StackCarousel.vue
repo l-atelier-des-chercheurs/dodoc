@@ -39,20 +39,21 @@
                 v-text="i + 1"
               />
             </select>
-            <div class="_credits">
-              <b-icon
-                v-if="file.caption"
-                icon="text-left"
-                :aria-label="$t('caption')"
-              />
-              <b-icon
-                v-if="file.credits"
-                icon="info-circle"
-                :aria-label="$t('credits/source')"
-              />
-            </div>
           </div>
         </transition>
+
+        <div class="_credits">
+          <b-icon
+            v-if="file.caption"
+            icon="text-left"
+            :aria-label="$t('caption')"
+          />
+          <b-icon
+            v-if="file.credits"
+            icon="info-circle"
+            :aria-label="$t('credits/source')"
+          />
+        </div>
       </div>
     </transition-group>
   </div>
