@@ -39,6 +39,18 @@
                 v-text="i + 1"
               />
             </select>
+            <div class="_credits">
+              <b-icon
+                v-if="file.caption"
+                icon="text-left"
+                :aria-label="$t('caption')"
+              />
+              <b-icon
+                v-if="file.credits"
+                icon="info-circle"
+                :aria-label="$t('credits/source')"
+              />
+            </div>
           </div>
         </transition>
       </div>
@@ -146,7 +158,6 @@ export default {
 
   overflow: hidden;
   border-radius: 4px;
-  cursor: pointer;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -154,6 +165,10 @@ export default {
   &:focus-visible {
     // transform: scale(0.95);
     background: transparent;
+  }
+
+  &:not([data-iscurrent]) {
+    cursor: pointer;
   }
 
   &[data-iscurrent] {
@@ -191,15 +206,25 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  margin: calc(var(--spacing) / 2);
 }
 
 ._changeOrderSelect {
-  // position: absolute;
-  // top: 0;
-  // left: 0;
   margin: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
 
   width: 5ch;
+}
+._credits {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 2);
+
+  pointer-events: none;
+
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 2);
 }
 </style>
