@@ -3,62 +3,64 @@
     <portal-target name="largemedia" multiple />
 
     <div class="_itemsList" @click.self="selected_items_slugs = []">
-      <div class="_topContent">
-        <div class="_subscribeBtn">
-          <button
-            type="button"
-            class="u-buttonLink _authorBtn"
-            @click="$eventHub.$emit('showAuthorModal')"
-          >
-            <template v-if="connected_as">
-              {{ connected_as.name }}
-            </template>
-            <template v-else>{{ $t("login") }}</template>
-          </button>
-          <div class="_separator" />
-          <button
-            type="button"
-            class="u-button u-button_icon _qrBtn"
-            @click="show_qr_code_modal = true"
-          >
-            <sl-icon name="qr-code" />
-          </button>
-          <QRModal
-            v-if="show_qr_code_modal"
-            :url_to_access="url_to_page"
-            @close="show_qr_code_modal = false"
+      <div class="_topRow">
+        <button
+          type="button"
+          class="u-buttonLink _authorBtn"
+          @click="$eventHub.$emit('showAuthorModal')"
+        >
+          <AuthorTag
+            v-if="connected_as"
+            :key="connected_as.$path"
+            :path="connected_as.$path"
           />
-          <button
-            type="button"
-            class="u-button u-button_icon _qrBtn"
-            @click="$eventHub.$emit(`app.show_welcome_modal`)"
-          >
-            <sl-icon name="question-square" />
-          </button>
+          <template v-else>{{ $t("login") }}</template>
+        </button>
+        <div class="_separator" />
+        <button
+          type="button"
+          class="u-button u-button_icon _qrBtn"
+          @click="show_qr_code_modal = true"
+        >
+          <sl-icon name="qr-code" />
+        </button>
+        <QRModal
+          v-if="show_qr_code_modal"
+          :url_to_access="url_to_page"
+          @close="show_qr_code_modal = false"
+        />
+        <button
+          type="button"
+          class="u-button u-button_icon _qrBtn"
+          @click="$eventHub.$emit(`app.show_welcome_modal`)"
+        >
+          <sl-icon name="question-square" />
+        </button>
 
-          <button
-            type="button"
-            class="u-button u-button_icon _qrBtn"
-            @click="show_lang_modal = !show_lang_modal"
-          >
-            {{ current_lang_code }}
-          </button>
-          <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+        <button
+          type="button"
+          class="u-button u-button_icon _qrBtn"
+          @click="show_lang_modal = !show_lang_modal"
+        >
+          {{ current_lang_code }}
+        </button>
+        <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
 
-          <button
-            type="button"
-            class="u-button u-button_icon _qrBtn"
-            v-if="is_instance_admin"
-            @click="show_admin_settings = !show_admin_settings"
-          >
-            <b-icon icon="gear" :aria-label="$t('admin_settings')" />
-          </button>
-          <AdminLumaSettings
-            v-if="show_admin_settings"
-            @close="show_admin_settings = false"
-          />
-        </div>
+        <button
+          type="button"
+          class="u-button u-button_icon _qrBtn"
+          v-if="is_instance_admin"
+          @click="show_admin_settings = !show_admin_settings"
+        >
+          <b-icon icon="gear" :aria-label="$t('admin_settings')" />
+        </button>
+        <AdminLumaSettings
+          v-if="show_admin_settings"
+          @close="show_admin_settings = false"
+        />
+      </div>
 
+      <template v-if="connected_as">
         <div class="_importButton">
           <!-- // TODO create component -->
           <div
@@ -130,96 +132,98 @@
             </div> -->
           </div>
         </div>
-      </div>
 
-      <div class="_middleContent">
-        <div
-          v-if="!chutier_items || chutier_items.length === 0"
-          class="u-instructions"
-        >
-          {{ $t("imported_docs") }}
-        </div>
-        <template v-else>
-          <label
-            for=""
-            class="_item--label"
-            :class="{
-              'is--fullySelected': all_items_selected,
-            }"
-            @click="!all_items_selected ? selectAll() : deselectAll()"
-          >
-            <button
-              type="button"
-              class="u-buttonLink u-selectBtn"
-              v-if="chutier_items.length > 0"
-            >
-              <sl-icon
-                :name="
-                  !all_items_selected
-                    ? 'plus-square-dotted'
-                    : 'dash-square-dotted'
-                "
-              />
-            </button>
-            {{ $t("items_to_share") }} • {{ chutier_items.length }}
-          </label>
-        </template>
-      </div>
-
-      <div class="_items" @click.self="selected_items_slugs = []">
-        <div
-          class="_item"
-          v-for="ci in chutier_items_grouped"
-          :key="ci.label"
-          @click.self="selected_items_slugs = []"
-        >
+        <div class="_middleContent">
           <div
-            class="_item--label"
-            @click="
-              rangeIsSelected(ci.files.map((f) => f.$path))
-                ? deselectRange(ci.files.map((f) => f.$path))
-                : selectRange(ci.files.map((f) => f.$path))
-            "
-            :class="{
-              'is--fullySelected': rangeIsSelected(
-                ci.files.map((f) => f.$path)
-              ),
-            }"
+            v-if="!chutier_items || chutier_items.length === 0"
+            class="u-instructions"
           >
-            <button
-              v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
-              type="button"
-              class="u-buttonLink u-selectBtn"
-            >
-              <sl-icon name="plus-square-dotted" />
-            </button>
-            <button v-else type="button" class="u-buttonLink u-selectBtn">
-              <sl-icon name="dash-square-dotted" />
-            </button>
-            {{ ci.label }}
+            {{ $t("imported_docs") }}
           </div>
-          <transition-group tag="div" name="listComplete">
-            <ChutierItem
-              v-for="file in ci.files"
-              :key="file.$path"
-              :file="file"
-              :is_clicked="last_clicked === file.$path"
-              :is_selected="selected_items_slugs.includes(file.$path)"
-              :draggable="true"
-              @toggleSelect="toggleSelect(file.$path)"
-              @unclicked="last_clicked = false"
-              @click.stop="last_clicked = file.$path"
-            />
-          </transition-group>
+          <template v-else>
+            <label
+              for=""
+              class="_item--label"
+              :class="{
+                'is--fullySelected': all_items_selected,
+              }"
+              @click="!all_items_selected ? selectAll() : deselectAll()"
+            >
+              <button
+                type="button"
+                class="u-buttonLink u-selectBtn"
+                v-if="chutier_items.length > 0"
+              >
+                <sl-icon
+                  :name="
+                    !all_items_selected
+                      ? 'plus-square-dotted'
+                      : 'dash-square-dotted'
+                  "
+                />
+              </button>
+              {{ $t("items_to_share") }} • {{ chutier_items.length }}
+            </label>
+          </template>
         </div>
-      </div>
+
+        <div class="_items" @click.self="selected_items_slugs = []">
+          <div
+            class="_item"
+            v-for="ci in chutier_items_grouped"
+            :key="ci.label"
+            @click.self="selected_items_slugs = []"
+          >
+            <div
+              class="_item--label"
+              @click="
+                rangeIsSelected(ci.files.map((f) => f.$path))
+                  ? deselectRange(ci.files.map((f) => f.$path))
+                  : selectRange(ci.files.map((f) => f.$path))
+              "
+              :class="{
+                'is--fullySelected': rangeIsSelected(
+                  ci.files.map((f) => f.$path)
+                ),
+              }"
+            >
+              <button
+                v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
+                type="button"
+                class="u-buttonLink u-selectBtn"
+              >
+                <sl-icon name="plus-square-dotted" />
+              </button>
+              <button v-else type="button" class="u-buttonLink u-selectBtn">
+                <sl-icon name="dash-square-dotted" />
+              </button>
+              {{ ci.label }}
+            </div>
+            <transition-group tag="div" name="listComplete">
+              <ChutierItem
+                v-for="file in ci.files"
+                :key="file.$path"
+                :file="file"
+                :is_clicked="last_clicked === file.$path"
+                :is_selected="selected_items_slugs.includes(file.$path)"
+                :draggable="true"
+                @toggleSelect="toggleSelect(file.$path)"
+                @unclicked="last_clicked = false"
+                @click.stop="last_clicked = file.$path"
+              />
+            </transition-group>
+          </div>
+        </div>
+      </template>
     </div>
-    <DocumentsCreator
-      class="_documentsCreator"
-      :author_stacks_path="author_stacks_path"
-      :selected_items="selected_items"
-    />
-    <!-- v-if="selected_items.length > 0" -->
+
+    <template v-if="connected_as">
+      <DocumentsCreator
+        class="_documentsCreator"
+        :author_stacks_path="author_stacks_path"
+        :selected_items="selected_items"
+      />
+    </template>
 
     <transition name="slideup" mode="out-in">
       <div
@@ -238,25 +242,6 @@
             {{ selected_items.length }}
           </div>
         </transition>
-        <!-- <div class="_selectionBar--previews">
-          <template v-for="file in selected_items">
-            <MediaContent
-              v-if="file.$path"
-              :key="file.$path"
-              :file="file"
-              class="_selectionBar--previews--preview"
-              :context="'preview'"
-            />
-          </template>
-        </div> -->
-        <!-- <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="show_mediastack_modal = true"
-        >
-          {{ $t("create_stack") }} ({{ selected_items.length }})
-        </button> -->
-
         <div class="u-sameRow _dbleBtns">
           <button
             type="button"
@@ -604,8 +589,6 @@ export default {
 }
 
 ._topContent {
-  // position: sticky;
-  // z-index: 1;
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
@@ -617,14 +600,12 @@ export default {
   // mask: linear-gradient(black 75%, transparent 100%);
 }
 
-._subscribeBtn {
+._topRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-
-  padding: 0 calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 
   ._separator {
     flex: 1 1 auto;
@@ -638,15 +619,15 @@ export default {
 }
 
 ._middleContent {
-  padding: 0 calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 1);
 }
 ._importBtn {
-  // padding: calc(var(--spacing) / 1) 0;
+  margin: calc(var(--spacing) / 1);
 }
 
 ._items {
   flex: 1 1 auto;
-  padding: calc(var(--spacing) * 2) calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) * 1) calc(var(--spacing) / 1);
 }
 ._item {
   margin-bottom: calc(var(--spacing) * 2);
@@ -762,15 +743,11 @@ export default {
     flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    gap: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
-
-    width: 100%;
-    max-width: none;
-
-    border: 2px dotted var(--c-rouge);
+    gap: 4px 3px;
+    // width: 100%;
+    // border: 2px dotted var(--c-rouge);
     border-radius: 10px;
-    box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
-    padding: calc(var(--spacing) / 2);
+    margin: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 
     transition: all 0.15 cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -793,7 +770,7 @@ export default {
 
     .u-button {
       padding: calc(var(--spacing) / 1.5);
-      border-radius: 5px;
+      // border-radius: 5px;
     }
   }
   .u-button {
