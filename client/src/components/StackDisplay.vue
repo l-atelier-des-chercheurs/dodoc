@@ -119,22 +119,11 @@
               <hr />
 
               <AuthorField
-                v-if="context === 'chutier'"
                 :label="$t('admins')"
                 class="u-spacingBottom"
                 :field="'$admins'"
                 :instructions="$t('media_editing_instructions')"
                 :authors_paths="stack.$admins"
-                :path="stack.$path"
-                :can_edit="can_edit"
-              />
-              <AuthorField
-                v-else-if="context === 'archive'"
-                :label="$t('contributors')"
-                class="u-spacingBottom"
-                :field="'$authors'"
-                :instructions="$t('media_editing_instructions')"
-                :authors_paths="stack.$authors"
                 :path="stack.$path"
                 :can_edit="can_edit"
               />
