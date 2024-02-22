@@ -86,7 +86,7 @@ export default {
     },
 
     async listStacks() {
-      this.all_stacks = await this.$api
+      const all_stacks = await this.$api
         .getFolders({
           path: this.author_stacks_path,
         })
@@ -94,6 +94,7 @@ export default {
           this.fetch_stack_err = err.response;
           this.is_loading = false;
         });
+      this.all_stacks = all_stacks;
     },
   },
 };
