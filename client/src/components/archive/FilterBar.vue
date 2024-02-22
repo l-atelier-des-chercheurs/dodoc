@@ -233,7 +233,9 @@ export default {
     available_keywords_except_active() {
       let _keywords = this.available_keywords.filter((kw) => {
         if (this.keywords_filter.includes(kw.title)) return false;
-        if (this.kw_search) return kw.title.includes(this.kw_search);
+        if (this.kw_search)
+          return this.twoStringsSearch(kw.title, this.kw_search);
+
         return true;
       });
       return _keywords;
