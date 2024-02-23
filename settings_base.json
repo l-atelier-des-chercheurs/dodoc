@@ -112,7 +112,7 @@
           }
         }
       },
-      "formats": {
+      "collections": {
         "fields": {
           "title": {
             "type": "string"

@@ -18,7 +18,9 @@ const routes = [
       static: true,
     },
     component: () =>
-      import(/* webpackChunkName: "FormatView" */ "../views/FormatView.vue"),
+      import(
+        /* webpackChunkName: "CollectionView" */ "../views/CollectionView.vue"
+      ),
   },
   {
     path: "/@",

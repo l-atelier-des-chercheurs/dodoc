@@ -24,7 +24,7 @@
         @resized="resizedPane"
       >
         <pane
-          v-for="pane_type in ['chutier', 'archive', 'format']"
+          v-for="pane_type in ['chutier', 'archive', 'collection']"
           :size="panes_width[pane_type]"
           :key="pane_type"
         >
@@ -39,7 +39,7 @@
           <div v-else-if="pane_type === 'archive'" class="_sharedContent">
             <SharedFolder2 :shared_folder_path="shared_folder_path" />
           </div>
-          <FormatsPane v-else-if="pane_type === 'format'" />
+          <CollectionsPane v-else-if="pane_type === 'collection'" />
         </pane>
       </splitpanes>
     </template>
@@ -49,7 +49,7 @@
 import { Splitpanes, Pane } from "splitpanes";
 import MyChutier from "@/components/MyChutier.vue";
 import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
-import FormatsPane from "@/components/formats/FormatsPane.vue";
+import CollectionsPane from "@/components/collections/CollectionsPane.vue";
 
 export default {
   props: {},
@@ -58,7 +58,7 @@ export default {
     Pane,
     MyChutier,
     SharedFolder2,
-    FormatsPane,
+    CollectionsPane,
   },
   data() {
     return {
@@ -78,21 +78,21 @@ export default {
           icon: "grid3x3-gap",
         },
         {
-          key: "format",
-          label: "FORMAT",
+          key: "collection",
+          label: "COLLECTION",
           icon: "layout-sidebar-inset-reverse",
         },
       ],
       top_panes_width: {
         chutier: 33,
         archive: 33,
-        format: 33,
+        collection: 33,
       },
 
       panes_width: {
         chutier: 33,
         archive: 33,
-        format: 33,
+        collection: 33,
       },
 
       // show_chutier:
@@ -110,7 +110,7 @@ export default {
       if (this.$root.is_mobile_view) {
         this.panes_width.chutier = 100;
         this.panes_width.archive = 0;
-        this.panes_width.format = 0;
+        this.panes_width.collection = 0;
       } else {
         // max chutier width on first open is 320px
         const chutier_width = Math.min(
@@ -119,7 +119,7 @@ export default {
         );
         this.panes_width.chutier = chutier_width;
         this.panes_width.archive = 100 - chutier_width;
-        this.panes_width.format = 0;
+        this.panes_width.collection = 0;
       }
     }
 
@@ -196,7 +196,7 @@ export default {
         const pane_width = Number(ps.size.toFixed(1));
         if (index === 0) this.top_panes_width.chutier = pane_width;
         if (index === 1) this.top_panes_width.archive = pane_width;
-        if (index === 2) this.top_panes_width.format = pane_width;
+        if (index === 2) this.top_panes_width.collection = pane_width;
       });
     },
     resizedPane(panes_sizes) {
@@ -205,7 +205,7 @@ export default {
         const pane_width = Number(ps.size.toFixed(1));
         if (index === 0) this.panes_width.chutier = pane_width;
         if (index === 1) this.panes_width.archive = pane_width;
-        if (index === 2) this.panes_width.format = pane_width;
+        if (index === 2) this.panes_width.collection = pane_width;
       });
     },
     setTopbarWidth(pane) {

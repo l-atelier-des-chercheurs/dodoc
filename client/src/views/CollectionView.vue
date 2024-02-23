@@ -1,6 +1,6 @@
 <template>
   <div
-    class="_formatView"
+    class="_collectionView"
     :class="{
       'is--serversidepreview': is_serversidepreview,
     }"
@@ -9,11 +9,14 @@
       <div class="u-divCentered" v-if="$root.is_loading" key="loader">
         <LoaderSpinner />
       </div>
-      <div v-else key="format" ref="fsContainer">
+      <div v-else key="collection" ref="fsContainer">
         <div
-          v-if="!format.template || format.template === '`story_with_sections`'"
+          v-if="
+            !collection.template ||
+            collection.template === '`story_with_sections`'
+          "
         >
-          <SectionWithPrint :publication="format" />
+          <SectionWithPrint :publication="collection" />
         </div>
       </div>
     </transition>
@@ -31,14 +34,14 @@ export default {
   },
   data() {
     return {
-      format: null,
+      collection: null,
 
       is_fullscreen: false,
       is_serversidepreview: false,
     };
   },
   created() {
-    console.log("Loading FormatView");
+    console.log("Loading collectionView");
   },
   async mounted() {
     if (this.$route.query?.make_preview === "true")
@@ -47,25 +50,25 @@ export default {
     let superadmintoken = undefined;
     if (this.$route.query?.sat) superadmintoken = this.$route.query.sat;
 
-    this.format = await this.$api
+    this.collection = await this.$api
       .getPublicFolder({
-        path: this.format_path,
+        path: this.collection_path,
         superadmintoken,
       })
       .catch((err) => {
-        this.fetch_format_error = err.response;
+        this.fetch_collection_error = err.response;
         this.$root.is_loading = false;
       });
 
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
-    // this.$api.join({ room: this.format_path });
+    // this.$api.join({ room: this.collection_path });
 
     this.$root.is_loading = false;
   },
   beforeDestroy() {
     // this.$api.leave({ room: this.project.$path });
-    // this.$api.leave({ room: this.format_path });
+    // this.$api.leave({ room: this.collection_path });
   },
   watch: {
     is_fullscreen() {
@@ -75,15 +78,15 @@ export default {
     },
   },
   computed: {
-    format_path() {
-      return `formats/${this.$route.params.format_slug}`;
+    collection_path() {
+      return `collections/${this.$route.params.collection_slug}`;
     },
   },
   methods: {},
 };
 </script>
 <style lang="scss" scoped>
-._formatView {
+._collectionView {
   background: white;
   min-height: 100%;
 }
