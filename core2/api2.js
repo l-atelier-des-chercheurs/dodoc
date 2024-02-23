@@ -534,9 +534,9 @@ module.exports = (function () {
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
 
-    res.render("index2", d);
+    res.render("index", d);
   }
-  function loadPerf(rea, res) {
+  function loadPerf(req, res) {
     let d = {};
     d.local_ips = utils.getLocalIPs();
     res.render("perf", d);
