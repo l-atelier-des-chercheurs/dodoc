@@ -1064,9 +1064,6 @@ input[type="checkbox"]:disabled {
 }
 
 .u-dropzone {
-  --dropzone-color1: transparent;
-  --dropzone-color2: var(--c-orange);
-
   display: flex;
   flex-flow: row wrap;
   justify-content: center;

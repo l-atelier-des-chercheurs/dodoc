@@ -151,11 +151,12 @@ export default {
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
+  --dropzone-color1: transparent;
+  --dropzone-color2: var(--c-orange);
+
   --c-bodybg: hsl(48, 19%, 98%);
   --c-bodybg: hsl(40, 20%, 94%);
-  --c-bodybg: white;
-  --c-bodybg: rgba(240, 240, 240, 1);
-  --body-bg-pattern-color: hsl(48, 19%, 93%);
+
   --plyr-color-main: var(--c-bleumarine);
 
   // --sharedfolder-bg: ;
