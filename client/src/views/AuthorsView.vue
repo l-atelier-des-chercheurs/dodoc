@@ -7,7 +7,7 @@
       </router-link>
     </div>
 
-    <h1 class="_title" v-text="$t('list_of_contributors')" />
+    <h1 class="_title" v-text="$t('list_of_accounts')" />
 
     <div class="u-spacingBottom _searchField">
       <SearchInput
@@ -30,7 +30,7 @@
       />
     </transition-group>
     <div v-if="filtered_authors.length === 0">
-      {{ $t("no_authors_to_show") }}
+      {{ $t("no_accounts_to_show") }}
     </div>
   </div>
 </template>

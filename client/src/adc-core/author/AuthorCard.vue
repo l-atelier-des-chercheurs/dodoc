@@ -144,8 +144,8 @@
           </div>
           <div class="">
             <RemoveMenu
-              :remove_text="$t('remove_author')"
-              :remove_expl="$t('remove_author_expl')"
+              :remove_text="$t('remove_account')"
+              :remove_expl="$t('remove_account_expl')"
               @remove="removeAuthor"
             />
           </div>
