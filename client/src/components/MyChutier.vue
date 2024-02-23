@@ -4,18 +4,21 @@
 
     <div class="_itemsList" @click.self="selected_items_slugs = []">
       <div class="_topRow">
+        <AuthorTag
+          v-if="connected_as"
+          :path="connected_as.$path"
+          :show_image_only="$root.is_mobile_view"
+          @click="$eventHub.$emit('showAuthorModal')"
+        />
         <button
           type="button"
-          class="u-buttonLink _authorBtn"
+          class="_authorBtn"
+          v-else
           @click="$eventHub.$emit('showAuthorModal')"
         >
-          <AuthorTag
-            v-if="connected_as"
-            :key="connected_as.$path"
-            :path="connected_as.$path"
-          />
-          <template v-else>{{ $t("login") }}</template>
+          {{ $t("login") }}
         </button>
+
         <div class="_separator" />
         <button
           type="button"
