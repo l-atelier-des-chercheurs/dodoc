@@ -19,7 +19,7 @@
               <template v-if="filtered_medias.length !== medias.length">
                 (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
                   filtered_medias.length
-                }})mpo
+                }})
               </template>
             </div>
             <button
@@ -850,6 +850,9 @@ export default {
 }
 
 ._importButton {
+  --dropzone-color1: var(--c-orange);
+  --dropzone-color2: var(--c-rouge);
+
   width: 100%;
   padding: calc(var(--spacing) / 2);
   padding-bottom: 0;

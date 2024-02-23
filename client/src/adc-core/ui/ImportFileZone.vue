@@ -108,8 +108,6 @@ export default {
 <style lang="scss" scoped>
 ._importFileZone {
   .u-dropzone {
-    --dropzone-color1: var(--c-orange);
-    --dropzone-color2: var(--c-rouge);
     cursor: pointer;
 
     &.is--dragover,
