@@ -176,7 +176,7 @@ export default {
     _instructions() {
       return this.instructions !== undefined
         ? this.instructions
-        : this.$t("upload_from_device");
+        : this.$t("upload_an_image");
     },
   },
   methods: {
