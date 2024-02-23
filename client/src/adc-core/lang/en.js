@@ -224,6 +224,22 @@ export default {
   add_caption: "Add a caption",
   copy_first_media_caption: "Reuse first media caption",
 
+  current: "Current",
+  save_on_this_device: "Save on this device",
+  will_use_cookies: "This feature requires cookies",
+
+  "module.label.text": "Text bloc",
+  "module.label.mosaic": "Mosaic",
+  "module.label.carousel": "Slider",
+  "module.label.files": "Files list",
+  object_fit_cover: "Fill the frame",
+  object_fit_contain: "Fit the frame",
+
+  create_a_module: "Create a module",
+  list_of_versions: "List of versions",
+  restore_this_version: "Restore this version",
+  version: "Version",
+
   panes: "Panes",
   capture: "Capture",
   collect: "Collect",
