@@ -65,75 +65,33 @@
 
       <template v-if="connected_as">
         <div class="_importButton">
-          <!-- // TODO create component -->
-          <div
-            class="_importButton--cnt"
-            :class="{
-              'is--dragover': is_dragover,
-            }"
-            @dragover="onDragover"
-            @dragenter="onDragEnter"
-            @dragleave="onDragLeave"
-            @drop="onDrop"
+          <ImportFileZone
+            :path="author_path"
+            @mediaJustImported="importedMedias"
+          />
+
+          <button
+            type="button"
+            class="u-button u-button_white _qrBtn"
+            @click="createNote"
           >
-            <label
-              :for="id + '-add_file'"
-              class="u-button u-button_red _importButton--btn"
-            >
-              <svg width="20" height="17" viewBox="0 0 20 17">
-                <path
-                  d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-                />
-              </svg>
-              <span>
-                {{ $t("import") }}
-              </span>
-            </label>
-            <input
-              type="file"
-              multiple="multiple"
-              :id="id + '-add_file'"
-              name="file"
-              accept=""
-              class=""
-              @change="updateInputFiles($event)"
-            />
-            <UploadFiles
-              v-if="files_to_import.length > 0"
-              class="_uploadFilesList"
-              :files_to_import="files_to_import"
-              :path="author_path"
-              @importedMedias="importedMedias"
-              @close="files_to_import = []"
-            />
+            <sl-icon name="file-text" />
+            &nbsp; note
+          </button>
 
-            <button
-              type="button"
-              class="u-button u-button_white _qrBtn"
-              @click="createNote"
-            >
-              <sl-icon name="file-text" />
-              &nbsp; note
-            </button>
-
-            <button
-              type="button"
-              class="u-button u-button_white _qrBtn"
-              @click="show_link_picker = true"
-            >
-              <sl-icon name="link-45deg" />
-              &nbsp; url
-            </button>
-            <LinkPicker
-              v-if="show_link_picker"
-              @embed="createEmbed"
-              @close="show_link_picker = false"
-            />
-
-            <!-- <div class="u-instructions">
-              {{ $t("or_drag_drop_file_here").toLowerCase() }}
-            </div> -->
-          </div>
+          <button
+            type="button"
+            class="u-button u-button_white _qrBtn"
+            @click="show_link_picker = true"
+          >
+            <sl-icon name="link-45deg" />
+            &nbsp; url
+          </button>
+          <LinkPicker
+            v-if="show_link_picker"
+            @embed="createEmbed"
+            @close="show_link_picker = false"
+          />
         </div>
 
         <div class="_middleContent">
@@ -287,6 +245,7 @@
   </div>
 </template>
 <script>
+import ImportFileZone from "@/adc-core/ui/ImportFileZone";
 import DocumentsCreator from "@/components/chutier/DocumentsCreator.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
@@ -298,6 +257,7 @@ export default {
     shared_folder_path: String,
   },
   components: {
+    ImportFileZone,
     DocumentsCreator,
     LinkPicker,
     ChutierItem,
@@ -626,6 +586,8 @@ export default {
 }
 ._importBtn {
   margin: calc(var(--spacing) / 1);
+  --dropzone-color1: transparent;
+  --dropzone-color2: var(--c-noir);
 }
 
 ._items {
