@@ -800,7 +800,7 @@ export default {
   remove_image: "Retirer cette image",
 
   no_accounts_to_show: "Aucun compte à afficher",
-  login_no_account_matches: "Aucun compte ne correspond à ce nom.",
+  login_no_account_matches: "Aucun compte ne correspond à ce nom",
   ellipsis: "Ellipse",
   rectangle: "Rectangle",
   line: "Ligne",
