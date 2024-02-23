@@ -70,28 +70,30 @@
             @mediaJustImported="importedMedias"
           />
 
-          <button
-            type="button"
-            class="u-button u-button_white _qrBtn"
-            @click="createNote"
-          >
-            <sl-icon name="file-text" />
-            &nbsp; note
-          </button>
+          <div class="_importBtns">
+            <button
+              type="button"
+              class="u-button u-button_white _qrBtn"
+              @click="createNote"
+            >
+              <sl-icon name="file-text" />
+              &nbsp; note
+            </button>
 
-          <button
-            type="button"
-            class="u-button u-button_white _qrBtn"
-            @click="show_link_picker = true"
-          >
-            <sl-icon name="link-45deg" />
-            &nbsp; url
-          </button>
-          <LinkPicker
-            v-if="show_link_picker"
-            @embed="createEmbed"
-            @close="show_link_picker = false"
-          />
+            <button
+              type="button"
+              class="u-button u-button_white _qrBtn"
+              @click="show_link_picker = true"
+            >
+              <sl-icon name="link-45deg" />
+              &nbsp; url
+            </button>
+            <LinkPicker
+              v-if="show_link_picker"
+              @embed="createEmbed"
+              @close="show_link_picker = false"
+            />
+          </div>
         </div>
 
         <div class="_middleContent">
@@ -568,7 +570,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
 
   ._separator {
     flex: 1 1 auto;
@@ -584,18 +586,13 @@ export default {
 ._middleContent {
   margin: calc(var(--spacing) / 1);
 }
-._importBtn {
-  margin: calc(var(--spacing) / 1);
-  --dropzone-color1: transparent;
-  --dropzone-color2: var(--c-noir);
-}
 
 ._items {
   flex: 1 1 auto;
   margin: calc(var(--spacing) * 1) calc(var(--spacing) / 1);
 }
 ._item {
-  margin-bottom: calc(var(--spacing) * 2);
+  margin: calc(var(--spacing) * 1) 0;
 }
 
 ._item--label {
@@ -699,65 +696,39 @@ export default {
   text-transform: none;
 }
 ._importButton {
-  width: 100%;
-  // padding: calc(var(--spacing) / 2);
+  // width: 100%;
+  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  --dropzone-color1: transparent;
+  --dropzone-color2: var(--c-noir);
+
   padding-bottom: 0;
+}
 
-  ._importButton--cnt {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 4px 3px;
-    // width: 100%;
-    // border: 2px dotted var(--c-rouge);
-    border-radius: 10px;
-    margin: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+._importBtns {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) 0;
 
-    transition: all 0.15 cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.15 cubic-bezier(0.19, 1, 0.22, 1);
 
-    &.is--dragover {
-      // border-color: transparent;
-      border: 2px dashed white;
-      // border-width: 0px;
-
-      > * {
-        pointer-events: none;
-
-        &:not(._importButton--btn) {
-          opacity: 0;
-        }
-      }
-    }
-    &.is--dragover {
-      background-color: var(--c-rouge);
-    }
-
-    .u-button {
-      padding: calc(var(--spacing) / 1.5);
-      // border-radius: 5px;
-    }
+  &.is--dragover {
+    border: 2px dashed white;
+    background-color: var(--c-rouge);
   }
+
   .u-button {
     flex: 1 1 0;
+    border-radius: 5px;
+    padding: calc(var(--spacing) / 2);
     align-items: center;
 
-    &._importButton--btn {
-      flex-basis: 100%;
-    }
-
-    // display: flex;
-    // flex-flow: row nowrap;
-    // background: var(--c-rouge);
-    // color: white;
-    // cursor: pointer;
     svg {
       width: 1rem;
       height: 1rem;
     }
-  }
-  .u-instructions {
-    color: white;
   }
 }
 </style>
