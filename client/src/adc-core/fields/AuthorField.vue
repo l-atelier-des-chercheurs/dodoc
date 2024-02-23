@@ -14,6 +14,7 @@
           :path="author_path"
           :key="author_path"
           :mode="'link'"
+          :show_image_only="show_image_only"
         />
       </template>
       <div v-else class="t-500" key="noone">
@@ -28,11 +29,13 @@
 
     <div class="_footer" v-if="edit_mode">
       <BaseModal2 @close="cancel" :title="label">
-        <div v-if="instructions" class="u-instructions" :key="'noprojects'">
+        <div
+          v-if="instructions"
+          class="u-instructions u-spacingBottom"
+          :key="'noprojects'"
+        >
           {{ instructions }}
         </div>
-
-        <br />
 
         <RadioCheckboxInput
           :value.sync="radio_mode"
@@ -108,6 +111,10 @@ export default {
       type: Boolean,
     },
     no_options: {
+      type: Boolean,
+      default: false,
+    },
+    show_image_only: {
       type: Boolean,
       default: false,
     },
