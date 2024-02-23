@@ -2,46 +2,9 @@
   <div class="_mediaLibrary">
     <section class="_scrollBox">
       <div class="_importButton">
-        <!-- // TODO create component -->
-        <label
-          class="u-dropzone"
-          :class="{
-            'is--dragover': is_dragover,
-            'is--active': $root.has_file_dragover_on_window,
-          }"
-          :for="id + '-add_file'"
-          @dragover="onDragover"
-          @dragenter="onDragEnter"
-          @dragleave="onDragLeave"
-          @drop="onDrop"
-        >
-          <div class="u-button u-button_red">
-            <svg width="20" height="17" viewBox="0 0 20 17">
-              <path
-                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-              />
-            </svg>
-            {{ $t("import") }}
-          </div>
-          <div class="u-instructions">
-            {{ $t("or_drag_drop_file_here").toLowerCase() }}
-          </div>
-        </label>
-        <input
-          type="file"
-          multiple="multiple"
-          :id="id + '-add_file'"
-          name="file"
-          accept=""
-          class=""
-          @change="updateInputFiles($event)"
-        />
-        <UploadFiles
-          v-if="files_to_import.length > 0"
-          :files_to_import="files_to_import"
-          :path="project.$path"
-          @importedMedias="mediaJustImported"
-          @close="files_to_import = []"
+        <ImportFileZone
+          :project_path="project.$path"
+          @mediaJustImported="mediaJustImported"
         />
       </div>
 
@@ -56,7 +19,7 @@
               <template v-if="filtered_medias.length !== medias.length">
                 (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
                   filtered_medias.length
-                }})
+                }})mpo
               </template>
             </div>
             <button
@@ -339,6 +302,7 @@
   </div>
 </template>
 <script>
+import ImportFileZone from "@/adc-core/ui/ImportFileZone";
 import MediaTile from "@/components/MediaTile.vue";
 import MediaModal from "@/components/MediaModal";
 
@@ -352,22 +316,15 @@ export default {
     show_only_media_type: String,
   },
   components: {
+    ImportFileZone,
     MediaTile,
     MediaModal,
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
   },
   data() {
     return {
-      files_to_import: [],
-      id: `image_select_${(
-        Math.random().toString(36) + "00000000000000000"
-      ).slice(2, 3 + 2)}`,
-
-      url_to: "https://latelier-des-chercheurs.fr/",
-
       selected_medias: [],
       batch_mode: false,
-      is_dragover: false,
 
       tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
 
@@ -463,7 +420,6 @@ export default {
   created() {},
   mounted() {
     console.log(`MediaLibrary / mounted`);
-    window.addEventListener("paste", this.handlePaste);
     window.addEventListener("keyup", this.handleKeyPress);
 
     if (this.media_focused)
@@ -472,7 +428,6 @@ export default {
       });
   },
   beforeDestroy() {
-    window.removeEventListener("paste", this.handlePaste);
     window.removeEventListener("keyup", this.handleKeyPress);
   },
   watch: {
@@ -612,29 +567,6 @@ export default {
       return false;
     },
 
-    handlePaste($event) {
-      if (!this.$el.closest("._baseModal") && this.$root.modal_is_opened)
-        return;
-
-      if ($event.clipboardData.files?.length > 0)
-        this.files_to_import = Array.from($event.clipboardData.files);
-    },
-    onDragover($event) {
-      $event.preventDefault();
-    },
-    onDragEnter($event) {
-      $event.preventDefault();
-      if ($event.dataTransfer.types.includes("Files")) this.is_dragover = true;
-    },
-    onDragLeave($event) {
-      $event.preventDefault();
-      this.is_dragover = false;
-    },
-    onDrop($event) {
-      this.is_dragover = false;
-      if ($event.dataTransfer.files?.length > 0)
-        this.files_to_import = Array.from($event.dataTransfer.files);
-    },
     mediaTileIsSelectable() {
       return this.select_mode === "multiple" || this.batch_mode;
     },
@@ -690,13 +622,6 @@ export default {
       const qty = this.quantityOfMediaWithAuthor(author_path);
       if (qty === false) return "";
       return ` (${qty})`;
-    },
-    updateInputFiles($event) {
-      this.files_to_import = Array.from($event.target.files);
-      $event.target.value = "";
-    },
-    fileDropped(files) {
-      this.files_to_import = Array.from(files);
     },
     mediaJustImported(list_of_added_metas) {
       if (!this.select_mode || this.select_mode === "single") return false;
@@ -928,26 +853,6 @@ export default {
   width: 100%;
   padding: calc(var(--spacing) / 2);
   padding-bottom: 0;
-
-  .u-dropzone {
-    --dropzone-color1: var(--c-orange);
-    --dropzone-color2: var(--c-rouge);
-    cursor: pointer;
-
-    &.is--dragover,
-    &:hover,
-    &:focus {
-    }
-  }
-  .u-button {
-    // display: flex;
-    // flex-flow: row nowrap;
-    // background: var(--c-rouge);
-    // color: white;
-  }
-  .u-instructions {
-    color: white;
-  }
 }
 
 ._tileMode {
