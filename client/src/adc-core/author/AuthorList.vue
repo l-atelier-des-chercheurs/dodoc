@@ -64,7 +64,7 @@
           class="u-buttonLink"
         >
           <b-icon icon="person-video2" />
-          {{ $t("show_all_contributors") }}
+          {{ $t("show_all_accounts") }}
         </router-link>
       </template>
     </div>

@@ -63,7 +63,7 @@
               :is_draggable="false"
             />
           </div>
-          <div class="u-spacingBottom">
+          <!-- <div class="u-spacingBottom">
             <DLabel :str="$t('filename')" />
             <div class="_comp">
               <span>
@@ -74,7 +74,7 @@
                 {{ optimized_file.$media_filename }}
               </strong>
             </div>
-          </div>
+          </div> -->
           <div class="u-spacingBottom">
             <DLabel :str="$t('size')" />
             <div class="_comp">

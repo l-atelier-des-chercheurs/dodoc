@@ -207,6 +207,10 @@ export default {
   remove_media: "Remove media",
   remove_space: "Remove space and all its content",
 
+  remove_account: "Remove this account",
+  remove_account_expl:
+    "Only the account will be removed, all its content (spaces, projects, medias and publications) will be kept.",
+
   interval_between_pictures: "Interval between pictures",
   start_timelapse: "Start timelapse",
   stop_timelapse: "Stop timelapse",
@@ -256,8 +260,6 @@ export default {
   text_background_color: "Background color of the text",
   text_image_layout: "Text and image layout",
 
-  space_author_instructions:
-    "They will be the only ones allowed to add, edit or remove this space and its content.",
   project_title_instructions:
     "The title is displayed here and on the projects list.",
   pick_cover: "Pick a cover image",
@@ -298,7 +300,7 @@ export default {
   other: "Other",
   all_medias_types: "Of all types",
   all_origins: "From all origins",
-  all_authors: "From all authors",
+  all_accounts: "From all accounts",
 
   or_download_media_on_device: "or download this media to your device",
 };

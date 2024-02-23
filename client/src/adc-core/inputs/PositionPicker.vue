@@ -101,6 +101,10 @@ export default {
       type: String,
       default: "",
     },
+    instructions: {
+      type: String,
+      default: "",
+    },
     content: Object,
     path: String,
     can_edit: Boolean,

@@ -170,8 +170,8 @@ export default {
   show_list: "Afficher la liste",
   show: "Afficher",
   hide: "Masquer",
-  list_of_contributors: "Liste des contributeur·rice·s",
-  show_all_contributors: "Afficher les contributeur·rice·s",
+  list_of_accounts: "Liste des comptes",
+  show_all_accounts: "Afficher tous les comptes",
   upload_from_device: "Importer une image",
   device: "Appareil",
   audioinput: "Entrée audio",
@@ -375,9 +375,8 @@ export default {
   event_projects_instr:
     "Cette liste affiche l’ensemble des projets documentés pendant cet événement.",
 
-  no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
+  no_accounts_yet: "Aucun compte créé pour le moment",
   add_accounts: "Rajouter des comptes",
-  list_of_accounts: "Liste des comptes",
   restart_to_apply: "Relancez do•doc pour appliquer",
   refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
   restart: "Relancer do•doc",
@@ -633,8 +632,8 @@ export default {
   remove_original_after_copy: "L’original sera supprimé après la copie",
   keep_original_after_copy: "L’original sera conservé après la copie",
 
-  remove_author: "Supprimer ce compte",
-  remove_author_expl:
+  remove_account: "Supprimer ce compte",
+  remove_account_expl:
     "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
 
   machines_and_materials: "Machines et matériaux",
@@ -703,7 +702,7 @@ export default {
   other: "Autre",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",
-  all_authors: "De tous les auteurs",
+  all_accounts: "De tous les comptes",
 
   or_download_media_on_device: "ou télécharger ce média sur votre appareil",
 
@@ -793,8 +792,6 @@ export default {
   project_contrib_instructions:
     "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
 
-  space_author_instructions:
-    "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
   project_title_instructions:
     "Le titre est affiché ici et sur la liste des projets.",
   pick_cover: "Choisissez une image de couverture",
@@ -803,9 +800,8 @@ export default {
   pick_medias: "Choisissez un ou plusieurs médias",
   remove_image: "Retirer cette image",
 
-  add_authors: "Ajouter des contributeur·rice·s",
-  no_authors_to_show: "Aucun compte à afficher",
-  login_no_author_matches: "Aucun auteur ne correspond à ce nom.",
+  no_accounts_to_show: "Aucun compte à afficher",
+  login_no_account_matches: "Aucun compte ne correspond à ce nom.",
   ellipsis: "Ellipse",
   rectangle: "Rectangle",
   line: "Ligne",
