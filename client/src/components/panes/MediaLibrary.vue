@@ -166,7 +166,7 @@
               'is--active': author_of_media_to_display !== 'all',
             }"
           >
-            <option key="all" value="all" v-text="$t('all_authors')" />
+            <option key="all" value="all" v-text="$t('all_accounts')" />
             <option
               v-for="author_of_media in authors_of_medias"
               :key="author_of_media.$path"

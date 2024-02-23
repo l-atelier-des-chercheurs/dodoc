@@ -14,7 +14,7 @@
                 key="no_author"
               >
                 <b-icon icon="exclamation-triangle-fill" />
-                {{ $t("login_no_author_matches") }}
+                {{ $t("login_no_account_matches") }}
               </div>
               <div
                 class="u-listOfAvatars"
