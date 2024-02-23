@@ -325,4 +325,5 @@ export default {
   all_accounts: "From all accounts",
 
   or_download_media_on_device: "or download this media to your device",
+  or_paste_an_image: "Or drop a picture",
 };
