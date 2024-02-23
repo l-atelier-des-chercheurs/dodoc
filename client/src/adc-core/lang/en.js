@@ -185,7 +185,15 @@ export default {
 
   no_accounts_yet: "No accounts created yet",
   add_accounts: "Add accounts",
+  show: "Show",
+  hide: "Hide",
   list_of_accounts: "List of accounts",
+  show_all_accounts: "Show all accounts",
+  upload_an_image: "Import an image",
+  device: "Device",
+  audioinput: "Audio input",
+  audiooutput: "Audio output",
+
   restart_to_apply: "Restart do•doc to apply",
   refresh_window_to_apply: "Refresh the window to apply",
   restart: "Restart do•doc",
