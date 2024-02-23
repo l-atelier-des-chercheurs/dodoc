@@ -131,7 +131,6 @@ export default {
   remove_select: "Remove selection",
   filter_sort: "Filter/Sort",
   help_contact: "help/contact",
-  version: "Version",
   sort_by: "Sort by",
   group_by_date: "Group by date",
   filter_by_type: "Filtrer par type",
