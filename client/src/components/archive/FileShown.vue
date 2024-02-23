@@ -44,7 +44,7 @@
         <b-icon
           v-if="file.credits"
           icon="info-circle"
-          :aria-label="$t('credits/source')"
+          :aria-label="$t('credits/reference')"
         />
         <!-- </template> -->
 
@@ -95,7 +95,7 @@
             <TitleField
               :field_name="'credits'"
               class="_credits"
-              :label="$t('credits/source')"
+              :label="$t('credits/reference')"
               :content="file.credits"
               :path="file.$path"
               :maxlength="1280"
@@ -135,7 +135,12 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        "credits/reference": "Crédit/Référence",
+      },
+      en: {
+        "credits/reference": "Credit/Reference",
+      },
     },
   },
   created() {

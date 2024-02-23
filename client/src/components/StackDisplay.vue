@@ -128,6 +128,8 @@
                 :can_edit="can_edit"
               />
 
+              <hr />
+
               <div v-if="can_edit" class="u-sameRow">
                 <DownloadFolder :path="stack.$path" />
                 <RemoveMenu

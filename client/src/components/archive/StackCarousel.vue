@@ -43,16 +43,8 @@
         </transition>
 
         <div class="_credits">
-          <b-icon
-            v-if="file.caption"
-            icon="text-left"
-            :aria-label="$t('caption')"
-          />
-          <b-icon
-            v-if="file.credits"
-            icon="info-circle"
-            :aria-label="$t('credits/source')"
-          />
+          <b-icon v-if="file.caption" icon="text-left" />
+          <b-icon v-if="file.credits" icon="info-circle" />
         </div>
       </div>
     </transition-group>
@@ -77,12 +69,8 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {
-        "credits/source": "Crédits/source",
-      },
-      en: {
-        "credits/source": "Credits/source",
-      },
+      fr: {},
+      en: {},
     },
   },
   created() {},

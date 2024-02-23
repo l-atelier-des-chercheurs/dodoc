@@ -12,7 +12,6 @@ export default {
   edit_source: "Modifier la source",
   stop_edit: "Arrêter les modifications",
   caption: "Légende",
-  "credits/source": "Crédits et sources",
   date_created: "Date de création",
   created: "Création",
   date_sent: "Envoi",
