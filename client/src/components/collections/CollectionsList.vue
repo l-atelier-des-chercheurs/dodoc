@@ -36,13 +36,15 @@
             </p>
           </td>
           <td>
-            <AuthorTag
-              v-for="atpath in collection.$admins"
-              :key="atpath"
-              :path="atpath"
-              :show_image_only="true"
-              :mode="'link'"
-            />
+            <div class="u-sameRow">
+              <AuthorTag
+                v-for="atpath in collection.$admins"
+                :key="atpath"
+                :path="atpath"
+                :show_image_only="true"
+                :mode="'link'"
+              />
+            </div>
           </td>
           <td>
             <button
@@ -77,6 +79,11 @@ export default {
         create_a_collection: "Créer une collection",
         collection_instr:
           "Les collections regroupent des médias dans l’espace partagé pour les partager.",
+      },
+      en: {
+        collections: "Collections",
+        create_a_collection: "Create a collection",
+        collection_instr: "Collections group multiple medias",
       },
     },
   },
