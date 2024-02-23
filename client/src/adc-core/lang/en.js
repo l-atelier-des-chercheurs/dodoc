@@ -298,4 +298,8 @@ export default {
 
   or_download_media_on_device: "or download this media to your device",
   or_paste_an_image: "Or drop a picture",
+
+  drop_here: "Drop here",
+  or_drag_drop_file_here: "Or drag and drop file here",
+  enable: "Enable",
 };
