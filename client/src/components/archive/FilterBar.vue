@@ -11,7 +11,7 @@
       <b-icon icon="x-lg" />
     </button>
 
-    <transition name="slidedown" mode="out-in">
+    <transition name="fade_fast" mode="out-in">
       <button
         type="button"
         v-if="can_be_reset"
@@ -257,7 +257,7 @@ export default {
     },
     can_be_reset() {
       return (
-        this.group_mode !== "day" ||
+        this.group_mode !== "year" ||
         this.sort_order !== "date_modified" ||
         this.search_str !== "" ||
         this.author_path_filter !== "" ||
@@ -291,6 +291,7 @@ export default {
 ._filterBar {
   position: relative;
   z-index: 1;
+  border: 2px solid currentColor;
 
   select,
   input {
