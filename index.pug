@@ -1,5 +1,3 @@
-- var path_prefix = mode !== "export_publication" ? "/" : "./_";
-
 doctype html
 html
   head
@@ -16,9 +14,9 @@ html
       link(rel="shortcut icon" href=favicon_url)
 
     style.
-      @import "!{path_prefix}_client/fonts/fira.css";
+      @import "/_client/fonts/fira.css";
     style.
-      @import "!{path_prefix}_client/fonts/default_fonts.css";
+      @import "/_client/fonts/default_fonts.css";
 
     //- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" integrity="sha256-BicZsQAhkGHIoR//IB2amPN5SrRb3fHB8tFsnqRAwnk=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.83/dist/themes/light.css" />
@@ -65,4 +63,4 @@ html
     #app
 
     //- script(src="http")
-    script(src=path_prefix + "_client/bundle.js")
+    script(src="/_client/bundle.js")
