@@ -152,7 +152,7 @@ export default {
   hide: "Masquer",
   list_of_accounts: "Liste des comptes",
   show_all_accounts: "Afficher tous les comptes",
-  upload_from_device: "Importer une image",
+  upload_an_image: "Importer une image",
   device: "Appareil",
   audioinput: "Entrée audio",
   audiooutput: "Sortie audio",
