@@ -145,10 +145,9 @@ export default {
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
-  // --c-bodybg: hsl(48, 19%, 98%);
-  // --c-bodybg: hsl(40, 20%, 94%);
-  // --c-bodybg: hsl(40, 20%, 98%);
-  // --c-bodybg: hsl(40, 20%, 99%);
+  --dropzone-color1: transparent;
+  --dropzone-color2: var(--c-orange);
+
   --c-bodybg: white;
   --c-bodybg: hsl(48, 19%, 95%);
 
