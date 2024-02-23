@@ -170,6 +170,18 @@ export default {
       show_settings_modal: false,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        remove_author_expl:
+          "Seuls le compte et le contenu du chutier seront supprimés, l’ensemble des contenus qui lui sont associés (documents de l’archive et collections) seront conservés.",
+      },
+      en: {
+        remove_author_expl:
+          "Only the account and chutier content will be removed, but archives and collections won’t.",
+      },
+    },
+  },
   created() {},
   mounted() {},
   beforeDestroy() {},

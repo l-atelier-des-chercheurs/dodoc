@@ -26,7 +26,7 @@
       <div class="">
         <input
           type="text"
-          :placeholder="$t('search_text')"
+          :placeholder="$t('search')"
           :value="search_str"
           @input="$emit('update:search_str', $event.target.value)"
         />
@@ -220,6 +220,16 @@ export default {
         },
       ],
     };
+  },
+  i18n: {
+    messages: {
+      fr: {
+        search_fields: "Dans les champs titre et description des documents.",
+      },
+      en: {
+        search_fields: "In titles or descriptions of documents.",
+      },
+    },
   },
   async created() {
     this.all_authors = await this.$api.getFolders({

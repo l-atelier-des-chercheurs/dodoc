@@ -234,6 +234,11 @@ export default {
         fill_keywords: "Veuillez remplir le champ Mots-clés",
         files_missing: "Veuillez ajouter des médias à ce document",
       },
+      en: {
+        fill_title: "Fill in the title field",
+        fill_keywords: "Fill in the keywords field",
+        files_missing: "Add medias to this document",
+      },
     },
   },
   async created() {

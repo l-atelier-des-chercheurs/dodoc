@@ -138,7 +138,6 @@ export default {
   filter_by_author: "Fitler by author",
   filter_by_keyword: "Fitler by keyword",
 
-  search_fields: "In titles or descriptions of documents.",
   show_all_keywords: "Show all keywords",
   share_link_to_page: "Share a link to this page",
   no_content: "No content to show",

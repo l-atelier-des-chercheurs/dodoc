@@ -215,7 +215,12 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {},
+      fr: {
+        only_my_fav: "Que les favoris",
+      },
+      en: {
+        only_my_fav: "Favourites",
+      },
     },
   },
   async created() {},
