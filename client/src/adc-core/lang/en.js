@@ -156,6 +156,9 @@ export default {
   optimize_media: "Optimize the media",
 
   no_accounts_yet: "No accounts created yet",
+  no_accounts_to_show: "No accounts to show",
+  login_no_account_matches: "No accounts match",
+
   add_accounts: "Add accounts",
   show: "Show",
   hide: "Hide",
@@ -196,6 +199,17 @@ export default {
   stop_timelapse: "Stop timelapse",
   quality: "Quality",
   duration: "Duration",
+
+  latitude: "Latitude",
+  longitude: "Longitude",
+  zoom: "Zoom",
+  map: "Map",
+  pins: "Pins",
+  pick_on_map: "Pick on map",
+  location: "Location",
+  current_position: "Current position",
+  no_position: "No position",
+  feature_not_yet_implemented: "Feature not yet implemented",
 
   no_coordinates: "No coordinates available",
   position_on_map: "No position on the map",
