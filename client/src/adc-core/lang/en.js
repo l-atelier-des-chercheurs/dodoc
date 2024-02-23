@@ -252,6 +252,16 @@ export default {
   add_caption: "Add a caption",
   copy_first_media_caption: "Reuse first media caption",
 
+  withdraw_from_page: "Withdraw from page",
+  confirm_removal: "Confirm removal",
+  move_up: "Move up",
+  move_down: "Move down",
+  source_project: "Source project",
+  source_files: "Source medias",
+  source_media_missing: "Source media is missing",
+  media_pickers_instr: "Select medias to import.",
+  already_present: "Already present",
+
   current: "Current",
   save_on_this_device: "Save on this device",
   will_use_cookies: "This feature requires cookies",
