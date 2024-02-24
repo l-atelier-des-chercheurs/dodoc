@@ -152,6 +152,15 @@
             :can_edit="true"
           />
         </div>
+        <div class="u-spacingBottom">
+          <TitleField
+            :label="$t('credits/source')"
+            :field_name="'$credits'"
+            :content="file.$credits"
+            :path="file.$path"
+            :can_edit="true"
+          />
+        </div>
 
         <div class="u-spacingBottom">
           <AuthorField

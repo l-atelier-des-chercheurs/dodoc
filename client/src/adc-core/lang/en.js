@@ -34,6 +34,7 @@ export default {
 
   keywords: "keywords",
   show_all: "Show all",
+  "credits/source": "Credits/source",
 
   template: "Template",
 

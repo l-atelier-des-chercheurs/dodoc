@@ -1,15 +1,11 @@
 <template>
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
-      <button
-        type="button"
-        class="u-button u-button_small u-button_black"
-        @click="$emit('close')"
-      >
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
         <b-icon icon="arrow-left-short" />
         {{ $t("close") }}
       </button>
-      <div class="u-spacingBottom _titleRow">
+      <div class="_titleRow">
         <button
           type="button"
           class="u-button u-button_transparent u-button_icon"
@@ -123,7 +119,7 @@
             </div>
             <div class="" v-if="can_edit">
               <ColorInput
-                class="u-spacingBottom"
+                class=""
                 :label="$t('page_color')"
                 :value="page_color"
                 @save="
@@ -134,18 +130,20 @@
                 "
               />
 
-              <ToggleInput
-                v-if="has_pagination"
-                class="u-spacingBottom"
-                :content="hide_pagination"
-                :label="$t('hide_pagination')"
-                @update:content="
-                  $emit('updatePageOptions', {
-                    page_number: active_page_number,
-                    value: { hide_pagination: $event },
-                  })
-                "
-              />
+              <template v-if="has_pagination">
+                <div class="u-spacingBottom" />
+                <ToggleInput
+                  class=""
+                  :content="hide_pagination"
+                  :label="$t('hide_pagination')"
+                  @update:content="
+                    $emit('updatePageOptions', {
+                      page_number: active_page_number,
+                      value: { hide_pagination: $event },
+                    })
+                  "
+                />
+              </template>
             </div>
           </div>
           <div class="_pageMenu--pane">
@@ -721,8 +719,8 @@ export default {
   text-align: left;
 }
 ._pageMenu--pane {
-  padding: calc(var(--spacing) / 2) 0;
-  margin: 0 calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
 
   &:not(:first-child) {
     margin-top: calc(var(--spacing) / 2);
@@ -799,7 +797,7 @@ export default {
   align-items: center;
   justify-content: space-between;
 
-  padding: calc(var(--spacing) / 2) 0;
+  margin: calc(var(--spacing) / 2) 0;
 
   button {
     font-size: var(--sl-font-size-medium);

@@ -192,6 +192,23 @@
         />
       </FullscreenView>
     </template>
+
+    <div class="_creditsBtn" v-if="display_credits && file.$credits">
+      <EditBtn :btn_type="'credits'" @click="show_credits = true" />
+    </div>
+
+    <transition name="pagechange" mode="out-in">
+      <div class="_showCredits" v-if="show_credits">
+        <button
+          type="button"
+          class="u-button u-button_icon _closeCredits"
+          @click="show_credits = false"
+        >
+          <b-icon icon="x-lg" />
+        </button>
+        {{ file.$credits }}
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -219,6 +236,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    display_credits: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     ThreeDPreview: () => import("@/adc-core/fields/ThreeDPreview.vue"),
@@ -230,6 +251,7 @@ export default {
       start_iframe: false,
       is_loading_iframe: false,
       failed_to_load_iframe: false,
+      show_credits: false,
     };
   },
   created() {},
@@ -329,6 +351,11 @@ export default {
     }
     .plyr__controls {
       border-radius: 4px;
+    }
+
+    ._editBtn {
+      background: rgba(255, 255, 255, 0.2) !important;
+      backdrop-filter: blur(5px) !important;
     }
   }
 }
@@ -434,5 +461,31 @@ export default {
       height: 100%;
     }
   }
+}
+
+._creditsBtn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 1);
+
+  @media print {
+    display: none;
+  }
+}
+._showCredits {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  backdrop-filter: blur(5px);
+  overflow: auto;
+  padding: calc(var(--spacing) * 2);
+}
+._closeCredits {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 4);
 }
 </style>

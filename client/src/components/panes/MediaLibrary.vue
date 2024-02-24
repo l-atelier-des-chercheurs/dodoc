@@ -820,7 +820,7 @@ export default {
 ._selectMediaOrigin,
 ._selectMediaType,
 ._selectMediaAuthor {
-  width: 20ch;
+  width: 21ch;
 }
 
 ._groupBy {

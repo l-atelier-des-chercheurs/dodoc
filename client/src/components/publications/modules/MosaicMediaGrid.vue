@@ -27,8 +27,8 @@
           :context="context"
           :show_fs_button="show_fs_button"
           :is_draggable="can_edit"
+          :display_credits="true"
         />
-
         <div class="_btnRow" v-if="can_edit">
           <template
             v-if="
