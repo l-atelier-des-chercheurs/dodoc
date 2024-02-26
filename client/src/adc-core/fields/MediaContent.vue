@@ -193,16 +193,20 @@
       </FullscreenView>
     </template>
 
-    <div class="_creditsBtn" v-if="display_credits && file.$credits">
-      <EditBtn :btn_type="'credits'" @click="show_credits = true" />
+    <div class="_creditsBtn" v-if="display_credits_caption">
+      <EditBtn
+        :btn_type="'credits'"
+        :label_position="'left'"
+        @click="show_credits_caption = true"
+      />
     </div>
 
     <transition name="pagechange" mode="out-in">
-      <div class="_showCredits" v-if="show_credits">
+      <div class="_showCredits" v-if="show_credits_caption">
         <button
           type="button"
           class="u-button u-button_icon _closeCredits"
-          @click="show_credits = false"
+          @click="show_credits_caption = false"
         >
           <b-icon icon="x-lg" />
         </button>
@@ -231,6 +235,7 @@
           <button
             type="button"
             class="u-buttonLink"
+            v-if="can_open_source"
             @click="$eventHub.$emit('publication.openModal', file.$path)"
           >
             <b-icon icon="pencil" />
@@ -266,7 +271,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    display_credits: {
+    display_credits_caption: {
+      type: Boolean,
+      default: false,
+    },
+    can_open_source: {
       type: Boolean,
       default: false,
     },
@@ -281,7 +290,7 @@ export default {
       start_iframe: false,
       is_loading_iframe: false,
       failed_to_load_iframe: false,
-      show_credits: false,
+      show_credits_caption: false,
     };
   },
   created() {},
