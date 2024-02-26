@@ -665,7 +665,9 @@ module.exports = (function () {
 
     try {
       let d = await folder.getFolder({ path_to_folder });
-      if (d.$public !== true) {
+
+      const { general_password } = await settings.get();
+      if (d.$public !== true && general_password) {
         // only allow queries with superadmintoken
         if (!auth.checkSuperadminToken(req.query?.sat)) {
           const err = new Error("Folder is not public");

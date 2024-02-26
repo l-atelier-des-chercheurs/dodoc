@@ -21,7 +21,7 @@
         </div>
         <div class="_baseModal--closeBtn" v-if="is_closable">
           <sl-button variant="neutral" size="medium" circle @click="closeModal">
-            <sl-icon name="x-lg" :label="$t('close')"></sl-icon>
+            <b-icon icon="x-lg" :label="$t('close')" />
           </sl-button>
         </div>
       </div>

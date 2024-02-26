@@ -28,6 +28,8 @@
             :resolution="context === 'preview' ? 220 : 1600"
             :context="context"
             :show_fs_button="show_fs_button"
+            :display_credits_caption="true"
+            :can_open_source="can_edit"
           />
           <div class="_btnRow" v-if="can_edit">
             <button

@@ -71,6 +71,11 @@ export default {
           label: this.$t("ok"),
           icon: "check-lg",
         };
+      else if (this.btn_type === "credits")
+        return {
+          label: this.$t("credits/source"),
+          icon: "info-circle-fill",
+        };
 
       return {
         label: this.$t("edit"),
@@ -110,7 +115,7 @@ export default {
   display: inline-flex;
   background: var(--color1);
   color: var(--color2);
-  border: 1px solid var(--color1);
+  // border: 1px solid var(--color1);
 
   box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
 
@@ -124,6 +129,7 @@ export default {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover,
+  &:active,
   &:focus-visible {
     z-index: 2;
     transform: scale(1.2);
@@ -149,6 +155,9 @@ export default {
     align-items: center;
     border-radius: 1rem;
     white-space: nowrap;
+
+    max-width: 0;
+    overflow: hidden;
 
     pointer-events: none;
     opacity: 0;
@@ -177,6 +186,7 @@ export default {
       transform: none;
       color: inherit;
       opacity: 1;
+      max-width: 20ch;
       pointer-events: auto;
       // transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
       transition: all 0.25s 0s cubic-bezier(0.19, 1, 0.22, 1);
