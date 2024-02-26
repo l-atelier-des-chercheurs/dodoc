@@ -27,9 +27,13 @@
           :context="context"
           :show_fs_button="show_fs_button"
           :is_draggable="can_edit"
-          :display_credits_caption="true"
-          :can_open_source="can_edit"
         />
+
+        <CaptionCreditsPage
+          :media="media_with_linked._linked_media"
+          :publication_path="publication_path"
+        />
+
         <div class="_btnRow" v-if="can_edit">
           <template
             v-if="
@@ -119,6 +123,7 @@
 </template>
 <script>
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
 
 export default {
   props: {
@@ -133,6 +138,7 @@ export default {
   },
   components: {
     MediaPicker,
+    CaptionCreditsPage,
   },
   data() {
     return {
@@ -147,7 +153,6 @@ export default {
     is_multiple_medias() {
       return this.medias_with_linked.length > 1;
     },
-
     single_media_displayed_at_full_ratio() {
       if (this.medias_with_linked.length > 1) return false;
 

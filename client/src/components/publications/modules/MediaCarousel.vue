@@ -29,8 +29,14 @@
             :context="context"
             :show_fs_button="show_fs_button"
             :display_credits_caption="true"
-            :can_open_source="can_edit"
+            :can_edit_credits_caption="can_edit"
           />
+
+          <CaptionCreditsPage
+            :media="media_with_linked._linked_media"
+            :publication_path="publication_path"
+          />
+
           <div class="_btnRow" v-if="can_edit">
             <button
               type="button"
@@ -130,6 +136,7 @@ import Flickity from "vue-flickity";
 import "flickity-imagesloaded";
 
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
 
 export default {
   props: {
@@ -145,6 +152,7 @@ export default {
   components: {
     Flickity,
     MediaPicker,
+    CaptionCreditsPage,
   },
   data() {
     return {
@@ -250,13 +258,23 @@ export default {
 
   ::v-deep .flickity-page-dots {
     bottom: 0;
+    display: flex;
+    justify-content: center;
+    flex-flow: row nowrap;
+    gap: calc(var(--spacing) / 3);
+    padding: calc(var(--spacing) / 2);
+    pointer-events: none;
 
     .dot {
-      background: var(--c-gris);
+      background: rgba(255, 255, 255, 0.5);
       border: none;
       opacity: 1;
+      margin: 0;
       padding: calc(var(--spacing) / 4);
       border: 2px solid transparent;
+      pointer-events: auto;
+
+      transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
       &:hover,
       &:active,

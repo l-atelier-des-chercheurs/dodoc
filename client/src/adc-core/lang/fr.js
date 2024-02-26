@@ -39,7 +39,7 @@ export default {
   suggested_keywords: "Mots-clé suggérés",
   suggested_cat_kw: "Catégories et mots-clé suggérés",
   show_all: "Afficher tout",
-  "credits/source": "Crédits/source",
+  "credit/reference": "Crédit/référence",
 
   add: "Ajouter",
   add_item: "Ajouter un élément",

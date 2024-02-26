@@ -19,7 +19,7 @@ export default {
   description: "Description",
   keywords: "Keywords",
   show_all: "Show all",
-  "credits/source": "Crédits/source",
+  "credit/reference": "Credit/reference",
 
   stop_edit: "Stop editing",
   alphabetical: "Alphabetical",
