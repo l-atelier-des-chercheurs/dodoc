@@ -32,9 +32,10 @@
           <AnimatedCounter :value="preview_progress" />
         </div>
       </transition>
+
       <button
         type="button"
-        class="u-button u-button_small u-button_white _generatePreviewBtn"
+        class="u-button u-button_small u-button_icon u-button_white _generatePreviewBtn"
         v-if="can_edit && !is_making_preview"
         @click.stop="generatePreview"
       >

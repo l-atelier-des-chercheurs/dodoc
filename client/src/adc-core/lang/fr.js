@@ -32,9 +32,9 @@ export default {
   year: "Année",
 
   description: "Description",
-  no_description: "Pas de description",
   keywords: "Mots-clés",
   show_all: "Afficher tout",
+  "credits/source": "Crédits/source",
 
   add: "Ajouter",
   add_item: "Ajouter un élément",
@@ -63,9 +63,7 @@ export default {
   name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
       Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
   presentation_of_instance: "Présentation de l’instance",
-  presentation_of_instance_instructions: `
-      Apparaîtra sur la page d’accueil uniquement.
-      `,
+  presentation_of_instance_instructions: `Apparaîtra sur la page d’accueil uniquement.`,
   presentation: "Présentation",
   general_password: "mot de passe général",
   general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
@@ -611,6 +609,11 @@ export default {
   beginner: "Débutant",
   intermediate: "Intermédiaire",
   experienced: "Avancé",
+
+  move_left: "À gauche",
+  move_right: "À droite",
+  pin: "Épingler",
+  unpin: "Désépingler",
 
   target_audience: "Public cible",
   ta_cycle1: "Cycle 1",

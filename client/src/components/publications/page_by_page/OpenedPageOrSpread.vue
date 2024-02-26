@@ -128,20 +128,12 @@
         </div>
       </div>
     </div>
-
-    <MediaModal
-      v-if="first_media_is_focused"
-      :key="active_module_first_media.$path"
-      :file="active_module_first_media"
-      @close="first_media_is_focused = false"
-    />
   </div>
 </template>
 <script>
 import PageMenu from "@/components/publications/page_by_page/PageMenu.vue";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
 import PanZoom2 from "@/components/publications/page_by_page/PanZoom2.vue";
-import MediaModal from "@/components/MediaModal";
 
 export default {
   props: {
@@ -163,7 +155,6 @@ export default {
     PageMenu,
     SinglePage,
     PanZoom2,
-    MediaModal,
   },
   data() {
     return {
@@ -178,12 +169,10 @@ export default {
       display_as_public: false,
 
       active_module_path: false,
-      first_media_is_focused: false,
     };
   },
   created() {
     this.$eventHub.$on(`module.setActive`, this.setActiveModule);
-    this.$eventHub.$on(`publication.openModal`, this.openFocusModal);
     document.addEventListener("keydown", this.keyPressed);
 
     this.$root.default_new_module_top = 15;
@@ -194,7 +183,6 @@ export default {
   mounted() {},
   beforeDestroy() {
     this.$eventHub.$off(`module.setActive`, this.setActiveModule);
-    this.$eventHub.$off(`publication.openModal`, this.openFocusModal);
     document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {
@@ -276,9 +264,6 @@ export default {
         `publication.page_settings.${this.publication_path}`,
         JSON.stringify(this.page_settings)
       );
-    },
-    openFocusModal() {
-      this.first_media_is_focused = true;
     },
     keyPressed(event) {
       if (
