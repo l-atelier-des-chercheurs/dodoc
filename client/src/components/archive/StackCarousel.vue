@@ -44,7 +44,7 @@
 
         <div class="_credits">
           <b-icon v-if="file.caption" icon="text-left" />
-          <b-icon v-if="file.credits" icon="info-circle" />
+          <b-icon v-if="file.$credits" icon="info-circle" />
         </div>
       </div>
     </transition-group>

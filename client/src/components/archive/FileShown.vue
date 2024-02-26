@@ -42,9 +42,9 @@
           :aria-label="$t('caption')"
         />
         <b-icon
-          v-if="file.credits"
+          v-if="file.$credits"
           icon="info-circle"
-          :aria-label="$t('credits/reference')"
+          :aria-label="$t('credit/reference')"
         />
         <!-- </template> -->
 
@@ -93,10 +93,10 @@
 
           <div class="">
             <TitleField
-              :field_name="'credits'"
+              :field_name="'$credits'"
               class="_credits"
-              :label="$t('credits/reference')"
-              :content="file.credits"
+              :label="$t('credit/reference')"
+              :content="file.$credits"
               :path="file.$path"
               :maxlength="1280"
               :input_type="'markdown'"
@@ -135,16 +135,12 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {
-        "credits/reference": "Crédit/Référence",
-      },
-      en: {
-        "credits/reference": "Credit/Reference",
-      },
+      fr: {},
+      en: {},
     },
   },
   created() {
-    this.show_infos = this.can_edit || this.file.caption || this.file.credits;
+    this.show_infos = this.can_edit || this.file.caption || this.file.$credits;
   },
   mounted() {},
   beforeDestroy() {},
