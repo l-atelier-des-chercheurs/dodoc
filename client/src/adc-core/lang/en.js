@@ -161,7 +161,6 @@ export default {
   filter_by_keyword: "Fitler by keyword",
 
   show_all_keywords: "Show all keywords",
-  share_link_to_page: "Share a link to this page",
   no_content: "No content to show",
   already_added: "Already added",
   open: "open",
@@ -469,7 +468,6 @@ export default {
   contributors: "Contributors",
   contributor: "Contributor",
   admin: "Administrator",
-  import: "Import",
   waiting: "Coming soon",
   sending: "In progress",
   feels: "Sent",
@@ -606,7 +604,6 @@ export default {
   media_removed: "Media removed",
   media_duplicated: "Media duplicated",
   media_was_saved: "The media was added to the project",
-  close: "Close",
   settings: "Settings",
   list_of_pages: "List of pages",
   list_of_spreads: "List of spreads",
