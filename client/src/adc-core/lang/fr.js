@@ -613,6 +613,10 @@ export default {
   intermediate: "Intermédiaire",
   experienced: "Avancé",
 
+  move_left: "À gauche",
+  move_right: "À droite",
+  unpin: "Désépingler",
+
   target_audience: "Public cible",
   ta_cycle1: "Cycle 1",
   ta_cycle1_instr: "Maternelle (Fr) (3-5 ans)",

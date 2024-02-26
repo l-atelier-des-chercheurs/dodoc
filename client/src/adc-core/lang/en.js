@@ -194,6 +194,19 @@ export default {
   remove_account: "Remove this account",
   remove_account_expl:
     "Only the account will be removed, all its content (spaces, projects, medias and publications) will be kept.",
+  machines_and_materials: "Machines and materials",
+  machines: "Machines",
+  materials: "Materials",
+  levels_and_competences: "Levels and skills",
+
+  skill_level: "Knowledge level",
+  beginner: "Beginner",
+  intermediate: "Intermediate",
+  experienced: "Experienced",
+
+  move_left: "À gauche",
+  move_right: "À droite",
+  unpin: "Désépingler",
 
   interval_between_pictures: "Interval between pictures",
   start_timelapse: "Start timelapse",
@@ -258,6 +271,29 @@ export default {
   publish: "Publish",
 
   projects_you_edited_last: "Projects you edited last",
+
+  path_to_content: "Path to content",
+  path_to_content_instructions: `Attention, advanced functionality!
+  The path below indicates the location of the folder that contains the contents of do•doc. If you change this path, it is strongly recommended to use either an empty folder or a folder that only contains content created by do•doc 10. Restart do•doc for this setting to take effect.`,
+
+  administration_and_access_control: "Administration et contrôle des accès",
+  logo_and_images: "Logo et images",
+  fonts: "Famille de caractère",
+  add_font: "Ajouter une famille de caractère",
+  font_name: "Nom de la famille de caractère",
+  font_regular: "Régulier (400)",
+  font_bold: "Gras (700)",
+  font_normal: "Normal",
+  font_italic: "Italique",
+  storage: "Stockage",
+  events: "Événements",
+  other_events: "Autres événements",
+  pages: "Pages",
+  start_date: "Date de début",
+  end_date: "Date de fin",
+  created_during: "Créé pendant un événement",
+  project_can_be_remixed: "Permettre le remix de ce projet",
+  remix_this_project: "Remixer ce projet",
 
   CC: "Creative Commons",
   authors_and_license: "License and authors",
