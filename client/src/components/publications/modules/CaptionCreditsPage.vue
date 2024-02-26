@@ -115,19 +115,19 @@ export default {
 }
 ._showCredits {
   position: absolute;
-  z-index: 1;
+  z-index: 1000;
   inset: 0;
   overflow: auto;
   text-align: left;
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(5px);
   overflow: auto;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 3);
 }
 ._closeCredits {
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
-  margin: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 1);
 }
 </style>
