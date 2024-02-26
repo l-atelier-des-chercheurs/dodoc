@@ -223,9 +223,10 @@ export default {
   intermediate: "Intermediate",
   experienced: "Experienced",
 
-  move_left: "À gauche",
-  move_right: "À droite",
-  unpin: "Désépingler",
+  move_left: "Move left",
+  move_right: "Move right",
+  pin: "Pin",
+  unpin: "Unpin",
 
   interval_between_pictures: "Interval between pictures",
   start_timelapse: "Start timelapse",

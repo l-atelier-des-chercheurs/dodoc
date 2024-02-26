@@ -612,6 +612,7 @@ export default {
 
   move_left: "À gauche",
   move_right: "À droite",
+  pin: "Épingler",
   unpin: "Désépingler",
 
   target_audience: "Public cible",
