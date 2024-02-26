@@ -235,7 +235,7 @@
           <button
             type="button"
             class="u-buttonLink"
-            v-if="can_open_source"
+            v-if="can_edit_credits_caption"
             @click="$eventHub.$emit('publication.openModal', file.$path)"
           >
             <b-icon icon="pencil" />
@@ -275,7 +275,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    can_open_source: {
+    can_edit_credits_caption: {
       type: Boolean,
       default: false,
     },

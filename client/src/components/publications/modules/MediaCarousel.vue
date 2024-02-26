@@ -29,7 +29,7 @@
             :context="context"
             :show_fs_button="show_fs_button"
             :display_credits_caption="true"
-            :can_open_source="can_edit"
+            :can_edit_credits_caption="can_edit"
           />
           <div class="_btnRow" v-if="can_edit">
             <button
