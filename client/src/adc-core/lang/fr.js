@@ -34,7 +34,7 @@ export default {
   description: "Description",
   keywords: "Mots-clés",
   show_all: "Afficher tout",
-  "credits/source": "Crédits/source",
+  "credit/reference": "Crédit/référence",
 
   add: "Ajouter",
   add_item: "Ajouter un élément",

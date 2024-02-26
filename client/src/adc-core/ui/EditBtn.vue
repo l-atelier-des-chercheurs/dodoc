@@ -73,7 +73,7 @@ export default {
         };
       else if (this.btn_type === "credits")
         return {
-          label: this.$t("credits/source"),
+          label: this.$t("informations"),
           icon: "info-circle-fill",
         };
 

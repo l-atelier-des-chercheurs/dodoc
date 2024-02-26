@@ -154,7 +154,7 @@
         </div>
         <div class="u-spacingBottom">
           <TitleField
-            :label="$t('credits/source')"
+            :label="$t('credit/reference')"
             :field_name="'$credits'"
             :content="file.$credits"
             :path="file.$path"
