@@ -192,58 +192,6 @@
         />
       </FullscreenView>
     </template>
-
-    <div class="_creditsBtn" v-if="display_credits_caption">
-      <EditBtn
-        :btn_type="'credits'"
-        :label_position="'left'"
-        @click="show_credits_caption = true"
-      />
-    </div>
-
-    <transition name="pagechange" mode="out-in">
-      <div class="_showCredits" v-if="show_credits_caption">
-        <button
-          type="button"
-          class="u-button u-button_icon _closeCredits"
-          @click="show_credits_caption = false"
-        >
-          <b-icon icon="x-lg" />
-        </button>
-
-        <div class="u-spacingBottom">
-          <TitleField
-            :label="$t('caption')"
-            :field_name="'caption'"
-            :content="file.caption"
-            :path="file.$path"
-            :input_type="'markdown'"
-            :can_edit="false"
-          />
-        </div>
-        <div class="u-spacingBottom">
-          <TitleField
-            :label="$t('credits/source')"
-            :field_name="'$credits'"
-            :content="file.$credits"
-            :path="file.$path"
-            :can_edit="false"
-          />
-        </div>
-
-        <div>
-          <button
-            type="button"
-            class="u-buttonLink"
-            v-if="can_edit_credits_caption"
-            @click="$eventHub.$emit('publication.openModal', file.$path)"
-          >
-            <b-icon icon="pencil" />
-            {{ $t("edit_source") }}
-          </button>
-        </div>
-      </div>
-    </transition>
   </div>
 </template>
 <script>
@@ -271,14 +219,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    display_credits_caption: {
-      type: Boolean,
-      default: false,
-    },
-    can_edit_credits_caption: {
-      type: Boolean,
-      default: false,
-    },
   },
   components: {
     ThreeDPreview: () => import("@/adc-core/fields/ThreeDPreview.vue"),
@@ -290,7 +230,6 @@ export default {
       start_iframe: false,
       is_loading_iframe: false,
       failed_to_load_iframe: false,
-      show_credits_caption: false,
     };
   },
   created() {},
@@ -500,32 +439,5 @@ export default {
       height: 100%;
     }
   }
-}
-
-._creditsBtn {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin: calc(var(--spacing) / 1);
-
-  @media print {
-    display: none;
-  }
-}
-._showCredits {
-  position: absolute;
-  inset: 0;
-  overflow: auto;
-  text-align: left;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(5px);
-  overflow: auto;
-  padding: calc(var(--spacing) * 1);
-}
-._closeCredits {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: calc(var(--spacing) / 4);
 }
 </style>
