@@ -1,7 +1,7 @@
 export default {
   welcome_to_dodoc: "Welcome to do•doc !",
   current_lang_name: "English",
-  // todo translate
+
   a_foss_made_by:
     "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers, …!",
   home: "Home",
@@ -10,7 +10,11 @@ export default {
   // admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
   // admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
   edit: "Edit",
-  description: "description",
+  description: "Description",
+  keywords: "Keywords",
+  show_all: "Show all",
+  "credits/source": "Crédits/source",
+
   stop_edit: "Stop editing",
   caption: "Caption",
   date_created: "Created on",
@@ -32,10 +36,6 @@ export default {
   year: "Year",
   admin_settings: "Admin settings",
 
-  keywords: "keywords",
-  show_all: "Show all",
-  "credits/source": "Credits/source",
-
   template: "Template",
 
   add: "Add",
@@ -49,6 +49,27 @@ export default {
   subtitle: "Subtitle",
   name: "Name",
   filename: "Filename",
+
+  instance_admins_and_admins: "Instance admins and contributors",
+  admins_and_contributors: "Admins and contributors",
+  set_admins_and_contributors: "Set admins and contributors",
+  instance_admins_instr:
+    "The accounts listed here will be able to access all content, private or public. They will also be able to modify or delete user accounts, and modify settings.",
+  instance_contributors_instr:
+    "The accounts listed here will be able to create spaces.",
+  space_members: "Participants in this space",
+
+  name_of_instance: "Instance name",
+  name_of_instance_instructions: `For example, <b>Malakoff fablab documentation</b>, <b>do•doc of the CM class</b>, etc.
+      Will appear on the home page and in the browser tab.`,
+  presentation_of_instance: "Instance presentation",
+  presentation_of_instance_instructions: `Will appear on the home page only.`,
+  presentation: "Presentation",
+  general_password: "general password",
+  general_password_instructions: `Limit access to projects to visitors with this password. The home page will however remain accessible and
+    can display a contact email to request access, if necessary. Leave the field empty so that access is open to everyone.`,
+  general_password_modal_text: `A password is required to access projects created on this platform.
+    If you do not have a password, contact us here:`,
 
   submitted_password_is_wrong: "The submitted password is wrong",
   account_doesnt_exist: "This account does not exist",
@@ -102,8 +123,6 @@ export default {
   password: "Password",
 
   open_in_finder: "Open in finder",
-  admins_and_contributors: "Admins and contributors",
-  set_admins_and_contributors: "Set admins and contributors",
 
   ui_lang_select: "Interface language",
   lang_updated: "The lang has been changed",
@@ -224,6 +243,15 @@ export default {
   current_position: "Current position",
   no_position: "No position",
   feature_not_yet_implemented: "Feature not yet implemented",
+
+  translate: "Translate",
+  show_missing_translations: "Show missing translations",
+  missing_translations: "Missing translations for language:",
+  hide_already_translated: "Hide translations already made",
+  "to_translate:": "To translate:",
+  publish_on_forum_to_add_to_contribute_to_code:
+    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' target='_blank '>forum.latelier-des-chercheurs.fr</a>.",
+  erase_translations: "Erase all proposed translations",
 
   no_coordinates: "No coordinates available",
   position_on_map: "No position on the map",
