@@ -166,8 +166,9 @@ export default {
 }
 html,
 body {
+  background: white !important;
   @media print {
-    background: white !important;
+    // background: white !important;
   }
 }
 ._storyTemplate {
