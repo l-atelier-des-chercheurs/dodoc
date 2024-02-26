@@ -101,7 +101,7 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 1);
 
   @media print {
     display: none;
@@ -122,7 +122,7 @@ export default {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(5px);
   overflow: auto;
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 2);
 }
 ._closeCredits {
   position: absolute;
