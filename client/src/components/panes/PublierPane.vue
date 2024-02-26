@@ -25,6 +25,7 @@
     />
     <MediaModal
       v-if="media_to_edit"
+      class="_editMediaModal"
       :key="media_to_edit.$path"
       :file="media_to_edit"
       @close="media_to_edit = false"
@@ -86,5 +87,9 @@ export default {
   &.is--editable {
     background: var(--color-publish);
   }
+}
+
+._editMediaModal {
+  z-index: 100;
 }
 </style>
