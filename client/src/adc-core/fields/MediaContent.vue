@@ -206,7 +206,37 @@
         >
           <b-icon icon="x-lg" />
         </button>
-        {{ file.$credits }}
+
+        <div class="u-spacingBottom">
+          <TitleField
+            :label="$t('caption')"
+            :field_name="'caption'"
+            :content="file.caption"
+            :path="file.$path"
+            :input_type="'markdown'"
+            :can_edit="false"
+          />
+        </div>
+        <div class="u-spacingBottom">
+          <TitleField
+            :label="$t('credits/source')"
+            :field_name="'$credits'"
+            :content="file.$credits"
+            :path="file.$path"
+            :can_edit="false"
+          />
+        </div>
+
+        <div>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="$eventHub.$emit('publication.openModal', file.$path)"
+          >
+            <b-icon icon="pencil" />
+            {{ $t("edit_source") }}
+          </button>
+        </div>
       </div>
     </transition>
   </div>
@@ -354,7 +384,7 @@ export default {
     }
 
     ._editBtn {
-      background: rgba(255, 255, 255, 0.2) !important;
+      background: rgba(255, 255, 255, 0.4) !important;
       backdrop-filter: blur(5px) !important;
     }
   }
@@ -476,11 +506,12 @@ export default {
 ._showCredits {
   position: absolute;
   inset: 0;
+  overflow: auto;
+  text-align: left;
   background: rgba(255, 255, 255, 0.8);
-  text-align: center;
   backdrop-filter: blur(5px);
   overflow: auto;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
 }
 ._closeCredits {
   position: absolute;

@@ -231,7 +231,12 @@
               <button
                 type="button"
                 class="u-buttonLink"
-                @click="openMediaModal"
+                @click="
+                  $eventHub.$emit(
+                    'publication.openModal',
+                    active_module_first_media.$path
+                  )
+                "
               >
                 <b-icon icon="pencil" />
                 {{ $t("edit_source") }}
@@ -688,9 +693,6 @@ export default {
           const meta_filename = this.getFilename(path);
           this.$eventHub.$emit(`module.panTo.${meta_filename}`);
         });
-    },
-    openMediaModal() {
-      this.$eventHub.$emit("publication.openModal");
     },
     async updateMediaPubliMeta(val) {
       if (!this.active_module) return;

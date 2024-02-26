@@ -42,10 +42,17 @@
         @toggleView="$emit('togglePage', $event)"
       />
     </template>
+    <MediaModal
+      v-if="media_to_edit"
+      :key="media_to_edit.$path"
+      :file="media_to_edit"
+      @close="media_to_edit = false"
+    />
   </div>
 </template>
 <script>
 import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
+import MediaModal from "@/components/MediaModal";
 
 export default {
   props: {
@@ -64,21 +71,25 @@ export default {
       import("@/components/publications/templates/PageTemplate.vue"),
     MapTemplate: () =>
       import("@/components/publications/templates/MapTemplate.vue"),
+    MediaModal,
   },
   data() {
     return {
       publication: null,
       fetch_publication_error: null,
+      media_to_edit: false,
     };
   },
   created() {},
   async mounted() {
     await this.listPublication();
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
+    this.$eventHub.$on("publication.openModal", this.openMediaModal);
     this.$api.join({ room: this.publication.$path });
   },
   beforeDestroy() {
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
+    this.$eventHub.$off("publication.openModal", this.openMediaModal);
     this.$api.leave({ room: this.publication.$path });
   },
   watch: {},
@@ -102,6 +113,11 @@ export default {
           .log(this.$t("notifications.publication_was_removed"));
         this.$emit("close");
       }
+    },
+    openMediaModal(path) {
+      this.media_to_edit = this.getMediaInFolder({
+        path_to_source_media_meta: path,
+      });
     },
   },
 };
