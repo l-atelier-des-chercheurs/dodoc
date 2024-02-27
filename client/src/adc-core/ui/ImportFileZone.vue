@@ -36,7 +36,7 @@
     <UploadFiles
       v-if="files_to_import.length > 0"
       :files_to_import="files_to_import"
-      :path="project_path"
+      :path="path"
       @importedMedias="$emit('mediaJustImported', $event)"
       @close="files_to_import = []"
     />
@@ -45,7 +45,7 @@
 <script>
 export default {
   props: {
-    project_path: String,
+    path: String,
   },
   components: {},
   data() {
