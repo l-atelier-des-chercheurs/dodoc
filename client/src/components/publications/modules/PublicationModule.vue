@@ -913,7 +913,7 @@ export default {
   background: transparent;
   top: 0;
   left: 0;
-  // z-index: 1;
+  z-index: 1;
   margin: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4);
 
