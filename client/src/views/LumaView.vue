@@ -13,6 +13,7 @@
           <span class="_topBarIndication--item--names">
             <b-icon :icon="pane.icon" />
             {{ pane.label }}
+            <!-- {{ top_panes_width[pane.key] }} -->
           </span>
         </div>
       </div>
@@ -223,6 +224,7 @@ export default {
       const active_panes = Object.values(this.panes_width).filter(
         (w) => w > 0
       ).length;
+
       // if no pane active, set all to active
       if (active_panes === 0) {
         Object.keys(this.panes_width).map(
@@ -242,7 +244,11 @@ export default {
     loadPanesWidthFromStorage() {
       try {
         const _panes_width = localStorage.getItem("panes_width");
-        if (_panes_width) return JSON.parse(_panes_width);
+        if (_panes_width) {
+          const panes = JSON.parse(_panes_width);
+          if (panes.format) delete panes.format;
+          return panes;
+        }
       } catch (e) {
         e;
       }
