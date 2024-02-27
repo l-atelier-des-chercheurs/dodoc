@@ -11,8 +11,8 @@ const routes = [
       import(/* webpackChunkName: "LumaView" */ "../views/LumaView.vue"),
   },
   {
-    path: "/formats/:format_slug",
-    name: "Format",
+    path: "/collections/:collection_slug",
+    name: "Collections",
     meta: {
       /* do not load full UI */
       static: true,
