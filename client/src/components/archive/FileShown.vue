@@ -140,11 +140,19 @@ export default {
     },
   },
   created() {
-    this.show_infos = this.can_edit || this.file.caption || this.file.$credits;
+    if (localStorage.getItem("show_infos"))
+      this.show_infos = localStorage.getItem("show_infos") !== "false";
+    else
+      this.show_infos =
+        this.can_edit || this.file.caption || this.file.$credits;
   },
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    show_infos() {
+      localStorage.setItem("show_infos", this.show_infos);
+    },
+  },
   computed: {
     optimization_possible() {
       return this.fileCanBeOptimized({ path: this.file.$media_filename });
