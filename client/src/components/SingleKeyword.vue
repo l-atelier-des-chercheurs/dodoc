@@ -87,8 +87,10 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 1);
 
-  background-color: var(--cat-color, rgba(51, 51, 51, 1));
+  background-color: var(--cat-color, white);
   color: #000;
+
+  transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
   sl-icon-button::part(base) {
     color: currentColor;
@@ -96,7 +98,8 @@ export default {
   }
 
   &.is--clickable:hover {
-    background-color: rgba(41, 41, 41, 1);
+    opacity: 0.7;
+    // background-color: rgba(41, 41, 41, 1);
   }
 }
 
@@ -119,7 +122,7 @@ export default {
 }
 
 ._count {
-  border: 1px solid white;
+  border: 1px solid currentColor;
   border-radius: 10px;
   min-width: 14px;
   height: 14px;
