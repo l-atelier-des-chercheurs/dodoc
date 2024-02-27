@@ -320,10 +320,7 @@ export default {
     pins: Array,
     lines: Object,
     geometries: Array,
-    start_zoom: {
-      type: [Boolean, Number],
-      default: 2,
-    },
+    start_zoom: Number,
     map_baselayer: {
       type: String,
       default: "OSM",
@@ -838,9 +835,10 @@ export default {
             padding: [50, 50, 50, 50],
           });
 
-        // prevent zoom from being too high (even though it may be correct for the extent)
-        if (this.start_zoom) this.map.getView().setZoom(this.start_zoom);
-        else if (
+        if (this.start_zoom) {
+          this.map.getView().setZoom(this.start_zoom);
+        } else if (
+          // prevent zoom from being too high (even though it may be correct for the extent)
           this.map_baselayer !== "image" &&
           this.map.getView().getZoom() > 15
         )
