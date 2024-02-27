@@ -3,7 +3,7 @@
     <section class="_scrollBox">
       <div class="_importButton">
         <ImportFileZone
-          :project_path="project.$path"
+          :path="project.$path"
           @mediaJustImported="mediaJustImported"
         />
       </div>
