@@ -161,7 +161,7 @@ export default {
   sent: "Envoyé",
   retry: "Réessayer",
   font_instr: `
-      Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle famille de caractère au format woff2. 
+      Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle famille de caractères au format woff2. 
       Indiquez ensuite pour chaque élément le fichier correspondant.
     `,
   reload_page_to_apply:
@@ -406,9 +406,9 @@ export default {
 
   administration_and_access_control: "Administration et contrôle des accès",
   logo_and_images: "Logo et images",
-  fonts: "Famille de caractère",
-  add_font: "Ajouter une famille de caractère",
-  font_name: "Nom de la famille de caractère",
+  fonts: "Famille de caractères",
+  add_font: "Ajouter une famille de caractères",
+  font_name: "Nom de la famille de caractères",
   font_regular: "Régulier (400)",
   font_bold: "Gras (700)",
   font_normal: "Normal",
