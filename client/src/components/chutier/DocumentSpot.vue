@@ -251,7 +251,7 @@ export default {
   border-radius: 8px;
   overflow: hidden;
   color: #666;
-  background: black;
+  background: var(--sd-separator);
 
   display: flex;
   justify-content: center;
