@@ -26,7 +26,7 @@
 
         <ColorInput
           :label="$t('custom_color')"
-          :default_value="'#ffffff'"
+          :default_value="'#000000'"
           :value="category.tag_color"
           :can_toggle="true"
           @save="saveNewColor"

@@ -6,8 +6,9 @@
           v-for="category in categories"
           :key="category.$path"
           class="_categoryRow"
+          :style="categoryStyles(category)"
         >
-          <div class="_title" :style="categoryStyles(category)">
+          <div class="_title">
             {{ category.title }}
           </div>
           <button
@@ -123,7 +124,7 @@ export default {
     categoryStyles(category) {
       if (category.tag_color)
         return `
-        color: ${category.tag_color}
+        --cat-color: ${category.tag_color}
       `;
       return "";
     },
@@ -140,8 +141,9 @@ export default {
 }
 
 ._title {
-  background: var(--c-noir);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   border-radius: 4px;
+  background: var(--cat-color, #ffffff);
+  color: #000;
 }
 </style>

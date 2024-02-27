@@ -77,16 +77,18 @@ export default {
 ._singleKeyword {
   position: relative;
   // background-color: rgba(255, 255, 255, 0.2);
-  background-color: rgba(51, 51, 51, 1);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   border-radius: 4px;
-  color: white;
+  // color: white;
   line-height: 1.2;
 
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   gap: calc(var(--spacing) / 1);
+
+  background-color: var(--cat-color, rgba(51, 51, 51, 1));
+  color: #000;
 
   sl-icon-button::part(base) {
     color: currentColor;
@@ -100,7 +102,7 @@ export default {
 
 ._category {
   font-size: 80%;
-  color: var(--cat-color);
+  // color: var(--cat-color);
 }
 ._name {
   font-size: 110%;
