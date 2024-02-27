@@ -92,7 +92,10 @@
         </button>
       </div>
 
-      <div class="_buttonRow" v-if="map_baselayer !== 'image'">
+      <div
+        class="_buttonRow"
+        v-if="!['image', 'color'].includes(map_baselayer)"
+      >
         <button type="button" class="u-button" @click="toggleSearch">
           <b-icon class="inlineSVG" icon="search" />
         </button>
@@ -333,6 +336,7 @@ export default {
       type: Number,
       default: 1,
     },
+    map_baselayer_color: String,
     map_base_media: Object,
     is_small: {
       type: Boolean,
@@ -565,9 +569,14 @@ export default {
   },
   computed: {
     map_styles() {
-      return {
-        "--current-view-color": this.opened_view_color,
-      };
+      let styles = {};
+      if (this.opened_view_color)
+        styles["--current-view-color"] = this.opened_view_color;
+      if (this.map_baselayer_color)
+        styles["--map-background-color"] = this.map_baselayer_color;
+      // if (this.map_baselayer === "color" && this.map_baselayer_color)
+      //   styles["--map-background-color"] = this.map_baselayer_color;
+      return styles;
     },
     default_pin_svg() {
       const svg = `<svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
@@ -942,6 +951,42 @@ export default {
           source: new olStatic({
             attributions,
             url: img_src,
+            projection,
+            imageExtent: extent,
+          }),
+          className: "ol-layer ol-basemap",
+        });
+      } else if (this.map_baselayer === "color") {
+        const img_width = 2000;
+        const img_height = 2000;
+
+        const extent = [0, 0, img_width, img_height];
+        const projection = new olProjection({
+          code: "solid-color",
+          units: "pixels",
+          extent,
+        });
+        center = getCenter(extent);
+        zoom = 1;
+
+        var canvas = document.createElement("canvas");
+        canvas.width = img_width;
+        canvas.height = img_height;
+        // var ctx = canvas.getContext("2d");
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(0, 0, img_width, img_height);
+        var imageDataURL = canvas.toDataURL();
+
+        view = new olView({
+          projection,
+          center,
+          zoom,
+          maxZoom: 6,
+        });
+        background_layer = new olImageLayer({
+          source: new olStatic({
+            // attributions,
+            url: imageDataURL,
             projection,
             imageExtent: extent,
           }),
@@ -1822,6 +1867,7 @@ export default {
 ._map {
   width: 100%;
   height: 100%;
+  background-color: var(--map-background-color);
 
   ::v-deep {
     .ol-geocoder {

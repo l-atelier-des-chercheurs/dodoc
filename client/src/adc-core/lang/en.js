@@ -693,7 +693,7 @@ export default {
   replace_color_with: "Replace with",
   use_own_risk: "Use with caution: media may become invisible in some cases!",
   chroma_key: "Overlay (green background)",
-  color: "color",
+  color: "Color",
   flip_horizontally: "Flip horizontally",
   flip_vertically: "Flip vertically",
   advanced_options: "Advanced options",
@@ -877,4 +877,29 @@ export default {
   "instructions.pane.make": "Crop, shorten, assemble and annotate your media.",
   "instructions.pane.publish":
     "Create publications here: project journal, tutorial, booklet, etc.\n<br />\nThey will contain text and elements that you have collected.",
+
+  pins_color: "Pin color",
+  link_pins: "Link pins",
+  pin_icons: "Pin icons",
+  icon: "Icon",
+  media_preview: "Image on map",
+
+  image_basemap: "Image used as the basemap",
+  choose_image_basemap: "Choose image basemap",
+
+  map_baselayer: "Basemap",
+  OSM: "OpenStreetMap",
+  alidade_smooth: "Alidade Smooth",
+  alidade_smooth_dark: "Alidade Smooth (dark)",
+  STAMEN_watercolor: "Watercolor",
+  STAMEN_toner: "Toner",
+  provided_by_stadiamaps:
+    "Provided by <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
+  IGN_MAP: "IGN map (France only)",
+  IGN_SAT: "IGN satellite pictures (France only)",
+  image_or_drawing: "Image or drawing",
+  bw_filter: "Black and white filter",
+
+  IGN_max_zoom_limits:
+    "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
 };

@@ -559,7 +559,7 @@ export default {
   use_own_risk:
     "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
   chroma_key: "Incrustation (fond vert)",
-  color: "couleur",
+  color: "Couleur",
   flip_horizontally: "Retourner horizontalement",
   flip_vertically: "Retourner verticalement",
   advanced_options: "Options avancées",
@@ -945,4 +945,29 @@ export default {
     "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
   add_caption: "Ajouter une légende",
   copy_first_media_caption: "Réutiliser la légende du premier média",
+
+  pins_color: "Couleur des épingles",
+  link_pins: "Relier les épingles",
+  pin_icons: "Apparence des épingles",
+  icon: "Icône",
+  media_preview: "Image sur la carte",
+
+  image_basemap: "Image en fond de carte",
+  choose_image_basemap: "Choisir le fond de carte",
+
+  map_baselayer: "Fond de carte",
+  OSM: "OpenStreetMap",
+  alidade_smooth: "Alidade Smooth",
+  alidade_smooth_dark: "Alidade Smooth (nuit)",
+  STAMEN_watercolor: "Aquarelle",
+  STAMEN_toner: "Toner",
+  provided_by_stadiamaps:
+    "Fournis par <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
+  IGN_MAP: "Carte IGN (en France uniquement)",
+  IGN_SAT: "Photos satellite IGN (en France uniquement)",
+  image_or_drawing: "Image ou dessin",
+  bw_filter: "Filtre noir et blanc",
+
+  IGN_max_zoom_limits:
+    "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
 };

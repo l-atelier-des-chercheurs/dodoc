@@ -72,6 +72,20 @@
         </div>
 
         <div class="u-spacingBottom">
+          <ColorInput
+            :label="$t('background_color')"
+            :value="view.map_baselayer_color"
+            :default_value="'#F6F8F8'"
+            @save="
+              updateView({
+                field: 'map_baselayer_color',
+                value: $event,
+              })
+            "
+          />
+        </div>
+
+        <div class="u-spacingBottom">
           <RangeValueInput
             :label="$t('opacity')"
             :value="view.map_baselayer_opacity"
@@ -176,56 +190,22 @@ export default {
           key: "image",
           text: this.$t("image_or_drawing"),
         },
+        {
+          key: "---2",
+          text: "---",
+          disabled: true,
+        },
+        {
+          key: "color",
+          text: this.$t("color"),
+        },
       ],
     };
   },
   i18n: {
     messages: {
-      fr: {
-        pins_color: "Couleur des épingles",
-        link_pins: "Relier les épingles",
-        pin_icons: "Apparence des épingles",
-        icon: "Icône",
-        media_preview: "Image sur la carte",
-
-        image_basemap: "Image en fond de carte",
-        choose_image_basemap: "Choisir le fond de carte",
-
-        map_baselayer: "Fond de carte",
-        OSM: "OpenStreetMap",
-        alidade_smooth: "Alidade Smooth",
-        alidade_smooth_dark: "Alidade Smooth (nuit)",
-        STAMEN_watercolor: "Aquarelle",
-        STAMEN_toner: "Toner",
-        provided_by_stadiamaps:
-          "Fournis par <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
-        IGN_MAP: "Carte IGN (en France uniquement)",
-        IGN_SAT: "Photos satellite IGN (en France uniquement)",
-        image_or_drawing: "Image ou dessin",
-        bw_filter: "Filtre noir et blanc",
-
-        IGN_max_zoom_limits:
-          "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
-      },
-      en: {
-        pins_color: "Pin color",
-        link_pins: "Link pins",
-        pin_icons: "Pin icons",
-        icon: "Icon",
-        media_preview: "Image on map",
-
-        image_basemap: "Image used as the basemap",
-
-        map_baselayer: "Basemap",
-        OSM: "OpenStreetMap",
-        IGN_MAP: "IGN map (France only)",
-        IGN_SAT: "IGN satellite pictures (France only)",
-        image_or_drawing: "Image or drawing",
-        bw_filter: "Black and white filter",
-
-        IGN_max_zoom_limits:
-          "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
-      },
+      fr: {},
+      en: {},
     },
   },
   created() {},
