@@ -698,7 +698,9 @@ export default {
         })
       );
 
-      const fs_option = new olFullScreen();
+      const fs_option = new olFullScreen({
+        source: this.$el,
+      });
       this.map.addControl(fs_option);
 
       ////////////////////////////////////////////////////////////////////////// SCALELINE
