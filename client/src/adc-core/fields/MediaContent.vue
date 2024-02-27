@@ -309,10 +309,10 @@ export default {
   position: relative;
 
   &[data-novisual] {
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    // text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 
   ::v-deep {

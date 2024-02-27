@@ -43,7 +43,8 @@
           </div>
         </div>
         <button type="button" class="u-button_icon _dragBtn">
-          <b-icon :icon="'grid3x2-gap-fill'" rotate="90" />
+          <b-icon icon="hand-index-thumb" />
+          <!-- <b-icon :icon="'grid3x2-gap-fill'" rotate="90" /> -->
         </button>
       </div>
     </div>
@@ -310,6 +311,9 @@ export default {
     // background: black;
     background: var(--sd-separator);
 
+    display: block !important;
+    text-align: left;
+
     font-size: 70%;
 
     ::v-deep {
@@ -320,7 +324,8 @@ export default {
         object-position: center;
       }
       .ql-container {
-        font-size: 50%;
+        padding: calc(var(--spacing) / 4);
+        font-size: 70%;
       }
     }
   }
