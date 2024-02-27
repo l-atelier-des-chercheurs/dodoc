@@ -282,12 +282,14 @@ export default {
   position: absolute;
   z-index: 3;
   display: flex;
-  gap: calc(var(--spacing) / 8);
   flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 8);
+  align-content: center;
   top: 0;
   left: 0;
   margin: calc(var(--spacing) / 4);
-  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4)
+    calc(var(--spacing) / 4);
   font-weight: 400;
   background: white;
   color: black;
@@ -313,6 +315,7 @@ export default {
   top: 0;
   right: 0;
   margin: 0px;
+  z-index: 1;
   color: transparent;
   stroke: var(--c-noir);
 

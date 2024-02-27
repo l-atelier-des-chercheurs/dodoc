@@ -306,8 +306,10 @@ export default {
     width: 60px;
     flex: 0 0 auto;
     overflow: hidden;
-    color: white;
-    background: black;
+    // color: white;
+    // background: black;
+    background: var(--sd-separator);
+
     font-size: 70%;
 
     ::v-deep {
