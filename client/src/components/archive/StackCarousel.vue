@@ -17,8 +17,9 @@
       >
         <MediaContent :file="file" :context="'preview'" :resolution="360" />
 
-        <transition name="fade_fast" mode="out-in">
+        <transition name="fade" mode="out-in">
           <div class="_btnRow" v-if="current_file_shown.$path === file.$path">
+            <div class="_previewOverlay" />
             <RemoveMenu
               class="_removeBtn"
               :remove_text="$t('remove')"
@@ -181,14 +182,19 @@ export default {
 ._btnRow {
   position: absolute;
   inset: 0;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(5px);
 
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-content: center;
   align-items: center;
+}
+
+._previewOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--sd-separator);
+  opacity: 0.9;
 }
 
 ._removeBtn {
