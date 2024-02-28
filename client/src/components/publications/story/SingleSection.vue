@@ -297,6 +297,7 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  clear: both;
 
   transition: all 0.2s linear;
 

@@ -388,6 +388,9 @@
                     "map_base_media_filename": {
                       "type": "string"
                     },
+                    "map_baselayer_color": {
+                      "type": "string"
+                    },
                     "map_baselayer_opacity": {
                       "type": "boolean"
                     },

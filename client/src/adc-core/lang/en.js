@@ -205,14 +205,14 @@ export default {
 
   move: "Move",
   unselect: "Unselect",
-  remove: "Remove",
-  remove_project: "Remove project",
-  remove_media: "Remove media",
-  remove_space: "Remove space and all its content",
+  remove: "Delete",
+  remove_project: "Delete project",
+  remove_media: "Delete media",
+  remove_space: "Delete space and all its content",
 
-  remove_account: "Remove this account",
+  remove_account: "Delete this account",
   remove_account_expl:
-    "Only the account will be removed, all its content (spaces, projects, medias and publications) will be kept.",
+    "Only the account will be deleted, all its content (spaces, projects, medias and publications) will be kept.",
   machines_and_materials: "Machines and materials",
   machines: "Machines",
   materials: "Materials",
@@ -353,7 +353,7 @@ export default {
   pick_portrait: "Pick an image for this account",
   pick_media: "Pick one media",
   pick_medias: "Pick one or more medias",
-  remove_image: "Remove this image",
+  remove_image: "Delete this image",
 
   stop_recording: "Stop recording",
   pause_recording: "Pause recording",
@@ -540,10 +540,10 @@ export default {
   pagn_starts_on_page: "Page count starts on page",
   hide_pagination: "Hide pagination",
   hide_pagination_instr: "Only concerns this page",
-  remove_page_and_content: "Remove the page and its content?",
+  remove_page_and_content: "Delete the page and its content?",
   border_radius: "Rounded corners",
   photo: "Photo",
-  remove_this_image: "Remove this image",
+  remove_this_image: "Delete this image",
   erase: "Erase",
   crop: "Crop",
   crop_instructions:
@@ -573,7 +573,7 @@ export default {
   no_media_in_project: "No media in this project",
   number_of_media: "Number of media",
   "displayed:": "Displayed:",
-  media_removed: "Media removed",
+  media_removed: "Media deleted",
   media_duplicated: "Media duplicated",
   media_was_saved: "The media was added to the project",
   close: "Close",
@@ -693,7 +693,7 @@ export default {
   replace_color_with: "Replace with",
   use_own_risk: "Use with caution: media may become invisible in some cases!",
   chroma_key: "Overlay (green background)",
-  color: "color",
+  color: "Color",
   flip_horizontally: "Flip horizontally",
   flip_vertically: "Flip vertically",
   advanced_options: "Advanced options",
@@ -722,7 +722,7 @@ export default {
   destination_space: "Space which will receive this copy",
   destination_space_remix: "Space that will receive this remixed project",
   destination_project: "Project that will receive this copy",
-  remove_original: "Remove original",
+  remove_original: "Delete original",
   remove_original_after_copy: "The original will be deleted after copying",
   keep_original_after_copy: "The original will be kept after copying",
   target_audience: "Target audience",
@@ -828,7 +828,7 @@ export default {
   project_contrib_instructions:
     "They can only create, modify and delete content (media, publications, etc.)",
   file_author_instructions:
-    "This information is used for informational purposes only and does not determine who may edit or remove this content.",
+    "This information is used for informational purposes only and does not determine who may edit or delete this content.",
   ellipsis: "Ellipsis",
   rectangle: "Rectangle",
   line: "Line",
@@ -877,4 +877,29 @@ export default {
   "instructions.pane.make": "Crop, shorten, assemble and annotate your media.",
   "instructions.pane.publish":
     "Create publications here: project journal, tutorial, booklet, etc.\n<br />\nThey will contain text and elements that you have collected.",
+
+  pins_color: "Pin color",
+  link_pins: "Link pins",
+  pin_icons: "Pin icons",
+  icon: "Icon",
+  media_preview: "Image on map",
+
+  image_basemap: "Image used as the basemap",
+  choose_image_basemap: "Choose image basemap",
+
+  map_baselayer: "Basemap",
+  OSM: "OpenStreetMap",
+  alidade_smooth: "Alidade Smooth",
+  alidade_smooth_dark: "Alidade Smooth (dark)",
+  STAMEN_watercolor: "Watercolor",
+  STAMEN_toner: "Toner",
+  provided_by_stadiamaps:
+    "Provided by <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
+  IGN_MAP: "IGN map (France only)",
+  IGN_SAT: "IGN satellite pictures (France only)",
+  image_or_drawing: "Image or drawing",
+  bw_filter: "Black and white filter",
+
+  IGN_max_zoom_limits:
+    "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
 };

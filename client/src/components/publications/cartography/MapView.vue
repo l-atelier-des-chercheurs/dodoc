@@ -12,6 +12,9 @@
           :map_baselayer_opacity="
             opened_view ? opened_view.map_baselayer_opacity : undefined
           "
+          :map_baselayer_color="
+            opened_view ? opened_view.map_baselayer_color : undefined
+          "
           :map_base_media="base_media"
           :pins="pins"
           :lines="lines"

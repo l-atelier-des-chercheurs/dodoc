@@ -210,6 +210,25 @@
 
     <div class="_content" :style="media_styles">
       <div ref="sentinel" />
+      <button
+        type="button"
+        class="u-button _pinButton"
+        v-if="is_associated_to_map && has_coordinates"
+        ref="pinButton"
+        :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
+        :class="{
+          'is--active': is_active_on_map,
+        }"
+        @click.stop="pinButtonClick"
+      >
+        <!-- v-if="pin_options.pin_preview === 'icon'" -->
+        <img :src="pin_options.pin_preview_src" />
+        <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
+        <!-- <b-icon icon="pin-map-fill" /> -->
+        <!-- <span class="_index">
+          {{ pin_options.index }}
+        </span> -->
+      </button>
 
       <div class="_floatingEditBtn" v-if="can_edit">
         <EditBtn
@@ -327,26 +346,6 @@
       </template>
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
-
-      <button
-        type="button"
-        class="u-button _pinButton"
-        v-if="is_associated_to_map && has_coordinates"
-        ref="pinButton"
-        :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
-        :class="{
-          'is--active': is_active_on_map,
-        }"
-        @click.stop="pinButtonClick"
-      >
-        <!-- v-if="pin_options.pin_preview === 'icon'" -->
-        <img :src="pin_options.pin_preview_src" />
-        <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
-        <!-- <b-icon icon="pin-map-fill" /> -->
-        <!-- <span class="_index">
-          {{ pin_options.index }}
-        </span> -->
-      </button>
 
       <div
         class="_captionField"
@@ -914,7 +913,7 @@ export default {
   background: transparent;
   top: 0;
   left: 0;
-  // z-index: 1;
+  z-index: 1;
   margin: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4);
 
