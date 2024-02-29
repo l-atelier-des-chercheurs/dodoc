@@ -231,8 +231,6 @@ export default {
       });
     this.is_loading = false;
 
-    // sl -tab bottom padding 0
-
     if (this.starting_tab) {
       setTimeout(() => {
         this.$refs.tabgroup.show(this.starting_tab);

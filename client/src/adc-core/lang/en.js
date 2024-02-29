@@ -116,6 +116,7 @@ export default {
   create_account: "Create an account",
   your_account: "Your account",
   new_account: "New account",
+  account_group: "Group (for accounts)",
   show_list: "Show the list",
 
   login: "login",
