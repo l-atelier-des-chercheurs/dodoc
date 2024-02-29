@@ -14,6 +14,7 @@
       <TagsField
         :label="$t('materials')"
         :field_name="'materials'"
+        :tag_type="'materials'"
         :content="project.materials"
         :path="project.$path"
         :can_edit="can_edit"
@@ -23,6 +24,7 @@
       <TagsField
         :label="$t('machines')"
         :field_name="'machines'"
+        :tag_type="'machines'"
         :content="project.machines"
         :path="project.$path"
         :can_edit="can_edit"

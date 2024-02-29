@@ -134,7 +134,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 2px;
+  padding: calc(var(--spacing) / 1);
 }
 
 header {

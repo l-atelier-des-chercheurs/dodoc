@@ -22,8 +22,6 @@
   </div>
 </template>
 <script>
-import suggestions from "@/adc-core/fields/TagsSuggestionsList";
-
 export default {
   props: {
     tag_type: String,
@@ -33,11 +31,13 @@ export default {
   components: {},
   data() {
     return {
-      suggestions,
+      suggestions: [],
       show_suggestions: false,
     };
   },
-  created() {},
+  created() {
+    this.loadSuggestions(this.tag_type);
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {
@@ -53,12 +53,8 @@ export default {
   },
   computed: {
     suggestions_list() {
-      const suggestions_by_type = this.suggestions[this.tag_type] || [];
-      return suggestions_by_type.sort((a, b) => {
-        return a.localeCompare(b);
-      });
+      return this.suggestions;
     },
-
     filtered_suggestions() {
       return this.suggestions_list.filter(
         (s) =>
@@ -67,7 +63,25 @@ export default {
       );
     },
   },
-  methods: {},
+  methods: {
+    async loadSuggestions(tag_type) {
+      const path = `categories/${tag_type}`;
+      const suggestions = await this.$api
+        .getFolders({
+          path,
+        })
+        .catch((err) => {
+          // probably no suggestions, abort
+          err;
+        });
+      if (suggestions.list_of_suggestions)
+        this.suggestions = suggestions.list_of_suggestions
+          .slice()
+          .sort((a, b) => {
+            return a.localeCompare(b);
+          });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

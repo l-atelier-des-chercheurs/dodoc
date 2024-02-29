@@ -57,6 +57,7 @@
         </button>
         <AdminSettings
           v-if="show_settings_modal"
+          :starting_tab="'suggested_cat_kw'"
           @close="show_settings_modal = false"
         />
       </template>
@@ -84,7 +85,7 @@ export default {
       show_authors_modal: false,
       show_lang_modal: false,
       show_qr_code_modal: false,
-      show_settings_modal: false,
+      show_settings_modal: true,
     };
   },
   created() {},

@@ -5,7 +5,7 @@
     <div class="_tl">
       <TagsList
         :tags="new_tags"
-        :tag_type="field_name"
+        :tag_type="tag_type"
         :mode="edit_mode ? 'remove' : 'inactive'"
         :shorten_if_too_long="edit_mode ? false : true"
         @tagClick="removeTag($event)"
@@ -15,15 +15,15 @@
       </template>
     </div>
 
-    <SaveCancelButtons
-      v-if="edit_mode"
-      class="_scb"
-      :is_saving="is_saving"
-      @save="updateTags"
-      @cancel="cancel"
-    />
-
     <div class="_footer" v-if="edit_mode">
+      <SaveCancelButtons
+        v-if="edit_mode"
+        class="_scb"
+        :is_saving="is_saving"
+        @save="updateTags"
+        @cancel="cancel"
+      />
+
       <fieldset class="_newTagPane" v-if="create_new_tag">
         <legend class="u-label">{{ $t("add_item") }}</legend>
 
@@ -66,7 +66,7 @@
         /> -->
 
         <TagsSuggestion
-          :tag_type="field_name"
+          :tag_type="tag_type"
           :new_tag_name="new_tag_name"
           :tags_to_exclude="new_tags"
           @newTag="newTag($event)"
@@ -79,6 +79,7 @@
 export default {
   props: {
     field_name: String,
+    tag_type: String,
     label: {
       type: String,
       default: "",
@@ -205,6 +206,7 @@ export default {
 
 ._newTagPane {
   width: 100%;
+  margin-top: calc(var(--spacing) / 4);
 }
 
 ._scb {

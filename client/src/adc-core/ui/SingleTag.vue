@@ -9,7 +9,7 @@
     :data-mode="mode"
     @click="mode !== 'inactive' ? $emit('tagClick') : ''"
   >
-    <b-icon class="_picto" :icon="icon_to_show" />
+    <b-icon v-if="icon_to_show" class="_picto" :icon="icon_to_show" />
 
     <span class="_tagName">
       {{ tag_name }}
@@ -61,7 +61,7 @@ export default {
       if (this.tag_type === "status")
         if (this.tag_str === "finished") return "check-circle-fill";
         else if (this.tag_str === "private") return "file-lock2-fill";
-      return "";
+      return false;
     },
   },
   methods: {},
@@ -112,6 +112,11 @@ export default {
   }
   &[data-tagtype="materials"] {
     background-color: var(--c-bleumarine_clair);
+  }
+  &[data-tagtype="accountgroup"] {
+    // background-color: #edbdff;
+    background-color: var(--c-noir);
+    color: white;
   }
   &[data-tagtype="status"] {
     &[data-tagvalue="finished"] {

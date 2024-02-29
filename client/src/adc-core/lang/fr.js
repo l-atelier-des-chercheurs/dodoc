@@ -41,6 +41,9 @@ export default {
   add_files: "Ajouter des fichiers",
   hide_already_present_medias: "Masquer les médias déjà inclus",
   suggestions: "Suggestions",
+  suggested_cat_kw: "Catégories et mots-clé suggérés",
+  list_of_suggestions: "Liste des suggestions",
+
   access: "Accéder",
   title: "Titre",
   subtitle: "Sous-titre",
@@ -145,6 +148,7 @@ export default {
   create_account: "créer un compte",
   your_account: "votre compte",
   new_account: "nouveau compte",
+  account_group: "Groupe (pour les comptes)",
   show_list: "Afficher la liste",
   show: "Afficher",
   hide: "Masquer",
@@ -245,6 +249,10 @@ export default {
   fullscreen: "Plein-écran",
   exit_fullscreen: "Quitter le plein-écran",
   size: "Poids",
+
+  category_title: "Titre de la catégorie",
+  remove_category: "Supprimer cette catégorie",
+  add_category: "Ajouter une catégorie",
 
   opacity: "Opacité",
   page_spreads: "Pages en vis-à-vis",

@@ -1315,6 +1315,19 @@ module.exports = (function () {
       return acc;
     }, []);
   }
+  async function _loadCustomCategories() {
+    let custom_categories = await folder.getFolders({
+      path_to_type: "categories",
+    });
+    return custom_categories.reduce((acc, category) => {
+      acc.push({
+        title: category.title,
+        tag_color: category.tag_color || "",
+        path: category.$path,
+      });
+      return acc;
+    }, []);
+  }
 
   return API;
 })();

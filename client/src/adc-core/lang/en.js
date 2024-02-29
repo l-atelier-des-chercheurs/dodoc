@@ -44,6 +44,9 @@ export default {
   hide_already_present_medias:
     "Hide medias already included in this publication ",
   suggestions: "Suggestions",
+  suggested_cat_kw: "Suggested keywords and categories",
+  list_of_suggestions: "List of suggestions",
+
   access: "Access",
   title: "Title",
   subtitle: "Subtitle",
@@ -510,6 +513,11 @@ export default {
   fullscreen: "Full-screen",
   exit_fullscreen: "Exit full screen",
   size: "Weight",
+
+  category_title: "Category title",
+  remove_category: "Remove this category",
+  add_category: "Add category",
+
   opacity: "Opacity",
   page_spreads: "Facing pages",
   page: "Page",

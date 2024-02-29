@@ -508,6 +508,9 @@
           "presentation": {
             "type": "string"
           },
+          "group": {
+            "type": "string"
+          },
           "projects_recently_edited": {
             "type": "array"
           }
@@ -522,6 +525,22 @@
           },
           "font_files": {
             "type": "object"
+          }
+        },
+        "$files": {}
+      },
+      "categories": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true,
+            "unique": true
+          },
+          "tag_color": {
+            "type": "string"
+          },
+          "list_of_suggestions": {
+            "type": "array"
           }
         },
         "$files": {}

@@ -9,6 +9,7 @@
     <div class="">
       <TagsField
         :field_name="'keywords'"
+        :tag_type="'keywords'"
         :content="project.keywords"
         :path="project.$path"
         :can_edit="can_edit"
