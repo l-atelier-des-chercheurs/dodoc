@@ -152,6 +152,8 @@ export default {
     async updateTags() {
       this.is_saving = true;
 
+      if (this.new_tag_name.length > 0) this.newTag();
+
       try {
         const new_meta = {
           [this.field_name]: this.new_tags,
