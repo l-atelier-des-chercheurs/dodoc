@@ -20,9 +20,13 @@
           </div>
         </div>
         <div class="_baseModal--closeBtn" v-if="is_closable">
-          <sl-button variant="neutral" size="medium" circle @click="closeModal">
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            @click="closeModal"
+          >
             <b-icon icon="x-lg" :label="$t('close')" />
-          </sl-button>
+          </button>
         </div>
       </div>
     </transition>
