@@ -43,6 +43,7 @@ export default {
   suggestions: "Suggestions",
   suggested_cat_kw: "Catégories et mots-clé suggérés",
   list_of_suggestions: "Liste des suggestions",
+  create_suggestion_list_for: "Créer une liste de suggestions",
 
   access: "Accéder",
   title: "Titre",

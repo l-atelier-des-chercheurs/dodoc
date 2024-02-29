@@ -46,6 +46,7 @@ export default {
   suggestions: "Suggestions",
   suggested_cat_kw: "Suggested keywords and categories",
   list_of_suggestions: "List of suggestions",
+  create_suggestion_list_for: "Create a list of suggestions",
 
   access: "Access",
   title: "Title",
