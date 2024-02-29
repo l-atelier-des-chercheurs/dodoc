@@ -7,7 +7,7 @@
         :tags="new_tags"
         :tag_type="tag_type"
         :mode="edit_mode ? 'remove' : 'inactive'"
-        :shorten_if_too_long="edit_mode ? false : true"
+        :shorten_if_too_long="shorten_if_too_long"
         @tagClick="removeTag($event)"
       />
       <template v-if="can_edit && !edit_mode">
@@ -93,6 +93,7 @@ export default {
       type: [Boolean, Number],
       default: 40,
     },
+    never_shorten_list: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -121,6 +122,10 @@ export default {
   computed: {
     new_tag_name_already_exists() {
       return this.new_tags.includes(this.new_tag_name);
+    },
+    shorten_if_too_long() {
+      if (this.never_shorten_list) return false;
+      return this.edit_mode ? false : true;
     },
   },
   methods: {

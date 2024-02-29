@@ -44,6 +44,7 @@
           :tag_type="tag_type"
           :content="category.list_of_suggestions"
           :path="path"
+          :never_shorten_list="true"
           :can_edit="true"
         />
       </div>
