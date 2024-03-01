@@ -875,7 +875,7 @@ export default {
   > * {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 100%;
     margin: calc(var(--spacing) / 2);
   }
 }
