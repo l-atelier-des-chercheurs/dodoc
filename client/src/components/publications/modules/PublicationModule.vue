@@ -897,6 +897,7 @@ export default {
   flex-flow: column nowrap;
 }
 ._repickNotice--content {
+  display: flex;
   background: white;
   padding: calc(var(--spacing) / 2);
 }
