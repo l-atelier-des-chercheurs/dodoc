@@ -58,6 +58,7 @@ export default {
       if (this.tag_type === "machines") return "gear-wide-connected";
       if (this.tag_type === "keywords") return "tag";
       if (this.tag_type === "disciplines") return "book";
+      if (this.tag_type === "accountgroup") return "diagram2";
       if (this.tag_type === "status")
         if (this.tag_str === "finished") return "check-circle-fill";
         else if (this.tag_str === "private") return "file-lock2-fill";

@@ -509,7 +509,7 @@
             "type": "string"
           },
           "group": {
-            "type": "string"
+            "type": "array"
           },
           "projects_recently_edited": {
             "type": "array"

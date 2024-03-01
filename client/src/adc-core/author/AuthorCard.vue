@@ -57,6 +57,17 @@
 
           <div v-if="context === 'full'" class="u-spacingBottom" />
 
+          <div class="u-spacingBottom">
+            <TagsField
+              :label="context === 'full' ? $t('group') : undefined"
+              :field_name="'group'"
+              :tag_type="'accountgroup'"
+              :content="author.group"
+              :path="author.$path"
+              :can_edit="can_edit"
+            />
+          </div>
+
           <div v-if="context === 'full'" class="u-spacingBottom">
             <TitleField
               :field_name="'email'"

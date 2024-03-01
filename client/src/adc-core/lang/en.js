@@ -118,6 +118,7 @@ export default {
   your_account: "Your account",
   new_account: "New account",
   account_group: "Group (for accounts)",
+  group: "Group",
   show_list: "Show the list",
 
   login: "login",

@@ -150,6 +150,7 @@ export default {
   your_account: "votre compte",
   new_account: "nouveau compte",
   account_group: "Groupe (pour les comptes)",
+  group: "Groupe",
   show_list: "Afficher la liste",
   show: "Afficher",
   hide: "Masquer",
