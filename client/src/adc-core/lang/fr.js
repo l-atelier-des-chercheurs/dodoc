@@ -980,4 +980,15 @@ export default {
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
+
+  terms: "Conditions d’utilisation",
+  create_terms_page: "Créer une page pour les conditions d’utilisation",
+  open_page: "Ouvrir la page",
+  terms_in_footer: "Placer un lien en bas de la page d’accueil",
+  users_must_accept_terms_to_signup:
+    "Les utilisateurs doivent accepter les conditions d’utilisation pour s’inscrire",
+  to_create_account_you_must_accept_terms:
+    "Pour pouvoir créer un compte, vous devez accepter les conditions d’utilisation.",
+  click_here_to_read: "Cliquez ici pour les lire.",
+  i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
 };

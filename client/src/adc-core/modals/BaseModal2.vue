@@ -128,6 +128,9 @@ export default {
   &[data-size="large"] ._baseModal--content {
     max-width: 680px;
   }
+  &[data-size="x-large"] ._baseModal--content {
+    max-width: 980px;
+  }
 }
 
 ._baseModal--closeBtn {

@@ -1,5 +1,9 @@
 <template>
-  <BaseModal2 :title="$t('admin_settings')" @close="$emit('close')">
+  <BaseModal2
+    :title="$t('admin_settings')"
+    size="x-large"
+    @close="$emit('close')"
+  >
     <div class="_adminSettings">
       <div class="_spinner" v-if="is_loading" key="loader">
         <LoaderSpinner />
@@ -21,9 +25,13 @@
           <sl-tab slot="nav" panel="events">
             {{ $t("events") }}
           </sl-tab>
-          <sl-tab slot="nav" panel="pages">
-            {{ $t("pages") }}
+          <sl-tab slot="nav" panel="terms">
+            {{ $t("terms") }}
           </sl-tab>
+          <!-- // disabled for now -->
+          <!-- <sl-tab slot="nav" panel="pages">
+            {{ $t("pages") }}
+          </sl-tab> -->
           <sl-tab slot="nav" panel="suggested_cat_kw">
             {{ $t("suggested_cat_kw") }}
           </sl-tab>
@@ -163,9 +171,17 @@
               />
             </template>
           </sl-tab-panel>
+          <sl-tab-panel name="terms">
+            <TermsPanel
+              v-if="current_tab === 'terms'"
+              :settings="settings"
+              @close="$emit('close')"
+            />
+          </sl-tab-panel>
           <sl-tab-panel name="pages">
             <PagesPanel
               v-if="current_tab === 'pages'"
+              :settings="settings"
               @close="$emit('close')"
             />
           </sl-tab-panel>
@@ -196,6 +212,7 @@
 <script>
 import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
 import ImagesPanel from "@/adc-core/ui/ImagesPanel.vue";
+import TermsPanel from "@/adc-core/ui/TermsPanel.vue";
 import PagesPanel from "@/adc-core/ui/PagesPanel.vue";
 import SuggestedCategories from "@/adc-core/ui/SuggestedCategories.vue";
 
@@ -206,6 +223,7 @@ export default {
   components: {
     FontsPanel,
     ImagesPanel,
+    TermsPanel,
     PagesPanel,
     SuggestedCategories,
   },

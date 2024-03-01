@@ -101,6 +101,18 @@
 
     <footer class="_bottomFooter">
       <div class="_bottomFooter--cont">
+        <div
+          v-if="$root.app_infos.instance_meta.terms_in_footer"
+          class="u-spacingBottom"
+        >
+          <router-link
+            :to="createURLFromPath('pages/terms')"
+            class="u-buttonLink"
+          >
+            {{ $t("terms") }}
+          </router-link>
+        </div>
+
         <div class="_logoText">
           <DodocLogo class="_logo" />
           <div class="_version">

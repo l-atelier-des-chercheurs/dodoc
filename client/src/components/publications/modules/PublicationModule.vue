@@ -125,7 +125,7 @@
                   @click="duplicateModule"
                 >
                   <b-icon icon="file-plus" />
-                  <!-- {{ $t("duplicate") }} -->
+                  {{ $t("duplicate") }}
                 </button>
                 <RemoveMenu
                   v-if="can_edit"

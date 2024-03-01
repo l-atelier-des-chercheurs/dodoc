@@ -913,4 +913,11 @@ export default {
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
+
+  terms: "Terms of use",
+  create_terms_page: "Create a terms of use page",
+  open_page: "Open page",
+  terms_in_footer: "Place a link at the bottom of the home page",
+  users_must_accept_terms_to_signup:
+    "Users must accept the terms of use to register",
 };

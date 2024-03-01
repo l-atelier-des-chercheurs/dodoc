@@ -91,6 +91,12 @@
       },
       "spaces_pinned": {
         "type": "array"
+      },
+      "users_must_accept_terms_to_signup": {
+        "type": "boolean"
+      },
+      "terms_in_footer": {
+        "type": "boolean"
       }
     },
     "$files": {

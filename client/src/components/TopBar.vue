@@ -66,7 +66,6 @@
   </div>
 </template>
 <script>
-import AdminSettings from "@/adc-core/AdminSettings.vue";
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
@@ -74,7 +73,7 @@ import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 export default {
   props: {},
   components: {
-    AdminSettings,
+    AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
     AuthorList,
     LangModal,
     BreadCrumbs,

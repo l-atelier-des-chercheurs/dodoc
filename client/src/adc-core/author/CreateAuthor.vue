@@ -93,9 +93,38 @@
 
           <div class="u-spacingBottom" />
 
+          <template
+            v-if="
+              $root.app_infos.instance_meta.users_must_accept_terms_to_signup
+            "
+          >
+            <!-- <DLabel class="_label" :str="$t('terms')" /> -->
+            <div class="u-instructions">
+              {{ $t("to_create_account_you_must_accept_terms") }}
+              <router-link
+                :to="createURLFromPath('pages/terms')"
+                class="u-buttonLink"
+              >
+                {{ $t("click_here_to_read") }}
+              </router-link>
+            </div>
+
+            <ToggleInput
+              :content.sync="terms_accepted"
+              :label="$t('i_read_and_accept_terms')"
+            />
+
+            <div class="u-spacingBottom" />
+          </template>
+
           <button
             slot="footer"
             :loading="is_creating_author"
+            :disabled="
+              $root.app_infos.instance_meta
+                .users_must_accept_terms_to_signup === true &&
+              terms_accepted === false
+            "
             class="u-button u-button_bleuvert"
             type="submit"
           >
@@ -137,6 +166,7 @@ export default {
       account_created_notice: false,
 
       new_cover: undefined,
+      terms_accepted: false,
     };
   },
   i18n: {
