@@ -98,9 +98,12 @@
               $root.app_infos.instance_meta.users_must_accept_terms_to_signup
             "
           >
-            <!-- <DLabel class="_label" :str="$t('terms')" /> -->
+            <ToggleInput
+              :content.sync="terms_accepted"
+              :label="$t('i_read_and_accept_terms')"
+            />
+
             <div class="u-instructions">
-              {{ $t("to_create_account_you_must_accept_terms") }}
               <router-link
                 :to="createURLFromPath('pages/terms')"
                 class="u-buttonLink"
@@ -108,11 +111,6 @@
                 {{ $t("click_here_to_read") }}
               </router-link>
             </div>
-
-            <ToggleInput
-              :content.sync="terms_accepted"
-              :label="$t('i_read_and_accept_terms')"
-            />
 
             <div class="u-spacingBottom" />
           </template>
