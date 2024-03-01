@@ -664,7 +664,7 @@ export default {
   z-index: 1;
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 8);
+  gap: calc(var(--spacing) / 4);
 
   > * {
   }

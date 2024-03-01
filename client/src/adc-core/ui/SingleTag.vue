@@ -83,7 +83,7 @@ export default {
 
   text-transform: none;
 
-  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 3);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   background-color: var(--c-gris_clair);
 
   &:not(.is--inactive) {
