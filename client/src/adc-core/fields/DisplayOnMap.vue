@@ -2030,6 +2030,11 @@ export default {
   ::v-deep ._publicationModule[data-type="text"] {
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
   }
+
+  ::v-deep ._captionField {
+    padding: calc(var(--spacing) / 2);
+    padding-top: 0;
+  }
 }
 
 ._popupMessage {
