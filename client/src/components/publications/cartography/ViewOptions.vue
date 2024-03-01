@@ -37,8 +37,8 @@
           />
         </div>
         <div class="u-spacingBottom">
-          <DLabel :str="$t('pin_icons')" />
           <RadioCheckboxField
+            :label="$t('pin_icons')"
             :field_name="'all_pins_icon'"
             :input_type="'radio'"
             :content="view.all_pins_icon || ''"

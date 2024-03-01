@@ -1,31 +1,40 @@
 <template>
   <div class="_tagsField">
     <DLabel v-if="label" :str="label" />
-
     <div class="_tl">
       <TagsList
-        :tags="new_tags"
+        :tags="content"
         :tag_type="tag_type"
-        :mode="edit_mode ? 'remove' : 'inactive'"
+        :mode="'inactive'"
         :shorten_if_too_long="shorten_if_too_long"
-        @tagClick="removeTag($event)"
       />
       <template v-if="can_edit && !edit_mode">
         <EditBtn @click="enableEditMode" />
       </template>
     </div>
 
-    <div class="_footer" v-if="edit_mode">
-      <SaveCancelButtons
-        v-if="edit_mode"
-        class="_scb"
-        :is_saving="is_saving"
-        @save="updateTags"
-        @cancel="cancel"
+    <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+      <TagsList
+        :tags="new_tags"
+        :tag_type="tag_type"
+        :mode="'remove'"
+        :shorten_if_too_long="false"
+        @tagClick="removeTag($event)"
       />
+
+      <div class="u-spacingBottom" />
 
       <fieldset class="_newTagPane" v-if="create_new_tag">
         <legend class="u-label">{{ $t("add_item") }}</legend>
+
+        <div class="u-spacingBottom">
+          <TagsSuggestion
+            :tag_type="tag_type"
+            :new_tag_name="new_tag_name"
+            :tags_to_exclude="new_tags"
+            @newTag="newTag($event)"
+          />
+        </div>
 
         <div class="_sameRowBtnInput">
           <TextInput
@@ -33,7 +42,6 @@
             :content.sync="new_tag_name"
             :maxlength="maxlength"
             :required="true"
-            :size="'small'"
             @toggleValidity="($event) => (allow_save_newkeyword = $event)"
             @onEnter="onEnter"
           />
@@ -56,23 +64,15 @@
         <div v-if="new_tag_name_already_exists" class="fieldCaption u-colorRed">
           {{ $t("already_added") }}
         </div>
-        <!-- <SaveCancelButtons
-          class="_scb u-spacingBottom"
-          :is_saving="is_saving"
-          :allow_save="allow_save_newkeyword && !new_tag_name_already_exists"
-          :save_text="$t('create')"
-          @save="newTag"
-          @cancel="cancelNewTag"
-        /> -->
 
-        <TagsSuggestion
-          :tag_type="tag_type"
-          :new_tag_name="new_tag_name"
-          :tags_to_exclude="new_tags"
-          @newTag="newTag($event)"
+        <SaveCancelButtons
+          class="_scb"
+          :is_saving="is_saving"
+          @save="updateTags"
+          @cancel="cancel"
         />
       </fieldset>
-    </div>
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -80,10 +80,7 @@ export default {
   props: {
     field_name: String,
     tag_type: String,
-    label: {
-      type: String,
-      default: "",
-    },
+    label: String,
     content: {
       type: Array,
       default: () => [],

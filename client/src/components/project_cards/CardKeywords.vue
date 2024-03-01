@@ -8,6 +8,7 @@
   >
     <div class="">
       <TagsField
+        :label="$t('keywords')"
         :field_name="'keywords'"
         :tag_type="'keywords'"
         :content="project.keywords"

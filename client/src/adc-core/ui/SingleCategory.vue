@@ -38,8 +38,8 @@
       </div> -->
 
       <div class="">
-        <DLabel class="_label" :str="$t('list_of_suggestions')" />
         <TagsField
+          :label="$t('list_of_suggestions')"
           :field_name="'list_of_suggestions'"
           :tag_type="tag_type"
           :content="category.list_of_suggestions"

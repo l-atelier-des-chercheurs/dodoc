@@ -123,7 +123,7 @@ export default {
     height: auto;
     margin: calc(var(--spacing) / 4);
     padding: calc(var(--spacing) / 2);
-    background-color: var(--c-gris);
+    // background-color: var(--c-gris);
     border-radius: 50%;
     color: var(--c-noir);
 
