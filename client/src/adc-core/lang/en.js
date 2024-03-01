@@ -920,4 +920,8 @@ export default {
   terms_in_footer: "Place a link at the bottom of the home page",
   users_must_accept_terms_to_signup:
     "Users must accept the terms of use to register",
+  to_create_account_you_must_accept_terms:
+    "To be able to create an account, you must accept the terms of use.",
+  click_here_to_read: "Click here to read them.",
+  i_read_and_accept_terms: "I accept the terms of use",
 };
