@@ -122,7 +122,7 @@ export default {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(5px);
   overflow: auto;
-  padding: calc(var(--spacing) * 3);
+  padding: calc(var(--spacing) * 1);
 }
 ._closeCredits {
   position: absolute;
