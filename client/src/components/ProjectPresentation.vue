@@ -193,7 +193,6 @@ x
         :can_edit="can_edit"
       />
       <CardKeywords class="_card" :project="project" :can_edit="can_edit" />
-      <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
       <CardLicense class="_card" :project="project" :can_edit="can_edit" />
       <CardFiles class="_card" :project="project" :can_edit="can_edit" />

@@ -1,7 +1,12 @@
 <template>
   <div class="_selectField">
     <div class="u-sameRow">
-      <select v-model="new_content" :disabled="!edit_mode" :size="size">
+      <span v-if="!edit_mode">
+        <slot name="preview" :item="new_content">
+          {{ new_content }}
+        </slot>
+      </span>
+      <select v-model="new_content" v-else :size="size">
         <template v-if="options">
           <option
             v-for="option in options"
