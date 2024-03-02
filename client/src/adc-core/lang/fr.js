@@ -227,6 +227,7 @@ export default {
   format: "Format",
   format_instructions:
     "Sélectionnez un format ou définissez les dimensions de la page, en millimètres.",
+  "format,margins,pagination": "Format, marges et pagination",
 
   A4_portrait: "A4 en portrait",
   A4_landscape: "A4 en paysage",

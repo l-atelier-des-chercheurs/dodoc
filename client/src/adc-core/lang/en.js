@@ -494,6 +494,8 @@ export default {
   format: "Format",
   format_instructions:
     "Select a format or set the page dimensions, in millimeters.",
+  "format,margins,pagination": "Format, margins and pagination",
+
   A4_portrait: "A4 in portrait",
   A4_landscape: "A4 in landscape",
   A5_portrait: "A5 in portrait",
