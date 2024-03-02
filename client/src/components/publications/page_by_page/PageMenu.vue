@@ -71,323 +71,327 @@
     </div>
 
     <template v-if="can_edit && !display_as_public">
-      <transition name="fade_fast" mode="out-in">
-        <div
-          v-if="!has_editor_toolbar && !active_module"
-          :key="'page_options-' + active_page_number"
-        >
-          <div class="_pageMenu--pane">
-            <div class="u-spacingBottom">
-              <DLabel :str="$t('add_on_page')" />
-              <ModuleCreator
-                :publication_path="publication_path"
-                :pre_addtl_meta="new_module_meta"
-                :context="'page_by_page'"
-                :start_collapsed="false"
-                @addModules="enableModuleEdit"
+      <template v-if="!has_editor_toolbar && !active_module">
+        <div class="_pageMenu--pane">
+          <div class="u-spacingBottom">
+            <DLabel :str="$t('add_on_page')" />
+            <ModuleCreator
+              :publication_path="publication_path"
+              :pre_addtl_meta="new_module_meta"
+              :context="'page_by_page'"
+              :start_collapsed="false"
+              @addModules="enableModuleEdit"
+            />
+          </div>
+
+          <div class="" v-if="can_edit">
+            <ToggledSection
+              v-if="can_edit"
+              class="u-spacingBottom"
+              :label="$t('show_grid')"
+              :show_toggle="show_grid"
+              @update:show_toggle="$emit('update:show_grid', $event)"
+            >
+              <RangeValueInput
+                :label="$t('gridstep')"
+                :can_toggle="false"
+                :value="gridstep_in_mm"
+                :min="1"
+                :max="20"
+                :step="1"
+                :ticks="[5, 10, 20, 50]"
+                :default_value="10"
+                :suffix="unit"
+                @save="$emit('update:gridstep_in_mm', $event)"
               />
-            </div>
 
-            <div class="" v-if="can_edit">
-              <ToggledSection
-                v-if="can_edit"
+              <ToggleInput
                 class="u-spacingBottom"
-                :label="$t('show_grid')"
-                :show_toggle="show_grid"
-                @update:show_toggle="$emit('update:show_grid', $event)"
-              >
-                <RangeValueInput
-                  :label="$t('gridstep')"
-                  :can_toggle="false"
-                  :value="gridstep_in_mm"
-                  :min="1"
-                  :max="20"
-                  :step="1"
-                  :ticks="[5, 10, 20, 50]"
-                  :default_value="10"
-                  :suffix="unit"
-                  @save="$emit('update:gridstep_in_mm', $event)"
-                />
+                :content="snap_to_grid"
+                :label="$t('snap_to_grid')"
+                @update:content="$emit('update:snap_to_grid', $event)"
+              />
+            </ToggledSection>
+          </div>
+          <div class="" v-if="can_edit">
+            <ColorInput
+              class="u-spacingBottom"
+              :label="$t('page_color')"
+              :value="page_color"
+              @save="
+                $emit('updatePageOptions', {
+                  page_number: active_page_number,
+                  value: { page_color: $event },
+                })
+              "
+            />
 
-                <ToggleInput
-                  class="u-spacingBottom"
-                  :content="snap_to_grid"
-                  :label="$t('snap_to_grid')"
-                  @update:content="$emit('update:snap_to_grid', $event)"
+            <DLabel :str="$t('format,margins,pagination')" />
+            <div class="">
+              <button
+                type="button"
+                class="u-button"
+                @click="$eventHub.$emit('publication.settings.toggle')"
+              >
+                <b-icon
+                  icon="gear"
+                  slot="prefix"
+                  :aria-label="$t('settings')"
                 />
-              </ToggledSection>
+                {{ $t("settings") }}
+              </button>
             </div>
-            <div class="" v-if="can_edit">
-              <ColorInput
+
+            <template v-if="has_pagination">
+              <div class="u-spacingBottom" />
+              <ToggleInput
                 class=""
-                :label="$t('page_color')"
-                :value="page_color"
-                @save="
+                :content="hide_pagination"
+                :label="$t('hide_pagination')"
+                @update:content="
                   $emit('updatePageOptions', {
                     page_number: active_page_number,
-                    value: { page_color: $event },
+                    value: { hide_pagination: $event },
                   })
                 "
               />
-
-              <template v-if="has_pagination">
-                <div class="u-spacingBottom" />
-                <ToggleInput
-                  class=""
-                  :content="hide_pagination"
-                  :label="$t('hide_pagination')"
-                  @update:content="
-                    $emit('updatePageOptions', {
-                      page_number: active_page_number,
-                      value: { hide_pagination: $event },
-                    })
-                  "
-                />
-              </template>
-            </div>
+            </template>
           </div>
-          <div class="_pageMenu--pane">
-            <DLabel
-              :str="$t('list_of_medias') + ' (' + page_modules.length + ')'"
-              :instructions="$t('list_of_medias_instr')"
-            />
-            <div class="u-spacingBottom" v-if="page_modules.length > 0">
-              <button
-                type="button"
-                class="u-buttonLink"
-                :disabled="page_modules.length === 0"
-                v-if="can_edit"
-                @click="show_all_medias = !show_all_medias"
-              >
-                <b-icon icon="collection" />
-                <template v-if="!show_all_medias">
-                  {{ $t("show") }}
-                </template>
-                <template v-else>
-                  {{ $t("hide") }}
-                </template>
-              </button>
-            </div>
-            <div class="_mediaList" v-if="show_all_medias">
-              <div
-                v-for="page_module in page_modules"
-                :key="page_module.$path"
-                @click="setActive(page_module.$path)"
-              >
-                <MediaContent
-                  class="_preview"
-                  v-if="firstMedia(page_module)"
-                  :file="firstMedia(page_module)"
-                  :resolution="50"
-                  :context="'preview'"
-                />
+        </div>
+        <div class="_pageMenu--pane">
+          <DLabel
+            :str="$t('list_of_medias') + ' (' + page_modules.length + ')'"
+            :instructions="$t('list_of_medias_instr')"
+          />
+          <div class="u-spacingBottom" v-if="page_modules.length > 0">
+            <button
+              type="button"
+              class="u-buttonLink"
+              :disabled="page_modules.length === 0"
+              v-if="can_edit"
+              @click="show_all_medias = !show_all_medias"
+            >
+              <b-icon icon="collection" />
+              <template v-if="!show_all_medias">
+                {{ $t("show") }}
+              </template>
+              <template v-else>
+                {{ $t("hide") }}
+              </template>
+            </button>
+          </div>
+          <div class="_mediaList" v-if="show_all_medias">
+            <div
+              v-for="page_module in page_modules"
+              :key="page_module.$path"
+              @click="setActive(page_module.$path)"
+            >
+              <MediaContent
+                class="_preview"
+                v-if="firstMedia(page_module)"
+                :file="firstMedia(page_module)"
+                :resolution="50"
+                :context="'preview'"
+              />
 
-                <DateDisplay
-                  class=""
-                  :title="$t('date_uploaded')"
-                  :date="page_module.$date_uploaded"
-                />
-              </div>
+              <DateDisplay
+                class=""
+                :title="$t('date_uploaded')"
+                :date="page_module.$date_uploaded"
+              />
             </div>
           </div>
         </div>
+      </template>
+      <div
+        v-else-if="!has_editor_toolbar && active_module"
+        class="_pageMenu--pane"
+        :key="'media-' + active_module.$path"
+      >
+        <DLabel :str="$t('media')" :instructions="$t('active_media_instr')" />
 
-        <div
-          v-else-if="!has_editor_toolbar && active_module"
-          class="_pageMenu--pane"
-          :key="'media-' + active_module.$path"
+        <MediaContent
+          class="_activeModulePreview"
+          v-if="
+            active_module.module_type === 'mosaic' && active_module_first_media
+          "
+          :file="active_module_first_media"
+          :resolution="50"
+          :context="'preview'"
+        />
+        <span
+          v-else-if="
+            active_module.module_type === 'text' && active_module_first_media
+          "
+          class="u-textEllipsis u-textEllipsis_3 _textExtract"
         >
-          <DLabel :str="$t('media')" :instructions="$t('active_media_instr')" />
-
-          <MediaContent
-            class="_activeModulePreview"
-            v-if="
-              active_module.module_type === 'mosaic' &&
-              active_module_first_media
-            "
-            :file="active_module_first_media"
-            :resolution="50"
-            :context="'preview'"
+          <CollaborativeEditor2
+            ref="textBloc"
+            :path="active_module_first_media.$path"
+            :content="active_module_first_media.$content"
+            :can_edit="false"
           />
-          <span
-            v-else-if="
-              active_module.module_type === 'text' && active_module_first_media
-            "
-            class="u-textEllipsis u-textEllipsis_3 _textExtract"
-          >
-            <CollaborativeEditor2
-              ref="textBloc"
-              :path="active_module_first_media.$path"
-              :content="active_module_first_media.$content"
-              :can_edit="false"
-            />
-          </span>
-          <span v-else>
-            {{ $t(active_module.module_type) }}
-          </span>
+        </span>
+        <span v-else>
+          {{ $t(active_module.module_type) }}
+        </span>
 
-          <div class="u-mediaOptions">
-            <div>
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="
-                  $eventHub.$emit(
-                    'publication.openModal',
-                    active_module_first_media.$path
-                  )
-                "
-              >
-                <b-icon icon="pencil" />
-                {{ $t("edit_source") }}
-              </button>
-            </div>
-
-            <MoveToPage
-              :pages="pages"
-              :current_page_id="pages[active_page_number].id"
-              @submit="
-                updateMediaPubliMeta({ page_id: $event });
-                setActive(false);
-              "
-            />
-            <div class="">
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="duplicateModule"
-              >
-                <b-icon icon="file-plus" />
-                {{ $t("duplicate") }}
-              </button>
-            </div>
-            <div class="">
-              <button
-                type="button"
-                class="u-buttonLink"
-                v-if="active_module.locked === true"
-                @click="updateMediaPubliMeta({ locked: false })"
-              >
-                <sl-icon name="unlock" />
-                {{ $t("unlock") }}
-              </button>
-              <button
-                type="button"
-                class="u-buttonLink"
-                v-else
-                @click="updateMediaPubliMeta({ locked: true })"
-              >
-                <sl-icon name="lock" />
-                {{ $t("lock") }}
-              </button>
-            </div>
-            <div class="">
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="setActive(false)"
-              >
-                <sl-icon name="dash-square-dotted" />
-                {{ $t("unselect") }}
-              </button>
-            </div>
-            <RemoveMenu
-              ref="removeMenu"
-              :remove_text="$t('withdraw_from_page')"
-              @remove="removeModule"
-            />
-          </div>
-
-          <div class="u-spacingBottom" />
-
-          <template v-if="!is_shape">
-            <TitleField
-              :label="
-                !active_module.caption ? $t('add_caption') : $t('caption')
-              "
-              :field_name="'caption'"
-              :content="active_module.caption"
-              :path="active_module.$path"
-              :input_type="'markdown'"
-              :can_edit="true"
-            />
-
-            <div class="u-spacingBottom" />
-
-            <div
-              class=""
-              v-if="
-                active_module_first_media &&
-                active_module_first_media.caption &&
-                !active_module.caption
+        <div class="u-mediaOptions">
+          <div>
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="
+                $eventHub.$emit(
+                  'publication.openModal',
+                  active_module_first_media.$path
+                )
               "
             >
-              <div class="u-instructions">
-                {{ $t("copy_first_media_caption") }}
-              </div>
-              <button
-                type="button"
-                class="u-buttonLink _firstMediaCaption"
-                @click="
-                  updateMediaPubliMeta({
-                    caption: active_module_first_media.caption,
-                  })
-                "
-              >
-                {{ active_module_first_media.caption }}
-              </button>
-            </div>
-
-            <div class="u-spacingBottom" />
-          </template>
-
-          <div class="u-sameRow">
-            <NumberInput
-              :label="$t('position') + '→'"
-              :value="active_module.x"
-              :suffix="unit"
-              @save="updateMediaPubliMeta({ x: $event })"
-            />
-            <NumberInput
-              :label="$t('position') + '↓'"
-              :value="active_module.y"
-              :suffix="unit"
-              @save="updateMediaPubliMeta({ y: $event })"
-            />
+              <b-icon icon="pencil" />
+              {{ $t("edit_source") }}
+            </button>
           </div>
 
-          <div class="u-sameRow">
-            <NumberInput
-              :label="$t('width') + '↔'"
-              :value="active_module.width"
-              :min="0"
-              :suffix="unit"
-              @save="updateMediaPubliMeta({ width: $event })"
-            />
-            <NumberInput
-              :label="$t('height') + '↕'"
-              :value="active_module.height"
-              :min="0"
-              :suffix="unit"
-              @save="updateMediaPubliMeta({ height: $event })"
-            />
+          <MoveToPage
+            :pages="pages"
+            :current_page_id="pages[active_page_number].id"
+            @submit="
+              updateMediaPubliMeta({ page_id: $event });
+              setActive(false);
+            "
+          />
+          <div class="">
+            <button type="button" class="u-buttonLink" @click="duplicateModule">
+              <b-icon icon="file-plus" />
+              {{ $t("duplicate") }}
+            </button>
           </div>
+          <div class="">
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="active_module.locked === true"
+              @click="updateMediaPubliMeta({ locked: false })"
+            >
+              <sl-icon name="unlock" />
+              {{ $t("unlock") }}
+            </button>
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-else
+              @click="updateMediaPubliMeta({ locked: true })"
+            >
+              <sl-icon name="lock" />
+              {{ $t("lock") }}
+            </button>
+          </div>
+          <div class="">
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="setActive(false)"
+            >
+              <sl-icon name="dash-square-dotted" />
+              {{ $t("unselect") }}
+            </button>
+          </div>
+          <RemoveMenu
+            ref="removeMenu"
+            :remove_text="$t('withdraw_from_page')"
+            @remove="removeModule"
+          />
+        </div>
+
+        <div class="u-spacingBottom" />
+
+        <template v-if="!is_shape">
+          <TitleField
+            :label="!active_module.caption ? $t('add_caption') : $t('caption')"
+            :field_name="'caption'"
+            :content="active_module.caption"
+            :path="active_module.$path"
+            :input_type="'markdown'"
+            :can_edit="true"
+          />
 
           <div class="u-spacingBottom" />
 
-          <RangeValueInput
-            class="u-spacingBottom"
-            :label="$t('angle')"
-            :value="active_module.rotation"
-            :min="0"
-            :max="360"
-            :step="1"
-            :ticks="[0, 90, 180, 270, 360]"
-            :default_value="0"
-            :suffix="'°'"
-            @save="updateMediaPubliMeta({ rotation: $event })"
+          <div
+            class=""
+            v-if="
+              active_module_first_media &&
+              active_module_first_media.caption &&
+              !active_module.caption
+            "
+          >
+            <div class="u-instructions">
+              {{ $t("copy_first_media_caption") }}
+            </div>
+            <button
+              type="button"
+              class="u-buttonLink _firstMediaCaption"
+              @click="
+                updateMediaPubliMeta({
+                  caption: active_module_first_media.caption,
+                })
+              "
+            >
+              {{ active_module_first_media.caption }}
+            </button>
+          </div>
+
+          <div class="u-spacingBottom" />
+        </template>
+
+        <div class="u-sameRow">
+          <NumberInput
+            :label="$t('position') + '→'"
+            :value="active_module.x"
+            :suffix="unit"
+            @save="updateMediaPubliMeta({ x: $event })"
           />
-          <!-- <RangeValueInput
+          <NumberInput
+            :label="$t('position') + '↓'"
+            :value="active_module.y"
+            :suffix="unit"
+            @save="updateMediaPubliMeta({ y: $event })"
+          />
+        </div>
+
+        <div class="u-sameRow">
+          <NumberInput
+            :label="$t('width') + '↔'"
+            :value="active_module.width"
+            :min="0"
+            :suffix="unit"
+            @save="updateMediaPubliMeta({ width: $event })"
+          />
+          <NumberInput
+            :label="$t('height') + '↕'"
+            :value="active_module.height"
+            :min="0"
+            :suffix="unit"
+            @save="updateMediaPubliMeta({ height: $event })"
+          />
+        </div>
+
+        <div class="u-spacingBottom" />
+
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('angle')"
+          :value="active_module.rotation"
+          :min="0"
+          :max="360"
+          :step="1"
+          :ticks="[0, 90, 180, 270, 360]"
+          :default_value="0"
+          :suffix="'°'"
+          @save="updateMediaPubliMeta({ rotation: $event })"
+        />
+        <!-- <RangeValueInput
             v-if="firstMedia(active_module).$type === 'text'"
             class="u-spacingBottom"
             :label="$t('text_size')"
@@ -400,105 +404,104 @@
             :suffix="'%'"
             @save="updateMediaPubliMeta({ text_size: $event })"
           /> -->
-          <RangeValueInput
-            class="u-spacingBottom"
-            :label="$t('margins')"
-            :value="active_module.margins"
-            :min="0"
-            :max="50"
-            :step="1"
-            :default_value="0"
-            :suffix="unit"
-            @save="
-              updateMediaPubliMeta({
-                margins: $event,
-              })
-            "
-          />
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('margins')"
+          :value="active_module.margins"
+          :min="0"
+          :max="50"
+          :step="1"
+          :default_value="0"
+          :suffix="unit"
+          @save="
+            updateMediaPubliMeta({
+              margins: $event,
+            })
+          "
+        />
 
-          <RangeValueInput
-            v-if="
-              active_module.module_type !== 'ellipsis' &&
-              active_module.module_type !== 'text'
-            "
-            class="u-spacingBottom"
-            :label="$t('border_radius')"
-            :value="active_module.border_radius"
-            :min="0"
-            :max="50"
-            :step="1"
-            :default_value="0"
-            :suffix="unit"
-            @save="
-              updateMediaPubliMeta({
-                border_radius: $event,
-              })
-            "
-          />
+        <RangeValueInput
+          v-if="
+            active_module.module_type !== 'ellipsis' &&
+            active_module.module_type !== 'text'
+          "
+          class="u-spacingBottom"
+          :label="$t('border_radius')"
+          :value="active_module.border_radius"
+          :min="0"
+          :max="50"
+          :step="1"
+          :default_value="0"
+          :suffix="unit"
+          @save="
+            updateMediaPubliMeta({
+              border_radius: $event,
+            })
+          "
+        />
 
-          <RangeValueInput
-            class="u-spacingBottom"
-            :label="$t('opacity')"
-            :value="Math.round(active_module.opacity * 100)"
-            :min="1"
-            :max="100"
-            :step="1"
-            :ticks="[1, 100]"
-            :default_value="100"
-            :suffix="'%'"
-            @save="updateMediaPubliMeta({ opacity: $event / 100 })"
-          />
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('opacity')"
+          :value="Math.round(active_module.opacity * 100)"
+          :min="1"
+          :max="100"
+          :step="1"
+          :ticks="[1, 100]"
+          :default_value="100"
+          :suffix="'%'"
+          @save="updateMediaPubliMeta({ opacity: $event / 100 })"
+        />
 
-          <ColorInput
-            class="u-spacingBottom"
-            :label="$t('background_color')"
-            :value="active_module.background_color"
-            :default_value="is_shape ? 'transparent' : ''"
-            @save="updateMediaPubliMeta({ background_color: $event })"
-          />
+        <ColorInput
+          class="u-spacingBottom"
+          :label="$t('background_color')"
+          :value="active_module.background_color"
+          :default_value="is_shape ? 'transparent' : ''"
+          @save="updateMediaPubliMeta({ background_color: $event })"
+        />
 
-          <RangeValueInput
-            class="u-spacingBottom"
-            :label="$t('outline_width')"
-            :value="active_module.outline_width"
-            :min="0"
-            :max="20"
-            :step="1"
-            :ticks="[0, 10, 20]"
-            :default_value="0"
-            :suffix="unit"
-            @save="
-              updateMediaPubliMeta({
-                outline_width: $event,
-              })
-            "
-          />
-          <ColorInput
-            v-if="active_module.outline_width > 0"
-            class="u-spacingBottom"
-            :label="$t('outline_color')"
-            :value="active_module.outline_color"
-            :default_value="'#000000'"
-            @save="updateMediaPubliMeta({ outline_color: $event })"
-          />
-          <ToggleInput
-            v-if="
-              active_module_first_media &&
-              active_module_first_media.$type === 'image'
-            "
-            class="u-spacingBottom"
-            :content="active_module.show_fs_button"
-            :label="$t('show_fs_button')"
-            @update:content="updateMediaPubliMeta({ show_fs_button: $event })"
-          />
-          <DepthInput
-            :label="$t('z_index')"
-            :value="active_module.z_index"
-            :page_modules="page_modules"
-            @save="updateMediaPubliMeta({ z_index: $event })"
-          />
-        </div>
-      </transition>
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('outline_width')"
+          :value="active_module.outline_width"
+          :min="0"
+          :max="20"
+          :step="1"
+          :ticks="[0, 10, 20]"
+          :default_value="0"
+          :suffix="unit"
+          @save="
+            updateMediaPubliMeta({
+              outline_width: $event,
+            })
+          "
+        />
+        <ColorInput
+          v-if="active_module.outline_width > 0"
+          class="u-spacingBottom"
+          :label="$t('outline_color')"
+          :value="active_module.outline_color"
+          :default_value="'#000000'"
+          @save="updateMediaPubliMeta({ outline_color: $event })"
+        />
+        <ToggleInput
+          v-if="
+            active_module_first_media &&
+            active_module_first_media.$type === 'image'
+          "
+          class="u-spacingBottom"
+          :content="active_module.show_fs_button"
+          :label="$t('show_fs_button')"
+          @update:content="updateMediaPubliMeta({ show_fs_button: $event })"
+        />
+        <DepthInput
+          :label="$t('z_index')"
+          :value="active_module.z_index"
+          :page_modules="page_modules"
+          @save="updateMediaPubliMeta({ z_index: $event })"
+        />
+      </div>
       <div
         v-show="has_editor_toolbar"
         class="_pageMenu--pane"

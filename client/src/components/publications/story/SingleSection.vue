@@ -308,10 +308,6 @@ export default {
       // padding: calc(var(--spacing) / 4);
       // z-index: 1;
       // border-radius: 0;
-
-      &.is--collapsed {
-        padding: 0;
-      }
     }
   }
 }
@@ -340,6 +336,6 @@ export default {
 }
 
 ._lastModule {
-  margin-top: calc(var(--spacing) * 2);
+  margin-top: calc(var(--spacing) * 1);
 }
 </style>

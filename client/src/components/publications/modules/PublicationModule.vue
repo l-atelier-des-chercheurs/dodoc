@@ -125,7 +125,7 @@
                   @click="duplicateModule"
                 >
                   <b-icon icon="file-plus" />
-                  <!-- {{ $t("duplicate") }} -->
+                  {{ $t("duplicate") }}
                 </button>
                 <RemoveMenu
                   v-if="can_edit"
@@ -875,7 +875,7 @@ export default {
   > * {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 100%;
     margin: calc(var(--spacing) / 2);
   }
 }
@@ -897,6 +897,7 @@ export default {
   flex-flow: column nowrap;
 }
 ._repickNotice--content {
+  display: flex;
   background: white;
   padding: calc(var(--spacing) / 2);
 }
@@ -912,17 +913,19 @@ export default {
   position: absolute;
   background: transparent;
   top: 0;
-  left: 0;
+  right: 100%;
+  width: 30px;
+  height: 30px;
   z-index: 1;
   margin: calc(var(--spacing) / 4);
-  padding: calc(var(--spacing) / 4);
+  padding: 0;
 
-  ._publicationModule[data-type="text"] & {
-    position: relative;
-    float: left;
-    margin-top: calc(var(--spacing) / 4);
-    margin-right: calc(var(--spacing) / 4);
-  }
+  // ._publicationModule[data-type="text"] & {
+  //   position: relative;
+  //   float: left;
+  //   margin-top: calc(var(--spacing) / 4);
+  //   margin-right: calc(var(--spacing) / 4);
+  // }
 
   &.is--active {
     background: var(--c-bleuvert);

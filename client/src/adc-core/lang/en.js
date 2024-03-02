@@ -44,6 +44,10 @@ export default {
   hide_already_present_medias:
     "Hide medias already included in this publication ",
   suggestions: "Suggestions",
+  suggested_cat_kw: "Suggested keywords and categories",
+  list_of_suggestions: "List of suggestions",
+  create_suggestion_list_for: "Create a list of suggestions",
+
   access: "Access",
   title: "Title",
   subtitle: "Subtitle",
@@ -113,6 +117,8 @@ export default {
   create_account: "Create an account",
   your_account: "Your account",
   new_account: "New account",
+  account_group: "Group (for accounts)",
+  group: "Group",
   show_list: "Show the list",
 
   login: "login",
@@ -488,6 +494,8 @@ export default {
   format: "Format",
   format_instructions:
     "Select a format or set the page dimensions, in millimeters.",
+  "format,margins,pagination": "Format, margins and pagination",
+
   A4_portrait: "A4 in portrait",
   A4_landscape: "A4 in landscape",
   A5_portrait: "A5 in portrait",
@@ -510,6 +518,11 @@ export default {
   fullscreen: "Full-screen",
   exit_fullscreen: "Exit full screen",
   size: "Weight",
+
+  category_title: "Category title",
+  remove_category: "Remove this category",
+  add_category: "Add category",
+
   opacity: "Opacity",
   page_spreads: "Facing pages",
   page: "Page",
@@ -902,4 +915,13 @@ export default {
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
+
+  terms: "Terms of use",
+  create_terms_page: "Create a terms of use page",
+  open_page: "Open page",
+  terms_in_footer: "Place a link at the bottom of the home page",
+  users_must_accept_terms_to_signup:
+    "Users must accept the terms of use to register",
+  click_here_to_read: "Click here to read them.",
+  i_read_and_accept_terms: "I accept the terms of use",
 };

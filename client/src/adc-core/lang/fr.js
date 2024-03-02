@@ -41,6 +41,10 @@ export default {
   add_files: "Ajouter des fichiers",
   hide_already_present_medias: "Masquer les médias déjà inclus",
   suggestions: "Suggestions",
+  suggested_cat_kw: "Catégories et mots-clé suggérés",
+  list_of_suggestions: "Liste des suggestions",
+  create_suggestion_list_for: "Créer une liste de suggestions",
+
   access: "Accéder",
   title: "Titre",
   subtitle: "Sous-titre",
@@ -145,6 +149,8 @@ export default {
   create_account: "créer un compte",
   your_account: "votre compte",
   new_account: "nouveau compte",
+  account_group: "Groupe (pour les comptes)",
+  group: "Groupe",
   show_list: "Afficher la liste",
   show: "Afficher",
   hide: "Masquer",
@@ -221,6 +227,7 @@ export default {
   format: "Format",
   format_instructions:
     "Sélectionnez un format ou définissez les dimensions de la page, en millimètres.",
+  "format,margins,pagination": "Format, marges et pagination",
 
   A4_portrait: "A4 en portrait",
   A4_landscape: "A4 en paysage",
@@ -245,6 +252,10 @@ export default {
   fullscreen: "Plein-écran",
   exit_fullscreen: "Quitter le plein-écran",
   size: "Poids",
+
+  category_title: "Titre de la catégorie",
+  remove_category: "Supprimer cette catégorie",
+  add_category: "Ajouter une catégorie",
 
   opacity: "Opacité",
   page_spreads: "Pages en vis-à-vis",
@@ -970,4 +981,13 @@ export default {
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
+
+  terms: "Conditions d’utilisation",
+  create_terms_page: "Créer une page pour les conditions d’utilisation",
+  open_page: "Ouvrir la page",
+  terms_in_footer: "Placer un lien en bas de la page d’accueil",
+  users_must_accept_terms_to_signup:
+    "Les utilisateurs doivent accepter les conditions d’utilisation pour s’inscrire",
+  click_here_to_read: "Cliquez ici pour les lire.",
+  i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
 };

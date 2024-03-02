@@ -193,7 +193,6 @@ x
         :can_edit="can_edit"
       />
       <CardKeywords class="_card" :project="project" :can_edit="can_edit" />
-      <!-- <CardStatus :project="project" :can_edit="can_edit" /> -->
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
       <CardLicense class="_card" :project="project" :can_edit="can_edit" />
       <CardFiles class="_card" :project="project" :can_edit="can_edit" />
@@ -665,7 +664,7 @@ export default {
   z-index: 1;
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 8);
+  gap: calc(var(--spacing) / 4);
 
   > * {
   }

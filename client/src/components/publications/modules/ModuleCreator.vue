@@ -9,7 +9,7 @@
       <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
-          class="u-button u-button_black"
+          class="u-button u-button_bleuvert u-button_small"
           v-if="types_available.includes('text')"
           @click="createText"
         >
@@ -23,7 +23,7 @@
 
         <button
           type="button"
-          class="u-button u-button_black"
+          class="u-button u-button_bleuvert u-button_small"
           v-if="types_available.includes('medias')"
           @click="show_media_picker = true"
         >
@@ -44,7 +44,7 @@
 
         <!-- <button
           type="button"
-          class="u-button u-button_black"
+          class="u-button u-button_bleuvert"
           v-if="types_available.includes('files')"
           @click="show_file_picker = true"
         >
@@ -65,7 +65,7 @@
 
         <button
           type="button"
-          class="u-button u-button_black"
+          class="u-button u-button_bleuvert u-button_small"
           v-if="types_available.includes('link')"
           @click="show_link_picker = true"
         >
@@ -87,7 +87,7 @@
             type="button"
             v-for="shape in shapes"
             :key="shape.type"
-            class="u-button u-button_black"
+            class="u-button u-button_bleuvert u-button_small"
             @click="
               createCustomModule({
                 module_type: shape.type,
@@ -222,7 +222,9 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    show_module_selector() {},
+  },
   computed: {},
   methods: {
     async createMosaic({ meta_filename, path_to_source_media_metas }) {
@@ -402,10 +404,13 @@ export default {
   gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 2) 0;
 
-  // color: var(--c-bleuvert);
-  // border-radius: 1rem;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 
   --icon-size: 1.2rem;
+
+  &.is--collapsed {
+    padding: 0;
+  }
 
   > * {
     pointer-events: auto;
@@ -439,7 +444,7 @@ sl-icon-button::part(base) {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.u-addBtn {
-  color: var(--c-noir);
+._addBtn {
+  margin-left: -24px;
 }
 </style>

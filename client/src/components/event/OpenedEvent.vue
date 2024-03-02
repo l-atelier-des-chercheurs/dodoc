@@ -27,6 +27,16 @@
             </router-link>
           </div>
 
+          <div v-if="can_edit_event" class="u-spacingBottom" />
+
+          <StatusTag
+            v-if="can_edit_event"
+            :status="event.$status || 'public'"
+            :status_options="['public', 'private']"
+            :path="event.$path"
+            :can_edit="can_edit_event"
+          />
+
           <div class="u-spacingBottom">
             <TitleField
               :field_name="'title'"

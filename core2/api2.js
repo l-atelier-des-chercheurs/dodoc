@@ -476,6 +476,8 @@ module.exports = (function () {
       general_password,
       signup_password,
       require_signup_to_contribute,
+      users_must_accept_terms_to_signup,
+      terms_in_footer,
       require_mail_to_signup,
       enable_events,
       $admins,
@@ -501,6 +503,9 @@ module.exports = (function () {
       : "";
     d.require_signup_to_contribute = require_signup_to_contribute === true;
     d.require_mail_to_signup = require_mail_to_signup === true;
+    d.users_must_accept_terms_to_signup =
+      users_must_accept_terms_to_signup === true;
+    d.terms_in_footer = terms_in_footer === true;
     d.enable_events = enable_events === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
@@ -1312,6 +1317,19 @@ module.exports = (function () {
           font_files: font.font_files,
         });
 
+      return acc;
+    }, []);
+  }
+  async function _loadCustomCategories() {
+    let custom_categories = await folder.getFolders({
+      path_to_type: "categories",
+    });
+    return custom_categories.reduce((acc, category) => {
+      acc.push({
+        title: category.title,
+        tag_color: category.tag_color || "",
+        path: category.$path,
+      });
       return acc;
     }, []);
   }

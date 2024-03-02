@@ -7,7 +7,7 @@
     :can_be_toggled="false"
   >
     <div class="u-spacingBottom">
-      <DLabel :str="$t('skill_level')" />
+      <!-- <DLabel :str="$t('skill_level')" /> -->
 
       <!-- <TagsList
         :tags="project.level ? [project.level] : []"
@@ -21,56 +21,63 @@
         :can_edit="can_edit"
       /> -->
 
-      <TagsList
-        v-if="project.level"
-        :tags="project.level ? [project.level] : []"
-        :tag_type="'level'"
-      />
-
-      <SelectField
+      <RadioCheckboxField
+        :label="$t('skill_level')"
         :field_name="'level'"
-        :content="project.level || ''"
+        :input_type="'radio'"
+        :content="project.level"
         :path="project.$path"
         :can_edit="can_edit"
         :options="basic_competences"
-        :size="'small'"
-      />
+      >
+        <template #preview="{ item }">
+          <div class="_list" v-if="item && !!item.key">
+            <SingleTag
+              :tag_type="'level'"
+              :tag_str="item.label"
+              :mode="'inactive'"
+            />
+          </div>
+        </template>
+      </RadioCheckboxField>
     </div>
     <div class="u-spacingBottom">
-      <DLabel :str="$t('target_audience')" />
-
-      <TagsList
-        v-if="project.target_audience"
-        :tags="project.target_audience"
-        :tag_type="'target_audience'"
-      />
-
       <RadioCheckboxField
+        :label="$t('target_audience')"
         :field_name="'target_audience'"
         :input_type="'checkbox'"
         :content="project.target_audience"
         :path="project.$path"
         :can_edit="can_edit"
         :options="target_audience_options"
-      />
+      >
+        <template #preview="{ items }">
+          <TagsList
+            v-if="items"
+            :tags="items.map(({ key }) => key)"
+            :tag_type="'target_audience'"
+          />
+        </template>
+      </RadioCheckboxField>
     </div>
     <div class="">
-      <DLabel :str="$t('disciplines')" />
-
-      <TagsList
-        v-if="project.disciplines"
-        :tags="project.disciplines"
-        :tag_type="'disciplines'"
-      />
-
       <RadioCheckboxField
+        :label="$t('disciplines')"
         :field_name="'disciplines'"
         :input_type="'checkbox'"
         :content="project.disciplines"
         :path="project.$path"
         :can_edit="can_edit"
         :options="discipline_options"
-      />
+      >
+        <template #preview="{ items }">
+          <TagsList
+            v-if="items"
+            :tags="items.map(({ key }) => key)"
+            :tag_type="'disciplines'"
+          />
+        </template>
+      </RadioCheckboxField>
     </div>
   </DetailsPane>
 </template>
@@ -89,19 +96,19 @@ export default {
       basic_competences: [
         {
           key: "",
-          text: "–",
+          label: "–",
         },
         {
           key: "beginner",
-          text: this.$t("beginner"),
+          label: this.$t("beginner"),
         },
         {
           key: "intermediate",
-          text: this.$t("intermediate"),
+          label: this.$t("intermediate"),
         },
         {
           key: "experienced",
-          text: this.$t("experienced"),
+          label: this.$t("experienced"),
         },
       ],
       target_audience_options: [
@@ -214,4 +221,9 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._list {
+  display: flex;
+  flex-flow: row wrap;
+}
+</style>

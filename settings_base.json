@@ -91,6 +91,12 @@
       },
       "spaces_pinned": {
         "type": "array"
+      },
+      "users_must_accept_terms_to_signup": {
+        "type": "boolean"
+      },
+      "terms_in_footer": {
+        "type": "boolean"
       }
     },
     "$files": {
@@ -508,6 +514,9 @@
           "presentation": {
             "type": "string"
           },
+          "group": {
+            "type": "array"
+          },
           "projects_recently_edited": {
             "type": "array"
           }
@@ -522,6 +531,22 @@
           },
           "font_files": {
             "type": "object"
+          }
+        },
+        "$files": {}
+      },
+      "categories": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true,
+            "unique": true
+          },
+          "tag_color": {
+            "type": "string"
+          },
+          "list_of_suggestions": {
+            "type": "array"
           }
         },
         "$files": {}

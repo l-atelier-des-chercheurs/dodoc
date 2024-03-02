@@ -31,13 +31,11 @@
         :can_edit="can_edit"
       />
 
-      <DLabel
-        :str="$t('license')"
-        :instructions="can_edit ? $t('licence_instructions') : ''"
-      />
       <!-- pour plus tard, voir https://github.com/l-atelier-des-chercheurs/dodoc/issues/513 -->
       <RadioCheckboxField
         v-if="can_edit || (!can_edit && project.license !== 'custom_license')"
+        :label="$t('license')"
+        :instructions="$t('licence_instructions')"
         :field_name="'license'"
         :input_type="'radio'"
         :content="project.license"

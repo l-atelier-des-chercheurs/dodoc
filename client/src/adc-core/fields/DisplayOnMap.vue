@@ -18,19 +18,19 @@
       v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div class="_popupShadow" />
+      <button
+        type="button"
+        class="u-button u-button_transparent u-button_icon _popupClose"
+        ref="closePopup"
+        @click="closePopup"
+      >
+        <b-icon icon="x-circle-fill" />
+      </button>
+
       <div
         class="_popup--content"
         :key="clicked_location.latitude + '-' + clicked_location.longitude"
       >
-        <button
-          type="button"
-          class="u-button u-button_icon _popupClose"
-          ref="closePopup"
-          @click="closePopup"
-        >
-          <b-icon icon="x-circle-fill" />
-        </button>
-
         <div
           v-if="clicked_location.module"
           :key="clicked_location.module.$path"
@@ -2016,8 +2016,8 @@ export default {
 ._popupClose {
   position: absolute;
   z-index: 1000;
-  top: calc(var(--spacing) / -2);
-  right: calc(var(--spacing) / -2);
+  top: calc(var(--spacing) * -2);
+  right: calc(var(--spacing) * -2);
   padding: calc(var(--spacing) / 1);
 }
 
@@ -2029,6 +2029,11 @@ export default {
 
   ::v-deep ._publicationModule[data-type="text"] {
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  }
+
+  ::v-deep ._captionField {
+    padding: calc(var(--spacing) / 2);
+    padding-top: 0;
   }
 }
 

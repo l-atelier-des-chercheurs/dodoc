@@ -153,6 +153,10 @@ export default {
     line_selected: [Boolean, Number],
     edit_on_mounted: Boolean,
     can_edit: Boolean,
+    is_collaborative: {
+      type: Boolean,
+      default: true,
+    },
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
   },
@@ -175,7 +179,6 @@ export default {
 
       debounce_textUpdate: undefined,
 
-      is_collaborative: true,
       collaborative_is_loaded: false,
 
       autosave: true,

@@ -48,6 +48,8 @@ html
           signup_password_hashed: `!{signup_password_hashed}`,
           require_signup_to_contribute: !{require_signup_to_contribute},
           require_mail_to_signup: !{require_mail_to_signup},
+          users_must_accept_terms_to_signup: !{users_must_accept_terms_to_signup},
+          terms_in_footer: !{terms_in_footer},
           enable_events: !{enable_events},
           $admins: !{JSON.stringify($admins)},
           $contributors: !{JSON.stringify($contributors)},
@@ -56,7 +58,7 @@ html
           hero_thumb: '!{hero_thumb}'
         },
 
-        custom_fonts: !{JSON.stringify(custom_fonts, null, 4)}
+        custom_fonts: !{JSON.stringify(custom_fonts, null, 4)},
       };
 
   body(data-mode=mode)
