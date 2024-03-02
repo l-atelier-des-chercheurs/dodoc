@@ -31,7 +31,7 @@
         :options="basic_competences"
       >
         <template #preview="{ item }">
-          <div class="_list" v-if="item">
+          <div class="_list" v-if="item && !!item.key">
             <SingleTag
               :tag_type="'level'"
               :tag_str="item.label"

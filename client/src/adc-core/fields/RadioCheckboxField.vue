@@ -13,7 +13,7 @@
     />
     <div>
       <slot name="preview" v-if="input_type === 'radio'" :item="current_option">
-        <template v-if="current_option">
+        <template v-if="current_option && current_option.key">
           {{ current_option.label }}
         </template>
       </slot>
@@ -90,7 +90,8 @@ export default {
   },
   computed: {
     current_options() {
-      return this.content.map((c) => this.options.find((o) => o.key === c));
+      // return this.content.map((c) => this.options.find((o) => o.key === c));
+      return this.options.filter((o) => this.content.includes(o.key));
     },
     current_option() {
       return this.options.find((o) => o.key === this.content);
