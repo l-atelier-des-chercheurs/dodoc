@@ -161,7 +161,7 @@
           </sl-tab-panel>
           <sl-tab-panel name="events">
             <template v-if="current_tab === 'events'">
-              <div class="">{{ $t("events") }}</div>
+              <DLabel :str="$t('events')" />
               <ToggleField
                 :label="$t('enable_events')"
                 :field_name="'enable_events'"
