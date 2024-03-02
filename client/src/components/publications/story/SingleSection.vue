@@ -308,10 +308,6 @@ export default {
       // padding: calc(var(--spacing) / 4);
       // z-index: 1;
       // border-radius: 0;
-
-      &.is--collapsed {
-        padding: 0;
-      }
     }
   }
 }
