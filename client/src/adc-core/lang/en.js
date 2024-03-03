@@ -478,6 +478,8 @@ export default {
   options: "Options",
   exports: "Exports",
   export: "Export",
+  to_export: "Export",
+
   untitled: "Untitled",
   responsive: "Fluid",
   responsive_instr:

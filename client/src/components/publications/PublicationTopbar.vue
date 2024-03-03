@@ -80,16 +80,17 @@
           <button
             type="button"
             class="u-buttonLink _exportBtn"
-            :disabled="!can_edit || is_exporting"
-            @click="exportPublication"
+            :disabled="!can_edit"
+            @click="show_export_pdf_modal = true"
           >
             <sl-icon name="filetype-pdf" />
-            {{ $t("export_in_pdf") }}
-            <transition name="fade_fast" :duration="150" mode="out-in">
-              <LoaderSpinner v-if="is_exporting" />
-            </transition>
+            {{ $t("to_export") }}
           </button>
         </div>
+        <ExportPubliModal
+          v-if="show_export_pdf_modal"
+          :publication="publication"
+        />
         <div class="">
           <button
             type="button"
@@ -122,6 +123,7 @@
 </template>
 <script>
 import DuplicatePublication from "@/components/publications/DuplicatePublication.vue";
+import ExportPubliModal from "@/components/publications/ExportPubliModal.vue";
 
 export default {
   props: {
@@ -131,9 +133,11 @@ export default {
   },
   components: {
     DuplicatePublication,
+    ExportPubliModal,
   },
   data() {
     return {
+      show_export_pdf_modal: false,
       show_qr_code_modal: false,
       is_exporting: false,
     };
@@ -159,38 +163,6 @@ export default {
     },
   },
   methods: {
-    async exportPublication() {
-      const additional_meta = {};
-      additional_meta.$origin = "publish";
-      if (this.connected_as?.$path)
-        additional_meta.$authors = [this.connected_as.$path];
-
-      let instructions = {
-        recipe: "pdf",
-        page_width: this.publication.page_width,
-        page_height: this.publication.page_height,
-        layout_mode: this.publication.layout_mode || "print",
-        suggested_file_name: this.publication.title,
-        additional_meta,
-      };
-
-      if (this.publication.page_spreads === true) instructions.page_width *= 2;
-
-      const current_task_id = await this.$api.exportFolder({
-        path: this.publication.$path,
-        instructions,
-      });
-      this.$alertify.delay(4000).log(this.$t("compilation_started"));
-
-      this.is_exporting = true;
-
-      const checkIfEnded = ({ task_id }) => {
-        if (task_id !== current_task_id) return;
-        this.is_exporting = false;
-        this.$eventHub.$off("task.ended", checkIfEnded);
-      };
-      this.$eventHub.$on("task.ended", checkIfEnded);
-    },
     async removePublication() {
       this.fetch_status = "pending";
       this.fetch_error = null;
