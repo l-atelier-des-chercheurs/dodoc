@@ -26,6 +26,8 @@
           />
         </div>
 
+        <div v-if="context === 'full'" class="u-spacingBottom" />
+
         <div class="_text">
           <!-- :label="$t('name')" -->
           <div class="">
@@ -36,7 +38,7 @@
               :required="true"
               :minlength="3"
               :maxlength="40"
-              :tag="'h2'"
+              :tag="context === 'full' ? 'h2' : 'h3'"
               :can_edit="can_edit"
             />
             <div
