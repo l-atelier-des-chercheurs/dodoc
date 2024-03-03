@@ -4,7 +4,7 @@
     :data-type="module_type"
     @click="preventClickTraversing"
   >
-    <transition name="toggleLock" mode="out-in">
+    <transition name="showOptions" mode="out-in" appear>
       <div
         class="_sideOptions"
         v-if="edit_mode && page_template !== 'page_by_page'"
@@ -946,5 +946,18 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) * 1);
+}
+
+.showOptions {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.2s;
+    max-height: 230px;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    max-height: 0px;
+  }
 }
 </style>
