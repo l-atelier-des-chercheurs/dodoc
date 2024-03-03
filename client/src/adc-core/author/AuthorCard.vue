@@ -57,7 +57,7 @@
 
           <div v-if="context === 'full'" class="u-spacingBottom" />
 
-          <div class="u-spacingBottom">
+          <div class="u-spacingBottom" v-if="author.group || can_edit">
             <TagsField
               :label="context === 'full' ? $t('group') : undefined"
               :field_name="'group'"
@@ -68,7 +68,7 @@
             />
           </div>
 
-          <div v-if="context === 'full'" class="u-spacingBottom">
+          <div v-if="can_edit" class="u-spacingBottom">
             <TitleField
               :field_name="'email'"
               :label="context === 'full' ? $t('email') : undefined"
