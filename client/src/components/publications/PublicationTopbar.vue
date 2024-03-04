@@ -90,6 +90,7 @@
         <ExportPubliModal
           v-if="show_export_pdf_modal"
           :publication="publication"
+          @close="show_export_pdf_modal = false"
         />
         <div class="">
           <button
