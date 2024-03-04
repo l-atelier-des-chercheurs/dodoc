@@ -71,7 +71,11 @@
     </template>
 
     <template v-else-if="file.$type === 'text'">
-      <CollaborativeEditor2 :content="file.$content" :can_edit="false" />
+      <CollaborativeEditor2
+        :content="file.$content"
+        :path="file.$path"
+        :can_edit="can_edit"
+      />
     </template>
 
     <template v-else-if="['pdf', 'url', 'stl', 'obj'].includes(file.$type)">
@@ -219,6 +223,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    can_edit: Boolean,
   },
   components: {
     ThreeDPreview: () => import("@/adc-core/fields/ThreeDPreview.vue"),

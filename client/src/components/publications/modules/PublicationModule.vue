@@ -70,15 +70,6 @@
                   </option>
                 </select>
               </div>
-
-              <!-- <sl-button
-            variant="default"
-            size="small"
-            pill
-            @click="changeModuleType"
-          >
-            {{ $t(`module.label.${publimodule.module_type}`) }}
-          </sl-button> -->
               <div class="_buttonRow">
                 <button
                   v-for="size in [100, 66.6, 50, 33.3]"
@@ -509,7 +500,7 @@ export default {
       return false;
     },
     available_module_types() {
-      if (this.publimodule.module_type === "text") return ["text"];
+      // if (this.publimodule.module_type === "text") return ["text"];
       return ["mosaic", "carousel", "files"];
     },
     pin_options() {
