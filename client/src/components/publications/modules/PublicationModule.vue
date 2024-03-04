@@ -624,7 +624,7 @@ export default {
     disableEdit() {
       this.$emit("update:module_being_edited", undefined);
     },
-    scrollToModule(behavior = "smooth") {
+    scrollToModule(behavior = "auto") {
       if (this.$el) {
         console.log("scrollToModule " + this.publimodule.$path);
         this.$el.scrollIntoView({
