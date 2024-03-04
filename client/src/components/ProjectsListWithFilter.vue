@@ -24,7 +24,6 @@
       </div>
       <div class="">
         <DLabel :str="$t('sort')" />
-        <!-- <span v-html="$t('sort:')" /> -->
         <select
           size="small"
           class="_orderSelect"

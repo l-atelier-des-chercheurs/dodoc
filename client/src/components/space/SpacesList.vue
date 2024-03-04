@@ -1,7 +1,7 @@
 <template>
   <div class="_spacesList">
-    <div class="_createSearch">
-      <div class="">
+    <div class="_filterSortBar">
+      <div class="u-sameRow">
         <button
           type="button"
           class="u-button u-button_red u-button_small"
@@ -32,13 +32,28 @@
           &nbsp;
           {{ $t("create") }}
         </button>
+        <div class="_searchField">
+          <SearchInput
+            v-model="search_space"
+            :search_placeholder="$t('search_by_title_or_subtitle')"
+          />
+        </div>
       </div>
-
-      <div class="_searchField">
-        <SearchInput
-          v-model="search_space"
-          :search_placeholder="$t('search_by_title_or_subtitle')"
-        />
+      <div class="">
+        <DLabel :str="$t('sort')" />
+        <select
+          size="small"
+          class="_orderSelect"
+          v-model="order_key"
+          :disabled="filtered_spaces.length <= 1"
+        >
+          <option
+            v-for="opt in order_options"
+            :key="opt.key"
+            :value="opt.key"
+            v-text="opt.text"
+          />
+        </select>
       </div>
     </div>
 
@@ -87,6 +102,22 @@ export default {
       show_create_modal: false,
       is_loading: true,
 
+      order_key: "$date_created",
+      order_options: [
+        {
+          key: "$date_created",
+          text: this.$t("date_created"),
+        },
+        {
+          key: "$date_modified",
+          text: this.$t("date_modified"),
+        },
+        {
+          key: "alphabetical",
+          text: this.$t("alphabetical"),
+        },
+      ],
+
       search_space: "",
     };
   },
@@ -127,9 +158,14 @@ export default {
             folder: s,
           })
         )
-        .sort(
-          (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
-        );
+        .sort((a, b) => {
+          if (this.order_key === "$date_created")
+            return +new Date(b.$date_created) - +new Date(a.$date_created);
+          else if (this.order_key === "$date_modified")
+            return +new Date(b.$date_modified) - +new Date(a.$date_modified);
+          else if (this.order_key === "alphabetical")
+            return a.title.localeCompare(b.title);
+        });
     },
     filtered_spaces() {
       return this.sorted_spaces.filter((s) => {
@@ -190,5 +226,13 @@ export default {
   ::v-deep ._searchInput {
     max-width: 30ch;
   }
+}
+
+._filterSortBar {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
 }
 </style>
