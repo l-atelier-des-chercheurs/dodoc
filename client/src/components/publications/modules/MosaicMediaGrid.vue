@@ -187,6 +187,10 @@ export default {
   position: relative;
   width: 100%;
 
+  ::v-deep ._mediaContent .plyr__controls {
+    padding-right: calc(var(--spacing) * 3);
+  }
+
   &.is--multipleMedias {
     display: flex;
     flex-flow: row nowrap;
