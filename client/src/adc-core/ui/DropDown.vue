@@ -201,7 +201,7 @@ export default {
 
   ::v-deep button,
   ::v-deep a {
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 1.5) calc(var(--spacing) / 1.5);
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -209,9 +209,12 @@ export default {
     width: 100%;
     text-align: left;
 
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
     &:hover,
-    &:focus {
-      background: var(--c-gris_clair);
+    &:active,
+    &:focus-visible {
+      background: var(--c-gris);
     }
   }
 
