@@ -76,7 +76,7 @@
         />
       </div>
 
-      <TitleField
+      <!-- <TitleField
         v-if="context === 'full' && (space.description || can_edit)"
         :field_name="'description'"
         class="_description"
@@ -85,6 +85,17 @@
         :path="space.$path"
         :input_type="'markdown'"
         :maxlength="480"
+        :can_edit="can_edit"
+      /> -->
+      <CollaborativeEditor2
+        v-if="context === 'full' && (space.description || can_edit)"
+        :label="context === 'full' ? $t('description') : ''"
+        :path="space.$path"
+        class="_description"
+        :field_to_edit="'description'"
+        :custom_formats="['bold', 'italic', 'link']"
+        :content="space.description"
+        :is_collaborative="false"
         :can_edit="can_edit"
       />
 
