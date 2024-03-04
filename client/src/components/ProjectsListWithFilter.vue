@@ -50,7 +50,7 @@
               :key="status"
               :status="status"
               :can_edit="false"
-              :mode="'button'"
+              :mode="'active'"
               @click="toggleFilter({ filter_type: '$status', value: status })"
             />
           </div>
@@ -165,7 +165,7 @@
                 :key="af.value"
                 :status="af.value"
                 :can_edit="false"
-                :mode="'button'"
+                :mode="'disable'"
                 @click="
                   toggleFilter({
                     filter_type: '$status',

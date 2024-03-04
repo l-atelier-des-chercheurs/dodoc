@@ -29,7 +29,7 @@ x
             :show_label="false"
             :status="project.$status"
             :can_edit="false"
-            :mode="context === 'list' ? 'button' : 'inactive'"
+            :mode="context === 'list' ? 'active' : 'inactive'"
             @click="
               $emit('toggleFilter', {
                 filter_type: '$status',
