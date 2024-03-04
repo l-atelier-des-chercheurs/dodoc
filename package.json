@@ -94,7 +94,7 @@
   },
   "devDependencies": {
     "electron": "11.0.3",
-    "electron-builder": "^22.9.1",
+    "electron-builder": "^24.13.3",
     "electron-packager": "^15.1.0",
     "electron-rebuild": "^2.3.4",
     "node-gyp": "^7.1.2"
