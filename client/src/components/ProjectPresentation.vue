@@ -137,6 +137,16 @@ x
           :can_edit="can_edit"
         />
 
+        <!-- <CollaborativeEditor2
+          :label="context === 'full' ? $t('description') : ''"
+          :path="project.$path"
+          :field_to_edit="'description'"
+          :custom_formats="['bold', 'italic', 'link']"
+          :content="project.description"
+          :is_collaborative="false"
+          :can_edit="can_edit"
+        /> -->
+
         <AdminsAndContributorsField
           v-if="context === 'full'"
           :folder="project"

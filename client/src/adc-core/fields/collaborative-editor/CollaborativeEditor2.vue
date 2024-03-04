@@ -8,6 +8,12 @@
     }"
     @click="editorClick"
   >
+    <DLabel
+      v-if="label"
+      :str="label"
+      :instructions="can_edit ? instructions : ''"
+    />
+
     <TextVersioning
       v-if="show_archives"
       :path="path"
@@ -54,7 +60,7 @@
             <button
               type="button"
               class="u-button _archivesBtn"
-              v-else
+              v-else-if="field_to_edit === '$content'"
               @click="show_archives = !show_archives"
             >
               <b-icon icon="archive" />
@@ -141,6 +147,10 @@ Quill.register("modules/cardEditable", CardEditableModule);
 
 export default {
   props: {
+    label: {
+      type: String,
+      default: "",
+    },
     path: String,
     sharedb_id: String,
     content: String,
