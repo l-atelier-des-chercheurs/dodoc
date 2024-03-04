@@ -4,7 +4,7 @@
     :data-type="module_type"
     @click="preventClickTraversing"
   >
-    <transition name="toggleLock" mode="out-in">
+    <transition name="showOptions" mode="out-in" appear>
       <div
         class="_sideOptions"
         v-if="edit_mode && page_template !== 'page_by_page'"
@@ -70,15 +70,6 @@
                   </option>
                 </select>
               </div>
-
-              <!-- <sl-button
-            variant="default"
-            size="small"
-            pill
-            @click="changeModuleType"
-          >
-            {{ $t(`module.label.${publimodule.module_type}`) }}
-          </sl-button> -->
               <div class="_buttonRow">
                 <button
                   v-for="size in [100, 66.6, 50, 33.3]"
@@ -509,7 +500,7 @@ export default {
       return false;
     },
     available_module_types() {
-      if (this.publimodule.module_type === "text") return ["text"];
+      // if (this.publimodule.module_type === "text") return ["text"];
       return ["mosaic", "carousel", "files"];
     },
     pin_options() {
@@ -624,7 +615,7 @@ export default {
     disableEdit() {
       this.$emit("update:module_being_edited", undefined);
     },
-    scrollToModule(behavior = "smooth") {
+    scrollToModule(behavior = "auto") {
       if (this.$el) {
         console.log("scrollToModule " + this.publimodule.$path);
         this.$el.scrollIntoView({
@@ -735,6 +726,7 @@ export default {
 ._publicationModule {
   position: relative;
   scroll-margin-top: calc(var(--spacing) * 1.5);
+  font-size: 16px;
   // padding: 0 calc(var(--spacing) * 2);
 
   &[data-type="shape"] {
@@ -946,5 +938,18 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) * 1);
+}
+
+.showOptions {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.2s;
+    max-height: 230px;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    max-height: 0px;
+  }
 }
 </style>

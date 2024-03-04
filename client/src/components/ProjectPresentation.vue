@@ -29,7 +29,7 @@ x
             :show_label="false"
             :status="project.$status"
             :can_edit="false"
-            :mode="context === 'list' ? 'button' : 'inactive'"
+            :mode="context === 'list' ? 'active' : 'inactive'"
             @click="
               $emit('toggleFilter', {
                 filter_type: '$status',
@@ -136,6 +136,16 @@ x
           :input_type="'markdown'"
           :can_edit="can_edit"
         />
+
+        <!-- <CollaborativeEditor2
+          :label="context === 'full' ? $t('description') : ''"
+          :path="project.$path"
+          :field_to_edit="'description'"
+          :custom_formats="['bold', 'italic', 'link']"
+          :content="project.description"
+          :is_collaborative="false"
+          :can_edit="can_edit"
+        /> -->
 
         <AdminsAndContributorsField
           v-if="context === 'full'"

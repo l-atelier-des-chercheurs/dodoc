@@ -250,6 +250,10 @@ button,
       background: rgba(255, 255, 255, 1);
     }
   }
+
+  &.u-button_small {
+    padding: calc(var(--spacing) / 4);
+  }
 }
 .u-button_inline {
   display: flex;

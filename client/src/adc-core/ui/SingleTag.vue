@@ -74,7 +74,7 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
 
-  gap: calc(var(--spacing) / 8);
+  gap: calc(var(--spacing) / 4);
 
   border-radius: 1em;
   font-weight: 400;

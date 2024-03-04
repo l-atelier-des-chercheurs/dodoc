@@ -13,6 +13,7 @@
             media_with_linked._linked_media.$path) ||
           'no_media_' + index
         "
+        :data-mediatype="media_with_linked._linked_media.$type"
         :style="itemStyle({ media_with_linked })"
       >
         <div
@@ -27,6 +28,7 @@
           :context="context"
           :show_fs_button="show_fs_button"
           :is_draggable="can_edit"
+          :can_edit="can_edit"
         />
 
         <CaptionCreditsPage
@@ -174,6 +176,7 @@ export default {
     itemStyle({ media_with_linked }) {
       let props = {};
       props["--object-fit"] = media_with_linked.objectFit || "cover";
+
       return props;
     },
     mediaIsSquare(media) {
@@ -186,6 +189,10 @@ export default {
 ._mediaGrid {
   position: relative;
   width: 100%;
+
+  ::v-deep ._mediaContent .plyr__controls {
+    padding-right: calc(var(--spacing) * 3);
+  }
 
   &.is--multipleMedias {
     display: flex;
@@ -202,8 +209,12 @@ export default {
   &.is--multipleMedias > ._mediaGrid--item {
     aspect-ratio: 1/1;
     overflow: hidden;
-    background: var(--c-gris_clair);
+    // background: var(--c-gris_clair);
     flex: 1 1 calc(100% / var(--number_of_medias));
+
+    &[data-mediatype="text"] {
+      aspect-ratio: auto;
+    }
   }
 
   &.is--multipleMedias ::v-deep ._mediaContent {
