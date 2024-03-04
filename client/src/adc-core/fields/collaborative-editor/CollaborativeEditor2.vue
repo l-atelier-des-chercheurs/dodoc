@@ -8,11 +8,7 @@
     }"
     @click="editorClick"
   >
-    <DLabel
-      v-if="label"
-      :str="label"
-      :instructions="can_edit ? instructions : ''"
-    />
+    <DLabel v-if="label" :str="label" />
 
     <TextVersioning
       v-if="show_archives"
