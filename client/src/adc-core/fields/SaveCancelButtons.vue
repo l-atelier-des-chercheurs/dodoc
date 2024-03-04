@@ -8,7 +8,7 @@
       @click="$emit('cancel')"
     >
       <b-icon icon="x-circle" />
-      {{ $t("back") }}
+      <!-- {{ $t("back") }} -->
     </button>
     <button
       :size="pill_size"
