@@ -735,6 +735,7 @@ export default {
 ._publicationModule {
   position: relative;
   scroll-margin-top: calc(var(--spacing) * 1.5);
+  font-size: 16px;
   // padding: 0 calc(var(--spacing) * 2);
 
   &[data-type="shape"] {

@@ -948,7 +948,7 @@ export default {
 
   ::v-deep {
     .ql-container {
-      font-size: 16px;
+      font-size: inherit;
       font-family: inherit;
       font-weight: normal;
       background-color: transparent;
@@ -985,7 +985,7 @@ export default {
       > * {
         // counter-increment: listCounter;
         position: relative;
-        padding: 0;
+        // padding: 0;
 
         &::before {
           // content: counter(listCounter);
