@@ -307,6 +307,7 @@ export default {
     // color: white;
     // background: black;
     background: var(--sd-separator);
+    color: var(--h-200);
 
     display: block !important;
     text-align: left;

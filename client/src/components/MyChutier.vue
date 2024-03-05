@@ -97,13 +97,11 @@
         </div>
 
         <div class="_middleContent">
-          <div
-            v-if="!chutier_items || chutier_items.length === 0"
-            class="u-instructions"
-          >
+          <div class="u-instructions u-spacingBottom">
+            <b-icon icon="info-circle" />
             {{ $t("imported_docs") }}
           </div>
-          <template v-else>
+          <template v-if="chutier_items && chutier_items.length > 0">
             <label
               for=""
               class="_item--label"
@@ -275,11 +273,11 @@ export default {
     messages: {
       fr: {
         imported_docs:
-          "Les médias importés apparaîtront ici. Ils sont et resteront privés tant que vous ne les ajoutez pas à un document partagé.",
+          "Les médias importés apparaissent ici. Ils restent privés tant que vous ne les ajoutez pas à un document partagé.",
       },
       en: {
         imported_docs:
-          "Imported medias will appear here. They will stay private until they are added to a shared document.",
+          "Imported medias will appear here. They stay private until they are added to a shared document.",
       },
     },
   },
@@ -529,7 +527,7 @@ export default {
   overflow: hidden;
   // background: #f9f9f9;
   // background: var(--chutier-bg);
-  color: white;
+  color: var(--h-600);
 
   display: flex;
   flex-flow: row nowrap;
@@ -605,7 +603,6 @@ export default {
   margin-bottom: 4px;
 
   opacity: 0.6;
-  color: var(--h-600);
   transition: all 0.25s ease-out;
 
   &:hover {

@@ -153,7 +153,7 @@ export default {
 
 header {
   padding: calc(var(--spacing) * 1);
-  border-bottom: 2px solid #e5e5e5;
+  border-bottom: 2px solid var(--h-200);
   width: 100%;
   h2 {
     font-weight: 600;

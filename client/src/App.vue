@@ -163,7 +163,8 @@ export default {
   // --sharedfolder-bg: ;
 
   // from tldraw
-  --panel-color: #fefefe;
+  --body-bg: var(--h-50);
+  --panel-color: var(--body-bg);
   --panel-borders: 1px solid var(--panel-color);
   --panel-shadows: rgba(0, 0, 0, 0.05) 0px 0px 16px -1px,
     rgba(0, 0, 0, 0.05) 0px 0px 16px -8px,
@@ -286,7 +287,7 @@ body {
   // background-color: var(--c-bodybg);
   // background: linear-gradient(180deg, #fff, var(--c-bodybg));
   // background: linear-gradient(180deg, var(--c-bodybg), var(--c-gris));
-  background: var(--h-50);
+  background: var(--body-bg);
   scroll-behavior: smooth;
 }
 
@@ -302,12 +303,12 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 90%;
+  font-size: 85%;
   line-height: 1.41;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--c-noir);
+  color: var(--h-900);
 }
 body {
   min-height: 100%;
