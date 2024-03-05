@@ -133,7 +133,7 @@ export default {
           this.stack_files = files;
           this.updateMousePos(event);
         }
-      }, 400);
+      }, 200);
     },
     updateMousePos(event) {
       if (!this.stack_files) return;
@@ -255,7 +255,7 @@ export default {
   opacity: 0;
   z-index: 2;
 
-  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  // transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--shown {
     z-index: 1;
