@@ -10,15 +10,16 @@
         </div>
         <div v-else :key="collection.$path">
           <div class="_topbar">
-            <button type="button" class="u-buttonLink" @click="$emit('close')">
-              <b-icon icon="arrow-left" />
-              {{ $t("back") }}
-            </button>
-            <RemoveMenu
-              v-if="can_edit"
-              :remove_text="$t('remove')"
-              @remove="removeCollection"
-            />
+            <div class="">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="$emit('close')"
+              >
+                <b-icon icon="arrow-left" />
+                {{ $t("back") }}
+              </button>
+            </div>
 
             <AuthorField
               class="_admins"
@@ -31,14 +32,21 @@
               :show_image_only="true"
             />
 
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_qr_code_modal = true"
-            >
-              <sl-icon name="qr-code" />
-              {{ $t("direct_link") }}
-            </button>
+            <DropDown v-if="can_edit">
+              <RemoveMenu
+                v-if="can_edit"
+                :remove_text="$t('remove')"
+                @remove="removeCollection"
+              />
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="show_qr_code_modal = true"
+              >
+                <sl-icon name="qr-code" />
+                {{ $t("direct_link") }}
+              </button>
+            </DropDown>
             <QRModal
               v-if="show_qr_code_modal"
               :url_to_access="share_url"

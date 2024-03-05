@@ -29,11 +29,13 @@
     </tr>
   </thead> -->
       <tbody>
-        <tr v-for="collection in sorted_collections" :key="collection.$path">
+        <tr
+          v-for="collection in sorted_collections"
+          :key="collection.$path"
+          @click="$emit('open', getFilename(collection.$path))"
+        >
           <td>
-            <p>
-              <strong>{{ collection.title }}</strong>
-            </p>
+            <h3>{{ collection.title }}</h3>
           </td>
           <td>
             <div class="u-sameRow">
@@ -41,19 +43,10 @@
                 v-for="atpath in collection.$admins"
                 :key="atpath"
                 :path="atpath"
-                :show_image_only="true"
+                :show_image_only="false"
                 :mode="'link'"
               />
             </div>
-          </td>
-          <td>
-            <button
-              type="button"
-              class="u-button u-button_black"
-              @click="$emit('open', getFilename(collection.$path))"
-            >
-              {{ $t("open") }}
-            </button>
           </td>
         </tr>
       </tbody>
