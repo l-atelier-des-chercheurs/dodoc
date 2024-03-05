@@ -7,7 +7,7 @@
         <AuthorTag
           v-if="connected_as"
           :path="connected_as.$path"
-          :show_image_only="$root.is_mobile_view"
+          :show_image_only="true"
           @click="$eventHub.$emit('showAuthorModal')"
         />
         <button
@@ -73,7 +73,7 @@
           <div class="_importBtns">
             <button
               type="button"
-              class="u-button u-button_white _qrBtn"
+              class="u-button u-button_outline _qrBtn"
               @click="createNote"
             >
               <sl-icon name="file-text" />
@@ -82,7 +82,7 @@
 
             <button
               type="button"
-              class="u-button u-button_white _qrBtn"
+              class="u-button u-button_outline _qrBtn"
               @click="show_link_picker = true"
             >
               <sl-icon name="link-45deg" />
@@ -571,6 +571,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  color: var(--h-500);
 
   ._separator {
     flex: 1 1 auto;
@@ -604,14 +605,16 @@ export default {
   margin-bottom: 4px;
 
   opacity: 0.6;
+  color: var(--h-600);
   transition: all 0.25s ease-out;
 
   &:hover {
-    opacity: 0.9;
+    color: var(--h-400);
   }
 
   &.is--fullySelected {
     opacity: 1;
+    color: var(--active-color);
   }
 }
 
@@ -699,9 +702,9 @@ export default {
   // width: 100%;
   margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
   --dropzone-color1: transparent;
-  --dropzone-color2: var(--c-noir);
-
-  padding-bottom: 0;
+  // --dropzone-color2: var(--h-900);
+  --dropzone-color2: var(--r-600);
+  color: var(--active-color);
 }
 
 ._importBtns {
@@ -709,8 +712,8 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2) 0;
+  gap: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 1) 0;
 
   transition: all 0.15 cubic-bezier(0.19, 1, 0.22, 1);
 

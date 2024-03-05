@@ -6,7 +6,7 @@
     <div class="u-spacingBottom">
       <button
         type="button"
-        class="u-button u-button_white"
+        class="u-button"
         @click="show_create_collection = true"
       >
         <b-icon icon="plus-circle" />&nbsp;

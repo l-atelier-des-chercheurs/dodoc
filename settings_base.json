@@ -175,6 +175,9 @@
             "required": true,
             "unique": true
           },
+          "favorites": {
+            "type": "array"
+          },
           "presentation": {
             "type": "string"
           },

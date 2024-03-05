@@ -199,7 +199,7 @@ export default {
     border-color: var(--c-rouge);
   }
   &.is--slider {
-    background: var(--c-gris);
+    background: var(--h-200);
   }
 
   &:hover,

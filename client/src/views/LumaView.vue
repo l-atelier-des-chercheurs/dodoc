@@ -357,8 +357,11 @@ export default {
   min-width: 23px;
   flex: 1 1 var(--topPane-width);
 
-  border-bottom: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  background: var(--h-100);
+  color: var(--h-700);
+
+  // border-bottom: 1px solid #ccc;
+  border-right: 1px solid var(--r-600);
 
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -376,7 +379,7 @@ export default {
 
   &:hover,
   &:focus-visible {
-    background: #ccc;
+    background: var(--h-300);
 
     &::after {
       opacity: 1;

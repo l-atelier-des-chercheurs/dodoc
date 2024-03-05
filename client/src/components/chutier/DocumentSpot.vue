@@ -202,7 +202,7 @@ export default {
   position: relative;
 
   flex: 0 0 auto;
-  width: 60px;
+  width: auto;
 
   margin: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 
@@ -260,8 +260,8 @@ export default {
   font-size: var(--sl-font-size-x-large);
   font-weight: bolder;
 
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
 
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 }

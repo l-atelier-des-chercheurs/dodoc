@@ -187,6 +187,9 @@ button {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-radius: var(--input-border-radius);
 
+  background: var(--r-200);
+  color: var(--r-900);
+
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   .b-icon.bi {
@@ -217,6 +220,7 @@ button {
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
+      color: var(--r-900);
       background: var(--active-color);
     }
   }
@@ -229,14 +233,18 @@ button {
 .u-button_nopadding {
 }
 
+.u-button_outline {
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+}
+
 .u-button_icon {
   padding: calc(var(--spacing) / 2);
-  // margin: calc(var(--spacing) / -4);
-  background: rgba(255, 255, 255, 0.4);
+  background: transparent;
   border-radius: 50%;
 
   font-size: var(--sl-font-size-medium);
-
   color: inherit;
 
   > svg {
@@ -249,7 +257,8 @@ button {
   &.is--active {
     &:not([disabled]) {
       color: var(--active-color);
-      background: rgba(255, 255, 255, 1);
+      background: transparent;
+      // background: rgba(255, 255, 255, 1);
     }
   }
 
@@ -1073,28 +1082,23 @@ input[type="checkbox"]:disabled {
 
 .u-dropzone {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 1);
 
   width: 100%;
 
   background-color: white;
   color: var(--c-noir);
 
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
 
-  // border-image-source: url(./utils/border-circle.svg);
-  // border-image-slice: 33% 33%;
-  // border-image-repeat: round;
-  // border-width: 8px;
+  // border: 2px dashed var(--active-color);
+  // border-radius: 10px;
 
-  border: 3px dotted white;
-  border-radius: 10px;
-
-  border-color: var(--dropzone-color2);
   background-color: var(--dropzone-color1);
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23ffbc00' stroke-width='2' stroke-dasharray='10%2c10' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");
 
   transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
 
