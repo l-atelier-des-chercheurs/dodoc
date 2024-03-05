@@ -443,7 +443,7 @@ img {
   position: relative;
   background-color: transparent;
   // border-left: 1px solid #eee;
-  z-index: 100;
+  z-index: 10001;
   border: 0px;
 
   pointer-events: none;
@@ -460,13 +460,13 @@ img {
   border-bottom: 1px solid var(--r-600);
 }
 
-.splitpanes__splitter:before {
+.splitpanes__splitter::before {
   content: "";
   position: absolute;
   width: 1rem;
   height: 100%;
   left: calc(50% - 0.4rem);
-  top: calc(50% - 20px);
+  top: 0;
 
   transition: opacity 0.4s;
   // background-color: rgba(255, 255, 0, 1);

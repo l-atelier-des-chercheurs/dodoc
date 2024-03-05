@@ -247,8 +247,8 @@ export default {
   padding: calc(var(--spacing) / 2);
 
   ::v-deep .ql-editor {
-    padding: 0 calc(var(--spacing) / 2);
-    border-left: 2px solid var(--sd-textcolor);
+    padding: calc(var(--spacing) / 2);
+    border-left: 2px solid var(--h-700);
   }
 }
 </style>

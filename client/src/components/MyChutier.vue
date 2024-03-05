@@ -517,7 +517,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._myChutier {
-  --sd-separator: #424146;
+  --sd-separator: var(--h-700);
   --sd-textcolor: white;
   --sd-bg: #77757c;
 
