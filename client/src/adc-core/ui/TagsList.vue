@@ -105,7 +105,7 @@ export default {
 ._list {
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 8);
+  gap: calc(var(--spacing) / 4);
 }
 ._addBtn,
 ._removeBtn {

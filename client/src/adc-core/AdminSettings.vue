@@ -1,6 +1,10 @@
 <template>
-  <BaseModal2 :title="$t('admin_settings')" @close="$emit('close')">
-    <div class="">
+  <BaseModal2
+    :title="$t('admin_settings')"
+    size="x-large"
+    @close="$emit('close')"
+  >
+    <div class="_adminSettings">
       <div class="_spinner" v-if="is_loading" key="loader">
         <LoaderSpinner />
       </div>
@@ -21,8 +25,15 @@
           <sl-tab slot="nav" panel="events">
             {{ $t("events") }}
           </sl-tab>
-          <sl-tab slot="nav" panel="pages">
+          <sl-tab slot="nav" panel="terms">
+            {{ $t("terms") }}
+          </sl-tab>
+          <!-- // disabled for now -->
+          <!-- <sl-tab slot="nav" panel="pages">
             {{ $t("pages") }}
+          </sl-tab> -->
+          <sl-tab slot="nav" panel="suggested_cat_kw">
+            {{ $t("suggested_cat_kw") }}
           </sl-tab>
           <sl-tab slot="nav" panel="storage">
             {{ $t("storage") }}
@@ -150,7 +161,7 @@
           </sl-tab-panel>
           <sl-tab-panel name="events">
             <template v-if="current_tab === 'events'">
-              <div class="">{{ $t("events") }}</div>
+              <DLabel :str="$t('events')" />
               <ToggleField
                 :label="$t('enable_events')"
                 :field_name="'enable_events'"
@@ -160,11 +171,22 @@
               />
             </template>
           </sl-tab-panel>
+          <sl-tab-panel name="terms">
+            <TermsPanel
+              v-if="current_tab === 'terms'"
+              :settings="settings"
+              @close="$emit('close')"
+            />
+          </sl-tab-panel>
           <sl-tab-panel name="pages">
             <PagesPanel
               v-if="current_tab === 'pages'"
+              :settings="settings"
               @close="$emit('close')"
             />
+          </sl-tab-panel>
+          <sl-tab-panel name="suggested_cat_kw">
+            <SuggestedCategories v-if="current_tab === 'suggested_cat_kw'" />
           </sl-tab-panel>
           <sl-tab-panel name="storage">
             <PickNativePath
@@ -190,7 +212,9 @@
 <script>
 import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
 import ImagesPanel from "@/adc-core/ui/ImagesPanel.vue";
+import TermsPanel from "@/adc-core/ui/TermsPanel.vue";
 import PagesPanel from "@/adc-core/ui/PagesPanel.vue";
+import SuggestedCategories from "@/adc-core/ui/SuggestedCategories.vue";
 
 export default {
   props: {
@@ -199,7 +223,9 @@ export default {
   components: {
     FontsPanel,
     ImagesPanel,
+    TermsPanel,
     PagesPanel,
+    SuggestedCategories,
   },
   data() {
     return {
@@ -250,4 +276,12 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._adminSettings {
+  margin-top: calc(var(--spacing) / -1);
+  margin-bottom: calc(var(--spacing) / -1);
+}
+// sl-tab-panel::part(base) {
+// padding-bottom: 0;
+// }
+</style>

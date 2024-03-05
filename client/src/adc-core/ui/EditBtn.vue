@@ -74,7 +74,7 @@ export default {
       else if (this.btn_type === "credits")
         return {
           label: this.$t("informations"),
-          icon: "info-circle-fill",
+          icon: "info-circle",
         };
 
       return {
@@ -93,6 +93,11 @@ export default {
       //     --color2: var(--c-noir);
       //     --color-hover-icon: white;
       //   `;
+      if (this.btn_type === "credits")
+        return `
+          --color2: var(--c-noir);
+        `;
+
       if (this.btn_type === "fullscreen-exit")
         return `
           --color1: var(--c-noir);

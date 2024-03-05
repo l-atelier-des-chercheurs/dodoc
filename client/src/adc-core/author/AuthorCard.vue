@@ -26,6 +26,8 @@
           />
         </div>
 
+        <div v-if="context === 'full'" class="u-spacingBottom" />
+
         <div class="_text">
           <!-- :label="$t('name')" -->
           <div class="">
@@ -36,7 +38,7 @@
               :required="true"
               :minlength="3"
               :maxlength="40"
-              :tag="'h2'"
+              :tag="context === 'full' ? 'h2' : 'h3'"
               :can_edit="can_edit"
             />
             <div
@@ -53,37 +55,22 @@
                 {{ $t("admin") }}
               </small>
             </div>
-            <div v-else-if="is_instance_admin && context === 'full'">
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="show_settings_modal = true"
-              >
-                {{ $t("add_to_instance_admin") }}
-              </button>
-              <!-- <button
-                type="button"
-                class="u-button u-button_verysmall u-button_bleuvert"
-                @click="show_settings_modal = true"
-              >
-                {{ $t("add_to_instance_admin") }}
-              </button> -->
-
-              <AdminLumaSettings
-                v-if="show_settings_modal"
-                :starting_tab="'administration_and_access_control'"
-                @close="show_settings_modal = false"
-              />
-            </div>
           </div>
 
-          <!-- <div class="_path">@{{ getFilename(author.$path) }}</div> -->
-          <div
-            v-if="
-              (is_instance_admin || is_self) &&
-              (context === 'full' || author.email)
-            "
-          >
+          <div v-if="context === 'full'" class="u-spacingBottom" />
+
+          <div class="u-spacingBottom" v-if="author.group || can_edit">
+            <TagsField
+              :label="context === 'full' ? $t('group') : undefined"
+              :field_name="'group'"
+              :tag_type="'accountgroup'"
+              :content="author.group"
+              :path="author.$path"
+              :can_edit="can_edit"
+            />
+          </div>
+
+          <div v-if="can_edit" class="u-spacingBottom">
             <TitleField
               :field_name="'email'"
               :label="context === 'full' ? $t('email') : undefined"
@@ -95,21 +82,22 @@
               :can_edit="can_edit"
             />
           </div>
-          <TitleField
-            v-if="context === 'full'"
-            :field_name="'presentation'"
-            class="_presentation"
-            :label="
-              context === 'full' && (author.presentation || can_edit)
-                ? $t('presentation')
-                : undefined
-            "
-            :content="author.presentation"
-            :path="author.$path"
-            :maxlength="1280"
-            :input_type="'markdown'"
-            :can_edit="can_edit"
-          />
+          <div v-if="context === 'full'" class="u-spacingBottom">
+            <TitleField
+              :field_name="'presentation'"
+              class="_presentation"
+              :label="
+                context === 'full' && (author.presentation || can_edit)
+                  ? $t('presentation')
+                  : undefined
+              "
+              :content="author.presentation"
+              :path="author.$path"
+              :maxlength="1280"
+              :input_type="'markdown'"
+              :can_edit="can_edit"
+            />
+          </div>
         </div>
 
         <DetailsPane
@@ -129,6 +117,24 @@
         </DetailsPane>
 
         <DetailsPane :header="$t('options')" :icon="'gear'" v-if="can_edit">
+          <div
+            v-if="is_instance_admin && context === 'full'"
+            class="u-spacingBottom"
+          >
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_settings_modal = true"
+            >
+              {{ $t("add_to_instance_admin") }}
+            </button>
+            <AdminLumaSettings
+              v-if="show_settings_modal"
+              :starting_tab="'administration_and_access_control'"
+              @close="show_settings_modal = false"
+            />
+          </div>
+
           <div class="u-spacingBottom">
             <TitleField
               :field_name="'$password'"
@@ -155,15 +161,13 @@
   </div>
 </template>
 <script>
-import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
-
 export default {
   props: {
     author: Object,
     context: String,
   },
   components: {
-    AdminLumaSettings,
+    AdminLumaSettings: () => import("@/components/AdminLumaSettings.vue"),
   },
   data() {
     return {
@@ -261,15 +265,21 @@ export default {
 }
 
 ._text {
-  display: flex;
-  flex-flow: column nowrap;
-  padding-bottom: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  // overflow: hidden;
+  // display: flex;
+  // flex-flow: column nowrap;
+  // padding-bottom: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
 
-  ::v-deep a {
-    color: currentColor;
+  ::v-deep {
+    a {
+      color: currentColor;
+    }
+
+    ._container {
+      // line-height: 1;
+    }
     ._content {
-      // text-decoration: underline;
     }
   }
 }

@@ -45,6 +45,10 @@ export default {
   hide_already_present_medias:
     "Hide medias already included in this publication ",
   suggestions: "Suggestions",
+  suggested_cat_kw: "Suggested keywords and categories",
+  list_of_suggestions: "List of suggestions",
+  create_suggestion_list_for: "Create a list of suggestions",
+
   access: "Access",
   title: "Title",
   subtitle: "Subtitle",
@@ -114,6 +118,8 @@ export default {
   create_account: "Create an account",
   your_account: "Your account",
   new_account: "New account",
+  account_group: "Group (for accounts)",
+  group: "Group",
   show_list: "Show the list",
 
   login: "login",
@@ -234,14 +240,14 @@ export default {
 
   move: "Move",
   unselect: "Unselect",
-  remove: "Remove",
-  remove_project: "Remove project",
-  remove_media: "Remove media",
-  remove_space: "Remove space and all its content",
+  remove: "Delete",
+  remove_project: "Delete project",
+  remove_media: "Delete media",
+  remove_space: "Delete space and all its content",
 
-  remove_account: "Remove this account",
+  remove_account: "Delete this account",
   remove_account_expl:
-    "Only the account will be removed, all its content (spaces, projects, medias and publications) will be kept.",
+    "Only the account will be deleted, all its content (spaces, projects, medias and publications) will be kept.",
   machines_and_materials: "Machines and materials",
   machines: "Machines",
   materials: "Materials",
@@ -382,7 +388,7 @@ export default {
   pick_portrait: "Pick an image for this account",
   pick_media: "Pick one media",
   pick_medias: "Pick one or more medias",
-  remove_image: "Remove this image",
+  remove_image: "Delete this image",
 
   stop_recording: "Stop recording",
   pause_recording: "Pause recording",
@@ -500,6 +506,8 @@ export default {
   options: "Options",
   exports: "Exports",
   export: "Export",
+  to_export: "Export",
+
   untitled: "Untitled",
   responsive: "Fluid",
   responsive_instr:
@@ -516,6 +524,8 @@ export default {
   format: "Format",
   format_instructions:
     "Select a format or set the page dimensions, in millimeters.",
+  "format,margins,pagination": "Format, margins and pagination",
+
   A4_portrait: "A4 in portrait",
   A4_landscape: "A4 in landscape",
   A5_portrait: "A5 in portrait",
@@ -538,6 +548,11 @@ export default {
   fullscreen: "Full-screen",
   exit_fullscreen: "Exit full screen",
   size: "Weight",
+
+  category_title: "Category title",
+  remove_category: "Remove this category",
+  add_category: "Add category",
+
   opacity: "Opacity",
   page_spreads: "Facing pages",
   page: "Page",
@@ -568,10 +583,10 @@ export default {
   pagn_starts_on_page: "Page count starts on page",
   hide_pagination: "Hide pagination",
   hide_pagination_instr: "Only concerns this page",
-  remove_page_and_content: "Remove the page and its content?",
+  remove_page_and_content: "Delete the page and its content?",
   border_radius: "Rounded corners",
   photo: "Photo",
-  remove_this_image: "Remove this image",
+  remove_this_image: "Delete this image",
   erase: "Erase",
   crop: "Crop",
   crop_instructions:
@@ -601,7 +616,7 @@ export default {
   no_media_in_project: "No media in this project",
   number_of_media: "Number of media",
   "displayed:": "Displayed:",
-  media_removed: "Media removed",
+  media_removed: "Media deleted",
   media_duplicated: "Media duplicated",
   media_was_saved: "The media was added to the project",
   settings: "Settings",
@@ -720,7 +735,7 @@ export default {
   replace_color_with: "Replace with",
   use_own_risk: "Use with caution: media may become invisible in some cases!",
   chroma_key: "Overlay (green background)",
-  color: "color",
+  color: "Color",
   flip_horizontally: "Flip horizontally",
   flip_vertically: "Flip vertically",
   advanced_options: "Advanced options",
@@ -749,7 +764,7 @@ export default {
   destination_space: "Space which will receive this copy",
   destination_space_remix: "Space that will receive this remixed project",
   destination_project: "Project that will receive this copy",
-  remove_original: "Remove original",
+  remove_original: "Delete original",
   remove_original_after_copy: "The original will be deleted after copying",
   keep_original_after_copy: "The original will be kept after copying",
   target_audience: "Target audience",
@@ -855,7 +870,7 @@ export default {
   project_contrib_instructions:
     "They can only create, modify and delete content (media, publications, etc.)",
   file_author_instructions:
-    "This information is used for informational purposes only and does not determine who may edit or remove this content.",
+    "This information is used for informational purposes only and does not determine who may edit or delete this content.",
   ellipsis: "Ellipsis",
   rectangle: "Rectangle",
   line: "Line",
@@ -904,4 +919,38 @@ export default {
   "instructions.pane.make": "Crop, shorten, assemble and annotate your media.",
   "instructions.pane.publish":
     "Create publications here: project journal, tutorial, booklet, etc.\n<br />\nThey will contain text and elements that you have collected.",
+
+  pins_color: "Pin color",
+  link_pins: "Link pins",
+  pin_icons: "Pin icons",
+  icon: "Icon",
+  media_preview: "Image on map",
+
+  image_basemap: "Image used as the basemap",
+  choose_image_basemap: "Choose image basemap",
+
+  map_baselayer: "Basemap",
+  OSM: "OpenStreetMap",
+  alidade_smooth: "Alidade Smooth",
+  alidade_smooth_dark: "Alidade Smooth (dark)",
+  STAMEN_watercolor: "Watercolor",
+  STAMEN_toner: "Toner",
+  provided_by_stadiamaps:
+    "Provided by <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
+  IGN_MAP: "IGN map (France only)",
+  IGN_SAT: "IGN satellite pictures (France only)",
+  image_or_drawing: "Image or drawing",
+  bw_filter: "Black and white filter",
+
+  IGN_max_zoom_limits:
+    "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
+
+  terms: "Terms of use",
+  create_terms_page: "Create a terms of use page",
+  open_page: "Open page",
+  terms_in_footer: "Place a link at the bottom of the home page",
+  users_must_accept_terms_to_signup:
+    "Users must accept the terms of use to register",
+  click_here_to_read: "Click here to read them.",
+  i_read_and_accept_terms: "I accept the terms of use",
 };

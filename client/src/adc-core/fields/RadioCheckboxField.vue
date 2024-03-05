@@ -5,34 +5,54 @@
       'is--beingEdited': edit_mode,
     }"
   >
-    <RadioCheckboxInput
-      v-if="edit_mode || new_content.length > 0"
-      :value.sync="new_content"
-      :input_type="input_type"
-      :options="options"
-      :can_edit="can_edit && edit_mode"
+    <DLabel
+      v-if="label"
+      class="_label"
+      :str="label"
+      :instructions="can_edit ? instructions : ''"
     />
-    <span v-else>
-      <template v-if="current_option">
-        {{ current_option.label }}
-      </template>
-      <template v-else></template>
-    </span>
+    <div>
+      <slot name="preview" v-if="input_type === 'radio'" :item="current_option">
+        <template v-if="current_option && current_option.key">
+          {{ current_option.label }}
+        </template>
+      </slot>
+      <slot
+        name="preview"
+        v-if="input_type === 'checkbox'"
+        :items="current_options"
+      >
+        <div v-for="option in current_options" :key="option.key">
+          {{ option.label }}
+        </div>
+      </slot>
+    </div>
     <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+
     <div class="_footer">
-      <SaveCancelButtons
-        v-if="edit_mode"
-        class="_scb"
-        :is_saving="is_saving"
-        @save="updateSelect"
-        @cancel="cancel"
-      />
+      <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+        <RadioCheckboxInput
+          :value.sync="new_content"
+          :input_type="input_type"
+          :options="options"
+          :can_edit="can_edit && edit_mode"
+        />
+        <SaveCancelButtons
+          v-if="edit_mode"
+          class="_scb"
+          :is_saving="is_saving"
+          @save="updateSelect"
+          @cancel="cancel"
+        />
+      </BaseModal2>
     </div>
   </div>
 </template>
 <script>
 export default {
   props: {
+    label: String,
+    instructions: String,
     field_name: String,
     content: {
       type: [String, Array],
@@ -69,6 +89,10 @@ export default {
     },
   },
   computed: {
+    current_options() {
+      // return this.content.map((c) => this.options.find((o) => o.key === c));
+      return this.options.filter((o) => this.content.includes(o.key));
+    },
     current_option() {
       return this.options.find((o) => o.key === this.content);
     },

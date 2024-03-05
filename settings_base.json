@@ -175,7 +175,10 @@
             "required": true,
             "unique": true
           },
-          "favorites": {
+          "presentation": {
+            "type": "string"
+          },
+          "group": {
             "type": "array"
           }
         },

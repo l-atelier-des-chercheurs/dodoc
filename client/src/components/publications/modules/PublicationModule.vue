@@ -4,7 +4,7 @@
     :data-type="module_type"
     @click="preventClickTraversing"
   >
-    <transition name="toggleLock" mode="out-in">
+    <transition name="showOptions" mode="out-in" appear>
       <div
         class="_sideOptions"
         v-if="edit_mode && page_template !== 'page_by_page'"
@@ -70,15 +70,6 @@
                   </option>
                 </select>
               </div>
-
-              <!-- <sl-button
-            variant="default"
-            size="small"
-            pill
-            @click="changeModuleType"
-          >
-            {{ $t(`module.label.${publimodule.module_type}`) }}
-          </sl-button> -->
               <div class="_buttonRow">
                 <button
                   v-for="size in [100, 66.6, 50, 33.3]"
@@ -125,7 +116,7 @@
                   @click="duplicateModule"
                 >
                   <b-icon icon="file-plus" />
-                  <!-- {{ $t("duplicate") }} -->
+                  {{ $t("duplicate") }}
                 </button>
                 <RemoveMenu
                   v-if="can_edit"
@@ -210,6 +201,25 @@
 
     <div class="_content" :style="media_styles">
       <div ref="sentinel" />
+      <button
+        type="button"
+        class="u-button _pinButton"
+        v-if="is_associated_to_map && has_coordinates"
+        ref="pinButton"
+        :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
+        :class="{
+          'is--active': is_active_on_map,
+        }"
+        @click.stop="pinButtonClick"
+      >
+        <!-- v-if="pin_options.pin_preview === 'icon'" -->
+        <img :src="pin_options.pin_preview_src" />
+        <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
+        <!-- <b-icon icon="pin-map-fill" /> -->
+        <!-- <span class="_index">
+          {{ pin_options.index }}
+        </span> -->
+      </button>
 
       <div class="_floatingEditBtn" v-if="can_edit">
         <EditBtn
@@ -327,26 +337,6 @@
       </template>
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
-
-      <button
-        type="button"
-        class="u-button _pinButton"
-        v-if="is_associated_to_map && has_coordinates"
-        ref="pinButton"
-        :style="`--pin-color: ${pin_options ? pin_options.color : ''}`"
-        :class="{
-          'is--active': is_active_on_map,
-        }"
-        @click.stop="pinButtonClick"
-      >
-        <!-- v-if="pin_options.pin_preview === 'icon'" -->
-        <img :src="pin_options.pin_preview_src" />
-        <!-- <img :src="this.$root.publicPath + 'maps/pin.svg'" /> -->
-        <!-- <b-icon icon="pin-map-fill" /> -->
-        <!-- <span class="_index">
-          {{ pin_options.index }}
-        </span> -->
-      </button>
 
       <div
         class="_captionField"
@@ -510,7 +500,7 @@ export default {
       return false;
     },
     available_module_types() {
-      if (this.publimodule.module_type === "text") return ["text"];
+      // if (this.publimodule.module_type === "text") return ["text"];
       return ["mosaic", "carousel", "files"];
     },
     pin_options() {
@@ -625,7 +615,7 @@ export default {
     disableEdit() {
       this.$emit("update:module_being_edited", undefined);
     },
-    scrollToModule(behavior = "smooth") {
+    scrollToModule(behavior = "auto") {
       if (this.$el) {
         console.log("scrollToModule " + this.publimodule.$path);
         this.$el.scrollIntoView({
@@ -736,6 +726,7 @@ export default {
 ._publicationModule {
   position: relative;
   scroll-margin-top: calc(var(--spacing) * 1.5);
+  font-size: 16px;
   // padding: 0 calc(var(--spacing) * 2);
 
   &[data-type="shape"] {
@@ -880,7 +871,7 @@ export default {
   > * {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 100%;
     margin: calc(var(--spacing) / 2);
   }
 }
@@ -902,6 +893,7 @@ export default {
   flex-flow: column nowrap;
 }
 ._repickNotice--content {
+  display: flex;
   background: white;
   padding: calc(var(--spacing) / 2);
 }
@@ -917,17 +909,19 @@ export default {
   position: absolute;
   background: transparent;
   top: 0;
-  left: 0;
-  // z-index: 1;
+  right: 100%;
+  width: 30px;
+  height: 30px;
+  z-index: 1;
   margin: calc(var(--spacing) / 4);
-  padding: calc(var(--spacing) / 4);
+  padding: 0;
 
-  ._publicationModule[data-type="text"] & {
-    position: relative;
-    float: left;
-    margin-top: calc(var(--spacing) / 4);
-    margin-right: calc(var(--spacing) / 4);
-  }
+  // ._publicationModule[data-type="text"] & {
+  //   position: relative;
+  //   float: left;
+  //   margin-top: calc(var(--spacing) / 4);
+  //   margin-right: calc(var(--spacing) / 4);
+  // }
 
   &.is--active {
     background: var(--c-bleuvert);
@@ -948,5 +942,18 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) * 1);
+}
+
+.showOptions {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.2s;
+    max-height: 230px;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    max-height: 0px;
+  }
 }
 </style>

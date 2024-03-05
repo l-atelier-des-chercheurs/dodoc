@@ -101,6 +101,7 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 150;
   margin: calc(var(--spacing) / 1);
 
   @media print {
@@ -115,14 +116,14 @@ export default {
 }
 ._showCredits {
   position: absolute;
-  z-index: 1000;
+  z-index: 101;
   inset: 0;
   overflow: auto;
   text-align: left;
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(5px);
   overflow: auto;
-  padding: calc(var(--spacing) * 3);
+  padding: calc(var(--spacing) * 1);
 }
 ._closeCredits {
   position: absolute;

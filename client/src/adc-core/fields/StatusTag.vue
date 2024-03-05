@@ -1,16 +1,16 @@
 <template>
   <component
-    :is="mode === 'button' ? 'button' : 'div'"
-    :type="mode === 'button'"
+    :is="tag_type"
+    :type="tag_type === 'button' ? 'button' : ''"
     class="_statusTag"
-    :data-mode="mode"
     :data-status="[new_status]"
-    @click="mode === 'button' ? $emit('click') : ''"
+    @click="$emit('click')"
   >
     <div v-if="!can_edit" class="_tag">
       <b-icon v-if="status === 'finished'" icon="check-circle-fill" />
       <b-icon v-else-if="status === 'private'" icon="file-lock2-fill" />
       <template v-if="show_label">{{ $t(status) }}</template>
+      <b-icon v-if="mode === 'disable'" icon="x-circle-fill" :key="mode" />
     </div>
     <select v-else size="small" v-model="new_status">
       <option
@@ -55,7 +55,13 @@ export default {
       this.updateMeta({ $status: this.new_status });
     },
   },
-  computed: {},
+  computed: {
+    tag_type() {
+      return this.mode === "active" || this.mode === "disable"
+        ? "button"
+        : "div";
+    },
+  },
   methods: {
     async updateMeta(new_meta) {
       await this.$api.updateMeta({

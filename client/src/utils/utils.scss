@@ -117,7 +117,7 @@
 
 .u-buttonLink {
   font-weight: 400;
-  text-transform: lowercase;
+  // text-transform: lowercase;
   background: transparent;
 
   line-height: 1;
@@ -251,6 +251,10 @@ button {
       color: var(--active-color);
       background: rgba(255, 255, 255, 1);
     }
+  }
+
+  &.u-button_small {
+    padding: calc(var(--spacing) / 4);
   }
 }
 .u-button_inline {
@@ -849,7 +853,10 @@ fieldset {
     background: white;
     border-radius: 4px;
     text-align: center;
-    margin-bottom: 0;
+
+    &.u-label {
+      margin-bottom: 0;
+    }
   }
 }
 

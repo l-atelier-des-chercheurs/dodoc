@@ -8,6 +8,8 @@
     }"
     @click="editorClick"
   >
+    <DLabel v-if="label" :str="label" />
+
     <TextVersioning
       v-if="show_archives"
       :path="path"
@@ -54,7 +56,7 @@
             <button
               type="button"
               class="u-button _archivesBtn"
-              v-else
+              v-else-if="field_to_edit === '$content'"
               @click="show_archives = !show_archives"
             >
               <b-icon icon="archive" />
@@ -141,6 +143,10 @@ Quill.register("modules/cardEditable", CardEditableModule);
 
 export default {
   props: {
+    label: {
+      type: String,
+      default: "",
+    },
     path: String,
     sharedb_id: String,
     content: String,
@@ -153,6 +159,10 @@ export default {
     line_selected: [Boolean, Number],
     edit_on_mounted: Boolean,
     can_edit: Boolean,
+    is_collaborative: {
+      type: Boolean,
+      default: true,
+    },
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
   },
@@ -175,7 +185,6 @@ export default {
 
       debounce_textUpdate: undefined,
 
-      is_collaborative: true,
       collaborative_is_loaded: false,
 
       autosave: true,
@@ -939,7 +948,7 @@ export default {
 
   ::v-deep {
     .ql-container {
-      font-size: 16px;
+      font-size: inherit;
       font-family: inherit;
       font-weight: normal;
       background-color: transparent;
@@ -976,7 +985,7 @@ export default {
       > * {
         // counter-increment: listCounter;
         position: relative;
-        padding: 0;
+        // padding: 0;
 
         &::before {
           // content: counter(listCounter);

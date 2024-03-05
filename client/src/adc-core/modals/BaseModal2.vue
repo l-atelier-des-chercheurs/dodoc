@@ -20,9 +20,13 @@
           </div>
         </div>
         <div class="_baseModal--closeBtn" v-if="is_closable">
-          <sl-button variant="neutral" size="medium" circle @click="closeModal">
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            @click="closeModal"
+          >
             <b-icon icon="x-lg" :label="$t('close')" />
-          </sl-button>
+          </button>
         </div>
       </div>
     </transition>
@@ -124,7 +128,6 @@ export default {
   &[data-size="large"] ._baseModal--content {
     max-width: 680px;
   }
-
   &[data-size="full"] ._baseModal--content {
     max-width: none;
     max-height: none;
@@ -136,13 +139,16 @@ export default {
     height: calc(100% - var(--modal-margin));
     margin: calc(var(--modal-margin) / 2);
   }
+  &[data-size="x-large"] ._baseModal--content {
+    max-width: 980px;
+  }
 }
 
 ._baseModal--closeBtn {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 2px;
+  padding: calc(var(--spacing) / 1);
 }
 
 header {

@@ -669,7 +669,7 @@ export default function () {
           } else if (code === "token_not_allowed_must_be_contributors") {
             // this.$alertify.delay(4000).error("notifications.action_not_allowed");
           } else if (code === "ENOENT") code = "folder_is_missing";
-          this.$alertify.delay(4000).error("Message d’erreur : " + code);
+          // this.$alertify.delay(4000).error("Message d’erreur : " + code);
           console.error("processError – " + code);
         } else console.error("processError – NO ERROR CODES");
 

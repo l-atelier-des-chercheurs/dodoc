@@ -31,7 +31,6 @@
             :display_credits_caption="true"
             :can_edit_credits_caption="can_edit"
           />
-
           <CaptionCreditsPage
             :media="media_with_linked._linked_media"
             :publication_path="publication_path"
@@ -254,6 +253,10 @@ export default {
     width: 100%;
     aspect-ratio: 1/1;
     margin-right: calc(var(--spacing) * 1);
+  }
+
+  ::v-deep ._mediaContent .plyr__controls {
+    padding-right: calc(var(--spacing) * 3);
   }
 
   ::v-deep .flickity-page-dots {

@@ -18,19 +18,19 @@
       v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div class="_popupShadow" />
+      <button
+        type="button"
+        class="u-button u-button_transparent u-button_icon _popupClose"
+        ref="closePopup"
+        @click="closePopup"
+      >
+        <b-icon icon="x-circle-fill" />
+      </button>
+
       <div
         class="_popup--content"
         :key="clicked_location.latitude + '-' + clicked_location.longitude"
       >
-        <button
-          type="button"
-          class="u-button u-button_icon _popupClose"
-          ref="closePopup"
-          @click="closePopup"
-        >
-          <b-icon icon="x-circle-fill" />
-        </button>
-
         <div
           v-if="clicked_location.module"
           :key="clicked_location.module.$path"
@@ -92,7 +92,10 @@
         </button>
       </div>
 
-      <div class="_buttonRow" v-if="map_baselayer !== 'image'">
+      <div
+        class="_buttonRow"
+        v-if="!['image', 'color'].includes(map_baselayer)"
+      >
         <button type="button" class="u-button" @click="toggleSearch">
           <b-icon class="inlineSVG" icon="search" />
         </button>
@@ -320,10 +323,7 @@ export default {
     pins: Array,
     lines: Object,
     geometries: Array,
-    start_zoom: {
-      type: [Boolean, Number],
-      default: 2,
-    },
+    start_zoom: Number,
     map_baselayer: {
       type: String,
       default: "OSM",
@@ -336,6 +336,7 @@ export default {
       type: Number,
       default: 1,
     },
+    map_baselayer_color: String,
     map_base_media: Object,
     is_small: {
       type: Boolean,
@@ -568,9 +569,14 @@ export default {
   },
   computed: {
     map_styles() {
-      return {
-        "--current-view-color": this.opened_view_color,
-      };
+      let styles = {};
+      if (this.opened_view_color)
+        styles["--current-view-color"] = this.opened_view_color;
+      if (this.map_baselayer_color)
+        styles["--map-background-color"] = this.map_baselayer_color;
+      // if (this.map_baselayer === "color" && this.map_baselayer_color)
+      //   styles["--map-background-color"] = this.map_baselayer_color;
+      return styles;
     },
     default_pin_svg() {
       const svg = `<svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
@@ -692,7 +698,9 @@ export default {
         })
       );
 
-      const fs_option = new olFullScreen();
+      const fs_option = new olFullScreen({
+        source: this.$el,
+      });
       this.map.addControl(fs_option);
 
       ////////////////////////////////////////////////////////////////////////// SCALELINE
@@ -838,9 +846,10 @@ export default {
             padding: [50, 50, 50, 50],
           });
 
-        // prevent zoom from being too high (even though it may be correct for the extent)
-        if (this.start_zoom) this.map.getView().setZoom(this.start_zoom);
-        else if (
+        if (this.start_zoom) {
+          this.map.getView().setZoom(this.start_zoom);
+        } else if (
+          // prevent zoom from being too high (even though it may be correct for the extent)
           this.map_baselayer !== "image" &&
           this.map.getView().getZoom() > 15
         )
@@ -944,6 +953,42 @@ export default {
           source: new olStatic({
             attributions,
             url: img_src,
+            projection,
+            imageExtent: extent,
+          }),
+          className: "ol-layer ol-basemap",
+        });
+      } else if (this.map_baselayer === "color") {
+        const img_width = 2000;
+        const img_height = 2000;
+
+        const extent = [0, 0, img_width, img_height];
+        const projection = new olProjection({
+          code: "solid-color",
+          units: "pixels",
+          extent,
+        });
+        center = getCenter(extent);
+        zoom = 1;
+
+        var canvas = document.createElement("canvas");
+        canvas.width = img_width;
+        canvas.height = img_height;
+        // var ctx = canvas.getContext("2d");
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(0, 0, img_width, img_height);
+        var imageDataURL = canvas.toDataURL();
+
+        view = new olView({
+          projection,
+          center,
+          zoom,
+          maxZoom: 6,
+        });
+        background_layer = new olImageLayer({
+          source: new olStatic({
+            // attributions,
+            url: imageDataURL,
             projection,
             imageExtent: extent,
           }),
@@ -1824,6 +1869,7 @@ export default {
 ._map {
   width: 100%;
   height: 100%;
+  background-color: var(--map-background-color);
 
   ::v-deep {
     .ol-geocoder {
@@ -1970,8 +2016,8 @@ export default {
 ._popupClose {
   position: absolute;
   z-index: 1000;
-  top: calc(var(--spacing) / -2);
-  right: calc(var(--spacing) / -2);
+  top: calc(var(--spacing) * -2);
+  right: calc(var(--spacing) * -2);
   padding: calc(var(--spacing) / 1);
 }
 
@@ -1983,6 +2029,11 @@ export default {
 
   ::v-deep ._publicationModule[data-type="text"] {
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  }
+
+  ::v-deep ._captionField {
+    padding: calc(var(--spacing) / 2);
+    padding-top: 0;
   }
 }
 

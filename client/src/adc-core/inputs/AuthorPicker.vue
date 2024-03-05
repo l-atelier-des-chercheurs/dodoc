@@ -1,6 +1,6 @@
 <template>
   <div class="_authorPicker">
-    <div class="u-spacingBottom _searchField">
+    <div class="_searchField">
       <SearchInput
         v-model="search_author_name"
         :search_placeholder="$t('search_by_name')"
@@ -66,6 +66,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._searchField {
+  margin-bottom: calc(var(--spacing) / 4);
+}
 ._maxlength {
   flex: 0 0 auto;
   padding: calc(var(--spacing) / 4) 0;
