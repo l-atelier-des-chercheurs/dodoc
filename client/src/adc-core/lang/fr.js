@@ -37,7 +37,6 @@ export default {
   description: "Description",
   keywords: "Mots-clés",
   suggested_keywords: "Mots-clé suggérés",
-  suggested_cat_kw: "Catégories et mots-clé suggérés",
   show_all: "Afficher tout",
   "credit/reference": "Crédit/référence",
 
@@ -278,7 +277,6 @@ export default {
 
   category_title: "Titre de la catégorie",
   remove_category: "Supprimer cette catégorie",
-  add_category: "Ajouter une catégorie",
 
   opacity: "Opacité",
   page_spreads: "Pages en vis-à-vis",
@@ -516,7 +514,6 @@ export default {
 
   add_category: "Ajouter une catégorie",
   category_name: "Nom de la catégorie",
-  category_title: "Titre de la catégorie",
 
   watermark: "Habillage",
   watermark_instructions:
