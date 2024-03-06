@@ -133,8 +133,8 @@ export default {
   display: flex;
   gap: 2px;
   overflow: auto;
-  margin: 2px;
-  // background: var(--c-gris_clair);
+  padding: 2px;
+  border-top: 1px solid var(--sd-separator);
 }
 ._preview {
   position: relative;

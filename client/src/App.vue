@@ -342,7 +342,7 @@ hr {
   margin-top: calc(var(--spacing) * 2);
   margin-bottom: calc(var(--spacing) * 2);
   border: none;
-  border-top: 2px solid var(--c-gris);
+  border-top: 1px solid var(--c-gris);
 }
 
 .authorLabel {

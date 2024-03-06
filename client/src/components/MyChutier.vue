@@ -519,7 +519,7 @@ export default {
 ._myChutier {
   --sd-separator: var(--h-700);
   --sd-textcolor: white;
-  --sd-bg: #77757c;
+  --sd-bg: var(--h-900);
 
   position: relative;
   top: 0;

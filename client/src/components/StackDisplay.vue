@@ -11,13 +11,15 @@
         </button>
       </div>
       <div class="_panes">
-        <button
-          type="button"
-          class="u-button u-button_icon u-button_black _showSidebar"
-          @click.stop="show_sidebar = true"
-        >
-          <b-icon icon="list-ul" :aria-label="$t('show_sidebar')" />
-        </button>
+        <div class="_showSidebar">
+          <button
+            type="button"
+            class="u-button u-button_icon u-button_transparent"
+            @click.stop="show_sidebar = true"
+          >
+            <b-icon icon="list-ul" :aria-label="$t('show_sidebar')" />
+          </button>
+        </div>
 
         <transition name="slideleft" mode="out-in">
           <div class="_infos" v-if="show_sidebar">
@@ -432,9 +434,6 @@ export default {
 ._panes {
   position: relative;
   overflow: hidden;
-  // display: flex;
-  // flex-flow: row wrap;
-  // overflow: auto;
 
   > ._infos {
     // flex: 1 1 320px;
@@ -501,6 +500,7 @@ export default {
   width: 100%;
   background: white;
   background: var(--sd-bg);
+  padding-left: 32px;
 
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -540,6 +540,7 @@ hr {
 
     &:hover,
     &:focus {
+      color: white;
       background: var(--sd-separator);
     }
   }
@@ -575,10 +576,23 @@ hr {
 
 ._showSidebar {
   position: absolute;
-  top: 0;
-  left: 0;
-  margin: calc(var(--spacing) / 4);
-  z-index: 8;
+  border-right: 1px solid var(--sd-separator);
+  z-index: 10;
+  height: 100%;
+  background: var(--sd-bg);
+
+  > button {
+    height: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-radius: 0;
+
+    &:hover,
+    &:focus {
+      color: white;
+      background: var(--sd-separator);
+    }
+  }
 }
 
 ._hideSidebar {

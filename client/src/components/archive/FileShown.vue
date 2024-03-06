@@ -35,7 +35,13 @@
         class="u-button u-button_icon u-button_transparent"
         @click="show_infos = !show_infos"
       >
-        <!-- <template v-if="!show_infos"> -->
+        <b-icon
+          v-if="show_infos"
+          icon="chevron-down"
+          :aria-label="$t('close')"
+        />
+        <b-icon v-else icon="chevron-up" :aria-label="$t('open')" />
+
         <b-icon
           v-if="file.caption"
           icon="text-left"
@@ -46,17 +52,6 @@
           icon="info-circle"
           :aria-label="$t('credit/reference')"
         />
-        <!-- </template> -->
-
-        <div class="_separator" />
-
-        <b-icon
-          v-if="show_infos"
-          icon="chevron-compact-down"
-          :aria-label="$t('close')"
-        />
-        <b-icon v-else icon="chevron-compact-up" :aria-label="$t('open')" />
-        <!-- <b-icon icon="file-earmark-text" /> -->
       </button>
     </div>
 
@@ -201,21 +196,14 @@ export default {
 
   > button {
     width: 100%;
-    justify-content: flex-end;
-    border-radius: 0;
-
-    display: flex;
-    flex-flow: row nowrap;
+    justify-content: flex-start;
     gap: calc(var(--spacing) / 2);
-    justify-content: space-between;
+    border-radius: 0;
 
     &:hover,
     &:focus {
       background: var(--sd-separator);
-    }
-
-    ._separator {
-      flex: 1 1 auto;
+      color: white;
     }
   }
 }
@@ -224,7 +212,7 @@ export default {
   flex: 0 0 auto;
   position: relative;
   border-top: 1px solid var(--sd-separator);
-  border-bottom: 1px solid var(--sd-separator);
+  // border-bottom: 1px solid var(--sd-separator);
   max-height: 50vh;
   overflow: auto;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
@@ -232,7 +220,9 @@ export default {
   transition: all 0.02s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-hide] {
+    overflow: 0;
     max-height: 0;
+    border: none;
     padding: 0 calc(var(--spacing) / 1);
   }
 }

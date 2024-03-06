@@ -113,7 +113,7 @@ export default {
 <style lang="scss" scoped>
 ._editBtn {
   --color1: transparent;
-  --color2: var(--active-color);
+  --color2: var(--c-gris);
   --color-hover-icon: white;
 
   position: relative;

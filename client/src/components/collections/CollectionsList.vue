@@ -1,5 +1,6 @@
 <template>
   <div class="_collectionsList">
+    <div class="u-spacingBottom" />
     <div class="u-spacingBottom u-instructions">
       {{ $t("collection_instr") }}
     </div>
@@ -23,11 +24,6 @@
     </div>
 
     <table class="_list">
-      <!-- <thead>
-    <tr>
-      <th colspan="2">The table header</th>
-    </tr>
-  </thead> -->
       <tbody>
         <tr
           v-for="collection in sorted_collections"
@@ -35,7 +31,7 @@
           @click="$emit('open', getFilename(collection.$path))"
         >
           <td>
-            <h3>{{ collection.title }}</h3>
+            <strong>{{ collection.title }}</strong>
           </td>
           <td>
             <div class="u-sameRow">
@@ -43,7 +39,7 @@
                 v-for="atpath in collection.$admins"
                 :key="atpath"
                 :path="atpath"
-                :show_image_only="false"
+                :show_image_only="true"
                 :mode="'link'"
               />
             </div>
@@ -114,14 +110,23 @@ export default {
   > * {
   }
 }
+
+table,
+th,
+td {
+  border: 2px solid var(--h-100);
+  border-collapse: collapse;
+}
+
 ._list {
   width: 100%;
+  margin-top: calc(var(--spacing) * 2);
   // background: var(--c-gris);
   // padding: 1px;
 
   tr {
     padding: calc(var(--spacing) / 2);
-    background: white;
+    // background: white;
   }
 
   tr:nth-child(2n) {
@@ -131,11 +136,12 @@ export default {
     // background-color: var(--c-gris_clair);
   }
   tr > td:last-child {
-    text-align: right;
+    width: 100px;
+    padding: 0;
   }
 
   td {
-    padding: calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 2);
   }
 }
 </style>
