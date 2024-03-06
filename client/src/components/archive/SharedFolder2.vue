@@ -22,65 +22,17 @@
           <LoaderSpinner />
         </div>
         <div v-else>
-          <div class="_topBtn">
-            <div class="">
-              <button
-                type="button"
-                class="u-buttonLink"
-                :class="{
-                  'is--active': show_filter_sort_pane,
-                }"
-                @click="show_filter_sort_pane = !show_filter_sort_pane"
-              >
-                {{ $t("filter_sort") }}
-              </button>
-            </div>
-
-            <div class="">
-              <ToggleInput
-                :content.sync="fav_filter"
-                :label="$t('only_my_fav')"
-              />
-            </div>
-
-            <div class="">
-              <button
-                class="u-button u-button_icon"
-                type="button"
-                :class="{
-                  'is--active': view_mode === 'list',
-                }"
-                @click="view_mode = 'list'"
-              >
-                <b-icon icon="grid-3x2-gap-fill" />
-              </button>
-              <button
-                class="u-button u-button_icon"
-                type="button"
-                :class="{
-                  'is--active': view_mode === 'map',
-                }"
-                @click="view_mode = 'map'"
-              >
-                <b-icon icon="map-fill" />
-              </button>
-            </div>
-          </div>
-
-          <transition name="pagechange" mode="out-in">
-            <div class="_filterBar" v-if="show_filter_sort_pane">
-              <FilterBar
-                :group_mode.sync="group_mode"
-                :sort_order.sync="sort_order"
-                :search_str.sync="search_str"
-                :filetype_filter.sync="filetype_filter"
-                :author_path_filter.sync="author_path_filter"
-                :available_keywords="available_keywords"
-                :keywords_filter.sync="keywords_filter"
-                @close="show_filter_sort_pane = false"
-              />
-            </div>
-          </transition>
+          <FilterBar
+            :group_mode.sync="group_mode"
+            :sort_order.sync="sort_order"
+            :search_str.sync="search_str"
+            :filetype_filter.sync="filetype_filter"
+            :author_path_filter.sync="author_path_filter"
+            :available_keywords="available_keywords"
+            :keywords_filter.sync="keywords_filter"
+            :fav_filter.sync="fav_filter"
+            :view_mode.sync="view_mode"
+          />
 
           <!-- <hr /> -->
 
@@ -202,7 +154,6 @@ export default {
       last_selected_stack_path: undefined,
       view_mode: "list",
 
-      show_filter_sort_pane: false,
       sort_order: "date_modified",
       search_str: "",
       filetype_filter: "all",
@@ -386,28 +337,13 @@ export default {
   position: relative;
   height: 100%;
   overflow: auto;
-
-  padding: 2px;
+  // padding: 2px;
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 }
 
-._topBtn {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-
-  > * {
-    flex: 0 0 auto;
-  }
-}
-
 ._dayFileSection {
-  margin: 0 calc(var(--spacing) / 2);
+  margin: 0 calc(var(--spacing) / 1);
 }
 
 ._itemGrid {

@@ -1,148 +1,226 @@
 <template>
   <div class="_filterBar">
-    <button
-      type="button"
-      class="u-buttonLink _closeBtn"
-      :class="{
-        'is--white': can_be_reset,
-      }"
-      @click="$emit('close')"
-    >
-      <b-icon icon="x-lg" />
-    </button>
-
-    <transition name="fade_fast" mode="out-in">
-      <button
-        type="button"
-        v-if="can_be_reset"
-        class="u-button u-button_black _resetFilters"
-        @click="resetFilters"
-      >
-        {{ $t("reset") }}
-      </button>
-    </transition>
-
-    <div class="_filterBar--content">
+    <div class="_topBtn">
       <div class="">
+        <button
+          type="button"
+          class="u-buttonLink"
+          :class="{
+            'is--active': show_filter_sort_pane,
+          }"
+          @click="show_filter_sort_pane = !show_filter_sort_pane"
+        >
+          <b-icon icon="filter" />
+          {{ $t("filters") }}
+        </button>
+      </div>
+
+      <div class="_searchField">
+        <label for="searchTitles" class="_prefix">
+          <b-icon icon="search" />
+        </label>
         <input
           type="text"
-          :placeholder="$t('search')"
+          name="searchTitles"
+          id="searchTitles"
+          :placeholder="$t('search_fields')"
           :value="search_str"
           @input="$emit('update:search_str', $event.target.value)"
         />
-        <div class="u-instructions">
-          {{ $t("search_fields") }}
+      </div>
+
+      <div class="u-sameRow">
+        <div>
+          <button
+            type="button"
+            class="u-button u-button_icon u-button_transparent"
+            :class="{
+              'is--active': fav_filter === true,
+            }"
+            @click="$emit('update:fav_filter', !fav_filter)"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.38174 1.75501C7.59507 1.19234 8.40241 1.19234 8.61641 1.75501L9.99641 5.57767C10.0931 5.83101 10.3391 5.99967 10.6137 5.99967H14.0051C14.6317 5.99967 14.9051 6.77967 14.4124 7.16167L11.9991 9.33301C11.891 9.41611 11.812 9.53132 11.7734 9.66211C11.7348 9.7929 11.7387 9.93255 11.7844 10.061L12.6657 13.7963C12.8804 14.3963 12.1857 14.9117 11.6604 14.5423L8.38241 12.4623C8.27015 12.3834 8.13628 12.3411 7.99907 12.3411C7.86187 12.3411 7.728 12.3834 7.61574 12.4623L4.33774 14.5423C3.81307 14.9117 3.11774 14.3957 3.33241 13.7963L4.21374 10.061C4.25946 9.93255 4.26331 9.7929 4.22475 9.66211C4.18618 9.53132 4.10718 9.41611 3.99907 9.33301L1.58574 7.16167C1.09241 6.77967 1.36707 5.99967 1.99241 5.99967H5.38374C5.51727 6.00012 5.64778 5.96001 5.75802 5.88466C5.86825 5.8093 5.95301 5.70225 6.00107 5.57767L7.38107 1.75501H7.38174Z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <!-- <b-icon v-if="!is_favorite" icon="star" :aria-label="$t('add')" />
+          <b-icon v-else icon="star-fill" :aria-label="$t('remove')" /> -->
+          </button>
         </div>
-      </div>
 
-      <div class="_sortSelect">
-        <DLabel :str="$t('sort_by')" />
-        <select
-          :value="sort_order"
-          @change="$emit('update:sort_order', $event.target.value)"
+        <button
+          class="u-button u-button_icon"
+          type="button"
+          :class="{
+            'is--active': view_mode === 'list',
+          }"
+          @click="$emit('update:view_mode', 'list')"
         >
-          <option value="date_modified" v-text="$t('date_modified')" />
-          <option value="date_created" v-text="$t('date_created')" />
-        </select>
+          <b-icon icon="grid3x3" />
+        </button>
+        <button
+          class="u-button u-button_icon"
+          type="button"
+          :class="{
+            'is--active': view_mode === 'map',
+          }"
+          @click="$emit('update:view_mode', 'map')"
+        >
+          <b-icon icon="map-fill" />
+        </button>
       </div>
+    </div>
 
-      <div>
-        <DLabel :str="$t('group_by_date')" />
-        <div class="_groupBy">
-          <div v-for="group_option in group_options" :key="group_option.key">
-            <input
-              type="radio"
-              :id="group_option.key"
-              :value="group_option.key"
-              :checked="group_mode === group_option.key"
-              @change="$emit('update:group_mode', $event.target.value)"
+    <transition name="pagechange">
+      <div class="_filterPane" v-if="show_filter_sort_pane">
+        <button
+          type="button"
+          class="u-buttonLink _closeBtn"
+          :class="{
+            'is--white': can_be_reset,
+          }"
+          @click="$emit('close')"
+        >
+          <b-icon icon="x-lg" />
+        </button>
+
+        <transition name="fade_fast" mode="out-in">
+          <button
+            type="button"
+            v-if="can_be_reset"
+            class="u-button u-button_black _resetFilters"
+            @click="resetFilters"
+          >
+            {{ $t("reset") }}
+          </button>
+        </transition>
+
+        <div class="">
+          <input
+            type="text"
+            :placeholder="$t('search')"
+            :value="search_str"
+            @input="$emit('update:search_str', $event.target.value)"
+          />
+          <div class="u-instructions">
+            {{ $t("search_fields") }}
+          </div>
+        </div>
+
+        <div class="_sortSelect">
+          <DLabel :str="$t('sort_by')" />
+          <select
+            :value="sort_order"
+            @change="$emit('update:sort_order', $event.target.value)"
+          >
+            <option value="date_modified" v-text="$t('date_modified')" />
+            <option value="date_created" v-text="$t('date_created')" />
+          </select>
+        </div>
+
+        <div>
+          <DLabel :str="$t('group_by_date')" />
+          <div class="_groupBy">
+            <div v-for="group_option in group_options" :key="group_option.key">
+              <input
+                type="radio"
+                :id="group_option.key"
+                :value="group_option.key"
+                :checked="group_mode === group_option.key"
+                @change="$emit('update:group_mode', $event.target.value)"
+              />
+              <label
+                :for="group_option.key"
+                v-text="group_option.label"
+                :class="{
+                  'is--selected': group_option.key === group_mode,
+                }"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="_typeFilter" v-if="false">
+          <!-- // not simple to do with stacks in folders… -->
+          <DLabel :str="$t('filter_by_type')" />
+          <select
+            :value="filetype_filter"
+            @change="$emit('update:filetype_filter', $event.target.value)"
+          >
+            <option
+              v-for="type_of_media in types_of_medias"
+              :key="type_of_media.key"
+              :value="type_of_media.key"
+              v-text="
+                type_of_media.label
+                // + ` (${quantityOfMediaWithType(type_of_media.key)})`
+              "
             />
-            <label
-              :for="group_option.key"
-              v-text="group_option.label"
+          </select>
+        </div>
+
+        <div class="_myContent">
+          <DLabel :str="$t('filter_by_author')" />
+          <select
+            :value="author_path_filter"
+            @change="$emit('update:author_path_filter', $event.target.value)"
+          >
+            <option value="" v-text="$t('none')" />
+            <option
+              v-for="author in all_authors"
+              :key="author.$path"
+              :value="author.$path"
+              v-text="author.name"
+            />
+          </select>
+        </div>
+
+        <div class="_tag">
+          <DLabel :str="$t('filter_by_keyword')" />
+
+          <div class="u-keywords _usedKw" v-if="keywords_filter.length > 0">
+            <SingleKeyword
+              v-for="keyword in keywords_filter"
+              :key="keyword"
+              :keyword="keyword"
+              :can_remove="true"
+              @remove="filterByKeyword(keyword)"
+            />
+          </div>
+          <div class="u-keywords">
+            <SingleKeyword
+              v-for="keyword in collapsable_keywords"
+              :key="keyword.title"
+              :keyword="keyword.title"
+              :count="keyword.count"
+              :can_add="true"
+              @add="filterByKeyword(keyword.title)"
+            />
+
+            <button
+              type="button"
+              v-if="available_keywords_except_active.length > 10"
+              class="u-buttonLink"
+              @click="show_all_keywords = !show_all_keywords"
               :class="{
-                'is--selected': group_option.key === group_mode,
+                'is--active': show_all_keywords,
               }"
-            />
+            >
+              {{ $t("show_all_keywords") }}
+            </button>
           </div>
         </div>
       </div>
-
-      <div class="_typeFilter" v-if="false">
-        <!-- // not simple to do with stacks in folders… -->
-        <DLabel :str="$t('filter_by_type')" />
-        <select
-          :value="filetype_filter"
-          @change="$emit('update:filetype_filter', $event.target.value)"
-        >
-          <option
-            v-for="type_of_media in types_of_medias"
-            :key="type_of_media.key"
-            :value="type_of_media.key"
-            v-text="
-              type_of_media.label
-              // + ` (${quantityOfMediaWithType(type_of_media.key)})`
-            "
-          />
-        </select>
-      </div>
-
-      <div class="_myContent">
-        <DLabel :str="$t('filter_by_author')" />
-        <select
-          :value="author_path_filter"
-          @change="$emit('update:author_path_filter', $event.target.value)"
-        >
-          <option value="" v-text="$t('none')" />
-          <option
-            v-for="author in all_authors"
-            :key="author.$path"
-            :value="author.$path"
-            v-text="author.name"
-          />
-        </select>
-      </div>
-
-      <div class="_tag">
-        <DLabel :str="$t('filter_by_keyword')" />
-
-        <div class="u-keywords _usedKw" v-if="keywords_filter.length > 0">
-          <SingleKeyword
-            v-for="keyword in keywords_filter"
-            :key="keyword"
-            :keyword="keyword"
-            :can_remove="true"
-            @remove="filterByKeyword(keyword)"
-          />
-        </div>
-
-        <div class="_searchKW">
-          <input type="text" v-model="kw_search" :placeholder="$t('search')" />
-        </div>
-        <div class="u-keywords">
-          <SingleKeyword
-            v-for="keyword in collapsable_keywords"
-            :key="keyword.title"
-            :keyword="keyword.title"
-            :count="keyword.count"
-            :can_add="true"
-            @add="filterByKeyword(keyword.title)"
-          />
-
-          <button
-            type="button"
-            v-if="available_keywords_except_active.length > 10"
-            class="u-buttonLink"
-            @click="show_all_keywords = !show_all_keywords"
-            :class="{
-              'is--active': show_all_keywords,
-            }"
-          >
-            {{ $t("show_all_keywords") }}
-          </button>
-        </div>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -156,14 +234,18 @@ export default {
     search_str: String,
     filetype_filter: String,
     author_path_filter: String,
-    keywords_filter: Array,
     available_keywords: Array,
+    keywords_filter: Array,
+    fav_filter: Boolean,
+    view_mode: String,
   },
   components: {
     SingleKeyword,
   },
   data() {
     return {
+      show_filter_sort_pane: false,
+
       all_authors: [],
 
       show_all_keywords: false,
@@ -224,10 +306,11 @@ export default {
   i18n: {
     messages: {
       fr: {
-        search_fields: "Dans les champs titre et description des documents.",
+        search_fields:
+          "Rechercher dans les champs titre et description des documents.",
       },
       en: {
-        search_fields: "In titles or descriptions of documents.",
+        search_fields: "Search in titles or descriptions of documents.",
       },
     },
   },
@@ -291,21 +374,29 @@ export default {
 ._filterBar {
   position: relative;
   z-index: 1;
-  border: 2px solid currentColor;
 
-  select,
-  input {
-    &:not(.is--dark) {
-      background-color: white;
-    }
-  }
+  // select,
+  // input {
+  //   &:not(.is--dark) {
+  //     background-color: white;
+  //   }
+  // }
 }
 
-._filterBar--content {
+._topBtn {
   display: flex;
-  flex-flow: column nowrap;
-  gap: calc(var(--spacing) * 1);
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1);
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  padding: 0 0 calc(var(--spacing) * 1) 0;
+  border-bottom: 1px solid var(--h-500);
+  margin: calc(var(--spacing) / 1);
+
+  > * {
+    flex: 0 0 auto;
+  }
 }
 
 ._groupBy {
@@ -361,6 +452,39 @@ export default {
 
   &.is--white {
     color: white;
+  }
+}
+
+._searchField {
+  flex: 1 1 100px;
+
+  display: flex;
+  flex-flow: row nowrap;
+  border: 1px solid var(--h-500);
+  border-radius: 4px;
+  max-width: 420px;
+
+  ._prefix {
+    padding: 0.5rem 0.6rem 0.3rem;
+    background: var(--h-500);
+    color: var(--h-200);
+  }
+
+  input {
+    background: transparent;
+    min-width: 20ch;
+    color: var(--h-700);
+
+    &::placeholder {
+      font-style: italic;
+      color: var(--h-500);
+      font-size: var(--sl-font-size-small);
+    }
+
+    &:hover,
+    &:focus-visible {
+      border: none;
+    }
   }
 }
 </style>

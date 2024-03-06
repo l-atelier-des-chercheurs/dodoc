@@ -196,7 +196,7 @@ export default {
   }
 
   &.is--selected {
-    border-color: var(--active-color);
+    background-color: var(--active-color);
   }
   &.is--slider {
     background: var(--h-200);

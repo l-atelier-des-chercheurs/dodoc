@@ -193,7 +193,7 @@ export default {
 ._previewOverlay {
   position: absolute;
   inset: 0;
-  background-color: var(--sd-separator);
+  background-color: var(--h-700);
   opacity: 0.9;
 }
 

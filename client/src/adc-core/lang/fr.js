@@ -855,7 +855,7 @@ export default {
   require_mail_to_signup:
     "Une adresse courriel est obligatoire pour créer un compte",
   enable_events: "Activer la fonctionnalité « événements »",
-  filter_sort: "Filtrer/classer",
+  filters: "Filtres",
 
   you_must_login_to_contribute:
     "Vous devez vous inscrire ou vous connecter pour contribuer",

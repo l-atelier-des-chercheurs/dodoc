@@ -158,7 +158,7 @@ export default {
   deselect_all: "Deselect all",
   remove_all: "Remove all",
   remove_select: "Remove selection",
-  filter_sort: "Filter/Sort",
+  filters: "Filters",
   help_contact: "help/contact",
   sort_by: "Sort by",
   group_by_date: "Group by date",

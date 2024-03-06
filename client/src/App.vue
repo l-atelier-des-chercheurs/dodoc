@@ -308,7 +308,7 @@ html {
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--h-900);
+  color: var(--h-700);
 }
 body {
   min-height: 100%;
