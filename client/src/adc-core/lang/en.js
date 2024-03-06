@@ -314,9 +314,9 @@ export default {
 
   administration_and_access_control: "Administration et contrôle des accès",
   logo_and_images: "Logo et images",
-  fonts: "Famille de caractère",
-  add_font: "Ajouter une famille de caractère",
-  font_name: "Nom de la famille de caractère",
+  fonts: "Famille de caractères",
+  add_font: "Ajouter une famille de caractères",
+  font_name: "Nom de la famille de caractères",
   font_regular: "Régulier (400)",
   font_bold: "Gras (700)",
   font_normal: "Normal",
