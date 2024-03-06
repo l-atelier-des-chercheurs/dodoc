@@ -314,9 +314,11 @@ export default {
 
   administration_and_access_control: "Administration and access control",
   logo_and_images: "Logo and images",
-  fonts: "Character family",
-  add_font: "Add a character family",
-  font_name: "Character family name",
+  fonts: "Typeface",
+  add_font: "Add a typeface",
+  font_name: "Typeface name",
+  font_instr:
+    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant.",
   font_regular: "Regular (400)",
   font_bold: "Bold (700)",
   font_normal: "Normal",
@@ -450,8 +452,6 @@ export default {
   sending: "In progress",
   feels: "Sent",
   retry: "Retry",
-  font_instr:
-    "\n First import the 4 files necessary for the integration of a new character family in woff2 format. \n Then indicate the corresponding file for each element.\n ",
   reload_page_to_apply: "After saving these changes, reload this page.",
   import_instructions: "Import from another device",
   show_meta: "Show metadata",
