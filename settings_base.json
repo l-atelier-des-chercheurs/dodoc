@@ -55,6 +55,12 @@
       },
       "general_password": {
         "type": "string"
+      },
+      "signup_password": {
+        "type": "string"
+      },
+      "require_mail_to_signup": {
+        "type": "boolean"
       }
     },
     "$folders": {

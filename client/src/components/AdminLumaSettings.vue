@@ -80,6 +80,27 @@
               :can_edit="is_instance_admin"
             />
             <br />
+
+            <TitleField
+              :field_name="'signup_password'"
+              :label="$t('signup_password')"
+              :instructions="$t('signup_password_instructions')"
+              :content="settings.signup_password"
+              :path="settings.$path"
+              :required="false"
+              :can_edit="is_instance_admin"
+            />
+            <br />
+
+            <ToggleField
+              :label="$t('require_mail_to_signup')"
+              :field_name="'require_mail_to_signup'"
+              :content="settings.require_mail_to_signup === true"
+              :path="settings.$path"
+              :can_edit="is_instance_admin"
+            />
+            <br />
+
             <TitleField
               :field_name="'contactmail_of_instance'"
               :label="$t('contactmail_of_instance')"
