@@ -186,11 +186,12 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
+  gap: 2px;
 
   margin-top: 2px;
-  padding: 0;
+  padding: 2px;
   background: white;
-  border: 2px solid var(--c-gris);
+  // border: 2px solid var(--c-gris);
   border-radius: 4px;
   max-width: 40ch;
 
@@ -208,6 +209,7 @@ export default {
 
     width: 100%;
     text-align: left;
+    border-radius: 2px;
 
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
