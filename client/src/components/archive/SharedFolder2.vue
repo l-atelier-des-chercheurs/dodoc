@@ -353,8 +353,9 @@ export default {
 }
 
 ._label {
-  font-weight: 500;
+  font-weight: 600;
   font-size: var(--sl-font-size-large);
+  margin: calc(var(--spacing) * 1) 0;
 }
 
 ._stackModal {
