@@ -229,10 +229,8 @@ button,
 
 .u-button_icon {
   padding: calc(var(--spacing) / 2);
-  // margin: calc(var(--spacing) / -4);
-  background: rgba(255, 255, 255, 0.4);
+  background: transparent;
   border-radius: 50%;
-
   font-size: var(--sl-font-size-medium);
 
   color: inherit;
