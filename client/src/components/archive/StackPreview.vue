@@ -181,7 +181,7 @@ export default {
   position: relative;
   // box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   background: transparent;
-  border: 2px solid var(--c-bodybg);
+  // border: 2px solid var(--c-bodybg);
   cursor: pointer;
 
   border-radius: 2px;
@@ -196,7 +196,7 @@ export default {
   }
 
   &.is--selected {
-    border-color: var(--c-rouge);
+    border-color: var(--active-color);
   }
   &.is--slider {
     background: var(--h-200);
@@ -229,12 +229,12 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
+    // max-height: 10rem;
 
     ::v-deep {
       ._mediaContent--image {
         height: 100%;
         width: 100%;
-        max-height: 10rem;
         object-fit: contain;
         object-position: center;
       }

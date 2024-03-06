@@ -422,9 +422,9 @@ export default {
 }
 
 ._stackModal {
-  --sd-separator: rgb(209, 209, 209);
-  --sd-textcolor: #333;
-  --sd-bg: rgb(245, 245, 245);
+  --sd-separator: var(--active-color);
+  --sd-textcolor: var(--h-900);
+  --sd-bg: var(--body-bg);
 }
 
 ._footer {

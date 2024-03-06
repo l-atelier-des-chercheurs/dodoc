@@ -246,7 +246,7 @@ export default {
   width: 100%;
   // padding: 2px;
   padding: calc(var(--spacing) / 4) 0;
-  margin-bottom: -1px;
+  margin-bottom: 1px;
   overflow: hidden;
   border-radius: 4px;
   color: var(--h-500);

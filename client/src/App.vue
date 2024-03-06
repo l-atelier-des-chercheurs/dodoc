@@ -443,7 +443,7 @@ img {
   position: relative;
   background-color: transparent;
   // border-left: 1px solid #eee;
-  z-index: 10001;
+  z-index: 11;
   border: 0px;
 
   pointer-events: none;
@@ -822,7 +822,7 @@ img {
 }
 .anim_backgroundPosition {
   background-color: var(--active-color);
-  animation: background-position 0.5s infinite;
+  animation: background-position 2s infinite;
   animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;
   animation-direction: alternate;

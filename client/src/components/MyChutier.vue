@@ -538,6 +538,7 @@ export default {
   top: 0;
   height: 100%;
   overflow: auto;
+  min-width: 200px;
   padding-bottom: 80px;
 
   @include scrollbar(4px, 4px, 5px, transparent, white);
@@ -601,16 +602,18 @@ export default {
   cursor: pointer;
   font-weight: 500;
   margin-bottom: 4px;
+  color: var(--h-400);
 
-  opacity: 0.6;
+  // opacity: 0.8;
   transition: all 0.25s ease-out;
 
-  &:hover {
-    color: var(--h-400);
+  &:hover,
+  &:focus-visible {
+    color: var(--h-200);
   }
 
   &.is--fullySelected {
-    opacity: 1;
+    // opacity: 1;
     color: var(--active-color);
   }
 }
