@@ -814,26 +814,17 @@ img {
 
 @keyframes background-position {
   from {
-    background-position: 0 0;
+    opacity: 1;
   }
   to {
-    background-position: 100% 100%;
+    opacity: 0;
   }
 }
 .anim_backgroundPosition {
-  background-image: linear-gradient(
-    135deg,
-    transparent 25%,
-    currentColor 25%,
-    currentColor 50%,
-    transparent 50%,
-    transparent 75%,
-    currentColor 75%,
-    currentColor
-  );
-  background-size: 7px 7px;
-  animation: background-position 3s infinite;
-  animation-timing-function: linear;
-  background-position: 0 0;
+  background-color: var(--active-color);
+  animation: background-position 0.5s infinite;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+  animation-direction: alternate;
 }
 </style>

@@ -15,7 +15,7 @@
       @drop="drop"
     >
       <div class="_topContent">
-        <template v-if="!stack">+</template>
+        <div v-if="!stack" class="_plus">+</div>
         <template v-else>
           <MediaContent
             v-if="stack.$preview"
@@ -294,9 +294,9 @@ export default {
   text-shadow: #000 1px 0 10px;
 
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: var(--sl-font-size-x-large);
+  justify-content: flex-start;
+  align-items: flex-start;
+  font-size: var(--sl-font-size-medium);
 }
 
 .anim_backgroundPosition {
@@ -326,6 +326,7 @@ export default {
   z-index: 2;
 }
 
-._stackModal {
+._plus {
+  color: var(--active-color);
 }
 </style>
