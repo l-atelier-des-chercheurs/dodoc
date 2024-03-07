@@ -203,7 +203,7 @@ export default {
   },
   data() {
     return {
-      show_filter_sort_pane: true,
+      show_filter_sort_pane: false,
 
       all_authors: [],
 
