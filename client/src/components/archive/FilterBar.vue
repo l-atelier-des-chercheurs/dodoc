@@ -15,7 +15,7 @@
         </button>
       </div>
 
-      <div class="_searchField">
+      <div class="_inputBorder _searchField">
         <label for="searchTitles" class="_prefix">
           <b-icon icon="search" />
         </label>
@@ -82,7 +82,7 @@
 
     <transition name="pagechange">
       <div class="_filterPane" v-if="show_filter_sort_pane">
-        <button
+        <!-- <button
           type="button"
           class="u-buttonLink _closeBtn"
           :class="{
@@ -91,86 +91,32 @@
           @click="$emit('close')"
         >
           <b-icon icon="x-lg" />
-        </button>
-
-        <transition name="fade_fast" mode="out-in">
-          <button
-            type="button"
-            v-if="can_be_reset"
-            class="u-button u-button_black _resetFilters"
-            @click="resetFilters"
-          >
-            {{ $t("reset") }}
-          </button>
-        </transition>
-
-        <div class="">
-          <input
-            type="text"
-            :placeholder="$t('search')"
-            :value="search_str"
-            @input="$emit('update:search_str', $event.target.value)"
-          />
-          <div class="u-instructions">
-            {{ $t("search_fields") }}
-          </div>
-        </div>
-
-        <div class="_sortSelect">
-          <DLabel :str="$t('sort_by')" />
+        </button> -->
+        <div class="_filterPane--row">
           <select
+            class="_selectField"
             :value="sort_order"
             @change="$emit('update:sort_order', $event.target.value)"
           >
             <option value="date_modified" v-text="$t('date_modified')" />
             <option value="date_created" v-text="$t('date_created')" />
           </select>
-        </div>
 
-        <div>
-          <DLabel :str="$t('group_by_date')" />
-          <div class="_groupBy">
-            <div v-for="group_option in group_options" :key="group_option.key">
-              <input
-                type="radio"
-                :id="group_option.key"
-                :value="group_option.key"
-                :checked="group_mode === group_option.key"
-                @change="$emit('update:group_mode', $event.target.value)"
-              />
-              <label
-                :for="group_option.key"
-                v-text="group_option.label"
-                :class="{
-                  'is--selected': group_option.key === group_mode,
-                }"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="_typeFilter" v-if="false">
-          <!-- // not simple to do with stacks in folders… -->
-          <DLabel :str="$t('filter_by_type')" />
           <select
-            :value="filetype_filter"
-            @change="$emit('update:filetype_filter', $event.target.value)"
+            class="_selectField"
+            :value="group_mode"
+            @change="$emit('update:group_mode', $event.target.value)"
           >
             <option
-              v-for="type_of_media in types_of_medias"
-              :key="type_of_media.key"
-              :value="type_of_media.key"
-              v-text="
-                type_of_media.label
-                // + ` (${quantityOfMediaWithType(type_of_media.key)})`
-              "
+              v-for="group_option in group_options"
+              :key="group_option.key"
+              :value="group_option.key"
+              v-text="group_option.label"
             />
           </select>
-        </div>
 
-        <div class="_myContent">
-          <DLabel :str="$t('filter_by_author')" />
           <select
+            class="_selectField"
             :value="author_path_filter"
             @change="$emit('update:author_path_filter', $event.target.value)"
           >
@@ -182,41 +128,54 @@
               v-text="author.name"
             />
           </select>
-        </div>
 
-        <div class="_tag">
-          <DLabel :str="$t('filter_by_keyword')" />
-
-          <div class="u-keywords _usedKw" v-if="keywords_filter.length > 0">
-            <SingleKeyword
-              v-for="keyword in keywords_filter"
-              :key="keyword"
-              :keyword="keyword"
-              :can_remove="true"
-              @remove="filterByKeyword(keyword)"
-            />
-          </div>
-          <div class="u-keywords">
-            <SingleKeyword
-              v-for="keyword in collapsable_keywords"
-              :key="keyword.title"
-              :keyword="keyword.title"
-              :count="keyword.count"
-              :can_add="true"
-              @add="filterByKeyword(keyword.title)"
-            />
-
+          <transition name="fade_fast" mode="out-in">
             <button
               type="button"
-              v-if="available_keywords_except_active.length > 10"
-              class="u-buttonLink"
-              @click="show_all_keywords = !show_all_keywords"
-              :class="{
-                'is--active': show_all_keywords,
-              }"
+              v-if="can_be_reset"
+              class="u-buttonLink _resetFilters"
+              @click="resetFilters"
             >
-              {{ $t("show_all_keywords") }}
+              {{ $t("reset") }}
             </button>
+          </transition>
+        </div>
+
+        <div class="_filterPane--row">
+          <div class="_tag">
+            <DLabel :str="$t('filter_by_keyword')" />
+
+            <div class="u-keywords _usedKw" v-if="keywords_filter.length > 0">
+              <SingleKeyword
+                v-for="keyword in keywords_filter"
+                :key="keyword"
+                :keyword="keyword"
+                :can_remove="true"
+                @remove="filterByKeyword(keyword)"
+              />
+            </div>
+            <div class="u-keywords">
+              <SingleKeyword
+                v-for="keyword in collapsable_keywords"
+                :key="keyword.title"
+                :keyword="keyword.title"
+                :count="keyword.count"
+                :can_add="true"
+                @add="filterByKeyword(keyword.title)"
+              />
+
+              <button
+                type="button"
+                v-if="available_keywords_except_active.length > 10"
+                class="u-buttonLink"
+                @click="show_all_keywords = !show_all_keywords"
+                :class="{
+                  'is--active': show_all_keywords,
+                }"
+              >
+                {{ $t("show_all_keywords") }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -244,7 +203,7 @@ export default {
   },
   data() {
     return {
-      show_filter_sort_pane: false,
+      show_filter_sort_pane: true,
 
       all_authors: [],
 
@@ -374,6 +333,8 @@ export default {
 ._filterBar {
   position: relative;
   z-index: 1;
+  margin: calc(var(--spacing) / 1);
+  border-bottom: 1px solid var(--h-500);
 
   // select,
   // input {
@@ -389,40 +350,25 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: calc(var(--spacing) / 2);
-
-  padding: 0 0 calc(var(--spacing) * 1) 0;
-  border-bottom: 1px solid var(--h-500);
-  margin: calc(var(--spacing) / 1);
+  padding-bottom: calc(var(--spacing) * 1);
 
   > * {
     flex: 0 0 auto;
   }
 }
 
-._groupBy {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  gap: calc(var(--spacing) / 1);
-
-  input {
-    visibility: hidden;
-    width: 1px;
-    height: 1px;
-    display: none;
-  }
-
-  label {
-    cursor: pointer;
-    &.is--selected {
-      font-weight: 600;
-    }
-  }
+._filterPane {
 }
 
-._sortSelect {
-  // width: 33ch;
-  width: 100%;
+._filterPane--row {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) * 1);
+
+  > * {
+    flex: 1 1 100px;
+  }
 }
 
 ._usedKw {
@@ -436,13 +382,7 @@ export default {
 }
 
 ._resetFilters {
-  position: sticky;
-  z-index: 11;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: calc(var(--spacing) / 2);
-  border-radius: 0;
+  flex: 0 0 100px;
 }
 ._closeBtn {
   position: absolute;
@@ -455,9 +395,17 @@ export default {
   }
 }
 
-._searchField {
-  flex: 1 1 100px;
+._selectField {
+  border: 1px solid var(--h-500);
+  border-radius: 4px;
+  // max-width: 420px;
+  min-width: 20ch;
+  color: var(--h-700);
 
+  background-color: transparent;
+}
+
+._inputBorder {
   display: flex;
   flex-flow: row nowrap;
   border: 1px solid var(--h-500);
@@ -486,5 +434,9 @@ export default {
       border: none;
     }
   }
+}
+
+._searchField {
+  flex: 1 1 100px;
 }
 </style>
