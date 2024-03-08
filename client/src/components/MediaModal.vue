@@ -142,6 +142,8 @@
           <small class="fieldCaption">{{ file.$media_filename }}</small>
         </div>
 
+        <hr class="u-spacingBottom" />
+
         <div class="u-spacingBottom">
           <TitleField
             :label="$t('caption')"
