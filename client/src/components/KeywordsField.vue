@@ -27,7 +27,7 @@
         :keywords="new_keywords"
         @update:keywords="new_keywords = $event"
       />
-      <div class="_footer">
+      <div slot="footer">
         <SaveCancelButtons
           class="_scb"
           @save="updateKeywords"
