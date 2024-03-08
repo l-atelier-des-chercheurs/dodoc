@@ -27,6 +27,7 @@
           <footer class="_footer" v-if="$slots.hasOwnProperty('footer')">
             <slot name="footer" />
           </footer>
+          <div v-else class="_noFooterMargin" />
         </div>
       </div>
     </transition>
@@ -142,9 +143,7 @@ header {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-
   padding: calc(var(--spacing) * 1);
-  width: 100%;
   h2 {
     font-weight: 600;
     font-size: var(--sl-font-size-x-large);
@@ -178,8 +177,11 @@ header {
 }
 ._footer {
   text-align: center;
-  padding: var(--spacing);
-  // border-top: 2px solid #e5e5e5;
+  padding: calc(var(--spacing) * 1);
+}
+
+._noFooterMargin {
+  margin-bottom: calc(var(--spacing) * 1);
 }
 
 @keyframes reveal {
