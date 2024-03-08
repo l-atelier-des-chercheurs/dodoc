@@ -198,6 +198,7 @@ export default {
   exports: "Exportations",
   export: "Exportation",
   to_export: "Exporter",
+  export_in_progress: "Exportation en cours",
 
   story_width: "Largeur du récit",
   summary: "Sommaire",
@@ -375,7 +376,7 @@ export default {
   "displayed:": "Affichés&nbsp;:",
   media_removed: "Média supprimé",
   media_duplicated: "Média dupliqué",
-  media_was_saved: "Le média a été ajouté au projet",
+  media_was_saved_to_project: "Le média a été ajouté au projet",
 
   CC: "Creative Commons",
   authors_and_license: "Licence et auteurs",
@@ -990,4 +991,6 @@ export default {
     "Les utilisateurs doivent accepter les conditions d’utilisation pour s’inscrire",
   click_here_to_read: "Cliquez ici pour les lire.",
   i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
+
+  page_to_export: "Page à exporter",
 };

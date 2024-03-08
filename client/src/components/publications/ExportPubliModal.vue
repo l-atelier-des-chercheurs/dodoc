@@ -1,29 +1,83 @@
 <template>
   <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
-    <button
-      type="button"
-      class="u-buttonLink _exportBtn"
-      :disabled="is_exporting"
-      @click="exportPublication"
-    >
-      <sl-icon name="filetype-pdf" />
-      {{ $t("export_in_pdf") }}
-    </button>
+    <div v-if="!task_instructions">
+      <div class="u-spacingBottom">
+        <DLabel :str="$t('document_type')" />
+        <RadioCheckboxInput
+          :value.sync="export_mode"
+          :options="export_options"
+          :can_edit="true"
+        />
+      </div>
 
-    <transition name="fade_fast" :duration="150" mode="out-in">
-      <LoaderSpinner v-if="is_exporting" />
-    </transition>
+      <template v-if="export_mode === 'pdf'">
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          @click="exportPublication('pdf')"
+        >
+          <sl-icon name="filetype-pdf" />
+          {{ $t("create") }}
+        </button>
+      </template>
+      <template v-else-if="export_mode === 'image'">
+        <template v-if="publication.template === 'page_by_page'">
+          <div class="u-spacingBottom">
+            <DLabel :str="$t('page_to_export')" />
+            <select v-model="page_to_export_as_image">
+              <option
+                v-for="(a, i) in new Array(page_count)"
+                :key="i + 1"
+                v-text="i + 1"
+              />
+            </select>
+          </div>
+
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="exportPublication('png')"
+          >
+            <b-icon icon="file-earmark-image" />
+            {{ $t("create") }}
+          </button>
+        </template>
+      </template>
+    </div>
+    <ExportItemAndSaveOrDownload
+      v-else
+      :publication_path="publication.$path"
+      :instructions="task_instructions"
+      @close="$emit('close')"
+    />
   </BaseModal2>
 </template>
 <script>
+import ExportItemAndSaveOrDownload from "@/components/publications/ExportItemAndSaveOrDownload.vue";
+
 export default {
   props: {
     publication: Object,
   },
-  components: {},
+  components: {
+    ExportItemAndSaveOrDownload,
+  },
   data() {
     return {
-      is_exporting: false,
+      task_instructions: false,
+      page_to_export_as_image: 1,
+
+      export_mode: "pdf",
+      export_options: [
+        {
+          key: "pdf",
+          label: this.$t("pdf"),
+        },
+        {
+          key: "image",
+          label: this.$t("image"),
+        },
+      ],
     };
   },
   i18n: {
@@ -35,39 +89,28 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    page_count() {
+      return this.publication.pages.length;
+    },
+  },
   methods: {
-    async exportPublication() {
+    async exportPublication(export_type) {
       const additional_meta = {};
       additional_meta.$origin = "publish";
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
       let instructions = {
-        recipe: "pdf",
+        recipe: export_type,
         page_width: this.publication.page_width,
         page_height: this.publication.page_height,
         layout_mode: this.publication.layout_mode || "print",
         suggested_file_name: this.publication.title,
         additional_meta,
       };
-
       if (this.publication.page_spreads === true) instructions.page_width *= 2;
-
-      const current_task_id = await this.$api.exportFolder({
-        path: this.publication.$path,
-        instructions,
-      });
-      this.$alertify.delay(4000).log(this.$t("compilation_started"));
-
-      this.is_exporting = true;
-
-      const checkIfEnded = ({ task_id }) => {
-        if (task_id !== current_task_id) return;
-        this.is_exporting = false;
-        this.$eventHub.$off("task.ended", checkIfEnded);
-      };
-      this.$eventHub.$on("task.ended", checkIfEnded);
+      this.task_instructions = instructions;
     },
   },
 };

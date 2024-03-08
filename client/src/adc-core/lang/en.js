@@ -479,6 +479,7 @@ export default {
   exports: "Exports",
   export: "Export",
   to_export: "Export",
+  export_in_progress: "Export in progress",
 
   untitled: "Untitled",
   responsive: "Fluid",
@@ -590,7 +591,7 @@ export default {
   "displayed:": "Displayed:",
   media_removed: "Media deleted",
   media_duplicated: "Media duplicated",
-  media_was_saved: "The media was added to the project",
+  media_was_saved_to_project: "The media was added to the project",
   close: "Close",
   settings: "Settings",
   list_of_pages: "List of pages",
@@ -926,4 +927,6 @@ export default {
     "Users must accept the terms of use to register",
   click_here_to_read: "Click here to read them.",
   i_read_and_accept_terms: "I accept the terms of use",
+
+  page_to_export: "Page to export",
 };

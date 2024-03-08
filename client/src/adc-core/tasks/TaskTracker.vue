@@ -30,7 +30,7 @@
           type="button"
           v-if="task.progress < 100"
           @click="abortTask(task.id)"
-          class="u-button u-button_icon u-button_red"
+          class="u-button u-button_red"
         >
           <b-icon icon="x-octagon" />
           {{ $t("stop") }}
