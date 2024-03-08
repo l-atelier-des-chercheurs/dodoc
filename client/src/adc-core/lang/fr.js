@@ -57,6 +57,7 @@ export default {
   filename: "Nom du fichier",
 
   open_in_finder: "Ouvrir dans l’explorateur",
+  keyword_materials_etc: "Mots-clés, materiaux, positions géographiques, etc.",
   complete_or_correct_title_kw:
     "Complétez ou corrigez ce titre et mots-clés pour partager cet élément",
 
