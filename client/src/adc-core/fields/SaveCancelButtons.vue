@@ -1,19 +1,11 @@
 <template>
   <div class="_saveCancelBtns">
-    <button
-      :size="pill_size"
-      variant="default"
-      pill
-      class="u-button u-button_white"
-      @click="$emit('cancel')"
-    >
-      <b-icon icon="x-circle" />
+    <button class="u-buttonLink _cancelBtn" @click="$emit('cancel')">
+      <!-- <b-icon icon="x-circle" /> -->
+      {{ $t("cancel") }}
       <!-- {{ $t("back") }} -->
     </button>
     <button
-      :size="pill_size"
-      variant="success"
-      pill
       class="u-button u-button_bleuvert"
       :loading="is_saving"
       :disabled="!allow_save"
@@ -32,10 +24,6 @@ export default {
     autofocus_save: {
       type: Boolean,
       default: false,
-    },
-    pill_size: {
-      type: String,
-      default: "small",
     },
     allow_save: {
       type: Boolean,
@@ -57,6 +45,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._cancelBtn {
+  padding: calc(var(--spacing) / 2);
+}
 ._saveCancelBtns {
   display: flex;
   gap: calc(var(--spacing) / 4);

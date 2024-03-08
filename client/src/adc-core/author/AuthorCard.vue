@@ -59,7 +59,7 @@
 
           <div v-if="context === 'full'" class="u-spacingBottom" />
 
-          <div class="u-spacingBottom" v-if="author.group || can_edit">
+          <div v-if="author.group || can_edit">
             <TagsField
               :label="context === 'full' ? $t('group') : undefined"
               :field_name="'group'"
@@ -69,6 +69,8 @@
               :can_edit="can_edit"
             />
           </div>
+
+          <div v-if="context === 'full'" class="u-spacingBottom" />
 
           <div v-if="can_edit" class="u-spacingBottom">
             <TitleField
@@ -223,6 +225,10 @@ export default {
   &[data-isself]:not([data-context="full"]) {
     border: 1px solid var(--c-bleumarine);
     background-color: var(--c-bleumarine_clair);
+  }
+
+  &:not([data-context="full"]) {
+    background: white;
   }
 
   ._topbar {

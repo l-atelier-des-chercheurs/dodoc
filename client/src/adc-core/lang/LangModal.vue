@@ -1,12 +1,14 @@
 <template>
   <BaseModal2 :title="$t('ui_lang_select')" @close="$emit('close')">
     <div class="_langSelect" :key="$i18n.locale">
-      <SelectField
-        :content="current_lang"
-        :can_edit="true"
-        :options="lang_options"
-        @update="updateLang"
-      />
+      <select v-model="current_lang">
+        <option
+          v-for="lang_option in lang_options"
+          :key="lang_option.key"
+          :value="lang_option.key"
+          v-text="lang_option.text"
+        />
+      </select>
     </div>
 
     <div class="" v-if="is_instance_admin">
@@ -191,6 +193,9 @@ export default {
       },
       deep: true,
     },
+    current_lang() {
+      this.updateLang(this.current_lang);
+    },
   },
   computed: {
     missing_translations() {
@@ -218,7 +223,7 @@ export default {
         .closeLogOnClick(true)
         .delay(4000)
         .success(this.$t("lang_updated"));
-      this.$emit("close");
+      // this.$emit("close");
     },
     async loadMissingTranslations() {
       const translations = await this.$root.findMissingTranslations();
