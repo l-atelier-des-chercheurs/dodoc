@@ -599,11 +599,15 @@ hr {
   position: absolute;
   top: 0;
   right: 0;
-  margin: calc(var(--spacing) / 4);
+  margin: 0;
   z-index: 8;
+  left: 100%;
+  background: var(--active-color);
+  border-radius: 0;
+  padding: calc(var(--spacing) / 4);
 }
 
 ._addToColl {
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
 }
 </style>

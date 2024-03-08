@@ -339,8 +339,8 @@ button {
 }
 
 hr {
-  margin-top: calc(var(--spacing) * 2);
-  margin-bottom: calc(var(--spacing) * 2);
+  margin-top: calc(var(--spacing) * 1);
+  margin-bottom: calc(var(--spacing) * 1);
   border: none;
   border-top: 1px solid var(--c-gris);
 }

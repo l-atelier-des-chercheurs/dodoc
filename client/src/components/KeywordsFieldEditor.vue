@@ -2,7 +2,6 @@
   <div class="_keywordsFieldEditor">
     <input
       type="text"
-      class="is--dark"
       v-model="user_suggestion"
       ref="keywordField"
       required
@@ -23,22 +22,33 @@
     </div>
 
     <div class="_catSug">
-      <div class="_categories">
+      <div class="_categories" v-if="!suggestion_from_category">
         <button
+          v-for="category in categories_with_keywords"
           type="button"
           class="u-button _category"
-          :class="{
-            'is--active': suggestion_from_category === category,
-          }"
-          v-for="category in categories_with_keywords"
           :key="category"
-          :data-category="category"
+          :style="getCatColor(category)"
           @click="toggleCategory(category)"
         >
           {{ category }}
           ({{ matchingKeywordsWithCategory(category).length }})
         </button>
       </div>
+      <div v-else>
+        <button
+          type="button"
+          class="u-button _category"
+          :style="getCatColor(suggestion_from_category)"
+          @click="toggleCategory(suggestion_from_category)"
+        >
+          {{ suggestion_from_category }}
+          ({{ matchingKeywordsWithCategory(suggestion_from_category).length }})
+          &nbsp;
+          <b-icon icon="x-circle" />
+        </button>
+      </div>
+
       <div class="_suggestions" v-if="suggested_keywords.length > 0">
         <div class="u-keywords">
           <SingleKeyword
@@ -145,6 +155,13 @@ export default {
         this.suggestion_from_category = false;
       else this.suggestion_from_category = category;
     },
+    getCatColor(category) {
+      const c = window.app_infos.custom_suggested_categories.find(
+        (c) => c.title === category
+      );
+      if (!c?.tag_color) return;
+      return `--cat-color: ${c.tag_color}`;
+    },
     newKeyword() {
       if (this.user_suggestion.length > 0)
         this.addKeyword(this.user_suggestion);
@@ -176,8 +193,9 @@ export default {
   margin-top: calc(var(--spacing) / 4);
 }
 ._suggestions {
+  margin-top: calc(var(--spacing) / 2);
   padding-top: calc(var(--spacing) / 2);
-  border-top: 2px solid var(--c-noir);
+  // border-top: 2px solid var(--c-noir);
 
   ._keyword {
     cursor: pointer;
@@ -185,40 +203,22 @@ export default {
 }
 
 ._catSug {
-  border-left: 2px solid black;
-  padding: calc(var(--spacing) / 2);
-  background: var(--c-noir);
+  // border-left: 2px solid black;
+  padding: calc(var(--spacing) / 2) 0;
+  // background: var(--c-noir);
 }
 
 ._categories {
   display: flex;
   flex-flow: row wrap;
   padding: 0;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
 }
 
 ._category {
-  background-color: rgba(255, 255, 255, 0.2);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   border-radius: 4px;
-  color: white;
   font-weight: 600;
-
-  &[data-category="techniques"] {
-    color: var(--color-vert);
-  }
-  &[data-category="gisement"] {
-    color: var(--color-rouge);
-  }
-  &[data-category="lieu"] {
-    color: var(--color-bleu);
-  }
-  &[data-category="domaine"] {
-    color: var(--color-jaune);
-  }
-
-  &.is--active {
-    background: black;
-  }
+  background: var(--cat-color);
 }
 </style>

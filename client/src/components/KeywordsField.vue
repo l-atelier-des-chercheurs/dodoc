@@ -1,33 +1,40 @@
 <template>
   <div class="_keywordsField">
     <DLabel v-if="label" class="_label" :str="label" />
-    <div class="u-keywords" v-if="new_keywords.length > 0">
+    <div class="u-keywords" v-if="keywords.length > 0">
       <SingleKeyword
-        v-for="keyword in new_keywords"
+        v-for="keyword in keywords"
         :key="keyword"
         :keyword="keyword"
-        :can_remove="edit_mode"
-        @remove="removeKeyword(keyword)"
       />
     </div>
-    <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+    <EditBtn v-if="can_edit" @click="enableEditMode" />
 
-    <template v-if="edit_mode">
+    <BaseModal2 :title="label" v-if="edit_mode" @close="edit_mode = false">
+      <div class="u-keywords" v-if="new_keywords.length > 0">
+        <SingleKeyword
+          v-for="keyword in new_keywords"
+          :key="keyword"
+          :keyword="keyword"
+          :can_remove="true"
+          @remove="removeKeyword(keyword)"
+        />
+      </div>
+
+      <hr />
+
       <KeywordsFieldEditor
         :keywords="new_keywords"
         @update:keywords="new_keywords = $event"
       />
-    </template>
-
-    <template v-if="can_edit && path && field_name">
-      <div class="_footer" v-if="edit_mode">
+      <div class="_footer">
         <SaveCancelButtons
           class="_scb"
           @save="updateKeywords"
           @cancel="cancel"
         />
       </div>
-    </template>
+    </BaseModal2>
   </div>
 </template>
 <script>

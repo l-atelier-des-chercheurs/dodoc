@@ -359,7 +359,7 @@ export default {
 }
 
 ._stackModal {
-  --sd-separator: var(--active-color);
+  --sd-separator: var(--h-200);
   --sd-textcolor: var(--h-900);
   --sd-bg: var(--body-bg);
 }
