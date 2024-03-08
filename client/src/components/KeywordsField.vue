@@ -46,7 +46,10 @@ export default {
     field_name: String,
     label: String,
     path: String,
-    keywords: Array,
+    keywords: {
+      type: Array,
+      default: () => [],
+    },
     can_edit: Boolean,
   },
   components: {
