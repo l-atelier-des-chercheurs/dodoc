@@ -40,7 +40,6 @@
                 :key="atpath"
                 :path="atpath"
                 :show_image_only="true"
-                :mode="'link'"
               />
             </div>
           </td>
@@ -126,6 +125,13 @@ td {
 
   tr {
     padding: calc(var(--spacing) / 2);
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--h-100);
+    }
+
     // background: white;
   }
 
@@ -142,6 +148,7 @@ td {
 
   td {
     padding: calc(var(--spacing) / 2);
+    // pointer-events: none;
   }
 }
 </style>
