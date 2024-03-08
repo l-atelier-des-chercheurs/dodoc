@@ -38,6 +38,7 @@
           :can_edit="can_edit && edit_mode"
         />
         <SaveCancelButtons
+          slot="footer"
           v-if="edit_mode"
           class="_scb"
           :is_saving="is_saving"

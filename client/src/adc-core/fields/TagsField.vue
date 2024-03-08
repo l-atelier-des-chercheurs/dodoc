@@ -64,14 +64,14 @@
         <div v-if="new_tag_name_already_exists" class="fieldCaption u-colorRed">
           {{ $t("already_added") }}
         </div>
-
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updateTags"
-          @cancel="cancel"
-        />
       </fieldset>
+      <SaveCancelButtons
+        slot="footer"
+        class="_scb"
+        :is_saving="is_saving"
+        @save="updateTags"
+        @cancel="cancel"
+      />
     </BaseModal2>
   </div>
 </template>
