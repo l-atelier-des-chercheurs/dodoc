@@ -1,28 +1,13 @@
 <template>
-  <nav aria-label="Fil d’ariane" class="_breadcrumb">
-    <button
-      type="button"
-      class="u-button u-button_icon _backButton"
-      v-if="$root.app_infos.is_electron"
-      @click="goBack"
-    >
-      <b-icon icon="chevron-left" />
-    </button>
-
-    <div class="_logo">
-      <component
-        :is="$route.name !== 'Accueil' ? 'router-link' : 'span'"
-        :to="`/`"
-      >
-        <DodocLogo class="_dodocLogo" v-if="instance_logo === 'dodoc'" />
-        <img class="_customLogo" v-else :src="instance_logo" />
-      </component>
-    </div>
-
+  <nav
+    aria-label="Fil d’ariane"
+    class="_breadcrumb"
+    v-if="show_space_name || show_project_name"
+  >
     <transition name="fade" mode="out-in">
       <div v-if="show_space_name">
-        <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
-        &nbsp;
+        <!-- <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
+        &nbsp; -->
         <component
           :is="$route.name === 'Projet' ? 'router-link' : 'span'"
           class="_spaceName"
@@ -57,13 +42,9 @@
   </nav>
 </template>
 <script>
-import DodocLogo from "@/components/nav/DodocLogo.vue";
-
 export default {
   props: {},
-  components: {
-    DodocLogo,
-  },
+  components: {},
   data() {
     return {
       space: undefined,
@@ -88,9 +69,6 @@ export default {
     },
   },
   computed: {
-    instance_logo() {
-      return this.$root.app_infos.instance_meta.topbar_thumb || "dodoc";
-    },
     show_space_name() {
       return this.$route.path.includes("/+");
     },
@@ -104,9 +82,6 @@ export default {
     },
     setProject(project) {
       this.project = project;
-    },
-    goBack() {
-      window.history.back();
     },
   },
 };
@@ -126,64 +101,24 @@ export default {
     overflow: hidden;
   }
 }
-
-._backButton {
-}
-
 ._name {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
-._logo {
-  flex: 0 0 auto;
+._spaceName {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  text-decoration: none;
+  gap: calc(var(--spacing) / 2);
 
-  svg {
-    width: 120px;
-  }
-
-  img {
-    width: auto;
-    border-radius: 4px;
-  }
-
-  svg,
-  img {
-    height: 40px;
-    object-fit: scale-down;
-    object-position: 0 0;
-  }
-
-  ._customLogo {
-    border-radius: 2px;
-    border: 2px solid var(--c-gris_clair);
-    transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-
-  a {
-    ._dodocLogo,
-    ._customLogo {
-      &:hover,
-      :focus-visible {
-        opacity: 0.9;
-        border-color: var(--c-gris);
-      }
-    }
-  }
-}
-
-a._spaceName {
   color: inherit;
-  // text-decoration: none;
 
-  &:hover {
+  &:is(a):hover {
     font-weight: 500;
   }
-}
-
-.u-label {
-  text-decoration: none;
 }
 
 ._arrowRight {
