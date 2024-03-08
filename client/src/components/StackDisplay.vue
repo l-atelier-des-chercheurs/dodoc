@@ -601,7 +601,6 @@ hr {
   right: 0;
   margin: 0;
   z-index: 8;
-  left: 100%;
   background: var(--active-color);
   border-radius: 0;
   padding: calc(var(--spacing) / 4);
