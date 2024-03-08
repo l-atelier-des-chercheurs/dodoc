@@ -109,7 +109,7 @@ export default {
     ._tag {
       &:hover,
       &:focus-visible {
-        background-color: var(--c-gris);
+        opacity: 0.8;
       }
     }
   }
@@ -126,7 +126,7 @@ export default {
     font-size: var(--sl-font-size-small);
   }
   select {
-    max-width: 13ch;
+    max-width: 15ch;
     background-image: var(--select-caret);
   }
 }
