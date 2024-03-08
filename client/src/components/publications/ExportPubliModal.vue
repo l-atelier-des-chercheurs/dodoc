@@ -1,6 +1,6 @@
 <template>
   <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
-    <div v-if="!task_instructions">
+    <div>
       <div class="u-spacingBottom">
         <DLabel :str="$t('document_type')" />
         <RadioCheckboxInput
@@ -20,7 +20,7 @@
           {{ $t("create") }}
         </button>
       </template>
-      <template v-else-if="export_mode === 'image'">
+      <template v-else-if="export_mode === 'png'">
         <template v-if="publication.template === 'page_by_page'">
           <div class="u-spacingBottom">
             <DLabel :str="$t('page_to_export')" />
@@ -32,23 +32,23 @@
               />
             </select>
           </div>
-
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="exportPublication('png')"
-          >
-            <b-icon icon="file-earmark-image" />
-            {{ $t("create") }}
-          </button>
         </template>
+
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          @click="exportPublication('png')"
+        >
+          <b-icon icon="file-earmark-image" />
+          {{ $t("create") }}
+        </button>
       </template>
     </div>
     <ExportItemAndSaveOrDownload
-      v-else
+      v-if="task_instructions"
       :publication_path="publication.$path"
       :instructions="task_instructions"
-      @close="$emit('close')"
+      @close="task_instructions = false"
     />
   </BaseModal2>
 </template>
@@ -74,7 +74,7 @@ export default {
           label: this.$t("pdf"),
         },
         {
-          key: "image",
+          key: "png",
           label: this.$t("image"),
         },
       ],
@@ -109,6 +109,8 @@ export default {
         suggested_file_name: this.publication.title,
         additional_meta,
       };
+      if (this.publication.template === "page_by_page")
+        instructions.page = this.page_to_export_as_image;
       if (this.publication.page_spreads === true) instructions.page_width *= 2;
       this.task_instructions = instructions;
     },

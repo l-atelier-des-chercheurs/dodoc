@@ -1,21 +1,22 @@
 <template>
-  <div>
-    <div v-if="is_exporting">
+  <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
+    <template v-if="is_exporting">
       <div class="u-instructions">
         {{ $t("export_in_progress") }}
       </div>
       <div class="">
         <b><AnimatedCounter :value="task_progress" /></b>
       </div>
-    </div>
-    <div v-else>
+    </template>
+    <template v-else>
       <MediaContent
         class="_preview"
+        v-if="created_doc"
         :file="created_doc"
         :resolution="1600"
         :context="'full'"
       />
-      <div class="u-sameRow">
+      <div class="u-sameRow" slot="footer">
         <a
           :disabled="!export_href"
           :download="export_name"
@@ -62,8 +63,8 @@
       <div class="_saveNotice" v-if="finished_saving_to_project">
         {{ $t("media_was_saved_to_project") }}
       </div>
-    </div>
-  </div>
+    </template>
+  </BaseModal2>
 </template>
 <script>
 export default {
@@ -126,16 +127,14 @@ export default {
         if (task_id !== current_task_id) return;
         this.$eventHub.$off("task.ended", checkIfEnded);
         this.$api.leave({ room: "task_" + current_task_id });
-        this.is_exporting = false;
-
         if (message.event === "completed") {
-          message.file;
           this.created_doc = message.file;
         } else if (message.event === "aborted") {
           //
         } else if (message.event === "failed") {
           message.info;
         }
+        this.is_exporting = false;
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
@@ -148,4 +147,8 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._preview {
+  border: 2px solid var(--c-gris);
+}
+</style>
