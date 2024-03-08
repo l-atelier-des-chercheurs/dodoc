@@ -9,24 +9,24 @@
         :data-size="size"
       >
         <div class="_baseModal--content">
-          <header v-if="title">
-            <h2>{{ title }}</h2>
+          <header v-if="title || is_closable">
+            <h2 v-if="title">{{ title }}</h2>
+
+            <button
+              v-if="is_closable"
+              type="button"
+              class="u-button u-button_icon _closeBtn"
+              @click="closeModal"
+            >
+              <b-icon icon="x-lg" :label="$t('close')" />
+            </button>
           </header>
           <div class="_content" v-if="$slots.hasOwnProperty('default')">
             <slot />
           </div>
-          <div class="_footer" v-if="$slots.hasOwnProperty('footer')">
+          <footer class="_footer" v-if="$slots.hasOwnProperty('footer')">
             <slot name="footer" />
-          </div>
-        </div>
-        <div class="_baseModal--closeBtn" v-if="is_closable">
-          <button
-            type="button"
-            class="u-button u-button_icon"
-            @click="closeModal"
-          >
-            <b-icon icon="x-lg" :label="$t('close')" />
-          </button>
+          </footer>
         </div>
       </div>
     </transition>
@@ -108,10 +108,11 @@ export default {
     border-radius: 4px;
 
     margin: 0 auto;
-    max-width: 480px;
     width: 100%;
-    max-height: calc(100vh - calc(var(--spacing) * 2));
-    overflow: auto;
+    max-width: 480px;
+    max-height: 100vh;
+    // max-width: calc(480px - calc(var(--spacing) * 1));
+    // max-height: calc(100vh - calc(var(--spacing) * 1));
   }
 
   &[data-size="full"] ._baseModal--content {
@@ -133,16 +134,16 @@ export default {
   }
 }
 
-._baseModal--closeBtn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: calc(var(--spacing) / 1);
+._closeBtn {
+  padding: calc(var(--spacing) / 3);
 }
 
 header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+
   padding: calc(var(--spacing) * 1);
-  border-bottom: 2px solid #e5e5e5;
   width: 100%;
   h2 {
     font-weight: 600;
@@ -151,9 +152,21 @@ header {
   }
 }
 
+._baseModal--content {
+  display: flex;
+  flex-flow: column nowrap;
+
+  > header,
+  footer {
+    flex: 0 0 auto;
+  }
+  ._content {
+    flex: 1 1 auto;
+  }
+}
 ._content {
-  height: 100%;
-  padding: var(--spacing) calc(var(--spacing) * 1);
+  overflow: auto;
+  padding: 0 calc(var(--spacing) * 1) 0;
 
   > *:first-child {
     margin-top: 0;
@@ -165,7 +178,8 @@ header {
 }
 ._footer {
   text-align: center;
-  padding: var(--spacing) calc(var(--spacing) * 1);
+  padding: var(--spacing);
+  // border-top: 2px solid #e5e5e5;
 }
 
 @keyframes reveal {
