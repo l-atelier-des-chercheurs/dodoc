@@ -46,8 +46,9 @@
         class="u-spacingBottom"
         :key="ptype.key"
       >
-        <DLabel :str="ptype.label" :instructions="ptype.instructions" />
         <RadioCheckboxField
+          :label="ptype.label"
+          :instructions="ptype.instructions"
           :field_name="ptype.key"
           :input_type="'radio'"
           :content="settings[ptype.key]"
@@ -73,8 +74,8 @@
     />
 
     <div class="u-spacingBottom">
-      <DLabel :str="$t('text_image_layout')" />
       <RadioCheckboxField
+        :label="$t('text_image_layout')"
         :field_name="'text_image_layout'"
         :input_type="'radio'"
         :content="settings['text_image_layout']"

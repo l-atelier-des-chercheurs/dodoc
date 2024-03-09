@@ -13,6 +13,11 @@
     />
     <div>
       <slot name="preview" v-if="input_type === 'radio'" :item="current_option">
+        <img
+          v-if="current_option.thumb_src"
+          :src="current_option.thumb_src"
+          class="_option_preview"
+        />
         <template v-if="current_option && current_option.key">
           {{ current_option.label }}
         </template>
@@ -31,6 +36,10 @@
 
     <div class="_footer">
       <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+        <div class="u-spacingBottom u-instructions" v-if="instructions">
+          {{ instructions }}
+        </div>
+
         <RadioCheckboxInput
           :value.sync="new_content"
           :input_type="input_type"
@@ -167,5 +176,12 @@ export default {
   width: 100%;
   text-align: center;
   justify-content: center;
+}
+._option_preview {
+  display: inline-block;
+  vertical-align: middle;
+  height: 1em;
+  aspect-ratio: 1;
+  object-fit: cover;
 }
 </style>
