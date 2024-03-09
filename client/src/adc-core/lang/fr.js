@@ -406,9 +406,6 @@ export default {
   snap_to_grid: "Magnétisme de la grille",
   gridstep: "Pas de la grille",
   scale: "Échelle",
-  list_of_medias: "Liste des médias",
-  list_of_medias_instr:
-    "Cette liste recense tous les médias présents sur cette page. Cliquez sur l’un d’eux pour afficher son emplacement et ses propriétés.",
 
   path_to_content: "Chemin du stockage des contenus",
   path_to_content_instructions: `Attention, fonctionnalité avancée !
@@ -993,4 +990,7 @@ export default {
   i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
 
   page_to_export: "Page à exporter",
+
+  on_this_page: "Sur cette page",
+  on_other_pages: "Sur d’autres pages",
 };

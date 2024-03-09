@@ -159,48 +159,36 @@
           </div>
         </div>
         <div class="_pageMenu--pane">
-          <DLabel
-            :str="$t('list_of_medias') + ' (' + page_modules.length + ')'"
-            :instructions="$t('list_of_medias_instr')"
-          />
-          <div class="u-spacingBottom" v-if="page_modules.length > 0">
-            <button
-              type="button"
-              class="u-buttonLink"
-              :disabled="page_modules.length === 0"
-              v-if="can_edit"
-              @click="show_all_medias = !show_all_medias"
-            >
-              <b-icon icon="collection" />
-              <template v-if="!show_all_medias">
-                {{ $t("show") }}
-              </template>
-              <template v-else>
-                {{ $t("hide") }}
-              </template>
-            </button>
-          </div>
-          <div class="_mediaList" v-if="show_all_medias">
-            <div
-              v-for="page_module in page_modules"
-              :key="page_module.$path"
-              @click="setActive(page_module.$path)"
-            >
-              <MediaContent
-                class="_preview"
-                v-if="firstMedia(page_module)"
-                :file="firstMedia(page_module)"
-                :resolution="50"
-                :context="'preview'"
-              />
+          <DetailsPane
+            :header="$t('on_this_page')"
+            :icon="'images'"
+            :has_items="page_modules.length"
+            :is_open_initially="false"
+            :can_be_toggled="true"
+          >
+            <div class="_mediaList">
+              <div
+                v-for="page_module in page_modules"
+                :key="page_module.$path"
+                class="u-sameRow"
+                @click="setActive(page_module.$path)"
+              >
+                <MediaContent
+                  class="_preview"
+                  v-if="firstMedia(page_module)"
+                  :file="firstMedia(page_module)"
+                  :resolution="50"
+                  :context="'preview'"
+                />
+              </div>
 
-              <DateDisplay
+              <!-- <DateDisplay
                 class=""
                 :title="$t('date_uploaded')"
                 :date="page_module.$date_uploaded"
-              />
+              /> -->
             </div>
-          </div>
+          </DetailsPane>
         </div>
       </template>
       <div

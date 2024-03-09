@@ -189,16 +189,7 @@ export default {
     };
   },
   i18n: {
-    messages: {
-      fr: {
-        on_this_page: "Sur cette page",
-        on_other_pages: "Sur d’autres pages",
-      },
-      en: {
-        on_this_page: "On this page",
-        on_other_pages: "On other pages",
-      },
-    },
+    messages: {},
   },
 
   created() {},

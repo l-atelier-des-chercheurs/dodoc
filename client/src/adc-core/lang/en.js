@@ -601,9 +601,6 @@ export default {
   snap_to_grid: "Grid Snapping",
   gridstep: "Grid step",
   scale: "Scale",
-  list_of_medias: "List of media",
-  list_of_medias_instr:
-    "This list lists all the media present on this page. Click on one of them to display its location and properties.",
   makes_list: "Makes list",
   back_to_makes_list: "Back to list",
   edit_image: "Rework an image",
@@ -929,4 +926,7 @@ export default {
   i_read_and_accept_terms: "I accept the terms of use",
 
   page_to_export: "Page to export",
+
+  on_this_page: "On this page",
+  on_other_pages: "On other pages",
 };
