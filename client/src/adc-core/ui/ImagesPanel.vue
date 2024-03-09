@@ -33,10 +33,16 @@
     >
       <div
         class="_imagesList--image"
-        v-for="image in settings.$files"
+        v-for="image in settings_file"
         :key="image.$path"
       >
         <MediaContent :file="image" :context="'preview'" :resolution="640" />
+        <RemoveMenu
+          class="_removeMedia"
+          :remove_text="$t('remove')"
+          :show_button_text="false"
+          @remove="removeMedia(image.$path)"
+        />
       </div>
     </div>
 
@@ -145,6 +151,9 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    settings_file() {
+      return this.settings?.$files;
+    },
     editing_options() {
       if (!this.settings.$files || this.settings.$files.length === 0) return [];
 
@@ -198,6 +207,11 @@ export default {
         },
       });
     },
+    async removeMedia(path) {
+      await this.$api.deleteItem({
+        path,
+      });
+    },
   },
 };
 </script>
@@ -221,6 +235,7 @@ export default {
   padding: calc(var(--spacing) / 4);
 }
 ._imagesList--image {
+  position: relative;
   width: 100%;
   aspect-ratio: 1;
 
@@ -238,5 +253,15 @@ export default {
       max-width: none;
     }
   }
+}
+._removeMedia {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>

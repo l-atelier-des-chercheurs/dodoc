@@ -247,6 +247,7 @@ export default {
         this.is_loading = false;
         return err;
       });
+    this.$api.join({ room: this.settings.$path });
     this.is_loading = false;
 
     if (this.starting_tab) {
@@ -254,8 +255,6 @@ export default {
         this.$refs.tabgroup.show(this.starting_tab);
       }, 100);
     }
-
-    this.$api.join({ room: this.settings.$path });
   },
   beforeDestroy() {
     this.$api.leave({ room: this.settings.$path });

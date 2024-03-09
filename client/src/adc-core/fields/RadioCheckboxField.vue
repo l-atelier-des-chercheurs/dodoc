@@ -13,12 +13,12 @@
     />
     <div>
       <slot name="preview" v-if="input_type === 'radio'" :item="current_option">
-        <img
-          v-if="current_option.thumb_src"
-          :src="current_option.thumb_src"
-          class="_option_preview"
-        />
         <template v-if="current_option && current_option.key">
+          <img
+            v-if="current_option.thumb_src"
+            :src="current_option.thumb_src"
+            class="_option_preview"
+          />
           {{ current_option.label }}
         </template>
       </slot>
