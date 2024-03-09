@@ -49,7 +49,9 @@
               :key="status"
               :status="status"
               :can_edit="false"
-              :mode="'active'"
+              :mode="
+                getActiveTags('$status').includes(status) ? 'disable' : 'active'
+              "
               @click="toggleFilter({ filter_type: '$status', value: status })"
             />
           </div>
