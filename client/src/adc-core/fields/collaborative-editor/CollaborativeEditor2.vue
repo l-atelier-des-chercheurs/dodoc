@@ -67,6 +67,7 @@
             </button>
           </transition>
           <EditBtn
+            class="_editBtn"
             :btn_type="'check'"
             :label_position="'left'"
             @click="disableEditor"
@@ -522,7 +523,6 @@ export default {
       }
 
       if (this.is_collaborative) this.endCollaborative();
-
       await this.saveText();
 
       // check if toolbar is away, get it back if it is
@@ -619,14 +619,14 @@ export default {
 
       try {
         this.is_loading_or_saving = true;
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 200));
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
         });
         this.is_loading_or_saving = false;
         this.show_saved_icon = true;
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 200));
         this.show_saved_icon = false;
       } catch (err) {
         if (err.message === "content not changed") err;
@@ -1399,10 +1399,12 @@ export default {
     justify-content: space-between;
     align-items: center;
 
-    // ._editBtn {
-    //   background-color: var(--c-bleuvert);
-    // }
+    ._editBtn {
+      background-color: var(--c-bleuvert) !important;
+      border-radius: 0 !important;
+    }
   }
+
   // background-color: var(--editor-bg);
 }
 </style>
