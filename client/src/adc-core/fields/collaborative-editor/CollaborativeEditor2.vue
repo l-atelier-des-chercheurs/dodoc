@@ -8,8 +8,11 @@
     }"
     @click="editorClick"
   >
-    <DLabel v-if="label" :str="label" />
-
+    <DLabel
+      v-if="label"
+      :str="label"
+      :instructions="can_edit ? instructions : ''"
+    />
     <TextVersioning
       v-if="show_archives"
       :path="path"
@@ -147,6 +150,7 @@ export default {
       type: String,
       default: "",
     },
+    instructions: String,
     path: String,
     sharedb_id: String,
     content: String,

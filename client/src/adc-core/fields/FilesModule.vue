@@ -148,7 +148,6 @@ export default {
   > ._file {
     // margin: calc(var(--spacing) / 4) 0;
     padding: 0;
-    border-radius: 2px;
     min-height: 2em;
     // border: 1px solid var(--c-gris_fonce);
 
@@ -160,10 +159,12 @@ export default {
 
     gap: calc(var(--spacing) / 4);
     border-radius: 4px;
+    overflow: hidden;
 
     justify-content: space-between;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       background: var(--c-gris);
     }
 

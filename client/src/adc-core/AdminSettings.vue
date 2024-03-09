@@ -56,7 +56,18 @@
               </div>
 
               <div class="u-spacingBottom">
-                <TitleField
+                <CollaborativeEditor2
+                  :label="$t('presentation_of_instance')"
+                  :instructions="$t('presentation_of_instance_instructions')"
+                  :field_to_edit="'presentation_of_instance'"
+                  :path="settings.$path"
+                  :content="settings.presentation_of_instance"
+                  :custom_formats="['bold', 'italic', 'link']"
+                  :is_collaborative="false"
+                  :can_edit="is_instance_admin"
+                />
+
+                <!-- <TitleField
                   :field_name="'presentation_of_instance'"
                   :label="$t('presentation_of_instance')"
                   :instructions="$t('presentation_of_instance_instructions')"
@@ -65,7 +76,7 @@
                   :required="false"
                   :input_type="'markdown'"
                   :can_edit="is_instance_admin"
-                />
+                /> -->
               </div>
 
               <div class="u-spacingBottom">

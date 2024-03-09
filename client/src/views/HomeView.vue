@@ -15,9 +15,7 @@
           <div v-if="layout === 'text'" :key="layout" class="_textBlock">
             <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
             <div class="u-spacingBottom">
-              <template v-if="description">
-                <MarkdownField :text="description" />
-              </template>
+              <CollaborativeEditor2 v-if="description" :content="description" />
               <template v-else>
                 <template v-if="!is_instance_admin">
                   <p v-html="$t('admins_edit_text_here')" />
@@ -246,6 +244,7 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  border-bottom: 1px solid var(--c-gris);
 
   > * {
     flex: 1 1 320px;
