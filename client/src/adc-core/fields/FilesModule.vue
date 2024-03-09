@@ -19,16 +19,14 @@
             "
           />
           <div v-else class="_preview" />
-
           <span class="_link--filename" v-text="file.$media_filename" />
-
-          <sl-icon-button name="file-earmark-arrow-down-fill" />
+          <b-icon icon="file-earmark-arrow-down-fill" />
         </DownloadFile>
 
         <button
           type="button"
           v-if="can_edit"
-          class="u-button u-button_icon u-button_small"
+          class="u-button u-button_icon"
           @click.prevent="removeFile(file.$path)"
         >
           <b-icon icon="x" :aria-label="$t('first_image')" />
@@ -187,8 +185,8 @@ export default {
         font-size: 100%;
 
         flex: 0 0 auto;
-        width: 25px;
-        height: 25px;
+        width: 35px;
+        height: 35px;
         overflow: hidden;
         background-color: var(--c-gris);
 
