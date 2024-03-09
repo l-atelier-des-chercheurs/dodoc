@@ -75,16 +75,16 @@
           </div>
 
           <div class="u-spacingBottom">
-            <TitleField
-              :field_name="'presentation'"
+            <CollaborativeEditor2
               :label="
                 can_edit_event && !event.description ? $t('presentation') : ''
               "
-              class="_presentation"
+              :field_to_edit="'presentation'"
               :content="event.presentation"
               :path="event.$path"
+              :custom_formats="['bold', 'italic', 'link']"
+              :is_collaborative="false"
               :maxlength="1280"
-              :input_type="'markdown'"
               :can_edit="can_edit_event"
             />
           </div>
