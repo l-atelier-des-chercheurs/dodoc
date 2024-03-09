@@ -400,7 +400,8 @@ export default {
   place-content: center;
   place-items: center;
 
-  > * {
+  ::v-deep button {
+    background-color: rgba(255, 255, 255, 0.5);
     pointer-events: auto;
   }
 }
