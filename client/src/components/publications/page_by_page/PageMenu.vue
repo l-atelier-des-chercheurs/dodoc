@@ -295,13 +295,14 @@
         <div class="u-spacingBottom" />
 
         <template v-if="!is_shape">
-          <TitleField
+          <CollaborativeEditor2
             :label="!active_module.caption ? $t('add_caption') : $t('caption')"
-            :field_name="'caption'"
+            :field_to_edit="'caption'"
             :content="active_module.caption"
             :path="active_module.$path"
-            :input_type="'markdown'"
-            :can_edit="true"
+            :custom_formats="['bold', 'italic', 'link']"
+            :is_collaborative="false"
+            :can_edit="can_edit"
           />
 
           <div class="u-spacingBottom" />

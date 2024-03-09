@@ -20,21 +20,24 @@
         </button>
 
         <div class="u-spacingBottom">
-          <TitleField
+          <CollaborativeEditor2
             :label="$t('caption')"
-            :field_name="'caption'"
+            :field_to_edit="'caption'"
             :content="media.caption"
             :path="media.$path"
-            :input_type="'markdown'"
+            :custom_formats="['bold', 'italic', 'link']"
+            :is_collaborative="false"
             :can_edit="canEditLinkedMedia(media.$path) === 'local'"
           />
         </div>
         <div class="u-spacingBottom">
-          <TitleField
+          <CollaborativeEditor2
             :label="$t('credit/reference')"
-            :field_name="'$credits'"
+            :field_to_edit="'$credits'"
             :content="media.$credits"
             :path="media.$path"
+            :custom_formats="['bold', 'italic', 'link']"
+            :is_collaborative="false"
             :can_edit="canEditLinkedMedia(media.$path) === 'local'"
           />
         </div>

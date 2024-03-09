@@ -122,19 +122,19 @@ x
           "
         />
 
-        <TitleField
+        <CollaborativeEditor2
           v-if="
             (context === 'list' && project.description) ||
             (context === 'full' && (project.description || can_edit))
           "
-          :field_name="'description'"
-          class="_description"
           :label="context === 'full' ? $t('description') : ''"
+          :field_to_edit="'description'"
           :content="project.description"
           :path="project.$path"
+          :custom_formats="['bold', 'italic', 'link']"
+          :is_collaborative="false"
           :maxlength="1280"
-          :input_type="'markdown'"
-          :can_edit="can_edit"
+          :can_edit="true"
         />
 
         <!-- <CollaborativeEditor2

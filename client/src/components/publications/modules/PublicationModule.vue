@@ -346,7 +346,8 @@
           module_type !== 'text'
         "
       >
-        <TitleField
+        <CollaborativeEditor2
+          class="_caption"
           :label="
             edit_mode &&
             !publimodule.caption &&
@@ -354,12 +355,12 @@
               ? $t('add_caption')
               : undefined
           "
-          :field_name="'caption'"
+          :field_to_edit="'caption'"
           :content="publimodule.caption"
           :path="publimodule.$path"
-          :input_type="'markdown'"
-          :tag="'small'"
-          :can_edit="edit_mode && can_edit"
+          :custom_formats="['bold', 'italic', 'link']"
+          :is_collaborative="false"
+          :can_edit="can_edit"
         />
 
         <div
@@ -938,6 +939,11 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) * 1);
+
+  > ._caption {
+    flex: 1 1 auto;
+    font-size: var(--sl-font-size-small);
+  }
 }
 
 .showOptions {
