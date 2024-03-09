@@ -18,9 +18,11 @@
               )
             "
           />
-          <b-icon v-else class="_preview" icon="file-earmark-arrow-down-fill" />
+          <div v-else class="_preview" />
 
           <span class="_link--filename" v-text="file.$media_filename" />
+
+          <sl-icon-button name="file-earmark-arrow-down-fill" />
         </DownloadFile>
 
         <button
@@ -171,8 +173,6 @@ export default {
       flex: 1 1 auto;
       overflow: hidden;
 
-      display: block;
-
       font-variant: none;
       font-weight: 400;
       letter-spacing: 0;
@@ -186,9 +186,11 @@ export default {
         flex: 0 0 auto;
         font-size: 100%;
 
+        flex: 0 0 auto;
         width: 25px;
         height: 25px;
         overflow: hidden;
+        background-color: var(--c-gris);
 
         ::v-deep ._mediaContent--image {
           position: absolute;
@@ -200,9 +202,7 @@ export default {
       }
 
       ._link--filename {
-        // text-overflow: ellipsis;
-        // white-space: nowrap;
-        // overflow: hidden;
+        flex: 1 1 auto;
         white-space: break-spaces;
       }
     }
