@@ -268,7 +268,7 @@ export default {
   change_location: "Change position",
   remove_pin: "Remove this pin",
   cancel_position: "Erase position",
-  click_on_map_to_repick_location_for_media:
+  click_on_map_to_repick_location:
     "Click on map to select the new position on the map",
   add_caption: "Add a caption",
   copy_first_media_caption: "Reuse first media caption",

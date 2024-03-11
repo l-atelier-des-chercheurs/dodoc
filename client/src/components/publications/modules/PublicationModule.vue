@@ -190,7 +190,7 @@
           <div class="_repickNotice" v-if="is_repicking_location">
             <div class="_repickNotice--content">
               <div>
-                {{ $t("click_on_map_to_repick_location_for_media") }}
+                {{ $t("click_on_map_to_repick_location") }}
               </div>
               <button
                 type="button"

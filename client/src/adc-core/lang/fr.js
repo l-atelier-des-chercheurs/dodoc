@@ -919,7 +919,7 @@ export default {
   pick_on_map: "Indiquer sur la carte",
   location: "Localisation",
   current_position: "Position actuelle",
-  no_position: "Aucune position à afficher",
+  no_position: "Aucune position définie",
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
   translate: "Traduire",
@@ -949,9 +949,12 @@ export default {
   placed_on_map: "Positionné sur la carte",
   change_location: "Changer la position",
   remove_pin: "Supprimer cette épingle",
+  location_stored_in_localstorage:
+    "Cette information sera conservée sur cet appareil pour toutes les captures réalisées.",
+
   cancel_position: "Annuler la position",
-  click_on_map_to_repick_location_for_media:
-    "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+  click_on_map_to_repick_location:
+    "Cliquez sur la carte pour sélectionner une nouvelle position.",
   add_caption: "Ajouter une légende",
   copy_first_media_caption: "Réutiliser la légende du premier média",
 
