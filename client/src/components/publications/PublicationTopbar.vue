@@ -55,7 +55,7 @@
         v-if="can_edit && publication.template !== 'cartography'"
         @click="openSettings"
         caret
-        class="u-button u-button_small"
+        class="u-button u-button_small u-button_transparent"
       >
         <b-icon icon="gear" slot="prefix" :aria-label="$t('settings')" />
         {{ $t("settings") }}
