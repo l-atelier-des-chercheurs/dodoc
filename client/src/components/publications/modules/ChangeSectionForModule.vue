@@ -9,7 +9,6 @@
         @change="setNewSection"
       />
     </div>
-    {{ section_path_to_move_to }}
     <div class="u-sameRow" slot="footer">
       <button type="button" class="u-buttonLink" @click="$emit('close')">
         {{ $t("cancel") }}
