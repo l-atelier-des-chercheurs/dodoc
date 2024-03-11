@@ -1050,8 +1050,11 @@ export default {
     }
 
     .ql-container.ql-disabled {
-      .ql-editor > * {
-        cursor: inherit;
+      .ql-editor {
+        padding-bottom: 0;
+        > * {
+          cursor: inherit;
+        }
       }
     }
   }

@@ -98,6 +98,9 @@
                   copy_meta_filename: $event,
                 })
               "
+              @changeSectionForModule="
+                $emit('changeSectionForModule', _module.$path)
+              "
               @remove="removeModule(_module.$path)"
             />
           </template>

@@ -118,6 +118,16 @@
                   <b-icon icon="file-plus" />
                   {{ $t("duplicate") }}
                 </button>
+
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click="$emit('changeSectionForModule')"
+                >
+                  <b-icon icon="arrow-left-right" />
+                  {{ $t("change_section") }}
+                </button>
+
                 <RemoveMenu
                   v-if="can_edit"
                   :remove_text="$t('remove')"
@@ -850,6 +860,7 @@ export default {
 
 ._buttonRow {
   display: flex;
+  flex-flow: row wrap;
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
   align-items: center;

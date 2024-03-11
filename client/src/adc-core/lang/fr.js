@@ -202,11 +202,11 @@ export default {
 
   story_width: "Largeur du récit",
   summary: "Sommaire",
-  chapters: "Chapitres",
   section_title: "Titre du chapitre",
   section: "Chapitre",
   in_this_section: "Dans ce chapitre",
   in_another_section: "Dans un autre chapitre",
+  change_section: "Déplacer vers un autre chapitre",
 
   untitled: "Sans titre",
   responsive: "Fluide",

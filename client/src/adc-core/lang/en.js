@@ -153,11 +153,11 @@ export default {
 
   story_width: "Story width",
   summary: "Summary",
-  chapters: "Chapters",
   section_title: "Chapter title",
   section: "Chapter",
   in_this_section: "In this chapter",
   in_another_section: "In another chapter",
+  change_section: "Move to another chapter",
 
   status: "Status",
   origin: "Origin",
