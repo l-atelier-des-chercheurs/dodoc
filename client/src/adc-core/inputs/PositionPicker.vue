@@ -164,7 +164,7 @@ export default {
       this.edit_mode = true;
     },
     removePosition() {
-      this.location = undefined;
+      this.longitude = undefined;
       this.latitude = undefined;
       this.zoom = undefined;
       this.updateLongLatZoom();
