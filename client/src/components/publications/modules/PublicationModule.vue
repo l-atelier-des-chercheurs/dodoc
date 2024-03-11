@@ -109,7 +109,7 @@
                 </button>
               </div>
 
-              <div class="_buttonRow">
+              <DropDown :right="true">
                 <button
                   type="button"
                   class="u-buttonLink"
@@ -134,11 +134,7 @@
                   :show_button_text="true"
                   @remove="removeModule"
                 />
-
-                <!-- <button type="button" class="u-button" @click="removeModule">
-                  <sl-icon name="trash3" />
-                </button> -->
-              </div>
+              </DropDown>
             </div>
             <div class="_carto" v-if="is_associated_to_map">
               <div class="_latlon" v-if="false">
@@ -693,6 +689,7 @@ export default {
         addtl_meta_to_module,
       });
       this.$emit("duplicate", meta_filename);
+      this.disableEdit();
     },
     async removeModule() {
       // todo also empty sharedb path, since $path can be retaken
