@@ -1,16 +1,16 @@
 <template>
   <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
-    <div>
-      <div class="u-spacingBottom">
-        <DLabel :str="$t('document_type')" />
-        <RadioCheckboxInput
-          :value.sync="export_mode"
-          :options="export_options"
-          :can_edit="true"
-        />
-      </div>
+    <div class="">
+      <DLabel :str="$t('document_type')" />
+      <RadioCheckboxInput
+        :value.sync="export_mode"
+        :options="export_options"
+        :can_edit="true"
+      />
+    </div>
 
-      <template v-if="export_mode === 'pdf'">
+    <template v-if="export_mode === 'pdf'">
+      <div slot="footer">
         <button
           type="button"
           class="u-button u-button_bleuvert"
@@ -19,21 +19,25 @@
           <sl-icon name="filetype-pdf" />
           {{ $t("create") }}
         </button>
-      </template>
-      <template v-else-if="export_mode === 'png'">
-        <template v-if="publication.template === 'page_by_page'">
-          <div class="u-spacingBottom">
-            <DLabel :str="$t('page_to_export')" />
-            <select v-model="page_to_export_as_image">
-              <option
-                v-for="(a, i) in new Array(page_count)"
-                :key="i + 1"
-                v-text="i + 1"
-              />
-            </select>
-          </div>
-        </template>
+      </div>
+    </template>
+    <template v-else-if="export_mode === 'png'">
+      <template v-if="publication.template === 'page_by_page'">
+        <div class="u-spacingBottom" />
 
+        <div class="">
+          <DLabel :str="$t('page_to_export')" />
+          <select v-model="page_to_export_as_image">
+            <option
+              v-for="(a, i) in new Array(page_count)"
+              :key="i + 1"
+              v-text="i + 1"
+            />
+          </select>
+        </div>
+      </template>
+
+      <div slot="footer">
         <button
           type="button"
           class="u-button u-button_bleuvert"
@@ -42,8 +46,8 @@
           <b-icon icon="file-earmark-image" />
           {{ $t("create") }}
         </button>
-      </template>
-    </div>
+      </div>
+    </template>
     <ExportItemAndSaveOrDownload
       v-if="task_instructions"
       :publication_path="publication.$path"
@@ -58,6 +62,7 @@ import ExportItemAndSaveOrDownload from "@/components/publications/ExportItemAnd
 export default {
   props: {
     publication: Object,
+    page_opened_id: String,
   },
   components: {
     ExportItemAndSaveOrDownload,
@@ -85,7 +90,14 @@ export default {
       fr: {},
     },
   },
-  created() {},
+  created() {
+    if (this.page_opened_id) {
+      const page_number = this.publication.pages.findIndex(
+        (p) => p.id === this.page_opened_id
+      );
+      if (page_number) this.page_to_export_as_image = page_number + 1;
+    }
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},

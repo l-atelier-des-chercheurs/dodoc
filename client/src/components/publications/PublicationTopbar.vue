@@ -90,6 +90,7 @@
         <ExportPubliModal
           v-if="show_export_pdf_modal"
           :publication="publication"
+          :page_opened_id="page_opened_id"
           @close="show_export_pdf_modal = false"
         />
         <div class="">
@@ -129,6 +130,7 @@ import ExportPubliModal from "@/components/publications/ExportPubliModal.vue";
 export default {
   props: {
     publication: Object,
+    page_opened_id: String,
     no_back_button: Boolean,
     can_edit: Boolean,
   },
