@@ -33,7 +33,9 @@ export default {
   methods: {
     newPosition(new_location) {
       this.$emit("update:location_to_add_to_medias", new_location);
-      this.$emit("close");
+      setTimeout(() => {
+        this.$emit("close");
+      }, 1000);
     },
   },
 };

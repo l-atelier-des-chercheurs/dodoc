@@ -21,7 +21,11 @@
         {{ $t("no_position") }}
       </div>
       <div v-if="!edit_mode" class="_editBtn">
-        <EditBtn :label_position="'left'" @click="enableEditMode" />
+        <EditBtn
+          :label_position="'left'"
+          :is_unfolded="true"
+          @click="enableEditMode"
+        />
       </div>
       <details v-if="pins.length > 0 || edit_mode">
         <summary class="u-buttonLink">
@@ -163,6 +167,7 @@ export default {
       this.location = undefined;
       this.latitude = undefined;
       this.zoom = undefined;
+      this.updateLongLatZoom();
     },
     newPositionClicked({ longitude, latitude, zoom }) {
       this.longitude = longitude;

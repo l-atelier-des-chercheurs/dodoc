@@ -265,41 +265,61 @@
           </div>
 
           <transition name="fade_fast">
-            <div
-              class="_settingsTag"
-              v-if="!(must_validate_media && media_to_validate)"
-            >
-              <button
-                type="button"
-                class="button-nostyle"
-                @click="show_capture_settings = !show_capture_settings"
-                v-if="enable_video"
-              >
-                {{ actual_camera_resolution.width }}×{{
-                  actual_camera_resolution.height
-                }}
-              </button>
-              <button
-                type="button"
-                class="button-nostyle"
-                :class="{ 'is--active': enable_grid }"
-                v-if="enable_video"
-                @click="enable_grid = !enable_grid"
-              >
-                {{ $t("grid").toLowerCase() }}
-              </button>
-              <div v-if="enable_video && enable_grid">
+            <div class="_settingsTag">
+              <template v-if="!(must_validate_media && media_to_validate)">
                 <button
                   type="button"
-                  class="button-nostyle"
-                  v-for="grid_type in Object.keys(grids)"
-                  :key="grid_type"
-                  :class="{ 'is--active': current_grid_type === grid_type }"
-                  @click="current_grid_type = grid_type"
+                  class="u-button u-button_small"
+                  @click="show_capture_settings = !show_capture_settings"
+                  v-if="enable_video"
                 >
-                  {{ $t(grid_type).toLowerCase() }}
+                  {{ actual_camera_resolution.width }}×{{
+                    actual_camera_resolution.height
+                  }}
                 </button>
-              </div>
+                <button
+                  type="button"
+                  class="u-button u-button_small"
+                  :class="{ 'is--active': enable_grid }"
+                  v-if="enable_video"
+                  @click="enable_grid = !enable_grid"
+                >
+                  {{ $t("grid").toLowerCase() }}
+                </button>
+                <div v-if="enable_video && enable_grid">
+                  <button
+                    type="button"
+                    class="u-button u-button_small"
+                    v-for="grid_type in Object.keys(grids)"
+                    :key="grid_type"
+                    :class="{ 'is--active': current_grid_type === grid_type }"
+                    @click="current_grid_type = grid_type"
+                  >
+                    {{ $t(grid_type).toLowerCase() }}
+                  </button>
+                </div>
+              </template>
+
+              <button
+                type="button"
+                class="u-button u-button_small"
+                :class="{
+                  'is--active': location_to_add_to_medias,
+                }"
+                @click="show_position_modal = true"
+              >
+                {{ $t("location") }}
+                <b-icon
+                  :icon="
+                    !!location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'
+                  "
+                />
+              </button>
+              <PickLocationForCaptures
+                v-if="show_position_modal"
+                :location_to_add_to_medias.sync="location_to_add_to_medias"
+                @close="show_position_modal = false"
+              />
             </div>
           </transition>
 
@@ -944,6 +964,7 @@ import ModeSelector from "./ModeSelector.vue";
 import MediaPreviewBeforeValidation from "./MediaPreviewBeforeValidation.vue";
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 import StopmotionPanel from "./StopmotionPanel.vue";
+import PickLocationForCaptures from "./PickLocationForCaptures.vue";
 
 import CaptureSettings from "./CaptureSettings.vue";
 import CaptureEffects from "./CaptureEffects.vue";
@@ -986,6 +1007,7 @@ export default {
     },
   },
   components: {
+    PickLocationForCaptures,
     ModeSelector,
     MediaPreviewBeforeValidation,
     MediaValidationButtons,
@@ -1038,6 +1060,9 @@ export default {
         ],
       },
       current_grid_type: "thirds",
+
+      location_to_add_to_medias: undefined,
+      show_position_modal: false,
 
       // selected_devices: {
       //   video_input_device: undefined,
@@ -1105,7 +1130,13 @@ export default {
       update_last_video_imageData: undefined,
     };
   },
-  created() {},
+  created() {
+    const location_to_add_to_medias = localStorage.getItem(
+      "location_to_add_to_medias"
+    );
+    if (location_to_add_to_medias)
+      this.location_to_add_to_medias = JSON.parse(location_to_add_to_medias);
+  },
   mounted() {
     if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
 
@@ -1189,6 +1220,12 @@ export default {
       if (this.selected_mode !== "stopmotion") {
         this.show_stopmotion_list = false;
       }
+    },
+    location_to_add_to_medias() {
+      localStorage.setItem(
+        "location_to_add_to_medias",
+        JSON.stringify(this.location_to_add_to_medias)
+      );
     },
     is_validating_stopmotion_video: function () {
       if (this.is_validating_stopmotion_video) {
@@ -1846,6 +1883,8 @@ export default {
 
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
+      if (this.location_to_add_to_medias)
+        additional_meta.$location = this.location_to_add_to_medias;
 
       const onProgress = (progressEvent) => {
         console.log(
@@ -2017,37 +2056,34 @@ export default {
     position: absolute;
     bottom: 0;
     right: 0;
-    color: var(--c-noir);
-    font-size: var(--font-verysmall);
+    z-index: 1;
     margin: calc(var(--spacing) / 2);
     pointer-events: none;
 
     display: flex;
     flex-flow: row wrap;
     gap: calc(var(--spacing) / 4);
-
     text-align: right;
 
     button {
-      display: inline-block;
-      background-color: white;
-      // border: 2px solid #fff;
-      border-radius: 4px;
-      line-height: 1;
-      margin: 0;
-      padding: 2px 4px;
-      font-weight: 500;
+      // display: inline-block;
+      // background-color: white;
+      // border-radius: 4px;
+      // line-height: 1;
+      // margin: 0;
+      // padding: 2px 4px;
+      // font-weight: 500;
       pointer-events: auto;
-      cursor: pointer;
+      // cursor: pointer;
 
-      &:hover {
-        font-weight: 600;
-      }
+      // &:hover {
+      //   font-weight: 600;
+      // }
 
-      &.is--active {
-        background-color: var(--c-rouge);
-        color: white;
-      }
+      // &.is--active {
+      //   background-color: var(--c-rouge);
+      //   color: white;
+      // }
     }
   }
 

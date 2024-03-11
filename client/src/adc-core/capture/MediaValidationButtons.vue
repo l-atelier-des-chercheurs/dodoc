@@ -125,25 +125,6 @@
       </svg>
     </button>
 
-    <button
-      type="button"
-      class="u-button u-button_small _locationBtn"
-      :class="{
-        'is--active': location_to_add_to_medias,
-      }"
-      @click="show_position_modal = true"
-    >
-      {{ $t("location") }}
-      <b-icon
-        :icon="!!location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'"
-      />
-    </button>
-    <PickLocationForCaptures
-      v-if="show_position_modal"
-      :location_to_add_to_medias.sync="location_to_add_to_medias"
-      @close="show_position_modal = false"
-    />
-
     <div class="m_mediaValidationButtons--overlay" v-if="media_is_being_sent">
       <transition name="fade_fast" :duration="150">
         <LoaderSpinner />
@@ -156,8 +137,6 @@
   </div>
 </template>
 <script>
-import PickLocationForCaptures from "./PickLocationForCaptures.vue";
-
 export default {
   props: {
     media_is_being_sent: Boolean,
@@ -168,25 +147,14 @@ export default {
       default: false,
     },
   },
-  components: {
-    PickLocationForCaptures,
-  },
+  components: {},
   data() {
     return {
       selected_button: 1,
-
-      show_position_modal: false,
-      location_to_add_to_medias: undefined,
     };
   },
 
-  created() {
-    const location_to_add_to_medias = localStorage.getItem(
-      "location_to_add_to_medias"
-    );
-    if (location_to_add_to_medias)
-      this.location_to_add_to_medias = JSON.parse(location_to_add_to_medias);
-  },
+  created() {},
   mounted() {
     document.addEventListener("keyup", this.captureKeyListener);
   },
@@ -194,14 +162,7 @@ export default {
     document.removeEventListener("keyup", this.captureKeyListener);
   },
 
-  watch: {
-    location_to_add_to_medias() {
-      localStorage.setItem(
-        "location_to_add_to_medias",
-        JSON.stringify(this.location_to_add_to_medias)
-      );
-    },
-  },
+  watch: {},
   computed: {},
   methods: {
     captureKeyListener(evt) {
