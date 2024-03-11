@@ -18,16 +18,21 @@
         <button type="button" v-if="can_edit" class="u-button u-button_icon">
           <b-icon v-handle icon="hand-index-thumb" :label="$t('move')" />
         </button>
-        <span v-if="_linked_media && _linked_media.$path" class="_link">
+        <DownloadFile
+          v-if="_linked_media && _linked_media.$path"
+          class="_link"
+          :file="_linked_media"
+        >
           <MediaContent
-            class="_preview"
-            :file="_linked_media"
-            :resolution="220"
             v-if="
               ['image', 'video', 'audio', 'pdf', 'stl', 'url'].includes(
                 _linked_media.$type
               )
             "
+            class="_preview"
+            :context="'preview'"
+            :file="_linked_media"
+            :resolution="220"
           />
 
           <div class="_preview _preview--none" v-else>
@@ -44,12 +49,7 @@
               v-text="formatBytes(_linked_media.$infos.size)"
             />
           </template>
-        </span>
 
-        <DownloadFile
-          v-if="_linked_media && _linked_media.$path"
-          :file="_linked_media"
-        >
           <sl-icon-button name="file-earmark-arrow-down-fill" />
         </DownloadFile>
 
@@ -168,7 +168,7 @@ export default {
     gap: calc(var(--spacing) / 1);
 
     > * {
-      flex: 1 1 50px;
+      flex: 0 0 auto;
     }
 
     ._preview {
