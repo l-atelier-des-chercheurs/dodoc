@@ -176,7 +176,8 @@ header {
   }
 }
 ._footer {
-  text-align: center;
+  display: flex;
+  justify-content: center;
   padding: calc(var(--spacing) * 1);
 }
 
