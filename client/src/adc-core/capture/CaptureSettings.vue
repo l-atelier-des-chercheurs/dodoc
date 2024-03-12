@@ -334,13 +334,14 @@
 
       <div class="m_captureSettings--updateButton--buttons">
         <template v-if="current_mode === 'LocalSources'">
-          <button
+          <!-- <button
             type="button"
-            class="u-button u-button_red u-button_wide"
+            v-if="show_update_btn"
+            class="u-button u-button_white u-button_wide"
             @click="setCameraStreamFromDefaults"
           >
             {{ $t("update") }}
-          </button>
+          </button> -->
         </template>
         <template v-else-if="current_mode === 'RemoteSources'">
           <transition name="fade_fast" :duration="150">
@@ -598,6 +599,13 @@ export default {
           "selected_devices",
           JSON.stringify(this.selected_devices)
         );
+        this.setCameraStreamFromDefaults();
+      },
+      deep: true,
+    },
+    desired_camera_resolution: {
+      handler() {
+        this.setCameraStreamFromDefaults();
       },
       deep: true,
     },
@@ -1366,6 +1374,7 @@ export default {
 <style lang="scss" scoped>
 .m_captureSettings {
   margin-top: calc(var(--spacing) / 2);
+  color: white;
 
   label,
   small,
