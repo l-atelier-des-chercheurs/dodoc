@@ -606,6 +606,10 @@ export default {
       if (this.layout_mode === "screen") return "px";
       else return "mm";
     },
+    magnification() {
+      if (this.layout_mode === "screen") return 1;
+      return this.$root.page_magnification;
+    },
 
     has_pagination() {
       return (
@@ -621,6 +625,15 @@ export default {
 
       let x = this.$root.default_new_module_left;
       let y = this.$root.default_new_module_top;
+
+      if (this.$root.set_new_module_offset_left)
+        x =
+          (this.$root.set_new_module_offset_left + this.$root.zoom_offset) /
+          this.magnification;
+      if (this.$root.set_new_module_offset_top)
+        y =
+          (this.$root.set_new_module_offset_top + this.$root.zoom_offset) /
+          this.magnification;
 
       if (this.gridstep_in_mm) {
         // todo : round to gridstep
@@ -704,16 +717,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pageMenu {
-  margin: 2px;
-  margin: calc(var(--spacing) / 4);
-  background: var(--panel-color);
-  border: var(--panel-borders);
-  box-shadow: var(--panel-shadows);
-  border-radius: var(--panel-radius);
+  background: white;
   text-align: left;
 }
 ._pageMenu--pane {
-  margin: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2);
 
   &:not(:first-child) {

@@ -174,10 +174,6 @@ export default {
   created() {
     this.$eventHub.$on(`module.setActive`, this.setActiveModule);
     document.addEventListener("keydown", this.keyPressed);
-
-    this.$root.default_new_module_top = 15;
-    this.$root.default_new_module_left = 15;
-
     this.loadSettings();
   },
   mounted() {},
@@ -416,8 +412,8 @@ export default {
 }
 
 ._spreadNavigator--content {
-  // padding-left: var(--pagemenu-width);
-
+  display: flex;
+  flex: row nowrap;
   width: 100%;
   height: 100%;
   // padding: calc(var(--spacing) * 1);
@@ -496,21 +492,17 @@ export default {
 
 ._sideCont {
   width: var(--pagemenu-width);
+  flex: 0 0 auto;
 
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1;
   height: 100%;
-  // padding-right: calc(var(--spacing) / 2);
+  background: white;
+  border-right: 2px solid var(--c-gris_fonce);
+
   overflow-x: visible;
   overflow-y: auto;
-  pointer-events: none;
   @include scrollbar(8px, 5px, 6px);
 
   > * {
-    pointer-events: auto;
-
     &._content {
       margin: 0 0 calc(var(--spacing) * 2) 0;
     }
