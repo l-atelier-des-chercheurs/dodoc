@@ -16,16 +16,28 @@
         {{ fetch_publication_error }}
       </div>
       <div v-else-if="publication" key="publication" ref="fsContainer">
-        <!-- <div
-          class="_pubTopbar"
-          v-if="!is_serversidepreview && !is_fullscreen && false"
-        >
-          <PublicationTopbar
-            :publication="publication"
-            :no_back_button="true"
-            :can_edit="false"
-          />
-        </div> -->
+        <transition name="pagechange" mode="out-in">
+          <div
+            class="_pubTopbar"
+            v-if="!is_serversidepreview && !is_fullscreen && show_topbar"
+          >
+            <PublicationTopbar
+              :publication="publication"
+              :no_back_button="true"
+              :can_edit="false"
+            />
+          </div>
+        </transition>
+        <div class="_toggleTopbar">
+          <button
+            type="button"
+            class="u-button u-button_small u-button_icon"
+            @click="show_topbar = !show_topbar"
+          >
+            <b-icon icon="chevron-up" :rotate="show_topbar ? 0 : 180" />
+          </button>
+        </div>
+
         <template v-if="publication.template === 'page_by_page'">
           <PageSlides
             :publication="publication"
@@ -54,12 +66,12 @@
 <script>
 import screenfull from "screenfull";
 
-// import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
+import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
 
 export default {
   props: {},
   components: {
-    // PublicationTopbar,
+    PublicationTopbar,
     PageSlides: () =>
       import("@/components/publications/page_by_page/PageSlides.vue"),
     StoryTemplate: () =>
@@ -74,6 +86,7 @@ export default {
       project: null,
       publication: null,
       fetch_publication_error: undefined,
+      show_topbar: true,
 
       is_fullscreen: false,
       is_serversidepreview: false,
@@ -175,13 +188,25 @@ body {
   padding: calc(var(--spacing) / 1);
 }
 
-._pubTopbar ._topbar {
-  margin: var(--spacing) auto;
+._pubTopbar {
+  // margin: 0 auto;
+  // max-width: 86ch;
+
+  @media print {
+    display: none;
+  }
 }
 
-._pubTopbar {
-  margin: 0 auto;
-  max-width: 86ch;
+._toggleTopbar {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  z-index: 1;
+  pointer-events: none;
+
+  button {
+    pointer-events: auto;
+  }
 
   @media print {
     display: none;
