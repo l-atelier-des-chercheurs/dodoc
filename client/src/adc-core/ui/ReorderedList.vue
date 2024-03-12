@@ -155,7 +155,7 @@ export default {
   position: relative;
   display: flex;
   flex-flow: row wrap;
-  // gap: calc(var(--spacing) / 4);
+  pointer-events: none;
 
   margin: 0 calc(var(--spacing) / -2);
 }
@@ -167,7 +167,7 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
 
-  // gap: calc(var(--spacing) / 2);
+  pointer-events: auto;
 
   background: white;
 
