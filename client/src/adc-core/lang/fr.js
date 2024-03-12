@@ -439,6 +439,7 @@ export default {
   edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
   trim_audio: "Recouper un son",
   trim_audio_summary: "Couper la fin ou le début dans un son",
+  volume: "Volume sonore",
   trim_video: "Recouper une vidéo",
   trim_video_summary: "Couper la fin ou le début dans une vidéo",
   trim_instructions:

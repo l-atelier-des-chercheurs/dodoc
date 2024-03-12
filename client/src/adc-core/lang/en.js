@@ -607,6 +607,7 @@ export default {
   edit_image_summary: "Crop or color correct an image",
   trim_audio: "Trim a sound",
   trim_audio_summary: "Cut the end or start of a sound",
+  volume: "Audio level",
   trim_video: "Trim a video",
   trim_video_summary: "Cut the end or start of a video",
   trim_instructions:

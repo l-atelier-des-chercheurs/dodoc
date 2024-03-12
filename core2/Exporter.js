@@ -411,6 +411,9 @@ class Exporter {
         this.instructions.base_media_path
       );
       const { start, end } = this.instructions.selection;
+      let volume = 1;
+      if (typeof this.instructions.volume !== "undefined")
+        volume = this.instructions.volume / 100;
 
       this._notifyProgress(10);
 
@@ -418,6 +421,7 @@ class Exporter {
         .input(base_media_path)
         .inputOptions([`-ss ${start}`, `-to ${end}`])
         .withVideoCodec("libx264")
+        .addOptions(["-af volume=" + volume])
         .toFormat("mp4")
         .on("start", (commandLine) => {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
