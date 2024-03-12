@@ -496,7 +496,7 @@ export default {
 
   height: 100%;
   background: white;
-  border-right: 2px solid var(--c-gris_fonce);
+  border-right: 2px solid var(--c-gris);
 
   overflow-x: visible;
   overflow-y: auto;
