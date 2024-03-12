@@ -76,11 +76,10 @@
           <b-icon icon="box-arrow-up-right" />
           {{ $t("share") }}
         </template>
-        <div class="">
+        <div v-if="can_edit">
           <button
             type="button"
             class="u-buttonLink _exportBtn"
-            :disabled="!can_edit"
             @click="show_export_pdf_modal = true"
           >
             <sl-icon name="filetype-pdf" />
@@ -93,7 +92,7 @@
           :page_opened_id="page_opened_id"
           @close="show_export_pdf_modal = false"
         />
-        <div class="">
+        <div>
           <button
             type="button"
             class="u-buttonLink"
