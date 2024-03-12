@@ -1134,7 +1134,7 @@ export default {
     const location_to_add_to_medias = localStorage.getItem(
       "location_to_add_to_medias"
     );
-    if (location_to_add_to_medias)
+    if (location_to_add_to_medias && location_to_add_to_medias !== "undefined")
       this.location_to_add_to_medias = JSON.parse(location_to_add_to_medias);
   },
   mounted() {
