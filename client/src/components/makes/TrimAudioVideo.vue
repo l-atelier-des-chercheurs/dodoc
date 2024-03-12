@@ -60,6 +60,13 @@
           <button
             type="button"
             class="u-buttonLink"
+            @click="setStartOrEnd({ new_start: 0 })"
+          >
+            <b-icon icon="chevron-double-left" />
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
             @click="setStartOrEnd({ new_start: selection.start - 0.1 })"
           >
             -0.1s
@@ -107,6 +114,13 @@
           >
             +0.1s
           </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_end: main_wfpl.tracks[0].duration })"
+          >
+            <b-icon icon="chevron-double-right" />
+          </button>
         </div>
       </div>
     </div>
@@ -125,10 +139,7 @@
       <button
         type="button"
         class="u-button u-button_bleuvert"
-        :disabled="
-          (selection.end === 0 || selection.start === selection.end) &&
-          this.player_volume === 100
-        "
+        :disabled="selection.start === selection.end && player_volume === 100"
         @click="show_save_export_modal = true"
       >
         <b-icon icon="check" />
