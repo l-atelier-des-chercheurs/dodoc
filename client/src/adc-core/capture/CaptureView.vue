@@ -3,23 +3,33 @@
     class="m_captureview"
     :class="{ 'is--collapsed': collapse_capture_pane }"
   >
-    <CaptureSettings
+    <CapturePane
       v-show="show_capture_settings"
-      :audio_output_deviceId.sync="audio_output_deviceId"
-      @setStream="setStream"
-      @hasFinishedLoading="hasFinishedLoading"
-      @show="show_capture_settings = true"
+      :label="$t('settings')"
+      :pane_type="'settings'"
       @close="show_capture_settings = false"
-    />
+    >
+      <CaptureSettings
+        :audio_output_deviceId.sync="audio_output_deviceId"
+        @setStream="setStream"
+        @hasFinishedLoading="hasFinishedLoading"
+        @show="show_capture_settings = true"
+      />
+    </CapturePane>
 
-    <CaptureEffects
+    <CapturePane
       v-show="show_effects_pane"
-      :enable_effects.sync="enable_effects"
-      :videoElement="$refs.videoElement"
-      :canvasElement="$refs.canvasElement"
-      :project_path="path"
+      :label="$t('effects')"
+      :pane_type="'effects'"
       @close="show_effects_pane = false"
-    />
+    >
+      <CaptureEffects
+        :enable_effects.sync="enable_effects"
+        :videoElement="$refs.videoElement"
+        :canvasElement="$refs.canvasElement"
+        :project_path="path"
+      />
+    </CapturePane>
 
     <div class="m_captureview--videoPane">
       <transition name="slidedown" :duration="500">
@@ -966,6 +976,7 @@ import MediaValidationButtons from "./MediaValidationButtons.vue";
 import StopmotionPanel from "./StopmotionPanel.vue";
 import PickLocationForCaptures from "./PickLocationForCaptures.vue";
 
+import CapturePane from "./CapturePane.vue";
 import CaptureSettings from "./CaptureSettings.vue";
 import CaptureEffects from "./CaptureEffects.vue";
 import StopmotionList from "./StopmotionList.vue";
@@ -1012,6 +1023,7 @@ export default {
     MediaPreviewBeforeValidation,
     MediaValidationButtons,
     StopmotionPanel,
+    CapturePane,
     CaptureSettings,
     CaptureEffects,
     StopmotionList,
