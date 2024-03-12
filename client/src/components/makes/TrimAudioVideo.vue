@@ -125,7 +125,10 @@
       <button
         type="button"
         class="u-button u-button_bleuvert"
-        :disabled="selection.end === 0 || selection.start === selection.end"
+        :disabled="
+          (selection.end === 0 || selection.start === selection.end) &&
+          this.player_volume === 100
+        "
         @click="show_save_export_modal = true"
       >
         <b-icon icon="check" />
