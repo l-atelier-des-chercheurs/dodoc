@@ -134,7 +134,7 @@ x
           :custom_formats="['bold', 'italic', 'link']"
           :is_collaborative="false"
           :maxlength="1280"
-          :can_edit="true"
+          :can_edit="can_edit"
         />
 
         <!-- <CollaborativeEditor2
