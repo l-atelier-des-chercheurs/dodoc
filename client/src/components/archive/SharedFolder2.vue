@@ -154,7 +154,8 @@ export default {
       last_selected_stack_path: undefined,
       view_mode: "list",
 
-      sort_order: "date_modified",
+      sort_order: localStorage.getItem("archive.sort_order") || "date_modified",
+
       search_str: "",
       filetype_filter: "all",
       author_path_filter: "",
@@ -190,6 +191,9 @@ export default {
       if (this.opened_stack) {
         this.last_selected_stack_path = this.opened_stack.$path;
       }
+    },
+    sort_order() {
+      localStorage.setItem("archive.sort_order", this.sort_order);
     },
   },
   computed: {
@@ -240,7 +244,7 @@ export default {
       });
     },
     grouped_stacks() {
-      let order_props;
+      let order_props = ["$date_modified"];
       if (this.sort_order === "date_created")
         order_props = [
           "date_created_corrected",
@@ -376,5 +380,9 @@ export default {
 
 ._mediamapContainer {
   height: 90vh;
+}
+
+._noContent {
+  margin: calc(var(--spacing) / 1);
 }
 </style>
