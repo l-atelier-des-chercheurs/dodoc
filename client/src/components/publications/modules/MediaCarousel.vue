@@ -210,7 +210,6 @@ export default {
       return media.$infos?.ratio === 1;
     },
     showObjectFitFor(media_with_linked) {
-      debugger;
       if (!media_with_linked._linked_media) return false;
       if (this.mediaIsSquare(media_with_linked._linked_media)) return false;
       if (

@@ -79,9 +79,6 @@ export default {
       );
       let modules_list = section_to_move_to.modules_list?.slice() || [];
       modules_list.push(this.module_meta_filename);
-
-      debugger;
-
       await this.$api.updateMeta({
         path: this.section_path_to_move_to,
         new_meta: { modules_list },
