@@ -293,7 +293,8 @@ body {
 
 ::selection {
   // background: hsla(211, 63%, 77%, 0.5);
-  background: hsla(174, 70%, 71%, 0.5);
+  // background: hsla(174, 70%, 71%, 0.5);
+  background: hsl(246, 18%, 65%, 0.2);
 }
 
 html {
@@ -336,6 +337,37 @@ button {
   /* font-family: "Work Sans"; */
   height: 100%;
   min-height: 100%;
+}
+
+.u-inputBorder {
+  display: flex;
+  flex-flow: row nowrap;
+  border: 1px solid var(--h-500);
+  border-radius: 4px;
+  max-width: 420px;
+
+  ._prefix {
+    padding: 0.5rem 0.6rem 0.3rem;
+    background: var(--h-500);
+    color: var(--h-200);
+  }
+
+  input {
+    background: transparent;
+    min-width: 20ch;
+    color: var(--h-700);
+
+    &::placeholder {
+      font-style: italic;
+      color: var(--h-500);
+      font-size: var(--sl-font-size-small);
+    }
+
+    &:hover,
+    &:focus-visible {
+      border: none;
+    }
+  }
 }
 
 hr {

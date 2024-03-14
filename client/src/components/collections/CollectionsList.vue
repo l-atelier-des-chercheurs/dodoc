@@ -23,10 +23,23 @@
       />
     </div>
 
-    <table class="_list">
-      <tbody>
+    <div class="u-spacingBottom u-inputBorder _searchField">
+      <label for="searchTitles" class="_prefix">
+        <b-icon icon="search" />
+      </label>
+      <input
+        type="text"
+        name="searchTitles"
+        id="searchTitles"
+        :placeholder="$t('search_in_titles')"
+        v-model="search_coll_name"
+      />
+    </div>
+
+    <table class="u-spacingBottom _list">
+      <transition-group tag="tbody" name="projectsList" appear>
         <tr
-          v-for="collection in sorted_collections"
+          v-for="collection in filtered_collections"
           :key="collection.$path"
           @click="$emit('open', getFilename(collection.$path))"
         >
@@ -44,7 +57,7 @@
             </div>
           </td>
         </tr>
-      </tbody>
+      </transition-group>
     </table>
   </div>
   <!-- </BaseModal2> -->
@@ -58,6 +71,7 @@ export default {
       show_create_collection: false,
       collections: [],
       path: "collections",
+      search_coll_name: "",
     };
   },
   i18n: {
@@ -65,12 +79,14 @@ export default {
       fr: {
         collections: "Collections",
         create_a_collection: "Créer une collection",
+        search_in_titles: "Rechercher dans les titres",
         collection_instr:
           "Les collections regroupent des médias dans l’espace partagé pour les partager.",
       },
       en: {
         collections: "Collections",
         create_a_collection: "Create a collection",
+        search_in_titles: "Search in titles",
         collection_instr: "Collections group multiple medias",
       },
     },
@@ -95,6 +111,13 @@ export default {
         return a.title.localeCompare(b.title);
       });
     },
+    filtered_collections() {
+      return this.sorted_collections.filter((c) => {
+        if (this.search_coll_name)
+          return this.twoStringsSearch(c.title, this.search_coll_name);
+        return true;
+      });
+    },
   },
   methods: {
     openNewCollection(new_folder_slug) {
@@ -110,6 +133,9 @@ export default {
   }
 }
 
+._searchField {
+}
+
 table,
 th,
 td {
@@ -119,7 +145,6 @@ td {
 
 ._list {
   width: 100%;
-  margin-top: calc(var(--spacing) * 2);
   // background: var(--c-gris);
   // padding: 1px;
 

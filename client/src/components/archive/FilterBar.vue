@@ -15,7 +15,7 @@
         </button>
       </div>
 
-      <div class="_inputBorder _searchField">
+      <div class="u-inputBorder _searchField">
         <label for="searchTitles" class="_prefix">
           <b-icon icon="search" />
         </label>
@@ -403,37 +403,6 @@ export default {
   color: var(--h-700);
 
   background-color: transparent;
-}
-
-._inputBorder {
-  display: flex;
-  flex-flow: row nowrap;
-  border: 1px solid var(--h-500);
-  border-radius: 4px;
-  max-width: 420px;
-
-  ._prefix {
-    padding: 0.5rem 0.6rem 0.3rem;
-    background: var(--h-500);
-    color: var(--h-200);
-  }
-
-  input {
-    background: transparent;
-    min-width: 20ch;
-    color: var(--h-700);
-
-    &::placeholder {
-      font-style: italic;
-      color: var(--h-500);
-      font-size: var(--sl-font-size-small);
-    }
-
-    &:hover,
-    &:focus-visible {
-      border: none;
-    }
-  }
 }
 
 ._searchField {

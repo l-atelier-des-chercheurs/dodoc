@@ -106,7 +106,7 @@ export default {
     position: relative;
     background: var(--panel-color);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    // border-radius: 4px;
 
     margin: 0 auto;
     width: 100%;
