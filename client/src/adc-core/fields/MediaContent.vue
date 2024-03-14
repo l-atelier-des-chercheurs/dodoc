@@ -72,6 +72,7 @@
 
     <template v-else-if="file.$type === 'text'">
       <CollaborativeEditor2
+        class="_mediaContent--collabEditor"
         :content="file.$content"
         :path="file.$path"
         :can_edit="can_edit"
@@ -318,6 +319,7 @@ export default {
     justify-content: center;
     align-items: center;
     text-align: center;
+    padding: calc(var(--spacing) * 1);
   }
 
   ::v-deep {
@@ -444,5 +446,9 @@ export default {
       height: 100%;
     }
   }
+}
+
+._mediaContent--collabEditor {
+  width: 100%;
 }
 </style>

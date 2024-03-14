@@ -474,7 +474,6 @@ export default {
       const start =
         typeof new_start !== "undefined" ? new_start : this.selection.start;
       const end = typeof new_end !== "undefined" ? new_end : this.selection.end;
-      debugger;
       this.updateSelection(start, end);
 
       // this.main_wfpl.getEventEmitter().emit("select", start, end);
