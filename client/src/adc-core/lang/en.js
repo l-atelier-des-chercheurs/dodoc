@@ -620,7 +620,7 @@ export default {
   media_removed: "Media deleted",
   media_duplicated: "Media duplicated",
   media_was_saved_to_project: "The media was added to the project",
-  close: "Close",
+
   settings: "Settings",
   list_of_pages: "List of pages",
   list_of_spreads: "List of spreads",
