@@ -56,14 +56,14 @@
               </div>
 
               <div class="u-spacingBottom">
-                <TitleField
-                  :field_name="'presentation_of_instance'"
+                <CollaborativeEditor2
                   :label="$t('presentation_of_instance')"
                   :instructions="$t('presentation_of_instance_instructions')"
-                  :content="settings.presentation_of_instance"
+                  :field_to_edit="'presentation_of_instance'"
                   :path="settings.$path"
-                  :required="false"
-                  :input_type="'markdown'"
+                  :content="settings.presentation_of_instance"
+                  :custom_formats="['bold', 'italic', 'link']"
+                  :is_collaborative="false"
                   :can_edit="is_instance_admin"
                 />
               </div>
@@ -247,6 +247,7 @@ export default {
         this.is_loading = false;
         return err;
       });
+    this.$api.join({ room: this.settings.$path });
     this.is_loading = false;
 
     if (this.starting_tab) {
@@ -254,8 +255,6 @@ export default {
         this.$refs.tabgroup.show(this.starting_tab);
       }, 100);
     }
-
-    this.$api.join({ room: this.settings.$path });
   },
   beforeDestroy() {
     this.$api.leave({ room: this.settings.$path });

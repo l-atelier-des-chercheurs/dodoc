@@ -182,11 +182,11 @@ export default {
 
   story_width: "Story width",
   summary: "Summary",
-  chapters: "Chapters",
   section_title: "Chapter title",
   section: "Chapter",
   in_this_section: "In this chapter",
   in_another_section: "In another chapter",
+  change_section: "Move to another chapter",
 
   status: "Status",
   origin: "Origin",
@@ -297,7 +297,7 @@ export default {
   change_location: "Change position",
   remove_pin: "Remove this pin",
   cancel_position: "Erase position",
-  click_on_map_to_repick_location_for_media:
+  click_on_map_to_repick_location:
     "Click on map to select the new position on the map",
   add_caption: "Add a caption",
   copy_first_media_caption: "Reuse first media caption",
@@ -507,6 +507,7 @@ export default {
   exports: "Exports",
   export: "Export",
   to_export: "Export",
+  export_in_progress: "Export in progress",
 
   untitled: "Untitled",
   responsive: "Fluid",
@@ -618,7 +619,8 @@ export default {
   "displayed:": "Displayed:",
   media_removed: "Media deleted",
   media_duplicated: "Media duplicated",
-  media_was_saved: "The media was added to the project",
+  media_was_saved_to_project: "The media was added to the project",
+  close: "Close",
   settings: "Settings",
   list_of_pages: "List of pages",
   list_of_spreads: "List of spreads",
@@ -627,15 +629,13 @@ export default {
   snap_to_grid: "Grid Snapping",
   gridstep: "Grid step",
   scale: "Scale",
-  list_of_medias: "List of media",
-  list_of_medias_instr:
-    "This list lists all the media present on this page. Click on one of them to display its location and properties.",
   makes_list: "Makes list",
   back_to_makes_list: "Back to list",
   edit_image: "Rework an image",
   edit_image_summary: "Crop or color correct an image",
   trim_audio: "Trim a sound",
   trim_audio_summary: "Cut the end or start of a sound",
+  volume: "Audio level",
   trim_video: "Trim a video",
   trim_video_summary: "Cut the end or start of a video",
   trim_instructions:
@@ -953,4 +953,9 @@ export default {
     "Users must accept the terms of use to register",
   click_here_to_read: "Click here to read them.",
   i_read_and_accept_terms: "I accept the terms of use",
+
+  page_to_export: "Page to export",
+
+  on_this_page: "On this page",
+  on_other_pages: "On other pages",
 };

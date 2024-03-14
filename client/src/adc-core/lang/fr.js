@@ -219,14 +219,15 @@ export default {
   exports: "Exportations",
   export: "Exportation",
   to_export: "Exporter",
+  export_in_progress: "Exportation en cours",
 
   story_width: "Largeur du récit",
   summary: "Sommaire",
-  chapters: "Chapitres",
   section_title: "Titre du chapitre",
   section: "Chapitre",
   in_this_section: "Dans ce chapitre",
   in_another_section: "Dans un autre chapitre",
+  change_section: "Déplacer vers un autre chapitre",
 
   untitled: "Sans titre",
   responsive: "Fluide",
@@ -406,7 +407,7 @@ export default {
   "displayed:": "Affichés&nbsp;:",
   media_removed: "Média supprimé",
   media_duplicated: "Média dupliqué",
-  media_was_saved: "Le média a été ajouté au projet",
+  media_was_saved_to_project: "Le média a été ajouté au projet",
 
   CC: "Creative Commons",
   authors_and_license: "Licence et auteurs",
@@ -436,9 +437,6 @@ export default {
   snap_to_grid: "Magnétisme de la grille",
   gridstep: "Pas de la grille",
   scale: "Échelle",
-  list_of_medias: "Liste des médias",
-  list_of_medias_instr:
-    "Cette liste recense tous les médias présents sur cette page. Cliquez sur l’un d’eux pour afficher son emplacement et ses propriétés.",
 
   path_to_content: "Chemin du stockage des contenus",
   path_to_content_instructions: `Attention, fonctionnalité avancée !
@@ -472,6 +470,7 @@ export default {
   edit_image_summary: "Recadrer ou corriger les couleurs d’une image",
   trim_audio: "Recouper un son",
   trim_audio_summary: "Couper la fin ou le début dans un son",
+  volume: "Volume sonore",
   trim_video: "Recouper une vidéo",
   trim_video_summary: "Couper la fin ou le début dans une vidéo",
   trim_instructions:
@@ -960,7 +959,7 @@ export default {
   pick_on_map: "Indiquer sur la carte",
   location: "Localisation",
   current_position: "Position actuelle",
-  no_position: "Aucune position à afficher",
+  no_position: "Aucune position définie",
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
   help_contact: "aide/contact",
 
@@ -980,9 +979,12 @@ export default {
   placed_on_map: "Positionné sur la carte",
   change_location: "Changer la position",
   remove_pin: "Supprimer cette épingle",
+  location_stored_in_localstorage:
+    "Cette information sera conservée sur cet appareil pour toutes les captures réalisées.",
+
   cancel_position: "Annuler la position",
-  click_on_map_to_repick_location_for_media:
-    "Cliquez sur la carte pour sélectionner une nouvelle position pour le média",
+  click_on_map_to_repick_location:
+    "Cliquez sur la carte pour sélectionner une nouvelle position.",
   add_caption: "Ajouter une légende",
   copy_first_media_caption: "Réutiliser la légende du premier média",
 
@@ -1019,4 +1021,9 @@ export default {
     "Les utilisateurs doivent accepter les conditions d’utilisation pour s’inscrire",
   click_here_to_read: "Cliquez ici pour les lire.",
   i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
+
+  page_to_export: "Page à exporter",
+
+  on_this_page: "Sur cette page",
+  on_other_pages: "Sur d’autres pages",
 };

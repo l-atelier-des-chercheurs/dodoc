@@ -109,7 +109,7 @@
                 </button>
               </div>
 
-              <div class="_buttonRow">
+              <DropDown :right="true">
                 <button
                   type="button"
                   class="u-buttonLink"
@@ -118,17 +118,23 @@
                   <b-icon icon="file-plus" />
                   {{ $t("duplicate") }}
                 </button>
+
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click="$emit('changeSectionForModule')"
+                >
+                  <b-icon icon="arrow-left-right" />
+                  {{ $t("change_section") }}
+                </button>
+
                 <RemoveMenu
                   v-if="can_edit"
                   :remove_text="$t('remove')"
                   :show_button_text="true"
                   @remove="removeModule"
                 />
-
-                <!-- <button type="button" class="u-button" @click="removeModule">
-                  <sl-icon name="trash3" />
-                </button> -->
-              </div>
+              </DropDown>
             </div>
             <div class="_carto" v-if="is_associated_to_map">
               <div class="_latlon" v-if="false">
@@ -184,7 +190,7 @@
           <div class="_repickNotice" v-if="is_repicking_location">
             <div class="_repickNotice--content">
               <div>
-                {{ $t("click_on_map_to_repick_location_for_media") }}
+                {{ $t("click_on_map_to_repick_location") }}
               </div>
               <button
                 type="button"
@@ -346,7 +352,8 @@
           module_type !== 'text'
         "
       >
-        <TitleField
+        <CollaborativeEditor2
+          class="_caption"
           :label="
             edit_mode &&
             !publimodule.caption &&
@@ -354,12 +361,12 @@
               ? $t('add_caption')
               : undefined
           "
-          :field_name="'caption'"
+          :field_to_edit="'caption'"
           :content="publimodule.caption"
           :path="publimodule.$path"
-          :input_type="'markdown'"
-          :tag="'small'"
-          :can_edit="edit_mode && can_edit"
+          :custom_formats="['bold', 'italic', 'link']"
+          :is_collaborative="false"
+          :can_edit="can_edit"
         />
 
         <div
@@ -682,6 +689,7 @@ export default {
         addtl_meta_to_module,
       });
       this.$emit("duplicate", meta_filename);
+      this.disableEdit();
     },
     async removeModule() {
       // todo also empty sharedb path, since $path can be retaken
@@ -853,6 +861,7 @@ export default {
 
 ._buttonRow {
   display: flex;
+  flex-flow: row wrap;
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
   align-items: center;
@@ -942,6 +951,11 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) * 1);
+
+  > ._caption {
+    flex: 1 1 auto;
+    font-size: var(--sl-font-size-small);
+  }
 }
 
 .showOptions {

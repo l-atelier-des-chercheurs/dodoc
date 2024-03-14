@@ -92,6 +92,7 @@ module.exports = (function () {
     );
     app.delete(
       [
+        "/_api2/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
@@ -1199,8 +1200,11 @@ module.exports = (function () {
   }
 
   async function _removeFile(req, res, next) {
-    const { path_to_folder, meta_filename, path_to_meta } =
-      utils.makePathFromReq(req);
+    const {
+      path_to_folder = "",
+      meta_filename,
+      path_to_meta,
+    } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, meta_filename });
 
     try {

@@ -1,29 +1,88 @@
 <template>
   <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
-    <button
-      type="button"
-      class="u-buttonLink _exportBtn"
-      :disabled="is_exporting"
-      @click="exportPublication"
-    >
-      <sl-icon name="filetype-pdf" />
-      {{ $t("export_in_pdf") }}
-    </button>
+    <div class="">
+      <DLabel :str="$t('document_type')" />
+      <RadioCheckboxInput
+        :value.sync="export_mode"
+        :options="export_options"
+        :can_edit="true"
+      />
+    </div>
 
-    <transition name="fade_fast" :duration="150" mode="out-in">
-      <LoaderSpinner v-if="is_exporting" />
-    </transition>
+    <template v-if="export_mode === 'pdf'">
+      <div slot="footer">
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          @click="exportPublication('pdf')"
+        >
+          <sl-icon name="filetype-pdf" />
+          {{ $t("create") }}
+        </button>
+      </div>
+    </template>
+    <template v-else-if="export_mode === 'png'">
+      <template v-if="publication.template === 'page_by_page'">
+        <div class="u-spacingBottom" />
+
+        <div class="">
+          <DLabel :str="$t('page_to_export')" />
+          <select v-model="page_to_export_as_image">
+            <option
+              v-for="(a, i) in new Array(page_count)"
+              :key="i + 1"
+              v-text="i + 1"
+            />
+          </select>
+        </div>
+      </template>
+
+      <div slot="footer">
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          @click="exportPublication('png')"
+        >
+          <b-icon icon="file-earmark-image" />
+          {{ $t("create") }}
+        </button>
+      </div>
+    </template>
+    <ExportItemAndSaveOrDownload
+      v-if="task_instructions"
+      :publication_path="publication.$path"
+      :instructions="task_instructions"
+      @close="task_instructions = false"
+    />
   </BaseModal2>
 </template>
 <script>
+import ExportItemAndSaveOrDownload from "@/components/publications/ExportItemAndSaveOrDownload.vue";
+
 export default {
   props: {
     publication: Object,
+    page_opened_id: String,
   },
-  components: {},
+  components: {
+    ExportItemAndSaveOrDownload,
+  },
   data() {
     return {
-      is_exporting: false,
+      task_instructions: false,
+      page_to_export_as_image: 1,
+
+      export_mode: "pdf",
+      export_options: [
+        {
+          key: "pdf",
+          label: this.$t("pdf"),
+        },
+        {
+          key: "png",
+          label: this.$t("image"),
+        },
+      ],
     };
   },
   i18n: {
@@ -31,43 +90,41 @@ export default {
       fr: {},
     },
   },
-  created() {},
+  created() {
+    if (this.page_opened_id) {
+      const page_number = this.publication.pages.findIndex(
+        (p) => p.id === this.page_opened_id
+      );
+      if (page_number) this.page_to_export_as_image = page_number + 1;
+    }
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    page_count() {
+      return this.publication.pages.length;
+    },
+  },
   methods: {
-    async exportPublication() {
+    async exportPublication(export_type) {
       const additional_meta = {};
       additional_meta.$origin = "publish";
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
       let instructions = {
-        recipe: "pdf",
+        recipe: export_type,
         page_width: this.publication.page_width,
         page_height: this.publication.page_height,
         layout_mode: this.publication.layout_mode || "print",
         suggested_file_name: this.publication.title,
         additional_meta,
       };
-
+      if (this.publication.template === "page_by_page")
+        instructions.page = this.page_to_export_as_image;
       if (this.publication.page_spreads === true) instructions.page_width *= 2;
-
-      const current_task_id = await this.$api.exportFolder({
-        path: this.publication.$path,
-        instructions,
-      });
-      this.$alertify.delay(4000).log(this.$t("compilation_started"));
-
-      this.is_exporting = true;
-
-      const checkIfEnded = ({ task_id }) => {
-        if (task_id !== current_task_id) return;
-        this.is_exporting = false;
-        this.$eventHub.$off("task.ended", checkIfEnded);
-      };
-      this.$eventHub.$on("task.ended", checkIfEnded);
+      this.task_instructions = instructions;
     },
   },
 };

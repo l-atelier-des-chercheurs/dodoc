@@ -132,7 +132,7 @@
       <b-icon icon="plus-circle-fill" />
     </button> -->
 
-    <DropZone @mediaDropped="createMosaic" />
+    <DropZone @mediaDropped="mediaDropped" />
   </div>
 </template>
 <script>

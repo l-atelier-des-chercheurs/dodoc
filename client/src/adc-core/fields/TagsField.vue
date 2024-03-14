@@ -8,9 +8,7 @@
         :mode="'inactive'"
         :shorten_if_too_long="shorten_if_too_long"
       />
-      <template v-if="can_edit && !edit_mode">
-        <EditBtn @click="enableEditMode" />
-      </template>
+      <EditBtn v-if="can_edit" @click="enableEditMode" />
     </div>
 
     <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">

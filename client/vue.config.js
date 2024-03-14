@@ -18,7 +18,7 @@ module.exports = defineConfig({
     },
   },
   devServer: {
-    https: true,
+    https: false,
     // proxy: "https://localhost:8080",
     port: 35501,
     allowedHosts: "all",
