@@ -173,7 +173,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  background: white;
+  background: var(--body-bg);
   height: 100%;
   width: 100%;
   overflow: auto;
