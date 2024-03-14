@@ -8,11 +8,7 @@
     <template v-for="(media_with_linked, index) in medias_with_linked">
       <div
         class="_mediaGrid--item"
-        :key="
-          (media_with_linked._linked_media &&
-            media_with_linked._linked_media.$path) ||
-          'no_media_' + index
-        "
+        :key="itemKey(media_with_linked._linked_media, index)"
         :data-mediatype="media_with_linked._linked_media.$type"
         :style="itemStyle({ media_with_linked })"
       >
@@ -36,6 +32,7 @@
         />
 
         <div class="_btnRow" v-if="can_edit">
+          <DragFile v-if="can_edit" :file="media_with_linked._linked_media" />
           <template
             v-if="
               (is_multiple_medias ||
@@ -173,6 +170,12 @@ export default {
     },
   },
   methods: {
+    itemKey(_lm, index) {
+      if (_lm?.$path) return _lm.$path + "_" + index;
+      return "no_media_" + index;
+      // if (_lm?.$path) return _lm.$path + "_" + _lm.$date_created;
+      // return "no_media_" + index;
+    },
     itemStyle({ media_with_linked }) {
       let props = {};
       props["--object-fit"] = media_with_linked.objectFit || "cover";
@@ -197,7 +200,7 @@ export default {
   &.is--multipleMedias {
     display: flex;
     flex-flow: row nowrap;
-    gap: calc(var(--spacing) / 4);
+    gap: calc(var(--spacing) / 2);
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
@@ -214,6 +217,9 @@ export default {
 
     &[data-mediatype="text"] {
       aspect-ratio: auto;
+    }
+    &:not([data-mediatype="text"]) {
+      background: var(--c-gris_clair);
     }
   }
 
@@ -272,16 +278,17 @@ export default {
 
   pointer-events: none;
 
-  button {
-    // background: white;
-    pointer-events: auto;
+  ::v-deep {
+    button {
+      // background: white;
+      pointer-events: auto;
 
-    border-radius: 4px;
-    color: var(--c-noir);
-    background: rgb(255 255 255 / 40%);
-    backdrop-filter: blur(8px);
-    padding: 4px;
-    // background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      color: var(--c-noir);
+      background: rgb(255 255 255 / 40%);
+      backdrop-filter: blur(8px);
+      padding: 4px;
+    }
   }
 }
 
@@ -289,5 +296,12 @@ export default {
   width: 100%;
   padding: calc(var(--spacing) / 4);
   text-align: center;
+}
+
+._dragFileIcon {
+  // position: absolute;
+  // top: 0;
+  // right: 0;
+  // z-index: 10;
 }
 </style>
