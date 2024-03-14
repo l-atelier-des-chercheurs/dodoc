@@ -27,7 +27,6 @@
           :resolution="context === 'preview' ? 220 : 1600"
           :context="context"
           :show_fs_button="show_fs_button"
-          :is_draggable="can_edit"
           :can_edit="can_edit"
         />
 
