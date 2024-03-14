@@ -45,6 +45,7 @@
               !mediaIsSquare(media_with_linked._linked_media) &&
               media_with_linked._linked_media.$type !== 'stl' &&
               media_with_linked._linked_media.$type !== 'obj' &&
+              media_with_linked._linked_media.$type !== 'text' &&
               media_with_linked._linked_media.$type !== 'other'
             "
           >

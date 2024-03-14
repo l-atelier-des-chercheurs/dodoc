@@ -37,43 +37,42 @@
           />
 
           <div class="_btnRow" v-if="can_edit">
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="
-                !(
-                  !media_with_linked.objectFit ||
-                  media_with_linked.objectFit === 'cover'
-                ) && !mediaIsSquare(media_with_linked._linked_media)
-              "
-              @click="
-                $emit('updateMediaOpt', {
-                  index,
-                  opt: { objectFit: 'cover' },
-                })
-              "
-            >
-              <sl-icon name="aspect-ratio" />
-              <!-- {{ $t("object_fit_cover") }} -->
-            </button>
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="
-                media_with_linked.objectFit !== 'contain' &&
-                !mediaIsSquare(media_with_linked._linked_media)
-              "
-              @click="
-                $emit('updateMediaOpt', {
-                  index,
-                  opt: { objectFit: 'contain' },
-                })
-              "
-            >
-              <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
-              <!-- {{ $t("object_fit_contain") }} -->
-              <sl-icon name="aspect-ratio-fill" />
-            </button>
+            <template v-if="showObjectFitFor(media_with_linked)">
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="
+                  !(
+                    !media_with_linked.objectFit ||
+                    media_with_linked.objectFit === 'cover'
+                  )
+                "
+                @click="
+                  $emit('updateMediaOpt', {
+                    index,
+                    opt: { objectFit: 'cover' },
+                  })
+                "
+              >
+                <sl-icon name="aspect-ratio" />
+                <!-- {{ $t("object_fit_cover") }} -->
+              </button>
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="media_with_linked.objectFit !== 'contain'"
+                @click="
+                  $emit('updateMediaOpt', {
+                    index,
+                    opt: { objectFit: 'contain' },
+                  })
+                "
+              >
+                <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
+                <!-- {{ $t("object_fit_contain") }} -->
+                <sl-icon name="aspect-ratio-fill" />
+              </button>
+            </template>
             <button
               type="button"
               class="u-buttonLink"
@@ -210,6 +209,18 @@ export default {
     mediaIsSquare(media) {
       return media.$infos?.ratio === 1;
     },
+    showObjectFitFor(media_with_linked) {
+      debugger;
+      if (!media_with_linked._linked_media) return false;
+      if (this.mediaIsSquare(media_with_linked._linked_media)) return false;
+      if (
+        !["image", "video", "stl", "pdf"].includes(
+          media_with_linked._linked_media.$type
+        )
+      )
+        return false;
+      return true;
+    },
   },
 };
 </script>
@@ -243,7 +254,7 @@ export default {
 }
 
 ._carousel {
-  background: var(--c-gris);
+  background: var(--c-gris_clair);
   // padding: calc(var(--spacing) / 4);
 }
 
