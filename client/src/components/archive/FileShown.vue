@@ -234,7 +234,7 @@ export default {
 }
 
 ._textEditor {
-  padding: calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) / 1);
 
   ::v-deep .ql-editor {
     padding: calc(var(--spacing) / 2);
