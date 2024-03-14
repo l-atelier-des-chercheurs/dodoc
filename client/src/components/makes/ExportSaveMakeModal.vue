@@ -52,7 +52,7 @@
         </div>
       </div>
       <div class="_saveNotice" v-if="finished_saving_to_project">
-        {{ $t("media_was_saved") }}
+        {{ $t("media_was_saved_to_project") }}
       </div>
     </div>
   </BaseModal2>

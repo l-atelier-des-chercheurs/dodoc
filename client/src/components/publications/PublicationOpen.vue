@@ -8,6 +8,7 @@
       <PublicationTopbar
         class="_publicationOpen--topbar"
         :publication="publication"
+        :page_opened_id="page_opened_id"
         :can_edit="can_edit"
         @close="$emit('close')"
       />

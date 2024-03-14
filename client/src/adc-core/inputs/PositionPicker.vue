@@ -20,6 +20,13 @@
       <div v-else class="u-instructions">
         {{ $t("no_position") }}
       </div>
+      <div v-if="!edit_mode" class="_editBtn">
+        <EditBtn
+          :label_position="'left'"
+          :is_unfolded="true"
+          @click="enableEditMode"
+        />
+      </div>
       <details v-if="pins.length > 0 || edit_mode">
         <summary class="u-buttonLink">
           {{ $t("more_informations") }}
@@ -69,18 +76,18 @@
         </div>
       </details>
 
-      <div class="u-instructions" v-if="edit_mode">
-        {{ $t("click_on_map_to_repick_location_for_media") }}
+      <div v-if="edit_mode">
+        <span class="u-instructions">
+          {{ $t("click_on_map_to_repick_location") }}
+        </span>
+        <button type="button" class="u-buttonLink" @click="removePosition">
+          {{ $t("cancel_position") }}
+        </button>
       </div>
 
       <template v-if="can_edit">
         <div class="_footer">
-          <EditBtn
-            v-if="!edit_mode"
-            :is_unfolded="true"
-            @click="enableEditMode"
-          />
-          <template v-else>
+          <template v-if="edit_mode">
             <SaveCancelButtons
               class="_scb"
               :allow_save="allow_save"
@@ -156,7 +163,12 @@ export default {
     enableEditMode() {
       this.edit_mode = true;
     },
-
+    removePosition() {
+      this.longitude = undefined;
+      this.latitude = undefined;
+      this.zoom = undefined;
+      this.updateLongLatZoom();
+    },
     newPositionClicked({ longitude, latitude, zoom }) {
       this.longitude = longitude;
       this.latitude = latitude;
@@ -166,18 +178,26 @@ export default {
       this.zoom = zoom;
     },
     async updateLongLatZoom() {
-      const new_meta = {
-        [this.field_name]: {
+      let location_infos = undefined;
+
+      if (this.longitude || this.latitude || this.zoom)
+        location_infos = {
           longitude: this.longitude,
           latitude: this.latitude,
           zoom: this.zoom,
-        },
-      };
+        };
 
-      await this.$api.updateMeta({
-        path: this.path,
-        new_meta,
-      });
+      this.$emit("newPosition", location_infos);
+
+      if (this.path) {
+        const new_meta = {
+          [this.field_name]: location_infos,
+        };
+        await this.$api.updateMeta({
+          path: this.path,
+          new_meta,
+        });
+      }
 
       this.edit_mode = false;
     },
@@ -196,23 +216,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._nowButton {
-  margin-top: var(--sl-spacing-xx-small);
+._positionPicker {
+  position: relative;
 }
-
-._btnRow {
-  display: flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2) 0;
-}
-
-._latLong {
-  justify-content: stretch;
-
-  > * {
-    flex: 1 1 0;
-  }
+._editBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 ._footer {
   margin-top: calc(var(--spacing) / 4);

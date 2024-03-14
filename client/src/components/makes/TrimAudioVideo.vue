@@ -60,6 +60,13 @@
           <button
             type="button"
             class="u-buttonLink"
+            @click="setStartOrEnd({ new_start: 0 })"
+          >
+            <b-icon icon="chevron-double-left" />
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
             @click="setStartOrEnd({ new_start: selection.start - 0.1 })"
           >
             -0.1s
@@ -107,9 +114,18 @@
           >
             +0.1s
           </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="setStartOrEnd({ new_end: main_wfpl.tracks[0].duration })"
+          >
+            <b-icon icon="chevron-double-right" />
+          </button>
         </div>
       </div>
     </div>
+
+    <div class="_currentVolume">{{ $t("volume") }} = {{ player_volume }}%</div>
 
     <div class="_submit">
       <div class="u-instructions">
@@ -123,7 +139,7 @@
       <button
         type="button"
         class="u-button u-button_bleuvert"
-        :disabled="selection.end === 0 || selection.start === selection.end"
+        :disabled="selection.start === selection.end && player_volume === 100"
         @click="show_save_export_modal = true"
       >
         <b-icon icon="check" />
@@ -196,6 +212,10 @@ export default {
         end: this.make.selection?.end || 0,
       },
 
+      debounce_volumeChange: undefined,
+      player_volume:
+        typeof this.make.volume !== "undefined" ? this.make.volume : 100,
+
       trimmed_video: false,
 
       is_rendering: false,
@@ -243,6 +263,11 @@ export default {
         this.setSelect();
       },
       deep: true,
+    },
+    "make.volume": {
+      handler() {
+        this.setVolume();
+      },
     },
     current_time() {
       this.updatePreviewVideoTime();
@@ -335,6 +360,7 @@ export default {
           },
         },
       ]);
+      this.setVolume();
     },
     play() {
       this.start_preview_play_from = this.current_time;
@@ -396,7 +422,7 @@ export default {
     },
     setListener() {
       this.main_wfpl.getEventEmitter().on("timeupdate", this.timeUpdate);
-      // this.main_wfpl.getEventEmitter().on("select", this.select);
+      this.main_wfpl.getEventEmitter().on("volumechange", this.volumeChange);
       this.main_wfpl.getEventEmitter().on("finished", this.finished);
       this.main_wfpl
         .getEventEmitter()
@@ -404,6 +430,19 @@ export default {
     },
     timeUpdate(time) {
       this.current_time = this.roundToDec(time);
+    },
+    async volumeChange(volume) {
+      this.player_volume = +volume;
+
+      if (this.debounce_volumeChange) clearTimeout(this.debounce_volumeChange);
+      this.debounce_volumeChange = setTimeout(async () => {
+        await this.$api.updateMeta({
+          path: this.make.$path,
+          new_meta: {
+            volume: this.player_volume,
+          },
+        });
+      }, 1000);
     },
     audiosourceserror(err) {
       if (err.message === "Unable to decode audio data") {
@@ -420,13 +459,22 @@ export default {
       if (start !== this.selection.start || end !== this.selection.end)
         this.main_wfpl.getEventEmitter().emit("select", start, end);
     },
+    setVolume() {
+      if (typeof this.make.volume === "undefined") return;
+      this.player_volume = this.make.volume;
+      this.main_wfpl
+        .getEventEmitter()
+        .emit("volumechange", this.make.volume, this.main_wfpl.tracks[0]);
+    },
     setStartOrEnd({ new_start, new_end }) {
       // let { start, end } = this.selection;
       // if (start !== new_start) start = new_start;
       // if (end !== new_end) end = new_end;
 
-      const start = new_start || this.selection.start;
-      const end = new_end || this.selection.end;
+      const start =
+        typeof new_start !== "undefined" ? new_start : this.selection.start;
+      const end = typeof new_end !== "undefined" ? new_end : this.selection.end;
+      debugger;
       this.updateSelection(start, end);
 
       // this.main_wfpl.getEventEmitter().emit("select", start, end);
@@ -513,13 +561,11 @@ export default {
         // },
       });
 
-      const gain = this.$el.querySelector(".volume-slider").value / 100 || 1;
-
       await preview_wfpl.load([
         {
           src: this.base_media_url,
           name: this.base_media.$media_filename,
-          gain,
+          gain: this.player_volume / 100,
           fadeIn: {
             shape: "logarithmic",
             duration: 0.3,
@@ -570,6 +616,7 @@ export default {
         recipe: "trim_video",
         suggested_file_name: this.base_media.$media_filename + "_trim",
         selection: this.selection,
+        volume: this.player_volume,
         base_media_path: this.makeMediaFilePath({
           $path: this.base_media.$path,
           $media_filename: this.base_media.$media_filename,
@@ -695,10 +742,13 @@ export default {
   }
 }
 
-._currentTime {
-  font-size: var(--sl-font-size-x-large);
+._currentTime,
+._currentVolume {
   margin: calc(var(--spacing) * 2) auto;
   text-align: center;
+}
+._currentTime {
+  font-size: var(--sl-font-size-x-large);
 }
 
 ._startEndBlock {

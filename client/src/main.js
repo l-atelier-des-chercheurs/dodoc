@@ -298,6 +298,9 @@ new Vue({
     default_new_module_height: 50,
     default_new_module_left: 15,
     default_new_module_top: 15,
+    set_new_module_offset_left: 0,
+    set_new_module_offset_top: 0,
+    zoom_offset: 50,
 
     page_magnification: 3.7952,
 

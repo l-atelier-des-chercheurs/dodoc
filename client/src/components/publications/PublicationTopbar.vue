@@ -55,7 +55,7 @@
         v-if="can_edit && publication.template !== 'cartography'"
         @click="openSettings"
         caret
-        class="u-button u-button_small"
+        class="u-button u-button_small u-button_transparent"
       >
         <b-icon icon="gear" slot="prefix" :aria-label="$t('settings')" />
         {{ $t("settings") }}
@@ -76,11 +76,10 @@
           <b-icon icon="box-arrow-up-right" />
           {{ $t("share") }}
         </template>
-        <div class="">
+        <div v-if="can_edit">
           <button
             type="button"
             class="u-buttonLink _exportBtn"
-            :disabled="!can_edit"
             @click="show_export_pdf_modal = true"
           >
             <sl-icon name="filetype-pdf" />
@@ -90,9 +89,10 @@
         <ExportPubliModal
           v-if="show_export_pdf_modal"
           :publication="publication"
+          :page_opened_id="page_opened_id"
           @close="show_export_pdf_modal = false"
         />
-        <div class="">
+        <div>
           <button
             type="button"
             class="u-buttonLink"
@@ -129,6 +129,7 @@ import ExportPubliModal from "@/components/publications/ExportPubliModal.vue";
 export default {
   props: {
     publication: Object,
+    page_opened_id: String,
     no_back_button: Boolean,
     can_edit: Boolean,
   },

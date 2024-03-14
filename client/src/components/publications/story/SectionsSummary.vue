@@ -1,12 +1,5 @@
 <template>
   <div class="_sectionsSummary" :style="story_styles">
-    <!-- <DetailsPane
-      ref="details"
-      :header="$t('chapters')"
-      :icon="'card-list'"
-      :has_items="sections.length > 0 ? sections.length : false"
-      :is_open_initially="sections.length === 0"
-    > -->
     <ReorderedList
       :field_name="'sections_list'"
       :items="sections"

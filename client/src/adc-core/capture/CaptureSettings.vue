@@ -7,24 +7,6 @@
       />
     </transition>
 
-    <div class="_topbar">
-      <div class="_topbar--title">
-        <span class>{{ $t("settings") }}</span>
-        <button
-          type="button"
-          class="u-button u-button_transparent _close_button"
-          @click="$emit('close')"
-        >
-          <img
-            :src="`${$root.publicPath}images/i_close_sansfond.svg`"
-            width="2rem"
-            height="2rem"
-            class=""
-          />
-        </button>
-      </div>
-    </div>
-
     <RadioSwitch
       :content.sync="current_mode"
       :options="[
@@ -46,8 +28,6 @@
             {{ $t("camera_access_refused") }}
           </div>
         </div>
-
-        <br />
 
         <label class="u-label">
           {{ $t("sources") }}
@@ -210,8 +190,6 @@
           </div>
         </div>
 
-        <br />
-
         <label class="u-label">{{ $t("resolutions") }}</label>
         <div>
           <div
@@ -356,13 +334,14 @@
 
       <div class="m_captureSettings--updateButton--buttons">
         <template v-if="current_mode === 'LocalSources'">
-          <button
+          <!-- <button
             type="button"
-            class="u-button u-button_red u-button_wide"
+            v-if="show_update_btn"
+            class="u-button u-button_white u-button_wide"
             @click="setCameraStreamFromDefaults"
           >
             {{ $t("update") }}
-          </button>
+          </button> -->
         </template>
         <template v-else-if="current_mode === 'RemoteSources'">
           <transition name="fade_fast" :duration="150">
@@ -620,6 +599,13 @@ export default {
           "selected_devices",
           JSON.stringify(this.selected_devices)
         );
+        this.setCameraStreamFromDefaults();
+      },
+      deep: true,
+    },
+    desired_camera_resolution: {
+      handler() {
+        this.setCameraStreamFromDefaults();
       },
       deep: true,
     },
@@ -1387,14 +1373,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_captureSettings {
-  position: relative;
-  flex: 1 0 200px;
-  max-width: 280px;
-  background-color: var(--c-rouge);
+  margin-top: calc(var(--spacing) / 2);
   color: white;
-
-  display: flex;
-  flex-flow: column nowrap;
 
   label,
   small,
@@ -1406,23 +1386,6 @@ export default {
   select {
     color: var(--c-noir);
   }
-}
-
-._topbar {
-  flex: 0 0 auto;
-  border-bottom: 2px solid var(--c-rouge_fonce);
-  padding: calc(var(--spacing) / 2);
-  color: white;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-._topbar--title {
-  padding: calc(var(--spacing) / 2) var(--spacing);
-  font-weight: 700;
-  font-size: var(--font-large);
 }
 
 .m_captureSettings--settings {

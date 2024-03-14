@@ -265,7 +265,7 @@ export default {
 }
 ._storyContent {
   width: 100%;
-  background: white;
+  // background: white;
   max-width: 800px;
   padding: calc(var(--spacing) * 1) 0;
   margin: calc(var(--spacing) / 2) auto;

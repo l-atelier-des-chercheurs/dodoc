@@ -298,4 +298,11 @@ export default {
     }
   }
 }
+
+._locationBtn {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin: calc(var(--spacing) / 1);
+}
 </style>

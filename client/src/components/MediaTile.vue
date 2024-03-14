@@ -9,12 +9,14 @@
     }"
     :data-tilemode="tile_mode"
   >
+    <!-- top left -->
     <div
       class="u-nut _index"
       :style="`--o-color: var(--color-${file.$origin})`"
       v-html="index"
       @click="$emit('toggleMediaFocus')"
     />
+
     <MediaContent
       class="_content"
       :file="file"
@@ -24,23 +26,31 @@
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
     />
+
+    <!-- top right  -->
     <FavSwitch
       class="_favSwitch"
       :fav="file.fav"
       :path="file.$path"
       :can_edit="true"
     />
-    <!-- <b-icon
-      class="_hasCoordinates"
-      v-if="has_coordinates"
-      icon="pin-map-fill"
-    /> -->
-    <span v-if="duration" class="_fileType" v-html="duration" />
-    <span
-      v-if="['pdf', 'stl'].includes(file.$type) || tile_mode === 'table'"
-      class="_fileType"
-      v-html="$t(file.$type)"
-    />
+
+    <!-- bottom right -->
+    <div class="_hasCoordinates">
+      <b-icon class="" v-if="has_coordinates" icon="pin-map-fill" />
+      <span v-else v-text="'-'" />
+    </div>
+
+    <template>
+      <!-- bottom left -->
+      <span v-if="duration" class="_fileType" v-html="duration" />
+      <span
+        v-if="['pdf', 'stl'].includes(file.$type) || tile_mode === 'table'"
+        class="_fileType"
+        v-html="$t(file.$type)"
+      />
+    </template>
+
     <span
       v-if="tile_mode !== 'tiny'"
       class="_caption"
@@ -115,7 +125,7 @@ export default {
       return 220;
     },
     has_coordinates() {
-      return this.file.$infos?.gps;
+      return this.file.$location;
     },
     is_own_media() {
       return this.isOwnItem({ folder: this.file });
@@ -224,7 +234,7 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    // gap: calc(var(--spacing) / 2);
+    gap: calc(var(--spacing) / 4);
     background: transparent;
     border-bottom: 1px solid white;
 
@@ -232,12 +242,17 @@ export default {
     // margin-bottom: 2px;
     &.was--focused {
       border: none;
-      border-left: 3px solid var(--active-color);
+      // border-left: 3px solid var(--active-color);
+      background-color: var(--active-color);
     }
 
     > * {
-      flex: 1 1 0;
-      padding: calc(var(--spacing) / 2);
+      flex: 0 0 50px;
+      padding: calc(var(--spacing) / 4);
+
+      &._content {
+        padding: 0;
+      }
 
       &._content,
       &._index,
@@ -250,6 +265,9 @@ export default {
       &._selectCb {
         flex: 0;
         position: relative;
+      }
+      &._caption {
+        flex: 1 1 auto;
       }
     }
 
@@ -289,7 +307,7 @@ export default {
   ._mediaTile:not([data-tilemode="table"]) & {
     position: absolute;
     bottom: 0;
-    right: 0;
+    left: 0;
   }
 }
 
@@ -355,19 +373,21 @@ export default {
   }
 }
 
-// ._hasCoordinates {
-//   position: absolute;
-//   bottom: 0;
-//   left: 0;
-//   margin: calc(var(--spacing) / 4);
+._hasCoordinates {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0 calc(var(--spacing) / 2);
+  // color: var(--active-color);
+  color: white;
 
-//   ._mediaTile[data-tilemode="table"] & {
-//     position: relative;
-//   }
-//   ._mediaTile[data-tilemode="medium"] & {
-//     bottom: 1.5rem;
-//   }
-// }
+  ._mediaTile[data-tilemode="table"] & {
+    position: relative;
+  }
+  ._mediaTile[data-tilemode="medium"] & {
+    bottom: 1.5rem;
+  }
+}
 ._favSwitch {
   position: absolute;
   top: 0;
@@ -400,7 +420,8 @@ export default {
   place-content: center;
   place-items: center;
 
-  > * {
+  ::v-deep button {
+    background-color: rgba(255, 255, 255, 0.5);
     pointer-events: auto;
   }
 }

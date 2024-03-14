@@ -77,6 +77,8 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.$off(`panzoom.panTo`, this.panTo);
+    this.$root.set_new_module_offset_left = 0;
+    this.$root.set_new_module_offset_top = 0;
   },
   watch: {
     scale() {
@@ -98,8 +100,14 @@ export default {
       // console.log("onScroll");
       if (this.debounce_scroll) clearTimeout(this.debounce_scroll);
       this.debounce_scroll = setTimeout(async () => {
-        // this.$root.default_new_module_top = -this.$refs.viewer.getScrollTop();
-        // this.$root.default_new_module_left = -this.$refs.viewer.getScrollLeft();
+        this.$root.set_new_module_offset_left = Math.max(
+          0,
+          this.$refs.viewer.getScrollLeft()
+        );
+        this.$root.set_new_module_offset_top = Math.max(
+          0,
+          this.$refs.viewer.getScrollTop()
+        );
       }, 500);
     },
     dragStart() {
@@ -129,23 +137,20 @@ export default {
     scrollToCorner({ x, y, animate }) {
       const opt = animate ? { duration: 200 } : undefined;
 
-      const ow = document.querySelector("._sideCont")?.offsetWidth || 280;
-
       const margin = 80;
 
-      let _x = (x || 0) + -(ow + margin) / this.scale;
+      let _x = (x || 0) + -(0 + margin) / this.scale;
       let _y = (y || 0) + -margin / this.scale;
       this.$refs.viewer.scrollTo(_x, _y, opt);
     },
     updateScale(scale) {
       if (scale !== this.$refs.viewer.getZoom()) {
-        const ow = document.querySelector("._sideCont")?.offsetWidth || 280;
         this.$refs.viewer.setZoom(scale, {
           // easing: () => 100,
           duration: 200,
           zoomBase: "viewport",
-          zoomOffsetX: ow,
-          zoomOffsetY: 50,
+          zoomOffsetX: this.$root.zoom_offset,
+          zoomOffsetY: this.$root.zoom_offset,
         });
       }
     },

@@ -159,48 +159,36 @@
           </div>
         </div>
         <div class="_pageMenu--pane">
-          <DLabel
-            :str="$t('list_of_medias') + ' (' + page_modules.length + ')'"
-            :instructions="$t('list_of_medias_instr')"
-          />
-          <div class="u-spacingBottom" v-if="page_modules.length > 0">
-            <button
-              type="button"
-              class="u-buttonLink"
-              :disabled="page_modules.length === 0"
-              v-if="can_edit"
-              @click="show_all_medias = !show_all_medias"
-            >
-              <b-icon icon="collection" />
-              <template v-if="!show_all_medias">
-                {{ $t("show") }}
-              </template>
-              <template v-else>
-                {{ $t("hide") }}
-              </template>
-            </button>
-          </div>
-          <div class="_mediaList" v-if="show_all_medias">
-            <div
-              v-for="page_module in page_modules"
-              :key="page_module.$path"
-              @click="setActive(page_module.$path)"
-            >
-              <MediaContent
-                class="_preview"
-                v-if="firstMedia(page_module)"
-                :file="firstMedia(page_module)"
-                :resolution="50"
-                :context="'preview'"
-              />
+          <DetailsPane
+            :header="$t('on_this_page')"
+            :icon="'images'"
+            :has_items="page_modules.length"
+            :is_open_initially="false"
+            :can_be_toggled="true"
+          >
+            <div class="_mediaList">
+              <div
+                v-for="page_module in page_modules"
+                :key="page_module.$path"
+                class="u-sameRow"
+                @click="setActive(page_module.$path)"
+              >
+                <MediaContent
+                  class="_preview"
+                  v-if="firstMedia(page_module)"
+                  :file="firstMedia(page_module)"
+                  :resolution="50"
+                  :context="'preview'"
+                />
+              </div>
 
-              <DateDisplay
+              <!-- <DateDisplay
                 class=""
                 :title="$t('date_uploaded')"
                 :date="page_module.$date_uploaded"
-              />
+              /> -->
             </div>
-          </div>
+          </DetailsPane>
         </div>
       </template>
       <div
@@ -307,13 +295,14 @@
         <div class="u-spacingBottom" />
 
         <template v-if="!is_shape">
-          <TitleField
+          <CollaborativeEditor2
             :label="!active_module.caption ? $t('add_caption') : $t('caption')"
-            :field_name="'caption'"
+            :field_to_edit="'caption'"
             :content="active_module.caption"
             :path="active_module.$path"
-            :input_type="'markdown'"
-            :can_edit="true"
+            :custom_formats="['bold', 'italic', 'link']"
+            :is_collaborative="false"
+            :can_edit="can_edit"
           />
 
           <div class="u-spacingBottom" />
@@ -617,6 +606,10 @@ export default {
       if (this.layout_mode === "screen") return "px";
       else return "mm";
     },
+    magnification() {
+      if (this.layout_mode === "screen") return 1;
+      return this.$root.page_magnification;
+    },
 
     has_pagination() {
       return (
@@ -632,6 +625,15 @@ export default {
 
       let x = this.$root.default_new_module_left;
       let y = this.$root.default_new_module_top;
+
+      if (this.$root.set_new_module_offset_left)
+        x =
+          (this.$root.set_new_module_offset_left + this.$root.zoom_offset) /
+          this.magnification;
+      if (this.$root.set_new_module_offset_top)
+        y =
+          (this.$root.set_new_module_offset_top + this.$root.zoom_offset) /
+          this.magnification;
 
       if (this.gridstep_in_mm) {
         // todo : round to gridstep
@@ -715,16 +717,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pageMenu {
-  margin: 2px;
-  margin: calc(var(--spacing) / 4);
-  background: var(--panel-color);
-  border: var(--panel-borders);
-  box-shadow: var(--panel-shadows);
-  border-radius: var(--panel-radius);
+  background: white;
   text-align: left;
 }
 ._pageMenu--pane {
-  margin: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2);
 
   &:not(:first-child) {

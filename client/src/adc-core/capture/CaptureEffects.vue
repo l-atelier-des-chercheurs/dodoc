@@ -1,23 +1,5 @@
 <template>
   <div class="m_captureEffects">
-    <div class="_topbar">
-      <div class="_topbar--title">
-        <span class>{{ $t("effects") }}</span>
-        <button
-          type="button"
-          class="u-button u-button_transparent _close_button"
-          @click="$emit('close')"
-        >
-          <img
-            :src="`${$root.publicPath}images/i_close_sansfond.svg`"
-            width="2rem"
-            height="2rem"
-            class=""
-          />
-        </button>
-      </div>
-    </div>
-
     <div class="_content">
       <div class="_options">
         <!-- :class="{
@@ -906,20 +888,10 @@ void main(void) {
 </script>
 <style lang="scss" scoped>
 .m_captureEffects {
-  position: relative;
-  flex: 1 0 200px;
-  max-width: 280px;
-  background-color: var(--c-bleumarine);
-  overflow: auto;
-
-  label {
-    // display: block;
-  }
-
   ._content {
     // background-color: #fff;
     // border-radius: 4px;
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+    // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
     ._options {
       background: rgba(0, 0, 0, 0.1);
@@ -952,37 +924,6 @@ void main(void) {
 
   > * {
     pointer-events: none;
-  }
-}
-
-._topbar {
-  flex: 0 0 auto;
-  border-bottom: 2px solid var(--c-bleumarine_fonce);
-  padding: calc(var(--spacing) / 2);
-  color: white;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-._topbar--title {
-  padding: calc(var(--spacing) / 2) var(--spacing);
-  font-weight: 700;
-  font-size: var(--font-large);
-}
-
-._close_button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  min-height: 0;
-  padding: 0;
-  margin: calc(var(--spacing) / 4);
-
-  img {
-    width: 2rem;
-    height: 2rem;
   }
 }
 </style>

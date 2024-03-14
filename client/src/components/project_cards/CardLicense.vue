@@ -7,12 +7,13 @@
     :can_be_toggled="false"
   >
     <div class="u-spacingBottom">
-      <TitleField
+      <CollaborativeEditor2
         :label="$t('authors')"
-        :field_name="'authors_list'"
+        :field_to_edit="'authors_list'"
         :content="project.authors_list"
-        :input_type="'markdown'"
         :path="project.$path"
+        :custom_formats="['bold', 'italic', 'link']"
+        :is_collaborative="false"
         :can_edit="can_edit"
       />
     </div>
@@ -43,14 +44,14 @@
         :can_edit="can_edit"
         :options="license_options"
       />
-
-      <TitleField
+      <CollaborativeEditor2
         v-if="project.license === 'custom_license'"
         :label="can_edit ? $t('custom_license') : undefined"
-        :field_name="'custom_license'"
+        :field_to_edit="'custom_license'"
         :content="project.custom_license || $t('fill_out_your_license')"
-        :input_type="'markdown'"
         :path="project.$path"
+        :custom_formats="['bold', 'italic', 'link']"
+        :is_collaborative="false"
         :can_edit="can_edit"
       />
     </div>

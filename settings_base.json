@@ -239,6 +239,9 @@
                   "selection": {
                     "type": "object"
                   },
+                  "volume": {
+                    "type": "number"
+                  },
                   "image_brightness": {
                     "type": "number"
                   },

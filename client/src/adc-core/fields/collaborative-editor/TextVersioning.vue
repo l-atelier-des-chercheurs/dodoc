@@ -57,13 +57,14 @@
         </div>
       </transition>
     </div>
-    <sl-button
-      slot="footer"
-      variant="primary"
-      @click="restoreVersion(archive_shown.content)"
-    >
-      {{ $t("restore_this_version") }}
-    </sl-button>
+    <div slot="footer">
+      <SaveCancelButtons
+        :allow_save="selected_archive_filename !== 'current'"
+        :save_text="$t('restore_this_version')"
+        @save="restoreVersion(archive_shown.content)"
+        @cancel="$emit('close')"
+      />
+    </div>
   </BaseModal2>
 </template>
 <script>
@@ -107,7 +108,7 @@ export default {
       const { $archives } = await this.$api.getArchives({
         path: this.path,
       });
-      this.archives = $archives;
+      this.archives = $archives || [];
       this.archives.push({
         filename: "current",
         content: this.current_content,

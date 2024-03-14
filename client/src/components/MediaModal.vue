@@ -145,21 +145,24 @@
         <hr class="u-spacingBottom" />
 
         <div class="u-spacingBottom">
-          <TitleField
+          <CollaborativeEditor2
             :label="$t('caption')"
-            :field_name="'caption'"
+            :field_to_edit="'caption'"
             :content="file.caption"
             :path="file.$path"
-            :input_type="'markdown'"
+            :custom_formats="['bold', 'italic', 'link']"
+            :is_collaborative="false"
             :can_edit="true"
           />
         </div>
         <div class="u-spacingBottom">
-          <TitleField
+          <CollaborativeEditor2
             :label="$t('credit/reference')"
-            :field_name="'$credits'"
+            :field_to_edit="'$credits'"
             :content="file.$credits"
             :path="file.$path"
+            :custom_formats="['bold', 'italic', 'link']"
+            :is_collaborative="false"
             :can_edit="true"
           />
         </div>

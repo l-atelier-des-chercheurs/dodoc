@@ -5,7 +5,7 @@
       class="u-buttonLink"
       @click="show_confirm_move = true"
     >
-      <sl-icon name="arrow-left-right" />
+      <b-icon icon="arrow-left-right" />
       {{ $t("move_to_page") }}
     </button>
 

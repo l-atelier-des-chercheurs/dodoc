@@ -85,18 +85,17 @@
             />
           </div>
           <div v-if="context === 'full'" class="u-spacingBottom">
-            <TitleField
-              :field_name="'presentation'"
-              class="_presentation"
+            <CollaborativeEditor2
               :label="
                 context === 'full' && (author.presentation || can_edit)
                   ? $t('presentation')
                   : undefined
               "
-              :content="author.presentation"
+              :field_to_edit="'presentation'"
               :path="author.$path"
-              :maxlength="1280"
-              :input_type="'markdown'"
+              :content="author.presentation"
+              :custom_formats="['bold', 'italic', 'link']"
+              :is_collaborative="false"
               :can_edit="can_edit"
             />
           </div>

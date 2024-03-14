@@ -7,7 +7,7 @@
     @mouseenter="mouseEnter"
     @click="toggleMenu"
   >
-    <button type="button" class="u-button">
+    <button type="button" class="u-button u-button_transparent">
       <template v-if="$slots.hasOwnProperty('trigger')">
         <slot name="trigger" />
       </template>
@@ -16,6 +16,7 @@
       </template>
       <span class="b-icon bi _caret" />
     </button>
+
     <transition name="fade_fast">
       <div
         v-show="show_dropdown"
