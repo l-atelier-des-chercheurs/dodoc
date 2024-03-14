@@ -500,7 +500,7 @@ export default {
           const edit_btn = this.$el.querySelector(
             "._collaborativeEditor ._floatingEditBtn ._editBtn"
           );
-          edit_btn.click();
+          if (edit_btn) edit_btn.click();
         });
       }
       if (!this.edit_mode) this.is_repicking_location = false;

@@ -60,7 +60,6 @@
               :resolution="1600"
               :zoom_on_click="true"
               :show_fs_button="true"
-              :is_draggable="false"
             />
           </div>
           <!-- <div class="u-spacingBottom">
