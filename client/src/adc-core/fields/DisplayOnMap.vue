@@ -40,24 +40,8 @@
             :publimodule="clicked_location.module"
             :can_edit="false"
           />
-          <!-- <MediaContent
-            :file="clicked_location.file"
-            :is_draggable="false"
-            :resolution="1600"
-            :context="'full'"
-            :show_fs_button="true"
-          /> -->
         </div>
 
-        <!-- <div class="u-instructions">
-          <small>
-            <span class="complementaryText"> {{ $t("latitude") }} = </span>
-            {{ clicked_location.latitude }}°
-            <br />
-            <span class="complementaryText"> {{ $t("longitude") }} = </span>
-            {{ clicked_location.longitude }}°
-          </small>
-        </div> -->
         <div
           v-if="popup_message"
           class="_popupMessage"

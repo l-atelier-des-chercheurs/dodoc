@@ -60,7 +60,6 @@
           :resolution="1600"
           :context="'full'"
           :show_fs_button="true"
-          :is_draggable="false"
         />
         <CollaborativeEditor2
           v-else
