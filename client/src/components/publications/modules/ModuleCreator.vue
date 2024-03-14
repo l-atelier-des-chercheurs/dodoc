@@ -239,10 +239,11 @@ export default {
         });
       } else if (path_to_source_media_metas) {
         for (const path_to_source_media_meta of path_to_source_media_metas) {
-          // if link, then we use medias stored in parent project and link to them
+          const import_mode = this.$root.publication_include_mode;
           const new_entry = await this.prepareMediaForPublication({
             path_to_source_media_meta,
             publication_path: this.publication_path,
+            import_mode,
           });
           source_medias.push(new_entry);
         }
@@ -316,7 +317,7 @@ export default {
       });
       const source_medias = [{ meta_filename }];
       await this.createModule({
-        module_type: "text",
+        module_type: "mosaic",
         source_medias,
       });
     },

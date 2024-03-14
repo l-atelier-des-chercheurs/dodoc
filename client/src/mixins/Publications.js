@@ -333,8 +333,9 @@ export default {
     async prepareMediaForPublication({
       path_to_source_media_meta,
       publication_path,
+      import_mode = "link",
     }) {
-      if (this.$root.publication_include_mode === "link") {
+      if (import_mode === "link") {
         // check if already in parent project
         const parent_project_path_for_media = this.getParent(
           path_to_source_media_meta
@@ -363,7 +364,7 @@ export default {
         }
 
         return { meta_filename_in_project };
-      } else if (this.$root.publication_include_mode === "copy") {
+      } else if (import_mode === "copy") {
         // if copy, we copy media to the local folder and append meta_filename
         const parent_project_path_for_media = this.getParent(
           path_to_source_media_meta

@@ -102,10 +102,11 @@ export default {
     async addMedias({ path_to_source_media_metas }) {
       let source_medias = this.publimodule.source_medias.slice() || [];
       for (const path_to_source_media_meta of path_to_source_media_metas) {
-        // if link, then we use medias stored in parent project and link to them
+        const import_mode = this.$root.publication_include_mode;
         const new_entry = await this.prepareMediaForPublication({
           path_to_source_media_meta,
           publication_path: this.publication_path,
+          import_mode,
         });
         source_medias.push(new_entry);
       }
