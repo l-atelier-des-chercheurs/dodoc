@@ -252,7 +252,7 @@ export default {
 }
 ._storyContent {
   width: 100%;
-  background: white;
+  // background: white;
   max-width: 800px;
   padding: 0;
   margin: 0 auto;
