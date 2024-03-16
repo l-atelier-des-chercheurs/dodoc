@@ -804,19 +804,13 @@ export default {
   ._sideOptions--content {
     width: 100%;
     margin: 0 auto;
-    padding: calc(var(--spacing) / 4);
-    background: var(--active-color);
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
 
-    // border: 2px solid var(--active-color);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    background: var(--active-color);
     box-shadow: var(--panel-shadows);
 
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    gap: calc(var(--spacing) / 4);
-    // border: 2px solid white;
-
+    border-radius: 12px;
+    gap: calc(var(--spacing) / 2);
     display: flex;
     align-items: center;
   }
@@ -835,7 +829,7 @@ export default {
   width: var(--side-width);
   height: var(--side-width);
   padding: 0;
-  border-radius: calc(var(--side-width) / 2);
+  border-radius: 50%;
   background: transparent;
 
   &:hover,
