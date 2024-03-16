@@ -496,12 +496,12 @@ export default {
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
         else this.$refs.textBloc.disableEditor();
       else {
-        this.$nextTick(() => {
-          const edit_btn = this.$el.querySelector(
-            "._collaborativeEditor ._floatingEditBtn ._editBtn"
-          );
-          if (edit_btn) edit_btn.click();
-        });
+        // this.$nextTick(() => {
+        //   const edit_btn = this.$el.querySelector(
+        //     "._collaborativeEditor ._floatingEditBtn ._editBtn"
+        //   );
+        //   if (edit_btn) edit_btn.click();
+        // });
       }
       if (!this.edit_mode) this.is_repicking_location = false;
     },
@@ -516,7 +516,9 @@ export default {
       return false;
     },
     available_module_types() {
-      // if (this.publimodule.module_type === "text") return ["text"];
+      // a text module can become something else but not the other way around
+      if (this.publimodule.module_type === "text")
+        return ["text", "mosaic", "carousel", "files"];
       return ["mosaic", "carousel", "files"];
     },
     pin_options() {
