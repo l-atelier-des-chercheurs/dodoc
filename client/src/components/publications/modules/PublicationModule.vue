@@ -496,12 +496,12 @@ export default {
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
         else this.$refs.textBloc.disableEditor();
       else {
-        this.$nextTick(() => {
-          const edit_btn = this.$el.querySelector(
-            "._collaborativeEditor ._floatingEditBtn ._editBtn"
-          );
-          if (edit_btn) edit_btn.click();
-        });
+        // this.$nextTick(() => {
+        //   const edit_btn = this.$el.querySelector(
+        //     "._collaborativeEditor ._floatingEditBtn ._editBtn"
+        //   );
+        //   if (edit_btn) edit_btn.click();
+        // });
       }
       if (!this.edit_mode) this.is_repicking_location = false;
     },
@@ -516,7 +516,9 @@ export default {
       return false;
     },
     available_module_types() {
-      // if (this.publimodule.module_type === "text") return ["text"];
+      // a text module can become something else but not the other way around
+      if (this.publimodule.module_type === "text")
+        return ["text", "mosaic", "carousel", "files"];
       return ["mosaic", "carousel", "files"];
     },
     pin_options() {
@@ -802,19 +804,13 @@ export default {
   ._sideOptions--content {
     width: 100%;
     margin: 0 auto;
-    padding: calc(var(--spacing) / 4);
-    background: var(--active-color);
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
 
-    // border: 2px solid var(--active-color);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    background: var(--active-color);
     box-shadow: var(--panel-shadows);
 
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    gap: calc(var(--spacing) / 4);
-    // border: 2px solid white;
-
+    border-radius: 12px;
+    gap: calc(var(--spacing) / 2);
     display: flex;
     align-items: center;
   }
@@ -833,7 +829,7 @@ export default {
   width: var(--side-width);
   height: var(--side-width);
   padding: 0;
-  border-radius: calc(var(--side-width) / 2);
+  border-radius: 50%;
   background: transparent;
 
   &:hover,

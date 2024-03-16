@@ -317,7 +317,7 @@ export default {
       });
       const source_medias = [{ meta_filename }];
       await this.createModule({
-        module_type: "mosaic",
+        module_type: "text",
         source_medias,
       });
     },
