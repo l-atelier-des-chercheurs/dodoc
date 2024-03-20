@@ -1,5 +1,9 @@
 <template>
   <div class="_cropImage">
+    <component
+      :is="'script'"
+      :src="$root.publicPath + 'context-filter-polyfill.min.js'"
+    />
     <div class="_sidebyside">
       <div class="_leftBtns">
         <fieldset class="u-spacingBottom">
