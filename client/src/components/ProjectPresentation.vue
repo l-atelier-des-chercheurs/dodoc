@@ -446,8 +446,9 @@ export default {
 }
 
 ._projectInfos--topContent {
-  width: var(--max-column-width);
-  max-width: 1080px;
+  max-width: min(var(--max-column-width), 1180px);
+  // max-width: var(--max-column-width);
+
   margin: calc(var(--spacing) / 2) auto 0;
 
   display: flex;
