@@ -1,9 +1,10 @@
 <template>
   <BaseModal2
     :title="$root.app_infos.instance_meta.name || $t('home')"
+    :is_closable="false"
     @close="$emit('close')"
   >
-    <p>
+    <p class="u-spacingBottom">
       {{ $t("general_password_modal_text") }}
       <br />
       <a
@@ -32,8 +33,6 @@
           false: $t('will_use_cookies'),
         }"
       /> -->
-
-      <br />
 
       <button
         type="submit"

@@ -69,7 +69,7 @@ export default {
   presentation_of_instance: "Présentation de l’instance",
   presentation_of_instance_instructions: `Apparaîtra sur la page d’accueil uniquement.`,
   presentation: "Présentation",
-  general_password: "mot de passe général",
+  general_password: "Mot de passe général",
   general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
     peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
   general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plateforme. 

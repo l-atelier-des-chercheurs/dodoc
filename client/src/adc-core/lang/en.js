@@ -69,7 +69,7 @@ export default {
   presentation_of_instance: "Instance presentation",
   presentation_of_instance_instructions: `Will appear on the home page only.`,
   presentation: "Presentation",
-  general_password: "general password",
+  general_password: "General password",
   general_password_instructions: `Limit access to projects to visitors with this password. The home page will however remain accessible and
     can display a contact email to request access, if necessary. Leave the field empty so that access is open to everyone.`,
   general_password_modal_text: `A password is required to access projects created on this platform.
