@@ -32,7 +32,7 @@
           &nbsp;
           {{ $t("create") }}
         </button>
-        <div class="_searchField">
+        <div class="_searchField" v-if="sorted_spaces.length > 0">
           <SearchInput
             v-model="search_space"
             :search_placeholder="$t('search_by_title_or_subtitle')"
