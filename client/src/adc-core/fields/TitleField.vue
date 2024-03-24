@@ -24,6 +24,7 @@
         :content.sync="new_content"
         :required="required"
         :input_type="input_type"
+        :autofocus="true"
         :autocomplete="input_type === 'email' ? 'email' : undefined"
         :minlength="minlength"
         :maxlength="maxlength"

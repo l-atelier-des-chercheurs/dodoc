@@ -6,6 +6,7 @@
         :content.sync="new_publication_title"
         :maxlength="40"
         :required="true"
+        :autofocus="true"
         @toggleValidity="($event) => (allow_save = $event)"
       />
 

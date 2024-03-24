@@ -122,7 +122,14 @@
 
         <DetailsPane :header="$t('options')" :icon="'gear'" v-if="can_edit">
           <div
-            v-if="is_instance_admin && context === 'full'"
+            v-if="
+              is_instance_admin &&
+              context === 'full' &&
+              !authorIsInstance({
+                field: '$admins',
+                folder_path: author.$path,
+              })
+            "
             class="u-spacingBottom"
           >
             <button

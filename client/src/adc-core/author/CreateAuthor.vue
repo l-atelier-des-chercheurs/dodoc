@@ -46,6 +46,7 @@
             :content.sync="new_author_name"
             :label_str="'name_or_pseudonym'"
             :required="true"
+            :autofocus="true"
             :maxlength="40"
             :autocomplete="'username'"
             @toggleValidity="($event) => (allow_save = $event)"
