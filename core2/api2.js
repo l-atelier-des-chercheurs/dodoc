@@ -210,6 +210,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
+      _restrictIfPrivate,
       _getFolder
     );
 
@@ -432,6 +433,31 @@ module.exports = (function () {
     } else {
       dev.log("not allowed to contribute");
       if (res) return res.status(403).send({ code: "not_allowed" });
+    }
+  }
+  async function _restrictIfPrivate(req, res, next) {
+    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    // if folder is private, only admins and
+    if (!auth.isFolderPrivate({ path_to_folder })) {
+      dev.log("Folder is not private, can be listed without restrictions");
+      return next();
+    }
+
+    const allowed = await _canContributeToFolder({
+      path_to_type,
+      path_to_folder,
+      req,
+    });
+
+    if (allowed) {
+      dev.log(allowed);
+      return next();
+    } else {
+      dev.error("not allowed to list be cause private");
+      if (res) return res.status(401).send({ code: "folder_private" });
+      return false;
     }
   }
   async function _onlyAdmins(req, res, next) {

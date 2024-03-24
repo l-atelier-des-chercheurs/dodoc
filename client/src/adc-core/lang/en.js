@@ -93,6 +93,9 @@ export default {
   create_a_space: "Create a space",
   project: "Project",
 
+  project_is_private:
+    "This project is private and can only be opened by its contributors and referents.",
+
   finished: "Finished",
   only_finished: "Finished projects",
   completed: "Completed",
