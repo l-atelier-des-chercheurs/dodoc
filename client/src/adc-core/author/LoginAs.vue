@@ -180,9 +180,7 @@ export default {
       this.$api
         .loginToFolder({
           path,
-          auth_infos: {
-            $password: this.input_password,
-          },
+          password: this.input_password,
         })
         .then(() => {
           // this.$alertify

@@ -223,9 +223,7 @@ export default {
         if (!this.connected_as) {
           await this.$api.loginToFolder({
             path: "authors/" + author_slug,
-            auth_infos: {
-              $password: this.new_author_password,
-            },
+            password: this.new_author_password,
           });
         } else {
           // otherwise we are instance admins

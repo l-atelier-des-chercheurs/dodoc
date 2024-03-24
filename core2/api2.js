@@ -33,7 +33,8 @@ module.exports = (function () {
       _generalPasswordCheck,
       _getLocalNetworkInfos
     );
-    app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
+    app.get("/_api2/_authCheck", _checkGeneralPassword);
+    app.get("/_api2/_tokenCheck", _checkToken);
 
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
@@ -281,16 +282,13 @@ module.exports = (function () {
     }
   }
 
-  async function _checkGeneralPasswordAndToken(req, res, next) {
+  async function _checkGeneralPassword(req, res, next) {
     dev.logapi();
-
-    let response = {};
-    try {
-      await _generalPasswordCheck(req);
-      response.general_password_is_valid = true;
-    } catch (err) {
-      response.general_password_is_wrong = err.code;
-    }
+    await _generalPasswordCheck(req, res);
+    return res.status(200).send();
+  }
+  async function _checkToken(req, res, next) {
+    dev.logapi();
 
     try {
       const { token, token_path } = JSON.parse(req.headers.authorization);
@@ -300,12 +298,10 @@ module.exports = (function () {
         throw err;
       }
       auth.checkTokenValidity({ token, token_path });
-      response.token_is_valid = true;
     } catch (err) {
-      response.token_is_wrong = err.code;
+      return res.status(401).send({ code: err.code });
     }
-
-    return res.json(response);
+    return res.status(200).send();
   }
 
   async function _canContributeToFolder({ path_to_type, path_to_folder, req }) {

@@ -158,54 +158,40 @@ export default function () {
       },
 
       async _setAuthFromStorage() {
-        let auth = {};
+        // check if password
+        if (window.app_infos.instance_meta.has_general_password === true) {
+          const search_params = new URLSearchParams(location.href);
+          let general_password;
+          if (search_params && search_params.has("general_password"))
+            general_password = search_params.get("general_password");
+          else if (localStorage.getItem("general_password"))
+            general_password = localStorage.getItem("general_password");
 
-        const tokenpath = localStorage.getItem("tokenpath");
-        try {
-          const { token, token_path } = JSON.parse(tokenpath);
-          auth.token = token;
-          auth.token_path = token_path;
-        } catch (err) {
-          err;
-        }
+          // check with route
 
-        const search_params = new URLSearchParams(location.href);
-        if (search_params && search_params.has("general_password"))
-          auth.general_password = search_params.get("general_password");
-        else if (localStorage.getItem("general_password"))
-          auth.general_password = localStorage.getItem("general_password");
-
-        if (Object.keys(auth).length === 0) return;
-
-        const Authorization = JSON.stringify(auth);
-
-        // check with route
-        const response = await this.$axios.get("_authCheck", {
-          headers: {
-            Authorization,
-          },
-        });
-
-        if (auth.general_password) {
-          if (response.data.general_password_is_valid)
-            this.general_password = auth.general_password;
-          else if (response.data.general_password_is_wrong) {
-            this.$alertify
-              .delay(4000)
-              .error(response.data.general_password_is_wrong);
+          await this.submitGeneralPassword({
+            password: general_password,
+          }).catch(() => {
+            if (localStorage.getItem("general_password"))
+              localStorage.removeItem("general_password");
             this.$eventHub.$emit("app.prompt_general_password");
-          }
-        } else if (response.data.general_password_is_wrong) {
-          this.$eventHub.$emit("app.prompt_general_password");
+          });
         }
 
-        if (auth.token && auth.token_path)
-          if (response.data.token_is_valid) {
-            this.tokenpath.token = auth.token;
-            this.tokenpath.token_path = auth.token_path;
-            // token is valid, get author info
-          } else if (response.data.token_is_wrong)
-            this.$alertify.delay(4000).error(response.data.token_is_wrong);
+        const token_and_tokenpath = localStorage.getItem("tokenpath");
+        if (token_and_tokenpath) {
+          try {
+            const { token, token_path } = JSON.parse(token_and_tokenpath);
+            await this.submitFolderToken({
+              token,
+              token_path,
+            });
+          } catch (err) {
+            localStorage.removeItem("tokenpath");
+          }
+        }
+
+        // if (Object.keys(auth).length === 0) return;
 
         // Todo change all this? if a user has a valid token and token_path,
         // then they must also have access
@@ -398,9 +384,11 @@ export default function () {
         this.$eventHub.$emit("hooks.createFolder", { path });
         return response.data.new_folder_slug;
       },
-      async loginToFolder({ path, auth_infos }) {
+      async loginToFolder({ path, password }) {
         try {
-          const response = await this.$axios.post(`${path}/_login`, auth_infos);
+          const response = await this.$axios.post(`${path}/_login`, {
+            $password: password,
+          });
           const token = response.data.token;
 
           this.tokenpath.token = token;
@@ -429,6 +417,7 @@ export default function () {
           this.leave({ room: path });
           // remove token on the server
           await this.$axios.post(`${path}/_logout`, auth_infos);
+
           return;
         } catch (err) {
           throw this.processError(err);
@@ -439,7 +428,6 @@ export default function () {
         password,
         remember_on_this_device = false,
       }) {
-        // TODO
         await this.$axios
           .get(`_authCheck`, {
             headers: {
@@ -454,6 +442,22 @@ export default function () {
           localStorage.setItem("general_password", password);
 
         this.general_password = password;
+        this.setAuthorizationHeader();
+        return true;
+      },
+      async submitFolderToken({ token, token_path }) {
+        await this.$axios
+          .get(`_tokenCheck`, {
+            headers: {
+              Authorization: JSON.stringify({ token, token_path }),
+            },
+          })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+
+        this.tokenpath.token = token;
+        this.tokenpath.token_path = token_path;
         this.setAuthorizationHeader();
         return true;
       },
