@@ -440,7 +440,7 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     // if folder is private, only admins and
-    if (!auth.isFolderPrivate({ path_to_folder })) {
+    if (!(await auth.isFolderPrivate({ path_to_folder }))) {
       dev.log("Folder is not private, can be listed without restrictions");
       return next();
     }
