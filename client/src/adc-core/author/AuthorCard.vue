@@ -102,7 +102,7 @@
         </div>
 
         <DetailsPane
-          v-if="context === 'full'"
+          v-if="context === 'full' && (can_edit || !!author.$location)"
           :header="$t('location')"
           :is_open_initially="true"
           :has_items="!!author.$location"
