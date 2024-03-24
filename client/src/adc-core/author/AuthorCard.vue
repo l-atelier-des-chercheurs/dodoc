@@ -84,7 +84,10 @@
               :can_edit="can_edit"
             />
           </div>
-          <div v-if="context === 'full'" class="u-spacingBottom">
+          <div
+            v-if="context === 'full' && (can_edit || !!author.presentation)"
+            class="u-spacingBottom"
+          >
             <CollaborativeEditor2
               :label="
                 context === 'full' && (author.presentation || can_edit)
