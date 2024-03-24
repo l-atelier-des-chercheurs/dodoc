@@ -217,5 +217,6 @@ export default {
 }
 ._revealBtn {
   padding: 0;
+  text-transform: lowercase;
 }
 </style>
