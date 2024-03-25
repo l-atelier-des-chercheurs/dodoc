@@ -555,7 +555,7 @@ export default function () {
             throw this.processError(err);
           });
         this.$eventHub.$emit("hooks.importFolder", { path });
-        return res.data.new_folder_slug;
+        return res.data.new_folder_meta;
       },
       async remixFolder({
         path,

@@ -867,6 +867,9 @@ export default {
     puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
+  import_finished:
+    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
+  zip_wrong: "Ce fichier ZIP n’est pas un projet dodoc valide",
 
   move_to_page: "Déplacer vers une autre page",
 

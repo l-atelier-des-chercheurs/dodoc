@@ -2,7 +2,10 @@
   <div class="_mediaLibrary">
     <section class="_scrollBox">
       <div class="_importButton">
-        <ImportFileZone :files_to_import.sync="files_to_import" />
+        <ImportFileZone
+          :multiple="true"
+          :files_to_import.sync="files_to_import"
+        />
         <UploadFiles
           v-if="files_to_import.length > 0"
           :files_to_import="files_to_import"
@@ -861,6 +864,7 @@ export default {
 ._importButton {
   --dropzone-color1: var(--c-orange);
   --dropzone-color2: var(--c-rouge);
+  color: white;
 
   width: 100%;
   padding: calc(var(--spacing) / 2);

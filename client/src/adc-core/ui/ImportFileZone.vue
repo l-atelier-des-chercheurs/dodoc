@@ -22,10 +22,10 @@
     </label>
     <input
       type="file"
-      multiple="multiple"
+      :multiple="multiple"
       :id="id + '-add_file'"
       name="file"
-      accept=""
+      :accept="accepts"
       class=""
       @change="updateInputFiles($event)"
     />
@@ -35,6 +35,8 @@
 export default {
   props: {
     files_to_import: Array,
+    accepts: String,
+    multiple: Boolean,
   },
   components: {},
   data() {
@@ -103,6 +105,7 @@ export default {
 ._importFileZone {
   .u-dropzone {
     cursor: pointer;
+    color: currentColor;
 
     &.is--dragover,
     &:hover,
@@ -110,7 +113,7 @@ export default {
     }
   }
   .u-instructions {
-    color: white;
+    color: currentColor;
   }
 }
 </style>

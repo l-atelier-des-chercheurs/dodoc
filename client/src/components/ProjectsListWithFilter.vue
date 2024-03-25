@@ -1,43 +1,46 @@
 <template>
   <section class="_projectsListWithFilter">
-    <div class="_filterSortBar" v-if="sorted_projects.length > 0">
+    <div class="_filterSortBar">
       <div class="u-sameRow">
         <slot />
 
-        <div class="">
-          <button
-            type="button"
-            size="small"
-            class="u-button u-button_small u-button_bleumarine"
-            :class="{
-              'is--active': show_sidebar,
-            }"
-            @click="show_sidebar = !show_sidebar"
-            v-text="!show_sidebar ? $t('filter') : $t('hide')"
-          />
-        </div>
-        <div class="">
-          <SearchInput
-            v-model="search_project"
-            :search_placeholder="$t('search_in_title_desc_kw')"
-          />
-        </div>
+        <template v-if="sorted_projects.length > 0">
+          <div class="">
+            <button
+              type="button"
+              size="small"
+              class="u-button u-button_small u-button_bleumarine"
+              :class="{
+                'is--active': show_sidebar,
+              }"
+              @click="show_sidebar = !show_sidebar"
+              v-text="!show_sidebar ? $t('filter') : $t('hide')"
+            />
+          </div>
+          <div class="">
+            <SearchInput
+              v-model="search_project"
+              :search_placeholder="$t('search_in_title_desc_kw')"
+            />
+          </div>
+        </template>
       </div>
       <div class="">
-        <!-- <DLabel :str="$t('sort')" /> -->
-        <select
-          size="small"
-          class="_orderSelect"
-          v-model="order_key"
-          :disabled="filtered_projects.length <= 1"
-        >
-          <option
-            v-for="opt in order_options"
-            :key="opt.key"
-            :value="opt.key"
-            v-text="opt.text"
-          />
-        </select>
+        <template v-if="sorted_projects.length > 0">
+          <select
+            size="small"
+            class="_orderSelect"
+            v-model="order_key"
+            :disabled="filtered_projects.length <= 1"
+          >
+            <option
+              v-for="opt in order_options"
+              :key="opt.key"
+              :value="opt.key"
+              v-text="opt.text"
+            />
+          </select>
+        </template>
       </div>
     </div>
     <div class="_cont">

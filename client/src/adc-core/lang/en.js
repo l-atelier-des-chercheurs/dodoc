@@ -884,6 +884,10 @@ export default {
     "In this project or another where you can create posts. All settings and texts will be duplicated, and the media (photos, videos, etc.) will be imported into the Collect panel.",
   import_zip: "Import a project in ZIP",
   import_in_progress: "Import in progress…",
+  import_finished:
+    "Import finished, click on the button to open the project. Media previews will be generated, which can take a few minutes.",
+  zip_wrong: "This ZIP file is not a valid project",
+
   move_to_page: "Move to another page",
   general_informations: "Instance informations",
   make_list: "Make list",

@@ -627,18 +627,16 @@ module.exports = (function () {
     dev.logapi({ path_to_type });
 
     try {
-      const new_folder_slug = await folder.importFolder({
+      const path_to_new_folder = await folder.importFolder({
         path_to_type,
         req,
       });
-      dev.logpackets(`folder was imported with name ${new_folder_slug}`);
-      res.status(200).json({ new_folder_slug });
-
-      const path_to_folder = path.join(path_to_type, new_folder_slug);
+      dev.logpackets(`folder was imported with path ${path_to_new_folder}`);
       const new_folder_meta = await folder.getFolder({
-        path_to_folder,
+        path_to_folder: path_to_new_folder,
       });
 
+      res.status(200).json({ new_folder_meta });
       notifier.emit("folderCreated", path_to_type, {
         path: path_to_type,
         meta: new_folder_meta,

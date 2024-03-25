@@ -1,53 +1,63 @@
 <template>
   <BaseModal2 :title="modal_name" @close="$emit('close')">
     <div
+      v-if="transfer_percent < 100"
       class="u-instructions u-spacingBottom"
       v-html="$t('import_a_project_instr')"
     />
 
-    <div class="" v-if="!folder_to_import">
-      <input
-        type="file"
-        :id="id + '-add_file'"
-        name="file"
-        accept=".zip"
-        class="inputfile-2"
-        @change="importProject($event)"
+    <div class="_importZone" v-if="!folder_to_import">
+      <ImportFileZone
+        :accepts="'.zip'"
+        :files_to_import.sync="files_to_import"
+        @update:files_to_import="importProject($event)"
       />
-      <label :for="id + '-add_file'">
-        <b-icon icon="upload" :label="$t('import')" />
-        {{ $t("import_zip") }}
-      </label>
-      <!-- <UploadFiles
-        v-if="selected_files.length > 0"
-        :files_to_import="selected_files"
-        :path="path"
-        @close="selected_files = []"
-      /> -->
     </div>
     <div v-else>
-      {{ $t("import_in_progress") }}<br />
-      {{ transfer_percent }}%
+      <template v-if="err_message">
+        {{ err_message }}
+      </template>
+      <template v-else>
+        <template v-if="transfer_percent < 100">
+          {{ $t("import_in_progress") }}<br />
+          {{ transfer_percent }}%
+        </template>
+        <template v-else>
+          {{ $t("import_finished") }}
+          <router-link
+            v-if="imported_project_path"
+            :to="{ path: createURLFromPath(imported_project_path) }"
+          >
+            {{ imported_project_title }}
+          </router-link>
+        </template>
+      </template>
     </div>
   </BaseModal2>
 </template>
 <script>
+import ImportFileZone from "@/adc-core/ui/ImportFileZone";
+
 export default {
   props: {
     modal_name: String,
     path: String,
   },
-  components: {},
+  components: { ImportFileZone },
   data() {
     return {
       error_msg: "",
-      selected_files: [],
+      files_to_import: [],
       id: `admin_images_upload_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
 
       folder_to_import: undefined,
       transfer_percent: undefined,
+      err_message: undefined,
+
+      imported_project_path: undefined,
+      imported_project_title: undefined,
     };
   },
   created() {},
@@ -56,8 +66,8 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async importProject($event) {
-      this.folder_to_import = Array.from($event.target.files).at(0);
+    async importProject(files) {
+      this.folder_to_import = files.at(0);
       this.transfer_percent = 0;
 
       const additional_meta = {
@@ -65,25 +75,44 @@ export default {
         $contributors: [],
       };
 
-      const new_folder_slug = await this.$api.importFolder({
-        path: this.path,
-        filename: this.folder_to_import.name,
-        file: this.folder_to_import,
-        additional_meta,
-        onProgress: (progressEvent) => {
-          this.transfer_percent = parseInt(
-            Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          );
-        },
-      });
-      new_folder_slug;
+      const new_folder_meta = await this.$api
+        .importFolder({
+          path: this.path,
+          filename: this.folder_to_import.name,
+          file: this.folder_to_import,
+          additional_meta,
+          onProgress: (progressEvent) => {
+            this.transfer_percent = parseInt(
+              Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            );
+          },
+        })
+        .catch((err) => {
+          if (err.code === "imported_folder_not_valid")
+            this.err_message = this.$t("zip_wrong");
+          // this.files_to_import = [];
+          // this.folder_to_import = undefined;
+          // this.transfer_percent = 0;
+          return;
+        });
+
       this.transfer_percent = 100;
 
-      setTimeout(() => {
-        this.$emit("close");
-      }, 1000);
+      debugger;
+
+      this.imported_project_title =
+        new_folder_meta.title || this.$t("untitled");
+      this.imported_project_path = new_folder_meta.$path || false;
+
+      // setTimeout(() => {
+      //   this.$emit("close");
+      // }, 1000);
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._importZone {
+  --dropzone-color2: var(--c-noir);
+}
+</style>
