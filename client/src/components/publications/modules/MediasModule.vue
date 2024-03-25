@@ -115,7 +115,7 @@ export default {
       }
       this.$emit("updateMeta", { source_medias });
     },
-    async removeMediaAtIndex(index) {
+    async removeMediaAtIndex({ index, remove_source = true }) {
       const source_medias = this.publimodule.source_medias.slice();
 
       const source_media = source_medias[index];
@@ -124,7 +124,10 @@ export default {
       if (source_medias.length === 0) this.$emit("remove");
       else this.$emit("updateMeta", { source_medias });
 
-      if (Object.prototype.hasOwnProperty.call(source_media, "meta_filename")) {
+      if (
+        Object.prototype.hasOwnProperty.call(source_media, "meta_filename") &&
+        remove_source
+      ) {
         const media = this.getSourceMedia({
           source_media: { meta_filename: source_media.meta_filename },
           folder_path: this.publication_path,

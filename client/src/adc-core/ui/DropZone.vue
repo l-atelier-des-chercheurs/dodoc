@@ -48,15 +48,15 @@ export default {
     if (this.media_types_allowed) dz.allowed_types = this.media_types_allowed;
 
     this.$root.registerDropzone(dz);
-    this.$eventHub.$on(`mediatile.drag.start`, this.showDropzone);
-    this.$eventHub.$on(`mediatile.drag.end`, this.hideDropzone);
+    this.$eventHub.$on(`dragfile.start`, this.showDropzone);
+    this.$eventHub.$on(`dragfile.end`, this.hideDropzone);
   },
   beforeDestroy() {
     this.$root.unregisterDropzone({
       id: this.id,
     });
-    this.$eventHub.$off(`mediatile.drag.start`, this.showDropzone);
-    this.$eventHub.$off(`mediatile.drag.end`, this.hideDropzone);
+    this.$eventHub.$off(`dragfile.start`, this.showDropzone);
+    this.$eventHub.$off(`dragfile.end`, this.hideDropzone);
   },
   watch: {},
   computed: {},
@@ -93,6 +93,7 @@ export default {
     droppedMediaInDodoc($event) {
       const file = JSON.parse($event.dataTransfer.getData("text/plain"));
       const path_to_source_media_metas = [file.$path];
+      this.$eventHub.$emit("dragfile.success");
       this.$emit("mediaDropped", { path_to_source_media_metas });
     },
   },

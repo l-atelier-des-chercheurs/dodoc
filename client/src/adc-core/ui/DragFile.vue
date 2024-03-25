@@ -50,12 +50,17 @@ export default {
       this.$emit("update:is_dragged", true);
       $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
       $event.dataTransfer.effectAllowed = "move";
-      this.$eventHub.$emit(`mediatile.drag.start`);
+      this.$eventHub.$emit(`dragfile.start`);
+      this.$eventHub.$on("dragfile.success", this.dragfileSuccess);
     },
     endMediaDrag() {
       console.log(`MediaFocus / endMediaDrag`);
       this.$emit("update:is_dragged", false);
-      this.$eventHub.$emit(`mediatile.drag.end`);
+      this.$eventHub.$emit(`dragfile.end`);
+      this.$eventHub.$off("dragfile.success", this.dragfileSuccess);
+    },
+    dragfileSuccess() {
+      this.$emit("dragfileSuccess");
     },
   },
 };
