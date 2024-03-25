@@ -22,7 +22,7 @@
           class="_mediaContent--collabEditor"
           :content="media_with_linked._linked_media.$content"
           :path="media_with_linked._linked_media.$path"
-          :edit_on_mounted="can_edit"
+          :edit_on_mounted="edit_mode"
           :can_edit="can_edit"
         />
         <MediaContent
