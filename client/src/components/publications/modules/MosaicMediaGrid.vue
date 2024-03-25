@@ -6,6 +6,15 @@
     }"
   >
     <template v-for="(media_with_linked, index) in medias_with_linked">
+      <!-- <DropZone
+        v-if="
+          !number_of_max_medias ||
+          medias_with_linked.length < number_of_max_medias
+        "
+        :key="'dz-' + index"
+        class="_dzInbetween"
+        @mediaDropped="$emit('addMedias', $event)"
+      /> -->
       <div
         class="_mediaGrid--item"
         :key="itemKey(media_with_linked._linked_media, index)"
@@ -238,6 +247,11 @@ export default {
     position: relative;
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
+
+  // ._dzInbetween {
+  //   position: relative !important;
+  //   width: 20px;
+  // }
 
   &.is--multipleMedias > ._mediaGrid--item {
     aspect-ratio: 1/1;
