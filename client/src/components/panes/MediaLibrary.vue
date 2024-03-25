@@ -2,9 +2,13 @@
   <div class="_mediaLibrary">
     <section class="_scrollBox">
       <div class="_importButton">
-        <ImportFileZone
+        <ImportFileZone :files_to_import.sync="files_to_import" />
+        <UploadFiles
+          v-if="files_to_import.length > 0"
+          :files_to_import="files_to_import"
           :path="project.$path"
-          @mediaJustImported="mediaJustImported"
+          @importedMedias="mediaJustImported($event)"
+          @close="files_to_import = []"
         />
       </div>
 
@@ -327,6 +331,7 @@ export default {
       batch_mode: false,
 
       tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
+      files_to_import: [],
 
       media_just_focused: undefined,
 
