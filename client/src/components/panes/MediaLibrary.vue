@@ -776,6 +776,10 @@ export default {
   gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 
+._dayFileSection {
+  margin-bottom: calc(var(--spacing) / 4);
+}
+
 ._gridSection {
   padding-bottom: calc(var(--spacing) / 2);
 }
