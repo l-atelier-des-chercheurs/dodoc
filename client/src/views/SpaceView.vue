@@ -14,35 +14,23 @@
       <div class="_projectsList">
         <div class="u-sameRow u-spacingBottom">
           <DLabel :str="$t('list_of_projects')" :tag="'h2'" />
+        </div>
+
+        <ProjectsListWithFilter
+          v-if="projects !== undefined"
+          :projects_pinned="space.projects_pinned"
+          :space_path="space.$path"
+          :projects="projects"
+          :can_edit="can_edit_space"
+        >
           <button
             type="button"
             class="u-button u-button_red u-button_small"
             v-if="can_contribute_to_space"
             @click="show_create_modal = true"
           >
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              viewBox="0 0 168 168"
-              style="enable-background: new 0 0 168 168"
-              xml:space="preserve"
-            >
-              <path
-                style="fill: #fc4b60"
-                d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
-		C110.5-8.2,57.5-8.2,24.6,24.4z"
-              />
-              <polygon
-                style="fill: #ffbe32"
-                points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
-		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-              />
-            </svg>
-            &nbsp;
-            {{ $t("create_a_project") }}
+            <b-icon icon="plus" :label="$t('create')" />
+            {{ $t("create") }}
           </button>
           <button
             type="button"
@@ -50,16 +38,10 @@
             v-if="can_contribute_to_space"
             @click="show_import_modal = true"
           >
-            <svg width="20" height="17" viewBox="0 0 20 17">
-              <path
-                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-              />
-            </svg>
-            &nbsp;
+            <b-icon icon="upload" :label="$t('import')" />
             {{ $t("import_a_project") }}
           </button>
-        </div>
-
+        </ProjectsListWithFilter>
         <CreateFolder
           v-if="show_create_modal"
           :modal_name="$t('create_a_project')"
@@ -75,14 +57,6 @@
           :path="projects_path"
           @close="show_import_modal = false"
           @openNew="openNewProject"
-        />
-
-        <ProjectsListWithFilter
-          v-if="projects !== undefined"
-          :projects_pinned="space.projects_pinned"
-          :space_path="space.$path"
-          :projects="projects"
-          :can_edit="can_edit_space"
         />
       </div>
     </div>
