@@ -1,7 +1,7 @@
 <template>
   <BaseModal2 :title="modal_name" @close="$emit('close')">
     <div
-      v-if="transfer_percent < 100"
+      v-if="transfer_percent !== 100"
       class="u-instructions u-spacingBottom"
       v-html="$t('import_a_project_instr')"
     />
@@ -97,8 +97,6 @@ export default {
         });
 
       this.transfer_percent = 100;
-
-      debugger;
 
       this.imported_project_title =
         new_folder_meta.title || this.$t("untitled");
