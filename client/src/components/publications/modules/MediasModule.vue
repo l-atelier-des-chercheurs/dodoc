@@ -16,6 +16,7 @@
           :show_fs_button="show_fs_button"
           :number_of_max_medias="number_of_max_medias"
           :publication_path="publication_path"
+          :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
@@ -39,6 +40,7 @@
           :show_fs_button="show_fs_button"
           :publication_path="publication_path"
           :publi_width="publimodule.size"
+          :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
@@ -63,6 +65,7 @@ export default {
     page_template: String,
     number_of_max_medias: [Boolean, Number],
     show_fs_button: Boolean,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {

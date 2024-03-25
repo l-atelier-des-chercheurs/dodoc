@@ -39,60 +39,70 @@
           :publication_path="publication_path"
         />
 
-        <div class="_btnRow" v-if="can_edit">
-          <DragFile v-if="can_edit" :file="media_with_linked._linked_media" />
-          <template
-            v-if="
-              (is_multiple_medias ||
-                (page_template === 'page_by_page' &&
-                  !single_media_displayed_at_full_ratio)) &&
-              !mediaIsSquare(media_with_linked._linked_media) &&
-              media_with_linked._linked_media.$type !== 'stl' &&
-              media_with_linked._linked_media.$type !== 'obj' &&
-              media_with_linked._linked_media.$type !== 'text' &&
-              media_with_linked._linked_media.$type !== 'other'
-            "
-          >
-            <button
-              type="button"
-              class="u-buttonLink"
+        <div class="_btnRow">
+          <DragFile
+            v-if="can_edit"
+            class="_df"
+            :file="media_with_linked._linked_media"
+            @droppedSuccessful="removeMedia(index)"
+          />
+          <template v-if="edit_mode">
+            <template
               v-if="
-                !(
-                  !media_with_linked.objectFit ||
-                  media_with_linked.objectFit === 'cover'
-                )
-              "
-              @click="
-                $emit('updateMediaOpt', { index, opt: { objectFit: 'cover' } })
+                (is_multiple_medias ||
+                  (page_template === 'page_by_page' &&
+                    !single_media_displayed_at_full_ratio)) &&
+                !mediaIsSquare(media_with_linked._linked_media) &&
+                media_with_linked._linked_media.$type !== 'stl' &&
+                media_with_linked._linked_media.$type !== 'obj' &&
+                media_with_linked._linked_media.$type !== 'text' &&
+                media_with_linked._linked_media.$type !== 'other'
               "
             >
-              <sl-icon name="aspect-ratio" />
-              <!-- {{ $t("object_fit_cover") }} -->
-            </button>
+              <button
+                type="button"
+                class="u-button u-button_icon"
+                v-if="
+                  !(
+                    !media_with_linked.objectFit ||
+                    media_with_linked.objectFit === 'cover'
+                  )
+                "
+                @click="
+                  $emit('updateMediaOpt', {
+                    index,
+                    opt: { objectFit: 'cover' },
+                  })
+                "
+              >
+                <sl-icon name="aspect-ratio" />
+                <!-- {{ $t("object_fit_cover") }} -->
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_icon"
+                v-if="media_with_linked.objectFit !== 'contain'"
+                @click="
+                  $emit('updateMediaOpt', {
+                    index,
+                    opt: { objectFit: 'contain' },
+                  })
+                "
+              >
+                <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
+                <!-- {{ $t("object_fit_contain") }} -->
+                <sl-icon name="aspect-ratio-fill" />
+              </button>
+            </template>
             <button
               type="button"
-              class="u-buttonLink"
-              v-if="media_with_linked.objectFit !== 'contain'"
-              @click="
-                $emit('updateMediaOpt', {
-                  index,
-                  opt: { objectFit: 'contain' },
-                })
-              "
+              class="u-button u-button_icon"
+              v-if="is_multiple_medias"
+              @click="removeMedia(index)"
             >
-              <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
-              <!-- {{ $t("object_fit_contain") }} -->
-              <sl-icon name="aspect-ratio-fill" />
+              <sl-icon name="trash3" />
             </button>
           </template>
-          <button
-            type="button"
-            class="u-buttonLink"
-            v-if="is_multiple_medias"
-            @click="$emit('removeMediaAtIndex', index)"
-          >
-            <sl-icon name="trash3" />
-          </button>
         </div>
       </div>
     </template>
@@ -140,6 +150,7 @@ export default {
     show_fs_button: Boolean,
     number_of_max_medias: [Boolean, Number],
     publication_path: String,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -192,6 +203,9 @@ export default {
     },
     mediaIsSquare(media) {
       return media.$infos?.ratio === 1;
+    },
+    removeMedia(index) {
+      this.$emit("removeMediaAtIndex", index);
     },
   },
 };
@@ -311,5 +325,8 @@ export default {
   // top: 0;
   // right: 0;
   // z-index: 10;
+}
+._df {
+  display: inline-flex;
 }
 </style>

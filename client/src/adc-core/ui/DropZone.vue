@@ -108,7 +108,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: calc(var(--spacing) / 1);
+  padding: 0;
 
   display: flex;
   flex-flow: row wrap;
@@ -130,6 +130,7 @@ export default {
   position: absolute;
   z-index: 0;
   inset: 0;
+  border-radius: 4px;
 }
 
 ._dropNotice {

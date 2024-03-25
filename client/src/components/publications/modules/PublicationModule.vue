@@ -238,7 +238,8 @@
       <MediasModule
         v-if="['mosaic', 'carousel', 'files'].includes(publimodule.module_type)"
         :publimodule="publimodule"
-        :can_edit="edit_mode"
+        :edit_mode="edit_mode"
+        :can_edit="can_edit"
         :context="context"
         :page_template="page_template"
         :number_of_max_medias="number_of_max_medias"

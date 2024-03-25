@@ -1013,7 +1013,7 @@ input[type="checkbox"]:disabled {
 
   &.is--active {
     border-color: var(--dropzone-color1) !important;
-    animation: flashbackground 1000ms infinite alternate linear;
+    animation: flashbackground 1000ms infinite alternate ease-in;
 
     @keyframes flashbackground {
       0% {
