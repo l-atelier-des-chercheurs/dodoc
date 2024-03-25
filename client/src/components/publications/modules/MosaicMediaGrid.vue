@@ -23,7 +23,7 @@
           :content="media_with_linked._linked_media.$content"
           :path="media_with_linked._linked_media.$path"
           :edit_on_mounted="edit_mode"
-          :can_edit="can_edit"
+          :can_edit="edit_mode"
         />
         <MediaContent
           v-else
@@ -41,7 +41,7 @@
 
         <div class="_btnRow">
           <DragFile
-            v-if="can_edit"
+            v-if="edit_mode"
             class="_df"
             :file="media_with_linked._linked_media"
             @droppedSuccessful="removeMedia(index)"
@@ -115,6 +115,7 @@
       "
     >
       <EditBtn
+        v-if="edit_mode"
         :btn_type="'add'"
         :is_unfolded="false"
         @click="show_media_picker = true"

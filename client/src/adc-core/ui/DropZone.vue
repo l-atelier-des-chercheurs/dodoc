@@ -1,5 +1,5 @@
 <template>
-  <transition name="pagechange">
+  <transition name="scaleInFade_fast">
     <div
       v-if="show_dropzone"
       class="_dropZone"
