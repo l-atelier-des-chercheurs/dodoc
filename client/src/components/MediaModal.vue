@@ -313,16 +313,6 @@ export default {
       this.show_meta_sidebar = !this.show_meta_sidebar;
       localStorage.setItem("show_meta_sidebar", this.show_meta_sidebar);
     },
-    startMediaDrag($event) {
-      this.is_dragged = true;
-      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
-      $event.dataTransfer.effectAllowed = "move";
-      this.$eventHub.$emit(`mediatile.drag.start`);
-    },
-    endMediaDrag() {
-      this.is_dragged = false;
-      this.$eventHub.$emit(`mediatile.drag.end`);
-    },
   },
 };
 </script>
