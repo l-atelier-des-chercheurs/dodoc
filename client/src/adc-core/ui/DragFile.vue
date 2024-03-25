@@ -60,7 +60,10 @@ export default {
       this.$eventHub.$off("dragfile.success", this.dragfileSuccess);
     },
     dragfileSuccess() {
-      this.$emit("dragfileSuccess");
+      // adding some timeout to make sure some operations finished
+      setTimeout(() => {
+        this.$emit("dragfileSuccess");
+      }, 200);
     },
   },
 };
