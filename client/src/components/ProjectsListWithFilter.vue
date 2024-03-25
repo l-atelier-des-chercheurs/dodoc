@@ -3,7 +3,6 @@
     <div class="_filterSortBar" v-if="sorted_projects.length > 0">
       <div class="u-sameRow">
         <div class="">
-          <DLabel :str="$t('filter')" />
           <button
             type="button"
             size="small"
@@ -12,7 +11,7 @@
               'is--active': show_sidebar,
             }"
             @click="show_sidebar = !show_sidebar"
-            v-text="!show_sidebar ? $t('show') : $t('hide')"
+            v-text="!show_sidebar ? $t('filter') : $t('hide')"
           />
         </div>
         <div class="">
@@ -23,7 +22,7 @@
         </div>
       </div>
       <div class="">
-        <DLabel :str="$t('sort')" />
+        <!-- <DLabel :str="$t('sort')" /> -->
         <select
           size="small"
           class="_orderSelect"

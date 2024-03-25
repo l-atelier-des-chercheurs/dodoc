@@ -79,9 +79,9 @@ export default {
   account_doesnt_exist: "This account does not exist",
   submit: "Submit",
   search_in_title_desc_kw:
-    "In titles, descriptions, keywords, machines and materials.",
-  search_by_name: "In names or nicknames",
-  search_by_title_or_subtitle: "In titles and subtitles",
+    "Search in titles, descriptions, keywords, machines and materials.",
+  search_by_name: "Search in names or nicknames",
+  search_by_title_or_subtitle: "Search in titles and subtitles",
 
   search: "Search",
   "search:": "Search:",

@@ -79,9 +79,9 @@ export default {
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
   search_in_title_desc_kw:
-    "Dans les titres, descriptions, mots-clés, machines et matériaux.",
-  search_by_name: "Dans les noms ou pseudonymes",
-  search_by_title_or_subtitle: "Dans les titres ou sous-titres",
+    "Rechercher dans les titres, descriptions, mots-clés, machines et matériaux.",
+  search_by_name: "Rechercher dans les noms ou pseudonymes",
+  search_by_title_or_subtitle: "Rechercher dans les titres ou sous-titres",
   search: "Rechercher",
   "search:": "Rechercher&nbsp;:",
 
