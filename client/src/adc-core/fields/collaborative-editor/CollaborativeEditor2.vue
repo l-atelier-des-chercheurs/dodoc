@@ -36,7 +36,7 @@
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
             <span>{{ $t("stop_edit") }}</span>
           </button> -->
-          <transition name="fade_fast" mode="out-in">
+          <transition name="pagechange" mode="out-in">
             <div
               class="u-button _savingStatus"
               v-if="is_loading_or_saving"
@@ -619,14 +619,14 @@ export default {
 
       try {
         this.is_loading_or_saving = true;
-        await new Promise((r) => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 300));
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
         });
         this.is_loading_or_saving = false;
         this.show_saved_icon = true;
-        await new Promise((r) => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 300));
         this.show_saved_icon = false;
       } catch (err) {
         if (err.message === "content not changed") err;
