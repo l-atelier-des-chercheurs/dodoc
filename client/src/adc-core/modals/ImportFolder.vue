@@ -97,14 +97,9 @@ export default {
         });
 
       this.transfer_percent = 100;
-
       this.imported_project_title =
         new_folder_meta.title || this.$t("untitled");
       this.imported_project_path = new_folder_meta.$path || false;
-
-      // setTimeout(() => {
-      //   this.$emit("close");
-      // }, 1000);
     },
   },
 };
