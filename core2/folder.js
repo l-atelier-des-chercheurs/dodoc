@@ -215,13 +215,9 @@ module.exports = (function () {
         data: valid_meta,
       });
 
-      // copy all medias to new folder
-      const full_path_to_folder = utils.getPathToUserContent(
-        path_to_type,
-        new_folder_slug
-      );
-
-      // await directory.extract({ path: full_path_to_folder, concurrency: 5 });
+      const path_to_new_folder = path.join(path_to_type, new_folder_slug);
+      const full_path_to_folder =
+        utils.getPathToUserContent(path_to_new_folder);
 
       const files_to_copy = directory.files.filter((f) => {
         const path_splits = f.path.split("/");
@@ -261,7 +257,7 @@ module.exports = (function () {
 
       await fs.remove(full_path_to_folder_in_cache);
 
-      return new_folder_slug;
+      return path_to_new_folder;
     },
     updateFolder: async ({
       path_to_type,

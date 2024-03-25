@@ -33,7 +33,8 @@ module.exports = (function () {
       _generalPasswordCheck,
       _getLocalNetworkInfos
     );
-    app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
+    app.get("/_api2/_authCheck", _checkGeneralPassword);
+    app.get("/_api2/_tokenCheck", _checkToken);
 
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
@@ -209,6 +210,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
+      _restrictIfPrivate,
       _getFolder
     );
 
@@ -281,16 +283,13 @@ module.exports = (function () {
     }
   }
 
-  async function _checkGeneralPasswordAndToken(req, res, next) {
+  async function _checkGeneralPassword(req, res, next) {
     dev.logapi();
-
-    let response = {};
-    try {
-      await _generalPasswordCheck(req);
-      response.general_password_is_valid = true;
-    } catch (err) {
-      response.general_password_is_wrong = err.code;
-    }
+    await _generalPasswordCheck(req, res);
+    return res.status(200).send();
+  }
+  async function _checkToken(req, res, next) {
+    dev.logapi();
 
     try {
       const { token, token_path } = JSON.parse(req.headers.authorization);
@@ -300,12 +299,10 @@ module.exports = (function () {
         throw err;
       }
       auth.checkTokenValidity({ token, token_path });
-      response.token_is_valid = true;
     } catch (err) {
-      response.token_is_wrong = err.code;
+      return res.status(401).send({ code: err.code });
     }
-
-    return res.json(response);
+    return res.status(200).send();
   }
 
   async function _canContributeToFolder({ path_to_type, path_to_folder, req }) {
@@ -436,6 +433,31 @@ module.exports = (function () {
     } else {
       dev.log("not allowed to contribute");
       if (res) return res.status(403).send({ code: "not_allowed" });
+    }
+  }
+  async function _restrictIfPrivate(req, res, next) {
+    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    // if folder is private, only admins and
+    if (!(await auth.isFolderPrivate({ path_to_folder }))) {
+      dev.log("Folder is not private, can be listed without restrictions");
+      return next();
+    }
+
+    const allowed = await _canContributeToFolder({
+      path_to_type,
+      path_to_folder,
+      req,
+    });
+
+    if (allowed) {
+      dev.log(allowed);
+      return next();
+    } else {
+      dev.error("not allowed to list be cause private");
+      if (res) return res.status(401).send({ code: "folder_private" });
+      return false;
     }
   }
   async function _onlyAdmins(req, res, next) {
@@ -605,18 +627,16 @@ module.exports = (function () {
     dev.logapi({ path_to_type });
 
     try {
-      const new_folder_slug = await folder.importFolder({
+      const path_to_new_folder = await folder.importFolder({
         path_to_type,
         req,
       });
-      dev.logpackets(`folder was imported with name ${new_folder_slug}`);
-      res.status(200).json({ new_folder_slug });
-
-      const path_to_folder = path.join(path_to_type, new_folder_slug);
+      dev.logpackets(`folder was imported with path ${path_to_new_folder}`);
       const new_folder_meta = await folder.getFolder({
-        path_to_folder,
+        path_to_folder: path_to_new_folder,
       });
 
+      res.status(200).json({ new_folder_meta });
       notifier.emit("folderCreated", path_to_type, {
         path: path_to_type,
         meta: new_folder_meta,

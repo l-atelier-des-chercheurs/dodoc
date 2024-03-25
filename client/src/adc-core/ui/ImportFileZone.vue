@@ -13,11 +13,7 @@
       @drop="onDrop"
     >
       <div class="u-button u-button_red">
-        <svg width="20" height="17" viewBox="0 0 20 17">
-          <path
-            d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-          />
-        </svg>
+        <b-icon icon="upload" :label="$t('import')" />
         {{ $t("import") }}
       </div>
       <div class="u-instructions">
@@ -26,26 +22,21 @@
     </label>
     <input
       type="file"
-      multiple="multiple"
+      :multiple="multiple"
       :id="id + '-add_file'"
       name="file"
-      accept=""
+      :accept="accepts"
       class=""
       @change="updateInputFiles($event)"
-    />
-    <UploadFiles
-      v-if="files_to_import.length > 0"
-      :files_to_import="files_to_import"
-      :path="path"
-      @importedMedias="$emit('mediaJustImported', $event)"
-      @close="files_to_import = []"
     />
   </div>
 </template>
 <script>
 export default {
   props: {
-    path: String,
+    files_to_import: Array,
+    accepts: String,
+    multiple: Boolean,
   },
   components: {},
   data() {
@@ -54,7 +45,6 @@ export default {
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
 
-      files_to_import: [],
       is_dragover: false,
     };
   },
@@ -76,14 +66,17 @@ export default {
     handlePaste($event) {
       if (this.$root.modal_is_opened) return;
       if ($event.clipboardData.files?.length > 0)
-        this.files_to_import = Array.from($event.clipboardData.files);
+        this.$emit(
+          "update:files_to_import",
+          Array.from($event.clipboardData.files)
+        );
     },
     updateInputFiles($event) {
-      this.files_to_import = Array.from($event.target.files);
+      this.$emit("update:files_to_import", Array.from($event.target.files));
       $event.target.value = "";
     },
     fileDropped(files) {
-      this.files_to_import = Array.from(files);
+      this.$emit("update:files_to_import", Array.from(files));
     },
 
     onDragover($event) {
@@ -100,7 +93,10 @@ export default {
     onDrop($event) {
       this.is_dragover = false;
       if ($event.dataTransfer.files?.length > 0)
-        this.files_to_import = Array.from($event.dataTransfer.files);
+        this.$emit(
+          "update:files_to_import",
+          Array.from($event.dataTransfer.files)
+        );
     },
   },
 };
@@ -109,6 +105,7 @@ export default {
 ._importFileZone {
   .u-dropzone {
     cursor: pointer;
+    color: currentColor;
 
     &.is--dragover,
     &:hover,
@@ -116,7 +113,7 @@ export default {
     }
   }
   .u-instructions {
-    color: white;
+    color: currentColor;
   }
 }
 </style>

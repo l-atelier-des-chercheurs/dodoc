@@ -69,7 +69,7 @@ export default {
   presentation_of_instance: "Présentation de l’instance",
   presentation_of_instance_instructions: `Apparaîtra sur la page d’accueil uniquement.`,
   presentation: "Présentation",
-  general_password: "mot de passe général",
+  general_password: "Mot de passe général",
   general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
     peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
   general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plateforme. 
@@ -79,9 +79,9 @@ export default {
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
   search_in_title_desc_kw:
-    "Dans les titres, descriptions, mots-clés, machines et matériaux.",
-  search_by_name: "Dans les noms ou pseudonymes",
-  search_by_title_or_subtitle: "Dans les titres ou sous-titres",
+    "Rechercher dans les titres, descriptions, mots-clés, machines et matériaux.",
+  search_by_name: "Rechercher dans les noms ou pseudonymes",
+  search_by_title_or_subtitle: "Rechercher dans les titres ou sous-titres",
   search: "Rechercher",
   "search:": "Rechercher&nbsp;:",
 
@@ -332,6 +332,9 @@ export default {
     "La publication sera visible à tous ceux qui accèdent au projet.",
   private_status_explanations_publis:
     "La publication ne sera visible qu’aux contributeurs du projet.",
+
+  project_is_private:
+    "Ce projet est privé et ne peut être consulté que par ses contributeurs ou référents.",
 
   finished: "Finalisé",
   only_finished: "Projets finalisés",
@@ -864,6 +867,9 @@ export default {
     puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
+  import_finished:
+    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
+  zip_wrong: "Ce fichier ZIP n’est pas un projet dodoc valide",
 
   move_to_page: "Déplacer vers une autre page",
 

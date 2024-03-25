@@ -1,9 +1,10 @@
 <template>
   <BaseModal2
     :title="$root.app_infos.instance_meta.name || $t('home')"
+    :is_closable="false"
     @close="$emit('close')"
   >
-    <p>
+    <p class="u-spacingBottom">
       {{ $t("general_password_modal_text") }}
       <br />
       <a
@@ -33,8 +34,6 @@
         }"
       /> -->
 
-      <br />
-
       <button
         type="submit"
         :disabled="!allow_send"
@@ -42,6 +41,9 @@
       >
         {{ $t("access") }}
       </button>
+      <div v-if="password_submit_error">
+        {{ password_submit_error }}
+      </div>
     </form>
   </BaseModal2>
 </template>
@@ -54,6 +56,7 @@ export default {
       password_to_submit: "",
       allow_send: false,
       remember_on_this_device: true,
+      password_submit_error: false,
     };
   },
   created() {},
@@ -64,14 +67,23 @@ export default {
   methods: {
     async submitGeneralPassword() {
       try {
-        this.response = await this.$api.submitGeneralPassword({
+        await this.$api.submitGeneralPassword({
           password: this.password_to_submit,
           remember_on_this_device: this.remember_on_this_device,
         });
+        debugger;
         this.$emit("close");
       } catch (err) {
-        this.response = err;
-        this.$alertify.delay(4000).error(err);
+        let msg = err.code;
+        if (err.code === "submitted_general_password_is_wrong")
+          msg = this.$t("submitted_password_is_wrong");
+
+        this.password_submit_error = msg;
+        this.$alertify.delay(4000).error(msg);
+
+        setTimeout(() => {
+          this.password_submit_error = false;
+        }, 4000);
         return false;
       }
     },

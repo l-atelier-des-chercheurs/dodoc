@@ -118,6 +118,13 @@ module.exports = (function () {
         folder_meta[field] === "parent_contributors"
       );
     },
+    async isFolderPrivate({ path_to_folder = "" }) {
+      const folder_meta = await folder.getFolder({ path_to_folder });
+      return (
+        folder_meta.hasOwnProperty("$status") &&
+        folder_meta["$status"] === "private"
+      );
+    },
     async isTokenInstanceAdmin({ token_path }) {
       return await API.isTokenIncluded({
         field: "$admins",

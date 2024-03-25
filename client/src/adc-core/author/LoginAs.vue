@@ -35,6 +35,7 @@
               ref="nameField"
               :label_str="'name_or_pseudonym'"
               :required="true"
+              :autofocus="true"
               :input_type="'text'"
               :autocomplete="'username'"
               @toggleValidity="($event) => (allow_save = $event)"
@@ -74,6 +75,7 @@
                 ref="passwordField"
                 :content.sync="input_password"
                 :required="true"
+                :autofocus="true"
                 :input_type="'password'"
                 :autocomplete="'current-password'"
                 @toggleValidity="($event) => (allow_save = $event)"
@@ -180,9 +182,7 @@ export default {
       this.$api
         .loginToFolder({
           path,
-          auth_infos: {
-            $password: this.input_password,
-          },
+          password: this.input_password,
         })
         .then(() => {
           // this.$alertify

@@ -4,11 +4,13 @@
       {{ $api.store }}
     </pre> -->
     <transition name="fade_fast" mode="out-in">
-      <div class="u-divCentered" v-if="!project" key="loader">
+      <div class="u-divCentered" v-if="is_loading" key="loader">
         <LoaderSpinner />
       </div>
-      <div v-else-if="fetch_project_error" key="err">
-        {{ fetch_project_error }}
+      <div v-else-if="fetch_project_error_message" key="err">
+        <div class="u-instructions _errNotice">
+          {{ fetch_project_error_message }}
+        </div>
       </div>
       <div v-else key="project">
         <!-- <pre>
@@ -73,7 +75,8 @@ export default {
   },
   data() {
     return {
-      fetch_project_error: null,
+      is_loading: true,
+      fetch_project_error_message: null,
       project: null,
 
       display_as_public: false,
@@ -168,13 +171,14 @@ export default {
           path,
         })
         .catch((err) => {
-          this.fetch_project_error = err.response;
+          if (err.code === "folder_private")
+            this.fetch_project_error_message = this.$t("project_is_private");
+          else this.fetch_project_error_message = err.code;
           this.is_loading = false;
+          return;
         });
 
-      // check here if allowed to see project : if project has authors, is not public, and we are not logged in
-      // todo remove this, since this will be answered by getfolder
-
+      this.is_loading = false;
       this.project = project;
     },
     async getSpace() {
@@ -258,5 +262,9 @@ export default {
 
 ._separator {
   margin: 0;
+}
+
+._errNotice {
+  padding: calc(var(--spacing) / 2);
 }
 </style>

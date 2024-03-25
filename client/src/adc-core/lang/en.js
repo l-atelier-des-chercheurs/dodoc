@@ -69,7 +69,7 @@ export default {
   presentation_of_instance: "Instance presentation",
   presentation_of_instance_instructions: `Will appear on the home page only.`,
   presentation: "Presentation",
-  general_password: "general password",
+  general_password: "General password",
   general_password_instructions: `Limit access to projects to visitors with this password. The home page will however remain accessible and
     can display a contact email to request access, if necessary. Leave the field empty so that access is open to everyone.`,
   general_password_modal_text: `A password is required to access projects created on this platform.
@@ -79,9 +79,9 @@ export default {
   account_doesnt_exist: "This account does not exist",
   submit: "Submit",
   search_in_title_desc_kw:
-    "In titles, descriptions, keywords, machines and materials.",
-  search_by_name: "In names or nicknames",
-  search_by_title_or_subtitle: "In titles and subtitles",
+    "Search in titles, descriptions, keywords, machines and materials.",
+  search_by_name: "Search in names or nicknames",
+  search_by_title_or_subtitle: "Search in titles and subtitles",
 
   search: "Search",
   "search:": "Search:",
@@ -92,6 +92,9 @@ export default {
     "Each space contains a set of projects linked to a particular group, place or theme.",
   create_a_space: "Create a space",
   project: "Project",
+
+  project_is_private:
+    "This project is private and can only be opened by its contributors and referents.",
 
   finished: "Finished",
   only_finished: "Finished projects",
@@ -881,6 +884,10 @@ export default {
     "In this project or another where you can create posts. All settings and texts will be duplicated, and the media (photos, videos, etc.) will be imported into the Collect panel.",
   import_zip: "Import a project in ZIP",
   import_in_progress: "Import in progress…",
+  import_finished:
+    "Import finished, click on the button to open the project. Media previews will be generated, which can take a few minutes.",
+  zip_wrong: "This ZIP file is not a valid project",
+
   move_to_page: "Move to another page",
   general_informations: "Instance informations",
   make_list: "Make list",

@@ -6,6 +6,7 @@
         :content.sync="new_folder_title"
         :maxlength="40"
         :required="true"
+        :autofocus="true"
         ref="titleInput"
         @toggleValidity="($event) => (allow_save = $event)"
         @onEnter="createFolder"

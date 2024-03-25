@@ -3,8 +3,15 @@
     <section class="_scrollBox">
       <div class="_importButton">
         <ImportFileZone
+          :multiple="true"
+          :files_to_import.sync="files_to_import"
+        />
+        <UploadFiles
+          v-if="files_to_import.length > 0"
+          :files_to_import="files_to_import"
           :path="project.$path"
-          @mediaJustImported="mediaJustImported"
+          @importedMedias="mediaJustImported($event)"
+          @close="files_to_import = []"
         />
       </div>
 
@@ -327,6 +334,7 @@ export default {
       batch_mode: false,
 
       tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
+      files_to_import: [],
 
       media_just_focused: undefined,
 
@@ -771,6 +779,10 @@ export default {
   gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 
+._dayFileSection {
+  margin-bottom: calc(var(--spacing) / 4);
+}
+
 ._gridSection {
   padding-bottom: calc(var(--spacing) / 2);
 }
@@ -852,6 +864,7 @@ export default {
 ._importButton {
   --dropzone-color1: var(--c-orange);
   --dropzone-color2: var(--c-rouge);
+  color: white;
 
   width: 100%;
   padding: calc(var(--spacing) / 2);
