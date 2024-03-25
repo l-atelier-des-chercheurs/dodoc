@@ -90,6 +90,7 @@ export default {
 }
 
 ._editMediaModal {
+  position: fixed;
   z-index: 100;
 }
 </style>
