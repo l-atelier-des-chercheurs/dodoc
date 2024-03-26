@@ -559,7 +559,7 @@ export default {
 // custom props
 ._moveableItem ::v-deep {
   ._publicationModule[data-type="mosaic"] {
-    .ql-editor,
+    ._content > ._collaborativeEditor .ql-editor,
     ._mediaContent--image,
     ._mediaContent[data-filetype="video"],
     ._mediaContent[data-filetype="url"],
