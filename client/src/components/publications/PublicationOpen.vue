@@ -1,6 +1,13 @@
 <template>
   <div class="_publicationOpen">
-    <sl-spinner style="--indicator-color: currentColor" v-if="!publication" />
+    <div
+      class="_spinner"
+      v-if="!publication"
+      style="--indicator-color: currentColor"
+      key="loader"
+    >
+      <LoaderSpinner />
+    </div>
     <div v-else-if="fetch_publication_error">
       {{ fetch_publication_error }}
     </div>

@@ -238,7 +238,8 @@
       <MediasModule
         v-if="['mosaic', 'carousel', 'files'].includes(publimodule.module_type)"
         :publimodule="publimodule"
-        :can_edit="edit_mode"
+        :edit_mode="edit_mode"
+        :can_edit="can_edit"
         :context="context"
         :page_template="page_template"
         :number_of_max_medias="number_of_max_medias"
@@ -246,6 +247,7 @@
         @updateMeta="updateMeta"
         @remove="removeModule"
       />
+      <!-- // specific to page by page -->
       <CollaborativeEditor2
         v-else-if="publimodule.module_type === 'text' && first_media"
         ref="textBloc"
@@ -253,7 +255,7 @@
         :content="first_media.$content"
         :scrollingContainer="$el"
         :line_selected="false"
-        :can_edit="edit_mode"
+        :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
@@ -344,14 +346,7 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
 
-      <div
-        class="_captionField"
-        v-if="
-          (publimodule.caption || edit_mode) &&
-          module_type !== 'shape' &&
-          module_type !== 'text'
-        "
-      >
+      <div class="_captionField" v-if="show_caption">
         <CollaborativeEditor2
           class="_caption"
           :label="
@@ -366,7 +361,7 @@
           :path="publimodule.$path"
           :custom_formats="['bold', 'italic', 'link']"
           :is_collaborative="false"
-          :can_edit="can_edit"
+          :can_edit="page_template !== 'page_by_page' ? can_edit : false"
         />
 
         <div
@@ -541,6 +536,17 @@ export default {
     },
     module_meta_filename() {
       return this.publimodule.$path.split("/").at(-1);
+    },
+    show_caption() {
+      if (this.module_type === "text") return false;
+      if (this.module_type === "shape") return false;
+      if (
+        this.publimodule.source_medias.length === 1 &&
+        this.publimodule.source_medias[0].meta_filename?.startsWith("text-")
+      )
+        return false;
+      if (!this.publimodule.caption && !this.edit_mode) return false;
+      return true;
     },
 
     module_type() {

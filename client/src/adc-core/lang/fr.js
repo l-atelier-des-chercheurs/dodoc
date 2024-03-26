@@ -79,11 +79,11 @@ export default {
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
   search_in_title_desc_kw:
-    "Rechercher dans les titres, descriptions, mots-clés, machines et matériaux.",
-  search_by_name: "Rechercher dans les noms ou pseudonymes",
-  search_by_title_or_subtitle: "Rechercher dans les titres ou sous-titres",
-  search: "Rechercher",
-  "search:": "Rechercher&nbsp;:",
+    "Chercher dans les titres, descriptions, mots-clés, machines et matériaux.",
+  search_by_name: "Chercher dans les noms ou pseudonymes",
+  search_by_title_or_subtitle: "Chercher dans les titres ou sous-titres",
+  search: "Chercher",
+  "search:": "Chercher&nbsp;:",
 
   connection_lost: `Connexion perdue`,
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
@@ -340,6 +340,8 @@ export default {
   only_finished: "Projets finalisés",
   completed: "Terminé",
   my_projects: "Mes projets",
+  my_projects_instr:
+    "Cette liste affiche tous les projets dont vous êtes référent ou contributeur.",
   pinned: "Épinglés",
   spaces_pinned: "Espaces épinglés",
   projects_pinned: "Projets épinglés",
@@ -1003,4 +1005,23 @@ export default {
 
   on_this_page: "Sur cette page",
   on_other_pages: "Sur d’autres pages",
+
+  freehand: "Tracé libre",
+  circle: "Cercle",
+  polygon: "Polygone",
+
+  mouse_position: "Position de la balise",
+  search_for_a_place: "Rechercher un lieu",
+  click_to_start_drawing: "cliquer pour commencer le tracé",
+  click_to_continue_drawing: "cliquez pour ajouter un autre point",
+  click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
+  click_to_place_center: "cliquer pour placer le centre",
+  click_to_define_circle_radius: "cliquer pour définir le rayon",
+  click_to_place_first_point: "cliquer pour placer le premier point",
+  finish_drawing: "Terminer le dessin",
+  or_double_click: "Ou double-cliquez sur la carte",
+  drag_to_modify: "cliquer-glisser pour modifier",
+
+  select_by_clicking: "sélectionner une forme en cliquant dessus",
+  move_drawing: "cliquer-glisser pour déplacer la forme",
 };

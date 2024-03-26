@@ -10,7 +10,7 @@
     @abortPinch="abortPinch"
     @pinch="pinch"
   >
-    <div class="viewport">
+    <div class="_pzViewport">
       <slot />
     </div>
   </vue-infinite-viewer>
@@ -110,8 +110,10 @@ export default {
         );
       }, 500);
     },
-    dragStart() {
+    dragStart(event) {
       console.log("dragStart");
+      if (event.inputEvent.target.classList.contains("panzoom-exclude"))
+        event.stop();
     },
     dragEnd(event) {
       console.log("dragEnd");
@@ -168,7 +170,7 @@ export default {
   height: 100%;
   cursor: move;
 }
-.viewport {
+._pzViewport {
   position: relative;
   // width: 400px;
   // height: 600px;

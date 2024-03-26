@@ -13,7 +13,6 @@
       'is--editable': can_edit,
       'is--active': can_edit && is_active,
       'is--beingEdited': content_is_edited,
-      'panzoom-exclude': can_edit,
     }"
     :active="
       can_edit &&
@@ -25,7 +24,7 @@
     :value="transform"
     :parent="false /* bind to container */"
     :acceptRatio="aspect_ratio"
-    :handlerSize="15"
+    :handlerSize="18"
     :grid="grid"
     :id="publimodule.$path"
     :zoom="scale"
@@ -37,7 +36,11 @@
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <span class="_activator" @mousedown="setActive" @dblclick="dblClick">
+    <span
+      class="_activator panzoom-exclude"
+      @mousedown="setActive"
+      @dblclick="dblClick"
+    >
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
@@ -644,9 +647,8 @@ export default {
 
 ._unlockBtn {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
   pointer-events: none;
   padding: calc(var(--spacing) / 2);
 

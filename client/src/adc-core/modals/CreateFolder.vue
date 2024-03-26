@@ -27,14 +27,19 @@
 
       <br />
 
-      <button
-        class="u-button u-button_bleuvert"
-        type="submit"
-        slot="footer"
-        :loading="is_creating_folder"
-      >
-        {{ $t("create_and_open") }}
-      </button>
+      <div class="u-sameRow" slot="footer">
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          {{ $t("cancel") }}
+        </button>
+        <button
+          class="u-button u-button_bleuvert"
+          type="submit"
+          slot="footer"
+          :loading="is_creating_folder"
+        >
+          {{ $t("create_and_open") }}
+        </button>
+      </div>
 
       <template v-if="error_msg">
         <br />

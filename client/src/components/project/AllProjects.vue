@@ -4,7 +4,7 @@
       <LoaderSpinner v-if="is_loading" />
       <ProjectsListWithFilter
         v-else
-        :projects="all_projects"
+        :projects="filtered_projects"
         :display_original_space="true"
       />
     </transition>
@@ -14,7 +14,9 @@
 import ProjectsListWithFilter from "@/components/ProjectsListWithFilter.vue";
 
 export default {
-  props: {},
+  props: {
+    show_only_my_projects: Boolean,
+  },
   components: { ProjectsListWithFilter },
   data() {
     return {
@@ -29,7 +31,18 @@ export default {
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    filtered_projects() {
+      let _projects = this.all_projects;
+
+      if (this.show_only_my_projects)
+        _projects = _projects.filter(
+          (p) => this.canLoggedinContributeToFolder({ folder: p }) === true
+        );
+
+      return _projects;
+    },
+  },
   methods: {
     async loadAllProjects() {
       let spaces = await this.$api

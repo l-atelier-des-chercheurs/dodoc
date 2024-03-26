@@ -16,6 +16,7 @@
           :show_fs_button="show_fs_button"
           :number_of_max_medias="number_of_max_medias"
           :publication_path="publication_path"
+          :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
@@ -39,6 +40,7 @@
           :show_fs_button="show_fs_button"
           :publication_path="publication_path"
           :publi_width="publimodule.size"
+          :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
@@ -63,6 +65,7 @@ export default {
     page_template: String,
     number_of_max_medias: [Boolean, Number],
     show_fs_button: Boolean,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -112,7 +115,7 @@ export default {
       }
       this.$emit("updateMeta", { source_medias });
     },
-    async removeMediaAtIndex(index) {
+    async removeMediaAtIndex({ index, remove_source = true }) {
       const source_medias = this.publimodule.source_medias.slice();
 
       const source_media = source_medias[index];
@@ -121,7 +124,10 @@ export default {
       if (source_medias.length === 0) this.$emit("remove");
       else this.$emit("updateMeta", { source_medias });
 
-      if (Object.prototype.hasOwnProperty.call(source_media, "meta_filename")) {
+      if (
+        Object.prototype.hasOwnProperty.call(source_media, "meta_filename") &&
+        remove_source
+      ) {
         const media = this.getSourceMedia({
           source_media: { meta_filename: source_media.meta_filename },
           folder_path: this.publication_path,

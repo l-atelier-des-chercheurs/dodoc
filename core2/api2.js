@@ -439,25 +439,27 @@ module.exports = (function () {
     const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
 
-    // if folder is private, only admins and
-    if (!(await auth.isFolderPrivate({ path_to_folder }))) {
-      dev.log("Folder is not private, can be listed without restrictions");
-      return next();
-    }
+    try {
+      const folder_is_private = await auth.isFolderPrivate({ path_to_folder });
+      if (!folder_is_private) {
+        dev.log("Folder is not private, can be listed without restrictions");
+        return next();
+      } else dev.log("Folder is private");
 
-    const allowed = await _canContributeToFolder({
-      path_to_type,
-      path_to_folder,
-      req,
-    });
-
-    if (allowed) {
-      dev.log(allowed);
-      return next();
-    } else {
-      dev.error("not allowed to list be cause private");
-      if (res) return res.status(401).send({ code: "folder_private" });
-      return false;
+      const allowed = await _canContributeToFolder({
+        path_to_type,
+        path_to_folder,
+        req,
+      });
+      if (allowed) {
+        dev.log("User allowed to open private folder");
+        return next();
+      } else {
+        dev.error("User NOT allowed to open private");
+        return res.status(401).send({ code: "folder_private" });
+      }
+    } catch (err) {
+      return res.status(404).send({ code: "not_found" });
     }
   }
   async function _onlyAdmins(req, res, next) {
@@ -509,7 +511,6 @@ module.exports = (function () {
       favicon_image_name,
       topbar_image_name,
       hero_image_name,
-      $files = [],
     } = await settings
       .get()
       .catch((err) => dev.error("Error while getting settings", err));
@@ -532,6 +533,10 @@ module.exports = (function () {
     d.enable_events = enable_events === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
+
+    const $files = await settings
+      .getFiles()
+      .catch((err) => dev.error("Error while getting settings", err));
 
     const findMatchingFileThumb = ({ meta_name, resolution }) => {
       const matching_file = $files.find(

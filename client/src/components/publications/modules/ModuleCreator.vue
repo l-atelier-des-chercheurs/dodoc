@@ -132,7 +132,7 @@
       <b-icon icon="plus-circle-fill" />
     </button> -->
 
-    <DropZone @mediaDropped="createMosaic" />
+    <DropZone @mediaDropped="mediaDropped" />
   </div>
 </template>
 <script>
@@ -227,6 +227,10 @@ export default {
   },
   computed: {},
   methods: {
+    async mediaDropped({ path_to_source_media_metas }) {
+      // todo multiple cases here : if drag/drop media already in a publication, drag drop media from library
+      this.createMosaic({ path_to_source_media_metas });
+    },
     async createMosaic({ meta_filename, path_to_source_media_metas }) {
       // if meta_filename, file is stored in publication
       // if path_to_source_media, we get metafilename
@@ -316,8 +320,10 @@ export default {
         content: "",
       });
       const source_medias = [{ meta_filename }];
+
+      const module_type = this.context === "page_by_page" ? "text" : "mosaic";
       await this.createModule({
-        module_type: "text",
+        module_type,
         source_medias,
       });
     },

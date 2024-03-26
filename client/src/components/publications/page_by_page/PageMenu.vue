@@ -224,6 +224,8 @@
           {{ $t(active_module.module_type) }}
         </span>
 
+        <div class="u-spacingBottom" />
+
         <div class="u-mediaOptions">
           <div>
             <button
@@ -294,7 +296,7 @@
 
         <div class="u-spacingBottom" />
 
-        <template v-if="!is_shape">
+        <template v-if="show_caption">
           <CollaborativeEditor2
             :label="!active_module.caption ? $t('add_caption') : $t('caption')"
             :field_to_edit="'caption'"
@@ -609,6 +611,11 @@ export default {
     magnification() {
       if (this.layout_mode === "screen") return 1;
       return this.$root.page_magnification;
+    },
+    show_caption() {
+      if (this.active_module.module_type === "text") return false;
+      if (this.is_shape) return false;
+      return true;
     },
 
     has_pagination() {

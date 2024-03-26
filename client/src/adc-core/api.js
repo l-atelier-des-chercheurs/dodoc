@@ -161,21 +161,22 @@ export default function () {
         // check if password
         if (window.app_infos.instance_meta.has_general_password === true) {
           const search_params = new URLSearchParams(location.href);
+
           let general_password;
           if (search_params && search_params.has("general_password"))
             general_password = search_params.get("general_password");
           else if (localStorage.getItem("general_password"))
             general_password = localStorage.getItem("general_password");
 
-          // check with route
+          if (general_password)
+            await this.submitGeneralPassword({
+              password: general_password,
+            }).catch(() => {
+              if (localStorage.getItem("general_password"))
+                localStorage.removeItem("general_password");
+            });
 
-          await this.submitGeneralPassword({
-            password: general_password,
-          }).catch(() => {
-            if (localStorage.getItem("general_password"))
-              localStorage.removeItem("general_password");
-            this.$eventHub.$emit("app.prompt_general_password");
-          });
+          this.$eventHub.$emit("app.prompt_general_password");
         }
 
         const token_and_tokenpath = localStorage.getItem("tokenpath");

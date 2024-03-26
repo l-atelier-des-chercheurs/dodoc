@@ -6,6 +6,15 @@
     }"
   >
     <template v-for="(media_with_linked, index) in medias_with_linked">
+      <!-- <DropZone
+        v-if="
+          !number_of_max_medias ||
+          medias_with_linked.length < number_of_max_medias
+        "
+        :key="'dz-' + index"
+        class="_dzInbetween"
+        @mediaDropped="$emit('addMedias', $event)"
+      /> -->
       <div
         class="_mediaGrid--item"
         :key="itemKey(media_with_linked._linked_media, index)"
@@ -20,10 +29,11 @@
         <CollaborativeEditor2
           v-else-if="media_with_linked._linked_media.$type === 'text'"
           class="_mediaContent--collabEditor"
+          :key="edit_mode"
           :content="media_with_linked._linked_media.$content"
           :path="media_with_linked._linked_media.$path"
-          :edit_on_mounted="can_edit"
-          :can_edit="can_edit"
+          :edit_on_mounted="edit_mode"
+          :can_edit="edit_mode"
         />
         <MediaContent
           v-else
@@ -39,60 +49,70 @@
           :publication_path="publication_path"
         />
 
-        <div class="_btnRow" v-if="can_edit">
-          <DragFile v-if="can_edit" :file="media_with_linked._linked_media" />
-          <template
-            v-if="
-              (is_multiple_medias ||
-                (page_template === 'page_by_page' &&
-                  !single_media_displayed_at_full_ratio)) &&
-              !mediaIsSquare(media_with_linked._linked_media) &&
-              media_with_linked._linked_media.$type !== 'stl' &&
-              media_with_linked._linked_media.$type !== 'obj' &&
-              media_with_linked._linked_media.$type !== 'text' &&
-              media_with_linked._linked_media.$type !== 'other'
-            "
-          >
-            <button
-              type="button"
-              class="u-buttonLink"
+        <div class="_btnRow">
+          <DragFile
+            v-if="edit_mode"
+            class="_df"
+            :file="media_with_linked._linked_media"
+            @dragfileSuccess="mediaDragged(index)"
+          />
+          <template v-if="edit_mode">
+            <template
               v-if="
-                !(
-                  !media_with_linked.objectFit ||
-                  media_with_linked.objectFit === 'cover'
-                )
-              "
-              @click="
-                $emit('updateMediaOpt', { index, opt: { objectFit: 'cover' } })
+                (is_multiple_medias ||
+                  (page_template === 'page_by_page' &&
+                    !single_media_displayed_at_full_ratio)) &&
+                !mediaIsSquare(media_with_linked._linked_media) &&
+                media_with_linked._linked_media.$type !== 'stl' &&
+                media_with_linked._linked_media.$type !== 'obj' &&
+                media_with_linked._linked_media.$type !== 'text' &&
+                media_with_linked._linked_media.$type !== 'other'
               "
             >
-              <sl-icon name="aspect-ratio" />
-              <!-- {{ $t("object_fit_cover") }} -->
-            </button>
+              <button
+                type="button"
+                class="u-button u-button_icon"
+                v-if="
+                  !(
+                    !media_with_linked.objectFit ||
+                    media_with_linked.objectFit === 'cover'
+                  )
+                "
+                @click="
+                  $emit('updateMediaOpt', {
+                    index,
+                    opt: { objectFit: 'cover' },
+                  })
+                "
+              >
+                <sl-icon name="aspect-ratio" />
+                <!-- {{ $t("object_fit_cover") }} -->
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_icon"
+                v-if="media_with_linked.objectFit !== 'contain'"
+                @click="
+                  $emit('updateMediaOpt', {
+                    index,
+                    opt: { objectFit: 'contain' },
+                  })
+                "
+              >
+                <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
+                <!-- {{ $t("object_fit_contain") }} -->
+                <sl-icon name="aspect-ratio-fill" />
+              </button>
+            </template>
             <button
               type="button"
-              class="u-buttonLink"
-              v-if="media_with_linked.objectFit !== 'contain'"
-              @click="
-                $emit('updateMediaOpt', {
-                  index,
-                  opt: { objectFit: 'contain' },
-                })
-              "
+              class="u-button u-button_icon"
+              v-if="is_multiple_medias"
+              @click="removeMedia(index)"
             >
-              <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
-              <!-- {{ $t("object_fit_contain") }} -->
-              <sl-icon name="aspect-ratio-fill" />
+              <sl-icon name="trash3" />
             </button>
           </template>
-          <button
-            type="button"
-            class="u-buttonLink"
-            v-if="is_multiple_medias"
-            @click="$emit('removeMediaAtIndex', index)"
-          >
-            <sl-icon name="trash3" />
-          </button>
         </div>
       </div>
     </template>
@@ -105,6 +125,7 @@
       "
     >
       <EditBtn
+        v-if="edit_mode"
         :btn_type="'add'"
         :is_unfolded="false"
         @click="show_media_picker = true"
@@ -140,6 +161,7 @@ export default {
     show_fs_button: Boolean,
     number_of_max_medias: [Boolean, Number],
     publication_path: String,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -193,6 +215,16 @@ export default {
     mediaIsSquare(media) {
       return media.$infos?.ratio === 1;
     },
+    removeMedia(index) {
+      this.$emit("removeMediaAtIndex", { index });
+    },
+    mediaDragged(index) {
+      // multiple possibilities -->
+      //
+      // const media = this.medias_with_linked[index];
+      this.$emit("removeMediaAtIndex", { index, remove_source: false });
+      // if
+    },
   },
 };
 </script>
@@ -216,6 +248,11 @@ export default {
     position: relative;
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
+
+  // ._dzInbetween {
+  //   position: relative !important;
+  //   width: 20px;
+  // }
 
   &.is--multipleMedias > ._mediaGrid--item {
     aspect-ratio: 1/1;
@@ -311,5 +348,8 @@ export default {
   // top: 0;
   // right: 0;
   // z-index: 10;
+}
+._df {
+  display: inline-flex;
 }
 </style>

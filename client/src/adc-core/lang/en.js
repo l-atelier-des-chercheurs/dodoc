@@ -390,7 +390,6 @@ export default {
   video: "Video",
   audio: "Audio",
   text: "Text",
-  lines: "Lines",
   vecto: "Shapes",
   pdf: "PDF",
   stl: "STL",
@@ -937,4 +936,23 @@ export default {
 
   on_this_page: "On this page",
   on_other_pages: "On other pages",
+
+  lines: "Lines",
+  freehand: "Path",
+  circle: "Circle",
+  polygon: "Polygon",
+
+  search_for_a_place: "Search for a place",
+  click_to_start_drawing: "click to start drawing",
+  click_to_continue_drawing: "click to continue drawing",
+  click_drag_to_draw_line: "click and hold to draw",
+  click_to_place_center: "click to place center",
+  click_to_define_circle_radius: "click to set circle radius",
+  click_to_place_first_point: "click to draw first point",
+  finish_drawing: "End drawing",
+  or_double_click: "Or double click for the last point",
+  drag_to_modify: "click and hold to modify",
+
+  select_by_clicking: "select by clicking",
+  move_drawing: "click and hold to draw",
 };

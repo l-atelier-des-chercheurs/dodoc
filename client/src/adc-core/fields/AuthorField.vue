@@ -71,9 +71,9 @@
           />
         </div>
 
-        <br />
+        <div class="u-spacingBottom" />
 
-        <div>
+        <div class="u-sameRow" slot="footer">
           <SaveCancelButtons
             class="_scb"
             :is_saving="is_saving"

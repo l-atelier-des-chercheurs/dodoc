@@ -57,7 +57,7 @@
           name="x"
           size="small"
           v-if="can_edit"
-          @click="$emit('removeMediaAtIndex', index)"
+          @click="$emit('removeMediaAtIndex', { index })"
         />
       </SlickItem>
     </SlickList>

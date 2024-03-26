@@ -76,7 +76,7 @@
             <button
               type="button"
               class="u-buttonLink"
-              @click="$emit('removeMediaAtIndex', index)"
+              @click="$emit('removeMediaAtIndex', { index })"
             >
               <sl-icon name="trash3" />
               <!-- v-if="is_multiple_medias" -->
