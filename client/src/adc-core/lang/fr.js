@@ -79,11 +79,11 @@ export default {
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
   search_in_title_desc_kw:
-    "Rechercher dans les titres, descriptions, mots-clés, machines et matériaux.",
-  search_by_name: "Rechercher dans les noms ou pseudonymes",
-  search_by_title_or_subtitle: "Rechercher dans les titres ou sous-titres",
-  search: "Rechercher",
-  "search:": "Rechercher&nbsp;:",
+    "Chercher dans les titres, descriptions, mots-clés, machines et matériaux.",
+  search_by_name: "Chercher dans les noms ou pseudonymes",
+  search_by_title_or_subtitle: "Chercher dans les titres ou sous-titres",
+  search: "Chercher",
+  "search:": "Chercher&nbsp;:",
 
   connection_lost: `Connexion perdue`,
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
