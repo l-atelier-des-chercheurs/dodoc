@@ -203,7 +203,7 @@ export default {
 
 ._searchField {
   ::v-deep ._searchInput {
-    max-width: 30ch;
+    max-width: 35ch;
   }
 }
 
