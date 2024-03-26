@@ -60,8 +60,9 @@ export default {
         .catch((err) => {
           // probably no suggestions, abort
           err;
+          return;
         });
-      if (suggestions.list_of_suggestions)
+      if (suggestions?.list_of_suggestions)
         this.suggestions = suggestions.list_of_suggestions
           .slice()
           .sort((a, b) => {
