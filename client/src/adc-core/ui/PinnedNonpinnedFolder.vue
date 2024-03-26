@@ -192,14 +192,14 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  margin: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 2);
 
   z-index: 100;
   color: var(--c-orange);
 
   display: flex;
   flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 8);
 
   > button {
     display: block;
