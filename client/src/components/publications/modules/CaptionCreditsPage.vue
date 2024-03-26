@@ -4,7 +4,7 @@
       <EditBtn
         :btn_type="'credits'"
         :label_position="'left'"
-        v-if="!show_credits_caption"
+        v-if="show_credits_caption_button"
         @click="show_credits_caption = true"
       />
     </div>
@@ -19,7 +19,10 @@
           <b-icon icon="x-lg" />
         </button>
 
-        <div class="u-spacingBottom">
+        <div
+          class="u-spacingBottom"
+          v-if="media.caption || canEditLinkedMedia(media.$path) !== false"
+        >
           <CollaborativeEditor2
             :label="$t('caption')"
             :field_to_edit="'caption'"
@@ -30,7 +33,10 @@
             :can_edit="canEditLinkedMedia(media.$path) === 'local'"
           />
         </div>
-        <div class="u-spacingBottom">
+        <div
+          class="u-spacingBottom"
+          v-if="media.$credits || canEditLinkedMedia(media.$path) !== false"
+        >
           <CollaborativeEditor2
             :label="$t('credit/reference')"
             :field_to_edit="'$credits'"
@@ -78,7 +84,18 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    show_credits_caption_button() {
+      if (this.show_credits_caption) return false;
+      if (
+        this.canEditLinkedMedia(this.media.$path) === false &&
+        !this.media.$credits &&
+        !this.media.caption
+      )
+        return false;
+      return true;
+    },
+  },
   methods: {
     canEditLinkedMedia(path) {
       const media_parent_folder = this.getParent(path);
