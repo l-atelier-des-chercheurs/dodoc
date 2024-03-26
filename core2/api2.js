@@ -509,7 +509,6 @@ module.exports = (function () {
       favicon_image_name,
       topbar_image_name,
       hero_image_name,
-      $files = [],
     } = await settings
       .get()
       .catch((err) => dev.error("Error while getting settings", err));
@@ -532,6 +531,10 @@ module.exports = (function () {
     d.enable_events = enable_events === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
+
+    const $files = await settings
+      .getFiles()
+      .catch((err) => dev.error("Error while getting settings", err));
 
     const findMatchingFileThumb = ({ meta_name, resolution }) => {
       const matching_file = $files.find(

@@ -41,8 +41,9 @@ module.exports = (function () {
     getFolder: async ({ path_to_folder, detailed }) => {
       dev.logfunction({ path_to_folder, detailed });
 
+      const cache_key = path_to_folder || "global_settings";
       let d = cache.get({
-        key: path_to_folder,
+        key: cache_key,
       });
       if (d) {
         d = JSON.parse(JSON.stringify(d));
@@ -92,7 +93,7 @@ module.exports = (function () {
 
       // TODO get number of files if files in item_in_schema
       cache.set({
-        key: path_to_folder,
+        key: cache_key,
         value: JSON.parse(JSON.stringify(folder_meta)),
       });
 
