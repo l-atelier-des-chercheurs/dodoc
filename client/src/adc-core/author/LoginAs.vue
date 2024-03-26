@@ -7,17 +7,17 @@
         <transition name="pagechange" mode="out-in">
           <div v-if="!author_to_login_to" key="search">
             <transition name="pagechange" mode="out-in">
-              <div v-if="!author_suggestions" key="none" />
+              <div v-if="!author_suggestions" class="" key="none" />
               <div
                 v-else-if="author_suggestions.length === 0"
-                class="u-instructions _noAuthorNotice"
+                class="u-instructions u-spacingBottom _noAuthorNotice"
                 key="no_author"
               >
                 <b-icon icon="exclamation-triangle-fill" />
                 {{ $t("login_no_account_matches") }}
               </div>
               <div
-                class="u-listOfAvatars"
+                class="u-spacingBottom u-listOfAvatars"
                 key="list"
                 v-else-if="author_suggestions.length > 0"
               >
