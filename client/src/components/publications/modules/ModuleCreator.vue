@@ -320,8 +320,10 @@ export default {
         content: "",
       });
       const source_medias = [{ meta_filename }];
+
+      const module_type = this.context === "page_by_page" ? "text" : "mosaic";
       await this.createModule({
-        module_type: "mosaic",
+        module_type,
         source_medias,
       });
     },
