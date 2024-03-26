@@ -647,9 +647,8 @@ export default {
 
 ._unlockBtn {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
   pointer-events: none;
   padding: calc(var(--spacing) / 2);
 
