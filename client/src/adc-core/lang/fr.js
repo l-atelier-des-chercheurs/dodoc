@@ -340,6 +340,8 @@ export default {
   only_finished: "Projets finalisés",
   completed: "Terminé",
   my_projects: "Mes projets",
+  my_projects_instr:
+    "Cette liste affiche tous les projets dont vous êtes référent ou contributeur.",
   pinned: "Épinglés",
   spaces_pinned: "Espaces épinglés",
   projects_pinned: "Projets épinglés",

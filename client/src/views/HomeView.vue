@@ -63,16 +63,7 @@
           v-if="!opened_event"
           class="_switch"
           :content.sync="current_mode"
-          :options="[
-            {
-              label: $t('spaces'),
-              value: 'spaces',
-            },
-            {
-              label: $t('all_projects'),
-              value: 'projects',
-            },
-          ]"
+          :options="available_radioswitch_modes"
         />
 
         <transition name="pagechange" mode="out-in">
@@ -91,6 +82,12 @@
                 <small v-else v-html="$t('all_projects_instr')" />
               </div>
               <AllProjects />
+            </template>
+            <template v-else-if="current_mode === 'my_projects'">
+              <div class="u-instructions _content">
+                <small v-html="$t('my_projects_instr')" />
+              </div>
+              <AllProjects :show_only_my_projects="true" />
             </template>
           </div>
         </transition>
@@ -173,6 +170,24 @@ export default {
   computed: {
     opened_event() {
       return this.$route.hash.substring(1) || false;
+    },
+    available_radioswitch_modes() {
+      let modes = [
+        {
+          label: this.$t("spaces"),
+          value: "spaces",
+        },
+        {
+          label: this.$t("all_projects"),
+          value: "projects",
+        },
+      ];
+      if (this.connected_as)
+        modes.push({
+          label: this.$t("my_projects"),
+          value: "my_projects",
+        });
+      return modes;
     },
     name() {
       return this.$root.app_infos.instance_meta.name;

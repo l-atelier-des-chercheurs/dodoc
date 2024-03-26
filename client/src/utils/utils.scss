@@ -819,6 +819,7 @@ fieldset {
     background: white;
     border-radius: 4px;
     text-align: center;
+    padding: 0 calc(var(--spacing) / 2);
 
     &.u-label {
       margin-bottom: 0;
