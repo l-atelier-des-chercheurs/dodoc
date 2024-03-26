@@ -1004,11 +1004,9 @@ export default {
   on_this_page: "Sur cette page",
   on_other_pages: "Sur d’autres pages",
 
-  lines: "Droites",
   freehand: "Tracé libre",
   circle: "Cercle",
   polygon: "Polygone",
-  select: "Sélection",
 
   mouse_position: "Position de la balise",
   search_for_a_place: "Rechercher un lieu",

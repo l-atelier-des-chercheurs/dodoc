@@ -390,7 +390,6 @@ export default {
   video: "Video",
   audio: "Audio",
   text: "Text",
-  lines: "Lines",
   vecto: "Shapes",
   pdf: "PDF",
   stl: "STL",
@@ -942,7 +941,6 @@ export default {
   freehand: "Path",
   circle: "Circle",
   polygon: "Polygon",
-  select: "Select",
 
   search_for_a_place: "Search for a place",
   click_to_start_drawing: "click to start drawing",
