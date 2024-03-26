@@ -110,8 +110,10 @@ export default {
         );
       }, 500);
     },
-    dragStart() {
+    dragStart(event) {
       console.log("dragStart");
+      if (event.inputEvent.target.classList.contains("panzoom-exclude"))
+        event.stop();
     },
     dragEnd(event) {
       console.log("dragEnd");

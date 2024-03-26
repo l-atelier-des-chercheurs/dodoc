@@ -36,7 +36,11 @@
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <span class="_activator" @mousedown="setActive" @dblclick="dblClick">
+    <span
+      class="_activator panzoom-exclude"
+      @mousedown="setActive"
+      @dblclick="dblClick"
+    >
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
