@@ -106,6 +106,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._importZone {
-  --dropzone-color2: var(--c-noir);
+  --dropzone-color1: transparent;
+  --dropzone-color2: var(--c-rouge);
+  color: var(--c-noir);
 }
 </style>
