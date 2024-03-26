@@ -13,7 +13,6 @@
       'is--editable': can_edit,
       'is--active': can_edit && is_active,
       'is--beingEdited': content_is_edited,
-      'panzoom-exclude': can_edit,
     }"
     :active="
       can_edit &&

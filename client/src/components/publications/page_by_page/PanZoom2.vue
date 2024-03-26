@@ -10,7 +10,7 @@
     @abortPinch="abortPinch"
     @pinch="pinch"
   >
-    <div class="viewport">
+    <div class="_pzViewport">
       <slot />
     </div>
   </vue-infinite-viewer>
@@ -168,7 +168,7 @@ export default {
   height: 100%;
   cursor: move;
 }
-.viewport {
+._pzViewport {
   position: relative;
   // width: 400px;
   // height: 600px;
