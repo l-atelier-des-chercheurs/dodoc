@@ -5,12 +5,10 @@
         <span v-html="$t('connection_lost_in')" /><br />
         <template v-if="!is_reconnecting">
           <span v-html="$t('attempting_to_reconnect_in')" />&nbsp;<strong>
-            <transition name="fade_superfast" mode="out-in">
-              <span :key="seconds_before_reconnecting">
-                {{ seconds_before_reconnecting }}s
-              </span>
-            </transition></strong
-          >
+            <span :key="seconds_before_reconnecting">
+              {{ seconds_before_reconnecting }}s
+            </span>
+          </strong>
         </template>
       </p>
 
