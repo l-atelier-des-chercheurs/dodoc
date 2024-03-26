@@ -1003,4 +1003,25 @@ export default {
 
   on_this_page: "Sur cette page",
   on_other_pages: "Sur d’autres pages",
+
+  lines: "Droites",
+  freehand: "Tracé libre",
+  circle: "Cercle",
+  polygon: "Polygone",
+  select: "Sélection",
+
+  mouse_position: "Position de la balise",
+  search_for_a_place: "Rechercher un lieu",
+  click_to_start_drawing: "cliquer pour commencer le tracé",
+  click_to_continue_drawing: "cliquez pour ajouter un autre point",
+  click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
+  click_to_place_center: "cliquer pour placer le centre",
+  click_to_define_circle_radius: "cliquer pour définir le rayon",
+  click_to_place_first_point: "cliquer pour placer le premier point",
+  finish_drawing: "Terminer le dessin",
+  or_double_click: "Ou double-cliquez sur la carte",
+  drag_to_modify: "cliquer-glisser pour modifier",
+
+  select_by_clicking: "sélectionner une forme en cliquant dessus",
+  move_drawing: "cliquer-glisser pour déplacer la forme",
 };
