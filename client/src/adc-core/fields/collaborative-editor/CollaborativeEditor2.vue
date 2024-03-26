@@ -1063,6 +1063,7 @@ export default {
   ::v-deep {
     .ql-toolbar {
       padding: 0;
+      margin: 0;
     }
     .ql-formats {
       display: none;
