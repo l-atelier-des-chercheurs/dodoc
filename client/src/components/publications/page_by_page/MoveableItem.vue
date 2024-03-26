@@ -24,7 +24,7 @@
     :value="transform"
     :parent="false /* bind to container */"
     :acceptRatio="aspect_ratio"
-    :handlerSize="15"
+    :handlerSize="18"
     :grid="grid"
     :id="publimodule.$path"
     :zoom="scale"
