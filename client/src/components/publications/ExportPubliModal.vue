@@ -121,7 +121,10 @@ export default {
         suggested_file_name: this.publication.title,
         additional_meta,
       };
-      if (this.publication.template === "page_by_page")
+      if (
+        this.publication.template === "page_by_page" &&
+        this.export_mode === "png"
+      )
         instructions.page = this.page_to_export_as_image;
       if (this.publication.page_spreads === true) instructions.page_width *= 2;
       this.task_instructions = instructions;
