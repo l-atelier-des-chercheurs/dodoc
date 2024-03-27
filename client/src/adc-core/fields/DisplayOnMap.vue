@@ -210,7 +210,7 @@
               />
 
               <RangeValueInput
-                class="_strokeWidth"
+                class="u-spacingBottom _strokeWidth"
                 :can_toggle="false"
                 :label="$t('outline_width')"
                 :value="selected_feature.get('stroke_width')"

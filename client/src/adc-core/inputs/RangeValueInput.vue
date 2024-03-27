@@ -1,7 +1,7 @@
 <template>
   <div class="_rangeInput">
     <ToggledSection
-      class="u-spacingBottom"
+      class=""
       :label="label"
       :can_toggle="can_toggle"
       :show_toggle.sync="show_range_input"

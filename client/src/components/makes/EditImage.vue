@@ -90,6 +90,7 @@
           <legend class="u-label">{{ $t("adjust") }}</legend>
 
           <RangeValueInput
+            class="u-spacingBottom"
             :can_toggle="true"
             :label="$t('brightness')"
             :value="make.image_brightness"
@@ -101,6 +102,7 @@
             @save="updatePubliMeta({ image_brightness: $event })"
           />
           <RangeValueInput
+            class="u-spacingBottom"
             :can_toggle="true"
             :label="$t('contrast')"
             :value="make.image_contrast"
@@ -112,6 +114,7 @@
             @save="updatePubliMeta({ image_contrast: $event })"
           />
           <RangeValueInput
+            class="u-spacingBottom"
             :can_toggle="true"
             :label="$t('saturation')"
             :value="make.image_saturation"
