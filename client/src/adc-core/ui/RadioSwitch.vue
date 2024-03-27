@@ -171,8 +171,8 @@ menu {
 .radio-switch__marker {
   position: absolute;
   inset: 0;
-  // background-color: var(--c-noir);
-  background-color: var(--active-color);
+  // background-color: var(--active-color);
+  background-color: var(--c-noir);
   border-radius: var(--radio-switch-radius);
 }
 
