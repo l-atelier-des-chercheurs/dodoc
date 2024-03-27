@@ -78,7 +78,7 @@
                     media_with_linked.objectFit === 'cover'
                   )
                 "
-                @click="
+                @click.stop="
                   $emit('updateMediaOpt', {
                     index,
                     opt: { objectFit: 'cover' },
@@ -92,7 +92,7 @@
                 type="button"
                 class="u-button u-button_icon"
                 v-if="media_with_linked.objectFit !== 'contain'"
-                @click="
+                @click.stop="
                   $emit('updateMediaOpt', {
                     index,
                     opt: { objectFit: 'contain' },
