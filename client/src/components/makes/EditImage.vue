@@ -18,6 +18,7 @@
               <b-icon icon="plus-square-dotted" />
               {{ $t("reset_crop") }}
             </button>
+
             <button
               type="button"
               class="u-button u-button_small u-button_bleuvert"
@@ -88,6 +89,19 @@
 
         <fieldset class="u-spacingBottom">
           <legend class="u-label">{{ $t("adjust") }}</legend>
+
+          <!-- <ToggleInput
+            :label="$t('flip_horizontally')"
+            :content="make.flip_horizontally"
+            @update:content="updatePubliMeta({ flip_horizontally: $event })"
+          />
+          <ToggleInput
+            :label="$t('flip_vertically')"
+            :content="make.flip_vertically"
+            @update:content="updatePubliMeta({ flip_vertically: $event })"
+          /> -->
+
+          <div class="u-spacingBottom" />
 
           <RangeValueInput
             class="u-spacingBottom"
@@ -269,6 +283,12 @@ export default {
     async "make.image_blur"() {
       await this.drawImageToCanvas();
     },
+    async "make.flip_horizontally"() {
+      await this.drawImageToCanvas();
+    },
+    async "make.flip_vertically"() {
+      await this.drawImageToCanvas();
+    },
     base_media() {
       (async () => {
         await this.drawImageToCanvas();
@@ -328,6 +348,7 @@ export default {
         crop_options: default_transform,
       });
     },
+    rotateImage() {},
     setTransformFromMake() {
       let x = this.make.crop_options?.x || 0;
       let y = this.make.crop_options?.y || 0;
@@ -348,6 +369,8 @@ export default {
       this.crop_key = new Date().getTime();
     },
     async drawImageToCanvas() {
+      console.log("drawImageToCanvas");
+
       const cropCanvas = this.$refs.cropCanvas;
       const cropCanvasContainer = this.$refs.cropCanvasContainer;
       if (!cropCanvas || !cropCanvasContainer) return false;
@@ -383,8 +406,25 @@ export default {
       context.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
 
       context.filter = this.generateFilters();
+      this.flipContextOrNot(context, width, height);
 
       context.drawImage(img, 0, 0, width, height);
+    },
+
+    flipContextOrNot(context, width, height) {
+      if (
+        this.make.flip_horizontally === true ||
+        this.make.flip_vertically === true
+      ) {
+        context.translate(width / 2, height / 2);
+
+        const x_flip = this.make.flip_horizontally === true ? -1 : 1;
+        const y_flip = this.make.flip_vertically === true ? -1 : 1;
+
+        context.scale(x_flip, y_flip);
+        context.translate(-(width / 2), -(height / 2));
+      }
+      return context;
     },
 
     updateMask(event, transform) {
@@ -496,6 +536,8 @@ export default {
       previewCanvas.height = crop_height;
 
       previewCanvasCtx.filter = this.generateFilters();
+      this.flipContextOrNot(previewCanvasCtx, crop_width, crop_height);
+
       previewCanvasCtx.drawImage(
         img,
         crop_x,

@@ -242,6 +242,12 @@
                   "volume": {
                     "type": "number"
                   },
+                  "flip_horizontally": {
+                    "type": "boolean"
+                  },
+                  "flip_vertically": {
+                    "type": "boolean"
+                  },
                   "image_brightness": {
                     "type": "number"
                   },
