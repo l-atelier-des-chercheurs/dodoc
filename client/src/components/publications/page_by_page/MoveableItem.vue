@@ -74,9 +74,10 @@
         type="button"
         class="u-button u-button_orange u-button_small u-colorBlack"
         v-if="publimodule.locked === true"
-        @click="unlock()"
+        @click.stop="unlock()"
+        @touchstart.stop="unlock()"
       >
-        <sl-icon name="lock" />
+        <b-icon icon="lock" />
       </button>
       <button
         type="button"
@@ -87,9 +88,10 @@
           !content_is_edited &&
           (!publimodule.locked || publimodule.locked === false)
         "
-        @click="lock()"
+        @click.stop="lock()"
+        @touchstart.stop="unlock()"
       >
-        <sl-icon name="unlock" />
+        <b-icon icon="unlock" />
         <!-- {{ $t("lock") }} -->
       </button>
     </div>
@@ -604,6 +606,14 @@ export default {
     //   position: fixed;
     //   width: 320px !important;
     // }
+
+    > ._content > ._floatingEditBtn > * {
+      left: auto;
+      right: 0;
+    }
+    ._collaborativeEditor > ._floatingEditBtn {
+      display: none !important;
+    }
   }
 
   ._publicationModule[data-type="shape"] {
@@ -661,6 +671,7 @@ export default {
     cursor: pointer;
   }
 }
+
 ._textOverflowNotice {
   position: absolute;
   left: 0;

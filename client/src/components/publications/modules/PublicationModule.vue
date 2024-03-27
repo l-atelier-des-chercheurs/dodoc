@@ -228,11 +228,9 @@
       </button>
 
       <div class="_floatingEditBtn" v-if="can_edit">
-        <EditBtn
-          v-if="!edit_mode"
-          :label_position="'left'"
-          @click="enableEdit"
-        />
+        <span @click.stop="enableEdit" @touchstart.stop="enableEdit">
+          <EditBtn v-if="!edit_mode" :label_position="'left'" />
+        </span>
       </div>
 
       <MediasModule
