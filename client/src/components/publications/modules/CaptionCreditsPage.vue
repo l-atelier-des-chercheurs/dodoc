@@ -87,12 +87,14 @@ export default {
   computed: {
     show_credits_caption_button() {
       if (this.show_credits_caption) return false;
+      if (this.media.$type === "text") return false;
       if (
         this.canEditLinkedMedia(this.media.$path) === false &&
         !this.media.$credits &&
         !this.media.caption
       )
         return false;
+
       return true;
     },
   },
