@@ -54,7 +54,7 @@
             v-if="edit_mode"
             class="_df"
             :file="media_with_linked._linked_media"
-            @dragfileSuccess="mediaDragged(index)"
+            @dragfileSuccess="mediaDraggedSuccessfully(index)"
           />
           <template v-if="edit_mode">
             <template
@@ -78,7 +78,7 @@
                     media_with_linked.objectFit === 'cover'
                   )
                 "
-                @click="
+                @click.stop="
                   $emit('updateMediaOpt', {
                     index,
                     opt: { objectFit: 'cover' },
@@ -92,7 +92,7 @@
                 type="button"
                 class="u-button u-button_icon"
                 v-if="media_with_linked.objectFit !== 'contain'"
-                @click="
+                @click.stop="
                   $emit('updateMediaOpt', {
                     index,
                     opt: { objectFit: 'contain' },
@@ -218,10 +218,8 @@ export default {
     removeMedia(index) {
       this.$emit("removeMediaAtIndex", { index });
     },
-    mediaDragged(index) {
-      // multiple possibilities -->
-      //
-      // const media = this.medias_with_linked[index];
+    mediaDraggedSuccessfully(index) {
+      console.log("mediaDraggedSuccessfully");
       this.$emit("removeMediaAtIndex", { index, remove_source: false });
       // if
     },

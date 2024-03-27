@@ -1,28 +1,33 @@
 <template>
   <div class="_label">
     <div class="u-sameRow">
-      <b class="">{{ $t("page") }} {{ index + 1 }}</b>
+      {{ $t("page") }}
+
+      <template v-if="!edit_mode">
+        {{ index + 1 }}
+      </template>
+      <template v-else>
+        <select
+          :value="index"
+          @change="
+            $emit('movePage', {
+              old_position: index,
+              new_position: +$event.target.value,
+            });
+            edit_mode = false;
+          "
+        >
+          <option
+            v-for="p in number_of_pages"
+            :key="p - 1"
+            :value="p - 1"
+            v-text="p"
+          />
+        </select>
+      </template>
       <EditBtn v-if="can_edit" @click="edit_mode = !edit_mode" />
     </div>
     <div class="u-sameRow" v-if="edit_mode">
-      <select
-        size="small"
-        :value="index"
-        @change="
-          $emit('movePage', {
-            old_position: index,
-            new_position: +$event.target.value,
-          });
-          edit_mode = false;
-        "
-      >
-        <option
-          v-for="p in number_of_pages"
-          :key="p - 1"
-          :value="p - 1"
-          v-text="p"
-        />
-      </select>
       <div class="">
         <button
           type="button"

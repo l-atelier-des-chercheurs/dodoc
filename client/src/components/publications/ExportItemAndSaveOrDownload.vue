@@ -150,5 +150,6 @@ export default {
 <style lang="scss" scoped>
 ._preview {
   border: 2px solid var(--c-gris);
+  aspect-ratio: 1;
 }
 </style>

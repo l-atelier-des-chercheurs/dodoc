@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     startMediaDrag($event) {
-      console.log(`MediaFocus / startMediaDrag`);
+      console.log(`DragFile / startMediaDrag`);
       this.$emit("update:is_dragged", true);
       $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
       $event.dataTransfer.effectAllowed = "move";
@@ -54,16 +54,19 @@ export default {
       this.$eventHub.$on("dragfile.success", this.dragfileSuccess);
     },
     endMediaDrag() {
-      console.log(`MediaFocus / endMediaDrag`);
+      console.log(`DragFile / endMediaDrag`);
       this.$emit("update:is_dragged", false);
       this.$eventHub.$emit(`dragfile.end`);
-      this.$eventHub.$off("dragfile.success", this.dragfileSuccess);
+      this.$nextTick(() => {
+        this.$eventHub.$off("dragfile.success", this.dragfileSuccess);
+      });
     },
     dragfileSuccess() {
+      console.log(`DragFile / dragfileSuccess`);
       // adding some timeout to make sure some operations finished
       setTimeout(() => {
         this.$emit("dragfileSuccess");
-      }, 200);
+      }, 100);
     },
   },
 };

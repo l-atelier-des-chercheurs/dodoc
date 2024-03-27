@@ -228,11 +228,9 @@
       </button>
 
       <div class="_floatingEditBtn" v-if="can_edit">
-        <EditBtn
-          v-if="!edit_mode"
-          :label_position="'left'"
-          @click="enableEdit"
-        />
+        <span @click.stop="enableEdit" @touchstart.stop="enableEdit">
+          <EditBtn v-if="!edit_mode" :label_position="'left'" />
+        </span>
       </div>
 
       <MediasModule
@@ -708,29 +706,34 @@ export default {
       this.$emit("duplicate", meta_filename);
       this.disableEdit();
     },
-    async removeModule() {
+    async removeModule({ with_content = true } = {}) {
       // todo also empty sharedb path, since $path can be retaken
-      try {
-        for (let source_media of this.publimodule.source_medias) {
-          // do not remove linked medias, only those in this specific folder
-          if (
-            Object.prototype.hasOwnProperty.call(source_media, "meta_filename")
-          ) {
-            const publication_path = this.getParent(this.publimodule.$path);
-            const full_source_media = this.getSourceMedia({
-              source_media,
-              folder_path: publication_path,
-            });
-
-            if (full_source_media)
-              await this.$api.deleteItem({
-                path: full_source_media.$path,
+      if (with_content) {
+        try {
+          for (let source_media of this.publimodule.source_medias) {
+            // do not remove linked medias, only those in this specific folder
+            if (
+              Object.prototype.hasOwnProperty.call(
+                source_media,
+                "meta_filename"
+              )
+            ) {
+              const publication_path = this.getParent(this.publimodule.$path);
+              const full_source_media = this.getSourceMedia({
+                source_media,
+                folder_path: publication_path,
               });
+
+              if (full_source_media)
+                await this.$api.deleteItem({
+                  path: full_source_media.$path,
+                });
+            }
           }
+        } catch (err) {
+          this.$alertify.delay(4000).error(err);
+          // throw err;
         }
-      } catch (err) {
-        this.$alertify.delay(4000).error(err);
-        throw err;
       }
 
       await this.$api

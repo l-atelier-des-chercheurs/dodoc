@@ -41,9 +41,8 @@ module.exports = (function () {
     getFolder: async ({ path_to_folder, detailed }) => {
       dev.logfunction({ path_to_folder, detailed });
 
-      const cache_key = path_to_folder || "global_settings";
       let d = cache.get({
-        key: cache_key,
+        key: _getCacheKey({ path_to_folder }),
       });
       if (d) {
         d = JSON.parse(JSON.stringify(d));
@@ -93,7 +92,7 @@ module.exports = (function () {
 
       // TODO get number of files if files in item_in_schema
       cache.set({
-        key: cache_key,
+        key: _getCacheKey({ path_to_folder }),
         value: JSON.parse(JSON.stringify(folder_meta)),
       });
 
@@ -331,8 +330,9 @@ module.exports = (function () {
         else delete changed_meta.$preview;
       }
 
+      const cache_key = _getCacheKey({ path_to_folder });
       cache.delete({
-        key: path_to_folder,
+        key: _getCacheKey({ path_to_folder }),
       });
 
       return changed_meta;
@@ -397,8 +397,9 @@ module.exports = (function () {
         else await _moveFolderToBin({ path_to_folder });
 
         await thumbs.removeFolderThumbs({ path_to_folder });
+
         cache.delete({
-          key: path_to_folder,
+          key: _getCacheKey({ path_to_folder }),
         });
 
         return;
@@ -637,6 +638,10 @@ module.exports = (function () {
     } catch (err) {
       throw err;
     }
+  }
+
+  function _getCacheKey({ path_to_folder }) {
+    return path_to_folder || "global_settings";
   }
 
   return API;
