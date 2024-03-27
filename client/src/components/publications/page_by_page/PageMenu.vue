@@ -742,7 +742,7 @@ export default {
 ._activeModulePreview {
   overflow: hidden;
   margin: 0 auto;
-  background: var(--c-noir);
+  background: var(--c-gris);
   width: 100%;
   height: 50px;
 
