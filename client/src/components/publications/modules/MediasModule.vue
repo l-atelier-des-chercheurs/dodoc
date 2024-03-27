@@ -117,16 +117,16 @@ export default {
     },
     async removeMediaAtIndex({ index, remove_source = true }) {
       const source_medias = this.publimodule.source_medias.slice();
-
       const source_media = source_medias[index];
 
       source_medias.splice(index, 1);
-      if (source_medias.length === 0) this.$emit("remove");
+      if (source_medias.length === 0)
+        this.$emit("remove", { with_content: false });
       else this.$emit("updateMeta", { source_medias });
 
       if (
         Object.prototype.hasOwnProperty.call(source_media, "meta_filename") &&
-        remove_source
+        remove_source === true
       ) {
         const media = this.getSourceMedia({
           source_media: { meta_filename: source_media.meta_filename },

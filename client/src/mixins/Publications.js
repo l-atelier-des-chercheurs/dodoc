@@ -335,6 +335,12 @@ export default {
       publication_path,
       import_mode = "link",
     }) {
+      // check if media is already in publication, in which case we do nothing
+      // for dodoc: texts in publi
+      // for lumadoc: texts and images
+      if (this.getParent(path_to_source_media_meta) === this.publication_path)
+        return { meta_filename: this.getFilename(path_to_source_media_meta) };
+
       if (import_mode === "link") {
         // check if already in parent project
         const parent_project_path_for_media = this.getParent(

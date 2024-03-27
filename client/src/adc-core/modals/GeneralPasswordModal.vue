@@ -71,7 +71,6 @@ export default {
           password: this.password_to_submit,
           remember_on_this_device: this.remember_on_this_device,
         });
-        debugger;
         this.$emit("close");
       } catch (err) {
         let msg = err.code;

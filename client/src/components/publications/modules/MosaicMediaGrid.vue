@@ -54,7 +54,7 @@
             v-if="edit_mode"
             class="_df"
             :file="media_with_linked._linked_media"
-            @dragfileSuccess="mediaDragged(index)"
+            @dragfileSuccess="mediaDraggedSuccessfully(index)"
           />
           <template v-if="edit_mode">
             <template
@@ -218,10 +218,8 @@ export default {
     removeMedia(index) {
       this.$emit("removeMediaAtIndex", { index });
     },
-    mediaDragged(index) {
-      // multiple possibilities -->
-      //
-      // const media = this.medias_with_linked[index];
+    mediaDraggedSuccessfully(index) {
+      console.log("mediaDraggedSuccessfully");
       this.$emit("removeMediaAtIndex", { index, remove_source: false });
       // if
     },
