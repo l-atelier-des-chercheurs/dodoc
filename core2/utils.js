@@ -396,7 +396,7 @@ module.exports = (function () {
       const schema = global.settings.schema;
 
       let items_in_path =
-        relative_path.length === 0 ? [] : relative_path.split("/");
+        relative_path.length === 0 ? [] : relative_path.split(path.sep);
       // items_in_path = items_in_path.filter((i) => i !== "_upload");
 
       // –––   / => schema (admin settings)
