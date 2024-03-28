@@ -32,6 +32,8 @@ module.exports = (function () {
     },
 
     getPathToUserContent(...paths) {
+      if (path.sep !== "/")
+        paths = paths.map((p) => p.replaceAll("/", path.sep));
       return path.join(global.pathToUserContent, ...paths);
     },
     getPathToCache(...paths) {
