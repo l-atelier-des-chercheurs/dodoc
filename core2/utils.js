@@ -449,11 +449,6 @@ module.exports = (function () {
       throw new Error(`no_schema_for_folder`);
     },
 
-    cleanReqPath(path) {
-      let p = path.substring(7);
-      if (p.endsWith("/")) p = p.slice(0, -1);
-      return p;
-    },
     endsWithAny(suffixes, string) {
       return suffixes.some(function (suffix) {
         return string.endsWith(suffix);
