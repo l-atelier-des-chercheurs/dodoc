@@ -141,7 +141,10 @@ async function copyAndRenameUserFolder(full_default_path) {
   // two cases:
   if (global.settings.contentPath.startsWith("/")) {
     // if starts with '/' then its a path to the folder itself
-    full_path_to_content = global.settings.contentPath;
+    full_path_to_content = global.settings.contentPath.replaceAll(
+      "/",
+      path.sep
+    );
   } else {
     // if contentPath is just a name, thats the name of the folder inside /Documents
     const user_dir_path = paths.getDocumentsFolder(is_electron);

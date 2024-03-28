@@ -36,6 +36,11 @@ module.exports = (function () {
         paths = paths.map((p) => p.replaceAll("/", path.sep));
       return path.join(global.pathToUserContent, ...paths);
     },
+    getBinFolder(p) {
+      const pre = p.substr(0, p.lastIndexOf(path.sep));
+      const post = p.substr(p.lastIndexOf(path.sep) + 1);
+      return path.join(pre, global.settings.deletedFolderName, post);
+    },
     getPathToCache(...paths) {
       if (path.sep !== "/")
         paths = paths.map((p) => p.replaceAll("/", path.sep));

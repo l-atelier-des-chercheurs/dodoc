@@ -620,13 +620,7 @@ module.exports = (function () {
   }
 
   async function _moveFolderToBin({ path_to_folder }) {
-    const bin_folder_path =
-      path_to_folder.substr(0, path_to_folder.lastIndexOf("/")) +
-      "/" +
-      global.settings.deletedFolderName +
-      "/" +
-      path_to_folder.substr(path_to_folder.lastIndexOf("/") + 1);
-
+    const bin_folder_path = utils.getBinFolder(path_to_folder);
     const full_folder_path = utils.getPathToUserContent(path_to_folder);
     const full_bin_folder_path = utils.getPathToUserContent(bin_folder_path);
 
