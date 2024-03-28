@@ -58,16 +58,18 @@ export default {
   async created() {
     console.log("Loading FullUI");
 
-    await this.$api.init({ debug_mode: this.$root.debug_mode });
-    this.$eventHub.$on("socketio.connect", this.socketConnected);
-    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
-    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
-    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
-
     this.$eventHub.$on(
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+
+    await this.$api.init({ debug_mode: this.$root.debug_mode });
+    debugger;
+
+    this.$eventHub.$on("socketio.connect", this.socketConnected);
+    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
 
     this.$root.is_loading = false;
