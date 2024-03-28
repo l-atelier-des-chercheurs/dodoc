@@ -6,26 +6,26 @@
     />
     <TrackAuthorChanges />
 
-    <div class="_spinner" v-if="$root.is_loading" key="loader">
-      <LoaderSpinner />
-    </div>
-
-    <template v-else>
-      <GeneralPasswordModal
-        v-if="show_general_password_modal"
-        @close="show_general_password_modal = false"
-      />
-
-      <template v-else>
-        <TopBar />
-        <transition name="pagechange" mode="out-in">
-          <router-view v-slot="{ Component }" :key="$route.path">
-            <component :is="Component" />
-          </router-view>
-        </transition>
-        <TaskTracker />
-      </template>
-    </template>
+    <transition name="fade_fast" mode="out-in">
+      <div class="_spinner" v-if="$root.is_loading" key="loader">
+        <LoaderSpinner />
+      </div>
+      <div v-else>
+        <GeneralPasswordModal
+          v-if="show_general_password_modal"
+          @close="show_general_password_modal = false"
+        />
+        <template v-else>
+          <TopBar />
+          <transition name="pagechange" mode="out-in">
+            <router-view v-slot="{ Component }" :key="$route.path">
+              <component :is="Component" />
+            </router-view>
+          </transition>
+          <TaskTracker />
+        </template>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -64,7 +64,6 @@ export default {
     );
 
     await this.$api.init({ debug_mode: this.$root.debug_mode });
-    debugger;
 
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
