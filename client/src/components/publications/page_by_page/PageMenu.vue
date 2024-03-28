@@ -227,7 +227,7 @@
         <div class="u-spacingBottom" />
 
         <div class="u-mediaOptions">
-          <div>
+          <!-- <div>
             <button
               type="button"
               class="u-buttonLink"
@@ -241,7 +241,7 @@
               <b-icon icon="pencil" />
               {{ $t("edit_source") }}
             </button>
-          </div>
+          </div> -->
 
           <MoveToPage
             :pages="pages"

@@ -966,6 +966,8 @@ export default {
     "Cliquez sur la carte pour sélectionner une nouvelle position.",
   add_caption: "Ajouter une légende",
   copy_first_media_caption: "Réutiliser la légende du premier média",
+  edit_caption_changes_for_all_medias:
+    "La légende et les crédits seront modifiés automatiquement pour le média d’origine pour toutes les publications.",
 
   pins_color: "Couleur des épingles",
   link_pins: "Relier les épingles",
