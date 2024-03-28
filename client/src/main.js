@@ -294,8 +294,8 @@ new Vue({
 
     current_time: "",
 
-    default_new_module_width: 50,
-    default_new_module_height: 50,
+    default_new_module_width: 100,
+    default_new_module_height: 100,
     default_new_module_left: 15,
     default_new_module_top: 15,
     set_new_module_offset_left: 0,

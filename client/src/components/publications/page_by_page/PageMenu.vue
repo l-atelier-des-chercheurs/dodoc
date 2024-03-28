@@ -642,6 +642,17 @@ export default {
           (this.$root.set_new_module_offset_top + this.$root.zoom_offset) /
           this.magnification;
 
+      const width =
+        Math.max(
+          this.$root.default_new_module_width,
+          this.$root.default_new_module_width / this.scale
+        ) / this.magnification;
+      const height =
+        Math.max(
+          this.$root.default_new_module_height,
+          this.$root.default_new_module_height / this.scale
+        ) / this.magnification;
+
       if (this.gridstep_in_mm) {
         // todo : round to gridstep
       }
@@ -650,8 +661,8 @@ export default {
         page_id: this.page_opened_id,
         x,
         y,
-        width: this.$root.default_new_module_width,
-        height: this.$root.default_new_module_height,
+        width,
+        height,
         rotation: 0,
         margins: 0,
         opacity: 1,
