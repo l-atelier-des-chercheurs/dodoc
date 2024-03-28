@@ -515,15 +515,15 @@ module.exports = (function () {
       return submitted_password_with_salt === stored_password_with_salt;
     },
 
-    getSlugFromPath(path) {
-      return path.split(path.sep).at(-1);
+    getSlugFromPath(p) {
+      return p.split(path.sep).at(-1);
     },
-    getContainingFolder(path) {
-      return path.substring(0, path.lastIndexOf(path.sep));
+    getContainingFolder(p) {
+      return p.substring(0, p.lastIndexOf(path.sep));
     },
-    getFolderParent(path) {
-      if (!path) return false;
-      let paths = path.split(path.sep);
+    getFolderParent(p) {
+      if (!p) return false;
+      let paths = p.split(path.sep);
       if (paths.length >= 2) {
         paths = paths.slice(0, -2);
         return paths.join(path.sep);
@@ -537,8 +537,8 @@ module.exports = (function () {
       }
       return false;
     },
-    getFilename(path) {
-      return path.substring(path.lastIndexOf(path.sep) + 1);
+    getFilename(p) {
+      return p.substring(p.lastIndexOf(path.sep) + 1);
     },
     hashCode(s) {
       return (
