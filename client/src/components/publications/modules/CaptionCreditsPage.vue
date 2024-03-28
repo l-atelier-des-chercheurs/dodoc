@@ -30,7 +30,7 @@
             :path="media.$path"
             :custom_formats="['bold', 'italic', 'link']"
             :is_collaborative="false"
-            :can_edit="canEditLinkedMedia(media.$path) === 'local'"
+            :can_edit="can_edit"
           />
         </div>
         <div
@@ -44,11 +44,15 @@
             :path="media.$path"
             :custom_formats="['bold', 'italic', 'link']"
             :is_collaborative="false"
-            :can_edit="canEditLinkedMedia(media.$path) === 'local'"
+            :can_edit="can_edit"
           />
         </div>
 
-        <div>
+        <div class="u-instructions" v-if="can_edit">
+          {{ $t("edit_caption_changes_for_all_medias") }}
+        </div>
+
+        <!-- <div>
           <button
             type="button"
             class="u-buttonLink"
@@ -58,7 +62,7 @@
             <b-icon icon="pencil" />
             {{ $t("edit_source") }}
           </button>
-        </div>
+        </div> -->
       </div>
     </transition>
   </div>
@@ -68,6 +72,7 @@ export default {
   props: {
     media: Object,
     publication_path: String,
+    can_edit: Boolean,
   },
   components: {},
   data() {

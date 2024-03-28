@@ -23,19 +23,11 @@
         $emit('update:page_opened_id', false);
       "
     />
-    <MediaModal
-      v-if="media_to_edit"
-      class="_editMediaModal"
-      :key="media_to_edit.$path"
-      :file="media_to_edit"
-      @close="media_to_edit = false"
-    />
   </div>
 </template>
 <script>
 import PublicationsList from "@/components/publications/PublicationsList.vue";
 import PublicationOpen from "@/components/publications/PublicationOpen.vue";
-import MediaModal from "@/components/MediaModal";
 
 export default {
   props: {
@@ -47,29 +39,16 @@ export default {
   components: {
     PublicationsList,
     PublicationOpen,
-    MediaModal,
   },
   data() {
-    return {
-      media_to_edit: false,
-    };
+    return {};
   },
-  created() {
-    this.$eventHub.$on("publication.openModal", this.openMediaModal);
-  },
+  created() {},
   mounted() {},
-  beforeDestroy() {
-    this.$eventHub.$off("publication.openModal", this.openMediaModal);
-  },
+  beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {
-    openMediaModal(path) {
-      this.media_to_edit = this.getMediaInFolder({
-        path_to_source_media_meta: path,
-      });
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>

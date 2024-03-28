@@ -47,6 +47,7 @@
         <CaptionCreditsPage
           :media="media_with_linked._linked_media"
           :publication_path="publication_path"
+          :can_edit="can_edit"
         />
 
         <div class="_btnRow">

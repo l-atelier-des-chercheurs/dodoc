@@ -49,12 +49,6 @@
               :ref="`pane_${pane.type}`"
               @click="replacePane($event, pane)"
             >
-              <!-- <div v-handle class="_inlineBtn">
-              <sl-icon-button
-                name="grip-vertical"
-                label="Déplacer"
-              />
-            </div> -->
               <span
                 class="_icon"
                 v-if="getIcon(pane.type)"

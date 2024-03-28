@@ -275,6 +275,8 @@ export default {
     "Click on map to select the new position on the map",
   add_caption: "Add a caption",
   copy_first_media_caption: "Reuse first media caption",
+  edit_caption_changes_for_all_medias:
+    "Caption and credits will be changed automatically for the original media for all publications.",
 
   withdraw_from_page: "Withdraw from page",
   confirm_removal: "Confirm removal",
