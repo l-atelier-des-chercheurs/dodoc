@@ -655,10 +655,6 @@ export default {
   // padding: calc(var(--spacing) * 1);
 }
 
-._moveableItem:has(._unlockBtn:hover) {
-  opacity: 0.2;
-}
-
 ._unlockBtn {
   position: absolute;
   bottom: 0;
