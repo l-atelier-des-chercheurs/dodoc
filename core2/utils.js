@@ -37,6 +37,8 @@ module.exports = (function () {
       return path.join(global.pathToUserContent, ...paths);
     },
     getPathToCache(...paths) {
+      if (path.sep !== "/")
+        paths = paths.map((p) => p.replaceAll("/", path.sep));
       return path.join(global.pathToCache, ...paths);
     },
     async createUniqueFolderInCache(prefix = "folder") {
@@ -514,17 +516,17 @@ module.exports = (function () {
     },
 
     getSlugFromPath(path) {
-      return path.split("/").at(-1);
+      return path.split(path.sep).at(-1);
     },
     getContainingFolder(path) {
-      return path.substring(0, path.lastIndexOf("/"));
+      return path.substring(0, path.lastIndexOf(path.sep));
     },
     getFolderParent(path) {
       if (!path) return false;
-      let paths = path.split("/");
+      let paths = path.split(path.sep);
       if (paths.length >= 2) {
         paths = paths.slice(0, -2);
-        return paths.join("/");
+        return paths.join(path.sep);
       }
       return false;
     },
@@ -536,7 +538,7 @@ module.exports = (function () {
       return false;
     },
     getFilename(path) {
-      return path.substring(path.lastIndexOf("/") + 1);
+      return path.substring(path.lastIndexOf(path.sep) + 1);
     },
     hashCode(s) {
       return (
