@@ -394,5 +394,10 @@ export default {
         return { meta_filename };
       }
     },
+    getModuleType(t) {
+      if (["ellipsis", "rectangle", "line", "arrow"].includes(t))
+        return "shape";
+      return t;
+    },
   },
 };

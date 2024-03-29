@@ -548,13 +548,7 @@ export default {
     },
 
     module_type() {
-      if (
-        ["ellipsis", "rectangle", "line", "arrow"].includes(
-          this.publimodule.module_type
-        )
-      )
-        return "shape";
-      return this.publimodule.module_type;
+      return this.getModuleType(this.publimodule.module_type);
     },
     show_fs_button() {
       if (this.page_template === "page_by_page")

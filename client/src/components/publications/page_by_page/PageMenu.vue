@@ -173,13 +173,19 @@
                 class="u-sameRow"
                 @click="setActive(page_module.$path)"
               >
+                <template
+                  v-if="getModuleType(page_module.module_type) === 'shape'"
+                >
+                  {{ $t(page_module.module_type) }}
+                </template>
                 <MediaContent
+                  v-else-if="firstMedia(page_module)"
                   class="_preview"
-                  v-if="firstMedia(page_module)"
                   :file="firstMedia(page_module)"
                   :resolution="50"
                   :context="'preview'"
                 />
+                <template v-else> – </template>
               </div>
 
               <!-- <DateDisplay
@@ -366,6 +372,11 @@
             :suffix="unit"
             @save="updateMediaPubliMeta({ height: $event })"
           />
+        </div>
+        <div v-if="first_media_has_resolution && layout_mode === 'screen'">
+          <button type="button" class="u-buttonLink" @click="setRealSize">
+            {{ $t("real_size") }}
+          </button>
         </div>
 
         <div class="u-spacingBottom" />
@@ -594,15 +605,17 @@ export default {
       );
     },
     active_module_first_media() {
+      debugger;
       return this.firstMedia(this.active_module);
     },
-    is_shape() {
+    first_media_has_resolution() {
       return (
-        this.active_module &&
-        ["ellipsis", "line", "arrow", "rectangle"].includes(
-          this.active_module.module_type
-        )
+        this.active_module_first_media?.$infos?.width &&
+        this.active_module_first_media?.$infos?.height
       );
+    },
+    is_shape() {
+      return this.getModuleType(this.active_module.module_type) === "shape";
     },
     unit() {
       if (this.layout_mode === "screen") return "px";
@@ -699,6 +712,17 @@ export default {
         this.$eventHub.$emit(`module.panTo.${meta_filename}`);
       }, 150);
     },
+    async setRealSize() {
+      const width =
+        this.active_module_first_media.$infos.width / this.magnification;
+      const height =
+        this.active_module_first_media.$infos.height / this.magnification;
+
+      await this.updateMediaPubliMeta({
+        width,
+        height,
+      });
+    },
     changeModulePage() {
       this.$eventHub.$emit(`module.move.${this.module_meta_filename}`);
     },
@@ -762,14 +786,17 @@ export default {
 }
 
 ._mediaList {
-  font-size: var(--sl-font-size-x-small);
+  font-size: var(--sl-font-size-small);
   padding: 0;
 
   > * {
     display: flex;
     flex-flow: row nowrap;
-    align-items: center;
+
+    height: 40px;
+    overflow: hidden;
     gap: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 2);
     cursor: pointer;
 
     &:hover {
@@ -782,11 +809,11 @@ export default {
 
     ._preview {
       position: relative;
-      width: 50px;
-      height: 50px;
-      flex: 0 0 50px;
+      width: 40px;
+      aspect-ratio: 1;
+      flex: 0 0 40px;
 
-      ::v-deep img {
+      ::v-deep ._mediaContent--image {
         width: 100%;
         height: 100%;
         position: absolute;
