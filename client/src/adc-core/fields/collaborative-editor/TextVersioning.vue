@@ -6,16 +6,14 @@
   >
     <div class="_archives" v-if="archives">
       <div class="_topbar">
-        <sl-button
-          variant="default"
-          size="small"
-          pill
+        <button
+          class="u-button u-button_small"
           :disabled="archive_shown_index === 0"
           @click="newerVersion"
         >
           <b-icon icon="arrow-up" />
-          récent
-        </sl-button>
+          {{ $t("recent") }}
+        </button>
 
         <select v-model="selected_archive_filename">
           <option
@@ -32,16 +30,14 @@
           />
         </select>
 
-        <sl-button
-          variant="default"
-          size="small"
-          pill
+        <button
+          class="u-button u-button_small"
           :disabled="archive_shown_index === archives.length - 1"
           @click="olderVersion"
         >
           <b-icon icon="arrow-down" />
-          ancient
-        </sl-button>
+          {{ $t("ancient") }}
+        </button>
       </div>
 
       <transition name="pagechange" mode="out-in" appear>
@@ -52,7 +48,6 @@
           "
           :key="selected_archive_filename"
         >
-          <!-- <DateDisplay :show_detail_initially="true" :date="archive_shown.date" /> -->
           <div class="_archiveText" v-html="archive_shown.content" />
         </div>
       </transition>

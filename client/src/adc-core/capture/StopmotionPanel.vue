@@ -125,7 +125,7 @@
                 @click="removeMedia(show_previous_photo.$path)"
                 class="u-button u-button_black _removeMedia"
               >
-                <sl-icon name="trash3" />
+                <b-icon icon="trash" />
               </button>
             </div>
 

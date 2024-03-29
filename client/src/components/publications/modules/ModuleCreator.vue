@@ -62,27 +62,6 @@
           <template v-if="show_labels">{{ $t("write") }}</template>
         </button>
 
-        <!-- <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          v-if="types_available.includes('files')"
-          @click="show_file_picker = true"
-        >
-          <template v-if="show_labels">{{ $t("files") }}</template>
-          <sl-icon
-            name="file-earmark-binary-fill"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_files')"
-          />
-        </button> -->
-        <!-- <MediaPicker
-          v-if="show_file_picker"
-          :publication_path="publication_path"
-          :select_mode="select_mode"
-          @addMedias="createFiles"
-          @close="show_file_picker = false"
-        /> -->
-
         <button
           type="button"
           class="u-button u-button_bleuvert"

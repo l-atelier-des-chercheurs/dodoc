@@ -85,6 +85,8 @@ export default {
 
   search: "Search",
   "search:": "Search:",
+  recent: "Recent",
+  ancient: "Ancient",
 
   space: "Space",
   spaces: "All spaces",

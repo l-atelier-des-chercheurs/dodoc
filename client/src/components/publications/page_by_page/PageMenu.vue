@@ -270,7 +270,7 @@
               v-if="active_module.locked === true"
               @click="updateMediaPubliMeta({ locked: false })"
             >
-              <sl-icon name="unlock" />
+              <b-icon icon="unlock" />
               {{ $t("unlock") }}
             </button>
             <button
@@ -279,7 +279,7 @@
               v-else
               @click="updateMediaPubliMeta({ locked: true })"
             >
-              <sl-icon name="lock" />
+              <b-icon icon="lock" />
               {{ $t("lock") }}
             </button>
           </div>
@@ -289,7 +289,7 @@
               class="u-buttonLink"
               @click="setActive(false)"
             >
-              <sl-icon name="dash-square-dotted" />
+              <b-icon icon="dash-square-dotted" />
               {{ $t("unselect") }}
             </button>
           </div>
@@ -605,7 +605,6 @@ export default {
       );
     },
     active_module_first_media() {
-      debugger;
       return this.firstMedia(this.active_module);
     },
     first_media_has_resolution() {

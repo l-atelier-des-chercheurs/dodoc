@@ -82,8 +82,11 @@ export default {
     "Chercher dans les titres, descriptions, mots-clés, machines et matériaux.",
   search_by_name: "Chercher dans les noms ou pseudonymes",
   search_by_title_or_subtitle: "Chercher dans les titres ou sous-titres",
+
   search: "Chercher",
   "search:": "Chercher&nbsp;:",
+  recent: "Récent",
+  ancient: "Ancien",
 
   connection_lost: `Connexion perdue`,
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
