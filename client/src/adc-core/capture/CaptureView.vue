@@ -360,13 +360,13 @@
       <!-- <transition name="slideup" :duration="150" mode="out-in"> -->
       <StopmotionPanel
         v-if="stopmotion_slug"
-        :current_stopmotion_path="`${slugFolderName}/stopmotions/${stopmotion_slug}`"
+        :current_stopmotion_path="`${path}/stopmotions/${stopmotion_slug}`"
         :stream="stream"
         :show_live_feed.sync="show_live_feed"
         :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
         :onion_skin_opacity.sync="onion_skin_opacity"
         :stopmotion_frame_rate.sync="stopmotion_frame_rate"
-        @saveMedia="($path) => $emit('insertMedias', [$path])"
+        @saveMedia="($path) => $emit('insertMedia', [$path])"
         @close="closeStopmotionPanel"
         @showPreviousImage="onion_skin_img = $event"
       />
@@ -991,7 +991,6 @@ import ysFixWebmDuration from "fix-webm-duration";
 
 export default {
   props: {
-    slugFolderName: String,
     type: String,
     path: String,
     selected_mode: String,
@@ -1429,7 +1428,6 @@ export default {
       );
       this.$emit("openStopmotion", stopmotion_slug);
       this.show_stopmotion_list = false;
-      // this.current_stopmotion_path = slugFolderName;
       // this.ask_before_leaving_capture = true;
     },
     checkCapturePanelSize() {
@@ -1481,9 +1479,9 @@ export default {
         this.ask_before_leaving_capture = true;
         // create stopmotion
         const new_stopmotion_slug = await this.$api.createFolder({
-          path: `${this.slugFolderName}/stopmotions`,
+          path: `${this.path}/stopmotions`,
           additional_meta: {
-            name: this.slugFolderName + "-" + new Date().getTime(),
+            name: new Date().getTime(),
             $admins: "parent_contributors",
           },
         });
@@ -1939,7 +1937,7 @@ export default {
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
 
-      this.$emit("insertMedias", meta_filename);
+      this.$emit("insertMedia", meta_filename);
       return;
     },
     cancelValidation() {

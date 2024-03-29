@@ -1,9 +1,7 @@
 <template>
   <div class="_capturePane">
     <CaptureView
-      :slugFolderName="project.$path"
       :path="project.$path"
-      :read_only="false"
       :selected_mode="selected_mode"
       :stopmotion_slug="stopmotion_slug"
       @changeMode="$emit('update:selected_mode', $event)"

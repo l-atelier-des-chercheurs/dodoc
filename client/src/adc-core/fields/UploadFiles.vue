@@ -67,10 +67,6 @@ export default {
   props: {
     files_to_import: Array,
     path: String,
-    read_only: {
-      type: Boolean,
-      default: false,
-    },
   },
   components: {},
   data() {

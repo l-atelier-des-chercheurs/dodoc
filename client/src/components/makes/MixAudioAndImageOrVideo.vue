@@ -3,19 +3,6 @@
     <div class="_topRow">
       <div class="">
         <SingleBaseMediaPicker
-          :title="$t('pick_audio')"
-          :context="'full'"
-          :field_name="'base_audio_filename'"
-          :content="make.base_audio_filename"
-          :path="make.$path"
-          :media_type_to_pick="'audio'"
-        />
-      </div>
-      <div class="_equationIcon">
-        <b-icon icon="plus-circle-dotted" />
-      </div>
-      <div class="">
-        <SingleBaseMediaPicker
           v-if="make.type === 'mix_audio_and_image'"
           :title="$t('pick_image')"
           :context="'full'"
@@ -32,6 +19,20 @@
           :content="make.base_video_filename"
           :path="make.$path"
           :media_type_to_pick="'video'"
+        />
+      </div>
+      <div class="_equationIcon">
+        <b-icon icon="plus-circle-dotted" />
+      </div>
+
+      <div class="">
+        <SingleBaseMediaPicker
+          :title="$t('pick_audio')"
+          :context="'full'"
+          :field_name="'base_audio_filename'"
+          :content="make.base_audio_filename"
+          :path="make.$path"
+          :media_type_to_pick="'audio'"
         />
       </div>
     </div>

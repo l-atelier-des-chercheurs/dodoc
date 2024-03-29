@@ -9,21 +9,27 @@
       <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
-          class="u-button u-button_bleuvert u-button_small"
-          v-if="types_available.includes('text')"
-          @click="createText"
+          class="u-button u-button_red"
+          v-if="types_available.includes('capture')"
+          @click="show_capture_modal = true"
         >
           <b-icon
-            icon="fonts"
+            icon="record-circle-fill"
             style="font-size: var(--icon-size)"
-            :label="$t('add_text')"
+            :label="$t('add_medias')"
           />
-          <template v-if="show_labels">{{ $t("text") }}</template>
+          <template v-if="show_labels">{{ $t("capture") }}</template>
         </button>
+        <CaptureModal
+          v-if="show_capture_modal"
+          :path="project_path"
+          @createMosaic="createMosaic"
+          @close="show_capture_modal = false"
+        />
 
         <button
           type="button"
-          class="u-button u-button_bleuvert u-button_small"
+          class="u-button u-button_orange"
           v-if="types_available.includes('medias')"
           @click="show_media_picker = true"
         >
@@ -32,7 +38,7 @@
             style="font-size: var(--icon-size)"
             :label="$t('add_medias')"
           />
-          <template v-if="show_labels">{{ $t("medias") }}</template>
+          <template v-if="show_labels">{{ $t("import") }}</template>
         </button>
         <MediaPicker
           v-if="show_media_picker"
@@ -41,6 +47,20 @@
           @addMedias="createMosaic"
           @close="show_media_picker = false"
         />
+
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          v-if="types_available.includes('text')"
+          @click="createText"
+        >
+          <b-icon
+            icon="fonts"
+            style="font-size: var(--icon-size)"
+            :label="$t('add_text')"
+          />
+          <template v-if="show_labels">{{ $t("write") }}</template>
+        </button>
 
         <!-- <button
           type="button"
@@ -65,7 +85,7 @@
 
         <button
           type="button"
-          class="u-button u-button_bleuvert u-button_small"
+          class="u-button u-button_bleuvert"
           v-if="types_available.includes('link')"
           @click="show_link_picker = true"
         >
@@ -87,7 +107,7 @@
             type="button"
             v-for="shape in shapes"
             :key="shape.type"
-            class="u-button u-button_bleuvert u-button_small"
+            class="u-button u-button_bleumarine"
             @click="
               createCustomModule({
                 module_type: shape.type,
@@ -121,21 +141,11 @@
         @click="show_module_selector = true"
       />
     </transition>
-
-    <!-- <button
-      type="button"
-      class="u-button u-button_transparent u-addBtn"
-      v-if="start_collapsed"
-      :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
-      @click="show_module_selector = !show_module_selector"
-    >
-      <b-icon icon="plus-circle-fill" />
-    </button> -->
-
     <DropZone @mediaDropped="mediaDropped" />
   </div>
 </template>
 <script>
+import CaptureModal from "@/components/publications/CaptureModal.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 
@@ -152,7 +162,7 @@ export default {
     context: String,
     types_available: {
       type: Array,
-      default: () => ["text", "medias", "files", "link", "shapes"],
+      default: () => ["capture", "medias", "text", "files", "link", "shapes"],
     },
     start_collapsed: {
       type: Boolean,
@@ -160,11 +170,13 @@ export default {
     },
   },
   components: {
+    CaptureModal,
     MediaPicker,
     LinkPicker,
   },
   data() {
     return {
+      show_capture_modal: false,
       show_module_selector: false,
       show_media_picker: false,
       show_file_picker: false,
@@ -225,7 +237,13 @@ export default {
   watch: {
     show_module_selector() {},
   },
-  computed: {},
+  computed: {
+    project_path() {
+      if (this.$root.publication_include_mode === "link")
+        return this.getParent(this.getParent(this.publication_path));
+      return this.publication_path;
+    },
+  },
   methods: {
     async mediaDropped({ path_to_source_media_metas }) {
       // todo multiple cases here : if drag/drop media already in a publication, drag drop media from library
@@ -306,6 +324,7 @@ export default {
 
       this.show_file_picker = false;
     },
+
     async createCustomModule({ module_type, addtl_meta }) {
       await this.createModule({
         module_type,
