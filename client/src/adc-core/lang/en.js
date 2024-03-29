@@ -833,6 +833,8 @@ export default {
   local_machine_instr: "On this computer, using a browser already installed.",
   display_as_public: "Show public view",
   preview: "Preview",
+  previews_size: "Size of previews",
+
   add_to_instance_admin: "Add as instance administrator",
   instance_admin_instructions:
     "Can access, modify and delete all content (spaces, projects, accounts, etc.). They have access to these settings and can modify them.",

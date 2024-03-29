@@ -788,6 +788,7 @@ export default {
 
   display_as_public: "Afficher la vue publique",
   preview: "Prévisualiser",
+  previews_size: "Taille des aperçus",
 
   add_to_instance_admin: "Ajouter comme administrateur d’instance",
   instance_admin_instructions:

@@ -143,13 +143,13 @@
         </template>
         <button
           type="button"
-          class="u-button u-button_transparent _createPage"
+          class="u-button _createPage"
           @click="createPage"
           v-if="can_edit"
           :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
           key="createPage"
         >
-          <sl-icon name="plus-circle" />
+          <b-icon icon="plus-circle-fill" />
           {{ $t("create_page") }}
         </button>
       </transition-group>
