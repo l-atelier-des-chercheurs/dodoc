@@ -23,7 +23,7 @@ module.exports = (function () {
 
       let all_folders_with_meta = [];
       for (let folder_slug of folders_slugs) {
-        const path_to_folder = path_to_type + "/" + folder_slug;
+        const path_to_folder = path.join(path_to_type, folder_slug);
         const folder_meta = await API.getFolder({
           path_to_folder,
         }).catch((err) => {
@@ -177,7 +177,7 @@ module.exports = (function () {
 
       if (!meta_file) {
         meta_file = directory.files.find((f) => {
-          const path_splits = f.path.split("/");
+          const path_splits = f.path.split(path.sep);
           if (path_splits.length === 2 && path_splits[1] === "meta.txt") {
             subfolder_name = path_splits[0];
             return true;
@@ -220,7 +220,7 @@ module.exports = (function () {
         utils.getPathToUserContent(path_to_new_folder);
 
       const files_to_copy = directory.files.filter((f) => {
-        const path_splits = f.path.split("/");
+        const path_splits = f.path.split(path.sep);
         return path_splits.length >= 2 && path_splits[1] !== "meta.txt";
       });
 

@@ -32,8 +32,6 @@ module.exports = (function () {
     },
 
     getPathToUserContent(...paths) {
-      // if (path.sep !== "/")
-      //   paths = paths.map((p) => p.replaceAll("/", path.sep));
       return path.join(global.pathToUserContent, ...paths);
     },
     getBinFolder(p) {
@@ -42,8 +40,6 @@ module.exports = (function () {
       return path.join(pre, global.settings.deletedFolderName, post);
     },
     getPathToCache(...paths) {
-      // if (path.sep !== "/")
-      //   paths = paths.map((p) => p.replaceAll("/", path.sep));
       return path.join(global.pathToCache, ...paths);
     },
     async createUniqueFolderInCache(prefix = "folder") {
@@ -405,7 +401,7 @@ module.exports = (function () {
       const schema = global.settings.schema;
 
       let items_in_path =
-        relative_path.length === 0 ? [] : relative_path.split("/");
+        relative_path.length === 0 ? [] : relative_path.split(path.sep);
       // items_in_path = items_in_path.filter((i) => i !== "_upload");
 
       // –––   / => schema (admin settings)
@@ -474,27 +470,39 @@ module.exports = (function () {
 
       const obj = {};
 
-      if (subsub_folder_type)
-        obj.path_to_type = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}/${subsub_folder_type}`;
-      else if (sub_folder_type)
-        obj.path_to_type = `${folder_type}/${folder_slug}/${sub_folder_type}`;
-      else if (folder_type) obj.path_to_type = `${folder_type}`;
+      let path_to_type = [];
+      if (folder_type) {
+        path_to_type.push(folder_type);
+        if (sub_folder_type) {
+          path_to_type.push(folder_slug, sub_folder_type);
+          if (subsub_folder_type)
+            path_to_type.push(sub_folder_slug, subsub_folder_type);
+        }
+      }
+      obj.path_to_type = path.join(...path_to_type);
 
-      if (subsub_folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}/${subsub_folder_type}/${subsub_folder_slug}`;
-      else if (sub_folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}`;
-      else if (folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}`;
+      let path_to_folder = [];
+      if (folder_slug) {
+        path_to_folder.push(folder_type, folder_slug);
+        if (sub_folder_slug) {
+          path_to_folder.push(sub_folder_type, sub_folder_slug);
+          if (subsub_folder_slug)
+            path_to_folder.push(subsub_folder_type, subsub_folder_slug);
+        }
+      }
+      obj.path_to_folder = path.join(...path_to_folder);
 
-      if (subsub_folder_slug)
-        obj.path_to_parent_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}`;
-      else if (sub_folder_slug)
-        obj.path_to_parent_folder = `${folder_type}/${folder_slug}`;
+      let path_to_parent_folder = [];
+      if (sub_folder_slug) {
+        path_to_folder.push(folder_type, folder_slug);
+        if (subsub_folder_slug)
+          path_to_folder.push(sub_folder_type, sub_folder_slug);
+      }
+      obj.path_to_parent_folder = path.join(...path_to_parent_folder);
 
       if (meta_filename && meta_filename.includes(".")) {
         obj.meta_filename = meta_filename;
-        obj.path_to_meta = `${obj.path_to_folder}/${meta_filename}`;
+        obj.path_to_meta = path.join(obj.path_to_folder, meta_filename);
       }
 
       if (req.body) obj.data = req.body;
@@ -521,17 +529,17 @@ module.exports = (function () {
     },
 
     getSlugFromPath(p) {
-      return p.split("/").at(-1);
+      return p.split(path.sep).at(-1);
     },
     getContainingFolder(p) {
-      return p.substring(0, p.lastIndexOf("/"));
+      return p.substring(0, p.lastIndexOf(path.sep));
     },
     getFolderParent(p) {
       if (!p) return false;
-      let paths = p.split("/");
+      let paths = p.split(path.sep);
       if (paths.length >= 2) {
         paths = paths.slice(0, -2);
-        return paths.join("/");
+        return paths.join(path.sep);
       }
       return false;
     },
@@ -543,7 +551,7 @@ module.exports = (function () {
       return false;
     },
     getFilename(p) {
-      return p.substring(p.lastIndexOf("/") + 1);
+      return p.substring(p.lastIndexOf(path.sep) + 1);
     },
     hashCode(s) {
       return (
