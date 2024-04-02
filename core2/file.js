@@ -532,8 +532,10 @@ module.exports = (function () {
     } else {
       // for images, check if exif
       if (new_meta.$type === "image" && path_to_media) {
-        const gps = await utils.getGPSFromFile(path_to_media);
-        if (gps) new_meta.$location = gps;
+        try {
+          const gps = await utils.getGPSFromFile(path_to_media);
+          if (gps) new_meta.$location = gps;
+        } catch (err) {}
       }
     }
 
