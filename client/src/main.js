@@ -61,15 +61,17 @@ Vue.directive("uppercase", {
 
 if (window.app_infos.is_electron)
   document.body.addEventListener("click", (event) => {
-    event.path.every((item) => {
-      if (item.tagName === "A" && item.target === "_blank" && !item.download) {
-        event.preventDefault();
-        window.electronAPI.send("toMain", {
-          type: "open_external",
-          url: item.href,
-        });
-      }
-    });
+    if (
+      event.target.tagName === "A" &&
+      event.target.target === "_blank" &&
+      !event.target.download
+    ) {
+      event.preventDefault();
+      window.electronAPI.send("toMain", {
+        type: "open_external",
+        url: event.target.href,
+      });
+    }
   });
 
 import api from "@/adc-core/api.js";
