@@ -115,7 +115,7 @@ class Exporter {
 
     const list_of_metas_in_order = folder_meta[this.instructions.field];
     const selected_files = list_of_metas_in_order.map((lf) =>
-      files.find((f) => f.$path.endsWith(path.sep + lf))
+      files.find((f) => f.$path.endsWith("/" + lf))
     );
     return selected_files;
   }
@@ -231,7 +231,7 @@ class Exporter {
 
     for (const image of images) {
       const path_to_image =
-        image.$path.substring(0, image.$path.lastIndexOf(path.sep) + 1) +
+        image.$path.substring(0, image.$path.lastIndexOf("/") + 1) +
         image.$media_filename;
       const source = utils.getPathToUserContent(path_to_image);
       const destination = path.join(

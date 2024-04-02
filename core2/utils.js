@@ -694,8 +694,8 @@ module.exports = (function () {
       return await exifr.gps(full_media_path);
     },
 
-    convertToSlashPath(path) {
-      return path.replaceAll(path.sep, "/");
+    convertToSlashPath(p) {
+      return p.replaceAll(path.sep, "/");
     },
   };
 
