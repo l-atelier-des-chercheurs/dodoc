@@ -32,8 +32,8 @@ module.exports = (function () {
     },
 
     getPathToUserContent(...paths) {
-      if (path.sep !== "/")
-        paths = paths.map((p) => p.replaceAll("/", path.sep));
+      // if (path.sep !== "/")
+      //   paths = paths.map((p) => p.replaceAll("/", path.sep));
       return path.join(global.pathToUserContent, ...paths);
     },
     getBinFolder(p) {
@@ -42,8 +42,8 @@ module.exports = (function () {
       return path.join(pre, global.settings.deletedFolderName, post);
     },
     getPathToCache(...paths) {
-      if (path.sep !== "/")
-        paths = paths.map((p) => p.replaceAll("/", path.sep));
+      // if (path.sep !== "/")
+      //   paths = paths.map((p) => p.replaceAll("/", path.sep));
       return path.join(global.pathToCache, ...paths);
     },
     async createUniqueFolderInCache(prefix = "folder") {
@@ -526,9 +526,9 @@ module.exports = (function () {
     getContainingFolder(p) {
       return p.substring(0, p.lastIndexOf("/"));
     },
-    getFolderParent(path) {
-      if (!path) return false;
-      let paths = path.split("/");
+    getFolderParent(p) {
+      if (!p) return false;
+      let paths = p.split("/");
       if (paths.length >= 2) {
         paths = paths.slice(0, -2);
         return paths.join("/");
