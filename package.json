@@ -16,13 +16,12 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron .",
+    "start": "electron-forge start",
     "debug": "electron --inspect=5858 . -- --debug --verbose",
     "node-start": "node .",
     "node-debug": "node . --inspect=5858 -- --debug --verbose",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "engines": {
     "node": "20.9.0",
@@ -79,11 +78,12 @@
     "@iarna/toml": "^2.2.5",
     "archiver": "^7.0.1",
     "bonjour-service": "^1.2.1",
-    "chalk": "^5.3.0",
+    "chalk": "^4.1.2",
     "cheerio": "^0.22.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "electron-pdf-window": "^1.0.12",
+    "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.2.0",
     "electron-window-state": "^5.0.3",
     "eventemitter2": "^6.4.9",
@@ -98,7 +98,7 @@
     "heic-decode": "^2.0.0",
     "lru-cache": "^10.2.0",
     "md5-file": "^5.0.0",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "portscanner": "^2.2.0",
@@ -116,8 +116,13 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.3.1",
+    "@electron-forge/maker-deb": "^7.3.1",
+    "@electron-forge/maker-rpm": "^7.3.1",
+    "@electron-forge/maker-squirrel": "^7.3.1",
+    "@electron-forge/maker-zip": "^7.3.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
     "electron": "29.1.6",
-    "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
     "node-gyp": "^10.1.0"
   },
