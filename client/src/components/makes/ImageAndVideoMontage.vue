@@ -11,7 +11,7 @@
         <div class="_spacer" :key="'mc_' + index">
           <ModuleCreator
             :publication_path="make.$path"
-            :types_available="['medias']"
+            :types_available="['capture', 'import']"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
             "
@@ -74,7 +74,7 @@
       class="_lastModule"
       :publication_path="make.$path"
       :start_collapsed="false"
-      :types_available="['medias']"
+      :types_available="['capture', 'import']"
       @addModules="addModules"
     />
 

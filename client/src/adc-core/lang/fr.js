@@ -1044,4 +1044,6 @@ export default {
   </ul>
   `,
   about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
+
+  write: "Écrire",
 };
