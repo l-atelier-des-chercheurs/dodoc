@@ -1030,4 +1030,18 @@ export default {
 
   select_by_clicking: "sélectionner une forme en cliquant dessus",
   move_drawing: "cliquer-glisser pour déplacer la forme",
+
+  about_dodoc: "À propos de do•doc",
+  about_dodoc_txt: `do•doc est un logiciel libre et gratuit créé pour documenter des projets et animé par une communauté diversifiée regroupant des designers, des enseignants, des artistes, des formateurs, des créateurs et des passionnés de documentation en général.
+  Il est employé dans une multitude de contextes, que ce soit en classe, dans des fablabs, des tiers-lieux, ainsi que comme moteur de plateformes de ressources accessible en ligne.<br><br>
+  Le design et le développement de cet outil est assuré par le collectif <a href="https://latelier-des-chercheurs.fr/" target="_blank">l’Atelier des chercheurs</a> depuis ses débuts, en 2014, 
+  mais tout le monde a la possibilité de suivre ou de participer à ce travail par le biais de ce forum : <a href="https://forum.latelier-des-chercheurs.fr/" target="_blank">https://forum.latelier-des-chercheurs.fr/</a>.`,
+  about_dodoc_links: `
+  Voici quelques autres liens :
+  <ul>
+  <li>La dernière version du logiciel est disponible sur la page dédiée : <a href="https://dodoc.fr" target="_blank">https://dodoc.fr</a></li>
+  <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
+  </ul>
+  `,
+  about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
 };

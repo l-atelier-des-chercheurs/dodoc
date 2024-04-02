@@ -30,6 +30,19 @@
         {{ current_lang_code }}
       </button>
       <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+
+      <button
+        type="button"
+        class="u-button u-button_transparent"
+        @click="show_credits_modal = !show_credits_modal"
+      >
+        <b-icon icon="patch-question" />
+      </button>
+      <CreditsModal
+        v-if="show_credits_modal"
+        @close="show_credits_modal = false"
+      />
+
       <div class="_subscribeBtn">
         <AuthorTag
           v-if="connected_as"
@@ -68,6 +81,7 @@
 <script>
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
+import CreditsModal from "@/adc-core/modals/CreditsModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 
 export default {
@@ -76,12 +90,14 @@ export default {
     AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
     AuthorList,
     LangModal,
+    CreditsModal,
     BreadCrumbs,
   },
   data() {
     return {
       show_authors_modal: false,
       show_lang_modal: false,
+      show_credits_modal: false,
       show_qr_code_modal: false,
       show_settings_modal: false,
     };
