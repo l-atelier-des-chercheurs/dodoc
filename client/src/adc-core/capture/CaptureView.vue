@@ -2371,9 +2371,6 @@ export default {
 }
 
 ._download_media_without_validation {
-  position: absolute;
-  bottom: 0;
-  right: 0;
   background-color: var(--c-noir);
   padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
   // margin-top: calc(-0.5 * var(--spacing));
