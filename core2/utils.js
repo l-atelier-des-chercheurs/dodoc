@@ -405,7 +405,7 @@ module.exports = (function () {
       const schema = global.settings.schema;
 
       let items_in_path =
-        relative_path.length === 0 ? [] : relative_path.split(path.sep);
+        relative_path.length === 0 ? [] : relative_path.split("/");
       // items_in_path = items_in_path.filter((i) => i !== "_upload");
 
       // –––   / => schema (admin settings)
@@ -521,17 +521,17 @@ module.exports = (function () {
     },
 
     getSlugFromPath(p) {
-      return p.split(path.sep).at(-1);
+      return p.split("/").at(-1);
     },
     getContainingFolder(p) {
-      return p.substring(0, p.lastIndexOf(path.sep));
+      return p.substring(0, p.lastIndexOf("/"));
     },
-    getFolderParent(p) {
-      if (!p) return false;
-      let paths = p.split(path.sep);
+    getFolderParent(path) {
+      if (!path) return false;
+      let paths = path.split("/");
       if (paths.length >= 2) {
         paths = paths.slice(0, -2);
-        return paths.join(path.sep);
+        return paths.join("/");
       }
       return false;
     },
@@ -543,7 +543,7 @@ module.exports = (function () {
       return false;
     },
     getFilename(p) {
-      return p.substring(p.lastIndexOf(path.sep) + 1);
+      return p.substring(p.lastIndexOf("/") + 1);
     },
     hashCode(s) {
       return (

@@ -23,7 +23,7 @@ module.exports = (function () {
 
       let all_folders_with_meta = [];
       for (let folder_slug of folders_slugs) {
-        const path_to_folder = path.join(path_to_type, folder_slug);
+        const path_to_folder = path_to_type + "/" + folder_slug;
         const folder_meta = await API.getFolder({
           path_to_folder,
         }).catch((err) => {
