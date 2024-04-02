@@ -93,7 +93,7 @@
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.2",
-    "formidable": "^3.5.1",
+    "formidable": "^2.1.2",
     "fs-extra": "^11.2.0",
     "heic-decode": "^2.0.0",
     "lru-cache": "^10.2.0",
