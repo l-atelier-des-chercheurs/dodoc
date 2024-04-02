@@ -366,7 +366,7 @@
         :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
         :onion_skin_opacity.sync="onion_skin_opacity"
         :stopmotion_frame_rate.sync="stopmotion_frame_rate"
-        @saveMedia="($path) => $emit('insertMedia', [$path])"
+        @insertMedia="(meta_filename) => $emit('insertMedia', meta_filename)"
         @close="closeStopmotionPanel"
         @showPreviousImage="onion_skin_img = $event"
       />
@@ -1504,7 +1504,12 @@ export default {
       this.$refs.videoElement.play();
     },
     closeStopmotionPanel() {
-      this.$emit("openStopmotion", "");
+      this.$emit("openStopmotion", undefined);
+
+      this.media_is_being_sent = false;
+      this.media_being_sent_percent = 100;
+      this.media_to_validate = false;
+
       this.is_recording = false;
       this.ask_before_leaving_capture = false;
       this.show_live_feed = true;

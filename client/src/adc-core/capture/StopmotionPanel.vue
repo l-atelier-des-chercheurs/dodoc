@@ -448,17 +448,19 @@ export default {
 
       const checkIfEnded = ({ task_id, message }) => {
         if (task_id !== current_task_id) return;
-        setTimeout(() => {
-          this.compilation_in_progress = false;
-          message;
-          // works, but not that useful
-          // this.created_stopmotion = this.getSourceMedia({
-          //   source_media: {
-          //     meta_filename_in_project: this.getFilename(message.path),
-          //   },
-          //   folder_path: this.current_stopmotion_path,
-          // });
-        }, 1000);
+        this.compilation_in_progress = false;
+        this.validating_video_preview = false;
+
+        const meta_filename = this.getFilename(message.file?.$path);
+        if (meta_filename) this.$emit("insertMedia", meta_filename);
+        this.$emit("close");
+        // works, but not that useful
+        // this.created_stopmotion = this.getSourceMedia({
+        //   source_media: {
+        //     meta_filename_in_project: this.getFilename(message.path),
+        //   },
+        //   folder_path: this.current_stopmotion_path,
+        // });
         this.$eventHub.$off("task.ended", checkIfEnded);
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
