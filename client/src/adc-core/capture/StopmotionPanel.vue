@@ -123,7 +123,7 @@
                   !show_live_feed
                 "
                 @click="removeMedia(show_previous_photo.$path)"
-                class="u-button u-button_black _removeMedia"
+                class="u-button u-button_icon _removeMedia"
               >
                 <b-icon icon="trash" />
               </button>

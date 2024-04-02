@@ -12,6 +12,10 @@
           />
         </div>
 
+        <div class="_imgCount">
+          {{ current_media_index + 1 }}/{{ medias.length }}
+        </div>
+
         <button type="button" class="_playPauseBtn" @click="playPausePreview">
           <img
             v-if="!is_playing"
@@ -88,10 +92,10 @@ export default {
     },
     playPreview() {
       this.is_playing = true;
+      this.current_media_index = 0;
 
       this.preview_playing_event = window.setInterval(() => {
         this.current_media_index++;
-
         this.$nextTick(() => {
           if (this.current_media_index === this.medias.length - 1)
             this.stopPreview();
@@ -103,7 +107,6 @@ export default {
 
       window.clearInterval(this.preview_playing_event);
       this.preview_playing_event = undefined;
-      this.current_media_index = 0;
     },
   },
 };
@@ -162,7 +165,7 @@ export default {
   gap: 1px;
 
   z-index: -1;
-  opacity: 0.01;
+  opacity: 0.5;
 
   justify-content: center;
   align-items: center;
@@ -173,5 +176,14 @@ export default {
     width: 50px;
     height: 50px;
   }
+}
+
+._imgCount {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: calc(var(--spacing) / 2);
+  color: white;
+  font-size: var(--sl-font-size-x-small);
 }
 </style>
