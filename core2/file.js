@@ -135,7 +135,7 @@ module.exports = (function () {
       const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       let meta = await utils.readMetaFile(path_to_meta);
-      meta.$path = path_to_meta;
+      meta.$path = path_to_meta.replaceAll(path.sep, "/");
 
       const media_filename = meta.$media_filename;
       const media_type = meta.$type;
