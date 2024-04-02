@@ -68,7 +68,7 @@ module.exports = (function () {
         .catch((err) => {
           throw err;
         });
-      folder_meta.$path = path_to_folder.replaceAll(path.sep, "/");
+      folder_meta.$path = utils.convertToSlashPath(path_to_folder);
 
       if (item_in_schema.$cover) {
         let cover = await _getFolderCover({

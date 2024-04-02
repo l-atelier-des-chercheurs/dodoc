@@ -693,6 +693,10 @@ module.exports = (function () {
     async getGPSFromFile(full_media_path) {
       return await exifr.gps(full_media_path);
     },
+
+    convertToSlashPath(path) {
+      return path.replaceAll(path.sep, "/");
+    },
   };
 
   return API;
