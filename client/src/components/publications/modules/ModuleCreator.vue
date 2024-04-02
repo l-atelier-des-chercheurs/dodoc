@@ -16,7 +16,6 @@
           <b-icon
             icon="record-circle-fill"
             style="font-size: var(--icon-size)"
-            :label="$t('add_medias')"
           />
           <template v-if="show_labels">{{ $t("capture") }}</template>
         </button>
@@ -30,14 +29,10 @@
         <button
           type="button"
           class="u-button u-button_orange"
-          v-if="types_available.includes('medias')"
+          v-if="types_available.includes('import')"
           @click="show_media_picker = true"
         >
-          <b-icon
-            icon="image"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_medias')"
-          />
+          <b-icon icon="image" style="font-size: var(--icon-size)" />
           <template v-if="show_labels">{{ $t("import") }}</template>
         </button>
         <MediaPicker
@@ -51,29 +46,21 @@
         <button
           type="button"
           class="u-button u-button_bleuvert"
-          v-if="types_available.includes('text')"
+          v-if="types_available.includes('write')"
           @click="createText"
         >
-          <b-icon
-            icon="fonts"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_text')"
-          />
+          <b-icon icon="fonts" style="font-size: var(--icon-size)" />
           <template v-if="show_labels">{{ $t("write") }}</template>
         </button>
 
         <button
           type="button"
           class="u-button u-button_bleuvert"
-          v-if="types_available.includes('link')"
+          v-if="types_available.includes('embed')"
           @click="show_link_picker = true"
         >
-          <b-icon
-            icon="link"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_link')"
-          />
-          <template v-if="show_labels">{{ $t("link") }}</template>
+          <b-icon icon="link" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("embed") }}</template>
         </button>
         <LinkPicker
           v-if="show_link_picker"
@@ -94,11 +81,7 @@
               })
             "
           >
-            <b-icon
-              :icon="shape.icon"
-              style="font-size: var(--icon-size)"
-              :label="$t(shape.type)"
-            />
+            <b-icon :icon="shape.icon" style="font-size: var(--icon-size)" />
             <template v-if="show_labels">{{ $t(shape.type) }}</template>
             <!-- {{ $t("add_medias") }} -->
           </button>
@@ -141,7 +124,7 @@ export default {
     context: String,
     types_available: {
       type: Array,
-      default: () => ["capture", "medias", "text", "files", "link", "shapes"],
+      default: () => ["capture", "import", "write", "embed", "shapes"],
     },
     start_collapsed: {
       type: Boolean,
