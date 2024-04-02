@@ -16,12 +16,13 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron-forge start",
+    "start": "electron .",
     "debug": "electron --inspect=5858 . -- --debug --verbose",
     "node-start": "node .",
     "node-debug": "node . --inspect=5858 -- --debug --verbose",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
     "node": "20.9.0",
@@ -83,7 +84,6 @@
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "electron-pdf-window": "^1.0.12",
-    "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.2.0",
     "electron-window-state": "^5.0.3",
     "eventemitter2": "^6.4.9",
@@ -116,13 +116,8 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.3.1",
-    "@electron-forge/maker-deb": "^7.3.1",
-    "@electron-forge/maker-rpm": "^7.3.1",
-    "@electron-forge/maker-squirrel": "^7.3.1",
-    "@electron-forge/maker-zip": "^7.3.1",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
     "electron": "29.1.6",
+    "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
     "node-gyp": "^10.1.0"
   },
