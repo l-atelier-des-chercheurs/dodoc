@@ -38,6 +38,7 @@ export default {
       this.$emit("createMosaic", {
         path_to_source_media_metas,
       });
+      this.$emit("close");
     },
   },
 };
