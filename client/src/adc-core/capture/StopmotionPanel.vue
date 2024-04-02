@@ -261,7 +261,7 @@ export default {
     stopmotion_frame_rate() {
       this.frame_rate = this.stopmotion_frame_rate;
     },
-    medias: function () {
+    medias() {
       if (this.medias.length > 0) {
         if (this.show_live_feed) {
           this.show_previous_photo = this.medias[this.medias.length - 1];
@@ -287,7 +287,7 @@ export default {
       },
       immediate: true,
     },
-    show_previous_photo: function () {
+    show_previous_photo() {
       this.$emit("showPreviousImage", this.show_previous_photo);
 
       // scroll to
@@ -303,10 +303,10 @@ export default {
           });
       });
     },
-    validating_video_preview: function () {
+    validating_video_preview() {
       this.$emit(
         "update:is_validating_stopmotion_video",
-        !!this.validating_video_preview
+        this.validating_video_preview
       );
     },
   },
@@ -389,7 +389,7 @@ export default {
       this.$nextTick(() => {
         this.$nextTick(() => {
           // strange bug where the window would scroll halfway up on click
-          this.$el.scrollIntoView({ behavior: "auto", block: "end" });
+          // this.$el.scrollIntoView({ behavior: "auto", block: "end" });
         });
       });
     },
@@ -420,13 +420,13 @@ export default {
     lastImage() {
       this.showVideoFeed();
     },
-    backToStopmotion: function () {
+    backToStopmotion() {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
       this.validating_video_preview = false;
       this.created_stopmotion = false;
       this.$emit("update:show_live_feed", true);
     },
-    exportStopmotion: async function () {
+    async exportStopmotion() {
       this.compilation_in_progress = true;
 
       const additional_meta = {};
@@ -445,11 +445,11 @@ export default {
       });
 
       this.$alertify.delay(4000).log(this.$t("compilation_started"));
+      this.backToStopmotion();
 
       const checkIfEnded = ({ task_id, message }) => {
         if (task_id !== current_task_id) return;
         this.compilation_in_progress = false;
-        this.validating_video_preview = false;
 
         const meta_filename = this.getFilename(message.file?.$path);
         if (meta_filename) this.$emit("insertMedia", meta_filename);

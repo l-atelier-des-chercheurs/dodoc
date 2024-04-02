@@ -1201,7 +1201,7 @@ export default {
     ); //turn off the event handler
   },
   watch: {
-    selected_mode: function (val, oldVal) {
+    selected_mode(val, oldVal) {
       // prevent starting nomode (when reclicking tab bar)
       if (!val) {
         this.$emit("changeMode", oldVal);
@@ -1238,7 +1238,7 @@ export default {
         JSON.stringify(this.location_to_add_to_medias)
       );
     },
-    is_validating_stopmotion_video: function () {
+    is_validating_stopmotion_video() {
       if (this.is_validating_stopmotion_video) {
         this.$refs.videoElement.pause();
       } else {
@@ -1249,12 +1249,12 @@ export default {
     is_making_stopmotion() {
       if (this.is_making_stopmotion) this.show_capture_settings = false;
     },
-    audio_output_deviceId: function () {
+    audio_output_deviceId() {
       // const audio = document.createElement('audio');
       // await audio.setSinkId(audioDevices[0].deviceId);
       // console.log('Audio is being played on ' + audio.sinkId);
     },
-    media_to_validate: function () {
+    media_to_validate() {
       console.log(
         `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
@@ -1809,7 +1809,7 @@ export default {
         _canvas = from_element;
       }
 
-      const imageBlob = await new Promise(function (resolve) {
+      const imageBlob = await new Promise((resolve) => {
         _canvas.toBlob(resolve, "image/jpeg", 0.95);
       });
       return imageBlob;
@@ -1824,7 +1824,7 @@ export default {
             this.enable_effects && this.$refs.canvasElement
               ? this.$refs.canvasElement.captureStream()
               : this.stream;
-          video_source.getVideoTracks().forEach(function (track) {
+          video_source.getVideoTracks().forEach((track) => {
             finalStream.addTrack(track);
           });
         }
