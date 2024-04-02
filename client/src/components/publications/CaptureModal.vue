@@ -3,7 +3,9 @@
     <CaptureView
       :path="path"
       :selected_mode="selected_mode"
+      :stopmotion_slug="stopmotion_slug"
       @changeMode="selected_mode = $event"
+      @openStopmotion="stopmotion_slug = $event"
       @insertMedia="insertMedia"
     />
   </BaseModal2>
@@ -19,6 +21,7 @@ export default {
   data() {
     return {
       selected_mode: "photo",
+      stopmotion_slug: undefined,
     };
   },
   i18n: {
