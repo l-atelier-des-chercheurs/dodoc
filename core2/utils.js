@@ -494,9 +494,9 @@ module.exports = (function () {
 
       let path_to_parent_folder = [];
       if (sub_folder_slug) {
-        path_to_folder.push(folder_type, folder_slug);
+        path_to_parent_folder.push(folder_type, folder_slug);
         if (subsub_folder_slug)
-          path_to_folder.push(sub_folder_type, sub_folder_slug);
+          path_to_parent_folder.push(sub_folder_type, sub_folder_slug);
       }
       obj.path_to_parent_folder = path.join(...path_to_parent_folder);
 
