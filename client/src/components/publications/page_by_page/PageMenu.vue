@@ -373,9 +373,45 @@
             @save="updateMediaPubliMeta({ height: $event })"
           />
         </div>
-        <div v-if="first_media_has_resolution && layout_mode === 'screen'">
-          <button type="button" class="u-buttonLink" @click="setRealSize">
+        <div class="_setSizeBtn">
+          <!-- <button
+            type="button"
+            class="u-button_icon"
+            v-if="layout_mode === 'screen' && first_media_has_resolution"
+            @click="setRealSize"
+          >
             {{ $t("real_size") }}
+          </button> -->
+          <button type="button" class="u-button_icon" @click="setSize('full')">
+            <b-icon icon="square-fill" :aria-label="$t('full_page')" />
+          </button>
+          <button
+            type="button"
+            class="u-button_icon"
+            @click="setSize('half_left')"
+          >
+            <b-icon icon="square-half" />
+          </button>
+          <button
+            type="button"
+            class="u-button_icon"
+            @click="setSize('half_right')"
+          >
+            <b-icon icon="square-half" rotate="180" />
+          </button>
+          <button
+            type="button"
+            class="u-button_icon"
+            @click="setSize('half_top')"
+          >
+            <b-icon icon="square-half" rotate="90" />
+          </button>
+          <button
+            type="button"
+            class="u-button_icon"
+            @click="setSize('half_bottom')"
+          >
+            <b-icon icon="square-half" rotate="270" />
           </button>
         </div>
 
@@ -551,6 +587,8 @@ export default {
     pages: Array,
     active_page_number: Number,
     active_spread_index: [Boolean, Number],
+    page_width: Number,
+    page_height: Number,
     scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
@@ -721,6 +759,43 @@ export default {
         width,
         height,
       });
+    },
+    async setSize(type) {
+      if (type === "full")
+        await this.updateMediaPubliMeta({
+          width: this.page_width,
+          height: this.page_height,
+          x: 0,
+          y: 0,
+        });
+      else if (type === "half_left")
+        await this.updateMediaPubliMeta({
+          width: this.page_width / 2,
+          height: this.page_height,
+          x: 0,
+          y: 0,
+        });
+      else if (type === "half_right")
+        await this.updateMediaPubliMeta({
+          width: this.page_width / 2,
+          height: this.page_height,
+          x: this.page_width / 2,
+          y: 0,
+        });
+      else if (type === "half_top")
+        await this.updateMediaPubliMeta({
+          width: this.page_width,
+          height: this.page_height / 2,
+          x: 0,
+          y: 0,
+        });
+      else if (type === "half_bottom")
+        await this.updateMediaPubliMeta({
+          width: this.page_width,
+          height: this.page_height / 2,
+          x: 0,
+          y: this.page_height / 2,
+        });
     },
     changeModulePage() {
       this.$eventHub.$emit(`module.move.${this.module_meta_filename}`);
