@@ -770,7 +770,7 @@ module.exports = (function () {
     if (!meta.hasOwnProperty("source_medias")) return meta;
 
     const source_folder = utils.getFolderParent(
-      utils.getContainingFolder(meta.$path)
+      utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
     );
 
     for (const [index, source_media] of meta.source_medias.entries()) {

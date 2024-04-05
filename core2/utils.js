@@ -697,6 +697,9 @@ module.exports = (function () {
     convertToSlashPath(p) {
       return p.replaceAll(path.sep, "/");
     },
+    convertToLocalPath(p) {
+      return p.replaceAll("/", path.sep);
+    },
   };
 
   return API;
