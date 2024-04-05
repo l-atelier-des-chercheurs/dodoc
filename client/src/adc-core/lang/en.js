@@ -977,4 +977,6 @@ export default {
   about_dodoc_contributors: `Main contributors: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
 
   write: "Write",
+  real_size: "Real size",
+  full_page: "Full page",
 };
