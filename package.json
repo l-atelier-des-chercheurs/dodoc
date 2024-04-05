@@ -38,7 +38,7 @@
     "icon": "build/icon.png",
     "win": {
       "artifactName": "dodoc-${version}-windows.${ext}",
-      "target": "dir"
+      "target": "nsis"
     },
     "nsis": {
       "oneClick": true,
