@@ -251,8 +251,8 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       // convert path_to_folder to URL (see createURLFromPath)
       const path_without_space = this.path_to_folder
-        .replace("spaces/", "/+")
-        .replace("projects/", "");
+        .replace("spaces" + path.sep, "/+")
+        .replace("projects" + path.sep, "");
 
       let url = global.appInfos.homeURL + path_without_space;
 
