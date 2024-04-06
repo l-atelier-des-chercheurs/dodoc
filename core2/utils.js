@@ -563,9 +563,9 @@ module.exports = (function () {
       );
     },
     remap(val, in_min, in_max, out_min, out_max) {
-      return (
-        ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min
-      );
+      const new_val =
+        ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+      return Math.min(Math.max(new_val, out_min), out_max);
     },
     fileExtensionIs(media_path, ext) {
       const exts = typeof ext === "string" ? [ext] : ext;
@@ -645,6 +645,7 @@ module.exports = (function () {
           .on("progress", (progress) => {
             if (reportProgress) {
               const time = parseInt(progress.timemark.replace(/:/g, ""));
+              if (time < 0 || time > totalTime) return;
               const percent = (time / totalTime) * 100;
               reportProgress(percent);
             }
