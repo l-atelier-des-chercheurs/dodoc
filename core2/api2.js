@@ -1260,7 +1260,7 @@ module.exports = (function () {
 
       notifier.emit("fileRemoved", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
-        path_to_meta,
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
       });
     } catch (err) {
       const { message, code, err_infos } = err;
