@@ -375,7 +375,8 @@ module.exports = (function () {
     const token_path = auth.extrackAndCheckToken({ req });
 
     if (token_path) {
-      if (token_path === path_to_folder) return "Token editing self";
+      if (token_path === utils.convertToSlashPath(path_to_folder))
+        return "Token editing self";
       if (await auth.isTokenInstanceAdmin({ token_path }))
         return "Token is instance admin";
       if (
