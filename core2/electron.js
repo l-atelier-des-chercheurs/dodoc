@@ -40,10 +40,6 @@ module.exports = (function () {
         app.on("ready", () => {
           dev.log(`ELECTRON — init : ready`);
 
-          if (process.platform === "linux") {
-            process.env.G_SLICE = "always-malloc";
-          }
-
           createWindow().then((_win) => {
             dev.logfunction(`ELECTRON — init : ready / window created`);
             win = _win;
