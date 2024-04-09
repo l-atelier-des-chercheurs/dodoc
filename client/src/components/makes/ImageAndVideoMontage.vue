@@ -11,7 +11,7 @@
         <div class="_spacer" :key="'mc_' + index">
           <ModuleCreator
             :publication_path="make.$path"
-            :types_available="['medias']"
+            :types_available="['capture', 'import']"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
             "
@@ -70,13 +70,14 @@
         /> -->
       </template>
     </transition-group>
-    <ModuleCreator
-      class="_lastModule"
-      :publication_path="make.$path"
-      :start_collapsed="false"
-      :types_available="['medias']"
-      @addModules="addModules"
-    />
+    <div class="_lastModule">
+      <ModuleCreator
+        :publication_path="make.$path"
+        :start_collapsed="false"
+        :types_available="['capture', 'import']"
+        @addModules="addModules"
+      />
+    </div>
 
     <transition name="pagechange" mode="out-in">
       <div class="_bottomRow" v-if="export_is_available">

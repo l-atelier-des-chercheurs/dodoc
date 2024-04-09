@@ -9,30 +9,31 @@
       <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
-          class="u-button u-button_bleuvert u-button_small"
-          v-if="types_available.includes('text')"
-          @click="createText"
+          class="u-button u-button_red"
+          v-if="types_available.includes('capture')"
+          @click="show_capture_modal = true"
         >
           <b-icon
-            icon="fonts"
+            icon="record-circle-fill"
             style="font-size: var(--icon-size)"
-            :label="$t('add_text')"
           />
-          <template v-if="show_labels">{{ $t("text") }}</template>
+          <template v-if="show_labels">{{ $t("capture") }}</template>
         </button>
+        <CaptureModal
+          v-if="show_capture_modal"
+          :path="project_path"
+          @createMosaic="createMosaic"
+          @close="show_capture_modal = false"
+        />
 
         <button
           type="button"
-          class="u-button u-button_bleuvert u-button_small"
-          v-if="types_available.includes('medias')"
+          class="u-button u-button_orange"
+          v-if="types_available.includes('import')"
           @click="show_media_picker = true"
         >
-          <b-icon
-            icon="image"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_medias')"
-          />
-          <template v-if="show_labels">{{ $t("medias") }}</template>
+          <b-icon icon="image" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("import") }}</template>
         </button>
         <MediaPicker
           v-if="show_media_picker"
@@ -42,39 +43,24 @@
           @close="show_media_picker = false"
         />
 
-        <!-- <button
+        <button
           type="button"
           class="u-button u-button_bleuvert"
-          v-if="types_available.includes('files')"
-          @click="show_file_picker = true"
+          v-if="types_available.includes('write')"
+          @click="createText"
         >
-          <template v-if="show_labels">{{ $t("files") }}</template>
-          <sl-icon
-            name="file-earmark-binary-fill"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_files')"
-          />
-        </button> -->
-        <!-- <MediaPicker
-          v-if="show_file_picker"
-          :publication_path="publication_path"
-          :select_mode="select_mode"
-          @addMedias="createFiles"
-          @close="show_file_picker = false"
-        /> -->
+          <b-icon icon="fonts" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("write") }}</template>
+        </button>
 
         <button
           type="button"
-          class="u-button u-button_bleuvert u-button_small"
-          v-if="types_available.includes('link')"
+          class="u-button u-button_bleuvert"
+          v-if="types_available.includes('embed')"
           @click="show_link_picker = true"
         >
-          <b-icon
-            icon="link"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_link')"
-          />
-          <template v-if="show_labels">{{ $t("link") }}</template>
+          <b-icon icon="link" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("embed") }}</template>
         </button>
         <LinkPicker
           v-if="show_link_picker"
@@ -87,7 +73,7 @@
             type="button"
             v-for="shape in shapes"
             :key="shape.type"
-            class="u-button u-button_bleuvert u-button_small"
+            class="u-button u-button_bleumarine"
             @click="
               createCustomModule({
                 module_type: shape.type,
@@ -95,11 +81,7 @@
               })
             "
           >
-            <b-icon
-              :icon="shape.icon"
-              style="font-size: var(--icon-size)"
-              :label="$t(shape.type)"
-            />
+            <b-icon :icon="shape.icon" style="font-size: var(--icon-size)" />
             <template v-if="show_labels">{{ $t(shape.type) }}</template>
             <!-- {{ $t("add_medias") }} -->
           </button>
@@ -121,21 +103,11 @@
         @click="show_module_selector = true"
       />
     </transition>
-
-    <!-- <button
-      type="button"
-      class="u-button u-button_transparent u-addBtn"
-      v-if="start_collapsed"
-      :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
-      @click="show_module_selector = !show_module_selector"
-    >
-      <b-icon icon="plus-circle-fill" />
-    </button> -->
-
     <DropZone @mediaDropped="mediaDropped" />
   </div>
 </template>
 <script>
+import CaptureModal from "@/components/publications/CaptureModal.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 
@@ -152,7 +124,7 @@ export default {
     context: String,
     types_available: {
       type: Array,
-      default: () => ["text", "medias", "files", "link", "shapes"],
+      default: () => ["capture", "import", "write", "embed", "shapes"],
     },
     start_collapsed: {
       type: Boolean,
@@ -160,11 +132,13 @@ export default {
     },
   },
   components: {
+    CaptureModal,
     MediaPicker,
     LinkPicker,
   },
   data() {
     return {
+      show_capture_modal: false,
       show_module_selector: false,
       show_media_picker: false,
       show_file_picker: false,
@@ -225,7 +199,13 @@ export default {
   watch: {
     show_module_selector() {},
   },
-  computed: {},
+  computed: {
+    project_path() {
+      if (this.$root.publication_include_mode === "link")
+        return this.getParent(this.getParent(this.publication_path));
+      return this.publication_path;
+    },
+  },
   methods: {
     async mediaDropped({ path_to_source_media_metas }) {
       // todo multiple cases here : if drag/drop media already in a publication, drag drop media from library
@@ -306,6 +286,7 @@ export default {
 
       this.show_file_picker = false;
     },
+
     async createCustomModule({ module_type, addtl_meta }) {
       await this.createModule({
         module_type,

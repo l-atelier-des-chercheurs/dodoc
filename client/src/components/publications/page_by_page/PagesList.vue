@@ -1,67 +1,43 @@
 <template>
   <transition name="slideup">
-    <transition-group
-      v-if="!page_opened_id"
-      tag="div"
-      name="listComplete"
-      class="_allPages"
-      key="allpages"
-    >
-      <template v-if="!is_spread">
-        <div
-          class="_page"
-          v-for="(page, index) in pages"
-          :key="'page-' + page.id"
-        >
-          <div class="_preview">
-            <SinglePage
-              :context="'preview'"
-              :zoom="page_preview_zoom"
-              :page_modules="getModulesForPage({ modules, page_id: page.id })"
-              :page_width="publication.page_width"
-              :page_height="publication.page_height"
-              :layout_mode="publication.layout_mode"
-              :page_color="page.page_color"
-              :page_number="index"
-              :pagination="pagination"
-              :hide_pagination="page.hide_pagination === true"
-              :can_edit="false"
-            />
+    <div v-if="!page_opened_id">
+      <div class="_setPreviewSize">
+        <RangeValueInput
+          :label="$t('previews_size')"
+          :value="previews_size"
+          :can_toggle="false"
+          :min="20"
+          :max="600"
+          :step="1"
+          :ticks="[20, 50, 100, 200, 400, 600]"
+          :default_value="200"
+          @save="previews_size = $event"
+        />
+      </div>
+
+      <transition-group
+        tag="div"
+        name="listComplete"
+        class="_allPages"
+        key="allpages"
+      >
+        <template v-if="!is_spread">
+          <div
+            v-for="(page, index) in pages"
+            :key="'page-' + page.id"
+            class="u-sameRow"
+          >
             <button
               type="button"
-              class="u-button _openPage"
-              @click="$emit('togglePage', page.id)"
-              v-html="$t('open')"
-            />
-          </div>
-
-          <PageLabel
-            :index="index"
-            :number_of_pages="pages.length"
-            :can_edit="can_edit"
-            @movePage="
-              movePage({
-                old_position: $event.old_position,
-                new_position: $event.new_position,
-              })
-            "
-            @duplicatePage="duplicatePage(page.id)"
-            @removePage="removePage(page.id)"
-          />
-        </div>
-      </template>
-      <template v-else>
-        <div
-          class="_spread"
-          v-for="(spread, index) in spreads"
-          :key="'spread-' + index"
-        >
-          <div
-            class=""
-            v-for="(page, iindex) in spread"
-            :key="page ? page.id : iindex"
-          >
-            <template v-if="page && page.id">
+              class="u-button u-button_icon u-button_small _createPage"
+              @click="createPage(index)"
+              v-if="can_edit"
+              :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
+              :key="'createPage' + index"
+            >
+              <b-icon icon="plus-circle" />
+            </button>
+            <div class="_page">
               <div class="_preview">
                 <SinglePage
                   :context="'preview'"
@@ -73,10 +49,9 @@
                   :page_height="publication.page_height"
                   :layout_mode="publication.layout_mode"
                   :page_color="page.page_color"
-                  :page_number="index * 2 + iindex"
+                  :page_number="index"
                   :pagination="pagination"
                   :hide_pagination="page.hide_pagination === true"
-                  :page_is_left="iindex === 0"
                   :can_edit="false"
                 />
                 <button
@@ -85,11 +60,9 @@
                   @click="$emit('togglePage', page.id)"
                   v-html="$t('open')"
                 />
-                <!-- <div v-else>No preview</div> -->
               </div>
-
               <PageLabel
-                :index="index * 2 + iindex - 1"
+                :index="index"
                 :number_of_pages="pages.length"
                 :can_edit="can_edit"
                 @movePage="
@@ -101,44 +74,76 @@
                 @duplicatePage="duplicatePage(page.id)"
                 @removePage="removePage(page.id)"
               />
-
-              <!-- <div class="_label">
-                  <b>{{ $t("page") }}</b>
-                  <SelectField
-                    :key="'page-' + index * 2 + iindex"
-                    :content="index * 2 + iindex"
-                    :can_edit="can_edit"
-                    :options="all_pages_in_select"
-                    @update="
-                      movePage({
-                        old_position: index * 2 + iindex - 1,
-                        new_position: $event - 1,
-                      })
-                    "
-                  />
-                  <RemoveMenu
-                    v-if="can_edit"
-                    :remove_text="$t('remove_page_and_content')"
-                    :show_button_text="false"
-                    @remove="removePage(page.id)"
-                  />
-                </div> -->
-            </template>
+            </div>
           </div>
-        </div>
-      </template>
-      <button
-        type="button"
-        class="u-button u-button_transparent _createPage"
-        @click="createPage"
-        v-if="can_edit"
-        :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
-        key="createPage"
-      >
-        <sl-icon name="plus-circle" />
-        {{ $t("create_page") }}
-      </button>
-    </transition-group>
+        </template>
+        <template v-else>
+          <div
+            class="_spread"
+            v-for="(spread, index) in spreads"
+            :key="'spread-' + index"
+          >
+            <div
+              class=""
+              v-for="(page, iindex) in spread"
+              :key="page ? page.id : iindex"
+            >
+              <template v-if="page && page.id">
+                <div class="_preview">
+                  <SinglePage
+                    :context="'preview'"
+                    :zoom="page_preview_zoom"
+                    :page_modules="
+                      getModulesForPage({ modules, page_id: page.id })
+                    "
+                    :page_width="publication.page_width"
+                    :page_height="publication.page_height"
+                    :layout_mode="publication.layout_mode"
+                    :page_color="page.page_color"
+                    :page_number="index * 2 + iindex"
+                    :pagination="pagination"
+                    :hide_pagination="page.hide_pagination === true"
+                    :page_is_left="iindex === 0"
+                    :can_edit="false"
+                  />
+                  <button
+                    type="button"
+                    class="u-button _openPage"
+                    @click="$emit('togglePage', page.id)"
+                    v-html="$t('open')"
+                  />
+                  <!-- <div v-else>No preview</div> -->
+                </div>
+                <PageLabel
+                  :index="index * 2 + iindex - 1"
+                  :number_of_pages="pages.length"
+                  :can_edit="can_edit"
+                  @movePage="
+                    movePage({
+                      old_position: $event.old_position,
+                      new_position: $event.new_position,
+                    })
+                  "
+                  @duplicatePage="duplicatePage(page.id)"
+                  @removePage="removePage(page.id)"
+                />
+              </template>
+            </div>
+          </div>
+        </template>
+        <button
+          type="button"
+          class="u-button u-button_white _createPage"
+          @click="createPage"
+          v-if="can_edit"
+          :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
+          key="createPage"
+        >
+          <b-icon icon="plus-circle" />
+          {{ $t("create_page") }}
+        </button>
+      </transition-group>
+    </div>
     <OpenedPageOrSpread
       v-else
       key="openedpage"
@@ -186,10 +191,8 @@ export default {
   data() {
     return {
       is_creating_page: false,
+      previews_size: 200,
     };
-  },
-  i18n: {
-    messages: {},
   },
 
   created() {},
@@ -211,7 +214,7 @@ export default {
       return this.calculateZoomToFit({
         width: this.publication.page_width,
         height: this.publication.page_height,
-        desired_largest_dimension: 200,
+        desired_largest_dimension: this.previews_size,
         magnification:
           this.publication.layout_mode === "screen"
             ? 1
@@ -276,17 +279,20 @@ export default {
     },
   },
   methods: {
-    async createPage() {
+    async createPage(index) {
       this.is_creating_page = true;
 
       const new_page_id = this.generatePageID();
 
       let pages = this.publication.pages ? this.publication.pages.slice() : [];
 
-      pages.push({
+      const p = {
         id: new_page_id,
         page_color: "white",
-      });
+      };
+
+      if (typeof index !== "number") pages.push(p);
+      else pages.splice(index, 0, p);
 
       await this.updatePubliMeta({
         pages,
@@ -381,7 +387,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 }
 
@@ -403,8 +409,8 @@ export default {
   position: relative;
   overflow: hidden;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-  min-width: 2em;
-  min-height: 2em;
+  // min-width: 2em;
+  // min-height: 2em;
   background: rgba(255, 255, 255, 0.2);
 }
 ._openPage {
@@ -429,5 +435,12 @@ export default {
 }
 ._createPage {
   margin-bottom: calc(var(--spacing) * 3);
+}
+
+._setPreviewSize {
+  max-width: 320px;
+  margin: 0 auto;
+  margin-left: 0;
+  padding: calc(var(--spacing) / 1);
 }
 </style>

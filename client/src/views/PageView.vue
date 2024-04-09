@@ -11,7 +11,7 @@
             :content="page.title"
             :path="page.$path"
             :required="true"
-            :maxlength="40"
+            :maxlength="70"
             :tag="'h1'"
             :can_edit="can_edit"
           />

@@ -360,13 +360,13 @@
       <!-- <transition name="slideup" :duration="150" mode="out-in"> -->
       <StopmotionPanel
         v-if="stopmotion_slug"
-        :current_stopmotion_path="`${slugFolderName}/stopmotions/${stopmotion_slug}`"
+        :current_stopmotion_path="`${path}/stopmotions/${stopmotion_slug}`"
         :stream="stream"
         :show_live_feed.sync="show_live_feed"
         :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
         :onion_skin_opacity.sync="onion_skin_opacity"
         :stopmotion_frame_rate.sync="stopmotion_frame_rate"
-        @saveMedia="($path) => $emit('insertMedias', [$path])"
+        @insertMedia="(meta_filename) => $emit('insertMedia', meta_filename)"
         @close="closeStopmotionPanel"
         @showPreviousImage="onion_skin_img = $event"
       />
@@ -991,7 +991,6 @@ import ysFixWebmDuration from "fix-webm-duration";
 
 export default {
   props: {
-    slugFolderName: String,
     type: String,
     path: String,
     selected_mode: String,
@@ -1202,7 +1201,7 @@ export default {
     ); //turn off the event handler
   },
   watch: {
-    selected_mode: function (val, oldVal) {
+    selected_mode(val, oldVal) {
       // prevent starting nomode (when reclicking tab bar)
       if (!val) {
         this.$emit("changeMode", oldVal);
@@ -1239,7 +1238,7 @@ export default {
         JSON.stringify(this.location_to_add_to_medias)
       );
     },
-    is_validating_stopmotion_video: function () {
+    is_validating_stopmotion_video() {
       if (this.is_validating_stopmotion_video) {
         this.$refs.videoElement.pause();
       } else {
@@ -1250,12 +1249,12 @@ export default {
     is_making_stopmotion() {
       if (this.is_making_stopmotion) this.show_capture_settings = false;
     },
-    audio_output_deviceId: function () {
+    audio_output_deviceId() {
       // const audio = document.createElement('audio');
       // await audio.setSinkId(audioDevices[0].deviceId);
       // console.log('Audio is being played on ' + audio.sinkId);
     },
-    media_to_validate: function () {
+    media_to_validate() {
       console.log(
         `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
@@ -1429,7 +1428,6 @@ export default {
       );
       this.$emit("openStopmotion", stopmotion_slug);
       this.show_stopmotion_list = false;
-      // this.current_stopmotion_path = slugFolderName;
       // this.ask_before_leaving_capture = true;
     },
     checkCapturePanelSize() {
@@ -1481,9 +1479,9 @@ export default {
         this.ask_before_leaving_capture = true;
         // create stopmotion
         const new_stopmotion_slug = await this.$api.createFolder({
-          path: `${this.slugFolderName}/stopmotions`,
+          path: `${this.path}/stopmotions`,
           additional_meta: {
-            name: this.slugFolderName + "-" + new Date().getTime(),
+            name: new Date().getTime(),
             $admins: "parent_contributors",
           },
         });
@@ -1506,7 +1504,12 @@ export default {
       this.$refs.videoElement.play();
     },
     closeStopmotionPanel() {
-      this.$emit("openStopmotion", "");
+      this.$emit("openStopmotion", undefined);
+
+      this.media_is_being_sent = false;
+      this.media_being_sent_percent = 100;
+      this.media_to_validate = false;
+
       this.is_recording = false;
       this.ask_before_leaving_capture = false;
       this.show_live_feed = true;
@@ -1806,7 +1809,7 @@ export default {
         _canvas = from_element;
       }
 
-      const imageBlob = await new Promise(function (resolve) {
+      const imageBlob = await new Promise((resolve) => {
         _canvas.toBlob(resolve, "image/jpeg", 0.95);
       });
       return imageBlob;
@@ -1821,7 +1824,7 @@ export default {
             this.enable_effects && this.$refs.canvasElement
               ? this.$refs.canvasElement.captureStream()
               : this.stream;
-          video_source.getVideoTracks().forEach(function (track) {
+          video_source.getVideoTracks().forEach((track) => {
             finalStream.addTrack(track);
           });
         }
@@ -1939,7 +1942,7 @@ export default {
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
 
-      this.$emit("insertMedias", meta_filename);
+      this.$emit("insertMedia", meta_filename);
       return;
     },
     cancelValidation() {
@@ -2373,9 +2376,6 @@ export default {
 }
 
 ._download_media_without_validation {
-  position: absolute;
-  bottom: 0;
-  right: 0;
   background-color: var(--c-noir);
   padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
   // margin-top: calc(-0.5 * var(--spacing));

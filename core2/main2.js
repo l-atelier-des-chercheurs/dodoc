@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs-extra");
 const portscanner = require("portscanner");
+const v8 = require("v8");
 
 const server = require("./server"),
   dev = require("./dev-log"),
@@ -15,6 +16,13 @@ module.exports = async function () {
   console.log(`App is ${is_electron ? "electron" : "node"}`);
   console.log(`Starting = ${global.appInfos.name}`);
   console.log(`Node = ${process.versions.node}`);
+
+  // setInterval(() => {
+  //   const usedHeapSize = process.memoryUsage().heapUsed;
+  //   const totalHeapSize = v8.getHeapStatistics().total_available_size;
+  //   const heapPercentage = (usedHeapSize / totalHeapSize) * 100;
+  //   console.log(`Heap Memory Usage: ${heapPercentage.toFixed(2)}%`);
+  // }, 1000);
 
   const debug = process.argv.length > 0 && process.argv.includes("--debug");
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
@@ -141,7 +149,10 @@ async function copyAndRenameUserFolder(full_default_path) {
   // two cases:
   if (global.settings.contentPath.startsWith("/")) {
     // if starts with '/' then its a path to the folder itself
-    full_path_to_content = global.settings.contentPath;
+    full_path_to_content = global.settings.contentPath.replaceAll(
+      "/",
+      path.sep
+    );
   } else {
     // if contentPath is just a name, thats the name of the folder inside /Documents
     const user_dir_path = paths.getDocumentsFolder(is_electron);

@@ -26,7 +26,10 @@ module.exports = (function () {
       // todo replace with jwt with expiration
       // https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
       const token = crypto.randomBytes(32).toString("hex");
-      tokens[token] = { token_path: path_to_folder, issued: +new Date() };
+      tokens[token] = {
+        token_path: utils.convertToSlashPath(path_to_folder),
+        issued: +new Date(),
+      };
 
       API.updateTokensFile();
       dev.logverbose("set new token", { token, path_to_folder });

@@ -173,13 +173,19 @@
                 class="u-sameRow"
                 @click="setActive(page_module.$path)"
               >
+                <template
+                  v-if="getModuleType(page_module.module_type) === 'shape'"
+                >
+                  {{ $t(page_module.module_type) }}
+                </template>
                 <MediaContent
+                  v-else-if="firstMedia(page_module)"
                   class="_preview"
-                  v-if="firstMedia(page_module)"
                   :file="firstMedia(page_module)"
                   :resolution="50"
                   :context="'preview'"
                 />
+                <template v-else> – </template>
               </div>
 
               <!-- <DateDisplay
@@ -264,7 +270,7 @@
               v-if="active_module.locked === true"
               @click="updateMediaPubliMeta({ locked: false })"
             >
-              <sl-icon name="unlock" />
+              <b-icon icon="unlock" />
               {{ $t("unlock") }}
             </button>
             <button
@@ -273,7 +279,7 @@
               v-else
               @click="updateMediaPubliMeta({ locked: true })"
             >
-              <sl-icon name="lock" />
+              <b-icon icon="lock" />
               {{ $t("lock") }}
             </button>
           </div>
@@ -283,7 +289,7 @@
               class="u-buttonLink"
               @click="setActive(false)"
             >
-              <sl-icon name="dash-square-dotted" />
+              <b-icon icon="dash-square-dotted" />
               {{ $t("unselect") }}
             </button>
           </div>
@@ -366,6 +372,47 @@
             :suffix="unit"
             @save="updateMediaPubliMeta({ height: $event })"
           />
+        </div>
+        <div class="_setSizeBtn">
+          <!-- <button
+            type="button"
+            class="u-button_icon"
+            v-if="layout_mode === 'screen' && first_media_has_resolution"
+            @click="setRealSize"
+          >
+            {{ $t("real_size") }}
+          </button> -->
+          <button type="button" class="u-button_icon" @click="setSize('full')">
+            <b-icon icon="square-fill" :aria-label="$t('full_page')" />
+          </button>
+          <button
+            type="button"
+            class="u-button_icon"
+            @click="setSize('half_left')"
+          >
+            <b-icon icon="square-half" />
+          </button>
+          <button
+            type="button"
+            class="u-button_icon"
+            @click="setSize('half_right')"
+          >
+            <b-icon icon="square-half" rotate="180" />
+          </button>
+          <button
+            type="button"
+            class="u-button_icon"
+            @click="setSize('half_top')"
+          >
+            <b-icon icon="square-half" rotate="90" />
+          </button>
+          <button
+            type="button"
+            class="u-button_icon"
+            @click="setSize('half_bottom')"
+          >
+            <b-icon icon="square-half" rotate="270" />
+          </button>
         </div>
 
         <div class="u-spacingBottom" />
@@ -540,6 +587,8 @@ export default {
     pages: Array,
     active_page_number: Number,
     active_spread_index: [Boolean, Number],
+    page_width: Number,
+    page_height: Number,
     scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
@@ -596,13 +645,14 @@ export default {
     active_module_first_media() {
       return this.firstMedia(this.active_module);
     },
-    is_shape() {
+    first_media_has_resolution() {
       return (
-        this.active_module &&
-        ["ellipsis", "line", "arrow", "rectangle"].includes(
-          this.active_module.module_type
-        )
+        this.active_module_first_media?.$infos?.width &&
+        this.active_module_first_media?.$infos?.height
       );
+    },
+    is_shape() {
+      return this.getModuleType(this.active_module.module_type) === "shape";
     },
     unit() {
       if (this.layout_mode === "screen") return "px";
@@ -642,6 +692,17 @@ export default {
           (this.$root.set_new_module_offset_top + this.$root.zoom_offset) /
           this.magnification;
 
+      const width =
+        Math.max(
+          this.$root.default_new_module_width,
+          this.$root.default_new_module_width / this.scale
+        ) / this.magnification;
+      const height =
+        Math.max(
+          this.$root.default_new_module_height,
+          this.$root.default_new_module_height / this.scale
+        ) / this.magnification;
+
       if (this.gridstep_in_mm) {
         // todo : round to gridstep
       }
@@ -650,8 +711,8 @@ export default {
         page_id: this.page_opened_id,
         x,
         y,
-        width: this.$root.default_new_module_width,
-        height: this.$root.default_new_module_height,
+        width,
+        height,
         rotation: 0,
         margins: 0,
         opacity: 1,
@@ -687,6 +748,54 @@ export default {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
         this.$eventHub.$emit(`module.panTo.${meta_filename}`);
       }, 150);
+    },
+    async setRealSize() {
+      const width =
+        this.active_module_first_media.$infos.width / this.magnification;
+      const height =
+        this.active_module_first_media.$infos.height / this.magnification;
+
+      await this.updateMediaPubliMeta({
+        width,
+        height,
+      });
+    },
+    async setSize(type) {
+      if (type === "full")
+        await this.updateMediaPubliMeta({
+          width: this.page_width,
+          height: this.page_height,
+          x: 0,
+          y: 0,
+        });
+      else if (type === "half_left")
+        await this.updateMediaPubliMeta({
+          width: this.page_width / 2,
+          height: this.page_height,
+          x: 0,
+          y: 0,
+        });
+      else if (type === "half_right")
+        await this.updateMediaPubliMeta({
+          width: this.page_width / 2,
+          height: this.page_height,
+          x: this.page_width / 2,
+          y: 0,
+        });
+      else if (type === "half_top")
+        await this.updateMediaPubliMeta({
+          width: this.page_width,
+          height: this.page_height / 2,
+          x: 0,
+          y: 0,
+        });
+      else if (type === "half_bottom")
+        await this.updateMediaPubliMeta({
+          width: this.page_width,
+          height: this.page_height / 2,
+          x: 0,
+          y: this.page_height / 2,
+        });
     },
     changeModulePage() {
       this.$eventHub.$emit(`module.move.${this.module_meta_filename}`);
@@ -751,14 +860,17 @@ export default {
 }
 
 ._mediaList {
-  font-size: var(--sl-font-size-x-small);
+  font-size: var(--sl-font-size-small);
   padding: 0;
 
   > * {
     display: flex;
     flex-flow: row nowrap;
-    align-items: center;
+
+    height: 40px;
+    overflow: hidden;
     gap: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 2);
     cursor: pointer;
 
     &:hover {
@@ -771,11 +883,11 @@ export default {
 
     ._preview {
       position: relative;
-      width: 50px;
-      height: 50px;
-      flex: 0 0 50px;
+      width: 40px;
+      aspect-ratio: 1;
+      flex: 0 0 40px;
 
-      ::v-deep img {
+      ::v-deep ._mediaContent--image {
         width: 100%;
         height: 100%;
         position: absolute;

@@ -17,6 +17,8 @@
               :pages="pages"
               :active_page_number="active_page_number"
               :active_spread_index="active_spread_index"
+              :page_width="page_width"
+              :page_height="page_height"
               :scale="scale"
               :show_grid.sync="page_settings.show_grid"
               :snap_to_grid.sync="page_settings.snap_to_grid"

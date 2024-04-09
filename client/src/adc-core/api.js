@@ -174,9 +174,9 @@ export default function () {
             }).catch(() => {
               if (localStorage.getItem("general_password"))
                 localStorage.removeItem("general_password");
+              this.$eventHub.$emit("app.prompt_general_password");
             });
-
-          this.$eventHub.$emit("app.prompt_general_password");
+          else this.$eventHub.$emit("app.prompt_general_password");
         }
 
         const token_and_tokenpath = localStorage.getItem("tokenpath");
@@ -285,9 +285,10 @@ export default function () {
       fileCreated({ path_to_folder, meta }) {
         const folder = this.store[path_to_folder];
         if (!folder)
-          this.$alertify
-            .delay(4000)
-            .error("Folder missing in store : " + path_to_folder);
+          if (this.debug_mode)
+            this.$alertify
+              .delay(4000)
+              .error("Folder missing in store : " + path_to_folder);
         if (!folder.$files) this.$set(folder, "$files", new Array());
         folder.$files.push(meta);
       },

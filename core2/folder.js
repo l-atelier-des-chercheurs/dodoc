@@ -68,7 +68,7 @@ module.exports = (function () {
         .catch((err) => {
           throw err;
         });
-      folder_meta.$path = path_to_folder;
+      folder_meta.$path = utils.convertToSlashPath(path_to_folder);
 
       if (item_in_schema.$cover) {
         let cover = await _getFolderCover({
@@ -177,7 +177,7 @@ module.exports = (function () {
 
       if (!meta_file) {
         meta_file = directory.files.find((f) => {
-          const path_splits = f.path.split("/");
+          const path_splits = f.path.split(path.sep);
           if (path_splits.length === 2 && path_splits[1] === "meta.txt") {
             subfolder_name = path_splits[0];
             return true;
@@ -220,7 +220,7 @@ module.exports = (function () {
         utils.getPathToUserContent(path_to_new_folder);
 
       const files_to_copy = directory.files.filter((f) => {
-        const path_splits = f.path.split("/");
+        const path_splits = f.path.split(path.sep);
         return path_splits.length >= 2 && path_splits[1] !== "meta.txt";
       });
 
@@ -483,7 +483,7 @@ module.exports = (function () {
     if (data.hasOwnProperty("path_to_meta")) {
       if (data.path_to_meta === "") return;
 
-      const path_to_meta = data.path_to_meta;
+      const path_to_meta = utils.convertToLocalPath(data.path_to_meta);
       const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       const meta = await file.getFile({
@@ -620,13 +620,7 @@ module.exports = (function () {
   }
 
   async function _moveFolderToBin({ path_to_folder }) {
-    const bin_folder_path =
-      path_to_folder.substr(0, path_to_folder.lastIndexOf("/")) +
-      "/" +
-      global.settings.deletedFolderName +
-      "/" +
-      path_to_folder.substr(path_to_folder.lastIndexOf("/") + 1);
-
+    const bin_folder_path = utils.getBinFolder(path_to_folder);
     const full_folder_path = utils.getPathToUserContent(path_to_folder);
     const full_bin_folder_path = utils.getPathToUserContent(bin_folder_path);
 
