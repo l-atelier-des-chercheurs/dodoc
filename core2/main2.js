@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs-extra");
 const portscanner = require("portscanner");
+const v8 = require("v8");
 
 const server = require("./server"),
   dev = require("./dev-log"),
@@ -15,6 +16,13 @@ module.exports = async function () {
   console.log(`App is ${is_electron ? "electron" : "node"}`);
   console.log(`Starting = ${global.appInfos.name}`);
   console.log(`Node = ${process.versions.node}`);
+
+  // setInterval(() => {
+  //   const usedHeapSize = process.memoryUsage().heapUsed;
+  //   const totalHeapSize = v8.getHeapStatistics().total_available_size;
+  //   const heapPercentage = (usedHeapSize / totalHeapSize) * 100;
+  //   console.log(`Heap Memory Usage: ${heapPercentage.toFixed(2)}%`);
+  // }, 1000);
 
   const debug = process.argv.length > 0 && process.argv.includes("--debug");
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");

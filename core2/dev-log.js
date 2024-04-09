@@ -201,8 +201,14 @@ module.exports = dev = (function () {
     const fct_name = fct.caller?.name;
 
     let str = "";
-    if (fct_filename) str += `${fct_filename} • `;
-    if (fct_name) str += `${fct_name} – `;
+    if (fct_filename) {
+      if (process.platform === "win32") str += `${fct_filename} . `;
+      else str += `${fct_filename} • `;
+    }
+    if (fct_name)
+      if (process.platform === "win32") str += `${fct_name} : `;
+      else str += `${fct_name} – `;
+
     return str + content.join(" / ");
   }
 

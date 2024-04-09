@@ -250,9 +250,11 @@ class Exporter {
   _loadPageAndPrint() {
     return new Promise(async (resolve, reject) => {
       // convert path_to_folder to URL (see createURLFromPath)
+      dev.logfunction();
+
       const path_without_space = this.path_to_folder
-        .replace("spaces/", "/+")
-        .replace("projects/", "");
+        .replace("spaces" + path.sep, "/+")
+        .replace("projects" + path.sep, "");
 
       let url = global.appInfos.homeURL + path_without_space;
 
@@ -294,8 +296,8 @@ class Exporter {
         this.instructions.layout_mode === "print" ? 1 : 3.7952;
 
       const printToPDF_pagesize = {
-        width: (document_size.width * 1000) / reduction_factor,
-        height: (document_size.height * 1000) / reduction_factor,
+        width: document_size.width / 10 / 2.54 / reduction_factor,
+        height: document_size.height / 10 / 2.54 / reduction_factor,
       };
 
       let win = new BrowserWindow({
@@ -336,8 +338,6 @@ class Exporter {
             this._notifyProgress(45);
             if (this.instructions.recipe === "pdf")
               return win.webContents.printToPDF({
-                // electron < 21
-                marginsType: 0,
                 // electron >= 21
                 // margins are set using @page in css
                 margins: { marginType: "default" },

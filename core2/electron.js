@@ -39,6 +39,7 @@ module.exports = (function () {
         // Some APIs can only be used after this event occurs.
         app.on("ready", () => {
           dev.log(`ELECTRON — init : ready`);
+
           createWindow().then((_win) => {
             dev.logfunction(`ELECTRON — init : ready / window created`);
             win = _win;

@@ -135,7 +135,7 @@ module.exports = (function () {
       const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       let meta = await utils.readMetaFile(path_to_meta);
-      meta.$path = path_to_meta;
+      meta.$path = utils.convertToSlashPath(path_to_meta);
 
       const media_filename = meta.$media_filename;
       const media_type = meta.$type;
@@ -532,8 +532,10 @@ module.exports = (function () {
     } else {
       // for images, check if exif
       if (new_meta.$type === "image" && path_to_media) {
-        const gps = await utils.getGPSFromFile(path_to_media);
-        if (gps) new_meta.$location = gps;
+        try {
+          const gps = await utils.getGPSFromFile(path_to_media);
+          if (gps) new_meta.$location = gps;
+        } catch (err) {}
       }
     }
 
@@ -768,7 +770,7 @@ module.exports = (function () {
     if (!meta.hasOwnProperty("source_medias")) return meta;
 
     const source_folder = utils.getFolderParent(
-      utils.getContainingFolder(meta.$path)
+      utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
     );
 
     for (const [index, source_media] of meta.source_medias.entries()) {
