@@ -42,7 +42,7 @@
               v-if="is_loading_or_saving"
               key="saving"
             >
-              <sl-spinner style="--indicator-color: currentColor" />
+              <LoaderSpinner />
               {{ $t("saving") }}
             </div>
             <div

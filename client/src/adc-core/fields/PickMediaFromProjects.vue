@@ -1,7 +1,7 @@
 <template>
   <BaseModal2 :title="title" :size="'large'" @close="$emit('close')">
     <div class="_pickMediaFromProject">
-      <sl-spinner style="--indicator-color: currentColor" v-if="is_loading" />
+      <LoaderSpinner v-if="is_loading" />
       <template v-else>
         <DLabel
           :str="$t('source_project')"

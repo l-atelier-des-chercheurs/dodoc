@@ -1,13 +1,6 @@
 <template>
   <div class="_publicationOpen">
-    <div
-      class="_spinner"
-      v-if="!publication"
-      style="--indicator-color: currentColor"
-      key="loader"
-    >
-      <LoaderSpinner />
-    </div>
+    <LoaderSpinner v-if="!publication" />
     <div v-else-if="fetch_publication_error">
       {{ fetch_publication_error }}
     </div>
