@@ -206,7 +206,7 @@ Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
   template: `
   <div class="u-loader">
-    <sl-spinner style="font-size: 2rem; --track-width: 5px; --indicator-color: currentColor" />
+      <div class="_spinner" />
   </div>
   `,
 });

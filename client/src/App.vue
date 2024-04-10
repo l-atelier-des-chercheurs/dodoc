@@ -19,9 +19,7 @@
       {{ custom_fonts_css }}
     </component>
 
-    <div class="_spinner" v-if="!router_is_loading" key="loader">
-      <LoaderSpinner />
-    </div>
+    <LoaderSpinner v-if="router_is_loading" />
     <template v-else>
       <!-- static UI, no live update -->
       <router-view
@@ -48,13 +46,13 @@ export default {
   },
   data() {
     return {
-      router_is_loading: false,
+      router_is_loading: true,
     };
   },
   created() {},
   mounted() {
     setTimeout(() => {
-      this.router_is_loading = true;
+      this.router_is_loading = false;
     }, 200);
   },
   beforeDestroy() {},
