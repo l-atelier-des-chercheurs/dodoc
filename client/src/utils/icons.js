@@ -68,6 +68,7 @@ import {
   BIconPinFill,
   BIconPin,
   BIconArrowRightCircleFill,
+  BIconArrowRightShort,
   BIconClipboard,
   BIconClipboardCheck,
   BIconBoxArrowUpRight,
@@ -251,3 +252,4 @@ Vue.component("BIconCircleFill", BIconCircleFill);
 Vue.component("BIconDashLg", BIconDashLg);
 Vue.component("BIconArrowRightSquare", BIconArrowRightSquare);
 Vue.component("BIconRecordCircleFill", BIconRecordCircleFill);
+Vue.component("BIconArrowRightShort", BIconArrowRightShort);
