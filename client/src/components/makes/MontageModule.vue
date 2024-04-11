@@ -9,7 +9,7 @@
           :disabled="module_position === 'alone' || module_position === 'first'"
           @click="$emit('moveUp')"
         >
-          <sl-icon name="chevron-up" />
+          <b-icon icon="chevron-up" />
         </button>
         <button
           type="button"
@@ -17,7 +17,7 @@
           :disabled="module_position === 'alone' || module_position === 'last'"
           @click="$emit('moveDown')"
         >
-          <sl-icon name="chevron-down" />
+          <b-icon icon="chevron-down" />
         </button>
       </div>
       <span class="_num">
@@ -35,7 +35,7 @@
             >
           </template>
           <button type="button" class="u-buttonLink" @click="removeModule">
-            <sl-icon name="trash3" />
+            <b-icon icon="trash" />
           </button>
         </div>
         <div class="">

@@ -74,9 +74,6 @@
           />
         </template>
       </div>
-      <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
-          Enregistrer
-        </sl-button> -->
     </div>
 
     <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">

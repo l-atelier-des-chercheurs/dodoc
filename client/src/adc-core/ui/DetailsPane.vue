@@ -10,7 +10,6 @@
     <summary>
       <div class="_icon">
         <b-icon v-if="icon" :icon="icon" />
-        <!-- <sl-icon v-if="icon" :name="icon" /> -->
       </div>
       <span class="_name">
         {{ header }}
@@ -24,16 +23,16 @@
           {{ has_items }}
         </template>
         <template v-else-if="has_items === true">
-          <sl-icon name="check" />
+          <b-icon icon="check" />
         </template>
         <template v-else>–</template>
       </div>
 
       <transition name="fade_fast" mode="out-in">
-        <sl-icon
+        <b-icon
           v-if="can_be_toggled"
           class="_openIcon"
-          :name="
+          :icon="
             !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
           "
         />
@@ -139,7 +138,6 @@ export default {
   }
 
   ._openIcon {
-    padding: calc(var(--spacing) / 8);
     margin: calc(var(--spacing) / 4);
   }
 
