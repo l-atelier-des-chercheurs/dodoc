@@ -7,8 +7,6 @@ export default {
   home: "Home",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
-  // admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
-  // admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
   edit: "Edit",
   description: "Description",
   keywords: "Keywords",
@@ -413,10 +411,11 @@ export default {
   or_drag_drop_file_here: "Or drag and drop file here",
   enable: "Enable",
 
-  admins_edit_text_here:
-    "To modify the name of the instance, this text and the settings, log in with an administrator account by clicking on <i>connect</i> at the top right.",
+  admins_edit_text_here: `To modify the name of the instance, this text and the settings, log in with an administrator account by clicking on <i>connect</i> at the top right.
+    The default admin account is <b>Admin</b> and the password is <b>dodoc</b>.
+    `,
   admins_edit_text_below:
-    "To modify this text, click on the Administration Settings button at the top right.",
+    "To modify this text, click on the gear icon in the top right.",
   edit_source: "Edit source",
   select_all: "Select all",
   input_url_instr:

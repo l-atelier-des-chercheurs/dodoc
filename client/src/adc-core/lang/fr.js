@@ -6,8 +6,9 @@ export default {
   home: "Accueil",
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
-  admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
-  admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
+  admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.
+  <br><br>Le compte administrateur par défaut a pour nom <b>Admin</b> et mot de passe <b>dodoc</b>.`,
+  admins_edit_text_below: `Pour modifier ce texte, cliquez sur l’icône engrenage en haut à droite de la page.`,
   edit: "Modifier",
   edit_source: "Modifier la source",
   stop_edit: "Arrêter les modifications",
