@@ -36,7 +36,7 @@
           />
 
           <div class="_preview _preview--none" v-else>
-            <sl-icon name="file-earmark-arrow-down" />
+            <b-icon icon="file-earmark-arrow-down" />
           </div>
           <span
             class="_link--filename"
@@ -50,7 +50,7 @@
             />
           </template>
 
-          <sl-icon-button name="file-earmark-arrow-down-fill" />
+          <b-icon icon="file-earmark-arrow-down-fill" />
         </DownloadFile>
 
         <sl-icon-button

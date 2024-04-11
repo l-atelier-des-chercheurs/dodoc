@@ -20,7 +20,7 @@
           />
           <div v-else class="_preview" />
           <span class="_link--filename" v-text="file.$media_filename" />
-          <b-icon icon="file-earmark-arrow-down-fill" />
+          <b-icon icon="file-earmark-arrow-down" />
         </DownloadFile>
 
         <button

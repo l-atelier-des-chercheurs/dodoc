@@ -75,16 +75,5 @@ export default {
 
     cursor: default;
   }
-
-  sl-icon-button {
-    position: absolute;
-    top: -1em;
-    right: -1em;
-    color: currentColor;
-
-    &::part(base) {
-      color: currentColor;
-    }
-  }
 }
 </style>
