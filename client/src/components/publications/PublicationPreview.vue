@@ -13,17 +13,17 @@
         <span v-if="template_icon" v-html="template_icon" />
       </div>
       <transition name="toggleLock" mode="out-in">
-        <sl-icon
-          v-if="publication.$status === 'finished'"
+        <StatusTag
+          v-if="
+            publication.$status === 'finished' ||
+            publication.$status === 'private'
+          "
+          class="_icon"
           :key="publication.$status"
-          name="check-circle-fill"
-          class="_icon _check"
-        />
-        <sl-icon
-          v-else-if="publication.$status === 'private'"
-          :key="publication.$status"
-          name="file-lock2-fill"
-          class="_icon _private"
+          :show_label="false"
+          :status="publication.$status"
+          :can_edit="false"
+          :mode="'inactive'"
         />
       </transition>
 
@@ -39,9 +39,7 @@
         v-if="can_edit && !is_making_preview"
         @click.stop="generatePreview"
       >
-        <!-- <sl-icon name="card-image" /> -->
         <b-icon icon="arrow-clockwise" />
-        <!-- {{ $t("generate_preview") }} -->
       </button>
     </div>
 
@@ -51,16 +49,7 @@
         {{ publication.title }}
       </h3>
     </header>
-    <div class="">
-      <!-- <button
-        type="button"
-        class="u-button u-button_red"
-        @click="$emit('open')"
-      >
-        ouvrir&nbsp;
-        <sl-icon name="arrow-up-right" />
-      </button> -->
-    </div>
+    <div class=""></div>
   </div>
 </template>
 <script>

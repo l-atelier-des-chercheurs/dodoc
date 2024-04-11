@@ -37,7 +37,7 @@
             edit_mode = false;
           "
         >
-          <sl-icon name="clipboard2-plus" />
+          <b-icon icon="file-plus" />
         </button>
       </div>
       <RemoveMenu

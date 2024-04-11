@@ -63,7 +63,7 @@
           @click.native="$emit('close')"
           class="u-buttonLink"
         >
-          <b-icon icon="person-video2" />
+          <b-icon icon="person-circle" />
           {{ $t("show_all_accounts") }}
         </router-link>
       </template>

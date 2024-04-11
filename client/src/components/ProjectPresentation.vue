@@ -36,36 +36,11 @@
               })
             "
           />
-
-          <!-- <button
-            v-else-if="project.$status === 'private'"
-            :key="project.$status"
-            class="u-button u-button_bleuvert u-button_small _icon _private"
-            @click="
-              $emit('toggleFilter', { filter_type: 'status', value: 'private' })
-            "
-          >
-            {{ $t("private") }}
-            <sl-icon name="file-lock2-fill" class="" />
-          </button> -->
-
-          <!-- <sl-icon
-            v-else-if="project.$status === 'private'"
-            :key="project.$status"
-            name=""
-            class="_icon _private"
-          /> -->
         </transition>
 
         <div v-if="display_original_space" class="_originalSpace">
           +&thinsp;{{ original_space_name }}
         </div>
-        <!-- <sl-icon
-        v-if="project.$status === 'draft'"
-        name="cone-striped"
-        class="_icon _cone"
-      /> -->
-        <!-- <div class="u-wips" /> -->
       </div>
 
       <div

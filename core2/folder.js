@@ -596,7 +596,7 @@ module.exports = (function () {
       relative_path: path_to_type,
     });
 
-    if (path_to_type) {
+    if (path_to_type && path_to_type !== ".") {
       // not applicable to instance settings
       // TODO check for impact on performance
       let siblings_folders = await API.getFolders({ path_to_type });

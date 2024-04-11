@@ -1,14 +1,5 @@
 <template>
   <div class="_homeView" :style="customStyling">
-    <!-- <div class="_floatinProjectBtn">
-      <router-link
-        class="u-button u-button_red u-button_big u-button_floating"
-        to="/projects"
-      >
-        {{ $t("show_projects") }}&nbsp;<sl-icon name="arrow-up-right" />
-      </router-link>
-    </div> -->
-
     <section class="_homeView--container">
       <div class="_homeView--content" :data-layout="text_image_layout">
         <template v-for="layout in custom_layout">

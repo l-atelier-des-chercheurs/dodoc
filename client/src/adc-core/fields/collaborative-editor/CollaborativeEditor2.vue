@@ -42,7 +42,7 @@
               v-if="is_loading_or_saving"
               key="saving"
             >
-              <sl-spinner style="--indicator-color: currentColor" />
+              <LoaderSpinner />
               {{ $t("saving") }}
             </div>
             <div
@@ -74,9 +74,6 @@
           />
         </template>
       </div>
-      <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
-          Enregistrer
-        </sl-button> -->
     </div>
 
     <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">

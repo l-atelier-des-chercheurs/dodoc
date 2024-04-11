@@ -49,7 +49,7 @@
             class="u-buttonLink"
             @click="translations_to_share = {}"
           >
-            <sl-icon name="trash3" />
+            <b-icon icon="trash" />
             {{ $t("erase_translations") }}
           </button>
         </div>

@@ -65,9 +65,9 @@
                 v-if="project_panes.some((p) => p.type === pane.type)"
                 class="_inlineBtn _removePaneBtn"
               >
-                <sl-icon-button
-                  name="x-circle-fill"
-                  label="Fermer"
+                <b-icon
+                  icon="x-circle-fill"
+                  :label="$t('close')"
                   @click.stop="removePane(pane.type)"
                 />
               </div>
@@ -75,9 +75,9 @@
                 v-else-if="project_panes.length > 0 && !$root.is_mobile_view"
                 class="_inlineBtn _addPaneBtn"
               >
-                <sl-icon-button
-                  name="plus-circle-fill"
-                  label="Ajouter"
+                <b-icon
+                  icon="plus-circle-fill"
+                  :label="$t('add')"
                   @click.stop="addPane($event, pane)"
                 />
               </div>
@@ -390,22 +390,15 @@ export default {
     color: white;
     background-color: var(--color-active);
   }
-
-  sl-icon-button::part(base) {
-    color: currentColor;
-  }
 }
 
 ._inlineBtn {
   position: relative;
   display: block;
   --sl-transition-medium: 0;
-  // width: var(--height-panebutton);
-  // height: var(--height-panebutton);
 
-  // margin: -8px 2px -8px calc(-1 * var(--spacing));
-
-  // padding: 10px;
+  line-height: 0;
+  padding: calc(var(--spacing) / 4);
   border-radius: 50%;
   transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 }

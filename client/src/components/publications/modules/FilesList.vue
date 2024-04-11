@@ -2,7 +2,7 @@
   <div class="_filesList">
     <DLabel :str="$t('source_files')" />
     <SlickList
-      :key="/* slicklist stays active otherwise */ can_edit"
+      :key="/* slicklist stays active otherwise */ edit_mode"
       class="_listOfFiles"
       axis="y"
       :value="medias_with_linked"
@@ -15,7 +15,7 @@
         :index="index"
         class="_reorderedFile"
       >
-        <button type="button" v-if="can_edit" class="u-button u-button_icon">
+        <button type="button" v-if="edit_mode" class="u-button u-button_icon">
           <b-icon v-handle icon="hand-index-thumb" :label="$t('move')" />
         </button>
         <DownloadFile
@@ -36,7 +36,7 @@
           />
 
           <div class="_preview _preview--none" v-else>
-            <sl-icon name="file-earmark-arrow-down" />
+            <b-icon icon="file-earmark-arrow-down" />
           </div>
           <span
             class="_link--filename"
@@ -50,25 +50,25 @@
             />
           </template>
 
-          <sl-icon-button name="file-earmark-arrow-down-fill" />
+          <b-icon class="_download" icon="file-earmark-arrow-down-fill" />
         </DownloadFile>
 
-        <sl-icon-button
-          name="x"
-          size="small"
-          v-if="can_edit"
+        <b-icon
+          icon="trash"
+          v-if="edit_mode"
+          class="_removeItem"
           @click="$emit('removeMediaAtIndex', { index })"
         />
       </SlickItem>
     </SlickList>
 
-    <div v-if="can_edit" class="_addBtnSection">
+    <div v-if="edit_mode" class="_addBtnSection">
       <button
         type="button"
         class="u-button u-button_transparent u-addBtn"
         @click="show_media_picker = true"
       >
-        <sl-icon name="plus-circle" />
+        <b-icon icon="plus-circle" />
         {{ $t("add_files") }}
       </button>
       <MediaPicker
@@ -89,6 +89,7 @@ export default {
   props: {
     medias_with_linked: Array,
     publication_path: String,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -233,5 +234,10 @@ export default {
 ._addBtnSection {
   padding: calc(var(--spacing) / 4);
   text-align: left;
+}
+
+._removeItem,
+._download {
+  margin: calc(var(--spacing) / 4);
 }
 </style>

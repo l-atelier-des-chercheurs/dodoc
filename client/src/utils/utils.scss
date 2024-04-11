@@ -791,6 +791,23 @@ input[type="file"] {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  ._spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 4px solid var(--c-gris);
+    border-top-color: var(--c-bleuvert);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
 .u-mediaOptions {
   display: flex;
@@ -924,6 +941,7 @@ input[type="checkbox"]:disabled {
   justify-content: center;
 
   min-width: 18px;
+  min-height: 18px;
   height: auto;
   aspect-ratio: 1;
   border-radius: 50%;

@@ -54,6 +54,7 @@
           <DragFile
             v-if="edit_mode"
             class="_df"
+            :size="'small'"
             :file="media_with_linked._linked_media"
             @dragfileSuccess="mediaDraggedSuccessfully(index)"
           />
@@ -72,7 +73,7 @@
             >
               <button
                 type="button"
-                class="u-button u-button_icon"
+                class="u-button u-button_icon u-button_small"
                 v-if="
                   !(
                     !media_with_linked.objectFit ||
@@ -86,12 +87,12 @@
                   })
                 "
               >
-                <sl-icon name="aspect-ratio" />
+                <b-icon icon="aspect-ratio" />
                 <!-- {{ $t("object_fit_cover") }} -->
               </button>
               <button
                 type="button"
-                class="u-button u-button_icon"
+                class="u-button u-button_icon u-button_small"
                 v-if="media_with_linked.objectFit !== 'contain'"
                 @click.stop="
                   $emit('updateMediaOpt', {
@@ -102,16 +103,16 @@
               >
                 <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
                 <!-- {{ $t("object_fit_contain") }} -->
-                <sl-icon name="aspect-ratio-fill" />
+                <b-icon icon="aspect-ratio-fill" />
               </button>
             </template>
             <button
               type="button"
-              class="u-button u-button_icon"
+              class="u-button u-button_icon u-button_small"
               v-if="is_multiple_medias"
               @click="removeMedia(index)"
             >
-              <sl-icon name="trash3" />
+              <b-icon icon="trash" />
             </button>
           </template>
         </div>

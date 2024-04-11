@@ -121,7 +121,7 @@
             <DropDown :right="true">
               <div>
                 <DownloadFile :file="file">
-                  <sl-icon name="file-earmark-arrow-down" />
+                  <b-icon icon="file-earmark-arrow-down" />
                   {{ $t("download") }}
                 </DownloadFile>
               </div>

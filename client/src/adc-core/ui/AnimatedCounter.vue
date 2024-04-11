@@ -1,10 +1,7 @@
 <template>
   <span class="_animatedCounter">
-    <sl-spinner
-      v-if="current_value < 100"
-      style="font-size: 1rem; --indicator-color: currentColor"
-    />
-    <sl-icon v-else name="check-circle-fill" :label="$t('finished')" />
+    <LoaderSpinner v-if="current_value < 100" />
+    <b-icon v-else icon="check-circle-fill" />
     {{ current_value }}%
   </span>
 </template>

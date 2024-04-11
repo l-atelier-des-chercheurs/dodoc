@@ -56,10 +56,6 @@
               <b-icon icon="plus-square" />
               {{ $t("select_all") }}
             </button>
-            <!-- <button type="button" class="u-buttonLink">
-              <sl-icon name="trash3" />
-              {{ $t("à la corbeille") }} (5)
-            </button> -->
           </template>
         </div>
         <div class="_topSection--right">
@@ -300,7 +296,7 @@
         :select_mode="select_mode"
         :position_in_list="focused_media_position_in_list"
         @remove="removeMedia(focused_media.$path)"
-        @close="toggleMediaFocus(focused_media.$path)"
+        @close="closeMediaFocus()"
         @select="addMedias([focused_media.$path])"
         @prevMedia="prevMedia"
         @nextMedia="nextMedia"
@@ -554,7 +550,7 @@ export default {
 
       switch (event.key) {
         case "Escape":
-          this.toggleMediaFocus();
+          this.closeMediaFocus();
           break;
         case "w":
         case "z":
@@ -652,11 +648,17 @@ export default {
 
       const filename = this.getFilename(path);
       if (this.media_focused === filename) {
-        this.$emit("update:media_focused", undefined);
+        this.closeMediaFocus();
       } else {
-        this.$emit("update:media_focused", filename);
-        this.media_just_focused = filename;
+        this.openMediaFocus(filename);
       }
+    },
+    openMediaFocus(filename) {
+      this.$emit("update:media_focused", filename);
+      this.media_just_focused = filename;
+    },
+    closeMediaFocus() {
+      this.$emit("update:media_focused", undefined);
     },
     setSelected(present, path) {
       if (present) this.selected_medias.push(path);
@@ -670,7 +672,7 @@ export default {
       await this.$api.deleteItem({
         path,
       });
-      this.toggleMediaFocus(path);
+      this.closeMediaFocus();
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)

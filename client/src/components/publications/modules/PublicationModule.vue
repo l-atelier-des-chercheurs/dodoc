@@ -75,7 +75,7 @@
                   v-for="size in [100, 66.6, 50, 33.3]"
                   :key="size"
                   type="button"
-                  class="u-buttonLink"
+                  class="u-button u-button_icon u-button_small _sizes"
                   :class="{
                     'is--active':
                       (!publimodule.size && size === 100) ||
@@ -95,7 +95,7 @@
                   v-for="align in ['left', 'center', 'right']"
                   :key="align"
                   type="button"
-                  class="u-buttonLink"
+                  class="u-button u-button_icon u-button_small"
                   :class="{
                     'is--active':
                       (!publimodule.align && align === 'left') ||
@@ -103,9 +103,9 @@
                   }"
                   @click="updateMeta({ align: align })"
                 >
-                  <sl-icon v-if="align === 'left'" name="align-start" />
-                  <sl-icon v-if="align === 'center'" name="align-center" />
-                  <sl-icon v-if="align === 'right'" name="align-end" />
+                  <b-icon v-if="align === 'left'" icon="align-start" />
+                  <b-icon v-if="align === 'center'" icon="align-center" />
+                  <b-icon v-if="align === 'right'" icon="align-end" />
                 </button>
               </div>
 
@@ -869,10 +869,11 @@ export default {
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
   align-items: center;
+}
 
-  .is--active {
-    color: white;
-  }
+._sizes.is--active {
+  color: white;
+  background: transparent;
 }
 
 ._floatingEditBtn {

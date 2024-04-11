@@ -57,7 +57,7 @@
           <template v-if="event.start_date">
             {{ formatDateToPrecise(event.start_date) }}
             <template v-if="event.end_date">
-              <sl-icon name="arrow-right-short" label="" />
+              <b-icon icon="arrow-right-short" />
               {{ formatDateToPrecise(event.end_date) }}
             </template>
           </template>

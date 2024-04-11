@@ -7,7 +7,7 @@
       <template v-else>
         <div v-if="!event">
           <router-link :to="'/'" class="u-buttonLink">
-            <sl-icon name="arrow-left-short" />
+            <b-icon icon="arrow-left-short" />
             {{ $t("other_events") }}
           </router-link>
         </div>
@@ -22,7 +22,7 @@
         <div class="_text">
           <div class="_backBtn">
             <router-link :to="'/'" class="u-buttonLink">
-              <sl-icon name="arrow-left-short" />
+              <b-icon icon="arrow-left-short" />
               {{ $t("other_events") }}
             </router-link>
           </div>

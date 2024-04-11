@@ -27,6 +27,7 @@
           key="filelist"
           :medias_with_linked="medias_with_linked"
           :publication_path="publication_path"
+          :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
           @reorderMedias="reorderMedias"
@@ -166,10 +167,5 @@ export default {
   ::v-deep ._dropNotice {
     transform: rotate(-90deg);
   }
-}
-
-sl-icon-button::part(base) {
-  font-size: 1.5em;
-  color: var(--c-bleuvert);
 }
 </style>

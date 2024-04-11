@@ -40,7 +40,7 @@
       class="u-button u-button_bleumarine u-button_small"
       @click="$emit('save', default_value)"
     >
-      <sl-icon name="trash3" :label="$t('erase')" />
+      <b-icon icon="trash" :label="$t('erase')" />
     </button>
   </div>
 </template>

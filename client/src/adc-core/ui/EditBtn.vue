@@ -12,7 +12,6 @@
       {{ btn_props.label }}
     </span>
     <b-icon class="_icon" :icon="btn_props.icon" />
-    <!-- <sl-icon :name="icon" :label="label" /> -->
   </button>
 </template>
 <script>

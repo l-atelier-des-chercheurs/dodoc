@@ -8,8 +8,8 @@
     >
       <div>
         <span v-html="$t(`instructions.pane.${type}`)"></span>
-        <sl-icon-button
-          name="x-circle-fill"
+        <b-icon
+          icon="x-circle-fill"
           label="Fermer"
           @click.stop="closeInstructions"
         />
@@ -74,17 +74,6 @@ export default {
     pointer-events: auto;
 
     cursor: default;
-  }
-
-  sl-icon-button {
-    position: absolute;
-    top: -1em;
-    right: -1em;
-    color: currentColor;
-
-    &::part(base) {
-      color: currentColor;
-    }
   }
 }
 </style>

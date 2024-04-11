@@ -152,12 +152,10 @@ export default {
     author_suggestions() {
       if (this.search_author_name.length === 0 || this.authors.length === 0)
         return false;
-
       const matching = this.authors.filter((a) => {
         return this.twoStringsSearch(a.name, this.search_author_name);
       });
-
-      return matching.map((m) => m.$path);
+      return matching.map((m) => m.$path).slice(0, 5);
     },
   },
   methods: {

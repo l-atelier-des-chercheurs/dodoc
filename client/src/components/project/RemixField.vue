@@ -17,7 +17,7 @@
       class="u-button u-button_bleumarine"
       @click="show_remix_modal = true"
     >
-      <sl-icon name="sign-intersection-y" />
+      <b-icon icon="intersect" />
       {{ $t("remix_this_project") }}
     </button>
     <DuplicateOrRemixProject

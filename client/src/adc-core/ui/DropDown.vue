@@ -1,7 +1,10 @@
 <template>
   <div
     class="_dropDown"
-    :class="{ dropup: top }"
+    :class="{
+      dropup: top,
+      active: show_dropdown,
+    }"
     @mouseleave="mouseLeave"
     @mouseover="mouseOver"
     @mouseenter="mouseEnter"
@@ -171,6 +174,14 @@ export default {
 <style lang="scss" scoped>
 ._dropDown {
   position: relative;
+
+  &.active {
+    background: var(--active-color);
+
+    ._caret {
+      transform: rotate(-180deg);
+    }
+  }
 }
 
 ._caret {
@@ -178,6 +189,8 @@ export default {
   background-position: 50% 55%;
   background-repeat: no-repeat;
   background-size: 0.75rem;
+
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 ._dropDown--content {

@@ -39,18 +39,7 @@
               :can_edit="can_edit"
             />
           </div>
-          <div class="_buttons" v-if="can_edit">
-            <!-- <div>
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="$emit('close')"
-              >
-                <sl-icon name="x" />
-                {{ $t("close") }}
-              </button>
-            </div> -->
-          </div>
+          <div class="_buttons" v-if="can_edit"></div>
         </div>
         <transition-group
           tag="div"

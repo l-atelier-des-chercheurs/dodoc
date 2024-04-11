@@ -3,7 +3,7 @@
     class="m_stopmotionpanel"
     :class="{ 'is--showing_video_validation': validating_video_preview }"
   >
-    <sl-spinner style="--indicator-color: currentColor" v-if="!stopmotion" />
+    <LoaderSpinner v-if="!stopmotion" />
     <div v-else-if="fetch_stopmotion_error">
       {{ fetch_stopmotion_error }}
     </div>
