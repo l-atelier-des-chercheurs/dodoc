@@ -121,6 +121,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type",
       ],
       _generalPasswordCheck,
+      _restrictIfPrivate,
       _getFolders
     );
     app.post(
