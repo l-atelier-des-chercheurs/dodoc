@@ -190,7 +190,7 @@ export default {
       settings: undefined,
       is_loading: true,
 
-      current_tab: "informations",
+      current_tab: this.starting_tab || "informations",
 
       tabs: [
         {
@@ -240,12 +240,6 @@ export default {
       });
     this.$api.join({ room: this.settings.$path });
     this.is_loading = false;
-
-    if (this.starting_tab) {
-      setTimeout(() => {
-        this.$refs.tabgroup.show(this.starting_tab);
-      }, 100);
-    }
   },
   beforeDestroy() {
     this.$api.leave({ room: this.settings.$path });
