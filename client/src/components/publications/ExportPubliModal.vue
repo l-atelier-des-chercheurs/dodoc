@@ -91,7 +91,7 @@ export default {
     },
   },
   created() {
-    if (this.page_opened_id) {
+    if (this.page_opened_id && this.publication.pages) {
       const page_number = this.publication.pages.findIndex(
         (p) => p.id === this.page_opened_id
       );
