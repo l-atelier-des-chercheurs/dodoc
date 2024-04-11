@@ -29,7 +29,7 @@
           class="u-button u-button_icon"
           @click.prevent="removeFile(file.$path)"
         >
-          <b-icon icon="x" :aria-label="$t('first_image')" />
+          <b-icon icon="x-lg" />
         </button>
       </div>
     </template>
