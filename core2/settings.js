@@ -10,13 +10,13 @@ module.exports = (function () {
       dev.logfunction();
 
       let d = await folder.getFolder({
-        path_to_folder: "",
+        path_to_folder: ".",
       });
 
       return d;
     },
     getFiles: async () => {
-      return await file.getFiles({ path_to_folder: "" });
+      return await file.getFiles({ path_to_folder: "." });
     },
     updatePath({ new_path }) {
       dev.logfunction();

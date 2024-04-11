@@ -540,6 +540,7 @@ module.exports = (function () {
       .catch((err) => dev.error("Error while getting settings", err));
 
     const findMatchingFileThumb = ({ meta_name, resolution }) => {
+      if (!meta_name) return false;
       const matching_file = $files.find(
         (f) => utils.getFilename(f.$path) === meta_name
       );
