@@ -230,7 +230,7 @@ export default {
   justify-content: flex-end;
   gap: calc(var(--spacing) / 4);
   padding: 0 calc(var(--spacing) / 2);
-  // crispy crisp sl-icons
+  // crispy crisp icons
   font-size: 111%;
 
   .is--mobileView & {
