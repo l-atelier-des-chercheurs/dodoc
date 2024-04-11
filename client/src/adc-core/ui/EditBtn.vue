@@ -9,7 +9,8 @@
     @click="$emit('click')"
   >
     <span class="_label" :data-position="label_position">
-      {{ btn_props.label }}
+      <template v-if="label">{{ label }}</template>
+      <template v-else>{{ btn_props.label }}</template>
     </span>
     <b-icon class="_icon" :icon="btn_props.icon" />
   </button>
@@ -25,6 +26,7 @@ export default {
       type: String,
       default: "right",
     },
+    label: String,
     is_unfolded: {
       type: Boolean,
       default: false,
@@ -75,7 +77,11 @@ export default {
           label: this.$t("informations"),
           icon: "info-circle",
         };
-
+      else if (this.btn_type === "remove")
+        return {
+          label: this.$t("remove"),
+          icon: "trash",
+        };
       return {
         label: this.$t("edit"),
         icon: "pencil-fill",
@@ -92,9 +98,13 @@ export default {
       //     --color2: var(--c-noir);
       //     --color-hover-icon: white;
       //   `;
-      if (this.btn_type === "credits")
+      else if (this.btn_type === "credits")
         return `
           --color2: var(--c-noir);
+        `;
+      else if (this.btn_type === "remove")
+        return `
+          --color2: var(--c-rouge);
         `;
 
       if (this.btn_type === "fullscreen-exit")
@@ -190,8 +200,8 @@ export default {
       transform: none;
       color: inherit;
       opacity: 1;
-      max-width: 20ch;
-      pointer-events: auto;
+      max-width: 40ch;
+      // pointer-events: auto;
       // transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
       transition: all 0.25s 0s cubic-bezier(0.19, 1, 0.22, 1);
     }

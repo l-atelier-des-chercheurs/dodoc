@@ -210,6 +210,7 @@ export default {
   in_this_section: "Dans ce chapitre",
   in_another_section: "Dans un autre chapitre",
   change_section: "Déplacer vers un autre chapitre",
+  remove_section: "Supprimer le chapitre",
 
   untitled: "Sans titre",
   responsive: "Fluide",

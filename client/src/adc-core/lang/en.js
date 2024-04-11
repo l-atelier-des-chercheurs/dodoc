@@ -163,6 +163,7 @@ export default {
   in_this_section: "In this chapter",
   in_another_section: "In another chapter",
   change_section: "Move to another chapter",
+  remove_section: "Remove this chapter",
 
   status: "Status",
   origin: "Origin",

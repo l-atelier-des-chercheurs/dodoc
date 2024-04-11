@@ -40,7 +40,7 @@
       </div>
       &nbsp;
       <div
-        class="_reorderedList--item _changeOrderBtn"
+        class="_reorderedList--item"
         v-if="can_edit && local_items.length > 1"
       >
         <EditBtn
@@ -57,6 +57,26 @@
           v-else-if="save_status === 'saved'"
           :key="save_status"
           icon="check"
+        />
+      </div>
+      <div class="_reorderedList--item">
+        <EditBtn
+          slot="button"
+          v-if="can_edit && local_items.length > 1"
+          :btn_type="'remove'"
+          :label="$t('remove_section')"
+          @click="show_remove_modal = true"
+        />
+        <RemoveMenu
+          v-if="show_remove_modal"
+          :remove_text="$t('remove_section')"
+          :show_button_text="false"
+          :show_modal_on_startup="true"
+          @remove="
+            $emit('removeOpened');
+            show_remove_modal = false;
+          "
+          @modalClosed="show_remove_modal = false"
         />
       </div>
     </SlickList>
@@ -85,6 +105,7 @@ export default {
     return {
       local_items: undefined,
       change_order: false,
+      show_remove_modal: false,
 
       save_status: undefined,
     };
@@ -218,8 +239,5 @@ export default {
     // background: var(--c-noir);
     // color: white;
   }
-}
-._changeOrderBtn {
-  // text-align: right;
 }
 </style>
