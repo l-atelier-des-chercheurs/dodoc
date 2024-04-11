@@ -2,6 +2,8 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 
+import "./utils/icons";
+
 Vue.config.productionTip = false;
 
 const debug_mode = window.app_infos.debug_mode;
@@ -15,9 +17,6 @@ import {
 
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
-
-import { IconsPlugin } from "bootstrap-vue";
-Vue.use(IconsPlugin);
 
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
