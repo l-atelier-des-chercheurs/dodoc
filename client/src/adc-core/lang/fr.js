@@ -337,6 +337,8 @@ export default {
   private_status_explanations_publis:
     "La publication ne sera visible qu’aux contributeurs du projet.",
 
+  space_is_private:
+    "Cet espace est privé et ne peut être consulté que par ses contributeurs ou référents.",
   project_is_private:
     "Ce projet est privé et ne peut être consulté que par ses contributeurs ou référents.",
 

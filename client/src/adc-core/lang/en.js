@@ -95,6 +95,8 @@ export default {
   create_a_space: "Create a space",
   project: "Project",
 
+  space_is_private:
+    "This space is private and can only be opened by its contributors and referents.",
   project_is_private:
     "This project is private and can only be opened by its contributors and referents.",
 

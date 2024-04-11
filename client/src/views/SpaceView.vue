@@ -1,6 +1,14 @@
 <template>
   <div class="_spaceView">
-    <div v-if="space">
+    <div class="u-divCentered" v-if="is_loading" key="loader">
+      <LoaderSpinner />
+    </div>
+    <div v-else-if="fetch_space_error_message" key="err">
+      <div class="u-instructions _errNotice">
+        {{ fetch_space_error_message }}
+      </div>
+    </div>
+    <div v-else-if="space">
       <div class="_topSpace">
         <SpacePresentation
           :space="space"
@@ -75,6 +83,8 @@ export default {
   },
   data() {
     return {
+      is_loading: true,
+      fetch_space_error_message: null,
       space: undefined,
       projects: undefined,
       show_create_modal: false,
@@ -83,14 +93,18 @@ export default {
   },
   created() {},
   async mounted() {
-    await this.getSpace();
+    await this.getSpace().catch(() => {
+      this.is_loading = false;
+      return;
+    });
     this.$api.join({ room: this.space_path });
     this.$eventHub.$emit("received.space", this.space);
 
     await this.getProjects();
     this.$api.join({ room: this.projects_path });
-
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
+
+    this.is_loading = false;
   },
   beforeDestroy() {
     this.$api.leave({ room: this.space_path });
@@ -119,8 +133,11 @@ export default {
         .getFolder({
           path: this.space_path,
         })
-        .catch(() => {
-          return;
+        .catch((err) => {
+          if (err.code === "folder_private")
+            this.fetch_space_error_message = this.$t("space_is_private");
+          else this.fetch_space_error_message = err.code;
+          throw err;
         });
     },
     async getProjects() {
@@ -128,9 +145,7 @@ export default {
         .getFolders({
           path: this.projects_path,
         })
-        .catch(() => {
-          return;
-        });
+        .catch((err) => {});
     },
     openNewProject(new_folder_slug) {
       this.show_create_modal = false;
@@ -152,9 +167,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._backBtn {
-  margin-top: var(--spacing);
-  margin-left: var(--spacing);
+._errNotice {
+  padding: calc(var(--spacing) / 2);
 }
 
 ._spaceView {
