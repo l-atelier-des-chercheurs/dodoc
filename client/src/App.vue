@@ -239,9 +239,15 @@ export default {
   // --sl-font-size-x-small: 0.9rem;
   // --sl-font-size-small: 0.95rem;
   --sl-font-size-normal: 1rem;
+
   --sl-font-size-large: 1.5rem;
   --sl-font-size-x-large: 1.66rem;
   --sl-font-size-xx-large: 2.8rem;
+
+  --sl-font-size-small: 0.875rem;
+  --sl-font-size-x-small: 0.75rem;
+
+  --font-verysmall: var(--sl-font-size-x-small);
 
   --max-column-width: 90%;
 
