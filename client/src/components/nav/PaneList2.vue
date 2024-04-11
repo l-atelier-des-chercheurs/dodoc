@@ -65,11 +65,13 @@
                 v-if="project_panes.some((p) => p.type === pane.type)"
                 class="_inlineBtn _removePaneBtn"
               >
-                <sl-icon-button
-                  name="x-circle-fill"
-                  label="Fermer"
+                <b-icon
+                  icon="x-circle-fill"
+                  :label="$t('close')"
                   @click.stop="removePane(pane.type)"
                 />
+
+                <sl-icon-button />
               </div>
               <div
                 v-else-if="project_panes.length > 0 && !$root.is_mobile_view"

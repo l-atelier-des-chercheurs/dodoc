@@ -21,9 +21,6 @@ Vue.config.ignoredElements = [/sl-/];
 /*
   sl-icon
   sl-icon-button
-  sl-tab
-  sl-tab-group
-  sl-tab-panel
 */
 import { IconsPlugin } from "bootstrap-vue";
 Vue.use(IconsPlugin);
