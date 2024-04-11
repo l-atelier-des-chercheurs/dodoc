@@ -127,6 +127,8 @@ import {
   BIconDashLg,
   BIconArrowRightSquare,
   BIconRecordCircleFill,
+  BIconBookmarkStar,
+  BIconPeople,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -253,3 +255,5 @@ Vue.component("BIconDashLg", BIconDashLg);
 Vue.component("BIconArrowRightSquare", BIconArrowRightSquare);
 Vue.component("BIconRecordCircleFill", BIconRecordCircleFill);
 Vue.component("BIconArrowRightShort", BIconArrowRightShort);
+Vue.component("BIconBookmarkStar", BIconBookmarkStar);
+Vue.component("BIconPeople", BIconPeople);
