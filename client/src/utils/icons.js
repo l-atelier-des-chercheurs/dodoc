@@ -90,6 +90,7 @@ import {
   BIconChevronDoubleDown,
   BIconPlusCircleDotted,
   BIconImage,
+  BIconImages,
   BIconPlayCircleFill,
   BIconPauseCircle,
   BIconZoomOut,
@@ -129,6 +130,8 @@ import {
   BIconRecordCircleFill,
   BIconBookmarkStar,
   BIconPeople,
+  BIconMap,
+  BIconInfoSquare,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -257,3 +260,6 @@ Vue.component("BIconRecordCircleFill", BIconRecordCircleFill);
 Vue.component("BIconArrowRightShort", BIconArrowRightShort);
 Vue.component("BIconBookmarkStar", BIconBookmarkStar);
 Vue.component("BIconPeople", BIconPeople);
+Vue.component("BIconMap", BIconMap);
+Vue.component("BIconInfoSquare", BIconInfoSquare);
+Vue.component("BIconImages", BIconImages);
