@@ -584,7 +584,7 @@ export default {
   border-radius: 8px;
   background: white;
   padding: calc(var(--spacing) / 2);
-  border-radius: 8px;
+  border-radius: 10px;
 
   > *:not(:last-child) {
     margin-bottom: calc(var(--spacing) / 2);
@@ -592,7 +592,7 @@ export default {
 }
 
 .m_recipe--icon {
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--c-bleumarine);
   flex: 0 1 160px;
   min-width: 120px;
