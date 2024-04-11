@@ -165,7 +165,7 @@ export default {
   watch: {
     transform: {
       handler() {
-        if (this.first_media.$type === "text") {
+        if (this.first_media?.$type === "text") {
           this.detectOverflowText();
         }
       },
