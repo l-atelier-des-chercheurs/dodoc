@@ -19,7 +19,6 @@ Vue.prototype.$alertify = alertify;
 Vue.config.ignoredElements = [/sl-/];
 // todo : replace shoelace components
 /*
-  sl-spinner
   sl-icon
   sl-icon-button
   sl-tab

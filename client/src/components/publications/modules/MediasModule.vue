@@ -167,9 +167,4 @@ export default {
     transform: rotate(-90deg);
   }
 }
-
-sl-icon-button::part(base) {
-  font-size: 1.5em;
-  color: var(--c-bleuvert);
-}
 </style>

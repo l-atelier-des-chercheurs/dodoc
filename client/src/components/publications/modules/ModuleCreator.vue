@@ -421,11 +421,6 @@ export default {
   pointer-events: none;
 }
 
-sl-icon-button::part(base) {
-  // font-size: 1.5em;
-  // color: var(--c-bleuvert);
-}
-
 ._showModuleSelector {
   // position: absolute;
   // right: 100%;
