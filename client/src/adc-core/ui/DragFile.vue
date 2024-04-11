@@ -12,6 +12,7 @@
       class="u-button u-button_icon"
       :class="{
         'is--dragged': is_dragged,
+        'u-button_small': size === 'small',
       }"
     >
       <b-icon icon="hand-index-thumb" />
@@ -22,6 +23,7 @@
 export default {
   props: {
     file: Object,
+    size: String,
     is_dragged: Boolean,
   },
   components: {},

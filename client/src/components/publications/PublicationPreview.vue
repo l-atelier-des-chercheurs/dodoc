@@ -39,9 +39,7 @@
         v-if="can_edit && !is_making_preview"
         @click.stop="generatePreview"
       >
-        <!-- <sl-icon name="card-image" /> -->
         <b-icon icon="arrow-clockwise" />
-        <!-- {{ $t("generate_preview") }} -->
       </button>
     </div>
 
@@ -51,16 +49,7 @@
         {{ publication.title }}
       </h3>
     </header>
-    <div class="">
-      <!-- <button
-        type="button"
-        class="u-button u-button_red"
-        @click="$emit('open')"
-      >
-        ouvrir&nbsp;
-        <sl-icon name="arrow-up-right" />
-      </button> -->
-    </div>
+    <div class=""></div>
   </div>
 </template>
 <script>

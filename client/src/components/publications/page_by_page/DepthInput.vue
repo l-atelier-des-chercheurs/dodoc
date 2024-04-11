@@ -13,7 +13,7 @@
         @click="moveToFront"
         :disabled="value === max_z_index"
       >
-        <sl-icon name="front" :label="$t('move_to_front')" />
+        <b-icon icon="front" />
         {{ $t("move_to_front") }}
       </button>
       <button
@@ -22,7 +22,7 @@
         @click="moveToBack"
         :disabled="value === min_z_index"
       >
-        <sl-icon name="back" :label="$t('move_to_back')" />
+        <b-icon icon="back" />
         {{ $t("move_to_back") }}
       </button>
     </div>

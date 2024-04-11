@@ -119,7 +119,7 @@ export default {
 @import "@/utils/utils.scss";
 
 :root {
-  --spacing: var(--sl-spacing-medium, 1rem);
+  --spacing: 1rem;
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);
@@ -206,22 +206,14 @@ export default {
   --color-make: var(--c-bleumarine);
   --color-publish: var(--c-bleuvert);
 
-  --indicator-color: var(--c-vert) !important;
   --active-color: var(--c-bleuvert);
 
-  --sl-font-sans: "Fira Sans";
-  --sl-font-serif: "IBM Plex Serif";
   --sl-font-mono: "Fira Mono";
-
   --padding: var(--spacing);
 
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 
   @each $size in $sizes {
-    // vert
-    // $i: index($sizes, $size);
-    // --sl-color-success-#{$size}: hsl(143, 69%, #{82% - $i * 5});
-    // bleuvert
     $i: index($sizes, $size);
     --sl-color-success-#{$size}: hsl(174, 60%, #{82% - $i * 5});
   }
@@ -234,10 +226,6 @@ export default {
     --sl-color-info-#{$size}: hsl(0, 0%, #{88% - $i * 0.5});
   }
 
-  --sl-input-color: black;
-
-  // --sl-font-size-x-small: 0.9rem;
-  // --sl-font-size-small: 0.95rem;
   --sl-font-size-normal: 1rem;
 
   --sl-font-size-large: 1.5rem;
@@ -278,7 +266,7 @@ body {
 html {
   height: 100%;
 
-  font-family: "Fira Sans";
+  font-family: "Fira Sans", sans-serif;
   font-style: normal;
   font-weight: 400;
 

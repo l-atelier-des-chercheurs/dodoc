@@ -16,17 +16,8 @@ import {
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
 
-Vue.config.ignoredElements = [/sl-/];
-// todo : replace shoelace components
-/*
-  sl-icon
-  sl-icon-button
-*/
 import { IconsPlugin } from "bootstrap-vue";
 Vue.use(IconsPlugin);
-// import { BootstrapVueIcons } from "bootstrap-vue";
-// import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
-// Vue.use(BootstrapVueIcons);
 
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
