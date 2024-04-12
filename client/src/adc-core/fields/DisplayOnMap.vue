@@ -955,6 +955,11 @@ export default {
           source,
           className: "ol-layer ol-basemap",
         });
+        background_layer.getSource().on("tileloaderror", (err) => {
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("failed_loading_tiles_no_internet"));
+        });
       }
 
       this.current_zoom = zoom;
