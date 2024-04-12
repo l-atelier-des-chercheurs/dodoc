@@ -28,7 +28,7 @@
     "imagetracerjs": "^1.2.6",
     "instascan": "^1.0.0",
     "jquery": "^3.5.1",
-    "katex": "^0.12.0",
+    "katex": "^0.16.10",
     "linkifyjs": "^2.1.9",
     "moment": "^2.29.1",
     "node-lessify": "^0.1.5",
