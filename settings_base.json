@@ -481,6 +481,9 @@
                     "border_radius": {
                       "type": "number"
                     },
+                    "drop_shadow": {
+                      "type": "number"
+                    },
                     "locked": {
                       "type": "boolean"
                     },

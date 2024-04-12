@@ -566,6 +566,7 @@ export default {
   hide_pagination_instr: "Only concerns this page",
   remove_page_and_content: "Delete the page and its content?",
   border_radius: "Rounded corners",
+  drop_shadow: "Box shadow",
   photo: "Photo",
   remove_this_image: "Delete this image",
   erase: "Erase",
@@ -927,6 +928,8 @@ export default {
   IGN_SAT: "IGN satellite pictures (France only)",
   image_or_drawing: "Image or drawing",
   bw_filter: "Black and white filter",
+  failed_loading_tiles_no_internet:
+    "Failed loading the baselayer, are you connected to the internet?",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",

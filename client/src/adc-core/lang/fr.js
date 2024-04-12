@@ -294,6 +294,7 @@ export default {
   hide_pagination_instr: "Concerne uniquement cette page",
   remove_page_and_content: "Supprimer la page et son contenu ?",
   border_radius: "Coins arrondis",
+  drop_shadow: "Ombre portée",
   photo: "Photo",
   remove_this_image: "Supprimer cette image",
   erase: "Effacer",
@@ -998,6 +999,8 @@ export default {
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
   bw_filter: "Filtre noir et blanc",
+  failed_loading_tiles_no_internet:
+    "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
