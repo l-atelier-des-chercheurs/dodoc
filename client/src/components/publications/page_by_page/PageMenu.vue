@@ -478,7 +478,11 @@
         <RangeValueInput
           class="u-spacingBottom"
           :label="$t('drop_shadow')"
-          :value="Math.round(active_module.drop_shadow * 100)"
+          :value="
+            active_module.drop_shadow
+              ? active_module.drop_shadow * 100
+              : undefined
+          "
           :min="0"
           :max="100"
           :step="1"
@@ -939,5 +943,11 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
+}
+
+._setSizeBtn {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
 }
 </style>
