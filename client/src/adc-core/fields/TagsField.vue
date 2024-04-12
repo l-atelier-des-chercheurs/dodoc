@@ -147,7 +147,8 @@ export default {
       // todo interrupt updateMeta
     },
     onEnter() {
-      this.newTag();
+      if (this.allow_save_newkeyword && !this.new_tag_name_already_exists)
+        this.newTag();
     },
     async updateTags() {
       this.is_saving = true;
