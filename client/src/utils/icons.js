@@ -132,6 +132,8 @@ import {
   BIconPeople,
   BIconMap,
   BIconInfoSquare,
+  BIconFront,
+  BIconBack,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -263,3 +265,5 @@ Vue.component("BIconPeople", BIconPeople);
 Vue.component("BIconMap", BIconMap);
 Vue.component("BIconInfoSquare", BIconInfoSquare);
 Vue.component("BIconImages", BIconImages);
+Vue.component("BIconFront", BIconFront);
+Vue.component("BIconBack", BIconBack);
