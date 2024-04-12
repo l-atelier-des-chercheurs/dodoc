@@ -33,7 +33,8 @@
     "appId": "dodoc",
     "productName": "do•doc",
     "asarUnpack": [
-      "content/"
+      "content/",
+      "node_modules/sharp/**"
     ],
     "icon": "build/icon.png",
     "win": {
