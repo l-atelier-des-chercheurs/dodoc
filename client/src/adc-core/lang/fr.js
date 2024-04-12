@@ -1037,7 +1037,7 @@ export default {
 
   about_dodoc: "À propos de do•doc",
   about_dodoc_txt: `do•doc est un logiciel libre et gratuit créé pour documenter des projets et animé par une communauté diversifiée regroupant des designers, des enseignants, des artistes, des formateurs, des créateurs et des passionnés de documentation en général.
-  Il est employé dans une multitude de contextes, que ce soit en classe, dans des fablabs, des tiers-lieux, ainsi que comme moteur de plateformes de ressources accessible en ligne.<br><br>
+  Il est employé dans une multitude de contextes, que ce soit en classe, dans des fablabs, des tiers-lieux, ainsi que comme moteur de plateformes de ressources accessibles en ligne.<br><br>
   Le design et le développement de cet outil sont assurés par le collectif <a href="https://latelier-des-chercheurs.fr/" target="_blank">l’Atelier des chercheurs</a> depuis ses débuts, en 2014, 
   mais tout le monde a la possibilité de suivre ou de participer à ce travail par le biais de ce forum : <a href="https://forum.latelier-des-chercheurs.fr/" target="_blank">https://forum.latelier-des-chercheurs.fr/</a>.`,
   about_dodoc_links: `
