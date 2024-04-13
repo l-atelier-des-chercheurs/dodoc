@@ -339,8 +339,11 @@ export default {
         let addtl_meta = {};
         if (this.context === "page_by_page")
           if (media?.$infos?.ratio)
-            addtl_meta.height =
-              this.$root.default_new_module_width * media.$infos.ratio;
+            if (addtl_meta.width)
+              addtl_meta.height = addtl_meta.width * media.$infos.ratio;
+            else
+              addtl_meta.height =
+                this.$root.default_new_module_width * media.$infos.ratio;
 
         if (media?.$location) addtl_meta.location = media.$location;
 

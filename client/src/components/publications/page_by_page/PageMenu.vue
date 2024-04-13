@@ -459,10 +459,7 @@
         />
 
         <RangeValueInput
-          v-if="
-            active_module.module_type !== 'ellipsis' &&
-            active_module.module_type !== 'text'
-          "
+          v-if="active_module.module_type !== 'ellipsis'"
           class="u-spacingBottom"
           :label="$t('border_radius')"
           :value="active_module.border_radius"
@@ -476,6 +473,23 @@
               border_radius: $event,
             })
           "
+        />
+
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('drop_shadow')"
+          :value="
+            active_module.drop_shadow
+              ? active_module.drop_shadow * 100
+              : undefined
+          "
+          :min="0"
+          :max="100"
+          :step="1"
+          :ticks="[0, 25, 50, 75, 100]"
+          :default_value="0"
+          :suffix="'%'"
+          @save="updateMediaPubliMeta({ drop_shadow: $event / 100 })"
         />
 
         <RangeValueInput
@@ -929,5 +943,11 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
+}
+
+._setSizeBtn {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
 }
 </style>

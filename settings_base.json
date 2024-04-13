@@ -10,7 +10,7 @@
   "tokenIsValidForXDays": 60,
 
   "cacheDirname": "dodoc_cache",
-  "contentPath": "dodoc_next",
+  "contentPath": "dodoc",
 
   "privateKeyPath": "",
   "certificatePath": "",
@@ -479,6 +479,9 @@
                       "type": "number"
                     },
                     "border_radius": {
+                      "type": "number"
+                    },
+                    "drop_shadow": {
                       "type": "number"
                     },
                     "locked": {

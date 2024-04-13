@@ -7,8 +7,6 @@ export default {
   home: "Home",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
-  // admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
-  // admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
   edit: "Edit",
   description: "Description",
   keywords: "Keywords",
@@ -95,6 +93,8 @@ export default {
   create_a_space: "Create a space",
   project: "Project",
 
+  space_is_private:
+    "This space is private and can only be opened by its contributors and referents.",
   project_is_private:
     "This project is private and can only be opened by its contributors and referents.",
 
@@ -163,6 +163,7 @@ export default {
   in_this_section: "In this chapter",
   in_another_section: "In another chapter",
   change_section: "Move to another chapter",
+  remove_section: "Remove this chapter",
 
   status: "Status",
   origin: "Origin",
@@ -410,10 +411,11 @@ export default {
   or_drag_drop_file_here: "Or drag and drop file here",
   enable: "Enable",
 
-  admins_edit_text_here:
-    "To modify the name of the instance, this text and the settings, log in with an administrator account by clicking on <i>connect</i> at the top right.",
+  admins_edit_text_here: `To modify the name of the instance, this text and the settings, log in with an administrator account by clicking on <i>connect</i> at the top right.
+    The default admin account is <b>Admin</b> and the password is <b>dodoc</b>.
+    `,
   admins_edit_text_below:
-    "To modify this text, click on the Administration Settings button at the top right.",
+    "To modify this text, click on the gear icon in the top right.",
   edit_source: "Edit source",
   select_all: "Select all",
   input_url_instr:
@@ -564,6 +566,7 @@ export default {
   hide_pagination_instr: "Only concerns this page",
   remove_page_and_content: "Delete the page and its content?",
   border_radius: "Rounded corners",
+  drop_shadow: "Box shadow",
   photo: "Photo",
   remove_this_image: "Delete this image",
   erase: "Erase",
@@ -925,6 +928,8 @@ export default {
   IGN_SAT: "IGN satellite pictures (France only)",
   image_or_drawing: "Image or drawing",
   bw_filter: "Black and white filter",
+  failed_loading_tiles_no_internet:
+    "Failed loading the baselayer, are you connected to the internet?",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",

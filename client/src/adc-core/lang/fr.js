@@ -6,8 +6,9 @@ export default {
   home: "Accueil",
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
-  admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
-  admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
+  admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.
+  <br><br>Le compte administrateur par défaut a pour nom <b>Admin</b> et mot de passe <b>dodoc</b>.`,
+  admins_edit_text_below: `Pour modifier ce texte, cliquez sur l’icône engrenage en haut à droite de la page.`,
   edit: "Modifier",
   edit_source: "Modifier la source",
   stop_edit: "Arrêter les modifications",
@@ -210,6 +211,7 @@ export default {
   in_this_section: "Dans ce chapitre",
   in_another_section: "Dans un autre chapitre",
   change_section: "Déplacer vers un autre chapitre",
+  remove_section: "Supprimer le chapitre",
 
   untitled: "Sans titre",
   responsive: "Fluide",
@@ -292,6 +294,7 @@ export default {
   hide_pagination_instr: "Concerne uniquement cette page",
   remove_page_and_content: "Supprimer la page et son contenu ?",
   border_radius: "Coins arrondis",
+  drop_shadow: "Ombre portée",
   photo: "Photo",
   remove_this_image: "Supprimer cette image",
   erase: "Effacer",
@@ -336,6 +339,8 @@ export default {
   private_status_explanations_publis:
     "La publication ne sera visible qu’aux contributeurs du projet.",
 
+  space_is_private:
+    "Cet espace est privé et ne peut être consulté que par ses contributeurs ou référents.",
   project_is_private:
     "Ce projet est privé et ne peut être consulté que par ses contributeurs ou référents.",
 
@@ -994,6 +999,8 @@ export default {
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
   bw_filter: "Filtre noir et blanc",
+  failed_loading_tiles_no_internet:
+    "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
@@ -1033,7 +1040,7 @@ export default {
 
   about_dodoc: "À propos de do•doc",
   about_dodoc_txt: `do•doc est un logiciel libre et gratuit créé pour documenter des projets et animé par une communauté diversifiée regroupant des designers, des enseignants, des artistes, des formateurs, des créateurs et des passionnés de documentation en général.
-  Il est employé dans une multitude de contextes, que ce soit en classe, dans des fablabs, des tiers-lieux, ainsi que comme moteur de plateformes de ressources accessible en ligne.<br><br>
+  Il est employé dans une multitude de contextes, que ce soit en classe, dans des fablabs, des tiers-lieux, ainsi que comme moteur de plateformes de ressources accessibles en ligne.<br><br>
   Le design et le développement de cet outil sont assurés par le collectif <a href="https://latelier-des-chercheurs.fr/" target="_blank">l’Atelier des chercheurs</a> depuis ses débuts, en 2014, 
   mais tout le monde a la possibilité de suivre ou de participer à ce travail par le biais de ce forum : <a href="https://forum.latelier-des-chercheurs.fr/" target="_blank">https://forum.latelier-des-chercheurs.fr/</a>.`,
   about_dodoc_links: `

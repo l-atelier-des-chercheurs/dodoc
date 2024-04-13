@@ -41,6 +41,7 @@ import {
   BIconFileEarmark,
   BIconCheck2Circle,
   BIconTools,
+  BIconArrowLeftCircle,
   BIconArrowRightCircle,
   BIconFilePlus,
   BIconSave2Fill,
@@ -68,6 +69,7 @@ import {
   BIconPinFill,
   BIconPin,
   BIconArrowRightCircleFill,
+  BIconArrowRightShort,
   BIconClipboard,
   BIconClipboardCheck,
   BIconBoxArrowUpRight,
@@ -89,6 +91,7 @@ import {
   BIconChevronDoubleDown,
   BIconPlusCircleDotted,
   BIconImage,
+  BIconImages,
   BIconPlayCircleFill,
   BIconPauseCircle,
   BIconZoomOut,
@@ -126,6 +129,12 @@ import {
   BIconDashLg,
   BIconArrowRightSquare,
   BIconRecordCircleFill,
+  BIconBookmarkStar,
+  BIconPeople,
+  BIconMap,
+  BIconInfoSquare,
+  BIconFront,
+  BIconBack,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -166,6 +175,7 @@ Vue.component("BIconEyeSlash", BIconEyeSlash);
 Vue.component("BIconFileEarmark", BIconFileEarmark);
 Vue.component("BIconCheck2Circle", BIconCheck2Circle);
 Vue.component("BIconTools", BIconTools);
+Vue.component("BIconArrowLeftCircle", BIconArrowLeftCircle);
 Vue.component("BIconArrowRightCircle", BIconArrowRightCircle);
 Vue.component("BIconFilePlus", BIconFilePlus);
 Vue.component("BIconSave2Fill", BIconSave2Fill);
@@ -251,3 +261,11 @@ Vue.component("BIconCircleFill", BIconCircleFill);
 Vue.component("BIconDashLg", BIconDashLg);
 Vue.component("BIconArrowRightSquare", BIconArrowRightSquare);
 Vue.component("BIconRecordCircleFill", BIconRecordCircleFill);
+Vue.component("BIconArrowRightShort", BIconArrowRightShort);
+Vue.component("BIconBookmarkStar", BIconBookmarkStar);
+Vue.component("BIconPeople", BIconPeople);
+Vue.component("BIconMap", BIconMap);
+Vue.component("BIconInfoSquare", BIconInfoSquare);
+Vue.component("BIconImages", BIconImages);
+Vue.component("BIconFront", BIconFront);
+Vue.component("BIconBack", BIconBack);

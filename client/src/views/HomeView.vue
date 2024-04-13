@@ -5,7 +5,7 @@
         <template v-for="layout in custom_layout">
           <div v-if="layout === 'text'" :key="layout" class="_textBlock">
             <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
-            <div class="u-spacingBottom">
+            <div class="">
               <CollaborativeEditor2 v-if="description" :content="description" />
               <template v-else>
                 <template v-if="!is_instance_admin">
@@ -16,15 +16,18 @@
                 </template>
               </template>
             </div>
-            <p v-if="$root.app_infos.instance_meta.contactmail">
-              <b>{{ $t("contactmail_of_instance") }}</b
-              >&nbsp;
-              <a
-                :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-                target="_blank"
-                >{{ $root.app_infos.instance_meta.contactmail }}</a
-              >
-            </p>
+            <template v-if="$root.app_infos.instance_meta.contactmail">
+              <div class="u-spacingBottom" />
+              <p>
+                <b>{{ $t("contactmail_of_instance") }}</b
+                >&nbsp;
+                <a
+                  :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+                  target="_blank"
+                  >{{ $root.app_infos.instance_meta.contactmail }}</a
+                >
+              </p>
+            </template>
           </div>
           <div
             v-if="layout === 'image' && hero_thumb"

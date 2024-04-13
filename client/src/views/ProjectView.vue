@@ -1,8 +1,5 @@
 <template>
   <div class="_projectView">
-    <!-- <pre>
-      {{ $api.store }}
-    </pre> -->
     <transition name="fade_fast" mode="out-in">
       <div class="u-divCentered" v-if="is_loading" key="loader">
         <LoaderSpinner />
@@ -13,10 +10,6 @@
         </div>
       </div>
       <div v-else key="project">
-        <!-- <pre>
-       {{ project }}
-      </pre> -->
-
         <div class="_topContent">
           <div class="u-displayAsPublic" v-if="can_contribute_to_project">
             <div class="_sticky">
