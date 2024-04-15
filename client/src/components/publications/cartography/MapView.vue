@@ -166,6 +166,10 @@ export default {
       );
     },
     base_media() {
+      // public folder export view
+      if (this.opened_view?._map_base_media)
+        return this.opened_view._map_base_media;
+
       const meta_filename_in_project =
         this.opened_view?.map_base_media_filename;
       if (meta_filename_in_project)
