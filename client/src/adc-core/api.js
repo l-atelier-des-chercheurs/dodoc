@@ -117,7 +117,7 @@ export default function () {
         // join room only if not tracking
         if (!this.rooms_joined.includes(room)) {
           // console.log("JOIN – room isnt tracked, joining", room);
-          this.socket.emit("joinRoom", { room });
+          this.apiJoinRoom({ room });
         } else {
           // console.log("JOIN – room already tracked", room);
         }
@@ -153,10 +153,17 @@ export default function () {
         );
         for (const path of paths) {
           await this.updateStore(path);
-          this.socket.emit("joinRoom", { room: path });
+          this.apiJoinRoom({ room: path });
         }
       },
-
+      apiJoinRoom({ room }) {
+        let infos = { room };
+        if (this.tokenpath.token && this.tokenpath.token_path) {
+          infos.token = this.tokenpath.token;
+          infos.token_path = this.tokenpath.token_path;
+        }
+        this.socket.emit("joinRoom", infos);
+      },
       async _setAuthFromStorage() {
         // check if password
         if (window.app_infos.instance_meta.has_general_password === true) {
