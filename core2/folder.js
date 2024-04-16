@@ -177,7 +177,9 @@ module.exports = (function () {
 
       if (!meta_file) {
         meta_file = directory.files.find((f) => {
-          const path_splits = f.path.split(path.sep);
+          // Replace all path separators with '/' for consistency
+          const normalizedPath = f.path.replace(/\\/g, "/");
+          const path_splits = normalizedPath.split("/");
           if (path_splits.length === 2 && path_splits[1] === "meta.txt") {
             subfolder_name = path_splits[0];
             return true;
