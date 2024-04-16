@@ -222,7 +222,8 @@ module.exports = (function () {
         utils.getPathToUserContent(path_to_new_folder);
 
       const files_to_copy = directory.files.filter((f) => {
-        const path_splits = f.path.split(path.sep);
+        const normalizedPath = f.path.replace(/\\/g, "/");
+        const path_splits = normalizedPath.split("/");
         return path_splits.length >= 2 && path_splits[1] !== "meta.txt";
       });
 
