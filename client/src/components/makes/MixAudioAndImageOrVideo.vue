@@ -95,22 +95,7 @@ export default {
       export_href: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        pick_audio: "Choisissez le son à utiliser",
-        pick_image: "Choisissez l’image à utiliser",
-        pick_video: "Choisissez la vidéo à utiliser",
-        export_mix: "Exporter la composition",
-      },
-      en: {
-        pick_audio: "Pick audio media",
-        pick_image: "Pick image media",
-        pick_video: "Pick video media",
-        export_mix: "Export composition",
-      },
-    },
-  },
+
   created() {},
   mounted() {},
   beforeDestroy() {},

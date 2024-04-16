@@ -40,11 +40,6 @@ export default {
       section_path_to_move_to: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},

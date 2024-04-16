@@ -85,11 +85,6 @@ export default {
       ],
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {
     if (this.page_opened_id && this.publication.pages) {
       const page_number = this.publication.pages.findIndex(

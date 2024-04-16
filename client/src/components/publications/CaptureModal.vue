@@ -24,11 +24,6 @@ export default {
       stopmotion_slug: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},

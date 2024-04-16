@@ -96,14 +96,10 @@ export default {
         }, 50);
       } catch (err_code) {
         if (err_code === "unique_field_taken") {
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("notifications.title_taken"));
+          this.$alertify.delay(4000).error(this.$t("title_taken"));
           this.$refs.titleInput.$el.querySelector("input").select();
         } else if (err_code === "token_not_allowed_must_be_contributors") {
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("notifications.action_not_allowed"));
+          this.$alertify.delay(4000).error(this.$t("action_not_allowed"));
         } else {
           this.$alertify.delay(4000).error(err_code);
         }

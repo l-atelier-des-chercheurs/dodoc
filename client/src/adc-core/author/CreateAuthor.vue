@@ -168,16 +168,6 @@ export default {
       terms_accepted: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        account_created: "Ce compte a été créé",
-      },
-      en: {
-        account_created: "Account created",
-      },
-    },
-  },
   created() {
     if (!this.has_signup_password) this.can_create_author = true;
   },
@@ -249,7 +239,7 @@ export default {
         if (err.code === "unique_field_taken") {
           this.$alertify
             .delay(4000)
-            .error(this.$t("notifications.name_taken") + " : " + err.err_infos);
+            .error(this.$t("name_taken") + " : " + err.err_infos);
           this.$refs.titleInput.$el.querySelector("input").select();
         }
         this.is_creating_space = false;

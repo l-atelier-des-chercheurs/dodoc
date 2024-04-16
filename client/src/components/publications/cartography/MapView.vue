@@ -109,19 +109,6 @@ export default {
       default_view_color: "#fc4b60",
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        to_add_media_here_open_matching_layer:
-          "Pour ajouter un média à cette position, créez ou ouvrez un chapitre dans le panneau de droite.",
-      },
-      en: {
-        to_add_media_here_open_matching_layer:
-          "To add a media in this position, create or open a chapter in the pane on the right.",
-      },
-    },
-  },
-
   created() {},
   mounted() {},
   beforeDestroy() {},

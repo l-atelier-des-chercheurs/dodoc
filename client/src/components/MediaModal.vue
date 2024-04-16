@@ -272,18 +272,7 @@ export default {
       show_meta_sidebar: true,
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        place: "Emplacement",
-        convert_to_format: "Adapter le format pour la lecture",
-      },
-      en: {
-        place: "Place",
-        convert_to_format: "Adapt format for viewing",
-      },
-    },
-  },
+
   created() {
     // if (this.select_mode) this.show_meta_sidebar = false;
     // else

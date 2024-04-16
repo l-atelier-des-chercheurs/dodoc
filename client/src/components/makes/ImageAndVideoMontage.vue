@@ -223,16 +223,6 @@ export default {
       ],
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        export_montage: "Exporter le montage",
-      },
-      en: {
-        export_montage: "Export montage",
-      },
-    },
-  },
   async created() {
     if (!this.sections || this.sections.length === 0) {
       await this.createSection2({

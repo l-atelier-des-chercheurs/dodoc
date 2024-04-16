@@ -48,11 +48,6 @@ export default {
       is_dragover: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {
     window.addEventListener("paste", this.handlePaste);
   },

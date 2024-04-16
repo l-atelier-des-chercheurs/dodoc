@@ -112,7 +112,7 @@ export default {
   async created() {
     await this.getEvent().catch((err) => {
       if (err.response?.status === 404)
-        this.$alertify.delay(4000).error("notifications.event_does_not_exit");
+        this.$alertify.delay(4000).error("event_does_not_exit");
       this.$router.replace("/");
     });
     this.$api.join({ room: this.event_path });

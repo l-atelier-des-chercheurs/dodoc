@@ -81,11 +81,6 @@ export default {
       finished_saving_to_project: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   async mounted() {
     await this.startExport();

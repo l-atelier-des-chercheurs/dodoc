@@ -678,9 +678,9 @@ export default function () {
           } else if (code === "no_general_password_submitted") {
             this.$eventHub.$emit("app.prompt_general_password");
           } else if (code === "token_not_allowed_must_be_local_admin") {
-            // this.$alertify.delay(4000).error("notifications.action_not_allowed");
+            // this.$alertify.delay(4000).error("action_not_allowed");
           } else if (code === "token_not_allowed_must_be_contributors") {
-            // this.$alertify.delay(4000).error("notifications.action_not_allowed");
+            // this.$alertify.delay(4000).error("action_not_allowed");
           } else if (code === "ENOENT") code = "folder_is_missing";
           // this.$alertify.delay(4000).error("Message d’erreur : " + code);
           console.error("processError – " + code);

@@ -433,12 +433,6 @@ export default {
       observer: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-      en: {},
-    },
-  },
   created() {},
   mounted() {
     this.$eventHub.$on(

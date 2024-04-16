@@ -443,12 +443,6 @@ export default {
       start_map_print: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-      en: {},
-    },
-  },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$on("publication.map.openPin", this.openPin);

@@ -80,11 +80,6 @@ export default {
       show_credits_caption: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},

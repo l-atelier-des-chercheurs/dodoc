@@ -37,16 +37,6 @@ export default {
   data() {
     return {};
   },
-  i18n: {
-    messages: {
-      fr: {
-        create_section: "Créer un chapitre",
-      },
-      en: {
-        create_section: "Create chapter",
-      },
-    },
-  },
   created() {},
   mounted() {
     if (this.can_edit && this.sections.length === 0) this.createSection();

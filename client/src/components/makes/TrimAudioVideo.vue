@@ -230,20 +230,6 @@ export default {
       export_duration: "",
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        start_egal_to_end: "Le début est identique à la fin",
-        end_before_start: "La fin est avant le début",
-        export_trim_video: "Exporter la vidéo recoupée",
-      },
-      en: {
-        start_egal_to_end: "Start is equal to end",
-        end_before_start: "End is before start",
-        export_trim_audio: "Export trimmed video",
-      },
-    },
-  },
 
   created() {},
   async mounted() {

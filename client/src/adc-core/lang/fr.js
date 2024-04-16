@@ -104,6 +104,7 @@ export default {
   position: "Position",
   media: "Média",
   media_not_found: "Média introuvable",
+
   active_media_instr:
     "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
@@ -461,8 +462,22 @@ export default {
   end: "fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
+  export_montage: "Exporter le montage",
 
-  extract_to_export: "Extrait sélectionné",
+  image_to_rework: "Image à retravailler",
+  video_to_rework: "Vidéo à recouper",
+  audio_to_rework: "Son à recouper",
+
+  pick_audio: "Choisissez le son à utiliser",
+  pick_image: "Choisissez l’image à utiliser",
+  pick_video: "Choisissez la vidéo à utiliser",
+  export_mix: "Exporter la composition",
+
+  start_egal_to_end: "Le début est identique à la fin",
+  end_before_start: "La fin est avant le début",
+  export_trim_video: "Exporter la vidéo recoupée",
+  export_trim_audio: "Exporter la piste audio recoupée",
+
   save_export_cropped: "Enregistrer la version retouchée",
 
   make_a_video: "Fabriquer une vidéo",
@@ -844,21 +859,19 @@ export default {
     "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
   or_paste_an_image: "Ou coller une image depuis le presse-papier",
-  "notifications.media_was_saved": "Média enregistré",
-  "notifications.no_image_in_clipboard":
-    "Votre presse-papier ne contient pas d’images",
-  "notifications.project_was_removed": "Ce projet vient d’être supprimé",
-  "notifications.action_not_authorized": "Cette action n’est pas permise",
-  "notifications.event_does_not_exit": "Cet événement n’existe pas",
-  "notifications.title_taken": "Ce titre est déjà utilisé",
-  "notifications.not_allowed_to_copy_to_space":
+  media_was_saved: "Média enregistré",
+  no_image_in_clipboard: "Votre presse-papier ne contient pas d’images",
+  project_was_removed: "Ce projet vient d’être supprimé",
+  event_does_not_exit: "Cet événement n’existe pas",
+  title_taken: "Ce titre est déjà utilisé",
+  not_allowed_to_copy_to_space:
     "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
-  "notifications.not_allowed_to_copy_to_project":
+  not_allowed_to_copy_to_project:
     "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
-  "notifications.name_taken": "Ce nom est déjà utilisé",
-  "notifications.action_not_allowed": "Cette action n’est pas autorisée",
-  "notifications.account_created": "Votre compte a été créé",
-  "notifications.logged_in":
+  name_taken: "Ce nom est déjà utilisé",
+  action_not_allowed: "Cette action n’est pas autorisée",
+  account_created: "Votre compte a été créé",
+  logged_in:
     "La connexion au compte est active, rechargement de la page en cours…",
 
   informations: "Informations",
@@ -966,9 +979,12 @@ export default {
   show_on_map: "Afficher sur la carte",
   placed_on_map: "Positionné sur la carte",
   change_location: "Changer la position",
-  remove_pin: "Supprimer cette épingle",
   location_stored_in_localstorage:
     "Cette information sera conservée sur cet appareil pour toutes les captures réalisées.",
+
+  print_map: "Imprimer la carte",
+  print_only_basemap:
+    "Uniquement le fond de carte (masquer les épingles et les dessins)",
 
   cancel_position: "Annuler la position",
   click_on_map_to_repick_location:
@@ -983,6 +999,8 @@ export default {
   pin_icons: "Apparence des épingles",
   icon: "Icône",
   media_preview: "Image sur la carte",
+  to_add_media_here_open_matching_layer:
+    "Pour ajouter un média à cette position, créez ou ouvrez un chapitre dans le panneau de droite.",
 
   image_basemap: "Image en fond de carte",
   choose_image_basemap: "Choisir le fond de carte",
@@ -1055,4 +1073,17 @@ export default {
   write: "Écrire",
   real_size: "Taille réelle",
   full_page: "Pleine page",
+
+  convert: "Convertir",
+  convert_to_format: "Adapter le format pour la lecture",
+
+  already_optimized:
+    "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
+  preview_optimize: "Créer une version optimisée",
+  wont_remove_original: "Ne supprimera pas l’original",
+  add_optimized_to_lib: "Conserver l’original et la nouvelle version",
+  replace_original: "Remplacer et supprimer l’original",
+
+  change: "Changer",
+  transition_fade: "Transition : fondu enchaîné",
 };

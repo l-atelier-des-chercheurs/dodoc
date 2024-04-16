@@ -202,12 +202,6 @@ export default {
       ],
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-      en: {},
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},

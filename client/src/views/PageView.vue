@@ -45,11 +45,6 @@ export default {
       page: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   async created() {},
   async mounted() {
     await this.getPage();

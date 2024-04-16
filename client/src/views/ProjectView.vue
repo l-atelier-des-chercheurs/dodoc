@@ -205,7 +205,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .log(this.$t("notifications.project_was_removed"));
+          .log(this.$t("project_was_removed"));
 
         this.$router.push(
           this.getParent(this.createURLFromPath(this.project.$path))

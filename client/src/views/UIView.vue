@@ -86,11 +86,6 @@ export default {
       authors: [],
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   async mounted() {
     this.authors = await this.$api.getFolders({

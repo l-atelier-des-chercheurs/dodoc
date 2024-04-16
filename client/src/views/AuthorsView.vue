@@ -49,11 +49,6 @@ export default {
       search_author_name: "",
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   async mounted() {
     this.authors = await this.$api.getFolders({
