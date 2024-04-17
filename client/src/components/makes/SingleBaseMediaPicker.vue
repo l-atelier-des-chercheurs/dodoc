@@ -118,8 +118,8 @@ export default {
     align-items: center;
 
     margin: 0 auto;
-    width: auto;
-    // width: 100%;
+    // width: auto;
+    width: 100%;
     max-width: 320px;
 
     color: white;
