@@ -29,13 +29,13 @@
       </div>
 
       <transition name="fade_fast" mode="out-in">
-        <b-icon
-          v-if="can_be_toggled"
-          class="_openIcon"
-          :icon="
-            !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
-          "
-        />
+        <div v-if="can_be_toggled" :key="currently_open" class="_openIcon">
+          <b-icon
+            :icon="
+              !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
+            "
+          />
+        </div>
       </transition>
     </summary>
     <div class="">
@@ -139,6 +139,11 @@ export default {
 
   ._openIcon {
     margin: calc(var(--spacing) / 4);
+    padding: calc(var(--spacing) / 2);
+
+    svg {
+      display: block;
+    }
   }
 
   summary {
