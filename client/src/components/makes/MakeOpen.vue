@@ -156,7 +156,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .log(this.$t("notifications.make_was_removed"));
+          .log(this.$t("make_was_removed"));
         this.$emit("close");
       }
     },

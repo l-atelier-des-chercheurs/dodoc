@@ -526,7 +526,7 @@ export default {
           .closeLogOnClick(true)
           .delay(4000)
           .error(
-            this.$t("notifications.couldnt_load_getusermedia") +
+            this.$t("couldnt_load_getusermedia") +
               "<br>" +
               err.name +
               ": " +
@@ -549,7 +549,7 @@ export default {
           .closeLogOnClick(true)
           .delay(4000)
           .error(
-            this.$t("notifications.failed_listing_devices") +
+            this.$t("failed_listing_devices") +
               "<br>" +
               err.name +
               ": " +
@@ -996,9 +996,7 @@ export default {
               .closeLogOnClick(true)
               .delay(4000)
               .error(
-                this.$t(
-                  "notifications.failed_to_start_streams_change_source_or_res"
-                ) +
+                this.$t("failed_to_start_streams_change_source_or_res") +
                   "<br>" +
                   error.name
               );
@@ -1034,11 +1032,7 @@ export default {
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
-              .error(
-                this.$t("notifications.failed_to_share_stream") +
-                  "<br>" +
-                  error.name
-              );
+              .error(this.$t("failed_to_share_stream") + "<br>" + error.name);
           });
       });
     },
@@ -1155,7 +1149,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t("notifications.no_stream_found_while_sharing"));
+            .error(this.$t("no_stream_found_while_sharing"));
 
         if (!this.rtcmulti_connection) {
           this.initRTCMulti();
@@ -1188,7 +1182,7 @@ export default {
                 .closeLogOnClick(true)
                 .delay(4000)
                 .error(
-                  this.$t("notifications.failed_to_start_stream_sharing") +
+                  this.$t("failed_to_start_stream_sharing") +
                     " " +
                     error.message
                 );
@@ -1205,7 +1199,7 @@ export default {
       this.$alertify
         .closeLogOnClick(true)
         .delay(8000)
-        .success(this.$t("notifications.new_user_connected_to_stream"));
+        .success(this.$t("new_user_connected_to_stream"));
 
       this.rtcmulti_connection.acceptParticipationRequest(
         participantId,

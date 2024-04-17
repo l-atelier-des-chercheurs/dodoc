@@ -136,7 +136,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.couldntbesaved"));
+          .error(this.$t("couldntbesaved"));
         this.$alertify.closeLogOnClick(true).error(e.response.data);
       }
     },

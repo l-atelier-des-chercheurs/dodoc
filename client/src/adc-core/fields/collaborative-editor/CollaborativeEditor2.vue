@@ -818,7 +818,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.media_type_not_handled"));
+          .error(this.$t("media_type_not_handled"));
       }
     },
 
@@ -891,7 +891,7 @@ export default {
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
-              .error(this.$t("notifications.failed_to_find_block_line"));
+              .error(this.$t("failed_to_find_block_line"));
             return;
           }
 

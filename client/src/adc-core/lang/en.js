@@ -662,6 +662,14 @@ export default {
   white: "White",
   black: "Black",
   transparent: "Transparent",
+  couldnt_load_getusermedia: "Impossible to load camera or microphone",
+  failed_listing_devices: "Impossible to list devices",
+  failed_to_start_stream_sharing: "Impossible to start stream sharing",
+  failed_to_start_recording: "Failed to start recording",
+  new_user_connected_to_stream: "New user connected to the stream",
+  no_stream_found_while_sharing: "No stream found while sharing",
+  media_couldnt_be_sent: "Media couldn’t be sent",
+
   markdown_instr:
     "Markdown field: you can format the text (titles, bold, italics, links, etc.)",
   watermark: "Dressing",
@@ -766,6 +774,10 @@ export default {
   destination_space: "Space which will receive this copy",
   destination_space_remix: "Space that will receive this remixed project",
   destination_project: "Project that will receive this copy",
+  space_was_removed: "This space has been removed",
+  publication_was_removed: "This publication has been removed",
+  make_was_removed: "This recipe has been removed",
+
   remove_original: "Delete original",
   remove_original_after_copy: "The original will be deleted after copying",
   keep_original_after_copy: "The original will be kept after copying",
@@ -883,6 +895,8 @@ export default {
   require_signup_to_contribute:
     "Users must create an account to contribute to the platform",
   require_mail_to_signup: "An email address is required to create an account",
+  wrong_signup_password: "Wrong password",
+
   enable_events: "Enable the events functionality",
   you_must_login_to_contribute: "You must register or log in to contribute",
   not_allowed_to_contribute_contact_referent:
@@ -1018,4 +1032,6 @@ export default {
 
   change: "Change",
   transition_fade: "Transition: fade",
+
+  couldntbesaved: "Value couldn’t be saved",
 };

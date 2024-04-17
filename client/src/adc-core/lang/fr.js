@@ -496,6 +496,13 @@ export default {
   white: "Blanc",
   black: "Noir",
   transparent: "Transparent",
+  couldnt_load_getusermedia: "Impossible de charger la caméra ou le micro",
+  failed_listing_devices: "Impossible de lister les appareils",
+  failed_to_start_stream_sharing: "Échec du démarrage du partage de flux",
+  failed_to_start_recording: "Échec du démarrage de l’enregistrement",
+  new_user_connected_to_stream: "Nouvel utilisateur connecté au flux",
+  no_stream_found_while_sharing: "Aucun flux trouvé pendant le partage",
+  media_couldnt_be_sent: "Échec de la sauvegarde du média",
 
   space: "Espace",
   spaces: "Les espaces",
@@ -629,6 +636,9 @@ export default {
   destination_space: "Espace qui recevra cette copie",
   destination_space_remix: "Espace qui recevra ce projet remixé",
   destination_project: "Projet qui recevra cette copie",
+  space_was_removed: "Cet espace a été supprimé",
+  publication_was_removed: "Cette publication a été supprimée",
+  make_was_removed: "Cette recette a été supprimée",
 
   remove_original: "Supprimer l’original",
   remove_original_after_copy: "L’original sera supprimé après la copie",
@@ -851,6 +861,8 @@ export default {
     "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
   require_mail_to_signup:
     "Une adresse courriel est obligatoire pour créer un compte",
+  wrong_signup_password: "Mauvais mot de passe",
+
   enable_events: "Activer la fonctionnalité « événements »",
 
   you_must_login_to_contribute:
@@ -1086,4 +1098,6 @@ export default {
 
   change: "Changer",
   transition_fade: "Transition : fondu enchaîné",
+
+  couldntbesaved: "La valeur n’a pas pu être enregistrée",
 };
