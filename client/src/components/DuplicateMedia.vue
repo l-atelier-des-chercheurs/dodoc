@@ -123,7 +123,7 @@ export default {
           if (err_code === "not_allowed_to_copy_to_folder") {
             this.$alertify
               .delay(4000)
-              .error(this.$t("notifications.not_allowed_to_copy_to_project"));
+              .error(this.$t("not_allowed_to_copy_to_project"));
           }
 
           this.is_copying = false;

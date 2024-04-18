@@ -15,13 +15,6 @@ export default {
   data() {
     return {};
   },
-  i18n: {
-    // `i18n` option, setup locale info for component
-    messages: {
-      fr: {},
-      en: {},
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},

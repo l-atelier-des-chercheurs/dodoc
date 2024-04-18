@@ -115,16 +115,6 @@ export default {
   data() {
     return {};
   },
-  i18n: {
-    messages: {
-      fr: {
-        transition_fade: "Transition : fondu enchaîné",
-      },
-      en: {
-        transition_fade: "Transition: fade",
-      },
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},

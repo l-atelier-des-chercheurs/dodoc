@@ -1848,11 +1848,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(
-              this.$t("notifications.failed_to_start_record") +
-                "<br>" +
-                err.message
-            );
+            .error(this.$t("failed_to_start_record") + "<br>" + err.message);
         }
       });
     },
@@ -1929,14 +1925,14 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t("notifications.media_couldnt_be_sent"));
+            .error(this.$t("media_couldnt_be_sent"));
           throw err;
         });
 
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .success(this.$t("notifications.media_was_saved"));
+        .success(this.$t("media_was_saved"));
 
       this.media_is_being_sent = false;
       this.media_being_sent_percent = 100;

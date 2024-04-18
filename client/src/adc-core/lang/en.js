@@ -272,7 +272,13 @@ export default {
   show_on_map: "Show on map",
   placed_on_map: "Already positioned on map",
   change_location: "Change position",
-  remove_pin: "Remove this pin",
+
+  location_stored_in_localstorage:
+    "This information will be retained on this device for all captures.",
+  print_map: "Print the map",
+  print_only_basemap:
+    "Only print the baselayer (do not print pins and drawing)",
+
   cancel_position: "Erase position",
   click_on_map_to_repick_location:
     "Click on map to select the new position on the map",
@@ -625,7 +631,22 @@ export default {
   end: "end",
   copy: "Copy",
   test_and_export: "Test and export",
-  extract_to_export: "Selected extract",
+  export_montage: "Export montage",
+
+  image_to_rework: "Image to edit",
+  video_to_rework: "Video to edit",
+  audio_to_rework: "Audio to edit",
+
+  pick_audio: "Pick audio media",
+  pick_image: "Pick image media",
+  pick_video: "Pick video media",
+  export_mix: "Export composition",
+
+  start_egal_to_end: "Start is equal to end",
+  end_before_start: "End is before start",
+  export_trim_video: "Export trimmed video",
+  export_trim_audio: "Export trimmed audio",
+
   save_export_cropped: "Save cropped version",
   make_a_video: "Make a video",
   video_assemblage: "Video assembly",
@@ -641,6 +662,14 @@ export default {
   white: "White",
   black: "Black",
   transparent: "Transparent",
+  couldnt_load_getusermedia: "Impossible to load camera or microphone",
+  failed_listing_devices: "Impossible to list devices",
+  failed_to_start_stream_sharing: "Impossible to start stream sharing",
+  failed_to_start_recording: "Failed to start recording",
+  new_user_connected_to_stream: "New user connected to the stream",
+  no_stream_found_while_sharing: "No stream found while sharing",
+  media_couldnt_be_sent: "Media couldn’t be sent",
+
   markdown_instr:
     "Markdown field: you can format the text (titles, bold, italics, links, etc.)",
   watermark: "Dressing",
@@ -745,6 +774,10 @@ export default {
   destination_space: "Space which will receive this copy",
   destination_space_remix: "Space that will receive this remixed project",
   destination_project: "Project that will receive this copy",
+  space_was_removed: "This space has been removed",
+  publication_was_removed: "This publication has been removed",
+  make_was_removed: "This recipe has been removed",
+
   remove_original: "Delete original",
   remove_original_after_copy: "The original will be deleted after copying",
   keep_original_after_copy: "The original will be kept after copying",
@@ -862,25 +895,25 @@ export default {
   require_signup_to_contribute:
     "Users must create an account to contribute to the platform",
   require_mail_to_signup: "An email address is required to create an account",
+  wrong_signup_password: "Wrong password",
+
   enable_events: "Enable the events functionality",
   you_must_login_to_contribute: "You must register or log in to contribute",
   not_allowed_to_contribute_contact_referent:
     "You do not have the possibility to contribute, contact a referent to be able to do so",
-  "notifications.media_was_saved": "Media saved",
-  "notifications.no_image_in_clipboard":
-    "Your clipboard does not contain any images",
-  "notifications.project_was_removed": "This project has just been deleted",
-  "notifications.action_not_authorized": "This action is not allowed",
-  "notifications.event_does_not_exit": "This event does not exist",
-  "notifications.title_taken": "This title is already in use",
-  "notifications.not_allowed_to_copy_to_space":
+  media_was_saved: "Media saved",
+  no_image_in_clipboard: "Your clipboard does not contain any images",
+  project_was_removed: "This project has just been deleted",
+  event_does_not_exit: "This event does not exist",
+  title_taken: "This title is already in use",
+  not_allowed_to_copy_to_space:
     "You do not have rights to create projects in the destination space",
-  "notifications.not_allowed_to_copy_to_project":
+  not_allowed_to_copy_to_project:
     "You do not have rights to add media to this project.",
-  "notifications.name_taken": "This name is already in use",
-  "notifications.action_not_allowed": "This action is not allowed",
-  "notifications.account_created": "Your account has been created",
-  "notifications.logged_in": "Account connection is active, page reloading…",
+  name_taken: "This name is already in use",
+  action_not_allowed: "This action is not allowed",
+  account_created: "Your account has been created",
+  logged_in: "Account connection is active, page reloading…",
   informations: "informations",
   duplicate: "Duplicate",
   duplicate_or_move: "Duplicate or move",
@@ -912,6 +945,8 @@ export default {
   pin_icons: "Pin icons",
   icon: "Icon",
   media_preview: "Image on map",
+  to_add_media_here_open_matching_layer:
+    "To add a media in this position, create or open a chapter in the pane on the right.",
 
   image_basemap: "Image used as the basemap",
   choose_image_basemap: "Choose image basemap",
@@ -984,4 +1019,19 @@ export default {
   write: "Write",
   real_size: "Real size",
   full_page: "Full page",
+
+  convert: "Convert",
+  convert_to_format: "Adapt format for viewing",
+
+  already_optimized:
+    "This media has already been converted, it is not recommended to convert it again.",
+  preview_optimize: "Create optimized version",
+  wont_remove_original: "Will not remove the original",
+  add_optimized_to_lib: "Keep original media and add new version",
+  replace_original: "Replace and remove original media",
+
+  change: "Change",
+  transition_fade: "Transition: fade",
+
+  couldntbesaved: "Value couldn’t be saved",
 };

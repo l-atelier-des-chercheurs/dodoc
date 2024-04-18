@@ -18,7 +18,6 @@
           @click="show_media_picker = true"
         >
           <b-icon icon="image" />
-          <!-- {{ $t("pick_base_media") }} -->
           {{ title }}
         </button>
         <button
@@ -68,20 +67,6 @@ export default {
     media_type_to_pick: String,
   },
   components: {},
-  i18n: {
-    messages: {
-      fr: {
-        not_found: "Média introuvable",
-        pick_base_media: "Choisir le média de référence",
-        change: "Changer",
-      },
-      en: {
-        not_found: "Media not found",
-        pick_base_media: "Pick base media",
-        change: "Change",
-      },
-    },
-  },
   data() {
     return {
       show_media_picker: !this.content
@@ -133,8 +118,8 @@ export default {
     align-items: center;
 
     margin: 0 auto;
-    width: auto;
-    // width: 100%;
+    // width: auto;
+    width: 100%;
     max-width: 320px;
 
     color: white;

@@ -115,7 +115,7 @@
 
       <LoaderSpinner v-if="connection_status === 'pending'" />
       <div class="" v-else-if="connection_status === 'success'">
-        {{ $t("notifications.logged_in") }}
+        {{ $t("logged_in") }}
       </div>
     </form>
   </div>
@@ -185,7 +185,7 @@ export default {
         .then(() => {
           // this.$alertify
           //   .delay(4000)
-          //   .success(this.$t("notifications.logged_in"));
+          //   .success(this.$t("logged_in"));
           this.connection_status = "success";
           window.location.reload();
         })

@@ -106,21 +106,6 @@ export default {
       fetch_make_error: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        image_to_rework: "Image à retravailler",
-        video_to_rework: "Vidéo à recouper",
-        audio_to_rework: "Son à recouper",
-      },
-      en: {
-        image_to_rework: "Image to edit",
-        video_to_rework: "Video to edit",
-        audio_to_rework: "Audio to edit",
-      },
-    },
-  },
-
   created() {},
   async mounted() {
     await this.listMake();
@@ -171,7 +156,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .log(this.$t("notifications.make_was_removed"));
+          .log(this.$t("make_was_removed"));
         this.$emit("close");
       }
     },

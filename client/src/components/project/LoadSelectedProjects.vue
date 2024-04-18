@@ -28,11 +28,6 @@ export default {
       fetch_err: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   async mounted() {
     await this.loadSelectedProjects(this.paths);

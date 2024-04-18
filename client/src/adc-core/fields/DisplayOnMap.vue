@@ -443,12 +443,6 @@ export default {
       start_map_print: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-      en: {},
-    },
-  },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$on("publication.map.openPin", this.openPin);
@@ -784,10 +778,13 @@ export default {
           extent = this.map.getView().getProjection().getExtent();
         }
 
-        if (extent)
+        if (extent) {
+          let padding =
+            this.map_baselayer === "image" ? [0, 0, 0, 0] : [50, 50, 50, 50];
           this.map.getView().fit(extent, {
-            padding: [50, 50, 50, 50],
+            padding,
           });
+        }
 
         if (this.start_zoom) {
           this.map.getView().setZoom(this.start_zoom);

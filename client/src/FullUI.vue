@@ -50,11 +50,6 @@ export default {
       show_disconnect_modal: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   async created() {
     console.log("Loading FullUI");
 

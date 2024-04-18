@@ -135,6 +135,7 @@ export default {
     async updateText() {
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
+      this.new_content = this.new_content.trim();
 
       try {
         const new_meta = {
@@ -148,10 +149,10 @@ export default {
 
         this.edit_mode = false;
         this.is_saving = false;
-      } catch (err) {
+      } catch ({ code }) {
         this.is_saving = false;
-        if (err === "unique_field_taken") {
-          this.$alertify.delay(4000).error(this.$t("notifications.name_taken"));
+        if (code === "unique_field_taken") {
+          this.$alertify.delay(4000).error(this.$t("name_taken"));
           this.$refs.TextInput.$refs.field.select();
         }
       }

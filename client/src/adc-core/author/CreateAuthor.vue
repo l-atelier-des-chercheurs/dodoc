@@ -168,16 +168,6 @@ export default {
       terms_accepted: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        account_created: "Ce compte a été créé",
-      },
-      en: {
-        account_created: "Account created",
-      },
-    },
-  },
   created() {
     if (!this.has_signup_password) this.can_create_author = true;
   },
@@ -214,9 +204,7 @@ export default {
           },
         });
 
-        this.$alertify
-          .delay(4000)
-          .success(this.$t("notifications.account_created"));
+        this.$alertify.delay(4000).success(this.$t("account_created"));
 
         this.new_author_name = "";
 
@@ -249,7 +237,7 @@ export default {
         if (err.code === "unique_field_taken") {
           this.$alertify
             .delay(4000)
-            .error(this.$t("notifications.name_taken") + " : " + err.err_infos);
+            .error(this.$t("name_taken") + " : " + err.err_infos);
           this.$refs.titleInput.$el.querySelector("input").select();
         }
         this.is_creating_space = false;
@@ -264,8 +252,7 @@ export default {
       const hashed_submitted_pw = this.hashCode(this.submitted_signup_password);
       if (hashed_submitted_pw === this.signup_password)
         this.can_create_author = true;
-      else
-        this.$alertify.delay(4000).error("notifications.wrong_signup_password");
+      else this.$alertify.delay(4000).error("wrong_signup_password");
 
       this.is_submitting_signup_password = false;
     },
