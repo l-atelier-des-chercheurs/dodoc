@@ -77,6 +77,7 @@ export default {
       this.is_creating_folder = true;
 
       const $admins = this.setDefaultContentAdmins();
+      this.new_folder_title = this.cleanUpString(this.new_folder_title);
 
       try {
         const new_folder_slug = await this.$api.createFolder({
