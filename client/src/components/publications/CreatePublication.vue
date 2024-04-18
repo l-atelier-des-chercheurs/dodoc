@@ -7,6 +7,7 @@
         :maxlength="40"
         :required="true"
         :autofocus="true"
+        ref="titleInput"
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
@@ -145,11 +146,11 @@ export default {
           additional_meta,
         });
         this.$emit("openPubli", new_folder_slug);
-      } catch (err) {
-        this.error_msg = "Error: " + err.message;
-        setTimeout(() => {
-          this.error_msg = "";
-        }, 5000);
+      } catch ({ code }) {
+        if (code === "unique_field_taken") {
+          this.$alertify.delay(4000).error(this.$t("title_taken"));
+          this.$refs.titleInput.$el.querySelector("input").select();
+        }
         this.is_creating_publication = false;
       }
     },

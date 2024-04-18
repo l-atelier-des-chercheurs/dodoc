@@ -149,9 +149,9 @@ export default {
 
         this.edit_mode = false;
         this.is_saving = false;
-      } catch (err) {
+      } catch ({ code }) {
         this.is_saving = false;
-        if (err === "unique_field_taken") {
+        if (code === "unique_field_taken") {
           this.$alertify.delay(4000).error(this.$t("name_taken"));
           this.$refs.TextInput.$refs.field.select();
         }
