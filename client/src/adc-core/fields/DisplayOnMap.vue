@@ -320,6 +320,10 @@ export default {
       type: Number,
       default: 1,
     },
+    zoom_animation: {
+      type: Number,
+      default: 0,
+    },
     map_baselayer_color: String,
     map_base_media: Object,
     is_small: {
@@ -1267,16 +1271,17 @@ export default {
       this.view.setRotation(0);
       const duration = 1400;
 
-      this.view.animate(
-        {
-          zoom: zoom - 1,
-          duration: duration / 2,
-        },
-        {
-          zoom,
-          duration: duration / 2,
-        }
-      );
+      if (this.zoom_animation && this.zoom_animation > 0)
+        this.view.animate(
+          {
+            zoom: zoom - this.zoom_animation,
+            duration: duration / 2,
+          },
+          {
+            zoom,
+            duration: duration / 2,
+          }
+        );
       this.view.animate({
         center,
         duration,
