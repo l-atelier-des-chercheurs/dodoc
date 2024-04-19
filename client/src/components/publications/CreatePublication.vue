@@ -122,6 +122,9 @@ export default {
   methods: {
     async createPublication() {
       this.is_creating_publication = true;
+      this.new_publication_title = this.cleanUpString(
+        this.new_publication_title
+      );
 
       let additional_meta = {
         title: this.new_publication_title,

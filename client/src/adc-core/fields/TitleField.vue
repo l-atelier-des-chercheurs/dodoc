@@ -135,8 +135,7 @@ export default {
     async updateText() {
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
-      this.new_content = this.new_content.trim();
-
+      this.new_content = this.cleanUpString(this.new_content);
       try {
         const new_meta = {
           [this.field_name]: this.new_content,
