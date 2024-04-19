@@ -1265,9 +1265,21 @@ export default {
       // used to stop current animation if there are any
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
+      const duration = 1400;
+
+      this.view.animate(
+        {
+          zoom: zoom - 1,
+          duration: duration / 2,
+        },
+        {
+          zoom,
+          duration: duration / 2,
+        }
+      );
       this.view.animate({
         center,
-        duration: 600,
+        duration,
         zoom,
       });
     },
