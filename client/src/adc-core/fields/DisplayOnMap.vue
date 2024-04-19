@@ -1968,11 +1968,12 @@ export default {
 
 ._pinContent {
   position: relative;
-  // border-radius: var(--panel-radius);
-  overflow: hidden;
-  min-height: 2em;
 
-  ::v-deep ._publicationModule[data-type="text"] {
+  min-height: 1em;
+  max-height: 40vh;
+  overflow: auto;
+
+  ::v-deep ._publicationModule ._collaborativeEditor {
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
   }
 
