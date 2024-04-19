@@ -1970,9 +1970,9 @@ export default {
   position: relative;
   // border-radius: var(--panel-radius);
   overflow: hidden;
-  min-height: 2em;
+  min-height: 1em;
 
-  ::v-deep ._publicationModule[data-type="text"] {
+  ::v-deep ._publicationModule ._collaborativeEditor {
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
   }
 
