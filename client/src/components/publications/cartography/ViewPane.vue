@@ -61,7 +61,7 @@ export default {
   // max-width: 420px;
   overflow: auto;
   // padding: calc(var(--spacing) / 1);
-  padding-bottom: 40vh;
+  padding-bottom: 70vh;
   background: white;
 
   // background: var(--panel-color);
