@@ -1031,7 +1031,7 @@ export default {
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles_no_internet:
     "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
-  zoom_animation: "Animation zoom",
+  zoom_animation: "Animation de zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
