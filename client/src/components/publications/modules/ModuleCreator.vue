@@ -19,12 +19,12 @@
           />
           <template v-if="show_labels">{{ $t("capture") }}</template>
         </button>
-        <CaptureModal
+        <!-- <CaptureModal
           v-if="show_capture_modal"
           :path="project_path"
           @createMosaic="createMosaic"
           @close="show_capture_modal = false"
-        />
+        /> -->
 
         <button
           type="button"
@@ -107,7 +107,7 @@
   </div>
 </template>
 <script>
-import CaptureModal from "@/components/publications/CaptureModal.vue";
+// import CaptureModal from "@/components/publications/CaptureModal.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
 
@@ -132,7 +132,7 @@ export default {
     },
   },
   components: {
-    CaptureModal,
+    // CaptureModal,
     MediaPicker,
     LinkPicker,
   },

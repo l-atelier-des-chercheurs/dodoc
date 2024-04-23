@@ -76,8 +76,6 @@ export default {
 
     this.$eventHub.$on(`app.show_welcome_modal`, this.showWelcomeModal);
     this.$eventHub.$on(`showAuthorModal`, this.showAuthorModal);
-
-
     await this.$api.init({ debug_mode: this.$root.debug_mode });
 
     this.$eventHub.$on("socketio.connect", this.socketConnected);

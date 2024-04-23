@@ -4,7 +4,6 @@ export default {
   a_foss_made_by:
     "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
   home: "Accueil",
-  admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
   admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.
@@ -95,7 +94,6 @@ export default {
   search_by_name: "Chercher dans les noms ou pseudonymes",
   search_by_title_or_subtitle: "Chercher dans les titres ou sous-titres",
 
-  search: "Chercher",
   "search:": "Chercher&nbsp;:",
   recent: "Récent",
   ancient: "Ancien",
