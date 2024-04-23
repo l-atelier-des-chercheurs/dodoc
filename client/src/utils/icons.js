@@ -135,6 +135,12 @@ import {
   BIconInfoSquare,
   BIconFront,
   BIconBack,
+  BIconFileText,
+  BIconQuestionSquare,
+  BIconLink45deg,
+  BIconLayoutSidebarInset,
+  BIconGrid3x3Gap,
+  BIconLayoutSidebarInsetReverse,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -269,3 +275,9 @@ Vue.component("BIconInfoSquare", BIconInfoSquare);
 Vue.component("BIconImages", BIconImages);
 Vue.component("BIconFront", BIconFront);
 Vue.component("BIconBack", BIconBack);
+Vue.component("BIconFileText", BIconFileText);
+Vue.component("BIconQuestionSquare", BIconQuestionSquare);
+Vue.component("BIconLink45deg", BIconLink45deg);
+Vue.component("BIconLayoutSidebarInset", BIconLayoutSidebarInset);
+Vue.component("BIconLayoutSidebarInsetReverse", BIconLayoutSidebarInsetReverse);
+Vue.component("BIconGrid3x3Gap", BIconGrid3x3Gap);

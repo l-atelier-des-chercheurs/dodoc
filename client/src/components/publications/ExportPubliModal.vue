@@ -16,7 +16,7 @@
           class="u-button u-button_bleuvert"
           @click="exportPublication('pdf')"
         >
-          <sl-icon name="filetype-pdf" />
+          <b-icon icon="filetype-pdf" />
           {{ $t("create") }}
         </button>
       </div>

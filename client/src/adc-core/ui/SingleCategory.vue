@@ -1,7 +1,7 @@
 <template>
   <div>
     <button type="button" class="u-buttonLink" @click="$emit('close')">
-      <sl-icon name="arrow-left-short" />
+      <b-icon icon="arrow-left-short" />
       {{ $t("back") }}
     </button>
     <div class="u-spacingBottom" />

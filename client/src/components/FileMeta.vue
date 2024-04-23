@@ -68,7 +68,7 @@
       </div>
 
       <DownloadFile :file="file" v-if="!is_stack">
-        <sl-icon name="file-earmark-arrow-down" />
+        <b-icon icon="file-earmark-arrow-down" />
         {{ $t("download") }}
       </DownloadFile>
       <RemoveMenu
@@ -117,7 +117,7 @@
           </div>
 
           <DownloadFile :file="stack_file_shown">
-            <sl-icon name="file-earmark-arrow-down" />
+            <b-icon icon="file-earmark-arrow-down" />
             {{ $t("download") }}
           </DownloadFile>
           <RemoveMenu

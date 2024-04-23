@@ -150,8 +150,8 @@
                   @click="publishStack"
                 >
                   {{ $t("publish") }}&nbsp;
-                  <sl-icon
-                    name="arrow-right-square"
+                  <b-icon
+                    icon="arrow-right-square"
                     style="font-size: 1rem"
                     circle
                   />

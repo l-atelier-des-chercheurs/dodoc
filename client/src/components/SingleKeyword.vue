@@ -17,10 +17,10 @@
     <div v-if="count" class="_count">
       {{ count }}
     </div>
-    <sl-icon-button
+    <b-icon
       v-if="can_remove"
       class="_white"
-      name="dash-circle"
+      icon="dash-circle"
       @click="$emit('remove')"
     />
     <button
@@ -91,11 +91,6 @@ export default {
   color: #000;
 
   transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
-
-  sl-icon-button::part(base) {
-    color: currentColor;
-    padding: 0;
-  }
 
   &.is--clickable:hover {
     opacity: 0.7;

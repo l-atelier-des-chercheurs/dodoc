@@ -5,18 +5,19 @@
         <LoaderSpinner />
       </div>
       <div v-else>
-        <sl-tab-group ref="tabgroup" @sl-tab-show="newTabShown">
-          <sl-tab slot="nav" panel="informations">
-            {{ $t("informations") }}
-          </sl-tab>
-          <sl-tab slot="nav" panel="administration_and_access_control">
-            {{ $t("administration_and_access_control") }}
-          </sl-tab>
-          <sl-tab slot="nav" panel="suggested_cat_kw">
-            {{ $t("suggested_cat_kw") }}
-          </sl-tab>
+        <div>
+          <div class="_selectMenu">
+            <SelectField2
+              :value="current_tab"
+              :options="tabs"
+              :can_edit="true"
+              :hide_validation="true"
+              @change="current_tab = $event"
+            />
+          </div>
+          <div class="u-spacingBottom" />
 
-          <sl-tab-panel name="informations">
+          <template v-if="current_tab === 'informations'">
             <div class="u-spacingBottom">
               <TitleField
                 :field_name="'name_of_instance'"
@@ -56,13 +57,12 @@
                 :can_edit="is_instance_admin"
               />
             </div>
-          </sl-tab-panel>
-
-          <sl-tab-panel name="administration_and_access_control">
+          </template>
+          <template v-if="current_tab === 'administration_and_access_control'">
             <AdminsAndContributorsField
-              v-if="current_tab === 'administration_and_access_control'"
               :folder="settings"
-              :can_edit="true"
+              :can_edit="is_instance_admin"
+              :custom_label="$t('instance_admins_and_admins')"
               :admin_label="$t('admin')"
               :admin_instructions="$t('instance_admin_instructions')"
               :contrib_instructions="$t('instance_contrib_instructions')"
@@ -111,11 +111,11 @@
               :input_type="'email'"
               :can_edit="is_instance_admin"
             />
-          </sl-tab-panel>
-          <sl-tab-panel name="suggested_cat_kw">
-            <SuggestedCategories v-if="current_tab === 'suggested_cat_kw'" />
-          </sl-tab-panel>
-        </sl-tab-group>
+          </template>
+          <template v-if="current_tab === 'suggested_cat_kw'">
+            <SuggestedCategories />
+          </template>
+        </div>
       </div>
     </div>
   </BaseModal2>
@@ -134,6 +134,21 @@ export default {
       is_loading: true,
 
       current_tab: "administration_and_access_control",
+
+      tabs: [
+        {
+          key: "informations",
+          text: this.$t("informations"),
+        },
+        {
+          text: this.$t("administration_and_access_control"),
+          key: "administration_and_access_control",
+        },
+        {
+          text: this.$t("suggested_cat_kw"),
+          key: "suggested_cat_kw",
+        },
+      ],
     };
   },
   created() {},
