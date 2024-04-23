@@ -30,7 +30,7 @@
         class="u-button u-button_bleuvert _submitBtn"
         @click="$emit('save', local_value)"
       >
-        <sl-icon style="font-size: 1.5em" name="check" :label="$t('submit')" />
+        <b-icon style="font-size: 1.5em" icon="check" />
       </button>
     </div>
 
@@ -40,7 +40,7 @@
       class="u-button u-button_bleumarine u-button_small"
       @click="$emit('save', default_value)"
     >
-      <sl-icon name="trash3" :label="$t('erase')" />
+      <b-icon icon="trash" :label="$t('erase')" />
     </button>
   </div>
 </template>

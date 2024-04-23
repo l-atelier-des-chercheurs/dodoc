@@ -141,9 +141,7 @@ export default {
             .closeLogOnClick(true)
             .delay(4000)
             .error(
-              this.$t("notifications.failed_to_start_stream_sharing") +
-                " " +
-                error.message
+              this.$t("failed_to_start_stream_sharing") + " " + error.message
             );
         }
       });

@@ -226,7 +226,7 @@
               />
 
               <RangeValueInput
-                class="_strokeWidth"
+                class="u-spacingBottom _strokeWidth"
                 :can_toggle="false"
                 :label="$t('outline_width')"
                 :value="selected_feature.get('stroke_width')"
@@ -458,53 +458,6 @@ export default {
 
       start_map_print: false,
     };
-  },
-  i18n: {
-    messages: {
-      fr: {
-        lines: "Droites",
-        freehand: "Tracé libre",
-        circle: "Cercle",
-        polygon: "Polygone",
-        select: "Sélection",
-
-        mouse_position: "Position de la balise",
-        search_for_a_place: "Rechercher un lieu",
-        click_to_start_drawing: "cliquer pour commencer le tracé",
-        click_to_continue_drawing: "cliquez pour ajouter un autre point",
-        click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
-        click_to_place_center: "cliquer pour placer le centre",
-        click_to_define_circle_radius: "cliquer pour définir le rayon",
-        click_to_place_first_point: "cliquer pour placer le premier point",
-        finish_drawing: "Terminer le dessin",
-        or_double_click: "Ou double-cliquez sur la carte",
-        drag_to_modify: "cliquer-glisser pour modifier",
-
-        select_by_clicking: "sélectionner une forme en cliquant dessus",
-        move_drawing: "cliquer-glisser pour déplacer la forme",
-      },
-      en: {
-        lines: "Lines",
-        freehand: "Path",
-        circle: "Circle",
-        polygon: "Polygon",
-        select: "Select",
-
-        search_for_a_place: "Search for a place",
-        click_to_start_drawing: "click to start drawing",
-        click_to_continue_drawing: "click to continue drawing",
-        click_drag_to_draw_line: "click and hold to draw",
-        click_to_place_center: "click to place center",
-        click_to_define_circle_radius: "click to set circle radius",
-        click_to_place_first_point: "click to draw first point",
-        finish_drawing: "End drawing",
-        or_double_click: "Or double click for the last point",
-        drag_to_modify: "click and hold to modify",
-
-        select_by_clicking: "select by clicking",
-        move_drawing: "click and hold to draw",
-      },
-    },
   },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
@@ -841,10 +794,13 @@ export default {
           extent = this.map.getView().getProjection().getExtent();
         }
 
-        if (extent)
+        if (extent) {
+          let padding =
+            this.map_baselayer === "image" ? [0, 0, 0, 0] : [50, 50, 50, 50];
           this.map.getView().fit(extent, {
-            padding: [50, 50, 50, 50],
+            padding,
           });
+        }
 
         if (this.start_zoom) {
           this.map.getView().setZoom(this.start_zoom);
@@ -1011,6 +967,11 @@ export default {
         background_layer = new olTileLayer({
           source,
           className: "ol-layer ol-basemap",
+        });
+        background_layer.getSource().on("tileloaderror", (err) => {
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("failed_loading_tiles_no_internet"));
         });
       }
 
@@ -2023,11 +1984,12 @@ export default {
 
 ._pinContent {
   position: relative;
-  // border-radius: var(--panel-radius);
-  overflow: hidden;
-  min-height: 2em;
 
-  ::v-deep ._publicationModule[data-type="text"] {
+  min-height: 1em;
+  max-height: 40vh;
+  overflow: auto;
+
+  ::v-deep ._publicationModule ._collaborativeEditor {
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
   }
 

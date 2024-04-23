@@ -20,7 +20,7 @@
       <div v-else class="u-instructions">
         {{ $t("no_position") }}
       </div>
-      <div v-if="!edit_mode" class="_editBtn">
+      <div v-if="!edit_mode && can_edit" class="_editBtn">
         <EditBtn
           :label_position="'left'"
           :is_unfolded="true"

@@ -26,6 +26,17 @@ The code is licensed under AGPLv3, and the graphic assets (icons, pictograms, us
 The font [Luciole](http://www.luciole-vision.com/) is licensed under the Creative Commons Attribution 4.0 and embedded with permission from Laurent Bourcellier and Jonathan Fabreguettes.
 The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with permission from Jean Boyault.
 
+# Branches
+
+- **main** --> default branch, latest stable version (currently v10), in Electron (offline app). See release page for Linux/Mac/Windows installers.
+- **main-node** --> latest stable version without Electron, to use on online servers.
+
+- **main-dev** --> fixes and small improvements on top of the current version, in Electron. Used for testing before merging changes to **main**.
+- **main-dev-node** --> fixes and small improvements on top of the current version, for servers. Used for testing before merging changes to - **main-node**.
+
+- **next** --> code for the next major version (v10.1 or v11), in Electron. Use at your own risks.
+- **next-node** --> code for the next major version, without Electron. Use at your own risks.
+
 # Install do•doc
 
 ### Method 1 — the easy way

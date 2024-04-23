@@ -23,11 +23,6 @@ export default {
       local_fav: this.fav === true,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},

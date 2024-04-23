@@ -21,13 +21,18 @@
               <b-icon icon="x-lg" :label="$t('close')" />
             </button>
           </header>
-          <div class="_content" v-if="$slots.hasOwnProperty('default')">
+          <div
+            class="_content"
+            v-if="$slots.hasOwnProperty('default')"
+            :class="{
+              has_nofooter: !$slots.hasOwnProperty('footer'),
+            }"
+          >
             <slot />
           </div>
           <footer class="_footer" v-if="$slots.hasOwnProperty('footer')">
             <slot name="footer" />
           </footer>
-          <div v-else class="_noFooterMargin" />
         </div>
       </div>
     </transition>
@@ -185,15 +190,15 @@ header {
   ._baseModal[data-size="full"] & {
     padding: 0;
   }
+
+  &.has_nofooter {
+    padding-bottom: calc(var(--spacing) * 1);
+  }
 }
 ._footer {
   display: flex;
   justify-content: center;
   padding: calc(var(--spacing) * 1);
-}
-
-._noFooterMargin {
-  margin-bottom: calc(var(--spacing) * 1);
 }
 
 @keyframes reveal {

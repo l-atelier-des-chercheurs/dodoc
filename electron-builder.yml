@@ -1,0 +1,3 @@
+asarUnpack:
+  - resources/**
+  - node_modules/sharp/**

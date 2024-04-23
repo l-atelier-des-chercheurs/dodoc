@@ -1,24 +1,30 @@
 <template>
   <div class="_radioSwitch">
     <ul class="radio-switch">
-      <li class="radio-switch__item" v-for="i in [0, 1]" :key="i">
+      <li
+        class="radio-switch__item"
+        v-for="option in options"
+        :key="option.value"
+      >
         <input
           class="radio-switch__input ri5-sr-only"
           type="radio"
           :name="id"
-          :id="id + '_' + i"
-          :value="options[i].value"
-          :checked="content === options[i].value"
+          :id="id + '_' + option.value"
+          :value="option.value"
+          :checked="content === option.value"
           @input="(event) => $emit('update:content', event.target.value)"
         />
-        <label class="radio-switch__label" :for="id + '_' + i">
-          {{ options[i].label }}
+        <label class="radio-switch__label" :for="id + '_' + option.value">
+          {{ option.label }}
         </label>
-        <div
-          v-if="i === 1"
-          aria-hidden="true"
-          class="radio-switch__marker"
-        ></div>
+        <transition name="popUp_slow">
+          <div
+            aria-hidden="true"
+            v-if="content === option.value"
+            class="radio-switch__marker"
+          />
+        </transition>
       </li>
       <!-- <li class="radio-switch__item">
         <input
@@ -82,7 +88,7 @@ Usage: codyhouse.co/license
   --radio-switch-width: 276px;
   --radio-switch-height: 36px;
   --radio-switch-padding: 0px;
-  --radio-switch-radius: 10em;
+  --radio-switch-radius: 5px;
   --radio-switch-animation-duration: 0.3s;
 }
 
@@ -114,7 +120,7 @@ menu {
   display: inline-flex;
   padding: var(--radio-switch-padding);
   border-radius: calc(var(--radio-switch-radius) * 1.4);
-  background-color: var(--c-gris_clair);
+  background-color: var(--c-gris);
   border: 1px solid var(--c-gris);
 }
 .radio-switch:focus-within,
@@ -164,24 +170,32 @@ menu {
 
 .radio-switch__marker {
   position: absolute;
-  z-index: 1;
-  top: 0;
-  left: -100%;
+  inset: 0;
+  // background-color: var(--active-color);
+  background-color: var(--c-noir);
   border-radius: var(--radio-switch-radius);
-  background-color: hsl(var(--ri5-color-primary-hsl));
-  height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
-  width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
-  // box-shadow: 0 0.9px 1.5px rgba(0, 0, 0, 0.03),
-  //   0 3.1px 5.5px rgba(0, 0, 0, 0.08), 0 14px 25px rgba(0, 0, 0, 0.12);
-  transition: -webkit-transform var(--radio-switch-animation-duration);
-  transition: transform var(--radio-switch-animation-duration);
-  transition: transform var(--radio-switch-animation-duration),
-    -webkit-transform var(--radio-switch-animation-duration);
 }
-.radio-switch__input:checked ~ .radio-switch__marker {
-  -webkit-transform: translateX(100%);
-  transform: translateX(100%);
-}
+
+// .radio-switch__marker {
+//   position: absolute;
+//   z-index: 1;
+//   top: 0;
+//   left: -100%;
+//   border-radius: var(--radio-switch-radius);
+//   background-color: hsl(var(--ri5-color-primary-hsl));
+//   height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
+//   width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
+//   // box-shadow: 0 0.9px 1.5px rgba(0, 0, 0, 0.03),
+//   //   0 3.1px 5.5px rgba(0, 0, 0, 0.08), 0 14px 25px rgba(0, 0, 0, 0.12);
+//   transition: -webkit-transform var(--radio-switch-animation-duration);
+//   transition: transform var(--radio-switch-animation-duration);
+//   transition: transform var(--radio-switch-animation-duration),
+//     -webkit-transform var(--radio-switch-animation-duration);
+// }
+// .radio-switch__input:checked ~ .radio-switch__marker {
+//   -webkit-transform: translateX(100%);
+//   transform: translateX(100%);
+// }
 
 /* utility classes */
 .ri5-sr-only {

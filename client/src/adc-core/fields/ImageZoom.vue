@@ -55,11 +55,7 @@ export default {
       padding: 100,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
+
   created() {},
   mounted() {
     this.updateContSize();

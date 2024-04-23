@@ -7,7 +7,9 @@ export default {
   admins_edit_text_here: `Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.`,
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
-  admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton ci-dessous.`,
+  admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.
+  <br><br>Le compte administrateur par défaut a pour nom <b>Admin</b> et mot de passe <b>dodoc</b>.`,
+  admins_edit_text_below: `Pour modifier ce texte, cliquez sur l’icône engrenage en haut à droite de la page.`,
   edit: "Modifier",
   edit_source: "Modifier la source",
   stop_edit: "Arrêter les modifications",
@@ -79,7 +81,7 @@ export default {
     Apparaîtra sur la page d’accueil uniquement.
     `,
   presentation: "Présentation",
-  general_password: "mot de passe général",
+  general_password: "Mot de passe général",
   general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
   peut afficher un courriel de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
   general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plateforme. 
@@ -89,11 +91,14 @@ export default {
   account_doesnt_exist: "Ce compte n’existe pas",
   submit: "Valider",
   search_in_title_desc_kw:
-    "Dans les titres, descriptions, mots-clés, machines et matériaux.",
-  search_by_name: "Dans les noms ou pseudonymes",
-  search_by_title_or_subtitle: "Dans les titres ou sous-titres",
+    "Chercher dans les titres, descriptions, mots-clés, machines et matériaux.",
+  search_by_name: "Chercher dans les noms ou pseudonymes",
+  search_by_title_or_subtitle: "Chercher dans les titres ou sous-titres",
 
-  "search:": "Rechercher&nbsp;:",
+  search: "Chercher",
+  "search:": "Chercher&nbsp;:",
+  recent: "Récent",
+  ancient: "Ancien",
 
   connection_lost: `Connexion perdue`,
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
@@ -110,6 +115,7 @@ export default {
   position: "Position",
   media: "Média",
   media_not_found: "Média introuvable",
+
   active_media_instr:
     "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
@@ -228,6 +234,7 @@ export default {
   in_this_section: "Dans ce chapitre",
   in_another_section: "Dans un autre chapitre",
   change_section: "Déplacer vers un autre chapitre",
+  remove_section: "Supprimer le chapitre",
 
   untitled: "Sans titre",
   responsive: "Fluide",
@@ -309,6 +316,7 @@ export default {
   hide_pagination_instr: "Concerne uniquement cette page",
   remove_page_and_content: "Supprimer la page et son contenu ?",
   border_radius: "Coins arrondis",
+  drop_shadow: "Ombre portée",
   photo: "Photo",
   remove_this_image: "Supprimer cette image",
   erase: "Effacer",
@@ -364,10 +372,17 @@ export default {
   private_status_explanations_publis:
     "La publication ne sera visible qu’aux contributeurs du projet.",
 
+  space_is_private:
+    "Cet espace est privé et ne peut être consulté que par ses contributeurs ou référents.",
+  project_is_private:
+    "Ce projet est privé et ne peut être consulté que par ses contributeurs ou référents.",
+
   finished: "Finalisé",
   only_finished: "Projets finalisés",
   completed: "Terminé",
   my_projects: "Mes projets",
+  my_projects_instr:
+    "Cette liste affiche tous les projets dont vous êtes référent ou contributeur.",
   pinned: "Épinglés",
   spaces_pinned: "Espaces épinglés",
   projects_pinned: "Projets épinglés",
@@ -479,8 +494,22 @@ export default {
   end: "fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
+  export_montage: "Exporter le montage",
 
-  extract_to_export: "Extrait sélectionné",
+  image_to_rework: "Image à retravailler",
+  video_to_rework: "Vidéo à recouper",
+  audio_to_rework: "Son à recouper",
+
+  pick_audio: "Choisissez le son à utiliser",
+  pick_image: "Choisissez l’image à utiliser",
+  pick_video: "Choisissez la vidéo à utiliser",
+  export_mix: "Exporter la composition",
+
+  start_egal_to_end: "Le début est identique à la fin",
+  end_before_start: "La fin est avant le début",
+  export_trim_video: "Exporter la vidéo recoupée",
+  export_trim_audio: "Exporter la piste audio recoupée",
+
   save_export_cropped: "Enregistrer la version retouchée",
 
   make_a_video: "Fabriquer une vidéo",
@@ -499,6 +528,13 @@ export default {
   white: "Blanc",
   black: "Noir",
   transparent: "Transparent",
+  couldnt_load_getusermedia: "Impossible de charger la caméra ou le micro",
+  failed_listing_devices: "Impossible de lister les appareils",
+  failed_to_start_stream_sharing: "Échec du démarrage du partage de flux",
+  failed_to_start_recording: "Échec du démarrage de l’enregistrement",
+  new_user_connected_to_stream: "Nouvel utilisateur connecté au flux",
+  no_stream_found_while_sharing: "Aucun flux trouvé pendant le partage",
+  media_couldnt_be_sent: "Échec de la sauvegarde du média",
 
   space: "Espace",
   spaces: "Les espaces",
@@ -634,6 +670,9 @@ export default {
   destination_space: "Espace qui recevra cette copie",
   destination_space_remix: "Espace qui recevra ce projet remixé",
   destination_project: "Projet qui recevra cette copie",
+  space_was_removed: "Cet espace a été supprimé",
+  publication_was_removed: "Cette publication a été supprimée",
+  make_was_removed: "Cette recette a été supprimée",
 
   remove_original: "Supprimer l’original",
   remove_original_after_copy: "L’original sera supprimé après la copie",
@@ -817,6 +856,7 @@ export default {
 
   display_as_public: "Afficher la vue publique",
   preview: "Prévisualiser",
+  previews_size: "Taille des aperçus",
 
   add_to_instance_admin: "Ajouter comme administrateur d’instance",
   instance_admin_instructions:
@@ -854,6 +894,8 @@ export default {
     "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
   require_mail_to_signup:
     "Une adresse courriel est obligatoire pour créer un compte",
+  wrong_signup_password: "Mauvais mot de passe",
+
   enable_events: "Activer la fonctionnalité « événements »",
   filters: "Filtres",
 
@@ -863,23 +905,19 @@ export default {
     "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
   or_paste_an_image: "Ou coller une image depuis le presse-papier",
-  "notifications.media_was_saved": "Média enregistré",
-  "notifications.no_image_in_clipboard":
-    "Votre presse-papier ne contient pas d’images",
-  "notifications.project_was_removed": "Ce projet vient d’être supprimé",
-  "notifications.action_not_authorized": "Cette action n’est pas permise",
-  "notifications.event_does_not_exit": "Cet événement n’existe pas",
-  "notifications.title_taken": "Ce titre est déjà utilisé",
-  "notifications.not_allowed_to_copy_to_space":
+  media_was_saved: "Média enregistré",
+  no_image_in_clipboard: "Votre presse-papier ne contient pas d’images",
+  project_was_removed: "Ce projet vient d’être supprimé",
+  event_does_not_exit: "Cet événement n’existe pas",
+  title_taken: "Ce titre est déjà utilisé",
+  not_allowed_to_copy_to_space:
     "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
-  "notifications.not_allowed_to_copy_to_project":
+  not_allowed_to_copy_to_project:
     "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
-  "notifications.name_taken": "Ce nom est déjà utilisé",
-  "notifications.too_many_items_selected": "Trop d’éléments sélectionnés.",
-  "notifications.max_items_is": "Le maximum est de",
-  "notifications.action_not_allowed": "Cette action n’est pas autorisée",
-  "notifications.account_created": "Votre compte a été créé",
-  "notifications.logged_in":
+  name_taken: "Ce nom est déjà utilisé",
+  action_not_allowed: "Cette action n’est pas autorisée",
+  account_created: "Votre compte a été créé",
+  logged_in:
     "La connexion au compte est active, rechargement de la page en cours…",
 
   informations: "Informations",
@@ -899,6 +937,9 @@ export default {
   puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
+  import_finished:
+    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
+  zip_wrong: "Ce fichier ZIP n’est pas un projet dodoc valide",
 
   move_to_page: "Déplacer vers une autre page",
 
@@ -978,21 +1019,28 @@ export default {
   show_on_map: "Afficher sur la carte",
   placed_on_map: "Positionné sur la carte",
   change_location: "Changer la position",
-  remove_pin: "Supprimer cette épingle",
   location_stored_in_localstorage:
     "Cette information sera conservée sur cet appareil pour toutes les captures réalisées.",
+
+  print_map: "Imprimer la carte",
+  print_only_basemap:
+    "Uniquement le fond de carte (masquer les épingles et les dessins)",
 
   cancel_position: "Annuler la position",
   click_on_map_to_repick_location:
     "Cliquez sur la carte pour sélectionner une nouvelle position.",
   add_caption: "Ajouter une légende",
   copy_first_media_caption: "Réutiliser la légende du premier média",
+  edit_caption_changes_for_all_medias:
+    "La légende et les crédits seront modifiés automatiquement pour le média d’origine pour toutes les publications.",
 
   pins_color: "Couleur des épingles",
   link_pins: "Relier les épingles",
   pin_icons: "Apparence des épingles",
   icon: "Icône",
   media_preview: "Image sur la carte",
+  to_add_media_here_open_matching_layer:
+    "Pour ajouter un média à cette position, créez ou ouvrez un chapitre dans le panneau de droite.",
 
   image_basemap: "Image en fond de carte",
   choose_image_basemap: "Choisir le fond de carte",
@@ -1009,6 +1057,8 @@ export default {
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
   bw_filter: "Filtre noir et blanc",
+  failed_loading_tiles_no_internet:
+    "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
@@ -1026,4 +1076,56 @@ export default {
 
   on_this_page: "Sur cette page",
   on_other_pages: "Sur d’autres pages",
+
+  freehand: "Tracé libre",
+  circle: "Cercle",
+  polygon: "Polygone",
+
+  mouse_position: "Position de la balise",
+  search_for_a_place: "Rechercher un lieu",
+  click_to_start_drawing: "cliquer pour commencer le tracé",
+  click_to_continue_drawing: "cliquez pour ajouter un autre point",
+  click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
+  click_to_place_center: "cliquer pour placer le centre",
+  click_to_define_circle_radius: "cliquer pour définir le rayon",
+  click_to_place_first_point: "cliquer pour placer le premier point",
+  finish_drawing: "Terminer le dessin",
+  or_double_click: "Ou double-cliquez sur la carte",
+  drag_to_modify: "cliquer-glisser pour modifier",
+
+  select_by_clicking: "sélectionner une forme en cliquant dessus",
+  move_drawing: "cliquer-glisser pour déplacer la forme",
+
+  about_dodoc: "À propos de do•doc",
+  about_dodoc_txt: `do•doc est un logiciel libre et gratuit créé pour documenter des projets et animé par une communauté diversifiée regroupant des designers, des enseignants, des artistes, des formateurs, des créateurs et des passionnés de documentation en général.
+  Il est employé dans une multitude de contextes, que ce soit en classe, dans des fablabs, des tiers-lieux, ainsi que comme moteur de plateformes de ressources accessibles en ligne.<br><br>
+  Le design et le développement de cet outil sont assurés par le collectif <a href="https://latelier-des-chercheurs.fr/" target="_blank">l’Atelier des chercheurs</a> depuis ses débuts, en 2014, 
+  mais tout le monde a la possibilité de suivre ou de participer à ce travail par le biais de ce forum : <a href="https://forum.latelier-des-chercheurs.fr/" target="_blank">https://forum.latelier-des-chercheurs.fr/</a>.`,
+  about_dodoc_links: `
+  Voici quelques autres liens :
+  <ul>
+  <li>La dernière version du logiciel est disponible sur la page dédiée : <a href="https://dodoc.fr" target="_blank">https://dodoc.fr</a></li>
+  <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
+  </ul>
+  `,
+  about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
+
+  write: "Écrire",
+  real_size: "Taille réelle",
+  full_page: "Pleine page",
+
+  convert: "Convertir",
+  convert_to_format: "Adapter le format pour la lecture",
+
+  already_optimized:
+    "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
+  preview_optimize: "Créer une version optimisée",
+  wont_remove_original: "Ne supprimera pas l’original",
+  add_optimized_to_lib: "Conserver l’original et la nouvelle version",
+  replace_original: "Remplacer et supprimer l’original",
+
+  change: "Changer",
+  transition_fade: "Transition : fondu enchaîné",
+
+  couldntbesaved: "La valeur n’a pas pu être enregistrée",
 };

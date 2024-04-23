@@ -8,7 +8,6 @@ const path = require("path"),
 const utils = require("./utils"),
   folder = require("./folder"),
   file = require("./file"),
-  settings = require("./settings"),
   notifier = require("./notifier"),
   auth = require("./auth"),
   tasks = require("./exporter_tasks/tasks"),
@@ -250,9 +249,11 @@ class Exporter {
 
   async _loadPageAndPrint() {
     try {
+      // convert path_to_folder to URL (see createURLFromPath)
+      dev.logfunction();
       const path_without_space = this.path_to_folder
-        .replace("spaces/", "/+")
-        .replace("projects/", "");
+        .replace("spaces" + path.sep, "/+")
+        .replace("projects" + path.sep, "");
 
       let url = global.appInfos.homeURL + path_without_space;
 

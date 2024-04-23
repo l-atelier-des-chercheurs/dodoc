@@ -33,7 +33,8 @@ module.exports = (function () {
       _generalPasswordCheck,
       _getLocalNetworkInfos
     );
-    app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
+    app.get("/_api2/_authCheck", _checkGeneralPassword);
+    app.get("/_api2/_tokenCheck", _checkToken);
 
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
@@ -120,6 +121,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type",
       ],
       _generalPasswordCheck,
+      _restrictIfPrivate,
       _getFolders
     );
     app.post(
@@ -209,6 +211,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
+      _restrictIfPrivate,
       _getFolder
     );
 
@@ -281,16 +284,13 @@ module.exports = (function () {
     }
   }
 
-  async function _checkGeneralPasswordAndToken(req, res, next) {
+  async function _checkGeneralPassword(req, res, next) {
     dev.logapi();
-
-    let response = {};
-    try {
-      await _generalPasswordCheck(req);
-      response.general_password_is_valid = true;
-    } catch (err) {
-      response.general_password_is_wrong = err.code;
-    }
+    await _generalPasswordCheck(req, res);
+    return res.status(200).send();
+  }
+  async function _checkToken(req, res, next) {
+    dev.logapi();
 
     try {
       const { token, token_path } = JSON.parse(req.headers.authorization);
@@ -300,12 +300,10 @@ module.exports = (function () {
         throw err;
       }
       auth.checkTokenValidity({ token, token_path });
-      response.token_is_valid = true;
     } catch (err) {
-      response.token_is_wrong = err.code;
+      return res.status(401).send({ code: err.code });
     }
-
-    return res.json(response);
+    return res.status(200).send();
   }
 
   async function _canContributeToFolder({ path_to_type, path_to_folder, req }) {
@@ -378,7 +376,8 @@ module.exports = (function () {
     const token_path = auth.extrackAndCheckToken({ req });
 
     if (token_path) {
-      if (token_path === path_to_folder) return "Token editing self";
+      if (token_path === utils.convertToSlashPath(path_to_folder))
+        return "Token editing self";
       if (await auth.isTokenInstanceAdmin({ token_path }))
         return "Token is instance admin";
       if (
@@ -438,6 +437,33 @@ module.exports = (function () {
       if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
+  async function _restrictIfPrivate(req, res, next) {
+    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      const folder_is_private = await auth.isFolderPrivate({ path_to_folder });
+      if (!folder_is_private) {
+        dev.log("Folder is not private, can be listed without restrictions");
+        return next();
+      } else dev.log("Folder is private");
+
+      const allowed = await _canContributeToFolder({
+        path_to_type,
+        path_to_folder,
+        req,
+      });
+      if (allowed) {
+        dev.log("User allowed to open private folder");
+        return next();
+      } else {
+        dev.error("User NOT allowed to open private");
+        return res.status(401).send({ code: "folder_private" });
+      }
+    } catch (err) {
+      return res.status(404).send({ code: "not_found" });
+    }
+  }
   async function _onlyAdmins(req, res, next) {
     dev.logapi();
 
@@ -488,7 +514,6 @@ module.exports = (function () {
       favicon_image_name,
       topbar_image_name,
       hero_image_name,
-      $files = [],
     } = await settings
       .get()
       .catch((err) => dev.error("Error while getting settings", err));
@@ -513,7 +538,12 @@ module.exports = (function () {
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
 
+    const $files = await settings
+      .getFiles()
+      .catch((err) => dev.error("Error while getting settings", err));
+
     const findMatchingFileThumb = ({ meta_name, resolution }) => {
+      if (!meta_name) return false;
       const matching_file = $files.find(
         (f) => utils.getFilename(f.$path) === meta_name
       );
@@ -590,8 +620,8 @@ module.exports = (function () {
         path_to_folder,
       });
 
-      notifier.emit("folderCreated", path_to_type, {
-        path: path_to_type,
+      notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_type),
         meta: new_folder_meta,
       });
     } catch (err) {
@@ -608,20 +638,18 @@ module.exports = (function () {
     dev.logapi({ path_to_type });
 
     try {
-      const new_folder_slug = await folder.importFolder({
+      const path_to_new_folder = await folder.importFolder({
         path_to_type,
         req,
       });
-      dev.logpackets(`folder was imported with name ${new_folder_slug}`);
-      res.status(200).json({ new_folder_slug });
-
-      const path_to_folder = path.join(path_to_type, new_folder_slug);
+      dev.logpackets(`folder was imported with path ${path_to_new_folder}`);
       const new_folder_meta = await folder.getFolder({
-        path_to_folder,
+        path_to_folder: path_to_new_folder,
       });
 
-      notifier.emit("folderCreated", path_to_type, {
-        path: path_to_type,
+      res.status(200).json({ new_folder_meta });
+      notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_type),
         meta: new_folder_meta,
       });
     } catch (err) {
@@ -719,13 +747,13 @@ module.exports = (function () {
       res.status(200).json({ status: "ok" });
 
       // TODO if $password is updated successfully, then revoke all tokens except current
-      notifier.emit("folderUpdated", path_to_folder, {
-        path: path_to_folder,
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+        path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
       if (path_to_type)
-        notifier.emit("folderUpdated", path_to_type, {
-          path: path_to_folder,
+        notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+          path: utils.convertToSlashPath(path_to_folder),
           changed_data,
         });
     } catch (err) {
@@ -804,8 +832,12 @@ module.exports = (function () {
 
       await auth.removeAllTokensForFolder({ token_path: path_to_folder });
 
-      notifier.emit("folderRemoved", path_to_folder, { path: path_to_folder });
-      notifier.emit("folderRemoved", path_to_type, { path: path_to_folder });
+      notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_folder), {
+        path: utils.convertToSlashPath(path_to_folder),
+      });
+      notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
+      });
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remove content: " + message);
@@ -835,7 +867,10 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_folder, meta_filename),
       });
-      notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
+      notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        meta,
+      });
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to upload file: " + message);
@@ -886,10 +921,14 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta: exported_path_to_meta,
       });
-      notifier.emit("fileCreated", folder_to_export_to, {
-        path_to_folder: folder_to_export_to,
-        meta,
-      });
+      notifier.emit(
+        "fileCreated",
+        utils.convertToSlashPath(folder_to_export_to),
+        {
+          path_to_folder: utils.convertToSlashPath(folder_to_export_to),
+          meta,
+        }
+      );
     } catch (err) {
       dev.error("Failed to export file: " + err);
       notifier.emit("taskEnded", task_id, {
@@ -943,10 +982,14 @@ module.exports = (function () {
         path_to_folder: copy_folder_path,
       });
 
-      notifier.emit("folderCreated", path_to_destination_type, {
-        path: path_to_destination_type,
-        meta: new_folder_meta,
-      });
+      notifier.emit(
+        "folderCreated",
+        utils.convertToSlashPath(path_to_destination_type),
+        {
+          path: utils.convertToSlashPath(path_to_destination_type),
+          meta: new_folder_meta,
+        }
+      );
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to copy content: " + message);
@@ -1050,10 +1093,14 @@ module.exports = (function () {
         path_to_folder: remix_folder_path,
       });
 
-      notifier.emit("folderCreated", path_to_destination_type, {
-        path: path_to_destination_type,
-        meta: new_folder_meta,
-      });
+      notifier.emit(
+        "folderCreated",
+        utils.convertToSlashPath(path_to_destination_type),
+        {
+          path: utils.convertToSlashPath(path_to_destination_type),
+          meta: new_folder_meta,
+        }
+      );
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remix folder: " + message);
@@ -1086,13 +1133,14 @@ module.exports = (function () {
       data,
     });
 
-    notifier.emit("folderUpdated", path_to_folder, {
-      path: path_to_folder,
+    notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+      path: utils.convertToSlashPath(path_to_folder),
       changed_data,
     });
+
     if (path_to_type)
-      notifier.emit("folderUpdated", path_to_type, {
-        path: path_to_folder,
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
   }
@@ -1121,12 +1169,12 @@ module.exports = (function () {
         update_cover_req: true,
       });
 
-      notifier.emit("folderUpdated", path_to_folder, {
-        path: path_to_folder,
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+        path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
-      notifier.emit("folderUpdated", path_to_type, {
-        path: path_to_folder,
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
     } catch (err) {
@@ -1184,9 +1232,9 @@ module.exports = (function () {
       dev.logpackets({ status: "file was updated" });
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("fileUpdated", path_to_folder, {
-        path_to_folder,
-        path_to_meta,
+      notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
         changed_data,
       });
     } catch (err) {
@@ -1215,9 +1263,9 @@ module.exports = (function () {
       dev.logpackets(`file ${meta_filename} was removed`);
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("fileRemoved", path_to_folder, {
-        path_to_folder,
-        path_to_meta,
+      notifier.emit("fileRemoved", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
       });
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -1271,10 +1319,14 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_destination_folder, copy_meta_filename),
       });
-      notifier.emit("fileCreated", path_to_destination_folder, {
-        path_to_folder: path_to_destination_folder,
-        meta,
-      });
+      notifier.emit(
+        "fileCreated",
+        utils.convertToSlashPath(path_to_destination_folder),
+        {
+          path_to_folder: utils.convertToSlashPath(path_to_destination_folder),
+          meta,
+        }
+      );
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to copy folder: " + message);

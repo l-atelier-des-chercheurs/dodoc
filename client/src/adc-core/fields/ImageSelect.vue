@@ -197,7 +197,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.no_image_in_clipboard"));
+          .error(this.$t("no_image_in_clipboard"));
       }
     },
     onFileChange(e) {

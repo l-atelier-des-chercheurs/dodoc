@@ -84,7 +84,10 @@
               :can_edit="can_edit"
             />
           </div>
-          <div v-if="context === 'full'" class="u-spacingBottom">
+          <div
+            v-if="context === 'full' && (can_edit || !!author.presentation)"
+            class="u-spacingBottom"
+          >
             <CollaborativeEditor2
               :label="
                 context === 'full' && (author.presentation || can_edit)
@@ -102,7 +105,7 @@
         </div>
 
         <DetailsPane
-          v-if="context === 'full'"
+          v-if="context === 'full' && (can_edit || !!author.$location)"
           :header="$t('location')"
           :is_open_initially="true"
           :has_items="!!author.$location"
@@ -119,7 +122,14 @@
 
         <DetailsPane :header="$t('options')" :icon="'gear'" v-if="can_edit">
           <div
-            v-if="is_instance_admin && context === 'full'"
+            v-if="
+              is_instance_admin &&
+              context === 'full' &&
+              !authorIsInstance({
+                field: '$admins',
+                folder_path: author.$path,
+              })
+            "
             class="u-spacingBottom"
           >
             <button

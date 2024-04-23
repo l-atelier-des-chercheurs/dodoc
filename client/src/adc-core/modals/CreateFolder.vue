@@ -6,6 +6,7 @@
         :content.sync="new_folder_title"
         :maxlength="40"
         :required="true"
+        :autofocus="true"
         ref="titleInput"
         @toggleValidity="($event) => (allow_save = $event)"
         @onEnter="createFolder"
@@ -26,14 +27,19 @@
 
       <br />
 
-      <button
-        class="u-button u-button_bleuvert"
-        type="submit"
-        slot="footer"
-        :loading="is_creating_folder"
-      >
-        {{ $t("create_and_open") }}
-      </button>
+      <div class="u-sameRow" slot="footer">
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          {{ $t("cancel") }}
+        </button>
+        <button
+          class="u-button u-button_bleuvert"
+          type="submit"
+          slot="footer"
+          :loading="is_creating_folder"
+        >
+          {{ $t("create_and_open") }}
+        </button>
+      </div>
 
       <template v-if="error_msg">
         <br />
@@ -71,6 +77,7 @@ export default {
       this.is_creating_folder = true;
 
       const $admins = this.setDefaultContentAdmins();
+      this.new_folder_title = this.cleanUpString(this.new_folder_title);
 
       try {
         const new_folder_slug = await this.$api.createFolder({
@@ -88,18 +95,14 @@ export default {
         setTimeout(() => {
           this.$emit("openNew", new_folder_slug);
         }, 50);
-      } catch (err_code) {
-        if (err_code === "unique_field_taken") {
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("notifications.title_taken"));
+      } catch ({ code }) {
+        if (code === "unique_field_taken") {
+          this.$alertify.delay(4000).error(this.$t("title_taken"));
           this.$refs.titleInput.$el.querySelector("input").select();
-        } else if (err_code === "token_not_allowed_must_be_contributors") {
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("notifications.action_not_allowed"));
+        } else if (code === "token_not_allowed_must_be_contributors") {
+          this.$alertify.delay(4000).error(this.$t("action_not_allowed"));
         } else {
-          this.$alertify.delay(4000).error(err_code);
+          this.$alertify.delay(4000).error(code);
         }
         this.is_creating_folder = false;
       }

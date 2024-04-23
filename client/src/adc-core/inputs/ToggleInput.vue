@@ -1,6 +1,6 @@
 <template>
   <div class="_toggleInput">
-    <label :for="id" class="u-label _inputLabel">
+    <label :for="id" class="_inputLabel">
       <input
         ref="field"
         :id="id"

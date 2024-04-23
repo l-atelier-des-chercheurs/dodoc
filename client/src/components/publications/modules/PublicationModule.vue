@@ -75,7 +75,7 @@
                   v-for="size in [100, 66.6, 50, 33.3]"
                   :key="size"
                   type="button"
-                  class="u-buttonLink"
+                  class="u-button u-button_icon u-button_small _sizes"
                   :class="{
                     'is--active':
                       (!publimodule.size && size === 100) ||
@@ -95,7 +95,7 @@
                   v-for="align in ['left', 'center', 'right']"
                   :key="align"
                   type="button"
-                  class="u-buttonLink"
+                  class="u-button u-button_icon u-button_small"
                   :class="{
                     'is--active':
                       (!publimodule.align && align === 'left') ||
@@ -103,9 +103,9 @@
                   }"
                   @click="updateMeta({ align: align })"
                 >
-                  <sl-icon v-if="align === 'left'" name="align-start" />
-                  <sl-icon v-if="align === 'center'" name="align-center" />
-                  <sl-icon v-if="align === 'right'" name="align-end" />
+                  <b-icon v-if="align === 'left'" icon="align-start" />
+                  <b-icon v-if="align === 'center'" icon="align-center" />
+                  <b-icon v-if="align === 'right'" icon="align-end" />
                 </button>
               </div>
 
@@ -228,17 +228,16 @@
       </button>
 
       <div class="_floatingEditBtn" v-if="can_edit">
-        <EditBtn
-          v-if="!edit_mode"
-          :label_position="'left'"
-          @click="enableEdit"
-        />
+        <span @click.stop="enableEdit" @touchstart.stop="enableEdit">
+          <EditBtn v-if="!edit_mode" :label_position="'left'" />
+        </span>
       </div>
 
       <MediasModule
         v-if="['mosaic', 'carousel', 'files'].includes(publimodule.module_type)"
         :publimodule="publimodule"
-        :can_edit="edit_mode"
+        :edit_mode="edit_mode"
+        :can_edit="can_edit"
         :context="context"
         :page_template="page_template"
         :number_of_max_medias="number_of_max_medias"
@@ -246,6 +245,7 @@
         @updateMeta="updateMeta"
         @remove="removeModule"
       />
+      <!-- // specific to page by page -->
       <CollaborativeEditor2
         v-else-if="publimodule.module_type === 'text' && first_media"
         ref="textBloc"
@@ -253,7 +253,7 @@
         :content="first_media.$content"
         :scrollingContainer="$el"
         :line_selected="false"
-        :can_edit="edit_mode"
+        :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
@@ -344,14 +344,7 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
 
-      <div
-        class="_captionField"
-        v-if="
-          (publimodule.caption || edit_mode) &&
-          module_type !== 'shape' &&
-          module_type !== 'text'
-        "
-      >
+      <div class="_captionField" v-if="show_caption">
         <CollaborativeEditor2
           class="_caption"
           :label="
@@ -366,7 +359,7 @@
           :path="publimodule.$path"
           :custom_formats="['bold', 'italic', 'link']"
           :is_collaborative="false"
-          :can_edit="can_edit"
+          :can_edit="page_template !== 'page_by_page' ? can_edit : false"
         />
 
         <div
@@ -440,12 +433,6 @@ export default {
       observer: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-      en: {},
-    },
-  },
   created() {},
   mounted() {
     this.$eventHub.$on(
@@ -496,12 +483,12 @@ export default {
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
         else this.$refs.textBloc.disableEditor();
       else {
-        this.$nextTick(() => {
-          const edit_btn = this.$el.querySelector(
-            "._collaborativeEditor ._floatingEditBtn ._editBtn"
-          );
-          if (edit_btn) edit_btn.click();
-        });
+        // this.$nextTick(() => {
+        //   const edit_btn = this.$el.querySelector(
+        //     "._collaborativeEditor ._floatingEditBtn ._editBtn"
+        //   );
+        //   if (edit_btn) edit_btn.click();
+        // });
       }
       if (!this.edit_mode) this.is_repicking_location = false;
     },
@@ -516,7 +503,9 @@ export default {
       return false;
     },
     available_module_types() {
-      // if (this.publimodule.module_type === "text") return ["text"];
+      // a text module can become something else but not the other way around
+      if (this.publimodule.module_type === "text")
+        return ["text", "mosaic", "carousel", "files"];
       return ["mosaic", "carousel", "files"];
     },
     pin_options() {
@@ -540,15 +529,20 @@ export default {
     module_meta_filename() {
       return this.publimodule.$path.split("/").at(-1);
     },
+    show_caption() {
+      if (this.module_type === "text") return false;
+      if (this.module_type === "shape") return false;
+      if (
+        this.publimodule.source_medias.length === 1 &&
+        this.publimodule.source_medias[0].meta_filename?.startsWith("text-")
+      )
+        return false;
+      if (!this.publimodule.caption && !this.edit_mode) return false;
+      return true;
+    },
 
     module_type() {
-      if (
-        ["ellipsis", "rectangle", "line", "arrow"].includes(
-          this.publimodule.module_type
-        )
-      )
-        return "shape";
-      return this.publimodule.module_type;
+      return this.getModuleType(this.publimodule.module_type);
     },
     show_fs_button() {
       if (this.page_template === "page_by_page")
@@ -700,29 +694,34 @@ export default {
       this.$emit("duplicate", meta_filename);
       this.disableEdit();
     },
-    async removeModule() {
+    async removeModule({ with_content = true } = {}) {
       // todo also empty sharedb path, since $path can be retaken
-      try {
-        for (let source_media of this.publimodule.source_medias) {
-          // do not remove linked medias, only those in this specific folder
-          if (
-            Object.prototype.hasOwnProperty.call(source_media, "meta_filename")
-          ) {
-            const publication_path = this.getParent(this.publimodule.$path);
-            const full_source_media = this.getSourceMedia({
-              source_media,
-              folder_path: publication_path,
-            });
-
-            if (full_source_media)
-              await this.$api.deleteItem({
-                path: full_source_media.$path,
+      if (with_content) {
+        try {
+          for (let source_media of this.publimodule.source_medias) {
+            // do not remove linked medias, only those in this specific folder
+            if (
+              Object.prototype.hasOwnProperty.call(
+                source_media,
+                "meta_filename"
+              )
+            ) {
+              const publication_path = this.getParent(this.publimodule.$path);
+              const full_source_media = this.getSourceMedia({
+                source_media,
+                folder_path: publication_path,
               });
+
+              if (full_source_media)
+                await this.$api.deleteItem({
+                  path: full_source_media.$path,
+                });
+            }
           }
+        } catch (err) {
+          this.$alertify.delay(4000).error(err);
+          // throw err;
         }
-      } catch (err) {
-        this.$alertify.delay(4000).error(err);
-        throw err;
       }
 
       await this.$api
@@ -802,19 +801,13 @@ export default {
   ._sideOptions--content {
     width: 100%;
     margin: 0 auto;
-    padding: calc(var(--spacing) / 4);
-    background: var(--active-color);
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
 
-    // border: 2px solid var(--active-color);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    background: var(--active-color);
     box-shadow: var(--panel-shadows);
 
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    gap: calc(var(--spacing) / 4);
-    // border: 2px solid white;
-
+    border-radius: 12px;
+    gap: calc(var(--spacing) / 2);
     display: flex;
     align-items: center;
   }
@@ -833,7 +826,7 @@ export default {
   width: var(--side-width);
   height: var(--side-width);
   padding: 0;
-  border-radius: calc(var(--side-width) / 2);
+  border-radius: 50%;
   background: transparent;
 
   &:hover,
@@ -874,10 +867,11 @@ export default {
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
   align-items: center;
+}
 
-  .is--active {
-    color: white;
-  }
+._sizes.is--active {
+  color: white;
+  background: transparent;
 }
 
 ._floatingEditBtn {

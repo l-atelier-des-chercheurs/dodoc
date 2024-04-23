@@ -8,6 +8,7 @@
       :can_edit="can_edit"
       @openItem="openSection"
       @createItem="createSection"
+      @removeOpened="removeOpenedSection"
       v-slot="slotProps"
     >
       <template v-if="slotProps.item.section_title">
@@ -17,16 +18,6 @@
         <i>{{ $t("untitled") }}</i>
       </template>
     </ReorderedList>
-
-    <!-- <template v-if="can_edit">
-      <button
-        type="button"
-        class="u-buttonLink _createSection"
-        @click="createSection"
-      >
-        {{ $t("create_section") }}
-      </button>
-    </template> -->
   </div>
 </template>
 <script>
@@ -45,16 +36,6 @@ export default {
   },
   data() {
     return {};
-  },
-  i18n: {
-    messages: {
-      fr: {
-        create_section: "Créer un chapitre",
-      },
-      en: {
-        create_section: "Create chapter",
-      },
-    },
   },
   created() {},
   mounted() {
@@ -122,6 +103,14 @@ export default {
         title: this.new_section_title,
       });
       this.$emit("toggleSection", new_section_meta);
+    },
+    async removeOpenedSection() {
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        path: this.opened_section.$path,
+      });
+      this.openFirstSection();
     },
   },
 };

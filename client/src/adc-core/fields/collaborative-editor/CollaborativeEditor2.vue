@@ -36,13 +36,13 @@
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
             <span>{{ $t("stop_edit") }}</span>
           </button> -->
-          <transition name="fade_fast" mode="out-in">
+          <transition name="pagechange" mode="out-in">
             <div
               class="u-button _savingStatus"
               v-if="is_loading_or_saving"
               key="saving"
             >
-              <sl-spinner style="--indicator-color: currentColor" />
+              <LoaderSpinner />
               {{ $t("saving") }}
             </div>
             <div
@@ -74,9 +74,6 @@
           />
         </template>
       </div>
-      <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
-          Enregistrer
-        </sl-button> -->
     </div>
 
     <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
@@ -302,12 +299,12 @@ export default {
       this.setStatusButton();
 
       this.editor.on("selection-change", () => {
-        console.log(`CollaborativeEditor / selection-change`);
+        // console.log(`CollaborativeEditor / selection-change`);
         this.updateSelectedLines();
       });
       this.editor.on("text-change", (delta, oldDelta, source) => {
         delta, oldDelta, source;
-        console.log(`CollaborativeEditor / text-change w source ${source}`);
+        // console.log(`CollaborativeEditor / text-change w source ${source}`);
         this.$nextTick(() => {
           // todo : only update if possibly changing line (backspace and enter)
           this.updateSelectedLines();
@@ -446,7 +443,7 @@ export default {
       };
     },
     getEditorContent() {
-      console.log(`CollaborativeEditor • getEditorContent`);
+      // console.log(`CollaborativeEditor • getEditorContent`);
       if (!this.editor.getText() || this.editor.getText() === "\n") return "";
       let html = this.editor.root.innerHTML;
 
@@ -455,7 +452,7 @@ export default {
       return html;
     },
     cleanEditorContent(html) {
-      console.log(`CollaborativeEditor • cleanEditorContent`);
+      // console.log(`CollaborativeEditor • cleanEditorContent`);
 
       var t = document.createElement("template");
       t.innerHTML = html;
@@ -485,7 +482,7 @@ export default {
       const bloc_height = this.$el.offsetHeight;
       this.$el.style.setProperty("min-height", bloc_height + "px");
 
-      console.log(`CollaborativeEditor2 • enableEditor`);
+      // console.log(`CollaborativeEditor2 • enableEditor`);
 
       if (this.is_collaborative) await this.startCollaborative();
 
@@ -511,7 +508,7 @@ export default {
     async disableEditor() {
       if (!this.editor_is_enabled || this.is_disabling_editor) return false;
 
-      console.log(`CollaborativeEditor2 • disableEditor`);
+      // console.log(`CollaborativeEditor2 • disableEditor`);
       this.is_disabling_editor = true;
 
       this.editor.setSelection(null);
@@ -619,14 +616,14 @@ export default {
 
       try {
         this.is_loading_or_saving = true;
-        await new Promise((r) => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 300));
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
         });
         this.is_loading_or_saving = false;
         this.show_saved_icon = true;
-        await new Promise((r) => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 300));
         this.show_saved_icon = false;
       } catch (err) {
         if (err.message === "content not changed") err;
@@ -652,9 +649,9 @@ export default {
           "/isSharedb" +
           `?path_to_meta=${path_to_meta}`;
 
-        console.log(
-          `CollaborativeEditor / startCollaborative : will connect to ws server with ${requested_resource_url}`
-        );
+        // console.log(
+        //   `CollaborativeEditor / startCollaborative : will connect to ws server with ${requested_resource_url}`
+        // );
 
         this.rtc.socket = new ReconnectingWebSocket(requested_resource_url);
         const connection = new ShareDB.Connection(this.rtc.socket);
@@ -662,18 +659,18 @@ export default {
           this.rtc.connection_state = state.toString();
         });
 
-        console.log(`CollaborativeEditor / connecting to doc ${path_to_meta}`);
+        // console.log(`CollaborativeEditor / connecting to doc ${path_to_meta}`);
         this.doc = connection.get("collaborative_texts", path_to_meta);
 
         this.doc.subscribe((err) => {
           if (err) console.error(`CollaborativeEditor / err ${err}`);
-          console.log(`CollaborativeEditor / doc subscribe`);
+          // console.log(`CollaborativeEditor / doc subscribe`);
 
           if (this.doc.type) {
-            console.log(`CollaborativeEditor / doc already exists`);
+            // console.log(`CollaborativeEditor / doc already exists`);
             this.editor.setContents(this.doc.data, "init");
           } else {
-            console.log(`CollaborativeEditor / doc does not exists`);
+            // console.log(`CollaborativeEditor / doc does not exists`);
             this.doc.create(this.editor.getContents(), "rich-text");
           }
 
@@ -681,10 +678,10 @@ export default {
 
           this.editor.on("text-change", this.submitOPAndSave);
           this.doc.on("op", (op, source) => {
-            console.log(`CollaborativeEditor / op applied`);
+            // console.log(`CollaborativeEditor / op applied`);
             this.text_deltas = this.doc.data;
             if (source === this.editor_id) return;
-            console.log(`CollaborativeEditor / outside op applied`);
+            // console.log(`CollaborativeEditor / outside op applied`);
             this.editor.updateContents(op);
           });
 
@@ -716,14 +713,14 @@ export default {
       this.collaborative_is_loaded = false;
     },
     submitOPAndSave(delta, oldDelta, source) {
-      console.log(`CollaborativeEditor / submitOPAndSave w source ${source}`);
+      // console.log(`CollaborativeEditor / submitOPAndSave w source ${source}`);
       if (source === "user") {
         this.doc.submitOp(delta, { source: this.editor_id });
-        console.log(
-          `CollaborativeEditor / submitted op to server ${JSON.stringify(
-            delta
-          )}`
-        );
+        // console.log(
+        //   `CollaborativeEditor / submitted op to server ${JSON.stringify(
+        //     delta
+        //   )}`
+        // );
         this.updateTextMedia();
       }
     },
@@ -731,9 +728,9 @@ export default {
     updateTextMedia() {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
       this.debounce_textUpdate = setTimeout(async () => {
-        console.log(
-          `CollaborativeEditor • updateTextMedia: saving new snapshot`
-        );
+        // console.log(
+        //   `CollaborativeEditor • updateTextMedia: saving new snapshot`
+        // );
         await this.saveText();
 
         const { font } = this.editor.getFormat();
@@ -753,7 +750,7 @@ export default {
       this.addMediaAtTheEnd(media);
     },
     addMediaAtIndex(index, media) {
-      console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
+      // console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
       // TODO fix
       const mediaURL = `./${this.folder_slug}/${media.media_filename}`;
       // const mediaURL =
@@ -821,13 +818,13 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.media_type_not_handled"));
+          .error(this.$t("media_type_not_handled"));
       }
     },
 
     onDragover($event) {
       if (!this.editor_is_enabled) return;
-      console.log(`CollaborativeEditor2 / onDragover`);
+      // console.log(`CollaborativeEditor2 / onDragover`);
       $event.preventDefault();
       // todo debounce dragover to trigger only a handful of times per seconds
       // const el = $event.target;
@@ -841,7 +838,7 @@ export default {
       if (!_blot.domNode.classList.contains("is--dragover")) {
         _blot.domNode.classList.add("is--dragover");
         _blot.domNode.addEventListener("dragleave", () => {
-          console.log(`CollaborativeEditor2 / dragleave`);
+          // console.log(`CollaborativeEditor2 / dragleave`);
           _blot.domNode.classList.remove("is--dragover");
         });
       }
@@ -849,7 +846,7 @@ export default {
     // onDragLeave($event) {},
     onDrop($event) {
       if (!this.editor_is_enabled) return;
-      console.log(`CollaborativeEditor2 / onDrop`);
+      // console.log(`CollaborativeEditor2 / onDrop`);
 
       // Prevent default behavior (Prevent file from being opened)
       $event.preventDefault();
@@ -858,9 +855,9 @@ export default {
       this.removeDragoverFromBlots();
 
       if ($event.dataTransfer.getData("text/plain") === "media_in_quill") {
-        console.log(
-          `CollaborativeEditor2 / onDrop : : drag and dropped a media from quill`
-        );
+        // console.log(
+        //   `CollaborativeEditor2 / onDrop : : drag and dropped a media from quill`
+        // );
 
         let _blot = this.getBlockFromElement($event.target);
         const index = this.editor.getIndex(_blot);
@@ -869,21 +866,21 @@ export default {
         // find where it was dropped (B)
         // move delta from A to B
 
-        console.log(`_blot is currently at index ${index}`);
+        // console.log(`_blot is currently at index ${index}`);
       } else if ($event.dataTransfer.getData("text/plain")) {
-        console.log(
-          `CollaborativeEditor2 / onDrop : : dropped a media from the library`
-        );
+        // console.log(
+        //   `CollaborativeEditor2 / onDrop : : dropped a media from the library`
+        // );
 
         const media = JSON.parse($event.dataTransfer.getData("text/plain"));
-        console.log(media);
+        // console.log(media);
 
         if (media.media_filename) {
           // drop sur l’éditor et pas sur une ligne
           if ($event.target.classList.contains("ql-editor")) {
-            console.log(
-              "dropped on editor and not on line, will insert at the end of doc"
-            );
+            // console.log(
+            //   "dropped on editor and not on line, will insert at the end of doc"
+            // );
             this.addMediaAtIndex(this.editor.getLength() - 1, media);
             return;
           }
@@ -894,7 +891,7 @@ export default {
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
-              .error(this.$t("notifications.failed_to_find_block_line"));
+              .error(this.$t("failed_to_find_block_line"));
             return;
           }
 
@@ -905,9 +902,9 @@ export default {
           this.addMediaAtIndex(index - 1, media);
         }
       } else {
-        console.log(
-          `CollaborativeEditor2 / onDrop : missing meta for drop to occur`
-        );
+        // console.log(
+        //   `CollaborativeEditor2 / onDrop : missing meta for drop to occur`
+        // );
       }
     },
 
@@ -1063,6 +1060,7 @@ export default {
   ::v-deep {
     .ql-toolbar {
       padding: 0;
+      margin: 0;
     }
     .ql-formats {
       display: none;

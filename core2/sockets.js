@@ -123,8 +123,13 @@ module.exports = (function () {
       //   )
       // );
 
-      socket.on("joinRoom", ({ room }) => {
+      socket.on("joinRoom", ({ room, token, token_path }) => {
         dev.logrooms(`ROOMS — socket ${socket.id} is joining ${room}`);
+
+        // todo check if token is allowed to join room, first by checking checkTokenValidity
+        // then by checking if room is private or not, and if it is, checking if token is allowed
+        // see _restrictIfPrivate
+
         socket.join("content/" + room);
         // roomStatus(socket);
       });

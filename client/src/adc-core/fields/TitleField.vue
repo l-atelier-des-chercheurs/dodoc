@@ -24,6 +24,7 @@
         :content.sync="new_content"
         :required="required"
         :input_type="input_type"
+        :autofocus="true"
         :autocomplete="input_type === 'email' ? 'email' : undefined"
         :minlength="minlength"
         :maxlength="maxlength"
@@ -134,7 +135,7 @@ export default {
     async updateText() {
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
-
+      this.new_content = this.cleanUpString(this.new_content);
       try {
         const new_meta = {
           [this.field_name]: this.new_content,
@@ -147,10 +148,10 @@ export default {
 
         this.edit_mode = false;
         this.is_saving = false;
-      } catch (err) {
+      } catch ({ code }) {
         this.is_saving = false;
-        if (err === "unique_field_taken") {
-          this.$alertify.delay(4000).error(this.$t("notifications.name_taken"));
+        if (code === "unique_field_taken") {
+          this.$alertify.delay(4000).error(this.$t("name_taken"));
           this.$refs.TextInput.$refs.field.select();
         }
       }

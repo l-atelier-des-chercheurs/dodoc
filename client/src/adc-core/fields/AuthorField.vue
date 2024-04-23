@@ -71,9 +71,9 @@
           />
         </div>
 
-        <br />
+        <div class="u-spacingBottom" />
 
-        <div>
+        <div class="u-sameRow" slot="footer">
           <SaveCancelButtons
             class="_scb"
             :is_saving="is_saving"
@@ -252,7 +252,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.couldntbesaved"));
+          .error(this.$t("couldntbesaved"));
         this.$alertify.closeLogOnClick(true).error(e.response.data);
       }
     },

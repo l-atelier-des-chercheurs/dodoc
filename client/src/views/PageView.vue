@@ -11,7 +11,7 @@
             :content="page.title"
             :path="page.$path"
             :required="true"
-            :maxlength="40"
+            :maxlength="70"
             :tag="'h1'"
             :can_edit="can_edit"
           />
@@ -44,11 +44,6 @@ export default {
       is_loading_page: true,
       page: undefined,
     };
-  },
-  i18n: {
-    messages: {
-      fr: {},
-    },
   },
   async created() {},
   async mounted() {

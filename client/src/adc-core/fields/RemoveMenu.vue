@@ -14,7 +14,7 @@
     <BaseModal2
       v-if="show_confirm_delete"
       :title="remove_text"
-      @close="show_confirm_delete = false"
+      @close="modalClosed"
     >
       <div v-if="remove_expl">
         {{ remove_expl }}
@@ -48,11 +48,12 @@ export default {
       type: Boolean,
       default: true,
     },
+    show_modal_on_startup: Boolean,
   },
   components: {},
   data() {
     return {
-      show_confirm_delete: false,
+      show_confirm_delete: this.show_modal_on_startup === true,
     };
   },
   created() {},
@@ -64,6 +65,10 @@ export default {
     confirmRemove() {
       this.$emit("remove");
       this.show_confirm_delete = false;
+    },
+    modalClosed() {
+      this.show_confirm_delete = false;
+      this.$emit("modalClosed");
     },
   },
 };

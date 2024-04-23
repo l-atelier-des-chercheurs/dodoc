@@ -9,13 +9,14 @@ module.exports = (function () {
     get: async () => {
       dev.logfunction();
 
-      let d = JSON.parse(
-        JSON.stringify(await folder.getFolder({ path_to_folder: "" }))
-      );
-      const files = await file.getFiles({ path_to_folder: "" });
-      d.$files = files;
+      let d = await folder.getFolder({
+        path_to_folder: ".",
+      });
 
       return d;
+    },
+    getFiles: async () => {
+      return await file.getFiles({ path_to_folder: "." });
     },
     updatePath({ new_path }) {
       dev.logfunction();

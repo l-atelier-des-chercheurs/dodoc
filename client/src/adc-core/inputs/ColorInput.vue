@@ -61,20 +61,6 @@
             @save="saveColor(local_value)"
             @cancel="cancelColor"
           />
-
-          <!-- <button
-            type="button"
-            v-if="value !== local_value"
-            class="u-button u-button_bleuvert _submitBtn"
-            @click="saveColor(local_value)"
-          >
-            <sl-icon
-              style="font-size: 1.5em"
-              name="check"
-              :label="$t('submit')"
-            />
-            {{ $t("save") }}
-          </button> -->
         </transition>
       </template>
     </ToggledSection>

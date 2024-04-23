@@ -15,12 +15,10 @@
         v-if="show_welcome_modal"
         @close="show_welcome_modal = false"
       />
-
       <GeneralPasswordModal
         v-else-if="show_general_password_modal"
         @close="show_general_password_modal = false"
       />
-
       <template v-else>
         <AuthorList
           v-if="show_authors_modal"
@@ -68,26 +66,24 @@ export default {
       show_welcome_modal: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   async created() {
     console.log("Loading FullUI");
-
-    await this.$api.init({ debug_mode: this.$root.debug_mode });
-    this.$eventHub.$on("socketio.connect", this.socketConnected);
-    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
-    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
-    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
 
     this.$eventHub.$on(
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+
     this.$eventHub.$on(`app.show_welcome_modal`, this.showWelcomeModal);
     this.$eventHub.$on(`showAuthorModal`, this.showAuthorModal);
+
+
+    await this.$api.init({ debug_mode: this.$root.debug_mode });
+
+    this.$eventHub.$on("socketio.connect", this.socketConnected);
+    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
 
     this.$root.is_loading = false;

@@ -135,7 +135,7 @@ module.exports = (function () {
       const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       let meta = await utils.readMetaFile(path_to_meta);
-      meta.$path = path_to_meta;
+      meta.$path = utils.convertToSlashPath(path_to_meta);
 
       const media_filename = meta.$media_filename;
       const media_type = meta.$type;
@@ -532,8 +532,10 @@ module.exports = (function () {
     } else {
       // for images, check if exif
       if (new_meta.$type === "image" && path_to_media) {
-        const gps = await utils.getGPSFromFile(path_to_media);
-        if (gps) new_meta.$location = gps;
+        try {
+          const gps = await utils.getGPSFromFile(path_to_media);
+          if (gps) new_meta.$location = gps;
+        } catch (err) {}
       }
     }
 
@@ -765,24 +767,42 @@ module.exports = (function () {
   }
 
   async function _embedSourceMedias({ meta }) {
-    if (!meta.hasOwnProperty("source_medias")) return meta;
+    if (
+      !["source_medias", "map_base_media_filename"].some((key) =>
+        meta.hasOwnProperty(key)
+      )
+    )
+      return meta;
 
     const source_folder = utils.getFolderParent(
-      utils.getContainingFolder(meta.$path)
+      utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
     );
 
-    for (const [index, source_media] of meta.source_medias.entries()) {
-      if (source_media.hasOwnProperty("meta_filename_in_project")) {
-        const path_to_meta = path.join(
-          source_folder,
-          source_media.meta_filename_in_project
-        );
-        const source_media_meta = await API.getFile({
-          path_to_meta,
-        });
-        meta.source_medias[index]._media = source_media_meta;
+    if (meta.source_medias)
+      for (const [index, source_media] of meta.source_medias.entries()) {
+        if (source_media.hasOwnProperty("meta_filename_in_project")) {
+          const path_to_meta = path.join(
+            source_folder,
+            source_media.meta_filename_in_project
+          );
+          const source_media_meta = await API.getFile({
+            path_to_meta,
+          });
+          meta.source_medias[index]._media = source_media_meta;
+        }
       }
+
+    if (meta.map_base_media_filename) {
+      const path_to_meta = path.join(
+        source_folder,
+        meta.map_base_media_filename
+      );
+      const source_media_meta = await API.getFile({
+        path_to_meta,
+      });
+      meta._map_base_media = source_media_meta;
     }
+
     return meta;
   }
 

@@ -175,28 +175,6 @@ export default {
       resolution_preset_picked: "source",
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        convert: "Convertir",
-        already_optimized:
-          "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
-        preview_optimize: "Créer une version optimisée",
-        wont_remove_original: "Ne supprimera pas l’original",
-        add_optimized_to_lib: "Conserver l’original et la nouvelle version",
-        replace_original: "Remplacer et supprimer l’original",
-      },
-      en: {
-        convert: "Convert",
-        already_optimized:
-          "This media has already been converted, it is not recommended to convert it again.",
-        preview_optimize: "Create optimized version",
-        wont_remove_original: "Will not remove the original",
-        add_optimized_to_lib: "Keep original media and add new version",
-        replace_original: "Replace and remove original media",
-      },
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},

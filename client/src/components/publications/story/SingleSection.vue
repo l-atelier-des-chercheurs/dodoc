@@ -19,12 +19,6 @@
                 :tag="'h1'"
                 :can_edit="can_edit"
               />
-              <RemoveMenu
-                v-if="can_edit"
-                :remove_text="$t('remove_section')"
-                :show_button_text="false"
-                @remove="removeSection"
-              />
             </div>
 
             <!-- legacy field – only existing description can be edited -->
@@ -39,18 +33,7 @@
               :can_edit="can_edit"
             />
           </div>
-          <div class="_buttons" v-if="can_edit">
-            <!-- <div>
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="$emit('close')"
-              >
-                <sl-icon name="x" />
-                {{ $t("close") }}
-              </button>
-            </div> -->
-          </div>
+          <div class="_buttons" v-if="can_edit"></div>
         </div>
         <transition-group
           tag="div"
@@ -64,7 +47,7 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
-                :types_available="['text', 'link']"
+                :types_available="['capture', 'import', 'write', 'embed']"
                 @addModules="
                   ({ meta_filenames }) =>
                     insertModules({ meta_filenames, index })
@@ -110,7 +93,7 @@
           class="_lastModule"
           :start_collapsed="false"
           :publication_path="publication.$path"
-          :types_available="['text', 'link']"
+          :types_available="['capture', 'import', 'write', 'embed']"
           @addModules="addModules"
         />
       </div>
@@ -137,16 +120,7 @@ export default {
       module_being_edited: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        remove_section: "Supprimer le chapitre",
-      },
-      en: {
-        remove_section: "Remove this chapter",
-      },
-    },
-  },
+
   created() {
     this.$eventHub.$on("module.none_edited", this.unselectModuleEdited);
   },
@@ -216,14 +190,6 @@ export default {
     },
     unselectModuleEdited() {
       this.module_being_edited = undefined;
-    },
-    async removeSection() {
-      this.$emit("prevSection");
-      await this.removeSection2({
-        publication: this.publication,
-        group: "sections_list",
-        path: this.section.$path,
-      });
     },
 
     async removeModule(path) {

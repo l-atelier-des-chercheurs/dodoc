@@ -94,6 +94,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    autofocus: {
+      type: Boolean,
+      default: false,
+    },
     minlength: {
       type: [Boolean, Number],
       default: false,
@@ -143,6 +147,7 @@ export default {
   },
   methods: {
     initInput() {
+      if (!this.autofocus) return;
       if (this.tag === "span") {
         this.$refs.field.innerText = this.content;
         this.focusSpanAtEnd();
@@ -217,5 +222,6 @@ export default {
 }
 ._revealBtn {
   padding: 0;
+  text-transform: lowercase;
 }
 </style>

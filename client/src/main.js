@@ -2,6 +2,8 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 
+import "./utils/icons";
+
 Vue.config.productionTip = false;
 
 const debug_mode = window.app_infos.debug_mode;
@@ -15,22 +17,6 @@ import {
 
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
-
-Vue.config.ignoredElements = [/sl-/];
-// todo : replace shoelace components
-/*
-  sl-spinner
-  sl-icon
-  sl-icon-button
-  sl-tab
-  sl-tab-group
-  sl-tab-panel
-*/
-import { IconsPlugin } from "bootstrap-vue";
-Vue.use(IconsPlugin);
-// import { BootstrapVueIcons } from "bootstrap-vue";
-// import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
-// Vue.use(BootstrapVueIcons);
 
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
@@ -61,15 +47,17 @@ Vue.directive("uppercase", {
 
 if (window.app_infos.is_electron)
   document.body.addEventListener("click", (event) => {
-    event.path.every((item) => {
-      if (item.tagName === "A" && item.target === "_blank" && !item.download) {
-        event.preventDefault();
-        window.electronAPI.send("toMain", {
-          type: "open_external",
-          url: item.href,
-        });
-      }
-    });
+    if (
+      event.target.tagName === "A" &&
+      event.target.target === "_blank" &&
+      !event.target.download
+    ) {
+      event.preventDefault();
+      window.electronAPI.send("toMain", {
+        type: "open_external",
+        url: event.target.href,
+      });
+    }
   });
 
 import api from "@/adc-core/api.js";
@@ -204,7 +192,7 @@ Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
   template: `
   <div class="u-loader">
-    <sl-spinner style="font-size: 2rem; --track-width: 5px; --indicator-color: currentColor" />
+      <div class="_spinner" />
   </div>
   `,
 });

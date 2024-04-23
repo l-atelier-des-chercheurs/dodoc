@@ -13,8 +13,6 @@ export default {
     "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers, …!",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
-  // admins_edit_text_here: `Pour modifier le nom de l’instance, ce texte et les réglages, connectez vous avec un compte administrateur en cliquant sur <i>se connecter</i> en haut à droite.`,
-  // admins_edit_text_below: `Pour modifier ce texte, cliquez sur le boutton Réglages d’administration en haut à droite.`,
   edit: "Edit",
   description: "Description",
   keywords: "Keywords",
@@ -70,7 +68,7 @@ export default {
   presentation_of_instance: "Instance presentation",
   presentation_of_instance_instructions: `Will appear on the home page only.`,
   presentation: "Presentation",
-  general_password: "general password",
+  general_password: "General password",
   general_password_instructions: `Limit access to projects to visitors with this password. The home page will however remain accessible and
     can display a contact email to request access, if necessary. Leave the field empty so that access is open to everyone.`,
   general_password_modal_text: `A password is required to access projects created on this platform.
@@ -80,12 +78,14 @@ export default {
   account_doesnt_exist: "This account does not exist",
   submit: "Submit",
   search_in_title_desc_kw:
-    "In titles, descriptions, keywords, machines and materials.",
-  search_by_name: "In names or nicknames",
-  search_by_title_or_subtitle: "In titles and subtitles",
+    "Search in titles, descriptions, keywords, machines and materials.",
+  search_by_name: "Search in names or nicknames",
+  search_by_title_or_subtitle: "Search in titles and subtitles",
 
   search: "Search",
   "search:": "Search:",
+  recent: "Recent",
+  ancient: "Ancient",
 
   space: "Space",
   spaces: "All spaces",
@@ -93,6 +93,11 @@ export default {
     "Each space contains a set of projects linked to a particular group, place or theme.",
   create_a_space: "Create a space",
   project: "Project",
+
+  space_is_private:
+    "This space is private and can only be opened by its contributors and referents.",
+  project_is_private:
+    "This project is private and can only be opened by its contributors and referents.",
 
   finished: "Finished",
   only_finished: "Finished projects",
@@ -187,6 +192,7 @@ export default {
   in_this_section: "In this chapter",
   in_another_section: "In another chapter",
   change_section: "Move to another chapter",
+  remove_section: "Remove this chapter",
 
   status: "Status",
   origin: "Origin",
@@ -295,12 +301,20 @@ export default {
   show_on_map: "Show on map",
   placed_on_map: "Already positioned on map",
   change_location: "Change position",
-  remove_pin: "Remove this pin",
+
+  location_stored_in_localstorage:
+    "This information will be retained on this device for all captures.",
+  print_map: "Print the map",
+  print_only_basemap:
+    "Only print the baselayer (do not print pins and drawing)",
+
   cancel_position: "Erase position",
   click_on_map_to_repick_location:
     "Click on map to select the new position on the map",
   add_caption: "Add a caption",
   copy_first_media_caption: "Reuse first media caption",
+  edit_caption_changes_for_all_medias:
+    "Caption and credits will be changed automatically for the original media for all publications.",
 
   withdraw_from_page: "Withdraw from page",
   confirm_removal: "Confirm removal",
@@ -416,7 +430,6 @@ export default {
   video: "Video",
   audio: "Audio",
   text: "Text",
-  lines: "Lines",
   vecto: "Shapes",
   pdf: "PDF",
   stl: "STL",
@@ -433,10 +446,11 @@ export default {
   or_drag_drop_file_here: "Or drag and drop file here",
   enable: "Enable",
 
-  admins_edit_text_here:
-    "To modify the name of the instance, this text and the settings, log in with an administrator account by clicking on <i>connect</i> at the top right.",
+  admins_edit_text_here: `To modify the name of the instance, this text and the settings, log in with an administrator account by clicking on <i>connect</i> at the top right.
+    The default admin account is <b>Admin</b> and the password is <b>dodoc</b>.
+    `,
   admins_edit_text_below:
-    "To modify this text, click on the Administration Settings button at the top right.",
+    "To modify this text, click on the gear icon in the top right.",
   edit_source: "Edit source",
   select_all: "Select all",
   input_url_instr:
@@ -586,6 +600,7 @@ export default {
   hide_pagination_instr: "Only concerns this page",
   remove_page_and_content: "Delete the page and its content?",
   border_radius: "Rounded corners",
+  drop_shadow: "Box shadow",
   photo: "Photo",
   remove_this_image: "Delete this image",
   erase: "Erase",
@@ -644,7 +659,22 @@ export default {
   end: "end",
   copy: "Copy",
   test_and_export: "Test and export",
-  extract_to_export: "Selected extract",
+  export_montage: "Export montage",
+
+  image_to_rework: "Image to edit",
+  video_to_rework: "Video to edit",
+  audio_to_rework: "Audio to edit",
+
+  pick_audio: "Pick audio media",
+  pick_image: "Pick image media",
+  pick_video: "Pick video media",
+  export_mix: "Export composition",
+
+  start_egal_to_end: "Start is equal to end",
+  end_before_start: "End is before start",
+  export_trim_video: "Export trimmed video",
+  export_trim_audio: "Export trimmed audio",
+
   save_export_cropped: "Save cropped version",
   make_a_video: "Make a video",
   video_assemblage: "Video assembly",
@@ -660,6 +690,14 @@ export default {
   white: "White",
   black: "Black",
   transparent: "Transparent",
+  couldnt_load_getusermedia: "Impossible to load camera or microphone",
+  failed_listing_devices: "Impossible to list devices",
+  failed_to_start_stream_sharing: "Impossible to start stream sharing",
+  failed_to_start_recording: "Failed to start recording",
+  new_user_connected_to_stream: "New user connected to the stream",
+  no_stream_found_while_sharing: "No stream found while sharing",
+  media_couldnt_be_sent: "Media couldn’t be sent",
+
   markdown_instr:
     "Markdown field: you can format the text (titles, bold, italics, links, etc.)",
   watermark: "Dressing",
@@ -764,6 +802,10 @@ export default {
   destination_space: "Space which will receive this copy",
   destination_space_remix: "Space that will receive this remixed project",
   destination_project: "Project that will receive this copy",
+  space_was_removed: "This space has been removed",
+  publication_was_removed: "This publication has been removed",
+  make_was_removed: "This recipe has been removed",
+
   remove_original: "Delete original",
   remove_original_after_copy: "The original will be deleted after copying",
   keep_original_after_copy: "The original will be kept after copying",
@@ -857,6 +899,8 @@ export default {
   local_machine_instr: "On this computer, using a browser already installed.",
   display_as_public: "Show public view",
   preview: "Preview",
+  previews_size: "Size of previews",
+
   add_to_instance_admin: "Add as instance administrator",
   instance_admin_instructions:
     "Can access, modify and delete all content (spaces, projects, accounts, etc.). They have access to these settings and can modify them.",
@@ -879,25 +923,25 @@ export default {
   require_signup_to_contribute:
     "Users must create an account to contribute to the platform",
   require_mail_to_signup: "An email address is required to create an account",
+  wrong_signup_password: "Wrong password",
+
   enable_events: "Enable the events functionality",
   you_must_login_to_contribute: "You must register or log in to contribute",
   not_allowed_to_contribute_contact_referent:
     "You do not have the possibility to contribute, contact a referent to be able to do so",
-  "notifications.media_was_saved": "Media saved",
-  "notifications.no_image_in_clipboard":
-    "Your clipboard does not contain any images",
-  "notifications.project_was_removed": "This project has just been deleted",
-  "notifications.action_not_authorized": "This action is not allowed",
-  "notifications.event_does_not_exit": "This event does not exist",
-  "notifications.title_taken": "This title is already in use",
-  "notifications.not_allowed_to_copy_to_space":
+  media_was_saved: "Media saved",
+  no_image_in_clipboard: "Your clipboard does not contain any images",
+  project_was_removed: "This project has just been deleted",
+  event_does_not_exit: "This event does not exist",
+  title_taken: "This title is already in use",
+  not_allowed_to_copy_to_space:
     "You do not have rights to create projects in the destination space",
-  "notifications.not_allowed_to_copy_to_project":
+  not_allowed_to_copy_to_project:
     "You do not have rights to add media to this project.",
-  "notifications.name_taken": "This name is already in use",
-  "notifications.action_not_allowed": "This action is not allowed",
-  "notifications.account_created": "Your account has been created",
-  "notifications.logged_in": "Account connection is active, page reloading…",
+  name_taken: "This name is already in use",
+  action_not_allowed: "This action is not allowed",
+  account_created: "Your account has been created",
+  logged_in: "Account connection is active, page reloading…",
   informations: "informations",
   duplicate: "Duplicate",
   duplicate_or_move: "Duplicate or move",
@@ -909,6 +953,10 @@ export default {
     "In this project or another where you can create posts. All settings and texts will be duplicated, and the media (photos, videos, etc.) will be imported into the Collect panel.",
   import_zip: "Import a project in ZIP",
   import_in_progress: "Import in progress…",
+  import_finished:
+    "Import finished, click on the button to open the project. Media previews will be generated, which can take a few minutes.",
+  zip_wrong: "This ZIP file is not a valid project",
+
   move_to_page: "Move to another page",
   general_informations: "Instance informations",
   make_list: "Make list",
@@ -925,6 +973,8 @@ export default {
   pin_icons: "Pin icons",
   icon: "Icon",
   media_preview: "Image on map",
+  to_add_media_here_open_matching_layer:
+    "To add a media in this position, create or open a chapter in the pane on the right.",
 
   image_basemap: "Image used as the basemap",
   choose_image_basemap: "Choose image basemap",
@@ -941,6 +991,8 @@ export default {
   IGN_SAT: "IGN satellite pictures (France only)",
   image_or_drawing: "Image or drawing",
   bw_filter: "Black and white filter",
+  failed_loading_tiles_no_internet:
+    "Failed loading the baselayer, are you connected to the internet?",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
@@ -958,4 +1010,56 @@ export default {
 
   on_this_page: "On this page",
   on_other_pages: "On other pages",
+
+  lines: "Lines",
+  freehand: "Path",
+  circle: "Circle",
+  polygon: "Polygon",
+
+  search_for_a_place: "Search for a place",
+  click_to_start_drawing: "click to start drawing",
+  click_to_continue_drawing: "click to continue drawing",
+  click_drag_to_draw_line: "click and hold to draw",
+  click_to_place_center: "click to place center",
+  click_to_define_circle_radius: "click to set circle radius",
+  click_to_place_first_point: "click to draw first point",
+  finish_drawing: "End drawing",
+  or_double_click: "Or double click for the last point",
+  drag_to_modify: "click and hold to modify",
+
+  select_by_clicking: "select by clicking",
+  move_drawing: "click and hold to draw",
+
+  about_dodoc: "About do•doc",
+  about_dodoc_txt: `do•doc is free and open-source software created to document projects and powered by a diverse community of designers, teachers, artists, trainers, creators and documentation enthusiasts in general.
+  It is used in a multitude of contexts, whether in the classroom, in fablabs, in third places, as well as as an engine for resource platforms accessible online.<br><br>
+  The design and development of this tool is managed by the collective <a href="https://latelier-des-chercheurs.fr" target="_blank">l'Atelier des chercheurs</a> since its beginnings, in 2014,
+  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
+  about_dodoc_links: `
+  Here are some other links:
+  <ul>
+  <li>The latest version of the software is available on the dedicated page: <a href="https://dodoc.fr" target="_blank">https://dodoc.fr</a></li>
+  <li>The source code can be found here: <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc</a></li>
+  </ul>
+  `,
+  about_dodoc_contributors: `Main contributors: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
+
+  write: "Write",
+  real_size: "Real size",
+  full_page: "Full page",
+
+  convert: "Convert",
+  convert_to_format: "Adapt format for viewing",
+
+  already_optimized:
+    "This media has already been converted, it is not recommended to convert it again.",
+  preview_optimize: "Create optimized version",
+  wont_remove_original: "Will not remove the original",
+  add_optimized_to_lib: "Keep original media and add new version",
+  replace_original: "Replace and remove original media",
+
+  change: "Change",
+  transition_fade: "Transition: fade",
+
+  couldntbesaved: "Value couldn’t be saved",
 };

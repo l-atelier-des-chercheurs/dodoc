@@ -20,7 +20,7 @@
           />
           <div v-else class="_preview" />
           <span class="_link--filename" v-text="file.$media_filename" />
-          <b-icon icon="file-earmark-arrow-down-fill" />
+          <b-icon icon="file-earmark-arrow-down" />
         </DownloadFile>
 
         <button
@@ -29,7 +29,7 @@
           class="u-button u-button_icon"
           @click.prevent="removeFile(file.$path)"
         >
-          <b-icon icon="x" :aria-label="$t('first_image')" />
+          <b-icon icon="x-lg" />
         </button>
       </div>
     </template>
