@@ -119,6 +119,7 @@
         }
       },
       "collections": {
+        "$can_be_created_by": "everyone",
         "fields": {
           "title": {
             "type": "string"
