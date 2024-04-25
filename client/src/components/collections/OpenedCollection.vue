@@ -1,8 +1,19 @@
 <template>
   <div class="_openedCollection">
     <transition name="slideup" mode="out-in">
-      <div class="_spinner" v-if="is_loading" key="loader">
-        <LoaderSpinner />
+      <div v-if="is_loading" key="loader">
+        <div class="_spinner">
+          <LoaderSpinner />
+        </div>
+      </div>
+      <div v-else-if="fetch_coll_error_message" class="_error" key="err">
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          <b-icon icon="arrow-left" />
+          {{ $t("back") }}
+        </button>
+        <div class="">
+          {{ fetch_coll_error_message }}
+        </div>
       </div>
       <div v-else key="opened-collection">
         <div v-if="!collection.$path">
@@ -30,6 +41,14 @@
               :path="collection.$path"
               :can_edit="can_edit"
               :show_image_only="true"
+            />
+
+            <StatusTag
+              v-if="can_edit"
+              :status="collection.$status || 'public'"
+              :status_options="['public', 'private']"
+              :path="collection.$path"
+              :can_edit="can_edit"
             />
 
             <DropDown v-if="can_edit">
@@ -116,6 +135,7 @@ export default {
       collection: undefined,
       path: "collections/" + this.opened_collection_slug,
       opened_section_meta_filename: "",
+      fetch_coll_error_message: "",
       show_qr_code_modal: false,
     };
   },
@@ -130,13 +150,19 @@ export default {
     },
   },
   async created() {
-    this.collection = await this.$api
+    const collection = await this.$api
       .getFolder({
         path: this.path,
       })
       .catch((err) => {
-        this.fetch_stopmotion_error = err.response;
+        if (err.code === "folder_private")
+          this.fetch_coll_error_message = this.$t("coll_is_private");
+        else this.fetch_coll_error_message = err.code;
+        this.is_loading = false;
+        return;
       });
+
+    this.collection = collection;
 
     this.is_loading = false;
     this.$api.join({ room: this.path });
@@ -228,5 +254,8 @@ export default {
   ::v-deep ._dLabel {
     display: none;
   }
+}
+._error {
+  padding: calc(var(--spacing) * 1);
 }
 </style>

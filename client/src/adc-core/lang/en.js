@@ -1062,4 +1062,6 @@ export default {
   transition_fade: "Transition: fade",
 
   couldntbesaved: "Value couldn’t be saved",
+  coll_is_private:
+    "This collection is private and can only be viewed by the referrers.",
 };

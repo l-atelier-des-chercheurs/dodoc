@@ -1126,4 +1126,7 @@ export default {
   transition_fade: "Transition : fondu enchaîné",
 
   couldntbesaved: "La valeur n’a pas pu être enregistrée",
+
+  coll_is_private:
+    "Cette collection est privée et ne peut être consultée que par les référents.",
 };

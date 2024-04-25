@@ -107,9 +107,16 @@ export default {
       return this.canLoggedinEditFolder({ folder: this.stack });
     },
     sorted_collections() {
-      return this.collections.slice().sort((a, b) => {
-        return a.title.localeCompare(b.title);
-      });
+      return this.collections
+        .slice()
+        .filter((s) =>
+          this.canLoggedinSeeFolder({
+            folder: s,
+          })
+        )
+        .sort((a, b) => {
+          return a.title.localeCompare(b.title);
+        });
     },
     filtered_collections() {
       return this.sorted_collections.filter((c) => {
