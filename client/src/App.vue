@@ -429,6 +429,14 @@ ol {
   }
 }
 
+._importFileZone {
+  .u-button {
+    background-color: var(--r-200);
+    color: var(--h-900);
+    gap: calc(var(--spacing) / 4);
+  }
+}
+
 ._boldBtn {
   font-weight: 700;
   font-variant: small-caps;
