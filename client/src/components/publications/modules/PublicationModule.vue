@@ -171,6 +171,32 @@
                   </template>
                 </button>
               </div>
+              <div class="">
+                <SelectField2
+                  :value="publimodule.zoom_level"
+                  :options="zoom_level_options"
+                  :can_edit="can_edit"
+                  :hide_validation="true"
+                  @change="
+                    updateMeta({
+                      zoom_level: $event,
+                    })
+                  "
+                />
+
+                <!-- <select
+                  :value="publimodule.zoom_level"
+                  :disabled="!can_edit"
+                  @change="updateMeta({ zoom_level: $event })"
+                >
+                  <option
+                    v-for="option in zoom_level_options"
+                    :key="option.key"
+                    :value="option.key"
+                    v-text="option.text || option.key"
+                  />
+                </select> -->
+              </div>
               <div class="" v-if="has_coordinates">
                 <button type="button" class="u-buttonLink" @click="eraseCoords">
                   <b-icon icon="x-circle" />
@@ -502,6 +528,31 @@ export default {
         return this.$getMapOptions().opened_pin_path === this.publimodule.$path;
       return false;
     },
+    zoom_level_options() {
+      const max = 20;
+      return new Array(max).fill(0).map((e, i) => {
+        if (i === 0)
+          return {
+            key: "",
+            text: this.$t("dont_zoom"),
+          };
+        else if (i === 1)
+          return {
+            key: i,
+            text: i + " (" + this.$t("very_far") + ")",
+          };
+        else if (i === max - 1)
+          return {
+            key: i,
+            text: i + " (" + this.$t("very_close") + ")",
+          };
+        else
+          return {
+            key: i,
+          };
+      });
+    },
+
     available_module_types() {
       // a text module can become something else but not the other way around
       if (this.publimodule.module_type === "text")
@@ -907,10 +958,8 @@ export default {
 }
 
 ._carto {
-  // display: flex;
-  // justify-content: center;
-  // gap: calc(var(--spacing) / 4);
-  // background: white;
+  padding: calc(var(--spacing) / 4);
+  border: 2px solid rgba(0, 0, 0, 0.2);
 }
 
 ._pinButton {
@@ -921,7 +970,9 @@ export default {
   width: 30px;
   height: 30px;
   z-index: 1;
-  margin: calc(var(--spacing) / 4);
+
+  margin: 0 calc(var(--spacing) / 2);
+
   padding: 0;
 
   // ._publicationModule[data-type="text"] & {

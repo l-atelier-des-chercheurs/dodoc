@@ -9,7 +9,11 @@
           "
         >
           <div class="_text">
-            <div class="_sectionTitle">
+            <div
+              class="_sectionTitle"
+              v-if="can_edit || title_is_visible"
+              :class="{ 'is--hidden': !title_is_visible }"
+            >
               <TitleField
                 :field_name="'section_title'"
                 :content="section.section_title || $t('untitled')"
@@ -18,6 +22,11 @@
                 :maxlength="60"
                 :tag="'h1'"
                 :can_edit="can_edit"
+              />
+              <EditBtn
+                v-if="can_edit"
+                :btn_type="title_is_visible ? 'show' : 'hide'"
+                @click="toggleSectionVisibility"
               />
             </div>
 
@@ -139,6 +148,9 @@ export default {
     story_styles() {
       return this.makeStoryStyles({ publication: this.publication });
     },
+    title_is_visible() {
+      return this.section.section_title_is_visible !== false;
+    },
   },
   methods: {
     async addModules({ meta_filenames }) {
@@ -167,6 +179,14 @@ export default {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
         this.$eventHub.$emit("publication.map.openPin", pin_path);
       }, 150);
+    },
+    async toggleSectionVisibility() {
+      await this.$api.updateMeta({
+        path: this.section.$path,
+        new_meta: {
+          section_title_is_visible: !this.title_is_visible,
+        },
+      });
     },
     async moveModuleTo({ path, new_position }) {
       await this.moveModuleTo2({
@@ -238,6 +258,14 @@ export default {
 ._sectionTitle {
   display: flex;
   align-items: baseline;
+
+  &.is--hidden {
+    ::v-deep {
+      h1 {
+        opacity: 0.5;
+      }
+    }
+  }
 }
 
 ._mediaPublication {

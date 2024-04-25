@@ -145,7 +145,7 @@
           medias_with_linked.length < number_of_max_medias
         "
       >
-        <DropZone @mediaDropped="$emit('addMedias', $event)" />
+        <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
       </template>
     </div>
   </div>
@@ -351,5 +351,9 @@ export default {
 }
 ._df {
   display: inline-flex;
+}
+
+._dzAfter {
+  z-index: 1000;
 }
 </style>

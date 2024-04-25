@@ -1101,4 +1101,8 @@ export default {
   transition_fade: "Transition : fondu enchaîné",
 
   couldntbesaved: "La valeur n’a pas pu être enregistrée",
+
+  dont_zoom: "Ne pas zoomer",
+  very_far: "Très éloigné",
+  very_close: "Très près",
 };

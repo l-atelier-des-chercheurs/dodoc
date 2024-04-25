@@ -103,7 +103,7 @@
         @click="show_module_selector = true"
       />
     </transition>
-    <DropZone @mediaDropped="mediaDropped" />
+    <DropZone class="_dropZone" @mediaDropped="mediaDropped" />
   </div>
 </template>
 <script>
