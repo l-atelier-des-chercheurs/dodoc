@@ -421,6 +421,9 @@
                     "section_title": {
                       "type": "string"
                     },
+                    "section_title_is_visible": {
+                      "type": "boolean"
+                    },
                     "section_description": {
                       "type": "string"
                     },
