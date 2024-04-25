@@ -215,8 +215,7 @@ export default {
         if (this.fav_filter) if (!this.isFavorite(f.$path)) return false;
 
         if (this.author_path_filter)
-          if (!f.$admins || !f.$admins.includes(this.author_path_filter))
-            return false;
+          if (!f.$authors?.includes(this.author_path_filter)) return false;
 
         if (this.keywords_filter.length > 0) {
           if (!f.keywords || !Array.isArray(f.keywords)) return false;

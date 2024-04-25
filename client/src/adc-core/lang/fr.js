@@ -871,6 +871,8 @@ export default {
     "Ils peuvent modifier ou supprimer ce projet et tous ses contenus (médias, publications, etc.). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
   project_contrib_instructions:
     "Ils peuvent uniquement créer, modifier et supprimer des contenus (médias, publications, etc.).",
+  file_author_instructions:
+    "Cette information est utilisée pour des informations seulement et ne détermine pas qui peut modifier ou supprimer ce contenu.",
 
   project_title_instructions:
     "Le titre est affiché ici et sur la liste des projets.",
