@@ -137,5 +137,6 @@ export default {
 ._dropNotice {
   position: relative;
   pointer-events: none;
+  white-space: nowrap;
 }
 </style>
