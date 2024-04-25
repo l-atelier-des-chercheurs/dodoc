@@ -14,8 +14,8 @@
       class="_popup"
       :class="{
         'is--pin': clicked_location.module,
+        'is--shown': has_module_content_to_show,
       }"
-      v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div class="_popupShadow" />
       <button
@@ -538,6 +538,23 @@ export default {
     selected_feature_type() {
       if (!this.selected_feature) return undefined;
       return this.selected_feature.getGeometry().getType();
+    },
+    has_module_content_to_show() {
+      if (!this.clicked_location.module)
+        return Object.prototype.hasOwnProperty.call(
+          this.$slots,
+          "popup_message"
+        );
+
+      // do not show empty text blocks
+      const fm = this.firstMedia(this.clicked_location.module);
+      if (
+        !fm ||
+        (fm.$type === "text" && (fm.$content === "" || fm.$content === "\n"))
+      )
+        return false;
+
+      return true;
     },
   },
   methods: {
@@ -1914,6 +1931,7 @@ export default {
   bottom: 9px;
   left: -48px;
   min-width: 280px;
+  opacity: 0;
 
   font-size: var(--sl-font-size-normal);
 
@@ -1949,6 +1967,10 @@ export default {
   //   left: 48px;
   //   margin-left: -11px;
   // }
+
+  &.is--shown {
+    opacity: 1;
+  }
   &.is--pin {
     bottom: 38px;
   }
@@ -1991,7 +2013,7 @@ export default {
   overflow: auto;
 
   ::v-deep ._publicationModule ._collaborativeEditor {
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1) 0;
   }
 
   ::v-deep ._captionField {
