@@ -147,6 +147,7 @@ import {
   BIconChevronDown,
   BIconTextLeft,
   BIconListUl,
+  BIconDashCircle,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -293,3 +294,4 @@ Vue.component("BIconFilter", BIconFilter);
 Vue.component("BIconTextLeft", BIconTextLeft);
 Vue.component("BIconChevronDown", BIconChevronDown);
 Vue.component("BIconListUl", BIconListUl);
+Vue.component("BIconDashCircle", BIconDashCircle);
