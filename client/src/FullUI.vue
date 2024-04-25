@@ -21,7 +21,7 @@
       />
       <template v-else>
         <AuthorList
-          v-if="show_authors_modal"
+          v-if="show_authors_modal || !connected_as"
           :is_closable="!!connected_as"
           @close="show_authors_modal = false"
         />
