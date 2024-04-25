@@ -19,6 +19,7 @@ import {
   BIconChevronRight,
   BIconChevronDoubleRight,
   BIconTrash,
+  BIconArrowLeft,
   BIconPlusCircle,
   BIconXCircle,
   BIconBoxArrowInRight,
@@ -281,3 +282,4 @@ Vue.component("BIconLink45deg", BIconLink45deg);
 Vue.component("BIconLayoutSidebarInset", BIconLayoutSidebarInset);
 Vue.component("BIconLayoutSidebarInsetReverse", BIconLayoutSidebarInsetReverse);
 Vue.component("BIconGrid3x3Gap", BIconGrid3x3Gap);
+Vue.component("BIconArrowLeft", BIconArrowLeft);
