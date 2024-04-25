@@ -145,6 +145,13 @@
           <div class="_tag">
             <DLabel :str="$t('filter_by_keyword')" />
 
+            <div class="_searchKW">
+              <SearchInput
+                v-model="kw_search"
+                :search_placeholder="$t('search')"
+              />
+            </div>
+
             <div class="u-keywords _usedKw" v-if="keywords_filter.length > 0">
               <SingleKeyword
                 v-for="keyword in keywords_filter"
@@ -407,5 +414,9 @@ export default {
 
 ._searchField {
   flex: 1 1 100px;
+}
+
+._searchKW {
+  margin-bottom: calc(var(--spacing) / 2);
 }
 </style>
