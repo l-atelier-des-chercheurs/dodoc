@@ -121,6 +121,17 @@
               <hr />
 
               <AuthorField
+                :label="$t('authors')"
+                class="u-spacingBottom"
+                :field="'$authors'"
+                :instructions="$t('file_author_instructions')"
+                :authors_paths="stack.$authors"
+                :path="stack.$path"
+                :can_edit="can_edit"
+                :no_options="true"
+              />
+
+              <AuthorField
                 :label="$t('admins')"
                 class="u-spacingBottom"
                 :field="'$admins'"
@@ -395,8 +406,8 @@ export default {
         path: this.stack.$path,
         path_to_destination_type,
         new_meta: {
-          $admins: "everyone",
-          $authors: this.stack.$admins,
+          // $admins: "everyone",
+          // $authors: this.stack.$admins,
         },
       });
       await this.$api.deleteItem({ path: this.stack.$path });

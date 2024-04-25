@@ -141,6 +141,7 @@ export default {
         let additional_meta = {
           requested_slug: "stack",
           stack_spot: this.index,
+          $authors: [this.connected_as.$path],
           $admins: [this.connected_as.$path],
         };
 
