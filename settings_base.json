@@ -498,6 +498,9 @@
                     },
                     "location": {
                       "type": "object"
+                    },
+                    "zoom_level": {
+                      "type": "number"
                     }
                   }
                 }

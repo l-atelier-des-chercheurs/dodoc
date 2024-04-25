@@ -194,18 +194,19 @@ export default {
             pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
 
           const pin_color = this.getViewColor(_view);
+          const pin_zoom_level = _module.zoom_level || "undefined";
 
           let pin_preview = "icon";
           const svg = `
               <svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
                 <path
                   d="m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z"
-                  fill="${pin_color}" 
-                  stroke="#000" 
+                  fill="${pin_color}"
+                  stroke="#000"
                   stroke-width="4px"
                 />
                 <text x="50" y="55" fill="#000000" text-anchor="middle" font-size="48px" font-weight="500" font-family="Fira Mono">
-                  ${index + 1}  
+                  ${index + 1}
                 </text>
               </svg>`;
           const b64 = btoa(unescape(encodeURIComponent(svg)));
@@ -232,6 +233,7 @@ export default {
             belongs_to_view: _view.$path,
             link_pins: _view.link_pins || false,
             color: pin_color,
+            pin_zoom_level,
             pin_preview,
             pin_preview_src,
             first_media_thumb,

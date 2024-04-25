@@ -1288,17 +1288,21 @@ export default {
       this.view.setRotation(0);
       const duration = 1400;
 
-      if (this.zoom_animation && this.zoom_animation > 0)
-        this.view.animate(
-          {
-            zoom: zoom - this.zoom_animation,
-            duration: duration / 2,
-          },
-          {
-            zoom,
-            duration: duration / 2,
-          }
-        );
+      // if (this.zoom_animation && this.zoom_animation > 0)
+      //   this.view.animate(
+      //     {
+      //       zoom: zoom - this.zoom_animation,
+      //       duration: duration / 2,
+      //     },
+      //   );
+      //   this.view.animate(
+      //     {
+
+      //       zoom: zoom,
+      //       duration: duration / 2,
+      //     },
+      //   );
+      //   else
       this.view.animate({
         center,
         duration,
@@ -1320,11 +1324,14 @@ export default {
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];
+
+      const pin_zoom_level = this.clicked_location.module?.zoom_level;
       this.navigateTo({
         center: [
           this.clicked_location.longitude,
           this.clicked_location.latitude,
         ],
+        zoom: pin_zoom_level,
       });
     },
     closePopup() {
@@ -2023,7 +2030,7 @@ export default {
 }
 
 ._popupMessage {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 }
 
 ._leftTopMenu {

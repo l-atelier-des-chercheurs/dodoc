@@ -11,7 +11,7 @@
           :key="option.key"
           :value="option.key"
           :disabled="option.disabled === true"
-          v-text="option.text"
+          v-text="option.text || option.key"
         />
       </select>
     </div>
