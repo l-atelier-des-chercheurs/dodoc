@@ -1,4 +1,4 @@
-(self["webpackChunkapp"]=self["webpackChunkapp"]||[]).push([[771],{45771:function(A,e,t){t(21703),t(57658),t(48675),t(63408),t(14590),t(3462),t(30541),t(92087),
+(self["webpackChunkapp"]=self["webpackChunkapp"]||[]).push([[771],{45771:function(A,e,t){t(21057),t(70560),t(95194),t(20522),t(82),t(79976),t(91719),t(25847),
 /*!
  * html2canvas 1.4.1 <https://html2canvas.hertzen.com>
  * Copyright (c) 2022 Niklas von Hertzen <https://hertzen.com>
