@@ -907,10 +907,8 @@ export default {
 }
 
 ._carto {
-  // display: flex;
-  // justify-content: center;
-  // gap: calc(var(--spacing) / 4);
-  // background: white;
+  padding: calc(var(--spacing) / 4);
+  border: 2px solid rgba(0, 0, 0, 0.2);
 }
 
 ._pinButton {
