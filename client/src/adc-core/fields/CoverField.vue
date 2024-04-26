@@ -1,7 +1,11 @@
 <template>
   <div class="_coverField">
     <div class="_hasImage" v-if="cover_thumb">
-      <img :src="cover_thumb" :data-isround="preview_format === 'circle'" />
+      <img
+        :src="cover_thumb"
+        :data-isround="preview_format === 'circle'"
+        role="presentation"
+      />
 
       <template v-if="context === 'full'">
         <div class="_fsButton">

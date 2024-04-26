@@ -34,7 +34,7 @@
             :key="layout"
             class="_imageBlock"
           >
-            <img :src="hero_thumb" />
+            <img :src="hero_thumb" role="presentation" />
           </div>
         </template>
       </div>
