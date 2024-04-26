@@ -1,5 +1,5 @@
 <template>
-  <div class="u-card2 _publicationPreview">
+  <div class="_publicationPreview">
     <div class="_publicationPreview--cover">
       <div v-if="cover_thumb">
         <img :src="cover_thumb" />
@@ -136,50 +136,20 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationPreview {
-  // width: 100%;
-  // padding: var(--spacing);
-}
-._publicationPreview header {
-  // min-height: 7rem;
-  cursor: pointer;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
 }
 ._publicationPreview--cover {
   position: relative;
-  // border-radius: 2px;
   overflow: hidden;
   background: white;
-  // border-bottom: 2px solid var(--c-gris);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
-
-  cursor: pointer;
 }
 
-// ._projectInfos--cover {
-//   position: relative;
-//   aspect-ratio: 1/1;
-//   background: var(--c-gris);
-//   border: 2px solid transparent;
-
-//   img {
-//     position: absolute;
-//     width: 100%;
-//     height: 100%;
-//     object-fit: contain;
-//     object-position: center;
-
-//     cursor: pointer;
-//   }
-// }
 ._header {
-  padding: calc(var(--spacing) / 2) 0;
   cursor: pointer;
   overflow: hidden;
-
-  // h2 {
-  //   white-space: nowrap;
-  //   overflow: hidden;
-  //   text-overflow: ellipsis;
-  // }
 }
 ._generatePreviewBtn {
   position: absolute;
