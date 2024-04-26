@@ -99,8 +99,7 @@ menu {
   background-color: var(--c-gris);
   border: 1px solid var(--c-gris);
 }
-.radio-switch:focus-within,
-.radio-switch:active {
+.radio-switch:focus-within {
   outline: 2px solid var(--active-color);
   // box-shadow: 0 0 0 2px hsla(var(--ri5-color-contrast-higher-hsl), 0.15);
 }
