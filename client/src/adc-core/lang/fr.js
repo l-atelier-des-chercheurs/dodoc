@@ -1105,4 +1105,5 @@ export default {
   dont_zoom: "Ne pas zoomer",
   very_far: "Très éloigné",
   very_close: "Très près",
+  enable_indexing: "Permettre l’indexation par les moteurs de recherche",
 };

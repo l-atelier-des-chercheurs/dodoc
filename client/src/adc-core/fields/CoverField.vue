@@ -1,7 +1,13 @@
 <template>
   <div class="_coverField">
     <div class="_hasImage" v-if="cover_thumb">
-      <img :src="cover_thumb" :data-isround="preview_format === 'circle'" />
+      <img
+        :src="cover_thumb"
+        :data-isround="preview_format === 'circle'"
+        role="presentation"
+      />
+      <!-- // not actually useful since we dont know the size it will be shown at -->
+      <!-- :srcset="cover_thumb_srcset" -->
 
       <template v-if="context === 'full'">
         <div class="_fsButton">
@@ -14,7 +20,7 @@
           v-if="show_cover_fullscreen"
           @close="show_cover_fullscreen = false"
         >
-          <img :src="cover_thumb" />
+          <img :src="cover_full" role="presentation" />
         </FullscreenView>
       </template>
     </div>
@@ -107,26 +113,34 @@ export default {
       return this.$t("pick_cover");
     },
     cover_thumb() {
-      return this.makeRelativeURLFromThumbs({
-        $thumbs: this.cover,
-        $type: "image",
-        $path: this.path,
-        resolution: this.context === "full" ? 2000 : 640,
-      });
+      return this.coverMakeRelativeURLFromThumbs(
+        this.context === "full" ? 2000 : 640
+      );
     },
-
+    cover_thumb_srcset() {
+      return `
+        ${this.coverMakeRelativeURLFromThumbs(320)} 320w, 
+        ${this.coverMakeRelativeURLFromThumbs(640)} 640w
+      `;
+    },
+    cover_full() {
+      return this.coverMakeRelativeURLFromThumbs(2000);
+    },
     existing_preview() {
-      return this.makeRelativeURLFromThumbs({
-        $thumbs: this.cover,
-        $type: "image",
-        $path: this.path,
-        resolution: 640,
-      });
+      return this.coverMakeRelativeURLFromThumbs(640);
     },
   },
   methods: {
     enableEditMode() {
       this.edit_mode = true;
+    },
+    coverMakeRelativeURLFromThumbs(res = 640) {
+      return this.makeRelativeURLFromThumbs({
+        $thumbs: this.cover,
+        $type: "image",
+        $path: this.path,
+        resolution: res,
+      });
     },
     cancel() {
       this.edit_mode = false;

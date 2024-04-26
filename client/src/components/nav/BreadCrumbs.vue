@@ -4,6 +4,7 @@
       type="button"
       class="u-button u-button_icon _backButton"
       v-if="$root.app_infos.is_electron"
+      :title="$t('back')"
       @click="goBack"
     >
       <b-icon icon="chevron-left" />
@@ -13,6 +14,7 @@
       <component
         :is="$route.name !== 'Accueil' ? 'router-link' : 'span'"
         :to="`/`"
+        :title="$t('home')"
       >
         <DodocLogo class="_dodocLogo" v-if="instance_logo === 'dodoc'" />
         <img class="_customLogo" v-else :src="instance_logo" />
