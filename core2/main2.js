@@ -62,12 +62,23 @@ module.exports = async function () {
   server();
 
   if (global.settings.bonjour_domain !== false) {
-    await require("./bonjour").init({
-      name: "do•doc",
-      protocol: global.settings.protocol,
-      port: global.appInfos.port,
-      host: global.settings.bonjour_domain,
-    });
+    if (typeof global.settings.bonjour_domain !== "string") {
+      if (is_electron) {
+        const { dialog } = require("electron");
+        dialog.showErrorBox(
+          `Impossible de démarrer l’application`,
+          `Le domaine Bonjour doit être une chaîne de caractères.`
+        );
+      }
+      throw new Error("Le domaine Bonjour doit être une chaîne de caractères.");
+    } else {
+      await require("./bonjour").init({
+        name: "do•doc",
+        protocol: global.settings.protocol,
+        port: global.appInfos.port,
+        host: global.settings.bonjour_domain,
+      });
+    }
   }
 
   if (is_electron) {
