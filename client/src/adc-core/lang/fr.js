@@ -626,7 +626,7 @@ export default {
 
   copyleft: "Art Libre / Copyleft",
   copyleft_explanations:
-    "Voir <a href='https://artlibre.org/' target='_blank'>artlibre.org</a> pour une explication de cette licence",
+    "Voir <a href='https://artlibre.org/' title='Site de Art Libre' target='_blank'>artlibre.org</a> pour une explication de cette licence",
   copy_of: "Copie de",
   remix_of: "Remix de",
   open_copy: "Accéder à la copie",
@@ -971,7 +971,7 @@ export default {
   hide_already_translated: "Masquer les traductions déjà réalisées",
   "to_translate:": "À traduire :",
   publish_on_forum_to_add_to_contribute_to_code:
-    "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
+    "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum de l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Effacer toutes les traductions proposées",
 
   "instructions.pane.capture":
@@ -1024,7 +1024,7 @@ export default {
   STAMEN_watercolor: "Aquarelle",
   STAMEN_toner: "Toner",
   provided_by_stadiamaps:
-    "Fournis par <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
+    "Fournis par <a href='https://stadiamaps.com' title='StadiaMaps' target='_blank'>StadiaMaps</a>.",
   IGN_MAP: "Carte IGN (en France uniquement)",
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
@@ -1071,13 +1071,13 @@ export default {
   about_dodoc: "À propos de do•doc",
   about_dodoc_txt: `do•doc est un logiciel libre et gratuit créé pour documenter des projets et animé par une communauté diversifiée regroupant des designers, des enseignants, des artistes, des formateurs, des créateurs et des passionnés de documentation en général.
   Il est employé dans une multitude de contextes, que ce soit en classe, dans des fablabs, des tiers-lieux, ainsi que comme moteur de plateformes de ressources accessibles en ligne.<br><br>
-  Le design et le développement de cet outil sont assurés par le collectif <a href="https://latelier-des-chercheurs.fr/" target="_blank">l’Atelier des chercheurs</a> depuis ses débuts, en 2014, 
-  mais tout le monde a la possibilité de suivre ou de participer à ce travail par le biais de ce forum : <a href="https://forum.latelier-des-chercheurs.fr/" target="_blank">https://forum.latelier-des-chercheurs.fr/</a>.`,
+  Le design et le développement de cet outil sont assurés par le collectif <a href="https://latelier-des-chercheurs.fr/" title="L’Atelier des chercheurs" target="_blank">l’Atelier des chercheurs</a> depuis ses débuts, en 2014, 
+  mais tout le monde a la possibilité de suivre ou de participer à ce travail par le biais de ce forum : <a href="https://forum.latelier-des-chercheurs.fr/" title="Forum de l’Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr/</a>.`,
   about_dodoc_links: `
   Voici quelques autres liens :
   <ul>
-  <li>La dernière version du logiciel est disponible sur la page dédiée : <a href="https://dodoc.fr" target="_blank">https://dodoc.fr</a></li>
-  <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
+  <li>La dernière version du logiciel est disponible sur la page dédiée : <a href="https://dodoc.fr" title="Site de do•doc" target="_blank">https://dodoc.fr</a></li>
+  <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Code source de do•doc sur Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
   </ul>
   `,
   about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
