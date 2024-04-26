@@ -100,13 +100,12 @@
     <!-- <div class="_descriptionField">
     </div> -->
 
-    <div class="_openSpace" v-if="context === 'list'">
-      <!-- class="u-button u-button_bleuvert" -->
-      <router-link :to="{ path: createURLFromPath(space.$path) }">
-        <div class="_clickZone" />
-        <!-- {{ $t("open") }} -->
-      </router-link>
-    </div>
+    <router-link
+      class="_openSpace"
+      v-if="context === 'list'"
+      :to="{ path: createURLFromPath(space.$path) }"
+      :title="$t('open') + ' ' + space.title"
+    />
   </div>
 </template>
 <script>
@@ -228,17 +227,6 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-
-  display: flex;
-  justify-content: center;
-
-  ._clickZone {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
 }
 
 ._icon {

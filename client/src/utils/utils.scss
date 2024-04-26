@@ -17,6 +17,14 @@
   letter-spacing: 0.02em;
 }
 
+*:focus-visible {
+  outline-color: var(--active-color);
+}
+
+a:focus-visible {
+  outline-width: 2px;
+}
+
 .u-sectionLabel {
   display: block;
   width: 100%;
@@ -210,15 +218,12 @@ button,
     color: var(--c-gris_fonce);
   }
 
-  &.is--active {
-    background: var(--c-bleuvert);
-  }
-
   &:hover,
   &:active,
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
+      outline: 0;
       background: var(--active-color);
     }
   }
