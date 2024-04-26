@@ -80,6 +80,10 @@ module.exports = function () {
   //   "/_cache",
   //   express.static(path.join(global.appRoot, global.settings.cacheDirname))
   // );
+  app.use("/robots.txt", (req, res) => {
+    res.type("text/plain");
+    res.send("");
+  });
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // To parse the incoming requests with JSON payloads
