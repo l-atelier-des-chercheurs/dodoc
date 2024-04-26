@@ -3,11 +3,6 @@
   color: var(--label-color);
   margin-bottom: calc(var(--spacing) / 4);
   font-size: var(--sl-font-size-small);
-
-  sl-icon-button::part(base) {
-    padding: 0;
-    color: currentColor;
-  }
 }
 .u-meta {
   text-transform: uppercase;
@@ -369,7 +364,6 @@ button,
   font-size: var(--input-font-size-small);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
-  sl-icon,
   b-icon {
     font-size: 80%;
   }
@@ -545,30 +539,6 @@ select {
 
   &.is--active {
     font-weight: 500;
-  }
-}
-
-sl-tag[size="small"] {
-  &::part(base) {
-    height: calc(var(--input-height-small) * 1);
-  }
-}
-
-sl-card {
-  &::part(header) {
-    padding: calc(var(--spacing) / 2) var(--spacing);
-  }
-}
-
-sl-button[variant="semitransparent"] {
-  &::part(base) {
-    background: rgba(255, 255, 255, 0.7);
-  }
-}
-sl-button[variant="edit"] {
-  &::part(base) {
-    background: var(--c-bleuvert);
-    border: none;
   }
 }
 
@@ -922,7 +892,6 @@ input[type="checkbox"]:disabled {
 
   color: var(--c-noir);
 
-  sl-icon,
   b-icon {
     font-size: 1.4em;
   }
