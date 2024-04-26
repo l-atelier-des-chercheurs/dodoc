@@ -62,6 +62,9 @@
       "signup_password": {
         "type": "string"
       },
+      "enable_indexing": {
+        "type": "boolean"
+      },
       "require_signup_to_contribute": {
         "type": "boolean"
       },

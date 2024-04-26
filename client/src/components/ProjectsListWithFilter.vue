@@ -21,6 +21,7 @@
             <SearchInput
               v-model="search_project"
               :search_placeholder="$t('search_in_title_desc_kw')"
+              :name="'search_project'"
             />
           </div>
         </template>
@@ -30,6 +31,7 @@
           <select
             size="small"
             class="_orderSelect"
+            :name="'order_projects'"
             v-model="order_key"
             :disabled="filtered_projects.length <= 1"
           >

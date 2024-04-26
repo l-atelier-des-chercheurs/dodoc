@@ -1100,4 +1100,5 @@ export default {
   transition_fade: "Transition : fondu enchaîné",
 
   couldntbesaved: "La valeur n’a pas pu être enregistrée",
+  enable_indexing: "Permettre l’indexation par les moteurs de recherche",
 };

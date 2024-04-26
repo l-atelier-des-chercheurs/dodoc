@@ -8,6 +8,7 @@
         :value="value"
         @input="$emit('input', $event.target.value)"
         :placeholder="search_placeholder"
+        :name="name"
       />
       <transition name="pagechange">
         <button
@@ -28,6 +29,7 @@ export default {
   props: {
     value: String,
     search_placeholder: String,
+    name: String,
   },
   components: {},
   data() {

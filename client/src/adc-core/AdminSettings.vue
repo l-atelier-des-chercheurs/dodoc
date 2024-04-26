@@ -83,7 +83,8 @@
               :admin_instructions="$t('instance_admin_instructions')"
               :contrib_instructions="$t('instance_contrib_instructions')"
             />
-            <br />
+
+            <div class="u-spacingBottom" />
 
             <ToggleField
               :label="$t('require_signup_to_contribute')"
@@ -92,7 +93,8 @@
               :path="settings.$path"
               :can_edit="is_instance_admin"
             />
-            <br />
+
+            <div class="u-spacingBottom" />
 
             <ToggleField
               :label="$t('require_mail_to_signup')"
@@ -101,7 +103,8 @@
               :path="settings.$path"
               :can_edit="is_instance_admin"
             />
-            <br />
+
+            <div class="u-spacingBottom" />
 
             <TitleField
               :field_name="'general_password'"
@@ -113,7 +116,8 @@
               :required="false"
               :can_edit="is_instance_admin"
             />
-            <br />
+
+            <div class="u-spacingBottom" />
 
             <TitleField
               :field_name="'signup_password'"
@@ -124,7 +128,19 @@
               :required="false"
               :can_edit="is_instance_admin"
             />
-            <br />
+
+            <div class="u-spacingBottom" />
+
+            <ToggleField
+              :label="$t('enable_indexing')"
+              :field_name="'enable_indexing'"
+              :content="settings.enable_indexing === true"
+              :path="settings.$path"
+              :can_edit="is_instance_admin"
+            />
+
+            <div class="u-spacingBottom" />
+
             <div class="u-instructions">
               {{ $t("restart_to_apply") }}
             </div>

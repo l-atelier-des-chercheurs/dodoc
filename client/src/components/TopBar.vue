@@ -13,7 +13,7 @@
         type="button"
         class="u-button u-button_transparent"
         @click="show_qr_code_modal = true"
-        :aria-label="$t('share_link_to_page')"
+        :title="$t('share_link_to_page')"
       >
         <div part="base" class="icon" aria-hidden="true">
           <svg
@@ -43,6 +43,7 @@
       <button
         type="button"
         class="u-button u-button_transparent"
+        :title="$t('ui_lang_select')"
         @click="show_lang_modal = !show_lang_modal"
       >
         {{ current_lang_code }}
@@ -52,6 +53,7 @@
       <button
         type="button"
         class="u-button u-button_transparent"
+        :title="$t('about_dodoc')"
         @click="show_credits_modal = !show_credits_modal"
       >
         <b-icon icon="patch-question" />

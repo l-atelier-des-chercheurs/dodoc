@@ -122,7 +122,7 @@
         @addMedias="$emit('addMedias', $event)"
         @close="show_media_picker = false"
       />
-      <DropZone @mediaDropped="$emit('addMedias', $event)" />
+      <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
     </div>
   </div>
 </template>
@@ -353,5 +353,8 @@ export default {
     padding: 4px;
     // background: rgba(0, 0, 0, 0.2);
   }
+}
+._dzAfter {
+  z-index: 1000;
 }
 </style>
