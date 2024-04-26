@@ -24,6 +24,7 @@
         <select
           size="small"
           class="_orderSelect"
+          aria-label="$t('sort')"
           name="order_spaces"
           v-model="order_key"
           :disabled="filtered_spaces.length <= 1"
