@@ -4,6 +4,7 @@
     :is="component_tag"
     :type="component_tag === 'button' ? 'button' : ''"
     :to="author_url"
+    :title="author.name"
     class="_author"
     :class="{
       'u-card2': component_tag === 'button' || component_tag === 'link',
