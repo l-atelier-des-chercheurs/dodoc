@@ -153,7 +153,7 @@
           class="_compactExpandButton"
           @click="toggleCompacted"
         >
-          <button type="button" class="u-button u-button_icon">
+          <button type="button" class="u-button u-button_icon" tabindex="-1">
             <b-icon v-if="short_project_view" icon="arrow-down-short" />
             <b-icon v-else icon="arrow-up-short" />
           </button>
@@ -182,11 +182,12 @@
       <CardFiles class="_card" :project="project" :can_edit="can_edit" />
     </flickity>
 
-    <div class="_projectInfos--open" v-if="['list', 'tiny'].includes(context)">
-      <router-link :to="{ path: createURLFromPath(project.$path) }">
-        <div class="_clickZone" />
-      </router-link>
-    </div>
+    <router-link
+      class="_projectInfos--open"
+      v-if="['list', 'tiny'].includes(context)"
+      :to="{ path: createURLFromPath(project.$path) }"
+      :title="$t('open') + ' ' + project.title"
+    />
   </div>
 </template>
 <script>
@@ -334,7 +335,6 @@ export default {
 
   width: 100%;
 
-  overflow: hidden;
   background: white;
 
   // width: 100%;
@@ -424,6 +424,7 @@ export default {
   // max-width: var(--max-column-width);
 
   margin: calc(var(--spacing) / 2) auto 0;
+  overflow: hidden;
 
   display: flex;
   flex-flow: row wrap;
@@ -608,26 +609,11 @@ export default {
 }
 
 ._projectInfos--open {
-  display: flex;
-
-  justify-content: center;
-  // margin: calc(var(--spacing) * 1);
-
-  ._clickZone {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-
-    &:hover,
-    &:focus-visible {
-      opacity: 0.32;
-    }
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 ._showMeta {
