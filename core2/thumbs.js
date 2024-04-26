@@ -50,6 +50,10 @@ module.exports = (function () {
         media_filename
       );
 
+      // make sure media exists
+      if (!(await fs.pathExists(full_media_path)))
+        throw new Error(`Media does not exist`);
+
       let settings;
       if (media_type === "image") {
       } else if (media_type === "video") {
@@ -248,17 +252,12 @@ module.exports = (function () {
           dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
 
           if (media_type === "video")
-            try {
-              await _makeVideoScreenshotFromPath({
-                thumb_name,
-                thumb_folder,
-                full_media_path,
-                timemark_key: setting.timemark,
-              });
-            } catch (err) {
-              dev.error(err);
-              continue;
-            }
+            await _makeVideoScreenshotFromPath({
+              thumb_name,
+              thumb_folder,
+              full_media_path,
+              timemark_key: setting.timemark,
+            });
           else if (media_type === "audio")
             await _makeAudioWaveforms({
               full_media_path,
@@ -607,6 +606,7 @@ module.exports = (function () {
   }) {
     return new Promise(function (resolve, reject) {
       const StlThumbnailer = require("stl-thumbnailer-node");
+
       // todo replace with @scalenc/stl-to-png ? does not handle large files…
 
       fs.stat(full_media_path)
