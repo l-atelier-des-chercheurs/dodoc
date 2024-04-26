@@ -1,6 +1,6 @@
 <template>
-  <div class="_publicationPreview">
-    <div class="_publicationPreview--cover" @click="$emit('open')">
+  <div class="u-card2 _publicationPreview">
+    <div class="_publicationPreview--cover">
       <div v-if="cover_thumb">
         <img :src="cover_thumb" />
         <span
@@ -49,7 +49,13 @@
         {{ publication.title }}
       </h3>
     </header>
-    <div class=""></div>
+
+    <button
+      type="button"
+      class="_openPublication"
+      :title="$t('open') + ' ' + publication.title"
+      @click="$emit('open')"
+    />
   </div>
 </template>
 <script>
@@ -233,5 +239,18 @@ export default {
   color: var(--c-bleuvert);
 }
 ._private {
+}
+
+._openPublication {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+
+  &:focus-visible {
+    outline: 2px solid var(--active-color);
+  }
 }
 </style>
