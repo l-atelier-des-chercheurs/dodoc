@@ -15,6 +15,7 @@
           <SearchInput
             v-model="search_space"
             :search_placeholder="$t('search_by_title_or_subtitle')"
+            :name="'search_space'"
           />
         </div>
       </div>
@@ -23,6 +24,7 @@
         <select
           size="small"
           class="_orderSelect"
+          name="order_spaces"
           v-model="order_key"
           :disabled="filtered_spaces.length <= 1"
         >
