@@ -507,9 +507,9 @@ module.exports = (function () {
       terms_in_footer,
       require_mail_to_signup,
       enable_events,
+      enable_indexing,
       $admins,
       $contributors,
-
       favicon_image_name,
       topbar_image_name,
       hero_image_name,
@@ -533,6 +533,7 @@ module.exports = (function () {
       users_must_accept_terms_to_signup === true;
     d.terms_in_footer = terms_in_footer === true;
     d.enable_events = enable_events === true;
+    d.enable_indexing = enable_indexing === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
 

@@ -1034,4 +1034,5 @@ export default {
   transition_fade: "Transition: fade",
 
   couldntbesaved: "Value couldn’t be saved",
+  enable_indexing: "Enable indexing on search engines",
 };
