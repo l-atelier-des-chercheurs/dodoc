@@ -61,7 +61,9 @@ import SearchInput2 from "@/components/SearchInput2.vue";
 
 export default {
   props: {},
-  components: {},
+  components: {
+    SearchInput2,
+  },
   data() {
     return {
       show_create_collection: false,
