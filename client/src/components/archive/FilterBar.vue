@@ -15,17 +15,11 @@
         </button>
       </div>
 
-      <div class="u-inputBorder _searchField">
-        <label for="searchTitles" class="_prefix">
-          <b-icon icon="search" />
-        </label>
-        <input
-          type="text"
-          name="searchTitles"
-          id="searchTitles"
-          :placeholder="$t('search_fields')"
+      <div class="_searchField">
+        <SearchInput2
           :value="search_str"
-          @input="$emit('update:search_str', $event.target.value)"
+          @input="$emit('update:search_str', $event)"
+          :search_placeholder="$t('search_fields')"
         />
       </div>
 
@@ -146,7 +140,7 @@
             <DLabel :str="$t('filter_by_keyword')" />
 
             <div class="_searchKW">
-              <SearchInput
+              <SearchInput2
                 v-model="kw_search"
                 :search_placeholder="$t('search')"
               />
@@ -191,6 +185,7 @@
 </template>
 <script>
 import SingleKeyword from "@/components/SingleKeyword.vue";
+import SearchInput2 from "@/components/SearchInput2.vue";
 
 export default {
   props: {
@@ -207,6 +202,7 @@ export default {
   },
   components: {
     SingleKeyword,
+    SearchInput2,
   },
   data() {
     return {
@@ -418,5 +414,10 @@ export default {
 
 ._searchKW {
   margin-bottom: calc(var(--spacing) / 2);
+}
+
+._searchField {
+  flex-grow: 1;
+  max-width: 420px;
 }
 </style>

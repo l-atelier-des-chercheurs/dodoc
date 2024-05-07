@@ -23,16 +23,10 @@
       />
     </div>
 
-    <div class="u-spacingBottom u-inputBorder _searchField">
-      <label for="searchTitles" class="_prefix">
-        <b-icon icon="search" />
-      </label>
-      <input
-        type="text"
-        name="searchTitles"
-        id="searchTitles"
-        :placeholder="$t('search_in_titles')"
+    <div class="u-spacingBottom">
+      <SearchInput2
         v-model="search_coll_name"
+        :search_placeholder="$t('search_in_titles')"
       />
     </div>
 
@@ -63,6 +57,8 @@
   <!-- </BaseModal2> -->
 </template>
 <script>
+import SearchInput2 from "@/components/SearchInput2.vue";
+
 export default {
   props: {},
   components: {},
@@ -138,9 +134,6 @@ export default {
 ._collectionsList {
   > * {
   }
-}
-
-._searchField {
 }
 
 table,

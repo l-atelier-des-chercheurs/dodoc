@@ -336,32 +336,40 @@ button {
 }
 
 .u-inputBorder {
+  --inputcol: var(--h-500);
+
   display: flex;
   flex-flow: row nowrap;
-  border: 1px solid var(--h-500);
+  border: 1px solid var(--inputcol);
   border-radius: 4px;
-  max-width: 420px;
+  // max-width: 420px;
 
-  ._prefix {
+  ._prefix,
+  ._suffix {
     padding: 0.5rem 0.6rem 0.3rem;
-    background: var(--h-500);
+    background: var(--inputcol);
     color: var(--h-200);
+
+    transition: all 0.1s;
+  }
+
+  &:has(input:focus-visible) {
+    --inputcol: var(--h-700);
   }
 
   input {
     background: transparent;
-    min-width: 20ch;
+    border: none !important;
     color: var(--h-700);
 
     &::placeholder {
       font-style: italic;
-      color: var(--h-500);
+      color: var(--inputcol);
       font-size: var(--sl-font-size-small);
     }
 
     &:hover,
     &:focus-visible {
-      border: none;
     }
   }
 }

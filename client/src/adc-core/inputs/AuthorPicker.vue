@@ -1,7 +1,7 @@
 <template>
   <div class="_authorPicker">
     <div class="_searchField">
-      <SearchInput
+      <SearchInput2
         v-model="search_author_name"
         :search_placeholder="$t('search_by_name')"
       />
@@ -22,11 +22,15 @@
   </div>
 </template>
 <script>
+import SearchInput2 from "@/components/SearchInput2.vue";
+
 export default {
   props: {
     current_authors: Array,
   },
-  components: {},
+  components: {
+    SearchInput2,
+  },
   data() {
     return {
       all_authors: [],
