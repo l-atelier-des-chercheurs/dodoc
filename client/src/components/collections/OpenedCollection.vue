@@ -20,6 +20,17 @@
           {{ $t("failed_loading") }}
         </div>
         <div v-else :key="collection.$path">
+          <div class="_titleBar">
+            <TitleField
+              :field_name="'title'"
+              :content="collection.title"
+              :path="collection.$path"
+              :tag="'h1'"
+              :required="true"
+              :can_edit="can_edit"
+            />
+          </div>
+
           <div class="_topbar">
             <div class="">
               <button
@@ -225,6 +236,11 @@ export default {
 }
 ._spinner {
   padding: calc(var(--spacing) * 2);
+}
+
+._titleBar {
+  padding: calc(var(--spacing) / 1);
+  padding-bottom: 0;
 }
 
 ._topbar {
