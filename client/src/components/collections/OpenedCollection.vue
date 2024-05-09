@@ -125,6 +125,11 @@
               :can_edit="can_edit"
               @toggleSection="toggleSection"
             />
+            <AgoraTemplate
+              v-else-if="collection.template === 'agora'"
+              :publication="collection"
+              :can_edit="can_edit"
+            />
           </div>
         </div>
       </div>
@@ -139,6 +144,8 @@ export default {
   components: {
     StorySectionTemplate: () =>
       import("@/components/publications/templates/StorySectionTemplate.vue"),
+    AgoraTemplate: () =>
+      import("@/components/publications/templates/AgoraTemplate.vue"),
   },
   data() {
     return {

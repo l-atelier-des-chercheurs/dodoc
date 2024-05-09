@@ -13,7 +13,7 @@
         <b-icon icon="plus-circle" />&nbsp;
         {{ $t("create_a_collection") }}
       </button>
-      <CreateFolder
+      <CreateCollection
         v-if="show_create_collection"
         :modal_name="$t('create_a_collection')"
         :path="'collections'"
@@ -38,7 +38,10 @@
           @click="$emit('open', getFilename(collection.$path))"
         >
           <td>
-            <strong>{{ collection.title }}</strong>
+            <strong>{{ collection.title }}</strong> –
+            <i>{{
+              $t(collection.template || "story_with_sections").toLowerCase()
+            }}</i>
           </td>
           <td>
             <div class="u-sameRow">
@@ -57,12 +60,14 @@
   <!-- </BaseModal2> -->
 </template>
 <script>
+import CreateCollection from "@/components/collections/CreateCollection.vue";
 import SearchInput2 from "@/components/SearchInput2.vue";
 
 export default {
   props: {},
   components: {
     SearchInput2,
+    CreateCollection,
   },
   data() {
     return {
