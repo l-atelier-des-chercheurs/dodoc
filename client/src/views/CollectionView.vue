@@ -13,11 +13,15 @@
         <div
           v-if="
             !collection.template ||
-            collection.template === '`story_with_sections`'
+            collection.template === 'story_with_sections'
           "
         >
           <SectionWithPrint :publication="collection" />
         </div>
+        <AgoraExport
+          v-else-if="collection.template === 'agora'"
+          :publication="collection"
+        />
       </div>
     </transition>
   </div>
@@ -29,6 +33,8 @@ export default {
   components: {
     SectionWithPrint: () =>
       import("@/components/publications/story/SectionWithPrint.vue"),
+    AgoraExport: () =>
+      import("@/components/publications/agora/AgoraExport.vue"),
     // MapForPrint: () =>
     //   import("@/components/publications/cartography/MapForPrint.vue"),
   },
