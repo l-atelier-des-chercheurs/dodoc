@@ -9,6 +9,9 @@
       <div class="u-divCentered" v-if="$root.is_loading" key="loader">
         <LoaderSpinner />
       </div>
+      <div v-else-if="fetch_collection_error" class="u-divCentered">
+        {{ fetch_collection_error }}
+      </div>
       <div v-else key="collection" ref="fsContainer">
         <div
           v-if="
@@ -41,11 +44,22 @@ export default {
   data() {
     return {
       collection: null,
+      fetch_collection_error: null,
 
       is_fullscreen: false,
       is_serversidepreview: false,
     };
   },
+  i18n: {
+    messages: {
+      fr: {
+        fetch_collection_error: "Erreur lors du fetch de la collection",
+        collection_is_not_public:
+          "Cette collection n'est pas publique, veuillez cocher la case qui s'affiche dans la fenêtre de partage.",
+      },
+    },
+  },
+
   created() {
     console.log("Loading collectionView");
   },
@@ -62,7 +76,9 @@ export default {
         superadmintoken,
       })
       .catch((err) => {
-        this.fetch_collection_error = err.response;
+        if (err.code === "folder_not_public")
+          this.fetch_collection_error = this.$t("collection_is_not_public");
+        else this.fetch_collection_error = this.$t("fetch_collection_error");
         this.$root.is_loading = false;
       });
 
