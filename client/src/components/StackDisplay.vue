@@ -154,15 +154,15 @@
                   :remove_text="$t('remove_stack')"
                   @remove="removeStack"
                 />
-                <div class="" v-if="is_instance_admin">
-                  <StatusTag
-                    v-if="can_edit"
-                    :status="stack.$status || 'public'"
-                    :status_options="['public', 'private']"
-                    :path="stack.$path"
-                    :can_edit="can_edit"
-                  />
-                </div>
+              </div>
+              <div class="" v-if="is_instance_admin">
+                <StatusTag
+                  v-if="can_edit"
+                  :status="stack.$status || 'public'"
+                  :status_options="['public', 'private']"
+                  :path="stack.$path"
+                  :can_edit="can_edit"
+                />
               </div>
             </div>
             <div class="_bottomBtns" v-if="context === 'chutier'">
