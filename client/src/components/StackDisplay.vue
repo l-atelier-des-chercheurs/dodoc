@@ -1,16 +1,19 @@
 <template>
   <div class="_stackDisplay" :data-context="context">
-    <LoaderSpinner v-if="is_loading" />
-    <template v-else>
-      <div class="_closeStack">
-        <button
-          class="u-button u-button_icon u-button_transparent"
-          @click="$emit('close')"
-        >
-          <b-icon icon="x-lg" :label="$t('close')" />
-        </button>
+    <div class="_closeStack">
+      <button
+        class="u-button u-button_icon u-button_transparent"
+        @click="$emit('close')"
+      >
+        <b-icon icon="x-lg" :label="$t('close')" />
+      </button>
+    </div>
+    <div class="_panes">
+      <LoaderSpinner v-if="is_loading" />
+      <div v-else-if="fetch_stack_error">
+        {{ fetch_stack_error }}
       </div>
-      <div class="_panes">
+      <template v-else>
         <div class="_showSidebar">
           <button
             type="button"
@@ -120,26 +123,28 @@
 
               <hr />
 
-              <AuthorField
-                :label="$t('authors')"
-                class="u-spacingBottom"
-                :field="'$authors'"
-                :instructions="$t('file_author_instructions')"
-                :authors_paths="stack.$authors"
-                :path="stack.$path"
-                :can_edit="can_edit"
-                :no_options="true"
-              />
+              <div class="u-spacingBottom">
+                <AuthorField
+                  :label="$t('authors')"
+                  :field="'$authors'"
+                  :instructions="$t('file_author_instructions')"
+                  :authors_paths="stack.$authors"
+                  :path="stack.$path"
+                  :can_edit="can_edit"
+                  :no_options="true"
+                />
+              </div>
 
-              <AuthorField
-                :label="$t('admins')"
-                class="u-spacingBottom"
-                :field="'$admins'"
-                :instructions="$t('media_editing_instructions')"
-                :authors_paths="stack.$admins"
-                :path="stack.$path"
-                :can_edit="can_edit"
-              />
+              <div class="u-spacingBottom">
+                <AuthorField
+                  :label="$t('admins')"
+                  :field="'$admins'"
+                  :instructions="$t('media_editing_instructions')"
+                  :authors_paths="stack.$admins"
+                  :path="stack.$path"
+                  :can_edit="can_edit"
+                />
+              </div>
 
               <hr />
 
@@ -149,6 +154,15 @@
                   :remove_text="$t('remove_stack')"
                   @remove="removeStack"
                 />
+                <div class="" v-if="is_instance_admin">
+                  <StatusTag
+                    v-if="can_edit"
+                    :status="stack.$status || 'public'"
+                    :status_options="['public', 'private']"
+                    :path="stack.$path"
+                    :can_edit="can_edit"
+                  />
+                </div>
               </div>
             </div>
             <div class="_bottomBtns" v-if="context === 'chutier'">
@@ -207,8 +221,8 @@
           @removeMediaFromStack="removeMediaFromStack"
           @changeMediaOrder="changeMediaOrder"
         />
-      </div>
-    </template>
+      </template>
+    </div>
   </div>
 </template>
 <script>
@@ -236,6 +250,7 @@ export default {
   data() {
     return {
       stack: undefined,
+      fetch_stack_error: undefined,
       is_loading: true,
       show_sidebar: localStorage.getItem("show_sidebar") !== "false",
       pane_width: undefined,
@@ -248,18 +263,32 @@ export default {
         fill_title: "Veuillez remplir le champ Titre",
         fill_keywords: "Veuillez remplir le champ Mots-clés",
         files_missing: "Veuillez ajouter des médias à ce document",
+        stack_not_public: "Ce document n'est pas public",
+        error_loading_stack: "Erreur lors du chargement du document",
       },
       en: {
         fill_title: "Fill in the title field",
         fill_keywords: "Fill in the keywords field",
         files_missing: "Add medias to this document",
+        stack_not_public: "This document is not public",
+        error_loading_stack: "Error loading document",
       },
     },
   },
   async created() {
-    this.stack = await this.$api.getFolder({
-      path: this.stack_path,
-    });
+    this.stack = await this.$api
+      .getFolder({
+        path: this.stack_path,
+      })
+      .catch((err) => {
+        this.is_loading = false;
+        if (err.code === "folder_private") {
+          this.fetch_stack_error = this.$t("stack_not_public");
+        } else {
+          this.fetch_stack_error = this.$t("error_loading_stack");
+        }
+        return;
+      });
     this.$api.join({ room: this.stack.$path });
     this.is_loading = false;
 
@@ -291,7 +320,7 @@ export default {
   beforeDestroy() {
     this.ro.unobserve(this.$el);
     window.removeEventListener("keyup", this.handleKeyPress);
-    this.$api.leave({ room: this.stack.$path });
+    if (this.stack) this.$api.leave({ room: this.stack.$path });
   },
   watch: {
     "stack.date_created_corrected"() {
@@ -406,6 +435,7 @@ export default {
         path: this.stack.$path,
         path_to_destination_type,
         new_meta: {
+          $status: "public",
           // $admins: "everyone",
           // $authors: this.stack.$admins,
         },
