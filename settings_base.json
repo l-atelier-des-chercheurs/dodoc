@@ -165,6 +165,9 @@
             },
             "size": {
               "type": "number"
+            },
+            "keywords": {
+              "type": "array"
             }
           }
         }

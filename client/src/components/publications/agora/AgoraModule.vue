@@ -25,7 +25,7 @@
     </div>
 
     <div class="_preview">
-      <div class="_topRow">
+      <div class="u-spacingBottom">
         <div class="u-label">
           <template v-if="first_media">
             {{ $t(first_media.$type) }}
@@ -37,6 +37,15 @@
             <b-icon icon="trash" />
           </button>
         </div>
+      </div>
+      <div class="u-spacingBottom">
+        <KeywordsField
+          :label="$t('keywords')"
+          :field_name="'keywords'"
+          :keywords="agoramodule.keywords"
+          :path="agoramodule.$path"
+          :can_edit="can_edit"
+        />
       </div>
       <template v-if="first_media">
         <MediaContent
@@ -52,7 +61,7 @@
           :path="first_media.$path"
           :content="first_media.$content"
           :line_selected="false"
-          :can_edit="true"
+          :can_edit="can_edit"
           @lineClicked="$emit('lineClicked', $event)"
           @contentIsEdited="$emit('contentIsEdited', $event)"
           @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
@@ -62,14 +71,19 @@
   </div>
 </template>
 <script>
+import KeywordsField from "@/components/KeywordsField.vue";
+
 export default {
   props: {
     agoramodule: Object,
     index: Number,
     module_position: String,
     default_image_duration: Number,
+    can_edit: Boolean,
   },
-  components: {},
+  components: {
+    KeywordsField,
+  },
   data() {
     return {};
   },
@@ -180,11 +194,6 @@ export default {
   }
 }
 
-._topRow {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-}
 ._imageDurationPicker {
   max-width: 18ch;
   margin: calc(var(--spacing) / 2) auto;

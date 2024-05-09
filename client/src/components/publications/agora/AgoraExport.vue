@@ -1,36 +1,65 @@
 <template>
   <div class="_agoraExport">
-    <div
-      v-for="agoramodule in section_modules_list"
-      :key="agoramodule.$path"
-      class="_item"
-    >
-      <template v-if="getFirstSourceMedia(agoramodule.source_medias)">
-        <MediaContent
-          :file="getFirstSourceMedia(agoramodule.source_medias)"
-          :resolution="1600"
-          :context="'full'"
-          :show_fs_button="true"
-        />
-      </template>
-      <template v-else>
-        <div>Erreur au chargement du média</div>
-      </template>
+    <div class="_agoraExport--items" ref="agoraView" @scroll="onScroll">
+      <div
+        v-for="agoramodule in section_modules_list"
+        :key="agoramodule.$path"
+        class="_item"
+      >
+        <template v-if="getFirstSourceMedia(agoramodule.source_medias)">
+          <MediaContent
+            :file="getFirstSourceMedia(agoramodule.source_medias)"
+            :resolution="1600"
+            :context="'full'"
+            :show_fs_button="false"
+          />
+        </template>
+        <template v-else>
+          <div>Erreur au chargement du média</div>
+        </template>
+      </div>
     </div>
+    <transition name="slideup">
+      <div
+        class="_agoraExport--bottom"
+        v-if="currently_shown_module && currently_shown_module.keywords"
+        :key="currently_shown_module.$path"
+      >
+        <KeywordsField
+          :field_name="'keywords'"
+          :keywords="currently_shown_module.keywords"
+          :can_edit="false"
+        />
+      </div>
+    </transition>
   </div>
 </template>
 <script>
+import KeywordsField from "@/components/KeywordsField.vue";
+
 export default {
   props: {
     publication: Object,
   },
-  components: {},
+  components: {
+    KeywordsField,
+  },
   data() {
-    return {};
+    return {
+      scroll_y: 0,
+      scroll_height: undefined,
+    };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$nextTick(() => {
+      this.onResize();
+    });
+    window.addEventListener("resize", this.onResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResize);
+  },
   watch: {},
   computed: {
     first_section() {
@@ -46,13 +75,24 @@ export default {
         section: this.first_section,
       }).map(({ _module }) => _module);
     },
+    currently_shown_module_index() {
+      // 0 to 0.1 --> 0
+      // 0.1 to 1.1 --> 1
+      // 1.1 to 2.1 --> 2
+      return Math.ceil(this.scroll_y / this.scroll_height - 0.1);
+    },
+    currently_shown_module() {
+      return this.section_modules_list[this.currently_shown_module_index];
+    },
   },
   methods: {
+    onResize() {
+      if (this.$refs.agoraView)
+        this.scroll_height = this.$refs.agoraView.offsetHeight;
+    },
     getFirstSourceMedia(source_medias) {
       const first_source_media = source_medias[0];
       if (!first_source_media) return false;
-
-      debugger;
       return this.getSourceMedia({
         source_media: {
           meta_filename: first_source_media.meta_filename,
@@ -60,19 +100,50 @@ export default {
         folder_path: this.publication.$path,
       });
     },
+    onScroll(e) {
+      this.scroll_y = e.target.scrollTop;
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._agoraExport {
+  display: flex;
+  height: 100vh;
+}
+._agoraExport--items {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+._agoraExport--bottom {
+  position: absolute;
+  padding: calc(var(--spacing) / 1);
+  padding-top: calc(var(--spacing) * 2);
+  // background-color: rgba(255, 255, 255, 0.3);
+  mask-image: linear-gradient(
+    to top,
+    white 0%,
+    white calc(100% - calc(var(--spacing) * 2)),
+    transparent 100%
+  );
+  backdrop-filter: blur(4px);
+  bottom: 0;
+  width: 100%;
+
+  ::v-deep {
+    .u-keywords {
+      font-size: 1.1rem;
+    }
+  }
 }
 
 ._item {
   position: sticky;
   top: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   padding: 10px;
+  padding-bottom: calc(var(--spacing) * 2);
   overflow: hidden;
 
   ::v-deep ._mediaContent {

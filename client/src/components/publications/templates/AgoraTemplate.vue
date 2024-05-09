@@ -42,6 +42,7 @@
               ? 'last'
               : 'inbetween'
           "
+          :can_edit="can_edit"
           @moveUp="
             moveModuleTo({ path: _module.$path, new_position: index - 1 })
           "
