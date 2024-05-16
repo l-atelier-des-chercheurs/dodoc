@@ -27,7 +27,7 @@
           v-for="(agoramodule, index) in section_modules_list"
           :data-alreadyshown="index <= currently_shown_module_index"
           :key="agoramodule.$path"
-          @click="scrollToModule(agoramodule.$path)"
+          @click="updateCurrentSlide(index)"
         />
       </div>
 
@@ -129,6 +129,10 @@ export default {
         folder_path: this.publication.$path,
       });
     },
+    updateCurrentSlide(slide_index) {
+      this.slide_to_show = slide_index;
+      this.startAutomaticScroll();
+    },
     scrollToModule(agoramodule_path) {
       const module_element = this.$refs.agoraView.querySelector(
         `[data-modulepath="${agoramodule_path}"]`
@@ -139,11 +143,13 @@ export default {
       this.scroll_y = e.target.scrollTop;
     },
     startAutomaticScroll() {
+      console.log("showing slide", this.slide_to_show);
       const path = this.section_modules_list[this.slide_to_show].$path;
       const module_element = this.$refs.agoraView.querySelector(
         `[data-modulepath="${path}"]`
       );
-      module_element.scrollIntoView();
+
+      this.$refs.agoraView.scrollTop = this.slide_to_show * window.innerHeight;
 
       const animation_duration = 1000;
       const keep_showing_slide_for =
@@ -151,12 +157,20 @@ export default {
         animation_duration;
 
       setTimeout(() => {
-        const play_btn = module_element.querySelector("[data-plyr='play']");
-        if (play_btn) play_btn.click();
+        const video_el = module_element.querySelector("video");
+        if (video_el) {
+          video_el.muted = true;
+          const play_btn = module_element.querySelector("[data-plyr='play']");
+          if (play_btn) play_btn.click();
+        }
       }, animation_duration);
 
       setTimeout(() => {
         this.slide_to_show += 1;
+        if (this.slide_to_show >= this.section_modules_list.length) {
+          this.slide_to_show = 0;
+          console.log("Last slide, restarting animation");
+        }
         this.startAutomaticScroll();
       }, keep_showing_slide_for);
     },
