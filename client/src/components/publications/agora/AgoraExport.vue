@@ -121,7 +121,12 @@ export default {
     },
     scrollAutomatically() {
       console.log("scrollToNextSlide");
-      this.scrollToNextSlide();
+      try {
+        this.scrollToNextSlide();
+      } catch (e) {
+        console.log("Last slide, stopping animation");
+        return;
+      }
 
       const animation_duration = 1000;
       const next_slide_in =
@@ -138,6 +143,7 @@ export default {
         const module_element = this.$refs.agoraView.querySelector(
           `[data-modulepath="${current_module_path}"]`
         );
+        if (!module_element.nextSibling) throw new Error("No next sibling");
         module_element.nextSibling.scrollIntoView();
       }
     },
