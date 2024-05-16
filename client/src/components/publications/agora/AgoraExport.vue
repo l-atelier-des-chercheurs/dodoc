@@ -4,6 +4,7 @@
       <div
         v-for="agoramodule in section_modules_list"
         :key="agoramodule.$path"
+        :data-modulepath="agoramodule.$path"
         class="_item"
       >
         <template v-if="getFirstSourceMedia(agoramodule.source_medias)">
@@ -19,19 +20,20 @@
         </template>
       </div>
     </div>
-    <transition name="slideup">
-      <div
-        class="_agoraExport--bottom"
-        v-if="currently_shown_module && currently_shown_module.keywords"
-        :key="currently_shown_module.$path"
-      >
-        <KeywordsField
-          :field_name="'keywords'"
-          :keywords="currently_shown_module.keywords"
-          :can_edit="false"
-        />
-      </div>
-    </transition>
+    <div class="_agoraExport--bottom">
+      <transition name="fade" mode="out-in">
+        <div
+          v-if="currently_shown_module && currently_shown_module.keywords"
+          :key="currently_shown_module.$path"
+        >
+          <KeywordsField
+            :field_name="'keywords'"
+            :keywords="currently_shown_module.keywords"
+            :can_edit="false"
+          />
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 <script>
@@ -56,6 +58,12 @@ export default {
       this.onResize();
     });
     window.addEventListener("resize", this.onResize);
+
+    if (this.publication.autoscroll === true) {
+      this.$nextTick(() => {
+        this.startAutomaticScroll();
+      });
+    }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
@@ -103,17 +111,47 @@ export default {
     onScroll(e) {
       this.scroll_y = e.target.scrollTop;
     },
+    startAutomaticScroll() {
+      this.$refs.agoraView.scrollTop = 0;
+      const first_module_duration =
+        this.section_modules_list[0]?.duration * 1000 || 5000;
+      setTimeout(() => {
+        this.scrollAutomatically();
+      }, first_module_duration);
+    },
+    scrollAutomatically() {
+      console.log("scrollToNextSlide");
+      this.scrollToNextSlide();
+
+      const animation_duration = 1000;
+      const next_slide_in =
+        this.currently_shown_module?.duration * 1000 ||
+        5000 + animation_duration;
+
+      setTimeout(() => {
+        this.scrollAutomatically();
+      }, next_slide_in);
+    },
+    scrollToNextSlide() {
+      if (this.$refs.agoraView) {
+        const current_module_path = this.currently_shown_module.$path;
+        const module_element = this.$refs.agoraView.querySelector(
+          `[data-modulepath="${current_module_path}"]`
+        );
+        module_element.nextSibling.scrollIntoView();
+      }
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._agoraExport {
-  display: flex;
-  height: 100vh;
 }
 ._agoraExport--items {
-  flex: 1 1 auto;
-  overflow-y: auto;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
 }
 ._agoraExport--bottom {
   position: absolute;
@@ -129,6 +167,7 @@ export default {
   backdrop-filter: blur(4px);
   bottom: 0;
   width: 100%;
+  overflow: hidden;
 
   ::v-deep {
     .u-keywords {
@@ -140,6 +179,7 @@ export default {
 ._item {
   position: sticky;
   top: 0;
+  scroll-snap-align: center;
   width: 100%;
   height: 100%;
   padding: 10px;
@@ -166,6 +206,19 @@ export default {
       object-fit: contain;
       background-size: contain;
     }
+  }
+}
+
+.slideupkeywords {
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    transition: all 1s ease-in-out;
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(100%);
+    transition: all 1s ease-in-out;
   }
 }
 </style>

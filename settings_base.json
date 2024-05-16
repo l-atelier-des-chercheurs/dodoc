@@ -130,6 +130,12 @@
           "modules_list": {
             "type": "array"
           },
+          "presentation": {
+            "type": "string"
+          },
+          "autoscroll": {
+            "type": "boolean"
+          },
           "sections_list": {
             "type": "array"
           }
@@ -168,6 +174,9 @@
             },
             "keywords": {
               "type": "array"
+            },
+            "duration": {
+              "type": "number"
             }
           }
         }

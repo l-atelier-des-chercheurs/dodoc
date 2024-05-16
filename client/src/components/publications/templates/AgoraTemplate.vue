@@ -1,5 +1,15 @@
 <template>
   <div class="_montageModules">
+    <div class="u-spacingBottom">
+      <ToggleField
+        :label="$t('autoscroll')"
+        :field_name="'autoscroll'"
+        :content="publication.autoscroll === true"
+        :path="publication.$path"
+        :can_edit="can_edit"
+      />
+    </div>
+
     <div class="_titleBar">
       <TitleField
         :field_name="'presentation'"
@@ -78,6 +88,14 @@ export default {
   },
   data() {
     return {};
+  },
+  i18n: {
+    fr: {
+      autoscroll: "Défilement automatique",
+    },
+    en: {
+      autoscroll: "Scroll automatically",
+    },
   },
   async created() {
     if (!this.sections || this.sections.length === 0) {

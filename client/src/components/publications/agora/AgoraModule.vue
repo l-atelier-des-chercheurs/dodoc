@@ -25,7 +25,7 @@
     </div>
 
     <div class="_preview">
-      <div class="u-spacingBottom">
+      <div class="u-spacingBottom _topLine">
         <div class="u-label">
           <template v-if="first_media">
             {{ $t(first_media.$type) }}
@@ -33,7 +33,21 @@
               >/ {{ first_media_duration }}</template
             >
           </template>
+        </div>
+
+        <div class="">
+          <NumberInput
+            :label="$t('duration')"
+            :value="agoramodule.duration || 5000"
+            :min="0"
+            :suffix="'s'"
+            @save="updateAgoramodule({ duration: $event })"
+          />
+        </div>
+
+        <div>
           <button type="button" class="u-buttonLink" @click="removeModule">
+            {{ $t("remove") }}
             <b-icon icon="trash" />
           </button>
         </div>
@@ -201,5 +215,12 @@ export default {
 ._transitionPicker {
   text-align: center;
   margin: calc(var(--spacing) / 2) auto;
+}
+
+._topLine {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>
