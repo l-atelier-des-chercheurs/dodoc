@@ -6,6 +6,7 @@
         :key="agoramodule.$path"
         :data-modulepath="agoramodule.$path"
         class="_item"
+        :style="slide_styles"
       >
         <transition name="fade" mode="out-in">
           <div
@@ -71,6 +72,8 @@ export default {
     return {
       scroll_y: 0,
       scroll_height: undefined,
+      window_width: undefined,
+      window_height: undefined,
       number_of_modules_to_keep_visible_at_once: 8,
 
       number_of_different_layouts: 10,
@@ -137,19 +140,29 @@ export default {
     currently_shown_module() {
       return this.section_modules_list[this.currently_shown_module_index];
     },
+    slide_styles() {
+      return {
+        "--slide-width": this.window_width + "px",
+        "--slide-height": this.window_height + "px",
+      };
+    },
   },
   methods: {
     onResize() {
       if (this.$refs.agoraView)
         this.scroll_height = this.$refs.agoraView.offsetHeight;
+      this.window_width = window.innerWidth;
+      this.window_height = window.innerHeight;
     },
     getRandomLayout(index) {
+      // return 4;
       return this.random_layouts_options[
         index % this.random_layouts_options.length
       ];
     },
     fillWithRandoms({ items, number_of_different_layouts }) {
       let previous_value;
+
       return new Array(items).fill(1).map((_, index) => {
         // previously generated value
 
@@ -255,10 +268,9 @@ export default {
   position: sticky;
   top: 0;
   scroll-snap-align: center;
-  width: 100%;
-  height: 100%;
-  padding: 10px;
-  padding-bottom: calc(var(--spacing) * 2);
+
+  width: var(--slide-width, 100%);
+  height: var(--slide-height, 100%);
 
   // background-color: rgba(0, 0, 0, 0.3);
   // backdrop-filter: blur(2px);
@@ -287,52 +299,70 @@ export default {
   }
 }
 ._item--content {
-  width: 100vw;
-  height: 1000vh;
+  width: 100%;
+  height: 100%;
+  padding: 1cm;
+
+  // background-color: rgba(0, 255, 0, 0.3);
+  // > * {
+  //   display: none;
+  // }
 
   &[data-layout="1"] {
-    width: 66.66vw;
-    height: 66.66vh;
+    width: calc(var(--slide-width) * 0.6666);
+    height: calc(var(--slide-height) * 0.6666);
   }
   &[data-layout="2"] {
-    width: 66.66vw;
-    height: 66.66vh;
-    margin-left: 33.34vw;
+    width: calc(var(--slide-width) * 0.6666);
+    height: calc(var(--slide-height) * 0.6666);
+    margin-left: calc(var(--slide-width) * 0.3334);
   }
   &[data-layout="3"] {
-    width: 66.66vw;
-    height: 66.66vh;
-    margin-top: 33.34vh;
+    width: calc(var(--slide-width) * 0.6666);
+    height: calc(var(--slide-height) * 0.6666);
+    margin-top: calc(var(--slide-height) * 0.3334);
   }
   &[data-layout="4"] {
-    width: 66.66vw;
-    height: 66.66vh;
-    margin-top: 33.34vh;
-    margin-left: 33.34vw;
+    width: calc(var(--slide-width) * 0.6666);
+    height: calc(var(--slide-height) * 0.6666);
+    margin-top: calc(var(--slide-height) * 0.3334);
+    margin-left: 33.34%;
   }
   &[data-layout="5"] {
-    width: 50vw;
-    height: 50vh;
-    margin-top: 25vh;
-    margin-left: 25vw;
+    width: 50%;
+    height: 50%;
+    margin-top: 25%;
+    margin-left: 25%;
   }
   &[data-layout="6"] {
-    width: 50vw;
-    height: 50vh;
+    width: 50%;
+    height: 50%;
     margin-top: 0;
-    margin-left: 25vw;
+    margin-left: 25%;
   }
   &[data-layout="7"] {
-    width: 50vw;
-    height: 50vh;
+    width: 50%;
+    height: 50%;
     margin-top: 0;
-    margin-left: 50vw;
+    margin-left: 50%;
   }
   &[data-layout="8"] {
-    width: 50vw;
-    height: 50vh;
+    width: 50%;
+    height: 50%;
     margin-top: 0;
-    margin-left: 50vw;
+    margin-left: 0;
+  }
+  &[data-layout="9"] {
+    width: 50%;
+    height: 50%;
+    margin-top: 25%;
+    margin-left: 50%;
+  }
+  &[data-layout="10"] {
+    width: 50%;
+    height: 50%;
+    margin-top: 25%;
+    margin-left: 0%;
   }
 }
 
