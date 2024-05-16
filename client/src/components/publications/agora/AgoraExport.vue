@@ -192,10 +192,11 @@ export default {
     startAutomaticScroll() {
       console.log("showing slide", this.slide_to_show);
 
+      const fixed_duration =
+        this.section_modules_list[this.slide_to_show]?.duration * 1000 || 5000;
+
       const animation_duration = 1000;
-      const keep_showing_slide_for =
-        this.section_modules_list[this.slide_to_show].duration * 1000 +
-        animation_duration;
+      const keep_showing_slide_for = fixed_duration + animation_duration;
 
       setTimeout(() => {
         const module_element = this.$el.querySelector(
