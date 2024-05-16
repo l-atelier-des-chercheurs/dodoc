@@ -161,22 +161,17 @@ export default {
       ];
     },
     fillWithRandoms({ items, number_of_different_layouts }) {
-      let previous_value;
+      let randoms = [];
 
-      return new Array(items).fill(1).map((_, index) => {
-        // previously generated value
+      while (randoms.length < items) {
+        const first_bag = new Array(number_of_different_layouts)
+          .fill(1)
+          .map((_, index) => index + 1)
+          .sort(() => Math.random() - 0.5);
+        randoms = randoms.concat(first_bag);
+      }
 
-        function generate_value() {
-          return Math.floor(Math.random() * number_of_different_layouts) + 1;
-        }
-
-        let rnd = generate_value();
-        while (rnd === previous_value) {
-          rnd = generate_value();
-        }
-        previous_value = rnd;
-        return rnd;
-      });
+      return randoms;
     },
     getFirstSourceMedia(source_medias) {
       const first_source_media = source_medias[0];
