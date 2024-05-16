@@ -21,6 +21,16 @@
       </div>
     </div>
     <div class="_agoraExport--bottom">
+      <div class="_progressBar">
+        <button
+          type="button"
+          v-for="(agoramodule, index) in section_modules_list"
+          :data-alreadyshown="index <= currently_shown_module_index"
+          :key="agoramodule.$path"
+          @click="scrollToModule(agoramodule.$path)"
+        />
+      </div>
+
       <transition name="fade" mode="out-in">
         <div
           v-if="currently_shown_module && currently_shown_module.keywords"
@@ -63,6 +73,15 @@ export default {
       this.$nextTick(() => {
         this.startAutomaticScroll();
       });
+    }
+
+    // scroll to top on reload to prevent scroll reload
+    if (history.scrollRestoration) {
+      history.scrollRestoration = "manual";
+    } else {
+      window.onbeforeunload = function () {
+        window.scrollTo(0, 0);
+      };
     }
   },
   beforeDestroy() {
@@ -108,6 +127,12 @@ export default {
         folder_path: this.publication.$path,
       });
     },
+    scrollToModule(agoramodule_path) {
+      const module_element = this.$refs.agoraView.querySelector(
+        `[data-modulepath="${agoramodule_path}"]`
+      );
+      module_element.scrollIntoView();
+    },
     onScroll(e) {
       this.scroll_y = e.target.scrollTop;
     },
@@ -115,10 +140,12 @@ export default {
       this.$refs.agoraView.scrollTop = 0;
       const first_module_duration =
         this.section_modules_list[0]?.duration * 1000 || 5000;
+
       setTimeout(() => {
         this.scrollAutomatically();
       }, first_module_duration);
     },
+
     scrollAutomatically() {
       console.log("scrollToNextSlide");
       try {
@@ -145,6 +172,15 @@ export default {
         );
         if (!module_element.nextSibling) throw new Error("No next sibling");
         module_element.nextSibling.scrollIntoView();
+
+        const play_btn =
+          module_element.nextSibling.querySelector("[data-plyr='play']");
+        if (play_btn) {
+          console.log("has play button");
+          play_btn.click();
+        } else {
+          console.log("no play button");
+        }
       }
     },
   },
@@ -161,19 +197,23 @@ export default {
 }
 ._agoraExport--bottom {
   position: absolute;
-  padding: calc(var(--spacing) / 1);
-  padding-top: calc(var(--spacing) * 2);
-  // background-color: rgba(255, 255, 255, 0.3);
-  mask-image: linear-gradient(
-    to top,
-    white 0%,
-    white calc(100% - calc(var(--spacing) * 2)),
-    transparent 100%
-  );
-  backdrop-filter: blur(4px);
+  padding: calc(var(--spacing) / 2);
+  background-color: rgba(255, 255, 255, 0.3);
+  // mask-image: linear-gradient(
+  //   to top,
+  //   white 0%,
+  //   white calc(100% - calc(var(--spacing) * 2)),
+  //   transparent 100%
+  // );
+  // background: white;
   bottom: 0;
   width: 100%;
   overflow: hidden;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+  align-items: center;
 
   ::v-deep {
     .u-keywords {
@@ -225,6 +265,36 @@ export default {
   &-leave-to {
     transform: translateY(100%);
     transition: all 1s ease-in-out;
+  }
+}
+
+._progressBar {
+  width: 100%;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  > button {
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+    background: transparent;
+    display: block;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid black;
+      background: transparent;
+    }
+
+    &[data-alreadyshown="true"]::before {
+      background: black;
+    }
   }
 }
 </style>
