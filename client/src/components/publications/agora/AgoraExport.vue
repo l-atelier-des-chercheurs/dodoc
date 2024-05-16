@@ -2,22 +2,34 @@
   <div class="_agoraExport">
     <div class="_agoraExport--items" ref="agoraView" @scroll="onScroll">
       <div
-        v-for="agoramodule in section_modules_list"
+        v-for="(agoramodule, index) in section_modules_list"
         :key="agoramodule.$path"
         :data-modulepath="agoramodule.$path"
         class="_item"
       >
-        <template v-if="getFirstSourceMedia(agoramodule.source_medias)">
-          <MediaContent
-            :file="getFirstSourceMedia(agoramodule.source_medias)"
-            :resolution="1600"
-            :context="'full'"
-            :show_fs_button="false"
-          />
-        </template>
-        <template v-else>
-          <div>Erreur au chargement du média</div>
-        </template>
+        <transition name="fade" mode="out-in">
+          <div
+            class="_item--content"
+            v-if="
+              index >
+              currently_shown_module_index -
+                number_of_modules_to_keep_visible_at_once
+            "
+            :data-layout="getRandomLayout(index)"
+          >
+            <template v-if="getFirstSourceMedia(agoramodule.source_medias)">
+              <MediaContent
+                :file="getFirstSourceMedia(agoramodule.source_medias)"
+                :resolution="1600"
+                :context="'full'"
+                :show_fs_button="false"
+              />
+            </template>
+            <template v-else>
+              <div>Erreur au chargement du média</div>
+            </template>
+          </div>
+        </transition>
       </div>
     </div>
     <div class="_agoraExport--bottom">
@@ -31,18 +43,17 @@
         />
       </div>
 
-      <transition name="fade" mode="out-in">
-        <div
+      <!-- <transition name="fade" mode="out-in"> -->
+      <div class="_keywords">
+        <KeywordsField
           v-if="currently_shown_module && currently_shown_module.keywords"
           :key="currently_shown_module.$path"
-        >
-          <KeywordsField
-            :field_name="'keywords'"
-            :keywords="currently_shown_module.keywords"
-            :can_edit="false"
-          />
-        </div>
-      </transition>
+          :field_name="'keywords'"
+          :keywords="currently_shown_module.keywords"
+          :can_edit="false"
+        />
+      </div>
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -60,11 +71,20 @@ export default {
     return {
       scroll_y: 0,
       scroll_height: undefined,
+      number_of_modules_to_keep_visible_at_once: 8,
+
+      number_of_different_layouts: 10,
 
       slide_to_show: 0,
+      random_layouts_options: [],
     };
   },
-  created() {},
+  created() {
+    this.random_layouts_options = this.fillWithRandoms({
+      items: 100,
+      number_of_different_layouts: 10,
+    });
+  },
   mounted() {
     this.$nextTick(() => {
       this.onResize();
@@ -89,7 +109,11 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
   },
-  watch: {},
+  watch: {
+    slide_to_show() {
+      this.$refs.agoraView.scrollTop = this.slide_to_show * window.innerHeight;
+    },
+  },
   computed: {
     first_section() {
       const sections = this.getSectionsWithProps({
@@ -119,6 +143,28 @@ export default {
       if (this.$refs.agoraView)
         this.scroll_height = this.$refs.agoraView.offsetHeight;
     },
+    getRandomLayout(index) {
+      return this.random_layouts_options[
+        index % this.random_layouts_options.length
+      ];
+    },
+    fillWithRandoms({ items, number_of_different_layouts }) {
+      let previous_value;
+      return new Array(items).fill(1).map((_, index) => {
+        // previously generated value
+
+        function generate_value() {
+          return Math.floor(Math.random() * number_of_different_layouts) + 1;
+        }
+
+        let rnd = generate_value();
+        while (rnd === previous_value) {
+          rnd = generate_value();
+        }
+        previous_value = rnd;
+        return rnd;
+      });
+    },
     getFirstSourceMedia(source_medias) {
       const first_source_media = source_medias[0];
       if (!first_source_media) return false;
@@ -131,25 +177,12 @@ export default {
     },
     updateCurrentSlide(slide_index) {
       this.slide_to_show = slide_index;
-      this.startAutomaticScroll();
-    },
-    scrollToModule(agoramodule_path) {
-      const module_element = this.$refs.agoraView.querySelector(
-        `[data-modulepath="${agoramodule_path}"]`
-      );
-      module_element.scrollIntoView();
     },
     onScroll(e) {
       this.scroll_y = e.target.scrollTop;
     },
     startAutomaticScroll() {
       console.log("showing slide", this.slide_to_show);
-      const path = this.section_modules_list[this.slide_to_show].$path;
-      const module_element = this.$refs.agoraView.querySelector(
-        `[data-modulepath="${path}"]`
-      );
-
-      this.$refs.agoraView.scrollTop = this.slide_to_show * window.innerHeight;
 
       const animation_duration = 1000;
       const keep_showing_slide_for =
@@ -157,6 +190,11 @@ export default {
         animation_duration;
 
       setTimeout(() => {
+        const module_element = this.$el.querySelector(
+          `[data-modulepath="${
+            this.section_modules_list[this.slide_to_show].$path
+          }"]`
+        );
         const video_el = module_element.querySelector("video");
         if (video_el) {
           video_el.muted = true;
@@ -167,11 +205,11 @@ export default {
 
       setTimeout(() => {
         this.slide_to_show += 1;
-        if (this.slide_to_show >= this.section_modules_list.length) {
-          this.slide_to_show = 0;
-          console.log("Last slide, restarting animation");
+        if (this.slide_to_show < this.section_modules_list.length) {
+          this.startAutomaticScroll();
+        } else {
+          console.log("Last slide");
         }
-        this.startAutomaticScroll();
       }, keep_showing_slide_for);
     },
   },
@@ -221,6 +259,9 @@ export default {
   height: 100%;
   padding: 10px;
   padding-bottom: calc(var(--spacing) * 2);
+
+  // background-color: rgba(0, 0, 0, 0.3);
+  // backdrop-filter: blur(2px);
   overflow: hidden;
 
   ::v-deep ._mediaContent {
@@ -243,6 +284,55 @@ export default {
       object-fit: contain;
       background-size: contain;
     }
+  }
+}
+._item--content {
+  width: 100vw;
+  height: 1000vh;
+
+  &[data-layout="1"] {
+    width: 66.66vw;
+    height: 66.66vh;
+  }
+  &[data-layout="2"] {
+    width: 66.66vw;
+    height: 66.66vh;
+    margin-left: 33.34vw;
+  }
+  &[data-layout="3"] {
+    width: 66.66vw;
+    height: 66.66vh;
+    margin-top: 33.34vh;
+  }
+  &[data-layout="4"] {
+    width: 66.66vw;
+    height: 66.66vh;
+    margin-top: 33.34vh;
+    margin-left: 33.34vw;
+  }
+  &[data-layout="5"] {
+    width: 50vw;
+    height: 50vh;
+    margin-top: 25vh;
+    margin-left: 25vw;
+  }
+  &[data-layout="6"] {
+    width: 50vw;
+    height: 50vh;
+    margin-top: 0;
+    margin-left: 25vw;
+  }
+  &[data-layout="7"] {
+    width: 50vw;
+    height: 50vh;
+    margin-top: 0;
+    margin-left: 50vw;
+  }
+  &[data-layout="8"] {
+    width: 50vw;
+    height: 50vh;
+    margin-top: 0;
+    margin-left: 50vw;
   }
 }
 
@@ -273,19 +363,26 @@ export default {
     background: transparent;
     display: block;
 
+    // disable for now because of scrolling back up because of stickies (!)
+    pointer-events: none;
+
     &::before {
       content: "";
       display: block;
-      width: 10px;
-      height: 10px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      border: 1px solid black;
       background: transparent;
+
+      transition: all 0.3s ease-in-out;
     }
 
     &[data-alreadyshown="true"]::before {
       background: black;
     }
   }
+}
+._keywords {
+  height: 4rem;
 }
 </style>
