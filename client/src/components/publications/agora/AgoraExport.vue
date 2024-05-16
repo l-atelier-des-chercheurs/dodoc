@@ -60,6 +60,8 @@ export default {
     return {
       scroll_y: 0,
       scroll_height: undefined,
+
+      slide_to_show: 0,
     };
   },
   created() {},
@@ -137,51 +139,26 @@ export default {
       this.scroll_y = e.target.scrollTop;
     },
     startAutomaticScroll() {
-      this.$refs.agoraView.scrollTop = 0;
-      const first_module_duration =
-        this.section_modules_list[0]?.duration * 1000 || 5000;
-
-      setTimeout(() => {
-        this.scrollAutomatically();
-      }, first_module_duration);
-    },
-
-    scrollAutomatically() {
-      console.log("scrollToNextSlide");
-      try {
-        this.scrollToNextSlide();
-      } catch (e) {
-        console.log("Last slide, stopping animation");
-        return;
-      }
+      const path = this.section_modules_list[this.slide_to_show].$path;
+      const module_element = this.$refs.agoraView.querySelector(
+        `[data-modulepath="${path}"]`
+      );
+      module_element.scrollIntoView();
 
       const animation_duration = 1000;
-      const next_slide_in =
-        this.currently_shown_module?.duration * 1000 ||
-        5000 + animation_duration;
+      const keep_showing_slide_for =
+        this.section_modules_list[this.slide_to_show].duration * 1000 +
+        animation_duration;
 
       setTimeout(() => {
-        this.scrollAutomatically();
-      }, next_slide_in);
-    },
-    scrollToNextSlide() {
-      if (this.$refs.agoraView) {
-        const current_module_path = this.currently_shown_module.$path;
-        const module_element = this.$refs.agoraView.querySelector(
-          `[data-modulepath="${current_module_path}"]`
-        );
-        if (!module_element.nextSibling) throw new Error("No next sibling");
-        module_element.nextSibling.scrollIntoView();
+        const play_btn = module_element.querySelector("[data-plyr='play']");
+        if (play_btn) play_btn.click();
+      }, animation_duration);
 
-        const play_btn =
-          module_element.nextSibling.querySelector("[data-plyr='play']");
-        if (play_btn) {
-          console.log("has play button");
-          play_btn.click();
-        } else {
-          console.log("no play button");
-        }
-      }
+      setTimeout(() => {
+        this.slide_to_show += 1;
+        this.startAutomaticScroll();
+      }, keep_showing_slide_for);
     },
   },
 };
