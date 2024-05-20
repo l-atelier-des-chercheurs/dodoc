@@ -86,32 +86,32 @@ export default {
         {
           w: 54,
           h: 54,
-          ml: 10,
-          mt: 20,
+          ml: 30,
+          mt: 40,
         },
         {
           w: 60,
           h: 50,
-          ml: 30,
+          ml: 10,
           mt: 25,
         },
         {
-          w: 80,
+          w: 50,
           h: 80,
-          ml: 10,
-          mt: 10,
+          ml: 0,
+          mt: 0,
         },
         {
           w: 40,
           h: 40,
-          ml: 20,
+          ml: 60,
           mt: 50,
         },
         {
           w: 60,
-          h: 40,
+          h: 80,
           ml: 5,
-          mt: 40,
+          mt: 20,
         },
       ],
     };
@@ -198,7 +198,7 @@ export default {
       while (randoms.length < items) {
         const first_bag = new Array(number_of_different_layouts)
           .fill(1)
-          .map((_, index) => index + 1)
+          .map((_, index) => index)
           .map((value) => ({ value, sort: Math.random() }))
           .sort((a, b) => a.sort - b.sort)
           .map(({ value }) => value);
@@ -208,7 +208,9 @@ export default {
       return randoms;
     },
     slideRandomLayout(index) {
-      const layout = this.all_layouts[index % this.all_layouts.length];
+      const layout_index =
+        this.random_layouts_options[index % this.random_layouts_options.length];
+      const layout = this.all_layouts[layout_index];
       return {
         width: `calc(var(--slide-width) * ${layout.w / 100})`,
         height: `calc(var(--slide-height) * ${layout.h / 100})`,
