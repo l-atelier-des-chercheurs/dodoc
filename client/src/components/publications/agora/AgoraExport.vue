@@ -175,6 +175,13 @@ export default {
     },
   },
   computed: {
+    slide_container_width() {
+      return this.window_width - this.slide_margins * 2;
+    },
+    slide_container_height() {
+      return this.window_height - this.slide_margins * 2;
+    },
+
     first_section() {
       const sections = this.getSectionsWithProps({
         publication: this.publication,
@@ -197,8 +204,8 @@ export default {
     slide_styles() {
       return {
         "--slide-margin": this.slide_margins + "px",
-        "--slide-width": this.window_width - this.slide_margins * 2 + "px",
-        "--slide-height": this.window_height - this.slide_margins * 2 + "px",
+        "--slide-width": this.slide_container_width + "px",
+        "--slide-height": this.slide_container_height + "px",
       };
     },
   },
