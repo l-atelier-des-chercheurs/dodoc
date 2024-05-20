@@ -16,7 +16,7 @@
               currently_shown_module_index -
                 number_of_modules_to_keep_visible_at_once
             "
-            :data-layout="getRandomLayout(index)"
+            :style="slideRandomLayout(index)"
           >
             <template v-if="getFirstSourceMedia(agoramodule.source_medias)">
               <MediaContent
@@ -81,12 +81,45 @@ export default {
 
       slide_to_show: 0,
       random_layouts_options: [],
+
+      all_layouts: [
+        {
+          w: 54,
+          h: 54,
+          ml: 10,
+          mt: 20,
+        },
+        {
+          w: 60,
+          h: 50,
+          ml: 30,
+          mt: 25,
+        },
+        {
+          w: 80,
+          h: 80,
+          ml: 10,
+          mt: 10,
+        },
+        {
+          w: 40,
+          h: 40,
+          ml: 20,
+          mt: 50,
+        },
+        {
+          w: 60,
+          h: 40,
+          ml: 5,
+          mt: 40,
+        },
+      ],
     };
   },
   created() {
     this.random_layouts_options = this.fillWithRandoms({
       items: 100,
-      number_of_different_layouts: 10,
+      number_of_different_layouts: this.all_layouts.length,
     });
   },
   mounted() {
@@ -159,12 +192,6 @@ export default {
       this.window_width = window.innerWidth;
       this.window_height = window.innerHeight;
     },
-    getRandomLayout(index) {
-      // return 4;
-      return this.random_layouts_options[
-        index % this.random_layouts_options.length
-      ];
-    },
     fillWithRandoms({ items, number_of_different_layouts }) {
       let randoms = [];
 
@@ -180,6 +207,16 @@ export default {
 
       return randoms;
     },
+    slideRandomLayout(index) {
+      const layout = this.all_layouts[index % this.all_layouts.length];
+      return {
+        width: `calc(var(--slide-width) * ${layout.w / 100})`,
+        height: `calc(var(--slide-height) * ${layout.h / 100})`,
+        marginLeft: `calc(var(--slide-width) * ${layout.ml / 100})`,
+        marginTop: `calc(var(--slide-height) * ${layout.mt / 100})`,
+      };
+    },
+
     getFirstSourceMedia(source_medias) {
       const first_source_media = source_medias[0];
       if (!first_source_media) return false;
@@ -312,63 +349,6 @@ export default {
   // > * {
   //   display: none;
   // }
-
-  &[data-layout="1"] {
-    width: calc(var(--slide-width) * 0.6666);
-    height: calc(var(--slide-height) * 0.6666);
-  }
-  &[data-layout="2"] {
-    width: calc(var(--slide-width) * 0.6666);
-    height: calc(var(--slide-height) * 0.6666);
-    margin-left: calc(var(--slide-width) * 0.3334);
-  }
-  &[data-layout="3"] {
-    width: calc(var(--slide-width) * 0.6666);
-    height: calc(var(--slide-height) * 0.6666);
-    margin-top: calc(var(--slide-height) * 0.3334);
-  }
-  &[data-layout="4"] {
-    width: calc(var(--slide-width) * 0.6666);
-    height: calc(var(--slide-height) * 0.6666);
-    margin-top: calc(var(--slide-height) * 0.3334);
-    margin-left: 33.34%;
-  }
-  &[data-layout="5"] {
-    width: 50%;
-    height: 50%;
-    margin-top: 25%;
-    margin-left: 25%;
-  }
-  &[data-layout="6"] {
-    width: 50%;
-    height: 50%;
-    margin-top: 0;
-    margin-left: 25%;
-  }
-  &[data-layout="7"] {
-    width: 50%;
-    height: 50%;
-    margin-top: 0;
-    margin-left: 50%;
-  }
-  &[data-layout="8"] {
-    width: 50%;
-    height: 50%;
-    margin-top: 0;
-    margin-left: 0;
-  }
-  &[data-layout="9"] {
-    width: 50%;
-    height: 50%;
-    margin-top: 25%;
-    margin-left: 50%;
-  }
-  &[data-layout="10"] {
-    width: 50%;
-    height: 50%;
-    margin-top: 25%;
-    margin-left: 0%;
-  }
 }
 
 .slideupkeywords {
