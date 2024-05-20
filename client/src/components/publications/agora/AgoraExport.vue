@@ -1,6 +1,7 @@
 <template>
   <div class="_agoraExport" :data-autoscroll="publication.autoscroll === true">
     <div class="_agoraExport--items" ref="agoraView" @scroll="onScroll">
+      <div class="_item--content _firstEmptySlide" />
       <div
         v-for="(agoramodule, index) in section_modules_list"
         :key="agoramodule.$path"
@@ -142,9 +143,7 @@ export default {
     window.addEventListener("resize", this.onResize);
 
     if (this.publication.autoscroll === true) {
-      this.$nextTick(() => {
-        this.startAutomaticScroll();
-      });
+      this.startAutomaticScroll();
     }
 
     // scroll to top on reload to prevent scroll reload
@@ -256,37 +255,48 @@ export default {
     onScroll(e) {
       this.scroll_y = e.target.scrollTop;
     },
-    startAutomaticScroll() {
+    async startAutomaticScroll() {
       console.log("showing slide", this.slide_to_show);
 
-      const fixed_duration =
-        this.section_modules_list[this.slide_to_show]?.duration * 1000 || 5000;
-
+      this.slide_to_show += 1;
       const animation_duration = 1000;
-      const keep_showing_slide_for = fixed_duration + animation_duration;
 
-      setTimeout(() => {
-        const module_element = this.$el.querySelector(
-          `[data-modulepath="${
-            this.section_modules_list[this.slide_to_show].$path
-          }"]`
-        );
-        const video_el = module_element.querySelector("video");
-        if (video_el) {
-          video_el.muted = true;
-          const play_btn = module_element.querySelector("[data-plyr='play']");
-          if (play_btn) play_btn.click();
-        }
-      }, animation_duration);
+      await new Promise((resolve) => setTimeout(resolve, animation_duration));
 
-      setTimeout(() => {
-        this.slide_to_show += 1;
-        if (this.slide_to_show < this.section_modules_list.length) {
-          this.startAutomaticScroll();
-        } else {
-          console.log("Last slide");
-        }
-      }, keep_showing_slide_for);
+      this.stopAllVideos();
+      this.autoPlayVideo(this.slide_to_show);
+
+      const keep_showing_slide_for =
+        this.section_modules_list[this.slide_to_show]?.duration * 1000 || 5000;
+      await new Promise((resolve) =>
+        setTimeout(resolve, keep_showing_slide_for)
+      );
+
+      if (this.slide_to_show < this.section_modules_list.length) {
+        this.startAutomaticScroll();
+      } else {
+        console.log("Last slide");
+        this.slide_to_show = 0;
+        this.startAutomaticScroll();
+      }
+    },
+    autoPlayVideo(slide_index) {
+      if (this.section_modules_list?.[slide_index]?.$path) return;
+      const module_element = this.$el.querySelector(
+        `[data-modulepath="${this.section_modules_list[slide_index].$path}"]`
+      );
+      const video_el = module_element.querySelector("video");
+      if (video_el) {
+        video_el.muted = true;
+        const play_btn = module_element.querySelector("[data-plyr='play']");
+        if (play_btn) play_btn.click();
+      }
+    },
+    stopAllVideos() {
+      this.$el.querySelectorAll("video").forEach((video_el) => {
+        video_el.pause();
+        video_el.currentTime = 0;
+      });
     },
   },
 };
