@@ -57,6 +57,13 @@
       </div>
       <!-- </transition> -->
     </div>
+
+    <div
+      class="_scrollIndicator"
+      :style="{
+        '--scroll-progress': scroll_y / scroll_height,
+      }"
+    />
   </div>
 </template>
 <script>
@@ -182,10 +189,7 @@ export default {
       }).map(({ _module }) => _module);
     },
     currently_shown_module_index() {
-      // 0 to 0.1 --> 0
-      // 0.1 to 1.1 --> 1
-      // 1.1 to 2.1 --> 2
-      return Math.ceil(this.scroll_y / this.scroll_height - 0.1);
+      return this.slide_to_show - 1;
     },
     currently_shown_module() {
       return this.section_modules_list[this.currently_shown_module_index];
@@ -201,7 +205,8 @@ export default {
   methods: {
     onResize() {
       if (this.$refs.agoraView)
-        this.scroll_height = this.$refs.agoraView.offsetHeight;
+        this.scroll_height =
+          this.$refs.agoraView.offsetHeight * this.section_modules_list.length;
       this.window_width = window.innerWidth;
       this.window_height = window.innerHeight;
     },
@@ -277,15 +282,20 @@ export default {
       } else {
         console.log("Last slide");
         this.slide_to_show = 0;
+        await new Promise((resolve) => setTimeout(resolve, animation_duration));
         this.startAutomaticScroll();
       }
     },
     autoPlayVideo(slide_index) {
-      if (this.section_modules_list?.[slide_index]?.$path) return;
+      const slide_path = this.section_modules_list[slide_index - 1]?.$path;
+      if (!slide_path) return;
+
       const module_element = this.$el.querySelector(
-        `[data-modulepath="${this.section_modules_list[slide_index].$path}"]`
+        `[data-modulepath="${slide_path}"]`
       );
+
       const video_el = module_element.querySelector("video");
+
       if (video_el) {
         video_el.muted = true;
         const play_btn = module_element.querySelector("[data-plyr='play']");
@@ -309,7 +319,7 @@ export default {
 }
 ._agoraExport--items {
   height: 100vh;
-  overflow-y: scroll;
+  overflow-y: hidden;
   padding: var(--slide-margin);
 }
 ._agoraExport--bottom {
@@ -431,5 +441,25 @@ export default {
 }
 ._keywords {
   height: 4rem;
+}
+
+._scrollIndicator {
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: calc(var(--scroll-progress) * 100%);
+  pointer-events: none;
+
+  padding: 3px;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--h-500);
+  }
 }
 </style>
