@@ -172,6 +172,9 @@ export default {
         const first_bag = new Array(number_of_different_layouts)
           .fill(1)
           .map((_, index) => index + 1)
+          .map((value) => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value);
         randoms = randoms.concat(first_bag);
       }
 
