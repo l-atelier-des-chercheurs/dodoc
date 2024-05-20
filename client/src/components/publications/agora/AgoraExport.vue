@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="_agoraExport--bottom">
-      <div class="_progressBar">
+      <div class="_progressBar" v-if="false">
         <button
           type="button"
           v-for="(agoramodule, index) in section_modules_list"
@@ -381,6 +381,10 @@ export default {
       object-fit: contain;
       background-size: contain;
       filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.35));
+    }
+
+    [data-plyr="play"] {
+      opacity: 0;
     }
   }
 }
