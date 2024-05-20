@@ -1,5 +1,5 @@
 <template>
-  <div class="_agoraExport">
+  <div class="_agoraExport" :data-autoscroll="publication.autoscroll === true">
     <div class="_agoraExport--items" ref="agoraView" @scroll="onScroll">
       <div
         v-for="(agoramodule, index) in section_modules_list"
@@ -60,6 +60,7 @@
 </template>
 <script>
 import KeywordsField from "@/components/KeywordsField.vue";
+import { scrollToY } from "@/utils/scrollToY.js";
 
 export default {
   props: {
@@ -114,7 +115,11 @@ export default {
   },
   watch: {
     slide_to_show() {
-      this.$refs.agoraView.scrollTop = this.slide_to_show * window.innerHeight;
+      scrollToY(
+        this.$refs.agoraView,
+        this.slide_to_show * window.innerHeight,
+        400
+      );
     },
   },
   computed: {
@@ -167,7 +172,6 @@ export default {
         const first_bag = new Array(number_of_different_layouts)
           .fill(1)
           .map((_, index) => index + 1)
-          .sort(() => Math.random() - 0.5);
         randoms = randoms.concat(first_bag);
       }
 
@@ -184,7 +188,8 @@ export default {
       });
     },
     updateCurrentSlide(slide_index) {
-      this.slide_to_show = slide_index;
+      const targetPosition = slide_index * window.innerHeight;
+      scrollToY(this.$refs.agoraView, targetPosition, 2000);
     },
     onScroll(e) {
       this.scroll_y = e.target.scrollTop;
@@ -226,12 +231,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._agoraExport {
+  &[data-autoscroll="false"] {
+    scroll-snap-type: y mandatory;
+  }
 }
 ._agoraExport--items {
   height: 100vh;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
 }
 ._agoraExport--bottom {
   position: absolute;

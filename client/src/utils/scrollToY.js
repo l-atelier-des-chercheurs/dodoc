@@ -16,7 +16,7 @@ export function scrollToY(
   // min time .1, max time .8 seconds
   var time = Math.max(
     0.1,
-    Math.min(Math.abs(scrollY - scrollTargetY) / speed, 0.8)
+    Math.min(Math.abs(scrollY - scrollTargetY) / speed, 1.6)
   );
 
   console.log(time);
