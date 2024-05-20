@@ -78,6 +78,7 @@ export default {
       number_of_modules_to_keep_visible_at_once: 8,
 
       number_of_different_layouts: 10,
+      slide_margins: 20,
 
       slide_to_show: 0,
       random_layouts_options: [],
@@ -91,27 +92,39 @@ export default {
         },
         {
           w: 60,
-          h: 50,
+          h: 30,
           ml: 10,
           mt: 25,
         },
         {
           w: 50,
-          h: 80,
+          h: 40,
           ml: 0,
-          mt: 0,
+          mt: 60,
         },
         {
-          w: 40,
+          w: 50,
           h: 40,
-          ml: 60,
-          mt: 50,
+          ml: 50,
+          mt: 0,
         },
         {
           w: 60,
           h: 80,
           ml: 5,
           mt: 20,
+        },
+        {
+          w: 80,
+          h: 40,
+          ml: 10,
+          mt: 50,
+        },
+        {
+          w: 100,
+          h: 50,
+          ml: 0,
+          mt: 50,
         },
       ],
     };
@@ -180,8 +193,9 @@ export default {
     },
     slide_styles() {
       return {
-        "--slide-width": this.window_width + "px",
-        "--slide-height": this.window_height + "px",
+        "--slide-margin": this.slide_margins + "px",
+        "--slide-width": this.window_width - this.slide_margins * 2 + "px",
+        "--slide-height": this.window_height - this.slide_margins * 2 + "px",
       };
     },
   },
@@ -211,6 +225,12 @@ export default {
       const layout_index =
         this.random_layouts_options[index % this.random_layouts_options.length];
       const layout = this.all_layouts[layout_index];
+      // return {
+      //   width: `${layout.w}%`,
+      //   height: `${layout.h}%`,
+      //   marginLeft: `${layout.ml}%`,
+      //   marginTop: `${layout.mt}%`,
+      // };
       return {
         width: `calc(var(--slide-width) * ${layout.w / 100})`,
         height: `calc(var(--slide-height) * ${layout.h / 100})`,
@@ -280,6 +300,7 @@ export default {
 ._agoraExport--items {
   height: 100vh;
   overflow-y: scroll;
+  padding: var(--slide-margin);
 }
 ._agoraExport--bottom {
   position: absolute;
@@ -299,7 +320,6 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
-  align-items: center;
 
   ::v-deep {
     .u-keywords {
@@ -313,8 +333,9 @@ export default {
   top: 0;
   scroll-snap-align: center;
 
-  width: var(--slide-width, 100%);
-  height: var(--slide-height, 100%);
+  padding: var(--slide-margin);
+  width: calc(var(--slide-width) + var(--slide-margin) * 2);
+  height: calc(var(--slide-height) + var(--slide-margin) * 2);
 
   // background-color: rgba(0, 0, 0, 0.3);
   // backdrop-filter: blur(2px);
@@ -324,14 +345,14 @@ export default {
     width: 100%;
     height: 100%;
 
-    img {
+    .plyr--video,
+    .plyr__poster {
       width: 100%;
-      height: 100%;
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.35));
     }
 
     ._mediaContent--image,
-    .plyr--video,
-    .plyr__poster,
     ._mediaContent--iframe,
     ._iframeStylePreview {
       position: absolute;
@@ -339,18 +360,17 @@ export default {
       width: 100%;
       object-fit: contain;
       background-size: contain;
+      filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.35));
     }
   }
 }
 ._item--content {
   width: 100%;
   height: 100%;
-  padding: 1cm;
-
   // background-color: rgba(0, 255, 0, 0.3);
-  // > * {
-  //   display: none;
-  // }
+  overflow: visible;
+  display: flex;
+  align-items: center;
 }
 
 .slideupkeywords {
