@@ -1,13 +1,12 @@
 <template>
   <div class="_agoraExport" :data-autoscroll="publication.autoscroll === true">
     <div class="_agoraExport--items" ref="agoraView" @scroll="onScroll">
-      <div class="_item--content _firstEmptySlide" />
+      <div class="_item _firstEmptySlide" />
       <div
         v-for="(agoramodule, index) in section_modules_list"
         :key="agoramodule.$path"
         :data-modulepath="agoramodule.$path"
         class="_item"
-        :style="slide_styles"
       >
         <transition name="fade" mode="out-in">
           <div
@@ -17,7 +16,12 @@
               currently_shown_module_index -
                 number_of_modules_to_keep_visible_at_once
             "
-            :style="slideRandomLayout(index)"
+            :style="
+              slideRandomLayout(
+                index,
+                getFirstSourceMedia(agoramodule.source_medias)
+              )
+            "
           >
             <template v-if="getFirstSourceMedia(agoramodule.source_medias)">
               <MediaContent
@@ -85,6 +89,8 @@ export default {
       window_height: undefined,
       number_of_modules_to_keep_visible_at_once: 8,
 
+      restart_autoscroll_on_end: false,
+
       number_of_different_layouts: 10,
       slide_margins: 20,
 
@@ -138,6 +144,10 @@ export default {
     };
   },
   created() {
+    this.all_layouts = this.all_layouts.map((layout) => ({
+      ...layout,
+      rnd: Math.random(),
+    }));
     this.random_layouts_options = this.fillWithRandoms({
       items: 100,
       number_of_different_layouts: this.all_layouts.length,
@@ -176,10 +186,10 @@ export default {
   },
   computed: {
     slide_container_width() {
-      return this.window_width - this.slide_margins * 2;
+      return this.window_width;
     },
     slide_container_height() {
-      return this.window_height - this.slide_margins * 2;
+      return this.window_height;
     },
 
     first_section() {
@@ -200,13 +210,6 @@ export default {
     },
     currently_shown_module() {
       return this.section_modules_list[this.currently_shown_module_index];
-    },
-    slide_styles() {
-      return {
-        "--slide-margin": this.slide_margins + "px",
-        "--slide-width": this.slide_container_width + "px",
-        "--slide-height": this.slide_container_height + "px",
-      };
     },
   },
   methods: {
@@ -232,21 +235,32 @@ export default {
 
       return randoms;
     },
-    slideRandomLayout(index) {
+    slideRandomLayout(index, source_media) {
+      if (!source_media) return;
+
       const layout_index =
         this.random_layouts_options[index % this.random_layouts_options.length];
       const layout = this.all_layouts[layout_index];
-      // return {
-      //   width: `${layout.w}%`,
-      //   height: `${layout.h}%`,
-      //   marginLeft: `${layout.ml}%`,
-      //   marginTop: `${layout.mt}%`,
-      // };
+
+      // get width
+      const ratio = source_media.$infos?.ratio || 1;
+
+      const width = (layout.w / 100) * this.slide_container_width;
+      const height = width * ratio;
+      const marginTop = Math.round(
+        (this.slide_container_height - height) * layout.rnd
+      );
+      const marginLeft = Math.round(
+        (this.slide_container_width - width) * layout.rnd
+      );
+
       return {
-        width: `calc(var(--slide-width) * ${layout.w / 100})`,
-        height: `calc(var(--slide-height) * ${layout.h / 100})`,
-        marginLeft: `calc(var(--slide-width) * ${layout.ml / 100})`,
-        marginTop: `calc(var(--slide-height) * ${layout.mt / 100})`,
+        "--ratio": ratio,
+        "--rnd": layout.rnd,
+        width: width + "px",
+        height: height + "px",
+        marginTop: marginTop + "px",
+        marginLeft: marginLeft + "px",
       };
     },
 
@@ -288,9 +302,13 @@ export default {
         this.startAutomaticScroll();
       } else {
         console.log("Last slide");
-        this.slide_to_show = 0;
-        await new Promise((resolve) => setTimeout(resolve, animation_duration));
-        this.startAutomaticScroll();
+        if (this.restart_autoscroll_on_end) {
+          this.slide_to_show = 0;
+          await new Promise((resolve) =>
+            setTimeout(resolve, animation_duration)
+          );
+          this.startAutomaticScroll();
+        }
       }
     },
     autoPlayVideo(slide_index) {
@@ -327,7 +345,6 @@ export default {
 ._agoraExport--items {
   height: 100vh;
   overflow-y: hidden;
-  padding: var(--slide-margin);
 }
 ._agoraExport--bottom {
   position: absolute;
@@ -360,9 +377,8 @@ export default {
   top: 0;
   scroll-snap-align: center;
 
-  padding: var(--slide-margin);
-  width: calc(var(--slide-width) + var(--slide-margin) * 2);
-  height: calc(var(--slide-height) + var(--slide-margin) * 2);
+  width: 100%;
+  height: 100%;
 
   // background-color: rgba(0, 0, 0, 0.3);
   // backdrop-filter: blur(2px);
@@ -398,10 +414,10 @@ export default {
 ._item--content {
   width: 100%;
   height: 100%;
-  // background-color: rgba(0, 255, 0, 0.3);
+  background-color: rgba(0, 255, 0, 0.3);
   overflow: visible;
-  display: flex;
-  align-items: center;
+  // display: flex;
+  // align-items: center;
 }
 
 .slideupkeywords {
