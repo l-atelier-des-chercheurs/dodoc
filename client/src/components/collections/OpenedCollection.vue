@@ -199,10 +199,13 @@ export default {
     },
     share_url() {
       let query = {};
-      // if (this.publication.template === "page_by_page")
-      //   query = { display: "slides" };
-      // else if (this.publication.template === "story_with_sections")
-      query = { display: "section" };
+      if (this.collection.template === "story_with_sections")
+        query = { display: "section" };
+      if (
+        this.collection.template === "agora" &&
+        this.collection.autoscroll === true
+      )
+        query = { scroll: "auto" };
 
       const route = this.$router.resolve({
         path: this.createURLFromPath(this.collection.$path),

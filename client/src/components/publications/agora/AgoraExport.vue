@@ -1,5 +1,5 @@
 <template>
-  <div class="_agoraExport" :data-autoscroll="publication.autoscroll === true">
+  <div class="_agoraExport" :data-autoscroll="is_autoscroll === true">
     <div class="_agoraExport--items" ref="agoraView" @scroll="onScroll">
       <div class="_item _firstEmptySlide" />
       <div
@@ -49,17 +49,19 @@
         />
       </div>
 
-      <!-- <transition name="fade" mode="out-in"> -->
-      <div class="_keywords">
-        <KeywordsField
+      <transition name="slideup" mode="out-in">
+        <div
+          class="_keywords"
           v-if="currently_shown_module && currently_shown_module.keywords"
           :key="currently_shown_module.$path"
-          :field_name="'keywords'"
-          :keywords="currently_shown_module.keywords"
-          :can_edit="false"
-        />
-      </div>
-      <!-- </transition> -->
+        >
+          <KeywordsField
+            :field_name="'keywords'"
+            :keywords="currently_shown_module.keywords"
+            :can_edit="false"
+          />
+        </div>
+      </transition>
     </div>
 
     <div
@@ -89,7 +91,7 @@ export default {
       window_height: undefined,
       number_of_modules_to_keep_visible_at_once: 8,
 
-      restart_autoscroll_on_end: false,
+      restart_autoscroll_on_end: true,
 
       number_of_different_layouts: 10,
       left_right_margin: 40,
@@ -101,46 +103,19 @@ export default {
 
       all_layouts: [
         {
+          w: 50,
+        },
+        {
           w: 54,
-          h: 54,
-          ml: 30,
-          mt: 40,
         },
         {
           w: 60,
-          h: 30,
-          ml: 10,
-          mt: 25,
-        },
-        {
-          w: 50,
-          h: 40,
-          ml: 0,
-          mt: 60,
-        },
-        {
-          w: 50,
-          h: 40,
-          ml: 50,
-          mt: 0,
-        },
-        {
-          w: 60,
-          h: 80,
-          ml: 5,
-          mt: 20,
         },
         {
           w: 80,
-          h: 40,
-          ml: 10,
-          mt: 50,
         },
         {
           w: 100,
-          h: 50,
-          ml: 0,
-          mt: 50,
         },
       ],
     };
@@ -161,7 +136,7 @@ export default {
     });
     window.addEventListener("resize", this.onResize);
 
-    if (this.publication.autoscroll === true) {
+    if (this.is_autoscroll === true) {
       this.startAutomaticScroll();
     }
 
@@ -194,6 +169,9 @@ export default {
       });
       return sections[0];
     },
+    is_autoscroll() {
+      return this.$route.query?.scroll === "auto";
+    },
     section_modules_list() {
       return this.getModulesForSection({
         publication: this.publication,
@@ -201,7 +179,7 @@ export default {
       }).map(({ _module }) => _module);
     },
     currently_shown_module_index() {
-      return this.slide_to_show - 1;
+      return Math.round(this.scroll_y / this.scroll_height);
     },
     currently_shown_module() {
       return this.section_modules_list[this.currently_shown_module_index];
@@ -245,8 +223,14 @@ export default {
       const slide_container_height =
         this.window_height - this.bottom_margin - this.top_margin;
 
-      const width = (layout.w / 100) * slide_container_width;
-      const height = width * ratio;
+      let width = (layout.w / 100) * slide_container_width;
+      let height = width * ratio;
+
+      if (height > slide_container_height) {
+        height = slide_container_height;
+        width = height / ratio;
+      }
+
       const marginTop =
         Math.round((slide_container_height - height) * layout.rnd) +
         this.top_margin;
@@ -338,17 +322,23 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._agoraExport {
-  &[data-autoscroll="false"] {
+  &:not([data-autoscroll="true"]) {
     scroll-snap-type: y mandatory;
+  }
+  &[data-autoscroll="true"] ._agoraExport--items {
+    overflow-y: hidden;
+
+    [data-plyr="play"] {
+      opacity: 0;
+    }
   }
 }
 ._agoraExport--items {
   height: 100vh;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 ._agoraExport--bottom {
   position: absolute;
-  padding: calc(var(--spacing) / 2);
   background-color: rgba(255, 255, 255, 0.3);
   // mask-image: linear-gradient(
   //   to top,
@@ -365,9 +355,13 @@ export default {
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
 
+  ._keywords {
+    padding: calc(var(--spacing) / 2);
+  }
+
   ::v-deep {
     .u-keywords {
-      font-size: 1.1rem;
+      font-size: 2rem;
     }
   }
 }
@@ -379,9 +373,8 @@ export default {
 
   width: 100%;
   height: 100%;
-
-  // background-color: rgba(0, 0, 0, 0.3);
-  // backdrop-filter: blur(2px);
+  pointer-events: none;
+  // backdrop-filter: blur(1px);
   overflow: hidden;
 
   ::v-deep ._mediaContent {
@@ -405,19 +398,13 @@ export default {
       background-size: contain;
       filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.35));
     }
-
-    [data-plyr="play"] {
-      opacity: 0;
-    }
   }
 }
 ._item--content {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 255, 0, 0.3);
+  pointer-events: auto;
   overflow: visible;
-  // display: flex;
-  // align-items: center;
 }
 
 .slideupkeywords {
@@ -466,9 +453,6 @@ export default {
     }
   }
 }
-._keywords {
-  height: 4rem;
-}
 
 ._scrollIndicator {
   position: absolute;
@@ -476,8 +460,10 @@ export default {
   top: 0;
   right: 0;
   width: 10px;
-  height: calc(var(--scroll-progress) * 100%);
+  height: 100%;
   pointer-events: none;
+
+  background-color: white;
 
   padding: 3px;
 
@@ -485,7 +471,7 @@ export default {
     content: "";
     display: block;
     width: 100%;
-    height: 100%;
+    height: calc(var(--scroll-progress) * 100%);
     background: var(--h-500);
   }
 }
