@@ -92,7 +92,9 @@ export default {
       restart_autoscroll_on_end: false,
 
       number_of_different_layouts: 10,
-      slide_margins: 20,
+      left_right_margin: 40,
+      top_margin: 40,
+      bottom_margin: 80,
 
       slide_to_show: 0,
       random_layouts_options: [],
@@ -185,13 +187,6 @@ export default {
     },
   },
   computed: {
-    slide_container_width() {
-      return this.window_width;
-    },
-    slide_container_height() {
-      return this.window_height;
-    },
-
     first_section() {
       const sections = this.getSectionsWithProps({
         publication: this.publication,
@@ -245,14 +240,19 @@ export default {
       // get width
       const ratio = source_media.$infos?.ratio || 1;
 
-      const width = (layout.w / 100) * this.slide_container_width;
+      const slide_container_width =
+        this.window_width - this.left_right_margin * 2;
+      const slide_container_height =
+        this.window_height - this.bottom_margin - this.top_margin;
+
+      const width = (layout.w / 100) * slide_container_width;
       const height = width * ratio;
-      const marginTop = Math.round(
-        (this.slide_container_height - height) * layout.rnd
-      );
-      const marginLeft = Math.round(
-        (this.slide_container_width - width) * layout.rnd
-      );
+      const marginTop =
+        Math.round((slide_container_height - height) * layout.rnd) +
+        this.top_margin;
+      const marginLeft =
+        Math.round((slide_container_width - width) * layout.rnd) +
+        this.left_right_margin;
 
       return {
         "--ratio": ratio,
