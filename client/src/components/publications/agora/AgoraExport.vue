@@ -38,31 +38,31 @@
         </transition>
       </div>
     </div>
-    <div class="_agoraExport--bottom">
-      <div class="_progressBar" v-if="false">
-        <button
-          type="button"
-          v-for="(agoramodule, index) in section_modules_list"
-          :data-alreadyshown="index <= currently_shown_module_index"
-          :key="agoramodule.$path"
-          @click="updateCurrentSlide(index)"
-        />
-      </div>
+    <transition name="showkeywords" mode="out-in">
+      <div
+        class="_agoraExport--bottom"
+        v-if="currently_shown_module && currently_shown_module.keywords"
+        :key="currently_shown_module.$path"
+      >
+        <!-- <div class="_progressBar" v-if="false">
+          <button
+            type="button"
+            v-for="(agoramodule, index) in section_modules_list"
+            :data-alreadyshown="index <= currently_shown_module_index"
+            :key="agoramodule.$path"
+            @click="updateCurrentSlide(index)"
+          />
+        </div> -->
 
-      <transition name="slideup" mode="out-in">
-        <div
-          class="_keywords"
-          v-if="currently_shown_module && currently_shown_module.keywords"
-          :key="currently_shown_module.$path"
-        >
+        <div class="_keywords">
           <KeywordsField
             :field_name="'keywords'"
             :keywords="currently_shown_module.keywords"
             :can_edit="false"
           />
         </div>
-      </transition>
-    </div>
+      </div>
+    </transition>
 
     <div
       class="_scrollIndicator"
@@ -87,6 +87,7 @@ export default {
     return {
       scroll_y: 0,
       scroll_height: undefined,
+
       window_width: undefined,
       window_height: undefined,
       number_of_modules_to_keep_visible_at_once: 8,
@@ -137,7 +138,9 @@ export default {
     window.addEventListener("resize", this.onResize);
 
     if (this.is_autoscroll === true) {
-      this.startAutomaticScroll();
+      setTimeout(() => {
+        this.startAutomaticScroll();
+      }, 1000);
     }
 
     // scroll to top on reload to prevent scroll reload
@@ -179,7 +182,7 @@ export default {
       }).map(({ _module }) => _module);
     },
     currently_shown_module_index() {
-      return Math.round(this.scroll_y / this.scroll_height);
+      return Math.floor(this.scroll_y / this.window_height - 0.1);
     },
     currently_shown_module() {
       return this.section_modules_list[this.currently_shown_module_index];
@@ -187,11 +190,11 @@ export default {
   },
   methods: {
     onResize() {
-      if (this.$refs.agoraView)
-        this.scroll_height =
-          this.$refs.agoraView.offsetHeight * this.section_modules_list.length;
       this.window_width = window.innerWidth;
       this.window_height = window.innerHeight;
+      this.scroll_height =
+        // account for empty slides at the top
+        this.window_width * this.section_modules_list.length;
     },
     fillWithRandoms({ items, number_of_different_layouts }) {
       let randoms = [];
@@ -407,16 +410,17 @@ export default {
   overflow: visible;
 }
 
-.slideupkeywords {
+.showkeywords {
   &-enter-active,
   &-leave-active {
-    transform: translateY(0);
-    transition: all 1s ease-in-out;
+    // transform: translateY(0);
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
   &-leave-to {
-    transform: translateY(100%);
-    transition: all 1s ease-in-out;
+    // transform: translateY(100%);
+    opacity: 0;
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 
