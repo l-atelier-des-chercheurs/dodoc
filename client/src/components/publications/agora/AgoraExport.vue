@@ -118,10 +118,10 @@ export default {
 
       all_layouts: [
         {
-          w: 50,
+          w: 70,
         },
         {
-          w: 54,
+          w: 64,
         },
         {
           w: 60,
