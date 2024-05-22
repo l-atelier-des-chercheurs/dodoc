@@ -1,11 +1,25 @@
 <template>
   <div class="_agoraExport" :data-autoscroll="is_autoscroll === true">
     <div class="_agoraExport--items" ref="agoraView" @scroll="onScroll">
-      <div class="_item _firstEmptySlide" />
+      <div class="_item">
+        <div class="_item--content _firstEmptySlide">
+          <transition name="fade" mode="out-in">
+            <button
+              v-if="currently_shown_module_index === -1"
+              class="u-button u-button_icon"
+              @click="slide_to_show = 1"
+            >
+              <b-icon icon="arrow-down" />
+            </button>
+          </transition>
+        </div>
+      </div>
       <div
         v-for="(agoramodule, index) in section_modules_list"
         :key="agoramodule.$path"
         :data-modulepath="agoramodule.$path"
+        :data-iscurrent="index === currently_shown_module_index"
+        :data-stickied="index < currently_shown_module_index"
         class="_item"
       >
         <transition name="fade" mode="out-in">
@@ -97,7 +111,7 @@ export default {
       number_of_different_layouts: 10,
       left_right_margin: 40,
       top_margin: 40,
-      bottom_margin: 80,
+      bottom_margin: 140,
 
       slide_to_show: 0,
       random_layouts_options: [],
@@ -192,9 +206,10 @@ export default {
     onResize() {
       this.window_width = window.innerWidth;
       this.window_height = window.innerHeight;
+      // account for empty slides at the top
       this.scroll_height =
-        // account for empty slides at the top
-        this.window_width * this.section_modules_list.length;
+        this.window_height * this.section_modules_list.length;
+      this.onScroll();
     },
     fillWithRandoms({ items, number_of_different_layouts }) {
       let randoms = [];
@@ -266,10 +281,10 @@ export default {
       scrollToY(this.$refs.agoraView, targetPosition, 2000);
     },
     onScroll(e) {
-      this.scroll_y = e.target.scrollTop;
+      this.scroll_y = this.$refs.agoraView.scrollTop;
     },
     async startAutomaticScroll() {
-      console.log("showing slide", this.slide_to_show);
+      console.log("showing slide number", this.slide_to_show);
 
       this.slide_to_show += 1;
       const animation_duration = 1000;
@@ -341,11 +356,13 @@ export default {
 }
 ._agoraExport--items {
   height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
 }
 ._agoraExport--bottom {
   position: absolute;
   background-color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
   // mask-image: linear-gradient(
   //   to top,
   //   white 0%,
@@ -363,11 +380,13 @@ export default {
 
   ._keywords {
     padding: calc(var(--spacing) / 2);
+    padding: 1vmin 3vmin 3vmin 3vmin;
   }
 
   ::v-deep {
     .u-keywords {
-      font-size: 2rem;
+      font-size: 2vw;
+      gap: 0.5vw;
     }
   }
 }
@@ -383,6 +402,12 @@ export default {
   // backdrop-filter: blur(1px);
   overflow: hidden;
 
+  transition: all 0.6s ease-in-out;
+
+  &[data-stickied="true"] {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
   ::v-deep ._mediaContent {
     width: 100%;
     height: 100%;
@@ -391,7 +416,7 @@ export default {
     .plyr__poster {
       width: 100%;
       height: auto;
-      filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.35));
+      filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.55));
     }
 
     ._mediaContent--image,
@@ -402,7 +427,7 @@ export default {
       width: 100%;
       object-fit: contain;
       background-size: contain;
-      filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.35));
+      filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.55));
     }
   }
 }
@@ -411,6 +436,14 @@ export default {
   height: 100%;
   pointer-events: auto;
   overflow: visible;
+
+  &._firstEmptySlide {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    padding: calc(var(--spacing) / 1);
+  }
 }
 
 .showkeywords {
@@ -466,7 +499,7 @@ export default {
   z-index: 1000;
   top: 0;
   right: 0;
-  width: 10px;
+  width: max(1vw, 10px);
   height: 100%;
   pointer-events: none;
 
