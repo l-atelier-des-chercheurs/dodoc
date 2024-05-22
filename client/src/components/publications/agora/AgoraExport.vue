@@ -5,7 +5,9 @@
         <div class="_item--content _firstEmptySlide">
           <transition name="fade" mode="out-in">
             <button
-              v-if="currently_shown_module_index === -1"
+              v-if="
+                currently_shown_module_index === -1 && is_autoscroll === false
+              "
               class="u-button u-button_icon"
               @click="slide_to_show = 1"
             >
