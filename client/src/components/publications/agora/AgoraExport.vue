@@ -9,7 +9,7 @@
                 currently_shown_module_index === -1 && is_autoscroll === false
               "
               class="u-button u-button_icon"
-              @click="slide_to_show = 1"
+              @click="slide_to_show = 0"
             >
               <b-icon icon="arrow-down" />
             </button>
@@ -115,7 +115,7 @@ export default {
       top_margin: 40,
       bottom_margin: 140,
 
-      slide_to_show: 0,
+      slide_to_show: -1,
       random_layouts_options: [],
 
       all_layouts: [
@@ -175,7 +175,7 @@ export default {
     slide_to_show() {
       scrollToY(
         this.$refs.agoraView,
-        this.slide_to_show * window.innerHeight,
+        (this.slide_to_show + 1) * window.innerHeight,
         400
       );
     },
@@ -310,7 +310,7 @@ export default {
       } else {
         console.log("Last slide");
         if (this.restart_autoscroll_on_end) {
-          this.slide_to_show = 0;
+          this.slide_to_show = -1;
           await new Promise((resolve) =>
             setTimeout(resolve, animation_duration)
           );
@@ -319,7 +319,7 @@ export default {
       }
     },
     autoPlayVideo(slide_index) {
-      const slide_path = this.section_modules_list[slide_index - 1]?.$path;
+      const slide_path = this.section_modules_list[slide_index]?.$path;
       if (!slide_path) return;
 
       const module_element = this.$el.querySelector(
