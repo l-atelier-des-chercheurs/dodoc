@@ -349,7 +349,7 @@ export default {
   &[data-autoscroll="true"] ._agoraExport--items {
     overflow-y: hidden;
 
-    [data-plyr="play"] {
+    ::v-deep [data-plyr="play"] {
       opacity: 0;
     }
   }
