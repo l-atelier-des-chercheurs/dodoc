@@ -281,6 +281,9 @@ export default {
 
       const keep_showing_slide_for =
         this.section_modules_list[this.slide_to_show]?.duration * 1000 || 5000;
+
+      console.log("will show slide for", keep_showing_slide_for, "ms");
+
       await new Promise((resolve) =>
         setTimeout(resolve, keep_showing_slide_for)
       );

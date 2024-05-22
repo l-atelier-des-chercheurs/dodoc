@@ -11,15 +11,11 @@ export function scrollToY(
   var scrollY = container.scrollTop || document.documentElement.scrollTop,
     currentTime = 0;
 
-  console.log(scrollY, scrollTargetY, speed, easing);
-
   // min time .1, max time .8 seconds
   var time = Math.max(
     0.1,
     Math.min(Math.abs(scrollY - scrollTargetY) / speed, 1.6)
   );
-
-  console.log(time);
 
   // easing equations from https://github.com/danro/easing-js/blob/master/easing.js
   var easingEquations = {
@@ -49,7 +45,6 @@ export function scrollToY(
       container.scrollTop = scrollY + (scrollTargetY - scrollY) * t;
       // console.log("scroll", scrollY + (scrollTargetY - scrollY) * t);
     } else {
-      console.log("scroll done");
       container.scrollTop = scrollTargetY;
     }
   }
