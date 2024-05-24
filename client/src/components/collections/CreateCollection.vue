@@ -116,19 +116,24 @@ export default {
       const $admins = this.setDefaultContentAdmins();
       this.new_folder_title = this.cleanUpString(this.new_folder_title);
 
+      let additional_meta = {
+        title: this.new_folder_title,
+        template: this.new_folder_template,
+        requested_slug: this.new_folder_title,
+        $status:
+          this.new_folder_is_private === true
+            ? "private"
+            : this.default_folder_status,
+        $admins,
+      };
+
+      if (this.new_folder_template === "agora")
+        additional_meta.autoscroll = true;
+
       try {
         const new_folder_slug = await this.$api.createFolder({
           path: this.path,
-          additional_meta: {
-            title: this.new_folder_title,
-            template: this.new_folder_template,
-            requested_slug: this.new_folder_title,
-            $status:
-              this.new_folder_is_private === true
-                ? "private"
-                : this.default_folder_status,
-            $admins,
-          },
+          additional_meta,
         });
         setTimeout(() => {
           this.$emit("openNew", new_folder_slug);
