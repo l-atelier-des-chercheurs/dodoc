@@ -396,7 +396,7 @@ export default {
 
   ::v-deep {
     .u-keywords {
-      font-size: 2vw;
+      font-size: max(2.2vw, 0.8rem);
       gap: 0.5vw;
     }
   }
