@@ -297,7 +297,7 @@ export default {
       this.autoPlayVideo(this.slide_to_show);
 
       const keep_showing_slide_for =
-        this.section_modules_list[this.slide_to_show]?.duration * 1000 || 5000;
+        this.section_modules_list[this.slide_to_show]?.duration * 1000 || 8000;
 
       console.log("will show slide for", keep_showing_slide_for, "ms");
 

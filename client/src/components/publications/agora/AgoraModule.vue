@@ -38,7 +38,7 @@
         <div class="">
           <NumberInput
             :label="$t('duration')"
-            :value="agoramodule.duration || 5"
+            :value="agoramodule.duration || 8"
             :min="0"
             :suffix="'s'"
             @save="updateAgoramodule({ duration: $event })"
