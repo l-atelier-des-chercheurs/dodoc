@@ -2,7 +2,8 @@ export function scrollToY(
   container,
   scrollTargetY = 0,
   speed = 2000,
-  easing = "easeOutSine"
+  easing = "easeOutSine",
+  callback = () => {}
 ) {
   // scrollTargetY: the target scrollY property of the window
   // speed: time in pixels per second
@@ -46,6 +47,7 @@ export function scrollToY(
       // console.log("scroll", scrollY + (scrollTargetY - scrollY) * t);
     } else {
       container.scrollTop = scrollTargetY;
+      callback();
     }
   }
 

@@ -9,7 +9,7 @@
                 currently_shown_module_index === -1 && is_autoscroll === false
               "
               class="u-button u-button_icon"
-              @click="slide_to_show = 0"
+              @click="slide_to_show = 1"
             >
               <b-icon icon="arrow-down" />
             </button>
@@ -104,6 +104,8 @@ export default {
       scroll_y: 0,
       scroll_height: undefined,
 
+      slide_to_show: 0,
+
       window_width: undefined,
       window_height: undefined,
       number_of_modules_to_keep_visible_at_once: 8,
@@ -115,7 +117,6 @@ export default {
       top_margin: 40,
       bottom_margin: 140,
 
-      slide_to_show: -1,
       random_layouts_options: [],
 
       all_layouts: [
@@ -171,15 +172,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
   },
-  watch: {
-    slide_to_show() {
-      scrollToY(
-        this.$refs.agoraView,
-        (this.slide_to_show + 1) * window.innerHeight,
-        400
-      );
-    },
-  },
+  watch: {},
   computed: {
     first_section() {
       const sections = this.getSectionsWithProps({
@@ -278,45 +271,61 @@ export default {
         folder_path: this.publication.$path,
       });
     },
-    updateCurrentSlide(slide_index) {
-      const targetPosition = slide_index * window.innerHeight;
-      scrollToY(this.$refs.agoraView, targetPosition, 2000);
-    },
+    // updateCurrentSlide(slide_index) {
+    //   const targetPosition = slide_index * window.innerHeight;
+    //   scrollToY(this.$refs.agoraView, targetPosition, 2000);
+    // },
     onScroll(e) {
       this.scroll_y = this.$refs.agoraView.scrollTop;
     },
     async startAutomaticScroll() {
       console.log("showing slide number", this.slide_to_show);
 
-      this.slide_to_show += 1;
+      this.scrollToSlide(this.slide_to_show);
       const animation_duration = 1000;
 
-      await new Promise((resolve) => setTimeout(resolve, animation_duration));
+      await this.waitFor(animation_duration);
 
       this.stopAllVideos();
       this.autoPlayVideo(this.slide_to_show);
 
-      const keep_showing_slide_for =
+      let keep_showing_slide_for;
+      // if (this.slide_to_show === 0) keep_showing_slide_for = 1000;
+      // else
+      keep_showing_slide_for =
         this.section_modules_list[this.slide_to_show]?.duration * 1000 || 8000;
 
       console.log("will show slide for", keep_showing_slide_for, "ms");
+      await this.waitFor(keep_showing_slide_for);
 
-      await new Promise((resolve) =>
-        setTimeout(resolve, keep_showing_slide_for)
-      );
-
-      if (this.slide_to_show < this.section_modules_list.length) {
+      if (this.slide_to_show < this.section_modules_list.length - 1) {
+        this.slide_to_show += 1;
         this.startAutomaticScroll();
       } else {
         console.log("Last slide");
         if (this.restart_autoscroll_on_end) {
-          this.slide_to_show = -1;
-          await new Promise((resolve) =>
-            setTimeout(resolve, animation_duration)
-          );
-          this.startAutomaticScroll();
+          scrollToY(this.$refs.agoraView, 0, 2000, "easeOutSine", async () => {
+            // wait 1 sec before restart
+            await this.waitFor(1000);
+            this.slide_to_show = 0;
+            this.startAutomaticScroll();
+          });
         }
       }
+    },
+    waitFor(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    scrollToSlide(slide_index, callback) {
+      const targetPosition =
+        slide_index * window.innerHeight + window.innerHeight;
+      scrollToY(
+        this.$refs.agoraView,
+        targetPosition,
+        2000,
+        "easeOutSine",
+        callback
+      );
     },
     autoPlayVideo(slide_index) {
       const slide_path = this.section_modules_list[slide_index]?.$path;
@@ -406,7 +415,8 @@ export default {
 
   transition: all 0.6s ease-in-out;
 
-  &[data-stickied="true"] {
+  &[data-stickied="true"],
+  &[data-iscurrent="true"] {
     background-color: rgba(255, 255, 255, 0.2);
   }
 
