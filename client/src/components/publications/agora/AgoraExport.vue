@@ -50,6 +50,12 @@
             <template v-else>
               <div>Erreur au chargement du média</div>
             </template>
+            <transition name="slideoverlay" mode="out-in">
+              <div
+                class="_overlay"
+                v-if="index < currently_shown_module_index"
+              />
+            </transition>
           </div>
         </transition>
       </div>
@@ -115,7 +121,7 @@ export default {
       number_of_different_layouts: 10,
       left_right_margin: 40,
       top_margin: 40,
-      bottom_margin: 140,
+      bottom_margin: 200,
 
       random_layouts_options: [],
 
@@ -281,6 +287,7 @@ export default {
     async startAutomaticScroll() {
       console.log("showing slide number", this.slide_to_show);
 
+      this.prepareForPlay(this.slide_to_show);
       this.scrollToSlide(this.slide_to_show);
       const animation_duration = 1000;
 
@@ -328,25 +335,37 @@ export default {
       );
     },
     autoPlayVideo(slide_index) {
-      const slide_path = this.section_modules_list[slide_index]?.$path;
-      if (!slide_path) return;
-
-      const module_element = this.$el.querySelector(
-        `[data-modulepath="${slide_path}"]`
-      );
+      const module_element = this.findModuleElementFromIndex(slide_index);
+      if (!module_element) return false;
 
       const video_el = module_element.querySelector("video");
+      if (!video_el) return false;
 
-      if (video_el) {
-        video_el.muted = true;
-        const play_btn = module_element.querySelector("[data-plyr='play']");
-        if (play_btn) play_btn.click();
-      }
+      video_el.muted = true;
+      video_el.currentTime = 0;
+      const play_btn = module_element.querySelector("[data-plyr='play']");
+      if (play_btn) play_btn.click();
+    },
+    prepareForPlay(slide_index) {
+      const module_element = this.findModuleElementFromIndex(slide_index);
+      if (!module_element) return false;
+
+      const video_el = module_element.querySelector("video");
+      if (!video_el) return false;
+
+      video_el.controls = false;
+      video_el.muted = true;
+      video_el.currentTime = 0.1;
+    },
+    findModuleElementFromIndex(slide_index) {
+      const slide_path = this.section_modules_list[slide_index]?.$path;
+      if (!slide_path) return;
+      return this.$el.querySelector(`[data-modulepath="${slide_path}"]`);
     },
     stopAllVideos() {
       this.$el.querySelectorAll("video").forEach((video_el) => {
         video_el.pause();
-        video_el.currentTime = 0;
+        // video_el.currentTime = 0;
       });
     },
   },
@@ -360,8 +379,11 @@ export default {
   &[data-autoscroll="true"] ._agoraExport--items {
     overflow-y: hidden;
 
-    ::v-deep [data-plyr="play"] {
-      opacity: 0;
+    ::v-deep {
+      [data-plyr="play"],
+      .plyr__controls {
+        opacity: 0;
+      }
     }
   }
 }
@@ -413,12 +435,66 @@ export default {
   // backdrop-filter: blur(1px);
   overflow: hidden;
 
-  transition: all 0.6s ease-in-out;
+  transition: all 0.3s ease-in-out;
 
-  &[data-stickied="true"],
   &[data-iscurrent="true"] {
-    background-color: rgba(255, 255, 255, 0.2);
+    ::v-deep {
+      ._mediaContent--image,
+      ._mediaContent--iframe,
+      ._iframeStylePreview,
+      .plyr--video,
+      .plyr__poster {
+        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.55));
+      }
+    }
   }
+  &[data-stickied="true"] {
+    ::v-deep {
+      ._mediaContent--image,
+      ._mediaContent--iframe,
+      ._iframeStylePreview,
+      .plyr--video,
+      .plyr__poster {
+        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.15));
+      }
+    }
+  }
+
+  ::v-deep {
+    ._mediaContent--image,
+    ._mediaContent--iframe,
+    ._iframeStylePreview,
+    .plyr--video,
+    .plyr__poster {
+      transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+  }
+
+  ._overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.25);
+    z-index: 100;
+    // backdrop-filter: blur(4px);
+  }
+
+  // &[data-stickied="true"] {
+  //   ::v-deep {
+  //     ._mediaContent {
+  //       // background-color: white;
+  //     }
+  //     ._mediaContent--image,
+  //     ._mediaContent--iframe,
+  //     ._iframeStylePreview,
+  //     .plyr--video,
+  //     .plyr__poster {
+  //       opacity: 0.8;
+  //     }
+  //   }
+  // }
 
   ::v-deep ._mediaContent {
     width: 100%;
@@ -428,7 +504,6 @@ export default {
     .plyr__poster {
       width: 100%;
       height: auto;
-      filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.55));
     }
 
     ._mediaContent--image,
@@ -439,11 +514,11 @@ export default {
       width: 100%;
       object-fit: contain;
       background-size: contain;
-      filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.55));
     }
   }
 }
 ._item--content {
+  position: relative;
   width: 100%;
   height: 100%;
   pointer-events: auto;
@@ -525,6 +600,19 @@ export default {
     width: 100%;
     height: calc(var(--scroll-progress) * 100%);
     background: var(--h-500);
+  }
+}
+
+.slideoverlay {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transition: opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transition: opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 </style>
