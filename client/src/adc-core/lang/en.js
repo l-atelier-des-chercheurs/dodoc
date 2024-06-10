@@ -670,8 +670,6 @@ export default {
   no_stream_found_while_sharing: "No stream found while sharing",
   media_couldnt_be_sent: "Media couldn’t be sent",
 
-  markdown_instr:
-    "Markdown field: you can format the text (titles, bold, italics, links, etc.)",
   watermark: "Dressing",
   watermark_instructions:
     "Select an image to place in the upper right corner of the video.",
