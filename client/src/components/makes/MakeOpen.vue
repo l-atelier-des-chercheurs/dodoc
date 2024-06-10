@@ -47,7 +47,7 @@
         </div>
 
         <div v-if="base_media" :key="base_media.$path">
-          <EditImage2
+          <EditImage
             v-if="make.type === 'edit_image'"
             :make="make"
             :project_path="project_path"
@@ -95,7 +95,7 @@ export default {
     SingleBaseMediaPicker,
     ImageAndVideoMontage: () =>
       import("@/components/makes/ImageAndVideoMontage.vue"),
-    EditImage2: () => import("@/components/makes/EditImage2.vue"),
+    EditImage: () => import("@/components/makes/EditImage.vue"),
     TrimAudioVideo: () => import("@/components/makes/TrimAudioVideo.vue"),
     MixAudioAndImageOrVideo: () =>
       import("@/components/makes/MixAudioAndImageOrVideo.vue"),
