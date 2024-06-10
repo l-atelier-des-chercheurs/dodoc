@@ -125,6 +125,11 @@
                   {{ $t("download") }}
                 </DownloadFile>
               </div>
+              <CropAdjustMedia
+                v-if="file.$type === 'image'"
+                :media="file"
+                @close="$emit('close')"
+              />
               <OptimizeMedia
                 v-if="optimization_possible"
                 :media="file"

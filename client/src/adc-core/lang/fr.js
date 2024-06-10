@@ -1096,6 +1096,7 @@ export default {
   wont_remove_original: "Ne supprimera pas l’original",
   add_optimized_to_lib: "Conserver l’original et la nouvelle version",
   replace_original: "Remplacer et supprimer l’original",
+  save_as_new_media: "Enregistrer comme nouveau média",
 
   change: "Changer",
   transition_fade: "Transition : fondu enchaîné",
@@ -1106,4 +1107,5 @@ export default {
   very_far: "Très éloigné",
   very_close: "Très près",
   enable_indexing: "Permettre l’indexation par les moteurs de recherche",
+  crop_adjust: "Recadrer/retoucher",
 };

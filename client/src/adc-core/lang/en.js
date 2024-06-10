@@ -1030,10 +1030,12 @@ export default {
   wont_remove_original: "Will not remove the original",
   add_optimized_to_lib: "Keep original media and add new version",
   replace_original: "Replace and remove original media",
+  save_as_new_media: "Save as new media",
 
   change: "Change",
   transition_fade: "Transition: fade",
 
   couldntbesaved: "Value couldn’t be saved",
   enable_indexing: "Enable indexing on search engines",
+  crop_adjust: "Crop/adjust",
 };
