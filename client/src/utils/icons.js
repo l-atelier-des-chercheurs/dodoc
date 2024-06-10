@@ -137,6 +137,7 @@ import {
   BIconBack,
   BIconEyeFill,
   BIconEyeSlashFill,
+  BIconBoundingBox,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -273,3 +274,4 @@ Vue.component("BIconFront", BIconFront);
 Vue.component("BIconBack", BIconBack);
 Vue.component("BIconEyeFill", BIconEyeFill);
 Vue.component("BIconEyeSlashFill", BIconEyeSlashFill);
+Vue.component("BIconBoundingBox", BIconBoundingBox);
