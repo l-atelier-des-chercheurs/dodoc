@@ -9,58 +9,25 @@
       v-if="show_modal"
       :title="$t('crop_adjust')"
       :size="'full'"
-      @close="show_modal = false"
+      @close="closeModal"
     >
       <div class="_cont">
-        <div v-show="!image_preview">
-          <div class="_btnRow">
-            <button type="button" class="u-button" @click="zoomIn">
-              zoom
-              <b-icon icon="plus" />
-            </button>
-            <button type="button" class="u-button" @click="zoomOut">
-              zoom
-              <b-icon icon="dash" />
-            </button>
-            <button type="button" class="u-button" @click="flipX">
-              flip horizontally
-              <b-icon icon="flip" />
-            </button>
-            <button type="button" class="u-button" @click="flipY">
-              flip vertically
-              <b-icon icon="flip" />
-            </button>
-            <button type="button" class="u-button" @click="rotateLeft">
-              rotate left
-              <b-icon icon="rotate-left" />
-            </button>
-            <button type="button" class="u-button" @click="rotateRight">
-              rotate right
-              <b-icon icon="rotate-right" />
-            </button>
-
-            <input
-              type="range"
-              v-model="saturation"
-              min="0"
-              max="100"
-              step="1"
-            />
-          </div>
-          <Cropper ref="cropper" :src="file_full_path" @change="onChange" />
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="previewMedia"
-          >
-            <b-icon icon="tools" />
-            {{ $t("preview") }}
-          </button>
-        </div>
-        <template v-if="image_preview">
-          <img :src="image_preview" />
-
-          <div class="_btnRow">
+        <CropMedia
+          v-show="step === 'crop'"
+          :image_type="image_type"
+          :media="media"
+          @updateCrop="updateCrop"
+        />
+        <AdjustMedia
+          v-if="step === 'adjust'"
+          :image_blob="image_blob"
+          :image_type="image_type"
+          @back="step = 'crop'"
+          @updateAdjust="updateAdjust"
+        />
+        <div v-if="step === 'final'">
+          <img :src="final_image_preview" />
+          <div class="_btnRow" v-if="final_image_preview">
             <button type="button" class="u-buttonLink" @click="goBack">
               <b-icon icon="arrow-left-short" />
               {{ $t("back") }}
@@ -82,15 +49,14 @@
               {{ $t("replace_original") }}
             </button>
           </div>
-        </template>
+        </div>
       </div>
     </BaseModal2>
   </div>
 </template>
 <script>
-import { Cropper } from "vue-advanced-cropper";
-import "vue-advanced-cropper/dist/style.css";
-import "vue-advanced-cropper/dist/theme.compact.css";
+import CropMedia from "./CropMedia.vue";
+import AdjustMedia from "./AdjustMedia.vue";
 
 export default {
   props: {
@@ -98,103 +64,61 @@ export default {
     project_path: String,
   },
   components: {
-    Cropper,
+    CropMedia,
+    AdjustMedia,
   },
   data() {
     return {
       show_modal: true,
 
+      step: "crop",
+
       image_preview: null,
       image_blob: null,
       image_filename: null,
 
-      result: {
-        coordinates: null,
-        image: null,
-      },
+      final_image_blob: null,
+      final_image_filename: null,
 
       saturation: 1,
-      brightness: 1,
-      contrast: 1,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {
-    saturation(value) {
-      this.$refs.cropper.setSaturation(value);
-    },
+    saturation(value) {},
   },
   computed: {
-    file_full_path() {
-      const p = this.makeMediaFilePath({
-        $path: this.media.$path,
-        $media_filename: this.media.$media_filename,
-      });
-      return `/${p}?v=${this.timestamp}`;
+    image_type() {
+      return this.media.$media_filename.endsWith(".png") ? "png" : "jpeg";
     },
-    timestamp() {
-      if (this.media.$date_created) return +new Date(this.media.$date_created);
-      else return +new Date();
+    final_image_preview() {
+      return this.final_image_blob
+        ? URL.createObjectURL(this.final_image_blob)
+        : null;
     },
   },
   methods: {
-    onChange({ coordinates, image }) {
-      this.result.coordinates = coordinates;
-      this.result.image = image;
+    updateCrop({ blob, filename }) {
+      this.image_blob = blob;
+      this.image_filename = filename;
+      this.step = "adjust";
     },
-    async previewMedia() {
-      console.log("previewMedia");
-      const { canvas } = this.$refs.cropper.getResult();
+    updateAdjust(blob) {
+      this.final_image_blob = blob;
+      this.step = "final";
+    },
 
-      if (this.media.$media_filename.endsWith(".png")) {
-        this.image_preview = canvas.toDataURL("image/png");
-        this.image_blob = await new Promise((resolve) => {
-          canvas.toBlob(resolve, "image/jpeg", 0.95);
-        });
-        this.image_filename = this.media.$media_filename + "_edit.png";
-      } else {
-        this.image_preview = canvas.toDataURL("image/jpeg", 0.95);
-        this.image_blob = await new Promise((resolve) => {
-          canvas.toBlob(resolve, "image/jpeg", 0.95);
-        });
-        this.image_filename = this.media.$media_filename + "_edit.jpg";
-      }
-    },
-    zoomIn() {
-      console.log("zoomIn");
-      this.$refs.cropper.zoom(1.5);
-    },
-    zoomOut() {
-      console.log("zoomOut");
-      this.$refs.cropper.zoom(0.66);
-    },
-    flipX() {
-      console.log("flipX");
-      this.$refs.cropper.flip(true, false);
-    },
-    flipY() {
-      console.log("flipY");
-      this.$refs.cropper.flip(false, true);
-    },
-    rotateLeft() {
-      this.$refs.cropper.rotate(90);
-    },
-    rotateRight() {
-      this.$refs.cropper.rotate(-90);
-    },
     goBack() {
-      this.image_preview = null;
-      this.image_blob = null;
-      this.image_filename = null;
+      this.step = "crop";
     },
     async saveAsNew() {
       console.log("saveAsNew");
 
       const path = this.getParent(this.media.$path);
       const filename = this.image_filename;
-      const file = this.image_blob;
+      const file = this.final_image_blob;
       // todo – get original caption, credits, geolocation, etc.
       const additional_meta = {};
 
@@ -217,6 +141,10 @@ export default {
     async replaceOriginal() {
       const meta_filename = await this.saveAsNew();
       // todo, update $content
+    },
+    closeModal() {
+      this.show_modal = false;
+      this.step = "crop";
     },
   },
 };
