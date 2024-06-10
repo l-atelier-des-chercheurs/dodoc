@@ -56,6 +56,7 @@
           >
             <MediaContent
               :file="optimized_file"
+              :resolution="1600"
               :context="'full'"
               :zoom_on_click="true"
               :show_fs_button="true"

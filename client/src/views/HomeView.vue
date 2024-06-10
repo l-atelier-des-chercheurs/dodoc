@@ -106,7 +106,9 @@
           </div>
           {{ $t("a_foss_made_by") }} <br />
           {{ $t("more_informations") }} :
-          <a href="https://dodoc.fr" target="_blank">dodoc.fr</a>
+          <a href="https://dodoc.fr" title="Site de do•doc" target="_blank"
+            >dodoc.fr</a
+          >
         </div>
       </footer>
     </template>

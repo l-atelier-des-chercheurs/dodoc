@@ -31,16 +31,9 @@
             </div>
 
             <!-- legacy field – only existing description can be edited -->
-            <TitleField
-              v-if="section.section_description"
-              :field_name="'section_description'"
-              :label="can_edit ? $t('description') : ''"
-              :content="section.section_description"
-              :path="section.$path"
-              :maxlength="1280"
-              :input_type="'markdown'"
-              :can_edit="can_edit"
-            />
+            <div v-if="section.section_description">
+              <div v-text="section.section_description" />
+            </div>
           </div>
           <div class="_buttons" v-if="can_edit"></div>
         </div>
