@@ -1,40 +1,51 @@
 <template>
-  <div>
-    <div class="_btnRow">
-      <button type="button" class="u-button" @click="zoomIn">
-        zoom
-        <b-icon icon="plus" />
-      </button>
-      <button type="button" class="u-button" @click="zoomOut">
-        zoom
-        <b-icon icon="dash" />
-      </button>
-      <button type="button" class="u-button" @click="flipX">
-        flip horizontally
-        <b-icon icon="flip" />
-      </button>
-      <button type="button" class="u-button" @click="flipY">
-        flip vertically
-        <b-icon icon="flip" />
-      </button>
-      <button type="button" class="u-button" @click="rotateLeft">
-        rotate left
-        <b-icon icon="rotate-left" />
-      </button>
-      <button type="button" class="u-button" @click="rotateRight">
-        rotate right
-        <b-icon icon="rotate-right" />
+  <div class="_cropMedia">
+    <div class="_topPanes">
+      <div class="_btn">
+        <button type="button" class="u-button" @click="zoomIn">
+          {{ $t("zoom") }}
+          <b-icon icon="plus" />
+        </button>
+        <button type="button" class="u-button" @click="zoomOut">
+          {{ $t("zoom") }}
+          <b-icon icon="dash" />
+        </button>
+        <button type="button" class="u-button" @click="flipX">
+          {{ $t("flip_horizontally") }}
+          <b-icon icon="arrow-left-right" />
+        </button>
+        <button type="button" class="u-button" @click="flipY">
+          {{ $t("flip_vertically") }}
+          <b-icon icon="arrow-left-right" rotate="90" />
+        </button>
+        <button type="button" class="u-button" @click="rotateLeft">
+          {{ $t("rotate_left") }}
+          <b-icon icon="arrow-counterclockwise" />
+        </button>
+        <button type="button" class="u-button" @click="rotateRight">
+          {{ $t("rotate_right") }}
+          <b-icon icon="arrow-clockwise" />
+        </button>
+      </div>
+      <div class="">
+        <Cropper
+          ref="cropper"
+          :src="file_full_path"
+          :default-size="defaultSize"
+          @change="onChange"
+        />
+      </div>
+    </div>
+    <div class="_bottomBar">
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="previewMedia"
+      >
+        {{ $t("next") }}
+        <b-icon icon="arrow-right" />
       </button>
     </div>
-    <Cropper ref="cropper" :src="file_full_path" @change="onChange" />
-    <button
-      type="button"
-      class="u-button u-button_bleuvert"
-      @click="previewMedia"
-    >
-      <b-icon icon="tools" />
-      {{ $t("preview") }}
-    </button>
   </div>
 </template>
 <script>
@@ -75,6 +86,12 @@ export default {
     },
   },
   methods: {
+    defaultSize({ imageSize, visibleArea }) {
+      return {
+        width: (visibleArea || imageSize).width,
+        height: (visibleArea || imageSize).height,
+      };
+    },
     onChange({ coordinates, image }) {
       this.result.coordinates = coordinates;
       this.result.image = image;
@@ -96,18 +113,41 @@ export default {
       this.$refs.cropper.flip(false, true);
     },
     rotateLeft() {
-      this.$refs.cropper.rotate(90);
-    },
-    rotateRight() {
       this.$refs.cropper.rotate(-90);
     },
+    rotateRight() {
+      this.$refs.cropper.rotate(90);
+    },
     async previewMedia() {
-      console.log("previewMedia");
       const { canvas } = this.$refs.cropper.getResult();
-
       this.$emit("updateCrop", canvas.toDataURL());
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._cropMedia {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+}
+._topPanes {
+  flex: 1 1 0;
+  background: var(--c-gris_fonce);
+  padding: var(--spacing);
+}
+._bottomBar {
+  flex: 0 0 auto;
+}
+
+._btn {
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--spacing);
+  margin-bottom: var(--spacing);
+}
+._bottomBar {
+  text-align: center;
+  padding: var(--spacing);
+}
+</style>

@@ -487,6 +487,7 @@ export default {
 
 ._favSwitch {
   display: inline-block;
+  font-size: 1rem;
 }
 
 ._optimizeNotice {

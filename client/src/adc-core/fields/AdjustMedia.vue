@@ -4,6 +4,32 @@
       <div class="_settings">
         <RangeValueInput
           class="u-spacingBottom"
+          :label="$t('brightness')"
+          :value="brightness"
+          :can_toggle="false"
+          :min="0"
+          :max="200"
+          :step="1"
+          :default_value="100"
+          :suffix="'%'"
+          @input="brightness = $event"
+          @save="brightness = $event"
+        />
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('contrast')"
+          :value="contrast"
+          :can_toggle="false"
+          :min="0"
+          :max="200"
+          :step="1"
+          :default_value="100"
+          :suffix="'%'"
+          @input="contrast = $event"
+          @save="contrast = $event"
+        />
+        <RangeValueInput
+          class="u-spacingBottom"
           :label="$t('saturation')"
           :value="saturation"
           :can_toggle="false"
@@ -15,13 +41,38 @@
           @input="saturation = $event"
           @save="saturation = $event"
         />
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('blur')"
+          :value="blur"
+          :can_toggle="false"
+          :min="0"
+          :max="100"
+          :step="1"
+          :default_value="0"
+          :suffix="'px'"
+          @input="blur = $event"
+          @save="blur = $event"
+        />
       </div>
-      <canvas ref="canvas" />
+      <div class="_preview">
+        <canvas ref="canvas" />
+      </div>
     </div>
 
     <div class="_bottomBar">
-      <button type="button" @click="$emit('back')">{{ $t("back") }}</button>
-      <button type="button" @click="updateAdjust">{{ $t("next") }}</button>
+      <button type="button" class="u-button" @click="$emit('back')">
+        <b-icon icon="arrow-left-short" />
+        {{ $t("previous") }}
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="updateAdjust"
+      >
+        {{ $t("next") }}
+        <b-icon icon="arrow-right" />
+      </button>
     </div>
   </div>
 </template>
@@ -33,7 +84,10 @@ export default {
   components: {},
   data() {
     return {
+      brightness: 100,
+      contrast: 100,
       saturation: 100,
+      blur: 0,
     };
   },
   created() {},
@@ -42,7 +96,16 @@ export default {
   },
   beforeDestroy() {},
   watch: {
+    brightness: function () {
+      this.draw();
+    },
+    contrast: function () {
+      this.draw();
+    },
     saturation: function () {
+      this.draw();
+    },
+    blur: function () {
       this.draw();
     },
   },
@@ -58,7 +121,12 @@ export default {
       canvas.height = img.height;
 
       const ctx = canvas.getContext("2d");
-      ctx.filter = `saturate(${this.saturation}%)`;
+      let filters = [];
+      filters.push(`saturate(${this.saturation}%)`);
+      filters.push(`brightness(${this.brightness}%)`);
+      filters.push(`contrast(${this.contrast}%)`);
+      filters.push(`blur(${this.blur}px)`);
+      ctx.filter = filters.join(" ");
       ctx.drawImage(img, 0, 0);
     },
     async updateAdjust() {
@@ -77,18 +145,32 @@ export default {
 }
 
 ._panes {
+  background-color: var(--c-bodybg);
+  flex: 1;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
 }
 
 ._settings {
-  flex: 0 0 200px;
+  flex: 0 0 240px;
   overflow: auto;
+  padding: calc(var(--spacing) / 2);
 }
+._preview {
+  flex: 1 1 0;
+  background-color: var(--c-noir);
 
-canvas {
-  width: 100%;
-  height: auto;
+  canvas {
+    width: 100%;
+    height: auto;
+  }
+}
+._bottomBar {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing);
+  gap: calc(var(--spacing) / 2);
 }
 </style>

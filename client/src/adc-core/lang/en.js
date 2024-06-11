@@ -390,6 +390,8 @@ export default {
   stop: "Stop",
   pause: "Pause",
   first_image: "First image",
+  next: "Next",
+  previous: "Previous",
   previous_image: "Previous image",
   next_image: "Next image",
   last_image: "Last image",
@@ -689,6 +691,9 @@ export default {
   mirror: "Mirror",
   horizontal_flip: "Horizontal flip",
   vertical_flip: "Vertical flip",
+  rotate_left: "Rotate left",
+  rotate_right: "Rotate right",
+
   both: "Both",
   mix_audio_and_image: "Sound on an image",
   mix_audio_and_image_summary: "Add sound to an image.",

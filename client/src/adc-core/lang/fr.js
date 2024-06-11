@@ -530,6 +530,8 @@ export default {
   mirror: "Miroir",
   horizontal_flip: "Retournement horizontal",
   vertical_flip: "Retournement vertical",
+  rotate_left: "Pivoter à gauche",
+  rotate_right: "Pivoter à droite",
   both: "Les deux",
 
   mix_audio_and_image: "Son sur une image",
@@ -727,6 +729,8 @@ export default {
   pause: "Pause",
   first_image: "Première image",
   previous_image: "Image précédente",
+  next: "Suivant",
+  previous: "Précedent",
   next_image: "Image suivante",
   last_image: "Dernière image",
   assemble: "Assembler",

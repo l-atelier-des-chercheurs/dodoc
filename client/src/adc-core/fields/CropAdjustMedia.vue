@@ -1,7 +1,7 @@
 <template>
   <div class="_cropAdjustMedia">
     <button type="button" class="u-buttonLink" @click="show_modal = true">
-      <b-icon icon="boundingbox" />
+      <b-icon icon="bounding-box" />
       {{ $t("crop_adjust") }}
     </button>
 
@@ -29,40 +29,42 @@
           </span>
         </div>
 
-        <CropMedia
-          v-show="current_step === 'crop'"
-          :media="media"
-          @updateCrop="updateCrop"
-        />
-        <AdjustMedia
-          v-if="current_step === 'adjust'"
-          :image="cropped_image"
-          @back="current_step = 'crop'"
-          @updateAdjust="updateAdjust"
-        />
-        <div v-if="current_step === 'final'">
-          <img :src="final_image" />
-          <div class="_btnRow">
-            <button type="button" class="u-buttonLink" @click="goBack">
-              <b-icon icon="arrow-left-short" />
-              {{ $t("back") }}
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_bleuvert"
-              @click="saveAsNew"
-            >
-              <b-icon icon="file-plus" />
-              {{ $t("save_as_new_media") }}
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_red"
-              @click="replaceOriginal"
-            >
-              <b-icon icon="save2-fill" />
-              {{ $t("replace_original") }}
-            </button>
+        <div class="_panes">
+          <CropMedia
+            v-show="current_step === 'crop'"
+            :media="media"
+            @updateCrop="updateCrop"
+          />
+          <AdjustMedia
+            v-if="current_step === 'adjust'"
+            :image="cropped_image"
+            @back="current_step = 'crop'"
+            @updateAdjust="updateAdjust"
+          />
+          <div v-if="current_step === 'export'">
+            <img :src="final_image" />
+            <div class="_btnRow">
+              <button type="button" class="u-buttonLink" @click="goBack">
+                <b-icon icon="arrow-left-short" />
+                {{ $t("previous") }}
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_bleuvert"
+                @click="saveAsNew"
+              >
+                <b-icon icon="file-plus" />
+                {{ $t("save_as_new_media") }}
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_red"
+                @click="replaceOriginal"
+              >
+                <b-icon icon="save2-fill" />
+                {{ $t("replace_original") }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -96,7 +98,7 @@ export default {
   },
   data() {
     return {
-      show_modal: true,
+      show_modal: false,
 
       current_step: "crop",
 
@@ -122,7 +124,7 @@ export default {
     },
     updateAdjust(image) {
       this.final_image = image;
-      this.current_step = "final";
+      this.current_step = "export";
     },
 
     goBack() {
@@ -181,17 +183,29 @@ export default {
 }
 
 ._steps {
+  flex: 0 0 auto;
+
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
   gap: calc(var(--spacing) / 2);
   overflow-x: auto;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 ._step {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+}
+
+._cont {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+._panes {
+  flex: 1 1 0;
+  overflow-y: auto;
 }
 </style>
