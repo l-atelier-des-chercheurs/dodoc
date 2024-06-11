@@ -44,7 +44,6 @@ import "vue-advanced-cropper/dist/theme.compact.css";
 
 export default {
   props: {
-    image_type: String,
     media: Object,
   },
   components: {
@@ -106,21 +105,7 @@ export default {
       console.log("previewMedia");
       const { canvas } = this.$refs.cropper.getResult();
 
-      let blob, filename;
-
-      if (this.image_type === "png") {
-        blob = await new Promise((resolve) => {
-          canvas.toBlob(resolve, "image/png", 0.95);
-        });
-        filename = this.media.$media_filename + "_edit.png";
-      } else {
-        blob = await new Promise((resolve) => {
-          canvas.toBlob(resolve, "image/jpeg", 0.95);
-        });
-        filename = this.media.$media_filename + "_edit.jpg";
-      }
-
-      this.$emit("updateCrop", { blob, filename });
+      this.$emit("updateCrop", canvas.toDataURL());
     },
   },
 };

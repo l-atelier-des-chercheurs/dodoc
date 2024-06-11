@@ -12,22 +12,37 @@
       @close="closeModal"
     >
       <div class="_cont">
+        <div class="_steps">
+          <span
+            class="_step"
+            v-for="(step, index) in ['crop', 'adjust', 'export']"
+            :key="step"
+          >
+            <component :is="step === current_step ? 'strong' : 'span'">
+              {{ $t(step) }}
+            </component>
+            <b-icon
+              v-if="index !== 2"
+              icon="chevron-right"
+              aria-role="presentation"
+            />
+          </span>
+        </div>
+
         <CropMedia
-          v-show="step === 'crop'"
-          :image_type="image_type"
+          v-show="current_step === 'crop'"
           :media="media"
           @updateCrop="updateCrop"
         />
         <AdjustMedia
-          v-if="step === 'adjust'"
-          :image_blob="image_blob"
-          :image_type="image_type"
-          @back="step = 'crop'"
+          v-if="current_step === 'adjust'"
+          :image="cropped_image"
+          @back="current_step = 'crop'"
           @updateAdjust="updateAdjust"
         />
-        <div v-if="step === 'final'">
-          <img :src="final_image_preview" />
-          <div class="_btnRow" v-if="final_image_preview">
+        <div v-if="current_step === 'final'">
+          <img :src="final_image" />
+          <div class="_btnRow">
             <button type="button" class="u-buttonLink" @click="goBack">
               <b-icon icon="arrow-left-short" />
               {{ $t("back") }}
@@ -58,6 +73,18 @@
 import CropMedia from "./CropMedia.vue";
 import AdjustMedia from "./AdjustMedia.vue";
 
+function dataURLtoBlob(dataurl) {
+  var arr = dataurl.split(","),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+}
+
 export default {
   props: {
     media: Object,
@@ -71,13 +98,11 @@ export default {
     return {
       show_modal: true,
 
-      step: "crop",
+      current_step: "crop",
 
-      image_preview: null,
-      image_blob: null,
-      image_filename: null,
+      cropped_image: null,
 
-      final_image_blob: null,
+      final_image: null,
       final_image_filename: null,
 
       saturation: 1,
@@ -89,36 +114,34 @@ export default {
   watch: {
     saturation(value) {},
   },
-  computed: {
-    image_type() {
-      return this.media.$media_filename.endsWith(".png") ? "png" : "jpeg";
-    },
-    final_image_preview() {
-      return this.final_image_blob
-        ? URL.createObjectURL(this.final_image_blob)
-        : null;
-    },
-  },
+  computed: {},
   methods: {
-    updateCrop({ blob, filename }) {
-      this.image_blob = blob;
-      this.image_filename = filename;
-      this.step = "adjust";
+    updateCrop(image) {
+      this.cropped_image = image;
+      this.current_step = "adjust";
     },
-    updateAdjust(blob) {
-      this.final_image_blob = blob;
-      this.step = "final";
+    updateAdjust(image) {
+      this.final_image = image;
+      this.current_step = "final";
     },
 
     goBack() {
-      this.step = "crop";
+      this.current_step = "crop";
     },
     async saveAsNew() {
       console.log("saveAsNew");
 
       const path = this.getParent(this.media.$path);
-      const filename = this.image_filename;
-      const file = this.final_image_blob;
+      let filename;
+      if (this.media.$media_filename.endsWith(".png")) {
+        filename =
+          this.getFilenameWithoutExt(this.media.$media_filename) + "_edit.png";
+      } else {
+        filename =
+          this.getFilenameWithoutExt(this.media.$media_filename) + "_edit.jpg";
+      }
+
+      const file = dataURLtoBlob(this.final_image);
       // todo – get original caption, credits, geolocation, etc.
       const additional_meta = {};
 
@@ -144,7 +167,7 @@ export default {
     },
     closeModal() {
       this.show_modal = false;
-      this.step = "crop";
+      this.current_step = "crop";
     },
   },
 };
@@ -153,7 +176,22 @@ export default {
 ._btnRow {
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: stretch;
+  gap: calc(var(--spacing) / 2);
+}
+
+._steps {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  gap: calc(var(--spacing) / 2);
+  overflow-x: auto;
+  padding: calc(var(--spacing) / 2);
+}
+._step {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
   gap: calc(var(--spacing) / 2);
 }
 </style>
