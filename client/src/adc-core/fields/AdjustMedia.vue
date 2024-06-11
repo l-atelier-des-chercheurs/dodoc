@@ -149,6 +149,7 @@ export default {
   flex: 1;
   display: flex;
   flex-flow: row nowrap;
+  overflow: hidden;
 }
 
 ._settings {
@@ -158,11 +159,15 @@ export default {
 }
 ._preview {
   flex: 1 1 0;
-  background-color: var(--c-noir);
+  // background-color: var(--c-noir);
+  padding: calc(var(--spacing) / 1);
 
   canvas {
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: scale-down;
+    object-position: center;
   }
 }
 ._bottomBar {
@@ -170,7 +175,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  padding: var(--spacing);
+  padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
 }
 </style>

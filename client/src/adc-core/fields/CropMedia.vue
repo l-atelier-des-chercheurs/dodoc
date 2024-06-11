@@ -10,6 +10,7 @@
           {{ $t("zoom") }}
           <b-icon icon="dash" />
         </button>
+        <br />
         <button type="button" class="u-button" @click="flipX">
           {{ $t("flip_horizontally") }}
           <b-icon icon="arrow-left-right" />
@@ -18,6 +19,7 @@
           {{ $t("flip_vertically") }}
           <b-icon icon="arrow-left-right" rotate="90" />
         </button>
+        <br />
         <button type="button" class="u-button" @click="rotateLeft">
           {{ $t("rotate_left") }}
           <b-icon icon="arrow-counterclockwise" />
@@ -27,14 +29,13 @@
           <b-icon icon="arrow-clockwise" />
         </button>
       </div>
-      <div class="">
-        <Cropper
-          ref="cropper"
-          :src="file_full_path"
-          :default-size="defaultSize"
-          @change="onChange"
-        />
-      </div>
+      <Cropper
+        class="_cropper"
+        ref="cropper"
+        :src="file_full_path"
+        :default-size="defaultSize"
+        @change="onChange"
+      />
     </div>
     <div class="_bottomBar">
       <button
@@ -133,19 +134,40 @@ export default {
 }
 ._topPanes {
   flex: 1 1 0;
-  background: var(--c-gris_fonce);
-  padding: var(--spacing);
+  background: var(--c-noir);
+  padding: calc(var(--spacing) / 2);
+
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
 }
 ._bottomBar {
   flex: 0 0 auto;
 }
 
 ._btn {
-  display: flex;
-  flex-flow: row wrap;
-  gap: var(--spacing);
-  margin-bottom: var(--spacing);
+  // padding: calc(var(--spacing) / 2) 0;
+  padding-right: 0;
+  // padding-bottom: 0;
+
+  > button {
+    margin-right: calc(var(--spacing) / 2);
+    margin-bottom: calc(var(--spacing) / 2);
+  }
 }
+._cropper {
+  flex: 1 1 0;
+
+  overflow: hidden;
+
+  ::v-deep {
+    .vue-advanced-cropper__background,
+    .vue-advanced-cropper__foreground {
+      background-color: var(--c-noir);
+    }
+  }
+}
+
 ._bottomBar {
   text-align: center;
   padding: var(--spacing);

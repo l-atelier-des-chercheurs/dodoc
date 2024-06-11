@@ -31,7 +31,7 @@
 
         <div class="_panes">
           <CropMedia
-            v-show="current_step === 'crop'"
+            v-if="current_step === 'crop'"
             :media="media"
             @updateCrop="updateCrop"
           />
@@ -41,10 +41,10 @@
             @back="current_step = 'crop'"
             @updateAdjust="updateAdjust"
           />
-          <div v-if="current_step === 'export'">
+          <div v-if="current_step === 'export'" class="_exportPane">
             <img :src="final_image" />
             <div class="_btnRow">
-              <button type="button" class="u-buttonLink" @click="goBack">
+              <button type="button" class="" @click="goBack">
                 <b-icon icon="arrow-left-short" />
                 {{ $t("previous") }}
               </button>
@@ -59,6 +59,7 @@
               <button
                 type="button"
                 class="u-button u-button_red"
+                disabled
                 @click="replaceOriginal"
               >
                 <b-icon icon="save2-fill" />
@@ -128,7 +129,7 @@ export default {
     },
 
     goBack() {
-      this.current_step = "crop";
+      this.current_step = "adjust";
     },
     async saveAsNew() {
       console.log("saveAsNew");
@@ -147,7 +148,7 @@ export default {
       // todo – get original caption, credits, geolocation, etc.
       const additional_meta = {};
 
-      return await this.$api
+      await this.$api
         .uploadFile({
           path,
           filename,
@@ -162,6 +163,8 @@ export default {
             .error(this.$t("media_couldnt_be_sent"));
           throw err;
         });
+
+      this.closeModal();
     },
     async replaceOriginal() {
       const meta_filename = await this.saveAsNew();
@@ -178,8 +181,9 @@ export default {
 ._btnRow {
   display: flex;
   flex-flow: row wrap;
-  justify-content: stretch;
+  justify-content: center;
   gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
 }
 
 ._steps {
@@ -207,5 +211,26 @@ export default {
 ._panes {
   flex: 1 1 0;
   overflow-y: auto;
+}
+
+._exportPane {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  img {
+    flex: 1 1 0;
+    width: 100%;
+    overflow: hidden;
+    object-fit: scale-down;
+    background-color: var(--c-noir);
+    padding: calc(var(--spacing) / 2);
+  }
+
+  ._btnRow {
+    flex: 0 0 auto;
+  }
 }
 </style>
