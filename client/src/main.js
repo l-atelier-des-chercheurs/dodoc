@@ -65,8 +65,6 @@ Vue.prototype.$api = api();
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
-import MarkdownField from "@/adc-core/fields/MarkdownField.vue";
-Vue.component("MarkdownField", MarkdownField);
 import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
@@ -180,6 +178,8 @@ import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
 import OptimizeMedia from "@/adc-core/fields/OptimizeMedia.vue";
 Vue.component("OptimizeMedia", OptimizeMedia);
+import CropAdjustMedia from "@/adc-core/fields/CropAdjustMedia.vue";
+Vue.component("CropAdjustMedia", CropAdjustMedia);
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelect);
 import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";

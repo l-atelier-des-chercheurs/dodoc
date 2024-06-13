@@ -298,6 +298,7 @@ export default function () {
               .error("Folder missing in store : " + path_to_folder);
         if (!folder.$files) this.$set(folder, "$files", new Array());
         folder.$files.push(meta);
+        this.$eventHub.$emit("file.created", { meta });
       },
       fileUpdated({ path_to_folder, path_to_meta, changed_data }) {
         const folder = this.store[path_to_folder];
@@ -510,7 +511,8 @@ export default function () {
             throw this.processError(err);
           });
         this.$eventHub.$emit("hooks.uploadFile", { path });
-        return res.data.meta_filename;
+        const { saved_meta, meta_filename } = res.data;
+        return { saved_meta, meta_filename };
       },
       async copyFile({ path, new_meta = {}, path_to_destination_folder = "" }) {
         const response = await this.$axios

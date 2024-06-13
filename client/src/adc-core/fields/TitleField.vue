@@ -11,10 +11,7 @@
       <template v-if="!can_edit || (can_edit && !edit_mode)">
         <template v-if="content && content !== ' '">
           <div class="_content">
-            <MarkdownField
-              v-if="input_type === 'markdown'"
-              :text="content"
-            /><span v-else v-text="content" />
+            <span v-text="content" />
           </div>
         </template>
       </template>

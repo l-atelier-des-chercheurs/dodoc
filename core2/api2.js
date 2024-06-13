@@ -851,16 +851,16 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      const meta_filename = await file.importFile({
+      const { meta: saved_meta, meta_filename } = await file.importFile({
         path_to_folder,
         req,
       });
       dev.logpackets({
         status: `uploaded file`,
         path_to_folder,
-        meta_filename,
+        saved_meta,
       });
-      res.status(200).json({ meta_filename });
+      res.status(200).json({ saved_meta, meta_filename });
 
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_folder, meta_filename),

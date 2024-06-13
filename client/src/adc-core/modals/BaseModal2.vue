@@ -1,13 +1,8 @@
 <template>
   <portal to="destination">
     <transition name="fade_fast">
-      <div
-        class="_baseModal"
-        v-if="show_modal"
-        @click.self="closeModal"
-        ref="modal"
-        :data-size="size"
-      >
+      <div class="_baseModal" v-if="show_modal" ref="modal" :data-size="size">
+        <div class="_baseModal--overlay" @click.self="closeModal" />
         <div class="_baseModal--content">
           <header v-if="title || is_closable">
             <h2 v-if="title">{{ title }}</h2>
@@ -81,6 +76,8 @@ export default {
     closeModal() {
       if (!this.is_closable) return false;
 
+      debugger;
+
       this.show_modal = false;
       setTimeout(() => {
         this.$emit("close");
@@ -102,10 +99,21 @@ export default {
   border: none;
   padding: 0;
 
-  backdrop-filter: blur(5px);
   // background: rgba(53, 53, 53, 0.7);
   // background: rgba(255, 255, 255, 0.7);
-  background: rgba(231, 231, 231, 0.7);
+
+  ._baseModal--overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(231, 231, 231, 0.7);
+    backdrop-filter: blur(5px);
+    cursor: pointer;
+    transition: backdrop-filter 0.3s ease-in-out;
+
+    &:hover {
+      backdrop-filter: blur(0px);
+    }
+  }
 
   ._baseModal--content {
     position: relative;

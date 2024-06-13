@@ -93,7 +93,7 @@ module.exports = (function () {
         meta,
       });
 
-      return meta_filename;
+      return { meta, meta_filename };
     },
 
     getFiles: async ({ path_to_folder, embed_source }) => {
@@ -154,7 +154,8 @@ module.exports = (function () {
             path_to_folder,
           })
           .catch((err) => {
-            dev.error(err);
+            if (err.message) dev.error(err.message);
+            else dev.error(err);
           });
         if (_thumbs) meta.$thumbs = _thumbs;
       }

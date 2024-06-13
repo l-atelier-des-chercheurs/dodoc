@@ -1908,7 +1908,7 @@ export default {
         );
       };
 
-      const meta_filename = await this.$api
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: this.path,
           filename,

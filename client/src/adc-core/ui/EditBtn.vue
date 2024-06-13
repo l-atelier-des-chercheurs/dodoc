@@ -204,6 +204,12 @@ export default {
     }
   }
 
+  &.is--unfolded {
+    ._label {
+      pointer-events: auto;
+    }
+  }
+
   &:hover,
   &:active,
   &:focus-visible,

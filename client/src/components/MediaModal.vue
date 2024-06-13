@@ -125,6 +125,11 @@
                   {{ $t("download") }}
                 </DownloadFile>
               </div>
+              <CropAdjustMedia
+                v-if="file.$type === 'image'"
+                :media="file"
+                @close="$emit('close')"
+              />
               <OptimizeMedia
                 v-if="optimization_possible"
                 :media="file"
@@ -482,6 +487,7 @@ export default {
 
 ._favSwitch {
   display: inline-block;
+  font-size: 1rem;
 }
 
 ._optimizeNotice {
