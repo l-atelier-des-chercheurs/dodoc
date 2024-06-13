@@ -93,7 +93,7 @@ module.exports = (function () {
         meta,
       });
 
-      return meta_filename;
+      return { meta, meta_filename };
     },
 
     getFiles: async ({ path_to_folder, embed_source }) => {

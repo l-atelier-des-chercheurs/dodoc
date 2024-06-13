@@ -170,7 +170,7 @@ export default {
         requested_slug: type,
       };
 
-      const section_meta_filename = await this.$api
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: publication.$path,
           additional_meta,
@@ -182,7 +182,7 @@ export default {
 
       let sections_list = this.getSectionsList({ publication, group }).slice();
       sections_list.push({
-        meta_filename: section_meta_filename,
+        meta_filename,
       });
 
       await this.$api.updateMeta({
@@ -192,7 +192,7 @@ export default {
         },
       });
 
-      return section_meta_filename;
+      return meta_filename;
     },
     async removeSection2({ publication, group, path }) {
       const section_meta_filename = this.getFilename(path);

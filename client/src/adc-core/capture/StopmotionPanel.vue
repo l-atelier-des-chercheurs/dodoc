@@ -338,7 +338,7 @@ export default {
     async appendToStopMotion({ imageData }) {
       const additional_meta = {};
       additional_meta.$origin = "capture";
-      const meta_filename = await this.$api
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: this.current_stopmotion_path,
           filename: +new Date() + ".jpeg",

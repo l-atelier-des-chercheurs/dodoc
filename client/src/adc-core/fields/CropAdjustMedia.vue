@@ -51,7 +51,7 @@
               <button
                 type="button"
                 class="u-button u-button_bleuvert"
-                @click="saveAsNew"
+                @click="buttonSaveAsNew"
               >
                 <b-icon icon="file-plus" />
                 {{ $t("save_as_new_media") }}
@@ -59,7 +59,6 @@
               <button
                 type="button"
                 class="u-button u-button_red"
-                disabled
                 @click="replaceOriginal"
               >
                 <b-icon icon="save2-fill" />
@@ -131,6 +130,10 @@ export default {
     goBack() {
       this.current_step = "adjust";
     },
+    async buttonSaveAsNew() {
+      await this.saveAsNew();
+      this.closeModal();
+    },
     async saveAsNew() {
       console.log("saveAsNew");
 
@@ -148,7 +151,7 @@ export default {
       // todo – get original caption, credits, geolocation, etc.
       const additional_meta = {};
 
-      await this.$api
+      const { saved_meta, meta_filename } = await this.$api
         .uploadFile({
           path,
           filename,
@@ -164,11 +167,34 @@ export default {
           throw err;
         });
 
-      this.closeModal();
+      return { saved_meta, meta_filename };
     },
     async replaceOriginal() {
-      const meta_filename = await this.saveAsNew();
-      // todo, update $content
+      // not very clean… Should rework with specific API route ? $api.updateContent ?
+      const { saved_meta, meta_filename } = await this.saveAsNew();
+      const temp_path = this.getParent(this.media.$path) + "/" + meta_filename;
+      const new_media_filename = saved_meta.$media_filename;
+
+      // set $media_filename from temp to the new filename
+      await this.$api.updateMeta({
+        path: this.media.$path,
+        new_meta: {
+          $media_filename: new_media_filename,
+        },
+      });
+
+      // set $media_filename of temp to the old media file
+      await this.$api.updateMeta({
+        path: temp_path,
+        new_meta: {
+          $media_filename: this.media.$media_filename,
+        },
+      });
+      await this.$api.deleteItem({
+        path: temp_path,
+      });
+
+      this.closeModal();
     },
     closeModal() {
       this.show_modal = false;

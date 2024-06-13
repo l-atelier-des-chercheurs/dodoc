@@ -256,7 +256,7 @@ export default {
     async createEmbed(full_url) {
       const filename = "url-" + +new Date() + ".txt";
 
-      const text_meta_filename = await this.$api.uploadText({
+      const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
         content: full_url,
@@ -264,7 +264,7 @@ export default {
           $type: "url",
         },
       });
-      this.createMosaic({ meta_filename: text_meta_filename });
+      this.createMosaic({ meta_filename });
       this.show_link_picker = false;
     },
     async createFiles({ path_to_source_media_metas }) {
@@ -295,7 +295,7 @@ export default {
     },
     async createText() {
       const filename = "text-" + +new Date() + ".txt";
-      const meta_filename = await this.$api.uploadText({
+      const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
         content: "",
@@ -371,7 +371,7 @@ export default {
       if (this.post_addtl_meta)
         Object.assign(additional_meta, this.post_addtl_meta);
 
-      return await this.$api
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: this.publication_path,
           additional_meta,
@@ -380,6 +380,7 @@ export default {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
+      return meta_filename;
     },
   },
 };

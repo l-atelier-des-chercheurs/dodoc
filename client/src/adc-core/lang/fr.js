@@ -1096,7 +1096,7 @@ export default {
   preview_optimize: "Créer une version optimisée",
   wont_remove_original: "Ne supprimera pas l’original",
   add_optimized_to_lib: "Conserver l’original et la nouvelle version",
-  replace_original: "Remplacer et supprimer l’original",
+  replace_original: "Remplacer l’original",
   save_as_new_media: "Enregistrer comme nouveau média",
 
   change: "Changer",

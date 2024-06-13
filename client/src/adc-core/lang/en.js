@@ -1032,7 +1032,7 @@ export default {
   preview_optimize: "Create optimized version",
   wont_remove_original: "Will not remove the original",
   add_optimized_to_lib: "Keep original media and add new version",
-  replace_original: "Replace and remove original media",
+  replace_original: "Replace original media",
   save_as_new_media: "Save as new media",
 
   change: "Change",
