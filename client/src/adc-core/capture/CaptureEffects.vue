@@ -36,14 +36,11 @@
               'is--disabled': !chroma_key_settings.enable,
             }"
           >
-            <div>
-              <label>{{ $t("color") }}</label>
-              <input
-                type="color"
-                v-model="chroma_key_color_hex"
-                :novalue="chroma_key_color_hex === ''"
-              />
-            </div>
+            <ColorInput
+              :label="$t('color')"
+              :value="chroma_key_color_hex"
+              @save="chroma_key_color_hex = $event"
+            />
             <div>
               <button
                 type="button"
@@ -143,10 +140,10 @@
               />
             </div>
             <div v-else>
-              <input
-                type="color"
-                v-model="chroma_key_replacement_color_hex"
-                :novalue="chroma_key_replacement_color_hex === ''"
+              <ColorInput
+                :can_toggle="false"
+                :value="chroma_key_replacement_color_hex"
+                @save="chroma_key_replacement_color_hex = $event"
               />
             </div>
           </div>
