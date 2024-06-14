@@ -312,6 +312,7 @@ export default {
   no_projects: "Aucun projet à afficher",
   no_files: "Aucun fichier",
   no_publications: "Aucune publication à afficher",
+
   none_f: "Aucune",
   none: "Aucun·e",
   reset_all: "Retirer tout",
@@ -1109,4 +1110,10 @@ export default {
   very_close: "Très près",
   enable_indexing: "Permettre l’indexation par les moteurs de recherche",
   crop_adjust: "Recadrer/retoucher",
+  aspect_ratio: "Rapport largeur/hauteur",
+  square: "Carré",
+  free: "Libre",
+  A_portrait: "Format 'A' portrait",
+  A_landscape: "Format 'A' paysage",
+  custom_aspect_ratio: "Indiquer ici une valeur, par exemple 1,66",
 };

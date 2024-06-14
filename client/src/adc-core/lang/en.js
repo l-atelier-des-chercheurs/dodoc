@@ -171,6 +171,7 @@ export default {
   no_projects: "No project to show",
   no_publications: "No publications to show",
   no_files: "No file",
+  none_m: "None",
   none_f: "None",
   none: "None",
 
@@ -1041,4 +1042,9 @@ export default {
   couldntbesaved: "Value couldn’t be saved",
   enable_indexing: "Enable indexing on search engines",
   crop_adjust: "Crop/adjust",
+  aspect_ratio: "Aspect ratio",
+  free: "Free",
+  A_portrait: "Format 'A' portrait",
+  A_landscape: "Format 'A' landscape",
+  custom_aspect_ratio: "Enter a value, for example 1.66",
 };

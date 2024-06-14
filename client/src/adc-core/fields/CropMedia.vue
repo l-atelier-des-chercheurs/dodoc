@@ -10,7 +10,7 @@
           {{ $t("zoom") }}
           <b-icon icon="dash" />
         </button>
-        <br />
+        <span class="_spacer" />
         <button type="button" class="u-button" @click="flipX">
           {{ $t("flip_horizontally") }}
           <b-icon icon="arrow-left-right" />
@@ -19,7 +19,7 @@
           {{ $t("flip_vertically") }}
           <b-icon icon="arrow-left-right" rotate="90" />
         </button>
-        <br />
+        <span class="_spacer" />
         <button type="button" class="u-button" @click="rotateLeft">
           {{ $t("rotate_left") }}
           <b-icon icon="arrow-counterclockwise" />
@@ -29,11 +29,32 @@
           <b-icon icon="arrow-clockwise" />
         </button>
       </div>
+      <div class="_aspectRatio">
+        <label for="aspect_ratio">{{ $t("aspect_ratio") }}</label>
+        <select v-model="aspect_ratio">
+          <option
+            v-for="ratio in available_aspect_ratios"
+            :key="ratio.key"
+            :value="ratio.key"
+          >
+            {{ ratio.label }}
+          </option>
+        </select>
+        <input
+          type="number"
+          v-if="aspect_ratio === 'custom'"
+          v-model.number="custom_aspect_ratio"
+        />
+        <small>{{ $t("custom_aspect_ratio") }}</small>
+      </div>
+      <div class="u-spacingBottom" />
       <Cropper
         class="_cropper"
+        :key="'' + stencil_props"
         ref="cropper"
         :src="file_full_path"
         :default-size="defaultSize"
+        :stencil-props="stencil_props"
         @change="onChange"
       />
     </div>
@@ -63,6 +84,20 @@ export default {
   },
   data() {
     return {
+      aspect_ratio: "none",
+      available_aspect_ratios: [
+        { key: "none", label: this.$t("free") },
+        { key: "square", label: this.$t("square") },
+        { key: "16 / 9", label: "16 / 9" },
+        { key: "4 / 3", label: "4 / 3" },
+        { key: "3 / 4", label: "3 / 4" },
+        { key: "2 / 3", label: "2 / 3" },
+        { key: "3 / 2", label: "3 / 2" },
+        { key: "A_portrait", label: this.$t("A_portrait") },
+        { key: "A_landscape", label: this.$t("A_landscape") },
+        { key: "custom", label: this.$t("custom") },
+      ],
+      custom_aspect_ratio: 1,
       result: {
         coordinates: null,
         image: null,
@@ -74,6 +109,21 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    stencil_props() {
+      if (this.aspect_ratio === "none") return {};
+      if (this.aspect_ratio === "square") return { aspectRatio: 1 / 1 };
+      if (this.aspect_ratio === "16 / 9") return { aspectRatio: 16 / 9 };
+      if (this.aspect_ratio === "4 / 3") return { aspectRatio: 4 / 3 };
+      if (this.aspect_ratio === "3 / 4") return { aspectRatio: 3 / 4 };
+      if (this.aspect_ratio === "2 / 3") return { aspectRatio: 2 / 3 };
+      if (this.aspect_ratio === "3 / 2") return { aspectRatio: 3 / 2 };
+      if (this.aspect_ratio === "A_portrait") return { aspectRatio: 21 / 29.7 };
+      if (this.aspect_ratio === "A_landscape")
+        return { aspectRatio: 29.7 / 21 };
+      if (this.aspect_ratio === "custom")
+        return { aspectRatio: this.custom_aspect_ratio };
+      return {};
+    },
     file_full_path() {
       const p = this.makeMediaFilePath({
         $path: this.media.$path,
@@ -134,7 +184,7 @@ export default {
 }
 ._topPanes {
   flex: 1 1 0;
-  background: var(--c-noir);
+  background: var(--c-gris_fonce);
   padding: calc(var(--spacing) / 2);
 
   display: flex;
@@ -150,10 +200,14 @@ export default {
   padding-right: 0;
   // padding-bottom: 0;
 
-  > button {
+  > * {
     margin-right: calc(var(--spacing) / 2);
     margin-bottom: calc(var(--spacing) / 2);
   }
+
+  // ._spacer {
+  //   padding:
+  // }
 }
 ._cropper {
   flex: 1 1 0;
@@ -171,5 +225,18 @@ export default {
 ._bottomBar {
   text-align: center;
   padding: var(--spacing);
+}
+
+._aspectRatio {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  select {
+    width: 20ch;
+  }
+  > * {
+  }
 }
 </style>
