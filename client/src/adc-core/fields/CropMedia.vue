@@ -87,7 +87,6 @@
       </div>
       -->
 
-      <div class="u-spacingBottom" />
       <div class="_cropper">
         <Cropper
           class=""
@@ -232,15 +231,15 @@ export default {
 ._topPanes {
   flex: 1 1 0;
   background: var(--c-gris_fonce);
-  padding: calc(var(--spacing) / 2);
+  margin-top: calc(var(--spacing) / 2);
 
   display: flex;
   flex-flow: column nowrap;
   overflow: auto;
 
   > *:not(:last-child) {
-    border-bottom: 1px solid white;
-    margin-bottom: calc(var(--spacing) / 2);
+    margin: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   }
 }
 ._bottomBar {
@@ -248,7 +247,7 @@ export default {
 }
 
 ._btn {
-  // padding: calc(var(--spacing) / 2) 0;
+  padding-top: calc(var(--spacing) / 2);
   padding-right: 0;
   // padding-bottom: 0;
 
@@ -266,7 +265,7 @@ export default {
   padding: calc(var(--spacing) / 2);
   overflow: hidden;
   min-height: 100px;
-  background-color: var(--c-noir);
+  // background-color: var(--c-noir);
 
   ::v-deep {
     .vue-advanced-cropper__background,
@@ -318,6 +317,8 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 2);
+  margin-bottom: 0 !important;
 
   select,
   input {
