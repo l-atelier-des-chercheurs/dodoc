@@ -2,29 +2,37 @@
   <div class="_cropMedia">
     <div class="_topPanes">
       <div class="_btn">
-        <button type="button" class="u-button" @click="zoomIn">
+        <button type="button" class="u-button u-button_small" @click="zoomIn">
           {{ $t("zoom") }}
           <b-icon icon="plus" />
         </button>
-        <button type="button" class="u-button" @click="zoomOut">
+        <button type="button" class="u-button u-button_small" @click="zoomOut">
           {{ $t("zoom") }}
           <b-icon icon="dash" />
         </button>
         <span class="_spacer" />
-        <button type="button" class="u-button" @click="flipX">
+        <button type="button" class="u-button u-button_small" @click="flipX">
           {{ $t("flip_horizontally") }}
           <b-icon icon="arrow-left-right" />
         </button>
-        <button type="button" class="u-button" @click="flipY">
+        <button type="button" class="u-button u-button_small" @click="flipY">
           {{ $t("flip_vertically") }}
           <b-icon icon="arrow-left-right" rotate="90" />
         </button>
         <span class="_spacer" />
-        <button type="button" class="u-button" @click="rotateLeft">
+        <button
+          type="button"
+          class="u-button u-button_small"
+          @click="rotateLeft"
+        >
           {{ $t("rotate_left") }}
           <b-icon icon="arrow-counterclockwise" />
         </button>
-        <button type="button" class="u-button" @click="rotateRight">
+        <button
+          type="button"
+          class="u-button u-button_small"
+          @click="rotateRight"
+        >
           {{ $t("rotate_right") }}
           <b-icon icon="arrow-clockwise" />
         </button>
@@ -48,13 +56,14 @@
         <small>{{ $t("custom_aspect_ratio") }}</small>
       </div>
 
+      <!-- 
       <div class="_resolution">
         <ResolutionDisplay
           v-if="img_width && img_height"
           :width="img_width"
           :height="img_height"
         />
-        <!-- <ToggledSection
+        <ToggledSection
           class=""
           :label="$t('resize')"
           :can_toggle="true"
@@ -74,19 +83,22 @@
             :suffix="'%'"
             @save="new_height = $event"
           />
-        </ToggledSection> -->
+        </ToggledSection> 
       </div>
+      -->
 
       <div class="u-spacingBottom" />
-      <Cropper
-        class="_cropper"
-        :key="'' + stencil_props"
-        ref="cropper"
-        :src="file_full_path"
-        :default-size="defaultSize"
-        :stencil-props="stencil_props"
-        @change="onChange"
-      />
+      <div class="_cropper">
+        <Cropper
+          class=""
+          :key="'' + stencil_props"
+          ref="cropper"
+          :src="file_full_path"
+          :default-size="defaultSize"
+          :stencil-props="stencil_props"
+          @change="onChange"
+        />
+      </div>
     </div>
     <div class="_bottomBar">
       <button
@@ -103,7 +115,7 @@
 <script>
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
-import "vue-advanced-cropper/dist/theme.compact.css";
+import "vue-advanced-cropper/dist/theme.bubble.css";
 
 export default {
   props: {
@@ -224,10 +236,11 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
-  overflow: hidden;
+  overflow: auto;
 
   > *:not(:last-child) {
     border-bottom: 1px solid white;
+    margin-bottom: calc(var(--spacing) / 2);
   }
 }
 ._bottomBar {
@@ -250,18 +263,47 @@ export default {
 }
 ._cropper {
   flex: 1 1 0;
-
+  padding: calc(var(--spacing) / 2);
   overflow: hidden;
+  min-height: 100px;
+  background-color: var(--c-noir);
 
   ::v-deep {
     .vue-advanced-cropper__background,
     .vue-advanced-cropper__foreground {
       background-color: var(--c-noir);
     }
+    .vue-advanced-cropper__foreground {
+      cursor: move;
+    }
     .vue-simple-handler {
-      border-width: 4px;
-      border-color: var(--c-orange);
+      border-width: 3px;
+      background-color: var(--c-orange);
+      // border-color: var(--c-orange);
       opacity: 1;
+
+      &:hover {
+        border-color: white;
+      }
+    }
+    .vue-simple-line {
+      border-color: var(--c-orange);
+
+      &:hover {
+        border-color: white;
+      }
+    }
+    .vue-simple-line--east {
+      border-right-width: 2px;
+    }
+    .vue-simple-line--south {
+      border-bottom-width: 2px;
+    }
+    .vue-simple-line--north {
+      border-top-width: 2px;
+    }
+    .vue-simple-line--west {
+      border-left-width: 2px;
     }
   }
 }
