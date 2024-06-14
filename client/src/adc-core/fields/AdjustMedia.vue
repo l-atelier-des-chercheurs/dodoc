@@ -12,6 +12,7 @@
           :step="1"
           :default_value="100"
           :suffix="'%'"
+          :ticks="[100]"
           @input="brightness = $event"
           @save="brightness = $event"
         />
@@ -25,6 +26,7 @@
           :step="1"
           :default_value="100"
           :suffix="'%'"
+          :ticks="[100]"
           @input="contrast = $event"
           @save="contrast = $event"
         />
@@ -38,6 +40,7 @@
           :step="1"
           :default_value="100"
           :suffix="'%'"
+          :ticks="[100]"
           @input="saturation = $event"
           @save="saturation = $event"
         />
@@ -51,6 +54,7 @@
           :step="1"
           :default_value="0"
           :suffix="'px'"
+          :ticks="[0]"
           @input="blur = $event"
           @save="blur = $event"
         />

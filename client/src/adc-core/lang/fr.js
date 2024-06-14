@@ -1116,4 +1116,5 @@ export default {
   A_portrait: "Format 'A' portrait",
   A_landscape: "Format 'A' paysage",
   custom_aspect_ratio: "Indiquer ici une valeur, par exemple 1,66",
+  resize: "Redimensionner",
 };

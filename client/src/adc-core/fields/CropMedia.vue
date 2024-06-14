@@ -47,6 +47,36 @@
         />
         <small>{{ $t("custom_aspect_ratio") }}</small>
       </div>
+
+      <div class="_resolution">
+        <ResolutionDisplay
+          v-if="img_width && img_height"
+          :width="img_width"
+          :height="img_height"
+        />
+        <!-- <ToggledSection
+          class=""
+          :label="$t('resize')"
+          :can_toggle="true"
+          :show_toggle.sync="is_resizing"
+        >
+          <NumberInput
+            :label="$t('width')"
+            :value="new_width"
+            :min="0"
+            :suffix="'%'"
+            @save="new_width = $event"
+          />
+          <NumberInput
+            :label="$t('height')"
+            :value="new_height"
+            :min="0"
+            :suffix="'%'"
+            @save="new_height = $event"
+          />
+        </ToggledSection> -->
+      </div>
+
       <div class="u-spacingBottom" />
       <Cropper
         class="_cropper"
@@ -102,6 +132,11 @@ export default {
         coordinates: null,
         image: null,
       },
+
+      img_width: 0,
+      img_height: 0,
+      new_width: 0,
+      new_height: 0,
     };
   },
   created() {},
@@ -190,6 +225,10 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   overflow: hidden;
+
+  > *:not(:last-child) {
+    border-bottom: 1px solid white;
+  }
 }
 ._bottomBar {
   flex: 0 0 auto;
@@ -219,6 +258,11 @@ export default {
     .vue-advanced-cropper__foreground {
       background-color: var(--c-noir);
     }
+    .vue-simple-handler {
+      border-width: 4px;
+      border-color: var(--c-orange);
+      opacity: 1;
+    }
   }
 }
 
@@ -233,10 +277,9 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  select {
+  select,
+  input {
     width: 20ch;
-  }
-  > * {
   }
 }
 </style>
