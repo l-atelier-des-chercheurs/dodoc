@@ -589,20 +589,29 @@ module.exports = (function () {
         let totalTime;
 
         ffmpeg_cmd.input(source);
-        const { duration, streams } = await API.getVideoDurationFromMetadata({
-          ffmpeg_cmd,
-          video_path: source,
-        });
 
-        if (duration) ffmpeg_cmd.duration(duration);
+        try {
+          const { duration, streams } = await API.getVideoDurationFromMetadata({
+            ffmpeg_cmd,
+            video_path: source,
+          });
+          if (duration) ffmpeg_cmd.duration(duration);
 
-        // check if has audio track or not
-        if (streams?.some((s) => s.codec_type === "audio"))
-          ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("192k");
-        else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+          // check if has audio track or not
+          if (streams?.some((s) => s.codec_type === "audio")) {
+            ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("192k");
+          } else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
 
-        const filter = API.makeFilterToPadMatchDurationAudioVideo({ streams });
-        if (filter) ffmpeg_cmd.addOptions([filter]);
+          if (streams) {
+            const filter = API.makeFilterToPadMatchDurationAudioVideo({
+              streams,
+            });
+            if (filter) ffmpeg_cmd.addOptions([filter]);
+          }
+        } catch (err) {
+          dev.error(err);
+          ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+        }
 
         if (resolution)
           ffmpeg_cmd.videoFilter([

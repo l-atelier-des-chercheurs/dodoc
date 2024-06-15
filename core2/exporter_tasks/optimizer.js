@@ -131,16 +131,20 @@ module.exports = (function () {
           bitrate = "2000k";
         }
 
-        await utils.convertVideoToStandardFormat({
-          source,
-          destination,
-          resolution,
-          bitrate,
-          ffmpeg_cmd,
-          reportProgress,
-        });
-
-        return resolve();
+        try {
+          await utils.convertVideoToStandardFormat({
+            source,
+            destination,
+            resolution,
+            bitrate,
+            ffmpeg_cmd,
+            reportProgress,
+          });
+          return resolve();
+        } catch (err) {
+          dev.error(err);
+          return reject(err);
+        }
       });
     },
   };
