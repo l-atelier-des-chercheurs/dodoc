@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class="_trimMedia">
     <vue-plyr ref="plyr">
-      <video :src="media_full_path" />
+      <video v-if="media.$type === 'video'" :src="media_full_path" />
+      <audio v-else-if="media.$type === 'audio'" :src="media_full_path" />
     </vue-plyr>
 
     <div class="u-spacingBottom" />
@@ -218,6 +219,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._trimMedia {
+  --plyr-audio-controls-background: var(--c-noir);
+  --plyr-audio-control-color: white;
+}
 ._startEndBlock {
   display: flex;
   justify-content: center;

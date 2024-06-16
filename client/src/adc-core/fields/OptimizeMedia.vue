@@ -183,7 +183,7 @@ export default {
   },
   data() {
     return {
-      show_modal: true,
+      show_modal: false,
       is_optimizing: false,
       optimized_file: undefined,
       resolution_preset_picked: "source",
@@ -347,9 +347,12 @@ export default {
 }
 
 ._mediaPreview {
-  &[data-type="image"],
-  &[data-type="video"] {
+  &[data-type="image"] {
     aspect-ratio: 1/1;
+  }
+  &[data-type="video"] {
+    max-height: 50vh;
+    // aspect-ratio: 16/9;
   }
   ::v-deep {
     ._mediaContent {

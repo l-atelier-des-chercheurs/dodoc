@@ -786,7 +786,6 @@ void main(void) {
     },
     async newChromaKeyImage(img) {
       console.log(`CaptureEffects • METHODS : newChromaKeyImage`);
-      debugger;
 
       if (img === false) {
         this.chroma_key_settings.replacement_image = undefined;
@@ -798,7 +797,6 @@ void main(void) {
       if (typeof img === "string") {
         src = window.location.origin + this.getMediaSrcFromPath(img);
       } else if (typeof img === "object" && img.thumb) {
-        debugger;
         // src = window.location.origin + "/" + img.thumb;
       }
       if (!src) return;
@@ -845,8 +843,6 @@ void main(void) {
       );
 
       this.loadReplacementImageInShader();
-
-      debugger;
 
       canvas.remove();
     },

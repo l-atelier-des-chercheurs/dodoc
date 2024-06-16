@@ -76,8 +76,6 @@ export default {
     closeModal() {
       if (!this.is_closable) return false;
 
-      debugger;
-
       this.show_modal = false;
       setTimeout(() => {
         this.$emit("close");
