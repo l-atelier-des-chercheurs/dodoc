@@ -460,7 +460,11 @@ export default {
   trim_instructions:
     "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
   start: "début",
+  set_start: "Définir le début",
+  play_extract: "Jouer l’extrait",
+  stop_extract: "Arrêter l’extrait",
   end: "fin",
+  set_end: "Définir la fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
   export_montage: "Exporter le montage",
@@ -1090,11 +1094,14 @@ export default {
   full_page: "Pleine page",
 
   convert: "Convertir",
+  convert_shorten: "Convertir/raccourcir",
+  select_extract: "Sélectionner un extrait",
+  extract_range: "Recouper le début ou la fin",
   convert_to_format: "Adapter le format pour la lecture",
 
   already_optimized:
     "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
-  preview_optimize: "Créer une version optimisée",
+  preview_new: "Créer une nouvelle version",
   wont_remove_original: "Ne supprimera pas l’original",
   add_optimized_to_lib: "Conserver l’original et la nouvelle version",
   replace_original: "Remplacer l’original",

@@ -631,7 +631,11 @@ export default {
   trim_instructions:
     "Select the area to extract by indicating the start and end time below. You can also click on the spectrogram above.",
   start: "start",
+  set_start: "Set start",
+  play_extract: "Play extract",
+  stop_extract: "Stop extract",
   end: "end",
+  set_end: "Set end",
   copy: "Copy",
   test_and_export: "Test and export",
   export_montage: "Export montage",
@@ -1026,11 +1030,14 @@ export default {
   full_page: "Full page",
 
   convert: "Convert",
+  convert_shorten: "Convert/shorten",
+  select_extract: "Select extract",
+  extract_range: "Extract range",
   convert_to_format: "Adapt format for viewing",
 
   already_optimized:
     "This media has already been converted, it is not recommended to convert it again.",
-  preview_optimize: "Create optimized version",
+  preview_new: "Create new version",
   wont_remove_original: "Will not remove the original",
   add_optimized_to_lib: "Keep original media and add new version",
   replace_original: "Replace original media",

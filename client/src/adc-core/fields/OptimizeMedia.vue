@@ -1,19 +1,29 @@
 <template>
   <div>
     <button type="button" class="u-buttonLink" @click="show_modal = true">
-      <b-icon :icon="media.$optimized === true ? 'check2-circle' : 'tools'" />
-      {{ $t("convert") }}
+      <b-icon :icon="'tools'" />
+      {{ $t("convert_shorten") }}
     </button>
 
     <BaseModal2
       v-if="show_modal"
-      :title="$t('convert')"
+      :title="$t('convert_shorten')"
       :size="modal_width"
       @close="show_modal = false"
     >
       <div class="_cont">
         <LoaderSpinner v-if="is_optimizing" class="_loader" />
         <div v-if="!optimized_file">
+          <TrimMedia
+            v-if="['video', 'audio'].includes(media.$type)"
+            :media="media"
+            :extract_selection.sync="extract_selection"
+            :selection_start.sync="selection_start"
+            :selection_end.sync="selection_end"
+          />
+
+          <div class="u-spacingBottom" />
+
           <DLabel :str="$t('quality')" />
           <div
             v-if="media.$optimized === true"
@@ -40,7 +50,7 @@
                   @click="optimizeMedia"
                 >
                   <b-icon icon="tools" />
-                  {{ $t("preview_optimize") }}
+                  {{ $t("preview_new") }}
                 </button>
               </div>
               <div class="u-instructions">
@@ -162,17 +172,25 @@
   </div>
 </template>
 <script>
+import TrimMedia from "@/adc-core/fields/TrimMedia.vue";
+
 export default {
   props: {
     media: Object,
   },
-  components: {},
+  components: {
+    TrimMedia,
+  },
   data() {
     return {
-      show_modal: false,
+      show_modal: true,
       is_optimizing: false,
       optimized_file: undefined,
       resolution_preset_picked: "source",
+
+      extract_selection: false,
+      selection_start: 0,
+      selection_end: this.media.$infos?.duration || 0,
     };
   },
   created() {},
@@ -187,7 +205,7 @@ export default {
   },
   computed: {
     modal_width() {
-      if (this.optimized_file) return "large";
+      if (this.optimized_file || this.extract_selection) return "large";
       return undefined;
     },
     presets() {
@@ -248,6 +266,12 @@ export default {
           $optimized: true,
         },
       };
+
+      if (this.extract_selection) {
+        instructions.trim_start = this.selection_start;
+        instructions.trim_end = this.selection_end;
+      }
+
       const current_task_id = await this.$api.optimizeFile({
         path: this.media.$path,
         instructions,

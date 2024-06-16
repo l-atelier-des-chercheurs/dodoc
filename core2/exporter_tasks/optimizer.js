@@ -71,6 +71,8 @@ module.exports = (function () {
       source,
       destination,
       quality_preset,
+      trim_start,
+      trim_end,
       ffmpeg_cmd,
       reportProgress,
     }) {
@@ -84,8 +86,12 @@ module.exports = (function () {
         if (quality_preset === "high") bitrate = "192k";
         else if (quality_preset === "medium") bitrate = "128k";
 
+        ffmpeg_cmd.input(source);
+
+        if (trim_start !== undefined && trim_end !== undefined)
+          ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
+
         ffmpeg_cmd
-          .input(source)
           .withAudioCodec("aac")
           .withAudioBitrate(bitrate)
 
@@ -116,6 +122,8 @@ module.exports = (function () {
       source,
       destination,
       quality_preset,
+      trim_start,
+      trim_end,
       ffmpeg_cmd,
       reportProgress,
     }) {
@@ -135,8 +143,10 @@ module.exports = (function () {
           await utils.convertVideoToStandardFormat({
             source,
             destination,
-            resolution,
             bitrate,
+            resolution,
+            trim_start,
+            trim_end,
             ffmpeg_cmd,
             reportProgress,
           });

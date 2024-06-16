@@ -260,11 +260,12 @@ export default {
       return this.file_full_path;
     },
     file_full_path() {
-      const p = this.makeMediaFilePath({
+      return this.makeMediaFilePath({
         $path: this.file.$path,
         $media_filename: this.file.$media_filename,
+        with_timestamp: true,
+        $date_created: this.file.$date_created,
       });
-      return `/${p}?v=${this.timestamp}`;
     },
     timestamp() {
       if (this.file.$date_created) return +new Date(this.file.$date_created);

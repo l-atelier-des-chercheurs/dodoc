@@ -127,6 +127,8 @@ export default {
     max-height: 100vh;
     // max-width: calc(480px - calc(var(--spacing) * 1));
     // max-height: calc(100vh - calc(var(--spacing) * 1));
+
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   &[data-size="full"] ._baseModal--content {

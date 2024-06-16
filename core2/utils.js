@@ -580,6 +580,8 @@ module.exports = (function () {
       format = "mp4",
       bitrate = "6000k",
       resolution,
+      trim_start,
+      trim_end,
       reportProgress,
     }) {
       return new Promise(async (resolve, reject) => {
@@ -595,7 +597,10 @@ module.exports = (function () {
             ffmpeg_cmd,
             video_path: source,
           });
-          if (duration) ffmpeg_cmd.duration(duration);
+
+          if (trim_start !== undefined && trim_end !== undefined)
+            ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
+          else if (duration) ffmpeg_cmd.duration(duration);
 
           // check if has audio track or not
           if (streams?.some((s) => s.codec_type === "audio")) {
