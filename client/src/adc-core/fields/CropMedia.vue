@@ -306,7 +306,7 @@ export default {
 
 ._bottomBar {
   text-align: center;
-  padding: var(--spacing);
+  padding: calc(var(--spacing) / 2);
 }
 
 ._aspectRatio {

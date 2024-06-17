@@ -40,26 +40,8 @@
               @change="resolution_preset_picked = $event"
             />
           </div>
-
-          <div class="" slot="footer">
-            <div class="_convertBtns">
-              <div class="">
-                <button
-                  type="button"
-                  class="u-button u-button_bleuvert"
-                  @click="optimizeMedia"
-                >
-                  <b-icon icon="tools" />
-                  {{ $t("preview_new") }}
-                </button>
-              </div>
-              <div class="u-instructions">
-                {{ $t("wont_remove_original") }}
-              </div>
-            </div>
-          </div>
         </div>
-        <div class="" v-else>
+        <div v-else>
           <div
             class="u-spacingBottom _mediaPreview"
             :data-type="optimized_file.$type"
@@ -143,29 +125,47 @@
             </div>
           </div>
           <hr />
-          <div class="_btnRow">
-            <button type="button" class="u-buttonLink" @click="cancel">
-              <b-icon icon="arrow-left-short" />
-              {{ $t("back") }}
-            </button>
+        </div>
+      </div>
+
+      <div slot="footer">
+        <div v-if="!optimized_file" class="_convertBtns">
+          <div class="">
             <button
               type="button"
               class="u-button u-button_bleuvert"
-              @click="keepBoth"
+              @click="optimizeMedia"
             >
-              <b-icon icon="file-plus" />
-              {{ $t("add_optimized_to_lib") }}
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_red"
-              @click="replaceOriginal"
-            >
-              <b-icon icon="save2-fill" />
-              {{ $t("replace_original") }}
+              <b-icon icon="tools" />
+              {{ $t("preview_new") }}
             </button>
           </div>
-          <div class=""></div>
+          <div class="u-instructions">
+            {{ $t("wont_remove_original") }}
+          </div>
+        </div>
+
+        <div v-else class="_btnRow">
+          <button type="button" class="u-buttonLink" @click="cancel">
+            <b-icon icon="arrow-left-short" />
+            {{ $t("back") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="keepBoth"
+          >
+            <b-icon icon="file-plus" />
+            {{ $t("add_optimized_to_lib") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_red"
+            @click="replaceOriginal"
+          >
+            <b-icon icon="save2-fill" />
+            {{ $t("replace_original") }}
+          </button>
         </div>
       </div>
     </BaseModal2>

@@ -157,6 +157,8 @@ header {
   flex-flow: row nowrap;
   justify-content: space-between;
   padding: calc(var(--spacing) * 1);
+  // border-bottom: 1px solid var(--c-gris);
+
   h2 {
     font-weight: 600;
     font-size: var(--sl-font-size-x-large);
@@ -195,7 +197,8 @@ header {
 ._footer {
   display: flex;
   justify-content: center;
-  padding: calc(var(--spacing) * 1);
+  // border-top: 1px solid var(--c-gris);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
 }
 
 @keyframes reveal {

@@ -7,14 +7,14 @@
 
     <div class="u-spacingBottom" />
 
+    <DLabel :str="$t('extract_range')" />
+    <!-- <DLabel :str="$t('select_extract')" /> -->
     <ToggledSection
-      :label="$t('extract_range')"
+      :label="$t('enable')"
       :can_toggle="true"
       :show_toggle.sync="show_extract_selection"
     >
       <div class="_currentTime">{{ current_time_displayed }} s</div>
-
-      <DLabel :str="$t('select_extract')" />
 
       <div class="_startEndBlock">
         <div class="_startEndBlock--b" :key="selection_start">
@@ -29,7 +29,7 @@
           </button>
           <NumberInput
             :value="selection_start"
-            :suffix="'s'"
+            :suffix="$t('seconds')"
             :size="'medium'"
             @save="setStartOrEnd({ new_start: $event })"
           />
@@ -60,7 +60,7 @@
           </div>
         </div>
 
-        <b-icon icon="arrow-right-circle" />
+        <b-icon icon="arrow-right-circle-fill" class="_arrowIcon" />
 
         <div class="_startEndBlock--b">
           <button
@@ -74,7 +74,7 @@
           </button>
           <NumberInput
             :value="selection_end"
-            :suffix="'s'"
+            :suffix="$t('seconds')"
             :size="'medium'"
             @save="setStartOrEnd({ new_end: $event })"
           />
@@ -222,19 +222,37 @@ export default {
 ._trimMedia {
   --plyr-audio-controls-background: var(--c-noir);
   --plyr-audio-control-color: white;
+
+  .plyr {
+    --plyr-audio-controls-background: var(--c-noir);
+    --plyr-audio-control-color: white;
+
+    .plyr__controls {
+      border-radius: 4px;
+    }
+  }
 }
+
 ._startEndBlock {
   display: flex;
-  justify-content: center;
-  gap: calc(var(--spacing) * 2);
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 1);
   margin: 0 auto;
+  background-color: var(--c-noir);
 }
 ._startEndBlock--b {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
-  border: 2px solid var(--c-gris);
+  // border: 2px solid var(--c-gris);
+  margin: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2);
+  background-color: white;
+}
+
+._arrowIcon {
+  color: white;
+  font-size: var(--sl-font-size-large);
 }
 ._currentTime {
   text-align: center;
@@ -245,6 +263,6 @@ export default {
 ._playExtract {
   display: flex;
   justify-content: center;
-  margin: calc(var(--spacing) / 2) auto;
+  margin: calc(var(--spacing) / 2) auto 0;
 }
 </style>
