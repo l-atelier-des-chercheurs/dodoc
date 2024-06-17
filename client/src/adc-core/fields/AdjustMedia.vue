@@ -157,9 +157,15 @@ export default {
 }
 
 ._settings {
-  flex: 0 0 240px;
+  flex: 0 0 200px;
   overflow: auto;
   padding: calc(var(--spacing) / 2);
+
+  ::v-deep {
+    ._numberField {
+      flex: 1 0 0;
+    }
+  }
 }
 ._preview {
   flex: 1 1 0;
@@ -170,7 +176,7 @@ export default {
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
     width: 100%;
     height: 100%;
-    object-fit: scale-down;
+    object-fit: contain;
     object-position: center;
   }
 }

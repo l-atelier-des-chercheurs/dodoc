@@ -10,7 +10,7 @@
           {{ $t("zoom") }}
           <b-icon icon="dash" />
         </button>
-        <span class="_spacer" />
+        <span class="_spacer" v-text="'•'" />
         <button type="button" class="u-button u-button_small" @click="flipX">
           {{ $t("flip_horizontally") }}
           <b-icon icon="arrow-left-right" />
@@ -19,7 +19,7 @@
           {{ $t("flip_vertically") }}
           <b-icon icon="arrow-left-right" rotate="90" />
         </button>
-        <span class="_spacer" />
+        <span class="_spacer" v-text="'•'" />
         <button
           type="button"
           class="u-button u-button_small"
@@ -36,27 +36,68 @@
           {{ $t("rotate_right") }}
           <b-icon icon="arrow-clockwise" />
         </button>
+        <span class="_spacer" v-text="'•'" />
+        <button
+          type="button"
+          class="u-button u-button_small u-button_red"
+          @click="resetCrop"
+        >
+          {{ $t("reset_crop") }}
+          <b-icon icon="arrow-counterclockwise" />
+        </button>
       </div>
-      <div class="_aspectRatio">
-        <label for="aspect_ratio">{{ $t("aspect_ratio") }}</label>
-        <select v-model="aspect_ratio">
-          <option
-            v-for="ratio in available_aspect_ratios"
-            :key="ratio.key"
-            :value="ratio.key"
-          >
-            {{ ratio.label }}
-          </option>
-        </select>
-        <template v-if="aspect_ratio === 'custom'">
-          <input
-            type="number"
-            min="0.01"
-            max="100"
-            v-model.number="custom_aspect_ratio"
-          />
-          <small>{{ $t("custom_aspect_ratio") }}</small>
-        </template>
+      <div class="_resizeRatio">
+        <div>
+          <DLabel :str="$t('constrain_crop_resize')" />
+          <label>
+            <input type="radio" v-model="crop_resize_mode" :value="'ratio'" />
+            {{ $t("aspect_ratio") }}
+          </label>
+          <label>
+            <input type="radio" v-model="crop_resize_mode" :value="'resize'" />
+            {{ $t("resize") }}
+          </label>
+        </div>
+
+        <div class="_targetResolution" v-if="crop_resize_mode === 'resize'">
+          <div class="u-sameRow">
+            <NumberInput
+              :label="$t('width')"
+              :value="new_width"
+              :min="0"
+              :suffix="'px'"
+              @save="new_width = $event"
+            />
+            <NumberInput
+              :label="$t('height')"
+              :value="new_height"
+              :min="0"
+              :suffix="'px'"
+              @save="new_height = $event"
+            />
+          </div>
+        </div>
+        <div class="_aspectRatio" v-if="crop_resize_mode === 'ratio'">
+          <DLabel :str="$t('aspect_ratio')" />
+          <select v-model="aspect_ratio">
+            <option
+              v-for="ratio in available_aspect_ratios"
+              :key="ratio.key"
+              :value="ratio.key"
+            >
+              {{ ratio.label }}
+            </option>
+          </select>
+          <div v-if="aspect_ratio === 'custom'">
+            <input
+              type="number"
+              min="0.01"
+              max="100"
+              v-model.number="custom_aspect_ratio"
+            />
+            <small>{{ $t("custom_aspect_ratio") }}</small>
+          </div>
+        </div>
       </div>
 
       <!-- 
@@ -128,6 +169,8 @@ export default {
   },
   data() {
     return {
+      crop_resize_mode: "ratio",
+
       aspect_ratio: "none",
       available_aspect_ratios: [
         { key: "none", label: this.$t("free") },
@@ -147,10 +190,10 @@ export default {
         image: null,
       },
 
-      img_width: 0,
-      img_height: 0,
-      new_width: 0,
-      new_height: 0,
+      img_width: this.media.$infos.width || undefined,
+      img_height: this.media.$infos.height || undefined,
+      new_width: this.media.$infos.width || undefined,
+      new_height: this.media.$infos.height || undefined,
     };
   },
   created() {},
@@ -159,6 +202,13 @@ export default {
   watch: {},
   computed: {
     stencil_props() {
+      if (this.crop_resize_mode === "resize") {
+        const aspectRatio = this.new_width / this.new_height;
+        return {
+          aspectRatio,
+        };
+      }
+
       if (this.aspect_ratio === "none") return {};
       if (this.aspect_ratio === "square") return { aspectRatio: 1 / 1 };
       if (this.aspect_ratio === "16 / 9") return { aspectRatio: 16 / 9 };
@@ -215,9 +265,32 @@ export default {
     rotateRight() {
       this.$refs.cropper.rotate(90);
     },
+    resetCrop() {
+      this.aspect_ratio = "none";
+      this.custom_aspect_ratio = 1;
+      this.$refs.cropper.reset();
+    },
     async previewMedia() {
-      const { canvas } = this.$refs.cropper.getResult();
-      this.$emit("updateCrop", canvas.toDataURL());
+      const { coordinates, canvas } = this.$refs.cropper.getResult();
+
+      if (this.crop_resize_mode === "ratio") {
+        this.$emit("updateCrop", canvas.toDataURL());
+      } else if (this.crop_resize_mode === "resize") {
+        debugger;
+
+        let img = new Image();
+        img.src = canvas.toDataURL();
+        await img.decode();
+
+        const resized_canvas = document.createElement("canvas");
+        resized_canvas.width = this.new_width;
+        resized_canvas.height = this.new_height;
+
+        const ctx = resized_canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, this.new_width, this.new_height);
+
+        this.$emit("updateCrop", resized_canvas.toDataURL());
+      }
     },
   },
 };
@@ -266,6 +339,10 @@ export default {
   // background-color: var(--c-noir);
 
   ::v-deep {
+    .vue-advanced-cropper {
+      height: 100%;
+    }
+
     .vue-advanced-cropper__background,
     .vue-advanced-cropper__foreground {
       background-color: var(--c-noir);
@@ -310,6 +387,33 @@ export default {
   padding: calc(var(--spacing) / 2);
 }
 
+._resizeRatio {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  padding: 0 calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+
+  * {
+    color: white;
+  }
+  ::v-deep {
+    input,
+    select {
+      color: var(--c-noir);
+    }
+    label {
+      color: white;
+    }
+  }
+}
+
+._targetResolution {
+  flex: 0 0 240px;
+}
+
 ._aspectRatio {
   display: flex;
   flex-flow: row nowrap;
@@ -317,13 +421,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  padding: 0 calc(var(--spacing) / 1) calc(var(--spacing) / 1);
   // margin-bottom: calc(var(--spacing) / 2);
-
-  > label,
-  > small {
-    color: white;
-  }
 
   select,
   input {

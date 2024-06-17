@@ -1123,6 +1123,7 @@ export default {
   free: "Libre",
   A_portrait: "Format 'A' portrait",
   A_landscape: "Format 'A' paysage",
+  constrain_crop_resize: "Contrainte pour recadrer/redimensionner",
   custom_aspect_ratio: "Indiquer ici une valeur, par exemple 1,66",
   resize: "Redimensionner",
 };
