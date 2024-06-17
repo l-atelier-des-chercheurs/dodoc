@@ -893,6 +893,7 @@ export default {
     "La connexion au compte est active, rechargement de la page en cours…",
 
   informations: "Informations",
+  metadatas: "Métadonnées",
 
   duplicate: "Dupliquer",
   duplicate_or_move: "Dupliquer ou déplacer",

@@ -197,7 +197,7 @@ header {
 ._footer {
   display: flex;
   justify-content: center;
-  // border-top: 1px solid var(--c-gris);
+  border-top: 1px solid var(--c-gris);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
 }
 

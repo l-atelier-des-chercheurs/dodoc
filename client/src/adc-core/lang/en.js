@@ -923,6 +923,8 @@ export default {
   account_created: "Your account has been created",
   logged_in: "Account connection is active, page reloading…",
   informations: "informations",
+  metadatas: "Metadatas",
+
   duplicate: "Duplicate",
   duplicate_or_move: "Duplicate or move",
   duplicate_or_move_project: "Duplicate or move this project",

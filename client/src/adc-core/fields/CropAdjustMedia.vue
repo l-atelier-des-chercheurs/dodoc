@@ -1,6 +1,10 @@
 <template>
   <div class="_cropAdjustMedia">
-    <button type="button" class="u-buttonLink" @click="show_modal = true">
+    <button
+      type="button"
+      class="u-button u-button_orange"
+      @click="show_modal = true"
+    >
       <b-icon icon="bounding-box" />
       {{ $t("crop_adjust") }}
     </button>
