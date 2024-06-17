@@ -1,6 +1,10 @@
 <template>
   <div>
-    <button type="button" class="u-buttonLink" @click="show_modal = true">
+    <button
+      type="button"
+      class="u-button u-button_orange"
+      @click="show_modal = true"
+    >
       <b-icon :icon="'tools'" />
       {{ $t("convert_shorten") }}
     </button>

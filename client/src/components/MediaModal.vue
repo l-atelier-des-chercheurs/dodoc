@@ -125,16 +125,6 @@
                   {{ $t("download") }}
                 </DownloadFile>
               </div>
-              <CropAdjustMedia
-                v-if="file.$type === 'image'"
-                :media="file"
-                @close="$emit('close')"
-              />
-              <OptimizeMedia
-                v-if="optimization_possible"
-                :media="file"
-                @close="$emit('close')"
-              />
               <DuplicateMedia :path="file.$path" @close="$emit('close')" />
               <RemoveMenu
                 v-if="$listeners.remove"
@@ -148,46 +138,62 @@
 
         <hr class="u-spacingBottom" />
 
-        <div class="u-spacingBottom">
-          <CollaborativeEditor2
-            :label="$t('caption')"
-            :field_to_edit="'caption'"
-            :content="file.caption"
-            :path="file.$path"
-            :custom_formats="['bold', 'italic', 'link']"
-            :is_collaborative="false"
-            :can_edit="true"
-          />
-        </div>
-        <div class="u-spacingBottom">
-          <CollaborativeEditor2
-            :label="$t('credit/reference')"
-            :field_to_edit="'$credits'"
-            :content="file.$credits"
-            :path="file.$path"
-            :custom_formats="['bold', 'italic', 'link']"
-            :is_collaborative="false"
-            :can_edit="true"
-          />
-        </div>
-
-        <div class="u-spacingBottom">
-          <AuthorField
-            :label="$t('authors')"
-            class="u-spacingBottom"
-            :field="'$authors'"
-            :authors_paths="authors_path"
-            :path="file.$path"
-            :can_edit="true"
-            :instructions="$t('file_author_instructions')"
-            :no_options="true"
-          />
-        </div>
-
         <DetailsPane
           :header="$t('informations')"
           :icon="'info-square'"
           :is_open_initially="true"
+          class="u-spacingBottom"
+        >
+          <div class="u-spacingBottom">
+            <CollaborativeEditor2
+              :label="$t('caption')"
+              :field_to_edit="'caption'"
+              :content="file.caption"
+              :path="file.$path"
+              :custom_formats="['bold', 'italic', 'link']"
+              :is_collaborative="false"
+              :can_edit="true"
+            />
+          </div>
+          <div class="u-spacingBottom">
+            <CollaborativeEditor2
+              :label="$t('credit/reference')"
+              :field_to_edit="'$credits'"
+              :content="file.$credits"
+              :path="file.$path"
+              :custom_formats="['bold', 'italic', 'link']"
+              :is_collaborative="false"
+              :can_edit="true"
+            />
+          </div>
+
+          <div class="u-spacingBottom">
+            <AuthorField
+              :label="$t('authors')"
+              class="u-spacingBottom"
+              :field="'$authors'"
+              :authors_paths="authors_path"
+              :path="file.$path"
+              :can_edit="true"
+              :instructions="$t('file_author_instructions')"
+              :no_options="true"
+            />
+          </div>
+
+          <div class="">
+            <PositionPicker
+              :label="$t('location')"
+              :field_name="'$location'"
+              :content="file.$location"
+              :path="file.$path"
+              :can_edit="true"
+            />
+          </div>
+        </DetailsPane>
+
+        <DetailsPane
+          :header="$t('metadatas')"
+          :icon="'rulers'"
           class="u-spacingBottom"
         >
           <DateDisplay
@@ -227,16 +233,24 @@
         </DetailsPane>
 
         <DetailsPane
-          :header="$t('location')"
-          :icon="'map'"
-          :has_items="!!file.$location"
+          :header="$t('edit')"
+          :icon="'tools'"
+          :is_open_initially="false"
         >
-          <PositionPicker
-            :field_name="'$location'"
-            :content="file.$location"
-            :path="file.$path"
-            :can_edit="true"
-          />
+          <div class="u-spacingBottom">
+            <CropAdjustMedia
+              v-if="file.$type === 'image'"
+              :media="file"
+              @close="$emit('close')"
+            />
+          </div>
+          <div class="">
+            <OptimizeMedia
+              v-if="optimization_possible"
+              :media="file"
+              @close="$emit('close')"
+            />
+          </div>
         </DetailsPane>
       </div>
     </div>
