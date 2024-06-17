@@ -261,6 +261,8 @@
 </template>
 <script>
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
+import CropAdjustMedia from "@/adc-core/fields/CropAdjustMedia.vue";
+import OptimizeMedia from "@/adc-core/fields/OptimizeMedia.vue";
 
 export default {
   props: {
@@ -270,6 +272,8 @@ export default {
   },
   components: {
     DuplicateMedia,
+    CropAdjustMedia,
+    OptimizeMedia,
   },
   data() {
     return {

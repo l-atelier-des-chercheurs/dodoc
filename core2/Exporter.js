@@ -750,6 +750,12 @@ class Exporter {
 
       const quality_preset = this.instructions.quality_preset || "source";
       // source high medium
+      const trim_start = this.instructions.hasOwnProperty("trim_start")
+        ? this.instructions.trim_start
+        : undefined;
+      const trim_end = this.instructions.hasOwnProperty("trim_end")
+        ? this.instructions.trim_end
+        : undefined;
 
       const that = this;
       const reportProgress = (progress) => {
@@ -763,6 +769,8 @@ class Exporter {
         source: base_media_path,
         destination: full_path_to_new_file,
         quality_preset,
+        trim_start,
+        trim_end,
         ffmpeg_cmd: this.ffmpeg_cmd,
         reportProgress,
       });

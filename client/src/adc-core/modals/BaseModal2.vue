@@ -76,8 +76,6 @@ export default {
     closeModal() {
       if (!this.is_closable) return false;
 
-      debugger;
-
       this.show_modal = false;
       setTimeout(() => {
         this.$emit("close");
@@ -127,6 +125,8 @@ export default {
     max-height: 100vh;
     // max-width: calc(480px - calc(var(--spacing) * 1));
     // max-height: calc(100vh - calc(var(--spacing) * 1));
+
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   &[data-size="full"] ._baseModal--content {
@@ -157,6 +157,8 @@ header {
   flex-flow: row nowrap;
   justify-content: space-between;
   padding: calc(var(--spacing) * 1);
+  // border-bottom: 1px solid var(--c-gris);
+
   h2 {
     font-weight: 600;
     font-size: var(--sl-font-size-x-large);
@@ -195,7 +197,8 @@ header {
 ._footer {
   display: flex;
   justify-content: center;
-  padding: calc(var(--spacing) * 1);
+  // border-top: 1px solid var(--c-gris);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
 }
 
 @keyframes reveal {

@@ -34,14 +34,27 @@ export default {
         resolution: resolution,
       });
     },
-    makeMediaFilePath({ $path, $media_filename }) {
+    makeMediaFilePath({
+      $path,
+      $media_filename,
+      $date_created,
+      with_timestamp,
+    }) {
       const path_to_parent_folder = $path.substring(0, $path.lastIndexOf("/"));
-      const full_path = path_to_parent_folder + "/" + $media_filename;
+      let full_path = "/" + path_to_parent_folder + "/" + $media_filename;
+
+      if (with_timestamp) {
+        let timestamp = +new Date().getTime();
+        if ($date_created) timestamp = +new Date($date_created);
+
+        full_path += "?v=" + timestamp;
+      }
+
       return full_path;
     },
     makeMediaFileURL({ $path, $media_filename }) {
       const full_path = this.makeMediaFilePath({ $path, $media_filename });
-      return window.location.origin + "/" + full_path;
+      return window.location.origin + full_path;
     },
     getSourceMedia({ source_media, folder_path }) {
       // three cases : source_media contains

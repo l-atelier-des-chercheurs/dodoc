@@ -171,15 +171,12 @@ export default {
       return {};
     },
     file_full_path() {
-      const p = this.makeMediaFilePath({
+      return this.makeMediaFilePath({
         $path: this.media.$path,
         $media_filename: this.media.$media_filename,
+        with_timestamp: true,
+        $date_created: this.media.$date_created,
       });
-      return `/${p}?v=${this.timestamp}`;
-    },
-    timestamp() {
-      if (this.media.$date_created) return +new Date(this.media.$date_created);
-      else return +new Date();
     },
   },
   methods: {
@@ -309,7 +306,7 @@ export default {
 
 ._bottomBar {
   text-align: center;
-  padding: var(--spacing);
+  padding: calc(var(--spacing) / 2);
 }
 
 ._aspectRatio {
