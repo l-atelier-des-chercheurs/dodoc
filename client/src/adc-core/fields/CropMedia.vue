@@ -91,7 +91,7 @@
           <div v-if="aspect_ratio === 'custom'">
             <input
               type="number"
-              min="0.01"
+              min="0.1"
               max="100"
               v-model.number="custom_aspect_ratio"
             />
@@ -203,6 +203,8 @@ export default {
   computed: {
     stencil_props() {
       if (this.crop_resize_mode === "resize") {
+        if (!this.new_width || !this.new_height)
+          return { aspectRatio: undefined };
         const aspectRatio = this.new_width / this.new_height;
         return {
           aspectRatio,
@@ -275,7 +277,11 @@ export default {
 
       if (this.crop_resize_mode === "ratio") {
         this.$emit("updateCrop", canvas.toDataURL());
-      } else if (this.crop_resize_mode === "resize") {
+      } else if (
+        this.crop_resize_mode === "resize" &&
+        this.new_width &&
+        this.new_height
+      ) {
         debugger;
 
         let img = new Image();
