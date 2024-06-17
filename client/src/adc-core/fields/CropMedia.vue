@@ -48,12 +48,15 @@
             {{ ratio.label }}
           </option>
         </select>
-        <input
-          type="number"
-          v-if="aspect_ratio === 'custom'"
-          v-model.number="custom_aspect_ratio"
-        />
-        <small>{{ $t("custom_aspect_ratio") }}</small>
+        <template v-if="aspect_ratio === 'custom'">
+          <input
+            type="number"
+            min="0.01"
+            max="100"
+            v-model.number="custom_aspect_ratio"
+          />
+          <small>{{ $t("custom_aspect_ratio") }}</small>
+        </template>
       </div>
 
       <!-- 
@@ -227,15 +230,14 @@ export default {
 }
 ._topPanes {
   flex: 1 1 0;
-  background: var(--c-gris_fonce);
-  margin-top: calc(var(--spacing) / 2);
+  background: var(--c-noir);
+  padding-top: calc(var(--spacing) / 1);
 
   display: flex;
   flex-flow: column nowrap;
   overflow: auto;
 
   > *:not(:last-child) {
-    margin: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   }
 }
@@ -244,9 +246,8 @@ export default {
 }
 
 ._btn {
-  padding-top: calc(var(--spacing) / 2);
-  padding-right: 0;
-  // padding-bottom: 0;
+  padding: 0 calc(var(--spacing) / 1) calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 1);
 
   > * {
     margin-right: calc(var(--spacing) / 2);
@@ -259,7 +260,7 @@ export default {
 }
 ._cropper {
   flex: 1 1 0;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
   overflow: hidden;
   min-height: 100px;
   // background-color: var(--c-noir);
@@ -312,10 +313,17 @@ export default {
 ._aspectRatio {
   display: flex;
   flex-flow: row nowrap;
+  justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) / 2);
-  margin-bottom: 0 !important;
+
+  padding: 0 calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  // margin-bottom: calc(var(--spacing) / 2);
+
+  > label,
+  > small {
+    color: white;
+  }
 
   select,
   input {
