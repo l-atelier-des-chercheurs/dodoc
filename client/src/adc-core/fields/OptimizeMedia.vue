@@ -14,32 +14,15 @@
       <div class="_cont">
         <LoaderSpinner v-if="is_optimizing" class="_loader" />
         <div v-if="!optimized_file">
-          <TrimMedia
-            v-if="['video', 'audio'].includes(media.$type)"
-            :media="media"
-            :extract_selection.sync="extract_selection"
-            :selection_start.sync="selection_start"
-            :selection_end.sync="selection_end"
-          />
-
-          <div class="u-spacingBottom" />
-
-          <DLabel :str="$t('quality')" />
-          <div
-            v-if="media.$optimized === true"
-            class="u-spacingBottom u-instructions"
-          >
-            {{ $t("already_optimized") }}
-          </div>
-          <div class="u-spacingBottom">
-            <SelectField2
-              :value="resolution_preset_picked"
-              :options="presets"
-              :can_edit="true"
-              :hide_validation="true"
-              @change="resolution_preset_picked = $event"
+          <template v-if="['video', 'audio'].includes(media.$type)">
+            <TrimMedia
+              :media="media"
+              :extract_selection.sync="extract_selection"
+              :selection_start.sync="selection_start"
+              :selection_end.sync="selection_end"
             />
-          </div>
+            <div class="u-spacingBottom" />
+          </template>
         </div>
         <div v-else>
           <div
@@ -124,49 +107,70 @@
               </strong>
             </div>
           </div>
-          <hr />
         </div>
       </div>
 
-      <div slot="footer">
-        <div v-if="!optimized_file" class="_convertBtns">
-          <div class="">
+      <div slot="footer" class="_convertBtns">
+        <template v-if="!optimized_file">
+          <div>
+            <DLabel :str="$t('quality')" />
+            <div
+              v-if="media.$optimized === true"
+              class="u-spacingBottom u-instructions"
+            >
+              {{ $t("already_optimized") }}
+            </div>
+            <div class="">
+              <SelectField2
+                :value="resolution_preset_picked"
+                :options="presets"
+                :can_edit="true"
+                :hide_validation="true"
+                @change="resolution_preset_picked = $event"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div>
+              <button
+                type="button"
+                class="u-button u-button_bleuvert"
+                @click="optimizeMedia"
+              >
+                <b-icon icon="tools" />
+                {{ $t("preview_new") }}
+              </button>
+            </div>
+            <div class="u-instructions">
+              {{ $t("wont_remove_original") }}
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="_btnRow">
+            <button type="button" class="u-buttonLink" @click="cancel">
+              <b-icon icon="arrow-left-short" />
+              {{ $t("back") }}
+            </button>
             <button
               type="button"
               class="u-button u-button_bleuvert"
-              @click="optimizeMedia"
+              @click="keepBoth"
             >
-              <b-icon icon="tools" />
-              {{ $t("preview_new") }}
+              <b-icon icon="file-plus" />
+              {{ $t("add_optimized_to_lib") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_red"
+              @click="replaceOriginal"
+            >
+              <b-icon icon="save2-fill" />
+              {{ $t("replace_original") }}
             </button>
           </div>
-          <div class="u-instructions">
-            {{ $t("wont_remove_original") }}
-          </div>
-        </div>
-
-        <div v-else class="_btnRow">
-          <button type="button" class="u-buttonLink" @click="cancel">
-            <b-icon icon="arrow-left-short" />
-            {{ $t("back") }}
-          </button>
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="keepBoth"
-          >
-            <b-icon icon="file-plus" />
-            {{ $t("add_optimized_to_lib") }}
-          </button>
-          <button
-            type="button"
-            class="u-button u-button_red"
-            @click="replaceOriginal"
-          >
-            <b-icon icon="save2-fill" />
-            {{ $t("replace_original") }}
-          </button>
-        </div>
+        </template>
       </div>
     </BaseModal2>
   </div>
@@ -381,7 +385,11 @@ export default {
 }
 
 ._convertBtns {
-  text-align: center;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 2);
 }
 
 ._loader {
