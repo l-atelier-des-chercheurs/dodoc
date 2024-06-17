@@ -32,7 +32,6 @@
             :suffix="$t('seconds')"
             :size="'medium'"
             :min="0"
-            :max="media_duration"
             @save="setStartOrEnd({ new_start: $event })"
           />
           <div class="u-sameRow">
@@ -79,7 +78,6 @@
             :suffix="$t('seconds')"
             :size="'medium'"
             :min="0"
-            :max="media_duration"
             @save="setStartOrEnd({ new_end: $event })"
           />
           <div class="u-sameRow">
