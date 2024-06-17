@@ -389,11 +389,12 @@ export default {
 }
 
 ._convertBtns {
+  flex: 1 1 auto;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 }
 
 ._loader {
