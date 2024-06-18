@@ -114,7 +114,7 @@
     "uuid": "^9.0.1",
     "websocket-json-stream": "0.0.3",
     "write-file-atomic": "^5.0.1",
-    "ws": "^8.16.0"
+    "ws": "^8.17.1"
   },
   "devDependencies": {
     "electron": "29.1.6",
