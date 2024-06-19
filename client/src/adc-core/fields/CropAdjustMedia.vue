@@ -254,7 +254,7 @@ export default {
     flex: 1 1 0;
     width: 100%;
     overflow: hidden;
-    object-fit: scale-down;
+    object-fit: contain;
     background-color: var(--c-noir);
     padding: calc(var(--spacing) / 2);
   }

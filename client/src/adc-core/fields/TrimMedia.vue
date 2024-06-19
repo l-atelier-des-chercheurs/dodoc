@@ -31,6 +31,7 @@
             :value="selection_start"
             :suffix="$t('seconds')"
             :size="'medium'"
+            :min="0"
             @save="setStartOrEnd({ new_start: $event })"
           />
           <div class="u-sameRow">
@@ -76,6 +77,7 @@
             :value="selection_end"
             :suffix="$t('seconds')"
             :size="'medium'"
+            :min="0"
             @save="setStartOrEnd({ new_end: $event })"
           />
           <div class="u-sameRow">
@@ -154,9 +156,11 @@ export default {
   watch: {
     selection_start: function (new_start) {
       this.$refs.plyr.player.currentTime = new_start;
+      this.$refs.plyr.player.pause();
     },
     selection_end: function (new_end) {
       this.$refs.plyr.player.currentTime = new_end;
+      this.$refs.plyr.player.pause();
     },
     show_extract_selection: function (new_value) {
       this.$emit("update:extract_selection", new_value);
