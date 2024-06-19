@@ -26,7 +26,6 @@
     "isomorphic-dompurify": "^1.13.0",
     "jspdf": "^2.5.1",
     "less-loader": "^11.1.4",
-    "marked": "^5.1.2",
     "moment": "^2.30.1",
     "ol": "^8.2.0",
     "ol-ext": "^4.0.17",

@@ -36,7 +36,10 @@
     />
 
     <!-- bottom right -->
-    <div class="_hasCoordinates">
+    <div
+      class="_hasCoordinates"
+      v-if="has_coordinates || tile_mode === 'table'"
+    >
       <b-icon class="" v-if="has_coordinates" icon="pin-map-fill" />
       <span v-else v-text="'-'" />
     </div>
