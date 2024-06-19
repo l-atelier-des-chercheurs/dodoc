@@ -155,6 +155,7 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 1;
   margin: calc(var(--spacing) / 2);
 }
 
@@ -164,6 +165,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: center;
