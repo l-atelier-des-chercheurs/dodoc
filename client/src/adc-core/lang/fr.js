@@ -535,8 +535,11 @@ export default {
   mirror: "Miroir",
   horizontal_flip: "Retournement horizontal",
   vertical_flip: "Retournement vertical",
+
   rotate_left: "Pivoter à gauche",
   rotate_right: "Pivoter à droite",
+  rotate_90_deg: "Pivoter de 90°",
+  rotate_x_deg: "Pivoter vers la droite",
   both: "Les deux",
 
   mix_audio_and_image: "Son sur une image",
@@ -1120,7 +1123,7 @@ export default {
   crop_adjust: "Recadrer/retoucher",
   aspect_ratio: "Rapport largeur/hauteur",
   square: "Carré",
-  free: "Libre",
+  original: "Original",
   A_portrait: "Format 'A' portrait",
   A_landscape: "Format 'A' paysage",
   constrain_crop_resize: "Contrainte pour recadrer/redimensionner",
