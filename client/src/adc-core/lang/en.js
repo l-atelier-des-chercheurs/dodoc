@@ -698,6 +698,8 @@ export default {
   vertical_flip: "Vertical flip",
   rotate_left: "Rotate left",
   rotate_right: "Rotate right",
+  rotate_90_deg: "Rotate 90°",
+  rotate_x_deg: "Rotate to the right",
 
   both: "Both",
   mix_audio_and_image: "Sound on an image",
@@ -1052,7 +1054,8 @@ export default {
   enable_indexing: "Enable indexing on search engines",
   crop_adjust: "Crop/adjust",
   aspect_ratio: "Aspect ratio",
-  free: "Free",
+  square: "Square",
+  original: "Original",
   A_portrait: "Format 'A' portrait",
   A_landscape: "Format 'A' landscape",
   constrain_crop_resize: "Constrain crop/resize",

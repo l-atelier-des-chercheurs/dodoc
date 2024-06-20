@@ -23,19 +23,51 @@
         <button
           type="button"
           class="u-button u-button_small"
-          @click="rotateLeft"
+          @click="rotateCrop(-90)"
         >
-          {{ $t("rotate_left") }}
+          {{ $t("rotate_90_deg") }}
           <b-icon icon="arrow-counterclockwise" />
         </button>
         <button
           type="button"
           class="u-button u-button_small"
-          @click="rotateRight"
+          @click="rotateCrop(90)"
         >
-          {{ $t("rotate_right") }}
+          {{ $t("rotate_90_deg") }}
           <b-icon icon="arrow-clockwise" />
         </button>
+        <button
+          type="button"
+          class="u-button u-button_small"
+          @click="show_rotate_deg_picker = true"
+        >
+          {{ $t("rotate_x_deg") }}
+        </button>
+        <BaseModal2
+          v-if="show_rotate_deg_picker"
+          :title="$t('rotate_x_deg')"
+          :is_closable="true"
+          @close="show_rotate_deg_picker = false"
+        >
+          <form @submit.prevent="rotateSpecificCrop">
+            <div class="u-spacingBottom">
+              <NumberInput
+                :label="$t('angle')"
+                :value="rotation_deg"
+                :size="'medium'"
+                :min="0"
+                :max="360"
+                :step="1"
+                :suffix="'°'"
+                @save="rotation_deg = $event"
+              />
+            </div>
+            <button class="u-button u-button_bleuvert" type="submit">
+              {{ $t("rotate") }}
+            </button>
+          </form>
+        </BaseModal2>
+
         <span class="_spacer" v-text="'•'" />
         <button
           type="button"
@@ -49,6 +81,10 @@
       <div class="_resizeRatio">
         <div>
           <DLabel :str="$t('constrain_crop_resize')" />
+          <label>
+            <input type="radio" v-model="crop_resize_mode" :value="'none'" />
+            {{ $t("none_f") }}
+          </label>
           <label>
             <input type="radio" v-model="crop_resize_mode" :value="'ratio'" />
             {{ $t("aspect_ratio") }}
@@ -169,11 +205,15 @@ export default {
   },
   data() {
     return {
-      crop_resize_mode: "ratio",
+      crop_resize_mode: "none",
+      show_percent_picker: false,
+      show_rotate_deg_picker: false,
 
-      aspect_ratio: "none",
+      rotation_deg: 5,
+
+      aspect_ratio: "original",
       available_aspect_ratios: [
-        { key: "none", label: this.$t("free") },
+        { key: "original", label: this.$t("original") },
         { key: "square", label: this.$t("square") },
         { key: "16 / 9", label: "16 / 9" },
         { key: "4 / 3", label: "4 / 3" },
@@ -202,6 +242,8 @@ export default {
   watch: {},
   computed: {
     stencil_props() {
+      if (this.crop_resize_mode === "none") return {};
+
       if (this.crop_resize_mode === "resize") {
         if (!this.new_width || !this.new_height)
           return { aspectRatio: undefined };
@@ -211,7 +253,10 @@ export default {
         };
       }
 
-      if (this.aspect_ratio === "none") return {};
+      if (this.aspect_ratio === "original")
+        return {
+          aspectRatio: this.img_width / this.img_height,
+        };
       if (this.aspect_ratio === "square") return { aspectRatio: 1 / 1 };
       if (this.aspect_ratio === "16 / 9") return { aspectRatio: 16 / 9 };
       if (this.aspect_ratio === "4 / 3") return { aspectRatio: 4 / 3 };
@@ -261,14 +306,18 @@ export default {
       console.log("flipY");
       this.$refs.cropper.flip(false, true);
     },
-    rotateLeft() {
-      this.$refs.cropper.rotate(-90);
+    rotateCrop(deg = 90) {
+      this.$refs.cropper.rotate(deg);
     },
-    rotateRight() {
-      this.$refs.cropper.rotate(90);
+    rotateSpecificCrop() {
+      this.show_rotate_deg_picker = false;
+      this.$refs.cropper.rotate(this.rotation_deg);
+    },
+    rotateXPercent() {
+      this.show_percent_picker = true;
     },
     resetCrop() {
-      this.aspect_ratio = "none";
+      this.aspect_ratio = "original";
       this.custom_aspect_ratio = 1;
       this.$refs.cropper.reset();
     },
