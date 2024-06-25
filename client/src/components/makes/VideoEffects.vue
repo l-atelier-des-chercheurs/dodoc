@@ -1,7 +1,6 @@
 <template>
   <div class="_videoEffects">
     <div class="_sidebyside">
-      {{ make.effect_type }}
       <div class="_leftBtns">
         <select :value="make.effect_type" @change="setEffectType">
           <option
@@ -9,18 +8,26 @@
             v-for="effect in available_effects"
             :key="effect.key"
           >
-            {{ effect.type }}
+            {{ effect.label }}
           </option>
         </select>
+
+        <div class="u-spacingBottom" />
 
         <button
           type="button"
           class="u-button u-button_bleumarine"
-          @click="show_save_export_modal = true"
+          @click="show_render_modal = true"
         >
           <b-icon icon="check" />
-          {{ $t("submit") }}
+          {{ $t("preview") }}
         </button>
+        <ExportSaveMakeModal2
+          v-if="show_render_modal"
+          :base_instructions="base_instructions"
+          :make="make"
+          @close="show_render_modal = false"
+        />
       </div>
       <div class="_cropWindow">
         <MediaContent
@@ -34,24 +41,29 @@
   </div>
 </template>
 <script>
+import ExportSaveMakeModal2 from "@/components/makes/ExportSaveMakeModal2.vue";
+
 export default {
   props: {
     make: Object,
-    project_path: String,
     base_media: Object,
   },
-  components: {},
+  components: {
+    ExportSaveMakeModal2,
+  },
   data() {
     return {
+      show_render_modal: false,
+
       available_effects: [
-        { key: "watermark", type: "Watermark" },
-        { key: "black_and_white", type: "Black and white" },
-        { key: "colored_filter", type: "Colored filter" },
-        { key: "slow_down", type: "Slow down" },
-        { key: "speed_up", type: "Speed up" },
-        { key: "reverse", type: "Reverse" },
-        { key: "rotate", type: "Rotate" },
-        { key: "mirror", type: "Mirror" },
+        // { key: "watermark", label: "Watermark" },
+        { key: "black_and_white", label: this.$t("black_and_white") },
+        { key: "colored_filter", label: this.$t("colored_filter") },
+        { key: "slow_down", label: this.$t("slow_down") },
+        { key: "speed_up", label: this.$t("speed_up") },
+        { key: "reverse", label: this.$t("reverse") },
+        // { key: "rotate", label: this.$t("rotate") },
+        // { key: "mirror", label: this.$t("mirror") },
       ],
     };
   },
@@ -59,7 +71,25 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    base_instructions() {
+      const recipe = "video_effects";
+      const effect_type = this.make.effect_type;
+      const suggested_file_name =
+        this.base_media.$media_filename + "-" + effect_type;
+      const base_media_path = this.makeMediaFilePath({
+        $path: this.base_media.$path,
+        $media_filename: this.base_media.$media_filename,
+      });
+
+      return {
+        recipe,
+        effect_type,
+        suggested_file_name,
+        base_media_path,
+      };
+    },
+  },
   methods: {
     setEffectType(event) {
       this.updatePubliMeta({

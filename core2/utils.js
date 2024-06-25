@@ -687,6 +687,16 @@ module.exports = (function () {
         });
       });
     },
+    hasAudioTrack({ ffmpeg_cmd, video_path }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
+          return resolve(
+            metadata?.streams?.filter((s) => s.codec_type === "audio").length >
+              0
+          );
+        });
+      });
+    },
 
     makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
       const audio_stream = streams.find((s) => s.codec_type === "audio");

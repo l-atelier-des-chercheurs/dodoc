@@ -112,15 +112,6 @@
       </div>
       <div v-else>
         <div v-if="!created_video">
-          <!-- <select v-model="resolution_preset_picked">
-            <option
-              v-for="res in presets"
-              :key="res"
-              v-text="res"
-              :value="res"
-            />
-          </select> -->
-
           <SelectField2
             :value="resolution_preset_picked"
             :options="presets"

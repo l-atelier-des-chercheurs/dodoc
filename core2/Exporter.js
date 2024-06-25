@@ -11,6 +11,7 @@ const utils = require("./utils"),
   notifier = require("./notifier"),
   auth = require("./auth"),
   tasks = require("./exporter_tasks/tasks"),
+  effects = require("./exporter_tasks/effects"),
   optimizer = require("./exporter_tasks/optimizer");
 
 const ffmpegPath = require("ffmpeg-static").replace(
@@ -59,6 +60,8 @@ class Exporter {
       full_path_to_file = await this._videoAssemblage();
     } else if (this.instructions.recipe === "optimize_media") {
       full_path_to_file = await this._optimizeMedia();
+    } else if (this.instructions.recipe === "video_effects") {
+      full_path_to_file = await this._videoEffects();
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -795,6 +798,50 @@ class Exporter {
       });
       this._notifyProgress(95);
       return full_path_to_new_file;
+    } catch (err) {
+      if (full_path_to_folder_in_cache)
+        await fs.remove(full_path_to_folder_in_cache);
+      this._notifyEnded({
+        event: "failed",
+        info: err.message,
+      });
+      throw err;
+    }
+  }
+
+  async _videoEffects() {
+    this._notifyProgress(5);
+
+    const {
+      full_path_to_folder_in_cache,
+      full_path_to_new_file: full_path_to_new_video,
+    } = await this._createTempFolderAndName("video", "mp4");
+
+    const effect_type = this.instructions.effect_type;
+    const base_media_path = utils.getPathToUserContent(
+      this.instructions.base_media_path
+    );
+    const quality_preset = this.instructions.quality_preset || "source";
+
+    const that = this;
+    const reportProgress = (progress) => {
+      const progress_percent = Math.round(
+        utils.remap(progress, 0, 100, 15, 90)
+      );
+      that._notifyProgress(progress_percent);
+    };
+
+    try {
+      await effects.applyVideoEffect({
+        source: base_media_path,
+        destination: full_path_to_new_video,
+        quality_preset,
+        effect_type,
+        ffmpeg_cmd: this.ffmpeg_cmd,
+        reportProgress,
+      });
+      this._notifyProgress(95);
+      return full_path_to_new_video;
     } catch (err) {
       if (full_path_to_folder_in_cache)
         await fs.remove(full_path_to_folder_in_cache);

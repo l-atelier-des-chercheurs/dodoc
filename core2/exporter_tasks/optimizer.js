@@ -135,7 +135,7 @@ module.exports = (function () {
           resolution = { width: 1920, height: 1080 };
           bitrate = "4000k";
         } else if (quality_preset === "medium") {
-          resolution = { width: 1920, height: 1080 };
+          resolution = { width: 1280, height: 720 };
           bitrate = "2000k";
         }
 

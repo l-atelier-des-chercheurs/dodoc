@@ -242,6 +242,9 @@
                   "effect_type": {
                     "type": "string"
                   },
+                  "color_filter": {
+                    "type": "object"
+                  },
                   "selection": {
                     "type": "object"
                   },
