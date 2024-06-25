@@ -818,6 +818,7 @@ class Exporter {
     } = await this._createTempFolderAndName("video", "mp4");
 
     const effect_type = this.instructions.effect_type;
+    const effect_opts = this.instructions.effect_opts;
     const base_media_path = utils.getPathToUserContent(
       this.instructions.base_media_path
     );
@@ -837,6 +838,7 @@ class Exporter {
         destination: full_path_to_new_video,
         quality_preset,
         effect_type,
+        effect_opts,
         ffmpeg_cmd: this.ffmpeg_cmd,
         reportProgress,
       });

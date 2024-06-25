@@ -14,6 +14,23 @@
 
         <div class="u-spacingBottom" />
 
+        <div
+          v-if="make.effect_type === 'colored_filter'"
+          class="u-spacingBottom"
+        >
+          <ColorInput
+            :can_toggle="false"
+            :live_editing="true"
+            :value="make.color_filter"
+            :default_value="'#fc4b60'"
+            @save="
+              updatePubliMeta({
+                color_filter: $event,
+              })
+            "
+          />
+        </div>
+
         <button
           type="button"
           class="u-button u-button_bleumarine"
@@ -35,6 +52,11 @@
           :resolution="1600"
           :show_fs_button="true"
           :context="'full'"
+        />
+        <div
+          class="_coloredFilter"
+          v-if="make.effect_type === 'colored_filter'"
+          :style="{ backgroundColor: make.color_filter }"
         />
       </div>
     </div>
@@ -82,9 +104,17 @@ export default {
         $media_filename: this.base_media.$media_filename,
       });
 
+      let effect_opts = {};
+
+      if (effect_type === "colored_filter")
+        effect_opts = {
+          color_filter: this.make.color_filter,
+        };
+
       return {
         recipe,
         effect_type,
+        effect_opts,
         suggested_file_name,
         base_media_path,
       };
@@ -125,7 +155,18 @@ export default {
     flex: 0 1 250px;
   }
   ._cropWindow {
+    position: relative;
     flex: 1 1 250px;
   }
+}
+
+._coloredFilter {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  mix-blend-mode: overlay;
 }
 </style>

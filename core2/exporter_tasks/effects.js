@@ -22,6 +22,7 @@ module.exports = (function () {
       destination,
       quality_preset,
       effect_type,
+      effect_opts,
       ffmpeg_cmd,
       reportProgress,
     }) {
@@ -41,25 +42,55 @@ module.exports = (function () {
           ffmpeg_cmd,
           video_path: source,
         });
-
         const { duration } = await utils.getVideoDurationFromMetadata({
           ffmpeg_cmd,
           video_path: source,
         });
         if (duration) ffmpeg_cmd.duration(duration);
 
-        let complexFilters = [];
+        const video_width = 1920;
+        const video_height = 1080;
+
+        let complexFilters = [
+          {
+            filter: "scale",
+            options: `${video_width}:${video_height}:force_original_aspect_ratio=1`,
+            inputs: "[0]",
+            outputs: "scaled",
+          },
+          {
+            filter: "setsar=sar",
+            options: 1,
+            inputs: "scaled",
+            outputs: "aspect",
+          },
+          {
+            filter: "pad",
+            options: `${video_width}:${video_height}:(ow-iw)/2:(oh-ih)/2`,
+            inputs: "aspect",
+            outputs: "output",
+          },
+        ];
 
         if (effect_type === "black_and_white") {
-          ffmpeg_cmd.videoFilters("hue=s=0");
+          complexFilters.push({
+            filter: "hue",
+            options: "s=0",
+            inputs: "output",
+            outputs: "output",
+          });
         } else if (effect_type === "colored_filter") {
           if (effect_opts?.color_filter?.startsWith("#")) {
             ffmpeg_cmd
               .input(
                 `color=${effect_opts.color_filter}:s=${video_width}x${video_height}`
               )
-              .inputFormat("lavfi")
-              .videoFilters("blend=shortest=1:all_mode=overlay:all_opacity=1");
+              .inputFormat("lavfi");
+            complexFilters.push({
+              filter: "blend=shortest=1:all_mode=overlay:all_opacity=1",
+              inputs: "output",
+              outputs: "output",
+            });
           } else {
             return reject(
               `Failed to create video for filter: color is not set correctly`
@@ -219,7 +250,7 @@ module.exports = (function () {
             .outputFPS(30)
             .withVideoCodec("libx264")
             // .withVideoBitrate(bitrate)
-            // .complexFilter(complexFilters, "output")
+            .complexFilter(complexFilters, "output")
             .addOptions(["-crf 22", "-preset fast"])
             .toFormat("mp4")
             .on("start", function (commandLine) {
