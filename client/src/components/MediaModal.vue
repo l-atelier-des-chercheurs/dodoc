@@ -237,20 +237,15 @@
           :icon="'tools'"
           :is_open_initially="false"
         >
-          <div class="u-spacingBottom">
-            <CropAdjustMedia
-              v-if="file.$type === 'image'"
-              :media="file"
-              @close="$emit('close')"
-            />
-          </div>
-          <div class="">
-            <OptimizeMedia
-              v-if="optimization_possible"
-              :media="file"
-              @close="$emit('close')"
-            />
-          </div>
+          <CropAdjustMedia
+            v-if="file.$type === 'image'"
+            :media="file"
+            @close="$emit('close')"
+          />
+          <template v-if="optimization_possible">
+            <div class="u-spacingBottom" />
+            <OptimizeMedia :media="file" @close="$emit('close')" />
+          </template>
         </DetailsPane>
       </div>
     </div>

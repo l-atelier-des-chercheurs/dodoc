@@ -2,6 +2,14 @@
   <div class="_adjustMedia">
     <div class="_panes">
       <div class="_settings">
+        <ResolutionDisplay
+          v-if="img_width && img_height"
+          :width="img_width"
+          :height="img_height"
+        />
+
+        <hr />
+
         <RangeValueInput
           class="u-spacingBottom"
           :label="$t('brightness')"
@@ -65,7 +73,11 @@
     </div>
 
     <div class="_bottomBar">
-      <button type="button" class="u-button" @click="$emit('back')">
+      <button
+        type="button"
+        class="u-button u-button_white"
+        @click="$emit('back')"
+      >
         <b-icon icon="arrow-left-short" />
         {{ $t("previous") }}
       </button>
@@ -92,6 +104,9 @@ export default {
       contrast: 100,
       saturation: 100,
       blur: 0,
+
+      img_width: null,
+      img_height: null,
     };
   },
   created() {},
@@ -123,6 +138,9 @@ export default {
       const canvas = this.$refs.canvas;
       canvas.width = img.width;
       canvas.height = img.height;
+
+      this.img_width = img.width;
+      this.img_height = img.height;
 
       const ctx = canvas.getContext("2d");
       let filters = [];

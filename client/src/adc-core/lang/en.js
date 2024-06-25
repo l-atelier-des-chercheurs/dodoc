@@ -186,7 +186,7 @@ export default {
   medium: "Medium",
   low: "Low",
   rough: "Draft",
-  optimize_media: "Optimize the media",
+  optimize: "Optimize",
 
   no_accounts_yet: "No accounts created yet",
   no_accounts_to_show: "No accounts to show",

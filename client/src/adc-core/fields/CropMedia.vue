@@ -324,15 +324,13 @@ export default {
     async previewMedia() {
       const { coordinates, canvas } = this.$refs.cropper.getResult();
 
-      if (this.crop_resize_mode === "ratio") {
+      if (["none", "ratio"].includes(this.crop_resize_mode)) {
         this.$emit("updateCrop", canvas.toDataURL());
       } else if (
         this.crop_resize_mode === "resize" &&
         this.new_width &&
         this.new_height
       ) {
-        debugger;
-
         let img = new Image();
         img.src = canvas.toDataURL();
         await img.decode();
