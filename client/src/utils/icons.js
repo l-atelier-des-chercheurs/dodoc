@@ -113,6 +113,7 @@ import {
   BIconAspectRatio,
   BIconAspectRatioFill,
   BIconChevronUp,
+  BIconChevronDown,
   BIconSlash,
   BIconSquareHalf,
   BIconSquareFill,
@@ -249,6 +250,7 @@ Vue.component("BIconFileEarmarkArrowDownFill", BIconFileEarmarkArrowDownFill);
 Vue.component("BIconAspectRatio", BIconAspectRatio);
 Vue.component("BIconAspectRatioFill", BIconAspectRatioFill);
 Vue.component("BIconChevronUp", BIconChevronUp);
+Vue.component("BIconChevronDown", BIconChevronDown);
 Vue.component("BIconSlash", BIconSlash);
 Vue.component("BIconSquareHalf", BIconSquareHalf);
 Vue.component("BIconSquareFill", BIconSquareFill);
