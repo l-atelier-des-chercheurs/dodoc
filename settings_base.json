@@ -245,6 +245,9 @@
                   "color_filter": {
                     "type": "object"
                   },
+                  "playback_speed": {
+                    "type": "number"
+                  },
                   "selection": {
                     "type": "object"
                   },

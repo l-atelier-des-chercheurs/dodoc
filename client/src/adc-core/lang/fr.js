@@ -523,8 +523,7 @@ export default {
   slowing_video_down_limit:
     "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
   speed_up: "Accélérer",
-  a_little: "Un peu",
-  a_lot: "Beaucoup",
+  playback_speed: "Vitesse de lecture",
   clockwise: "Dans le sens des aiguilles d’une montre",
   counterclockwise: "Dans le sens inverse des aiguilles d’une montre",
   reverse: "Inverser le début et la fin",

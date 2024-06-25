@@ -684,8 +684,7 @@ export default {
   slowing_video_down_limit:
     "Attention! The audio track will be deleted (if it exists) because the desired speed is too slow. To keep and convert the sound choose a speed between 0.5 and 1.",
   speed_up: "Speed up",
-  a_little: "A little",
-  a_lot: "A lot",
+  playback_speed: "Playback speed",
   clockwise: "Clockwise",
   counterclockwise: "Counterclockwise",
   reverse: "Reverse start and end",

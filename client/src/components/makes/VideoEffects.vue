@@ -30,6 +30,56 @@
             "
           />
         </div>
+        <div
+          v-else-if="make.effect_type === 'speed_up'"
+          class="u-spacingBottom"
+        >
+          <RangeValueInput
+            :label="$t('playback_speed')"
+            :value="make.playback_speed"
+            :can_toggle="false"
+            :min="100"
+            :max="1000"
+            :step="1"
+            :default_value="100"
+            :suffix="'%'"
+            :ticks="[100, 200, 500, 1000]"
+            @save="
+              updatePubliMeta({
+                playback_speed: $event,
+              })
+            "
+          />
+          <small
+            v-if="make.playback_speed < 50"
+            v-html="$t('slowing_video_down_limit')"
+          />
+        </div>
+        <div
+          v-else-if="make.effect_type === 'slow_down'"
+          class="u-spacingBottom"
+        >
+          <RangeValueInput
+            :label="$t('playback_speed')"
+            :value="make.playback_speed"
+            :can_toggle="false"
+            :min="1"
+            :max="100"
+            :step="1"
+            :default_value="50"
+            :suffix="'%'"
+            :ticks="[1, 10, 25, 50]"
+            @save="
+              updatePubliMeta({
+                playback_speed: $event,
+              })
+            "
+          />
+          <small
+            v-if="make.playback_speed < 50"
+            v-html="$t('slowing_video_down_limit')"
+          />
+        </div>
 
         <button
           type="button"
@@ -84,8 +134,8 @@ export default {
         { key: "slow_down", label: this.$t("slow_down") },
         { key: "speed_up", label: this.$t("speed_up") },
         { key: "reverse", label: this.$t("reverse") },
-        // { key: "rotate", label: this.$t("rotate") },
-        // { key: "mirror", label: this.$t("mirror") },
+        { key: "rotate", label: this.$t("rotate") },
+        { key: "mirror", label: this.$t("mirror") },
       ],
     };
   },
@@ -110,6 +160,10 @@ export default {
         effect_opts = {
           color_filter: this.make.color_filter,
         };
+      else if (effect_type === "slow_down" || effect_type === "speed_up")
+        effect_opts = {
+          playback_speed: this.make.playback_speed,
+        };
 
       return {
         recipe,
@@ -122,9 +176,19 @@ export default {
   },
   methods: {
     setEffectType(event) {
-      this.updatePubliMeta({
-        effect_type: event.target.value,
-      });
+      const new_effect_type = event.target.value;
+
+      let new_meta = {
+        effect_type: new_effect_type,
+      };
+
+      if (new_effect_type === "speed_up") {
+        new_meta.playback_speed = 200;
+      } else if (new_effect_type === "slow_down") {
+        new_meta.playback_speed = 50;
+      }
+
+      this.updatePubliMeta(new_meta);
     },
     async updatePubliMeta(new_meta) {
       return await this.$api.updateMeta({
