@@ -248,6 +248,12 @@
                   "playback_speed": {
                     "type": "number"
                   },
+                  "rotation": {
+                    "type": "string"
+                  },
+                  "flip": {
+                    "type": "string"
+                  },
                   "selection": {
                     "type": "object"
                   },

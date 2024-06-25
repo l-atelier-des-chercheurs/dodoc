@@ -132,11 +132,12 @@ module.exports = (function () {
             ffmpeg_cmd.noAudio();
           }
         } else if (effect_type === "rotate") {
-          if (effect_opts.rotation === "1" || effect_opts.rotation === "2") {
+          if (effect_opts.rotation === "cw" || effect_opts.rotation === "ccw") {
+            const rotation = effect_opts.rotation === "cw" ? "1" : "2";
             complexFilters = [];
             complexFilters.push({
               filter: "transpose",
-              options: effect_opts.rotation,
+              options: rotation,
               inputs: "[0]",
               outputs: "output",
             });

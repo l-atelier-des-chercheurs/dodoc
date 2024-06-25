@@ -80,6 +80,41 @@
             v-html="$t('slowing_video_down_limit')"
           />
         </div>
+        <div v-else-if="make.effect_type === 'mirror'">
+          <select
+            :value="make.flip"
+            @change="
+              updatePubliMeta({
+                flip: $event.target.value,
+              })
+            "
+          >
+            <option value="vflip">
+              {{ $t("vertical_flip").toLowerCase() }}
+            </option>
+            <option value="hflip">
+              {{ $t("horizontal_flip").toLowerCase() }}
+            </option>
+            <option value="hflip, vflip">
+              {{ $t("both").toLowerCase() }}
+            </option>
+          </select>
+        </div>
+        <div v-else-if="make.effect_type === 'rotate'">
+          <select
+            :value="make.rotation"
+            @change="
+              updatePubliMeta({
+                rotation: $event.target.value,
+              })
+            "
+          >
+            <option value="cw">{{ $t("clockwise").toLowerCase() }}</option>
+            <option value="ccw">
+              {{ $t("counterclockwise").toLowerCase() }}
+            </option>
+          </select>
+        </div>
 
         <button
           type="button"
@@ -163,6 +198,14 @@ export default {
       else if (effect_type === "slow_down" || effect_type === "speed_up")
         effect_opts = {
           playback_speed: this.make.playback_speed,
+        };
+      else if (effect_type === "mirror")
+        effect_opts = {
+          flip: this.make.flip,
+        };
+      else if (effect_type === "rotate")
+        effect_opts = {
+          rotation: this.make.rotation,
         };
 
       return {
