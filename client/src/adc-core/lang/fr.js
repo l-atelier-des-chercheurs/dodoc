@@ -469,9 +469,7 @@ export default {
   test_and_export: "Tester et exporter",
   export_montage: "Exporter le montage",
 
-  image_to_rework: "Image à retravailler",
-  video_to_rework: "Vidéo à recouper",
-  audio_to_rework: "Son à recouper",
+  video_to_rework: "Vidéo à retrailler",
 
   pick_audio: "Choisissez le son à utiliser",
   pick_image: "Choisissez l’image à utiliser",

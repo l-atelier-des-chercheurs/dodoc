@@ -171,6 +171,7 @@ export default {
           key: "video_effects",
           summary: "video_effects_summary",
           show_instructions: false,
+          enabled: true,
           instructions: "video_effects_instructions",
 
           icon: `

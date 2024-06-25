@@ -640,9 +640,7 @@ export default {
   test_and_export: "Test and export",
   export_montage: "Export montage",
 
-  image_to_rework: "Image to edit",
   video_to_rework: "Video to edit",
-  audio_to_rework: "Audio to edit",
 
   pick_audio: "Pick audio media",
   pick_image: "Pick image media",

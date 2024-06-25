@@ -239,6 +239,9 @@
                   "crop_options": {
                     "type": "object"
                   },
+                  "effect_type": {
+                    "type": "string"
+                  },
                   "selection": {
                     "type": "object"
                   },

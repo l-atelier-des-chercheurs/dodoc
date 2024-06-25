@@ -249,7 +249,7 @@ export default {
       return "video_montage.mp4";
     },
     export_is_available() {
-      return this.section_modules_list.length > 1;
+      return this.section_modules_list.length > 0;
     },
     montage() {
       return this.section_modules_list.reduce((acc, _module) => {
