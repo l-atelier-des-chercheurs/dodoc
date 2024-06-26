@@ -354,6 +354,13 @@ export default {
                 </svg>
               `,
         },
+        {
+          key: "qr_code",
+          summary: "qr_code_summary",
+          show_instructions: false,
+          enabled: true,
+          icon: ``,
+        },
       ],
     };
   },

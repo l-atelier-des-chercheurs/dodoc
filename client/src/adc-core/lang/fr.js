@@ -549,6 +549,9 @@ export default {
   mix_audio_and_video_instructions:
     "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
 
+  qr_code: "Code QR",
+  qr_code_summary: "Créer un code QR à partir d’un texte ou d’un lien.",
+
   add_sound_video_file:
     "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.",
   add_sound_image_file:

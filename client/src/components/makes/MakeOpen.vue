@@ -61,6 +61,7 @@
         v-else-if="make.type === 'video_assemblage'"
         :make="make"
       />
+      <QrCode v-else-if="make.type === 'qr_code'" :make="make" />
     </div>
   </div>
 </template>
@@ -80,6 +81,7 @@ export default {
     VideoEffects: () => import("@/components/makes/VideoEffects.vue"),
     MixAudioAndImageOrVideo: () =>
       import("@/components/makes/MixAudioAndImageOrVideo.vue"),
+    QrCode: () => import("@/components/makes/QrCode.vue"),
   },
   data() {
     return {

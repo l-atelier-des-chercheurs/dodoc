@@ -709,6 +709,10 @@ export default {
   mix_audio_and_video_summary: "Add or replace audio to a video.",
   mix_audio_and_video_instructions:
     "This recipe takes a video and an audio track. It adds or replaces the video's soundtrack with the selected one.<br> Accepted media: a video and an audio track.<br>Will create a new video of the duration of the longest media.",
+
+  qr_code: "QR code",
+  qr_code_summary: "Create a QR code from a text or a link.",
+
   add_sound_video_file:
     "Open a project and add <b>sound</b> media and <b>video</b> media by clicking the green arrow.<br>Exporting will create a new video.<br>Accepted media : a video and a sound track.",
   add_sound_image_file:
