@@ -693,8 +693,6 @@ export default {
   mirror: "Mirror",
   horizontal_flip: "Horizontal flip",
   vertical_flip: "Vertical flip",
-  rotate_left: "Rotate left",
-  rotate_right: "Rotate right",
   rotate_90_deg: "Rotate 90°",
   rotate_x_deg: "Rotate to the right",
 

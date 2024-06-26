@@ -524,8 +524,6 @@ export default {
     "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
   speed_up: "Accélérer",
   playback_speed: "Vitesse de lecture",
-  clockwise: "Dans le sens des aiguilles d’une montre",
-  counterclockwise: "Dans le sens inverse des aiguilles d’une montre",
   reverse: "Inverser le début et la fin",
   angle: "Angle",
   "error:": "Erreur&nbsp;:",
@@ -533,8 +531,7 @@ export default {
   horizontal_flip: "Retournement horizontal",
   vertical_flip: "Retournement vertical",
 
-  rotate_left: "Pivoter à gauche",
-  rotate_right: "Pivoter à droite",
+  rotate: "Pivoter",
   rotate_90_deg: "Pivoter de 90°",
   rotate_x_deg: "Pivoter vers la droite",
   both: "Les deux",

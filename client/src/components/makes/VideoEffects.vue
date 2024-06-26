@@ -1,149 +1,138 @@
 <template>
   <div class="_videoEffects">
-    <div class="_sidebyside">
-      <div class="_leftBtns">
-        <select :value="make.effect_type" @change="setEffectType">
-          <option
-            :value="effect.key"
-            v-for="effect in available_effects"
-            :key="effect.key"
-          >
-            {{ effect.label }}
+    <div class="_leftBtns">
+      <DLabel :str="$t('effect_type')" />
+
+      <select :value="make.effect_type" @change="setEffectType">
+        <option
+          :value="effect.key"
+          v-for="effect in available_effects"
+          :key="effect.key"
+        >
+          {{ effect.label }}
+        </option>
+      </select>
+
+      <div class="u-spacingBottom" />
+
+      <div v-if="make.effect_type === 'colored_filter'" class="u-spacingBottom">
+        <ColorInput
+          :can_toggle="false"
+          :live_editing="true"
+          :value="make.color_filter"
+          :default_value="'#fc4b60'"
+          @save="
+            updatePubliMeta({
+              color_filter: $event,
+            })
+          "
+        />
+      </div>
+      <div v-else-if="make.effect_type === 'speed_up'" class="u-spacingBottom">
+        <RangeValueInput
+          :label="$t('playback_speed')"
+          :value="make.playback_speed"
+          :can_toggle="false"
+          :min="100"
+          :max="1000"
+          :step="1"
+          :default_value="100"
+          :suffix="'%'"
+          :ticks="[100, 200, 500, 1000]"
+          @save="
+            updatePubliMeta({
+              playback_speed: $event,
+            })
+          "
+        />
+        <small
+          v-if="make.playback_speed < 50"
+          v-html="$t('slowing_video_down_limit')"
+        />
+      </div>
+      <div v-else-if="make.effect_type === 'slow_down'" class="u-spacingBottom">
+        <RangeValueInput
+          :label="$t('playback_speed')"
+          :value="make.playback_speed"
+          :can_toggle="false"
+          :min="1"
+          :max="100"
+          :step="1"
+          :default_value="50"
+          :suffix="'%'"
+          :ticks="[1, 10, 25, 50]"
+          @save="
+            updatePubliMeta({
+              playback_speed: $event,
+            })
+          "
+        />
+        <small
+          v-if="make.playback_speed < 50"
+          v-html="$t('slowing_video_down_limit')"
+        />
+      </div>
+      <div v-else-if="make.effect_type === 'mirror'" class="u-spacingBottom">
+        <select
+          :value="make.flip"
+          @change="
+            updatePubliMeta({
+              flip: $event.target.value,
+            })
+          "
+        >
+          <option value="vflip">
+            {{ $t("vertical_flip").toLowerCase() }}
+          </option>
+          <option value="hflip">
+            {{ $t("horizontal_flip").toLowerCase() }}
+          </option>
+          <option value="hflip, vflip">
+            {{ $t("both").toLowerCase() }}
           </option>
         </select>
-
-        <div class="u-spacingBottom" />
-
-        <div
-          v-if="make.effect_type === 'colored_filter'"
-          class="u-spacingBottom"
-        >
-          <ColorInput
-            :can_toggle="false"
-            :live_editing="true"
-            :value="make.color_filter"
-            :default_value="'#fc4b60'"
-            @save="
-              updatePubliMeta({
-                color_filter: $event,
-              })
-            "
-          />
-        </div>
-        <div
-          v-else-if="make.effect_type === 'speed_up'"
-          class="u-spacingBottom"
-        >
-          <RangeValueInput
-            :label="$t('playback_speed')"
-            :value="make.playback_speed"
-            :can_toggle="false"
-            :min="100"
-            :max="1000"
-            :step="1"
-            :default_value="100"
-            :suffix="'%'"
-            :ticks="[100, 200, 500, 1000]"
-            @save="
-              updatePubliMeta({
-                playback_speed: $event,
-              })
-            "
-          />
-          <small
-            v-if="make.playback_speed < 50"
-            v-html="$t('slowing_video_down_limit')"
-          />
-        </div>
-        <div
-          v-else-if="make.effect_type === 'slow_down'"
-          class="u-spacingBottom"
-        >
-          <RangeValueInput
-            :label="$t('playback_speed')"
-            :value="make.playback_speed"
-            :can_toggle="false"
-            :min="1"
-            :max="100"
-            :step="1"
-            :default_value="50"
-            :suffix="'%'"
-            :ticks="[1, 10, 25, 50]"
-            @save="
-              updatePubliMeta({
-                playback_speed: $event,
-              })
-            "
-          />
-          <small
-            v-if="make.playback_speed < 50"
-            v-html="$t('slowing_video_down_limit')"
-          />
-        </div>
-        <div v-else-if="make.effect_type === 'mirror'">
-          <select
-            :value="make.flip"
-            @change="
-              updatePubliMeta({
-                flip: $event.target.value,
-              })
-            "
-          >
-            <option value="vflip">
-              {{ $t("vertical_flip").toLowerCase() }}
-            </option>
-            <option value="hflip">
-              {{ $t("horizontal_flip").toLowerCase() }}
-            </option>
-            <option value="hflip, vflip">
-              {{ $t("both").toLowerCase() }}
-            </option>
-          </select>
-        </div>
-        <div v-else-if="make.effect_type === 'rotate'">
-          <select
-            :value="make.rotation"
-            @change="
-              updatePubliMeta({
-                rotation: $event.target.value,
-              })
-            "
-          >
-            <option value="cw">{{ $t("clockwise").toLowerCase() }}</option>
-            <option value="ccw">
-              {{ $t("counterclockwise").toLowerCase() }}
-            </option>
-          </select>
-        </div>
-
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          @click="show_render_modal = true"
-        >
-          <b-icon icon="check" />
-          {{ $t("preview") }}
-        </button>
-        <ExportSaveMakeModal2
-          v-if="show_render_modal"
-          :base_instructions="base_instructions"
-          :make="make"
-          @close="show_render_modal = false"
-        />
       </div>
-      <div class="_cropWindow">
-        <MediaContent
-          :file="base_media"
-          :resolution="1600"
-          :show_fs_button="true"
-          :context="'full'"
-        />
-        <div
-          class="_coloredFilter"
-          v-if="make.effect_type === 'colored_filter'"
-          :style="{ backgroundColor: make.color_filter }"
-        />
+      <div v-else-if="make.effect_type === 'rotate'" class="u-spacingBottom">
+        <select
+          :value="make.rotation"
+          @change="
+            updatePubliMeta({
+              rotation: $event.target.value,
+            })
+          "
+        >
+          <option value="cw">{{ $t("move_right") }} ⟳</option>
+          <option value="ccw">{{ $t("move_left") }} ⟲</option>
+        </select>
       </div>
+
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="show_render_modal = true"
+      >
+        <b-icon icon="check" />
+        {{ $t("make") }}
+      </button>
+      <ExportSaveMakeModal2
+        v-if="show_render_modal"
+        :base_instructions="base_instructions"
+        :make="make"
+        @close="show_render_modal = false"
+      />
+    </div>
+    <div class="_cropWindow" :data-rotate="rotate_preview">
+      <MediaContent
+        :file="base_media"
+        :resolution="1600"
+        :show_fs_button="true"
+        :context="'full'"
+      />
+      <div
+        class="_coloredFilter"
+        v-if="make.effect_type === 'colored_filter'"
+        :style="{ backgroundColor: make.color_filter }"
+      />
     </div>
   </div>
 </template>
@@ -216,6 +205,11 @@ export default {
         base_media_path,
       };
     },
+    rotate_preview() {
+      if (this.make.effect_type === "rotate") return this.make.rotation;
+      else if (this.make.effect_type === "mirror") return this.make.flip;
+      return false;
+    },
   },
   methods: {
     setEffectType(event) {
@@ -229,6 +223,8 @@ export default {
         new_meta.playback_speed = 200;
       } else if (new_effect_type === "slow_down") {
         new_meta.playback_speed = 50;
+      } else if (new_effect_type === "rotate") {
+        new_meta.rotation = "cw";
       }
 
       this.updatePubliMeta(new_meta);
@@ -249,13 +245,10 @@ export default {
   padding: calc(var(--spacing) / 1);
   border-radius: 6px;
 
-  height: auto;
-}
-
-._sidebyside {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
+  justify-content: space-around;
   gap: calc(var(--spacing) * 1);
 
   ._leftBtns {
@@ -263,7 +256,47 @@ export default {
   }
   ._cropWindow {
     position: relative;
-    flex: 1 1 250px;
+    flex: 0 1 60vmin;
+  }
+}
+
+._cropWindow {
+  position: relative;
+
+  ::v-deep .plyr__video-wrapper {
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    transform-origin: center;
+  }
+
+  &[data-rotate="cw"] {
+    ::v-deep .plyr__video-wrapper {
+      transform: rotate(90deg);
+    }
+  }
+  &[data-rotate="ccw"] {
+    ::v-deep .plyr__video-wrapper {
+      transform: rotate(-90deg);
+    }
+  }
+  &[data-rotate="hflip"] {
+    ::v-deep .plyr__video-wrapper {
+      transform: scale(-1, 1);
+    }
+  }
+  &[data-rotate="vflip"] {
+    ::v-deep .plyr__video-wrapper {
+      transform: scale(1, -1);
+    }
+  }
+  &[data-rotate="hflip, vflip"] {
+    ::v-deep .plyr__video-wrapper {
+      transform: scale(-1, -1);
+    }
+  }
+
+  > * {
+    width: 100%;
+    aspect-ratio: 1/1;
   }
 }
 
@@ -275,5 +308,7 @@ export default {
   left: 0;
   opacity: 1;
   mix-blend-mode: overlay;
+
+  pointer-events: none;
 }
 </style>
