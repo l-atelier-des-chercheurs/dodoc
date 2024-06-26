@@ -207,7 +207,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._cont {
-  position: relative;
 }
 
 ._saveNotice {
