@@ -14,18 +14,19 @@
             />
           </div>
         </div>
-
         <div class="_spinner" v-if="is_exporting" key="loader">
-          <LoaderSpinner />
+          <AnimatedCounter :value="progress_percent" />
         </div>
       </template>
       <template v-else>
-        <MediaContent
-          :file="created_video"
-          :resolution="1600"
-          :show_fs_button="true"
-          :context="'full'"
-        />
+        <div class="_preview">
+          <MediaContent
+            :file="created_video"
+            :resolution="1600"
+            :show_fs_button="true"
+            :context="'full'"
+          />
+        </div>
       </template>
     </div>
 
@@ -110,6 +111,7 @@ export default {
       is_exporting: false,
       finished_saving_to_project: false,
       resolution_preset_picked: "source",
+      progress_percent: 0,
 
       presets: [
         {
@@ -148,6 +150,7 @@ export default {
   },
   methods: {
     async renderVideo() {
+      this.progress_percent = 0;
       this.is_exporting = true;
       this.created_video = false;
 
@@ -169,6 +172,12 @@ export default {
 
       this.$api.join({ room: "task_" + current_task_id });
 
+      const updateProgress = ({ task_id, progress }) => {
+        if (task_id !== current_task_id) return;
+        this.progress_percent = progress;
+      };
+      this.$eventHub.$on("task.status", updateProgress);
+
       const checkIfEnded = ({ task_id, message }) => {
         if (task_id !== current_task_id) return;
         this.$eventHub.$off("task.ended", checkIfEnded);
@@ -182,6 +191,7 @@ export default {
           message.info;
         }
 
+        this.progress_percent = 100;
         this.is_exporting = false;
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
@@ -196,6 +206,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._cont {
+  position: relative;
+}
+
 ._saveNotice {
   position: absolute;
   inset: -2px;
@@ -211,6 +225,15 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(2px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+._preview {
+  margin: calc(var(--spacing) * 1) 0;
 }
 </style>

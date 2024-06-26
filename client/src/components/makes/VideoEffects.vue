@@ -1,7 +1,7 @@
 <template>
   <div class="_videoEffects">
     <div class="_leftBtns">
-      <DLabel :str="$t('effect_type')" />
+      <DLabel :str="$t('effect')" />
 
       <select :value="make.effect_type" @change="setEffectType">
         <option
@@ -240,19 +240,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._videoEffects {
-  margin: 0;
-  background: white;
-  padding: calc(var(--spacing) / 1);
-  border-radius: 6px;
-
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
   justify-content: space-around;
   gap: calc(var(--spacing) * 1);
 
+  border-radius: 6px;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  background: white;
+  padding: calc(var(--spacing) / 1);
+
   ._leftBtns {
-    flex: 0 1 250px;
+    flex: 0 0 200px;
   }
   ._cropWindow {
     position: relative;
