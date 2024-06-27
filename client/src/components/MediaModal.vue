@@ -205,16 +205,19 @@
             :date="file.$date_modified"
           />
           <SizeDisplay
-            v-if="file.$infos && file.$infos.size"
+            v-if="file.$infos.hasOwnProperty('size')"
             :size="file.$infos.size"
           />
           <ResolutionDisplay
-            v-if="file.$infos && (file.$infos.width || file.$infos.height)"
+            v-if="
+              file.$infos.hasOwnProperty('width') ||
+              file.$infos.hasOwnProperty('height')
+            "
             :width="file.$infos.width"
             :height="file.$infos.height"
           />
           <DurationDisplay
-            v-if="file.$infos && file.$infos.duration"
+            v-if="file.$infos.hasOwnProperty('duration')"
             :title="$t('duration')"
             :duration="file.$infos.duration"
           />
@@ -233,6 +236,7 @@
         </DetailsPane>
 
         <DetailsPane
+          v-if="optimization_possible || file.$type === 'image'"
           :header="$t('edit')"
           :icon="'tools'"
           :is_open_initially="false"

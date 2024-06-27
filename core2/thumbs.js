@@ -157,9 +157,9 @@ module.exports = (function () {
 
       // read file infos
       const { size, mtimems, hash } = await _readFileInfos({ full_media_path });
-      if (size) infos.size = size;
-      if (mtimems) infos.mtimems = mtimems;
-      if (hash) infos.hash = hash;
+      if (size !== undefined) infos.size = size;
+      if (mtimems !== undefined) infos.mtimems = mtimems;
+      if (hash !== undefined) infos.hash = hash;
 
       let hrend = process.hrtime(hrstart);
       dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
@@ -752,7 +752,6 @@ module.exports = (function () {
     const props = {};
     try {
       const { size, mtimeMs } = await fs.stat(full_media_path);
-
       props.size = size;
       props.mtimems = Math.floor(mtimeMs);
     } catch (e) {
