@@ -1060,7 +1060,7 @@ export default {
     d’utilisation et les règles de confidentialité de votre instance.
     Un lien vers ces pages peut être placé en bas de la page d’accueil, 
     ainsi qu’au niveau du formulaire pour créer un compte.
-    En France et dans n’importe quel pays de l’Union Européene, ces pages doivent être
+    En France et dans n’importe quel pays de l’Union Européenne, ces pages doivent être
     remplies pour informer les utilisateurs de ces règles là.
     `,
   cookies_info: `
