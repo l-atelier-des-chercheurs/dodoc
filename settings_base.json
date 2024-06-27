@@ -100,6 +100,9 @@
       },
       "terms_in_footer": {
         "type": "boolean"
+      },
+      "confidentiality_in_footer": {
+        "type": "boolean"
       }
     },
     "$files": {

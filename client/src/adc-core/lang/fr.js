@@ -1044,15 +1044,30 @@ export default {
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
 
   terms: "Conditions d’utilisation",
-  create_terms_page: "Créer une page pour les conditions d’utilisation",
-  open_page: "Ouvrir la page",
-  terms_in_footer: "Placer un lien en bas de la page d’accueil",
+  create_this_page: "Créer la page",
+  open_terms_page: "Ouvrir la page des conditions d’utilisation",
+  terms_confidentiality_in_footer: "Placer un lien en bas de la page d’accueil",
   users_must_accept_terms_to_signup:
     "Les utilisateurs doivent accepter les conditions d’utilisation pour s’inscrire",
   click_here_to_read: "Cliquez ici pour les lire.",
   i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
 
+  confidentiality: "Confidentialité",
+  open_confidentiality_page: "Ouvrir la page de la confidentialité",
   page_to_export: "Page à exporter",
+  terms_confidentiality_infos: `
+    Les champs suivants permettent de créer des pages précisant les conditions 
+    d’utilisation et les règles de confidentialité de votre instance.
+    Un lien vers ces pages peut être placé en bas de la page d’accueil, 
+    ainsi qu’au niveau du formulaire pour créer un compte.
+    En France et dans n’importe quel pays de l’Union Européene, ces pages doivent être
+    remplies pour informer les utilisateurs de ces règles là.
+    `,
+  cookies_info: `
+    Sur cette version de do•doc, sachez qu’aucun suivi des visites n’est réalisé 
+    et que les seuls cookies servent à enregistrer des informations techniques anonymes
+    (comme la langue, l’utilisation des caméras, etc.).
+    `,
 
   on_this_page: "Sur cette page",
   on_other_pages: "Sur d’autres pages",

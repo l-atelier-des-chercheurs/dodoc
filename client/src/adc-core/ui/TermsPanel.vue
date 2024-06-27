@@ -4,43 +4,67 @@
       <LoaderSpinner />
     </div>
     <div v-else>
-      <template v-if="!terms_page">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="createTermsPage"
-        >
-          {{ $t("create_terms_page") }}
-        </button>
-      </template>
-      <template v-else>
-        <div class="u-spacingBottom">
-          <ToggleField
-            :label="$t('users_must_accept_terms_to_signup')"
-            :field_name="'users_must_accept_terms_to_signup'"
-            :content="settings.users_must_accept_terms_to_signup === true"
-            :path="settings.$path"
-            :can_edit="true"
-          />
-        </div>
-        <div class="u-spacingBottom">
-          <ToggleField
-            :label="$t('terms_in_footer')"
-            :field_name="'terms_in_footer'"
-            :content="settings.terms_in_footer === true"
-            :path="settings.$path"
-            :can_edit="true"
-          />
-        </div>
+      <div class="u-instructions">
+        <p class="u-spacingBottom">{{ $t("terms_confidentiality_infos") }}</p>
+        <p class="u-spacingBottom">{{ $t("cookies_info") }}</p>
+      </div>
 
-        <router-link
-          :to="createURLFromPath(terms_page.$path)"
-          @click.native="$emit('close')"
-          class="u-buttonLink"
-        >
-          {{ $t("open_page") }}
-        </router-link>
-      </template>
+      <fieldset v-for="page in ['terms', 'confidentiality']" :key="page">
+        <legend>{{ $t(page) }}</legend>
+        <!-- <div class="u-spacingBottom">
+          <h3>{{ $t(page) }}</h3>
+        </div> -->
+        <template v-if="!getPage(page)">
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="createPage(page)"
+          >
+            {{ $t("create_this_page") }}
+          </button>
+        </template>
+        <template v-else>
+          <div class="u-spacingBottom" v-if="page === 'terms'">
+            <ToggleField
+              :label="$t('users_must_accept_terms_to_signup')"
+              :field_name="'users_must_accept_terms_to_signup'"
+              :content="settings.users_must_accept_terms_to_signup === true"
+              :path="settings.$path"
+              :can_edit="true"
+            />
+          </div>
+          <div class="u-spacingBottom" v-if="page === 'terms'">
+            <ToggleField
+              :label="$t('terms_confidentiality_in_footer')"
+              :field_name="'terms_in_footer'"
+              :content="settings.terms_in_footer === true"
+              :path="settings.$path"
+              :can_edit="true"
+            />
+          </div>
+          <div class="u-spacingBottom" v-else-if="page === 'confidentiality'">
+            <ToggleField
+              :label="$t('terms_confidentiality_in_footer')"
+              :field_name="'confidentiality_in_footer'"
+              :content="settings.confidentiality_in_footer === true"
+              :path="settings.$path"
+              :can_edit="true"
+            />
+          </div>
+          <router-link
+            :to="createURLFromPath(getPage(page).$path)"
+            @click.native="$emit('close')"
+            class="u-buttonLink"
+          >
+            <template v-if="page === 'terms'">
+              {{ $t("open_terms_page") }}
+            </template>
+            <template v-else>
+              {{ $t("open_confidentiality_page") }}
+            </template>
+          </router-link>
+        </template>
+      </fieldset>
     </div>
   </div>
 </template>
@@ -75,24 +99,23 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {
-    terms_page() {
-      return this.pages?.find((p) => p.$path === "pages/terms");
-    },
-  },
+  computed: {},
   methods: {
-    async createTermsPage() {
+    async createPage(type = "terms") {
       const page_slug = await this.$api.createFolder({
         path: this.path,
         additional_meta: {
-          title: this.$t("terms"),
-          requested_slug: "terms",
+          title: this.$t(type),
+          requested_slug: type,
           $status: "public",
         },
       });
       this.show_create_page = false;
       page_slug;
       // this.openFontItem(this.path + "/" + page_slug);
+    },
+    getPage(page) {
+      return this.pages?.find((p) => p.$path === `pages/${page}`);
     },
   },
 };
@@ -104,5 +127,9 @@ export default {
   align-content: center;
   border-bottom: 2px solid var(--c-gris);
   padding: calc(var(--spacing) / 2) 0;
+}
+
+fieldset + fieldset {
+  margin-top: calc(var(--spacing) / 1);
 }
 </style>

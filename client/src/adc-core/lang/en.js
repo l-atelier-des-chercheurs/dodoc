@@ -982,15 +982,31 @@ export default {
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
 
   terms: "Terms of use",
-  create_terms_page: "Create a terms of use page",
-  open_page: "Open page",
-  terms_in_footer: "Place a link at the bottom of the home page",
+  create_this_page: "Create this page",
+  open_terms_page: "Open Terms page",
+  terms_confidentiality_in_footer:
+    "Place a link at the bottom of the home page",
   users_must_accept_terms_to_signup:
     "Users must accept the terms of use to register",
   click_here_to_read: "Click here to read them.",
   i_read_and_accept_terms: "I accept the terms of use",
 
+  confidentiality: "Confidentiality",
+  open_confidentiality_page: "Open confidentiality page",
   page_to_export: "Page to export",
+
+  terms_confidentiality_infos: `
+  The following fields allow you to create pages specifying the conditions
+  of use and the confidentiality rules of your instance.
+  A link to these pages can be placed at the bottom of the home page,
+  as well as at the bottom of the signup form.
+  In France and in all of the countries belonging to the European Union, these pages must be
+  completed to inform users of these rules.
+    `,
+  cookies_info: `
+  In this version of do•doc, know that no tracking is done and that the cookies only contain anonymous technical information
+  (like the language, the cameras used, etc.).
+    `,
 
   on_this_page: "On this page",
   on_other_pages: "On other pages",

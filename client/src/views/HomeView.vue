@@ -87,14 +87,25 @@
       <footer class="_bottomFooter">
         <div class="_bottomFooter--cont">
           <div
-            v-if="$root.app_infos.instance_meta.terms_in_footer"
+            v-if="
+              $root.app_infos.instance_meta.terms_in_footer ||
+              $root.app_infos.instance_meta.confidentiality_in_footer
+            "
             class="u-spacingBottom"
           >
             <router-link
+              v-if="$root.app_infos.instance_meta.terms_in_footer"
               :to="createURLFromPath('pages/terms')"
               class="u-buttonLink"
             >
               {{ $t("terms") }}
+            </router-link>
+            <router-link
+              v-if="$root.app_infos.instance_meta.confidentiality_in_footer"
+              :to="createURLFromPath('pages/confidentiality')"
+              class="u-buttonLink"
+            >
+              {{ $t("confidentiality") }}
             </router-link>
           </div>
 
