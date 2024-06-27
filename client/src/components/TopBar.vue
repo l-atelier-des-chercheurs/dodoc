@@ -129,10 +129,12 @@ export default {
     });
     this.$api.join({ room: "authors" });
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
+    this.$eventHub.$on(`toolbar.openCredits`, this.showCredits);
   },
   beforeDestroy() {
     this.$api.leave({ room: "authors" });
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
+    this.$eventHub.$off(`toolbar.openCredits`, this.showCredits);
   },
   watch: {
     $route: {
@@ -154,6 +156,9 @@ export default {
   methods: {
     showAuthorModal() {
       this.show_authors_modal = true;
+    },
+    showCredits() {
+      this.show_credits_modal = true;
     },
   },
 };

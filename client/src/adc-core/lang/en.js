@@ -3,7 +3,7 @@ export default {
   current_lang_name: "English",
 
   a_foss_made_by:
-    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers, …!",
+    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers,&nbsp;…!",
   home: "Home",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
