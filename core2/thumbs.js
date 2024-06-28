@@ -678,6 +678,9 @@ module.exports = (function () {
         height: height + y_padding,
         deviceScaleFactor: 2,
       });
+      await page.setUserAgent(
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3738.0 Safari/537.36"
+      );
       await page
         .goto("file:" + full_media_path + "#toolbar=0&view=FitH", {
           waitUntil: "networkidle0",
