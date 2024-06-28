@@ -56,7 +56,7 @@ const routes = [
     path: "/_ui",
     name: "UI (dev only)",
     component: () =>
-      import(/* webpackChunkName: "AuthorView" */ "../views/UIView.vue"),
+      import(/* webpackChunkName: "UIView" */ "../views/UIView.vue"),
   },
   // {
   //   path: "/=:event_slug",
@@ -64,6 +64,19 @@ const routes = [
   //   component: () =>
   //     import(/* webpackChunkName: "AuthorView" */ "../views/EventView.vue"),
   // },
+  {
+    // internal route to generate preview for PDF and STL
+    path: "/_previewmedia",
+    name: "Preview media",
+    meta: {
+      /* do not load full UI */
+      static: true,
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "PreviewMedia" */ "../views/PreviewMedia.vue"
+      ),
+  },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
