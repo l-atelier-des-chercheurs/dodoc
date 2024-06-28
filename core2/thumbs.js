@@ -660,32 +660,43 @@ module.exports = (function () {
     // await fs.ensureDir(temp_pdf_doc);
 
     try {
-      const { BrowserWindow } = require("electron");
-      let win = new BrowserWindow({
-        width: 800,
-        height: 800,
-        show: false,
-        enableLargerThanScreen: true,
-        webPreferences: {
-          contextIsolation: true,
-          allowRunningInsecureContent: true,
-          offscreen: true,
+      const puppeteer = require("puppeteer");
+      const browser = await puppeteer.launch({
+        headless: true,
+        ignoreHTTPSErrors: true,
+        args: ["--no-sandbox", "--font-render-hinting=none"],
+      });
+      const page = await browser.newPage();
+
+      const x_padding = 11;
+      const y_padding = 8;
+      const width = 800 + x_padding * 2;
+      const height = 800 + y_padding;
+
+      await page.setViewport({
+        width: width,
+        height: height,
+        deviceScaleFactor: 2,
+      });
+      await page
+        .goto("file:" + full_media_path + "#toolbar=0", {
+          waitUntil: "networkidle0",
+        })
+        .catch((err) => {
+          throw err;
+        });
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await page.screenshot({
+        path: full_path_to_thumb,
+        clip: {
+          x: x_padding,
+          y: y_padding,
+          width: width - x_padding * 2,
+          height: height - y_padding,
         },
       });
-      win.loadFile(full_media_path);
-
-      await new Promise((resolve) => {
-        win.webContents.once("did-finish-load", async () => {
-          dev.logverbose("did-finish-load " + full_media_path);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          resolve();
-        });
-      }).then(async () => {
-        const image = await win.capturePage();
-        if (win) win.close();
-        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
-        return;
-      });
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      if (browser) await browser.close();
 
       return;
 
