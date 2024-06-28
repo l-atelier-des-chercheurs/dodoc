@@ -600,52 +600,12 @@ module.exports = (function () {
     });
   }
 
-  function _makeSTLThumbs({
+  async function _makeSTLThumbs({
     full_media_path,
     full_path_to_thumb,
     camera_angle,
   }) {
-    return new Promise(function (resolve, reject) {
-      const StlThumbnailer = require("stl-thumbnailer-node");
-
-      // todo replace with @scalenc/stl-to-png ? does not handle large files…
-
-      fs.stat(full_media_path)
-        .then(({ size }) => {
-          if (size / (1024 * 1024) > 10) {
-            const err = new Error("STL too large");
-            err.code = "stl_too_large";
-            throw err;
-          }
-          return;
-        })
-        .then(() => {
-          return new StlThumbnailer({
-            filePath: full_media_path,
-            requestThumbnails: [
-              {
-                width: 2200,
-                height: 2200,
-                cameraAngle: camera_angle,
-              },
-            ],
-          });
-        })
-        .then((thumbnails) => {
-          // thumbnails is an array (in matching order to your requests) of Canvas objects
-          // you can write them to disk, return them to web users, etc
-          // see node-canvas documentation at https://github.com/Automattic/node-canvas
-          thumbnails[0].toBuffer(async (err, buf) => {
-            if (err) return reject(err);
-
-            await fs.outputFile(full_path_to_thumb, buf);
-            return resolve();
-          });
-        })
-        .catch((err) => {
-          return reject(err);
-        });
-    });
+    await _loadMediaInWeb({ full_media_path, full_path_to_thumb });
   }
 
   async function _makePDFThumbs({
@@ -655,67 +615,55 @@ module.exports = (function () {
     page,
   }) {
     dev.logfunction({ full_media_path, full_path_to_thumb, page });
-
-    // const temp_pdf_doc = path.join(thumb_folder, "_temp_pdf");
-    // await fs.ensureDir(temp_pdf_doc);
-
     try {
-      const { BrowserWindow } = require("electron");
-      let win = new BrowserWindow({
-        width: 800,
-        height: 800,
-        show: false,
-        enableLargerThanScreen: true,
-        webPreferences: {
-          contextIsolation: true,
-          allowRunningInsecureContent: true,
-          offscreen: true,
-        },
-      });
-      win.loadFile(full_media_path);
-
-      await new Promise((resolve) => {
-        win.webContents.once("did-finish-load", async () => {
-          dev.logverbose("did-finish-load " + full_media_path);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          resolve();
-        });
-      }).then(async () => {
-        const image = await win.capturePage();
-        if (win) win.close();
-        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
-        return;
-      });
-
+      await _loadMediaInWeb({ full_media_path, full_path_to_thumb });
       return;
-
-      // const PdfExtractor = require("pdf-extractor").PdfExtractor;
-      // let pdf_extractor = new PdfExtractor(temp_pdf_doc, {
-      //   viewportScale: (width, height) => {
-      //     if (width > height) return 1100 / width;
-      //     return 800 / width;
-      //   },
-      //   pageRange: [page, page],
-      // });
-      // await pdf_extractor.parse(full_media_path).catch((err) => {
-      //   dev.error(err);
-      // });
     } catch (err) {
       throw err;
     }
+  }
 
-    dev.logverbose(`Created temp pdf folder`);
+  async function _loadMediaInWeb({ full_media_path, full_path_to_thumb }) {
+    dev.logfunction({ full_media_path, full_path_to_thumb });
 
-    // try {
-    //   const src = path.join(temp_pdf_doc, "page-1.png");
-    //   await fs.move(src, full_path_to_thumb);
-    //   await fs.remove(temp_pdf_doc);
-    // } catch (err) {
-    //   await fs.remove(temp_pdf_doc);
-    //   throw err;
-    // }
+    const relative_path_from_server = full_media_path.replace(
+      utils.getPathToUserContent(),
+      ""
+    );
+    const encoded_full_media_path = encodeURIComponent(
+      relative_path_from_server
+    );
+    let url =
+      global.appInfos.homeURL +
+      "/_previewmedia?path=" +
+      encoded_full_media_path;
 
-    dev.logverbose(`Moved/removed temp pdf folder`);
+    const { BrowserWindow } = require("electron");
+    let win = new BrowserWindow({
+      width: 800,
+      height: 800,
+      show: false,
+      enableLargerThanScreen: true,
+      webPreferences: {
+        contextIsolation: true,
+        allowRunningInsecureContent: true,
+        offscreen: true,
+      },
+    });
+    win.loadURL(url);
+
+    await new Promise((resolve) => {
+      win.webContents.once("did-finish-load", async () => {
+        dev.logverbose("did-finish-load " + full_media_path);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        resolve();
+      });
+    }).then(async () => {
+      const image = await win.capturePage();
+      if (win) win.close();
+      await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+      return;
+    });
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {

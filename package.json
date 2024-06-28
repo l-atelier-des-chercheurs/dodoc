@@ -123,7 +123,6 @@
     "node-gyp": "^10.1.0"
   },
   "optionalDependencies": {
-    "extractd": "^2.1.2",
-    "stl-thumbnailer-node": "^1.2.1"
+    "extractd": "^2.1.2"
   }
 }
