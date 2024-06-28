@@ -668,7 +668,7 @@ module.exports = (function () {
       });
       const page = await browser.newPage();
 
-      const x_padding = 14;
+      const x_padding = 12;
       const y_padding = 8;
       const width = 800;
       const height = 800;
@@ -679,7 +679,7 @@ module.exports = (function () {
         deviceScaleFactor: 2,
       });
       await page
-        .goto("file:" + full_media_path + "#toolbar=0", {
+        .goto("file:" + full_media_path + "#toolbar=0&view=FitH", {
           waitUntil: "networkidle0",
         })
         .catch((err) => {
