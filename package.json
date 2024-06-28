@@ -124,7 +124,6 @@
   },
   "optionalDependencies": {
     "extractd": "^2.1.2",
-    "pdf-extractor": "^2.2.0",
     "stl-thumbnailer-node": "^1.2.1"
   }
 }
