@@ -15,48 +15,43 @@
         />
       </div>
 
-      <div class="_topSection">
+      <div class="_topSection" v-if="medias.length > 0">
         <div class="_topSection--left">
-          <small v-if="medias.length === 0">
-            {{ $t("no_media_in_project") }}
-          </small>
-          <template v-else-if="medias.length > 0">
-            <div class="_mediaCount">
-              {{ $t("number_of_media") }} = {{ medias.length }}
-              <template v-if="filtered_medias.length !== medias.length">
-                (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
-                  filtered_medias.length
-                }})
-              </template>
-            </div>
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="!select_mode && !batch_mode"
-              @click="batch_mode = !batch_mode"
-            >
-              <b-icon icon="hand-index" />
-              {{ $t("select") }}
-            </button>
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="batch_mode"
-              @click="cancelSelect"
-            >
-              <b-icon icon="x-square" />
-              {{ $t("cancel") }}
-            </button>
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="select_mode === 'multiple' || batch_mode"
-              @click="selectAllVisibleMedias"
-            >
-              <b-icon icon="plus-square" />
-              {{ $t("select_all") }}
-            </button>
-          </template>
+          <div class="_mediaCount">
+            {{ $t("number_of_media") }} = {{ medias.length }}
+            <template v-if="filtered_medias.length !== medias.length">
+              (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
+                filtered_medias.length
+              }})
+            </template>
+          </div>
+          <button
+            type="button"
+            class="u-buttonLink"
+            v-if="!select_mode && !batch_mode"
+            @click="batch_mode = !batch_mode"
+          >
+            <b-icon icon="hand-index" />
+            {{ $t("select") }}
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            v-if="batch_mode"
+            @click="cancelSelect"
+          >
+            <b-icon icon="x-square" />
+            {{ $t("cancel") }}
+          </button>
+          <button
+            type="button"
+            class="u-buttonLink"
+            v-if="select_mode === 'multiple' || batch_mode"
+            @click="selectAllVisibleMedias"
+          >
+            <b-icon icon="plus-square" />
+            {{ $t("select_all") }}
+          </button>
         </div>
         <div class="_topSection--right">
           <button
@@ -211,6 +206,10 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <div class="_noMedia" v-if="medias.length === 0">
+        {{ $t("no_media_in_project") }}
       </div>
 
       <transition name="pagechange" mode="out-in">
@@ -763,6 +762,14 @@ export default {
   z-index: 1;
 
   border-bottom: 2px solid var(--c-orange_clair);
+}
+
+._noMedia {
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
+  font-size: var(--sl-font-size-small);
+  text-align: center;
+  text-transform: lowercase;
+  font-style: italic;
 }
 
 ._topSection--left {

@@ -505,6 +505,7 @@ module.exports = (function () {
       require_signup_to_contribute,
       users_must_accept_terms_to_signup,
       terms_in_footer,
+      confidentiality_in_footer,
       require_mail_to_signup,
       enable_events,
       enable_indexing,
@@ -532,6 +533,7 @@ module.exports = (function () {
     d.users_must_accept_terms_to_signup =
       users_must_accept_terms_to_signup === true;
     d.terms_in_footer = terms_in_footer === true;
+    d.confidentiality_in_footer = confidentiality_in_footer === true;
     d.enable_events = enable_events === true;
     d.enable_indexing = enable_indexing === true;
     d.$admins = $admins || "";

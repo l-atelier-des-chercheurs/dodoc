@@ -48,7 +48,11 @@
           <div v-if="current_step === 'export'" class="_exportPane">
             <img :src="final_image" />
             <div class="_btnRow">
-              <button type="button" class="" @click="goBack">
+              <button
+                type="button"
+                class="u-button u-button_white"
+                @click="goBack"
+              >
                 <b-icon icon="arrow-left-short" />
                 {{ $t("previous") }}
               </button>

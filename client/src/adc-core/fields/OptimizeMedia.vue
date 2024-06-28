@@ -6,7 +6,12 @@
       @click="show_modal = true"
     >
       <b-icon :icon="'tools'" />
-      {{ $t("convert_shorten") }}
+      <template v-if="['video', 'audio'].includes(media.$type)">
+        {{ $t("convert_shorten") }}
+      </template>
+      <template v-else-if="media.$type === 'image'">
+        {{ $t("optimize") }}
+      </template>
     </button>
 
     <BaseModal2
@@ -153,7 +158,11 @@
         </template>
         <template v-else>
           <div class="_btnRow">
-            <button type="button" class="u-buttonLink" @click="cancel">
+            <button
+              type="button"
+              class="u-button u-button_white"
+              @click="cancel"
+            >
               <b-icon icon="arrow-left-short" />
               {{ $t("back") }}
             </button>

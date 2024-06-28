@@ -185,9 +185,7 @@
 </template>
 <script>
 // import { createSilentAudio } from "create-silent-audio";
-
 import WaveformPlaylist from "waveform-playlist";
-
 import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
 
 export default {

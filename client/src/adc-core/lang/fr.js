@@ -2,7 +2,7 @@ export default {
   welcome_to_dodoc: "Bienvenue sur do•doc !",
   current_lang_name: "Français",
   a_foss_made_by:
-    "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
+    "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers,&nbsp;…!",
   home: "Accueil",
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
@@ -469,9 +469,7 @@ export default {
   test_and_export: "Tester et exporter",
   export_montage: "Exporter le montage",
 
-  image_to_rework: "Image à retravailler",
-  video_to_rework: "Vidéo à recouper",
-  audio_to_rework: "Son à recouper",
+  video_to_rework: "Vidéo à retrailler",
 
   pick_audio: "Choisissez le son à utiliser",
   pick_image: "Choisissez l’image à utiliser",
@@ -525,10 +523,7 @@ export default {
   slowing_video_down_limit:
     "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
   speed_up: "Accélérer",
-  a_little: "Un peu",
-  a_lot: "Beaucoup",
-  clockwise: "Dans le sens des aiguilles d’une montre",
-  counterclockwise: "Dans le sens inverse des aiguilles d’une montre",
+  playback_speed: "Vitesse de lecture",
   reverse: "Inverser le début et la fin",
   angle: "Angle",
   "error:": "Erreur&nbsp;:",
@@ -536,8 +531,7 @@ export default {
   horizontal_flip: "Retournement horizontal",
   vertical_flip: "Retournement vertical",
 
-  rotate_left: "Pivoter à gauche",
-  rotate_right: "Pivoter à droite",
+  rotate: "Pivoter",
   rotate_90_deg: "Pivoter de 90°",
   rotate_x_deg: "Pivoter vers la droite",
   both: "Les deux",
@@ -554,6 +548,9 @@ export default {
   mix_audio_and_video_summary: "Ajouter ou remplacer du son sur une vidéo.",
   mix_audio_and_video_instructions:
     "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
+
+  qr_code: "Code QR",
+  qr_code_summary: "Créer un code QR à partir d’un texte ou d’un lien.",
 
   add_sound_video_file:
     "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.",
@@ -772,7 +769,7 @@ export default {
   medium: "Moyenne",
   low: "Basse",
   rough: "Ébauche",
-  optimize_media: "Optimiser le média",
+  optimize: "Optimiser",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
@@ -1047,15 +1044,30 @@ export default {
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
 
   terms: "Conditions d’utilisation",
-  create_terms_page: "Créer une page pour les conditions d’utilisation",
-  open_page: "Ouvrir la page",
-  terms_in_footer: "Placer un lien en bas de la page d’accueil",
+  create_this_page: "Créer la page",
+  open_terms_page: "Ouvrir la page des conditions d’utilisation",
+  terms_confidentiality_in_footer: "Placer un lien en bas de la page d’accueil",
   users_must_accept_terms_to_signup:
     "Les utilisateurs doivent accepter les conditions d’utilisation pour s’inscrire",
   click_here_to_read: "Cliquez ici pour les lire.",
   i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
 
+  confidentiality: "Confidentialité",
+  open_confidentiality_page: "Ouvrir la page de la confidentialité",
   page_to_export: "Page à exporter",
+  terms_confidentiality_infos: `
+    Les champs suivants permettent de créer des pages précisant les conditions 
+    d’utilisation et les règles de confidentialité de votre instance.
+    Un lien vers ces pages peut être placé en bas de la page d’accueil, 
+    ainsi qu’au niveau du formulaire pour créer un compte.
+    En France et dans n’importe quel pays de l’Union Européenne, ces pages doivent être
+    remplies pour informer les utilisateurs de ces règles là.
+    `,
+  cookies_info: `
+    Sur cette version de do•doc, sachez qu’aucun suivi des visites n’est réalisé 
+    et que les seuls cookies servent à enregistrer des informations techniques anonymes
+    (comme la langue, l’utilisation des caméras, etc.).
+    `,
 
   on_this_page: "Sur cette page",
   on_other_pages: "Sur d’autres pages",

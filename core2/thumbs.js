@@ -4,6 +4,7 @@ const path = require("path"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
   https = require("https"),
+  writeFileAtomic = require("write-file-atomic"),
   { promisify } = require("util"),
   fastFolderSize = require("fast-folder-size");
 
@@ -157,9 +158,9 @@ module.exports = (function () {
 
       // read file infos
       const { size, mtimems, hash } = await _readFileInfos({ full_media_path });
-      if (size) infos.size = size;
-      if (mtimems) infos.mtimems = mtimems;
-      if (hash) infos.hash = hash;
+      if (size !== undefined) infos.size = size;
+      if (mtimems !== undefined) infos.mtimems = mtimems;
+      if (hash !== undefined) infos.hash = hash;
 
       let hrend = process.hrtime(hrstart);
       dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
@@ -649,41 +650,70 @@ module.exports = (function () {
 
   async function _makePDFThumbs({
     full_media_path,
-    thumb_folder,
+    // thumb_folder,
     full_path_to_thumb,
     page,
   }) {
     dev.logfunction({ full_media_path, full_path_to_thumb, page });
 
-    const temp_pdf_doc = path.join(thumb_folder, "_temp_pdf");
-    await fs.ensureDir(temp_pdf_doc);
+    // const temp_pdf_doc = path.join(thumb_folder, "_temp_pdf");
+    // await fs.ensureDir(temp_pdf_doc);
 
     try {
-      const PdfExtractor = require("pdf-extractor").PdfExtractor;
-      let pdf_extractor = new PdfExtractor(temp_pdf_doc, {
-        viewportScale: (width, height) => {
-          if (width > height) return 1100 / width;
-          return 800 / width;
+      const { BrowserWindow } = require("electron");
+      let win = new BrowserWindow({
+        width: 800,
+        height: 800,
+        show: false,
+        enableLargerThanScreen: true,
+        webPreferences: {
+          contextIsolation: true,
+          allowRunningInsecureContent: true,
+          offscreen: true,
         },
-        pageRange: [page, page],
       });
-      await pdf_extractor.parse(full_media_path).catch((err) => {
-        dev.error(err);
+      win.loadFile(full_media_path);
+
+      await new Promise((resolve) => {
+        win.webContents.once("did-finish-load", async () => {
+          dev.logverbose("did-finish-load " + full_media_path);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          resolve();
+        });
+      }).then(async () => {
+        const image = await win.capturePage();
+        if (win) win.close();
+        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+        return;
       });
+
+      return;
+
+      // const PdfExtractor = require("pdf-extractor").PdfExtractor;
+      // let pdf_extractor = new PdfExtractor(temp_pdf_doc, {
+      //   viewportScale: (width, height) => {
+      //     if (width > height) return 1100 / width;
+      //     return 800 / width;
+      //   },
+      //   pageRange: [page, page],
+      // });
+      // await pdf_extractor.parse(full_media_path).catch((err) => {
+      //   dev.error(err);
+      // });
     } catch (err) {
       throw err;
     }
 
     dev.logverbose(`Created temp pdf folder`);
 
-    try {
-      const src = path.join(temp_pdf_doc, "page-1.png");
-      await fs.move(src, full_path_to_thumb);
-      await fs.remove(temp_pdf_doc);
-    } catch (err) {
-      await fs.remove(temp_pdf_doc);
-      throw err;
-    }
+    // try {
+    //   const src = path.join(temp_pdf_doc, "page-1.png");
+    //   await fs.move(src, full_path_to_thumb);
+    //   await fs.remove(temp_pdf_doc);
+    // } catch (err) {
+    //   await fs.remove(temp_pdf_doc);
+    //   throw err;
+    // }
 
     dev.logverbose(`Moved/removed temp pdf folder`);
   }
@@ -752,7 +782,6 @@ module.exports = (function () {
     const props = {};
     try {
       const { size, mtimeMs } = await fs.stat(full_media_path);
-
       props.size = size;
       props.mtimems = Math.floor(mtimeMs);
     } catch (e) {

@@ -87,14 +87,25 @@
       <footer class="_bottomFooter">
         <div class="_bottomFooter--cont">
           <div
-            v-if="$root.app_infos.instance_meta.terms_in_footer"
-            class="u-spacingBottom"
+            v-if="
+              $root.app_infos.instance_meta.terms_in_footer ||
+              $root.app_infos.instance_meta.confidentiality_in_footer
+            "
+            class="u-spacingBottom _links"
           >
             <router-link
+              v-if="$root.app_infos.instance_meta.terms_in_footer"
               :to="createURLFromPath('pages/terms')"
               class="u-buttonLink"
             >
               {{ $t("terms") }}
+            </router-link>
+            <router-link
+              v-if="$root.app_infos.instance_meta.confidentiality_in_footer"
+              :to="createURLFromPath('pages/confidentiality')"
+              class="u-buttonLink"
+            >
+              {{ $t("confidentiality") }}
             </router-link>
           </div>
 
@@ -104,11 +115,23 @@
               {{ $t("version") }} {{ $root.app_infos.version }}
             </div>
           </div>
-          {{ $t("a_foss_made_by") }} <br />
-          {{ $t("more_informations") }} :
-          <a href="https://dodoc.fr" title="Site de do•doc" target="_blank"
-            >dodoc.fr</a
+
+          <p v-html="$t('a_foss_made_by')" />
+
+          <button
+            type="button"
+            class="u-buttonLink u-button_small"
+            @click="showCredits"
           >
+            <span v-html="$t('more_informations')" />
+          </button>
+          <!-- &nbsp;
+            <a
+              href="https://dodoc.fr"
+              :title="$t('open_website_new_tab')"
+              target="_blank"
+              >dodoc.fr</a
+            > -->
         </div>
       </footer>
     </template>
@@ -221,7 +244,11 @@ export default {
       return ["text", "image"];
     },
   },
-  methods: {},
+  methods: {
+    showCredits() {
+      this.$eventHub.$emit(`toolbar.openCredits`);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -322,8 +349,16 @@ export default {
   // background: white;
 }
 ._bottomFooter--cont {
-  max-width: 65ch;
+  max-width: 68ch;
   margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
+
+  ._links {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: calc(var(--spacing) * 1);
+  }
 }
 
 ._floatinProjectBtn {

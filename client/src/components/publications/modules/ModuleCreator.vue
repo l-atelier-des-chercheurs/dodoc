@@ -338,9 +338,8 @@ export default {
 
         let addtl_meta = {};
         if (["page_by_page", "montage"].includes(this.context))
-          if (media?.$infos?.ratio && this.pre_addtl_meta.width)
+          if (media?.$infos?.ratio && this.pre_addtl_meta?.width)
             addtl_meta.height = this.pre_addtl_meta.width * media.$infos.ratio;
-
         if (media?.$location) addtl_meta.location = media.$location;
 
         const meta_filename = await this.createMetaForModule({

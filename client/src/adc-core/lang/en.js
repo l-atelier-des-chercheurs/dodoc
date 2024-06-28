@@ -3,7 +3,7 @@ export default {
   current_lang_name: "English",
 
   a_foss_made_by:
-    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers, …!",
+    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers,&nbsp;…!",
   home: "Home",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
@@ -186,7 +186,7 @@ export default {
   medium: "Medium",
   low: "Low",
   rough: "Draft",
-  optimize_media: "Optimize the media",
+  optimize: "Optimize",
 
   no_accounts_yet: "No accounts created yet",
   no_accounts_to_show: "No accounts to show",
@@ -640,9 +640,7 @@ export default {
   test_and_export: "Test and export",
   export_montage: "Export montage",
 
-  image_to_rework: "Image to edit",
   video_to_rework: "Video to edit",
-  audio_to_rework: "Audio to edit",
 
   pick_audio: "Pick audio media",
   pick_image: "Pick image media",
@@ -686,8 +684,7 @@ export default {
   slowing_video_down_limit:
     "Attention! The audio track will be deleted (if it exists) because the desired speed is too slow. To keep and convert the sound choose a speed between 0.5 and 1.",
   speed_up: "Speed up",
-  a_little: "A little",
-  a_lot: "A lot",
+  playback_speed: "Playback speed",
   clockwise: "Clockwise",
   counterclockwise: "Counterclockwise",
   reverse: "Reverse start and end",
@@ -696,8 +693,6 @@ export default {
   mirror: "Mirror",
   horizontal_flip: "Horizontal flip",
   vertical_flip: "Vertical flip",
-  rotate_left: "Rotate left",
-  rotate_right: "Rotate right",
   rotate_90_deg: "Rotate 90°",
   rotate_x_deg: "Rotate to the right",
 
@@ -714,6 +709,10 @@ export default {
   mix_audio_and_video_summary: "Add or replace audio to a video.",
   mix_audio_and_video_instructions:
     "This recipe takes a video and an audio track. It adds or replaces the video's soundtrack with the selected one.<br> Accepted media: a video and an audio track.<br>Will create a new video of the duration of the longest media.",
+
+  qr_code: "QR code",
+  qr_code_summary: "Create a QR code from a text or a link.",
+
   add_sound_video_file:
     "Open a project and add <b>sound</b> media and <b>video</b> media by clicking the green arrow.<br>Exporting will create a new video.<br>Accepted media : a video and a sound track.",
   add_sound_image_file:
@@ -983,15 +982,31 @@ export default {
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
 
   terms: "Terms of use",
-  create_terms_page: "Create a terms of use page",
-  open_page: "Open page",
-  terms_in_footer: "Place a link at the bottom of the home page",
+  create_this_page: "Create this page",
+  open_terms_page: "Open Terms page",
+  terms_confidentiality_in_footer:
+    "Place a link at the bottom of the home page",
   users_must_accept_terms_to_signup:
     "Users must accept the terms of use to register",
   click_here_to_read: "Click here to read them.",
   i_read_and_accept_terms: "I accept the terms of use",
 
+  confidentiality: "Confidentiality",
+  open_confidentiality_page: "Open confidentiality page",
   page_to_export: "Page to export",
+
+  terms_confidentiality_infos: `
+  The following fields allow you to create pages specifying the conditions
+  of use and the confidentiality rules of your instance.
+  A link to these pages can be placed at the bottom of the home page,
+  as well as at the bottom of the signup form.
+  In France and in all of the countries belonging to the European Union, these pages must be
+  completed to inform users of these rules.
+    `,
+  cookies_info: `
+  In this version of do•doc, know that no tracking is done and that the cookies only contain anonymous technical information
+  (like the language, the cameras used, etc.).
+    `,
 
   on_this_page: "On this page",
   on_other_pages: "On other pages",

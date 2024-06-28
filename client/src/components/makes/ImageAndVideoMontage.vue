@@ -112,15 +112,6 @@
       </div>
       <div v-else>
         <div v-if="!created_video">
-          <!-- <select v-model="resolution_preset_picked">
-            <option
-              v-for="res in presets"
-              :key="res"
-              v-text="res"
-              :value="res"
-            />
-          </select> -->
-
           <SelectField2
             :value="resolution_preset_picked"
             :options="presets"
@@ -249,7 +240,7 @@ export default {
       return "video_montage.mp4";
     },
     export_is_available() {
-      return this.section_modules_list.length > 1;
+      return this.section_modules_list.length > 0;
     },
     montage() {
       return this.section_modules_list.reduce((acc, _module) => {

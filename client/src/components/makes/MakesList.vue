@@ -79,6 +79,11 @@ export default {
 }
 
 ._makes {
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) * 1);
+  align-items: end;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
 ._makes--item {

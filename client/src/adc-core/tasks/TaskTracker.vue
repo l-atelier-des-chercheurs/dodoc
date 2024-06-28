@@ -4,47 +4,49 @@
       class=""
       :str="tasks_tracked.length > 1 ? $t('exports') : $t('export')"
     />
-    <div v-for="task in tasks_tracked" class="_task" :key="task.id">
-      <div class="">
-        {{ $t(task.instructions.recipe) }}
+    <transition-group name="listComplete">
+      <div v-for="task in tasks_tracked" class="_task" :key="task.id">
+        <div class="">
+          {{ $t(task.instructions.recipe) }}
+        </div>
+        <div v-if="task.event !== 'completed'">
+          <i>
+            {{ $t(task.event) }}
+          </i>
+        </div>
+        <div>
+          <b><AnimatedCounter :value="task.progress" /></b>
+        </div>
+        <div v-if="task.path">
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="openMediaModalToExport(task.path)"
+          >
+            {{ $t("open") }}
+          </button>
+        </div>
+        <div class="u-sameRow">
+          <button
+            type="button"
+            v-if="task.progress < 100"
+            @click="abortTask(task.id)"
+            class="u-button u-button_red"
+          >
+            <b-icon icon="x-octagon" />
+            {{ $t("stop") }}
+          </button>
+          <button
+            type="button"
+            v-else-if="task.progress === 100"
+            @click="removeTask(task.id)"
+            class="u-button u-button_icon"
+          >
+            <b-icon icon="x-octagon" />
+          </button>
+        </div>
       </div>
-      <div v-if="task.event !== 'completed'">
-        <i>
-          {{ $t(task.event) }}
-        </i>
-      </div>
-      <div>
-        <b><AnimatedCounter :value="task.progress" /></b>
-      </div>
-      <div v-if="task.path">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="openMediaModalToExport(task.path)"
-        >
-          {{ $t("open") }}
-        </button>
-      </div>
-      <div class="u-sameRow">
-        <button
-          type="button"
-          v-if="task.progress < 100"
-          @click="abortTask(task.id)"
-          class="u-button u-button_red"
-        >
-          <b-icon icon="x-octagon" />
-          {{ $t("stop") }}
-        </button>
-        <button
-          type="button"
-          v-else-if="task.progress === 100"
-          @click="removeTask(task.id)"
-          class="u-button u-button_icon"
-        >
-          <b-icon icon="x-octagon" />
-        </button>
-      </div>
-    </div>
+    </transition-group>
   </div>
 </template>
 <script>
@@ -67,7 +69,13 @@ export default {
     this.$eventHub.$off("task.status", this.status);
     this.$eventHub.$off("task.ended", this.ended);
   },
-  watch: {},
+  watch: {
+    tasks_tracked() {
+      if (this.tasks_tracked.length > 3) {
+        this.tasks_tracked.shift();
+      }
+    },
+  },
   computed: {},
   methods: {
     started({ task_id, instructions }) {

@@ -100,6 +100,9 @@
       },
       "terms_in_footer": {
         "type": "boolean"
+      },
+      "confidentiality_in_footer": {
+        "type": "boolean"
       }
     },
     "$files": {
@@ -238,6 +241,21 @@
                   },
                   "crop_options": {
                     "type": "object"
+                  },
+                  "effect_type": {
+                    "type": "string"
+                  },
+                  "color_filter": {
+                    "type": "object"
+                  },
+                  "playback_speed": {
+                    "type": "number"
+                  },
+                  "rotation": {
+                    "type": "string"
+                  },
+                  "flip": {
+                    "type": "string"
                   },
                   "selection": {
                     "type": "object"
