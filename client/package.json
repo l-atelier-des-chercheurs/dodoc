@@ -23,7 +23,6 @@
     "fix-webm-duration": "^1.0.5",
     "flickity-imagesloaded": "^2.0.0",
     "imagetracerjs": "^1.2.6",
-    "isomorphic-dompurify": "^1.13.0",
     "jspdf": "^2.5.1",
     "less-loader": "^11.1.4",
     "moment": "^2.30.1",
