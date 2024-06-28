@@ -668,14 +668,14 @@ module.exports = (function () {
       });
       const page = await browser.newPage();
 
-      const x_padding = 11;
+      const x_padding = 14;
       const y_padding = 8;
-      const width = 800 + x_padding * 2;
-      const height = 800 + y_padding;
+      const width = 800;
+      const height = 800;
 
       await page.setViewport({
-        width: width,
-        height: height,
+        width: width + x_padding * 2,
+        height: height + y_padding,
         deviceScaleFactor: 2,
       });
       await page
@@ -691,8 +691,8 @@ module.exports = (function () {
         clip: {
           x: x_padding,
           y: y_padding,
-          width: width - x_padding * 2,
-          height: height - y_padding,
+          width: width,
+          height: height,
         },
       });
       await new Promise((resolve) => setTimeout(resolve, 200));
