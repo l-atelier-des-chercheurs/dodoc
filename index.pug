@@ -8,9 +8,12 @@ html
     if !enable_indexing
       meta(name="pinterest" content="nopin")
       meta(name="robots" content="noindex")
-    title !{name_of_instance}
+    title !{name_of_instance || "do•doc"}
     if favicon_url
       link(rel="shortcut icon" href=favicon_url)
+    else 
+      link(rel="shortcut icon" href="/_client/favicon.ico")
+
     style.
       @import "/_client/fonts/fira.css";
       @import "/_client/fonts/default_fonts.css";
