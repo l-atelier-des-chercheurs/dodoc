@@ -605,7 +605,13 @@ module.exports = (function () {
     full_path_to_thumb,
     camera_angle,
   }) {
-    await _loadMediaInWeb({ full_media_path, full_path_to_thumb });
+    dev.logfunction({ full_media_path, full_path_to_thumb, page });
+    try {
+      await _loadMediaInWeb({ full_media_path, full_path_to_thumb });
+      return;
+    } catch (err) {
+      throw err;
+    }
   }
 
   async function _makePDFThumbs({
