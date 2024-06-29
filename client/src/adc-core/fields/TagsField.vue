@@ -12,17 +12,17 @@
     </div>
 
     <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
-      <TagsList
-        :tags="new_tags"
-        :tag_type="tag_type"
-        :mode="'remove'"
-        :shorten_if_too_long="false"
-        @tagClick="removeTag($event)"
-      />
+      <div class="u-spacingBottom">
+        <TagsList
+          :tags="new_tags"
+          :tag_type="tag_type"
+          :mode="'remove'"
+          :shorten_if_too_long="false"
+          @tagClick="removeTag($event)"
+        />
+      </div>
 
-      <div class="u-spacingBottom" />
-
-      <fieldset class="_newTagPane" v-if="create_new_tag">
+      <fieldset class="u-spacingBottom _newTagPane" v-if="create_new_tag">
         <legend class="u-label">{{ $t("add_item") }}</legend>
 
         <div class="u-spacingBottom">
