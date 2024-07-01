@@ -194,6 +194,7 @@ export default {
 
   add_accounts: "Add accounts",
   show: "Show",
+  show_title: "Show title",
   hide: "Hide",
   list_of_accounts: "List of accounts",
   show_all_accounts: "Show all accounts",

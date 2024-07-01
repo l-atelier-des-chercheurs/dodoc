@@ -158,6 +158,7 @@ export default {
   group: "Groupe",
   show_list: "Afficher la liste",
   show: "Afficher",
+  show_title: "Afficher le titre",
   hide: "Masquer",
   list_of_accounts: "Liste des comptes",
   show_all_accounts: "Afficher tous les comptes",
