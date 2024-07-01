@@ -672,8 +672,8 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// SEARCH FIELD
 
-      let lang = "fr-FR";
-      if (this.$i18n.locale === "en") lang = "en-US";
+      let lang = "en-US";
+      if (this.$i18n.locale === "fr") lang = "fr-FR";
 
       const geocoder = new Geocoder("nominatim", {
         provider: "osm",
@@ -682,11 +682,38 @@ export default {
         placeholder: this.$t("search_for_a_place"),
         // targetType: "text-input",
         limit: 5,
-        keepOpen: false,
+        keepOpen: true,
         preventDefault: true,
       });
       this.map.addControl(geocoder);
+
+      let search_timeout;
+      const startTimeout = () => {
+        console.log("startTimeout");
+        search_timeout = setTimeout(() => {
+          clearTimeout(search_timeout);
+          this.$alertify.error(this.$t("no_results"));
+        }, 2000);
+      };
+
+      const search_button = document.querySelector(
+        ".ol-geocoder #gcd-input-search"
+      );
+      if (search_button) search_button.addEventListener("click", startTimeout);
+
+      const search_input = document.querySelector(
+        ".ol-geocoder #gcd-input-query"
+      );
+      if (search_input)
+        search_input.addEventListener("keyup", function (e) {
+          if (e.key === "Enter" || e.keyCode === 13) {
+            startTimeout();
+          }
+        });
+
       geocoder.on("addresschosen", async (evt) => {
+        if (search_timeout) clearTimeout(search_timeout);
+
         this.closePopup();
 
         await this.$nextTick();
@@ -1893,6 +1920,7 @@ export default {
         left: 0;
         top: 0;
         padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+        padding-right: 2em;
         height: calc(2rem + 2px);
         position: relative;
         border: 1px solid var(--c-gris_fonce);
@@ -1901,6 +1929,19 @@ export default {
           box-shadow: none;
           border-color: var(--active-color);
         }
+      }
+      .gcd-gl-search:after {
+        content: "→";
+
+        line-height: 1;
+        font-weight: 800;
+        background: var(--active-color);
+        color: white;
+        display: inline-block;
+        border-radius: 50%;
+        margin-top: 3px;
+        padding: 4px;
+        font-size: 90%;
       }
     }
     .gcd-road {

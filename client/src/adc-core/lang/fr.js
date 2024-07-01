@@ -1078,6 +1078,8 @@ export default {
 
   mouse_position: "Position de la balise",
   search_for_a_place: "Rechercher un lieu",
+  no_results: "Aucun résultat",
+
   click_to_start_drawing: "cliquer pour commencer le tracé",
   click_to_continue_drawing: "cliquez pour ajouter un autre point",
   click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",

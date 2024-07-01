@@ -49,7 +49,9 @@
         </div>
 
         <div class="u-instructions" v-if="can_edit">
-          {{ $t("edit_caption_changes_for_all_medias") }}
+          <small>
+            {{ $t("edit_caption_changes_for_all_medias") }}
+          </small>
         </div>
 
         <!-- <div>

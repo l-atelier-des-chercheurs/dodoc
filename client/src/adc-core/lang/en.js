@@ -1017,6 +1017,8 @@ export default {
   polygon: "Polygon",
 
   search_for_a_place: "Search for a place",
+  no_results: "No results",
+
   click_to_start_drawing: "click to start drawing",
   click_to_continue_drawing: "click to continue drawing",
   click_drag_to_draw_line: "click and hold to draw",
