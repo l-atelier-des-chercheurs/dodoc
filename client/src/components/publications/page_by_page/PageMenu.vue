@@ -92,6 +92,24 @@
               :show_toggle="show_grid"
               @update:show_toggle="$emit('update:show_grid', $event)"
             >
+              <RadioCheckboxInput
+                :value="grid_z_index"
+                :options="[
+                  {
+                    label: $t('over'),
+                    key: 'over',
+                  },
+                  {
+                    label: $t('under'),
+                    key: 'under',
+                  },
+                ]"
+                :can_edit="true"
+                @update:value="$emit('update:grid_z_index', $event)"
+              />
+
+              <div class="u-spacingBottom" />
+
               <RangeValueInput
                 :label="$t('gridstep')"
                 :can_toggle="false"
@@ -104,6 +122,8 @@
                 :suffix="unit"
                 @save="$emit('update:gridstep_in_mm', $event)"
               />
+
+              <div class="u-spacingBottom" />
 
               <ToggleInput
                 class="u-spacingBottom"
@@ -344,13 +364,13 @@
 
         <div class="u-sameRow">
           <NumberInput
-            :label="$t('position') + '→'"
+            :label="$t('position') + ' →'"
             :value="active_module.x"
             :suffix="unit"
             @save="updateMediaPubliMeta({ x: $event })"
           />
           <NumberInput
-            :label="$t('position') + '↓'"
+            :label="$t('position') + ' ↓'"
             :value="active_module.y"
             :suffix="unit"
             @save="updateMediaPubliMeta({ y: $event })"
@@ -359,14 +379,14 @@
 
         <div class="u-sameRow">
           <NumberInput
-            :label="$t('width') + '↔'"
+            :label="$t('width') + ' ↔'"
             :value="active_module.width"
             :min="0"
             :suffix="unit"
             @save="updateMediaPubliMeta({ width: $event })"
           />
           <NumberInput
-            :label="$t('height') + '↕'"
+            :label="$t('height') + ' ↕'"
             :value="active_module.height"
             :min="0"
             :suffix="unit"
@@ -374,14 +394,19 @@
           />
         </div>
         <div class="_setSizeBtn">
-          <!-- <button
+          <button
             type="button"
             class="u-button_icon"
-            v-if="layout_mode === 'screen' && first_media_has_resolution"
+            :title="$t('real_size')"
+            v-if="/* layout_mode === 'screen' && */ first_media_ratio"
             @click="setRealSize"
           >
-            {{ $t("real_size") }}
-          </button> -->
+            <b-icon
+              icon="slash-square-fill"
+              rotate="90"
+              :aria-label="$t('real_size')"
+            />
+          </button>
           <button type="button" class="u-button_icon" @click="setSize('full')">
             <b-icon icon="square-fill" :aria-label="$t('full_page')" />
           </button>
@@ -606,6 +631,7 @@ export default {
     scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
+    grid_z_index: Boolean,
     gridstep_in_mm: Number,
     layout_mode: {
       type: String,
@@ -659,11 +685,8 @@ export default {
     active_module_first_media() {
       return this.firstMedia(this.active_module);
     },
-    first_media_has_resolution() {
-      return (
-        this.active_module_first_media?.$infos?.width &&
-        this.active_module_first_media?.$infos?.height
-      );
+    first_media_ratio() {
+      return this.active_module_first_media?.$infos?.ratio;
     },
     is_shape() {
       return this.getModuleType(this.active_module.module_type) === "shape";
@@ -764,13 +787,8 @@ export default {
       }, 150);
     },
     async setRealSize() {
-      const width =
-        this.active_module_first_media.$infos.width / this.magnification;
-      const height =
-        this.active_module_first_media.$infos.height / this.magnification;
-
+      const height = this.active_module.width * this.first_media_ratio;
       await this.updateMediaPubliMeta({
-        width,
         height,
       });
     },
@@ -949,5 +967,6 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  color: var(--c-gris_fonce);
 }
 </style>

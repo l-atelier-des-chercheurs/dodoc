@@ -632,6 +632,10 @@ export default {
   }
 }
 
+._moveableItem:not(.is--active):not(.is--beingEdited) {
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
 ._moveableItem.is--editable:not(.is--beingEdited):not(.is--locked) ._activator {
   &::after {
     content: "";

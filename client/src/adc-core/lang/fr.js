@@ -422,6 +422,8 @@ export default {
   snap_to_grid: "Magnétisme de la grille",
   gridstep: "Pas de la grille",
   scale: "Échelle",
+  over: "au-dessus",
+  under: "en-dessous",
 
   path_to_content: "Chemin du stockage des contenus",
   path_to_content_instructions: `Attention, fonctionnalité avancée !

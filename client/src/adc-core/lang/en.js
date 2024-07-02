@@ -620,6 +620,9 @@ export default {
   snap_to_grid: "Grid Snapping",
   gridstep: "Grid step",
   scale: "Scale",
+  over: "Over",
+  under: "Under",
+
   makes_list: "Makes list",
   back_to_makes_list: "Back to list",
   edit_image: "Rework an image",
