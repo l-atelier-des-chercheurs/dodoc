@@ -153,6 +153,7 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 100;
   margin: calc(var(--spacing) / 1);
 }
 </style>
