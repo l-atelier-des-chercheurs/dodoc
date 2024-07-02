@@ -238,6 +238,7 @@ export default {
   --font-verysmall: var(--sl-font-size-x-small);
 
   --max-column-width: 90%;
+  --switch-thumb-border-radius: 4px;
 
   accent-color: var(--c-orange);
 }

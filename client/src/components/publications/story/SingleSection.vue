@@ -26,6 +26,7 @@
               <EditBtn
                 v-if="can_edit"
                 :btn_type="title_is_visible ? 'show' : 'hide'"
+                :label="$t('show_title')"
                 @click="toggleSectionVisibility"
               />
             </div>

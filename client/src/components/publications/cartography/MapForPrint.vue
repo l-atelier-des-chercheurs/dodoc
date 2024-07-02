@@ -1,11 +1,29 @@
 <template>
-  <div class="_mapForPrint">
-    <MapView
-      :publication="publication"
-      :opened_view_meta_filename="opened_view_meta_filename"
-      :can_edit="false"
-      @toggleView="toggleView"
-    />
+  <div class="_mapForPrint" :data-display="display_mode">
+    <template v-if="display_mode === 'section'">
+      <MapView
+        class="_mapStoryContainer"
+        :publication="publication"
+        :opened_view_meta_filename="opened_view_meta_filename"
+        :can_edit="false"
+        @toggleView="toggleView"
+      />
+    </template>
+    <template v-else>
+      <div
+        v-for="view_meta_filename in openable_views_meta_filenames"
+        class="_mapStoryContainer"
+        :key="view_meta_filename"
+      >
+        <MapView
+          :publication="publication"
+          :opened_view_meta_filename="view_meta_filename"
+          :can_edit="false"
+          :display="'linear'"
+          @toggleView="toggleView"
+        />
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -19,15 +37,28 @@ export default {
     MapView,
   },
   data() {
-    return {};
+    return {
+      display_mode: "all",
+    };
   },
-  created() {},
+  created() {
+    if (this.$route.query?.display === "section") this.display_mode = "section";
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
     opened_view_meta_filename() {
       return this.$route.query?.view || undefined;
+    },
+    views() {
+      return this.getSectionsWithProps({
+        publication: this.publication,
+        group: "sections_list",
+      });
+    },
+    openable_views_meta_filenames() {
+      return this.views.map((view) => this.getFilename(view.$path));
     },
   },
   methods: {
@@ -40,6 +71,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._mapForPrint {
-  height: 100vh;
+  &[data-display="section"] {
+    height: 100vh;
+  }
+}
+._mapStoryContainer {
+  page-break-inside: avoid;
 }
 </style>

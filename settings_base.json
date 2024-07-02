@@ -454,6 +454,9 @@
                     "caption": {
                       "type": "string"
                     },
+                    "on_click": {
+                      "type": "object"
+                    },
                     "pin_icon": {
                       "type": "string"
                     },

@@ -69,32 +69,66 @@
         </button>
       </div>
     </span>
-    <div class="_unlockBtn" v-if="can_edit">
+    <div class="_bottomLeftButton">
+      <template v-if="can_edit">
+        <button
+          type="button"
+          class="u-button u-button_orange u-button_icon u-button_small u-colorBlack"
+          v-if="publimodule.locked === true"
+          @click.stop="unlock()"
+          @touchstart.stop="unlock()"
+        >
+          <b-icon icon="lock" />
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_orange u-button_icon u-button_small u-colorBlack"
+          v-if="
+            can_edit &&
+            is_active &&
+            !content_is_edited &&
+            (!publimodule.locked || publimodule.locked === false)
+          "
+          @click.stop="lock()"
+          @touchstart.stop="unlock()"
+        >
+          <b-icon icon="unlock" />
+          <!-- {{ $t("lock") }} -->
+        </button>
+      </template>
+
       <button
         type="button"
-        class="u-button u-button_orange u-button_icon u-button_small u-colorBlack"
-        v-if="publimodule.locked === true"
-        @click.stop="unlock()"
-        @touchstart.stop="unlock()"
+        class="u-button u-button_orange u-button_small u-colorBlack"
+        v-if="on_click_action"
+        @click.stop="onClickAction()"
+        @touchstart.stop="onClickAction()"
       >
-        <b-icon icon="lock" />
-      </button>
-      <button
-        type="button"
-        class="u-button u-button_orange u-button_icon u-button_small"
-        v-if="
-          can_edit &&
-          is_active &&
-          !content_is_edited &&
-          (!publimodule.locked || publimodule.locked === false)
-        "
-        @click.stop="lock()"
-        @touchstart.stop="unlock()"
-      >
-        <b-icon icon="unlock" />
-        <!-- {{ $t("lock") }} -->
+        <b-icon icon="link" />
+        <template
+          v-if="on_click_action.type === 'page' && on_click_action.page_id"
+        >
+          {{ $t("page") }}
+        </template>
+        <template
+          v-else-if="on_click_action.type === 'url' && on_click_action.url"
+        >
+          www
+        </template>
       </button>
     </div>
+
+    <button
+      v-if="on_click_action && !can_edit"
+      type="button"
+      class="_clickZone"
+      :title="
+        on_click_action.type === 'page'
+          ? $t('navigate_to_page')
+          : $t('open_webpage')
+      "
+      @click="onClickAction()"
+    />
 
     <!-- <small class="_coords">
       x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
@@ -207,6 +241,19 @@ export default {
       return `
         z-index: ${this.publimodule.z_index ? this.publimodule.z_index : 0}
       `;
+    },
+    on_click_action() {
+      if (
+        this.publimodule.on_click?.type === "page" &&
+        this.publimodule.on_click?.page_id
+      )
+        return { type: "page", page_id: this.publimodule.on_click.page_id };
+      else if (
+        this.publimodule.on_click?.type === "url" &&
+        this.publimodule.on_click?.url
+      )
+        return { type: "url", url: this.publimodule.on_click.url };
+      else return false;
     },
     scaled_border_radius() {
       if (!this.publimodule.border_radius) return;
@@ -343,6 +390,16 @@ export default {
       this.updateTransform(transform);
 
       event.stopPropagation();
+    },
+    onClickAction() {
+      if (this.on_click_action?.type === "page") {
+        this.$eventHub.$emit(
+          "publication.togglePage",
+          this.on_click_action.page_id
+        );
+      } else if (this.on_click_action?.type === "url") {
+        window.open(this.on_click_action.url, "_blank");
+      }
     },
     async updateTransform(transform) {
       let new_meta = JSON.parse(JSON.stringify(transform));
@@ -632,6 +689,12 @@ export default {
   }
 }
 
+._moveableItem:not(.ddr-dragging):not(.ddr-rotating) {
+  // not doing anything because of component_key, which makes sure that items move when their props change
+  // when another user is editing the same item
+  // transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
 ._moveableItem.is--editable:not(.is--beingEdited):not(.is--locked) ._activator {
   &::after {
     content: "";
@@ -661,7 +724,7 @@ export default {
   // padding: calc(var(--spacing) * 1);
 }
 
-._unlockBtn {
+._bottomLeftButton {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -670,6 +733,7 @@ export default {
 
   display: flex;
   justify-content: flex-start;
+  gap: calc(var(--spacing) / 2);
 
   > * {
     // background: white;
@@ -690,6 +754,23 @@ export default {
   button {
     // border: 1px solid black;
     pointer-events: auto;
+  }
+}
+
+._clickZone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--c-orange_clair);
+  opacity: 0;
+
+  transition: opacity 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover,
+  &:focus-visible {
+    opacity: 0.1;
   }
 }
 </style>

@@ -83,6 +83,7 @@
         <button
           type="button"
           class="u-button u-button_red"
+          v-if="!enable_capture_mode"
           @click="enable_capture_mode = true"
         >
           <img
@@ -94,22 +95,27 @@
           </span>
         </button>
 
-        <CaptureView
+        <BaseModal2
+          :title="$t('capture')"
+          :size="'full'"
           v-if="enable_capture_mode"
-          :available_modes="[]"
-          :selected_mode="'photo'"
-          :return_temp_media="true"
-          :must_validate_media="false"
           @close="enable_capture_mode = false"
-          @tempMedia="tempMedia"
-        />
+        >
+          <CaptureView
+            :available_modes="[]"
+            :selected_mode="'photo'"
+            :return_temp_media="true"
+            :must_validate_media="false"
+            @close="enable_capture_mode = false"
+            @tempMedia="tempMedia"
+          />
+        </BaseModal2>
 
-        <div v-if="enable_capture_mode">
+        <!-- <div v-if="enable_capture_mode">
           <button type="button" class="" @click="enable_capture_mode = false">
             <span>{{ $t("cancel") }}</span>
-            <!-- <img src="/images/i_close_sansfond.svg" draggable="false" /> -->
           </button>
-        </div>
+        </div> -->
       </div>
 
       <small class="u-instructions">{{ $t("or_paste_an_image") }}</small>
@@ -129,6 +135,8 @@
   </div>
 </template>
 <script>
+import CaptureModal from "@/components/publications/CaptureModal.vue";
+
 export default {
   props: {
     existing_preview: [Boolean, String],

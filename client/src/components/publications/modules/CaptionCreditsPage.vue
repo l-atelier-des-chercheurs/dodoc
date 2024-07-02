@@ -49,7 +49,9 @@
         </div>
 
         <div class="u-instructions" v-if="can_edit">
-          {{ $t("edit_caption_changes_for_all_medias") }}
+          <small>
+            {{ $t("edit_caption_changes_for_all_medias") }}
+          </small>
         </div>
 
         <!-- <div>
@@ -151,6 +153,7 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 100;
   margin: calc(var(--spacing) / 1);
 }
 </style>

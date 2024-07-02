@@ -225,7 +225,9 @@ export default {
       page_zoom: 100,
     };
   },
-  created() {},
+  created() {
+    this.$eventHub.$on("publication.togglePage", this.togglePage);
+  },
   async mounted() {
     if (this.publication.layout_mode === "screen")
       document.body.style = `
@@ -249,6 +251,7 @@ export default {
     }
   },
   beforeDestroy() {
+    this.$eventHub.$off("publication.togglePage", this.togglePage);
     document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {},
@@ -373,6 +376,18 @@ export default {
         case "f":
           this.$emit("toggleFs");
           break;
+      }
+    },
+    togglePage(page_id) {
+      const page_index = this.pages.findIndex((p) => p.id === page_id);
+      debugger;
+      if (page_index !== -1) {
+        this.updatePageQuery({
+          prop: "page",
+          val: page_index + 1,
+        });
+      } else {
+        this.$alertify.error(this.$t("page_not_found"));
       }
     },
   },

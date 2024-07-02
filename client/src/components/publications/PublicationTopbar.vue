@@ -172,6 +172,8 @@ export default {
         query = { display: "slides" };
       else if (this.publication.template === "story_with_sections")
         query = { display: "section" };
+      else if (this.publication.template === "cartography")
+        query = { display: "section" };
 
       const route = this.$router.resolve({
         path: this.createURLFromPath(this.publication.$path),

@@ -97,7 +97,7 @@ export default {
   &.can--toggle {
     border-left: 3px solid var(--c-orange);
     padding-left: calc(var(--spacing) / 2);
-    margin-left: calc(var(--spacing) / 3);
+    margin-left: calc(var(--spacing) / 2);
   }
 }
 </style>

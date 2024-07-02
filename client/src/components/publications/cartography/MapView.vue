@@ -1,7 +1,7 @@
 <template>
-  <div class="_mapView">
-    <splitpanes>
-      <pane min-size="5">
+  <div class="_mapView" :data-display="display">
+    <component :is="display === 'adjacent' ? 'splitpanes' : 'div'">
+      <component :is="display === 'adjacent' ? 'pane' : 'div'" min-size="5">
         <DisplayOnMap
           :key="opened_view_meta_filename"
           class="_mapContainer"
@@ -56,8 +56,8 @@
             :default_view_color="default_view_color"
           />
         </transition>
-      </pane>
-      <pane min-size="5">
+      </component>
+      <component :is="display === 'adjacent' ? 'pane' : 'div'" min-size="5">
         <ViewPane
           :publication="publication"
           :opened_view_meta_filename="opened_view_meta_filename"
@@ -68,8 +68,8 @@
           @toggleView="toggleView"
           @togglePin="opened_pin_path = $event"
         />
-      </pane>
-    </splitpanes>
+      </component>
+    </component>
   </div>
 </template>
 <script>
@@ -83,6 +83,10 @@ export default {
   props: {
     publication: Object,
     opened_view_meta_filename: String,
+    display: {
+      type: String,
+      default: "adjacent",
+    },
     can_edit: Boolean,
   },
   components: {
@@ -149,6 +153,7 @@ export default {
     },
     opened_view() {
       if (!this.opened_view_meta_filename) return false;
+
       return this.views.find(
         (v) => this.getFilename(v.$path) === this.opened_view_meta_filename
       );
@@ -343,16 +348,30 @@ export default {
   width: 100%;
   height: 100%;
 
-  // border-top: 1px solid black;
-
   background: var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
 
-  // display: flex;
-  // flex-flow: row wrap;
-}
-._mapContainer {
-  height: 100%;
+  ._mapContainer {
+    width: 100%;
+  }
+
+  &[data-display="linear"] {
+    ._mapContainer {
+      height: 8cm;
+    }
+
+    ::v-deep {
+      ._viewPane {
+        padding-bottom: 0 !important;
+      }
+      ._sectionsSummary {
+        display: none;
+      }
+      ._navBtns {
+        display: none;
+      }
+    }
+  }
 }
 </style>

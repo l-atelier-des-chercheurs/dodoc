@@ -408,7 +408,7 @@ export default {
         container.push(["code-block"]);
 
       // todo divider
-      container.push(["clean"]);
+      if (reference_formats.length > 0) container.push(["clean"]);
 
       let handlers = {
         divider: function () {

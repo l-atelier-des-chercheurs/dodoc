@@ -46,7 +46,7 @@
         :title="label_title"
         @close="edit_mode = false"
       >
-        <div class="_picker">
+        <div class="u-spacingBottom">
           <ImageSelect
             v-if="edit_mode"
             :path="path"
@@ -59,16 +59,15 @@
               }
             "
           />
-
-          <div class="_footer">
-            <SaveCancelButtons
-              class="_scb"
-              :is_saving="is_saving"
-              :allow_save="allow_save"
-              @save="updateCover"
-              @cancel="cancel"
-            />
-          </div>
+        </div>
+        <div slot="footer">
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
+            :allow_save="allow_save"
+            @save="updateCover"
+            @cancel="cancel"
+          />
         </div>
       </BaseModal2>
     </div>
@@ -182,23 +181,6 @@ export default {
   --color1: var(--c-gris);
   // --color2: var(--c-gris_fonce);
   --color2: white;
-}
-
-._picker {
-  position: relative;
-  // background: var(--c-noir);
-  // color: white;
-  // padding: calc(var(--spacing) / 4);
-  // max-width: 320px;
-  margin: calc(var(--spacing) / 4) auto;
-  // border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  flex-flow: column nowrap;
-  place-items: center;
-  width: 100%;
-
-  gap: calc(var(--spacing) / 2);
 }
 
 ._editingPane {

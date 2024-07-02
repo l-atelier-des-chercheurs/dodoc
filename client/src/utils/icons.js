@@ -117,6 +117,7 @@ import {
   BIconSlash,
   BIconSquareHalf,
   BIconSquareFill,
+  BIconSlashSquareFill,
   BIconDashSquareDotted,
   BIconLock,
   BIconUnlock,
@@ -254,6 +255,7 @@ Vue.component("BIconChevronDown", BIconChevronDown);
 Vue.component("BIconSlash", BIconSlash);
 Vue.component("BIconSquareHalf", BIconSquareHalf);
 Vue.component("BIconSquareFill", BIconSquareFill);
+Vue.component("BIconSlashSquareFill", BIconSlashSquareFill);
 Vue.component("BIconDashSquareDotted", BIconDashSquareDotted);
 Vue.component("BIconLock", BIconLock);
 Vue.component("BIconUnlock", BIconUnlock);
