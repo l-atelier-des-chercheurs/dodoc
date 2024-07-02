@@ -23,9 +23,7 @@ export default {
   select: "Select",
   back: "back",
   save: "save",
-  input_url: "URL to the site to embed",
-  // input_url_instr:
-  //   "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
+  input_url: "URL of the website to embed",
   embed: "Embed",
   from_project: "From project",
   save_to_project: "Save in the project",
@@ -430,6 +428,7 @@ export default {
   select_all: "Select all",
   input_url_instr:
     "Enter a URL to a resource here (web page, PeerTube or YouTube video, etc.)",
+  url_to_open: "URL of the page to open",
   content: "Content",
   connection_lost: "Connection lost",
   connection_lost_in: "The connection to the server was lost.",
@@ -1082,4 +1081,10 @@ export default {
   constrain_crop_resize: "Constrain crop/resize",
   custom_aspect_ratio: "Enter a value, for example 1.66",
   resize: "Resize",
+
+  page_number: "Page number",
+  on_click: "On click",
+  do_nothing: "Do nothing",
+  open_webpage: "Open a web page in a new tab",
+  navigate_to_page: "Navigate to another page",
 };

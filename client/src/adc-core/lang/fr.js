@@ -23,8 +23,8 @@ export default {
   back: "retour",
   save: "enregistrer",
   input_url: "URL vers un site à intégrer",
-  input_url_instr:
-    "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
+  input_url_instr: "Indiquez ici une URL vers une ressource.",
+  url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
   from_project: "Depuis le projet",
   save_to_project: "Enregistrer dans le projet",
@@ -118,7 +118,7 @@ export default {
   favicon_image_instr: "Apparaîtra dans l’onglet du navigateur.",
   topbar_image: "Logo dans la barre de navigation",
   topbar_image_instr:
-    "En haut à gauche de l’écran. Au click, ramène à la page d’accueil.",
+    "En haut à gauche de l’écran. Au clic, ramène à la page d’accueil.",
   hero_image: "Visuel page d’accueil",
   hero_image_instr: "",
   change_order: "Changer l’ordre",
@@ -1146,4 +1146,10 @@ export default {
   constrain_crop_resize: "Contrainte pour recadrer/redimensionner",
   custom_aspect_ratio: "Indiquer ici une valeur, par exemple 1,66",
   resize: "Redimensionner",
+
+  page_number: "Numéro de page",
+  on_click: "Au clic",
+  do_nothing: "Ne rien faire",
+  open_webpage: "Ouvrir une page web dans un nouvel onglet",
+  navigate_to_page: "Naviguer vers une autre page",
 };

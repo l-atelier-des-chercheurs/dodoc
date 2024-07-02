@@ -266,9 +266,19 @@
             </button>
           </div> -->
 
-          <MoveToPage
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="show_confirm_move = true"
+          >
+            <b-icon icon="arrow-left-right" />
+            {{ $t("move_to_page") }}
+          </button>
+
+          <SelectPage
+            v-if="show_confirm_move"
             :pages="pages"
-            :current_page_id="pages[active_page_number].id"
+            :current_page_id="active_page.id"
             @submit="
               updateMediaPubliMeta({ page_id: $event });
               setActive(false);
@@ -359,6 +369,51 @@
           <div class="u-spacingBottom" />
         </template>
 
+        <div>
+          <DLabel :str="$t('on_click')" />
+          <div>
+            <template
+              v-if="
+                active_module.on_click &&
+                active_module.on_click.type === 'url' &&
+                active_module.on_click.url
+              "
+            >
+              {{ $t("open_webpage") }}
+              <br />
+              <b>{{ active_module.on_click.url }}</b>
+            </template>
+            <template
+              v-else-if="
+                active_module.on_click &&
+                active_module.on_click.type === 'page' &&
+                active_module.on_click.page_id
+              "
+            >
+              {{ $t("navigate_to_page") }}
+              <br />
+              <b>{{ getPageNumberFromId(active_module.on_click.page_id) }}</b>
+            </template>
+            <template v-else>
+              {{ $t("do_nothing") }}
+            </template>
+            <EditBtn
+              :label_position="'left'"
+              @click="show_edit_link_modal = true"
+            />
+          </div>
+          <LinkToPageOrURL
+            v-if="show_edit_link_modal"
+            :path="active_module.$path"
+            :on_click="active_module.on_click"
+            :pages="pages"
+            :current_page_id="active_page.id"
+            @save="updateMediaPubliMeta"
+            @close="show_edit_link_modal = false"
+          />
+        </div>
+
+        <div class="u-spacingBottom" />
         <div class="u-sameRow">
           <NumberInput
             :label="$t('position') + ' →'"
@@ -603,7 +658,8 @@
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
-import MoveToPage from "@/components/publications/page_by_page/MoveToPage.vue";
+import SelectPage from "@/components/publications/page_by_page/SelectPage.vue";
+import LinkToPageOrURL from "@/components/publications/page_by_page/LinkToPageOrURL.vue";
 
 // const throttle = (fn, wait) => {
 //   let throttled = false;
@@ -645,11 +701,14 @@ export default {
   components: {
     DepthInput,
     ModuleCreator,
-    MoveToPage,
+    SelectPage,
+    LinkToPageOrURL,
   },
   data() {
     return {
       show_page_options: false,
+      show_confirm_move: false,
+      show_edit_link_modal: false,
       show_all_medias: false,
       has_editor_toolbar: false,
     };
@@ -706,6 +765,9 @@ export default {
       return (
         this.active_page_number - this.pagination.pagination_start_on_page >= 0
       );
+    },
+    active_page() {
+      return this.pages[this.active_page_number];
     },
     hide_pagination() {
       return this.pages[this.active_page_number].hide_pagination === true;
@@ -774,6 +836,9 @@ export default {
     },
     openRemoveModal() {
       this.$refs.removeMenu.show_confirm_delete = true;
+    },
+    getPageNumberFromId(page_id) {
+      return this.pages.findIndex((p) => p.id === page_id) + 1;
     },
     enableModuleEdit({ meta_filenames }) {
       // get last

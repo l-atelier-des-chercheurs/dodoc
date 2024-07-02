@@ -62,7 +62,7 @@
           <b-icon icon="link" style="font-size: var(--icon-size)" />
           <template v-if="show_labels">{{ $t("embed") }}</template>
         </button>
-        <LinkPicker
+        <EmbedPicker
           v-if="show_link_picker"
           @embed="createEmbed"
           @close="show_link_picker = false"
@@ -109,7 +109,7 @@
 <script>
 import CaptureModal from "@/components/publications/CaptureModal.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
-import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
+import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 
 export default {
   props: {
@@ -134,7 +134,7 @@ export default {
   components: {
     CaptureModal,
     MediaPicker,
-    LinkPicker,
+    EmbedPicker,
   },
   data() {
     return {

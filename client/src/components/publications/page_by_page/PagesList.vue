@@ -195,9 +195,13 @@ export default {
     };
   },
 
-  created() {},
+  created() {
+    this.$eventHub.$on("publication.togglePage", this.togglePage);
+  },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("publication.togglePage", this.togglePage);
+  },
   watch: {},
   computed: {
     pages() {
@@ -364,6 +368,9 @@ export default {
     },
     generatePageID() {
       return (Math.random().toString(36) + "00000000000000000").slice(2, 2 + 6);
+    },
+    togglePage(page_id) {
+      this.$emit("togglePage", page_id);
     },
     async updatePageOptions({ page_number, value }) {
       let pages = this.publication.pages.slice();
