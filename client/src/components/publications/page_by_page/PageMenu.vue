@@ -92,6 +92,7 @@
               :show_toggle="show_grid"
               @update:show_toggle="$emit('update:show_grid', $event)"
             >
+              <div class="u-spacingBottom" />
               <RadioCheckboxInput
                 :value="grid_z_index"
                 :options="[
@@ -107,9 +108,7 @@
                 :can_edit="true"
                 @update:value="$emit('update:grid_z_index', $event)"
               />
-
               <div class="u-spacingBottom" />
-
               <RangeValueInput
                 :label="$t('gridstep')"
                 :can_toggle="false"
@@ -122,9 +121,7 @@
                 :suffix="unit"
                 @save="$emit('update:gridstep_in_mm', $event)"
               />
-
               <div class="u-spacingBottom" />
-
               <ToggleInput
                 class="u-spacingBottom"
                 :content="snap_to_grid"
@@ -631,7 +628,7 @@ export default {
     scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
-    grid_z_index: Boolean,
+    grid_z_index: String,
     gridstep_in_mm: Number,
     layout_mode: {
       type: String,
