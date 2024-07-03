@@ -1151,5 +1151,5 @@ export default {
   on_click: "Au clic",
   do_nothing: "Ne rien faire",
   open_webpage: "Ouvrir une page web dans un nouvel onglet",
-  navigate_to_page: "Naviguer vers une autre page",
+  navigate_to_page: "Naviguer vers une page",
 };
