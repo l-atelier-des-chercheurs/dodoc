@@ -705,6 +705,7 @@ export default {
     height: 100%;
     background-color: var(--c-orange_clair);
     opacity: 0;
+    pointer-events: none;
 
     transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
