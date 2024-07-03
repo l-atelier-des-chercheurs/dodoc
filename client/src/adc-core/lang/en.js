@@ -1086,5 +1086,5 @@ export default {
   on_click: "On click",
   do_nothing: "Do nothing",
   open_webpage: "Open a web page in a new tab",
-  navigate_to_page: "Navigate to another page",
+  navigate_to_page: "Navigate to page",
 };

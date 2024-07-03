@@ -408,6 +408,10 @@ textarea {
   box-sizing: border-box;
 }
 
+input[type="number"] {
+  min-width: 8ch;
+}
+
 input[type="color"],
 input[type="date"],
 input[type="datetime-local"],
