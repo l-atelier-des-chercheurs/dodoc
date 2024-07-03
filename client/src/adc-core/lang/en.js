@@ -697,7 +697,7 @@ export default {
   horizontal_flip: "Horizontal flip",
   vertical_flip: "Vertical flip",
   rotate_90_deg: "Rotate 90°",
-  rotate_x_deg: "Rotate to the right",
+  rotate_x_deg: "Rotate right of …°",
 
   both: "Both",
   mix_audio_and_image: "Sound on an image",

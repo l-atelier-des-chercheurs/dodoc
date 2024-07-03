@@ -253,7 +253,14 @@
         </span> -->
       </button>
 
-      <div class="_floatingEditBtn" v-if="can_edit">
+      <div
+        class="_floatingEditBtn"
+        v-if="
+          can_edit &&
+          (page_template !== 'page_by_page' ||
+            publimodule.module_type === 'text')
+        "
+      >
         <span @click.stop="enableEdit" @touchstart.stop="enableEdit">
           <EditBtn v-if="!edit_mode" :label_position="'left'" />
         </span>

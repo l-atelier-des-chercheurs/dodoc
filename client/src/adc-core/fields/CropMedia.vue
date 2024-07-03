@@ -306,12 +306,23 @@ export default {
       console.log("flipY");
       this.$refs.cropper.flip(false, true);
     },
+    unZoom() {
+      this.$refs.cropper.zoom(0.001);
+    },
     rotateCrop(deg = 90) {
       this.$refs.cropper.rotate(deg);
+
+      setTimeout(() => {
+        this.unZoom();
+      }, 500);
     },
     rotateSpecificCrop() {
       this.show_rotate_deg_picker = false;
       this.$refs.cropper.rotate(this.rotation_deg);
+
+      setTimeout(() => {
+        this.unZoom();
+      }, 500);
     },
     rotateXPercent() {
       this.show_percent_picker = true;

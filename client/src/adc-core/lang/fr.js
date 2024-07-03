@@ -536,7 +536,7 @@ export default {
 
   rotate: "Pivoter",
   rotate_90_deg: "Pivoter de 90°",
-  rotate_x_deg: "Pivoter vers la droite",
+  rotate_x_deg: "Pivoter vers la droite de …°",
   both: "Les deux",
 
   mix_audio_and_image: "Son sur une image",
