@@ -170,6 +170,7 @@ export default {
   justify-content: center;
   align-items: center;
   backdrop-filter: blur(5px);
+  pointer-events: none;
 
   padding: calc(var(--spacing) * 1);
   font-family: "Fira Code";
