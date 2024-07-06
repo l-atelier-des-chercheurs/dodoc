@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       current_value: 0,
-      speed: 0.002,
+      speed: 0.004,
     };
   },
 
