@@ -4,7 +4,7 @@
       <div v-if="cover_thumb">
         <img :src="cover_thumb" />
         <span
-          v-if="template_icon"
+          v-if="template_icon && false"
           class="_iconPreview"
           v-html="template_icon"
         />
@@ -145,6 +145,7 @@ export default {
   position: relative;
   overflow: hidden;
   background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 ._header {
