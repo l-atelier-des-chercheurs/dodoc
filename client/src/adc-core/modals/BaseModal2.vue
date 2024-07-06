@@ -123,6 +123,7 @@ export default {
     width: 100%;
     max-width: 480px;
     max-height: 100vh;
+    max-height: 100dvh;
     // max-width: calc(480px - calc(var(--spacing) * 1));
     // max-height: calc(100vh - calc(var(--spacing) * 1));
 

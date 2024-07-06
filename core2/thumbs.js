@@ -605,9 +605,9 @@ module.exports = (function () {
     full_path_to_thumb,
     camera_angle,
   }) {
-    dev.logfunction({ full_media_path, full_path_to_thumb, page });
+    dev.logfunction({ full_media_path, full_path_to_thumb, camera_angle });
     try {
-      await _loadMediaInWeb({ full_media_path, full_path_to_thumb });
+      await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
     } catch (err) {
       throw err;
@@ -622,14 +622,17 @@ module.exports = (function () {
   }) {
     dev.logfunction({ full_media_path, full_path_to_thumb, page });
     try {
-      await _loadMediaInWeb({ full_media_path, full_path_to_thumb });
+      await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
     } catch (err) {
       throw err;
     }
   }
 
-  async function _loadMediaInWeb({ full_media_path, full_path_to_thumb }) {
+  async function _captureMediaScreenshot({
+    full_media_path,
+    full_path_to_thumb,
+  }) {
     dev.logfunction({ full_media_path, full_path_to_thumb });
 
     const relative_path_from_server = full_media_path.replace(

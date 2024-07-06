@@ -862,11 +862,10 @@ module.exports = (function () {
         path_to_folder,
         saved_meta,
       });
-      res.status(200).json({ saved_meta, meta_filename });
-
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_folder, meta_filename),
       });
+      res.status(200).json({ saved_meta, meta_filename });
       notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
         meta,
