@@ -488,6 +488,7 @@ export default {
   story_with_sections: "Story",
   page_by_page: "Page by page",
   cartography: "Cartography",
+  markdown: "Markdown",
   export_in_pdf: "Export to PDF",
   direct_link: "Direct link",
   link: "Link",
