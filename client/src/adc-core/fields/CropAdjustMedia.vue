@@ -72,6 +72,10 @@
                 <b-icon icon="save2-fill" />
                 {{ $t("replace_original") }}
               </button>
+
+              <div class="_spinner" v-if="is_saving" key="loader">
+                <AnimatedCounter :value="media_being_sent_percent" />
+              </div>
             </div>
           </div>
         </div>
@@ -107,6 +111,9 @@ export default {
   data() {
     return {
       show_modal: false,
+
+      is_saving: false,
+      media_being_sent_percent: 0,
 
       current_step: "crop",
 
@@ -144,6 +151,7 @@ export default {
     },
     async saveAsNew() {
       console.log("saveAsNew");
+      this.is_saving = true;
 
       const path = this.getParent(this.media.$path);
       let filename;
@@ -156,8 +164,14 @@ export default {
       }
 
       const file = dataURLtoBlob(this.final_image);
-      // todo – get original caption, credits, geolocation, etc.
+      // todo – get original caption, credits, geolocation, etc. for new
       const additional_meta = {};
+
+      const onProgress = (progressEvent) => {
+        this.media_being_sent_percent = parseInt(
+          Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        );
+      };
 
       const { saved_meta, meta_filename } = await this.$api
         .uploadFile({
@@ -165,7 +179,7 @@ export default {
           filename,
           file,
           additional_meta,
-          // onProgress,
+          onProgress,
         })
         .catch((err) => {
           this.$alertify
@@ -175,6 +189,7 @@ export default {
           throw err;
         });
 
+      this.is_saving = false;
       return { saved_meta, meta_filename };
     },
     async replaceOriginal() {
@@ -213,6 +228,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._btnRow {
+  position: relative;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -266,5 +282,19 @@ export default {
   ._btnRow {
     flex: 0 0 auto;
   }
+}
+
+._spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(2px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
