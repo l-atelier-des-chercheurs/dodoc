@@ -754,6 +754,7 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  h5p: "H5P",
   other: "Autre",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",

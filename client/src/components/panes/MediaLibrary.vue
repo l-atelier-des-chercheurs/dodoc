@@ -384,6 +384,10 @@ export default {
           label: this.$t("stl"),
         },
         {
+          key: "h5p",
+          label: this.$t("h5p"),
+        },
+        {
           key: "obj",
           label: this.$t("obj"),
         },

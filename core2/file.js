@@ -503,6 +503,9 @@ module.exports = (function () {
         case ".stl":
           new_meta.$type = "stl";
           break;
+        case ".h5p":
+          new_meta.$type = "h5p";
+          break;
         case ".mp3":
         case ".wav":
         case ".aac":

@@ -79,7 +79,9 @@
       />
     </template>
 
-    <template v-else-if="['pdf', 'url', 'stl', 'obj'].includes(file.$type)">
+    <template
+      v-else-if="['pdf', 'url', 'stl', 'obj', 'h5p'].includes(file.$type)"
+    >
       <template v-if="context === 'preview'">
         <img
           v-if="thumb"
@@ -142,6 +144,11 @@
               :file_type="file.$type"
               :src="file_full_path"
             />
+            <H5PPreview
+              v-else-if="file.$type === 'h5p'"
+              :key="file_full_path"
+              :src="file_full_path"
+            />
             <iframe
               v-else-if="url_to_site.type === 'any'"
               :src="url_to_site.src"
@@ -175,7 +182,9 @@
     </small>
 
     <template
-      v-if="['image', 'stl', 'obj'].includes(file.$type) && show_fs_button"
+      v-if="
+        ['image', 'stl', 'obj', 'h5p'].includes(file.$type) && show_fs_button
+      "
     >
       <div class="_fsButton">
         <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
@@ -193,6 +202,11 @@
           class="_threeDPreview"
           :key="file_full_path"
           :file_type="file.$type"
+          :src="file_full_path"
+        />
+        <H5PPreview
+          v-else-if="file.$type === 'h5p'"
+          :key="file_full_path"
           :src="file_full_path"
         />
       </FullscreenView>
@@ -228,6 +242,7 @@ export default {
   },
   components: {
     ThreeDPreview: () => import("@/adc-core/fields/ThreeDPreview.vue"),
+    H5PPreview: () => import("@/adc-core/fields/H5PPreview.vue"),
     ImageZoom: () => import("@/adc-core/fields/ImageZoom.vue"),
   },
   data() {

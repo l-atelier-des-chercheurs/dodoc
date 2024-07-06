@@ -407,6 +407,7 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  h5p: "H5P",
   other: "Other",
   all_medias_types: "Of all types",
   all_origins: "From all origins",
