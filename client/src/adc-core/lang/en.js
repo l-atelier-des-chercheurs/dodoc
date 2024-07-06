@@ -941,7 +941,9 @@ export default {
   import_in_progress: "Import in progress…",
   import_finished:
     "Import finished, click on the button to open the project. Media previews will be generated, which can take a few minutes.",
-  zip_wrong: "This ZIP file is not a valid project",
+  zip_not_valid_project: "This ZIP file is not a valid project",
+  zip_is_space_not_project:
+    "This ZIP seems to contain a space and not a project",
 
   move_to_page: "Move to another page",
   general_informations: "Instance informations",

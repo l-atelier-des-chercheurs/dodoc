@@ -915,7 +915,9 @@ export default {
   import_in_progress: "Importation en cours…",
   import_finished:
     "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
-  zip_wrong: "Ce fichier ZIP n’est pas un projet dodoc valide",
+  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet dodoc valide",
+  zip_is_space_not_project:
+    "Ce fichier ZIP semble être un espace et non un projet",
 
   move_to_page: "Déplacer vers une autre page",
 
