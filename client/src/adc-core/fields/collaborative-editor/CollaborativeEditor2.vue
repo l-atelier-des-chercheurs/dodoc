@@ -99,23 +99,23 @@ import {
   lineHeightArr,
 } from "./imports/defaults.js";
 
-var Parchment = Quill.import("parchment");
-var lineHeightConfig = {
-  scope: Parchment.Scope.BLOCK,
-  whitelist: lineHeightArr,
-};
-var lineHeightClass = new Parchment.Attributor.Class(
-  "lineheight",
-  "ql-line-height",
-  lineHeightConfig
-);
-var lineHeightStyle = new Parchment.Attributor.Style(
-  "lineheight",
-  "line-height",
-  lineHeightConfig
-);
-Parchment.register(lineHeightClass);
-Parchment.register(lineHeightStyle);
+// var Parchment = Quill.import("parchment");
+// var lineHeightConfig = {
+//   scope: Parchment.Scope.BLOCK,
+//   whitelist: lineHeightArr,
+// };
+// var lineHeightClass = new Parchment.Attributor.Class(
+//   "lineheight",
+//   "ql-line-height",
+//   lineHeightConfig
+// );
+// var lineHeightStyle = new Parchment.Attributor.Style(
+//   "lineheight",
+//   "line-height",
+//   lineHeightConfig
+// );
+// Parchment.register(lineHeightClass);
+// Parchment.register(lineHeightStyle);
 var Size = Quill.import("attributors/style/size");
 Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
@@ -326,8 +326,8 @@ export default {
         container.push([{ header: [false, 1, 2, 3] }]);
       if (reference_formats.includes("size"))
         container.push([{ size: fontSizeArr }]);
-      if (reference_formats.includes("lineheight"))
-        container.push([{ lineheight: lineHeightArr }]);
+      // if (reference_formats.includes("lineheight"))
+      //   container.push([{ lineheight: lineHeightArr }]);
 
       let formatting_opt = [];
       const basic_formatting = [
@@ -406,6 +406,7 @@ export default {
 
       if (reference_formats.includes("code-block"))
         container.push(["code-block"]);
+      if (reference_formats.includes("table")) container.push(["table"]);
 
       // todo divider
       if (reference_formats.length > 0) container.push(["clean"]);
