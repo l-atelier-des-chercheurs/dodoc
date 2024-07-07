@@ -25,6 +25,7 @@ export default {
   save: "save",
   input_url: "URL of the website to embed",
   embed: "Embed",
+  table: "Table",
   from_project: "From project",
   save_to_project: "Save in the project",
   day: "Day",

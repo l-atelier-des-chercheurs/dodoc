@@ -78,6 +78,14 @@
         :can_edit="can_edit"
       />
     </template>
+    <template v-else-if="file.$type === 'table'">
+      <TableEditor
+        class="_mediaContent--table"
+        :content="file.$content"
+        :path="file.$path"
+        :can_edit="can_edit"
+      />
+    </template>
 
     <template v-else-if="['pdf', 'url', 'stl', 'obj'].includes(file.$type)">
       <template v-if="context === 'preview'">
@@ -449,6 +457,9 @@ export default {
 }
 
 ._mediaContent--collabEditor {
+  width: 100%;
+}
+._mediaContent--table {
   width: 100%;
 }
 </style>

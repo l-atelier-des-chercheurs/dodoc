@@ -198,7 +198,7 @@ module.exports = (function () {
       let { $content, $media_filename, ...new_meta } = data;
 
       // update meta file
-      if (new_meta) {
+      if (new_meta && Object.keys(new_meta).length) {
         const clean_meta = await utils.cleanNewMeta({
           relative_path: path_to_meta,
           new_meta,
@@ -216,7 +216,7 @@ module.exports = (function () {
       }
 
       if ($media_filename) meta.$media_filename = $media_filename;
-      if (typeof $content !== "undefined" && meta.$type === "text") {
+      if (typeof $content !== "undefined") {
         await _updateTextContent({
           new_content: $content,
           path_to_folder,
@@ -249,8 +249,7 @@ module.exports = (function () {
           path_to_meta,
         });
 
-      if (typeof $content !== "undefined" && meta.$type === "text")
-        changed_data.$content = $content;
+      if (typeof $content !== "undefined") changed_data.$content = $content;
 
       return changed_data;
     },

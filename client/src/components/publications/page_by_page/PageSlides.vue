@@ -380,7 +380,7 @@ export default {
     },
     togglePage(page_id) {
       const page_index = this.pages.findIndex((p) => p.id === page_id);
-      debugger;
+
       if (page_index !== -1) {
         this.updatePageQuery({
           prop: "page",

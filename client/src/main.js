@@ -170,6 +170,8 @@ import FullscreenView from "@/adc-core/fields/FullscreenView.vue";
 Vue.component("FullscreenView", FullscreenView);
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
 Vue.component("CollaborativeEditor2", CollaborativeEditor2);
+import TableEditor from "@/adc-core/fields/TableEditor.vue";
+Vue.component("TableEditor", TableEditor);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
 Vue.component("AuthorTag", AuthorTag);
 import DLabel from "@/adc-core/fields/DLabel.vue";

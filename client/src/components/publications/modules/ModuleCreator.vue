@@ -68,6 +68,16 @@
           @close="show_link_picker = false"
         />
 
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          v-if="types_available.includes('table')"
+          @click="createTable"
+        >
+          <b-icon icon="table" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("table") }}</template>
+        </button>
+
         <template v-if="types_available.includes('shapes')">
           <button
             type="button"
@@ -124,7 +134,7 @@ export default {
     context: String,
     types_available: {
       type: Array,
-      default: () => ["capture", "import", "write", "embed", "shapes"],
+      default: () => ["capture", "import", "write", "embed", "table", "shapes"],
     },
     start_collapsed: {
       type: Boolean,
@@ -307,6 +317,25 @@ export default {
         module_type,
         source_medias,
       });
+    },
+    async createTable() {
+      const filename = "table-" + +new Date() + ".txt";
+
+      const { meta_filename } = await this.$api.uploadText({
+        path: this.publication_path,
+        filename,
+        content: `
+| col | col | col |
+| - | - | - |
+| content | content | content |
+| content | content | content |
+        `,
+        additional_meta: {
+          $type: "table",
+        },
+      });
+      this.createMosaic({ meta_filename });
+      this.show_link_picker = false;
     },
 
     async createModule({ module_type, source_medias = [], addtl_meta = {} }) {

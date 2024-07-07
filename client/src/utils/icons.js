@@ -126,6 +126,7 @@ import {
   BIconAlignCenter,
   BIconAlignEnd,
   BIconLink,
+  BIconTable,
   BIconFonts,
   BIconCircleFill,
   BIconDashLg,
@@ -264,6 +265,7 @@ Vue.component("BIconAlignStart", BIconAlignStart);
 Vue.component("BIconAlignCenter", BIconAlignCenter);
 Vue.component("BIconAlignEnd", BIconAlignEnd);
 Vue.component("BIconLink", BIconLink);
+Vue.component("BIconTable", BIconTable);
 Vue.component("BIconFonts", BIconFonts);
 Vue.component("BIconCircleFill", BIconCircleFill);
 Vue.component("BIconDashLg", BIconDashLg);
