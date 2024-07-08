@@ -29,6 +29,7 @@
           :context="'full'"
           :show_fs_button="true"
           :zoom_on_click="true"
+          :can_edit="false"
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           <div class="">
@@ -357,6 +358,11 @@ export default {
       height: 100%;
       overflow: hidden;
 
+      &[data-filetype="text"] {
+        padding: calc(var(--spacing) * 1);
+        overflow: auto;
+        align-items: flex-start;
+      }
       &[data-filetype="audio"] {
         padding: calc(var(--spacing) * 3);
       }

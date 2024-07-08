@@ -72,10 +72,17 @@
 
     <template v-else-if="file.$type === 'text'">
       <CollaborativeEditor2
+        v-if="file.$media_filename.endsWith('.txt')"
         class="_mediaContent--collabEditor"
         :content="file.$content"
         :path="file.$path"
         :can_edit="can_edit"
+      />
+
+      <div
+        v-else-if="file.$media_filename.endsWith('.md')"
+        class="_mediaContent--markdown"
+        v-text="file.$content"
       />
     </template>
     <template v-else-if="['pdf', 'url', 'stl', 'obj'].includes(file.$type)">
@@ -447,7 +454,12 @@ export default {
   }
 }
 
-._mediaContent--collabEditor {
+._mediaContent--collabEditor,
+._mediaContent--markdown {
   width: 100%;
+  text-align: left;
+}
+._mediaContent--markdown {
+  white-space: pre-wrap;
 }
 </style>

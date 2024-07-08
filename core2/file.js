@@ -140,7 +140,7 @@ module.exports = (function () {
       const media_filename = meta.$media_filename;
       const media_type = meta.$type;
 
-      if (media_filename && media_filename.endsWith(".txt"))
+      if (media_filename && media_type === "text")
         meta.$content = await utils.readFileContent(
           path_to_folder,
           media_filename
@@ -509,9 +509,8 @@ module.exports = (function () {
         case ".ogg":
           new_meta.$type = "audio";
           break;
-        case ".md":
-        case ".rtf":
         case ".txt":
+        case ".md":
           new_meta.$type = "text";
           break;
         case ".pdf":
