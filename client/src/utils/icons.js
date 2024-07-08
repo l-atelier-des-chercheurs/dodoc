@@ -26,6 +26,7 @@ import {
   BIconDiscFill,
   BIconPlus,
   BIconDash,
+  BIconDashCircle,
   BIconSearch,
   BIconHandIndex,
   BIconPrinter,
@@ -167,6 +168,7 @@ Vue.component("BIconXCircleFill", BIconXCircleFill);
 Vue.component("BIconDiscFill", BIconDiscFill);
 Vue.component("BIconPlus", BIconPlus);
 Vue.component("BIconDash", BIconDash);
+Vue.component("BIconDashCircle", BIconDashCircle);
 Vue.component("BIconSearch", BIconSearch);
 Vue.component("BIconHandIndex", BIconHandIndex);
 Vue.component("BIconPrinter", BIconPrinter);

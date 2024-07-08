@@ -1,13 +1,21 @@
 <template>
   <div>
-    <TitleField
+    <!-- <TitleField
       :content="local_value"
+      :input_type="input_type"
       :maxlength="60"
       :can_edit="can_edit"
       @save="save"
       @cancel="cancel"
+    /> -->
+    <CollaborativeEditor2
+      :content="local_value"
+      :custom_formats="['bold', 'italic', 'link']"
+      :is_collaborative="false"
+      :can_edit="can_edit"
+      @save="save"
+      @cancel="cancel"
     />
-
     <!-- <TextInput :content.sync="local_value" :disabled="!edit_mode" /> -->
     <!-- <EditBtn
       key="editbtn"

@@ -324,12 +324,10 @@ export default {
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
-        content: `
-| col | col | col |
-| - | - | - |
-| content | content | content |
-| content | content | content |
-        `,
+        content: JSON.stringify([
+          ["", "", ""],
+          ["", "", ""],
+        ]),
         additional_meta: {
           $type: "table",
         },

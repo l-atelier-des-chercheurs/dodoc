@@ -610,6 +610,11 @@ export default {
         return "content_not_changed";
       }
 
+      if (!this.path) {
+        this.$emit("save", new_content);
+        return;
+      }
+
       const new_meta = {
         [this.field_to_edit]: new_content,
       };

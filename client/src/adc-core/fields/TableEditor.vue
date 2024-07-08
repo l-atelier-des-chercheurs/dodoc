@@ -1,40 +1,71 @@
 <template>
   <div class="_tableEditor">
-    <table>
-      <thead>
-        <tr>
-          <th v-for="(header, index) in table_header" :key="header">
-            <CellEdit
-              :value="header"
-              :can_edit="can_edit"
-              @update="updateCell({ row: 0, column: index, value: $event })"
-            />
-          </th>
-          <th>
-            <button type="button" @click="addCol">
-              <b-icon icon="plus-circle" />
-            </button>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, rowIndex) in table_body" :key="rowIndex">
-          <td v-for="(cell, cellIndex) in row" :key="cellIndex">
-            <CellEdit
-              :value="cell"
-              :can_edit="can_edit"
-              @update="
-                updateCell({
-                  row: rowIndex + 1,
-                  column: cellIndex,
-                  value: $event,
-                })
-              "
-            />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="_tableEditor--content">
+      <table>
+        <thead>
+          <tr>
+            <th v-for="(header, index) in table_header" :key="index">
+              <CellEdit
+                :value="header"
+                :can_edit="can_edit"
+                @update="updateCell({ row: 0, column: index, value: $event })"
+              />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, rowIndex) in table_body" :key="rowIndex">
+            <td v-for="(cell, cellIndex) in row" :key="cellIndex">
+              <CellEdit
+                :value="cell"
+                :can_edit="can_edit"
+                @update="
+                  updateCell({
+                    row: rowIndex + 1,
+                    column: cellIndex,
+                    value: $event,
+                  })
+                "
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <template v-if="can_edit">
+        <button
+          type="button"
+          class="u-button u-button_small u-button_icon"
+          @click="addCol"
+        >
+          <b-icon icon="plus-circle" />
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_small u-button_icon"
+          @click="removeCol"
+        >
+          <b-icon icon="dash-circle" />
+        </button>
+      </template>
+    </div>
+    <template v-if="can_edit">
+      <button
+        type="button"
+        class="u-button u-button_small u-button_icon"
+        @click="addRow"
+      >
+        <b-icon icon="plus-circle" />
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_small u-button_icon"
+        @click="removeRow"
+      >
+        <b-icon icon="dash-circle" />
+      </button>
+    </template>
+
     <!-- <div v-html="md_text"></div> -->
   </div>
 </template>
@@ -58,9 +89,7 @@ export default {
   data() {
     return {};
   },
-  created() {
-    this.setContent();
-  },
+  created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -75,6 +104,17 @@ export default {
       let content = [];
       try {
         content = JSON.parse(this.content);
+        let max_number_of_items_in_row = content.reduce((max, row) => {
+          return Math.max(max, row.length);
+        }, 0);
+        content = content.map((row) =>
+          row.concat(
+            Array.from(
+              { length: max_number_of_items_in_row - row.length },
+              () => ""
+            )
+          )
+        );
       } catch (e) {
         content = [[]];
       }
@@ -95,6 +135,25 @@ export default {
       }
       await this.updateTable(updated_table);
     },
+    async removeCol() {
+      const updated_table = [...this.table_content];
+      for (let i = 0; i < updated_table.length; i++) {
+        updated_table[i].pop();
+      }
+      await this.updateTable(updated_table);
+    },
+    async addRow() {
+      const updated_table = [...this.table_content];
+      const last_row = updated_table[updated_table.length - 1];
+      const last_row_length = last_row.length || 1;
+      updated_table.push(Array.from({ length: last_row_length }, () => ""));
+      await this.updateTable(updated_table);
+    },
+    async removeRow() {
+      const updated_table = [...this.table_content];
+      updated_table.pop();
+      await this.updateTable(updated_table);
+    },
     async updateTable(table) {
       const new_meta = {
         $content: JSON.stringify(table),
@@ -109,13 +168,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._tableEditor {
+  width: 100%;
+  overflow: auto;
+  text-align: left;
+}
+._tableEditor--content {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
 }
 
 table {
-  color: #333;
-  background: white;
-  border: 1px solid grey;
-  font-size: 12pt;
+  // color: #333;
+  // background: white;
+  // border: 1px solid grey;
+  // font-size: 12pt;
   border-collapse: collapse;
 }
 table thead th,
