@@ -48,7 +48,12 @@
           "
           :key="selected_archive_filename"
         >
-          <div class="_archiveText" v-html="archive_shown.content" />
+          <div class="_archiveText">
+            <CollaborativeEditor2
+              :content="archive_shown.content"
+              :can_edit="false"
+            />
+          </div>
         </div>
       </transition>
     </div>
@@ -146,10 +151,14 @@ export default {
 }
 
 ._topbar {
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: calc(var(--spacing) / 1) 0;
+  padding: calc(var(--spacing) / 1) 0;
+  background: white;
+  z-index: 1;
   gap: calc(var(--spacing) / 1);
 }
 
@@ -157,6 +166,7 @@ export default {
   background: var(--c-gris);
   padding: calc(var(--spacing) / 2);
   width: 100%;
+  overflow-x: auto;
   // max-height: 150px;
   // overflow: auto;
 

@@ -554,12 +554,13 @@ export default {
     },
 
     restoreVersion(content) {
-      // TODO : with delta to allow for undo
-      // this.editor.root.innerHTML = content;
-      const value = content;
-      const delta = this.editor.clipboard.convert(value);
+      // it seems this allows for undo
+      this.editor.root.innerHTML = content;
 
-      this.editor.setContents(delta, "user");
+      // do not use, it doesnt respect \n
+      // const value = content;
+      // const delta = this.editor.clipboard.convert(value);
+      // this.editor.setContents(delta, "user");
 
       this.show_archives = false;
     },
