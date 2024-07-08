@@ -319,15 +319,19 @@ export default {
       });
     },
     async createTable() {
-      const filename = "table-" + +new Date() + ".txt";
+      const filename = "table-" + +new Date() + ".json";
 
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
-        content: JSON.stringify([
-          ["", "", ""],
-          ["", "", ""],
-        ]),
+        content: JSON.stringify(
+          [
+            [{ c: "" }, { c: "" }],
+            [{ c: "" }, { c: "" }],
+          ],
+          null,
+          4
+        ),
         additional_meta: {
           $type: "table",
         },

@@ -78,10 +78,14 @@
         :path="file.$path"
         :can_edit="can_edit"
       />
-
       <div
         v-else-if="file.$media_filename.endsWith('.md')"
         class="_mediaContent--markdown"
+        v-text="file.$content"
+      />
+      <div
+        v-else-if="file.$media_filename.endsWith('.json')"
+        class="_mediaContent--json"
         v-text="file.$content"
       />
     </template>
@@ -455,11 +459,13 @@ export default {
 }
 
 ._mediaContent--collabEditor,
-._mediaContent--markdown {
+._mediaContent--markdown,
+._mediaContent--json {
   width: 100%;
   text-align: left;
 }
-._mediaContent--markdown {
+._mediaContent--markdown,
+._mediaContent--json {
   white-space: pre-wrap;
 }
 </style>

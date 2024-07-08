@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_cellEdit">
     <!-- <TitleField
       :content="local_value"
       :input_type="input_type"
@@ -67,4 +67,21 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._cellEdit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ::v-deep {
+    ._collaborativeEditor {
+      display: flex;
+      gap: calc(var(--spacing) / 2);
+    }
+
+    ._floatingEditBtn {
+      order: 1;
+    }
+  }
+}
+</style>
