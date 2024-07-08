@@ -29,7 +29,7 @@
           :context="'full'"
           :show_fs_button="true"
           :zoom_on_click="true"
-          :can_edit="true"
+          :can_edit="false"
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           <div class="">
