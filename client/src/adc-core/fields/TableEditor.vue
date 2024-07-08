@@ -70,12 +70,8 @@
   </div>
 </template>
 <script>
-import { marked } from "marked";
-import DOMPurify from "isomorphic-dompurify";
 import { tabletojson } from "tabletojson";
 import CellEdit from "@/adc-core/fields/CellEdit.vue";
-
-// import { mdTableToArray } from "@/adc-core/fields/markdown-table-to-html.js";
 
 export default {
   props: {
