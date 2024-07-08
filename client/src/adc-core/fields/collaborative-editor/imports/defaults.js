@@ -57,7 +57,7 @@ export const lineHeightArr = [
 export const formats = [
   "bold",
   "size",
-  "lineheight",
+  // "lineheight",
   "italic",
   "underline",
   "strike",

@@ -142,7 +142,9 @@ module.exports = (function () {
 
       if (
         media_filename &&
-        [".txt", ".md", ".json"].includes(path.extname(media_filename))
+        [".txt", ".md", ".json", ".csv", ".js", ".ino"].includes(
+          path.extname(media_filename)
+        )
       )
         meta.$content = await utils.readFileContent(
           path_to_folder,
@@ -515,6 +517,9 @@ module.exports = (function () {
         case ".txt":
         case ".md":
         case ".json":
+        case ".csv":
+        case ".js":
+        case ".ino":
           new_meta.$type = "text";
           break;
         case ".pdf":

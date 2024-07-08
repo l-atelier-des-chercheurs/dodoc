@@ -22,7 +22,6 @@
       </div>
 
       <div class="_preview">
-        <!-- <DebugBtn :content="file" /> -->
         <MediaContent
           :file="file"
           :resolution="1600"

@@ -78,16 +78,7 @@
         :path="file.$path"
         :can_edit="can_edit"
       />
-      <div
-        v-else-if="file.$media_filename.endsWith('.md')"
-        class="_mediaContent--markdown"
-        v-text="file.$content"
-      />
-      <div
-        v-else-if="file.$media_filename.endsWith('.json')"
-        class="_mediaContent--json"
-        v-text="file.$content"
-      />
+      <div v-else class="_mediaContent--rawText" v-text="file.$content" />
     </template>
     <template v-else-if="['pdf', 'url', 'stl', 'obj'].includes(file.$type)">
       <template v-if="context === 'preview'">
@@ -459,13 +450,11 @@ export default {
 }
 
 ._mediaContent--collabEditor,
-._mediaContent--markdown,
-._mediaContent--json {
+._mediaContent--rawText {
   width: 100%;
   text-align: left;
 }
-._mediaContent--markdown,
-._mediaContent--json {
+._mediaContent--rawText {
   white-space: pre-wrap;
 }
 </style>
