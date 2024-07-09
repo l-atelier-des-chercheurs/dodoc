@@ -91,6 +91,16 @@ module.exports = (function () {
       _restrictToContributors,
       _updateFile
     );
+    app.patch(
+      [
+        "/_api2/:folder_type/:folder_slug/:meta_filename/_regenerateThumbs",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename/_regenerateThumbs",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_regenerateThumbs",
+      ],
+      _generalPasswordCheck,
+      _restrictToContributors,
+      _regenerateThumbs
+    );
     app.delete(
       [
         "/_api2/:meta_filename",
@@ -1231,6 +1241,32 @@ module.exports = (function () {
       dev.logpackets({ status: "file was updated" });
       res.status(200).json({ status: "ok" });
 
+      notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
+        changed_data,
+      });
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to update file: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+
+  async function _regenerateThumbs(req, res, next) {
+    const { path_to_folder, path_to_meta, meta_filename } =
+      utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_meta, meta_filename });
+
+    try {
+      const changed_data = await file._regenerateThumbs({
+        path_to_folder,
+        path_to_meta,
+        meta_filename,
+      });
       notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
         path_to_meta: utils.convertToSlashPath(path_to_meta),

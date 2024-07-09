@@ -1090,4 +1090,6 @@ export default {
   do_nothing: "Do nothing",
   open_webpage: "Open a web page in a new tab",
   navigate_to_page: "Navigate to page",
+
+  regenerate_thumbs: "Regenerate thumbnails",
 };
