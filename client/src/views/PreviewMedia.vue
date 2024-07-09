@@ -10,6 +10,18 @@
       :file_type="'stl'"
       :src="preview_url"
     />
+    <img
+      v-else-if="['jpg', 'png', 'jpeg', 'gif'].includes(media_type)"
+      :src="preview_url"
+    />
+    <video
+      v-else-if="['mp4', 'mov', 'webm'].includes(media_type)"
+      :src="preview_url"
+    />
+    <span v-else>
+      No preview module for <strong>{{ media_type }}</strong
+      >, ask Louis to develop it :)
+    </span>
   </div>
 </template>
 <script>
@@ -54,6 +66,8 @@ export default {
   > * {
     width: 100%;
     height: 100%;
+    object-fit: scale-down;
+    object-position: center;
   }
 }
 </style>

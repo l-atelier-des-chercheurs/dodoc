@@ -178,6 +178,8 @@ import DLabel from "@/adc-core/fields/DLabel.vue";
 Vue.component("DLabel", DLabel);
 import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
+import ShareFile from "@/adc-core/fields/ShareFile.vue";
+Vue.component("ShareFile", ShareFile);
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelect);
 import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";

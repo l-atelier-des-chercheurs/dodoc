@@ -119,6 +119,7 @@
             </h3>
 
             <DropDown :right="true">
+              <ShareFile :file="file" />
               <div>
                 <DownloadFile :file="file">
                   <b-icon icon="file-earmark-arrow-down" />
