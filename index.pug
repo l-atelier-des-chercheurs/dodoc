@@ -11,6 +11,13 @@ html
     title !{name_of_instance}
     if favicon_url
       link(rel="shortcut icon" href=favicon_url)
+    else 
+      link(rel="icon" href=`data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'>
+          <circle fill='rgb(255, 190, 51)' cx='250' cy='250' r='250'  />
+          <circle fill='rgb(82, 197, 185)' cx='250' cy='250' r='125'  />
+        </svg>
+      `)
+
     style.
       @import "/_client/fonts/fira.css";
       @import "/_client/fonts/default_fonts.css";
