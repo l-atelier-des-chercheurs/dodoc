@@ -326,8 +326,8 @@ export default {
         filename,
         content: JSON.stringify(
           [
-            [{ c: "" }, { c: "" }],
-            [{ c: "" }, { c: "" }],
+            [{ content: "" }, { content: "" }],
+            [{ content: "" }, { content: "" }],
           ],
           null,
           4

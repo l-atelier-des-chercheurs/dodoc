@@ -6,7 +6,7 @@
           <tr>
             <th v-for="(header, index) in table_header" :key="index">
               <CellEdit
-                :value="header.c"
+                :cell="header"
                 :can_edit="can_edit"
                 @update="updateCell({ row: 0, column: index, value: $event })"
               />
@@ -17,7 +17,7 @@
           <tr v-for="(row, rowIndex) in table_body" :key="rowIndex">
             <td v-for="(cell, cellIndex) in row" :key="cellIndex">
               <CellEdit
-                :value="cell.c"
+                :cell="cell"
                 :can_edit="can_edit"
                 @update="
                   updateCell({
@@ -120,14 +120,13 @@ export default {
   methods: {
     async updateCell({ row, column, value }) {
       const updated_table = [...this.table_content];
-      updated_table[row][column] = { c: value };
-
+      updated_table[row][column] = value;
       await this.updateTable(updated_table);
     },
     async addCol() {
       const updated_table = [...this.table_content];
       for (let i = 0; i < updated_table.length; i++) {
-        updated_table[i].push({ c: "" });
+        updated_table[i].push({ content: "" });
       }
       await this.updateTable(updated_table);
     },
@@ -143,7 +142,7 @@ export default {
       const last_row = updated_table[updated_table.length - 1];
       const last_row_length = last_row.length || 1;
       updated_table.push(
-        Array.from({ length: last_row_length }, () => ({ c: "" }))
+        Array.from({ length: last_row_length }, () => ({ content: "" }))
       );
       await this.updateTable(updated_table);
     },

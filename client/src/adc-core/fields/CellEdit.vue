@@ -8,14 +8,21 @@
       @save="save"
       @cancel="cancel"
     /> -->
+
     <CollaborativeEditor2
-      :content="local_value"
+      :content="cell.content"
       :custom_formats="['bold', 'italic', 'link']"
       :is_collaborative="false"
       :can_edit="can_edit"
-      @save="save"
-      @cancel="cancel"
+      @save="save({ key: 'content', value: $event })"
     />
+    <!-- <ColorInput
+      v-if="can_edit"
+      :can_toggle="false"
+      :value="cell.color"
+      @save="save({ key: 'color', value: $event })"
+    /> -->
+
     <!-- <TextInput :content.sync="local_value" :disabled="!edit_mode" /> -->
     <!-- <EditBtn
       key="editbtn"
@@ -32,10 +39,7 @@
 <script>
 export default {
   props: {
-    value: {
-      type: String,
-      required: true,
-    },
+    cell: Object,
     can_edit: {
       type: Boolean,
       required: false,
@@ -44,25 +48,17 @@ export default {
   },
   components: {},
   data() {
-    return {
-      local_value: this.value,
-    };
+    return {};
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    value(newVal) {
-      this.local_value = newVal;
-    },
-  },
+
   computed: {},
   methods: {
-    save(new_val) {
-      this.$emit("update", new_val);
-    },
-    cancel() {
-      this.local_value = this.value;
+    save({ key, value }) {
+      const new_cell = { ...this.cell, [key]: value };
+      this.$emit("update", new_cell);
     },
   },
 };
