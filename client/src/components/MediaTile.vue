@@ -7,6 +7,7 @@
       'is--selected': is_selected,
       'is--own': is_own_media,
     }"
+    :data-type="file.$type"
     :data-tilemode="tile_mode"
   >
     <!-- top left -->
@@ -198,8 +199,17 @@ export default {
       pointer-events: none;
     }
   }
+  &[data-type="text"] {
+    font-size: var(--sl-font-size-x-small);
+    padding: calc(var(--spacing) / 4);
+    ::v-deep {
+      ._mediaContent {
+        display: block;
+        text-align: left;
+      }
+    }
+  }
 
-  &[data-type="text"],
   &[data-type="other"] {
     display: flex;
     justify-content: flex-start;
@@ -207,7 +217,6 @@ export default {
 
     text-align: center;
   }
-
   ::v-deep {
     ._mediaContent {
       width: 100%;

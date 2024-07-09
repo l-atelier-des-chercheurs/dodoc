@@ -130,9 +130,17 @@ export default {
       // todo interrupt updateMeta
     },
     async updateText() {
+      this.new_content = this.cleanUpString(this.new_content);
+
+      if (!this.path) {
+        this.$emit("save", this.new_content);
+        this.edit_mode = false;
+        this.is_saving = false;
+        return;
+      }
+
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
-      this.new_content = this.cleanUpString(this.new_content);
       try {
         const new_meta = {
           [this.field_name]: this.new_content,

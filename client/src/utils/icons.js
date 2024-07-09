@@ -26,6 +26,7 @@ import {
   BIconDiscFill,
   BIconPlus,
   BIconDash,
+  BIconDashCircle,
   BIconSearch,
   BIconHandIndex,
   BIconPrinter,
@@ -126,6 +127,7 @@ import {
   BIconAlignCenter,
   BIconAlignEnd,
   BIconLink,
+  BIconTable,
   BIconFonts,
   BIconCircleFill,
   BIconDashLg,
@@ -166,6 +168,7 @@ Vue.component("BIconXCircleFill", BIconXCircleFill);
 Vue.component("BIconDiscFill", BIconDiscFill);
 Vue.component("BIconPlus", BIconPlus);
 Vue.component("BIconDash", BIconDash);
+Vue.component("BIconDashCircle", BIconDashCircle);
 Vue.component("BIconSearch", BIconSearch);
 Vue.component("BIconHandIndex", BIconHandIndex);
 Vue.component("BIconPrinter", BIconPrinter);
@@ -264,6 +267,7 @@ Vue.component("BIconAlignStart", BIconAlignStart);
 Vue.component("BIconAlignCenter", BIconAlignCenter);
 Vue.component("BIconAlignEnd", BIconAlignEnd);
 Vue.component("BIconLink", BIconLink);
+Vue.component("BIconTable", BIconTable);
 Vue.component("BIconFonts", BIconFonts);
 Vue.component("BIconCircleFill", BIconCircleFill);
 Vue.component("BIconDashLg", BIconDashLg);

@@ -26,6 +26,7 @@ export default {
   input_url_instr: "Indiquez ici une URL vers une ressource.",
   url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
+  table: "Tableau",
   from_project: "Depuis le projet",
   save_to_project: "Enregistrer dans le projet",
   day: "Jour",

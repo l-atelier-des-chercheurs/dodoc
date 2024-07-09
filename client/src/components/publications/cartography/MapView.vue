@@ -41,7 +41,13 @@
                 :publication_path="publication.$path"
                 :start_collapsed="false"
                 :select_mode="'single'"
-                :types_available="['capture', 'import', 'write', 'embed']"
+                :types_available="[
+                  'capture',
+                  'import',
+                  'write',
+                  'embed',
+                  'table',
+                ]"
                 :post_addtl_meta="new_module_meta"
                 @addModules="addModules"
               />

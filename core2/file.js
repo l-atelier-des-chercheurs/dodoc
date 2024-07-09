@@ -140,7 +140,12 @@ module.exports = (function () {
       const media_filename = meta.$media_filename;
       const media_type = meta.$type;
 
-      if (media_filename && media_filename.endsWith(".txt"))
+      if (
+        media_filename &&
+        [".txt", ".md", ".json", ".csv", ".js", ".ino"].includes(
+          path.extname(media_filename)
+        )
+      )
         meta.$content = await utils.readFileContent(
           path_to_folder,
           media_filename
@@ -198,7 +203,7 @@ module.exports = (function () {
       let { $content, $media_filename, ...new_meta } = data;
 
       // update meta file
-      if (new_meta) {
+      if (new_meta && Object.keys(new_meta).length) {
         const clean_meta = await utils.cleanNewMeta({
           relative_path: path_to_meta,
           new_meta,
@@ -216,7 +221,7 @@ module.exports = (function () {
       }
 
       if ($media_filename) meta.$media_filename = $media_filename;
-      if (typeof $content !== "undefined" && meta.$type === "text") {
+      if (typeof $content !== "undefined") {
         await _updateTextContent({
           new_content: $content,
           path_to_folder,
@@ -249,8 +254,7 @@ module.exports = (function () {
           path_to_meta,
         });
 
-      if (typeof $content !== "undefined" && meta.$type === "text")
-        changed_data.$content = $content;
+      if (typeof $content !== "undefined") changed_data.$content = $content;
 
       return changed_data;
     },
@@ -510,9 +514,12 @@ module.exports = (function () {
         case ".ogg":
           new_meta.$type = "audio";
           break;
-        case ".md":
-        case ".rtf":
         case ".txt":
+        case ".md":
+        case ".json":
+        case ".csv":
+        case ".js":
+        case ".ino":
           new_meta.$type = "text";
           break;
         case ".pdf":

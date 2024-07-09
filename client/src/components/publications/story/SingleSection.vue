@@ -50,7 +50,13 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
-                :types_available="['capture', 'import', 'write', 'embed']"
+                :types_available="[
+                  'capture',
+                  'import',
+                  'write',
+                  'embed',
+                  'table',
+                ]"
                 @addModules="
                   ({ meta_filenames }) =>
                     insertModules({ meta_filenames, index })
@@ -96,7 +102,7 @@
           class="_lastModule"
           :start_collapsed="false"
           :publication_path="publication.$path"
-          :types_available="['capture', 'import', 'write', 'embed']"
+          :types_available="['capture', 'import', 'write', 'embed', 'table']"
           @addModules="addModules"
         />
       </div>
