@@ -1,6 +1,6 @@
 <template>
   <div class="_publicationPreview">
-    <div class="_publicationPreview--cover" @click="$emit('open')">
+    <div class="_publicationPreview--cover">
       <div v-if="cover_thumb">
         <img :src="cover_thumb" />
         <span
@@ -49,7 +49,13 @@
         {{ publication.title }}
       </h3>
     </header>
-    <div class=""></div>
+
+    <button
+      type="button"
+      class="_openPublication"
+      :title="$t('open') + ' ' + publication.title"
+      @click="$emit('open')"
+    />
   </div>
 </template>
 <script>
@@ -130,55 +136,26 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationPreview {
-  // width: 100%;
-  // padding: var(--spacing);
-}
-._publicationPreview header {
-  // min-height: 7rem;
-  cursor: pointer;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
 }
 ._publicationPreview--cover {
   position: relative;
-  // border-radius: 2px;
   overflow: hidden;
   background: white;
-  // border-bottom: 2px solid var(--c-gris);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
-
-  cursor: pointer;
 }
 
-// ._projectInfos--cover {
-//   position: relative;
-//   aspect-ratio: 1/1;
-//   background: var(--c-gris);
-//   border: 2px solid transparent;
-
-//   img {
-//     position: absolute;
-//     width: 100%;
-//     height: 100%;
-//     object-fit: contain;
-//     object-position: center;
-
-//     cursor: pointer;
-//   }
-// }
 ._header {
-  padding: calc(var(--spacing) / 2) 0;
   cursor: pointer;
   overflow: hidden;
-
-  // h2 {
-  //   white-space: nowrap;
-  //   overflow: hidden;
-  //   text-overflow: ellipsis;
-  // }
 }
 ._generatePreviewBtn {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 1;
   margin: calc(var(--spacing) / 2);
 }
 
@@ -188,6 +165,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -233,5 +211,18 @@ export default {
   color: var(--c-bleuvert);
 }
 ._private {
+}
+
+._openPublication {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+
+  &:focus-visible {
+    outline: 2px solid var(--active-color);
+  }
 }
 </style>

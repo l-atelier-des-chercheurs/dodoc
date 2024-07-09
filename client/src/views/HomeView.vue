@@ -34,85 +34,84 @@
             :key="layout"
             class="_imageBlock"
           >
-            <img :src="hero_thumb" />
+            <img :src="hero_thumb" role="presentation" />
           </div>
         </template>
       </div>
     </section>
 
-    <!-- <div class="_modeSel">
-      <button type="button" class="u-button" v-if="">{{ $t("spaces") }}</button> /
-      <button type="button" class="u-button">{{ $t("projects") }}</button>
-    </div> -->
+    <template v-if="load_whole_page === true">
+      <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
 
-    <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
+      <section v-if="$root.app_infos.instance_meta.enable_events">
+        <EventsSection />
+      </section>
 
-    <section v-if="$root.app_infos.instance_meta.enable_events">
-      <EventsSection />
-    </section>
+      <transition name="pagechange" mode="out-in">
+        <div class="_bottomCont" :key="opened_event">
+          <RadioSwitch
+            v-if="!opened_event"
+            class="_switch"
+            :content.sync="current_mode"
+            :options="available_radioswitch_modes"
+          />
 
-    <transition name="pagechange" mode="out-in">
-      <div class="_bottomCont" :key="opened_event">
-        <RadioSwitch
-          v-if="!opened_event"
-          class="_switch"
-          :content.sync="current_mode"
-          :options="available_radioswitch_modes"
-        />
+          <transition name="pagechange" mode="out-in">
+            <div :key="current_mode">
+              <template v-if="current_mode === 'spaces'">
+                <div class="u-instructions _content">
+                  <small v-html="$t('spaces_instr')" />
+                </div>
+                <SpacesList />
+              </template>
+              <template v-else-if="current_mode === 'projects'">
+                <div class="u-instructions _content">
+                  <template v-if="opened_event">
+                    <h2>{{ $t("list_of_projects") }}</h2>
+                  </template>
+                  <small v-else v-html="$t('all_projects_instr')" />
+                </div>
+                <AllProjects />
+              </template>
+              <template v-else-if="current_mode === 'my_projects'">
+                <div class="u-instructions _content">
+                  <small v-html="$t('my_projects_instr')" />
+                </div>
+                <AllProjects :show_only_my_projects="true" />
+              </template>
+            </div>
+          </transition>
+        </div>
+      </transition>
 
-        <transition name="pagechange" mode="out-in">
-          <div :key="current_mode">
-            <template v-if="current_mode === 'spaces'">
-              <div class="u-instructions _content">
-                <small v-html="$t('spaces_instr')" />
-              </div>
-              <SpacesList />
-            </template>
-            <template v-else-if="current_mode === 'projects'">
-              <div class="u-instructions _content">
-                <template v-if="opened_event">
-                  <h2>{{ $t("list_of_projects") }}</h2>
-                </template>
-                <small v-else v-html="$t('all_projects_instr')" />
-              </div>
-              <AllProjects />
-            </template>
-            <template v-else-if="current_mode === 'my_projects'">
-              <div class="u-instructions _content">
-                <small v-html="$t('my_projects_instr')" />
-              </div>
-              <AllProjects :show_only_my_projects="true" />
-            </template>
-          </div>
-        </transition>
-      </div>
-    </transition>
-
-    <footer class="_bottomFooter">
-      <div class="_bottomFooter--cont">
-        <div
-          v-if="$root.app_infos.instance_meta.terms_in_footer"
-          class="u-spacingBottom"
-        >
-          <router-link
-            :to="createURLFromPath('pages/terms')"
-            class="u-buttonLink"
+      <footer class="_bottomFooter">
+        <div class="_bottomFooter--cont">
+          <div
+            v-if="$root.app_infos.instance_meta.terms_in_footer"
+            class="u-spacingBottom"
           >
-            {{ $t("terms") }}
-          </router-link>
-        </div>
-
-        <div class="_logoText">
-          <DodocLogo class="_logo" />
-          <div class="_version">
-            {{ $t("version") }} {{ $root.app_infos.version }}
+            <router-link
+              :to="createURLFromPath('pages/terms')"
+              class="u-buttonLink"
+            >
+              {{ $t("terms") }}
+            </router-link>
           </div>
+
+          <div class="_logoText">
+            <DodocLogo class="_logo" />
+            <div class="_version">
+              {{ $t("version") }} {{ $root.app_infos.version }}
+            </div>
+          </div>
+          {{ $t("a_foss_made_by") }} <br />
+          {{ $t("more_informations") }} :
+          <a href="https://dodoc.fr" title="Site de do•doc" target="_blank"
+            >dodoc.fr</a
+          >
         </div>
-        {{ $t("a_foss_made_by") }} <br />
-        {{ $t("more_informations") }} :
-        <a href="https://dodoc.fr" target="_blank">dodoc.fr</a>
-      </div>
-    </footer>
+      </footer>
+    </template>
   </div>
 </template>
 
@@ -133,7 +132,7 @@ export default {
   },
   data() {
     return {
-      // current_mode: "spaces",
+      load_whole_page: false,
       current_mode: "spaces",
     };
   },
@@ -141,7 +140,11 @@ export default {
     if (this.$route.query?.pfilters || this.opened_event)
       this.current_mode = "projects";
   },
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      this.load_whole_page = true;
+    }, 100);
+  },
   beforeDestroy() {},
 
   watch: {

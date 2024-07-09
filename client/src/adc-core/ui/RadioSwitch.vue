@@ -13,7 +13,7 @@
           :id="id + '_' + option.value"
           :value="option.value"
           :checked="content === option.value"
-          @input="(event) => $emit('update:content', event.target.value)"
+          @input="(event) => $emit('update:content', option.value)"
         />
         <label class="radio-switch__label" :for="id + '_' + option.value">
           {{ option.label }}
@@ -26,21 +26,6 @@
           />
         </transition>
       </li>
-      <!-- <li class="radio-switch__item">
-        <input
-          class="radio-switch__input ri5-sr-only"
-          type="radio"
-          name="radio-switch-name"
-          id="radio-2"
-          :value="options[1].value"
-          :checked="content === options[1].value"
-          @input="(event) => $emit('update:content', event.target.value)"
-        />
-        <label class="radio-switch__label" for="radio-2">
-          {{ options[1].label }}
-        </label>
-        <div aria-hidden="true" class="radio-switch__marker"></div>
-      </li> -->
     </ul>
   </div>
 </template>
@@ -65,15 +50,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-/* --------------------------------
-
-File#: _1_radio-switch
-Title: Radio Switch
-Descr: Custom radio toggle
-Usage: codyhouse.co/license
-
--------------------------------- */
-
 ._radioSwitch {
   display: flex;
   justify-content: center;
@@ -123,10 +99,8 @@ menu {
   background-color: var(--c-gris);
   border: 1px solid var(--c-gris);
 }
-.radio-switch:focus-within,
-.radio-switch:active {
-  // background: blue;
-  // border-color: var(--active-color);
+.radio-switch:focus-within {
+  outline: 2px solid var(--active-color);
   // box-shadow: 0 0 0 2px hsla(var(--ri5-color-contrast-higher-hsl), 0.15);
 }
 

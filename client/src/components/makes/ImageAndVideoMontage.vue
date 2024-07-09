@@ -12,6 +12,7 @@
           <ModuleCreator
             :publication_path="make.$path"
             :types_available="['capture', 'import']"
+            :context="'montage'"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
             "
@@ -75,6 +76,7 @@
         :publication_path="make.$path"
         :start_collapsed="false"
         :types_available="['capture', 'import']"
+        :context="'montage'"
         @addModules="addModules"
       />
     </div>

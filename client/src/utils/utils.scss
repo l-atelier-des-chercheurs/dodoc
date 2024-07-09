@@ -12,6 +12,14 @@
   letter-spacing: 0.02em;
 }
 
+*:focus-visible {
+  outline-color: var(--active-color);
+}
+
+a:focus-visible {
+  outline-width: 2px;
+}
+
 .u-sectionLabel {
   display: block;
   width: 100%;
@@ -205,15 +213,12 @@ button,
     color: var(--c-gris_fonce);
   }
 
-  &.is--active {
-    background: var(--c-bleuvert);
-  }
-
   &:hover,
   &:active,
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
+      outline: 0;
       background: var(--active-color);
     }
   }
@@ -518,7 +523,7 @@ select {
   background-position: right 0.4rem center;
   background-repeat: no-repeat;
   background-size: 0.75rem;
-  border: none;
+  // border: none;
   padding: calc(var(--spacing) / 2);
   padding-right: calc(var(--spacing) * 0.5 + 1rem);
   min-width: 0px;

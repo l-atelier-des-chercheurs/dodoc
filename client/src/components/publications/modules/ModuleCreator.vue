@@ -103,7 +103,7 @@
         @click="show_module_selector = true"
       />
     </transition>
-    <DropZone @mediaDropped="mediaDropped" />
+    <DropZone class="_dropZone" @mediaDropped="mediaDropped" />
   </div>
 </template>
 <script>
@@ -239,7 +239,7 @@ export default {
         });
       }
 
-      if (this.context === "page_by_page") {
+      if (["page_by_page", "montage"].includes(this.context)) {
         await this.createMultipleModules({
           module_type: "mosaic",
           source_medias,
@@ -337,7 +337,7 @@ export default {
         });
 
         let addtl_meta = {};
-        if (this.context === "page_by_page")
+        if (["page_by_page", "montage"].includes(this.context))
           if (media?.$infos?.ratio)
             if (addtl_meta.width)
               addtl_meta.height = addtl_meta.width * media.$infos.ratio;

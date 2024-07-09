@@ -65,10 +65,11 @@ module.exports = function () {
   app.set("views", global.appRoot); //Specify the views folder
   app.set("view engine", "pug"); //View engine is Pug
 
-  // app.use(function (req, res, next) {
-  // if (req.url.includes(".txt")) res.status(403).send(`Access not allowed.`);
-  // else next();
-  // });
+  app.use(function (req, res, next) {
+    if (req.url.includes("meta.txt"))
+      res.status(403).send(`Access not allowed.`);
+    else next();
+  });
 
   app.use(express.static(global.pathToUserContent));
   app.use(
@@ -80,6 +81,10 @@ module.exports = function () {
   //   "/_cache",
   //   express.static(path.join(global.appRoot, global.settings.cacheDirname))
   // );
+  app.use("/robots.txt", (req, res) => {
+    res.type("text/plain");
+    res.send("");
+  });
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // To parse the incoming requests with JSON payloads
