@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     async getAllArchives() {
-      const { $archives } = await this.$api.getArchives({
+      const { $archives } = await this.$api.getFile({
         path: this.path,
       });
       this.archives = $archives || [];

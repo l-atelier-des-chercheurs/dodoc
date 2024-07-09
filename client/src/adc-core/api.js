@@ -377,7 +377,7 @@ export default function () {
         return this.store[folder.$path];
       },
 
-      async getArchives({ path }) {
+      async getFile({ path }) {
         const response = await this.$axios.get(path);
         return response.data;
       },

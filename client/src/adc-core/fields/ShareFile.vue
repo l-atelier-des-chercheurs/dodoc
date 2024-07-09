@@ -6,7 +6,7 @@
       @click="show_qr_code_modal = true"
     >
       <b-icon icon="box-arrow-up-right" />
-      {{ $t("open") }}
+      {{ $t("share") }}
     </button>
 
     <QRModal
@@ -34,14 +34,14 @@ export default {
   computed: {
     preview_url() {
       if (!this.file.$path) return false;
-      const full_path = this.makeMediaFilePath({
-        $path: this.file.$path,
-        $media_filename: this.file.$media_filename,
-      });
+      // const full_path = this.makeMediaFilePath({
+      //   $path: this.file.$path,
+      //   $media_filename: this.file.$media_filename,
+      // });
       return (
         window.location.origin +
-        "/_previewmedia?path=" +
-        encodeURIComponent(full_path)
+        "/_previewmedia?path_to_meta=" +
+        this.file.$path
       );
     },
   },

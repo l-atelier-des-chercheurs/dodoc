@@ -103,6 +103,8 @@ export default {
   },
   methods: {
     canEditLinkedMedia(path) {
+      if (!path || !this.publication_path) return false;
+
       const media_parent_folder = this.getParent(path);
 
       // media is directly inside publication
