@@ -119,11 +119,23 @@
             </h3>
 
             <DropDown :right="true">
+              <ShareFile :file="file" />
               <div>
                 <DownloadFile :file="file">
                   <b-icon icon="file-earmark-arrow-down" />
                   {{ $t("download") }}
                 </DownloadFile>
+              </div>
+              <div class="_regenerateThumbs">
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click="regenerateThumbs"
+                >
+                  <b-icon icon="arrow-clockwise" />
+                  {{ $t("regenerate_thumbs") }}
+                </button>
+                <LoaderSpinner v-if="is_regenerating" />
               </div>
               <DuplicateMedia :path="file.$path" @close="$emit('close')" />
               <RemoveMenu
@@ -292,6 +304,7 @@ export default {
     return {
       show_nav_btn: false,
       show_meta_sidebar: true,
+      is_regenerating: false,
     };
   },
 
@@ -323,6 +336,11 @@ export default {
     toggleMeta() {
       this.show_meta_sidebar = !this.show_meta_sidebar;
       localStorage.setItem("show_meta_sidebar", this.show_meta_sidebar);
+    },
+    async regenerateThumbs() {
+      this.is_regenerating = true;
+      await this.$api.regenerateThumbs({ path: this.file.$path });
+      this.is_regenerating = false;
     },
   },
 };
@@ -540,6 +558,7 @@ export default {
   gap: calc(var(--spacing) / 1);
 }
 
-._dragFile {
+._regenerateThumbs {
+  position: relative;
 }
 </style>

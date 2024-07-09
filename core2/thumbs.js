@@ -644,8 +644,9 @@ module.exports = (function () {
     );
     let url =
       global.appInfos.homeURL +
-      "/_previewmedia?path=" +
-      encoded_full_media_path;
+      "/_previewmedia?path_to_media=" +
+      encoded_full_media_path +
+      "&previewing_for=node";
 
     const puppeteer = require("puppeteer");
     const browser = await puppeteer.launch({

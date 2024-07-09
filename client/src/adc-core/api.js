@@ -377,7 +377,7 @@ export default function () {
         return this.store[folder.$path];
       },
 
-      async getArchives({ path }) {
+      async getFile({ path }) {
         const response = await this.$axios.get(path);
         return response.data;
       },
@@ -622,7 +622,11 @@ export default function () {
         this.$eventHub.$emit("hooks.updateMeta", { path });
         return response.data;
       },
-
+      async regenerateThumbs({ path }) {
+        const response = await this.$axios.patch(`${path}/_regenerateThumbs`);
+        this.$eventHub.$emit("hooks.regenerateThumbs", { path });
+        return response.data;
+      },
       async updateCover({ path, new_cover_data, onProgress }) {
         if (typeof new_cover_data === "string") {
           // its a meta filename in that same folder

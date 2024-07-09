@@ -258,7 +258,31 @@ module.exports = (function () {
 
       return changed_data;
     },
+    _regenerateThumbs: async ({
+      path_to_folder,
+      path_to_meta,
+      meta_filename,
+    }) => {
+      dev.logfunction({ path_to_folder, path_to_meta, meta_filename });
 
+      let { $media_filename, $type } = await utils.readMetaFile(path_to_meta);
+      await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
+
+      if ($type) {
+        const $thumbs = await thumbs
+          .makeThumbForMedia({
+            media_type: $type,
+            media_filename: $media_filename,
+            path_to_folder,
+          })
+          .catch((err) => {
+            if (err.message) dev.error(err.message);
+            else dev.error(err);
+          });
+        if ($thumbs) return { $thumbs };
+      }
+      return { $thumbs: {} };
+    },
     removeFile: async ({ path_to_folder, meta_filename }) => {
       dev.logfunction({ path_to_folder, meta_filename });
 
