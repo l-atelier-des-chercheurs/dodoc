@@ -304,12 +304,18 @@ class Exporter {
 
       let page_timeout = setTimeout(async () => {
         clearTimeout(page_timeout);
-        dev.error(`page timeout for ${url}`);
-        if (browser) await browser.close();
-        this._notifyEnded({
-          event: "failed",
-        });
-        throw new Error(`page-timeout`);
+
+        try {
+          const err = new Error("Failed to capture media screenshot");
+          err.code = "failed_to_capture_media_screenshot_page-timeout";
+          throw err;
+        } catch (e) {
+          dev.error(`page timeout for ${url}`);
+          if (browser) await browser.close();
+          this._notifyEnded({
+            event: "failed",
+          });
+        }
       }, 30_000);
 
       browser = await puppeteer.launch({
