@@ -650,18 +650,12 @@ module.exports = (function () {
 
     const puppeteer = require("puppeteer");
 
-    let page_timeout = setTimeout(async () => {
-      clearTimeout(page_timeout);
-      dev.error(`page timeout for ${url}`);
-      if (browser) await browser.close();
-      throw new Error(`page-timeout`);
-    }, 10_000);
-
     const browser = await puppeteer.launch({
       headless: true,
       ignoreHTTPSErrors: true,
       args: ["--no-sandbox", "--font-render-hinting=none"],
     });
+
     const page = await browser.newPage();
     const x_padding = 12;
     const y_padding = 8;
@@ -677,6 +671,7 @@ module.exports = (function () {
     await page
       .goto(url, {
         waitUntil: "networkidle0",
+        timeout: 4_000,
       })
       .catch((err) => {
         throw err;
@@ -692,7 +687,6 @@ module.exports = (function () {
       },
     });
     await new Promise((resolve) => setTimeout(resolve, 200));
-    clearTimeout(page_timeout);
     if (browser) await browser.close();
   }
 
