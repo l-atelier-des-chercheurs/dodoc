@@ -649,6 +649,14 @@ module.exports = (function () {
       "&previewing_for=node";
 
     const puppeteer = require("puppeteer");
+
+    let page_timeout = setTimeout(async () => {
+      clearTimeout(page_timeout);
+      dev.error(`page timeout for ${url}`);
+      if (browser) await browser.close();
+      throw new Error(`page-timeout`);
+    }, 10_000);
+
     const browser = await puppeteer.launch({
       headless: true,
       ignoreHTTPSErrors: true,
@@ -684,6 +692,7 @@ module.exports = (function () {
       },
     });
     await new Promise((resolve) => setTimeout(resolve, 200));
+    clearTimeout(page_timeout);
     if (browser) await browser.close();
   }
 
