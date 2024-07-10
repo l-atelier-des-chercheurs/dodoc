@@ -33,15 +33,10 @@ export default {
   computed: {
     preview_url() {
       if (!this.file.$path) return false;
-      // const full_path = this.makeMediaFilePath({
-      //   $path: this.file.$path,
-      //   $media_filename: this.file.$media_filename,
-      // });
-      return (
-        window.location.origin +
-        "/_previewmedia?path_to_meta=" +
-        this.file.$path
-      );
+      return this.makeMediaFileURL({
+        $path: this.file.$path,
+        $media_filename: this.file.$media_filename,
+      });
     },
   },
   methods: {},

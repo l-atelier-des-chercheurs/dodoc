@@ -180,6 +180,8 @@ import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
 import ShareFile from "@/adc-core/fields/ShareFile.vue";
 Vue.component("ShareFile", ShareFile);
+import EmbedFile from "@/adc-core/fields/EmbedFile.vue";
+Vue.component("EmbedFile", EmbedFile);
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelect);
 import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";
