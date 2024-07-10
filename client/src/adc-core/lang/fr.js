@@ -1156,5 +1156,6 @@ export default {
   open_webpage: "Ouvrir une page web dans un nouvel onglet",
   navigate_to_page: "Naviguer vers une page",
 
-  regenerate_thumbs: "Regénérer les aperçus",
+  regenerate_thumbs: "Regénérer l’aperçu",
+  embed_link: "Lien d’intégration",
 };

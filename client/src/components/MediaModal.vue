@@ -119,7 +119,14 @@
             </h3>
 
             <DropDown :right="true">
-              <ShareFile :file="file" />
+              <ShareFile :file="file">
+                <b-icon icon="box-arrow-up-right" />
+                {{ $t("share") }}
+              </ShareFile>
+              <EmbedFile :file="file">
+                <b-icon icon="link" />
+                {{ $t("embed_link") }}
+              </EmbedFile>
               <div>
                 <DownloadFile :file="file">
                   <b-icon icon="file-earmark-arrow-down" />
