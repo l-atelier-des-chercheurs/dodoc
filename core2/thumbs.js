@@ -663,7 +663,7 @@ module.exports = (function () {
         dev.error(`page timeout for ${url}`);
         if (browser) await browser.close();
       }
-    }, 5_000);
+    }, 6_000);
 
     browser = await puppeteer.launch({
       headless: true,
@@ -683,14 +683,10 @@ module.exports = (function () {
       deviceScaleFactor: 2,
     });
 
-    await page
-      .goto(url, {
-        waitUntil: "networkidle0",
-      })
-      .catch((err) => {
-        throw err;
-      });
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    await page.goto(url).catch((err) => {
+      throw err;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 4000));
     await page.screenshot({
       path: full_path_to_thumb,
       clip: {
