@@ -689,7 +689,7 @@ module.exports = (function () {
 
     dev.logverbose(`Waiting for page to load`);
 
-    await new Promise((resolve) => setTimeout(resolve, 3_000));
+    await new Promise((resolve) => setTimeout(resolve, 2_000));
 
     dev.logverbose(`Taking screenshot`);
     await page.screenshot({
