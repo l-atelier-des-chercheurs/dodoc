@@ -266,7 +266,12 @@ module.exports = (function () {
       return results;
     },
 
-    async handleForm({ path_to_folder, destination_full_folder_path, req }) {
+    async handleForm({
+      path_to_folder,
+      destination_full_folder_path,
+      req,
+      upload_max_file_size_in_mo = 10_000,
+    }) {
       dev.logfunction({ path_to_folder, destination_full_folder_path });
 
       if (
@@ -281,7 +286,7 @@ module.exports = (function () {
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
-          maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
+          maxFileSize: upload_max_file_size_in_mo * 1024 * 1024,
         });
 
         let file = null;
@@ -304,9 +309,22 @@ module.exports = (function () {
 
         form
           .on("error", (err) => {
-            return reject(err);
+            if (err.code === 1009) {
+              dev.error(
+                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
+              );
+              return reject("file_size_limit_exceeded");
+            } else {
+              return reject(err);
+            }
           })
           .on("aborted", (err) => {
+            if (err.code === 1009) {
+              dev.error(
+                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
+              );
+              return reject("file_size_limit_exceeded");
+            }
             return reject(err);
           });
 

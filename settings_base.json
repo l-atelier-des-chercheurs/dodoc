@@ -5,7 +5,6 @@
   "redirect_port": "",
   "cache_content": true,
   "bonjour_domain": false,
-  "removePermanently": false,
   "versioning": true,
   "tokenIsValidForXDays": 60,
 
@@ -27,7 +26,6 @@
   },
 
   "mediaThumbQuality": 90,
-  "maxFileSizeInMoForUpload": 10000,
 
   "regexpMatchFolderNames": "^([^.]+)$",
   "regexpGetFileExtension": "\\.[^.]*$",
@@ -64,6 +62,12 @@
       },
       "enable_indexing": {
         "type": "boolean"
+      },
+      "remove_permanently": {
+        "type": "boolean"
+      },
+      "upload_max_file_size_in_mo": {
+        "type": "number"
       },
       "require_signup_to_contribute": {
         "type": "boolean"

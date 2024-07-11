@@ -119,7 +119,8 @@ export default {
           onProgress,
         })
         .catch((err) => {
-          this.$alertify.delay(4000).error(err);
+          if (err.code !== "file_size_limit_exceeded")
+            this.$alertify.delay(4000).error(err.message);
           this.files_to_upload_meta[filename].status = "failed";
           this.files_to_upload_meta[filename].upload_percentages = 0;
           throw err;

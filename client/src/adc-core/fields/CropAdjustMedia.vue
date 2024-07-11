@@ -196,6 +196,8 @@ export default {
       // not very clean… Should rework with specific API route ? $api.updateContent ?
       const { saved_meta, meta_filename } = await this.saveAsNew();
       const temp_path = this.getParent(this.media.$path) + "/" + meta_filename;
+
+      const old_media_filename = this.media.$media_filename;
       const new_media_filename = saved_meta.$media_filename;
 
       // set $media_filename from temp to the new filename
@@ -210,9 +212,10 @@ export default {
       await this.$api.updateMeta({
         path: temp_path,
         new_meta: {
-          $media_filename: this.media.$media_filename,
+          $media_filename: old_media_filename,
         },
       });
+
       await this.$api.deleteItem({
         path: temp_path,
       });

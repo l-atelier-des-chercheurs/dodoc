@@ -407,7 +407,8 @@ module.exports = (function () {
       dev.logfunction({ path_to_folder });
 
       try {
-        if (global.settings.removePermanently === true)
+        const { remove_permanently } = await settings.get();
+        if (remove_permanently === true)
           await _removeFolderForGood({ path_to_folder });
         else await _moveFolderToBin({ path_to_folder });
 

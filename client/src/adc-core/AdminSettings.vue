@@ -141,6 +141,46 @@
 
             <div class="u-spacingBottom" />
 
+            <div class="_setMaxFileSize">
+              <TitleField
+                :field_name="'upload_max_file_size_in_mo'"
+                :label="$t('upload_max_file_size_in_mo')"
+                :instructions="$t('umo_instructions')"
+                :content="settings.upload_max_file_size_in_mo"
+                :path="settings.$path"
+                :input_type="'number'"
+                :required="false"
+                :can_edit="is_instance_admin"
+              />
+
+              <!-- <NumberInput
+                :label="$t('upload_max_file_size_in_mo')"
+                :value="settings.upload_max_file_size_in_mo || 10000"
+                :default_value="10000"
+                :min="0"
+                :max="10000"
+                :suffix="$t('mb')"
+                :size="'medium'"
+                @save="updateUploadMaxFileSizeInMo($event)"
+              /> -->
+            </div>
+
+            <div class="u-spacingBottom" />
+
+            <ToggleField
+              :label="$t('remove_permanently')"
+              :field_name="'remove_permanently'"
+              :content="settings.remove_permanently === true"
+              :path="settings.$path"
+              :options="{
+                true: $t('remove_permanently_true'),
+                false: $t('remove_permanently_false'),
+              }"
+              :can_edit="is_instance_admin"
+            />
+
+            <div class="u-spacingBottom" />
+
             <div class="u-instructions">
               {{ $t("restart_to_apply") }}
             </div>
@@ -273,6 +313,12 @@ export default {
     newTabShown($event) {
       this.current_tab = $event.detail.name;
     },
+    updateUploadMaxFileSizeInMo(value) {
+      this.$api.updateMeta({
+        path: this.settings.$path,
+        new_meta: { upload_max_file_size_in_mo: value },
+      });
+    },
   },
 };
 </script>
@@ -284,5 +330,8 @@ export default {
 ._adminSettings {
   // margin-top: calc(var(--spacing) / -1);
   // margin-bottom: calc(var(--spacing) / -1);
+}
+._setMaxFileSize {
+  max-width: 40ch;
 }
 </style>

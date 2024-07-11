@@ -27,6 +27,7 @@
         :maxlength="maxlength"
         :key="edit_mode + content"
         @toggleValidity="($event) => (allow_save = $event)"
+        @onEnter="updateText"
       />
       <EditBtn
         v-if="can_edit && !edit_mode"
@@ -65,7 +66,7 @@ export default {
       default: "text",
     },
     content: {
-      type: String,
+      type: [String, Number],
       default: "",
     },
     path: String,
@@ -130,7 +131,9 @@ export default {
       // todo interrupt updateMeta
     },
     async updateText() {
-      this.new_content = this.cleanUpString(this.new_content);
+      if (this.input_type === "number")
+        this.new_content = Number(this.new_content);
+      else this.new_content = this.cleanUpString(this.new_content);
 
       if (!this.path) {
         this.$emit("save", this.new_content);

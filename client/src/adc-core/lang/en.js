@@ -1093,4 +1093,13 @@ export default {
 
   regenerate_thumbs: "Regenerate preview",
   embed_link: "Embed link",
+
+  remove_permanently: "Delete contents permanently",
+  remove_permanently_true:
+    "The contents will be deleted permanently and cannot be recovered.",
+  remove_permanently_false:
+    "The contents will be moved to a subfolder (like a trash).",
+
+  upload_max_file_size_in_mo: "Maximum file size for uploads or captures",
+  umo_instructions: "In megabytes (by default, 10 000, so about 10 Go).",
 };
