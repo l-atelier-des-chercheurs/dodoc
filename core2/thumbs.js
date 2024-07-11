@@ -653,7 +653,6 @@ module.exports = (function () {
     let browser;
 
     let page_timeout = setTimeout(async () => {
-      clearTimeout(page_timeout);
       if (browser) await browser.close();
       try {
         const err = new Error("Failed to capture media screenshot");
@@ -682,10 +681,17 @@ module.exports = (function () {
       deviceScaleFactor: 2,
     });
 
+    dev.logverbose(`Navigating to ${url}`);
+
     await page.goto(url).catch((err) => {
       throw err;
     });
+
+    dev.logverbose(`Waiting for page to load`);
+
     await new Promise((resolve) => setTimeout(resolve, 3_000));
+
+    dev.logverbose(`Taking screenshot`);
     await page.screenshot({
       path: full_path_to_thumb,
       clip: {
@@ -695,10 +701,9 @@ module.exports = (function () {
         height: height,
       },
     });
+    dev.logverbose(`Screenshot taken`);
     await new Promise((resolve) => setTimeout(resolve, 200));
-
     clearTimeout(page_timeout);
-
     if (browser) await browser.close();
   }
 
