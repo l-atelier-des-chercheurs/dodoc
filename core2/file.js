@@ -46,7 +46,19 @@ module.exports = (function () {
             upload_max_file_size_in_mo,
           })
           .catch((err) => {
-            dev.error(`Failed to handle form`, err);
+            if (err === "file_size_limit_exceeded") {
+              const err = new Error("File size limit exceeded");
+              err.code = "file_size_limit_exceeded";
+              err.err_infos = {
+                upload_max_file_size_in_mo,
+              };
+              throw err;
+            } else {
+              dev.error(`Failed to handle form`, err);
+              const err = new Error("Failed to save file");
+              err.code = "failed_to_save_file";
+              throw err;
+            }
           });
 
         additional_meta = _additional_meta;
@@ -300,7 +312,7 @@ module.exports = (function () {
           meta_filename,
         });
 
-        const { remove_permanently } = await settings.get();
+        const { remove_permanently } = await require("./settings").get();
 
         try {
           for (const file_folder_names of _all_files_and_folders) {

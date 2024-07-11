@@ -687,6 +687,12 @@ export default function () {
             // this.$alertify.delay(4000).error("action_not_allowed");
           } else if (code === "token_not_allowed_must_be_contributors") {
             // this.$alertify.delay(4000).error("action_not_allowed");
+          } else if (code === "file_size_limit_exceeded") {
+            let msg = "File size limit exceeded. Maximum file size is ";
+            msg +=
+              err_infos.upload_max_file_size_in_mo +
+              " Mo. Please try again with a smaller file.";
+            this.$alertify.delay(4000).error(msg);
           } else if (code === "ENOENT") code = "folder_is_missing";
           // this.$alertify.delay(4000).error("Message d’erreur : " + code);
           console.error("processError – " + code);
