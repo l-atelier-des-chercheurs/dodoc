@@ -291,9 +291,35 @@ module.exports = (function () {
         // todo check if file exists in sharedb collection, remove
         // await serverRTC.removeDoc({});
 
-        if (global.settings.removePermanently === true)
-          await _removeFileForGood({ path_to_folder, meta_filename });
-        else await _moveFileToBin({ path_to_folder, meta_filename });
+        const _all_files_and_folders = await _getAllFilesAndFolders({
+          path_to_folder,
+          meta_filename,
+        });
+
+        try {
+          for (const file_folder_names of _all_files_and_folders) {
+            const full_path_to_file_or_folder = utils.getPathToUserContent(
+              path_to_folder,
+              file_folder_names
+            );
+
+            if (global.settings.removePermanently === true)
+              await fs.remove(full_path_to_file_or_folder);
+            else {
+              const dest_path = utils.getPathToUserContent(
+                path_to_folder,
+                global.settings.deletedFolderName,
+                file_folder_names
+              );
+              await fs.move(full_path_to_file_or_folder, dest_path, {
+                overwrite: true,
+              });
+            }
+          }
+          return;
+        } catch (err) {
+          // don't catch error if missing target at path (can be an "…_archives" folder)
+        }
 
         cache.delete({
           key: `${path_to_folder}/${meta_filename}`,
@@ -366,7 +392,7 @@ module.exports = (function () {
       let desired_meta_filename = meta_filename;
 
       // todo copy all related meta (archives as well)
-      // const _all_file_paths = await _getAllFilesRelatedToMeta({
+      // const _all_file_paths = await _getAllFilesAndFolders({
       //   path_to_folder,
       //   meta_filename,
       // });
@@ -595,81 +621,27 @@ module.exports = (function () {
     }
   }
 
-  async function _removeFileForGood({ path_to_folder, meta_filename }) {
-    dev.logfunction({ path_to_folder, meta_filename });
-
-    const _all_file_paths = await _getAllFilesRelatedToMeta({
-      path_to_folder,
-      meta_filename,
-    });
-
-    try {
-      for (const file_path of _all_file_paths) {
-        await fs.remove(file_path);
-      }
-      return;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async function _moveFileToBin({ path_to_folder, meta_filename }) {
-    dev.logfunction({ path_to_folder, meta_filename });
-
-    const _all_file_paths = await _getAllFilesRelatedToMeta({
-      path_to_folder,
-      meta_filename,
-    });
-
-    try {
-      for (const file_path of _all_file_paths) {
-        const path_in_bin = file_path.replace(
-          path.join(path_to_folder),
-          path.join(path_to_folder, global.settings.deletedFolderName)
-        );
-        dev.logverbose({ file_path, path_in_bin });
-        await fs
-          .move(file_path, path_in_bin, { overwrite: true })
-          .catch((err) => {
-            // don't catch error if missing target at path (can be an "…_archives" folder)
-          });
-      }
-      return;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async function _getAllFilesRelatedToMeta({ path_to_folder, meta_filename }) {
-    let paths = [];
-
-    const full_meta_path = utils.getPathToUserContent(
-      path_to_folder,
-      meta_filename
-    );
-    paths.push(full_meta_path);
+  async function _getAllFilesAndFolders({ path_to_folder, meta_filename }) {
+    let files_and_folders_name = [];
+    files_and_folders_name.push(meta_filename);
 
     let meta = await utils.readMetaFile(path_to_folder, meta_filename);
     const media_filename = meta.$media_filename;
 
-    if (!media_filename) return paths;
+    if (media_filename) {
+      files_and_folders_name.push(media_filename);
+      const archive_folder_name = _getArchivePath(media_filename);
+      const full_archive_path = utils.getPathToUserContent(
+        path_to_folder,
+        archive_folder_name
+      );
+      if (await fs.pathExists(full_archive_path))
+        files_and_folders_name.push(archive_folder_name);
+    }
 
-    const full_media_path = utils.getPathToUserContent(
-      path_to_folder,
-      media_filename
-    );
-    paths.push(full_media_path);
+    dev.logfunction({ files_and_folders_name });
 
-    const archive_folder_name = _getArchivePath(media_filename);
-    const full_archive_path = utils.getPathToUserContent(
-      path_to_folder,
-      archive_folder_name
-    );
-    if (await fs.pathExists(full_archive_path)) paths.push(full_archive_path);
-
-    dev.logfunction({ paths });
-
-    return paths;
+    return files_and_folders_name;
   }
 
   async function _updateTextContent({
