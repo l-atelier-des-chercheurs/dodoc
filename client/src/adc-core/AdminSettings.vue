@@ -141,6 +141,21 @@
 
             <div class="u-spacingBottom" />
 
+            <div class="_setMaxFileSize">
+              <NumberInput
+                :label="$t('upload_max_file_size_in_mo')"
+                :value="settings.upload_max_file_size_in_mo || 10000"
+                :default_value="10000"
+                :min="0"
+                :max="10000"
+                :suffix="$t('mb')"
+                :size="'medium'"
+                @save="updateUploadMaxFileSizeInMo($event)"
+              />
+            </div>
+
+            <div class="u-spacingBottom" />
+
             <ToggleField
               :label="$t('remove_permanently')"
               :field_name="'remove_permanently'"
@@ -287,6 +302,12 @@ export default {
     newTabShown($event) {
       this.current_tab = $event.detail.name;
     },
+    updateUploadMaxFileSizeInMo(value) {
+      this.$api.updateMeta({
+        path: this.settings.$path,
+        new_meta: { upload_max_file_size_in_mo: value },
+      });
+    },
   },
 };
 </script>
@@ -298,5 +319,8 @@ export default {
 ._adminSettings {
   // margin-top: calc(var(--spacing) / -1);
   // margin-bottom: calc(var(--spacing) / -1);
+}
+._setMaxFileSize {
+  max-width: 40ch;
 }
 </style>

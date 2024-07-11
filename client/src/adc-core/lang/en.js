@@ -1099,4 +1099,6 @@ export default {
     "The contents will be deleted permanently and cannot be recovered.",
   remove_permanently_false:
     "The contents will be moved to a subfolder (like a trash).",
+
+  upload_max_file_size_in_mo: "Maximum file size for uploads or captures",
 };

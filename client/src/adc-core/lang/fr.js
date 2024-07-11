@@ -1164,4 +1164,6 @@ export default {
     "Les médias supprimés seront définitivement perdu et ne pourront pas être récupérés.",
   remove_permanently_false:
     "Les médias supprimés seront déplacés dans un sous-dossier (comme une corbeille).",
+
+  upload_max_file_size_in_mo: "Taille maximale des fichiers importés ou captés",
 };

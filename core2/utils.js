@@ -276,12 +276,13 @@ module.exports = (function () {
         destination_full_folder_path = API.getPathToUserContent(path_to_folder);
 
       await fs.ensureDir(destination_full_folder_path);
+      const { upload_max_file_size_in_mo } = await settings.get();
 
       return new Promise((resolve, reject) => {
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
-          maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
+          maxFileSize: upload_max_file_size_in_mo * 1024 * 1024,
         });
 
         let file = null;
