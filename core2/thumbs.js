@@ -655,7 +655,6 @@ module.exports = (function () {
     let page_timeout = setTimeout(async () => {
       clearTimeout(page_timeout);
       if (browser) await browser.close();
-      puppeteer = null;
       try {
         const err = new Error("Failed to capture media screenshot");
         err.code = "failed_to_capture_media_screenshot_page-timeout";
