@@ -296,6 +296,8 @@ module.exports = (function () {
           meta_filename,
         });
 
+        const { remove_permanently } = await settings.get();
+
         try {
           for (const file_folder_names of _all_files_and_folders) {
             const full_path_to_file_or_folder = utils.getPathToUserContent(
@@ -303,7 +305,7 @@ module.exports = (function () {
               file_folder_names
             );
 
-            if (global.settings.removePermanently === true)
+            if (remove_permanently === true)
               await fs.remove(full_path_to_file_or_folder);
             else {
               const dest_path = utils.getPathToUserContent(

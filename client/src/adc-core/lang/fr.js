@@ -132,7 +132,7 @@ export default {
   ui_lang_select: "Langue de l’interface",
   lang_updated: "La langue a été mise à jour",
 
-  signup_password: "mot de passe pour la création d’un compte",
+  signup_password: "Mot de passe pour la création d’un compte",
   signup_password_instructions:
     "Limiter la création de compte aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent créer un compte.",
   signup_password_users_instructions:
@@ -1158,4 +1158,10 @@ export default {
 
   regenerate_thumbs: "Regénérer l’aperçu",
   embed_link: "Lien d’intégration",
+
+  remove_permanently: "Supprimer définitivement les contenus",
+  remove_permanently_true:
+    "Les médias supprimés seront définitivement perdu et ne pourront pas être récupérés.",
+  remove_permanently_false:
+    "Les médias supprimés seront déplacés dans un sous-dossier (comme une corbeille).",
 };

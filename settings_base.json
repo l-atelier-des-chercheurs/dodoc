@@ -5,7 +5,6 @@
   "redirect_port": "",
   "cache_content": true,
   "bonjour_domain": false,
-  "removePermanently": false,
   "versioning": true,
   "tokenIsValidForXDays": 60,
 
@@ -63,6 +62,9 @@
         "type": "string"
       },
       "enable_indexing": {
+        "type": "boolean"
+      },
+      "remove_permanently": {
         "type": "boolean"
       },
       "require_signup_to_contribute": {

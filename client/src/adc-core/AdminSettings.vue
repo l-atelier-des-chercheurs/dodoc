@@ -141,6 +141,20 @@
 
             <div class="u-spacingBottom" />
 
+            <ToggleField
+              :label="$t('remove_permanently')"
+              :field_name="'remove_permanently'"
+              :content="settings.remove_permanently === true"
+              :path="settings.$path"
+              :options="{
+                true: $t('remove_permanently_true'),
+                false: $t('remove_permanently_false'),
+              }"
+              :can_edit="is_instance_admin"
+            />
+
+            <div class="u-spacingBottom" />
+
             <div class="u-instructions">
               {{ $t("restart_to_apply") }}
             </div>

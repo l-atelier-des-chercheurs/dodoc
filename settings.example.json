@@ -1,7 +1,6 @@
 {
   "desired_port": 8080,
   "contentPath": "dodoc",
-  "removePermanently": false,
 
   "api": {
     "enabled": false,
