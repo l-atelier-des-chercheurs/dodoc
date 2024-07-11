@@ -661,7 +661,7 @@ module.exports = (function () {
       } catch (e) {
         dev.error(`page timeout for ${url}`);
       }
-    }, 6_000);
+    }, 10_000);
 
     browser = await puppeteer.launch({
       headless: true,
