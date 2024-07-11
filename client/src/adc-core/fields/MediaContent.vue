@@ -183,7 +183,7 @@
       </div>
       <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
         <ImageZoom
-          v-if="file.$type === 'image'"
+          v-if="file.$type === 'image' && full_thumb"
           :small_img="full_thumb"
           :large_img="file_full_path"
           :width="img_width"
@@ -245,6 +245,8 @@ export default {
   watch: {},
   computed: {
     thumb() {
+      if (this.file.$thumbs === "no_preview") return false;
+
       const path_to_parent = this.file.$path.substring(
         0,
         this.file.$path.lastIndexOf("/")

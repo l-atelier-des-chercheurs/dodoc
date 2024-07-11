@@ -234,6 +234,12 @@ module.exports = (function () {
 
     let thumb_paths = {};
 
+    const no_preview_path = utils.getPathToUserContent(
+      path_to_thumb_folder,
+      `${media_filename}.no_preview`
+    );
+    if (await fs.pathExists(no_preview_path)) return "no_preview";
+
     if (!settings) {
       thumb_paths = await _makeImageThumbsFor({
         full_media_path,
@@ -252,40 +258,52 @@ module.exports = (function () {
         if (!(await fs.pathExists(full_path_to_thumb))) {
           dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
 
-          if (media_type === "video")
-            await _makeVideoScreenshotFromPath({
-              thumb_name,
-              thumb_folder,
-              full_media_path,
-              timemark_key: setting.timemark,
+          try {
+            if (media_type === "video")
+              await _makeVideoScreenshotFromPath({
+                thumb_name,
+                thumb_folder,
+                full_media_path,
+                timemark_key: setting.timemark,
+              });
+            else if (media_type === "audio")
+              await _makeAudioWaveforms({
+                full_media_path,
+                full_path_to_thumb,
+              });
+            else if (media_type === "stl")
+              await _makeSTLThumbs({
+                full_media_path,
+                full_path_to_thumb,
+                camera_angle: setting.camera_angle,
+              });
+            else if (media_type === "pdf")
+              await _makePDFThumbs({
+                full_media_path,
+                thumb_folder,
+                full_path_to_thumb,
+                page: setting.page,
+              });
+            else if (media_type === "url")
+              await _makeLinkThumbs({
+                full_media_path,
+                full_path_to_thumb,
+                cc,
+              });
+          } catch (err) {
+            dev.error(err);
+            // make empty nopreview file
+            await utils.storeContent({
+              full_path: no_preview_path,
+              meta: "",
             });
-          else if (media_type === "audio")
-            await _makeAudioWaveforms({
-              full_media_path,
-              full_path_to_thumb,
-            });
-          // else if (media_type === "stl")
-          //   await _makeSTLThumbs({
-          //     full_media_path,
-          //     full_path_to_thumb,
-          //     camera_angle: setting.camera_angle,
-          //   });
-          // else if (media_type === "pdf")
-          //   await _makePDFThumbs({
-          //     full_media_path,
-          //     thumb_folder,
-          //     full_path_to_thumb,
-          //     page: setting.page,
-          //   });
-          // else if (media_type === "url")
-          //   await _makeLinkThumbs({
-          //     full_media_path,
-          //     full_path_to_thumb,cc
-          //   });
+          }
           dev.logverbose(`Made screenshot at`, full_path_to_thumb);
         } else {
           dev.logverbose(`Found screenshot at`, full_path_to_thumb);
         }
+
+        if (await fs.pathExists(no_preview_path)) return "no_preview";
 
         const thumbs = await _makeImageThumbsFor({
           full_media_path: full_path_to_thumb,
