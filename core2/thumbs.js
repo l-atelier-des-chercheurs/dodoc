@@ -654,14 +654,14 @@ module.exports = (function () {
 
     let page_timeout = setTimeout(async () => {
       clearTimeout(page_timeout);
-
+      if (browser) await browser.close();
+      puppeteer = null;
       try {
         const err = new Error("Failed to capture media screenshot");
         err.code = "failed_to_capture_media_screenshot_page-timeout";
         throw err;
       } catch (e) {
         dev.error(`page timeout for ${url}`);
-        if (browser) await browser.close();
       }
     }, 6_000);
 
@@ -686,7 +686,7 @@ module.exports = (function () {
     await page.goto(url).catch((err) => {
       throw err;
     });
-    await new Promise((resolve) => setTimeout(resolve, 4000));
+    await new Promise((resolve) => setTimeout(resolve, 3_000));
     await page.screenshot({
       path: full_path_to_thumb,
       clip: {
