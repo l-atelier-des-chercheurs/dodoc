@@ -32,6 +32,9 @@ module.exports = (function () {
         meta_filename =
           prefix + "-" + +extracted_meta.$date_uploaded + ".meta.txt";
       } else {
+        const { upload_max_file_size_in_mo } =
+          await require("./settings").get();
+
         const {
           originalFilename,
           path_to_temp_file,
@@ -40,6 +43,7 @@ module.exports = (function () {
           .handleForm({
             path_to_folder,
             req,
+            upload_max_file_size_in_mo,
           })
           .catch((err) => {
             dev.error(`Failed to handle form`, err);

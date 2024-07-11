@@ -1166,4 +1166,5 @@ export default {
     "Les médias supprimés seront déplacés dans un sous-dossier (comme une corbeille).",
 
   upload_max_file_size_in_mo: "Taille maximale des fichiers importés ou captés",
+  umo_instructions: "En mégaoctets (par défaut, 10 000, soit environ 10 Go).",
 };

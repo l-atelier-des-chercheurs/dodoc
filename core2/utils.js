@@ -266,7 +266,12 @@ module.exports = (function () {
       return results;
     },
 
-    async handleForm({ path_to_folder, destination_full_folder_path, req }) {
+    async handleForm({
+      path_to_folder,
+      destination_full_folder_path,
+      req,
+      upload_max_file_size_in_mo = 10_000,
+    }) {
       dev.logfunction({ path_to_folder, destination_full_folder_path });
 
       if (
@@ -276,7 +281,6 @@ module.exports = (function () {
         destination_full_folder_path = API.getPathToUserContent(path_to_folder);
 
       await fs.ensureDir(destination_full_folder_path);
-      const { upload_max_file_size_in_mo } = await settings.get();
 
       return new Promise((resolve, reject) => {
         const form = new IncomingForm({
