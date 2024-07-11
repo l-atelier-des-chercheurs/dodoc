@@ -70,7 +70,6 @@
   </div>
 </template>
 <script>
-import { tabletojson } from "tabletojson";
 import CellEdit from "@/adc-core/fields/CellEdit.vue";
 
 export default {

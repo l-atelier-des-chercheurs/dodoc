@@ -570,7 +570,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="scss">
 .yoyoo-ddr {
   position: absolute;
   .resize-handler.tm {
