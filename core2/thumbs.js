@@ -264,24 +264,24 @@ module.exports = (function () {
               full_media_path,
               full_path_to_thumb,
             });
-          else if (media_type === "stl")
-            await _makeSTLThumbs({
-              full_media_path,
-              full_path_to_thumb,
-              camera_angle: setting.camera_angle,
-            });
-          else if (media_type === "pdf")
-            await _makePDFThumbs({
-              full_media_path,
-              thumb_folder,
-              full_path_to_thumb,
-              page: setting.page,
-            });
-          else if (media_type === "url")
-            await _makeLinkThumbs({
-              full_media_path,
-              full_path_to_thumb,
-            });
+          // else if (media_type === "stl")
+          //   await _makeSTLThumbs({
+          //     full_media_path,
+          //     full_path_to_thumb,
+          //     camera_angle: setting.camera_angle,
+          //   });
+          // else if (media_type === "pdf")
+          //   await _makePDFThumbs({
+          //     full_media_path,
+          //     thumb_folder,
+          //     full_path_to_thumb,
+          //     page: setting.page,
+          //   });
+          // else if (media_type === "url")
+          //   await _makeLinkThumbs({
+          //     full_media_path,
+          //     full_path_to_thumb,cc
+          //   });
           dev.logverbose(`Made screenshot at`, full_path_to_thumb);
         } else {
           dev.logverbose(`Found screenshot at`, full_path_to_thumb);
