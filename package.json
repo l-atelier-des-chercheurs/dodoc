@@ -97,6 +97,7 @@
     "formidable": "^2.1.2",
     "fs-extra": "^11.2.0",
     "heic-decode": "^2.0.0",
+    "helmet": "^7.1.0",
     "lru-cache": "^10.2.2",
     "md5-file": "^5.0.0",
     "node-fetch": "^2.7.0",

@@ -5,6 +5,7 @@ var https = require("https");
 var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
+const helmet = require("helmet");
 const { Server } = require("socket.io");
 
 const sockets = require("./sockets"),
@@ -17,6 +18,13 @@ module.exports = function () {
   const app = express();
 
   app.use(compression());
+
+  app.use(
+    helmet({
+      // todo: set correct CSP
+      contentSecurityPolicy: false,
+    })
+  );
 
   // only for HTTPS, works without asking for a certificate
   const options = {
