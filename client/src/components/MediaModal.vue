@@ -405,6 +405,8 @@ export default {
 
 ._navBtn {
   pointer-events: auto;
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(5px) !important;
 
   position: relative;
   z-index: 100;

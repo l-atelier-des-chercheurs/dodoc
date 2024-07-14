@@ -16,12 +16,22 @@
         </option>
       </select> -->
 
-      <RadioCheckboxInput
-        v-if="!urls_to_page.domain"
-        :value.sync="current_opt"
-        :options="network_options"
-        :can_edit="true"
-      />
+      <DetailsPane
+        :header="$t('advanced_options')"
+        :icon="'link'"
+        :is_open_initially="false"
+        class="u-spacingBottom"
+      >
+        <summary>
+          {{ $t("share_link_to_file") }}
+        </summary>
+        <RadioCheckboxInput
+          v-if="!urls_to_page.domain"
+          :value.sync="current_opt"
+          :options="network_options"
+          :can_edit="true"
+        />
+      </DetailsPane>
 
       <!-- <hr class="_hr" /> -->
 

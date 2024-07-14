@@ -1093,6 +1093,10 @@ export default {
 
   regenerate_thumbs: "Regenerate preview",
   embed_link: "Embed link",
+  direct_link_to_file:
+    "This link points directly to the media file, it can be used in other applications or websites.",
+  share_link_to_file:
+    "This link corresponds to a specific page containing the media, its legend and its credits (if the fields are filled in).",
 
   remove_permanently: "Delete contents permanently",
   remove_permanently_true:

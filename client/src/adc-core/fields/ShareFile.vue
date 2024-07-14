@@ -12,7 +12,9 @@
       v-if="show_qr_code_modal"
       :url_to_access="preview_url"
       @close="show_qr_code_modal = false"
-    />
+    >
+      {{ $t("share_link_to_file") }}
+    </QRModal>
   </div>
 </template>
 <script>
