@@ -463,9 +463,16 @@ export default {
   font-size: 80%;
   cursor: pointer;
 
-  ::v-deep ._inputLabel {
-    padding: calc(var(--spacing) / 2);
-    ._mediaTile[data-tilemode="medium"] & {
+  &:not([data-tilemode="table"]) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+
+    ::v-deep ._inputLabel {
+      pointer-events: auto;
       padding: calc(var(--spacing) / 1);
     }
   }
