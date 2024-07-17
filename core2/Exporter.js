@@ -300,7 +300,6 @@ class Exporter {
       let browser;
 
       let page_timeout = setTimeout(async () => {
-        clearTimeout(page_timeout);
         dev.error(`page timeout for ${url}`);
         if (browser) await browser.close();
         this._notifyEnded({
@@ -364,13 +363,13 @@ class Exporter {
       }
 
       this._notifyProgress(95);
-      clearTimeout(page_timeout);
+      if (page_timeout) clearTimeout(page_timeout);
       if (browser) await browser.close();
 
       return path_to_temp_file;
     } catch (err) {
       dev.error(`err for puppeteer ${err}`);
-      clearTimeout(page_timeout);
+      if (page_timeout) clearTimeout(page_timeout);
       this._notifyEnded({
         event: "failed",
       });
