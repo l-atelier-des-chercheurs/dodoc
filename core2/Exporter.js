@@ -343,7 +343,12 @@ class Exporter {
               return win.webContents.printToPDF({
                 // electron >= 21
                 // margins are set using @page in css
-                margins: { marginType: "default" },
+                margins: {
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                },
                 pageSize: printToPDF_pagesize,
                 printBackground: true,
                 printSelectionOnly: false,
