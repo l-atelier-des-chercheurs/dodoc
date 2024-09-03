@@ -395,8 +395,9 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
+  gap: calc(var(--spacing) * 2) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2)
+    calc(var(--spacing) * 4);
 }
 
 ._page {
