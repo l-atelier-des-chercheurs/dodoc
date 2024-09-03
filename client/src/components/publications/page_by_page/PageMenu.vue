@@ -266,14 +266,16 @@
             </button>
           </div> -->
 
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="show_confirm_move = true"
-          >
-            <b-icon icon="arrow-left-right" />
-            {{ $t("move_to_page") }}
-          </button>
+          <div>
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_confirm_move = true"
+            >
+              <b-icon icon="arrow-left-right" />
+              {{ $t("move_to_page") }}
+            </button>
+          </div>
 
           <SelectPage
             v-if="show_confirm_move"
