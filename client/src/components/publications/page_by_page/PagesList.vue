@@ -27,16 +27,17 @@
             :key="'page-' + page.id"
             class="u-sameRow"
           >
-            <button
-              type="button"
-              class="u-button u-button_icon u-button_small _createPage"
-              @click="createPage(index)"
+            <EditBtn
               v-if="can_edit"
-              :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
+              :style="
+                is_creating_page
+                  ? 'opacity: 0 !important;'
+                  : 'opacity: 1 !important;'
+              "
+              :btn_type="'create_page'"
               :key="'createPage' + index"
-            >
-              <b-icon icon="plus-circle" />
-            </button>
+              @click="createPage(index)"
+            />
             <div class="_page">
               <div class="_preview">
                 <SinglePage
@@ -131,17 +132,17 @@
             </div>
           </div>
         </template>
-        <button
-          type="button"
-          class="u-button u-button_white _createPage"
-          @click="createPage"
+        <EditBtn
           v-if="can_edit"
-          :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
-          key="createPage"
-        >
-          <b-icon icon="plus-circle" />
-          {{ $t("create_page") }}
-        </button>
+          :style="
+            is_creating_page
+              ? 'opacity: 0 !important;'
+              : 'opacity: 1 !important;'
+          "
+          :btn_type="'create_page'"
+          :key="'createPage'"
+          @click="createPage"
+        />
       </transition-group>
     </div>
     <OpenedPageOrSpread
@@ -441,7 +442,7 @@ export default {
   }
 }
 ._createPage {
-  margin-bottom: calc(var(--spacing) * 3);
+  // margin-bottom: calc(var(--spacing) * 2);
 }
 
 ._setPreviewSize {
