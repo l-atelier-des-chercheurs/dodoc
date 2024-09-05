@@ -3,6 +3,7 @@ const path = require("path"),
 
 const utils = require("./utils"),
   thumbs = require("./thumbs"),
+  archives = require("./archives"),
   cache = require("./cache");
 
 module.exports = (function () {
@@ -204,10 +205,12 @@ module.exports = (function () {
     },
     getArchives: async ({ path_to_folder, meta_filename }) => {
       dev.logfunction({ path_to_folder, meta_filename });
-      return await _readArchives({
+      const archives_content = await archives.getArchives({
         path_to_folder,
         meta_filename,
       });
+      if (archives_content) return archives_content;
+      return [];
     },
 
     updateFile: async ({ path_to_folder, path_to_meta, data }) => {
@@ -304,6 +307,8 @@ module.exports = (function () {
 
       try {
         await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
+        await archives.removeFileArchives({ path_to_folder, meta_filename });
+
         // todo check if file exists in sharedb collection, remove
         // await serverRTC.removeDoc({});
 
@@ -408,12 +413,6 @@ module.exports = (function () {
 
       let meta = await utils.readMetaFile(path_to_meta);
       let desired_meta_filename = meta_filename;
-
-      // todo copy all related meta (archives as well)
-      // const _all_file_paths = await _getAllFilesAndFolders({
-      //   path_to_folder,
-      //   meta_filename,
-      // });
 
       if (meta.hasOwnProperty("$media_filename")) {
         // copy media
@@ -648,13 +647,6 @@ module.exports = (function () {
 
     if (media_filename) {
       files_and_folders_name.push(media_filename);
-      const archive_folder_name = _getArchivePath(media_filename);
-      const full_archive_path = utils.getPathToUserContent(
-        path_to_folder,
-        archive_folder_name
-      );
-      if (await fs.pathExists(full_archive_path))
-        files_and_folders_name.push(archive_folder_name);
     }
 
     dev.logfunction({ files_and_folders_name });
@@ -686,7 +678,7 @@ module.exports = (function () {
     );
 
     if (global.settings.versioning === true)
-      await _archiveVersion({
+      await archives.archiveVersion({
         path_to_folder,
         media_filename,
       });
@@ -704,88 +696,6 @@ module.exports = (function () {
       .catch((err) => {
         throw err;
       });
-  }
-
-  async function _archiveVersion({ path_to_folder, media_filename }) {
-    dev.logfunction(arguments[0]);
-    const media_path = utils.getPathToUserContent(
-      path_to_folder,
-      media_filename
-    );
-
-    const archive_folder_name = _getArchivePath(media_filename);
-
-    const full_archived_folder_path = utils.getPathToUserContent(
-      path_to_folder,
-      archive_folder_name
-    );
-    await fs.ensureDir(full_archived_folder_path);
-
-    try {
-      // keep file name, append -1, -2, etc. if necessary to prevent override
-      // const archived_media_filename = await _preventFileOverride({
-      //   folder_path: archived_folder_path,
-      //   original_filename: media_filename,
-      // });
-
-      // use timestamp to mark time archived
-      const archived_media_filename =
-        +utils.getCurrentDate() + path.parse(media_filename).ext;
-
-      const archived_media_path = path.join(
-        full_archived_folder_path,
-        archived_media_filename
-      );
-
-      await fs.move(media_path, archived_media_path, {
-        overwrite: true,
-      });
-      return;
-    } catch (err) {
-      throw err;
-    }
-  }
-  async function _readArchives({ path_to_folder, meta_filename }) {
-    dev.logfunction();
-
-    let meta = await utils.readMetaFile(path_to_folder, meta_filename);
-
-    const archive_folder_name = _getArchivePath(meta.$media_filename);
-    const full_archived_folder_path = utils.getPathToUserContent(
-      path_to_folder,
-      archive_folder_name
-    );
-
-    try {
-      let filenames = (
-        await fs.readdir(full_archived_folder_path, { withFileTypes: true })
-      )
-        .filter((dirent) => !dirent.isDirectory())
-        .map((dirent) => dirent.name);
-      dev.logfunction({ filenames });
-
-      const files_content = [];
-      for (const filename of filenames) {
-        const content = await utils.readFileContent(
-          path_to_folder,
-          archive_folder_name,
-          filename
-        );
-        const date = +path.parse(filename).name;
-        files_content.push({
-          date,
-          filename,
-          content,
-        });
-      }
-      return files_content;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  function _getArchivePath(media_filename) {
-    return "_archives_" + path.parse(media_filename).name;
   }
 
   async function _embedSourceMedias({ meta }) {

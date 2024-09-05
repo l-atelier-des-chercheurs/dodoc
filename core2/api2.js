@@ -1207,12 +1207,10 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta,
       });
-      const file_archives = await file
-        .getArchives({
-          path_to_folder,
-          meta_filename,
-        })
-        .catch(() => {});
+      const file_archives = await file.getArchives({
+        path_to_folder,
+        meta_filename,
+      });
       if (file_archives) meta.$archives = file_archives;
 
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -1274,7 +1272,7 @@ module.exports = (function () {
       });
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to update file: " + message);
+      dev.error("Failed to regenerate thumbs: " + message);
       res.status(500).send({
         code,
         err_infos,
