@@ -77,7 +77,7 @@ export default {
   // align-items: center;
   // gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4) 0;
   // background: white;
   // border-radius: 4px;
   // background: rgba(0, 0, 0, 0.06);

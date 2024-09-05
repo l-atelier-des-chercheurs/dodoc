@@ -25,7 +25,7 @@
           <div
             v-for="(page, index) in pages"
             :key="'page-' + page.id"
-            class="u-sameRow"
+            class="u-sameRow _singlePage"
           >
             <EditBtn
               v-if="can_edit"
@@ -84,6 +84,18 @@
             v-for="(spread, index) in spreads"
             :key="'spread-' + index"
           >
+            <EditBtn
+              v-if="can_edit"
+              class="_createPage"
+              :style="
+                is_creating_page
+                  ? 'opacity: 0 !important;'
+                  : 'opacity: 1 !important;'
+              "
+              :btn_type="'create_page'"
+              :key="'createPage' + index"
+              @click="createPage(index)"
+            />
             <div
               class=""
               v-for="(page, iindex) in spread"
@@ -395,7 +407,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) * 2);
+  gap: calc(var(--spacing) * 1);
   padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2)
     calc(var(--spacing) * 4);
 }
@@ -410,9 +422,14 @@ export default {
   // width: 210px;
   // height: 297px;
 }
+._singlePage {
+  gap: calc(var(--spacing) * 1);
+}
 ._spread {
   display: flex;
   flex-flow: row nowrap;
+  align-items: center;
+  gap: 0;
 }
 ._preview {
   position: relative;
@@ -443,7 +460,7 @@ export default {
   }
 }
 ._createPage {
-  // margin-bottom: calc(var(--spacing) * 2);
+  margin-right: calc(var(--spacing) * 1);
 }
 
 ._setPreviewSize {
