@@ -183,6 +183,7 @@ table {
 }
 table thead th,
 table tfoot th {
+  min-width: 100px;
   color: #777;
   background: rgba(0, 0, 0, 0.1);
 }
