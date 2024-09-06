@@ -38,6 +38,7 @@
           >
             <ColorInput
               :label="$t('color')"
+              :can_toggle="false"
               :value="chroma_key_color_hex"
               @save="chroma_key_color_hex = $event"
             />
