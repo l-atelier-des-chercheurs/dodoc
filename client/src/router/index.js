@@ -81,7 +81,7 @@ const routes = [
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: () =>
-      import(/* webpackChunkName: "AuthorView" */ "../views/NotFound.vue"),
+      import(/* webpackChunkName: "NotFound" */ "../views/NotFound.vue"),
   },
 ];
 
