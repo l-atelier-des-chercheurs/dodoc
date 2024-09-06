@@ -39,7 +39,7 @@
 <script>
 export default {
   props: {
-    cell: Object,
+    cell: [String, Object],
     can_edit: {
       type: Boolean,
       required: false,
