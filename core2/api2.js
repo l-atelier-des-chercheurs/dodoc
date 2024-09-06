@@ -38,7 +38,7 @@ module.exports = (function () {
 
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
-    app.post("/_api2/_restart", _onlyAdmins, _restart);
+    app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
 
     /* PUBLIC FILES */
     app.get(
@@ -1384,11 +1384,9 @@ module.exports = (function () {
     });
   }
 
-  async function _checkAuth(req, res, next) {}
-  async function _restart(req, res, next) {
-    notifier.emit("restart");
+  async function _restartApp(req, res, next) {
+    notifier.emit("restartApp");
   }
-
   async function _getStoragePath(req, res, next) {
     res.json({ pathToUserContent: global.pathToUserContent });
   }

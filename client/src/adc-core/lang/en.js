@@ -202,9 +202,11 @@ export default {
   audioinput: "Audio input",
   audiooutput: "Audio output",
 
-  restart_to_apply: "Restart do•doc to apply",
+  restart_to_apply:
+    "Close and restart do•doc manually or using the button below for the setting to take effect.",
+  restart: "Close and restart",
+
   refresh_window_to_apply: "Refresh the window to apply",
-  restart: "Restart do•doc",
   reveal: "Reveal",
   choose_a_pane: "Choose a pane to start!",
   latest_changes_to_project: "Latest changes to project",

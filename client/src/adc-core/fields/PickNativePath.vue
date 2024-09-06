@@ -10,47 +10,56 @@
       <EditBtn
         v-if="can_edit && !edit_mode"
         :label_position="'left'"
-        @click="enableEditMode"
+        @click="changeStorage"
       />
     </div>
 
-    <div class="u-spacingBottom" />
+    <template v-if="can_edit">
+      <div class="u-spacingBottom" />
 
-    <div v-if="edit_mode" class="u-spacingBottom">
-      <button
+      <div v-if="edit_mode" class="u-spacingBottom">
+        <!-- <button
         type="button"
         class="u-button u-button_bleuvert"
         @click="changeStorage"
       >
         Sélectionner un chemin sur le disque
-      </button>
-      <div class="_footer">
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          :allow_save="allow_save"
-          @save="updatePath"
-          @cancel="cancel"
-        />
-      </div>
-    </div>
-
-    <template v-else>
-      <template v-if="path_is_changed">
-        <div class="u-errorMsg">
-          {{ $t("restart_to_apply") }}
+      </button> -->
+        <div class="_footer">
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
+            :allow_save="allow_save"
+            @save="updatePath"
+            @cancel="cancel"
+          />
         </div>
-      </template>
+      </div>
+
       <template v-else>
-        <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
+        <template v-if="path_is_changed">
+          <div class="u-errorMsg">
+            {{ $t("restart_to_apply") }}
+          </div>
           <button
             type="button"
-            class="u-button u-button_bleumarine u-button_small"
-            @click="openInFinder({ absolute_path: new_path })"
+            class="u-button u-button_red"
+            @click="restartApp"
           >
-            {{ $t("open_in_finder") }}
+            {{ $t("restart") }}
           </button>
-        </div>
+        </template>
+        <template v-else>
+          <div class="">
+            <button
+              type="button"
+              class="u-button u-button_bleumarine u-button_small"
+              @click="openInFinder({ absolute_path: new_path })"
+            >
+              {{ $t("open_in_finder") }}
+            </button>
+          </div>
+        </template>
       </template>
     </template>
   </div>
@@ -72,7 +81,7 @@ export default {
       new_path: this.path_to_storage,
 
       current_character_count: undefined,
-      allow_save: false,
+      allow_save: true,
 
       path_is_changed: false,
     };
@@ -89,9 +98,6 @@ export default {
   },
   computed: {},
   methods: {
-    enableEditMode() {
-      this.edit_mode = true;
-    },
     changeStorage() {
       window.electronAPI.send("toMain", {
         type: "get_path",
@@ -100,7 +106,6 @@ export default {
         if (type === "new_path") {
           this.new_path = path_to_content;
           this.edit_mode = true;
-          this.allow_save = this.new_path !== this.path_to_storage;
         }
       });
     },
@@ -142,6 +147,9 @@ export default {
           .error(this.$t("couldntbesaved"));
         this.$alertify.closeLogOnClick(true).error(e.response.data);
       }
+    },
+    restartApp() {
+      this.$api.restartApp();
     },
   },
 };
