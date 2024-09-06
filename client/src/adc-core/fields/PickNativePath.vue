@@ -14,41 +14,45 @@
       />
     </div>
 
-    <div v-if="can_edit" class="u-spacingBottom">
-      <template v-if="edit_mode">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="changeStorage"
-        >
-          Sélectionner un chemin sur le disque
-        </button>
+    <div class="u-spacingBottom" />
 
-        <br />
-        <br />
-
-        <div class="_footer">
-          <SaveCancelButtons
-            class="_scb"
-            :is_saving="is_saving"
-            :allow_save="allow_save"
-            @save="updatePath"
-            @cancel="cancel"
-          />
-        </div>
-      </template>
-    </div>
-
-    <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
-      <div class="u-spacingBottom" />
+    <div v-if="edit_mode" class="u-spacingBottom">
       <button
         type="button"
-        class="u-button u-button_bleumarine u-button_small"
-        @click="openInFinder({ absolute_path: new_path })"
+        class="u-button u-button_bleuvert"
+        @click="changeStorage"
       >
-        {{ $t("open_in_finder") }}
+        Sélectionner un chemin sur le disque
       </button>
+      <div class="_footer">
+        <SaveCancelButtons
+          class="_scb"
+          :is_saving="is_saving"
+          :allow_save="allow_save"
+          @save="updatePath"
+          @cancel="cancel"
+        />
+      </div>
     </div>
+
+    <template v-else>
+      <template v-if="path_is_changed">
+        <div class="u-errorMsg">
+          {{ $t("restart_to_apply") }}
+        </div>
+      </template>
+      <template v-else>
+        <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
+          <button
+            type="button"
+            class="u-button u-button_bleumarine u-button_small"
+            @click="openInFinder({ absolute_path: new_path })"
+          >
+            {{ $t("open_in_finder") }}
+          </button>
+        </div>
+      </template>
+    </template>
   </div>
 </template>
 <script>
@@ -69,6 +73,8 @@ export default {
 
       current_character_count: undefined,
       allow_save: false,
+
+      path_is_changed: false,
     };
   },
   created() {},
@@ -126,6 +132,7 @@ export default {
 
         this.edit_mode = false;
         this.is_saving = false;
+        this.path_is_changed = true;
       } catch (e) {
         this.is_saving = false;
 
