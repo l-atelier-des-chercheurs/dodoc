@@ -102,14 +102,17 @@ export default {
     let superadmintoken = undefined;
     if (this.$route.query?.sat) superadmintoken = this.$route.query.sat;
 
-    this.publication = await this.$api
-      .getPublicFolder({
-        path: this.publication_path,
-        superadmintoken,
-      })
-      .catch((err) => {
-        this.fetch_publication_error = err.code;
-      });
+    if (window.app_infos.page_is_standalone_html) {
+      this.publication = window.folder_data;
+    } else
+      this.publication = await this.$api
+        .getPublicFolder({
+          path: this.publication_path,
+          superadmintoken,
+        })
+        .catch((err) => {
+          this.fetch_publication_error = err.code;
+        });
 
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });

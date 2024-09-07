@@ -758,6 +758,7 @@ export default {
   stl: "STL",
   obj: "OBJ",
   other: "Autre",
+  webpage: "Page web",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",
   all_accounts: "De tous les comptes",

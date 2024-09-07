@@ -18,9 +18,9 @@ export default {
         return false;
       }
 
-      if ($path === "") return `/thumbs/${thumb_path}`;
+      if ($path === "") return `./thumbs/${thumb_path}`;
 
-      return `/thumbs/${$path}/${thumb_path}`;
+      return `./thumbs/${$path}/${thumb_path}`;
     },
     getFirstThumbURLForMedia({ file, resolution }) {
       const path_to_parent = file.$path.substring(

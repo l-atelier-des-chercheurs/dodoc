@@ -50,6 +50,8 @@ class Exporter {
       full_path_to_file = await this._loadPageAndPrint();
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
+    } else if (this.instructions.recipe === "webpage") {
+      full_path_to_file = await this._loadPageAndExport();
     } else if (this.instructions.recipe === "trim_video") {
       full_path_to_file = await this._trimVideo();
     } else if (this.instructions.recipe === "mix_audio_and_image") {
@@ -337,7 +339,7 @@ class Exporter {
         new Promise(function (resolve, reject) {
           setTimeout(() => resolve(1), 4000);
         })
-          .then(() => {
+          .then(async () => {
             this._notifyProgress(45);
             if (this.instructions.recipe === "pdf")
               return win.webContents.printToPDF({
@@ -403,6 +405,80 @@ class Exporter {
       );
     });
     // print to pdf
+  }
+
+  _loadPageAndExport() {
+    return new Promise(async (resolve, reject) => {
+      // convert path_to_folder to URL (see createURLFromPath)
+      dev.logfunction();
+
+      const path_without_space = this.path_to_folder
+        .replace("spaces" + path.sep, "/+")
+        .replace("projects" + path.sep, "");
+
+      let url = global.appInfos.homeURL + path_without_space;
+
+      let query = {};
+      if (this.instructions.page) {
+        query.page = this.instructions.page;
+        query.make_preview = true;
+      }
+
+      // use superamdin token
+      const sat = auth.getSuperadminToken();
+      query.sat = sat;
+
+      if (Object.keys(query).length > 0) {
+        const searchParams = new URLSearchParams(query);
+        url += "?" + searchParams.toString();
+      }
+
+      const res = this.instructions.express_res;
+
+      // get necessary files
+      let folder_data = await folder.getFolder({
+        path_to_folder: this.path_to_folder,
+      });
+      folder_data.$files = await file.getFiles({
+        path_to_folder: this.path_to_folder,
+        embed_source: true,
+      });
+
+      res.render(
+        "index",
+        {
+          page_is_standalone_html: true,
+          folder_data,
+        },
+        async (err, html) => {
+          const full_path_to_folder_in_cache =
+            await utils.createUniqueFolderInCache("webpage_export");
+
+          ////////////////////////////////////////////////////////////// HTML
+          const full_path_to_html_file = path.join(
+            full_path_to_folder_in_cache,
+            "index.html"
+          );
+          await writeFileAtomic(full_path_to_html_file, html);
+
+          ////////////////////////////////////////////////////////////// CLIENT DIST
+          const full_path_to_client_dist = path.join(
+            global.appRoot,
+            "client",
+            "dist"
+          );
+          const destination_path = path.join(
+            full_path_to_folder_in_cache,
+            "_client"
+          );
+          await fs.copy(full_path_to_client_dist, destination_path);
+
+          ////////////////////////////////////////////////////////////// MEDIAS
+
+          // copy all medias from project the right projet
+        }
+      );
+    });
   }
 
   _trimVideo() {

@@ -2,7 +2,7 @@ const { defineConfig } = require("@vue/cli-service");
 
 module.exports = defineConfig({
   transpileDependencies: true,
-  publicPath: "/_client",
+  publicPath: "./_client",
   configureWebpack: {
     optimization: {
       splitChunks: false,
