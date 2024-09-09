@@ -98,6 +98,9 @@ class Exporter {
       path_to_meta: exported_path_to_meta,
     });
 
+    // remove temp file
+    await fs.remove(full_path_to_file);
+
     this._notifyEnded({
       event: "completed",
       file: exported_file,
@@ -540,6 +543,8 @@ class Exporter {
           const full_path_to_zip_file = await utils.createZIPFromFolder({
             full_path_to_folder: full_path_to_folder_in_cache,
           });
+
+          await fs.remove(full_path_to_folder_in_cache);
 
           this._notifyProgress(95);
 
