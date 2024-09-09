@@ -45,7 +45,7 @@ module.exports = (function () {
       const filethumbs_resolutions = item_in_schema.$files?.thumbs?.resolutions;
       if (!filethumbs_resolutions) return false;
 
-      const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
+      const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
       const full_media_path = utils.getPathToUserContent(
         path_to_folder,
         media_filename
@@ -135,7 +135,7 @@ module.exports = (function () {
 
       const infos_filename = media_filename + ".infos.txt";
 
-      const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
+      const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
 
       try {
         const infos = await utils.readMetaFile(
@@ -219,6 +219,43 @@ module.exports = (function () {
         path_to_destination_folder,
         new_filename,
       });
+    },
+    copyAllThumbsForFile: async ({
+      full_path_to_thumb,
+      full_path_to_new_thumb,
+      media_filename,
+      new_filename,
+    }) => {
+      try {
+        const files = await _getAllThumbsForFile({
+          full_path_to_thumb,
+          media_filename,
+        });
+
+        for (const filename of files) {
+          // copy to destination folder with new name
+          const new_filename_with_suffix = new_filename
+            ? filename.replace(media_filename, new_filename)
+            : filename;
+
+          await fs.copy(
+            path.join(full_path_to_thumb, filename),
+            path.join(full_path_to_new_thumb, new_filename_with_suffix)
+          );
+        }
+        return;
+      } catch (err) {
+        dev.logverbose("No thumbs to remove");
+        return;
+      }
+    },
+    getThumbFolderPath: async (...paths) => {
+      const relative_path_to_thumb_folder = path.join("thumbs", ...paths);
+      const path_to_thumb_folder = utils.getPathToUserContent(
+        relative_path_to_thumb_folder
+      );
+      await fs.ensureDir(path_to_thumb_folder);
+      return relative_path_to_thumb_folder;
     },
   };
 
@@ -330,7 +367,7 @@ module.exports = (function () {
       relative_path: path_to_folder,
     });
     const cover_schema = item_in_schema.$cover;
-    const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
+    const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
 
     const paths = await _makeImageThumbsFor({
       full_media_path: full_cover_path,
@@ -378,10 +415,10 @@ module.exports = (function () {
     path_to_source_folder,
     path_to_destination_folder,
   }) {
-    const path_to_thumb_folder = await _getThumbFolderPath(
+    const path_to_thumb_folder = await API.getThumbFolderPath(
       path_to_source_folder
     );
-    const path_to_destination_thumb_folder = await _getThumbFolderPath(
+    const path_to_destination_thumb_folder = await API.getThumbFolderPath(
       path_to_destination_folder
     );
     await fs.copy(
@@ -406,28 +443,12 @@ module.exports = (function () {
       path_to_destination_folder
     );
 
-    try {
-      const files = await _getAllThumbsForFile({
-        full_path_to_thumb,
-        media_filename,
-      });
-
-      for (const filename of files) {
-        // copy to destination folder with new name
-        const new_filename_with_suffix = filename.replace(
-          media_filename,
-          new_filename
-        );
-        await fs.copy(
-          path.join(full_path_to_thumb, filename),
-          path.join(full_path_to_new_thumb, new_filename_with_suffix)
-        );
-      }
-      return;
-    } catch (err) {
-      dev.logverbose("No thumbs to remove");
-      return;
-    }
+    API.copyAllThumbsForFile({
+      full_path_to_thumb,
+      full_path_to_new_thumb,
+      media_filename,
+      new_filename,
+    });
   }
 
   async function _removeAllThumbsForFile({ path_to_folder, media_filename }) {
@@ -459,15 +480,6 @@ module.exports = (function () {
           !dirent.isDirectory() && dirent.name.startsWith(media_filename)
       )
       .map((dirent) => dirent.name);
-  }
-
-  async function _getThumbFolderPath(...paths) {
-    const relative_path_to_thumb_folder = path.join("thumbs", ...paths);
-    const path_to_thumb_folder = utils.getPathToUserContent(
-      relative_path_to_thumb_folder
-    );
-    await fs.ensureDir(path_to_thumb_folder);
-    return relative_path_to_thumb_folder;
   }
 
   async function _makeImageThumbsFor({

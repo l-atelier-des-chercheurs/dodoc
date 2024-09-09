@@ -8,6 +8,7 @@ const path = require("path"),
 const utils = require("./utils"),
   folder = require("./folder"),
   file = require("./file"),
+  thumbs = require("./thumbs"),
   notifier = require("./notifier"),
   auth = require("./auth"),
   tasks = require("./exporter_tasks/tasks"),
@@ -444,6 +445,61 @@ class Exporter {
         embed_source: true,
       });
 
+      const full_path_to_folder_in_cache =
+        await utils.createUniqueFolderInCache("webpage_export");
+
+      for (const file of folder_data.$files) {
+        if (!file.source_medias) continue;
+
+        try {
+          for (const source_media of file.source_medias) {
+            if (!source_media._media?.$media_filename) continue;
+
+            // copy necessary medias from the project to the cache
+            const parent_folder_path = utils.getContainingFolder(
+              source_media._media.$path
+            );
+            const parent_folder_full_path =
+              utils.getPathToUserContent(parent_folder_path);
+            const source = path.join(
+              parent_folder_full_path,
+              source_media._media.$media_filename
+            );
+            const destination = path.join(
+              full_path_to_folder_in_cache,
+              "medias",
+              source_media._media.$media_filename
+            );
+            await fs.copy(source, destination);
+
+            // copy necessary thumbs from the project to the cache
+            // in thumbs folder
+            // copy all thumbs
+            if (
+              !source_media._media?.$thumbs ||
+              typeof source_media._media.$thumbs !== "object"
+            )
+              continue;
+
+            const full_path_to_thumb = await utils.getPathToUserContent(
+              await thumbs.getThumbFolderPath(parent_folder_path)
+            );
+
+            await thumbs.copyAllThumbsForFile({
+              full_path_to_thumb,
+              full_path_to_new_thumb: path.join(
+                full_path_to_folder_in_cache,
+                "thumbs"
+              ),
+              media_filename: source_media._media.$media_filename,
+            });
+          }
+        } catch (error) {
+          dev.error(error.message);
+          throw error;
+        }
+      }
+
       res.render(
         "index",
         {
@@ -451,9 +507,6 @@ class Exporter {
           folder_data,
         },
         async (err, html) => {
-          const full_path_to_folder_in_cache =
-            await utils.createUniqueFolderInCache("webpage_export");
-
           ////////////////////////////////////////////////////////////// HTML
           const full_path_to_html_file = path.join(
             full_path_to_folder_in_cache,
