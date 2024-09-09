@@ -91,7 +91,7 @@ export default {
   },
   computed: {
     urls_to_page() {
-      let current_url = new URL(this.url_to_access);
+      let current_url = new URL(this.url_to_access.trim());
 
       let _urls_to_page = {};
 

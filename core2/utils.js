@@ -9,7 +9,8 @@ const path = require("path"),
   { IncomingForm } = require("formidable"),
   md5File = require("md5-file"),
   exifr = require("exifr"),
-  crypto = require("crypto");
+  crypto = require("crypto"),
+  archiver = require("archiver");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -266,6 +267,31 @@ module.exports = (function () {
       return results;
     },
 
+    createZIPFromFolder({ full_path_to_folder }) {
+      return new Promise((resolve, reject) => {
+        const containing_folder = API.getContainingFolder(full_path_to_folder);
+        const folder_name = API.getFilename(full_path_to_folder);
+        const path_to_zip = path.join(containing_folder, `${folder_name}.zip`);
+
+        const output = fs.createWriteStream(path_to_zip);
+        const archive = archiver("zip", {
+          zlib: { level: 0 },
+        });
+        archive.on("warning", (err) => {
+          throw err;
+        });
+        archive.on("error", function (err) {
+          dev.error(`Failed to create ZIP from folder: ${err}`);
+          return reject(err);
+        });
+        archive.on("finish", function () {
+          return resolve(path_to_zip);
+        });
+        archive.pipe(output);
+        archive.directory(full_path_to_folder, false);
+        archive.finalize();
+      });
+    },
     async handleForm({
       path_to_folder,
       destination_full_folder_path,

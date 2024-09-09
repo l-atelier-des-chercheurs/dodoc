@@ -43,7 +43,7 @@ export default {
         return "./medias/" + $media_filename;
 
       const path_to_parent_folder = $path.substring(0, $path.lastIndexOf("/"));
-      let full_path = "./" + path_to_parent_folder + "/" + $media_filename;
+      let full_path = "/" + path_to_parent_folder + "/" + $media_filename;
 
       if (with_timestamp) {
         let timestamp = +new Date().getTime();

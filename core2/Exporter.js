@@ -410,6 +410,8 @@ class Exporter {
 
   _loadPageAndExport() {
     return new Promise(async (resolve, reject) => {
+      this._notifyProgress(5);
+
       // convert path_to_folder to URL (see createURLFromPath)
       dev.logfunction();
 
@@ -445,10 +447,16 @@ class Exporter {
         embed_source: true,
       });
 
+      this._notifyProgress(25);
+
       const full_path_to_folder_in_cache =
         await utils.createUniqueFolderInCache("webpage_export");
 
-      for (const file of folder_data.$files) {
+      const length = folder_data.$files.length;
+
+      for (const [index, file] of folder_data.$files.entries()) {
+        this._notifyProgress(25 + Math.round((index / length) * 50));
+
         if (!file.source_medias) continue;
 
         try {
@@ -473,8 +481,6 @@ class Exporter {
             await fs.copy(source, destination);
 
             // copy necessary thumbs from the project to the cache
-            // in thumbs folder
-            // copy all thumbs
             if (
               !source_media._media?.$thumbs ||
               typeof source_media._media.$thumbs !== "object"
@@ -499,6 +505,8 @@ class Exporter {
           throw error;
         }
       }
+
+      this._notifyProgress(76);
 
       res.render(
         "index",
@@ -526,9 +534,16 @@ class Exporter {
           );
           await fs.copy(full_path_to_client_dist, destination_path);
 
-          ////////////////////////////////////////////////////////////// MEDIAS
+          this._notifyProgress(80);
 
-          // copy all medias from project the right projet
+          // ZIP folder
+          const full_path_to_zip_file = await utils.createZIPFromFolder({
+            full_path_to_folder: full_path_to_folder_in_cache,
+          });
+
+          this._notifyProgress(95);
+
+          return resolve(full_path_to_zip_file);
         }
       );
     });
