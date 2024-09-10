@@ -1,11 +1,7 @@
 <template>
   <div class="_widthHeightField">
     <fieldset>
-      {{ new_page_width }}
-      {{ new_page_height }}
-
       <legend class="u-label">{{ $t("format") }}</legend>
-
       <DLabel class="_label" :str="$t('document_type')" :tag="'h3'" />
       <br />
       <div

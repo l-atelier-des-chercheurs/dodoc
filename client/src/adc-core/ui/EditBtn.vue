@@ -92,6 +92,11 @@ export default {
           label: this.$t("hide"),
           icon: "eye-slash-fill",
         };
+      else if (this.btn_type === "create_page")
+        return {
+          label: this.$t("create_page"),
+          icon: "plus-lg",
+        };
       return {
         label: this.$t("edit"),
         icon: "pencil-fill",

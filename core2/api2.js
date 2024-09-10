@@ -38,7 +38,7 @@ module.exports = (function () {
 
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
-    app.post("/_api2/_restart", _onlyAdmins, _restart);
+    app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
 
     /* PUBLIC FILES */
     app.get(
@@ -567,19 +567,19 @@ module.exports = (function () {
       meta_name: favicon_image_name,
       resolution: 640,
     });
-    if (favicon_thumb) d.favicon_url = `/thumbs/${favicon_thumb}`;
+    if (favicon_thumb) d.favicon_url = `./thumbs/${favicon_thumb}`;
 
     const topbar_thumb = findMatchingFileThumb({
       meta_name: topbar_image_name,
       resolution: 320,
     });
-    if (topbar_thumb) d.topbar_thumb = `/thumbs/${topbar_thumb}`;
+    if (topbar_thumb) d.topbar_thumb = `./thumbs/${topbar_thumb}`;
 
     const hero_thumb = findMatchingFileThumb({
       meta_name: hero_image_name,
       resolution: 2000,
     });
-    if (hero_thumb) d.hero_thumb = `/thumbs/${hero_thumb}`;
+    if (hero_thumb) d.hero_thumb = `./thumbs/${hero_thumb}`;
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
 
@@ -901,6 +901,9 @@ module.exports = (function () {
       ? path_to_folder
       : path_to_parent_folder;
 
+    // add res to data so res becomes available to Exporter to generate HTML
+    data.express_res = res;
+
     // DISPATCH TASKS
     const task = new Exporter({
       path_to_folder,
@@ -1207,12 +1210,10 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta,
       });
-      const file_archives = await file
-        .getArchives({
-          path_to_folder,
-          meta_filename,
-        })
-        .catch(() => {});
+      const file_archives = await file.getArchives({
+        path_to_folder,
+        meta_filename,
+      });
       if (file_archives) meta.$archives = file_archives;
 
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -1274,7 +1275,7 @@ module.exports = (function () {
       });
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to update file: " + message);
+      dev.error("Failed to regenerate thumbs: " + message);
       res.status(500).send({
         code,
         err_infos,
@@ -1386,11 +1387,9 @@ module.exports = (function () {
     });
   }
 
-  async function _checkAuth(req, res, next) {}
-  async function _restart(req, res, next) {
-    notifier.emit("restart");
+  async function _restartApp(req, res, next) {
+    notifier.emit("restartApp");
   }
-
   async function _getStoragePath(req, res, next) {
     res.json({ pathToUserContent: global.pathToUserContent });
   }

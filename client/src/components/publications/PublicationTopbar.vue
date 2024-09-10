@@ -82,7 +82,7 @@
             class="u-buttonLink _exportBtn"
             @click="show_export_pdf_modal = true"
           >
-            <b-icon icon="file-pdf" />
+            <b-icon icon="download" />
             {{ $t("to_export") }}
           </button>
         </div>

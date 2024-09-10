@@ -371,9 +371,11 @@ export default {
 
   no_accounts_yet: "Aucun compte créé pour le moment",
   add_accounts: "Rajouter des comptes",
-  restart_to_apply: "Relancez do•doc pour appliquer",
+  restart_to_apply:
+    "Fermez et redémarrez do•doc manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
+  restart: "Fermer et redémarrer",
+
   refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
-  restart: "Relancer do•doc",
   reveal: "Révéler",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
@@ -756,6 +758,7 @@ export default {
   stl: "STL",
   obj: "OBJ",
   other: "Autre",
+  webpage: "Page web",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",
   all_accounts: "De tous les comptes",

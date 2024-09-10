@@ -787,7 +787,7 @@ export default {
               caption,
               // TODO update with $path
               // meta_filename: $slug,
-              // src: `/thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
+              // src: `./thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
             },
             Quill.sources.USER
           );

@@ -1,6 +1,6 @@
 <template>
   <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
-    <div class="">
+    <div class="u-spacingBottom">
       <DLabel :str="$t('document_type')" />
       <RadioCheckboxInput
         :value.sync="export_mode"
@@ -9,12 +9,12 @@
       />
     </div>
 
-    <template v-if="export_mode === 'pdf'">
+    <template v-if="['pdf', 'webpage'].includes(export_mode)">
       <div slot="footer">
         <button
           type="button"
           class="u-button u-button_bleuvert"
-          @click="exportPublication('pdf')"
+          @click="exportPublication(export_mode)"
         >
           <b-icon icon="file-pdf" />
           {{ $t("create") }}
@@ -82,6 +82,10 @@ export default {
           key: "png",
           label: this.$t("image"),
         },
+        {
+          key: "webpage",
+          label: this.$t("webpage"),
+        },
       ],
     };
   },
@@ -116,6 +120,8 @@ export default {
         suggested_file_name: this.publication.title,
         additional_meta,
       };
+
+      if (export_type === "webpage") instructions.layout_mode = "screen";
       if (
         this.publication.template === "page_by_page" &&
         this.export_mode === "png"

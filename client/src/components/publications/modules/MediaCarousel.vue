@@ -252,6 +252,9 @@ export default {
 
 ._carousel {
   background: var(--c-gris_clair);
+  page-break-inside: avoid;
+  -webkit-region-break-inside: avoid;
+
   // padding: calc(var(--spacing) / 4);
 }
 

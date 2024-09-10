@@ -320,6 +320,9 @@ export default function () {
         const storage_path = response.data.pathToUserContent;
         return storage_path;
       },
+      async restartApp() {
+        await this.$axios.post(`_restartApp`);
+      },
       taskStatus({ task_id, progress }) {
         this.$eventHub.$emit("task.status", { task_id, progress });
       },

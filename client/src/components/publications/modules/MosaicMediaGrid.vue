@@ -239,6 +239,8 @@ export default {
 ._mediaGrid {
   position: relative;
   width: 100%;
+  page-break-inside: avoid;
+  -webkit-region-break-inside: avoid;
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);

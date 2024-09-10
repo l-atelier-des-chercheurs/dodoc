@@ -21,14 +21,17 @@
 
     <LoaderSpinner v-if="router_is_loading" />
     <template v-else>
+      <!-- export publication as standalone webpage -->
+      <PublicationView v-if="page_is_standalone_html" />
       <!-- static UI, no live update -->
       <router-view
-        v-if="$route.meta && $route.meta.static === true"
+        v-else-if="$route.meta && $route.meta.static === true"
         v-slot="{ Component }"
         :key="$route.path"
       >
         <component :is="Component" />
       </router-view>
+
       <!-- dynamic, regular app with live updates and logging in -->
       <FullUI v-else />
     </template>
@@ -43,6 +46,7 @@ export default {
   props: {},
   components: {
     FullUI,
+    PublicationView: () => import("@/views/PublicationView.vue"),
   },
   data() {
     return {
@@ -58,6 +62,9 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    page_is_standalone_html() {
+      return window.app_infos.page_is_standalone_html === true;
+    },
     custom_fonts_css() {
       const custom_fonts = this.$root.app_infos.custom_fonts;
 

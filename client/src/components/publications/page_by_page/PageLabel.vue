@@ -1,11 +1,11 @@
 <template>
   <div class="_label">
-    <div class="u-sameRow">
+    <div class="u-sameRow u-label">
       {{ $t("page") }}
-
       <template v-if="!edit_mode">
         {{ index + 1 }}
       </template>
+
       <template v-else>
         <select
           :value="index"
@@ -77,9 +77,9 @@ export default {
   // align-items: center;
   // gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 4);
-  background: white;
-  border-radius: 4px;
+  margin: calc(var(--spacing) / 4) 0;
+  // background: white;
+  // border-radius: 4px;
   // background: rgba(0, 0, 0, 0.06);
 }
 </style>

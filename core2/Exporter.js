@@ -8,6 +8,7 @@ const path = require("path"),
 const utils = require("./utils"),
   folder = require("./folder"),
   file = require("./file"),
+  thumbs = require("./thumbs"),
   notifier = require("./notifier"),
   auth = require("./auth"),
   tasks = require("./exporter_tasks/tasks"),
@@ -50,6 +51,8 @@ class Exporter {
       full_path_to_file = await this._loadPageAndPrint();
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
+    } else if (this.instructions.recipe === "webpage") {
+      full_path_to_file = await this._loadPageAndExport();
     } else if (this.instructions.recipe === "trim_video") {
       full_path_to_file = await this._trimVideo();
     } else if (this.instructions.recipe === "mix_audio_and_image") {
@@ -94,6 +97,9 @@ class Exporter {
     const exported_file = await file.getFile({
       path_to_meta: exported_path_to_meta,
     });
+
+    // remove temp file
+    await fs.remove(full_path_to_file);
 
     this._notifyEnded({
       event: "completed",
@@ -385,6 +391,149 @@ class Exporter {
       });
       throw new Error(`failed`);
     }
+  }
+
+  _loadPageAndExport() {
+    return new Promise(async (resolve, reject) => {
+      this._notifyProgress(5);
+
+      // convert path_to_folder to URL (see createURLFromPath)
+      dev.logfunction();
+
+      const path_without_space = this.path_to_folder
+        .replace("spaces" + path.sep, "/+")
+        .replace("projects" + path.sep, "");
+
+      let url = global.appInfos.homeURL + path_without_space;
+
+      let query = {};
+      if (this.instructions.page) {
+        query.page = this.instructions.page;
+        query.make_preview = true;
+      }
+
+      // use superamdin token
+      const sat = auth.getSuperadminToken();
+      query.sat = sat;
+
+      if (Object.keys(query).length > 0) {
+        const searchParams = new URLSearchParams(query);
+        url += "?" + searchParams.toString();
+      }
+
+      const res = this.instructions.express_res;
+
+      // get necessary files
+      let folder_data = await folder.getFolder({
+        path_to_folder: this.path_to_folder,
+      });
+      folder_data.$files = await file.getFiles({
+        path_to_folder: this.path_to_folder,
+        embed_source: true,
+      });
+
+      this._notifyProgress(25);
+
+      const full_path_to_folder_in_cache =
+        await utils.createUniqueFolderInCache("webpage_export");
+
+      const length = folder_data.$files.length;
+
+      for (const [index, file] of folder_data.$files.entries()) {
+        this._notifyProgress(25 + Math.round((index / length) * 50));
+
+        if (!file.source_medias) continue;
+
+        try {
+          for (const source_media of file.source_medias) {
+            if (!source_media._media?.$media_filename) continue;
+
+            // copy necessary medias from the project to the cache
+            const parent_folder_path = utils.getContainingFolder(
+              source_media._media.$path
+            );
+            const parent_folder_full_path =
+              utils.getPathToUserContent(parent_folder_path);
+            const source = path.join(
+              parent_folder_full_path,
+              source_media._media.$media_filename
+            );
+            const destination = path.join(
+              full_path_to_folder_in_cache,
+              "medias",
+              source_media._media.$media_filename
+            );
+            await fs.copy(source, destination);
+
+            // copy necessary thumbs from the project to the cache
+            if (
+              !source_media._media?.$thumbs ||
+              typeof source_media._media.$thumbs !== "object"
+            )
+              continue;
+
+            const full_path_to_thumb = await utils.getPathToUserContent(
+              await thumbs.getThumbFolderPath(parent_folder_path)
+            );
+
+            await thumbs.copyAllThumbsForFile({
+              full_path_to_thumb,
+              full_path_to_new_thumb: path.join(
+                full_path_to_folder_in_cache,
+                "thumbs"
+              ),
+              media_filename: source_media._media.$media_filename,
+            });
+          }
+        } catch (error) {
+          dev.error(error.message);
+          throw error;
+        }
+      }
+
+      this._notifyProgress(76);
+
+      res.render(
+        "index",
+        {
+          page_is_standalone_html: true,
+          folder_data,
+        },
+        async (err, html) => {
+          ////////////////////////////////////////////////////////////// HTML
+          const full_path_to_html_file = path.join(
+            full_path_to_folder_in_cache,
+            "index.html"
+          );
+          await writeFileAtomic(full_path_to_html_file, html);
+
+          ////////////////////////////////////////////////////////////// CLIENT DIST
+          const full_path_to_client_dist = path.join(
+            global.appRoot,
+            "client",
+            "dist"
+          );
+          const destination_path = path.join(
+            full_path_to_folder_in_cache,
+            "_client"
+          );
+          await fs.copy(full_path_to_client_dist, destination_path);
+
+          this._notifyProgress(80);
+
+          // ZIP folder
+          const full_path_to_zip_file = await utils.createZIPFromFolder({
+            full_path_to_folder: full_path_to_folder_in_cache,
+          });
+
+          await fs.remove(full_path_to_folder_in_cache);
+
+          this._notifyProgress(95);
+
+          return resolve(full_path_to_zip_file);
+        }
+      );
+    });
   }
 
   _trimVideo() {
