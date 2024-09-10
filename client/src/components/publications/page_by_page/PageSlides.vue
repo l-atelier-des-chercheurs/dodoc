@@ -241,7 +241,11 @@ export default {
         `;
     document.addEventListener("keydown", this.keyPressed);
 
-    if (this.$route.query?.display === "slides") this.display_mode = "slides";
+    if (
+      this.$route.query?.display === "slides" ||
+      window.app_infos.page_is_standalone_html
+    )
+      this.display_mode = "slides";
 
     if (this.display_mode === "slides") {
       this.fitZoomToPage();
