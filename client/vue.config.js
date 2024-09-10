@@ -4,7 +4,6 @@ module.exports = defineConfig({
   transpileDependencies: true,
   productionSourceMap: false,
   publicPath: "./_client",
-  productionSourceMap: false,
   configureWebpack: {
     optimization: {
       splitChunks: false,
