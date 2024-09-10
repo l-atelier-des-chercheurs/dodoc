@@ -180,6 +180,7 @@ header {
   }
 }
 ._content {
+  position: relative;
   overflow: auto;
   padding: 0 calc(var(--spacing) * 1) 0;
 
