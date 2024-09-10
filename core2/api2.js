@@ -567,19 +567,19 @@ module.exports = (function () {
       meta_name: favicon_image_name,
       resolution: 640,
     });
-    if (favicon_thumb) d.favicon_url = `/thumbs/${favicon_thumb}`;
+    if (favicon_thumb) d.favicon_url = `./thumbs/${favicon_thumb}`;
 
     const topbar_thumb = findMatchingFileThumb({
       meta_name: topbar_image_name,
       resolution: 320,
     });
-    if (topbar_thumb) d.topbar_thumb = `/thumbs/${topbar_thumb}`;
+    if (topbar_thumb) d.topbar_thumb = `./thumbs/${topbar_thumb}`;
 
     const hero_thumb = findMatchingFileThumb({
       meta_name: hero_image_name,
       resolution: 2000,
     });
-    if (hero_thumb) d.hero_thumb = `/thumbs/${hero_thumb}`;
+    if (hero_thumb) d.hero_thumb = `./thumbs/${hero_thumb}`;
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
 
@@ -900,6 +900,9 @@ module.exports = (function () {
     const folder_to_export_to = meta_filename
       ? path_to_folder
       : path_to_parent_folder;
+
+    // add res to data so res becomes available to Exporter to generate HTML
+    data.express_res = res;
 
     // DISPATCH TASKS
     const task = new Exporter({

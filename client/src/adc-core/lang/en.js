@@ -411,6 +411,7 @@ export default {
   stl: "STL",
   obj: "OBJ",
   other: "Other",
+  webpage: "Webpage",
   all_medias_types: "Of all types",
   all_origins: "From all origins",
   all_accounts: "From all accounts",
