@@ -97,11 +97,11 @@ menu {
   padding: var(--radio-switch-padding);
   border-radius: calc(var(--radio-switch-radius) * 1.4);
   background-color: #fff;
-  // border: 2px solid var(--c-gris);
+  transition: all var(--radio-switch-animation-duration);
 }
 
 .radio-switch:hover {
-  background-color: var(--active-color);
+  background-color: var(--c-gris);
 }
 // .radio-switch:focus-within {
 //   border-color: var(--active-color);
@@ -133,6 +133,10 @@ menu {
   font-weight: 500;
 
   transition: all var(--radio-switch-animation-duration);
+
+  &:hover {
+    color: var(--active-color);
+  }
 }
 .radio-switch__input:checked ~ .radio-switch__label {
   color: hsl(var(--ri5-color-white-hsl));
