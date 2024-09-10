@@ -8,12 +8,13 @@
       <video ref="videoElem" />
 
       <div class="_qrCodeResult" v-if="last_detected_qr">
-        <div class="_qrCodeResultActions" v-if="will_open_in !== null">
-          {{ last_detected_qr }}
-          <br />
-          {{ $t("opening_link_in") }} {{ will_open_in }}
+        <div class="_qrCodeResult--content">
+          <div v-if="will_open_in !== null">
+            <div class="_linkToOpen">{{ last_detected_qr }}</div>
+            <b>{{ $t("opening_link_in") }} {{ will_open_in }}…</b>
+          </div>
+          <div v-else>{{ $t("qr_code_content") }}: {{ last_detected_qr }}</div>
         </div>
-        <div v-else>{{ $t("qr_code_content") }}: {{ last_detected_qr }}</div>
       </div>
     </div>
   </BaseModal2>
@@ -75,10 +76,11 @@ export default {
       // this.qrScanner.stop();
       this.will_open_in = 3;
 
-      setInterval(() => {
+      const intv = setInterval(() => {
         this.will_open_in--;
         if (this.will_open_in === 0) {
           window.open(url, "_self");
+          clearInterval(intv);
         }
       }, 1000);
     },
@@ -108,11 +110,24 @@ video {
   left: 0;
   width: 100%;
 
-  background-color: white;
-  color: var(--active-color);
-
+  padding: calc(var(--spacing) * 1);
+}
+._qrCodeResult--content {
   text-align: center;
-  margin: calc(var(--spacing) * 1);
   padding: calc(var(--spacing) / 2);
+  background-color: white;
+  border-radius: var(--border-radius);
+
+  // b {
+  //   color: var(--active-color);
+  // }
+}
+
+._linkToOpen {
+  text-decoration: underline;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
