@@ -6,13 +6,15 @@
   >
     <p class="u-spacingBottom">
       {{ $t("general_password_modal_text") }}
-      <br />
-      <a
-        :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-        target="_blank"
-      >
-        {{ $root.app_infos.instance_meta.contactmail }}
-      </a>
+      <template v-if="$root.app_infos.instance_meta.contactmail">
+        <br />
+        <a
+          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+          target="_blank"
+        >
+          {{ $root.app_infos.instance_meta.contactmail }}
+        </a>
+      </template>
     </p>
 
     <form @submit.prevent="submitGeneralPassword">
