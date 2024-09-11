@@ -87,18 +87,6 @@
 import CropMedia from "./CropMedia.vue";
 import AdjustMedia from "./AdjustMedia.vue";
 
-function dataURLtoBlob(dataurl) {
-  var arr = dataurl.split(","),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new Blob([u8arr], { type: mime });
-}
-
 export default {
   props: {
     media: Object,
@@ -163,7 +151,7 @@ export default {
           this.getFilenameWithoutExt(this.media.$media_filename) + "_edit.jpg";
       }
 
-      const file = dataURLtoBlob(this.final_image);
+      const file = this.dataURLtoBlob(this.final_image);
       // todo – get original caption, credits, geolocation, etc. for new
       const additional_meta = {};
 
