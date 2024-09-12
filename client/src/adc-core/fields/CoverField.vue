@@ -51,7 +51,7 @@
             v-if="edit_mode"
             :path="path"
             :existing_preview="existing_preview"
-            :available_options="['import', 'project', 'capture']"
+            :available_options="available_options"
             :preview_format="preview_format"
             @newPreview="
               (value) => {
@@ -87,6 +87,10 @@ export default {
     placeholder: {
       type: String,
       default: "pattern",
+    },
+    available_options: {
+      type: Array,
+      default: () => ["import", "project", "capture"],
     },
     can_edit: Boolean,
   },
