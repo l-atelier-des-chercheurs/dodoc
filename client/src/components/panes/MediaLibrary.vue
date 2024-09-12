@@ -633,8 +633,10 @@ export default {
         (meta_filename) => this.project.$path + "/" + meta_filename
       );
 
-      if (this.select_mode === "multiple")
+      if (this.select_mode === "multiple") {
         this.selected_medias = this.selected_medias.concat(new_medias_path);
+        this.batch_mode = true;
+      }
 
       // todo add focus ring to indicate medias just sent
       // this.$alertify
