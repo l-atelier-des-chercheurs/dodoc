@@ -108,33 +108,6 @@
                   <b-icon v-if="align === 'right'" icon="align-end" />
                 </button>
               </div>
-
-              <DropDown :right="true">
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  @click="duplicateModule"
-                >
-                  <b-icon icon="file-plus" />
-                  {{ $t("duplicate") }}
-                </button>
-
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  @click="$emit('changeSectionForModule')"
-                >
-                  <b-icon icon="arrow-left-right" />
-                  {{ $t("change_section") }}
-                </button>
-
-                <RemoveMenu
-                  v-if="can_edit"
-                  :remove_text="$t('remove')"
-                  :show_button_text="true"
-                  @remove="removeModule"
-                />
-              </DropDown>
             </div>
             <div class="_carto" v-if="is_associated_to_map">
               <div class="_latlon" v-if="false">
@@ -158,7 +131,7 @@
               <div class="">
                 <button
                   type="button"
-                  class="u-button u-button_red"
+                  class="u-button u-button_red u-button_small"
                   @click.stop="repickLocation"
                 >
                   <template v-if="!has_coordinates">
@@ -171,12 +144,13 @@
                   </template>
                 </button>
               </div>
-              <div class="">
+              <div class="" v-if="has_coordinates">
                 <SelectField2
                   :value="publimodule.zoom_level"
                   :options="zoom_level_options"
                   :can_edit="can_edit"
                   :hide_validation="true"
+                  :size="'small'"
                   @change="
                     updateMeta({
                       zoom_level: $event,
@@ -204,6 +178,33 @@
                 </button>
               </div>
             </div>
+
+            <DropDown :right="true">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="duplicateModule"
+              >
+                <b-icon icon="file-plus" />
+                {{ $t("duplicate") }}
+              </button>
+
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="$emit('changeSectionForModule')"
+              >
+                <b-icon icon="arrow-left-right" />
+                {{ $t("change_section") }}
+              </button>
+
+              <RemoveMenu
+                v-if="can_edit"
+                :remove_text="$t('remove')"
+                :show_button_text="true"
+                @remove="removeModule"
+              />
+            </DropDown>
           </div>
 
           <div class="_saveBtn">
@@ -908,9 +909,10 @@ export default {
 
 ._advanced_menu,
 ._carto {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   display: flex;
   flex-flow: row wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: calc(var(--spacing) / 4);
 }
