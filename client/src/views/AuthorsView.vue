@@ -78,7 +78,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._backBtn {
-  margin-bottom: calc(var(--spacing) * 2);
+  display: flex;
+  margin-bottom: calc(var(--spacing) * 1);
 }
 ._authorsView {
   padding: calc(var(--spacing) * 1);

@@ -103,6 +103,8 @@ export default {
 }
 
 ._backBtn {
+  display: flex;
+  gap: calc(var(--spacing) / 4);
   margin-bottom: calc(var(--spacing) * 2);
 }
 </style>
