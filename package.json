@@ -29,7 +29,7 @@
     "npm": "*"
   },
   "build": {
-    "electronVersion": "29.1.6",
+    "electronVersion": "31.4.0",
     "appId": "dodoc",
     "productName": "do•doc",
     "asarUnpack": [
