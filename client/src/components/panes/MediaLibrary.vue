@@ -28,7 +28,7 @@
           <button
             type="button"
             class="u-buttonLink"
-            v-if="!select_mode && !batch_mode"
+            v-if="!batch_mode && select_mode !== 'single'"
             @click="batch_mode = !batch_mode"
           >
             <b-icon icon="hand-index" />
@@ -46,7 +46,7 @@
           <button
             type="button"
             class="u-buttonLink"
-            v-if="select_mode === 'multiple' || batch_mode"
+            v-if="batch_mode"
             @click="selectAllVisibleMedias"
           >
             <b-icon icon="plus-square" />
@@ -571,7 +571,7 @@ export default {
     },
 
     mediaTileIsSelectable() {
-      return this.select_mode === "multiple" || this.batch_mode;
+      return this.batch_mode;
     },
     mediaTileAlreadySelected(path) {
       if (!this.meta_filenames_already_present) return false;
@@ -633,8 +633,10 @@ export default {
         (meta_filename) => this.project.$path + "/" + meta_filename
       );
 
-      if (this.select_mode === "multiple")
+      if (this.select_mode === "multiple") {
         this.selected_medias = this.selected_medias.concat(new_medias_path);
+        this.batch_mode = true;
+      }
 
       // todo add focus ring to indicate medias just sent
       // this.$alertify

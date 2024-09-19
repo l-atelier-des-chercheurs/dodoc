@@ -4,6 +4,7 @@
       <select
         v-model="new_value"
         @change="$emit('change', new_value)"
+        :size="size"
         :disabled="!can_edit"
       >
         <option
@@ -41,6 +42,7 @@ export default {
     options: {
       type: Array,
     },
+    size: String,
     can_edit: {
       type: Boolean,
     },

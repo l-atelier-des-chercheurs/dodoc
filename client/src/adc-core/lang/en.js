@@ -225,6 +225,7 @@ export default {
   remove_media: "Delete media",
   remove_space: "Delete space and all its content",
 
+  no_authors_to_show: "No account to show",
   remove_account: "Delete this account",
   remove_account_expl:
     "Only the account will be deleted, all its content (spaces, projects, medias and publications) will be kept.",

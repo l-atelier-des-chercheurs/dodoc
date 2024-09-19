@@ -101,7 +101,7 @@ menu {
 }
 
 .radio-switch:hover {
-  background-color: var(--c-gris);
+  // background-color: var(--c-gris);
 }
 // .radio-switch:focus-within {
 //   border-color: var(--active-color);
@@ -134,8 +134,9 @@ menu {
 
   transition: all var(--radio-switch-animation-duration);
 
-  &:hover {
-    color: var(--active-color);
+  &:hover,
+  &:focus-visible {
+    background-color: var(--active-color);
   }
 }
 .radio-switch__input:checked ~ .radio-switch__label {
