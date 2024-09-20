@@ -204,6 +204,9 @@
                 "caption": {
                   "type": "string"
                 },
+                "keywords": {
+                  "type": "array"
+                },
                 "fav": {
                   "type": "boolean"
                 }
