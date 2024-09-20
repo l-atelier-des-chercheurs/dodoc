@@ -153,7 +153,9 @@ export default {
 
       const file = this.dataURLtoBlob(this.final_image);
       // todo – get original caption, credits, geolocation, etc. for new
-      const additional_meta = {};
+      const additional_meta = {
+        $origin: "collect",
+      };
 
       const onProgress = (progressEvent) => {
         this.media_being_sent_percent = parseInt(
