@@ -154,7 +154,7 @@ export default {
     // border-bottom: 2px solid var(--c-bleumarine);
 
     ._index {
-      border: 2px solid var(--c-bleumarine);
+      border: 1px solid var(--c-bleumarine);
     }
 
     // &::before {
@@ -396,6 +396,7 @@ export default {
   margin: 0 calc(var(--spacing) / 2);
   // color: var(--active-color);
   color: white;
+  mix-blend-mode: difference;
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;

@@ -114,7 +114,6 @@ export default {
   computed: {},
   methods: {
     updateDataUrl() {
-      debugger;
       if (this.$refs.qrCode)
         this.canvas_dataurl = this.$refs.qrCode.$el.toDataURL();
       else this.canvas_dataurl = undefined;
