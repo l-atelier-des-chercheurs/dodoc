@@ -154,7 +154,7 @@ export default {
     // border-bottom: 2px solid var(--c-bleumarine);
 
     ._index {
-      border: 2px solid var(--c-bleumarine);
+      border: 1px solid var(--c-bleumarine);
     }
 
     // &::before {
