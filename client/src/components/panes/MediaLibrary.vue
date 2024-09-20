@@ -63,6 +63,27 @@
           </button>
 
           <select
+            class="_selectMediaKeyword"
+            size="small"
+            v-model="keyword_of_media_to_display"
+            :class="{
+              'is--active': keyword_of_media_to_display !== 'all',
+            }"
+          >
+            <option key="all" value="all" v-text="$t('all_keywords')" />
+            <option
+              v-for="keyword_of_media in keywords_of_medias"
+              :key="keyword_of_media"
+              :value="keyword_of_media"
+              :disabled="quantityOfMediaWithKeyword(keyword_of_media) === 0"
+              v-text="
+                keyword_of_media +
+                formattedQuantityWithKeyword(keyword_of_media)
+              "
+            />
+          </select>
+
+          <select
             class="_selectMediaOrigin"
             size="small"
             v-model="origin_of_media_to_display"
@@ -353,6 +374,8 @@ export default {
         },
       ],
 
+      keyword_of_media_to_display: "all",
+
       type_of_media_to_display: this.show_only_media_type || "all",
       types_of_medias: [
         {
@@ -476,6 +499,13 @@ export default {
           if (!m.$authors?.includes(this.author_of_media_to_display))
             return false;
 
+        if (this.keyword_of_media_to_display !== "all") {
+          debugger;
+
+          if (!m.keywords?.includes(this.keyword_of_media_to_display))
+            return false;
+        }
+
         if (this.tile_mode === "map") if (!m.$location) return false;
 
         return true;
@@ -487,6 +517,14 @@ export default {
         ["$date_uploaded"],
         this.group_mode
       );
+    },
+    keywords_of_medias() {
+      return this.sorted_medias.reduce((acc, m) => {
+        m.keywords?.map((k) => {
+          if (!acc.some((k) => k.key === k.key)) acc.push(k);
+        });
+        return acc;
+      }, []);
     },
     focused_media() {
       if (!this.media_focused) return false;
@@ -623,6 +661,17 @@ export default {
     },
     formattedQuantityWithAuthor(author_path) {
       const qty = this.quantityOfMediaWithAuthor(author_path);
+      if (qty === false) return "";
+      return ` (${qty})`;
+    },
+    quantityOfMediaWithKeyword(keyword_key) {
+      const num = this.sorted_medias.filter((m) =>
+        m.keywords?.includes(keyword_key)
+      ).length;
+      return num;
+    },
+    formattedQuantityWithKeyword(keyword_key) {
+      const qty = this.quantityOfMediaWithKeyword(keyword_key);
       if (qty === false) return "";
       return ` (${qty})`;
     },
@@ -842,7 +891,8 @@ export default {
 
 ._selectMediaOrigin,
 ._selectMediaType,
-._selectMediaAuthor {
+._selectMediaAuthor,
+._selectMediaKeyword {
   width: 21ch;
 }
 

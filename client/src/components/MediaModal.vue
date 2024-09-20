@@ -185,7 +185,16 @@
               :can_edit="true"
             />
           </div>
-
+          <div class="u-spacingBottom">
+            <TagsField
+              :label="$t('keywords')"
+              :field_name="'keywords'"
+              :tag_type="'keywords'"
+              :content="file.keywords"
+              :path="file.$path"
+              :can_edit="true"
+            />
+          </div>
           <div class="u-spacingBottom">
             <AuthorField
               :label="$t('authors')"

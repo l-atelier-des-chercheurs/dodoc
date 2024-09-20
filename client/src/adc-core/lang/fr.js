@@ -760,6 +760,7 @@ export default {
   obj: "OBJ",
   other: "Autre",
   webpage: "Page web",
+  all_keywords: "De tous les mots-clés",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",
   all_accounts: "De tous les comptes",
