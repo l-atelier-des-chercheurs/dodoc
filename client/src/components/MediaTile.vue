@@ -396,6 +396,7 @@ export default {
   margin: 0 calc(var(--spacing) / 2);
   // color: var(--active-color);
   color: white;
+  mix-blend-mode: difference;
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
