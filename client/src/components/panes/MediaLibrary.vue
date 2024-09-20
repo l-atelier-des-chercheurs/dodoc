@@ -521,7 +521,9 @@ export default {
     keywords_of_medias() {
       return this.sorted_medias.reduce((acc, m) => {
         m.keywords?.map((k) => {
-          if (!acc.some((k) => k.key === k.key)) acc.push(k);
+          if (!acc.some((_k) => _k === k)) {
+            if (k) acc.push(k);
+          }
         });
         return acc;
       }, []);
@@ -668,6 +670,7 @@ export default {
       const num = this.sorted_medias.filter((m) =>
         m.keywords?.includes(keyword_key)
       ).length;
+      debugger;
       return num;
     },
     formattedQuantityWithKeyword(keyword_key) {
