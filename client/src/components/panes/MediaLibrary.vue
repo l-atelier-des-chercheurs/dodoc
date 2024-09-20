@@ -499,12 +499,9 @@ export default {
           if (!m.$authors?.includes(this.author_of_media_to_display))
             return false;
 
-        if (this.keyword_of_media_to_display !== "all") {
-          debugger;
-
+        if (this.keyword_of_media_to_display !== "all")
           if (!m.keywords?.includes(this.keyword_of_media_to_display))
             return false;
-        }
 
         if (this.tile_mode === "map") if (!m.$location) return false;
 
@@ -670,7 +667,6 @@ export default {
       const num = this.sorted_medias.filter((m) =>
         m.keywords?.includes(keyword_key)
       ).length;
-      debugger;
       return num;
     },
     formattedQuantityWithKeyword(keyword_key) {
