@@ -17,6 +17,7 @@
 export default {
   props: {
     tag_type: String,
+    local_suggestions: Array,
     new_tag_name: String,
     tags_to_exclude: Array,
   },
@@ -26,8 +27,10 @@ export default {
       suggestions: [],
     };
   },
-  created() {
-    this.loadSuggestions(this.tag_type);
+  async created() {
+    if (this.local_suggestions !== undefined)
+      this.suggestions = this.local_suggestions;
+    else this.suggestions = await this.loadSuggestions(this.tag_type);
   },
   mounted() {},
   beforeDestroy() {},
@@ -62,12 +65,9 @@ export default {
           err;
           return;
         });
-      if (suggestions?.list_of_suggestions)
-        this.suggestions = suggestions.list_of_suggestions
-          .slice()
-          .sort((a, b) => {
-            return a.localeCompare(b);
-          });
+      return suggestions?.list_of_suggestions
+        ? suggestions.list_of_suggestions
+        : [];
     },
   },
 };
