@@ -314,6 +314,7 @@
         :key="focused_media.$path"
         :file="focused_media"
         :select_mode="select_mode"
+        :keywords_suggestions="keywords_of_medias"
         :position_in_list="focused_media_position_in_list"
         @remove="removeMedia(focused_media.$path)"
         @close="closeMediaFocus()"

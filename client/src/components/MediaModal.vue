@@ -190,6 +190,7 @@
               :label="$t('keywords')"
               :field_name="'keywords'"
               :tag_type="'keywords'"
+              :local_suggestions="keywords_suggestions"
               :content="file.keywords"
               :path="file.$path"
               :can_edit="true"
@@ -309,6 +310,7 @@ export default {
   props: {
     file: Object,
     select_mode: String,
+    keywords_suggestions: Array,
     position_in_list: String,
   },
   components: {

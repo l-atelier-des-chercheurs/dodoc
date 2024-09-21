@@ -28,6 +28,7 @@
         <div class="u-spacingBottom">
           <TagsSuggestion
             :tag_type="tag_type"
+            :local_suggestions="local_suggestions"
             :new_tag_name="new_tag_name"
             :tags_to_exclude="new_tags"
             @newTag="newTag($event)"
@@ -78,6 +79,7 @@ export default {
   props: {
     field_name: String,
     tag_type: String,
+    local_suggestions: Array,
     label: String,
     content: {
       type: Array,
