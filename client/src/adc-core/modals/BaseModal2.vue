@@ -1,7 +1,12 @@
 <template>
   <portal to="destination">
     <transition name="fade_fast">
-      <div class="_baseModal" v-if="show_modal" ref="modal" :data-size="size">
+      <div
+        class="_baseModal"
+        v-if="show_modal && !hide_modal"
+        ref="modal"
+        :data-size="size"
+      >
         <div class="_baseModal--overlay" @click.self="closeModal" />
         <div class="_baseModal--content">
           <header v-if="title || is_closable">
@@ -41,6 +46,10 @@ export default {
     is_closable: {
       type: Boolean,
       default: true,
+    },
+    hide_modal: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},
