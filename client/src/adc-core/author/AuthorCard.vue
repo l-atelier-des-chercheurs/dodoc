@@ -221,14 +221,18 @@ export default {
       const authors = await this.$api.getFolders({
         path: "authors",
       });
-      return authors.reduce((acc, m) => {
-        m.group?.map((k) => {
-          if (!acc.some((_k) => _k === k)) {
-            if (k) acc.push(k);
-          }
+      return authors
+        .reduce((acc, m) => {
+          m.group?.map((k) => {
+            if (!acc.some((_k) => _k === k)) {
+              if (k) acc.push(k);
+            }
+          });
+          return acc;
+        }, [])
+        .sort((a, b) => {
+          return a.localeCompare(b);
         });
-        return acc;
-      }, []);
     },
   },
 };
