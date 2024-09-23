@@ -75,7 +75,7 @@
                   v-for="size in [100, 66.6, 50, 33.3]"
                   :key="size"
                   type="button"
-                  class="u-button u-button_icon u-button_small _sizes"
+                  class="u-button u-button_small u-button_transparent _sizes"
                   :class="{
                     'is--active':
                       (!publimodule.size && size === 100) ||
@@ -95,7 +95,7 @@
                   v-for="align in ['left', 'center', 'right']"
                   :key="align"
                   type="button"
-                  class="u-button u-button_icon u-button_small"
+                  class="u-button u-button_small u-button_transparent"
                   :class="{
                     'is--active':
                       (!publimodule.align && align === 'left') ||
@@ -923,11 +923,11 @@ export default {
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
   align-items: center;
+
+  --active-color: white;
 }
 
 ._sizes.is--active {
-  color: white;
-  background: transparent;
 }
 
 ._floatingEditBtn {
