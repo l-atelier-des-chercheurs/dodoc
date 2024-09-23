@@ -37,7 +37,7 @@
             :publication_path="publication_path"
           />
 
-          <div class="_btnRow" v-if="can_edit">
+          <div class="_btnRow" v-if="edit_mode">
             <template v-if="showObjectFitFor(media_with_linked)">
               <button
                 type="button"
@@ -144,6 +144,7 @@ export default {
     number_of_max_medias: [Boolean, Number],
     publication_path: String,
     publi_width: Number,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
