@@ -8,6 +8,24 @@
     />
 
     <div class="">
+      <div v-if="edit_mode">
+        <span class="u-instructions">
+          {{ $t("click_on_map_to_repick_location") }}
+        </span>
+        <button type="button" class="u-buttonLink" @click="removePosition">
+          {{ $t("cancel_position") }}
+        </button>
+      </div>
+
+      <template v-if="edit_mode">
+        <SaveCancelButtons
+          class="_scb"
+          :allow_save="allow_save"
+          @save="updateLongLatZoom"
+          @cancel="cancel"
+        />
+      </template>
+
       <DisplayOnMap
         v-if="pins.length > 0 || edit_mode"
         :key="map_key"
@@ -75,28 +93,6 @@
           </div>
         </div>
       </details>
-
-      <div v-if="edit_mode">
-        <span class="u-instructions">
-          {{ $t("click_on_map_to_repick_location") }}
-        </span>
-        <button type="button" class="u-buttonLink" @click="removePosition">
-          {{ $t("cancel_position") }}
-        </button>
-      </div>
-
-      <template v-if="can_edit">
-        <div class="_footer">
-          <template v-if="edit_mode">
-            <SaveCancelButtons
-              class="_scb"
-              :allow_save="allow_save"
-              @save="updateLongLatZoom"
-              @cancel="cancel"
-            />
-          </template>
-        </div>
-      </template>
     </div>
   </div>
 </template>
@@ -178,7 +174,7 @@ export default {
       this.zoom = zoom;
     },
     async updateLongLatZoom() {
-      let location_infos = undefined;
+      let location_infos = {};
 
       if (this.longitude || this.latitude || this.zoom)
         location_infos = {
@@ -223,8 +219,13 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  // margin: calc(var(--spacing) / 4);
 }
 ._footer {
   margin-top: calc(var(--spacing) / 4);
+}
+._scb {
+  justify-content: center;
+  margin: calc(var(--spacing) / 4) auto;
 }
 </style>
