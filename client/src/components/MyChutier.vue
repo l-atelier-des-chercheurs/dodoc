@@ -112,7 +112,7 @@
               <b-icon icon="link-45deg" />
               &nbsp; url
             </button>
-            <LinkPicker
+            <EmbedPicker
               v-if="show_link_picker"
               @embed="createEmbed"
               @close="show_link_picker = false"
@@ -271,7 +271,7 @@
 <script>
 import ImportFileZone from "@/adc-core/ui/ImportFileZone";
 import DocumentsCreator from "@/components/chutier/DocumentsCreator.vue";
-import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
+import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
 import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
@@ -283,7 +283,7 @@ export default {
   components: {
     ImportFileZone,
     DocumentsCreator,
-    LinkPicker,
+    EmbedPicker,
     ChutierItem,
     AdminLumaSettings,
     LangModal,
