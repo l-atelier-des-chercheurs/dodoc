@@ -62,7 +62,7 @@
       <div class="_textOverflowNotice" v-if="can_edit && text_overflows">
         <button
           type="button"
-          class="u-button u-button_icon u-button_red"
+          class="u-button u-button_icon u-button_red u-button_small"
           @click="setHeightToTextBloc"
         >
           <b-icon icon="text-paragraph" />

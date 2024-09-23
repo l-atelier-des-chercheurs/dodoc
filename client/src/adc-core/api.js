@@ -73,7 +73,6 @@ export default function () {
           this.connected = false;
           this.$eventHub.$emit("socketio.disconnect", reason);
           this.socket.disconnect();
-          this.emptyStore();
           this.socket.once("connect", () => {
             this.rejoinRooms();
           });
@@ -137,12 +136,6 @@ export default function () {
         } else {
           // console.log("LEAVE – room still tracked", room);
         }
-      },
-
-      emptyStore() {
-        // called when client disconnects from socket
-        // since we cant be sure of what happens before reconnect, we nuke all store
-        // this.store = {};
       },
 
       async rejoinRooms() {

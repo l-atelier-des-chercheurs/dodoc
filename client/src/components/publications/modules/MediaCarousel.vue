@@ -9,6 +9,7 @@
       >
         <div
           class="carousel-cell"
+          :data-mediatype="media_with_linked._linked_media.$type"
           v-for="(media_with_linked, index) in medias_with_linked"
           :key="
             (media_with_linked._linked_media &&
@@ -36,7 +37,7 @@
             :publication_path="publication_path"
           />
 
-          <div class="_btnRow" v-if="can_edit">
+          <div class="_btnRow" v-if="edit_mode">
             <template v-if="showObjectFitFor(media_with_linked)">
               <button
                 type="button"
@@ -143,6 +144,7 @@ export default {
     number_of_max_medias: [Boolean, Number],
     publication_path: String,
     publi_width: Number,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -262,10 +264,25 @@ export default {
   // padding: calc(var(--spacing) / 4);
   .carousel-cell {
     width: 100%;
-    aspect-ratio: 1/1;
+    aspect-ratio: 3/2;
     margin-right: calc(var(--spacing) * 1);
+
+    &[data-mediatype="text"] {
+      padding: min(calc(var(--spacing) * 3), 15%);
+    }
   }
 
+  ::v-deep .flickity-prev-next-button {
+    // top: auto;
+    // bottom: calc(var(--spacing) * 1);
+
+    &.flickity-prev-next-button.previous {
+      left: calc(var(--spacing) / 2);
+    }
+    &.flickity-prev-next-button.next {
+      right: calc(var(--spacing) / 2);
+    }
+  }
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
   }

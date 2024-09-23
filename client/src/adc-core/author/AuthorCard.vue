@@ -65,6 +65,7 @@
               :label="context === 'full' ? $t('group') : undefined"
               :field_name="'group'"
               :tag_type="'accountgroup'"
+              :local_suggestions="group_suggestions"
               :content="author.group"
               :path="author.$path"
               :can_edit="can_edit"
@@ -184,9 +185,12 @@ export default {
   data() {
     return {
       show_settings_modal: false,
+      group_suggestions: [],
     };
   },
-  created() {},
+  async created() {
+    this.group_suggestions = await this.getAllAuthorsGroup();
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -212,6 +216,23 @@ export default {
       });
       if (this.is_self) await this.$api.logoutFromFolder();
       this.$router.push("/@");
+    },
+    async getAllAuthorsGroup() {
+      const authors = await this.$api.getFolders({
+        path: "authors",
+      });
+      return authors
+        .reduce((acc, m) => {
+          m.group?.map((k) => {
+            if (!acc.some((_k) => _k === k)) {
+              if (k) acc.push(k);
+            }
+          });
+          return acc;
+        }, [])
+        .sort((a, b) => {
+          return a.localeCompare(b);
+        });
     },
   },
 };

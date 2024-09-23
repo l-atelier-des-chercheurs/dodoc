@@ -190,6 +190,7 @@ export default {
 ._tl {
   display: flex;
   flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
 }
 
 ._footer {

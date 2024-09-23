@@ -869,6 +869,12 @@ export default {
       this.overlay.setPosition([longitude, latitude]);
       this.clicked_location.longitude = longitude;
       this.clicked_location.latitude = latitude;
+
+      setTimeout(() => {
+        this.navigateTo({
+          center: [longitude, latitude],
+        });
+      }, 100);
     },
     getCurrentPosition() {
       this.is_looking_for_gps_coords = true;
