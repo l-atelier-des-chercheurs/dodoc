@@ -1,5 +1,9 @@
 <template>
-  <BaseModal2 :title="$t('connection_lost')" :is_closable="false">
+  <BaseModal2
+    v-show="show_disconnect_modal"
+    :title="$t('connection_lost')"
+    :is_closable="false"
+  >
     <template v-if="!$api.connected">
       <p class="u-spacingBottom">
         <span v-html="$t('connection_lost_in')" /><br />
@@ -54,12 +58,19 @@ export default {
   components: {},
   data() {
     return {
-      seconds_before_reconnecting: 10,
+      seconds_before_reconnecting: 3,
       is_reconnecting: false,
       countdown: undefined,
+      show_disconnect_modal: false,
+      duration_before_reconnecting: 3,
     };
   },
-  created() {
+  async created() {
+    // try to reconnect first
+    await this.reconnectSocket();
+    this.duration_before_reconnecting = 10;
+    this.show_disconnect_modal = true;
+
     (this.countdown = async () => {
       this.seconds_before_reconnecting -= 1;
       if (this.seconds_before_reconnecting === 0) {
@@ -91,7 +102,7 @@ export default {
 
       await new Promise((r) => setTimeout(r, 1000));
       this.is_reconnecting = false;
-      this.seconds_before_reconnecting = 10;
+      this.seconds_before_reconnecting = this.duration_before_reconnecting;
     },
   },
 };
