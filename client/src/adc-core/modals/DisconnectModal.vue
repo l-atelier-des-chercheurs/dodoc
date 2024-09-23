@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <p>
+      <p v-if="$root.app_infos.instance_meta.contactmail">
         {{ $t("if_issues_contact") }}
         <br />
         <a
