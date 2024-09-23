@@ -2,10 +2,7 @@
   <div class="_metaField">
     <DLabel :str="$t('size')" />
     <div>
-      <template v-if="size">
-        {{ formatBytes(size) }}
-      </template>
-      <template v-else> – </template>
+      {{ formatBytes(size) }}
     </div>
   </div>
 </template>

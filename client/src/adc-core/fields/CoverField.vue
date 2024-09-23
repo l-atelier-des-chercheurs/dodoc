@@ -1,7 +1,13 @@
 <template>
   <div class="_coverField">
     <div class="_hasImage" v-if="cover_thumb">
-      <img :src="cover_thumb" :data-isround="preview_format === 'circle'" />
+      <img
+        :src="cover_thumb"
+        :data-isround="preview_format === 'circle'"
+        role="presentation"
+      />
+      <!-- // not actually useful since we dont know the size it will be shown at -->
+      <!-- :srcset="cover_thumb_srcset" -->
 
       <template v-if="context === 'full'">
         <div class="_fsButton">
@@ -14,7 +20,7 @@
           v-if="show_cover_fullscreen"
           @close="show_cover_fullscreen = false"
         >
-          <img :src="cover_thumb" />
+          <img :src="cover_full" role="presentation" />
         </FullscreenView>
       </template>
     </div>
@@ -40,12 +46,12 @@
         :title="label_title"
         @close="edit_mode = false"
       >
-        <div class="_picker">
+        <div class="u-spacingBottom">
           <ImageSelect
             v-if="edit_mode"
             :path="path"
             :existing_preview="existing_preview"
-            :available_options="['import', 'project', 'capture']"
+            :available_options="available_options"
             :preview_format="preview_format"
             @newPreview="
               (value) => {
@@ -53,16 +59,15 @@
               }
             "
           />
-
-          <div class="_footer">
-            <SaveCancelButtons
-              class="_scb"
-              :is_saving="is_saving"
-              :allow_save="allow_save"
-              @save="updateCover"
-              @cancel="cancel"
-            />
-          </div>
+        </div>
+        <div slot="footer">
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
+            :allow_save="allow_save"
+            @save="updateCover"
+            @cancel="cancel"
+          />
         </div>
       </BaseModal2>
     </div>
@@ -82,6 +87,10 @@ export default {
     placeholder: {
       type: String,
       default: "pattern",
+    },
+    available_options: {
+      type: Array,
+      default: () => ["import", "project", "capture"],
     },
     can_edit: Boolean,
   },
@@ -107,26 +116,34 @@ export default {
       return this.$t("pick_cover");
     },
     cover_thumb() {
-      return this.makeRelativeURLFromThumbs({
-        $thumbs: this.cover,
-        $type: "image",
-        $path: this.path,
-        resolution: this.context === "full" ? 2000 : 640,
-      });
+      return this.coverMakeRelativeURLFromThumbs(
+        this.context === "full" ? 2000 : 640
+      );
     },
-
+    cover_thumb_srcset() {
+      return `
+        ${this.coverMakeRelativeURLFromThumbs(320)} 320w, 
+        ${this.coverMakeRelativeURLFromThumbs(640)} 640w
+      `;
+    },
+    cover_full() {
+      return this.coverMakeRelativeURLFromThumbs(2000);
+    },
     existing_preview() {
-      return this.makeRelativeURLFromThumbs({
-        $thumbs: this.cover,
-        $type: "image",
-        $path: this.path,
-        resolution: 640,
-      });
+      return this.coverMakeRelativeURLFromThumbs(640);
     },
   },
   methods: {
     enableEditMode() {
       this.edit_mode = true;
+    },
+    coverMakeRelativeURLFromThumbs(res = 640) {
+      return this.makeRelativeURLFromThumbs({
+        $thumbs: this.cover,
+        $type: "image",
+        $path: this.path,
+        resolution: res,
+      });
     },
     cancel() {
       this.edit_mode = false;
@@ -168,23 +185,6 @@ export default {
   --color1: var(--c-gris);
   // --color2: var(--c-gris_fonce);
   --color2: white;
-}
-
-._picker {
-  position: relative;
-  // background: var(--c-noir);
-  // color: white;
-  // padding: calc(var(--spacing) / 4);
-  // max-width: 320px;
-  margin: calc(var(--spacing) / 4) auto;
-  // border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  flex-flow: column nowrap;
-  place-items: center;
-  width: 100%;
-
-  gap: calc(var(--spacing) / 2);
 }
 
 ._editingPane {

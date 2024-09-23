@@ -8,6 +8,7 @@ const {
 } = require("electron");
 const path = require("path");
 const utils = require("./utils");
+const notifier = require("./notifier");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
 app.commandLine.appendSwitch("allow-insecure-localhost", "true");
@@ -33,6 +34,12 @@ module.exports = (function () {
             `ELECTRON — custom storage path is detected and will be used ${custom_storage_path}`
           );
         }
+
+        notifier.on("restartApp", () => {
+          dev.logfunction(`ELECTRON — init : restart`);
+          app.relaunch();
+          app.exit(0);
+        });
 
         // This method will be called when Electron has finished
         // initialization and is ready to create browser windows.

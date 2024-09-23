@@ -26,37 +26,48 @@ const routes = [
     path: "/@",
     name: "Tous les auteurs",
     component: () =>
-      import(/* webpackChunkName: "AuthorsView" */ "../views/AuthorsView.vue"),
+      import(/* webpackChunkName: "AuthorsView" */ "@/views/AuthorsView.vue"),
   },
   {
     path: "/@:author_slug",
     name: "Contributeur",
     component: () =>
-      import(/* webpackChunkName: "AuthorView" */ "../views/AuthorView.vue"),
+      import(/* webpackChunkName: "AuthorView" */ "@/views/AuthorView.vue"),
   },
   {
     path: "/p/:page_slug",
     name: "Page",
     component: () =>
-      import(/* webpackChunkName: "Page" */ "../views/PageView.vue"),
+      import(/* webpackChunkName: "Page" */ "@/views/PageView.vue"),
   },
   {
     path: "/_ui",
     name: "UI (dev only)",
     component: () =>
-      import(/* webpackChunkName: "AuthorView" */ "../views/UIView.vue"),
+      import(/* webpackChunkName: "UIView" */ "@/views/UIView.vue"),
   },
   // {
   //   path: "/=:event_slug",
   //   name: "Événement",
   //   component: () =>
-  //     import(/* webpackChunkName: "AuthorView" */ "../views/EventView.vue"),
+  //     import(/* webpackChunkName: "AuthorView" */ "@/views/EventView.vue"),
   // },
+  {
+    // internal route to generate preview for PDF and STL
+    path: "/_previewmedia",
+    name: "Preview media",
+    meta: {
+      /* do not load full UI */
+      static: true,
+    },
+    component: () =>
+      import(/* webpackChunkName: "PreviewMedia" */ "@/views/PreviewMedia.vue"),
+  },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: () =>
-      import(/* webpackChunkName: "AuthorView" */ "../views/NotFound.vue"),
+      import(/* webpackChunkName: "NotFound" */ "@/views/NotFound.vue"),
   },
 ];
 

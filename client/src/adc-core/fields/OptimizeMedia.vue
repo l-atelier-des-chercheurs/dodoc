@@ -1,61 +1,46 @@
 <template>
   <div>
-    <button type="button" class="u-buttonLink" @click="show_modal = true">
-      <b-icon :icon="media.$optimized === true ? 'check2-circle' : 'tools'" />
-      {{ $t("convert") }}
+    <button
+      type="button"
+      class="u-button u-button_orange"
+      @click="show_modal = true"
+    >
+      <b-icon :icon="'tools'" />
+      <template v-if="['video', 'audio'].includes(media.$type)">
+        {{ $t("convert_shorten") }}
+      </template>
+      <template v-else-if="media.$type === 'image'">
+        {{ $t("optimize") }}
+      </template>
     </button>
 
     <BaseModal2
       v-if="show_modal"
-      :title="$t('convert')"
+      :title="$t('convert_shorten')"
       :size="modal_width"
       @close="show_modal = false"
     >
       <div class="_cont">
         <LoaderSpinner v-if="is_optimizing" class="_loader" />
         <div v-if="!optimized_file">
-          <DLabel :str="$t('quality')" />
-          <div
-            v-if="media.$optimized === true"
-            class="u-spacingBottom u-instructions"
-          >
-            {{ $t("already_optimized") }}
-          </div>
-          <div class="u-spacingBottom">
-            <SelectField2
-              :value="resolution_preset_picked"
-              :options="presets"
-              :can_edit="true"
-              :hide_validation="true"
-              @change="resolution_preset_picked = $event"
+          <template v-if="['video', 'audio'].includes(media.$type)">
+            <TrimMedia
+              :media="media"
+              :extract_selection.sync="extract_selection"
+              :selection_start.sync="selection_start"
+              :selection_end.sync="selection_end"
             />
-          </div>
-
-          <div class="" slot="footer">
-            <div class="_convertBtns">
-              <div class="">
-                <button
-                  type="button"
-                  class="u-button u-button_bleuvert"
-                  @click="optimizeMedia"
-                >
-                  <b-icon icon="tools" />
-                  {{ $t("preview_optimize") }}
-                </button>
-              </div>
-              <div class="u-instructions">
-                {{ $t("wont_remove_original") }}
-              </div>
-            </div>
-          </div>
+            <div class="u-spacingBottom" />
+          </template>
         </div>
-        <div class="" v-else>
+        <div v-else>
           <div
             class="u-spacingBottom _mediaPreview"
             :data-type="optimized_file.$type"
           >
             <MediaContent
               :file="optimized_file"
+              :resolution="1600"
               :context="'full'"
               :resolution="1600"
               :zoom_on_click="true"
@@ -132,9 +117,53 @@
               </strong>
             </div>
           </div>
-          <hr />
+        </div>
+      </div>
+
+      <div slot="footer" class="_convertBtns">
+        <template v-if="!optimized_file">
+          <div>
+            <DLabel :str="$t('quality')" />
+            <div
+              v-if="media.$optimized === true"
+              class="u-spacingBottom u-instructions"
+            >
+              {{ $t("already_optimized") }}
+            </div>
+            <div class="">
+              <SelectField2
+                :value="resolution_preset_picked"
+                :options="presets"
+                :can_edit="true"
+                :hide_validation="true"
+                @change="resolution_preset_picked = $event"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div>
+              <button
+                type="button"
+                class="u-button u-button_bleuvert"
+                @click="optimizeMedia"
+              >
+                <b-icon icon="tools" />
+                {{ $t("preview_new") }}
+              </button>
+            </div>
+            <div class="u-instructions">
+              {{ $t("wont_remove_original") }}
+            </div>
+          </div>
+        </template>
+        <template v-else>
           <div class="_btnRow">
-            <button type="button" class="u-buttonLink" @click="cancel">
+            <button
+              type="button"
+              class="u-button u-button_white"
+              @click="cancel"
+            >
               <b-icon icon="arrow-left-short" />
               {{ $t("back") }}
             </button>
@@ -155,24 +184,31 @@
               {{ $t("replace_original") }}
             </button>
           </div>
-          <div class=""></div>
-        </div>
+        </template>
       </div>
     </BaseModal2>
   </div>
 </template>
 <script>
+import TrimMedia from "@/adc-core/fields/TrimMedia.vue";
+
 export default {
   props: {
     media: Object,
   },
-  components: {},
+  components: {
+    TrimMedia,
+  },
   data() {
     return {
       show_modal: false,
       is_optimizing: false,
       optimized_file: undefined,
       resolution_preset_picked: "source",
+
+      extract_selection: false,
+      selection_start: 0,
+      selection_end: this.media.$infos?.duration || 0,
     };
   },
   created() {},
@@ -187,7 +223,7 @@ export default {
   },
   computed: {
     modal_width() {
-      if (this.optimized_file) return "large";
+      if (this.optimized_file || this.extract_selection) return "large";
       return undefined;
     },
     presets() {
@@ -248,6 +284,12 @@ export default {
           $optimized: true,
         },
       };
+
+      if (this.extract_selection) {
+        instructions.trim_start = this.selection_start;
+        instructions.trim_end = this.selection_end;
+      }
+
       const current_task_id = await this.$api.optimizeFile({
         path: this.media.$path,
         instructions,
@@ -323,9 +365,12 @@ export default {
 }
 
 ._mediaPreview {
-  &[data-type="image"],
-  &[data-type="video"] {
+  &[data-type="image"] {
     aspect-ratio: 1/1;
+  }
+  &[data-type="video"] {
+    max-height: 50vh;
+    // aspect-ratio: 16/9;
   }
   ::v-deep {
     ._mediaContent {
@@ -354,7 +399,12 @@ export default {
 }
 
 ._convertBtns {
-  text-align: center;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 1);
 }
 
 ._loader {

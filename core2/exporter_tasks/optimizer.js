@@ -71,6 +71,8 @@ module.exports = (function () {
       source,
       destination,
       quality_preset,
+      trim_start,
+      trim_end,
       ffmpeg_cmd,
       reportProgress,
     }) {
@@ -84,8 +86,12 @@ module.exports = (function () {
         if (quality_preset === "high") bitrate = "192k";
         else if (quality_preset === "medium") bitrate = "128k";
 
+        ffmpeg_cmd.input(source);
+
+        if (trim_start !== undefined && trim_end !== undefined)
+          ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
+
         ffmpeg_cmd
-          .input(source)
           .withAudioCodec("aac")
           .withAudioBitrate(bitrate)
 
@@ -116,6 +122,8 @@ module.exports = (function () {
       source,
       destination,
       quality_preset,
+      trim_start,
+      trim_end,
       ffmpeg_cmd,
       reportProgress,
     }) {
@@ -127,20 +135,26 @@ module.exports = (function () {
           resolution = { width: 1920, height: 1080 };
           bitrate = "4000k";
         } else if (quality_preset === "medium") {
-          resolution = { width: 1920, height: 1080 };
+          resolution = { width: 1280, height: 720 };
           bitrate = "2000k";
         }
 
-        await utils.convertVideoToStandardFormat({
-          source,
-          destination,
-          resolution,
-          bitrate,
-          ffmpeg_cmd,
-          reportProgress,
-        });
-
-        return resolve();
+        try {
+          await utils.convertVideoToStandardFormat({
+            source,
+            destination,
+            bitrate,
+            resolution,
+            trim_start,
+            trim_end,
+            ffmpeg_cmd,
+            reportProgress,
+          });
+          return resolve();
+        } catch (err) {
+          dev.error(err);
+          return reject(err);
+        }
       });
     },
   };

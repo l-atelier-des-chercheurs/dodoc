@@ -3,11 +3,11 @@
     <transition name="fade_fast">
       <div
         class="_baseModal"
-        v-if="show_modal"
-        @click.self="closeModal"
+        v-if="show_modal && !hide_modal"
         ref="modal"
         :data-size="size"
       >
+        <div class="_baseModal--overlay" @click.self="closeModal" />
         <div class="_baseModal--content">
           <header v-if="title || is_closable">
             <h2 v-if="title">{{ title }}</h2>
@@ -46,6 +46,10 @@ export default {
     is_closable: {
       type: Boolean,
       default: true,
+    },
+    hide_modal: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},
@@ -102,10 +106,21 @@ export default {
   border: none;
   padding: 0;
 
-  backdrop-filter: blur(5px);
   // background: rgba(53, 53, 53, 0.7);
   // background: rgba(255, 255, 255, 0.7);
-  background: rgba(231, 231, 231, 0.7);
+
+  ._baseModal--overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(231, 231, 231, 0.7);
+    backdrop-filter: blur(5px);
+    cursor: pointer;
+    transition: backdrop-filter 0.3s ease-in-out;
+
+    &:hover {
+      backdrop-filter: blur(0px);
+    }
+  }
 
   ._baseModal--content {
     position: relative;
@@ -117,8 +132,11 @@ export default {
     width: 100%;
     max-width: 480px;
     max-height: 100vh;
+    max-height: 100dvh;
     // max-width: calc(480px - calc(var(--spacing) * 1));
     // max-height: calc(100vh - calc(var(--spacing) * 1));
+
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   &[data-size="full"] ._baseModal--content {
@@ -160,6 +178,8 @@ header {
   flex-flow: row nowrap;
   justify-content: space-between;
   padding: calc(var(--spacing) * 1);
+  // border-bottom: 1px solid var(--c-gris);
+
   h2 {
     font-weight: 600;
     font-size: var(--sl-font-size-x-large);
@@ -180,6 +200,7 @@ header {
   }
 }
 ._content {
+  position: relative;
   overflow: auto;
   padding: 0 calc(var(--spacing) * 1) 0;
 
@@ -198,7 +219,8 @@ header {
 ._footer {
   display: flex;
   justify-content: center;
-  padding: calc(var(--spacing) * 1);
+  border-top: 1px solid var(--c-gris);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
 }
 
 @keyframes reveal {

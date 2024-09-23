@@ -40,12 +40,15 @@
           {{ instructions }}
         </div>
 
-        <RadioCheckboxInput
-          :value.sync="new_content"
-          :input_type="input_type"
-          :options="options"
-          :can_edit="can_edit && edit_mode"
-        />
+        <div class="u-spacingBottom">
+          <RadioCheckboxInput
+            :value.sync="new_content"
+            :input_type="input_type"
+            :options="options"
+            :can_edit="can_edit && edit_mode"
+          />
+        </div>
+
         <SaveCancelButtons
           slot="footer"
           v-if="edit_mode"

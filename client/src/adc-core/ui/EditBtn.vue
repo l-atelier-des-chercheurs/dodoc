@@ -69,7 +69,7 @@ export default {
         };
       else if (this.btn_type === "check")
         return {
-          label: this.$t("ok"),
+          label: this.$t("save"),
           icon: "check-lg",
         };
       else if (this.btn_type === "credits")
@@ -82,13 +82,33 @@ export default {
           label: this.$t("remove"),
           icon: "trash",
         };
+      else if (this.btn_type === "show")
+        return {
+          label: this.$t("show"),
+          icon: "eye-fill",
+        };
+      else if (this.btn_type === "hide")
+        return {
+          label: this.$t("hide"),
+          icon: "eye-slash-fill",
+        };
+      else if (this.btn_type === "create_page")
+        return {
+          label: this.$t("create_page"),
+          icon: "plus-lg",
+        };
       return {
         label: this.$t("edit"),
         icon: "pencil-fill",
       };
     },
     btn_styles() {
-      if (this.btn_type === "fullscreen" || this.btn_type === "close")
+      if (
+        this.btn_type === "fullscreen" ||
+        this.btn_type === "close" ||
+        this.btn_type === "show" ||
+        this.btn_type === "hide"
+      )
         return `
           --color2: var(--c-noir);
         `;
@@ -186,6 +206,12 @@ export default {
       right: 0;
       padding-right: 100%;
       transform: translateX(-15px);
+    }
+  }
+
+  &.is--unfolded {
+    ._label {
+      pointer-events: auto;
     }
   }
 

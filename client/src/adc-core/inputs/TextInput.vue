@@ -55,9 +55,6 @@
       </div>
     </div>
 
-    <div v-if="input_type === 'markdown'">
-      <small class="u-instructions" v-html="$t('markdown_instr')" />
-    </div>
     <div v-if="instructions">
       <small class="u-instructions" v-html="instructions" />
     </div>
@@ -77,7 +74,7 @@ export default {
       type: String,
     },
     content: {
-      type: String,
+      type: [String, Number],
       default: "",
     },
     placeholder: {
@@ -129,7 +126,6 @@ export default {
   },
   computed: {
     tag() {
-      if (this.input_type === "markdown") return "span";
       return "input";
     },
     validity() {

@@ -10,7 +10,7 @@ export default {
   cancel: "cancel",
   // todo translate
   a_foss_made_by:
-    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers, …!",
+    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers,&nbsp;…!",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
   edit: "Edit",
@@ -25,10 +25,9 @@ export default {
   back: "back",
   save_as_favorite: "save as favorite",
   save: "save",
-  input_url: "URL to the site to embed",
-  // input_url_instr:
-  //   "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
+  input_url: "URL of the website to embed",
   embed: "Embed",
+  table: "Table",
   from_project: "From project",
   save_to_project: "Save in the project",
   day: "Day",
@@ -200,6 +199,7 @@ export default {
   no_projects: "No project to show",
   no_publications: "No publications to show",
   no_files: "No file",
+  none_m: "None",
   none_f: "None",
   none: "None",
 
@@ -214,7 +214,7 @@ export default {
   medium: "Medium",
   low: "Low",
   rough: "Draft",
-  optimize_media: "Optimize the media",
+  optimize: "Optimize",
 
   no_accounts_yet: "No accounts created yet",
   no_accounts_to_show: "No accounts to show",
@@ -222,6 +222,7 @@ export default {
 
   add_accounts: "Add accounts",
   show: "Show",
+  show_title: "Show title",
   hide: "Hide",
   list_of_accounts: "List of accounts",
   show_all_accounts: "Show all accounts",
@@ -230,9 +231,11 @@ export default {
   audioinput: "Audio input",
   audiooutput: "Audio output",
 
-  restart_to_apply: "Restart do•doc to apply",
+  restart_to_apply:
+    "Close and restart do•doc manually or using the button below for the setting to take effect.",
+  restart: "Close and restart",
+
   refresh_window_to_apply: "Refresh the window to apply",
-  restart: "Restart do•doc",
   reveal: "Reveal",
   choose_a_pane: "Choose a pane to start!",
   latest_changes_to_project: "Latest changes to project",
@@ -251,6 +254,7 @@ export default {
   remove_media: "Delete media",
   remove_space: "Delete space and all its content",
 
+  no_authors_to_show: "No account to show",
   remove_account: "Delete this account",
   remove_account_expl:
     "Only the account will be deleted, all its content (spaces, projects, medias and publications) will be kept.",
@@ -292,7 +296,7 @@ export default {
   hide_already_translated: "Hide translations already made",
   "to_translate:": "To translate:",
   publish_on_forum_to_add_to_contribute_to_code:
-    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' target='_blank '>forum.latelier-des-chercheurs.fr</a>.",
+    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Erase all proposed translations",
 
   no_coordinates: "No coordinates available",
@@ -419,6 +423,8 @@ export default {
   stop: "Stop",
   pause: "Pause",
   first_image: "First image",
+  next: "Next",
+  previous: "Previous",
   previous_image: "Previous image",
   next_image: "Next image",
   last_image: "Last image",
@@ -435,6 +441,8 @@ export default {
   stl: "STL",
   obj: "OBJ",
   other: "Other",
+  webpage: "Webpage",
+  all_keywords: "Of all keywords",
   all_medias_types: "Of all types",
   all_origins: "From all origins",
   all_accounts: "From all accounts",
@@ -455,6 +463,7 @@ export default {
   select_all: "Select all",
   input_url_instr:
     "Enter a URL to a resource here (web page, PeerTube or YouTube video, etc.)",
+  url_to_open: "URL of the page to open",
   content: "Content",
   connection_lost: "Connection lost",
   connection_lost_in: "The connection to the server was lost.",
@@ -644,6 +653,9 @@ export default {
   snap_to_grid: "Grid Snapping",
   gridstep: "Grid step",
   scale: "Scale",
+  over: "Over",
+  under: "Under",
+
   makes_list: "Makes list",
   back_to_makes_list: "Back to list",
   edit_image: "Rework an image",
@@ -656,14 +668,16 @@ export default {
   trim_instructions:
     "Select the area to extract by indicating the start and end time below. You can also click on the spectrogram above.",
   start: "start",
+  set_start: "Set start",
+  play_extract: "Play extract",
+  stop_extract: "Stop extract",
   end: "end",
+  set_end: "Set end",
   copy: "Copy",
   test_and_export: "Test and export",
   export_montage: "Export montage",
 
-  image_to_rework: "Image to edit",
   video_to_rework: "Video to edit",
-  audio_to_rework: "Audio to edit",
 
   pick_audio: "Pick audio media",
   pick_image: "Pick image media",
@@ -698,8 +712,6 @@ export default {
   no_stream_found_while_sharing: "No stream found while sharing",
   media_couldnt_be_sent: "Media couldn’t be sent",
 
-  markdown_instr:
-    "Markdown field: you can format the text (titles, bold, italics, links, etc.)",
   watermark: "Dressing",
   watermark_instructions:
     "Select an image to place in the upper right corner of the video.",
@@ -709,8 +721,7 @@ export default {
   slowing_video_down_limit:
     "Attention! The audio track will be deleted (if it exists) because the desired speed is too slow. To keep and convert the sound choose a speed between 0.5 and 1.",
   speed_up: "Speed up",
-  a_little: "A little",
-  a_lot: "A lot",
+  playback_speed: "Playback speed",
   clockwise: "Clockwise",
   counterclockwise: "Counterclockwise",
   reverse: "Reverse start and end",
@@ -719,6 +730,9 @@ export default {
   mirror: "Mirror",
   horizontal_flip: "Horizontal flip",
   vertical_flip: "Vertical flip",
+  rotate_90_deg: "Rotate 90°",
+  rotate_x_deg: "Rotate right of …°",
+
   both: "Both",
   mix_audio_and_image: "Sound on an image",
   mix_audio_and_image_summary: "Add sound to an image.",
@@ -732,6 +746,10 @@ export default {
   mix_audio_and_video_summary: "Add or replace audio to a video.",
   mix_audio_and_video_instructions:
     "This recipe takes a video and an audio track. It adds or replaces the video's soundtrack with the selected one.<br> Accepted media: a video and an audio track.<br>Will create a new video of the duration of the longest media.",
+
+  qr_code: "QR code",
+  qr_code_summary: "Create a QR code from a text or a link.",
+
   add_sound_video_file:
     "Open a project and add <b>sound</b> media and <b>video</b> media by clicking the green arrow.<br>Exporting will create a new video.<br>Accepted media : a video and a sound track.",
   add_sound_image_file:
@@ -792,7 +810,7 @@ export default {
   fill_out_your_license: "Enter your license here",
   copyleft: "Free Art / Copyleft",
   copyleft_explanations:
-    "See <a href='https://artlibre.org/' target='_blank'>artlibre.org</a> for an explanation of this license",
+    "See <a href='https://artlibre.org/' title='Art Libre' target='_blank'>artlibre.org</a> for an explanation of this license",
   copy_of: "Copy of",
   remix_of: "Remix of",
   open_copy: "Access copy",
@@ -943,6 +961,8 @@ export default {
   account_created: "Your account has been created",
   logged_in: "Account connection is active, page reloading…",
   informations: "informations",
+  metadatas: "Metadatas",
+
   duplicate: "Duplicate",
   duplicate_or_move: "Duplicate or move",
   duplicate_or_move_project: "Duplicate or move this project",
@@ -955,7 +975,9 @@ export default {
   import_in_progress: "Import in progress…",
   import_finished:
     "Import finished, click on the button to open the project. Media previews will be generated, which can take a few minutes.",
-  zip_wrong: "This ZIP file is not a valid project",
+  zip_not_valid_project: "This ZIP file is not a valid project",
+  zip_is_space_not_project:
+    "This ZIP seems to contain a space and not a project",
 
   move_to_page: "Move to another page",
   general_informations: "Instance informations",
@@ -986,27 +1008,44 @@ export default {
   STAMEN_watercolor: "Watercolor",
   STAMEN_toner: "Toner",
   provided_by_stadiamaps:
-    "Provided by <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
+    "Provided by <a href='https://stadiamaps.com' title='StadiaMaps' target='_blank'>StadiaMaps</a>.",
   IGN_MAP: "IGN map (France only)",
   IGN_SAT: "IGN satellite pictures (France only)",
   image_or_drawing: "Image or drawing",
   bw_filter: "Black and white filter",
   failed_loading_tiles_no_internet:
     "Failed loading the baselayer, are you connected to the internet?",
+  zoom_animation: "Zoom animation",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
 
   terms: "Terms of use",
-  create_terms_page: "Create a terms of use page",
-  open_page: "Open page",
-  terms_in_footer: "Place a link at the bottom of the home page",
+  create_this_page: "Create this page",
+  open_terms_page: "Open Terms page",
+  terms_confidentiality_in_footer:
+    "Place a link at the bottom of the home page",
   users_must_accept_terms_to_signup:
     "Users must accept the terms of use to register",
   click_here_to_read: "Click here to read them.",
   i_read_and_accept_terms: "I accept the terms of use",
 
+  confidentiality: "Confidentiality",
+  open_confidentiality_page: "Open confidentiality page",
   page_to_export: "Page to export",
+
+  terms_confidentiality_infos: `
+  The following fields allow you to create pages specifying the conditions
+  of use and the confidentiality rules of your instance.
+  A link to these pages can be placed at the bottom of the home page,
+  as well as at the bottom of the signup form.
+  In France and in all of the countries belonging to the European Union, these pages must be
+  completed to inform users of these rules.
+    `,
+  cookies_info: `
+  In this version of do•doc, know that no tracking is done and that the cookies only contain anonymous technical information
+  (like the language, the cameras used, etc.).
+    `,
 
   on_this_page: "On this page",
   on_other_pages: "On other pages",
@@ -1017,6 +1056,8 @@ export default {
   polygon: "Polygon",
 
   search_for_a_place: "Search for a place",
+  no_results: "No results",
+
   click_to_start_drawing: "click to start drawing",
   click_to_continue_drawing: "click to continue drawing",
   click_drag_to_draw_line: "click and hold to draw",
@@ -1033,13 +1074,13 @@ export default {
   about_dodoc: "About do•doc",
   about_dodoc_txt: `do•doc is free and open-source software created to document projects and powered by a diverse community of designers, teachers, artists, trainers, creators and documentation enthusiasts in general.
   It is used in a multitude of contexts, whether in the classroom, in fablabs, in third places, as well as as an engine for resource platforms accessible online.<br><br>
-  The design and development of this tool is managed by the collective <a href="https://latelier-des-chercheurs.fr" target="_blank">l'Atelier des chercheurs</a> since its beginnings, in 2014,
-  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
+  The design and development of this tool is managed by the collective <a href="https://latelier-des-chercheurs.fr" title="Atelier des chercheurs" target="_blank">l'Atelier des chercheurs</a> since its beginnings, in 2014,
+  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" title="Forum de l’Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
   about_dodoc_links: `
   Here are some other links:
   <ul>
-  <li>The latest version of the software is available on the dedicated page: <a href="https://dodoc.fr" target="_blank">https://dodoc.fr</a></li>
-  <li>The source code can be found here: <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc</a></li>
+  <li>The latest version of the software is available on the dedicated page: <a href="https://dodoc.fr" title="Site of do•doc" target="_blank">https://dodoc.fr</a></li>
+  <li>The source code can be found here: <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Source code of do•doc on Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc</a></li>
   </ul>
   `,
   about_dodoc_contributors: `Main contributors: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
@@ -1049,14 +1090,18 @@ export default {
   full_page: "Full page",
 
   convert: "Convert",
+  convert_shorten: "Convert/shorten",
+  select_extract: "Select extract",
+  extract_range: "Extract range",
   convert_to_format: "Adapt format for viewing",
 
   already_optimized:
     "This media has already been converted, it is not recommended to convert it again.",
-  preview_optimize: "Create optimized version",
+  preview_new: "Create new version",
   wont_remove_original: "Will not remove the original",
   add_optimized_to_lib: "Keep original media and add new version",
-  replace_original: "Replace and remove original media",
+  replace_original: "Replace original media",
+  save_as_new_media: "Save as new media",
 
   change: "Change",
   transition_fade: "Transition: fade",
@@ -1064,4 +1109,40 @@ export default {
   couldntbesaved: "Value couldn’t be saved",
   coll_is_private:
     "This collection is private and can only be viewed by the referrers.",
+  enable_indexing: "Enable indexing on search engines",
+  crop_adjust: "Crop/adjust",
+  aspect_ratio: "Aspect ratio",
+  square: "Square",
+  original: "Original",
+  A_portrait: "Format 'A' portrait",
+  A_landscape: "Format 'A' landscape",
+  constrain_crop_resize: "Constrain crop/resize",
+  custom_aspect_ratio: "Enter a value, for example 1.66",
+  resize: "Resize",
+
+  page_number: "Page number",
+  on_click: "On click",
+  do_nothing: "Do nothing",
+  open_webpage: "Open a web page in a new tab",
+  navigate_to_page: "Navigate to page",
+
+  regenerate_thumbs: "Regenerate preview",
+  embed_link: "Embed link",
+  direct_link_to_file:
+    "This link points directly to the media file, it can be used in other applications or websites.",
+  share_link_to_file:
+    "This link corresponds to a specific page containing the media, its legend and its credits (if the fields are filled in).",
+
+  remove_permanently: "Delete contents permanently",
+  remove_permanently_true:
+    "The contents will be deleted permanently and cannot be recovered.",
+  remove_permanently_false:
+    "The contents will be moved to a subfolder (like a trash).",
+
+  upload_max_file_size_in_mo: "Maximum file size for uploads or captures",
+  umo_instructions: "In megabytes (by default, 10 000, so about 10 Go).",
+
+  scan_qr_code: "Scan QR code",
+  opening_link_in: "Opening link in",
+  qr_code_content: "QR code content",
 };

@@ -9,7 +9,11 @@
           "
         >
           <div class="_text">
-            <div class="_sectionTitle">
+            <div
+              class="_sectionTitle"
+              v-if="can_edit || title_is_visible"
+              :class="{ 'is--hidden': !title_is_visible }"
+            >
               <TitleField
                 :field_name="'section_title'"
                 :content="section.section_title || $t('untitled')"
@@ -19,19 +23,18 @@
                 :tag="'h1'"
                 :can_edit="can_edit"
               />
+              <EditBtn
+                v-if="can_edit"
+                :btn_type="title_is_visible ? 'show' : 'hide'"
+                :label="$t('show_title')"
+                @click="toggleSectionVisibility"
+              />
             </div>
 
             <!-- legacy field – only existing description can be edited -->
-            <TitleField
-              v-if="section.section_description"
-              :field_name="'section_description'"
-              :label="can_edit ? $t('description') : ''"
-              :content="section.section_description"
-              :path="section.$path"
-              :maxlength="1280"
-              :input_type="'markdown'"
-              :can_edit="can_edit"
-            />
+            <div v-if="section.section_description">
+              <div v-text="section.section_description" />
+            </div>
           </div>
           <div class="_buttons" v-if="can_edit"></div>
         </div>
@@ -47,7 +50,7 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
-                :types_available="['write', 'embed']"
+                :types_available="['import', 'write', 'embed', 'table']"
                 @addModules="
                   ({ meta_filenames }) =>
                     insertModules({ meta_filenames, index })
@@ -88,14 +91,11 @@
             />
           </template>
         </transition-group>
-        <ModuleCreator
-          v-if="can_edit"
-          class="_lastModule"
-          :start_collapsed="false"
-          :publication_path="publication.$path"
-          :types_available="['write', 'embed']"
-          @addModules="addModules"
-        />
+        <ModuleCreator v-if="can_edit" class="_lastModule"
+        :start_collapsed="false" :publication_path="publication.$path" <<<<<<<
+        HEAD :types_available="['write', 'embed']" =======
+        :types_available="['capture', 'import', 'write', 'embed', 'table']"
+        >>>>>>> next-node @addModules="addModules" />
       </div>
     </div>
   </div>
@@ -139,6 +139,9 @@ export default {
     story_styles() {
       return this.makeStoryStyles({ publication: this.publication });
     },
+    title_is_visible() {
+      return this.section.section_title_is_visible !== false;
+    },
   },
   methods: {
     async addModules({ meta_filenames }) {
@@ -167,6 +170,14 @@ export default {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
         this.$eventHub.$emit("publication.map.openPin", pin_path);
       }, 150);
+    },
+    async toggleSectionVisibility() {
+      await this.$api.updateMeta({
+        path: this.section.$path,
+        new_meta: {
+          section_title_is_visible: !this.title_is_visible,
+        },
+      });
     },
     async moveModuleTo({ path, new_position }) {
       await this.moveModuleTo2({
@@ -238,6 +249,14 @@ export default {
 ._sectionTitle {
   display: flex;
   align-items: baseline;
+
+  &.is--hidden {
+    ::v-deep {
+      h1 {
+        opacity: 0.5;
+      }
+    }
+  }
 }
 
 ._mediaPublication {

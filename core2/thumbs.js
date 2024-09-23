@@ -4,6 +4,7 @@ const path = require("path"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
   https = require("https"),
+  writeFileAtomic = require("write-file-atomic"),
   { promisify } = require("util"),
   fastFolderSize = require("fast-folder-size");
 
@@ -44,11 +45,15 @@ module.exports = (function () {
       const filethumbs_resolutions = item_in_schema.$files?.thumbs?.resolutions;
       if (!filethumbs_resolutions) return false;
 
-      const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
+      const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
       const full_media_path = utils.getPathToUserContent(
         path_to_folder,
         media_filename
       );
+
+      // make sure media exists
+      if (!(await fs.pathExists(full_media_path)))
+        throw new Error(`Media does not exist`);
 
       let settings;
       if (media_type === "image") {
@@ -130,7 +135,7 @@ module.exports = (function () {
 
       const infos_filename = media_filename + ".infos.txt";
 
-      const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
+      const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
 
       try {
         const infos = await utils.readMetaFile(
@@ -153,9 +158,9 @@ module.exports = (function () {
 
       // read file infos
       const { size, mtimems, hash } = await _readFileInfos({ full_media_path });
-      if (size) infos.size = size;
-      if (mtimems) infos.mtimems = mtimems;
-      if (hash) infos.hash = hash;
+      if (size !== undefined) infos.size = size;
+      if (mtimems !== undefined) infos.mtimems = mtimems;
+      if (hash !== undefined) infos.hash = hash;
 
       let hrend = process.hrtime(hrstart);
       dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
@@ -215,6 +220,43 @@ module.exports = (function () {
         new_filename,
       });
     },
+    copyAllThumbsForFile: async ({
+      full_path_to_thumb,
+      full_path_to_new_thumb,
+      media_filename,
+      new_filename,
+    }) => {
+      try {
+        const files = await _getAllThumbsForFile({
+          full_path_to_thumb,
+          media_filename,
+        });
+
+        for (const filename of files) {
+          // copy to destination folder with new name
+          const new_filename_with_suffix = new_filename
+            ? filename.replace(media_filename, new_filename)
+            : filename;
+
+          await fs.copy(
+            path.join(full_path_to_thumb, filename),
+            path.join(full_path_to_new_thumb, new_filename_with_suffix)
+          );
+        }
+        return;
+      } catch (err) {
+        dev.logverbose("No thumbs to remove");
+        return;
+      }
+    },
+    getThumbFolderPath: async (...paths) => {
+      const relative_path_to_thumb_folder = path.join("thumbs", ...paths);
+      const path_to_thumb_folder = utils.getPathToUserContent(
+        relative_path_to_thumb_folder
+      );
+      await fs.ensureDir(path_to_thumb_folder);
+      return relative_path_to_thumb_folder;
+    },
   };
 
   async function _makeThumbFor({
@@ -228,6 +270,12 @@ module.exports = (function () {
     dev.logfunction({ full_media_path });
 
     let thumb_paths = {};
+
+    const no_preview_path = utils.getPathToUserContent(
+      path_to_thumb_folder,
+      `${media_filename}.no_preview`
+    );
+    if (await fs.pathExists(no_preview_path)) return "no_preview";
 
     if (!settings) {
       thumb_paths = await _makeImageThumbsFor({
@@ -247,45 +295,52 @@ module.exports = (function () {
         if (!(await fs.pathExists(full_path_to_thumb))) {
           dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
 
-          if (media_type === "video")
-            try {
+          try {
+            if (media_type === "video")
               await _makeVideoScreenshotFromPath({
                 thumb_name,
                 thumb_folder,
                 full_media_path,
                 timemark_key: setting.timemark,
               });
-            } catch (err) {
-              dev.error(err);
-              continue;
-            }
-          else if (media_type === "audio")
-            await _makeAudioWaveforms({
-              full_media_path,
-              full_path_to_thumb,
+            else if (media_type === "audio")
+              await _makeAudioWaveforms({
+                full_media_path,
+                full_path_to_thumb,
+              });
+            else if (media_type === "stl")
+              await _makeSTLThumbs({
+                full_media_path,
+                full_path_to_thumb,
+                camera_angle: setting.camera_angle,
+              });
+            else if (media_type === "pdf")
+              await _makePDFThumbs({
+                full_media_path,
+                thumb_folder,
+                full_path_to_thumb,
+                page: setting.page,
+              });
+            else if (media_type === "url")
+              await _makeLinkThumbs({
+                full_media_path,
+                full_path_to_thumb,
+                cc,
+              });
+          } catch (err) {
+            dev.error(err);
+            // make empty nopreview file
+            await utils.storeContent({
+              full_path: no_preview_path,
+              meta: "",
             });
-          else if (media_type === "stl")
-            await _makeSTLThumbs({
-              full_media_path,
-              full_path_to_thumb,
-              camera_angle: setting.camera_angle,
-            });
-          else if (media_type === "pdf")
-            await _makePDFThumbs({
-              full_media_path,
-              thumb_folder,
-              full_path_to_thumb,
-              page: setting.page,
-            });
-          else if (media_type === "url")
-            await _makeLinkThumbs({
-              full_media_path,
-              full_path_to_thumb,
-            });
+          }
           dev.logverbose(`Made screenshot at`, full_path_to_thumb);
         } else {
           dev.logverbose(`Found screenshot at`, full_path_to_thumb);
         }
+
+        if (await fs.pathExists(no_preview_path)) return "no_preview";
 
         const thumbs = await _makeImageThumbsFor({
           full_media_path: full_path_to_thumb,
@@ -312,7 +367,7 @@ module.exports = (function () {
       relative_path: path_to_folder,
     });
     const cover_schema = item_in_schema.$cover;
-    const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
+    const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
 
     const paths = await _makeImageThumbsFor({
       full_media_path: full_cover_path,
@@ -360,10 +415,10 @@ module.exports = (function () {
     path_to_source_folder,
     path_to_destination_folder,
   }) {
-    const path_to_thumb_folder = await _getThumbFolderPath(
+    const path_to_thumb_folder = await API.getThumbFolderPath(
       path_to_source_folder
     );
-    const path_to_destination_thumb_folder = await _getThumbFolderPath(
+    const path_to_destination_thumb_folder = await API.getThumbFolderPath(
       path_to_destination_folder
     );
     await fs.copy(
@@ -388,28 +443,12 @@ module.exports = (function () {
       path_to_destination_folder
     );
 
-    try {
-      const files = await _getAllThumbsForFile({
-        full_path_to_thumb,
-        media_filename,
-      });
-
-      for (const filename of files) {
-        // copy to destination folder with new name
-        const new_filename_with_suffix = filename.replace(
-          media_filename,
-          new_filename
-        );
-        await fs.copy(
-          path.join(full_path_to_thumb, filename),
-          path.join(full_path_to_new_thumb, new_filename_with_suffix)
-        );
-      }
-      return;
-    } catch (err) {
-      dev.logverbose("No thumbs to remove");
-      return;
-    }
+    API.copyAllThumbsForFile({
+      full_path_to_thumb,
+      full_path_to_new_thumb,
+      media_filename,
+      new_filename,
+    });
   }
 
   async function _removeAllThumbsForFile({ path_to_folder, media_filename }) {
@@ -441,15 +480,6 @@ module.exports = (function () {
           !dirent.isDirectory() && dirent.name.startsWith(media_filename)
       )
       .map((dirent) => dirent.name);
-  }
-
-  async function _getThumbFolderPath(...paths) {
-    const relative_path_to_thumb_folder = path.join("thumbs", ...paths);
-    const path_to_thumb_folder = utils.getPathToUserContent(
-      relative_path_to_thumb_folder
-    );
-    await fs.ensureDir(path_to_thumb_folder);
-    return relative_path_to_thumb_folder;
   }
 
   async function _makeImageThumbsFor({
@@ -600,92 +630,111 @@ module.exports = (function () {
     });
   }
 
-  function _makeSTLThumbs({
+  async function _makeSTLThumbs({
     full_media_path,
     full_path_to_thumb,
     camera_angle,
   }) {
-    return new Promise(function (resolve, reject) {
-      const StlThumbnailer = require("stl-thumbnailer-node");
-      // todo replace with @scalenc/stl-to-png ? does not handle large files…
-
-      fs.stat(full_media_path)
-        .then(({ size }) => {
-          if (size / (1024 * 1024) > 10) {
-            const err = new Error("STL too large");
-            err.code = "stl_too_large";
-            throw err;
-          }
-          return;
-        })
-        .then(() => {
-          return new StlThumbnailer({
-            filePath: full_media_path,
-            requestThumbnails: [
-              {
-                width: 2200,
-                height: 2200,
-                cameraAngle: camera_angle,
-              },
-            ],
-          });
-        })
-        .then((thumbnails) => {
-          // thumbnails is an array (in matching order to your requests) of Canvas objects
-          // you can write them to disk, return them to web users, etc
-          // see node-canvas documentation at https://github.com/Automattic/node-canvas
-          thumbnails[0].toBuffer(async (err, buf) => {
-            if (err) return reject(err);
-
-            await fs.outputFile(full_path_to_thumb, buf);
-            return resolve();
-          });
-        })
-        .catch((err) => {
-          return reject(err);
-        });
-    });
+    dev.logfunction({ full_media_path, full_path_to_thumb, camera_angle });
+    try {
+      await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
+      return;
+    } catch (err) {
+      throw err;
+    }
   }
 
   async function _makePDFThumbs({
     full_media_path,
-    thumb_folder,
+    // thumb_folder,
     full_path_to_thumb,
     page,
   }) {
     dev.logfunction({ full_media_path, full_path_to_thumb, page });
-
-    const temp_pdf_doc = path.join(thumb_folder, "_temp_pdf");
-    await fs.ensureDir(temp_pdf_doc);
-
     try {
-      const PdfExtractor = require("pdf-extractor").PdfExtractor;
-      let pdf_extractor = new PdfExtractor(temp_pdf_doc, {
-        viewportScale: (width, height) => {
-          if (width > height) return 1100 / width;
-          return 800 / width;
-        },
-        pageRange: [page, page],
-      });
-      await pdf_extractor.parse(full_media_path).catch((err) => {
-        dev.error(err);
-      });
+      await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
+      return;
     } catch (err) {
       throw err;
     }
+  }
 
-    dev.logverbose(`Created temp pdf folder`);
+  async function _captureMediaScreenshot({
+    full_media_path,
+    full_path_to_thumb,
+  }) {
+    dev.logfunction({ full_media_path, full_path_to_thumb });
 
-    try {
-      const src = path.join(temp_pdf_doc, "page-1.png");
-      await fs.move(src, full_path_to_thumb);
-      await fs.remove(temp_pdf_doc);
-    } catch (err) {
-      await fs.remove(temp_pdf_doc);
+    const relative_path_from_server = full_media_path.replace(
+      utils.getPathToUserContent(),
+      ""
+    );
+    const encoded_full_media_path = encodeURIComponent(
+      relative_path_from_server
+    );
+    let url =
+      global.appInfos.homeURL +
+      "/_previewmedia?path_to_media=" +
+      encoded_full_media_path +
+      "&previewing_for=node";
+
+    const puppeteer = require("puppeteer");
+
+    let browser;
+
+    let page_timeout = setTimeout(async () => {
+      if (browser) await browser.close();
+      try {
+        const err = new Error("Failed to capture media screenshot");
+        err.code = "failed_to_capture_media_screenshot_page-timeout";
+        throw err;
+      } catch (e) {
+        dev.error(`page timeout for ${url}`);
+      }
+    }, 10_000);
+
+    browser = await puppeteer.launch({
+      headless: true,
+      ignoreHTTPSErrors: true,
+      args: ["--no-sandbox", "--font-render-hinting=none"],
+    });
+
+    const page = await browser.newPage();
+    const x_padding = 12;
+    const y_padding = 8;
+    const width = 800;
+    const height = 800;
+
+    await page.setViewport({
+      width: width + x_padding * 2,
+      height: height + y_padding,
+      deviceScaleFactor: 2,
+    });
+
+    dev.logverbose(`Navigating to ${url}`);
+
+    await page.goto(url).catch((err) => {
       throw err;
-    }
+    });
 
-    dev.logverbose(`Moved/removed temp pdf folder`);
+    dev.logverbose(`Waiting for page to load`);
+
+    await new Promise((resolve) => setTimeout(resolve, 3_000));
+
+    dev.logverbose(`Taking screenshot`);
+    await page.screenshot({
+      path: full_path_to_thumb,
+      clip: {
+        x: x_padding,
+        y: y_padding,
+        width: width,
+        height: height,
+      },
+    });
+    dev.logverbose(`Screenshot taken`);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    clearTimeout(page_timeout);
+    if (browser) await browser.close();
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
@@ -752,7 +801,6 @@ module.exports = (function () {
     const props = {};
     try {
       const { size, mtimeMs } = await fs.stat(full_media_path);
-
       props.size = size;
       props.mtimems = Math.floor(mtimeMs);
     } catch (e) {

@@ -2,7 +2,7 @@ export default {
   welcome_to_dodoc: "Bienvenue sur do•doc !",
   current_lang_name: "Français",
   a_foss_made_by:
-    "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
+    "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers,&nbsp;…!",
   home: "Accueil",
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
@@ -26,9 +26,10 @@ export default {
   back: "retour",
   save: "enregistrer",
   input_url: "URL vers un site à intégrer",
-  input_url_instr:
-    "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
+  input_url_instr: "Indiquez ici une URL vers une ressource.",
+  url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
+  table: "Tableau",
   from_project: "Depuis le projet",
   save_to_project: "Enregistrer dans le projet",
   day: "Jour",
@@ -138,7 +139,7 @@ export default {
   favicon_image_instr: "Apparaîtra dans l’onglet du navigateur.",
   topbar_image: "Logo dans la barre de navigation",
   topbar_image_instr:
-    "En haut à gauche de l’écran. Au click, ramène à la page d’accueil.",
+    "En haut à gauche de l’écran. Au clic, ramène à la page d’accueil.",
   hero_image: "Visuel page d’accueil",
   hero_image_instr: "",
   change_order: "Changer l’ordre",
@@ -151,7 +152,7 @@ export default {
   ui_lang_select: "Langue de l’interface",
   lang_updated: "La langue a été mise à jour",
 
-  signup_password: "mot de passe pour la création d’un compte",
+  signup_password: "Mot de passe pour la création d’un compte",
   signup_password_instructions:
     "Limiter la création de compte aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent créer un compte.",
   signup_password_users_instructions:
@@ -178,6 +179,7 @@ export default {
   group: "Groupe",
   show_list: "Afficher la liste",
   show: "Afficher",
+  show_title: "Afficher le titre",
   hide: "Masquer",
   list_of_accounts: "Liste des comptes",
   show_all_accounts: "Afficher tous les comptes",
@@ -331,6 +333,7 @@ export default {
   no_projects: "Aucun projet à afficher",
   no_files: "Aucun fichier",
   no_publications: "Aucune publication à afficher",
+
   none_f: "Aucune",
   none: "Aucun·e",
   reset_all: "Retirer tout",
@@ -398,9 +401,11 @@ export default {
 
   no_accounts_yet: "Aucun compte créé pour le moment",
   add_accounts: "Rajouter des comptes",
-  restart_to_apply: "Relancez do•doc pour appliquer",
+  restart_to_apply:
+    "Fermez et redémarrez do•doc manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
+  restart: "Fermer et redémarrer",
+
   refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
-  restart: "Relancer do•doc",
   reveal: "Révéler",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
@@ -450,6 +455,8 @@ export default {
   snap_to_grid: "Magnétisme de la grille",
   gridstep: "Pas de la grille",
   scale: "Échelle",
+  over: "au-dessus",
+  under: "en-dessous",
 
   path_to_content: "Chemin du stockage des contenus",
   path_to_content_instructions: `Attention, fonctionnalité avancée !
@@ -489,14 +496,16 @@ export default {
   trim_instructions:
     "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
   start: "début",
+  set_start: "Définir le début",
+  play_extract: "Jouer l’extrait",
+  stop_extract: "Arrêter l’extrait",
   end: "fin",
+  set_end: "Définir la fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
   export_montage: "Exporter le montage",
 
-  image_to_rework: "Image à retravailler",
-  video_to_rework: "Vidéo à recouper",
-  audio_to_rework: "Son à recouper",
+  video_to_rework: "Vidéo à retrailler",
 
   pick_audio: "Choisissez le son à utiliser",
   pick_image: "Choisissez l’image à utiliser",
@@ -556,16 +565,17 @@ export default {
   slowing_video_down_limit:
     "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
   speed_up: "Accélérer",
-  a_little: "Un peu",
-  a_lot: "Beaucoup",
-  clockwise: "Dans le sens des aiguilles d’une montre",
-  counterclockwise: "Dans le sens inverse des aiguilles d’une montre",
+  playback_speed: "Vitesse de lecture",
   reverse: "Inverser le début et la fin",
   angle: "Angle",
   "error:": "Erreur&nbsp;:",
   mirror: "Miroir",
   horizontal_flip: "Retournement horizontal",
   vertical_flip: "Retournement vertical",
+
+  rotate: "Pivoter",
+  rotate_90_deg: "Pivoter de 90°",
+  rotate_x_deg: "Pivoter vers la droite de …°",
   both: "Les deux",
 
   mix_audio_and_image: "Son sur une image",
@@ -580,6 +590,9 @@ export default {
   mix_audio_and_video_summary: "Ajouter ou remplacer du son sur une vidéo.",
   mix_audio_and_video_instructions:
     "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
+
+  qr_code: "Code QR",
+  qr_code_summary: "Créer un code QR à partir d’un texte ou d’un lien.",
 
   add_sound_video_file:
     "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.",
@@ -658,7 +671,7 @@ export default {
 
   copyleft: "Art Libre / Copyleft",
   copyleft_explanations:
-    "Voir <a href='https://artlibre.org/' target='_blank'>artlibre.org</a> pour une explication de cette licence",
+    "Voir <a href='https://artlibre.org/' title='Site de Art Libre' target='_blank'>artlibre.org</a> pour une explication de cette licence",
   copy_of: "Copie de",
   remix_of: "Remix de",
   open_copy: "Accéder à la copie",
@@ -676,6 +689,7 @@ export default {
   remove_original_after_copy: "L’original sera supprimé après la copie",
   keep_original_after_copy: "L’original sera conservé après la copie",
 
+  no_authors_to_show: "Aucun compte à afficher",
   remove_account: "Supprimer ce compte",
   remove_account_expl:
     "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
@@ -763,6 +777,8 @@ export default {
   pause: "Pause",
   first_image: "Première image",
   previous_image: "Image précédente",
+  next: "Suivant",
+  previous: "Précedent",
   next_image: "Image suivante",
   last_image: "Dernière image",
   assemble: "Assembler",
@@ -779,6 +795,8 @@ export default {
   stl: "STL",
   obj: "OBJ",
   other: "Autre",
+  webpage: "Page web",
+  all_keywords: "De tous les mots-clés",
   all_medias_types: "De tous types",
   all_origins: "De toutes origines",
   all_accounts: "De tous les comptes",
@@ -796,7 +814,7 @@ export default {
   medium: "Moyenne",
   low: "Basse",
   rough: "Ébauche",
-  optimize_media: "Optimiser le média",
+  optimize: "Optimiser",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
@@ -921,6 +939,7 @@ export default {
     "La connexion au compte est active, rechargement de la page en cours…",
 
   informations: "Informations",
+  metadatas: "Métadonnées",
 
   duplicate: "Dupliquer",
   duplicate_or_move: "Dupliquer ou déplacer",
@@ -939,7 +958,9 @@ export default {
   import_in_progress: "Importation en cours…",
   import_finished:
     "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
-  zip_wrong: "Ce fichier ZIP n’est pas un projet dodoc valide",
+  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet dodoc valide",
+  zip_is_space_not_project:
+    "Ce fichier ZIP semble être un espace et non un projet",
 
   move_to_page: "Déplacer vers une autre page",
 
@@ -1010,7 +1031,7 @@ export default {
   hide_already_translated: "Masquer les traductions déjà réalisées",
   "to_translate:": "À traduire :",
   publish_on_forum_to_add_to_contribute_to_code:
-    "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
+    "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum de l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Effacer toutes les traductions proposées",
 
   no_coordinates: "Aucunes coordonnées disponibles",
@@ -1052,27 +1073,43 @@ export default {
   STAMEN_watercolor: "Aquarelle",
   STAMEN_toner: "Toner",
   provided_by_stadiamaps:
-    "Fournis par <a href='https://stadiamaps.com' target='_blank'>StadiaMaps</a>.",
+    "Fournis par <a href='https://stadiamaps.com' title='StadiaMaps' target='_blank'>StadiaMaps</a>.",
   IGN_MAP: "Carte IGN (en France uniquement)",
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles_no_internet:
     "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
+  zoom_animation: "Animation de zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
 
   terms: "Conditions d’utilisation",
-  create_terms_page: "Créer une page pour les conditions d’utilisation",
-  open_page: "Ouvrir la page",
-  terms_in_footer: "Placer un lien en bas de la page d’accueil",
+  create_this_page: "Créer la page",
+  open_terms_page: "Ouvrir la page des conditions d’utilisation",
+  terms_confidentiality_in_footer: "Placer un lien en bas de la page d’accueil",
   users_must_accept_terms_to_signup:
     "Les utilisateurs doivent accepter les conditions d’utilisation pour s’inscrire",
   click_here_to_read: "Cliquez ici pour les lire.",
   i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
 
+  confidentiality: "Confidentialité",
+  open_confidentiality_page: "Ouvrir la page de la confidentialité",
   page_to_export: "Page à exporter",
+  terms_confidentiality_infos: `
+    Les champs suivants permettent de créer des pages précisant les conditions 
+    d’utilisation et les règles de confidentialité de votre instance.
+    Un lien vers ces pages peut être placé en bas de la page d’accueil, 
+    ainsi qu’au niveau du formulaire pour créer un compte.
+    En France et dans n’importe quel pays de l’Union Européenne, ces pages doivent être
+    remplies pour informer les utilisateurs de ces règles là.
+    `,
+  cookies_info: `
+    Sur cette version de do•doc, sachez qu’aucun suivi des visites n’est réalisé 
+    et que les seuls cookies servent à enregistrer des informations techniques anonymes
+    (comme la langue, l’utilisation des caméras, etc.).
+    `,
 
   on_this_page: "Sur cette page",
   on_other_pages: "Sur d’autres pages",
@@ -1083,6 +1120,8 @@ export default {
 
   mouse_position: "Position de la balise",
   search_for_a_place: "Rechercher un lieu",
+  no_results: "Aucun résultat",
+
   click_to_start_drawing: "cliquer pour commencer le tracé",
   click_to_continue_drawing: "cliquez pour ajouter un autre point",
   click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
@@ -1099,13 +1138,13 @@ export default {
   about_dodoc: "À propos de do•doc",
   about_dodoc_txt: `do•doc est un logiciel libre et gratuit créé pour documenter des projets et animé par une communauté diversifiée regroupant des designers, des enseignants, des artistes, des formateurs, des créateurs et des passionnés de documentation en général.
   Il est employé dans une multitude de contextes, que ce soit en classe, dans des fablabs, des tiers-lieux, ainsi que comme moteur de plateformes de ressources accessibles en ligne.<br><br>
-  Le design et le développement de cet outil sont assurés par le collectif <a href="https://latelier-des-chercheurs.fr/" target="_blank">l’Atelier des chercheurs</a> depuis ses débuts, en 2014, 
-  mais tout le monde a la possibilité de suivre ou de participer à ce travail par le biais de ce forum : <a href="https://forum.latelier-des-chercheurs.fr/" target="_blank">https://forum.latelier-des-chercheurs.fr/</a>.`,
+  Le design et le développement de cet outil sont assurés par le collectif <a href="https://latelier-des-chercheurs.fr/" title="L’Atelier des chercheurs" target="_blank">l’Atelier des chercheurs</a> depuis ses débuts, en 2014, 
+  mais tout le monde a la possibilité de suivre ou de participer à ce travail par le biais de ce forum : <a href="https://forum.latelier-des-chercheurs.fr/" title="Forum de l’Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr/</a>.`,
   about_dodoc_links: `
   Voici quelques autres liens :
   <ul>
-  <li>La dernière version du logiciel est disponible sur la page dédiée : <a href="https://dodoc.fr" target="_blank">https://dodoc.fr</a></li>
-  <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
+  <li>La dernière version du logiciel est disponible sur la page dédiée : <a href="https://dodoc.fr" title="Site de do•doc" target="_blank">https://dodoc.fr</a></li>
+  <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Code source de do•doc sur Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
   </ul>
   `,
   about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
@@ -1115,14 +1154,18 @@ export default {
   full_page: "Pleine page",
 
   convert: "Convertir",
+  convert_shorten: "Convertir/raccourcir",
+  select_extract: "Sélectionner un extrait",
+  extract_range: "Recouper le début ou la fin",
   convert_to_format: "Adapter le format pour la lecture",
 
   already_optimized:
     "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
-  preview_optimize: "Créer une version optimisée",
+  preview_new: "Créer une nouvelle version",
   wont_remove_original: "Ne supprimera pas l’original",
   add_optimized_to_lib: "Conserver l’original et la nouvelle version",
-  replace_original: "Remplacer et supprimer l’original",
+  replace_original: "Remplacer l’original",
+  save_as_new_media: "Enregistrer comme nouveau média",
 
   change: "Changer",
   transition_fade: "Transition : fondu enchaîné",
@@ -1131,4 +1174,43 @@ export default {
 
   coll_is_private:
     "Cette collection est privée et ne peut être consultée que par les référents.",
+  dont_zoom: "Ne pas zoomer",
+  very_far: "Très éloigné",
+  very_close: "Très près",
+  enable_indexing: "Permettre l’indexation par les moteurs de recherche",
+  crop_adjust: "Recadrer/retoucher",
+  aspect_ratio: "Rapport largeur/hauteur",
+  square: "Carré",
+  original: "Original",
+  A_portrait: "Format 'A' portrait",
+  A_landscape: "Format 'A' paysage",
+  constrain_crop_resize: "Contrainte pour recadrer/redimensionner",
+  custom_aspect_ratio: "Indiquer ici une valeur, par exemple 1,66",
+  resize: "Redimensionner",
+
+  page_number: "Numéro de page",
+  on_click: "Au clic",
+  do_nothing: "Ne rien faire",
+  open_webpage: "Ouvrir une page web dans un nouvel onglet",
+  navigate_to_page: "Naviguer vers une page",
+
+  regenerate_thumbs: "Regénérer l’aperçu",
+  embed_link: "Lien d’intégration",
+  direct_link_to_file:
+    "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",
+  share_link_to_file:
+    "Ce lien correspond à une page de consultation contenant le média, sa légende et ses crédits (si les champs sont remplis).",
+
+  remove_permanently: "Supprimer définitivement les contenus",
+  remove_permanently_true:
+    "Les médias supprimés seront définitivement perdu et ne pourront pas être récupérés.",
+  remove_permanently_false:
+    "Les médias supprimés seront déplacés dans un sous-dossier (comme une corbeille).",
+
+  upload_max_file_size_in_mo: "Taille maximale des fichiers importés ou captés",
+  umo_instructions: "En mégaoctets (par défaut, 10 000, soit environ 10 Go).",
+
+  scan_qr_code: "Scanner un code QR",
+  opening_link_in: "Ouverture du lien dans",
+  qr_code_content: "Contenu du code QR",
 };

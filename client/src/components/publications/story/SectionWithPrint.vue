@@ -39,7 +39,11 @@ export default {
     };
   },
   created() {
-    if (this.$route.query?.display === "section") this.display_mode = "section";
+    if (
+      this.$route.query?.display === "section" ||
+      window.app_infos.page_is_standalone_html
+    )
+      this.display_mode = "section";
   },
   mounted() {},
   beforeDestroy() {},

@@ -11,10 +11,7 @@
       <template v-if="!can_edit || (can_edit && !edit_mode)">
         <template v-if="content && content !== ' '">
           <div class="_content">
-            <MarkdownField
-              v-if="input_type === 'markdown'"
-              :text="content"
-            /><span v-else v-text="content" />
+            <span v-text="content" />
           </div>
         </template>
       </template>
@@ -30,6 +27,7 @@
         :maxlength="maxlength"
         :key="edit_mode + content"
         @toggleValidity="($event) => (allow_save = $event)"
+        @onEnter="updateText"
       />
       <EditBtn
         v-if="can_edit && !edit_mode"
@@ -68,7 +66,7 @@ export default {
       default: "text",
     },
     content: {
-      type: String,
+      type: [String, Number],
       default: "",
     },
     path: String,
@@ -133,9 +131,19 @@ export default {
       // todo interrupt updateMeta
     },
     async updateText() {
+      if (this.input_type === "number")
+        this.new_content = Number(this.new_content);
+      else this.new_content = this.cleanUpString(this.new_content);
+
+      if (!this.path) {
+        this.$emit("save", this.new_content);
+        this.edit_mode = false;
+        this.is_saving = false;
+        return;
+      }
+
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
-      this.new_content = this.cleanUpString(this.new_content);
       try {
         const new_meta = {
           [this.field_name]: this.new_content,

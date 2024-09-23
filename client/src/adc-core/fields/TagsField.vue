@@ -12,22 +12,23 @@
     </div>
 
     <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
-      <TagsList
-        :tags="new_tags"
-        :tag_type="tag_type"
-        :mode="'remove'"
-        :shorten_if_too_long="false"
-        @tagClick="removeTag($event)"
-      />
+      <div class="u-spacingBottom">
+        <TagsList
+          :tags="new_tags"
+          :tag_type="tag_type"
+          :mode="'remove'"
+          :shorten_if_too_long="false"
+          @tagClick="removeTag($event)"
+        />
+      </div>
 
-      <div class="u-spacingBottom" />
-
-      <fieldset class="_newTagPane" v-if="create_new_tag">
+      <fieldset class="u-spacingBottom _newTagPane" v-if="create_new_tag">
         <legend class="u-label">{{ $t("add_item") }}</legend>
 
         <div class="u-spacingBottom">
           <TagsSuggestion
             :tag_type="tag_type"
+            :local_suggestions="local_suggestions"
             :new_tag_name="new_tag_name"
             :tags_to_exclude="new_tags"
             @newTag="newTag($event)"
@@ -78,6 +79,7 @@ export default {
   props: {
     field_name: String,
     tag_type: String,
+    local_suggestions: Array,
     label: String,
     content: {
       type: Array,
@@ -188,6 +190,7 @@ export default {
 ._tl {
   display: flex;
   flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
 }
 
 ._footer {

@@ -73,7 +73,6 @@ export default function () {
           this.connected = false;
           this.$eventHub.$emit("socketio.disconnect", reason);
           this.socket.disconnect();
-          this.emptyStore();
           this.socket.once("connect", () => {
             this.rejoinRooms();
           });
@@ -137,12 +136,6 @@ export default function () {
         } else {
           // console.log("LEAVE – room still tracked", room);
         }
-      },
-
-      emptyStore() {
-        // called when client disconnects from socket
-        // since we cant be sure of what happens before reconnect, we nuke all store
-        // this.store = {};
       },
 
       async rejoinRooms() {
@@ -298,6 +291,7 @@ export default function () {
               .error("Folder missing in store : " + path_to_folder);
         if (!folder.$files) this.$set(folder, "$files", new Array());
         folder.$files.push(meta);
+        this.$eventHub.$emit("file.created", { meta });
       },
       fileUpdated({ path_to_folder, path_to_meta, changed_data }) {
         const folder = this.store[path_to_folder];
@@ -318,6 +312,9 @@ export default function () {
         const response = await this.$axios.get(`_storagePath`);
         const storage_path = response.data.pathToUserContent;
         return storage_path;
+      },
+      async restartApp() {
+        await this.$axios.post(`_restartApp`);
       },
       taskStatus({ task_id, progress }) {
         this.$eventHub.$emit("task.status", { task_id, progress });
@@ -376,7 +373,7 @@ export default function () {
         return this.store[folder.$path];
       },
 
-      async getArchives({ path }) {
+      async getFile({ path }) {
         const response = await this.$axios.get(path);
         return response.data;
       },
@@ -510,7 +507,8 @@ export default function () {
             throw this.processError(err);
           });
         this.$eventHub.$emit("hooks.uploadFile", { path });
-        return res.data.meta_filename;
+        const { saved_meta, meta_filename } = res.data;
+        return { saved_meta, meta_filename };
       },
       async copyFile({ path, new_meta = {}, path_to_destination_folder = "" }) {
         const response = await this.$axios
@@ -620,7 +618,11 @@ export default function () {
         this.$eventHub.$emit("hooks.updateMeta", { path });
         return response.data;
       },
-
+      async regenerateThumbs({ path }) {
+        const response = await this.$axios.patch(`${path}/_regenerateThumbs`);
+        this.$eventHub.$emit("hooks.regenerateThumbs", { path });
+        return response.data;
+      },
       async updateCover({ path, new_cover_data, onProgress }) {
         if (typeof new_cover_data === "string") {
           // its a meta filename in that same folder
@@ -681,6 +683,12 @@ export default function () {
             // this.$alertify.delay(4000).error("action_not_allowed");
           } else if (code === "token_not_allowed_must_be_contributors") {
             // this.$alertify.delay(4000).error("action_not_allowed");
+          } else if (code === "file_size_limit_exceeded") {
+            let msg = "File size limit exceeded. Maximum file size is ";
+            msg +=
+              err_infos.upload_max_file_size_in_mo +
+              " Mo. Please try again with a smaller file.";
+            this.$alertify.delay(4000).error(msg);
           } else if (code === "ENOENT") code = "folder_is_missing";
           // this.$alertify.delay(4000).error("Message d’erreur : " + code);
           console.error("processError – " + code);

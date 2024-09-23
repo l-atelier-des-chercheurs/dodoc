@@ -36,14 +36,12 @@
               'is--disabled': !chroma_key_settings.enable,
             }"
           >
-            <div>
-              <label>{{ $t("color") }}</label>
-              <input
-                type="color"
-                v-model="chroma_key_color_hex"
-                :novalue="chroma_key_color_hex === ''"
-              />
-            </div>
+            <ColorInput
+              :label="$t('color')"
+              :can_toggle="false"
+              :value="chroma_key_color_hex"
+              @save="chroma_key_color_hex = $event"
+            />
             <div>
               <button
                 type="button"
@@ -136,24 +134,17 @@
             </div>
 
             <div v-if="chroma_key_settings.replacement_mode === 'image'">
-              <!-- // TODO  -->
-              <small class="_instr u-instructions">
-                pas disponible pour le moment / feature not yet functioning, use
-                dodoc 9
-              </small>
-
-              <!-- <ImageSelect
+              <ImageSelect
                 :path="project_path"
-                :available_options="['import', 'project', 'capture']"
+                :available_options="['project']"
                 @newPreview="newChromaKeyImage"
-              /> -->
-              <!-- {{ chroma_key_settings.replacement_image }} -->
+              />
             </div>
             <div v-else>
-              <input
-                type="color"
-                v-model="chroma_key_replacement_color_hex"
-                :novalue="chroma_key_replacement_color_hex === ''"
+              <ColorInput
+                :can_toggle="false"
+                :value="chroma_key_replacement_color_hex"
+                @save="chroma_key_replacement_color_hex = $event"
               />
             </div>
           </div>
@@ -215,7 +206,7 @@ export default {
           g: 255,
           b: 0,
         }, // 0 -> 1 by 0.001
-        similarity: 0.04, // 0 -> 1 by 0.001
+        similarity: 0.02, // 0 -> 1 by 0.001
         smoothness: 0.08, // 0 -> 1 by 0.001
         spill: 0.1, // 0 -> 1 by 0.001
         replacement_color: {
@@ -794,7 +785,7 @@ void main(void) {
     stopWebGL() {
       this.offscreen_canvas = undefined;
     },
-    newChromaKeyImage(img) {
+    async newChromaKeyImage(img) {
       console.log(`CaptureEffects • METHODS : newChromaKeyImage`);
 
       if (img === false) {
@@ -803,50 +794,70 @@ void main(void) {
         return;
       }
 
-      var imageElement = new Image();
+      let src = "";
+      if (typeof img === "string") {
+        src = window.location.origin + this.getMediaSrcFromPath(img);
+      } else if (typeof img === "object" && img.thumb) {
+        // src = window.location.origin + "/" + img.thumb;
+      }
+      if (!src) return;
 
-      if (typeof img === "string") imageElement.src = img;
-      else if (typeof img === "object") imageElement.src = img.thumb;
+      let img_el = new Image();
+      img_el.src = src;
 
-      imageElement.onload = () => {
-        const canvas = document.createElement("canvas"),
-          ctx = canvas.getContext("2d");
+      try {
+        await img_el.decode();
+      } catch (e) {
+        console.error(e);
+      }
 
-        canvas.width = this.videoElement.videoWidth;
-        canvas.height = this.videoElement.videoHeight;
+      const canvas = document.createElement("canvas"),
+        ctx = canvas.getContext("2d");
 
-        const coverImg = (img, type, c_width, c_height) => {
-          const img_ratio = img.height / img.width;
-          const c_ratio = c_height / c_width;
-          if (
-            (img_ratio < c_ratio && type === "contain") ||
-            (img_ratio > c_ratio && type === "cover")
-          ) {
-            const h = c_width * img_ratio;
-            ctx.drawImage(img, 0, (c_height - h) / 2, c_width, h);
-          }
-          if (
-            (img_ratio > c_ratio && type === "contain") ||
-            (img_ratio < c_ratio && type === "cover")
-          ) {
-            const w = (c_width * c_ratio) / img_ratio;
-            ctx.drawImage(img, (c_width - w) / 2, 0, w, c_height);
-          }
-        };
+      canvas.width = this.videoElement.videoWidth;
+      canvas.height = this.videoElement.videoHeight;
 
-        coverImg(imageElement, "cover", canvas.width, canvas.height);
+      const type = "cover";
 
-        this.chroma_key_settings.replacement_image = ctx.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
+      const img_ratio = img_el.height / img_el.width;
+      const c_ratio = canvas.height / canvas.width;
+      if (
+        (img_ratio < c_ratio && type === "contain") ||
+        (img_ratio > c_ratio && type === "cover")
+      ) {
+        const h = canvas.width * img_ratio;
+        ctx.drawImage(img_el, 0, (canvas.height - h) / 2, canvas.width, h);
+      }
+      if (
+        (img_ratio > c_ratio && type === "contain") ||
+        (img_ratio < c_ratio && type === "cover")
+      ) {
+        const w = (canvas.width * c_ratio) / img_ratio;
+        ctx.drawImage(img_el, (canvas.width - w) / 2, 0, w, canvas.height);
+      }
 
-        this.loadReplacementImageInShader();
+      this.chroma_key_settings.replacement_image = ctx.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
 
-        canvas.remove();
-      };
+      this.loadReplacementImageInShader();
+
+      canvas.remove();
+    },
+    getMediaSrcFromPath(path_to_source_media_meta) {
+      const file = this.getMediaInFolder({
+        path_to_source_media_meta,
+      });
+      const path_to_project = this.getParent(file.$path);
+      return this.makeRelativeURLFromThumbs({
+        $thumbs: file.$thumbs,
+        $type: file.$type,
+        $path: path_to_project,
+        resolution: 1600,
+      });
     },
     loadReplacementImageInShader() {
       const gl = this.offscreen_canvas.getContext("webgl", {

@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 @close="$emit('close')">
+  <BaseModal2 :title="$t('embed')" @close="$emit('close')">
     <div class="_linkPicker">
       <div class="_urlBox">
         <!-- <DLabel :str="$t('input_url')" :instructions="$t('input_url_instr')" /> -->
@@ -17,21 +17,34 @@
       </div>
 
       <div class="u-instructions">
-        PeerTube, YouTube, Vimeo, etc.
-        {{ $t("for_example") }}&nbsp;
-        <button
-          v-for="(url, index) in [
-            'https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde',
-            'https://www.youtube.com/watch?v=Bn6zdyCAwJs',
-            'https://vimeo.com/447785086',
-            'https://observablehq.com/embed/@fil/bertin1953-glsl?cells=canvas',
-          ]"
-          type="button"
-          class="u-buttonLink"
-          @click="full_url = url"
-          :key="index"
-          v-html="url"
-        />
+        <small class="_examples">
+          {{ $t("for_example") }}
+          <button
+            v-for="(url, index) in [
+              {
+                url: 'https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde',
+                label: 'PeerTube',
+              },
+              {
+                url: 'https://www.youtube.com/watch?v=Bn6zdyCAwJs',
+                label: 'Youtube',
+              },
+              {
+                url: 'https://vimeo.com/447785086',
+                label: 'Vimeo',
+              },
+              {
+                url: 'https://observablehq.com/embed/@fil/bertin1953-glsl?cells=canvas',
+                label: 'Observable',
+              },
+            ]"
+            type="button"
+            class="u-buttonLink"
+            @click="full_url = url.url"
+            :key="index"
+            v-html="url.label"
+          />
+        </small>
       </div>
 
       <br />
@@ -119,5 +132,11 @@ export default {
 iframe {
   width: 100%;
   aspect-ratio: 4/3;
+}
+
+._examples {
+  display: inline-flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
 }
 </style>

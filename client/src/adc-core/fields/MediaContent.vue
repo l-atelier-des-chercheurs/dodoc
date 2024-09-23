@@ -72,13 +72,14 @@
 
     <template v-else-if="file.$type === 'text'">
       <CollaborativeEditor2
+        v-if="file.$media_filename.endsWith('.txt')"
         class="_mediaContent--collabEditor"
         :content="file.$content"
         :path="file.$path"
         :can_edit="can_edit"
       />
+      <div v-else class="_mediaContent--rawText" v-text="file.$content" />
     </template>
-
     <template v-else-if="['pdf', 'url', 'stl', 'obj'].includes(file.$type)">
       <template v-if="context === 'preview'">
         <img
@@ -182,7 +183,7 @@
       </div>
       <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
         <ImageZoom
-          v-if="file.$type === 'image'"
+          v-if="file.$type === 'image' && full_thumb"
           :small_img="full_thumb"
           :large_img="file_full_path"
           :width="img_width"
@@ -244,6 +245,8 @@ export default {
   watch: {},
   computed: {
     thumb() {
+      if (this.file.$thumbs === "no_preview") return false;
+
       const path_to_parent = this.file.$path.substring(
         0,
         this.file.$path.lastIndexOf("/")
@@ -260,11 +263,12 @@ export default {
       return this.file_full_path;
     },
     file_full_path() {
-      const p = this.makeMediaFilePath({
+      return this.makeMediaFilePath({
         $path: this.file.$path,
         $media_filename: this.file.$media_filename,
+        with_timestamp: true,
+        $date_created: this.file.$date_created,
       });
-      return `/${p}?v=${this.timestamp}`;
     },
     timestamp() {
       if (this.file.$date_created) return +new Date(this.file.$date_created);
@@ -447,7 +451,12 @@ export default {
   }
 }
 
-._mediaContent--collabEditor {
+._mediaContent--collabEditor,
+._mediaContent--rawText {
   width: 100%;
+  text-align: left;
+}
+._mediaContent--rawText {
+  white-space: pre-wrap;
 }
 </style>

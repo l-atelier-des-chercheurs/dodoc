@@ -20,6 +20,7 @@
             :cover="author.$cover"
             :title="$t('pick_portrait')"
             :preview_format="'circle'"
+            :available_options="['import', 'capture']"
             :path="author.$path"
             :placeholder="author.name.substring(0, 2)"
             :can_edit="can_edit"
@@ -64,6 +65,7 @@
               :label="context === 'full' ? $t('group') : undefined"
               :field_name="'group'"
               :tag_type="'accountgroup'"
+              :local_suggestions="group_suggestions"
               :content="author.group"
               :path="author.$path"
               :can_edit="can_edit"
@@ -183,21 +185,12 @@ export default {
   data() {
     return {
       show_settings_modal: false,
+      group_suggestions: [],
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        remove_author_expl:
-          "Seuls le compte et le contenu du chutier seront supprimés, l’ensemble des contenus qui lui sont associés (documents de l’archive et collections) seront conservés.",
-      },
-      en: {
-        remove_author_expl:
-          "Only the account and chutier content will be removed, but archives and collections won’t.",
-      },
-    },
+  async created() {
+    this.group_suggestions = await this.getAllAuthorsGroup();
   },
-  created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -223,6 +216,23 @@ export default {
       });
       if (this.is_self) await this.$api.logoutFromFolder();
       this.$router.push("/@");
+    },
+    async getAllAuthorsGroup() {
+      const authors = await this.$api.getFolders({
+        path: "authors",
+      });
+      return authors
+        .reduce((acc, m) => {
+          m.group?.map((k) => {
+            if (!acc.some((_k) => _k === k)) {
+              if (k) acc.push(k);
+            }
+          });
+          return acc;
+        }, [])
+        .sort((a, b) => {
+          return a.localeCompare(b);
+        });
     },
   },
 };

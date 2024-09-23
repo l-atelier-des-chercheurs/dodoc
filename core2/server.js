@@ -5,6 +5,7 @@ var https = require("https");
 var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
+const helmet = require("helmet");
 const { Server } = require("socket.io");
 
 const sockets = require("./sockets"),
@@ -17,6 +18,13 @@ module.exports = function () {
   const app = express();
 
   app.use(compression());
+
+  app.use(
+    helmet({
+      // todo: set correct CSP
+      contentSecurityPolicy: false,
+    })
+  );
 
   // only for HTTPS, works without asking for a certificate
   const options = {
@@ -65,10 +73,12 @@ module.exports = function () {
   app.set("views", global.appRoot); //Specify the views folder
   app.set("view engine", "pug"); //View engine is Pug
 
-  // app.use(function (req, res, next) {
-  // if (req.url.includes(".txt")) res.status(403).send(`Access not allowed.`);
-  // else next();
-  // });
+  // prevent access to general admin and folders meta.txt
+  app.use(function (req, res, next) {
+    if (req.url.includes("/meta.txt"))
+      res.status(403).send(`Access not allowed.`);
+    else next();
+  });
 
   app.use(express.static(global.pathToUserContent));
   app.use(
@@ -80,6 +90,10 @@ module.exports = function () {
   //   "/_cache",
   //   express.static(path.join(global.appRoot, global.settings.cacheDirname))
   // );
+  app.use("/robots.txt", (req, res) => {
+    res.type("text/plain");
+    res.send("");
+  });
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // To parse the incoming requests with JSON payloads

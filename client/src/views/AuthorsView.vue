@@ -9,11 +9,29 @@
 
     <h1 class="_title" v-text="$t('list_of_accounts')" />
 
-    <div class="u-spacingBottom _searchField">
-      <SearchInput
-        v-model="search_author_name"
-        :search_placeholder="$t('search_by_name')"
-      />
+    <div class="_topRow">
+      <div class="_searchField">
+        <SearchInput
+          v-model="search_author_name"
+          :search_placeholder="$t('search_by_name')"
+          :name="'search_author'"
+        />
+      </div>
+      <div v-if="all_groups.length > 0">
+        <TagsList
+          :tags="all_groups"
+          :tag_type="'accountgroup'"
+          :tags_active="[filter_by_group]"
+          @tagClick="toggleGroupFilter($event)"
+        />
+
+        <!-- <TagsField
+          :label="$t('group')"
+          :tag_type="'accountgroup'"
+          :content="all_groups"
+          :can_edit="false"
+        /> -->
+      </div>
     </div>
 
     <transition-group
@@ -47,6 +65,7 @@ export default {
       path: "authors",
       authors: [],
       search_author_name: "",
+      filter_by_group: "",
     };
   },
   created() {},
@@ -67,17 +86,41 @@ export default {
     filtered_authors() {
       return this.sorted_authors.filter((a) => {
         if (this.search_author_name)
-          return this.twoStringsSearch(a.name, this.search_author_name);
+          if (!this.twoStringsSearch(a.name, this.search_author_name))
+            return false;
+
+        if (this.filter_by_group)
+          if (!a.group.includes(this.filter_by_group)) return false;
+
         return true;
       });
     },
+    all_groups() {
+      return this.sorted_authors
+        .reduce((acc, m) => {
+          m.group?.map((k) => {
+            if (!acc.some((_k) => _k === k)) {
+              if (k) acc.push(k);
+            }
+          });
+          return acc;
+        }, [])
+        .sort((a, b) => {
+          return a.localeCompare(b);
+        });
+    },
   },
-  methods: {},
+  methods: {
+    toggleGroupFilter(val) {
+      this.filter_by_group = val === this.filter_by_group ? "" : val;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
 ._backBtn {
-  margin-bottom: calc(var(--spacing) * 2);
+  display: flex;
+  margin-bottom: calc(var(--spacing) * 1);
 }
 ._authorsView {
   padding: calc(var(--spacing) * 1);
@@ -95,5 +138,13 @@ export default {
 
 ._searchField {
   max-width: 30ch;
+}
+
+._topRow {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  gap: calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) / 1);
 }
 </style>

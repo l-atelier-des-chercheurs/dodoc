@@ -4,6 +4,7 @@
       <SearchInput2
         v-model="search_author_name"
         :search_placeholder="$t('search_by_name')"
+        :name="'search_author'"
       />
     </div>
 

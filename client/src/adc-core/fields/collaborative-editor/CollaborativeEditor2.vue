@@ -99,23 +99,23 @@ import {
   lineHeightArr,
 } from "./imports/defaults.js";
 
-var Parchment = Quill.import("parchment");
-var lineHeightConfig = {
-  scope: Parchment.Scope.BLOCK,
-  whitelist: lineHeightArr,
-};
-var lineHeightClass = new Parchment.Attributor.Class(
-  "lineheight",
-  "ql-line-height",
-  lineHeightConfig
-);
-var lineHeightStyle = new Parchment.Attributor.Style(
-  "lineheight",
-  "line-height",
-  lineHeightConfig
-);
-Parchment.register(lineHeightClass);
-Parchment.register(lineHeightStyle);
+// var Parchment = Quill.import("parchment");
+// var lineHeightConfig = {
+//   scope: Parchment.Scope.BLOCK,
+//   whitelist: lineHeightArr,
+// };
+// var lineHeightClass = new Parchment.Attributor.Class(
+//   "lineheight",
+//   "ql-line-height",
+//   lineHeightConfig
+// );
+// var lineHeightStyle = new Parchment.Attributor.Style(
+//   "lineheight",
+//   "line-height",
+//   lineHeightConfig
+// );
+// Parchment.register(lineHeightClass);
+// Parchment.register(lineHeightStyle);
 var Size = Quill.import("attributors/style/size");
 Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
@@ -326,8 +326,8 @@ export default {
         container.push([{ header: [false, 1, 2, 3] }]);
       if (reference_formats.includes("size"))
         container.push([{ size: fontSizeArr }]);
-      if (reference_formats.includes("lineheight"))
-        container.push([{ lineheight: lineHeightArr }]);
+      // if (reference_formats.includes("lineheight"))
+      //   container.push([{ lineheight: lineHeightArr }]);
 
       let formatting_opt = [];
       const basic_formatting = [
@@ -406,9 +406,10 @@ export default {
 
       if (reference_formats.includes("code-block"))
         container.push(["code-block"]);
+      if (reference_formats.includes("table")) container.push(["table"]);
 
       // todo divider
-      container.push(["clean"]);
+      if (reference_formats.length > 0) container.push(["clean"]);
 
       let handlers = {
         divider: function () {
@@ -553,12 +554,13 @@ export default {
     },
 
     restoreVersion(content) {
-      // TODO : with delta to allow for undo
-      // this.editor.root.innerHTML = content;
-      const value = content;
-      const delta = this.editor.clipboard.convert(value);
+      // it seems this allows for undo
+      this.editor.root.innerHTML = content;
 
-      this.editor.setContents(delta, "user");
+      // do not use, it doesnt respect \n
+      // const value = content;
+      // const delta = this.editor.clipboard.convert(value);
+      // this.editor.setContents(delta, "user");
 
       this.show_archives = false;
     },
@@ -608,6 +610,11 @@ export default {
       const new_content = this.getEditorContent();
       if (new_content === this.content) {
         return "content_not_changed";
+      }
+
+      if (!this.path) {
+        this.$emit("save", new_content);
+        return;
       }
 
       const new_meta = {
@@ -780,7 +787,7 @@ export default {
               caption,
               // TODO update with $path
               // meta_filename: $slug,
-              // src: `/thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
+              // src: `./thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
             },
             Quill.sources.USER
           );

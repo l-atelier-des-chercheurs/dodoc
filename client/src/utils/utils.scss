@@ -7,6 +7,8 @@
   color: inherit;
   opacity: 0.8;
   margin-bottom: calc(var(--spacing) / 4);
+
+  // color: var(--label-color);
 }
 .u-meta {
   text-transform: uppercase;
@@ -14,6 +16,14 @@
   font-family: var(--sl-font-mono);
   font-size: var(--sl-font-size-small);
   letter-spacing: 0.02em;
+}
+
+*:focus-visible {
+  outline-color: var(--active-color);
+}
+
+a:focus-visible {
+  outline-width: 2px;
 }
 
 .u-sectionLabel {
@@ -205,16 +215,13 @@ button {
     color: var(--c-gris);
   }
 
-  &.is--active {
-    background: var(--c-bleuvert);
-  }
-
   &:hover,
   &:active,
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
       color: var(--r-900);
+      outline: 0;
       background: var(--active-color);
     }
   }
@@ -431,6 +438,9 @@ textarea {
   font-size: inherit;
   min-height: 4.5em;
 }
+input[type="number"] {
+  min-width: 8ch;
+}
 
 input[type="color"],
 input[type="date"],
@@ -552,7 +562,7 @@ select {
   background-position: right 0.4rem center;
   background-repeat: no-repeat;
   background-size: 0.75rem;
-  border: none;
+  // border: none;
   padding: calc(var(--spacing) / 2);
   padding-right: calc(var(--spacing) * 0.5 + 1rem);
   min-width: 0px;
@@ -575,34 +585,7 @@ select {
   }
 
   &.is--active {
-    font-weight: 500;
-  }
-}
-
-sl-tag[size="small"] {
-  &::part(base) {
-    height: calc(var(--input-height-small) * 1);
-  }
-}
-
-sl-card {
-  &::part(header) {
-    padding: calc(var(--spacing) / 2) var(--spacing);
-  }
-}
-
-sl-button[variant="semitransparent"] {
-  &::part(base) {
-    background: rgba(255, 255, 255, 0.7);
-  }
-}
-sl-button[variant="edit"] {
-  &::part(base) {
-    // background: var(--c-bleuvert);
-    background: transparent;
-    color: var(--c-bleuvert);
-    // color: white;
-    border: none;
+    font-weight: 700;
   }
 }
 
@@ -1176,4 +1159,8 @@ input[type="checkbox"]:disabled {
       color: white;
     }
   }
+}
+.flickity-prev-next-button.flickity-prev-next-button {
+  height: 34px;
+  width: 34px;
 }

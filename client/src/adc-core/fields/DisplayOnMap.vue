@@ -14,8 +14,8 @@
       class="_popup"
       :class="{
         'is--pin': clicked_location.module,
+        'is--shown': has_module_content_to_show,
       }"
-      v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div class="_popupShadow" />
       <button
@@ -336,6 +336,10 @@ export default {
       type: Number,
       default: 1,
     },
+    zoom_animation: {
+      type: Number,
+      default: 0,
+    },
     map_baselayer_color: String,
     map_base_media: Object,
     is_small: {
@@ -551,6 +555,23 @@ export default {
       if (!this.selected_feature) return undefined;
       return this.selected_feature.getGeometry().getType();
     },
+    has_module_content_to_show() {
+      if (!this.clicked_location.module)
+        return Object.prototype.hasOwnProperty.call(
+          this.$slots,
+          "popup_message"
+        );
+
+      // do not show empty text blocks
+      const fm = this.firstMedia(this.clicked_location.module);
+      if (
+        !fm ||
+        (fm.$type === "text" && (fm.$content === "" || fm.$content === "\n"))
+      )
+        return false;
+
+      return true;
+    },
   },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
@@ -667,8 +688,8 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// SEARCH FIELD
 
-      let lang = "fr-FR";
-      if (this.$i18n.locale === "en") lang = "en-US";
+      let lang = "en-US";
+      if (this.$i18n.locale === "fr") lang = "fr-FR";
 
       const geocoder = new Geocoder("nominatim", {
         provider: "osm",
@@ -677,11 +698,38 @@ export default {
         placeholder: this.$t("search_for_a_place"),
         // targetType: "text-input",
         limit: 5,
-        keepOpen: false,
+        keepOpen: true,
         preventDefault: true,
       });
       this.map.addControl(geocoder);
+
+      let search_timeout;
+      const startTimeout = () => {
+        console.log("startTimeout");
+        search_timeout = setTimeout(() => {
+          clearTimeout(search_timeout);
+          this.$alertify.error(this.$t("no_results"));
+        }, 2000);
+      };
+
+      const search_button = document.querySelector(
+        ".ol-geocoder #gcd-input-search"
+      );
+      if (search_button) search_button.addEventListener("click", startTimeout);
+
+      const search_input = document.querySelector(
+        ".ol-geocoder #gcd-input-query"
+      );
+      if (search_input)
+        search_input.addEventListener("keyup", function (e) {
+          if (e.key === "Enter" || e.keyCode === 13) {
+            startTimeout();
+          }
+        });
+
       geocoder.on("addresschosen", async (evt) => {
+        if (search_timeout) clearTimeout(search_timeout);
+
         this.closePopup();
 
         await this.$nextTick();
@@ -837,6 +885,12 @@ export default {
       this.overlay.setPosition([longitude, latitude]);
       this.clicked_location.longitude = longitude;
       this.clicked_location.latitude = latitude;
+
+      setTimeout(() => {
+        this.navigateTo({
+          center: [longitude, latitude],
+        });
+      }, 100);
     },
     getCurrentPosition() {
       this.is_looking_for_gps_coords = true;
@@ -1281,9 +1335,26 @@ export default {
       // used to stop current animation if there are any
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
+      const duration = 1400;
+
+      // if (this.zoom_animation && this.zoom_animation > 0)
+      //   this.view.animate(
+      //     {
+      //       zoom: zoom - this.zoom_animation,
+      //       duration: duration / 2,
+      //     },
+      //   );
+      //   this.view.animate(
+      //     {
+
+      //       zoom: zoom,
+      //       duration: duration / 2,
+      //     },
+      //   );
+      //   else
       this.view.animate({
         center,
-        duration: 600,
+        duration,
         zoom,
       });
     },
@@ -1302,11 +1373,14 @@ export default {
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];
+
+      const pin_zoom_level = this.clicked_location.module?.zoom_level;
       this.navigateTo({
         center: [
           this.clicked_location.longitude,
           this.clicked_location.latitude,
         ],
+        zoom: pin_zoom_level,
       });
     },
     closePopup() {
@@ -1868,6 +1942,7 @@ export default {
         left: 0;
         top: 0;
         padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+        padding-right: 2em;
         height: calc(2rem + 2px);
         position: relative;
         border: 1px solid var(--c-gris_fonce);
@@ -1876,6 +1951,19 @@ export default {
           box-shadow: none;
           border-color: var(--active-color);
         }
+      }
+      .gcd-gl-search:after {
+        content: "→";
+
+        line-height: 1;
+        font-weight: 800;
+        background: var(--active-color);
+        color: white;
+        display: inline-block;
+        border-radius: 50%;
+        margin-top: 3px;
+        padding: 4px;
+        font-size: 90%;
       }
     }
     .gcd-road {
@@ -1913,6 +2001,7 @@ export default {
   bottom: 9px;
   left: -48px;
   min-width: 280px;
+  opacity: 0;
 
   font-size: var(--sl-font-size-normal);
 
@@ -1948,6 +2037,10 @@ export default {
   //   left: 48px;
   //   margin-left: -11px;
   // }
+
+  &.is--shown {
+    opacity: 1;
+  }
   &.is--pin {
     bottom: 38px;
   }
@@ -1990,7 +2083,7 @@ export default {
   overflow: auto;
 
   ::v-deep ._publicationModule ._collaborativeEditor {
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1) 0;
   }
 
   ::v-deep ._captionField {
@@ -2000,7 +2093,7 @@ export default {
 }
 
 ._popupMessage {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 }
 
 ._leftTopMenu {

@@ -51,5 +51,9 @@ export default {
 <style lang="scss" scoped>
 ._favSwitch {
   color: var(--c-rouge);
+
+  .u-button_icon {
+    padding: calc(var(--spacing) / 4);
+  }
 }
 </style>

@@ -35,6 +35,13 @@
           :edit_on_mounted="edit_mode"
           :can_edit="edit_mode"
         />
+        <TableEditor
+          v-else-if="media_with_linked._linked_media.$type === 'table'"
+          class="_mediaContent--table"
+          :content="media_with_linked._linked_media.$content"
+          :path="media_with_linked._linked_media.$path"
+          :can_edit="edit_mode"
+        />
         <MediaContent
           v-else
           :file="media_with_linked._linked_media"
@@ -43,7 +50,6 @@
           :show_fs_button="show_fs_button"
           :can_edit="can_edit"
         />
-
         <CaptionCreditsPage
           :media="media_with_linked._linked_media"
           :publication_path="publication_path"
@@ -68,6 +74,7 @@
                 media_with_linked._linked_media.$type !== 'stl' &&
                 media_with_linked._linked_media.$type !== 'obj' &&
                 media_with_linked._linked_media.$type !== 'text' &&
+                media_with_linked._linked_media.$type !== 'table' &&
                 media_with_linked._linked_media.$type !== 'other'
               "
             >
@@ -145,7 +152,7 @@
           medias_with_linked.length < number_of_max_medias
         "
       >
-        <DropZone @mediaDropped="$emit('addMedias', $event)" />
+        <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
       </template>
     </div>
   </div>
@@ -232,6 +239,8 @@ export default {
 ._mediaGrid {
   position: relative;
   width: 100%;
+  page-break-inside: avoid;
+  -webkit-region-break-inside: avoid;
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
@@ -351,5 +360,9 @@ export default {
 }
 ._df {
   display: inline-flex;
+}
+
+._dzAfter {
+  z-index: 1000;
 }
 </style>
