@@ -135,8 +135,6 @@
   </div>
 </template>
 <script>
-import CaptureModal from "@/components/publications/CaptureModal.vue";
-
 export default {
   props: {
     existing_preview: [Boolean, String],

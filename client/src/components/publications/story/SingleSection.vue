@@ -91,11 +91,13 @@
             />
           </template>
         </transition-group>
-        <ModuleCreator v-if="can_edit" class="_lastModule"
-        :start_collapsed="false" :publication_path="publication.$path" <<<<<<<
-        HEAD :types_available="['write', 'embed']" =======
-        :types_available="['capture', 'import', 'write', 'embed', 'table']"
-        >>>>>>> next-node @addModules="addModules" />
+        <ModuleCreator
+          v-if="can_edit"
+          class="_lastModule"
+          :start_collapsed="false"
+          :publication_path="publication.$path"
+          :types_available="['import', 'write', 'embed', 'table']"
+        />
       </div>
     </div>
   </div>
