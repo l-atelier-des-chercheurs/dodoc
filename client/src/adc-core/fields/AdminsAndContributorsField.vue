@@ -9,7 +9,12 @@
         :str="custom_label ? custom_label : $t('admins_and_contributors')"
       />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-      <div class="u-listOfAvatars" v-if="all_participants_path.length > 0">
+      <transition-group
+        tag="div"
+        class="u-listOfAvatars"
+        v-if="all_participants_path.length > 0"
+        name="listComplete"
+      >
         <AuthorTag
           v-for="atpath in subset_participants_path"
           :path="atpath"
@@ -20,12 +25,22 @@
         <button
           type="button"
           class="u-button u-button_icon _unshortenListBtn"
+          v-if="all_participants_path.length > 10"
+          :key="'shorten_list'"
           @click="shorten_list = !shorten_list"
         >
-          <b-icon v-if="shorten_list" icon="plus-circle" />
-          <b-icon v-else icon="dash-circle" />
+          <transition name="fade_fast" mode="out-in">
+            <div key="plus" v-if="shorten_list">
+              +
+              {{
+                all_participants_path.length - subset_participants_path.length
+              }}
+            </div>
+            <b-icon v-else key="minus" icon="dash" />
+          </transition>
         </button>
-      </div>
+      </transition-group>
+
       <div class="u-instructions">
         <div v-if="admins_path === 'everyone'">
           {{ $t("everyone_can_edit") }}
@@ -88,6 +103,7 @@ export default {
         p = p.concat(this.contributors_path);
       p = [...new Set(p)];
       // p = p.concat(p).concat(p);
+      // p = p.concat(p).concat(p);
       return p;
     },
     subset_participants_path() {
@@ -138,7 +154,9 @@ export default {
 }
 
 ._unshortenListBtn {
-  width: 30px;
+  min-width: 30px;
   height: 30px;
+  border: 2px solid var(--c-gris);
+  border-radius: 15px;
 }
 </style>
