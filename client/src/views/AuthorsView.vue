@@ -90,7 +90,7 @@ export default {
             return false;
 
         if (this.filter_by_group)
-          if (!a.group.includes(this.filter_by_group)) return false;
+          if (!a.group?.includes(this.filter_by_group)) return false;
 
         return true;
       });
@@ -131,6 +131,11 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: calc(var(--spacing) / 1);
+
+  > * {
+    // for listComplete
+    z-index: 1;
+  }
 }
 ._title {
   margin-bottom: calc(var(--spacing) * 1);

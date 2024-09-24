@@ -5,10 +5,7 @@
     :type="component_tag === 'button' ? 'button' : ''"
     :to="author_url"
     :title="author.name"
-    class="_author"
-    :class="{
-      'u-card2': component_tag === 'button' || component_tag === 'link',
-    }"
+    class="u-card2 _author"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
     @click="$emit('click')"
@@ -96,7 +93,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._author {
-  display: flex;
+  display: inline-flex;
   flex-flow: row nowrap;
   align-items: center;
   // background: var(--c-bleumarine_clair);
@@ -114,6 +111,7 @@ export default {
   &:where(button) {
     &:hover,
     &:focus-visible {
+      font-weight: 800;
       background-color: var(--c-gris_clair);
     }
   }

@@ -11,12 +11,20 @@
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
       <div class="u-listOfAvatars" v-if="all_participants_path.length > 0">
         <AuthorTag
-          v-for="atpath in all_participants_path"
+          v-for="atpath in subset_participants_path"
           :path="atpath"
           :key="atpath"
           :show_image_only="true"
           :mode="'link'"
         />
+        <button
+          type="button"
+          class="u-button u-button_icon _unshortenListBtn"
+          @click="shorten_list = !shorten_list"
+        >
+          <b-icon v-if="shorten_list" icon="plus-circle" />
+          <b-icon v-else icon="dash-circle" />
+        </button>
       </div>
       <div class="u-instructions">
         <div v-if="admins_path === 'everyone'">
@@ -65,6 +73,7 @@ export default {
     return {
       edit_mode: false,
       show_modal: false,
+      shorten_list: true,
     };
   },
   created() {},
@@ -78,8 +87,13 @@ export default {
       if (Array.isArray(this.contributors_path))
         p = p.concat(this.contributors_path);
       p = [...new Set(p)];
-      // p = p.concat(p).concat(p);
+      p = p.concat(p).concat(p);
       return p;
+    },
+    subset_participants_path() {
+      if (this.all_participants_path.length > 10 && this.shorten_list)
+        return this.all_participants_path.slice(0, 10);
+      return this.all_participants_path;
     },
     admins_path() {
       if (this.folder.$admins) return this.folder.$admins;
@@ -112,18 +126,19 @@ export default {
     }
   }
 }
-.u-listOfAvatars {
-  flex-flow: row nowrap;
-  padding: 0;
-  gap: 0;
-  overflow: auto;
-
-  @include scrollbar(8px, 5px, 6px);
-}
 
 ._floatingTopRight {
   position: absolute !important;
   top: 0;
   right: 0;
+}
+
+.u-listOfAvatars {
+  gap: 0;
+}
+
+._unshortenListBtn {
+  width: 30px;
+  height: 30px;
 }
 </style>

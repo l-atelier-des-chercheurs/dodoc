@@ -54,12 +54,14 @@
                 {{ $t("back") }}
               </button>
 
-              <transition name="fade" mode="out-in">
-                <AuthorTag
-                  :key="author_to_login_to.$path"
-                  :path="author_to_login_to.$path"
-                />
-              </transition>
+              <div>
+                <transition name="fade" mode="out-in">
+                  <AuthorTag
+                    :key="author_to_login_to.$path"
+                    :path="author_to_login_to.$path"
+                  />
+                </transition>
+              </div>
 
               <input
                 style="display: none"
