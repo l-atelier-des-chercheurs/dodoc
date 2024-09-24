@@ -112,8 +112,7 @@
             <div class="u-spacingBottom" />
 
             <div class="u-instructions">
-              {{ $t("latitude") }} : {{ file.$location.latitude }}
-              <br />
+              {{ $t("latitude") }} : {{ file.$location.latitude }} //
               {{ $t("longitude") }} : {{ file.$location.longitude }}
             </div>
           </template>
