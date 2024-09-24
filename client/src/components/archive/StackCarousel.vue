@@ -75,8 +75,14 @@ export default {
     },
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("carousel.next", this.nextFile);
+    this.$eventHub.$on("carousel.prev", this.prevFile);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("carousel.next", this.nextFile);
+    this.$eventHub.$off("carousel.prev", this.prevFile);
+  },
   watch: {
     active_file_index() {
       this.$nextTick(() => {
@@ -111,6 +117,13 @@ export default {
     },
     openFile(index) {
       this.active_file_index = index;
+    },
+    prevFile() {
+      if (this.active_file_index > 0) this.active_file_index--;
+    },
+    nextFile() {
+      if (this.active_file_index < this.files.length - 1)
+        this.active_file_index++;
     },
   },
 };

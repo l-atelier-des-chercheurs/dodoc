@@ -55,7 +55,6 @@
               <hr />
 
               <div>
-                <TitleField
                 <CollaborativeEditor2
                   :label="$t('description')"
                   :field_to_edit="'description'"
@@ -450,6 +449,14 @@ export default {
       if ($event.key === "Escape") {
         this.$emit("close");
         return false;
+      } else if ($event.key === "ArrowLeft") {
+        this.$eventHub.$emit("carousel.prev");
+      } else if ($event.key === "ArrowRight") {
+        this.$eventHub.$emit("carousel.next");
+      } else if ($event.key === "ArrowUp") {
+        this.$eventHub.$emit("fileshown.showCaption");
+      } else if ($event.key === "ArrowDown") {
+        this.$eventHub.$emit("fileshown.hideCaption");
       }
     },
   },
