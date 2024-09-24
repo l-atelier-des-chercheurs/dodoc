@@ -46,8 +46,8 @@
           <td>
             <div class="u-sameRow">
               <AuthorTag
-                v-for="atpath in collection.$admins"
-                :key="atpath"
+                v-for="(atpath, index) in collection.$admins"
+                :key="atpath + '_' + index"
                 :path="atpath"
                 :show_image_only="true"
               />
