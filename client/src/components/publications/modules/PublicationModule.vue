@@ -912,9 +912,12 @@ export default {
   flex: 0 1 auto;
   display: flex;
   flex-flow: row wrap;
-  justify-content: flex-end;
   align-items: center;
   gap: calc(var(--spacing) / 4);
+}
+
+._carto {
+  justify-content: flex-end;
 }
 
 ._buttonRow {
