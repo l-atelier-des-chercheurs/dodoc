@@ -59,7 +59,7 @@
             <button
               type="button"
               class="u-button _archivesBtn"
-              v-else-if="field_to_edit === '$content'"
+              v-else-if="field_to_edit === '$content' && path"
               @click="show_archives = !show_archives"
             >
               <b-icon icon="archive" />
