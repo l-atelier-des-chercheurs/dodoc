@@ -24,6 +24,34 @@
           :show_fs_button="true"
           :zoom_on_click="false"
         />
+        <div class="_navArrow">
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            @click="$eventHub.$emit('carousel.prev')"
+          >
+            <b-icon icon="arrow-left-short" />
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            @click="$eventHub.$emit('carousel.next')"
+          >
+            <b-icon icon="arrow-right-short" />
+          </button>
+        </div>
+        <button
+          type="button"
+          class="u-buttonLink _regenerateBtn"
+          v-if="file.$thumbs === 'no_preview'"
+          @click="regenerateThumbs"
+        >
+          <template v-if="!is_regenerating">
+            <b-icon icon="arrow-clockwise" />
+            {{ $t("regenerate_thumbs") }}
+          </template>
+          <LoaderSpinner v-else />
+        </button>
         <button
           type="button"
           class="u-buttonLink _regenerateBtn"
@@ -294,6 +322,20 @@ export default {
   ::v-deep .ql-editor {
     padding: calc(var(--spacing) / 2);
     border-left: 2px solid var(--h-700);
+  }
+}
+
+._navArrow {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
   }
 }
 </style>
