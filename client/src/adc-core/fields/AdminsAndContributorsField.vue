@@ -87,7 +87,7 @@ export default {
       if (Array.isArray(this.contributors_path))
         p = p.concat(this.contributors_path);
       p = [...new Set(p)];
-      p = p.concat(p).concat(p);
+      // p = p.concat(p).concat(p);
       return p;
     },
     subset_participants_path() {
