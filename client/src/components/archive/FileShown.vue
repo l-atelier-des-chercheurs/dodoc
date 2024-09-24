@@ -1,6 +1,6 @@
 <template>
   <div class="_fileShown">
-    <div class="_single">
+    <div class="_single" :data-type="file.$type">
       <transition name="pagechange" mode="out-in">
         <template v-if="file">
           <div class="_textEditor" v-if="file.$type === 'text'">
@@ -179,6 +179,10 @@ export default {
   position: relative;
   flex: 1 1 auto;
   overflow: hidden;
+
+  &[data-type="text"] {
+    overflow: auto;
+  }
 
   ::v-deep {
     ._mediaContent {
