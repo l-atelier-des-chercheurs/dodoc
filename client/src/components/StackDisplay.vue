@@ -454,9 +454,9 @@ export default {
       } else if ($event.key === "ArrowRight") {
         this.$eventHub.$emit("carousel.next");
       } else if ($event.key === "ArrowUp") {
-        this.$eventHub.$emit("fileshown.showCaption");
+        this.$eventHub.$emit("fileshown.showInfos");
       } else if ($event.key === "ArrowDown") {
-        this.$eventHub.$emit("fileshown.hideCaption");
+        this.$eventHub.$emit("fileshown.hideInfos");
       }
     },
   },
