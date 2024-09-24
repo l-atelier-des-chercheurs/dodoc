@@ -73,6 +73,15 @@
             @close="$emit('close')"
           /> -->
 
+          <div class="u-spacingBottom" v-if="file.$type === 'url'">
+            <DLabel class="_label" :str="$t('link')" />
+            <div>
+              <a :href="file.$content" target="_blank">
+                {{ file.$content }}
+              </a>
+            </div>
+          </div>
+
           <div class="u-spacingBottom">
             <TitleField
               :field_name="'caption'"
