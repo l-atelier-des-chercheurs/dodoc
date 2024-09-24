@@ -20,7 +20,7 @@
             class="u-button u-button_icon u-button_transparent"
             @click.stop="show_sidebar = true"
           >
-            <b-icon icon="list-ul" :aria-label="$t('show_sidebar')" />
+            <b-icon icon="list-ul" :aria-label="$t('show')" />
           </button>
         </div>
 
@@ -202,7 +202,7 @@
               class="u-button u-button_icon u-button_transparent _hideSidebar"
               @click.stop="show_sidebar = false"
             >
-              <b-icon icon="arrow-left" :aria-label="$t('hide_sidebar')" />
+              <b-icon icon="arrow-left" :aria-label="$t('hide')" />
             </button>
           </div>
         </transition>
