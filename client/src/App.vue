@@ -317,7 +317,7 @@ body {
 }
 
 a {
-  color: var(--c-bleumarine);
+  color: var(--active-color);
   text-underline-offset: 0.1em;
 
   &:hover,
