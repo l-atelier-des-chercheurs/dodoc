@@ -317,7 +317,7 @@ body {
 }
 
 a {
-  color: var(--active-color);
+  color: var(--h-900);
   text-underline-offset: 0.1em;
 
   &:hover,
