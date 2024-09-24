@@ -4,6 +4,7 @@
       class="_stackCarousel--fileshown"
       :key="current_file_shown.$path"
       :file="current_file_shown"
+      :position="file_shown_position"
       :can_edit="can_edit"
     />
 
@@ -108,6 +109,12 @@ export default {
       if (this.active_file_index !== false)
         return this.files[this.active_file_index];
       return false;
+    },
+    file_shown_position() {
+      if (this.files.length === 1) return "alone";
+      if (this.active_file_index === 0) return "first";
+      if (this.active_file_index === this.files.length - 1) return "last";
+      return "inbetween";
     },
   },
   methods: {

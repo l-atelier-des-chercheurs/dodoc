@@ -28,6 +28,7 @@
           <button
             type="button"
             class="u-button u-button_icon"
+            :disabled="position === 'alone' || position === 'first'"
             @click="$eventHub.$emit('carousel.prev')"
           >
             <b-icon icon="arrow-left-short" />
@@ -35,23 +36,12 @@
           <button
             type="button"
             class="u-button u-button_icon"
+            :disabled="position === 'alone' || position === 'last'"
             @click="$eventHub.$emit('carousel.next')"
           >
             <b-icon icon="arrow-right-short" />
           </button>
         </div>
-        <button
-          type="button"
-          class="u-buttonLink _regenerateBtn"
-          v-if="file.$thumbs === 'no_preview'"
-          @click="regenerateThumbs"
-        >
-          <template v-if="!is_regenerating">
-            <b-icon icon="arrow-clockwise" />
-            {{ $t("regenerate_thumbs") }}
-          </template>
-          <LoaderSpinner v-else />
-        </button>
         <button
           type="button"
           class="u-buttonLink _regenerateBtn"
@@ -167,6 +157,7 @@ export default {
   props: {
     file: Object,
     context: String,
+    position: String,
     can_edit: Boolean,
   },
   components: {},
