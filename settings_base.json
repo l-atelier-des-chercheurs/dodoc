@@ -232,6 +232,13 @@
       },
       "authors": {
         "$can_be_created_by": "everyone",
+        "$cover": {
+          "width": 2000,
+          "height": 2000,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 2000]
+          }
+        },
         "fields": {
           "email": {
             "type": "string",
