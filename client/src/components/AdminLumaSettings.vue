@@ -34,26 +34,26 @@
             </div>
 
             <div class="u-spacingBottom">
-              <TitleField
-                :field_name="'presentation_of_instance_fr'"
+              <CollaborativeEditor2
                 :label="$t('presentation_of_instance') + ' (en français)'"
+                :field_to_edit="'presentation_of_instance_fr'"
                 :instructions="$t('presentation_of_instance_instructions')"
                 :content="settings.presentation_of_instance_fr"
                 :path="settings.$path"
-                :required="false"
-                :input_type="'markdown'"
+                :custom_formats="['bold', 'italic', 'link']"
+                :is_collaborative="false"
                 :can_edit="is_instance_admin"
               />
             </div>
             <div class="u-spacingBottom">
-              <TitleField
-                :field_name="'presentation_of_instance_en'"
+              <CollaborativeEditor2
                 :label="$t('presentation_of_instance') + ' (en anglais)'"
+                :field_to_edit="'presentation_of_instance_en'"
                 :instructions="$t('presentation_of_instance_instructions')"
                 :content="settings.presentation_of_instance_en"
                 :path="settings.$path"
-                :required="false"
-                :input_type="'markdown'"
+                :custom_formats="['bold', 'italic', 'link']"
+                :is_collaborative="false"
                 :can_edit="is_instance_admin"
               />
             </div>

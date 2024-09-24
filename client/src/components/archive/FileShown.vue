@@ -1,33 +1,46 @@
 <template>
   <div class="_fileShown">
-    <div class="_single" :data-type="file.$type">
-      <transition name="pagechange" mode="out-in">
-        <template v-if="file">
-          <div class="_textEditor" v-if="file.$type === 'text'">
-            <CollaborativeEditor2
-              :path="file.$path"
-              :content="file.$content"
-              :custom_formats="['bold', 'italic', 'underline', 'link']"
-              :can_edit="can_edit"
-              :edit_on_mounted="context === 'chutier'"
-            />
-          </div>
-          <MediaContent
-            v-else
-            :key="file.$path"
-            :file="file"
-            :context="'full'"
-            :resolution="1600"
-            :show_fs_button="true"
-            :zoom_on_click="false"
+    <transition name="pagechange" mode="out-in">
+      <div
+        v-if="file"
+        :key="file.$path"
+        class="_single"
+        :data-type="file.$type"
+      >
+        <div v-if="file.$type === 'text'" class="_textEditor">
+          <CollaborativeEditor2
+            :path="file.$path"
+            :content="file.$content"
+            :custom_formats="['bold', 'italic', 'underline', 'link']"
+            :can_edit="can_edit"
+            :edit_on_mounted="context === 'chutier'"
           />
-        </template>
-      </transition>
-
-      <div class="_dragEditBtn">
-        <DragFile :file="file" :is_dragged.sync="is_dragged" />
+        </div>
+        <MediaContent
+          v-else
+          :file="file"
+          :context="'full'"
+          :resolution="1600"
+          :show_fs_button="true"
+          :zoom_on_click="false"
+        />
+        <button
+          type="button"
+          class="u-buttonLink _regenerateBtn"
+          v-if="file.$thumbs === 'no_preview'"
+          @click="regenerateThumbs"
+        >
+          <template v-if="!is_regenerating">
+            <b-icon icon="arrow-clockwise" />
+            {{ $t("regenerate_thumbs") }}
+          </template>
+          <LoaderSpinner v-else />
+        </button>
+        <div class="_dragEditBtn">
+          <DragFile :file="file" :is_dragged.sync="is_dragged" />
+        </div>
       </div>
-    </div>
+    </transition>
 
     <div class="_unfoldBtn">
       <button
@@ -83,27 +96,27 @@
           </div>
 
           <div class="u-spacingBottom">
-            <TitleField
-              :field_name="'caption'"
-              class="_caption"
+            <CollaborativeEditor2
               :label="$t('caption')"
+              :field_to_edit="'caption'"
               :content="file.caption"
               :path="file.$path"
+              :custom_formats="['bold', 'italic', 'link']"
+              :is_collaborative="false"
               :maxlength="1280"
-              :input_type="'markdown'"
               :can_edit="can_edit"
             />
           </div>
 
           <div class="">
-            <TitleField
-              :field_name="'$credits'"
-              class="_credits"
+            <CollaborativeEditor2
               :label="$t('credit/reference')"
+              :field_to_edit="'$credits'"
               :content="file.$credits"
               :path="file.$path"
+              :custom_formats="['bold', 'italic', 'link']"
+              :is_collaborative="false"
               :maxlength="1280"
-              :input_type="'markdown'"
               :can_edit="can_edit"
             />
           </div>
@@ -134,6 +147,7 @@ export default {
       show_infos: true,
       is_dragged: false,
       edit_mode: false,
+      is_regenerating: false,
     };
   },
   i18n: {
@@ -149,8 +163,14 @@ export default {
       this.show_infos =
         this.can_edit || this.file.caption || this.file.$credits;
   },
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("fileshown.showInfos", this.showInfos);
+    this.$eventHub.$on("fileshown.hideInfos", this.hideInfos);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("fileshown.showInfos", this.showInfos);
+    this.$eventHub.$off("fileshown.hideInfos", this.hideInfos);
+  },
   watch: {
     show_infos() {
       localStorage.setItem("show_infos", this.show_infos);
@@ -164,7 +184,19 @@ export default {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
     },
   },
-  methods: {},
+  methods: {
+    async regenerateThumbs() {
+      this.is_regenerating = true;
+      await this.$api.regenerateThumbs({ path: this.file.$path });
+      this.is_regenerating = false;
+    },
+    showInfos() {
+      this.show_infos = true;
+    },
+    hideInfos() {
+      this.show_infos = false;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -189,6 +221,11 @@ export default {
       height: 100%;
     }
 
+    ._iframeStylePreview {
+      border: none !important;
+      border-radius: 0 !important;
+    }
+
     ._mediaContent--image {
       position: absolute;
       width: 100%;
@@ -199,6 +236,12 @@ export default {
       // border-radius: 2px;
     }
   }
+}
+
+._regenerateBtn {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 ._unfoldBtn {

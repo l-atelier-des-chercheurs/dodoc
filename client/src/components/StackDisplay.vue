@@ -56,11 +56,13 @@
 
               <div>
                 <TitleField
+                <CollaborativeEditor2
                   :label="$t('description')"
-                  :field_name="'description'"
+                  :field_to_edit="'description'"
                   :content="stack.description"
                   :path="stack.$path"
-                  :input_type="'markdown'"
+                  :custom_formats="['bold', 'italic', 'link']"
+                  :is_collaborative="false"
                   :can_edit="can_edit"
                 />
               </div>

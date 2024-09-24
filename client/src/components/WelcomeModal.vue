@@ -4,13 +4,13 @@
     @close="$emit('close')"
   >
     <div class="u-spacingBottom">
-      <MarkdownField
-        v-if="$i18n.locale === 'fr'"
-        :text="$root.app_infos.instance_meta.presentation_of_instance_fr"
-      />
-      <MarkdownField
-        v-if="$i18n.locale === 'en'"
-        :text="$root.app_infos.instance_meta.presentation_of_instance_en"
+      <CollaborativeEditor2
+        :content="
+          $i18n.locale === 'fr'
+            ? $root.app_infos.instance_meta.presentation_of_instance_fr
+            : $root.app_infos.instance_meta.presentation_of_instance_en
+        "
+        :can_edit="false"
       />
     </div>
 
