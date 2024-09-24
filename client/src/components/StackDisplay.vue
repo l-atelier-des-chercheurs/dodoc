@@ -151,7 +151,8 @@
               <div v-if="can_edit" class="u-sameRow">
                 <DownloadFolder :path="stack.$path" />
                 <RemoveMenu
-                  :remove_text="$t('remove_stack')"
+                  :remove_text="$t('remove')"
+                  :remove_expl="$t('remove_stack_instr')"
                   @remove="removeStack"
                 />
               </div>

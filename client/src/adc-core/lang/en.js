@@ -155,7 +155,9 @@ export default {
   complete_or_correct_title_kw:
     "Complete or correct title and keywords to share this item",
   create_stack: "Create stack",
-  remove_stack: "Remove stack and its content",
+
+  remove_stack_instr: "Remove stack and its content",
+
   selected_items: "Selected medias:",
   selected_item: "Selected media:",
   show_only_my_content: "Show only my content",
