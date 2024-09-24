@@ -97,6 +97,7 @@
           :start_collapsed="false"
           :publication_path="publication.$path"
           :types_available="['import', 'write', 'embed', 'table']"
+          @addModules="addModules"
         />
       </div>
     </div>
