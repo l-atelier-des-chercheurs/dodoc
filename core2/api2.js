@@ -332,7 +332,6 @@ module.exports = (function () {
       return "Folder opened to any contributors or admins";
 
     const token_path = auth.extractAndCheckToken({ req });
-
     if (token_path) {
       if (token_path === path_to_folder) return "Token editing self";
       if (
@@ -384,7 +383,6 @@ module.exports = (function () {
     }
 
     const token_path = auth.extractAndCheckToken({ req });
-
     if (token_path) {
       if (token_path === utils.convertToSlashPath(path_to_folder))
         return "Token editing self";
