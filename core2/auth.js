@@ -45,7 +45,7 @@ module.exports = (function () {
     checkSuperadminToken(t) {
       return superadmintoken === t;
     },
-    extrackAndCheckToken({ req }) {
+    extractAndCheckToken({ req }) {
       if (!req.headers || !req.headers.authorization) {
         // const err = new Error("Headers missing");
         // err.code = "missing_headers";
