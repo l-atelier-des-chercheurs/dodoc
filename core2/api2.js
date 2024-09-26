@@ -331,8 +331,7 @@ module.exports = (function () {
     )
       return "Folder opened to any contributors or admins";
 
-    const token_path = auth.extrackAndCheckToken({ req });
-
+    const token_path = auth.extractAndCheckToken({ req });
     if (token_path) {
       if (token_path === path_to_folder) return "Token editing self";
       if (
@@ -383,8 +382,7 @@ module.exports = (function () {
       else return false;
     }
 
-    const token_path = auth.extrackAndCheckToken({ req });
-
+    const token_path = auth.extractAndCheckToken({ req });
     if (token_path) {
       if (token_path === utils.convertToSlashPath(path_to_folder))
         return "Token editing self";
@@ -478,7 +476,7 @@ module.exports = (function () {
     dev.logapi();
 
     try {
-      const token_path = auth.extrackAndCheckToken({ req });
+      const token_path = auth.extractAndCheckToken({ req });
 
       if (await auth.isTokenInstanceAdmin({ token_path }))
         return next ? next() : undefined;
