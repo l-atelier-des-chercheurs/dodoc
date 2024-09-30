@@ -310,18 +310,13 @@ class Exporter {
 
       let page_timeout = setTimeout(async () => {
         clearTimeout(page_timeout);
-
-        try {
-          const err = new Error("Failed to capture media screenshot");
-          err.code = "failed_to_capture_media_screenshot_page-timeout";
-          throw err;
-        } catch (e) {
-          dev.error(`page timeout for ${url}`);
-          if (browser) await browser.close();
-          this._notifyEnded({
-            event: "failed",
-          });
-        }
+        if (browser) await browser.close();
+        this._notifyEnded({
+          event: "failed",
+        });
+        const err = new Error("Failed to capture media screenshot");
+        err.code = "failed_to_capture_media_screenshot_page-timeout";
+        throw err;
       }, 30_000);
 
       browser = await puppeteer.launch({
@@ -379,13 +374,13 @@ class Exporter {
       }
 
       this._notifyProgress(95);
-      clearTimeout(page_timeout);
+      if (page_timeout) clearTimeout(page_timeout);
       if (browser) await browser.close();
 
       return path_to_temp_file;
     } catch (err) {
       dev.error(`err for puppeteer ${err}`);
-      clearTimeout(page_timeout);
+      if (page_timeout) clearTimeout(page_timeout);
       this._notifyEnded({
         event: "failed",
       });
