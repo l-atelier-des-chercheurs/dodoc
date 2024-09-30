@@ -364,7 +364,7 @@ class Exporter {
           })
           .then((data) => {
             this._notifyProgress(80);
-            clearTimeout(page_timeout);
+            if (page_timeout) clearTimeout(page_timeout);
             if (win) win.close();
             return data;
           })
@@ -384,7 +384,7 @@ class Exporter {
           .catch((error) => {
             dev.logverbose("Failed to print to pdf " + url);
             dev.error(error.message);
-            clearTimeout(page_timeout);
+            if (page_timeout) clearTimeout(page_timeout);
             if (win) win.close();
             this._notifyEnded({
               event: "failed",
@@ -397,7 +397,7 @@ class Exporter {
         "did-fail-load",
         (event, code, desc, url, isMainFrame) => {
           dev.error(`Failed to load print pdf page ${url}`);
-          clearTimeout(page_timeout);
+          if (page_timeout) clearTimeout(page_timeout);
           dev.error("did-fail-load: ");
           // dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
           if (win) win.close();
