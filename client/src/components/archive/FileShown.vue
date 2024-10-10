@@ -24,7 +24,7 @@
           :show_fs_button="true"
           :zoom_on_click="false"
         />
-        <div class="_navArrow">
+        <div class="_navArrow" v-if="position">
           <button
             type="button"
             class="u-button u-button_icon"
