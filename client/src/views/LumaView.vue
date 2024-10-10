@@ -332,6 +332,7 @@ export default {
 
 ._splitpanes {
   height: calc(100% - 20px);
+  overflow: hidden;
 }
 
 ._topBarIndication {
