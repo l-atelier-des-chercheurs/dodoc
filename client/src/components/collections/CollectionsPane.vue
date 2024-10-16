@@ -45,6 +45,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._collections {
-  margin: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
+  height: 100%;
+  overflow: auto;
 }
 </style>

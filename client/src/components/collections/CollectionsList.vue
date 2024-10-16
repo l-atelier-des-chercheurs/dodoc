@@ -1,6 +1,5 @@
 <template>
   <div class="_collectionsList">
-    <div class="u-spacingBottom" />
     <div class="u-spacingBottom u-instructions">
       {{ $t("collection_instr") }}
     </div>
