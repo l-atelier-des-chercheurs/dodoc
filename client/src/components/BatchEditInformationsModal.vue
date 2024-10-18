@@ -5,34 +5,49 @@
         {{ $t("edit_informations_instructions") }}
       </p>
 
-      <select v-model="selected_option">
-        <option
-          v-for="option in options"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </option>
-      </select>
-
-      <div v-if="selected_option === 'new_caption'">
-        <CollaborativeEditor2
-          :label="$t('caption')"
-          :content="''"
-          :custom_formats="['bold', 'italic', 'link']"
-          :is_collaborative="false"
+      <div class="u-spacingBottom">
+        <DLabel :str="$t('action')" />
+        <RadioCheckboxInput
+          :value.sync="selected_option"
+          :options="options"
           :can_edit="true"
-          @save="
-            ($event) => saveInformations({ field: 'caption', value: $event })
-          "
         />
+      </div>
 
-        <p v-if="saving_media_index > 0">
+      <CollaborativeEditor2
+        v-if="selected_option === 'new_caption'"
+        :label="$t('caption')"
+        :content="''"
+        :custom_formats="['bold', 'italic', 'link']"
+        :is_collaborative="false"
+        :can_edit="true"
+        :edit_on_mounted="true"
+        @save="
+          ($event) => saveInformations({ field: 'caption', value: $event })
+        "
+      />
+      <CollaborativeEditor2
+        v-else-if="selected_option === 'new_credit'"
+        :label="$t('credit/reference')"
+        :field_to_edit="'$credits'"
+        :content="''"
+        :custom_formats="['bold', 'italic', 'link']"
+        :is_collaborative="false"
+        :can_edit="true"
+        :edit_on_mounted="true"
+        @save="
+          ($event) => saveInformations({ field: '$credits', value: $event })
+        "
+      />
+
+      <template v-if="saving_media_index > 0">
+        <hr />
+        <p>
           {{ $t("saving") }} {{ saving_media_index }}/{{
             selected_medias.length
           }}
         </p>
-      </div>
+      </template>
     </div>
   </BaseModal2>
 </template>
@@ -52,28 +67,24 @@ export default {
       selected_option: "",
       options: [
         {
+          key: "",
           label: this.$t("pick_an_option"),
-          value: "",
         },
         {
+          key: "new_caption",
           label: this.$t("assign_a_new_caption"),
-          value: "new_caption",
         },
         {
+          key: "new_credit",
           label: this.$t("assign_a_new_credit"),
-          value: "new_credit",
         },
         {
+          key: "new_keywords",
           label: this.$t("add_or_replace_keywords"),
-          value: "new_keywords",
         },
         {
-          label: this.$t("add_or_replace_authors"),
-          value: "new_authors",
-        },
-        {
+          key: "new_location",
           label: this.$t("assign_a_new_location"),
-          value: "new_location",
         },
       ],
     };
@@ -87,7 +98,6 @@ export default {
     async saveInformations({ field, value }) {
       this.saving_media_index = 0;
       for (const media_path of this.selected_medias) {
-        debugger;
         const new_meta = {
           [field]: value,
         };
@@ -97,6 +107,9 @@ export default {
         });
         this.saving_media_index++;
       }
+      setTimeout(() => {
+        this.saving_media_index = null;
+      }, 2000);
     },
   },
 };
