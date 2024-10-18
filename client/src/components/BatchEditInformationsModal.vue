@@ -7,10 +7,16 @@
 
       <div class="u-spacingBottom">
         <DLabel :str="$t('action')" />
-        <RadioCheckboxInput
+        <!-- <RadioCheckboxInput
           :value.sync="selected_option"
           :options="options"
           :can_edit="true"
+        /> -->
+        <SelectField2
+          :value="selected_option"
+          :options="options"
+          :can_edit="true"
+          @change="selected_option = $event"
         />
       </div>
 
@@ -39,6 +45,25 @@
           ($event) => saveInformations({ field: '$credits', value: $event })
         "
       />
+      <div v-else-if="selected_option === 'new_keywords'">
+        <ToggleInput
+          :content.sync="keep_existing_keywords"
+          :label="$t('keep_existing_keywords')"
+          :options="{
+            true: $t('add_after_existing_keywords'),
+            false: $t('erase_and_replace_keywords'),
+          }"
+        />
+        <div class="u-spacingBottom" />
+        <TagsField
+          :label="$t('keywords')"
+          :tag_type="'keywords'"
+          :local_suggestions="keywords_suggestions"
+          :content="[]"
+          :can_edit="true"
+          @save="($event) => saveKeywords({ field: 'keywords', value: $event })"
+        />
+      </div>
 
       <template v-if="saving_media_index > 0">
         <hr />
@@ -58,6 +83,10 @@ export default {
       type: Array,
       required: true,
     },
+    keywords_suggestions: {
+      type: Array,
+      required: true,
+    },
   },
   components: {},
   data() {
@@ -68,25 +97,27 @@ export default {
       options: [
         {
           key: "",
-          label: this.$t("pick_an_option"),
+          text: this.$t("pick_an_option"),
         },
         {
           key: "new_caption",
-          label: this.$t("assign_a_new_caption"),
+          text: this.$t("assign_a_new_caption"),
         },
         {
           key: "new_credit",
-          label: this.$t("assign_a_new_credit"),
+          text: this.$t("assign_a_new_credit"),
         },
         {
           key: "new_keywords",
-          label: this.$t("add_or_replace_keywords"),
+          text: this.$t("add_or_replace_keywords"),
         },
         {
           key: "new_location",
-          label: this.$t("assign_a_new_location"),
+          text: this.$t("assign_a_new_location"),
         },
       ],
+
+      keep_existing_keywords: true,
     };
   },
   created() {},
@@ -110,6 +141,26 @@ export default {
       setTimeout(() => {
         this.saving_media_index = null;
       }, 2000);
+    },
+    async saveKeywords({ field, value }) {
+      this.saving_media_index = 0;
+
+      debugger;
+
+      // todo : keep existing keywords
+      // for (const media_path of this.selected_medias) {
+      //   const new_meta = {
+      //     [field]: value,
+      //   };
+      //   await this.$api.updateMeta({
+      //     path: media_path,
+      //     new_meta,
+      //   });
+      //   this.saving_media_index++;
+      // }
+      // setTimeout(() => {
+      //   this.saving_media_index = null;
+      // }, 2000);
     },
   },
 };

@@ -157,6 +157,9 @@ export default {
 
       if (this.new_tag_name.length > 0) this.newTag();
 
+      this.$emit("save", this.new_tags);
+      if (!this.path) return;
+
       try {
         const new_meta = {
           [this.field_name]: this.new_tags,

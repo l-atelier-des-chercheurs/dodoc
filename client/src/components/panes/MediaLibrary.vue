@@ -308,6 +308,7 @@
                 <BatchEditInformationsModal
                   v-if="show_batch_informations_edit_modal"
                   :selected_medias="selected_medias"
+                  :keywords_suggestions="keywords_of_medias"
                   @close="show_batch_informations_edit_modal = false"
                 />
                 <button

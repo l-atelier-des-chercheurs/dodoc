@@ -1193,4 +1193,8 @@ export default {
   add_or_replace_authors: "Ajouter ou remplacer un ou plusieurs auteurs",
   assign_a_new_location: "Attribuer une nouvelle localisation",
   pick_an_option: "Choisissez  une option",
+
+  keep_existing_keywords: "Conserver les mots-clés existants",
+  add_after_existing_keywords: "Ajouter après les mots-clés existants",
+  erase_and_replace_keywords: "Effacer et remplacer les mots-clés",
 };
