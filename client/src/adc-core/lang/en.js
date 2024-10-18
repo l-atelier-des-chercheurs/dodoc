@@ -1118,7 +1118,7 @@ export default {
 
   edit_informations: "Edit informations",
   edit_informations_instructions: `
-  You can edit the information of several media at once.
+  You can edit the information of several media at once here.
   `,
   medias_selected: "Medias selected",
 

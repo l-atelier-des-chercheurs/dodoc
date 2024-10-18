@@ -234,6 +234,9 @@ export default {
       if (this.new_authors_paths === "noone") _new_authors_paths = [];
       else _new_authors_paths = this.new_authors_paths;
 
+      this.$emit("save", _new_authors_paths);
+      if (!this.path) return;
+
       try {
         const new_meta = {
           [this.field]: _new_authors_paths,

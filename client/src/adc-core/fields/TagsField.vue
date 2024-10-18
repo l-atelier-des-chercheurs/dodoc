@@ -158,7 +158,11 @@ export default {
       if (this.new_tag_name.length > 0) this.newTag();
 
       this.$emit("save", this.new_tags);
-      if (!this.path) return;
+      if (!this.path) {
+        this.edit_mode = false;
+        this.is_saving = false;
+        return;
+      }
 
       try {
         const new_meta = {

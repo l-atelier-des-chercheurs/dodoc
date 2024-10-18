@@ -268,7 +268,7 @@
                 :file="file"
                 :was_focused="media_just_focused === getFilename(file.$path)"
                 :is_selectable="mediaTileIsSelectable(file.$path)"
-                :is_selected="selected_medias.includes(file.$path)"
+                :is_selected="selected_medias_paths.includes(file.$path)"
                 :data-filepath="file.$path"
                 :tile_mode="tile_mode"
                 :is_already_selected="mediaTileAlreadySelected(file.$path)"
@@ -281,10 +281,10 @@
       </transition>
 
       <transition name="slideup">
-        <div v-if="selected_medias.length > 0" class="_selectBtn">
+        <div v-if="selected_medias_paths.length > 0" class="_selectBtn">
           <div class="_selectBtn--content">
             <div class="_selectBtn--content--title">
-              {{ selected_medias.length }} {{ $t("medias_selected") }}
+              {{ selected_medias_paths.length }} {{ $t("medias_selected") }}
             </div>
 
             <div class="_selectBtn--content--buttons">
@@ -292,9 +292,9 @@
                 <button
                   type="button"
                   class="u-button u-button_bleuvert"
-                  @click="addMedias(selected_medias)"
+                  @click="addMedias(selected_medias_paths)"
                 >
-                  {{ `${$t("add")} (${selected_medias.length})` }}
+                  {{ `${$t("add")} (${selected_medias_paths.length})` }}
                 </button>
               </template>
               <template v-else-if="batch_mode">
@@ -314,7 +314,7 @@
                 <button
                   type="button"
                   class="u-button u-button_red"
-                  @click="removeAllMedias(selected_medias)"
+                  @click="removeAllMedias"
                 >
                   {{ $t("remove") }}
                 </button>
@@ -370,7 +370,7 @@ export default {
   },
   data() {
     return {
-      selected_medias: [],
+      selected_medias_paths: [],
       batch_mode: false,
       show_batch_informations_edit_modal: false,
 
@@ -585,6 +585,11 @@ export default {
         return acc;
       }, []);
     },
+    selected_medias() {
+      return this.selected_medias_paths.map((p) =>
+        this.medias.find((m) => m.$path === p)
+      );
+    },
   },
   methods: {
     scrollToMediaTile(path) {
@@ -651,18 +656,20 @@ export default {
       }
       return false;
     },
-    async removeAllMedias(selected_medias) {
-      for (const path of selected_medias) {
+    async removeAllMedias() {
+      for (const path of this.selected_medias_paths) {
         await this.removeMedia(path);
-        this.selected_medias = this.selected_medias.filter((p) => p !== path);
+        this.selected_medias_paths = this.selected_medias_paths.filter(
+          (p) => p !== path
+        );
       }
       this.batch_mode = false;
     },
     selectAllVisibleMedias() {
-      this.selected_medias = this.filtered_medias.map((fm) => fm.$path);
+      this.selected_medias_paths = this.filtered_medias.map((fm) => fm.$path);
     },
     cancelSelect() {
-      this.selected_medias = [];
+      this.selected_medias_paths = [];
       if (this.batch_mode) this.batch_mode = false;
     },
     quantityOfMediaWithKey({ key, val }) {
@@ -707,7 +714,8 @@ export default {
       );
 
       if (this.select_mode === "multiple") {
-        this.selected_medias = this.selected_medias.concat(new_medias_path);
+        this.selected_medias_paths =
+          this.selected_medias_paths.concat(new_medias_path);
         this.batch_mode = true;
       }
 
@@ -735,9 +743,11 @@ export default {
       this.$emit("update:media_focused", undefined);
     },
     setSelected(present, path) {
-      if (present) this.selected_medias.push(path);
+      if (present) this.selected_medias_paths.push(path);
       else
-        this.selected_medias = this.selected_medias.filter((sm) => sm !== path);
+        this.selected_medias_paths = this.selected_medias_paths.filter(
+          (sm) => sm !== path
+        );
     },
     addMedias(medias) {
       this.$emit("addMedias", medias);

@@ -1183,7 +1183,7 @@ export default {
 
   edit_informations: "Modifier les informations",
   edit_informations_instructions: `
-    Vous pouvez modifier les informations de plusieurs médias en une seule opération.
+    Modifiez ici les informations de plusieurs médias en une seule opération.
   `,
   medias_selected: "Médias sélectionnés",
 
@@ -1197,4 +1197,7 @@ export default {
   keep_existing_keywords: "Conserver les mots-clés existants",
   add_after_existing_keywords: "Ajouter après les mots-clés existants",
   erase_and_replace_keywords: "Effacer et remplacer les mots-clés",
+  keep_existing_authors: "Conserver les auteurs existants",
+  add_after_existing_authors: "Ajouter à la suite des auteurs existants",
+  erase_and_replace_authors: "Effacer et remplacer les auteurs",
 };
