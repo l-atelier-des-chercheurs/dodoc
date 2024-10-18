@@ -1180,4 +1180,17 @@ export default {
   scan_qr_code: "Scanner un code QR",
   opening_link_in: "Ouverture du lien dans",
   qr_code_content: "Contenu du code QR",
+
+  edit_informations: "Modifier les informations",
+  edit_informations_instructions: `
+    Vous pouvez modifier les informations de plusieurs médias en une seule opération.
+  `,
+  medias_selected: "Médias sélectionnés",
+
+  assign_a_new_caption: "Attribuer une nouvelle légende",
+  assign_a_new_credit: "Attribuer un nouveau crédit/référence",
+  add_or_replace_keywords: "Ajouter ou remplacer les mots-clés",
+  add_or_replace_authors: "Ajouter ou remplacer un ou plusieurs auteurs",
+  assign_a_new_location: "Attribuer une nouvelle localisation",
+  pick_an_option: "Choisissez  une option",
 };

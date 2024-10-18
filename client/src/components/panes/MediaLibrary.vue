@@ -282,29 +282,49 @@
 
       <transition name="slideup">
         <div v-if="selected_medias.length > 0" class="_selectBtn">
-          <template v-if="select_mode">
-            <button
-              type="button"
-              class="u-button u-button_bleuvert"
-              @click="addMedias(selected_medias)"
-            >
-              {{ `${$t("add")} (${selected_medias.length})` }}
-            </button>
-          </template>
-          <template v-else-if="batch_mode">
-            <button
-              type="button"
-              class="u-button u-button_red"
-              @click="removeAllMedias(selected_medias)"
-            >
-              {{ `${$t("remove")} (${selected_medias.length})` }}
-            </button>
-          </template>
+          <div class="_selectBtn--content">
+            <div class="_selectBtn--content--title">
+              {{ selected_medias.length }} {{ $t("medias_selected") }}
+            </div>
 
-          <button type="button" class="u-buttonLink" @click="cancelSelect">
-            <b-icon icon="x-circle" />
-            {{ $t("cancel") }}
-          </button>
+            <div class="_selectBtn--content--buttons">
+              <template v-if="select_mode">
+                <button
+                  type="button"
+                  class="u-button u-button_bleuvert"
+                  @click="addMedias(selected_medias)"
+                >
+                  {{ `${$t("add")} (${selected_medias.length})` }}
+                </button>
+              </template>
+              <template v-else-if="batch_mode">
+                <button
+                  type="button"
+                  class="u-button u-button_bleuvert"
+                  @click="show_batch_informations_edit_modal = true"
+                >
+                  {{ $t("edit_informations") }}
+                </button>
+                <BatchEditInformationsModal
+                  v-if="show_batch_informations_edit_modal"
+                  :selected_medias="selected_medias"
+                  @close="show_batch_informations_edit_modal = false"
+                />
+                <button
+                  type="button"
+                  class="u-button u-button_red"
+                  @click="removeAllMedias(selected_medias)"
+                >
+                  {{ $t("remove") }}
+                </button>
+              </template>
+
+              <button type="button" class="u-buttonLink" @click="cancelSelect">
+                <b-icon icon="x-circle" />
+                {{ $t("unselect") }}
+              </button>
+            </div>
+          </div>
         </div>
       </transition>
     </section>
@@ -329,6 +349,7 @@
 import ImportFileZone from "@/adc-core/ui/ImportFileZone";
 import MediaTile from "@/components/MediaTile.vue";
 import MediaModal from "@/components/MediaModal";
+import BatchEditInformationsModal from "@/components/BatchEditInformationsModal";
 
 export default {
   props: {
@@ -343,12 +364,14 @@ export default {
     ImportFileZone,
     MediaTile,
     MediaModal,
+    BatchEditInformationsModal,
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
   },
   data() {
     return {
       selected_medias: [],
       batch_mode: false,
+      show_batch_informations_edit_modal: false,
 
       tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
       files_to_import: [],
@@ -858,16 +881,33 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 10;
+  display: flex;
+  justify-content: center;
   width: 100%;
+  padding: calc(var(--spacing) / 2);
+  pointer-events: none;
+}
+._selectBtn--content {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4);
+  background: white;
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.85);
+  pointer-events: auto;
+  border-radius: 5px;
+}
+._selectBtn--content--title {
+  font-weight: 700;
+  text-align: center;
+}
+._selectBtn--content--buttons {
   display: flex;
   justify-content: center;
   gap: calc(var(--spacing) / 4);
-  padding: calc(var(--spacing) / 1);
-  pointer-events: none;
-
-  > * {
-    pointer-events: auto;
-  }
+  text-align: center;
 }
 ._addBtn {
   --side-width: 24px;
