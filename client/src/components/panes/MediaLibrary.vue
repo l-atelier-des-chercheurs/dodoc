@@ -284,7 +284,8 @@
         <div v-if="selected_medias_paths.length > 0" class="_selectBtn">
           <div class="_selectBtn--content">
             <div class="_selectBtn--content--title">
-              {{ selected_medias_paths.length }} {{ $t("medias_selected") }}
+              {{ selected_medias_paths.length }}
+              {{ $t("medias_selected").toLowerCase() }}
             </div>
 
             <div class="_selectBtn--content--buttons">

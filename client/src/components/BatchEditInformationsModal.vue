@@ -5,7 +5,7 @@
         {{ $t("edit_informations_instructions") }}
       </p>
       <p class="u-spacingBottom">
-        {{ $t("medias_selected") }}: {{ selected_medias.length }}
+        {{ selected_medias.length }} {{ $t("medias_selected").toLowerCase() }}
       </p>
 
       <DetailsPane
