@@ -54,7 +54,7 @@
             :local_suggestions="keywords_suggestions"
             :content="set_keywords"
             :can_edit="true"
-            @save="($event) => saveKeywords($event)"
+            @save="($event) => saveArray($event, 'keywords')"
           />
         </div>
         <div class="u-spacingBottom">
@@ -68,12 +68,11 @@
             }"
           />
           <AuthorField
-            :field="'$authors'"
             :can_edit="true"
-            :authors_paths="set_authors"
+            :authors_paths="set_$authors"
             :instructions="$t('file_author_instructions')"
             :no_options="true"
-            @save="($event) => saveAuthors($event)"
+            @save="($event) => saveArray($event, '$authors')"
           />
         </div>
         <div class="">
@@ -146,7 +145,7 @@ export default {
       set_keywords: [],
       keep_existing_keywords: true,
 
-      set_authors: [],
+      set_$authors: [],
       keep_existing_authors: true,
     };
   },
@@ -177,55 +176,28 @@ export default {
         this.saving_media_index = null;
       }, 2000);
     },
-    async saveKeywords(value) {
+    async saveArray(value, field) {
       this.saving_media_index = 0;
 
-      let keywords_to_save = value;
+      let array_to_save = value;
 
       // todo : keep existing keywords
       for (const media of this.selected_medias) {
-        let new_keywords_list = keywords_to_save;
+        let new_array = array_to_save;
 
-        if (this.keep_existing_keywords) {
-          const existing_keywords = media.keywords || [];
-          new_keywords_list = [...existing_keywords, ...keywords_to_save];
-          new_keywords_list = [...new Set(new_keywords_list)];
+        if (this[`keep_existing_${field}`]) {
+          const existing_array = media[field] || [];
+          new_array = [...existing_array, ...array_to_save];
+          new_array = [...new Set(new_array)];
         }
 
         await this.$api.updateMeta({
           path: media.$path,
-          new_meta: { keywords: new_keywords_list },
+          new_meta: { [field]: new_array },
         });
         this.saving_media_index++;
       }
-      this.set_keywords = value;
-
-      setTimeout(() => {
-        this.saving_media_index = null;
-      }, 2000);
-    },
-    async saveAuthors(value) {
-      this.saving_media_index = 0;
-
-      let authors_to_save = value;
-
-      // todo : keep existing keywords
-      for (const media of this.selected_medias) {
-        let new_authors_list = authors_to_save;
-
-        if (this.keep_existing_authors) {
-          const existing_authors = media.authors || [];
-          new_authors_list = [...existing_authors, ...authors_to_save];
-          new_authors_list = [...new Set(new_authors_list)];
-        }
-
-        await this.$api.updateMeta({
-          path: media.$path,
-          new_meta: { authors: new_authors_list },
-        });
-        this.saving_media_index++;
-      }
-      this.set_authors = value;
+      this.$set(this, `set_${field}`, value);
 
       setTimeout(() => {
         this.saving_media_index = null;
