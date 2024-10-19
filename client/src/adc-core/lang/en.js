@@ -1115,4 +1115,17 @@ export default {
   scan_qr_code: "Scan QR code",
   opening_link_in: "Opening link in",
   qr_code_content: "QR code content",
+
+  edit_informations: "Edit informations",
+  edit_informations_instructions: `
+  You can edit the information of several media at once here.
+  `,
+  medias_selected: "Medias selected",
+
+  assign_a_new_caption: "Assign a new caption",
+  assign_a_new_credit: "Assign a new credit/reference",
+  add_or_replace_keywords: "Add or replace keywords",
+  add_or_replace_authors: "Add or replace authors",
+  assign_a_new_location: "Assign a new location",
+  pick_an_option: "Pick an option",
 };
