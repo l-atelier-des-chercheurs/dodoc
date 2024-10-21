@@ -410,6 +410,11 @@ textarea {
 
 input[type="number"] {
   min-width: 8ch;
+
+  &:not([step="any"])::-webkit-inner-spin-button,
+  &:not([step="any"])::-webkit-outer-spin-button {
+    opacity: 1;
+  }
 }
 
 input[type="color"],
