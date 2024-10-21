@@ -411,19 +411,21 @@ export default {
       )
         this.firstImage();
 
-      this.preview_playing_event = window.setInterval(() => {
-        // change currently shown image
-        this.previous_photo_to_show =
-          this.medias[this.image_index_currently_shown + 1].media;
+      const playPreview = (index) => {
+        if (index > this.medias.length - 1) return this.pausePreview();
 
-        this.$nextTick(() => {
-          if (this.image_index_currently_shown === this.medias.length - 1)
-            this.pausePreview();
-        });
-      }, 1000 / this.frame_rate);
+        this.previous_photo_to_show = this.medias[index].media;
+
+        const duration = this.medias[index].duration;
+        this.preview_playing_event = window.setTimeout(
+          () => playPreview(index + 1),
+          (1000 / this.frame_rate) * duration
+        );
+      };
+      playPreview(this.image_index_currently_shown);
     },
     pausePreview() {
-      window.clearInterval(this.preview_playing_event);
+      window.clearTimeout(this.preview_playing_event);
       this.preview_playing_event = undefined;
     },
     testStopmotion() {
