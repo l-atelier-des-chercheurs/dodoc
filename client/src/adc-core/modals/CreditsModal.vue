@@ -1,6 +1,9 @@
 <template>
   <BaseModal2 :title="$t('about_dodoc')" @close="$emit('close')">
     <div class="_creditsModal">
+      <p class="u-spacingBottom">
+        {{ $t("version") }} {{ $root.app_infos.version }}
+      </p>
       <p v-html="$t('about_dodoc_txt')" />
       <br />
       <p v-html="$t('about_dodoc_links')" />
