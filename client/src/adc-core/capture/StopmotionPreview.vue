@@ -66,7 +66,7 @@ export default {
             const m = this.stopmotion.$files.find((f) =>
               f.$path.endsWith(meta_filename)
             );
-            if (m) acc.push(m);
+            if (m && !acc.find((m2) => m2.$path === m.$path)) acc.push(m);
             return acc;
           },
           []

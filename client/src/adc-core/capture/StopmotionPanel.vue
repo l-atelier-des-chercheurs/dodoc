@@ -99,7 +99,7 @@
             ref="mediaPreviews"
           >
             <div
-              v-for="media in medias"
+              v-for="{ media, duration, index } in medias"
               :key="media.$path"
               @click="
                 show_previous_photo = media;
@@ -115,18 +115,36 @@
             >
               <MediaContent :file="media" :resolution="240" />
 
-              <button
-                type="button"
-                v-if="
-                  show_previous_photo &&
-                  show_previous_photo.$path === media.$path &&
-                  !show_live_feed
-                "
-                @click="removeMedia(show_previous_photo.$path)"
-                class="u-button u-button_icon _removeMedia"
-              >
-                <b-icon icon="trash" />
-              </button>
+              <div class="_optionBtns">
+                <button
+                  type="button"
+                  v-if="duration > 1 || showPreviousPhoto(media.$path)"
+                  @click="show_duration_menu = !show_duration_menu"
+                  class="u-button u-button_small u-button_bleumarine"
+                  :title="$t('duration')"
+                >
+                  <b-icon icon="clock" />
+                  {{ duration }}
+                </button>
+                <ImageDurationPicker
+                  v-if="show_duration_menu && showPreviousPhoto(media.$path)"
+                  :value="current_photo_duration"
+                  :frame_rate="stopmotion_frame_rate"
+                  @close="show_duration_menu = false"
+                  @save="
+                    updateMediaDurationForCurrentPreviousPhoto($event, index)
+                  "
+                />
+                <button
+                  v-if="showPreviousPhoto(media.$path)"
+                  type="button"
+                  @click="removeMedia(media.$path)"
+                  class="u-button u-button_icon u-button_small u-button_white"
+                  :title="$t('remove')"
+                >
+                  <b-icon icon="trash" />
+                </button>
+              </div>
             </div>
 
             <!-- <div key="separator" class="_separator" /> -->
@@ -171,7 +189,6 @@
           </transition-group>
         </div>
       </template>
-
       <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
         <PreviewStopmotion
           :medias="medias"
@@ -201,6 +218,7 @@
 <script>
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 import PreviewStopmotion from "./PreviewStopmotion.vue";
+import ImageDurationPicker from "./ImageDurationPicker.vue";
 
 export default {
   props: {
@@ -214,6 +232,7 @@ export default {
   components: {
     MediaValidationButtons,
     PreviewStopmotion,
+    ImageDurationPicker,
   },
   data() {
     return {
@@ -231,6 +250,8 @@ export default {
       created_stopmotion: false,
 
       preview_playing_event: undefined,
+
+      show_duration_menu: false,
     };
   },
 
@@ -313,25 +334,42 @@ export default {
   computed: {
     medias() {
       if (this.stopmotion?.images_list && this.stopmotion?.$files?.length > 0) {
-        const medias = this.stopmotion.images_list.reduce(
-          (acc, meta_filename) => {
-            const m = this.stopmotion.$files.find((f) =>
-              f.$path.endsWith(meta_filename)
-            );
-            if (m) acc.push(m);
-            return acc;
-          },
-          []
-        );
+        const medias = this.stopmotion.images_list.reduce((acc, il) => {
+          const meta_filename = il.m || il;
+          const duration = il.d || 1;
+
+          const media = this.stopmotion.$files.find((f) =>
+            f.$path.endsWith(meta_filename)
+          );
+          if (media)
+            acc.push({
+              media,
+              duration,
+            });
+          return acc;
+        }, []);
         return medias;
       }
       return [];
     },
+    images_list() {
+      return this.medias.map((m) => {
+        return {
+          m: this.getFilename(m.media.$path),
+          d: m.duration,
+        };
+      });
+    },
     image_index_currently_shown() {
       if (!this.show_previous_photo) return false;
       return this.medias.findIndex(
-        (m) => m.$path === this.show_previous_photo.$path
+        (m) => m.media.$path === this.show_previous_photo.$path
       );
+    },
+    current_photo_duration() {
+      return this.medias.find(
+        (m) => m.media.$path === this.show_previous_photo.$path
+      )?.duration;
     },
   },
   methods: {
@@ -350,10 +388,11 @@ export default {
           throw err;
         });
 
-      let images_list = this.stopmotion.images_list
-        ? this.stopmotion.images_list.slice()
-        : [];
-      images_list.push(meta_filename);
+      let images_list = this.images_list.slice();
+      images_list.push({
+        m: meta_filename,
+        d: 1,
+      });
 
       await this.$api.updateMeta({
         path: this.current_stopmotion_path,
@@ -372,7 +411,7 @@ export default {
       this.preview_playing_event = window.setInterval(() => {
         // change currently shown image
         this.show_previous_photo =
-          this.medias[this.image_index_currently_shown + 1];
+          this.medias[this.image_index_currently_shown + 1].media;
 
         this.$nextTick(() => {
           if (this.image_index_currently_shown === this.medias.length - 1)
@@ -393,6 +432,9 @@ export default {
         });
       });
     },
+    showPreviousPhoto(path) {
+      return this.show_previous_photo?.$path === path && !this.show_live_feed;
+    },
     showVideoFeed() {
       this.show_previous_photo = this.medias[this.medias.length - 1];
       this.$emit("update:show_live_feed", true);
@@ -408,17 +450,25 @@ export default {
         return;
       }
       this.show_previous_photo =
-        this.medias[this.image_index_currently_shown - 1];
+        this.medias[this.image_index_currently_shown - 1].media;
     },
     nextImage() {
       if (this.image_index_currently_shown === this.medias.length - 1)
         return this.showVideoFeed();
 
       this.show_previous_photo =
-        this.medias[this.image_index_currently_shown + 1];
+        this.medias[this.image_index_currently_shown + 1].media;
     },
     lastImage() {
       this.showVideoFeed();
+    },
+    async updateMediaDurationForCurrentPreviousPhoto(duration) {
+      const images_list = this.images_list.slice();
+      images_list[this.image_index_currently_shown].d = duration;
+      await this.$api.updateMeta({
+        path: this.current_stopmotion_path,
+        new_meta: { images_list },
+      });
     },
     backToStopmotion() {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
@@ -473,16 +523,14 @@ export default {
     },
     async removeMedia(path) {
       // remove from stopmotion list
-      let images_list = this.stopmotion.images_list.slice();
-      images_list = images_list.filter((i) => !path.endsWith(i));
+      let images_list = this.images_list.slice();
+      images_list = images_list.filter((i) => !path.endsWith(i.m));
 
       this.nextImage();
 
       await this.$api.updateMeta({
         path: this.current_stopmotion_path,
-        new_meta: {
-          images_list,
-        },
+        new_meta: { images_list },
       });
 
       await this.$api.deleteItem({
@@ -675,18 +723,16 @@ export default {
       position: absolute;
       left: 0;
       bottom: 0;
-      padding: calc(var(--spacing) / 16);
-
+      padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4)
+        calc(var(--spacing) / 16);
       margin: calc(var(--spacing) / 16);
-      // .c-noir;
-      // .c-blanc;
       text-transform: uppercase;
       font-weight: 500;
       letter-spacing: 0.06em;
       font-size: var(--font-verysmall);
       // font-weight: 600;
-      background-color: var(--c-noir);
-      color: white;
+      background-color: white;
+      color: var(--c-noir);
       border-radius: 2px;
       line-height: 1;
       z-index: 1;
@@ -797,12 +843,17 @@ export default {
   }
 }
 
-._removeMedia {
+._optionBtns {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
+  width: 100%;
   padding: calc(var(--spacing) / 4);
-  margin: calc(var(--spacing) / 4);
+  display: flex;
+  gap: calc(var(--spacing) / 4);
+  justify-content: space-between;
+
+  color: var(--c-noir);
 }
 
 .m_stopmotionpanel--loader {

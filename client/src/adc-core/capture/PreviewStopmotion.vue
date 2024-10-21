@@ -2,10 +2,10 @@
   <div>
     <div class="_player">
       <template v-if="!created_stopmotion">
-        <MediaContent :file="current_media" :resolution="1600" />
+        <MediaContent :file="current_media.media" :resolution="1600" />
         <div v-if="!is_playing" class="_miniListPreview">
           <MediaContent
-            v-for="media in medias"
+            v-for="{ media } in medias"
             :key="'previews-' + media.$path"
             :file="media"
             :resolution="1600"
@@ -66,8 +66,8 @@ export default {
     return {
       current_media_index: 0,
       is_playing: false,
-      preview_playing_event: undefined,
       new_frame_rate: this.frame_rate,
+      next_image_timeout: null,
     };
   },
   created() {},
@@ -90,23 +90,31 @@ export default {
       if (!this.is_playing) this.playPreview();
       else this.stopPreview();
     },
-    playPreview() {
-      this.is_playing = true;
-      this.current_media_index = 0;
-
-      this.preview_playing_event = window.setInterval(() => {
-        this.current_media_index++;
-        this.$nextTick(() => {
-          if (this.current_media_index === this.medias.length - 1)
-            this.stopPreview();
-        });
-      }, 1000 / this.frame_rate);
-    },
     stopPreview() {
       this.is_playing = false;
+      window.clearTimeout(this.next_image_timeout);
+    },
+    playPreview() {
+      this.is_playing = true;
 
-      window.clearInterval(this.preview_playing_event);
-      this.preview_playing_event = undefined;
+      const playCurrentImage = (index) => {
+        if (index >= this.medias.length) {
+          this.is_playing = false;
+          return;
+        }
+
+        const duration = this.current_media.duration;
+        const time_between_images = 1000 / this.frame_rate;
+        const time_for_image = duration * time_between_images;
+
+        this.next_image_timeout = window.setTimeout(() => {
+          this.current_media_index++;
+          playCurrentImage(this.current_media_index);
+        }, time_for_image);
+      };
+
+      this.current_media_index = 0;
+      playCurrentImage(this.current_media_index);
     },
   },
 };
@@ -184,6 +192,6 @@ export default {
   right: 0;
   padding: calc(var(--spacing) / 2);
   color: white;
-  font-size: var(--sl-font-size-x-small);
+  font-size: var(--sl-font-size-small);
 }
 </style>

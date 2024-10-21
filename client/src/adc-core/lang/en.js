@@ -844,9 +844,9 @@ export default {
   take_picture: "Take a photo",
   delay: "Self-timer",
   timelapse: "time-lapse",
-  framerate: "frames per second",
   live: "Live",
   img_per_second: "Frames per second",
+
   name_of_stream: "Stream name",
   failed_to_start_streams_change_source_or_res:
     "The video or audio stream could not be started.<br>Try changing the source or resolution in the settings.",
@@ -1128,4 +1128,7 @@ export default {
   add_or_replace_authors: "Add or replace authors",
   assign_a_new_location: "Assign a new location",
   pick_an_option: "Pick an option",
+
+  duration_explanation:
+    "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
 };

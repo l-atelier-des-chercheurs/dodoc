@@ -723,7 +723,6 @@ export default {
   take_picture: "Prendre une photo",
   delay: "Retardateur",
   timelapse: "time-lapse",
-  framerate: "images par seconde",
   live: "Direct",
   img_per_second: "Images par seconde",
 
@@ -1200,4 +1199,7 @@ export default {
   keep_existing_authors: "Conserver les auteurs existants",
   add_after_existing_authors: "Ajouter à la suite des auteurs existants",
   erase_and_replace_authors: "Effacer et remplacer les auteurs",
+
+  duration_explanation:
+    "Soit {seconds_equivalent} seconde(s) à une vitesse de {frame_rate} images par seconde",
 };
