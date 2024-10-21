@@ -99,17 +99,17 @@
             ref="mediaPreviews"
           >
             <div
-              v-for="{ media, duration, index } in medias"
+              v-for="({ media, duration }, index) in medias"
               :key="media.$path"
               @click="
-                show_previous_photo = media;
+                previous_photo_to_show = media;
                 $emit('update:show_live_feed', false);
               "
               class="m_stopmotionpanel--medias--list--items"
               :class="{
                 'is--current_single':
-                  show_previous_photo &&
-                  show_previous_photo.$path === media.$path &&
+                  previous_photo_to_show &&
+                  previous_photo_to_show.$path === media.$path &&
                   !show_live_feed,
               }"
             >
@@ -245,7 +245,7 @@ export default {
 
       frame_rate: this.stopmotion_frame_rate,
       validating_video_preview: false,
-      show_previous_photo: false,
+      previous_photo_to_show: false,
       media_is_being_sent: false,
       show_advanced_menu: false,
 
@@ -288,7 +288,7 @@ export default {
     medias() {
       if (this.medias.length > 0) {
         if (this.show_live_feed) {
-          this.show_previous_photo = this.medias[this.medias.length - 1];
+          this.previous_photo_to_show = this.medias[this.medias.length - 1];
           this.$nextTick(() => {
             this.$nextTick(() => {
               this.$refs.mediaPreviews.$el.scrollLeft = 1000000;
@@ -311,8 +311,8 @@ export default {
       },
       immediate: true,
     },
-    show_previous_photo() {
-      this.$emit("showPreviousImage", this.show_previous_photo);
+    previous_photo_to_show() {
+      this.$emit("showPreviousImage", this.previous_photo_to_show);
 
       // scroll to
 
@@ -364,14 +364,14 @@ export default {
       });
     },
     image_index_currently_shown() {
-      if (!this.show_previous_photo) return false;
+      if (!this.previous_photo_to_show) return false;
       return this.medias.findIndex(
-        (m) => m.media.$path === this.show_previous_photo.$path
+        (m) => m.media.$path === this.previous_photo_to_show.$path
       );
     },
     current_photo_duration() {
       return this.medias.find(
-        (m) => m.media.$path === this.show_previous_photo.$path
+        (m) => m.media.$path === this.previous_photo_to_show.$path
       )?.duration;
     },
   },
@@ -413,7 +413,7 @@ export default {
 
       this.preview_playing_event = window.setInterval(() => {
         // change currently shown image
-        this.show_previous_photo =
+        this.previous_photo_to_show =
           this.medias[this.image_index_currently_shown + 1].media;
 
         this.$nextTick(() => {
@@ -436,30 +436,32 @@ export default {
       });
     },
     showPreviousPhoto(path) {
-      return this.show_previous_photo?.$path === path && !this.show_live_feed;
+      return (
+        this.previous_photo_to_show?.$path === path && !this.show_live_feed
+      );
     },
     showVideoFeed() {
-      this.show_previous_photo = this.medias[this.medias.length - 1];
+      this.previous_photo_to_show = this.medias[this.medias.length - 1].media;
       this.$emit("update:show_live_feed", true);
     },
     firstImage() {
-      this.show_previous_photo = this.medias[0];
+      this.previous_photo_to_show = this.medias[0].media;
       this.$emit("update:show_live_feed", false);
     },
     prevImage() {
       if (this.show_live_feed) {
-        this.show_previous_photo = this.medias.at(-1);
+        this.previous_photo_to_show = this.medias.at(-1).media;
         this.$emit("update:show_live_feed", false);
         return;
       }
-      this.show_previous_photo =
+      this.previous_photo_to_show =
         this.medias[this.image_index_currently_shown - 1].media;
     },
     nextImage() {
       if (this.image_index_currently_shown === this.medias.length - 1)
         return this.showVideoFeed();
 
-      this.show_previous_photo =
+      this.previous_photo_to_show =
         this.medias[this.image_index_currently_shown + 1].media;
     },
     lastImage() {
@@ -519,7 +521,7 @@ export default {
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
 
-      // this.show_previous_photo = false;
+      // this.previous_photo_to_show = false;
       // this.validating_video_preview = false;
       // this.$nextTick(() => {
       //   this.$emit("close");
