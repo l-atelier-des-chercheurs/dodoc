@@ -120,7 +120,10 @@
                   type="button"
                   v-if="duration > 1 || showPreviousPhoto(media.$path)"
                   @click="show_duration_menu = !show_duration_menu"
-                  class="u-button u-button_small u-button_bleumarine"
+                  class="u-button u-button_small"
+                  :class="{
+                    'u-button_bleumarine': duration > 1,
+                  }"
                   :title="$t('duration')"
                 >
                   <b-icon icon="clock" />
@@ -469,6 +472,7 @@ export default {
         path: this.current_stopmotion_path,
         new_meta: { images_list },
       });
+      this.show_duration_menu = false;
     },
     backToStopmotion() {
       console.log("METHODS • StopmotionPanel: backToStopmotion");

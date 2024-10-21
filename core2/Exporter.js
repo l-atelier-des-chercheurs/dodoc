@@ -123,9 +123,17 @@ class Exporter {
     const files = await file.getFiles({ path_to_folder: this.path_to_folder });
 
     const list_of_metas_in_order = folder_meta[this.instructions.field];
-    const selected_files = list_of_metas_in_order.map((lf) =>
-      files.find((f) => f.$path.endsWith("/" + lf))
-    );
+    const selected_files = list_of_metas_in_order.reduce((acc, lf) => {
+      const meta = lf.m || lf;
+      const duration = lf.d || 1;
+      const file = files.find((f) => f.$path.endsWith("/" + meta));
+      if (!file) return acc;
+
+      for (let i = 0; i < duration; i++) {
+        acc.push(file);
+      }
+      return acc;
+    }, []);
     return selected_files;
   }
 
