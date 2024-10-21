@@ -14,7 +14,7 @@
         @keyup.enter="$emit('save', local_value)"
       />
       <span class="u-suffix">
-        {{ $t("images").toLowerCase() }}
+        {{ (local_value > 1 ? $t("images") : $t("image")).toLowerCase() }}
       </span>
     </div>
 
