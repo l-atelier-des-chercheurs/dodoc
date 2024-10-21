@@ -225,32 +225,45 @@
           :icon="'rulers'"
           class="u-spacingBottom"
         >
-          <DateDisplay
-            :title="$t('date_uploaded')"
-            :date="file.$date_uploaded"
-          />
-          <DateDisplay
-            :title="$t('date_modified')"
-            :date="file.$date_modified"
-          />
-          <SizeDisplay
+          <div class="u-spacingBottom">
+            <DateDisplay
+              :title="$t('date_uploaded')"
+              :date="file.$date_uploaded"
+            />
+          </div>
+          <div class="u-spacingBottom">
+            <DateDisplay
+              :title="$t('date_modified')"
+              :date="file.$date_modified"
+            />
+          </div>
+          <div
+            class="u-spacingBottom"
             v-if="file.$infos.hasOwnProperty('size')"
-            :size="file.$infos.size"
-          />
-          <ResolutionDisplay
+          >
+            <SizeDisplay :size="file.$infos.size" />
+          </div>
+          <div
+            class="u-spacingBottom"
             v-if="
               file.$infos.hasOwnProperty('width') ||
               file.$infos.hasOwnProperty('height')
             "
-            :width="file.$infos.width"
-            :height="file.$infos.height"
-          />
-          <DurationDisplay
+          >
+            <ResolutionDisplay
+              :width="file.$infos.width"
+              :height="file.$infos.height"
+            />
+          </div>
+          <div
+            class="u-spacingBottom"
             v-if="file.$infos.hasOwnProperty('duration')"
-            :title="$t('duration')"
-            :duration="file.$infos.duration"
-          />
-
+          >
+            <DurationDisplay
+              :title="$t('duration')"
+              :duration="file.$infos.duration"
+            />
+          </div>
           <div class="_metaField" v-if="file.$origin">
             <DLabel :str="$t('origin')" />
             <div

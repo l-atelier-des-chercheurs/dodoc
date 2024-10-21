@@ -304,6 +304,7 @@
                   class="u-button u-button_bleuvert"
                   @click="show_batch_informations_edit_modal = true"
                 >
+                  <b-icon icon="info-square" />
                   {{ $t("edit_informations") }}
                 </button>
                 <BatchEditInformationsModal
@@ -312,11 +313,22 @@
                   :keywords_suggestions="keywords_of_medias"
                   @close="show_batch_informations_edit_modal = false"
                 />
+                <DuplicateMedia :paths="selected_medias_paths">
+                  <button
+                    type="button"
+                    class="u-button u-button_bleuvert"
+                    slot="button"
+                  >
+                    <b-icon icon="file-plus" />
+                    {{ $t("duplicate_or_move") }}
+                  </button>
+                </DuplicateMedia>
                 <button
                   type="button"
                   class="u-button u-button_red"
                   @click="removeAllMedias"
                 >
+                  <b-icon icon="trash" />
                   {{ $t("remove") }}
                 </button>
               </template>
@@ -352,6 +364,7 @@ import ImportFileZone from "@/adc-core/ui/ImportFileZone";
 import MediaTile from "@/components/MediaTile.vue";
 import MediaModal from "@/components/MediaModal";
 import BatchEditInformationsModal from "@/components/BatchEditInformationsModal";
+import DuplicateMedia from "@/components/DuplicateMedia";
 
 export default {
   props: {
@@ -368,6 +381,7 @@ export default {
     MediaModal,
     BatchEditInformationsModal,
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
+    DuplicateMedia,
   },
   data() {
     return {
@@ -656,6 +670,14 @@ export default {
         return { label, color };
       }
       return false;
+    },
+    async moveMedias() {
+      console.log("moveMedias");
+
+      // await this.$api.moveMedias({
+      //   paths: this.selected_medias_paths,
+      //   destination_path: this.project.$path,
+      // });
     },
     async removeAllMedias() {
       for (const path of this.selected_medias_paths) {
