@@ -131,6 +131,14 @@ export default {
   justify-content: center;
   align-items: center;
   background: black;
+
+  ::v-deep {
+    ._mediaContent,
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
 }
 
 ._playPauseBtn {
