@@ -759,10 +759,10 @@ export default {
   obj: "OBJ",
   other: "Autre",
   webpage: "Page web",
-  all_keywords: "De tous les mots-clés",
-  all_medias_types: "De tous types",
-  all_origins: "De toutes origines",
-  all_accounts: "De tous les comptes",
+  all_keywords: "Tous les mots-clés",
+  all_medias_types: "Tous les types",
+  all_origins: "Toutes les origines",
+  all_accounts: "Tous les comptes",
 
   or_download_media_on_device: "ou télécharger ce média sur votre appareil",
 
