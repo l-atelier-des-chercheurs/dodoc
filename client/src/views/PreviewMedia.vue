@@ -27,7 +27,7 @@
             :resolution="1600"
           />
           <div class="_captionCredits">
-            <CaptionCreditsPage :media="media" />
+            <CaptionCreditsPage :media="media" :can_edit="can_edit" />
           </div>
         </template>
         <span v-else>Error loading media</span>
