@@ -393,10 +393,21 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 0 calc(var(--spacing) / 2);
-  // color: var(--active-color);
+  margin: 0;
+  width: 1.5rem;
+  height: 1.5rem;
   color: white;
-  mix-blend-mode: difference;
+  // mix-blend-mode: difference;
+  // background: var(--c-bleumarine);
+  border-radius: 50%;
+
+  display: flex;
+  place-content: center;
+
+  svg {
+    // color: var(--c-bleumarine);
+    padding: 1px;
+  }
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
