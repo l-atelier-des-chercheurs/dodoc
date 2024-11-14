@@ -39,6 +39,8 @@
       <EditBtn
         v-if="!edit_mode"
         :label_position="'left'"
+        :is_unfolded="!cover_thumb"
+        :label="!cover_thumb ? $t('add') : undefined"
         @click="enableEditMode"
       />
       <BaseModal2
