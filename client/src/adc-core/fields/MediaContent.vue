@@ -245,7 +245,7 @@ export default {
   watch: {},
   computed: {
     thumb() {
-      if (this.file.$thumbs === "no_preview") return false;
+      if (this.file.$thumbs === "no_preview" || !this.file.$path) return false;
 
       const path_to_parent = this.file.$path.substring(
         0,
