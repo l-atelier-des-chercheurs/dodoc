@@ -2,7 +2,11 @@
   <div>
     <div class="_player">
       <template v-if="!created_stopmotion">
-        <MediaContent :file="current_media.media" :resolution="1600" />
+        <MediaContent
+          v-if="current_media"
+          :file="current_media.media"
+          :resolution="1600"
+        />
         <div v-if="!is_playing" class="_miniListPreview">
           <MediaContent
             v-for="{ media } in medias"
@@ -31,7 +35,7 @@
           <div class="_fps" v-if="!is_playing">
             <div class="">
               <label class="u-label">{{ $t("img_per_second") }}</label>
-              <select v-model.number="new_frame_rate">
+              <select v-model.number="new_frame_rate" size="small">
                 <option>2</option>
                 <option>4</option>
                 <option>8</option>
@@ -97,19 +101,19 @@ export default {
     playPreview() {
       this.is_playing = true;
 
-      const playCurrentImage = (index) => {
-        if (index >= this.medias.length) {
-          this.is_playing = false;
-          return;
-        }
-
+      const playCurrentImage = () => {
         const duration = this.current_media.duration;
         const time_between_images = 1000 / this.frame_rate;
         const time_for_image = duration * time_between_images;
 
         this.next_image_timeout = window.setTimeout(() => {
-          this.current_media_index++;
-          playCurrentImage(this.current_media_index);
+          if (this.current_media_index < this.medias.length - 1) {
+            this.current_media_index++;
+            playCurrentImage();
+          } else {
+            this.is_playing = false;
+            return;
+          }
         }, time_for_image);
       };
 
@@ -170,6 +174,15 @@ export default {
   bottom: 0;
   width: 100%;
   padding: calc(var(--spacing) / 1);
+
+  > * {
+    background: var(--c-noir);
+
+    label {
+      color: white;
+    }
+    padding: calc(var(--spacing) / 4);
+  }
 }
 
 ._miniListPreview {
