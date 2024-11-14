@@ -742,6 +742,7 @@ export default {
   previous_image: "Image précédente",
   next: "Suivant",
   previous: "Précedent",
+  loop: "Boucle",
   next_image: "Image suivante",
   last_image: "Dernière image",
   assemble: "Assembler",

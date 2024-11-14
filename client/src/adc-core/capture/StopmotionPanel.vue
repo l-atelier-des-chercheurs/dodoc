@@ -31,17 +31,28 @@
           </button>
 
           <div class="">
-            <button
-              v-if="!preview_playing_event"
-              type="button"
-              class="u-button u-button_black"
-              :disabled="medias.length <= 1"
-              @click="previewPlay"
-            >
-              <b-icon icon="play-fill" />
-              &nbsp;
-              {{ $t("play") }}
-            </button>
+            <template v-if="!preview_playing_event">
+              <button
+                type="button"
+                class="u-button u-button_black"
+                :disabled="medias.length <= 1"
+                @click="previewPlay"
+              >
+                <b-icon icon="play-fill" />
+                &nbsp;
+                {{ $t("play") }}
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_black"
+                :disabled="medias.length <= 1"
+                @click="previewPlay({ loop: true })"
+              >
+                <b-icon icon="play-circle-fill" />
+                &nbsp;
+                {{ $t("loop") }}
+              </button>
+            </template>
             <button
               v-else
               type="button"
@@ -404,7 +415,7 @@ export default {
         },
       });
     },
-    previewPlay() {
+    previewPlay({ loop = false } = {}) {
       if (
         this.show_live_feed ||
         this.image_index_currently_shown === this.medias.length - 1
@@ -412,10 +423,11 @@ export default {
         this.firstImage();
 
       const playPreview = (index) => {
-        if (index > this.medias.length - 1) return this.pausePreview();
-
+        if (index > this.medias.length - 1) {
+          if (loop) return playPreview(0);
+          return this.pausePreview();
+        }
         this.previous_photo_to_show = this.medias[index].media;
-
         const duration = this.medias[index].duration;
         this.preview_playing_event = window.setTimeout(
           () => playPreview(index + 1),

@@ -397,6 +397,7 @@ export default {
   next: "Next",
   previous: "Previous",
   previous_image: "Previous image",
+  loop: "Loop",
   next_image: "Next image",
   last_image: "Last image",
   assemble: "Assemble",
