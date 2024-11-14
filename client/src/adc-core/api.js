@@ -423,7 +423,6 @@ export default function () {
           this.leave({ room: path });
           // remove token on the server
           await this.$axios.post(`${path}/_logout`, auth_infos);
-
           return;
         } catch (err) {
           throw this.processError(err);
