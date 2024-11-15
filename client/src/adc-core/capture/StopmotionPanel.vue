@@ -208,7 +208,6 @@
           :medias="medias"
           :frame_rate.sync="frame_rate"
           :export_format.sync="export_format"
-          :loop_preview.sync="loop_preview"
           :created_stopmotion="created_stopmotion"
         />
         <transition name="fade_fast" :duration="150" mode="out-in">
@@ -259,7 +258,6 @@ export default {
 
       frame_rate: this.stopmotion_frame_rate,
       export_format: "mp4",
-      loop_preview: false,
       validating_video_preview: false,
       previous_photo_to_show: false,
       media_is_being_sent: false,
@@ -518,7 +516,6 @@ export default {
           field: "images_list",
           frame_rate: this.frame_rate,
           export_format: this.export_format,
-          loop_preview: this.loop_preview,
           additional_meta,
         },
       });

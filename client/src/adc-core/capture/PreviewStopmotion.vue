@@ -53,17 +53,6 @@
                 </select>
               </div>
               <div>
-                <label class="u-label" for="loop_preview">{{
-                  $t("loop")
-                }}</label>
-                <input
-                  type="checkbox"
-                  v-model="new_loop_preview"
-                  :disabled="new_export_format !== 'gif'"
-                  id="loop_preview"
-                />
-              </div>
-              <div>
                 <label class="u-label" for="export_format">{{
                   $t("format")
                 }}</label>
@@ -98,7 +87,6 @@ export default {
     medias: Array,
     frame_rate: Number,
     export_format: String,
-    loop_preview: Boolean,
     created_stopmotion: [Boolean, Object],
   },
   components: {},
@@ -108,7 +96,6 @@ export default {
       is_playing: false,
       new_frame_rate: this.frame_rate,
       new_export_format: this.export_format,
-      new_loop_preview: this.loop_preview,
       next_image_timeout: null,
     };
   },
@@ -123,9 +110,6 @@ export default {
     },
     new_export_format() {
       this.$emit("update:export_format", this.new_export_format);
-    },
-    new_loop_preview() {
-      this.$emit("update:loop_preview", this.new_loop_preview);
     },
   },
   computed: {

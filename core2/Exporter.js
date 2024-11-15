@@ -182,9 +182,7 @@ class Exporter {
         .inputFPS(frame_rate);
 
       if (this.instructions.export_format === "gif") {
-        if (this.instructions.loop_preview === true) {
-          this.ffmpeg_cmd.inputOption("-stream_loop -1");
-        }
+        this.ffmpeg_cmd.inputOption("-stream_loop -1");
       } else {
         this.ffmpeg_cmd
           .withVideoCodec("libx264")
