@@ -1051,8 +1051,8 @@ export default {
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
   bw_filter: "Filtre noir et blanc",
-  failed_loading_tiles_no_internet:
-    "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
+  failed_loading_tiles:
+    "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
   zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:

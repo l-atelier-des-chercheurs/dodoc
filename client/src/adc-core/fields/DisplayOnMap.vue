@@ -1008,9 +1008,7 @@ export default {
         });
         background_layer.getSource().on("tileloaderror", (err) => {
           console.error(err.tile.l);
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("failed_loading_tiles_no_internet"));
+          this.$alertify.delay(4000).error(this.$t("failed_loading_tiles"));
         });
       }
 

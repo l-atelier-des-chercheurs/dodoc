@@ -990,8 +990,8 @@ export default {
   IGN_SAT: "IGN satellite pictures (France only)",
   image_or_drawing: "Image or drawing",
   bw_filter: "Black and white filter",
-  failed_loading_tiles_no_internet:
-    "Failed loading the baselayer, are you connected to the internet?",
+  failed_loading_tiles:
+    "Failed loading the baselayer, you can try to zoom out.",
   zoom_animation: "Zoom animation",
 
   IGN_max_zoom_limits:
