@@ -397,9 +397,13 @@ export default {
   next: "Next",
   previous: "Previous",
   previous_image: "Previous image",
+  loop: "Loop",
   next_image: "Next image",
   last_image: "Last image",
   assemble: "Assemble",
+  filter_by_fav: "Filter by favorites",
+  add_to_fav: "Add to favorites",
+  remove_from_fav: "Remove from favorites",
 
   with_sound: "with sound",
   update: "Update",
@@ -411,12 +415,13 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  gif: "GIF",
   other: "Other",
   webpage: "Webpage",
-  all_keywords: "Of all keywords",
-  all_medias_types: "Of all types",
-  all_origins: "From all origins",
-  all_accounts: "From all accounts",
+  all_keywords: "All keywords",
+  all_medias_types: "All types",
+  all_origins: "All origins",
+  all_accounts: "All accounts",
 
   or_download_media_on_device: "or download this media to your device",
   or_paste_an_image: "Or drop a picture",
@@ -844,9 +849,9 @@ export default {
   take_picture: "Take a photo",
   delay: "Self-timer",
   timelapse: "time-lapse",
-  framerate: "frames per second",
   live: "Live",
   img_per_second: "Frames per second",
+
   name_of_stream: "Stream name",
   failed_to_start_streams_change_source_or_res:
     "The video or audio stream could not be started.<br>Try changing the source or resolution in the settings.",
@@ -985,8 +990,8 @@ export default {
   IGN_SAT: "IGN satellite pictures (France only)",
   image_or_drawing: "Image or drawing",
   bw_filter: "Black and white filter",
-  failed_loading_tiles_no_internet:
-    "Failed loading the baselayer, are you connected to the internet?",
+  failed_loading_tiles:
+    "Failed loading the baselayer, you can try to zoom out.",
   zoom_animation: "Zoom animation",
 
   IGN_max_zoom_limits:
@@ -1128,4 +1133,7 @@ export default {
   add_or_replace_authors: "Add or replace authors",
   assign_a_new_location: "Assign a new location",
   pick_an_option: "Pick an option",
+
+  duration_explanation:
+    "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
 };

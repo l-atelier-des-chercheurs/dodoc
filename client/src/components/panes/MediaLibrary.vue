@@ -16,52 +16,104 @@
       </div>
 
       <div class="_topSection" v-if="medias.length > 0">
-        <div class="_topSection--left">
-          <div class="_mediaCount">
-            {{ $t("number_of_media") }} = {{ medias.length }}
-            <template v-if="filtered_medias.length !== medias.length">
-              (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
-                filtered_medias.length
-              }})
-            </template>
-          </div>
-          <button
-            type="button"
-            class="u-buttonLink"
-            v-if="!batch_mode && select_mode !== 'single'"
-            @click="batch_mode = !batch_mode"
-          >
-            <b-icon icon="hand-index" />
-            {{ $t("select") }}
-          </button>
-          <button
-            type="button"
-            class="u-buttonLink"
-            v-if="batch_mode"
-            @click="cancelSelect"
-          >
-            <b-icon icon="x-square" />
-            {{ $t("cancel") }}
-          </button>
-          <button
-            type="button"
-            class="u-buttonLink"
-            v-if="batch_mode"
-            @click="selectAllVisibleMedias"
-          >
-            <b-icon icon="plus-square" />
-            {{ $t("select_all") }}
-          </button>
-        </div>
-        <div class="_topSection--right">
-          <button
-            type="button"
-            class="u-button u-button_icon _favFilter"
-            @click="fav_filter = !fav_filter"
-          >
-            <b-icon :icon="fav_filter ? 'star-fill' : 'star'" />
-          </button>
+        <div class="_row">
+          <div class="_topSection--left">
+            <div class="_mediaCount">
+              {{ $t("number_of_media") }} = {{ medias.length }}
+              <template v-if="filtered_medias.length !== medias.length">
+                (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
+                  filtered_medias.length
+                }})
+              </template>
+            </div>
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="!batch_mode && select_mode !== 'single'"
+              @click="batch_mode = !batch_mode"
+            >
+              <b-icon icon="hand-index" />
+              {{ $t("select") }}
+            </button>
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="batch_mode"
+              @click="cancelSelect"
+            >
+              <b-icon icon="x-square" />
+              {{ $t("cancel") }}
+            </button>
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="batch_mode"
+              @click="selectAllVisibleMedias"
+            >
+              <b-icon icon="plus-square" />
+              {{ $t("select_all") }}
+            </button>
 
+            <button type="button" class="u-buttonLink" @click="toggleFilters">
+              <b-icon icon="filter" />
+              {{ $t("filter") }}
+            </button>
+          </div>
+          <div class="_topSection--right">
+            <button
+              type="button"
+              class="u-button u-button_icon _favFilter"
+              :title="$t('filter_by_fav')"
+              @click="fav_filter = !fav_filter"
+            >
+              <b-icon :icon="fav_filter ? 'star-fill' : 'star'" />
+            </button>
+
+            <div class="_tileMode">
+              <button
+                class="u-button u-button_transparent"
+                type="button"
+                :class="{
+                  'is--active': tile_mode === 'table',
+                }"
+                @click="tile_mode = 'table'"
+              >
+                <b-icon icon="list-ol" />
+              </button>
+              <button
+                class="u-button u-button_transparent"
+                type="button"
+                :class="{
+                  'is--active': tile_mode === 'tiny',
+                }"
+                @click="tile_mode = 'tiny'"
+              >
+                <b-icon icon="grid-3x2-gap-fill" />
+              </button>
+              <button
+                class="u-button u-button_transparent"
+                type="button"
+                :class="{
+                  'is--active': tile_mode === 'medium',
+                }"
+                @click="tile_mode = 'medium'"
+              >
+                <b-icon icon="grid-fill" />
+              </button>
+              <button
+                class="u-button u-button_transparent"
+                type="button"
+                :class="{
+                  'is--active': tile_mode === 'map',
+                }"
+                @click="tile_mode = 'map'"
+              >
+                <b-icon icon="map-fill" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="_row _filters" v-if="filters_opened">
           <select
             class="_selectMediaKeyword"
             size="small"
@@ -182,49 +234,6 @@
                 />
               </div>
             </template>
-          </div>
-
-          <div class="_tileMode">
-            <button
-              class="u-button u-button_transparent"
-              type="button"
-              :class="{
-                'is--active': tile_mode === 'table',
-              }"
-              @click="tile_mode = 'table'"
-            >
-              <b-icon icon="list-ol" />
-            </button>
-            <button
-              class="u-button u-button_transparent"
-              type="button"
-              :class="{
-                'is--active': tile_mode === 'tiny',
-              }"
-              @click="tile_mode = 'tiny'"
-            >
-              <b-icon icon="grid-3x2-gap-fill" />
-            </button>
-            <button
-              class="u-button u-button_transparent"
-              type="button"
-              :class="{
-                'is--active': tile_mode === 'medium',
-              }"
-              @click="tile_mode = 'medium'"
-            >
-              <b-icon icon="grid-fill" />
-            </button>
-            <button
-              class="u-button u-button_transparent"
-              type="button"
-              :class="{
-                'is--active': tile_mode === 'map',
-              }"
-              @click="tile_mode = 'map'"
-            >
-              <b-icon icon="map-fill" />
-            </button>
           </div>
         </div>
       </div>
@@ -388,6 +397,7 @@ export default {
       selected_medias_paths: [],
       batch_mode: false,
       show_batch_informations_edit_modal: false,
+      filters_opened: false,
 
       tile_mode: localStorage.getItem("library_tile_mode") || "tiny",
       files_to_import: [],
@@ -651,7 +661,9 @@ export default {
 
       return false;
     },
-
+    toggleFilters() {
+      this.filters_opened = !this.filters_opened;
+    },
     mediaTileIsSelectable() {
       return this.batch_mode;
     },
@@ -860,16 +872,23 @@ export default {
 }
 
 ._topSection {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-
-  z-index: 1;
-
   border-bottom: 2px solid var(--c-orange_clair);
+  padding: calc(var(--spacing) / 8) 0;
+
+  > ._row {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
+
+    z-index: 1;
+
+    &._filters {
+      justify-content: center;
+    }
+  }
 }
 
 ._noMedia {

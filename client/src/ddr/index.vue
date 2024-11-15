@@ -1,6 +1,7 @@
 <script>
 /* eslint-disable */
 import {
+  getBoundingRect,
   getHandler,
   getPoints,
   getSize,
@@ -201,31 +202,8 @@ export default {
       this._parentRect = this.$refs.wrapper.parentNode.getBoundingClientRect();
       this._resizeHandler = event.target.dataset.resizetype;
       this.localeTransform = { ...this.transform };
-      // 如果设置了限制在父元素的边界内移
-      // 计算组件的边界，在移动时进行判断并修正
-      if (this.parent) {
-        let minLeft = 0;
-        let maxLeft = this._parentRect.width / this.zoom - this.transform.width;
-        let minTop = 0;
-        let maxTop =
-          this._parentRect.height / this.zoom - this.transform.height;
-        let maxLeftWidth = this.transform.x + this.transform.width;
-        let maxRightWidth =
-          this._parentRect.width / this.zoom - this.transform.x;
-        let maxTopHeight = this.transform.y + this.transform.height;
-        let maxBottomHeight =
-          this._parentRect.height / this.zoom - this.transform.y;
-        this.bounday = {
-          minLeft,
-          maxLeft,
-          minTop,
-          maxTop,
-          maxLeftWidth,
-          maxRightWidth,
-          maxTopHeight,
-          maxBottomHeight,
-        };
-      }
+      this.lastTransform = { ...this.transform };
+
       // 添加事件，该事件会在up时移除
       document.addEventListener("mousemove", this.handleMouseMove, false);
       document.addEventListener("touchmove", this.handleMouseMove, false);
@@ -283,58 +261,75 @@ export default {
       let y = (this.localeTransform.y = Math.round(
         this.localeTransform.y + deltaY
       ));
+      let transform = { ...this.transform };
 
       // 将当前位置对齐网格，限制在父元素内进行移动
       // 当deltaX > 0 说明当前移动方向为向右移动，则向下取整。例如：10 12 14 始终取 10
       // 当deltaY < 0 说明当干移动方向为向左移动，则向上取整。例如：20 19 17 始终取 20
       if (this.axis.includes("x")) {
-        if (x > this.transform.x) {
-          this.transform.x = this.restrictToLeftOfParent(x - (x % gridX));
-        } else if (x < this.transform.x) {
-          this.transform.x = this.restrictToLeftOfParent(
-            x - ((x % gridX) - gridX)
-          );
+        if (x > transform.x) {
+          transform.x = x - (x % gridX);
+        } else if (x < transform.x) {
+          transform.x = x - ((x % gridX) - gridX);
         }
       }
 
       if (this.axis.includes("y")) {
-        if (y > this.transform.y) {
-          this.transform.y = this.restrictToTopOfParent(y - (y % gridY));
-        } else if (y < this.transform.y) {
-          this.transform.y = this.restrictToTopOfParent(
-            y - ((y % gridY) - gridY)
-          );
+        if (y > transform.y) {
+          transform.y = y - (y % gridY);
+        } else if (y < transform.y) {
+          transform.y = y - ((y % gridY) - gridY);
         }
       }
+
+      this.resetTranslate(transform);
     },
-    restrictToLeftOfParent(x) {
-      if (!this.parent) return x;
-      x = Math.max(this.bounday.minLeft, x);
-      x = Math.min(this.bounday.maxLeft, x);
-      return x;
+    resetTranslate(transform) {
+      if (!this.parent) {
+        this.transform = transform;
+        return;
+      }
+      let rect = getBoundingRect(transform, this.zoom);
+      let diffX = 0;
+      let diffY = 0;
+      if (rect.left < 0) {
+        diffX = rect.left;
+      }
+      if (rect.right > this._parentRect.width) {
+        diffX = rect.right - this._parentRect.width;
+      }
+      if (rect.top < 0) {
+        diffY = rect.top;
+      }
+      if (rect.bottom > this._parentRect.height) {
+        diffY = rect.bottom - this._parentRect.height;
+      }
+      transform.x -= diffX;
+      transform.y -= diffY;
+      this.transform = transform;
     },
-    restrictToTopOfParent(y) {
-      if (!this.parent) return y;
-      y = Math.max(this.bounday.minTop, y);
-      y = Math.min(this.bounday.maxTop, y);
-      return y;
+    resetTransform(transform) {
+      // 限制在父元素中
+      let rect = getBoundingRect(transform, this.zoom);
+      let flag = this.allowTransform(rect);
+      if (flag) {
+        this.lastTransform = transform;
+      } else {
+        transform = this.lastTransform;
+      }
+      this.transform = transform;
     },
-    restrictHeight(h, type) {
-      if (!this.parent || this.transform.rotation > 0) return h;
-      if (["bl", "bm", "br"].includes(type))
-        return Math.min(this.bounday.maxBottomHeight, h);
-      if (["tl", "tm", "tr"].includes(type))
-        return Math.min(this.bounday.maxTopHeight, h);
-      return h;
+    // 缩放和旋转只进行判断，不会以边界进行修正transform，如果缩放过快顶点可能无法触碰到边界就会停止动作
+    allowTransform(rect) {
+      if (!this.parent) return true;
+      return (
+        rect.left >= 0 &&
+        rect.right <= this._parentRect.width &&
+        rect.top >= 0 &&
+        rect.bottom <= this._parentRect.height
+      );
     },
-    restrictWidth(w, type) {
-      if (!this.parent || this.transform.rotation > 0) return w;
-      if (["tl", "l", "bl"].includes(type))
-        return Math.min(this.bounday.maxLeftWidth, w);
-      if (["tr", "r", "br"].includes(type))
-        return Math.min(this.bounday.maxRightWidth, w);
-      return w;
-    },
+
     handleMouseUp(event) {
       this.handleDefaultEvent(event);
       document.removeEventListener("mousemove", this.handleMouseMove, false);
@@ -379,7 +374,6 @@ export default {
       let y1 = clientY - opp2.y - offsetY;
       let width = rect.width;
       let height = rect.height;
-      // 有问题
       if (tr2bl[type]) {
         pressAngle = rad2deg(
           Math.atan2(width, widthMap[type] ? height / 2 : height)
@@ -451,7 +445,6 @@ export default {
         transform.height = h;
       }
 
-      let resizeType = this._resizeHandler;
       // // 限制在网格中移动，原理同拖动
       if (transform.width % gridX > 0) {
         if (transform.width > this.localeTransform.width) {
@@ -473,18 +466,18 @@ export default {
             transform.height - ((transform.height % gridY) - gridY);
         }
       }
-      // 限制在父元素中
-      transform.height = this.restrictHeight(transform.height, resizeType);
-      transform.width = this.restrictWidth(transform.width, resizeType);
 
       // 根据新的旋转和宽高计算新的位置
       let matrix = getPoints(transform, this.zoom);
+
       let newOpposite = matrix[pointMap[type]];
       let deltaX = -(newOpposite.x - opposite.x) / this.zoom;
       let deltaY = -(newOpposite.y - opposite.y) / this.zoom;
+
       transform.x = Math.round(transform.x + deltaX);
       transform.y = Math.round(transform.y + deltaY);
-      this.transform = transform;
+
+      this.resetTransform(transform);
     },
 
     handleRotateStart(event) {
@@ -510,7 +503,10 @@ export default {
       r = r % 360;
       r = r < 0 ? r + 360 : r;
       r = this.roundRotate(r);
-      this.transform.rotation = Math.floor(r);
+
+      let transform = { ...this.transform };
+      transform.rotation = Math.floor(r);
+      this.resetTransform(transform);
     },
     roundRotate(r) {
       const round = 5;

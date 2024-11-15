@@ -57,6 +57,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$on(`app.notify_error`, this.notifyError);
 
     await this.$api.init({ debug_mode: this.$root.debug_mode });
 
@@ -74,6 +75,12 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$off(`app.notify_error`, this.notifyError);
+
+    this.$eventHub.$off("socketio.connect", this.socketConnected);
+    this.$eventHub.$off("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$off("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$off("socketio.connect_error", this.socketConnectError);
     this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
   },
   watch: {},
@@ -104,6 +111,10 @@ export default {
     },
     promptGeneralPassword() {
       this.show_general_password_modal = true;
+    },
+    notifyError(msg) {
+      if (msg === "not_allowed")
+        this.$alertify.delay(4000).error(this.$t("action_not_allowed"));
     },
   },
 };

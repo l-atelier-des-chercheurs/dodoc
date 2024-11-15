@@ -35,6 +35,7 @@
           <CaptionCreditsPage
             :media="media_with_linked._linked_media"
             :publication_path="publication_path"
+            :can_edit="can_edit"
           />
 
           <div class="_btnRow" v-if="edit_mode">
@@ -155,6 +156,7 @@ export default {
   data() {
     return {
       show_media_picker: false,
+      observer: null,
 
       flickityOptions: {
         initialIndex: 0,
@@ -175,12 +177,14 @@ export default {
   },
   created() {},
   mounted() {
-    setTimeout(() => {
-      // if (this.$refs.flickity) this.$refs.flickity.resize();
-      // if (this.$refs.nav) this.$refs.nav.resize();
-    }, 500);
+    this.observer = new ResizeObserver(() => {
+      if (this.$refs.flickity) this.$refs.flickity.resize();
+    });
+    this.observer.observe(this.$el);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.observer.disconnect();
+  },
   watch: {
     // medias_with_linked() {
     // if (this.$refs.flickity) this.$refs.flickity.reloadCells();

@@ -245,7 +245,7 @@ export default {
   watch: {},
   computed: {
     thumb() {
-      if (this.file.$thumbs === "no_preview") return false;
+      if (this.file.$thumbs === "no_preview" || !this.file.$path) return false;
 
       const path_to_parent = this.file.$path.substring(
         0,
@@ -259,6 +259,11 @@ export default {
       });
     },
     full_thumb() {
+      if (
+        this.file.$type === "image" &&
+        this.file.$media_filename.endsWith(".gif")
+      )
+        return this.file_full_path;
       if (this.resolution) return this.thumb;
       return this.file_full_path;
     },

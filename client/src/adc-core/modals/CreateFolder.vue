@@ -99,8 +99,6 @@ export default {
         if (code === "unique_field_taken") {
           this.$alertify.delay(4000).error(this.$t("title_taken"));
           this.$refs.titleInput.$el.querySelector("input").select();
-        } else if (code === "token_not_allowed_must_be_contributors") {
-          this.$alertify.delay(4000).error(this.$t("action_not_allowed"));
         } else {
           this.$alertify.delay(4000).error(code);
         }

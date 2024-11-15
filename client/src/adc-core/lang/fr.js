@@ -723,7 +723,6 @@ export default {
   take_picture: "Prendre une photo",
   delay: "Retardateur",
   timelapse: "time-lapse",
-  framerate: "images par seconde",
   live: "Direct",
   img_per_second: "Images par seconde",
 
@@ -743,9 +742,13 @@ export default {
   previous_image: "Image précédente",
   next: "Suivant",
   previous: "Précedent",
+  loop: "Boucle",
   next_image: "Image suivante",
   last_image: "Dernière image",
   assemble: "Assembler",
+  filter_by_fav: "Filtrer les favoris",
+  add_to_fav: "Ajouter aux favoris",
+  remove_from_fav: "Retirer des favoris",
 
   with_sound: "avec le son",
   update: "Mettre à jour",
@@ -758,12 +761,13 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  gif: "GIF",
   other: "Autre",
   webpage: "Page web",
-  all_keywords: "De tous les mots-clés",
-  all_medias_types: "De tous types",
-  all_origins: "De toutes origines",
-  all_accounts: "De tous les comptes",
+  all_keywords: "Tous les mots-clés",
+  all_medias_types: "Tous les types",
+  all_origins: "Toutes les origines",
+  all_accounts: "Tous les comptes",
 
   or_download_media_on_device: "ou télécharger ce média sur votre appareil",
 
@@ -921,7 +925,7 @@ export default {
   import_in_progress: "Importation en cours…",
   import_finished:
     "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
-  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet dodoc valide",
+  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet do•doc valide",
   zip_is_space_not_project:
     "Ce fichier ZIP semble être un espace et non un projet",
 
@@ -1047,9 +1051,9 @@ export default {
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
   bw_filter: "Filtre noir et blanc",
-  failed_loading_tiles_no_internet:
-    "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
-  zoom_animation: "Animation de zoom",
+  failed_loading_tiles:
+    "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
+  zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
@@ -1200,4 +1204,7 @@ export default {
   keep_existing_authors: "Conserver les auteurs existants",
   add_after_existing_authors: "Ajouter à la suite des auteurs existants",
   erase_and_replace_authors: "Effacer et remplacer les auteurs",
+
+  duration_explanation:
+    "Soit {seconds_equivalent} seconde(s) à une vitesse de {frame_rate} images par seconde",
 };

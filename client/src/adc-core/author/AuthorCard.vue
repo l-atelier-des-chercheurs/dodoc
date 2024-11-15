@@ -214,8 +214,11 @@ export default {
       await this.$api.deleteItem({
         path: this.author.$path,
       });
-      if (this.is_self) await this.$api.logoutFromFolder();
       this.$router.push("/@");
+      if (this.is_self) {
+        await this.$api.logoutFromFolder();
+        window.location.reload();
+      }
     },
     async getAllAuthorsGroup() {
       const authors = await this.$api.getFolders({

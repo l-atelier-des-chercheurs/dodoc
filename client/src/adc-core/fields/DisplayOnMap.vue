@@ -1007,9 +1007,8 @@ export default {
           className: "ol-layer ol-basemap",
         });
         background_layer.getSource().on("tileloaderror", (err) => {
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("failed_loading_tiles_no_internet"));
+          console.error(err.tile.l);
+          this.$alertify.delay(4000).error(this.$t("failed_loading_tiles"));
         });
       }
 
@@ -1066,7 +1065,7 @@ export default {
         }
 
         return new olSourceWMTS({
-          url: "https://wxs.ign.fr/decouverte/geoportail/wmts",
+          url: "https://data.geopf.fr/wmts",
           layer,
           matrixSet: "PM",
           format,

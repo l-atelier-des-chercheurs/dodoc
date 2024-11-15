@@ -131,7 +131,6 @@ export default {
         return `
           --color1: var(--c-noir);
           --color2: white;
-          --color-hover-icon: var(--c-noir);
         `;
       return ``;
     },
@@ -143,7 +142,6 @@ export default {
 ._editBtn {
   --color1: rgba(255, 255, 255, 1);
   --color2: var(--active-color);
-  --color-hover-icon: white;
 
   position: relative;
   display: inline-flex;
@@ -219,8 +217,8 @@ export default {
   &:active,
   &:focus-visible,
   &.is--unfolded {
-    // background: var(--color2);
-    color: var(--color-hover-icon);
+    background: var(--color2);
+    color: var(--color1);
 
     ._label {
       transform: none;

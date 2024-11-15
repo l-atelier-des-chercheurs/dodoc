@@ -3,6 +3,7 @@
     <button
       type="button"
       class="u-button u-button_icon u-button_transparent"
+      :title="local_fav ? $t('remove_from_fav') : $t('add_to_fav')"
       :disabled="!can_edit"
       @click="toggleFav"
     >

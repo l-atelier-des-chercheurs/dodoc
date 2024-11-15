@@ -123,9 +123,17 @@ class Exporter {
     const files = await file.getFiles({ path_to_folder: this.path_to_folder });
 
     const list_of_metas_in_order = folder_meta[this.instructions.field];
-    const selected_files = list_of_metas_in_order.map((lf) =>
-      files.find((f) => f.$path.endsWith("/" + lf))
-    );
+    const selected_files = list_of_metas_in_order.reduce((acc, lf) => {
+      const meta = lf.m || lf;
+      const duration = lf.d || 1;
+      const file = files.find((f) => f.$path.endsWith("/" + meta));
+      if (!file) return acc;
+
+      for (let i = 0; i < duration; i++) {
+        acc.push(file);
+      }
+      return acc;
+    }, []);
     return selected_files;
   }
 
@@ -146,11 +154,14 @@ class Exporter {
           resolution,
         });
 
+      const file_ext =
+        this.instructions.export_format === "gif" ? ".gif" : ".mp4";
+
       const new_video_name =
         "stopmotion_" +
         +new Date() +
         (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-        ".mp4";
+        file_ext;
       const full_path_to_new_video = path.join(
         full_path_to_folder_in_cache,
         new_video_name
@@ -168,19 +179,29 @@ class Exporter {
 
       this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
-        .inputFPS(frame_rate)
-        .withVideoCodec("libx264")
-        .withVideoBitrate("4000k")
-        .input("anullsrc")
-        .inputFormat("lavfi")
+        .inputFPS(frame_rate);
+
+      if (this.instructions.export_format === "gif") {
+        this.ffmpeg_cmd.inputOption("-stream_loop -1");
+      } else {
+        this.ffmpeg_cmd
+          .withVideoCodec("libx264")
+          .withVideoBitrate("4000k")
+          .input("anullsrc")
+          .inputFormat("lavfi");
+      }
+
+      this.ffmpeg_cmd
         .duration(images.length / frame_rate)
         .size(`${width}x${height}`)
         .outputFPS(output_frame_rate)
         .autopad()
         .addOptions(["-preset slow", "-tune animation"])
-        .toFormat("mp4")
+        .toFormat(this.instructions.export_format === "gif" ? "gif" : "mp4");
+
+      this.ffmpeg_cmd
         .on("start", (commandLine) => {
-          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+          dev.log("Spawned Ffmpeg with command: \n" + commandLine);
         })
         .on("progress", (progress) => {
           // value from 0 to 100

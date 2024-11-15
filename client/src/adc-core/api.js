@@ -423,7 +423,6 @@ export default function () {
           this.leave({ room: path });
           // remove token on the server
           await this.$axios.post(`${path}/_logout`, auth_infos);
-
           return;
         } catch (err) {
           throw this.processError(err);
@@ -679,16 +678,14 @@ export default function () {
             this.$eventHub.$emit("app.prompt_general_password");
           } else if (code === "no_general_password_submitted") {
             this.$eventHub.$emit("app.prompt_general_password");
-          } else if (code === "token_not_allowed_must_be_local_admin") {
-            // this.$alertify.delay(4000).error("action_not_allowed");
-          } else if (code === "token_not_allowed_must_be_contributors") {
-            // this.$alertify.delay(4000).error("action_not_allowed");
+          } else if (code === "not_allowed") {
+            this.$eventHub.$emit("app.notify_error", code);
           } else if (code === "file_size_limit_exceeded") {
             let msg = "File size limit exceeded. Maximum file size is ";
             msg +=
               err_infos.upload_max_file_size_in_mo +
               " Mo. Please try again with a smaller file.";
-            this.$alertify.delay(4000).error(msg);
+            this.$eventHub.$emit("app.file_size_limit_exceeded", msg);
           } else if (code === "ENOENT") code = "folder_is_missing";
           // this.$alertify.delay(4000).error("Message d’erreur : " + code);
           console.error("processError – " + code);

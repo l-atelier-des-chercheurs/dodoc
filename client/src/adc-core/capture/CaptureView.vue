@@ -202,7 +202,7 @@
               class="record_options"
             >
               <label class="u-label">
-                <span>{{ $t("delay").toLowerCase() }}</span>
+                <span>{{ $t("delay") }}</span>
                 <input
                   type="number"
                   v-model.number="delay_seconds"
@@ -314,14 +314,14 @@
                 type="button"
                 class="u-button u-button_small"
                 :class="{
-                  'is--active': location_to_add_to_medias,
+                  'is--active': has_location_to_add_to_medias,
                 }"
                 @click="show_position_modal = true"
               >
                 {{ $t("location") }}
                 <b-icon
                   :icon="
-                    !!location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'
+                    has_location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'
                   "
                 />
               </button>
@@ -932,6 +932,14 @@
               v-else-if="media_to_validate && must_validate_media"
               key="validation"
             >
+              <MediaValidationButtons
+                :media_is_being_sent="media_is_being_sent"
+                :media_being_sent_percent="media_being_sent_percent"
+                :can_add_to_fav="true"
+                @cancel="cancelValidation()"
+                @save="sendMedia()"
+                @save_and_fav="sendMedia({ fav: true })"
+              />
               <div class="_download_media_without_validation">
                 <small>
                   <a
@@ -947,15 +955,6 @@
                   </a>
                 </small>
               </div>
-
-              <MediaValidationButtons
-                :media_is_being_sent="media_is_being_sent"
-                :media_being_sent_percent="media_being_sent_percent"
-                :can_add_to_fav="true"
-                @cancel="cancelValidation()"
-                @save="sendMedia({})"
-                @save_and_fav="sendMedia({ fav: true })"
-              />
             </div>
           </transition>
         </div>
@@ -1142,11 +1141,14 @@ export default {
     };
   },
   created() {
-    const location_to_add_to_medias = localStorage.getItem(
-      "location_to_add_to_medias"
-    );
-    if (location_to_add_to_medias && location_to_add_to_medias !== "undefined")
-      this.location_to_add_to_medias = JSON.parse(location_to_add_to_medias);
+    try {
+      const l = localStorage.getItem("location_to_add_to_medias");
+      if (l && l !== "undefined")
+        this.location_to_add_to_medias = JSON.parse(l);
+    } catch (e) {
+      console.error(e);
+      this.location_to_add_to_medias = undefined;
+    }
   },
   mounted() {
     if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
@@ -1233,10 +1235,12 @@ export default {
       }
     },
     location_to_add_to_medias() {
-      localStorage.setItem(
-        "location_to_add_to_medias",
-        JSON.stringify(this.location_to_add_to_medias)
-      );
+      if (this.has_location_to_add_to_medias)
+        localStorage.setItem(
+          "location_to_add_to_medias",
+          JSON.stringify(this.location_to_add_to_medias)
+        );
+      else localStorage.removeItem("location_to_add_to_medias");
     },
     is_validating_stopmotion_video() {
       if (this.is_validating_stopmotion_video) {
@@ -1260,7 +1264,7 @@ export default {
       );
 
       if (!this.must_validate_media) {
-        this.sendMedia({});
+        this.sendMedia();
         return;
       }
 
@@ -1282,6 +1286,12 @@ export default {
         !this.is_recording &&
         !this.is_making_stopmotion &&
         !this.delay_event
+      );
+    },
+    has_location_to_add_to_medias() {
+      return (
+        this.location_to_add_to_medias?.longitude &&
+        this.location_to_add_to_medias?.latitude
       );
     },
     is_making_stopmotion() {
@@ -1853,7 +1863,7 @@ export default {
       });
     },
 
-    async sendMedia({ fav = false }) {
+    async sendMedia({ fav = false } = {}) {
       console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
       if (this.$root.debug_mode === true)
         console.log(`METHODS • CaptureView / sendMedia`);
@@ -1894,7 +1904,7 @@ export default {
 
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
-      if (this.location_to_add_to_medias)
+      if (this.has_location_to_add_to_medias)
         additional_meta.$location = this.location_to_add_to_medias;
 
       const onProgress = (progressEvent) => {
@@ -2202,7 +2212,8 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  margin: 0 auto;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
 
   label {
     display: inline-block;
@@ -2218,7 +2229,7 @@ export default {
 
   .record_options {
     max-width: 450px;
-    margin: calc(var(--spacing) / 2) auto;
+    margin: 0 auto;
     // .padding-verysmall;
     pointer-events: auto;
     // .font-small;

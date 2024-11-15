@@ -49,9 +49,9 @@
       <!-- bottom left -->
       <span v-if="duration" class="_fileType" v-html="duration" />
       <span
-        v-if="['pdf', 'stl'].includes(file.$type) || tile_mode === 'table'"
+        v-if="show_file_type_label"
         class="_fileType"
-        v-html="$t(file.$type)"
+        v-html="show_file_type_label"
       />
     </template>
 
@@ -136,6 +136,13 @@ export default {
     },
     duration() {
       return this.displayDuration({ media: this.file });
+    },
+    show_file_type_label() {
+      if (this.file.$media_filename.endsWith(".gif")) return this.$t("gif");
+      if (this.file.$type === "stl") return this.$t("stl");
+      if (this.file.$type === "pdf") return this.$t("pdf");
+      if (this.tile_mode === "table") return this.$t(this.file.$type);
+      return false;
     },
   },
   methods: {},
@@ -305,8 +312,9 @@ export default {
 }
 
 ._fileType {
-  background: rgba(255, 255, 255, 0.5);
-  color: var(--c-noir);
+  // background: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
   border-radius: 2px;
   line-height: 1;
   font-weight: 600;
@@ -393,10 +401,21 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 0 calc(var(--spacing) / 2);
-  // color: var(--active-color);
+  margin: 0;
+  width: 1.5rem;
+  height: 1.5rem;
   color: white;
-  mix-blend-mode: difference;
+  // mix-blend-mode: difference;
+  // background: var(--c-bleumarine);
+  border-radius: 50%;
+
+  display: flex;
+  place-content: center;
+
+  svg {
+    // color: var(--c-bleumarine);
+    padding: 1px;
+  }
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
@@ -477,7 +496,7 @@ export default {
       padding: calc(var(--spacing) * 1.5);
       background: rgba(255, 255, 255, 0.5);
       border-radius: 50%;
-      cursor: copy;
+      cursor: pointer;
 
       > * {
         pointer-events: none;

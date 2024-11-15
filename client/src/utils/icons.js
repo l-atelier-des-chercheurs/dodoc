@@ -143,6 +143,8 @@ import {
   BIconEyeSlashFill,
   BIconBoundingBox,
   BIconRulers,
+  BIconClock,
+  BIconFilter,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -285,3 +287,5 @@ Vue.component("BIconEyeFill", BIconEyeFill);
 Vue.component("BIconEyeSlashFill", BIconEyeSlashFill);
 Vue.component("BIconBoundingBox", BIconBoundingBox);
 Vue.component("BIconRulers", BIconRulers);
+Vue.component("BIconClock", BIconClock);
+Vue.component("BIconFilter", BIconFilter);

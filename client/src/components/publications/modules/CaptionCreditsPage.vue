@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     canEditLinkedMedia(path) {
-      if (!path || !this.publication_path) return false;
+      if (!path || !this.publication_path || !this.can_edit) return false;
 
       const media_parent_folder = this.getParent(path);
 
