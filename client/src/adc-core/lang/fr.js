@@ -761,6 +761,7 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  gif: "GIF",
   other: "Autre",
   webpage: "Page web",
   all_keywords: "Tous les mots-clés",

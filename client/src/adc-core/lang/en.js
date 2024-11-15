@@ -415,6 +415,7 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  gif: "GIF",
   other: "Other",
   webpage: "Webpage",
   all_keywords: "All keywords",
