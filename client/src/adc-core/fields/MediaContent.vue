@@ -259,6 +259,11 @@ export default {
       });
     },
     full_thumb() {
+      if (
+        this.file.$type === "image" &&
+        this.file.$media_filename.endsWith(".gif")
+      )
+        return this.file_full_path;
       if (this.resolution) return this.thumb;
       return this.file_full_path;
     },
