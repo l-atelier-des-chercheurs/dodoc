@@ -174,19 +174,37 @@ class Exporter {
       const frame_rate = this.instructions.frame_rate || 4;
       const output_frame_rate = 30;
 
-      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
-        .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
-        .inputFPS(frame_rate)
-        .withVideoCodec("libx264")
-        .withVideoBitrate("4000k")
-        .input("anullsrc")
-        .inputFormat("lavfi")
-        .duration(images.length / frame_rate)
-        .size(`${width}x${height}`)
-        .outputFPS(output_frame_rate)
-        .autopad()
-        .addOptions(["-preset slow", "-tune animation"])
-        .toFormat("mp4")
+      if (this.instructions.export_format === "gif") {
+        this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+          .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
+          .inputFPS(frame_rate)
+          .duration(images.length / frame_rate)
+          .size(`${width}x${height}`)
+          .outputFPS(output_frame_rate)
+          .autopad()
+          .addOptions(["-preset slow", "-tune animation"])
+          .toFormat("gif");
+
+        if (this.instructions.loop_preview === true) {
+          this.ffmpeg_cmd.addOptions(["-stream_loop -1"]);
+        }
+      } else {
+        this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+          .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
+          .inputFPS(frame_rate)
+          .withVideoCodec("libx264")
+          .withVideoBitrate("4000k")
+          .input("anullsrc")
+          .inputFormat("lavfi")
+          .duration(images.length / frame_rate)
+          .size(`${width}x${height}`)
+          .outputFPS(output_frame_rate)
+          .autopad()
+          .addOptions(["-preset slow", "-tune animation"])
+          .toFormat("mp4");
+      }
+
+      this.ffmpeg_cmd
         .on("start", (commandLine) => {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
         })
