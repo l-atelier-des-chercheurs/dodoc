@@ -42,7 +42,7 @@
                   v-model.number="new_frame_rate"
                   size="small"
                   name="fps_select"
-                  :id="fps_select"
+                  id="fps_select"
                 >
                   <option>2</option>
                   <option>4</option>
@@ -73,8 +73,8 @@
                   name="export_format"
                   :id="export_format"
                 >
-                  <option :value="'gif'">gif</option>
-                  <option :value="'mp4'">video (mp4)</option>
+                  <option :value="'gif'">{{ $t("gif") }}</option>
+                  <option :value="'mp4'">{{ $t("video") }}</option>
                 </select>
               </div>
             </div>

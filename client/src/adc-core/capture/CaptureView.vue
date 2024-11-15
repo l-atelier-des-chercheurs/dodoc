@@ -937,7 +937,7 @@
                 :media_being_sent_percent="media_being_sent_percent"
                 :can_add_to_fav="true"
                 @cancel="cancelValidation()"
-                @save="sendMedia({})"
+                @save="sendMedia()"
                 @save_and_fav="sendMedia({ fav: true })"
               />
               <div class="_download_media_without_validation">
@@ -1264,7 +1264,7 @@ export default {
       );
 
       if (!this.must_validate_media) {
-        this.sendMedia({});
+        this.sendMedia();
         return;
       }
 
@@ -1863,7 +1863,7 @@ export default {
       });
     },
 
-    async sendMedia({ fav = false }) {
+    async sendMedia({ fav = false } = {}) {
       console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
       if (this.$root.debug_mode === true)
         console.log(`METHODS • CaptureView / sendMedia`);

@@ -223,6 +223,7 @@
         :cancelButtonIsBackButton="true"
         @cancel="backToStopmotion"
         @save="exportStopmotion()"
+        @save_and_fav="exportStopmotion({ fav: true })"
       />
 
       <div class="_loader" v-if="media_is_being_sent">
@@ -500,11 +501,13 @@ export default {
       this.created_stopmotion = false;
       this.$emit("update:show_live_feed", true);
     },
-    async exportStopmotion() {
+    async exportStopmotion({ fav = false } = {}) {
       this.compilation_in_progress = true;
 
-      const additional_meta = {};
-      additional_meta.$origin = "capture";
+      const additional_meta = {
+        fav,
+        $origin: "capture",
+      };
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
@@ -525,19 +528,24 @@ export default {
 
       const checkIfEnded = ({ task_id, message }) => {
         if (task_id !== current_task_id) return;
+        this.$eventHub.$off("task.ended", checkIfEnded);
+
         this.compilation_in_progress = false;
 
-        const meta_filename = this.getFilename(message.file?.$path);
-        if (meta_filename) this.$emit("insertMedia", meta_filename);
-        this.$emit("close");
-        // works, but not that useful
-        // this.created_stopmotion = this.getSourceMedia({
-        //   source_media: {
-        //     meta_filename_in_project: this.getFilename(message.path),
-        //   },
-        //   folder_path: this.current_stopmotion_path,
-        // });
-        this.$eventHub.$off("task.ended", checkIfEnded);
+        if (message.event === "completed") {
+          const meta_filename = this.getFilename(message.file?.$path);
+          if (meta_filename) this.$emit("insertMedia", meta_filename);
+          this.$emit("close");
+          // works, but not that useful
+          // this.created_stopmotion = this.getSourceMedia({
+          //   source_media: {
+          //     meta_filename_in_project: this.getFilename(message.path),
+          //   },
+          //   folder_path: this.current_stopmotion_path,
+          // });
+        } else {
+          this.$alertify.delay(4000).error(message.info);
+        }
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
 
