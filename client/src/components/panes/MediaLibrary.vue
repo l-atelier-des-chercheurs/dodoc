@@ -63,6 +63,7 @@
             <button
               type="button"
               class="u-button u-button_icon _favFilter"
+              :title="$t('filter_by_fav')"
               @click="fav_filter = !fav_filter"
             >
               <b-icon :icon="fav_filter ? 'star-fill' : 'star'" />

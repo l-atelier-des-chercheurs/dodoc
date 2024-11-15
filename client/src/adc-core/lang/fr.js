@@ -746,6 +746,9 @@ export default {
   next_image: "Image suivante",
   last_image: "Dernière image",
   assemble: "Assembler",
+  filter_by_fav: "Filtrer les favoris",
+  add_to_fav: "Ajouter aux favoris",
+  remove_from_fav: "Retirer des favoris",
 
   with_sound: "avec le son",
   update: "Mettre à jour",

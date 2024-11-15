@@ -932,6 +932,14 @@
               v-else-if="media_to_validate && must_validate_media"
               key="validation"
             >
+              <MediaValidationButtons
+                :media_is_being_sent="media_is_being_sent"
+                :media_being_sent_percent="media_being_sent_percent"
+                :can_add_to_fav="true"
+                @cancel="cancelValidation()"
+                @save="sendMedia({})"
+                @save_and_fav="sendMedia({ fav: true })"
+              />
               <div class="_download_media_without_validation">
                 <small>
                   <a
@@ -947,15 +955,6 @@
                   </a>
                 </small>
               </div>
-
-              <MediaValidationButtons
-                :media_is_being_sent="media_is_being_sent"
-                :media_being_sent_percent="media_being_sent_percent"
-                :can_add_to_fav="true"
-                @cancel="cancelValidation()"
-                @save="sendMedia({})"
-                @save_and_fav="sendMedia({ fav: true })"
-              />
             </div>
           </transition>
         </div>

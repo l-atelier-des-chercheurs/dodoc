@@ -401,6 +401,9 @@ export default {
   next_image: "Next image",
   last_image: "Last image",
   assemble: "Assemble",
+  filter_by_fav: "Filter by favorites",
+  add_to_fav: "Add to favorites",
+  remove_from_fav: "Remove from favorites",
 
   with_sound: "with sound",
   update: "Update",

@@ -488,7 +488,7 @@ export default {
       padding: calc(var(--spacing) * 1.5);
       background: rgba(255, 255, 255, 0.5);
       border-radius: 50%;
-      cursor: copy;
+      cursor: pointer;
 
       > * {
         pointer-events: none;
