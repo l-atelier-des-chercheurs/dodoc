@@ -202,7 +202,7 @@
               class="record_options"
             >
               <label class="u-label">
-                <span>{{ $t("delay").toLowerCase() }}</span>
+                <span>{{ $t("delay") }}</span>
                 <input
                   type="number"
                   v-model.number="delay_seconds"
@@ -2212,7 +2212,8 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  margin: 0 auto;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
 
   label {
     display: inline-block;
@@ -2228,7 +2229,7 @@ export default {
 
   .record_options {
     max-width: 450px;
-    margin: calc(var(--spacing) / 2) auto;
+    margin: 0 auto;
     // .padding-verysmall;
     pointer-events: auto;
     // .font-small;
