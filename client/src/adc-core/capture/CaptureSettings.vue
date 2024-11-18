@@ -1383,7 +1383,8 @@ export default {
     color: inherit;
   }
 
-  select {
+  select,
+  input {
     color: var(--c-noir);
   }
 }
