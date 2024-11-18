@@ -695,9 +695,7 @@ export default {
         navigator.mediaDevices
           .enumerateDevices()
           .then((devices) => {
-            // if (!this.$root.is_electron) {
             return resolve(devices);
-            // } else return devices;
           })
           // .then((devices) => {
           //   this.getDesktopCapturer()
@@ -750,6 +748,10 @@ export default {
       if (this.all_video_input_devices.length > 0)
         this.selected_devices.video_input_device = this.getDefaultDevice({
           key: "video_input_device",
+          option_preference: {
+            key: "facingMode",
+            value: "environment",
+          },
           devices_list: this.all_video_input_devices,
         });
 
@@ -780,7 +782,7 @@ export default {
       );
       // }
     },
-    getDefaultDevice({ key, devices_list }) {
+    getDefaultDevice({ key, option_preference, devices_list }) {
       if (this.$root.debug_mode === true)
         console.log(`CaptureSettings • METHODS : getDefaultDevice`);
 
@@ -791,25 +793,22 @@ export default {
           previously_used = JSON.parse(
             localStorage.getItem("selected_devices")
           );
+          if (previously_used?.[key]) {
+            const found_device = devices_list.find(
+              (d) => d.deviceId === previously_used[key].deviceId
+            );
+            if (found_device) return found_device;
+          }
         } catch (e) {
           /**/
         }
       }
 
-      if (previously_used?.[key]) {
+      if (option_preference) {
         const found_device = devices_list.find(
-          (d) => d.deviceId === previously_used[key].deviceId
+          (d) => d[option_preference.key] === option_preference.value
         );
-        // if true, use this
-        if (found_device) {
-          if (this.$root.debug_mode === true)
-            console.log(
-              `CaptureSettings • METHODS : getDefaultDevice — found previously used device for ` +
-                key
-            );
-
-          return found_device;
-        }
+        if (found_device) return found_device;
       }
 
       if (this.$root.debug_mode === true)
@@ -945,13 +944,20 @@ export default {
           .then(() => this.listDevices())
           .then((devices) => {
             this.connected_devices = devices.map((d) => {
+              const { label, kind, deviceId, chromeMediaSource = false } = d;
+              let facingMode = {};
+              try {
+                facingMode = d.getCapabilities()?.facingMode?.[0];
+              } catch (e) {
+                /**/
+              }
+
               return {
-                label: d.label,
-                kind: d.kind,
-                deviceId: d.deviceId,
-                chromeMediaSource: d.chromeMediaSource
-                  ? d.chromeMediaSource
-                  : false,
+                label,
+                kind,
+                deviceId,
+                facingMode,
+                chromeMediaSource,
               };
             });
 
