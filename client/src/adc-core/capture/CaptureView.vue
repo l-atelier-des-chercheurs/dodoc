@@ -2158,7 +2158,7 @@ export default {
   background-color: var(--c-rouge);
   font-weight: 700;
   font-family: "Fira Code";
-  font-size: var(--font-large);
+  font-size: var(--sl-font-size-large);
   text-transform: uppercase;
 
   letter-spacing: 0.06em;
