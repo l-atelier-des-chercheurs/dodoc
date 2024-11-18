@@ -221,7 +221,7 @@
               )"
               :key="res.name"
             >
-              <label :for="res.label" class="u-label">
+              <label :for="res.label" class="">
                 <input
                   type="radio"
                   :id="res.label"
@@ -245,23 +245,31 @@
                 desired_camera_resolution &&
                 desired_camera_resolution.type === 'custom'
               "
-              class="u-sameRow"
+              class="u-sameRow _customResolution"
             >
-              <input
-                type="number"
-                min="2"
-                max="4096"
-                step="2"
-                v-model.number="desired_camera_resolution.width"
-              />
-              <span class="font-large u-padding_verysmall">×</span>
-              <input
-                type="number"
-                min="2"
-                max="2160"
-                step="2"
-                v-model.number="desired_camera_resolution.height"
-              />
+              <label class="u-label" for="custom_width">
+                <input
+                  name="custom_width"
+                  type="number"
+                  min="2"
+                  max="4096"
+                  step="2"
+                  v-model.number="desired_camera_resolution.width"
+                />
+                {{ $t("pixels") }}
+              </label>
+              <span class="u-padding_verysmall _customResolution--x">×</span>
+              <label class="u-label" for="custom_height">
+                <input
+                  name="custom_height"
+                  type="number"
+                  min="2"
+                  max="2160"
+                  step="2"
+                  v-model.number="desired_camera_resolution.height"
+                />
+                {{ $t("pixels") }}
+              </label>
             </div>
           </div>
         </div>
@@ -1426,6 +1434,7 @@ export default {
 
     > input {
       flex: 0 0 auto;
+      margin: 0;
       margin-right: calc(var(--spacing) / 3);
     }
   }
@@ -1512,5 +1521,16 @@ export default {
 ._loader {
   position: absolute;
   z-index: 1000;
+}
+
+._customResolution {
+  justify-content: space-between;
+
+  input {
+    width: auto;
+  }
+  ._customResolution--x {
+    font-size: var(--sl-font-size-x-large);
+  }
 }
 </style>
