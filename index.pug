@@ -60,4 +60,8 @@ html
   body(data-mode=mode)
     #app
 
-    script(src="./_client/bundle.js")
+    if debug_mode
+      script(type="module" src="http://localhost:5173/src/main.js")
+    else
+      script(type="module" src="/client2/dist/main.js")
+
