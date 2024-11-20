@@ -1,9 +1,19 @@
-<script setup>
-import TheWelcome from '../components/TheWelcome.vue'
-</script>
-
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <div>home</div>
 </template>
+<script>
+export default {
+  props: {},
+  components: {},
+  data() {
+    return {};
+  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+  watch: {},
+  computed: {},
+  methods: {},
+};
+</script>
+<style lang="scss" scoped></style>
