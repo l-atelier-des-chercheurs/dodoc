@@ -83,7 +83,7 @@ module.exports = function () {
   app.use(express.static(global.pathToUserContent));
   app.use(
     "/_client",
-    express.static(path.join(global.appRoot, "client", "dist"))
+    express.static(path.join(global.appRoot, "client2", "dist"))
   );
   // not used yet
   // app.use(

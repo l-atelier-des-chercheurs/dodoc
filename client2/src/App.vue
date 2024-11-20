@@ -1,6 +1,6 @@
 <template>
   <div>
-    Ploup4
+    Ploup5
     <header>
       <img
         alt="Vue logo"
@@ -11,8 +11,6 @@
       />
 
       <div class="wrapper">
-        <HelloWorld msg="You did it!" />
-
         <nav>
           <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/about">About</RouterLink>
@@ -25,7 +23,6 @@
 </template>
 <script>
 import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
 </script>
 
 <style scoped>

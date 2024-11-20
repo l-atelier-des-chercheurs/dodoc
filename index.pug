@@ -60,8 +60,9 @@ html
   body(data-mode=mode)
     #app
 
+
     if debug_mode
-      script(type="module" src="http://localhost:5173/src/main.js")
+      script(type="module" src="https://localhost:5173/src/main.js")
     else
-      script(type="module" src="/client2/dist/main.js")
+      script(type="module" src="/_client/build.js")
 
