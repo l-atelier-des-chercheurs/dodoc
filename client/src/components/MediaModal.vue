@@ -272,13 +272,13 @@
         </DetailsPane>
 
         <DetailsPane
-          v-if="optimization_possible || file.$type === 'image'"
+          v-if="optimization_possible || cropadjust_possible"
           :header="$t('edit')"
           :icon="'tools'"
           :is_open_initially="false"
         >
           <CropAdjustMedia
-            v-if="file.$type === 'image'"
+            v-if="cropadjust_possible"
             :media="file"
             @close="$emit('close')"
           />
@@ -347,6 +347,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    cropadjust_possible() {
+      return (
+        this.file.$type === "image" &&
+        !this.file.$media_filename.endsWith(".gif")
+      );
+    },
     optimization_possible() {
       return this.fileCanBeOptimized({ path: this.file.$media_filename });
     },
