@@ -157,6 +157,11 @@
           </div>
         </template>
         <template v-else>
+          <DownloadFile :file="optimized_file">
+            <b-icon icon="file-earmark-arrow-down" />
+            {{ $t("download") }}
+          </DownloadFile>
+
           <div class="_btnRow">
             <button
               type="button"
@@ -402,8 +407,9 @@ export default {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--spacing) / 1);
+  // justify-content: space-between;
+  justify-content: flex-end;
+  // gap: calc(var(--spacing) / 1);
 }
 
 ._loader {
