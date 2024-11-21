@@ -1293,6 +1293,7 @@ module.exports = (function () {
       await file.removeFile({
         path_to_folder,
         meta_filename,
+        path_to_meta,
       });
       dev.logpackets(`file ${meta_filename} was removed`);
       res.status(200).json({ status: "ok" });
