@@ -344,8 +344,8 @@ export default function () {
         return this.store[path];
       },
       async getFolder({ path, no_files = false, detailed_infos = false }) {
-        if (!detailed_infos && !no_files && this.store[path])
-          return this.store[path];
+        const dont_rely_on_store = detailed_infos || no_files;
+        if (dont_rely_on_store && this.store[path]) return this.store[path];
 
         let queries = [];
         if (detailed_infos) queries.push("detailed=true");
@@ -356,7 +356,8 @@ export default function () {
           throw this.processError(err);
         });
         const folder = response.data;
-        this.$set(this.store, folder.$path, folder);
+
+        if (!dont_rely_on_store) this.$set(this.store, folder.$path, folder);
         return this.store[folder.$path];
       },
 
