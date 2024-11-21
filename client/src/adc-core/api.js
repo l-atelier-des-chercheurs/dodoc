@@ -344,8 +344,8 @@ export default function () {
         return this.store[path];
       },
       async getFolder({ path, no_files = false, detailed_infos = false }) {
-        const dont_rely_on_store = detailed_infos || no_files;
-        if (dont_rely_on_store && this.store[path]) return this.store[path];
+        const use_store = detailed_infos === false && no_files === false;
+        if (use_store && this.store[path]) return this.store[path];
 
         let queries = [];
         if (detailed_infos) queries.push("detailed=true");
@@ -357,8 +357,14 @@ export default function () {
         });
         const folder = response.data;
 
-        if (!dont_rely_on_store) this.$set(this.store, folder.$path, folder);
-        return this.store[folder.$path];
+        if (use_store) {
+          // to get reactivity
+          this.$set(this.store, folder.$path, folder);
+          return this.store[folder.$path];
+        } else {
+          // to only get data
+          return folder;
+        }
       },
 
       async getPublicFolder({ path, superadmintoken }) {
