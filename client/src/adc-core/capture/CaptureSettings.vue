@@ -229,13 +229,16 @@
                   :disabled="unavailable_camera_resolutions.includes(res.label)"
                   v-model="desired_camera_resolution"
                 />
-                <span
-                  >{{ res.label }}
-                  <template v-if="res.type !== 'custom'">
-                    •
-                    <template v-if="res.ratio">{{ res.ratio }}</template>
-                    • {{ res.width }}/{{ res.height }}
-                  </template>
+                <span class="_resolutionLabel">
+                  <span>{{ res.label }}</span>
+                  <span v-if="res.type !== 'custom'">
+                    <!-- • -->
+                    <!-- <template v-if="res.ratio">{{ res.ratio }}</template> -->
+                    {{ res.width
+                    }}<span class="u-padding_verysmall _customResolution--x"
+                      >×</span
+                    >{{ res.height }}
+                  </span>
                 </span>
               </label>
             </div>
@@ -426,33 +429,31 @@ export default {
 
       predefined_resolutions: [
         {
-          label: "4K(UHD)",
+          label: this.$t("very_high"),
+          label_detail: "4K(UHD)",
           width: 3840,
           height: 2160,
           ratio: "16:9",
         },
         {
-          label: "1080p(FHD)",
+          label: this.$t("high"),
+          label_detail: "1080p(FHD)",
           width: 1920,
           height: 1080,
           ratio: "16:9",
         },
         {
-          label: "720p(HD)",
+          label: this.$t("medium"),
+          label_detail: "720p(HD)",
           width: 1280,
           height: 720,
           ratio: "16:9",
         },
         {
-          label: "VGA",
+          label: this.$t("low"),
+          label_detail: "VGA",
           width: 640,
           height: 480,
-          ratio: "4:3",
-        },
-        {
-          label: "QVGA",
-          width: 320,
-          height: 240,
           ratio: "4:3",
         },
       ],
@@ -786,7 +787,7 @@ export default {
       //   );
       // } else {
       this.desired_camera_resolution = this.predefined_resolutions.find(
-        (r) => r.label === "720p(HD)"
+        (r) => r.height === 720
       );
       // }
     },
@@ -1532,5 +1533,13 @@ export default {
   ._customResolution--x {
     font-size: var(--sl-font-size-x-large);
   }
+}
+
+._resolutionLabel {
+  flex: 1;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: baseline;
 }
 </style>
