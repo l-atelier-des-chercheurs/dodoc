@@ -339,7 +339,6 @@ module.exports = (function () {
               });
             }
           }
-          return;
         } catch (err) {
           // don't catch error if missing target at path (can be an "…_archives" folder)
         }
