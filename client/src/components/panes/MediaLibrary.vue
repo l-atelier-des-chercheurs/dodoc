@@ -19,16 +19,16 @@
         <div class="_row">
           <div class="_topSection--left">
             <div class="_mediaCount">
-              {{ $t("number_of_media") }} = {{ medias.length }}
               <template v-if="filtered_medias.length !== medias.length">
-                (<span v-html="$t('displayed:').toLowerCase()" />&nbsp;{{
+                <span class="_mediaCount--filtered">{{
                   filtered_medias.length
-                }})
-              </template>
+                }}</span
+                ><span class="_mediaCount--slash">/</span></template
+              >{{ medias.length }} {{ $t("medias").toLowerCase() }}
             </div>
             <button
               type="button"
-              class="u-buttonLink"
+              class="u-button u-button_transparent"
               v-if="!batch_mode && select_mode !== 'single'"
               @click="batch_mode = !batch_mode"
             >
@@ -37,24 +37,31 @@
             </button>
             <button
               type="button"
-              class="u-buttonLink"
               v-if="batch_mode"
+              class="u-button u-button_transparent"
+              :class="{ 'is--active': batch_mode }"
               @click="cancelSelect"
             >
-              <b-icon icon="x-square" />
+              <b-icon icon="hand-index" />
               {{ $t("cancel") }}
             </button>
             <button
               type="button"
-              class="u-buttonLink"
+              class="u-button u-button_transparent"
               v-if="batch_mode"
+              :disabled="filtered_medias.length === 0"
               @click="selectAllVisibleMedias"
             >
               <b-icon icon="plus-square" />
               {{ $t("select_all") }}
             </button>
 
-            <button type="button" class="u-buttonLink" @click="toggleFilters">
+            <button
+              type="button"
+              class="u-button u-button_transparent"
+              :class="{ 'is--active': filters_opened }"
+              @click="toggleFilters"
+            >
               <b-icon icon="filter" />
               {{ $t("filter") }}
             </button>
@@ -703,6 +710,7 @@ export default {
     selectAllVisibleMedias() {
       this.selected_medias_paths = this.filtered_medias.map((fm) => fm.$path);
     },
+
     cancelSelect() {
       this.selected_medias_paths = [];
       if (this.batch_mode) this.batch_mode = false;
@@ -881,12 +889,13 @@ export default {
     align-items: center;
     justify-content: flex-start;
     gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
     z-index: 1;
 
     &._filters {
-      justify-content: center;
+      justify-content: flex-start;
+      border-top: 2px solid var(--c-orange_clair);
     }
   }
 }
@@ -904,7 +913,8 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-start;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding-left: calc(var(--spacing) / 2);
 }
 ._topSection--right {
   flex: 1 1 auto;
@@ -926,7 +936,15 @@ export default {
 ._mediaCount {
   // color: black;
   // margin-bottom: 0;
-  font-weight: 600;
+  // font-weight: 600;
+}
+._mediaCount--filtered {
+  // color: white;
+  font-weight: 700;
+}
+._mediaCount--slash {
+  display: inline-block;
+  padding: 0 calc(var(--spacing) / 4);
 }
 
 ._selectBtn {
@@ -961,25 +979,6 @@ export default {
   justify-content: center;
   gap: calc(var(--spacing) / 4);
   text-align: center;
-}
-._addBtn {
-  --side-width: 24px;
-  display: block;
-  // width: var(--side-width);
-  // height: var(--side-width);
-  padding: calc(var(--spacing) / 4);
-  border-radius: calc(var(--side-width) / 2);
-  background: transparent;
-  font-size: 1.4em;
-
-  color: var(--c-noir);
-
-  display: flex;
-
-  &:hover,
-  &:focus {
-    background: rgba(0, 0, 0, 0.1);
-  }
 }
 
 ._selectMediaOrigin,

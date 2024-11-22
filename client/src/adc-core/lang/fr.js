@@ -392,7 +392,6 @@ export default {
   no_preview_to_show: "Aucun aperçu à afficher pour le moment",
   no_media_in_project: "Aucun média dans ce projet",
   number_of_media: "Nombre de médias",
-  "displayed:": "Affichés&nbsp;:",
   media_removed: "Média supprimé",
   media_duplicated: "Média dupliqué",
   media_was_saved_to_project: "Le média a été ajouté au projet",
