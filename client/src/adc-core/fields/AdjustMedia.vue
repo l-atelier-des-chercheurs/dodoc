@@ -186,7 +186,7 @@ export default {
   }
 }
 ._preview {
-  flex: 1 1 0;
+  flex: 1 1 200px;
   // background-color: var(--c-noir);
   padding: calc(var(--spacing) / 1);
 
