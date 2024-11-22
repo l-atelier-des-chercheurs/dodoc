@@ -75,6 +75,7 @@
     <button
       type="button"
       class="_focusMediaBtn"
+      :title="file.$media_filename"
       @click="$emit('toggleMediaFocus')"
     />
 
