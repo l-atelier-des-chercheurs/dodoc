@@ -553,7 +553,7 @@ select {
   }
 
   &.is--active {
-    font-weight: 700;
+    background-color: var(--active-color);
   }
 }
 

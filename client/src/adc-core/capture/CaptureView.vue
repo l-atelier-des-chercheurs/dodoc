@@ -292,9 +292,12 @@
                   v-model="current_grid_type"
                   v-if="enable_video"
                   size="small"
+                  :class="{
+                    'is--active': current_grid_type !== false,
+                  }"
                 >
                   <option :value="false">
-                    -- {{ $t("grid").toLowerCase() }} --
+                    --{{ $t("grid").toLowerCase() }}--
                   </option>
                   <option
                     v-for="grid_type in Object.keys(grids)"
@@ -1085,7 +1088,7 @@ export default {
           [0, 75, 100, 75],
         ],
       },
-      current_grid_type: "thirds",
+      current_grid_type: false,
 
       location_to_add_to_medias: undefined,
       show_position_modal: false,
