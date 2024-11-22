@@ -714,7 +714,7 @@ export default {
   onion_skin: "Pelure d’oignon",
 
   pick_a_camera: "Sélectionnez une caméra",
-  resolutions: "Résolutions",
+  resolutions: "Résolution",
   resolution: "Résolution",
   screen_capture: "Capture d’écran",
   cant_pick_resolution_when_screen_capture:

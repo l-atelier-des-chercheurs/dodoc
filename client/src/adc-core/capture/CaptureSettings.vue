@@ -7,7 +7,7 @@
       />
     </transition>
 
-    <RadioSwitch
+    <!-- <RadioSwitch
       :content.sync="current_mode"
       :options="[
         {
@@ -19,7 +19,7 @@
           value: 'RemoteSources',
         },
       ]"
-    />
+    /> -->
 
     <div class="m_captureSettings--settings">
       <div v-if="current_mode === 'LocalSources'" class>
@@ -230,15 +230,11 @@
                   v-model="desired_camera_resolution"
                 />
                 <span class="_resolutionLabel">
-                  <span>{{ res.label }}</span>
-                  <span v-if="res.type !== 'custom'">
-                    <!-- • -->
-                    <!-- <template v-if="res.ratio">{{ res.ratio }}</template> -->
-                    {{ res.width
-                    }}<span class="u-padding_verysmall _customResolution--x"
-                      >×</span
-                    >{{ res.height }}
-                  </span>
+                  <DLabel
+                    :str="res.label"
+                    tag="div"
+                    :instructions="resInstructions(res)"
+                  />
                 </span>
               </label>
             </div>
@@ -259,9 +255,8 @@
                   step="2"
                   v-model.number="desired_camera_resolution.width"
                 />
-                {{ $t("pixels") }}
               </label>
-              <span class="u-padding_verysmall _customResolution--x">×</span>
+              <span class="u-padding_verysmall _customResolutionX">×</span>
               <label class="u-label" for="custom_height">
                 <input
                   name="custom_height"
@@ -302,7 +297,7 @@
         </div>
       </div>
     </div>
-    <div class="m_captureSettings--updateButton">
+    <div class="m_captureSettings--updateButton" v-if="false">
       <!-- <small v-if="!desired_camera_resolution">
           Select a camera resolution first
         </small> -->
@@ -730,6 +725,12 @@ export default {
       } else if (this.current_mode === "LocalSources") {
         this.current_stream = this.local_stream;
       }
+    },
+    resInstructions(res) {
+      if (res.type === "custom") return undefined;
+      return `${res.label_detail} • ${res.ratio} • ${res.width}×${
+        res.height
+      } ${this.$t("pixels")}`;
     },
     setSupportedConstraints() {
       return new Promise((resolve) => {
@@ -1382,7 +1383,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_captureSettings {
-  margin-top: calc(var(--spacing) / 2);
+  // margin-top: calc(var(--spacing) / 2);
   color: white;
 
   label,
@@ -1525,21 +1526,32 @@ export default {
 }
 
 ._customResolution {
-  justify-content: space-between;
+  justify-content: center;
 
   input {
     width: auto;
   }
-  ._customResolution--x {
-    font-size: var(--sl-font-size-x-large);
-  }
+}
+._customResolutionX {
+  font-size: var(--sl-font-size-x-large);
 }
 
 ._resolutionLabel {
   flex: 1;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: baseline;
+  // display: flex;
+  // flex-flow: row wrap;
+  // justify-content: space-between;
+  // align-items: baseline;
+
+  ::v-deep {
+    ._labelLine {
+      color: white;
+      font-size: var(--sl-font-size-normal);
+    }
+    .u-instructions {
+      color: white;
+      margin-bottom: 0;
+    }
+  }
 }
 </style>

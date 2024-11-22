@@ -841,7 +841,7 @@ export default {
   stop_stopmotion: "Stop this animation",
   onion_skin: "Onion skin",
   pick_a_camera: "Select a camera",
-  resolutions: "Resolutions",
+  resolutions: "Resolution",
   resolution: "Resolution",
   screen_capture: "Screen Capture",
   cant_pick_resolution_when_screen_capture:
