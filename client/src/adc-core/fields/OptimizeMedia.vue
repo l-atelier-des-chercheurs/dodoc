@@ -32,6 +32,25 @@
             />
             <div class="u-spacingBottom" />
           </template>
+
+          <div class="u-spacingBottom">
+            <DLabel :str="$t('quality')" />
+            <div
+              v-if="media.$optimized === true"
+              class="u-spacingBottom u-instructions"
+            >
+              {{ $t("already_optimized") }}
+            </div>
+            <div class="">
+              <SelectField2
+                :value="resolution_preset_picked"
+                :options="presets"
+                :can_edit="true"
+                :hide_validation="true"
+                @change="resolution_preset_picked = $event"
+              />
+            </div>
+          </div>
         </div>
         <div v-else>
           <div
@@ -122,25 +141,6 @@
       <div slot="footer" class="_convertBtns">
         <template v-if="!optimized_file">
           <div>
-            <DLabel :str="$t('quality')" />
-            <div
-              v-if="media.$optimized === true"
-              class="u-spacingBottom u-instructions"
-            >
-              {{ $t("already_optimized") }}
-            </div>
-            <div class="">
-              <SelectField2
-                :value="resolution_preset_picked"
-                :options="presets"
-                :can_edit="true"
-                :hide_validation="true"
-                @change="resolution_preset_picked = $event"
-              />
-            </div>
-          </div>
-
-          <div>
             <div>
               <button
                 type="button"
@@ -157,10 +157,12 @@
           </div>
         </template>
         <template v-else>
-          <DownloadFile :file="optimized_file">
-            <b-icon icon="file-earmark-arrow-down" />
-            {{ $t("download") }}
-          </DownloadFile>
+          <div class="_saveLocal">
+            <DownloadFile :file="optimized_file">
+              <b-icon icon="file-earmark-arrow-down" />
+              {{ $t("download") }}
+            </DownloadFile>
+          </div>
 
           <div class="_btnRow">
             <button
@@ -408,11 +410,15 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   // justify-content: space-between;
-  justify-content: flex-end;
+  // justify-content: flex-end;
   // gap: calc(var(--spacing) / 1);
 }
 
 ._loader {
   z-index: 150;
+}
+
+._saveLocal {
+  text-align: right;
 }
 </style>
