@@ -742,7 +742,7 @@ export default {
 
         const { font } = this.editor.getFormat();
         localStorage.setItem("fontLastUsed", font);
-      }, 1000);
+      }, 5000);
     },
 
     addMediaAtTheEnd(media) {
