@@ -392,7 +392,6 @@ export default {
   no_preview_to_show: "Aucun aperçu à afficher pour le moment",
   no_media_in_project: "Aucun média dans ce projet",
   number_of_media: "Nombre de médias",
-  "displayed:": "Affichés&nbsp;:",
   media_removed: "Média supprimé",
   media_duplicated: "Média dupliqué",
   media_was_saved_to_project: "Le média a été ajouté au projet",
@@ -714,7 +713,7 @@ export default {
   onion_skin: "Pelure d’oignon",
 
   pick_a_camera: "Sélectionnez une caméra",
-  resolutions: "Résolutions",
+  resolutions: "Résolution",
   resolution: "Résolution",
   screen_capture: "Capture d’écran",
   cant_pick_resolution_when_screen_capture:

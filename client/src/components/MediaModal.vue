@@ -225,26 +225,23 @@
           :icon="'rulers'"
           class="u-spacingBottom"
         >
-          <div class="u-spacingBottom">
+          <div class="">
             <DateDisplay
               :title="$t('date_uploaded')"
               :date="file.$date_uploaded"
             />
           </div>
-          <div class="u-spacingBottom">
+          <div class="">
             <DateDisplay
               :title="$t('date_modified')"
               :date="file.$date_modified"
             />
           </div>
-          <div
-            class="u-spacingBottom"
-            v-if="file.$infos.hasOwnProperty('size')"
-          >
+          <div class="" v-if="file.$infos.hasOwnProperty('size')">
             <SizeDisplay :size="file.$infos.size" />
           </div>
           <div
-            class="u-spacingBottom"
+            class=""
             v-if="
               file.$infos.hasOwnProperty('width') ||
               file.$infos.hasOwnProperty('height')
@@ -255,10 +252,7 @@
               :height="file.$infos.height"
             />
           </div>
-          <div
-            class="u-spacingBottom"
-            v-if="file.$infos.hasOwnProperty('duration')"
-          >
+          <div class="" v-if="file.$infos.hasOwnProperty('duration')">
             <DurationDisplay
               :title="$t('duration')"
               :duration="file.$infos.duration"
@@ -278,13 +272,13 @@
         </DetailsPane>
 
         <DetailsPane
-          v-if="optimization_possible || file.$type === 'image'"
+          v-if="optimization_possible || cropadjust_possible"
           :header="$t('edit')"
           :icon="'tools'"
           :is_open_initially="false"
         >
           <CropAdjustMedia
-            v-if="file.$type === 'image'"
+            v-if="cropadjust_possible"
             :media="file"
             @close="$emit('close')"
           />
@@ -353,6 +347,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    cropadjust_possible() {
+      return (
+        this.file.$type === "image" &&
+        !this.file.$media_filename.endsWith(".gif")
+      );
+    },
     optimization_possible() {
       return this.fileCanBeOptimized({ path: this.file.$media_filename });
     },

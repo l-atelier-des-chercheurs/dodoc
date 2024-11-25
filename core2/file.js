@@ -302,8 +302,8 @@ module.exports = (function () {
       }
       return { $thumbs: {} };
     },
-    removeFile: async ({ path_to_folder, meta_filename }) => {
-      dev.logfunction({ path_to_folder, meta_filename });
+    removeFile: async ({ path_to_folder, meta_filename, path_to_meta }) => {
+      dev.logfunction({ path_to_folder, meta_filename, path_to_meta });
 
       try {
         await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
@@ -339,13 +339,12 @@ module.exports = (function () {
               });
             }
           }
-          return;
         } catch (err) {
           // don't catch error if missing target at path (can be an "…_archives" folder)
         }
 
         cache.delete({
-          key: `${path_to_folder}/${meta_filename}`,
+          key: `${path_to_meta}`,
         });
 
         return;

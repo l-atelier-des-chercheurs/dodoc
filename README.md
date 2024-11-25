@@ -66,7 +66,7 @@ Default values are:
 - $preview          (String, editable)                    if set, search for a meta filename in this folder and read it when reading folder (useful for advanced cover of this folder)
 - $date_created     (Date)                                when the folder was created
 - $date_modified    (Date)                                when the folder was last edited
-- $files            (Array)                               list of all the files in this folder (see Files below)
+- $files            (Array)                               list of all the files in this folder (see Files below) (bypass with no_files=true to improve performance where files are not needed)
 - $status           (String, editable)                    determines whether the folder gets listed
 - $public           (Boolean, editable)                   if true, return that folder, its files, and its source medias even when request is not auth
 - $password         (String, editable, stored as hash)    limit editing to users with password

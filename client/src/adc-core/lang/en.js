@@ -617,7 +617,6 @@ export default {
   no_preview_to_show: "No previews to show at the moment",
   no_media_in_project: "No media in this project",
   number_of_media: "Number of media",
-  "displayed:": "Displayed:",
   media_removed: "Media deleted",
   media_duplicated: "Media duplicated",
   media_was_saved_to_project: "The media was added to the project",
@@ -841,7 +840,7 @@ export default {
   stop_stopmotion: "Stop this animation",
   onion_skin: "Onion skin",
   pick_a_camera: "Select a camera",
-  resolutions: "Resolutions",
+  resolutions: "Resolution",
   resolution: "Resolution",
   screen_capture: "Screen Capture",
   cant_pick_resolution_when_screen_capture:

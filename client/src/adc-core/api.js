@@ -343,19 +343,28 @@ export default function () {
         // we use the store to trigger updates to array if item is updated
         return this.store[path];
       },
-      async getFolder({ path, detailed_infos = false }) {
-        if (!detailed_infos && this.store[path]) return this.store[path];
+      async getFolder({ path, no_files = false, detailed_infos = false }) {
+        const use_store = detailed_infos === false && no_files === false;
+        if (use_store && this.store[path]) return this.store[path];
 
         let queries = [];
         if (detailed_infos) queries.push("detailed=true");
+        if (no_files) queries.push("no_files=true");
         if (queries.length > 0) path += `?${queries.join("&")}`;
 
         const response = await this.$axios.get(path).catch((err) => {
           throw this.processError(err);
         });
         const folder = response.data;
-        this.$set(this.store, folder.$path, folder);
-        return this.store[folder.$path];
+
+        if (use_store) {
+          // to get reactivity
+          this.$set(this.store, folder.$path, folder);
+          return this.store[folder.$path];
+        } else {
+          // to only get data
+          return folder;
+        }
       },
 
       async getPublicFolder({ path, superadmintoken }) {

@@ -399,7 +399,7 @@ export default {
   flex: 1 1 0;
   padding: calc(var(--spacing) / 1);
   overflow: hidden;
-  min-height: 100px;
+  min-height: 240px;
   // background-color: var(--c-noir);
 
   ::v-deep {

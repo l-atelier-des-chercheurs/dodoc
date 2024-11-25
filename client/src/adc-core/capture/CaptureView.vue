@@ -255,7 +255,7 @@
 
           <div
             class="_video_grid_overlay"
-            v-if="enable_grid && enable_video && !media_to_validate"
+            v-if="current_grid_type && enable_video && !media_to_validate"
           >
             <svg
               :width="actual_camera_resolution.width"
@@ -287,16 +287,36 @@
                     actual_camera_resolution.height
                   }}
                 </button>
-                <button
+
+                <select
+                  v-model="current_grid_type"
+                  v-if="enable_video"
+                  size="small"
+                  :class="{
+                    'is--active': current_grid_type !== false,
+                  }"
+                >
+                  <option :value="false">
+                    --{{ $t("grid").toLowerCase() }}--
+                  </option>
+                  <option
+                    v-for="grid_type in Object.keys(grids)"
+                    :value="grid_type"
+                    :key="grid_type"
+                  >
+                    {{ $t(grid_type).toLowerCase() }}
+                  </option>
+                </select>
+                <!-- <button
                   type="button"
                   class="u-button u-button_small"
-                  :class="{ 'is--active': enable_grid }"
+                  :class="{ 'is--active': current_grid_type !== false }"
                   v-if="enable_video"
                   @click="enable_grid = !enable_grid"
                 >
                   {{ $t("grid").toLowerCase() }}
-                </button>
-                <div v-if="enable_video && enable_grid">
+                </button> -->
+                <!-- <div v-if="enable_video && enable_grid">
                   <button
                     type="button"
                     class="u-button u-button_small"
@@ -307,7 +327,7 @@
                   >
                     {{ $t(grid_type).toLowerCase() }}
                   </button>
-                </div>
+                </div> -->
               </template>
 
               <button
@@ -1048,7 +1068,6 @@ export default {
 
       collapse_capture_pane: false,
 
-      enable_grid: false,
       grids: {
         halfs: [
           [50, 0, 50, 100],
@@ -1069,7 +1088,7 @@ export default {
           [0, 75, 100, 75],
         ],
       },
-      current_grid_type: "thirds",
+      current_grid_type: false,
 
       location_to_add_to_medias: undefined,
       show_position_modal: false,
@@ -2084,27 +2103,13 @@ export default {
     display: flex;
     flex-flow: row wrap;
     gap: calc(var(--spacing) / 4);
-    text-align: right;
 
-    button {
-      // display: inline-block;
-      // background-color: white;
-      // border-radius: 4px;
-      // line-height: 1;
-      // margin: 0;
-      // padding: 2px 4px;
-      // font-weight: 500;
+    button,
+    select {
       pointer-events: auto;
-      // cursor: pointer;
-
-      // &:hover {
-      //   font-weight: 600;
-      // }
-
-      // &.is--active {
-      //   background-color: var(--c-rouge);
-      //   color: white;
-      // }
+    }
+    select {
+      width: 11ch;
     }
   }
 
@@ -2158,7 +2163,7 @@ export default {
   background-color: var(--c-rouge);
   font-weight: 700;
   font-family: "Fira Code";
-  font-size: var(--font-large);
+  font-size: var(--sl-font-size-large);
   text-transform: uppercase;
 
   letter-spacing: 0.06em;

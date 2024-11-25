@@ -75,6 +75,7 @@
     <button
       type="button"
       class="_focusMediaBtn"
+      :title="file.$media_filename"
       @click="$emit('toggleMediaFocus')"
     />
 
@@ -154,14 +155,20 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
   border-radius: 3px;
-  // border: 1px solid transparent;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--own {
     // border-bottom: 2px solid var(--c-bleumarine);
 
     ._index {
-      border: 1px solid var(--c-bleumarine);
+      // border: 1px solid var(--c-bleumarine);
+
+      &::after {
+        content: "•";
+        margin-left: calc(var(--spacing) / 8);
+        color: var(--c-bleumarine);
+      }
     }
 
     // &::before {
@@ -374,6 +381,9 @@ export default {
   left: 0;
   z-index: 2;
   pointer-events: none;
+
+  aspect-ratio: auto;
+  border-radius: 1rem;
 
   font-size: var(--input-font-size-small);
   font-weight: 800;
