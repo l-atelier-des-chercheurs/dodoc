@@ -63,6 +63,20 @@
         @close="show_credits_modal = false"
       />
 
+      <template v-if="is_instance_admin">
+        <button
+          type="button"
+          class="u-button u-button_transparent"
+          @click="show_settings_modal = !show_settings_modal"
+        >
+          <b-icon icon="gear" :aria-label="$t('admin_settings')" />
+        </button>
+        <AdminSettings
+          v-if="show_settings_modal"
+          @close="show_settings_modal = false"
+        />
+      </template>
+
       <div class="_subscribeBtn">
         <AuthorTag
           v-if="connected_as"
@@ -80,19 +94,14 @@
         </button>
       </div>
 
-      <template v-if="is_instance_admin">
-        <button
-          type="button"
-          class="u-button u-button_transparent"
-          @click="show_settings_modal = !show_settings_modal"
-        >
-          <b-icon icon="gear" :aria-label="$t('admin_settings')" />
-        </button>
-        <AdminSettings
-          v-if="show_settings_modal"
-          @close="show_settings_modal = false"
-        />
-      </template>
+      <router-link
+        v-if="users.length > 1"
+        :to="'/@'"
+        class="u-button u-button_icon u-button_bleumarine"
+      >
+        {{ users.length }}
+        <b-icon icon="person-circle" />
+      </router-link>
     </div>
 
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
@@ -115,6 +124,7 @@ export default {
   },
   data() {
     return {
+      show_users_modal: false,
       show_authors_modal: false,
       show_lang_modal: false,
       show_credits_modal: false,
