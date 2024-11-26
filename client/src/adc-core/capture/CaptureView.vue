@@ -2062,8 +2062,11 @@ export default {
 
       > * {
         display: flex;
-        flex: 1 1 100px;
         padding: calc(var(--spacing) / 2);
+
+        @media only screen and (min-width: 781px) {
+          flex: 1 0 200px;
+        }
 
         > * {
           margin-right: calc(var(--spacing) / 2);
@@ -2074,7 +2077,7 @@ export default {
           padding: calc(var(--spacing) / 2);
         }
         &:nth-child(2) {
-          flex: 5 1 220px;
+          // flex: 5 1 220px;
           text-align: center;
           display: flex;
           flex-flow: row wrap;
