@@ -9,7 +9,8 @@ const folder = require("./folder"),
   notifier = require("./notifier"),
   utils = require("./utils"),
   Exporter = require("./Exporter"),
-  auth = require("./auth");
+  auth = require("./auth"),
+  users = require("./users");
 
 module.exports = (function () {
   const API = {
@@ -39,6 +40,7 @@ module.exports = (function () {
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
+    app.get("/_api2/_users", _getAllUsers);
 
     /* PUBLIC FILES */
     app.get(
@@ -1397,6 +1399,11 @@ module.exports = (function () {
     const new_path = data.new_path;
     settings.updatePath({ new_path });
     res.status(200).json({ status: "ok" });
+  }
+
+  async function _getAllUsers(req, res, next) {
+    const all_users = users.getAllUsers();
+    res.json(all_users);
   }
 
   async function _loadCustomFonts() {

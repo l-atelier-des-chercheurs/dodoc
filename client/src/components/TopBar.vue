@@ -120,6 +120,7 @@ export default {
       show_credits_modal: false,
       show_qr_code_modal: false,
       show_settings_modal: false,
+      users: [],
     };
   },
   created() {},
@@ -130,11 +131,14 @@ export default {
     this.$api.join({ room: "authors" });
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$on(`toolbar.openCredits`, this.showCredits);
+
+    this.users = await this.$api.getAndTrackUsers();
   },
   beforeDestroy() {
     this.$api.leave({ room: "authors" });
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$off(`toolbar.openCredits`, this.showCredits);
+    this.$api.unTrackUsers();
   },
   watch: {
     $route: {

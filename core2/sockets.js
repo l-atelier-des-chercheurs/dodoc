@@ -10,7 +10,9 @@
 
 const dev = require("./dev-log"),
   notifier = require("./notifier"),
-  sessionStore = require("./sessionStore");
+  sessionStore = require("./sessionStore"),
+  users = require("./users"),
+  { v4: uuidv4 } = require("uuid");
 
 module.exports = (function () {
   dev.log(`Sockets module initialized`);
@@ -35,80 +37,47 @@ module.exports = (function () {
       // }
 
       // check if socket has a session_id
-
       // if it does, check if it matches one in the store
-
       // if it does, return what's in the store
-
       // else create a session ID
 
       try {
-        dev.logsockets(`initSessionID`);
-        const { sessionID, userID } = sessionStore.get({
-          sessionID: socket.handshake.auth.sessionID,
-        });
+        dev.log(`initSessionID`);
+        const sessionID = sessionStore.getOrCreate(
+          socket.handshake.auth.sessionID
+        );
         socket.sessionID = sessionID;
-        socket.userID = userID;
+        socket.userID = uuidv4();
+        const user = users.addUser(socket.userID);
+        if (user) notifier.emit("newUser", user);
       } catch (err) {
         dev.error(err);
         return next(err);
       }
 
-      dev.logverbose({ sessions: sessionStore.findAllSessions() });
-
       next();
     });
 
     io.on("connection", async (socket) => {
-      dev.logsockets(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+      const { sessionID, userID } = socket;
+      dev.logsockets(`RECEIVED CONNECTION with sessionID: ${sessionID}`);
 
-      dev.logsockets({
-        sessionID: socket.sessionID,
-        userID: socket.userID,
-      });
+      let ip =
+        socket.handshake?.headers?.["x-real-ip"] || socket.handshake?.address;
+      let user_agent = socket.handshake?.headers?.["user-agent"];
 
-      // persist session
-      // see https://github.com/socketio/socket.io/blob/992c9380c34b9a67c03dd503c26d008836f2899b/examples/private-messaging/server/index.js
-      sessionStore.saveSession(socket.sessionID, {
-        userID: socket.userID,
+      // persist session, see https://github.com/socketio/socket.io/blob/992c9380c34b9a67c03dd503c26d008836f2899b/examples/private-messaging/server/index.js
+      sessionStore.updateSession(sessionID, {
         connected: true,
+        ip,
+        user_agent,
       });
+      const user = users.updateUser(userID, { ip, user_agent });
+      if (user) notifier.emit("updateUser", user);
 
-      // emit session details
       socket.emit("session", {
-        sessionID: socket.sessionID,
-        userID: socket.userID,
+        sessionID,
       });
-
-      const sockets = await io.fetchSockets();
-      dev.logsockets(
-        `Sockets connected currently : ${Object.keys(sockets).length}`
-      );
-
-      let ip = "";
-      if (socket.handshake) {
-        if (socket.handshake.headers && socket.handshake.headers["x-real-ip"]) {
-          // need to add the following to nginx .conf
-          // proxy_set_header X-Real-IP $remote_addr;
-          ip = socket.handshake.headers["x-real-ip"];
-        } else if (socket.handshake.address) {
-          ip = socket.handshake.address;
-        }
-      }
-
-      let user_agent = "";
-      if (
-        socket.handshake &&
-        socket.handshake.headers &&
-        socket.handshake.headers["user-agent"]
-      )
-        user_agent = socket.handshake.headers["user-agent"];
-
-      // access.append({
-      //   ip,
-      //   user_agent,
-      // });
-      socket._data = {};
 
       var onevent = socket.onevent;
       socket.onevent = function (packet) {
@@ -123,22 +92,33 @@ module.exports = (function () {
       //   )
       // );
 
+      socket.on("trackUsers", () => {
+        socket.join("users");
+      });
+      socket.on("leaveUsers", () => {
+        socket.leave("users");
+      });
+
       socket.on("joinRoom", ({ room, token, token_path }) => {
         dev.logrooms(`ROOMS — socket ${socket.id} is joining ${room}`);
+        socket.join("content/" + room);
 
         // todo check if token is allowed to join room, first by checking checkTokenValidity
         // then by checking if room is private or not, and if it is, checking if token is allowed
         // see _restrictIfPrivate
-
-        socket.join("content/" + room);
         // roomStatus(socket);
       });
       socket.on("leaveRoom", ({ room }) => {
-        dev.logrooms(`ROOMS — socket ${socket.id} is leaving ${room}`);
+        dev.logrooms(`ROOMS — socket ${sessionID} is leaving ${room}`);
         socket.leave("content/" + room);
       });
-      socket.on("disconnect", () => {
-        dev.logrooms(`ROOMS — socket ${socket.id} disconnected`);
+      socket.on("disconnect", async () => {
+        console.log("disconnect");
+        sessionStore.updateSession(sessionID, {
+          connected: false,
+        });
+        users.removeUser(userID);
+        notifier.emit("removeUser", userID);
       });
     });
 
@@ -173,6 +153,16 @@ module.exports = (function () {
     });
     notifier.on("taskEnded", (room, content) => {
       io.to("content/" + room).emit("taskEnded", content);
+    });
+
+    notifier.on("newUser", (user) => {
+      io.to("users").emit("newUser", user);
+    });
+    notifier.on("updateUser", (user) => {
+      io.to("users").emit("updateUser", user);
+    });
+    notifier.on("removeUser", (id) => {
+      io.to("users").emit("removeUser", { id });
     });
   }
 
