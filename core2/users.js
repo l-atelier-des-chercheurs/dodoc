@@ -19,7 +19,7 @@ module.exports = (function () {
     updateUser: (id, meta = {}) => {
       const user = users.find((u) => u.id === id);
       if (!user) return;
-      user.meta = meta;
+      user.meta = { ...user.meta, ...meta };
       return user;
     },
     removeUser: (id) => {

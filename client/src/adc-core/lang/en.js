@@ -1135,4 +1135,6 @@ export default {
 
   duration_explanation:
     "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
+
+  connected_currently: "Connected currently",
 };

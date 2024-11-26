@@ -37,9 +37,6 @@ export default function () {
           autoConnect: false,
         });
 
-        const sessionID = localStorage.getItem("sessionID");
-        if (sessionID) this.socket.auth = { sessionID };
-
         await this._setAuthFromStorage();
         this.setAuthorizationHeader();
 
@@ -47,6 +44,13 @@ export default function () {
           await this.getCurrentAuthor().catch(() => {});
           this.trackCurrentAuthor();
         }
+
+        const sessionID = localStorage.getItem("sessionID");
+        let auth = {};
+        if (sessionID) auth.sessionID = sessionID;
+        if (this.tokenpath.token_path)
+          auth.token_path = this.tokenpath.token_path;
+        if (Object.keys(auth).length > 0) this.socket.auth = auth;
 
         await this.socket.connect();
 

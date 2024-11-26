@@ -1206,4 +1206,6 @@ export default {
 
   duration_explanation:
     "Soit {seconds_equivalent} seconde(s) à une vitesse de {frame_rate} images par seconde",
+
+  connected_currently: "Connecté actuellement",
 };

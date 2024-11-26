@@ -43,12 +43,15 @@ module.exports = (function () {
 
       try {
         dev.log(`initSessionID`);
-        const sessionID = sessionStore.getOrCreate(
-          socket.handshake.auth.sessionID
-        );
+
+        const { sessionID: _sID, token_path } = socket.handshake.auth;
+
+        const sessionID = sessionStore.getOrCreate(_sID);
         socket.sessionID = sessionID;
         socket.userID = uuidv4();
-        const user = users.addUser(socket.userID);
+        let meta = {};
+        if (token_path) meta.token_path = token_path;
+        const user = users.addUser(socket.userID, meta);
         if (user) notifier.emit("newUser", user);
       } catch (err) {
         dev.error(err);
@@ -72,7 +75,11 @@ module.exports = (function () {
         ip,
         user_agent,
       });
-      const user = users.updateUser(userID, { ip, user_agent });
+      let meta = {
+        ip,
+        user_agent,
+      };
+      const user = users.updateUser(userID, meta);
       if (user) notifier.emit("updateUser", user);
 
       socket.emit("session", {
