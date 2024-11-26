@@ -690,7 +690,11 @@ module.exports = (function () {
         offscreen: true,
       },
     });
-    win.loadURL(url);
+    win.loadURL(url, {
+      // improve chance of getting a screenshot
+      userAgent: "facebookexternalhit/1.1",
+    });
+    win.webContents.setAudioMuted(true);
 
     await new Promise((resolve) => {
       win.webContents.once("did-finish-load", async () => {
