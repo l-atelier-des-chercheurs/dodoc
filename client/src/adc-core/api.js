@@ -81,7 +81,7 @@ export default function () {
           this.socket.disconnect();
           this.socket.once("connect", () => {
             this.rejoinRooms();
-            if (this.is_tracking_users) this.refreshUsers();
+            if (this.is_tracking_users) this.getAndTrackUsers();
           });
         });
 
