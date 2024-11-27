@@ -19,13 +19,33 @@
         <div class="_row">
           <div class="_topSection--left">
             <div class="_mediaCount">
-              <template v-if="filtered_medias.length !== medias.length">
-                <span class="_mediaCount--filtered">{{
-                  filtered_medias.length
-                }}</span
-                ><span class="_mediaCount--slash">/</span></template
-              >{{ medias.length }} {{ $t("medias").toLowerCase() }}
+              <template v-if="filtered_medias.length === medias.length">
+                {{ medias.length }} {{ $t("medias").toLowerCase() }}
+              </template>
+              <template v-else>
+                <button
+                  type="button"
+                  class="u-button u-button_transparent _mediaCount--filtered"
+                  @click="resetFilters"
+                >
+                  {{ filtered_medias.length }}
+                  <span class="_mediaCount--slash">/</span>
+                  {{ medias.length }}
+                </button>
+                {{ $t("medias").toLowerCase() }}
+              </template>
             </div>
+
+            <button
+              type="button"
+              class="u-button u-button_transparent"
+              :class="{ 'is--active': filters_opened }"
+              @click="toggleFilters"
+            >
+              <b-icon icon="filter" />
+              {{ $t("filter") }}
+            </button>
+
             <button
               type="button"
               class="u-button u-button_transparent"
@@ -54,16 +74,6 @@
             >
               <b-icon icon="plus-square" />
               {{ $t("select_all") }}
-            </button>
-
-            <button
-              type="button"
-              class="u-button u-button_transparent"
-              :class="{ 'is--active': filters_opened }"
-              @click="toggleFilters"
-            >
-              <b-icon icon="filter" />
-              {{ $t("filter") }}
             </button>
           </div>
           <div class="_topSection--right">
@@ -664,6 +674,12 @@ export default {
 
       return false;
     },
+    resetFilters() {
+      this.type_of_media_to_display = "all";
+      this.origin_of_media_to_display = "all";
+      this.author_of_media_to_display = "all";
+      this.keyword_of_media_to_display = "all";
+    },
     toggleFilters() {
       this.filters_opened = !this.filters_opened;
     },
@@ -890,7 +906,7 @@ export default {
     z-index: 1;
 
     &._filters {
-      justify-content: flex-start;
+      justify-content: center;
       border-top: 2px solid var(--c-orange_clair);
     }
   }
@@ -935,8 +951,11 @@ export default {
   // font-weight: 600;
 }
 ._mediaCount--filtered {
-  // color: white;
   font-weight: 700;
+  background-color: var(--c-bleuvert);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  color: black;
+  border-radius: 7px;
 }
 ._mediaCount--slash {
   display: inline-block;
