@@ -25,7 +25,7 @@
               <template v-else>
                 <button
                   type="button"
-                  class="u-button u-button_transparent _mediaCount--filtered"
+                  class="u-button u-button_transparent is--active _mediaCount--filtered"
                   @click="resetFilters"
                 >
                   {{ filtered_medias.length }}
@@ -952,10 +952,10 @@ export default {
 }
 ._mediaCount--filtered {
   font-weight: 700;
-  background-color: var(--c-bleuvert);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  color: black;
-  border-radius: 7px;
+  font-size: inherit;
+  // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  // color: black;
+  // border-radius: 7px;
 }
 ._mediaCount--slash {
   display: inline-block;
