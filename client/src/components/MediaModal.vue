@@ -520,8 +520,9 @@ export default {
 
 ._stickyClose {
   position: sticky;
+  top: 0;
   height: 0;
-  z-index: 100;
+  z-index: 101;
 }
 
 ._navBtns {
