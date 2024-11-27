@@ -29,7 +29,7 @@
           </div>
         </div>
 
-        <label class="u-label">
+        <label class="u-label _sourcesTitle">
           {{ $t("sources") }}
           <button
             type="button"
@@ -189,6 +189,8 @@
             </div>
           </div>
         </div>
+
+        <div class="u-spacingBottom" />
 
         <label class="u-label">{{ $t("resolutions") }}</label>
         <div>
@@ -455,7 +457,7 @@ export default {
 
       unavailable_camera_resolutions: [],
       custom_camera_resolution: {
-        label: this.$t("custom"),
+        label: this.$t("custom_f"),
         type: "custom",
         width: 1280,
         height: 720,
@@ -1553,5 +1555,10 @@ export default {
       margin-bottom: 0;
     }
   }
+}
+
+._sourcesTitle {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

@@ -245,6 +245,7 @@ export default {
   desktop_720: "Bureau 720p",
 
   custom: "Personnalisé",
+  custom_f: "Personnalisée",
   width: "Largeur",
   height: "Hauteur",
   text_size: "Taille du texte",

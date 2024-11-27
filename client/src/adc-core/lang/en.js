@@ -535,6 +535,7 @@ export default {
   desktop_1080: "Desktop 1080p",
   desktop_720: "Desktop 720p",
   custom: "Custom",
+  custom_f: "Custom",
   width: "Width",
   height: "Height",
   text_size: "Text size",
