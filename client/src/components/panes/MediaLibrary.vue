@@ -220,27 +220,22 @@
             />
           </select>
 
-          <div class="_groupBy">
-            <template v-if="tile_mode !== 'map'">
-              <div
-                v-for="group_option in group_options"
-                :key="group_option.key"
-              >
-                <input
-                  type="radio"
-                  :id="group_option.key"
-                  :value="group_option.key"
-                  v-model="group_mode"
-                />
-                <label
-                  :for="group_option.key"
-                  v-text="group_option.label"
-                  :class="{
-                    'is--selected': group_option.key === group_mode,
-                  }"
-                />
-              </div>
-            </template>
+          <div class="_groupBy" v-if="tile_mode !== 'map' && false">
+            <div v-for="group_option in group_options" :key="group_option.key">
+              <input
+                type="radio"
+                :id="group_option.key"
+                :value="group_option.key"
+                v-model="group_mode"
+              />
+              <label
+                :for="group_option.key"
+                v-text="group_option.label"
+                :class="{
+                  'is--selected': group_option.key === group_mode,
+                }"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -415,7 +410,8 @@ export default {
 
       fav_filter: false,
 
-      group_mode: localStorage.getItem("library_group_mode") || "day",
+      group_mode: "day",
+      // group_mode: localStorage.getItem("library_group_mode") || "day",
       group_options: [
         {
           key: "day",
