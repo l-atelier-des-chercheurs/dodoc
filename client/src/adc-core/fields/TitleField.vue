@@ -11,7 +11,8 @@
       <template v-if="!can_edit || (can_edit && !edit_mode)">
         <template v-if="content && content !== ' '">
           <div class="_content">
-            <span v-text="content" />
+            <span v-if="input_type !== 'editor'" v-text="content" />
+            <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
           </div>
         </template>
       </template>

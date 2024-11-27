@@ -16,6 +16,17 @@
         @keydown.enter.prevent="$emit('onEnter')"
       />
     </template>
+    <CollaborativeEditor3
+      v-else-if="tag === 'editor'"
+      ref="field"
+      :field_to_edit="'field_to_edit'"
+      :content="content"
+      :custom_formats="['bold', 'italic', 'link']"
+      :is_collaborative="false"
+      :edit_on_mounted="true"
+      :can_edit="true"
+      @input="$emit('update:content', $event)"
+    />
     <span
       v-else-if="tag === 'span'"
       ref="field"
@@ -126,6 +137,7 @@ export default {
   },
   computed: {
     tag() {
+      if (this.input_type === "editor") return "editor";
       return "input";
     },
     validity() {

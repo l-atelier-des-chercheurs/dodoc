@@ -96,11 +96,22 @@
           "
         />
 
-        <CollaborativeEditor2
+        <TitleField
           v-if="
             (context === 'list' && project.description) ||
             (context === 'full' && (project.description || can_edit))
           "
+          :field_name="'description'"
+          :label="context === 'full' ? $t('description') : ''"
+          :input_type="'editor'"
+          :custom_formats="['bold', 'italic', 'link']"
+          :content="project.description"
+          :path="project.$path"
+          :maxlength="1280"
+          :can_edit="can_edit"
+        />
+
+        <!-- <CollaborativeEditor2
           :label="context === 'full' ? $t('description') : ''"
           :field_to_edit="'description'"
           :content="project.description"
@@ -109,7 +120,7 @@
           :is_collaborative="false"
           :maxlength="1280"
           :can_edit="can_edit"
-        />
+        /> -->
 
         <!-- <CollaborativeEditor2
           :label="context === 'full' ? $t('description') : ''"
@@ -363,24 +374,6 @@ export default {
     ._title {
       h3 {
         font-size: var(--sl-font-size-medium);
-      }
-    }
-    ._description {
-      font-size: var(--sl-font-size-small);
-
-      ::v-deep ._content {
-        display: block;
-        width: 100%;
-
-        p:first-child {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        p:not(:first-child) {
-          display: none;
-        }
       }
     }
   }
