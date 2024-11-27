@@ -7,17 +7,20 @@
       :instructions="can_edit ? instructions : ''"
     />
 
-    <component :is="tag" class="_container">
-      <template v-if="!can_edit || (can_edit && !edit_mode)">
-        <template v-if="content && content !== ' '">
-          <div class="_content">
-            <span v-if="input_type !== 'editor'" v-text="content" />
-            <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
-          </div>
-        </template>
-      </template>
+    <div class="_container">
+      <div class="_content">
+        <component v-if="input_type !== 'editor'" :is="tag" v-text="content" />
+        <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
+      </div>
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        class="_edit"
+        @click="enableEditMode"
+      />
+    </div>
+
+    <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
       <TextInput
-        v-else
         ref="TextInput"
         :content.sync="new_content"
         :required="required"
@@ -30,24 +33,17 @@
         @toggleValidity="($event) => (allow_save = $event)"
         @onEnter="updateText"
       />
-      <EditBtn
-        v-if="can_edit && !edit_mode"
-        class="_edit"
-        @click="enableEditMode"
-      />
-    </component>
 
-    <template v-if="can_edit">
-      <div class="_footer" v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          :allow_save="allow_save"
-          @save="updateText"
-          @cancel="cancel"
-        />
-      </div>
-    </template>
+      <div class="u-spacingBottom" />
+
+      <SaveCancelButtons
+        slot="footer"
+        class="_scb"
+        :is_saving="is_saving"
+        @save="updateText"
+        @cancel="cancel"
+      />
+    </BaseModal2>
   </span>
 </template>
 <script>
