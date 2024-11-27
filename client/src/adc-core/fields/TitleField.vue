@@ -20,19 +20,25 @@
     </div>
 
     <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
-      <TextInput
-        ref="TextInput"
-        :content.sync="new_content"
-        :required="required"
-        :input_type="input_type"
-        :autofocus="true"
-        :autocomplete="input_type === 'email' ? 'email' : undefined"
-        :minlength="minlength"
-        :maxlength="maxlength"
-        :key="edit_mode + content"
-        @toggleValidity="($event) => (allow_save = $event)"
-        @onEnter="updateText"
-      />
+      <div class="u-spacingBottom u-instructions" v-if="instructions">
+        {{ instructions }}
+      </div>
+
+      <component :is="tag">
+        <TextInput
+          ref="TextInput"
+          :content.sync="new_content"
+          :required="required"
+          :input_type="input_type"
+          :autofocus="true"
+          :autocomplete="input_type === 'email' ? 'email' : undefined"
+          :minlength="minlength"
+          :maxlength="maxlength"
+          :key="edit_mode + content"
+          @toggleValidity="($event) => (allow_save = $event)"
+          @onEnter="updateText"
+        />
+      </component>
 
       <div class="u-spacingBottom" />
 
