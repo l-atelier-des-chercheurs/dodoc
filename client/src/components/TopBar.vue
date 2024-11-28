@@ -11,7 +11,7 @@
     <div class="_topRightButtons">
       <button
         type="button"
-        class="u-button u-button_transparent"
+        class="u-button u-button_icon"
         @click="show_qr_code_modal = true"
         :title="$t('share_link_to_page')"
       >
@@ -42,7 +42,7 @@
 
       <button
         type="button"
-        class="u-button u-button_transparent"
+        class="u-button u-button_icon"
         :title="$t('ui_lang_select')"
         @click="show_lang_modal = !show_lang_modal"
       >
@@ -52,7 +52,7 @@
 
       <button
         type="button"
-        class="u-button u-button_transparent"
+        class="u-button u-button_icon"
         :title="$t('about_dodoc')"
         @click="show_credits_modal = !show_credits_modal"
       >
@@ -66,7 +66,7 @@
       <template v-if="is_instance_admin">
         <button
           type="button"
-          class="u-button u-button_transparent"
+          class="u-button u-button_icon"
           @click="show_settings_modal = !show_settings_modal"
         >
           <b-icon icon="gear" :aria-label="$t('admin_settings')" />
