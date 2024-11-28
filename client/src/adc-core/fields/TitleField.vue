@@ -178,6 +178,10 @@ export default {
     display: inline-block;
     margin-right: calc(var(--spacing) / 2);
 
+    > * {
+      margin: 0;
+    }
+
     span {
       white-space: break-spaces;
     }

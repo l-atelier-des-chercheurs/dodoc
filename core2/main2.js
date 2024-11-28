@@ -158,8 +158,11 @@ async function copyAndRenameUserFolder(full_default_path) {
   // TODO
 
   // two cases:
-  if (global.settings.contentPath.startsWith("/")) {
-    // if starts with '/' then its a path to the folder itself
+  if (
+    global.settings.contentPath.startsWith("/") ||
+    global.settings.contentPath.includes(path.sep)
+  ) {
+    // if starts with '/' or contains path.sep then its a path to the folder itself
     full_path_to_content = global.settings.contentPath.replaceAll(
       "/",
       path.sep
