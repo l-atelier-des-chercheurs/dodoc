@@ -13,6 +13,7 @@
         :placeholder="placeholder"
         :value="content"
         @input="$emit('update:content', $event.target.value)"
+        @input_txt="innerText = $event.target.value"
         @keydown.enter.prevent="$emit('onEnter')"
       />
     </template>
@@ -48,7 +49,7 @@
       <div>
         <template v-if="minlength || maxlength">
           <template v-if="minlength">{{ minlength }} ≤ </template>
-          {{ content.length }}
+          {{ content_txt.length }}
           <template v-if="maxlength"> ≤ {{ maxlength }}</template>
         </template>
       </div>
@@ -141,9 +142,11 @@ export default {
       return "input";
     },
     validity() {
-      if (this.required && this.content.length === 0) return false;
-      if (this.minlength && this.content.length < this.minlength) return false;
-      if (this.maxlength && this.content.length > this.maxlength) return false;
+      if (this.required && this.content_txt.length === 0) return false;
+      if (this.minlength && this.content_txt.length < this.minlength)
+        return false;
+      if (this.maxlength && this.content_txt.length > this.maxlength)
+        return false;
       return true;
     },
     field_input_type_prop() {
@@ -151,6 +154,12 @@ export default {
         if (this.show_password_in_clear) return "text";
         else return "password";
       return this.input_type;
+    },
+    content_txt() {
+      // Create a temporary div to parse HTML and get plain text
+      const temp = document.createElement("div");
+      temp.innerHTML = this.content;
+      return temp.innerText;
     },
   },
   methods: {
