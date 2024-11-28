@@ -11,7 +11,7 @@
     <div class="_topRightButtons">
       <button
         type="button"
-        class="u-button u-button_transparent"
+        class="u-button u-button_icon"
         @click="show_qr_code_modal = true"
         :title="$t('share_link_to_page')"
       >
@@ -42,7 +42,7 @@
 
       <button
         type="button"
-        class="u-button u-button_transparent"
+        class="u-button u-button_icon"
         :title="$t('ui_lang_select')"
         @click="show_lang_modal = !show_lang_modal"
       >
@@ -52,7 +52,7 @@
 
       <button
         type="button"
-        class="u-button u-button_transparent"
+        class="u-button u-button_icon"
         :title="$t('about_dodoc')"
         @click="show_credits_modal = !show_credits_modal"
       >
@@ -62,6 +62,20 @@
         v-if="show_credits_modal"
         @close="show_credits_modal = false"
       />
+
+      <template v-if="is_instance_admin">
+        <button
+          type="button"
+          class="u-button u-button_icon"
+          @click="show_settings_modal = !show_settings_modal"
+        >
+          <b-icon icon="gear" :aria-label="$t('admin_settings')" />
+        </button>
+        <AdminSettings
+          v-if="show_settings_modal"
+          @close="show_settings_modal = false"
+        />
+      </template>
 
       <div class="_subscribeBtn">
         <AuthorTag
@@ -80,19 +94,14 @@
         </button>
       </div>
 
-      <template v-if="is_instance_admin">
-        <button
-          type="button"
-          class="u-button u-button_transparent"
-          @click="show_settings_modal = !show_settings_modal"
-        >
-          <b-icon icon="gear" :aria-label="$t('admin_settings')" />
-        </button>
-        <AdminSettings
-          v-if="show_settings_modal"
-          @close="show_settings_modal = false"
-        />
-      </template>
+      <router-link
+        v-if="users.length > 1"
+        :to="'/@'"
+        class="u-button u-button_icon u-button_bleumarine"
+      >
+        {{ users.length }}
+        <b-icon icon="person-circle" />
+      </router-link>
     </div>
 
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
@@ -115,11 +124,13 @@ export default {
   },
   data() {
     return {
+      show_users_modal: false,
       show_authors_modal: false,
       show_lang_modal: false,
       show_credits_modal: false,
       show_qr_code_modal: false,
       show_settings_modal: false,
+      users: [],
     };
   },
   created() {},
@@ -130,11 +141,14 @@ export default {
     this.$api.join({ room: "authors" });
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$on(`toolbar.openCredits`, this.showCredits);
+
+    this.users = await this.$api.getAndTrackUsers();
   },
   beforeDestroy() {
     this.$api.leave({ room: "authors" });
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$off(`toolbar.openCredits`, this.showCredits);
+    this.$api.unTrackUsers();
   },
   watch: {
     $route: {

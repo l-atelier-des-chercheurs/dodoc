@@ -16,6 +16,9 @@ export default function () {
 
       rooms_joined: [],
 
+      is_tracking_users: false,
+      users: new Array(),
+
       // todo replace is_identified, create route to test
       is_correctly_logged_in: false,
 
@@ -34,9 +37,6 @@ export default function () {
           autoConnect: false,
         });
 
-        const sessionID = localStorage.getItem("sessionID");
-        if (sessionID) this.socket.auth = { sessionID };
-
         await this._setAuthFromStorage();
         this.setAuthorizationHeader();
 
@@ -44,6 +44,13 @@ export default function () {
           await this.getCurrentAuthor().catch(() => {});
           this.trackCurrentAuthor();
         }
+
+        const sessionID = localStorage.getItem("sessionID");
+        let auth = {};
+        if (sessionID) auth.sessionID = sessionID;
+        if (this.tokenpath.token_path)
+          auth.token_path = this.tokenpath.token_path;
+        if (Object.keys(auth).length > 0) this.socket.auth = auth;
 
         await this.socket.connect();
 
@@ -57,11 +64,10 @@ export default function () {
           });
         });
 
-        this.socket.on("session", ({ sessionID, userID }) => {
+        this.socket.on("session", ({ sessionID }) => {
           // attach the session ID to the next reconnection attempts
           this.socket.auth = { sessionID };
           localStorage.setItem("sessionID", sessionID);
-          this.socket.userID = userID;
         });
         this.socket.on("connect_error", (reason) => {
           console.log("socket connect error");
@@ -75,6 +81,7 @@ export default function () {
           this.socket.disconnect();
           this.socket.once("connect", () => {
             this.rejoinRooms();
+            if (this.is_tracking_users) this.getAndTrackUsers();
           });
         });
 
@@ -105,6 +112,10 @@ export default function () {
 
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);
+
+        this.socket.on("newUser", this.newUser);
+        this.socket.on("updateUser", this.updateUser);
+        this.socket.on("removeUser", this.removeUser);
       },
       disconnectSocket() {
         this.socket.disconnect();
@@ -139,8 +150,6 @@ export default function () {
       },
 
       async rejoinRooms() {
-        console.log("rejoinRooms");
-        // refresh full content of all rooms tracked
         const paths = this.rooms_joined.filter(
           (value, index, array) => array.indexOf(value) === index
         );
@@ -220,13 +229,39 @@ export default function () {
         this.join({ room: this.tokenpath.token_path });
       },
 
+      async getAndTrackUsers() {
+        const response = await this.$axios.get("_users").catch((err) => {
+          throw this.processError(err);
+        });
+        const users = response.data;
+        this.$set(this, "users", users);
+        this.is_tracking_users = true;
+        this.socket.emit("trackUsers");
+        return this.users;
+      },
+      newUser(user) {
+        this.users.push(user);
+      },
+      updateUser(user) {
+        const index = this.users.findIndex((u) => u.id === user.id);
+        if (index !== -1) this.users[index] = user;
+      },
+      removeUser({ id }) {
+        const index = this.users.findIndex((u) => u.id === id);
+        if (index !== -1) this.$delete(this.users, index);
+      },
+      async unTrackUsers() {
+        this.socket.emit("leaveUsers");
+        this.users = [];
+        this.is_tracking_users = false;
+      },
+
       folderCreated({ path, meta }) {
         // only update store if content is tracked
         if (!this.rooms_joined.includes(path)) {
           // console.log("folderCreated – room isnt tracked, not adding to store");
           return;
         }
-
         if (!Object.prototype.hasOwnProperty.call(this.store, path))
           this.store[path] = new Array();
         this.store[path].push(meta);

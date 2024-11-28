@@ -769,6 +769,17 @@ module.exports = (function () {
     convertToLocalPath(p) {
       return p.replaceAll("/", path.sep);
     },
+    async testWriteFileInFolder(folder_path) {
+      const path_to_test_file = path.join(folder_path, "__test.txt");
+      const created_on_date = API.getCurrentDate();
+      await fs.ensureDir(folder_path);
+      await writeFileAtomic(
+        path_to_test_file,
+        `Test file created and immediately deleted by dodoc while starting, on ${created_on_date}.`
+      );
+      await fs.remove(path_to_test_file);
+      return;
+    },
   };
 
   return API;

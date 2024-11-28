@@ -13,6 +13,11 @@
       :to="author_url"
       @click.native="context !== 'full' ? $emit('navToPage') : ''"
     >
+      <div v-if="is_connected" class="_connected">
+        <b-icon icon="people" />
+        {{ $t("connected_currently") }}
+      </div>
+
       <div class="_topbar">
         <div class="_cover">
           <CoverField
@@ -30,7 +35,6 @@
         <div v-if="context === 'full'" class="u-spacingBottom" />
 
         <div class="_text">
-          <!-- :label="$t('name')" -->
           <div class="">
             <TitleField
               :field_name="'name'"
@@ -58,8 +62,6 @@
             </div>
           </div>
 
-          <div v-if="context === 'full'" class="u-spacingBottom" />
-
           <div v-if="author.group || can_edit">
             <TagsField
               :label="context === 'full' ? $t('group') : undefined"
@@ -71,8 +73,6 @@
               :can_edit="can_edit"
             />
           </div>
-
-          <div v-if="context === 'full'" class="u-spacingBottom" />
 
           <div v-if="can_edit" class="u-spacingBottom">
             <TitleField
@@ -86,10 +86,8 @@
               :can_edit="can_edit"
             />
           </div>
-          <div
-            v-if="context === 'full' && (can_edit || !!author.presentation)"
-            class="u-spacingBottom"
-          >
+
+          <div v-if="context === 'full' && (can_edit || !!author.presentation)">
             <CollaborativeEditor2
               :label="
                 context === 'full' && (author.presentation || can_edit)
@@ -200,6 +198,11 @@ export default {
         return this.connected_as.$path === this.author.$path;
       return false;
     },
+    is_connected() {
+      return this.$api.users.some(
+        (u) => u.meta?.token_path === this.author.$path
+      );
+    },
     can_edit() {
       return (
         (this.is_self || this.is_instance_admin) && this.context === "full"
@@ -254,6 +257,7 @@ export default {
   }
 
   ._topbar {
+    position: relative;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -283,6 +287,8 @@ export default {
 }
 
 ._linkTo {
+  position: relative;
+  display: block;
   text-decoration: none;
   color: inherit;
 }
@@ -294,10 +300,10 @@ export default {
 
 ._text {
   // overflow: hidden;
-  // display: flex;
-  // flex-flow: column nowrap;
+  display: flex;
+  flex-flow: column nowrap;
   // padding-bottom: calc(var(--spacing) / 2);
-  // gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
 
   ::v-deep {
     a {
@@ -310,5 +316,15 @@ export default {
     ._content {
     }
   }
+}
+
+._connected {
+  display: flex;
+  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  background-color: var(--c-bleumarine_clair);
+  border-radius: 3px;
+
+  font-weight: 500;
+  justify-content: center;
 }
 </style>

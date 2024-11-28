@@ -245,6 +245,7 @@ export default {
   desktop_720: "Bureau 720p",
 
   custom: "Personnalisé",
+  custom_f: "Personnalisée",
   width: "Largeur",
   height: "Hauteur",
   text_size: "Taille du texte",
@@ -1206,4 +1207,6 @@ export default {
 
   duration_explanation:
     "Soit {seconds_equivalent} seconde(s) à une vitesse de {frame_rate} images par seconde",
+
+  connected_currently: "Connecté actuellement",
 };

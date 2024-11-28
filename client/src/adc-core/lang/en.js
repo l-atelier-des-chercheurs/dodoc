@@ -535,6 +535,7 @@ export default {
   desktop_1080: "Desktop 1080p",
   desktop_720: "Desktop 720p",
   custom: "Custom",
+  custom_f: "Custom",
   width: "Width",
   height: "Height",
   text_size: "Text size",
@@ -1135,4 +1136,6 @@ export default {
 
   duration_explanation:
     "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
+
+  connected_currently: "Connected currently",
 };

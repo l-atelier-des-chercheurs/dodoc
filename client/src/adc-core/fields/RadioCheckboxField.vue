@@ -51,7 +51,6 @@
 
         <SaveCancelButtons
           slot="footer"
-          v-if="edit_mode"
           class="_scb"
           :is_saving="is_saving"
           @save="updateSelect"

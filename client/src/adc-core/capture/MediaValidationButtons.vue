@@ -245,6 +245,8 @@ export default {
   position: relative;
   z-index: 105;
   display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
   justify-content: space-around;
   align-items: center;
   padding: calc(var(--spacing) / 2);
