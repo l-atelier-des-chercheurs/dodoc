@@ -56,6 +56,7 @@
           :tag="context === 'full' ? 'h1' : 'h2'"
           :content="space.title"
           :path="space.$path"
+          :required="true"
           :maxlength="280"
           :can_edit="can_edit"
         />
