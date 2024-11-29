@@ -40,7 +40,7 @@
     <!-- @keyup.enter="$emit('onEnter')" -->
 
     <div
-      class="_notices fieldCaption"
+      class="fieldCaption _notices"
       :class="{
         'u-colorRed': !validity,
       }"
@@ -231,8 +231,7 @@ export default {
 <style lang="scss" scoped>
 ._notices {
   flex: 0 0 auto;
-  // padding: calc(var(--spacing) / 4);
-  padding: 0;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 8);
 
   display: flex;
   justify-content: space-between;

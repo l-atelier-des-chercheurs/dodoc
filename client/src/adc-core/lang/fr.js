@@ -1209,4 +1209,8 @@ export default {
     "Soit {seconds_equivalent} seconde(s) à une vitesse de {frame_rate} images par seconde",
 
   connected_currently: "Connecté actuellement",
+
+  confirm_save_changes:
+    "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
+  close_without_saving: "Fermer sans valider",
 };

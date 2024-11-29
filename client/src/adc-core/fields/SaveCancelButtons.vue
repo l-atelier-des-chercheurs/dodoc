@@ -2,7 +2,7 @@
   <div class="_saveCancelBtns">
     <button class="u-buttonLink _cancelBtn" @click="$emit('cancel')">
       <!-- <b-icon icon="x-circle" /> -->
-      {{ $t("cancel") }}
+      {{ cancel_text ? cancel_text : $t("cancel") }}
       <!-- {{ $t("back") }} -->
     </button>
     <button
@@ -20,6 +20,7 @@
 export default {
   props: {
     save_text: String,
+    cancel_text: String,
     is_saving: Boolean,
     autofocus_save: {
       type: Boolean,

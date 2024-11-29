@@ -7,7 +7,7 @@
         ref="modal"
         :data-size="size"
       >
-        <div class="_baseModal--overlay" @click.self="closeModal" />
+        <div class="_baseModal--overlay" @click.self="requestCloseModal" />
         <div class="_baseModal--content">
           <header v-if="title || is_closable">
             <h2 v-if="title">{{ title }}</h2>
@@ -16,7 +16,7 @@
               v-if="is_closable"
               type="button"
               class="u-button u-button_icon _closeBtn"
-              @click="closeModal"
+              @click="requestCloseModal"
             >
               <b-icon icon="x-lg" :label="$t('close')" />
             </button>
@@ -34,6 +34,25 @@
             <slot name="footer" />
           </footer>
         </div>
+
+        <BaseModal2
+          v-if="show_confirm_before_closing_modal"
+          :title="$t('confirm_save_changes')"
+          @close="show_confirm_before_closing_modal = false"
+        >
+          <!-- <p class="u-spacingBottom">
+            {{ $t("confirm_save_changes") }}
+          </p> -->
+          <div slot="footer">
+            <SaveCancelButtons
+              slot="footer"
+              class="_scb"
+              :cancel_text="$t('close_without_saving')"
+              @save="saveContent"
+              @cancel="closeModal"
+            />
+          </div>
+        </BaseModal2>
       </div>
     </transition>
   </portal>
@@ -51,11 +70,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    confirm_before_closing: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {},
   data() {
     return {
       show_modal: false,
+      show_confirm_before_closing_modal: false,
     };
   },
   created() {},
@@ -80,15 +104,25 @@ export default {
   computed: {},
   methods: {
     handleKeyPress($event) {
-      if ($event.key === "Escape") this.closeModal();
+      if ($event.key === "Escape") this.requestCloseModal();
+    },
+
+    requestCloseModal() {
+      if (this.confirm_before_closing) {
+        this.show_confirm_before_closing_modal = true;
+      } else {
+        this.closeModal();
+      }
     },
     closeModal() {
       if (!this.is_closable) return false;
-
       this.show_modal = false;
       setTimeout(() => {
         this.$emit("close");
       }, 400);
+    },
+    saveContent() {
+      this.$emit("save");
     },
   },
 };

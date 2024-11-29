@@ -8,7 +8,7 @@
     />
 
     <div class="_container">
-      <div class="_content">
+      <div class="_content" v-if="content && content.length > 0">
         <component v-if="input_type !== 'editor'" :is="tag" v-text="content" />
         <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
       </div>
@@ -19,7 +19,13 @@
       />
     </div>
 
-    <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+    <BaseModal2
+      v-if="edit_mode"
+      :title="label"
+      :confirm_before_closing="content_is_changed"
+      @close="cancel"
+      @save="updateText"
+    >
       <div class="u-spacingBottom u-instructions" v-if="instructions">
         {{ instructions }}
       </div>
@@ -114,7 +120,11 @@ export default {
       this.new_content = this.content;
     },
   },
-  computed: {},
+  computed: {
+    content_is_changed() {
+      return this.new_content !== this.content;
+    },
+  },
   methods: {
     enableEditMode() {
       this.edit_mode = true;
