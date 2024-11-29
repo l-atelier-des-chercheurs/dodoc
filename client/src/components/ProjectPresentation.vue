@@ -438,7 +438,7 @@ export default {
   flex-flow: column nowrap;
   place-content: center;
 
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 
   transition: all 0.4s;
 
@@ -469,7 +469,7 @@ export default {
   }
 
   > * {
-    max-width: 56ch;
+    // max-width: 56ch;
   }
 }
 
