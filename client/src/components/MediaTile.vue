@@ -225,11 +225,10 @@ export default {
   }
 
   &[data-type="other"] {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-    text-align: center;
+    // display: flex;
+    // justify-content: flex-start;
+    // align-items: center;
+    // text-align: center;
   }
   ::v-deep {
     ._mediaContent {
