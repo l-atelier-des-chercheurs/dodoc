@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('export')" @close="$emit('close')">
+  <BaseModal2 :title="$t('export')" @close="removeAndCloseModal">
     <div class="_cont">
       <template v-if="!created_video">
         <div>
@@ -13,9 +13,6 @@
               @change="resolution_preset_picked = $event"
             />
           </div>
-        </div>
-        <div class="_spinner" v-if="is_exporting" key="loader">
-          <AnimatedCounter :value="progress_percent" />
         </div>
       </template>
       <template v-else>
@@ -31,7 +28,7 @@
     </div>
 
     <div slot="footer">
-      <template v-if="!created_video">
+      <template v-if="!created_video && !is_exporting">
         <div>
           <button
             type="button"
@@ -44,6 +41,11 @@
         </div>
         <div class="u-instructions">
           {{ $t("wont_remove_original") }}
+        </div>
+      </template>
+      <template v-else-if="is_exporting">
+        <div class="_spinner" key="loader">
+          <AnimatedCounter :value="progress_percent" />
         </div>
       </template>
       <template v-else>
@@ -195,6 +197,11 @@ export default {
         this.is_exporting = false;
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
+    },
+    removeAndCloseModal() {
+      if (this.created_video)
+        this.$api.deleteItem({ path: this.created_video.$path });
+      this.$emit("close");
     },
     async saveToProject() {
       this.finished_saving_to_project = true;
