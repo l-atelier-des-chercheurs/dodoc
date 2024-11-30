@@ -3,7 +3,7 @@
     <div class="_leftBtns">
       <DLabel :str="$t('effect')" />
 
-      <select :value="make.effect_type" @change="setEffectType">
+      <select :value="selected_effect_type" @change="setEffectType">
         <option
           :value="effect.key"
           v-for="effect in available_effects"
@@ -15,7 +15,10 @@
 
       <div class="u-spacingBottom" />
 
-      <div v-if="make.effect_type === 'colored_filter'" class="u-spacingBottom">
+      <div
+        v-if="selected_effect_type === 'colored_filter'"
+        class="u-spacingBottom"
+      >
         <ColorInput
           :can_toggle="false"
           :live_editing="true"
@@ -28,7 +31,10 @@
           "
         />
       </div>
-      <div v-else-if="make.effect_type === 'speed_up'" class="u-spacingBottom">
+      <div
+        v-else-if="selected_effect_type === 'speed_up'"
+        class="u-spacingBottom"
+      >
         <RangeValueInput
           :label="$t('playback_speed')"
           :value="make.playback_speed"
@@ -50,7 +56,10 @@
           v-html="$t('slowing_video_down_limit')"
         />
       </div>
-      <div v-else-if="make.effect_type === 'slow_down'" class="u-spacingBottom">
+      <div
+        v-else-if="selected_effect_type === 'slow_down'"
+        class="u-spacingBottom"
+      >
         <RangeValueInput
           :label="$t('playback_speed')"
           :value="make.playback_speed"
@@ -72,7 +81,10 @@
           v-html="$t('slowing_video_down_limit')"
         />
       </div>
-      <div v-else-if="make.effect_type === 'mirror'" class="u-spacingBottom">
+      <div
+        v-else-if="selected_effect_type === 'mirror'"
+        class="u-spacingBottom"
+      >
         <select
           :value="make.flip"
           @change="
@@ -92,7 +104,10 @@
           </option>
         </select>
       </div>
-      <div v-else-if="make.effect_type === 'rotate'" class="u-spacingBottom">
+      <div
+        v-else-if="selected_effect_type === 'rotate'"
+        class="u-spacingBottom"
+      >
         <select
           :value="make.rotation"
           @change="
@@ -130,7 +145,7 @@
       />
       <div
         class="_coloredFilter"
-        v-if="make.effect_type === 'colored_filter'"
+        v-if="selected_effect_type === 'colored_filter'"
         :style="{ backgroundColor: make.color_filter }"
       />
     </div>
@@ -170,7 +185,7 @@ export default {
   computed: {
     base_instructions() {
       const recipe = "video_effects";
-      const effect_type = this.make.effect_type;
+      const effect_type = this.selected_effect_type;
       const suggested_file_name =
         this.base_media.$media_filename + "-" + effect_type;
       const base_media_path = this.makeMediaFilePath({
@@ -206,9 +221,14 @@ export default {
       };
     },
     rotate_preview() {
-      if (this.make.effect_type === "rotate") return this.make.rotation;
-      else if (this.make.effect_type === "mirror") return this.make.flip;
+      if (this.selected_effect_type === "rotate") return this.make.rotation;
+      else if (this.selected_effect_type === "mirror") return this.make.flip;
       return false;
+    },
+    selected_effect_type: {
+      get() {
+        return this.make.effect_type || "black_and_white";
+      },
     },
   },
   methods: {
