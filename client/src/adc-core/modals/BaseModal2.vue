@@ -80,6 +80,7 @@ export default {
     return {
       show_modal: false,
       show_confirm_before_closing_modal: false,
+      current_level: undefined,
     };
   },
   created() {},
@@ -88,6 +89,7 @@ export default {
     window.addEventListener("keyup", this.handleKeyPress);
 
     this.$eventHub.$emit(`modal.is_opened`);
+    this.current_level = this.$root.opened_modals;
 
     this.$nextTick(() => {
       this.$nextTick(() => {
@@ -104,7 +106,12 @@ export default {
   computed: {},
   methods: {
     handleKeyPress($event) {
-      if ($event.key === "Escape") this.requestCloseModal();
+      if (this.current_level !== this.$root.opened_modals) return;
+
+      if ($event.key === "Escape") {
+        this.requestCloseModal();
+        $event.stopImmediatePropagation();
+      }
     },
 
     requestCloseModal() {

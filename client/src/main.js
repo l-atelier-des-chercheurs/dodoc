@@ -281,8 +281,8 @@ new Vue({
 
     publicPath: process.env.BASE_URL,
 
-    modal_is_opened: false,
     has_file_dragover_on_window: false,
+    opened_modals: 0,
 
     current_time: "",
 
@@ -337,15 +337,18 @@ new Vue({
       // return false;
       return this.window.innerWidth < 1000;
     },
+    modal_is_opened() {
+      return this.opened_modals > 0;
+    },
   },
   methods: {
     modalIsOpened() {
-      document.body.style.overflow = "hidden";
-      this.modal_is_opened = true;
+      this.opened_modals++;
+      if (this.opened_modals === 1) document.body.style.overflow = "hidden";
     },
     modalIsClosed() {
-      document.body.style.overflow = "";
-      this.modal_is_opened = false;
+      this.opened_modals--;
+      if (this.opened_modals === 0) document.body.style.overflow = "";
     },
     async changeLocale(lang) {
       await changeLocale(lang);
