@@ -64,11 +64,8 @@
         <TitleField
           :field_name="'subtitle'"
           v-if="can_edit || space.subtitle"
-          :label="
-            context === 'full' && can_edit && !space.subtitle
-              ? $t('subtitle')
-              : ''
-          "
+          :label="$t('subtitle')"
+          :show_label="context === 'full' && can_edit && !space.subtitle"
           class="_subtitle"
           :content="space.subtitle"
           :path="space.$path"
@@ -76,15 +73,16 @@
           :can_edit="can_edit"
         />
       </div>
-      <CollaborativeEditor2
+      <TitleField
         v-if="context === 'full' && (space.description || can_edit)"
-        :label="context === 'full' ? $t('description') : ''"
-        :path="space.$path"
-        class="_description"
-        :field_to_edit="'description'"
+        :label="$t('description')"
+        :show_label="context === 'full'"
+        :field_name="'description'"
+        :input_type="'editor'"
         :custom_formats="['bold', 'italic', 'link']"
         :content="space.description"
-        :is_collaborative="false"
+        :path="space.$path"
+        :maxlength="1280"
         :can_edit="can_edit"
       />
 

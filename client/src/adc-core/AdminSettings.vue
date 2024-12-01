@@ -36,14 +36,14 @@
             </div>
 
             <div class="u-spacingBottom">
-              <CollaborativeEditor2
+              <TitleField
                 :label="$t('presentation_of_instance')"
+                :field_name="'presentation_of_instance'"
                 :instructions="$t('presentation_of_instance_instructions')"
-                :field_to_edit="'presentation_of_instance'"
-                :path="settings.$path"
-                :content="settings.presentation_of_instance"
+                :input_type="'editor'"
                 :custom_formats="['bold', 'italic', 'link']"
-                :is_collaborative="false"
+                :content="settings.presentation_of_instance"
+                :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
             </div>

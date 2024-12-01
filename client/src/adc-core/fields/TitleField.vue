@@ -1,7 +1,7 @@
 <template>
   <span class="_titleField">
     <DLabel
-      v-if="label"
+      v-if="label && show_label"
       class="_label"
       :str="label"
       :instructions="can_edit ? instructions : ''"
@@ -27,7 +27,7 @@
       @save="updateText"
     >
       <div class="u-spacingBottom u-instructions" v-if="instructions">
-        {{ instructions }}
+        <span v-html="instructions" />
       </div>
 
       <component :is="tag">
@@ -65,6 +65,10 @@ export default {
     label: {
       type: String,
       default: "",
+    },
+    show_label: {
+      type: Boolean,
+      default: true,
     },
     instructions: {
       type: String,
