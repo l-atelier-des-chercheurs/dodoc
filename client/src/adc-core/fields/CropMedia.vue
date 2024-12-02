@@ -176,6 +176,9 @@
           :src="cropper_src"
           :default-size="defaultSize"
           :stencil-props="stencil_props"
+          :stencil-component="
+            preview_format === 'circle' ? 'circle-stencil' : undefined
+          "
           @change="onChange"
         />
       </div>
@@ -202,6 +205,7 @@ export default {
     media: Object,
     blob: String,
     forced_ratio: String,
+    preview_format: String,
   },
   components: {
     Cropper,
