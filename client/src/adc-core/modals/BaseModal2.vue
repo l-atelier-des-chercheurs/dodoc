@@ -185,7 +185,7 @@ export default {
     max-height: none;
     border: none;
 
-    --modal-margin: var(--spacing) * 4;
+    --modal-margin: 0%;
 
     width: calc(100% - var(--modal-margin));
     height: calc(100% - var(--modal-margin));

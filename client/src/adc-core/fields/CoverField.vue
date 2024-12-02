@@ -43,35 +43,20 @@
         :label="!cover_thumb ? $t('add') : undefined"
         @click="enableEditMode"
       />
-      <BaseModal2
+      <ImageSelect
         v-if="edit_mode"
-        :title="label_title"
+        :path="path"
+        :label="label_title"
+        :existing_preview="existing_preview"
+        :available_options="available_options"
+        :preview_format="preview_format"
+        @newPreview="
+          (value) => {
+            new_cover = value;
+          }
+        "
         @close="edit_mode = false"
-      >
-        <div class="">
-          <ImageSelect
-            v-if="edit_mode"
-            :path="path"
-            :existing_preview="existing_preview"
-            :available_options="available_options"
-            :preview_format="preview_format"
-            @newPreview="
-              (value) => {
-                new_cover = value;
-              }
-            "
-          />
-        </div>
-        <div slot="footer">
-          <SaveCancelButtons
-            class="_scb"
-            :is_saving="is_saving"
-            :allow_save="allow_save"
-            @save="updateCover"
-            @cancel="cancel"
-          />
-        </div>
-      </BaseModal2>
+      />
     </div>
   </div>
 </template>
@@ -108,7 +93,7 @@ export default {
       allow_save: true,
 
       edit_mode: false,
-      is_saving: false,
+
       show_cover_fullscreen: false,
     };
   },
@@ -150,34 +135,6 @@ export default {
         $path: this.path,
         resolution: res,
       });
-    },
-    cancel() {
-      this.edit_mode = false;
-      this.is_saving = false;
-    },
-    async updateCover() {
-      this.is_saving = true;
-
-      try {
-        await this.$api.updateCover({
-          path: this.path,
-          new_cover_data: this.new_cover,
-          // onProgress,
-        });
-
-        this.edit_mode = false;
-        this.is_saving = false;
-      } catch (e) {
-        this.is_saving = false;
-        this.edit_mode = false;
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("couldntbesaved"));
-
-        this.$alertify.closeLogOnClick(true).error(e.response);
-      }
     },
   },
 };

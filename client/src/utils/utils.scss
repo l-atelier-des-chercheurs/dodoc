@@ -1082,3 +1082,50 @@ input[type="checkbox"]:disabled {
   height: 34px;
   width: 34px;
 }
+
+.u-cropper {
+  flex: 1 1 0;
+  padding: calc(var(--spacing) / 1);
+  overflow: hidden;
+
+  .vue-advanced-cropper {
+    height: 100%;
+  }
+
+  .vue-advanced-cropper__background,
+  .vue-advanced-cropper__foreground {
+    background-color: var(--c-noir);
+  }
+  .vue-advanced-cropper__foreground {
+    cursor: move;
+  }
+  .vue-simple-handler {
+    border-width: 3px;
+    background-color: var(--c-orange);
+    // border-color: var(--c-orange);
+    opacity: 1;
+
+    &:hover {
+      border-color: white;
+    }
+  }
+  .vue-simple-line {
+    border-color: var(--c-orange);
+
+    &:hover {
+      border-color: white;
+    }
+  }
+  .vue-simple-line--east {
+    border-right-width: 2px;
+  }
+  .vue-simple-line--south {
+    border-bottom-width: 2px;
+  }
+  .vue-simple-line--north {
+    border-top-width: 2px;
+  }
+  .vue-simple-line--west {
+    border-left-width: 2px;
+  }
+}

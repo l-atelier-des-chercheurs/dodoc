@@ -1,25 +1,45 @@
 <template>
-  <div class="_imageselect">
-    <PickImage
-      v-if="!picked_image"
-      :path="path"
-      :instructions="instructions"
-      :available_options="available_options"
-      @newPreview="setNewPreview"
-    />
-    <div class="_imageselect--image" v-else>
-      <!-- 
+  <BaseModal2 :title="label" @close="$emit('close')">
+    <div class="_imageselect">
+      <PickImage
+        v-if="!picked_image"
+        :path="path"
+        :instructions="instructions"
+        :available_options="available_options"
+        @newPreview="setNewPreview"
+      />
+      <div class="_imageselect--image" v-else>
+        <!-- 
       <img
         :data-format="preview_format"
         :src="picked_image"
         draggable="false"
       /> -->
-      <Cropper :key="picked_image" :src="picked_image" />
-      <button class="u-buttonLink" type="button" @click="removeImage">
-        {{ $t("remove_image") }}
-      </button>
+        <div class="u-cropper" v-if="crop_mode">
+          <Cropper :key="picked_image" :src="picked_image" />
+        </div>
+        <div v-else>
+          <img
+            :data-format="preview_format"
+            :src="picked_image"
+            draggable="false"
+          />
+        </div>
+        <button class="u-buttonLink" type="button" @click="removeImage">
+          {{ $t("remove_image") }}
+        </button>
+      </div>
     </div>
-  </div>
+    <div slot="footer">
+      <SaveCancelButtons
+        class="_scb"
+        :is_saving="is_saving"
+        :allow_save="allow_save"
+        @save="updateCover"
+        @cancel="cancel"
+      />
+    </div>
+  </BaseModal2>
 </template>
 <script>
 import PickImage from "@/adc-core/fields/PickImage.vue";
@@ -30,6 +50,7 @@ import "vue-advanced-cropper/dist/theme.bubble.css";
 export default {
   props: {
     existing_preview: [Boolean, String],
+    label: String,
     path: String,
     instructions: String,
     preview_format: String,
@@ -42,13 +63,11 @@ export default {
   data() {
     return {
       picked_image: this.existing_preview,
-      id: `image_select_${(
-        Math.random().toString(36) + "00000000000000000"
-      ).slice(2, 3 + 2)}`,
 
-      show_picker: false,
-      show_medias_from_project: "",
-      enable_capture_mode: false,
+      crop_mode: false,
+
+      allow_save: true,
+      is_saving: false,
     };
   },
 
@@ -60,14 +79,7 @@ export default {
     window.removeEventListener("paste", this.handlePaste);
   },
 
-  watch: {
-    // show_medias_from_project: function () {
-    //   this.$socketio.listMedias({
-    //     type: "projects",
-    //     slugFolderName: this.show_medias_from_project,
-    //   });
-    // },
-  },
+  watch: {},
   computed: {},
   methods: {
     async setNewPreview(file) {
@@ -79,8 +91,8 @@ export default {
       let blob = null;
       blob = file.data;
 
+      this.crop_mode = true;
       this.picked_image = URL.createObjectURL(blob);
-      this.$emit("newPreview", blob);
     },
     async fetchURLToFile(url) {
       return await fetch(url).then((r) => r.blob());
@@ -100,6 +112,33 @@ export default {
     removeImage: function () {
       this.picked_image = "";
       this.$emit("newPreview", "");
+    },
+    async updateCover() {
+      this.is_saving = true;
+
+      if (!this.path) return this.$emit("newImage", this.new_cover);
+
+      try {
+        await this.$api.updateCover({
+          path: this.path,
+          new_cover_data: this.new_cover,
+          // onProgress,
+        });
+
+        this.is_saving = false;
+      } catch (e) {
+        this.is_saving = false;
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("couldntbesaved"));
+
+        this.$alertify.closeLogOnClick(true).error(e.response);
+      }
+    },
+    cancel() {
+      this.$emit("close");
     },
   },
 };

@@ -167,7 +167,7 @@
       </div>
       -->
 
-      <div class="_cropper">
+      <div class="u-cropper">
         <Cropper
           class=""
           :key="'' + stencil_props"
@@ -401,49 +401,6 @@ export default {
   overflow: hidden;
   min-height: 240px;
   // background-color: var(--c-noir);
-
-  ::v-deep {
-    .vue-advanced-cropper {
-      height: 100%;
-    }
-
-    .vue-advanced-cropper__background,
-    .vue-advanced-cropper__foreground {
-      background-color: var(--c-noir);
-    }
-    .vue-advanced-cropper__foreground {
-      cursor: move;
-    }
-    .vue-simple-handler {
-      border-width: 3px;
-      background-color: var(--c-orange);
-      // border-color: var(--c-orange);
-      opacity: 1;
-
-      &:hover {
-        border-color: white;
-      }
-    }
-    .vue-simple-line {
-      border-color: var(--c-orange);
-
-      &:hover {
-        border-color: white;
-      }
-    }
-    .vue-simple-line--east {
-      border-right-width: 2px;
-    }
-    .vue-simple-line--south {
-      border-bottom-width: 2px;
-    }
-    .vue-simple-line--north {
-      border-top-width: 2px;
-    }
-    .vue-simple-line--west {
-      border-left-width: 2px;
-    }
-  }
 }
 
 ._bottomBar {
