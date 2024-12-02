@@ -48,6 +48,7 @@
         :path="path"
         :label="label_title"
         :ratio="ratio"
+        :preview_format="preview_format"
         :existing_preview="existing_preview"
         :available_options="available_options"
         @close="edit_mode = false"

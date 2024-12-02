@@ -17,7 +17,7 @@
             @updateCrop="updateCrop"
           />
         </div>
-        <div v-else>
+        <div v-else class="_imageselect--image">
           <img
             :data-format="preview_format"
             :src="picked_image"
