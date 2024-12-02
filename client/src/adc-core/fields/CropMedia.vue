@@ -2,6 +2,7 @@
   <div class="_cropMedia">
     <div class="_topPanes">
       <div class="_btn">
+        {{ aspect_ratio }}
         <button type="button" class="u-button u-button_small" @click="zoomIn">
           {{ $t("zoom") }}
           <b-icon icon="plus" />
@@ -78,7 +79,7 @@
           <b-icon icon="arrow-counterclockwise" />
         </button>
       </div>
-      <div class="_resizeRatio">
+      <div class="_resizeRatio" v-if="!forced_ratio">
         <div>
           <DLabel :str="$t('constrain_crop_resize')" />
           <label>
@@ -200,19 +201,20 @@ export default {
   props: {
     media: Object,
     blob: String,
+    forced_ratio: String,
   },
   components: {
     Cropper,
   },
   data() {
     return {
-      crop_resize_mode: "none",
+      crop_resize_mode: this.forced_ratio ? "ratio" : "none",
       show_percent_picker: false,
       show_rotate_deg_picker: false,
 
       rotation_deg: 5,
 
-      aspect_ratio: "original",
+      aspect_ratio: this.forced_ratio || "original",
       available_aspect_ratios: [
         { key: "original", label: this.$t("original") },
         { key: "square", label: this.$t("square") },

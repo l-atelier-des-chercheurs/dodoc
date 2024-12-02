@@ -13,7 +13,7 @@
         <CoverField
           class="_cover"
           :context="context"
-          :ratio="'3/2'"
+          :ratio="'3 / 2'"
           :cover="project.$cover"
           :path="project.$path"
           :can_edit="can_edit"

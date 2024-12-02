@@ -47,9 +47,9 @@
         v-if="edit_mode"
         :path="path"
         :label="label_title"
+        :ratio="ratio"
         :existing_preview="existing_preview"
         :available_options="available_options"
-        :preview_format="preview_format"
         @close="edit_mode = false"
       />
     </div>
@@ -64,7 +64,7 @@ export default {
     context: String,
     ratio: {
       type: String,
-      default: "3/2",
+      default: "3 / 2",
     },
     preview_format: {
       type: String,

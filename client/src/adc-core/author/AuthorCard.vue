@@ -25,6 +25,7 @@
             :cover="author.$cover"
             :title="$t('pick_portrait')"
             :preview_format="'circle'"
+            :ratio="'circle'"
             :available_options="['import', 'capture']"
             :path="author.$path"
             :placeholder="author.name.substring(0, 2)"

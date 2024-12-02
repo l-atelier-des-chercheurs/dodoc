@@ -10,7 +10,12 @@
       />
       <template v-else>
         <div v-if="crop_mode" class="_imageselect--crop">
-          <CropMedia :blob="picked_image" @updateCrop="updateCrop" />
+          <CropMedia
+            :blob="picked_image"
+            :preview_format="preview_format"
+            :forced_ratio="ratio"
+            @updateCrop="updateCrop"
+          />
         </div>
         <div v-else>
           <img
@@ -44,6 +49,7 @@ export default {
     existing_preview: [Boolean, String],
     label: String,
     path: String,
+    ratio: String,
     instructions: String,
     preview_format: String,
     available_options: Array,
