@@ -1138,4 +1138,6 @@ export default {
     "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
 
   connected_currently: "Connected currently",
+
+  start_by_uploading_images: "Start by uploading images below",
 };

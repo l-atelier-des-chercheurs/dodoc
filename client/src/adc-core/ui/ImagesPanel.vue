@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div class="u-instructions">
+      {{ $t("start_by_uploading_images") }}
+    </div>
+
+    <div class="u-spacingBottom" />
+
     <DLabel :str="$t('images')" />
     <div class="u-spacingBottom">
       <input
