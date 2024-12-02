@@ -9,12 +9,6 @@
         @newPreview="setNewPreview"
       />
       <template v-else>
-        <!-- 
-      <img
-        :data-format="preview_format"
-        :src="picked_image"
-        draggable="false"
-      /> -->
         <div v-if="crop_mode" class="_imageselect--crop">
           <CropMedia :blob="picked_image" @updateCrop="updateCrop" />
         </div>
@@ -30,7 +24,7 @@
         </div>
       </template>
     </div>
-    <div slot="footer">
+    <div slot="footer" v-if="!crop_mode">
       <SaveCancelButtons
         class="_scb"
         :is_saving="is_saving"
@@ -107,16 +101,23 @@ export default {
     async updateCover() {
       this.is_saving = true;
 
-      if (!this.path) return this.$emit("newPreview", this.picked_image);
+      // dataurl to file
+      const file = this.picked_image
+        ? new File([this.picked_image], "cover")
+        : "";
+
+      if (!this.path) return this.$emit("newPreview", file);
+
+      debugger;
 
       try {
         await this.$api.updateCover({
           path: this.path,
-          new_cover_data: this.picked_image,
+          new_cover_data: file,
           // onProgress,
         });
-
         this.is_saving = false;
+        this.$emit("close");
       } catch (e) {
         this.is_saving = false;
 
