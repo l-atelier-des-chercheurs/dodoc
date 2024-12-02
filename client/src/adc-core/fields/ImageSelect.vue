@@ -102,13 +102,13 @@ export default {
       this.is_saving = true;
 
       // dataurl to file
-      const file = this.picked_image
-        ? new File([this.picked_image], "cover")
-        : "";
+      let file = "";
+      if (this.picked_image) {
+        const response = await fetch(this.picked_image);
+        file = await response.blob();
+      }
 
       if (!this.path) return this.$emit("newPreview", file);
-
-      debugger;
 
       try {
         await this.$api.updateCover({
