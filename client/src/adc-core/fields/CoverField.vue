@@ -48,7 +48,7 @@
         :title="label_title"
         @close="edit_mode = false"
       >
-        <div class="u-spacingBottom">
+        <div class="">
           <ImageSelect
             v-if="edit_mode"
             :path="path"

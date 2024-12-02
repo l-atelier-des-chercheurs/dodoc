@@ -51,6 +51,8 @@ export default {
 }
 ._saveCancelBtns {
   display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
   gap: calc(var(--spacing) / 4);
 }
 </style>

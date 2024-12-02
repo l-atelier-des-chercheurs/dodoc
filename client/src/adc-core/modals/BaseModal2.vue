@@ -145,7 +145,7 @@ export default {
   align-items: center;
 
   border: none;
-  padding: 0;
+  padding: calc(var(--spacing) / 2);
 
   // background: rgba(53, 53, 53, 0.7);
   // background: rgba(255, 255, 255, 0.7);
@@ -156,10 +156,10 @@ export default {
     background: rgba(231, 231, 231, 0.7);
     backdrop-filter: blur(5px);
     cursor: pointer;
-    transition: backdrop-filter 0.3s ease-in-out;
+    transition: backdrop-filter 1s ease-in-out;
 
     &:hover {
-      backdrop-filter: blur(0px);
+      // backdrop-filter: blur(0px);
     }
   }
 
@@ -248,8 +248,8 @@ header {
 }
 ._footer {
   display: flex;
-  justify-content: center;
-  border-top: 1px solid var(--c-gris);
+  justify-content: flex-end;
+  // border-top: 1px solid var(--c-gris);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
 }
 
