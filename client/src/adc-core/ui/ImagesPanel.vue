@@ -93,7 +93,7 @@
 
     <div class="u-instructions">
       <button type="button" class="u-buttonLink" @click="$emit('reloadPage')">
-        {{ $t("refresh_window_to_apply") }}
+        {{ $t("refresh_window_to_see_changes") }}
       </button>
     </div>
   </div>
