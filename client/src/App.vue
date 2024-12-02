@@ -1,20 +1,5 @@
 <template>
-  <div id="app">
-    <!-- <button
-      type="button"
-      :disabled="$api.connected"
-      @click="$api.reconnectSocket"
-    >
-      connect
-    </button>
-    <button
-      type="button"
-      :disabled="!$api.connected"
-      @click="$api.disconnectSocket"
-    >
-      disconnect
-    </button> -->
-
+  <div id="app" :style="{ '--accent-color': random_accent_color }">
     <component :is="'style'">
       {{ custom_fonts_css }}
     </component>
@@ -51,6 +36,8 @@ export default {
   data() {
     return {
       router_is_loading: true,
+      random_color_index: 0,
+      colors: ["vert_pastel", "jaune_pastel", "rose_pastel", "bleu_pastel"],
     };
   },
   created() {},
@@ -60,10 +47,23 @@ export default {
     }, 200);
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    $route() {
+      this.random_color_index = Math.floor(Math.random() * this.colors.length);
+    },
+  },
   computed: {
     page_is_standalone_html() {
       return window.app_infos.page_is_standalone_html === true;
+    },
+    random_accent_color() {
+      /*
+      --c-vert_pastel
+      --c-jaune_pastel
+      --c-rose_pastel
+      --c-bleu_pastel
+      */
+      return `var(--c-${this.colors[this.random_color_index]})`;
     },
     custom_fonts_css() {
       const custom_fonts = this.$root.app_infos.custom_fonts;
@@ -140,6 +140,11 @@ export default {
   --c-rouge: #fc4b60;
   --c-rouge_clair: #ff808c;
   --c-rouge_fonce: #cc334a;
+
+  --c-vert_pastel: rgb(207, 220, 201);
+  --c-jaune_pastel: rgb(250, 242, 134);
+  --c-rose_pastel: rgb(250, 216, 222);
+  --c-bleu_pastel: rgb(212, 230, 237);
 
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
@@ -250,6 +255,16 @@ export default {
   accent-color: var(--c-orange);
 }
 
+:root {
+  font-family: "Inter", sans-serif;
+}
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: "InterVariable", sans-serif;
+    font-optical-sizing: auto;
+  }
+}
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -274,7 +289,6 @@ body {
 html {
   height: 100%;
 
-  font-family: "Fira Sans", sans-serif;
   font-style: normal;
   font-weight: 400;
 

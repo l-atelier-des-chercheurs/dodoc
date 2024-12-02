@@ -179,9 +179,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topbar {
-  // position: sticky;
+  position: sticky;
+  top: 0;
+  // position: fixed;
   // top: 0;
-  position: relative;
   z-index: 5;
 
   display: flex;
@@ -192,11 +193,11 @@ export default {
 
   width: 100%;
   // max-width: calc(var(--max-column-width));
-  margin: 0 auto;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  margin: 0;
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
   // padding-bottom: calc(var(--spacing) * 1);
-  background: white;
-  border-bottom: 1px solid var(--c-gris);
+  background: var(--accent-color);
+  border-bottom: 1px solid var(--c-noir);
 
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
