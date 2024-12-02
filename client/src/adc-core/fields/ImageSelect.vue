@@ -8,15 +8,15 @@
         :available_options="available_options"
         @newPreview="setNewPreview"
       />
-      <div class="_imageselect--image" v-else>
+      <template v-else>
         <!-- 
       <img
         :data-format="preview_format"
         :src="picked_image"
         draggable="false"
       /> -->
-        <div class="u-cropper" v-if="crop_mode">
-          <Cropper :key="picked_image" :src="picked_image" />
+        <div v-if="crop_mode" class="_imageselect--crop">
+          <CropMedia :blob="picked_image" @updateCrop="updateCrop" />
         </div>
         <div v-else>
           <img
@@ -24,11 +24,11 @@
             :src="picked_image"
             draggable="false"
           />
+          <button class="u-buttonLink" type="button" @click="removeImage">
+            {{ $t("remove_image") }}
+          </button>
         </div>
-        <button class="u-buttonLink" type="button" @click="removeImage">
-          {{ $t("remove_image") }}
-        </button>
-      </div>
+      </template>
     </div>
     <div slot="footer">
       <SaveCancelButtons
@@ -43,9 +43,7 @@
 </template>
 <script>
 import PickImage from "@/adc-core/fields/PickImage.vue";
-import { Cropper } from "vue-advanced-cropper";
-import "vue-advanced-cropper/dist/style.css";
-import "vue-advanced-cropper/dist/theme.bubble.css";
+import CropMedia from "./CropMedia.vue";
 
 export default {
   props: {
@@ -57,8 +55,8 @@ export default {
     available_options: Array,
   },
   components: {
+    CropMedia,
     PickImage: () => import("@/adc-core/fields/PickImage.vue"),
-    Cropper,
   },
   data() {
     return {
@@ -98,16 +96,9 @@ export default {
       return await fetch(url).then((r) => r.blob());
       // .then((blobFile) => new File([blobFile], "filename"));
     },
-    createImage(blob) {
-      return new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.onerror = reject;
-        reader.onload = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 20));
-          return resolve(reader.result);
-        };
-        reader.readAsDataURL(blob);
-      });
+    updateCrop(image) {
+      this.picked_image = image;
+      this.crop_mode = false;
     },
     removeImage: function () {
       this.picked_image = "";
@@ -116,12 +107,12 @@ export default {
     async updateCover() {
       this.is_saving = true;
 
-      if (!this.path) return this.$emit("newImage", this.new_cover);
+      if (!this.path) return this.$emit("newPreview", this.picked_image);
 
       try {
         await this.$api.updateCover({
           path: this.path,
-          new_cover_data: this.new_cover,
+          new_cover_data: this.picked_image,
           // onProgress,
         });
 
@@ -153,8 +144,13 @@ export default {
   gap: calc(var(--spacing) / 4);
 }
 
+._imageselect--crop {
+  min-height: 60vh;
+  height: 400px;
+}
+
 ._imageselect--image {
-  width: 200px;
+  width: 100%;
 
   img {
     &[data-format="square"] {
@@ -171,31 +167,6 @@ export default {
       object-fit: cover;
       object-position: center;
     }
-  }
-}
-
-._imageselect--upload {
-  ::v-deep label {
-    width: 100%;
-  }
-}
-
-._imageselect--takePhoto,
-._imageselect--fromLib {
-  > button {
-    width: 100%;
-  }
-}
-
-._close_button {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  // background-color: white;
-
-  img {
-    width: auto;
   }
 }
 </style>

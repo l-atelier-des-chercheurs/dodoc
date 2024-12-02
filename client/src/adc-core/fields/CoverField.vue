@@ -50,11 +50,6 @@
         :existing_preview="existing_preview"
         :available_options="available_options"
         :preview_format="preview_format"
-        @newPreview="
-          (value) => {
-            new_cover = value;
-          }
-        "
         @close="edit_mode = false"
       />
     </div>
@@ -89,7 +84,6 @@ export default {
   data() {
     return {
       selected_file: [],
-      new_cover: "",
       allow_save: true,
 
       edit_mode: false,

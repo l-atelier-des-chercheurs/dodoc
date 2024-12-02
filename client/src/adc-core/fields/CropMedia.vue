@@ -167,12 +167,12 @@
       </div>
       -->
 
-      <div class="u-cropper">
+      <div class="u-cropper" v-if="cropper_src">
         <Cropper
           class=""
           :key="'' + stencil_props"
           ref="cropper"
-          :src="file_full_path"
+          :src="cropper_src"
           :default-size="defaultSize"
           :stencil-props="stencil_props"
           @change="onChange"
@@ -199,6 +199,7 @@ import "vue-advanced-cropper/dist/theme.bubble.css";
 export default {
   props: {
     media: Object,
+    blob: String,
   },
   components: {
     Cropper,
@@ -230,10 +231,10 @@ export default {
         image: null,
       },
 
-      img_width: this.media.$infos.width || undefined,
-      img_height: this.media.$infos.height || undefined,
-      new_width: this.media.$infos.width || undefined,
-      new_height: this.media.$infos.height || undefined,
+      img_width: this.media?.$infos?.width || undefined,
+      img_height: this.media?.$infos?.height || undefined,
+      new_width: this.media?.$infos?.width || undefined,
+      new_height: this.media?.$infos?.height || undefined,
     };
   },
   created() {},
@@ -270,13 +271,16 @@ export default {
         return { aspectRatio: this.custom_aspect_ratio };
       return {};
     },
-    file_full_path() {
-      return this.makeMediaFilePath({
-        $path: this.media.$path,
-        $media_filename: this.media.$media_filename,
-        with_timestamp: true,
-        $date_created: this.media.$date_created,
-      });
+    cropper_src() {
+      if (this.media)
+        return this.makeMediaFilePath({
+          $path: this.media.$path,
+          $media_filename: this.media.$media_filename,
+          with_timestamp: true,
+          $date_created: this.media.$date_created,
+        });
+      else if (this.blob) return this.blob;
+      return null;
     },
   },
   methods: {

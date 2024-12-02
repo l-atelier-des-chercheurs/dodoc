@@ -225,27 +225,6 @@ export default {
   gap: calc(var(--spacing) / 4);
 }
 
-._imageselect--image {
-  width: 200px;
-
-  img {
-    &[data-format="square"] {
-      width: 100%;
-      aspect-ratio: 1;
-      object-fit: cover;
-      object-position: center;
-    }
-    &[data-format="circle"] {
-      width: 100%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      overflow: hidden;
-      object-fit: cover;
-      object-position: center;
-    }
-  }
-}
-
 ._imageselect--upload {
   ::v-deep label {
     width: 100%;
@@ -256,18 +235,6 @@ export default {
 ._imageselect--fromLib {
   > button {
     width: 100%;
-  }
-}
-
-._close_button {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  // background-color: white;
-
-  img {
-    width: auto;
   }
 }
 </style>
