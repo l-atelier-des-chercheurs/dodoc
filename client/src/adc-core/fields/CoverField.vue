@@ -82,6 +82,10 @@ export default {
     title: String,
     path: String,
     context: String,
+    ratio: {
+      type: String,
+      default: "3/2",
+    },
     preview_format: {
       type: String,
       default: "square",
