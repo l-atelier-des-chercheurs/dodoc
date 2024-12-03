@@ -38,6 +38,8 @@
         <div class="_text">
           <div class="">
             <TitleField
+              :label="$t('name_or_pseudonym')"
+              :show_label="false"
               :field_name="'name'"
               :content="author.name"
               :path="author.$path"
@@ -77,8 +79,9 @@
 
           <div v-if="can_edit" class="u-spacingBottom">
             <TitleField
+              :label="$t('email')"
+              :show_label="context === 'full'"
               :field_name="'email'"
-              :label="context === 'full' ? $t('email') : undefined"
               :content="author.email"
               :path="author.$path"
               :required="$root.app_infos.instance_meta.require_mail_to_signup"
@@ -149,8 +152,8 @@
 
           <div class="u-spacingBottom">
             <TitleField
-              :field_name="'$password'"
               :label="$t('password')"
+              :field_name="'$password'"
               :content="''"
               :path="author.$path"
               :required="true"
