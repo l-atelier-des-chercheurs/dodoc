@@ -161,17 +161,17 @@ export default {
   // width: 100%;
   // max-width: 120ch;
 
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) * 2);
   border-radius: 6px;
 
   border-bottom: 2px solid var(--c-gris);
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  background: white;
+  // background: white;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-context="full"] {
-    margin: calc(var(--spacing) * 2) auto;
+    margin: 0 auto;
   }
   &[data-context="list"] {
     flex-flow: row nowrap;

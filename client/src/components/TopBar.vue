@@ -6,105 +6,110 @@
       'is--mobileView': $root.is_mobile_view,
     }"
   >
-    <BreadCrumbs class="_bc" />
+    <div class="_topbar--content">
+      <BreadCrumbs class="_bc" />
 
-    <div class="_topRightButtons">
-      <button
-        type="button"
-        class="u-button u-button_icon"
-        @click="show_qr_code_modal = true"
-        :title="$t('share_link_to_page')"
-      >
-        <div part="base" class="icon" aria-hidden="true">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-qr-code"
-            viewBox="0 0 16 16"
-          >
-            <path d="M2 2h2v2H2V2Z"></path>
-            <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"></path>
-            <path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"></path>
-            <path
-              d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"
-            ></path>
-            <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"></path>
-          </svg>
-        </div>
-      </button>
-      <QRModal
-        v-if="show_qr_code_modal"
-        :url_to_access="url_to_page"
-        @close="show_qr_code_modal = false"
-      />
-
-      <button
-        type="button"
-        class="u-button u-button_icon"
-        :title="$t('ui_lang_select')"
-        @click="show_lang_modal = !show_lang_modal"
-      >
-        {{ current_lang_code }}
-      </button>
-      <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
-
-      <button
-        type="button"
-        class="u-button u-button_icon"
-        :title="$t('about_dodoc')"
-        @click="show_credits_modal = !show_credits_modal"
-      >
-        <b-icon icon="patch-question" />
-      </button>
-      <CreditsModal
-        v-if="show_credits_modal"
-        @close="show_credits_modal = false"
-      />
-
-      <template v-if="is_instance_admin">
+      <div class="_topRightButtons">
         <button
           type="button"
           class="u-button u-button_icon"
-          @click="show_settings_modal = !show_settings_modal"
+          @click="show_qr_code_modal = true"
+          :title="$t('share_link_to_page')"
         >
-          <b-icon icon="gear" :aria-label="$t('admin_settings')" />
+          <div part="base" class="icon" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-qr-code"
+              viewBox="0 0 16 16"
+            >
+              <path d="M2 2h2v2H2V2Z"></path>
+              <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"></path>
+              <path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"></path>
+              <path
+                d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"
+              ></path>
+              <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"></path>
+            </svg>
+          </div>
         </button>
-        <AdminSettings
-          v-if="show_settings_modal"
-          @close="show_settings_modal = false"
+        <QRModal
+          v-if="show_qr_code_modal"
+          :url_to_access="url_to_page"
+          @close="show_qr_code_modal = false"
         />
-      </template>
 
-      <div class="_subscribeBtn">
-        <AuthorTag
-          v-if="connected_as"
-          :path="connected_as.$path"
-          :show_image_only="$root.is_mobile_view"
-          @click="showAuthorModal"
-        />
         <button
           type="button"
-          class="_authorBtn"
-          v-else
-          @click="showAuthorModal"
+          class="u-button u-button_icon"
+          :title="$t('ui_lang_select')"
+          @click="show_lang_modal = !show_lang_modal"
         >
-          {{ $t("login") }}
+          {{ current_lang_code }}
         </button>
+        <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+
+        <button
+          type="button"
+          class="u-button u-button_icon"
+          :title="$t('about_dodoc')"
+          @click="show_credits_modal = !show_credits_modal"
+        >
+          <b-icon icon="patch-question" />
+        </button>
+        <CreditsModal
+          v-if="show_credits_modal"
+          @close="show_credits_modal = false"
+        />
+
+        <template v-if="is_instance_admin">
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            @click="show_settings_modal = !show_settings_modal"
+          >
+            <b-icon icon="gear" :aria-label="$t('admin_settings')" />
+          </button>
+          <AdminSettings
+            v-if="show_settings_modal"
+            @close="show_settings_modal = false"
+          />
+        </template>
+
+        <div class="_subscribeBtn">
+          <AuthorTag
+            v-if="connected_as"
+            :path="connected_as.$path"
+            :show_image_only="$root.is_mobile_view"
+            @click="showAuthorModal"
+          />
+          <button
+            type="button"
+            class="_authorBtn"
+            v-else
+            @click="showAuthorModal"
+          >
+            {{ $t("login") }}
+          </button>
+        </div>
+
+        <router-link
+          v-if="users.length > 1"
+          :to="'/@'"
+          class="u-button u-button_icon u-button_bleumarine"
+        >
+          {{ users.length }}
+          <b-icon icon="person-circle" />
+        </router-link>
       </div>
 
-      <router-link
-        v-if="users.length > 1"
-        :to="'/@'"
-        class="u-button u-button_icon u-button_bleumarine"
-      >
-        {{ users.length }}
-        <b-icon icon="person-circle" />
-      </router-link>
+      <AuthorList
+        v-if="show_authors_modal"
+        @close="show_authors_modal = false"
+      />
     </div>
-
-    <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
   </div>
 </template>
 <script>
@@ -179,25 +184,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topbar {
-  position: sticky;
+  position: relative;
   top: 0;
   // position: fixed;
   // top: 0;
   z-index: 5;
 
-  display: flex;
-  flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 2);
-  align-items: center;
-  overflow: hidden;
-
   width: 100%;
   // max-width: calc(var(--max-column-width));
   margin: 0;
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  padding: 0 calc(var(--spacing) * 2);
   // padding-bottom: calc(var(--spacing) * 1);
   background: var(--accent-color);
-  border-bottom: 1px solid var(--c-noir);
 
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
@@ -212,21 +210,32 @@ export default {
     box-shadow: none;
   }
 
-  > * {
-    flex: 1 1 auto;
+  ._topbar--content {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) * 1) 0;
 
-    &._bc {
-      flex: 1 0 0;
-      overflow: hidden;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--c-noir);
+
+    > * {
+      flex: 1 1 auto;
+
+      &._bc {
+        flex: 1 0 0;
+        overflow: hidden;
+      }
+      &._topRightButtons {
+        flex: 0 0 auto;
+      }
     }
-    &._topRightButtons {
+
+    > ._subscribeBtn {
       flex: 0 0 auto;
+      white-space: nowrap;
     }
-  }
-
-  > ._subscribeBtn {
-    flex: 0 0 auto;
-    white-space: nowrap;
   }
 }
 

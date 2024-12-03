@@ -177,8 +177,7 @@ export default {
 }
 
 ._topSpace {
-  max-width: min(var(--max-column-width), 1080px);
-  margin: calc(var(--spacing) * 1) auto 0;
+  background-color: var(--accent-color);
 }
 
 ._projectsList {

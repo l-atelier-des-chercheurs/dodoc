@@ -118,9 +118,11 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  padding: 0 calc(var(--spacing) / 2);
+  padding: 0;
   gap: calc(var(--spacing) / 2);
   line-height: 1.1;
+
+  margin-left: calc(var(--spacing) / -2);
 
   > * {
     display: flex;

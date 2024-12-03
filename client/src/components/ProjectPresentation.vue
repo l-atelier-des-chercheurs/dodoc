@@ -9,41 +9,6 @@
     :data-context="context"
   >
     <div class="_projectInfos--topContent">
-      <div class="_projectInfos--cover">
-        <CoverField
-          class="_cover"
-          :context="context"
-          :ratio="'3 / 2'"
-          :cover="project.$cover"
-          :path="project.$path"
-          :can_edit="can_edit"
-        />
-
-        <transition name="toggleLock" mode="out-in">
-          <StatusTag
-            v-if="
-              project.$status === 'finished' || project.$status === 'private'
-            "
-            class="_icon"
-            :key="project.$status"
-            :show_label="false"
-            :status="project.$status"
-            :can_edit="false"
-            :mode="context === 'list' ? 'active' : 'inactive'"
-            @click="
-              $emit('toggleFilter', {
-                filter_type: '$status',
-                value: project.$status,
-              })
-            "
-          />
-        </transition>
-
-        <div v-if="display_original_space" class="_originalSpace">
-          +&thinsp;{{ original_space_name }}
-        </div>
-      </div>
-
       <div
         class="_projectInfos--infos"
         :class="{
@@ -148,6 +113,41 @@
             <b-icon v-if="short_project_view" icon="arrow-down-short" />
             <b-icon v-else icon="arrow-up-short" />
           </button>
+        </div>
+      </div>
+
+      <div class="_projectInfos--cover">
+        <CoverField
+          class="_cover"
+          :context="context"
+          :ratio="'3 / 2'"
+          :cover="project.$cover"
+          :path="project.$path"
+          :can_edit="can_edit"
+        />
+
+        <transition name="toggleLock" mode="out-in">
+          <StatusTag
+            v-if="
+              project.$status === 'finished' || project.$status === 'private'
+            "
+            class="_icon"
+            :key="project.$status"
+            :show_label="false"
+            :status="project.$status"
+            :can_edit="false"
+            :mode="context === 'list' ? 'active' : 'inactive'"
+            @click="
+              $emit('toggleFilter', {
+                filter_type: '$status',
+                value: project.$status,
+              })
+            "
+          />
+        </transition>
+
+        <div v-if="display_original_space" class="_originalSpace">
+          +&thinsp;{{ original_space_name }}
         </div>
       </div>
     </div>
@@ -325,8 +325,9 @@ export default {
   position: relative;
 
   width: 100%;
+  padding: calc(var(--spacing) * 2);
 
-  background: white;
+  background-color: var(--accent-color);
 
   // width: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -393,20 +394,21 @@ export default {
 }
 
 ._projectInfos--topContent {
-  max-width: min(var(--max-column-width), 1180px);
+  // max-width: min(var(--max-column-width), 1180px);
   // max-width: var(--max-column-width);
 
-  margin: calc(var(--spacing) / 2) auto 0;
+  margin: 0 auto;
+  padding: calc(var(--spacing) / 2);
   overflow: hidden;
 
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
   gap: calc(var(--spacing) * 1);
 
   > * {
-    flex: 1 1 320px;
+    flex: 0 1 480px;
   }
 }
 
