@@ -24,7 +24,7 @@
         </button>
       </template>
     </div>
-    <div class="u-instructions _instr" v-if="show_instructions">
+    <div class="u-instructions _instr" v-if="show_instructions && instructions">
       <small v-html="instructions" />
     </div>
   </div>

@@ -14,6 +14,7 @@
     <div
       class="u-nut _index"
       :style="`--o-color: var(--color-${file.$origin})`"
+      :data-origin="file.$origin"
       v-html="index"
       @click="$emit('toggleMediaFocus')"
     />
@@ -167,7 +168,13 @@ export default {
       &::after {
         content: "•";
         margin-left: calc(var(--spacing) / 8);
-        color: var(--c-bleumarine);
+        color: white;
+      }
+
+      &[data-origin="make"] {
+        &::after {
+          // color: white;
+        }
       }
     }
 
@@ -225,11 +232,10 @@ export default {
   }
 
   &[data-type="other"] {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-    text-align: center;
+    // display: flex;
+    // justify-content: flex-start;
+    // align-items: center;
+    // text-align: center;
   }
   ::v-deep {
     ._mediaContent {
@@ -403,7 +409,7 @@ export default {
 
   ._mediaTile:hover &,
   ._mediaTile:focus-visible & {
-    transform: scale(1.25);
+    transform: scale(1.15);
   }
 }
 

@@ -30,10 +30,9 @@
               :selection_start.sync="selection_start"
               :selection_end.sync="selection_end"
             />
-            <div class="u-spacingBottom" />
           </template>
 
-          <div class="u-spacingBottom">
+          <div class="">
             <DLabel :str="$t('quality')" />
             <div
               v-if="media.$optimized === true"
@@ -112,7 +111,7 @@
                     media.$infos && media.$infos.width && media.$infos.height
                   "
                 >
-                  {{ media.$infos.width + "×" + media.$infos.height }}
+                  {{ media.$infos.width + " × " + media.$infos.height }}
                 </template>
                 <template v-else> ? </template>
               </span>
@@ -127,7 +126,7 @@
                 >
                   {{
                     optimized_file.$infos.width +
-                    "×" +
+                    " × " +
                     optimized_file.$infos.height
                   }}
                 </template>

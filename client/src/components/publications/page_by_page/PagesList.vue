@@ -2,6 +2,13 @@
   <transition name="slideup">
     <div v-if="!page_opened_id">
       <div class="_setPreviewSize">
+        <h2>
+          <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
+          <template v-else>{{ $t("list_of_spreads") }}</template>
+        </h2>
+
+        <div class="u-spacingBottom" />
+
         <RangeValueInput
           :label="$t('previews_size')"
           :value="previews_size"
@@ -63,6 +70,7 @@
                 />
               </div>
               <PageLabel
+                class="_pageLabel"
                 :index="index"
                 :number_of_pages="pages.length"
                 :can_edit="can_edit"
@@ -434,12 +442,7 @@ export default {
 ._singlePage {
   gap: calc(var(--spacing) * 1);
 }
-/* ._spread {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: 0;
-} */
+
 ._preview {
   position: relative;
   overflow: hidden;

@@ -315,9 +315,9 @@ export default {
 <style lang="scss" scoped>
 ._fileName {
   padding: calc(var(--spacing) / 4);
-
   display: flex;
   gap: calc(var(--spacing) / 8);
+  text-align: left;
 }
 
 ._mediaContent {

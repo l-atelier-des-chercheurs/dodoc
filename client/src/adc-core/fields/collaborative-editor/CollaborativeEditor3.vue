@@ -723,6 +723,16 @@ export default {
     }
   }
 }
+._collaborativeEditor.is--editing_is_enabled {
+  background-color: var(--c-gris_clair);
+
+  ::v-deep {
+    .ql-editor {
+      padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
+    }
+  }
+}
+
 ._collaborativeEditor:not(.is--editing_is_enabled) {
   ::v-deep {
     .ql-toolbar {
@@ -767,8 +777,8 @@ export default {
   top: 0;
   z-index: 2;
   padding: calc(var(--spacing) / 4);
-  margin-bottom: 0.3em;
-  border-radius: 14px;
+  margin-bottom: 0;
+  border-radius: var(--input-border-radius);
   // hides select, do not use
   // overflow: hidden;
 
@@ -866,7 +876,7 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     border: 2px solid var(--toolbar-bg);
-    border-radius: 12px;
+    border-radius: var(--input-border-radius);
     background: #fff;
 
     button,
@@ -1059,7 +1069,7 @@ export default {
 
   > * {
     border: 2px solid var(--toolbar-bg);
-    border-radius: 12px;
+    border-radius: var(--input-border-radius);
     overflow: hidden;
     background: #fff;
     display: flex;
