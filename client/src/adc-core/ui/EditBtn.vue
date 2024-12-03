@@ -140,7 +140,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color-bg: transparent;
+  --color-bg: rgba(255, 255, 255, 0.6);
   --color1: white;
   --color2: var(--active-color);
 
