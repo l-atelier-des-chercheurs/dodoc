@@ -235,7 +235,7 @@ header {
 }
 ._content {
   position: relative;
-  margin: 0 calc(var(--spacing) * 1);
+  padding: 0 calc(var(--spacing) * 1);
 
   &:first-child {
     margin-top: calc(var(--spacing) * 1);
