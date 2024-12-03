@@ -1,7 +1,7 @@
 <template>
   <div class="_saveCancelBtns">
     <button class="u-button" @click="$emit('cancel')">
-      <!-- <b-icon icon="x-circle" /> -->
+      <b-icon icon="x-circle" />
       {{ cancel_text ? cancel_text : $t("cancel") }}
       <!-- {{ $t("back") }} -->
     </button>

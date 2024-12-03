@@ -8,18 +8,17 @@
         :data-size="size"
       >
         <div class="_baseModal--overlay" @click.self="requestCloseModal" />
+        <button
+          v-if="is_closable"
+          type="button"
+          class="u-button u-button_icon _closeBtn"
+          @click="requestCloseModal"
+        >
+          <b-icon icon="x-lg" :label="$t('close')" />
+        </button>
         <div class="_baseModal--content">
-          <header v-if="title || is_closable">
-            <h2 v-if="title">{{ title }}</h2>
-
-            <button
-              v-if="is_closable"
-              type="button"
-              class="u-button u-button_icon _closeBtn"
-              @click="requestCloseModal"
-            >
-              <b-icon icon="x-lg" :label="$t('close')" />
-            </button>
+          <header v-if="title">
+            <h2>{{ title }}</h2>
           </header>
           <div
             class="_content"
@@ -200,6 +199,10 @@ export default {
 }
 
 ._closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: var(--spacing);
   padding: calc(var(--spacing) / 3);
 }
 
@@ -210,11 +213,11 @@ header {
   padding: calc(var(--spacing) * 1);
   // border-bottom: 1px solid var(--c-gris);
 
-  h2 {
-    font-weight: 600;
-    font-size: var(--sl-font-size-x-large);
-    margin: 0;
-  }
+  // h2 {
+  //   font-weight: 600;
+  //   font-size: var(--sl-font-size-x-large);
+  //   margin: 0;
+  // }
 }
 
 ._baseModal--content {
