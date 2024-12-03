@@ -33,10 +33,10 @@
       />
 
       <!-- pour plus tard, voir https://github.com/l-atelier-des-chercheurs/dodoc/issues/513 -->
-      <DLabel :str="$t('license')" />
-
       <RadioCheckboxField
         v-if="can_edit || (!can_edit && project.license !== 'custom_license')"
+        :label="$t('license')"
+        :show_label="false"
         :instructions="$t('licence_instructions')"
         :field_name="'license'"
         :input_type="'radio'"
@@ -45,6 +45,8 @@
         :can_edit="can_edit"
         :options="license_options"
       />
+      <DLabel v-else :str="$t('license')" />
+
       <TitleField
         v-if="project.license === 'custom_license'"
         ref="custom_license_field"

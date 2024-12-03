@@ -237,6 +237,10 @@ header {
   position: relative;
   margin: 0 calc(var(--spacing) * 1);
 
+  &:first-child {
+    margin-top: calc(var(--spacing) * 1);
+  }
+
   ._baseModal[data-size="full"] & {
     padding: 0;
   }
