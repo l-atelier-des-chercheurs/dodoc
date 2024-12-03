@@ -633,6 +633,21 @@ img {
   }
 }
 
+.enableMode {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transform: scale(1.5);
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
+
 .scaleInFade {
   &-enter-active,
   &-leave-active {

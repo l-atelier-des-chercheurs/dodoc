@@ -355,7 +355,7 @@
 
           <transition name="enableMode" :duration="800">
             <div
-              v-if="mode_just_changed"
+              v-if="mode_just_changed && !is_loading_stream"
               class="_mode_indicator"
               v-html="$t(selected_mode)"
             />
@@ -372,12 +372,9 @@
           <transition name="fade_fast">
             <LoaderSpinner class="_loader" v-if="is_loading_stream" />
           </transition>
-          <!-- <transition name="scaleInFade_fast">
-            <div class="_capture_flash" v-if="capture_button_pressed" />
-          </transition> -->
         </div>
       </div>
-      <!-- <transition name="slideup" :duration="150" mode="out-in"> -->
+
       <StopmotionPanel
         v-if="stopmotion_slug"
         :current_stopmotion_path="`${path}/stopmotions/${stopmotion_slug}`"
@@ -2416,6 +2413,7 @@ export default {
   background: transparent;
   color: white;
   color: var(--c-rouge);
+  margin-bottom: calc(var(--spacing) * 2);
 }
 
 ._stopmotionValidation {
