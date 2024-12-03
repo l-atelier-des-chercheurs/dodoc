@@ -22,7 +22,7 @@
         />
       </div>
 
-      <fieldset class="u-spacingBottom _newTagPane" v-if="create_new_tag">
+      <fieldset class="_newTagPane" v-if="create_new_tag">
         <legend class="u-label">{{ $t("add_item") }}</legend>
 
         <div class="u-spacingBottom">

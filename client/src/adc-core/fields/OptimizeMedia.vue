@@ -30,10 +30,9 @@
               :selection_start.sync="selection_start"
               :selection_end.sync="selection_end"
             />
-            <div class="u-spacingBottom" />
           </template>
 
-          <div class="u-spacingBottom">
+          <div class="">
             <DLabel :str="$t('quality')" />
             <div
               v-if="media.$optimized === true"

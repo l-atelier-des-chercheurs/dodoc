@@ -18,7 +18,7 @@
         </button>
         <div class="_baseModal--content">
           <header v-if="title">
-            <h2>{{ title }}</h2>
+            <h3>{{ title }}</h3>
           </header>
           <div
             class="_content"
@@ -144,7 +144,7 @@ export default {
   align-items: center;
 
   border: none;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
 
   // background: rgba(53, 53, 53, 0.7);
   // background: rgba(255, 255, 255, 0.7);
@@ -168,13 +168,13 @@ export default {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 
-    margin: 0 auto;
     width: 100%;
     max-width: 480px;
     max-height: 100vh;
     max-height: 100dvh;
-    // max-width: calc(480px - calc(var(--spacing) * 1));
-    // max-height: calc(100vh - calc(var(--spacing) * 1));
+
+    margin: 0 auto;
+    padding: 0;
 
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -210,7 +210,7 @@ header {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  padding: calc(var(--spacing) * 1);
+  margin: calc(var(--spacing) * 1);
   // border-bottom: 1px solid var(--c-gris);
 
   // h2 {
@@ -230,16 +230,12 @@ header {
   }
   ._content {
     flex: 1 1 auto;
+    overflow: auto;
   }
 }
 ._content {
   position: relative;
-  overflow: auto;
-  padding: 0 calc(var(--spacing) * 1) 0;
-
-  > *:first-child {
-    margin-top: 0;
-  }
+  margin: 0 calc(var(--spacing) * 1);
 
   ._baseModal[data-size="full"] & {
     padding: 0;
@@ -249,11 +245,10 @@ header {
     padding-bottom: calc(var(--spacing) * 1);
   }
 }
-._footer {
+footer {
   display: flex;
   justify-content: flex-end;
-  // border-top: 1px solid var(--c-gris);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  margin: calc(var(--spacing) * 1);
 }
 
 @keyframes reveal {
