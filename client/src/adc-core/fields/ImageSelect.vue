@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="label" @close="$emit('close')">
+  <BaseModal2 :title="label" :size="modal_size" @close="$emit('close')">
     <div class="_imageselect">
       <PickImage
         v-if="!picked_image"
@@ -78,7 +78,11 @@ export default {
   },
 
   watch: {},
-  computed: {},
+  computed: {
+    modal_size() {
+      return this.crop_mode ? "x-large" : "";
+    },
+  },
   methods: {
     async setNewPreview(file) {
       if (!file) {
@@ -160,6 +164,8 @@ export default {
   width: 100%;
 
   img {
+    border: 2px solid var(--c-gris);
+
     &[data-format="square"] {
       width: 100%;
       aspect-ratio: 1;

@@ -67,10 +67,7 @@ export default {
       type: String,
       default: "3 / 2",
     },
-    preview_format: {
-      type: String,
-      default: "square",
-    },
+    preview_format: String,
     placeholder: {
       type: String,
       default: "pattern",

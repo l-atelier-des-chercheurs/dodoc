@@ -2,7 +2,6 @@
   <div class="_cropMedia">
     <div class="_topPanes">
       <div class="_btn">
-        {{ aspect_ratio }}
         <button type="button" class="u-button u-button_small" @click="zoomIn">
           {{ $t("zoom") }}
           <b-icon icon="plus" />
@@ -168,7 +167,7 @@
       </div>
       -->
 
-      <div class="u-cropper" v-if="cropper_src">
+      <div class="_cropper" v-if="cropper_src">
         <Cropper
           class=""
           :key="'' + stencil_props"
@@ -212,13 +211,13 @@ export default {
   },
   data() {
     return {
-      crop_resize_mode: this.forced_ratio ? "ratio" : "none",
+      crop_resize_mode: "none",
       show_percent_picker: false,
       show_rotate_deg_picker: false,
 
       rotation_deg: 5,
 
-      aspect_ratio: this.forced_ratio || "original",
+      aspect_ratio: "original",
       available_aspect_ratios: [
         { key: "original", label: this.$t("original") },
         { key: "square", label: this.$t("square") },
@@ -244,7 +243,9 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.initCrop();
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -290,6 +291,15 @@ export default {
     },
   },
   methods: {
+    initCrop() {
+      this.crop_resize_mode = this.forced_ratio ? "ratio" : "none";
+      this.aspect_ratio = this.forced_ratio || "original";
+      this.custom_aspect_ratio = 1;
+      if (this.$refs.cropper) this.$refs.cropper.reset();
+    },
+    resetCrop() {
+      this.initCrop();
+    },
     defaultSize({ imageSize, visibleArea }) {
       return {
         width: (visibleArea || imageSize).width,
@@ -337,11 +347,6 @@ export default {
     rotateXPercent() {
       this.show_percent_picker = true;
     },
-    resetCrop() {
-      this.aspect_ratio = "original";
-      this.custom_aspect_ratio = 1;
-      this.$refs.cropper.reset();
-    },
     async previewMedia() {
       const { coordinates, canvas } = this.$refs.cropper.getResult();
 
@@ -377,7 +382,7 @@ export default {
 }
 ._topPanes {
   flex: 1 1 0;
-  background: var(--c-noir);
+  // background: var(--c-noir);
   padding-top: calc(var(--spacing) / 1);
 
   display: flex;
@@ -404,13 +409,6 @@ export default {
   // ._spacer {
   //   padding:
   // }
-}
-._cropper {
-  flex: 1 1 0;
-  padding: calc(var(--spacing) / 1);
-  overflow: hidden;
-  min-height: 240px;
-  // background-color: var(--c-noir);
 }
 
 ._bottomBar {
@@ -457,6 +455,56 @@ export default {
   select,
   input {
     width: 20ch;
+  }
+}
+
+._cropper {
+  flex: 1 1 0;
+  padding: calc(var(--spacing) / 2);
+  overflow: hidden;
+  min-height: 240px;
+
+  ::v-deep {
+    .vue-advanced-cropper {
+      height: 100%;
+    }
+
+    .vue-advanced-cropper__background,
+    .vue-advanced-cropper__foreground {
+      background-color: white;
+    }
+    .vue-advanced-cropper__foreground {
+      cursor: move;
+    }
+    .vue-simple-handler {
+      border-width: 3px;
+      background-color: var(--c-orange);
+      // border-color: var(--c-orange);
+      opacity: 1;
+
+      &:hover {
+        border-color: white;
+      }
+    }
+    .vue-simple-line {
+      border-color: var(--c-orange);
+
+      &:hover {
+        border-color: white;
+      }
+    }
+    .vue-simple-line--east {
+      border-right-width: 2px;
+    }
+    .vue-simple-line--south {
+      border-bottom-width: 2px;
+    }
+    .vue-simple-line--north {
+      border-top-width: 2px;
+    }
+    .vue-simple-line--west {
+      border-left-width: 2px;
+    }
   }
 }
 </style>
