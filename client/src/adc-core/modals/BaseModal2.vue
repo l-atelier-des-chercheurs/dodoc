@@ -153,12 +153,12 @@ export default {
     position: absolute;
     inset: 0;
     background: rgba(231, 231, 231, 0.7);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(3px);
     cursor: pointer;
     transition: backdrop-filter 1s ease-in-out;
 
     &:hover {
-      // backdrop-filter: blur(0px);
+      backdrop-filter: blur(0px);
     }
   }
 

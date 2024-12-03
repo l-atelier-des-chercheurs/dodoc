@@ -33,8 +33,6 @@
           />
         </div>
 
-        <div v-if="context === 'full'" class="u-spacingBottom" />
-
         <div class="_text">
           <div class="">
             <TitleField
@@ -94,11 +92,6 @@
           <div v-if="context === 'full' && (can_edit || !!author.presentation)">
             <TitleField
               :label="$t('presentation')"
-              :show_label="
-                context === 'full' && (author.presentation || can_edit)
-                  ? $t('presentation')
-                  : undefined
-              "
               :field_name="'presentation'"
               :path="author.$path"
               :content="author.presentation"
@@ -283,6 +276,7 @@ export default {
     ._topbar {
       flex-flow: column nowrap;
       align-items: stretch;
+      gap: calc(var(--spacing) / 1);
 
       ._cover {
         flex: 0 0 auto;
@@ -308,7 +302,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   // padding-bottom: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 
   ::v-deep {
     a {
