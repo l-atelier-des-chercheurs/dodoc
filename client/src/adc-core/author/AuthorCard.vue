@@ -13,7 +13,7 @@
       :to="author_url"
       @click.native="context !== 'full' ? $emit('navToPage') : ''"
     >
-      <div v-if="is_connected" class="_connected">
+      <div v-if="is_connected && !is_self" class="_connected">
         <b-icon icon="people" />
         {{ $t("connected_currently") }}
       </div>
