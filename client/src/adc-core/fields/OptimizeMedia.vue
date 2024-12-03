@@ -18,7 +18,7 @@
       v-if="show_modal"
       :title="$t('convert_shorten')"
       :size="modal_width"
-      @close="show_modal = false"
+      @close="closeModal"
     >
       <div class="_cont">
         <LoaderSpinner v-if="is_optimizing" class="_loader" />
@@ -137,7 +137,7 @@
         </div>
       </div>
 
-      <div slot="footer" class="_convertBtns">
+      <div slot="footer" class="">
         <template v-if="!optimized_file">
           <div>
             <div>
@@ -219,13 +219,7 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    show_modal() {
-      if (!this.show_modal) {
-        this.optimized_file = "";
-      }
-    },
-  },
+  watch: {},
   computed: {
     modal_width() {
       if (this.optimized_file || this.extract_selection) return "large";
@@ -320,13 +314,21 @@ export default {
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
     async cancel() {
+      this.removeOptimizedFile();
+    },
+    async removeOptimizedFile() {
+      if (!this.optimized_file?.$path) return;
       await this.$api.deleteItem({
         path: this.optimized_file.$path,
       });
       this.optimized_file = undefined;
-      // this.show_modal = false;
     },
     keepBoth() {
+      this.show_modal = false;
+      this.optimized_file = undefined;
+    },
+    closeModal() {
+      this.removeOptimizedFile();
       this.show_modal = false;
     },
     async replaceOriginal() {
@@ -401,16 +403,6 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 1);
-}
-
-._convertBtns {
-  flex: 1 1 auto;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  // justify-content: space-between;
-  // justify-content: flex-end;
-  // gap: calc(var(--spacing) / 1);
 }
 
 ._loader {
