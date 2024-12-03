@@ -1,7 +1,7 @@
 <template>
   <div class="_saveCancelBtns">
-    <button class="u-buttonLink _cancelBtn" @click="$emit('cancel')">
-      <!-- <b-icon icon="x-circle" /> -->
+    <button class="u-button" @click="$emit('cancel')">
+      <b-icon icon="x-circle" />
       {{ cancel_text ? cancel_text : $t("cancel") }}
       <!-- {{ $t("back") }} -->
     </button>
@@ -46,11 +46,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._cancelBtn {
-  padding: calc(var(--spacing) / 2);
-}
 ._saveCancelBtns {
   display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
   gap: calc(var(--spacing) / 4);
 }
 </style>

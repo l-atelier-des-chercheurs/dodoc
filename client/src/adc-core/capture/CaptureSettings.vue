@@ -258,7 +258,7 @@
                   v-model.number="desired_camera_resolution.width"
                 />
               </label>
-              <span class="u-padding_verysmall _customResolutionX">×</span>
+              <span class="u-padding_verysmall _customResolutionX"> × </span>
               <label class="u-label" for="custom_height">
                 <input
                   name="custom_height"

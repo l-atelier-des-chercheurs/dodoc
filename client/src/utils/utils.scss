@@ -188,9 +188,10 @@ button,
   font-size: var(--input-font-size-small);
   text-decoration: none;
   color: inherit;
+  white-space: nowrap;
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-  border-radius: 1.3em;
+  border-radius: var(--input-border-radius);
 
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -445,7 +446,7 @@ textarea,
   // border: solid var(--input-border-width) var(--input-border-color);
   padding: calc(var(--spacing) / 2);
   border-radius: var(--input-border-radius);
-  background-color: var(--c-gris);
+  background-color: var(--c-gris_clair);
   color: inherit;
 
   // background: white;

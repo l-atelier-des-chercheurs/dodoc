@@ -13,6 +13,7 @@
         <CoverField
           class="_cover"
           :context="context"
+          :ratio="'3 / 2'"
           :cover="project.$cover"
           :path="project.$path"
           :can_edit="can_edit"
@@ -110,27 +111,6 @@
           :maxlength="1280"
           :can_edit="can_edit"
         />
-
-        <!-- <CollaborativeEditor2
-          :label="context === 'full' ? $t('description') : ''"
-          :field_to_edit="'description'"
-          :content="project.description"
-          :path="project.$path"
-          :custom_formats="['bold', 'italic', 'link']"
-          :is_collaborative="false"
-          :maxlength="1280"
-          :can_edit="can_edit"
-        /> -->
-
-        <!-- <CollaborativeEditor2
-          :label="context === 'full' ? $t('description') : ''"
-          :path="project.$path"
-          :field_to_edit="'description'"
-          :custom_formats="['bold', 'italic', 'link']"
-          :content="project.description"
-          :is_collaborative="false"
-          :can_edit="can_edit"
-        /> -->
 
         <AdminsAndContributorsField
           v-if="context === 'full'"

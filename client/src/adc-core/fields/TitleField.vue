@@ -46,8 +46,6 @@
         />
       </component>
 
-      <div class="u-spacingBottom" />
-
       <SaveCancelButtons
         slot="footer"
         class="_scb"

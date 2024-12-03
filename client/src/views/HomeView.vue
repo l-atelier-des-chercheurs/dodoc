@@ -28,6 +28,11 @@
                 >
               </p>
             </template>
+            <EditBtn
+              v-if="is_instance_admin"
+              class="_editAdminText"
+              @click="editPresentationText"
+            />
           </div>
           <div
             v-if="layout === 'image' && hero_thumb"
@@ -37,8 +42,20 @@
             <img :src="hero_thumb" role="presentation" />
           </div>
         </template>
+        <EditBtn
+          v-if="is_instance_admin"
+          class="_editAdminImg"
+          :label_position="'left'"
+          @click="editHeroImage"
+        />
       </div>
     </section>
+
+    <AdminSettings
+      v-if="show_settings_modal"
+      :starting_tab="settings_modal_starting_tab"
+      @close="closeAdminSettings"
+    />
 
     <template v-if="load_whole_page === true">
       <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
@@ -151,12 +168,16 @@ export default {
     SpacesList,
     AllProjects,
     DodocLogo,
+    AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
     RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
   },
   data() {
     return {
       load_whole_page: false,
       current_mode: "spaces",
+
+      settings_modal_starting_tab: undefined,
+      show_settings_modal: false,
     };
   },
   created() {
@@ -247,6 +268,18 @@ export default {
   methods: {
     showCredits() {
       this.$eventHub.$emit(`toolbar.openCredits`);
+    },
+    editHeroImage() {
+      this.settings_modal_starting_tab = "logo_and_images";
+      this.show_settings_modal = true;
+    },
+    editPresentationText() {
+      this.settings_modal_starting_tab = "informations";
+      this.show_settings_modal = true;
+    },
+    closeAdminSettings() {
+      this.show_settings_modal = false;
+      this.settings_modal_starting_tab = undefined;
     },
   },
 };
@@ -426,5 +459,16 @@ export default {
 ._recentlyEdited {
   max-width: var(--max-column-width);
   margin: calc(var(--spacing) * 2) auto;
+}
+
+._editAdminText {
+  position: absolute;
+  top: calc(var(--spacing) / 2);
+  right: calc(var(--spacing) / 2);
+}
+._editAdminImg {
+  position: absolute;
+  bottom: calc(var(--spacing) / 2);
+  right: calc(var(--spacing) / 2);
 }
 </style>

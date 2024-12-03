@@ -249,6 +249,8 @@ module.exports = (function () {
       _removeFolder
     );
 
+    app.get("/site.webmanifest", _loadManifest);
+    app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
   }
 
@@ -585,6 +587,25 @@ module.exports = (function () {
 
     res.render("index", d);
   }
+
+  async function _loadManifest(req, res) {
+    const { name_of_instance } = await settings.get();
+    res.type("application/json");
+    res.send({
+      name: name_of_instance || "do•doc",
+      short_name: name_of_instance || "do•doc",
+      theme_color: "#ffffff",
+      background_color: "#ffffff",
+      display: "standalone",
+    });
+  }
+  async function _loadRobots(req, res) {
+    const { enable_indexing } = await settings.get();
+    const disallow = enable_indexing === true ? "" : "/";
+    res.type("text/plain");
+    res.send(`User-agent: *\nDisallow: ${disallow}`);
+  }
+
   function loadPerf(req, res) {
     let d = {};
     d.local_ips = utils.getLocalIPs();

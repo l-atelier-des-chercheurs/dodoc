@@ -16,6 +16,7 @@
         :context="context"
         :cover="space.$cover"
         :path="space.$path"
+        :ratio="'square'"
         :can_edit="can_edit"
       />
 

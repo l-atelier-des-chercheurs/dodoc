@@ -376,7 +376,8 @@ export default {
     "Fermez et redémarrez do•doc manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
   restart: "Fermer et redémarrer",
 
-  refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
+  refresh_window_to_see_changes:
+    "Rafraîchir la fenêtre pour voir les modifications",
   reveal: "Révéler",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
@@ -866,7 +867,7 @@ export default {
   pick_portrait: "Choisissez une image pour ce compte",
   pick_media: "Choisissez un média",
   pick_medias: "Choisissez un ou plusieurs médias",
-  remove_image: "Retirer cette image",
+  remove_image: "Supprimer cette image",
 
   no_accounts_to_show: "Aucun compte à afficher",
   login_no_account_matches: "Aucun compte ne correspond à ce nom",
@@ -1213,4 +1214,6 @@ export default {
   confirm_save_changes:
     "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
   close_without_saving: "Fermer sans valider",
+
+  start_by_uploading_images: "Commencez par importer vos images ci-dessous",
 };

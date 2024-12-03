@@ -14,7 +14,8 @@
         :value="content"
         @input="$emit('update:content', $event.target.value)"
         @input_txt="innerText = $event.target.value"
-        @keydown.enter.prevent="$emit('onEnter')"
+        @keydown.enter.exact.prevent="$emit('onEnter')"
+        @keydown.enter.shift.exact.prevent="$emit('onShiftEnter')"
       />
     </template>
     <CollaborativeEditor3

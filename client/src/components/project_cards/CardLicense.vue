@@ -7,13 +7,13 @@
     :can_be_toggled="false"
   >
     <div class="u-spacingBottom">
-      <CollaborativeEditor2
+      <TitleField
         :label="$t('authors')"
-        :field_to_edit="'authors_list'"
+        :field_name="'authors_list'"
         :content="project.authors_list"
         :path="project.$path"
+        :input_type="'editor'"
         :custom_formats="['bold', 'italic', 'link']"
-        :is_collaborative="false"
         :can_edit="can_edit"
       />
     </div>
@@ -36,6 +36,7 @@
       <RadioCheckboxField
         v-if="can_edit || (!can_edit && project.license !== 'custom_license')"
         :label="$t('license')"
+        :show_label="false"
         :instructions="$t('licence_instructions')"
         :field_name="'license'"
         :input_type="'radio'"
@@ -44,14 +45,18 @@
         :can_edit="can_edit"
         :options="license_options"
       />
-      <CollaborativeEditor2
+      <DLabel v-else :str="$t('license')" />
+
+      <TitleField
         v-if="project.license === 'custom_license'"
-        :label="can_edit ? $t('custom_license') : undefined"
-        :field_to_edit="'custom_license'"
+        ref="custom_license_field"
+        :label="$t('custom_license')"
+        :show_label="can_edit"
+        :field_name="'custom_license'"
         :content="project.custom_license || $t('fill_out_your_license')"
         :path="project.$path"
+        :input_type="'editor'"
         :custom_formats="['bold', 'italic', 'link']"
-        :is_collaborative="false"
         :can_edit="can_edit"
       />
     </div>
@@ -101,7 +106,15 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    "project.license": function (newVal) {
+      if (newVal === "custom_license") {
+        this.$nextTick(() => {
+          this.$refs.custom_license_field.enableEditMode();
+        });
+      }
+    },
+  },
   computed: {},
   methods: {},
 };

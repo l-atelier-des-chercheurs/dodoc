@@ -13,7 +13,7 @@
       :to="author_url"
       @click.native="context !== 'full' ? $emit('navToPage') : ''"
     >
-      <div v-if="is_connected" class="_connected">
+      <div v-if="is_connected && !is_self" class="_connected">
         <b-icon icon="people" />
         {{ $t("connected_currently") }}
       </div>
@@ -25,6 +25,7 @@
             :cover="author.$cover"
             :title="$t('pick_portrait')"
             :preview_format="'circle'"
+            :ratio="'square'"
             :available_options="['import', 'capture']"
             :path="author.$path"
             :placeholder="author.name.substring(0, 2)"
@@ -32,11 +33,11 @@
           />
         </div>
 
-        <div v-if="context === 'full'" class="u-spacingBottom" />
-
         <div class="_text">
           <div class="">
             <TitleField
+              :label="$t('name_or_pseudonym')"
+              :show_label="false"
               :field_name="'name'"
               :content="author.name"
               :path="author.$path"
@@ -76,8 +77,9 @@
 
           <div v-if="can_edit" class="u-spacingBottom">
             <TitleField
+              :label="$t('email')"
+              :show_label="context === 'full'"
               :field_name="'email'"
-              :label="context === 'full' ? $t('email') : undefined"
               :content="author.email"
               :path="author.$path"
               :required="$root.app_infos.instance_meta.require_mail_to_signup"
@@ -88,17 +90,13 @@
           </div>
 
           <div v-if="context === 'full' && (can_edit || !!author.presentation)">
-            <CollaborativeEditor2
-              :label="
-                context === 'full' && (author.presentation || can_edit)
-                  ? $t('presentation')
-                  : undefined
-              "
-              :field_to_edit="'presentation'"
+            <TitleField
+              :label="$t('presentation')"
+              :field_name="'presentation'"
               :path="author.$path"
               :content="author.presentation"
+              :input_type="'editor'"
               :custom_formats="['bold', 'italic', 'link']"
-              :is_collaborative="false"
               :can_edit="can_edit"
             />
           </div>
@@ -148,8 +146,8 @@
 
           <div class="u-spacingBottom">
             <TitleField
-              :field_name="'$password'"
               :label="$t('password')"
+              :field_name="'$password'"
               :content="''"
               :path="author.$path"
               :required="true"
@@ -278,6 +276,7 @@ export default {
     ._topbar {
       flex-flow: column nowrap;
       align-items: stretch;
+      gap: calc(var(--spacing) / 1);
 
       ._cover {
         flex: 0 0 auto;
@@ -303,7 +302,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   // padding-bottom: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 
   ::v-deep {
     a {

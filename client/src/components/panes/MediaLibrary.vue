@@ -679,6 +679,7 @@ export default {
       this.origin_of_media_to_display = "all";
       this.author_of_media_to_display = "all";
       this.keyword_of_media_to_display = "all";
+      this.fav_filter = false;
     },
     toggleFilters() {
       this.filters_opened = !this.filters_opened;
@@ -818,11 +819,13 @@ export default {
         .success(this.$t("media_removed"));
     },
     prevMedia() {
+      if (this.focused_media_index === 0) return;
       this.toggleMediaFocus(
         this.filtered_medias[this.focused_media_index - 1].$path
       );
     },
     nextMedia() {
+      if (this.focused_media_index === this.filtered_medias.length - 1) return;
       this.toggleMediaFocus(
         this.filtered_medias[this.focused_media_index + 1].$path
       );
@@ -953,7 +956,7 @@ export default {
 ._mediaCount--filtered {
   font-weight: 700;
   font-size: inherit;
-  // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
   // color: black;
   // border-radius: 7px;
 }

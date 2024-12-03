@@ -206,7 +206,7 @@ export default {
     "Close and restart do•doc manually or using the button below for the setting to take effect.",
   restart: "Close and restart",
 
-  refresh_window_to_apply: "Refresh the window to apply",
+  refresh_window_to_see_changes: "Refresh the window to see the changes",
   reveal: "Reveal",
   choose_a_pane: "Choose a pane to start!",
   latest_changes_to_project: "Latest changes to project",
@@ -1138,4 +1138,6 @@ export default {
     "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
 
   connected_currently: "Connected currently",
+
+  start_by_uploading_images: "Start by uploading images below",
 };

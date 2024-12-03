@@ -195,9 +195,9 @@ Vue.component("EditBtn", EditBtn);
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
   template: `
-  <div class="u-loader">
+    <div class="u-loader">
       <div class="_spinner" />
-  </div>
+    </div>
   `,
 });
 
