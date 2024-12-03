@@ -43,6 +43,7 @@
             :required="true"
             @toggleValidity="($event) => (allow_save_newkeyword = $event)"
             @onEnter="onEnter"
+            @onShiftEnter="onShiftEnter"
           />
           <div>
             <button
@@ -151,6 +152,9 @@ export default {
     onEnter() {
       if (this.allow_save_newkeyword && !this.new_tag_name_already_exists)
         this.newTag();
+    },
+    onShiftEnter() {
+      this.updateTags();
     },
     async updateTags() {
       this.is_saving = true;
