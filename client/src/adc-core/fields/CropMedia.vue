@@ -424,19 +424,6 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   padding: 0 calc(var(--spacing) / 1) calc(var(--spacing) / 1);
-
-  * {
-    color: white;
-  }
-  ::v-deep {
-    input,
-    select {
-      color: var(--c-noir);
-    }
-    label {
-      color: white;
-    }
-  }
 }
 
 ._targetResolution {
@@ -460,7 +447,7 @@ export default {
 
 ._cropper {
   flex: 1 1 0;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
   overflow: hidden;
   min-height: 240px;
 
