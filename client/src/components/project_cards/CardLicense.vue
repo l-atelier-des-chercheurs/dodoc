@@ -33,9 +33,10 @@
       />
 
       <!-- pour plus tard, voir https://github.com/l-atelier-des-chercheurs/dodoc/issues/513 -->
+      <DLabel :str="$t('license')" />
+
       <RadioCheckboxField
         v-if="can_edit || (!can_edit && project.license !== 'custom_license')"
-        :label="$t('license')"
         :instructions="$t('licence_instructions')"
         :field_name="'license'"
         :input_type="'radio'"
@@ -46,6 +47,7 @@
       />
       <TitleField
         v-if="project.license === 'custom_license'"
+        ref="custom_license_field"
         :label="$t('custom_license')"
         :show_label="can_edit"
         :field_name="'custom_license'"
@@ -102,7 +104,15 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    "project.license": function (newVal) {
+      if (newVal === "custom_license") {
+        this.$nextTick(() => {
+          this.$refs.custom_license_field.enableEditMode();
+        });
+      }
+    },
+  },
   computed: {},
   methods: {},
 };
