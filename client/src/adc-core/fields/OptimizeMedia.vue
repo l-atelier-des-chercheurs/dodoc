@@ -111,7 +111,7 @@
                     media.$infos && media.$infos.width && media.$infos.height
                   "
                 >
-                  {{ media.$infos.width + "×" + media.$infos.height }}
+                  {{ media.$infos.width + " × " + media.$infos.height }}
                 </template>
                 <template v-else> ? </template>
               </span>
@@ -126,7 +126,7 @@
                 >
                   {{
                     optimized_file.$infos.width +
-                    "×" +
+                    " × " +
                     optimized_file.$infos.height
                   }}
                 </template>

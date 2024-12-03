@@ -283,9 +283,8 @@
                   @click="show_capture_settings = !show_capture_settings"
                   v-if="enable_video"
                 >
-                  {{ actual_camera_resolution.width }}×{{
-                    actual_camera_resolution.height
-                  }}
+                  {{ actual_camera_resolution.width }} ×
+                  {{ actual_camera_resolution.height }}
                 </button>
 
                 <select
