@@ -44,7 +44,7 @@
             @toggleValidity="($event) => (allow_save_newkeyword = $event)"
             @onEnter="onEnter"
           />
-          <div class="">
+          <div>
             <button
               v-if="allow_save_newkeyword && !new_tag_name_already_exists"
               type="button"
@@ -228,17 +228,17 @@ export default {
   justify-content: center;
 }
 
-._submitBtn {
-  padding: calc(var(--spacing) / 8);
-}
-
 ._sameRowBtnInput {
   display: flex;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 4);
 
   > ._input {
     width: 100%;
+  }
+  ._submitBtn {
+    padding: calc(var(--spacing) / 8);
+    height: 2rem;
+    width: 2rem;
   }
 }
 </style>
