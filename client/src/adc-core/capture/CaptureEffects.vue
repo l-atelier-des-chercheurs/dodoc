@@ -2,25 +2,14 @@
   <div class="m_captureEffects">
     <div class="_content">
       <div class="_options">
-        <!-- :class="{
-          'is--disabled': !enable_effects,
-        }" -->
-        <div class="u-switch u-switch-xs">
-          <input
-            id="flip_horizontally"
-            type="checkbox"
-            v-model="flip_horizontally"
-          />
-          <label for="flip_horizontally">{{ $t("flip_horizontally") }}</label>
-        </div>
-        <div class="u-switch u-switch-xs">
-          <input
-            id="flip_vertically"
-            type="checkbox"
-            v-model="flip_vertically"
-          />
-          <label for="flip_vertically">{{ $t("flip_vertically") }}</label>
-        </div>
+        <ToggleInput
+          :content.sync="flip_horizontally"
+          :label="$t('flip_horizontally')"
+        />
+        <ToggleInput
+          :content.sync="flip_vertically"
+          :label="$t('flip_vertically')"
+        />
 
         <div>
           <div class="u-switch u-switch-xs">
@@ -150,33 +139,27 @@
             </fieldset>
           </div>
         </div>
+
         <div
           v-for="[name, props] in Object.entries(image_filters_settings)"
           :key="name"
         >
-          <div class="u-switch u-switch-xs">
-            <input
-              :id="`${name}_slider`"
-              type="checkbox"
-              v-model="image_filters_settings[name].enable"
-            />
-            <label :for="`${name}_slider`"
-              >{{ $t(name) }} ({{ image_filters_settings[name].value }})</label
-            >
-          </div>
-
-          <div v-if="image_filters_settings[name].enable">
-            <input
-              class="margin-none"
-              type="range"
-              v-model.number="image_filters_settings[name].value"
-              :min="props.min"
-              :max="props.max"
-              :step="props.step"
-              :title="image_filters_settings[name].value"
-            />
-          </div>
+          <RangeValueInput
+            :label="$t(name)"
+            :value="image_filters_settings[name].value"
+            :can_toggle="true"
+            :min="props.min"
+            :max="props.max"
+            :step="props.step"
+            :ticks="props.ticks"
+            :default_value="props.default"
+            @save="image_filters_settings[name].value = $event"
+          />
         </div>
+
+        <pre>
+          {{ image_filters_settings }}
+        </pre>
       </div>
     </div>
   </div>
@@ -201,7 +184,6 @@ export default {
       flip_vertically: false,
 
       chroma_key_settings: {
-        enable: false,
         key_color: {
           r: 0,
           g: 255,
@@ -221,7 +203,6 @@ export default {
 
       image_filters_settings: {
         brightness: {
-          enable: false,
           value: 1,
           order: 0,
           default: 1,
@@ -230,7 +211,6 @@ export default {
           step: 0.01,
         },
         contrast: {
-          enable: false,
           value: 1,
           order: 1,
           default: 1,
@@ -239,7 +219,6 @@ export default {
           step: 0.01,
         },
         hue: {
-          enable: false,
           value: 0,
           order: 2,
           default: 0,
@@ -248,7 +227,6 @@ export default {
           step: 0.01,
         },
         saturation: {
-          enable: false,
           value: 0,
           order: 3,
           default: 0,
@@ -257,7 +235,6 @@ export default {
           step: 0.01,
         },
         lightness: {
-          enable: false,
           value: 0,
           order: 4,
           default: 0,
@@ -266,7 +243,6 @@ export default {
           step: 0.01,
         },
         dotscreen: {
-          enable: false,
           value: 10,
           order: 6,
           default: 10,
@@ -531,7 +507,9 @@ void main(void) {
         this.flip_horizontally === true ||
         this.chroma_key_settings.enable === true ||
         Object.keys(this.image_filters_settings).some(
-          (ifs) => this.image_filters_settings[ifs].enable === true
+          (ifs) =>
+            this.image_filters_settings[ifs].value !==
+            this.image_filters_settings[ifs].default
         )
       );
     },
@@ -559,7 +537,8 @@ void main(void) {
       this.chroma_key_settings.enable = false;
 
       Object.keys(this.image_filters_settings).map((ifs) => {
-        this.image_filters_settings[ifs].enable = false;
+        this.image_filters_settings[ifs].value =
+          this.image_filters_settings[ifs].default;
       });
     },
     hexToRgb(hex) {
@@ -755,7 +734,8 @@ void main(void) {
           gl.uniform1f(
             loc,
             parseFloat(
-              this.image_filters_settings[name].enable
+              this.image_filters_settings[name].value !==
+                this.image_filters_settings[name].default
                 ? this.image_filters_settings[name].value
                 : -1000
             )
