@@ -177,6 +177,7 @@ export default {
       select_image: false,
       chroma_key_replacement_image_url: undefined,
       chroma_key_settings: {
+        enable: false,
         key_color: {
           r: 0,
           g: 255,
