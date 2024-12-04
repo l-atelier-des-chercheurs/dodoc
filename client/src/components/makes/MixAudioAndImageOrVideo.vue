@@ -27,10 +27,12 @@
 
       <div class="_audioMedia">
         <template v-if="make.base_audio_filename">
+          {{ make.base_audio_filename }}
+
           <MediaContent
-            v-if="selected_media"
+            v-if="selected_audio_media"
             ref="audioMedia"
-            :file="selected_media"
+            :file="selected_audio_media"
             :resolution="440"
             :context="'full'"
           />
@@ -190,7 +192,7 @@ export default {
       return false;
     },
 
-    selected_media() {
+    selected_audio_media() {
       const meta_filename_in_project = this.make.base_audio_filename;
       if (meta_filename_in_project)
         return this.getSourceMedia({
@@ -217,12 +219,9 @@ export default {
       this.created_video = false;
       this.export_href = undefined;
 
-      const base_audio = this.getSourceMedia({
-        source_media: {
-          meta_filename_in_project: this.make.base_audio_filename,
-        },
-        folder_path: this.make.$path,
-      });
+      const base_audio = this.selected_audio_media;
+
+      debugger;
 
       const additional_meta = {};
       additional_meta.$origin = "make";
@@ -240,6 +239,8 @@ export default {
         output_height: 720,
         additional_meta,
       };
+
+      debugger;
 
       if (this.make.type === "mix_audio_and_image") {
         const base_image = this.getSourceMedia({

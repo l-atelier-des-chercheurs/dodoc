@@ -1265,7 +1265,7 @@ export default {
         `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
 
-      if (!this.must_validate_media) {
+      if (this.media_to_validate && !this.must_validate_media) {
         this.sendMedia();
         return;
       }
@@ -1953,6 +1953,7 @@ export default {
 
       this.$eventHub.$emit("animatePane", "collect");
 
+      debugger;
       this.$emit("insertMedia", meta_filename);
       return;
     },

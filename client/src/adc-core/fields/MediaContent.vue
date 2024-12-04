@@ -242,7 +242,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.player = this.$refs.plyr.player;
+    if (this.$refs.plyr?.player) this.player = this.$refs.plyr.player;
   },
   beforeDestroy() {},
   watch: {},
