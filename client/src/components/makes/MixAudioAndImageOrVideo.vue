@@ -29,6 +29,7 @@
         <template v-if="make.base_audio_filename">
           <MediaContent
             v-if="selected_media"
+            ref="audioMedia"
             :file="selected_media"
             :resolution="440"
             :context="'full'"
@@ -158,8 +159,12 @@ export default {
   },
 
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("capture.isRecording", this.onRecording);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("capture.isRecording", this.onRecording);
+  },
   watch: {
     show_save_export_modal() {
       if (this.show_save_export_modal) this.renderAudioImageOrVideo();
@@ -206,21 +211,7 @@ export default {
       });
       this.record_audio_live = false;
     },
-    playBoth() {
-      const video = this.$el.querySelector("._videoOrImage video");
-      if (video) {
-        video.muted = true;
-        video.currentTime = 0;
-        video.play();
-      }
 
-      const audio = this.$el.querySelector("._audioMedia audio");
-      if (audio) {
-        audio.currentTime = 0;
-        audio.muted = false;
-        audio.play();
-      }
-    },
     async renderAudioImageOrVideo() {
       this.is_exporting = true;
       this.created_video = false;
@@ -312,6 +303,31 @@ export default {
         if (typeof val === "number" && val > acc) acc = val;
         return acc;
       }, 0);
+    },
+    onRecording(type) {
+      if (type === "audio") {
+        this.rewindAndPlayVideo();
+      }
+    },
+    playBoth() {
+      this.rewindAndPlayVideo();
+      this.rewindAndPlayAudio();
+    },
+    rewindAndPlayAudio() {
+      const audio = this.$refs.audioMedia?.player;
+      if (audio) {
+        audio.currentTime = 0;
+        audio.muted = false;
+        audio.play();
+      }
+    },
+    rewindAndPlayVideo() {
+      const video = this.$el.querySelector("._videoOrImage video");
+      if (video) {
+        video.currentTime = 0;
+        video.muted = true;
+        video.play();
+      }
     },
   },
 };

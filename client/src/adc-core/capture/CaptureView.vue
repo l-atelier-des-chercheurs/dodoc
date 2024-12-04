@@ -1855,6 +1855,7 @@ export default {
           this.recorder.startRecording();
           this.is_recording = true;
           this.timer_recording_in_seconds = 0;
+          this.$eventHub.$emit("capture.isRecording", options.type);
           this.startTimer();
         } catch (err) {
           this.$alertify
