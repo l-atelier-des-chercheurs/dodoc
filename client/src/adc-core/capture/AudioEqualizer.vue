@@ -21,7 +21,7 @@ export default {
       audio_activity: undefined,
       current_audio_level: 0,
       audioHistory: [],
-      maxHistoryPoints: 150,
+      maxHistoryPoints: 1000,
     };
   },
   created() {},
@@ -36,7 +36,7 @@ export default {
       this.startEqualizer();
     },
     is_recording() {
-      // this.clearCanvas();
+      this.audioHistory = [];
     },
   },
   computed: {},
@@ -47,13 +47,11 @@ export default {
       if (typeof this.stream !== "object") return;
 
       this.audio_activity = audioActivity(this.stream, (level) => {
-        this.current_audio_level = Math.round(level * 100);
+        this.current_audio_level = level;
       });
       this.drawVolume();
     },
     drawVolume() {
-      console.log("drawVolume");
-
       const canvas = this.$refs.canvas;
       if (!canvas) return;
 
@@ -65,8 +63,15 @@ export default {
         canvas.height = h;
       }
 
-      this.audioHistory.push(this.current_audio_level);
-      if (this.audioHistory.length > this.maxHistoryPoints) {
+      const max_history_points = !this.is_recording
+        ? this.maxHistoryPoints
+        : Infinity;
+
+      const latest_level = this.audioHistory.at(-1) || 0;
+      const smoothed_level = this.current_audio_level;
+      // const smoothed_level = (latest_level * 1 + this.current_audio_level) / 2;
+      this.audioHistory.push(smoothed_level);
+      if (this.audioHistory.length > max_history_points) {
         this.audioHistory.shift();
       }
 
@@ -76,26 +81,18 @@ export default {
       if (!this.is_recording) ctx.fillStyle = "#333";
       else ctx.fillStyle = "#fc4b60";
 
-      const pointWidth = canvas.width / this.maxHistoryPoints;
+      const pointWidth = canvas.width / this.audioHistory.length;
       const maxHeight = canvas.height * 0.8;
-
-      ctx.beginPath();
-      ctx.moveTo(0, canvas.height / 2);
 
       this.audioHistory.forEach((level, index) => {
         const x = index * pointWidth;
-        const y = canvas.height - (level / 100) * maxHeight;
-
-        if (index === 0) {
-          ctx.moveTo(x, canvas.height / 2);
-        }
-        ctx.lineTo(x, y);
+        const width = pointWidth / 2;
+        const height = Math.max(level * maxHeight, 2);
+        const y = canvas.height / 2 - height / 2;
+        // if (index === 0) ctx.moveTo(x, 0);
+        // ctx.lineTo(x, y);
+        ctx.fillRect(x, y, width, height);
       });
-
-      ctx.lineTo(canvas.width, canvas.height);
-      ctx.closePath();
-
-      ctx.fill();
 
       window.requestAnimationFrame(this.drawVolume);
     },
