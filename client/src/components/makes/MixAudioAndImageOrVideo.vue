@@ -25,33 +25,45 @@
         <b-icon icon="plus-circle-dotted" />
       </div>
 
-      <div class="">
-        <SingleBaseMediaPicker
-          v-if="!record_audio_live"
-          :title="$t('pick_audio')"
-          :context="'full'"
-          :field_name="'base_audio_filename'"
-          :content="make.base_audio_filename"
-          :path="make.$path"
-          :media_type_to_pick="'audio'"
-        />
+      <div class="_pickChoice">
+        <template v-if="!record_audio_live">
+          <SingleBaseMediaPicker
+            :title="$t('pick_audio')"
+            :context="'full'"
+            :field_name="'base_audio_filename'"
+            :content="make.base_audio_filename"
+            :path="make.$path"
+            :media_type_to_pick="'audio'"
+          />
+          {{ $t("or") }}
+        </template>
         <div class="_recordAudioLive">
           <button
             type="button"
             class="u-button u-button_red"
+            :class="{ 'u-button_small': record_audio_live }"
             @click="record_audio_live = !record_audio_live"
           >
-            <b-icon icon="record-circle-fill" />
-            {{ record_audio_live ? $t("cancel") : $t("live_dubbing") }}
+            <template v-if="record_audio_live">
+              <b-icon icon="x-circle" />
+              {{ $t("cancel") }}
+            </template>
+            <template v-else>
+              <b-icon icon="record-circle-fill" />
+              {{ $t("live_dubbing") }}
+            </template>
           </button>
-          <CaptureView
-            v-if="record_audio_live"
-            :available_modes="['audio']"
-            @insertMedia="
-              (meta_filename) => setAudioMetaFilename(meta_filename)
-            "
-            @close="enable_capture_mode = false"
-          />
+
+          <div class="_captureView" v-if="record_audio_live">
+            <CaptureView
+              :selected_mode="'audio'"
+              :available_modes="[]"
+              @insertMedia="
+                (meta_filename) => setAudioMetaFilename(meta_filename)
+              "
+              @close="enable_capture_mode = false"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -256,6 +268,10 @@ export default {
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) * 2);
+
+  @media (max-width: 1000px) {
+    flex-flow: column nowrap;
+  }
 }
 
 ._equationIcon {
@@ -270,7 +286,19 @@ export default {
   text-align: center;
 }
 ._recordAudioLive {
+  padding: calc(var(--spacing) / 4);
+}
+._captureView {
+  width: min(380px, 100%);
+}
+._pickChoice {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) * 1);
   background: var(--c-bleumarine_fonce);
+  color: white;
   padding: calc(var(--spacing) / 4);
 }
 </style>

@@ -276,7 +276,12 @@
 
           <transition name="fade_fast">
             <div class="_settingsTag" v-if="!is_recording">
-              <template v-if="!(must_validate_media && media_to_validate)">
+              <template
+                v-if="
+                  !(must_validate_media && media_to_validate) &&
+                  selected_mode !== 'audio'
+                "
+              >
                 <button
                   type="button"
                   class="u-button u-button_small"
@@ -289,7 +294,7 @@
 
                 <select
                   v-model="current_grid_type"
-                  v-if="enable_video"
+                  v-if="enable_video && selected_mode !== 'audio'"
                   size="small"
                   :class="{
                     'is--active': current_grid_type !== false,
@@ -306,27 +311,6 @@
                     {{ $t(grid_type).toLowerCase() }}
                   </option>
                 </select>
-                <!-- <button
-                  type="button"
-                  class="u-button u-button_small"
-                  :class="{ 'is--active': current_grid_type !== false }"
-                  v-if="enable_video"
-                  @click="enable_grid = !enable_grid"
-                >
-                  {{ $t("grid").toLowerCase() }}
-                </button> -->
-                <!-- <div v-if="enable_video && enable_grid">
-                  <button
-                    type="button"
-                    class="u-button u-button_small"
-                    v-for="grid_type in Object.keys(grids)"
-                    :key="grid_type"
-                    :class="{ 'is--active': current_grid_type === grid_type }"
-                    @click="current_grid_type = grid_type"
-                  >
-                    {{ $t(grid_type).toLowerCase() }}
-                  </button>
-                </div> -->
               </template>
 
               <button
@@ -448,6 +432,7 @@
 
                   <button
                     type="button"
+                    v-if="selected_mode !== 'audio'"
                     class="u-button u-button_bleumarine _settingsBtn"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
