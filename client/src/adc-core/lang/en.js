@@ -1143,4 +1143,5 @@ export default {
   start_by_uploading_images: "Start by uploading images below",
   or: "or",
   live_dubbing: "Live dubbing",
+  play_both: "Play both at the same time",
 };

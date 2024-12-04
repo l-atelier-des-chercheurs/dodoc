@@ -67,9 +67,10 @@ export default {
         ? this.maxHistoryPoints
         : Infinity;
 
+      // const smoothed_level = this.current_audio_level;
       const latest_level = this.audioHistory.at(-1) || 0;
-      const smoothed_level = this.current_audio_level;
-      // const smoothed_level = (latest_level * 1 + this.current_audio_level) / 2;
+      const smoothed_level = (latest_level * 3 + this.current_audio_level) / 4;
+
       this.audioHistory.push(smoothed_level);
       if (this.audioHistory.length > max_history_points) {
         this.audioHistory.shift();
@@ -86,7 +87,7 @@ export default {
 
       this.audioHistory.forEach((level, index) => {
         const x = index * pointWidth;
-        const width = pointWidth / 2;
+        const width = pointWidth;
         const height = Math.max(level * maxHeight, 2);
         const y = canvas.height / 2 - height / 2;
         // if (index === 0) ctx.moveTo(x, 0);

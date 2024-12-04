@@ -1219,4 +1219,5 @@ export default {
   start_by_uploading_images: "Commencez par importer vos images ci-dessous",
   or: "ou",
   live_dubbing: "Doublage en direct",
+  play_both: "Lire les deux en même temps",
 };

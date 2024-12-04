@@ -1,7 +1,7 @@
 <template>
   <div class="_mixAudioAndImage">
     <div class="_topRow">
-      <div class="">
+      <div class="_videoOrImage">
         <SingleBaseMediaPicker
           v-if="make.type === 'mix_audio_and_image'"
           :title="$t('pick_image')"
@@ -25,57 +25,68 @@
         <b-icon icon="plus-circle-dotted" />
       </div>
 
-      <div class="_pickChoice">
+      <div class="_audioMedia">
         <template v-if="make.base_audio_filename">
           <MediaContent
             v-if="selected_media"
             :file="selected_media"
-            :resolution="220"
-            :context="context"
+            :resolution="440"
+            :context="'full'"
           />
-          <span v-else-if="content">
+          <span v-else>
             {{ $t("media_not_found") }}
           </span>
-        </template>
-        <template v-if="!record_audio_live">
-          <SingleBaseMediaPicker
-            :title="$t('pick_audio')"
-            :context="'full'"
-            :field_name="'base_audio_filename'"
-            :content="make.base_audio_filename"
-            :path="make.$path"
-            :media_type_to_pick="'audio'"
-          />
-          {{ $t("or") }}
-        </template>
-        <div class="_recordAudioLive">
           <button
             type="button"
-            class="u-button u-button_red"
-            :class="{ 'u-button_small': record_audio_live }"
-            @click="record_audio_live = !record_audio_live"
+            class="u-button u-button_small u-button_red"
+            @click="setAudioMetaFilename('')"
           >
-            <template v-if="record_audio_live">
-              <b-icon icon="x-circle" />
-              {{ $t("cancel") }}
-            </template>
-            <template v-else>
-              <b-icon icon="record-circle-fill" />
-              {{ $t("live_dubbing") }}
-            </template>
+            <b-icon icon="arrow-left-right" />
+            {{ $t("change") }}
           </button>
-
-          <div class="_captureView" v-if="record_audio_live">
-            <CaptureView
-              :path="project_path"
-              :selected_mode="'audio'"
-              :available_modes="[]"
-              @insertMedia="
-                (meta_filename) => setAudioMetaFilename(meta_filename)
-              "
+        </template>
+        <template v-else>
+          <template v-if="!record_audio_live">
+            <SingleBaseMediaPicker
+              :title="$t('pick_audio')"
+              :context="'full'"
+              :field_name="'base_audio_filename'"
+              :content="make.base_audio_filename"
+              :path="make.$path"
+              :media_type_to_pick="'audio'"
             />
+            {{ $t("or") }}
+          </template>
+          <div class="_recordAudioLive">
+            <button
+              type="button"
+              class="u-button u-button_red"
+              :class="{ 'u-button_small': record_audio_live }"
+              @click="record_audio_live = !record_audio_live"
+            >
+              <template v-if="record_audio_live">
+                <b-icon icon="x-circle" />
+                {{ $t("cancel") }}
+              </template>
+              <template v-else>
+                <b-icon icon="record-circle-fill" />
+                {{ $t("live_dubbing") }}
+              </template>
+            </button>
+
+            <div class="_captureView" v-if="record_audio_live">
+              <CaptureView
+                :path="project_path"
+                :selected_mode="'audio'"
+                :available_modes="[]"
+                :must_validate_media="false"
+                @insertMedia="
+                  (meta_filename) => setAudioMetaFilename(meta_filename)
+                "
+              />
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </div>
     <transition name="pagechange" mode="out-in">
@@ -83,7 +94,12 @@
         <div class="_equationIcon">
           <b-icon icon="chevron-double-down" />
         </div>
-        <div class="">
+        <div class="_exportPlayButtons">
+          <button type="button" class="u-button u-button_red" @click="playBoth">
+            <b-icon icon="play-circle-fill" />
+            {{ $t("play_both") }}
+          </button>
+
           <button
             type="button"
             class="u-button u-button_bleuvert"
@@ -168,6 +184,16 @@ export default {
         return this.make.base_audio_filename && this.make.base_video_filename;
       return false;
     },
+
+    selected_media() {
+      const meta_filename_in_project = this.make.base_audio_filename;
+      if (meta_filename_in_project)
+        return this.getSourceMedia({
+          source_media: { meta_filename_in_project },
+          folder_path: this.make.$path,
+        });
+      return false;
+    },
   },
   methods: {
     async setAudioMetaFilename(meta_filename) {
@@ -179,6 +205,21 @@ export default {
         new_meta,
       });
       this.record_audio_live = false;
+    },
+    playBoth() {
+      const video = this.$el.querySelector("._videoOrImage video");
+      if (video) {
+        video.muted = true;
+        video.currentTime = 0;
+        video.play();
+      }
+
+      const audio = this.$el.querySelector("._audioMedia audio");
+      if (audio) {
+        audio.currentTime = 0;
+        audio.muted = false;
+        audio.play();
+      }
     },
     async renderAudioImageOrVideo() {
       this.is_exporting = true;
@@ -289,7 +330,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) * 2);
+  // gap: calc(var(--spacing) * 2);
 
   @media (max-width: 1000px) {
     flex-flow: column nowrap;
@@ -311,9 +352,10 @@ export default {
   padding: calc(var(--spacing) / 4);
 }
 ._captureView {
-  width: min(380px, 100%);
+  width: 440px;
+  max-width: 100%;
 }
-._pickChoice {
+._audioMedia {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -322,5 +364,12 @@ export default {
   background: var(--c-bleumarine_fonce);
   color: white;
   padding: calc(var(--spacing) / 4);
+}
+._exportPlayButtons {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) * 1);
 }
 </style>
