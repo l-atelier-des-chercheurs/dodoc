@@ -1217,4 +1217,5 @@ export default {
   close_without_saving: "Fermer sans valider",
 
   start_by_uploading_images: "Commencez par importer vos images ci-dessous",
+  live_dubbing: "Doublage en direct",
 };

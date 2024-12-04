@@ -1141,4 +1141,5 @@ export default {
   connected_currently: "Connected currently",
 
   start_by_uploading_images: "Start by uploading images below",
+  live_dubbing: "Live dubbing",
 };

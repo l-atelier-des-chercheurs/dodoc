@@ -27,6 +27,7 @@
 
       <div class="">
         <SingleBaseMediaPicker
+          v-if="!record_audio_live"
           :title="$t('pick_audio')"
           :context="'full'"
           :field_name="'base_audio_filename'"
@@ -34,6 +35,24 @@
           :path="make.$path"
           :media_type_to_pick="'audio'"
         />
+        <div class="_recordAudioLive">
+          <button
+            type="button"
+            class="u-button u-button_red"
+            @click="record_audio_live = !record_audio_live"
+          >
+            <b-icon icon="record-circle-fill" />
+            {{ record_audio_live ? $t("cancel") : $t("live_dubbing") }}
+          </button>
+          <CaptureView
+            v-if="record_audio_live"
+            :available_modes="['audio']"
+            @insertMedia="
+              (meta_filename) => setAudioMetaFilename(meta_filename)
+            "
+            @close="enable_capture_mode = false"
+          />
+        </div>
       </div>
     </div>
     <transition name="pagechange" mode="out-in">
@@ -81,18 +100,21 @@
 <script>
 import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue"; // eslint-disable-line
 import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
+import CaptureView from "@/adc-core/capture/CaptureView.vue";
 
 export default {
   props: {
     make: Object,
   },
-  components: { SingleBaseMediaPicker, ExportSaveMakeModal },
+  components: { SingleBaseMediaPicker, ExportSaveMakeModal, CaptureView },
   data() {
     return {
       show_save_export_modal: false,
       is_exporting: false,
       created_video: false,
       export_href: undefined,
+
+      record_audio_live: false,
     };
   },
 
@@ -213,6 +235,9 @@ export default {
         return acc;
       }, 0);
     },
+    tempMedia(media) {
+      console.log("tempMedia", media);
+    },
   },
 };
 </script>
@@ -243,5 +268,9 @@ export default {
 ._bottomRow {
   margin-top: calc(var(--spacing) * 2);
   text-align: center;
+}
+._recordAudioLive {
+  background: var(--c-bleumarine_fonce);
+  padding: calc(var(--spacing) / 4);
 }
 </style>
