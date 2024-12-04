@@ -26,6 +26,17 @@
       </div>
 
       <div class="_pickChoice">
+        <template v-if="make.base_audio_filename">
+          <MediaContent
+            v-if="selected_media"
+            :file="selected_media"
+            :resolution="220"
+            :context="context"
+          />
+          <span v-else-if="content">
+            {{ $t("media_not_found") }}
+          </span>
+        </template>
         <template v-if="!record_audio_live">
           <SingleBaseMediaPicker
             :title="$t('pick_audio')"
@@ -56,12 +67,12 @@
 
           <div class="_captureView" v-if="record_audio_live">
             <CaptureView
+              :path="project_path"
               :selected_mode="'audio'"
               :available_modes="[]"
               @insertMedia="
                 (meta_filename) => setAudioMetaFilename(meta_filename)
               "
-              @close="enable_capture_mode = false"
             />
           </div>
         </div>
@@ -146,6 +157,10 @@ export default {
         return "audio_video_mix.mp4";
       return "untitled";
     },
+    project_path() {
+      let { space_slug, project_slug } = this.decomposePath(this.make.$path);
+      return this.createPath({ space_slug, project_slug });
+    },
     export_is_available() {
       if (this.make.type === "mix_audio_and_image")
         return this.make.base_audio_filename && this.make.base_image_filename;
@@ -155,6 +170,16 @@ export default {
     },
   },
   methods: {
+    async setAudioMetaFilename(meta_filename) {
+      const new_meta = {
+        base_audio_filename: meta_filename,
+      };
+      await this.$api.updateMeta({
+        path: this.make.$path,
+        new_meta,
+      });
+      this.record_audio_live = false;
+    },
     async renderAudioImageOrVideo() {
       this.is_exporting = true;
       this.created_video = false;
@@ -246,9 +271,6 @@ export default {
         if (typeof val === "number" && val > acc) acc = val;
         return acc;
       }, 0);
-    },
-    tempMedia(media) {
-      console.log("tempMedia", media);
     },
   },
 };

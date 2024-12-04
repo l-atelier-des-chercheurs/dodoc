@@ -20,9 +20,8 @@ export default {
     return {
       audio_activity: undefined,
       current_audio_level: 0,
-      current_audio_level_smoothed: 0,
-
-      current_draw_percentage: 0,
+      audioHistory: [],
+      maxHistoryPoints: 150,
     };
   },
   created() {},
@@ -36,15 +35,6 @@ export default {
     stream() {
       this.startEqualizer();
     },
-    current_audio_level() {
-      // if (this.current_audio_level > this.current_audio_level_smoothed)
-      const current_audio_level = Math.max(0, this.current_audio_level - 10);
-
-      this.current_audio_level_smoothed = Math.round(
-        (this.current_audio_level_smoothed + current_audio_level) / 2
-      );
-      // else
-    },
     is_recording() {
       // this.clearCanvas();
     },
@@ -57,54 +47,55 @@ export default {
       if (typeof this.stream !== "object") return;
 
       this.audio_activity = audioActivity(this.stream, (level) => {
-        // 'level' indicates the audio activity in percentage
         this.current_audio_level = Math.round(level * 100);
       });
       this.drawVolume();
     },
     drawVolume() {
+      console.log("drawVolume");
+
       const canvas = this.$refs.canvas;
       if (!canvas) return;
 
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = this.$el.clientWidth * dpr;
-      canvas.height = this.$el.clientHeight * dpr;
+      const w = this.$el.clientWidth * dpr;
+      const h = this.$el.clientHeight * dpr;
+      if (w !== canvas.width || h !== canvas.height) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      this.audioHistory.push(this.current_audio_level);
+      if (this.audioHistory.length > this.maxHistoryPoints) {
+        this.audioHistory.shift();
+      }
 
       const ctx = canvas.getContext("2d");
-      // ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // ctx.fillStyle = "rgba(255,255,255,.1)";
-      ctx.fillStyle = "rgba(0,0,0,.1)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (!this.is_recording) ctx.fillStyle = "#333";
       else ctx.fillStyle = "#fc4b60";
 
-      const diam = Math.min(canvas.width, canvas.height);
-      const volume = ((diam / 2) * this.current_audio_level_smoothed) / 20;
+      const pointWidth = canvas.width / this.maxHistoryPoints;
+      const maxHeight = canvas.height * 0.8;
 
       ctx.beginPath();
-      ctx.ellipse(
-        canvas.width / 2,
-        canvas.height / 2,
-        volume,
-        volume,
-        0,
-        2 * Math.PI,
-        false
-      );
-      ctx.fill();
+      ctx.moveTo(0, canvas.height / 2);
 
-      // ctx.fillStyle = "#000000";
-      // ctx.fillRect(20, Math.random() * 200, 10, 10);
-      // ctx.ellipse(
-      //   Math.random() * 200 + canvas.width / 2,
-      //   Math.random() * 200 + canvas.height / 2,
-      //   volume,
-      //   volume,
-      //   0,
-      //   2 * Math.PI,
-      //   false
-      // );
+      this.audioHistory.forEach((level, index) => {
+        const x = index * pointWidth;
+        const y = canvas.height - (level / 100) * maxHeight;
+
+        if (index === 0) {
+          ctx.moveTo(x, canvas.height / 2);
+        }
+        ctx.lineTo(x, y);
+      });
+
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.closePath();
+
+      ctx.fill();
 
       window.requestAnimationFrame(this.drawVolume);
     },
@@ -116,10 +107,6 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: scale-down;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   canvas {
     display: block;

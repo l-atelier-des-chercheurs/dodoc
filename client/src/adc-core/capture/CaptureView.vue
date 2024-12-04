@@ -1151,7 +1151,9 @@ export default {
     }
   },
   mounted() {
-    if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
+    if (!this.selected_mode) {
+      this.$emit("changeMode", this.available_modes[0]);
+    }
 
     document.addEventListener("keyup", this.captureKeyListener);
 
