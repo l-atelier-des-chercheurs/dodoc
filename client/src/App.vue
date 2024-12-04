@@ -148,7 +148,7 @@ export default {
 
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
-  --c-noir: hsl(0, 0%, 15%);
+  --c-noir: hsl(0, 0%, 5%);
   --c-gris: hsl(195, 14%, 93%);
   --c-gris_clair: hsl(195, 14%, 97%);
   --c-gris_fonce: hsl(195, 14%, 45%);
