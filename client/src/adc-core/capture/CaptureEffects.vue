@@ -31,122 +31,123 @@
             />
             <label for="chroma_key">{{ $t("chroma_key") }}</label>
           </div>
-          <div
-            :class="{
-              'is--disabled': !chroma_key_settings.enable,
-            }"
-          >
-            <ColorInput
-              :label="$t('color')"
-              :can_toggle="false"
-              :value="chroma_key_color_hex"
-              @save="chroma_key_color_hex = $event"
-            />
-            <div>
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="setTogglePickColorFromVideo"
-              >
-                <template v-if="!enable_pick_color_from_video">
-                  {{ $t("pick_color_in_video") }}
-                </template>
-                <template v-else>
-                  {{ $t("click_in_video…") }}
-                </template>
-              </button>
-            </div>
+          <div v-if="chroma_key_settings.enable">
+            <fieldset>
+              <legend class="u-label">{{ $t("chroma_key_color") }}</legend>
 
-            <br />
-
-            <div>
-              <div class="">
-                <label>{{ $t("similarity") }}</label>
-                <input
-                  class="margin-none"
-                  type="range"
-                  v-model.number="chroma_key_settings.similarity"
-                  min="0"
-                  max="1"
-                  step="0.001"
-                />
-              </div>
-
-              <div class="">
-                <label>{{ $t("smoothness") }}</label>
-                <input
-                  class="margin-none"
-                  type="range"
-                  v-model.number="chroma_key_settings.smoothness"
-                  min="0"
-                  max="1"
-                  step="0.001"
-                />
-              </div>
-
-              <div class="">
-                <label>{{ $t("spill") }}</label>
-                <input
-                  class="margin-none"
-                  type="range"
-                  v-model.number="chroma_key_settings.spill"
-                  min="0"
-                  max="1"
-                  step="0.001"
-                  value="0.1"
-                />
-              </div>
-            </div>
-
-            <br />
-            <label>{{ $t("replace_color_with") }}</label>
-
-            <div
-              class="u-switch u-switch-xs u-switch_twoway u-padding_verysmall"
-            >
-              <label
-                for="chroma_key_use_image"
-                class="cursor-pointer"
-                :class="{
-                  'is--active':
-                    chroma_key_settings.replacement_mode === 'color',
-                }"
-              >
-                <span class>{{ $t("color") }}</span>
-              </label>
-              <input
-                type="checkbox"
-                id="chroma_key_use_image"
-                v-model="chroma_key_settings.replacement_mode"
-                value="color"
-                true-value="image"
-                false-value="color"
-              />
-              <label
-                for="chroma_key_use_image"
-                :class="{
-                  'is--active':
-                    chroma_key_settings.replacement_mode === 'image',
-                }"
-              >
-                <span class>{{ $t("image") }}</span>
-              </label>
-            </div>
-
-            <div v-if="chroma_key_settings.replacement_mode === 'image'">
-              <ImageSelect
-                :path="project_path"
-                :available_options="['project']"
-                @newPreview="newChromaKeyImage"
-              />
-            </div>
-            <div v-else>
               <ColorInput
+                :label="$t('color')"
                 :can_toggle="false"
-                :value="chroma_key_replacement_color_hex"
-                @save="chroma_key_replacement_color_hex = $event"
+                :value="chroma_key_color_hex"
+                @save="chroma_key_color_hex = $event"
               />
-            </div>
+              <div>
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click="setTogglePickColorFromVideo"
+                >
+                  <template v-if="!enable_pick_color_from_video">
+                    {{ $t("pick_color_in_video") }}
+                  </template>
+                  <template v-else>
+                    {{ $t("click_in_video…") }}
+                  </template>
+                </button>
+              </div>
+
+              <br />
+
+              <div>
+                <div class="">
+                  <label>{{ $t("similarity") }}</label>
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="chroma_key_settings.similarity"
+                    min="0"
+                    max="1"
+                    step="0.001"
+                  />
+                </div>
+
+                <div class="">
+                  <label>{{ $t("smoothness") }}</label>
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="chroma_key_settings.smoothness"
+                    min="0"
+                    max="1"
+                    step="0.001"
+                  />
+                </div>
+
+                <div class="">
+                  <label>{{ $t("spill") }}</label>
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="chroma_key_settings.spill"
+                    min="0"
+                    max="1"
+                    step="0.001"
+                    value="0.1"
+                  />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="u-label">{{ $t("replace_color_with") }}</legend>
+
+              <div
+                class="u-switch u-switch-xs u-switch_twoway u-padding_verysmall"
+              >
+                <label
+                  for="chroma_key_use_image"
+                  class="cursor-pointer"
+                  :class="{
+                    'is--active':
+                      chroma_key_settings.replacement_mode === 'color',
+                  }"
+                >
+                  <span class>{{ $t("color") }}</span>
+                </label>
+                <input
+                  type="checkbox"
+                  id="chroma_key_use_image"
+                  v-model="chroma_key_settings.replacement_mode"
+                  value="color"
+                  true-value="image"
+                  false-value="color"
+                />
+                <label
+                  for="chroma_key_use_image"
+                  :class="{
+                    'is--active':
+                      chroma_key_settings.replacement_mode === 'image',
+                  }"
+                >
+                  <span class>{{ $t("image") }}</span>
+                </label>
+              </div>
+
+              <div v-if="chroma_key_settings.replacement_mode === 'image'">
+                <ImageSelect
+                  :path="project_path"
+                  :available_options="['project']"
+                  @newPreview="newChromaKeyImage"
+                />
+              </div>
+              <div v-else>
+                <ColorInput
+                  :can_toggle="false"
+                  :value="chroma_key_replacement_color_hex"
+                  @save="chroma_key_replacement_color_hex = $event"
+                />
+              </div>
+            </fieldset>
           </div>
         </div>
         <div
@@ -160,7 +161,7 @@
               v-model="image_filters_settings[name].enable"
             />
             <label :for="`${name}_slider`"
-              >{{ $t(name) }} — {{ image_filters_settings[name].value }}</label
+              >{{ $t(name) }} ({{ image_filters_settings[name].value }})</label
             >
           </div>
 
@@ -529,7 +530,7 @@ void main(void) {
         this.flip_vertically === true ||
         this.flip_horizontally === true ||
         this.chroma_key_settings.enable === true ||
-        Object.keys(this.image_filters_settings).find(
+        Object.keys(this.image_filters_settings).some(
           (ifs) => this.image_filters_settings[ifs].enable === true
         )
       );
@@ -913,7 +914,7 @@ void main(void) {
         // margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) / 2);
         margin: calc(var(--spacing) / 2) 0;
         padding: calc(var(--spacing) / 2);
-        background-color: var(--c-gris_clair);
+        background-color: white;
         border-radius: 4px;
 
         &:first-child {

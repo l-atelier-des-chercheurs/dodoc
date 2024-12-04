@@ -659,7 +659,8 @@ input[type="file"] {
 .u-switch {
   /* Switches */
   --switch-font-size: var(--input-font-size);
-  --switch-bg-color: var(--c-rouge_clair);
+  --switch-bg-color: var(--c-gris);
+  --switch-bg-color-hovered: var(--c-rouge_clair);
   --switch-bg-color-checked: var(--c-rouge);
   --switch-border-radius: var(--switch-size);
 
@@ -672,6 +673,10 @@ input[type="file"] {
   --switch-speed: 0.2s;
 
   font-size: var(--switch-font-size);
+
+  &:hover {
+    --switch-bg-color: var(--switch-bg-color-hovered);
+  }
 
   input {
     display: none !important;
