@@ -109,8 +109,8 @@
             name="slideFromTop"
             mode="out-in"
           >
-            <label
-              class="u-label"
+            <div
+              class="_duration_timer"
               v-if="
                 selected_mode !== 'stopmotion' &&
                 is_recording &&
@@ -129,7 +129,7 @@
               :key="'timelapse_interval'"
               class="record_options"
             >
-              <label class="u-label">
+              <div>
                 <span>{{ $t("interval_between_pictures") }}</span>
                 <input
                   type="number"
@@ -137,7 +137,7 @@
                   v-model.number="timelapse_interval"
                 />
                 <span>{{ $t("seconds") }}</span>
-              </label>
+              </div>
             </div>
 
             <div
@@ -201,7 +201,7 @@
               :key="'delay_interval'"
               class="record_options"
             >
-              <label class="u-label">
+              <div>
                 <span>{{ $t("delay") }}</span>
                 <input
                   type="number"
@@ -210,7 +210,7 @@
                   max="60"
                 />
                 <span>{{ $t("seconds") }}</span>
-              </label>
+              </div>
             </div>
           </transition-group>
 
@@ -275,7 +275,7 @@
           </div>
 
           <transition name="fade_fast">
-            <div class="_settingsTag">
+            <div class="_settingsTag" v-if="!is_recording">
               <template v-if="!(must_validate_media && media_to_validate)">
                 <button
                   type="button"
@@ -337,7 +337,7 @@
                 }"
                 @click="show_position_modal = true"
               >
-                {{ $t("location") }}
+                <!-- {{ $t("location") }} -->
                 <b-icon
                   :icon="
                     has_location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'
@@ -2057,6 +2057,7 @@ export default {
       }
 
       > * {
+        flex: 0 0 auto;
         display: flex;
         padding: calc(var(--spacing) / 2);
 
@@ -2219,11 +2220,12 @@ export default {
   gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 2);
 
-  label {
+  ._duration_timer {
     display: inline-block;
     margin: 0 auto;
     background-color: var(--c-rouge);
     padding: 0 calc(var(--spacing) / 8);
+    font-size: var(--sl-font-size-normal);
 
     margin-bottom: calc(var(--spacing) / 8);
     color: white;
@@ -2357,15 +2359,15 @@ export default {
 ._enable_timelapse_button {
   color: #fff;
   background: var(--c-orange);
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: block;
   min-height: 0;
   line-height: 0;
   border-radius: 50%;
   text-align: center;
   font-weight: bold;
-  padding: 0;
+  padding: calc(var(--spacing) / 8);
   margin: calc(var(--spacing) / 4);
 
   svg {
