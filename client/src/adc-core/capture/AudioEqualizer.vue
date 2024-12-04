@@ -66,9 +66,14 @@ export default {
       const canvas = this.$refs.canvas;
       if (!canvas) return;
 
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = this.$el.clientWidth * dpr;
+      canvas.height = this.$el.clientHeight * dpr;
+
       const ctx = canvas.getContext("2d");
       // ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(255,255,255,.1)";
+      // ctx.fillStyle = "rgba(255,255,255,.1)";
+      ctx.fillStyle = "rgba(0,0,0,.1)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       if (!this.is_recording) ctx.fillStyle = "#333";
