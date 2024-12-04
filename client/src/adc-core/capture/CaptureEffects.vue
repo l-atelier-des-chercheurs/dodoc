@@ -11,134 +11,125 @@
           :label="$t('flip_vertically')"
         />
 
-        <div>
-          <div class="u-switch u-switch-xs">
-            <input
-              id="chroma_key"
-              type="checkbox"
-              v-model="chroma_key_settings.enable"
+        <ToggledSection
+          class=""
+          :label="$t('chroma_key')"
+          :show_toggle.sync="chroma_key_settings.enable"
+        >
+          <fieldset>
+            <legend class="u-label">{{ $t("chroma_key_color") }}</legend>
+
+            <ColorInput
+              :label="$t('color')"
+              :can_toggle="false"
+              :value="chroma_key_color_hex"
+              @save="chroma_key_color_hex = $event"
             />
-            <label for="chroma_key">{{ $t("chroma_key") }}</label>
-          </div>
-          <div v-if="chroma_key_settings.enable">
-            <fieldset>
-              <legend class="u-label">{{ $t("chroma_key_color") }}</legend>
-
-              <ColorInput
-                :label="$t('color')"
-                :can_toggle="false"
-                :value="chroma_key_color_hex"
-                @save="chroma_key_color_hex = $event"
-              />
-              <div>
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  @click="setTogglePickColorFromVideo"
-                >
-                  <template v-if="!enable_pick_color_from_video">
-                    {{ $t("pick_color_in_video") }}
-                  </template>
-                  <template v-else>
-                    {{ $t("click_in_video…") }}
-                  </template>
-                </button>
-              </div>
-
-              <br />
-
-              <div>
-                <div class="">
-                  <label>{{ $t("similarity") }}</label>
-                  <input
-                    class="margin-none"
-                    type="range"
-                    v-model.number="chroma_key_settings.similarity"
-                    min="0"
-                    max="1"
-                    step="0.001"
-                  />
-                </div>
-
-                <div class="">
-                  <label>{{ $t("smoothness") }}</label>
-                  <input
-                    class="margin-none"
-                    type="range"
-                    v-model.number="chroma_key_settings.smoothness"
-                    min="0"
-                    max="1"
-                    step="0.001"
-                  />
-                </div>
-
-                <div class="">
-                  <label>{{ $t("spill") }}</label>
-                  <input
-                    class="margin-none"
-                    type="range"
-                    v-model.number="chroma_key_settings.spill"
-                    min="0"
-                    max="1"
-                    step="0.001"
-                    value="0.1"
-                  />
-                </div>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend class="u-label">{{ $t("replace_color_with") }}</legend>
-
-              <div
-                class="u-switch u-switch-xs u-switch_twoway u-padding_verysmall"
+            <div>
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="setTogglePickColorFromVideo"
               >
-                <label
-                  for="chroma_key_use_image"
-                  class="cursor-pointer"
-                  :class="{
-                    'is--active':
-                      chroma_key_settings.replacement_mode === 'color',
-                  }"
-                >
-                  <span class>{{ $t("color") }}</span>
-                </label>
+                <template v-if="!enable_pick_color_from_video">
+                  {{ $t("pick_color_in_video") }}
+                </template>
+                <template v-else>
+                  {{ $t("click_in_video…") }}
+                </template>
+              </button>
+            </div>
+
+            <br />
+
+            <div>
+              <div class="">
+                <label>{{ $t("similarity") }}</label>
                 <input
-                  type="checkbox"
-                  id="chroma_key_use_image"
-                  v-model="chroma_key_settings.replacement_mode"
-                  value="color"
-                  true-value="image"
-                  false-value="color"
+                  class="margin-none"
+                  type="range"
+                  v-model.number="chroma_key_settings.similarity"
+                  min="0"
+                  max="1"
+                  step="0.001"
                 />
-                <label
-                  for="chroma_key_use_image"
-                  :class="{
-                    'is--active':
-                      chroma_key_settings.replacement_mode === 'image',
-                  }"
-                >
-                  <span class>{{ $t("image") }}</span>
-                </label>
               </div>
 
-              <div v-if="chroma_key_settings.replacement_mode === 'image'">
-                <ImageSelect
-                  :path="project_path"
-                  :available_options="['project']"
-                  @newPreview="newChromaKeyImage"
+              <div class="">
+                <label>{{ $t("smoothness") }}</label>
+                <input
+                  class="margin-none"
+                  type="range"
+                  v-model.number="chroma_key_settings.smoothness"
+                  min="0"
+                  max="1"
+                  step="0.001"
                 />
               </div>
-              <div v-else>
-                <ColorInput
-                  :can_toggle="false"
-                  :value="chroma_key_replacement_color_hex"
-                  @save="chroma_key_replacement_color_hex = $event"
+
+              <div class="">
+                <label>{{ $t("spill") }}</label>
+                <input
+                  class="margin-none"
+                  type="range"
+                  v-model.number="chroma_key_settings.spill"
+                  min="0"
+                  max="1"
+                  step="0.001"
+                  value="0.1"
                 />
               </div>
-            </fieldset>
-          </div>
-        </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend class="u-label">{{ $t("replace_color_with") }}</legend>
+
+            <RadioCheckboxInput
+              :value="chroma_key_settings.replacement_mode"
+              :options="[
+                {
+                  label: $t('color'),
+                  key: 'color',
+                },
+                {
+                  label: $t('image'),
+                  key: 'image',
+                },
+              ]"
+              :can_edit="true"
+              @update:value="chroma_key_settings.replacement_mode = $event"
+            />
+
+            <div v-if="chroma_key_settings.replacement_mode === 'image'">
+              <img
+                class="_imgPreview"
+                :src="chroma_key_replacement_image_url"
+              />
+              <EditBtn
+                :label="
+                  !chroma_key_replacement_image_url ? $t('select') : $t('edit')
+                "
+                :is_unfolded="true"
+                @click="select_image = true"
+              />
+              <ImageSelect
+                v-if="select_image"
+                :label="$t('image')"
+                :project_path="project_path"
+                @newPreview="newChromaKeyImage"
+                @close="select_image = false"
+              />
+            </div>
+            <div v-else>
+              <ColorInput
+                :can_toggle="false"
+                :value="chroma_key_replacement_color_hex"
+                @save="chroma_key_replacement_color_hex = $event"
+              />
+            </div>
+          </fieldset>
+        </ToggledSection>
 
         <div
           v-for="[name, props] in Object.entries(image_filters_settings)"
@@ -157,9 +148,9 @@
           />
         </div>
 
-        <pre>
+        <!-- <pre>
           {{ image_filters_settings }}
-        </pre>
+        </pre> -->
       </div>
     </div>
   </div>
@@ -183,6 +174,8 @@ export default {
       flip_horizontally: false,
       flip_vertically: false,
 
+      select_image: false,
+      chroma_key_replacement_image_url: undefined,
       chroma_key_settings: {
         key_color: {
           r: 0,
@@ -499,6 +492,12 @@ void main(void) {
         });
       }
     },
+    "chroma_key_settings.replacement_mode"() {
+      if (this.chroma_key_settings.replacement_mode === "image") {
+        this.chroma_key_replacement_image_url = undefined;
+        this.select_image = true;
+      }
+    },
   },
   computed: {
     enable__() {
@@ -766,31 +765,27 @@ void main(void) {
     stopWebGL() {
       this.offscreen_canvas = undefined;
     },
-    async newChromaKeyImage(img) {
+    async newChromaKeyImage(blob) {
       console.log(`CaptureEffects • METHODS : newChromaKeyImage`);
 
-      if (img === false) {
+      if (!blob) {
         this.chroma_key_settings.replacement_image = undefined;
+        this.chroma_key_replacement_image_url = undefined;
         this.loadReplacementImageInShader();
         return;
       }
 
-      let src = "";
-      if (typeof img === "string") {
-        src = window.location.origin + this.getMediaSrcFromPath(img);
-      } else if (typeof img === "object" && img.thumb) {
-        // src = window.location.origin + "/" + img.thumb;
-      }
-      if (!src) return;
+      const img = await createImageBitmap(blob);
+      this.chroma_key_replacement_image_url = URL.createObjectURL(blob);
 
-      let img_el = new Image();
-      img_el.src = src;
+      // let img_el = new Image();
+      // img_el.src = img;
 
-      try {
-        await img_el.decode();
-      } catch (e) {
-        console.error(e);
-      }
+      // try {
+      //   await img_el.decode();
+      // } catch (e) {
+      //   console.error(e);
+      // }
 
       const canvas = document.createElement("canvas"),
         ctx = canvas.getContext("2d");
@@ -800,21 +795,21 @@ void main(void) {
 
       const type = "cover";
 
-      const img_ratio = img_el.height / img_el.width;
+      const img_ratio = img.height / img.width;
       const c_ratio = canvas.height / canvas.width;
       if (
         (img_ratio < c_ratio && type === "contain") ||
         (img_ratio > c_ratio && type === "cover")
       ) {
         const h = canvas.width * img_ratio;
-        ctx.drawImage(img_el, 0, (canvas.height - h) / 2, canvas.width, h);
+        ctx.drawImage(img, 0, (canvas.height - h) / 2, canvas.width, h);
       }
       if (
         (img_ratio > c_ratio && type === "contain") ||
         (img_ratio < c_ratio && type === "cover")
       ) {
         const w = (canvas.width * c_ratio) / img_ratio;
-        ctx.drawImage(img_el, (canvas.width - w) / 2, 0, w, canvas.height);
+        ctx.drawImage(img, (canvas.width - w) / 2, 0, w, canvas.height);
       }
 
       this.chroma_key_settings.replacement_image = ctx.getImageData(

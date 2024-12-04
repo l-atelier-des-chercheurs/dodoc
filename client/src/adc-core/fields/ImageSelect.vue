@@ -3,7 +3,7 @@
     <div class="_imageselect">
       <PickImage
         v-if="!picked_image"
-        :path="path"
+        :path="project_path || path"
         :instructions="instructions"
         :available_options="available_options"
         @newPreview="setNewPreview"
@@ -49,6 +49,7 @@ export default {
     existing_preview: [Boolean, String],
     label: String,
     path: String,
+    project_path: String,
     ratio: String,
     instructions: String,
     preview_format: String,
@@ -118,7 +119,10 @@ export default {
         file = await response.blob();
       }
 
-      if (!this.path) return this.$emit("newPreview", file);
+      if (!this.path) {
+        this.$emit("close");
+        return this.$emit("newPreview", file);
+      }
 
       try {
         await this.$api.updateCover({

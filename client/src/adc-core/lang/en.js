@@ -768,6 +768,7 @@ export default {
   replace_color_with: "Replace with",
   use_own_risk: "Use with caution: media may become invisible in some cases!",
   chroma_key: "Overlay (green background)",
+  chroma_key_color: "Color to replace",
   color: "Color",
   flip_horizontally: "Flip horizontally",
   flip_vertically: "Flip vertically",
