@@ -13,16 +13,13 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-
   server: {
     https: true,
     port: 5173,
     origin: "https://localhost:5173",
     cors: true,
     emptyOutDir: true,
-    outDir: "dist",
   },
-
   build: {
     outDir: "dist",
     assetsDir: "assets",
