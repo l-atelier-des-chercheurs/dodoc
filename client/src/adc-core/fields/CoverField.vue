@@ -137,9 +137,9 @@ export default {
   inset: 0;
   overflow: visible;
 
+  --color1: white;
   --color2: var(--c-gris);
   // --color2: var(--c-gris_fonce);
-  --color1: white;
 }
 
 ._editingPane {
