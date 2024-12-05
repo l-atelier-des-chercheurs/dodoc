@@ -164,24 +164,24 @@
           class="u-spacingBottom"
         >
           <div class="u-spacingBottom">
-            <CollaborativeEditor2
+            <TitleField
               :label="$t('caption')"
-              :field_to_edit="'caption'"
+              :field_name="'caption'"
               :content="file.caption"
               :path="file.$path"
+              :input_type="'editor'"
               :custom_formats="['bold', 'italic', 'link']"
-              :is_collaborative="false"
               :can_edit="true"
             />
           </div>
           <div class="u-spacingBottom">
-            <CollaborativeEditor2
+            <TitleField
               :label="$t('credit/reference')"
-              :field_to_edit="'$credits'"
+              :field_name="'$credits'"
               :content="file.$credits"
               :path="file.$path"
+              :input_type="'editor'"
               :custom_formats="['bold', 'italic', 'link']"
-              :is_collaborative="false"
               :can_edit="true"
             />
           </div>
@@ -272,13 +272,13 @@
         </DetailsPane>
 
         <DetailsPane
-          v-if="optimization_possible || file.$type === 'image'"
+          v-if="optimization_possible || cropadjust_possible"
           :header="$t('edit')"
           :icon="'tools'"
           :is_open_initially="false"
         >
           <CropAdjustMedia
-            v-if="file.$type === 'image'"
+            v-if="cropadjust_possible"
             :media="file"
             @close="$emit('close')"
           />
@@ -347,6 +347,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    cropadjust_possible() {
+      return (
+        this.file.$type === "image" &&
+        !this.file.$media_filename.endsWith(".gif")
+      );
+    },
     optimization_possible() {
       return this.fileCanBeOptimized({ path: this.file.$media_filename });
     },
@@ -514,8 +520,9 @@ export default {
 
 ._stickyClose {
   position: sticky;
+  top: 0;
   height: 0;
-  z-index: 100;
+  z-index: 101;
 }
 
 ._navBtns {

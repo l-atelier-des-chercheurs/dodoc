@@ -56,6 +56,7 @@
                 <b-icon icon="arrow-left-short" />
                 {{ $t("previous") }}
               </button>
+
               <button
                 type="button"
                 class="u-button u-button_bleuvert"
@@ -72,6 +73,19 @@
                 <b-icon icon="save2-fill" />
                 {{ $t("replace_original") }}
               </button>
+              <small>
+                <a
+                  ref=""
+                  :href="final_image_blob"
+                  :download="final_image_filename"
+                  target="_blank"
+                >
+                  {{ $t("or_download_media_on_device") }}
+                  <template v-if="final_image_blob">
+                    — {{ formatBytes(final_image_blob.size) }}
+                  </template>
+                </a>
+              </small>
 
               <div class="_spinner" v-if="is_saving" key="loader">
                 <AnimatedCounter :value="media_being_sent_percent" />
@@ -108,7 +122,6 @@ export default {
       cropped_image: null,
 
       final_image: null,
-      final_image_filename: null,
 
       saturation: 1,
     };
@@ -119,7 +132,17 @@ export default {
   watch: {
     saturation(value) {},
   },
-  computed: {},
+  computed: {
+    final_image_filename() {
+      let ext = this.media.$media_filename.endsWith(".png") ? ".png" : ".jpg";
+      return (
+        this.getFilenameWithoutExt(this.media.$media_filename) + "_edit" + ext
+      );
+    },
+    final_image_blob() {
+      return this.dataURLtoBlob(this.final_image);
+    },
+  },
   methods: {
     updateCrop(image) {
       this.cropped_image = image;
@@ -129,7 +152,6 @@ export default {
       this.final_image = image;
       this.current_step = "export";
     },
-
     goBack() {
       this.current_step = "adjust";
     },
@@ -142,16 +164,7 @@ export default {
       this.is_saving = true;
 
       const path = this.getParent(this.media.$path);
-      let filename;
-      if (this.media.$media_filename.endsWith(".png")) {
-        filename =
-          this.getFilenameWithoutExt(this.media.$media_filename) + "_edit.png";
-      } else {
-        filename =
-          this.getFilenameWithoutExt(this.media.$media_filename) + "_edit.jpg";
-      }
 
-      const file = this.dataURLtoBlob(this.final_image);
       // todo – get original caption, credits, geolocation, etc. for new
       const additional_meta = {
         $origin: "collect",
@@ -166,8 +179,8 @@ export default {
       const { saved_meta, meta_filename } = await this.$api
         .uploadFile({
           path,
-          filename,
-          file,
+          filename: this.final_image_filename,
+          file: this.final_image_blob,
           additional_meta,
           onProgress,
         })
@@ -225,6 +238,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  align-items: center;
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2);
 }

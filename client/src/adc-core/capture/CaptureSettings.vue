@@ -7,7 +7,7 @@
       />
     </transition>
 
-    <RadioSwitch
+    <!-- <RadioSwitch
       :content.sync="current_mode"
       :options="[
         {
@@ -19,7 +19,7 @@
           value: 'RemoteSources',
         },
       ]"
-    />
+    /> -->
 
     <div class="m_captureSettings--settings">
       <div v-if="current_mode === 'LocalSources'" class>
@@ -29,7 +29,7 @@
           </div>
         </div>
 
-        <label class="u-label">
+        <label class="u-label _sourcesTitle">
           {{ $t("sources") }}
           <button
             type="button"
@@ -190,6 +190,8 @@
           </div>
         </div>
 
+        <div class="u-spacingBottom" />
+
         <label class="u-label">{{ $t("resolutions") }}</label>
         <div>
           <div
@@ -229,13 +231,12 @@
                   :disabled="unavailable_camera_resolutions.includes(res.label)"
                   v-model="desired_camera_resolution"
                 />
-                <span
-                  >{{ res.label }}
-                  <template v-if="res.type !== 'custom'">
-                    •
-                    <template v-if="res.ratio">{{ res.ratio }}</template>
-                    • {{ res.width }}/{{ res.height }}
-                  </template>
+                <span class="_resolutionLabel">
+                  <DLabel
+                    :str="res.label"
+                    tag="div"
+                    :instructions="resInstructions(res)"
+                  />
                 </span>
               </label>
             </div>
@@ -256,9 +257,8 @@
                   step="2"
                   v-model.number="desired_camera_resolution.width"
                 />
-                {{ $t("pixels") }}
               </label>
-              <span class="u-padding_verysmall _customResolution--x">×</span>
+              <span class="u-padding_verysmall _customResolutionX"> × </span>
               <label class="u-label" for="custom_height">
                 <input
                   name="custom_height"
@@ -299,7 +299,7 @@
         </div>
       </div>
     </div>
-    <div class="m_captureSettings--updateButton">
+    <div class="m_captureSettings--updateButton" v-if="false">
       <!-- <small v-if="!desired_camera_resolution">
           Select a camera resolution first
         </small> -->
@@ -426,40 +426,38 @@ export default {
 
       predefined_resolutions: [
         {
-          label: "4K(UHD)",
+          label: this.$t("very_high"),
+          label_detail: "4K(UHD)",
           width: 3840,
           height: 2160,
           ratio: "16:9",
         },
         {
-          label: "1080p(FHD)",
+          label: this.$t("high"),
+          label_detail: "1080p(FHD)",
           width: 1920,
           height: 1080,
           ratio: "16:9",
         },
         {
-          label: "720p(HD)",
+          label: this.$t("medium"),
+          label_detail: "720p(HD)",
           width: 1280,
           height: 720,
           ratio: "16:9",
         },
         {
-          label: "VGA",
+          label: this.$t("low"),
+          label_detail: "VGA",
           width: 640,
           height: 480,
-          ratio: "4:3",
-        },
-        {
-          label: "QVGA",
-          width: 320,
-          height: 240,
           ratio: "4:3",
         },
       ],
 
       unavailable_camera_resolutions: [],
       custom_camera_resolution: {
-        label: this.$t("custom"),
+        label: this.$t("custom_f"),
         type: "custom",
         width: 1280,
         height: 720,
@@ -730,6 +728,12 @@ export default {
         this.current_stream = this.local_stream;
       }
     },
+    resInstructions(res) {
+      if (res.type === "custom") return undefined;
+      return `${res.label_detail} • ${res.ratio} • ${res.width}×${
+        res.height
+      } ${this.$t("pixels")}`;
+    },
     setSupportedConstraints() {
       return new Promise((resolve) => {
         if (this.$root.debug_mode === true)
@@ -786,7 +790,7 @@ export default {
       //   );
       // } else {
       this.desired_camera_resolution = this.predefined_resolutions.find(
-        (r) => r.label === "720p(HD)"
+        (r) => r.height === 720
       );
       // }
     },
@@ -1381,7 +1385,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_captureSettings {
-  margin-top: calc(var(--spacing) / 2);
+  // margin-top: calc(var(--spacing) / 2);
   color: white;
 
   label,
@@ -1524,13 +1528,37 @@ export default {
 }
 
 ._customResolution {
-  justify-content: space-between;
+  justify-content: center;
 
   input {
     width: auto;
   }
-  ._customResolution--x {
-    font-size: var(--sl-font-size-x-large);
+}
+._customResolutionX {
+  font-size: var(--sl-font-size-x-large);
+}
+
+._resolutionLabel {
+  flex: 1;
+  // display: flex;
+  // flex-flow: row wrap;
+  // justify-content: space-between;
+  // align-items: baseline;
+
+  ::v-deep {
+    ._labelLine {
+      color: white;
+      font-size: var(--sl-font-size-normal);
+    }
+    .u-instructions {
+      color: white;
+      margin-bottom: 0;
+    }
   }
+}
+
+._sourcesTitle {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

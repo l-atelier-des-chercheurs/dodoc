@@ -13,6 +13,11 @@
       :to="author_url"
       @click.native="context !== 'full' ? $emit('navToPage') : ''"
     >
+      <div v-if="is_connected && !is_self" class="_connected">
+        <b-icon icon="people" />
+        {{ $t("connected_currently") }}
+      </div>
+
       <div class="_topbar">
         <div class="_cover">
           <CoverField
@@ -20,6 +25,7 @@
             :cover="author.$cover"
             :title="$t('pick_portrait')"
             :preview_format="'circle'"
+            :ratio="'square'"
             :available_options="['import', 'capture']"
             :path="author.$path"
             :placeholder="author.name.substring(0, 2)"
@@ -27,12 +33,11 @@
           />
         </div>
 
-        <div v-if="context === 'full'" class="u-spacingBottom" />
-
         <div class="_text">
-          <!-- :label="$t('name')" -->
           <div class="">
             <TitleField
+              :label="$t('name_or_pseudonym')"
+              :show_label="false"
               :field_name="'name'"
               :content="author.name"
               :path="author.$path"
@@ -58,8 +63,6 @@
             </div>
           </div>
 
-          <div v-if="context === 'full'" class="u-spacingBottom" />
-
           <div v-if="author.group || can_edit">
             <TagsField
               :label="context === 'full' ? $t('group') : undefined"
@@ -72,12 +75,11 @@
             />
           </div>
 
-          <div v-if="context === 'full'" class="u-spacingBottom" />
-
           <div v-if="can_edit" class="u-spacingBottom">
             <TitleField
+              :label="$t('email')"
+              :show_label="context === 'full'"
               :field_name="'email'"
-              :label="context === 'full' ? $t('email') : undefined"
               :content="author.email"
               :path="author.$path"
               :required="$root.app_infos.instance_meta.require_mail_to_signup"
@@ -86,21 +88,15 @@
               :can_edit="can_edit"
             />
           </div>
-          <div
-            v-if="context === 'full' && (can_edit || !!author.presentation)"
-            class="u-spacingBottom"
-          >
-            <CollaborativeEditor2
-              :label="
-                context === 'full' && (author.presentation || can_edit)
-                  ? $t('presentation')
-                  : undefined
-              "
-              :field_to_edit="'presentation'"
+
+          <div v-if="context === 'full' && (can_edit || !!author.presentation)">
+            <TitleField
+              :label="$t('presentation')"
+              :field_name="'presentation'"
               :path="author.$path"
               :content="author.presentation"
+              :input_type="'editor'"
               :custom_formats="['bold', 'italic', 'link']"
-              :is_collaborative="false"
               :can_edit="can_edit"
             />
           </div>
@@ -150,8 +146,8 @@
 
           <div class="u-spacingBottom">
             <TitleField
-              :field_name="'$password'"
               :label="$t('password')"
+              :field_name="'$password'"
               :content="''"
               :path="author.$path"
               :required="true"
@@ -199,6 +195,11 @@ export default {
       if (this.connected_as)
         return this.connected_as.$path === this.author.$path;
       return false;
+    },
+    is_connected() {
+      return this.$api.users.some(
+        (u) => u.meta?.token_path === this.author.$path
+      );
     },
     can_edit() {
       return (
@@ -254,6 +255,7 @@ export default {
   }
 
   ._topbar {
+    position: relative;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -274,6 +276,7 @@ export default {
     ._topbar {
       flex-flow: column nowrap;
       align-items: stretch;
+      gap: calc(var(--spacing) / 1);
 
       ._cover {
         flex: 0 0 auto;
@@ -283,6 +286,8 @@ export default {
 }
 
 ._linkTo {
+  position: relative;
+  display: block;
   text-decoration: none;
   color: inherit;
 }
@@ -294,10 +299,10 @@ export default {
 
 ._text {
   // overflow: hidden;
-  // display: flex;
-  // flex-flow: column nowrap;
+  display: flex;
+  flex-flow: column nowrap;
   // padding-bottom: calc(var(--spacing) / 2);
-  // gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 
   ::v-deep {
     a {
@@ -310,5 +315,15 @@ export default {
     ._content {
     }
   }
+}
+
+._connected {
+  display: flex;
+  gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  background-color: var(--c-bleumarine_clair);
+  border-radius: 3px;
+
+  font-weight: 500;
+  justify-content: center;
 }
 </style>

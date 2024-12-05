@@ -116,8 +116,8 @@ export default {
   }
   &[data-tagtype="accountgroup"] {
     // background-color: #edbdff;
-    background-color: var(--c-noir);
-    color: white;
+    background-color: var(--c-gris);
+    color: var(--c-noir);
   }
   &[data-tagtype="status"] {
     &[data-tagvalue="finished"] {

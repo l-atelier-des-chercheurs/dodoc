@@ -78,7 +78,7 @@
           <b-icon icon="arrow-counterclockwise" />
         </button>
       </div>
-      <div class="_resizeRatio">
+      <div class="_resizeRatio" v-if="!forced_ratio">
         <div>
           <DLabel :str="$t('constrain_crop_resize')" />
           <label>
@@ -167,14 +167,17 @@
       </div>
       -->
 
-      <div class="_cropper">
+      <div class="_cropper" v-if="cropper_src">
         <Cropper
           class=""
           :key="'' + stencil_props"
           ref="cropper"
-          :src="file_full_path"
+          :src="cropper_src"
           :default-size="defaultSize"
           :stencil-props="stencil_props"
+          :stencil-component="
+            preview_format === 'circle' ? 'circle-stencil' : undefined
+          "
           @change="onChange"
         />
       </div>
@@ -199,6 +202,9 @@ import "vue-advanced-cropper/dist/theme.bubble.css";
 export default {
   props: {
     media: Object,
+    blob: String,
+    forced_ratio: String,
+    preview_format: String,
   },
   components: {
     Cropper,
@@ -230,14 +236,16 @@ export default {
         image: null,
       },
 
-      img_width: this.media.$infos.width || undefined,
-      img_height: this.media.$infos.height || undefined,
-      new_width: this.media.$infos.width || undefined,
-      new_height: this.media.$infos.height || undefined,
+      img_width: this.media?.$infos?.width || undefined,
+      img_height: this.media?.$infos?.height || undefined,
+      new_width: this.media?.$infos?.width || undefined,
+      new_height: this.media?.$infos?.height || undefined,
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.initCrop();
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -270,16 +278,28 @@ export default {
         return { aspectRatio: this.custom_aspect_ratio };
       return {};
     },
-    file_full_path() {
-      return this.makeMediaFilePath({
-        $path: this.media.$path,
-        $media_filename: this.media.$media_filename,
-        with_timestamp: true,
-        $date_created: this.media.$date_created,
-      });
+    cropper_src() {
+      if (this.media)
+        return this.makeMediaFilePath({
+          $path: this.media.$path,
+          $media_filename: this.media.$media_filename,
+          with_timestamp: true,
+          $date_created: this.media.$date_created,
+        });
+      else if (this.blob) return this.blob;
+      return null;
     },
   },
   methods: {
+    initCrop() {
+      this.crop_resize_mode = this.forced_ratio ? "ratio" : "none";
+      this.aspect_ratio = this.forced_ratio || "original";
+      this.custom_aspect_ratio = 1;
+      if (this.$refs.cropper) this.$refs.cropper.reset();
+    },
+    resetCrop() {
+      this.initCrop();
+    },
     defaultSize({ imageSize, visibleArea }) {
       return {
         width: (visibleArea || imageSize).width,
@@ -327,11 +347,6 @@ export default {
     rotateXPercent() {
       this.show_percent_picker = true;
     },
-    resetCrop() {
-      this.aspect_ratio = "original";
-      this.custom_aspect_ratio = 1;
-      this.$refs.cropper.reset();
-    },
     async previewMedia() {
       const { coordinates, canvas } = this.$refs.cropper.getResult();
 
@@ -367,7 +382,7 @@ export default {
 }
 ._topPanes {
   flex: 1 1 0;
-  background: var(--c-noir);
+  // background: var(--c-noir);
   padding-top: calc(var(--spacing) / 1);
 
   display: flex;
@@ -395,12 +410,46 @@ export default {
   //   padding:
   // }
 }
+
+._bottomBar {
+  text-align: center;
+  padding: calc(var(--spacing) / 2);
+}
+
+._resizeRatio {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  padding: 0 calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+}
+
+._targetResolution {
+  flex: 0 0 240px;
+}
+
+._aspectRatio {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  // margin-bottom: calc(var(--spacing) / 2);
+
+  select,
+  input {
+    width: 20ch;
+  }
+}
+
 ._cropper {
   flex: 1 1 0;
   padding: calc(var(--spacing) / 1);
   overflow: hidden;
-  min-height: 100px;
-  // background-color: var(--c-noir);
+  min-height: 240px;
 
   ::v-deep {
     .vue-advanced-cropper {
@@ -409,7 +458,7 @@ export default {
 
     .vue-advanced-cropper__background,
     .vue-advanced-cropper__foreground {
-      background-color: var(--c-noir);
+      background-color: white;
     }
     .vue-advanced-cropper__foreground {
       cursor: move;
@@ -443,53 +492,6 @@ export default {
     .vue-simple-line--west {
       border-left-width: 2px;
     }
-  }
-}
-
-._bottomBar {
-  text-align: center;
-  padding: calc(var(--spacing) / 2);
-}
-
-._resizeRatio {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-
-  padding: 0 calc(var(--spacing) / 1) calc(var(--spacing) / 1);
-
-  * {
-    color: white;
-  }
-  ::v-deep {
-    input,
-    select {
-      color: var(--c-noir);
-    }
-    label {
-      color: white;
-    }
-  }
-}
-
-._targetResolution {
-  flex: 0 0 240px;
-}
-
-._aspectRatio {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-
-  // margin-bottom: calc(var(--spacing) / 2);
-
-  select,
-  input {
-    width: 20ch;
   }
 }
 </style>

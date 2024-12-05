@@ -51,7 +51,6 @@
 
         <SaveCancelButtons
           slot="footer"
-          v-if="edit_mode"
           class="_scb"
           :is_saving="is_saving"
           @save="updateSelect"
@@ -103,8 +102,10 @@ export default {
   },
   computed: {
     current_options() {
-      // return this.content.map((c) => this.options.find((o) => o.key === c));
-      return this.options.filter((o) => this.content.includes(o.key));
+      const filtered_options = this.options.filter((o) =>
+        this.content.includes(o.key)
+      );
+      return filtered_options;
     },
     current_option() {
       return this.options.find((o) => o.key === this.content);

@@ -40,6 +40,7 @@
             class="_paneItem"
             :class="{
               'is--enabled': paneIsEnabled(pane.type),
+              'is--animating': animate_pane === pane.type,
             }"
             :style="`--color-active: var(--color-${pane.type});`"
             :key="pane.type"
@@ -55,32 +56,44 @@
                 v-html="getIcon(pane.type)"
               />
               <!-- <span>{{ $t(pane.type) }}</span> -->
+
               <span
                 class="_name"
+                key="'name'"
                 v-if="paneIsEnabled(pane.type) || !$root.is_mobile_view"
               >
                 {{ index + 1 }} • {{ $t(pane.type) }}
               </span>
-              <div
-                v-if="project_panes.some((p) => p.type === pane.type)"
-                class="_inlineBtn _removePaneBtn"
-              >
-                <b-icon
-                  icon="x-circle-fill"
-                  :label="$t('close')"
-                  @click.stop="removePane(pane.type)"
-                />
-              </div>
-              <div
-                v-else-if="project_panes.length > 0 && !$root.is_mobile_view"
-                class="_inlineBtn _addPaneBtn"
-              >
-                <b-icon
-                  icon="plus-circle-fill"
-                  :label="$t('add')"
-                  @click.stop="addPane($event, pane)"
-                />
-              </div>
+
+              <transition name="fade" mode="out-in">
+                <span
+                  key="'count+'"
+                  class="_count"
+                  v-if="animate_pane === pane.type"
+                >
+                  +1
+                </span>
+                <div
+                  v-else-if="project_panes.some((p) => p.type === pane.type)"
+                  class="_inlineBtn _removePaneBtn"
+                >
+                  <b-icon
+                    icon="x-circle-fill"
+                    :label="$t('close')"
+                    @click.stop="removePane(pane.type)"
+                  />
+                </div>
+                <div
+                  v-else-if="project_panes.length > 0 && !$root.is_mobile_view"
+                  class="_inlineBtn _addPaneBtn"
+                >
+                  <b-icon
+                    icon="plus-circle-fill"
+                    :label="$t('add')"
+                    @click.stop="addPane($event, pane)"
+                  />
+                </div>
+              </transition>
             </div>
           </SlickItem>
         </SlickList>
@@ -123,6 +136,9 @@ export default {
           type: "publish",
         },
       ],
+
+      animate_pane: false,
+      animate_pane_timeout: null,
     };
   },
   created() {
@@ -136,9 +152,11 @@ export default {
     //   );
     //   this.project_panes.push(lib);
     // });
+    this.$eventHub.$on("animatePane", this.animatePane);
     document.addEventListener("scroll", this.detectTopOfWindow);
   },
   beforeDestroy() {
+    this.$eventHub.$off("animatePane", this.animatePane);
     document.removeEventListener("scroll", this.detectTopOfWindow);
   },
   watch: {
@@ -280,6 +298,14 @@ export default {
 
       return false;
     },
+    animatePane(pane) {
+      this.animate_pane = pane;
+      if (this.animate_pane_timeout) clearTimeout(this.animate_pane_timeout);
+      this.animate_pane_timeout = setTimeout(() => {
+        this.animate_pane = false;
+        this.animate_pane_timeout = null;
+      }, 2000);
+    },
   },
 };
 </script>
@@ -347,8 +373,6 @@ export default {
   white-space: nowrap;
   height: auto;
 
-  overflow: auto;
-
   > * {
     flex: 0 0 0;
     display: flex;
@@ -380,6 +404,8 @@ export default {
   // border-radius: 4px;
   color: var(--color-active);
 
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
   &:hover,
   &:focus {
     color: white;
@@ -387,6 +413,12 @@ export default {
   }
 
   &.is--enabled {
+    color: white;
+    background-color: var(--color-active);
+  }
+  &.is--animating {
+    // transform: scale(0.8);
+    // z-index: 10;
     color: white;
     background-color: var(--color-active);
   }
@@ -437,6 +469,9 @@ export default {
   height: 2rem;
 }
 ._name {
+  padding: 0 calc(var(--spacing) / 2);
+}
+._count {
   padding: 0 calc(var(--spacing) / 2);
 }
 

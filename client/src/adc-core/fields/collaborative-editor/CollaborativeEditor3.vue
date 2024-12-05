@@ -6,7 +6,6 @@
       'is--editing_is_enabled': editor_is_enabled,
       'is--mobileView': $root.is_mobile_view,
     }"
-    @click="editorClick"
   >
     <DLabel
       v-if="label"
@@ -66,22 +65,22 @@
               <span>{{ $t("history") }}</span>
             </button>
           </transition>
-          <EditBtn
+          <!-- <EditBtn
             class="_editBtn"
             :btn_type="'check'"
             :label_position="'left'"
             @click="disableEditor"
-          />
+          /> -->
         </template>
       </div>
     </div>
 
-    <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
+    <!-- <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
       <EditBtn key="editbtn" :label_position="'left'" @click="toggleEdit" />
-    </div>
+    </div> -->
 
     <div class="_toolbarAndEditorContainer">
-      <div ref="editor" @dragover="onDragover" @drop="onDrop" />
+      <div ref="editor" />
     </div>
   </div>
 </template>
@@ -132,8 +131,8 @@ DividerBlot.blotName = "divider";
 DividerBlot.tagName = "hr";
 Quill.register(DividerBlot);
 
-import MediaBlot from "./imports/MediaBlot";
-import CardEditableModule from "./imports/CardEditableModule";
+import MediaBlot from "./imports/MediaBlot.js";
+import CardEditableModule from "./imports/CardEditableModule.js";
 
 Quill.register("formats/media", MediaBlot);
 Quill.register("modules/cardEditable", CardEditableModule);
@@ -158,7 +157,6 @@ export default {
     },
     scrollingContainer: HTMLElement,
     custom_formats: Array,
-    line_selected: [Boolean, Number],
     edit_on_mounted: Boolean,
     can_edit: Boolean,
     is_collaborative: {
@@ -197,8 +195,6 @@ export default {
       is_disabling_editor: false,
       show_saved_icon: false,
 
-      currently_selected_eles: false,
-
       editor_id: (Math.random().toString(36) + "00000000000000000").slice(
         2,
         5 + 5
@@ -222,44 +218,13 @@ export default {
         (this.is_collaborative && !this.editor_is_enabled)
       ) {
         this.$nextTick(() => {
-          this.editor.root.innerHTML = this.content;
+          if (this.content !== this.editor.root.innerHTML)
+            this.editor.root.innerHTML = this.content;
         });
       }
     },
-    line_selected: {
-      handler() {
-        if (this.line_selected) {
-          // let [line, offset] = quill.getLine(this.line_selected);
-          this.$nextTick(() => {
-            const selected_line = this.editor.container.querySelector(
-              `.ql-editor > *:nth-child(${this.line_selected})`
-            );
-            this.currently_selected_eles = [selected_line];
-            this.$nextTick(() => {
-              selected_line.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-                inline: "nearest",
-              });
-            });
-          });
-        }
-        this.currently_selected_eles = false;
-      },
-      immediate: true,
-    },
     can_edit() {
       if (!this.can_edit && this.editor_is_enabled) this.disableEditor();
-    },
-    currently_selected_eles(newEles) {
-      this.editor.container
-        .querySelectorAll(".is--selected")
-        .forEach((el) => el.classList && el.classList.remove("is--selected"));
-
-      if (newEles)
-        newEles.forEach(
-          (el) => el.classList && el.classList.add("is--selected")
-        );
     },
   },
   computed: {
@@ -297,19 +262,6 @@ export default {
       if (this.content) this.editor.root.innerHTML = this.content;
 
       this.setStatusButton();
-
-      this.editor.on("selection-change", () => {
-        // console.log(`CollaborativeEditor / selection-change`);
-        this.updateSelectedLines();
-      });
-      this.editor.on("text-change", (delta, oldDelta, source) => {
-        delta, oldDelta, source;
-        // console.log(`CollaborativeEditor / text-change w source ${source}`);
-        this.$nextTick(() => {
-          // todo : only update if possibly changing line (backspace and enter)
-          this.updateSelectedLines();
-        });
-      });
     },
 
     makeToolbar() {
@@ -446,25 +398,17 @@ export default {
     getEditorContent() {
       // console.log(`CollaborativeEditor • getEditorContent`);
       if (!this.editor.getText() || this.editor.getText() === "\n") return "";
-      let html = this.editor.root.innerHTML;
-
-      html = this.cleanEditorContent(html);
-
-      return html;
+      return this.cleanEditorContent(this.editor.root.innerHTML);
     },
     cleanEditorContent(html) {
-      // console.log(`CollaborativeEditor • cleanEditorContent`);
-
       var t = document.createElement("template");
       t.innerHTML = html;
-
       // used to make sure we don’t get weird stuff such as <p style="font-family: "Avada";">plop</p>
       // content = content.replace(/&quot;/g, "'");
       // todo : remove status class like is--selected or is--dragover
       t.content
         .querySelectorAll(".is--selected")
         .forEach((el) => el.classList && el.classList.remove("is--selected"));
-
       return t.innerHTML;
     },
 
@@ -483,15 +427,10 @@ export default {
       const bloc_height = this.$el.offsetHeight;
       this.$el.style.setProperty("min-height", bloc_height + "px");
 
-      // console.log(`CollaborativeEditor2 • enableEditor`);
-
       if (this.is_collaborative) await this.startCollaborative();
-
       this.editor.enable();
-
       this.editor.focus();
 
-      // todo select latest used font as selected font
       if (this.editor.getLength() <= 1) {
         const fontLastUsed = localStorage.getItem("fontLastUsed");
         this.editor.format("font", fontLastUsed);
@@ -505,25 +444,20 @@ export default {
       });
       this.$el.style.removeProperty("min-height");
       this.editor_is_enabled = true;
+      this.editor.on("text-change", this.updateInput);
     },
     async disableEditor() {
       if (!this.editor_is_enabled || this.is_disabling_editor) return false;
 
-      // console.log(`CollaborativeEditor2 • disableEditor`);
       this.is_disabling_editor = true;
-
       this.editor.setSelection(null);
       this.editor.blur();
-      this.updateSelectedLines();
 
-      if (window.getSelection) {
-        window.getSelection().removeAllRanges();
-      }
+      if (window.getSelection) window.getSelection().removeAllRanges();
 
       if (this.is_collaborative) this.endCollaborative();
       await this.saveText();
 
-      // check if toolbar is away, get it back if it is
       this.getToolbarBack();
       this.$emit(`contentIsNotEdited`);
 
@@ -531,9 +465,9 @@ export default {
         this.editor.disable();
         this.editor_is_enabled = false;
         this.is_disabling_editor = false;
+        this.editor.off("text-change", this.updateInput);
       });
     },
-
     getToolbarBack() {
       if (
         !this.toolbar_el.parentElement.classList.contains(
@@ -554,63 +488,19 @@ export default {
     },
 
     restoreVersion(content) {
-      // it seems this allows for undo
       this.editor.root.innerHTML = content;
-
       // do not use, it doesnt respect \n
       // const value = content;
       // const delta = this.editor.clipboard.convert(value);
       // this.editor.setContents(delta, "user");
-
       this.show_archives = false;
     },
-
-    editorClick($event) {
-      // $event.preventDefault();
-      if (
-        $event.target.parentElement &&
-        $event.target.parentElement.classList &&
-        $event.target.parentElement.classList.contains("ql-editor")
-      ) {
-        // click on the left of the element
-        if ($event.offsetX < 0) {
-          const line_number = Array.from(
-            $event.target.parentElement.children
-          ).findIndex((c) => c === $event.target);
-          this.$emit("lineClicked", line_number + 1);
-        }
-      }
+    updateInput() {
+      this.$emit("input", this.getEditorContent());
     },
-
-    updateSelectedLines() {
-      // console.log(`CollaborativeEditor • updateSelectedLines`);
-      if (!this.editor_is_enabled) return;
-
-      const range = this.editor.getSelection();
-
-      if (range && range.index) {
-        // console.log(
-        //   `CollaborativeEditor • updateSelectedLines / range.index = ${range.index} et range.length = ${range.length} `
-        // );
-
-        let blots = [];
-        if (range.length === 0) blots = [this.editor.getLine(range.index)[0]];
-        else blots = this.editor.getLines(range.index, range.length);
-
-        if (blots) {
-          this.currently_selected_eles = blots.map((b) => b.domNode);
-          return;
-        }
-      }
-
-      this.currently_selected_eles = false;
-    },
-
     async saveText() {
       const new_content = this.getEditorContent();
-      if (new_content === this.content) {
-        return "content_not_changed";
-      }
+      if (new_content === this.content) return "content_not_changed";
 
       if (!this.path) {
         this.$emit("save", new_content);
@@ -640,13 +530,6 @@ export default {
 
     async startCollaborative() {
       return new Promise((resolve, reject) => {
-        // const params = new URLSearchParams({
-        //   folder_type: this.folder_type,
-        //   folder_slug: this.folder_slug,
-        //   meta_slug: this.meta_slug,
-        // });
-
-        // const path_to_meta = this.sharedb_id || this.path.replaceAll("/", "*");
         const path_to_meta = this.sharedb_id || encodeURIComponent(this.path);
 
         const requested_resource_url =
@@ -656,23 +539,15 @@ export default {
           "/isSharedb" +
           `?path_to_meta=${path_to_meta}`;
 
-        // console.log(
-        //   `CollaborativeEditor / startCollaborative : will connect to ws server with ${requested_resource_url}`
-        // );
-
         this.rtc.socket = new ReconnectingWebSocket(requested_resource_url);
         const connection = new ShareDB.Connection(this.rtc.socket);
         connection.on("state", (state) => {
           this.rtc.connection_state = state.toString();
         });
-
-        // console.log(`CollaborativeEditor / connecting to doc ${path_to_meta}`);
         this.doc = connection.get("collaborative_texts", path_to_meta);
 
         this.doc.subscribe((err) => {
           if (err) console.error(`CollaborativeEditor / err ${err}`);
-          // console.log(`CollaborativeEditor / doc subscribe`);
-
           if (this.doc.type) {
             // console.log(`CollaborativeEditor / doc already exists`);
             this.editor.setContents(this.doc.data, "init");
@@ -685,10 +560,8 @@ export default {
 
           this.editor.on("text-change", this.submitOPAndSave);
           this.doc.on("op", (op, source) => {
-            // console.log(`CollaborativeEditor / op applied`);
             this.text_deltas = this.doc.data;
             if (source === this.editor_id) return;
-            // console.log(`CollaborativeEditor / outside op applied`);
             this.editor.updateContents(op);
           });
 
@@ -699,12 +572,11 @@ export default {
 
         this.doc.on("error", (err) => {
           // err;
+          // todo
           // soucis : les situations ou le serveur a été fermé et en le rouvrant il ne possède plus d’instance du doc dans sharedb…
           console.error(`CollaborativeEditor / doc err ${err}`);
           this.$alertify.delay(4000).error(err);
-
           this.collaborative_is_loaded = true;
-
           return reject(err);
         });
       });
@@ -720,223 +592,18 @@ export default {
       this.collaborative_is_loaded = false;
     },
     submitOPAndSave(delta, oldDelta, source) {
-      // console.log(`CollaborativeEditor / submitOPAndSave w source ${source}`);
       if (source === "user") {
         this.doc.submitOp(delta, { source: this.editor_id });
-        // console.log(
-        //   `CollaborativeEditor / submitted op to server ${JSON.stringify(
-        //     delta
-        //   )}`
-        // );
         this.updateTextMedia();
       }
     },
-
     updateTextMedia() {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
       this.debounce_textUpdate = setTimeout(async () => {
-        // console.log(
-        //   `CollaborativeEditor • updateTextMedia: saving new snapshot`
-        // );
         await this.saveText();
-
         const { font } = this.editor.getFormat();
         localStorage.setItem("fontLastUsed", font);
       }, 5000);
-    },
-
-    addMediaAtTheEnd(media) {
-      this.addMediaAtIndex(this.editor.getLength() - 1, media);
-    },
-    addMediaAtCaretPosition(media) {
-      const selection = this.editor.getSelection(true);
-      if (selection && selection.index) {
-        this.addMediaAtIndex(selection.index, media);
-        return;
-      }
-      this.addMediaAtTheEnd(media);
-    },
-    addMediaAtIndex(index, media) {
-      // console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
-      // TODO fix
-      const mediaURL = `./${this.folder_slug}/${media.media_filename}`;
-      // const mediaURL =
-      //   this.$root.state.mode === "export_publication"
-      //     ? `./${this.folder_slug}/${media.media_filename}`
-      //     : `/${this.folder_slug}/${media.media_filename}`;
-
-      // setting editor focus and selection can cause the scroll to "jump"
-      // not exactly a good idea…
-      // this.editor.setSelection(index, Quill.sources.SILENT);
-      // this.editor.focus();
-
-      this.editor.blur();
-
-      const { $type, caption, $path } = media;
-      $path;
-
-      if ($type === "image") {
-        const thumb_path = media.$thumbs[1600];
-        if (thumb_path) {
-          // this.editor.insertText(index, "\n", Quill.sources.USER);
-          this.editor.insertEmbed(
-            index,
-            "media",
-            {
-              type: $type,
-              caption,
-              // TODO update with $path
-              // meta_filename: $slug,
-              // src: `./thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
-            },
-            Quill.sources.USER
-          );
-          // this.editor.setSelection(index + 1, Quill.sources.SILENT);
-        }
-      } else if ($type === "video") {
-        // this.editor.insertText(index, "\n", Quill.sources.USER);
-        this.editor.insertEmbed(
-          index,
-          "media",
-          {
-            type: $type,
-            caption,
-            // TODO update with $path
-            meta_filename: $path,
-            src: mediaURL,
-          },
-          Quill.sources.USER
-        );
-        // this.editor.setSelection(index + 1, Quill.sources.SILENT);
-      } else if ($type === "audio") {
-        this.editor.insertEmbed(
-          index,
-          "media",
-          {
-            type: $type,
-            caption,
-            // TODO update with $path
-            meta_filename: $path,
-            src: mediaURL,
-          },
-          Quill.sources.USER
-        );
-      } else {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("media_type_not_handled"));
-      }
-    },
-
-    onDragover($event) {
-      if (!this.editor_is_enabled) return;
-      // console.log(`CollaborativeEditor2 / onDragover`);
-      $event.preventDefault();
-      // todo debounce dragover to trigger only a handful of times per seconds
-      // const el = $event.target;
-      let _blot = this.getBlockFromElement($event.target);
-      if (!_blot) return false;
-
-      // do nothing if dragover on
-      // if (el.classList.contains("ql-editor")) return;
-
-      // if (el.parentElement.classList.contains("ql-editor")) {
-      if (!_blot.domNode.classList.contains("is--dragover")) {
-        _blot.domNode.classList.add("is--dragover");
-        _blot.domNode.addEventListener("dragleave", () => {
-          // console.log(`CollaborativeEditor2 / dragleave`);
-          _blot.domNode.classList.remove("is--dragover");
-        });
-      }
-    },
-    // onDragLeave($event) {},
-    onDrop($event) {
-      if (!this.editor_is_enabled) return;
-      // console.log(`CollaborativeEditor2 / onDrop`);
-
-      // Prevent default behavior (Prevent file from being opened)
-      $event.preventDefault();
-      $event.dataTransfer.dropEffect = "move";
-
-      this.removeDragoverFromBlots();
-
-      if ($event.dataTransfer.getData("text/plain") === "media_in_quill") {
-        // console.log(
-        //   `CollaborativeEditor2 / onDrop : : drag and dropped a media from quill`
-        // );
-
-        let _blot = this.getBlockFromElement($event.target);
-        const index = this.editor.getIndex(_blot);
-
-        // find which blot was dragged (A)
-        // find where it was dropped (B)
-        // move delta from A to B
-
-        // console.log(`_blot is currently at index ${index}`);
-      } else if ($event.dataTransfer.getData("text/plain")) {
-        // console.log(
-        //   `CollaborativeEditor2 / onDrop : : dropped a media from the library`
-        // );
-
-        const media = JSON.parse($event.dataTransfer.getData("text/plain"));
-        // console.log(media);
-
-        if (media.media_filename) {
-          // drop sur l’éditor et pas sur une ligne
-          if ($event.target.classList.contains("ql-editor")) {
-            // console.log(
-            //   "dropped on editor and not on line, will insert at the end of doc"
-            // );
-            this.addMediaAtIndex(this.editor.getLength() - 1, media);
-            return;
-          }
-
-          let _blot = this.getBlockFromElement($event.target);
-
-          if (!_blot) {
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error(this.$t("failed_to_find_block_line"));
-            return;
-          }
-
-          _blot =
-            _blot.next !== null && _blot.next.domNode ? _blot.next : _blot;
-
-          const index = this.editor.getIndex(_blot);
-          this.addMediaAtIndex(index - 1, media);
-        }
-      } else {
-        // console.log(
-        //   `CollaborativeEditor2 / onDrop : missing meta for drop to occur`
-        // );
-      }
-    },
-
-    removeDragoverFromBlots() {
-      this.editor.getLines().map((b) => {
-        while (b.parent !== b.scroll) {
-          b = b.parent;
-          if (b === b.scroll) {
-            break;
-          }
-        }
-        if (b !== b.scroll && b.domNode) {
-          b.domNode.classList.remove("is--dragover");
-        }
-      });
-    },
-
-    getBlockFromElement(_target) {
-      while (!_target.parentElement.classList.contains("ql-editor")) {
-        _target = _target.parentElement;
-        if (_target === null || !_target.parentElement) break;
-      }
-      let _blot = Quill.find(_target);
-      if (_blot) return _blot;
-      return false;
     },
   },
 };
@@ -1043,13 +710,6 @@ export default {
           background-color: var(--active-color);
           transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
         }
-
-        &.is--dragover {
-          &::after {
-            margin: 4px 0;
-            height: 4px;
-          }
-        }
       }
     }
 
@@ -1063,6 +723,16 @@ export default {
     }
   }
 }
+._collaborativeEditor.is--editing_is_enabled {
+  background-color: var(--c-gris_clair);
+
+  ::v-deep {
+    .ql-editor {
+      padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
+    }
+  }
+}
+
 ._collaborativeEditor:not(.is--editing_is_enabled) {
   ::v-deep {
     .ql-toolbar {
@@ -1107,8 +777,8 @@ export default {
   top: 0;
   z-index: 2;
   padding: calc(var(--spacing) / 4);
-  margin-bottom: 0.3em;
-  border-radius: 14px;
+  margin-bottom: 0;
+  border-radius: var(--input-border-radius);
   // hides select, do not use
   // overflow: hidden;
 
@@ -1206,7 +876,7 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     border: 2px solid var(--toolbar-bg);
-    border-radius: 12px;
+    border-radius: var(--input-border-radius);
     background: #fff;
 
     button,
@@ -1399,7 +1069,7 @@ export default {
 
   > * {
     border: 2px solid var(--toolbar-bg);
-    border-radius: 12px;
+    border-radius: var(--input-border-radius);
     overflow: hidden;
     background: #fff;
     display: flex;

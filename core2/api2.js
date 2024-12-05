@@ -9,7 +9,8 @@ const folder = require("./folder"),
   notifier = require("./notifier"),
   utils = require("./utils"),
   Exporter = require("./Exporter"),
-  auth = require("./auth");
+  auth = require("./auth"),
+  users = require("./users");
 
 module.exports = (function () {
   const API = {
@@ -39,6 +40,7 @@ module.exports = (function () {
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
+    app.get("/_api2/_users", _getAllUsers);
 
     /* PUBLIC FILES */
     app.get(
@@ -247,6 +249,8 @@ module.exports = (function () {
       _removeFolder
     );
 
+    app.get("/site.webmanifest", _loadManifest);
+    app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
   }
 
@@ -583,6 +587,25 @@ module.exports = (function () {
 
     res.render("index", d);
   }
+
+  async function _loadManifest(req, res) {
+    const { name_of_instance } = await settings.get();
+    res.type("application/json");
+    res.send({
+      name: name_of_instance || "do•doc",
+      short_name: name_of_instance || "do•doc",
+      theme_color: "#ffffff",
+      background_color: "#ffffff",
+      display: "standalone",
+    });
+  }
+  async function _loadRobots(req, res) {
+    const { enable_indexing } = await settings.get();
+    const disallow = enable_indexing === true ? "" : "/";
+    res.type("text/plain");
+    res.send(`User-agent: *\nDisallow: ${disallow}`);
+  }
+
   function loadPerf(req, res) {
     let d = {};
     d.local_ips = utils.getLocalIPs();
@@ -1293,6 +1316,7 @@ module.exports = (function () {
       await file.removeFile({
         path_to_folder,
         meta_filename,
+        path_to_meta,
       });
       dev.logpackets(`file ${meta_filename} was removed`);
       res.status(200).json({ status: "ok" });
@@ -1396,6 +1420,11 @@ module.exports = (function () {
     const new_path = data.new_path;
     settings.updatePath({ new_path });
     res.status(200).json({ status: "ok" });
+  }
+
+  async function _getAllUsers(req, res, next) {
+    const all_users = users.getAllUsers();
+    res.json(all_users);
   }
 
   async function _loadCustomFonts() {

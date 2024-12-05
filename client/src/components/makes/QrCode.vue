@@ -117,6 +117,7 @@ export default {
           throw err;
         });
 
+      this.$eventHub.$emit("animatePane", "collect");
       setTimeout(() => {
         this.status_saving_to_project = "saved";
         setTimeout(() => {

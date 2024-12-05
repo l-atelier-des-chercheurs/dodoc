@@ -143,6 +143,11 @@ export default {
       this.img_height = img.height;
 
       const ctx = canvas.getContext("2d");
+
+      // draw background
+      // ctx.fillStyle = "white";
+      // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       let filters = [];
       filters.push(`saturate(${this.saturation}%)`);
       filters.push(`brightness(${this.brightness}%)`);
@@ -186,12 +191,13 @@ export default {
   }
 }
 ._preview {
-  flex: 1 1 0;
+  flex: 1 1 200px;
   // background-color: var(--c-noir);
   padding: calc(var(--spacing) / 1);
 
   canvas {
-    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
+    // filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
+    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
     width: 100%;
     height: 100%;
     object-fit: contain;

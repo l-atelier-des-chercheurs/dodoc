@@ -144,7 +144,7 @@ export default {
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
-  --c-gris: hsl(195, 14%, 93%);
+  --c-gris: hsl(195, 14%, 83%);
   --c-gris_clair: hsl(195, 14%, 97%);
   --c-gris_fonce: hsl(195, 14%, 45%);
   --c-vert: hsl(143, 69%, 55%);
@@ -194,7 +194,7 @@ export default {
   --input-border-color: var(--c-gris_fonce);
   --input-border-color-focus: var(--active-color);
   --input-border-width: 3px;
-  --input-border-radius: 3px;
+  --input-border-radius: 6px;
   --input-bg-color: var(--color-white);
   --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
   --input-readonly-bg-color: var(--component-bg-color);
@@ -630,6 +630,21 @@ img {
   }
   &-leave-active {
     position: absolute !important;
+  }
+}
+
+.enableMode {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transform: scale(1.5);
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 

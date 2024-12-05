@@ -4,7 +4,9 @@
     class="u-button u-button_verysmall _editBtn"
     :class="{
       'is--unfolded': is_unfolded,
+      'is--spinning': is_spinning,
     }"
+    :disabled="disabled"
     :style="btn_styles"
     @click="$emit('click')"
   >
@@ -18,6 +20,7 @@
 <script>
 export default {
   props: {
+    label: String,
     btn_type: {
       type: String,
       default: "edit",
@@ -26,8 +29,19 @@ export default {
       type: String,
       default: "right",
     },
-    label: String,
+    style_type: {
+      type: String,
+      default: "default",
+    },
     is_unfolded: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    is_spinning: {
       type: Boolean,
       default: false,
     },
@@ -97,12 +111,22 @@ export default {
           label: this.$t("create_page"),
           icon: "plus-lg",
         };
+      else if (this.btn_type === "regenerate_thumbs")
+        return {
+          label: this.$t("regenerate_thumbs"),
+          icon: "arrow-clockwise",
+        };
       return {
         label: this.$t("edit"),
         icon: "pencil-fill",
       };
     },
     btn_styles() {
+      if (this.style_type === "black")
+        return `
+          --color1: var(--c-noir);
+          --color2: white;        `;
+
       if (
         this.btn_type === "fullscreen" ||
         this.btn_type === "close" ||
@@ -140,7 +164,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: rgba(255, 255, 255, 1);
+  --color1: rgba(255, 255, 255, 0.68);
   --color2: var(--active-color);
 
   position: relative;
@@ -149,7 +173,7 @@ export default {
   color: var(--color2);
   // border: 1px solid var(--color1);
 
-  box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
+  // box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
 
   // margin-top: -0.5rem;
   // margin-bottom: -0.5rem;
@@ -210,6 +234,12 @@ export default {
   &.is--unfolded {
     ._label {
       pointer-events: auto;
+    }
+  }
+
+  &.is--spinning {
+    ._icon {
+      animation: spin 1s linear infinite;
     }
   }
 

@@ -165,11 +165,17 @@ module.exports = (function () {
     destination,
     quality_preset,
   }) {
+    // check if source has transparency
+    // const { hasAlpha } = await sharp(source).metadata();
+    const hasAlpha = false;
+    const format = hasAlpha ? "png" : "jpeg";
+    const quality = hasAlpha ? 100 : global.settings.mediaThumbQuality;
+    const background = hasAlpha ? "transparent" : "white";
+
     const sharp_buffer = await sharp(source, addtl_infos)
       .rotate()
-      .toFormat("jpeg", {
-        quality: global.settings.mediaThumbQuality,
-      })
+      .flatten({ background })
+      .toFormat(format, { quality })
       .toBuffer()
       .catch((err) => {
         dev.error(`Failed to sharp create image to destination.`);

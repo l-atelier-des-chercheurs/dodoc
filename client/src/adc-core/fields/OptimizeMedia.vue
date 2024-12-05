@@ -18,7 +18,7 @@
       v-if="show_modal"
       :title="$t('convert_shorten')"
       :size="modal_width"
-      @close="show_modal = false"
+      @close="closeModal"
     >
       <div class="_cont">
         <LoaderSpinner v-if="is_optimizing" class="_loader" />
@@ -30,8 +30,26 @@
               :selection_start.sync="selection_start"
               :selection_end.sync="selection_end"
             />
-            <div class="u-spacingBottom" />
           </template>
+
+          <div class="">
+            <DLabel :str="$t('quality')" />
+            <div
+              v-if="media.$optimized === true"
+              class="u-spacingBottom u-instructions"
+            >
+              {{ $t("already_optimized") }}
+            </div>
+            <div class="">
+              <SelectField2
+                :value="resolution_preset_picked"
+                :options="presets"
+                :can_edit="true"
+                :hide_validation="true"
+                @change="resolution_preset_picked = $event"
+              />
+            </div>
+          </div>
         </div>
         <div v-else>
           <div
@@ -93,7 +111,7 @@
                     media.$infos && media.$infos.width && media.$infos.height
                   "
                 >
-                  {{ media.$infos.width + "×" + media.$infos.height }}
+                  {{ media.$infos.width + " × " + media.$infos.height }}
                 </template>
                 <template v-else> ? </template>
               </span>
@@ -108,7 +126,7 @@
                 >
                   {{
                     optimized_file.$infos.width +
-                    "×" +
+                    " × " +
                     optimized_file.$infos.height
                   }}
                 </template>
@@ -119,27 +137,8 @@
         </div>
       </div>
 
-      <div slot="footer" class="_convertBtns">
+      <div slot="footer" class="">
         <template v-if="!optimized_file">
-          <div>
-            <DLabel :str="$t('quality')" />
-            <div
-              v-if="media.$optimized === true"
-              class="u-spacingBottom u-instructions"
-            >
-              {{ $t("already_optimized") }}
-            </div>
-            <div class="">
-              <SelectField2
-                :value="resolution_preset_picked"
-                :options="presets"
-                :can_edit="true"
-                :hide_validation="true"
-                @change="resolution_preset_picked = $event"
-              />
-            </div>
-          </div>
-
           <div>
             <div>
               <button
@@ -157,6 +156,13 @@
           </div>
         </template>
         <template v-else>
+          <div class="_saveLocal">
+            <DownloadFile :file="optimized_file">
+              <b-icon icon="file-earmark-arrow-down" />
+              {{ $t("download") }}
+            </DownloadFile>
+          </div>
+
           <div class="_btnRow">
             <button
               type="button"
@@ -213,13 +219,7 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    show_modal() {
-      if (!this.show_modal) {
-        this.optimized_file = "";
-      }
-    },
-  },
+  watch: {},
   computed: {
     modal_width() {
       if (this.optimized_file || this.extract_selection) return "large";
@@ -314,13 +314,21 @@ export default {
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
     async cancel() {
+      this.removeOptimizedFile();
+    },
+    async removeOptimizedFile() {
+      if (!this.optimized_file?.$path) return;
       await this.$api.deleteItem({
         path: this.optimized_file.$path,
       });
       this.optimized_file = undefined;
-      // this.show_modal = false;
     },
     keepBoth() {
+      this.show_modal = false;
+      this.optimized_file = undefined;
+    },
+    closeModal() {
+      this.removeOptimizedFile();
       this.show_modal = false;
     },
     async replaceOriginal() {
@@ -397,16 +405,11 @@ export default {
   gap: calc(var(--spacing) / 1);
 }
 
-._convertBtns {
-  flex: 1 1 auto;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--spacing) / 1);
-}
-
 ._loader {
   z-index: 150;
+}
+
+._saveLocal {
+  text-align: right;
 }
 </style>

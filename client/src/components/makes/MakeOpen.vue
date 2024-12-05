@@ -51,6 +51,10 @@
           />
         </div>
       </div>
+      <MakeStopmotionAnimation
+        v-else-if="make.type === 'stopmotion_animation'"
+        :make="make"
+      />
       <MixAudioAndImageOrVideo
         v-else-if="
           ['mix_audio_and_image', 'mix_audio_and_video'].includes(make.type)
@@ -79,6 +83,8 @@ export default {
     ImageAndVideoMontage: () =>
       import("@/components/makes/ImageAndVideoMontage.vue"),
     VideoEffects: () => import("@/components/makes/VideoEffects.vue"),
+    MakeStopmotionAnimation: () =>
+      import("@/components/makes/MakeStopmotionAnimation.vue"),
     MixAudioAndImageOrVideo: () =>
       import("@/components/makes/MixAudioAndImageOrVideo.vue"),
     QrCode: () => import("@/components/makes/QrCode.vue"),

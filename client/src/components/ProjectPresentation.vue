@@ -13,6 +13,7 @@
         <CoverField
           class="_cover"
           :context="context"
+          :ratio="'3 / 2'"
           :cover="project.$cover"
           :path="project.$path"
           :can_edit="can_edit"
@@ -96,30 +97,20 @@
           "
         />
 
-        <CollaborativeEditor2
+        <TitleField
           v-if="
             (context === 'list' && project.description) ||
             (context === 'full' && (project.description || can_edit))
           "
+          :field_name="'description'"
           :label="context === 'full' ? $t('description') : ''"
-          :field_to_edit="'description'"
+          :input_type="'editor'"
+          :custom_formats="['bold', 'italic', 'link']"
           :content="project.description"
           :path="project.$path"
-          :custom_formats="['bold', 'italic', 'link']"
-          :is_collaborative="false"
           :maxlength="1280"
           :can_edit="can_edit"
         />
-
-        <!-- <CollaborativeEditor2
-          :label="context === 'full' ? $t('description') : ''"
-          :path="project.$path"
-          :field_to_edit="'description'"
-          :custom_formats="['bold', 'italic', 'link']"
-          :content="project.description"
-          :is_collaborative="false"
-          :can_edit="can_edit"
-        /> -->
 
         <AdminsAndContributorsField
           v-if="context === 'full'"
@@ -365,24 +356,6 @@ export default {
         font-size: var(--sl-font-size-medium);
       }
     }
-    ._description {
-      font-size: var(--sl-font-size-small);
-
-      ::v-deep ._content {
-        display: block;
-        width: 100%;
-
-        p:first-child {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        p:not(:first-child) {
-          display: none;
-        }
-      }
-    }
   }
 
   &.is--list {
@@ -445,7 +418,7 @@ export default {
   flex-flow: column nowrap;
   place-content: center;
 
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 
   transition: all 0.4s;
 
@@ -476,7 +449,7 @@ export default {
   }
 
   > * {
-    max-width: 56ch;
+    // max-width: 56ch;
   }
 }
 

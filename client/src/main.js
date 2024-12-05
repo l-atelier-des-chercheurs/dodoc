@@ -170,6 +170,8 @@ import FullscreenView from "@/adc-core/fields/FullscreenView.vue";
 Vue.component("FullscreenView", FullscreenView);
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
 Vue.component("CollaborativeEditor2", CollaborativeEditor2);
+import CollaborativeEditor3 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor3.vue";
+Vue.component("CollaborativeEditor3", CollaborativeEditor3);
 import TableEditor from "@/adc-core/fields/TableEditor.vue";
 Vue.component("TableEditor", TableEditor);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
@@ -193,9 +195,9 @@ Vue.component("EditBtn", EditBtn);
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
   template: `
-  <div class="u-loader">
+    <div class="u-loader">
       <div class="_spinner" />
-  </div>
+    </div>
   `,
 });
 
@@ -279,8 +281,8 @@ new Vue({
 
     publicPath: process.env.BASE_URL,
 
-    modal_is_opened: false,
     has_file_dragover_on_window: false,
+    opened_modals: 0,
 
     current_time: "",
 
@@ -335,15 +337,18 @@ new Vue({
       // return false;
       return this.window.innerWidth < 1000;
     },
+    modal_is_opened() {
+      return this.opened_modals > 0;
+    },
   },
   methods: {
     modalIsOpened() {
-      document.body.style.overflow = "hidden";
-      this.modal_is_opened = true;
+      this.opened_modals++;
+      if (this.opened_modals === 1) document.body.style.overflow = "hidden";
     },
     modalIsClosed() {
-      document.body.style.overflow = "";
-      this.modal_is_opened = false;
+      this.opened_modals--;
+      if (this.opened_modals === 0) document.body.style.overflow = "";
     },
     async changeLocale(lang) {
       await changeLocale(lang);

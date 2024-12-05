@@ -188,6 +188,7 @@ button,
   font-size: var(--input-font-size-small);
   text-decoration: none;
   color: inherit;
+  white-space: nowrap;
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-radius: var(--input-border-radius);
@@ -445,7 +446,7 @@ textarea,
   // border: solid var(--input-border-width) var(--input-border-color);
   padding: calc(var(--spacing) / 2);
   border-radius: var(--input-border-radius);
-  background-color: var(--c-gris);
+  background-color: var(--c-gris_clair);
   color: inherit;
 
   // background: white;
@@ -553,7 +554,7 @@ select {
   }
 
   &.is--active {
-    font-weight: 700;
+    background-color: var(--active-color);
   }
 }
 
@@ -658,7 +659,8 @@ input[type="file"] {
 .u-switch {
   /* Switches */
   --switch-font-size: var(--input-font-size);
-  --switch-bg-color: var(--c-rouge_clair);
+  --switch-bg-color: var(--c-gris);
+  --switch-bg-color-hovered: var(--c-rouge_clair);
   --switch-bg-color-checked: var(--c-rouge);
   --switch-border-radius: var(--switch-size);
 
@@ -671,6 +673,10 @@ input[type="file"] {
   --switch-speed: 0.2s;
 
   font-size: var(--switch-font-size);
+
+  &:hover {
+    --switch-bg-color: var(--switch-bg-color-hovered);
+  }
 
   input {
     display: none !important;
@@ -785,13 +791,13 @@ input[type="file"] {
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 .u-mediaOptions {
@@ -930,7 +936,7 @@ input[type="checkbox"]:disabled {
   aspect-ratio: 1;
   border-radius: 50%;
   font-family: "Fira Code";
-  padding: calc(var(--spacing) / 8);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   margin: calc(var(--spacing) / 4);
 
   font-weight: 500;

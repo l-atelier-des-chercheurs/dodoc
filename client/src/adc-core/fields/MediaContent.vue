@@ -149,7 +149,7 @@
               frameborder="0"
               @load="iframeLoaded"
             />
-            <vue-plyr v-else :key="file_full_path">
+            <vue-plyr v-else :key="file_full_path" ref="plyr">
               <div class="plyr__video-embed">
                 <iframe
                   :src="url_to_site.src"
@@ -237,10 +237,13 @@ export default {
       start_iframe: false,
       is_loading_iframe: false,
       failed_to_load_iframe: false,
+      player: null,
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.$refs.plyr?.player) this.player = this.$refs.plyr.player;
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -315,9 +318,14 @@ export default {
 <style lang="scss" scoped>
 ._fileName {
   padding: calc(var(--spacing) / 4);
-
   display: flex;
   gap: calc(var(--spacing) / 8);
+  text-align: center;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
 }
 
 ._mediaContent {

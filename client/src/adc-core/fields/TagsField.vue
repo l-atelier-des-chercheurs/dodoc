@@ -22,7 +22,7 @@
         />
       </div>
 
-      <fieldset class="u-spacingBottom _newTagPane" v-if="create_new_tag">
+      <fieldset class="_newTagPane" v-if="create_new_tag">
         <legend class="u-label">{{ $t("add_item") }}</legend>
 
         <div class="u-spacingBottom">
@@ -43,8 +43,9 @@
             :required="true"
             @toggleValidity="($event) => (allow_save_newkeyword = $event)"
             @onEnter="onEnter"
+            @onShiftEnter="onShiftEnter"
           />
-          <div class="">
+          <div>
             <button
               v-if="allow_save_newkeyword && !new_tag_name_already_exists"
               type="button"
@@ -152,6 +153,9 @@ export default {
       if (this.allow_save_newkeyword && !this.new_tag_name_already_exists)
         this.newTag();
     },
+    onShiftEnter() {
+      this.updateTags();
+    },
     async updateTags() {
       this.is_saving = true;
 
@@ -228,17 +232,17 @@ export default {
   justify-content: center;
 }
 
-._submitBtn {
-  padding: calc(var(--spacing) / 8);
-}
-
 ._sameRowBtnInput {
   display: flex;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 4);
 
   > ._input {
     width: 100%;
+  }
+  ._submitBtn {
+    padding: calc(var(--spacing) / 8);
+    height: 2rem;
+    width: 2rem;
   }
 }
 </style>

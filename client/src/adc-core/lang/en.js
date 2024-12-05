@@ -206,7 +206,7 @@ export default {
     "Close and restart do•doc manually or using the button below for the setting to take effect.",
   restart: "Close and restart",
 
-  refresh_window_to_apply: "Refresh the window to apply",
+  refresh_window_to_see_changes: "Refresh the window to see the changes",
   reveal: "Reveal",
   choose_a_pane: "Choose a pane to start!",
   latest_changes_to_project: "Latest changes to project",
@@ -535,6 +535,7 @@ export default {
   desktop_1080: "Desktop 1080p",
   desktop_720: "Desktop 720p",
   custom: "Custom",
+  custom_f: "Custom",
   width: "Width",
   height: "Height",
   text_size: "Text size",
@@ -617,7 +618,6 @@ export default {
   no_preview_to_show: "No previews to show at the moment",
   no_media_in_project: "No media in this project",
   number_of_media: "Number of media",
-  "displayed:": "Displayed:",
   media_removed: "Media deleted",
   media_duplicated: "Media duplicated",
   media_was_saved_to_project: "The media was added to the project",
@@ -768,6 +768,7 @@ export default {
   replace_color_with: "Replace with",
   use_own_risk: "Use with caution: media may become invisible in some cases!",
   chroma_key: "Overlay (green background)",
+  chroma_key_color: "Color to replace",
   color: "Color",
   flip_horizontally: "Flip horizontally",
   flip_vertically: "Flip vertically",
@@ -841,7 +842,7 @@ export default {
   stop_stopmotion: "Stop this animation",
   onion_skin: "Onion skin",
   pick_a_camera: "Select a camera",
-  resolutions: "Resolutions",
+  resolutions: "Resolution",
   resolution: "Resolution",
   screen_capture: "Screen Capture",
   cant_pick_resolution_when_screen_capture:
@@ -1136,4 +1137,11 @@ export default {
 
   duration_explanation:
     "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
+
+  connected_currently: "Connected currently",
+
+  start_by_uploading_images: "Start by uploading images below",
+  or: "or",
+  live_dubbing: "Live dubbing",
+  play_both: "Play both at the same time",
 };
