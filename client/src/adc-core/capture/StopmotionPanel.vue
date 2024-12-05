@@ -149,15 +149,17 @@
                     updateMediaDurationForCurrentPreviousPhoto($event, index)
                   "
                 />
-                <button
-                  v-if="showPreviousPhoto(media.$path)"
-                  type="button"
-                  @click="removeMedia(media.$path)"
-                  class="u-button u-button_icon u-button_small u-button_white"
-                  :title="$t('remove')"
-                >
-                  <b-icon icon="trash" />
-                </button>
+                <div>
+                  <button
+                    v-if="showPreviousPhoto(media.$path)"
+                    type="button"
+                    @click="removeMedia(media.$path)"
+                    class="u-button u-button_icon u-button_small u-button_white"
+                    :title="$t('remove')"
+                  >
+                    <b-icon icon="trash" />
+                  </button>
+                </div>
               </div>
             </div>
 
