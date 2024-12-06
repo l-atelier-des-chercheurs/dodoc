@@ -25,9 +25,11 @@ module.exports = async function () {
 
   const debug = process.argv.length > 0 && process.argv.includes("--debug");
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
+  const livereload =
+    process.argv.length > 0 && process.argv.includes("--livereload");
   const logToFile = false;
 
-  dev.init(debug, verbose, logToFile);
+  dev.init(debug, verbose, livereload, logToFile);
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
