@@ -90,7 +90,8 @@ import TextVersioning from "./TextVersioning.vue";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
-ShareDB.types.register(require("rich-text").type);
+import richText from "rich-text";
+ShareDB.types.register(richText.type);
 
 import {
   fonts as default_fonts,
@@ -983,7 +984,26 @@ export default {
       padding: 0px;
       padding-bottom: 0.4em;
 
-      @import "./imports/mainText.scss";
+      > * {
+        padding: 0;
+        margin: 0;
+      }
+      > img {
+        max-width: 30ch;
+      }
+
+      blockquote {
+        padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+        border-radius: 5px;
+        border: none;
+        border-left: 2px solid var(--c-gris);
+        background-color: var(--c-gris_clair);
+      }
+
+      pre.ql-syntax {
+        font-family: Fira Mono;
+        padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+      }
 
       &[contenteditable="true"] {
         // padding: 2px;

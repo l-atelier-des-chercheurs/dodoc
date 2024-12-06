@@ -33,7 +33,7 @@ Vue.use(VuePlyr, {
       "volume",
       "fullscreen",
     ],
-    iconUrl: `${process.env.BASE_URL}plyr.svg`,
+    iconUrl: `plyr.svg`,
   },
 });
 Vue.directive("uppercase", {
@@ -192,14 +192,15 @@ Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
 
-Vue.component("LoaderSpinner", {
-  name: "LoaderSpinner",
-  template: `
+import { compileToFunctions } from "vue-template-compiler";
+Vue.component(
+  "LoaderSpinner",
+  compileToFunctions(`
     <div class="u-loader">
       <div class="_spinner" />
     </div>
-  `,
-});
+  `)
+);
 
 document.addEventListener(
   "dragover",
@@ -279,7 +280,7 @@ new Vue({
     is_loading: true,
     debug_mode,
 
-    publicPath: process.env.BASE_URL,
+    publicPath: "",
 
     has_file_dragover_on_window: false,
     opened_modals: 0,

@@ -171,7 +171,26 @@ export default {
   // overflow: auto;
 
   ::v-deep {
-    @import "./imports/mainText.scss";
+    > * {
+      padding: 0;
+      margin: 0;
+    }
+    > img {
+      max-width: 30ch;
+    }
+
+    blockquote {
+      padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+      border-radius: 5px;
+      border: none;
+      border-left: 2px solid var(--c-gris);
+      background-color: var(--c-gris_clair);
+    }
+
+    pre.ql-syntax {
+      font-family: Fira Mono;
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    }
   }
 }
 </style>

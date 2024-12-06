@@ -9,6 +9,17 @@ import vueJsx from "@vitejs/plugin-vue2-jsx";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue2(), cssInjectedByJsPlugin(), basicSsl(), vueJsx()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+        @use "@/utils/mixins.scss" as *;
+        @use "@/utils/utils.scss" as *;
+        `,
+        api: "modern-compiler", // or "modern"
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

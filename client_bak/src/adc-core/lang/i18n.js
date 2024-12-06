@@ -46,7 +46,7 @@ const i18n = () => {
 
   changeLocale = async (new_lang) => {
     const messages = await import(
-      /* webpackChunkName: "lang-[request]" */ `@/adc-core/lang/${new_lang}.js`
+      /* webpackChunkName: "lang-[request]" */ `./${new_lang}.js`
     );
     i18n.locale = new_lang;
     document.querySelector("html").setAttribute("lang", new_lang);

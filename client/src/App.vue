@@ -123,8 +123,6 @@ export default {
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
 <style src="../node_modules/vue-plyr/dist/vue-plyr.css"></style>
 <style lang="scss">
-@import "@/utils/utils.scss";
-
 :root {
   --spacing: 1rem;
 

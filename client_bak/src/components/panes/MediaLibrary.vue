@@ -381,11 +381,11 @@
   </div>
 </template>
 <script>
-import ImportFileZone from "@/adc-core/ui/ImportFileZone";
+import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 import MediaTile from "@/components/MediaTile.vue";
-import MediaModal from "@/components/MediaModal";
-import BatchEditInformationsModal from "@/components/BatchEditInformationsModal";
-import DuplicateMedia from "@/components/DuplicateMedia";
+import MediaModal from "@/components/MediaModal.vue";
+import BatchEditInformationsModal from "@/components/BatchEditInformationsModal.vue";
+import DuplicateMedia from "@/components/DuplicateMedia.vue";
 
 export default {
   props: {
