@@ -18,7 +18,6 @@ export default defineConfig({
     port: 5173,
     origin: "https://localhost:5173",
     cors: true,
-    emptyOutDir: true,
   },
   build: {
     outDir: "dist",
