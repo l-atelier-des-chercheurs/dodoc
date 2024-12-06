@@ -1,4 +1,4 @@
-<script>
+<script lang="jsx">
 /* eslint-disable */
 import {
   getBoundingRect,

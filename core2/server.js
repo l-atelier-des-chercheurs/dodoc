@@ -83,7 +83,7 @@ module.exports = function () {
   app.use(express.static(global.pathToUserContent));
   app.use(
     "/_client",
-    express.static(path.join(global.appRoot, "client2", "dist"))
+    express.static(path.join(global.appRoot, "client", "dist"))
   );
 
   app.use(express.urlencoded({ extended: true }));

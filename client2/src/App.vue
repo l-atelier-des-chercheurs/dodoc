@@ -1,6 +1,6 @@
 <template>
   <div>
-    Ploup5
+    Ploup10
     <header>
       <img
         alt="Vue logo"
@@ -18,11 +18,30 @@
       </div>
     </header>
 
+    <HelloWorld msg="Hello Vue 3 + Vite !" />
+
     <RouterView />
   </div>
 </template>
 <script>
 import { RouterLink, RouterView } from "vue-router";
+import HelloWorld from "@/components/HelloWorld.vue";
+
+export default {
+  props: {},
+  components: {
+    HelloWorld,
+  },
+  data() {
+    return {};
+  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+  watch: {},
+  computed: {},
+  methods: {},
+};
 </script>
 
 <style scoped>
