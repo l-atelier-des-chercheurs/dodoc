@@ -396,6 +396,7 @@ input[type="datetime-local"],
 input[type="email"],
 input[type="month"],
 input[type="number"],
+input[type="checkbox"],
 input[type="password"],
 input[type="search"],
 input[type="tel"],
@@ -424,12 +425,14 @@ input[type="datetime-local"],
 input[type="email"],
 input[type="month"],
 input[type="number"],
+input[type="checkbox"],
 input[type="password"],
 input[type="search"],
 input[type="tel"],
 input[type="text"],
 input[type="time"],
 input[type="url"],
+input[type="week"],
 input[type="week"],
 select,
 textarea,
@@ -460,7 +463,7 @@ textarea,
   padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
   margin: 0;
 
-  border-bottom: 2px solid hsl(195, 14%, 83%);
+  border-bottom: 2px solid var(--c-gris);
 
   transition: all 0.05s;
 
@@ -848,64 +851,35 @@ fieldset {
 }
 
 input[type="checkbox"] {
-  --form-background: #ffffff;
-  --form-control-color: var(--active-color);
-  --form-control-disabled: var(--c-gris);
-
-  /* Add if not using autoprefixer */
-  -webkit-appearance: none;
-  /* Remove most all native input styles */
-  appearance: none;
-  /* For iOS < 15 */
-  background-color: var(--form-background);
-  /* Not removed via appearance */
-  margin: 0;
-
-  font: inherit;
-  color: currentColor;
   width: 1.15em;
   height: 1.15em;
-  border: 2px solid currentColor;
-  border-radius: var(--switch-thumb-border-radius);
-  transform: translateY(-0.075em);
+  border: 2px solid var(--c-gris);
 
   display: grid;
   place-content: center;
+
+  &::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0);
+    transform-origin: bottom left;
+    transition: 0.12s transform cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: inset 1em 1em currentColor;
+    /* Windows High Contrast Mode */
+    background-color: CanvasText;
+  }
+
+  &:checked::before {
+    transform: scale(1);
+  }
+
+  &:disabled {
+    color: var(--c-gris);
+    cursor: not-allowed;
+  }
 }
-
-input[type="checkbox"]::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-  transform: scale(0);
-  transform-origin: bottom left;
-  transition: 0.12s transform cubic-bezier(0.19, 1, 0.22, 1);
-  box-shadow: inset 1em 1em var(--form-control-color);
-  /* Windows High Contrast Mode */
-  background-color: CanvasText;
-}
-
-input[type="checkbox"]:checked::before {
-  transform: scale(1);
-}
-
-input[type="checkbox"]:focus-visible {
-  outline: max(2px, 0.15em) solid currentColor;
-  outline-offset: max(2px, 0.15em);
-}
-
-input[type="checkbox"]:hover {
-  color: var(--form-control-color);
-}
-
-input[type="checkbox"]:disabled {
-  --form-control-color: var(--form-control-disabled);
-
-  color: var(--form-control-disabled);
-  cursor: not-allowed;
-}
-
 .u-addBtn {
   padding: calc(var(--spacing) / 4);
   color: var(--c-noir);

@@ -47,15 +47,11 @@
             </div>
             <div v-if="resolution_preset_picked === 'custom'">
               <div class="u-spacingBottom" />
-
               <CustomResolutionInput
                 :width.sync="custom_resolution_width"
                 :height.sync="custom_resolution_height"
                 :ratio="media_ratio"
               />
-
-              {{ custom_resolution_width }} /
-              {{ custom_resolution_height }}
             </div>
           </div>
         </div>
