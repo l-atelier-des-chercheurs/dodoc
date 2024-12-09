@@ -208,6 +208,7 @@ module.exports = (function () {
         .resize({
           width: quality_preset.width,
           height: quality_preset.height,
+          fit: "fill",
         })
         .toFile(destination);
   }
