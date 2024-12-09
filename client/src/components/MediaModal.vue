@@ -473,7 +473,7 @@ export default {
 
   > ._preview {
     position: relative;
-    background: var(--c-gris);
+    background: var(--c-gris_clair);
     overflow: hidden;
   }
 
