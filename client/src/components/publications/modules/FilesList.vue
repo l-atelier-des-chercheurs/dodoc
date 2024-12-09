@@ -24,21 +24,40 @@
           class="_link"
           :file="_linked_media"
         >
-          <MediaContent
+          <button
+            type="button"
+            class="_link--previewBtn"
             v-if="
               ['image', 'video', 'audio', 'pdf', 'stl', 'url'].includes(
                 _linked_media.$type
               )
             "
-            class="_preview"
-            :context="'preview'"
-            :file="_linked_media"
-            :resolution="220"
-          />
-
+            @click.prevent="show_media_preview_for = _linked_media"
+          >
+            <MediaContent
+              class="_preview"
+              :context="'preview'"
+              :file="_linked_media"
+              :resolution="220"
+            />
+          </button>
           <div class="_preview _preview--none" v-else>
             <b-icon icon="file-earmark-arrow-down" />
           </div>
+
+          <BaseModal2
+            v-if="show_media_preview_for === _linked_media"
+            @close="show_media_preview_for = null"
+          >
+            <MediaContent
+              :file="show_media_preview_for"
+              :context="'preview'"
+              :resolution="1600"
+            />
+            <div class="u-spacingBottom" />
+            <DownloadFile :file="show_media_preview_for" />
+          </BaseModal2>
+
           <span
             class="_link--filename"
             v-text="_linked_media.$media_filename"
@@ -108,6 +127,7 @@ export default {
   data() {
     return {
       show_media_picker: false,
+      show_media_preview_for: null,
     };
   },
   created() {},
@@ -145,7 +165,6 @@ export default {
 ._reorderedFile {
   z-index: 10001;
   padding: 0;
-  border-radius: 2px;
   min-height: 2em;
   background: white;
   border: 1px solid var(--c-gris);
@@ -159,7 +178,7 @@ export default {
   // padding: 0 calc(var(--spacing) / 2);
   padding: 0;
   // gap: calc(var(--spacing) / 2);
-  border-radius: 2px;
+  border-radius: 5px;
 
   justify-content: space-between;
 
@@ -185,6 +204,11 @@ export default {
 
     > * {
       flex: 0 0 auto;
+    }
+
+    ._link--previewBtn {
+      padding: 0;
+      background: transparent;
     }
 
     ._preview {

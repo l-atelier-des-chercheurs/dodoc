@@ -161,10 +161,7 @@
         </template>
         <template v-else>
           <div class="_saveLocal">
-            <DownloadFile :file="optimized_file">
-              <b-icon icon="file-earmark-arrow-down" />
-              {{ $t("download") }}
-            </DownloadFile>
+            <DownloadFile :file="optimized_file" />
           </div>
 
           <div class="_btnRow">

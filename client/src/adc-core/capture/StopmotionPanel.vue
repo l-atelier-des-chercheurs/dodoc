@@ -206,10 +206,7 @@
 
                     <div class="u-sameRow">
                       <div>
-                        <DownloadFile :file="media">
-                          <b-icon icon="file-earmark-arrow-down" />
-                          {{ $t("download") }}
-                        </DownloadFile>
+                        <DownloadFile :file="media" />
                       </div>
 
                       <RemoveMenu

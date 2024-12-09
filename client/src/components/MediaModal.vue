@@ -128,10 +128,7 @@
                 {{ $t("embed_link") }}
               </EmbedFile>
               <div>
-                <DownloadFile :file="file">
-                  <b-icon icon="file-earmark-arrow-down" />
-                  {{ $t("download") }}
-                </DownloadFile>
+                <DownloadFile :file="file" />
               </div>
               <div class="_regenerateThumbs">
                 <button
