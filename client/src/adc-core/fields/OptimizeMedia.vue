@@ -48,32 +48,14 @@
             <div v-if="resolution_preset_picked === 'custom'">
               <div class="u-spacingBottom" />
 
-              <DLabel :str="$t('resolution')" />
+              <CustomResolutionInput
+                :width.sync="custom_resolution_width"
+                :height.sync="custom_resolution_height"
+                :ratio="media_ratio"
+              />
 
-              <div class="u-sameRow _customResolution">
-                <label class="u-label" for="custom_width">
-                  <input
-                    name="custom_width"
-                    type="number"
-                    min="2"
-                    max="4096"
-                    step="2"
-                    v-model.number="custom_resolution_width"
-                  />
-                </label>
-                <span class="u-padding_verysmall _customResolutionX"> × </span>
-                <label class="u-label" for="custom_height">
-                  <input
-                    name="custom_height"
-                    type="number"
-                    min="2"
-                    max="2160"
-                    step="2"
-                    v-model.number="custom_resolution_height"
-                  />
-                  {{ $t("pixels") }}
-                </label>
-              </div>
+              {{ custom_resolution_width }} /
+              {{ custom_resolution_height }}
             </div>
           </div>
         </div>
@@ -222,6 +204,7 @@
 </template>
 <script>
 import TrimMedia from "@/adc-core/fields/TrimMedia.vue";
+import CustomResolutionInput from "@/adc-core/fields/CustomResolutionInput.vue";
 
 export default {
   props: {
@@ -229,6 +212,7 @@ export default {
   },
   components: {
     TrimMedia,
+    CustomResolutionInput,
   },
   data() {
     return {
@@ -249,6 +233,9 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    media_ratio() {
+      return this.media.$infos?.ratio;
+    },
     label() {
       if (["video", "audio"].includes(this.media.$type))
         return this.$t("convert_shorten");
@@ -468,7 +455,7 @@ export default {
       height: 100%;
       object-fit: scale-down;
       max-width: none;
-      background-color: var(--c-gris);
+      background-color: var(--c-gris_clair);
       border-radius: 2px;
     }
   }
@@ -490,24 +477,5 @@ export default {
 
 ._saveLocal {
   text-align: right;
-}
-
-._customResolution {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-
-  > * {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--spacing) / 4);
-  }
-
-  input {
-    width: auto;
-  }
-}
-._customResolutionX {
-  font-size: var(--sl-font-size-large);
 }
 </style>

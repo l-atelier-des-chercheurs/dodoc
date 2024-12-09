@@ -1147,4 +1147,5 @@ export default {
   bitrate: "Bitrate (kbps)",
   resolution_on_largest_side:
     "Resolution on the largest side: {resolution} pixels",
+  keep_ratio: "Keep the width/height ratio",
 };
