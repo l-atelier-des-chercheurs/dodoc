@@ -603,7 +603,7 @@ export default {
         await this.saveText();
         const { font } = this.editor.getFormat();
         localStorage.setItem("fontLastUsed", font);
-      }, 5000);
+      }, 3500);
     },
   },
 };

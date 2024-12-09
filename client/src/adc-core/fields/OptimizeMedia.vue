@@ -6,17 +6,12 @@
       @click="show_modal = true"
     >
       <b-icon :icon="'tools'" />
-      <template v-if="['video', 'audio'].includes(media.$type)">
-        {{ $t("convert_shorten") }}
-      </template>
-      <template v-else-if="media.$type === 'image'">
-        {{ $t("optimize") }}
-      </template>
+      {{ label }}
     </button>
 
     <BaseModal2
       v-if="show_modal"
-      :title="$t('convert_shorten')"
+      :title="label"
       :size="modal_width"
       @close="closeModal"
     >
@@ -30,6 +25,7 @@
               :selection_start.sync="selection_start"
               :selection_end.sync="selection_end"
             />
+            <div class="u-spacingBottom" />
           </template>
 
           <div class="">
@@ -48,6 +44,36 @@
                 :hide_validation="true"
                 @change="resolution_preset_picked = $event"
               />
+            </div>
+            <div v-if="resolution_preset_picked === 'custom'">
+              <div class="u-spacingBottom" />
+
+              <DLabel :str="$t('resolution')" />
+
+              <div class="u-sameRow _customResolution">
+                <label class="u-label" for="custom_width">
+                  <input
+                    name="custom_width"
+                    type="number"
+                    min="2"
+                    max="4096"
+                    step="2"
+                    v-model.number="custom_resolution_width"
+                  />
+                </label>
+                <span class="u-padding_verysmall _customResolutionX"> × </span>
+                <label class="u-label" for="custom_height">
+                  <input
+                    name="custom_height"
+                    type="number"
+                    min="2"
+                    max="2160"
+                    step="2"
+                    v-model.number="custom_resolution_height"
+                  />
+                  {{ $t("pixels") }}
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -214,6 +240,8 @@ export default {
       extract_selection: false,
       selection_start: 0,
       selection_end: this.media.$infos?.duration || 0,
+      custom_resolution_width: 1920,
+      custom_resolution_height: 1080,
     };
   },
   created() {},
@@ -221,6 +249,11 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    label() {
+      if (["video", "audio"].includes(this.media.$type))
+        return this.$t("convert_shorten");
+      return this.$t("optimize_resize");
+    },
     modal_width() {
       if (this.optimized_file || this.extract_selection) return "large";
       return undefined;
@@ -231,17 +264,43 @@ export default {
           {
             key: "source",
             text: this.$t("close_to_source"),
-            instructions: "256k",
+            instructions: this.$t("bitrate") + " 256k",
           },
           {
             key: "high",
             text: this.$t("high"),
-            instructions: "192k",
+            instructions: this.$t("bitrate") + " 192k",
           },
           {
             key: "medium",
             text: this.$t("medium"),
-            instructions: "128k",
+            instructions: this.$t("bitrate") + " 128k",
+          },
+        ];
+      if (this.media.$type === "video")
+        return [
+          {
+            key: "source",
+            text: this.$t("close_to_source"),
+            instructions: this.$t("bitrate") + " 6000k",
+          },
+          {
+            key: "high",
+            text: this.$t("high"),
+            instructions:
+              this.$t("resolution") +
+              " 1920x1080, " +
+              this.$t("bitrate") +
+              " 4000k",
+          },
+          {
+            key: "medium",
+            text: this.$t("medium"),
+            instructions:
+              this.$t("resolution") +
+              " 1280x720, " +
+              this.$t("bitrate") +
+              " 2000k",
           },
         ];
       return [
@@ -252,10 +311,20 @@ export default {
         {
           key: "high",
           text: this.$t("high"),
+          instructions: this.$t("resolution_on_largest_side", {
+            resolution: 1920,
+          }),
         },
         {
           key: "medium",
           text: this.$t("medium"),
+          instructions: this.$t("resolution_on_largest_side", {
+            resolution: 1280,
+          }),
+        },
+        {
+          key: "custom",
+          text: this.$t("custom_f"),
         },
       ];
     },
@@ -270,10 +339,20 @@ export default {
           this.media.$media_filename
         );
 
+      let quality_preset;
+      if (this.resolution_preset_picked === "custom") {
+        quality_preset = {
+          width: this.custom_resolution_width,
+          height: this.custom_resolution_height,
+        };
+      } else {
+        quality_preset = this.resolution_preset_picked;
+      }
+
       const instructions = {
         recipe: "optimize_media",
         suggested_file_name,
-        quality_preset: this.resolution_preset_picked,
+        quality_preset,
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
@@ -411,5 +490,24 @@ export default {
 
 ._saveLocal {
   text-align: right;
+}
+
+._customResolution {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+
+  > * {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) / 4);
+  }
+
+  input {
+    width: auto;
+  }
+}
+._customResolutionX {
+  font-size: var(--sl-font-size-large);
 }
 </style>

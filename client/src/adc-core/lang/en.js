@@ -185,7 +185,7 @@ export default {
   medium: "Medium",
   low: "Low",
   rough: "Draft",
-  optimize: "Optimize",
+  optimize_resize: "Optimize/resize",
 
   no_accounts_yet: "No accounts created yet",
   no_accounts_to_show: "No accounts to show",
@@ -1144,4 +1144,7 @@ export default {
   or: "or",
   live_dubbing: "Live dubbing",
   play_both: "Play both at the same time",
+  bitrate: "Bitrate (kbps)",
+  resolution_on_largest_side:
+    "Resolution on the largest side: {resolution} pixels",
 };

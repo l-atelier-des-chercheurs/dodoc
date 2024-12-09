@@ -130,7 +130,8 @@ module.exports = (function () {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
-        let resolution, bitrate;
+        let resolution,
+          bitrate = "6000k";
         if (quality_preset === "high") {
           resolution = { width: 1920, height: 1080 };
           bitrate = "4000k";
@@ -200,6 +201,13 @@ module.exports = (function () {
           height: 1280,
           fit: "inside",
           withoutEnlargement: true,
+        })
+        .toFile(destination);
+    else if (quality_preset.width && quality_preset.height)
+      await sharp(sharp_buffer)
+        .resize({
+          width: quality_preset.width,
+          height: quality_preset.height,
         })
         .toFile(destination);
   }

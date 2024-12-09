@@ -784,7 +784,7 @@ export default {
   medium: "Moyenne",
   low: "Basse",
   rough: "Ébauche",
-  optimize: "Optimiser",
+  optimize_resize: "Optimiser/redimensionner",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
@@ -1220,4 +1220,7 @@ export default {
   or: "ou",
   live_dubbing: "Doublage en direct",
   play_both: "Lire les deux en même temps",
+  bitrate: "Débit (kbps)",
+  resolution_on_largest_side:
+    "Résolution sur le plus grand côté : {resolution} pixels",
 };
