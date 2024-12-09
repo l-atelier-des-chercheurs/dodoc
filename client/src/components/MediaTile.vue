@@ -140,10 +140,10 @@ export default {
       return this.displayDuration({ media: this.file });
     },
     show_file_type_label() {
-      if (this.file.$media_filename.endsWith(".gif")) return this.$t("gif");
-      if (this.file.$type === "stl") return this.$t("stl");
-      if (this.file.$type === "pdf") return this.$t("pdf");
-      if (this.tile_mode === "table") return this.$t(this.file.$type);
+      if (this.file?.$media_filename?.endsWith(".gif")) return this.$t("gif");
+      if (this.file?.$type === "stl") return this.$t("stl");
+      if (this.file?.$type === "pdf") return this.$t("pdf");
+      if (this.tile_mode === "table") return this.$t(this.file?.$type);
       return false;
     },
   },

@@ -116,6 +116,11 @@ export default {
           label: this.$t("regenerate_thumbs"),
           icon: "arrow-clockwise",
         };
+      else if (this.btn_type === "duplicate")
+        return {
+          label: this.$t("duplicate"),
+          icon: "file-plus",
+        };
       return {
         label: this.$t("edit"),
         icon: "pencil-fill",

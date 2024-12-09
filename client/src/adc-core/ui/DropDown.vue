@@ -3,21 +3,24 @@
     class="_dropDown"
     :class="{
       dropup: top,
-      active: show_dropdown,
     }"
     @mouseleave="mouseLeave"
     @mouseover="mouseOver"
     @mouseenter="mouseEnter"
     @click="toggleMenu"
   >
-    <button type="button" class="u-button u-button_transparent">
+    <button
+      type="button"
+      class="u-button _toggleDropdown"
+      :class="{ 'is--active': show_dropdown }"
+    >
       <template v-if="$slots.hasOwnProperty('trigger')">
         <slot name="trigger" />
       </template>
       <template v-else>
         {{ $t("options") }}
       </template>
-      <span class="b-icon bi _caret" />
+      <span v-if="show_caret" class="b-icon bi _caret" />
     </button>
 
     <transition name="fade_fast">
@@ -44,9 +47,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    force_top: {
+      type: Boolean,
+      default: false,
+    },
     hover: {
       type: Boolean,
       default: false,
+    },
+    show_caret: {
+      type: Boolean,
+      default: true,
     },
     hover_time: {
       type: Number,
@@ -148,6 +159,11 @@ export default {
   },
   watch: {
     show_dropdown(v) {
+      if (this.force_top) {
+        this.top = true;
+        return;
+      }
+
       if (v) {
         let vm = this;
         this.top = false;
@@ -175,12 +191,16 @@ export default {
 ._dropDown {
   position: relative;
 
-  &.active {
-    background: var(--active-color);
-
-    ._caret {
-      transform: rotate(-180deg);
+  &.dropup {
+    ._dropDown--content {
+      bottom: 100%;
     }
+  }
+}
+
+._toggleDropdown {
+  &.is--active ._caret {
+    transform: rotate(-180deg);
   }
 }
 

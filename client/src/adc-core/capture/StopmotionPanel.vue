@@ -129,9 +129,9 @@
               <div class="_optionBtns">
                 <button
                   type="button"
-                  v-if="duration > 1 || showPreviousPhoto(media.$path)"
+                  v-if="duration > 1 || photoIsActive(media.$path)"
                   @click="show_duration_menu = !show_duration_menu"
-                  class="u-button u-button_small"
+                  class="u-button"
                   :class="{
                     'u-button_bleumarine': duration > 1,
                   }"
@@ -141,7 +141,7 @@
                   {{ duration }}
                 </button>
                 <ImageDurationPicker
-                  v-if="show_duration_menu && showPreviousPhoto(media.$path)"
+                  v-if="show_duration_menu && photoIsActive(media.$path)"
                   :value="current_photo_duration"
                   :frame_rate="stopmotion_frame_rate"
                   @close="show_duration_menu = false"
@@ -149,16 +149,85 @@
                     updateMediaDurationForCurrentPreviousPhoto($event, index)
                   "
                 />
-                <div>
+                <div v-if="photoIsActive(media.$path)">
                   <button
-                    v-if="showPreviousPhoto(media.$path)"
                     type="button"
-                    @click="removeMedia(media.$path)"
-                    class="u-button u-button_icon u-button_small u-button_white"
-                    :title="$t('remove')"
+                    class="u-button u-button_small"
+                    @click="show_options_menu = !show_options_menu"
                   >
-                    <b-icon icon="trash" />
+                    <b-icon icon="three-dots" />
                   </button>
+                  <BaseModal2
+                    v-if="show_options_menu"
+                    :title="$t('options')"
+                    @close="show_options_menu = false"
+                  >
+                    <MediaContent :file="media" :resolution="1600" />
+
+                    <div class="u-spacingBottom" />
+
+                    <div>
+                      <button
+                        type="button"
+                        class="u-button u-button_red"
+                        @click="saveToProject(media.$path)"
+                      >
+                        <svg
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                          x="0px"
+                          y="0px"
+                          viewBox="0 0 168 168"
+                          style="enable-background: new 0 0 168 168"
+                          xml:space="preserve"
+                        >
+                          <path
+                            style="fill: var(--c-rouge)"
+                            d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
+                          />
+                          <g style="fill: var(--c-orange)">
+                            <path d="m42 42h21.6v21h-21.6z" />
+                            <path d="m73.2 42h21.6v21h-21.6z" />
+                            <path d="m104.4 42h21.6v21h-21.6z" />
+                            <path d="m42 73.5h21.6v21h-21.6z" />
+                            <path d="m73.2 73.5h21.6v21h-21.6z" />
+                            <path d="m104.4 73.5h21.6v21h-21.6z" />
+                            <path d="m42 105h21.6v21h-21.6z" />
+                            <path d="m73.2 105h21.6v21h-21.6z" />
+                            <path d="m104.4 105h21.6v21h-21.6z" />
+                          </g>
+                        </svg>
+                        {{ $t("save_to_project") }}
+                      </button>
+                    </div>
+
+                    <div class="u-spacingBottom" />
+
+                    <div class="u-sameRow">
+                      <div>
+                        <DownloadFile :file="media">
+                          <b-icon icon="file-earmark-arrow-down" />
+                          {{ $t("download") }}
+                        </DownloadFile>
+                      </div>
+
+                      <RemoveMenu
+                        :remove_text="$t('remove')"
+                        @remove="removeMedia(media.$path)"
+                      />
+                    </div>
+
+                    <div v-if="status_saving_to_project" class="_saveNotice">
+                      <div v-if="status_saving_to_project === 'saving'">
+                        <LoaderSpinner />
+                        {{ $t("saving") }}
+                      </div>
+                      <div v-else-if="status_saving_to_project === 'saved'">
+                        {{ $t("media_was_saved_to_project") }}
+                      </div>
+                    </div>
+                  </BaseModal2>
                 </div>
               </div>
             </div>
@@ -237,6 +306,7 @@
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 import PreviewStopmotion from "./PreviewStopmotion.vue";
 import ImageDurationPicker from "./ImageDurationPicker.vue";
+import BaseModal2 from "../modals/BaseModal2.vue";
 
 export default {
   props: {
@@ -258,6 +328,8 @@ export default {
 
       fetch_stopmotion_error: undefined,
 
+      show_options_menu: false,
+
       frame_rate: this.stopmotion_frame_rate,
       export_format: "mp4",
       validating_video_preview: false,
@@ -271,6 +343,8 @@ export default {
       preview_playing_event: undefined,
 
       show_duration_menu: false,
+
+      status_saving_to_project: false,
     };
   },
 
@@ -454,7 +528,7 @@ export default {
         });
       });
     },
-    showPreviousPhoto(path) {
+    photoIsActive(path) {
       return (
         this.previous_photo_to_show?.$path === path && !this.show_live_feed
       );
@@ -553,6 +627,33 @@ export default {
       // this.$nextTick(() => {
       //   this.$emit("close");
       // });
+    },
+    async saveToProject(path) {
+      let { space_slug, project_slug } = this.decomposePath(path);
+      const parent_project_path = this.createPath({
+        space_slug,
+        project_slug,
+      });
+
+      this.status_saving_to_project = "saving";
+
+      const copy_file_meta = await this.$api
+        .copyFile({
+          path: path,
+          path_to_destination_folder: parent_project_path,
+          new_meta: {
+            $origin: "capture",
+          },
+        })
+        .catch((err_code) => {
+          this.$alertify.delay(4000).error(err_code);
+        });
+
+      this.status_saving_to_project = "saved";
+
+      setTimeout(() => {
+        this.status_saving_to_project = false;
+      }, 3000);
     },
     async removeMedia(path) {
       // remove from stopmotion list
@@ -741,7 +842,7 @@ export default {
 
   .m_stopmotionpanel--medias--list--items {
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
     width: auto;
     flex: 0 0 auto;
     width: var(--img-width);
@@ -885,6 +986,7 @@ export default {
   display: flex;
   gap: calc(var(--spacing) / 4);
   justify-content: space-between;
+  align-items: flex-start;
 
   color: var(--c-noir);
 }
@@ -940,5 +1042,13 @@ export default {
 }
 ._onion_skin_range {
   direction: rtl;
+}
+._saveNotice {
+  position: absolute;
+  inset: -2px;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
