@@ -1172,7 +1172,7 @@ export default {
   direct_link_to_file:
     "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",
   share_link_to_file:
-    "Ce lien correspond à une page de consultation contenant le média, sa légende et ses crédits (si les champs sont remplis).",
+    "Ce lien correspond à une page de consultation du contenu.",
 
   remove_permanently: "Supprimer définitivement les contenus",
   remove_permanently_true:
