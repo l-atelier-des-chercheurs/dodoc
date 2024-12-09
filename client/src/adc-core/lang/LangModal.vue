@@ -7,6 +7,7 @@
           :key="lang_option.key"
           :value="lang_option.key"
           v-text="lang_option.text"
+          :disabled="lang_option.disabled"
         />
       </select>
     </div>
@@ -145,14 +146,17 @@ export default {
         {
           key: "de",
           text: "Deutsch",
+          disabled: true,
         },
         {
           key: "nl",
           text: "Nederlands",
+          disabled: true,
         },
         {
           key: "oc",
           text: "Occitan",
+          disabled: true,
         },
       ],
 
