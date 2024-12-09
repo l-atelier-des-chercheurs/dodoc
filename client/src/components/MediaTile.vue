@@ -156,7 +156,7 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
   border-radius: 3px;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: 0;
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--own {
@@ -254,8 +254,10 @@ export default {
   &[data-tilemode="table"] ::v-deep ._mediaContent--image {
     object-fit: scale-down;
   }
-  &[data-tilemode="tiny"] ::v-deep ._mediaContent--image {
-    object-fit: cover;
+  &[data-tilemode="tiny"] {
+    ::v-deep ._mediaContent--image {
+      object-fit: cover;
+    }
   }
   &[data-tilemode="medium"] ::v-deep ._mediaContent--image {
     object-fit: scale-down;
