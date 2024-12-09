@@ -1,8 +1,8 @@
 <template>
   <div class="_filesList">
-    <DLabel :str="$t('source_files')" />
+    <DLabel :str="mode === 'source' ? $t('source_files') : undefined" />
     <SlickList
-      :key="/* slicklist stays active otherwise */ edit_mode"
+      :key="/* slicklist stays active otherwise */ slicklist_key"
       class="_listOfFiles"
       axis="y"
       :value="medias_with_linked"
@@ -18,7 +18,8 @@
         <button type="button" v-if="edit_mode" class="u-button u-button_icon">
           <b-icon v-handle icon="hand-index-thumb" :label="$t('move')" />
         </button>
-        <DownloadFile
+        <component
+          :is="mode === 'source' ? 'DownloadFile' : 'span'"
           v-if="_linked_media && _linked_media.$path"
           class="_link"
           :file="_linked_media"
@@ -42,7 +43,7 @@
             class="_link--filename"
             v-text="_linked_media.$media_filename"
           />
-          <template v-if="_linked_media.$infos.size">
+          <template v-if="_linked_media.$infos.size && mode === 'source'">
             <!-- |&nbsp; -->
             <span
               class="u-instructions _link--filesize"
@@ -50,15 +51,21 @@
             />
           </template>
 
-          <b-icon class="_download" icon="file-earmark-arrow-down-fill" />
-        </DownloadFile>
+          <b-icon
+            v-if="mode === 'source'"
+            class="_download"
+            icon="file-earmark-arrow-down-fill"
+          />
+        </component>
 
-        <b-icon
-          icon="trash"
-          v-if="edit_mode"
-          class="_removeItem"
-          @click="$emit('removeMediaAtIndex', { index })"
-        />
+        <div class="_removeItem" v-if="edit_mode">
+          <EditBtn
+            :btn_type="'remove'"
+            :label_position="'left'"
+            :is_unfolded="false"
+            @click="$emit('removeMediaAtIndex', { index })"
+          />
+        </div>
       </SlickItem>
     </SlickList>
 
@@ -89,8 +96,8 @@ export default {
   props: {
     medias_with_linked: Array,
     publication_path: String,
+    mode: String,
     edit_mode: Boolean,
-    can_edit: Boolean,
   },
   components: {
     SlickItem,
@@ -107,7 +114,15 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    slicklist_key() {
+      let key = this.edit_mode + "_";
+      this.medias_with_linked.forEach((media) => {
+        key += media._linked_media.$path + "_";
+      });
+      return key;
+    },
+  },
   methods: {},
 };
 </script>
@@ -128,7 +143,7 @@ export default {
 }
 
 ._reorderedFile {
-  z-index: 10;
+  z-index: 10001;
   padding: 0;
   border-radius: 2px;
   min-height: 2em;
@@ -160,7 +175,7 @@ export default {
     font-variant: none;
     font-weight: 400;
     letter-spacing: 0;
-    font-size: var(--sl-font-size-x-small);
+    font-size: var(--sl-font-size-small);
     text-decoration: none;
 
     display: flex;
@@ -176,8 +191,8 @@ export default {
       flex: 0 0 auto;
       font-size: 100%;
 
-      width: 45px;
-      height: 45px;
+      width: 60px;
+      height: 60px;
       overflow: hidden;
       border-radius: 4px;
       // border: calc(var(--spacing) / 2) solid transparent;

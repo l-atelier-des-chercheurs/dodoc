@@ -854,6 +854,8 @@ input[type="checkbox"] {
   width: 1.15em;
   height: 1.15em;
   border: 2px solid var(--c-gris);
+  padding: 0;
+  color: var(--c-noir);
 
   display: grid;
   place-content: center;
