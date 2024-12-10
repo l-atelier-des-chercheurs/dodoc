@@ -47,6 +47,8 @@ class Exporter {
 
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
+    } else if (this.instructions.recipe === "make_stopmotion") {
+      full_path_to_file = await this._createStopmotionFromImages();
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
     } else if (this.instructions.recipe === "png") {
@@ -127,7 +129,28 @@ class Exporter {
       const meta = lf.m || lf;
       const duration = lf.d || 1;
       const file = files.find((f) => f.$path.endsWith("/" + meta));
-      if (!file) return acc;
+      if (!file || file.$type !== "image") return acc;
+
+      for (let i = 0; i < duration; i++) {
+        acc.push(file);
+      }
+      return acc;
+    }, []);
+    return selected_files;
+  }
+  async _loadFilesFromParentFolder() {
+    this.instructions.images_meta;
+
+    const grand_parent_path = utils.getContainingFolder(
+      utils.getContainingFolder(this.path_to_folder)
+    );
+    const files = await file.getFiles({ path_to_folder: grand_parent_path });
+
+    const selected_files = this.instructions.images_meta.reduce((acc, lf) => {
+      const meta = lf.m;
+      const duration = lf.d || 1;
+      const file = files.find((f) => f.$path.endsWith("/" + meta));
+      if (!file || file.$type !== "image") return acc;
 
       for (let i = 0; i < duration; i++) {
         acc.push(file);
@@ -140,8 +163,14 @@ class Exporter {
   _createStopmotionFromImages() {
     return new Promise(async (resolve, reject) => {
       // we need to copy all images to a temp folder with the right naming
-      const images = await this._loadFilesInOrder();
+      let images = [];
+      if (this.instructions.hasOwnProperty("field")) {
+        images = await this._loadFilesInOrder();
+      } else if (this.instructions.hasOwnProperty("images_meta")) {
+        images = await this._loadFilesFromParentFolder();
+      }
 
+      // images is an array of files
       this._notifyProgress(5);
 
       const width = images[0].$infos.width || 1280;

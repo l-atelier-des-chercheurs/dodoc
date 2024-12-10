@@ -1,6 +1,6 @@
 <template>
-  <div class="u-card2 _stopmotionModule">
-    <div class="_mediaContainer">
+  <div class="_stopmotionModule">
+    <div class="_mediaContainer" :style="{ '--aspectRatio': imposed_ratio }">
       <MediaContent :file="first_media" />
     </div>
     <!-- <div class="_index">{{ index + 1 }}</div> -->
@@ -37,6 +37,7 @@ export default {
     index: Number,
     makemodule: Object,
     number_of_modules: Number,
+    imposed_ratio: Number,
   },
   components: {},
   data() {
@@ -71,7 +72,7 @@ export default {
 ._stopmotionModule {
   position: relative;
   background-color: white;
-  // padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
   border-radius: 4px;
 }
 
@@ -93,8 +94,10 @@ export default {
   ::v-deep ._mediaContent {
     width: 100%;
 
-    aspect-ratio: 1/1;
+    aspect-ratio: calc(1 / var(--aspectRatio, 1 / 1));
     border-radius: 3px;
+    min-height: 80px;
+    min-width: 80px;
 
     ._mediaContent--image {
       position: absolute;
@@ -117,7 +120,7 @@ export default {
   justify-content: center;
 
   select {
-    width: 5ch;
+    width: 8ch;
     pointer-events: all;
   }
 }
@@ -126,6 +129,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  padding-right: calc(var(--spacing) / 2);
+  padding-top: calc(var(--spacing) / 4);
+  padding-right: calc(var(--spacing) / 4);
 }
 </style>

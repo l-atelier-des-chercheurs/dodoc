@@ -475,6 +475,7 @@ export default {
   copy: "Copier",
   test_and_export: "Tester et exporter",
   export_montage: "Exporter le montage",
+  export_stomotion: "Exporter l’animation",
 
   video_to_rework: "Vidéo à retrailler",
 

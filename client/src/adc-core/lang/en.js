@@ -653,6 +653,7 @@ export default {
   copy: "Copy",
   test_and_export: "Test and export",
   export_montage: "Export montage",
+  export_stomotion: "Export animation",
 
   video_to_rework: "Video to edit",
 
