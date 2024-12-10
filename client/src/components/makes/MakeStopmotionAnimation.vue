@@ -33,7 +33,18 @@
         <div class="_equationIcon">
           <b-icon icon="chevron-double-down" />
         </div>
-        <div class="">
+        <div class="_create">
+          <div class="">
+            <label class="u-label">{{ $t("img_per_second") }}</label>
+            <select v-model.number="frame_rate" size="small">
+              <option>2</option>
+              <option>4</option>
+              <option>8</option>
+              <option>15</option>
+              <option>24</option>
+              <option>30</option>
+            </select>
+          </div>
           <button
             type="button"
             class="u-button u-button_bleuvert"
@@ -59,6 +70,9 @@
       </div>
       <div v-else>
         <div v-if="!created_video">
+          <DLabel>
+            {{ $t("resolution") }}
+          </DLabel>
           <SelectField2
             :value="resolution_preset_picked"
             :options="presets"
@@ -116,9 +130,46 @@ export default {
       is_exporting: false,
       created_video: false,
       export_href: undefined,
+      frame_rate: 4,
 
-      resolution_preset_picked: "high",
-      presets: [
+      resolution_preset_picked: "original",
+    };
+  },
+  async created() {
+    if (!this.sections || this.sections.length === 0) {
+      await this.createSection2({
+        publication: this.make,
+        type: "section",
+        group: "sections_list",
+        title: "stopmotion",
+      });
+    }
+  },
+  mounted() {},
+  beforeDestroy() {},
+  watch: {
+    show_save_export_modal() {
+      if (!this.show_save_export_modal) {
+        if (this.created_video) this.created_video = false;
+      }
+    },
+  },
+  computed: {
+    presets() {
+      let presets = [];
+
+      let source = {
+        key: "original",
+        text: this.$t("original"),
+      };
+      if (this.first_media) {
+        const { width, height } = this.first_media.$infos;
+        source.width = width;
+        source.height = height;
+        source.instructions = `${width} × ${height}`;
+      }
+      presets.push(source);
+      presets = presets.concat([
         {
           key: "vhigh",
           text: this.$t("very_high"),
@@ -159,29 +210,10 @@ export default {
           text: "↓" + this.$t("custom"),
           instructions: "512 × 512",
         },
-      ],
-    };
-  },
-  async created() {
-    if (!this.sections || this.sections.length === 0) {
-      await this.createSection2({
-        publication: this.make,
-        type: "section",
-        group: "sections_list",
-        title: "stopmotion",
-      });
-    }
-  },
-  mounted() {},
-  beforeDestroy() {},
-  watch: {
-    show_save_export_modal() {
-      if (!this.show_save_export_modal) {
-        if (this.created_video) this.created_video = false;
-      }
+      ]);
+
+      return presets;
     },
-  },
-  computed: {
     export_name() {
       return "stopmotion.mp4";
     },
@@ -197,6 +229,13 @@ export default {
     first_section() {
       return this.sections.at(0);
     },
+    first_media() {
+      if (this.section_modules_list.length > 0) {
+        const first_module = this.section_modules_list.at(0);
+        return this.firstMedia(first_module);
+      }
+      return undefined;
+    },
     section_modules_list() {
       return this.getModulesForSection({
         publication: this.make,
@@ -204,11 +243,7 @@ export default {
       }).map(({ _module }) => _module);
     },
     imposed_ratio() {
-      if (this.section_modules_list.length > 0) {
-        const first_module = this.section_modules_list.at(0);
-        return this.firstMedia(first_module)?.$infos?.ratio;
-      }
-      return false;
+      return this.first_media?.$infos?.ratio || undefined;
     },
   },
   methods: {
@@ -275,15 +310,15 @@ export default {
         return acc;
       }, []);
 
-      debugger;
-
       // m: meta, d: duration
       const current_task_id = await this.$api.exportFolder({
         path: this.make.$path,
         instructions: {
           recipe: "make_stopmotion",
           images_meta,
-          frame_rate: 10,
+          frame_rate: this.frame_rate,
+          output_width,
+          output_height,
           export_format: "mp4",
           additional_meta,
         },
@@ -333,5 +368,18 @@ export default {
 ._bottomRow {
   margin-top: calc(var(--spacing) * 2);
   text-align: center;
+}
+
+._create {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing);
+  color: white;
+
+  label {
+    color: inherit;
+  }
 }
 </style>

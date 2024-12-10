@@ -173,8 +173,10 @@ class Exporter {
       // images is an array of files
       this._notifyProgress(5);
 
-      const width = images[0].$infos.width || 1280;
-      const height = images[0].$infos.height || 720;
+      const width =
+        this.instructions.output_width || images[0].$infos.width || 1280;
+      const height =
+        this.instructions.output_height || images[0].$infos.height || 720;
       const resolution = { width, height };
 
       const full_path_to_folder_in_cache =

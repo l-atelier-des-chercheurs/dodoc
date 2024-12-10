@@ -778,12 +778,14 @@ export default {
   quality: "Qualité",
   duration: "Durée",
   close_to_source: "Au plus proche du média original",
+
   very_high: "Très élevée",
   high: "Élevée",
   medium: "Moyenne",
   low: "Basse",
   rough: "Ébauche",
   optimize_resize: "Optimiser/redimensionner",
+  from_the_first_media: "À partir du premier média",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
