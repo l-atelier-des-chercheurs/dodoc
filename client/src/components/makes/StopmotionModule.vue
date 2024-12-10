@@ -11,7 +11,7 @@
         @change="
           $emit('moveTo', {
             path: makemodule.$path,
-            new_position: +$event.target.value,
+            new_position: +$event.target.value - 1,
           })
         "
       >

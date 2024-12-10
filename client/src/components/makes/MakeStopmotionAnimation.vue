@@ -95,7 +95,6 @@ export default {
       });
     },
     async moveModuleTo({ path, new_position }) {
-      console.log("moveModuleTo " + new_position);
       await this.moveModuleTo2({
         publication: this.make,
         section: this.first_section,
