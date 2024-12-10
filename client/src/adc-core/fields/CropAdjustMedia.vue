@@ -2,7 +2,7 @@
   <div class="_cropAdjustMedia">
     <button
       type="button"
-      class="u-button u-button_orange"
+      class="u-button u-button_bleumarine"
       @click="show_modal = true"
     >
       <b-icon icon="bounding-box" />

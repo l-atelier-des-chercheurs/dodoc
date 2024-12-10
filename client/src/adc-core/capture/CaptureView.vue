@@ -1007,6 +1007,10 @@ export default {
         "lines",
       ],
     },
+    origin: {
+      type: String,
+      default: "capture",
+    },
     return_temp_media: {
       type: Boolean,
       default: false,
@@ -1902,7 +1906,7 @@ export default {
 
       let additional_meta = {
         fav,
-        $origin: "capture",
+        $origin: this.origin,
       };
 
       if (this.connected_as?.$path)

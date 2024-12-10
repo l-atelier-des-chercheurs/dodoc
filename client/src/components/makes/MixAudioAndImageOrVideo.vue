@@ -27,8 +27,6 @@
 
       <div class="_audioMedia">
         <template v-if="make.base_audio_filename">
-          {{ make.base_audio_filename }}
-
           <MediaContent
             v-if="selected_audio_media"
             ref="audioMedia"
@@ -59,30 +57,41 @@
               :media_type_to_pick="'audio'"
             />
             {{ $t("or") }}
-          </template>
-          <div class="_recordAudioLive">
             <button
               type="button"
               class="u-button u-button_red"
-              :class="{ 'u-button_small': record_audio_live }"
-              @click="record_audio_live = !record_audio_live"
+              @click="record_audio_live = true"
             >
-              <template v-if="record_audio_live">
-                <b-icon icon="x-circle" />
-                {{ $t("cancel") }}
-              </template>
-              <template v-else>
-                <b-icon icon="record-circle-fill" />
-                {{ $t("live_dubbing") }}
-              </template>
+              <b-icon icon="record-circle-fill" />
+              {{ $t("live_dubbing") }}
+            </button>
+            <!-- {{ $t("or") }}
+            <button
+              type="button"
+              class="u-button u-button_red"
+              @click="setNoAudio"
+            >
+              <b-icon icon="record-circle-fill" />
+              {{ $t("no_sound") }}
+            </button> -->
+          </template>
+          <div class="_recordAudioLive" v-else>
+            <button
+              type="button"
+              class="u-button u-button_red u-button_small"
+              @click="record_audio_live = false"
+            >
+              <b-icon icon="x-circle" />
+              {{ $t("cancel") }}
             </button>
 
-            <div class="_captureView" v-if="record_audio_live">
+            <div class="_captureView">
               <CaptureView
                 :path="project_path"
                 :selected_mode="'audio'"
                 :available_modes="[]"
                 :must_validate_media="false"
+                :origin="'make'"
                 @insertMedia="
                   (meta_filename) => setAudioMetaFilename(meta_filename)
                 "
