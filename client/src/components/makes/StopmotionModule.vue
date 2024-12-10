@@ -62,7 +62,7 @@ export default {
           throw err;
         });
 
-      this.$emit("remove");
+      this.$emit("remove", this.makemodule.$path);
     },
   },
 };

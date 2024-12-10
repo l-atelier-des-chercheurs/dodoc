@@ -17,14 +17,15 @@
           @remove="removeModule"
         />
       </template>
+      <ModuleCreator
+        key="mc_0"
+        :publication_path="make.$path"
+        :start_collapsed="false"
+        :types_available="['capture', 'import']"
+        :context="'montage'"
+        @addModules="addModules"
+      />
     </transition-group>
-    <ModuleCreator
-      :publication_path="make.$path"
-      :start_collapsed="false"
-      :types_available="['capture', 'import']"
-      :context="'montage'"
-      @addModules="addModules"
-    />
   </div>
 </template>
 <script>

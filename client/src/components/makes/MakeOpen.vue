@@ -14,7 +14,6 @@
     </div>
     <div v-if="make">
       <div class="_topbar">
-        {{ meta_filenames_already_present }}
         <TitleField
           :field_name="'title'"
           :tag="'h2'"
