@@ -60,7 +60,7 @@
 
     <button
       type="button"
-      class="_openPublication"
+      class="js--showCursor _openPublication"
       :title="$t('open') + ' ' + publication.title"
       @click="$emit('open')"
     />

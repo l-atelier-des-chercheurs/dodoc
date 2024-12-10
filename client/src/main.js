@@ -337,6 +337,9 @@ new Vue({
       // return false;
       return this.window.innerWidth < 1000;
     },
+    is_touch_device() {
+      return window.matchMedia("(pointer: coarse)").matches;
+    },
     modal_is_opened() {
       return this.opened_modals > 0;
     },

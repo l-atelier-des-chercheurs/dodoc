@@ -174,7 +174,7 @@
     </flickity>
 
     <router-link
-      class="_projectInfos--open"
+      class="js--showCursor _projectInfos--open"
       v-if="['list', 'tiny'].includes(context)"
       :to="{ path: createURLFromPath(project.$path) }"
       :title="$t('open') + ' ' + project.title"
