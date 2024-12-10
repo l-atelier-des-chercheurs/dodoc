@@ -11,16 +11,16 @@
   >
     <button
       type="button"
-      class="u-button _toggleDropdown"
+      class="u-button u-button_icon _toggleDropdown"
       :class="{ 'is--active': show_dropdown }"
     >
       <template v-if="$slots.hasOwnProperty('trigger')">
         <slot name="trigger" />
+        <span v-if="show_caret" class="b-icon bi _caret" />
       </template>
       <template v-else>
-        {{ $t("options") }}
+        <b-icon icon="three-dots" :aria-label="$t('options')" />
       </template>
-      <span v-if="show_caret" class="b-icon bi _caret" />
     </button>
 
     <transition name="fade_fast">
