@@ -7,9 +7,11 @@
       appear
       :duration="700"
     >
-      <template v-for="(_module, index) in section_modules_list">
+      <div
+        v-for="(_module, index) in section_modules_list"
+        :key="_module.$path"
+      >
         <StopmotionModule
-          :key="_module.$path"
           :index="index"
           :makemodule="_module"
           :number_of_modules="section_modules_list.length"
@@ -32,7 +34,7 @@
           "
           @remove="removeModule"
         />
-      </template>
+      </div>
       <ModuleCreator
         key="mc_0"
         :publication_path="make.$path"
