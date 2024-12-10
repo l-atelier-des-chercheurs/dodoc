@@ -377,9 +377,14 @@ export default {
     gap: calc(var(--spacing) / 4);
 
     padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-    border-radius: 1em;
+    border-radius: 2px;
 
     background: var(--notice-bg);
+    color: white;
+
+    font-weight: 600;
+    text-align: center;
+    text-transform: lowercase;
   }
 }
 
