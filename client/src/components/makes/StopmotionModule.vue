@@ -5,6 +5,14 @@
     </div>
     <!-- <div class="_index">{{ index + 1 }}</div> -->
     <div class="_selectPosition">
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        :disabled="module_position === 'alone' || module_position === 'first'"
+        @click="$emit('moveUp')"
+      >
+        <b-icon icon="chevron-left" />
+      </button>
       <select
         :value="index + 1"
         size="small"
@@ -19,6 +27,15 @@
           {{ i }}
         </option>
       </select>
+
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        :disabled="module_position === 'alone' || module_position === 'last'"
+        @click="$emit('moveDown')"
+      >
+        <b-icon icon="chevron-right" />
+      </button>
     </div>
 
     <div class="_options">
@@ -38,6 +55,7 @@ export default {
     makemodule: Object,
     number_of_modules: Number,
     imposed_ratio: Number,
+    module_position: String,
   },
   components: {},
   data() {
@@ -117,11 +135,18 @@ export default {
   pointer-events: none;
 
   display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
   justify-content: center;
+  gap: calc(var(--spacing) / 2);
+
+  button,
+  select {
+    pointer-events: all;
+  }
 
   select {
     width: 8ch;
-    pointer-events: all;
   }
 }
 

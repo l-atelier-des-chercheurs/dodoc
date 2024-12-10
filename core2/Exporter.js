@@ -47,7 +47,7 @@ class Exporter {
 
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
-    } else if (this.instructions.recipe === "make_stopmotion") {
+    } else if (this.instructions.recipe === "stopmotion_animation") {
       full_path_to_file = await this._createStopmotionFromImages();
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();

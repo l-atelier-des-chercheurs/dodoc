@@ -14,7 +14,22 @@
           :makemodule="_module"
           :number_of_modules="section_modules_list.length"
           :imposed_ratio="imposed_ratio"
+          :module_position="
+            section_modules_list.length === 1
+              ? 'alone'
+              : index === 0
+              ? 'first'
+              : index === section_modules_list.length - 1
+              ? 'last'
+              : 'inbetween'
+          "
           @moveTo="moveModuleTo"
+          @moveUp="
+            moveModuleTo({ path: _module.$path, new_position: index - 1 })
+          "
+          @moveDown="
+            moveModuleTo({ path: _module.$path, new_position: index + 1 })
+          "
           @remove="removeModule"
         />
       </template>
@@ -166,49 +181,49 @@ export default {
         const { width, height } = this.first_media.$infos;
         source.width = width;
         source.height = height;
-        source.instructions = `${width} × ${height}`;
+        source.instructions = `${width} × ${height} pixels`;
       }
       presets.push(source);
       presets = presets.concat([
         {
           key: "vhigh",
           text: this.$t("very_high"),
-          instructions: "1920 × 1080",
+          instructions: "1920 × 1080 pixels",
           width: 1920,
           height: 1080,
         },
         {
           key: "high",
           text: this.$t("high"),
-          instructions: "1280 × 720",
+          instructions: "1280 × 720 pixels",
           width: 1280,
           height: 720,
         },
         {
           key: "medium",
           text: this.$t("medium"),
-          instructions: "640 × 480",
+          instructions: "640 × 480 pixels",
           width: 640,
           height: 480,
         },
         {
           key: "low",
           text: this.$t("low"),
-          instructions: "480 × 360",
+          instructions: "480 × 360 pixels",
           width: 480,
           height: 360,
         },
         {
           key: "rough",
           text: "→" + this.$t("rough"),
-          instructions: "360 × 240",
+          instructions: "360 × 240 pixels",
           width: 360,
           height: 240,
         },
         {
           key: "custom",
           text: "↓" + this.$t("custom"),
-          instructions: "512 × 512",
+          instructions: "512 × 512 pixels",
         },
       ]);
 
@@ -314,7 +329,7 @@ export default {
       const current_task_id = await this.$api.exportFolder({
         path: this.make.$path,
         instructions: {
-          recipe: "make_stopmotion",
+          recipe: this.make.type,
           images_meta,
           frame_rate: this.frame_rate,
           output_width,
