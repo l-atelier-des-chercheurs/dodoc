@@ -7,6 +7,7 @@
       appear
       :duration="700"
     >
+      {{ first_media }}
       <template v-for="(_module, index) in section_modules_list">
         <div class="_spacer" :key="'mc_' + index">
           <ModuleCreator
@@ -120,8 +121,16 @@
             @change="resolution_preset_picked = $event"
           />
 
-          <br />
+          <div v-if="resolution_preset_picked === 'custom'">
+            <div class="u-spacingBottom" />
+            <CustomResolutionInput
+              :width.sync="custom_resolution_width"
+              :height.sync="custom_resolution_height"
+              :ratio="first_media_ratio"
+            />
+          </div>
 
+          <div class="u-spacingBottom" />
           <button
             type="button"
             class="u-button u-button_bleuvert"
@@ -171,6 +180,9 @@ export default {
       export_href: undefined,
       default_image_duration: 2,
 
+      custom_resolution_width: 512,
+      custom_resolution_height: 512,
+
       resolution_preset_picked: "high",
       presets: [
         {
@@ -211,7 +223,6 @@ export default {
         {
           key: "custom",
           text: "↓" + this.$t("custom"),
-          instructions: "512 × 512",
         },
       ],
     };
@@ -233,6 +244,17 @@ export default {
       if (!this.show_save_export_modal) {
         if (this.created_video) this.created_video = false;
       }
+    },
+    first_media: {
+      handler() {
+        if (!this.first_media?.$infos) return;
+        const { width, height } = this.first_media.$infos;
+        if (width && height) {
+          this.custom_resolution_width = width;
+          this.custom_resolution_height = height;
+        }
+      },
+      immediate: true,
     },
   },
   computed: {
@@ -273,6 +295,16 @@ export default {
     },
     first_section() {
       return this.sections.at(0);
+    },
+    first_media() {
+      if (this.section_modules_list.length > 0) {
+        const first_module = this.section_modules_list.at(0);
+        return this.firstMedia(first_module);
+      }
+      return undefined;
+    },
+    first_media_ratio() {
+      return this.first_media?.$infos?.ratio || undefined;
     },
     section_modules_list() {
       return this.getModulesForSection({
@@ -335,9 +367,17 @@ export default {
       this.created_video = false;
       this.export_href = undefined;
 
-      const { width: output_width, height: output_height } = this.presets.find(
-        (p) => p.key === this.resolution_preset_picked
-      );
+      let output_width, output_height;
+      if (this.resolution_preset_picked === "custom") {
+        output_width = this.custom_resolution_width;
+        output_height = this.custom_resolution_height;
+      } else {
+        const preset = this.presets.find(
+          (p) => p.key === this.resolution_preset_picked
+        );
+        output_width = preset.width;
+        output_height = preset.height;
+      }
 
       const additional_meta = {};
       additional_meta.$origin = "make";

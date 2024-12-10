@@ -197,7 +197,6 @@
 </template>
 <script>
 import TrimMedia from "@/adc-core/fields/TrimMedia.vue";
-import CustomResolutionInput from "@/adc-core/fields/CustomResolutionInput.vue";
 
 export default {
   props: {
@@ -205,7 +204,6 @@ export default {
   },
   components: {
     TrimMedia,
-    CustomResolutionInput,
   },
   data() {
     return {
@@ -217,8 +215,8 @@ export default {
       extract_selection: false,
       selection_start: 0,
       selection_end: this.media.$infos?.duration || 0,
-      custom_resolution_width: 1920,
-      custom_resolution_height: 1080,
+      custom_resolution_width: this.media.$infos?.width || 1920,
+      custom_resolution_height: this.media.$infos?.height || 1080,
     };
   },
   created() {},
@@ -304,7 +302,7 @@ export default {
         },
         {
           key: "custom",
-          text: this.$t("custom_f"),
+          text: "↓" + this.$t("custom_f"),
         },
       ];
     },

@@ -111,6 +111,8 @@ import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
 import ReorderedList from "@/adc-core/ui/ReorderedList.vue";
 Vue.component("ReorderedList", ReorderedList);
+import CustomResolutionInput from "@/adc-core/fields/CustomResolutionInput.vue";
+Vue.component("CustomResolutionInput", CustomResolutionInput);
 
 import QRModal from "@/adc-core/modals/QRModal.vue";
 Vue.component("QRModal", QRModal);
