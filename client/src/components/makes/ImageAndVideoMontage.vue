@@ -265,7 +265,6 @@ export default {
         return acc;
       }, []);
     },
-
     sections() {
       return this.getSectionsWithProps({
         publication: this.make,
