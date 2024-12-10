@@ -471,7 +471,7 @@ class Exporter {
         embed_source: true,
       });
 
-      this._notifyProgress(25);
+      this._notifyProgress(24);
 
       const full_path_to_folder_in_cache =
         await utils.createUniqueFolderInCache("webpage_export");
