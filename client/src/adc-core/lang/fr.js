@@ -572,8 +572,6 @@ export default {
   more_informations: "Plus d’informations",
   images: "Images",
 
-  make_an_exhibition: "Créer une exposition",
-
   image_tracking: "Réalité augmentée",
   create_block: "Créer un groupe",
   image_tracking_summary: "",
@@ -1224,4 +1222,6 @@ export default {
   resolution_on_largest_side:
     "Résolution sur le plus grand côté : {resolution} pixels",
   keep_ratio: "Conserver le rapport largeur/hauteur",
+
+  in_this_make: "Dans cette fabrication",
 };

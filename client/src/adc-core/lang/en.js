@@ -738,7 +738,7 @@ export default {
   add_multiple_images:
     "Open a project and add several <b>image</b> media by clicking on the green arrow. The images will be placed end to end in the order of addition. Export the sequence and adjust the frame rate. <br>Export will create a video.<br>Media accepted: images only. The dimensions of the first image determine whether the final video is portrait or landscape.",
   images: "Pictures",
-  make_an_exhibition: "Create an exhibition",
+
   image_tracking: "Augmented reality",
   create_block: "Create group",
   image_tracking_summary: "",
@@ -1148,4 +1148,6 @@ export default {
   resolution_on_largest_side:
     "Resolution on the largest side: {resolution} pixels",
   keep_ratio: "Keep the width/height ratio",
+
+  in_this_make: "In this make",
 };
