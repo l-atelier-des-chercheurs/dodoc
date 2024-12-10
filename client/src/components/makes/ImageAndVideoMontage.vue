@@ -7,7 +7,6 @@
       appear
       :duration="700"
     >
-      {{ first_media }}
       <template v-for="(_module, index) in section_modules_list">
         <div class="_spacer" :key="'mc_' + index">
           <ModuleCreator
@@ -19,57 +18,29 @@
             "
           />
         </div>
-        <MontageModule
-          :key="_module.$path"
-          :index="index + 1"
-          :makemodule="_module"
-          :module_position="
-            section_modules_list.length === 1
-              ? 'alone'
-              : index === 0
-              ? 'first'
-              : index === section_modules_list.length - 1
-              ? 'last'
-              : 'inbetween'
-          "
-          :default_image_duration="default_image_duration"
-          @moveUp="
-            moveModuleTo({ path: _module.$path, new_position: index - 1 })
-          "
-          @moveDown="
-            moveModuleTo({ path: _module.$path, new_position: index + 1 })
-          "
-          @remove="removeModule(_module.$path)"
-        />
-        <!-- <PublicationModule
-          class="_mediaPublication"
-          :key="_module.$path"
-          :publimodule="_module"
-          :module_being_edited.sync="module_being_edited"
-          :module_position="
-            section_modules_list.length === 1
-              ? 'alone'
-              : index === 0
-              ? 'first'
-              : index === section_modules_list.length - 1
-              ? 'last'
-              : 'inbetween'
-          "
-          :can_edit="can_edit"
-          @moveUp="
-            moveModuleTo({ path: _module.$path, new_position: index - 1 })
-          "
-          @moveDown="
-            moveModuleTo({ path: _module.$path, new_position: index + 1 })
-          "
-          @duplicate="
-            duplicatePublicationMedia({
-              source_module_path: _module.$path,
-              copy_meta_filename: $event,
-            })
-          "
-          @remove="removeModule(_module.$path)"
-        /> -->
+        <div :key="_module.$path">
+          <MontageModule
+            :index="index + 1"
+            :makemodule="_module"
+            :module_position="
+              section_modules_list.length === 1
+                ? 'alone'
+                : index === 0
+                ? 'first'
+                : index === section_modules_list.length - 1
+                ? 'last'
+                : 'inbetween'
+            "
+            :default_image_duration="default_image_duration"
+            @moveUp="
+              moveModuleTo({ path: _module.$path, new_position: index - 1 })
+            "
+            @moveDown="
+              moveModuleTo({ path: _module.$path, new_position: index + 1 })
+            "
+            @remove="removeModule(_module.$path)"
+          />
+        </div>
       </template>
     </transition-group>
     <div class="_lastModule">
