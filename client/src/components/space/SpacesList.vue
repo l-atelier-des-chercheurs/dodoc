@@ -1,7 +1,7 @@
 <template>
   <div class="_spacesList">
     <div class="_filterSortBar">
-      <div class="u-sameRow">
+      <div class="_filterSortBar--leftSide">
         <button
           type="button"
           class="u-button u-button_red u-button_small"
@@ -212,8 +212,15 @@ export default {
 
 ._filterSortBar {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+}
+._filterSortBar--leftSide {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
   align-items: center;
   gap: calc(var(--spacing) / 2);
 }

@@ -79,6 +79,7 @@
                 <div class="u-instructions _content">
                   <small v-html="$t('spaces_instr')" />
                 </div>
+
                 <SpacesList />
               </template>
               <template v-else-if="current_mode === 'projects'">
@@ -368,8 +369,8 @@ export default {
 
 ._content {
   max-width: 86ch;
-  margin: 0 auto;
   width: 100%;
+  margin: calc(var(--spacing) * 1) auto;
   padding: 0 calc(var(--spacing) * 1);
   text-align: center;
 }
