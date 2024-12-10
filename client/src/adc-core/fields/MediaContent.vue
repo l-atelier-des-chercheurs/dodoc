@@ -103,13 +103,13 @@
             <button
               type="button"
               class="plyr__control plyr__control--overlaid _playButton"
-              aria-label="Play"
+              :aria-label="$t('play')"
               @click="loadIframe"
             >
               <svg aria-hidden="true" focusable="false">
                 <use :xlink:href="$root.publicPath + 'plyr.svg#plyr-play'" />
               </svg>
-              <span class="plyr__sr-only">Play</span>
+              <span class="plyr__sr-only">{{ $t("play") }}</span>
             </button>
           </div>
           <div class="_mediaContent--iframe--content" v-else>
