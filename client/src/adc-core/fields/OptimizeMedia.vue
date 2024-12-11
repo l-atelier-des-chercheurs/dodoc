@@ -31,8 +31,8 @@
             <div class="u-spacingBottom" />
           </template>
 
-          <div class="">
-            <DLabel :str="$t('quality')" />
+          <div v-if="['image', 'video'].includes(media.$type)" class="">
+            <DLabel :str="$t('image_quality')" />
             <div
               v-if="media.$optimized === true"
               class="u-spacingBottom u-instructions"
@@ -69,6 +69,16 @@
                 />
               </div>
             </div>
+          </div>
+          <div v-if="['video', 'audio'].includes(media.$type)" class="">
+            <DLabel :str="$t('audio_quality')" />
+            <SelectField2
+              :value="audio_quality_picked"
+              :options="audio_quality_options"
+              :can_edit="true"
+              :hide_validation="true"
+              @change="audio_quality_picked = $event"
+            />
           </div>
         </div>
         <div v-else>
@@ -227,6 +237,7 @@ export default {
       is_optimizing: false,
       optimized_file: undefined,
       resolution_preset_picked: "source",
+      audio_quality_picked: "source",
 
       extract_selection: false,
       selection_start: 0,
@@ -264,17 +275,17 @@ export default {
           {
             key: "source",
             text: this.$t("close_to_source"),
-            instructions: this.$t("bitrate") + " 256k",
+            instructions: this.$t("bitrate", { bitrate: "256" }),
           },
           {
             key: "high",
             text: this.$t("high"),
-            instructions: this.$t("bitrate") + " 192k",
+            instructions: this.$t("bitrate", { bitrate: "192" }),
           },
           {
             key: "medium",
             text: this.$t("medium"),
-            instructions: this.$t("bitrate") + " 128k",
+            instructions: this.$t("bitrate", { bitrate: "128" }),
           },
         ];
       if (this.media.$type === "video") {
@@ -283,7 +294,7 @@ export default {
         if (media_width && media_height)
           source_instr +=
             this.$t("resolution") + ` ${media_width}x${media_height}, `;
-        source_instr += this.$t("bitrate") + " 6000k";
+        source_instr += this.$t("bitrate", { bitrate: "6000" });
 
         return [
           {
@@ -297,8 +308,7 @@ export default {
             instructions:
               this.$t("resolution") +
               " 1920x1080, " +
-              this.$t("bitrate") +
-              " 4000k",
+              this.$t("bitrate", { bitrate: "4000" }),
           },
           {
             key: "medium",
@@ -306,8 +316,7 @@ export default {
             instructions:
               this.$t("resolution") +
               " 1280x720, " +
-              this.$t("bitrate") +
-              " 2000k",
+              this.$t("bitrate", { bitrate: "2000" }),
           },
           {
             key: "custom",
@@ -340,6 +349,31 @@ export default {
         },
       ];
     },
+    audio_quality_options() {
+      let presets = [
+        {
+          key: "source",
+          text: this.$t("very_high"),
+          instructions: this.$t("bitrate", { bitrate: "256" }),
+        },
+        {
+          key: "high",
+          text: this.$t("high"),
+          instructions: this.$t("bitrate", { bitrate: "192" }),
+        },
+        {
+          key: "medium",
+          text: this.$t("medium"),
+          instructions: this.$t("bitrate", { bitrate: "128" }),
+        },
+      ];
+      if (this.media.$type === "video")
+        presets.push({
+          key: "no_audio",
+          text: this.$t("no_audio_track"),
+        });
+      return presets;
+    },
   },
   methods: {
     async optimizeMedia() {
@@ -351,21 +385,24 @@ export default {
           this.media.$media_filename
         );
 
-      let quality_preset;
+      let image_quality_preset;
       if (this.resolution_preset_picked === "custom") {
-        quality_preset = {
+        image_quality_preset = {
           width: this.custom_resolution_width,
           height: this.custom_resolution_height,
           bitrate: this.custom_bitrate,
         };
       } else {
-        quality_preset = this.resolution_preset_picked;
+        image_quality_preset = this.resolution_preset_picked;
       }
+
+      const audio_quality_preset = this.audio_quality_picked;
 
       const instructions = {
         recipe: "optimize_media",
         suggested_file_name,
-        quality_preset,
+        image_quality_preset,
+        audio_quality_preset,
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,

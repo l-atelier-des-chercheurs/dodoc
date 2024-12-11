@@ -287,12 +287,9 @@
             v-if="cropadjust_possible && optimization_possible"
             class="u-spacingBottom"
           />
-          <OptimizeMedia
-            v-if="optimization_possible"
-            :media="file"
-            @close="$emit('close')"
-          />
-          <div class="u-spacingBottom" />
+          <template v-if="optimization_possible">
+            <OptimizeMedia :media="file" @close="$emit('close')" />
+          </template>
         </DetailsPane>
       </div>
     </div>

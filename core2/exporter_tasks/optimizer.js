@@ -21,7 +21,7 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
-    async convertHEIC({ source, destination, quality_preset }) {
+    async convertHEIC({ source, destination, image_quality_preset }) {
       const heic_buffer = await promisify(fs.readFile)(source);
       const { width, height, data } = await decode({ buffer: heic_buffer });
 
@@ -39,11 +39,11 @@ module.exports = (function () {
         source: buffer,
         addtl_infos,
         destination,
-        quality_preset,
+        image_quality_preset,
       });
     },
 
-    async convertCameraRAW({ source, destination, quality_preset }) {
+    async convertCameraRAW({ source, destination, image_quality_preset }) {
       let infos = await require("extractd").generate(source, {
         base64: true,
         datauri: true,
@@ -57,20 +57,20 @@ module.exports = (function () {
       await _saveImage({
         source: buffer,
         destination,
-        quality_preset,
+        image_quality_preset,
       });
     },
-    async convertImage({ source, destination, quality_preset }) {
+    async convertImage({ source, destination, image_quality_preset }) {
       await _saveImage({
         source,
         destination,
-        quality_preset,
+        image_quality_preset,
       });
     },
     async convertAudio({
       source,
       destination,
-      quality_preset,
+      audio_quality_preset,
       trim_start,
       trim_end,
       ffmpeg_cmd,
@@ -83,8 +83,8 @@ module.exports = (function () {
         let totalTime;
 
         let bitrate = "256k";
-        if (quality_preset === "high") bitrate = "192k";
-        else if (quality_preset === "medium") bitrate = "128k";
+        if (audio_quality_preset === "high") bitrate = "192k";
+        else if (audio_quality_preset === "medium") bitrate = "128k";
 
         ffmpeg_cmd.input(source);
 
@@ -121,7 +121,8 @@ module.exports = (function () {
     async convertVideo({
       source,
       destination,
-      quality_preset,
+      image_quality_preset,
+      audio_quality_preset,
       trim_start,
       trim_end,
       ffmpeg_cmd,
@@ -131,26 +132,27 @@ module.exports = (function () {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         let resolution,
-          bitrate = "6000k";
-        if (quality_preset === "high") {
+          video_bitrate = "6000k";
+        if (image_quality_preset === "high") {
           resolution = { width: 1920, height: 1080 };
-          bitrate = "4000k";
-        } else if (quality_preset === "medium") {
+          video_bitrate = "4000k";
+        } else if (image_quality_preset === "medium") {
           resolution = { width: 1280, height: 720 };
-          bitrate = "2000k";
-        } else if (quality_preset.width && quality_preset.height) {
+          video_bitrate = "2000k";
+        } else if (image_quality_preset.width && image_quality_preset.height) {
           resolution = {
-            width: quality_preset.width,
-            height: quality_preset.height,
+            width: image_quality_preset.width,
+            height: image_quality_preset.height,
           };
-          if (quality_preset.bitrate) bitrate = quality_preset.bitrate + "k";
+          if (image_quality_preset.bitrate)
+            video_bitrate = image_quality_preset.bitrate + "k";
         }
 
         try {
           await utils.convertVideoToStandardFormat({
             source,
             destination,
-            bitrate,
+            video_bitrate,
             resolution,
             trim_start,
             trim_end,
@@ -170,7 +172,7 @@ module.exports = (function () {
     source,
     addtl_infos = undefined,
     destination,
-    quality_preset,
+    image_quality_preset,
   }) {
     // check if source has transparency
     // const { hasAlpha } = await sharp(source).metadata();
@@ -189,9 +191,9 @@ module.exports = (function () {
         throw err;
       });
 
-    if (quality_preset === "source")
+    if (image_quality_preset === "source")
       await sharp(sharp_buffer).toFile(destination);
-    else if (quality_preset === "high")
+    else if (image_quality_preset === "high")
       await sharp(sharp_buffer)
         .resize({
           width: 1920,
@@ -200,7 +202,7 @@ module.exports = (function () {
           withoutEnlargement: true,
         })
         .toFile(destination);
-    else if (quality_preset === "medium")
+    else if (image_quality_preset === "medium")
       await sharp(sharp_buffer)
         .resize({
           width: 1280,
@@ -209,11 +211,11 @@ module.exports = (function () {
           withoutEnlargement: true,
         })
         .toFile(destination);
-    else if (quality_preset.width && quality_preset.height)
+    else if (image_quality_preset.width && image_quality_preset.height)
       await sharp(sharp_buffer)
         .resize({
-          width: quality_preset.width,
-          height: quality_preset.height,
+          width: image_quality_preset.width,
+          height: image_quality_preset.height,
           fit: "fill",
         })
         .toFile(destination);

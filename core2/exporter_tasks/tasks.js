@@ -21,7 +21,7 @@ module.exports = (function () {
       media_full_path,
       full_path_to_folder_in_cache,
       resolution,
-      bitrate,
+      video_bitrate,
       image_duration = 2,
       ffmpeg_cmd,
     }) => {
@@ -43,7 +43,7 @@ module.exports = (function () {
         "x" +
         resolution.height +
         "_br=" +
-        bitrate +
+        video_bitrate +
         ".ts";
 
       const temp_video_path = path.join(
@@ -62,7 +62,7 @@ module.exports = (function () {
           temp_image_path,
           image_duration,
           temp_video_path,
-          bitrate,
+          video_bitrate,
           resolution,
         });
       }
@@ -76,7 +76,7 @@ module.exports = (function () {
       media_full_path,
       full_path_to_folder_in_cache,
       resolution,
-      bitrate,
+      video_bitrate,
       ffmpeg_cmd,
       reportProgress,
     }) => {
@@ -91,7 +91,7 @@ module.exports = (function () {
         "x" +
         resolution.height +
         "_br=" +
-        bitrate +
+        video_bitrate +
         ".ts";
 
       const temp_video_path = path.join(
@@ -105,7 +105,7 @@ module.exports = (function () {
           source: media_full_path,
           destination: temp_video_path,
           format: "mpegts",
-          bitrate,
+          video_bitrate,
           resolution,
           reportProgress,
         });
@@ -124,7 +124,7 @@ module.exports = (function () {
 
     mergeAllVideos: async ({
       temp_videos_array,
-      bitrate,
+      video_bitrate,
       ffmpeg_cmd,
       full_path_to_new_video,
     }) => {
@@ -372,7 +372,7 @@ module.exports = (function () {
           }
         );
 
-        ffmpeg_cmd.withVideoBitrate(bitrate);
+        ffmpeg_cmd.withVideoBitrate(video_bitrate);
 
         // todo set https://trac.ffmpeg.org/wiki/Encode/H.264#Profile ?
         complexFilters.push(
@@ -431,7 +431,7 @@ module.exports = (function () {
     temp_image_path,
     image_duration,
     temp_video_path,
-    bitrate,
+    video_bitrate,
     resolution,
   }) {
     return new Promise(async (resolve, reject) => {
@@ -443,7 +443,7 @@ module.exports = (function () {
         .inputFormat("lavfi")
         .outputFPS(30)
         .withVideoCodec("libx264")
-        .withVideoBitrate(bitrate)
+        .withVideoBitrate(video_bitrate)
         .addOptions(["-af apad", "-tune stillimage"])
         .size(`${resolution.width}x${resolution.height}`)
         .autopad()

@@ -249,6 +249,8 @@ export default {
   start_timelapse: "Start timelapse",
   stop_timelapse: "Stop timelapse",
   quality: "Quality",
+  image_quality: "Image quality",
+  audio_quality: "Audio quality",
   duration: "Duration",
 
   latitude: "Latitude",
@@ -1146,7 +1148,7 @@ export default {
   or: "or",
   live_dubbing: "Live dubbing",
   play_both: "Play both at the same time",
-  bitrate: "Bitrate (kbps)",
+  bitrate: "Bitrate: {bitrate} kbps",
   resolution_on_largest_side:
     "Resolution on the largest side: {resolution} pixels",
   keep_ratio: "Keep the width/height ratio",
@@ -1155,4 +1157,5 @@ export default {
   edit_volume_or_mute: "Edit volume or mute",
   toolbox: "Toolbox",
   video_resolution_even: "The resolution must be a multiple of 2",
+  no_audio_track: "No audio track (muted)",
 };

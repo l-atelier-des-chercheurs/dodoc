@@ -622,7 +622,7 @@ module.exports = (function () {
       source,
       destination,
       format = "mp4",
-      bitrate = "6000k",
+      video_bitrate = "6000k",
       resolution,
       trim_start,
       trim_end,
@@ -691,7 +691,7 @@ module.exports = (function () {
           .native()
           .outputFPS(30)
           .withVideoCodec("libx264")
-          .withVideoBitrate(bitrate)
+          .withVideoBitrate(video_bitrate)
           .addOptions(flags)
           .videoFilter(["setsar=1/1"])
           .on("start", function (commandLine) {

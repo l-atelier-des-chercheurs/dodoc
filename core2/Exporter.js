@@ -809,7 +809,7 @@ class Exporter {
     )
       return reject(new Error(`no-montage-in-instructions`));
 
-    const bitrate = "6000k";
+    const video_bitrate = "6000k";
     const output_width = this.instructions.output_width;
     const output_height = this.instructions.output_height;
     const resolution = { width: output_width, height: output_height };
@@ -853,7 +853,7 @@ class Exporter {
             media_full_path,
             full_path_to_folder_in_cache,
             resolution,
-            bitrate,
+            video_bitrate,
             image_duration: media.image_duration,
             ffmpeg_cmd: this.ffmpeg_cmd,
           }));
@@ -862,7 +862,7 @@ class Exporter {
             media_full_path,
             full_path_to_folder_in_cache,
             resolution,
-            bitrate,
+            video_bitrate,
             ffmpeg_cmd: this.ffmpeg_cmd,
             reportProgress,
           }));
@@ -882,7 +882,7 @@ class Exporter {
 
       await tasks.mergeAllVideos({
         temp_videos_array,
-        bitrate,
+        video_bitrate,
         ffmpeg_cmd: this.ffmpeg_cmd,
         full_path_to_new_video,
       });
@@ -976,7 +976,11 @@ class Exporter {
 
       this._notifyProgress(10);
 
-      const quality_preset = this.instructions.quality_preset || "source";
+      const image_quality_preset =
+        this.instructions.image_quality_preset || "source";
+      const audio_quality_preset =
+        this.instructions.audio_quality_preset || "source";
+
       // source high medium
       const trim_start = this.instructions.hasOwnProperty("trim_start")
         ? this.instructions.trim_start
@@ -996,7 +1000,8 @@ class Exporter {
       await optimizer[handler.task]({
         source: base_media_path,
         destination: full_path_to_new_file,
-        quality_preset,
+        image_quality_preset,
+        audio_quality_preset,
         trim_start,
         trim_end,
         ffmpeg_cmd: this.ffmpeg_cmd,
@@ -1028,7 +1033,8 @@ class Exporter {
     const base_media_path = utils.getPathToUserContent(
       this.instructions.base_media_path
     );
-    const quality_preset = this.instructions.quality_preset || "source";
+    const image_quality_preset =
+      this.instructions.image_quality_preset || "source";
 
     const that = this;
     const reportProgress = (progress) => {
@@ -1042,7 +1048,7 @@ class Exporter {
       await effects.applyVideoEffect({
         source: base_media_path,
         destination: full_path_to_new_video,
-        quality_preset,
+        image_quality_preset,
         effect_type,
         effect_opts,
         ffmpeg_cmd: this.ffmpeg_cmd,

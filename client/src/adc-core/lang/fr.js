@@ -776,6 +776,8 @@ export default {
   start_timelapse: "Démarrer le time-lapse",
   stop_timelapse: "Interrompre le time-lapse",
   quality: "Qualité",
+  image_quality: "Qualité de l’image",
+  audio_quality: "Qualité de l’audio",
   duration: "Durée",
   close_to_source: "Au plus proche du média original",
 
@@ -1227,7 +1229,7 @@ export default {
   or: "ou",
   live_dubbing: "Doublage en direct",
   play_both: "Lire les deux en même temps",
-  bitrate: "Débit (kbps)",
+  bitrate: "Débit : {bitrate} kbps",
   resolution_on_largest_side:
     "Résolution sur le plus grand côté : {resolution} pixels",
   keep_ratio: "Conserver le rapport largeur/hauteur",
@@ -1236,4 +1238,5 @@ export default {
   edit_volume_or_mute: "Modifier le volume ou le mettre en sourdine",
   toolbox: "Boîte à outils",
   video_resolution_even: "La résolution doit être un multiple de 2",
+  no_audio_track: "Pas de piste audio (muet)",
 };
