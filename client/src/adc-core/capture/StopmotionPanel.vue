@@ -131,10 +131,7 @@
                   type="button"
                   v-if="duration > 1 || photoIsActive(media.$path)"
                   @click="show_duration_menu = !show_duration_menu"
-                  class="u-button"
-                  :class="{
-                    'u-button_bleumarine': duration > 1,
-                  }"
+                  class="u-button u-button_small u-button_bleumarine"
                   :title="$t('duration')"
                 >
                   <b-icon icon="clock" />
@@ -149,7 +146,20 @@
                     updateMediaDurationForCurrentPreviousPhoto($event, index)
                   "
                 />
-                <div v-if="photoIsActive(media.$path)">
+                <template v-if="photoIsActive(media.$path)">
+                  <RemoveMenu
+                    :remove_text="$t('remove_this_image')"
+                    @remove="removeMedia(media.$path)"
+                  >
+                    <button
+                      slot="trigger"
+                      type="button"
+                      class="u-button u-button_small u-button_red"
+                      :title="$t('remove_this_image')"
+                    >
+                      <b-icon icon="trash" />
+                    </button>
+                  </RemoveMenu>
                   <button
                     type="button"
                     class="u-button u-button_small"
@@ -165,8 +175,10 @@
                     <MediaContent :file="media" :resolution="1600" />
 
                     <div class="u-spacingBottom" />
-
-                    <div>
+                    <div class="u-sameRow">
+                      <div>
+                        <DownloadFile :file="media" />
+                      </div>
                       <button
                         type="button"
                         class="u-button u-button_red"
@@ -202,19 +214,6 @@
                       </button>
                     </div>
 
-                    <div class="u-spacingBottom" />
-
-                    <div class="u-sameRow">
-                      <div>
-                        <DownloadFile :file="media" />
-                      </div>
-
-                      <RemoveMenu
-                        :remove_text="$t('remove')"
-                        @remove="removeMedia(media.$path)"
-                      />
-                    </div>
-
                     <div v-if="status_saving_to_project" class="_saveNotice">
                       <div v-if="status_saving_to_project === 'saving'">
                         <LoaderSpinner />
@@ -225,7 +224,7 @@
                       </div>
                     </div>
                   </BaseModal2>
-                </div>
+                </template>
               </div>
             </div>
 
