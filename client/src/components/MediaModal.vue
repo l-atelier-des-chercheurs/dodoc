@@ -149,10 +149,9 @@
               />
             </DropDown>
           </div>
-          <small class="fieldCaption">{{ file.$media_filename }}</small>
         </div>
 
-        <hr class="u-spacingBottom" />
+        <div class="u-spacingBottom" />
 
         <DetailsPane
           :header="$t('informations')"
@@ -222,6 +221,11 @@
           :icon="'rulers'"
           class="u-spacingBottom"
         >
+          <div class="u-metaField">
+            <DLabel :str="$t('filename')" />
+            <div class="u-filename">{{ file.$media_filename }}</div>
+          </div>
+
           <div class="">
             <DateDisplay
               :title="$t('date_uploaded')"
@@ -255,7 +259,7 @@
               :duration="file.$infos.duration"
             />
           </div>
-          <div class="_metaField" v-if="file.$origin">
+          <div class="u-metaField" v-if="file.$origin">
             <DLabel :str="$t('origin')" />
             <div
               class="_originInd"
@@ -270,7 +274,7 @@
 
         <DetailsPane
           v-if="optimization_possible || cropadjust_possible"
-          :header="$t('edit')"
+          :header="$t('toolbox')"
           :icon="'tools'"
           :is_open_initially="false"
         >
@@ -279,10 +283,16 @@
             :media="file"
             @close="$emit('close')"
           />
-          <template v-if="optimization_possible">
-            <div class="u-spacingBottom" />
-            <OptimizeMedia :media="file" @close="$emit('close')" />
-          </template>
+          <div
+            v-if="cropadjust_possible && optimization_possible"
+            class="u-spacingBottom"
+          />
+          <OptimizeMedia
+            v-if="optimization_possible"
+            :media="file"
+            @close="$emit('close')"
+          />
+          <div class="u-spacingBottom" />
         </DetailsPane>
       </div>
     </div>
@@ -356,6 +366,7 @@ export default {
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
     },
+
     authors_path() {
       return this.file.$authors || "noone";
     },

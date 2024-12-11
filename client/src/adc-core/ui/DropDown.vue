@@ -11,7 +11,7 @@
   >
     <button
       type="button"
-      class="u-button u-button_icon _toggleDropdown"
+      class="u-button u-button_small u-button_white _toggleDropdown"
       :class="{ 'is--active': show_dropdown }"
     >
       <template v-if="$slots.hasOwnProperty('trigger')">
@@ -19,6 +19,7 @@
         <span v-if="show_caret" class="b-icon bi _caret" />
       </template>
       <template v-else>
+        {{ $t("options") }}
         <b-icon icon="three-dots" :aria-label="$t('options')" />
       </template>
     </button>
@@ -220,15 +221,15 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
-  gap: 2px;
-
+  // gap: 2px;
   margin-top: 2px;
-  padding: 2px;
+  // padding: 2px;
   background: white;
   // border: 2px solid var(--c-gris);
   border-radius: 4px;
   max-width: 40ch;
 
+  border: 1px solid var(--c-gris);
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
     0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),

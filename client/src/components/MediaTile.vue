@@ -10,7 +10,6 @@
     :data-type="file.$type"
     :data-tilemode="tile_mode"
   >
-    <!-- top left -->
     <div
       class="u-nut _index"
       :style="`--o-color: var(--color-${file.$origin})`"
@@ -28,6 +27,11 @@
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
     />
+    <div
+      v-if="tile_mode === 'table'"
+      class="u-filename _filename"
+      v-text="file.$media_filename"
+    />
 
     <!-- top right  -->
     <FavSwitch
@@ -39,7 +43,7 @@
 
     <!-- bottom right -->
     <div
-      class="_hasCoordinates"
+      class="_fileType _hasCoordinates"
       v-if="has_coordinates || tile_mode === 'table'"
     >
       <b-icon class="" v-if="has_coordinates" icon="pin-map-fill" />
@@ -271,6 +275,7 @@ export default {
     gap: calc(var(--spacing) / 4);
     background: transparent;
     border-bottom: 1px solid white;
+    font-size: var(--sl-font-size-small);
 
     // margin-top: 2px;
     // margin-bottom: 2px;
@@ -286,6 +291,10 @@ export default {
 
       &._content {
         padding: 0;
+      }
+
+      &._filename {
+        flex: 0 0 30ch;
       }
 
       &._content,
@@ -424,16 +433,17 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 0;
-  width: 1.5rem;
-  height: 1.5rem;
-  color: white;
+  left: auto !important;
+  // margin: 0;
+  // width: 1.5rem;
+  // height: 1.5rem;
+
   // mix-blend-mode: difference;
   // background: var(--c-bleumarine);
-  border-radius: 50%;
+  // border-radius: 50%;
 
-  display: flex;
-  place-content: center;
+  // display: flex;
+  // place-content: center;
 
   svg {
     // color: var(--c-bleumarine);
