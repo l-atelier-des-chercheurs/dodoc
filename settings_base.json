@@ -293,6 +293,9 @@
                   },
                   "sections_list": {
                     "type": "array"
+                  },
+                  "frame_rate": {
+                    "type": "number"
                   }
                 },
                 "$files": {
