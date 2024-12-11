@@ -625,6 +625,11 @@ input[type="file"] {
   font-size: var(--sl-font-size-x-small);
   font-family: var(--sl-font-mono);
 }
+.u-filename {
+  // font-weight: 500;
+  font-size: var(--sl-font-size-small);
+  font-family: var(--sl-font-mono);
+}
 
 .u-defaultValue {
   margin: calc(var(--spacing) / 8);
@@ -1062,4 +1067,18 @@ input[type="checkbox"] {
 .flickity-prev-next-button.flickity-prev-next-button {
   height: 34px;
   width: 34px;
+}
+.u-metaField {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: calc(var(--spacing) / 16);
+
+  &:nth-child(1) {
+    flex: 0 0 auto;
+  }
+  &:nth-child(2) {
+    flex: 1 1 auto;
+  }
 }
