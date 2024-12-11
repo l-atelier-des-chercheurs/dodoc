@@ -276,7 +276,7 @@ export default {
         },
         {
           key: "custom",
-          text: "↓" + this.$t("custom"),
+          text: "↓ " + this.$t("custom"),
         },
       ]);
 

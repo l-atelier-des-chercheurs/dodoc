@@ -55,13 +55,19 @@
                 :height.sync="custom_resolution_height"
                 :ratio="media_ratio"
               />
-              <NumberInput
-                :label="$t('bitrate')"
-                :value="custom_bitrate"
-                :min="0"
-                :suffix="'k'"
-                @save="custom_bitrate = $event"
-              />
+              <div v-if="media.$type === 'video'">
+                <small class="u-instructions">
+                  {{ $t("video_resolution_even") }}
+                </small>
+                <div class="u-spacingBottom" />
+                <NumberInput
+                  :label="$t('bitrate')"
+                  :value="custom_bitrate"
+                  :min="0"
+                  :suffix="'k'"
+                  @save="custom_bitrate = $event"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -271,12 +277,19 @@ export default {
             instructions: this.$t("bitrate") + " 128k",
           },
         ];
-      if (this.media.$type === "video")
+      if (this.media.$type === "video") {
+        const { width: media_width, height: media_height } = this.media.$infos;
+        let source_instr = "";
+        if (media_width && media_height)
+          source_instr +=
+            this.$t("resolution") + ` ${media_width}x${media_height}, `;
+        source_instr += this.$t("bitrate") + " 6000k";
+
         return [
           {
             key: "source",
             text: this.$t("close_to_source"),
-            instructions: this.$t("bitrate") + " 6000k",
+            instructions: source_instr,
           },
           {
             key: "high",
@@ -298,9 +311,10 @@ export default {
           },
           {
             key: "custom",
-            text: "↓" + this.$t("custom_f"),
+            text: "↓ " + this.$t("custom_f"),
           },
         ];
+      }
       return [
         {
           key: "source",
@@ -322,7 +336,7 @@ export default {
         },
         {
           key: "custom",
-          text: "↓" + this.$t("custom_f"),
+          text: "↓ " + this.$t("custom_f"),
         },
       ];
     },
@@ -436,6 +450,7 @@ export default {
         path: this.optimized_file.$path,
       });
 
+      this.optimized_file = undefined;
       this.show_modal = false;
     },
   },
