@@ -4,7 +4,7 @@
       id="cursor"
       class="_cursor"
       :style="{ left: left, top: top }"
-      v-if="show_cursor"
+      v-if="show_cursor && !is_in_active_state"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -34,6 +34,8 @@ export default {
       left: "0px",
       top: "0px",
       show_cursor: false,
+      rotate_cursor: false,
+      is_in_active_state: false,
     };
   },
   created() {
@@ -46,6 +48,15 @@ export default {
   watch: {
     $route(to, from) {
       this.show_cursor = false;
+      this.is_in_active_state = true;
+      setTimeout(() => {
+        this.is_in_active_state = false;
+      }, 200);
+    },
+    show_cursor(new_value) {
+      this.$nextTick(() => {
+        this.rotate_cursor = new_value;
+      });
     },
   },
   computed: {},
@@ -95,7 +106,7 @@ export default {
   &-enter,
   &-leave-to {
     opacity: 0;
-    transform: scale(0.5);
+    transform: scale(0.5) rotate(-35deg);
   }
 }
 </style>
