@@ -9,6 +9,15 @@
       @reorderMedias="$emit('reorderMedias', $event)"
       @removeMediaAtIndex="$emit('removeMediaAtIndex', $event)"
     />
+    <div slot="footer" class="_actions">
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="$emit('close')"
+      >
+        {{ $t("submit") }}
+      </button>
+    </div>
   </BaseModal2>
 </template>
 <script>
