@@ -51,8 +51,20 @@
           <b-icon icon="chevron-double-down" />
         </div>
         <div class="_create">
-          <div class="">
-            <label class="u-label">{{ $t("img_per_second") }}</label>
+          <div class="_fpsPick">
+            <RangeValueInput
+              :can_toggle="false"
+              :label="$t('img_per_second')"
+              :value="frame_rate"
+              :min="2"
+              :max="30"
+              :step="1"
+              :ticks="[2, 4, 8, 15, 24, 30]"
+              :default_value="4"
+              @save="updateFrameRate"
+            />
+
+            <!-- <label class="u-label">{{ $t("img_per_second") }}</label>
             <select v-model.number="frame_rate" size="small">
               <option>2</option>
               <option>4</option>
@@ -60,7 +72,19 @@
               <option>15</option>
               <option>24</option>
               <option>30</option>
+              <option value="custom">{{ $t("custom") }}</option>
             </select>
+            <input
+              v-model.number="frame_rate"
+              type="number"
+              min="1"
+              max="60"
+              step="1"
+              list="frame_rate_options"
+            />
+            <datalist id="frame_rate_options">
+              <option v-for="i in 60" :value="i" :key="i" />
+            </datalist> -->
           </div>
           <button
             type="button"
@@ -155,7 +179,7 @@ export default {
       is_exporting: false,
       created_video: false,
       export_href: undefined,
-      frame_rate: 4,
+      frame_rate: this.make.frame_rate || 4,
 
       custom_resolution_width: 1920,
       custom_resolution_height: 1080,
@@ -189,6 +213,12 @@ export default {
           this.custom_resolution_width = width;
           this.custom_resolution_height = height;
         }
+      },
+      immediate: true,
+    },
+    "make.frame_rate": {
+      handler() {
+        this.frame_rate = this.make.frame_rate;
       },
       immediate: true,
     },
@@ -315,6 +345,12 @@ export default {
         path,
       });
     },
+    updateFrameRate(frame_rate) {
+      this.$api.updateMeta({
+        path: this.make.$path,
+        new_meta: { frame_rate },
+      });
+    },
     async cancelExport() {
       this.$api.deleteItem({
         path: this.created_video.$path,
@@ -422,10 +458,15 @@ export default {
   align-items: center;
   justify-content: center;
   gap: var(--spacing);
-  color: white;
 
   label {
     color: inherit;
   }
+}
+
+._fpsPick {
+  background: rgba(255, 255, 255, 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  border-radius: var(--input-border-radius);
 }
 </style>
