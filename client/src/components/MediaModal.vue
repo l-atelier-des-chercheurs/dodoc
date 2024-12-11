@@ -261,13 +261,13 @@
           </div>
           <div class="u-metaField" v-if="file.$origin">
             <DLabel :str="$t('origin')" />
-            <div
-              class="_originInd"
-              :style="`--o-color: var(--color-${file.$origin})`"
-            >
-              <i>
+            <div class="">
+              <div
+                class="_originInd"
+                :style="`--o-color: var(--color-${file.$origin})`"
+              >
                 {{ $t(file.$origin) }}
-              </i>
+              </div>
             </div>
           </div>
         </DetailsPane>
@@ -562,8 +562,10 @@ export default {
 }
 
 ._originInd {
-  padding: 2px 4px;
+  display: inline-block;
   color: white;
+  padding: 2px 4px;
+  font-style: italic;
   background: var(--o-color);
 }
 
