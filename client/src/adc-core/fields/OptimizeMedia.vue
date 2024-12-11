@@ -5,9 +5,12 @@
       class="u-button u-button_orange"
       @click="show_modal = true"
     >
-      <b-icon :icon="'tools'" />
+      <b-icon :icon="'file-play-fill'" />
       {{ label }}
     </button>
+    <div v-if="instructions" class="u-instructions">
+      <small v-html="instructions" />
+    </div>
 
     <BaseModal2
       v-if="show_modal"
@@ -51,6 +54,13 @@
                 :width.sync="custom_resolution_width"
                 :height.sync="custom_resolution_height"
                 :ratio="media_ratio"
+              />
+              <NumberInput
+                :label="$t('bitrate')"
+                :value="custom_bitrate"
+                :min="0"
+                :suffix="'k'"
+                @save="custom_bitrate = $event"
               />
             </div>
           </div>
@@ -217,6 +227,7 @@ export default {
       selection_end: this.media.$infos?.duration || 0,
       custom_resolution_width: this.media.$infos?.width || 1920,
       custom_resolution_height: this.media.$infos?.height || 1080,
+      custom_bitrate: 6000,
     };
   },
   created() {},
@@ -231,6 +242,11 @@ export default {
       if (["video", "audio"].includes(this.media.$type))
         return this.$t("convert_shorten");
       return this.$t("optimize_resize");
+    },
+    instructions() {
+      if (["video", "audio"].includes(this.media.$type))
+        return this.$t("convert_shorten_instructions");
+      return this.$t("optimize_resize_instructions");
     },
     modal_width() {
       if (this.optimized_file || this.extract_selection) return "large";
@@ -280,6 +296,10 @@ export default {
               this.$t("bitrate") +
               " 2000k",
           },
+          {
+            key: "custom",
+            text: "↓" + this.$t("custom_f"),
+          },
         ];
       return [
         {
@@ -322,6 +342,7 @@ export default {
         quality_preset = {
           width: this.custom_resolution_width,
           height: this.custom_resolution_height,
+          bitrate: this.custom_bitrate,
         };
       } else {
         quality_preset = this.resolution_preset_picked;
@@ -433,7 +454,9 @@ export default {
     aspect-ratio: 1/1;
   }
   &[data-type="video"] {
-    max-height: 50vh;
+    ::v-deep video {
+      max-height: 50vh;
+    }
     // aspect-ratio: 16/9;
   }
   ::v-deep {

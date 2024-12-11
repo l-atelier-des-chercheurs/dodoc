@@ -1152,4 +1152,6 @@ export default {
   keep_ratio: "Keep the width/height ratio",
 
   in_this_make: "In this make",
+  edit_volume_or_mute: "Edit volume or mute",
+  toolbox: "Toolbox",
 };

@@ -138,6 +138,12 @@ module.exports = (function () {
         } else if (quality_preset === "medium") {
           resolution = { width: 1280, height: 720 };
           bitrate = "2000k";
+        } else if (quality_preset.width && quality_preset.height) {
+          resolution = {
+            width: quality_preset.width,
+            height: quality_preset.height,
+          };
+          if (quality_preset.bitrate) bitrate = quality_preset.bitrate + "k";
         }
 
         try {

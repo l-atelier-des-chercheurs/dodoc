@@ -785,6 +785,8 @@ export default {
   low: "Basse",
   rough: "Ébauche",
   optimize_resize: "Optimiser/redimensionner",
+  optimize_resize_instructions:
+    "Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.",
   from_the_first_media: "À partir du premier média",
 
   name_of_stream: "Nom du flux",
@@ -1130,7 +1132,11 @@ export default {
   full_page: "Pleine page",
 
   convert: "Convertir",
-  convert_shorten: "Convertir/raccourcir",
+  convert_shorten: "Convertir",
+  convert_shorten_instructions: `
+    Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
+    `,
+
   select_extract: "Sélectionner un extrait",
   extract_range: "Recouper le début ou la fin",
   convert_to_format: "Adapter le format pour la lecture",
@@ -1227,4 +1233,6 @@ export default {
   keep_ratio: "Conserver le rapport largeur/hauteur",
 
   in_this_make: "Dans cette fabrication",
+  edit_volume_or_mute: "Modifier le volume ou le mettre en sourdine",
+  toolbox: "Boîte à outils",
 };
