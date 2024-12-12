@@ -144,7 +144,7 @@ export default {
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
-  --c-gris: hsl(195, 14%, 93%);
+  --c-gris: hsl(195, 14%, 83%);
   --c-gris_clair: hsl(195, 14%, 97%);
   --c-gris_fonce: hsl(195, 14%, 45%);
   --c-vert: hsl(143, 69%, 55%);
@@ -617,7 +617,7 @@ img {
   &-enter-active,
   &-leave-active,
   &-move {
-    transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
+    transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) !important;
     transition-property: opacity, transform;
     transform-origin: center top;
   }

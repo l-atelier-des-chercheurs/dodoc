@@ -120,7 +120,7 @@ export default {
     margin: 0 auto;
     // width: auto;
     width: 100%;
-    max-width: 320px;
+    max-width: 440px;
 
     color: white;
     background: var(--c-bleumarine_fonce);
@@ -142,7 +142,7 @@ export default {
 
   &[data-context="full"] {
     ::v-deep ._mediaContent {
-      width: 320px;
+      width: 440px;
       height: auto;
       aspect-ratio: 1/1;
 

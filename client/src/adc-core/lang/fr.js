@@ -475,6 +475,7 @@ export default {
   copy: "Copier",
   test_and_export: "Tester et exporter",
   export_montage: "Exporter le montage",
+  export_stomotion: "Exporter l’animation",
 
   video_to_rework: "Vidéo à retrailler",
 
@@ -572,8 +573,6 @@ export default {
   more_informations: "Plus d’informations",
   images: "Images",
 
-  make_an_exhibition: "Créer une exposition",
-
   image_tracking: "Réalité augmentée",
   create_block: "Créer un groupe",
   image_tracking_summary: "",
@@ -615,6 +614,7 @@ export default {
   use_own_risk:
     "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
   chroma_key: "Incrustation (fond vert)",
+  chroma_key_color: "Couleur à remplacer",
   color: "Couleur",
   flip_horizontally: "Retourner horizontalement",
   flip_vertically: "Retourner verticalement",
@@ -776,14 +776,20 @@ export default {
   start_timelapse: "Démarrer le time-lapse",
   stop_timelapse: "Interrompre le time-lapse",
   quality: "Qualité",
+  image_quality: "Qualité de l’image",
+  audio_quality: "Qualité de l’audio",
   duration: "Durée",
   close_to_source: "Au plus proche du média original",
+
   very_high: "Très élevée",
   high: "Élevée",
   medium: "Moyenne",
   low: "Basse",
   rough: "Ébauche",
-  optimize: "Optimiser",
+  optimize_resize: "Optimiser/redimensionner",
+  optimize_resize_instructions:
+    "Convertir vers un format standard, recouper le début ou la fin, supprimer la piste sonore ou modifier la qualité pour alléger le fichier.",
+  from_the_first_media: "À partir du premier média",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
@@ -1128,7 +1134,11 @@ export default {
   full_page: "Pleine page",
 
   convert: "Convertir",
-  convert_shorten: "Convertir/raccourcir",
+  convert_shorten: "Convertir",
+  convert_shorten_instructions: `
+    Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
+    `,
+
   select_extract: "Sélectionner un extrait",
   extract_range: "Recouper le début ou la fin",
   convert_to_format: "Adapter le format pour la lecture",
@@ -1171,7 +1181,7 @@ export default {
   direct_link_to_file:
     "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",
   share_link_to_file:
-    "Ce lien correspond à une page de consultation contenant le média, sa légende et ses crédits (si les champs sont remplis).",
+    "Ce lien correspond à une page de consultation du contenu.",
 
   remove_permanently: "Supprimer définitivement les contenus",
   remove_permanently_true:
@@ -1216,4 +1226,17 @@ export default {
   close_without_saving: "Fermer sans valider",
 
   start_by_uploading_images: "Commencez par importer vos images ci-dessous",
+  or: "ou",
+  live_dubbing: "Doublage en direct",
+  play_both: "Lire les deux en même temps",
+  bitrate: "Débit : {bitrate} kbps",
+  resolution_on_largest_side:
+    "Résolution sur le plus grand côté : {resolution} pixels",
+  keep_ratio: "Conserver le rapport largeur/hauteur",
+
+  in_this_make: "Dans cette fabrication",
+  edit_volume_or_mute: "Modifier le volume ou le mettre en sourdine",
+  toolbox: "Boîte à outils",
+  video_resolution_even: "La résolution doit être un multiple de 2",
+  no_audio_track: "Pas de piste audio (muet)",
 };

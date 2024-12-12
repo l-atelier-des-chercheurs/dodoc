@@ -204,6 +204,7 @@ export default {
   right: 0;
   margin: var(--spacing);
   padding: calc(var(--spacing) / 3);
+  z-index: 1;
 }
 
 header {
@@ -235,7 +236,7 @@ header {
 }
 ._content {
   position: relative;
-  margin: 0 calc(var(--spacing) * 1);
+  padding: 0 calc(var(--spacing) * 1);
 
   &:first-child {
     margin-top: calc(var(--spacing) * 1);

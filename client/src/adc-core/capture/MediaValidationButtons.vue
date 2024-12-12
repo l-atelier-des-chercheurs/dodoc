@@ -312,6 +312,8 @@ export default {
 
 ._favBtn {
   margin-left: -5px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 ._checkBtn {

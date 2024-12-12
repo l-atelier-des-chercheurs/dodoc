@@ -1,7 +1,7 @@
 <template>
   <div class="_mixAudioAndImage">
     <div class="_topRow">
-      <div class="">
+      <div class="_videoOrImage">
         <SingleBaseMediaPicker
           v-if="make.type === 'mix_audio_and_image'"
           :title="$t('pick_image')"
@@ -25,15 +25,80 @@
         <b-icon icon="plus-circle-dotted" />
       </div>
 
-      <div class="">
-        <SingleBaseMediaPicker
-          :title="$t('pick_audio')"
-          :context="'full'"
-          :field_name="'base_audio_filename'"
-          :content="make.base_audio_filename"
-          :path="make.$path"
-          :media_type_to_pick="'audio'"
-        />
+      <div class="_audioMedia">
+        <template v-if="make.base_audio_filename">
+          <MediaContent
+            v-if="selected_audio_media"
+            ref="audioMedia"
+            :file="selected_audio_media"
+            :resolution="440"
+            :context="'full'"
+          />
+          <span v-else>
+            {{ $t("media_not_found") }}
+          </span>
+          <button
+            type="button"
+            class="u-button u-button_small u-button_red"
+            @click="setAudioMetaFilename('')"
+          >
+            <b-icon icon="arrow-left-right" />
+            {{ $t("change") }}
+          </button>
+        </template>
+        <template v-else>
+          <template v-if="!record_audio_live">
+            <SingleBaseMediaPicker
+              :title="$t('pick_audio')"
+              :context="'full'"
+              :field_name="'base_audio_filename'"
+              :content="make.base_audio_filename"
+              :path="make.$path"
+              :media_type_to_pick="'audio'"
+            />
+            {{ $t("or") }}
+            <button
+              type="button"
+              class="u-button u-button_red"
+              @click="record_audio_live = true"
+            >
+              <b-icon icon="record-circle-fill" />
+              {{ $t("live_dubbing") }}
+            </button>
+            <!-- {{ $t("or") }}
+            <button
+              type="button"
+              class="u-button u-button_red"
+              @click="setNoAudio"
+            >
+              <b-icon icon="record-circle-fill" />
+              {{ $t("no_sound") }}
+            </button> -->
+          </template>
+          <div class="_recordAudioLive" v-else>
+            <button
+              type="button"
+              class="u-button u-button_red u-button_small"
+              @click="record_audio_live = false"
+            >
+              <b-icon icon="x-circle" />
+              {{ $t("cancel") }}
+            </button>
+
+            <div class="_captureView">
+              <CaptureView
+                :path="project_path"
+                :selected_mode="'audio'"
+                :available_modes="[]"
+                :must_validate_media="false"
+                :origin="'make'"
+                @insertMedia="
+                  (meta_filename) => setAudioMetaFilename(meta_filename)
+                "
+              />
+            </div>
+          </div>
+        </template>
       </div>
     </div>
     <transition name="pagechange" mode="out-in">
@@ -41,7 +106,12 @@
         <div class="_equationIcon">
           <b-icon icon="chevron-double-down" />
         </div>
-        <div class="">
+        <div class="_exportPlayButtons">
+          <button type="button" class="u-button u-button_red" @click="playBoth">
+            <b-icon icon="play-circle-fill" />
+            {{ $t("play_both") }}
+          </button>
+
           <button
             type="button"
             class="u-button u-button_bleuvert"
@@ -81,24 +151,31 @@
 <script>
 import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue"; // eslint-disable-line
 import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
+import CaptureView from "@/adc-core/capture/CaptureView.vue";
 
 export default {
   props: {
     make: Object,
   },
-  components: { SingleBaseMediaPicker, ExportSaveMakeModal },
+  components: { SingleBaseMediaPicker, ExportSaveMakeModal, CaptureView },
   data() {
     return {
       show_save_export_modal: false,
       is_exporting: false,
       created_video: false,
       export_href: undefined,
+
+      record_audio_live: false,
     };
   },
 
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("capture.isRecording", this.onRecording);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("capture.isRecording", this.onRecording);
+  },
   watch: {
     show_save_export_modal() {
       if (this.show_save_export_modal) this.renderAudioImageOrVideo();
@@ -112,6 +189,10 @@ export default {
         return "audio_video_mix.mp4";
       return "untitled";
     },
+    project_path() {
+      let { space_slug, project_slug } = this.decomposePath(this.make.$path);
+      return this.createPath({ space_slug, project_slug });
+    },
     export_is_available() {
       if (this.make.type === "mix_audio_and_image")
         return this.make.base_audio_filename && this.make.base_image_filename;
@@ -119,19 +200,35 @@ export default {
         return this.make.base_audio_filename && this.make.base_video_filename;
       return false;
     },
+
+    selected_audio_media() {
+      const meta_filename_in_project = this.make.base_audio_filename;
+      if (meta_filename_in_project)
+        return this.getSourceMedia({
+          source_media: { meta_filename_in_project },
+          folder_path: this.make.$path,
+        });
+      return false;
+    },
   },
   methods: {
+    async setAudioMetaFilename(meta_filename) {
+      const new_meta = {
+        base_audio_filename: meta_filename,
+      };
+      await this.$api.updateMeta({
+        path: this.make.$path,
+        new_meta,
+      });
+      this.record_audio_live = false;
+    },
+
     async renderAudioImageOrVideo() {
       this.is_exporting = true;
       this.created_video = false;
       this.export_href = undefined;
 
-      const base_audio = this.getSourceMedia({
-        source_media: {
-          meta_filename_in_project: this.make.base_audio_filename,
-        },
-        folder_path: this.make.$path,
-      });
+      const base_audio = this.selected_audio_media;
 
       const additional_meta = {};
       additional_meta.$origin = "make";
@@ -213,6 +310,31 @@ export default {
         return acc;
       }, 0);
     },
+    onRecording(type) {
+      if (type === "audio") {
+        this.rewindAndPlayVideo();
+      }
+    },
+    playBoth() {
+      this.rewindAndPlayVideo();
+      this.rewindAndPlayAudio();
+    },
+    rewindAndPlayAudio() {
+      const audio = this.$refs.audioMedia?.player;
+      if (audio) {
+        audio.currentTime = 0;
+        audio.muted = false;
+        audio.play();
+      }
+    },
+    rewindAndPlayVideo() {
+      const video = this.$el.querySelector("._videoOrImage video");
+      if (video) {
+        video.currentTime = 0;
+        video.muted = true;
+        video.play();
+      }
+    },
   },
 };
 </script>
@@ -230,7 +352,11 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) * 2);
+  // gap: calc(var(--spacing) * 2);
+
+  @media (max-width: 1000px) {
+    flex-flow: column nowrap;
+  }
 }
 
 ._equationIcon {
@@ -243,5 +369,29 @@ export default {
 ._bottomRow {
   margin-top: calc(var(--spacing) * 2);
   text-align: center;
+}
+._recordAudioLive {
+  padding: calc(var(--spacing) / 4);
+}
+._captureView {
+  width: 440px;
+  max-width: 100%;
+}
+._audioMedia {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) * 1);
+  background: var(--c-bleumarine_fonce);
+  color: white;
+  padding: calc(var(--spacing) / 4);
+}
+._exportPlayButtons {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) * 1);
 }
 </style>

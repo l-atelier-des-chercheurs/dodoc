@@ -5,24 +5,29 @@
       class="u-button u-button_orange"
       @click="show_modal = true"
     >
-      <b-icon :icon="'tools'" />
-      <template v-if="['video', 'audio'].includes(media.$type)">
-        {{ $t("convert_shorten") }}
-      </template>
-      <template v-else-if="media.$type === 'image'">
-        {{ $t("optimize") }}
-      </template>
+      <b-icon :icon="'file-play-fill'" />
+      {{ label }}
     </button>
+    <div v-if="instructions" class="u-instructions">
+      <small v-html="instructions" />
+    </div>
 
     <BaseModal2
       v-if="show_modal"
-      :title="$t('convert_shorten')"
+      :title="label"
       :size="modal_width"
-      @close="show_modal = false"
+      @close="closeModal"
     >
       <div class="_cont">
         <LoaderSpinner v-if="is_optimizing" class="_loader" />
         <div v-if="!optimized_file">
+          <div
+            v-if="media.$optimized === true"
+            class="u-spacingBottom u-instructions"
+          >
+            {{ $t("already_optimized") }}
+          </div>
+
           <template v-if="['video', 'audio'].includes(media.$type)">
             <TrimMedia
               :media="media"
@@ -30,16 +35,11 @@
               :selection_start.sync="selection_start"
               :selection_end.sync="selection_end"
             />
+            <div class="u-spacingBottom" />
           </template>
 
-          <div class="">
-            <DLabel :str="$t('quality')" />
-            <div
-              v-if="media.$optimized === true"
-              class="u-spacingBottom u-instructions"
-            >
-              {{ $t("already_optimized") }}
-            </div>
+          <div v-if="['image', 'video'].includes(media.$type)" class="">
+            <DLabel :str="$t('image_quality')" />
             <div class="">
               <SelectField2
                 :value="resolution_preset_picked"
@@ -49,6 +49,38 @@
                 @change="resolution_preset_picked = $event"
               />
             </div>
+            <div v-if="resolution_preset_picked === 'custom'">
+              <div class="u-spacingBottom" />
+              <CustomResolutionInput
+                :width.sync="custom_resolution_width"
+                :height.sync="custom_resolution_height"
+                :ratio="media_ratio"
+              />
+              <div v-if="media.$type === 'video'">
+                <small class="u-instructions">
+                  {{ $t("video_resolution_even") }}
+                </small>
+                <div class="u-spacingBottom" />
+                <NumberInput
+                  :label="$t('bitrate')"
+                  :value="custom_bitrate"
+                  :min="0"
+                  :suffix="'k'"
+                  @save="custom_bitrate = $event"
+                />
+              </div>
+            </div>
+          </div>
+          <div v-if="['video', 'audio'].includes(media.$type)" class="">
+            <div class="u-spacingBottom" />
+            <DLabel :str="$t('audio_quality')" />
+            <SelectField2
+              :value="audio_quality_picked"
+              :options="audio_quality_options"
+              :can_edit="true"
+              :hide_validation="true"
+              @change="audio_quality_picked = $event"
+            />
           </div>
         </div>
         <div v-else>
@@ -137,7 +169,7 @@
         </div>
       </div>
 
-      <div slot="footer" class="_convertBtns">
+      <div slot="footer" class="">
         <template v-if="!optimized_file">
           <div>
             <div>
@@ -157,10 +189,7 @@
         </template>
         <template v-else>
           <div class="_saveLocal">
-            <DownloadFile :file="optimized_file">
-              <b-icon icon="file-earmark-arrow-down" />
-              {{ $t("download") }}
-            </DownloadFile>
+            <DownloadFile :file="optimized_file" />
           </div>
 
           <div class="_btnRow">
@@ -210,23 +239,34 @@ export default {
       is_optimizing: false,
       optimized_file: undefined,
       resolution_preset_picked: "source",
+      audio_quality_picked: "source",
 
       extract_selection: false,
       selection_start: 0,
       selection_end: this.media.$infos?.duration || 0,
+      custom_resolution_width: this.media.$infos?.width || 1920,
+      custom_resolution_height: this.media.$infos?.height || 1080,
+      custom_bitrate: 6000,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    show_modal() {
-      if (!this.show_modal) {
-        this.optimized_file = "";
-      }
-    },
-  },
+  watch: {},
   computed: {
+    media_ratio() {
+      return this.media.$infos?.ratio;
+    },
+    label() {
+      if (["video", "audio"].includes(this.media.$type))
+        return this.$t("convert_shorten");
+      return this.$t("optimize_resize");
+    },
+    instructions() {
+      if (["video", "audio"].includes(this.media.$type))
+        return this.$t("convert_shorten_instructions");
+      return this.$t("optimize_resize_instructions");
+    },
     modal_width() {
       if (this.optimized_file || this.extract_selection) return "large";
       return undefined;
@@ -237,19 +277,55 @@ export default {
           {
             key: "source",
             text: this.$t("close_to_source"),
-            instructions: "256k",
+            instructions: this.$t("bitrate", { bitrate: "256" }),
           },
           {
             key: "high",
             text: this.$t("high"),
-            instructions: "192k",
+            instructions: this.$t("bitrate", { bitrate: "192" }),
           },
           {
             key: "medium",
             text: this.$t("medium"),
-            instructions: "128k",
+            instructions: this.$t("bitrate", { bitrate: "128" }),
           },
         ];
+      if (this.media.$type === "video") {
+        const { width: media_width, height: media_height } = this.media.$infos;
+        let source_instr = "";
+        if (media_width && media_height)
+          source_instr +=
+            this.$t("resolution") + ` ${media_width}x${media_height}, `;
+        source_instr += this.$t("bitrate", { bitrate: "6000" });
+
+        return [
+          {
+            key: "source",
+            text: this.$t("close_to_source"),
+            instructions: source_instr,
+          },
+          {
+            key: "high",
+            text: this.$t("high"),
+            instructions:
+              this.$t("resolution") +
+              " 1920x1080, " +
+              this.$t("bitrate", { bitrate: "4000" }),
+          },
+          {
+            key: "medium",
+            text: this.$t("medium"),
+            instructions:
+              this.$t("resolution") +
+              " 1280x720, " +
+              this.$t("bitrate", { bitrate: "2000" }),
+          },
+          {
+            key: "custom",
+            text: "↓ " + this.$t("custom_f"),
+          },
+        ];
+      }
       return [
         {
           key: "source",
@@ -258,12 +334,47 @@ export default {
         {
           key: "high",
           text: this.$t("high"),
+          instructions: this.$t("resolution_on_largest_side", {
+            resolution: 1920,
+          }),
         },
         {
           key: "medium",
           text: this.$t("medium"),
+          instructions: this.$t("resolution_on_largest_side", {
+            resolution: 1280,
+          }),
+        },
+        {
+          key: "custom",
+          text: "↓ " + this.$t("custom_f"),
         },
       ];
+    },
+    audio_quality_options() {
+      let presets = [
+        {
+          key: "source",
+          text: this.$t("very_high"),
+          instructions: this.$t("bitrate", { bitrate: "256" }),
+        },
+        {
+          key: "high",
+          text: this.$t("high"),
+          instructions: this.$t("bitrate", { bitrate: "192" }),
+        },
+        {
+          key: "medium",
+          text: this.$t("medium"),
+          instructions: this.$t("bitrate", { bitrate: "128" }),
+        },
+      ];
+      if (this.media.$type === "video")
+        presets.push({
+          key: "no_audio",
+          text: this.$t("no_audio_track"),
+        });
+      return presets;
     },
   },
   methods: {
@@ -276,10 +387,24 @@ export default {
           this.media.$media_filename
         );
 
+      let image_quality_preset;
+      if (this.resolution_preset_picked === "custom") {
+        image_quality_preset = {
+          width: this.custom_resolution_width,
+          height: this.custom_resolution_height,
+          bitrate: this.custom_bitrate,
+        };
+      } else {
+        image_quality_preset = this.resolution_preset_picked;
+      }
+
+      const audio_quality_preset = this.audio_quality_picked;
+
       const instructions = {
         recipe: "optimize_media",
         suggested_file_name,
-        quality_preset: this.resolution_preset_picked,
+        image_quality_preset,
+        audio_quality_preset,
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
@@ -320,13 +445,21 @@ export default {
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
     async cancel() {
+      this.removeOptimizedFile();
+    },
+    async removeOptimizedFile() {
+      if (!this.optimized_file?.$path) return;
       await this.$api.deleteItem({
         path: this.optimized_file.$path,
       });
       this.optimized_file = undefined;
-      // this.show_modal = false;
     },
     keepBoth() {
+      this.show_modal = false;
+      this.optimized_file = undefined;
+    },
+    closeModal() {
+      this.removeOptimizedFile();
       this.show_modal = false;
     },
     async replaceOriginal() {
@@ -356,6 +489,7 @@ export default {
         path: this.optimized_file.$path,
       });
 
+      this.optimized_file = undefined;
       this.show_modal = false;
     },
   },
@@ -374,7 +508,9 @@ export default {
     aspect-ratio: 1/1;
   }
   &[data-type="video"] {
-    max-height: 50vh;
+    ::v-deep video {
+      max-height: 50vh;
+    }
     // aspect-ratio: 16/9;
   }
   ::v-deep {
@@ -387,7 +523,7 @@ export default {
       height: 100%;
       object-fit: scale-down;
       max-width: none;
-      background-color: var(--c-gris);
+      background-color: var(--c-gris_clair);
       border-radius: 2px;
     }
   }
@@ -401,16 +537,6 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 1);
-}
-
-._convertBtns {
-  flex: 1 1 auto;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  // justify-content: space-between;
-  // justify-content: flex-end;
-  // gap: calc(var(--spacing) / 1);
 }
 
 ._loader {

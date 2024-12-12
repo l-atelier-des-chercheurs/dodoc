@@ -8,7 +8,6 @@
       :can_edit="can_edit"
       @openItem="openSection"
       @createItem="createSection"
-      @removeOpened="removeOpenedSection"
       v-slot="slotProps"
     >
       <template v-if="slotProps.item.section_title">
@@ -82,19 +81,14 @@ export default {
     },
     openFirstSectionIfNoneOpened() {
       if (this.sections.length > 0 && !this.opened_section_meta_filename) {
-        this.openFirstSection();
+        this.$emit("openFirstSection");
       }
-    },
-    openFirstSection() {
-      const section_path = this.sections[0].$path;
-      this.openSection(section_path);
     },
     openExistingSectionIfNotExisting() {
       if (this.opened_section_meta_filename && !this.opened_section) {
-        this.openFirstSection();
+        this.$emit("openFirstSection");
       }
     },
-
     async createSection() {
       const new_section_meta = await this.createSection2({
         publication: this.publication,
@@ -103,14 +97,6 @@ export default {
         title: this.new_section_title,
       });
       this.$emit("toggleSection", new_section_meta);
-    },
-    async removeOpenedSection() {
-      await this.removeSection2({
-        publication: this.publication,
-        group: "sections_list",
-        path: this.opened_section.$path,
-      });
-      this.openFirstSection();
     },
   },
 };

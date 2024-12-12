@@ -103,13 +103,13 @@
             <button
               type="button"
               class="plyr__control plyr__control--overlaid _playButton"
-              aria-label="Play"
+              :aria-label="$t('play')"
               @click="loadIframe"
             >
               <svg aria-hidden="true" focusable="false">
                 <use :xlink:href="$root.publicPath + 'plyr.svg#plyr-play'" />
               </svg>
-              <span class="plyr__sr-only">Play</span>
+              <span class="plyr__sr-only">{{ $t("play") }}</span>
             </button>
           </div>
           <div class="_mediaContent--iframe--content" v-else>
@@ -149,7 +149,7 @@
               frameborder="0"
               @load="iframeLoaded"
             />
-            <vue-plyr v-else :key="file_full_path">
+            <vue-plyr v-else :key="file_full_path" ref="plyr">
               <div class="plyr__video-embed">
                 <iframe
                   :src="url_to_site.src"
@@ -237,10 +237,13 @@ export default {
       start_iframe: false,
       is_loading_iframe: false,
       failed_to_load_iframe: false,
+      player: null,
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.$refs.plyr?.player) this.player = this.$refs.plyr.player;
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -317,7 +320,12 @@ export default {
   padding: calc(var(--spacing) / 4);
   display: flex;
   gap: calc(var(--spacing) / 8);
-  text-align: left;
+  text-align: center;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
 }
 
 ._mediaContent {

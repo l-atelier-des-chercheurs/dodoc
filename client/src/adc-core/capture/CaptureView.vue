@@ -109,8 +109,8 @@
             name="slideFromTop"
             mode="out-in"
           >
-            <label
-              class="u-label"
+            <div
+              class="_duration_timer"
               v-if="
                 selected_mode !== 'stopmotion' &&
                 is_recording &&
@@ -129,7 +129,7 @@
               :key="'timelapse_interval'"
               class="record_options"
             >
-              <label class="u-label">
+              <div>
                 <span>{{ $t("interval_between_pictures") }}</span>
                 <input
                   type="number"
@@ -137,7 +137,7 @@
                   v-model.number="timelapse_interval"
                 />
                 <span>{{ $t("seconds") }}</span>
-              </label>
+              </div>
             </div>
 
             <div
@@ -201,7 +201,7 @@
               :key="'delay_interval'"
               class="record_options"
             >
-              <label class="u-label">
+              <div>
                 <span>{{ $t("delay") }}</span>
                 <input
                   type="number"
@@ -210,7 +210,7 @@
                   max="60"
                 />
                 <span>{{ $t("seconds") }}</span>
-              </label>
+              </div>
             </div>
           </transition-group>
 
@@ -275,8 +275,13 @@
           </div>
 
           <transition name="fade_fast">
-            <div class="_settingsTag">
-              <template v-if="!(must_validate_media && media_to_validate)">
+            <div class="_settingsTag" v-if="!is_recording">
+              <template
+                v-if="
+                  !(must_validate_media && media_to_validate) &&
+                  selected_mode !== 'audio'
+                "
+              >
                 <button
                   type="button"
                   class="u-button u-button_small"
@@ -289,7 +294,7 @@
 
                 <select
                   v-model="current_grid_type"
-                  v-if="enable_video"
+                  v-if="enable_video && selected_mode !== 'audio'"
                   size="small"
                   :class="{
                     'is--active': current_grid_type !== false,
@@ -306,27 +311,6 @@
                     {{ $t(grid_type).toLowerCase() }}
                   </option>
                 </select>
-                <!-- <button
-                  type="button"
-                  class="u-button u-button_small"
-                  :class="{ 'is--active': current_grid_type !== false }"
-                  v-if="enable_video"
-                  @click="enable_grid = !enable_grid"
-                >
-                  {{ $t("grid").toLowerCase() }}
-                </button> -->
-                <!-- <div v-if="enable_video && enable_grid">
-                  <button
-                    type="button"
-                    class="u-button u-button_small"
-                    v-for="grid_type in Object.keys(grids)"
-                    :key="grid_type"
-                    :class="{ 'is--active': current_grid_type === grid_type }"
-                    @click="current_grid_type = grid_type"
-                  >
-                    {{ $t(grid_type).toLowerCase() }}
-                  </button>
-                </div> -->
               </template>
 
               <button
@@ -337,7 +321,7 @@
                 }"
                 @click="show_position_modal = true"
               >
-                {{ $t("location") }}
+                <!-- {{ $t("location") }} -->
                 <b-icon
                   :icon="
                     has_location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'
@@ -448,6 +432,7 @@
 
                   <button
                     type="button"
+                    v-if="selected_mode !== 'audio'"
                     class="u-button u-button_bleumarine _settingsBtn"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
@@ -1022,6 +1007,10 @@ export default {
         "lines",
       ],
     },
+    origin: {
+      type: String,
+      default: "capture",
+    },
     return_temp_media: {
       type: Boolean,
       default: false,
@@ -1166,7 +1155,9 @@ export default {
     }
   },
   mounted() {
-    if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
+    if (!this.selected_mode) {
+      this.$emit("changeMode", this.available_modes[0]);
+    }
 
     document.addEventListener("keyup", this.captureKeyListener);
 
@@ -1278,7 +1269,7 @@ export default {
         `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
 
-      if (!this.must_validate_media) {
+      if (this.media_to_validate && !this.must_validate_media) {
         this.sendMedia();
         return;
       }
@@ -1868,6 +1859,7 @@ export default {
           this.recorder.startRecording();
           this.is_recording = true;
           this.timer_recording_in_seconds = 0;
+          this.$eventHub.$emit("capture.isRecording", options.type);
           this.startTimer();
         } catch (err) {
           this.$alertify
@@ -1914,7 +1906,7 @@ export default {
 
       let additional_meta = {
         fav,
-        $origin: "capture",
+        $origin: this.origin,
       };
 
       if (this.connected_as?.$path)
@@ -1962,6 +1954,8 @@ export default {
       this.media_is_being_sent = false;
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
+
+      this.$eventHub.$emit("animatePane", "collect");
 
       this.$emit("insertMedia", meta_filename);
       return;
@@ -2057,6 +2051,7 @@ export default {
       }
 
       > * {
+        flex: 0 0 auto;
         display: flex;
         padding: calc(var(--spacing) / 2);
 
@@ -2219,11 +2214,12 @@ export default {
   gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 2);
 
-  label {
+  ._duration_timer {
     display: inline-block;
     margin: 0 auto;
     background-color: var(--c-rouge);
     padding: 0 calc(var(--spacing) / 8);
+    font-size: var(--sl-font-size-normal);
 
     margin-bottom: calc(var(--spacing) / 8);
     color: white;
@@ -2357,15 +2353,15 @@ export default {
 ._enable_timelapse_button {
   color: #fff;
   background: var(--c-orange);
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: block;
   min-height: 0;
   line-height: 0;
   border-radius: 50%;
   text-align: center;
   font-weight: bold;
-  padding: 0;
+  padding: calc(var(--spacing) / 8);
   margin: calc(var(--spacing) / 4);
 
   svg {

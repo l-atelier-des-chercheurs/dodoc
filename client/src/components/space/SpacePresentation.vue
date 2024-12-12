@@ -101,7 +101,7 @@
     </div> -->
 
     <router-link
-      class="_openSpace"
+      class="js--showCursor _openSpace"
       v-if="context === 'list'"
       :to="{ path: createURLFromPath(space.$path) }"
       :title="$t('open') + ' ' + space.title"

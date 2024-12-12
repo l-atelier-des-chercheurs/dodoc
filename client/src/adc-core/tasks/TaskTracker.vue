@@ -169,7 +169,7 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  background: var(--c-gris);
+  background: var(--c-gris_clair);
   border-left: 2px solid var(--c-gris_fonce);
   margin: calc(var(--spacing) / 2) 0;
   padding: calc(var(--spacing) / 2);

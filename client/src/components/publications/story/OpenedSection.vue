@@ -6,6 +6,7 @@
       :section="opened_section"
       :can_edit="can_edit"
       @prevSection="prevSection"
+      @nextSection="nextSection"
       @changeSectionForModule="change_section_for_module = $event"
     />
 
@@ -94,11 +95,13 @@ export default {
   methods: {
     nextSection() {
       this.scrollToTop();
-      this.$emit("toggleSection", this.getFilename(this.next_section.$path));
+      if (this.next_section?.$path)
+        this.$emit("toggleSection", this.getFilename(this.next_section.$path));
     },
     prevSection() {
       this.scrollToTop();
-      this.$emit("toggleSection", this.getFilename(this.prev_section.$path));
+      if (this.prev_section?.$path)
+        this.$emit("toggleSection", this.getFilename(this.prev_section.$path));
     },
     async scrollToTop() {
       //https://phuoc.ng/collection/html-dom/get-the-first-scrollable-parent-of-an-element/

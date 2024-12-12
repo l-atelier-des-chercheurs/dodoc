@@ -47,6 +47,8 @@ class Exporter {
 
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
+    } else if (this.instructions.recipe === "stopmotion_animation") {
+      full_path_to_file = await this._createStopmotionFromImages();
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
     } else if (this.instructions.recipe === "png") {
@@ -127,7 +129,28 @@ class Exporter {
       const meta = lf.m || lf;
       const duration = lf.d || 1;
       const file = files.find((f) => f.$path.endsWith("/" + meta));
-      if (!file) return acc;
+      if (!file || file.$type !== "image") return acc;
+
+      for (let i = 0; i < duration; i++) {
+        acc.push(file);
+      }
+      return acc;
+    }, []);
+    return selected_files;
+  }
+  async _loadFilesFromParentFolder() {
+    this.instructions.images_meta;
+
+    const grand_parent_path = utils.getContainingFolder(
+      utils.getContainingFolder(this.path_to_folder)
+    );
+    const files = await file.getFiles({ path_to_folder: grand_parent_path });
+
+    const selected_files = this.instructions.images_meta.reduce((acc, lf) => {
+      const meta = lf.m;
+      const duration = lf.d || 1;
+      const file = files.find((f) => f.$path.endsWith("/" + meta));
+      if (!file || file.$type !== "image") return acc;
 
       for (let i = 0; i < duration; i++) {
         acc.push(file);
@@ -140,12 +163,20 @@ class Exporter {
   _createStopmotionFromImages() {
     return new Promise(async (resolve, reject) => {
       // we need to copy all images to a temp folder with the right naming
-      const images = await this._loadFilesInOrder();
+      let images = [];
+      if (this.instructions.hasOwnProperty("field")) {
+        images = await this._loadFilesInOrder();
+      } else if (this.instructions.hasOwnProperty("images_meta")) {
+        images = await this._loadFilesFromParentFolder();
+      }
 
+      // images is an array of files
       this._notifyProgress(5);
 
-      const width = images[0].$infos.width || 1280;
-      const height = images[0].$infos.height || 720;
+      const width =
+        this.instructions.output_width || images[0].$infos.width || 1280;
+      const height =
+        this.instructions.output_height || images[0].$infos.height || 720;
       const resolution = { width, height };
 
       const full_path_to_folder_in_cache =
@@ -448,7 +479,7 @@ class Exporter {
         embed_source: true,
       });
 
-      this._notifyProgress(25);
+      this._notifyProgress(24);
 
       const full_path_to_folder_in_cache =
         await utils.createUniqueFolderInCache("webpage_export");
@@ -755,7 +786,7 @@ class Exporter {
     )
       return reject(new Error(`no-montage-in-instructions`));
 
-    const bitrate = "6000k";
+    const video_bitrate = "6000k";
     const output_width = this.instructions.output_width;
     const output_height = this.instructions.output_height;
     const resolution = { width: output_width, height: output_height };
@@ -799,7 +830,7 @@ class Exporter {
             media_full_path,
             full_path_to_folder_in_cache,
             resolution,
-            bitrate,
+            video_bitrate,
             image_duration: media.image_duration,
             ffmpeg_cmd: this.ffmpeg_cmd,
           }));
@@ -808,7 +839,7 @@ class Exporter {
             media_full_path,
             full_path_to_folder_in_cache,
             resolution,
-            bitrate,
+            video_bitrate,
             ffmpeg_cmd: this.ffmpeg_cmd,
             reportProgress,
           }));
@@ -828,7 +859,7 @@ class Exporter {
 
       await tasks.mergeAllVideos({
         temp_videos_array,
-        bitrate,
+        video_bitrate,
         ffmpeg_cmd: this.ffmpeg_cmd,
         full_path_to_new_video,
       });
@@ -922,7 +953,11 @@ class Exporter {
 
       this._notifyProgress(10);
 
-      const quality_preset = this.instructions.quality_preset || "source";
+      const image_quality_preset =
+        this.instructions.image_quality_preset || "source";
+      const audio_quality_preset =
+        this.instructions.audio_quality_preset || "source";
+
       // source high medium
       const trim_start = this.instructions.hasOwnProperty("trim_start")
         ? this.instructions.trim_start
@@ -942,7 +977,8 @@ class Exporter {
       await optimizer[handler.task]({
         source: base_media_path,
         destination: full_path_to_new_file,
-        quality_preset,
+        image_quality_preset,
+        audio_quality_preset,
         trim_start,
         trim_end,
         ffmpeg_cmd: this.ffmpeg_cmd,
@@ -974,7 +1010,8 @@ class Exporter {
     const base_media_path = utils.getPathToUserContent(
       this.instructions.base_media_path
     );
-    const quality_preset = this.instructions.quality_preset || "source";
+    const image_quality_preset =
+      this.instructions.image_quality_preset || "source";
 
     const that = this;
     const reportProgress = (progress) => {
@@ -988,7 +1025,7 @@ class Exporter {
       await effects.applyVideoEffect({
         source: base_media_path,
         destination: full_path_to_new_video,
-        quality_preset,
+        image_quality_preset,
         effect_type,
         effect_opts,
         ffmpeg_cmd: this.ffmpeg_cmd,

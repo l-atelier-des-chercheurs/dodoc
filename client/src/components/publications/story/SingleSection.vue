@@ -24,7 +24,6 @@
                 :can_edit="can_edit"
               />
               <EditBtn
-                v-if="can_edit"
                 :btn_type="title_is_visible ? 'show' : 'hide'"
                 :label="$t('show_title')"
                 @click="toggleSectionVisibility"
@@ -36,7 +35,23 @@
               <div v-text="section.section_description" />
             </div>
           </div>
-          <div class="_buttons" v-if="can_edit"></div>
+          <div class="_buttons" v-if="can_edit">
+            <DropDown v-if="can_edit" :right="true">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="duplicateSection"
+              >
+                <b-icon icon="file-plus" />
+                {{ $t("duplicate") }}
+              </button>
+
+              <RemoveMenu
+                :remove_text="$t('remove_section')"
+                @remove="removeSection"
+              />
+            </DropDown>
+          </div>
         </div>
         <transition-group
           tag="div"
@@ -188,6 +203,22 @@ export default {
         },
       });
     },
+    async duplicateSection() {
+      await this.duplicateSection2({
+        publication: this.publication,
+        og_modules: this.section_modules_list,
+        section: this.section,
+      });
+      this.$emit("nextSection");
+    },
+    async removeSection() {
+      this.$emit("prevSection");
+      this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        section: this.section,
+      });
+    },
     async moveModuleTo({ path, new_position }) {
       await this.moveModuleTo2({
         publication: this.publication,
@@ -312,8 +343,8 @@ export default {
 ._topbar {
   display: flex;
   flex-flow: row wrap;
-  align-items: baseline;
   justify-content: space-between;
+  align-items: flex-end;
 
   margin: calc(var(--spacing) * 1) 0 0;
 
@@ -323,7 +354,7 @@ export default {
       flex: 1 1 56ch;
     }
     &._buttons {
-      flex: 1 1 auto;
+      flex: 0 0 auto;
       display: flex;
       flex-flow: row wrap;
       // justify-content: flex-end;

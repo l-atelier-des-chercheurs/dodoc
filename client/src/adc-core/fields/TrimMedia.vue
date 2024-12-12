@@ -227,12 +227,9 @@ export default {
   --plyr-audio-controls-background: var(--c-noir);
   --plyr-audio-control-color: white;
 
-  .plyr {
-    --plyr-audio-controls-background: var(--c-noir);
-    --plyr-audio-control-color: white;
-
-    .plyr__controls {
-      border-radius: 4px;
+  ::v-deep .plyr__video-wrapper {
+    video {
+      max-height: 50vh;
     }
   }
 }

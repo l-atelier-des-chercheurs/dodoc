@@ -20,7 +20,7 @@ module.exports = (function () {
     async applyVideoEffect({
       source,
       destination,
-      quality_preset,
+      image_quality_preset,
       effect_type,
       effect_opts,
       ffmpeg_cmd,
@@ -52,6 +52,10 @@ module.exports = (function () {
 
         const video_width = 1920;
         const video_height = 1080;
+
+        if (image_quality_preset === "no_audio") {
+          ffmpeg_cmd.noAudio();
+        }
 
         let complexFilters = [
           {

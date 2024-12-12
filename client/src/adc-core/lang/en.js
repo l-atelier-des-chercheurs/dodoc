@@ -185,7 +185,8 @@ export default {
   medium: "Medium",
   low: "Low",
   rough: "Draft",
-  optimize: "Optimize",
+  optimize_resize: "Optimize/resize",
+  from_the_first_media: "From the first media",
 
   no_accounts_yet: "No accounts created yet",
   no_accounts_to_show: "No accounts to show",
@@ -248,6 +249,8 @@ export default {
   start_timelapse: "Start timelapse",
   stop_timelapse: "Stop timelapse",
   quality: "Quality",
+  image_quality: "Image quality",
+  audio_quality: "Audio quality",
   duration: "Duration",
 
   latitude: "Latitude",
@@ -653,6 +656,7 @@ export default {
   copy: "Copy",
   test_and_export: "Test and export",
   export_montage: "Export montage",
+  export_stomotion: "Export animation",
 
   video_to_rework: "Video to edit",
 
@@ -738,7 +742,7 @@ export default {
   add_multiple_images:
     "Open a project and add several <b>image</b> media by clicking on the green arrow. The images will be placed end to end in the order of addition. Export the sequence and adjust the frame rate. <br>Export will create a video.<br>Media accepted: images only. The dimensions of the first image determine whether the final video is portrait or landscape.",
   images: "Pictures",
-  make_an_exhibition: "Create an exhibition",
+
   image_tracking: "Augmented reality",
   create_block: "Create group",
   image_tracking_summary: "",
@@ -768,6 +772,7 @@ export default {
   replace_color_with: "Replace with",
   use_own_risk: "Use with caution: media may become invisible in some cases!",
   chroma_key: "Overlay (green background)",
+  chroma_key_color: "Color to replace",
   color: "Color",
   flip_horizontally: "Flip horizontally",
   flip_vertically: "Flip vertically",
@@ -1140,4 +1145,17 @@ export default {
   connected_currently: "Connected currently",
 
   start_by_uploading_images: "Start by uploading images below",
+  or: "or",
+  live_dubbing: "Live dubbing",
+  play_both: "Play both at the same time",
+  bitrate: "Bitrate: {bitrate} kbps",
+  resolution_on_largest_side:
+    "Resolution on the largest side: {resolution} pixels",
+  keep_ratio: "Keep the width/height ratio",
+
+  in_this_make: "In this make",
+  edit_volume_or_mute: "Edit volume or mute",
+  toolbox: "Toolbox",
+  video_resolution_even: "The resolution must be a multiple of 2",
+  no_audio_track: "No audio track (muted)",
 };

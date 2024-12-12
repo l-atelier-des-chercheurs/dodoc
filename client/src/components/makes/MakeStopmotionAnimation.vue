@@ -1,5 +1,5 @@
 <template>
-  <div class="_montageModules">
+  <div>
     <transition-group
       tag="div"
       class="_listOfModules"
@@ -7,58 +7,85 @@
       appear
       :duration="700"
     >
-      <template v-for="(_module, index) in section_modules_list">
-        <div class="_spacer" :key="'mc_' + index">
-          <ModuleCreator
-            :publication_path="make.$path"
-            :types_available="['capture', 'import']"
-            :context="'montage'"
-            @addModules="
-              ({ meta_filenames }) => insertModules({ meta_filenames, index })
-            "
-          />
-        </div>
-        <div :key="_module.$path">
-          <MontageModule
-            :index="index + 1"
-            :makemodule="_module"
-            :module_position="
-              section_modules_list.length === 1
-                ? 'alone'
-                : index === 0
-                ? 'first'
-                : index === section_modules_list.length - 1
-                ? 'last'
-                : 'inbetween'
-            "
-            :default_image_duration="default_image_duration"
-            @moveUp="
-              moveModuleTo({ path: _module.$path, new_position: index - 1 })
-            "
-            @moveDown="
-              moveModuleTo({ path: _module.$path, new_position: index + 1 })
-            "
-            @remove="removeModule(_module.$path)"
-          />
-        </div>
-      </template>
-    </transition-group>
-    <div class="_lastModule">
+      <div
+        v-for="(_module, index) in section_modules_list"
+        :key="_module.$path"
+      >
+        <StopmotionModule
+          :index="index"
+          :makemodule="_module"
+          :number_of_modules="section_modules_list.length"
+          :imposed_ratio="first_media_ratio"
+          :module_position="
+            section_modules_list.length === 1
+              ? 'alone'
+              : index === 0
+              ? 'first'
+              : index === section_modules_list.length - 1
+              ? 'last'
+              : 'inbetween'
+          "
+          @moveTo="moveModuleTo"
+          @moveUp="
+            moveModuleTo({ path: _module.$path, new_position: index - 1 })
+          "
+          @moveDown="
+            moveModuleTo({ path: _module.$path, new_position: index + 1 })
+          "
+          @remove="removeModule"
+        />
+      </div>
       <ModuleCreator
+        key="mc_0"
         :publication_path="make.$path"
         :start_collapsed="false"
         :types_available="['capture', 'import']"
         :context="'montage'"
         @addModules="addModules"
       />
-    </div>
+    </transition-group>
 
     <transition name="pagechange" mode="out-in">
       <div class="_bottomRow" v-if="export_is_available">
         <div class="_equationIcon">
           <b-icon icon="chevron-double-down" />
         </div>
-        <div class="">
+        <div class="_create">
+          <div class="_fpsPick">
+            <RangeValueInput
+              :can_toggle="false"
+              :label="$t('img_per_second')"
+              :value="frame_rate"
+              :min="2"
+              :max="30"
+              :step="1"
+              :ticks="[2, 4, 8, 15, 24, 30]"
+              :default_value="4"
+              @save="updateFrameRate"
+            />
+
+            <!-- <label class="u-label">{{ $t("img_per_second") }}</label>
+            <select v-model.number="frame_rate" size="small">
+              <option>2</option>
+              <option>4</option>
+              <option>8</option>
+              <option>15</option>
+              <option>24</option>
+              <option>30</option>
+              <option value="custom">{{ $t("custom") }}</option>
+            </select>
+            <input
+              v-model.number="frame_rate"
+              type="number"
+              min="1"
+              max="60"
+              step="1"
+              list="frame_rate_options"
+            />
+            <datalist id="frame_rate_options">
+              <option v-for="i in 60" :value="i" :key="i" />
+            </datalist> -->
+          </div>
           <button
             type="button"
             class="u-button u-button_bleuvert"
@@ -73,7 +100,7 @@
 
     <ExportSaveMakeModal
       v-if="show_save_export_modal"
-      :title="$t('export_montage')"
+      :title="$t('export_stomotion')"
       :export_name="export_name"
       :export_href="export_href"
       :enable_options="created_video !== false"
@@ -84,6 +111,9 @@
       </div>
       <div v-else>
         <div v-if="!created_video">
+          <DLabel>
+            {{ $t("resolution") }}
+          </DLabel>
           <SelectField2
             :value="resolution_preset_picked"
             :options="presets"
@@ -131,7 +161,7 @@
 </template>
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
-import MontageModule from "@/components/makes/MontageModule.vue";
+import StopmotionModule from "@/components/makes/StopmotionModule.vue";
 import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
 
 export default {
@@ -140,7 +170,7 @@ export default {
   },
   components: {
     ModuleCreator,
-    MontageModule,
+    StopmotionModule,
     ExportSaveMakeModal,
   },
   data() {
@@ -149,53 +179,12 @@ export default {
       is_exporting: false,
       created_video: false,
       export_href: undefined,
-      default_image_duration: 2,
+      frame_rate: this.make.frame_rate || 4,
 
-      custom_resolution_width: 512,
-      custom_resolution_height: 512,
+      custom_resolution_width: 1920,
+      custom_resolution_height: 1080,
 
-      resolution_preset_picked: "high",
-      presets: [
-        {
-          key: "vhigh",
-          text: this.$t("very_high"),
-          instructions: "1920 × 1080",
-          width: 1920,
-          height: 1080,
-        },
-        {
-          key: "high",
-          text: this.$t("high"),
-          instructions: "1280 × 720",
-          width: 1280,
-          height: 720,
-        },
-        {
-          key: "medium",
-          text: this.$t("medium"),
-          instructions: "640 × 480",
-          width: 640,
-          height: 480,
-        },
-        {
-          key: "low",
-          text: this.$t("low"),
-          instructions: "480 × 360",
-          width: 480,
-          height: 360,
-        },
-        {
-          key: "rough",
-          text: "→" + this.$t("rough"),
-          instructions: "360 × 240",
-          width: 360,
-          height: 240,
-        },
-        {
-          key: "custom",
-          text: "↓ " + this.$t("custom"),
-        },
-      ],
+      resolution_preset_picked: "original",
     };
   },
   async created() {
@@ -204,7 +193,7 @@ export default {
         publication: this.make,
         type: "section",
         group: "sections_list",
-        title: "montage",
+        title: "stopmotion",
       });
     }
   },
@@ -227,36 +216,77 @@ export default {
       },
       immediate: true,
     },
+    "make.frame_rate": {
+      handler() {
+        this.frame_rate = this.make.frame_rate;
+      },
+      immediate: true,
+    },
   },
   computed: {
+    presets() {
+      let presets = [];
+
+      let source = {
+        key: "original",
+        text: this.$t("original"),
+      };
+      if (this.first_media) {
+        const { width, height } = this.first_media.$infos;
+        source.width = width;
+        source.height = height;
+        source.instructions = `${width} × ${height} pixels`;
+      }
+      presets.push(source);
+      presets = presets.concat([
+        {
+          key: "vhigh",
+          text: this.$t("very_high"),
+          instructions: "1920 × 1080 pixels",
+          width: 1920,
+          height: 1080,
+        },
+        {
+          key: "high",
+          text: this.$t("high"),
+          instructions: "1280 × 720 pixels",
+          width: 1280,
+          height: 720,
+        },
+        {
+          key: "medium",
+          text: this.$t("medium"),
+          instructions: "640 × 480 pixels",
+          width: 640,
+          height: 480,
+        },
+        {
+          key: "low",
+          text: this.$t("low"),
+          instructions: "480 × 360 pixels",
+          width: 480,
+          height: 360,
+        },
+        {
+          key: "rough",
+          text: "→" + this.$t("rough"),
+          instructions: "360 × 240 pixels",
+          width: 360,
+          height: 240,
+        },
+        {
+          key: "custom",
+          text: "↓ " + this.$t("custom"),
+        },
+      ]);
+
+      return presets;
+    },
     export_name() {
-      return "video_montage.mp4";
+      return "stopmotion.mp4";
     },
     export_is_available() {
       return this.section_modules_list.length > 0;
-    },
-    montage() {
-      return this.section_modules_list.reduce((acc, _module) => {
-        const media = this.firstMedia(_module);
-        if (media) {
-          let instr = {
-            path: this.makeMediaFilePath({
-              $path: media.$path,
-              $media_filename: media.$media_filename,
-            }),
-            type: media.$type,
-            transition_in: _module.transition_in,
-            transition_out: _module.transition_out,
-          };
-
-          if (media.$type === "image")
-            instr.image_duration =
-              _module.image_duration || this.default_image_duration;
-
-          acc.push(instr);
-        }
-        return acc;
-      }, []);
     },
     sections() {
       return this.getSectionsWithProps({
@@ -274,14 +304,14 @@ export default {
       }
       return undefined;
     },
-    first_media_ratio() {
-      return this.first_media?.$infos?.ratio || undefined;
-    },
     section_modules_list() {
       return this.getModulesForSection({
         publication: this.make,
         section: this.first_section,
       }).map(({ _module }) => _module);
+    },
+    first_media_ratio() {
+      return this.first_media?.$infos?.ratio || undefined;
     },
   },
   methods: {
@@ -308,23 +338,17 @@ export default {
         new_position,
       });
     },
-    async duplicatePublicationMedia({
-      source_module_path,
-      copy_meta_filename,
-    }) {
-      const source_meta_filename = this.getFilename(source_module_path);
-      await this.duplicatePublicationMedia2({
-        publication: this.make,
-        section: this.first_section,
-        source_meta_filename,
-        copy_meta_filename,
-      });
-    },
     async removeModule(path) {
       await this.removeModule2({
         publication: this.make,
         section: this.first_section,
         path,
+      });
+    },
+    updateFrameRate(frame_rate) {
+      this.$api.updateMeta({
+        path: this.make.$path,
+        new_meta: { frame_rate },
       });
     },
     async cancelExport() {
@@ -350,23 +374,36 @@ export default {
         output_height = preset.height;
       }
 
-      const additional_meta = {};
-      additional_meta.$origin = "make";
+      const additional_meta = {
+        $origin: "make",
+      };
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
-      let instructions = {
-        recipe: this.make.type,
-        suggested_file_name: this.make.type,
-        montage: this.montage,
-        output_width,
-        output_height,
-        additional_meta,
-      };
+      const images_meta = this.section_modules_list.reduce((acc, m) => {
+        const meta_filename_in_project =
+          m.source_medias[0]?.meta_filename_in_project;
+        if (meta_filename_in_project) {
+          acc.push({
+            m: meta_filename_in_project,
+            d: 1,
+          });
+        }
+        return acc;
+      }, []);
 
+      // m: meta, d: duration
       const current_task_id = await this.$api.exportFolder({
         path: this.make.$path,
-        instructions,
+        instructions: {
+          recipe: this.make.type,
+          images_meta,
+          frame_rate: this.frame_rate,
+          output_width,
+          output_height,
+          export_format: "mp4",
+          additional_meta,
+        },
       });
       this.$api.join({ room: "task_" + current_task_id });
 
@@ -396,51 +433,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._montageModules {
-  padding: calc(var(--spacing) * 1);
-  max-width: 680px;
-  margin: 0 auto;
-  width: 100%;
-
-  ::v-deep {
-    ._moduleCreator {
-      justify-content: center;
-    }
-  }
-}
-
 ._listOfModules {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-}
-
-._lastModule {
-  padding: calc(var(--spacing) * 1);
-}
-
-._spacer {
-  min-height: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: calc(var(--spacing) * 1);
-
-  transition: all 0.2s linear;
-
-  ::v-deep {
-    ._moduleCreator {
-      // position: absolute;
-      // background: white;
-      padding: calc(var(--spacing) / 4);
-      z-index: 1;
-      border-radius: 0;
-
-      &.is--collapsed {
-        padding: 0;
-      }
-    }
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--spacing);
+  margin: var(--spacing) 0;
 }
 
 ._equationIcon {
@@ -455,6 +452,21 @@ export default {
   text-align: center;
 }
 
-._preview {
+._create {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing);
+
+  label {
+    color: inherit;
+  }
+}
+
+._fpsPick {
+  background: rgba(255, 255, 255, 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  border-radius: var(--input-border-radius);
 }
 </style>

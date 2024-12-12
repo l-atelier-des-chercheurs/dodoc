@@ -107,6 +107,7 @@ export default {
       }
 
       this.finished_saving_to_project = true;
+      this.$eventHub.$emit("animatePane", "collect");
       setTimeout(() => {
         this.$emit("close");
       }, 3000);

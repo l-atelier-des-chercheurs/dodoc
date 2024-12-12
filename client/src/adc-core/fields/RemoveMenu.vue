@@ -1,15 +1,18 @@
 <template>
   <div>
-    <button
-      type="button"
-      class="u-buttonLink u-buttonLink_red"
-      @click="show_confirm_delete = true"
-    >
-      <b-icon icon="trash" />
-      <template v-if="show_button_text">
-        {{ remove_text }}
+    <div @click="show_confirm_delete = true">
+      <template v-if="$slots.hasOwnProperty('trigger')">
+        <slot name="trigger" />
       </template>
-    </button>
+      <template v-else>
+        <button type="button" class="u-buttonLink u-buttonLink_red">
+          <b-icon icon="trash" />
+          <template v-if="show_button_text">
+            {{ remove_text }}
+          </template>
+        </button>
+      </template>
+    </div>
 
     <BaseModal2
       v-if="show_confirm_delete"
