@@ -80,7 +80,6 @@ export default {
       this.$emit("toggleSection", this.getFilename(path));
     },
     openFirstSectionIfNoneOpened() {
-      debugger;
       if (this.sections.length > 0 && !this.opened_section_meta_filename) {
         this.$emit("openFirstSection");
       }

@@ -28,13 +28,6 @@
                 :label="$t('show_title')"
                 @click="toggleSectionVisibility"
               />
-
-              <DropDown v-if="can_edit">
-                <RemoveMenu
-                  :remove_text="$t('remove_section')"
-                  @remove="removeSection"
-                />
-              </DropDown>
             </div>
 
             <!-- legacy field – only existing description can be edited -->
@@ -42,7 +35,14 @@
               <div v-text="section.section_description" />
             </div>
           </div>
-          <div class="_buttons" v-if="can_edit"></div>
+          <div class="_buttons" v-if="can_edit">
+            <DropDown v-if="can_edit" :right="true">
+              <RemoveMenu
+                :remove_text="$t('remove_section')"
+                @remove="removeSection"
+              />
+            </DropDown>
+          </div>
         </div>
         <transition-group
           tag="div"
@@ -326,8 +326,8 @@ export default {
 ._topbar {
   display: flex;
   flex-flow: row wrap;
-  align-items: baseline;
   justify-content: space-between;
+  align-items: flex-end;
 
   margin: calc(var(--spacing) * 1) 0 0;
 
@@ -337,7 +337,7 @@ export default {
       flex: 1 1 56ch;
     }
     &._buttons {
-      flex: 1 1 auto;
+      flex: 0 0 auto;
       display: flex;
       flex-flow: row wrap;
       // justify-content: flex-end;
