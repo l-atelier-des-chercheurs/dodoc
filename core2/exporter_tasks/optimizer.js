@@ -148,11 +148,19 @@ module.exports = (function () {
             video_bitrate = image_quality_preset.bitrate + "k";
         }
 
+        let audio_bitrate;
+        if (audio_quality_preset === "source") audio_bitrate = "256k";
+        else if (audio_quality_preset === "high") audio_bitrate = "192k";
+        else if (audio_quality_preset === "medium") audio_bitrate = "128k";
+        else if (audio_quality_preset === "no_audio")
+          audio_bitrate = "no_audio";
+
         try {
           await utils.convertVideoToStandardFormat({
             source,
             destination,
             video_bitrate,
+            audio_bitrate,
             resolution,
             trim_start,
             trim_end,

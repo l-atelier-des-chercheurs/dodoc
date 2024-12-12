@@ -72,6 +72,7 @@
             </div>
           </div>
           <div v-if="['video', 'audio'].includes(media.$type)" class="">
+            <div class="u-spacingBottom" />
             <DLabel :str="$t('audio_quality')" />
             <SelectField2
               :value="audio_quality_picked"

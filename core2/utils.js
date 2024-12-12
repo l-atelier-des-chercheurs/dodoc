@@ -623,6 +623,7 @@ module.exports = (function () {
       destination,
       format = "mp4",
       video_bitrate = "6000k",
+      audio_bitrate = "192k",
       resolution,
       trim_start,
       trim_end,
@@ -641,21 +642,23 @@ module.exports = (function () {
             ffmpeg_cmd,
             video_path: source,
           });
-
           if (trim_start !== undefined && trim_end !== undefined)
             ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
           else if (duration) ffmpeg_cmd.duration(duration);
 
-          // check if has audio track or not
-          if (streams?.some((s) => s.codec_type === "audio")) {
-            ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("192k");
-          } else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+          if (audio_bitrate === "no_audio") {
+            ffmpeg_cmd.noAudio();
+          } else {
+            if (streams?.some((s) => s.codec_type === "audio")) {
+              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate(audio_bitrate);
+            } else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
 
-          if (streams) {
-            const filter = API.makeFilterToPadMatchDurationAudioVideo({
-              streams,
-            });
-            if (filter) ffmpeg_cmd.addOptions([filter]);
+            if (streams) {
+              const filter = API.makeFilterToPadMatchDurationAudioVideo({
+                streams,
+              });
+              if (filter) ffmpeg_cmd.addOptions([filter]);
+            }
           }
         } catch (err) {
           dev.error(err);

@@ -788,7 +788,7 @@ export default {
   rough: "Ébauche",
   optimize_resize: "Optimiser/redimensionner",
   optimize_resize_instructions:
-    "Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.",
+    "Convertir vers un format standard, recouper le début ou la fin, supprimer la piste sonore ou modifier la qualité pour alléger le fichier.",
   from_the_first_media: "À partir du premier média",
 
   name_of_stream: "Nom du flux",
