@@ -7,23 +7,19 @@
       :show_toggle.sync="show_color_input"
     >
       <div class="_currentColor" v-if="!edit_mode">
-        <button
-          type="button"
-          class="u-button u-button_small u-button_transparent"
-          @click="edit_mode = true"
-        >
-          <span
-            class="_colorPatch"
-            :data-color="local_value"
-            :style="`--patch-color: ${local_value}`"
-          />
-        </button>
+        <span
+          class="_colorPatch"
+          :data-color="local_value"
+          :style="`--patch-color: ${local_value}`"
+        />
+        <EditBtn @click="edit_mode = true" />
       </div>
       <template v-else>
         <div class="_defaultColors">
-          <div
+          <button
+            type="button"
             v-for="color in computed_default_colors"
-            class="_colorPatch"
+            class="_colorPatch _colorPatch_isButton"
             :data-color="color"
             :class="{
               'is--active': color === local_value,
@@ -61,10 +57,11 @@
           <SaveCancelButtons
             v-if="!live_editing"
             class="_scb"
-            :allow_save="value !== local_value"
             @save="saveColor(local_value)"
             @cancel="cancelColor"
           />
+          <!-- // dont use because of custom color -->
+          <!-- :allow_save="value !== local_value" -->
         </transition>
       </template>
     </ToggledSection>
@@ -93,10 +90,9 @@ export default {
       type: Array,
       default: () => [
         "#000000",
-        "#CED7DA",
+        "#637B83",
         "#ffffff",
         "transparent",
-        "#637B83",
         "#1d327f",
         "#52c5b9",
         "#ffbe32",
@@ -170,12 +166,16 @@ export default {
   padding: calc(var(--spacing) / 2);
 }
 
+._currentColor {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
 ._colorPatch {
   display: block;
   width: 2rem;
   height: 2rem;
-  padding: 0.3rem;
-  cursor: pointer;
 
   &::before {
     content: "";
@@ -183,15 +183,25 @@ export default {
     border-radius: 50%;
     width: 100%;
     height: 100%;
-    outline: 2px solid var(--c-gris);
-    border: 1px solid white;
     background-color: var(--patch-color);
   }
 
-  &:hover,
-  &:focus-visible {
+  &._colorPatch_isButton {
+    padding: 0.3rem;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+
     &::before {
-      outline-color: var(--active-color);
+      outline: 2px solid var(--c-gris);
+      border: 1px solid white;
+    }
+
+    &:hover,
+    &:focus-visible {
+      &::before {
+        outline-color: var(--active-color);
+      }
     }
   }
 
