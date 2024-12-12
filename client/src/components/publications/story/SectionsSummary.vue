@@ -89,7 +89,6 @@ export default {
         this.$emit("openFirstSection");
       }
     },
-
     async createSection() {
       const new_section_meta = await this.createSection2({
         publication: this.publication,

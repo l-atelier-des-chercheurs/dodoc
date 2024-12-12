@@ -37,6 +37,15 @@
           </div>
           <div class="_buttons" v-if="can_edit">
             <DropDown v-if="can_edit" :right="true">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="duplicateSection"
+              >
+                <b-icon icon="file-plus" />
+                {{ $t("duplicate") }}
+              </button>
+
               <RemoveMenu
                 :remove_text="$t('remove_section')"
                 @remove="removeSection"
@@ -192,6 +201,13 @@ export default {
         new_meta: {
           section_title_is_visible: !this.title_is_visible,
         },
+      });
+    },
+    async duplicateSection() {
+      await this.duplicateSection2({
+        publication: this.publication,
+        og_modules: this.section_modules_list,
+        section: this.section,
       });
     },
     async removeSection() {

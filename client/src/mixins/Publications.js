@@ -194,8 +194,30 @@ export default {
 
       return meta_filename;
     },
-    async duplicateSection2({ publication, group, path }) {
-      //
+    async duplicateSection2({ publication, og_modules, section }) {
+      const new_title = this.$t("copy_of") + " " + section.section_title;
+      const new_section_meta = await this.createSection2({
+        publication: this.publication,
+        type: "section",
+        group: "sections_list",
+        title: new_title,
+      });
+
+      const new_modules_meta = [];
+      for (const og_module of og_modules) {
+        const new_module_meta = await this.duplicateModuleWithSourceMedias({
+          og_module,
+        });
+        new_modules_meta.push(new_module_meta);
+      }
+
+      const section_path = publication.$path + "/" + new_section_meta;
+      await this.$api.updateMeta({
+        path: section_path,
+        new_meta: {
+          modules_list: new_modules_meta,
+        },
+      });
     },
     async removeSection2({ publication, group, section }) {
       const section_meta_filename = this.getFilename(section.$path);
@@ -211,14 +233,16 @@ export default {
         },
       });
 
-      // remove module
+      // remove modules
       if (section.modules_list) {
-        debugger;
         for (let _module_meta_filename of section.modules_list) {
           const path = publication.$path + "/" + _module_meta_filename;
           await this.removeModule2({ publication, path });
         }
       }
+
+      // remove section module
+      await this.$api.deleteItem({ path: section.$path });
     },
     async insertModuleMetaFilenamesToList2({
       publication,
