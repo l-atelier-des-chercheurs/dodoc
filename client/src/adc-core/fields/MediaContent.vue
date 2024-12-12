@@ -149,7 +149,7 @@
               frameborder="0"
               @load="iframeLoaded"
             />
-            <vue-plyr v-else :key="file_full_path" ref="plyr">
+            <vue-plyr v-else :key="'plyr-' + file_full_path" ref="plyr">
               <div class="plyr__video-embed">
                 <iframe
                   :src="url_to_site.src"

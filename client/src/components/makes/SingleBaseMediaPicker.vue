@@ -3,6 +3,7 @@
     <div class="_mpContent">
       <MediaContent
         v-if="selected_media"
+        :key="selected_media.$path"
         :file="selected_media"
         :resolution="220"
         :context="context"
