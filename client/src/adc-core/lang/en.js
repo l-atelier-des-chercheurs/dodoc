@@ -186,6 +186,7 @@ export default {
   low: "Low",
   rough: "Draft",
   optimize_resize: "Optimize/resize",
+  convert_instructions: "Convert to standard format",
   from_the_first_media: "From the first media",
 
   no_accounts_yet: "No accounts created yet",

@@ -265,7 +265,9 @@ export default {
     instructions() {
       if (["video", "audio"].includes(this.media.$type))
         return this.$t("convert_shorten_instructions");
-      return this.$t("optimize_resize_instructions");
+      if (this.media.$type === "image")
+        return this.$t("optimize_resize_instructions");
+      return this.$t("convert_instructions");
     },
     modal_width() {
       if (this.optimized_file || this.extract_selection) return "large";

@@ -787,6 +787,7 @@ export default {
   low: "Basse",
   rough: "Ébauche",
   optimize_resize: "Optimiser/redimensionner",
+  convert_instructions: "Convertir vers un format standard",
   optimize_resize_instructions:
     "Convertir vers un format standard, recouper le début ou la fin, supprimer la piste sonore ou modifier la qualité pour alléger le fichier.",
   from_the_first_media: "À partir du premier média",
