@@ -93,10 +93,10 @@ export default {
       type: Array,
       default: () => [
         "#000000",
-        "#353535",
-        "#b9b9b9",
+        "#CED7DA",
         "#ffffff",
         "transparent",
+        "#637B83",
         "#1d327f",
         "#52c5b9",
         "#ffbe32",
