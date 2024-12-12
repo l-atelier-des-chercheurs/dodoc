@@ -21,6 +21,13 @@
       <div class="_cont">
         <LoaderSpinner v-if="is_optimizing" class="_loader" />
         <div v-if="!optimized_file">
+          <div
+            v-if="media.$optimized === true"
+            class="u-spacingBottom u-instructions"
+          >
+            {{ $t("already_optimized") }}
+          </div>
+
           <template v-if="['video', 'audio'].includes(media.$type)">
             <TrimMedia
               :media="media"
@@ -33,12 +40,6 @@
 
           <div v-if="['image', 'video'].includes(media.$type)" class="">
             <DLabel :str="$t('image_quality')" />
-            <div
-              v-if="media.$optimized === true"
-              class="u-spacingBottom u-instructions"
-            >
-              {{ $t("already_optimized") }}
-            </div>
             <div class="">
               <SelectField2
                 :value="resolution_preset_picked"

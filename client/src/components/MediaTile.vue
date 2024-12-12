@@ -42,20 +42,19 @@
     />
 
     <!-- bottom right -->
-    <div
-      class="_fileType _hasCoordinates"
-      v-if="has_coordinates || tile_mode === 'table'"
-    >
-      <b-icon class="" v-if="has_coordinates" icon="pin-map-fill" />
+    <div v-if="has_coordinates || tile_mode === 'table'" class="">
+      <div v-if="has_coordinates" class="_hasCoordinates">
+        <b-icon class="_indicator" icon="pin-map-fill" />
+      </div>
       <span v-else v-text="'-'" />
     </div>
 
     <template>
       <!-- bottom left -->
-      <span v-if="duration" class="_fileType" v-html="duration" />
+      <span v-if="duration" class="_indicator _fileType" v-html="duration" />
       <span
         v-if="show_file_type_label"
-        class="_fileType"
+        class="_indicator _fileType"
         v-html="show_file_type_label"
       />
     </template>
@@ -336,18 +335,6 @@ export default {
 }
 
 ._fileType {
-  // background: rgba(255, 255, 255, 0.5);
-  background: rgba(0, 0, 0, 0.85);
-  color: white;
-  border-radius: 2px;
-  line-height: 1;
-  font-weight: 600;
-
-  padding: calc(var(--spacing) / 8);
-  margin: calc(var(--spacing) / 8);
-  font-size: var(--input-font-size-small);
-  text-transform: uppercase;
-
   ._mediaTile:not([data-tilemode="table"]) & {
     position: absolute;
     bottom: 0;
@@ -429,25 +416,31 @@ export default {
   }
 }
 
+._indicator {
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  border-radius: 2px;
+  line-height: 1;
+  font-weight: 600;
+  padding: calc(var(--spacing) / 8);
+  margin: calc(var(--spacing) / 8);
+  font-size: var(--input-font-size-small);
+  text-transform: uppercase;
+}
+
 ._hasCoordinates {
   position: absolute;
   bottom: 0;
   right: 0;
   left: auto !important;
-  // margin: 0;
-  // width: 1.5rem;
-  // height: 1.5rem;
-
-  // mix-blend-mode: difference;
-  // background: var(--c-bleumarine);
-  // border-radius: 50%;
-
-  // display: flex;
-  // place-content: center;
 
   svg {
     // color: var(--c-bleumarine);
-    padding: 1px;
+
+    padding: 2px;
+    width: 1rem;
+    display: block;
+    height: 1rem;
   }
 
   ._mediaTile[data-tilemode="table"] & {
