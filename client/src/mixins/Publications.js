@@ -163,7 +163,7 @@ export default {
         return acc;
       }, []);
     },
-    async createSection2({ publication, type, group, title }) {
+    async createSection2({ publication, type, group, title, index }) {
       let additional_meta = {
         section_type: "-",
         section_title: title,
@@ -181,9 +181,10 @@ export default {
         });
 
       let sections_list = this.getSectionsList({ publication, group }).slice();
-      sections_list.push({
-        meta_filename,
-      });
+
+      if (typeof index === "number")
+        sections_list.splice(index, 0, { meta_filename });
+      else sections_list.push({ meta_filename });
 
       await this.$api.updateMeta({
         path: publication.$path,
@@ -195,12 +196,18 @@ export default {
       return meta_filename;
     },
     async duplicateSection2({ publication, og_modules, section }) {
+      const section_index = this.getSectionsList({
+        publication: this.publication,
+        group: "sections_list",
+      }).findIndex((s) => s.meta_filename === this.getFilename(section.$path));
+
       const new_title = this.$t("copy_of") + " " + section.section_title;
       const new_section_meta = await this.createSection2({
         publication: this.publication,
         type: "section",
         group: "sections_list",
         title: new_title,
+        index: section_index + 1,
       });
 
       const new_modules_meta = [];

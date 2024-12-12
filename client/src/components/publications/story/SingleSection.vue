@@ -209,14 +209,15 @@ export default {
         og_modules: this.section_modules_list,
         section: this.section,
       });
+      this.$emit("nextSection");
     },
     async removeSection() {
-      await this.removeSection2({
+      this.$emit("prevSection");
+      this.removeSection2({
         publication: this.publication,
         group: "sections_list",
         section: this.section,
       });
-      this.$emit("removed");
     },
     async moveModuleTo({ path, new_position }) {
       await this.moveModuleTo2({
