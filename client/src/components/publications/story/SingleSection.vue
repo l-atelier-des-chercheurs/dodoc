@@ -24,11 +24,17 @@
                 :can_edit="can_edit"
               />
               <EditBtn
-                v-if="can_edit"
                 :btn_type="title_is_visible ? 'show' : 'hide'"
                 :label="$t('show_title')"
                 @click="toggleSectionVisibility"
               />
+
+              <DropDown v-if="can_edit">
+                <RemoveMenu
+                  :remove_text="$t('remove_section')"
+                  @remove="removeSection"
+                />
+              </DropDown>
             </div>
 
             <!-- legacy field – only existing description can be edited -->
@@ -187,6 +193,14 @@ export default {
           section_title_is_visible: !this.title_is_visible,
         },
       });
+    },
+    async removeSection() {
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        section: this.section,
+      });
+      this.$emit("removed");
     },
     async moveModuleTo({ path, new_position }) {
       await this.moveModuleTo2({

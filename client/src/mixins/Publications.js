@@ -194,8 +194,11 @@ export default {
 
       return meta_filename;
     },
-    async removeSection2({ publication, group, path }) {
-      const section_meta_filename = this.getFilename(path);
+    async duplicateSection2({ publication, group, path }) {
+      //
+    },
+    async removeSection2({ publication, group, section }) {
+      const section_meta_filename = this.getFilename(section.$path);
       let sections_list = this.getSectionsList({ publication, group }).slice();
       sections_list = sections_list.filter(
         (f) => f.meta_filename !== section_meta_filename
@@ -208,9 +211,14 @@ export default {
         },
       });
 
-      await this.$api.deleteItem({
-        path,
-      });
+      // remove module
+      if (section.modules_list) {
+        debugger;
+        for (let _module_meta_filename of section.modules_list) {
+          const path = publication.$path + "/" + _module_meta_filename;
+          await this.removeModule2({ publication, path });
+        }
+      }
     },
     async insertModuleMetaFilenamesToList2({
       publication,
@@ -285,21 +293,27 @@ export default {
     },
 
     async removeModule2({ publication, section, path }) {
-      const meta_filename = this.getFilename(path);
+      // remove module from section
+      if (section) {
+        const meta_filename = this.getFilename(path);
+        let modules_list = this.getModulesForSection({
+          publication,
+          section,
+        })
+          .map((m) => m.meta_filename)
+          .slice()
+          .filter((_mf) => _mf !== meta_filename);
+        await this.$api.updateMeta({
+          path: section.$path,
+          new_meta: {
+            modules_list,
+          },
+        });
+      }
 
-      let modules_list = this.getModulesForSection({
-        publication,
-        section,
-      })
-        .map((m) => m.meta_filename)
-        .slice()
-        .filter((_mf) => _mf !== meta_filename);
-      await this.$api.updateMeta({
-        path: section.$path,
-        new_meta: {
-          modules_list,
-        },
-      });
+      this.$api.deleteItem({ path });
+
+      // todo remove media as well if local
     },
 
     getMediasAlreadyPresentInPublication({
