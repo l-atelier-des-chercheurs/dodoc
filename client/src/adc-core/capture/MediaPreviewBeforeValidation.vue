@@ -90,47 +90,6 @@ export default {
     margin: 0;
     // .padding-medium;
   }
-  .m_previewValidation--audio {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-
-    .plyr .plyr__controls {
-      color: white;
-    }
-
-    ::v-deep .plyr--audio {
-      flex: 0 0 0;
-    }
-
-    img {
-      object-fit: contain;
-    }
-
-    > * {
-      flex: 1 1 auto;
-      // width: 100%;
-      // height: 100%;
-      height: 90%;
-
-      &:last-child {
-        height: auto;
-      }
-    }
-  }
-}
-
-.play_picto {
-  position: absolute;
-  top: 0;
-  left: 0;
-  svg {
-    width: 50px;
-    height: 50px;
-    padding: 10px;
-    border-radius: 50%;
-  }
 }
 
 .m_previewValidation--svg {

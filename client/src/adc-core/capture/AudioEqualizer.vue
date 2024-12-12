@@ -55,7 +55,8 @@ export default {
       const canvas = this.$refs.canvas;
       if (!canvas) return;
 
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = 1;
+      // const dpr = window.devicePixelRatio || 1;
       const w = this.$el.clientWidth * dpr;
       const h = this.$el.clientHeight * dpr;
       if (w !== canvas.width || h !== canvas.height) {
@@ -68,22 +69,24 @@ export default {
         : Infinity;
 
       // const smoothed_level = this.current_audio_level;
-      const latest_level = this.audioHistory.at(-1) || 0;
-      const smoothed_level = (latest_level * 3 + this.current_audio_level) / 4;
+      // const latest_level = this.audioHistory.at(-1) || 0;
+      // const smoothed_level = (latest_level * 3 + this.current_audio_level) / 4;
 
-      this.audioHistory.push(smoothed_level);
+      this.audioHistory.push(this.current_audio_level);
+
       if (this.audioHistory.length > max_history_points) {
         this.audioHistory.shift();
       }
 
       const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       if (!this.is_recording) ctx.fillStyle = "#333";
       else ctx.fillStyle = "#fc4b60";
 
       const pointWidth = canvas.width / this.audioHistory.length;
-      const maxHeight = canvas.height * 0.8;
+      const maxHeight = canvas.height * 1.6;
 
       this.audioHistory.forEach((level, index) => {
         const x = index * pointWidth;
