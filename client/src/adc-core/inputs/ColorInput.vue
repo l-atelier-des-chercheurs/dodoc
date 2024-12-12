@@ -12,15 +12,19 @@
           class="u-button u-button_small u-button_transparent"
           @click="edit_mode = true"
         >
-          <span class="_colorPatch" :style="`--patch-color: ${local_value}`" />
-          {{ $t("edit") }}
+          <span
+            class="_colorPatch"
+            :data-color="local_value"
+            :style="`--patch-color: ${local_value}`"
+          />
         </button>
       </div>
       <template v-else>
         <div class="_defaultColors">
           <div
-            v-for="color in default_colors"
+            v-for="color in computed_default_colors"
             class="_colorPatch"
+            :data-color="color"
             :class="{
               'is--active': color === local_value,
             }"
@@ -92,11 +96,16 @@ export default {
         "#353535",
         "#b9b9b9",
         "#ffffff",
+        "transparent",
         "#1d327f",
         "#52c5b9",
         "#ffbe32",
         "#fc4b60",
       ],
+    },
+    allow_transparent: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},
@@ -131,6 +140,11 @@ export default {
   computed: {
     is_custom_color() {
       return !this.default_colors.includes(this.local_value);
+    },
+    computed_default_colors() {
+      return this.default_colors.filter(
+        (color) => color !== "transparent" || this.allow_transparent
+      );
     },
   },
   methods: {
@@ -185,6 +199,16 @@ export default {
     pointer-events: none;
     &::before {
       outline-color: var(--c-noir);
+    }
+  }
+
+  &[data-color="transparent"] {
+    &::before {
+      background-image: repeating-conic-gradient(
+        var(--c-gris) 0% 25%,
+        white 0% 50%
+      );
+      background-size: 8px 8px;
     }
   }
 }
