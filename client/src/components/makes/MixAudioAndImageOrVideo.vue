@@ -103,6 +103,7 @@
             </div>
 
             <ToggleInput
+              v-if="make.type === 'mix_audio_and_video'"
               :label="$t('stop_recording_with_video')"
               :content.sync="stop_recording_with_video"
             />
