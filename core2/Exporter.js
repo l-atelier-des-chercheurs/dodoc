@@ -179,12 +179,12 @@ class Exporter {
       if (!output_width) output_width = images[0].$infos.width || 1280;
       if (!output_height) output_height = images[0].$infos.height || 720;
       if (!video_bitrate) video_bitrate = 4000;
-      const resolution = { width: output_width, height: output_height };
 
       const full_path_to_folder_in_cache =
         await this._copyToCacheAndRenameImages({
           images,
-          resolution,
+          output_width,
+          output_height,
         });
 
       const file_ext = output_format === "gif" ? ".gif" : ".mp4";
@@ -279,7 +279,7 @@ class Exporter {
     });
   }
 
-  async _copyToCacheAndRenameImages({ images, resolution }) {
+  async _copyToCacheAndRenameImages({ images, width, height }) {
     let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "stopmotion"
     );
@@ -296,7 +296,12 @@ class Exporter {
         "img-" + pad(index, 4, "0") + ".jpeg"
       );
 
-      await utils.convertAndCopyImage({ source, destination, resolution });
+      await utils.convertAndCopyImage({
+        source,
+        destination,
+        width: output_width,
+        height: output_height,
+      });
       // await fs.copy(source, destination);
       index++;
     }
@@ -848,7 +853,6 @@ class Exporter {
             full_path_to_folder_in_cache,
             output_width,
             output_height,
-            additional_meta,
             video_bitrate,
             image_duration: media.image_duration,
             ffmpeg_cmd: this.ffmpeg_cmd,

@@ -56,8 +56,8 @@ module.exports = (function () {
         await utils.convertAndCopyImage({
           source: media_full_path,
           destination: temp_image_path,
-          output_width,
-          output_height,
+          width: output_width,
+          height: output_height,
         });
         await _makeVideoFromImage({
           ffmpeg_cmd,

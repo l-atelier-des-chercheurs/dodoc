@@ -411,11 +411,11 @@ module.exports = (function () {
             throw err;
           });
     },
-    async convertAndCopyImage({ source, destination, resolution }) {
+    async convertAndCopyImage({ source, destination, width, height }) {
       await sharp(source)
         .rotate()
         .flatten({ background: "white" })
-        .resize(resolution.width, resolution.height, {
+        .resize(width, height, {
           fit: "contain",
           withoutEnlargement: false,
           background: "black",
