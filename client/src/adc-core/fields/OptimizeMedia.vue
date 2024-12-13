@@ -35,6 +35,7 @@
               :selection_start.sync="selection_start"
               :selection_end.sync="selection_end"
             />
+            <div class="u-spacingBottom" />
           </div>
 
           <div v-if="['image', 'video'].includes(media.$type)" class="">
@@ -69,14 +70,25 @@
           </div>
           <div v-if="['video', 'audio'].includes(media.$type)" class="">
             <div class="u-spacingBottom" />
-            <DLabel :str="$t('audio_quality')" />
-            <SelectField2
-              :value="audio_quality_picked"
-              :options="audio_quality_options"
-              :can_edit="true"
-              :hide_validation="true"
-              @change="audio_quality_picked = $event"
+
+            <ToggleInput
+              :content.sync="enable_audio"
+              :label="$t('with_sound')"
             />
+
+            <template v-if="enable_audio">
+              <DLabel :str="$t('audio_quality')" />
+              <SelectField2
+                :value="audio_quality_picked"
+                :options="audio_quality_options"
+                :can_edit="true"
+                :hide_validation="true"
+                @change="audio_quality_picked = $event"
+              />
+            </template>
+            <div v-else class="u-instructions">
+              {{ $t("no_audio_track") }}
+            </div>
           </div>
         </div>
         <div v-else>
@@ -243,6 +255,8 @@ export default {
       custom_resolution_width: this.media.$infos?.width || 1920,
       custom_resolution_height: this.media.$infos?.height || 1080,
       custom_bitrate: 6000,
+
+      enable_audio: true,
     };
   },
   created() {},
@@ -380,11 +394,6 @@ export default {
           instructions: this.$t("bitrate", { bitrate: "128" }),
         },
       ];
-      if (this.media.$type === "video")
-        presets.push({
-          key: "no_audio",
-          text: this.$t("no_audio_track"),
-        });
       return presets;
     },
   },
@@ -409,7 +418,9 @@ export default {
         image_quality_preset = this.resolution_preset_picked;
       }
 
-      const audio_quality_preset = this.audio_quality_picked;
+      let audio_quality_preset;
+      if (this.enable_audio) audio_quality_preset = this.audio_quality_picked;
+      else audio_quality_preset = "no_audio";
 
       const instructions = {
         recipe: "optimize_media",
