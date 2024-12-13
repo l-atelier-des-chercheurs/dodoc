@@ -1230,7 +1230,11 @@ export default {
   or: "ou",
   live_dubbing: "Doublage en direct",
   play_both: "Lire les deux en même temps",
-  bitrate: "Débit : {bitrate} kbps",
+  bitrate_kbps: "Débit : {bitrate} kbps",
+  bitrate: "Débit",
+  bitrate_instructions:
+    "Quantité de données allouées par seconde. Plus la valeur est élevée, plus la vidéo sera de haute qualité mais plus elle sera lourde.",
+
   resolution_on_largest_side:
     "Résolution sur le plus grand côté : {resolution} pixels",
   keep_ratio: "Conserver le rapport largeur/hauteur",

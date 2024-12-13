@@ -60,7 +60,7 @@ export default {
   components: {},
   data() {
     return {
-      keep_ratio: !!this.ratio,
+      keep_ratio: true,
     };
   },
   created() {},

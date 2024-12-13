@@ -173,11 +173,13 @@ class Exporter {
       // images is an array of files
       this._notifyProgress(5);
 
-      const width =
+      const output_width =
         this.instructions.output_width || images[0].$infos.width || 1280;
-      const height =
+      const output_height =
         this.instructions.output_height || images[0].$infos.height || 720;
-      const resolution = { width, height };
+      const resolution = { width: output_width, height: output_height };
+      const output_bitrate = this.instructions.output_bitrate || 4000;
+      const output_format = this.instructions.output_format || "mp4";
 
       const full_path_to_folder_in_cache =
         await this._copyToCacheAndRenameImages({
@@ -185,14 +187,8 @@ class Exporter {
           resolution,
         });
 
-      const file_ext =
-        this.instructions.export_format === "gif" ? ".gif" : ".mp4";
-
-      const new_video_name =
-        "stopmotion_" +
-        +new Date() +
-        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-        file_ext;
+      const file_ext = output_format === "gif" ? ".gif" : ".mp4";
+      const new_video_name = utils.createUniqueName("stopmotion") + file_ext;
       const full_path_to_new_video = path.join(
         full_path_to_folder_in_cache,
         new_video_name
@@ -212,23 +208,23 @@ class Exporter {
         .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
         .inputFPS(frame_rate);
 
-      if (this.instructions.export_format === "gif") {
+      if (output_format === "gif") {
         this.ffmpeg_cmd.inputOption("-stream_loop -1");
       } else {
         this.ffmpeg_cmd
           .withVideoCodec("libx264")
-          .withVideoBitrate("4000k")
+          .withVideoBitrate(output_bitrate)
           .input("anullsrc")
           .inputFormat("lavfi");
       }
 
       this.ffmpeg_cmd
         .duration(images.length / frame_rate)
-        .size(`${width}x${height}`)
+        .size(`${output_width}x${output_height}`)
         .outputFPS(output_frame_rate)
         .autopad()
         .addOptions(["-preset slow", "-tune animation"])
-        .toFormat(this.instructions.export_format === "gif" ? "gif" : "mp4");
+        .toFormat(output_format === "gif" ? "gif" : "mp4");
 
       this.ffmpeg_cmd
         .on("start", (commandLine) => {

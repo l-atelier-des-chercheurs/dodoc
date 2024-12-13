@@ -3,7 +3,6 @@
     <div class="_mediaContainer" :style="{ '--aspectRatio': imposed_ratio }">
       <MediaContent :file="first_media" />
     </div>
-    <!-- <div class="_index">{{ index + 1 }}</div> -->
     <div class="_selectPosition">
       <button
         type="button"
@@ -90,20 +89,8 @@ export default {
 ._stopmotionModule {
   position: relative;
   background-color: white;
-  padding: calc(var(--spacing) / 4);
+  // padding: calc(var(--spacing) / 4);
   border-radius: 4px;
-}
-
-._index {
-  position: absolute;
-  top: calc(var(--spacing) / 2);
-  left: calc(var(--spacing) / 2);
-  font-size: 0.8rem;
-  font-weight: 600;
-  background-color: var(--c-noir);
-  color: white;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  border-radius: 2px;
 }
 
 ._mediaContainer {
@@ -131,7 +118,7 @@ export default {
   width: 100%;
   bottom: 0;
   left: 0;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 8);
   pointer-events: none;
 
   display: flex;

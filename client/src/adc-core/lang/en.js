@@ -1149,7 +1149,10 @@ export default {
   or: "or",
   live_dubbing: "Live dubbing",
   play_both: "Play both at the same time",
-  bitrate: "Bitrate: {bitrate} kbps",
+  bitrate_kbps: "Bitrate: {bitrate} kbps",
+  bitrate: "Bitrate",
+  bitrate_instructions:
+    "Amount of data allocated per second. The higher the value, the higher the video quality but the heavier it is.",
   resolution_on_largest_side:
     "Resolution on the largest side: {resolution} pixels",
   keep_ratio: "Keep the width/height ratio",

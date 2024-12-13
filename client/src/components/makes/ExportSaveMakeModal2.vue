@@ -25,10 +25,11 @@
             <div class="u-spacingBottom" />
             <NumberInput
               :label="$t('bitrate')"
+              :instructions="$t('bitrate_instructions')"
               :value="custom_bitrate"
               :min="0"
               :suffix="'k'"
-              @save="custom_bitrate = $event"
+              @update:value="custom_bitrate = $event"
             />
           </div>
         </div>
@@ -41,6 +42,32 @@
             :show_fs_button="true"
             :context="'full'"
           />
+          <div class="u-spacingBottom" />
+          <div class="u-metaField">
+            <DLabel :str="$t('filename')" />
+            <div class="u-filename">{{ created_video.$media_filename }}</div>
+          </div>
+          <div class="" v-if="created_video.$infos.hasOwnProperty('size')">
+            <SizeDisplay :size="created_video.$infos.size" />
+          </div>
+          <div
+            class=""
+            v-if="
+              created_video.$infos.hasOwnProperty('width') ||
+              created_video.$infos.hasOwnProperty('height')
+            "
+          >
+            <ResolutionDisplay
+              :width="created_video.$infos.width"
+              :height="created_video.$infos.height"
+            />
+          </div>
+          <div class="" v-if="created_video.$infos.hasOwnProperty('duration')">
+            <DurationDisplay
+              :title="$t('duration')"
+              :duration="created_video.$infos.duration"
+            />
+          </div>
         </div>
       </template>
     </div>
@@ -125,6 +152,7 @@ export default {
     base_instructions: Object,
     make_path: String,
     reference_media: Object,
+    possible_formats: Array,
   },
   components: {},
   data() {
@@ -191,6 +219,13 @@ export default {
         bitrate: 2000,
       });
       presets.push({
+        key: "rough",
+        text: this.$t("rough"),
+        width: 640,
+        height: 360,
+        bitrate: 1000,
+      });
+      presets.push({
         key: "custom",
         text: "↓ " + this.$t("custom_f"),
       });
@@ -200,7 +235,7 @@ export default {
           p.instructions =
             this.$t("resolution") +
             ` ${p.width}x${p.height}, ` +
-            this.$t("bitrate", { bitrate: p.bitrate }).toLowerCase();
+            this.$t("bitrate_kbps", { bitrate: p.bitrate }).toLowerCase();
         }
         return p;
       });
@@ -234,6 +269,8 @@ export default {
         output_height = selected_preset.height;
         output_bitrate = selected_preset.bitrate;
       }
+
+      console.log(output_width, output_height, output_bitrate);
 
       const current_task_id = await this.$api.exportFolder({
         path: this.make_path,
@@ -315,6 +352,6 @@ export default {
 }
 
 ._preview {
-  margin: calc(var(--spacing) * 1) 0;
+  // margin: calc(var(--spacing) * 1) 0;
 }
 </style>

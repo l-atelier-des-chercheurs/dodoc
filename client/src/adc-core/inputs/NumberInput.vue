@@ -33,6 +33,9 @@
         <b-icon style="font-size: 1.5em" icon="check" />
       </button>
     </div>
+    <div class="u-instructions" v-if="instructions">
+      <small>{{ instructions }}</small>
+    </div>
 
     <button
       type="button"
@@ -48,6 +51,7 @@
 export default {
   props: {
     label: String,
+    instructions: String,
     value: Number,
     default_value: Number,
     min: Number,
@@ -71,6 +75,9 @@ export default {
   watch: {
     value() {
       this.local_value = this.value;
+    },
+    local_value() {
+      this.$emit("update:value", this.local_value);
     },
   },
   computed: {},

@@ -274,7 +274,7 @@
         <PreviewStopmotion
           :medias="medias"
           :frame_rate.sync="frame_rate"
-          :export_format.sync="export_format"
+          :output_format.sync="output_format"
           :created_stopmotion="created_stopmotion"
         />
         <transition name="fade_fast" :duration="150" mode="out-in">
@@ -327,7 +327,7 @@ export default {
       show_options_menu: false,
 
       frame_rate: this.stopmotion_frame_rate,
-      export_format: "mp4",
+      output_format: "mp4",
       validating_video_preview: false,
       previous_photo_to_show: false,
       media_is_being_sent: false,
@@ -587,7 +587,7 @@ export default {
           recipe: "stopmotion",
           field: "images_list",
           frame_rate: this.frame_rate,
-          export_format: this.export_format,
+          output_format: this.output_format,
           additional_meta,
         },
       });
