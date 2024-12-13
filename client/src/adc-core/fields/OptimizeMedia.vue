@@ -28,15 +28,14 @@
             {{ $t("already_optimized") }}
           </div>
 
-          <template v-if="['video', 'audio'].includes(media.$type)">
+          <div v-if="['video', 'audio'].includes(media.$type)">
             <TrimMedia
               :media="media"
               :extract_selection.sync="extract_selection"
               :selection_start.sync="selection_start"
               :selection_end.sync="selection_end"
             />
-            <div class="u-spacingBottom" />
-          </template>
+          </div>
 
           <div v-if="['image', 'video'].includes(media.$type)" class="">
             <DLabel :str="$t('image_quality')" />
@@ -294,12 +293,6 @@ export default {
           },
         ];
       if (this.media.$type === "video") {
-        const { width: media_width, height: media_height } = this.media.$infos;
-        let source_instr = "";
-        if (media_width && media_height)
-          source_instr +=
-            this.$t("resolution") + ` ${media_width}x${media_height}, `;
-        source_instr += this.$t("bitrate", { bitrate: "6000" });
         const presets = [];
         presets.push({
           key: "source",
