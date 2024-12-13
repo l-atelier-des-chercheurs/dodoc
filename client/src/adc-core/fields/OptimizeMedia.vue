@@ -55,20 +55,17 @@
                 :width.sync="custom_resolution_width"
                 :height.sync="custom_resolution_height"
                 :ratio="media_ratio"
+                :is_video="is_video"
               />
-              <div v-if="media.$type === 'video'">
-                <small class="u-instructions">
-                  {{ $t("video_resolution_even") }}
-                </small>
-                <div class="u-spacingBottom" />
-                <NumberInput
-                  :label="$t('bitrate')"
-                  :value="custom_bitrate"
-                  :min="0"
-                  :suffix="'k'"
-                  @save="custom_bitrate = $event"
-                />
-              </div>
+              <div class="u-spacingBottom" />
+              <NumberInput
+                :label="$t('bitrate')"
+                :instructions="$t('bitrate_instructions')"
+                :value.sync="custom_bitrate"
+                :min="0"
+                :suffix="'kbps'"
+                :size="'normal'"
+              />
             </div>
           </div>
           <div v-if="['video', 'audio'].includes(media.$type)" class="">
@@ -257,6 +254,9 @@ export default {
     media_ratio() {
       return this.media.$infos?.ratio;
     },
+    is_video() {
+      return this.media.$type === "video";
+    },
     label() {
       if (["video", "audio"].includes(this.media.$type))
         return this.$t("convert_shorten");
@@ -274,6 +274,7 @@ export default {
       return undefined;
     },
     presets() {
+      // todo refactor using ExportSaveMakeModal2 as a reference
       if (this.media.$type === "audio")
         return [
           {
@@ -299,34 +300,49 @@ export default {
           source_instr +=
             this.$t("resolution") + ` ${media_width}x${media_height}, `;
         source_instr += this.$t("bitrate", { bitrate: "6000" });
+        const presets = [];
+        presets.push({
+          key: "source",
+          text: this.$t("close_to_source"),
+          width: this.media.$infos?.width,
+          height: this.media.$infos?.height,
+          bitrate: 6000,
+        });
+        presets.push({
+          key: "high",
+          text: this.$t("high"),
+          width: 1920,
+          height: 1080,
+          bitrate: 4000,
+        });
+        presets.push({
+          key: "medium",
+          text: this.$t("medium"),
+          width: 1280,
+          height: 720,
+          bitrate: 2000,
+        });
+        presets.push({
+          key: "rough",
+          text: this.$t("rough"),
+          width: 640,
+          height: 360,
+          bitrate: 1000,
+        });
+        presets.push({
+          key: "custom",
+          text: "↓ " + this.$t("custom_f"),
+        });
 
-        return [
-          {
-            key: "source",
-            text: this.$t("close_to_source"),
-            instructions: source_instr,
-          },
-          {
-            key: "high",
-            text: this.$t("high"),
-            instructions:
-              this.$t("resolution") +
-              " 1920x1080, " +
-              this.$t("bitrate", { bitrate: "4000" }),
-          },
-          {
-            key: "medium",
-            text: this.$t("medium"),
-            instructions:
-              this.$t("resolution") +
-              " 1280x720, " +
-              this.$t("bitrate", { bitrate: "2000" }),
-          },
-          {
-            key: "custom",
-            text: "↓ " + this.$t("custom_f"),
-          },
-        ];
+        return presets.map((p) => {
+          if (p.key !== "custom") {
+            p.instructions =
+              this.$t("resolution_w_h", { width: p.width, height: p.height }) +
+              ", " +
+              this.$t("bitrate_kbps", { bitrate: p.bitrate }).toLowerCase();
+          }
+          return p;
+        });
       }
       return [
         {
