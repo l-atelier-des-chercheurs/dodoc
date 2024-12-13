@@ -1157,6 +1157,6 @@ export default {
   in_this_make: "In this make",
   edit_volume_or_mute: "Edit volume or mute",
   toolbox: "Toolbox",
-  video_resolution_even: "The resolution must be a multiple of 2",
+  video_resolution_even: "For a video, the resolution must be a multiple of 2",
   no_audio_track: "No audio track (muted)",
 };

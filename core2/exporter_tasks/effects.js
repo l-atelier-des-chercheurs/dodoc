@@ -20,7 +20,9 @@ module.exports = (function () {
     async applyVideoEffect({
       source,
       destination,
-      image_quality_preset,
+      output_width,
+      output_height,
+      output_bitrate,
       effect_type,
       effect_opts,
       ffmpeg_cmd,
@@ -28,15 +30,6 @@ module.exports = (function () {
     }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options).input(source);
-
-        // let resolution, bitrate;
-        // if (quality_preset === "high") {
-        //   resolution = { width: 1920, height: 1080 };
-        //   bitrate = "4000k";
-        // } else if (quality_preset === "medium") {
-        //   resolution = { width: 1920, height: 1080 };
-        //   bitrate = "2000k";
-        // }
 
         const has_no_audio_track = !(await utils.hasAudioTrack({
           ffmpeg_cmd,
@@ -50,12 +43,8 @@ module.exports = (function () {
         // });
         // if (duration) ffmpeg_cmd.duration(duration);
 
-        const video_width = 1920;
-        const video_height = 1080;
-
-        if (image_quality_preset === "no_audio") {
-          ffmpeg_cmd.noAudio();
-        }
+        const video_width = output_width;
+        const video_height = output_height;
 
         let complexFilters = [
           {
@@ -250,7 +239,7 @@ module.exports = (function () {
             .native()
             .outputFPS(30)
             .withVideoCodec("libx264")
-            // .withVideoBitrate(bitrate)
+            .withVideoBitrate(output_bitrate)
             .complexFilter(complexFilters, "output")
             .addOptions(["-crf 22", "-preset fast"])
             .toFormat("mp4")

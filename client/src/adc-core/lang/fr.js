@@ -1238,7 +1238,8 @@ export default {
   in_this_make: "Dans cette fabrication",
   edit_volume_or_mute: "Modifier le volume ou le mettre en sourdine",
   toolbox: "Boîte à outils",
-  video_resolution_even: "La résolution doit être un multiple de 2",
+  video_resolution_even:
+    "Pour une vidéo, la résolution doit être un multiple de 2",
   no_audio_track: "Pas de piste audio (muet)",
   stop_recording_with_video: "Arrêter l’enregistrement à la fin de la vidéo.",
 };

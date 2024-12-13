@@ -13,6 +13,24 @@
               @change="resolution_preset_picked = $event"
             />
           </div>
+
+          <div v-if="resolution_preset_picked === 'custom'">
+            <div class="u-spacingBottom" />
+            <CustomResolutionInput
+              :width.sync="custom_resolution_width"
+              :height.sync="custom_resolution_height"
+              :ratio="ref_infos.ratio"
+              :is_video="true"
+            />
+            <div class="u-spacingBottom" />
+            <NumberInput
+              :label="$t('bitrate')"
+              :value="custom_bitrate"
+              :min="0"
+              :suffix="'k'"
+              @save="custom_bitrate = $event"
+            />
+          </div>
         </div>
       </template>
       <template v-else>
@@ -40,7 +58,7 @@
           </button>
         </div>
         <div class="u-instructions">
-          {{ $t("wont_remove_original") }}
+          {{ $t("wont_remove_original").toLowerCase() }}
         </div>
       </template>
       <template v-else-if="is_exporting">
@@ -105,7 +123,8 @@
 export default {
   props: {
     base_instructions: Object,
-    make: Object,
+    make_path: String,
+    reference_media: Object,
   },
   components: {},
   data() {
@@ -115,26 +134,20 @@ export default {
       resolution_preset_picked: "source",
       progress_percent: 0,
 
-      presets: [
-        {
-          key: "source",
-          text: this.$t("close_to_source"),
-        },
-        {
-          key: "high",
-          text: this.$t("high"),
-        },
-        {
-          key: "medium",
-          text: this.$t("medium"),
-        },
-      ],
+      custom_resolution_width: 1920,
+      custom_resolution_height: 1080,
+      custom_bitrate: 6000,
 
       created_video: false,
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.reference_media) {
+      this.custom_resolution_width = this.ref_infos.width;
+      this.custom_resolution_height = this.ref_infos.height;
+    }
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -148,6 +161,49 @@ export default {
     export_name() {
       if (!this.created_video) return "";
       return this.created_video.$media_filename;
+    },
+    ref_infos() {
+      if (!this.reference_media) return {};
+      const { width, height, ratio } = this.reference_media.$infos;
+      return { width, height, ratio };
+    },
+    presets() {
+      const presets = [];
+      presets.push({
+        key: "source",
+        text: this.$t("close_to_source"),
+        width: this.ref_infos.width,
+        height: this.ref_infos.height,
+        bitrate: 6000,
+      });
+      presets.push({
+        key: "high",
+        text: this.$t("high"),
+        width: 1920,
+        height: 1080,
+        bitrate: 4000,
+      });
+      presets.push({
+        key: "medium",
+        text: this.$t("medium"),
+        width: 1280,
+        height: 720,
+        bitrate: 2000,
+      });
+      presets.push({
+        key: "custom",
+        text: "↓ " + this.$t("custom_f"),
+      });
+
+      return presets.map((p) => {
+        if (p.key !== "custom") {
+          p.instructions =
+            this.$t("resolution") +
+            ` ${p.width}x${p.height}, ` +
+            this.$t("bitrate", { bitrate: p.bitrate }).toLowerCase();
+        }
+        return p;
+      });
     },
   },
   methods: {
@@ -163,13 +219,31 @@ export default {
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
-      // output_height ?
-
-      instructions.additional_meta = additional_meta;
+      let output_width = 1920,
+        output_height = 1080,
+        output_bitrate = 4000;
+      if (this.resolution_preset_picked === "custom") {
+        output_width = this.custom_resolution_width;
+        output_height = this.custom_resolution_height;
+        output_bitrate = this.custom_bitrate;
+      } else {
+        const selected_preset = this.presets.find(
+          (p) => p.key === this.resolution_preset_picked
+        );
+        output_width = selected_preset.width;
+        output_height = selected_preset.height;
+        output_bitrate = selected_preset.bitrate;
+      }
 
       const current_task_id = await this.$api.exportFolder({
-        path: this.make.$path,
-        instructions,
+        path: this.make_path,
+        instructions: {
+          ...instructions,
+          output_width,
+          output_height,
+          output_bitrate,
+          additional_meta,
+        },
       });
 
       this.$api.join({ room: "task_" + current_task_id });

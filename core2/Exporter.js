@@ -1033,8 +1033,10 @@ class Exporter {
     const base_media_path = utils.getPathToUserContent(
       this.instructions.base_media_path
     );
-    const image_quality_preset =
-      this.instructions.image_quality_preset || "source";
+
+    const output_width = this.instructions.output_width;
+    const output_height = this.instructions.output_height;
+    const output_bitrate = this.instructions.output_bitrate;
 
     const that = this;
     const reportProgress = (progress) => {
@@ -1048,7 +1050,9 @@ class Exporter {
       await effects.applyVideoEffect({
         source: base_media_path,
         destination: full_path_to_new_video,
-        image_quality_preset,
+        output_width,
+        output_height,
+        output_bitrate,
         effect_type,
         effect_opts,
         ffmpeg_cmd: this.ffmpeg_cmd,

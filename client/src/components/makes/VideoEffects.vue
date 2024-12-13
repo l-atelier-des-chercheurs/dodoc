@@ -152,7 +152,8 @@
       <ExportSaveMakeModal2
         v-if="show_render_modal"
         :base_instructions="base_instructions"
-        :make="make"
+        :make_path="make.$path"
+        :reference_media="base_media"
         @close="show_render_modal = false"
       />
     </div>
@@ -237,6 +238,12 @@ export default {
         return this.make.effect_type || "black_and_white";
       },
     },
+    base_media_width() {
+      return this.base_media?.$infos?.width;
+    },
+    base_media_height() {
+      return this.base_media?.$infos?.height;
+    },
   },
   methods: {
     setEffectType(event) {
@@ -252,6 +259,8 @@ export default {
         new_meta.playback_speed = 50;
       } else if (new_effect_type === "rotate") {
         new_meta.rotation = "cw";
+      } else if (new_effect_type === "mirror") {
+        new_meta.flip = "hflip";
       }
 
       this.updatePubliMeta(new_meta);
@@ -283,7 +292,7 @@ export default {
   gap: calc(var(--spacing) * 1);
 
   ._leftBtns {
-    flex: 0 0 200px;
+    flex: 0 0 240px;
   }
   ._cropWindow {
     position: relative;

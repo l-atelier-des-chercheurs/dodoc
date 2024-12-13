@@ -2,30 +2,33 @@
   <div>
     <DLabel :str="$t('resolution')" />
     <div class="u-sameRow _customResolution">
-      <label class="u-label" for="custom_width">
-        <input
-          name="custom_width"
-          type="number"
-          min="2"
-          max="4096"
-          step="1"
-          :value="width"
-          @input="adjustWidth"
-        />
-      </label>
-      <span class="u-padding_verysmall _customResolutionX"> × </span>
-      <label class="u-label" for="custom_height">
-        <input
-          name="custom_height"
-          type="number"
-          min="2"
-          max="4096"
-          step="1"
-          :value="height"
-          @input="adjustHeight"
-        />
-        {{ $t("pixels") }}
-      </label>
+      <input
+        name="custom_width"
+        type="number"
+        min="2"
+        max="4096"
+        :step="is_video ? 2 : 1"
+        :value="width"
+        @input="adjustWidth"
+      />
+
+      <span class="_customResolutionX">×</span>
+      <input
+        name="custom_height"
+        type="number"
+        min="2"
+        max="4096"
+        :step="is_video ? 2 : 1"
+        :value="height"
+        @input="adjustHeight"
+      />
+      {{ $t("pixels") }}
+    </div>
+    <div v-if="is_video">
+      <small class="u-instructions">
+        {{ $t("video_resolution_even") }}
+      </small>
+      <div class="u-spacingBottom" />
     </div>
     <ToggleInput
       v-if="ratio !== undefined"
@@ -48,6 +51,10 @@ export default {
     ratio: {
       type: Number,
       default: 0,
+    },
+    is_video: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},
@@ -96,6 +103,5 @@ export default {
   }
 }
 ._customResolutionX {
-  font-size: var(--sl-font-size-large);
 }
 </style>
