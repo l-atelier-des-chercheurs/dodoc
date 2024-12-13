@@ -35,6 +35,13 @@
         </div>
       </template>
       <template v-else>
+        <button type="button" class="u-buttonLink" @click="cancelExport">
+          <b-icon icon="arrow-left-short" />
+          {{ $t("back") }}
+        </button>
+
+        <div class="u-spacingBottom" />
+
         <div class="_preview">
           <MediaContent
             :file="created_video"
@@ -159,14 +166,14 @@ export default {
     return {
       is_exporting: false,
       finished_saving_to_project: false,
+      created_video: false,
+
       resolution_preset_picked: "source",
       progress_percent: 0,
 
       custom_resolution_width: 1920,
       custom_resolution_height: 1080,
       custom_bitrate: 6000,
-
-      created_video: false,
     };
   },
   created() {},
@@ -270,8 +277,6 @@ export default {
         output_bitrate = selected_preset.bitrate;
       }
 
-      console.log(output_width, output_height, output_bitrate);
-
       const current_task_id = await this.$api.exportFolder({
         path: this.make_path,
         instructions: {
@@ -308,6 +313,11 @@ export default {
         this.is_exporting = false;
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
+    },
+    cancelExport() {
+      if (this.created_video)
+        this.$api.deleteItem({ path: this.created_video.$path });
+      this.created_video = false;
     },
     removeAndCloseModal() {
       if (this.created_video)
