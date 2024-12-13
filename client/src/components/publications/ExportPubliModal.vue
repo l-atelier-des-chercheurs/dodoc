@@ -16,7 +16,7 @@
           class="u-button u-button_bleuvert"
           @click="exportPublication(export_mode)"
         >
-          <b-icon icon="file-pdf" />
+          <b-icon :icon="export_mode === 'pdf' ? 'file-pdf' : 'window'" />
           {{ $t("create") }}
         </button>
       </div>

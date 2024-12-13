@@ -253,6 +253,7 @@ header {
 footer {
   display: flex;
   justify-content: flex-end;
+  gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) * 1);
 }
 

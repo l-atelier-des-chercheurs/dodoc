@@ -107,6 +107,7 @@ import {
   BIconMapFill,
   BIconIntersect,
   BIconFilePdf,
+  BIconWindow,
   BIconFileEarmarkImage,
   BIconArrowLeftCircleFill,
   BIconPencil,
@@ -251,6 +252,7 @@ Vue.component("BIconGridFill", BIconGridFill);
 Vue.component("BIconMapFill", BIconMapFill);
 Vue.component("BIconIntersect", BIconIntersect);
 Vue.component("BIconFilePdf", BIconFilePdf);
+Vue.component("BIconWindow", BIconWindow);
 Vue.component("BIconFileEarmarkImage", BIconFileEarmarkImage);
 Vue.component("BIconArrowLeftCircleFill", BIconArrowLeftCircleFill);
 Vue.component("BIconPencil", BIconPencil);

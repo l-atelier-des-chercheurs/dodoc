@@ -246,6 +246,8 @@ import Tags from "@/mixins/Tags";
 Vue.mixin(Tags);
 import Electron from "@/mixins/Electron";
 Vue.mixin(Electron);
+import DodocIcon from "@/mixins/DodocIcon";
+Vue.mixin(DodocIcon);
 
 Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
