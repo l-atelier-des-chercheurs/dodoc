@@ -181,7 +181,7 @@
                       </div>
                       <button
                         type="button"
-                        class="u-button u-button_red"
+                        class="u-button u-button_orange"
                         @click="saveToProject(media.$path)"
                       >
                         <span class="u-icon" v-html="dodoc_icon_collect" />

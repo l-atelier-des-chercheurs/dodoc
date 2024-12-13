@@ -269,7 +269,7 @@ export default {
   }
 
   button {
-    ::v-deep svg {
+    svg {
       width: 2rem;
       height: 2rem;
     }

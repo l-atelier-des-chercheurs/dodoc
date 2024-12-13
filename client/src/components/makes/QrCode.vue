@@ -14,7 +14,7 @@
     <div class="_bottomBtns" v-if="qrcode_dataurl">
       <button
         type="button"
-        class="u-button u-button_red"
+        class="u-button u-button_orange"
         @click="saveToProject"
       >
         <span class="u-icon" v-html="dodoc_icon_collect" />
