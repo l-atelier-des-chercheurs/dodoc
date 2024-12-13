@@ -197,7 +197,7 @@ export default {
         text: this.$t("close_to_source"),
         width: this.ref_infos.width,
         height: this.ref_infos.height,
-        bitrate: 6000,
+        bitrate: 4000,
       });
       presets.push({
         key: "high",
