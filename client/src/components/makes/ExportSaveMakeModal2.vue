@@ -159,7 +159,7 @@ export default {
 
       custom_resolution_width: 1920,
       custom_resolution_height: 1080,
-      custom_bitrate: 6000,
+      custom_bitrate: 4000,
     };
   },
   created() {},
@@ -251,18 +251,18 @@ export default {
 
       let output_width = 1920,
         output_height = 1080,
-        output_bitrate = 4000;
+        video_bitrate = 4000;
       if (this.resolution_preset_picked === "custom") {
         output_width = this.custom_resolution_width;
         output_height = this.custom_resolution_height;
-        output_bitrate = this.custom_bitrate;
+        video_bitrate = this.custom_bitrate;
       } else {
         const selected_preset = this.presets.find(
           (p) => p.key === this.resolution_preset_picked
         );
         output_width = selected_preset.width;
         output_height = selected_preset.height;
-        output_bitrate = selected_preset.bitrate;
+        video_bitrate = selected_preset.bitrate;
       }
 
       if (this.possible_formats)
@@ -274,7 +274,7 @@ export default {
           ...instructions,
           output_width,
           output_height,
-          output_bitrate,
+          video_bitrate,
           additional_meta,
         },
       });

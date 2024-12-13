@@ -22,7 +22,7 @@ module.exports = (function () {
       destination,
       output_width,
       output_height,
-      output_bitrate,
+      video_bitrate,
       effect_type,
       effect_opts,
       ffmpeg_cmd,
@@ -239,7 +239,7 @@ module.exports = (function () {
             .native()
             .outputFPS(30)
             .withVideoCodec("libx264")
-            .withVideoBitrate(output_bitrate)
+            .withVideoBitrate(video_bitrate)
             .complexFilter(complexFilters, "output")
             .addOptions(["-crf 22", "-preset fast"])
             .toFormat("mp4")

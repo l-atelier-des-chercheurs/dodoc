@@ -622,9 +622,10 @@ module.exports = (function () {
       source,
       destination,
       format = "mp4",
-      video_bitrate = "6000k",
+      output_width = 1920,
+      output_height = 1080,
+      video_bitrate = "4000k",
       audio_bitrate = "192k",
-      resolution,
       trim_start,
       trim_end,
       reportProgress,
@@ -665,9 +666,9 @@ module.exports = (function () {
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
         }
 
-        if (resolution)
+        if (output_width && output_height)
           ffmpeg_cmd.videoFilter([
-            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
+            `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=1,pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`,
           ]);
 
         // if (streams?.some((s) => s.codec_type === "audio"))

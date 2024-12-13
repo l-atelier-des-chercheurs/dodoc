@@ -255,7 +255,7 @@ export default {
       selection_end: this.media.$infos?.duration || 0,
       custom_resolution_width: this.media.$infos?.width || 1920,
       custom_resolution_height: this.media.$infos?.height || 1080,
-      custom_bitrate: 6000,
+      custom_bitrate: 4000,
 
       enable_audio: true,
       enable_video: true,
@@ -315,7 +315,7 @@ export default {
           text: this.$t("close_to_source"),
           width: this.media.$infos?.width,
           height: this.media.$infos?.height,
-          bitrate: 6000,
+          bitrate: 4000,
         });
         presets.push({
           key: "high",
