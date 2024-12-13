@@ -64,9 +64,10 @@ export default {
         canvas.height = h;
       }
 
-      const max_history_points = !this.is_recording
-        ? this.maxHistoryPoints
-        : Infinity;
+      const max_history_points = this.maxHistoryPoints;
+      // const max_history_points = !this.is_recording
+      //   ? this.maxHistoryPoints
+      //   : Infinity;
 
       // const smoothed_level = this.current_audio_level;
       // const latest_level = this.audioHistory.at(-1) || 0;

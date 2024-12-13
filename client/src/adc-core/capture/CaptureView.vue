@@ -1172,6 +1172,7 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+    this.$eventHub.$on("capture.stopRecording", this.stopRecording);
 
     this.$refs.videoElement.volume = 0;
     this.$refs.videoElement.addEventListener(
@@ -1190,6 +1191,7 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+    this.$eventHub.$off("capture.stopRecording", this.stopRecording);
 
     document.removeEventListener("keyup", this.captureKeyListener);
 
@@ -2053,7 +2055,10 @@ export default {
       > * {
         flex: 0 0 auto;
         display: flex;
-        padding: calc(var(--spacing) / 2);
+
+        &:not(:empty) {
+          padding: calc(var(--spacing) / 2);
+        }
 
         @media only screen and (min-width: 781px) {
           flex: 1 0 200px;

@@ -7,6 +7,8 @@
         :file="selected_media"
         :resolution="220"
         :context="context"
+        @videoPaused="$emit('videoPaused')"
+        @videoEnded="$emit('videoEnded')"
       />
       <span v-else-if="content">
         {{ $t("media_not_found") }}

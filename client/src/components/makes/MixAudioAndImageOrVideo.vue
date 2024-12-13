@@ -19,6 +19,8 @@
           :content="make.base_video_filename"
           :path="make.$path"
           :media_type_to_pick="'video'"
+          @videoPaused="videoWasPaused"
+          @videoEnded="videoWasEnded"
         />
       </div>
       <div class="_equationIcon">
@@ -99,6 +101,11 @@
                 "
               />
             </div>
+
+            <ToggleInput
+              :label="$t('stop_recording_with_video')"
+              :content.sync="stop_recording_with_video"
+            />
           </div>
         </template>
       </div>
@@ -109,7 +116,12 @@
           <b-icon icon="chevron-double-down" />
         </div>
         <div class="_exportPlayButtons">
-          <button type="button" class="u-button u-button_red" @click="playBoth">
+          <button
+            type="button"
+            class="u-button u-button_red"
+            v-if="make.type === 'mix_audio_and_video'"
+            @click="playBoth"
+          >
             <b-icon icon="play-circle-fill" />
             {{ $t("play_both") }}
           </button>
@@ -168,15 +180,18 @@ export default {
       export_href: undefined,
 
       record_audio_live: false,
+      stop_recording_with_video: true,
     };
   },
 
   created() {},
   mounted() {
     this.$eventHub.$on("capture.isRecording", this.onRecording);
+    this.$eventHub.$on("capture.isRecordingStopped", this.onRecordingStopped);
   },
   beforeDestroy() {
     this.$eventHub.$off("capture.isRecording", this.onRecording);
+    this.$eventHub.$off("capture.isRecordingStopped", this.onRecordingStopped);
   },
   watch: {
     show_save_export_modal() {
@@ -315,7 +330,20 @@ export default {
     onRecording(type) {
       if (type === "audio") {
         this.rewindAndPlayVideo();
+
+        // video on pause or stop
       }
+    },
+    videoWasPaused() {
+      if (this.stop_recording_with_video)
+        this.$eventHub.$emit("capture.stopRecording");
+    },
+    videoWasEnded() {
+      if (this.stop_recording_with_video)
+        this.$eventHub.$emit("capture.stopRecording");
+    },
+    onRecordingStopped() {
+      this.pauseVideo();
     },
     playBoth() {
       this.rewindAndPlayVideo();
@@ -326,6 +354,7 @@ export default {
       if (audio) {
         audio.currentTime = 0;
         audio.muted = false;
+        audio.volume = 1;
         audio.play();
       }
     },
@@ -335,6 +364,12 @@ export default {
         video.currentTime = 0;
         video.muted = true;
         video.play();
+      }
+    },
+    pauseVideo() {
+      const video = this.$el.querySelector("._videoOrImage video");
+      if (video) {
+        video.pause();
       }
     },
   },
@@ -373,7 +408,7 @@ export default {
   text-align: center;
 }
 ._recordAudioLive {
-  // padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4);
 }
 ._captureView {
   width: 440px;
@@ -387,8 +422,7 @@ export default {
   gap: calc(var(--spacing) / 2);
   background: var(--c-bleumarine_fonce);
   color: white;
-
-  padding: calc(var(--spacing) / 4);
+  // padding: calc(var(--spacing) / 4);
   border-radius: 4px;
 }
 ._exportPlayButtons {
