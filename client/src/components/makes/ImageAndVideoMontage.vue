@@ -75,7 +75,7 @@
       v-if="show_render_modal"
       :base_instructions="base_instructions"
       :make_path="make.$path"
-      :reference_media="base_media"
+      :reference_media="first_media"
       @close="show_render_modal = false"
     />
   </div>

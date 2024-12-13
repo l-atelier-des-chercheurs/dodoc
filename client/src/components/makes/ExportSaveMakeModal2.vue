@@ -297,7 +297,8 @@ export default {
 
           //
           this.$nextTick(() => {
-            this.$el.querySelector("video").volume = 1;
+            const video = this.$el.querySelector("video");
+            if (video) video.volume = 1;
           });
         } else if (message.event === "aborted") {
           //
