@@ -279,17 +279,17 @@ export default {
           {
             key: "source",
             text: this.$t("close_to_source"),
-            instructions: this.$t("bitrate", { bitrate: "256" }),
+            instructions: this.$t("bitrate_kbps", { bitrate: "256" }),
           },
           {
             key: "high",
             text: this.$t("high"),
-            instructions: this.$t("bitrate", { bitrate: "192" }),
+            instructions: this.$t("bitrate_kbps", { bitrate: "192" }),
           },
           {
             key: "medium",
             text: this.$t("medium"),
-            instructions: this.$t("bitrate", { bitrate: "128" }),
+            instructions: this.$t("bitrate_kbps", { bitrate: "128" }),
           },
         ];
       if (this.media.$type === "video") {
