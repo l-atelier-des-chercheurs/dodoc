@@ -2,7 +2,7 @@
   <BaseModal2 :title="$t('export')" @close="removeAndCloseModal">
     <div class="_cont">
       <template v-if="!created_video">
-        <div class="u-spacingBottom">
+        <div class="u-spacingBottom" v-if="possible_formats">
           <DLabel :str="$t('format')" />
           <SelectField2
             :value="output_format"
