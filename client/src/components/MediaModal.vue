@@ -192,10 +192,9 @@
               :can_edit="true"
             />
           </div>
-          <div class="u-spacingBottom">
+          <div class="">
             <AuthorField
               :label="$t('authors')"
-              class="u-spacingBottom"
               :field="'$authors'"
               :authors_paths="authors_path"
               :path="file.$path"
@@ -204,16 +203,21 @@
               :no_options="true"
             />
           </div>
+        </DetailsPane>
 
-          <div class="">
-            <PositionPicker
-              :label="$t('location')"
-              :field_name="'$location'"
-              :content="file.$location"
-              :path="file.$path"
-              :can_edit="true"
-            />
-          </div>
+        <DetailsPane
+          :header="$t('location')"
+          :is_open_initially="false"
+          :has_items="!!file.$location"
+          :icon="'map'"
+          class="u-spacingBottom"
+        >
+          <PositionPicker
+            :field_name="'$location'"
+            :content="file.$location"
+            :path="file.$path"
+            :can_edit="true"
+          />
         </DetailsPane>
 
         <DetailsPane
