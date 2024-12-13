@@ -69,6 +69,7 @@ export default {
         e.clientY
       );
       this.show_cursor =
+        element_under_cursor &&
         element_under_cursor.classList.contains("js--showCursor");
     },
   },

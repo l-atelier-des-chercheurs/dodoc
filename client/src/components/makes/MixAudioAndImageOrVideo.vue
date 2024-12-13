@@ -57,14 +57,16 @@
               :media_type_to_pick="'audio'"
             />
             {{ $t("or") }}
-            <button
-              type="button"
-              class="u-button u-button_red"
-              @click="record_audio_live = true"
-            >
-              <b-icon icon="record-circle-fill" />
-              {{ $t("live_dubbing") }}
-            </button>
+            <div class="_liveDubbingBtn">
+              <button
+                type="button"
+                class="u-button u-button_red"
+                @click="record_audio_live = true"
+              >
+                <b-icon icon="record-circle-fill" />
+                {{ $t("live_dubbing") }}
+              </button>
+            </div>
             <!-- {{ $t("or") }}
             <button
               type="button"
@@ -371,7 +373,7 @@ export default {
   text-align: center;
 }
 ._recordAudioLive {
-  padding: calc(var(--spacing) / 4);
+  // padding: calc(var(--spacing) / 4);
 }
 ._captureView {
   width: 440px;
@@ -382,10 +384,12 @@ export default {
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) / 2);
   background: var(--c-bleumarine_fonce);
   color: white;
+
   padding: calc(var(--spacing) / 4);
+  border-radius: 4px;
 }
 ._exportPlayButtons {
   display: flex;
@@ -393,5 +397,8 @@ export default {
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) * 1);
+}
+._liveDubbingBtn {
+  padding: calc(var(--spacing) / 4);
 }
 </style>

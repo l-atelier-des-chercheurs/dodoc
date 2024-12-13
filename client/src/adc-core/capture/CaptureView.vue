@@ -2011,7 +2011,7 @@ export default {
   .m_captureview--videoPane--top {
     position: relative;
     margin: 0 auto;
-    min-height: 300px;
+    min-height: 60px;
 
     flex: 1 1 auto;
     overflow: hidden;

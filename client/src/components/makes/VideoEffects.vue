@@ -1,124 +1,144 @@
 <template>
   <div class="_videoEffects">
-    <div class="_leftBtns">
-      <DLabel :str="$t('effect')" />
+    <div class="_topContent">
+      <div class="_leftBtns">
+        <DLabel :str="$t('effect')" />
 
-      <select :value="selected_effect_type" @change="setEffectType">
-        <option
-          :value="effect.key"
-          v-for="effect in available_effects"
-          :key="effect.key"
-        >
-          {{ effect.label }}
-        </option>
-      </select>
-
-      <div class="u-spacingBottom" />
-
-      <div
-        v-if="selected_effect_type === 'colored_filter'"
-        class="u-spacingBottom"
-      >
-        <ColorInput
-          :can_toggle="false"
-          :live_editing="true"
-          :value="make.color_filter"
-          :default_value="'#fc4b60'"
-          @save="
-            updatePubliMeta({
-              color_filter: $event,
-            })
-          "
-        />
-      </div>
-      <div
-        v-else-if="selected_effect_type === 'speed_up'"
-        class="u-spacingBottom"
-      >
-        <RangeValueInput
-          :label="$t('playback_speed')"
-          :value="make.playback_speed"
-          :can_toggle="false"
-          :min="100"
-          :max="1000"
-          :step="1"
-          :default_value="100"
-          :suffix="'%'"
-          :ticks="[100, 200, 500, 1000]"
-          @save="
-            updatePubliMeta({
-              playback_speed: $event,
-            })
-          "
-        />
-        <small
-          v-if="make.playback_speed < 50"
-          v-html="$t('slowing_video_down_limit')"
-        />
-      </div>
-      <div
-        v-else-if="selected_effect_type === 'slow_down'"
-        class="u-spacingBottom"
-      >
-        <RangeValueInput
-          :label="$t('playback_speed')"
-          :value="make.playback_speed"
-          :can_toggle="false"
-          :min="1"
-          :max="100"
-          :step="1"
-          :default_value="50"
-          :suffix="'%'"
-          :ticks="[1, 10, 25, 50]"
-          @save="
-            updatePubliMeta({
-              playback_speed: $event,
-            })
-          "
-        />
-        <small
-          v-if="make.playback_speed < 50"
-          v-html="$t('slowing_video_down_limit')"
-        />
-      </div>
-      <div
-        v-else-if="selected_effect_type === 'mirror'"
-        class="u-spacingBottom"
-      >
-        <select
-          :value="make.flip"
-          @change="
-            updatePubliMeta({
-              flip: $event.target.value,
-            })
-          "
-        >
-          <option value="vflip">
-            {{ $t("vertical_flip").toLowerCase() }}
-          </option>
-          <option value="hflip">
-            {{ $t("horizontal_flip").toLowerCase() }}
-          </option>
-          <option value="hflip, vflip">
-            {{ $t("both").toLowerCase() }}
+        <select :value="selected_effect_type" @change="setEffectType">
+          <option
+            :value="effect.key"
+            v-for="effect in available_effects"
+            :key="effect.key"
+          >
+            {{ effect.label }}
           </option>
         </select>
-      </div>
-      <div
-        v-else-if="selected_effect_type === 'rotate'"
-        class="u-spacingBottom"
-      >
-        <select
-          :value="make.rotation"
-          @change="
-            updatePubliMeta({
-              rotation: $event.target.value,
-            })
-          "
+
+        <div class="u-spacingBottom" />
+
+        <div
+          v-if="selected_effect_type === 'colored_filter'"
+          class="u-spacingBottom"
         >
-          <option value="cw">{{ $t("move_right") }} ⟳</option>
-          <option value="ccw">{{ $t("move_left") }} ⟲</option>
-        </select>
+          <ColorInput
+            :can_toggle="false"
+            :live_editing="true"
+            :value="make.color_filter"
+            :default_value="'#fc4b60'"
+            @save="
+              updatePubliMeta({
+                color_filter: $event,
+              })
+            "
+          />
+        </div>
+        <div
+          v-else-if="selected_effect_type === 'speed_up'"
+          class="u-spacingBottom"
+        >
+          <RangeValueInput
+            :label="$t('playback_speed')"
+            :value="make.playback_speed"
+            :can_toggle="false"
+            :min="100"
+            :max="1000"
+            :step="1"
+            :default_value="100"
+            :suffix="'%'"
+            :ticks="[100, 200, 500, 1000]"
+            @save="
+              updatePubliMeta({
+                playback_speed: $event,
+              })
+            "
+          />
+          <small
+            v-if="make.playback_speed < 50"
+            v-html="$t('slowing_video_down_limit')"
+          />
+        </div>
+        <div
+          v-else-if="selected_effect_type === 'slow_down'"
+          class="u-spacingBottom"
+        >
+          <RangeValueInput
+            :label="$t('playback_speed')"
+            :value="make.playback_speed"
+            :can_toggle="false"
+            :min="1"
+            :max="100"
+            :step="1"
+            :default_value="50"
+            :suffix="'%'"
+            :ticks="[1, 10, 25, 50]"
+            @save="
+              updatePubliMeta({
+                playback_speed: $event,
+              })
+            "
+          />
+          <small
+            v-if="make.playback_speed < 50"
+            v-html="$t('slowing_video_down_limit')"
+          />
+        </div>
+        <div
+          v-else-if="selected_effect_type === 'mirror'"
+          class="u-spacingBottom"
+        >
+          <select
+            :value="make.flip"
+            @change="
+              updatePubliMeta({
+                flip: $event.target.value,
+              })
+            "
+          >
+            <option value="vflip">
+              {{ $t("vertical_flip").toLowerCase() }}
+            </option>
+            <option value="hflip">
+              {{ $t("horizontal_flip").toLowerCase() }}
+            </option>
+            <option value="hflip, vflip">
+              {{ $t("both").toLowerCase() }}
+            </option>
+          </select>
+        </div>
+        <div
+          v-else-if="selected_effect_type === 'rotate'"
+          class="u-spacingBottom"
+        >
+          <select
+            :value="make.rotation"
+            @change="
+              updatePubliMeta({
+                rotation: $event.target.value,
+              })
+            "
+          >
+            <option value="cw">{{ $t("move_right") }} ⟳</option>
+            <option value="ccw">{{ $t("move_left") }} ⟲</option>
+          </select>
+        </div>
+      </div>
+      <div class="_cropWindow" :data-rotate="rotate_preview">
+        <MediaContent
+          :file="base_media"
+          :resolution="1600"
+          :show_fs_button="true"
+          :context="'full'"
+        />
+        <div
+          class="_coloredFilter"
+          v-if="selected_effect_type === 'colored_filter'"
+          :style="{ backgroundColor: make.color_filter }"
+        />
+      </div>
+    </div>
+    <div class="_bottomBtns">
+      <div class="_equationIcon">
+        <b-icon icon="chevron-double-down" />
       </div>
 
       <button
@@ -134,19 +154,6 @@
         :base_instructions="base_instructions"
         :make="make"
         @close="show_render_modal = false"
-      />
-    </div>
-    <div class="_cropWindow" :data-rotate="rotate_preview">
-      <MediaContent
-        :file="base_media"
-        :resolution="1600"
-        :show_fs_button="true"
-        :context="'full'"
-      />
-      <div
-        class="_coloredFilter"
-        v-if="selected_effect_type === 'colored_filter'"
-        :style="{ backgroundColor: make.color_filter }"
       />
     </div>
   </div>
@@ -260,25 +267,27 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._videoEffects {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  justify-content: space-around;
-  gap: calc(var(--spacing) * 1);
-
   border-radius: 6px;
   width: 100%;
   max-width: 880px;
   margin: 0 auto;
   background: white;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 4);
+}
+
+._topContent {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) * 1);
 
   ._leftBtns {
     flex: 0 0 200px;
   }
   ._cropWindow {
     position: relative;
-    flex: 0 1 60vmin;
+    flex: 0 1 50vmin;
   }
 }
 
@@ -332,5 +341,21 @@ export default {
   mix-blend-mode: overlay;
 
   pointer-events: none;
+}
+
+._bottomBtns {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  padding-bottom: calc(var(--spacing) * 1);
+}
+
+._equationIcon {
+  font-size: 2em;
+  line-height: 1;
+  margin: calc(var(--spacing) * 2) 0;
+  color: var(--c-bleumarine_fonce);
 }
 </style>
