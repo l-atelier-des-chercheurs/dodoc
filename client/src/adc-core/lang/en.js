@@ -849,6 +849,7 @@ export default {
   pick_a_camera: "Select a camera",
   resolutions: "Resolution",
   resolution: "Resolution",
+  resolution_w_h: "Resolution: {width}x{height} pixels",
   screen_capture: "Screen Capture",
   cant_pick_resolution_when_screen_capture:
     "Resolution selection is not compatible with screenshot.",
@@ -1160,6 +1161,9 @@ export default {
   in_this_make: "In this make",
   edit_volume_or_mute: "Edit volume or mute",
   toolbox: "Toolbox",
-  video_resolution_even: "For a video, the resolution must be a multiple of 2",
+  video_resolution_even: "Width × Height. Each value must be a multiple of 2.",
   no_audio_track: "No audio track (muted)",
+
+  video_mp4: "Video MP4",
+  video_gif: "Animation GIF",
 };

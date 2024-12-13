@@ -717,6 +717,7 @@ export default {
   pick_a_camera: "Sélectionnez une caméra",
   resolutions: "Résolution",
   resolution: "Résolution",
+  resolution_w_h: "Résolution : {width}x{height} pixels",
   screen_capture: "Capture d’écran",
   cant_pick_resolution_when_screen_capture:
     "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
@@ -1243,7 +1244,10 @@ export default {
   edit_volume_or_mute: "Modifier le volume ou le mettre en sourdine",
   toolbox: "Boîte à outils",
   video_resolution_even:
-    "Pour une vidéo, la résolution doit être un multiple de 2",
+    "Largeur × Hauteur. Chaque valeur doit être un multiple de 2.",
   no_audio_track: "Pas de piste audio (muet)",
   stop_recording_with_video: "Arrêter l’enregistrement à la fin de la vidéo.",
+
+  video_mp4: "Vidéo MP4",
+  video_gif: "Animation GIF",
 };

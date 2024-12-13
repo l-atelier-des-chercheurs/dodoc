@@ -38,7 +38,7 @@
     </div>
 
     <div class="_options">
-      <DropDown :right="true">
+      <DropDown :right="true" :show_label="false">
         <button type="button" class="u-buttonLink" @click="removeModule">
           <b-icon icon="trash" />
           {{ $t("remove") }}

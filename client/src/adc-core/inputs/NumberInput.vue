@@ -5,7 +5,7 @@
   >
     <DLabel v-if="label" :str="label" :for="label" />
 
-    <div class="u-sameRow" :key="'value-' + value">
+    <div class="u-sameRow">
       <div class="u-inputGroup">
         <input
           ref="field"
@@ -74,7 +74,9 @@ export default {
   beforeDestroy() {},
   watch: {
     value() {
-      this.local_value = this.value;
+      if (this.value !== this.local_value) {
+        this.local_value = this.value;
+      }
     },
     local_value() {
       this.$emit("update:value", this.local_value);
