@@ -91,11 +91,13 @@ export default {
 }
 
 ._toggled {
-  margin-top: calc(var(--spacing) / 2 * -1);
-  padding-top: calc(var(--spacing) / 2);
+  // margin-top: calc(var(--spacing) / 2 * -1);
+  margin-top: 1px;
+  padding-top: calc(var(--spacing) / 4);
+  padding-left: calc(var(--spacing) / 4);
 
   &.can--toggle {
-    border-left: 3px solid var(--c-orange);
+    border-left: 3px dotted var(--c-gris_fonce);
     padding-left: calc(var(--spacing) / 2);
     margin-left: calc(var(--spacing) / 2);
   }

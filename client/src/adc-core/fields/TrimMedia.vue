@@ -7,10 +7,8 @@
 
     <div class="u-spacingBottom" />
 
-    <DLabel :str="$t('extract_range')" />
-    <!-- <DLabel :str="$t('select_extract')" /> -->
     <ToggledSection
-      :label="$t('enable')"
+      :label="$t('extract_range')"
       :can_toggle="true"
       :show_toggle.sync="show_extract_selection"
     >

@@ -67,16 +67,13 @@
                 :size="'normal'"
               />
             </div>
+            <div class="u-spacingBottom" />
           </div>
           <div v-if="['video', 'audio'].includes(media.$type)" class="">
-            <div class="u-spacingBottom" />
-
-            <ToggleInput
-              :content.sync="enable_audio"
-              :label="$t('with_sound')"
-            />
-
-            <template v-if="enable_audio">
+            <ToggledSection
+              :label="$t('Activer le son')"
+              :show_toggle.sync="enable_audio"
+            >
               <DLabel :str="$t('audio_quality')" />
               <SelectField2
                 :value="audio_quality_picked"
@@ -85,10 +82,7 @@
                 :hide_validation="true"
                 @change="audio_quality_picked = $event"
               />
-            </template>
-            <div v-else class="u-instructions">
-              {{ $t("no_audio_track") }}
-            </div>
+            </ToggledSection>
           </div>
         </div>
         <div v-else>

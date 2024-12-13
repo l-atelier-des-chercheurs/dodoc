@@ -1141,7 +1141,6 @@ export default {
     Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
     `,
 
-  select_extract: "Sélectionner un extrait",
   extract_range: "Recouper le début ou la fin",
   convert_to_format: "Adapter le format pour la lecture",
 

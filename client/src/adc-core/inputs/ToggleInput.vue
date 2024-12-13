@@ -11,7 +11,7 @@
         :checked="content"
         @change="$emit('update:content', $event.target.checked)"
       />
-      <span v-if="label">
+      <span v-if="label" class="u-label">
         {{ label }}
       </span>
     </label>
@@ -74,5 +74,8 @@ export default {
   margin-bottom: 0;
 }
 ._inputCb {
+  &[checked] {
+    border-color: var(--active-color);
+  }
 }
 </style>

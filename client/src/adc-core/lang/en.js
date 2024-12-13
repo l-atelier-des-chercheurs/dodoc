@@ -1075,7 +1075,6 @@ export default {
 
   convert: "Convert",
   convert_shorten: "Convert/shorten",
-  select_extract: "Select extract",
   extract_range: "Extract range",
   convert_to_format: "Adapt format for viewing",
 

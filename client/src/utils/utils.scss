@@ -878,8 +878,12 @@ input[type="checkbox"] {
     background-color: CanvasText;
   }
 
-  &:checked::before {
-    transform: scale(1);
+  &:checked {
+    border-color: var(--c-gris_fonce);
+
+    &::before {
+      transform: scale(1);
+    }
   }
 
   &:disabled {
