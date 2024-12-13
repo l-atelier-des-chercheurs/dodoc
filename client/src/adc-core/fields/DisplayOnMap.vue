@@ -2161,7 +2161,7 @@ export default {
     pointer-events: auto;
     margin: 0 auto;
     width: 100%;
-    max-width: 245px;
+    max-width: 250px;
 
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.9);
