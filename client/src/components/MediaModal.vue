@@ -208,7 +208,7 @@
         <DetailsPane
           :header="$t('location')"
           :is_open_initially="false"
-          :has_items="!!file.$location"
+          :has_items="author_has_location"
           :icon="'map'"
           class="u-spacingBottom"
         >
@@ -366,6 +366,11 @@ export default {
     },
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+    },
+    author_has_location() {
+      return (
+        !!this.file.$location?.latitude && !!this.file.$location?.longitude
+      );
     },
 
     authors_path() {

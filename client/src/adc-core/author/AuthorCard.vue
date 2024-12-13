@@ -106,7 +106,7 @@
           v-if="context === 'full' && (can_edit || !!author.$location)"
           :header="$t('location')"
           :is_open_initially="true"
-          :has_items="!!author.$location"
+          :has_items="author_has_location"
           :icon="'map'"
           class="u-spacingBottom"
         >
@@ -208,6 +208,11 @@ export default {
     },
     author_url() {
       return this.createURLFromPath(this.author.$path);
+    },
+    author_has_location() {
+      return (
+        !!this.author.$location?.latitude && !!this.author.$location?.longitude
+      );
     },
   },
   methods: {
