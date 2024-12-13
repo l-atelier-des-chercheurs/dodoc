@@ -106,7 +106,7 @@
       :base_instructions="base_instructions"
       :make_path="make.$path"
       :reference_media="first_media"
-      :possible_formats="['mp4', 'gif']"
+      :possible_formats="possible_formats"
       @close="show_render_modal = false"
     />
 
@@ -230,63 +230,17 @@ export default {
     },
   },
   computed: {
-    presets() {
-      let presets = [];
-
-      let source = {
-        key: "original",
-        text: this.$t("original"),
-      };
-      if (this.first_media) {
-        const { width, height } = this.first_media.$infos;
-        source.width = width;
-        source.height = height;
-        source.instructions = `${width} × ${height} pixels`;
-      }
-      presets.push(source);
-      presets = presets.concat([
+    possible_formats() {
+      return [
         {
-          key: "vhigh",
-          text: this.$t("very_high"),
-          instructions: "1920 × 1080 pixels",
-          width: 1920,
-          height: 1080,
+          key: "mp4",
+          text: this.$t("video_mp4"),
         },
         {
-          key: "high",
-          text: this.$t("high"),
-          instructions: "1280 × 720 pixels",
-          width: 1280,
-          height: 720,
+          key: "gif",
+          text: this.$t("video_gif"),
         },
-        {
-          key: "medium",
-          text: this.$t("medium"),
-          instructions: "640 × 480 pixels",
-          width: 640,
-          height: 480,
-        },
-        {
-          key: "low",
-          text: this.$t("low"),
-          instructions: "480 × 360 pixels",
-          width: 480,
-          height: 360,
-        },
-        {
-          key: "rough",
-          text: "→" + this.$t("rough"),
-          instructions: "360 × 240 pixels",
-          width: 360,
-          height: 240,
-        },
-        {
-          key: "custom",
-          text: "↓ " + this.$t("custom"),
-        },
-      ]);
-
-      return presets;
+      ];
     },
     export_is_available() {
       return this.section_modules_list.length > 0;

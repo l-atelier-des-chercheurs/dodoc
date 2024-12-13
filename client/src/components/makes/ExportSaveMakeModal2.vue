@@ -2,6 +2,17 @@
   <BaseModal2 :title="$t('export')" @close="removeAndCloseModal">
     <div class="_cont">
       <template v-if="!created_video">
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('format')" />
+          <SelectField2
+            :value="output_format"
+            :options="possible_formats"
+            :can_edit="true"
+            :hide_validation="true"
+            @change="output_format = $event"
+          />
+        </div>
+
         <div>
           <DLabel :str="$t('quality')" />
           <div class="">
@@ -26,10 +37,10 @@
             <NumberInput
               :label="$t('bitrate')"
               :instructions="$t('bitrate_instructions')"
-              :value="custom_bitrate"
+              :value.sync="custom_bitrate"
               :min="0"
-              :suffix="'k'"
-              @update:value="custom_bitrate = $event"
+              :suffix="'kbps'"
+              :size="'normal'"
             />
           </div>
         </div>
@@ -83,9 +94,9 @@
             <b-icon icon="tools" />
             {{ $t("preview_new") }}
           </button>
-        </div>
-        <div class="u-instructions">
-          {{ $t("wont_remove_original").toLowerCase() }}
+          <div class="u-instructions">
+            {{ $t("wont_remove_original").toLowerCase() }}
+          </div>
         </div>
       </template>
       <template v-else-if="is_exporting">
@@ -143,6 +154,8 @@ export default {
 
       resolution_preset_picked: "source",
       progress_percent: 0,
+
+      output_format: "mp4",
 
       custom_resolution_width: 1920,
       custom_resolution_height: 1080,
@@ -213,8 +226,8 @@ export default {
       return presets.map((p) => {
         if (p.key !== "custom") {
           p.instructions =
-            this.$t("resolution") +
-            ` ${p.width}x${p.height}, ` +
+            this.$t("resolution_w_h", { width: p.width, height: p.height }) +
+            ", " +
             this.$t("bitrate_kbps", { bitrate: p.bitrate }).toLowerCase();
         }
         return p;
@@ -249,6 +262,9 @@ export default {
         output_height = selected_preset.height;
         output_bitrate = selected_preset.bitrate;
       }
+
+      if (this.possible_formats)
+        instructions.output_format = this.output_format;
 
       const current_task_id = await this.$api.exportFolder({
         path: this.make_path,
