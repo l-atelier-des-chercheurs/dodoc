@@ -66,7 +66,13 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    keep_ratio: function (new_value) {
+      if (this.keep_ratio === true) {
+        this.$emit("update:height", Math.round(this.width * this.ratio));
+      }
+    },
+  },
   computed: {},
   methods: {
     adjustWidth(e) {
