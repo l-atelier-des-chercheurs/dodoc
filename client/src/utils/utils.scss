@@ -189,6 +189,7 @@ button,
   text-decoration: none;
   color: inherit;
   white-space: nowrap;
+  background-color: var(--c-gris_clair);
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-radius: var(--input-border-radius);

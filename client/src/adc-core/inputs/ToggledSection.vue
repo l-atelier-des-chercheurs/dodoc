@@ -92,8 +92,8 @@ export default {
 
 ._toggled {
   // margin-top: calc(var(--spacing) / 2 * -1);
-  margin-top: 1px;
-  padding-top: calc(var(--spacing) / 4);
+  margin-top: 0px;
+  padding-top: 0px;
   padding-left: calc(var(--spacing) / 4);
 
   &.can--toggle {

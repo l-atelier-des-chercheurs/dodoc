@@ -38,40 +38,47 @@
             <div class="u-spacingBottom" />
           </div>
 
-          <div v-if="['image', 'video'].includes(media.$type)" class="">
-            <DLabel :str="$t('image_quality')" />
-            <div class="">
-              <SelectField2
-                :value="resolution_preset_picked"
-                :options="presets"
-                :can_edit="true"
-                :hide_validation="true"
-                @change="resolution_preset_picked = $event"
-              />
-            </div>
-            <div v-if="resolution_preset_picked === 'custom'">
-              <div class="u-spacingBottom" />
-              <CustomResolutionInput
-                :width.sync="custom_resolution_width"
-                :height.sync="custom_resolution_height"
-                :ratio="media_ratio"
-                :is_video="is_video"
-              />
-              <div class="u-spacingBottom" />
-              <NumberInput
-                :label="$t('bitrate')"
-                :instructions="$t('bitrate_instructions')"
-                :value.sync="custom_bitrate"
-                :min="0"
-                :suffix="'kbps'"
-                :size="'normal'"
-              />
-            </div>
+          <template v-if="['image', 'video'].includes(media.$type)">
+            <ToggledSection
+              :label="$t('enable_image')"
+              :show_toggle.sync="enable_video"
+              :can_toggle="true"
+            >
+              <DLabel :str="$t('image_quality')" />
+              <div class="">
+                <SelectField2
+                  :value="resolution_preset_picked"
+                  :options="presets"
+                  :can_edit="true"
+                  :hide_validation="true"
+                  @change="resolution_preset_picked = $event"
+                />
+              </div>
+              <div v-if="resolution_preset_picked === 'custom'">
+                <div class="u-spacingBottom" />
+                <CustomResolutionInput
+                  :width.sync="custom_resolution_width"
+                  :height.sync="custom_resolution_height"
+                  :ratio="media_ratio"
+                  :is_video="is_video"
+                />
+                <div class="u-spacingBottom" />
+                <NumberInput
+                  :label="$t('bitrate')"
+                  :instructions="$t('bitrate_instructions')"
+                  :value.sync="custom_bitrate"
+                  :min="0"
+                  :suffix="'kbps'"
+                  :size="'normal'"
+                />
+              </div>
+            </ToggledSection>
             <div class="u-spacingBottom" />
-          </div>
+          </template>
+
           <div v-if="['video', 'audio'].includes(media.$type)" class="">
             <ToggledSection
-              :label="$t('Activer le son')"
+              :label="$t('enable_sound')"
               :show_toggle.sync="enable_audio"
             >
               <DLabel :str="$t('audio_quality')" />
@@ -251,6 +258,7 @@ export default {
       custom_bitrate: 6000,
 
       enable_audio: true,
+      enable_video: true,
     };
   },
   created() {},

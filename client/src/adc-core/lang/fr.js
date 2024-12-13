@@ -1249,4 +1249,7 @@ export default {
 
   video_mp4: "Vidéo MP4",
   video_gif: "Animation GIF",
+
+  enable_image: "Activer l’image",
+  enable_sound: "Activer le son",
 };
