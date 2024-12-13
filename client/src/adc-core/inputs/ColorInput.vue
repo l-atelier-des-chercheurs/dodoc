@@ -266,7 +266,7 @@ export default {
   display: flex;
 }
 ._customCol--label {
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
 }
 
 ._submitBtn {
