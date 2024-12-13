@@ -26,10 +26,10 @@
             }"
             :key="color"
             :style="`--patch-color: ${color}`"
-            @click="local_value = color"
+            @click="saveColor(color)"
           />
         </div>
-        <div class="" :key="'value-' + value">
+        <div class="">
           <div
             class="_inputField"
             :class="{
@@ -42,27 +42,25 @@
               :style="`--patch-color: ${local_value}`"
             >
               <span class="_colorPatch is--active" v-if="is_custom_color" />
-              {{ $t("custom_color") }}
+              <span class="_customCol--label">{{ $t("custom_color") }}</span>
               <input
                 ref="field"
                 type="color"
                 :name="label"
                 :id="'_input_' + label"
-                v-model.lazy="local_value"
+                v-model="local_value"
               />
             </label>
           </div>
         </div>
-        <transition name="fade_fast">
+        <!-- <transition name="fade_fast">
           <SaveCancelButtons
             v-if="!live_editing"
             class="_scb"
             @save="saveColor(local_value)"
             @cancel="cancelColor"
           />
-          <!-- // dont use because of custom color -->
-          <!-- :allow_save="value !== local_value" -->
-        </transition>
+        </transition> -->
       </template>
     </ToggledSection>
   </div>
@@ -76,7 +74,7 @@ export default {
     },
     live_editing: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     label: {
       type: String,
@@ -112,6 +110,8 @@ export default {
 
       local_value: this.value || this.default_value,
       previous_value: undefined,
+
+      custom_color_debounce: null,
     };
   },
   created() {},
@@ -123,7 +123,11 @@ export default {
       this.local_value = this.value;
     },
     local_value() {
-      if (this.live_editing) this.saveColor(this.local_value);
+      if (this.custom_color_debounce) clearTimeout(this.custom_color_debounce);
+
+      this.custom_color_debounce = setTimeout(() => {
+        this.saveColor(this.local_value);
+      }, 500);
     },
     show_color_input() {
       if (!this.show_color_input) {
@@ -225,6 +229,7 @@ export default {
 
 ._inputField {
   position: relative;
+  display: flex;
 
   input {
     width: 1px;
@@ -257,8 +262,11 @@ export default {
 }
 
 ._customCol {
+  margin: calc(var(--spacing) / 4) auto;
   display: flex;
-  margin-bottom: calc(var(--spacing) / 4);
+}
+._customCol--label {
+  padding: calc(var(--spacing) / 2);
 }
 
 ._submitBtn {
