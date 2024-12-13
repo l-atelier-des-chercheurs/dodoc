@@ -185,7 +185,9 @@ export default {
     },
     ref_infos() {
       if (!this.reference_media) return {};
-      const { width, height, ratio } = this.reference_media.$infos;
+      let { width, height, ratio } = this.reference_media.$infos;
+      if (width) width = Math.ceil(width / 2) * 2;
+      if (height) height = Math.ceil(height / 2) * 2;
       return { width, height, ratio };
     },
     presets() {
@@ -292,6 +294,11 @@ export default {
 
         if (message.event === "completed") {
           this.created_video = message.file;
+
+          //
+          this.$nextTick(() => {
+            this.$el.querySelector("video").volume = 1;
+          });
         } else if (message.event === "aborted") {
           //
         } else if (message.event === "failed") {

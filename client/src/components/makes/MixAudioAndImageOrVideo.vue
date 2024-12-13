@@ -130,7 +130,7 @@
           <button
             type="button"
             class="u-button u-button_bleuvert"
-            @click="show_save_export_modal = true"
+            @click="show_render_modal = true"
           >
             <b-icon icon="check" />
             {{ $t("create") }}
@@ -139,43 +139,28 @@
       </div>
     </transition>
 
-    <ExportSaveMakeModal
-      v-if="show_save_export_modal"
-      :title="$t('export_mix')"
-      :export_name="export_name"
-      :export_href="export_href"
-      @close="show_save_export_modal = false"
-    >
-      <!-- <p class="u-spacingBottom">
-        {{ $t("duration") }} – {{ export_duration }}
-      </p> -->
-      <div class="_spinner" v-if="is_exporting" key="loader">
-        <LoaderSpinner />
-      </div>
-      <div v-else>
-        <MediaContent
-          class="_preview"
-          :file="created_video"
-          :resolution="1600"
-          :context="'full'"
-        />
-      </div>
-    </ExportSaveMakeModal>
+    <ExportSaveMakeModal2
+      v-if="show_render_modal"
+      :base_instructions="base_instructions"
+      :make_path="make.$path"
+      :reference_media="reference_media"
+      @close="show_render_modal = false"
+    />
   </div>
 </template>
 <script>
 import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue"; // eslint-disable-line
-import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
+import ExportSaveMakeModal2 from "@/components/makes/ExportSaveMakeModal2.vue";
 import CaptureView from "@/adc-core/capture/CaptureView.vue";
 
 export default {
   props: {
     make: Object,
   },
-  components: { SingleBaseMediaPicker, ExportSaveMakeModal, CaptureView },
+  components: { SingleBaseMediaPicker, ExportSaveMakeModal2, CaptureView },
   data() {
     return {
-      show_save_export_modal: false,
+      show_render_modal: false,
       is_exporting: false,
       created_video: false,
       export_href: undefined,
@@ -194,19 +179,8 @@ export default {
     this.$eventHub.$off("capture.isRecording", this.onRecording);
     this.$eventHub.$off("capture.isRecordingStopped", this.onRecordingStopped);
   },
-  watch: {
-    show_save_export_modal() {
-      if (this.show_save_export_modal) this.renderAudioImageOrVideo();
-    },
-  },
+  watch: {},
   computed: {
-    export_name() {
-      if (this.make.type === "mix_audio_and_image")
-        return "audio_image_mix.mp4";
-      if (this.make.type === "mix_audio_and_video")
-        return "audio_video_mix.mp4";
-      return "untitled";
-    },
     project_path() {
       let { space_slug, project_slug } = this.decomposePath(this.make.$path);
       return this.createPath({ space_slug, project_slug });
@@ -218,15 +192,54 @@ export default {
         return this.make.base_audio_filename && this.make.base_video_filename;
       return false;
     },
-
     selected_audio_media() {
-      const meta_filename_in_project = this.make.base_audio_filename;
-      if (meta_filename_in_project)
-        return this.getSourceMedia({
-          source_media: { meta_filename_in_project },
-          folder_path: this.make.$path,
+      return this.getMediaFromFilename(this.make.base_audio_filename);
+    },
+    selected_video_media() {
+      return this.getMediaFromFilename(this.make.base_video_filename);
+    },
+    selected_image_media() {
+      return this.getMediaFromFilename(this.make.base_image_filename);
+    },
+    reference_media() {
+      if (this.make.type === "mix_audio_and_image")
+        return this.selected_image_media;
+      if (this.make.type === "mix_audio_and_video")
+        return this.selected_video_media;
+      return undefined;
+    },
+    base_instructions() {
+      let instructions = {
+        recipe: this.make.type,
+        suggested_file_name: this.make.type,
+      };
+
+      if (this.selected_audio_media)
+        instructions.base_audio_path = this.makeMediaFilePath({
+          $path: this.selected_audio_media.$path,
+          $media_filename: this.selected_audio_media.$media_filename,
         });
-      return false;
+      if (this.selected_image_media)
+        instructions.base_image_path = this.makeMediaFilePath({
+          $path: this.selected_image_media.$path,
+          $media_filename: this.selected_image_media.$media_filename,
+        });
+      if (this.selected_video_media)
+        instructions.base_video_path = this.makeMediaFilePath({
+          $path: this.selected_video_media.$path,
+          $media_filename: this.selected_video_media.$media_filename,
+        });
+
+      if (
+        this.make.type === "mix_audio_and_video" &&
+        this.selected_video_media &&
+        this.selected_audio_media
+      )
+        instructions.duration = this.getMaxDuration(
+          this.selected_video_media.$infos?.duration,
+          this.selected_audio_media.$infos?.duration
+        );
+      return instructions;
     },
   },
   methods: {
@@ -240,87 +253,13 @@ export default {
       });
       this.record_audio_live = false;
     },
-
-    async renderAudioImageOrVideo() {
-      this.is_exporting = true;
-      this.created_video = false;
-      this.export_href = undefined;
-
-      const base_audio = this.selected_audio_media;
-
-      const additional_meta = {};
-      additional_meta.$origin = "make";
-      if (this.connected_as?.$path)
-        additional_meta.$authors = [this.connected_as.$path];
-
-      let instructions = {
-        recipe: this.make.type,
-        suggested_file_name: this.make.type,
-        base_audio_path: this.makeMediaFilePath({
-          $path: base_audio.$path,
-          $media_filename: base_audio.$media_filename,
-        }),
-        output_width: 1280,
-        output_height: 720,
-        additional_meta,
-      };
-
-      if (this.make.type === "mix_audio_and_image") {
-        const base_image = this.getSourceMedia({
-          source_media: {
-            meta_filename_in_project: this.make.base_image_filename,
-          },
+    getMediaFromFilename(meta_filename_in_project) {
+      if (meta_filename_in_project)
+        return this.getSourceMedia({
+          source_media: { meta_filename_in_project },
           folder_path: this.make.$path,
         });
-        instructions.base_image_path = this.makeMediaFilePath({
-          $path: base_image.$path,
-          $media_filename: base_image.$media_filename,
-        });
-      } else if (this.make.type === "mix_audio_and_video") {
-        const base_video = this.getSourceMedia({
-          source_media: {
-            meta_filename_in_project: this.make.base_video_filename,
-          },
-          folder_path: this.make.$path,
-        });
-
-        const duration = this.getMaxDuration(
-          base_video.$infos?.duration,
-          base_audio.$infos?.duration
-        );
-        instructions.duration = duration;
-        instructions.base_video_path = this.makeMediaFilePath({
-          $path: base_video.$path,
-          $media_filename: base_video.$media_filename,
-        });
-      }
-
-      const current_task_id = await this.$api.exportFolder({
-        path: this.make.$path,
-        instructions,
-      });
-      this.$api.join({ room: "task_" + current_task_id });
-
-      const checkIfEnded = ({ task_id, message }) => {
-        if (task_id !== current_task_id) return;
-        this.$eventHub.$off("task.ended", checkIfEnded);
-        this.$api.leave({ room: "task_" + current_task_id });
-
-        if (message.event === "completed") {
-          this.created_video = message.file;
-          this.export_href = this.makeMediaFileURL({
-            $path: this.created_video.$path,
-            $media_filename: this.created_video.$media_filename,
-          });
-        } else if (message.event === "aborted") {
-          //
-        } else if (message.event === "failed") {
-          message.info;
-        }
-
-        this.is_exporting = false;
-      };
-      this.$eventHub.$on("task.ended", checkIfEnded);
+      return undefined;
     },
     getMaxDuration() {
       return Array.prototype.slice.call(arguments).reduce((acc, val) => {
