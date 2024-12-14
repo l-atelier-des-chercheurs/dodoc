@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
+  <BaseModal2 :title="$t('export_publi')" @close="removeAndCloseModal">
     <template v-if="is_exporting">
       <div class="u-instructions">
         {{ $t("export_in_progress") }}
@@ -25,8 +25,8 @@
         <div class="u-spacingBottom" />
         <ShowExportedFileInfos :file="created_doc" />
       </template>
-      <div class="u-sameRow" slot="footer">
-        <button type="button" class="u-button" @click="cancelExport">
+      <template slot="footer">
+        <button type="button" class="u-button" @click="removeAndCloseModal">
           <b-icon icon="arrow-left-short" />
           {{ $t("back") }}
         </button>
@@ -50,7 +50,7 @@
             {{ $t("save_to_project") }}
           </button>
         </div>
-      </div>
+      </template>
       <div class="_saveNotice" v-if="finished_saving_to_project">
         {{ $t("media_was_saved_to_project") }}
       </div>
@@ -133,10 +133,9 @@ export default {
         this.$emit("close");
       }, 3000);
     },
-    cancelExport() {
+    removeAndCloseModal() {
       if (this.created_doc)
         this.$api.deleteItem({ path: this.created_doc.$path });
-      this.created_doc = false;
       this.$emit("close");
     },
   },

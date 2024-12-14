@@ -250,9 +250,9 @@ header {
     padding-bottom: calc(var(--spacing) * 1);
   }
 }
-footer {
+._footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) * 1);
 }
