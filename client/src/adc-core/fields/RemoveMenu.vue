@@ -22,12 +22,13 @@
       <div v-if="remove_expl">
         {{ remove_expl }}
       </div>
-      <div class="u-sameRow" slot="footer">
+      <template slot="footer">
         <button
+          class="u-button"
           type="button"
-          class="u-buttonLink"
           @click="show_confirm_delete = false"
         >
+          <b-icon icon="x-circle" />
           {{ $t("cancel") }}
         </button>
         <button
@@ -36,9 +37,10 @@
           autofocus
           @click="confirmRemove"
         >
+          <b-icon icon="trash" />
           {{ $t("confirm_removal") }}
         </button>
-      </div>
+      </template>
     </BaseModal2>
   </div>
 </template>

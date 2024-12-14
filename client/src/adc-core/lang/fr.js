@@ -1148,7 +1148,6 @@ export default {
     "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
   preview_new: "Créer une nouvelle version",
   wont_remove_original: "Ne supprimera pas l’original",
-  add_optimized_to_lib: "Conserver l’original et la nouvelle version",
   replace_original: "Remplacer l’original",
   save_as_new_media: "Enregistrer comme nouveau média",
 

@@ -39,18 +39,13 @@
           :title="$t('confirm_save_changes')"
           @close="show_confirm_before_closing_modal = false"
         >
-          <!-- <p class="u-spacingBottom">
-            {{ $t("confirm_save_changes") }}
-          </p> -->
-          <div slot="footer">
+          <template slot="footer">
             <SaveCancelButtons
-              slot="footer"
-              class="_scb"
               :cancel_text="$t('close_without_saving')"
               @save="saveContent"
               @cancel="closeModal"
             />
-          </div>
+          </template>
         </BaseModal2>
       </div>
     </transition>
@@ -252,6 +247,7 @@ header {
 }
 ._footer {
   display: flex;
+  flex-flow: row wrap;
   justify-content: space-between;
   gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) * 1);

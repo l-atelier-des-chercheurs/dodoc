@@ -105,40 +105,29 @@
               :show_fs_button="true"
             />
           </div>
-          <!-- <div class="u-spacingBottom">
-            <DLabel :str="$t('filename')" />
-            <div class="_comp">
-              <span>
-                {{ media.$media_filename }}
-              </span>
-              <b-icon icon="arrow-right-circle" />
-              <strong>
-                {{ optimized_file.$media_filename }}
-              </strong>
-            </div>
-          </div> -->
-          <div class="u-spacingBottom">
-            <DLabel :str="$t('size')" />
-            <div class="_comp">
-              <span>
-                <template v-if="media.$infos && media.$infos.size">
-                  {{ formatBytes(media.$infos.size) }}
-                </template>
-                <template v-else> ? </template>
-              </span>
-              <b-icon icon="arrow-right-circle" />
-              <strong>
-                <template
-                  v-if="optimized_file.$infos && optimized_file.$infos.size"
-                >
-                  {{ formatBytes(optimized_file.$infos.size) }}
-                </template>
-                <template v-else> ? </template>
-              </strong>
-            </div>
+
+          <div class="u-spacingBottom" />
+
+          <DLabel :str="$t('size')" />
+          <div class="_comp">
+            <span>
+              <template v-if="media.$infos && media.$infos.size">
+                {{ formatBytes(media.$infos.size) }}
+              </template>
+              <template v-else> ? </template>
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              <template
+                v-if="optimized_file.$infos && optimized_file.$infos.size"
+              >
+                {{ formatBytes(optimized_file.$infos.size) }}
+              </template>
+              <template v-else> ? </template>
+            </strong>
           </div>
-          <div
-            class="u-spacingBottom"
+
+          <template
             v-if="
               optimized_file.$type === 'image' ||
               optimized_file.$type === 'video'
@@ -174,61 +163,64 @@
                 <template v-else> ? </template>
               </strong>
             </div>
+          </template>
+
+          <DLabel :str="$t('filename')" />
+          <div class="_comp">
+            <span>
+              {{ media.$media_filename }}
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              {{ optimized_file.$media_filename }}
+            </strong>
           </div>
+
+          <div class="u-spacingBottom" />
         </div>
       </div>
 
-      <div slot="footer" class="">
+      <template slot="footer">
         <template v-if="!optimized_file">
+          <div />
           <div>
-            <div>
-              <button
-                type="button"
-                class="u-button u-button_bleuvert"
-                @click="optimizeMedia"
-              >
-                <b-icon icon="tools" />
-                {{ $t("preview_new") }}
-              </button>
-            </div>
+            <button
+              type="button"
+              class="u-button u-button_bleuvert"
+              @click="optimizeMedia"
+            >
+              <b-icon icon="tools" />
+              {{ $t("preview_new") }}
+            </button>
             <div class="u-instructions">
               {{ $t("wont_remove_original") }}
             </div>
           </div>
         </template>
         <template v-else>
-          <div class="_saveLocal">
-            <DownloadFile :file="optimized_file" />
-          </div>
-
-          <div class="_btnRow">
-            <button
-              type="button"
-              class="u-button u-button_white"
-              @click="cancel"
-            >
-              <b-icon icon="arrow-left-short" />
-              {{ $t("back") }}
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_bleuvert"
-              @click="keepBoth"
-            >
-              <b-icon icon="file-plus" />
-              {{ $t("add_optimized_to_lib") }}
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_red"
-              @click="replaceOriginal"
-            >
-              <b-icon icon="save2-fill" />
-              {{ $t("replace_original") }}
-            </button>
-          </div>
+          <button type="button" class="u-button u-button_white" @click="cancel">
+            <b-icon icon="arrow-left-short" />
+            {{ $t("back") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="keepBoth"
+          >
+            <b-icon icon="file-plus" />
+            {{ $t("save_as_new_media") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_red"
+            @click="replaceOriginal"
+          >
+            <b-icon icon="save2-fill" />
+            {{ $t("replace_original") }}
+          </button>
+          <DownloadFile :file="optimized_file" />
         </template>
-      </div>
+      </template>
     </BaseModal2>
   </div>
 </template>
@@ -520,13 +512,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._btnRow {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: calc(var(--spacing) / 2);
-}
-
 ._mediaPreview {
   &[data-type="image"] {
     aspect-ratio: 1/1;
@@ -565,9 +550,5 @@ export default {
 
 ._loader {
   z-index: 150;
-}
-
-._saveLocal {
-  text-align: right;
 }
 </style>

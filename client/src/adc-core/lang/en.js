@@ -1082,7 +1082,6 @@ export default {
     "This media has already been converted, it is not recommended to convert it again.",
   preview_new: "Create new version",
   wont_remove_original: "Will not remove the original",
-  add_optimized_to_lib: "Keep original media and add new version",
   replace_original: "Replace original media",
   save_as_new_media: "Save as new media",
 

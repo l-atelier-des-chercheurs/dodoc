@@ -61,6 +61,7 @@
 
     <template slot="footer">
       <template v-if="!created_video && !is_exporting">
+        <div />
         <div>
           <button
             type="button"
@@ -123,7 +124,9 @@ export default {
     reference_media: Object,
     possible_formats: Array,
   },
-  components: {},
+  components: {
+    ShowExportedFileInfos,
+  },
   data() {
     return {
       is_exporting: false,

@@ -73,15 +73,15 @@
 
         <div class="u-spacingBottom" />
 
-        <div class="u-sameRow" slot="footer">
+        <template slot="footer">
+          <div />
           <SaveCancelButtons
-            class="_scb"
             :is_saving="is_saving"
             :allow_save="allow_save"
             @save="updateAuthors"
             @cancel="cancel"
           />
-        </div>
+        </template>
       </BaseModal2>
     </div>
   </div>

@@ -48,7 +48,6 @@
 
       <SaveCancelButtons
         slot="footer"
-        class="_scb"
         :is_saving="is_saving"
         @save="updateText"
         @cancel="cancel"

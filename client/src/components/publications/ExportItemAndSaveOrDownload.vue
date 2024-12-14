@@ -24,32 +24,30 @@
         />
         <div class="u-spacingBottom" />
         <ShowExportedFileInfos :file="created_doc" />
+
+        <a
+          :disabled="!export_href"
+          :download="created_doc.$media_filename"
+          :href="export_href"
+          target="_blank"
+          class="u-buttonLink"
+        >
+          {{ $t("download") }}
+        </a>
       </template>
       <template slot="footer">
         <button type="button" class="u-button" @click="removeAndCloseModal">
           <b-icon icon="arrow-left-short" />
           {{ $t("back") }}
         </button>
-
-        <div>
-          <a
-            :disabled="!export_href"
-            :download="export_name"
-            :href="export_href"
-            target="_blank"
-            class="u-buttonLink"
-          >
-            {{ $t("download") }}
-          </a>
-          <button
-            type="button"
-            class="u-button u-button_red"
-            @click="saveToProject"
-          >
-            <span class="u-icon" v-html="dodoc_icon_collect" />
-            {{ $t("save_to_project") }}
-          </button>
-        </div>
+        <button
+          type="button"
+          class="u-button u-button_red"
+          @click="saveToProject"
+        >
+          <span class="u-icon" v-html="dodoc_icon_collect" />
+          {{ $t("save_to_project") }}
+        </button>
       </template>
       <div class="_saveNotice" v-if="finished_saving_to_project">
         {{ $t("media_was_saved_to_project") }}
@@ -87,9 +85,6 @@ export default {
         $path: this.created_doc.$path,
         $media_filename: this.created_doc.$media_filename,
       });
-    },
-    export_name() {
-      return this.created_doc?.$media_filename;
     },
   },
   methods: {
