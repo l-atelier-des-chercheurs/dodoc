@@ -54,31 +54,7 @@
             :context="'full'"
           />
           <div class="u-spacingBottom" />
-          <div class="u-metaField">
-            <DLabel :str="$t('filename')" />
-            <div class="u-filename">{{ created_video.$media_filename }}</div>
-          </div>
-          <div class="" v-if="created_video.$infos.hasOwnProperty('size')">
-            <SizeDisplay :size="created_video.$infos.size" />
-          </div>
-          <div
-            class=""
-            v-if="
-              created_video.$infos.hasOwnProperty('width') ||
-              created_video.$infos.hasOwnProperty('height')
-            "
-          >
-            <ResolutionDisplay
-              :width="created_video.$infos.width"
-              :height="created_video.$infos.height"
-            />
-          </div>
-          <div class="" v-if="created_video.$infos.hasOwnProperty('duration')">
-            <DurationDisplay
-              :title="$t('duration')"
-              :duration="created_video.$infos.duration"
-            />
-          </div>
+          <ShowExportedFileInfos :file="created_video" />
         </div>
       </template>
     </div>
@@ -138,6 +114,8 @@
   </BaseModal2>
 </template>
 <script>
+import ShowExportedFileInfos from "@/components/fields/ShowExportedFileInfos.vue";
+
 export default {
   props: {
     base_instructions: Object,

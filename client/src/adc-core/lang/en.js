@@ -1165,4 +1165,11 @@ export default {
 
   video_mp4: "Video MP4",
   video_gif: "Animation GIF",
+
+  enable_image: "Enable image",
+  enable_sound: "Enable sound",
+  created_by_publication: "From the publication {publication_title}",
+  webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of do•doc. 
+  <br />By decompressing the ZIP and opening the index.html file it contains, you can view the publication from any computer in a web browser.
+  <br /><br />You can also publish it online so that it can be accessed on the internet. For this, we recommend following the tutorial on our forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Upload media and publications online</a>.`,
 };

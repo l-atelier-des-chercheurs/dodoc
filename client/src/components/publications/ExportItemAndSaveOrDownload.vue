@@ -9,31 +9,47 @@
       </div>
     </template>
     <template v-else>
-      <MediaContent
-        class="_preview"
-        v-if="created_doc"
-        :file="created_doc"
-        :resolution="1600"
-        :context="'full'"
-      />
+      <template v-if="created_doc">
+        <div
+          v-if="instructions.recipe === 'webpage'"
+          class="u-instructions"
+          v-html="$t('webpage_export_instructions')"
+        />
+        <MediaContent
+          v-else
+          class="_preview"
+          :file="created_doc"
+          :resolution="1600"
+          :context="'full'"
+        />
+        <div class="u-spacingBottom" />
+        <ShowExportedFileInfos :file="created_doc" />
+      </template>
       <div class="u-sameRow" slot="footer">
-        <a
-          :disabled="!export_href"
-          :download="export_name"
-          :href="export_href"
-          target="_blank"
-          class="u-buttonLink"
-        >
-          {{ $t("download") }}
-        </a>
-        <button
-          type="button"
-          class="u-button u-button_red"
-          @click="saveToProject"
-        >
-          <span class="u-icon" v-html="dodoc_icon_collect" />
-          {{ $t("save_to_project") }}
+        <button type="button" class="u-button" @click="cancelExport">
+          <b-icon icon="arrow-left-short" />
+          {{ $t("back") }}
         </button>
+
+        <div>
+          <a
+            :disabled="!export_href"
+            :download="export_name"
+            :href="export_href"
+            target="_blank"
+            class="u-buttonLink"
+          >
+            {{ $t("download") }}
+          </a>
+          <button
+            type="button"
+            class="u-button u-button_red"
+            @click="saveToProject"
+          >
+            <span class="u-icon" v-html="dodoc_icon_collect" />
+            {{ $t("save_to_project") }}
+          </button>
+        </div>
       </div>
       <div class="_saveNotice" v-if="finished_saving_to_project">
         {{ $t("media_was_saved_to_project") }}
@@ -42,12 +58,14 @@
   </BaseModal2>
 </template>
 <script>
+import ShowExportedFileInfos from "@/components/fields/ShowExportedFileInfos.vue";
+
 export default {
   props: {
     publication_path: String,
     instructions: Object,
   },
-  components: {},
+  components: { ShowExportedFileInfos },
   data() {
     return {
       is_exporting: false,
@@ -114,6 +132,12 @@ export default {
       setTimeout(() => {
         this.$emit("close");
       }, 3000);
+    },
+    cancelExport() {
+      if (this.created_doc)
+        this.$api.deleteItem({ path: this.created_doc.$path });
+      this.created_doc = false;
+      this.$emit("close");
     },
   },
 };
