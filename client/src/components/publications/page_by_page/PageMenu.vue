@@ -334,13 +334,14 @@
         <div class="u-spacingBottom" />
 
         <template v-if="show_caption">
-          <CollaborativeEditor2
+          <TitleField
             :label="!active_module.caption ? $t('add_caption') : $t('caption')"
-            :field_to_edit="'caption'"
+            :field_name="'caption'"
+            :input_type="'editor'"
+            :custom_formats="['bold', 'italic', 'link']"
             :content="active_module.caption"
             :path="active_module.$path"
-            :custom_formats="['bold', 'italic', 'link']"
-            :is_collaborative="false"
+            :maxlength="640"
             :can_edit="can_edit"
           />
 
