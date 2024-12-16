@@ -293,20 +293,24 @@
               :media="file"
               @close="$emit('close')"
             />
-            <div>
-              <template v-if="file.$type === 'video'">
-                <button
-                  type="button"
-                  class="u-button u-button_bleumarine"
-                  @click="createNewMakeAndOpenIt('video_effects')"
-                >
-                  {{ $t("video_effects") }}
-                </button>
-                <div class="u-instructions">
-                  <small v-html="$t('video_effects_instructions')" />
-                </div>
-              </template>
-              <div class="u-spacingBottom" />
+
+            <div v-for="make in available_makes" :key="make.type">
+              <button
+                type="button"
+                class="u-button u-button_bleumarine"
+                @click="
+                  createNewMakeAndOpenIt({
+                    type: make.type,
+                    additional_meta: make.additional_meta,
+                  })
+                "
+              >
+                {{ make.title }}
+              </button>
+
+              <div class="u-instructions">
+                <small v-html="make.instructions" />
+              </div>
             </div>
           </div>
         </DetailsPane>
@@ -388,8 +392,79 @@ export default {
       );
     },
 
+    all_available_makes() {
+      return {
+        video: [
+          {
+            type: "video_assemblage",
+            title: this.$t("video_assemblage"),
+            instructions: this.$t("video_assemblage_instructions"),
+          },
+          {
+            type: "video_effects",
+            title: this.$t("video_effects"),
+            instructions: this.$t("video_effects_instructions"),
+            additional_meta: {
+              effect_type: "black_and_white",
+              base_media_filename: this.meta_filename,
+            },
+          },
+          {
+            type: "mix_audio_and_video",
+            title: this.$t("mix_audio_and_video"),
+            instructions: this.$t("mix_audio_and_video_instructions"),
+            additional_meta: {
+              base_video_filename: this.meta_filename,
+            },
+          },
+        ],
+        image: [
+          {
+            type: "video_assemblage",
+            title: this.$t("video_assemblage"),
+            instructions: this.$t("video_assemblage_instructions"),
+          },
+          {
+            type: "mix_audio_and_image",
+            title: this.$t("mix_audio_and_image"),
+            instructions: this.$t("mix_audio_and_image_instructions"),
+            additional_meta: {
+              base_image_filename: this.meta_filename,
+            },
+          },
+        ],
+        audio: [
+          {
+            type: "mix_audio_and_image",
+            title: this.$t("mix_audio_and_image"),
+            instructions: this.$t("mix_audio_and_image_instructions"),
+            additional_meta: {
+              base_audio_filename: this.meta_filename,
+            },
+          },
+          {
+            type: "mix_audio_and_video",
+            title: this.$t("mix_audio_and_video"),
+            instructions: this.$t("mix_audio_and_video_instructions"),
+            additional_meta: {
+              base_audio_filename: this.meta_filename,
+            },
+          },
+        ],
+      };
+    },
+    available_makes() {
+      return this.all_available_makes[this.file.$type];
+    },
+
     authors_path() {
       return this.file.$authors || "noone";
+    },
+    project_path() {
+      return this.getParent(this.file.$path);
+    },
+    meta_filename() {
+      return this.getFilename(this.file.$path);
     },
   },
   methods: {
@@ -403,14 +478,12 @@ export default {
       this.is_regenerating = false;
     },
 
-    async createNewMakeAndOpenIt(type) {
+    async createNewMakeAndOpenIt({ type, additional_meta: addtl_meta }) {
       const rnd_suffix = (
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 2 + 3);
 
       const title = this.$t(type) + "-" + rnd_suffix;
-      const project_path = this.getParent(this.file.$path);
-      const meta_filename = this.getFilename(this.file.$path);
 
       let additional_meta = {
         type,
@@ -418,16 +491,10 @@ export default {
         requested_slug: title,
         $admins: "parent_contributors",
       };
-
-      if (type === "video_effects") {
-        additional_meta.effect_type = "black_and_white";
-        additional_meta.base_media_filename = meta_filename;
-      } else {
-        additional_meta.base_media_filename = meta_filename;
-      }
+      Object.assign(additional_meta, addtl_meta);
 
       const new_folder_slug = await this.$api.createFolder({
-        path: `${project_path}/makes`,
+        path: `${this.project_path}/makes`,
         additional_meta,
       });
 
