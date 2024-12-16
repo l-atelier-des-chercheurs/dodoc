@@ -325,7 +325,6 @@ module.exports = (function () {
               await _makeLinkThumbs({
                 full_media_path,
                 full_path_to_thumb,
-                cc,
               });
           } catch (err) {
             dev.error(err);
