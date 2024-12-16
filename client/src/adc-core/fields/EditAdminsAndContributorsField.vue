@@ -43,6 +43,13 @@
       :can_edit="can_edit"
       :instructions="contrib_instructions"
     />
+
+    <template #footer>
+      <div />
+      <button type="button" class="u-button" @click="$emit('closeModal')">
+        {{ $t("close") }}
+      </button>
+    </template>
   </BaseModal2>
 </template>
 <script>
