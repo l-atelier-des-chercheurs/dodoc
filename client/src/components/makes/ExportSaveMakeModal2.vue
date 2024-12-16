@@ -304,7 +304,7 @@ export default {
     },
     async saveToProject() {
       this.finished_saving_to_project = true;
-      this.$eventHub.$emit("animatePane", "collect");
+      this.$eventHub.$emit("pane.animate", "collect");
       setTimeout(() => {
         this.$emit("close");
       }, 3000);

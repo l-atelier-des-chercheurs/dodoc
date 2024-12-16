@@ -48,7 +48,7 @@
             <div
               class="_btn"
               :ref="`pane_${pane.type}`"
-              @click="replacePane($event, pane)"
+              @click="replacePane(pane)"
             >
               <span
                 class="u-icon"
@@ -90,7 +90,7 @@
                   <b-icon
                     icon="plus-circle-fill"
                     :label="$t('add')"
-                    @click.stop="addPane($event, pane)"
+                    @click.stop="addPane(pane)"
                   />
                 </div>
               </transition>
@@ -152,11 +152,13 @@ export default {
     //   );
     //   this.project_panes.push(lib);
     // });
-    this.$eventHub.$on("animatePane", this.animatePane);
+    this.$eventHub.$on("pane.animate", this.animatePane);
+    this.$eventHub.$on("pane.replacePane", this.replacePane);
     document.addEventListener("scroll", this.detectTopOfWindow);
   },
   beforeDestroy() {
-    this.$eventHub.$off("animatePane", this.animatePane);
+    this.$eventHub.$off("pane.animate", this.animatePane);
+    this.$eventHub.$off("pane.replacePane", this.replacePane);
     document.removeEventListener("scroll", this.detectTopOfWindow);
   },
   watch: {
@@ -212,21 +214,15 @@ export default {
     paneIsEnabled(type) {
       return this.project_panes.some((p) => p.type === type);
     },
-    replacePane($event, pane) {
+    replacePane(pane) {
       this.project_panes = [];
-      this.addPane($event, pane);
-      // if (this.project_panes.some((p) => p.type === pane.type)) {
-      //   this.project_panes = this.project_panes.filter(
-      //     (p) => p.type !== pane.type
-      //   );
-      //   return;
-      // } else this.addPane($event, pane);
+      this.addPane(pane);
     },
-    addPane($event, pane) {
+    addPane(pane) {
       console.log(`PaneList2 / addPane`);
 
       this.$nextTick(() => {
-        $event.target.scrollIntoView({
+        this.$el.scrollIntoView({
           behavior: "smooth",
           block: "start",
           inline: "nearest",

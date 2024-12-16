@@ -1951,7 +1951,7 @@ export default {
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
 
-      this.$eventHub.$emit("animatePane", "collect");
+      this.$eventHub.$emit("pane.animate", "collect");
 
       this.$emit("insertMedia", meta_filename);
       return;
