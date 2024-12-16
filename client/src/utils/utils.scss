@@ -212,7 +212,7 @@ button,
   &[disabled] {
     cursor: not-allowed;
     filter: grayscale(50%);
-    color: var(--c-gris_fonce);
+    color: var(--c-gris);
   }
 
   &:hover,
@@ -271,7 +271,6 @@ button,
   background-color: transparent;
 
   &[disabled] {
-    color: var(--c-gris_fonce);
     &:hover,
     &:focus-visible,
     &.is--active {

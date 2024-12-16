@@ -133,6 +133,7 @@ import {
   BIconCircleFill,
   BIconDashLg,
   BIconArrowRightSquare,
+  BIconArrowLeftSquare,
   BIconRecordCircleFill,
   BIconBookmarkStar,
   BIconPeople,
@@ -278,6 +279,7 @@ Vue.component("BIconFonts", BIconFonts);
 Vue.component("BIconCircleFill", BIconCircleFill);
 Vue.component("BIconDashLg", BIconDashLg);
 Vue.component("BIconArrowRightSquare", BIconArrowRightSquare);
+Vue.component("BIconArrowLeftSquare", BIconArrowLeftSquare);
 Vue.component("BIconRecordCircleFill", BIconRecordCircleFill);
 Vue.component("BIconArrowRightShort", BIconArrowRightShort);
 Vue.component("BIconBookmarkStar", BIconBookmarkStar);

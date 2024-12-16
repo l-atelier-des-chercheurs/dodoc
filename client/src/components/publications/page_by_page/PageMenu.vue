@@ -2,8 +2,11 @@
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
       <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <b-icon icon="arrow-left-short" />
-        {{ $t("close") }}
+        <b-icon icon="grid-fill" />
+        <template v-if="!active_spread_index">{{
+          $t("list_of_pages")
+        }}</template>
+        <template v-else>{{ $t("list_of_spreads") }}</template>
       </button>
       <div class="_titleRow">
         <button
@@ -12,17 +15,17 @@
           @click="$emit('prevPage')"
           :disabled="active_page_number <= 0"
         >
-          <b-icon icon="arrow-left-circle" />
+          <b-icon icon="arrow-left-square" />
         </button>
         <div>
-          <transition name="fade_fast" mode="out-in">
+          <transition name="pagechange" mode="out-in">
             <b :key="active_page_number"
               >{{ $t("page") }} {{ active_page_number + 1 }}</b
             >
           </transition>
           <transition
             v-if="active_spread_index !== false"
-            name="fade_fast"
+            name="pagechange"
             mode="out-in"
           >
             <span :key="active_spread_index">
@@ -41,7 +44,7 @@
           @click="$emit('nextPage')"
           :disabled="active_page_number >= pages.length - 1"
         >
-          <b-icon icon="arrow-right-circle" />
+          <b-icon icon="arrow-right-square" />
         </button>
       </div>
 
@@ -92,7 +95,6 @@
               :show_toggle="show_grid"
               @update:show_toggle="$emit('update:show_grid', $event)"
             >
-              <div class="u-spacingBottom" />
               <RadioCheckboxInput
                 :value="grid_z_index"
                 :options="[
@@ -935,11 +937,11 @@ export default {
   text-align: left;
 }
 ._pageMenu--pane {
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
 
   &:not(:first-child) {
     margin-top: calc(var(--spacing) / 2);
-    border-top: 1px solid var(--active-color);
+    border-top: 2px solid var(--c-gris);
   }
 }
 

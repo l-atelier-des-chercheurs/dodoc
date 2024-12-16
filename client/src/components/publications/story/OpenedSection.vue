@@ -25,7 +25,7 @@
           v-if="prev_section"
           @click="prevSection"
         >
-          <b-icon icon="arrow-left-circle" />
+          <b-icon icon="arrow-left-square" />
           <span>
             {{ prev_section.section_title }}
           </span>
@@ -40,7 +40,7 @@
           <span>
             {{ next_section.section_title }}
           </span>
-          <b-icon icon="arrow-right-circle" />
+          <b-icon icon="arrow-right-square" />
         </button>
       </div>
     </div>
