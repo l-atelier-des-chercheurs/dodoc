@@ -89,11 +89,25 @@
       <template v-else>
         <div class="_mediaContent--iframe">
           <div v-if="!start_iframe" class="_mediaContent--iframe--preview">
-            <img
-              :src="thumb"
-              class="_iframeStylePreview"
-              :loading="img_loading"
-            />
+            <template v-if="thumb">
+              <img
+                :src="thumb"
+                class="_iframeStylePreview"
+                :loading="img_loading"
+              />
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                v-if="!is_regenerating"
+                class="u-button u-button_small u-button_transparent"
+                @click="regenerateThumbs"
+              >
+                <b-icon icon="arrow-clockwise" />
+                {{ $t("regenerate_thumbs") }}
+              </button>
+              <LoaderSpinner v-else />
+            </template>
             <button
               type="button"
               class="plyr__control plyr__control--overlaid _playButton"
@@ -232,6 +246,8 @@ export default {
       is_loading_iframe: false,
       failed_to_load_iframe: false,
       player: null,
+
+      is_regenerating: false,
     };
   },
   created() {},
@@ -322,6 +338,11 @@ export default {
       }, 1000);
     },
 
+    async regenerateThumbs() {
+      this.is_regenerating = true;
+      await this.$api.regenerateThumbs({ path: this.file.$path });
+      this.is_regenerating = false;
+    },
     loadIframe() {
       if (this.url_to_site.type === "any") this.is_loading_iframe = true;
       this.start_iframe = true;
