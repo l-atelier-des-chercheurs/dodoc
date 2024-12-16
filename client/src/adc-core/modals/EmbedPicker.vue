@@ -47,7 +47,7 @@
         </small>
       </div>
 
-      <div v-if="full_url" class="" :key="full_url">
+      <div v-if="url_to_site" class="" :key="full_url">
         <template v-if="url_to_site.type === 'any'">
           <iframe class="_siteIframe" :src="url_to_site.src" frameborder="0" />
         </template>
