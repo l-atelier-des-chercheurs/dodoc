@@ -677,36 +677,7 @@ module.exports = (function () {
       encoded_full_media_path +
       "&previewing_for=node";
 
-    const { BrowserWindow } = require("electron");
-    let win = new BrowserWindow({
-      width: 800,
-      height: 800,
-      show: false,
-      enableLargerThanScreen: true,
-      webPreferences: {
-        contextIsolation: true,
-        allowRunningInsecureContent: true,
-        offscreen: true,
-      },
-    });
-    win.loadURL(url, {
-      // improve chance of getting a screenshot
-      userAgent: "facebookexternalhit/1.1",
-    });
-    win.webContents.setAudioMuted(true);
-
-    await new Promise((resolve) => {
-      win.webContents.once("did-finish-load", async () => {
-        dev.logverbose("did-finish-load " + full_media_path);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        resolve();
-      });
-    }).then(async () => {
-      const image = await win.capturePage();
-      if (win) win.close();
-      await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
-      return;
-    });
+    await electron.captureScreenshot({ url, full_path_to_thumb });
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
@@ -721,7 +692,11 @@ module.exports = (function () {
     // else {
     // if no image, use Electron or Puppeteer to generate screenshot of webpage
     // }
-    else throw new Error("No image to download");
+    else {
+      const err = new Error("No image to download");
+      err.code = "no_image_to_download";
+      throw err;
+    }
   }
 
   async function _readVideoAudioExif({ full_media_path }) {
