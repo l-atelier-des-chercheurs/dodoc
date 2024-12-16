@@ -1255,4 +1255,6 @@ export default {
   webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de do•doc. 
   <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s'y trouve, vous pouvez consulter la publication depuis n'importe quel ordinateur dans un navigateur web.
   <br /><br />Vous pouvez également la mettre en ligne pour qu'elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
+
+  all_fields_not_filled: "Tous les champs ne sont pas renseignés",
 };

@@ -282,18 +282,33 @@
           :icon="'tools'"
           :is_open_initially="false"
         >
-          <CropAdjustMedia
-            v-if="cropadjust_possible"
-            :media="file"
-            @close="$emit('close')"
-          />
-          <div
-            v-if="cropadjust_possible && optimization_possible"
-            class="u-spacingBottom"
-          />
-          <template v-if="optimization_possible">
-            <OptimizeMedia :media="file" @close="$emit('close')" />
-          </template>
+          <div class="_allModifyButtons">
+            <CropAdjustMedia
+              v-if="cropadjust_possible"
+              :media="file"
+              @close="$emit('close')"
+            />
+            <OptimizeMedia
+              v-if="optimization_possible"
+              :media="file"
+              @close="$emit('close')"
+            />
+            <div>
+              <template v-if="file.$type === 'video'">
+                <button
+                  type="button"
+                  class="u-button u-button_bleumarine"
+                  @click="createNewMakeAndOpenIt('video_effects')"
+                >
+                  {{ $t("video_effects") }}
+                </button>
+                <div class="u-instructions">
+                  <small v-html="$t('video_effects_instructions')" />
+                </div>
+              </template>
+              <div class="u-spacingBottom" />
+            </div>
+          </div>
         </DetailsPane>
       </div>
     </div>
@@ -386,6 +401,42 @@ export default {
       this.is_regenerating = true;
       await this.$api.regenerateThumbs({ path: this.file.$path });
       this.is_regenerating = false;
+    },
+
+    async createNewMakeAndOpenIt(type) {
+      const rnd_suffix = (
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 2 + 3);
+
+      const title = this.$t(type) + "-" + rnd_suffix;
+      const project_path = this.getParent(this.file.$path);
+      const meta_filename = this.getFilename(this.file.$path);
+
+      let additional_meta = {
+        type,
+        title,
+        requested_slug: title,
+        $admins: "parent_contributors",
+      };
+
+      if (type === "video_effects") {
+        additional_meta.effect_type = "black_and_white";
+        additional_meta.base_media_filename = meta_filename;
+      } else {
+        additional_meta.base_media_filename = meta_filename;
+      }
+
+      const new_folder_slug = await this.$api.createFolder({
+        path: `${project_path}/makes`,
+        additional_meta,
+      });
+
+      this.$eventHub.$emit("pane.replacePane", {
+        type: "make",
+      });
+      this.$nextTick(() => {
+        this.$eventHub.$emit("make.open", new_folder_slug);
+      });
     },
   },
 };
@@ -610,5 +661,11 @@ export default {
 
 ._regenerateThumbs {
   position: relative;
+}
+
+._allModifyButtons {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 1);
 }
 </style>

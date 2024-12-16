@@ -122,7 +122,11 @@
           </select>
         </div>
       </div>
-      <div class="_cropWindow" :data-rotate="rotate_preview">
+      <div
+        class="_cropWindow"
+        :data-rotate="rotate_preview"
+        :data-isblackandwhite="selected_effect_type === 'black_and_white'"
+      >
         <MediaContent
           :file="base_media"
           :resolution="1600"
@@ -144,11 +148,18 @@
       <button
         type="button"
         class="u-button u-button_bleumarine"
+        :disabled="!base_instructions"
         @click="show_render_modal = true"
       >
         <b-icon icon="check" />
         {{ $t("make") }}
       </button>
+      <div>
+        <div v-if="!base_instructions" class="fieldCaption u-colorRed">
+          <small v-html="$t('all_fields_not_filled')" />
+        </div>
+      </div>
+
       <ExportSaveMakeModal2
         v-if="show_render_modal"
         :base_instructions="base_instructions"
@@ -203,22 +214,27 @@ export default {
 
       let effect_opts = {};
 
-      if (effect_type === "colored_filter")
+      if (effect_type === "colored_filter") {
+        if (!this.make.color_filter) return false;
         effect_opts = {
           color_filter: this.make.color_filter,
         };
-      else if (effect_type === "slow_down" || effect_type === "speed_up")
+      } else if (effect_type === "slow_down" || effect_type === "speed_up") {
+        if (!this.make.playback_speed) return false;
         effect_opts = {
           playback_speed: this.make.playback_speed,
         };
-      else if (effect_type === "mirror")
+      } else if (effect_type === "mirror") {
+        if (!this.make.flip) return false;
         effect_opts = {
           flip: this.make.flip,
         };
-      else if (effect_type === "rotate")
+      } else if (effect_type === "rotate") {
+        if (!this.make.rotation) return false;
         effect_opts = {
           rotation: this.make.rotation,
         };
+      }
 
       return {
         recipe,
@@ -253,7 +269,9 @@ export default {
         effect_type: new_effect_type,
       };
 
-      if (new_effect_type === "speed_up") {
+      if (new_effect_type === "colored_filter") {
+        new_meta.color_filter = "#fc4b60";
+      } else if (new_effect_type === "speed_up") {
         new_meta.playback_speed = 200;
       } else if (new_effect_type === "slow_down") {
         new_meta.playback_speed = 50;
@@ -306,6 +324,12 @@ export default {
   ::v-deep .plyr__video-wrapper {
     transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
     transform-origin: center;
+  }
+
+  &[data-isblackandwhite="true"] {
+    ::v-deep .plyr__video-wrapper {
+      filter: grayscale(100%);
+    }
   }
 
   &[data-rotate="cw"] {

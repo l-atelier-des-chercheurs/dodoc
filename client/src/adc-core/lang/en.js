@@ -1171,4 +1171,6 @@ export default {
   webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of do•doc. 
   <br />By decompressing the ZIP and opening the index.html file it contains, you can view the publication from any computer in a web browser.
   <br /><br />You can also publish it online so that it can be accessed on the internet. For this, we recommend following the tutorial on our forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Upload media and publications online</a>.`,
+
+  all_fields_not_filled: "All fields are not filled",
 };
