@@ -94,14 +94,18 @@
         </button>
       </div>
 
-      <router-link
-        v-if="users.length > 1"
-        :to="'/@'"
-        class="u-button u-button_icon u-button_bleumarine"
-      >
-        {{ users.length }}
-        <b-icon icon="person-circle" />
-      </router-link>
+      <div class="_currentUsers">
+        <router-link
+          v-if="users.length > 1"
+          :to="'/@'"
+          class="u-button u-button_icon"
+        >
+          <b-icon icon="person-circle" />
+          <sup class="_badge">
+            {{ users.length }}
+          </sup>
+        </router-link>
+      </div>
     </div>
 
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
@@ -251,8 +255,9 @@ export default {
   justify-content: flex-end;
   gap: calc(var(--spacing) / 4);
   padding: 0 calc(var(--spacing) / 2);
+  align-items: center;
   // crispy crisp icons
-  font-size: 111%;
+  // font-size: 111%;
 
   .is--mobileView & {
     padding: 0;
@@ -280,5 +285,27 @@ export default {
   /* right: 0; */
   text-decoration: none;
   font-size: 80%;
+}
+
+._currentUsers {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+._badge {
+  position: absolute;
+  right: -0.3rem;
+  top: -0.3rem;
+  color: white;
+  background: var(--c-bleumarine);
+  border-radius: 0.75em;
+  min-width: 1.2rem;
+  height: 1rem;
+  display: flex;
+  padding: 2px;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 </style>
