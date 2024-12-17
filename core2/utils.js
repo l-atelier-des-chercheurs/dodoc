@@ -790,6 +790,10 @@ module.exports = (function () {
       await fs.remove(path_to_test_file);
       return;
     },
+    addhttp(url) {
+      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+      return url;
+    },
   };
 
   return API;

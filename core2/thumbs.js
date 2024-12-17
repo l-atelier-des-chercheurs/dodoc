@@ -767,11 +767,7 @@ module.exports = (function () {
   async function _getPageMetadata({ url }) {
     dev.logfunction({ url });
 
-    function addhttp(url) {
-      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
-      return url;
-    }
-    url = addhttp(url);
+    url = utils.addhttp(url);
 
     let headers = {};
     if (url.includes("https://"))
@@ -816,6 +812,7 @@ module.exports = (function () {
   async function _fetchImageAndSave({ url, image, full_path_to_thumb }) {
     dev.logfunction({ url, image, full_path_to_thumb });
 
+    url = utils.addhttp(url);
     const full_url = new URL(image, url).href;
     dev.logfunction({ full_url });
 
