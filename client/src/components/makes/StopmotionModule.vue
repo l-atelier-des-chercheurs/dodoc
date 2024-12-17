@@ -6,7 +6,7 @@
     <div class="_selectPosition">
       <button
         type="button"
-        class="u-button u-button_icon"
+        class="u-button u-button_icon u-button_small"
         :disabled="module_position === 'alone' || module_position === 'first'"
         @click="$emit('moveUp')"
       >
@@ -29,7 +29,7 @@
 
       <button
         type="button"
-        class="u-button u-button_icon"
+        class="u-button u-button_icon u-button_small"
         :disabled="module_position === 'alone' || module_position === 'last'"
         @click="$emit('moveDown')"
       >
@@ -89,7 +89,6 @@ export default {
 ._stopmotionModule {
   position: relative;
   background-color: white;
-  // padding: calc(var(--spacing) / 4);
   border-radius: 4px;
 }
 
@@ -114,10 +113,6 @@ export default {
 }
 
 ._selectPosition {
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  left: 0;
   padding: calc(var(--spacing) / 8);
   pointer-events: none;
 
