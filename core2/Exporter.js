@@ -279,7 +279,7 @@ class Exporter {
     });
   }
 
-  async _copyToCacheAndRenameImages({ images, width, height }) {
+  async _copyToCacheAndRenameImages({ images, output_width, output_height }) {
     let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "stopmotion"
     );
