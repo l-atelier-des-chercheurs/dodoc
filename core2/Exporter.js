@@ -1076,7 +1076,7 @@ class Exporter {
     const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       prefix
     );
-    const new_file_name = utils.createUniqueName(prefix);
+    let new_file_name = utils.createUniqueName(prefix);
     if (extension) new_file_name += "." + extension;
     const full_path_to_new_file = path.join(
       full_path_to_folder_in_cache,
