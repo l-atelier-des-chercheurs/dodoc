@@ -27,8 +27,6 @@
             {{ $t("already_optimized") }}
           </div>
 
-          <DebugBtn :content="base_instructions" />
-
           <div v-if="['video', 'audio'].includes(media.$type)">
             <TrimMedia
               :media="media"
@@ -136,6 +134,8 @@
           <div class="u-spacingBottom" />
         </div>
       </div>
+
+      <DebugBtn :content="base_instructions" />
 
       <template slot="footer">
         <div class="_spinner" v-if="is_optimizing" key="loader">

@@ -1173,4 +1173,5 @@ export default {
   <br /><br />You can also publish it online so that it can be accessed on the internet. For this, we recommend following the tutorial on our forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Upload media and publications online</a>.`,
 
   all_fields_not_filled: "All fields are not filled",
+  pixels: "pixels",
 };

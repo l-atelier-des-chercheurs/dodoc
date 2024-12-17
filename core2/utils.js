@@ -622,8 +622,8 @@ module.exports = (function () {
       source,
       destination,
       format = "mp4",
-      output_width = 1920,
-      output_height = 1080,
+      image_width,
+      image_height,
       video_bitrate = "4000k",
       audio_bitrate = "192k",
       trim_start,
@@ -666,11 +666,6 @@ module.exports = (function () {
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
         }
 
-        if (output_width && output_height)
-          ffmpeg_cmd.videoFilter([
-            `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=1,pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`,
-          ]);
-
         // if (streams?.some((s) => s.codec_type === "audio"))
         // if (temp_video_volume) {
         //   ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
@@ -691,13 +686,24 @@ module.exports = (function () {
           ffmpeg_cmd.toFormat("mpegts");
         }
 
+        if (video_bitrate === "no_video") {
+          ffmpeg_cmd.noVideo();
+        } else {
+          ffmpeg_cmd
+            .withVideoCodec("libx264")
+            .withVideoBitrate(video_bitrate)
+            .videoFilter(["setsar=1/1"]);
+          if (image_width && image_height) {
+            ffmpeg_cmd.videoFilter([
+              `scale=w=${image_width}:h=${image_height}:force_original_aspect_ratio=1,pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2`,
+            ]);
+          }
+        }
+
         ffmpeg_cmd
           .native()
           .outputFPS(30)
-          .withVideoCodec("libx264")
-          .withVideoBitrate(video_bitrate)
           .addOptions(flags)
-          .videoFilter(["setsar=1/1"])
           .on("start", function (commandLine) {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })

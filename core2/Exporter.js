@@ -977,11 +977,6 @@ class Exporter {
 
       this._notifyProgress(10);
 
-      const image_quality_preset =
-        this.instructions.image_quality_preset || "source";
-      const audio_quality_preset =
-        this.instructions.audio_quality_preset || "source";
-
       // source high medium
       const trim_start = this.instructions.hasOwnProperty("trim_start")
         ? this.instructions.trim_start
@@ -998,11 +993,18 @@ class Exporter {
         that._notifyProgress(progress_percent);
       };
 
+      const image_width = this.instructions.image_width;
+      const image_height = this.instructions.image_height;
+      const video_bitrate = this.instructions.video_bitrate;
+      const audio_bitrate = this.instructions.audio_bitrate;
+
       await optimizer[handler.task]({
         source: base_media_path,
         destination: full_path_to_new_file,
-        image_quality_preset,
-        audio_quality_preset,
+        image_width,
+        image_height,
+        video_bitrate,
+        audio_bitrate,
         trim_start,
         trim_end,
         ffmpeg_cmd: this.ffmpeg_cmd,

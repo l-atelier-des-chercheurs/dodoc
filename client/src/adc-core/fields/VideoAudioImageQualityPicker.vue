@@ -22,10 +22,11 @@
             :width.sync="custom_resolution_width"
             :height.sync="custom_resolution_height"
             :ratio="media_ratio"
-            :is_video="is_video"
+            :is_video="media_type === 'video'"
           />
           <div class="u-spacingBottom" />
           <NumberInput
+            v-if="video_bitrate !== 'no_video'"
             :label="$t('bitrate')"
             :instructions="$t('bitrate_instructions')"
             :value="video_bitrate"
@@ -81,15 +82,21 @@ export default {
   components: {},
   data() {
     return {
-      image_quality_picked: "source",
-      audio_quality_picked: "source",
+      image_quality_picked: undefined,
+      audio_quality_picked: undefined,
+
+      custom_resolution_width: this.media_width,
+      custom_resolution_height: this.media_height,
 
       enable_image: true,
       enable_audio: true,
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.updateImagePreset("source");
+    this.updateAudioQuality("source");
+  },
   beforeDestroy() {},
   watch: {
     enable_image(new_value) {
@@ -100,10 +107,16 @@ export default {
       if (!new_value) this.$emit("update:audio_bitrate", "no_audio");
       else this.updateAudioQuality("source");
     },
+    custom_resolution_width(new_value) {
+      this.$emit("update:image_width", new_value);
+    },
+    custom_resolution_height(new_value) {
+      this.$emit("update:image_height", new_value);
+    },
   },
   computed: {
     image_quality_presets() {
-      const presets = [];
+      let presets = [];
       if (this.media_type === "video") {
         presets.push({
           key: "source",
@@ -200,19 +213,22 @@ export default {
   methods: {
     updateImagePreset(new_value) {
       this.image_quality_picked = new_value;
-      const { width, height, bitrate } = this.image_quality_presets.find(
+      const preset = this.image_quality_presets.find(
         (p) => p.key === new_value
       );
-      this.$emit("update:image_width", width);
-      this.$emit("update:image_height", height);
-      this.$emit("update:video_bitrate", bitrate);
+      if (!preset) return;
+
+      const { width, height, bitrate } = preset;
+      if (width) this.$emit("update:image_width", width);
+      if (height) this.$emit("update:image_height", height);
+      if (bitrate) this.$emit("update:video_bitrate", bitrate);
     },
     updateAudioQuality(new_value) {
       this.audio_quality_picked = new_value;
       const { bitrate } = this.audio_quality_options.find(
         (p) => p.key === new_value
       );
-      this.$emit("update:audio_bitrate", bitrate);
+      if (bitrate) this.$emit("update:audio_bitrate", bitrate);
     },
     makeInstructions(p) {
       if (p.key !== "custom") {

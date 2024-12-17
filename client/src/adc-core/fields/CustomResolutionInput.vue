@@ -28,8 +28,8 @@
       <small class="u-instructions">
         {{ $t("video_resolution_even") }}
       </small>
-      <div class="u-spacingBottom" />
     </div>
+    <div class="_mb" />
     <ToggleInput
       v-if="ratio !== undefined"
       :label="$t('keep_ratio')"
@@ -109,5 +109,9 @@ export default {
   }
 }
 ._customResolutionX {
+}
+
+._mb {
+  margin-bottom: calc(var(--spacing) / 2);
 }
 </style>
