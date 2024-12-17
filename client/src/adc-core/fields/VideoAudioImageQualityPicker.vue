@@ -33,7 +33,7 @@
             :min="0"
             :suffix="'kbps'"
             :size="'normal'"
-            @change="$emit('update:video_bitrate', $event)"
+            @update:value="$emit('update:video_bitrate', $event)"
           />
         </div>
       </ToggledSection>
@@ -62,7 +62,7 @@
           :max="320"
           :suffix="'kbps'"
           :size="'normal'"
-          @change="$emit('update:audio_bitrate', $event)"
+          @update:value="$emit('update:audio_bitrate', $event)"
         />
       </ToggledSection>
     </div>
@@ -213,6 +213,14 @@ export default {
   methods: {
     updateImagePreset(new_value) {
       this.image_quality_picked = new_value;
+
+      if (new_value === "custom") {
+        this.$emit("update:image_width", this.custom_resolution_width);
+        this.$emit("update:image_height", this.custom_resolution_height);
+        this.$emit("update:video_bitrate", this.video_bitrate);
+        return;
+      }
+
       const preset = this.image_quality_presets.find(
         (p) => p.key === new_value
       );
@@ -225,6 +233,12 @@ export default {
     },
     updateAudioQuality(new_value) {
       this.audio_quality_picked = new_value;
+
+      if (new_value === "custom") {
+        this.$emit("update:audio_bitrate", this.audio_bitrate);
+        return;
+      }
+
       const { bitrate } = this.audio_quality_options.find(
         (p) => p.key === new_value
       );
