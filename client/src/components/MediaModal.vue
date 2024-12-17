@@ -277,11 +277,14 @@
         </DetailsPane>
 
         <DetailsPane
-          v-if="optimization_possible || cropadjust_possible"
           :header="$t('toolbox')"
           :icon="'tools'"
+          :has_items="tools_available"
           :is_open_initially="false"
         >
+          <div v-if="tools_available.length === 0">
+            <small>{{ $t("nothing_to_show") }}</small>
+          </div>
           <div class="_allModifyButtons">
             <CropAdjustMedia
               v-if="cropadjust_possible"
@@ -293,7 +296,6 @@
               :media="file"
               @close="$emit('close')"
             />
-
             <div v-for="make in available_makes" :key="make.type">
               <button
                 type="button"
@@ -374,6 +376,14 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    tools_available() {
+      let count = 0;
+      if (this.cropadjust_possible) count++;
+      if (this.optimization_possible) count++;
+      if (this.available_makes?.length > 0)
+        count += this.available_makes.length;
+      return count;
+    },
     cropadjust_possible() {
       return (
         this.file.$type === "image" &&
