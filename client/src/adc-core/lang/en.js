@@ -1181,4 +1181,5 @@ export default {
 
   all_fields_not_filled: "All fields are not filled",
   pixels: "pixels",
+  show_only_media_of_types: "Displayed media types: {types}",
 };

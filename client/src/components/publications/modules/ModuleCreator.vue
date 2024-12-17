@@ -22,6 +22,7 @@
         <CaptureModal
           v-if="show_capture_modal"
           :path="project_path"
+          :available_modes="available_modes"
           @createMosaic="createMosaic"
           @close="show_capture_modal = false"
         />
@@ -39,7 +40,7 @@
           v-if="show_media_picker"
           :publication_path="publication_path"
           :select_mode="select_mode"
-          :pick_from_type="pick_from_type"
+          :pick_from_types="pick_from_types"
           @addMedias="createMosaic"
           @close="show_media_picker = false"
         />
@@ -128,7 +129,8 @@ export default {
     pre_addtl_meta: Object,
     post_addtl_meta: Object,
     select_mode: String,
-    pick_from_type: String,
+    pick_from_types: [String, Array],
+    available_modes: Array,
     show_labels: {
       type: Boolean,
       default: true,

@@ -42,7 +42,7 @@
         :title="$t('pick_media')"
         :path="path"
         :select_mode="'single'"
-        :pick_from_type="'image'"
+        :pick_from_types="['image']"
         @addMedias="addMediaFromLib"
         @close="show_picker = false"
       />

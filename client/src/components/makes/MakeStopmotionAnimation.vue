@@ -39,7 +39,7 @@
         :publication_path="make.$path"
         :start_collapsed="false"
         :types_available="['capture', 'import']"
-        :pick_from_type="'image'"
+        :pick_from_types="['image']"
         :context="'montage'"
         @addModules="addModules"
       />

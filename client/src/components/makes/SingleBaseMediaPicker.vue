@@ -39,7 +39,7 @@
           :title="title"
           :path="path"
           :select_mode="'single'"
-          :pick_from_type="media_type_to_pick"
+          :pick_from_types="[media_type_to_pick]"
           @addMedias="pickMedia"
           @close="show_media_picker = false"
         />

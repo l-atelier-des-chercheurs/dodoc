@@ -12,6 +12,8 @@
           <ModuleCreator
             :publication_path="make.$path"
             :types_available="['capture', 'import']"
+            :pick_from_types="['image', 'video']"
+            :available_modes="['photo', 'video']"
             :context="'montage'"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
@@ -48,6 +50,8 @@
         :publication_path="make.$path"
         :start_collapsed="false"
         :types_available="['capture', 'import']"
+        :pick_from_types="['image', 'video']"
+        :available_modes="['photo', 'video']"
         :context="'montage'"
         @addModules="addModules"
       />
