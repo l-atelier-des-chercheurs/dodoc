@@ -5,7 +5,6 @@
       class="_listOfModules"
       name="StoryModules"
       appear
-      :duration="700"
     >
       <div
         v-for="(_module, index) in section_modules_list"
@@ -40,6 +39,7 @@
         :publication_path="make.$path"
         :start_collapsed="false"
         :types_available="['capture', 'import']"
+        :pick_from_type="'image'"
         :context="'montage'"
         @addModules="addModules"
       />

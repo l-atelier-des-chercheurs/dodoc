@@ -39,6 +39,7 @@
           v-if="show_media_picker"
           :publication_path="publication_path"
           :select_mode="select_mode"
+          :pick_from_type="pick_from_type"
           @addMedias="createMosaic"
           @close="show_media_picker = false"
         />
@@ -127,6 +128,7 @@ export default {
     pre_addtl_meta: Object,
     post_addtl_meta: Object,
     select_mode: String,
+    pick_from_type: String,
     show_labels: {
       type: Boolean,
       default: true,
