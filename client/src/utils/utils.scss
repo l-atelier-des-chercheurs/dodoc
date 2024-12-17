@@ -247,7 +247,7 @@ button,
   &.is--active {
     &:not([disabled]) {
       color: var(--active-color);
-      background: rgba(255, 255, 255, 1);
+      background: transparent;
     }
   }
 

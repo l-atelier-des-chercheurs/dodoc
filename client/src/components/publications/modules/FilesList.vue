@@ -15,8 +15,12 @@
         :index="index"
         class="_reorderedFile"
       >
-        <button type="button" v-if="edit_mode" class="u-button u-button_icon">
-          <b-icon v-handle icon="hand-index-thumb" :label="$t('move')" />
+        <button
+          type="button"
+          v-if="edit_mode"
+          class="u-button u-button_icon _dragHandle"
+        >
+          <b-icon v-handle icon="grip-vertical" :label="$t('move')" />
         </button>
         <component
           :is="mode === 'source' ? 'DownloadFile' : 'span'"
@@ -278,5 +282,9 @@ export default {
 ._removeItem,
 ._download {
   margin: calc(var(--spacing) / 4);
+}
+
+._dragHandle {
+  cursor: grab;
 }
 </style>
