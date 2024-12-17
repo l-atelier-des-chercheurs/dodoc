@@ -29,13 +29,15 @@
 
     <div class="u-spacingBottom"></div>
 
-    <SaveCancelButtons
-      slot="footer"
-      class="_scb"
-      :allow_save="true"
-      @save="$emit('save', local_value)"
-      @cancel="$emit('close')"
-    />
+    <template slot="footer">
+      <div />
+      <SaveCancelButtons
+        class="_scb"
+        :allow_save="true"
+        @save="$emit('save', local_value)"
+        @cancel="$emit('close')"
+      />
+    </template>
   </BaseModal2>
 </template>
 <script>

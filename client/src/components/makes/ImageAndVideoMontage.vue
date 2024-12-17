@@ -12,6 +12,8 @@
           <ModuleCreator
             :publication_path="make.$path"
             :types_available="['capture', 'import']"
+            :pick_from_types="['image', 'video']"
+            :available_modes="['photo', 'video']"
             :context="'montage'"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
@@ -48,6 +50,8 @@
         :publication_path="make.$path"
         :start_collapsed="false"
         :types_available="['capture', 'import']"
+        :pick_from_types="['image', 'video']"
+        :available_modes="['photo', 'video']"
         :context="'montage'"
         @addModules="addModules"
       />
@@ -62,7 +66,7 @@
           <button
             type="button"
             class="u-button u-button_bleuvert"
-            @click="show_save_export_modal = true"
+            @click="show_render_modal = true"
           >
             <b-icon icon="check" />
             {{ $t("create") }}
@@ -71,69 +75,19 @@
       </div>
     </transition>
 
-    <ExportSaveMakeModal
-      v-if="show_save_export_modal"
-      :title="$t('export_montage')"
-      :export_name="export_name"
-      :export_href="export_href"
-      :enable_options="created_video !== false"
-      @close="show_save_export_modal = false"
-    >
-      <div class="_spinner" v-if="is_exporting" key="loader">
-        <LoaderSpinner />
-      </div>
-      <div v-else>
-        <div v-if="!created_video">
-          <SelectField2
-            :value="resolution_preset_picked"
-            :options="presets"
-            :can_edit="true"
-            :hide_validation="true"
-            @change="resolution_preset_picked = $event"
-          />
-
-          <div v-if="resolution_preset_picked === 'custom'">
-            <div class="u-spacingBottom" />
-            <CustomResolutionInput
-              :width.sync="custom_resolution_width"
-              :height.sync="custom_resolution_height"
-              :ratio="first_media_ratio"
-            />
-          </div>
-
-          <div class="u-spacingBottom" />
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="renderMontage"
-          >
-            <b-icon icon="check" />
-            {{ $t("create") }}
-          </button>
-        </div>
-        <div v-else>
-          <button type="button" class="u-buttonLink" @click="cancelExport">
-            <b-icon icon="arrow-left-short" />
-            {{ $t("back") }}
-          </button>
-          <br />
-
-          <MediaContent
-            class="_preview"
-            :file="created_video"
-            :resolution="1600"
-            :context="'full'"
-          />
-        </div>
-      </div>
-    </ExportSaveMakeModal>
+    <ExportSaveMakeModal2
+      v-if="show_render_modal"
+      :base_instructions="base_instructions"
+      :make_path="make.$path"
+      :reference_media="first_media"
+      @close="show_render_modal = false"
+    />
   </div>
 </template>
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import MontageModule from "@/components/makes/MontageModule.vue";
-import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
-
+import ExportSaveMakeModal2 from "@/components/makes/ExportSaveMakeModal2.vue";
 export default {
   props: {
     make: Object,
@@ -141,61 +95,12 @@ export default {
   components: {
     ModuleCreator,
     MontageModule,
-    ExportSaveMakeModal,
+    ExportSaveMakeModal2,
   },
   data() {
     return {
-      show_save_export_modal: false,
-      is_exporting: false,
-      created_video: false,
-      export_href: undefined,
+      show_render_modal: false,
       default_image_duration: 2,
-
-      custom_resolution_width: 512,
-      custom_resolution_height: 512,
-
-      resolution_preset_picked: "high",
-      presets: [
-        {
-          key: "vhigh",
-          text: this.$t("very_high"),
-          instructions: "1920 × 1080",
-          width: 1920,
-          height: 1080,
-        },
-        {
-          key: "high",
-          text: this.$t("high"),
-          instructions: "1280 × 720",
-          width: 1280,
-          height: 720,
-        },
-        {
-          key: "medium",
-          text: this.$t("medium"),
-          instructions: "640 × 480",
-          width: 640,
-          height: 480,
-        },
-        {
-          key: "low",
-          text: this.$t("low"),
-          instructions: "480 × 360",
-          width: 480,
-          height: 360,
-        },
-        {
-          key: "rough",
-          text: "→" + this.$t("rough"),
-          instructions: "360 × 240",
-          width: 360,
-          height: 240,
-        },
-        {
-          key: "custom",
-          text: "↓ " + this.$t("custom"),
-        },
-      ],
     };
   },
   async created() {
@@ -210,24 +115,7 @@ export default {
   },
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    show_save_export_modal() {
-      if (!this.show_save_export_modal) {
-        if (this.created_video) this.created_video = false;
-      }
-    },
-    first_media: {
-      handler() {
-        if (!this.first_media?.$infos) return;
-        const { width, height } = this.first_media.$infos;
-        if (width && height) {
-          this.custom_resolution_width = width;
-          this.custom_resolution_height = height;
-        }
-      },
-      immediate: true,
-    },
-  },
+  watch: {},
   computed: {
     export_name() {
       return "video_montage.mp4";
@@ -283,6 +171,13 @@ export default {
         section: this.first_section,
       }).map(({ _module }) => _module);
     },
+    base_instructions() {
+      return {
+        recipe: this.make.type,
+        suggested_file_name: this.make.type,
+        montage: this.montage,
+      };
+    },
   },
   methods: {
     async addModules({ meta_filenames }) {
@@ -326,71 +221,6 @@ export default {
         section: this.first_section,
         path,
       });
-    },
-    async cancelExport() {
-      this.$api.deleteItem({
-        path: this.created_video.$path,
-      });
-      this.created_video = false;
-    },
-    async renderMontage() {
-      this.is_exporting = true;
-      this.created_video = false;
-      this.export_href = undefined;
-
-      let output_width, output_height;
-      if (this.resolution_preset_picked === "custom") {
-        output_width = this.custom_resolution_width;
-        output_height = this.custom_resolution_height;
-      } else {
-        const preset = this.presets.find(
-          (p) => p.key === this.resolution_preset_picked
-        );
-        output_width = preset.width;
-        output_height = preset.height;
-      }
-
-      const additional_meta = {};
-      additional_meta.$origin = "make";
-      if (this.connected_as?.$path)
-        additional_meta.$authors = [this.connected_as.$path];
-
-      let instructions = {
-        recipe: this.make.type,
-        suggested_file_name: this.make.type,
-        montage: this.montage,
-        output_width,
-        output_height,
-        additional_meta,
-      };
-
-      const current_task_id = await this.$api.exportFolder({
-        path: this.make.$path,
-        instructions,
-      });
-      this.$api.join({ room: "task_" + current_task_id });
-
-      const checkIfEnded = ({ task_id, message }) => {
-        if (task_id !== current_task_id) return;
-        this.$eventHub.$off("task.ended", checkIfEnded);
-        this.$api.leave({ room: "task_" + current_task_id });
-
-        if (message.event === "completed") {
-          message.file;
-          this.created_video = message.file;
-          this.export_href = this.makeMediaFileURL({
-            $path: this.created_video.$path,
-            $media_filename: this.created_video.$media_filename,
-          });
-        } else if (message.event === "aborted") {
-          //
-        } else if (message.event === "failed") {
-          message.info;
-        }
-
-        this.is_exporting = false;
-      };
-      this.$eventHub.$on("task.ended", checkIfEnded);
     },
   },
 };

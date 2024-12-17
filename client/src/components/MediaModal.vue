@@ -192,10 +192,9 @@
               :can_edit="true"
             />
           </div>
-          <div class="u-spacingBottom">
+          <div class="">
             <AuthorField
               :label="$t('authors')"
-              class="u-spacingBottom"
               :field="'$authors'"
               :authors_paths="authors_path"
               :path="file.$path"
@@ -204,16 +203,21 @@
               :no_options="true"
             />
           </div>
+        </DetailsPane>
 
-          <div class="">
-            <PositionPicker
-              :label="$t('location')"
-              :field_name="'$location'"
-              :content="file.$location"
-              :path="file.$path"
-              :can_edit="true"
-            />
-          </div>
+        <DetailsPane
+          :header="$t('location')"
+          :is_open_initially="false"
+          :has_items="author_has_location"
+          :icon="'map'"
+          class="u-spacingBottom"
+        >
+          <PositionPicker
+            :field_name="'$location'"
+            :content="file.$location"
+            :path="file.$path"
+            :can_edit="true"
+          />
         </DetailsPane>
 
         <DetailsPane
@@ -273,23 +277,44 @@
         </DetailsPane>
 
         <DetailsPane
-          v-if="optimization_possible || cropadjust_possible"
           :header="$t('toolbox')"
           :icon="'tools'"
+          :has_items="tools_available"
           :is_open_initially="false"
         >
-          <CropAdjustMedia
-            v-if="cropadjust_possible"
-            :media="file"
-            @close="$emit('close')"
-          />
-          <div
-            v-if="cropadjust_possible && optimization_possible"
-            class="u-spacingBottom"
-          />
-          <template v-if="optimization_possible">
-            <OptimizeMedia :media="file" @close="$emit('close')" />
-          </template>
+          <div v-if="tools_available.length === 0">
+            <small>{{ $t("nothing_to_show") }}</small>
+          </div>
+          <div class="_allModifyButtons">
+            <CropAdjustMedia
+              v-if="cropadjust_possible"
+              :media="file"
+              @close="$emit('close')"
+            />
+            <OptimizeMedia
+              v-if="optimization_possible"
+              :media="file"
+              @close="$emit('close')"
+            />
+            <div v-for="make in available_makes" :key="make.type">
+              <button
+                type="button"
+                class="u-button u-button_bleumarine"
+                @click="
+                  createNewMakeAndOpenIt({
+                    type: make.type,
+                    additional_meta: make.additional_meta,
+                  })
+                "
+              >
+                {{ make.title }}
+              </button>
+
+              <div class="u-instructions">
+                <small v-html="make.instructions" />
+              </div>
+            </div>
+          </div>
         </DetailsPane>
       </div>
     </div>
@@ -351,6 +376,14 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    tools_available() {
+      let count = 0;
+      if (this.cropadjust_possible) count++;
+      if (this.optimization_possible) count++;
+      if (this.available_makes?.length > 0)
+        count += this.available_makes.length;
+      return count;
+    },
     cropadjust_possible() {
       return (
         this.file.$type === "image" &&
@@ -363,9 +396,85 @@ export default {
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
     },
+    author_has_location() {
+      return (
+        !!this.file.$location?.latitude && !!this.file.$location?.longitude
+      );
+    },
+
+    all_available_makes() {
+      return {
+        video: [
+          {
+            type: "video_assemblage",
+            title: this.$t("video_assemblage"),
+            instructions: this.$t("video_assemblage_instructions"),
+          },
+          {
+            type: "video_effects",
+            title: this.$t("video_effects"),
+            instructions: this.$t("video_effects_instructions"),
+            additional_meta: {
+              effect_type: "black_and_white",
+              base_media_filename: this.meta_filename,
+            },
+          },
+          {
+            type: "mix_audio_and_video",
+            title: this.$t("mix_audio_and_video"),
+            instructions: this.$t("mix_audio_and_video_instructions"),
+            additional_meta: {
+              base_video_filename: this.meta_filename,
+            },
+          },
+        ],
+        image: [
+          {
+            type: "video_assemblage",
+            title: this.$t("video_assemblage"),
+            instructions: this.$t("video_assemblage_instructions"),
+          },
+          {
+            type: "mix_audio_and_image",
+            title: this.$t("mix_audio_and_image"),
+            instructions: this.$t("mix_audio_and_image_instructions"),
+            additional_meta: {
+              base_image_filename: this.meta_filename,
+            },
+          },
+        ],
+        audio: [
+          {
+            type: "mix_audio_and_image",
+            title: this.$t("mix_audio_and_image"),
+            instructions: this.$t("mix_audio_and_image_instructions"),
+            additional_meta: {
+              base_audio_filename: this.meta_filename,
+            },
+          },
+          {
+            type: "mix_audio_and_video",
+            title: this.$t("mix_audio_and_video"),
+            instructions: this.$t("mix_audio_and_video_instructions"),
+            additional_meta: {
+              base_audio_filename: this.meta_filename,
+            },
+          },
+        ],
+      };
+    },
+    available_makes() {
+      return this.all_available_makes[this.file.$type];
+    },
 
     authors_path() {
       return this.file.$authors || "noone";
+    },
+    project_path() {
+      return this.getParent(this.file.$path);
+    },
+    meta_filename() {
+      return this.getFilename(this.file.$path);
     },
   },
   methods: {
@@ -377,6 +486,34 @@ export default {
       this.is_regenerating = true;
       await this.$api.regenerateThumbs({ path: this.file.$path });
       this.is_regenerating = false;
+    },
+
+    async createNewMakeAndOpenIt({ type, additional_meta: addtl_meta }) {
+      const rnd_suffix = (
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 2 + 3);
+
+      const title = this.$t(type) + "-" + rnd_suffix;
+
+      let additional_meta = {
+        type,
+        title,
+        requested_slug: title,
+        $admins: "parent_contributors",
+      };
+      Object.assign(additional_meta, addtl_meta);
+
+      const new_folder_slug = await this.$api.createFolder({
+        path: `${this.project_path}/makes`,
+        additional_meta,
+      });
+
+      this.$eventHub.$emit("pane.replacePane", {
+        type: "make",
+      });
+      this.$nextTick(() => {
+        this.$eventHub.$emit("make.open", new_folder_slug);
+      });
     },
   },
 };
@@ -601,5 +738,11 @@ export default {
 
 ._regenerateThumbs {
   position: relative;
+}
+
+._allModifyButtons {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 1);
 }
 </style>

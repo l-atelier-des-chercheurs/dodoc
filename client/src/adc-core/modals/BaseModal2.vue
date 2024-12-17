@@ -39,18 +39,13 @@
           :title="$t('confirm_save_changes')"
           @close="show_confirm_before_closing_modal = false"
         >
-          <!-- <p class="u-spacingBottom">
-            {{ $t("confirm_save_changes") }}
-          </p> -->
-          <div slot="footer">
+          <template slot="footer">
             <SaveCancelButtons
-              slot="footer"
-              class="_scb"
               :cancel_text="$t('close_without_saving')"
               @save="saveContent"
               @cancel="closeModal"
             />
-          </div>
+          </template>
         </BaseModal2>
       </div>
     </transition>
@@ -152,7 +147,7 @@ export default {
   ._baseModal--overlay {
     position: absolute;
     inset: 0;
-    background: rgba(231, 231, 231, 0.7);
+    background: rgba(231, 231, 231, 0.87);
     backdrop-filter: blur(3px);
     cursor: pointer;
     transition: backdrop-filter 1s ease-in-out;
@@ -250,9 +245,11 @@ header {
     padding-bottom: calc(var(--spacing) * 1);
   }
 }
-footer {
+._footer {
   display: flex;
-  justify-content: flex-end;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) * 1);
 }
 

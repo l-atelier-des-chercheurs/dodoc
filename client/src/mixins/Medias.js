@@ -48,7 +48,6 @@ export default {
       if (with_timestamp) {
         let timestamp = +new Date().getTime();
         if ($date_created) timestamp = +new Date($date_created);
-
         full_path += "?v=" + timestamp;
       }
 

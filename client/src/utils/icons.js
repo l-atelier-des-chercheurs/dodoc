@@ -95,6 +95,7 @@ import {
   BIconImages,
   BIconPlayCircleFill,
   BIconPauseCircle,
+  BIconStopCircle,
   BIconZoomOut,
   BIconChevronBarLeft,
   BIconChevronBarRight,
@@ -107,6 +108,7 @@ import {
   BIconMapFill,
   BIconIntersect,
   BIconFilePdf,
+  BIconWindow,
   BIconFileEarmarkImage,
   BIconArrowLeftCircleFill,
   BIconPencil,
@@ -132,6 +134,7 @@ import {
   BIconCircleFill,
   BIconDashLg,
   BIconArrowRightSquare,
+  BIconArrowLeftSquare,
   BIconRecordCircleFill,
   BIconBookmarkStar,
   BIconPeople,
@@ -147,6 +150,7 @@ import {
   BIconFilter,
   BIconThreeDots,
   BIconFilePlayFill,
+  BIconGripVertical,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -239,6 +243,7 @@ Vue.component("BIconPlusCircleDotted", BIconPlusCircleDotted);
 Vue.component("BIconImage", BIconImage);
 Vue.component("BIconPlayCircleFill", BIconPlayCircleFill);
 Vue.component("BIconPauseCircle", BIconPauseCircle);
+Vue.component("BIconStopCircle", BIconStopCircle);
 Vue.component("BIconZoomOut", BIconZoomOut);
 Vue.component("BIconChevronBarLeft", BIconChevronBarLeft);
 Vue.component("BIconChevronBarRight", BIconChevronBarRight);
@@ -251,6 +256,7 @@ Vue.component("BIconGridFill", BIconGridFill);
 Vue.component("BIconMapFill", BIconMapFill);
 Vue.component("BIconIntersect", BIconIntersect);
 Vue.component("BIconFilePdf", BIconFilePdf);
+Vue.component("BIconWindow", BIconWindow);
 Vue.component("BIconFileEarmarkImage", BIconFileEarmarkImage);
 Vue.component("BIconArrowLeftCircleFill", BIconArrowLeftCircleFill);
 Vue.component("BIconPencil", BIconPencil);
@@ -276,6 +282,7 @@ Vue.component("BIconFonts", BIconFonts);
 Vue.component("BIconCircleFill", BIconCircleFill);
 Vue.component("BIconDashLg", BIconDashLg);
 Vue.component("BIconArrowRightSquare", BIconArrowRightSquare);
+Vue.component("BIconArrowLeftSquare", BIconArrowLeftSquare);
 Vue.component("BIconRecordCircleFill", BIconRecordCircleFill);
 Vue.component("BIconArrowRightShort", BIconArrowRightShort);
 Vue.component("BIconBookmarkStar", BIconBookmarkStar);
@@ -293,3 +300,4 @@ Vue.component("BIconClock", BIconClock);
 Vue.component("BIconFilter", BIconFilter);
 Vue.component("BIconThreeDots", BIconThreeDots);
 Vue.component("BIconFilePlayFill", BIconFilePlayFill);
+Vue.component("BIconGripVertical", BIconGripVertical);

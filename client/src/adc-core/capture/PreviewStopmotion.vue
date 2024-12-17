@@ -53,14 +53,14 @@
                 </select>
               </div>
               <div>
-                <label class="u-label" for="export_format">{{
+                <label class="u-label" for="output_format">{{
                   $t("format")
                 }}</label>
                 <select
-                  v-model="new_export_format"
+                  v-model="new_output_format"
                   size="small"
-                  name="export_format"
-                  :id="export_format"
+                  name="output_format"
+                  :id="output_format"
                 >
                   <option :value="'gif'">{{ $t("gif") }}</option>
                   <option :value="'mp4'">{{ $t("video") }}</option>
@@ -86,7 +86,7 @@ export default {
   props: {
     medias: Array,
     frame_rate: Number,
-    export_format: String,
+    output_format: String,
     created_stopmotion: [Boolean, Object],
   },
   components: {},
@@ -95,7 +95,7 @@ export default {
       current_media_index: 0,
       is_playing: false,
       new_frame_rate: this.frame_rate,
-      new_export_format: this.export_format,
+      new_output_format: this.output_format,
       next_image_timeout: null,
     };
   },
@@ -108,8 +108,8 @@ export default {
     new_frame_rate() {
       this.$emit("update:frame_rate", this.new_frame_rate);
     },
-    new_export_format() {
-      this.$emit("update:export_format", this.new_export_format);
+    new_output_format() {
+      this.$emit("update:output_format", this.new_output_format);
     },
   },
   computed: {

@@ -9,19 +9,7 @@
       />
     </div>
 
-    <template v-if="['pdf', 'webpage'].includes(export_mode)">
-      <div slot="footer">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="exportPublication(export_mode)"
-        >
-          <b-icon icon="file-pdf" />
-          {{ $t("create") }}
-        </button>
-      </div>
-    </template>
-    <template v-else-if="export_mode === 'png'">
+    <template v-if="export_mode === 'png'">
       <template v-if="publication.template === 'page_by_page'">
         <div class="u-spacingBottom" />
 
@@ -36,18 +24,20 @@
           </select>
         </div>
       </template>
-
-      <div slot="footer">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="exportPublication('png')"
-        >
-          <b-icon icon="file-earmark-image" />
-          {{ $t("create") }}
-        </button>
-      </div>
     </template>
+
+    <template slot="footer">
+      <div />
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="exportPublication(export_mode)"
+      >
+        <b-icon :icon="export_mode_icon" />
+        {{ $t("create") }}
+      </button>
+    </template>
+
     <ExportItemAndSaveOrDownload
       v-if="task_instructions"
       :publication_path="publication.$path"
@@ -104,11 +94,20 @@ export default {
     page_count() {
       return this.publication.pages.length;
     },
+    export_mode_icon() {
+      if (this.export_mode === "pdf") return "file-pdf";
+      if (this.export_mode === "png") return "file-earmark-image";
+      if (this.export_mode === "webpage") return "window";
+      return undefined;
+    },
   },
   methods: {
     async exportPublication(export_type) {
       const additional_meta = {};
       additional_meta.$origin = "publish";
+      additional_meta.$credits = this.$t("created_by_publication", {
+        publication_title: this.publication.title,
+      });
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 

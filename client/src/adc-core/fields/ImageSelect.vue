@@ -29,15 +29,15 @@
         </div>
       </template>
     </div>
-    <div slot="footer" v-if="!crop_mode">
+    <template slot="footer" v-if="!crop_mode">
+      <div />
       <SaveCancelButtons
-        class="_scb"
         :is_saving="is_saving"
         :allow_save="allow_save"
         @save="updateCover"
         @cancel="cancel"
       />
-    </div>
+    </template>
   </BaseModal2>
 </template>
 <script>

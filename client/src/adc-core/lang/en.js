@@ -186,6 +186,10 @@ export default {
   low: "Low",
   rough: "Draft",
   optimize_resize: "Optimize/resize",
+  convert_instructions: "Convert to standard format",
+  optimize_resize_instructions:
+    "Convert to standard format, trim the beginning or the end, remove the audio track or modify the quality to reduce the file size.",
+
   from_the_first_media: "From the first media",
 
   no_accounts_yet: "No accounts created yet",
@@ -848,6 +852,7 @@ export default {
   pick_a_camera: "Select a camera",
   resolutions: "Resolution",
   resolution: "Resolution",
+  resolution_w_h: "Resolution: {width}x{height} pixels",
   screen_capture: "Screen Capture",
   cant_pick_resolution_when_screen_capture:
     "Resolution selection is not compatible with screenshot.",
@@ -1073,7 +1078,9 @@ export default {
 
   convert: "Convert",
   convert_shorten: "Convert/shorten",
-  select_extract: "Select extract",
+  convert_shorten_instructions: `
+  Convert to a standard format, cut the beginning or the end, remove the audio track or change the quality to lighten the file.
+  `,
   extract_range: "Extract range",
   convert_to_format: "Adapt format for viewing",
 
@@ -1081,7 +1088,6 @@ export default {
     "This media has already been converted, it is not recommended to convert it again.",
   preview_new: "Create new version",
   wont_remove_original: "Will not remove the original",
-  add_optimized_to_lib: "Keep original media and add new version",
   replace_original: "Replace original media",
   save_as_new_media: "Save as new media",
 
@@ -1148,7 +1154,10 @@ export default {
   or: "or",
   live_dubbing: "Live dubbing",
   play_both: "Play both at the same time",
-  bitrate: "Bitrate: {bitrate} kbps",
+  bitrate_kbps: "Bitrate: {bitrate} kbps",
+  bitrate: "Bitrate",
+  bitrate_instructions:
+    "Amount of data allocated per second. The higher the value, the higher the video quality but the heavier it is.",
   resolution_on_largest_side:
     "Resolution on the largest side: {resolution} pixels",
   keep_ratio: "Keep the width/height ratio",
@@ -1156,6 +1165,21 @@ export default {
   in_this_make: "In this make",
   edit_volume_or_mute: "Edit volume or mute",
   toolbox: "Toolbox",
-  video_resolution_even: "The resolution must be a multiple of 2",
+  video_resolution_even: "Width × Height. Each value must be a multiple of 2.",
   no_audio_track: "No audio track (muted)",
+  stop_recording_with_video: "Stop recording at the end of the video.",
+
+  video_mp4: "Video MP4",
+  video_gif: "Animation GIF",
+
+  enable_image: "Enable image",
+  enable_sound: "Enable sound",
+  created_by_publication: "From the publication {publication_title}",
+  webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of do•doc. 
+  <br />By decompressing the ZIP and opening the index.html file it contains, you can view the publication from any computer in a web browser.
+  <br /><br />You can also publish it online so that it can be accessed on the internet. For this, we recommend following the tutorial on our forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Upload media and publications online</a>.`,
+
+  all_fields_not_filled: "All fields are not filled",
+  pixels: "pixels",
+  show_only_media_of_types: "Displayed media types: {types}",
 };

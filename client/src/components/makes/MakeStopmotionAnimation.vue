@@ -5,7 +5,6 @@
       class="_listOfModules"
       name="StoryModules"
       appear
-      :duration="700"
     >
       <div
         v-for="(_module, index) in section_modules_list"
@@ -40,31 +39,33 @@
         :publication_path="make.$path"
         :start_collapsed="false"
         :types_available="['capture', 'import']"
+        :pick_from_types="['image']"
         :context="'montage'"
         @addModules="addModules"
       />
     </transition-group>
 
     <transition name="pagechange" mode="out-in">
-      <div class="_bottomRow" v-if="export_is_available">
+      <div class="_bottomRow">
         <div class="_equationIcon">
           <b-icon icon="chevron-double-down" />
         </div>
-        <div class="_create">
-          <div class="_fpsPick">
-            <RangeValueInput
-              :can_toggle="false"
-              :label="$t('img_per_second')"
-              :value="frame_rate"
-              :min="2"
-              :max="30"
-              :step="1"
-              :ticks="[2, 4, 8, 15, 24, 30]"
-              :default_value="4"
-              @save="updateFrameRate"
-            />
+        <div>
+          <div class="_create">
+            <div class="_fpsPick">
+              <RangeValueInput
+                :can_toggle="false"
+                :label="$t('img_per_second')"
+                :value="frame_rate"
+                :min="2"
+                :max="30"
+                :step="1"
+                :ticks="[2, 4, 8, 15, 24, 30]"
+                :default_value="4"
+                @save="updateFrameRate"
+              />
 
-            <!-- <label class="u-label">{{ $t("img_per_second") }}</label>
+              <!-- <label class="u-label">{{ $t("img_per_second") }}</label>
             <select v-model.number="frame_rate" size="small">
               <option>2</option>
               <option>4</option>
@@ -85,20 +86,31 @@
             <datalist id="frame_rate_options">
               <option v-for="i in 60" :value="i" :key="i" />
             </datalist> -->
+            </div>
+            <button
+              type="button"
+              class="u-button u-button_bleumarine"
+              :disabled="!export_is_available"
+              @click="show_render_modal = true"
+            >
+              <b-icon icon="check" />
+              {{ $t("make") }}
+            </button>
           </div>
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="show_save_export_modal = true"
-          >
-            <b-icon icon="check" />
-            {{ $t("create") }}
-          </button>
         </div>
       </div>
     </transition>
 
-    <ExportSaveMakeModal
+    <ExportSaveMakeModal2
+      v-if="show_render_modal"
+      :base_instructions="base_instructions"
+      :make_path="make.$path"
+      :reference_media="first_media"
+      :possible_formats="possible_formats"
+      @close="show_render_modal = false"
+    />
+
+    <!-- <ExportSaveMakeModal
       v-if="show_save_export_modal"
       :title="$t('export_stomotion')"
       :export_name="export_name"
@@ -147,7 +159,6 @@
             {{ $t("back") }}
           </button>
           <br />
-
           <MediaContent
             class="_preview"
             :file="created_video"
@@ -156,13 +167,13 @@
           />
         </div>
       </div>
-    </ExportSaveMakeModal>
+    </ExportSaveMakeModal> -->
   </div>
 </template>
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import StopmotionModule from "@/components/makes/StopmotionModule.vue";
-import ExportSaveMakeModal from "@/components/makes/ExportSaveMakeModal.vue";
+import ExportSaveMakeModal2 from "@/components/makes/ExportSaveMakeModal2.vue";
 
 export default {
   props: {
@@ -171,11 +182,11 @@ export default {
   components: {
     ModuleCreator,
     StopmotionModule,
-    ExportSaveMakeModal,
+    ExportSaveMakeModal2,
   },
   data() {
     return {
-      show_save_export_modal: false,
+      show_render_modal: false,
       is_exporting: false,
       created_video: false,
       export_href: undefined,
@@ -200,11 +211,6 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
-    show_save_export_modal() {
-      if (!this.show_save_export_modal) {
-        if (this.created_video) this.created_video = false;
-      }
-    },
     first_media: {
       handler() {
         if (!this.first_media?.$infos) return;
@@ -224,66 +230,17 @@ export default {
     },
   },
   computed: {
-    presets() {
-      let presets = [];
-
-      let source = {
-        key: "original",
-        text: this.$t("original"),
-      };
-      if (this.first_media) {
-        const { width, height } = this.first_media.$infos;
-        source.width = width;
-        source.height = height;
-        source.instructions = `${width} × ${height} pixels`;
-      }
-      presets.push(source);
-      presets = presets.concat([
+    possible_formats() {
+      return [
         {
-          key: "vhigh",
-          text: this.$t("very_high"),
-          instructions: "1920 × 1080 pixels",
-          width: 1920,
-          height: 1080,
+          key: "mp4",
+          text: this.$t("video_mp4"),
         },
         {
-          key: "high",
-          text: this.$t("high"),
-          instructions: "1280 × 720 pixels",
-          width: 1280,
-          height: 720,
+          key: "gif",
+          text: this.$t("video_gif"),
         },
-        {
-          key: "medium",
-          text: this.$t("medium"),
-          instructions: "640 × 480 pixels",
-          width: 640,
-          height: 480,
-        },
-        {
-          key: "low",
-          text: this.$t("low"),
-          instructions: "480 × 360 pixels",
-          width: 480,
-          height: 360,
-        },
-        {
-          key: "rough",
-          text: "→" + this.$t("rough"),
-          instructions: "360 × 240 pixels",
-          width: 360,
-          height: 240,
-        },
-        {
-          key: "custom",
-          text: "↓ " + this.$t("custom"),
-        },
-      ]);
-
-      return presets;
-    },
-    export_name() {
-      return "stopmotion.mp4";
+      ];
     },
     export_is_available() {
       return this.section_modules_list.length > 0;
@@ -312,6 +269,27 @@ export default {
     },
     first_media_ratio() {
       return this.first_media?.$infos?.ratio || undefined;
+    },
+    base_instructions() {
+      const recipe = "stopmotion_animation";
+
+      const images_meta = this.section_modules_list.reduce((acc, m) => {
+        const meta_filename_in_project =
+          m.source_medias[0]?.meta_filename_in_project;
+        if (meta_filename_in_project) {
+          acc.push({
+            m: meta_filename_in_project,
+            d: 1,
+          });
+        }
+        return acc;
+      }, []);
+
+      return {
+        recipe,
+        images_meta,
+        frame_rate: this.frame_rate,
+      };
     },
   },
   methods: {
@@ -351,91 +329,13 @@ export default {
         new_meta: { frame_rate },
       });
     },
-    async cancelExport() {
-      this.$api.deleteItem({
-        path: this.created_video.$path,
-      });
-      this.created_video = false;
-    },
-    async renderMontage() {
-      this.is_exporting = true;
-      this.created_video = false;
-      this.export_href = undefined;
-
-      let output_width, output_height;
-      if (this.resolution_preset_picked === "custom") {
-        output_width = this.custom_resolution_width;
-        output_height = this.custom_resolution_height;
-      } else {
-        const preset = this.presets.find(
-          (p) => p.key === this.resolution_preset_picked
-        );
-        output_width = preset.width;
-        output_height = preset.height;
-      }
-
-      const additional_meta = {
-        $origin: "make",
-      };
-      if (this.connected_as?.$path)
-        additional_meta.$authors = [this.connected_as.$path];
-
-      const images_meta = this.section_modules_list.reduce((acc, m) => {
-        const meta_filename_in_project =
-          m.source_medias[0]?.meta_filename_in_project;
-        if (meta_filename_in_project) {
-          acc.push({
-            m: meta_filename_in_project,
-            d: 1,
-          });
-        }
-        return acc;
-      }, []);
-
-      // m: meta, d: duration
-      const current_task_id = await this.$api.exportFolder({
-        path: this.make.$path,
-        instructions: {
-          recipe: this.make.type,
-          images_meta,
-          frame_rate: this.frame_rate,
-          output_width,
-          output_height,
-          export_format: "mp4",
-          additional_meta,
-        },
-      });
-      this.$api.join({ room: "task_" + current_task_id });
-
-      const checkIfEnded = ({ task_id, message }) => {
-        if (task_id !== current_task_id) return;
-        this.$eventHub.$off("task.ended", checkIfEnded);
-        this.$api.leave({ room: "task_" + current_task_id });
-
-        if (message.event === "completed") {
-          message.file;
-          this.created_video = message.file;
-          this.export_href = this.makeMediaFileURL({
-            $path: this.created_video.$path,
-            $media_filename: this.created_video.$media_filename,
-          });
-        } else if (message.event === "aborted") {
-          //
-        } else if (message.event === "failed") {
-          message.info;
-        }
-
-        this.is_exporting = false;
-      };
-      this.$eventHub.$on("task.ended", checkIfEnded);
-    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._listOfModules {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: var(--spacing);
   margin: var(--spacing) 0;
 }
@@ -448,6 +348,10 @@ export default {
 }
 
 ._bottomRow {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
   margin-top: calc(var(--spacing) * 2);
   text-align: center;
 }
@@ -458,6 +362,9 @@ export default {
   align-items: center;
   justify-content: center;
   gap: var(--spacing);
+  background: white;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  border-radius: var(--input-border-radius);
 
   label {
     color: inherit;
@@ -465,8 +372,5 @@ export default {
 }
 
 ._fpsPick {
-  background: rgba(255, 255, 255, 1);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-  border-radius: var(--input-border-radius);
 }
 </style>

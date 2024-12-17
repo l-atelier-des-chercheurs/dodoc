@@ -47,8 +47,7 @@
         </small>
       </div>
 
-      <br />
-      <div class="" :key="full_url">
+      <div v-if="url_to_site" class="" :key="full_url">
         <template v-if="url_to_site.type === 'any'">
           <iframe class="_siteIframe" :src="url_to_site.src" frameborder="0" />
         </template>
@@ -65,22 +64,21 @@
           </div>
         </vue-plyr>
       </div>
-
-      <br />
-
-      <div class="_selectBtn" v-if="full_url">
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
-          {{ $t("cancel") }}
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="$emit('embed', full_url)"
-        >
-          {{ $t("embed") }}
-        </button>
-      </div>
     </div>
+    <template slot="footer">
+      <button type="button" class="u-button" @click="$emit('close')">
+        <b-icon icon="x-circle" />
+        {{ $t("cancel") }}
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        :disabled="!full_url"
+        @click="$emit('embed', full_url)"
+      >
+        {{ $t("embed") }}
+      </button>
+    </template>
   </BaseModal2>
 </template>
 <script>
@@ -117,16 +115,6 @@ export default {
 ._addMediaBtn {
   text-align: center;
   padding: calc(var(--spacing) * 1);
-}
-
-._selectBtn {
-  display: flex;
-  place-items: center;
-  justify-content: center;
-  width: 100%;
-  gap: calc(var(--spacing) / 1);
-
-  background: white;
 }
 
 iframe {

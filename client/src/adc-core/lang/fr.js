@@ -717,6 +717,7 @@ export default {
   pick_a_camera: "Sélectionnez une caméra",
   resolutions: "Résolution",
   resolution: "Résolution",
+  resolution_w_h: "Résolution : {width}x{height} pixels",
   screen_capture: "Capture d’écran",
   cant_pick_resolution_when_screen_capture:
     "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
@@ -787,6 +788,7 @@ export default {
   low: "Basse",
   rough: "Ébauche",
   optimize_resize: "Optimiser/redimensionner",
+  convert_instructions: "Convertir vers un format standard",
   optimize_resize_instructions:
     "Convertir vers un format standard, recouper le début ou la fin, supprimer la piste sonore ou modifier la qualité pour alléger le fichier.",
   from_the_first_media: "À partir du premier média",
@@ -1139,7 +1141,6 @@ export default {
     Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
     `,
 
-  select_extract: "Sélectionner un extrait",
   extract_range: "Recouper le début ou la fin",
   convert_to_format: "Adapter le format pour la lecture",
 
@@ -1147,7 +1148,6 @@ export default {
     "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
   preview_new: "Créer une nouvelle version",
   wont_remove_original: "Ne supprimera pas l’original",
-  add_optimized_to_lib: "Conserver l’original et la nouvelle version",
   replace_original: "Remplacer l’original",
   save_as_new_media: "Enregistrer comme nouveau média",
 
@@ -1229,7 +1229,11 @@ export default {
   or: "ou",
   live_dubbing: "Doublage en direct",
   play_both: "Lire les deux en même temps",
-  bitrate: "Débit : {bitrate} kbps",
+  bitrate_kbps: "Débit : {bitrate} kbps",
+  bitrate: "Débit",
+  bitrate_instructions:
+    "Quantité de données allouées par seconde. Plus la valeur est élevée, plus la vidéo sera de haute qualité mais plus elle sera lourde.",
+
   resolution_on_largest_side:
     "Résolution sur le plus grand côté : {resolution} pixels",
   keep_ratio: "Conserver le rapport largeur/hauteur",
@@ -1237,6 +1241,22 @@ export default {
   in_this_make: "Dans cette fabrication",
   edit_volume_or_mute: "Modifier le volume ou le mettre en sourdine",
   toolbox: "Boîte à outils",
-  video_resolution_even: "La résolution doit être un multiple de 2",
+  video_resolution_even:
+    "Largeur × Hauteur. Chaque valeur doit être un multiple de 2.",
   no_audio_track: "Pas de piste audio (muet)",
+  stop_recording_with_video: "Arrêter l’enregistrement à la fin de la vidéo.",
+
+  video_mp4: "Vidéo MP4",
+  video_gif: "Animation GIF",
+
+  enable_image: "Activer l’image",
+  enable_sound: "Activer le son",
+  created_by_publication: "Créé par la publication {publication_title}",
+  webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de do•doc. 
+  <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s'y trouve, vous pouvez consulter la publication depuis n'importe quel ordinateur dans un navigateur web.
+  <br /><br />Vous pouvez également la mettre en ligne pour qu'elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
+
+  all_fields_not_filled: "Tous les champs ne sont pas renseignés",
+  pixels: "pixels",
+  show_only_media_of_types: "Type de médias affichés : {types}",
 };

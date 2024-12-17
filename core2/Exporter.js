@@ -173,26 +173,22 @@ class Exporter {
       // images is an array of files
       this._notifyProgress(5);
 
-      const width =
-        this.instructions.output_width || images[0].$infos.width || 1280;
-      const height =
-        this.instructions.output_height || images[0].$infos.height || 720;
-      const resolution = { width, height };
+      const { output_width, output_height, video_bitrate, output_format } =
+        this._extractResolutionAndBitrate(this.instructions);
+
+      if (!output_width) output_width = images[0].$infos.width || 1280;
+      if (!output_height) output_height = images[0].$infos.height || 720;
+      if (!video_bitrate) video_bitrate = 4000;
 
       const full_path_to_folder_in_cache =
         await this._copyToCacheAndRenameImages({
           images,
-          resolution,
+          output_width,
+          output_height,
         });
 
-      const file_ext =
-        this.instructions.export_format === "gif" ? ".gif" : ".mp4";
-
-      const new_video_name =
-        "stopmotion_" +
-        +new Date() +
-        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-        file_ext;
+      const file_ext = output_format === "gif" ? ".gif" : ".mp4";
+      const new_video_name = utils.createUniqueName("stopmotion") + file_ext;
       const full_path_to_new_video = path.join(
         full_path_to_folder_in_cache,
         new_video_name
@@ -212,23 +208,23 @@ class Exporter {
         .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
         .inputFPS(frame_rate);
 
-      if (this.instructions.export_format === "gif") {
+      if (output_format === "gif") {
         this.ffmpeg_cmd.inputOption("-stream_loop -1");
       } else {
         this.ffmpeg_cmd
           .withVideoCodec("libx264")
-          .withVideoBitrate("4000k")
+          .withVideoBitrate(video_bitrate)
           .input("anullsrc")
           .inputFormat("lavfi");
       }
 
       this.ffmpeg_cmd
         .duration(images.length / frame_rate)
-        .size(`${width}x${height}`)
+        .size(`${output_width}x${output_height}`)
         .outputFPS(output_frame_rate)
         .autopad()
         .addOptions(["-preset slow", "-tune animation"])
-        .toFormat(this.instructions.export_format === "gif" ? "gif" : "mp4");
+        .toFormat(output_format === "gif" ? "gif" : "mp4");
 
       this.ffmpeg_cmd
         .on("start", (commandLine) => {
@@ -283,7 +279,7 @@ class Exporter {
     });
   }
 
-  async _copyToCacheAndRenameImages({ images, resolution }) {
+  async _copyToCacheAndRenameImages({ images, output_width, output_height }) {
     let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "stopmotion"
     );
@@ -300,7 +296,12 @@ class Exporter {
         "img-" + pad(index, 4, "0") + ".jpeg"
       );
 
-      await utils.convertAndCopyImage({ source, destination, resolution });
+      await utils.convertAndCopyImage({
+        source,
+        destination,
+        width: output_width,
+        height: output_height,
+      });
       // await fs.copy(source, destination);
       index++;
     }
@@ -655,8 +656,8 @@ class Exporter {
         this.instructions.base_image_path
       );
 
-      const output_width = this.instructions.output_width;
-      const output_height = this.instructions.output_height;
+      const { output_width, output_height, video_bitrate } =
+        this._extractResolutionAndBitrate(this.instructions);
 
       this._notifyProgress(10);
 
@@ -665,7 +666,7 @@ class Exporter {
         .loop()
         .input(base_audio_path)
         .withVideoCodec("libx264")
-        .withVideoBitrate("4000k")
+        .withVideoBitrate(video_bitrate)
         .addOptions(["-shortest"])
         .withAudioCodec("aac")
         .withAudioBitrate("192k")
@@ -721,8 +722,8 @@ class Exporter {
         this.instructions.base_video_path
       );
 
-      const output_width = this.instructions.output_width;
-      const output_height = this.instructions.output_height;
+      const { output_width, output_height, video_bitrate } =
+        this._extractResolutionAndBitrate(this.instructions);
       const duration = this.instructions.duration;
 
       this._notifyProgress(10);
@@ -733,7 +734,7 @@ class Exporter {
         .duration(duration)
         // .withVideoCodec('copy')
         .withVideoCodec("libx264")
-        .withVideoBitrate("4000k")
+        .withVideoBitrate(video_bitrate)
         .withAudioCodec("aac")
         .withAudioBitrate("192k")
         .addOptions(["-map 0:v:0", "-map 1:a:0", "-af apad"])
@@ -786,10 +787,8 @@ class Exporter {
     )
       return reject(new Error(`no-montage-in-instructions`));
 
-    const video_bitrate = "6000k";
-    const output_width = this.instructions.output_width;
-    const output_height = this.instructions.output_height;
-    const resolution = { width: output_width, height: output_height };
+    const { output_width, output_height, video_bitrate } =
+      this._extractResolutionAndBitrate(this.instructions);
 
     this._notifyProgress(10);
 
@@ -829,7 +828,8 @@ class Exporter {
           ({ video_path, duration } = await tasks.prepareImageForMontageAndWeb({
             media_full_path,
             full_path_to_folder_in_cache,
-            resolution,
+            output_width,
+            output_height,
             video_bitrate,
             image_duration: media.image_duration,
             ffmpeg_cmd: this.ffmpeg_cmd,
@@ -838,7 +838,8 @@ class Exporter {
           ({ video_path, duration } = await tasks.prepareVideoForMontageAndWeb({
             media_full_path,
             full_path_to_folder_in_cache,
-            resolution,
+            output_width,
+            output_height,
             video_bitrate,
             ffmpeg_cmd: this.ffmpeg_cmd,
             reportProgress,
@@ -886,8 +887,6 @@ class Exporter {
     const ext_handler = [
       {
         exts: [".heic"],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertHEIC",
       },
       {
@@ -902,20 +901,14 @@ class Exporter {
           ".x3f",
           ".arw",
         ],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertCameraRAW",
       },
       {
         exts: [".tif", ".tiff", ".webp", ".jpeg", ".jpg"],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertImage",
       },
       {
         exts: [".flv", ".mov", ".avi", ".webm", ".mp4"],
-        output_filetype: "video",
-        output_fileext: "mp4",
         task: "convertVideo",
       },
       {
@@ -930,8 +923,6 @@ class Exporter {
           ".mp3",
           ".aac",
         ],
-        output_filetype: "audio",
-        output_fileext: "aac",
         task: "convertAudio",
       },
     ];
@@ -943,20 +934,12 @@ class Exporter {
       if (!handler) throw new Error(`no_handler`);
 
       ({ full_path_to_folder_in_cache, full_path_to_new_file } =
-        await this._createTempFolderAndName(
-          handler.output_filetype,
-          handler.output_fileext
-        ));
+        await this._createTempFolderAndName("optimizer"));
       const base_media_path = utils.getPathToUserContent(
         this.instructions.base_media_path
       );
 
       this._notifyProgress(10);
-
-      const image_quality_preset =
-        this.instructions.image_quality_preset || "source";
-      const audio_quality_preset =
-        this.instructions.audio_quality_preset || "source";
 
       // source high medium
       const trim_start = this.instructions.hasOwnProperty("trim_start")
@@ -974,18 +957,25 @@ class Exporter {
         that._notifyProgress(progress_percent);
       };
 
-      await optimizer[handler.task]({
+      const image_width = this.instructions.image_width;
+      const image_height = this.instructions.image_height;
+      const video_bitrate = this.instructions.video_bitrate;
+      const audio_bitrate = this.instructions.audio_bitrate;
+
+      const full_path_to_new_file_with_ext = await optimizer[handler.task]({
         source: base_media_path,
         destination: full_path_to_new_file,
-        image_quality_preset,
-        audio_quality_preset,
+        image_width,
+        image_height,
+        video_bitrate,
+        audio_bitrate,
         trim_start,
         trim_end,
         ffmpeg_cmd: this.ffmpeg_cmd,
         reportProgress,
       });
       this._notifyProgress(95);
-      return full_path_to_new_file;
+      return full_path_to_new_file_with_ext;
     } catch (err) {
       if (full_path_to_folder_in_cache)
         await fs.remove(full_path_to_folder_in_cache);
@@ -1010,8 +1000,9 @@ class Exporter {
     const base_media_path = utils.getPathToUserContent(
       this.instructions.base_media_path
     );
-    const image_quality_preset =
-      this.instructions.image_quality_preset || "source";
+
+    const { output_width, output_height, video_bitrate } =
+      this._extractResolutionAndBitrate(this.instructions);
 
     const that = this;
     const reportProgress = (progress) => {
@@ -1025,7 +1016,9 @@ class Exporter {
       await effects.applyVideoEffect({
         source: base_media_path,
         destination: full_path_to_new_video,
-        image_quality_preset,
+        output_width,
+        output_height,
+        video_bitrate,
         effect_type,
         effect_opts,
         ffmpeg_cmd: this.ffmpeg_cmd,
@@ -1059,12 +1052,27 @@ class Exporter {
     const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       prefix
     );
-    const new_video_name = utils.createUniqueName(prefix) + "." + extension;
+    let new_file_name = utils.createUniqueName(prefix);
+    if (extension) new_file_name += "." + extension;
     const full_path_to_new_file = path.join(
       full_path_to_folder_in_cache,
-      new_video_name
+      new_file_name
     );
     return { full_path_to_folder_in_cache, full_path_to_new_file };
+  }
+
+  _extractResolutionAndBitrate(instructions) {
+    const output_width = instructions.output_width
+      ? Math.ceil(instructions.output_width / 2) * 2
+      : 1280;
+    const output_height = instructions.output_height
+      ? Math.ceil(instructions.output_height / 2) * 2
+      : 720;
+    const video_bitrate = instructions.video_bitrate
+      ? Math.ceil(instructions.video_bitrate / 2) * 2
+      : 4000;
+    const output_format = instructions.output_format || "mp4";
+    return { output_width, output_height, video_bitrate, output_format };
   }
 }
 

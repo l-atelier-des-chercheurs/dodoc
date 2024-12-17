@@ -3,11 +3,10 @@
     <div class="_mediaContainer" :style="{ '--aspectRatio': imposed_ratio }">
       <MediaContent :file="first_media" />
     </div>
-    <!-- <div class="_index">{{ index + 1 }}</div> -->
-    <div class="_selectPosition">
+    <div class="_bottomBar">
       <button
         type="button"
-        class="u-button u-button_icon"
+        class="u-button u-button_icon u-button_small"
         :disabled="module_position === 'alone' || module_position === 'first'"
         @click="$emit('moveUp')"
       >
@@ -30,21 +29,24 @@
 
       <button
         type="button"
-        class="u-button u-button_icon"
+        class="u-button u-button_icon u-button_small"
         :disabled="module_position === 'alone' || module_position === 'last'"
         @click="$emit('moveDown')"
       >
         <b-icon icon="chevron-right" />
       </button>
-    </div>
-
-    <div class="_options">
-      <DropDown :right="true">
-        <button type="button" class="u-buttonLink" @click="removeModule">
-          <b-icon icon="trash" />
-          {{ $t("remove") }}
-        </button>
-      </DropDown>
+      <div class="_options">
+        <RemoveMenu
+          :path="makemodule.$path"
+          :remove_text="$t('remove_image')"
+          :show_button_text="false"
+          @remove="removeModule"
+        >
+          <template #content>
+            <MediaContent :file="first_media" :resolution="440" />
+          </template>
+        </RemoveMenu>
+      </div>
     </div>
   </div>
 </template>
@@ -90,20 +92,7 @@ export default {
 ._stopmotionModule {
   position: relative;
   background-color: white;
-  padding: calc(var(--spacing) / 4);
   border-radius: 4px;
-}
-
-._index {
-  position: absolute;
-  top: calc(var(--spacing) / 2);
-  left: calc(var(--spacing) / 2);
-  font-size: 0.8rem;
-  font-weight: 600;
-  background-color: var(--c-noir);
-  color: white;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  border-radius: 2px;
 }
 
 ._mediaContainer {
@@ -126,12 +115,8 @@ export default {
   }
 }
 
-._selectPosition {
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  padding: calc(var(--spacing) / 2);
+._bottomBar {
+  padding: calc(var(--spacing) / 8);
   pointer-events: none;
 
   display: flex;
@@ -152,9 +137,10 @@ export default {
 
 ._options {
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
-  padding-top: calc(var(--spacing) / 4);
-  padding-right: calc(var(--spacing) / 4);
+
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
+  pointer-events: auto;
 }
 </style>

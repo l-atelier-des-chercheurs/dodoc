@@ -411,11 +411,11 @@ module.exports = (function () {
             throw err;
           });
     },
-    async convertAndCopyImage({ source, destination, resolution }) {
+    async convertAndCopyImage({ source, destination, width, height }) {
       await sharp(source)
         .rotate()
         .flatten({ background: "white" })
-        .resize(resolution.width, resolution.height, {
+        .resize(width, height, {
           fit: "contain",
           withoutEnlargement: false,
           background: "black",
@@ -622,9 +622,10 @@ module.exports = (function () {
       source,
       destination,
       format = "mp4",
-      video_bitrate = "6000k",
+      image_width,
+      image_height,
+      video_bitrate = "4000k",
       audio_bitrate = "192k",
-      resolution,
       trim_start,
       trim_end,
       reportProgress,
@@ -665,11 +666,6 @@ module.exports = (function () {
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
         }
 
-        if (resolution)
-          ffmpeg_cmd.videoFilter([
-            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
-          ]);
-
         // if (streams?.some((s) => s.codec_type === "audio"))
         // if (temp_video_volume) {
         //   ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
@@ -690,13 +686,24 @@ module.exports = (function () {
           ffmpeg_cmd.toFormat("mpegts");
         }
 
+        if (video_bitrate === "no_video") {
+          ffmpeg_cmd.noVideo();
+        } else {
+          ffmpeg_cmd
+            .withVideoCodec("libx264")
+            .withVideoBitrate(video_bitrate)
+            .videoFilter(["setsar=1/1"]);
+          if (image_width && image_height) {
+            ffmpeg_cmd.videoFilter([
+              `scale=w=${image_width}:h=${image_height}:force_original_aspect_ratio=1,pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2`,
+            ]);
+          }
+        }
+
         ffmpeg_cmd
           .native()
           .outputFPS(30)
-          .withVideoCodec("libx264")
-          .withVideoBitrate(video_bitrate)
           .addOptions(flags)
-          .videoFilter(["setsar=1/1"])
           .on("start", function (commandLine) {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })

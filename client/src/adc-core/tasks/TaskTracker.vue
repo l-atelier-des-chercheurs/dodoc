@@ -71,7 +71,7 @@ export default {
   },
   watch: {
     tasks_tracked() {
-      if (this.tasks_tracked.length > 3) {
+      if (this.tasks_tracked.length > 1) {
         this.tasks_tracked.shift();
       }
     },

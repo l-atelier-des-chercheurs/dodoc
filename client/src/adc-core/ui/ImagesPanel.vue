@@ -74,6 +74,7 @@
     <ColorInput
       class="u-spacingBottom"
       :label="$t('hero_background_color')"
+      :allow_transparent="true"
       :value="settings.hero_background_color"
       @save="saveNewHeroBgColor({ $event, field: 'hero_background_color' })"
     />
@@ -81,6 +82,7 @@
     <ColorInput
       class="u-spacingBottom"
       :label="$t('text_background_color')"
+      :allow_transparent="true"
       :value="settings.text_background_color"
       @save="saveNewHeroBgColor({ $event, field: 'text_background_color' })"
     />

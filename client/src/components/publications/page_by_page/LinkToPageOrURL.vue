@@ -51,9 +51,7 @@
       />
     </div>
 
-    <div slot="footer">
-      <SaveCancelButtons @save="save" @cancel="$emit('close')" />
-    </div>
+    <SaveCancelButtons slot="footer" @save="save" @cancel="$emit('close')" />
   </BaseModal2>
 </template>
 <script>

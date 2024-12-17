@@ -93,14 +93,6 @@
       :content="is_selected"
       @update:content="$emit('setSelected', $event)"
     />
-
-    <!-- <input
-      v-if="is_selectable"
-      class="_selectCb"
-      type="checkbox"
-      :checked="is_selected"
-      @change="$emit('setSelected', $event.target.checked)"
-    /> -->
   </div>
 </template>
 <script>

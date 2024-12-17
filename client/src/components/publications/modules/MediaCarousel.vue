@@ -39,14 +39,14 @@
           />
 
           <div class="_btnRow" v-if="edit_mode">
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_small"
+              @click="show_change_order_modal = true"
+            >
+              <b-icon icon="arrow-left-right" />
+            </button>
             <template v-if="showObjectFitFor(media_with_linked)">
-              <button
-                type="button"
-                class="u-button u-button_icon u-button_small"
-                @click="show_change_order_modal = true"
-              >
-                <b-icon icon="arrow-left-right" />
-              </button>
               <button
                 type="button"
                 class="u-button u-button_icon u-button_small"

@@ -54,7 +54,7 @@
               :select_mode="select_mode"
               :hide_already_present_medias="hide_already_present_medias"
               :meta_filenames_already_present="meta_filenames_already_present"
-              :show_only_media_type="pick_from_type"
+              :show_only_media_of_types="pick_from_types"
               @update:media_focused="media_focused = $event"
               @addMedias="addMedias"
             />
@@ -75,8 +75,8 @@ export default {
       type: String,
       required: true,
     },
-    pick_from_type: {
-      type: String,
+    pick_from_types: {
+      type: [String, Array],
       default: "all",
     },
   },

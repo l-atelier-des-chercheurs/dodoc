@@ -19,7 +19,9 @@
         <span v-if="show_caret" class="b-icon bi _caret" />
       </template>
       <template v-else>
-        {{ $t("options") }}
+        <template v-if="show_label">
+          {{ $t("options") }}
+        </template>
         <b-icon icon="three-dots" :aria-label="$t('options')" />
       </template>
     </button>
@@ -80,6 +82,10 @@ export default {
       default: true,
     },
     closeOnClickOutside: {
+      type: Boolean,
+      default: true,
+    },
+    show_label: {
       type: Boolean,
       default: true,
     },

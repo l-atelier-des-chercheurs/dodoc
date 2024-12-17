@@ -183,7 +183,9 @@
           <select
             class="_selectMediaType"
             size="small"
-            :disabled="show_only_media_type && show_only_media_type !== 'all'"
+            :disabled="
+              show_only_media_of_types && show_only_media_of_types !== 'all'
+            "
             v-model="type_of_media_to_display"
             :class="{
               'is--active': type_of_media_to_display !== 'all',
@@ -248,6 +250,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div v-if="show_only_media_of_types_notice" class="_filterNotice">
+        {{ show_only_media_of_types_notice }}
       </div>
 
       <div class="_noMedia" v-if="medias.length === 0">
@@ -394,7 +400,7 @@ export default {
     select_mode: String,
     hide_already_present_medias: Boolean,
     meta_filenames_already_present: [Boolean, Array],
-    show_only_media_type: String,
+    show_only_media_of_types: [String, Array],
   },
   components: {
     ImportFileZone,
@@ -439,7 +445,7 @@ export default {
 
       keyword_of_media_to_display: "all",
 
-      type_of_media_to_display: this.show_only_media_type || "all",
+      type_of_media_to_display: "all",
       types_of_medias: [
         {
           key: "all",
@@ -552,8 +558,19 @@ export default {
 
         if (this.fav_filter === true) if (m.fav !== true) return false;
 
-        if (this.type_of_media_to_display !== "all")
-          if (m.$type !== this.type_of_media_to_display) return false;
+        if (
+          !this.show_only_media_of_types ||
+          this.show_only_media_of_types === "all"
+        ) {
+          if (this.type_of_media_to_display !== "all")
+            if (m.$type !== this.type_of_media_to_display) return false;
+        } else {
+          if (Array.isArray(this.show_only_media_of_types)) {
+            if (!this.show_only_media_of_types.includes(m.$type)) return false;
+          } else if (typeof this.show_only_media_of_types === "string") {
+            if (m.$type !== this.show_only_media_of_types) return false;
+          }
+        }
 
         if (this.origin_of_media_to_display !== "all")
           if (m.$origin !== this.origin_of_media_to_display) return false;
@@ -622,6 +639,20 @@ export default {
         });
         return acc;
       }, []);
+    },
+    show_only_media_of_types_notice() {
+      if (
+        Array.isArray(this.show_only_media_of_types) &&
+        this.show_only_media_of_types.length > 0
+      ) {
+        const types = this.show_only_media_of_types.map((t) =>
+          this.$t(t).toLowerCase()
+        );
+        return this.$t("show_only_media_of_types", {
+          types: types.join("/"),
+        });
+      }
+      return false;
     },
     selected_medias() {
       return this.selected_medias_paths.map((p) =>
@@ -1055,5 +1086,12 @@ export default {
 
 ._favFilter {
   color: var(--c-rouge);
+}
+._filterNotice {
+  background: var(--c-bleuvert);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+  text-align: center;
+  font-weight: bold;
+  text-transform: lowercase;
 }
 </style>
