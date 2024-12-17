@@ -19,7 +19,6 @@
       @close="closeModal"
     >
       <div class="_cont">
-        <LoaderSpinner v-if="is_optimizing" class="_loader" />
         <div v-if="!optimized_file">
           <div
             v-if="media.$optimized === true"
@@ -181,6 +180,9 @@
       </div>
 
       <template slot="footer">
+        <div class="_spinner" v-if="is_optimizing" key="loader">
+          <AnimatedCounter :value="progress_percent" />
+        </div>
         <template v-if="!optimized_file">
           <div />
           <div>
@@ -248,6 +250,8 @@ export default {
       custom_resolution_width: this.media.$infos?.width || 1920,
       custom_resolution_height: this.media.$infos?.height || 1080,
       custom_bitrate: 4000,
+
+      progress_percent: 0,
 
       enable_audio: true,
       enable_video: true,
@@ -393,6 +397,7 @@ export default {
   },
   methods: {
     async optimizeMedia() {
+      this.progress_percent = 0;
       this.is_optimizing = true;
 
       let suggested_file_name = "converted";
@@ -442,6 +447,12 @@ export default {
       });
       this.$api.join({ room: "task_" + current_task_id });
 
+      const updateProgress = ({ task_id, progress }) => {
+        if (task_id !== current_task_id) return;
+        this.progress_percent = progress;
+      };
+      this.$eventHub.$on("task.status", updateProgress);
+
       const checkIfEnded = ({ task_id, message }) => {
         if (task_id !== current_task_id) return;
         this.is_optimizing = false;
@@ -449,7 +460,7 @@ export default {
         this.$api.leave({ room: "task_" + current_task_id });
 
         if (message.event === "completed") {
-          message.file;
+          this.progress_percent = 100;
           this.optimized_file = message.file;
         } else if (message.event === "aborted") {
           //
@@ -550,5 +561,19 @@ export default {
 
 ._loader {
   z-index: 150;
+}
+
+._spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(2px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
