@@ -8,7 +8,8 @@ const path = require("path"),
   { promisify } = require("util"),
   fastFolderSize = require("fast-folder-size");
 
-const utils = require("./utils");
+const utils = require("./utils"),
+  electron = require("./electron");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -654,6 +655,7 @@ module.exports = (function () {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
     } catch (err) {
+      dev.error(err.message);
       throw err;
     }
   }

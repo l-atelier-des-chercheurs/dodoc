@@ -7,6 +7,8 @@ const {
   dialog,
 } = require("electron");
 const path = require("path");
+const writeFileAtomic = require("write-file-atomic");
+
 const utils = require("./utils");
 const notifier = require("./notifier");
 
@@ -110,7 +112,6 @@ module.exports = (function () {
 
       await new Promise((resolve) => {
         win.webContents.once("did-finish-load", async () => {
-          dev.logverbose("did-finish-load " + full_media_path);
           await new Promise((resolve) => setTimeout(resolve, 2000));
           resolve();
         });
