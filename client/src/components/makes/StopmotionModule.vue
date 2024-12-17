@@ -3,7 +3,7 @@
     <div class="_mediaContainer" :style="{ '--aspectRatio': imposed_ratio }">
       <MediaContent :file="first_media" />
     </div>
-    <div class="_selectPosition">
+    <div class="_bottomBar">
       <button
         type="button"
         class="u-button u-button_icon u-button_small"
@@ -35,15 +35,18 @@
       >
         <b-icon icon="chevron-right" />
       </button>
-    </div>
-
-    <div class="_options">
-      <DropDown :right="true" :show_label="false">
-        <button type="button" class="u-buttonLink" @click="removeModule">
-          <b-icon icon="trash" />
-          {{ $t("remove") }}
-        </button>
-      </DropDown>
+      <div class="_options">
+        <RemoveMenu
+          :path="makemodule.$path"
+          :remove_text="$t('remove_image')"
+          :show_button_text="false"
+          @remove="removeModule"
+        >
+          <template #content>
+            <MediaContent :file="first_media" :resolution="440" />
+          </template>
+        </RemoveMenu>
+      </div>
     </div>
   </div>
 </template>
@@ -112,7 +115,7 @@ export default {
   }
 }
 
-._selectPosition {
+._bottomBar {
   padding: calc(var(--spacing) / 8);
   pointer-events: none;
 
@@ -134,9 +137,10 @@ export default {
 
 ._options {
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
-  padding-top: calc(var(--spacing) / 4);
-  padding-right: calc(var(--spacing) / 4);
+
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
+  pointer-events: auto;
 }
 </style>

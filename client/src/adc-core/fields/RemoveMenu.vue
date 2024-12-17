@@ -22,6 +22,9 @@
       <div v-if="remove_expl">
         {{ remove_expl }}
       </div>
+      <template v-if="$slots.hasOwnProperty('content')">
+        <slot name="content" />
+      </template>
       <template slot="footer">
         <button
           class="u-button"
