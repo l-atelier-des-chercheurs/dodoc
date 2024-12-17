@@ -2,7 +2,7 @@
   <div>
     <template v-if="['image', 'video'].includes(media_type)">
       <ToggledSection
-        :label="$t('enable_image')"
+        :label="media_type === 'video' ? $t('enable_image') : undefined"
         :show_toggle.sync="enable_image"
         :can_toggle="media_type === 'video'"
       >
@@ -42,8 +42,9 @@
 
     <div v-if="['video', 'audio'].includes(media_type)" class="">
       <ToggledSection
-        :label="$t('enable_sound')"
+        :label="media_type === 'video' ? $t('enable_sound') : undefined"
         :show_toggle.sync="enable_audio"
+        :can_toggle="media_type === 'video'"
       >
         <DLabel :str="$t('audio_quality')" />
         <SelectField2

@@ -95,6 +95,7 @@ import {
   BIconImages,
   BIconPlayCircleFill,
   BIconPauseCircle,
+  BIconStopCircle,
   BIconZoomOut,
   BIconChevronBarLeft,
   BIconChevronBarRight,
@@ -242,6 +243,7 @@ Vue.component("BIconPlusCircleDotted", BIconPlusCircleDotted);
 Vue.component("BIconImage", BIconImage);
 Vue.component("BIconPlayCircleFill", BIconPlayCircleFill);
 Vue.component("BIconPauseCircle", BIconPauseCircle);
+Vue.component("BIconStopCircle", BIconStopCircle);
 Vue.component("BIconZoomOut", BIconZoomOut);
 Vue.component("BIconChevronBarLeft", BIconChevronBarLeft);
 Vue.component("BIconChevronBarRight", BIconChevronBarRight);

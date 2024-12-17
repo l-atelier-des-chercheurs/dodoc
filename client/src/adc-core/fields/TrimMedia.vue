@@ -9,7 +9,6 @@
 
     <ToggledSection
       :label="$t('extract_range')"
-      :can_toggle="true"
       :show_toggle.sync="show_extract_selection"
     >
       <div class="_currentTime">{{ current_time_displayed }} s</div>
@@ -112,6 +111,7 @@
           class="u-button u-button_orange"
           @click="playExtract"
         >
+          <b-icon icon="play-circle-fill" />
           {{ $t("play_extract") }}
         </button>
         <button
@@ -120,6 +120,7 @@
           class="u-button u-button_orange"
           @click="stopExtract"
         >
+          <b-icon icon="stop-circle" />
           {{ $t("stop_extract") }}
         </button>
       </div>
@@ -256,7 +257,7 @@ export default {
 ._currentTime {
   text-align: center;
   font-size: var(--sl-font-size-x-large);
-  margin: calc(var(--spacing) * 1) auto;
+  margin: 0 auto calc(var(--spacing) * 1);
 }
 
 ._playExtract {

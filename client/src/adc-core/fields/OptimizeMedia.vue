@@ -135,7 +135,7 @@
         </div>
       </div>
 
-      <DebugBtn :content="base_instructions" />
+      <!-- <DebugBtn :content="base_instructions" /> -->
 
       <template slot="footer">
         <div class="_spinner" v-if="is_optimizing" key="loader">

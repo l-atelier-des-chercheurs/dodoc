@@ -109,8 +109,8 @@ module.exports = (function () {
           source: media_full_path,
           destination: temp_video_path,
           format: "mpegts",
-          output_width,
-          output_height,
+          image_width: output_width,
+          image_height: output_height,
           video_bitrate,
           reportProgress,
         });

@@ -1078,6 +1078,9 @@ export default {
 
   convert: "Convert",
   convert_shorten: "Convert/shorten",
+  convert_shorten_instructions: `
+  Convert to a standard format, cut the beginning or the end, remove the audio track or change the quality to lighten the file.
+  `,
   extract_range: "Extract range",
   convert_to_format: "Adapt format for viewing",
 

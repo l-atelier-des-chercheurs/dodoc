@@ -109,7 +109,7 @@ module.exports = (function () {
             reportProgress(percent);
           })
           .on("end", async () => {
-            return resolve();
+            return resolve(destination);
           })
           .on("error", async (err, stdout, stderr) => {
             dev.error("An error happened: " + err.message);
@@ -136,7 +136,7 @@ module.exports = (function () {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         try {
-          if (audio_bitrate === "no_audio") destination = destination + ".aac";
+          if (video_bitrate === "no_video") destination = destination + ".aac";
           else destination = destination + ".mp4";
 
           await utils.convertVideoToStandardFormat({

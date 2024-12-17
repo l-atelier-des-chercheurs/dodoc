@@ -94,12 +94,12 @@ export default {
   // margin-top: calc(var(--spacing) / 2 * -1);
   margin-top: 0px;
   padding-top: 0px;
-  padding-left: calc(var(--spacing) / 4);
 
   &.can--toggle {
     border-left: 3px dotted var(--c-gris_fonce);
     padding-left: calc(var(--spacing) / 2);
     margin-left: calc(var(--spacing) / 2);
+    padding-left: calc(var(--spacing) / 4);
   }
 }
 </style>
