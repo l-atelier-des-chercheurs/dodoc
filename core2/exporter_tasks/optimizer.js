@@ -35,7 +35,7 @@ module.exports = (function () {
         },
       };
 
-      await _saveImage({
+      return await _saveImage({
         source: buffer,
         addtl_infos,
         destination,
@@ -55,7 +55,7 @@ module.exports = (function () {
       const uri = infos.preview.split(";base64,").pop();
       const buffer = Buffer.from(uri, "base64");
 
-      await _saveImage({
+      return await _saveImage({
         source: buffer,
         destination,
         image_width,
@@ -63,7 +63,7 @@ module.exports = (function () {
       });
     },
     async convertImage({ source, destination, image_width, image_height }) {
-      await _saveImage({
+      return await _saveImage({
         source,
         destination,
         image_width,
@@ -87,9 +87,11 @@ module.exports = (function () {
 
         ffmpeg_cmd.input(source);
 
-        if (audio_bitrate === "no_audio") ffmpeg_cmd.noAudio();
-        else if (audio_bitrate)
+        // if (audio_bitrate === "no_audio") ffmpeg_cmd.noAudio();
+        if (audio_bitrate)
           ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate(audio_bitrate);
+
+        destination = destination + ".aac";
 
         if (trim_start !== undefined && trim_end !== undefined)
           ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
@@ -134,6 +136,9 @@ module.exports = (function () {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         try {
+          if (audio_bitrate === "no_audio") destination = destination + ".aac";
+          else destination = destination + ".mp4";
+
           await utils.convertVideoToStandardFormat({
             source,
             destination,
@@ -146,7 +151,7 @@ module.exports = (function () {
             ffmpeg_cmd,
             reportProgress,
           });
-          return resolve();
+          return resolve(destination);
         } catch (err) {
           dev.error(err);
           return reject(err);
@@ -159,12 +164,14 @@ module.exports = (function () {
     source,
     addtl_infos = undefined,
     destination,
-    image_quality_preset,
+    image_width,
+    image_height,
   }) {
     // check if source has transparency
     // const { hasAlpha } = await sharp(source).metadata();
     const hasAlpha = false;
     const format = hasAlpha ? "png" : "jpeg";
+    destination = destination + "." + format;
     const quality = hasAlpha ? 100 : global.settings.mediaThumbQuality;
     const background = hasAlpha ? "transparent" : "white";
 
@@ -178,34 +185,25 @@ module.exports = (function () {
         throw err;
       });
 
-    if (image_quality_preset === "source")
-      await sharp(sharp_buffer).toFile(destination);
-    else if (image_quality_preset === "high")
+    if (image_width && image_height)
       await sharp(sharp_buffer)
         .resize({
-          width: 1920,
-          height: 1920,
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        .toFile(destination);
-    else if (image_quality_preset === "medium")
-      await sharp(sharp_buffer)
-        .resize({
-          width: 1280,
-          height: 1280,
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        .toFile(destination);
-    else if (image_quality_preset.width && image_quality_preset.height)
-      await sharp(sharp_buffer)
-        .resize({
-          width: image_quality_preset.width,
-          height: image_quality_preset.height,
+          width: image_width,
+          height: image_height,
           fit: "fill",
         })
         .toFile(destination);
+    else if (image_width || image_height)
+      await sharp(sharp_buffer)
+        .resize({
+          width: image_width,
+          height: image_height,
+          fit: "inside",
+        })
+        .toFile(destination);
+    else await sharp(sharp_buffer).toFile(destination);
+
+    return destination;
   }
 
   return API;

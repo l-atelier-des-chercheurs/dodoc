@@ -187,6 +187,9 @@ export default {
   rough: "Draft",
   optimize_resize: "Optimize/resize",
   convert_instructions: "Convert to standard format",
+  optimize_resize_instructions:
+    "Convert to standard format, trim the beginning or the end, remove the audio track or modify the quality to reduce the file size.",
+
   from_the_first_media: "From the first media",
 
   no_accounts_yet: "No accounts created yet",

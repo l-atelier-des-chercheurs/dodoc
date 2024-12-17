@@ -4,7 +4,7 @@
       <ToggledSection
         :label="$t('enable_image')"
         :show_toggle.sync="enable_image"
-        :can_toggle="true"
+        :can_toggle="media_type === 'video'"
       >
         <DLabel :str="$t('image_quality')" />
         <div class="">
@@ -26,7 +26,7 @@
           />
           <div class="u-spacingBottom" />
           <NumberInput
-            v-if="video_bitrate !== 'no_video'"
+            v-if="media_type === 'video' && video_bitrate !== 'no_video'"
             :label="$t('bitrate')"
             :instructions="$t('bitrate_instructions')"
             :value="video_bitrate"
@@ -164,7 +164,6 @@ export default {
             key: "high",
             text: this.$t("high"),
             width: 1920,
-            height: 1080,
           },
           {
             key: "medium",
@@ -207,7 +206,7 @@ export default {
       return presets.map((p) => this.makeInstructions(p));
     },
     media_ratio() {
-      return this.media_width / this.media_height;
+      return this.media_height / this.media_width;
     },
   },
   methods: {
@@ -219,16 +218,16 @@ export default {
       if (!preset) return;
 
       const { width, height, bitrate } = preset;
-      if (width) this.$emit("update:image_width", width);
-      if (height) this.$emit("update:image_height", height);
-      if (bitrate) this.$emit("update:video_bitrate", bitrate);
+      this.$emit("update:image_width", width);
+      this.$emit("update:image_height", height);
+      this.$emit("update:video_bitrate", bitrate);
     },
     updateAudioQuality(new_value) {
       this.audio_quality_picked = new_value;
       const { bitrate } = this.audio_quality_options.find(
         (p) => p.key === new_value
       );
-      if (bitrate) this.$emit("update:audio_bitrate", bitrate);
+      this.$emit("update:audio_bitrate", bitrate);
     },
     makeInstructions(p) {
       if (p.key !== "custom") {

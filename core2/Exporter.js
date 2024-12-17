@@ -910,8 +910,6 @@ class Exporter {
     const ext_handler = [
       {
         exts: [".heic"],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertHEIC",
       },
       {
@@ -926,20 +924,14 @@ class Exporter {
           ".x3f",
           ".arw",
         ],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertCameraRAW",
       },
       {
         exts: [".tif", ".tiff", ".webp", ".jpeg", ".jpg"],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertImage",
       },
       {
         exts: [".flv", ".mov", ".avi", ".webm", ".mp4"],
-        output_filetype: "video",
-        output_fileext: "mp4",
         task: "convertVideo",
       },
       {
@@ -954,8 +946,6 @@ class Exporter {
           ".mp3",
           ".aac",
         ],
-        output_filetype: "audio",
-        output_fileext: "aac",
         task: "convertAudio",
       },
     ];
@@ -967,10 +957,7 @@ class Exporter {
       if (!handler) throw new Error(`no_handler`);
 
       ({ full_path_to_folder_in_cache, full_path_to_new_file } =
-        await this._createTempFolderAndName(
-          handler.output_filetype,
-          handler.output_fileext
-        ));
+        await this._createTempFolderAndName("optimizer"));
       const base_media_path = utils.getPathToUserContent(
         this.instructions.base_media_path
       );
@@ -998,7 +985,7 @@ class Exporter {
       const video_bitrate = this.instructions.video_bitrate;
       const audio_bitrate = this.instructions.audio_bitrate;
 
-      await optimizer[handler.task]({
+      const full_path_to_new_file_with_ext = await optimizer[handler.task]({
         source: base_media_path,
         destination: full_path_to_new_file,
         image_width,
@@ -1011,7 +998,7 @@ class Exporter {
         reportProgress,
       });
       this._notifyProgress(95);
-      return full_path_to_new_file;
+      return full_path_to_new_file_with_ext;
     } catch (err) {
       if (full_path_to_folder_in_cache)
         await fs.remove(full_path_to_folder_in_cache);
@@ -1089,10 +1076,11 @@ class Exporter {
     const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       prefix
     );
-    const new_video_name = utils.createUniqueName(prefix) + "." + extension;
+    const new_file_name = utils.createUniqueName(prefix);
+    if (extension) new_file_name += "." + extension;
     const full_path_to_new_file = path.join(
       full_path_to_folder_in_cache,
-      new_video_name
+      new_file_name
     );
     return { full_path_to_folder_in_cache, full_path_to_new_file };
   }

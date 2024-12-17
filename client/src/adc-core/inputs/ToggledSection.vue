@@ -92,7 +92,7 @@ export default {
 
 ._toggled {
   // margin-top: calc(var(--spacing) / 2 * -1);
-  margin-top: 3px;
+  margin-top: 0px;
   padding-top: 0px;
   padding-left: calc(var(--spacing) / 4);
 
