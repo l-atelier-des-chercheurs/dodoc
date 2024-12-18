@@ -2,7 +2,6 @@
 Type=Application
 Encoding=UTF-8
 Name=do•doc
-Version=11.1.9
 Comment=A documentation tool for creativity.
 Exec=do•doc
 Icon=./build/icon.png
