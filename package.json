@@ -29,12 +29,14 @@
     "npm": "*"
   },
   "build": {
-    "electronVersion": "31.6.0",
+    "electronVersion": "33.3.0",
     "appId": "dodoc",
     "productName": "do•doc",
+    "asar": true,
     "asarUnpack": [
       "content/",
-      "node_modules/sharp/**"
+      "**/node_modules/sharp/**/*",
+      "**/node_modules/@img/**/*"
     ],
     "icon": "build/icon.png",
     "win": {
