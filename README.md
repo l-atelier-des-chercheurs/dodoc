@@ -37,6 +37,8 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 - **next** --> code for the next major version (v11), in Electron. Use at your own risks.
 - **next-node** --> code for the next major version, without Electron. Use at your own risks.
 
+Note: on Ubuntu 22.04, you may need to install the dependency sharp 0.31.3 as the most recent version (0.33.5) is not compatible.
+
 # Install do•doc
 
 ## Method 1 — the easy way
