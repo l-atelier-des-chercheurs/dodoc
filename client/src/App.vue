@@ -21,14 +21,17 @@
 
     <LoaderSpinner v-if="router_is_loading" />
     <template v-else>
+      <!-- export publication as standalone webpage -->
+      <PublicationView v-if="page_is_standalone_html" />
       <!-- static UI, no live update -->
       <router-view
-        v-if="$route.meta && $route.meta.static === true"
+        v-else-if="$route.meta && $route.meta.static === true"
         v-slot="{ Component }"
         :key="$route.path"
       >
         <component :is="Component" />
       </router-view>
+
       <!-- dynamic, regular app with live updates and logging in -->
       <FullUI v-else />
     </template>
@@ -43,6 +46,7 @@ export default {
   props: {},
   components: {
     FullUI,
+    PublicationView: () => import("@/views/PublicationView.vue"),
   },
   data() {
     return {
@@ -58,6 +62,9 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    page_is_standalone_html() {
+      return window.app_infos.page_is_standalone_html === true;
+    },
     custom_fonts_css() {
       const custom_fonts = this.$root.app_infos.custom_fonts;
 
@@ -123,7 +130,7 @@ export default {
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);
-  --c-bleumarine_fonce: hsl(227, 63%, 11%);
+  --c-bleumarine_fonce: hsl(227, 63%, 21%);
   --c-bleuvert: #52c5b9;
   --c-bleuvert_clair: hsl(174, 50%, 81%);
   --c-bleuvert_fonce: hsl(174, 50%, 41%);
@@ -137,8 +144,8 @@ export default {
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
-  --c-gris: hsl(195, 14%, 93%);
-  --c-gris_clair: hsl(195, 14%, 97%);
+  --c-gris: hsl(195, 14%, 83%);
+  --c-gris_clair: hsl(195, 14%, 96%);
   --c-gris_fonce: hsl(195, 14%, 45%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
@@ -181,13 +188,13 @@ export default {
   --input-height: 2.5em;
   --input-height-large: 3em;
   // --input-height-big: 3em;
-  --input-height-small: 1.5rem;
+  --input-height-small: 1.6rem;
 
   --input-color: var(--body-color);
   --input-border-color: var(--c-gris_fonce);
   --input-border-color-focus: var(--active-color);
   --input-border-width: 3px;
-  --input-border-radius: 3px;
+  --input-border-radius: 6px;
   --input-bg-color: var(--color-white);
   --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
   --input-readonly-bg-color: var(--component-bg-color);
@@ -238,6 +245,7 @@ export default {
   --font-verysmall: var(--sl-font-size-x-small);
 
   --max-column-width: 90%;
+  --switch-thumb-border-radius: 4px;
 
   accent-color: var(--c-orange);
 }
@@ -609,7 +617,7 @@ img {
   &-enter-active,
   &-leave-active,
   &-move {
-    transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
+    transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) !important;
     transition-property: opacity, transform;
     transform-origin: center top;
   }
@@ -622,6 +630,21 @@ img {
   }
   &-leave-active {
     position: absolute !important;
+  }
+}
+
+.enableMode {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transform: scale(1.5);
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 

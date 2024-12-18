@@ -3,23 +3,22 @@
     <transition name="fade_fast">
       <div
         class="_baseModal"
-        v-if="show_modal"
-        @click.self="closeModal"
+        v-if="show_modal && !hide_modal"
         ref="modal"
         :data-size="size"
       >
+        <div class="_baseModal--overlay" @click.self="requestCloseModal" />
+        <button
+          v-if="is_closable"
+          type="button"
+          class="u-button u-button_icon _closeBtn"
+          @click="requestCloseModal"
+        >
+          <b-icon icon="x-lg" :label="$t('close')" />
+        </button>
         <div class="_baseModal--content">
-          <header v-if="title || is_closable">
-            <h2 v-if="title">{{ title }}</h2>
-
-            <button
-              v-if="is_closable"
-              type="button"
-              class="u-button u-button_icon _closeBtn"
-              @click="closeModal"
-            >
-              <b-icon icon="x-lg" :label="$t('close')" />
-            </button>
+          <header v-if="title">
+            <h3>{{ title }}</h3>
           </header>
           <div
             class="_content"
@@ -34,6 +33,20 @@
             <slot name="footer" />
           </footer>
         </div>
+
+        <BaseModal2
+          v-if="show_confirm_before_closing_modal"
+          :title="$t('confirm_save_changes')"
+          @close="show_confirm_before_closing_modal = false"
+        >
+          <template slot="footer">
+            <SaveCancelButtons
+              :cancel_text="$t('close_without_saving')"
+              @save="saveContent"
+              @cancel="closeModal"
+            />
+          </template>
+        </BaseModal2>
       </div>
     </transition>
   </portal>
@@ -47,11 +60,21 @@ export default {
       type: Boolean,
       default: true,
     },
+    hide_modal: {
+      type: Boolean,
+      default: false,
+    },
+    confirm_before_closing: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {},
   data() {
     return {
       show_modal: false,
+      show_confirm_before_closing_modal: false,
+      current_level: undefined,
     };
   },
   created() {},
@@ -60,6 +83,7 @@ export default {
     window.addEventListener("keyup", this.handleKeyPress);
 
     this.$eventHub.$emit(`modal.is_opened`);
+    this.current_level = this.$root.opened_modals;
 
     this.$nextTick(() => {
       this.$nextTick(() => {
@@ -76,15 +100,30 @@ export default {
   computed: {},
   methods: {
     handleKeyPress($event) {
-      if ($event.key === "Escape") this.closeModal();
+      if (this.current_level !== this.$root.opened_modals) return;
+
+      if ($event.key === "Escape") {
+        this.requestCloseModal();
+        $event.stopImmediatePropagation();
+      }
+    },
+
+    requestCloseModal() {
+      if (this.confirm_before_closing) {
+        this.show_confirm_before_closing_modal = true;
+      } else {
+        this.closeModal();
+      }
     },
     closeModal() {
       if (!this.is_closable) return false;
-
       this.show_modal = false;
       setTimeout(() => {
         this.$emit("close");
       }, 400);
+    },
+    saveContent() {
+      this.$emit("save");
     },
   },
 };
@@ -100,12 +139,23 @@ export default {
   align-items: center;
 
   border: none;
-  padding: 0;
+  padding: calc(var(--spacing) / 1);
 
-  backdrop-filter: blur(5px);
   // background: rgba(53, 53, 53, 0.7);
   // background: rgba(255, 255, 255, 0.7);
-  background: rgba(231, 231, 231, 0.7);
+
+  ._baseModal--overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(231, 231, 231, 0.87);
+    backdrop-filter: blur(3px);
+    cursor: pointer;
+    transition: backdrop-filter 1s ease-in-out;
+
+    &:hover {
+      backdrop-filter: blur(0px);
+    }
+  }
 
   ._baseModal--content {
     position: relative;
@@ -113,12 +163,15 @@ export default {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 
-    margin: 0 auto;
     width: 100%;
     max-width: 480px;
     max-height: 100vh;
-    // max-width: calc(480px - calc(var(--spacing) * 1));
-    // max-height: calc(100vh - calc(var(--spacing) * 1));
+    max-height: 100dvh;
+
+    margin: 0 auto;
+    padding: 0;
+
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   &[data-size="full"] ._baseModal--content {
@@ -126,7 +179,7 @@ export default {
     max-height: none;
     border: none;
 
-    --modal-margin: var(--spacing) * 4;
+    --modal-margin: 0%;
 
     width: calc(100% - var(--modal-margin));
     height: calc(100% - var(--modal-margin));
@@ -141,19 +194,26 @@ export default {
 }
 
 ._closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: var(--spacing);
   padding: calc(var(--spacing) / 3);
+  z-index: 1;
 }
 
 header {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  padding: calc(var(--spacing) * 1);
-  h2 {
-    font-weight: 600;
-    font-size: var(--sl-font-size-x-large);
-    margin: 0;
-  }
+  margin: calc(var(--spacing) * 1);
+  // border-bottom: 1px solid var(--c-gris);
+
+  // h2 {
+  //   font-weight: 600;
+  //   font-size: var(--sl-font-size-x-large);
+  //   margin: 0;
+  // }
 }
 
 ._baseModal--content {
@@ -166,14 +226,15 @@ header {
   }
   ._content {
     flex: 1 1 auto;
+    overflow: auto;
   }
 }
 ._content {
-  overflow: auto;
-  padding: 0 calc(var(--spacing) * 1) 0;
+  position: relative;
+  padding: 0 calc(var(--spacing) * 1);
 
-  > *:first-child {
-    margin-top: 0;
+  &:first-child {
+    margin-top: calc(var(--spacing) * 1);
   }
 
   ._baseModal[data-size="full"] & {
@@ -186,8 +247,10 @@ header {
 }
 ._footer {
   display: flex;
-  justify-content: center;
-  padding: calc(var(--spacing) * 1);
+  flex-flow: row wrap;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) * 1);
 }
 
 @keyframes reveal {

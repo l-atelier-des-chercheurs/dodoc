@@ -12,15 +12,15 @@
     </div>
 
     <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
-      <TagsList
-        :tags="new_tags"
-        :tag_type="tag_type"
-        :mode="'remove'"
-        :shorten_if_too_long="false"
-        @tagClick="removeTag($event)"
-      />
-
-      <div class="u-spacingBottom" />
+      <div class="u-spacingBottom">
+        <TagsList
+          :tags="new_tags"
+          :tag_type="tag_type"
+          :mode="'remove'"
+          :shorten_if_too_long="false"
+          @tagClick="removeTag($event)"
+        />
+      </div>
 
       <fieldset class="_newTagPane" v-if="create_new_tag">
         <legend class="u-label">{{ $t("add_item") }}</legend>
@@ -28,6 +28,7 @@
         <div class="u-spacingBottom">
           <TagsSuggestion
             :tag_type="tag_type"
+            :local_suggestions="local_suggestions"
             :new_tag_name="new_tag_name"
             :tags_to_exclude="new_tags"
             @newTag="newTag($event)"
@@ -42,8 +43,9 @@
             :required="true"
             @toggleValidity="($event) => (allow_save_newkeyword = $event)"
             @onEnter="onEnter"
+            @onShiftEnter="onShiftEnter"
           />
-          <div class="">
+          <div>
             <button
               v-if="allow_save_newkeyword && !new_tag_name_already_exists"
               type="button"
@@ -78,6 +80,7 @@ export default {
   props: {
     field_name: String,
     tag_type: String,
+    local_suggestions: Array,
     label: String,
     content: {
       type: Array,
@@ -150,10 +153,20 @@ export default {
       if (this.allow_save_newkeyword && !this.new_tag_name_already_exists)
         this.newTag();
     },
+    onShiftEnter() {
+      this.updateTags();
+    },
     async updateTags() {
       this.is_saving = true;
 
       if (this.new_tag_name.length > 0) this.newTag();
+
+      this.$emit("save", this.new_tags);
+      if (!this.path) {
+        this.edit_mode = false;
+        this.is_saving = false;
+        return;
+      }
 
       try {
         const new_meta = {
@@ -188,6 +201,7 @@ export default {
 ._tl {
   display: flex;
   flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
 }
 
 ._footer {
@@ -218,17 +232,17 @@ export default {
   justify-content: center;
 }
 
-._submitBtn {
-  padding: calc(var(--spacing) / 8);
-}
-
 ._sameRowBtnInput {
   display: flex;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 4);
 
   > ._input {
     width: 100%;
+  }
+  ._submitBtn {
+    padding: calc(var(--spacing) / 8);
+    height: 2rem;
+    width: 2rem;
   }
 }
 </style>

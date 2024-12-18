@@ -1,51 +1,59 @@
 <template>
   <span class="_titleField">
     <DLabel
-      v-if="label"
+      v-if="label && show_label"
       class="_label"
       :str="label"
       :instructions="can_edit ? instructions : ''"
     />
 
-    <component :is="tag" class="_container">
-      <template v-if="!can_edit || (can_edit && !edit_mode)">
-        <template v-if="content && content !== ' '">
-          <div class="_content">
-            <span v-text="content" />
-          </div>
-        </template>
-      </template>
-      <TextInput
-        v-else
-        ref="TextInput"
-        :content.sync="new_content"
-        :required="required"
-        :input_type="input_type"
-        :autofocus="true"
-        :autocomplete="input_type === 'email' ? 'email' : undefined"
-        :minlength="minlength"
-        :maxlength="maxlength"
-        :key="edit_mode + content"
-        @toggleValidity="($event) => (allow_save = $event)"
-      />
+    <div class="_container">
+      <div class="_content" v-if="content && content.length > 0">
+        <component v-if="input_type !== 'editor'" :is="tag" v-text="content" />
+        <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
+      </div>
       <EditBtn
         v-if="can_edit && !edit_mode"
         class="_edit"
         @click="enableEditMode"
       />
-    </component>
+    </div>
 
-    <template v-if="can_edit">
-      <div class="_footer" v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          :allow_save="allow_save"
-          @save="updateText"
-          @cancel="cancel"
-        />
+    <BaseModal2
+      v-if="edit_mode"
+      :title="label"
+      :confirm_before_closing="content_is_changed"
+      @close="cancel"
+      @save="updateText"
+    >
+      <div class="u-spacingBottom u-instructions" v-if="instructions">
+        <span v-html="instructions" />
       </div>
-    </template>
+
+      <component :is="tag">
+        <TextInput
+          ref="TextInput"
+          :content.sync="new_content"
+          :required="required"
+          :input_type="input_type"
+          :autofocus="true"
+          :autocomplete="input_type === 'email' ? 'email' : undefined"
+          :minlength="minlength"
+          :maxlength="maxlength"
+          :key="edit_mode + content"
+          @toggleValidity="($event) => (allow_save = $event)"
+          @onEnter="updateText"
+        />
+      </component>
+
+      <SaveCancelButtons
+        slot="footer"
+        :is_saving="is_saving"
+        :allow_save="allow_save"
+        @save="updateText"
+        @cancel="cancel"
+      />
+    </BaseModal2>
   </span>
 </template>
 <script>
@@ -56,6 +64,10 @@ export default {
       type: String,
       default: "",
     },
+    show_label: {
+      type: Boolean,
+      default: true,
+    },
     instructions: {
       type: String,
       default: "",
@@ -65,7 +77,7 @@ export default {
       default: "text",
     },
     content: {
-      type: String,
+      type: [String, Number],
       default: "",
     },
     path: String,
@@ -110,7 +122,11 @@ export default {
       this.new_content = this.content;
     },
   },
-  computed: {},
+  computed: {
+    content_is_changed() {
+      return this.new_content !== this.content;
+    },
+  },
   methods: {
     enableEditMode() {
       this.edit_mode = true;
@@ -130,9 +146,19 @@ export default {
       // todo interrupt updateMeta
     },
     async updateText() {
+      if (this.input_type === "number")
+        this.new_content = Number(this.new_content);
+      else this.new_content = this.cleanUpString(this.new_content);
+
+      if (!this.path) {
+        this.$emit("save", this.new_content);
+        this.edit_mode = false;
+        this.is_saving = false;
+        return;
+      }
+
       this.is_saving = true;
       await new Promise((r) => setTimeout(r, 50));
-      this.new_content = this.cleanUpString(this.new_content);
       try {
         const new_meta = {
           [this.field_name]: this.new_content,
@@ -163,6 +189,10 @@ export default {
   ._content {
     display: inline-block;
     margin-right: calc(var(--spacing) / 2);
+
+    > * {
+      margin: 0;
+    }
 
     span {
       white-space: break-spaces;

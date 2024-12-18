@@ -126,7 +126,7 @@ export default {
 
 ._dzBg {
   --dropzone-color1: white;
-  --dropzone-color2: var(--c-bleuvert);
+  --dropzone-color2: var(--active-color);
 
   position: absolute;
   z-index: 0;

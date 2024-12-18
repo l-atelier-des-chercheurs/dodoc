@@ -1,15 +1,18 @@
 <template>
   <div>
-    <button
-      type="button"
-      class="u-buttonLink u-buttonLink_red"
-      @click="show_confirm_delete = true"
-    >
-      <b-icon icon="trash" />
-      <template v-if="show_button_text">
-        {{ remove_text }}
+    <div @click="show_confirm_delete = true">
+      <template v-if="$slots.hasOwnProperty('trigger')">
+        <slot name="trigger" />
       </template>
-    </button>
+      <template v-else>
+        <button type="button" class="u-buttonLink u-buttonLink_red">
+          <b-icon icon="trash" />
+          <template v-if="show_button_text">
+            {{ remove_text }}
+          </template>
+        </button>
+      </template>
+    </div>
 
     <BaseModal2
       v-if="show_confirm_delete"
@@ -19,12 +22,16 @@
       <div v-if="remove_expl">
         {{ remove_expl }}
       </div>
-      <div class="u-sameRow" slot="footer">
+      <template v-if="$slots.hasOwnProperty('content')">
+        <slot name="content" />
+      </template>
+      <template slot="footer">
         <button
+          class="u-button"
           type="button"
-          class="u-buttonLink"
           @click="show_confirm_delete = false"
         >
+          <b-icon icon="x-circle" />
           {{ $t("cancel") }}
         </button>
         <button
@@ -33,9 +40,10 @@
           autofocus
           @click="confirmRemove"
         >
+          <b-icon icon="trash" />
           {{ $t("confirm_removal") }}
         </button>
-      </div>
+      </template>
     </BaseModal2>
   </div>
 </template>

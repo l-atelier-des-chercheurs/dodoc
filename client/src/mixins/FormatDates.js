@@ -53,10 +53,12 @@ export default {
         second: "numeric",
       });
     },
-    formatDurationToHoursMinutesSeconds(seconds) {
+    formatDurationToHoursMinutesSeconds(seconds, round_zero = true) {
       const h = Math.floor(seconds / 3600);
       const m = Math.floor((seconds % 3600) / 60);
-      const s = Math.floor(seconds % 60);
+      let s = Math.floor(seconds % 60);
+      // dont display 00:00, round to 00:01
+      if (round_zero && h === 0 && m === 0 && s === 0) s = 1;
       return [h, m > 9 ? m : h ? "0" + m : m || "0", s > 9 ? s : "0" + s]
         .filter(Boolean)
         .join(":");
@@ -66,7 +68,7 @@ export default {
       // const ds = (
       //   +(seconds % 1).toFixed(1).toLocaleString(this.$i18n.locale) + ""
       // ).substring(1);
-      return this.formatDurationToHoursMinutesSeconds(seconds) + ds;
+      return this.formatDurationToHoursMinutesSeconds(seconds, false) + ds;
     },
     datetimeLocal(datetime) {
       const dt = new Date(datetime);

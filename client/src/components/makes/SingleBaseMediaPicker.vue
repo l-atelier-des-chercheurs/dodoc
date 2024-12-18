@@ -3,9 +3,12 @@
     <div class="_mpContent">
       <MediaContent
         v-if="selected_media"
+        :key="selected_media.$path"
         :file="selected_media"
         :resolution="220"
         :context="context"
+        @videoPaused="$emit('videoPaused')"
+        @videoEnded="$emit('videoEnded')"
       />
       <span v-else-if="content">
         {{ $t("media_not_found") }}
@@ -36,7 +39,7 @@
           :title="title"
           :path="path"
           :select_mode="'single'"
-          :pick_from_type="media_type_to_pick"
+          :pick_from_types="[media_type_to_pick]"
           @addMedias="pickMedia"
           @close="show_media_picker = false"
         />
@@ -120,7 +123,7 @@ export default {
     margin: 0 auto;
     // width: auto;
     width: 100%;
-    max-width: 320px;
+    max-width: 440px;
 
     color: white;
     background: var(--c-bleumarine_fonce);
@@ -142,7 +145,7 @@ export default {
 
   &[data-context="full"] {
     ::v-deep ._mediaContent {
-      width: 320px;
+      width: 440px;
       height: auto;
       aspect-ratio: 1/1;
 

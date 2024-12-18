@@ -1,11 +1,11 @@
 <template>
   <div class="_label">
-    <div class="u-sameRow">
+    <div class="u-sameRow u-label">
       {{ $t("page") }}
-
       <template v-if="!edit_mode">
         {{ index + 1 }}
       </template>
+
       <template v-else>
         <select
           :value="index"
@@ -29,23 +29,23 @@
     </div>
     <div class="u-sameRow" v-if="edit_mode">
       <div class="">
-        <button
-          type="button"
-          class="u-buttonLink"
+        <EditBtn
+          :btn_type="'duplicate'"
           @click="
             $emit('duplicatePage');
             edit_mode = false;
           "
-        >
-          <b-icon icon="file-plus" />
-        </button>
+        />
       </div>
       <RemoveMenu
         v-if="can_edit"
         :remove_text="$t('remove_page_and_content')"
-        :show_button_text="false"
         @remove="$emit('removePage')"
-      />
+      >
+        <template slot="trigger">
+          <EditBtn :btn_type="'remove'" />
+        </template>
+      </RemoveMenu>
     </div>
   </div>
 </template>
@@ -77,9 +77,9 @@ export default {
   // align-items: center;
   // gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 4);
-  background: white;
-  border-radius: 4px;
+  margin: calc(var(--spacing) / 4) 0;
+  // background: white;
+  // border-radius: 4px;
   // background: rgba(0, 0, 0, 0.06);
 }
 </style>

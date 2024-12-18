@@ -41,6 +41,7 @@ export default {
         const project = await this.$api
           .getFolder({
             path,
+            no_files: true,
           })
           .catch((err) => {
             this.fetch_err = err.response;

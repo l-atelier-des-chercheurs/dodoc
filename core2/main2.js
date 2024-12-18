@@ -1,7 +1,6 @@
 const path = require("path");
 const fs = require("fs-extra");
 const portscanner = require("portscanner");
-const v8 = require("v8");
 
 const server = require("./server"),
   dev = require("./dev-log"),
@@ -153,25 +152,33 @@ async function setupApp() {
 async function copyAndRenameUserFolder(full_default_path) {
   dev.logfunction({ full_default_path });
 
+  const user_dir_path = paths.getDocumentsFolder(is_electron);
+
   let full_path_to_content;
+  const path_is_custom =
+    global.settings.contentPath.startsWith("/") ||
+    global.settings.contentPath.includes(path.sep);
 
-  // TODO
-
-  // two cases:
-  if (global.settings.contentPath.startsWith("/")) {
-    // if starts with '/' then its a path to the folder itself
-    full_path_to_content = global.settings.contentPath.replaceAll(
-      "/",
-      path.sep
-    );
+  if (path_is_custom) {
+    try {
+      // attempt to use custom path
+      const custom_path = global.settings.contentPath.replaceAll("/", path.sep);
+      await utils.testWriteFileInFolder(custom_path);
+      full_path_to_content = custom_path;
+    } catch (err) {
+      // failed to write to custom path, fallback to default path
+      // todo display error message to user
+      dev.log(`-> failed to write to custom path, fallback to default path`);
+      full_path_to_content = path.join(user_dir_path, "dodoc");
+    }
   } else {
-    // if contentPath is just a name, thats the name of the folder inside /Documents
-    const user_dir_path = paths.getDocumentsFolder(is_electron);
     full_path_to_content = path.join(
       user_dir_path,
       global.settings.contentPath
     );
   }
+
+  // attempt to write something to dest folder
 
   // if path to content exists
 

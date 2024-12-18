@@ -1,9 +1,14 @@
 <template>
   <div>
-    <button type="button" class="u-buttonLink" @click="show_modal = true">
-      <b-icon icon="file-plus" />
-      {{ $t("duplicate_or_move") }}
-    </button>
+    <span v-if="$slots.hasOwnProperty('button')" @click="show_modal = true">
+      <slot name="button" />
+    </span>
+    <template v-else>
+      <button type="button" class="u-buttonLink" @click="show_modal = true">
+        <b-icon icon="file-plus" />
+        {{ $t("duplicate_or_move") }}
+      </button>
+    </template>
 
     <BaseModal2
       v-if="show_modal"
@@ -16,11 +21,15 @@
             <small>
               {{ $t("dmm_instr") }}
             </small>
+
+            <p class="u-spacingBottom" v-if="is_multiple_medias">
+              {{ paths.length }} {{ $t("medias_selected").toLowerCase() }}
+            </p>
           </div>
 
           <SpaceProjectPicker
             class="u-spacingBottom"
-            :path="path"
+            :path="paths ? paths[0] : path"
             @newProjectSelected="destination_project_path = $event"
           />
 
@@ -36,17 +45,14 @@
           </div>
         </div>
 
-        <div class="u-sameRow" slot="footer">
+        <template slot="footer">
           <template v-if="!is_copying">
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_modal = false"
-            >
+            <button type="button" class="u-button" @click="show_modal = false">
+              <b-icon icon="x-circle" />
               {{ $t("cancel") }}
             </button>
             <button
-              class="u-button u-button_red"
+              class="u-button u-button_bleuvert"
               type="button"
               autofocus
               :disabled="!destination_project_path"
@@ -61,7 +67,7 @@
             </button>
           </template>
           <LoaderSpinner v-else />
-        </div>
+        </template>
       </template>
       <template v-else>
         <router-link
@@ -80,6 +86,7 @@ import SpaceProjectPicker from "@/components/fields/SpaceProjectPicker.vue";
 export default {
   props: {
     path: String,
+    paths: Array,
     source_title: String,
   },
   components: {
@@ -105,60 +112,70 @@ export default {
       this.is_copying = false;
     },
   },
-  computed: {},
+  computed: {
+    is_multiple_medias() {
+      return Array.isArray(this.paths);
+    },
+  },
   methods: {
     async confirm() {
       // const parent_type = this.getParent(this.path);
 
       this.is_copying = true;
 
-      const path_to_destination_folder = this.destination_project_path;
-      const copy_file_meta = await this.$api
-        .copyFile({
-          path: this.path,
-          path_to_destination_folder,
-          new_meta: {},
-        })
-        .catch((err_code) => {
-          if (err_code === "not_allowed_to_copy_to_folder") {
-            this.$alertify
-              .delay(4000)
-              .error(this.$t("not_allowed_to_copy_to_project"));
-          }
+      const paths_of_medias_to_copy = this.paths ? this.paths : [this.path];
 
+      for (const path_of_media_to_copy of paths_of_medias_to_copy) {
+        const path_to_destination_folder = this.destination_project_path;
+        const copy_file_meta = await this.$api
+          .copyFile({
+            path: path_of_media_to_copy,
+            path_to_destination_folder,
+            new_meta: {},
+          })
+          .catch((err_code) => {
+            if (err_code === "not_allowed_to_copy_to_folder") {
+              this.$alertify
+                .delay(4000)
+                .error(this.$t("not_allowed_to_copy_to_project"));
+            }
+
+            this.is_copying = false;
+            throw "fail";
+          });
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t("completed"));
+
+        let query = {};
+        query.projectpanes = JSON.stringify([
+          {
+            type: "collect",
+            size: 100,
+            focus: copy_file_meta,
+          },
+        ]);
+        const navigation = {
+          path: this.createURLFromPath(path_to_destination_folder),
+          query,
+        };
+
+        if (!this.remove_original) {
+          this.navigation_to_copy = navigation;
           this.is_copying = false;
-          throw "fail";
-        });
-
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .success(this.$t("completed"));
-
-      let query = {};
-      query.projectpanes = JSON.stringify([
-        {
-          type: "collect",
-          size: 100,
-          focus: copy_file_meta,
-        },
-      ]);
-      const navigation = {
-        path: this.createURLFromPath(path_to_destination_folder),
-        query,
-      };
-
-      if (!this.remove_original) {
-        this.navigation_to_copy = navigation;
-        this.is_copying = false;
-      } else {
-        this.is_copying = false;
-        await this.$api.deleteItem({
-          path: this.path,
-        });
-        // close media modal
-        this.$emit("close");
+        } else {
+          this.is_copying = false;
+          await this.$api.deleteItem({
+            path: path_of_media_to_copy,
+          });
+        }
       }
+
+      // close media modal
+      this.show_modal = false;
+      this.$emit("close");
     },
   },
 };

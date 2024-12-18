@@ -4,7 +4,9 @@
     class="u-button u-button_verysmall _editBtn"
     :class="{
       'is--unfolded': is_unfolded,
+      'is--spinning': is_spinning,
     }"
+    :disabled="disabled"
     :style="btn_styles"
     @click="$emit('click')"
   >
@@ -18,6 +20,7 @@
 <script>
 export default {
   props: {
+    label: String,
     btn_type: {
       type: String,
       default: "edit",
@@ -26,8 +29,19 @@ export default {
       type: String,
       default: "right",
     },
-    label: String,
+    style_type: {
+      type: String,
+      default: "default",
+    },
     is_unfolded: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    is_spinning: {
       type: Boolean,
       default: false,
     },
@@ -69,7 +83,7 @@ export default {
         };
       else if (this.btn_type === "check")
         return {
-          label: this.$t("ok"),
+          label: this.$t("save"),
           icon: "check-lg",
         };
       else if (this.btn_type === "credits")
@@ -82,13 +96,48 @@ export default {
           label: this.$t("remove"),
           icon: "trash",
         };
+      else if (this.btn_type === "show")
+        return {
+          label: this.$t("show"),
+          icon: "eye-fill",
+        };
+      else if (this.btn_type === "hide")
+        return {
+          label: this.$t("hide"),
+          icon: "eye-slash-fill",
+        };
+      else if (this.btn_type === "create_page")
+        return {
+          label: this.$t("create_page"),
+          icon: "plus-lg",
+        };
+      else if (this.btn_type === "regenerate_thumbs")
+        return {
+          label: this.$t("regenerate_thumbs"),
+          icon: "arrow-clockwise",
+        };
+      else if (this.btn_type === "duplicate")
+        return {
+          label: this.$t("duplicate"),
+          icon: "file-plus",
+        };
       return {
         label: this.$t("edit"),
         icon: "pencil-fill",
       };
     },
     btn_styles() {
-      if (this.btn_type === "fullscreen" || this.btn_type === "close")
+      if (this.style_type === "black")
+        return `
+          --color1: var(--c-noir);
+          --color2: white;        `;
+
+      if (
+        this.btn_type === "fullscreen" ||
+        this.btn_type === "close" ||
+        this.btn_type === "show" ||
+        this.btn_type === "hide"
+      )
         return `
           --color2: var(--c-noir);
         `;
@@ -111,7 +160,6 @@ export default {
         return `
           --color1: var(--c-noir);
           --color2: white;
-          --color-hover-icon: var(--c-noir);
         `;
       return ``;
     },
@@ -121,9 +169,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: rgba(255, 255, 255, 1);
+  --color1: rgba(255, 255, 255, 0.68);
   --color2: var(--active-color);
-  --color-hover-icon: white;
 
   position: relative;
   display: inline-flex;
@@ -131,7 +178,7 @@ export default {
   color: var(--color2);
   // border: 1px solid var(--color1);
 
-  box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
+  // box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
 
   // margin-top: -0.5rem;
   // margin-bottom: -0.5rem;
@@ -195,12 +242,18 @@ export default {
     }
   }
 
+  &.is--spinning {
+    ._icon {
+      animation: spin 1s linear infinite;
+    }
+  }
+
   &:hover,
   &:active,
   &:focus-visible,
   &.is--unfolded {
-    // background: var(--color2);
-    color: var(--color-hover-icon);
+    background: var(--color2);
+    color: var(--color1);
 
     ._label {
       transform: none;

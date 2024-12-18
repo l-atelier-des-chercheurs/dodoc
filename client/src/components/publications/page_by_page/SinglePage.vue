@@ -11,6 +11,7 @@
         <svg
           v-if="can_edit && show_grid"
           class="_grid"
+          :data-position="grid_z_index"
           width="100%"
           height="100%"
           xmlns="http://www.w3.org/2000/svg"
@@ -158,6 +159,7 @@ export default {
     scale: { type: Number, default: 1 },
     show_grid: { type: Boolean, default: false },
     snap_to_grid: { type: Boolean, default: false },
+    grid_z_index: { type: String, default: "under" },
     gridstep_in_mm: Number,
     margins: Object,
     page_number: Number,
@@ -298,7 +300,12 @@ export default {
   pointer-events: none;
   opacity: 0.6;
 
-  z-index: -10000;
+  &[data-position="under"] {
+    z-index: -10000;
+  }
+  &[data-position="over"] {
+    z-index: 10000;
+  }
 
   --c-gridlines: #aaa;
   --c-gridfiveslines: #111;

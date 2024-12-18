@@ -4,6 +4,7 @@
       :path="path"
       :selected_mode="selected_mode"
       :stopmotion_slug="stopmotion_slug"
+      :available_modes="available_modes"
       @changeMode="selected_mode = $event"
       @openStopmotion="stopmotion_slug = $event"
       @insertMedia="insertMedia"
@@ -14,6 +15,7 @@
 export default {
   props: {
     path: String,
+    available_modes: Array,
   },
   components: {
     CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),

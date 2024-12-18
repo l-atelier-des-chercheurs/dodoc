@@ -3,7 +3,7 @@ export default {
   current_lang_name: "English",
 
   a_foss_made_by:
-    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers, …!",
+    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers,&nbsp;…!",
   home: "Home",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
@@ -23,10 +23,9 @@ export default {
   select: "Select",
   back: "back",
   save: "save",
-  input_url: "URL to the site to embed",
-  // input_url_instr:
-  //   "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
+  input_url: "URL of the website to embed",
   embed: "Embed",
+  table: "Table",
   from_project: "From project",
   save_to_project: "Save in the project",
   day: "Day",
@@ -171,6 +170,7 @@ export default {
   no_projects: "No project to show",
   no_publications: "No publications to show",
   no_files: "No file",
+  none_m: "None",
   none_f: "None",
   none: "None",
 
@@ -185,7 +185,12 @@ export default {
   medium: "Medium",
   low: "Low",
   rough: "Draft",
-  optimize_media: "Optimize the media",
+  optimize_resize: "Optimize/resize",
+  convert_instructions: "Convert to standard format",
+  optimize_resize_instructions:
+    "Convert to standard format, trim the beginning or the end, remove the audio track or modify the quality to reduce the file size.",
+
+  from_the_first_media: "From the first media",
 
   no_accounts_yet: "No accounts created yet",
   no_accounts_to_show: "No accounts to show",
@@ -193,6 +198,7 @@ export default {
 
   add_accounts: "Add accounts",
   show: "Show",
+  show_title: "Show title",
   hide: "Hide",
   list_of_accounts: "List of accounts",
   show_all_accounts: "Show all accounts",
@@ -201,9 +207,11 @@ export default {
   audioinput: "Audio input",
   audiooutput: "Audio output",
 
-  restart_to_apply: "Restart do•doc to apply",
-  refresh_window_to_apply: "Refresh the window to apply",
-  restart: "Restart do•doc",
+  restart_to_apply:
+    "Close and restart do•doc manually or using the button below for the setting to take effect.",
+  restart: "Close and restart",
+
+  refresh_window_to_see_changes: "Refresh the window to see the changes",
   reveal: "Reveal",
   choose_a_pane: "Choose a pane to start!",
   latest_changes_to_project: "Latest changes to project",
@@ -222,6 +230,7 @@ export default {
   remove_media: "Delete media",
   remove_space: "Delete space and all its content",
 
+  no_authors_to_show: "No account to show",
   remove_account: "Delete this account",
   remove_account_expl:
     "Only the account will be deleted, all its content (spaces, projects, medias and publications) will be kept.",
@@ -244,6 +253,8 @@ export default {
   start_timelapse: "Start timelapse",
   stop_timelapse: "Stop timelapse",
   quality: "Quality",
+  image_quality: "Image quality",
+  audio_quality: "Audio quality",
   duration: "Duration",
 
   latitude: "Latitude",
@@ -390,10 +401,16 @@ export default {
   stop: "Stop",
   pause: "Pause",
   first_image: "First image",
+  next: "Next",
+  previous: "Previous",
   previous_image: "Previous image",
+  loop: "Loop",
   next_image: "Next image",
   last_image: "Last image",
   assemble: "Assemble",
+  filter_by_fav: "Filter by favorites",
+  add_to_fav: "Add to favorites",
+  remove_from_fav: "Remove from favorites",
 
   with_sound: "with sound",
   update: "Update",
@@ -405,10 +422,13 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  gif: "GIF",
   other: "Other",
-  all_medias_types: "Of all types",
-  all_origins: "From all origins",
-  all_accounts: "From all accounts",
+  webpage: "Webpage",
+  all_keywords: "All keywords",
+  all_medias_types: "All types",
+  all_origins: "All origins",
+  all_accounts: "All accounts",
 
   or_download_media_on_device: "or download this media to your device",
   or_paste_an_image: "Or drop a picture",
@@ -426,6 +446,7 @@ export default {
   select_all: "Select all",
   input_url_instr:
     "Enter a URL to a resource here (web page, PeerTube or YouTube video, etc.)",
+  url_to_open: "URL of the page to open",
   content: "Content",
   connection_lost: "Connection lost",
   connection_lost_in: "The connection to the server was lost.",
@@ -521,6 +542,7 @@ export default {
   desktop_1080: "Desktop 1080p",
   desktop_720: "Desktop 720p",
   custom: "Custom",
+  custom_f: "Custom",
   width: "Width",
   height: "Height",
   text_size: "Text size",
@@ -603,7 +625,6 @@ export default {
   no_preview_to_show: "No previews to show at the moment",
   no_media_in_project: "No media in this project",
   number_of_media: "Number of media",
-  "displayed:": "Displayed:",
   media_removed: "Media deleted",
   media_duplicated: "Media duplicated",
   media_was_saved_to_project: "The media was added to the project",
@@ -616,6 +637,9 @@ export default {
   snap_to_grid: "Grid Snapping",
   gridstep: "Grid step",
   scale: "Scale",
+  over: "Over",
+  under: "Under",
+
   makes_list: "Makes list",
   back_to_makes_list: "Back to list",
   edit_image: "Rework an image",
@@ -628,14 +652,17 @@ export default {
   trim_instructions:
     "Select the area to extract by indicating the start and end time below. You can also click on the spectrogram above.",
   start: "start",
+  set_start: "Set start",
+  play_extract: "Play extract",
+  stop_extract: "Stop extract",
   end: "end",
+  set_end: "Set end",
   copy: "Copy",
   test_and_export: "Test and export",
   export_montage: "Export montage",
+  export_stomotion: "Export animation",
 
-  image_to_rework: "Image to edit",
   video_to_rework: "Video to edit",
-  audio_to_rework: "Audio to edit",
 
   pick_audio: "Pick audio media",
   pick_image: "Pick image media",
@@ -679,8 +706,7 @@ export default {
   slowing_video_down_limit:
     "Attention! The audio track will be deleted (if it exists) because the desired speed is too slow. To keep and convert the sound choose a speed between 0.5 and 1.",
   speed_up: "Speed up",
-  a_little: "A little",
-  a_lot: "A lot",
+  playback_speed: "Playback speed",
   clockwise: "Clockwise",
   counterclockwise: "Counterclockwise",
   reverse: "Reverse start and end",
@@ -689,6 +715,9 @@ export default {
   mirror: "Mirror",
   horizontal_flip: "Horizontal flip",
   vertical_flip: "Vertical flip",
+  rotate_90_deg: "Rotate 90°",
+  rotate_x_deg: "Rotate right of …°",
+
   both: "Both",
   mix_audio_and_image: "Sound on an image",
   mix_audio_and_image_summary: "Add sound to an image.",
@@ -702,6 +731,10 @@ export default {
   mix_audio_and_video_summary: "Add or replace audio to a video.",
   mix_audio_and_video_instructions:
     "This recipe takes a video and an audio track. It adds or replaces the video's soundtrack with the selected one.<br> Accepted media: a video and an audio track.<br>Will create a new video of the duration of the longest media.",
+
+  qr_code: "QR code",
+  qr_code_summary: "Create a QR code from a text or a link.",
+
   add_sound_video_file:
     "Open a project and add <b>sound</b> media and <b>video</b> media by clicking the green arrow.<br>Exporting will create a new video.<br>Accepted media : a video and a sound track.",
   add_sound_image_file:
@@ -713,7 +746,7 @@ export default {
   add_multiple_images:
     "Open a project and add several <b>image</b> media by clicking on the green arrow. The images will be placed end to end in the order of addition. Export the sequence and adjust the frame rate. <br>Export will create a video.<br>Media accepted: images only. The dimensions of the first image determine whether the final video is portrait or landscape.",
   images: "Pictures",
-  make_an_exhibition: "Create an exhibition",
+
   image_tracking: "Augmented reality",
   create_block: "Create group",
   image_tracking_summary: "",
@@ -743,6 +776,7 @@ export default {
   replace_color_with: "Replace with",
   use_own_risk: "Use with caution: media may become invisible in some cases!",
   chroma_key: "Overlay (green background)",
+  chroma_key_color: "Color to replace",
   color: "Color",
   flip_horizontally: "Flip horizontally",
   flip_vertically: "Flip vertically",
@@ -816,17 +850,18 @@ export default {
   stop_stopmotion: "Stop this animation",
   onion_skin: "Onion skin",
   pick_a_camera: "Select a camera",
-  resolutions: "Resolutions",
+  resolutions: "Resolution",
   resolution: "Resolution",
+  resolution_w_h: "Resolution: {width}x{height} pixels",
   screen_capture: "Screen Capture",
   cant_pick_resolution_when_screen_capture:
     "Resolution selection is not compatible with screenshot.",
   take_picture: "Take a photo",
   delay: "Self-timer",
   timelapse: "time-lapse",
-  framerate: "frames per second",
   live: "Live",
   img_per_second: "Frames per second",
+
   name_of_stream: "Stream name",
   failed_to_start_streams_change_source_or_res:
     "The video or audio stream could not be started.<br>Try changing the source or resolution in the settings.",
@@ -913,6 +948,8 @@ export default {
   account_created: "Your account has been created",
   logged_in: "Account connection is active, page reloading…",
   informations: "informations",
+  metadatas: "Metadatas",
+
   duplicate: "Duplicate",
   duplicate_or_move: "Duplicate or move",
   duplicate_or_move_project: "Duplicate or move this project",
@@ -925,7 +962,9 @@ export default {
   import_in_progress: "Import in progress…",
   import_finished:
     "Import finished, click on the button to open the project. Media previews will be generated, which can take a few minutes.",
-  zip_wrong: "This ZIP file is not a valid project",
+  zip_not_valid_project: "This ZIP file is not a valid project",
+  zip_is_space_not_project:
+    "This ZIP seems to contain a space and not a project",
 
   move_to_page: "Move to another page",
   general_informations: "Instance informations",
@@ -961,22 +1000,39 @@ export default {
   IGN_SAT: "IGN satellite pictures (France only)",
   image_or_drawing: "Image or drawing",
   bw_filter: "Black and white filter",
-  failed_loading_tiles_no_internet:
-    "Failed loading the baselayer, are you connected to the internet?",
+  failed_loading_tiles:
+    "Failed loading the baselayer, you can try to zoom out.",
+  zoom_animation: "Zoom animation",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
 
   terms: "Terms of use",
-  create_terms_page: "Create a terms of use page",
-  open_page: "Open page",
-  terms_in_footer: "Place a link at the bottom of the home page",
+  create_this_page: "Create this page",
+  open_terms_page: "Open Terms page",
+  terms_confidentiality_in_footer:
+    "Place a link at the bottom of the home page",
   users_must_accept_terms_to_signup:
     "Users must accept the terms of use to register",
   click_here_to_read: "Click here to read them.",
   i_read_and_accept_terms: "I accept the terms of use",
 
+  confidentiality: "Confidentiality",
+  open_confidentiality_page: "Open confidentiality page",
   page_to_export: "Page to export",
+
+  terms_confidentiality_infos: `
+  The following fields allow you to create pages specifying the conditions
+  of use and the confidentiality rules of your instance.
+  A link to these pages can be placed at the bottom of the home page,
+  as well as at the bottom of the signup form.
+  In France and in all of the countries belonging to the European Union, these pages must be
+  completed to inform users of these rules.
+    `,
+  cookies_info: `
+  In this version of do•doc, know that no tracking is done and that the cookies only contain anonymous technical information
+  (like the language, the cameras used, etc.).
+    `,
 
   on_this_page: "On this page",
   on_other_pages: "On other pages",
@@ -987,6 +1043,8 @@ export default {
   polygon: "Polygon",
 
   search_for_a_place: "Search for a place",
+  no_results: "No results",
+
   click_to_start_drawing: "click to start drawing",
   click_to_continue_drawing: "click to continue drawing",
   click_drag_to_draw_line: "click and hold to draw",
@@ -1019,18 +1077,109 @@ export default {
   full_page: "Full page",
 
   convert: "Convert",
+  convert_shorten: "Convert/shorten",
+  convert_shorten_instructions: `
+  Convert to a standard format, cut the beginning or the end, remove the audio track or change the quality to lighten the file.
+  `,
+  extract_range: "Extract range",
   convert_to_format: "Adapt format for viewing",
 
   already_optimized:
     "This media has already been converted, it is not recommended to convert it again.",
-  preview_optimize: "Create optimized version",
+  preview_new: "Create new version",
   wont_remove_original: "Will not remove the original",
-  add_optimized_to_lib: "Keep original media and add new version",
-  replace_original: "Replace and remove original media",
+  replace_original: "Replace original media",
+  save_as_new_media: "Save as new media",
 
   change: "Change",
   transition_fade: "Transition: fade",
 
   couldntbesaved: "Value couldn’t be saved",
   enable_indexing: "Enable indexing on search engines",
+  crop_adjust: "Crop/adjust",
+  aspect_ratio: "Aspect ratio",
+  square: "Square",
+  original: "Original",
+  A_portrait: "Format 'A' portrait",
+  A_landscape: "Format 'A' landscape",
+  constrain_crop_resize: "Constrain crop/resize",
+  custom_aspect_ratio: "Enter a value, for example 1.66",
+  resize: "Resize",
+
+  page_number: "Page number",
+  on_click: "On click",
+  do_nothing: "Do nothing",
+  open_webpage: "Open a web page in a new tab",
+  navigate_to_page: "Navigate to page",
+
+  regenerate_thumbs: "Regenerate preview",
+  embed_link: "Embed link",
+  direct_link_to_file:
+    "This link points directly to the media file, it can be used in other applications or websites.",
+  share_link_to_file:
+    "This link corresponds to a specific page containing the media, its legend and its credits (if the fields are filled in).",
+
+  remove_permanently: "Delete contents permanently",
+  remove_permanently_true:
+    "The contents will be deleted permanently and cannot be recovered.",
+  remove_permanently_false:
+    "The contents will be moved to a subfolder (like a trash).",
+
+  upload_max_file_size_in_mo: "Maximum file size for uploads or captures",
+  umo_instructions: "In megabytes (by default, 10 000, so about 10 Go).",
+
+  scan_qr_code: "Scan QR code",
+  opening_link_in: "Opening link in",
+  qr_code_content: "QR code content",
+
+  edit_informations: "Edit informations",
+  edit_informations_instructions: `
+  You can edit the information of several media at once here.
+  `,
+  medias_selected: "Medias selected",
+
+  assign_a_new_caption: "Assign a new caption",
+  assign_a_new_credit: "Assign a new credit/reference",
+  add_or_replace_keywords: "Add or replace keywords",
+  add_or_replace_authors: "Add or replace authors",
+  assign_a_new_location: "Assign a new location",
+  pick_an_option: "Pick an option",
+
+  duration_explanation:
+    "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
+
+  connected_currently: "Connected currently",
+
+  start_by_uploading_images: "Start by uploading images below",
+  or: "or",
+  live_dubbing: "Live dubbing",
+  play_both: "Play both at the same time",
+  bitrate_kbps: "Bitrate: {bitrate} kbps",
+  bitrate: "Bitrate",
+  bitrate_instructions:
+    "Amount of data allocated per second. The higher the value, the higher the video quality but the heavier it is.",
+  resolution_on_largest_side:
+    "Resolution on the largest side: {resolution} pixels",
+  keep_ratio: "Keep the width/height ratio",
+
+  in_this_make: "In this make",
+  edit_volume_or_mute: "Edit volume or mute",
+  toolbox: "Toolbox",
+  video_resolution_even: "Width × Height. Each value must be a multiple of 2.",
+  no_audio_track: "No audio track (muted)",
+  stop_recording_with_video: "Stop recording at the end of the video.",
+
+  video_mp4: "Video MP4",
+  video_gif: "Animation GIF",
+
+  enable_image: "Enable image",
+  enable_sound: "Enable sound",
+  created_by_publication: "From the publication {publication_title}",
+  webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of do•doc. 
+  <br />By decompressing the ZIP and opening the index.html file it contains, you can view the publication from any computer in a web browser.
+  <br /><br />You can also publish it online so that it can be accessed on the internet. For this, we recommend following the tutorial on our forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Upload media and publications online</a>.`,
+
+  all_fields_not_filled: "All fields are not filled",
+  pixels: "pixels",
+  show_only_media_of_types: "Displayed media types: {types}",
 };

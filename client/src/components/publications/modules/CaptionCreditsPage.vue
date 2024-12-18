@@ -49,7 +49,9 @@
         </div>
 
         <div class="u-instructions" v-if="can_edit">
-          {{ $t("edit_caption_changes_for_all_medias") }}
+          <small>
+            {{ $t("edit_caption_changes_for_all_medias") }}
+          </small>
         </div>
 
         <!-- <div>
@@ -87,7 +89,8 @@ export default {
   computed: {
     show_credits_caption_button() {
       if (this.show_credits_caption) return false;
-      if (this.media.$type === "text") return false;
+      if (this.media.$type === "text" || this.media.$type === "table")
+        return false;
       if (
         this.canEditLinkedMedia(this.media.$path) === false &&
         !this.media.$credits &&
@@ -100,6 +103,8 @@ export default {
   },
   methods: {
     canEditLinkedMedia(path) {
+      if (!path || !this.publication_path || !this.can_edit) return false;
+
       const media_parent_folder = this.getParent(path);
 
       // media is directly inside publication
@@ -151,6 +156,7 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 100;
   margin: calc(var(--spacing) / 1);
 }
 </style>

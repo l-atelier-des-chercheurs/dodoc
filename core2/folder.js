@@ -187,11 +187,23 @@ module.exports = (function () {
           return false;
         });
       }
-
       if (!meta_file) {
         await fs.remove(full_path_to_folder_in_cache);
         const err = new Error("Imported folder is missing meta.txt");
         err.code = "imported_folder_not_valid";
+        throw err;
+      }
+
+      // check edge case: if someone download a space and tried importing it as a project, catch that
+      const is_space = directory.files.find((f) => {
+        const normalizedPath = f.path.replace(/\\/g, "/");
+        return normalizedPath.endsWith("projects/");
+      });
+      if (is_space) {
+        const err = new Error(
+          "Imported folder seems to be a space and not a project"
+        );
+        err.code = "imported_folder_is_a_space";
         throw err;
       }
 
@@ -395,7 +407,8 @@ module.exports = (function () {
       dev.logfunction({ path_to_folder });
 
       try {
-        if (global.settings.removePermanently === true)
+        const { remove_permanently } = await require("./settings").get();
+        if (remove_permanently === true)
           await _removeFolderForGood({ path_to_folder });
         else await _moveFolderToBin({ path_to_folder });
 

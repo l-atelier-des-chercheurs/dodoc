@@ -48,18 +48,23 @@
           "
           :key="selected_archive_filename"
         >
-          <div class="_archiveText" v-html="archive_shown.content" />
+          <div class="_archiveText">
+            <CollaborativeEditor2
+              :content="archive_shown.content"
+              :can_edit="false"
+            />
+          </div>
         </div>
       </transition>
     </div>
-    <div slot="footer">
-      <SaveCancelButtons
-        :allow_save="selected_archive_filename !== 'current'"
-        :save_text="$t('restore_this_version')"
-        @save="restoreVersion(archive_shown.content)"
-        @cancel="$emit('close')"
-      />
-    </div>
+
+    <SaveCancelButtons
+      slot="footer"
+      :allow_save="selected_archive_filename !== 'current'"
+      :save_text="$t('restore_this_version')"
+      @save="restoreVersion(archive_shown.content)"
+      @cancel="$emit('close')"
+    />
   </BaseModal2>
 </template>
 <script>
@@ -100,7 +105,7 @@ export default {
   },
   methods: {
     async getAllArchives() {
-      const { $archives } = await this.$api.getArchives({
+      const { $archives } = await this.$api.getFile({
         path: this.path,
       });
       this.archives = $archives || [];
@@ -146,17 +151,25 @@ export default {
 }
 
 ._topbar {
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: calc(var(--spacing) / 1) 0;
+  padding: calc(var(--spacing) / 1) 0;
+  background: white;
+  z-index: 1;
   gap: calc(var(--spacing) / 1);
 }
 
 ._archiveText {
-  background: var(--c-gris);
+  background: var(--c-gris_clair);
+  border: 1px solid var(--c-gris_clair);
+  border-radius: 1px;
+
   padding: calc(var(--spacing) / 2);
   width: 100%;
+  overflow-x: auto;
   // max-height: 150px;
   // overflow: auto;
 

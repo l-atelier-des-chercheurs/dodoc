@@ -73,15 +73,15 @@
 
         <div class="u-spacingBottom" />
 
-        <div class="u-sameRow" slot="footer">
+        <template slot="footer">
+          <div />
           <SaveCancelButtons
-            class="_scb"
             :is_saving="is_saving"
             :allow_save="allow_save"
             @save="updateAuthors"
             @cancel="cancel"
           />
-        </div>
+        </template>
       </BaseModal2>
     </div>
   </div>
@@ -95,7 +95,6 @@ export default {
     },
     field: {
       type: String,
-      required: true,
     },
     authors_paths: {
       type: [Boolean, String, Array],
@@ -233,6 +232,13 @@ export default {
       let _new_authors_paths = undefined;
       if (this.new_authors_paths === "noone") _new_authors_paths = [];
       else _new_authors_paths = this.new_authors_paths;
+
+      this.$emit("save", _new_authors_paths);
+      if (!this.path) {
+        this.edit_mode = false;
+        this.is_saving = false;
+        return;
+      }
 
       try {
         const new_meta = {

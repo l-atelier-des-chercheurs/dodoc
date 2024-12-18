@@ -9,7 +9,8 @@ const path = require("path"),
   { IncomingForm } = require("formidable"),
   md5File = require("md5-file"),
   exifr = require("exifr"),
-  crypto = require("crypto");
+  crypto = require("crypto"),
+  archiver = require("archiver");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -266,7 +267,37 @@ module.exports = (function () {
       return results;
     },
 
-    async handleForm({ path_to_folder, destination_full_folder_path, req }) {
+    createZIPFromFolder({ full_path_to_folder }) {
+      return new Promise((resolve, reject) => {
+        const containing_folder = API.getContainingFolder(full_path_to_folder);
+        const folder_name = API.getFilename(full_path_to_folder);
+        const path_to_zip = path.join(containing_folder, `${folder_name}.zip`);
+
+        const output = fs.createWriteStream(path_to_zip);
+        const archive = archiver("zip", {
+          zlib: { level: 0 },
+        });
+        archive.on("warning", (err) => {
+          throw err;
+        });
+        archive.on("error", function (err) {
+          dev.error(`Failed to create ZIP from folder: ${err}`);
+          return reject(err);
+        });
+        archive.on("finish", function () {
+          return resolve(path_to_zip);
+        });
+        archive.pipe(output);
+        archive.directory(full_path_to_folder, false);
+        archive.finalize();
+      });
+    },
+    async handleForm({
+      path_to_folder,
+      destination_full_folder_path,
+      req,
+      upload_max_file_size_in_mo = 10_000,
+    }) {
       dev.logfunction({ path_to_folder, destination_full_folder_path });
 
       if (
@@ -281,7 +312,7 @@ module.exports = (function () {
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
-          maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
+          maxFileSize: upload_max_file_size_in_mo * 1024 * 1024,
         });
 
         let file = null;
@@ -304,9 +335,22 @@ module.exports = (function () {
 
         form
           .on("error", (err) => {
-            return reject(err);
+            if (err.code === 1009) {
+              dev.error(
+                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
+              );
+              return reject("file_size_limit_exceeded");
+            } else {
+              return reject(err);
+            }
           })
           .on("aborted", (err) => {
+            if (err.code === 1009) {
+              dev.error(
+                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
+              );
+              return reject("file_size_limit_exceeded");
+            }
             return reject(err);
           });
 
@@ -367,11 +411,11 @@ module.exports = (function () {
             throw err;
           });
     },
-    async convertAndCopyImage({ source, destination, resolution }) {
+    async convertAndCopyImage({ source, destination, width, height }) {
       await sharp(source)
         .rotate()
         .flatten({ background: "white" })
-        .resize(resolution.width, resolution.height, {
+        .resize(width, height, {
           fit: "contain",
           withoutEnlargement: false,
           background: "black",
@@ -578,8 +622,12 @@ module.exports = (function () {
       source,
       destination,
       format = "mp4",
-      bitrate = "6000k",
-      resolution,
+      image_width,
+      image_height,
+      video_bitrate = "4000k",
+      audio_bitrate = "192k",
+      trim_start,
+      trim_end,
       reportProgress,
     }) {
       return new Promise(async (resolve, reject) => {
@@ -589,25 +637,34 @@ module.exports = (function () {
         let totalTime;
 
         ffmpeg_cmd.input(source);
-        const { duration, streams } = await API.getVideoDurationFromMetadata({
-          ffmpeg_cmd,
-          video_path: source,
-        });
 
-        if (duration) ffmpeg_cmd.duration(duration);
+        try {
+          const { duration, streams } = await API.getVideoDurationFromMetadata({
+            ffmpeg_cmd,
+            video_path: source,
+          });
+          if (trim_start !== undefined && trim_end !== undefined)
+            ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
+          else if (duration) ffmpeg_cmd.duration(duration);
 
-        // check if has audio track or not
-        if (streams?.some((s) => s.codec_type === "audio"))
-          ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("192k");
-        else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+          if (audio_bitrate === "no_audio") {
+            ffmpeg_cmd.noAudio();
+          } else {
+            if (streams?.some((s) => s.codec_type === "audio")) {
+              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate(audio_bitrate);
+            } else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
 
-        const filter = API.makeFilterToPadMatchDurationAudioVideo({ streams });
-        if (filter) ffmpeg_cmd.addOptions([filter]);
-
-        if (resolution)
-          ffmpeg_cmd.videoFilter([
-            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
-          ]);
+            if (streams) {
+              const filter = API.makeFilterToPadMatchDurationAudioVideo({
+                streams,
+              });
+              if (filter) ffmpeg_cmd.addOptions([filter]);
+            }
+          }
+        } catch (err) {
+          dev.error(err);
+          ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+        }
 
         // if (streams?.some((s) => s.codec_type === "audio"))
         // if (temp_video_volume) {
@@ -629,13 +686,24 @@ module.exports = (function () {
           ffmpeg_cmd.toFormat("mpegts");
         }
 
+        if (video_bitrate === "no_video") {
+          ffmpeg_cmd.noVideo();
+        } else {
+          ffmpeg_cmd
+            .withVideoCodec("libx264")
+            .withVideoBitrate(video_bitrate)
+            .videoFilter(["setsar=1/1"]);
+          if (image_width && image_height) {
+            ffmpeg_cmd.videoFilter([
+              `scale=w=${image_width}:h=${image_height}:force_original_aspect_ratio=1,pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2`,
+            ]);
+          }
+        }
+
         ffmpeg_cmd
           .native()
           .outputFPS(30)
-          .withVideoCodec("libx264")
-          .withVideoBitrate(bitrate)
           .addOptions(flags)
-          .videoFilter(["setsar=1/1"])
           .on("start", function (commandLine) {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
@@ -673,6 +741,16 @@ module.exports = (function () {
         });
       });
     },
+    hasAudioTrack({ ffmpeg_cmd, video_path }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
+          return resolve(
+            metadata?.streams?.filter((s) => s.codec_type === "audio").length >
+              0
+          );
+        });
+      });
+    },
 
     makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
       const audio_stream = streams.find((s) => s.codec_type === "audio");
@@ -700,6 +778,21 @@ module.exports = (function () {
     },
     convertToLocalPath(p) {
       return p.replaceAll("/", path.sep);
+    },
+    async testWriteFileInFolder(folder_path) {
+      const path_to_test_file = path.join(folder_path, "__test.txt");
+      const created_on_date = API.getCurrentDate();
+      await fs.ensureDir(folder_path);
+      await writeFileAtomic(
+        path_to_test_file,
+        `Test file created and immediately deleted by dodoc while starting, on ${created_on_date}.`
+      );
+      await fs.remove(path_to_test_file);
+      return;
+    },
+    addhttp(url) {
+      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+      return url;
     },
   };
 

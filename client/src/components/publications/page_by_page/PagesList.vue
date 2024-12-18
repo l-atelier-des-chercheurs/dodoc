@@ -2,6 +2,13 @@
   <transition name="slideup">
     <div v-if="!page_opened_id">
       <div class="_setPreviewSize">
+        <h2>
+          <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
+          <template v-else>{{ $t("list_of_spreads") }}</template>
+        </h2>
+
+        <div class="u-spacingBottom" />
+
         <RangeValueInput
           :label="$t('previews_size')"
           :value="previews_size"
@@ -25,18 +32,19 @@
           <div
             v-for="(page, index) in pages"
             :key="'page-' + page.id"
-            class="u-sameRow"
+            class="u-sameRow _singlePage"
           >
-            <button
-              type="button"
-              class="u-button u-button_icon u-button_small _createPage"
-              @click="createPage(index)"
+            <EditBtn
               v-if="can_edit"
-              :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
+              :style="
+                is_creating_page
+                  ? 'opacity: 0 !important;'
+                  : 'opacity: 1 !important;'
+              "
+              :btn_type="'create_page'"
               :key="'createPage' + index"
-            >
-              <b-icon icon="plus-circle" />
-            </button>
+              @click="createPage(index)"
+            />
             <div class="_page">
               <div class="_preview">
                 <SinglePage
@@ -62,6 +70,7 @@
                 />
               </div>
               <PageLabel
+                class="_pageLabel"
                 :index="index"
                 :number_of_pages="pages.length"
                 :can_edit="can_edit"
@@ -78,70 +87,83 @@
           </div>
         </template>
         <template v-else>
-          <div
-            class="_spread"
-            v-for="(spread, index) in spreads"
-            :key="'spread-' + index"
-          >
-            <div
-              class=""
-              v-for="(page, iindex) in spread"
-              :key="page ? page.id : iindex"
-            >
-              <template v-if="page && page.id">
-                <div class="_preview">
-                  <SinglePage
-                    :context="'preview'"
-                    :zoom="page_preview_zoom"
-                    :page_modules="
-                      getModulesForPage({ modules, page_id: page.id })
+          <template v-for="(spread, index) in spreads">
+            <template v-for="(page, iindex) in spread">
+              <EditBtn
+                v-if="can_edit && iindex === 0"
+                class="_createPage"
+                :style="
+                  is_creating_page
+                    ? 'opacity: 0 !important;'
+                    : 'opacity: 1 !important;'
+                "
+                :btn_type="'create_page'"
+                :key="'createPage-' + Math.max(0, index * 2 + iindex - 1)"
+                @click="createPage(Math.max(0, index * 2 + iindex - 1))"
+              />
+              <div
+                :key="page ? page.id : iindex"
+                :data-pageposition="iindex === 0 ? 'left' : 'right'"
+              >
+                <template v-if="page && page.id">
+                  <div class="_preview">
+                    <SinglePage
+                      :context="'preview'"
+                      :zoom="page_preview_zoom"
+                      :page_modules="
+                        getModulesForPage({ modules, page_id: page.id })
+                      "
+                      :page_width="publication.page_width"
+                      :page_height="publication.page_height"
+                      :layout_mode="publication.layout_mode"
+                      :page_color="page.page_color"
+                      :page_number="index * 2 + iindex"
+                      :pagination="pagination"
+                      :hide_pagination="page.hide_pagination === true"
+                      :page_is_left="iindex === 0"
+                      :can_edit="false"
+                    />
+                    <button
+                      type="button"
+                      class="u-button _openPage"
+                      @click="$emit('togglePage', page.id)"
+                      v-html="$t('open')"
+                    />
+                    <!-- <div v-else>No preview</div> -->
+                  </div>
+                  <PageLabel
+                    :index="index * 2 + iindex - 1"
+                    :number_of_pages="pages.length"
+                    :can_edit="can_edit"
+                    @movePage="
+                      movePage({
+                        old_position: $event.old_position,
+                        new_position: $event.new_position,
+                      })
                     "
-                    :page_width="publication.page_width"
-                    :page_height="publication.page_height"
-                    :layout_mode="publication.layout_mode"
-                    :page_color="page.page_color"
-                    :page_number="index * 2 + iindex"
-                    :pagination="pagination"
-                    :hide_pagination="page.hide_pagination === true"
-                    :page_is_left="iindex === 0"
-                    :can_edit="false"
+                    @duplicatePage="duplicatePage(page.id)"
+                    @removePage="removePage(page.id)"
                   />
-                  <button
-                    type="button"
-                    class="u-button _openPage"
-                    @click="$emit('togglePage', page.id)"
-                    v-html="$t('open')"
-                  />
-                  <!-- <div v-else>No preview</div> -->
-                </div>
-                <PageLabel
-                  :index="index * 2 + iindex - 1"
-                  :number_of_pages="pages.length"
-                  :can_edit="can_edit"
-                  @movePage="
-                    movePage({
-                      old_position: $event.old_position,
-                      new_position: $event.new_position,
-                    })
-                  "
-                  @duplicatePage="duplicatePage(page.id)"
-                  @removePage="removePage(page.id)"
-                />
-              </template>
-            </div>
-          </div>
+                </template>
+              </div>
+            </template>
+          </template>
         </template>
-        <button
-          type="button"
-          class="u-button u-button_white _createPage"
-          @click="createPage"
+        <span
           v-if="can_edit"
-          :style="is_creating_page ? 'opacity: 0;' : 'opacity: 1'"
-          key="createPage"
+          :key="'createPage'"
+          :style="
+            is_creating_page
+              ? 'opacity: 0 !important;'
+              : 'opacity: 1 !important;'
+          "
         >
-          <b-icon icon="plus-circle" />
-          {{ $t("create_page") }}
-        </button>
+          <EditBtn
+            :btn_type="'create_page'"
+            :is_unfolded="true"
+            @click="createPage"
+          />
+        </span>
       </transition-group>
     </div>
     <OpenedPageOrSpread
@@ -195,9 +217,13 @@ export default {
     };
   },
 
-  created() {},
+  created() {
+    this.$eventHub.$on("publication.togglePage", this.togglePage);
+  },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("publication.togglePage", this.togglePage);
+  },
   watch: {},
   computed: {
     pages() {
@@ -365,6 +391,9 @@ export default {
     generatePageID() {
       return (Math.random().toString(36) + "00000000000000000").slice(2, 2 + 6);
     },
+    togglePage(page_id) {
+      this.$emit("togglePage", page_id);
+    },
     async updatePageOptions({ page_number, value }) {
       let pages = this.publication.pages.slice();
       Object.assign(pages[page_number], value);
@@ -387,8 +416,17 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
+  gap: calc(var(--spacing) * 1) 0;
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2)
+    calc(var(--spacing) * 4);
+
+  > * {
+    margin-right: calc(var(--spacing) * 1);
+
+    &[data-pageposition="left"] {
+      margin-right: 0;
+    }
+  }
 }
 
 ._page {
@@ -401,10 +439,10 @@ export default {
   // width: 210px;
   // height: 297px;
 }
-._spread {
-  display: flex;
-  flex-flow: row nowrap;
+._singlePage {
+  gap: calc(var(--spacing) * 1);
 }
+
 ._preview {
   position: relative;
   overflow: hidden;
@@ -434,7 +472,7 @@ export default {
   }
 }
 ._createPage {
-  margin-bottom: calc(var(--spacing) * 3);
+  margin-right: calc(var(--spacing) * 1);
 }
 
 ._setPreviewSize {

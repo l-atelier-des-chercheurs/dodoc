@@ -75,7 +75,7 @@
                   v-for="size in [100, 66.6, 50, 33.3]"
                   :key="size"
                   type="button"
-                  class="u-button u-button_icon u-button_small _sizes"
+                  class="u-button u-button_small u-button_transparent _sizes"
                   :class="{
                     'is--active':
                       (!publimodule.size && size === 100) ||
@@ -95,7 +95,7 @@
                   v-for="align in ['left', 'center', 'right']"
                   :key="align"
                   type="button"
-                  class="u-button u-button_icon u-button_small"
+                  class="u-button u-button_small u-button_transparent"
                   :class="{
                     'is--active':
                       (!publimodule.align && align === 'left') ||
@@ -108,33 +108,6 @@
                   <b-icon v-if="align === 'right'" icon="align-end" />
                 </button>
               </div>
-
-              <DropDown :right="true">
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  @click="duplicateModule"
-                >
-                  <b-icon icon="file-plus" />
-                  {{ $t("duplicate") }}
-                </button>
-
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  @click="$emit('changeSectionForModule')"
-                >
-                  <b-icon icon="arrow-left-right" />
-                  {{ $t("change_section") }}
-                </button>
-
-                <RemoveMenu
-                  v-if="can_edit"
-                  :remove_text="$t('remove')"
-                  :show_button_text="true"
-                  @remove="removeModule"
-                />
-              </DropDown>
             </div>
             <div class="_carto" v-if="is_associated_to_map">
               <div class="_latlon" v-if="false">
@@ -158,7 +131,7 @@
               <div class="">
                 <button
                   type="button"
-                  class="u-button u-button_red"
+                  class="u-button u-button_red u-button_small"
                   @click.stop="repickLocation"
                 >
                   <template v-if="!has_coordinates">
@@ -172,12 +145,66 @@
                 </button>
               </div>
               <div class="" v-if="has_coordinates">
+                <SelectField2
+                  :value="publimodule.zoom_level"
+                  :options="zoom_level_options"
+                  :can_edit="can_edit"
+                  :hide_validation="true"
+                  :size="'small'"
+                  @change="
+                    updateMeta({
+                      zoom_level: $event,
+                    })
+                  "
+                />
+
+                <!-- <select
+                  :value="publimodule.zoom_level"
+                  :disabled="!can_edit"
+                  @change="updateMeta({ zoom_level: $event })"
+                >
+                  <option
+                    v-for="option in zoom_level_options"
+                    :key="option.key"
+                    :value="option.key"
+                    v-text="option.text || option.key"
+                  />
+                </select> -->
+              </div>
+              <div class="" v-if="has_coordinates">
                 <button type="button" class="u-buttonLink" @click="eraseCoords">
                   <b-icon icon="x-circle" />
                   {{ $t("erase") }}
                 </button>
               </div>
             </div>
+
+            <DropDown :right="true">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="duplicateModule"
+              >
+                <b-icon icon="file-plus" />
+                {{ $t("duplicate") }}
+              </button>
+
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="$emit('changeSectionForModule')"
+              >
+                <b-icon icon="arrow-left-right" />
+                {{ $t("change_section") }}
+              </button>
+
+              <RemoveMenu
+                v-if="can_edit"
+                :remove_text="$t('remove')"
+                :show_button_text="true"
+                @remove="removeModule"
+              />
+            </DropDown>
           </div>
 
           <div class="_saveBtn">
@@ -227,7 +254,14 @@
         </span> -->
       </button>
 
-      <div class="_floatingEditBtn" v-if="can_edit">
+      <div
+        class="_floatingEditBtn"
+        v-if="
+          can_edit &&
+          (page_template !== 'page_by_page' ||
+            publimodule.module_type === 'text')
+        "
+      >
         <span @click.stop="enableEdit" @touchstart.stop="enableEdit">
           <EditBtn v-if="!edit_mode" :label_position="'left'" />
         </span>
@@ -502,6 +536,31 @@ export default {
         return this.$getMapOptions().opened_pin_path === this.publimodule.$path;
       return false;
     },
+    zoom_level_options() {
+      const max = 20;
+      return new Array(max).fill(0).map((e, i) => {
+        if (i === 0)
+          return {
+            key: "",
+            text: this.$t("dont_zoom"),
+          };
+        else if (i === 1)
+          return {
+            key: i,
+            text: i + " (" + this.$t("very_far") + ")",
+          };
+        else if (i === max - 1)
+          return {
+            key: i,
+            text: i + " (" + this.$t("very_close") + ")",
+          };
+        else
+          return {
+            key: i,
+          };
+      });
+    },
+
     available_module_types() {
       // a text module can become something else but not the other way around
       if (this.publimodule.module_type === "text")
@@ -742,8 +801,8 @@ export default {
 ._publicationModule {
   position: relative;
   scroll-margin-top: calc(var(--spacing) * 1.5);
-  font-size: 16px;
-  // padding: 0 calc(var(--spacing) * 2);
+  // not sure why 16px ?
+  // font-size: 16px;
 
   &[data-type="shape"] {
     ._content,
@@ -850,11 +909,15 @@ export default {
 
 ._advanced_menu,
 ._carto {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
+}
+
+._carto {
+  justify-content: flex-end;
 }
 
 ._buttonRow {
@@ -863,11 +926,11 @@ export default {
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
   align-items: center;
+
+  --active-color: white;
 }
 
 ._sizes.is--active {
-  color: white;
-  background: transparent;
 }
 
 ._floatingEditBtn {
@@ -919,7 +982,9 @@ export default {
   width: 30px;
   height: 30px;
   z-index: 1;
-  margin: calc(var(--spacing) / 4);
+
+  margin: 0 calc(var(--spacing) / 2);
+
   padding: 0;
 
   // ._publicationModule[data-type="text"] & {

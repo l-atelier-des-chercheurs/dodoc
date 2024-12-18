@@ -82,7 +82,7 @@
             class="u-buttonLink _exportBtn"
             @click="show_export_pdf_modal = true"
           >
-            <b-icon icon="file-pdf" />
+            <b-icon icon="download" />
             {{ $t("to_export") }}
           </button>
         </div>
@@ -171,6 +171,8 @@ export default {
       if (this.publication.template === "page_by_page")
         query = { display: "slides" };
       else if (this.publication.template === "story_with_sections")
+        query = { display: "section" };
+      else if (this.publication.template === "cartography")
         query = { display: "section" };
 
       const route = this.$router.resolve({

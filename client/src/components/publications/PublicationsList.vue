@@ -59,7 +59,7 @@
         :content="project.publications_pinned"
         :path="project.$path"
         :folders="sorted_publications"
-        :can_edit="can_edit"
+        :can_edit="can_edit_project"
         v-slot="slotProps"
       >
         <PublicationPreview
@@ -199,6 +199,9 @@ export default {
         .sort(
           (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
         );
+    },
+    can_edit_project() {
+      return this.canLoggedinEditFolder({ folder: this.project.$path });
     },
   },
   methods: {

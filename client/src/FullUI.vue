@@ -5,6 +5,7 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
+    <DynamicCursor v-if="!$root.is_touch_device" />
 
     <transition name="fade_fast" mode="out-in">
       <div class="_spinner" v-if="$root.is_loading" key="loader">
@@ -30,6 +31,7 @@
 </template>
 <script>
 import TopBar from "@/components/TopBar.vue";
+import DynamicCursor from "@/components/DynamicCursor.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
@@ -39,6 +41,7 @@ export default {
   props: {},
   components: {
     TopBar,
+    DynamicCursor,
     GeneralPasswordModal,
     TrackAuthorChanges,
     TaskTracker,
@@ -57,6 +60,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$on(`app.notify_error`, this.notifyError);
 
     await this.$api.init({ debug_mode: this.$root.debug_mode });
 
@@ -74,6 +78,12 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$off(`app.notify_error`, this.notifyError);
+
+    this.$eventHub.$off("socketio.connect", this.socketConnected);
+    this.$eventHub.$off("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$off("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$off("socketio.connect_error", this.socketConnectError);
     this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
   },
   watch: {},
@@ -104,6 +114,10 @@ export default {
     },
     promptGeneralPassword() {
       this.show_general_password_modal = true;
+    },
+    notifyError(msg) {
+      if (msg === "not_allowed")
+        this.$alertify.delay(4000).error(this.$t("action_not_allowed"));
     },
   },
 };

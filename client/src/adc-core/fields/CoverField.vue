@@ -39,38 +39,20 @@
       <EditBtn
         v-if="!edit_mode"
         :label_position="'left'"
+        :is_unfolded="!cover_thumb"
+        :label="!cover_thumb ? $t('add') : undefined"
         @click="enableEditMode"
       />
-      <BaseModal2
+      <ImageSelect
         v-if="edit_mode"
-        :title="label_title"
+        :path="path"
+        :label="label_title"
+        :ratio="ratio"
+        :preview_format="preview_format"
+        :existing_preview="existing_preview"
+        :available_options="available_options"
         @close="edit_mode = false"
-      >
-        <div class="_picker">
-          <ImageSelect
-            v-if="edit_mode"
-            :path="path"
-            :existing_preview="existing_preview"
-            :available_options="['import', 'project', 'capture']"
-            :preview_format="preview_format"
-            @newPreview="
-              (value) => {
-                new_cover = value;
-              }
-            "
-          />
-
-          <div class="_footer">
-            <SaveCancelButtons
-              class="_scb"
-              :is_saving="is_saving"
-              :allow_save="allow_save"
-              @save="updateCover"
-              @cancel="cancel"
-            />
-          </div>
-        </div>
-      </BaseModal2>
+      />
     </div>
   </div>
 </template>
@@ -81,13 +63,18 @@ export default {
     title: String,
     path: String,
     context: String,
-    preview_format: {
+    ratio: {
       type: String,
-      default: "square",
+      default: "3 / 2",
     },
+    preview_format: String,
     placeholder: {
       type: String,
       default: "pattern",
+    },
+    available_options: {
+      type: Array,
+      default: () => ["import", "project", "capture"],
     },
     can_edit: Boolean,
   },
@@ -95,11 +82,10 @@ export default {
   data() {
     return {
       selected_file: [],
-      new_cover: "",
       allow_save: true,
 
       edit_mode: false,
-      is_saving: false,
+
       show_cover_fullscreen: false,
     };
   },
@@ -142,34 +128,6 @@ export default {
         resolution: res,
       });
     },
-    cancel() {
-      this.edit_mode = false;
-      this.is_saving = false;
-    },
-    async updateCover() {
-      this.is_saving = true;
-
-      try {
-        await this.$api.updateCover({
-          path: this.path,
-          new_cover_data: this.new_cover,
-          // onProgress,
-        });
-
-        this.edit_mode = false;
-        this.is_saving = false;
-      } catch (e) {
-        this.is_saving = false;
-        this.edit_mode = false;
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("couldntbesaved"));
-
-        this.$alertify.closeLogOnClick(true).error(e.response);
-      }
-    },
   },
 };
 </script>
@@ -179,26 +137,9 @@ export default {
   inset: 0;
   overflow: visible;
 
-  --color1: var(--c-gris);
+  --color1: white;
+  --color2: var(--c-gris);
   // --color2: var(--c-gris_fonce);
-  --color2: white;
-}
-
-._picker {
-  position: relative;
-  // background: var(--c-noir);
-  // color: white;
-  // padding: calc(var(--spacing) / 4);
-  // max-width: 320px;
-  margin: calc(var(--spacing) / 4) auto;
-  // border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  flex-flow: column nowrap;
-  place-items: center;
-  width: 100%;
-
-  gap: calc(var(--spacing) / 2);
 }
 
 ._editingPane {
