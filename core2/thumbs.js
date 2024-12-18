@@ -655,6 +655,7 @@ module.exports = (function () {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
     } catch (err) {
+      dev.error(err.message);
       throw err;
     }
   }
