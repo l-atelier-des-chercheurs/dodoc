@@ -7,7 +7,10 @@ const {
   dialog,
 } = require("electron");
 const path = require("path");
+const writeFileAtomic = require("write-file-atomic");
+
 const utils = require("./utils");
+const notifier = require("./notifier");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
 app.commandLine.appendSwitch("allow-insecure-localhost", "true");
@@ -34,13 +37,19 @@ module.exports = (function () {
           );
         }
 
+        notifier.on("restartApp", () => {
+          dev.logfunction(`ELECTRON — init : restart`);
+          app.relaunch();
+          app.exit(0);
+        });
+
         // This method will be called when Electron has finished
         // initialization and is ready to create browser windows.
         // Some APIs can only be used after this event occurs.
         app.on("ready", () => {
           dev.log(`ELECTRON — init : ready`);
 
-          createWindow().then((_win) => {
+          _createWindow().then((_win) => {
             dev.logfunction(`ELECTRON — init : ready / window created`);
             win = _win;
             return resolve(win);
@@ -63,7 +72,7 @@ module.exports = (function () {
           // On macOS it's common to re-create a window in the app when the
           // dock icon is clicked and there are no other windows open.
           if (win === null) {
-            createWindow().then((_win) => {
+            _createWindow().then((_win) => {
               win = _win;
               return resolve(win);
             });
@@ -83,9 +92,39 @@ module.exports = (function () {
         );
       });
     },
+    captureScreenshot: async ({ url, full_path_to_thumb }) => {
+      let win = new BrowserWindow({
+        width: 800,
+        height: 800,
+        show: false,
+        enableLargerThanScreen: true,
+        webPreferences: {
+          contextIsolation: true,
+          allowRunningInsecureContent: true,
+          offscreen: true,
+        },
+      });
+      win.loadURL(url, {
+        // improve chance of getting a screenshot
+        userAgent: "facebookexternalhit/1.1",
+      });
+      win.webContents.setAudioMuted(true);
+
+      await new Promise((resolve) => {
+        win.webContents.once("did-finish-load", async () => {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          resolve();
+        });
+      }).then(async () => {
+        const image = await win.capturePage();
+        if (win) win.close();
+        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+        return;
+      });
+    },
   };
 
-  function createWindow() {
+  function _createWindow() {
     return new Promise(function (resolve, reject) {
       dev.logfunction();
 

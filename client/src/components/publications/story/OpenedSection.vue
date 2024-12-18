@@ -6,6 +6,7 @@
       :section="opened_section"
       :can_edit="can_edit"
       @prevSection="prevSection"
+      @nextSection="nextSection"
       @changeSectionForModule="change_section_for_module = $event"
     />
 
@@ -24,7 +25,7 @@
           v-if="prev_section"
           @click="prevSection"
         >
-          <b-icon icon="arrow-left-circle" />
+          <b-icon icon="arrow-left-square" />
           <span>
             {{ prev_section.section_title }}
           </span>
@@ -39,7 +40,7 @@
           <span>
             {{ next_section.section_title }}
           </span>
-          <b-icon icon="arrow-right-circle" />
+          <b-icon icon="arrow-right-square" />
         </button>
       </div>
     </div>
@@ -94,11 +95,13 @@ export default {
   methods: {
     nextSection() {
       this.scrollToTop();
-      this.$emit("toggleSection", this.getFilename(this.next_section.$path));
+      if (this.next_section?.$path)
+        this.$emit("toggleSection", this.getFilename(this.next_section.$path));
     },
     prevSection() {
       this.scrollToTop();
-      this.$emit("toggleSection", this.getFilename(this.prev_section.$path));
+      if (this.prev_section?.$path)
+        this.$emit("toggleSection", this.getFilename(this.prev_section.$path));
     },
     async scrollToTop() {
       //https://phuoc.ng/collection/html-dom/get-the-first-scrollable-parent-of-an-element/

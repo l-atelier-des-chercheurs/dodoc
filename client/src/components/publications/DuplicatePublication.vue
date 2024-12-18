@@ -57,17 +57,14 @@
           </details> -->
         </div>
 
-        <div class="u-sameRow" slot="footer">
+        <template slot="footer">
           <template v-if="!is_copying">
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_modal = false"
-            >
+            <button type="button" class="u-button" @click="show_modal = false">
+              <b-icon icon="x-circle" />
               {{ $t("cancel") }}
             </button>
             <button
-              class="u-button u-button_red"
+              class="u-button u-button_bleuvert"
               type="button"
               autofocus
               :disabled="!destination_project_path"
@@ -82,7 +79,7 @@
             </button>
           </template>
           <LoaderSpinner v-else />
-        </div>
+        </template>
       </template>
       <template v-else>
         <a :href="navigation_to_copy" class="u-button u-button_bleumarine">

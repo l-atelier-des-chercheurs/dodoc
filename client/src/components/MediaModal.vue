@@ -22,13 +22,13 @@
       </div>
 
       <div class="_preview">
-        <!-- <DebugBtn :content="file" /> -->
         <MediaContent
           :file="file"
           :resolution="1600"
           :context="'full'"
           :show_fs_button="true"
           :zoom_on_click="true"
+          :can_edit="false"
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           <div class="">
@@ -119,17 +119,28 @@
             </h3>
 
             <DropDown :right="true">
+              <ShareFile :file="file">
+                <b-icon icon="box-arrow-up-right" />
+                {{ $t("share") }}
+              </ShareFile>
+              <EmbedFile :file="file">
+                <b-icon icon="link" />
+                {{ $t("embed_link") }}
+              </EmbedFile>
               <div>
-                <DownloadFile :file="file">
-                  <b-icon icon="file-earmark-arrow-down" />
-                  {{ $t("download") }}
-                </DownloadFile>
+                <DownloadFile :file="file" />
               </div>
-              <OptimizeMedia
-                v-if="optimization_possible"
-                :media="file"
-                @close="$emit('close')"
-              />
+              <div class="_regenerateThumbs">
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click="regenerateThumbs"
+                >
+                  <b-icon icon="arrow-clockwise" />
+                  {{ $t("regenerate_thumbs") }}
+                </button>
+                <LoaderSpinner v-if="is_regenerating" />
+              </div>
               <DuplicateMedia :path="file.$path" @close="$emit('close')" />
               <RemoveMenu
                 v-if="$listeners.remove"
@@ -138,46 +149,9 @@
               />
             </DropDown>
           </div>
-          <small class="fieldCaption">{{ file.$media_filename }}</small>
         </div>
 
-        <hr class="u-spacingBottom" />
-
-        <div class="u-spacingBottom">
-          <CollaborativeEditor2
-            :label="$t('caption')"
-            :field_to_edit="'caption'"
-            :content="file.caption"
-            :path="file.$path"
-            :custom_formats="['bold', 'italic', 'link']"
-            :is_collaborative="false"
-            :can_edit="true"
-          />
-        </div>
-        <div class="u-spacingBottom">
-          <CollaborativeEditor2
-            :label="$t('credit/reference')"
-            :field_to_edit="'$credits'"
-            :content="file.$credits"
-            :path="file.$path"
-            :custom_formats="['bold', 'italic', 'link']"
-            :is_collaborative="false"
-            :can_edit="true"
-          />
-        </div>
-
-        <div class="u-spacingBottom">
-          <AuthorField
-            :label="$t('authors')"
-            class="u-spacingBottom"
-            :field="'$authors'"
-            :authors_paths="authors_path"
-            :path="file.$path"
-            :can_edit="true"
-            :instructions="$t('file_author_instructions')"
-            :no_options="true"
-          />
-        </div>
+        <div class="u-spacingBottom" />
 
         <DetailsPane
           :header="$t('informations')"
@@ -185,46 +159,58 @@
           :is_open_initially="true"
           class="u-spacingBottom"
         >
-          <DateDisplay
-            :title="$t('date_uploaded')"
-            :date="file.$date_uploaded"
-          />
-          <DateDisplay
-            :title="$t('date_modified')"
-            :date="file.$date_modified"
-          />
-          <SizeDisplay
-            v-if="file.$infos && file.$infos.size"
-            :size="file.$infos.size"
-          />
-          <ResolutionDisplay
-            v-if="file.$infos && (file.$infos.width || file.$infos.height)"
-            :width="file.$infos.width"
-            :height="file.$infos.height"
-          />
-          <DurationDisplay
-            v-if="file.$infos && file.$infos.duration"
-            :title="$t('duration')"
-            :duration="file.$infos.duration"
-          />
-
-          <div class="_metaField" v-if="file.$origin">
-            <DLabel :str="$t('origin')" />
-            <div
-              class="_originInd"
-              :style="`--o-color: var(--color-${file.$origin})`"
-            >
-              <i>
-                {{ $t(file.$origin) }}
-              </i>
-            </div>
+          <div class="u-spacingBottom">
+            <TitleField
+              :label="$t('caption')"
+              :field_name="'caption'"
+              :content="file.caption"
+              :path="file.$path"
+              :input_type="'editor'"
+              :custom_formats="['bold', 'italic', 'link']"
+              :can_edit="true"
+            />
+          </div>
+          <div class="u-spacingBottom">
+            <TitleField
+              :label="$t('credit/reference')"
+              :field_name="'$credits'"
+              :content="file.$credits"
+              :path="file.$path"
+              :input_type="'editor'"
+              :custom_formats="['bold', 'italic', 'link']"
+              :can_edit="true"
+            />
+          </div>
+          <div class="u-spacingBottom">
+            <TagsField
+              :label="$t('keywords')"
+              :field_name="'keywords'"
+              :tag_type="'keywords'"
+              :local_suggestions="keywords_suggestions"
+              :content="file.keywords"
+              :path="file.$path"
+              :can_edit="true"
+            />
+          </div>
+          <div class="">
+            <AuthorField
+              :label="$t('authors')"
+              :field="'$authors'"
+              :authors_paths="authors_path"
+              :path="file.$path"
+              :can_edit="true"
+              :instructions="$t('file_author_instructions')"
+              :no_options="true"
+            />
           </div>
         </DetailsPane>
 
         <DetailsPane
           :header="$t('location')"
+          :is_open_initially="false"
+          :has_items="author_has_location"
           :icon="'map'"
-          :has_items="!!file.$location"
+          class="u-spacingBottom"
         >
           <PositionPicker
             :field_name="'$location'"
@@ -232,6 +218,103 @@
             :path="file.$path"
             :can_edit="true"
           />
+        </DetailsPane>
+
+        <DetailsPane
+          :header="$t('metadatas')"
+          :icon="'rulers'"
+          class="u-spacingBottom"
+        >
+          <div class="u-metaField">
+            <DLabel :str="$t('filename')" />
+            <div class="u-filename">{{ file.$media_filename }}</div>
+          </div>
+
+          <div class="">
+            <DateDisplay
+              :title="$t('date_uploaded')"
+              :date="file.$date_uploaded"
+            />
+          </div>
+          <div class="">
+            <DateDisplay
+              :title="$t('date_modified')"
+              :date="file.$date_modified"
+            />
+          </div>
+          <div class="" v-if="file.$infos.hasOwnProperty('size')">
+            <SizeDisplay :size="file.$infos.size" />
+          </div>
+          <div
+            class=""
+            v-if="
+              file.$infos.hasOwnProperty('width') ||
+              file.$infos.hasOwnProperty('height')
+            "
+          >
+            <ResolutionDisplay
+              :width="file.$infos.width"
+              :height="file.$infos.height"
+            />
+          </div>
+          <div class="" v-if="file.$infos.hasOwnProperty('duration')">
+            <DurationDisplay
+              :title="$t('duration')"
+              :duration="file.$infos.duration"
+            />
+          </div>
+          <div class="u-metaField" v-if="file.$origin">
+            <DLabel :str="$t('origin')" />
+            <div class="">
+              <div
+                class="_originInd"
+                :style="`--o-color: var(--color-${file.$origin})`"
+              >
+                {{ $t(file.$origin) }}
+              </div>
+            </div>
+          </div>
+        </DetailsPane>
+
+        <DetailsPane
+          :header="$t('toolbox')"
+          :icon="'tools'"
+          :has_items="tools_available"
+          :is_open_initially="false"
+        >
+          <div v-if="tools_available.length === 0">
+            <small>{{ $t("nothing_to_show") }}</small>
+          </div>
+          <div class="_allModifyButtons">
+            <CropAdjustMedia
+              v-if="cropadjust_possible"
+              :media="file"
+              @close="$emit('close')"
+            />
+            <OptimizeMedia
+              v-if="optimization_possible"
+              :media="file"
+              @close="$emit('close')"
+            />
+            <div v-for="make in available_makes" :key="make.type">
+              <button
+                type="button"
+                class="u-button u-button_bleumarine"
+                @click="
+                  createNewMakeAndOpenIt({
+                    type: make.type,
+                    additional_meta: make.additional_meta,
+                  })
+                "
+              >
+                {{ make.title }}
+              </button>
+
+              <div class="u-instructions">
+                <small v-html="make.instructions" />
+              </div>
+            </div>
+          </div>
         </DetailsPane>
       </div>
     </div>
@@ -256,20 +339,26 @@
 </template>
 <script>
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
+import CropAdjustMedia from "@/adc-core/fields/CropAdjustMedia.vue";
+import OptimizeMedia from "@/adc-core/fields/OptimizeMedia.vue";
 
 export default {
   props: {
     file: Object,
     select_mode: String,
+    keywords_suggestions: Array,
     position_in_list: String,
   },
   components: {
     DuplicateMedia,
+    CropAdjustMedia,
+    OptimizeMedia,
   },
   data() {
     return {
       show_nav_btn: false,
       show_meta_sidebar: true,
+      is_regenerating: false,
     };
   },
 
@@ -287,20 +376,144 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    tools_available() {
+      let count = 0;
+      if (this.cropadjust_possible) count++;
+      if (this.optimization_possible) count++;
+      if (this.available_makes?.length > 0)
+        count += this.available_makes.length;
+      return count;
+    },
+    cropadjust_possible() {
+      return (
+        this.file.$type === "image" &&
+        !this.file.$media_filename.endsWith(".gif")
+      );
+    },
     optimization_possible() {
       return this.fileCanBeOptimized({ path: this.file.$media_filename });
     },
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
     },
+    author_has_location() {
+      return (
+        !!this.file.$location?.latitude && !!this.file.$location?.longitude
+      );
+    },
+
+    all_available_makes() {
+      return {
+        video: [
+          {
+            type: "video_assemblage",
+            title: this.$t("video_assemblage"),
+            instructions: this.$t("video_assemblage_instructions"),
+          },
+          {
+            type: "video_effects",
+            title: this.$t("video_effects"),
+            instructions: this.$t("video_effects_instructions"),
+            additional_meta: {
+              effect_type: "black_and_white",
+              base_media_filename: this.meta_filename,
+            },
+          },
+          {
+            type: "mix_audio_and_video",
+            title: this.$t("mix_audio_and_video"),
+            instructions: this.$t("mix_audio_and_video_instructions"),
+            additional_meta: {
+              base_video_filename: this.meta_filename,
+            },
+          },
+        ],
+        image: [
+          {
+            type: "video_assemblage",
+            title: this.$t("video_assemblage"),
+            instructions: this.$t("video_assemblage_instructions"),
+          },
+          {
+            type: "mix_audio_and_image",
+            title: this.$t("mix_audio_and_image"),
+            instructions: this.$t("mix_audio_and_image_instructions"),
+            additional_meta: {
+              base_image_filename: this.meta_filename,
+            },
+          },
+        ],
+        audio: [
+          {
+            type: "mix_audio_and_image",
+            title: this.$t("mix_audio_and_image"),
+            instructions: this.$t("mix_audio_and_image_instructions"),
+            additional_meta: {
+              base_audio_filename: this.meta_filename,
+            },
+          },
+          {
+            type: "mix_audio_and_video",
+            title: this.$t("mix_audio_and_video"),
+            instructions: this.$t("mix_audio_and_video_instructions"),
+            additional_meta: {
+              base_audio_filename: this.meta_filename,
+            },
+          },
+        ],
+      };
+    },
+    available_makes() {
+      return this.all_available_makes[this.file.$type];
+    },
+
     authors_path() {
       return this.file.$authors || "noone";
+    },
+    project_path() {
+      return this.getParent(this.file.$path);
+    },
+    meta_filename() {
+      return this.getFilename(this.file.$path);
     },
   },
   methods: {
     toggleMeta() {
       this.show_meta_sidebar = !this.show_meta_sidebar;
       localStorage.setItem("show_meta_sidebar", this.show_meta_sidebar);
+    },
+    async regenerateThumbs() {
+      this.is_regenerating = true;
+      await this.$api.regenerateThumbs({ path: this.file.$path });
+      this.is_regenerating = false;
+    },
+
+    async createNewMakeAndOpenIt({ type, additional_meta: addtl_meta }) {
+      const rnd_suffix = (
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 2 + 3);
+
+      const title = this.$t(type) + "-" + rnd_suffix;
+
+      let additional_meta = {
+        type,
+        title,
+        requested_slug: title,
+        $admins: "parent_contributors",
+      };
+      Object.assign(additional_meta, addtl_meta);
+
+      const new_folder_slug = await this.$api.createFolder({
+        path: `${this.project_path}/makes`,
+        additional_meta,
+      });
+
+      this.$eventHub.$emit("pane.replacePane", {
+        type: "make",
+      });
+      this.$nextTick(() => {
+        this.$eventHub.$emit("make.open", new_folder_slug);
+      });
     },
   },
 };
@@ -335,6 +548,11 @@ export default {
       height: 100%;
       overflow: hidden;
 
+      &[data-filetype="text"] {
+        padding: calc(var(--spacing) * 1);
+        overflow: auto;
+        align-items: flex-start;
+      }
       &[data-filetype="audio"] {
         padding: calc(var(--spacing) * 3);
       }
@@ -353,6 +571,8 @@ export default {
 
 ._navBtn {
   pointer-events: auto;
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(5px) !important;
 
   position: relative;
   z-index: 100;
@@ -395,7 +615,7 @@ export default {
 
   > ._preview {
     position: relative;
-    background: var(--c-gris);
+    background: var(--c-gris_clair);
     overflow: hidden;
   }
 
@@ -442,8 +662,9 @@ export default {
 
 ._stickyClose {
   position: sticky;
+  top: 0;
   height: 0;
-  z-index: 100;
+  z-index: 101;
 }
 
 ._navBtns {
@@ -475,13 +696,16 @@ export default {
 }
 
 ._originInd {
-  padding: 2px 4px;
+  display: inline-block;
   color: white;
+  padding: 2px 4px;
+  font-style: italic;
   background: var(--o-color);
 }
 
 ._favSwitch {
   display: inline-block;
+  font-size: 1rem;
 }
 
 ._optimizeNotice {
@@ -512,6 +736,13 @@ export default {
   gap: calc(var(--spacing) / 1);
 }
 
-._dragFile {
+._regenerateThumbs {
+  position: relative;
+}
+
+._allModifyButtons {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 1);
 }
 </style>

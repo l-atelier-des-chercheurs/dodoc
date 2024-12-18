@@ -27,7 +27,7 @@ module.exports = function (media, options, callback) {
   }
 
   analyser.smoothingTimeConstant = 0.3;
-  analyser.fftSize = 1024;
+  analyser.fftSize = 256;
 
   source.connect(analyser);
 

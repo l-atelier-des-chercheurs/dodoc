@@ -28,6 +28,11 @@
                 >
               </p>
             </template>
+            <EditBtn
+              v-if="is_instance_admin"
+              class="_editAdminText"
+              @click="editPresentationText"
+            />
           </div>
           <div
             v-if="layout === 'image' && hero_thumb"
@@ -37,8 +42,20 @@
             <img :src="hero_thumb" role="presentation" />
           </div>
         </template>
+        <EditBtn
+          v-if="is_instance_admin"
+          class="_editAdminImg"
+          :label_position="'left'"
+          @click="editHeroImage"
+        />
       </div>
     </section>
+
+    <AdminSettings
+      v-if="show_settings_modal"
+      :starting_tab="settings_modal_starting_tab"
+      @close="closeAdminSettings"
+    />
 
     <template v-if="load_whole_page === true">
       <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
@@ -62,6 +79,7 @@
                 <div class="u-instructions _content">
                   <small v-html="$t('spaces_instr')" />
                 </div>
+
                 <SpacesList />
               </template>
               <template v-else-if="current_mode === 'projects'">
@@ -87,14 +105,25 @@
       <footer class="_bottomFooter">
         <div class="_bottomFooter--cont">
           <div
-            v-if="$root.app_infos.instance_meta.terms_in_footer"
-            class="u-spacingBottom"
+            v-if="
+              $root.app_infos.instance_meta.terms_in_footer ||
+              $root.app_infos.instance_meta.confidentiality_in_footer
+            "
+            class="u-spacingBottom _links"
           >
             <router-link
+              v-if="$root.app_infos.instance_meta.terms_in_footer"
               :to="createURLFromPath('pages/terms')"
               class="u-buttonLink"
             >
               {{ $t("terms") }}
+            </router-link>
+            <router-link
+              v-if="$root.app_infos.instance_meta.confidentiality_in_footer"
+              :to="createURLFromPath('pages/confidentiality')"
+              class="u-buttonLink"
+            >
+              {{ $t("confidentiality") }}
             </router-link>
           </div>
 
@@ -104,11 +133,23 @@
               {{ $t("version") }} {{ $root.app_infos.version }}
             </div>
           </div>
-          {{ $t("a_foss_made_by") }} <br />
-          {{ $t("more_informations") }} :
-          <a href="https://dodoc.fr" title="Site de do•doc" target="_blank"
-            >dodoc.fr</a
+
+          <p v-html="$t('a_foss_made_by')" />
+
+          <button
+            type="button"
+            class="u-buttonLink u-button_small"
+            @click="showCredits"
           >
+            <span v-html="$t('more_informations')" />
+          </button>
+          <!-- &nbsp;
+            <a
+              href="https://dodoc.fr"
+              :title="$t('open_website_new_tab')"
+              target="_blank"
+              >dodoc.fr</a
+            > -->
         </div>
       </footer>
     </template>
@@ -128,12 +169,16 @@ export default {
     SpacesList,
     AllProjects,
     DodocLogo,
+    AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
     RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
   },
   data() {
     return {
       load_whole_page: false,
       current_mode: "spaces",
+
+      settings_modal_starting_tab: undefined,
+      show_settings_modal: false,
     };
   },
   created() {
@@ -221,7 +266,23 @@ export default {
       return ["text", "image"];
     },
   },
-  methods: {},
+  methods: {
+    showCredits() {
+      this.$eventHub.$emit(`toolbar.openCredits`);
+    },
+    editHeroImage() {
+      this.settings_modal_starting_tab = "logo_and_images";
+      this.show_settings_modal = true;
+    },
+    editPresentationText() {
+      this.settings_modal_starting_tab = "informations";
+      this.show_settings_modal = true;
+    },
+    closeAdminSettings() {
+      this.show_settings_modal = false;
+      this.settings_modal_starting_tab = undefined;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -308,8 +369,8 @@ export default {
 
 ._content {
   max-width: 86ch;
-  margin: 0 auto;
   width: 100%;
+  margin: calc(var(--spacing) * 1) auto;
   padding: 0 calc(var(--spacing) * 1);
   text-align: center;
 }
@@ -322,8 +383,16 @@ export default {
   // background: white;
 }
 ._bottomFooter--cont {
-  max-width: 65ch;
+  max-width: 68ch;
   margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 1);
+
+  ._links {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: calc(var(--spacing) * 1);
+  }
 }
 
 ._floatinProjectBtn {
@@ -391,5 +460,16 @@ export default {
 ._recentlyEdited {
   max-width: var(--max-column-width);
   margin: calc(var(--spacing) * 2) auto;
+}
+
+._editAdminText {
+  position: absolute;
+  top: calc(var(--spacing) / 2);
+  right: calc(var(--spacing) / 2);
+}
+._editAdminImg {
+  position: absolute;
+  bottom: calc(var(--spacing) / 2);
+  right: calc(var(--spacing) / 2);
 }
 </style>

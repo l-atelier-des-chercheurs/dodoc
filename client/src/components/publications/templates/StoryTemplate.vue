@@ -67,7 +67,13 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
-                :types_available="['capture', 'import', 'write', 'embed']"
+                :types_available="[
+                  'capture',
+                  'import',
+                  'write',
+                  'embed',
+                  'table',
+                ]"
                 @addModules="
                   ({ meta_filenames }) =>
                     insertModuleMetaFilenamesToList({
@@ -85,7 +91,7 @@
     <ModuleCreator
       v-if="can_edit && (!modules_list || modules_list.length === 0)"
       :publication_path="publication.$path"
-      :types_available="['capture', 'import', 'write', 'embed']"
+      :types_available="['capture', 'import', 'write', 'embed', 'table']"
       @addModules="appendModuleMetaFilenameToList"
     />
   </div>

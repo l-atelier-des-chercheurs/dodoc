@@ -9,7 +9,8 @@ const folder = require("./folder"),
   notifier = require("./notifier"),
   utils = require("./utils"),
   Exporter = require("./Exporter"),
-  auth = require("./auth");
+  auth = require("./auth"),
+  users = require("./users");
 
 module.exports = (function () {
   const API = {
@@ -23,10 +24,7 @@ module.exports = (function () {
 
     app.get("/_perf", loadPerf);
 
-    // todo forbiddenFiles txt
-    // app.use(forbiddenFiles);
     app.use("/_api2/*", [cors(_corsCheck)]);
-    // app.options("/_api2/*", cors());
 
     app.get(
       "/_api2/_networkInfos",
@@ -38,7 +36,8 @@ module.exports = (function () {
 
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
-    app.post("/_api2/_restart", _onlyAdmins, _restart);
+    app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
+    app.get("/_api2/_users", _getAllUsers);
 
     /* PUBLIC FILES */
     app.get(
@@ -90,6 +89,16 @@ module.exports = (function () {
       _generalPasswordCheck,
       _restrictToContributors,
       _updateFile
+    );
+    app.patch(
+      [
+        "/_api2/:folder_type/:folder_slug/:meta_filename/_regenerateThumbs",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename/_regenerateThumbs",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_regenerateThumbs",
+      ],
+      _generalPasswordCheck,
+      _restrictToContributors,
+      _regenerateThumbs
     );
     app.delete(
       [
@@ -237,13 +246,14 @@ module.exports = (function () {
       _removeFolder
     );
 
+    app.get("/site.webmanifest", _loadManifest);
+    app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
   }
 
   function _corsCheck(req, callback) {
     console.log();
     dev.logapi({ path: req.path }, { params: req.params });
-
     // TODO check origin
     callback(null, { origin: true });
   }
@@ -321,8 +331,7 @@ module.exports = (function () {
     )
       return "Folder opened to any contributors or admins";
 
-    const token_path = auth.extrackAndCheckToken({ req });
-
+    const token_path = auth.extractAndCheckToken({ req });
     if (token_path) {
       if (token_path === path_to_folder) return "Token editing self";
       if (
@@ -373,8 +382,7 @@ module.exports = (function () {
       else return false;
     }
 
-    const token_path = auth.extrackAndCheckToken({ req });
-
+    const token_path = auth.extractAndCheckToken({ req });
     if (token_path) {
       if (token_path === utils.convertToSlashPath(path_to_folder))
         return "Token editing self";
@@ -416,7 +424,7 @@ module.exports = (function () {
       return next();
     } else {
       dev.error("not allowed to contribute");
-      if (res) return res.status(401).send({ code: "not_allowed" });
+      if (res) return res.status(403).send({ code: "not_allowed" });
       return false;
     }
   }
@@ -433,7 +441,7 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.log("not allowed to contribute");
+      dev.error("not allowed to contribute");
       if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
@@ -468,7 +476,7 @@ module.exports = (function () {
     dev.logapi();
 
     try {
-      const token_path = auth.extrackAndCheckToken({ req });
+      const token_path = auth.extractAndCheckToken({ req });
 
       if (await auth.isTokenInstanceAdmin({ token_path }))
         return next ? next() : undefined;
@@ -505,6 +513,7 @@ module.exports = (function () {
       require_signup_to_contribute,
       users_must_accept_terms_to_signup,
       terms_in_footer,
+      confidentiality_in_footer,
       require_mail_to_signup,
       enable_events,
       enable_indexing,
@@ -532,6 +541,7 @@ module.exports = (function () {
     d.users_must_accept_terms_to_signup =
       users_must_accept_terms_to_signup === true;
     d.terms_in_footer = terms_in_footer === true;
+    d.confidentiality_in_footer = confidentiality_in_footer === true;
     d.enable_events = enable_events === true;
     d.enable_indexing = enable_indexing === true;
     d.$admins = $admins || "";
@@ -555,24 +565,43 @@ module.exports = (function () {
       meta_name: favicon_image_name,
       resolution: 640,
     });
-    if (favicon_thumb) d.favicon_url = `/thumbs/${favicon_thumb}`;
+    if (favicon_thumb) d.favicon_url = `./thumbs/${favicon_thumb}`;
 
     const topbar_thumb = findMatchingFileThumb({
       meta_name: topbar_image_name,
       resolution: 320,
     });
-    if (topbar_thumb) d.topbar_thumb = `/thumbs/${topbar_thumb}`;
+    if (topbar_thumb) d.topbar_thumb = `./thumbs/${topbar_thumb}`;
 
     const hero_thumb = findMatchingFileThumb({
       meta_name: hero_image_name,
       resolution: 2000,
     });
-    if (hero_thumb) d.hero_thumb = `/thumbs/${hero_thumb}`;
+    if (hero_thumb) d.hero_thumb = `./thumbs/${hero_thumb}`;
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
 
     res.render("index", d);
   }
+
+  async function _loadManifest(req, res) {
+    const { name_of_instance } = await settings.get();
+    res.type("application/json");
+    res.send({
+      name: name_of_instance || "do•doc",
+      short_name: name_of_instance || "do•doc",
+      theme_color: "#ffffff",
+      background_color: "#ffffff",
+      display: "standalone",
+    });
+  }
+  async function _loadRobots(req, res) {
+    const { enable_indexing } = await settings.get();
+    const disallow = enable_indexing === true ? "" : "/";
+    res.type("text/plain");
+    res.send(`User-agent: *\nDisallow: ${disallow}`);
+  }
+
   function loadPerf(req, res) {
     let d = {};
     d.local_ips = utils.getLocalIPs();
@@ -665,12 +694,12 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     const detailed = req.query?.detailed === "true";
+    const no_files = req.query?.no_files === "true";
     const hrstart = process.hrtime();
 
     try {
       let d = await folder.getFolder({ path_to_folder, detailed });
-      const files = await file.getFiles({ path_to_folder });
-      d.$files = files;
+      if (!no_files) d.$files = await file.getFiles({ path_to_folder });
 
       let hrend = process.hrtime(hrstart);
       dev.performance(
@@ -851,20 +880,19 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      const meta_filename = await file.importFile({
+      const { meta: saved_meta, meta_filename } = await file.importFile({
         path_to_folder,
         req,
       });
       dev.logpackets({
         status: `uploaded file`,
         path_to_folder,
-        meta_filename,
+        saved_meta,
       });
-      res.status(200).json({ meta_filename });
-
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_folder, meta_filename),
       });
+      res.status(200).json({ saved_meta, meta_filename });
       notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
         meta,
@@ -889,6 +917,9 @@ module.exports = (function () {
     const folder_to_export_to = meta_filename
       ? path_to_folder
       : path_to_parent_folder;
+
+    // add res to data so res becomes available to Exporter to generate HTML
+    data.express_res = res;
 
     // DISPATCH TASKS
     const task = new Exporter({
@@ -1196,12 +1227,10 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta,
       });
-      const file_archives = await file
-        .getArchives({
-          path_to_folder,
-          meta_filename,
-        })
-        .catch(() => {});
+      const file_archives = await file.getArchives({
+        path_to_folder,
+        meta_filename,
+      });
       if (file_archives) meta.$archives = file_archives;
 
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -1245,6 +1274,32 @@ module.exports = (function () {
     }
   }
 
+  async function _regenerateThumbs(req, res, next) {
+    const { path_to_folder, path_to_meta, meta_filename } =
+      utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_meta, meta_filename });
+
+    try {
+      const changed_data = await file._regenerateThumbs({
+        path_to_folder,
+        path_to_meta,
+        meta_filename,
+      });
+      notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
+        changed_data,
+      });
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to regenerate thumbs: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+
   async function _removeFile(req, res, next) {
     const {
       path_to_folder = "",
@@ -1257,6 +1312,7 @@ module.exports = (function () {
       await file.removeFile({
         path_to_folder,
         meta_filename,
+        path_to_meta,
       });
       dev.logpackets(`file ${meta_filename} was removed`);
       res.status(200).json({ status: "ok" });
@@ -1349,11 +1405,9 @@ module.exports = (function () {
     });
   }
 
-  async function _checkAuth(req, res, next) {}
-  async function _restart(req, res, next) {
-    notifier.emit("restart");
+  async function _restartApp(req, res, next) {
+    notifier.emit("restartApp");
   }
-
   async function _getStoragePath(req, res, next) {
     res.json({ pathToUserContent: global.pathToUserContent });
   }
@@ -1362,6 +1416,11 @@ module.exports = (function () {
     const new_path = data.new_path;
     settings.updatePath({ new_path });
     res.status(200).json({ status: "ok" });
+  }
+
+  async function _getAllUsers(req, res, next) {
+    const all_users = users.getAllUsers();
+    res.json(all_users);
   }
 
   async function _loadCustomFonts() {

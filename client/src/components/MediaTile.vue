@@ -7,12 +7,13 @@
       'is--selected': is_selected,
       'is--own': is_own_media,
     }"
+    :data-type="file.$type"
     :data-tilemode="tile_mode"
   >
-    <!-- top left -->
     <div
       class="u-nut _index"
       :style="`--o-color: var(--color-${file.$origin})`"
+      :data-origin="file.$origin"
       v-html="index"
       @click="$emit('toggleMediaFocus')"
     />
@@ -26,6 +27,11 @@
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
     />
+    <div
+      v-if="tile_mode === 'table'"
+      class="u-filename _filename"
+      v-text="file.$media_filename"
+    />
 
     <!-- top right  -->
     <FavSwitch
@@ -36,21 +42,20 @@
     />
 
     <!-- bottom right -->
-    <div
-      class="_hasCoordinates"
-      v-if="has_coordinates || tile_mode === 'table'"
-    >
-      <b-icon class="" v-if="has_coordinates" icon="pin-map-fill" />
+    <div v-if="has_coordinates || tile_mode === 'table'" class="">
+      <div v-if="has_coordinates" class="_hasCoordinates">
+        <b-icon class="_indicator" icon="pin-map-fill" />
+      </div>
       <span v-else v-text="'-'" />
     </div>
 
     <template>
       <!-- bottom left -->
-      <span v-if="duration" class="_fileType" v-html="duration" />
+      <span v-if="duration" class="_indicator _fileType" v-html="duration" />
       <span
-        v-if="['pdf', 'stl'].includes(file.$type) || tile_mode === 'table'"
-        class="_fileType"
-        v-html="$t(file.$type)"
+        v-if="show_file_type_label"
+        class="_indicator _fileType"
+        v-html="show_file_type_label"
       />
     </template>
 
@@ -74,6 +79,7 @@
     <button
       type="button"
       class="_focusMediaBtn"
+      :title="file.$media_filename"
       @click="$emit('toggleMediaFocus')"
     />
 
@@ -87,14 +93,6 @@
       :content="is_selected"
       @update:content="$emit('setSelected', $event)"
     />
-
-    <!-- <input
-      v-if="is_selectable"
-      class="_selectCb"
-      type="checkbox"
-      :checked="is_selected"
-      @change="$emit('setSelected', $event.target.checked)"
-    /> -->
   </div>
 </template>
 <script>
@@ -136,6 +134,13 @@ export default {
     duration() {
       return this.displayDuration({ media: this.file });
     },
+    show_file_type_label() {
+      if (this.file?.$media_filename?.endsWith(".gif")) return this.$t("gif");
+      if (this.file?.$type === "stl") return this.$t("stl");
+      if (this.file?.$type === "pdf") return this.$t("pdf");
+      if (this.tile_mode === "table") return this.$t(this.file?.$type);
+      return false;
+    },
   },
   methods: {},
 };
@@ -146,14 +151,26 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
   border-radius: 3px;
-  // border: 1px solid transparent;
+  padding: 0;
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--own {
     // border-bottom: 2px solid var(--c-bleumarine);
 
     ._index {
-      border: 2px solid var(--c-bleumarine);
+      // border: 1px solid var(--c-bleumarine);
+
+      &::after {
+        content: "•";
+        margin-left: calc(var(--spacing) / 8);
+        color: white;
+      }
+
+      &[data-origin="make"] {
+        &::after {
+          // color: white;
+        }
+      }
     }
 
     // &::before {
@@ -198,16 +215,23 @@ export default {
       pointer-events: none;
     }
   }
-
-  &[data-type="text"],
-  &[data-type="other"] {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-    text-align: center;
+  &[data-type="text"] {
+    font-size: var(--sl-font-size-x-small);
+    padding: calc(var(--spacing) / 4);
+    ::v-deep {
+      ._mediaContent {
+        display: block;
+        text-align: left;
+      }
+    }
   }
 
+  &[data-type="other"] {
+    // display: flex;
+    // justify-content: flex-start;
+    // align-items: center;
+    // text-align: center;
+  }
   ::v-deep {
     ._mediaContent {
       width: 100%;
@@ -225,8 +249,10 @@ export default {
   &[data-tilemode="table"] ::v-deep ._mediaContent--image {
     object-fit: scale-down;
   }
-  &[data-tilemode="tiny"] ::v-deep ._mediaContent--image {
-    object-fit: cover;
+  &[data-tilemode="tiny"] {
+    ::v-deep ._mediaContent--image {
+      object-fit: cover;
+    }
   }
   &[data-tilemode="medium"] ::v-deep ._mediaContent--image {
     object-fit: scale-down;
@@ -240,6 +266,7 @@ export default {
     gap: calc(var(--spacing) / 4);
     background: transparent;
     border-bottom: 1px solid white;
+    font-size: var(--sl-font-size-small);
 
     // margin-top: 2px;
     // margin-bottom: 2px;
@@ -255,6 +282,10 @@ export default {
 
       &._content {
         padding: 0;
+      }
+
+      &._filename {
+        flex: 0 0 30ch;
       }
 
       &._content,
@@ -296,17 +327,6 @@ export default {
 }
 
 ._fileType {
-  background: rgba(255, 255, 255, 0.5);
-  color: var(--c-noir);
-  border-radius: 2px;
-  line-height: 1;
-  font-weight: 600;
-
-  padding: calc(var(--spacing) / 8);
-  margin: calc(var(--spacing) / 8);
-  font-size: var(--input-font-size-small);
-  text-transform: uppercase;
-
   ._mediaTile:not([data-tilemode="table"]) & {
     position: absolute;
     bottom: 0;
@@ -345,9 +365,14 @@ export default {
     gap: calc(var(--spacing) / 4);
 
     padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-    border-radius: 1em;
+    border-radius: 2px;
 
     background: var(--notice-bg);
+    color: white;
+
+    font-weight: 600;
+    text-align: center;
+    text-transform: lowercase;
   }
 }
 
@@ -357,6 +382,9 @@ export default {
   left: 0;
   z-index: 2;
   pointer-events: none;
+
+  aspect-ratio: auto;
+  border-radius: 1rem;
 
   font-size: var(--input-font-size-small);
   font-weight: 800;
@@ -376,17 +404,36 @@ export default {
 
   ._mediaTile:hover &,
   ._mediaTile:focus-visible & {
-    transform: scale(1.25);
+    transform: scale(1.15);
   }
+}
+
+._indicator {
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  border-radius: 2px;
+  line-height: 1;
+  font-weight: 600;
+  padding: calc(var(--spacing) / 8);
+  margin: calc(var(--spacing) / 8);
+  font-size: var(--input-font-size-small);
+  text-transform: uppercase;
 }
 
 ._hasCoordinates {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 0 calc(var(--spacing) / 2);
-  // color: var(--active-color);
-  color: white;
+  left: auto !important;
+
+  svg {
+    // color: var(--c-bleumarine);
+
+    padding: 2px;
+    width: 1rem;
+    display: block;
+    height: 1rem;
+  }
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
@@ -454,10 +501,24 @@ export default {
   font-size: 80%;
   cursor: pointer;
 
-  ::v-deep ._inputLabel {
-    padding: calc(var(--spacing) / 2);
-    ._mediaTile[data-tilemode="medium"] & {
-      padding: calc(var(--spacing) / 1);
+  &:not([data-tilemode="table"]) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+
+    ::v-deep ._inputLabel {
+      pointer-events: auto;
+      padding: calc(var(--spacing) * 1.5);
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+
+      > * {
+        pointer-events: none;
+      }
     }
   }
 }

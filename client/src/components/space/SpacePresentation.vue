@@ -16,6 +16,7 @@
         :context="context"
         :cover="space.$cover"
         :path="space.$path"
+        :ratio="'square'"
         :can_edit="can_edit"
       />
 
@@ -56,6 +57,7 @@
           :tag="context === 'full' ? 'h1' : 'h2'"
           :content="space.title"
           :path="space.$path"
+          :required="true"
           :maxlength="280"
           :can_edit="can_edit"
         />
@@ -63,11 +65,8 @@
         <TitleField
           :field_name="'subtitle'"
           v-if="can_edit || space.subtitle"
-          :label="
-            context === 'full' && can_edit && !space.subtitle
-              ? $t('subtitle')
-              : ''
-          "
+          :label="$t('subtitle')"
+          :show_label="context === 'full' && can_edit && !space.subtitle"
           class="_subtitle"
           :content="space.subtitle"
           :path="space.$path"
@@ -75,15 +74,16 @@
           :can_edit="can_edit"
         />
       </div>
-      <CollaborativeEditor2
+      <TitleField
         v-if="context === 'full' && (space.description || can_edit)"
-        :label="context === 'full' ? $t('description') : ''"
-        :path="space.$path"
-        class="_description"
-        :field_to_edit="'description'"
+        :label="$t('description')"
+        :show_label="context === 'full'"
+        :field_name="'description'"
+        :input_type="'editor'"
         :custom_formats="['bold', 'italic', 'link']"
         :content="space.description"
-        :is_collaborative="false"
+        :path="space.$path"
+        :maxlength="1280"
         :can_edit="can_edit"
       />
 
@@ -101,7 +101,7 @@
     </div> -->
 
     <router-link
-      class="_openSpace"
+      class="js--showCursor _openSpace"
       v-if="context === 'list'"
       :to="{ path: createURLFromPath(space.$path) }"
       :title="$t('open') + ' ' + space.title"

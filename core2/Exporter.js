@@ -8,9 +8,11 @@ const path = require("path"),
 const utils = require("./utils"),
   folder = require("./folder"),
   file = require("./file"),
+  thumbs = require("./thumbs"),
   notifier = require("./notifier"),
   auth = require("./auth"),
   tasks = require("./exporter_tasks/tasks"),
+  effects = require("./exporter_tasks/effects"),
   optimizer = require("./exporter_tasks/optimizer");
 
 const ffmpegPath = require("ffmpeg-static").replace(
@@ -45,10 +47,14 @@ class Exporter {
 
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
+    } else if (this.instructions.recipe === "stopmotion_animation") {
+      full_path_to_file = await this._createStopmotionFromImages();
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
+    } else if (this.instructions.recipe === "webpage") {
+      full_path_to_file = await this._loadPageAndExport();
     } else if (this.instructions.recipe === "trim_video") {
       full_path_to_file = await this._trimVideo();
     } else if (this.instructions.recipe === "mix_audio_and_image") {
@@ -59,6 +65,8 @@ class Exporter {
       full_path_to_file = await this._videoAssemblage();
     } else if (this.instructions.recipe === "optimize_media") {
       full_path_to_file = await this._optimizeMedia();
+    } else if (this.instructions.recipe === "video_effects") {
+      full_path_to_file = await this._videoEffects();
     } else {
       throw new Error(`recipe_handling_missing`);
     }
@@ -92,6 +100,9 @@ class Exporter {
       path_to_meta: exported_path_to_meta,
     });
 
+    // remove temp file
+    await fs.remove(full_path_to_file);
+
     this._notifyEnded({
       event: "completed",
       file: exported_file,
@@ -114,34 +125,70 @@ class Exporter {
     const files = await file.getFiles({ path_to_folder: this.path_to_folder });
 
     const list_of_metas_in_order = folder_meta[this.instructions.field];
-    const selected_files = list_of_metas_in_order.map((lf) =>
-      files.find((f) => f.$path.endsWith("/" + lf))
+    const selected_files = list_of_metas_in_order.reduce((acc, lf) => {
+      const meta = lf.m || lf;
+      const duration = lf.d || 1;
+      const file = files.find((f) => f.$path.endsWith("/" + meta));
+      if (!file || file.$type !== "image") return acc;
+
+      for (let i = 0; i < duration; i++) {
+        acc.push(file);
+      }
+      return acc;
+    }, []);
+    return selected_files;
+  }
+  async _loadFilesFromParentFolder() {
+    this.instructions.images_meta;
+
+    const grand_parent_path = utils.getContainingFolder(
+      utils.getContainingFolder(this.path_to_folder)
     );
+    const files = await file.getFiles({ path_to_folder: grand_parent_path });
+
+    const selected_files = this.instructions.images_meta.reduce((acc, lf) => {
+      const meta = lf.m;
+      const duration = lf.d || 1;
+      const file = files.find((f) => f.$path.endsWith("/" + meta));
+      if (!file || file.$type !== "image") return acc;
+
+      for (let i = 0; i < duration; i++) {
+        acc.push(file);
+      }
+      return acc;
+    }, []);
     return selected_files;
   }
 
   _createStopmotionFromImages() {
     return new Promise(async (resolve, reject) => {
       // we need to copy all images to a temp folder with the right naming
-      const images = await this._loadFilesInOrder();
+      let images = [];
+      if (this.instructions.hasOwnProperty("field")) {
+        images = await this._loadFilesInOrder();
+      } else if (this.instructions.hasOwnProperty("images_meta")) {
+        images = await this._loadFilesFromParentFolder();
+      }
 
+      // images is an array of files
       this._notifyProgress(5);
 
-      const width = images[0].$infos.width || 1280;
-      const height = images[0].$infos.height || 720;
-      const resolution = { width, height };
+      const { output_width, output_height, video_bitrate, output_format } =
+        this._extractResolutionAndBitrate(this.instructions);
+
+      if (!output_width) output_width = images[0].$infos.width || 1280;
+      if (!output_height) output_height = images[0].$infos.height || 720;
+      if (!video_bitrate) video_bitrate = 4000;
 
       const full_path_to_folder_in_cache =
         await this._copyToCacheAndRenameImages({
           images,
-          resolution,
+          output_width,
+          output_height,
         });
 
-      const new_video_name =
-        "stopmotion_" +
-        +new Date() +
-        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
-        ".mp4";
+      const file_ext = output_format === "gif" ? ".gif" : ".mp4";
+      const new_video_name = utils.createUniqueName("stopmotion") + file_ext;
       const full_path_to_new_video = path.join(
         full_path_to_folder_in_cache,
         new_video_name
@@ -159,19 +206,29 @@ class Exporter {
 
       this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
-        .inputFPS(frame_rate)
-        .withVideoCodec("libx264")
-        .withVideoBitrate("4000k")
-        .input("anullsrc")
-        .inputFormat("lavfi")
+        .inputFPS(frame_rate);
+
+      if (output_format === "gif") {
+        this.ffmpeg_cmd.inputOption("-stream_loop -1");
+      } else {
+        this.ffmpeg_cmd
+          .withVideoCodec("libx264")
+          .withVideoBitrate(video_bitrate)
+          .input("anullsrc")
+          .inputFormat("lavfi");
+      }
+
+      this.ffmpeg_cmd
         .duration(images.length / frame_rate)
-        .size(`${width}x${height}`)
+        .size(`${output_width}x${output_height}`)
         .outputFPS(output_frame_rate)
         .autopad()
         .addOptions(["-preset slow", "-tune animation"])
-        .toFormat("mp4")
+        .toFormat(output_format === "gif" ? "gif" : "mp4");
+
+      this.ffmpeg_cmd
         .on("start", (commandLine) => {
-          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+          dev.log("Spawned Ffmpeg with command: \n" + commandLine);
         })
         .on("progress", (progress) => {
           // value from 0 to 100
@@ -222,7 +279,7 @@ class Exporter {
     });
   }
 
-  async _copyToCacheAndRenameImages({ images, resolution }) {
+  async _copyToCacheAndRenameImages({ images, output_width, output_height }) {
     let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "stopmotion"
     );
@@ -239,7 +296,12 @@ class Exporter {
         "img-" + pad(index, 4, "0") + ".jpeg"
       );
 
-      await utils.convertAndCopyImage({ source, destination, resolution });
+      await utils.convertAndCopyImage({
+        source,
+        destination,
+        width: output_width,
+        height: output_height,
+      });
       // await fs.copy(source, destination);
       index++;
     }
@@ -333,13 +395,18 @@ class Exporter {
         new Promise(function (resolve, reject) {
           setTimeout(() => resolve(1), 4000);
         })
-          .then(() => {
+          .then(async () => {
             this._notifyProgress(45);
             if (this.instructions.recipe === "pdf")
               return win.webContents.printToPDF({
                 // electron >= 21
                 // margins are set using @page in css
-                margins: { marginType: "default" },
+                margins: {
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                },
                 pageSize: printToPDF_pagesize,
                 printBackground: true,
                 printSelectionOnly: false,
@@ -394,6 +461,149 @@ class Exporter {
       );
     });
     // print to pdf
+  }
+
+  _loadPageAndExport() {
+    return new Promise(async (resolve, reject) => {
+      this._notifyProgress(5);
+
+      // convert path_to_folder to URL (see createURLFromPath)
+      dev.logfunction();
+
+      const path_without_space = this.path_to_folder
+        .replace("spaces" + path.sep, "/+")
+        .replace("projects" + path.sep, "");
+
+      let url = global.appInfos.homeURL + path_without_space;
+
+      let query = {};
+      if (this.instructions.page) {
+        query.page = this.instructions.page;
+        query.make_preview = true;
+      }
+
+      // use superamdin token
+      const sat = auth.getSuperadminToken();
+      query.sat = sat;
+
+      if (Object.keys(query).length > 0) {
+        const searchParams = new URLSearchParams(query);
+        url += "?" + searchParams.toString();
+      }
+
+      const res = this.instructions.express_res;
+
+      // get necessary files
+      let folder_data = await folder.getFolder({
+        path_to_folder: this.path_to_folder,
+      });
+      folder_data.$files = await file.getFiles({
+        path_to_folder: this.path_to_folder,
+        embed_source: true,
+      });
+
+      this._notifyProgress(24);
+
+      const full_path_to_folder_in_cache =
+        await utils.createUniqueFolderInCache("webpage_export");
+
+      const length = folder_data.$files.length;
+
+      for (const [index, file] of folder_data.$files.entries()) {
+        this._notifyProgress(25 + Math.round((index / length) * 50));
+
+        if (!file.source_medias) continue;
+
+        try {
+          for (const source_media of file.source_medias) {
+            if (!source_media._media?.$media_filename) continue;
+
+            // copy necessary medias from the project to the cache
+            const parent_folder_path = utils.getContainingFolder(
+              source_media._media.$path
+            );
+            const parent_folder_full_path =
+              utils.getPathToUserContent(parent_folder_path);
+            const source = path.join(
+              parent_folder_full_path,
+              source_media._media.$media_filename
+            );
+            const destination = path.join(
+              full_path_to_folder_in_cache,
+              "medias",
+              source_media._media.$media_filename
+            );
+            await fs.copy(source, destination);
+
+            // copy necessary thumbs from the project to the cache
+            if (
+              !source_media._media?.$thumbs ||
+              typeof source_media._media.$thumbs !== "object"
+            )
+              continue;
+
+            const full_path_to_thumb = await utils.getPathToUserContent(
+              await thumbs.getThumbFolderPath(parent_folder_path)
+            );
+
+            await thumbs.copyAllThumbsForFile({
+              full_path_to_thumb,
+              full_path_to_new_thumb: path.join(
+                full_path_to_folder_in_cache,
+                "thumbs"
+              ),
+              media_filename: source_media._media.$media_filename,
+            });
+          }
+        } catch (error) {
+          dev.error(error.message);
+          throw error;
+        }
+      }
+
+      this._notifyProgress(76);
+
+      res.render(
+        "index",
+        {
+          page_is_standalone_html: true,
+          folder_data,
+        },
+        async (err, html) => {
+          ////////////////////////////////////////////////////////////// HTML
+          const full_path_to_html_file = path.join(
+            full_path_to_folder_in_cache,
+            "index.html"
+          );
+          await writeFileAtomic(full_path_to_html_file, html);
+
+          ////////////////////////////////////////////////////////////// CLIENT DIST
+          const full_path_to_client_dist = path.join(
+            global.appRoot,
+            "client",
+            "dist"
+          );
+          const destination_path = path.join(
+            full_path_to_folder_in_cache,
+            "_client"
+          );
+          await fs.copy(full_path_to_client_dist, destination_path);
+
+          this._notifyProgress(80);
+
+          // ZIP folder
+          const full_path_to_zip_file = await utils.createZIPFromFolder({
+            full_path_to_folder: full_path_to_folder_in_cache,
+          });
+
+          await fs.remove(full_path_to_folder_in_cache);
+
+          this._notifyProgress(95);
+
+          return resolve(full_path_to_zip_file);
+        }
+      );
+    });
   }
 
   _trimVideo() {
@@ -468,8 +678,8 @@ class Exporter {
         this.instructions.base_image_path
       );
 
-      const output_width = this.instructions.output_width;
-      const output_height = this.instructions.output_height;
+      const { output_width, output_height, video_bitrate } =
+        this._extractResolutionAndBitrate(this.instructions);
 
       this._notifyProgress(10);
 
@@ -478,7 +688,7 @@ class Exporter {
         .loop()
         .input(base_audio_path)
         .withVideoCodec("libx264")
-        .withVideoBitrate("4000k")
+        .withVideoBitrate(video_bitrate)
         .addOptions(["-shortest"])
         .withAudioCodec("aac")
         .withAudioBitrate("192k")
@@ -534,8 +744,8 @@ class Exporter {
         this.instructions.base_video_path
       );
 
-      const output_width = this.instructions.output_width;
-      const output_height = this.instructions.output_height;
+      const { output_width, output_height, video_bitrate } =
+        this._extractResolutionAndBitrate(this.instructions);
       const duration = this.instructions.duration;
 
       this._notifyProgress(10);
@@ -546,7 +756,7 @@ class Exporter {
         .duration(duration)
         // .withVideoCodec('copy')
         .withVideoCodec("libx264")
-        .withVideoBitrate("4000k")
+        .withVideoBitrate(video_bitrate)
         .withAudioCodec("aac")
         .withAudioBitrate("192k")
         .addOptions(["-map 0:v:0", "-map 1:a:0", "-af apad"])
@@ -599,10 +809,8 @@ class Exporter {
     )
       return reject(new Error(`no-montage-in-instructions`));
 
-    const bitrate = "6000k";
-    const output_width = this.instructions.output_width;
-    const output_height = this.instructions.output_height;
-    const resolution = { width: output_width, height: output_height };
+    const { output_width, output_height, video_bitrate } =
+      this._extractResolutionAndBitrate(this.instructions);
 
     this._notifyProgress(10);
 
@@ -642,8 +850,9 @@ class Exporter {
           ({ video_path, duration } = await tasks.prepareImageForMontageAndWeb({
             media_full_path,
             full_path_to_folder_in_cache,
-            resolution,
-            bitrate,
+            output_width,
+            output_height,
+            video_bitrate,
             image_duration: media.image_duration,
             ffmpeg_cmd: this.ffmpeg_cmd,
           }));
@@ -651,8 +860,9 @@ class Exporter {
           ({ video_path, duration } = await tasks.prepareVideoForMontageAndWeb({
             media_full_path,
             full_path_to_folder_in_cache,
-            resolution,
-            bitrate,
+            output_width,
+            output_height,
+            video_bitrate,
             ffmpeg_cmd: this.ffmpeg_cmd,
             reportProgress,
           }));
@@ -672,7 +882,7 @@ class Exporter {
 
       await tasks.mergeAllVideos({
         temp_videos_array,
-        bitrate,
+        video_bitrate,
         ffmpeg_cmd: this.ffmpeg_cmd,
         full_path_to_new_video,
       });
@@ -699,8 +909,6 @@ class Exporter {
     const ext_handler = [
       {
         exts: [".heic"],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertHEIC",
       },
       {
@@ -715,20 +923,14 @@ class Exporter {
           ".x3f",
           ".arw",
         ],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertCameraRAW",
       },
       {
         exts: [".tif", ".tiff", ".webp", ".jpeg", ".jpg"],
-        output_filetype: "image",
-        output_fileext: "jpeg",
         task: "convertImage",
       },
       {
         exts: [".flv", ".mov", ".avi", ".webm", ".mp4"],
-        output_filetype: "video",
-        output_fileext: "mp4",
         task: "convertVideo",
       },
       {
@@ -743,8 +945,6 @@ class Exporter {
           ".mp3",
           ".aac",
         ],
-        output_filetype: "audio",
-        output_fileext: "aac",
         task: "convertAudio",
       },
     ];
@@ -756,18 +956,20 @@ class Exporter {
       if (!handler) throw new Error(`no_handler`);
 
       ({ full_path_to_folder_in_cache, full_path_to_new_file } =
-        await this._createTempFolderAndName(
-          handler.output_filetype,
-          handler.output_fileext
-        ));
+        await this._createTempFolderAndName("optimizer"));
       const base_media_path = utils.getPathToUserContent(
         this.instructions.base_media_path
       );
 
       this._notifyProgress(10);
 
-      const quality_preset = this.instructions.quality_preset || "source";
       // source high medium
+      const trim_start = this.instructions.hasOwnProperty("trim_start")
+        ? this.instructions.trim_start
+        : undefined;
+      const trim_end = this.instructions.hasOwnProperty("trim_end")
+        ? this.instructions.trim_end
+        : undefined;
 
       const that = this;
       const reportProgress = (progress) => {
@@ -777,15 +979,75 @@ class Exporter {
         that._notifyProgress(progress_percent);
       };
 
-      await optimizer[handler.task]({
+      const image_width = this.instructions.image_width;
+      const image_height = this.instructions.image_height;
+      const video_bitrate = this.instructions.video_bitrate;
+      const audio_bitrate = this.instructions.audio_bitrate;
+
+      const full_path_to_new_file_with_ext = await optimizer[handler.task]({
         source: base_media_path,
         destination: full_path_to_new_file,
-        quality_preset,
+        image_width,
+        image_height,
+        video_bitrate,
+        audio_bitrate,
+        trim_start,
+        trim_end,
         ffmpeg_cmd: this.ffmpeg_cmd,
         reportProgress,
       });
       this._notifyProgress(95);
-      return full_path_to_new_file;
+      return full_path_to_new_file_with_ext;
+    } catch (err) {
+      if (full_path_to_folder_in_cache)
+        await fs.remove(full_path_to_folder_in_cache);
+      this._notifyEnded({
+        event: "failed",
+        info: err.message,
+      });
+      throw err;
+    }
+  }
+
+  async _videoEffects() {
+    this._notifyProgress(5);
+
+    const {
+      full_path_to_folder_in_cache,
+      full_path_to_new_file: full_path_to_new_video,
+    } = await this._createTempFolderAndName("video", "mp4");
+
+    const effect_type = this.instructions.effect_type;
+    const effect_opts = this.instructions.effect_opts;
+    const base_media_path = utils.getPathToUserContent(
+      this.instructions.base_media_path
+    );
+
+    const { output_width, output_height, video_bitrate } =
+      this._extractResolutionAndBitrate(this.instructions);
+
+    const that = this;
+    const reportProgress = (progress) => {
+      const progress_percent = Math.round(
+        utils.remap(progress, 0, 100, 15, 90)
+      );
+      that._notifyProgress(progress_percent);
+    };
+
+    try {
+      await effects.applyVideoEffect({
+        source: base_media_path,
+        destination: full_path_to_new_video,
+        output_width,
+        output_height,
+        video_bitrate,
+        effect_type,
+        effect_opts,
+        ffmpeg_cmd: this.ffmpeg_cmd,
+        reportProgress,
+      });
+      this._notifyProgress(95);
+      return full_path_to_new_video;
     } catch (err) {
       if (full_path_to_folder_in_cache)
         await fs.remove(full_path_to_folder_in_cache);
@@ -813,12 +1075,27 @@ class Exporter {
     const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       prefix
     );
-    const new_video_name = utils.createUniqueName(prefix) + "." + extension;
+    let new_file_name = utils.createUniqueName(prefix);
+    if (extension) new_file_name += "." + extension;
     const full_path_to_new_file = path.join(
       full_path_to_folder_in_cache,
-      new_video_name
+      new_file_name
     );
     return { full_path_to_folder_in_cache, full_path_to_new_file };
+  }
+
+  _extractResolutionAndBitrate(instructions) {
+    const output_width = instructions.output_width
+      ? Math.ceil(instructions.output_width / 2) * 2
+      : 1280;
+    const output_height = instructions.output_height
+      ? Math.ceil(instructions.output_height / 2) * 2
+      : 720;
+    const video_bitrate = instructions.video_bitrate
+      ? Math.ceil(instructions.video_bitrate / 2) * 2
+      : 4000;
+    const output_format = instructions.output_format || "mp4";
+    return { output_width, output_height, video_bitrate, output_format };
   }
 }
 

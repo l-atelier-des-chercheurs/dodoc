@@ -28,13 +28,13 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 
 # Branches
 
-- **main** --> default branch, latest stable version (currently v10), in Electron (offline app). See release page for Linux/Mac/Windows installers.
+- **main** --> default branch, latest stable version (currently v11), in Electron (offline app). See release page for Linux/Mac/Windows installers.
 - **main-node** --> latest stable version without Electron, to use on online servers.
 
 - **main-dev** --> fixes and small improvements on top of the current version, in Electron. Used for testing before merging changes to **main**.
 - **main-dev-node** --> fixes and small improvements on top of the current version, for servers. Used for testing before merging changes to - **main-node**.
 
-- **next** --> code for the next major version (v10.1 or v11), in Electron. Use at your own risks.
+- **next** --> code for the next major version (v11), in Electron. Use at your own risks.
 - **next-node** --> code for the next major version, without Electron. Use at your own risks.
 
 # Install do•doc
@@ -66,7 +66,7 @@ Default values are:
 - $preview          (String, editable)                    if set, search for a meta filename in this folder and read it when reading folder (useful for advanced cover of this folder)
 - $date_created     (Date)                                when the folder was created
 - $date_modified    (Date)                                when the folder was last edited
-- $files            (Array)                               list of all the files in this folder (see Files below)
+- $files            (Array)                               list of all the files in this folder (see Files below) (bypass with no_files=true to improve performance where files are not needed)
 - $status           (String, editable)                    determines whether the folder gets listed
 - $public           (Boolean, editable)                   if true, return that folder, its files, and its source medias even when request is not auth
 - $password         (String, editable, stored as hash)    limit editing to users with password

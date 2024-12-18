@@ -9,6 +9,7 @@
       >
         <div
           class="carousel-cell"
+          :data-mediatype="media_with_linked._linked_media.$type"
           v-for="(media_with_linked, index) in medias_with_linked"
           :key="
             (media_with_linked._linked_media &&
@@ -34,9 +35,17 @@
           <CaptionCreditsPage
             :media="media_with_linked._linked_media"
             :publication_path="publication_path"
+            :can_edit="can_edit"
           />
 
-          <div class="_btnRow" v-if="can_edit">
+          <div class="_btnRow" v-if="edit_mode">
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_small"
+              @click="show_change_order_modal = true"
+            >
+              <b-icon icon="arrow-left-right" />
+            </button>
             <template v-if="showObjectFitFor(media_with_linked)">
               <button
                 type="button"
@@ -110,6 +119,16 @@
     </flickity> -->
     </transition>
 
+    <ChangeOrderModal
+      v-if="show_change_order_modal"
+      :medias_with_linked="medias_with_linked"
+      :publication_path="publication_path"
+      @addMedias="$emit('addMedias', $event)"
+      @reorderMedias="$emit('reorderMedias', $event)"
+      @removeMediaAtIndex="$emit('removeMediaAtIndex', $event)"
+      @close="show_change_order_modal = false"
+    />
+
     <div class="_mediaPickerTile" v-if="can_edit">
       <EditBtn
         :btn_type="'add'"
@@ -133,6 +152,7 @@ import "flickity-imagesloaded";
 
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
+import ChangeOrderModal from "@/components/publications/modules/ChangeOrderModal.vue";
 
 export default {
   props: {
@@ -143,16 +163,20 @@ export default {
     number_of_max_medias: [Boolean, Number],
     publication_path: String,
     publi_width: Number,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
     Flickity,
     MediaPicker,
     CaptionCreditsPage,
+    ChangeOrderModal,
   },
   data() {
     return {
       show_media_picker: false,
+      observer: null,
+      show_change_order_modal: false,
 
       flickityOptions: {
         initialIndex: 0,
@@ -173,12 +197,14 @@ export default {
   },
   created() {},
   mounted() {
-    setTimeout(() => {
-      // if (this.$refs.flickity) this.$refs.flickity.resize();
-      // if (this.$refs.nav) this.$refs.nav.resize();
-    }, 500);
+    this.observer = new ResizeObserver(() => {
+      if (this.$refs.flickity) this.$refs.flickity.resize();
+    });
+    this.observer.observe(this.$el);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.observer.disconnect();
+  },
   watch: {
     // medias_with_linked() {
     // if (this.$refs.flickity) this.$refs.flickity.reloadCells();
@@ -252,6 +278,9 @@ export default {
 
 ._carousel {
   background: var(--c-gris_clair);
+  page-break-inside: avoid;
+  -webkit-region-break-inside: avoid;
+
   // padding: calc(var(--spacing) / 4);
 }
 
@@ -259,10 +288,25 @@ export default {
   // padding: calc(var(--spacing) / 4);
   .carousel-cell {
     width: 100%;
-    aspect-ratio: 1/1;
+    aspect-ratio: 3/2;
     margin-right: calc(var(--spacing) * 1);
+
+    &[data-mediatype="text"] {
+      padding: min(calc(var(--spacing) * 3), 15%);
+    }
   }
 
+  ::v-deep .flickity-prev-next-button {
+    // top: auto;
+    // bottom: calc(var(--spacing) * 1);
+
+    &.flickity-prev-next-button.previous {
+      left: calc(var(--spacing) / 2);
+    }
+    &.flickity-prev-next-button.next {
+      right: calc(var(--spacing) / 2);
+    }
+  }
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
   }
@@ -342,7 +386,8 @@ export default {
 
   pointer-events: none;
 
-  button {
+  button,
+  select {
     // background: white;
     pointer-events: auto;
 

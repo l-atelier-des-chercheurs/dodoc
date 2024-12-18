@@ -19,15 +19,16 @@
               {{ make.title }}
             </b>
             <br />
-            <span>
-              <i>
-                {{ $t(make.type).toLowerCase() }}
+            <span v-if="getMakeType(make.type)">
+              <i v-if="make.type">
+                {{ getMakeType(make.type) }}
               </i>
             </span>
           </span>
           <DateDisplay :title="$t('date_created')" :date="make.$date_created" />
           <button
             type="button"
+            v-if="make.$path"
             class="u-button"
             @click="$emit('open', make.$path.split('/').at(-1))"
           >
@@ -66,12 +67,22 @@ export default {
     sorted_makes() {
       return this.makes
         .slice()
+        .filter(
+          (make) => make.$path && make.type && typeof make.type === "string"
+        )
         .sort(
           (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
         );
     },
   },
-  methods: {},
+  methods: {
+    getMakeType(type) {
+      if (typeof type === "string") {
+        return this.$t(type).toLowerCase();
+      }
+      return false;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -79,6 +90,11 @@ export default {
 }
 
 ._makes {
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) * 1);
+  align-items: end;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
 ._makes--item {

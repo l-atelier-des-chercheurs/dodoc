@@ -22,6 +22,7 @@
         <CaptureModal
           v-if="show_capture_modal"
           :path="project_path"
+          :available_modes="available_modes"
           @createMosaic="createMosaic"
           @close="show_capture_modal = false"
         />
@@ -39,6 +40,7 @@
           v-if="show_media_picker"
           :publication_path="publication_path"
           :select_mode="select_mode"
+          :pick_from_types="pick_from_types"
           @addMedias="createMosaic"
           @close="show_media_picker = false"
         />
@@ -62,11 +64,21 @@
           <b-icon icon="link" style="font-size: var(--icon-size)" />
           <template v-if="show_labels">{{ $t("embed") }}</template>
         </button>
-        <LinkPicker
+        <EmbedPicker
           v-if="show_link_picker"
           @embed="createEmbed"
           @close="show_link_picker = false"
         />
+
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          v-if="types_available.includes('table')"
+          @click="createTable"
+        >
+          <b-icon icon="table" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("table") }}</template>
+        </button>
 
         <template v-if="types_available.includes('shapes')">
           <button
@@ -109,7 +121,7 @@
 <script>
 import CaptureModal from "@/components/publications/CaptureModal.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
-import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
+import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 
 export default {
   props: {
@@ -117,6 +129,8 @@ export default {
     pre_addtl_meta: Object,
     post_addtl_meta: Object,
     select_mode: String,
+    pick_from_types: [String, Array],
+    available_modes: Array,
     show_labels: {
       type: Boolean,
       default: true,
@@ -124,7 +138,7 @@ export default {
     context: String,
     types_available: {
       type: Array,
-      default: () => ["capture", "import", "write", "embed", "shapes"],
+      default: () => ["capture", "import", "write", "embed", "table", "shapes"],
     },
     start_collapsed: {
       type: Boolean,
@@ -134,7 +148,7 @@ export default {
   components: {
     CaptureModal,
     MediaPicker,
-    LinkPicker,
+    EmbedPicker,
   },
   data() {
     return {
@@ -256,7 +270,7 @@ export default {
     async createEmbed(full_url) {
       const filename = "url-" + +new Date() + ".txt";
 
-      const text_meta_filename = await this.$api.uploadText({
+      const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
         content: full_url,
@@ -264,7 +278,7 @@ export default {
           $type: "url",
         },
       });
-      this.createMosaic({ meta_filename: text_meta_filename });
+      this.createMosaic({ meta_filename });
       this.show_link_picker = false;
     },
     async createFiles({ path_to_source_media_metas }) {
@@ -295,7 +309,7 @@ export default {
     },
     async createText() {
       const filename = "text-" + +new Date() + ".txt";
-      const meta_filename = await this.$api.uploadText({
+      const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
         content: "",
@@ -307,6 +321,27 @@ export default {
         module_type,
         source_medias,
       });
+    },
+    async createTable() {
+      const filename = "table-" + +new Date() + ".json";
+
+      const { meta_filename } = await this.$api.uploadText({
+        path: this.publication_path,
+        filename,
+        content: JSON.stringify(
+          [
+            [{ content: "" }, { content: "" }],
+            [{ content: "" }, { content: "" }],
+          ],
+          null,
+          4
+        ),
+        additional_meta: {
+          $type: "table",
+        },
+      });
+      this.createMosaic({ meta_filename });
+      this.show_link_picker = false;
     },
 
     async createModule({ module_type, source_medias = [], addtl_meta = {} }) {
@@ -338,13 +373,8 @@ export default {
 
         let addtl_meta = {};
         if (["page_by_page", "montage"].includes(this.context))
-          if (media?.$infos?.ratio)
-            if (addtl_meta.width)
-              addtl_meta.height = addtl_meta.width * media.$infos.ratio;
-            else
-              addtl_meta.height =
-                this.$root.default_new_module_width * media.$infos.ratio;
-
+          if (media?.$infos?.ratio && this.pre_addtl_meta?.width)
+            addtl_meta.height = this.pre_addtl_meta.width * media.$infos.ratio;
         if (media?.$location) addtl_meta.location = media.$location;
 
         const meta_filename = await this.createMetaForModule({
@@ -371,7 +401,7 @@ export default {
       if (this.post_addtl_meta)
         Object.assign(additional_meta, this.post_addtl_meta);
 
-      return await this.$api
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: this.publication_path,
           additional_meta,
@@ -380,6 +410,7 @@ export default {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
+      return meta_filename;
     },
   },
 };

@@ -2,7 +2,7 @@ export default {
   welcome_to_dodoc: "Bienvenue sur do•doc !",
   current_lang_name: "Français",
   a_foss_made_by:
-    "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers, …!",
+    "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers,&nbsp;…!",
   home: "Accueil",
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
@@ -23,9 +23,10 @@ export default {
   back: "retour",
   save: "enregistrer",
   input_url: "URL vers un site à intégrer",
-  input_url_instr:
-    "Indiquez ici une URL vers une ressource (page web, vidéo PeerTube ou YouTube, etc.)",
+  input_url_instr: "Indiquez ici une URL vers une ressource.",
+  url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
+  table: "Tableau",
   from_project: "Depuis le projet",
   save_to_project: "Enregistrer dans le projet",
   day: "Jour",
@@ -118,7 +119,7 @@ export default {
   favicon_image_instr: "Apparaîtra dans l’onglet du navigateur.",
   topbar_image: "Logo dans la barre de navigation",
   topbar_image_instr:
-    "En haut à gauche de l’écran. Au click, ramène à la page d’accueil.",
+    "En haut à gauche de l’écran. Au clic, ramène à la page d’accueil.",
   hero_image: "Visuel page d’accueil",
   hero_image_instr: "",
   change_order: "Changer l’ordre",
@@ -131,7 +132,7 @@ export default {
   ui_lang_select: "Langue de l’interface",
   lang_updated: "La langue a été mise à jour",
 
-  signup_password: "mot de passe pour la création d’un compte",
+  signup_password: "Mot de passe pour la création d’un compte",
   signup_password_instructions:
     "Limiter la création de compte aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent créer un compte.",
   signup_password_users_instructions:
@@ -158,6 +159,7 @@ export default {
   group: "Groupe",
   show_list: "Afficher la liste",
   show: "Afficher",
+  show_title: "Afficher le titre",
   hide: "Masquer",
   list_of_accounts: "Liste des comptes",
   show_all_accounts: "Afficher tous les comptes",
@@ -243,6 +245,7 @@ export default {
   desktop_720: "Bureau 720p",
 
   custom: "Personnalisé",
+  custom_f: "Personnalisée",
   width: "Largeur",
   height: "Hauteur",
   text_size: "Taille du texte",
@@ -312,6 +315,7 @@ export default {
   no_projects: "Aucun projet à afficher",
   no_files: "Aucun fichier",
   no_publications: "Aucune publication à afficher",
+
   none_f: "Aucune",
   none: "Aucun·e",
   reset_all: "Retirer tout",
@@ -368,9 +372,12 @@ export default {
 
   no_accounts_yet: "Aucun compte créé pour le moment",
   add_accounts: "Rajouter des comptes",
-  restart_to_apply: "Relancez do•doc pour appliquer",
-  refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
-  restart: "Relancer do•doc",
+  restart_to_apply:
+    "Fermez et redémarrez do•doc manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
+  restart: "Fermer et redémarrer",
+
+  refresh_window_to_see_changes:
+    "Rafraîchir la fenêtre pour voir les modifications",
   reveal: "Révéler",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
@@ -387,7 +394,6 @@ export default {
   no_preview_to_show: "Aucun aperçu à afficher pour le moment",
   no_media_in_project: "Aucun média dans ce projet",
   number_of_media: "Nombre de médias",
-  "displayed:": "Affichés&nbsp;:",
   media_removed: "Média supprimé",
   media_duplicated: "Média dupliqué",
   media_was_saved_to_project: "Le média a été ajouté au projet",
@@ -420,6 +426,8 @@ export default {
   snap_to_grid: "Magnétisme de la grille",
   gridstep: "Pas de la grille",
   scale: "Échelle",
+  over: "au-dessus",
+  under: "en-dessous",
 
   path_to_content: "Chemin du stockage des contenus",
   path_to_content_instructions: `Attention, fonctionnalité avancée !
@@ -459,14 +467,17 @@ export default {
   trim_instructions:
     "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
   start: "début",
+  set_start: "Définir le début",
+  play_extract: "Jouer l’extrait",
+  stop_extract: "Arrêter l’extrait",
   end: "fin",
+  set_end: "Définir la fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
   export_montage: "Exporter le montage",
+  export_stomotion: "Exporter l’animation",
 
-  image_to_rework: "Image à retravailler",
-  video_to_rework: "Vidéo à recouper",
-  audio_to_rework: "Son à recouper",
+  video_to_rework: "Vidéo à retrailler",
 
   pick_audio: "Choisissez le son à utiliser",
   pick_image: "Choisissez l’image à utiliser",
@@ -520,16 +531,17 @@ export default {
   slowing_video_down_limit:
     "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
   speed_up: "Accélérer",
-  a_little: "Un peu",
-  a_lot: "Beaucoup",
-  clockwise: "Dans le sens des aiguilles d’une montre",
-  counterclockwise: "Dans le sens inverse des aiguilles d’une montre",
+  playback_speed: "Vitesse de lecture",
   reverse: "Inverser le début et la fin",
   angle: "Angle",
   "error:": "Erreur&nbsp;:",
   mirror: "Miroir",
   horizontal_flip: "Retournement horizontal",
   vertical_flip: "Retournement vertical",
+
+  rotate: "Pivoter",
+  rotate_90_deg: "Pivoter de 90°",
+  rotate_x_deg: "Pivoter vers la droite de …°",
   both: "Les deux",
 
   mix_audio_and_image: "Son sur une image",
@@ -545,6 +557,9 @@ export default {
   mix_audio_and_video_instructions:
     "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
 
+  qr_code: "Code QR",
+  qr_code_summary: "Créer un code QR à partir d’un texte ou d’un lien.",
+
   add_sound_video_file:
     "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.",
   add_sound_image_file:
@@ -557,8 +572,6 @@ export default {
     "Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera una video.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.",
   more_informations: "Plus d’informations",
   images: "Images",
-
-  make_an_exhibition: "Créer une exposition",
 
   image_tracking: "Réalité augmentée",
   create_block: "Créer un groupe",
@@ -601,6 +614,7 @@ export default {
   use_own_risk:
     "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
   chroma_key: "Incrustation (fond vert)",
+  chroma_key_color: "Couleur à remplacer",
   color: "Couleur",
   flip_horizontally: "Retourner horizontalement",
   flip_vertically: "Retourner verticalement",
@@ -641,6 +655,7 @@ export default {
   remove_original_after_copy: "L’original sera supprimé après la copie",
   keep_original_after_copy: "L’original sera conservé après la copie",
 
+  no_authors_to_show: "Aucun compte à afficher",
   remove_account: "Supprimer ce compte",
   remove_account_expl:
     "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
@@ -700,8 +715,9 @@ export default {
   onion_skin: "Pelure d’oignon",
 
   pick_a_camera: "Sélectionnez une caméra",
-  resolutions: "Résolutions",
+  resolutions: "Résolution",
   resolution: "Résolution",
+  resolution_w_h: "Résolution : {width}x{height} pixels",
   screen_capture: "Capture d’écran",
   cant_pick_resolution_when_screen_capture:
     "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
@@ -709,7 +725,6 @@ export default {
   take_picture: "Prendre une photo",
   delay: "Retardateur",
   timelapse: "time-lapse",
-  framerate: "images par seconde",
   live: "Direct",
   img_per_second: "Images par seconde",
 
@@ -727,9 +742,15 @@ export default {
   pause: "Pause",
   first_image: "Première image",
   previous_image: "Image précédente",
+  next: "Suivant",
+  previous: "Précedent",
+  loop: "Boucle",
   next_image: "Image suivante",
   last_image: "Dernière image",
   assemble: "Assembler",
+  filter_by_fav: "Filtrer les favoris",
+  add_to_fav: "Ajouter aux favoris",
+  remove_from_fav: "Retirer des favoris",
 
   with_sound: "avec le son",
   update: "Mettre à jour",
@@ -742,10 +763,13 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  gif: "GIF",
   other: "Autre",
-  all_medias_types: "De tous types",
-  all_origins: "De toutes origines",
-  all_accounts: "De tous les comptes",
+  webpage: "Page web",
+  all_keywords: "Tous les mots-clés",
+  all_medias_types: "Tous les types",
+  all_origins: "Toutes les origines",
+  all_accounts: "Tous les comptes",
 
   or_download_media_on_device: "ou télécharger ce média sur votre appareil",
 
@@ -753,14 +777,21 @@ export default {
   start_timelapse: "Démarrer le time-lapse",
   stop_timelapse: "Interrompre le time-lapse",
   quality: "Qualité",
+  image_quality: "Qualité de l’image",
+  audio_quality: "Qualité de l’audio",
   duration: "Durée",
   close_to_source: "Au plus proche du média original",
+
   very_high: "Très élevée",
   high: "Élevée",
   medium: "Moyenne",
   low: "Basse",
   rough: "Ébauche",
-  optimize_media: "Optimiser le média",
+  optimize_resize: "Optimiser/redimensionner",
+  convert_instructions: "Convertir vers un format standard",
+  optimize_resize_instructions:
+    "Convertir vers un format standard, recouper le début ou la fin, supprimer la piste sonore ou modifier la qualité pour alléger le fichier.",
+  from_the_first_media: "À partir du premier média",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
@@ -844,7 +875,7 @@ export default {
   pick_portrait: "Choisissez une image pour ce compte",
   pick_media: "Choisissez un média",
   pick_medias: "Choisissez un ou plusieurs médias",
-  remove_image: "Retirer cette image",
+  remove_image: "Supprimer cette image",
 
   no_accounts_to_show: "Aucun compte à afficher",
   login_no_account_matches: "Aucun compte ne correspond à ce nom",
@@ -884,6 +915,7 @@ export default {
     "La connexion au compte est active, rechargement de la page en cours…",
 
   informations: "Informations",
+  metadatas: "Métadonnées",
 
   duplicate: "Dupliquer",
   duplicate_or_move: "Dupliquer ou déplacer",
@@ -902,7 +934,9 @@ export default {
   import_in_progress: "Importation en cours…",
   import_finished:
     "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
-  zip_wrong: "Ce fichier ZIP n’est pas un projet dodoc valide",
+  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet do•doc valide",
+  zip_is_space_not_project:
+    "Ce fichier ZIP semble être un espace et non un projet",
 
   move_to_page: "Déplacer vers une autre page",
 
@@ -1026,22 +1060,38 @@ export default {
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
   bw_filter: "Filtre noir et blanc",
-  failed_loading_tiles_no_internet:
-    "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
+  failed_loading_tiles:
+    "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
+  zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
 
   terms: "Conditions d’utilisation",
-  create_terms_page: "Créer une page pour les conditions d’utilisation",
-  open_page: "Ouvrir la page",
-  terms_in_footer: "Placer un lien en bas de la page d’accueil",
+  create_this_page: "Créer la page",
+  open_terms_page: "Ouvrir la page des conditions d’utilisation",
+  terms_confidentiality_in_footer: "Placer un lien en bas de la page d’accueil",
   users_must_accept_terms_to_signup:
     "Les utilisateurs doivent accepter les conditions d’utilisation pour s’inscrire",
   click_here_to_read: "Cliquez ici pour les lire.",
   i_read_and_accept_terms: "J’accepte les conditions d’utilisation",
 
+  confidentiality: "Confidentialité",
+  open_confidentiality_page: "Ouvrir la page de la confidentialité",
   page_to_export: "Page à exporter",
+  terms_confidentiality_infos: `
+    Les champs suivants permettent de créer des pages précisant les conditions 
+    d’utilisation et les règles de confidentialité de votre instance.
+    Un lien vers ces pages peut être placé en bas de la page d’accueil, 
+    ainsi qu’au niveau du formulaire pour créer un compte.
+    En France et dans n’importe quel pays de l’Union Européenne, ces pages doivent être
+    remplies pour informer les utilisateurs de ces règles là.
+    `,
+  cookies_info: `
+    Sur cette version de do•doc, sachez qu’aucun suivi des visites n’est réalisé 
+    et que les seuls cookies servent à enregistrer des informations techniques anonymes
+    (comme la langue, l’utilisation des caméras, etc.).
+    `,
 
   on_this_page: "Sur cette page",
   on_other_pages: "Sur d’autres pages",
@@ -1052,6 +1102,8 @@ export default {
 
   mouse_position: "Position de la balise",
   search_for_a_place: "Rechercher un lieu",
+  no_results: "Aucun résultat",
+
   click_to_start_drawing: "cliquer pour commencer le tracé",
   click_to_continue_drawing: "cliquez pour ajouter un autre point",
   click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
@@ -1084,18 +1136,127 @@ export default {
   full_page: "Pleine page",
 
   convert: "Convertir",
+  convert_shorten: "Convertir",
+  convert_shorten_instructions: `
+    Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
+    `,
+
+  extract_range: "Recouper le début ou la fin",
   convert_to_format: "Adapter le format pour la lecture",
 
   already_optimized:
     "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
-  preview_optimize: "Créer une version optimisée",
+  preview_new: "Créer une nouvelle version",
   wont_remove_original: "Ne supprimera pas l’original",
-  add_optimized_to_lib: "Conserver l’original et la nouvelle version",
-  replace_original: "Remplacer et supprimer l’original",
+  replace_original: "Remplacer l’original",
+  save_as_new_media: "Enregistrer comme nouveau média",
 
   change: "Changer",
   transition_fade: "Transition : fondu enchaîné",
 
   couldntbesaved: "La valeur n’a pas pu être enregistrée",
+
+  dont_zoom: "Ne pas zoomer",
+  very_far: "Très éloigné",
+  very_close: "Très près",
   enable_indexing: "Permettre l’indexation par les moteurs de recherche",
+  crop_adjust: "Recadrer/retoucher",
+  aspect_ratio: "Rapport largeur/hauteur",
+  square: "Carré",
+  original: "Original",
+  A_portrait: "Format 'A' portrait",
+  A_landscape: "Format 'A' paysage",
+  constrain_crop_resize: "Contrainte pour recadrer/redimensionner",
+  custom_aspect_ratio: "Indiquer ici une valeur, par exemple 1,66",
+  resize: "Redimensionner",
+
+  page_number: "Numéro de page",
+  on_click: "Au clic",
+  do_nothing: "Ne rien faire",
+  open_webpage: "Ouvrir une page web dans un nouvel onglet",
+  navigate_to_page: "Naviguer vers une page",
+
+  regenerate_thumbs: "Regénérer l’aperçu",
+  embed_link: "Lien d’intégration",
+  direct_link_to_file:
+    "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",
+  share_link_to_file:
+    "Ce lien correspond à une page de consultation du contenu.",
+
+  remove_permanently: "Supprimer définitivement les contenus",
+  remove_permanently_true:
+    "Les médias supprimés seront définitivement perdu et ne pourront pas être récupérés.",
+  remove_permanently_false:
+    "Les médias supprimés seront déplacés dans un sous-dossier (comme une corbeille).",
+
+  upload_max_file_size_in_mo: "Taille maximale des fichiers importés ou captés",
+  umo_instructions: "En mégaoctets (par défaut, 10 000, soit environ 10 Go).",
+
+  scan_qr_code: "Scanner un code QR",
+  opening_link_in: "Ouverture du lien dans",
+  qr_code_content: "Contenu du code QR",
+
+  edit_informations: "Modifier les informations",
+  edit_informations_instructions: `
+    Modifiez ici les informations de plusieurs médias en une seule opération.
+  `,
+  medias_selected: "Médias sélectionnés",
+
+  assign_a_new_caption: "Attribuer une nouvelle légende",
+  assign_a_new_credit: "Attribuer un nouveau crédit/référence",
+  add_or_replace_keywords: "Ajouter ou remplacer les mots-clés",
+  add_or_replace_authors: "Ajouter ou remplacer un ou plusieurs auteurs",
+  assign_a_new_location: "Attribuer une nouvelle localisation",
+  pick_an_option: "Choisissez  une option",
+
+  keep_existing_keywords: "Conserver les mots-clés existants",
+  add_after_existing_keywords: "Ajouter après les mots-clés existants",
+  erase_and_replace_keywords: "Effacer et remplacer les mots-clés",
+  keep_existing_authors: "Conserver les auteurs existants",
+  add_after_existing_authors: "Ajouter à la suite des auteurs existants",
+  erase_and_replace_authors: "Effacer et remplacer les auteurs",
+
+  duration_explanation:
+    "Soit {seconds_equivalent} seconde(s) à une vitesse de {frame_rate} images par seconde",
+
+  connected_currently: "Connecté actuellement",
+
+  confirm_save_changes:
+    "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
+  close_without_saving: "Fermer sans valider",
+
+  start_by_uploading_images: "Commencez par importer vos images ci-dessous",
+  or: "ou",
+  live_dubbing: "Doublage en direct",
+  play_both: "Lire les deux en même temps",
+  bitrate_kbps: "Débit : {bitrate} kbps",
+  bitrate: "Débit",
+  bitrate_instructions:
+    "Quantité de données allouées par seconde. Plus la valeur est élevée, plus la vidéo sera de haute qualité mais plus elle sera lourde.",
+
+  resolution_on_largest_side:
+    "Résolution sur le plus grand côté : {resolution} pixels",
+  keep_ratio: "Conserver le rapport largeur/hauteur",
+
+  in_this_make: "Dans cette fabrication",
+  edit_volume_or_mute: "Modifier le volume ou le mettre en sourdine",
+  toolbox: "Boîte à outils",
+  video_resolution_even:
+    "Largeur × Hauteur. Chaque valeur doit être un multiple de 2.",
+  no_audio_track: "Pas de piste audio (muet)",
+  stop_recording_with_video: "Arrêter l’enregistrement à la fin de la vidéo.",
+
+  video_mp4: "Vidéo MP4",
+  video_gif: "Animation GIF",
+
+  enable_image: "Activer l’image",
+  enable_sound: "Activer le son",
+  created_by_publication: "Créé par la publication {publication_title}",
+  webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de do•doc. 
+  <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s'y trouve, vous pouvez consulter la publication depuis n'importe quel ordinateur dans un navigateur web.
+  <br /><br />Vous pouvez également la mettre en ligne pour qu'elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
+
+  all_fields_not_filled: "Tous les champs ne sont pas renseignés",
+  pixels: "pixels",
+  show_only_media_of_types: "Type de médias affichés : {types}",
 };

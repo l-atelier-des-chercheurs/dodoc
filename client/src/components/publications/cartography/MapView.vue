@@ -1,7 +1,7 @@
 <template>
-  <div class="_mapView">
-    <splitpanes>
-      <pane min-size="5">
+  <div class="_mapView" :data-display="display">
+    <component :is="display === 'adjacent' ? 'splitpanes' : 'div'">
+      <component :is="display === 'adjacent' ? 'pane' : 'div'" min-size="5">
         <DisplayOnMap
           :key="opened_view_meta_filename"
           class="_mapContainer"
@@ -15,6 +15,7 @@
           :map_baselayer_color="
             opened_view ? opened_view.map_baselayer_color : undefined
           "
+          :zoom_animation="opened_view ? opened_view.zoom_animation : undefined"
           :map_base_media="base_media"
           :pins="pins"
           :lines="lines"
@@ -40,7 +41,13 @@
                 :publication_path="publication.$path"
                 :start_collapsed="false"
                 :select_mode="'single'"
-                :types_available="['capture', 'import', 'write', 'embed']"
+                :types_available="[
+                  'capture',
+                  'import',
+                  'write',
+                  'embed',
+                  'table',
+                ]"
                 :post_addtl_meta="new_module_meta"
                 @addModules="addModules"
               />
@@ -55,8 +62,8 @@
             :default_view_color="default_view_color"
           />
         </transition>
-      </pane>
-      <pane min-size="5">
+      </component>
+      <component :is="display === 'adjacent' ? 'pane' : 'div'" min-size="5">
         <ViewPane
           :publication="publication"
           :opened_view_meta_filename="opened_view_meta_filename"
@@ -67,8 +74,8 @@
           @toggleView="toggleView"
           @togglePin="opened_pin_path = $event"
         />
-      </pane>
-    </splitpanes>
+      </component>
+    </component>
   </div>
 </template>
 <script>
@@ -82,6 +89,10 @@ export default {
   props: {
     publication: Object,
     opened_view_meta_filename: String,
+    display: {
+      type: String,
+      default: "adjacent",
+    },
     can_edit: Boolean,
   },
   components: {
@@ -148,6 +159,7 @@ export default {
     },
     opened_view() {
       if (!this.opened_view_meta_filename) return false;
+
       return this.views.find(
         (v) => this.getFilename(v.$path) === this.opened_view_meta_filename
       );
@@ -193,18 +205,19 @@ export default {
             pin_label_items.length > 0 ? pin_label_items.join(" • ") : false;
 
           const pin_color = this.getViewColor(_view);
+          const pin_zoom_level = _module.zoom_level || "undefined";
 
           let pin_preview = "icon";
           const svg = `
               <svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
                 <path
                   d="m78.527 5h-57.054c-4.104 0-7.431 3.324-7.431 7.428v57.059c0 4.106 3.326 7.433 7.431 7.433h11.965l16.501 18.08 16.5-18.085h12.088c4.104 0 7.431-3.322 7.431-7.429v-57.058c-.001-4.104-3.327-7.428-7.431-7.428z"
-                  fill="${pin_color}" 
-                  stroke="#000" 
+                  fill="${pin_color}"
+                  stroke="#000"
                   stroke-width="4px"
                 />
                 <text x="50" y="55" fill="#000000" text-anchor="middle" font-size="48px" font-weight="500" font-family="Fira Mono">
-                  ${index + 1}  
+                  ${index + 1}
                 </text>
               </svg>`;
           const b64 = btoa(unescape(encodeURIComponent(svg)));
@@ -231,6 +244,7 @@ export default {
             belongs_to_view: _view.$path,
             link_pins: _view.link_pins || false,
             color: pin_color,
+            pin_zoom_level,
             pin_preview,
             pin_preview_src,
             first_media_thumb,
@@ -340,16 +354,30 @@ export default {
   width: 100%;
   height: 100%;
 
-  // border-top: 1px solid black;
-
   background: var(--c-gris);
   border-radius: 4px;
   overflow: hidden;
 
-  // display: flex;
-  // flex-flow: row wrap;
-}
-._mapContainer {
-  height: 100%;
+  ._mapContainer {
+    width: 100%;
+  }
+
+  &[data-display="linear"] {
+    ._mapContainer {
+      height: 8cm;
+    }
+
+    ::v-deep {
+      ._viewPane {
+        padding-bottom: 0 !important;
+      }
+      ._sectionsSummary {
+        display: none;
+      }
+      ._navBtns {
+        display: none;
+      }
+    }
+  }
 }
 </style>

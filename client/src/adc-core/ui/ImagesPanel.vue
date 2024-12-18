@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div class="u-instructions">
+      {{ $t("start_by_uploading_images") }}
+    </div>
+
+    <div class="u-spacingBottom" />
+
     <DLabel :str="$t('images')" />
     <div class="u-spacingBottom">
       <input
@@ -68,6 +74,7 @@
     <ColorInput
       class="u-spacingBottom"
       :label="$t('hero_background_color')"
+      :allow_transparent="true"
       :value="settings.hero_background_color"
       @save="saveNewHeroBgColor({ $event, field: 'hero_background_color' })"
     />
@@ -75,6 +82,7 @@
     <ColorInput
       class="u-spacingBottom"
       :label="$t('text_background_color')"
+      :allow_transparent="true"
       :value="settings.text_background_color"
       @save="saveNewHeroBgColor({ $event, field: 'text_background_color' })"
     />
@@ -93,7 +101,7 @@
 
     <div class="u-instructions">
       <button type="button" class="u-buttonLink" @click="$emit('reloadPage')">
-        {{ $t("refresh_window_to_apply") }}
+        {{ $t("refresh_window_to_see_changes") }}
       </button>
     </div>
   </div>

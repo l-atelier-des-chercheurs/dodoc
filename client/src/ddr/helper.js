@@ -65,7 +65,6 @@ export function getPoints({ x, y, width, height, rotation }, zoom) {
   let a = (rotation * Math.PI) / 180;
   let wc = (width / 2) * zoom;
   let hc = (height / 2) * zoom;
-  // 标准的矩阵点乘公式，返回旋转后的坐标
   let deg = new Matrix([
     [Math.cos(a), Math.sin(a)],
     [-Math.sin(a), Math.cos(a)],
@@ -88,7 +87,7 @@ export function getPoints({ x, y, width, height, rotation }, zoom) {
       return { x: item[0] + wc + x * zoom, y: -(item[1] - hc) + y * zoom };
     });
 }
-export function getBoundingRect(transform) {
+export function getBoundingRect(transform, zoom) {
   if (transform.rotation === 0) {
     return {
       left: transform.x,
@@ -99,7 +98,7 @@ export function getBoundingRect(transform) {
       height: transform.height,
     };
   }
-  let points = getPoints(transform);
+  let points = getPoints(transform, zoom);
   let xarray = [],
     yarray = [];
   points.forEach((element) => {

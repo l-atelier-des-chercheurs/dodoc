@@ -35,6 +35,13 @@
           :edit_on_mounted="edit_mode"
           :can_edit="edit_mode"
         />
+        <TableEditor
+          v-else-if="media_with_linked._linked_media.$type === 'table'"
+          class="_mediaContent--table"
+          :content="media_with_linked._linked_media.$content"
+          :path="media_with_linked._linked_media.$path"
+          :can_edit="edit_mode"
+        />
         <MediaContent
           v-else
           :file="media_with_linked._linked_media"
@@ -43,7 +50,6 @@
           :show_fs_button="show_fs_button"
           :can_edit="can_edit"
         />
-
         <CaptionCreditsPage
           :media="media_with_linked._linked_media"
           :publication_path="publication_path"
@@ -59,18 +65,7 @@
             @dragfileSuccess="mediaDraggedSuccessfully(index)"
           />
           <template v-if="edit_mode">
-            <template
-              v-if="
-                (is_multiple_medias ||
-                  (page_template === 'page_by_page' &&
-                    !single_media_displayed_at_full_ratio)) &&
-                !mediaIsSquare(media_with_linked._linked_media) &&
-                media_with_linked._linked_media.$type !== 'stl' &&
-                media_with_linked._linked_media.$type !== 'obj' &&
-                media_with_linked._linked_media.$type !== 'text' &&
-                media_with_linked._linked_media.$type !== 'other'
-              "
-            >
+            <template v-if="showAspectRatioOptions(media_with_linked)">
               <button
                 type="button"
                 class="u-button u-button_icon u-button_small"
@@ -225,6 +220,17 @@ export default {
       this.$emit("removeMediaAtIndex", { index, remove_source: false });
       // if
     },
+    showAspectRatioOptions(media_with_linked) {
+      if (this.medias_with_linked.length === 1) return false;
+
+      const unsupportedTypes = ["stl", "obj", "text", "table", "other"];
+      if (unsupportedTypes.includes(media_with_linked._linked_media.$type))
+        return false;
+
+      if (this.mediaIsSquare(media_with_linked._linked_media)) return false;
+
+      return true;
+    },
   },
 };
 </script>
@@ -232,6 +238,8 @@ export default {
 ._mediaGrid {
   position: relative;
   width: 100%;
+  page-break-inside: avoid;
+  -webkit-region-break-inside: avoid;
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);

@@ -185,6 +185,7 @@
                 :can_toggle="false"
                 :live_editing="true"
                 :label="$t('outline_color')"
+                :allow_transparent="true"
                 :value="selected_feature.get('stroke_color')"
                 :default_value="opened_view_color"
                 @save="
@@ -199,6 +200,7 @@
                 v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
                 :can_toggle="false"
                 :live_editing="true"
+                :allow_transparent="true"
                 :label="$t('background_color')"
                 :value="selected_feature.get('fill_color')"
                 @save="
@@ -319,6 +321,10 @@ export default {
     map_baselayer_opacity: {
       type: Number,
       default: 1,
+    },
+    zoom_animation: {
+      type: Number,
+      default: 0,
     },
     map_baselayer_color: String,
     map_base_media: Object,
@@ -668,8 +674,8 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// SEARCH FIELD
 
-      let lang = "fr-FR";
-      if (this.$i18n.locale === "en") lang = "en-US";
+      let lang = "en-US";
+      if (this.$i18n.locale === "fr") lang = "fr-FR";
 
       const geocoder = new Geocoder("nominatim", {
         provider: "osm",
@@ -678,11 +684,38 @@ export default {
         placeholder: this.$t("search_for_a_place"),
         // targetType: "text-input",
         limit: 5,
-        keepOpen: false,
+        keepOpen: true,
         preventDefault: true,
       });
       this.map.addControl(geocoder);
+
+      let search_timeout;
+      const startTimeout = () => {
+        console.log("startTimeout");
+        search_timeout = setTimeout(() => {
+          clearTimeout(search_timeout);
+          this.$alertify.error(this.$t("no_results"));
+        }, 2000);
+      };
+
+      const search_button = document.querySelector(
+        ".ol-geocoder #gcd-input-search"
+      );
+      if (search_button) search_button.addEventListener("click", startTimeout);
+
+      const search_input = document.querySelector(
+        ".ol-geocoder #gcd-input-query"
+      );
+      if (search_input)
+        search_input.addEventListener("keyup", function (e) {
+          if (e.key === "Enter" || e.keyCode === 13) {
+            startTimeout();
+          }
+        });
+
       geocoder.on("addresschosen", async (evt) => {
+        if (search_timeout) clearTimeout(search_timeout);
+
         this.closePopup();
 
         await this.$nextTick();
@@ -838,6 +871,12 @@ export default {
       this.overlay.setPosition([longitude, latitude]);
       this.clicked_location.longitude = longitude;
       this.clicked_location.latitude = latitude;
+
+      setTimeout(() => {
+        this.navigateTo({
+          center: [longitude, latitude],
+        });
+      }, 100);
     },
     getCurrentPosition() {
       this.is_looking_for_gps_coords = true;
@@ -970,9 +1009,8 @@ export default {
           className: "ol-layer ol-basemap",
         });
         background_layer.getSource().on("tileloaderror", (err) => {
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("failed_loading_tiles_no_internet"));
+          console.error(err.tile.l);
+          this.$alertify.delay(4000).error(this.$t("failed_loading_tiles"));
         });
       }
 
@@ -1029,7 +1067,7 @@ export default {
         }
 
         return new olSourceWMTS({
-          url: "https://wxs.ign.fr/decouverte/geoportail/wmts",
+          url: "https://data.geopf.fr/wmts",
           layer,
           matrixSet: "PM",
           format,
@@ -1201,7 +1239,8 @@ export default {
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
       let fill_color = feature.get("fill_color") || "rgba(255, 255, 255, 1)";
-      fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
+      if (fill_color !== "transparent")
+        fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
 
       if (is_selected) {
         const style = new olStyle({
@@ -1282,9 +1321,26 @@ export default {
       // used to stop current animation if there are any
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
+      const duration = 1400;
+
+      // if (this.zoom_animation && this.zoom_animation > 0)
+      //   this.view.animate(
+      //     {
+      //       zoom: zoom - this.zoom_animation,
+      //       duration: duration / 2,
+      //     },
+      //   );
+      //   this.view.animate(
+      //     {
+
+      //       zoom: zoom,
+      //       duration: duration / 2,
+      //     },
+      //   );
+      //   else
       this.view.animate({
         center,
-        duration: 600,
+        duration,
         zoom,
       });
     },
@@ -1303,11 +1359,14 @@ export default {
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];
+
+      const pin_zoom_level = this.clicked_location.module?.zoom_level;
       this.navigateTo({
         center: [
           this.clicked_location.longitude,
           this.clicked_location.latitude,
         ],
+        zoom: pin_zoom_level,
       });
     },
     closePopup() {
@@ -1869,6 +1928,7 @@ export default {
         left: 0;
         top: 0;
         padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+        padding-right: 2em;
         height: calc(2rem + 2px);
         position: relative;
         border: 1px solid var(--c-gris_fonce);
@@ -1877,6 +1937,19 @@ export default {
           box-shadow: none;
           border-color: var(--active-color);
         }
+      }
+      .gcd-gl-search:after {
+        content: "→";
+
+        line-height: 1;
+        font-weight: 800;
+        background: var(--active-color);
+        color: white;
+        display: inline-block;
+        border-radius: 50%;
+        margin-top: 3px;
+        padding: 4px;
+        font-size: 90%;
       }
     }
     .gcd-road {
@@ -2006,7 +2079,7 @@ export default {
 }
 
 ._popupMessage {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 }
 
 ._leftTopMenu {
@@ -2088,7 +2161,7 @@ export default {
     pointer-events: auto;
     margin: 0 auto;
     width: 100%;
-    max-width: 245px;
+    max-width: 250px;
 
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.9);

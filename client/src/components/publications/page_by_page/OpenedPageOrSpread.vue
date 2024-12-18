@@ -22,6 +22,7 @@
               :scale="scale"
               :show_grid.sync="page_settings.show_grid"
               :snap_to_grid.sync="page_settings.snap_to_grid"
+              :grid_z_index.sync="page_settings.grid_z_index"
               :gridstep_in_mm.sync="page_settings.gridstep_in_mm"
               :layout_mode="layout_mode"
               :page_color="current_page.page_color"
@@ -67,6 +68,7 @@
                   :scale="scale"
                   :show_grid="page_settings.show_grid"
                   :snap_to_grid="page_settings.snap_to_grid"
+                  :grid_z_index="page_settings.grid_z_index"
                   :gridstep_in_mm="page_settings.gridstep_in_mm"
                   :margins="margins"
                   :page_number="active_page_number"
@@ -99,6 +101,7 @@
                         :scale="scale"
                         :show_grid="page_settings.show_grid"
                         :snap_to_grid="page_settings.snap_to_grid"
+                        :grid_z_index="page_settings.grid_z_index"
                         :gridstep_in_mm="page_settings.gridstep_in_mm"
                         :margins="margins"
                         :page_number="active_spread_index * 2 + index"
@@ -165,6 +168,7 @@ export default {
       page_settings: {
         show_grid: false,
         snap_to_grid: false,
+        grid_z_index: "under",
         gridstep_in_mm: 10,
       },
 

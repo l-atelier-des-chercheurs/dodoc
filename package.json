@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "10.0.13",
+  "version": "11.1.9",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -25,16 +25,18 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
-    "node": "20.9.0",
+    "node": "20.18.1",
     "npm": "*"
   },
   "build": {
-    "electronVersion": "29.1.6",
+    "electronVersion": "33.3.0",
     "appId": "dodoc",
     "productName": "do•doc",
+    "asar": true,
     "asarUnpack": [
       "content/",
-      "node_modules/sharp/**"
+      "**/node_modules/sharp/**/*",
+      "**/node_modules/@img/**/*"
     ],
     "icon": "build/icon.png",
     "win": {
@@ -79,52 +81,51 @@
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "archiver": "^7.0.1",
-    "bonjour-service": "^1.2.1",
+    "bonjour-service": "^1.3.0",
     "chalk": "^4.1.2",
     "cheerio": "^0.22.0",
-    "compression": "^1.7.4",
+    "compression": "^1.7.5",
     "cors": "^2.8.5",
     "electron-pdf-window": "^1.0.12",
     "electron-store": "^8.2.0",
     "electron-window-state": "^5.0.3",
     "eventemitter2": "^6.4.9",
     "exifr": "^7.1.3",
-    "express": "^4.19.2",
-    "fast-folder-size": "^2.2.0",
+    "express": "^4.21.2",
+    "fast-folder-size": "^2.3.0",
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
-    "fluent-ffmpeg": "^2.1.2",
+    "fluent-ffmpeg": "^2.1.3",
     "formidable": "^2.1.2",
     "fs-extra": "^11.2.0",
     "heic-decode": "^2.0.0",
-    "lru-cache": "^10.2.0",
+    "helmet": "^7.2.0",
+    "lru-cache": "^10.4.3",
     "md5-file": "^5.0.0",
     "node-fetch": "^2.7.0",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "portscanner": "^2.2.0",
-    "pug": "^3.0.2",
+    "pug": "^3.0.3",
     "rich-text": "^4.1.0",
-    "sharedb": "^4.1.3",
+    "sharedb": "^4.1.5",
     "sharedb-logger": "^0.1.4",
-    "sharp": "^0.31.3",
+    "sharp": "^0.33.5",
     "slugg": "^1.2.1",
-    "socket.io": "^4.7.5",
-    "unzipper": "^0.10.14",
+    "socket.io": "^4.8.1",
+    "unzipper": "^0.12.3",
     "uuid": "^9.0.1",
     "websocket-json-stream": "0.0.3",
-    "write-file-atomic": "^5.0.1",
-    "ws": "^8.16.0"
+    "write-file-atomic": "^6.0.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
-    "electron": "29.1.6",
+    "electron": "^33.3.0",
     "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
-    "node-gyp": "^10.1.0"
+    "node-gyp": "^10.3.1"
   },
   "optionalDependencies": {
-    "extractd": "^2.1.2",
-    "pdf-extractor": "^2.2.0",
-    "stl-thumbnailer-node": "^1.2.1"
+    "extractd": "^2.1.2"
   }
 }

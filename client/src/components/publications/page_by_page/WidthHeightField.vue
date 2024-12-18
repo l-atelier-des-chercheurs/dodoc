@@ -2,7 +2,6 @@
   <div class="_widthHeightField">
     <fieldset>
       <legend class="u-label">{{ $t("format") }}</legend>
-
       <DLabel class="_label" :str="$t('document_type')" :tag="'h3'" />
       <br />
       <div
@@ -129,8 +128,8 @@ export default {
   watch: {
     new_layout_mode() {
       const { width, height } = this.format_options[0];
-      this.new_page_width = width;
-      this.new_page_height = height;
+      if (!this.new_page_width) this.new_page_width = width;
+      if (!this.new_page_height) this.new_page_height = height;
     },
   },
   computed: {

@@ -5,7 +5,6 @@
       class="u-instructions u-spacingBottom"
       v-html="$t('import_a_project_instr')"
     />
-
     <div class="_importZone" v-if="!folder_to_import">
       <ImportFileZone
         :accepts="'.zip'"
@@ -89,7 +88,9 @@ export default {
         })
         .catch((err) => {
           if (err.code === "imported_folder_not_valid")
-            this.err_message = this.$t("zip_wrong");
+            this.err_message = this.$t("zip_not_valid_project");
+          if (err.code === "imported_folder_is_a_space")
+            this.err_message = this.$t("zip_is_space_not_project");
           // this.files_to_import = [];
           // this.folder_to_import = undefined;
           // this.transfer_percent = 0;

@@ -5,7 +5,6 @@
   "redirect_port": "",
   "cache_content": true,
   "bonjour_domain": false,
-  "removePermanently": false,
   "versioning": true,
   "tokenIsValidForXDays": 60,
 
@@ -16,8 +15,8 @@
   "certificatePath": "",
   "passphrase": "",
 
-  "lruCacheMax": 3000,
-  "lruCacheMaxSize": 5000000,
+  "lruCacheMax": 10000,
+  "lruCacheMaxSize": 25000000,
 
   "deletedFolderName": "_bin",
 
@@ -27,17 +26,7 @@
   },
 
   "mediaThumbQuality": 90,
-  "maxFileSizeInMoForUpload": 10000,
 
-  "regexpMatchFolderNames": "^([^.]+)$",
-  "regexpGetFileExtension": "\\.[^.]*$",
-  "regexpRemoveFileExtension": "(.+?)(\\.[^.]*$|$)",
-
-  "api": {
-    "enabled": false,
-    "allow_all_domains": false,
-    "domains_whitelist": ["localhost"]
-  },
   "schema": {
     "$cover": {
       "width": 2000,
@@ -64,6 +53,12 @@
       },
       "enable_indexing": {
         "type": "boolean"
+      },
+      "remove_permanently": {
+        "type": "boolean"
+      },
+      "upload_max_file_size_in_mo": {
+        "type": "number"
       },
       "require_signup_to_contribute": {
         "type": "boolean"
@@ -99,6 +94,9 @@
         "type": "boolean"
       },
       "terms_in_footer": {
+        "type": "boolean"
+      },
+      "confidentiality_in_footer": {
         "type": "boolean"
       }
     },
@@ -197,6 +195,9 @@
                 "caption": {
                   "type": "string"
                 },
+                "keywords": {
+                  "type": "array"
+                },
                 "fav": {
                   "type": "boolean"
                 }
@@ -239,6 +240,21 @@
                   "crop_options": {
                     "type": "object"
                   },
+                  "effect_type": {
+                    "type": "string"
+                  },
+                  "color_filter": {
+                    "type": "object"
+                  },
+                  "playback_speed": {
+                    "type": "number"
+                  },
+                  "rotation": {
+                    "type": "string"
+                  },
+                  "flip": {
+                    "type": "string"
+                  },
                   "selection": {
                     "type": "object"
                   },
@@ -268,6 +284,9 @@
                   },
                   "sections_list": {
                     "type": "array"
+                  },
+                  "frame_rate": {
+                    "type": "number"
                   }
                 },
                 "$files": {
@@ -400,6 +419,9 @@
                     "all_pins_icon": {
                       "type": "boolean"
                     },
+                    "zoom_animation": {
+                      "type": "number"
+                    },
                     "map_baselayer": {
                       "type": "string"
                     },
@@ -421,6 +443,9 @@
                     "section_title": {
                       "type": "string"
                     },
+                    "section_title_is_visible": {
+                      "type": "boolean"
+                    },
                     "section_description": {
                       "type": "string"
                     },
@@ -429,6 +454,9 @@
                     },
                     "caption": {
                       "type": "string"
+                    },
+                    "on_click": {
+                      "type": "object"
                     },
                     "pin_icon": {
                       "type": "string"
@@ -498,6 +526,9 @@
                     },
                     "location": {
                       "type": "object"
+                    },
+                    "zoom_level": {
+                      "type": "number"
                     }
                   }
                 }

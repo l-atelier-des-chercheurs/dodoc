@@ -32,53 +32,40 @@
         />
       </div>
 
-      <div
-        v-if="['edit_image', 'trim_video', 'trim_audio'].includes(make.type)"
-      >
+      <div v-if="make.type === 'video_effects'">
         <div class="_mediaPicker">
           <SingleBaseMediaPicker
-            :title="picker_title"
+            :title="$t('video_to_rework')"
             :field_name="'base_media_filename'"
             :open_modal_if_empty="true"
             :content="make.base_media_filename"
             :path="make.$path"
-            :media_type_to_pick="media_type_to_pick"
+            :media_type_to_pick="'video'"
           />
         </div>
-
         <div v-if="base_media" :key="base_media.$path">
-          <EditImage
-            v-if="make.type === 'edit_image'"
-            :make="make"
-            :project_path="project_path"
-            :base_media="base_media"
-          />
-          <TrimAudioVideo
-            v-else-if="make.type === 'trim_video'"
-            :make="make"
-            :project_path="project_path"
-            :base_media="base_media"
-          />
-          <TrimAudioVideo
-            v-else-if="make.type === 'trim_audio'"
+          <VideoEffects
             :make="make"
             :project_path="project_path"
             :base_media="base_media"
           />
         </div>
       </div>
-
+      <MakeStopmotionAnimation
+        v-else-if="make.type === 'stopmotion_animation'"
+        :make="make"
+      />
       <MixAudioAndImageOrVideo
         v-else-if="
           ['mix_audio_and_image', 'mix_audio_and_video'].includes(make.type)
         "
         :make="make"
       />
-
       <ImageAndVideoMontage
         v-else-if="make.type === 'video_assemblage'"
         :make="make"
       />
+      <QrCode v-else-if="make.type === 'qr_code'" :make="make" />
     </div>
   </div>
 </template>
@@ -95,10 +82,18 @@ export default {
     SingleBaseMediaPicker,
     ImageAndVideoMontage: () =>
       import("@/components/makes/ImageAndVideoMontage.vue"),
-    EditImage: () => import("@/components/makes/EditImage.vue"),
-    TrimAudioVideo: () => import("@/components/makes/TrimAudioVideo.vue"),
+    VideoEffects: () => import("@/components/makes/VideoEffects.vue"),
+    MakeStopmotionAnimation: () =>
+      import("@/components/makes/MakeStopmotionAnimation.vue"),
     MixAudioAndImageOrVideo: () =>
       import("@/components/makes/MixAudioAndImageOrVideo.vue"),
+    QrCode: () => import("@/components/makes/QrCode.vue"),
+  },
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
   },
   data() {
     return {
@@ -127,17 +122,49 @@ export default {
         });
       return false;
     },
-    media_type_to_pick() {
-      if (this.make.type === "edit_image") return "image";
-      if (this.make.type === "trim_audio") return "audio";
-      if (this.make.type === "trim_video") return "video";
-      return undefined;
-    },
-    picker_title() {
-      if (this.make.type === "edit_image") return this.$t("image_to_rework");
-      if (this.make.type === "trim_audio") return this.$t("audio_to_rework");
-      if (this.make.type === "trim_video") return this.$t("video_to_rework");
-      return undefined;
+    meta_filenames_already_present() {
+      if (
+        ["stopmotion_animation", "video_assemblage"].includes(this.make.type)
+      ) {
+        const sections = this.getSectionsWithProps({
+          publication: this.make,
+          group: "sections_list",
+        });
+        const { other } = this.getMediasAlreadyPresentInPublication({
+          publication: this.make,
+          sections,
+        });
+
+        return [
+          {
+            label: this.$t("in_this_make"),
+            medias: other,
+            color: "var(--c-bleumarine)",
+          },
+        ];
+      }
+
+      let medias = [];
+
+      if (this.make.base_media_filename)
+        medias.push(this.make.base_media_filename);
+      if (this.make.base_image_filename)
+        medias.push(this.make.base_image_filename);
+      if (this.make.base_video_filename)
+        medias.push(this.make.base_video_filename);
+      if (this.make.base_audio_filename)
+        medias.push(this.make.base_audio_filename);
+
+      if (medias.length > 0)
+        return [
+          {
+            label: this.$t("in_this_make"),
+            medias: medias,
+            color: "var(--c-bleumarine)",
+          },
+        ];
+
+      return [];
     },
   },
   methods: {
