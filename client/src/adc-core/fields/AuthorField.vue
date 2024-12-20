@@ -199,7 +199,7 @@ export default {
       ) {
         this.new_authors_paths = "noone";
       } else if (Array.isArray(this.authors_paths)) {
-        this.new_authors_paths = this.new_authors_paths.reduce((acc, a) => {
+        this.new_authors_paths = this.authors_paths.reduce((acc, a) => {
           const author = this.getAuthor(a);
           if (author) acc.push(author.$path);
           return acc;
