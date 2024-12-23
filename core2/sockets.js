@@ -49,10 +49,7 @@ module.exports = (function () {
         const sessionID = sessionStore.getOrCreate(_sID);
         socket.sessionID = sessionID;
         socket.userID = uuidv4();
-        let meta = {};
-        if (token_path) meta.token_path = token_path;
-        const user = users.addUser(socket.userID, meta);
-        if (user) notifier.emit("newUser", user);
+        if (token_path) socket.token_path = token_path;
       } catch (err) {
         dev.error(err);
         return next(err);
@@ -62,7 +59,7 @@ module.exports = (function () {
     });
 
     io.on("connection", async (socket) => {
-      const { sessionID, userID } = socket;
+      const { sessionID, userID, token_path } = socket;
       dev.logsockets(`RECEIVED CONNECTION with sessionID: ${sessionID}`);
 
       let ip =
@@ -76,11 +73,11 @@ module.exports = (function () {
         user_agent,
       });
       let meta = {
-        ip,
         user_agent,
+        token_path,
       };
-      const user = users.updateUser(userID, meta);
-      if (user) notifier.emit("updateUser", user);
+      const user = users.addUser(userID, meta);
+      if (user) notifier.emit("newUser", user);
 
       socket.emit("session", {
         sessionID,
