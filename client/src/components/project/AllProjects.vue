@@ -37,8 +37,17 @@ export default {
 
       if (this.show_only_my_projects)
         _projects = _projects.filter((p) => {
-          if (p.$admins.includes(this.connected_as.$path)) return true;
-          if (p.$contributors.includes(this.connected_as.$path)) return true;
+          if (!p) return false;
+          if (
+            Array.isArray(p.$admins) &&
+            p.$admins?.includes(this.connected_as.$path)
+          )
+            return true;
+          if (
+            Array.isArray(p.$contributors) &&
+            p.$contributors?.includes(this.connected_as.$path)
+          )
+            return true;
           return false;
         });
 
