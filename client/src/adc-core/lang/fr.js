@@ -1258,5 +1258,6 @@ export default {
 
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",
-  show_only_media_of_types: "Type de médias affichés : {types}",
+  show_only_media_of_types: "Type de médias affiché : {types}",
+  devices_connected: "Appareils connectés actuellement : {count}",
 };
