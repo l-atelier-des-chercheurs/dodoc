@@ -123,6 +123,10 @@ export default {
     make_path: String,
     reference_media: Object,
     possible_formats: Array,
+    default_resolution_preset: {
+      type: String,
+      default: "source",
+    },
   },
   components: {
     ShowExportedFileInfos,
@@ -133,7 +137,7 @@ export default {
       finished_saving_to_project: false,
       created_video: false,
 
-      resolution_preset_picked: "source",
+      resolution_preset_picked: this.default_resolution_preset,
       progress_percent: 0,
 
       output_format: "mp4",

@@ -80,6 +80,7 @@
       :base_instructions="base_instructions"
       :make_path="make.$path"
       :reference_media="first_media"
+      :default_resolution_preset="'high'"
       @close="show_render_modal = false"
     />
   </div>

@@ -36,9 +36,11 @@ export default {
       let _projects = this.all_projects;
 
       if (this.show_only_my_projects)
-        _projects = _projects.filter(
-          (p) => this.canLoggedinContributeToFolder({ folder: p }) === true
-        );
+        _projects = _projects.filter((p) => {
+          if (p.$admins.includes(this.connected_as.$path)) return true;
+          if (p.$contributors.includes(this.connected_as.$path)) return true;
+          return false;
+        });
 
       return _projects;
     },

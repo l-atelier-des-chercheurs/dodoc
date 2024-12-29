@@ -94,12 +94,8 @@
         </button>
       </div>
 
-      <div class="_currentUsers">
-        <router-link
-          v-if="users.length > 1"
-          :to="'/@'"
-          class="u-button u-button_icon"
-        >
+      <div class="_currentUsers" v-if="users.length > 1">
+        <router-link :to="'/@'" class="u-button u-button_icon">
           <b-icon icon="person-circle" />
           <sup class="_badge">
             {{ users.length }}
@@ -146,7 +142,9 @@ export default {
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$on(`toolbar.openCredits`, this.showCredits);
 
-    this.users = await this.$api.getAndTrackUsers();
+    setTimeout(async () => {
+      this.users = await this.$api.getAndTrackUsers();
+    }, 1000);
   },
   beforeDestroy() {
     this.$api.leave({ room: "authors" });

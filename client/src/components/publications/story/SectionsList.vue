@@ -19,7 +19,6 @@
         :opened_section_meta_filename="opened_section_meta_filename"
         :can_edit="can_edit"
         @toggleSection="$emit('toggleSection', $event)"
-        @openFirstSection="openFirstSection"
       />
     </transition>
   </div>

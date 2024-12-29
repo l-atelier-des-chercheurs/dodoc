@@ -107,67 +107,9 @@
       :make_path="make.$path"
       :reference_media="first_media"
       :possible_formats="possible_formats"
+      :default_resolution_preset="'high'"
       @close="show_render_modal = false"
     />
-
-    <!-- <ExportSaveMakeModal
-      v-if="show_save_export_modal"
-      :title="$t('export_stomotion')"
-      :export_name="export_name"
-      :export_href="export_href"
-      :enable_options="created_video !== false"
-      @close="show_save_export_modal = false"
-    >
-      <div class="_spinner" v-if="is_exporting" key="loader">
-        <LoaderSpinner />
-      </div>
-      <div v-else>
-        <div v-if="!created_video">
-          <DLabel>
-            {{ $t("resolution") }}
-          </DLabel>
-          <SelectField2
-            :value="resolution_preset_picked"
-            :options="presets"
-            :can_edit="true"
-            :hide_validation="true"
-            @change="resolution_preset_picked = $event"
-          />
-
-          <div v-if="resolution_preset_picked === 'custom'">
-            <div class="u-spacingBottom" />
-            <CustomResolutionInput
-              :width.sync="custom_resolution_width"
-              :height.sync="custom_resolution_height"
-              :ratio="first_media_ratio"
-            />
-          </div>
-
-          <div class="u-spacingBottom" />
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            @click="renderMontage"
-          >
-            <b-icon icon="check" />
-            {{ $t("create") }}
-          </button>
-        </div>
-        <div v-else>
-          <button type="button" class="u-buttonLink" @click="cancelExport">
-            <b-icon icon="arrow-left-short" />
-            {{ $t("back") }}
-          </button>
-          <br />
-          <MediaContent
-            class="_preview"
-            :file="created_video"
-            :resolution="1600"
-            :context="'full'"
-          />
-        </div>
-      </div>
-    </ExportSaveMakeModal> -->
   </div>
 </template>
 <script>

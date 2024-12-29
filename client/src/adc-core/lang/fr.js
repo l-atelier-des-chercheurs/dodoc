@@ -786,7 +786,7 @@ export default {
   high: "Élevée",
   medium: "Moyenne",
   low: "Basse",
-  rough: "Ébauche",
+  rough: "Ébauche (le plus rapide)",
   optimize_resize: "Optimiser/redimensionner",
   convert_instructions: "Convertir vers un format standard",
   optimize_resize_instructions:
@@ -943,6 +943,7 @@ export default {
   move: "Déplacer",
   unselect: "Déselectionner",
   remove: "Supprimer",
+  disable: "Désactiver",
   remove_project: "Supprimer le projet",
   remove_media: "Supprimer le média",
   remove_space: "Supprimer cet espace et tous ses contenus",
@@ -1258,5 +1259,6 @@ export default {
 
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",
-  show_only_media_of_types: "Type de médias affichés : {types}",
+  show_only_media_of_types: "Type de médias affiché : {types}",
+  devices_connected: "Appareils connectés actuellement : {count}",
 };

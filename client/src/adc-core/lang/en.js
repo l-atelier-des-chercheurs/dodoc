@@ -184,7 +184,7 @@ export default {
   high: "High",
   medium: "Medium",
   low: "Low",
-  rough: "Draft",
+  rough: "Draft (the fastest)",
   optimize_resize: "Optimize/resize",
   convert_instructions: "Convert to standard format",
   optimize_resize_instructions:
@@ -226,6 +226,7 @@ export default {
   move: "Move",
   unselect: "Unselect",
   remove: "Delete",
+  disable: "Disable",
   remove_project: "Delete project",
   remove_media: "Delete media",
   remove_space: "Delete space and all its content",
@@ -1182,4 +1183,5 @@ export default {
   all_fields_not_filled: "All fields are not filled",
   pixels: "pixels",
   show_only_media_of_types: "Displayed media types: {types}",
+  devices_connected: "Devices currently connected: {count}",
 };
