@@ -226,6 +226,7 @@ export default {
   move: "Move",
   unselect: "Unselect",
   remove: "Delete",
+  disable: "Disable",
   remove_project: "Delete project",
   remove_media: "Delete media",
   remove_space: "Delete space and all its content",

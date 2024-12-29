@@ -37,17 +37,32 @@
       </span>
     </div>
 
-    <b-icon
-      v-if="mode === 'select'"
-      icon="box-arrow-in-right"
-      :aria-label="$t('select')"
-    />
-    <b-icon v-if="mode === 'add'" icon="plus-circle" :aria-label="$t('add')" />
-    <b-icon
-      v-if="mode === 'remove'"
-      icon="x-circle"
-      :aria-label="$t('remove')"
-    />
+    <transition name="pagechange" mode="out-in">
+      <b-icon
+        v-if="mode === 'select'"
+        icon="box-arrow-in-right"
+        :aria-label="$t('select')"
+        :key="'select'"
+      />
+      <b-icon
+        v-else-if="mode === 'add'"
+        icon="plus-circle"
+        :aria-label="$t('add')"
+        :key="'add'"
+      />
+      <b-icon
+        v-else-if="mode === 'remove'"
+        icon="x-circle"
+        :aria-label="$t('remove')"
+        :key="'remove'"
+      />
+      <b-icon
+        v-else-if="mode === 'disable'"
+        icon="x-circle-fill"
+        :aria-label="$t('disable')"
+        :key="'disable'"
+      />
+    </transition>
   </component>
 </template>
 <script>
@@ -104,6 +119,7 @@ export default {
   gap: calc(var(--spacing) / 2);
   background: transparent;
   text-align: left;
+  background-color: white;
 
   &:where(button, a) {
     border: 1px solid var(--c-gris);

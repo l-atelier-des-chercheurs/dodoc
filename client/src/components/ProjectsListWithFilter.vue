@@ -71,52 +71,17 @@
         <div>
           <DLabel :str="$t('contributors')" />
 
-          <AuthorTag
-            v-for="atpath in project_admins_and_contributors"
-            :path="atpath.$path"
-            :key="atpath.$path"
-            :mode="
-              getActiveTags('authors').includes(atpath.$path) ? 'remove' : 'add'
-            "
-            @click="
-              toggleFilter({ filter_type: 'authors', value: atpath.$path })
-            "
-          />
-
-          <!-- <TagsList
+          <TagsList
             :tags="project_admins_and_contributors"
-            :tag_type="'contributors'"
-            :tags_active="getActiveTags('contributors')"
+            :tag_type="'authors'"
+            :tags_active="getActiveTags('authors')"
             @tagClick="
               toggleFilter({
-                filter_type: 'contributors',
+                filter_type: 'authors',
                 value: $event,
               })
             "
-          /> -->
-
-          <!-- <select
-            class="_selectMediaAuthor"
-            size="small"
-            v-model="author_of_media_to_display"
-            :class="{
-              'is--active': author_of_media_to_display !== 'all',
-            }"
-            @change="
-              toggleFilter({
-                filter_type: 'contributors',
-                value: $event.target.value,
-              })
-            "
-          >
-            <option key="all" value="all" v-text="$t('all_accounts')" />
-            <option
-              v-for="admin_or_contributor in project_admins_and_contributors"
-              :key="admin_or_contributor.$path"
-              :value="admin_or_contributor.$path"
-              v-text="admin_or_contributor.name"
-            />
-          </select> -->
+          />
         </div>
 
         <template
@@ -236,7 +201,7 @@
                 v-else-if="af.filter_type === 'authors'"
                 :path="af.value"
                 :key="af.value"
-                :mode="'remove'"
+                :mode="'disable'"
                 @click="
                   toggleFilter({
                     filter_type: 'authors',
@@ -340,8 +305,11 @@ export default {
       return _filters;
     },
     project_admins_and_contributors() {
-      const admins = this.extractArr(this.projects, "$admins");
-      const contributors = this.extractArr(this.projects, "$contributors");
+      const admins = this.extractArr(this.filtered_projects, "$admins");
+      const contributors = this.extractArr(
+        this.filtered_projects,
+        "$contributors"
+      );
 
       return [...admins, ...contributors]
         .reduce((acc, a_path) => {

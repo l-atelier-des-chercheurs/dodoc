@@ -943,6 +943,7 @@ export default {
   move: "Déplacer",
   unselect: "Déselectionner",
   remove: "Supprimer",
+  disable: "Désactiver",
   remove_project: "Supprimer le projet",
   remove_media: "Supprimer le média",
   remove_space: "Supprimer cet espace et tous ses contenus",

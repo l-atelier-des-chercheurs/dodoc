@@ -16,9 +16,30 @@
     </span>
 
     <transition name="pagechange" mode="out-in">
-      <b-icon v-if="mode === 'add'" icon="plus-circle" :key="mode" />
-      <b-icon v-else-if="mode === 'remove'" icon="x-circle" :key="mode" />
-      <b-icon v-else-if="mode === 'disable'" icon="x-circle-fill" :key="mode" />
+      <b-icon
+        v-if="mode === 'select'"
+        icon="box-arrow-in-right"
+        :aria-label="$t('select')"
+        :key="'select'"
+      />
+      <b-icon
+        v-else-if="mode === 'add'"
+        icon="plus-circle"
+        :aria-label="$t('add')"
+        :key="'add'"
+      />
+      <b-icon
+        v-else-if="mode === 'remove'"
+        icon="x-circle"
+        :aria-label="$t('remove')"
+        :key="'remove'"
+      />
+      <b-icon
+        v-else-if="mode === 'disable'"
+        icon="x-circle-fill"
+        :aria-label="$t('disable')"
+        :key="'disable'"
+      />
     </transition>
   </div>
 </template>
