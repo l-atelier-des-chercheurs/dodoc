@@ -184,7 +184,7 @@ export default {
   high: "High",
   medium: "Medium",
   low: "Low",
-  rough: "Draft",
+  rough: "Draft (the fastest)",
   optimize_resize: "Optimize/resize",
   convert_instructions: "Convert to standard format",
   optimize_resize_instructions:

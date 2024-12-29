@@ -786,7 +786,7 @@ export default {
   high: "Élevée",
   medium: "Moyenne",
   low: "Basse",
-  rough: "Ébauche",
+  rough: "Ébauche (le plus rapide)",
   optimize_resize: "Optimiser/redimensionner",
   convert_instructions: "Convertir vers un format standard",
   optimize_resize_instructions:
