@@ -26,8 +26,8 @@
             {{ $t("open") }}
           </button>
         </div>
-        <div class="u-sameRow">
-          <button
+        <div class="u-sameRow" v-if="task.progress === 100">
+          <!-- <button
             type="button"
             v-if="task.progress < 100"
             @click="abortTask(task.id)"
@@ -35,10 +35,10 @@
           >
             <b-icon icon="x-octagon" />
             {{ $t("stop") }}
-          </button>
+          </button> -->
           <button
             type="button"
-            v-else-if="task.progress === 100"
+            v-if="task.progress === 100"
             @click="removeTask(task.id)"
             class="u-button u-button_icon"
           >
