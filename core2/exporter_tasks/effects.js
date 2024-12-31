@@ -74,6 +74,7 @@ module.exports = (function () {
             inputs: "output",
             outputs: "output",
           });
+          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
         } else if (effect_type === "colored_filter") {
           if (effect_opts?.color_filter?.startsWith("#")) {
             ffmpeg_cmd
@@ -86,6 +87,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: color is not set correctly`
@@ -134,7 +136,7 @@ module.exports = (function () {
               inputs: "[0]",
               outputs: "output",
             });
-            // ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -151,7 +153,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            // ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
