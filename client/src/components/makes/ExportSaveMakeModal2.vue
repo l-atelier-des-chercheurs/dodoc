@@ -44,6 +44,13 @@
             />
           </div>
         </div>
+        <div v-if="allow_disable_audio">
+          <div class="u-spacingBottom" />
+          <ToggleInput
+            :content.sync="keep_audio_track"
+            :label="$t('keep_audio_track')"
+          />
+        </div>
       </template>
       <template v-else>
         <div class="_preview">
@@ -123,6 +130,7 @@ export default {
     make_path: String,
     reference_media: Object,
     possible_formats: Array,
+    allow_disable_audio: Boolean,
     default_resolution_preset: {
       type: String,
       default: "source",
@@ -145,6 +153,8 @@ export default {
       custom_resolution_width: 1920,
       custom_resolution_height: 1080,
       custom_bitrate: 4000,
+
+      keep_audio_track: true,
     };
   },
   created() {},
@@ -252,6 +262,10 @@ export default {
 
       if (this.possible_formats)
         instructions.output_format = this.output_format;
+
+      if (this.allow_disable_audio) {
+        instructions.keep_audio_track = this.keep_audio_track;
+      }
 
       const current_task_id = await this.$api.exportFolder({
         path: this.make_path,
