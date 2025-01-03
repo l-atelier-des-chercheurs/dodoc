@@ -573,10 +573,10 @@ module.exports = (function () {
     },
 
     getSlugFromPath(p) {
-      return p.split(path.sep).at(-1);
+      return path.basename(p);
     },
     getContainingFolder(p) {
-      return p.substring(0, p.lastIndexOf(path.sep));
+      return path.dirname(p);
     },
     getFolderParent(p) {
       if (!p) return false;
