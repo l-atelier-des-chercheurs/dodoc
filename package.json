@@ -36,7 +36,8 @@
     "asarUnpack": [
       "content/",
       "**/node_modules/sharp/**/*",
-      "**/node_modules/@img/**/*"
+      "**/node_modules/@img/**/*",
+      "client/dist/"
     ],
     "icon": "build/icon.png",
     "win": {
