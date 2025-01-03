@@ -165,6 +165,7 @@
         :base_instructions="base_instructions"
         :make_path="make.$path"
         :reference_media="base_media"
+        :allow_disable_audio="true"
         @close="show_render_modal = false"
       />
     </div>

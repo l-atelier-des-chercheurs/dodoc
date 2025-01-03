@@ -1005,6 +1005,9 @@ class Exporter {
     const { output_width, output_height, video_bitrate } =
       this._extractResolutionAndBitrate(this.instructions);
 
+    const keep_audio_track =
+      this.instructions.keep_audio_track === true ? true : false;
+
     const that = this;
     const reportProgress = (progress) => {
       const progress_percent = Math.round(
@@ -1020,6 +1023,7 @@ class Exporter {
         output_width,
         output_height,
         video_bitrate,
+        keep_audio_track,
         effect_type,
         effect_opts,
         ffmpeg_cmd: this.ffmpeg_cmd,

@@ -1245,6 +1245,7 @@ export default {
   video_resolution_even:
     "Largeur × Hauteur. Chaque valeur doit être un multiple de 2.",
   no_audio_track: "Pas de piste audio (muet)",
+  keep_audio_track: "Conserver la piste audio",
   stop_recording_with_video: "Arrêter l’enregistrement à la fin de la vidéo.",
 
   video_mp4: "Vidéo MP4",

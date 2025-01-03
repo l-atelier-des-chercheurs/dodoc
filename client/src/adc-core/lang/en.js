@@ -1168,6 +1168,7 @@ export default {
   toolbox: "Toolbox",
   video_resolution_even: "Width × Height. Each value must be a multiple of 2.",
   no_audio_track: "No audio track (muted)",
+  keep_audio_track: "Keep the audio track",
   stop_recording_with_video: "Stop recording at the end of the video.",
 
   video_mp4: "Video MP4",
