@@ -558,7 +558,10 @@ class Exporter {
 
           ////////////////////////////////////////////////////////////// CLIENT DIST
           const full_path_to_client_dist = path.join(
-            global.appRoot,
+            `${global.appRoot.replace(
+              `${path.sep}app.asar`,
+              `${path.sep}app.asar.unpacked`
+            )}`,
             "client",
             "dist"
           );

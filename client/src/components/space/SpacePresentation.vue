@@ -44,7 +44,7 @@
         />
 
         <DropDown :right="true">
-          <DownloadFolder :path="space.$path" />
+          <DownloadFolder :label="$t('download_space')" :path="space.$path" />
           <RemoveMenu :remove_text="$t('remove_space')" @remove="removeSpace" />
         </DropDown>
       </div>

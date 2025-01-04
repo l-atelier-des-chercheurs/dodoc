@@ -2,12 +2,12 @@
   <div>
     <button type="button" class="u-buttonLink" @click="showDownloadModal">
       <b-icon icon="download" />
-      {{ $t("download") }}
+      {{ label }}
     </button>
 
     <BaseModal2
       v-if="show_download_modal"
-      :title="$t('download')"
+      :title="label"
       @close="show_download_modal = false"
     >
       <!-- {{ archive_name }} -->
@@ -56,6 +56,7 @@
 <script>
 export default {
   props: {
+    label: String,
     path: String,
   },
   components: {},
