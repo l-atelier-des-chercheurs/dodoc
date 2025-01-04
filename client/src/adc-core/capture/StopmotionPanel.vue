@@ -148,7 +148,7 @@
                 />
                 <template v-if="photoIsActive(media.$path)">
                   <RemoveMenu
-                    :remove_text="$t('remove_this_image')"
+                    :modal_title="$t('remove_this_image')"
                     @remove="removeMedia(media.$path)"
                   >
                     <button

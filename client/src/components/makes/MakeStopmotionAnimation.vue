@@ -46,7 +46,7 @@
     </transition-group>
 
     <transition name="pagechange" mode="out-in">
-      <div class="_bottomRow">
+      <div class="_bottomRow" v-if="section_modules_list.length > 0">
         <div class="_equationIcon">
           <b-icon icon="chevron-double-down" />
         </div>
@@ -185,7 +185,7 @@ export default {
       ];
     },
     export_is_available() {
-      return this.section_modules_list.length > 0;
+      return this.section_modules_list.length > 1;
     },
     sections() {
       return this.getSectionsWithProps({

@@ -48,7 +48,7 @@
               </button>
 
               <RemoveMenu
-                :remove_text="$t('remove_section')"
+                :modal_title="$t('remove_section')"
                 @remove="removeSection"
               />
             </DropDown>

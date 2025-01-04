@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
+  <BaseModal2 :title="modal_title" @close="$emit('close')">
     <div class="u-spacingBottom">
       <DLabel :str="$t('document_type')" />
       <RadioCheckboxInput
@@ -51,6 +51,7 @@ import ExportItemAndSaveOrDownload from "@/components/publications/ExportItemAnd
 
 export default {
   props: {
+    modal_title: String,
     publication: Object,
     page_opened_id: String,
   },

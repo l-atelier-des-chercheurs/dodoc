@@ -159,8 +159,9 @@
           </div>
           <div class="">
             <RemoveMenu
-              :remove_text="$t('remove_account')"
-              :remove_expl="$t('remove_account_expl')"
+              :button_text="$t('remove_account')"
+              :modal_title="$t('remove_account_name', { name: author.name })"
+              :modal_expl="$t('remove_account_expl')"
               @remove="removeAuthor"
             />
           </div>

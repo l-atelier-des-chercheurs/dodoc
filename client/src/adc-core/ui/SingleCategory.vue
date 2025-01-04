@@ -8,7 +8,7 @@
         </button>
       </div>
 
-      <RemoveMenu :remove_text="$t('remove_category')" @remove="removeCat" />
+      <RemoveMenu :button_text="$t('remove_category')" @remove="removeCat" />
     </div>
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />

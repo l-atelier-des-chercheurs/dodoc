@@ -45,7 +45,6 @@
         <MediaContent :file="image" :context="'preview'" :resolution="640" />
         <RemoveMenu
           class="_removeMedia"
-          :remove_text="$t('remove')"
           :show_button_text="false"
           @remove="removeMedia(image.$path)"
         />

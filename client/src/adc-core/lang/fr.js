@@ -196,14 +196,14 @@ export default {
   story_with_sections: "Récit",
   page_by_page: "Page à page",
   cartography: "Cartographie",
-  export_publi: "Exporter la publication",
+  export: "Exporter",
   export_in_pdf: "Exporter en PDF",
   direct_link: "Lien direct",
   link: "Lien",
   share: "Partager",
   options: "Options",
-  exports: "Exportations",
-  export: "Exportation",
+  exports: "Exportation | Exportations",
+  export_publi: "Exporter la publication {name}",
   export_in_progress: "Exportation en cours",
 
   story_width: "Largeur du récit",
@@ -382,8 +382,11 @@ export default {
   latest_changes_to_project: "Dernières modifications au projet",
 
   download: "Télécharger",
-  download_project: "Télécharger ce projet",
-  download_space: "Télécharger cet espace et tous ses projets",
+  download_project: "Télécharger le projet {name}",
+  download_project_instr:
+    "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11).",
+  download_space:
+    "Télécharger l’espace {name} et tous les projets qu’il contient",
   download_ready: "Le téléchargement est prêt",
   download_image: "Télécharger cette image",
   page_failed_to_load: "Cette page n’a pas pu charger.",
@@ -658,6 +661,7 @@ export default {
 
   no_authors_to_show: "Aucun compte à afficher",
   remove_account: "Supprimer ce compte",
+  remove_account_name: "Supprimer le compte {name}",
   remove_account_expl:
     "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
 
@@ -920,7 +924,6 @@ export default {
 
   duplicate: "Dupliquer",
   duplicate_or_move: "Dupliquer ou déplacer",
-  duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
   dm_instr:
     "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, fabrications, publications) seront copiées.",
   dmm_instr:
@@ -945,7 +948,7 @@ export default {
   unselect: "Déselectionner",
   remove: "Supprimer",
   disable: "Désactiver",
-  remove_project: "Supprimer le projet",
+  remove_project: "Supprimer le projet {name}",
   remove_media: "Supprimer le média",
   remove_space: "Supprimer cet espace et tous ses contenus",
 
@@ -1263,4 +1266,6 @@ export default {
   pixels: "pixels",
   show_only_media_of_types: "Type de médias affiché : {types}",
   devices_connected: "Appareils connectés actuellement : {count}",
+
+  remove_publication: "Supprimer la publication {name}",
 };

@@ -68,7 +68,10 @@
           :publication="publication"
           @close="$emit('close')"
         />
-        <RemoveMenu :remove_text="$t('remove')" @remove="removePublication" />
+        <RemoveMenu
+          :modal_title="$t('remove_publication', { name: publication.title })"
+          @remove="removePublication"
+        />
       </DropDown>
 
       <DropDown :right="true" @show="closeSettings">
@@ -82,12 +85,13 @@
             class="u-buttonLink _exportBtn"
             @click="show_export_pdf_modal = true"
           >
-            <b-icon icon="download" />
-            {{ $t("export_publi") }}
+            <b-icon icon="save2-fill" />
+            {{ $t("export") }}
           </button>
         </div>
         <ExportPubliModal
           v-if="show_export_pdf_modal"
+          :modal_title="$t('export_publi', { name: publication.title })"
           :publication="publication"
           :page_opened_id="page_opened_id"
           @close="show_export_pdf_modal = false"

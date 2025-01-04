@@ -17,7 +17,10 @@
           />
 
           <DropDown v-if="can_edit">
-            <RemoveMenu :remove_text="$t('remove')" @remove="removePage" />
+            <RemoveMenu
+              :modal_title="$t('remove_page_and_content')"
+              @remove="removePage"
+            />
           </DropDown>
         </div>
 
