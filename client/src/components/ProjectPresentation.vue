@@ -58,7 +58,10 @@
           />
 
           <DropDown v-if="can_edit" :right="true">
-            <DownloadFolder :path="project.$path" />
+            <DownloadFolder
+              :label="$t('download_project')"
+              :path="project.$path"
+            />
             <div class="">
               <button
                 type="button"

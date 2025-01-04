@@ -217,6 +217,8 @@ export default {
   latest_changes_to_project: "Latest changes to project",
 
   download: "Download",
+  download_project: "Download project",
+  download_space: "Download space and all its projects",
   download_ready: "The download is ready",
   download_image: "Download image",
   page_failed_to_load: "This page could not load.",
@@ -514,7 +516,6 @@ export default {
   options: "Options",
   exports: "Exports",
   export: "Export",
-  to_export: "Export",
   export_in_progress: "Export in progress",
 
   untitled: "Untitled",

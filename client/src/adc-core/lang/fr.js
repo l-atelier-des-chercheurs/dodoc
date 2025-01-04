@@ -204,7 +204,6 @@ export default {
   options: "Options",
   exports: "Exportations",
   export: "Exportation",
-  to_export: "Exporter",
   export_in_progress: "Exportation en cours",
 
   story_width: "Largeur du récit",
@@ -383,6 +382,8 @@ export default {
   latest_changes_to_project: "Dernières modifications au projet",
 
   download: "Télécharger",
+  download_project: "Télécharger ce projet",
+  download_space: "Télécharger cet espace et tous ses projets",
   download_ready: "Le téléchargement est prêt",
   download_image: "Télécharger cette image",
   page_failed_to_load: "Cette page n’a pas pu charger.",
@@ -1255,8 +1256,8 @@ export default {
   enable_sound: "Activer le son",
   created_by_publication: "Créé par la publication {publication_title}",
   webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de do•doc. 
-  <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s'y trouve, vous pouvez consulter la publication depuis n'importe quel ordinateur dans un navigateur web.
-  <br /><br />Vous pouvez également la mettre en ligne pour qu'elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
+  <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s’y trouve, vous pouvez consulter la publication depuis n’importe quel ordinateur dans un navigateur web.
+  <br /><br />Vous pouvez également la mettre en ligne pour qu’elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
 
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",

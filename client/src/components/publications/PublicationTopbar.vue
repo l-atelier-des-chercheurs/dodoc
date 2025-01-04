@@ -71,7 +71,7 @@
         <RemoveMenu :remove_text="$t('remove')" @remove="removePublication" />
       </DropDown>
 
-      <DropDown @show="closeSettings">
+      <DropDown :right="true" @show="closeSettings">
         <template slot="trigger">
           <b-icon icon="box-arrow-up-right" />
           {{ $t("share") }}
@@ -83,7 +83,7 @@
             @click="show_export_pdf_modal = true"
           >
             <b-icon icon="download" />
-            {{ $t("to_export") }}
+            {{ $t("export_publi") }}
           </button>
         </div>
         <ExportPubliModal
