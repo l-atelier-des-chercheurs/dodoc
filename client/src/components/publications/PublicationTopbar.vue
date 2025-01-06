@@ -14,6 +14,8 @@
 
     <div class="_publiTitle">
       <TitleField
+        :label="$t('title')"
+        :show_label="false"
         :field_name="'title'"
         :tag="'h2'"
         :maxlength="40"
