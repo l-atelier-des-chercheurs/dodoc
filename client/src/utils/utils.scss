@@ -887,7 +887,7 @@ input[type="checkbox"] {
   }
 
   &:disabled {
-    color: var(--c-gris);
+    color: var(--c-gris_fonce);
     cursor: not-allowed;
   }
 }

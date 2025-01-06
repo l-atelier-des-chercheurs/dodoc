@@ -144,7 +144,7 @@
               <DuplicateMedia :path="file.$path" @close="$emit('close')" />
               <RemoveMenu
                 v-if="$listeners.remove"
-                :remove_text="$t('remove_media')"
+                :modal_title="$t('remove_media')"
                 @remove="$emit('remove')"
               />
             </DropDown>

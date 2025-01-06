@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('export')" @close="removeAndCloseModal">
+  <BaseModal2 :title="$t('make')" @close="removeAndCloseModal">
     <div class="_cont">
       <template v-if="!created_video">
         <div class="u-spacingBottom" v-if="possible_formats">

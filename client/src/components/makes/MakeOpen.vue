@@ -25,11 +25,7 @@
           :can_edit="can_edit"
         />
 
-        <RemoveMenu
-          v-if="can_edit"
-          :remove_text="$t('remove')"
-          @remove="removeMake"
-        />
+        <RemoveMenu v-if="can_edit" @remove="removeMake" />
       </div>
 
       <div v-if="make.type === 'video_effects'">
