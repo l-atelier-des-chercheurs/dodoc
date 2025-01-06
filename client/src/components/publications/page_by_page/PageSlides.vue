@@ -117,7 +117,10 @@
         </template>
       </template>
     </div>
-    <div class="_navBtns" v-if="display_mode === 'slides'">
+    <div
+      class="_navBtns"
+      v-if="display_mode === 'slides' && has_multiple_pages"
+    >
       <span>
         <button
           type="button"
@@ -296,6 +299,10 @@ export default {
       if (page_to_display)
         return this.pages.slice(page_to_display - 1, page_to_display);
       return this.pages;
+    },
+    has_multiple_pages() {
+      if (this.is_spread) return this.spreads.length > 1;
+      return this.pages.length > 1;
     },
     modules() {
       return this.publication.$files || [];
