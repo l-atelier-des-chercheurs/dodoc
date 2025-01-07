@@ -296,7 +296,7 @@ export default {
   // position: sticky;
   // top: 60px;
   width: 100%;
-  background: var(--hero-bg, var(--c-gris_clair));
+  background: var(--hero-bg, var(--accent-color));
 
   ._homeCover {
     background: white;

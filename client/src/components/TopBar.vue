@@ -95,29 +95,19 @@
           </button>
         </div>
 
-        <router-link
-          v-if="users.length > 1"
-          :to="'/@'"
-          class="u-button u-button_icon u-button_bleumarine"
-        >
-          {{ users.length }}
-          <b-icon icon="person-circle" />
-        </router-link>
-      </div>
-
-      <div class="_currentUsers" v-if="users.length > 1">
-        <router-link :to="'/@'" class="u-button u-button_icon">
-          <b-icon icon="person-circle" />
-          <sup class="_badge">
-            {{ users.length }}
-          </sup>
-        </router-link>
+        <div class="_currentUsers" v-if="users.length > 1">
+          <router-link :to="'/@'" class="u-button u-button_icon">
+            <b-icon icon="person-circle" />
+            <sup class="_badge">
+              {{ users.length }}
+            </sup>
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import AuthorList from "@/adc-core/author/AuthorList.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
 import CreditsModal from "@/adc-core/modals/CreditsModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
@@ -126,7 +116,6 @@ export default {
   props: {},
   components: {
     AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
-    AuthorList,
     LangModal,
     CreditsModal,
     BreadCrumbs,
