@@ -28,6 +28,7 @@ module.exports = (function () {
       const width = 800;
       const height = 800;
 
+      await page.setUserAgent("facebookexternalhit/1.1");
       await page.setViewport({
         width: width + x_padding * 2,
         height: height + y_padding,
