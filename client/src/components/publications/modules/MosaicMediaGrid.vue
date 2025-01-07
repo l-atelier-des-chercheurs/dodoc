@@ -221,7 +221,11 @@ export default {
       // if
     },
     showAspectRatioOptions(media_with_linked) {
-      if (this.medias_with_linked.length === 1) return false;
+      if (
+        this.medias_with_linked.length === 1 &&
+        this.page_template !== "page_by_page"
+      )
+        return false;
 
       const unsupportedTypes = ["stl", "obj", "text", "table", "other"];
       if (unsupportedTypes.includes(media_with_linked._linked_media.$type))
