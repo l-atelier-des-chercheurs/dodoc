@@ -25,11 +25,7 @@
           :can_edit="can_edit"
         />
 
-        <RemoveMenu
-          v-if="can_edit"
-          :remove_text="$t('remove')"
-          @remove="removeMake"
-        />
+        <RemoveMenu v-if="can_edit" @remove="removeMake" />
       </div>
 
       <div v-if="make.type === 'video_effects'">
@@ -89,6 +85,12 @@ export default {
       import("@/components/makes/MixAudioAndImageOrVideo.vue"),
     QrCode: () => import("@/components/makes/QrCode.vue"),
   },
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
+  },
   data() {
     return {
       make: null,
@@ -115,6 +117,50 @@ export default {
           folder_path: this.make.$path,
         });
       return false;
+    },
+    meta_filenames_already_present() {
+      if (
+        ["stopmotion_animation", "video_assemblage"].includes(this.make.type)
+      ) {
+        const sections = this.getSectionsWithProps({
+          publication: this.make,
+          group: "sections_list",
+        });
+        const { other } = this.getMediasAlreadyPresentInPublication({
+          publication: this.make,
+          sections,
+        });
+
+        return [
+          {
+            label: this.$t("in_this_make"),
+            medias: other,
+            color: "var(--c-bleumarine)",
+          },
+        ];
+      }
+
+      let medias = [];
+
+      if (this.make.base_media_filename)
+        medias.push(this.make.base_media_filename);
+      if (this.make.base_image_filename)
+        medias.push(this.make.base_image_filename);
+      if (this.make.base_video_filename)
+        medias.push(this.make.base_video_filename);
+      if (this.make.base_audio_filename)
+        medias.push(this.make.base_audio_filename);
+
+      if (medias.length > 0)
+        return [
+          {
+            label: this.$t("in_this_make"),
+            medias: medias,
+            color: "var(--c-bleumarine)",
+          },
+        ];
+
+      return [];
     },
   },
   methods: {

@@ -6,3 +6,4 @@ Comment=A documentation tool for creativity.
 Exec=do•doc
 Icon=./build/icon.png
 Terminal=false
+Categories=Education;AudioVideo;Graphics;

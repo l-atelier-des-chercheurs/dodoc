@@ -185,6 +185,7 @@
                 :can_toggle="false"
                 :live_editing="true"
                 :label="$t('outline_color')"
+                :allow_transparent="true"
                 :value="selected_feature.get('stroke_color')"
                 :default_value="opened_view_color"
                 @save="
@@ -199,6 +200,7 @@
                 v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
                 :can_toggle="false"
                 :live_editing="true"
+                :allow_transparent="true"
                 :label="$t('background_color')"
                 :value="selected_feature.get('fill_color')"
                 @save="
@@ -1237,7 +1239,8 @@ export default {
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
       let fill_color = feature.get("fill_color") || "rgba(255, 255, 255, 1)";
-      fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
+      if (fill_color !== "transparent")
+        fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
 
       if (is_selected) {
         const style = new olStyle({
@@ -2158,7 +2161,7 @@ export default {
     pointer-events: auto;
     margin: 0 auto;
     width: 100%;
-    max-width: 245px;
+    max-width: 250px;
 
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.9);

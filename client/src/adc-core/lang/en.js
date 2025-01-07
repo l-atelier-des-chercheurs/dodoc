@@ -184,8 +184,13 @@ export default {
   high: "High",
   medium: "Medium",
   low: "Low",
-  rough: "Draft",
-  optimize: "Optimize",
+  rough: "Draft (the fastest)",
+  optimize_resize: "Optimize/resize",
+  convert_instructions: "Convert to standard format",
+  optimize_resize_instructions:
+    "Convert to standard format, trim the beginning or the end, remove the audio track or modify the quality to reduce the file size.",
+
+  from_the_first_media: "From the first media",
 
   no_accounts_yet: "No accounts created yet",
   no_accounts_to_show: "No accounts to show",
@@ -212,6 +217,10 @@ export default {
   latest_changes_to_project: "Latest changes to project",
 
   download: "Download",
+  download_project: "Download project {name}",
+  download_project_instr:
+    "You will be able to import it to any other do•doc (offline or online, as long as it is version 11).",
+  download_space: "Download space {name} and all the projects it contains",
   download_ready: "The download is ready",
   download_image: "Download image",
   page_failed_to_load: "This page could not load.",
@@ -221,12 +230,14 @@ export default {
   move: "Move",
   unselect: "Unselect",
   remove: "Delete",
-  remove_project: "Delete project",
+  disable: "Disable",
+  remove_project: "Delete project {name}",
   remove_media: "Delete media",
   remove_space: "Delete space and all its content",
 
   no_authors_to_show: "No account to show",
   remove_account: "Delete this account",
+  remove_account_name: "Delete account {name}",
   remove_account_expl:
     "Only the account will be deleted, all its content (spaces, projects, medias and publications) will be kept.",
   machines_and_materials: "Machines and materials",
@@ -248,6 +259,8 @@ export default {
   start_timelapse: "Start timelapse",
   stop_timelapse: "Stop timelapse",
   quality: "Quality",
+  image_quality: "Image quality",
+  audio_quality: "Audio quality",
   duration: "Duration",
 
   latitude: "Latitude",
@@ -499,14 +512,14 @@ export default {
   story_with_sections: "Story",
   page_by_page: "Page by page",
   cartography: "Cartography",
+  export: "Export",
   export_in_pdf: "Export to PDF",
   direct_link: "Direct link",
   link: "Link",
   share: "Share",
   options: "Options",
-  exports: "Exports",
-  export: "Export",
-  to_export: "Export",
+  exports: "Export | Exports",
+  export_publi: "Export publication {name}",
   export_in_progress: "Export in progress",
 
   untitled: "Untitled",
@@ -653,6 +666,7 @@ export default {
   copy: "Copy",
   test_and_export: "Test and export",
   export_montage: "Export montage",
+  export_stomotion: "Export animation",
 
   video_to_rework: "Video to edit",
 
@@ -738,7 +752,7 @@ export default {
   add_multiple_images:
     "Open a project and add several <b>image</b> media by clicking on the green arrow. The images will be placed end to end in the order of addition. Export the sequence and adjust the frame rate. <br>Export will create a video.<br>Media accepted: images only. The dimensions of the first image determine whether the final video is portrait or landscape.",
   images: "Pictures",
-  make_an_exhibition: "Create an exhibition",
+
   image_tracking: "Augmented reality",
   create_block: "Create group",
   image_tracking_summary: "",
@@ -844,6 +858,7 @@ export default {
   pick_a_camera: "Select a camera",
   resolutions: "Resolution",
   resolution: "Resolution",
+  resolution_w_h: "Resolution: {width}x{height} pixels",
   screen_capture: "Screen Capture",
   cant_pick_resolution_when_screen_capture:
     "Resolution selection is not compatible with screenshot.",
@@ -943,7 +958,6 @@ export default {
 
   duplicate: "Duplicate",
   duplicate_or_move: "Duplicate or move",
-  duplicate_or_move_project: "Duplicate or move this project",
   dm_instr:
     "In this space or to another where you can create projects. All properties and contents (media, productions, publications) will be copied.",
   dmm_instr: "In this space or another where you can import media.",
@@ -1069,7 +1083,9 @@ export default {
 
   convert: "Convert",
   convert_shorten: "Convert/shorten",
-  select_extract: "Select extract",
+  convert_shorten_instructions: `
+  Convert to a standard format, cut the beginning or the end, remove the audio track or change the quality to lighten the file.
+  `,
   extract_range: "Extract range",
   convert_to_format: "Adapt format for viewing",
 
@@ -1077,7 +1093,6 @@ export default {
     "This media has already been converted, it is not recommended to convert it again.",
   preview_new: "Create new version",
   wont_remove_original: "Will not remove the original",
-  add_optimized_to_lib: "Keep original media and add new version",
   replace_original: "Replace original media",
   save_as_new_media: "Save as new media",
 
@@ -1144,4 +1159,36 @@ export default {
   or: "or",
   live_dubbing: "Live dubbing",
   play_both: "Play both at the same time",
+  bitrate_kbps: "Bitrate: {bitrate} kbps",
+  bitrate: "Bitrate",
+  bitrate_instructions:
+    "Amount of data allocated per second. The higher the value, the higher the video quality but the heavier it is.",
+  resolution_on_largest_side:
+    "Resolution on the largest side: {resolution} pixels",
+  keep_ratio: "Keep the width/height ratio",
+
+  in_this_make: "In this make",
+  edit_volume_or_mute: "Edit volume or mute",
+  toolbox: "Toolbox",
+  video_resolution_even: "Width × Height. Each value must be a multiple of 2.",
+  no_audio_track: "No audio track (muted)",
+  keep_audio_track: "Keep the audio track",
+  stop_recording_with_video: "Stop recording at the end of the video.",
+
+  video_mp4: "Video MP4",
+  video_gif: "Animation GIF",
+
+  enable_image: "Enable image",
+  enable_sound: "Enable sound",
+  created_by_publication: "From the publication {publication_title}",
+  webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of do•doc. 
+  <br />By decompressing the ZIP and opening the index.html file it contains, you can view the publication from any computer in a web browser.
+  <br /><br />You can also publish it online so that it can be accessed on the internet. For this, we recommend following the tutorial on our forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Upload media and publications online</a>.`,
+
+  all_fields_not_filled: "All fields are not filled",
+  pixels: "pixels",
+  show_only_media_of_types: "Displayed media types: {types}",
+  devices_connected: "Devices currently connected: {count}",
+
+  remove_publication: "Delete publication {name}",
 };

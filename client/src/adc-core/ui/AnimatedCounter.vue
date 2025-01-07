@@ -5,7 +5,7 @@
       v-if="current_value < 100"
     />
     <b-icon class="_animatedCounter-icon" v-else icon="check-circle-fill" />
-    {{ current_value }}%
+    {{ current_value }}&thinsp;%
   </span>
 </template>
 <script>
@@ -55,6 +55,8 @@ export default {
   display: flex;
   gap: calc(var(--spacing) / 2);
   align-items: center;
+
+  font-weight: 600;
 
   background: white;
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);

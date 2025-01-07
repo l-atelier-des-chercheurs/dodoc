@@ -63,9 +63,25 @@
           </div>
         </div>
 
-        <div v-if="$root.app_infos.instance_meta.enable_events">
+        <!-- <div v-if="$root.app_infos.instance_meta.enable_events">
           <DLabel :str="$t('events')" />
-          <!-- <EventField :project="" /> -->
+          <EventField :project="" />
+        </div> -->
+
+        <div>
+          <DLabel :str="$t('contributors')" />
+
+          <TagsList
+            :tags="project_admins_and_contributors"
+            :tag_type="'authors'"
+            :tags_active="getActiveTags('authors')"
+            @tagClick="
+              toggleFilter({
+                filter_type: 'authors',
+                value: $event,
+              })
+            "
+          />
         </div>
 
         <template
@@ -78,6 +94,7 @@
             'materials',
           ]"
         >
+          <!-- TODO REFACTOR -->
           <div v-if="extractAll(filter).length > 0" :key="filter">
             <template v-if="filter === 'level'">
               <DLabel :str="$t('levels_and_competences')" />
@@ -180,6 +197,18 @@
                   })
                 "
               />
+              <AuthorTag
+                v-else-if="af.filter_type === 'authors'"
+                :path="af.value"
+                :key="af.value"
+                :mode="'disable'"
+                @click="
+                  toggleFilter({
+                    filter_type: 'authors',
+                    value: af.value,
+                  })
+                "
+              />
               <SingleTag
                 v-else
                 :key="af.value"
@@ -275,6 +304,24 @@ export default {
 
       return _filters;
     },
+    project_admins_and_contributors() {
+      const admins = this.extractArr(this.filtered_projects, "$admins");
+      const contributors = this.extractArr(
+        this.filtered_projects,
+        "$contributors"
+      );
+
+      return [...admins, ...contributors]
+        .reduce((acc, a_path) => {
+          const author = this.getAuthor(a_path);
+          if (author && !acc.some((a) => a.$path === author.$path))
+            acc.push(author);
+          return acc;
+        }, [])
+        .sort((a, b) => {
+          return a.name.localeCompare(b.name);
+        });
+    },
     sorted_projects() {
       if (!this.projects) return [];
       return this.projects
@@ -301,8 +348,18 @@ export default {
           const filter_type = af.filter_type;
           const value = af.value;
 
-          if (!Object.prototype.hasOwnProperty.call(p, filter_type))
-            return false;
+          if (filter_type === "authors") {
+            const a = this.getAuthor(value);
+            if (!a) return false;
+            if (
+              !p.$contributors?.includes(a.$path) &&
+              !p.$admins?.includes(a.$path)
+            )
+              return false;
+          } else {
+            if (!Object.prototype.hasOwnProperty.call(p, filter_type))
+              return false;
+          }
 
           if (Array.isArray(p[filter_type]) && !p[filter_type].includes(value))
             return false;
@@ -444,7 +501,8 @@ export default {
 }
 ._tagList {
   display: flex;
-  gap: calc(var(--spacing) / 8);
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
   margin: calc(var(--spacing) / 1) 0;
 }
 ._projectsListWithFilter {

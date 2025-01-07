@@ -29,23 +29,23 @@
     </div>
     <div class="u-sameRow" v-if="edit_mode">
       <div class="">
-        <button
-          type="button"
-          class="u-buttonLink"
+        <EditBtn
+          :btn_type="'duplicate'"
           @click="
             $emit('duplicatePage');
             edit_mode = false;
           "
-        >
-          <b-icon icon="file-plus" />
-        </button>
+        />
       </div>
       <RemoveMenu
         v-if="can_edit"
-        :remove_text="$t('remove_page_and_content')"
-        :show_button_text="false"
+        :modal_title="$t('remove_page_and_content')"
         @remove="$emit('removePage')"
-      />
+      >
+        <template slot="trigger">
+          <EditBtn :btn_type="'remove'" />
+        </template>
+      </RemoveMenu>
     </div>
   </div>
 </template>

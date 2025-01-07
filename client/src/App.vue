@@ -128,7 +128,7 @@ export default {
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);
-  --c-bleumarine_fonce: hsl(227, 63%, 11%);
+  --c-bleumarine_fonce: hsl(227, 63%, 21%);
   --c-bleuvert: #52c5b9;
   --c-bleuvert_clair: hsl(174, 50%, 81%);
   --c-bleuvert_fonce: hsl(174, 50%, 41%);
@@ -143,7 +143,7 @@ export default {
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
   --c-gris: hsl(195, 14%, 83%);
-  --c-gris_clair: hsl(195, 14%, 97%);
+  --c-gris_clair: hsl(195, 14%, 96%);
   --c-gris_fonce: hsl(195, 14%, 45%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
@@ -602,7 +602,7 @@ img {
   &-enter-active,
   &-leave-active,
   &-move {
-    transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
+    transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) !important;
     transition-property: opacity, transform;
     transform-origin: center top;
   }

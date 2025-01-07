@@ -44,8 +44,14 @@
         />
 
         <DropDown :right="true">
-          <DownloadFolder :path="space.$path" />
-          <RemoveMenu :remove_text="$t('remove_space')" @remove="removeSpace" />
+          <DownloadFolder
+            :modal_title="$t('download_space', { name: space.title })"
+            :path="space.$path"
+          />
+          <RemoveMenu
+            :modal_title="$t('remove_space', { name: space.title })"
+            @remove="removeSpace"
+          />
         </DropDown>
       </div>
 
@@ -101,7 +107,7 @@
     </div> -->
 
     <router-link
-      class="_openSpace"
+      class="js--showCursor _openSpace"
       v-if="context === 'list'"
       :to="{ path: createURLFromPath(space.$path) }"
       :title="$t('open') + ' ' + space.title"

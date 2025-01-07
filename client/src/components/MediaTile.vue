@@ -10,7 +10,6 @@
     :data-type="file.$type"
     :data-tilemode="tile_mode"
   >
-    <!-- top left -->
     <div
       class="u-nut _index"
       :style="`--o-color: var(--color-${file.$origin})`"
@@ -28,6 +27,11 @@
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
     />
+    <div
+      v-if="tile_mode === 'table'"
+      class="u-filename _filename"
+      v-text="file.$media_filename"
+    />
 
     <!-- top right  -->
     <FavSwitch
@@ -38,20 +42,19 @@
     />
 
     <!-- bottom right -->
-    <div
-      class="_hasCoordinates"
-      v-if="has_coordinates || tile_mode === 'table'"
-    >
-      <b-icon class="" v-if="has_coordinates" icon="pin-map-fill" />
+    <div v-if="has_coordinates || tile_mode === 'table'" class="">
+      <div v-if="has_coordinates" class="_hasCoordinates">
+        <b-icon class="_indicator" icon="pin-map-fill" />
+      </div>
       <span v-else v-text="'-'" />
     </div>
 
     <template>
       <!-- bottom left -->
-      <span v-if="duration" class="_fileType" v-html="duration" />
+      <span v-if="duration" class="_indicator _fileType" v-html="duration" />
       <span
         v-if="show_file_type_label"
-        class="_fileType"
+        class="_indicator _fileType"
         v-html="show_file_type_label"
       />
     </template>
@@ -90,14 +93,6 @@
       :content="is_selected"
       @update:content="$emit('setSelected', $event)"
     />
-
-    <!-- <input
-      v-if="is_selectable"
-      class="_selectCb"
-      type="checkbox"
-      :checked="is_selected"
-      @change="$emit('setSelected', $event.target.checked)"
-    /> -->
   </div>
 </template>
 <script>
@@ -140,10 +135,10 @@ export default {
       return this.displayDuration({ media: this.file });
     },
     show_file_type_label() {
-      if (this.file.$media_filename.endsWith(".gif")) return this.$t("gif");
-      if (this.file.$type === "stl") return this.$t("stl");
-      if (this.file.$type === "pdf") return this.$t("pdf");
-      if (this.tile_mode === "table") return this.$t(this.file.$type);
+      if (this.file?.$media_filename?.endsWith(".gif")) return this.$t("gif");
+      if (this.file?.$type === "stl") return this.$t("stl");
+      if (this.file?.$type === "pdf") return this.$t("pdf");
+      if (this.tile_mode === "table") return this.$t(this.file?.$type);
       return false;
     },
   },
@@ -156,7 +151,7 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
   border-radius: 3px;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: 0;
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--own {
@@ -254,8 +249,10 @@ export default {
   &[data-tilemode="table"] ::v-deep ._mediaContent--image {
     object-fit: scale-down;
   }
-  &[data-tilemode="tiny"] ::v-deep ._mediaContent--image {
-    object-fit: cover;
+  &[data-tilemode="tiny"] {
+    ::v-deep ._mediaContent--image {
+      object-fit: cover;
+    }
   }
   &[data-tilemode="medium"] ::v-deep ._mediaContent--image {
     object-fit: scale-down;
@@ -269,6 +266,7 @@ export default {
     gap: calc(var(--spacing) / 4);
     background: transparent;
     border-bottom: 1px solid white;
+    font-size: var(--sl-font-size-small);
 
     // margin-top: 2px;
     // margin-bottom: 2px;
@@ -284,6 +282,10 @@ export default {
 
       &._content {
         padding: 0;
+      }
+
+      &._filename {
+        flex: 0 0 30ch;
       }
 
       &._content,
@@ -325,18 +327,6 @@ export default {
 }
 
 ._fileType {
-  // background: rgba(255, 255, 255, 0.5);
-  background: rgba(0, 0, 0, 0.85);
-  color: white;
-  border-radius: 2px;
-  line-height: 1;
-  font-weight: 600;
-
-  padding: calc(var(--spacing) / 8);
-  margin: calc(var(--spacing) / 8);
-  font-size: var(--input-font-size-small);
-  text-transform: uppercase;
-
   ._mediaTile:not([data-tilemode="table"]) & {
     position: absolute;
     bottom: 0;
@@ -375,9 +365,14 @@ export default {
     gap: calc(var(--spacing) / 4);
 
     padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
-    border-radius: 1em;
+    border-radius: 2px;
 
     background: var(--notice-bg);
+    color: white;
+
+    font-weight: 600;
+    text-align: center;
+    text-transform: lowercase;
   }
 }
 
@@ -413,24 +408,31 @@ export default {
   }
 }
 
+._indicator {
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  border-radius: 2px;
+  line-height: 1;
+  font-weight: 600;
+  padding: calc(var(--spacing) / 8);
+  margin: calc(var(--spacing) / 8);
+  font-size: var(--input-font-size-small);
+  text-transform: uppercase;
+}
+
 ._hasCoordinates {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 0;
-  width: 1.5rem;
-  height: 1.5rem;
-  color: white;
-  // mix-blend-mode: difference;
-  // background: var(--c-bleumarine);
-  border-radius: 50%;
-
-  display: flex;
-  place-content: center;
+  left: auto !important;
 
   svg {
     // color: var(--c-bleumarine);
-    padding: 1px;
+
+    padding: 2px;
+    width: 1rem;
+    display: block;
+    height: 1rem;
   }
 
   ._mediaTile[data-tilemode="table"] & {

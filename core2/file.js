@@ -604,7 +604,6 @@ module.exports = (function () {
     ) {
       new_meta.$location = additional_meta.$location;
     } else {
-      // for images, check if exif
       if (new_meta.$type === "image" && path_to_media) {
         try {
           const gps = await utils.getGPSFromFile(path_to_media);
@@ -612,6 +611,8 @@ module.exports = (function () {
         } catch (err) {}
       }
     }
+
+    if (additional_meta.$credits) new_meta.$credits = additional_meta.$credits;
 
     return new_meta;
   }

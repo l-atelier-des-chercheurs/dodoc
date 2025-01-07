@@ -1,8 +1,8 @@
 <template>
   <div class="_filesList">
-    <DLabel :str="$t('source_files')" />
+    <DLabel :str="mode === 'source' ? $t('source_files') : undefined" />
     <SlickList
-      :key="/* slicklist stays active otherwise */ edit_mode"
+      :key="/* slicklist stays active otherwise */ slicklist_key"
       class="_listOfFiles"
       axis="y"
       :value="medias_with_linked"
@@ -15,34 +15,58 @@
         :index="index"
         class="_reorderedFile"
       >
-        <button type="button" v-if="edit_mode" class="u-button u-button_icon">
-          <b-icon v-handle icon="hand-index-thumb" :label="$t('move')" />
+        <button
+          type="button"
+          v-if="edit_mode"
+          class="u-button u-button_icon _dragHandle"
+        >
+          <b-icon v-handle icon="grip-vertical" :label="$t('move')" />
         </button>
-        <DownloadFile
+        <component
+          :is="mode === 'source' ? 'DownloadFile' : 'span'"
           v-if="_linked_media && _linked_media.$path"
           class="_link"
           :file="_linked_media"
         >
-          <MediaContent
+          <button
+            type="button"
+            class="_link--previewBtn"
             v-if="
               ['image', 'video', 'audio', 'pdf', 'stl', 'url'].includes(
                 _linked_media.$type
               )
             "
-            class="_preview"
-            :context="'preview'"
-            :file="_linked_media"
-            :resolution="220"
-          />
-
+            @click.prevent="show_media_preview_for = _linked_media"
+          >
+            <MediaContent
+              class="_preview"
+              :context="'preview'"
+              :file="_linked_media"
+              :resolution="220"
+            />
+          </button>
           <div class="_preview _preview--none" v-else>
             <b-icon icon="file-earmark-arrow-down" />
           </div>
+
+          <BaseModal2
+            v-if="show_media_preview_for === _linked_media"
+            @close="show_media_preview_for = null"
+          >
+            <MediaContent
+              :file="show_media_preview_for"
+              :context="'preview'"
+              :resolution="1600"
+            />
+            <div class="u-spacingBottom" />
+            <DownloadFile :file="show_media_preview_for" />
+          </BaseModal2>
+
           <span
             class="_link--filename"
             v-text="_linked_media.$media_filename"
           />
-          <template v-if="_linked_media.$infos.size">
+          <template v-if="_linked_media.$infos.size && mode === 'source'">
             <!-- |&nbsp; -->
             <span
               class="u-instructions _link--filesize"
@@ -50,15 +74,21 @@
             />
           </template>
 
-          <b-icon class="_download" icon="file-earmark-arrow-down-fill" />
-        </DownloadFile>
+          <b-icon
+            v-if="mode === 'source'"
+            class="_download"
+            icon="file-earmark-arrow-down-fill"
+          />
+        </component>
 
-        <b-icon
-          icon="trash"
-          v-if="edit_mode"
-          class="_removeItem"
-          @click="$emit('removeMediaAtIndex', { index })"
-        />
+        <div class="_removeItem" v-if="edit_mode">
+          <EditBtn
+            :btn_type="'remove'"
+            :label_position="'left'"
+            :is_unfolded="false"
+            @click="$emit('removeMediaAtIndex', { index })"
+          />
+        </div>
       </SlickItem>
     </SlickList>
 
@@ -89,8 +119,8 @@ export default {
   props: {
     medias_with_linked: Array,
     publication_path: String,
+    mode: String,
     edit_mode: Boolean,
-    can_edit: Boolean,
   },
   components: {
     SlickItem,
@@ -101,13 +131,22 @@ export default {
   data() {
     return {
       show_media_picker: false,
+      show_media_preview_for: null,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    slicklist_key() {
+      let key = this.edit_mode + "_";
+      this.medias_with_linked.forEach((media) => {
+        key += media._linked_media.$path + "_";
+      });
+      return key;
+    },
+  },
   methods: {},
 };
 </script>
@@ -128,9 +167,8 @@ export default {
 }
 
 ._reorderedFile {
-  z-index: 10;
+  z-index: 10001;
   padding: 0;
-  border-radius: 2px;
   min-height: 2em;
   background: white;
   border: 1px solid var(--c-gris);
@@ -144,7 +182,7 @@ export default {
   // padding: 0 calc(var(--spacing) / 2);
   padding: 0;
   // gap: calc(var(--spacing) / 2);
-  border-radius: 2px;
+  border-radius: 5px;
 
   justify-content: space-between;
 
@@ -160,7 +198,7 @@ export default {
     font-variant: none;
     font-weight: 400;
     letter-spacing: 0;
-    font-size: var(--sl-font-size-x-small);
+    font-size: var(--sl-font-size-small);
     text-decoration: none;
 
     display: flex;
@@ -172,12 +210,17 @@ export default {
       flex: 0 0 auto;
     }
 
+    ._link--previewBtn {
+      padding: 0;
+      background: transparent;
+    }
+
     ._preview {
       flex: 0 0 auto;
       font-size: 100%;
 
-      width: 45px;
-      height: 45px;
+      width: 60px;
+      height: 60px;
       overflow: hidden;
       border-radius: 4px;
       // border: calc(var(--spacing) / 2) solid transparent;
@@ -239,5 +282,9 @@ export default {
 ._removeItem,
 ._download {
   margin: calc(var(--spacing) / 4);
+}
+
+._dragHandle {
+  cursor: grab;
 }
 </style>

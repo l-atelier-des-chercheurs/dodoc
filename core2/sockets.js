@@ -49,10 +49,7 @@ module.exports = (function () {
         const sessionID = sessionStore.getOrCreate(_sID);
         socket.sessionID = sessionID;
         socket.userID = uuidv4();
-        let meta = {};
-        if (token_path) meta.token_path = token_path;
-        const user = users.addUser(socket.userID, meta);
-        if (user) notifier.emit("newUser", user);
+        if (token_path) socket.token_path = token_path;
       } catch (err) {
         dev.error(err);
         return next(err);
@@ -62,25 +59,23 @@ module.exports = (function () {
     });
 
     io.on("connection", async (socket) => {
-      const { sessionID, userID } = socket;
+      const { sessionID, userID, token_path } = socket;
       dev.logsockets(`RECEIVED CONNECTION with sessionID: ${sessionID}`);
 
-      let ip =
-        socket.handshake?.headers?.["x-real-ip"] || socket.handshake?.address;
+      // let ip = socket.handshake?.headers?.["x-real-ip"] || socket.handshake?.address;
       let user_agent = socket.handshake?.headers?.["user-agent"];
 
       // persist session, see https://github.com/socketio/socket.io/blob/992c9380c34b9a67c03dd503c26d008836f2899b/examples/private-messaging/server/index.js
       sessionStore.updateSession(sessionID, {
         connected: true,
-        ip,
-        user_agent,
       });
+
       let meta = {
-        ip,
         user_agent,
       };
-      const user = users.updateUser(userID, meta);
-      if (user) notifier.emit("updateUser", user);
+      if (token_path) meta.token_path = token_path;
+      const user = users.addUser(userID, meta);
+      if (user) notifier.emit("newUser", user);
 
       socket.emit("session", {
         sessionID,
@@ -120,7 +115,6 @@ module.exports = (function () {
         socket.leave("content/" + room);
       });
       socket.on("disconnect", async () => {
-        console.log("disconnect");
         sessionStore.updateSession(sessionID, {
           connected: false,
         });
@@ -129,8 +123,6 @@ module.exports = (function () {
       });
     });
 
-    // https://socket.io/fr/docs/v3/emit-cheatsheet/
-    // todo bypass:
     notifier.on("folderCreated", (room, content) => {
       io.to("content/" + room).emit("folderCreated", content);
     });

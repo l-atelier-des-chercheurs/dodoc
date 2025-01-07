@@ -7,6 +7,8 @@ const {
   dialog,
 } = require("electron");
 const path = require("path");
+const writeFileAtomic = require("write-file-atomic");
+
 const utils = require("./utils");
 const notifier = require("./notifier");
 
@@ -27,6 +29,8 @@ module.exports = (function () {
     init: () => {
       return new Promise(function (resolve, reject) {
         // check if a custom storage path was set
+
+        // todo cleanup and move this to contentPath in main2.js
         const custom_storage_path = store.get("custom_content_path");
         if (custom_storage_path) {
           global.settings.contentPath = custom_storage_path;
@@ -47,7 +51,7 @@ module.exports = (function () {
         app.on("ready", () => {
           dev.log(`ELECTRON — init : ready`);
 
-          createWindow().then((_win) => {
+          _createWindow().then((_win) => {
             dev.logfunction(`ELECTRON — init : ready / window created`);
             win = _win;
             return resolve(win);
@@ -70,7 +74,7 @@ module.exports = (function () {
           // On macOS it's common to re-create a window in the app when the
           // dock icon is clicked and there are no other windows open.
           if (win === null) {
-            createWindow().then((_win) => {
+            _createWindow().then((_win) => {
               win = _win;
               return resolve(win);
             });
@@ -90,9 +94,48 @@ module.exports = (function () {
         );
       });
     },
+    captureScreenshot: async ({ url, full_path_to_thumb }) => {
+      dev.logfunction({ url, full_path_to_thumb });
+
+      let win = new BrowserWindow({
+        width: 800,
+        height: 800,
+        show: false,
+        enableLargerThanScreen: true,
+        webPreferences: {
+          contextIsolation: true,
+          allowRunningInsecureContent: true,
+          offscreen: true,
+        },
+      });
+
+      win.loadURL(url, {
+        // improve chance of getting a screenshot
+        userAgent: "facebookexternalhit/1.1",
+      });
+      win.webContents.setAudioMuted(true);
+
+      dev.logfunction(
+        `ELECTRON — captureScreenshot : waiting for page to load`
+      );
+
+      // todo add timeout
+
+      await new Promise((resolve) => {
+        win.webContents.once("did-finish-load", async () => {
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          resolve();
+        });
+      }).then(async () => {
+        const image = await win.capturePage();
+        if (win) win.close();
+        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+        return;
+      });
+    },
   };
 
-  function createWindow() {
+  function _createWindow() {
     return new Promise(function (resolve, reject) {
       dev.logfunction();
 

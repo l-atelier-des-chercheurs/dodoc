@@ -12,8 +12,6 @@
         @onEnter="createFolder"
       />
 
-      <br />
-
       <div class="">
         <ToggleInput
           :content.sync="new_folder_is_private"
@@ -25,28 +23,26 @@
         />
       </div>
 
-      <br />
-
-      <div class="u-sameRow" slot="footer">
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
-          {{ $t("cancel") }}
-        </button>
-        <button
-          class="u-button u-button_bleuvert"
-          type="submit"
-          slot="footer"
-          :loading="is_creating_folder"
-        >
-          {{ $t("create_and_open") }}
-        </button>
-      </div>
-
       <template v-if="error_msg">
         <br />
         <br />
         <div class="u-errorMsg" v-text="error_msg" />
       </template>
     </form>
+
+    <template slot="footer">
+      <button type="button" class="u-button" @click="$emit('close')">
+        <b-icon icon="x-circle" />
+        {{ $t("cancel") }}
+      </button>
+      <button
+        class="u-button u-button_bleuvert"
+        :loading="is_creating_folder"
+        @click="createFolder"
+      >
+        {{ $t("create_and_open") }}
+      </button>
+    </template>
   </BaseModal2>
 </template>
 <script>

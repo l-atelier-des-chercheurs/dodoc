@@ -90,7 +90,7 @@
           <MakesList
             :project_path="project.$path"
             :can_edit="can_edit"
-            @open="openMakes"
+            @open="openMake"
           />
         </section>
       </div>
@@ -366,9 +366,13 @@ export default {
       ],
     };
   },
-  created() {},
+  created() {
+    this.$eventHub.$on("make.open", this.openMake);
+  },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("make.open", this.openMake);
+  },
   watch: {},
   computed: {},
   methods: {
@@ -388,9 +392,9 @@ export default {
       });
 
       // const path = `${this.project.$path}/makes/${new_folder_slug}`;
-      this.openMakes(new_folder_slug);
+      this.openMake(new_folder_slug);
     },
-    openMakes(new_folder_slug) {
+    openMake(new_folder_slug) {
       this.$emit("update:opened_make_slug", new_folder_slug);
     },
     removeMake(path) {

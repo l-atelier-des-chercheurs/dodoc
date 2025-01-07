@@ -6,15 +6,7 @@
     <div class="_txt" v-else>
       <slot />
 
-      <!-- <select v-if="!urls_to_page.domain" v-model="current_opt">
-        <option
-          value="local_network"
-          :disabled="!urls_to_page.local_network"
-        ></option>
-        <option value="local" :disabled="!urls_to_page.local">
-          sur la même machine, dans un navigateur web
-        </option>
-      </select> -->
+      <p>{{ $t("share_link_to_file") }}</p>
 
       <DetailsPane
         :header="$t('advanced_options')"
@@ -22,15 +14,13 @@
         :is_open_initially="false"
         class="u-spacingBottom"
       >
-        <summary>
-          {{ $t("share_link_to_file") }}
-        </summary>
-        <RadioCheckboxInput
-          v-if="!urls_to_page.domain"
-          :value.sync="current_opt"
-          :options="network_options"
-          :can_edit="true"
-        />
+        <template v-if="!urls_to_page.domain">
+          <RadioCheckboxInput
+            :value.sync="current_opt"
+            :options="network_options"
+            :can_edit="true"
+          />
+        </template>
       </DetailsPane>
 
       <!-- <hr class="_hr" /> -->
@@ -129,23 +119,32 @@ export default {
     },
 
     network_options() {
-      return [
-        {
+      let options = [];
+      if (this.urls_to_page["domain"]?.length > 0) {
+        options.push({
           key: "domain",
           label: this.$t("domain"),
           instructions: this.$t("domain_instr"),
-        },
-        {
+        });
+      }
+
+      if (this.urls_to_page["local_network"]?.length > 0) {
+        options.push({
           key: "local_network",
           label: this.$t("local_network"),
           instructions: this.$t("local_network_instr"),
-        },
-        {
+        });
+      }
+
+      if (this.urls_to_page["local"]?.length > 0) {
+        options.push({
           key: "local",
           label: this.$t("local_machine"),
           instructions: this.$t("local_machine_instr"),
-        },
-      ];
+        });
+      }
+
+      return options;
     },
 
     // dodoc 9 code

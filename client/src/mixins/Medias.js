@@ -48,7 +48,6 @@ export default {
       if (with_timestamp) {
         let timestamp = +new Date().getTime();
         if ($date_created) timestamp = +new Date($date_created);
-
         full_path += "?v=" + timestamp;
       }
 
@@ -96,6 +95,13 @@ export default {
         folder_path = this.getParent(path_to_source_media_meta);
         meta_filename = this.getFilename(path_to_source_media_meta);
       }
+
+      if (window.app_infos.page_is_standalone_html) {
+        return window.folder_data.$files?.find(
+          ({ $path }) => $path === folder_path + "/" + meta_filename
+        );
+      }
+
       return this.$api.store[folder_path]?.$files?.find(
         ({ $path }) => $path === folder_path + "/" + meta_filename
       );

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="m_captureview"
-    :class="{ 'is--collapsed': collapse_capture_pane }"
-  >
+  <div class="m_captureview">
     <CapturePane
       v-show="show_capture_settings"
       :label="$t('settings')"
@@ -219,12 +216,13 @@
               v-if="delay_remaining_time"
               :key="'delay_before_' + delay_remaining_time"
               class="_delay_timer"
+              :class="{ 'is--small': capture_pane_is_small }"
               v-html="delay_remaining_time"
             />
             <label
               v-else-if="timelapse_time_before_next_picture"
               :key="'timelapse_before_' + timelapse_time_before_next_picture"
-              class="_delay_timer is--timelapse"
+              class="_delay_timer is--small is--timelapse"
               v-html="timelapse_time_before_next_picture"
             />
             <!-- necessary to handle timely out-in transition -->
@@ -1007,6 +1005,10 @@ export default {
         "lines",
       ],
     },
+    origin: {
+      type: String,
+      default: "capture",
+    },
     return_temp_media: {
       type: Boolean,
       default: false,
@@ -1039,6 +1041,8 @@ export default {
 
       ask_before_leaving_capture: false,
 
+      capture_pane_is_small: false,
+
       media_to_validate: false,
       media_is_being_sent: false,
       media_being_sent_percent: 0,
@@ -1046,8 +1050,6 @@ export default {
       mode_just_changed: false,
       is_validating_stopmotion_video: false,
       video_recording_is_paused: false,
-
-      collapse_capture_pane: false,
 
       grids: {
         halfs: [
@@ -1168,6 +1170,7 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+    this.$eventHub.$on("capture.stopRecording", this.stopRecording);
 
     this.$refs.videoElement.volume = 0;
     this.$refs.videoElement.addEventListener(
@@ -1186,6 +1189,7 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+    this.$eventHub.$off("capture.stopRecording", this.stopRecording);
 
     document.removeEventListener("keyup", this.captureKeyListener);
 
@@ -1443,13 +1447,9 @@ export default {
       // this.ask_before_leaving_capture = true;
     },
     checkCapturePanelSize() {
-      if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
-        this.collapse_capture_pane = true;
-      else this.collapse_capture_pane = false;
-
-      // this.updateVideoDisplayedSize();
+      if (this.$el?.offsetHeight <= 400) this.capture_pane_is_small = true;
+      else this.capture_pane_is_small = false;
     },
-
     stopStopmotion() {
       // two options : remove or save
       this.closeStopmotionPanel();
@@ -1902,7 +1902,7 @@ export default {
 
       let additional_meta = {
         fav,
-        $origin: "capture",
+        $origin: this.origin,
       };
 
       if (this.connected_as?.$path)
@@ -1951,9 +1951,8 @@ export default {
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
 
-      this.$eventHub.$emit("animatePane", "collect");
+      this.$eventHub.$emit("pane.animate", "collect");
 
-      debugger;
       this.$emit("insertMedia", meta_filename);
       return;
     },
@@ -1969,14 +1968,6 @@ export default {
   flex-flow: row nowrap;
   max-height: 100vh;
   height: 100%;
-
-  // &.is--collapsed {
-  //   .m_captureview--videoPane--bottom--buttons {
-  //     > * {
-  //       padding: 0;
-  //     }
-  //   }
-  // }
 
   .m_captureview--settingsPaneButton {
     position: relative;
@@ -2008,7 +1999,7 @@ export default {
   .m_captureview--videoPane--top {
     position: relative;
     margin: 0 auto;
-    min-height: 300px;
+    min-height: 60px;
 
     flex: 1 1 auto;
     overflow: hidden;
@@ -2050,7 +2041,10 @@ export default {
       > * {
         flex: 0 0 auto;
         display: flex;
-        padding: calc(var(--spacing) / 2);
+
+        &:not(:empty) {
+          padding: calc(var(--spacing) / 2);
+        }
 
         @media only screen and (min-width: 781px) {
           flex: 1 0 200px;
@@ -2189,13 +2183,23 @@ export default {
   //   -1px -1px 0 var(--c-text-shadow), 1px -1px 0 var(--c-text-shadow),
   //   -1px 1px 0 var(--c-text-shadow), 1px 1px 0 var(--c-text-shadow);
 
-  &.is--timelapse {
+  &.is--small {
     font-size: 10vmin;
     -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
-    height: 50%;
     bottom: 0;
+
+    &.is--timelapse {
+      height: 50%;
+    }
   }
 }
+
+// @container video-pane (height < 400px) {
+//   ._delay_timer {
+//     font-size: 10vmin;
+//     -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
+//   }
+// }
 
 ._capture_options {
   position: absolute;

@@ -1,7 +1,18 @@
 <template>
-  <BaseModal2 :title="$t('export')" @close="removeAndCloseModal">
+  <BaseModal2 :title="$t('make')" @close="removeAndCloseModal">
     <div class="_cont">
       <template v-if="!created_video">
+        <div class="u-spacingBottom" v-if="possible_formats">
+          <DLabel :str="$t('format')" />
+          <SelectField2
+            :value="output_format"
+            :options="possible_formats"
+            :can_edit="true"
+            :hide_validation="true"
+            @change="output_format = $event"
+          />
+        </div>
+
         <div>
           <DLabel :str="$t('quality')" />
           <div class="">
@@ -13,6 +24,32 @@
               @change="resolution_preset_picked = $event"
             />
           </div>
+
+          <div v-if="resolution_preset_picked === 'custom'">
+            <div class="u-spacingBottom" />
+            <CustomResolutionInput
+              :width.sync="custom_resolution_width"
+              :height.sync="custom_resolution_height"
+              :ratio="ref_infos.ratio"
+              :is_video="true"
+            />
+            <div class="u-spacingBottom" />
+            <NumberInput
+              :label="$t('bitrate')"
+              :instructions="$t('bitrate_instructions')"
+              :value.sync="custom_bitrate"
+              :min="0"
+              :suffix="'kbps'"
+              :size="'normal'"
+            />
+          </div>
+        </div>
+        <div v-if="allow_disable_audio">
+          <div class="u-spacingBottom" />
+          <ToggleInput
+            :content.sync="keep_audio_track"
+            :label="$t('keep_audio_track')"
+          />
         </div>
       </template>
       <template v-else>
@@ -23,12 +60,15 @@
             :show_fs_button="true"
             :context="'full'"
           />
+          <div class="u-spacingBottom" />
+          <ShowExportedFileInfos :file="created_video" />
         </div>
       </template>
     </div>
 
-    <div slot="footer">
+    <template slot="footer">
       <template v-if="!created_video && !is_exporting">
+        <div />
         <div>
           <button
             type="button"
@@ -38,9 +78,9 @@
             <b-icon icon="tools" />
             {{ $t("preview_new") }}
           </button>
-        </div>
-        <div class="u-instructions">
-          {{ $t("wont_remove_original") }}
+          <div class="u-instructions">
+            {{ $t("wont_remove_original").toLowerCase() }}
+          </div>
         </div>
       </template>
       <template v-else-if="is_exporting">
@@ -48,8 +88,13 @@
           <AnimatedCounter :value="progress_percent" />
         </div>
       </template>
-      <template v-else>
-        <div class="u-sameRow">
+      <div class="_bottomBtns" v-else>
+        <button type="button" class="u-button" @click="cancelExport">
+          <b-icon icon="arrow-left-short" />
+          {{ $t("back") }}
+        </button>
+
+        <div class="_rightRow">
           <a
             :disabled="!export_href"
             :download="export_name"
@@ -61,35 +106,10 @@
           </a>
           <button
             type="button"
-            class="u-button u-button_red"
+            class="u-button u-button_orange"
             @click="saveToProject"
           >
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              viewBox="0 0 168 168"
-              style="enable-background: new 0 0 168 168"
-              xml:space="preserve"
-            >
-              <path
-                style="fill: var(--c-rouge)"
-                d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
-              />
-              <g style="fill: var(--c-orange)">
-                <path d="m42 42h21.6v21h-21.6z" />
-                <path d="m73.2 42h21.6v21h-21.6z" />
-                <path d="m104.4 42h21.6v21h-21.6z" />
-                <path d="m42 73.5h21.6v21h-21.6z" />
-                <path d="m73.2 73.5h21.6v21h-21.6z" />
-                <path d="m104.4 73.5h21.6v21h-21.6z" />
-                <path d="m42 105h21.6v21h-21.6z" />
-                <path d="m73.2 105h21.6v21h-21.6z" />
-                <path d="m104.4 105h21.6v21h-21.6z" />
-              </g>
-            </svg>
+            <span class="u-icon" v-html="dodoc_icon_collect" />
             {{ $t("save_to_project") }}
           </button>
         </div>
@@ -97,44 +117,53 @@
         <div class="_saveNotice" v-if="finished_saving_to_project">
           {{ $t("media_was_saved_to_project") }}
         </div>
-      </template>
-    </div>
+      </div>
+    </template>
   </BaseModal2>
 </template>
 <script>
+import ShowExportedFileInfos from "@/components/fields/ShowExportedFileInfos.vue";
+
 export default {
   props: {
     base_instructions: Object,
-    make: Object,
+    make_path: String,
+    reference_media: Object,
+    possible_formats: Array,
+    allow_disable_audio: Boolean,
+    default_resolution_preset: {
+      type: String,
+      default: "source",
+    },
   },
-  components: {},
+  components: {
+    ShowExportedFileInfos,
+  },
   data() {
     return {
       is_exporting: false,
       finished_saving_to_project: false,
-      resolution_preset_picked: "source",
+      created_video: false,
+
+      resolution_preset_picked: this.default_resolution_preset,
       progress_percent: 0,
 
-      presets: [
-        {
-          key: "source",
-          text: this.$t("close_to_source"),
-        },
-        {
-          key: "high",
-          text: this.$t("high"),
-        },
-        {
-          key: "medium",
-          text: this.$t("medium"),
-        },
-      ],
+      output_format: "mp4",
 
-      created_video: false,
+      custom_resolution_width: 1920,
+      custom_resolution_height: 1080,
+      custom_bitrate: 4000,
+
+      keep_audio_track: true,
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.reference_media) {
+      this.custom_resolution_width = this.ref_infos.width;
+      this.custom_resolution_height = this.ref_infos.height;
+    }
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -148,6 +177,58 @@ export default {
     export_name() {
       if (!this.created_video) return "";
       return this.created_video.$media_filename;
+    },
+    ref_infos() {
+      if (!this.reference_media) return {};
+      let { width, height, ratio } = this.reference_media.$infos;
+      if (width) width = Math.ceil(width / 2) * 2;
+      if (height) height = Math.ceil(height / 2) * 2;
+      return { width, height, ratio };
+    },
+    presets() {
+      const presets = [];
+      presets.push({
+        key: "source",
+        text: this.$t("close_to_source"),
+        width: this.ref_infos.width,
+        height: this.ref_infos.height,
+        bitrate: 4000,
+      });
+      presets.push({
+        key: "high",
+        text: this.$t("high"),
+        width: 1920,
+        height: 1080,
+        bitrate: 4000,
+      });
+      presets.push({
+        key: "medium",
+        text: this.$t("medium"),
+        width: 1280,
+        height: 720,
+        bitrate: 2000,
+      });
+      presets.push({
+        key: "rough",
+        text: this.$t("rough"),
+        width: 640,
+        height: 360,
+        bitrate: 1000,
+      });
+      presets.push({
+        key: "custom",
+        text: "↓ " + this.$t("custom_f"),
+      });
+
+      return presets.map((p) => {
+        if (p.key !== "custom") {
+          p.instructions =
+            this.$t("resolution_w_h", { width: p.width, height: p.height }) +
+            ", " +
+            this.$t("bitrate_kbps", { bitrate: p.bitrate }).toLowerCase();
+        }
+        return p;
+      });
     },
   },
   methods: {
@@ -163,13 +244,38 @@ export default {
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
-      // output_height ?
+      let output_width = 1920,
+        output_height = 1080,
+        video_bitrate = 4000;
+      if (this.resolution_preset_picked === "custom") {
+        output_width = this.custom_resolution_width;
+        output_height = this.custom_resolution_height;
+        video_bitrate = this.custom_bitrate;
+      } else {
+        const selected_preset = this.presets.find(
+          (p) => p.key === this.resolution_preset_picked
+        );
+        output_width = selected_preset.width;
+        output_height = selected_preset.height;
+        video_bitrate = selected_preset.bitrate;
+      }
 
-      instructions.additional_meta = additional_meta;
+      if (this.possible_formats)
+        instructions.output_format = this.output_format;
+
+      if (this.allow_disable_audio) {
+        instructions.keep_audio_track = this.keep_audio_track;
+      }
 
       const current_task_id = await this.$api.exportFolder({
-        path: this.make.$path,
-        instructions,
+        path: this.make_path,
+        instructions: {
+          ...instructions,
+          output_width,
+          output_height,
+          video_bitrate,
+          additional_meta,
+        },
       });
 
       this.$api.join({ room: "task_" + current_task_id });
@@ -187,6 +293,12 @@ export default {
 
         if (message.event === "completed") {
           this.created_video = message.file;
+
+          //
+          this.$nextTick(() => {
+            const video = this.$el.querySelector("video");
+            if (video) video.volume = 1;
+          });
         } else if (message.event === "aborted") {
           //
         } else if (message.event === "failed") {
@@ -198,6 +310,11 @@ export default {
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
+    cancelExport() {
+      if (this.created_video)
+        this.$api.deleteItem({ path: this.created_video.$path });
+      this.created_video = false;
+    },
     removeAndCloseModal() {
       if (this.created_video)
         this.$api.deleteItem({ path: this.created_video.$path });
@@ -205,7 +322,7 @@ export default {
     },
     async saveToProject() {
       this.finished_saving_to_project = true;
-      this.$eventHub.$emit("animatePane", "collect");
+      this.$eventHub.$emit("pane.animate", "collect");
       setTimeout(() => {
         this.$emit("close");
       }, 3000);
@@ -241,6 +358,21 @@ export default {
 }
 
 ._preview {
-  margin: calc(var(--spacing) * 1) 0;
+  // margin: calc(var(--spacing) * 1) 0;
+}
+._bottomBtns {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: calc(var(--spacing) / 2);
+}
+._rightRow {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
 }
 </style>

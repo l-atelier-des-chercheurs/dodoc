@@ -493,10 +493,10 @@ export default {
       this.editor.focus();
 
       // todo select latest used font as selected font
-      if (this.editor.getLength() <= 1) {
-        const fontLastUsed = localStorage.getItem("fontLastUsed");
-        this.editor.format("font", fontLastUsed);
-      }
+      // if (this.editor.getLength() <= 1) {
+      //   const fontLastUsed = localStorage.getItem("fontLastUsed");
+      //   this.editor.format("font", fontLastUsed);
+      // }
 
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
@@ -741,8 +741,8 @@ export default {
         // );
         await this.saveText();
 
-        const { font } = this.editor.getFormat();
-        localStorage.setItem("fontLastUsed", font);
+        // const { font } = this.editor.getFormat();
+        // localStorage.setItem("fontLastUsed", font);
       }, 5000);
     },
 

@@ -34,30 +34,27 @@
     </div>
     <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
-    <div class="_footer">
-      <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
-        <div class="u-spacingBottom u-instructions" v-if="instructions">
-          {{ instructions }}
-        </div>
+    <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+      <div class="u-spacingBottom u-instructions" v-if="instructions">
+        {{ instructions }}
+      </div>
 
-        <div class="u-spacingBottom">
-          <RadioCheckboxInput
-            :value.sync="new_content"
-            :input_type="input_type"
-            :options="options"
-            :can_edit="can_edit && edit_mode"
-          />
-        </div>
-
-        <SaveCancelButtons
-          slot="footer"
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updateSelect"
-          @cancel="cancel"
+      <div class="u-spacingBottom">
+        <RadioCheckboxInput
+          :value.sync="new_content"
+          :input_type="input_type"
+          :options="options"
+          :can_edit="can_edit && edit_mode"
         />
-      </BaseModal2>
-    </div>
+      </div>
+
+      <SaveCancelButtons
+        slot="footer"
+        :is_saving="is_saving"
+        @save="updateSelect"
+        @cancel="cancel"
+      />
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -172,15 +169,6 @@ export default {
   }
 }
 
-._footer {
-  margin-top: calc(var(--spacing) / 4);
-}
-
-._scb {
-  width: 100%;
-  text-align: center;
-  justify-content: center;
-}
 ._option_preview {
   display: inline-block;
   vertical-align: middle;
