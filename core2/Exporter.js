@@ -362,6 +362,7 @@ class Exporter {
       let browser;
 
       let page_timeout = setTimeout(async () => {
+        dev.error(`page timeout for ${url}`);
         clearTimeout(page_timeout);
         if (browser) await browser.close();
         this._notifyEnded({

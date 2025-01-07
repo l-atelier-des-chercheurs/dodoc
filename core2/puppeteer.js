@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 
-module.exports = function () {
+module.exports = (function () {
   return {
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       let browser;
@@ -28,6 +28,7 @@ module.exports = function () {
       const width = 800;
       const height = 800;
 
+      await page.setUserAgent("facebookexternalhit/1.1");
       await page.setViewport({
         width: width + x_padding * 2,
         height: height + y_padding,
@@ -60,4 +61,4 @@ module.exports = function () {
       if (browser) await browser.close();
     },
   };
-};
+})();

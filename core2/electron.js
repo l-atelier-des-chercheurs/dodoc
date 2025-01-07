@@ -95,6 +95,8 @@ module.exports = (function () {
       });
     },
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
+      dev.logfunction({ url, full_path_to_thumb });
+
       let win = new BrowserWindow({
         width: 800,
         height: 800,
@@ -106,15 +108,22 @@ module.exports = (function () {
           offscreen: true,
         },
       });
+
       win.loadURL(url, {
         // improve chance of getting a screenshot
         userAgent: "facebookexternalhit/1.1",
       });
       win.webContents.setAudioMuted(true);
 
+      dev.logfunction(
+        `ELECTRON — captureScreenshot : waiting for page to load`
+      );
+
+      // todo add timeout
+
       await new Promise((resolve) => {
         win.webContents.once("did-finish-load", async () => {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 3000));
           resolve();
         });
       }).then(async () => {

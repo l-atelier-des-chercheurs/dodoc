@@ -103,7 +103,7 @@ export default {
       return decodeURIComponent(this.$route.query.path_to_media);
     },
     media_type() {
-      return this.full_media_path.split(".").pop();
+      return this.full_media_path.split(".").pop().toLowerCase();
     },
     preview_url() {
       let suffix = "";
