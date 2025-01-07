@@ -39,7 +39,7 @@
       </div>
       <RemoveMenu
         v-if="can_edit"
-        :remove_text="$t('remove_page_and_content')"
+        :modal_title="$t('remove_page_and_content')"
         @remove="$emit('removePage')"
       >
         <template slot="trigger">

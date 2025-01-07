@@ -184,7 +184,7 @@ export default {
   high: "High",
   medium: "Medium",
   low: "Low",
-  rough: "Draft",
+  rough: "Draft (the fastest)",
   optimize_resize: "Optimize/resize",
   convert_instructions: "Convert to standard format",
   optimize_resize_instructions:
@@ -217,6 +217,10 @@ export default {
   latest_changes_to_project: "Latest changes to project",
 
   download: "Download",
+  download_project: "Download project {name}",
+  download_project_instr:
+    "You will be able to import it to any other do•doc (offline or online, as long as it is version 11).",
+  download_space: "Download space {name} and all the projects it contains",
   download_ready: "The download is ready",
   download_image: "Download image",
   page_failed_to_load: "This page could not load.",
@@ -226,12 +230,14 @@ export default {
   move: "Move",
   unselect: "Unselect",
   remove: "Delete",
-  remove_project: "Delete project",
+  disable: "Disable",
+  remove_project: "Delete project {name}",
   remove_media: "Delete media",
   remove_space: "Delete space and all its content",
 
   no_authors_to_show: "No account to show",
   remove_account: "Delete this account",
+  remove_account_name: "Delete account {name}",
   remove_account_expl:
     "Only the account will be deleted, all its content (spaces, projects, medias and publications) will be kept.",
   machines_and_materials: "Machines and materials",
@@ -506,14 +512,14 @@ export default {
   story_with_sections: "Story",
   page_by_page: "Page by page",
   cartography: "Cartography",
+  export: "Export",
   export_in_pdf: "Export to PDF",
   direct_link: "Direct link",
   link: "Link",
   share: "Share",
   options: "Options",
-  exports: "Exports",
-  export: "Export",
-  to_export: "Export",
+  exports: "Export | Exports",
+  export_publi: "Export publication {name}",
   export_in_progress: "Export in progress",
 
   untitled: "Untitled",
@@ -952,7 +958,6 @@ export default {
 
   duplicate: "Duplicate",
   duplicate_or_move: "Duplicate or move",
-  duplicate_or_move_project: "Duplicate or move this project",
   dm_instr:
     "In this space or to another where you can create projects. All properties and contents (media, productions, publications) will be copied.",
   dmm_instr: "In this space or another where you can import media.",
@@ -1167,6 +1172,7 @@ export default {
   toolbox: "Toolbox",
   video_resolution_even: "Width × Height. Each value must be a multiple of 2.",
   no_audio_track: "No audio track (muted)",
+  keep_audio_track: "Keep the audio track",
   stop_recording_with_video: "Stop recording at the end of the video.",
 
   video_mp4: "Video MP4",
@@ -1182,4 +1188,7 @@ export default {
   all_fields_not_filled: "All fields are not filled",
   pixels: "pixels",
   show_only_media_of_types: "Displayed media types: {types}",
+  devices_connected: "Devices currently connected: {count}",
+
+  remove_publication: "Delete publication {name}",
 };

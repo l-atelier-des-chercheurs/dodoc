@@ -29,6 +29,8 @@ module.exports = (function () {
     init: () => {
       return new Promise(function (resolve, reject) {
         // check if a custom storage path was set
+
+        // todo cleanup and move this to contentPath in main2.js
         const custom_storage_path = store.get("custom_content_path");
         if (custom_storage_path) {
           global.settings.contentPath = custom_storage_path;

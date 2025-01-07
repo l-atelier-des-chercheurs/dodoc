@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "11.1.9",
+  "version": "11.1.15",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -67,6 +67,7 @@
     "node-gyp": "^10.3.1"
   },
   "optionalDependencies": {
+    "bufferutil": "^4.0.8",
     "extractd": "^2.1.2"
   }
 }

@@ -326,7 +326,7 @@
           </div>
           <RemoveMenu
             ref="removeMenu"
-            :remove_text="$t('withdraw_from_page')"
+            :modal_title="$t('withdraw_from_page')"
             @remove="removeModule"
           />
         </div>

@@ -15,7 +15,7 @@
         >
           {{ $t("open") }}
         </button>
-        <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
+        <RemoveMenu @remove="$emit('remove')" />
       </div>
     </div>
 

@@ -116,7 +116,7 @@ export default {
   computed: {
     modal_title() {
       if (this.mode === "remix") return this.$t("remix_this_project");
-      return this.$t("duplicate_or_move_project");
+      return this.$t("duplicate_or_move");
     },
     destination_space_label() {
       if (this.mode === "remix") return this.$t("destination_space_remix");

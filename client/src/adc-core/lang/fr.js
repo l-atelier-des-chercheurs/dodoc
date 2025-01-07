@@ -196,15 +196,14 @@ export default {
   story_with_sections: "Récit",
   page_by_page: "Page à page",
   cartography: "Cartographie",
-  export_publi: "Exporter la publication",
+  export: "Exporter",
   export_in_pdf: "Exporter en PDF",
   direct_link: "Lien direct",
   link: "Lien",
   share: "Partager",
   options: "Options",
-  exports: "Exportations",
-  export: "Exportation",
-  to_export: "Exporter",
+  exports: "Exportation | Exportations",
+  export_publi: "Exporter la publication {name}",
   export_in_progress: "Exportation en cours",
 
   story_width: "Largeur du récit",
@@ -383,6 +382,11 @@ export default {
   latest_changes_to_project: "Dernières modifications au projet",
 
   download: "Télécharger",
+  download_project: "Télécharger le projet {name}",
+  download_project_instr:
+    "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11).",
+  download_space:
+    "Télécharger l’espace {name} et tous les projets qu’il contient",
   download_ready: "Le téléchargement est prêt",
   download_image: "Télécharger cette image",
   page_failed_to_load: "Cette page n’a pas pu charger.",
@@ -657,6 +661,7 @@ export default {
 
   no_authors_to_show: "Aucun compte à afficher",
   remove_account: "Supprimer ce compte",
+  remove_account_name: "Supprimer le compte {name}",
   remove_account_expl:
     "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
 
@@ -786,7 +791,7 @@ export default {
   high: "Élevée",
   medium: "Moyenne",
   low: "Basse",
-  rough: "Ébauche",
+  rough: "Ébauche (le plus rapide)",
   optimize_resize: "Optimiser/redimensionner",
   convert_instructions: "Convertir vers un format standard",
   optimize_resize_instructions:
@@ -919,7 +924,6 @@ export default {
 
   duplicate: "Dupliquer",
   duplicate_or_move: "Dupliquer ou déplacer",
-  duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
   dm_instr:
     "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, fabrications, publications) seront copiées.",
   dmm_instr:
@@ -943,7 +947,8 @@ export default {
   move: "Déplacer",
   unselect: "Déselectionner",
   remove: "Supprimer",
-  remove_project: "Supprimer le projet",
+  disable: "Désactiver",
+  remove_project: "Supprimer le projet {name}",
   remove_media: "Supprimer le média",
   remove_space: "Supprimer cet espace et tous ses contenus",
 
@@ -1244,6 +1249,7 @@ export default {
   video_resolution_even:
     "Largeur × Hauteur. Chaque valeur doit être un multiple de 2.",
   no_audio_track: "Pas de piste audio (muet)",
+  keep_audio_track: "Conserver la piste audio",
   stop_recording_with_video: "Arrêter l’enregistrement à la fin de la vidéo.",
 
   video_mp4: "Vidéo MP4",
@@ -1253,10 +1259,13 @@ export default {
   enable_sound: "Activer le son",
   created_by_publication: "Créé par la publication {publication_title}",
   webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de do•doc. 
-  <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s'y trouve, vous pouvez consulter la publication depuis n'importe quel ordinateur dans un navigateur web.
-  <br /><br />Vous pouvez également la mettre en ligne pour qu'elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
+  <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s’y trouve, vous pouvez consulter la publication depuis n’importe quel ordinateur dans un navigateur web.
+  <br /><br />Vous pouvez également la mettre en ligne pour qu’elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
 
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",
-  show_only_media_of_types: "Type de médias affichés : {types}",
+  show_only_media_of_types: "Type de médias affiché : {types}",
+  devices_connected: "Appareils connectés actuellement : {count}",
+
+  remove_publication: "Supprimer la publication {name}",
 };

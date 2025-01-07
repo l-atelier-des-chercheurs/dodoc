@@ -1,15 +1,16 @@
 <template>
   <div>
-    <DLabel :str="$t('projects_you_edited_last')" />
-    <div class="" v-if="paths">
-      <!-- disabled because it flashes up/down -->
-      <!-- <transition name="pagechange" mode="in-out"> -->
-      <LoadSelectedProjects :key="paths.join('.')" :paths="paths" />
-      <!-- </transition> -->
-    </div>
-    <div v-else>
-      {{ $t("nothing_to_show") }}
-    </div>
+    <ToggledSection
+      :label="$t('projects_you_edited_last')"
+      :show_toggle.sync="show_toggle"
+    >
+      <div class="" v-if="paths">
+        <LoadSelectedProjects :key="paths.join('.')" :paths="paths" />
+      </div>
+      <div v-else>
+        {{ $t("nothing_to_show") }}
+      </div>
+    </ToggledSection>
   </div>
 </template>
 <script>
@@ -21,7 +22,9 @@ export default {
     LoadSelectedProjects,
   },
   data() {
-    return {};
+    return {
+      show_toggle: false,
+    };
   },
   created() {},
   mounted() {},

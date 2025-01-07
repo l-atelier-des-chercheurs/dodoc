@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('export')" @close="removeAndCloseModal">
+  <BaseModal2 :title="$t('make')" @close="removeAndCloseModal">
     <div class="_cont">
       <template v-if="!created_video">
         <div class="u-spacingBottom" v-if="possible_formats">
@@ -43,6 +43,13 @@
               :size="'normal'"
             />
           </div>
+        </div>
+        <div v-if="allow_disable_audio">
+          <div class="u-spacingBottom" />
+          <ToggleInput
+            :content.sync="keep_audio_track"
+            :label="$t('keep_audio_track')"
+          />
         </div>
       </template>
       <template v-else>
@@ -123,6 +130,11 @@ export default {
     make_path: String,
     reference_media: Object,
     possible_formats: Array,
+    allow_disable_audio: Boolean,
+    default_resolution_preset: {
+      type: String,
+      default: "source",
+    },
   },
   components: {
     ShowExportedFileInfos,
@@ -133,7 +145,7 @@ export default {
       finished_saving_to_project: false,
       created_video: false,
 
-      resolution_preset_picked: "source",
+      resolution_preset_picked: this.default_resolution_preset,
       progress_percent: 0,
 
       output_format: "mp4",
@@ -141,6 +153,8 @@ export default {
       custom_resolution_width: 1920,
       custom_resolution_height: 1080,
       custom_bitrate: 4000,
+
+      keep_audio_track: true,
     };
   },
   created() {},
@@ -248,6 +262,10 @@ export default {
 
       if (this.possible_formats)
         instructions.output_format = this.output_format;
+
+      if (this.allow_disable_audio) {
+        instructions.keep_audio_track = this.keep_audio_track;
+      }
 
       const current_task_id = await this.$api.exportFolder({
         path: this.make_path,
