@@ -119,6 +119,8 @@ module.exports = (function () {
         `ELECTRON — captureScreenshot : waiting for page to load`
       );
 
+      // todo add timeout
+
       await new Promise((resolve) => {
         win.webContents.once("did-finish-load", async () => {
           await new Promise((resolve) => setTimeout(resolve, 3000));
