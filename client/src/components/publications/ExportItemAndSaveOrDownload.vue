@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
+  <BaseModal2 :title="$t('export_publi')" @close="removeAndCloseModal">
     <template v-if="is_exporting">
       <div class="u-instructions">
         {{ $t("export_in_progress") }}
@@ -9,57 +9,46 @@
       </div>
     </template>
     <template v-else>
-      <MediaContent
-        class="_preview"
-        v-if="created_doc"
-        :file="created_doc"
-        :resolution="1600"
-        :context="'full'"
-      />
-      <div class="u-sameRow" slot="footer">
+      <template v-if="created_doc">
+        <div
+          v-if="instructions.recipe === 'webpage'"
+          class="u-instructions"
+          v-html="$t('webpage_export_instructions')"
+        />
+        <MediaContent
+          v-else
+          class="_preview"
+          :file="created_doc"
+          :resolution="1600"
+          :context="'full'"
+        />
+        <div class="u-spacingBottom" />
+        <ShowExportedFileInfos :file="created_doc" />
+
         <a
           :disabled="!export_href"
-          :download="export_name"
+          :download="created_doc.$media_filename"
           :href="export_href"
           target="_blank"
           class="u-buttonLink"
         >
           {{ $t("download") }}
         </a>
+      </template>
+      <template slot="footer">
+        <button type="button" class="u-button" @click="removeAndCloseModal">
+          <b-icon icon="arrow-left-short" />
+          {{ $t("back") }}
+        </button>
         <button
           type="button"
           class="u-button u-button_red"
           @click="saveToProject"
         >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 168 168"
-            style="enable-background: new 0 0 168 168"
-            xml:space="preserve"
-          >
-            <path
-              style="fill: var(--c-rouge)"
-              d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
-            />
-            <g style="fill: var(--c-orange)">
-              <path d="m42 42h21.6v21h-21.6z" />
-              <path d="m73.2 42h21.6v21h-21.6z" />
-              <path d="m104.4 42h21.6v21h-21.6z" />
-              <path d="m42 73.5h21.6v21h-21.6z" />
-              <path d="m73.2 73.5h21.6v21h-21.6z" />
-              <path d="m104.4 73.5h21.6v21h-21.6z" />
-              <path d="m42 105h21.6v21h-21.6z" />
-              <path d="m73.2 105h21.6v21h-21.6z" />
-              <path d="m104.4 105h21.6v21h-21.6z" />
-            </g>
-          </svg>
+          <span class="u-icon" v-html="dodoc_icon_collect" />
           {{ $t("save_to_project") }}
         </button>
-      </div>
+      </template>
       <div class="_saveNotice" v-if="finished_saving_to_project">
         {{ $t("media_was_saved_to_project") }}
       </div>
@@ -67,12 +56,14 @@
   </BaseModal2>
 </template>
 <script>
+import ShowExportedFileInfos from "@/components/fields/ShowExportedFileInfos.vue";
+
 export default {
   props: {
     publication_path: String,
     instructions: Object,
   },
-  components: {},
+  components: { ShowExportedFileInfos },
   data() {
     return {
       is_exporting: false,
@@ -94,9 +85,6 @@ export default {
         $path: this.created_doc.$path,
         $media_filename: this.created_doc.$media_filename,
       });
-    },
-    export_name() {
-      return this.created_doc?.$media_filename;
     },
   },
   methods: {
@@ -135,9 +123,15 @@ export default {
     },
     async saveToProject() {
       this.finished_saving_to_project = true;
+      this.$eventHub.$emit("pane.animate", "collect");
       setTimeout(() => {
         this.$emit("close");
       }, 3000);
+    },
+    removeAndCloseModal() {
+      if (this.created_doc)
+        this.$api.deleteItem({ path: this.created_doc.$path });
+      this.$emit("close");
     },
   },
 };

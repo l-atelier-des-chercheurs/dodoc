@@ -5,6 +5,7 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
+    <DynamicCursor v-if="!$root.is_touch_device" />
 
     <transition name="fade_fast" mode="out-in">
       <div class="_spinner" v-if="$root.is_loading" key="loader">
@@ -30,6 +31,7 @@
 </template>
 <script>
 import TopBar from "@/components/TopBar.vue";
+import DynamicCursor from "@/components/DynamicCursor.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
@@ -39,6 +41,7 @@ export default {
   props: {},
   components: {
     TopBar,
+    DynamicCursor,
     GeneralPasswordModal,
     TrackAuthorChanges,
     TaskTracker,

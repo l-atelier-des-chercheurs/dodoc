@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "11.1.7",
+  "version": "11.1.17",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -25,16 +25,19 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
-    "node": "20.18.0",
+    "node": "20.18.1",
     "npm": "*"
   },
   "build": {
-    "electronVersion": "31.6.0",
+    "electronVersion": "33.3.0",
     "appId": "dodoc",
     "productName": "do•doc",
+    "asar": true,
     "asarUnpack": [
       "content/",
-      "node_modules/sharp/**"
+      "**/node_modules/sharp/**/*",
+      "**/node_modules/@img/**/*",
+      "client/dist/"
     ],
     "icon": "build/icon.png",
     "win": {
@@ -79,7 +82,7 @@
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "archiver": "^7.0.1",
-    "bonjour-service": "^1.2.1",
+    "bonjour-service": "^1.3.0",
     "chalk": "^4.1.2",
     "cheerio": "^0.22.0",
     "compression": "^1.7.5",
@@ -89,7 +92,7 @@
     "electron-window-state": "^5.0.3",
     "eventemitter2": "^6.4.9",
     "exifr": "^7.1.3",
-    "express": "^4.21.0",
+    "express": "^4.21.2",
     "fast-folder-size": "^2.3.0",
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
@@ -97,8 +100,8 @@
     "formidable": "^2.1.2",
     "fs-extra": "^11.2.0",
     "heic-decode": "^2.0.0",
-    "helmet": "^7.1.0",
-    "lru-cache": "^10.2.2",
+    "helmet": "^7.2.0",
+    "lru-cache": "^10.4.3",
     "md5-file": "^5.0.0",
     "node-fetch": "^2.7.0",
     "pad-left": "^2.1.0",
@@ -118,12 +121,13 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "electron": "^33.2.0",
+    "electron": "^33.3.0",
     "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
-    "node-gyp": "^10.2.0"
+    "node-gyp": "^10.3.1"
   },
   "optionalDependencies": {
+    "bufferutil": "^4.0.8",
     "extractd": "^2.1.2"
   }
 }

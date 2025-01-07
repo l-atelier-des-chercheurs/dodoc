@@ -90,7 +90,7 @@
           </div>
 
           <div class="u-mediaOptions" v-if="can_edit_event">
-            <RemoveMenu :remove_text="$t('remove')" @remove="removeEvent" />
+            <RemoveMenu @remove="removeEvent" />
           </div>
         </div>
       </template>

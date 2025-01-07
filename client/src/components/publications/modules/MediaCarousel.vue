@@ -39,6 +39,13 @@
           />
 
           <div class="_btnRow" v-if="edit_mode">
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_small"
+              @click="show_change_order_modal = true"
+            >
+              <b-icon icon="arrow-left-right" />
+            </button>
             <template v-if="showObjectFitFor(media_with_linked)">
               <button
                 type="button"
@@ -112,6 +119,16 @@
     </flickity> -->
     </transition>
 
+    <ChangeOrderModal
+      v-if="show_change_order_modal"
+      :medias_with_linked="medias_with_linked"
+      :publication_path="publication_path"
+      @addMedias="$emit('addMedias', $event)"
+      @reorderMedias="$emit('reorderMedias', $event)"
+      @removeMediaAtIndex="$emit('removeMediaAtIndex', $event)"
+      @close="show_change_order_modal = false"
+    />
+
     <div class="_mediaPickerTile" v-if="can_edit">
       <EditBtn
         :btn_type="'add'"
@@ -135,6 +152,7 @@ import "flickity-imagesloaded";
 
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
+import ChangeOrderModal from "@/components/publications/modules/ChangeOrderModal.vue";
 
 export default {
   props: {
@@ -152,11 +170,13 @@ export default {
     Flickity,
     MediaPicker,
     CaptionCreditsPage,
+    ChangeOrderModal,
   },
   data() {
     return {
       show_media_picker: false,
       observer: null,
+      show_change_order_modal: false,
 
       flickityOptions: {
         initialIndex: 0,
@@ -366,7 +386,8 @@ export default {
 
   pointer-events: none;
 
-  button {
+  button,
+  select {
     // background: white;
     pointer-events: auto;
 

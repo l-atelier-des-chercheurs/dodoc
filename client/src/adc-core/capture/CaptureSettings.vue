@@ -1535,7 +1535,7 @@ export default {
   }
 }
 ._customResolutionX {
-  font-size: var(--sl-font-size-x-large);
+  font-size: var(--sl-font-size-large);
 }
 
 ._resolutionLabel {

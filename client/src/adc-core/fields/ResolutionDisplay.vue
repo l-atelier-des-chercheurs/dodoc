@@ -1,5 +1,5 @@
 <template>
-  <div class="_metaField">
+  <div class="u-metaField">
     <DLabel :str="$t('resolution')" />
     <div>
       <template v-if="width">
@@ -32,12 +32,4 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss">
-._metaField {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: calc(var(--spacing) / 16);
-}
-</style>
+<style lang="scss"></style>

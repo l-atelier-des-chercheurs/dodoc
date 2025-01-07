@@ -60,18 +60,28 @@ export default {
   methods: {
     handlePaste($event) {
       if (this.$root.modal_is_opened) return;
-      if ($event.clipboardData.files?.length > 0)
-        this.$emit(
-          "update:files_to_import",
-          Array.from($event.clipboardData.files)
-        );
+      if ($event.clipboardData.files?.length > 0) {
+        this.importFiles(Array.from($event.clipboardData.files));
+      }
     },
     updateInputFiles($event) {
-      this.$emit("update:files_to_import", Array.from($event.target.files));
+      this.importFiles(Array.from($event.target.files));
       $event.target.value = "";
     },
     fileDropped(files) {
-      this.$emit("update:files_to_import", Array.from(files));
+      this.importFiles(Array.from(files));
+    },
+    importFiles(files) {
+      files = files.reduce((acc, file) => {
+        if (file.size > 0) acc.push(file);
+        else if (file.size === 0)
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(`File ${file.name} is empty, skipping`);
+        return acc;
+      }, []);
+      this.$emit("update:files_to_import", files);
     },
 
     onDragover($event) {

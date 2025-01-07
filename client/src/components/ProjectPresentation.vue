@@ -23,7 +23,11 @@
           />
 
           <DropDown v-if="can_edit" :right="true">
-            <DownloadFolder :path="project.$path" />
+            <DownloadFolder
+              :modal_title="$t('download_project', { name: project.title })"
+              :modal_instructions="$t('download_project_instr')"
+              :path="project.$path"
+            />
             <div class="">
               <button
                 type="button"
@@ -31,7 +35,7 @@
                 @click="show_dup_modal = true"
               >
                 <b-icon icon="file-plus" />
-                {{ $t("duplicate_or_move_project") }}
+                {{ $t("duplicate_or_move") }}
               </button>
               <DuplicateOrRemixProject
                 v-if="show_dup_modal"
@@ -41,7 +45,7 @@
               />
             </div>
             <RemoveMenu
-              :remove_text="$t('remove_project')"
+              :modal_title="$t('remove_project', { name: project.title })"
               @remove="removeProject"
             />
           </DropDown>
@@ -174,7 +178,7 @@
     </flickity>
 
     <router-link
-      class="_projectInfos--open"
+      class="js--showCursor _projectInfos--open"
       v-if="['list', 'tiny'].includes(context)"
       :to="{ path: createURLFromPath(project.$path) }"
       :title="$t('open') + ' ' + project.title"

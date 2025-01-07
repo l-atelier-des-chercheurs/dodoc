@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="m_captureview"
-    :class="{ 'is--collapsed': collapse_capture_pane }"
-  >
+  <div class="m_captureview">
     <CapturePane
       v-show="show_capture_settings"
       :label="$t('settings')"
@@ -109,8 +106,8 @@
             name="slideFromTop"
             mode="out-in"
           >
-            <label
-              class="u-label"
+            <div
+              class="_duration_timer"
               v-if="
                 selected_mode !== 'stopmotion' &&
                 is_recording &&
@@ -129,7 +126,7 @@
               :key="'timelapse_interval'"
               class="record_options"
             >
-              <label class="u-label">
+              <div>
                 <span>{{ $t("interval_between_pictures") }}</span>
                 <input
                   type="number"
@@ -137,7 +134,7 @@
                   v-model.number="timelapse_interval"
                 />
                 <span>{{ $t("seconds") }}</span>
-              </label>
+              </div>
             </div>
 
             <div
@@ -201,7 +198,7 @@
               :key="'delay_interval'"
               class="record_options"
             >
-              <label class="u-label">
+              <div>
                 <span>{{ $t("delay") }}</span>
                 <input
                   type="number"
@@ -210,7 +207,7 @@
                   max="60"
                 />
                 <span>{{ $t("seconds") }}</span>
-              </label>
+              </div>
             </div>
           </transition-group>
 
@@ -219,12 +216,13 @@
               v-if="delay_remaining_time"
               :key="'delay_before_' + delay_remaining_time"
               class="_delay_timer"
+              :class="{ 'is--small': capture_pane_is_small }"
               v-html="delay_remaining_time"
             />
             <label
               v-else-if="timelapse_time_before_next_picture"
               :key="'timelapse_before_' + timelapse_time_before_next_picture"
-              class="_delay_timer is--timelapse"
+              class="_delay_timer is--small is--timelapse"
               v-html="timelapse_time_before_next_picture"
             />
             <!-- necessary to handle timely out-in transition -->
@@ -275,8 +273,13 @@
           </div>
 
           <transition name="fade_fast">
-            <div class="_settingsTag">
-              <template v-if="!(must_validate_media && media_to_validate)">
+            <div class="_settingsTag" v-if="!is_recording">
+              <template
+                v-if="
+                  !(must_validate_media && media_to_validate) &&
+                  selected_mode !== 'audio'
+                "
+              >
                 <button
                   type="button"
                   class="u-button u-button_small"
@@ -289,7 +292,7 @@
 
                 <select
                   v-model="current_grid_type"
-                  v-if="enable_video"
+                  v-if="enable_video && selected_mode !== 'audio'"
                   size="small"
                   :class="{
                     'is--active': current_grid_type !== false,
@@ -306,27 +309,6 @@
                     {{ $t(grid_type).toLowerCase() }}
                   </option>
                 </select>
-                <!-- <button
-                  type="button"
-                  class="u-button u-button_small"
-                  :class="{ 'is--active': current_grid_type !== false }"
-                  v-if="enable_video"
-                  @click="enable_grid = !enable_grid"
-                >
-                  {{ $t("grid").toLowerCase() }}
-                </button> -->
-                <!-- <div v-if="enable_video && enable_grid">
-                  <button
-                    type="button"
-                    class="u-button u-button_small"
-                    v-for="grid_type in Object.keys(grids)"
-                    :key="grid_type"
-                    :class="{ 'is--active': current_grid_type === grid_type }"
-                    @click="current_grid_type = grid_type"
-                  >
-                    {{ $t(grid_type).toLowerCase() }}
-                  </button>
-                </div> -->
               </template>
 
               <button
@@ -337,7 +319,7 @@
                 }"
                 @click="show_position_modal = true"
               >
-                {{ $t("location") }}
+                <!-- {{ $t("location") }} -->
                 <b-icon
                   :icon="
                     has_location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'
@@ -448,6 +430,7 @@
 
                   <button
                     type="button"
+                    v-if="selected_mode !== 'audio'"
                     class="u-button u-button_bleumarine _settingsBtn"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
@@ -1022,6 +1005,10 @@ export default {
         "lines",
       ],
     },
+    origin: {
+      type: String,
+      default: "capture",
+    },
     return_temp_media: {
       type: Boolean,
       default: false,
@@ -1054,6 +1041,8 @@ export default {
 
       ask_before_leaving_capture: false,
 
+      capture_pane_is_small: false,
+
       media_to_validate: false,
       media_is_being_sent: false,
       media_being_sent_percent: 0,
@@ -1061,8 +1050,6 @@ export default {
       mode_just_changed: false,
       is_validating_stopmotion_video: false,
       video_recording_is_paused: false,
-
-      collapse_capture_pane: false,
 
       grids: {
         halfs: [
@@ -1166,7 +1153,9 @@ export default {
     }
   },
   mounted() {
-    if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
+    if (!this.selected_mode) {
+      this.$emit("changeMode", this.available_modes[0]);
+    }
 
     document.addEventListener("keyup", this.captureKeyListener);
 
@@ -1181,6 +1170,7 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+    this.$eventHub.$on("capture.stopRecording", this.stopRecording);
 
     this.$refs.videoElement.volume = 0;
     this.$refs.videoElement.addEventListener(
@@ -1199,6 +1189,7 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+    this.$eventHub.$off("capture.stopRecording", this.stopRecording);
 
     document.removeEventListener("keyup", this.captureKeyListener);
 
@@ -1278,7 +1269,7 @@ export default {
         `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
 
-      if (!this.must_validate_media) {
+      if (this.media_to_validate && !this.must_validate_media) {
         this.sendMedia();
         return;
       }
@@ -1456,13 +1447,9 @@ export default {
       // this.ask_before_leaving_capture = true;
     },
     checkCapturePanelSize() {
-      if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
-        this.collapse_capture_pane = true;
-      else this.collapse_capture_pane = false;
-
-      // this.updateVideoDisplayedSize();
+      if (this.$el?.offsetHeight <= 400) this.capture_pane_is_small = true;
+      else this.capture_pane_is_small = false;
     },
-
     stopStopmotion() {
       // two options : remove or save
       this.closeStopmotionPanel();
@@ -1868,6 +1855,7 @@ export default {
           this.recorder.startRecording();
           this.is_recording = true;
           this.timer_recording_in_seconds = 0;
+          this.$eventHub.$emit("capture.isRecording", options.type);
           this.startTimer();
         } catch (err) {
           this.$alertify
@@ -1914,7 +1902,7 @@ export default {
 
       let additional_meta = {
         fav,
-        $origin: "capture",
+        $origin: this.origin,
       };
 
       if (this.connected_as?.$path)
@@ -1963,6 +1951,8 @@ export default {
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
 
+      this.$eventHub.$emit("pane.animate", "collect");
+
       this.$emit("insertMedia", meta_filename);
       return;
     },
@@ -1978,14 +1968,6 @@ export default {
   flex-flow: row nowrap;
   max-height: 100vh;
   height: 100%;
-
-  // &.is--collapsed {
-  //   .m_captureview--videoPane--bottom--buttons {
-  //     > * {
-  //       padding: 0;
-  //     }
-  //   }
-  // }
 
   .m_captureview--settingsPaneButton {
     position: relative;
@@ -2017,7 +1999,7 @@ export default {
   .m_captureview--videoPane--top {
     position: relative;
     margin: 0 auto;
-    min-height: 300px;
+    min-height: 60px;
 
     flex: 1 1 auto;
     overflow: hidden;
@@ -2057,8 +2039,12 @@ export default {
       }
 
       > * {
+        flex: 0 0 auto;
         display: flex;
-        padding: calc(var(--spacing) / 2);
+
+        &:not(:empty) {
+          padding: calc(var(--spacing) / 2);
+        }
 
         @media only screen and (min-width: 781px) {
           flex: 1 0 200px;
@@ -2197,13 +2183,23 @@ export default {
   //   -1px -1px 0 var(--c-text-shadow), 1px -1px 0 var(--c-text-shadow),
   //   -1px 1px 0 var(--c-text-shadow), 1px 1px 0 var(--c-text-shadow);
 
-  &.is--timelapse {
+  &.is--small {
     font-size: 10vmin;
     -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
-    height: 50%;
     bottom: 0;
+
+    &.is--timelapse {
+      height: 50%;
+    }
   }
 }
+
+// @container video-pane (height < 400px) {
+//   ._delay_timer {
+//     font-size: 10vmin;
+//     -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
+//   }
+// }
 
 ._capture_options {
   position: absolute;
@@ -2219,11 +2215,12 @@ export default {
   gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 2);
 
-  label {
+  ._duration_timer {
     display: inline-block;
     margin: 0 auto;
     background-color: var(--c-rouge);
     padding: 0 calc(var(--spacing) / 8);
+    font-size: var(--sl-font-size-normal);
 
     margin-bottom: calc(var(--spacing) / 8);
     color: white;
@@ -2357,15 +2354,15 @@ export default {
 ._enable_timelapse_button {
   color: #fff;
   background: var(--c-orange);
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: block;
   min-height: 0;
   line-height: 0;
   border-radius: 50%;
   text-align: center;
   font-weight: bold;
-  padding: 0;
+  padding: calc(var(--spacing) / 8);
   margin: calc(var(--spacing) / 4);
 
   svg {

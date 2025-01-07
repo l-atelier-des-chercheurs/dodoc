@@ -10,6 +10,7 @@ const { Server } = require("socket.io");
 
 const sockets = require("./sockets"),
   api2 = require("./api2"),
+  // cors_for_ressources = require("./cors_for_ressources"),
   serverRTC = require("./serverRTC.js");
 
 module.exports = function () {
@@ -23,6 +24,7 @@ module.exports = function () {
     helmet({
       // todo: set correct CSP
       contentSecurityPolicy: false,
+      crossOriginResourcePolicy: false,
     })
   );
 
@@ -77,6 +79,9 @@ module.exports = function () {
   app.use(function (req, res, next) {
     if (req.url.includes("/meta.txt"))
       res.status(403).send(`Access not allowed.`);
+    // TODO: allow loading medias from domains that admin has allowed (set to ”domain1”, ”domain2”, ”domain3”, etc., or to "all")
+    // else if (!(cors_for_ressources.allowed(req, res, next)))
+    //   res.status(403).send(`Access not allowed.`);
     else next();
   });
 

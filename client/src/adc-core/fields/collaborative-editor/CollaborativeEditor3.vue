@@ -431,10 +431,10 @@ export default {
       this.editor.enable();
       this.editor.focus();
 
-      if (this.editor.getLength() <= 1) {
-        const fontLastUsed = localStorage.getItem("fontLastUsed");
-        this.editor.format("font", fontLastUsed);
-      }
+      // if (this.editor.getLength() <= 1) {
+      //   const fontLastUsed = localStorage.getItem("fontLastUsed");
+      //   this.editor.format("font", fontLastUsed);
+      // }
 
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
@@ -601,9 +601,10 @@ export default {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
       this.debounce_textUpdate = setTimeout(async () => {
         await this.saveText();
-        const { font } = this.editor.getFormat();
-        localStorage.setItem("fontLastUsed", font);
-      }, 5000);
+        // do not enable: it triggers a focus on the text block
+        // const { font } = this.editor.getFormat();
+        // localStorage.setItem("fontLastUsed", font);
+      }, 3500);
     },
   },
 };

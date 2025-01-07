@@ -130,7 +130,7 @@ export default {
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);
-  --c-bleumarine_fonce: hsl(227, 63%, 11%);
+  --c-bleumarine_fonce: hsl(227, 63%, 21%);
   --c-bleuvert: #52c5b9;
   --c-bleuvert_clair: hsl(174, 50%, 81%);
   --c-bleuvert_fonce: hsl(174, 50%, 41%);
@@ -631,7 +631,7 @@ img {
   &-enter-active,
   &-leave-active,
   &-move {
-    transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
+    transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) !important;
     transition-property: opacity, transform;
     transform-origin: center top;
   }

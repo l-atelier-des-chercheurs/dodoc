@@ -20,7 +20,10 @@ module.exports = (function () {
     async applyVideoEffect({
       source,
       destination,
-      quality_preset,
+      output_width,
+      output_height,
+      video_bitrate,
+      keep_audio_track,
       effect_type,
       effect_opts,
       ffmpeg_cmd,
@@ -28,15 +31,6 @@ module.exports = (function () {
     }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options).input(source);
-
-        // let resolution, bitrate;
-        // if (quality_preset === "high") {
-        //   resolution = { width: 1920, height: 1080 };
-        //   bitrate = "4000k";
-        // } else if (quality_preset === "medium") {
-        //   resolution = { width: 1920, height: 1080 };
-        //   bitrate = "2000k";
-        // }
 
         const has_no_audio_track = !(await utils.hasAudioTrack({
           ffmpeg_cmd,
@@ -50,8 +44,8 @@ module.exports = (function () {
         // });
         // if (duration) ffmpeg_cmd.duration(duration);
 
-        const video_width = 1920;
-        const video_height = 1080;
+        const video_width = output_width;
+        const video_height = output_height;
 
         let complexFilters = [
           {
@@ -81,6 +75,9 @@ module.exports = (function () {
             inputs: "output",
             outputs: "output",
           });
+          if (keep_audio_track) {
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+          }
         } else if (effect_type === "colored_filter") {
           if (effect_opts?.color_filter?.startsWith("#")) {
             ffmpeg_cmd
@@ -93,27 +90,31 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
+            if (keep_audio_track) {
+              ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+            }
           } else {
             return reject(
               `Failed to create video for filter: color is not set correctly`
             );
           }
         } else if (effect_type === "reverse") {
-          complexFilters.push(
-            {
-              filter: "reverse",
-              inputs: "output",
-              outputs: "output",
-            },
-            {
+          complexFilters.push({
+            filter: "reverse",
+            inputs: "output",
+            outputs: "output",
+          });
+          if (keep_audio_track) {
+            complexFilters.push({
               filter: "areverse",
-            }
-          );
+            });
+          }
         } else if (effect_type === "slow_down" || effect_type === "speed_up") {
           let speed = effect_opts.playback_speed / 100;
-          if (!speed)
+          if (!speed) {
             if (effect_type === "slow_down") speed = 0.5;
             else if (effect_type === "speed_up") speed = 2;
+          }
 
           complexFilters.push({
             filter: "setpts",
@@ -122,12 +123,11 @@ module.exports = (function () {
             outputs: "output",
           });
 
-          if (speed >= 0.5 && !has_no_audio_track) {
+          if (speed >= 0.5 && !has_no_audio_track && keep_audio_track) {
             complexFilters.push({
               filter: "atempo",
               options: speed,
             });
-            // ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
           } else {
             ffmpeg_cmd.noAudio();
           }
@@ -141,7 +141,9 @@ module.exports = (function () {
               inputs: "[0]",
               outputs: "output",
             });
-            // ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+            if (keep_audio_track) {
+              ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+            }
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -158,7 +160,9 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            // ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+            if (keep_audio_track) {
+              ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+            }
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -226,7 +230,10 @@ module.exports = (function () {
               //   outputs: "output"
               // }
             );
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+
+            if (keep_audio_track) {
+              ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+            }
 
             // if (metadata && metadata.format && metadata.format.duration)
             //   ffmpeg_cmd.duration(metadata.format.duration);
@@ -246,7 +253,7 @@ module.exports = (function () {
             .native()
             .outputFPS(30)
             .withVideoCodec("libx264")
-            // .withVideoBitrate(bitrate)
+            .withVideoBitrate(video_bitrate)
             .complexFilter(complexFilters, "output")
             .addOptions(["-crf 22", "-preset fast"])
             .toFormat("mp4")

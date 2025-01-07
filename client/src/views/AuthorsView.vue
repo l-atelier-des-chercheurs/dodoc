@@ -34,6 +34,16 @@
       </div>
     </div>
 
+    <div class="u-spacingBottom" v-if="all_devices_connected.length > 1">
+      <div>
+        {{
+          $tc("devices_connected", all_devices_connected.length, {
+            count: all_devices_connected.length,
+          })
+        }}
+      </div>
+    </div>
+
     <transition-group
       tag="section"
       class="_allAuthors"
@@ -78,6 +88,19 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    all_devices_connected() {
+      return this.$api.users || [];
+    },
+    accounts_logged_in() {
+      return this.all_devices_connected.filter((u) => u.meta?.token_path);
+    },
+    logged_in_devices() {
+      const all_users_paths = this.$api.users.reduce((acc, u) => {
+        if (u.meta?.token_path) acc.push(u.meta.token_path);
+        return acc;
+      }, []);
+      return [...new Set(all_users_paths)];
+    },
     sorted_authors() {
       return this.authors.slice().sort((a, b) => {
         return a.name.localeCompare(b.name);

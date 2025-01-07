@@ -111,6 +111,8 @@ import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
 import ReorderedList from "@/adc-core/ui/ReorderedList.vue";
 Vue.component("ReorderedList", ReorderedList);
+import CustomResolutionInput from "@/adc-core/fields/CustomResolutionInput.vue";
+Vue.component("CustomResolutionInput", CustomResolutionInput);
 
 import QRModal from "@/adc-core/modals/QRModal.vue";
 Vue.component("QRModal", QRModal);
@@ -244,6 +246,8 @@ import Tags from "@/mixins/Tags";
 Vue.mixin(Tags);
 import Electron from "@/mixins/Electron";
 Vue.mixin(Electron);
+import DodocIcon from "@/mixins/DodocIcon";
+Vue.mixin(DodocIcon);
 
 Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
@@ -336,6 +340,9 @@ new Vue({
     is_mobile_view() {
       // return false;
       return this.window.innerWidth < 1000;
+    },
+    is_touch_device() {
+      return window.matchMedia("(pointer: coarse)").matches;
     },
     modal_is_opened() {
       return this.opened_modals > 0;

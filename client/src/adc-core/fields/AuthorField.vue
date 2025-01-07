@@ -73,15 +73,15 @@
 
         <div class="u-spacingBottom" />
 
-        <div class="u-sameRow" slot="footer">
+        <template slot="footer">
+          <div />
           <SaveCancelButtons
-            class="_scb"
             :is_saving="is_saving"
             :allow_save="allow_save"
             @save="updateAuthors"
             @cancel="cancel"
           />
-        </div>
+        </template>
       </BaseModal2>
     </div>
   </div>
@@ -199,7 +199,11 @@ export default {
       ) {
         this.new_authors_paths = "noone";
       } else if (Array.isArray(this.authors_paths)) {
-        this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
+        this.new_authors_paths = this.authors_paths.reduce((acc, a) => {
+          const author = this.getAuthor(a);
+          if (author) acc.push(author.$path);
+          return acc;
+        }, []);
       }
     },
     enableEditMode() {

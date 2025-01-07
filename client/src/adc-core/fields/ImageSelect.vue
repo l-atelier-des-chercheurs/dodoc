@@ -3,7 +3,7 @@
     <div class="_imageselect">
       <PickImage
         v-if="!picked_image"
-        :path="path"
+        :path="project_path || path"
         :instructions="instructions"
         :available_options="available_options"
         @newPreview="setNewPreview"
@@ -29,15 +29,15 @@
         </div>
       </template>
     </div>
-    <div slot="footer" v-if="!crop_mode">
+    <template slot="footer" v-if="!crop_mode">
+      <div />
       <SaveCancelButtons
-        class="_scb"
         :is_saving="is_saving"
         :allow_save="allow_save"
         @save="updateCover"
         @cancel="cancel"
       />
-    </div>
+    </template>
   </BaseModal2>
 </template>
 <script>
@@ -49,6 +49,7 @@ export default {
     existing_preview: [Boolean, String],
     label: String,
     path: String,
+    project_path: String,
     ratio: String,
     instructions: String,
     preview_format: String,
@@ -118,7 +119,10 @@ export default {
         file = await response.blob();
       }
 
-      if (!this.path) return this.$emit("newPreview", file);
+      if (!this.path) {
+        this.$emit("close");
+        return this.$emit("newPreview", file);
+      }
 
       try {
         await this.$api.updateCover({

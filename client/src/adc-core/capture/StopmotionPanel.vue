@@ -129,19 +129,16 @@
               <div class="_optionBtns">
                 <button
                   type="button"
-                  v-if="duration > 1 || showPreviousPhoto(media.$path)"
+                  v-if="duration > 1 || photoIsActive(media.$path)"
                   @click="show_duration_menu = !show_duration_menu"
-                  class="u-button u-button_small"
-                  :class="{
-                    'u-button_bleumarine': duration > 1,
-                  }"
+                  class="u-button u-button_small u-button_bleumarine"
                   :title="$t('duration')"
                 >
                   <b-icon icon="clock" />
                   {{ duration }}
                 </button>
                 <ImageDurationPicker
-                  v-if="show_duration_menu && showPreviousPhoto(media.$path)"
+                  v-if="show_duration_menu && photoIsActive(media.$path)"
                   :value="current_photo_duration"
                   :frame_rate="stopmotion_frame_rate"
                   @close="show_duration_menu = false"
@@ -149,15 +146,60 @@
                     updateMediaDurationForCurrentPreviousPhoto($event, index)
                   "
                 />
-                <button
-                  v-if="showPreviousPhoto(media.$path)"
-                  type="button"
-                  @click="removeMedia(media.$path)"
-                  class="u-button u-button_icon u-button_small u-button_white"
-                  :title="$t('remove')"
-                >
-                  <b-icon icon="trash" />
-                </button>
+                <template v-if="photoIsActive(media.$path)">
+                  <RemoveMenu
+                    :modal_title="$t('remove_this_image')"
+                    @remove="removeMedia(media.$path)"
+                  >
+                    <button
+                      slot="trigger"
+                      type="button"
+                      class="u-button u-button_small u-button_red"
+                      :title="$t('remove_this_image')"
+                    >
+                      <b-icon icon="trash" />
+                    </button>
+                  </RemoveMenu>
+                  <button
+                    type="button"
+                    class="u-button u-button_small"
+                    @click="show_options_menu = !show_options_menu"
+                  >
+                    <b-icon icon="three-dots" />
+                  </button>
+                  <BaseModal2
+                    v-if="show_options_menu"
+                    :title="$t('options')"
+                    @close="show_options_menu = false"
+                  >
+                    <MediaContent :file="media" :resolution="1600" />
+
+                    <div class="u-spacingBottom" />
+                    <div class="u-sameRow">
+                      <div>
+                        <DownloadFile :file="media" />
+                      </div>
+                      <button
+                        type="button"
+                        class="u-button u-button_orange"
+                        @click="saveToProject(media.$path)"
+                      >
+                        <span class="u-icon" v-html="dodoc_icon_collect" />
+                        {{ $t("save_to_project") }}
+                      </button>
+                    </div>
+
+                    <div v-if="status_saving_to_project" class="_saveNotice">
+                      <div v-if="status_saving_to_project === 'saving'">
+                        <LoaderSpinner />
+                        {{ $t("saving") }}
+                      </div>
+                      <div v-else-if="status_saving_to_project === 'saved'">
+                        {{ $t("media_was_saved_to_project") }}
+                      </div>
+                    </div>
+                  </BaseModal2>
+                </template>
               </div>
             </div>
 
@@ -207,7 +249,7 @@
         <PreviewStopmotion
           :medias="medias"
           :frame_rate.sync="frame_rate"
-          :export_format.sync="export_format"
+          :output_format.sync="output_format"
           :created_stopmotion="created_stopmotion"
         />
         <transition name="fade_fast" :duration="150" mode="out-in">
@@ -235,6 +277,7 @@
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 import PreviewStopmotion from "./PreviewStopmotion.vue";
 import ImageDurationPicker from "./ImageDurationPicker.vue";
+import BaseModal2 from "../modals/BaseModal2.vue";
 
 export default {
   props: {
@@ -256,8 +299,10 @@ export default {
 
       fetch_stopmotion_error: undefined,
 
+      show_options_menu: false,
+
       frame_rate: this.stopmotion_frame_rate,
-      export_format: "mp4",
+      output_format: "mp4",
       validating_video_preview: false,
       previous_photo_to_show: false,
       media_is_being_sent: false,
@@ -269,6 +314,8 @@ export default {
       preview_playing_event: undefined,
 
       show_duration_menu: false,
+
+      status_saving_to_project: false,
     };
   },
 
@@ -452,7 +499,7 @@ export default {
         });
       });
     },
-    showPreviousPhoto(path) {
+    photoIsActive(path) {
       return (
         this.previous_photo_to_show?.$path === path && !this.show_live_feed
       );
@@ -515,7 +562,7 @@ export default {
           recipe: "stopmotion",
           field: "images_list",
           frame_rate: this.frame_rate,
-          export_format: this.export_format,
+          output_format: this.output_format,
           additional_meta,
         },
       });
@@ -551,6 +598,33 @@ export default {
       // this.$nextTick(() => {
       //   this.$emit("close");
       // });
+    },
+    async saveToProject(path) {
+      let { space_slug, project_slug } = this.decomposePath(path);
+      const parent_project_path = this.createPath({
+        space_slug,
+        project_slug,
+      });
+
+      this.status_saving_to_project = "saving";
+
+      const copy_file_meta = await this.$api
+        .copyFile({
+          path: path,
+          path_to_destination_folder: parent_project_path,
+          new_meta: {
+            $origin: "capture",
+          },
+        })
+        .catch((err_code) => {
+          this.$alertify.delay(4000).error(err_code);
+        });
+
+      this.status_saving_to_project = "saved";
+
+      setTimeout(() => {
+        this.status_saving_to_project = false;
+      }, 3000);
     },
     async removeMedia(path) {
       // remove from stopmotion list
@@ -739,7 +813,7 @@ export default {
 
   .m_stopmotionpanel--medias--list--items {
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
     width: auto;
     flex: 0 0 auto;
     width: var(--img-width);
@@ -883,6 +957,7 @@ export default {
   display: flex;
   gap: calc(var(--spacing) / 4);
   justify-content: space-between;
+  align-items: flex-start;
 
   color: var(--c-noir);
 }
@@ -938,5 +1013,13 @@ export default {
 }
 ._onion_skin_range {
   direction: rtl;
+}
+._saveNotice {
+  position: absolute;
+  inset: -2px;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

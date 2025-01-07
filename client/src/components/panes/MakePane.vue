@@ -25,9 +25,6 @@
               v-for="recipe in recipes"
               :key="recipe.key"
               class="u-card2 m_recipe"
-              :class="{
-                'u-disabled': !recipe.enabled,
-              }"
             >
               <div class="m_recipe--icon" v-html="recipe.icon" />
 
@@ -61,16 +58,7 @@
                 </template>
               </div>
               <div class="m_recipe--buttons">
-                <div v-if="recipe.enabled !== true">
-                  <hr />
-                  <small>
-                    Pas encore disponible sur do•doc 10 / vous pouvez utiliser
-                    <a href="https://dodoc.fr/">do•doc 9</a> en attendant.
-                  </small>
-                </div>
-
                 <button
-                  v-else
                   class="u-button u-button_bleumarine"
                   type="button"
                   @click="createMake(recipe.key)"
@@ -102,7 +90,7 @@
           <MakesList
             :project_path="project.$path"
             :can_edit="can_edit"
-            @open="openMakes"
+            @open="openMake"
           />
         </section>
       </div>
@@ -142,7 +130,7 @@ export default {
           summary: "video_assemblage_summary",
           show_instructions: false,
           instructions: "video_assemblage_instructions",
-          enabled: true,
+
           icon: `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
                   <g id="Calque_6" data-name="Calque 6">
@@ -171,7 +159,7 @@ export default {
           key: "video_effects",
           summary: "video_effects_summary",
           show_instructions: false,
-          enabled: true,
+
           instructions: "video_effects_instructions",
 
           icon: `
@@ -285,7 +273,7 @@ export default {
           key: "mix_audio_and_video",
           summary: "mix_audio_and_video_summary",
           show_instructions: false,
-          enabled: true,
+
           instructions: "mix_audio_and_video_instructions",
 
           icon: `
@@ -323,7 +311,7 @@ export default {
           key: "mix_audio_and_image",
           summary: "mix_audio_and_image_summary",
           show_instructions: false,
-          enabled: true,
+
           instructions: "mix_audio_and_image_instructions",
 
           icon: `
@@ -358,7 +346,7 @@ export default {
           key: "qr_code",
           summary: "qr_code_summary",
           show_instructions: false,
-          enabled: true,
+
           icon: `
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -378,9 +366,13 @@ export default {
       ],
     };
   },
-  created() {},
+  created() {
+    this.$eventHub.$on("make.open", this.openMake);
+  },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("make.open", this.openMake);
+  },
   watch: {},
   computed: {},
   methods: {
@@ -400,9 +392,9 @@ export default {
       });
 
       // const path = `${this.project.$path}/makes/${new_folder_slug}`;
-      this.openMakes(new_folder_slug);
+      this.openMake(new_folder_slug);
     },
-    openMakes(new_folder_slug) {
+    openMake(new_folder_slug) {
       this.$emit("update:opened_make_slug", new_folder_slug);
     },
     removeMake(path) {

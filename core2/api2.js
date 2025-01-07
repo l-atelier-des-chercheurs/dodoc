@@ -24,10 +24,7 @@ module.exports = (function () {
 
     app.get("/_perf", loadPerf);
 
-    // todo forbiddenFiles txt
-    // app.use(forbiddenFiles);
     app.use("/_api2/*", [cors(_corsCheck)]);
-    // app.options("/_api2/*", cors());
 
     app.get(
       "/_api2/_networkInfos",
@@ -257,7 +254,6 @@ module.exports = (function () {
   function _corsCheck(req, callback) {
     console.log();
     dev.logapi({ path: req.path }, { params: req.params });
-
     // TODO check origin
     callback(null, { origin: true });
   }

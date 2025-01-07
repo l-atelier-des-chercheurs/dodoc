@@ -33,14 +33,22 @@
         </div>
       </transition>
 
-      <button
+      <!-- <button
         type="button"
         class="u-button u-button_small u-button_icon u-button_black _generatePreviewBtn"
-        v-if="can_edit && !is_making_preview"
         @click.stop="generatePreview"
       >
         <b-icon icon="arrow-clockwise" />
-      </button>
+      </button> -->
+      <div class="_generatePreviewBtn">
+        <EditBtn
+          v-if="can_edit && !is_making_preview"
+          :btn_type="'regenerate_thumbs'"
+          :style_type="'black'"
+          :label_position="'left'"
+          @click="generatePreview"
+        />
+      </div>
     </div>
 
     <header class="_header" @click="$emit('open')">
@@ -52,7 +60,7 @@
 
     <button
       type="button"
-      class="_openPublication"
+      class="js--showCursor _openPublication"
       :title="$t('open') + ' ' + publication.title"
       @click="$emit('open')"
     />
@@ -98,6 +106,8 @@ export default {
       await this.$api.deleteItem({ path: this.publication.$path });
     },
     async generatePreview() {
+      this.is_making_preview = true;
+
       const instructions = {
         recipe: "png",
         page: 1,
@@ -106,7 +116,6 @@ export default {
         layout_mode: this.publication.layout_mode || "print",
       };
 
-      this.is_making_preview = true;
       const current_task_id = await this.$api.generatePreviewForPublication({
         path: this.publication.$path,
         instructions,
@@ -143,7 +152,7 @@ export default {
 }
 ._publicationPreview--cover {
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }

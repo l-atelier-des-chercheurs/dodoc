@@ -73,19 +73,21 @@
                 <b-icon icon="save2-fill" />
                 {{ $t("replace_original") }}
               </button>
-              <small>
-                <a
-                  ref=""
-                  :href="final_image_blob"
-                  :download="final_image_filename"
-                  target="_blank"
-                >
-                  {{ $t("or_download_media_on_device") }}
-                  <template v-if="final_image_blob">
-                    — {{ formatBytes(final_image_blob.size) }}
-                  </template>
-                </a>
-              </small>
+              <div class="_download_media_without_validation">
+                <small>
+                  <a
+                    ref=""
+                    :href="final_image_blob"
+                    :download="final_image_filename"
+                    target="_blank"
+                  >
+                    {{ $t("or_download_media_on_device") }}
+                    <template v-if="final_image_blob">
+                      — {{ formatBytes(final_image_blob.size) }}
+                    </template>
+                  </a>
+                </small>
+              </div>
 
               <div class="_spinner" v-if="is_saving" key="loader">
                 <AnimatedCounter :value="media_being_sent_percent" />
@@ -303,5 +305,22 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+._download_media_without_validation {
+  // background-color: var(--c-noir);
+  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
+  // margin-top: calc(-0.5 * var(--spacing));
+  margin-bottom: -0.2em;
+  line-height: 1;
+  text-align: right;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  a {
+    color: var(--c-noir);
+  }
 }
 </style>

@@ -3,7 +3,6 @@
     <button class="u-button" @click="$emit('cancel')">
       <b-icon icon="x-circle" />
       {{ cancel_text ? cancel_text : $t("cancel") }}
-      <!-- {{ $t("back") }} -->
     </button>
     <button
       class="u-button u-button_bleuvert"
@@ -49,7 +48,8 @@ export default {
 ._saveCancelBtns {
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 4);
+  flex-grow: 1;
 }
 </style>

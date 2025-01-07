@@ -43,13 +43,15 @@
         </div>
       </div>
 
-      <div class="u-sameRow" slot="footer">
+      <template slot="footer">
         <template v-if="!is_copying">
-          <button type="button" class="u-buttonLink" @click="$emit('close')">
+          <button type="button" class="u-button" @click="$emit('close')">
+            <b-icon icon="x-circle" />
             {{ $t("cancel") }}
           </button>
+
           <button
-            class="u-button u-button_red"
+            class="u-button u-button_bleuvert"
             type="button"
             autofocus
             @click="confirm"
@@ -68,7 +70,7 @@
           </button>
         </template>
         <LoaderSpinner v-else />
-      </div>
+      </template>
     </template>
     <template v-else>
       <router-link :to="url_to_copy" class="u-button u-button_bleumarine">
@@ -114,7 +116,7 @@ export default {
   computed: {
     modal_title() {
       if (this.mode === "remix") return this.$t("remix_this_project");
-      return this.$t("duplicate_or_move_project");
+      return this.$t("duplicate_or_move");
     },
     destination_space_label() {
       if (this.mode === "remix") return this.$t("destination_space_remix");
