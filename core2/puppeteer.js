@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 
-module.exports = function () {
+module.exports = (function () {
   return {
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       let browser;
@@ -60,4 +60,4 @@ module.exports = function () {
       if (browser) await browser.close();
     },
   };
-};
+})();
