@@ -231,7 +231,11 @@ export default {
       if (unsupportedTypes.includes(media_with_linked._linked_media.$type))
         return false;
 
-      if (this.mediaIsSquare(media_with_linked._linked_media)) return false;
+      if (
+        this.page_template !== "page_by_page" &&
+        this.mediaIsSquare(media_with_linked._linked_media)
+      )
+        return false;
 
       return true;
     },
