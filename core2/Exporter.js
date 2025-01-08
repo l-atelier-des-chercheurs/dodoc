@@ -428,8 +428,8 @@ class Exporter {
             } else if (this.instructions.recipe === "png") {
               const full_path_to_image = await this._saveImage({
                 data: data.toPNG(1.0),
-                width: document_size.width,
-                height: document_size.height,
+                width: bw_pagesize.width,
+                height: bw_pagesize.height,
               });
               return resolve(full_path_to_image);
             }

@@ -138,7 +138,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._preview {
-  border: 2px solid var(--c-gris);
-  // aspect-ratio: 1;
+  border: 2px solid var(--c-gris_clair);
+  background-color: var(--c-gris_clair);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
 }
 </style>

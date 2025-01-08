@@ -16,27 +16,26 @@
         {{ fetch_publication_error }}
       </div>
       <div v-else-if="publication" key="publication" ref="fsContainer">
-        <transition name="pagechange" mode="out-in">
-          <div
-            class="_pubTopbar"
-            v-if="!is_serversidepreview && !is_fullscreen && show_topbar"
-          >
-            <PublicationTopbar
-              :publication="publication"
-              :no_back_button="true"
-              :can_edit="false"
-            />
+        <template v-if="!is_serversidepreview && !is_fullscreen">
+          <transition name="pagechange" mode="out-in">
+            <div class="_pubTopbar" v-if="show_topbar">
+              <PublicationTopbar
+                :publication="publication"
+                :no_back_button="true"
+                :can_edit="false"
+              />
+            </div>
+          </transition>
+          <div class="_toggleTopbar">
+            <button
+              type="button"
+              class="u-button u-button_small u-button_icon"
+              @click="show_topbar = !show_topbar"
+            >
+              <b-icon icon="chevron-up" :rotate="show_topbar ? 0 : 180" />
+            </button>
           </div>
-        </transition>
-        <div class="_toggleTopbar">
-          <button
-            type="button"
-            class="u-button u-button_small u-button_icon"
-            @click="show_topbar = !show_topbar"
-          >
-            <b-icon icon="chevron-up" :rotate="show_topbar ? 0 : 180" />
-          </button>
-        </div>
+        </template>
 
         <template v-if="publication.template === 'page_by_page'">
           <PageSlides
