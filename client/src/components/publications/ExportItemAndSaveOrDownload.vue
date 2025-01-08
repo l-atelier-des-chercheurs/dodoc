@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('export_publi')" @close="removeAndCloseModal">
+  <BaseModal2 @close="removeAndCloseModal">
     <template v-if="is_exporting">
       <div class="u-instructions">
         {{ $t("export_in_progress") }}
@@ -139,6 +139,6 @@ export default {
 <style lang="scss" scoped>
 ._preview {
   border: 2px solid var(--c-gris);
-  aspect-ratio: 1;
+  // aspect-ratio: 1;
 }
 </style>
