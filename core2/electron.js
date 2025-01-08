@@ -98,7 +98,7 @@ module.exports = (function () {
       dev.logfunction({ url, full_path_to_thumb });
 
       let win = new BrowserWindow({
-        width: 800,
+        width: 1200,
         height: 800,
         show: false,
         enableLargerThanScreen: true,
