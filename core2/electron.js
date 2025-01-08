@@ -97,41 +97,12 @@ module.exports = (function () {
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       dev.logfunction({ url, full_path_to_thumb });
 
-      let win = new BrowserWindow({
-        width: 1200,
-        height: 800,
-        show: false,
-        enableLargerThanScreen: true,
-        webPreferences: {
-          contextIsolation: true,
-          allowRunningInsecureContent: true,
-          offscreen: true,
-        },
-      });
-
-      win.loadURL(url, {
-        // improve chance of getting a screenshot
-        userAgent: "facebookexternalhit/1.1",
-      });
-      win.webContents.setAudioMuted(true);
-
-      dev.logfunction(
-        `ELECTRON — captureScreenshot : waiting for page to load`
-      );
-
       // todo add timeout
-
-      await new Promise((resolve) => {
-        win.webContents.once("did-finish-load", async () => {
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-          resolve();
-        });
-      }).then(async () => {
-        const image = await win.capturePage();
-        if (win) win.close();
-        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
-        return;
-      });
+      const win = await _loadWebpage({ url });
+      const image = await win.capturePage();
+      if (win) win.close();
+      await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+      return;
     },
   };
 
@@ -210,6 +181,39 @@ module.exports = (function () {
 
       return resolve(win);
     });
+  }
+
+  async function _loadWebpage({ url }) {
+    let page_timeout = setTimeout(() => {
+      if (win) win.close();
+      throw new Error(`page-timeout`);
+    }, 5_000);
+
+    const win = new BrowserWindow({
+      width: 1600,
+      height: 900,
+      show: false,
+      enableLargerThanScreen: true,
+    });
+
+    win.loadURL(url, {
+      // improve chance of getting a screenshot
+      userAgent: "facebookexternalhit/1.1",
+    });
+    win.webContents.setAudioMuted(true);
+
+    await new Promise((resolve, reject) => {
+      win.webContents.once("did-finish-load", async () => {
+        if (page_timeout) clearTimeout(page_timeout);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        resolve();
+      });
+      win.webContents.on("did-fail-load", (event, error) => {
+        reject(error);
+      });
+    });
+
+    return win;
   }
 
   async function _pickPath() {

@@ -152,7 +152,7 @@ module.exports = dev = (function () {
       });
 
     if (logToFile) _sendToLogFile(message);
-    _sendToConsole(message, chalk.red);
+    console.error(chalk.red(message));
   }
 
   function performance() {

@@ -362,9 +362,16 @@ class Exporter {
         height: document_size.height / 10 / 2.54 / reduction_factor,
       };
 
+      // todo use electron.captureScreenshot
+      // electron.captureScreenshot({
+      //   url,
+      //   full_path_to_thumb: path.join(
+      //     full_path_to_folder_in_cache,
+      //     "img-" + pad(index, 4, "0") + ".jpeg"
+      //   ),
+      // });
+
       let win = new BrowserWindow({
-        // width: 800,
-        // height: 800,
         width: bw_pagesize.width,
         height: bw_pagesize.height,
         show: false,

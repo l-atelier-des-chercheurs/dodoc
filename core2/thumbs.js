@@ -704,6 +704,7 @@ module.exports = (function () {
       return;
     } catch (err) {
       dev.error(err);
+      throw new Error("failed to capture screenshot");
     }
 
     const err = new Error("No image to download");
