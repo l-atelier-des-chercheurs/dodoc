@@ -34,17 +34,19 @@
             :key="'page-' + page.id"
             class="u-sameRow _singlePage"
           >
-            <EditBtn
-              v-if="can_edit"
-              :style="
-                is_creating_page
-                  ? 'opacity: 0 !important;'
-                  : 'opacity: 1 !important;'
-              "
-              :btn_type="'create_page'"
-              :key="'createPage' + index"
-              @click="createPage(index)"
-            />
+            <div class="_createPageBtn">
+              <EditBtn
+                v-if="can_edit"
+                :style="
+                  is_creating_page
+                    ? 'opacity: 0 !important;'
+                    : 'opacity: 1 !important;'
+                "
+                :btn_type="'create_page'"
+                :key="'createPage' + index"
+                @click="createPage(index)"
+              />
+            </div>
             <div class="_page">
               <div class="_preview">
                 <SinglePage
@@ -441,6 +443,9 @@ export default {
 }
 ._singlePage {
   gap: calc(var(--spacing) * 1);
+}
+._createPageBtn {
+  margin-bottom: 3rem;
 }
 
 ._preview {
