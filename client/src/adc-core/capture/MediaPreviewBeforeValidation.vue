@@ -82,13 +82,14 @@ export default {
   height: 100%;
   object-fit: contain;
 
-  > * {
-    // position: absolute;
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    // .padding-medium;
+  ::v-deep {
+    > * {
+      // position: absolute;
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
   }
 }
 
