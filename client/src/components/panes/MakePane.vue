@@ -380,7 +380,7 @@ export default {
       const rnd_suffix = (
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 2 + 3);
-      const title = this.$t(type) + "-" + rnd_suffix;
+      const title = this.$t(type) + " - " + rnd_suffix;
       const new_folder_slug = await this.$api.createFolder({
         path: `${this.project.$path}/makes`,
         additional_meta: {
