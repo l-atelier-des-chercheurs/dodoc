@@ -576,6 +576,10 @@ export default {
 
   position: relative;
   z-index: 100;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1) !important;
+  }
 }
 
 ._meta {
