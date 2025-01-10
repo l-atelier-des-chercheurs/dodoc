@@ -163,11 +163,11 @@ module.exports = (function () {
     notifier.on("userJoined", (user) => {
       io.to("users").emit("userJoined", user);
     });
-    notifier.on("userUpdated", (user) => {
-      io.to("users").emit("userUpdated", user);
+    notifier.on("userUpdated", (content) => {
+      io.to("users").emit("userUpdated", content);
     });
     notifier.on("userLeft", (id) => {
-      io.to("users").emit("userLeft", { id });
+      io.to("users").emit("userLeft", id);
     });
   }
 

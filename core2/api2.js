@@ -1427,11 +1427,11 @@ module.exports = (function () {
   }
   async function _updateUser(req, res, next) {
     const id = req.params.id;
-    const { data } = req.body;
-    const user = users.updateUser(id, data);
+    const { path } = req.body;
+    const user = users.updateUser(id, { path });
     if (!user) return res.status(404).json({ status: "user not found" });
     res.json(user);
-    notifier.emit("userUpdated", user);
+    notifier.emit("userUpdated", { id, changed_data: { path } });
   }
 
   async function _loadCustomFonts() {

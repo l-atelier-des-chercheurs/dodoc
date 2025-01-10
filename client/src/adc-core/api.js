@@ -67,7 +67,6 @@ export default function () {
 
         this.socket.on("session", ({ sessionID, userID }) => {
           // attach the session ID to the next reconnection attempts
-          debugger;
           this.socket.auth = { sessionID };
           this.self_user_id = userID;
           localStorage.setItem("sessionID", sessionID);
@@ -238,18 +237,26 @@ export default function () {
         });
         const users = response.data;
         this.$set(this, "users", users);
-        this.is_tracking_users = true;
-        this.socket.emit("trackUsers");
+        if (!this.is_tracking_users) {
+          this.is_tracking_users = true;
+          this.socket.emit("trackUsers");
+        }
         return this.users;
       },
       userJoined(user) {
         this.users.push(user);
       },
-      userUpdated(user) {
-        const index = this.users.findIndex((u) => u.id === user.id);
-        if (index !== -1) this.users[index] = user;
+      userUpdated({ id, changed_data }) {
+        const index = this.users.findIndex((u) => u.id === id);
+        if (index === -1) {
+          this.getAndTrackUsers();
+        } else {
+          Object.entries(changed_data).map(([key, value]) => {
+            this.$set(this.users[index].meta, key, value);
+          });
+        }
       },
-      userLeft({ id }) {
+      userLeft(id) {
         const index = this.users.findIndex((u) => u.id === id);
         if (index !== -1) this.users.splice(index, 1);
       },
@@ -258,10 +265,12 @@ export default function () {
         this.users = [];
         this.is_tracking_users = false;
       },
-      async updateSelfUser({ new_meta }) {
+      async updateSelfPath(path) {
         if (!this.self_user_id) return;
         const response = await this.$axios
-          .patch(`_users/${this.self_user_id}`, new_meta)
+          .patch(`_users/${this.self_user_id}`, {
+            path,
+          })
           .catch((err) => {
             throw this.processError(err);
           });
