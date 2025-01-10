@@ -1285,6 +1285,7 @@ module.exports = (function () {
         path_to_meta,
         meta_filename,
       });
+      res.status(200).json({ status: "ok" });
       notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
         path_to_meta: utils.convertToSlashPath(path_to_meta),
