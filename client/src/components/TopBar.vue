@@ -130,7 +130,6 @@ export default {
       show_credits_modal: false,
       show_qr_code_modal: false,
       show_settings_modal: false,
-      users: [],
     };
   },
   created() {},
@@ -141,10 +140,6 @@ export default {
     this.$api.join({ room: "authors" });
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$on(`toolbar.openCredits`, this.showCredits);
-
-    setTimeout(async () => {
-      this.users = await this.$api.getAndTrackUsers();
-    }, 1000);
   },
   beforeDestroy() {
     this.$api.leave({ room: "authors" });
@@ -167,6 +162,9 @@ export default {
       // for reactivity
       this.$route.path;
       return window.location.href;
+    },
+    users() {
+      return this.$api.users;
     },
   },
   methods: {

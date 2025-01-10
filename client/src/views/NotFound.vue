@@ -13,7 +13,9 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+    this.$api.updateSelfPath("404");
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},

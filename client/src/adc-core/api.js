@@ -31,6 +31,9 @@ export default function () {
       async init({ debug_mode }) {
         this.debug_mode = debug_mode;
         await this.initSocketio();
+        setTimeout(async () => {
+          await this.getAndTrackUsers();
+        }, 10);
       },
       async initSocketio() {
         console.log("initSocketio");

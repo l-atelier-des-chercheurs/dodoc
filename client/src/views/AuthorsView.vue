@@ -34,14 +34,25 @@
       </div>
     </div>
 
-    <div class="u-spacingBottom" v-if="all_devices_connected.length > 1">
-      <div>
-        {{
-          $tc("devices_connected", all_devices_connected.length, {
-            count: all_devices_connected.length,
-          })
-        }}
-      </div>
+    <div class="_currentlyConnected" v-if="all_devices_connected.length > 1">
+      <DetailsPane
+        :header="$t('devices_connected')"
+        :icon="'people'"
+        :has_items="all_devices_connected.length"
+      >
+        <div v-for="device in all_devices_connected" :key="device.id">
+          <div>
+            <AuthorTag
+              v-if="device.meta.token_path"
+              :path="device.meta.token_path"
+            />
+            <span v-else>{{ $t("not_logged_in") }}</span>
+          </div>
+          <div>{{ device.meta.user_agent }}</div>
+          <div>{{ device.meta.path }}</div>
+          <hr />
+        </div>
+      </DetailsPane>
     </div>
 
     <transition-group
@@ -80,6 +91,7 @@ export default {
   },
   created() {},
   async mounted() {
+    this.$api.updateSelfPath(this.path);
     this.authors = await this.$api.getFolders({
       path: this.path,
     });
@@ -149,6 +161,11 @@ export default {
   padding: calc(var(--spacing) * 1);
   max-width: calc(var(--max-column-width));
   margin: 0 auto;
+}
+
+._currentlyConnected {
+  max-width: 400px;
+  margin-bottom: calc(var(--spacing) * 1);
 }
 ._allAuthors {
   display: grid;

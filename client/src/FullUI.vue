@@ -86,11 +86,7 @@ export default {
     this.$eventHub.$off("socketio.connect_error", this.socketConnectError);
     this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
   },
-  watch: {
-    "$route.path"() {
-      this.updateUserPath();
-    },
-  },
+  watch: {},
   computed: {},
   methods: {
     socketConnected() {
@@ -111,9 +107,6 @@ export default {
         .closeLogOnClick(true)
         .delay(4000)
         .error(`Connect error ${reason}`);
-    },
-    updateUserPath() {
-      this.$api.updateSelfPath(this.$route.path);
     },
     showDisconnectModal() {
       this.show_disconnect_modal = true;
