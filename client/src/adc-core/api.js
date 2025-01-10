@@ -17,6 +17,7 @@ export default function () {
       rooms_joined: [],
 
       is_tracking_users: false,
+      self_user_id: null,
       users: new Array(),
 
       // todo replace is_identified, create route to test
@@ -64,9 +65,11 @@ export default function () {
           });
         });
 
-        this.socket.on("session", ({ sessionID }) => {
+        this.socket.on("session", ({ sessionID, userID }) => {
           // attach the session ID to the next reconnection attempts
+          debugger;
           this.socket.auth = { sessionID };
+          this.self_user_id = userID;
           localStorage.setItem("sessionID", sessionID);
         });
         this.socket.on("connect_error", (reason) => {
@@ -113,9 +116,9 @@ export default function () {
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);
 
-        this.socket.on("newUser", this.newUser);
-        this.socket.on("updateUser", this.updateUser);
-        this.socket.on("removeUser", this.removeUser);
+        this.socket.on("userJoined", this.userJoined);
+        this.socket.on("userUpdated", this.userUpdated);
+        this.socket.on("userLeft", this.userLeft);
       },
       disconnectSocket() {
         this.socket.disconnect();
@@ -239,21 +242,30 @@ export default function () {
         this.socket.emit("trackUsers");
         return this.users;
       },
-      newUser(user) {
+      userJoined(user) {
         this.users.push(user);
       },
-      updateUser(user) {
+      userUpdated(user) {
         const index = this.users.findIndex((u) => u.id === user.id);
         if (index !== -1) this.users[index] = user;
       },
-      removeUser({ id }) {
+      userLeft({ id }) {
         const index = this.users.findIndex((u) => u.id === id);
-        if (index !== -1) this.$delete(this.users, index);
+        if (index !== -1) this.users.splice(index, 1);
       },
       async unTrackUsers() {
         this.socket.emit("leaveUsers");
         this.users = [];
         this.is_tracking_users = false;
+      },
+      async updateSelfUser({ new_meta }) {
+        if (!this.self_user_id) return;
+        const response = await this.$axios
+          .patch(`_users/${this.self_user_id}`, new_meta)
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        return response.data;
       },
 
       folderCreated({ path, meta }) {
