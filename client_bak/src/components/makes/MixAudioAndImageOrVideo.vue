@@ -221,8 +221,6 @@ export default {
 
       const base_audio = this.selected_audio_media;
 
-      debugger;
-
       const additional_meta = {};
       additional_meta.$origin = "make";
       if (this.connected_as?.$path)
@@ -239,9 +237,7 @@ export default {
         output_height: 720,
         additional_meta,
       };
-
-      debugger;
-
+      
       if (this.make.type === "mix_audio_and_image") {
         const base_image = this.getSourceMedia({
           source_media: {

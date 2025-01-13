@@ -43,7 +43,12 @@
         :icon="'people'"
         :has_items="$api.all_devices_connected.length"
       >
-        <div v-for="device in $api.all_devices_connected" :key="device.id">
+        <div
+          v-for="device in $api.all_devices_connected"
+          :key="device.id"
+          class="u-spacingBottom"
+        >
+          <!-- <hr /> -->
           <div>
             <AuthorTag
               v-if="device.meta.token_path"
@@ -53,7 +58,6 @@
           </div>
           <div>{{ device.meta.user_agent }}</div>
           <div>{{ device.meta.path }}</div>
-          <hr />
         </div>
       </DetailsPane>
     </div>

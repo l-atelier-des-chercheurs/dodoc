@@ -1953,7 +1953,6 @@ export default {
 
       this.$eventHub.$emit("animatePane", "collect");
 
-      debugger;
       this.$emit("insertMedia", meta_filename);
       return;
     },
