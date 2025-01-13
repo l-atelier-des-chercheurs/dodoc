@@ -39,6 +39,7 @@ export default defineConfig({
     cors: true,
   },
   build: {
+    modulePreload: false,
     outDir: "dist",
     assetsDir: "assets",
     emptyOutDir: true,
