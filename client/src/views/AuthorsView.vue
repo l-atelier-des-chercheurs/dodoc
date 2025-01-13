@@ -34,13 +34,16 @@
       </div>
     </div>
 
-    <div class="_currentlyConnected" v-if="all_devices_connected.length > 1">
+    <div
+      class="_currentlyConnected"
+      v-if="$api.all_devices_connected.length > 1"
+    >
       <DetailsPane
         :header="$t('devices_connected')"
         :icon="'people'"
-        :has_items="all_devices_connected.length"
+        :has_items="$api.all_devices_connected.length"
       >
-        <div v-for="device in all_devices_connected" :key="device.id">
+        <div v-for="device in $api.all_devices_connected" :key="device.id">
           <div>
             <AuthorTag
               v-if="device.meta.token_path"
@@ -61,12 +64,9 @@
       name="listComplete"
       appear
     >
-      <AuthorCard
-        v-for="author in filtered_authors"
-        :key="author.$path"
-        :author="author"
-        :links_to_author_page="true"
-      />
+      <div v-for="author in filtered_authors" :key="author.$path">
+        <AuthorCard :author="author" :links_to_author_page="true" />
+      </div>
     </transition-group>
     <div v-if="filtered_authors.length === 0">
       {{ $t("no_accounts_to_show") }}
@@ -100,19 +100,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    all_devices_connected() {
-      return this.$api.users || [];
-    },
-    accounts_logged_in() {
-      return this.all_devices_connected.filter((u) => u.meta?.token_path);
-    },
-    logged_in_devices() {
-      const all_users_paths = this.$api.users.reduce((acc, u) => {
-        if (u.meta?.token_path) acc.push(u.meta.token_path);
-        return acc;
-      }, []);
-      return [...new Set(all_users_paths)];
-    },
     sorted_authors() {
       return this.authors.slice().sort((a, b) => {
         return a.name.localeCompare(b.name);

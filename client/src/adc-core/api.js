@@ -765,6 +765,16 @@ export default function () {
         // this.$alertify.delay(4000).error(err);
       },
     },
-    computed: {},
+    computed: {
+      all_devices_connected() {
+        return this.users.map((u) => {
+          if (u.id === this.self_user_id) u.is_self = true;
+          return u;
+        });
+      },
+      other_devices_connected() {
+        return this.users.filter((u) => !u.is_self);
+      },
+    },
   });
 }

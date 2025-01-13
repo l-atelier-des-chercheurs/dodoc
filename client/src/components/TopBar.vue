@@ -94,11 +94,11 @@
         </button>
       </div>
 
-      <div class="_currentUsers" v-if="users.length > 1">
+      <div class="_currentUsers" v-if="$api.other_devices_connected.length > 0">
         <router-link :to="'/@'" class="u-button u-button_icon">
           <b-icon icon="person-circle" />
           <sup class="_badge">
-            {{ users.length }}
+            {{ $api.other_devices_connected.length }}
           </sup>
         </router-link>
       </div>
@@ -145,7 +145,6 @@ export default {
     this.$api.leave({ room: "authors" });
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$off(`toolbar.openCredits`, this.showCredits);
-    this.$api.unTrackUsers();
   },
   watch: {
     $route: {
@@ -162,9 +161,6 @@ export default {
       // for reactivity
       this.$route.path;
       return window.location.href;
-    },
-    users() {
-      return this.$api.users;
     },
   },
   methods: {
