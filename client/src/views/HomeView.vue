@@ -184,6 +184,7 @@ export default {
   created() {
     if (this.$route.query?.pfilters || this.opened_event)
       this.current_mode = "projects";
+    this.$api.updateSelfPath("/");
   },
   mounted() {
     setTimeout(() => {

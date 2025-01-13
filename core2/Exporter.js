@@ -362,9 +362,16 @@ class Exporter {
         height: document_size.height / 10 / 2.54 / reduction_factor,
       };
 
+      // todo use electron.captureScreenshot
+      // electron.captureScreenshot({
+      //   url,
+      //   full_path_to_thumb: path.join(
+      //     full_path_to_folder_in_cache,
+      //     "img-" + pad(index, 4, "0") + ".jpeg"
+      //   ),
+      // });
+
       let win = new BrowserWindow({
-        // width: 800,
-        // height: 800,
         width: bw_pagesize.width,
         height: bw_pagesize.height,
         show: false,
@@ -426,10 +433,11 @@ class Exporter {
               this._notifyProgress(95);
               return resolve(full_path_to_pdf);
             } else if (this.instructions.recipe === "png") {
-              const full_path_to_image = await this._saveData(
-                "png",
-                data.toPNG(1.0)
-              );
+              const full_path_to_image = await this._saveImage({
+                data: data.toPNG(1.0),
+                width: bw_pagesize.width,
+                height: bw_pagesize.height,
+              });
               return resolve(full_path_to_image);
             }
           })
@@ -1075,6 +1083,22 @@ class Exporter {
       "file." + type
     );
     await writeFileAtomic(full_path_to_file, data);
+    return full_path_to_file;
+  }
+  async _saveImage({ data, width, height }) {
+    const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
+      "png"
+    );
+    const full_path_to_file = path.join(
+      full_path_to_folder_in_cache,
+      "file.png"
+    );
+    await utils.convertAndCopyImage({
+      source: data,
+      destination: full_path_to_file,
+      width,
+      height,
+    });
     return full_path_to_file;
   }
 

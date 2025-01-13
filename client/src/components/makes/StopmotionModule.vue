@@ -1,7 +1,7 @@
 <template>
   <div class="_stopmotionModule">
     <div class="_mediaContainer" :style="{ '--aspectRatio': imposed_ratio }">
-      <MediaContent :file="first_media" />
+      <MediaContent :file="first_media" :resolution="440" />
     </div>
     <div class="_bottomBar">
       <button

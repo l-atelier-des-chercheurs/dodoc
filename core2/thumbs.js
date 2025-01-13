@@ -690,15 +690,26 @@ module.exports = (function () {
     if (!url) throw "no url";
 
     const { image } = await _getPageMetadata({ url });
-    if (image) await _fetchImageAndSave({ url, image, full_path_to_thumb });
-    // else {
-    // if no image, use Electron or Puppeteer to generate screenshot of webpage
-    // }
-    else {
-      const err = new Error("No image to download");
-      err.code = "no_image_to_download";
-      throw err;
+    if (image) {
+      try {
+        await _fetchImageAndSave({ url, image, full_path_to_thumb });
+        return;
+      } catch (err) {
+        dev.error(err);
+      }
     }
+
+    try {
+      await electron.captureScreenshot({ url, full_path_to_thumb });
+      return;
+    } catch (err) {
+      dev.error(err);
+      throw new Error("failed to capture screenshot");
+    }
+
+    const err = new Error("No image to download");
+    err.code = "no_image_to_download";
+    throw err;
   }
 
   async function _readVideoAudioExif({ full_media_path }) {
