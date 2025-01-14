@@ -28,8 +28,21 @@ module.exports = (function () {
   return {
     init: () => {
       return new Promise(function (resolve, reject) {
-        // check if a custom storage path was set
+        // check if ubuntu + electron + sharp
+        if (
+          process.platform === "linux" &&
+          process.versions.sharp !== "0.31.3"
+        ) {
+          const err = new Error(
+            `Can't start application, please install sharp 0.31.3 (linux only requirements, see readme)`
+          );
+          err.code = "sharp_version_mismatch";
+          dev.error(err);
+          dialog.showErrorBox("Could not start application", err.message);
+          app.exit(0);
+        }
 
+        // check if a custom storage path was set
         // todo cleanup and move this to contentPath in main2.js
         const custom_storage_path = store.get("custom_content_path");
         if (custom_storage_path) {
