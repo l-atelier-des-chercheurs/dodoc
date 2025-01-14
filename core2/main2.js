@@ -37,12 +37,14 @@ module.exports = async function () {
   }
 
   let win;
-  if (is_electron)
-    win = await require("./electron")
-      .init()
-      .catch((err) => {
-        dev.error(err);
-      });
+  if (is_electron) {
+    try {
+      win = await require("./electron").init();
+    } catch (err) {
+      dev.error(err);
+      throw err;
+    }
+  }
 
   await setupApp().catch((err) => {
     dev.error(err);
