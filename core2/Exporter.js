@@ -11,6 +11,7 @@ const utils = require("./utils"),
   thumbs = require("./thumbs"),
   notifier = require("./notifier"),
   auth = require("./auth"),
+  puppeteer = require("./puppeteer"),
   tasks = require("./exporter_tasks/tasks"),
   effects = require("./exporter_tasks/effects"),
   optimizer = require("./exporter_tasks/optimizer");
@@ -311,12 +312,10 @@ class Exporter {
 
   async _loadPageAndPrint() {
     try {
-      // convert path_to_folder to URL (see createURLFromPath)
       dev.logfunction();
       const path_without_space = this.path_to_folder
         .replace("spaces" + path.sep, "/+")
         .replace("projects" + path.sep, "");
-
       let url = global.appInfos.homeURL + path_without_space;
 
       let query = {};
@@ -324,123 +323,37 @@ class Exporter {
         query.page = this.instructions.page;
         query.make_preview = true;
       }
+      if (this.instructions.superadmintoken)
+        query.sat = this.instructions.superadmintoken;
 
-      // use superamdin token
-      const sat = auth.getSuperadminToken();
-      query.sat = sat;
+      const searchParams = new URLSearchParams(query);
+      url += "?" + searchParams.toString();
 
-      if (Object.keys(query).length > 0) {
-        const searchParams = new URLSearchParams(query);
-        url += "?" + searchParams.toString();
-      }
+      const layout_mode = this.instructions.layout_mode || "print";
+      const document_width = this.instructions.page_width || 210;
+      const document_height = this.instructions.page_height || 297;
+      const recipe = this.instructions.recipe;
 
-      const puppeteer = require("puppeteer");
-
-      const document_size = {
-        width: this.instructions.page_width * 1 || 210,
-        height: this.instructions.page_height * 1 || 297,
-      };
-      const magnify_factor =
-        this.instructions.layout_mode === "print" ? 3.7952 : 1;
-
-      // magnify browser window size if print with css px to mm of 3.78
-      // if screen, browser window size is same as page size
-      const bw_pagesize = {
-        width: Math.floor(document_size.width * magnify_factor),
-        height: Math.floor(document_size.height * magnify_factor) + 0,
+      const reportProgress = (progress) => {
+        const mapped_progress = utils.remap(progress, 0, 100, 10, 90);
+        this._notifyProgress(mapped_progress);
       };
 
-      // print to pdf with size, try to match pagesize with pixels
-      const reduction_factor =
-        this.instructions.layout_mode === "print" ? 1 : 3.7952;
-
-      const printToPDF_pagesize = {
-        width: document_size.width / reduction_factor,
-        height: document_size.height / reduction_factor,
-      };
-
-      let browser;
-
-      let page_timeout = setTimeout(async () => {
-        dev.error(`page timeout for ${url}`);
-        clearTimeout(page_timeout);
-        if (browser) await browser.close();
-        this._notifyEnded({
-          event: "failed",
-        });
-        const err = new Error("Failed to capture media screenshot");
-        err.code = "failed_to_capture_media_screenshot_page-timeout";
-        throw err;
-      }, 30_000);
-
-      browser = await puppeteer.launch({
-        headless: true,
-        ignoreHTTPSErrors: true,
-        args: ["--no-sandbox", "--font-render-hinting=none"],
+      const path_to_export = await puppeteer.exportToPDFOrImage({
+        url,
+        recipe,
+        layout_mode,
+        document_width,
+        document_height,
+        reportProgress,
       });
 
-      this._notifyProgress(15);
-      const page = await browser.newPage();
-
-      // Set screen size
-      await page.setViewport({
-        width: bw_pagesize.width,
-        height: bw_pagesize.height,
-        deviceScaleFactor: 2,
-      });
-
-      this._notifyProgress(30);
-      await page
-        .goto(url, {
-          waitUntil: "networkidle0",
-        })
-        .catch((err) => {
-          throw err;
-        });
-      this._notifyProgress(50);
-
-      page.emulateMediaType("print");
-
-      await new Promise((r) => setTimeout(r, 3000));
-      this._notifyProgress(70);
-
-      let path_to_temp_file = "";
-
-      if (this.instructions.recipe === "pdf") {
-        path_to_temp_file = await this._saveData("pdf");
-        await page.pdf({
-          path: path_to_temp_file,
-          printBackground: true,
-          width: `${printToPDF_pagesize.width}mm`,
-          height: `${printToPDF_pagesize.height}mm`,
-        });
-      } else if (this.instructions.recipe === "png") {
-        const data = await page.screenshot({
-          path: path_to_temp_file,
-          clip: {
-            x: 0,
-            y: 0,
-            width: Math.floor(bw_pagesize.width),
-            height: Math.floor(bw_pagesize.height),
-          },
-        });
-        path_to_temp_file = await this._saveImage({
-          data,
-          width: bw_pagesize.width,
-          height: bw_pagesize.height,
-        });
-      }
-
-      this._notifyProgress(95);
-      if (page_timeout) clearTimeout(page_timeout);
-      if (browser) await browser.close();
-
-      return path_to_temp_file;
+      return path_to_export;
     } catch (err) {
       dev.error(`err for puppeteer ${err}`);
-      if (page_timeout) clearTimeout(page_timeout);
       this._notifyEnded({
         event: "failed",
+        info: err.message,
       });
       throw new Error(`failed`);
     }
@@ -1059,6 +972,7 @@ class Exporter {
     );
     return full_path_to_file;
   }
+
   async _saveImage({ data, width, height }) {
     const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "png"
