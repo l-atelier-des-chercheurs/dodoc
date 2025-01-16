@@ -679,7 +679,13 @@ module.exports = (function () {
       encoded_full_media_path +
       "&previewing_for=node";
 
-    await electron.captureScreenshot({ url, full_path_to_thumb });
+    if (global.is_electron)
+      await electron.captureScreenshot({ url, full_path_to_thumb });
+    else
+      await puppeteer.captureScreenshot({
+        url,
+        full_path_to_thumb,
+      });
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
