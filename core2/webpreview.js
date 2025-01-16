@@ -58,6 +58,7 @@ module.exports = (function () {
         });
       } else {
         const puppeteer = require("./puppeteer");
+
         return await puppeteer.exportToPDFOrImage({
           url,
           recipe,

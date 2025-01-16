@@ -156,6 +156,11 @@ module.exports = (function () {
       reportProgress(5);
 
       if (recipe === "pdf") {
+        const pageSize = {
+          width: printToPDF_pagesize.width / 10 / 2.54,
+          height: printToPDF_pagesize.height / 10 / 2.54,
+        };
+
         const data = await win.webContents.printToPDF({
           margins: {
             top: 0,
@@ -163,7 +168,7 @@ module.exports = (function () {
             left: 0,
             right: 0,
           },
-          pageSize: printToPDF_pagesize,
+          pageSize,
           printBackground: true,
           printSelectionOnly: false,
         });
