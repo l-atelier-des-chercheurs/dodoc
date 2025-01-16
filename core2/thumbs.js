@@ -708,6 +708,7 @@ module.exports = (function () {
       throw new Error("failed to capture screenshot");
     }
 
+    // todo fix err
     const err = new Error("No image to download");
     err.code = "no_image_to_download";
     throw err;
