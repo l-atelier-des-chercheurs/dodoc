@@ -48,19 +48,21 @@ export default {
       is_dragover: false,
     };
   },
-  created() {
+  created() {},
+  mounted() {
     window.addEventListener("paste", this.handlePaste);
   },
-  mounted() {
+  beforeDestroy() {
     window.removeEventListener("paste", this.handlePaste);
   },
-  beforeDestroy() {},
   watch: {},
   computed: {},
   methods: {
     handlePaste($event) {
       if (this.$root.modal_is_opened) return;
-      if ($event.clipboardData.files?.length > 0) {
+      if ($event.clipboardData.files && $event.clipboardData.files.length > 0) {
+        $event.preventDefault();
+        $event.stopPropagation();
         this.importFiles(Array.from($event.clipboardData.files));
       }
     },
