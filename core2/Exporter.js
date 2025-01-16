@@ -970,6 +970,7 @@ class Exporter {
       full_path_to_folder_in_cache,
       "file." + type
     );
+    await writeFileAtomic(full_path_to_file, data);
     return full_path_to_file;
   }
 
