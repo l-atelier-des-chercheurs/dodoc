@@ -9,7 +9,7 @@ const path = require("path"),
   fastFolderSize = require("fast-folder-size");
 
 const utils = require("./utils"),
-  electron = require("./electron");
+  webpreview = require("./webpreview");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -640,6 +640,7 @@ module.exports = (function () {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
     } catch (err) {
+      dev.error(err.message);
       throw err;
     }
   }
@@ -679,13 +680,7 @@ module.exports = (function () {
       encoded_full_media_path +
       "&previewing_for=node";
 
-    if (global.is_electron)
-      await electron.captureScreenshot({ url, full_path_to_thumb });
-    else
-      await puppeteer.captureScreenshot({
-        url,
-        full_path_to_thumb,
-      });
+    await webpreview.captureScreenshot({ url, full_path_to_thumb });
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
@@ -706,7 +701,7 @@ module.exports = (function () {
     }
 
     try {
-      await electron.captureScreenshot({ url, full_path_to_thumb });
+      await webpreview.captureScreenshot({ url, full_path_to_thumb });
       return;
     } catch (err) {
       dev.error(err);

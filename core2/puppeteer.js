@@ -9,58 +9,64 @@ module.exports = (function () {
 
       let page_timeout = setTimeout(async () => {
         if (browser) await browser.close();
-        try {
-          const err = new Error("Failed to capture media screenshot");
-          err.code = "failed_to_capture_media_screenshot_page-timeout";
-          throw err;
-        } catch (e) {
-          dev.error(`page timeout for ${url}`);
-        }
+        const err = new Error("Failed to capture screenshot");
+        err.code = "timeout";
+        throw err;
       }, 10_000);
 
-      browser = await puppeteer.launch({
-        headless: true,
-        ignoreHTTPSErrors: true,
-        args: ["--no-sandbox", "--font-render-hinting=none"],
-      });
+      try {
+        browser = await puppeteer.launch({
+          headless: true,
+          ignoreHTTPSErrors: true,
+          args: [
+            "--no-sandbox",
+            "--font-render-hinting=none",
+            "--ignore-certificate-errors",
+          ],
+        });
 
-      const page = await browser.newPage();
-      const x_padding = 12;
-      const y_padding = 8;
-      const width = 800;
-      const height = 800;
+        const page = await browser.newPage();
+        const x_padding = 12;
+        const y_padding = 8;
+        const width = 800;
+        const height = 800;
 
-      await page.setUserAgent("facebookexternalhit/1.1");
-      await page.setViewport({
-        width: width + x_padding * 2,
-        height: height + y_padding,
-        deviceScaleFactor: 2,
-      });
+        await page.setUserAgent("facebookexternalhit/1.1");
+        await page.setViewport({
+          width: width + x_padding * 2,
+          height: height + y_padding,
+          deviceScaleFactor: 2,
+        });
 
-      dev.logverbose(`Navigating to ${url}`);
+        dev.logverbose(`Navigating to ${url}`);
 
-      await page.goto(url).catch((err) => {
+        await page.goto(url).catch((err) => {
+          throw err;
+        });
+
+        dev.logverbose(`Waiting for page to load`);
+
+        await new Promise((resolve) => setTimeout(resolve, 3_000));
+
+        dev.logverbose(`Taking screenshot`);
+        await page.screenshot({
+          path: full_path_to_thumb,
+          clip: {
+            x: x_padding,
+            y: y_padding,
+            width: width,
+            height: height,
+          },
+        });
+        dev.logverbose(`Screenshot taken`);
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        clearTimeout(page_timeout);
+        if (browser) await browser.close();
+      } catch (err) {
+        clearTimeout(page_timeout);
+        if (browser) await browser.close();
         throw err;
-      });
-
-      dev.logverbose(`Waiting for page to load`);
-
-      await new Promise((resolve) => setTimeout(resolve, 3_000));
-
-      dev.logverbose(`Taking screenshot`);
-      await page.screenshot({
-        path: full_path_to_thumb,
-        clip: {
-          x: x_padding,
-          y: y_padding,
-          width: width,
-          height: height,
-        },
-      });
-      dev.logverbose(`Screenshot taken`);
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      clearTimeout(page_timeout);
-      if (browser) await browser.close();
+      }
     },
     exportToPDFOrImage: async ({
       url,
@@ -98,7 +104,11 @@ module.exports = (function () {
         browser = await puppeteer.launch({
           headless: true,
           ignoreHTTPSErrors: true,
-          args: ["--no-sandbox", "--font-render-hinting=none"],
+          args: [
+            "--no-sandbox",
+            "--font-render-hinting=none",
+            "--ignore-certificate-errors",
+          ],
         });
 
         if (reportProgress) reportProgress(10);

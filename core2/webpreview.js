@@ -3,12 +3,17 @@ module.exports = (function () {
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       dev.logfunction({ url, full_path_to_thumb });
 
-      if (global.is_electron) {
-        const electron = require("./electron");
-        await electron.captureScreenshot({ url, full_path_to_thumb });
-      } else {
-        const puppeteer = require("./puppeteer");
-        await puppeteer.captureScreenshot({ url, full_path_to_thumb });
+      try {
+        if (global.is_electron) {
+          const electron = require("./electron");
+          await electron.captureScreenshot({ url, full_path_to_thumb });
+        } else {
+          const puppeteer = require("./puppeteer");
+          await puppeteer.captureScreenshot({ url, full_path_to_thumb });
+        }
+      } catch (err) {
+        dev.error(err.message);
+        throw err;
       }
     },
     exportToPDFOrImage: async ({

@@ -110,12 +110,27 @@ module.exports = (function () {
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       dev.logfunction({ url, full_path_to_thumb });
 
-      // todo add timeout
-      const win = await _loadWebpage({ url });
-      const image = await win.capturePage();
-      if (win) win.close();
-      await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
-      return;
+      let win;
+
+      let page_timeout = setTimeout(async () => {
+        if (win) win.close();
+        const err = new Error("Failed to capture screenshot");
+        err.code = "timeout";
+        throw err;
+      }, 10_000);
+
+      try {
+        win = await _loadWebpage({ url });
+        const image = await win.capturePage();
+        if (win) win.close();
+        clearTimeout(page_timeout);
+        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+        return;
+      } catch (err) {
+        if (win) win.close();
+        clearTimeout(page_timeout);
+        throw err;
+      }
     },
     exportToPDFOrImage: ({
       url,
@@ -128,10 +143,6 @@ module.exports = (function () {
       return new Promise((resolve, reject) => {
         const { BrowserWindow } = require("electron");
 
-        const document_size = {
-          width: this.instructions.page_width * 1 || 210,
-          height: this.instructions.page_height * 1 || 297,
-        };
         const magnify_factor =
           this.instructions.layout_mode === "print" ? 3.7952 : 1;
 
