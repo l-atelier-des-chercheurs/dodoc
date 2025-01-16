@@ -11,7 +11,7 @@ const utils = require("./utils"),
   thumbs = require("./thumbs"),
   notifier = require("./notifier"),
   auth = require("./auth"),
-  puppeteer = require("./puppeteer"),
+  webpreview = require("./webpreview"),
   tasks = require("./exporter_tasks/tasks"),
   effects = require("./exporter_tasks/effects"),
   optimizer = require("./exporter_tasks/optimizer");
@@ -339,7 +339,7 @@ class Exporter {
         this._notifyProgress(mapped_progress);
       };
 
-      const path_to_export = await puppeteer.exportToPDFOrImage({
+      const path_to_export = await webpreview.exportToPDFOrImage({
         url,
         recipe,
         layout_mode,
@@ -350,7 +350,7 @@ class Exporter {
 
       return path_to_export;
     } catch (err) {
-      dev.error(`err for puppeteer ${err}`);
+      dev.error(`err for webpreview ${err}`);
       this._notifyEnded({
         event: "failed",
         info: err.message,
@@ -960,18 +960,6 @@ class Exporter {
       });
       throw err;
     }
-  }
-
-  async _saveData(type) {
-    const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
-      type
-    );
-    const full_path_to_file = path.join(
-      full_path_to_folder_in_cache,
-      "file." + type
-    );
-    await writeFileAtomic(full_path_to_file, data);
-    return full_path_to_file;
   }
 
   async _saveImage({ data, width, height }) {

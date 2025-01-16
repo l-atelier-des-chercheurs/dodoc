@@ -9,10 +9,10 @@ const server = require("./server"),
   paths = require("./paths"),
   auth = require("./auth");
 
-const is_electron = process.versions.hasOwnProperty("electron");
-
 module.exports = async function () {
-  console.log(`App is ${is_electron ? "electron" : "node"}`);
+  global.is_electron = process.versions.hasOwnProperty("electron");
+
+  console.log(`App is ${global.is_electron ? "electron" : "node"}`);
   console.log(`Starting = ${global.appInfos.name}`);
   console.log(`Node = ${process.versions.node}`);
 
@@ -37,7 +37,7 @@ module.exports = async function () {
   }
 
   let win;
-  if (is_electron) {
+  if (global.is_electron) {
     try {
       win = await require("./electron").init();
     } catch (err) {
@@ -49,7 +49,7 @@ module.exports = async function () {
   await setupApp().catch((err) => {
     dev.error(err);
 
-    if (is_electron) {
+    if (global.is_electron) {
       const { dialog } = require("electron");
       dialog.showErrorBox(
         `Impossible de démarrer l’application`,
@@ -64,7 +64,7 @@ module.exports = async function () {
 
   if (global.settings.bonjour_domain !== false) {
     if (typeof global.settings.bonjour_domain !== "string") {
-      if (is_electron) {
+      if (global.is_electron) {
         const { dialog } = require("electron");
         dialog.showErrorBox(
           `Impossible de démarrer l’application`,
@@ -82,7 +82,7 @@ module.exports = async function () {
     }
   }
 
-  if (is_electron) {
+  if (global.is_electron) {
     dev.log(`MAIN — opening URL in electron : ${global.appInfos.homeURL}`);
     win.loadURL(global.appInfos.homeURL);
   }
@@ -102,7 +102,7 @@ async function setupApp() {
   // dev.logfunction(["un", "array", "de", "valeurs"]);
 
   global.pathToCache = path.join(
-    paths.getCacheFolder(is_electron),
+    paths.getCacheFolder(global.is_electron),
     global.settings.cacheDirname
   );
   global.ffmpeg_processes = [];
@@ -114,7 +114,7 @@ async function setupApp() {
   });
 
   let full_default_path = path.join(`${global.appRoot}`, `content`);
-  if (is_electron)
+  if (global.is_electron)
     full_default_path = path.join(
       `${global.appRoot.replace(
         `${path.sep}app.asar`,
@@ -154,7 +154,7 @@ async function setupApp() {
 async function copyAndRenameUserFolder(full_default_path) {
   dev.logfunction({ full_default_path });
 
-  const user_dir_path = paths.getDocumentsFolder(is_electron);
+  const user_dir_path = paths.getDocumentsFolder(global.is_electron);
 
   let full_path_to_content;
   const path_is_custom =
