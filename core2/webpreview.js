@@ -24,6 +24,15 @@ module.exports = (function () {
       document_height,
       reportProgress,
     }) => {
+      dev.logfunction({
+        url,
+        recipe,
+        layout_mode,
+        document_width,
+        document_height,
+        reportProgress,
+      });
+
       // print to pdf with size, try to match pagesize with pixels
       const reduction_factor = layout_mode === "print" ? 1 : 3.7952;
       const magnify_factor = layout_mode === "print" ? 3.7952 : 1;
@@ -40,7 +49,7 @@ module.exports = (function () {
 
       if (global.is_electron) {
         const electron = require("./electron");
-        await electron.exportToPDFOrImage({
+        return await electron.exportToPDFOrImage({
           url,
           recipe,
           bw_pagesize,
@@ -49,7 +58,7 @@ module.exports = (function () {
         });
       } else {
         const puppeteer = require("./puppeteer");
-        await puppeteer.exportToPDFOrImage({
+        return await puppeteer.exportToPDFOrImage({
           url,
           recipe,
           bw_pagesize,

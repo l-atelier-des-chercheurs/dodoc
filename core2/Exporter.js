@@ -962,17 +962,6 @@ class Exporter {
     }
   }
 
-  async _saveData(type) {
-    const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
-      type
-    );
-    const full_path_to_file = path.join(
-      full_path_to_folder_in_cache,
-      "file." + type
-    );
-    return full_path_to_file;
-  }
-
   async _saveImage({ data, width, height }) {
     const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "png"
