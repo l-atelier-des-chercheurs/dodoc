@@ -1188,7 +1188,9 @@ export default {
   all_fields_not_filled: "All fields are not filled",
   pixels: "pixels",
   show_only_media_of_types: "Displayed media types: {types}",
-  devices_connected: "Devices currently connected: {count}",
+  devices_connected: "Devices currently connected",
 
   remove_publication: "Delete publication {name}",
+
+  not_logged_in: "Not logged in",
 };

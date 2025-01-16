@@ -28,8 +28,21 @@ module.exports = (function () {
   return {
     init: () => {
       return new Promise(function (resolve, reject) {
-        // check if a custom storage path was set
+        // check if ubuntu + electron + sharp
+        if (
+          process.platform === "linux" &&
+          process.versions.sharp !== "0.31.3"
+        ) {
+          const err = new Error(
+            `Can't start application, please install sharp 0.31.3 (linux only requirements, see readme)`
+          );
+          err.code = "sharp_version_mismatch";
+          dev.error(err);
+          dialog.showErrorBox("Could not start application", err.message);
+          app.exit(0);
+        }
 
+        // check if a custom storage path was set
         // todo cleanup and move this to contentPath in main2.js
         const custom_storage_path = store.get("custom_content_path");
         if (custom_storage_path) {
@@ -97,41 +110,12 @@ module.exports = (function () {
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       dev.logfunction({ url, full_path_to_thumb });
 
-      let win = new BrowserWindow({
-        width: 800,
-        height: 800,
-        show: false,
-        enableLargerThanScreen: true,
-        webPreferences: {
-          contextIsolation: true,
-          allowRunningInsecureContent: true,
-          offscreen: true,
-        },
-      });
-
-      win.loadURL(url, {
-        // improve chance of getting a screenshot
-        userAgent: "facebookexternalhit/1.1",
-      });
-      win.webContents.setAudioMuted(true);
-
-      dev.logfunction(
-        `ELECTRON — captureScreenshot : waiting for page to load`
-      );
-
       // todo add timeout
-
-      await new Promise((resolve) => {
-        win.webContents.once("did-finish-load", async () => {
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-          resolve();
-        });
-      }).then(async () => {
-        const image = await win.capturePage();
-        if (win) win.close();
-        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
-        return;
-      });
+      const win = await _loadWebpage({ url });
+      const image = await win.capturePage();
+      if (win) win.close();
+      await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+      return;
     },
   };
 
@@ -210,6 +194,39 @@ module.exports = (function () {
 
       return resolve(win);
     });
+  }
+
+  async function _loadWebpage({ url }) {
+    let page_timeout = setTimeout(() => {
+      if (win) win.close();
+      throw new Error(`page-timeout`);
+    }, 5_000);
+
+    const win = new BrowserWindow({
+      width: 1600,
+      height: 900,
+      show: false,
+      enableLargerThanScreen: true,
+    });
+
+    win.loadURL(url, {
+      // improve chance of getting a screenshot
+      userAgent: "facebookexternalhit/1.1",
+    });
+    win.webContents.setAudioMuted(true);
+
+    await new Promise((resolve, reject) => {
+      win.webContents.once("did-finish-load", async () => {
+        if (page_timeout) clearTimeout(page_timeout);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        resolve();
+      });
+      win.webContents.on("did-fail-load", (event, error) => {
+        reject(error);
+      });
+    });
+
+    return win;
   }
 
   async function _pickPath() {

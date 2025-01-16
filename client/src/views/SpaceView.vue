@@ -93,6 +93,8 @@ export default {
   },
   created() {},
   async mounted() {
+    this.$api.updateSelfPath(this.space_path);
+
     await this.getSpace().catch(() => {
       this.is_loading = false;
       return;

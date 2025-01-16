@@ -29,6 +29,10 @@
           :show_fs_button="true"
           :zoom_on_click="true"
           :can_edit="false"
+          @zoomingIn="onZoomingIn"
+          @zoomingOut="onZoomingOut"
+          @videoPlayed="onVideoPlayed"
+          @videoPaused="onVideoPaused"
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           <div class="">
@@ -37,7 +41,10 @@
           </div>
         </div>
 
-        <div class="_topRightBtn" v-if="!$root.is_mobile_view">
+        <div
+          class="_topRightBtn"
+          v-if="!$root.is_mobile_view && show_overlay_button"
+        >
           <DragFile class="_dragFile" :file="file" />
           <button
             type="button"
@@ -64,7 +71,11 @@
         <transition name="scaleOutFade" mode="out-in">
           <div
             class="_navBtns"
-            v-if="position_in_list !== 'alone' && show_nav_btn"
+            v-if="
+              position_in_list !== 'alone' &&
+              show_nav_btn &&
+              show_overlay_button
+            "
             :key="file.$path"
           >
             <span>
@@ -359,6 +370,8 @@ export default {
       show_nav_btn: false,
       show_meta_sidebar: true,
       is_regenerating: false,
+      is_zooming_in: false,
+      is_playing_video: false,
     };
   },
 
@@ -376,6 +389,10 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    show_overlay_button() {
+      if (this.is_zooming_in || this.is_playing_video) return false;
+      return true;
+    },
     tools_available() {
       let count = 0;
       if (this.cropadjust_possible) count++;
@@ -478,6 +495,18 @@ export default {
     },
   },
   methods: {
+    onZoomingIn() {
+      this.is_zooming_in = true;
+    },
+    onZoomingOut() {
+      this.is_zooming_in = false;
+    },
+    onVideoPlayed() {
+      this.is_playing_video = true;
+    },
+    onVideoPaused() {
+      this.is_playing_video = false;
+    },
     toggleMeta() {
       this.show_meta_sidebar = !this.show_meta_sidebar;
       localStorage.setItem("show_meta_sidebar", this.show_meta_sidebar);
@@ -576,6 +605,10 @@ export default {
 
   position: relative;
   z-index: 100;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1) !important;
+  }
 }
 
 ._meta {

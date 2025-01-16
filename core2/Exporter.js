@@ -415,8 +415,7 @@ class Exporter {
           height: `${printToPDF_pagesize.height}mm`,
         });
       } else if (this.instructions.recipe === "png") {
-        path_to_temp_file = await this._saveData("png");
-        await page.screenshot({
+        const data = await page.screenshot({
           path: path_to_temp_file,
           clip: {
             x: 0,
@@ -424,6 +423,11 @@ class Exporter {
             width: Math.floor(bw_pagesize.width),
             height: Math.floor(bw_pagesize.height),
           },
+        });
+        path_to_temp_file = await this._saveImage({
+          data,
+          width: bw_pagesize.width,
+          height: bw_pagesize.height,
         });
       }
 
@@ -1053,6 +1057,22 @@ class Exporter {
       full_path_to_folder_in_cache,
       "file." + type
     );
+    return full_path_to_file;
+  }
+  async _saveImage({ data, width, height }) {
+    const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
+      "png"
+    );
+    const full_path_to_file = path.join(
+      full_path_to_folder_in_cache,
+      "file.png"
+    );
+    await utils.convertAndCopyImage({
+      source: data,
+      destination: full_path_to_file,
+      width,
+      height,
+    });
     return full_path_to_file;
   }
 
