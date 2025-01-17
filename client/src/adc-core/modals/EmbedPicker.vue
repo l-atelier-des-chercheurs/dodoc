@@ -53,9 +53,15 @@
         </small>
       </div>
 
-      <div v-if="url_to_site" class="_previewEmbed" :key="full_url">
+      <LoaderSpinner class="_loader" v-if="is_loading" />
+      <div v-else-if="url_to_site" class="_previewEmbed" :key="url_to_site.src">
         <template v-if="url_to_site.type === 'any'">
-          <iframe class="_siteIframe" :src="url_to_site.src" frameborder="0" />
+          <iframe
+            class="_siteIframe"
+            :src="url_to_site.src"
+            frameborder="0"
+            @load="iframeLoaded"
+          />
         </template>
         <vue-plyr v-else>
           <div class="plyr__video-embed">
@@ -94,17 +100,33 @@ export default {
   components: {},
   data() {
     return {
+      is_loading: false,
       full_url: "",
+      debounced_full_url: "",
+      debounce_timeout: null,
+
       is_inserting_embed: false,
     };
   },
   async created() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    full_url(new_url) {
+      if (this.debounce_timeout) clearTimeout(this.debounce_timeout);
+      this.is_loading = true;
+      this.debounce_timeout = setTimeout(() => {
+        this.is_loading = false;
+        this.debounced_full_url = new_url;
+      }, 1000);
+    },
+  },
   computed: {
     url_to_site() {
-      if (!this.full_url) return false;
-      return this.transformURL({ url: this.full_url, autoplay: false });
+      if (!this.debounced_full_url) return false;
+      return this.transformURL({
+        url: this.debounced_full_url,
+        autoplay: false,
+      });
     },
   },
   methods: {
@@ -112,6 +134,7 @@ export default {
       this.$emit("embed", this.full_url);
       this.is_inserting_embed = true;
     },
+    iframeLoaded() {},
   },
 };
 </script>
@@ -141,7 +164,13 @@ iframe {
   gap: calc(var(--spacing) / 2);
 }
 
+._loader {
+  position: relative;
+  margin-top: calc(var(--spacing) * 1);
+}
+
 ._previewEmbed {
+  position: relative;
   margin-top: calc(var(--spacing) * 1);
   border-radius: 2px;
   border: 2px solid var(--c-gris);
