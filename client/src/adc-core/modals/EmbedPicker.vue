@@ -1,5 +1,11 @@
 <template>
-  <BaseModal2 :title="$t('embed')" @close="$emit('close')">
+  <BaseModal2
+    :title="$t('embed')"
+    :confirm_before_closing="full_url.length > 0"
+    :is_loading="is_inserting_embed"
+    @close="$emit('close')"
+    @save="insertEmbed"
+  >
     <div class="_linkPicker">
       <div class="_urlBox">
         <!-- <DLabel :str="$t('input_url')" :instructions="$t('input_url_instr')" /> -->
@@ -47,7 +53,7 @@
         </small>
       </div>
 
-      <div v-if="url_to_site" class="" :key="full_url">
+      <div v-if="url_to_site" class="_previewEmbed" :key="full_url">
         <template v-if="url_to_site.type === 'any'">
           <iframe class="_siteIframe" :src="url_to_site.src" frameborder="0" />
         </template>
@@ -74,8 +80,9 @@
         type="button"
         class="u-button u-button_bleuvert"
         :disabled="!full_url"
-        @click="$emit('embed', full_url)"
+        @click="insertEmbed"
       >
+        <b-icon icon="link" />
         {{ $t("embed") }}
       </button>
     </template>
@@ -88,6 +95,7 @@ export default {
   data() {
     return {
       full_url: "",
+      is_inserting_embed: false,
     };
   },
   async created() {},
@@ -99,7 +107,12 @@ export default {
       return this.transformURL({ url: this.full_url, autoplay: false });
     },
   },
-  methods: {},
+  methods: {
+    insertEmbed() {
+      this.$emit("embed", this.full_url);
+      this.is_inserting_embed = true;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -126,5 +139,11 @@ iframe {
   display: inline-flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
+}
+
+._previewEmbed {
+  margin-top: calc(var(--spacing) * 1);
+  border-radius: 2px;
+  border: 2px solid var(--c-gris);
 }
 </style>
