@@ -42,7 +42,7 @@ linux:
   icon: build/icons/512x512.png
   executableName: do•doc
   executableArgs:
-    - '--js-flags="--max-old-space-size=12288"'
+    - '--js-flags="--max-old-space-size=4096"'
 
 appImage:
   synopsis: A documentation tool for creativity.
