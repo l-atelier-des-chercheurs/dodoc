@@ -17,6 +17,7 @@ export default function () {
       rooms_joined: [],
 
       is_tracking_users: false,
+      self_user_id: null,
       users: new Array(),
 
       // todo replace is_identified, create route to test
@@ -30,6 +31,9 @@ export default function () {
       async init({ debug_mode }) {
         this.debug_mode = debug_mode;
         await this.initSocketio();
+        setTimeout(async () => {
+          await this.getAndTrackUsers();
+        }, 10);
       },
       async initSocketio() {
         console.log("initSocketio");
@@ -64,9 +68,10 @@ export default function () {
           });
         });
 
-        this.socket.on("session", ({ sessionID }) => {
+        this.socket.on("session", ({ sessionID, userID }) => {
           // attach the session ID to the next reconnection attempts
           this.socket.auth = { sessionID };
+          this.self_user_id = userID;
           localStorage.setItem("sessionID", sessionID);
         });
         this.socket.on("connect_error", (reason) => {
@@ -113,9 +118,9 @@ export default function () {
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);
 
-        this.socket.on("newUser", this.newUser);
-        this.socket.on("updateUser", this.updateUser);
-        this.socket.on("removeUser", this.removeUser);
+        this.socket.on("userJoined", this.userJoined);
+        this.socket.on("userUpdated", this.userUpdated);
+        this.socket.on("userLeft", this.userLeft);
       },
       disconnectSocket() {
         this.socket.disconnect();
@@ -235,25 +240,44 @@ export default function () {
         });
         const users = response.data;
         this.$set(this, "users", users);
-        this.is_tracking_users = true;
-        this.socket.emit("trackUsers");
+        if (!this.is_tracking_users) {
+          this.is_tracking_users = true;
+          this.socket.emit("trackUsers");
+        }
         return this.users;
       },
-      newUser(user) {
+      userJoined(user) {
         this.users.push(user);
       },
-      updateUser(user) {
-        const index = this.users.findIndex((u) => u.id === user.id);
-        if (index !== -1) this.users[index] = user;
-      },
-      removeUser({ id }) {
+      userUpdated({ id, changed_data }) {
         const index = this.users.findIndex((u) => u.id === id);
-        if (index !== -1) this.$delete(this.users, index);
+        if (index === -1) {
+          this.getAndTrackUsers();
+        } else {
+          Object.entries(changed_data).map(([key, value]) => {
+            this.$set(this.users[index].meta, key, value);
+          });
+        }
+      },
+      userLeft(id) {
+        const index = this.users.findIndex((u) => u.id === id);
+        if (index !== -1) this.users.splice(index, 1);
       },
       async unTrackUsers() {
         this.socket.emit("leaveUsers");
         this.users = [];
         this.is_tracking_users = false;
+      },
+      async updateSelfPath(path) {
+        if (!this.self_user_id) return;
+        const response = await this.$axios
+          .patch(`_users/${this.self_user_id}`, {
+            path,
+          })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        return response.data;
       },
 
       folderCreated({ path, meta }) {
@@ -741,6 +765,16 @@ export default function () {
         // this.$alertify.delay(4000).error(err);
       },
     },
-    computed: {},
+    computed: {
+      all_devices_connected() {
+        return this.users.map((u) => {
+          if (u.id === this.self_user_id) u.is_self = true;
+          return u;
+        });
+      },
+      other_devices_connected() {
+        return this.users.filter((u) => !u.is_self);
+      },
+    },
   });
 }

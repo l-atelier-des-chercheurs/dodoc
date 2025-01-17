@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="$t('export_publi')" @close="removeAndCloseModal">
+  <BaseModal2 @close="removeAndCloseModal">
     <template v-if="is_exporting">
       <div class="u-instructions">
         {{ $t("export_in_progress") }}
@@ -49,9 +49,6 @@
           {{ $t("save_to_project") }}
         </button>
       </template>
-      <div class="_saveNotice" v-if="finished_saving_to_project">
-        {{ $t("media_was_saved_to_project") }}
-      </div>
     </template>
   </BaseModal2>
 </template>
@@ -69,7 +66,6 @@ export default {
       is_exporting: false,
       created_doc: undefined,
       task_progress: 0,
-      finished_saving_to_project: false,
     };
   },
   created() {},
@@ -122,11 +118,12 @@ export default {
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
     async saveToProject() {
-      this.finished_saving_to_project = true;
       this.$eventHub.$emit("pane.animate", "collect");
-      setTimeout(() => {
-        this.$emit("close");
-      }, 3000);
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("media_was_saved_to_project"));
+      this.$emit("close");
     },
     removeAndCloseModal() {
       if (this.created_doc)
@@ -138,7 +135,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._preview {
-  border: 2px solid var(--c-gris);
+  border: 2px solid var(--c-gris_clair);
+  background-color: var(--c-gris_clair);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
   aspect-ratio: 1;
+}
+
+._saveNotice {
+  position: absolute;
+  inset: -2px;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

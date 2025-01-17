@@ -39,7 +39,9 @@ export default {
     await new Promise((r) => setTimeout(r, 500));
     await this.startQR();
   },
-  beforeDestroy() {},
+  async beforeDestroy() {
+    await this.stopQR();
+  },
   watch: {},
   computed: {},
   methods: {
@@ -57,6 +59,12 @@ export default {
         }
       );
       await this.qrScanner.start();
+    },
+    async stopQR() {
+      if (this.qrScanner) {
+        this.qrScanner.destroy();
+        this.qrScanner = null;
+      }
     },
     updateLastDetectedQR(qr_content) {
       this.last_detected_qr = qr_content;

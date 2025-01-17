@@ -541,28 +541,35 @@ export default {
     }
   }
 
-  &.yoyoo-ddr:not(.is--beingEdited) {
-    &.active {
-      border: none;
-      outline: 2px dotted var(--c-orange) !important;
+  &.yoyoo-ddr {
+    .resize-handler,
+    .rotate-handler {
+      transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+    }
 
-      ::v-deep {
-        .bl,
-        .br,
-        .tl,
-        .tr {
-          background: var(--c-orange);
+    &:not(.is--beingEdited) {
+      &.active {
+        border: none;
+        outline: 2px dotted var(--c-orange) !important;
+
+        ::v-deep {
+          .bl,
+          .br,
+          .tl,
+          .tr {
+            background: var(--c-orange);
+          }
         }
       }
-    }
-    &.ddr-dragging {
-      cursor: -webkit-grabbing;
-      cursor: -moz-grabbing;
-      cursor: dragging;
+      &.ddr-dragging {
+        cursor: -webkit-grabbing;
+        cursor: -moz-grabbing;
+        cursor: dragging;
 
-      // transition-property: left, top, right, bottom;
-      // transition-duration: 0.05s;
-      // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+        // transition-property: left, top, right, bottom;
+        // transition-duration: 0.05s;
+        // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+      }
     }
   }
 }

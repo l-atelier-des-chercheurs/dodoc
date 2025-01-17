@@ -18,14 +18,16 @@
           <b-icon icon="arrow-left-square" />
         </button>
         <div>
-          <transition name="pagechange" mode="out-in">
-            <b :key="active_page_number"
-              >{{ $t("page") }} {{ active_page_number + 1 }}</b
-            >
+          <transition name="slideupFade" mode="out-in">
+            <div>
+              <b :key="active_page_number"
+                >{{ $t("page") }} {{ active_page_number + 1 }}</b
+              >
+            </div>
           </transition>
           <transition
             v-if="active_spread_index !== false"
-            name="pagechange"
+            name="slideupFade"
             mode="out-in"
           >
             <span :key="active_spread_index">
@@ -1018,7 +1020,7 @@ export default {
   align-items: center;
   justify-content: space-between;
 
-  margin: calc(var(--spacing) / 2) 0;
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / -2);
 
   button {
     font-size: var(--sl-font-size-medium);

@@ -9,7 +9,7 @@ const path = require("path"),
   fastFolderSize = require("fast-folder-size");
 
 const utils = require("./utils"),
-  electron = require("./electron");
+  webpreview = require("./webpreview");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -640,6 +640,7 @@ module.exports = (function () {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
     } catch (err) {
+      dev.error(err.message);
       throw err;
     }
   }
@@ -679,7 +680,7 @@ module.exports = (function () {
       encoded_full_media_path +
       "&previewing_for=node";
 
-    await electron.captureScreenshot({ url, full_path_to_thumb });
+    await webpreview.captureScreenshot({ url, full_path_to_thumb });
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
@@ -690,15 +691,27 @@ module.exports = (function () {
     if (!url) throw "no url";
 
     const { image } = await _getPageMetadata({ url });
-    if (image) await _fetchImageAndSave({ url, image, full_path_to_thumb });
-    // else {
-    // if no image, use Electron or Puppeteer to generate screenshot of webpage
-    // }
-    else {
-      const err = new Error("No image to download");
-      err.code = "no_image_to_download";
-      throw err;
+    if (image) {
+      try {
+        await _fetchImageAndSave({ url, image, full_path_to_thumb });
+        return;
+      } catch (err) {
+        dev.error(err);
+      }
     }
+
+    try {
+      await webpreview.captureScreenshot({ url, full_path_to_thumb });
+      return;
+    } catch (err) {
+      dev.error(err);
+      throw new Error("failed to capture screenshot");
+    }
+
+    // todo fix err
+    const err = new Error("No image to download");
+    err.code = "no_image_to_download";
+    throw err;
   }
 
   async function _readVideoAudioExif({ full_media_path }) {

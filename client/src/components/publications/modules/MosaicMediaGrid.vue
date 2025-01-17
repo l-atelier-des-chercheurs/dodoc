@@ -3,6 +3,7 @@
     class="_mediaGrid"
     :class="{
       'is--multipleMedias': is_multiple_medias,
+      'is--singleText': is_single_text,
     }"
   >
     <template v-for="(media_with_linked, index) in medias_with_linked">
@@ -175,6 +176,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    is_single_text() {
+      return (
+        this.medias_with_linked.length === 1 &&
+        this.medias_with_linked[0]._linked_media.$type === "text"
+      );
+    },
     is_multiple_medias() {
       return this.medias_with_linked.length > 1;
     },
@@ -221,13 +228,21 @@ export default {
       // if
     },
     showAspectRatioOptions(media_with_linked) {
-      if (this.medias_with_linked.length === 1) return false;
+      if (
+        this.medias_with_linked.length === 1 &&
+        this.page_template !== "page_by_page"
+      )
+        return false;
 
       const unsupportedTypes = ["stl", "obj", "text", "table", "other"];
       if (unsupportedTypes.includes(media_with_linked._linked_media.$type))
         return false;
 
-      if (this.mediaIsSquare(media_with_linked._linked_media)) return false;
+      if (
+        this.page_template !== "page_by_page" &&
+        this.mediaIsSquare(media_with_linked._linked_media)
+      )
+        return false;
 
       return true;
     },
@@ -243,6 +258,10 @@ export default {
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
+  }
+
+  &.is--singleText {
+    page-break-inside: auto;
   }
 
   &.is--multipleMedias {

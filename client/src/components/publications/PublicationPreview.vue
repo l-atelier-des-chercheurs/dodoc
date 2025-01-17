@@ -114,6 +114,7 @@ export default {
         page_width: this.publication.page_width,
         page_height: this.publication.page_height,
         layout_mode: this.publication.layout_mode || "print",
+        make_preview: true,
       };
 
       const current_task_id = await this.$api.generatePreviewForPublication({

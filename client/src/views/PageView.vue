@@ -50,6 +50,7 @@ export default {
   },
   async created() {},
   async mounted() {
+    this.$api.updateSelfPath(this.page_path);
     await this.getPage();
     this.$api.join({ room: this.page_path });
 
