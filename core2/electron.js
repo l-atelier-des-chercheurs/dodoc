@@ -29,12 +29,10 @@ module.exports = (function () {
     init: () => {
       return new Promise(function (resolve, reject) {
         // check if ubuntu + electron + sharp
-        if (
-          process.platform === "linux" &&
-          process.versions.sharp !== "0.31.3"
-        ) {
+        const found_sharp_version = require("sharp").versions.sharp;
+        if (process.platform === "linux" && found_sharp_version !== "0.31.3") {
           const err = new Error(
-            `Can't start application, please install sharp 0.31.3 (linux only requirements, see readme)`
+            `Can't start application, please install sharp 0.31.3 (current version ${found_sharp_version}, see readme)`
           );
           err.code = "sharp_version_mismatch";
           dev.error(err);
