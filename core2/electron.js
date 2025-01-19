@@ -30,6 +30,7 @@ module.exports = (function () {
       return new Promise(function (resolve, reject) {
         // check if ubuntu + electron + sharp
         const found_sharp_version = require("sharp").versions.sharp;
+        console.log("VERSION DE SHARP INSTALLÉE", found_sharp_version);
         if (process.platform === "linux" && found_sharp_version !== "0.31.3") {
           const err = new Error(
             `Can't start application, please install sharp 0.31.3 (current version ${found_sharp_version}, see readme)`
