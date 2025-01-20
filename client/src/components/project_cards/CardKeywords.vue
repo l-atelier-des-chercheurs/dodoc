@@ -3,8 +3,6 @@
     :header="keywords_title"
     :icon="'tag'"
     :has_items="!!project.keywords"
-    :is_open_initially="true"
-    :can_be_toggled="false"
   >
     <div class="">
       <TagsField

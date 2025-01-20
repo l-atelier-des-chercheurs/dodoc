@@ -156,7 +156,7 @@
       </div>
     </div>
 
-    <flickity
+    <div
       class="_projectInfos--meta"
       :class="{
         'is--hidden': !show_meta,
@@ -175,7 +175,7 @@
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
       <CardLicense class="_card" :project="project" :can_edit="can_edit" />
       <CardFiles class="_card" :project="project" :can_edit="can_edit" />
-    </flickity>
+    </div>
 
     <router-link
       class="js--showCursor _projectInfos--open"
@@ -563,9 +563,15 @@ export default {
 }
 
 ._projectInfos--meta {
-  // max-width: var(--max-column-width);
-  margin: 0 auto;
-  padding: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center safe;
+  align-items: flex-start;
+  padding: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
+  background: var(--c-gris_clair);
+
+  overflow: auto;
   // padding-top: calc(var(--spacing) * 1);
 
   .is--mobileView & {
@@ -573,10 +579,11 @@ export default {
   }
 
   ._card {
+    flex: 0 0 240px;
     width: 240px;
-    height: 240px;
+    max-height: 60vh;
+    // height: 240px;
     overflow: auto;
-    margin: calc(var(--spacing) / 2);
     @include scrollbar(8px, 5px, 6px);
 
     .is--mobileView & {

@@ -746,7 +746,6 @@ export default {
 }
 ._collaborativeEditor.is--editing_is_enabled {
   background-color: var(--c-gris_clair);
-
   ::v-deep {
     .ql-editor {
       padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);

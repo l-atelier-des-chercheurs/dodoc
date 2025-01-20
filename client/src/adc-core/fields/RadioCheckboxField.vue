@@ -13,7 +13,7 @@
     />
     <div>
       <slot name="preview" v-if="input_type === 'radio'" :item="current_option">
-        <template v-if="current_option && current_option.key">
+        <template v-if="current_option && current_option.hasOwnProperty('key')">
           <img
             v-if="current_option.thumb_src"
             :src="current_option.thumb_src"
