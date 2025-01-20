@@ -29,17 +29,19 @@ module.exports = (function () {
     init: () => {
       return new Promise(function (resolve, reject) {
         // check if ubuntu + electron + sharp
-        if (
-          process.platform === "linux" &&
-          process.versions.sharp !== "0.31.3"
-        ) {
-          const err = new Error(
-            `Can't start application, please install sharp 0.31.3 (linux only requirements, see readme)`
-          );
-          err.code = "sharp_version_mismatch";
-          dev.error(err);
-          dialog.showErrorBox("Could not start application", err.message);
-          app.exit(0);
+        if (process.platform === "linux") {
+          // if sharp reports its version number, it means it's version > 0.32.0
+          // because of a memory cage instability issue with sharp > 0.31.3, we show an error
+          const found_sharp_version = require("sharp").versions?.sharp;
+          if (found_sharp_version) {
+            const err = new Error(
+              `Can't start application, please install sharp 0.31.3 (current version ${found_sharp_version}, see readme)`
+            );
+            err.code = "sharp_version_mismatch";
+            dev.error(err);
+            dialog.showErrorBox("Could not start application", err.message);
+            app.exit(0);
+          }
         }
 
         // check if a custom storage path was set
