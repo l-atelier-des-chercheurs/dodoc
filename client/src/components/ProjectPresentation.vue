@@ -565,7 +565,7 @@ export default {
 ._projectInfos--meta {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center safe;
+  justify-content: safe center;
   align-items: flex-start;
   padding: calc(var(--spacing) / 1);
   gap: calc(var(--spacing) / 2);
