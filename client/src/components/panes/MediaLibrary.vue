@@ -1,18 +1,25 @@
 <template>
   <div class="_mediaLibrary">
     <section class="_scrollBox">
-      <div class="_importButton">
-        <ImportFileZone
-          :multiple="true"
-          :files_to_import.sync="files_to_import"
-        />
-        <UploadFiles
-          v-if="files_to_import.length > 0"
-          :files_to_import="files_to_import"
-          :path="project.$path"
-          @importedMedias="mediaJustImported($event)"
-          @close="files_to_import = []"
-        />
+      <div class="_importCreateTextButtons">
+        <div class="_importCreateTextButtons--import">
+          <ImportFileZone
+            :multiple="true"
+            :files_to_import.sync="files_to_import"
+          />
+          <UploadFiles
+            v-if="files_to_import.length > 0"
+            :files_to_import="files_to_import"
+            :path="project.$path"
+            @importedMedias="mediaJustImported($event)"
+            @close="files_to_import = []"
+          />
+        </div>
+        <div class="_importCreateTextButtons--createText">
+          <button class="u-button u-button_bleuvert" @click="createText">
+            {{ $t("create_text") }}
+          </button>
+        </div>
       </div>
 
       <div class="_topSection" v-if="medias.length > 0">
@@ -387,11 +394,11 @@
   </div>
 </template>
 <script>
-import ImportFileZone from "@/adc-core/ui/ImportFileZone";
+import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 import MediaTile from "@/components/MediaTile.vue";
-import MediaModal from "@/components/MediaModal";
-import BatchEditInformationsModal from "@/components/BatchEditInformationsModal";
-import DuplicateMedia from "@/components/DuplicateMedia";
+import MediaModal from "@/components/MediaModal.vue";
+import BatchEditInformationsModal from "@/components/BatchEditInformationsModal.vue";
+import DuplicateMedia from "@/components/DuplicateMedia.vue";
 
 export default {
   props: {
@@ -793,6 +800,14 @@ export default {
       if (qty === false) return "";
       return ` (${qty})`;
     },
+    async createText() {
+      const filename = "text-" + +new Date() + ".txt";
+      const { meta_filename } = await this.$api.uploadText({
+        path: this.project.$path,
+        filename,
+        content: "",
+      });
+    },
     mediaJustImported(list_of_added_metas) {
       if (!this.select_mode || this.select_mode === "single") return false;
 
@@ -1063,7 +1078,19 @@ export default {
   }
 }
 
-._importButton {
+._importCreateTextButtons {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) / 4);
+
+  > * {
+    flex: 1 1 0;
+  }
+}
+
+._importCreateTextButtons--import {
   --dropzone-color1: var(--c-orange);
   --dropzone-color2: var(--c-rouge);
   color: white;
@@ -1071,6 +1098,9 @@ export default {
   width: 100%;
   padding: calc(var(--spacing) / 2);
   padding-bottom: 0;
+}
+
+._importCreateTextButtons--createText {
 }
 
 ._tileMode {

@@ -21,14 +21,14 @@
         </div>
       </div>
 
-      <div class="_preview">
+      <div class="_preview" :data-filetype="file.$type">
         <MediaContent
           :file="file"
           :resolution="1600"
           :context="'full'"
           :show_fs_button="true"
           :zoom_on_click="true"
-          :can_edit="false"
+          :can_edit="true"
           @zoomingIn="onZoomingIn"
           @zoomingOut="onZoomingOut"
           @videoPlayed="onVideoPlayed"
@@ -650,6 +650,21 @@ export default {
     position: relative;
     background: var(--c-gris_clair);
     overflow: hidden;
+
+    &[data-filetype="text"] {
+      ::v-deep {
+        ._mediaContent {
+          background: white;
+          padding: 0;
+        }
+        ._collaborativeEditor {
+          padding: calc(var(--spacing) * 1);
+        }
+        ._floatingEditBtn {
+          top: calc(var(--spacing) * 3);
+        }
+      }
+    }
   }
 
   // large view, side by side

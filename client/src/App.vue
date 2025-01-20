@@ -123,8 +123,6 @@ export default {
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
 <style src="../node_modules/vue-plyr/dist/vue-plyr.css"></style>
 <style lang="scss">
-@import "@/utils/utils.scss";
-
 :root {
   --spacing: 1rem;
 
@@ -219,19 +217,6 @@ export default {
   --padding: var(--spacing);
 
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
-
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-success-#{$size}: hsl(174, 60%, #{82% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-warning-#{$size}: hsl(36, 96%, #{90% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-info-#{$size}: hsl(0, 0%, #{88% - $i * 0.5});
-  }
 
   --sl-font-size-normal: 1rem;
 

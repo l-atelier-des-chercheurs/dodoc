@@ -33,7 +33,7 @@ Vue.use(VuePlyr, {
       "volume",
       "fullscreen",
     ],
-    iconUrl: `${process.env.BASE_URL}plyr.svg`,
+    iconUrl: `plyr.svg`,
   },
 });
 Vue.directive("uppercase", {
@@ -145,9 +145,9 @@ import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
 Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
-import CreateFolder from "@/adc-core/modals/CreateFolder";
+import CreateFolder from "@/adc-core/modals/CreateFolder.vue";
 Vue.component("CreateFolder", CreateFolder);
-import ImportFolder from "@/adc-core/modals/ImportFolder";
+import ImportFolder from "@/adc-core/modals/ImportFolder.vue";
 Vue.component("ImportFolder", ImportFolder);
 //
 
@@ -194,14 +194,15 @@ Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
 
-Vue.component("LoaderSpinner", {
-  name: "LoaderSpinner",
-  template: `
+import { compileToFunctions } from "vue-template-compiler";
+Vue.component(
+  "LoaderSpinner",
+  compileToFunctions(`
     <div class="u-loader">
       <div class="_spinner" />
     </div>
-  `,
-});
+  `)
+);
 
 document.addEventListener(
   "dragover",
@@ -283,7 +284,7 @@ new Vue({
     is_loading: true,
     debug_mode,
 
-    publicPath: process.env.BASE_URL,
+    publicPath: "",
 
     has_file_dragover_on_window: false,
     opened_modals: 0,
