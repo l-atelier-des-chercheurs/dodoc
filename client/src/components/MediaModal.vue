@@ -302,6 +302,7 @@
               :media="file"
               @close="$emit('close')"
             />
+
             <OptimizeMedia
               v-if="optimization_possible"
               :media="file"

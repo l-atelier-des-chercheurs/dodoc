@@ -278,6 +278,7 @@ export default {
 
         ".jpeg",
         ".jpg",
+        ".png",
 
         ".wav",
         ".m4a",
