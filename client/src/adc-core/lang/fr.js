@@ -316,6 +316,7 @@ export default {
   no_publications: "Aucune publication à afficher",
 
   none_f: "Aucune",
+  not_specified: "Non renseigné",
   none: "Aucun·e",
   reset_all: "Retirer tout",
   filter: "Filtrer",

@@ -94,7 +94,7 @@ export default {
       basic_competences: [
         {
           key: "",
-          label: "–",
+          label: this.$t("not_specified"),
         },
         {
           key: "beginner",

@@ -77,7 +77,7 @@ export default {
       license_options: [
         {
           key: "",
-          label: this.$t("none_f"),
+          label: this.$t("not_specified"),
         },
         {
           key: "creativecommons_by_sa",

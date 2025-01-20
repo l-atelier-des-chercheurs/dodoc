@@ -569,8 +569,6 @@ export default {
   align-items: flex-start;
   padding: calc(var(--spacing) / 1);
   gap: calc(var(--spacing) / 2);
-  background: var(--c-gris_clair);
-
   overflow: auto;
   // padding-top: calc(var(--spacing) * 1);
 
@@ -579,8 +577,8 @@ export default {
   }
 
   ._card {
-    flex: 0 0 240px;
-    width: 240px;
+    flex: 0 0 280px;
+    width: 280px;
     max-height: 60vh;
     // height: 240px;
     overflow: auto;
