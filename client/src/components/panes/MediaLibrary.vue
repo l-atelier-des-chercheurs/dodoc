@@ -17,7 +17,7 @@
         </div>
         <div class="_importCreateTextButtons--createText">
           <button class="u-button u-button_bleuvert" @click="createText">
-            {{ $t("create_text") }}
+            {{ $t("add_text") }}
           </button>
         </div>
       </div>
@@ -805,8 +805,13 @@ export default {
       const { meta_filename } = await this.$api.uploadText({
         path: this.project.$path,
         filename,
-        content: "",
+        content: "…",
+        additional_meta: {
+          $origin: "collect",
+        },
       });
+      const path = this.project.$path + "/" + meta_filename;
+      this.toggleMediaFocus(path);
     },
     mediaJustImported(list_of_added_metas) {
       if (!this.select_mode || this.select_mode === "single") return false;
@@ -1086,7 +1091,7 @@ export default {
   gap: calc(var(--spacing) / 4);
 
   > * {
-    flex: 1 1 0;
+    // flex: 1 1 0;
   }
 }
 

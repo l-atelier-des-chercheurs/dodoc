@@ -661,11 +661,10 @@ export default {
       }
 
       blockquote {
-        padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
-        border-radius: 5px;
+        padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+        margin: calc(var(--spacing) * 1) 0;
         border: none;
         border-left: 2px solid var(--c-gris);
-        background-color: var(--c-gris_clair);
       }
 
       pre.ql-syntax {
