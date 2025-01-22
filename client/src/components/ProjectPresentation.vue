@@ -579,7 +579,7 @@ export default {
   ._card {
     flex: 0 0 280px;
     width: 280px;
-    max-height: 60vh;
+    max-height: 50vh;
     // height: 240px;
     overflow: auto;
     @include scrollbar(8px, 5px, 6px);
