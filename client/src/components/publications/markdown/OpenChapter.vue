@@ -1,40 +1,47 @@
 <template>
   <div class="_openChapter">
-    <div class="_leftPanel">
-      <div class="_topButtons">
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
-          {{ $t("close") }}
-        </button>
-        <RemoveMenu @remove="$emit('remove')" />
-      </div>
-      <template v-if="chapter._main_text">
-        <CollaborativeEditor3
-          :content="chapter._main_text.$content"
-          :path="chapter._main_text.$path"
-          :edit_on_mounted="true"
-          :save_format="'raw'"
-          :custom_formats="[]"
-          :can_edit="can_edit"
-        />
-      </template>
-    </div>
-    <div class="_rightPanel">
-      <div class="_viewMode">
-        <select v-model="view_mode" size="small">
-          <option value="book">{{ $t("book") }}</option>
-          <option value="html">{{ $t("website") }}</option>
-        </select>
-      </div>
-      <div class="_viewer">
-        <ViewContent
-          :content="chapter._main_text.$content"
-          :view_mode="view_mode"
-        />
-      </div>
-    </div>
+    <splitpanes>
+      <pane>
+        <div class="_leftPanel">
+          <div class="_topButtons">
+            <button type="button" class="u-buttonLink" @click="$emit('close')">
+              {{ $t("close") }}
+            </button>
+            <RemoveMenu @remove="$emit('remove')" />
+          </div>
+          <template v-if="chapter._main_text">
+            <CollaborativeEditor3
+              :content="chapter._main_text.$content"
+              :path="chapter._main_text.$path"
+              :edit_on_mounted="true"
+              :can_edit="can_edit"
+            />
+          </template>
+        </div>
+      </pane>
+      <pane>
+        <div class="_rightPanel">
+          <div class="_viewMode">
+            <select v-model="view_mode" size="small">
+              <option value="book">{{ $t("book") }}</option>
+              <option value="html">{{ $t("website") }}</option>
+            </select>
+          </div>
+          <div class="_viewer">
+            <ViewContent
+              v-if="content_to_view"
+              :content="content_to_view"
+              :view_mode="view_mode"
+            />
+          </div>
+        </div>
+      </pane>
+    </splitpanes>
   </div>
 </template>
 <script>
+import { Splitpanes, Pane } from "splitpanes";
+
 import ViewContent from "@/components/publications/markdown/ViewContent.vue";
 
 export default {
@@ -43,6 +50,8 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    Splitpanes,
+    Pane,
     ViewContent,
   },
   data() {
@@ -54,7 +63,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    content_to_view() {
+      return this.chapter._main_text?.$content || " ";
+    },
+  },
   methods: {},
 };
 </script>
@@ -65,12 +78,12 @@ export default {
   height: 100%;
   background-color: var(--c-gris_clair);
 
-  display: flex;
-  flex-direction: row nowrap;
+  // display: flex;
+  // flex-direction: row nowrap;
 
-  > * {
-    flex: 1 1 0;
-  }
+  // > * {
+  //   flex: 1 1 0;
+  // }
 }
 
 ._leftPanel {
