@@ -33,6 +33,7 @@
     "ol": "^8.2.0",
     "ol-ext": "^4.0.24",
     "ol-geocoder": "^4.3.3",
+    "pagedjs": "^0.4.3",
     "portal-vue": "^2.1.7",
     "qr-scanner": "^1.4.2",
     "quill": "^2.0.2",
