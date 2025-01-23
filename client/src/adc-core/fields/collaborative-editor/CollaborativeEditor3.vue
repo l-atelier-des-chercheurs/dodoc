@@ -65,12 +65,13 @@
               <span>{{ $t("history") }}</span>
             </button>
           </transition>
-          <!-- <EditBtn
+          <EditBtn
             class="_editBtn"
+            v-if="is_collaborative"
             :btn_type="'check'"
             :label_position="'left'"
             @click="disableEditor"
-          /> -->
+          />
         </template>
       </div>
     </div>
@@ -163,6 +164,10 @@ export default {
     is_collaborative: {
       type: Boolean,
       default: true,
+    },
+    save_format: {
+      type: String,
+      default: "html",
     },
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
@@ -397,9 +402,11 @@ export default {
       };
     },
     getEditorContent() {
-      // console.log(`CollaborativeEditor • getEditorContent`);
       if (!this.editor.getText() || this.editor.getText() === "\n") return "";
-      return this.cleanEditorContent(this.editor.root.innerHTML);
+
+      if (this.save_format === "html")
+        return this.cleanEditorContent(this.editor.root.innerHTML);
+      else if (this.save_format === "raw") return this.editor.getText();
     },
     cleanEditorContent(html) {
       var t = document.createElement("template");

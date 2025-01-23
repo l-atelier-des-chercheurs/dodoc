@@ -446,6 +446,9 @@
                     "section_title_is_visible": {
                       "type": "boolean"
                     },
+                    "main_text_meta": {
+                      "type": "string"
+                    },
                     "section_description": {
                       "type": "string"
                     },

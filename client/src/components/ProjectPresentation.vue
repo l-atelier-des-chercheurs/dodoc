@@ -164,6 +164,8 @@
       v-if="context === 'full'"
       :options="flickityOptions"
     >
+      <CardLicense class="_card" :project="project" :can_edit="can_edit" />
+      <CardFiles class="_card" :project="project" :can_edit="can_edit" />
       <!-- <CardMeta class="_card" :project="project" :can_edit="can_edit" /> -->
       <CardCompetences class="_card" :project="project" :can_edit="can_edit" />
       <CardMachinesMaterials
@@ -173,8 +175,6 @@
       />
       <CardKeywords class="_card" :project="project" :can_edit="can_edit" />
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
-      <CardLicense class="_card" :project="project" :can_edit="can_edit" />
-      <CardFiles class="_card" :project="project" :can_edit="can_edit" />
     </div>
 
     <router-link
@@ -577,8 +577,8 @@ export default {
   }
 
   ._card {
-    flex: 0 0 280px;
-    width: 280px;
+    flex: 0 0 240px;
+    width: 240px;
     max-height: 50vh;
     // height: 240px;
     overflow: auto;

@@ -1,5 +1,5 @@
 <template>
-  <div class="_sectionsSummary" :style="story_styles">
+  <div class="_sectionsSummary">
     <ReorderedList
       :field_name="'sections_list'"
       :items="sections"
@@ -20,6 +20,8 @@
   </div>
 </template>
 <script>
+import { add } from "ol/coordinate";
+
 export default {
   props: {
     publication: Object,
@@ -39,8 +41,6 @@ export default {
   created() {},
   mounted() {
     if (this.can_edit && this.sections.length === 0) this.createSection();
-    this.openFirstSectionIfNoneOpened();
-    this.openExistingSectionIfNotExisting();
   },
   beforeDestroy() {},
   watch: {
@@ -51,12 +51,6 @@ export default {
   computed: {
     is_associated_to_map() {
       return this.$getMapOptions;
-    },
-    default_view_color() {
-      return this.$getMapOptions().default_view_color;
-    },
-    story_styles() {
-      return this.makeStoryStyles({ publication: this.publication });
     },
     new_section_title() {
       let idx = this.sections.length + 1;
@@ -84,16 +78,19 @@ export default {
         this.$emit("openFirstSection");
       }
     },
-    openExistingSectionIfNotExisting() {
-      if (this.opened_section_meta_filename && !this.opened_section) {
-        this.$emit("openFirstSection");
-      }
-    },
     async createSection() {
+      const filename = this.new_section_title + " text.txt";
+      const { meta_filename } = await this.$api.uploadText({
+        path: this.publication.$path,
+        filename,
+        content: "",
+      });
+
       const new_section_meta = await this.createSection2({
         publication: this.publication,
         additional_meta: {
           section_title: this.new_section_title,
+          main_text_meta: meta_filename,
         },
       });
       this.$emit("toggleSection", new_section_meta);
@@ -104,9 +101,6 @@ export default {
 <style lang="scss" scoped>
 ._sectionsSummary {
   // max-width: 60ch;
-  width: 100%;
-  margin: 0 auto;
-  margin-bottom: calc(var(--spacing) * 1);
   // padding: 0 calc(var(--spacing) * 1);
 
   // ::v-deep summary {

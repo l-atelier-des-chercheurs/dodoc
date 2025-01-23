@@ -163,12 +163,13 @@ export default {
         return acc;
       }, []);
     },
-    async createSection2({ publication, type, group, title, index }) {
-      let additional_meta = {
-        section_type: "-",
-        section_title: title,
-        requested_slug: type,
-      };
+    async createSection2({
+      publication,
+      group = "sections_list",
+      index,
+      additional_meta = {},
+    }) {
+      additional_meta.section_type = "-";
 
       const { meta_filename } = await this.$api
         .uploadFile({
