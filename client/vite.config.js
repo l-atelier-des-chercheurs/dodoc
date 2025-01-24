@@ -21,7 +21,6 @@ export default defineConfig({
       scss: {
         additionalData: `
           @use "@/utils/mixins.scss" as *;
-          @use "@/utils/utils.scss" as *;
         `,
         api: "modern-compiler",
       },
