@@ -1086,9 +1086,10 @@ export default {
 ._importCreateTextButtons {
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: calc(var(--spacing) / 4);
+  align-items: stretch;
+  justify-content: stretch;
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
 
   > * {
     // flex: 1 1 0;
@@ -1101,11 +1102,14 @@ export default {
   color: white;
 
   width: 100%;
-  padding: calc(var(--spacing) / 2);
-  padding-bottom: 0;
 }
 
 ._importCreateTextButtons--createText {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  // background: var(--c-bleuvert);
 }
 
 ._tileMode {

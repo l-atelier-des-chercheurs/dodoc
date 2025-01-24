@@ -293,8 +293,8 @@
           :has_items="tools_available"
           :is_open_initially="false"
         >
-          <div v-if="tools_available.length === 0">
-            <small>{{ $t("nothing_to_show") }}</small>
+          <div v-if="tools_available === 0">
+            <small class="u-instructions">{{ $t("nothing_to_show") }}</small>
           </div>
           <div class="_allModifyButtons">
             <CropAdjustMedia
@@ -653,13 +653,18 @@ export default {
     overflow: hidden;
 
     &[data-filetype="text"] {
+      background: var(--c-gris_clair);
       ::v-deep {
         ._mediaContent {
-          background: white;
           padding: 0;
         }
         ._collaborativeEditor {
           padding: calc(var(--spacing) * 1);
+
+          .ql-editor {
+            background: white;
+            padding: calc(var(--spacing) / 2);
+          }
         }
         ._floatingEditBtn {
           top: calc(var(--spacing) * 3);
