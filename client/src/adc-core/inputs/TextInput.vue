@@ -40,8 +40,6 @@
     <!-- @paste.prevent="onPaste" -->
     <!-- @keyup.enter="$emit('onEnter')" -->
 
-    {{ content }}
-
     <div
       class="fieldCaption _notices"
       :class="{
