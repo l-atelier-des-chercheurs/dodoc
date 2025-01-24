@@ -2,11 +2,9 @@
   <DetailsPane
     :header="$t('authors_and_license')"
     :icon="'people'"
-    :has_items="!!project.license"
-    :is_open_initially="true"
-    :can_be_toggled="false"
+    :has_items="has_items"
   >
-    <div class="u-spacingBottom">
+    <div class="u-spacingBottom" v-if="can_edit || project.authors_list">
       <TitleField
         :label="$t('authors')"
         :field_name="'authors_list'"
@@ -46,7 +44,6 @@
         :options="license_options"
       />
       <DLabel v-else :str="$t('license')" />
-
       <TitleField
         v-if="project.license === 'custom_license'"
         ref="custom_license_field"
@@ -80,7 +77,7 @@ export default {
       license_options: [
         {
           key: "",
-          label: this.$t("none_f"),
+          label: this.$t("not_specified"),
         },
         {
           key: "creativecommons_by_sa",
@@ -115,7 +112,11 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    has_items() {
+      return !!(this.project.license || this.project.authors_list);
+    },
+  },
   methods: {},
 };
 </script>

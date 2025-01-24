@@ -96,7 +96,7 @@ menu {
   display: inline-flex;
   padding: var(--radio-switch-padding);
   border-radius: calc(var(--radio-switch-radius) * 1.4);
-  background-color: #fff;
+  // background-color: #fff;
   transition: all var(--radio-switch-animation-duration);
 }
 
@@ -141,21 +141,21 @@ menu {
 }
 .radio-switch__input:checked ~ .radio-switch__label {
   color: hsl(var(--ri5-color-white-hsl));
-  pointer-events: none;
+  background-color: var(--c-noir);
+  // pointer-events: none;
 }
 .radio-switch__input:focus ~ .radio-switch__label {
-  background-color: hsla(var(--ri5-color-primary-hsl), 0.6);
+  // background-color: hsla(var(--ri5-color-primary-hsl), 0.6);
 }
 .radio-switch__label :not(*):focus-within,
 .radio-switch__input:focus ~ .radio-switch__label {
-  background-color: transparent;
 }
 
 .radio-switch__marker {
   position: absolute;
   inset: 3px;
   // background-color: var(--active-color);
-  background-color: var(--c-noir);
+  // background-color: var(--c-noir);
   border-radius: var(--radio-switch-radius);
 }
 

@@ -4,11 +4,12 @@ const path = require("path"),
 module.exports = dev = (function () {
   let isDebugMode = false;
   let isVerboseMode = false;
+  let livereload = false;
   let logToFile = false;
 
   const API = {
-    init: (isDebug, isVerbose, logToFile) => {
-      return initModule(isDebug, isVerbose, logToFile);
+    init: (isDebug, isVerbose, livereload, logToFile) => {
+      return initModule(isDebug, isVerbose, livereload, logToFile);
     },
     space: space,
     log: log,
@@ -21,11 +22,13 @@ module.exports = dev = (function () {
     error: error,
     performance: performance,
     isDebug: () => isDebugMode,
+    isLivereload: () => livereload,
   };
 
-  function initModule(d, v, l) {
+  function initModule(d, v, lr, l) {
     isDebugMode = d;
     isVerboseMode = v;
+    livereload = lr;
     logToFile = l;
     console.log(`Init module with debug = ${d} and verbose = ${v}`);
 

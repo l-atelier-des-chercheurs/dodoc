@@ -42,6 +42,14 @@
         :can_edit="can_edit"
         @toggleView="$emit('togglePage', $event)"
       />
+      <MarkdownTemplate
+        v-else-if="publication.template === 'markdown'"
+        class="_publicationOpen--content"
+        :publication="publication"
+        :opened_section_meta_filename="page_opened_id"
+        :can_edit="can_edit"
+        @toggleSection="$emit('togglePage', $event)"
+      />
     </template>
   </div>
 </template>
@@ -65,6 +73,8 @@ export default {
       import("@/components/publications/templates/PageTemplate.vue"),
     MapTemplate: () =>
       import("@/components/publications/templates/MapTemplate.vue"),
+    MarkdownTemplate: () =>
+      import("@/components/publications/templates/MarkdownTemplate.vue"),
   },
   data() {
     return {

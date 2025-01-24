@@ -930,6 +930,10 @@ input[type="checkbox"] {
   &[data-isfilled] {
     background: var(--c-bleumarine);
     color: white;
+
+    &[data-isfilled="0"] {
+      background: var(--c-gris_fonce);
+    }
   }
 }
 

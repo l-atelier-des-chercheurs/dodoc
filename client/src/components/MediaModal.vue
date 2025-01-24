@@ -21,14 +21,14 @@
         </div>
       </div>
 
-      <div class="_preview">
+      <div class="_preview" :data-filetype="file.$type">
         <MediaContent
           :file="file"
           :resolution="1600"
           :context="'full'"
           :show_fs_button="true"
           :zoom_on_click="true"
-          :can_edit="false"
+          :can_edit="true"
           @zoomingIn="onZoomingIn"
           @zoomingOut="onZoomingOut"
           @videoPlayed="onVideoPlayed"
@@ -293,8 +293,8 @@
           :has_items="tools_available"
           :is_open_initially="false"
         >
-          <div v-if="tools_available.length === 0">
-            <small>{{ $t("nothing_to_show") }}</small>
+          <div v-if="tools_available === 0">
+            <small class="u-instructions">{{ $t("nothing_to_show") }}</small>
           </div>
           <div class="_allModifyButtons">
             <CropAdjustMedia
@@ -302,6 +302,7 @@
               :media="file"
               @close="$emit('close')"
             />
+
             <OptimizeMedia
               v-if="optimization_possible"
               :media="file"
@@ -650,6 +651,26 @@ export default {
     position: relative;
     background: var(--c-gris_clair);
     overflow: hidden;
+
+    &[data-filetype="text"] {
+      background: var(--c-gris_clair);
+      ::v-deep {
+        ._mediaContent {
+          padding: 0;
+        }
+        ._collaborativeEditor {
+          padding: calc(var(--spacing) * 1);
+
+          .ql-editor {
+            background: white;
+            padding: calc(var(--spacing) / 2);
+          }
+        }
+        ._floatingEditBtn {
+          top: calc(var(--spacing) * 3);
+        }
+      }
+    }
   }
 
   // large view, side by side

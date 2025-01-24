@@ -825,7 +825,7 @@ class Exporter {
         task: "convertCameraRAW",
       },
       {
-        exts: [".tif", ".tiff", ".webp", ".jpeg", ".jpg"],
+        exts: [".tif", ".tiff", ".webp", ".jpeg", ".jpg", ".png"],
         task: "convertImage",
       },
       {

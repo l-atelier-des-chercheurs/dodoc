@@ -5,8 +5,6 @@
     :has_items="
       downloadable_files.length > 0 ? downloadable_files.length : false
     "
-    :is_open_initially="true"
-    :can_be_toggled="false"
   >
     <FilesModule
       :field_name="'downloadable_files'"

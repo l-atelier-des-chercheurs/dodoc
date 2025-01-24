@@ -92,9 +92,9 @@ export default {
     async createSection() {
       const new_section_meta = await this.createSection2({
         publication: this.publication,
-        type: "section",
-        group: "sections_list",
-        title: this.new_section_title,
+        additional_meta: {
+          section_title: this.new_section_title,
+        },
       });
       this.$emit("toggleSection", new_section_meta);
     },

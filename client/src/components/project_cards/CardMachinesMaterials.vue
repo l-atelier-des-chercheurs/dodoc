@@ -7,8 +7,6 @@
         ? machines_materials_items_length
         : false
     "
-    :is_open_initially="true"
-    :can_be_toggled="false"
   >
     <div class="u-spacingBottom">
       <TagsField

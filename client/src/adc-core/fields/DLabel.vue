@@ -86,6 +86,6 @@ export default {
   margin-left: calc(var(--spacing) / 4);
 }
 ._instr {
-  margin-bottom: calc(var(--spacing) / 2);
+  // margin-bottom: calc(var(--spacing) / 2);
 }
 </style>

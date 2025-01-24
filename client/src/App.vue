@@ -123,8 +123,6 @@ export default {
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
 <style src="../node_modules/vue-plyr/dist/vue-plyr.css"></style>
 <style lang="scss">
-@import "@/utils/utils.scss";
-
 :root {
   --spacing: 1rem;
 
@@ -144,9 +142,9 @@ export default {
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
-  --c-gris: hsl(195, 14%, 83%);
-  --c-gris_clair: hsl(195, 14%, 96%);
-  --c-gris_fonce: hsl(195, 14%, 45%);
+  --c-gris: hsl(195, 0%, 83%);
+  --c-gris_clair: hsl(195, 0%, 96%);
+  --c-gris_fonce: hsl(195, 0%, 45%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
@@ -219,19 +217,6 @@ export default {
   --padding: var(--spacing);
 
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
-
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-success-#{$size}: hsl(174, 60%, #{82% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-warning-#{$size}: hsl(36, 96%, #{90% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-info-#{$size}: hsl(0, 0%, #{88% - $i * 0.5});
-  }
 
   --sl-font-size-normal: 1rem;
 
@@ -733,6 +718,7 @@ img {
 .listComplete {
   &-move {
     position: relative;
+    z-index: 1;
     transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
       opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
   }
