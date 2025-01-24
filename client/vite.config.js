@@ -20,6 +20,8 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: `
+          @use "@/utils/mixins.scss" as *;
+          @use "@/utils/utils.scss" as *;
         `,
         api: "modern-compiler",
       },
