@@ -34,8 +34,11 @@ export default defineConfig({
   server: {
     https: true,
     port: 5173,
-    origin: "https://localhost:5173",
-    cors: true,
+    host: true,
+    origin: undefined,
+    cors: {
+      origin: "*",
+    },
   },
   build: {
     modulePreload: false,

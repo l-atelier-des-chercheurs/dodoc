@@ -6,6 +6,8 @@ import "./utils/icons";
 
 Vue.config.productionTip = false;
 
+const publicPath = "/_client/";
+
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
@@ -35,7 +37,7 @@ Vue.use(VuePlyr, {
       "volume",
       "fullscreen",
     ],
-    iconUrl: `plyr.svg`,
+    iconUrl: publicPath + `plyr.svg`,
   },
 });
 Vue.directive("uppercase", {
@@ -286,7 +288,7 @@ new Vue({
     is_loading: true,
     debug_mode,
 
-    publicPath: "",
+    publicPath,
 
     has_file_dragover_on_window: false,
     opened_modals: 0,
