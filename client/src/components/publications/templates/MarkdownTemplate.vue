@@ -26,6 +26,14 @@
             <option value="book">{{ $t("book") }}</option>
             <option value="html">{{ $t("website") }}</option>
           </select>
+          <select
+            v-if="view_mode === 'book'"
+            v-model="format_mode"
+            size="small"
+          >
+            <option value="a4">{{ $t("a4") }}</option>
+            <option value="a5">{{ $t("a5") }}</option>
+          </select>
         </div>
         <div class="_viewer">
           <ViewContent
@@ -33,6 +41,7 @@
             :key="content_to_view"
             :content="content_to_view"
             :view_mode="view_mode"
+            :format_mode="format_mode"
           />
         </div>
       </pane>
@@ -61,6 +70,7 @@ export default {
   data() {
     return {
       view_mode: "book",
+      format_mode: "a5",
     };
   },
   created() {},

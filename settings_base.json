@@ -297,9 +297,6 @@
                     "source_medias": {
                       "type": "array"
                     },
-                    "section_type": {
-                      "type": "string"
-                    },
                     "modules_list": {
                       "type": "array"
                     },

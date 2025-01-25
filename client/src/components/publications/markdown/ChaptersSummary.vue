@@ -1,39 +1,32 @@
 <template>
   <div class="_sectionsSummary">
-    <ReorderedList
-      :field_name="'sections_list'"
-      :items="sections"
-      :path="publication.$path"
-      :active_item_meta="opened_section_meta_filename"
-      :can_edit="can_edit"
-      @openItem="openSection"
-      @createItem="createSection"
-      v-slot="slotProps"
+    <transition-group
+      tag="div"
+      name="listComplete"
+      class="_allChapters"
+      key="allpages"
     >
-      <div class="_item">
-        {{ slotProps.item.section_type }}
-        <h2 class="_item--title">
-          <template v-if="slotProps.item.section_title">
-            {{ slotProps.item.section_title }}
-          </template>
-          <template v-else>
-            <i>{{ $t("untitled") }}</i>
-          </template>
-        </h2>
-        <div class="_item--content">
-          <div
-            class="_item--content--text"
-            v-if="previewContent(slotProps.item)"
-          >
-            <CollaborativeEditor3 :content="previewContent(slotProps.item)" />
-          </div>
-        </div>
+      <div v-for="(section, index) in sections" :key="section.$path">
+        <ChapterPreview
+          :section="section"
+          :index="index"
+          :number_of_sections="sections.length"
+          :can_edit="can_edit"
+          @open="openSection(section.$path)"
+          @moveSection="moveSection"
+        />
       </div>
-    </ReorderedList>
+      <EditBtn
+        v-if="can_edit"
+        key="'add'"
+        :btn_type="'add'"
+        @click="createSection"
+      />
+    </transition-group>
   </div>
 </template>
 <script>
-import { add } from "ol/coordinate";
+import ChapterPreview from "@/components/publications/markdown/ChapterPreview.vue";
 
 export default {
   props: {
@@ -42,12 +35,7 @@ export default {
     opened_section_meta_filename: String,
     can_edit: Boolean,
   },
-  components: {},
-  inject: {
-    $getMapOptions: {
-      default: false,
-    },
-  },
+  components: { ChapterPreview },
   data() {
     return {};
   },
@@ -109,12 +97,30 @@ export default {
       });
       this.$emit("toggleSection", new_section_meta);
     },
-    previewContent(chapter) {
-      const sub_content = chapter._main_text?.$content;
-      if (sub_content) {
-        return sub_content.substring(0, 100) + "...";
+    async moveSection({ old_position, new_position }) {
+      let sections_meta = this.sections.map((s) => ({
+        meta_filename: this.getFilename(s.$path),
+      }));
+
+      function array_move(arr, old_index, new_index) {
+        if (new_index >= arr.length) {
+          var k = new_index - arr.length + 1;
+          while (k--) {
+            arr.push(undefined);
+          }
+        }
+        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+        return arr; // for testing
       }
-      return "";
+
+      array_move(sections_meta, old_position, new_position);
+
+      return await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          sections_list: sections_meta,
+        },
+      });
     },
   },
 };
@@ -133,20 +139,15 @@ export default {
   padding: calc(var(--spacing) / 4);
 }
 
-._item {
-  padding: calc(var(--spacing) / 2);
-  background: white;
-  width: 350px;
-  height: 350px;
-  text-align: left;
-  text-decoration: none;
+._allChapters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
+  gap: calc(var(--spacing) / 2);
 
-  a {
-    text-decoration: none;
-  }
-
-  &--title {
-    font-weight: bold;
+  > * {
+    background-color: white;
+    padding: calc(var(--spacing) / 2);
   }
 }
 </style>

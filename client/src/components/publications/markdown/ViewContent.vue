@@ -1,29 +1,48 @@
 <template>
   <div class="_viewContent">
-    <!-- <div>view mode: {{ view_mode }}</div>
-    <div>content: {{ content }}</div> -->
-    <div ref="bookpreview"></div>
+    <vue-infinite-viewer class="viewer" ref="viewer" v-bind="viewerOptions">
+      <div ref="bookpreview"></div>
+    </vue-infinite-viewer>
   </div>
 </template>
 <script>
+import VueInfiniteViewer from "vue-infinite-viewer";
 import { Previewer } from "pagedjs";
 
 export default {
   props: {
     content: String,
     view_mode: String,
+    format_mode: String,
   },
-  components: {},
+  components: {
+    VueInfiniteViewer,
+  },
   data() {
-    return {};
+    return {
+      viewerOptions: {
+        useMouseDrag: true,
+        useWheelScroll: true,
+        useAutoZoom: true,
+        zoomRange: [0.4, 10],
+        maxPinchWheel: 10,
+        displayVerticalScroll: true,
+        displayHorizontalScroll: true,
+      },
+    };
   },
   created() {},
   mounted() {
-    this.generateBook();
+    this.$nextTick(() => {
+      this.generateBook();
+    });
   },
   beforeDestroy() {},
   watch: {
     content() {
+      this.generateBook();
+    },
+    format_mode() {
       this.generateBook();
     },
   },
@@ -32,14 +51,22 @@ export default {
       let styles = "";
 
       styles += `
-      ._chapter { 
-        break-before: right; 
+      ._chapter {
+        break-before: right;
       }
       `;
 
+      if (this.format_mode === "a5") {
+        styles += `
+        @page {
+          size: A5;
+        }
+        `;
+      }
+
       return [
         {
-          ".pagedjs-page": styles,
+          pagedjs_styles: styles,
         },
       ];
     },
@@ -64,10 +91,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._viewContent {
-  padding: calc(var(--spacing) * 2);
-  background: var(--c-gris_clair);
+  background: var(--c-noir);
   overflow: auto;
-
+  height: 100%;
   --color-pageSheet: #cfcfcf;
   --color-pageBox: violet;
   --color-paper: white;
@@ -181,5 +207,13 @@ export default {
       box-shadow: 0px -1px 0px 0px var(--pagedjs-crop-shadow);
     }
   }
+}
+
+.viewer {
+  // border: 1px solid black;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: move;
 }
 </style>
