@@ -54,6 +54,9 @@ export default {
         ._chapter {
           break-before: right;
         }
+        p {
+          margin: 1em 0;
+        }
       `;
       styles += `
         @page {

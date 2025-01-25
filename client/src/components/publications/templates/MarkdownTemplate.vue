@@ -52,6 +52,8 @@
 </template>
 <script>
 import { Splitpanes, Pane } from "splitpanes";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 import ChaptersSummary from "@/components/publications/markdown/ChaptersSummary.vue";
 import OpenChapter from "@/components/publications/markdown/OpenChapter.vue";
@@ -108,9 +110,14 @@ export default {
       function formatChapter(chapter) {
         let content = "<section class='_chapter'>";
         content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
-        if (chapter._main_text?.content_type === "markdown") {
-          // todo parse markdown to html
-          content += chapter._main_text?.$content || "";
+
+        if (
+          chapter._main_text?.content_type === "markdown" &&
+          chapter._main_text?.$content
+        ) {
+          content += DOMPurify.sanitize(
+            marked.parse(chapter._main_text?.$content)
+          );
         } else {
           content += chapter._main_text?.$content || "";
         }
