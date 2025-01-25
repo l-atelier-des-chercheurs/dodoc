@@ -5,9 +5,9 @@
         {{ $t("close") }}
       </button>
       <SelectField
-        :field_name="'section_type'"
-        :value="chapter.section_type"
-        :path="chapter.$path"
+        :field_name="'content_type'"
+        :content="content_type"
+        :path="chapter._main_text.$path"
         :options="[
           { key: 'html', text: 'HTML' },
           { key: 'markdown', text: 'Markdown' },
@@ -37,6 +37,8 @@
           :path="chapter._main_text.$path"
           :edit_on_mounted="true"
           :can_edit="can_edit"
+          :custom_formats="custom_formats"
+          :save_format="save_format"
         />
       </template>
     </div>
@@ -56,7 +58,20 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    content_type() {
+      return this.chapter._main_text?.content_type || "html";
+    },
+    custom_formats() {
+      if (this.content_type === "markdown") return [""];
+      else return;
+    },
+    save_format() {
+      if (this.content_type === "html") return "html";
+      else if (this.content_type === "markdown") return "raw";
+      else return "html";
+    },
+  },
   methods: {},
 };
 </script>
@@ -70,6 +85,7 @@ export default {
   overflow: auto;
   background-color: var(--c-gris_clair);
   background-color: white;
+  z-index: 2;
 
   // display: flex;
   // flex-direction: row nowrap;
@@ -84,11 +100,11 @@ export default {
   flex-direction: row nowrap;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  margin-bottom: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 2) 0;
 }
 
 ._content {
-  padding: calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 2);
 }
 </style>

@@ -404,7 +404,7 @@
                     "module_type": {
                       "type": "string"
                     },
-                    "section_type": {
+                    "content_type": {
                       "type": "string"
                     },
                     "section_color": {

@@ -1,6 +1,5 @@
 <template>
   <div class="_chapterPreview">
-    <!-- {{ section.section_type }} -->
     <div class="_order" v-if="can_edit">
       <select
         :value="index"

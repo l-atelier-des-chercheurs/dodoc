@@ -9,7 +9,7 @@
           :can_edit="can_edit"
           @toggleSection="$emit('toggleSection', $event)"
         />
-        <transition name="pagechange" mode="out-in">
+        <transition name="scaleInFade" mode="out-in">
           <OpenChapter
             v-if="open_chapter"
             :key="open_chapter.$path"
@@ -31,8 +31,10 @@
             v-model="format_mode"
             size="small"
           >
-            <option value="a4">{{ $t("a4") }}</option>
-            <option value="a5">{{ $t("a5") }}</option>
+            <option value="A4">{{ $t("A4_portrait") }}</option>
+            <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
+            <option value="A5">{{ $t("A5_portrait") }}</option>
+            <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
           </select>
         </div>
         <div class="_viewer">
@@ -70,7 +72,7 @@ export default {
   data() {
     return {
       view_mode: "book",
-      format_mode: "a5",
+      format_mode: "A5",
     };
   },
   created() {},
@@ -106,7 +108,7 @@ export default {
       function formatChapter(chapter) {
         let content = "<section class='_chapter'>";
         content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
-        if (chapter.section_type === "markdown") {
+        if (chapter._main_text?.content_type === "markdown") {
           // todo parse markdown to html
           content += chapter._main_text?.$content || "";
         } else {
@@ -116,7 +118,7 @@ export default {
         return content;
       }
 
-      if (this.open_chapter) return formatChapter(this.open_chapter);
+      // if (this.open_chapter) return formatChapter(this.open_chapter);
 
       return this.all_chapters.reduce((acc, chapter) => {
         acc += formatChapter(chapter);

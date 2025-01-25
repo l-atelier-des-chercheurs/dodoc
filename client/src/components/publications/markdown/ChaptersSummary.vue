@@ -16,12 +16,14 @@
           @moveSection="moveSection"
         />
       </div>
-      <EditBtn
-        v-if="can_edit"
-        key="'add'"
-        :btn_type="'add'"
-        @click="createSection"
-      />
+      <div key="'add'" class="_addSection">
+        <EditBtn
+          v-if="can_edit"
+          :btn_type="'add'"
+          :is_unfolded="true"
+          @click="createSection"
+        />
+      </div>
     </transition-group>
   </div>
 </template>
@@ -85,13 +87,15 @@ export default {
         path: this.publication.$path,
         filename,
         content: "",
+        additional_meta: {
+          content_type: "html",
+        },
       });
 
       const new_section_meta = await this.createSection2({
         publication: this.publication,
         additional_meta: {
           section_title: this.new_section_title,
-          section_type: "html",
           main_text_meta: meta_filename,
         },
       });
@@ -149,5 +153,9 @@ export default {
     background-color: white;
     padding: calc(var(--spacing) / 2);
   }
+}
+
+._addSection {
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
 }
 </style>

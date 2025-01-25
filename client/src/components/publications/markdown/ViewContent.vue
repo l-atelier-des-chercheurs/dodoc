@@ -1,7 +1,7 @@
 <template>
   <div class="_viewContent">
     <vue-infinite-viewer class="viewer" ref="viewer" v-bind="viewerOptions">
-      <div ref="bookpreview"></div>
+      <div class="bookpreview" ref="bookpreview"></div>
     </vue-infinite-viewer>
   </div>
 </template>
@@ -51,18 +51,15 @@ export default {
       let styles = "";
 
       styles += `
-      ._chapter {
-        break-before: right;
-      }
-      `;
-
-      if (this.format_mode === "a5") {
-        styles += `
-        @page {
-          size: A5;
+        ._chapter {
+          break-before: right;
         }
-        `;
-      }
+      `;
+      styles += `
+        @page {
+          size: ${this.format_mode};
+        }
+      `;
 
       return [
         {
@@ -75,23 +72,30 @@ export default {
     generateBook() {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
-      bookpreview.innerHTML = "";
 
       let paged = new Previewer();
 
       // let flow = paged.preview(DOMContent, ["path/to/css/file.css"], document.body).then((flow) => {
-      paged
-        .preview(this.content, this.theme_styles, bookpreview)
-        .then((flow) => {
-          console.log("Rendered", flow.total, "pages.");
-        });
+      paged.preview(this.content, this.theme_styles, undefined).then((flow) => {
+        // bookpreview.style.width =
+        //   bookpreview.getBoundingClientRect().width + "px";
+        // bookpreview.style.height =
+        //   bookpreview.getBoundingClientRect().height + "px";
+
+        bookpreview.innerHTML = "";
+        const pagesOutput = flow.pagesArea;
+        bookpreview.appendChild(pagesOutput);
+
+        // bookpreview.style.width = "";
+        // bookpreview.style.height = "";
+      });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._viewContent {
-  background: var(--c-noir);
+  background: var(--c-gris_clair);
   overflow: auto;
   height: 100%;
   --color-pageSheet: #cfcfcf;
