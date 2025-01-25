@@ -7,7 +7,7 @@
       @click="$emit('close')"
     >
       <b-icon
-        icon="arrow-left-circle-fill"
+        icon="arrow-left-circle"
         :aria-label="$t('back_to_publications')"
       />
     </button>
@@ -17,7 +17,7 @@
         :label="$t('title')"
         :show_label="false"
         :field_name="'title'"
-        :tag="'h2'"
+        :tag="'h3'"
         :maxlength="40"
         :required="true"
         :content="publication.title"
@@ -226,7 +226,7 @@ export default {
 ._topbar {
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   align-items: center;
   width: 100%;
   background: white;

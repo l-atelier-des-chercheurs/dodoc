@@ -1,82 +1,75 @@
 <template>
   <div class="_openChapter">
-    <splitpanes>
-      <pane>
-        <div class="_leftPanel">
-          <div class="_topButtons">
-            <button type="button" class="u-buttonLink" @click="$emit('close')">
-              {{ $t("close") }}
-            </button>
-            <RemoveMenu @remove="$emit('remove')" />
-          </div>
-          <template v-if="chapter._main_text">
-            <CollaborativeEditor3
-              :content="chapter._main_text.$content"
-              :path="chapter._main_text.$path"
-              :edit_on_mounted="true"
-              :can_edit="can_edit"
-            />
-          </template>
-        </div>
-      </pane>
-      <pane>
-        <div class="_rightPanel">
-          <div class="_viewMode">
-            <select v-model="view_mode" size="small">
-              <option value="book">{{ $t("book") }}</option>
-              <option value="html">{{ $t("website") }}</option>
-            </select>
-          </div>
-          <div class="_viewer">
-            <ViewContent
-              v-if="content_to_view"
-              :content="content_to_view"
-              :view_mode="view_mode"
-            />
-          </div>
-        </div>
-      </pane>
-    </splitpanes>
+    <div class="_topButtons">
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        {{ $t("close") }}
+      </button>
+      <SelectField
+        :field_name="'section_type'"
+        :value="chapter.section_type"
+        :path="chapter.$path"
+        :options="[
+          { key: 'html', text: 'HTML' },
+          { key: 'markdown', text: 'Markdown' },
+        ]"
+        :can_edit="can_edit"
+        :hide_validation="true"
+      />
+      <RemoveMenu @remove="$emit('remove')" />
+    </div>
+    <div class="_content">
+      <div class="u-spacingBottom">
+        <TitleField
+          :label="$t('section_title')"
+          :field_name="'section_title'"
+          :content="chapter.section_title"
+          :required="true"
+          :maxlength="40"
+          :tag="'h1'"
+          :path="chapter.$path"
+          :can_edit="can_edit"
+        />
+      </div>
+      <template v-if="chapter._main_text">
+        <DLabel :str="$t('content')" />
+        <CollaborativeEditor3
+          :content="chapter._main_text.$content"
+          :path="chapter._main_text.$path"
+          :edit_on_mounted="true"
+          :can_edit="can_edit"
+        />
+      </template>
+    </div>
   </div>
 </template>
 <script>
-import { Splitpanes, Pane } from "splitpanes";
-
-import ViewContent from "@/components/publications/markdown/ViewContent.vue";
-
 export default {
   props: {
     chapter: Object,
     can_edit: Boolean,
   },
-  components: {
-    Splitpanes,
-    Pane,
-    ViewContent,
-  },
+  components: {},
   data() {
-    return {
-      view_mode: "book",
-    };
+    return {};
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    content_to_view() {
-      return this.chapter._main_text?.$content || " ";
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>
 <style lang="scss" scoped>
 ._openChapter {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  overflow: auto;
   background-color: var(--c-gris_clair);
+  background-color: white;
 
   // display: flex;
   // flex-direction: row nowrap;
@@ -84,14 +77,6 @@ export default {
   // > * {
   //   flex: 1 1 0;
   // }
-}
-
-._leftPanel {
-  height: 100%;
-  overflow: auto;
-  // background-color: #000;
-  border-right: 2px solid var(--c-gris);
-  background-color: var(--c-gris);
 }
 
 ._topButtons {
@@ -103,34 +88,7 @@ export default {
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
 }
 
-._rightPanel {
-  position: relative;
-  overflow: auto;
-  height: 100%;
-  background-color: white;
-}
-
-._viewMode {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  margin: 0 auto;
+._content {
   padding: calc(var(--spacing) / 2);
-  pointer-events: none;
-
-  select {
-    max-width: 20ch;
-    pointer-events: all;
-  }
-}
-
-._viewer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
 }
 </style>

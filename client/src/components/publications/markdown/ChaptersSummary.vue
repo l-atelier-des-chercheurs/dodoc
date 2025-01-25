@@ -10,12 +10,25 @@
       @createItem="createSection"
       v-slot="slotProps"
     >
-      <template v-if="slotProps.item.section_title">
-        {{ slotProps.item.section_title }}
-      </template>
-      <template v-else>
-        <i>{{ $t("untitled") }}</i>
-      </template>
+      <div class="_item">
+        {{ slotProps.item.section_type }}
+        <h2 class="_item--title">
+          <template v-if="slotProps.item.section_title">
+            {{ slotProps.item.section_title }}
+          </template>
+          <template v-else>
+            <i>{{ $t("untitled") }}</i>
+          </template>
+        </h2>
+        <div class="_item--content">
+          <div
+            class="_item--content--text"
+            v-if="previewContent(slotProps.item)"
+          >
+            <CollaborativeEditor3 :content="previewContent(slotProps.item)" />
+          </div>
+        </div>
+      </div>
     </ReorderedList>
   </div>
 </template>
@@ -90,25 +103,50 @@ export default {
         publication: this.publication,
         additional_meta: {
           section_title: this.new_section_title,
+          section_type: "html",
           main_text_meta: meta_filename,
         },
       });
       this.$emit("toggleSection", new_section_meta);
+    },
+    previewContent(chapter) {
+      const sub_content = chapter._main_text?.$content;
+      if (sub_content) {
+        return sub_content.substring(0, 100) + "...";
+      }
+      return "";
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._sectionsSummary {
-  // max-width: 60ch;
-  // padding: 0 calc(var(--spacing) * 1);
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--c-gris_clair);
 
-  // ::v-deep summary {
-  // border: 2px solid var(--c-gris);
-  // }
+  padding: calc(var(--spacing) / 1);
 }
 
 ._createSection {
   padding: calc(var(--spacing) / 4);
+}
+
+._item {
+  padding: calc(var(--spacing) / 2);
+  background: white;
+  width: 350px;
+  height: 350px;
+  text-align: left;
+  text-decoration: none;
+
+  a {
+    text-decoration: none;
+  }
+
+  &--title {
+    font-weight: bold;
+  }
 }
 </style>

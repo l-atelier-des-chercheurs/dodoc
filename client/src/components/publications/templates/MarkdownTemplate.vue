@@ -1,31 +1,50 @@
 <template>
   <div class="_markdownTemplate">
-    <div class="_chapters">
-      <ChaptersSummary
-        v-show="can_edit || all_chapters.length > 1"
-        :publication="publication"
-        :sections="all_chapters"
-        :opened_section_meta_filename="opened_section_meta_filename"
-        :can_edit="can_edit"
-        @toggleSection="$emit('toggleSection', $event)"
-      />
-    </div>
-    <transition name="slideupFade" mode="out-in">
-      <OpenChapter
-        v-if="open_chapter"
-        :key="open_chapter.$path"
-        :chapter="open_chapter"
-        :can_edit="can_edit"
-        @remove="removeChapter(open_chapter)"
-        @close="$emit('toggleSection', null)"
-      />
-    </transition>
+    <splitpanes class="_splitpanes">
+      <pane>
+        <ChaptersSummary
+          :publication="publication"
+          :sections="all_chapters"
+          :opened_section_meta_filename="opened_section_meta_filename"
+          :can_edit="can_edit"
+          @toggleSection="$emit('toggleSection', $event)"
+        />
+        <transition name="pagechange" mode="out-in">
+          <OpenChapter
+            v-if="open_chapter"
+            :key="open_chapter.$path"
+            :chapter="open_chapter"
+            :can_edit="can_edit"
+            @remove="removeChapter(open_chapter)"
+            @close="$emit('toggleSection', null)"
+          />
+        </transition>
+      </pane>
+      <pane>
+        <div class="_viewMode">
+          <select v-model="view_mode" size="small">
+            <option value="book">{{ $t("book") }}</option>
+            <option value="html">{{ $t("website") }}</option>
+          </select>
+        </div>
+        <div class="_viewer">
+          <ViewContent
+            v-if="content_to_view"
+            :key="content_to_view"
+            :content="content_to_view"
+            :view_mode="view_mode"
+          />
+        </div>
+      </pane>
+    </splitpanes>
   </div>
 </template>
 <script>
+import { Splitpanes, Pane } from "splitpanes";
+
 import ChaptersSummary from "@/components/publications/markdown/ChaptersSummary.vue";
 import OpenChapter from "@/components/publications/markdown/OpenChapter.vue";
-
+import ViewContent from "@/components/publications/markdown/ViewContent.vue";
 export default {
   props: {
     publication: Object,
@@ -33,11 +52,16 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    Splitpanes,
+    Pane,
     ChaptersSummary,
     OpenChapter,
+    ViewContent,
   },
   data() {
-    return {};
+    return {
+      view_mode: "book",
+    };
   },
   created() {},
   mounted() {},
@@ -68,6 +92,27 @@ export default {
       }
       return false;
     },
+    content_to_view() {
+      function formatChapter(chapter) {
+        let content = "<section class='_chapter'>";
+        content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
+        if (chapter.section_type === "markdown") {
+          // todo parse markdown to html
+          content += chapter._main_text?.$content || "";
+        } else {
+          content += chapter._main_text?.$content || "";
+        }
+        content += "</section>";
+        return content;
+      }
+
+      if (this.open_chapter) return formatChapter(this.open_chapter);
+
+      return this.all_chapters.reduce((acc, chapter) => {
+        acc += formatChapter(chapter);
+        return acc;
+      }, "");
+    },
   },
   methods: {
     async removeChapter(chapter) {
@@ -88,12 +133,44 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-  overflow: hidden;
 }
 
-._chapters {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+._splitpanes {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+._viewMode {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  margin: 0 auto;
+  padding: calc(var(--spacing) / 2);
+  pointer-events: none;
+
+  select {
+    max-width: 20ch;
+    pointer-events: all;
+  }
+}
+
+._viewer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: auto;
+}
+</style>
+<style data-pagedjs-inserted-styles="true">
+@media print {
+  .pagedjs-page {
+    background: red;
+  }
 }
 </style>

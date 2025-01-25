@@ -27,7 +27,23 @@ export default {
       this.generateBook();
     },
   },
-  computed: {},
+  computed: {
+    theme_styles() {
+      let styles = "";
+
+      styles += `
+      ._chapter { 
+        break-before: right; 
+      }
+      `;
+
+      return [
+        {
+          ".pagedjs-page": styles,
+        },
+      ];
+    },
+  },
   methods: {
     generateBook() {
       const bookpreview = this.$refs.bookpreview;
@@ -37,9 +53,11 @@ export default {
       let paged = new Previewer();
 
       // let flow = paged.preview(DOMContent, ["path/to/css/file.css"], document.body).then((flow) => {
-      paged.preview(this.content, [], bookpreview).then((flow) => {
-        console.log("Rendered", flow.total, "pages.");
-      });
+      paged
+        .preview(this.content, this.theme_styles, bookpreview)
+        .then((flow) => {
+          console.log("Rendered", flow.total, "pages.");
+        });
     },
   },
 };
@@ -47,8 +65,9 @@ export default {
 <style lang="scss" scoped>
 ._viewContent {
   padding: calc(var(--spacing) * 2);
+  background: var(--c-gris_clair);
+  overflow: auto;
 
-  --color-background: whitesmoke;
   --color-pageSheet: #cfcfcf;
   --color-pageBox: violet;
   --color-paper: white;
@@ -60,10 +79,6 @@ export default {
   ::v-deep {
     /* To define how the book look on the screen: */
     @media screen {
-      body {
-        background-color: var(--color-background);
-      }
-
       .pagedjs_pages {
         display: flex;
         width: calc(var(--pagedjs-width) * 2);

@@ -1194,4 +1194,6 @@ export default {
   remove_publication: "Delete publication {name}",
 
   not_logged_in: "Not logged in",
+
+  chapters: "Chapters",
 };

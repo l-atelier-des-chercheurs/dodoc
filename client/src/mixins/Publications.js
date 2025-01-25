@@ -169,8 +169,6 @@ export default {
       index,
       additional_meta = {},
     }) {
-      additional_meta.section_type = "-";
-
       const { meta_filename } = await this.$api
         .uploadFile({
           path: publication.$path,
