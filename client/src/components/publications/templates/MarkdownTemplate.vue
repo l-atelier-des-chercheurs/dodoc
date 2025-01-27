@@ -1,9 +1,11 @@
 <template>
   <div class="_markdownTemplate">
+    {{ publication.cover_image_layout }}
     <splitpanes class="_splitpanes">
       <pane>
         <ChaptersSummary
           :publication="publication"
+          :cover_image="cover_image"
           :sections="all_chapters"
           :opened_section_meta_filename="opened_section_meta_filename"
           :can_edit="can_edit"
@@ -99,6 +101,21 @@ export default {
         return chapter;
       });
     },
+    cover_image() {
+      if (this.publication.cover_enabled !== true) return false;
+
+      let cover = {};
+      if (this.publication.cover_meta_filename) {
+        cover = this.getSourceMedia({
+          source_media: {
+            meta_filename_in_project: this.publication.cover_meta_filename,
+          },
+          folder_path: this.publication.$path,
+        });
+      }
+
+      return cover;
+    },
     open_chapter() {
       if (this.opened_section_meta_filename) {
         return this.all_chapters.find((f) =>
@@ -111,7 +128,6 @@ export default {
       function formatChapter(chapter) {
         let content = "<section class='_chapter'>";
         content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
-
         if (
           chapter._main_text?.content_type === "markdown" &&
           chapter._main_text?.$content
@@ -124,12 +140,33 @@ export default {
         return content;
       }
 
-      // if (this.open_chapter) return formatChapter(this.open_chapter);
+      let html = "";
 
-      return this.all_chapters.reduce((acc, chapter) => {
+      if (this.publication.cover_enabled) {
+        html += `<div class="_cover">`;
+
+        if (this.cover_image)
+          html += `<h1 class="_coverTitle">${this.publication.cover_title}</h1>`;
+
+        if (this.cover_image) {
+          const cover_full = this.makeMediaFileURL({
+            $path: this.cover_image.$path,
+            $media_filename: this.cover_image.$media_filename,
+          });
+
+          let layout_mode = this.publication.cover_image_layout || "normal";
+          html += `<div class="_coverImage" data-layout-mode="${layout_mode}"><img src="${cover_full}" /></div>`;
+        }
+
+        html += `</div>`;
+      }
+
+      html += this.all_chapters.reduce((acc, chapter) => {
         acc += formatChapter.call(this, chapter);
         return acc;
       }, "");
+
+      return html;
     },
   },
   methods: {

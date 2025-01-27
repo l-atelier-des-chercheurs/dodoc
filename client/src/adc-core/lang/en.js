@@ -1196,4 +1196,8 @@ export default {
   not_logged_in: "Not logged in",
 
   chapters: "Chapters",
+  use_cover: "Display a cover",
+  layout_style: "Layout style",
+  full_page: "Full page",
+  half_page: "Half page",
 };

@@ -394,6 +394,18 @@
                   },
                   "pagn_bottom": {
                     "type": "number"
+                  },
+                  "cover_enabled": {
+                    "type": "boolean"
+                  },
+                  "cover_title": {
+                    "type": "string"
+                  },
+                  "cover_meta_filename": {
+                    "type": "string"
+                  },
+                  "cover_image_layout": {
+                    "type": "string"
                   }
                 },
                 "$files": {

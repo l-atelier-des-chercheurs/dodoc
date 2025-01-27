@@ -3,7 +3,7 @@
     <div class="u-sameRow">
       <select
         v-model="new_value"
-        @change="$emit('change', new_value)"
+        @change="selectChanged"
         :size="size"
         :disabled="!can_edit"
       >
@@ -29,6 +29,9 @@
         @cancel="cancel"
       />
     </div>
+
+    <LoaderSpinner v-if="is_saving" />
+
     <!-- {{ value }} / {{ new_value }} -->
   </div>
 </template>
@@ -38,6 +41,12 @@ export default {
     value: {
       type: [Number, String],
       default: "",
+    },
+    field_name: {
+      type: String,
+    },
+    path: {
+      type: String,
     },
     options: {
       type: Array,
@@ -74,14 +83,44 @@ export default {
     cancel() {
       this.new_value = this.value;
     },
+    selectChanged() {
+      this.$emit("change", this.new_value);
+      if (this.hide_validation === true) this.updateSelect();
+    },
     async updateSelect() {
       this.$emit("update", this.new_value);
+
+      this.is_saving = true;
+
+      if (this.path && this.field_name) {
+        const new_meta = {
+          [this.field_name]: this.new_value,
+        };
+        try {
+          await this.$api.updateMeta({
+            path: this.path,
+            new_meta,
+          });
+          this.edit_mode = false;
+        } catch (e) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("couldntbesaved"));
+          this.$alertify.closeLogOnClick(true).error(e.response.data);
+        }
+
+        setTimeout(() => {
+          this.is_saving = false;
+        }, 100);
+      }
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._selectField {
+  position: relative;
 }
 
 ._footer {

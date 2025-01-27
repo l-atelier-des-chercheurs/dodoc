@@ -511,7 +511,8 @@ module.exports = (function () {
       await utils.makeImageFromPath({
         full_path: path_to_file,
         new_path: full_path_to_thumb,
-        resolution: 2000,
+        resolution: 4000,
+        withoutEnlargement: true,
       });
     } else if (req) {
       const { originalFilename, path_to_temp_file } = await utils

@@ -16,6 +16,7 @@
           class="_cover"
           :context="'full'"
           :cover="event.$cover"
+          :ratio="'3 / 2'"
           :path="event.$path"
           :can_edit="can_edit_event"
         />

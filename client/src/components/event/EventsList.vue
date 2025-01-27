@@ -67,6 +67,7 @@
             class="_cover"
             :context="'preview'"
             :cover="event.$cover"
+            :ratio="'3 / 2'"
             :path="event.$path"
             :can_edit="false"
           />
