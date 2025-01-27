@@ -42,17 +42,19 @@ export default {
   created() {},
   mounted() {
     this.$nextTick(() => {
-      this.generateBook();
+      this.refreshView();
     });
   },
   beforeDestroy() {},
   watch: {
     content() {
-      this.generateBook();
-      debugger;
+      this.refreshView();
+    },
+    view_mode() {
+      this.refreshView();
     },
     format_mode() {
-      this.generateBook();
+      this.refreshView();
     },
   },
   computed: {
@@ -130,6 +132,17 @@ export default {
     },
   },
   methods: {
+    refreshView() {
+      document
+        .querySelectorAll("style[data-pagedjs-inserted-styles]")
+        .forEach((styleElement) => {
+          styleElement.parentNode.removeChild(styleElement);
+        });
+
+      if (this.view_mode === "book") {
+        this.generateBook();
+      }
+    },
     generateBook() {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;

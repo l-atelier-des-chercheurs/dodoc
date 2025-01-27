@@ -41,7 +41,6 @@
         <div class="_viewer">
           <ViewContent
             v-if="content_to_view"
-            :key="content_to_view"
             :content="content_to_view"
             :view_mode="view_mode"
             :format_mode="format_mode"
