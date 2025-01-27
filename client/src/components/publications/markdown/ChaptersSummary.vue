@@ -86,9 +86,9 @@ export default {
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication.$path,
         filename,
-        content: "",
+        content: "Contenu du " + this.new_section_title,
         additional_meta: {
-          content_type: "html",
+          content_type: "markdown",
         },
       });
 
