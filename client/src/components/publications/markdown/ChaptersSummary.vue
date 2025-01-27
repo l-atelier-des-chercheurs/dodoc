@@ -190,6 +190,7 @@ export default {
         additional_meta: {
           section_title: this.new_section_title,
           main_text_meta: meta_filename,
+          section_starts_on_page: "right",
         },
       });
       this.$emit("toggleSection", new_section_meta);

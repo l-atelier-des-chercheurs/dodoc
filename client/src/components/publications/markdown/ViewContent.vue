@@ -61,10 +61,21 @@ export default {
 
       styles += `
         ._chapter {
+        }
+
+        ._chapter[data-starts-on-page="left"] {
+          break-before: left;
+        }
+
+        ._chapter[data-starts-on-page="right"] {
           break-before: right;
         }
+
         p {
           margin: 1em 0;
+        }
+        ._cover {
+          break-after: left;
         }
         ._coverTitle {
           position: relative;

@@ -1,6 +1,5 @@
 <template>
   <div class="_markdownTemplate">
-    {{ publication.cover_image_layout }}
     <splitpanes class="_splitpanes">
       <pane>
         <ChaptersSummary
@@ -125,21 +124,6 @@ export default {
       return false;
     },
     content_to_view() {
-      function formatChapter(chapter) {
-        let content = "<section class='_chapter'>";
-        content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
-        if (
-          chapter._main_text?.content_type === "markdown" &&
-          chapter._main_text?.$content
-        ) {
-          content += this.parseMarkdown(chapter._main_text.$content);
-        } else {
-          content += chapter._main_text?.$content || "";
-        }
-        content += "</section>";
-        return content;
-      }
-
       let html = "";
 
       if (this.publication.cover_enabled) {
@@ -161,8 +145,25 @@ export default {
         html += `</div>`;
       }
 
+      const formatChapter = (chapter) => {
+        const starts_on_page = chapter.section_starts_on_page || "in_flow";
+
+        let content = `<section class='_chapter' data-starts-on-page="${starts_on_page}">`;
+        content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
+        if (
+          chapter._main_text?.content_type === "markdown" &&
+          chapter._main_text?.$content
+        ) {
+          content += this.parseMarkdown(chapter._main_text.$content);
+        } else {
+          content += chapter._main_text?.$content || "";
+        }
+        content += "</section>";
+        return content;
+      };
+
       html += this.all_chapters.reduce((acc, chapter) => {
-        acc += formatChapter.call(this, chapter);
+        acc += formatChapter(chapter);
         return acc;
       }, "");
 
