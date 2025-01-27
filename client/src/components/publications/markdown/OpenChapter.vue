@@ -1,48 +1,56 @@
 <template>
   <div class="_openChapter">
-    <splitpanes>
-      <pane>
-        <div class="_leftPanel">
-          <div class="_topButtons">
-            <button type="button" class="u-buttonLink" @click="$emit('close')">
-              {{ $t("close") }}
-            </button>
-            <RemoveMenu @remove="$emit('remove')" />
-          </div>
-          <template v-if="chapter._main_text">
-            <CollaborativeEditor3
-              :content="chapter._main_text.$content"
-              :path="chapter._main_text.$path"
-              :edit_on_mounted="true"
-              :can_edit="can_edit"
-            />
-          </template>
-        </div>
-      </pane>
-      <pane>
-        <div class="_rightPanel">
-          <div class="_viewMode">
-            <select v-model="view_mode" size="small">
-              <option value="book">{{ $t("book") }}</option>
-              <option value="html">{{ $t("website") }}</option>
-            </select>
-          </div>
-          <div class="_viewer">
-            <ViewContent
-              v-if="content_to_view"
-              :content="content_to_view"
-              :view_mode="view_mode"
-            />
-          </div>
-        </div>
-      </pane>
-    </splitpanes>
+    <div class="_topButtons">
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        {{ $t("close") }}
+      </button>
+      <SelectField
+        :field_name="'content_type'"
+        :content="content_type"
+        :path="chapter._main_text.$path"
+        :options="[
+          { key: 'html', text: 'HTML' },
+          { key: 'markdown', text: 'Markdown' },
+        ]"
+        :can_edit="can_edit"
+        :hide_validation="true"
+      />
+      <RemoveMenu @remove="$emit('remove')" />
+    </div>
+    <div class="_content">
+      <div class="u-spacingBottom">
+        <TitleField
+          :label="$t('section_title')"
+          :field_name="'section_title'"
+          :content="chapter.section_title"
+          :required="true"
+          :maxlength="40"
+          :tag="'h1'"
+          :path="chapter.$path"
+          :can_edit="can_edit"
+        />
+      </div>
+      <template v-if="chapter._main_text">
+        <DLabel :str="$t('content')" />
+        <!-- <MarkdownEditor
+          :content="chapter._main_text.$content"
+          :path="chapter._main_text.$path"
+          :edit_on_mounted="true"
+          :can_edit="can_edit"
+        /> -->
+        <CollaborativeEditor3
+          :content="chapter._main_text.$content"
+          :path="chapter._main_text.$path"
+          :custom_formats="custom_formats"
+          :save_format="save_format"
+          :can_edit="can_edit"
+        />
+      </template>
+    </div>
   </div>
 </template>
 <script>
-import { Splitpanes, Pane } from "splitpanes";
-
-import ViewContent from "@/components/publications/markdown/ViewContent.vue";
+// import MarkdownEditor from "@/adc-core/fields/collaborative-editor/MarkdownEditor.vue";
 
 export default {
   props: {
@@ -50,22 +58,27 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    Splitpanes,
-    Pane,
-    ViewContent,
+    // MarkdownEditor,
   },
   data() {
-    return {
-      view_mode: "book",
-    };
+    return {};
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
-    content_to_view() {
-      return this.chapter._main_text?.$content || " ";
+    content_type() {
+      return this.chapter._main_text?.content_type || "html";
+    },
+    custom_formats() {
+      if (this.content_type === "markdown") return [];
+      else return;
+    },
+    save_format() {
+      if (this.content_type === "html") return "html";
+      else if (this.content_type === "markdown") return "raw";
+      else return "html";
     },
   },
   methods: {},
@@ -74,9 +87,14 @@ export default {
 <style lang="scss" scoped>
 ._openChapter {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  overflow: auto;
   background-color: var(--c-gris_clair);
+  background-color: white;
+  z-index: 2;
 
   // display: flex;
   // flex-direction: row nowrap;
@@ -86,51 +104,16 @@ export default {
   // }
 }
 
-._leftPanel {
-  height: 100%;
-  overflow: auto;
-  // background-color: #000;
-  border-right: 2px solid var(--c-gris);
-  background-color: var(--c-gris);
-}
-
 ._topButtons {
   display: flex;
   flex-direction: row nowrap;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  margin-bottom: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 2) 0;
 }
 
-._rightPanel {
-  position: relative;
-  overflow: auto;
-  height: 100%;
-  background-color: white;
-}
-
-._viewMode {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  margin: 0 auto;
-  padding: calc(var(--spacing) / 2);
-  pointer-events: none;
-
-  select {
-    max-width: 20ch;
-    pointer-events: all;
-  }
-}
-
-._viewer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+._content {
+  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 2);
 }
 </style>

@@ -1271,4 +1271,6 @@ export default {
   remove_publication: "Supprimer la publication {name}",
 
   not_logged_in: "Non connecté",
+
+  chapters: "Chapitres",
 };

@@ -1,44 +1,104 @@
 <template>
   <div class="_viewContent">
-    <!-- <div>view mode: {{ view_mode }}</div>
-    <div>content: {{ content }}</div> -->
-    <div ref="bookpreview"></div>
+    <vue-infinite-viewer
+      v-if="view_mode === 'book'"
+      class="_bookViewer"
+      ref="viewer"
+      v-bind="viewerOptions"
+    >
+      <div class="bookpreview" ref="bookpreview" />
+    </vue-infinite-viewer>
+    <div v-else class="_docViewer">
+      <div class="viewer-content" v-html="content"></div>
+    </div>
   </div>
 </template>
 <script>
+import VueInfiniteViewer from "vue-infinite-viewer";
 import { Previewer } from "pagedjs";
 
 export default {
   props: {
     content: String,
     view_mode: String,
+    format_mode: String,
   },
-  components: {},
+  components: {
+    VueInfiniteViewer,
+  },
   data() {
-    return {};
+    return {
+      viewerOptions: {
+        useMouseDrag: true,
+        useWheelScroll: true,
+        useAutoZoom: true,
+        zoomRange: [0.4, 10],
+        maxPinchWheel: 10,
+        displayVerticalScroll: true,
+        displayHorizontalScroll: true,
+      },
+    };
   },
   created() {},
   mounted() {
-    this.generateBook();
+    this.$nextTick(() => {
+      this.generateBook();
+    });
   },
   beforeDestroy() {},
   watch: {
     content() {
       this.generateBook();
     },
+    format_mode() {
+      this.generateBook();
+    },
   },
-  computed: {},
+  computed: {
+    theme_styles() {
+      let styles = "";
+
+      styles += `
+        ._chapter {
+          break-before: right;
+        }
+        p {
+          margin: 1em 0;
+        }
+      `;
+      styles += `
+        @page {
+          size: ${this.format_mode};
+        }
+      `;
+
+      return [
+        {
+          pagedjs_styles: styles,
+        },
+      ];
+    },
+  },
   methods: {
     generateBook() {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
-      bookpreview.innerHTML = "";
 
       let paged = new Previewer();
 
       // let flow = paged.preview(DOMContent, ["path/to/css/file.css"], document.body).then((flow) => {
-      paged.preview(this.content, [], bookpreview).then((flow) => {
-        console.log("Rendered", flow.total, "pages.");
+      paged.preview(this.content, this.theme_styles, undefined).then((flow) => {
+        // bookpreview.style.width =
+        //   bookpreview.getBoundingClientRect().width + "px";
+        // bookpreview.style.height =
+        //   bookpreview.getBoundingClientRect().height + "px";
+
+        bookpreview.innerHTML = "";
+        const pagesOutput = flow.pagesArea;
+        bookpreview.appendChild(pagesOutput);
+
+        // bookpreview.style.width = "";
+        // bookpreview.style.height = "";
       });
     },
   },
@@ -46,9 +106,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._viewContent {
-  padding: calc(var(--spacing) * 2);
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
-  --color-background: whitesmoke;
+._bookViewer {
+  // border: 1px solid black;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: move;
+
+  background: var(--c-gris_clair);
+  overflow: auto;
+  height: 100%;
   --color-pageSheet: #cfcfcf;
   --color-pageBox: violet;
   --color-paper: white;
@@ -60,10 +132,6 @@ export default {
   ::v-deep {
     /* To define how the book look on the screen: */
     @media screen {
-      body {
-        background-color: var(--color-background);
-      }
-
       .pagedjs_pages {
         display: flex;
         width: calc(var(--pagedjs-width) * 2);

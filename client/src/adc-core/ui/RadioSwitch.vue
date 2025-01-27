@@ -96,7 +96,7 @@ menu {
   display: inline-flex;
   padding: var(--radio-switch-padding);
   border-radius: calc(var(--radio-switch-radius) * 1.4);
-  // background-color: #fff;
+  background-color: #fff;
   transition: all var(--radio-switch-animation-duration);
 }
 

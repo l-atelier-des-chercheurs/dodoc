@@ -1,26 +1,34 @@
 <template>
   <div class="_sectionsSummary">
-    <ReorderedList
-      :field_name="'sections_list'"
-      :items="sections"
-      :path="publication.$path"
-      :active_item_meta="opened_section_meta_filename"
-      :can_edit="can_edit"
-      @openItem="openSection"
-      @createItem="createSection"
-      v-slot="slotProps"
+    <transition-group
+      tag="div"
+      name="listComplete"
+      class="_allChapters"
+      key="allpages"
     >
-      <template v-if="slotProps.item.section_title">
-        {{ slotProps.item.section_title }}
-      </template>
-      <template v-else>
-        <i>{{ $t("untitled") }}</i>
-      </template>
-    </ReorderedList>
+      <div v-for="(section, index) in sections" :key="section.$path">
+        <ChapterPreview
+          :section="section"
+          :index="index"
+          :number_of_sections="sections.length"
+          :can_edit="can_edit"
+          @open="openSection(section.$path)"
+          @moveSection="moveSection"
+        />
+      </div>
+      <div key="'add'" class="_addSection">
+        <EditBtn
+          v-if="can_edit"
+          :btn_type="'add'"
+          :is_unfolded="true"
+          @click="createSection"
+        />
+      </div>
+    </transition-group>
   </div>
 </template>
 <script>
-import { add } from "ol/coordinate";
+import ChapterPreview from "@/components/publications/markdown/ChapterPreview.vue";
 
 export default {
   props: {
@@ -29,12 +37,7 @@ export default {
     opened_section_meta_filename: String,
     can_edit: Boolean,
   },
-  components: {},
-  inject: {
-    $getMapOptions: {
-      default: false,
-    },
-  },
+  components: { ChapterPreview },
   data() {
     return {};
   },
@@ -83,7 +86,10 @@ export default {
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication.$path,
         filename,
-        content: "",
+        content: "Contenu du " + this.new_section_title,
+        additional_meta: {
+          content_type: "markdown",
+        },
       });
 
       const new_section_meta = await this.createSection2({
@@ -95,20 +101,61 @@ export default {
       });
       this.$emit("toggleSection", new_section_meta);
     },
+    async moveSection({ old_position, new_position }) {
+      let sections_meta = this.sections.map((s) => ({
+        meta_filename: this.getFilename(s.$path),
+      }));
+
+      function array_move(arr, old_index, new_index) {
+        if (new_index >= arr.length) {
+          var k = new_index - arr.length + 1;
+          while (k--) {
+            arr.push(undefined);
+          }
+        }
+        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+        return arr; // for testing
+      }
+
+      array_move(sections_meta, old_position, new_position);
+
+      return await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          sections_list: sections_meta,
+        },
+      });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._sectionsSummary {
-  // max-width: 60ch;
-  // padding: 0 calc(var(--spacing) * 1);
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--c-gris_clair);
 
-  // ::v-deep summary {
-  // border: 2px solid var(--c-gris);
-  // }
+  padding: calc(var(--spacing) / 1);
 }
 
 ._createSection {
   padding: calc(var(--spacing) / 4);
+}
+
+._allChapters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    background-color: white;
+    padding: calc(var(--spacing) / 2);
+  }
+}
+
+._addSection {
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
 }
 </style>

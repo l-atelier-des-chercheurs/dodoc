@@ -53,6 +53,42 @@ Download the latest release from the [release page](https://github.com/l-atelier
 
 See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developpement/426
 
+## Method 3 — the dev way
+
+To install do•doc in dev mode, you need to have Node.js and npm installed. Clone this repository and run the following commands:
+
+```
+npm install
+```
+
+Available scripts:
+
+- run the app with minimal logging, as fast as possible:
+
+```
+npm run start
+```
+
+- run the app to debug locally:
+
+```
+npm run debug
+```
+
+- run the app in debug mode, with client code and vite/hot-module-replacement:
+
+```
+npm run debug-lr
+```
+
+You need to open a second terminal to run the vite/livereload server:
+
+```
+cd client
+npm i
+npm run dev
+```
+
 # How the core works
 
 Everything is structured in folders/files, so as to mirror the content in the filesystem. No database is used, almost all the content are saved in the content folder (by default /Documents/dodoc_next).
@@ -234,7 +270,7 @@ Then the following routes will redirect to:
 - /spaces/bonjour/projects/elephant-with-plywood.zip
   --> downloads a zip file with all the content of that folder
 
-### Permission
+## Permission
 
 For an existing folder:
 
