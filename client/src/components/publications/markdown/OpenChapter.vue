@@ -41,10 +41,9 @@
         <CollaborativeEditor3
           :content="chapter._main_text.$content"
           :path="chapter._main_text.$path"
-          :edit_on_mounted="true"
-          :can_edit="can_edit"
           :custom_formats="custom_formats"
           :save_format="save_format"
+          :can_edit="can_edit"
         />
       </template>
     </div>

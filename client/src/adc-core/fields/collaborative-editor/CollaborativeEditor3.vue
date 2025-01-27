@@ -83,6 +83,14 @@
 
     <div class="_toolbarAndEditorContainer">
       <div ref="editor" />
+
+      <div class="_editText">
+        <EditBtn
+          v-if="can_edit && !editor_is_enabled"
+          :label_position="'left'"
+          @click="enableEditor"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -1130,5 +1138,12 @@ select.ql-ui {
   }
 
   // background-color: var(--editor-bg);
+}
+
+._editText {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
 }
 </style>
