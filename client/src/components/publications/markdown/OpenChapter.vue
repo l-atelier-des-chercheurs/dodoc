@@ -72,7 +72,7 @@ export default {
       return this.chapter._main_text?.content_type || "html";
     },
     custom_formats() {
-      if (this.content_type === "markdown") return [""];
+      if (this.content_type === "markdown") return [];
       else return;
     },
     save_format() {

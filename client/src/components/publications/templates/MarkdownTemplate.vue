@@ -53,6 +53,7 @@
 <script>
 import { Splitpanes, Pane } from "splitpanes";
 import { marked } from "marked";
+import { baseUrl } from "marked-base-url";
 import DOMPurify from "dompurify";
 
 import ChaptersSummary from "@/components/publications/markdown/ChaptersSummary.vue";
@@ -133,6 +134,9 @@ export default {
   },
   methods: {
     parseMarkdown(content) {
+      const url_to_medias =
+        window.location.origin + "/" + this.getParent(this.publication.$path);
+      marked.use(baseUrl(url_to_medias));
       const parsed = marked.parse(content);
       return DOMPurify.sanitize(parsed);
     },

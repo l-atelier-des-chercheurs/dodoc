@@ -82,8 +82,6 @@
     </div> -->
 
     <div class="_toolbarAndEditorContainer">
-      <div ref="editor" />
-
       <div class="_editText">
         <EditBtn
           v-if="can_edit && !editor_is_enabled"
@@ -91,6 +89,8 @@
           @click="enableEditor"
         />
       </div>
+
+      <div ref="editor" />
     </div>
   </div>
 </template>
@@ -804,6 +804,18 @@ export default {
     right: 0;
   }
 }
+
+._toolbarAndEditorContainer {
+  position: relative;
+}
+._editText {
+  position: sticky;
+  top: 0;
+  right: 0;
+  text-align: right;
+  height: 0;
+  z-index: 1000;
+}
 </style>
 <style lang="scss">
 .ql-toolbar.ql-toolbar {
@@ -1138,12 +1150,5 @@ select.ql-ui {
   }
 
   // background-color: var(--editor-bg);
-}
-
-._editText {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1000;
 }
 </style>
