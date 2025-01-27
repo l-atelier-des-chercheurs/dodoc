@@ -48,7 +48,7 @@ export default {
   beforeDestroy() {},
   watch: {
     opened_section_meta_filename() {
-      this.openFirstSectionIfNoneOpened();
+      // this.openFirstSectionIfNoneOpened();
     },
   },
   computed: {
@@ -76,11 +76,11 @@ export default {
     openSection(path) {
       this.$emit("toggleSection", this.getFilename(path));
     },
-    openFirstSectionIfNoneOpened() {
-      if (this.sections.length > 0 && !this.opened_section_meta_filename) {
-        this.$emit("openFirstSection");
-      }
-    },
+    // openFirstSectionIfNoneOpened() {
+    //   if (this.sections.length > 0 && !this.opened_section_meta_filename) {
+    //     this.$emit("openFirstSection");
+    //   }
+    // },
     async createSection() {
       const filename = this.new_section_title + " text.txt";
       const { meta_filename } = await this.$api.uploadText({
