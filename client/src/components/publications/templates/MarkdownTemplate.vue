@@ -115,9 +115,7 @@ export default {
           chapter._main_text?.content_type === "markdown" &&
           chapter._main_text?.$content
         ) {
-          content += DOMPurify.sanitize(
-            marked.parse(chapter._main_text?.$content)
-          );
+          content += this.parseMarkdown(chapter._main_text.$content);
         } else {
           content += chapter._main_text?.$content || "";
         }
@@ -128,12 +126,16 @@ export default {
       // if (this.open_chapter) return formatChapter(this.open_chapter);
 
       return this.all_chapters.reduce((acc, chapter) => {
-        acc += formatChapter(chapter);
+        acc += formatChapter.call(this, chapter);
         return acc;
       }, "");
     },
   },
   methods: {
+    parseMarkdown(content) {
+      const parsed = marked.parse(content);
+      return DOMPurify.sanitize(parsed);
+    },
     async removeChapter(chapter) {
       if (chapter._main_text) {
         await this.$api.deleteItem({

@@ -32,25 +32,35 @@
       </div>
       <template v-if="chapter._main_text">
         <DLabel :str="$t('content')" />
-        <CollaborativeEditor3
+        <MarkdownEditor
+          :content="chapter._main_text.$content"
+          :path="chapter._main_text.$path"
+          :edit_on_mounted="true"
+          :can_edit="can_edit"
+        />
+        <!-- <CollaborativeEditor3
           :content="chapter._main_text.$content"
           :path="chapter._main_text.$path"
           :edit_on_mounted="true"
           :can_edit="can_edit"
           :custom_formats="custom_formats"
           :save_format="save_format"
-        />
+        /> -->
       </template>
     </div>
   </div>
 </template>
 <script>
+import MarkdownEditor from "@/adc-core/fields/collaborative-editor/MarkdownEditor.vue";
+
 export default {
   props: {
     chapter: Object,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    MarkdownEditor,
+  },
   data() {
     return {};
   },

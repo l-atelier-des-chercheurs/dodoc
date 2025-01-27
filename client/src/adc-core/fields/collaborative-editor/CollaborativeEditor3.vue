@@ -86,12 +86,15 @@
   </div>
 </template>
 <script>
-import TextVersioning from "./TextVersioning.vue";
-import ReconnectingWebSocket from "reconnectingwebsocket";
+import hljs from "highlight.js";
+
 import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
 import richText from "rich-text";
 ShareDB.types.register(richText.type);
+
+import TextVersioning from "./TextVersioning.vue";
+import ReconnectingWebSocket from "reconnectingwebsocket";
 
 import {
   fonts as default_fonts,
@@ -245,6 +248,7 @@ export default {
 }
         `;
       }
+
       return css;
     },
   },
@@ -256,7 +260,8 @@ export default {
         // debug: "info",
         modules: {
           cardEditable: true,
-          toolbar: toolbar,
+          toolbar,
+          syntax: { hljs },
         },
         bounds: this.$refs.editor,
         theme: "snow",
@@ -618,6 +623,7 @@ export default {
 };
 </script>
 <style src="quill/dist/quill.snow.css"></style>
+<style src="@node_modules/highlight.js/styles/atom-one-dark.min.css"></style>
 <style lang="scss" scoped>
 ._collaborativeEditor {
   position: relative;
@@ -1055,6 +1061,15 @@ export default {
   .ql-picker.ql-size .ql-picker-label[data-value]::before {
     font-size: 100% !important;
   }
+}
+
+select.ql-ui {
+  width: 15ch;
+  height: var(--input-height-small);
+  font-size: var(--sl-font-size-small);
+  padding-top: calc(var(--spacing) / 8);
+  padding-bottom: calc(var(--spacing) / 8);
+  line-height: 1.5;
 }
 
 .ql-tooltip.ql-tooltip {
