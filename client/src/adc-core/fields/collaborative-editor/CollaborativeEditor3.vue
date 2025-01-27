@@ -6,6 +6,7 @@
       'is--editing_is_enabled': editor_is_enabled,
       'is--mobileView': $root.is_mobile_view,
     }"
+    :data-format="save_format"
   >
     <DLabel
       v-if="label"
@@ -634,6 +635,10 @@ export default {
     ::v-deep .ql-toolbar {
       display: none;
     }
+  }
+
+  &[data-format="raw"] {
+    font-family: "Fira Mono";
   }
 
   ::v-deep {

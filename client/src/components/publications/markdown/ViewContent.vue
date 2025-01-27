@@ -1,8 +1,16 @@
 <template>
   <div class="_viewContent">
-    <vue-infinite-viewer class="viewer" ref="viewer" v-bind="viewerOptions">
-      <div class="bookpreview" ref="bookpreview"></div>
+    <vue-infinite-viewer
+      v-if="view_mode === 'book'"
+      class="_bookViewer"
+      ref="viewer"
+      v-bind="viewerOptions"
+    >
+      <div class="bookpreview" ref="bookpreview" />
     </vue-infinite-viewer>
+    <div v-else class="_docViewer">
+      <div class="viewer-content" v-html="content"></div>
+    </div>
   </div>
 </template>
 <script>
@@ -98,6 +106,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._viewContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+._bookViewer {
+  // border: 1px solid black;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: move;
+
   background: var(--c-gris_clair);
   overflow: auto;
   height: 100%;
@@ -214,13 +234,5 @@ export default {
       box-shadow: 0px -1px 0px 0px var(--pagedjs-crop-shadow);
     }
   }
-}
-
-.viewer {
-  // border: 1px solid black;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  cursor: move;
 }
 </style>
