@@ -110,9 +110,12 @@ export default {
           },
           folder_path: this.publication.$path,
         });
+        if (cover) {
+          return cover;
+        }
       }
 
-      return cover;
+      return false;
     },
     open_chapter() {
       if (this.opened_section_meta_filename) {
@@ -128,15 +131,15 @@ export default {
       if (this.publication.cover_enabled) {
         html += `<div class="_cover">`;
 
-        if (this.cover_image)
+        if (this.publication.cover_title)
           html += `<h1 class="_coverTitle">${this.publication.cover_title}</h1>`;
 
         if (this.cover_image) {
+          debugger;
           const cover_full = this.makeMediaFileURL({
             $path: this.cover_image.$path,
             $media_filename: this.cover_image.$media_filename,
           });
-
           let layout_mode = this.publication.cover_image_layout || "normal";
           html += `<div class="_coverImage" data-layout-mode="${layout_mode}"><img src="${cover_full}" /></div>`;
         }
