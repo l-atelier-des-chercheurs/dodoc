@@ -42,16 +42,19 @@ export default {
   created() {},
   mounted() {
     this.$nextTick(() => {
-      this.generateBook();
+      this.refreshView();
     });
   },
   beforeDestroy() {},
   watch: {
     content() {
-      this.generateBook();
+      this.refreshView();
+    },
+    view_mode() {
+      this.refreshView();
     },
     format_mode() {
-      this.generateBook();
+      this.refreshView();
     },
   },
   computed: {
@@ -60,10 +63,59 @@ export default {
 
       styles += `
         ._chapter {
+        }
+
+        ._chapter[data-starts-on-page="left"] {
+          break-before: left;
+        }
+
+        ._chapter[data-starts-on-page="right"] {
           break-before: right;
         }
+
         p {
           margin: 1em 0;
+        }
+        ._cover {
+          break-after: left;
+        }
+        ._coverTitle {
+          position: relative;
+          z-index: 1000;
+        }
+        ._coverImage {
+          position: relative;
+          z-index: 2;
+        }
+        ._coverImage[data-layout-mode="full_page"] {
+          position: absolute;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+        ._coverImage[data-layout-mode="half_top"] {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 50%;
+        }
+        ._coverImage[data-layout-mode="half_bottom"] {
+          position: absolute;
+          top: 50%;
+          left: 0;
+          width: 100%;
+          height: 50%;
+        }
+        ._coverImage:not([data-layout-mode="normal"]) img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
         }
       `;
       styles += `
@@ -80,6 +132,17 @@ export default {
     },
   },
   methods: {
+    refreshView() {
+      document
+        .querySelectorAll("style[data-pagedjs-inserted-styles]")
+        .forEach((styleElement) => {
+          styleElement.parentNode.removeChild(styleElement);
+        });
+
+      if (this.view_mode === "book") {
+        this.generateBook();
+      }
+    },
     generateBook() {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;

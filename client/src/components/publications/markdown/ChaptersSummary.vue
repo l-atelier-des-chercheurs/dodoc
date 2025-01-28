@@ -6,6 +6,95 @@
       class="_allChapters"
       key="allpages"
     >
+      <div class="_cover" :key="'cover'">
+        <div class="u-spacingBottom">
+          <ToggleField
+            :field_name="'cover_enabled'"
+            :label="$t('use_cover')"
+            :content="publication.cover_enabled"
+            :path="publication.$path"
+            :submit_on_change="true"
+            :can_edit="can_edit"
+          />
+        </div>
+        <template v-if="publication.cover_enabled">
+          <div class="u-spacingBottom">
+            <TitleField
+              :field_name="'cover_title'"
+              :label="$t('title')"
+              :content="publication.cover_title"
+              :path="publication.$path"
+              :required="false"
+              :input_type="'text'"
+              :tag="'h2'"
+              :can_edit="can_edit"
+            />
+          </div>
+
+          <div class="_cover--pickCover">
+            <template v-if="cover_image">
+              <div class="_cover--pickCover--img">
+                <MediaContent :file="cover_image" :resolution="1600" />
+                <button
+                  type="button"
+                  class="u-button u-button_bleuvert u-button_small _changeCoverBtn"
+                  @click="show_cover_picker = true"
+                >
+                  {{ $t("change") }}
+                </button>
+              </div>
+
+              <div class="u-spacingBottom" />
+
+              <SelectField2
+                :field_name="'cover_image_layout'"
+                :value="publication.cover_image_layout"
+                :path="publication.$path"
+                size="small"
+                :hide_validation="true"
+                :can_edit="can_edit"
+                :options="[
+                  {
+                    key: '',
+                    text: $t('normal'),
+                  },
+                  {
+                    key: 'full_page',
+                    text: $t('full_page'),
+                  },
+                  {
+                    key: 'half_top',
+                    text: $t('half_page_top'),
+                  },
+                  {
+                    key: 'half_bottom',
+                    text: $t('half_page_bottom'),
+                  },
+                ]"
+              />
+            </template>
+
+            <template v-else>
+              <button
+                type="button"
+                class="u-button u-button_bleuvert u-button_small"
+                @click="show_cover_picker = true"
+              >
+                {{ $t("pick_cover") }}
+              </button>
+            </template>
+            <MediaPicker
+              v-if="show_cover_picker"
+              :publication_path="publication.$path"
+              :select_mode="'single'"
+              :pick_from_types="['image']"
+              @addMedias="pickCover"
+              @close="show_cover_picker = false"
+            />
+          </div>
+        </template>
+      </div>
+
       <div v-for="(section, index) in sections" :key="section.$path">
         <ChapterPreview
           :section="section"
@@ -29,17 +118,21 @@
 </template>
 <script>
 import ChapterPreview from "@/components/publications/markdown/ChapterPreview.vue";
+import MediaPicker from "@/components/publications/MediaPicker.vue";
 
 export default {
   props: {
     publication: Object,
+    cover_image: [Boolean, Object],
     sections: Array,
     opened_section_meta_filename: String,
     can_edit: Boolean,
   },
-  components: { ChapterPreview },
+  components: { ChapterPreview, MediaPicker },
   data() {
-    return {};
+    return {
+      show_cover_picker: false,
+    };
   },
   created() {},
   mounted() {
@@ -97,6 +190,7 @@ export default {
         additional_meta: {
           section_title: this.new_section_title,
           main_text_meta: meta_filename,
+          section_starts_on_page: "right",
         },
       });
       this.$emit("toggleSection", new_section_meta);
@@ -123,6 +217,18 @@ export default {
         path: this.publication.$path,
         new_meta: {
           sections_list: sections_meta,
+        },
+      });
+    },
+    pickCover({ path_to_source_media_metas }) {
+      const cover_meta_filename = this.getFilename(
+        path_to_source_media_metas[0]
+      );
+
+      this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          cover_meta_filename,
         },
       });
     },
@@ -157,5 +263,38 @@ export default {
 
 ._addSection {
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+}
+
+._cover {
+  position: relative;
+}
+._cover--pickCover {
+  position: relative;
+  width: 100%;
+  min-height: 100px;
+  margin-bottom: calc(var(--spacing) / 2);
+}
+._cover--pickCover--img {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: calc(var(--spacing) / 1);
+  background-color: var(--c-bodybg);
+
+  ::v-deep {
+    ._mediaContent,
+    img {
+      width: 100%;
+      height: auto;
+      max-height: 70px;
+      object-fit: scale-down;
+    }
+  }
+}
+
+._changeCoverBtn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 2);
 }
 </style>

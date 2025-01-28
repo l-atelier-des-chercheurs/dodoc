@@ -1273,4 +1273,12 @@ export default {
   not_logged_in: "Non connecté",
 
   chapters: "Chapitres",
+  use_cover: "Afficher une couverture",
+  layout_style: "Placement de l’image",
+  full_page: "Pleine page",
+  half_page_top: "Demi-page en haut",
+  half_page_bottom: "Demi-page en bas",
+  in_flow: "À la suite",
+  next_left_page: "Page de gauche",
+  next_right_page: "Page de droite",
 };

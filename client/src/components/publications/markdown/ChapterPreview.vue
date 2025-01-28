@@ -1,9 +1,10 @@
 <template>
   <div class="_chapterPreview">
-    <div class="_order" v-if="can_edit">
+    <div class="_selects" v-if="can_edit">
       <select
         :value="index"
         size="small"
+        class="_selects--order"
         @change="
           $emit('moveSection', {
             old_position: index,
@@ -18,6 +19,37 @@
           v-text="p"
         />
       </select>
+
+      <div class="_selects--starts_on_page">
+        <SelectField2
+          :field_name="'section_starts_on_page'"
+          :value="section.section_starts_on_page || 'in_flow'"
+          :path="section.$path"
+          size="small"
+          :hide_validation="true"
+          :can_edit="can_edit"
+          :options="[
+            {
+              key: '',
+              text: $t('in_flow'),
+            },
+            {
+              key: 'left',
+              text: $t('next_left_page'),
+            },
+            {
+              key: 'right',
+              text: $t('next_right_page'),
+            },
+          ]"
+          @change="
+            $emit('moveSection', {
+              old_position: index,
+              new_position: +$event.target.value,
+            })
+          "
+        />
+      </div>
     </div>
 
     <h2 class="_item--title">
@@ -44,6 +76,8 @@
   </div>
 </template>
 <script>
+import SelectField2 from "@/adc-core/fields/SelectField2.vue";
+
 export default {
   props: {
     section: Object,
@@ -79,7 +113,18 @@ export default {
   align-items: flex-start;
 }
 
-._order {
+._selects {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: calc(var(--spacing) / 2);
+}
+
+._selects--order {
   width: 5ch;
+}
+
+._selects--starts_on_page {
+  width: 15ch;
 }
 </style>

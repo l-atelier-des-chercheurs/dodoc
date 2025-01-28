@@ -5,19 +5,23 @@
         :content.sync="new_content"
         :label="label"
         :options="options"
-        :disabled="!edit_mode"
+        :disabled="!edit_mode && !submit_on_change"
       />
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+      <EditBtn
+        v-if="can_edit && !edit_mode && !submit_on_change"
+        @click="enableEditMode"
+      />
     </div>
 
     <div class="_footer" v-if="edit_mode">
       <SaveCancelButtons
         class="_scb"
         :is_saving="is_saving"
-        @save="updateSelect"
+        @save="updateToggle"
         @cancel="cancel"
       />
     </div>
+    <LoaderSpinner v-if="is_saving" />
   </div>
 </template>
 <script>
@@ -37,6 +41,10 @@ export default {
     can_edit: {
       type: Boolean,
     },
+    submit_on_change: {
+      type: Boolean,
+      default: true,
+    },
     explanations: String,
   },
   components: { ToggleInput },
@@ -54,6 +62,9 @@ export default {
   watch: {
     content() {
       this.new_content = this.content;
+    },
+    new_content() {
+      if (this.submit_on_change === true) this.updateToggle();
     },
   },
   computed: {},
@@ -74,7 +85,7 @@ export default {
       });
       // todo interrupt updateMeta
     },
-    async updateSelect() {
+    async updateToggle() {
       this.is_saving = true;
 
       try {
@@ -104,6 +115,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._toggleField {
+  position: relative;
 }
 
 ._sameLine {

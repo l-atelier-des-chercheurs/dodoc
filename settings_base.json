@@ -394,6 +394,18 @@
                   },
                   "pagn_bottom": {
                     "type": "number"
+                  },
+                  "cover_enabled": {
+                    "type": "boolean"
+                  },
+                  "cover_title": {
+                    "type": "string"
+                  },
+                  "cover_meta_filename": {
+                    "type": "string"
+                  },
+                  "cover_image_layout": {
+                    "type": "string"
                   }
                 },
                 "$files": {
@@ -442,6 +454,9 @@
                     },
                     "section_title_is_visible": {
                       "type": "boolean"
+                    },
+                    "section_starts_on_page": {
+                      "type": "string"
                     },
                     "main_text_meta": {
                       "type": "string"

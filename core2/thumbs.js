@@ -376,6 +376,13 @@ module.exports = (function () {
       resolutions: cover_schema.thumbs.resolutions,
     });
 
+    let _cover_name = cover_name;
+    const { mtimems } = await _readFileInfos({
+      full_media_path: full_cover_path,
+    });
+    if (mtimems) _cover_name += "?v=" + mtimems;
+    paths.original = _cover_name;
+
     return paths;
   }
 
