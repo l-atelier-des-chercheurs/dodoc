@@ -22,11 +22,9 @@
     </vue-infinite-viewer>
     <div v-else class="_docViewer">
       <div class="_docViewer--menu">
-        <div v-for="chapter in all_chapters" :key="chapter.$path">
-          {{ chapter }}
-
-          ---
-        </div>
+        <ol v-for="(chapter, index) in content_nodes.chapters" :key="index">
+          <li>{{ chapter.title }}</li>
+        </ol>
       </div>
       <!-- <div class="_docViewer--content" v-html="content"></div> -->
     </div>
@@ -38,7 +36,7 @@ import { Previewer } from "pagedjs";
 
 export default {
   props: {
-    content: String,
+    content_nodes: Object,
     view_mode: {
       type: String,
       default: "book",
@@ -72,7 +70,7 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    content() {
+    content_nodes() {
       this.refreshView();
     },
     view_mode() {
@@ -157,9 +155,6 @@ export default {
         },
       ];
     },
-    all_chapters() {
-      return this.content.split("<section class='_chapter'");
-    },
   },
   methods: {
     refreshView() {
@@ -173,14 +168,40 @@ export default {
         this.generateBook();
       }
     },
+    makePagedjsHTML() {
+      const nodes = this.content_nodes;
+
+      let html = "";
+
+      if (nodes.cover) {
+        html += `<section class="_cover">`;
+        if (nodes.cover.title)
+          html += `<h1 class="_coverTitle">${nodes.cover.title}</h1>`;
+        if (nodes.cover.image_url)
+          html += `<div class="_coverImage" data-layout-mode="${nodes.cover.layout_mode}"><img src="${nodes.cover.image_url}" /></div>`;
+        html += `</section>`;
+      }
+
+      nodes.chapters.forEach((chapter) => {
+        html += `<section class="_chapter" data-starts-on-page="${chapter.starts_on_page}">`;
+        if (chapter.title)
+          html += `<h1 class="_chapterTitle">${chapter.title}</h1>`;
+        if (chapter.content) html += `${chapter.content}`;
+        html += `</section>`;
+      });
+
+      return html;
+    },
     generateBook() {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
 
       let paged = new Previewer();
 
+      const pagedjs_html = this.makePagedjsHTML();
+
       // let flow = paged.preview(DOMContent, ["path/to/css/file.css"], document.body).then((flow) => {
-      paged.preview(this.content, this.theme_styles, undefined).then((flow) => {
+      paged.preview(pagedjs_html, this.theme_styles, undefined).then((flow) => {
         // bookpreview.style.width =
         //   bookpreview.getBoundingClientRect().width + "px";
         // bookpreview.style.height =
@@ -231,7 +252,7 @@ export default {
   height: 100%;
   cursor: move;
 
-  background-color: var(--c-noir);
+  background-color: var(--c-gris_fonce);
   // background: white;
   overflow: auto;
   height: 100%;

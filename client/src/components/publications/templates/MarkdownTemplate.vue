@@ -24,8 +24,7 @@
       <pane>
         <div class="_viewer">
           <ViewContent
-            v-if="content_to_view"
-            :content="content_to_view"
+            :content_nodes="content_nodes"
             :view_mode.sync="view_mode"
             :format_mode.sync="format_mode"
           />
@@ -109,52 +108,46 @@ export default {
       }
       return false;
     },
-    content_to_view() {
-      if (this.view_mode === "html") {
-        let;
-      } else if (this.view_mode === "book") {
-        let html = "";
-        if (this.publication.cover_enabled) {
-          html += `<div class="_cover">`;
-          if (this.publication.cover_title)
-            html += `<h1 class="_coverTitle">${this.publication.cover_title}</h1>`;
-          if (this.cover_image) {
-            const cover_full = this.makeMediaFileURL({
-              $path: this.cover_image.$path,
-              $media_filename: this.cover_image.$media_filename,
-            });
-            let layout_mode = this.publication.cover_image_layout || "normal";
-            html += `<div class="_coverImage" data-layout-mode="${layout_mode}"><img src="${cover_full}" /></div>`;
+
+    content_nodes() {
+      let nodes = {};
+
+      if (this.publication.cover_enabled) {
+        nodes.cover = {};
+        if (this.publication.cover_title)
+          nodes.cover.title = this.publication.cover_title;
+
+        if (this.cover_image) {
+          const image_url = this.makeMediaFileURL({
+            $path: this.cover_image.$path,
+            $media_filename: this.cover_image.$media_filename,
+          });
+          if (image_url) {
+            nodes.cover.image_url = image_url;
           }
-          html += `</div>`;
+          nodes.cover.layout_mode =
+            this.publication.cover_image_layout || "normal";
         }
-
-        const formatChapter = (chapter) => {
-          const starts_on_page = chapter.section_starts_on_page || "in_flow";
-
-          let content = `<section class='_chapter' data-starts-on-page="${starts_on_page}">`;
-          content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
-          if (
-            chapter._main_text?.content_type === "markdown" &&
-            chapter._main_text?.$content
-          ) {
-            content += this.parseMarkdown(chapter._main_text.$content);
-          } else {
-            content += chapter._main_text?.$content || "";
-          }
-          content += "</section>";
-          return content;
-        };
-
-        html += this.all_chapters.reduce((acc, chapter) => {
-          acc += formatChapter(chapter);
-          return acc;
-        }, "");
-
-        return html;
       }
 
-      return false;
+      nodes.chapters = [];
+      this.all_chapters.map((chapter) => {
+        let _chapter = {};
+
+        _chapter.title = chapter.section_title;
+        _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
+        if (chapter._main_text?.$content) {
+          if (chapter._main_text?.content_type === "markdown") {
+            _chapter.content = this.parseMarkdown(chapter._main_text.$content);
+          } else {
+            _chapter.content = chapter._main_text?.$content;
+          }
+        }
+
+        nodes.chapters.push(_chapter);
+      });
+
+      return nodes;
     },
   },
   methods: {

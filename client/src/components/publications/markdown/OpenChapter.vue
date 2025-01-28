@@ -98,7 +98,7 @@ export default {
   overflow: auto;
   background-color: var(--c-gris_clair);
   background-color: white;
-  z-index: 2;
+  z-index: 10;
 
   // display: flex;
   // flex-direction: row nowrap;

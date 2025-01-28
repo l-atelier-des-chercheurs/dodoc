@@ -23,7 +23,7 @@
       <div class="_selects--starts_on_page">
         <SelectField2
           :field_name="'section_starts_on_page'"
-          :value="section.section_starts_on_page || 'in_flow'"
+          :value="section.section_starts_on_page || ''"
           :path="section.$path"
           size="small"
           :hide_validation="true"
@@ -42,12 +42,6 @@
               text: $t('next_right_page'),
             },
           ]"
-          @change="
-            $emit('moveSection', {
-              old_position: index,
-              new_position: +$event.target.value,
-            })
-          "
         />
       </div>
     </div>
@@ -81,7 +75,10 @@ import SelectField2 from "@/adc-core/fields/SelectField2.vue";
 
 export default {
   props: {
-    section: Object,
+    section: {
+      type: Object,
+      required: true,
+    },
     index: Number,
     number_of_sections: Number,
     can_edit: Boolean,

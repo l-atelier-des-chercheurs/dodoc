@@ -1,5 +1,6 @@
 <template>
-  <div class="_sectionsSummary">
+  <div class="_chaptersSummary">
+    <DLabel :str="$t('content')" />
     <transition-group
       tag="div"
       name="listComplete"
@@ -238,13 +239,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._sectionsSummary {
+._chaptersSummary {
   position: relative;
   height: 100%;
   overflow: auto;
   background-color: var(--c-gris_clair);
 
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 2);
 }
 
 ._createSection {
@@ -255,7 +256,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: calc(var(--spacing) * 4) calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
 }
 
 ._addSection {
