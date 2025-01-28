@@ -7,7 +7,7 @@
       appear
       key="allpages"
     >
-      <div class="_cover" :key="'cover'">
+      <div class="_singleChapter _cover" :key="'cover'">
         <div class="u-spacingBottom">
           <ToggleField
             :field_name="'cover_enabled'"
@@ -263,7 +263,7 @@ export default {
 ._singleChapter {
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
 
   &:hover {
   }

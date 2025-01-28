@@ -626,7 +626,7 @@ export default {
         // do not enable: it triggers a focus on the text block
         // const { font } = this.editor.getFormat();
         // localStorage.setItem("fontLastUsed", font);
-      }, 3500);
+      }, 2500);
     },
   },
 };

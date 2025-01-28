@@ -61,13 +61,11 @@
       </template>
     </h2>
     <div class="_item--content">
-      <div class="_item--content--text">
-        <CollaborativeEditor3
-          v-if="previewContent(section)"
-          :content="previewContent(section)"
-        />
-        <div v-else class="u-instructions">{{ $t("no_content") }}</div>
-      </div>
+      <CollaborativeEditor3
+        v-if="previewContent(section)"
+        :content="previewContent(section)"
+      />
+      <div v-else class="u-instructions">{{ $t("no_content") }}</div>
     </div>
 
     <button
@@ -130,5 +128,10 @@ export default {
 
 ._selects--starts_on_page {
   width: 15ch;
+}
+
+._item--content {
+  font-size: var(--sl-font-size-x-small);
+  opacity: 0.5;
 }
 </style>

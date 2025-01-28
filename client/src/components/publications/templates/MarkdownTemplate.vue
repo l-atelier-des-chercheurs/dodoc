@@ -22,28 +22,12 @@
         </transition>
       </pane>
       <pane>
-        <div class="_viewMode">
-          <select v-model="view_mode" size="small">
-            <option value="book">{{ $t("book") }}</option>
-            <option value="html">{{ $t("website") }}</option>
-          </select>
-          <select
-            v-if="view_mode === 'book'"
-            v-model="format_mode"
-            size="small"
-          >
-            <option value="A4">{{ $t("A4_portrait") }}</option>
-            <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
-            <option value="A5">{{ $t("A5_portrait") }}</option>
-            <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
-          </select>
-        </div>
         <div class="_viewer">
           <ViewContent
             v-if="content_to_view"
             :content="content_to_view"
-            :view_mode="view_mode"
-            :format_mode="format_mode"
+            :view_mode.sync="view_mode"
+            :format_mode.sync="format_mode"
           />
         </div>
       </pane>
@@ -176,6 +160,25 @@ export default {
       const url_to_medias =
         window.location.origin + "/" + this.getParent(this.publication.$path);
       marked.use(baseUrl(url_to_medias));
+
+      marked.use({
+        renderer: {
+          image(src, title, alt) {
+            console.log("---", src, alt, title);
+            const [width, height] = title?.startsWith("=")
+              ? title
+                  .slice(1)
+                  .split("x")
+                  .map((v) => v.trim())
+                  .filter(Boolean)
+              : [];
+            return `<img src="${src}" alt="${alt}"${
+              width ? ` width="${width}"` : ""
+            }${height ? ` height="${height}"` : ""}>`;
+          },
+        },
+      });
+
       const parsed = marked.parse(content);
       return DOMPurify.sanitize(parsed);
     },
@@ -198,29 +201,11 @@ export default {
   width: 100%;
   height: 100%;
 }
-
 ._splitpanes {
   position: absolute;
   height: 100%;
   width: 100%;
 }
-
-._viewMode {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
-  margin: 0 auto;
-  padding: calc(var(--spacing) / 2);
-  pointer-events: none;
-
-  select {
-    max-width: 20ch;
-    pointer-events: all;
-  }
-}
-
 ._viewer {
   position: absolute;
   top: 0;
@@ -229,12 +214,5 @@ export default {
   height: 100%;
   z-index: 1;
   overflow: auto;
-}
-</style>
-<style data-pagedjs-inserted-styles="true">
-@media print {
-  .pagedjs-page {
-    background: red;
-  }
 }
 </style>

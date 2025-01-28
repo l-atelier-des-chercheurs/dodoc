@@ -1,5 +1,17 @@
 <template>
   <div class="_viewContent">
+    <div class="_viewMode">
+      <select v-model="view_mode" size="small">
+        <option value="book">{{ $t("book") }}</option>
+        <option value="html">{{ $t("webpage") }}</option>
+      </select>
+      <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
+        <option value="A4">{{ $t("A4_portrait") }}</option>
+        <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
+        <option value="A5">{{ $t("A5_portrait") }}</option>
+        <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
+      </select>
+    </div>
     <vue-infinite-viewer
       v-if="view_mode === 'book'"
       class="_bookViewer"
@@ -20,8 +32,14 @@ import { Previewer } from "pagedjs";
 export default {
   props: {
     content: String,
-    view_mode: String,
-    format_mode: String,
+    view_mode: {
+      type: String,
+      default: "book",
+    },
+    format_mode: {
+      type: String,
+      default: "A5",
+    },
   },
   components: {
     VueInfiniteViewer,
@@ -174,6 +192,26 @@ export default {
   height: 100%;
 }
 
+._viewMode {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  margin: 0 auto;
+  padding: calc(var(--spacing) / 2);
+  pointer-events: none;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+
+  select {
+    max-width: 20ch;
+    pointer-events: all;
+  }
+}
+
 ._bookViewer {
   // border: 1px solid black;
   position: relative;
@@ -181,7 +219,8 @@ export default {
   height: 100%;
   cursor: move;
 
-  background: var(--c-gris_clair);
+  background-color: var(--c-noir);
+  // background: white;
   overflow: auto;
   height: 100%;
   --color-pageSheet: #cfcfcf;
