@@ -1281,4 +1281,5 @@ export default {
   in_flow: "À la suite",
   next_left_page: "Page de gauche",
   next_right_page: "Page de droite",
+  no_content: "Pas de contenu",
 };

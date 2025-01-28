@@ -61,8 +61,12 @@
       </template>
     </h2>
     <div class="_item--content">
-      <div class="_item--content--text" v-if="previewContent(section)">
-        <CollaborativeEditor3 :content="previewContent(section)" />
+      <div class="_item--content--text">
+        <CollaborativeEditor3
+          v-if="previewContent(section)"
+          :content="previewContent(section)"
+        />
+        <div v-else class="u-instructions">{{ $t("no_content") }}</div>
       </div>
     </div>
 
@@ -100,7 +104,7 @@ export default {
       if (sub_content) {
         return sub_content.substring(0, 100) + "...";
       }
-      return "";
+      return false;
     },
   },
 };

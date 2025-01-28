@@ -4,6 +4,7 @@
       tag="div"
       name="listComplete"
       class="_allChapters"
+      appear
       key="allpages"
     >
       <div class="_cover" :key="'cover'">
@@ -95,7 +96,11 @@
         </template>
       </div>
 
-      <div v-for="(section, index) in sections" :key="section.$path">
+      <div
+        v-for="(section, index) in sections"
+        :key="section.$path"
+        class="u-card2 _singleChapter"
+      >
         <ChapterPreview
           :section="section"
           :index="index"
@@ -179,7 +184,7 @@ export default {
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication.$path,
         filename,
-        content: "Contenu du " + this.new_section_title,
+        content: "",
         additional_meta: {
           content_type: "markdown",
         },
@@ -193,7 +198,7 @@ export default {
           section_starts_on_page: "right",
         },
       });
-      this.$emit("toggleSection", new_section_meta);
+      // this.$emit("toggleSection", new_section_meta);
     },
     async moveSection({ old_position, new_position }) {
       let sections_meta = this.sections.map((s) => ({
@@ -253,15 +258,22 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) * 1);
+}
+._singleChapter {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
 
-  > * {
-    background-color: white;
-    padding: calc(var(--spacing) / 2);
+  &:hover {
   }
 }
 
 ._addSection {
+  display: flex;
+  // justify-content: center;
+  align-items: center;
+  background-color: transparent;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
 }
 

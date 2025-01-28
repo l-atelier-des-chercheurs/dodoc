@@ -135,7 +135,6 @@ export default {
           html += `<h1 class="_coverTitle">${this.publication.cover_title}</h1>`;
 
         if (this.cover_image) {
-          debugger;
           const cover_full = this.makeMediaFileURL({
             $path: this.cover_image.$path,
             $media_filename: this.cover_image.$media_filename,
