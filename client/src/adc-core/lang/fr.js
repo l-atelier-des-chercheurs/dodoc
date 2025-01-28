@@ -20,8 +20,8 @@ export default {
   cancel: "Annuler",
   select: "Sélectionner",
   select_all: "Sélectionner tout",
-  back: "retour",
-  save: "enregistrer",
+  back: "Retour",
+  save: "Enregistrer",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
   url_to_open: "URL de la page à ouvrir",
@@ -1281,4 +1281,6 @@ export default {
   in_flow: "À la suite",
   next_left_page: "Page de gauche",
   next_right_page: "Page de droite",
+  no_content: "Pas de contenu",
+  book: "Livre",
 };

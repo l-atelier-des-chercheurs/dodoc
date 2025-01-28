@@ -41,6 +41,7 @@ export default {
     value: {
       type: [Number, String],
       default: "",
+      required: true,
     },
     field_name: {
       type: String,
@@ -69,7 +70,7 @@ export default {
   beforeDestroy() {},
   watch: {
     value() {
-      this.new_value = this.value;
+      this.new_value = this.value || "";
     },
   },
   computed: {

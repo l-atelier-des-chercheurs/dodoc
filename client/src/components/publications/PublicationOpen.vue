@@ -120,7 +120,7 @@ export default {
 <style lang="scss" scoped>
 ._publicationOpen {
   position: relative;
-  min-height: calc(100vh - 45px);
+  min-height: calc(100vh - 44px);
 
   display: flex;
   flex-flow: column nowrap;

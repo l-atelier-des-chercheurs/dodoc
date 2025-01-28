@@ -22,28 +22,11 @@
         </transition>
       </pane>
       <pane>
-        <div class="_viewMode">
-          <select v-model="view_mode" size="small">
-            <option value="book">{{ $t("book") }}</option>
-            <option value="html">{{ $t("website") }}</option>
-          </select>
-          <select
-            v-if="view_mode === 'book'"
-            v-model="format_mode"
-            size="small"
-          >
-            <option value="A4">{{ $t("A4_portrait") }}</option>
-            <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
-            <option value="A5">{{ $t("A5_portrait") }}</option>
-            <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
-          </select>
-        </div>
         <div class="_viewer">
           <ViewContent
-            v-if="content_to_view"
-            :content="content_to_view"
-            :view_mode="view_mode"
-            :format_mode="format_mode"
+            :content_nodes="content_nodes"
+            :view_mode.sync="view_mode"
+            :format_mode.sync="format_mode"
           />
         </div>
       </pane>
@@ -125,51 +108,46 @@ export default {
       }
       return false;
     },
-    content_to_view() {
-      let html = "";
+
+    content_nodes() {
+      let nodes = {};
 
       if (this.publication.cover_enabled) {
-        html += `<div class="_cover">`;
-
+        nodes.cover = {};
         if (this.publication.cover_title)
-          html += `<h1 class="_coverTitle">${this.publication.cover_title}</h1>`;
+          nodes.cover.title = this.publication.cover_title;
 
         if (this.cover_image) {
-          debugger;
-          const cover_full = this.makeMediaFileURL({
+          const image_url = this.makeMediaFileURL({
             $path: this.cover_image.$path,
             $media_filename: this.cover_image.$media_filename,
           });
-          let layout_mode = this.publication.cover_image_layout || "normal";
-          html += `<div class="_coverImage" data-layout-mode="${layout_mode}"><img src="${cover_full}" /></div>`;
+          if (image_url) {
+            nodes.cover.image_url = image_url;
+          }
+          nodes.cover.layout_mode =
+            this.publication.cover_image_layout || "normal";
         }
-
-        html += `</div>`;
       }
 
-      const formatChapter = (chapter) => {
-        const starts_on_page = chapter.section_starts_on_page || "in_flow";
+      nodes.chapters = [];
+      this.all_chapters.map((chapter) => {
+        let _chapter = {};
 
-        let content = `<section class='_chapter' data-starts-on-page="${starts_on_page}">`;
-        content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
-        if (
-          chapter._main_text?.content_type === "markdown" &&
-          chapter._main_text?.$content
-        ) {
-          content += this.parseMarkdown(chapter._main_text.$content);
-        } else {
-          content += chapter._main_text?.$content || "";
+        _chapter.title = chapter.section_title;
+        _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
+        if (chapter._main_text?.$content) {
+          if (chapter._main_text?.content_type === "markdown") {
+            _chapter.content = this.parseMarkdown(chapter._main_text.$content);
+          } else {
+            _chapter.content = chapter._main_text?.$content;
+          }
         }
-        content += "</section>";
-        return content;
-      };
 
-      html += this.all_chapters.reduce((acc, chapter) => {
-        acc += formatChapter(chapter);
-        return acc;
-      }, "");
+        nodes.chapters.push(_chapter);
+      });
 
-      return html;
+      return nodes;
     },
   },
   methods: {
@@ -177,6 +155,25 @@ export default {
       const url_to_medias =
         window.location.origin + "/" + this.getParent(this.publication.$path);
       marked.use(baseUrl(url_to_medias));
+
+      marked.use({
+        renderer: {
+          image(src, title, alt) {
+            console.log("---", src, alt, title);
+            const [width, height] = title?.startsWith("=")
+              ? title
+                  .slice(1)
+                  .split("x")
+                  .map((v) => v.trim())
+                  .filter(Boolean)
+              : [];
+            return `<img src="${src}" alt="${alt}"${
+              width ? ` width="${width}"` : ""
+            }${height ? ` height="${height}"` : ""}>`;
+          },
+        },
+      });
+
       const parsed = marked.parse(content);
       return DOMPurify.sanitize(parsed);
     },
@@ -199,29 +196,11 @@ export default {
   width: 100%;
   height: 100%;
 }
-
 ._splitpanes {
   position: absolute;
   height: 100%;
   width: 100%;
 }
-
-._viewMode {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
-  margin: 0 auto;
-  padding: calc(var(--spacing) / 2);
-  pointer-events: none;
-
-  select {
-    max-width: 20ch;
-    pointer-events: all;
-  }
-}
-
 ._viewer {
   position: absolute;
   top: 0;
@@ -230,12 +209,5 @@ export default {
   height: 100%;
   z-index: 1;
   overflow: auto;
-}
-</style>
-<style data-pagedjs-inserted-styles="true">
-@media print {
-  .pagedjs-page {
-    background: red;
-  }
 }
 </style>

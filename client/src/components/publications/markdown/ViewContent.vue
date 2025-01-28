@@ -1,5 +1,17 @@
 <template>
   <div class="_viewContent">
+    <div class="_viewMode">
+      <select v-model="view_mode" size="small">
+        <option value="book">{{ $t("book") }}</option>
+        <option value="html">{{ $t("webpage") }}</option>
+      </select>
+      <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
+        <option value="A4">{{ $t("A4_portrait") }}</option>
+        <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
+        <option value="A5">{{ $t("A5_portrait") }}</option>
+        <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
+      </select>
+    </div>
     <vue-infinite-viewer
       v-if="view_mode === 'book'"
       class="_bookViewer"
@@ -9,7 +21,12 @@
       <div class="bookpreview" ref="bookpreview" />
     </vue-infinite-viewer>
     <div v-else class="_docViewer">
-      <div class="viewer-content" v-html="content"></div>
+      <div class="_docViewer--menu">
+        <ol v-for="(chapter, index) in content_nodes.chapters" :key="index">
+          <li>{{ chapter.title }}</li>
+        </ol>
+      </div>
+      <!-- <div class="_docViewer--content" v-html="content"></div> -->
     </div>
   </div>
 </template>
@@ -19,9 +36,15 @@ import { Previewer } from "pagedjs";
 
 export default {
   props: {
-    content: String,
-    view_mode: String,
-    format_mode: String,
+    content_nodes: Object,
+    view_mode: {
+      type: String,
+      default: "book",
+    },
+    format_mode: {
+      type: String,
+      default: "A5",
+    },
   },
   components: {
     VueInfiniteViewer,
@@ -47,7 +70,7 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    content() {
+    content_nodes() {
       this.refreshView();
     },
     view_mode() {
@@ -64,7 +87,9 @@ export default {
       styles += `
         ._chapter {
         }
-
+        ._chapter[data-starts-on-page="in_flow"]:not(:first-child) {
+          margin-top: 3rem;
+        }
         ._chapter[data-starts-on-page="left"] {
           break-before: left;
         }
@@ -122,6 +147,30 @@ export default {
         @page {
           size: ${this.format_mode};
         }
+
+        ._chapterTitle {
+          string-set: title content(text);
+        }
+
+        @page:left {
+          @bottom-left {
+            content: counter(page);
+            font-size: 10px;
+          }
+        }
+        @page:right {
+          @bottom-right {
+            content: counter(page);
+            font-size: 10px;
+          }
+        }
+
+        @page {
+          @bottom-center {
+            content: string(title);
+            font-size: 10px;
+          }
+        }
       `;
 
       return [
@@ -143,14 +192,40 @@ export default {
         this.generateBook();
       }
     },
+    makePagedjsHTML() {
+      const nodes = this.content_nodes;
+
+      let html = "";
+
+      if (nodes.cover) {
+        html += `<section class="_cover">`;
+        if (nodes.cover.title)
+          html += `<h1 class="_coverTitle">${nodes.cover.title}</h1>`;
+        if (nodes.cover.image_url)
+          html += `<div class="_coverImage" data-layout-mode="${nodes.cover.layout_mode}"><img src="${nodes.cover.image_url}" /></div>`;
+        html += `</section>`;
+      }
+
+      nodes.chapters.forEach((chapter) => {
+        html += `<section class="_chapter" data-starts-on-page="${chapter.starts_on_page}">`;
+        if (chapter.title)
+          html += `<h1 class="_chapterTitle">${chapter.title}</h1>`;
+        if (chapter.content) html += `${chapter.content}`;
+        html += `</section>`;
+      });
+
+      return html;
+    },
     generateBook() {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
 
       let paged = new Previewer();
 
+      const pagedjs_html = this.makePagedjsHTML();
+
       // let flow = paged.preview(DOMContent, ["path/to/css/file.css"], document.body).then((flow) => {
-      paged.preview(this.content, this.theme_styles, undefined).then((flow) => {
+      paged.preview(pagedjs_html, this.theme_styles, undefined).then((flow) => {
         // bookpreview.style.width =
         //   bookpreview.getBoundingClientRect().width + "px";
         // bookpreview.style.height =
@@ -174,6 +249,26 @@ export default {
   height: 100%;
 }
 
+._viewMode {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  margin: 0 auto;
+  padding: calc(var(--spacing) / 2);
+  pointer-events: none;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+
+  select {
+    max-width: 20ch;
+    pointer-events: all;
+  }
+}
+
 ._bookViewer {
   // border: 1px solid black;
   position: relative;
@@ -181,7 +276,8 @@ export default {
   height: 100%;
   cursor: move;
 
-  background: var(--c-gris_clair);
+  background-color: var(--c-gris_fonce);
+  // background: white;
   overflow: auto;
   height: 100%;
   --color-pageSheet: #cfcfcf;
@@ -297,5 +393,9 @@ export default {
       box-shadow: 0px -1px 0px 0px var(--pagedjs-crop-shadow);
     }
   }
+}
+
+._docViewer {
+  padding: calc(var(--spacing) / 1);
 }
 </style>

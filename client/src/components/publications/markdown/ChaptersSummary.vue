@@ -1,9 +1,11 @@
 <template>
-  <div class="_sectionsSummary">
+  <div class="_chaptersSummary">
+    <DLabel :str="$t('content')" />
     <transition-group
       tag="div"
       name="listComplete"
       class="_allChapters"
+      appear
       key="allpages"
     >
       <div class="_cover" :key="'cover'">
@@ -95,16 +97,17 @@
         </template>
       </div>
 
-      <div v-for="(section, index) in sections" :key="section.$path">
-        <ChapterPreview
-          :section="section"
-          :index="index"
-          :number_of_sections="sections.length"
-          :can_edit="can_edit"
-          @open="openSection(section.$path)"
-          @moveSection="moveSection"
-        />
-      </div>
+      <ChapterPreview
+        v-for="(section, index) in sections"
+        :key="section.$path"
+        :section="section"
+        :index="index"
+        :number_of_sections="sections.length"
+        :can_edit="can_edit"
+        @open="openSection(section.$path)"
+        @moveSection="moveSection"
+      />
+
       <div key="'add'" class="_addSection">
         <EditBtn
           v-if="can_edit"
@@ -179,7 +182,7 @@ export default {
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication.$path,
         filename,
-        content: "Contenu du " + this.new_section_title,
+        content: "",
         additional_meta: {
           content_type: "markdown",
         },
@@ -193,7 +196,7 @@ export default {
           section_starts_on_page: "right",
         },
       });
-      this.$emit("toggleSection", new_section_meta);
+      // this.$emit("toggleSection", new_section_meta);
     },
     async moveSection({ old_position, new_position }) {
       let sections_meta = this.sections.map((s) => ({
@@ -236,13 +239,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._sectionsSummary {
+._chaptersSummary {
   position: relative;
   height: 100%;
   overflow: auto;
   background-color: var(--c-gris_clair);
 
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 2);
 }
 
 ._createSection {
@@ -253,20 +256,22 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: calc(var(--spacing) / 2);
-
-  > * {
-    background-color: white;
-    padding: calc(var(--spacing) / 2);
-  }
+  gap: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
 }
 
 ._addSection {
+  display: flex;
+  // justify-content: center;
+  align-items: center;
+  background-color: transparent;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
 }
 
 ._cover {
   position: relative;
+  background-color: rgba(255, 255, 255, 1);
+  padding: calc(var(--spacing) / 1);
+  border-radius: var(--border-radius);
 }
 ._cover--pickCover {
   position: relative;
