@@ -89,7 +89,7 @@ export default {
         }
         ._chapter[data-starts-on-page="in_flow"]:not(:first-child) {
           margin-top: 3rem;
-        } 
+        }
         ._chapter[data-starts-on-page="left"] {
           break-before: left;
         }
@@ -146,6 +146,30 @@ export default {
       styles += `
         @page {
           size: ${this.format_mode};
+        }
+
+        ._chapterTitle {
+          string-set: title content(text);
+        }
+
+        @page:left {
+          @bottom-left {
+            content: counter(page);
+            font-size: 10px;
+          }
+        }
+        @page:right {
+          @bottom-right {
+            content: counter(page);
+            font-size: 10px;
+          }
+        }
+
+        @page {
+          @bottom-center {
+            content: string(title);
+            font-size: 10px;
+          }
         }
       `;
 
