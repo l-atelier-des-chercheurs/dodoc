@@ -450,9 +450,14 @@ export default {
   gap: calc(var(--spacing) / 1);
   padding: calc(var(--spacing) / 1);
   background-color: var(--body-bg);
+  position: relative;
+  overflow: auto;
+  height: 100%;
 
   ._docViewer--menu {
     flex: 0 0 20ch;
+    position: sticky;
+    top: 0;
     padding: calc(var(--spacing) / 1);
 
     ul,
