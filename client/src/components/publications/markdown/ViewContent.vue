@@ -21,7 +21,14 @@
       <div class="bookpreview" ref="bookpreview" />
     </vue-infinite-viewer>
     <div v-else class="_docViewer">
-      <div class="viewer-content" v-html="content"></div>
+      <div class="_docViewer--menu">
+        <div v-for="chapter in all_chapters" :key="chapter.$path">
+          {{ chapter }}
+
+          ---
+        </div>
+      </div>
+      <!-- <div class="_docViewer--content" v-html="content"></div> -->
     </div>
   </div>
 </template>
@@ -82,7 +89,9 @@ export default {
       styles += `
         ._chapter {
         }
-
+        ._chapter[data-starts-on-page="in_flow"]:not(:first-child) {
+          margin-top: 3rem;
+        } 
         ._chapter[data-starts-on-page="left"] {
           break-before: left;
         }
@@ -147,6 +156,9 @@ export default {
           pagedjs_styles: styles,
         },
       ];
+    },
+    all_chapters() {
+      return this.content.split("<section class='_chapter'");
     },
   },
   methods: {
@@ -336,5 +348,9 @@ export default {
       box-shadow: 0px -1px 0px 0px var(--pagedjs-crop-shadow);
     }
   }
+}
+
+._docViewer {
+  padding: calc(var(--spacing) / 1);
 }
 </style>

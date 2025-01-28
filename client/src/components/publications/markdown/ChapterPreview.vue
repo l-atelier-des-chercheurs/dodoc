@@ -1,5 +1,5 @@
 <template>
-  <div class="_chapterPreview">
+  <div class="u-card2 _chapterPreview">
     <div class="_selects" v-if="can_edit">
       <select
         :value="index"
@@ -70,11 +70,10 @@
 
     <button
       type="button"
-      class="u-button u-button_small u-button_bleuvert"
+      class="js--showCursor _openButton"
+      :title="$t('open')"
       @click="$emit('open')"
-    >
-      {{ $t("open") }}
-    </button>
+    />
   </div>
 </template>
 <script>
@@ -109,10 +108,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._chapterPreview {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: calc(var(--spacing) / 2);
   align-items: flex-start;
+  background-color: var(--editor-bg);
+  padding: calc(var(--spacing) / 1);
+  background-color: white;
+  border-radius: var(--border-radius);
 }
 
 ._selects {
@@ -123,15 +127,34 @@ export default {
 }
 
 ._selects--order {
-  width: 5ch;
+  // width: 5ch;
+  width: auto;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 10;
 }
 
 ._selects--starts_on_page {
-  width: 15ch;
+  // width: 15ch;
+  width: auto;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 10;
 }
 
 ._item--content {
   font-size: var(--sl-font-size-x-small);
   opacity: 0.5;
+}
+
+._openButton {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+
+  margin: 0;
 }
 </style>

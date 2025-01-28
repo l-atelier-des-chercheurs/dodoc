@@ -1,10 +1,13 @@
 <template>
   <div class="_openChapter">
     <div class="_topButtons">
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
-        {{ $t("close") }}
-      </button>
-      <SelectField
+      <div>
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          <b-icon icon="arrow-left-short" />
+          {{ $t("back") }}
+        </button>
+      </div>
+      <!-- <SelectField
         :field_name="'content_type'"
         :content="content_type"
         :path="chapter._main_text.$path"
@@ -14,7 +17,7 @@
         ]"
         :can_edit="can_edit"
         :hide_validation="true"
-      />
+      /> -->
       <RemoveMenu @remove="$emit('remove')" />
     </div>
     <div class="_content">
@@ -44,6 +47,7 @@
           :custom_formats="custom_formats"
           :save_format="save_format"
           :can_edit="can_edit"
+          :mode="'always_active'"
         />
       </template>
     </div>

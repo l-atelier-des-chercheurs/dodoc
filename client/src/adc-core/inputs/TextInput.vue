@@ -25,7 +25,7 @@
       :content="content"
       :custom_formats="['bold', 'italic', 'link']"
       :is_collaborative="false"
-      :edit_on_mounted="true"
+      :mode="'always_active'"
       :can_edit="true"
       @input="$emit('update:content', $event)"
     />

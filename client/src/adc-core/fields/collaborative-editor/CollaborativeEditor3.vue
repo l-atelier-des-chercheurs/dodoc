@@ -68,7 +68,7 @@
           </transition>
           <EditBtn
             class="_editBtn"
-            v-if="is_collaborative"
+            v-if="is_collaborative && mode !== 'always_active'"
             :btn_type="'check'"
             :label_position="'left'"
             @click="disableEditor"
@@ -89,7 +89,6 @@
           @click="enableEditor"
         />
       </div>
-
       <div ref="editor" />
     </div>
   </div>
@@ -171,7 +170,6 @@ export default {
     },
     scrollingContainer: HTMLElement,
     custom_formats: Array,
-    edit_on_mounted: Boolean,
     can_edit: Boolean,
     is_collaborative: {
       type: Boolean,
@@ -180,6 +178,10 @@ export default {
     save_format: {
       type: String,
       default: "html",
+    },
+    mode: {
+      type: String,
+      default: "normal",
     },
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
@@ -224,7 +226,7 @@ export default {
     await this.initEditor();
     this.toolbar_el = this.$el.querySelector(".ql-toolbar");
     this.tooltip_el = this.$el.querySelector(".ql-tooltip");
-    if (this.edit_on_mounted === true) this.enableEditor();
+    if (this.mode === "always_active") this.enableEditor();
   },
   beforeDestroy() {
     this.disableEditor();

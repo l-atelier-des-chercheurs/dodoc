@@ -110,49 +110,51 @@ export default {
       return false;
     },
     content_to_view() {
-      let html = "";
-
-      if (this.publication.cover_enabled) {
-        html += `<div class="_cover">`;
-
-        if (this.publication.cover_title)
-          html += `<h1 class="_coverTitle">${this.publication.cover_title}</h1>`;
-
-        if (this.cover_image) {
-          const cover_full = this.makeMediaFileURL({
-            $path: this.cover_image.$path,
-            $media_filename: this.cover_image.$media_filename,
-          });
-          let layout_mode = this.publication.cover_image_layout || "normal";
-          html += `<div class="_coverImage" data-layout-mode="${layout_mode}"><img src="${cover_full}" /></div>`;
+      if (this.view_mode === "html") {
+        let;
+      } else if (this.view_mode === "book") {
+        let html = "";
+        if (this.publication.cover_enabled) {
+          html += `<div class="_cover">`;
+          if (this.publication.cover_title)
+            html += `<h1 class="_coverTitle">${this.publication.cover_title}</h1>`;
+          if (this.cover_image) {
+            const cover_full = this.makeMediaFileURL({
+              $path: this.cover_image.$path,
+              $media_filename: this.cover_image.$media_filename,
+            });
+            let layout_mode = this.publication.cover_image_layout || "normal";
+            html += `<div class="_coverImage" data-layout-mode="${layout_mode}"><img src="${cover_full}" /></div>`;
+          }
+          html += `</div>`;
         }
 
-        html += `</div>`;
+        const formatChapter = (chapter) => {
+          const starts_on_page = chapter.section_starts_on_page || "in_flow";
+
+          let content = `<section class='_chapter' data-starts-on-page="${starts_on_page}">`;
+          content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
+          if (
+            chapter._main_text?.content_type === "markdown" &&
+            chapter._main_text?.$content
+          ) {
+            content += this.parseMarkdown(chapter._main_text.$content);
+          } else {
+            content += chapter._main_text?.$content || "";
+          }
+          content += "</section>";
+          return content;
+        };
+
+        html += this.all_chapters.reduce((acc, chapter) => {
+          acc += formatChapter(chapter);
+          return acc;
+        }, "");
+
+        return html;
       }
 
-      const formatChapter = (chapter) => {
-        const starts_on_page = chapter.section_starts_on_page || "in_flow";
-
-        let content = `<section class='_chapter' data-starts-on-page="${starts_on_page}">`;
-        content += `<h1 class="_chapterTitle">${chapter.section_title}</h1>`;
-        if (
-          chapter._main_text?.content_type === "markdown" &&
-          chapter._main_text?.$content
-        ) {
-          content += this.parseMarkdown(chapter._main_text.$content);
-        } else {
-          content += chapter._main_text?.$content || "";
-        }
-        content += "</section>";
-        return content;
-      };
-
-      html += this.all_chapters.reduce((acc, chapter) => {
-        acc += formatChapter(chapter);
-        return acc;
-      }, "");
-
-      return html;
+      return false;
     },
   },
   methods: {

@@ -7,7 +7,7 @@
       appear
       key="allpages"
     >
-      <div class="_singleChapter _cover" :key="'cover'">
+      <div class="_cover" :key="'cover'">
         <div class="u-spacingBottom">
           <ToggleField
             :field_name="'cover_enabled'"
@@ -96,20 +96,17 @@
         </template>
       </div>
 
-      <div
+      <ChapterPreview
         v-for="(section, index) in sections"
         :key="section.$path"
-        class="u-card2 _singleChapter"
-      >
-        <ChapterPreview
-          :section="section"
-          :index="index"
-          :number_of_sections="sections.length"
-          :can_edit="can_edit"
-          @open="openSection(section.$path)"
-          @moveSection="moveSection"
-        />
-      </div>
+        :section="section"
+        :index="index"
+        :number_of_sections="sections.length"
+        :can_edit="can_edit"
+        @open="openSection(section.$path)"
+        @moveSection="moveSection"
+      />
+
       <div key="'add'" class="_addSection">
         <EditBtn
           v-if="can_edit"
@@ -258,15 +255,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: calc(var(--spacing) * 1);
-}
-._singleChapter {
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 1);
-
-  &:hover {
-  }
+  gap: calc(var(--spacing) * 4) calc(var(--spacing) * 1);
 }
 
 ._addSection {
@@ -279,6 +268,9 @@ export default {
 
 ._cover {
   position: relative;
+  background-color: rgba(255, 255, 255, 1);
+  padding: calc(var(--spacing) / 1);
+  border-radius: var(--border-radius);
 }
 ._cover--pickCover {
   position: relative;
