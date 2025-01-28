@@ -25,8 +25,9 @@
         <div class="_viewer">
           <ViewContent
             :content_nodes="content_nodes"
-            :view_mode.sync="view_mode"
-            :format_mode.sync="format_mode"
+            :opened_chapter_meta_filename="opened_section_meta_filename"
+            :can_edit="can_edit"
+            @openChapter="$emit('toggleSection', $event)"
           />
         </div>
       </pane>
@@ -56,10 +57,7 @@ export default {
     ViewContent,
   },
   data() {
-    return {
-      view_mode: "book",
-      format_mode: "A5",
-    };
+    return {};
   },
   created() {},
   mounted() {},
@@ -135,6 +133,7 @@ export default {
         let _chapter = {};
 
         _chapter.title = chapter.section_title;
+        _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
         if (chapter._main_text?.$content) {
           if (chapter._main_text?.content_type === "markdown") {

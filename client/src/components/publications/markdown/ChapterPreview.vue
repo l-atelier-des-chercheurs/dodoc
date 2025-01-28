@@ -141,7 +141,7 @@ export default {
 
 ._item--content {
   font-size: var(--sl-font-size-x-small);
-  opacity: 0.5;
+  opacity: 0.75;
 }
 
 ._openButton {

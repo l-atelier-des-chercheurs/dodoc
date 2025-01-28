@@ -12,22 +12,42 @@
         <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
       </select>
     </div>
-    <vue-infinite-viewer
-      v-if="view_mode === 'book'"
-      class="_bookViewer"
-      ref="viewer"
-      v-bind="viewerOptions"
-    >
-      <div class="bookpreview" ref="bookpreview" />
-    </vue-infinite-viewer>
+    <template v-if="view_mode === 'book'">
+      <vue-infinite-viewer
+        class="_bookViewer"
+        ref="viewer"
+        v-bind="viewerOptions"
+      >
+        <div class="bookpreview" ref="bookpreview" />
+      </vue-infinite-viewer>
+    </template>
     <div v-else class="_docViewer">
       <div class="_docViewer--menu">
-        <ol v-for="(chapter, index) in content_nodes.chapters" :key="index">
-          <li>{{ chapter.title }}</li>
+        <ol>
+          <li v-for="(chapter, index) in content_nodes.chapters" :key="index">
+            <button
+              type="button"
+              class="u-button u-button--small"
+              :class="{
+                'is--active':
+                  chapter.meta_filename === opened_chapter.meta_filename,
+              }"
+              @click="$emit('openChapter', chapter.meta_filename)"
+            >
+              {{ chapter.title }}
+            </button>
+          </li>
         </ol>
       </div>
-      <!-- <div class="_docViewer--content" v-html="content"></div> -->
+      <transition name="pagechange" mode="out-in">
+        <div
+          class="_docViewer--content"
+          :key="opened_chapter.meta_filename"
+          v-html="opened_chapter.content"
+        />
+      </transition>
     </div>
+    <LoaderSpinner v-if="is_loading" />
   </div>
 </template>
 <script>
@@ -37,20 +57,18 @@ import { Previewer } from "pagedjs";
 export default {
   props: {
     content_nodes: Object,
-    view_mode: {
-      type: String,
-      default: "book",
-    },
-    format_mode: {
-      type: String,
-      default: "A5",
-    },
+    opened_chapter_meta_filename: String,
   },
   components: {
     VueInfiniteViewer,
   },
   data() {
     return {
+      is_loading: false,
+
+      view_mode: "book",
+      format_mode: "A5",
+
       viewerOptions: {
         useMouseDrag: true,
         useWheelScroll: true,
@@ -59,6 +77,7 @@ export default {
         maxPinchWheel: 10,
         displayVerticalScroll: true,
         displayHorizontalScroll: true,
+        rangeX: [0, 1000],
       },
     };
   },
@@ -74,7 +93,9 @@ export default {
       this.refreshView();
     },
     view_mode() {
-      this.refreshView();
+      this.$nextTick(() => {
+        this.refreshView();
+      });
     },
     format_mode() {
       this.refreshView();
@@ -86,6 +107,7 @@ export default {
 
       styles += `
         ._chapter {
+
         }
         ._chapter[data-starts-on-page="in_flow"]:not(:first-child) {
           margin-top: 3rem;
@@ -179,9 +201,16 @@ export default {
         },
       ];
     },
+    opened_chapter() {
+      return this.content_nodes.chapters.find(
+        (chapter) => chapter.meta_filename === this.opened_chapter_meta_filename
+      );
+    },
   },
   methods: {
-    refreshView() {
+    async refreshView() {
+      this.is_loading = true;
+
       document
         .querySelectorAll("style[data-pagedjs-inserted-styles]")
         .forEach((styleElement) => {
@@ -189,11 +218,18 @@ export default {
         });
 
       if (this.view_mode === "book") {
-        this.generateBook();
+        await this.generateBook();
       }
+
+      this.is_loading = false;
     },
     makePagedjsHTML() {
       const nodes = this.content_nodes;
+
+      // if (this.opened_chapter) {
+      //   delete nodes.chapters
+      //   nodes.chapters = [this.opened_chapter];
+      // }
 
       let html = "";
 
@@ -216,9 +252,14 @@ export default {
 
       return html;
     },
-    generateBook() {
+    async generateBook() {
+      console.log("generateBook");
+
       const bookpreview = this.$refs.bookpreview;
-      if (!bookpreview) return;
+      if (!bookpreview) {
+        console.log("no bookpreview div");
+        return;
+      }
 
       let paged = new Previewer();
 
@@ -234,6 +275,12 @@ export default {
         bookpreview.innerHTML = "";
         const pagesOutput = flow.pagesArea;
         bookpreview.appendChild(pagesOutput);
+
+        this.$nextTick(() => {
+          const { width, height } = bookpreview.getBoundingClientRect();
+          this.viewerOptions.rangeX = [-width, width * 2];
+          this.viewerOptions.rangeY = [-100, height];
+        });
 
         // bookpreview.style.width = "";
         // bookpreview.style.height = "";
@@ -260,7 +307,9 @@ export default {
   pointer-events: none;
 
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
   gap: calc(var(--spacing) / 2);
 
   select {
@@ -274,7 +323,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  cursor: move;
+  // cursor: move;
 
   background-color: var(--c-gris_fonce);
   // background: white;
@@ -396,6 +445,25 @@ export default {
 }
 
 ._docViewer {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 1);
   padding: calc(var(--spacing) / 1);
+  background-color: var(--body-bg);
+
+  ._docViewer--menu {
+    flex: 0 0 20ch;
+    padding: calc(var(--spacing) / 1);
+
+    ul,
+    ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+  }
+  ._docViewer--content {
+    flex: 1 1 100%;
+  }
 }
 </style>
