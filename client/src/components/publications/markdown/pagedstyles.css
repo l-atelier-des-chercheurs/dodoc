@@ -1,25 +1,26 @@
+._chapterTitle {
+  string-set: title content(text);
+}
+
 @page {
   margin-top: 20mm;
   margin-bottom: 30mm;
 }
-@page: left {
+@page:left {
   margin-left: 30mm;
   margin-right: 20mm;
 }
-@page: right {
+@page:right {
   margin-left: 20mm;
   margin-right: 30mm;
-}
-._chapterTitle {
-  string-set: title content(text);
-}
-@page: left {
+};
+@page:left {
   @bottom-left {
     content: counter(page);
     font-size: 10px;
   }
 }
-@page: right {
+@page:right {
   @bottom-right {
     content: counter(page);
     font-size: 10px;
@@ -31,6 +32,7 @@
     font-size: 10px;
   }
 }
+
 ._chapter {
 }
 ._chapter[data-starts-on-page="in_flow"]:not(:first-child) {
@@ -46,11 +48,8 @@
 p {
   margin: 1em 0;
 }
-._break {
-  break-after: page;
-}
 ._cover {
-  break-after: left;
+  break-after: page;
 }
 
 ._coverTitle {
@@ -84,12 +83,17 @@ p {
 }
 ._cover[data-layout-mode="text_top_image_down"] ._coverImage {
   position: absolute;
-  top: calc(var(--pagedjs-margin-top) * -1) + calc(var(--pagedjs-height) / 2);
+  top: calc(var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2));
   left: calc(var(--pagedjs-margin-left) * -1);
   width: var(--pagedjs-width);
   height: calc(var(--pagedjs-height) / 2);
 }
 
+._cover[data-layout-mode="image_top_text_down"] ._coverTitle {
+  position: absolute;
+  top: calc(var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2) + 2rem);
+  height: calc(var(--pagedjs-height) / 2);
+}
 ._cover[data-layout-mode="image_top_text_down"] ._coverImage {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1);

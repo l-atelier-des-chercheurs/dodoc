@@ -56,7 +56,7 @@
 import VueInfiniteViewer from "vue-infinite-viewer";
 import { Previewer } from "pagedjs";
 
-import pagedstyles from "@/components/publications/markdown/pagedstyles.css?raw";
+import default_pagedstyles from "@/components/publications/markdown/pagedstyles.css?raw";
 
 export default {
   props: {
@@ -180,8 +180,7 @@ export default {
         size: ${this.format_mode};
       }
       `;
-
-      pagedjs_styles += pagedstyles;
+      pagedjs_styles += default_pagedstyles;
 
       const theme_styles = [
         {
