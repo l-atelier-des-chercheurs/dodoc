@@ -49,30 +49,13 @@
               <div class="u-spacingBottom" />
 
               <SelectField2
-                :field_name="'cover_image_layout'"
-                :value="publication.cover_image_layout"
+                :field_name="'cover_layout_mode'"
+                :value="publication.cover_layout_mode"
                 :path="publication.$path"
                 size="small"
                 :hide_validation="true"
                 :can_edit="can_edit"
-                :options="[
-                  {
-                    key: '',
-                    text: $t('normal'),
-                  },
-                  {
-                    key: 'full_page',
-                    text: $t('full_page'),
-                  },
-                  {
-                    key: 'half_top',
-                    text: $t('half_page_top'),
-                  },
-                  {
-                    key: 'half_bottom',
-                    text: $t('half_page_bottom'),
-                  },
-                ]"
+                :options="cover_layout_mode_options"
               />
             </template>
 
@@ -135,6 +118,24 @@ export default {
   data() {
     return {
       show_cover_picker: false,
+      cover_layout_mode_options: [
+        {
+          key: "normal",
+          text: this.$t("normal"),
+        },
+        {
+          key: "full_page",
+          text: this.$t("full_page"),
+        },
+        {
+          key: "text_top_image_down",
+          text: this.$t("text_top_image_down"),
+        },
+        {
+          key: "image_top_text_down",
+          text: this.$t("image_top_text_down"),
+        },
+      ],
     };
   },
   created() {},

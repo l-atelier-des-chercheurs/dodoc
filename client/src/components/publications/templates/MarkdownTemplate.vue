@@ -10,7 +10,7 @@
           :can_edit="can_edit"
           @toggleSection="$emit('toggleSection', $event)"
         />
-        <transition name="scaleInFade" mode="out-in">
+        <transition name="scaleInFade" mode="in-out">
           <OpenChapter
             v-if="open_chapter"
             :key="open_chapter.$path"
@@ -124,7 +124,7 @@ export default {
             nodes.cover.image_url = image_url;
           }
           nodes.cover.layout_mode =
-            this.publication.cover_image_layout || "normal";
+            this.publication.cover_layout_mode || "normal";
         }
       }
 

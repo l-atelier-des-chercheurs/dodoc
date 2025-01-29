@@ -89,7 +89,6 @@ export default {
       let blob = null;
       blob = file.data;
 
-      debugger;
       if (this.ratio) this.crop_mode = true;
       this.picked_image = URL.createObjectURL(blob);
     },

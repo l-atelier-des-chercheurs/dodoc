@@ -404,7 +404,7 @@
                   "cover_meta_filename": {
                     "type": "string"
                   },
-                  "cover_image_layout": {
+                  "cover_layout_mode": {
                     "type": "string"
                   }
                 },

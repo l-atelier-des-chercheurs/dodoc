@@ -17,6 +17,7 @@
         class="_bookViewer"
         ref="viewer"
         v-bind="viewerOptions"
+        :style="pagedvar"
       >
         <div class="bookpreview" ref="bookpreview" />
       </vue-infinite-viewer>
@@ -27,10 +28,10 @@
           <li v-for="(chapter, index) in content_nodes.chapters" :key="index">
             <button
               type="button"
-              class="u-button u-button--small"
+              class="u-buttonLink"
               :class="{
                 'is--active':
-                  chapter.meta_filename === opened_chapter.meta_filename,
+                  chapter.meta_filename === opened_chapter_meta_filename,
               }"
               @click="$emit('openChapter', chapter.meta_filename)"
             >
@@ -42,7 +43,8 @@
       <transition name="pagechange" mode="out-in">
         <div
           class="_docViewer--content"
-          :key="opened_chapter.meta_filename"
+          :key="opened_chapter_meta_filename"
+          v-if="opened_chapter"
           v-html="opened_chapter.content"
         />
       </transition>
@@ -53,6 +55,8 @@
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
 import { Previewer } from "pagedjs";
+
+import pagedstyles from "@/components/publications/markdown/pagedstyles.css?raw";
 
 export default {
   props: {
@@ -102,104 +106,10 @@ export default {
     },
   },
   computed: {
-    theme_styles() {
-      let styles = "";
-
-      styles += `
-        ._chapter {
-
-        }
-        ._chapter[data-starts-on-page="in_flow"]:not(:first-child) {
-          margin-top: 3rem;
-        }
-        ._chapter[data-starts-on-page="left"] {
-          break-before: left;
-        }
-
-        ._chapter[data-starts-on-page="right"] {
-          break-before: right;
-        }
-
-        p {
-          margin: 1em 0;
-        }
-        ._cover {
-          break-after: left;
-        }
-        ._coverTitle {
-          position: relative;
-          z-index: 1000;
-        }
-        ._coverImage {
-          position: relative;
-          z-index: 2;
-        }
-        ._coverImage[data-layout-mode="full_page"] {
-          position: absolute;
-          z-index: 1;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-        }
-        ._coverImage[data-layout-mode="half_top"] {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 50%;
-        }
-        ._coverImage[data-layout-mode="half_bottom"] {
-          position: absolute;
-          top: 50%;
-          left: 0;
-          width: 100%;
-          height: 50%;
-        }
-        ._coverImage:not([data-layout-mode="normal"]) img {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      `;
-      styles += `
-        @page {
-          size: ${this.format_mode};
-        }
-
-        ._chapterTitle {
-          string-set: title content(text);
-        }
-
-        @page:left {
-          @bottom-left {
-            content: counter(page);
-            font-size: 10px;
-          }
-        }
-        @page:right {
-          @bottom-right {
-            content: counter(page);
-            font-size: 10px;
-          }
-        }
-
-        @page {
-          @bottom-center {
-            content: string(title);
-            font-size: 10px;
-          }
-        }
-      `;
-
-      return [
-        {
-          pagedjs_styles: styles,
-        },
-      ];
+    pagedvar() {
+      return {
+        "--pagedjs-format": this.format_mode,
+      };
     },
     opened_chapter() {
       return this.content_nodes.chapters.find(
@@ -234,11 +144,11 @@ export default {
       let html = "";
 
       if (nodes.cover) {
-        html += `<section class="_cover">`;
+        html += `<section class="_cover" data-layout-mode="${nodes.cover.layout_mode}">`;
         if (nodes.cover.title)
           html += `<h1 class="_coverTitle">${nodes.cover.title}</h1>`;
         if (nodes.cover.image_url)
-          html += `<div class="_coverImage" data-layout-mode="${nodes.cover.layout_mode}"><img src="${nodes.cover.image_url}" /></div>`;
+          html += `<div class="_coverImage"><img src="${nodes.cover.image_url}" /></div>`;
         html += `</section>`;
       }
 
@@ -265,8 +175,21 @@ export default {
 
       const pagedjs_html = this.makePagedjsHTML();
 
-      // let flow = paged.preview(DOMContent, ["path/to/css/file.css"], document.body).then((flow) => {
-      paged.preview(pagedjs_html, this.theme_styles, undefined).then((flow) => {
+      let pagedjs_styles = `
+      @page {
+        size: ${this.format_mode};
+      }
+      `;
+
+      pagedjs_styles += pagedstyles;
+
+      const theme_styles = [
+        {
+          pagedjs_styles,
+        },
+      ];
+
+      paged.preview(pagedjs_html, theme_styles, undefined).then((flow) => {
         // bookpreview.style.width =
         //   bookpreview.getBoundingClientRect().width + "px";
         // bookpreview.style.height =
@@ -355,6 +278,9 @@ export default {
         flex-shrink: 0;
         flex-grow: 0;
         margin-top: 10mm;
+      }
+      .pagedjs_page_content {
+        box-shadow: 0 0 0 1px var(--color-pageSheet);
       }
 
       .pagedjs_first_page {
