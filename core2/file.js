@@ -699,12 +699,12 @@ module.exports = (function () {
   }
 
   async function _embedSourceMedias({ meta }) {
-    if (
-      !["source_medias", "map_base_media_filename", "cover_meta_filename"].some(
-        (key) => meta.hasOwnProperty(key)
-      )
-    )
-      return meta;
+    // if (
+    //   !["source_medias", "map_base_media_filename", "cover_meta_filename"].some(
+    //     (key) => meta.hasOwnProperty(key)
+    //   )
+    // )
+    //   return meta;
 
     const source_folder = utils.getFolderParent(
       utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
@@ -730,15 +730,8 @@ module.exports = (function () {
           meta.source_medias[index]._media = source_media_meta;
       }
 
-    const map_base_media_meta = await findSourceMedia(
-      meta,
-      "map_base_media_filename"
-    );
-    if (map_base_media_meta) meta["_map_base_media"] = map_base_media_meta;
-
-    ["map_base_media_filename", "cover_meta_filename"].forEach(
-      async (key) => {}
-    );
+    const _map = await findSourceMedia(meta, "map_base_media_filename");
+    if (_map) meta["_map_base_media"] = _map;
 
     return meta;
   }

@@ -4,7 +4,6 @@
       <pane>
         <ChaptersSummary
           :publication="publication"
-          :cover_image="cover_image"
           :sections="all_chapters"
           :opened_section_meta_filename="opened_section_meta_filename"
           :can_edit="can_edit"
@@ -76,24 +75,6 @@ export default {
         }
         return chapter;
       });
-    },
-    cover_image() {
-      if (this.publication.cover_enabled !== true) return false;
-
-      let cover = {};
-      if (this.publication.cover_meta_filename) {
-        cover = this.getSourceMedia({
-          source_media: {
-            meta_filename_in_project: this.publication.cover_meta_filename,
-          },
-          folder_path: this.publication.$path,
-        });
-        if (cover) {
-          return cover;
-        }
-      }
-
-      return false;
     },
     open_chapter() {
       if (this.opened_section_meta_filename) {

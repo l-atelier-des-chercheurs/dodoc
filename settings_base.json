@@ -394,18 +394,6 @@
                   },
                   "pagn_bottom": {
                     "type": "number"
-                  },
-                  "cover_enabled": {
-                    "type": "boolean"
-                  },
-                  "cover_title": {
-                    "type": "string"
-                  },
-                  "cover_meta_filename": {
-                    "type": "string"
-                  },
-                  "cover_layout_mode": {
-                    "type": "string"
                   }
                 },
                 "$files": {
@@ -544,6 +532,12 @@
                     },
                     "zoom_level": {
                       "type": "number"
+                    },
+                    "cover_type": {
+                      "type": "string"
+                    },
+                    "cover_layout_mode": {
+                      "type": "string"
                     }
                   }
                 }

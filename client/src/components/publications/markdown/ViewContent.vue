@@ -84,7 +84,7 @@ export default {
       is_loading: false,
 
       view_mode: "book",
-      format_mode: "A5",
+      format_mode: "A4",
 
       viewerOptions: {
         useMouseDrag: true,
@@ -131,6 +131,9 @@ export default {
         "--pagedjs-format": this.format_mode,
       };
     },
+    cover_media() {
+      return this.publication.$files.find((f) => f.cover_type === "front");
+    },
     all_chapters() {
       return this.getSectionsWithProps({
         publication: this.publication,
@@ -155,31 +158,8 @@ export default {
     content_nodes() {
       let nodes = {};
 
-      if (this.publication.cover_enabled) {
-        nodes.cover = {};
-        if (this.publication.cover_title)
-          nodes.cover.title = this.publication.cover_title;
-
-        if (this.publication.cover_meta_filename) {
-          const cover_file = this.getSourceMedia({
-            source_media: {
-              meta_filename_in_project: this.publication.cover_meta_filename,
-            },
-            folder_path: this.publication.$path,
-          });
-          if (cover_file) {
-            const image_url = this.makeMediaFileURL({
-              $path: cover_file.$path,
-              $media_filename: cover_file.$media_filename,
-            });
-            if (image_url) {
-              nodes.cover.image_url = image_url;
-              nodes.cover.layout_mode =
-                this.publication.cover_layout_mode || "normal";
-            }
-          }
-        }
-      }
+      const cover = this.parseCover();
+      if (cover) nodes.cover = cover;
 
       nodes.chapters = [];
 
@@ -204,6 +184,39 @@ export default {
     },
   },
   methods: {
+    parseCover() {
+      let cover = undefined;
+      if (
+        this.cover_media &&
+        (this.cover_media.$content ||
+          this.cover_media.source_medias?.length > 0)
+      ) {
+        cover = {};
+
+        if (this.cover_media.$content?.length > 0) {
+          cover.title = this.parseMarkdown(this.cover_media.$content);
+        }
+
+        if (this.cover_media.source_medias?.length > 0) {
+          const cover_file = this.getSourceMedia({
+            source_media: this.cover_media.source_medias[0],
+            folder_path: this.publication.$path,
+          });
+          if (cover_file) {
+            cover.image_meta = cover_file;
+
+            const image_url = this.makeMediaFileURL({
+              $path: cover_file.$path,
+              $media_filename: cover_file.$media_filename,
+            });
+            if (image_url) cover.image_url = image_url;
+          }
+        }
+
+        cover.layout_mode = this.cover_media.cover_layout_mode || "normal";
+      }
+      return cover;
+    },
     parseMarkdown(content) {
       const url_to_medias =
         window.location.origin + "/" + this.getParent(this.publication.$path);
@@ -258,7 +271,7 @@ export default {
       if (nodes.cover) {
         html += `<section class="_cover" data-layout-mode="${nodes.cover.layout_mode}">`;
         if (nodes.cover.title)
-          html += `<h1 class="_coverTitle">${nodes.cover.title}</h1>`;
+          html += `<hgroup class="_coverTitle">${nodes.cover.title}</hgroup>`;
         if (nodes.cover.image_url)
           html += `<div class="_coverImage"><img src="${nodes.cover.image_url}" /></div>`;
         html += `</section>`;

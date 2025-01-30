@@ -29,8 +29,9 @@
         @cancel="cancel"
       />
     </div>
-
-    <LoaderSpinner v-if="is_saving" />
+    <transition v-else name="fade">
+      <LoaderSpinner v-if="is_saving" />
+    </transition>
 
     <!-- {{ value }} / {{ new_value }} -->
   </div>

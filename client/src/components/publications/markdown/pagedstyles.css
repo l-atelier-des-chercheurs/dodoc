@@ -54,11 +54,11 @@ p {
 
 ._coverTitle {
   position: relative;
-  z-index: 1000;
+  z-index: 2;
 }
 ._coverImage {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 ._cover:not([data-layout-mode="normal"]) ._coverImage img {

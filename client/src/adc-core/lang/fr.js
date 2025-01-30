@@ -1283,4 +1283,5 @@ export default {
   next_right_page: "Page de droite",
   no_content: "Pas de contenu",
   book: "Livre",
+  normal: "Normal",
 };
