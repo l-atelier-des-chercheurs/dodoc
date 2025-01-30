@@ -1,13 +1,12 @@
 <template>
   <div class="_markdownExport">
-    <pre>{{ publication }}</pre>
-    <!-- <ViewContent
+    <ViewContent
       :publication="publication"
       :opened_chapter_meta_filename="opened_chapter_meta_filename"
       :viewer_type="'div'"
       :can_edit="false"
       @openChapter="toggleChapter"
-    /> -->
+    />
   </div>
 </template>
 <script>
