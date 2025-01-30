@@ -91,9 +91,9 @@ export default {
     async updateSelect() {
       this.$emit("update", this.new_value);
 
-      this.is_saving = true;
-
       if (this.path && this.field_name) {
+        this.is_saving = true;
+
         const new_meta = {
           [this.field_name]: this.new_value,
         };
