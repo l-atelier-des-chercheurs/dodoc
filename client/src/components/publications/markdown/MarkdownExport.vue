@@ -3,6 +3,7 @@
     <ViewContent
       :publication="publication"
       :opened_chapter_meta_filename="opened_chapter_meta_filename"
+      :viewer_type="'div'"
       :can_edit="false"
       @openChapter="toggleChapter"
     />

@@ -5,10 +5,10 @@
         <ChaptersSummary
           :publication="publication"
           :cover_image="cover_image"
-          :chapters="all_chapters"
-          :opened_chapter_meta_filename="opened_section_meta_filename"
+          :sections="all_chapters"
+          :opened_section_meta_filename="opened_section_meta_filename"
           :can_edit="can_edit"
-          @toggleChapter="$emit('toggleChapter', $event)"
+          @toggleSection="$emit('toggleSection', $event)"
         />
         <transition name="scaleInFade" mode="in-out">
           <OpenChapter

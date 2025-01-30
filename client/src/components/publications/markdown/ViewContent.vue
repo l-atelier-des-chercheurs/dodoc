@@ -14,15 +14,18 @@
     </div>
 
     <template v-if="view_mode === 'book'">
-      <component
-        :is="viewer_type"
-        class="_bookViewer"
+      <vue-infinite-viewer
+        v-if="viewer_type === 'vue-infinite-viewer'"
+        class="_bookViewer _infiniteViewer"
         ref="viewer"
         v-bind="viewerOptions"
         :style="pagedvar"
       >
         <div class="bookpreview" ref="bookpreview" />
-      </component>
+      </vue-infinite-viewer>
+      <div v-else class="_bookViewer" ref="viewer" :style="pagedvar">
+        <div class="bookpreview" ref="bookpreview" />
+      </div>
     </template>
     <div v-else class="_docViewer">
       <div class="_docViewer--menu">
@@ -67,6 +70,10 @@ import default_pagedstyles from "@/components/publications/markdown/pagedstyles.
 export default {
   props: {
     publication: Object,
+    viewer_type: {
+      type: String,
+      default: "vue-infinite-viewer",
+    },
     opened_chapter_meta_filename: String,
   },
   components: {
@@ -88,16 +95,23 @@ export default {
         displayVerticalScroll: true,
         displayHorizontalScroll: true,
         rangeX: [0, 1000],
+        rangeY: [0, 1000],
       },
     };
   },
   created() {},
   mounted() {
+    window.addEventListener("beforeprint", this.beforePrint);
+    window.addEventListener("afterprint", this.afterPrint);
+
     this.$nextTick(() => {
       this.refreshView();
     });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    window.removeEventListener("beforeprint", this.beforePrint);
+    window.removeEventListener("afterprint", this.afterPrint);
+  },
   watch: {
     content_nodes() {
       this.refreshView();
@@ -112,10 +126,6 @@ export default {
     },
   },
   computed: {
-    viewer_type() {
-      // return "div";
-      return VueInfiniteViewer;
-    },
     pagedvar() {
       return {
         "--pagedjs-format": this.format_mode,
@@ -138,9 +148,8 @@ export default {
       });
     },
     opened_chapter() {
-      return this.all_chapters.find(
-        (chapter) =>
-          this.getFilename(chapter.$path) === this.opened_chapter_meta_filename
+      return this.content_nodes.chapters.find(
+        (chapter) => chapter.meta_filename === this.opened_chapter_meta_filename
       );
     },
     content_nodes() {
@@ -341,23 +350,30 @@ export default {
     max-width: 20ch;
     pointer-events: all;
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 ._bookViewer {
   // border: 1px solid black;
   position: relative;
-  width: 100%;
-  height: 100%;
-  // cursor: move;
 
-  background-color: var(--c-gris_fonce);
-  // background: white;
-  overflow: auto;
-  height: 100%;
+  &._infiniteViewer {
+    width: 100%;
+    height: 100%;
+    background-color: var(--c-gris_fonce);
+    overflow: auto;
+    height: 100%;
+    cursor: move;
+  }
+
   --color-pageSheet: #cfcfcf;
   --color-pageBox: violet;
   --color-paper: white;
   --color-marginBox: transparent;
+  --color-pageContent: #eee;
   --pagedjs-crop-color: black;
   --pagedjs-crop-shadow: white;
   --pagedjs-crop-stroke: 1px;
@@ -382,7 +398,7 @@ export default {
         margin-top: 10mm;
       }
       .pagedjs_page_content {
-        box-shadow: 0 0 0 1px var(--color-pageSheet);
+        box-shadow: 0 0 0 1px var(--color-pageContent);
       }
 
       .pagedjs_first_page {
