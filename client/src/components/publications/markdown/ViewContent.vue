@@ -12,15 +12,17 @@
         <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
       </select>
     </div>
+
     <template v-if="view_mode === 'book'">
-      <vue-infinite-viewer
+      <component
+        :is="viewer_type"
         class="_bookViewer"
         ref="viewer"
         v-bind="viewerOptions"
         :style="pagedvar"
       >
         <div class="bookpreview" ref="bookpreview" />
-      </vue-infinite-viewer>
+      </component>
     </template>
     <div v-else class="_docViewer">
       <div class="_docViewer--menu">
@@ -43,7 +45,7 @@
       <transition name="pagechange" mode="out-in">
         <div
           class="_docViewer--content"
-          :key="opened_chapter_meta_filename"
+          :key="opened_chapter.meta_filename"
           v-if="opened_chapter"
           v-html="opened_chapter.content"
         />
@@ -54,13 +56,17 @@
 </template>
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
+import { marked } from "marked";
+import { baseUrl } from "marked-base-url";
+import DOMPurify from "dompurify";
+
 import { Previewer } from "pagedjs";
 
 import default_pagedstyles from "@/components/publications/markdown/pagedstyles.css?raw";
 
 export default {
   props: {
-    content_nodes: Object,
+    publication: Object,
     opened_chapter_meta_filename: String,
   },
   components: {
@@ -106,18 +112,115 @@ export default {
     },
   },
   computed: {
+    viewer_type() {
+      // return "div";
+      return VueInfiniteViewer;
+    },
     pagedvar() {
       return {
         "--pagedjs-format": this.format_mode,
       };
     },
+    all_chapters() {
+      return this.getSectionsWithProps({
+        publication: this.publication,
+        group: "sections_list",
+      }).map((chapter) => {
+        // const associated_text = this.publication.$files.find(
+        //   (f2) => f2.$path.endsWith(".md")
+        // );
+        if (chapter.main_text_meta) {
+          chapter._main_text = this.publication.$files.find((f) =>
+            f.$path.endsWith("/" + chapter.main_text_meta)
+          );
+        }
+        return chapter;
+      });
+    },
     opened_chapter() {
-      return this.content_nodes.chapters.find(
-        (chapter) => chapter.meta_filename === this.opened_chapter_meta_filename
+      return this.all_chapters.find(
+        (chapter) =>
+          this.getFilename(chapter.$path) === this.opened_chapter_meta_filename
       );
+    },
+    content_nodes() {
+      let nodes = {};
+
+      if (this.publication.cover_enabled) {
+        nodes.cover = {};
+        if (this.publication.cover_title)
+          nodes.cover.title = this.publication.cover_title;
+
+        if (this.publication.cover_meta_filename) {
+          const cover_file = this.getSourceMedia({
+            source_media: {
+              meta_filename_in_project: this.publication.cover_meta_filename,
+            },
+            folder_path: this.publication.$path,
+          });
+          if (cover_file) {
+            const image_url = this.makeMediaFileURL({
+              $path: cover_file.$path,
+              $media_filename: cover_file.$media_filename,
+            });
+            if (image_url) {
+              nodes.cover.image_url = image_url;
+              nodes.cover.layout_mode =
+                this.publication.cover_layout_mode || "normal";
+            }
+          }
+        }
+      }
+
+      nodes.chapters = [];
+
+      this.all_chapters.map((chapter) => {
+        let _chapter = {};
+
+        _chapter.title = chapter.section_title;
+        _chapter.meta_filename = this.getFilename(chapter.$path);
+        _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
+        if (chapter._main_text?.$content) {
+          if (chapter._main_text?.content_type === "markdown") {
+            _chapter.content = this.parseMarkdown(chapter._main_text.$content);
+          } else {
+            _chapter.content = chapter._main_text?.$content;
+          }
+        }
+
+        nodes.chapters.push(_chapter);
+      });
+
+      return nodes;
     },
   },
   methods: {
+    parseMarkdown(content) {
+      const url_to_medias =
+        window.location.origin + "/" + this.getParent(this.publication.$path);
+      marked.use(baseUrl(url_to_medias));
+
+      marked.use({
+        renderer: {
+          image(src, title, alt) {
+            console.log("---", src, alt, title);
+            const [width, height] = title?.startsWith("=")
+              ? title
+                  .slice(1)
+                  .split("x")
+                  .map((v) => v.trim())
+                  .filter(Boolean)
+              : [];
+            return `<img src="${src}" alt="${alt}"${
+              width ? ` width="${width}"` : ""
+            }${height ? ` height="${height}"` : ""}>`;
+          },
+        },
+      });
+
+      const parsed = marked.parse(content);
+      return DOMPurify.sanitize(parsed);
+    },
     async refreshView() {
       this.is_loading = true;
 
