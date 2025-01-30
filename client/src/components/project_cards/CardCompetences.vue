@@ -2,7 +2,7 @@
   <DetailsPane
     :header="$t('levels_and_competences')"
     :icon="'bookmark-star'"
-    :has_items="!!project.level"
+    :has_items="items_count > 0 ? items_count : false"
   >
     <div class="u-spacingBottom">
       <!-- <DLabel :str="$t('skill_level')" /> -->
@@ -215,7 +215,19 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    items_count() {
+      return (
+        (this.project.level ? 1 : 0) +
+        (this.project.target_audience?.length > 0
+          ? this.project.target_audience.length
+          : 0) +
+        (this.project.disciplines?.length > 0
+          ? this.project.disciplines.length
+          : 0)
+      );
+    },
+  },
   methods: {},
 };
 </script>
