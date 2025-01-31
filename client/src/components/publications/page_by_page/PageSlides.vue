@@ -4,6 +4,7 @@
     :class="{
       'is--slides': display_mode === 'slides',
       'is--serversidepreview': is_serversidepreview,
+      'is--nightmode': night_mode,
     }"
   >
     <div class="_pages" :style="pages_style">
@@ -83,7 +84,7 @@
           </div>
         </template>
         <template v-else>
-          <transition name="fade" mode="out-in">
+          <transition name="fade_fast" mode="out-in">
             <div
               class="_spread"
               :key="'spread-' + slides_current_page_or_spread_index"
@@ -142,25 +143,28 @@
       </span>
       <span class="_pageInd">
         <b>
-          <select
-            class=""
-            :value="slides_current_page_or_spread_index"
-            @change="
-              updatePageQuery({
-                prop: 'page',
-                val: $event.target.value,
-              })
-            "
-          >
-            <option
-              v-for="(o, page_number) in is_spread
-                ? spreads.length
-                : pages.length"
-              :key="page_number"
-              :value="page_number + 1"
-              v-text="page_number + 1"
-            />
-          </select>
+          <transition name="pagechange" mode="out-in">
+            <select
+              class=""
+              :value="slides_current_page_or_spread_index"
+              :key="slides_current_page_or_spread_index"
+              @change="
+                updatePageQuery({
+                  prop: 'page',
+                  val: $event.target.value,
+                })
+              "
+            >
+              <option
+                v-for="(o, page_number) in is_spread
+                  ? spreads.length
+                  : pages.length"
+                :key="page_number"
+                :value="page_number + 1"
+                v-text="page_number + 1"
+              />
+            </select>
+          </transition>
           <div
             v-for="(o, page_number) in is_spread
               ? spreads.length
@@ -226,6 +230,7 @@ export default {
     return {
       display_mode: "print",
       page_zoom: 100,
+      night_mode: true,
     };
   },
   created() {
@@ -387,6 +392,9 @@ export default {
         case "f":
           this.$emit("toggleFs");
           break;
+        case "n":
+          this.night_mode = !this.night_mode;
+          break;
       }
     },
     togglePage(page_id) {
@@ -456,6 +464,13 @@ export default {
 
 ._pageSlides {
   &.is--slides {
+    background-color: white;
+
+    transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
+    &.is--nightmode {
+      background-color: black;
+    }
+
     ._pages {
       display: flex;
       justify-content: center;
@@ -486,14 +501,22 @@ export default {
   gap: calc(var(--spacing) / 2);
   border-radius: 8px;
   color: black;
-
   background-color: rgba(255, 255, 255, 1);
 
   transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover {
-    background-color: rgba(255, 255, 255, 1);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    box-shadow: 0 0px 6px rgba(0, 0, 0, 0.06), 0 0px 6px rgba(0, 0, 0, 0.13);
+  }
+
+  ._pageSlides.is--nightmode & {
+    background-color: var(--c-noir);
+    color: white;
+
+    &:hover {
+      box-shadow: 0 0px 6px rgba(255, 255, 255, 0.06),
+        0 0px 6px rgba(255, 255, 255, 0.13);
+    }
   }
 }
 ._pageInd {
@@ -507,6 +530,7 @@ export default {
   select {
     background-color: rgba(205, 205, 205, 0.3);
     // width: 6ch;
+    color: inherit;
     padding-top: calc(var(--spacing) / 4);
     padding-bottom: calc(var(--spacing) / 4);
   }
