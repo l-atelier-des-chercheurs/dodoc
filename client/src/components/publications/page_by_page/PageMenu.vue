@@ -76,108 +76,112 @@
     </div>
 
     <template v-if="can_edit && !display_as_public">
-      <template v-if="!has_editor_toolbar && !active_module">
+      <template v-if="!has_editor_toolbar">
         <div class="_pageMenu--pane">
-          <div class="u-spacingBottom">
+          <div class="">
             <DLabel :str="$t('add_on_page')" />
             <ModuleCreator
               :publication_path="publication_path"
               :pre_addtl_meta="new_module_meta"
               :context="'page_by_page'"
               :start_collapsed="false"
+              :enable_clipboard_paste="true"
               @addModules="enableModuleEdit"
             />
           </div>
 
-          <div class="" v-if="can_edit">
-            <ToggledSection
-              v-if="can_edit"
-              class="u-spacingBottom"
-              :label="$t('show_grid')"
-              :show_toggle="show_grid"
-              @update:show_toggle="$emit('update:show_grid', $event)"
-            >
-              <RadioCheckboxInput
-                :value="grid_z_index"
-                :options="[
-                  {
-                    label: $t('over'),
-                    key: 'over',
-                  },
-                  {
-                    label: $t('under'),
-                    key: 'under',
-                  },
-                ]"
-                :can_edit="true"
-                @update:value="$emit('update:grid_z_index', $event)"
-              />
-              <div class="u-spacingBottom" />
-              <RangeValueInput
-                :label="$t('gridstep')"
-                :can_toggle="false"
-                :value="gridstep_in_mm"
-                :min="1"
-                :max="20"
-                :step="1"
-                :ticks="[5, 10, 20, 50]"
-                :default_value="10"
-                :suffix="unit"
-                @save="$emit('update:gridstep_in_mm', $event)"
-              />
-              <div class="u-spacingBottom" />
-              <ToggleInput
-                class="u-spacingBottom"
-                :content="snap_to_grid"
-                :label="$t('snap_to_grid')"
-                @update:content="$emit('update:snap_to_grid', $event)"
-              />
-            </ToggledSection>
-          </div>
-          <div class="" v-if="can_edit">
-            <ColorInput
-              class="u-spacingBottom"
-              :label="$t('page_color')"
-              :value="page_color"
-              @save="
-                $emit('updatePageOptions', {
-                  page_number: active_page_number,
-                  value: { page_color: $event },
-                })
-              "
-            />
-
-            <DLabel :str="$t('format,margins,pagination')" />
+          <template v-if="can_edit && !active_module">
+            <div class="u-spacingBottom" />
             <div class="">
-              <button
-                type="button"
-                class="u-button"
-                @click="$eventHub.$emit('publication.settings.toggle')"
+              <ToggledSection
+                v-if="can_edit"
+                class="u-spacingBottom"
+                :label="$t('show_grid')"
+                :show_toggle="show_grid"
+                @update:show_toggle="$emit('update:show_grid', $event)"
               >
-                <b-icon
-                  icon="gear"
-                  slot="prefix"
-                  :aria-label="$t('settings')"
+                <RadioCheckboxInput
+                  :value="grid_z_index"
+                  :options="[
+                    {
+                      label: $t('over'),
+                      key: 'over',
+                    },
+                    {
+                      label: $t('under'),
+                      key: 'under',
+                    },
+                  ]"
+                  :can_edit="true"
+                  @update:value="$emit('update:grid_z_index', $event)"
                 />
-                {{ $t("settings") }}
-              </button>
+                <div class="u-spacingBottom" />
+                <RangeValueInput
+                  :label="$t('gridstep')"
+                  :can_toggle="false"
+                  :value="gridstep_in_mm"
+                  :min="1"
+                  :max="20"
+                  :step="1"
+                  :ticks="[5, 10, 20, 50]"
+                  :default_value="10"
+                  :suffix="unit"
+                  @save="$emit('update:gridstep_in_mm', $event)"
+                />
+                <div class="u-spacingBottom" />
+                <ToggleInput
+                  class="u-spacingBottom"
+                  :content="snap_to_grid"
+                  :label="$t('snap_to_grid')"
+                  @update:content="$emit('update:snap_to_grid', $event)"
+                />
+              </ToggledSection>
             </div>
-
-            <template v-if="has_pagination">
-              <div class="u-spacingBottom" />
-              <ToggleInput
-                class=""
-                :content="hide_pagination"
-                :label="$t('hide_pagination')"
-                @update:content="
+            <div class="">
+              <ColorInput
+                class="u-spacingBottom"
+                :label="$t('page_color')"
+                :value="page_color"
+                @save="
                   $emit('updatePageOptions', {
                     page_number: active_page_number,
-                    value: { hide_pagination: $event },
+                    value: { page_color: $event },
                   })
                 "
               />
-            </template>
-          </div>
+
+              <DLabel :str="$t('format,margins,pagination')" />
+              <div class="">
+                <button
+                  type="button"
+                  class="u-button"
+                  @click="$eventHub.$emit('publication.settings.toggle')"
+                >
+                  <b-icon
+                    icon="gear"
+                    slot="prefix"
+                    :aria-label="$t('settings')"
+                  />
+                  {{ $t("settings") }}
+                </button>
+              </div>
+
+              <template v-if="has_pagination">
+                <div class="u-spacingBottom" />
+                <ToggleInput
+                  class=""
+                  :content="hide_pagination"
+                  :label="$t('hide_pagination')"
+                  @update:content="
+                    $emit('updatePageOptions', {
+                      page_number: active_page_number,
+                      value: { hide_pagination: $event },
+                    })
+                  "
+                />
+              </template>
+            </div>
+          </template>
         </div>
         <div class="_pageMenu--pane">
           <DetailsPane
@@ -669,6 +673,7 @@ import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
 import SelectPage from "@/components/publications/page_by_page/SelectPage.vue";
 import LinkToPageOrURL from "@/components/publications/page_by_page/LinkToPageOrURL.vue";
+import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 
 // const throttle = (fn, wait) => {
 //   let throttled = false;
@@ -712,6 +717,7 @@ export default {
     ModuleCreator,
     SelectPage,
     LinkToPageOrURL,
+    ImportFileZone,
   },
   data() {
     return {
