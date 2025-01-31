@@ -505,8 +505,10 @@ export default {
   align-items: center;
 
   select {
-    background-color: rgba(205, 205, 205, 0.5);
-    width: 6ch;
+    background-color: rgba(205, 205, 205, 0.3);
+    // width: 6ch;
+    padding-top: calc(var(--spacing) / 4);
+    padding-bottom: calc(var(--spacing) / 4);
   }
 }
 </style>
