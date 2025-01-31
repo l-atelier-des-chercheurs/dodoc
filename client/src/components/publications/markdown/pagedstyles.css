@@ -6,6 +6,7 @@
   margin-top: 20mm;
   margin-bottom: 30mm;
 }
+
 @page:left {
   margin-left: 30mm;
   margin-right: 20mm;
@@ -15,7 +16,7 @@
   margin-right: 30mm;
 };
 @page:left {
-  @bottom-left {
+  @bottom-right {
     content: counter(page);
     font-size: 10px;
   }

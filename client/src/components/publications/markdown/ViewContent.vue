@@ -184,7 +184,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  // width: 100%;
   z-index: 10;
   margin: 0 auto;
   padding: calc(var(--spacing) / 1);

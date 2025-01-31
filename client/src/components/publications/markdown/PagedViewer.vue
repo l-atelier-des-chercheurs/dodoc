@@ -19,8 +19,9 @@
 </template>
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
-import { Previewer } from "pagedjs";
+import { Previewer, Handler, registerHandlers } from "pagedjs";
 import default_pagedstyles from "@/components/publications/markdown/pagedstyles.css?raw";
+// import imposition from "@/components/publications/markdown/imposition.js";
 
 export default {
   props: {
@@ -143,7 +144,8 @@ export default {
         bookpreview.appendChild(pagesOutput);
 
         this.$nextTick(() => {
-          const { width, height } = bookpreview.getBoundingClientRect();
+          // imposition(Handler, registerHandlers);
+          // const { width, height } = bookpreview.getBoundingClientRect();
         });
       });
     },

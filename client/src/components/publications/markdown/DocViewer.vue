@@ -68,7 +68,8 @@ export default {
   align-items: flex-start;
 
   gap: calc(var(--spacing) * 2);
-  margin: calc(var(--spacing) * 2) auto;
+  padding: calc(var(--spacing) * 2);
+  margin: 0 auto;
   background-color: var(--body-bg);
 
   ._docViewer--menu {
