@@ -1,6 +1,7 @@
 <template>
   <div class="_docViewer">
     <div class="_docViewer--menu">
+      <DLabel :str="$t('chapters')" />
       <ol>
         <li v-for="(chapter, index) in content_nodes.chapters" :key="index">
           <button
@@ -59,19 +60,22 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._docViewer {
+  max-width: 1000px;
+  margin: 0 auto;
+
   display: flex;
   flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 1);
-  padding: calc(var(--spacing) / 1);
+  align-items: flex-start;
+
+  gap: calc(var(--spacing) * 2);
+  margin: calc(var(--spacing) * 2) auto;
   background-color: var(--body-bg);
-  position: relative;
-  overflow: auto;
-  height: 100%;
 
   ._docViewer--menu {
     flex: 0 0 20ch;
     position: sticky;
     top: 0;
+    background-color: var(--c-gris_clair);
     padding: calc(var(--spacing) / 1);
 
     ul,
