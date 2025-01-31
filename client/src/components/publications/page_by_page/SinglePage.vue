@@ -91,7 +91,7 @@
         </div>
 
         <svg
-          v-if="can_edit && l_margins"
+          v-if="can_edit"
           class="_pageBorders"
           width="100%"
           height="100%"
@@ -183,6 +183,14 @@ export default {
   computed: {
     l_margins() {
       if (Object.keys(this.margins).length === 0) return false;
+      if (
+        this.margins.left === 0 &&
+        this.margins.right === 0 &&
+        this.margins.top === 0 &&
+        this.margins.bottom === 0
+      )
+        return false;
+
       if (this.page_is_left === true)
         return {
           left: this.margins.right,

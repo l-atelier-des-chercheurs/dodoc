@@ -68,7 +68,7 @@
           </transition>
           <EditBtn
             class="_editBtn"
-            v-if="is_collaborative"
+            v-if="is_collaborative && !is_loading_or_saving"
             :btn_type="'check'"
             :label_position="'left'"
             @click="saveContent"
@@ -528,11 +528,20 @@ export default {
       this.$emit("input", this.getEditorContent());
     },
     async saveText() {
+      this.is_loading_or_saving = true;
+      clearTimeout(this.debounce_textUpdate);
+
+      await new Promise((r) => setTimeout(r, 300));
+
       const new_content = this.getEditorContent();
-      if (new_content === this.content) return "content_not_changed";
+      if (new_content === this.content) {
+        this.is_loading_or_saving = false;
+        return "content_not_changed";
+      }
 
       if (!this.path) {
         this.$emit("save", new_content);
+        this.is_loading_or_saving = false;
         return;
       }
 
@@ -541,8 +550,6 @@ export default {
       };
 
       try {
-        this.is_loading_or_saving = true;
-        await new Promise((r) => setTimeout(r, 300));
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
@@ -633,7 +640,7 @@ export default {
         // do not enable: it triggers a focus on the text block
         // const { font } = this.editor.getFormat();
         // localStorage.setItem("fontLastUsed", font);
-      }, 1000);
+      }, 2000);
     },
   },
 };

@@ -19,9 +19,8 @@
 </template>
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
-import { Previewer, Handler, registerHandlers } from "pagedjs";
+import { Previewer } from "pagedjs";
 import default_pagedstyles from "@/components/publications/markdown/pagedstyles.css?raw";
-import imposition from "@/components/publications/markdown/imposition.js";
 
 export default {
   props: {
@@ -91,7 +90,7 @@ export default {
       //   nodes.chapters = [this.opened_chapter];
       // }
 
-      let html = "";
+      let html = "<div class='_book'>";
 
       if (nodes.cover) {
         html += `<section class="_cover" data-layout-mode="${nodes.cover.layout_mode}">`;
@@ -109,6 +108,8 @@ export default {
         if (chapter.content) html += `${chapter.content}`;
         html += `</section>`;
       });
+
+      html += `</div>`;
 
       return html;
     },
@@ -408,7 +409,6 @@ export default {
           final_groups[i] = page_groups[i];
         }
       }
-      console.log("Final Imposition Order: " + final_groups);
 
       var final_flat = final_groups.flat();
       final_flat.forEach((folio, i) => {

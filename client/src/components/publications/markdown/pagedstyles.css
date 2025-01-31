@@ -1,19 +1,43 @@
 ._chapterTitle {
   string-set: title content(text);
+  font-family: "Volkhov", serif;
+  font-weight: 400;
+}
+
+._book {
+  font-family: "PT Serif", serif;
+}
+
+._book p {
+  /* gestion bancale des césures */
+  text-align: justify;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  -webkit-hyphenate-limit-before: 3;
+  -webkit-hyphenate-limit-after: 4;
+  -ms-hyphenate-limit-chars: 7 3 4;
+  hyphenate-limit-chars: 7 3 4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  /* veuves et orphelines (bancal) */
+  widows: 3;
+  orphans: 3; 
 }
 
 @page {
-  margin-top: 20mm;
-  margin-bottom: 30mm;
+  margin-top: 16mm;
+  margin-bottom: 32mm;
 }
 
 @page:left {
-  margin-left: 30mm;
-  margin-right: 20mm;
+  margin-left: 16mm;
+  margin-right: 32mm;
 }
 @page:right {
-  margin-left: 20mm;
-  margin-right: 30mm;
+  margin-left: 32mm;
+  margin-right: 16mm;
 }
 
 @page:right {
