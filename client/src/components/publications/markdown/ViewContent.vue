@@ -18,6 +18,8 @@
         :content_nodes="content_nodes"
         :format_mode="format_mode"
         :viewer_type="viewer_type"
+        :opened_chapter_meta_filename="opened_chapter_meta_filename"
+        @openChapter="$emit('openChapter', $event)"
       />
     </template>
     <DocViewer

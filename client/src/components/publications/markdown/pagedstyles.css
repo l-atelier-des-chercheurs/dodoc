@@ -48,7 +48,6 @@
 ._chapter[data-starts-on-page="right"] {
   break-before: right;
 }
-
 p {
   margin: 1em 0;
 }

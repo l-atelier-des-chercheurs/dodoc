@@ -103,7 +103,7 @@ export default {
       }
 
       nodes.chapters.forEach((chapter) => {
-        html += `<section class="_chapter" data-starts-on-page="${chapter.starts_on_page}">`;
+        html += `<section class="_chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}">`;
         if (chapter.title)
           html += `<h1 class="_chapterTitle">${chapter.title}</h1>`;
         if (chapter.content) html += `${chapter.content}`;
@@ -147,7 +147,23 @@ export default {
         const pagesOutput = flow.pagesArea;
         bookpreview.appendChild(pagesOutput);
 
-        this.$nextTick(() => {});
+        this.$nextTick(() => {
+          this.addChapterShortcuts();
+        });
+      });
+    },
+    addChapterShortcuts() {
+      const bookpreview = this.$refs.bookpreview;
+      const chapters = bookpreview.querySelectorAll(
+        "._chapter[data-chapter-meta-filename]"
+      );
+      chapters.forEach((chapter) => {
+        chapter.addEventListener("click", () => {
+          this.$emit(
+            "openChapter",
+            chapter.getAttribute("data-chapter-meta-filename")
+          );
+        });
       });
     },
     removeExistingStyles() {
@@ -436,6 +452,14 @@ export default {
   ::v-deep {
     /* To define how the book look on the screen: */
     @media screen {
+      ._chapter {
+        cursor: pointer !important;
+
+        &:hover {
+          opacity: 0.85;
+        }
+      }
+
       .pagedjs_pages {
         display: flex;
         width: calc(var(--pagedjs-width) * 2);

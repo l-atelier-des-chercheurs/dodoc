@@ -146,6 +146,7 @@ export default {
   height: 100%;
   overflow: auto;
   background-color: var(--c-gris_clair);
+  z-index: 1;
 
   padding: calc(var(--spacing) * 2);
 }
