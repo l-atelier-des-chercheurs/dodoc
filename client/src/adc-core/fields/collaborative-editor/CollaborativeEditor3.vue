@@ -68,10 +68,10 @@
           </transition>
           <EditBtn
             class="_editBtn"
-            v-if="is_collaborative && mode !== 'always_active'"
+            v-if="is_collaborative"
             :btn_type="'check'"
             :label_position="'left'"
-            @click="disableEditor"
+            @click="saveContent"
           />
         </template>
       </div>
@@ -133,8 +133,9 @@ Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
 
 const FontAttributor = Quill.import("attributors/style/font");
+const merge = (a, b, i = 0) => [...a.slice(0, i), ...b, ...a.slice(i)];
 const custom_fonts_titles = window.app_infos.custom_fonts.map((cf) => cf.title);
-const all_fonts = default_fonts.concat(custom_fonts_titles);
+const all_fonts = merge(default_fonts, custom_fonts_titles, 1);
 FontAttributor.whitelist = all_fonts;
 Quill.register(FontAttributor, true);
 
@@ -470,6 +471,10 @@ export default {
       this.editor_is_enabled = true;
       this.editor.on("text-change", this.updateInput);
     },
+    saveContent() {
+      if (this.mode === "always_active") this.saveText();
+      else this.disableEditor();
+    },
     async disableEditor() {
       if (!this.editor_is_enabled || this.is_disabling_editor) return false;
 
@@ -628,7 +633,7 @@ export default {
         // do not enable: it triggers a focus on the text block
         // const { font } = this.editor.getFormat();
         // localStorage.setItem("fontLastUsed", font);
-      }, 2500);
+      }, 1000);
     },
   },
 };

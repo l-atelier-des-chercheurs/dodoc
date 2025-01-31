@@ -29,8 +29,9 @@
         @cancel="cancel"
       />
     </div>
-
-    <LoaderSpinner v-if="is_saving" />
+    <transition v-else name="fade">
+      <LoaderSpinner v-if="is_saving" />
+    </transition>
 
     <!-- {{ value }} / {{ new_value }} -->
   </div>
@@ -91,9 +92,9 @@ export default {
     async updateSelect() {
       this.$emit("update", this.new_value);
 
-      this.is_saving = true;
-
       if (this.path && this.field_name) {
+        this.is_saving = true;
+
         const new_meta = {
           [this.field_name]: this.new_value,
         };

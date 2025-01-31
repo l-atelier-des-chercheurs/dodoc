@@ -1,6 +1,6 @@
 <template>
   <div class="_taskTracker" v-if="tasks_tracked.length > 0">
-    <DLabel class="" :str="$t('exports', tasks_tracked.length)" />
+    <DLabel class="" :str="$tc('exports', tasks_tracked.length)" />
     <transition-group name="listComplete">
       <div v-for="task in tasks_tracked" class="_task" :key="task.id">
         <div class="">

@@ -162,7 +162,6 @@
         'is--hidden': !show_meta,
       }"
       v-if="context === 'full'"
-      :options="flickityOptions"
     >
       <CardLicense class="_card" :project="project" :can_edit="can_edit" />
       <CardFiles class="_card" :project="project" :can_edit="can_edit" />
@@ -186,8 +185,6 @@
   </div>
 </template>
 <script>
-import Flickity from "vue-flickity";
-
 // import CardMeta from "@/components/project_cards/CardMeta.vue";
 // import CardAuthor from "@/components/project_cards/CardAuthor.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
@@ -208,7 +205,6 @@ export default {
     // show_more_informations: Boolean,
   },
   components: {
-    Flickity,
     DuplicateOrRemixProject,
 
     // CardMeta,
@@ -229,21 +225,6 @@ export default {
       show_meta: true,
       show_dup_modal: false,
       short_project_view: true,
-
-      flickityOptions: {
-        initialIndex: 0,
-        groupCells: true,
-        imagesLoaded: true,
-        pageDots: false,
-        resize: true,
-        // arrowShape:
-        //   "M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z",
-        selectedAttraction: 0.2,
-        percentPosition: false,
-        friction: 0.8,
-        cellAlign: "center",
-        contain: false,
-      },
     };
   },
   created() {},
