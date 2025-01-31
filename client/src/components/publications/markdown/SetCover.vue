@@ -117,8 +117,11 @@ export default {
       return this.publication.$files?.find((f) => f.cover_type === "front");
     },
     cover_image_media() {
+      const source_media = this.cover_media?.source_medias?.[0];
+      if (!source_media) return false;
+
       const cover_file = this.getSourceMedia({
-        source_media: this.cover_media.source_medias[0],
+        source_media,
         folder_path: this.publication.$path,
       });
       if (cover_file) return cover_file;

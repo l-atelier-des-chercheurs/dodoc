@@ -37,6 +37,7 @@ import DOMPurify from "dompurify";
 
 import PagedViewer from "@/components/publications/markdown/PagedViewer.vue";
 import DocViewer from "@/components/publications/markdown/DocViewer.vue";
+import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 
 export default {
   props: {
@@ -55,7 +56,7 @@ export default {
     return {
       is_loading: false,
       view_mode: "book",
-      format_mode: "A4",
+      format_mode: "A5",
     };
   },
   created() {},
