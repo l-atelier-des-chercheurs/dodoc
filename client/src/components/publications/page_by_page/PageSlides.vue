@@ -230,7 +230,7 @@ export default {
     return {
       display_mode: "print",
       page_zoom: 100,
-      night_mode: true,
+      night_mode: false,
     };
   },
   created() {
