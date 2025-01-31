@@ -200,7 +200,7 @@ export default {
   gap: calc(var(--spacing) / 1);
 
   select {
-    max-width: 20ch;
+    width: 18ch;
     pointer-events: all;
   }
 
