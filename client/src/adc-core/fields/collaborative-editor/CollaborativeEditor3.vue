@@ -133,8 +133,9 @@ Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
 
 const FontAttributor = Quill.import("attributors/style/font");
+const merge = (a, b, i = 0) => [...a.slice(0, i), ...b, ...a.slice(i)];
 const custom_fonts_titles = window.app_infos.custom_fonts.map((cf) => cf.title);
-const all_fonts = default_fonts.concat(custom_fonts_titles);
+const all_fonts = merge(default_fonts, custom_fonts_titles, 1);
 FontAttributor.whitelist = all_fonts;
 Quill.register(FontAttributor, true);
 
