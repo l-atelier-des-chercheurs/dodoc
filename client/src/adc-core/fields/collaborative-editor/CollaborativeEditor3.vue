@@ -94,7 +94,7 @@
   </div>
 </template>
 <script>
-import hljs from "highlight.js";
+// import hljs from "highlight.js";
 
 import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
@@ -273,7 +273,7 @@ export default {
         modules: {
           cardEditable: true,
           toolbar,
-          syntax: { hljs },
+          // syntax: { hljs },
         },
         bounds: this.$refs.editor,
         theme: "snow",
