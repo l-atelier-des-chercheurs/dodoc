@@ -14,19 +14,22 @@
 @page:right {
   margin-left: 20mm;
   margin-right: 30mm;
-};
-@page:left {
-  @bottom-right {
-    content: counter(page);
-    font-size: 10px;
-  }
 }
+
 @page:right {
   @bottom-right {
     content: counter(page);
     font-size: 10px;
   }
 }
+@page:left {
+  @bottom-left {
+    content: counter(page);
+    font-size: 10px;
+  }
+}
+
+
 @page {
   @bottom-center {
     content: string(title);
