@@ -76,154 +76,156 @@
     </div>
 
     <template v-if="can_edit && !display_as_public">
-      <template v-if="!has_editor_toolbar">
-        <div class="_pageMenu--pane">
-          <div class="">
-            <DLabel :str="$t('add_on_page')" />
-            <ModuleCreator
-              :publication_path="publication_path"
-              :pre_addtl_meta="new_module_meta"
-              :context="'page_by_page'"
-              :start_collapsed="false"
-              :enable_clipboard_paste="true"
-              @addModules="enableModuleEdit"
-            />
-          </div>
+      <div
+        class="_pageMenu--pane"
+        v-show="!has_editor_toolbar && !active_module"
+      >
+        <div class="">
+          <DLabel :str="$t('add_on_page')" />
+          <ModuleCreator
+            :publication_path="publication_path"
+            :pre_addtl_meta="new_module_meta"
+            :context="'page_by_page'"
+            :start_collapsed="false"
+            :enable_clipboard_paste="true"
+            @addModules="enableModuleEdit"
+          />
+        </div>
 
-          <template v-if="can_edit && !active_module">
-            <div class="u-spacingBottom" />
-            <div class="">
-              <ToggledSection
-                v-if="can_edit"
+        <template v-if="can_edit && !active_module">
+          <div class="u-spacingBottom" />
+          <div class="">
+            <ToggledSection
+              v-if="can_edit"
+              class="u-spacingBottom"
+              :label="$t('show_grid')"
+              :show_toggle="show_grid"
+              @update:show_toggle="$emit('update:show_grid', $event)"
+            >
+              <RadioCheckboxInput
+                :value="grid_z_index"
+                :options="[
+                  {
+                    label: $t('over'),
+                    key: 'over',
+                  },
+                  {
+                    label: $t('under'),
+                    key: 'under',
+                  },
+                ]"
+                :can_edit="true"
+                @update:value="$emit('update:grid_z_index', $event)"
+              />
+              <div class="u-spacingBottom" />
+              <RangeValueInput
+                :label="$t('gridstep')"
+                :can_toggle="false"
+                :value="gridstep_in_mm"
+                :min="1"
+                :max="20"
+                :step="1"
+                :ticks="[5, 10, 20, 50]"
+                :default_value="10"
+                :suffix="unit"
+                @save="$emit('update:gridstep_in_mm', $event)"
+              />
+              <div class="u-spacingBottom" />
+              <ToggleInput
                 class="u-spacingBottom"
-                :label="$t('show_grid')"
-                :show_toggle="show_grid"
-                @update:show_toggle="$emit('update:show_grid', $event)"
+                :content="snap_to_grid"
+                :label="$t('snap_to_grid')"
+                @update:content="$emit('update:snap_to_grid', $event)"
+              />
+            </ToggledSection>
+          </div>
+          <div class="">
+            <ColorInput
+              class="u-spacingBottom"
+              :label="$t('page_color')"
+              :value="page_color"
+              @save="
+                $emit('updatePageOptions', {
+                  page_number: active_page_number,
+                  value: { page_color: $event },
+                })
+              "
+            />
+
+            <DLabel :str="$t('format,margins,pagination')" />
+            <div class="">
+              <button
+                type="button"
+                class="u-button"
+                @click="$eventHub.$emit('publication.settings.toggle')"
               >
-                <RadioCheckboxInput
-                  :value="grid_z_index"
-                  :options="[
-                    {
-                      label: $t('over'),
-                      key: 'over',
-                    },
-                    {
-                      label: $t('under'),
-                      key: 'under',
-                    },
-                  ]"
-                  :can_edit="true"
-                  @update:value="$emit('update:grid_z_index', $event)"
+                <b-icon
+                  icon="gear"
+                  slot="prefix"
+                  :aria-label="$t('settings')"
                 />
-                <div class="u-spacingBottom" />
-                <RangeValueInput
-                  :label="$t('gridstep')"
-                  :can_toggle="false"
-                  :value="gridstep_in_mm"
-                  :min="1"
-                  :max="20"
-                  :step="1"
-                  :ticks="[5, 10, 20, 50]"
-                  :default_value="10"
-                  :suffix="unit"
-                  @save="$emit('update:gridstep_in_mm', $event)"
-                />
-                <div class="u-spacingBottom" />
-                <ToggleInput
-                  class="u-spacingBottom"
-                  :content="snap_to_grid"
-                  :label="$t('snap_to_grid')"
-                  @update:content="$emit('update:snap_to_grid', $event)"
-                />
-              </ToggledSection>
+                {{ $t("settings") }}
+              </button>
             </div>
-            <div class="">
-              <ColorInput
-                class="u-spacingBottom"
-                :label="$t('page_color')"
-                :value="page_color"
-                @save="
+
+            <template v-if="has_pagination">
+              <div class="u-spacingBottom" />
+              <ToggleInput
+                class=""
+                :content="hide_pagination"
+                :label="$t('hide_pagination')"
+                @update:content="
                   $emit('updatePageOptions', {
                     page_number: active_page_number,
-                    value: { page_color: $event },
+                    value: { hide_pagination: $event },
                   })
                 "
               />
-
-              <DLabel :str="$t('format,margins,pagination')" />
-              <div class="">
-                <button
-                  type="button"
-                  class="u-button"
-                  @click="$eventHub.$emit('publication.settings.toggle')"
-                >
-                  <b-icon
-                    icon="gear"
-                    slot="prefix"
-                    :aria-label="$t('settings')"
-                  />
-                  {{ $t("settings") }}
-                </button>
-              </div>
-
-              <template v-if="has_pagination">
-                <div class="u-spacingBottom" />
-                <ToggleInput
-                  class=""
-                  :content="hide_pagination"
-                  :label="$t('hide_pagination')"
-                  @update:content="
-                    $emit('updatePageOptions', {
-                      page_number: active_page_number,
-                      value: { hide_pagination: $event },
-                    })
-                  "
-                />
-              </template>
-            </div>
-          </template>
-        </div>
-        <div class="_pageMenu--pane">
-          <DetailsPane
-            :header="$t('on_this_page')"
-            :icon="'images'"
-            :has_items="page_modules.length"
-            :is_open_initially="false"
-            :can_be_toggled="true"
-          >
-            <div class="_mediaList">
-              <div
-                v-for="page_module in page_modules"
-                :key="page_module.$path"
-                class="u-sameRow"
-                @click="setActive(page_module.$path)"
+            </template>
+          </div>
+        </template>
+      </div>
+      <div class="_pageMenu--pane" v-if="!has_editor_toolbar && !active_module">
+        <DetailsPane
+          :header="$t('on_this_page')"
+          :icon="'images'"
+          :has_items="page_modules.length"
+          :is_open_initially="false"
+          :can_be_toggled="true"
+        >
+          <div class="_mediaList">
+            <div
+              v-for="page_module in page_modules"
+              :key="page_module.$path"
+              class="u-sameRow"
+              @click="setActive(page_module.$path)"
+            >
+              <template
+                v-if="getModuleType(page_module.module_type) === 'shape'"
               >
-                <template
-                  v-if="getModuleType(page_module.module_type) === 'shape'"
-                >
-                  {{ $t(page_module.module_type) }}
-                </template>
-                <MediaContent
-                  v-else-if="firstMedia(page_module)"
-                  class="_preview"
-                  :file="firstMedia(page_module)"
-                  :resolution="50"
-                  :context="'preview'"
-                />
-                <template v-else> – </template>
-              </div>
+                {{ $t(page_module.module_type) }}
+              </template>
+              <MediaContent
+                v-else-if="firstMedia(page_module)"
+                class="_preview"
+                :file="firstMedia(page_module)"
+                :resolution="50"
+                :context="'preview'"
+              />
+              <template v-else> – </template>
+            </div>
 
-              <!-- <DateDisplay
+            <!-- <DateDisplay
                 class=""
                 :title="$t('date_uploaded')"
                 :date="page_module.$date_uploaded"
               /> -->
-            </div>
-          </DetailsPane>
-        </div>
-      </template>
+          </div>
+        </DetailsPane>
+      </div>
+
       <div
-        v-else-if="!has_editor_toolbar && active_module"
+        v-if="!has_editor_toolbar && active_module"
         class="_pageMenu--pane"
         :key="'media-' + active_module.$path"
       >

@@ -64,4 +64,11 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.u-sameRow {
+  button {
+    padding-left: calc(var(--spacing) / 2);
+    padding-right: calc(var(--spacing) / 2);
+  }
+}
+</style>
