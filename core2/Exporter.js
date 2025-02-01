@@ -35,6 +35,7 @@ class Exporter {
     this.folder_to_export_to = folder_to_export_to;
     this.ffmpeg_cmd = null;
 
+    this.last_progress = 0;
     this.instructions = instructions;
     this.status = "ready";
   }
@@ -181,11 +182,19 @@ class Exporter {
       if (!output_height) output_height = images[0].$infos.height || 720;
       if (!video_bitrate) video_bitrate = 4000;
 
+      const reportProgress = (progress) => {
+        const progress_percent = Math.round(
+          utils.remap(progress, 0, 100, 6, 19)
+        );
+        this._notifyProgress(progress_percent);
+      };
+
       const full_path_to_folder_in_cache =
         await this._copyToCacheAndRenameImages({
           images,
           output_width,
           output_height,
+          reportProgress,
         });
 
       const file_ext = output_format === "gif" ? ".gif" : ".mp4";
@@ -200,7 +209,7 @@ class Exporter {
         // await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
       };
 
-      this._notifyProgress(10);
+      this._notifyProgress(20);
 
       const frame_rate = this.instructions.frame_rate || 4;
       const output_frame_rate = 30;
@@ -238,7 +247,7 @@ class Exporter {
               ((images.length / frame_rate) * output_frame_rate)) *
             100;
 
-          const progress_percent = Math.round(utils.remap(adv, 0, 100, 15, 90));
+          const progress_percent = Math.round(utils.remap(adv, 0, 100, 21, 90));
 
           this._notifyProgress(progress_percent);
         })
@@ -267,10 +276,13 @@ class Exporter {
   }
   _notifyProgress(progress) {
     dev.logverbose("Task " + this.id + " progress = " + progress);
-    notifier.emit("taskStatus", "task_" + this.id, {
-      task_id: this.id,
-      progress,
-    });
+    if (progress !== this.last_progress) {
+      this.last_progress = progress;
+      notifier.emit("taskStatus", "task_" + this.id, {
+        task_id: this.id,
+        progress,
+      });
+    }
   }
   _notifyEnded(message) {
     dev.logverbose("Task " + this.id + " end");
@@ -280,7 +292,12 @@ class Exporter {
     });
   }
 
-  async _copyToCacheAndRenameImages({ images, output_width, output_height }) {
+  async _copyToCacheAndRenameImages({
+    images,
+    output_width,
+    output_height,
+    reportProgress,
+  }) {
     let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "stopmotion"
     );
@@ -303,7 +320,12 @@ class Exporter {
         width: output_width,
         height: output_height,
       });
+
       // await fs.copy(source, destination);
+      reportProgress(Math.round((index / images.length) * 100));
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
       index++;
     }
 

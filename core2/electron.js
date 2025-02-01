@@ -149,13 +149,15 @@ module.exports = (function () {
     }) => {
       let win;
 
+      reportProgress(10);
+
       win = await _loadWebpage({
         url,
         width: bw_pagesize.width,
         height: bw_pagesize.height,
       });
 
-      reportProgress(5);
+      reportProgress(20);
 
       if (recipe === "pdf") {
         const pageSize = {
@@ -175,17 +177,17 @@ module.exports = (function () {
           printSelectionOnly: false,
         });
 
-        reportProgress(90);
+        reportProgress(80);
 
         const full_path_to_pdf = await utils.createUniqueFilenameInCache("pdf");
         await writeFileAtomic(full_path_to_pdf, data);
 
-        reportProgress(95);
+        reportProgress(90);
         return full_path_to_pdf;
       } else if (recipe === "png") {
         const data = await win.webContents.capturePage();
 
-        reportProgress(95);
+        reportProgress(80);
 
         const full_path_to_image = await utils.createUniqueFilenameInCache(
           "png"
@@ -196,6 +198,8 @@ module.exports = (function () {
           width: bw_pagesize.width,
           height: bw_pagesize.height,
         });
+
+        reportProgress(90);
 
         return full_path_to_image;
       }
