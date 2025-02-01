@@ -280,22 +280,20 @@
             <button
               type="button"
               class="u-buttonLink"
-              @click="show_confirm_move = true"
+              @click="show_move_to_page_modal = true"
             >
               <b-icon icon="arrow-left-right" />
               {{ $t("move_to_page") }}
             </button>
           </div>
-
           <SelectPage
-            v-if="show_confirm_move"
+            v-if="show_move_to_page_modal"
             :pages="pages"
             :current_page_id="active_page.id"
-            @submit="
-              updateMediaPubliMeta({ page_id: $event });
-              setActive(false);
-            "
+            @submit="moveToAnotherPage"
+            @close="show_move_to_page_modal = false"
           />
+
           <div class="">
             <button type="button" class="u-buttonLink" @click="duplicateModule">
               <b-icon icon="file-plus" />
@@ -724,7 +722,7 @@ export default {
   data() {
     return {
       show_page_options: false,
-      show_confirm_move: false,
+      show_move_to_page_modal: false,
       show_edit_link_modal: false,
       show_all_medias: false,
       has_editor_toolbar: false,
@@ -835,6 +833,11 @@ export default {
     },
   },
   methods: {
+    moveToAnotherPage($event) {
+      this.show_move_to_page_modal = false;
+      this.updateMediaPubliMeta({ page_id: $event });
+      this.setActive(false);
+    },
     displayToolbarAndToolTip({ $toolbar, $tooltip }) {
       this.has_editor_toolbar = true;
       this.$nextTick(() => {
