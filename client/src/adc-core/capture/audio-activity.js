@@ -64,4 +64,4 @@ export default function (media, options, callback) {
   return that;
 }
 
-module.exports.supported = supported;
+// module.exports.supported = supported;
