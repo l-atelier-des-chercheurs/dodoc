@@ -287,7 +287,7 @@ export default {
   background: var(--page-color, white);
 
   overflow: hidden;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.16);
 
   transition: background 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 

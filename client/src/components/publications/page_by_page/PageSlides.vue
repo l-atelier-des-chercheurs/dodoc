@@ -464,11 +464,12 @@ export default {
 
 ._pageSlides {
   &.is--slides {
-    background-color: white;
+    background-color: var(--c-bodybg);
+    overflow: hidden;
 
     transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
     &.is--nightmode {
-      background-color: black;
+      background-color: var(--c-noir);
     }
 
     ._pages {
