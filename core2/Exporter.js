@@ -324,7 +324,8 @@ class Exporter {
       // await fs.copy(source, destination);
       reportProgress(Math.round((index / images.length) * 100));
 
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      // allow for some time before moving to the next image
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       index++;
     }
