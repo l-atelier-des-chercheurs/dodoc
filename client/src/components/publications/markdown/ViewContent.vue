@@ -175,33 +175,81 @@ export default {
               height = media.$infos.height;
             }
 
-            let html = '<div class="_mediaEmbed">';
-
             if (media.$type === "image") {
-              html += `
+              return `
               <img src="${src}" alt="${alt}"${
                 width ? ` width="${width}"` : ""
               }${height ? ` height="${height}"` : ""}>
               `;
-            } else if (media.$type === "video") {
-              html += `
-                <video src="${src}" alt="${alt}" controls ${
-                width ? ` width="${width}"` : ""
-              }${height ? ` height="${height}"` : ""}></video>
-              `;
-            } else if (media.$type === "audio") {
-              html += `
-                <audio src="${src}" alt="${alt}" controls ${
-                width ? ` width="${width}"` : ""
-              }${height ? ` height="${height}"` : ""}></audio>
-              `;
-            } else {
-              return `<div><i>Media type not supported</i></div>`;
+            }
+
+            let html = '<div class="_mediaEmbed">';
+
+            html += `
+              <div>
+                <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
+              </div>
+            `;
+
+            // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
+            html += `<div class="_mediaInfos">`;
+
+            if (media.$infos.duration) {
+              html += `<div class="_mediaDuration">
+                ${this.$t("duration")} 
+                ${this.formatDurationToHoursMinutesSeconds(
+                  media.$infos.duration
+                )} 
+              </div>`;
             }
 
             html += `
-              <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
-            </div>`;
+              <div class="_mediaCaption">
+                ${media.caption || ""}
+              </div>
+              <div class="_mediaCredits">
+                ${media.$credits || ""}
+              </div>`;
+
+            html += `</div>`;
+
+            // get thumbs
+            const thumb = this.getFirstThumbURLForMedia({
+              file: media,
+              resolution: 220,
+            });
+            if (thumb) {
+              html += `
+              <div class="_thumbnail">
+                <img src="${thumb}" alt="${alt}"${
+                width ? ` width="${width}"` : ""
+              }${height ? ` height="${height}"` : ""}>
+              </div>`;
+            }
+
+            html += "</div>";
+
+            // if (media.$type === "image") {
+            //   html += `
+            //   <img src="${src}" alt="${alt}"${
+            //     width ? ` width="${width}"` : ""
+            //   }${height ? ` height="${height}"` : ""}>
+            //   `;
+            // } else if (media.$type === "video") {
+            //   html += `
+            //     <video src="${src}" alt="${alt}" controls ${
+            //     width ? ` width="${width}"` : ""
+            //   }${height ? ` height="${height}"` : ""}></video>
+            //   `;
+            // } else if (media.$type === "audio") {
+            //   html += `
+            //     <audio src="${src}" alt="${alt}" controls ${
+            //     width ? ` width="${width}"` : ""
+            //   }${height ? ` height="${height}"` : ""}></audio>
+            //   `;
+            // } else {
+            //   return `<div><i>Media type not supported</i></div>`;
+            // }
 
             return html;
           },
