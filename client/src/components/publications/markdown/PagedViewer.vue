@@ -155,6 +155,7 @@ export default {
     },
     addChapterShortcuts() {
       const bookpreview = this.$refs.bookpreview;
+      if (!bookpreview) return;
       const chapters = bookpreview.querySelectorAll(
         "._chapter[data-chapter-meta-filename]"
       );

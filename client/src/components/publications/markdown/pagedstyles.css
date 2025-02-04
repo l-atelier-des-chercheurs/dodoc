@@ -23,6 +23,22 @@
   orphans: 3; 
 }
 
+._image {
+  position: relative;
+}
+
+._image ._qrCode {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 4em;
+  height: 4em;
+  margin: 0.5em;
+  object-fit: cover;
+  background-color: white;
+  border-radius: 0.25em;
+}
+
 
 /* SET MARGINS */
 

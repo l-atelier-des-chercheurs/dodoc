@@ -34,7 +34,7 @@
 </template>
 <script>
 import { marked } from "marked";
-import { baseUrl } from "marked-base-url";
+import { generate } from "lean-qr";
 import DOMPurify from "dompurify";
 
 import PagedViewer from "@/components/publications/markdown/PagedViewer.vue";
@@ -158,29 +158,11 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
-            let media = this.getSourceMedia({
-              source_media: {
-                meta_filename_in_project: meta_src,
-              },
-              folder_path: this.publication.$path,
-            });
+            const _image = this.getMediaSrc(meta_src, source_medias);
+            if (!_image) return `<div><i>Media not found</i></div>`;
 
-            if (!media) {
-              // attempt to find in chapter source_medias
-              if (source_medias?.length > 0) {
-                const local_media = source_medias.find(
-                  (sm) => sm.meta_filename_in_project === meta_src
-                );
-                if (local_media) media = local_media._media;
-              }
-            }
+            const { src, dataUrl } = _image;
 
-            if (!media) return `<div><i>Media not found</i></div>`;
-
-            const src = this.makeMediaFileURL({
-              $path: media.$path,
-              $media_filename: media.$media_filename,
-            });
             const [width, height] = title?.startsWith("=")
               ? title
                   .slice(1)
@@ -193,6 +175,7 @@ export default {
               <img src="${src}" alt="${alt}"${
               width ? ` width="${width}"` : ""
             }${height ? ` height="${height}"` : ""}>
+              <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
             </div>`;
           },
         },
@@ -200,6 +183,42 @@ export default {
 
       const parsed = marked.parse(content);
       return DOMPurify.sanitize(parsed);
+    },
+    getMediaSrc(meta_src, source_medias) {
+      let media = this.getSourceMedia({
+        source_media: {
+          meta_filename_in_project: meta_src,
+        },
+        folder_path: this.publication.$path,
+      });
+
+      if (!media) {
+        // attempt to find in chapter source_medias
+        if (source_medias?.length > 0) {
+          const local_media = source_medias.find(
+            (sm) => sm.meta_filename_in_project === meta_src
+          );
+          if (local_media) media = local_media._media;
+        }
+      }
+
+      if (!media) return;
+
+      const src = this.makeMediaFileURL({
+        $path: media.$path,
+        $media_filename: media.$media_filename,
+      });
+
+      const url =
+        window.location.origin + "/_previewmedia?path_to_meta=" + media.$path;
+
+      const code = generate(url);
+      const dataUrl = code.toDataURL({ scale: 10 });
+
+      return {
+        src,
+        dataUrl,
+      };
     },
   },
 };

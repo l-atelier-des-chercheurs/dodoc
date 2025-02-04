@@ -58,6 +58,7 @@ export default {
   methods: {},
 };
 </script>
+<style src="@/components/publications/markdown/pagedstyles.css" />
 <style lang="scss" scoped>
 ._docViewer {
   max-width: 1000px;
