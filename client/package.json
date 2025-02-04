@@ -30,6 +30,7 @@
     "imagetracerjs": "^1.2.6",
     "isomorphic-dompurify": "^2.13.0",
     "jspdf": "^2.5.2",
+    "lean-qr": "^2.3.5",
     "marked": "^13.0.3",
     "marked-base-url": "^1.1.6",
     "moment": "^2.30.1",
