@@ -23,17 +23,17 @@
   orphans: 3; 
 }
 
-._image {
+._mediaEmbed {
   position: relative;
 }
 
-._image ._qrCode {
+._mediaEmbed ._qrCode {
   position: absolute;
-  bottom: 0;
+  top: 0;
   right: 0;
-  width: 4em;
-  height: 4em;
-  margin: 0.5em;
+  width: 2cm;
+  height: 2cm;
+  margin: 0.5cm;
   object-fit: cover;
   background-color: white;
   border-radius: 0.25em;

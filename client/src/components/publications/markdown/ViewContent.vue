@@ -158,10 +158,10 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
-            const _image = this.getMediaSrc(meta_src, source_medias);
-            if (!_image) return `<div><i>Media not found</i></div>`;
+            const _media = this.getMediaSrc(meta_src, source_medias);
+            if (!_media) return `<div><i>Media not found</i></div>`;
 
-            const { src, dataUrl } = _image;
+            const { src, dataUrl, media } = _media;
 
             const [width, height] = title?.startsWith("=")
               ? title
@@ -171,12 +171,29 @@ export default {
                   .filter(Boolean)
               : [];
 
-            return `<div class="_image">
+            let html = '<div class="_mediaEmbed">';
+
+            if (media.$type === "image") {
+              html += `
               <img src="${src}" alt="${alt}"${
-              width ? ` width="${width}"` : ""
-            }${height ? ` height="${height}"` : ""}>
+                width ? ` width="${width}"` : ""
+              }${height ? ` height="${height}"` : ""}>
+              `;
+            } else if (media.$type === "video") {
+              html += `
+                <video src="${src}" alt="${alt}" controls ${
+                width ? ` width="${width}"` : ""
+              }${height ? ` height="${height}"` : ""}></video>
+              `;
+            } else {
+              return `<div><i>Media type not supported</i></div>`;
+            }
+
+            html += `
               <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
             </div>`;
+
+            return html;
           },
         },
       });
@@ -185,6 +202,8 @@ export default {
       return DOMPurify.sanitize(parsed);
     },
     getMediaSrc(meta_src, source_medias) {
+      if (!meta_src) return;
+
       let media = this.getSourceMedia({
         source_media: {
           meta_filename_in_project: meta_src,
@@ -216,6 +235,7 @@ export default {
       const dataUrl = code.toDataURL({ scale: 10 });
 
       return {
+        media,
         src,
         dataUrl,
       };
