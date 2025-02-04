@@ -23,20 +23,31 @@
   orphans: 3; 
 }
 
-._image {
+._mediaEmbed {
   position: relative;
-}
 
-._image ._qrCode {
+  video {
+  }
+  audio {
+    height: 3em;
+  }
+}
+._mediaEmbed ._qrCode {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 4em;
-  height: 4em;
-  margin: 0.5em;
+  top: 0;
+  left: 100%;
+  width: 2cm;
+  height: 2cm;
+  margin: 0;
   object-fit: cover;
   background-color: white;
   border-radius: 0.25em;
+}
+@page:right {
+  ._mediaEmbed ._qrCode {
+    right: 100%;
+    left: unset;
+  }
 }
 
 
