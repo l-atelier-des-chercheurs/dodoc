@@ -5,6 +5,7 @@
 }
 
 ._book p {
+  margin: 1em 0;
   /* gestion bancale des césures */
   text-align: justify;
   -webkit-hyphens: auto;

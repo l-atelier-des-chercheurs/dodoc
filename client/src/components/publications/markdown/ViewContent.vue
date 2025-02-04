@@ -101,7 +101,10 @@ export default {
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
         if (chapter._main_text?.$content) {
           if (chapter._main_text?.content_type === "markdown") {
-            _chapter.content = this.parseMarkdown(chapter._main_text.$content);
+            _chapter.content = this.parseMarkdown(
+              chapter._main_text.$content,
+              chapter.source_medias
+            );
           } else {
             _chapter.content = chapter._main_text?.$content;
           }
@@ -147,7 +150,7 @@ export default {
       }
       return cover;
     },
-    parseMarkdown(content) {
+    parseMarkdown(content, source_medias) {
       // const url_to_medias =
       //   window.location.origin + "/" + this.getParent(this.publication.$path);
       // marked.use(baseUrl(url_to_medias));
@@ -155,19 +158,29 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
-            const media = this.getSourceMedia({
+            let media = this.getSourceMedia({
               source_media: {
                 meta_filename_in_project: meta_src,
               },
               folder_path: this.publication.$path,
             });
+
+            if (!media) {
+              // attempt to find in chapter source_medias
+              if (source_medias?.length > 0) {
+                const local_media = source_medias.find(
+                  (sm) => sm.meta_filename_in_project === meta_src
+                );
+                if (local_media) media = local_media._media;
+              }
+            }
+
+            if (!media) return `<div><i>Media not found</i></div>`;
+
             const src = this.makeMediaFileURL({
               $path: media.$path,
               $media_filename: media.$media_filename,
             });
-
-            debugger;
-
             const [width, height] = title?.startsWith("=")
               ? title
                   .slice(1)

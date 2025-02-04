@@ -55,6 +55,7 @@
 </template>
 <script>
 // import MarkdownEditor from "@/adc-core/fields/collaborative-editor/MarkdownEditor.vue";
+import { marked } from "marked";
 
 export default {
   props: {
@@ -70,7 +71,14 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    "chapter._main_text.$content": {
+      handler(content) {
+        this.listAllEmbeddedMedias(content);
+      },
+      deep: true,
+    },
+  },
   computed: {
     content_type() {
       return this.chapter._main_text?.content_type || "html";
@@ -85,7 +93,42 @@ export default {
       else return "html";
     },
   },
-  methods: {},
+  methods: {
+    listAllEmbeddedMedias(content) {
+      let source_medias = [];
+
+      marked.use({
+        renderer: {
+          image: (meta_src, title, alt) => {
+            const folder_path = this.getParent(this.chapter.$path);
+            const media = this.getSourceMedia({
+              source_media: {
+                meta_filename_in_project: meta_src,
+              },
+              folder_path,
+            });
+            if (!media) return;
+            source_medias.push({
+              meta_filename_in_project: meta_src,
+            });
+          },
+        },
+      });
+      marked.parse(content);
+
+      // update list of embedded medias if it changed
+      if (
+        JSON.stringify(source_medias) !==
+        JSON.stringify(this.chapter.source_medias)
+      )
+        this.$api.updateMeta({
+          path: this.chapter.$path,
+          new_meta: {
+            source_medias,
+          },
+        });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

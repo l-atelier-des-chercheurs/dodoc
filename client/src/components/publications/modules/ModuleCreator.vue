@@ -255,8 +255,6 @@ export default {
       this.createMosaic({ path_to_source_media_metas });
     },
     async createMosaic({ meta_filename, path_to_source_media_metas }) {
-      debugger;
-
       // if meta_filename, file is stored in publication
       // if path_to_source_media, we get metafilename
       let source_medias = [];
