@@ -189,6 +189,12 @@ export default {
                 width ? ` width="${width}"` : ""
               }${height ? ` height="${height}"` : ""}></video>
               `;
+            } else if (media.$type === "audio") {
+              html += `
+                <audio src="${src}" alt="${alt}" controls ${
+                width ? ` width="${width}"` : ""
+              }${height ? ` height="${height}"` : ""}></audio>
+              `;
             } else {
               return `<div><i>Media type not supported</i></div>`;
             }
