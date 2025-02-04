@@ -128,7 +128,7 @@ export default {
   width: auto;
   flex: 0 0 auto;
   position: relative;
-  z-index: 10;
+  z-index: 2;
 }
 
 ._selects--starts_on_page {
@@ -136,7 +136,7 @@ export default {
   width: auto;
   flex: 0 0 auto;
   position: relative;
-  z-index: 10;
+  z-index: 2;
 }
 
 ._item--content {

@@ -159,7 +159,7 @@ module.exports = (function () {
 
       if (
         media_filename &&
-        [".txt", ".md", ".json", ".csv", ".js", ".ino"].includes(
+        [".txt", ".md", ".json", ".csv", ".js", ".ino", ".css"].includes(
           path.extname(media_filename)
         )
       )
@@ -586,6 +586,7 @@ module.exports = (function () {
         case ".csv":
         case ".js":
         case ".ino":
+        case ".css":
           new_meta.$type = "text";
           break;
         case ".pdf":

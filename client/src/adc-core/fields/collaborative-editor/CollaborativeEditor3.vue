@@ -660,7 +660,9 @@ export default {
   }
 
   &[data-format="raw"] {
-    font-family: "Fira Mono";
+    ::v-deep .ql-editor {
+      font-family: "Fira Mono";
+    }
   }
 
   ::v-deep {
@@ -708,8 +710,8 @@ export default {
       }
 
       pre.ql-syntax {
-        font-family: Fira Mono;
         padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+        font-family: Fira Mono;
       }
 
       &[contenteditable="true"] {
@@ -828,7 +830,7 @@ export default {
   right: 0;
   text-align: right;
   height: 0;
-  z-index: 1000;
+  z-index: 2;
 }
 </style>
 <style lang="scss">

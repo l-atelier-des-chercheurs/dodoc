@@ -1273,6 +1273,7 @@ export default {
   not_logged_in: "Non connecté",
 
   chapters: "Chapitres",
+  create_chapter: "Créer un chapitre",
   use_cover: "Afficher une couverture",
   layout_style: "Placement de l’image",
   full_page: "Pleine page",
@@ -1284,4 +1285,5 @@ export default {
   no_content: "Pas de contenu",
   book: "Livre",
   normal: "Normal",
+  styles: "Styles graphiques",
 };

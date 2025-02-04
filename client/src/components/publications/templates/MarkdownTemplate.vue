@@ -9,6 +9,17 @@
           :can_edit="can_edit"
           @toggleSection="$emit('toggleSection', $event)"
         />
+
+        <div class="_editGraphics">
+          <button
+            type="button"
+            class="u-button u-button_bleumarine"
+            @click="show_edit_graphics = true"
+          >
+            {{ $t("styles") }}
+          </button>
+        </div>
+
         <transition name="scaleInFade" mode="in-out">
           <OpenChapter
             v-if="open_chapter"
@@ -17,6 +28,11 @@
             :can_edit="can_edit"
             @remove="removeChapter(open_chapter)"
             @close="$emit('toggleSection', null)"
+          />
+          <EditGraphicStyles
+            v-else-if="show_edit_graphics"
+            :publication="publication"
+            @close="show_edit_graphics = false"
           />
         </transition>
       </pane>
@@ -39,6 +55,8 @@ import { Splitpanes, Pane } from "splitpanes";
 import ChaptersSummary from "@/components/publications/markdown/ChaptersSummary.vue";
 import OpenChapter from "@/components/publications/markdown/OpenChapter.vue";
 import ViewContent from "@/components/publications/markdown/ViewContent.vue";
+import EditGraphicStyles from "@/components/publications/markdown/EditGraphicStyles.vue";
+
 export default {
   props: {
     publication: Object,
@@ -51,9 +69,12 @@ export default {
     ChaptersSummary,
     OpenChapter,
     ViewContent,
+    EditGraphicStyles,
   },
   data() {
-    return {};
+    return {
+      show_edit_graphics: false,
+    };
   },
   created() {},
   mounted() {},
@@ -118,5 +139,19 @@ export default {
   height: 100%;
   z-index: 1;
   overflow: auto;
+}
+._editGraphics {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  padding: calc(var(--spacing) * 1);
+  text-align: center;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 </style>

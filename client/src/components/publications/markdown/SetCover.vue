@@ -22,6 +22,7 @@
           :can_edit="can_edit"
         /> -->
         <CollaborativeEditor3
+          :label="$t('title')"
           :content="cover_media.$content"
           :path="cover_media.$path"
           :custom_formats="[]"
@@ -63,6 +64,7 @@
         />
       </div>
       <div class="u-spacingBottom" />
+      <DLabel :str="$t('text_image_layout')" />
       <SelectField2
         :field_name="'cover_layout_mode'"
         :value="cover_media.cover_layout_mode"

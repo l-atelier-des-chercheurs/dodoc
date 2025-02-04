@@ -1,44 +1,46 @@
 <template>
   <div class="_chaptersSummary">
-    <DLabel :str="$t('content')" />
-    <transition-group
-      tag="div"
-      name="listComplete"
-      class="_allChapters"
-      appear
-      key="allpages"
-    >
-      <SetCover
-        :key="'cover'"
-        :publication="publication"
-        :can_edit="can_edit"
-      />
-
-      <ChapterPreview
-        v-for="(section, index) in sections"
-        :key="section.$path"
-        :section="section"
-        :index="index"
-        :number_of_sections="sections.length"
-        :can_edit="can_edit"
-        @open="openSection(section.$path)"
-        @moveSection="moveSection"
-      />
-
-      <div key="'add'" class="_addSection">
-        <EditBtn
-          v-if="can_edit"
-          :btn_type="'add'"
-          :is_unfolded="true"
-          @click="createSection"
+    <div class="_content">
+      <DLabel :str="$t('content')" />
+      <transition-group
+        tag="div"
+        name="listComplete"
+        class="_allChapters"
+        appear
+        key="allpages"
+      >
+        <SetCover
+          :key="'cover'"
+          :publication="publication"
+          :can_edit="can_edit"
         />
-      </div>
-    </transition-group>
+        <ChapterPreview
+          v-for="(section, index) in sections"
+          :key="section.$path"
+          :section="section"
+          :index="index"
+          :number_of_sections="sections.length"
+          :can_edit="can_edit"
+          @open="openSection(section.$path)"
+          @moveSection="moveSection"
+        />
+
+        <div key="'add'" class="_addSection">
+          <EditBtn
+            v-if="can_edit"
+            :btn_type="'create_chapter'"
+            :is_unfolded="true"
+            @click="createSection"
+          />
+        </div>
+      </transition-group>
+    </div>
   </div>
 </template>
 <script>
 import SetCover from "@/components/publications/markdown/SetCover.vue";
 import ChapterPreview from "@/components/publications/markdown/ChapterPreview.vue";
+import DLabel from "@/adc-core/fields/DLabel.vue";
 
 export default {
   props: {
@@ -146,9 +148,12 @@ export default {
   height: 100%;
   overflow: auto;
   background-color: var(--c-gris_clair);
-  z-index: 1;
 
   padding: calc(var(--spacing) * 2);
+}
+
+._content {
+  margin-bottom: calc(var(--spacing) * 2);
 }
 
 ._createSection {
@@ -166,7 +171,7 @@ export default {
   display: flex;
   // justify-content: center;
   align-items: center;
-  background-color: transparent;
+  background-color: white;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
 }
 </style>
