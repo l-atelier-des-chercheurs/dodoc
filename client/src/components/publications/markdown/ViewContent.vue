@@ -163,13 +163,17 @@ export default {
 
             const { src, dataUrl, media } = _media;
 
-            const [width, height] = title?.startsWith("=")
+            let [width, height] = title?.startsWith("=")
               ? title
                   .slice(1)
                   .split("x")
                   .map((v) => v.trim())
                   .filter(Boolean)
               : [];
+            if (!width && !height) {
+              width = media.$infos.width;
+              height = media.$infos.height;
+            }
 
             let html = '<div class="_mediaEmbed">';
 

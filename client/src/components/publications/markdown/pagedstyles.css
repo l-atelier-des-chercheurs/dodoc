@@ -25,6 +25,9 @@
 
 ._mediaEmbed {
   position: relative;
+
+  video {
+  }
 }
 
 ._mediaEmbed ._qrCode {
