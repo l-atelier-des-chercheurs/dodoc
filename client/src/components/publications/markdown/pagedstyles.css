@@ -1,8 +1,4 @@
-._chapterTitle {
-  string-set: title content(text);
-  font-family: "Volkhov", serif;
-  font-weight: 400;
-}
+/* STYLES */
 
 ._book {
   font-family: "PT Serif", serif;
@@ -26,6 +22,9 @@
   orphans: 3; 
 }
 
+
+/* SET MARGINS */
+
 @page {
   margin-top: 16mm;
   margin-bottom: 32mm;
@@ -40,6 +39,8 @@
   margin-right: 16mm;
 }
 
+/* SHOW PAGE COUNTER ON EACH PAGE */
+
 @page:right {
   @bottom-right {
     content: counter(page);
@@ -53,7 +54,13 @@
   }
 }
 
+/* SHOW CHAPTER NAME ON EACH PAGE */
 
+._chapterTitle {
+  string-set: title content(text);
+  font-family: "Volkhov", serif;
+  font-weight: 400;
+}
 @page {
   @bottom-center {
     content: string(title);
@@ -61,8 +68,8 @@
   }
 }
 
-._chapter {
-}
+/* SET CHAPTER START OPTION */
+
 ._chapter[data-starts-on-page="in_flow"]:not(:first-child) {
   margin-top: 3rem;
 }
@@ -72,13 +79,12 @@
 ._chapter[data-starts-on-page="right"] {
   break-before: right;
 }
-p {
-  margin: 1em 0;
-}
+
+/* SET COVER OPTIONS */
+
 ._cover {
   break-after: page;
 }
-
 ._coverTitle {
   position: relative;
   z-index: 2;
@@ -87,7 +93,6 @@ p {
   position: relative;
   z-index: 1;
 }
-
 ._cover:not([data-layout-mode="normal"]) ._coverImage img {
   position: absolute;
   top: 0;
@@ -96,7 +101,6 @@ p {
   height: 100%;
   object-fit: cover;
 }
-
 ._cover[data-layout-mode="full_page"] ._coverImage {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1);
@@ -115,7 +119,6 @@ p {
   width: var(--pagedjs-width);
   height: calc(var(--pagedjs-height) / 2);
 }
-
 ._cover[data-layout-mode="image_top_text_down"] ._coverTitle {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2) + 2rem);

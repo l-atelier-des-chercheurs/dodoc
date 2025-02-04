@@ -538,6 +538,9 @@
                     },
                     "cover_layout_mode": {
                       "type": "string"
+                    },
+                    "css_styles": {
+                      "type": "string"
                     }
                   }
                 }

@@ -148,14 +148,26 @@ export default {
       return cover;
     },
     parseMarkdown(content) {
-      const url_to_medias =
-        window.location.origin + "/" + this.getParent(this.publication.$path);
-      marked.use(baseUrl(url_to_medias));
+      // const url_to_medias =
+      //   window.location.origin + "/" + this.getParent(this.publication.$path);
+      // marked.use(baseUrl(url_to_medias));
 
       marked.use({
         renderer: {
-          image(src, title, alt) {
-            console.log("---", src, alt, title);
+          image: (meta_src, title, alt) => {
+            const media = this.getSourceMedia({
+              source_media: {
+                meta_filename_in_project: meta_src,
+              },
+              folder_path: this.publication.$path,
+            });
+            const src = this.makeMediaFileURL({
+              $path: media.$path,
+              $media_filename: media.$media_filename,
+            });
+
+            debugger;
+
             const [width, height] = title?.startsWith("=")
               ? title
                   .slice(1)
@@ -163,9 +175,12 @@ export default {
                   .map((v) => v.trim())
                   .filter(Boolean)
               : [];
-            return `<img src="${src}" alt="${alt}"${
+
+            return `<div class="_image">
+              <img src="${src}" alt="${alt}"${
               width ? ` width="${width}"` : ""
-            }${height ? ` height="${height}"` : ""}>`;
+            }${height ? ` height="${height}"` : ""}>
+            </div>`;
           },
         },
       });
