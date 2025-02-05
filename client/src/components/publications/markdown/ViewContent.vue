@@ -196,7 +196,7 @@ export default {
 
             if (media.$infos.duration) {
               html += `<div class="_mediaDuration">
-                ${this.$t("duration")} 
+                ${this.$t(media.$type)} 
                 ${this.formatDurationToHoursMinutesSeconds(
                   media.$infos.duration
                 )} 
