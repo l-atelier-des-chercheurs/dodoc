@@ -1,7 +1,8 @@
 /* STYLES */
 
 ._book {
-  font-family: "PT Serif", serif;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 12px;
 }
 
 ._book p {
@@ -21,6 +22,7 @@
   /* veuves et orphelines (bancal) */
   widows: 3;
   orphans: 3; 
+  line-height: 1.3;
 }
 
 ._mediaEmbed {
@@ -45,7 +47,7 @@
 
   ._mediaInfos {
     flex: 1 1 auto;
-    font-size: var(--sl-font-size-x-small)
+    font-size: 10px;
 
   }
   ._mediaCaption, ._mediaCredits {
@@ -63,31 +65,32 @@
 
 
 /* SET MARGINS */
-
 @page {
-  margin-top: 16mm;
-  margin-bottom: 32mm;
+  margin-top: 20mm;
+  margin-bottom: 20mm;
 }
 
 @page:left {
-  margin-left: 16mm;
-  margin-right: 32mm;
+  margin-left: 25mm;
+  margin-right: 20mm;
 }
 @page:right {
-  margin-left: 32mm;
-  margin-right: 16mm;
+  margin-left: 20mm;
+  margin-right: 25mm;
 }
 
 /* SHOW PAGE COUNTER ON EACH PAGE */
 
 @page:right {
-  @bottom-right {
+  @right-middle {
+    color: #3982B9;
     content: counter(page);
     font-size: 10px;
   }
 }
 @page:left {
-  @bottom-left {
+  @left-middle {
+    color: #3982B9;
     content: counter(page);
     font-size: 10px;
   }
@@ -97,13 +100,36 @@
 
 ._chapterTitle {
   string-set: title content(text);
-  font-family: "Volkhov", serif;
-  font-weight: 400;
+  font-family: "IBM Plex Serif", sans-serif;
+  font-weight: 600;
+  font-size: 1.5em;
 }
 @page {
-  @bottom-center {
+  @bottom-left-corner {
     content: string(title);
     font-size: 10px;
+    color: #3982B9;
+    font-weight: 600; 
+  }
+  @top-left-corner {
+    content: "Tunizine!";
+    font-size: 10px;
+    color: #3982B9;
+    font-weight: 600;
+  }
+  @top-right-corner {
+    content: "Slash";
+    font-size: 10px;
+    color: #3982B9;
+    font-weight: 600;
+    text-align: center;
+  }
+  @bottom-right-corner {
+    content: "Transition";
+    font-size: 10px;
+    color: #3982B9;
+    font-weight: 600;
+    text-align: center;
   }
 }
 
