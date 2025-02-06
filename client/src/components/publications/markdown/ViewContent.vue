@@ -158,120 +158,58 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
-            // if(title === '=full-page')
+            let html;
 
-            let caption = undefined;
-            if (alt) caption = `<span class="_mediaCaption">${alt}</span>`;
+            let custom_classes = [],
+              width,
+              height;
 
-            let [width, height] = title?.startsWith("=")
-              ? title
+            if (title?.startsWith("=")) {
+              if (title.startsWith("=full-page")) {
+                custom_classes.push("_fullPage");
+                if (title.startsWith("=full-page-cover")) {
+                  custom_classes.push("_fullPageCover");
+                }
+              } else {
+                [width, height] = title
                   .slice(1)
                   .split("x")
                   .map((v) => v.trim())
-                  .filter(Boolean)
-              : [];
-
-            if (meta_src.startsWith("http")) {
-              if (caption) {
-                let html = `
-                  <img src="${meta_src}" alt="${alt}"${
-                  width ? ` width="${width}"` : ""
-                }${height ? ` height="${height}"` : ""}>
-                `;
-                if (caption) html += caption;
-                return html;
+                  .filter(Boolean);
               }
             }
 
-            const _media = this.getMediaSrc(meta_src, source_medias);
-            if (!_media) return `<div><i>Media not found</i></div>`;
+            if (meta_src.startsWith("http")) {
+              html = `
+                  <img src="${meta_src}"
+                    alt="${alt}"
+                    ${width ? ` width="${width}"` : ""}
+                    ${height ? ` height="${height}"` : ""}
+                  >
 
-            const { src, dataUrl, media } = _media;
-
-            if (!width && !height) {
-              width = media.$infos.width;
-              height = media.$infos.height;
+                `;
+            } else {
+              const _media = this.getMediaSrc(meta_src, source_medias);
+              if (!_media) {
+                html = `<i>Media not found</i>`;
+              } else {
+                const { html: _html, is_qr_code } = this.placeLocalMedia({
+                  _media,
+                  alt,
+                  width,
+                  height,
+                });
+                html = _html;
+                if (is_qr_code) {
+                  custom_classes.push("_isQRCode");
+                }
+              }
             }
 
-            if (media.$type === "image") {
-              let html = `
-              <img src="${src}" alt="${alt}"${
-                width ? ` width="${width}"` : ""
-              }${height ? ` height="${height}"` : ""}>
-              `;
-              if (caption) html += caption;
-              return html;
-            }
-
-            let html = '<div class="_mediaEmbed">';
-
-            html += `
-              <div>
-                <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
-              </div>
-            `;
-
-            // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
-            html += `<div class="_mediaInfos">`;
-
-            if (media.$infos.duration) {
-              html += `<div class="_mediaDuration">
-                ${this.$t(media.$type)} 
-                ${this.formatDurationToHoursMinutesSeconds(
-                  media.$infos.duration
-                )} 
-              </div>`;
-            }
-
-            html += `
-              <div class="_mediaCaption">
-                ${media.caption || ""}
-              </div>
-              <div class="_mediaCredits">
-                ${media.$credits || ""}
-              </div>`;
-
-            html += `</div>`;
-
-            // get thumbs
-            const thumb = this.getFirstThumbURLForMedia({
-              file: media,
-              resolution: 220,
-            });
-            if (thumb) {
-              html += `
-              <div class="_thumbnail">
-                <img src="${thumb}" alt="${alt}"${
-                width ? ` width="${width}"` : ""
-              }${height ? ` height="${height}"` : ""}>
-              </div>`;
-            }
-
-            html += "</div>";
-
-            // if (media.$type === "image") {
-            //   html += `
-            //   <img src="${src}" alt="${alt}"${
-            //     width ? ` width="${width}"` : ""
-            //   }${height ? ` height="${height}"` : ""}>
-            //   `;
-            // } else if (media.$type === "video") {
-            //   html += `
-            //     <video src="${src}" alt="${alt}" controls ${
-            //     width ? ` width="${width}"` : ""
-            //   }${height ? ` height="${height}"` : ""}></video>
-            //   `;
-            // } else if (media.$type === "audio") {
-            //   html += `
-            //     <audio src="${src}" alt="${alt}" controls ${
-            //     width ? ` width="${width}"` : ""
-            //   }${height ? ` height="${height}"` : ""}></audio>
-            //   `;
-            // } else {
-            //   return `<div><i>Media type not supported</i></div>`;
-            // }
-
-            return html;
+            if (alt) html += `<span class="_mediaCaption">${alt}</span>`;
+            return `<div class='_mediaContainer ${custom_classes.join(
+              " "
+            )}'>${html}</div>`;
           },
         },
       });
@@ -279,6 +217,7 @@ export default {
       const parsed = marked.parse(content);
       return DOMPurify.sanitize(parsed);
     },
+
     getMediaSrc(meta_src, source_medias) {
       if (!meta_src) return;
 
@@ -317,6 +256,73 @@ export default {
         src,
         dataUrl,
       };
+    },
+    placeLocalMedia({ _media, alt, width, height }) {
+      let html = "";
+      let is_qr_code = false;
+
+      const { src, dataUrl, media } = _media;
+      if (!width && !height) {
+        width = media.$infos.width;
+        height = media.$infos.height;
+      }
+
+      if (media.$type === "image") {
+        html = `
+                  <img src="${src}"
+                    alt="${alt}"
+                    ${width ? ` width="${width}"` : ""}
+                    ${height ? ` height="${height}"` : ""}
+                  >
+                `;
+      } else {
+        is_qr_code = true;
+        html += `
+              <div>
+                <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
+              </div>
+            `;
+
+        // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
+        html += `<div class="_mediaInfos">`;
+
+        if (media.$infos.duration) {
+          html += `<div class="_mediaDuration">
+                ${this.$t(media.$type)}
+                ${this.formatDurationToHoursMinutesSeconds(
+                  media.$infos.duration
+                )}
+              </div>`;
+        }
+
+        html += `
+              <div class="_mediaCaption">
+                ${media.caption || ""}
+              </div>
+              <div class="_mediaCredits">
+                ${media.$credits || ""}
+              </div>`;
+
+        html += `</div>`;
+
+        // get thumbs
+        const thumb = this.getFirstThumbURLForMedia({
+          file: media,
+          resolution: 220,
+        });
+        if (thumb) {
+          html += `
+              <div class="_thumbnail">
+                <img src="${thumb}"
+                  alt="${alt}"
+                  ${width ? ` width="${width}"` : ""}
+                  ${height ? ` height="${height}"` : ""}
+                >
+              </div>`;
+        }
+      }
+
+      return { html, is_qr_code };
     },
   },
 };
