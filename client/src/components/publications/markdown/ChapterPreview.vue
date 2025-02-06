@@ -34,6 +34,10 @@
               text: $t('in_flow'),
             },
             {
+              key: 'page',
+              text: $t('next_page'),
+            },
+            {
               key: 'left',
               text: $t('next_left_page'),
             },
