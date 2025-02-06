@@ -187,7 +187,7 @@ export default {
 }
 
 ._settings {
-  flex: 0 0 200px;
+  flex: 1 0 240px;
   overflow: auto;
   padding: calc(var(--spacing) / 1);
   background-color: white;
@@ -200,7 +200,7 @@ export default {
   }
 }
 ._preview {
-  flex: 1 1 200px;
+  flex: 8 1 200px;
 
   canvas {
     // filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
