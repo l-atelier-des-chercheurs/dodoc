@@ -158,11 +158,6 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
-            const _media = this.getMediaSrc(meta_src, source_medias);
-            if (!_media) return `<div><i>Media not found</i></div>`;
-
-            const { src, dataUrl, media } = _media;
-
             let [width, height] = title?.startsWith("=")
               ? title
                   .slice(1)
@@ -170,6 +165,20 @@ export default {
                   .map((v) => v.trim())
                   .filter(Boolean)
               : [];
+
+            if (meta_src.startsWith("http")) {
+              return `
+              <img src="${meta_src}" alt="${alt}"${
+                width ? ` width="${width}"` : ""
+              }${height ? ` height="${height}"` : ""}>
+              `;
+            }
+
+            const _media = this.getMediaSrc(meta_src, source_medias);
+            if (!_media) return `<div><i>Media not found</i></div>`;
+
+            const { src, dataUrl, media } = _media;
+
             if (!width && !height) {
               width = media.$infos.width;
               height = media.$infos.height;
