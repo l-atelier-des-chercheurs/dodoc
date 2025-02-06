@@ -72,6 +72,12 @@ export default {
     ViewContent,
     EditGraphicStyles,
   },
+  provide() {
+    return {
+      $getMetaFilenamesAlreadyPresent: () =>
+        this.meta_filenames_already_present,
+    };
+  },
   data() {
     return {
       show_edit_graphics: false,
@@ -105,6 +111,38 @@ export default {
         );
       }
       return false;
+    },
+    meta_filenames_already_present() {
+      const { current, other } = {
+        current: [],
+        other: [],
+      };
+
+      this.all_chapters.forEach((chapter) => {
+        chapter.source_medias.forEach((sm) => {
+          if (
+            this.getFilename(chapter.$path) ===
+            this.opened_section_meta_filename
+          ) {
+            current.push(sm.meta_filename_in_project);
+          } else {
+            other.push(sm.meta_filename_in_project);
+          }
+        });
+      });
+
+      return [
+        {
+          label: this.$t("in_this_section"),
+          medias: current,
+          color: "var(--c-orange)",
+        },
+        {
+          label: this.$t("in_another_section"),
+          medias: other,
+          color: "var(--c-bleuvert)",
+        },
+      ];
     },
   },
   methods: {
