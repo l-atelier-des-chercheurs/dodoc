@@ -24,6 +24,9 @@
   orphans: 3; 
   line-height: 1.3;
 }
+._book img {
+  display: inline-block;
+}
 ._book h1 {
   font-family: "Work Sans", sans-serif;
   font-weight: 600;
