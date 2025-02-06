@@ -41,6 +41,16 @@
           :edit_on_mounted="true"
           :can_edit="can_edit"
         /> -->
+        <div class="_pickFileButton">
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="show_media_picker = !show_media_picker"
+          >
+            pick media
+          </button>
+        </div>
+
         <CollaborativeEditor3
           :content="chapter._main_text.$content"
           :path="chapter._main_text.$path"
@@ -49,6 +59,23 @@
           :can_edit="can_edit"
           :mode="'always_active'"
         />
+
+        <MediaPicker
+          v-if="show_media_picker"
+          :publication_path="publication_path"
+          :select_mode="'single'"
+          :pick_from_types="['image', 'video', 'audio']"
+          @addMedias="pickFile"
+          @close="show_media_picker = false"
+        />
+
+        <BaseModal2
+          v-if="pick_file_shortcut"
+          :title="$t('pick_file')"
+          @close="pick_file_shortcut = null"
+        >
+          <input type="text" v-model="pick_file_shortcut" readonly />
+        </BaseModal2>
       </template>
     </div>
   </div>
@@ -57,16 +84,23 @@
 // import MarkdownEditor from "@/adc-core/fields/collaborative-editor/MarkdownEditor.vue";
 import { marked } from "marked";
 
+import MediaPicker from "@/components/publications/MediaPicker.vue";
+
 export default {
   props: {
     chapter: Object,
+    publication_path: String,
     can_edit: Boolean,
   },
   components: {
     // MarkdownEditor,
+    MediaPicker,
   },
   data() {
-    return {};
+    return {
+      show_media_picker: false,
+      pick_file_shortcut: null,
+    };
   },
   created() {},
   mounted() {},
@@ -128,6 +162,10 @@ export default {
           },
         });
     },
+    pickFile({ path_to_source_media_metas }) {
+      const source_media_meta = path_to_source_media_metas[0];
+      this.pick_file_shortcut = `![](${this.getFilename(source_media_meta)})`;
+    },
   },
 };
 </script>
@@ -162,5 +200,15 @@ export default {
 
 ._content {
   padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 2);
+}
+
+._pickFileButton {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  text-align: right;
+  margin: calc(var(--spacing) * 2);
+  z-index: 10;
+  padding: calc(var(--spacing) / 2);
 }
 </style>

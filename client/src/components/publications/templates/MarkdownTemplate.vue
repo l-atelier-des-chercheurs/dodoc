@@ -26,6 +26,7 @@
             :key="open_chapter.$path"
             :chapter="open_chapter"
             :can_edit="can_edit"
+            :publication_path="publication.$path"
             @remove="removeChapter(open_chapter)"
             @close="$emit('toggleSection', null)"
           />
