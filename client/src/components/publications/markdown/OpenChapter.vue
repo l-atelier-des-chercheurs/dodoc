@@ -44,7 +44,7 @@
         <div class="_pickFileButton">
           <button
             type="button"
-            class="u-button u-button_bleuvert"
+            class="u-button u-button_bleumarine"
             @click="show_media_picker = !show_media_picker"
           >
             pick media
