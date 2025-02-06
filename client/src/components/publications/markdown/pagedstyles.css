@@ -67,8 +67,10 @@
 
   &._fullPage {
     break-before: page;
+    break-after: page;
     width: var(--pagedjs-width);
-    height: var(--pagedjs-height);
+    /* complex calculation because otherwise a p is pushed onto the next page */
+    height: calc(var(--pagedjs-height) - var(--pagedjs-margin-top) - var(--pagedjs-margin-bottom) - 5mm);
     z-index: 1000;
 
 
