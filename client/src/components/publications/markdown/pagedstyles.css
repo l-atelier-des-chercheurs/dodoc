@@ -32,7 +32,7 @@
   font-weight: 600;
   font-size: 24px;
 }
-._book h2 {
+._book h2 { 
   font-family: "Work Sans", sans-serif;
   font-weight: 600;
   font-size: 20px;
@@ -81,6 +81,14 @@
 
 }
 
+._mediaCaption {
+  font-size: 10px;
+  color: var(--c-gris_fonce);
+  font-style: italic;
+  text-align: center;
+  display: block;
+
+}
 
 
 /* SET MARGINS */

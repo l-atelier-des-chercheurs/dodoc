@@ -158,6 +158,11 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
+            // if(title === '=full-page')
+
+            let caption = undefined;
+            if (alt) caption = `<span class="_mediaCaption">${alt}</span>`;
+
             let [width, height] = title?.startsWith("=")
               ? title
                   .slice(1)
@@ -167,11 +172,15 @@ export default {
               : [];
 
             if (meta_src.startsWith("http")) {
-              return `
-              <img src="${meta_src}" alt="${alt}"${
-                width ? ` width="${width}"` : ""
-              }${height ? ` height="${height}"` : ""}>
-              `;
+              if (caption) {
+                let html = `
+                  <img src="${meta_src}" alt="${alt}"${
+                  width ? ` width="${width}"` : ""
+                }${height ? ` height="${height}"` : ""}>
+                `;
+                if (caption) html += caption;
+                return html;
+              }
             }
 
             const _media = this.getMediaSrc(meta_src, source_medias);
@@ -185,11 +194,13 @@ export default {
             }
 
             if (media.$type === "image") {
-              return `
+              let html = `
               <img src="${src}" alt="${alt}"${
                 width ? ` width="${width}"` : ""
               }${height ? ` height="${height}"` : ""}>
               `;
+              if (caption) html += caption;
+              return html;
             }
 
             let html = '<div class="_mediaEmbed">';
