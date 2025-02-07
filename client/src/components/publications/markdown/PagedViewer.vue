@@ -102,9 +102,7 @@ export default {
       }
 
       nodes.chapters.forEach((chapter) => {
-        html += `<section class="_chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" 
-          data-chapter-title="${chapter.title}"
-        > `;
+        html += `<section class="_chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" >`;
         if (chapter.title)
           html += `<h1 class="_chapterTitle">${chapter.title}</h1>`;
         if (chapter.content) html += `${chapter.content}`;
