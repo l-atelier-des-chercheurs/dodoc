@@ -26,7 +26,6 @@
           :label="$t('section_title')"
           :field_name="'section_title'"
           :content="chapter.section_title"
-          :required="true"
           :maxlength="40"
           :tag="'h1'"
           :path="chapter.$path"
