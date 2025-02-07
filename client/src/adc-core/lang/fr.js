@@ -41,9 +41,12 @@ export default {
   add: "Ajouter",
   add_item: "Ajouter un élément",
   add_files: "Ajouter des fichiers",
-  hide_already_present_medias: "Masquer les médias déjà inclus",
+  hide_already_present_medias: `
+    Masquer le média déjà inclus dans la publication | 
+    Masquer les {count} médias déjà inclus dans la publication
+    `,
   suggestions: "Suggestions",
-  suggested_cat_kw: "Catégories et mots-clé suggérés",
+  suggested_cat_kw: "Catégories et mots-clés suggérés",
   list_of_suggestions: "Liste des suggestions",
   create_suggestion_list_for: "Créer une liste de suggestions",
 

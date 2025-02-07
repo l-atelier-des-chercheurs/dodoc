@@ -30,10 +30,14 @@
         </select>
 
         <ToggleInput
-          v-if="meta_filenames_already_present"
+          v-if="has_already_present_medias > 0"
           class="u-spacingBottom"
           :content.sync="hide_already_present_medias"
-          :label="$t('hide_already_present_medias')"
+          :label="
+            $tc('hide_already_present_medias', has_already_present_medias, {
+              count: has_already_present_medias,
+            })
+          "
         />
 
         <div v-if="source_project_path" class="_projectLib">
@@ -117,6 +121,12 @@ export default {
       if (this.$getMetaFilenamesAlreadyPresent)
         return this.$getMetaFilenamesAlreadyPresent();
       return false;
+    },
+    has_already_present_medias() {
+      return this.meta_filenames_already_present.reduce((acc, m) => {
+        if (m.medias?.length > 0) acc += m.medias.length;
+        return acc;
+      }, 0);
     },
     sorted_projects() {
       if (!this.projects) return [];

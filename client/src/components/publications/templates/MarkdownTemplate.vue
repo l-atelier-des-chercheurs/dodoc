@@ -113,22 +113,22 @@ export default {
       return false;
     },
     meta_filenames_already_present() {
-      const { current, other } = {
-        current: [],
-        other: [],
-      };
+      let current = [],
+        other = [];
 
       this.all_chapters.forEach((chapter) => {
-        chapter.source_medias.forEach((sm) => {
-          if (
-            this.getFilename(chapter.$path) ===
-            this.opened_section_meta_filename
-          ) {
-            current.push(sm.meta_filename_in_project);
-          } else {
-            other.push(sm.meta_filename_in_project);
-          }
-        });
+        if (Array.isArray(chapter.source_medias)) {
+          chapter.source_medias.forEach((sm) => {
+            if (
+              this.getFilename(chapter.$path) ===
+              this.opened_section_meta_filename
+            ) {
+              current.push(sm.meta_filename_in_project);
+            } else {
+              other.push(sm.meta_filename_in_project);
+            }
+          });
+        }
       });
 
       return [
