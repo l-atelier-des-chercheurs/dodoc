@@ -206,7 +206,8 @@ export default {
               }
             }
 
-            if (alt) html += `<span class="_mediaCaption">${alt}</span>`;
+            if (alt)
+              html += `<div class="_mediaCaption"><span>${alt}</span></div>`;
             return `<div class='_mediaContainer ${custom_classes.join(
               " "
             )}'>${html}</div>`;
@@ -296,10 +297,10 @@ export default {
         }
 
         html += `
-              <div class="_mediaCaption">
+              <div class="_mediaSourceCaption">
                 ${media.caption || ""}
               </div>
-              <div class="_mediaCredits">
+              <div class="_mediaSourceCredits">
                 ${media.$credits || ""}
               </div>`;
 

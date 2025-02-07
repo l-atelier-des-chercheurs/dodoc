@@ -940,7 +940,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
       font-size: 10px;
   
     }
-    ._mediaCaption, ._mediaCredits {
+    ._mediaSourceCredits, ._mediaSourceCaption {
       p {
         margin: 0;
       }
@@ -953,12 +953,13 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 
   &._fullPage {
     break-before: page;
+    break-after: page;
     width: var(--pagedjs-width);
-    height: var(--pagedjs-height);
+    /* complex calculation because otherwise a p is pushed onto the next page */
+    height: calc(var(--pagedjs-height) - var(--pagedjs-margin-top) - var(--pagedjs-margin-bottom) - 5mm);
     z-index: 1000;
 
-
-    > * {
+    > *:not(._mediaCaption) {
       position: absolute;
       top: calc(var(--pagedjs-margin-top) * -1);
       left: calc(var(--pagedjs-margin-left) * -1);
@@ -966,11 +967,31 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
       height: var(--pagedjs-height);
       object-fit: contain;
       background-color: white;
-    }
 
+    }
     &._fullPageCover > * {
       object-fit: cover;
     }
+
+    ._mediaCaption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 5mm;
+      font-size: 10px;
+      left: calc(var(--pagedjs-margin-left)* -1);
+
+      span {
+        display: inline;
+        box-decoration-break: clone;
+        background-color: white;
+        padding: .25em;
+        border-radius: 0.25em;
+      }
+    }
+
+
   }
 }
 ._book h1 {
@@ -1070,6 +1091,9 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 
 ._chapter[data-starts-on-page="in_flow"]:not(:first-child) {
   margin-top: 3rem;
+}
+._chapter[data-starts-on-page="page"] {
+  break-before: page;
 }
 ._chapter[data-starts-on-page="left"] {
   break-before: left;
@@ -1223,7 +1247,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
                     ${p?` height="${p}"`:""}
                   >
 
-                `;else{const c=this.getMediaSrc(n,e);if(!c)s="<i>Media not found</i>";else{const{html:u,is_qr_code:d}=this.placeLocalMedia({_media:c,alt:i,width:l,height:p});s=u,d&&o.push("_isQRCode")}}return i&&(s+=`<span class="_mediaCaption">${i}</span>`),`<div class='_mediaContainer ${o.join(" ")}'>${s}</div>`}}});const r=N.parse(t);return um.sanitize(r)},getMediaSrc(t,e){if(!t)return;let r=this.getSourceMedia({source_media:{meta_filename_in_project:t},folder_path:this.publication.$path});if(!r&&(e==null?void 0:e.length)>0){const o=e.find(l=>l.meta_filename_in_project===t);o&&(r=o._media)}if(!r)return;const n=this.makeMediaFileURL({$path:r.$path,$media_filename:r.$media_filename}),a=window.location.origin+"/_previewmedia?path_to_meta="+r.$path,s=si(a).toDataURL({scale:10});return{media:r,src:n,dataUrl:s}},placeLocalMedia({_media:t,alt:e,width:r,height:n}){let a="",i=!1;const{src:s,dataUrl:o,media:l}=t;if(!r&&!n&&(r=l.$infos.width,n=l.$infos.height),l.$type==="image")a=`
+                `;else{const c=this.getMediaSrc(n,e);if(!c)s="<i>Media not found</i>";else{const{html:u,is_qr_code:d}=this.placeLocalMedia({_media:c,alt:i,width:l,height:p});s=u,d&&o.push("_isQRCode")}}return i&&(s+=`<div class="_mediaCaption"><span>${i}</span></div>`),`<div class='_mediaContainer ${o.join(" ")}'>${s}</div>`}}});const r=N.parse(t);return um.sanitize(r)},getMediaSrc(t,e){if(!t)return;let r=this.getSourceMedia({source_media:{meta_filename_in_project:t},folder_path:this.publication.$path});if(!r&&(e==null?void 0:e.length)>0){const o=e.find(l=>l.meta_filename_in_project===t);o&&(r=o._media)}if(!r)return;const n=this.makeMediaFileURL({$path:r.$path,$media_filename:r.$media_filename}),a=window.location.origin+"/_previewmedia?path_to_meta="+r.$path,s=si(a).toDataURL({scale:10});return{media:r,src:n,dataUrl:s}},placeLocalMedia({_media:t,alt:e,width:r,height:n}){let a="",i=!1;const{src:s,dataUrl:o,media:l}=t;if(!r&&!n&&(r=l.$infos.width,n=l.$infos.height),l.$type==="image")a=`
                   <img src="${s}"
                     alt="${e}"
                     ${r?` width="${r}"`:""}
@@ -1237,10 +1261,10 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
                 ${this.$t(l.$type)}
                 ${this.formatDurationToHoursMinutesSeconds(l.$infos.duration)}
               </div>`),a+=`
-              <div class="_mediaCaption">
+              <div class="_mediaSourceCaption">
                 ${l.caption||""}
               </div>
-              <div class="_mediaCredits">
+              <div class="_mediaSourceCredits">
                 ${l.$credits||""}
               </div>`,a+="</div>";const p=this.getFirstThumbURLForMedia({file:l,resolution:220});p&&(a+=`
               <div class="_thumbnail">
@@ -1249,4 +1273,4 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
                   ${r?` width="${r}"`:""}
                   ${n?` height="${n}"`:""}
                 >
-              </div>`)}return{html:a,is_qr_code:i}}}};var IT=function(){var e=this,r=e._self._c;return r("div",{staticClass:"_viewContent"},[r("div",{staticClass:"_viewMode"},[r("select",{directives:[{name:"model",rawName:"v-model",value:e.view_mode,expression:"view_mode"}],attrs:{size:"small"},on:{change:function(n){var a=Array.prototype.filter.call(n.target.options,function(i){return i.selected}).map(function(i){var s="_value"in i?i._value:i.value;return s});e.view_mode=n.target.multiple?a:a[0]}}},[r("option",{attrs:{value:"book"}},[e._v(e._s(e.$t("book")))]),r("option",{attrs:{value:"html"}},[e._v(e._s(e.$t("webpage")))])]),e.view_mode==="book"?r("select",{directives:[{name:"model",rawName:"v-model",value:e.format_mode,expression:"format_mode"}],attrs:{size:"small"},on:{change:function(n){var a=Array.prototype.filter.call(n.target.options,function(i){return i.selected}).map(function(i){var s="_value"in i?i._value:i.value;return s});e.format_mode=n.target.multiple?a:a[0]}}},[r("option",{attrs:{value:"A4"}},[e._v(e._s(e.$t("A4_portrait")))]),r("option",{attrs:{value:"A4 landscape"}},[e._v(e._s(e.$t("A4_landscape")))]),r("option",{attrs:{value:"A5"}},[e._v(e._s(e.$t("A5_portrait")))]),r("option",{attrs:{value:"A5 landscape"}},[e._v(e._s(e.$t("A5_landscape")))])]):e._e()]),e.view_mode==="book"?[r("PagedViewer",{attrs:{content_nodes:e.content_nodes,format_mode:e.format_mode,viewer_type:e.viewer_type,opened_chapter_meta_filename:e.opened_chapter_meta_filename},on:{openChapter:function(n){return e.$emit("openChapter",n)}}})]:r("DocViewer",{staticClass:"_docViewer",attrs:{content_nodes:e.content_nodes,opened_chapter_meta_filename:e.opened_chapter_meta_filename},on:{openChapter:function(n){return e.$emit("openChapter",n)}}}),e.is_loading?r("LoaderSpinner"):e._e()],2)},RT=[],PT=Li(LT,IT,RT,!1,null,"0347b47f");const DT=PT.exports;export{DT as V,N as m};
+              </div>`)}return{html:a,is_qr_code:i}}}};var IT=function(){var e=this,r=e._self._c;return r("div",{staticClass:"_viewContent"},[r("div",{staticClass:"_viewMode"},[r("select",{directives:[{name:"model",rawName:"v-model",value:e.view_mode,expression:"view_mode"}],attrs:{size:"small"},on:{change:function(n){var a=Array.prototype.filter.call(n.target.options,function(i){return i.selected}).map(function(i){var s="_value"in i?i._value:i.value;return s});e.view_mode=n.target.multiple?a:a[0]}}},[r("option",{attrs:{value:"book"}},[e._v(e._s(e.$t("book")))]),r("option",{attrs:{value:"html"}},[e._v(e._s(e.$t("webpage")))])]),e.view_mode==="book"?r("select",{directives:[{name:"model",rawName:"v-model",value:e.format_mode,expression:"format_mode"}],attrs:{size:"small"},on:{change:function(n){var a=Array.prototype.filter.call(n.target.options,function(i){return i.selected}).map(function(i){var s="_value"in i?i._value:i.value;return s});e.format_mode=n.target.multiple?a:a[0]}}},[r("option",{attrs:{value:"A4"}},[e._v(e._s(e.$t("A4_portrait")))]),r("option",{attrs:{value:"A4 landscape"}},[e._v(e._s(e.$t("A4_landscape")))]),r("option",{attrs:{value:"A5"}},[e._v(e._s(e.$t("A5_portrait")))]),r("option",{attrs:{value:"A5 landscape"}},[e._v(e._s(e.$t("A5_landscape")))])]):e._e()]),e.view_mode==="book"?[r("PagedViewer",{attrs:{content_nodes:e.content_nodes,format_mode:e.format_mode,viewer_type:e.viewer_type,opened_chapter_meta_filename:e.opened_chapter_meta_filename},on:{openChapter:function(n){return e.$emit("openChapter",n)}}})]:r("DocViewer",{staticClass:"_docViewer",attrs:{content_nodes:e.content_nodes,opened_chapter_meta_filename:e.opened_chapter_meta_filename},on:{openChapter:function(n){return e.$emit("openChapter",n)}}}),e.is_loading?r("LoaderSpinner"):e._e()],2)},RT=[],PT=Li(LT,IT,RT,!1,null,"90fa189c");const DT=PT.exports;export{DT as V,N as m};

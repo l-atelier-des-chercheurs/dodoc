@@ -210,5 +210,10 @@ export default {
   margin: calc(var(--spacing) * 2);
   z-index: 10;
   padding: calc(var(--spacing) / 2);
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 </style>
