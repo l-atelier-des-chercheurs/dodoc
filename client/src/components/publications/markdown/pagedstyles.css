@@ -23,6 +23,10 @@
   widows: 3;
   orphans: 3; 
   line-height: 1.3;
+
+  &:empty {
+    margin: 0;
+  }
 }
 
 ._mediaContainer {
