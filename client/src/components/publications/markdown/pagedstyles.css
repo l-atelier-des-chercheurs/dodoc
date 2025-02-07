@@ -5,8 +5,17 @@
   font-size: 12px;
 }
 
+._book {
+  p, ._mediaContainer, ._chapterTitle {
+    margin-bottom: 2mm;
+
+    &:empty {
+      margin: 0;
+    }
+  }
+}
+
 ._book p {
-  margin: 1em 0;
   /* gestion bancale des césures */
   text-align: justify;
   -webkit-hyphens: auto;
@@ -24,14 +33,12 @@
   orphans: 3; 
   line-height: 1.3;
 
-  &:empty {
-    margin: 0;
-  }
 }
 
 ._mediaContainer {
   display: inline-block;
   position: relative;
+
 
 
 
@@ -72,6 +79,7 @@
   &._fullPage {
     break-before: page;
     break-after: page;
+    margin: 0;
     width: var(--pagedjs-width);
     /* complex calculation because otherwise a p is pushed onto the next page */
     height: calc(var(--pagedjs-height) - var(--pagedjs-margin-top) - var(--pagedjs-margin-bottom) - 5mm);
@@ -135,7 +143,7 @@
   font-style: italic;
   text-align: center;
   display: block;
-
+  margin-top: 1mm;
 }
 
 

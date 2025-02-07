@@ -13,7 +13,7 @@
             }"
             @click="$emit('openChapter', chapter.meta_filename)"
           >
-            {{ chapter.title }}
+            {{ chapter.title || $t("untitled") + " " + (index + 1) }}
           </button>
         </li>
       </ol>
@@ -25,7 +25,7 @@
         :key="opened_chapter?.meta_filename"
       >
         <h1>{{ opened_chapter.title }}</h1>
-        <div v-html="opened_chapter.content" />
+        <div class="_md" v-html="opened_chapter.content" />
       </div>
     </transition>
   </div>
@@ -89,6 +89,10 @@ export default {
   }
   ._docViewer--content {
     flex: 1 1 100%;
+
+    ._md ::v-deep > * {
+      margin: 1em 0;
+    }
   }
 }
 </style>
