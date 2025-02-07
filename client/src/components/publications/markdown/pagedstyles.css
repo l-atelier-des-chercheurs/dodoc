@@ -169,8 +169,12 @@
 
 /* SHOW CHAPTER NAME ON EACH PAGE */
 
-._chapterTitle {
-  string-set: title content(text);
+._chapter {
+  string-set: title attr(data-chapter-title);
+
+  > *:first-child {
+    margin-top: 0;
+  }
 }
 @page {
   @bottom-left-corner {
