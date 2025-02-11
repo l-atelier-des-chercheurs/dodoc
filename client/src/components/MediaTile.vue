@@ -216,7 +216,9 @@ export default {
     }
   }
   &[data-type="text"] {
-    font-size: var(--sl-font-size-x-small);
+    ._content {
+      font-size: var(--sl-font-size-x-small);
+    }
     padding: calc(var(--spacing) / 4);
     ::v-deep {
       ._mediaContent {
@@ -498,7 +500,7 @@ export default {
   z-index: 1;
   line-height: 0;
   border-radius: 50%;
-  font-size: 80%;
+  // font-size: 80%;
   cursor: pointer;
 
   &:not([data-tilemode="table"]) {
