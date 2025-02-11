@@ -172,8 +172,9 @@ async function copyAndRenameUserFolder(full_default_path) {
     } catch (err) {
       // failed to write to custom path, fallback to default path
       // todo display error message to user
-      dev.log(`-> failed to write to custom path, fallback to default path`);
+      dev.error(`-> failed to write to custom path`, err);
       full_path_to_content = path.join(user_dir_path, "dodoc");
+      dev.log("fallback to default path for content", full_path_to_content);
     }
   } else {
     full_path_to_content = path.join(
