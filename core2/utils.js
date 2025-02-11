@@ -785,6 +785,7 @@ module.exports = (function () {
       return p.replaceAll("/", path.sep);
     },
     async testWriteFileInFolder(folder_path) {
+      dev.logfunction({ folder_path });
       const path_to_test_file = path.join(folder_path, "__test.txt");
       const created_on_date = API.getCurrentDate();
       await fs.ensureDir(folder_path);

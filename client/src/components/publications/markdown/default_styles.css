@@ -1,0 +1,141 @@
+/****************************************************
+ * 
+ *  Default styles for markdown publications
+ * 
+ ****************************************************/
+
+/* SET MARGINS */
+
+@page {
+  margin-top: 20mm;
+  margin-bottom: 20mm;
+}
+@page:left {
+  margin-left: 25mm;
+  margin-right: 20mm;
+}
+@page:right {
+  margin-left: 20mm;
+  margin-right: 25mm;
+}
+
+/* SHOW PAGE COUNTER ON EACH PAGE */
+
+@page:right {
+  @right-middle {
+    color: #3982B9;
+    content: counter(page);
+    font-size: 10px;
+  }
+}
+@page:left {
+  @left-middle {
+    color: #3982B9;
+    content: counter(page);
+    font-size: 10px;
+  }
+}
+
+
+/* STYLES */
+
+._book {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 12px;
+}
+
+._book {
+  p, ._mediaContainer, ._chapterTitle {
+    margin-bottom: 2mm;
+
+    &:empty {
+      margin: 0;
+    }
+  }
+}
+
+._book p {
+  /* gestion bancale des césures */
+  text-align: justify;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  -webkit-hyphenate-limit-before: 3;
+  -webkit-hyphenate-limit-after: 4;
+  -ms-hyphenate-limit-chars: 7 3 4;
+  hyphenate-limit-chars: 7 3 4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  /* veuves et orphelines (bancal) */
+  widows: 3;
+  orphans: 3; 
+  line-height: 1.3;
+
+}
+
+._book h1 {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+}
+._book h2 { 
+  font-family: "Work Sans", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+} 
+._book h3 {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+._mediaCaption {
+  font-size: 10px;
+  color: var(--c-gris_fonce);
+  font-style: italic;
+  text-align: center;
+  display: block;
+  margin-top: 1mm;
+  padding: 5mm;
+}
+
+/* SHOW CHAPTER NAME ON EACH PAGE */
+
+._chapter {
+  string-set: title attr(data-chapter-title);
+
+  > *:first-child {
+    margin-top: 0;
+  }
+}
+@page {
+  @bottom-left-corner {
+    content: string(title);
+    font-size: 10px;
+    color: #3982B9;
+    font-weight: 600; 
+  }
+  @top-left-corner {
+    content: "Tunizine!";
+    font-size: 10px;
+    color: #3982B9;
+    font-weight: 600;
+  }
+  @top-right-corner {
+    content: "Slash";
+    font-size: 10px;
+    color: #3982B9;
+    font-weight: 600;
+    text-align: center;
+  }
+  @bottom-right-corner {
+    content: "Transition";
+    font-size: 10px;
+    color: #3982B9;
+    font-weight: 600;
+    text-align: center;
+  }
+}
+
+
