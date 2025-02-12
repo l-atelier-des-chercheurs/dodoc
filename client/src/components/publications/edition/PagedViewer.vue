@@ -142,6 +142,7 @@ export default {
       }
       `;
       pagedjs_styles += this.css_styles;
+      pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 
       const theme_styles = [
         {
@@ -153,6 +154,20 @@ export default {
         bookpreview.innerHTML = "";
         const pagesOutput = flow.pagesArea;
         bookpreview.appendChild(pagesOutput);
+
+        const custom_styles_el = document.querySelectorAll(
+          "[data-pagedjs-inserted-styles]"
+        )[1];
+        const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
+          ".makertoidentfyendofcustomcss{}"
+        );
+
+        const wrap_custom_styles = `
+          .bookpreview {
+            ${custom_css}
+          }
+        `;
+        custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
 
         this.$nextTick(() => {
           this.addChapterShortcuts();

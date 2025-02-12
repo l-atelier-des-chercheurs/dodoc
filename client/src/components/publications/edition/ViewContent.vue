@@ -130,9 +130,7 @@ export default {
 
       return `
       ${pagedengine || ""}
-      ._viewContent 
-        ${custom_styles || ""}
-      
+      ${custom_styles || ""}
       `;
     },
   },
