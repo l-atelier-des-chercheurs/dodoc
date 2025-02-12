@@ -38,9 +38,8 @@
   </div>
 </template>
 <script>
-import SetCover from "@/components/publications/markdown/SetCover.vue";
-import ChapterPreview from "@/components/publications/markdown/ChapterPreview.vue";
-import DLabel from "@/adc-core/fields/DLabel.vue";
+import SetCover from "@/components/publications/edition/SetCover.vue";
+import ChapterPreview from "@/components/publications/edition/ChapterPreview.vue";
 
 export default {
   props: {

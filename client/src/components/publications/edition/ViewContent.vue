@@ -37,9 +37,8 @@ import { marked } from "marked";
 import { generate } from "lean-qr";
 import DOMPurify from "dompurify";
 
-import PagedViewer from "@/components/publications/markdown/PagedViewer.vue";
-import DocViewer from "@/components/publications/markdown/DocViewer.vue";
-import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
+import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
+import DocViewer from "@/components/publications/edition/DocViewer.vue";
 
 export default {
   props: {

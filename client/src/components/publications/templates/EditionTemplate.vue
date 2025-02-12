@@ -1,5 +1,5 @@
 <template>
-  <div class="_markdownTemplate">
+  <div class="_editionTemplate">
     <splitpanes class="_splitpanes">
       <pane>
         <ChaptersSummary
@@ -53,10 +53,10 @@
 <script>
 import { Splitpanes, Pane } from "splitpanes";
 
-import ChaptersSummary from "@/components/publications/markdown/ChaptersSummary.vue";
-import OpenChapter from "@/components/publications/markdown/OpenChapter.vue";
-import ViewContent from "@/components/publications/markdown/ViewContent.vue";
-import EditGraphicStyles from "@/components/publications/markdown/EditGraphicStyles.vue";
+import ChaptersSummary from "@/components/publications/edition/ChaptersSummary.vue";
+import OpenChapter from "@/components/publications/edition/OpenChapter.vue";
+import ViewContent from "@/components/publications/edition/ViewContent.vue";
+import EditGraphicStyles from "@/components/publications/edition/EditGraphicStyles.vue";
 
 export default {
   props: {
@@ -160,7 +160,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._markdownTemplate {
+._editionTemplate {
   position: relative;
   width: 100%;
   height: 100%;

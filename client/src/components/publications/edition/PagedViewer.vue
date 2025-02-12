@@ -20,8 +20,8 @@
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
 import { Previewer } from "pagedjs";
-import pagedengine from "@/components/publications/markdown/pagedengine.css?raw";
-import default_styles from "@/components/publications/markdown/default_styles.css?raw";
+import pagedengine from "@/components/publications/edition/pagedengine.css?raw";
+import default_styles from "@/components/publications/edition/default_styles.css?raw";
 
 export default {
   props: {

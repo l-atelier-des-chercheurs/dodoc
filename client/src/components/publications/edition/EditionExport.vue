@@ -1,5 +1,5 @@
 <template>
-  <div class="_markdownExport">
+  <div class="_editionExport">
     <ViewContent
       :publication="publication"
       :opened_chapter_meta_filename="opened_chapter_meta_filename"
@@ -10,7 +10,7 @@
   </div>
 </template>
 <script>
-import ViewContent from "@/components/publications/markdown/ViewContent.vue";
+import ViewContent from "@/components/publications/edition/ViewContent.vue";
 
 export default {
   props: {
@@ -44,7 +44,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._markdownExport {
+._editionExport {
   position: absolute;
   left: 0;
   width: 100%;

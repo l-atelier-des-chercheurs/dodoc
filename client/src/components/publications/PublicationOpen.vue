@@ -42,14 +42,17 @@
         :can_edit="can_edit"
         @toggleView="$emit('togglePage', $event)"
       />
-      <MarkdownTemplate
-        v-else-if="publication.template === 'markdown'"
+      <EditionTemplate
+        v-else-if="publication.template === 'edition'"
         class="_publicationOpen--content"
         :publication="publication"
         :opened_section_meta_filename="page_opened_id"
         :can_edit="can_edit"
         @toggleSection="$emit('togglePage', $event)"
       />
+      <div v-else class="u-instructions _noTemplateNotice">
+        Ce template n’existe pas : {{ publication.template }}
+      </div>
     </template>
   </div>
 </template>
@@ -73,8 +76,8 @@ export default {
       import("@/components/publications/templates/PageTemplate.vue"),
     MapTemplate: () =>
       import("@/components/publications/templates/MapTemplate.vue"),
-    MarkdownTemplate: () =>
-      import("@/components/publications/templates/MarkdownTemplate.vue"),
+    EditionTemplate: () =>
+      import("@/components/publications/templates/EditionTemplate.vue"),
   },
   data() {
     return {
@@ -134,5 +137,9 @@ export default {
 
 ._publicationOpen--content {
   flex: 1 1 auto;
+}
+
+._noTemplateNotice {
+  padding: calc(var(--spacing) / 1);
 }
 </style>
