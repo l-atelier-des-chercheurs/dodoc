@@ -1290,5 +1290,7 @@ export default {
   no_content: "Pas de contenu",
   book: "Livre",
   normal: "Normal",
-  styles: "Styles graphiques",
+  graphic_styles: "Styles graphiques",
+  edit_default: "Modifier le style par défaut",
+  back_to_default: "Supprimer les modifications",
 };

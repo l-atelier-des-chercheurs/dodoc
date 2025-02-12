@@ -14,9 +14,9 @@
           <button
             type="button"
             class="u-button u-button_bleumarine"
-            @click="show_edit_graphics = true"
+            @click="$emit('toggleSection', 'edit_graphics')"
           >
-            {{ $t("styles") }}
+            {{ $t("graphic_styles") }}
           </button>
         </div>
 
@@ -31,9 +31,9 @@
             @close="$emit('toggleSection', null)"
           />
           <EditGraphicStyles
-            v-else-if="show_edit_graphics"
+            v-else-if="open_graphic_styles"
             :publication="publication"
-            @close="show_edit_graphics = false"
+            @close="$emit('toggleSection', null)"
           />
         </transition>
       </pane>
@@ -79,9 +79,7 @@ export default {
     };
   },
   data() {
-    return {
-      show_edit_graphics: false,
-    };
+    return {};
   },
   created() {},
   mounted() {},
@@ -111,6 +109,9 @@ export default {
         );
       }
       return false;
+    },
+    open_graphic_styles() {
+      return this.opened_section_meta_filename === "edit_graphics";
     },
     meta_filenames_already_present() {
       let current = [],

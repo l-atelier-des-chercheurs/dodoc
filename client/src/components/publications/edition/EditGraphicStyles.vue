@@ -1,51 +1,71 @@
 <template>
   <div class="_editGraphicStyles">
-    <CollaborativeEditor3
-      v-for="style_file in style_files"
-      :key="style_file.$path"
-      :content="style_file.$content"
-      :path="style_file.$path"
-      :custom_formats="[]"
-      :save_format="'raw'"
-      :mode="'always_active'"
-      :can_edit="true"
-    />
+    <button
+      type="button"
+      class="u-button u-button_bleumarine"
+      v-if="!style_file"
+      @click="createCustom"
+    >
+      {{ $t("edit_default") }}
+    </button>
+    <template v-if="!style_file">
+      <pre v-html="default_styles" />
+    </template>
+    <template v-else>
+      <CollaborativeEditor3
+        :key="style_file.$path"
+        :content="style_file.$content"
+        :path="style_file.$path"
+        :custom_formats="[]"
+        :save_format="'raw'"
+        :mode="'always_active'"
+        :can_edit="true"
+      />
+      <div class="u-spacingBottom" />
+      <button type="button" class="u-button u-button_red" @click="removeCustom">
+        {{ $t("back_to_default") }}
+      </button>
+    </template>
   </div>
 </template>
 <script>
+import default_styles from "@/components/publications/edition/default_styles.css?raw";
+
 export default {
   props: {
     publication: Object,
   },
   components: {},
   data() {
-    return {};
+    return {
+      default_styles,
+    };
   },
   created() {},
-  mounted() {
-    if (!this.style_files || this.style_files.length === 0) {
-      this.createStyles();
-    }
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
-    style_files() {
-      return this.publication.$files?.filter((f) =>
-        f.$media_filename?.endsWith(".css")
-      );
+    style_file() {
+      return this.publication.$files?.find((f) => f.is_css_styles === true);
     },
   },
   methods: {
-    async createStyles() {
-      const filename = "styles.css";
+    async createCustom() {
+      const filename = "custom_styles.css";
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication.$path,
         filename,
-        content: "",
+        content: default_styles,
         additional_meta: {
           $type: "text",
+          is_css_styles: true,
         },
+      });
+    },
+    removeCustom() {
+      this.$api.deleteItem({
+        path: this.style_file.$path,
       });
     },
   },
@@ -62,8 +82,12 @@ export default {
   background-color: var(--c-noir);
   z-index: 10;
 
-  padding: calc(var(--spacing) * 2);
-}
-.EditGraphicStyles {
+  padding: calc(var(--spacing) * 1);
+
+  ::v-deep {
+    ._collaborativeEditor.is--editing_is_enabled {
+      background-color: transparent;
+    }
+  }
 }
 </style>
