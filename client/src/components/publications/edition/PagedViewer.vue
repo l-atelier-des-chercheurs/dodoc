@@ -20,8 +20,6 @@
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
 import { Previewer } from "pagedjs";
-import pagedengine from "@/components/publications/markdown/pagedengine.css?raw";
-import default_styles from "@/components/publications/markdown/default_styles.css?raw";
 
 export default {
   props: {
@@ -34,6 +32,10 @@ export default {
       required: true,
     },
     viewer_type: {
+      type: String,
+      required: true,
+    },
+    css_styles: {
       type: String,
       required: true,
     },
@@ -73,6 +75,9 @@ export default {
     format_mode() {
       this.generateBook();
     },
+    css_styles() {
+      this.generateBook();
+    },
   },
   computed: {
     pagedvar() {
@@ -94,7 +99,7 @@ export default {
       let html = "<div class='_book'>";
 
       if (nodes.cover) {
-        html += `<section class="_cover" data-layout-mode="${nodes.cover.layout_mode}">`;
+        html += `<section class="_cover" id="cover" data-layout-mode="${nodes.cover.layout_mode}">`;
         if (nodes.cover.title)
           html += `<hgroup class="_coverTitle">${nodes.cover.title}</hgroup>`;
         if (nodes.cover.image_url)
@@ -136,8 +141,7 @@ export default {
         --paged-layout: booklet;
       }
       `;
-      pagedjs_styles += pagedengine;
-      pagedjs_styles += default_styles;
+      pagedjs_styles += this.css_styles;
 
       const theme_styles = [
         {

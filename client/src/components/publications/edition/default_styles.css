@@ -104,12 +104,14 @@
 
 ._chapter {
   string-set: title attr(data-chapter-title);
+  page: chapters;
 
   > *:first-child {
     margin-top: 0;
   }
 }
-@page {
+
+@page chapters {
   @bottom-left-corner {
     content: string(title);
     font-size: 10px;

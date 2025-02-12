@@ -19,7 +19,9 @@
           class="u-spacingBottom"
           :size="folder_size"
         />
+      </div>
 
+      <template slot="footer">
         <button
           class="u-button u-button_red"
           type="button"
@@ -29,7 +31,6 @@
         >
           {{ $t("download") }}
         </button>
-
         <template v-else>
           <div class="_spinner" v-if="is_downloading" key="loader">
             <LoaderSpinner />
@@ -43,7 +44,7 @@
             </template>
           </template>
         </template>
-      </div>
+      </template>
     </BaseModal2>
   </div>
 </template>

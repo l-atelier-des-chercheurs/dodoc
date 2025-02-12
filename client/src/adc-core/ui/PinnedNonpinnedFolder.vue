@@ -222,9 +222,10 @@ export default {
 }
 ._list_pinned {
   // border-radius: 3px;
-  background-image: radial-gradient(rgba(51, 51, 51, 0.2) 2px, transparent 2px);
-  background-size: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  background-image: radial-gradient(rgba(51, 51, 51, 0.1) 2px, transparent 2px);
+  background-size: calc(var(--spacing)) calc(var(--spacing));
 
   padding: calc(var(--spacing) / 1);
+  margin: 0 calc(var(--spacing) / -1);
 }
 </style>

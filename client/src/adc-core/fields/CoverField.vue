@@ -136,8 +136,8 @@ export default {
   inset: 0;
   overflow: visible;
 
-  --color1: white;
-  --color2: var(--c-gris);
+  --color1: var(--c-gris_clair);
+  --color2: white;
   // --color2: var(--c-gris_fonce);
 }
 

@@ -1,39 +1,37 @@
 <template>
   <div class="_publicationsList">
-    <div class="_topBtn">
-      <div class="u-sameRow">
-        <DLabel :str="$t('publications')" :tag="'h2'" />
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          v-if="can_edit"
-          @click="show_create_publication = true"
+    <div class="u-sameRow _topBtn">
+      <DLabel :str="$t('publications')" :tag="'h2'" />
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        v-if="can_edit"
+        @click="show_create_publication = true"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 168 168"
+          style="enable-background: new 0 0 168 168"
+          xml:space="preserve"
         >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 168 168"
-            style="enable-background: new 0 0 168 168"
-            xml:space="preserve"
-          >
-            <path
-              style="fill: var(--color-publish)"
-              d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
+          <path
+            style="fill: var(--color-publish)"
+            d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
 		C110.5-8.2,57.5-8.2,24.6,24.4z"
-            />
-            <polygon
-              style="fill: #ffffff"
-              points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+          />
+          <polygon
+            style="fill: #ffffff"
+            points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-            />
-          </svg>
-          &nbsp;
-          {{ $t("create") }}
-        </button>
-      </div>
+          />
+        </svg>
+        &nbsp;
+        {{ $t("create") }}
+      </button>
     </div>
     <CreatePublication
       v-if="show_create_publication"
@@ -139,8 +137,8 @@ export default {
           `,
         },
         {
-          key: "markdown",
-          label: this.$t("markdown"),
+          key: "edition",
+          label: this.$t("edition"),
           icon: `
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" style="overflow:visible;enable-background:new 0 0 100 100;" xml:space="preserve">
             <rect x="30.68" y="30" width="40" height="40" style="fill: #fff"/>
@@ -237,5 +235,9 @@ export default {
   // not working for unknown reasons…
   // align-items: baseline;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+._topBtn {
+  margin-top: calc(var(--spacing) * 1);
 }
 </style>

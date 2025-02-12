@@ -48,7 +48,7 @@
             <div
               class="_btn"
               :ref="`pane_${pane.type}`"
-              @click="replacePane(pane)"
+              @click="togglePane(pane)"
             >
               <span
                 class="u-icon"
@@ -218,6 +218,10 @@ export default {
       this.project_panes = [];
       this.addPane(pane);
     },
+    togglePane(pane) {
+      if (this.paneIsEnabled(pane.type)) this.removePane(pane.type);
+      else this.replacePane(pane);
+    },
     addPane(pane) {
       console.log(`PaneList2 / addPane`);
 
@@ -363,16 +367,16 @@ export default {
     color: white;
     background-color: var(--color-active);
   }
-
-  &.is--enabled {
+  &.is--enabled,
+  &.is--animating {
     color: white;
     background-color: var(--color-active);
   }
-  &.is--animating {
-    // transform: scale(0.8);
-    // z-index: 10;
-    color: white;
-    background-color: var(--color-active);
+  &.is--enabled {
+    &:hover,
+    &:focus {
+      color: var(--c-noir);
+    }
   }
 }
 
@@ -383,6 +387,7 @@ export default {
 
   line-height: 0;
   padding: calc(var(--spacing) / 4);
+  font-size: 120%;
   border-radius: 50%;
   transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 }

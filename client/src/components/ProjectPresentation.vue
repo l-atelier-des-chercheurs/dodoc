@@ -57,7 +57,7 @@
             :can_edit="can_edit"
           />
 
-          <DropDown v-if="can_edit" :right="true">
+          <DropDown v-if="can_edit" :show_label="false" :right="true">
             <DownloadFolder
               :modal_title="$t('download_project', { name: project.title })"
               :modal_instructions="$t('download_project_instr')"

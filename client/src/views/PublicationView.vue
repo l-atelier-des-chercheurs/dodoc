@@ -57,8 +57,8 @@
         <div v-else-if="publication.template === 'cartography'">
           <MapForPrint :publication="publication" />
         </div>
-        <div v-else-if="publication.template === 'markdown'">
-          <MarkdownExport :publication="publication" />
+        <div v-else-if="publication.template === 'edition'">
+          <EditionExport :publication="publication" />
         </div>
       </div>
     </transition>
@@ -82,8 +82,8 @@ export default {
       import("@/components/publications/story/SectionWithPrint.vue"),
     MapForPrint: () =>
       import("@/components/publications/cartography/MapForPrint.vue"),
-    MarkdownExport: () =>
-      import("@/components/publications/markdown/MarkdownExport.vue"),
+    EditionExport: () =>
+      import("@/components/publications/edition/EditionExport.vue"),
   },
   data() {
     return {

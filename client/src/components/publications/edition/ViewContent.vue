@@ -13,22 +13,25 @@
       </select>
     </div>
 
-    <template v-if="view_mode === 'book'">
+    <div class="_viewContent--content">
       <PagedViewer
+        v-if="view_mode === 'book'"
         :content_nodes="content_nodes"
         :format_mode="format_mode"
         :viewer_type="viewer_type"
+        :css_styles="css_styles"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         @openChapter="$emit('openChapter', $event)"
       />
-    </template>
-    <DocViewer
-      v-else
-      class="_docViewer"
-      :content_nodes="content_nodes"
-      :opened_chapter_meta_filename="opened_chapter_meta_filename"
-      @openChapter="$emit('openChapter', $event)"
-    />
+      <DocViewer
+        v-else
+        class="_docViewer"
+        :content_nodes="content_nodes"
+        :css_styles="css_styles"
+        :opened_chapter_meta_filename="opened_chapter_meta_filename"
+        @openChapter="$emit('openChapter', $event)"
+      />
+    </div>
     <LoaderSpinner v-if="is_loading" />
   </div>
 </template>
@@ -37,9 +40,11 @@ import { marked } from "marked";
 import { generate } from "lean-qr";
 import DOMPurify from "dompurify";
 
-import PagedViewer from "@/components/publications/markdown/PagedViewer.vue";
-import DocViewer from "@/components/publications/markdown/DocViewer.vue";
-import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
+import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
+import DocViewer from "@/components/publications/edition/DocViewer.vue";
+
+import pagedengine from "@/components/publications/edition/pagedengine.css?raw";
+import default_styles from "@/components/publications/edition/default_styles.css?raw";
 
 export default {
   props: {
@@ -114,6 +119,21 @@ export default {
       });
 
       return nodes;
+    },
+    css_styles() {
+      let custom_styles = default_styles;
+
+      const style_file = this.publication.$files?.find(
+        (f) => f.is_css_styles === true
+      );
+      if (style_file) custom_styles = style_file.$content;
+
+      return `
+      ${pagedengine || ""}
+      ._viewContent 
+        ${custom_styles || ""}
+      
+      `;
     },
   },
   methods: {
@@ -333,6 +353,12 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
+
+  ._viewContent--content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 ._viewMode {

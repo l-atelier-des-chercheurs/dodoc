@@ -38,6 +38,10 @@ export default {
       required: true,
     },
     opened_chapter_meta_filename: String,
+    css_styles: {
+      type: String,
+      required: true,
+    },
   },
   components: {},
   data() {

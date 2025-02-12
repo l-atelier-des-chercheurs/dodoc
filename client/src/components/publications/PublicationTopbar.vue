@@ -55,8 +55,7 @@
       <button
         type="button"
         v-if="
-          can_edit &&
-          !['cartography', 'markdown'].includes(publication.template)
+          can_edit && !['cartography', 'edition'].includes(publication.template)
         "
         @click="openSettings"
         caret

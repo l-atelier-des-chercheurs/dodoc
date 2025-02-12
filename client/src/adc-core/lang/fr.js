@@ -199,6 +199,7 @@ export default {
   story_with_sections: "Récit",
   page_by_page: "Page à page",
   cartography: "Cartographie",
+  edition: "Édition multisupport",
   export: "Exporter",
   export_in_pdf: "Exporter en PDF",
   direct_link: "Lien direct",
@@ -1289,5 +1290,7 @@ export default {
   no_content: "Pas de contenu",
   book: "Livre",
   normal: "Normal",
-  styles: "Styles graphiques",
+  graphic_styles: "Styles graphiques",
+  edit_default: "Modifier le style par défaut",
+  back_to_default: "Supprimer les modifications",
 };
