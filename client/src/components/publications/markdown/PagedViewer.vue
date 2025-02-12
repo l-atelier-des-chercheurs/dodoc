@@ -94,7 +94,7 @@ export default {
       let html = "<div class='_book'>";
 
       if (nodes.cover) {
-        html += `<section class="_cover" data-layout-mode="${nodes.cover.layout_mode}">`;
+        html += `<section class="_cover" id="cover" data-layout-mode="${nodes.cover.layout_mode}">`;
         if (nodes.cover.title)
           html += `<hgroup class="_coverTitle">${nodes.cover.title}</hgroup>`;
         if (nodes.cover.image_url)

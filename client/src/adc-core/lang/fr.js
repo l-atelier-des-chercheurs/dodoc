@@ -199,6 +199,7 @@ export default {
   story_with_sections: "Récit",
   page_by_page: "Page à page",
   cartography: "Cartographie",
+  edition: "Édition multisupport",
   export: "Exporter",
   export_in_pdf: "Exporter en PDF",
   direct_link: "Lien direct",

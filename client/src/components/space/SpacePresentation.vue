@@ -43,7 +43,7 @@
           :can_edit="can_edit"
         />
 
-        <DropDown :right="true">
+        <DropDown :show_label="false" :right="true">
           <DownloadFolder
             :modal_title="$t('download_space', { name: space.title })"
             :path="space.$path"
@@ -170,7 +170,7 @@ export default {
   padding: calc(var(--spacing) / 4);
   border-radius: 6px;
 
-  border-bottom: 2px solid var(--c-gris);
+  // border-bottom: 2px solid var(--c-gris);
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
 

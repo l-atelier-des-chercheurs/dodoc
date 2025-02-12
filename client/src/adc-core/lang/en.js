@@ -513,6 +513,7 @@ export default {
   story_with_sections: "Story",
   page_by_page: "Page by page",
   cartography: "Cartography",
+  edition: "Multi-support edition",
   export: "Export",
   export_in_pdf: "Export to PDF",
   direct_link: "Direct link",

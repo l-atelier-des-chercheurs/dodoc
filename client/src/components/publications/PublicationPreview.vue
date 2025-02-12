@@ -146,10 +146,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationPreview {
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 2);
 }
 ._publicationPreview--cover {
   position: relative;
@@ -231,6 +232,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  padding: 0;
   background: transparent;
 
   &:focus-visible {

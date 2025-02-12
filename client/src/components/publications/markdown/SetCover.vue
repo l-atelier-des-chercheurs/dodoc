@@ -1,12 +1,13 @@
 <template>
   <div class="_cover">
     <div class="u-spacingBottom" v-if="!cover_media">
+      <DLabel :str="$t('cover')" />
       <button
         type="button"
         class="u-button u-button_bleuvert u-button_small"
         @click="createCover"
       >
-        {{ $t("create_cover") }}
+        {{ $t("create") }}
       </button>
     </div>
     <template v-if="cover_media">

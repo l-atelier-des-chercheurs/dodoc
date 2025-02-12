@@ -48,7 +48,7 @@
             <div
               class="_btn"
               :ref="`pane_${pane.type}`"
-              @click="replacePane(pane)"
+              @click="togglePane(pane)"
             >
               <span
                 class="u-icon"
@@ -217,6 +217,10 @@ export default {
     replacePane(pane) {
       this.project_panes = [];
       this.addPane(pane);
+    },
+    togglePane(pane) {
+      if (this.paneIsEnabled(pane.type)) this.removePane(pane.type);
+      else this.replacePane(pane);
     },
     addPane(pane) {
       console.log(`PaneList2 / addPane`);
