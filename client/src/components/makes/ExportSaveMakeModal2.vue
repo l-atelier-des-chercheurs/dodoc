@@ -113,10 +113,6 @@
             {{ $t("save_to_project") }}
           </button>
         </div>
-
-        <div class="_saveNotice" v-if="finished_saving_to_project">
-          {{ $t("media_was_saved_to_project") }}
-        </div>
       </div>
     </template>
   </BaseModal2>
@@ -142,7 +138,6 @@ export default {
   data() {
     return {
       is_exporting: false,
-      finished_saving_to_project: false,
       created_video: false,
 
       resolution_preset_picked: this.default_resolution_preset,
@@ -321,11 +316,12 @@ export default {
       this.$emit("close");
     },
     async saveToProject() {
-      this.finished_saving_to_project = true;
       this.$eventHub.$emit("pane.animate", "collect");
-      setTimeout(() => {
-        this.$emit("close");
-      }, 3000);
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("media_was_saved_to_project"));
+      this.$emit("close");
     },
   },
 };

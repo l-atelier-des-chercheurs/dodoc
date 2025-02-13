@@ -108,7 +108,6 @@ export default {
         .delay(4000)
         .error(`Connect error ${reason}`);
     },
-
     showDisconnectModal() {
       this.show_disconnect_modal = true;
     },

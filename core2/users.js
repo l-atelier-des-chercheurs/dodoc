@@ -1,11 +1,18 @@
-const utils = require("./utils"),
-  folder = require("./folder"),
-  file = require("./file");
+const notifier = require("./notifier");
 
 module.exports = (function () {
   let users = [];
+  let io;
 
   const API = {
+    init: (_io) => {
+      io = _io;
+
+      const interval = 1000 * 10;
+      setInterval(() => {
+        API.cleanupUsers();
+      }, interval);
+    },
     getAllUsers: () => {
       return users;
     },
@@ -22,8 +29,15 @@ module.exports = (function () {
       user.meta = { ...user.meta, ...meta };
       return user;
     },
-    removeUser: (id) => {
+    userLeft: (id) => {
       users = users.filter((u) => u.id !== id);
+    },
+    cleanupUsers: async () => {
+      const ids = await io.fetchSockets();
+      return ids.map((socket) => {
+        const user = users.find((u) => u.id === socket.userID);
+        if (!user) notifier.emit("userLeft", socket.userID);
+      });
     },
   };
 

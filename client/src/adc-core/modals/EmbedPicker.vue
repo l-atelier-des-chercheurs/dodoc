@@ -1,5 +1,11 @@
 <template>
-  <BaseModal2 :title="$t('embed')" @close="$emit('close')">
+  <BaseModal2
+    :title="$t('embed')"
+    :confirm_before_closing="full_url.length > 0"
+    :is_loading="is_inserting_embed"
+    @close="$emit('close')"
+    @save="insertEmbed"
+  >
     <div class="_linkPicker">
       <div class="_urlBox">
         <!-- <DLabel :str="$t('input_url')" :instructions="$t('input_url_instr')" /> -->
@@ -47,9 +53,15 @@
         </small>
       </div>
 
-      <div v-if="url_to_site" class="" :key="full_url">
+      <LoaderSpinner class="_loader" v-if="is_loading" />
+      <div v-else-if="url_to_site" class="_previewEmbed" :key="url_to_site.src">
         <template v-if="url_to_site.type === 'any'">
-          <iframe class="_siteIframe" :src="url_to_site.src" frameborder="0" />
+          <iframe
+            class="_siteIframe"
+            :src="url_to_site.src"
+            frameborder="0"
+            @load="iframeLoaded"
+          />
         </template>
         <vue-plyr v-else>
           <div class="plyr__video-embed">
@@ -74,8 +86,9 @@
         type="button"
         class="u-button u-button_bleuvert"
         :disabled="!full_url"
-        @click="$emit('embed', full_url)"
+        @click="insertEmbed"
       >
+        <b-icon icon="link" />
         {{ $t("embed") }}
       </button>
     </template>
@@ -87,19 +100,42 @@ export default {
   components: {},
   data() {
     return {
+      is_loading: false,
       full_url: "",
+      debounced_full_url: "",
+      debounce_timeout: null,
+
+      is_inserting_embed: false,
     };
   },
   async created() {},
   beforeDestroy() {},
-  watch: {},
-  computed: {
-    url_to_site() {
-      if (!this.full_url) return false;
-      return this.transformURL({ url: this.full_url, autoplay: false });
+  watch: {
+    full_url(new_url) {
+      if (this.debounce_timeout) clearTimeout(this.debounce_timeout);
+      this.is_loading = true;
+      this.debounce_timeout = setTimeout(() => {
+        this.is_loading = false;
+        this.debounced_full_url = new_url;
+      }, 1000);
     },
   },
-  methods: {},
+  computed: {
+    url_to_site() {
+      if (!this.debounced_full_url) return false;
+      return this.transformURL({
+        url: this.debounced_full_url,
+        autoplay: false,
+      });
+    },
+  },
+  methods: {
+    insertEmbed() {
+      this.$emit("embed", this.full_url);
+      this.is_inserting_embed = true;
+    },
+    iframeLoaded() {},
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -126,5 +162,17 @@ iframe {
   display: inline-flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
+}
+
+._loader {
+  position: relative;
+  margin-top: calc(var(--spacing) * 1);
+}
+
+._previewEmbed {
+  position: relative;
+  margin-top: calc(var(--spacing) * 1);
+  border-radius: 2px;
+  border: 2px solid var(--c-gris);
 }
 </style>

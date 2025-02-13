@@ -751,7 +751,7 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: all 0.08s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter {
     transform: scale(0.97);

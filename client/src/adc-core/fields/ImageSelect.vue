@@ -71,13 +71,8 @@ export default {
   },
 
   created() {},
-  mounted() {
-    window.addEventListener("paste", this.handlePaste);
-  },
-  beforeDestroy() {
-    window.removeEventListener("paste", this.handlePaste);
-  },
-
+  mounted() {},
+  beforeDestroy() {},
   watch: {},
   computed: {
     modal_size() {

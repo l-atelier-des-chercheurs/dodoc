@@ -198,7 +198,7 @@ export default {
       return false;
     },
     is_connected() {
-      return this.$api.users.some(
+      return this.$api.other_devices_connected.some(
         (u) => u.meta?.token_path === this.author.$path
       );
     },
@@ -327,6 +327,7 @@ export default {
   display: flex;
   gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   background-color: var(--c-bleumarine_clair);
+  color: var(--c-bleumarine_fonce);
   border-radius: 3px;
 
   font-weight: 500;

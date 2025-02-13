@@ -31,6 +31,8 @@
           :large_img="file_full_path"
           :width="img_width"
           :ratio="img_ratio"
+          @zoomingIn="$emit('zoomingIn')"
+          @zoomingOut="$emit('zoomingOut')"
         />
       </template>
     </template>
@@ -256,6 +258,7 @@ export default {
       this.player = this.$refs.plyr.player;
       this.player.on("volumechange", this.volumeChanged);
       this.player.on("timeupdate", this.videoTimeUpdated);
+      this.player.on("play", this.videoPlayed);
       this.player.on("pause", this.videoPaused);
       this.player.on("ended", this.videoEnded);
     }
@@ -264,6 +267,7 @@ export default {
     if (this.player) {
       this.player.off("volumechange", this.volumeChanged);
       this.player.off("timeupdate", this.videoTimeUpdated);
+      this.player.off("play", this.videoPlayed);
       this.player.off("pause", this.videoPaused);
       this.player.off("ended", this.videoEnded);
     }
@@ -323,6 +327,9 @@ export default {
     },
     videoTimeUpdated(event) {
       this.$emit("videoTimeUpdated", event.detail.plyr.media.currentTime);
+    },
+    videoPlayed(event) {
+      this.$emit("videoPlayed", event.detail.plyr.media.currentTime);
     },
     videoPaused(event) {
       this.$emit("videoPaused", event.detail.plyr.media.currentTime);

@@ -49,6 +49,11 @@ module.exports = (function () {
       await fs.ensureDir(full_path_to_folder_in_cache);
       return full_path_to_folder_in_cache;
     },
+    async createUniqueFilenameInCache(ext) {
+      let folder_name = await API.createUniqueFolderInCache();
+      let filename = ext ? `document.${ext}` : "document";
+      return path.join(folder_name, filename);
+    },
     createUniqueName(prefix = "prefix") {
       return `${prefix}_${+API.getCurrentDate()}-${(
         Math.random().toString(36) + "00000000000000000"

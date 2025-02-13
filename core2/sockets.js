@@ -7,23 +7,28 @@
 //   access = require("./access");
 
 // TODO : make changelog, and access modules
+const { Server } = require("socket.io"),
+  { v4: uuidv4 } = require("uuid");
 
 const dev = require("./dev-log"),
   notifier = require("./notifier"),
   sessionStore = require("./sessionStore"),
-  users = require("./users"),
-  { v4: uuidv4 } = require("uuid");
+  users = require("./users");
 
 module.exports = (function () {
   dev.log(`Sockets module initialized`);
   let io;
 
   const API = {
-    init: (io) => init(io),
+    init: (server) => init(server),
   };
 
-  function init(_io) {
-    io = _io;
+  function init(server) {
+    io = new Server(server, {
+      cookie: false,
+      serveClient: false,
+    });
+    users.init(io);
 
     io.use(function (socket, next) {
       // if (
@@ -75,10 +80,11 @@ module.exports = (function () {
       };
       if (token_path) meta.token_path = token_path;
       const user = users.addUser(userID, meta);
-      if (user) notifier.emit("newUser", user);
+      if (user) notifier.emit("userJoined", user);
 
       socket.emit("session", {
         sessionID,
+        userID,
       });
 
       var onevent = socket.onevent;
@@ -118,8 +124,8 @@ module.exports = (function () {
         sessionStore.updateSession(sessionID, {
           connected: false,
         });
-        users.removeUser(userID);
-        notifier.emit("removeUser", userID);
+        users.userLeft(userID);
+        notifier.emit("userLeft", userID);
       });
     });
 
@@ -154,14 +160,14 @@ module.exports = (function () {
       io.to("content/" + room).emit("taskEnded", content);
     });
 
-    notifier.on("newUser", (user) => {
-      io.to("users").emit("newUser", user);
+    notifier.on("userJoined", (user) => {
+      io.to("users").emit("userJoined", user);
     });
-    notifier.on("updateUser", (user) => {
-      io.to("users").emit("updateUser", user);
+    notifier.on("userUpdated", (content) => {
+      io.to("users").emit("userUpdated", content);
     });
-    notifier.on("removeUser", (id) => {
-      io.to("users").emit("removeUser", { id });
+    notifier.on("userLeft", (id) => {
+      io.to("users").emit("userLeft", id);
     });
   }
 

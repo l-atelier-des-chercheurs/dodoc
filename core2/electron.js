@@ -29,17 +29,19 @@ module.exports = (function () {
     init: () => {
       return new Promise(function (resolve, reject) {
         // check if ubuntu + electron + sharp
-        if (
-          process.platform === "linux" &&
-          process.versions.sharp !== "0.31.3"
-        ) {
-          const err = new Error(
-            `Can't start application, please install sharp 0.31.3 (linux only requirements, see readme)`
-          );
-          err.code = "sharp_version_mismatch";
-          dev.error(err);
-          dialog.showErrorBox("Could not start application", err.message);
-          app.exit(0);
+        if (process.platform === "linux") {
+          // if sharp reports its version number, it means it's version > 0.32.0
+          // because of a memory cage instability issue with sharp > 0.31.3, we show an error
+          const found_sharp_version = require("sharp").versions?.sharp;
+          if (found_sharp_version) {
+            const err = new Error(
+              `Can't start application, please install sharp 0.31.3 (current version ${found_sharp_version}, see readme)`
+            );
+            err.code = "sharp_version_mismatch";
+            dev.error(err);
+            dialog.showErrorBox("Could not start application", err.message);
+            app.exit(0);
+          }
         }
 
         // check if a custom storage path was set
@@ -110,41 +112,93 @@ module.exports = (function () {
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       dev.logfunction({ url, full_path_to_thumb });
 
-      let win = new BrowserWindow({
-        width: 800,
-        height: 800,
-        show: false,
-        enableLargerThanScreen: true,
-        webPreferences: {
-          contextIsolation: true,
-          allowRunningInsecureContent: true,
-          offscreen: true,
-        },
-      });
+      let win;
 
-      win.loadURL(url, {
-        // improve chance of getting a screenshot
-        userAgent: "facebookexternalhit/1.1",
-      });
-      win.webContents.setAudioMuted(true);
+      function closeWin() {
+        if (!win) return;
+        win.close();
+        win = null;
+      }
 
-      dev.logfunction(
-        `ELECTRON — captureScreenshot : waiting for page to load`
-      );
+      let page_timeout = setTimeout(async () => {
+        closeWin();
+        const err = new Error("Failed to capture screenshot");
+        err.code = "timeout";
+        throw err;
+      }, 10_000);
 
-      // todo add timeout
-
-      await new Promise((resolve) => {
-        win.webContents.once("did-finish-load", async () => {
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-          resolve();
-        });
-      }).then(async () => {
-        const image = await win.capturePage();
-        if (win) win.close();
+      try {
+        win = await _loadWebpage({ url });
+        const image = await win.webContents.capturePage();
+        closeWin();
+        clearTimeout(page_timeout);
         await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
         return;
+      } catch (err) {
+        closeWin();
+        clearTimeout(page_timeout);
+        throw err;
+      }
+    },
+    exportToPDFOrImage: async ({
+      url,
+      recipe,
+      bw_pagesize,
+      printToPDF_pagesize,
+      reportProgress,
+    }) => {
+      let win;
+
+      win = await _loadWebpage({
+        url,
+        width: bw_pagesize.width,
+        height: bw_pagesize.height,
       });
+
+      reportProgress(5);
+
+      if (recipe === "pdf") {
+        const pageSize = {
+          width: printToPDF_pagesize.width / 10 / 2.54,
+          height: printToPDF_pagesize.height / 10 / 2.54,
+        };
+
+        const data = await win.webContents.printToPDF({
+          margins: {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          },
+          pageSize,
+          printBackground: true,
+          printSelectionOnly: false,
+        });
+
+        reportProgress(90);
+
+        const full_path_to_pdf = await utils.createUniqueFilenameInCache("pdf");
+        await writeFileAtomic(full_path_to_pdf, data);
+
+        reportProgress(95);
+        return full_path_to_pdf;
+      } else if (recipe === "png") {
+        const data = await win.webContents.capturePage();
+
+        reportProgress(95);
+
+        const full_path_to_image = await utils.createUniqueFilenameInCache(
+          "png"
+        );
+        await utils.convertAndCopyImage({
+          source: data.toPNG(1.0),
+          destination: full_path_to_image,
+          width: bw_pagesize.width,
+          height: bw_pagesize.height,
+        });
+
+        return full_path_to_image;
+      }
     },
   };
 
@@ -223,6 +277,40 @@ module.exports = (function () {
 
       return resolve(win);
     });
+  }
+
+  async function _loadWebpage({ url, width = 1600, height = 900 }) {
+    const win = new BrowserWindow({
+      width: width,
+      height: height,
+      show: false,
+      enableLargerThanScreen: true,
+      webPreferences: {
+        contextIsolation: true,
+        allowRunningInsecureContent: true,
+        offscreen: true,
+      },
+    });
+
+    win.loadURL(url, {
+      // improve chance of getting a screenshot
+      userAgent: "facebookexternalhit/1.1",
+    });
+    win.webContents.setAudioMuted(true);
+
+    await new Promise((resolve, reject) => {
+      win.webContents.once("did-finish-load", async () => {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        return resolve();
+      });
+      win.webContents.on("did-fail-load", (event, error) => {
+        return reject(error);
+      });
+    }).catch((error) => {
+      throw error;
+    });
+
+    return win;
   }
 
   async function _pickPath() {

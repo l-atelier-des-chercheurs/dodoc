@@ -11,6 +11,7 @@ const utils = require("./utils"),
   thumbs = require("./thumbs"),
   notifier = require("./notifier"),
   auth = require("./auth"),
+  webpreview = require("./webpreview"),
   tasks = require("./exporter_tasks/tasks"),
   effects = require("./exporter_tasks/effects"),
   optimizer = require("./exporter_tasks/optimizer");
@@ -309,15 +310,12 @@ class Exporter {
     return full_path_to_folder_in_cache;
   }
 
-  _loadPageAndPrint() {
-    return new Promise(async (resolve, reject) => {
-      // convert path_to_folder to URL (see createURLFromPath)
+  async _loadPageAndPrint() {
+    try {
       dev.logfunction();
-
       const path_without_space = this.path_to_folder
         .replace("spaces" + path.sep, "/+")
         .replace("projects" + path.sep, "");
-
       let url = global.appInfos.homeURL + path_without_space;
 
       let query = {};
@@ -325,142 +323,40 @@ class Exporter {
         query.page = this.instructions.page;
         query.make_preview = true;
       }
+      if (this.instructions.superadmintoken)
+        query.sat = this.instructions.superadmintoken;
 
-      // use superamdin token
-      const sat = auth.getSuperadminToken();
-      query.sat = sat;
+      const searchParams = new URLSearchParams(query);
+      url += "?" + searchParams.toString();
 
-      if (Object.keys(query).length > 0) {
-        const searchParams = new URLSearchParams(query);
-        url += "?" + searchParams.toString();
-      }
+      const layout_mode = this.instructions.layout_mode || "print";
+      const document_width = this.instructions.page_width || 210;
+      const document_height = this.instructions.page_height || 297;
+      const recipe = this.instructions.recipe;
 
-      // open page https://localhost:8080/projects/hehe/publications/test-pages/
-      const { BrowserWindow } = require("electron");
-
-      const document_size = {
-        width: this.instructions.page_width * 1 || 210,
-        height: this.instructions.page_height * 1 || 297,
-      };
-      const magnify_factor =
-        this.instructions.layout_mode === "print" ? 3.7952 : 1;
-
-      // magnify browser window size if print with css px to mm of 3.7952
-      // if screen, browser window size is same as page size
-      const bw_pagesize = {
-        width: Math.floor(document_size.width * magnify_factor),
-        height: Math.floor(document_size.height * magnify_factor) + 0 /*25*/,
-        // height: Math.floor(document_size.height * magnify_factor) + 25 /*25*/,
+      const reportProgress = (progress) => {
+        const mapped_progress = utils.remap(progress, 0, 100, 10, 90);
+        this._notifyProgress(mapped_progress);
       };
 
-      // print to pdf with size, try to match pagesize with pixels
-      const reduction_factor =
-        this.instructions.layout_mode === "print" ? 1 : 3.7952;
-
-      const printToPDF_pagesize = {
-        width: document_size.width / 10 / 2.54 / reduction_factor,
-        height: document_size.height / 10 / 2.54 / reduction_factor,
-      };
-
-      let win = new BrowserWindow({
-        // width: 800,
-        // height: 800,
-        width: bw_pagesize.width,
-        height: bw_pagesize.height,
-        show: false,
-        enableLargerThanScreen: true,
-        webPreferences: {
-          contextIsolation: true,
-          allowRunningInsecureContent: true,
-          offscreen: true,
-        },
-      });
-      win.loadURL(url);
-      win.webContents.setAudioMuted(true);
-
-      this._notifyProgress(5);
-
-      let page_timeout = setTimeout(() => {
-        if (win) win.close();
-        this._notifyEnded({
-          event: "failed",
-        });
-        return reject(new Error(`page-timeout`));
-      }, 30_000);
-
-      win.webContents.once("did-finish-load", async () => {
-        dev.logverbose("did-finish-load " + url);
-        this._notifyProgress(40);
-
-        new Promise(function (resolve, reject) {
-          setTimeout(() => resolve(1), 4000);
-        })
-          .then(async () => {
-            this._notifyProgress(45);
-            if (this.instructions.recipe === "pdf")
-              return win.webContents.printToPDF({
-                // electron >= 21
-                // margins are set using @page in css
-                margins: {
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                },
-                pageSize: printToPDF_pagesize,
-                printBackground: true,
-                printSelectionOnly: false,
-              });
-            else if (this.instructions.recipe === "png")
-              return win.capturePage();
-          })
-          .then((data) => {
-            this._notifyProgress(80);
-            if (page_timeout) clearTimeout(page_timeout);
-            if (win) win.close();
-            return data;
-          })
-          .then(async (data) => {
-            if (this.instructions.recipe === "pdf") {
-              const full_path_to_pdf = await this._saveData("pdf", data);
-              this._notifyProgress(95);
-              return resolve(full_path_to_pdf);
-            } else if (this.instructions.recipe === "png") {
-              const full_path_to_image = await this._saveData(
-                "png",
-                data.toPNG(1.0)
-              );
-              return resolve(full_path_to_image);
-            }
-          })
-          .catch((error) => {
-            dev.logverbose("Failed to print to pdf " + url);
-            dev.error(error.message);
-            if (page_timeout) clearTimeout(page_timeout);
-            if (win) win.close();
-            this._notifyEnded({
-              event: "failed",
-            });
-            return reject(error);
-          });
+      const path_to_export = await webpreview.exportToPDFOrImage({
+        url,
+        recipe,
+        layout_mode,
+        document_width,
+        document_height,
+        reportProgress,
       });
 
-      win.webContents.once(
-        "did-fail-load",
-        (event, code, desc, url, isMainFrame) => {
-          dev.error(`Failed to load print pdf page ${url}`);
-          if (page_timeout) clearTimeout(page_timeout);
-          dev.error("did-fail-load: ");
-          // dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
-          if (win) win.close();
-          this._notifyEnded({
-            event: "failed",
-          });
-          return reject(new Error(`did-fail-load`));
-        }
-      );
-    });
-    // print to pdf
+      return path_to_export;
+    } catch (err) {
+      dev.error(`err for webpreview ${err}`);
+      this._notifyEnded({
+        event: "failed",
+        info: err.message,
+      });
+      throw new Error(`failed`);
+    }
   }
 
   _loadPageAndExport() {
@@ -1066,15 +962,20 @@ class Exporter {
     }
   }
 
-  async _saveData(type, data) {
+  async _saveImage({ data, width, height }) {
     const full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
-      type
+      "png"
     );
     const full_path_to_file = path.join(
       full_path_to_folder_in_cache,
-      "file." + type
+      "file.png"
     );
-    await writeFileAtomic(full_path_to_file, data);
+    await utils.convertAndCopyImage({
+      source: data,
+      destination: full_path_to_file,
+      width,
+      height,
+    });
     return full_path_to_file;
   }
 

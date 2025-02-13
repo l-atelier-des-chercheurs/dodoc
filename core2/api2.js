@@ -37,7 +37,9 @@ module.exports = (function () {
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
+
     app.get("/_api2/_users", _getAllUsers);
+    app.patch("/_api2/_users/:id", _updateUser);
 
     /* PUBLIC FILES */
     app.get(
@@ -1285,6 +1287,7 @@ module.exports = (function () {
         path_to_meta,
         meta_filename,
       });
+      res.status(200).json({ status: "ok" });
       notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
         path_to_meta: utils.convertToSlashPath(path_to_meta),
@@ -1421,6 +1424,14 @@ module.exports = (function () {
   async function _getAllUsers(req, res, next) {
     const all_users = users.getAllUsers();
     res.json(all_users);
+  }
+  async function _updateUser(req, res, next) {
+    const id = req.params.id;
+    const { path } = req.body;
+    const user = users.updateUser(id, { path });
+    if (!user) return res.status(404).json({ status: "user not found" });
+    res.json(user);
+    notifier.emit("userUpdated", { id, changed_data: { path } });
   }
 
   async function _loadCustomFonts() {

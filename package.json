@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "11.1.16",
+  "version": "11.1.19",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -27,57 +27,6 @@
   "engines": {
     "node": "20.18.1",
     "npm": "*"
-  },
-  "build": {
-    "electronVersion": "33.3.0",
-    "appId": "dodoc",
-    "productName": "do•doc",
-    "asar": true,
-    "asarUnpack": [
-      "content/",
-      "**/node_modules/sharp/**/*",
-      "**/node_modules/@img/**/*",
-      "client/dist/"
-    ],
-    "icon": "build/icon.png",
-    "win": {
-      "artifactName": "dodoc-${version}-windows.${ext}",
-      "target": "nsis"
-    },
-    "nsis": {
-      "oneClick": true,
-      "uninstallDisplayName": "do•doc ${version}",
-      "createDesktopShortcut": "always",
-      "shortcutName": "do•doc"
-    },
-    "mac": {
-      "artifactName": "dodoc-${version}-macos.${ext}",
-      "category": "public.app-category.education",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
-      "provisioningProfile": "build/dodoc.provisionprofile",
-      "extendInfo": {
-        "NSMicrophoneUsageDescription": "Merci d’accorder l’accès au micro pour réaliser des enregistrements.",
-        "NSCameraUsageDescription": "Merci d’accorder l’accès à la caméra pour réaliser des enregistrements.",
-        "NSScreenCaptureDescription": "Merci d’accorder l’accès à l’affichage pour réaliser des enregistrements.",
-        "com.apple.security.device.audio-input": true,
-        "com.apple.security.device.camera": true
-      }
-    },
-    "linux": {
-      "artifactName": "dodoc-${version}-linux.${ext}",
-      "target": "AppImage",
-      "category": "Education",
-      "icon": "build/icons/512x512.png",
-      "executableName": "do•doc"
-    },
-    "appImage": {
-      "synopsis": "A documentation tool for creativity.",
-      "category": "Game",
-      "desktop": "dodoc-linux-desktop-entry.desktop"
-    }
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
@@ -121,7 +70,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "electron": "^33.3.0",
+    "electron": "33.3.0",
     "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
     "node-gyp": "^10.3.1"

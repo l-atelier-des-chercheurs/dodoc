@@ -78,6 +78,7 @@ export default {
     };
   },
   async created() {
+    this.$api.updateSelfPath(this.project_path);
     await this.listProject();
     await this.getSpace();
 
@@ -146,6 +147,12 @@ export default {
     // },
   },
   computed: {
+    project_path() {
+      return this.createPath({
+        space_slug: this.$route.params.space_slug,
+        project_slug: this.$route.params.project_slug,
+      });
+    },
     can_edit_project() {
       return this.canLoggedinEditFolder({ folder: this.project });
     },
@@ -155,13 +162,9 @@ export default {
   },
   methods: {
     async listProject() {
-      const path = this.createPath({
-        space_slug: this.$route.params.space_slug,
-        project_slug: this.$route.params.project_slug,
-      });
       const project = await this.$api
         .getFolder({
-          path,
+          path: this.project_path,
         })
         .catch((err) => {
           if (err.code === "folder_private")

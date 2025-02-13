@@ -6,7 +6,6 @@ var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
 const helmet = require("helmet");
-const { Server } = require("socket.io");
 
 const sockets = require("./sockets"),
   api2 = require("./api2"),
@@ -61,13 +60,8 @@ module.exports = function () {
       ? https.createServer(options, app)
       : http.createServer(app);
 
-  const io = new Server(server, {
-    cookie: false,
-    serveClient: false,
-  });
-
   dev.logverbose("Starting server 2");
-  sockets.init(io);
+  sockets.init(server);
 
   dev.logverbose("Starting express-settings");
 

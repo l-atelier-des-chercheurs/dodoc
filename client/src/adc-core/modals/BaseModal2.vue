@@ -32,6 +32,12 @@
           <footer class="_footer" v-if="$slots.hasOwnProperty('footer')">
             <slot name="footer" />
           </footer>
+
+          <transition name="fade">
+            <div class="_spinner" v-if="is_loading" key="loader">
+              <LoaderSpinner />
+            </div>
+          </transition>
         </div>
 
         <BaseModal2
@@ -65,6 +71,10 @@ export default {
       default: false,
     },
     confirm_before_closing: {
+      type: Boolean,
+      default: false,
+    },
+    is_loading: {
       type: Boolean,
       default: false,
     },
@@ -123,6 +133,7 @@ export default {
       }, 400);
     },
     saveContent() {
+      this.show_confirm_before_closing_modal = false;
       this.$emit("save");
     },
   },
@@ -258,5 +269,13 @@ header {
     opacity: 0;
     transform: translate(0, 30px);
   }
+}
+
+._spinner {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(231, 231, 231, 0.87);
+  backdrop-filter: blur(3px);
 }
 </style>
