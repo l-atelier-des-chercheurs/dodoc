@@ -170,7 +170,8 @@ export default {
   display: flex;
   // justify-content: center;
   align-items: center;
-  background-color: white;
+  // background-color: white;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+  padding: 0;
 }
 </style>
