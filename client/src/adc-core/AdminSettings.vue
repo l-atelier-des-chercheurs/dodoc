@@ -21,10 +21,9 @@
           </div>
           <div class="u-spacingBottom" />
           <transition name="fade" mode="out-in">
-            <template v-if="current_tab === 'informations'">
+            <div v-if="current_tab === 'informations'">
               <div class="u-spacingBottom">
                 <TitleField
-                  class="u-spacingBottom"
                   :field_name="'name_of_instance'"
                   :label="$t('name_of_instance')"
                   :instructions="$t('name_of_instance_instructions')"
@@ -43,7 +42,7 @@
                   :instructions="$t('presentation_of_instance_instructions')"
                   :input_type="'editor'"
                   :custom_formats="['bold', 'italic', 'link']"
-                  :content="settings.presentation_of_instance"
+                  :content="settings.presentation_of_instance || ''"
                   :path="settings.$path"
                   :can_edit="is_instance_admin"
                 />
@@ -67,16 +66,16 @@
                   {{ $t("refresh_window_to_see_changes") }}
                 </button>
               </div>
-            </template>
-            <template v-if="current_tab === 'logo_and_images'">
+            </div>
+            <div v-else-if="current_tab === 'logo_and_images'">
               <ImagesPanel
                 :settings="settings"
                 :can_edit="is_instance_admin"
                 @reloadPage="reloadPage"
               />
-            </template>
-            <template
-              v-if="current_tab === 'administration_and_access_control'"
+            </div>
+            <div
+              v-else-if="current_tab === 'administration_and_access_control'"
             >
               <AdminsAndContributorsField
                 :folder="settings"
@@ -187,9 +186,9 @@
               <div class="u-instructions">
                 {{ $t("restart_to_apply") }}
               </div>
-            </template>
-            <FontsPanel v-if="current_tab === 'fonts'" />
-            <template v-if="current_tab === 'events'">
+            </div>
+            <FontsPanel v-else-if="current_tab === 'fonts'" />
+            <div v-else-if="current_tab === 'events'">
               <DLabel :str="$t('events')" />
               <ToggleField
                 :label="$t('enable_events')"
@@ -198,20 +197,22 @@
                 :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
-            </template>
+            </div>
             <TermsPanel
-              v-if="current_tab === 'terms'"
+              v-else-if="current_tab === 'terms'"
               :settings="settings"
               @close="$emit('close')"
             />
             <PagesPanel
-              v-if="current_tab === 'pages'"
+              v-else-if="current_tab === 'pages'"
               :settings="settings"
               @close="$emit('close')"
             />
-            <SuggestedCategories v-if="current_tab === 'suggested_cat_kw'" />
+            <SuggestedCategories
+              v-else-if="current_tab === 'suggested_cat_kw'"
+            />
             <PickNativePath
-              v-if="current_tab === 'storage'"
+              v-else-if="current_tab === 'storage'"
               :can_edit="is_instance_admin && $root.app_infos.is_electron"
             />
           </transition>
