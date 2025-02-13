@@ -120,10 +120,10 @@ export default {
     meta_filenames_already_present() {
       if (this.$getMetaFilenamesAlreadyPresent)
         return this.$getMetaFilenamesAlreadyPresent();
-      return false;
+      return [];
     },
     has_already_present_medias() {
-      return this.meta_filenames_already_present.reduce((acc, m) => {
+      return this.meta_filenames_already_present?.reduce((acc, m) => {
         if (m.medias?.length > 0) acc += m.medias.length;
         return acc;
       }, 0);
