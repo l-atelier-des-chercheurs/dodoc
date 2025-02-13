@@ -192,7 +192,7 @@ export default {
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   // padding-bottom: calc(var(--spacing) * 1);
   background: white;
-  border-bottom: 1px solid var(--c-gris);
+  // border-bottom: 1px solid var(--c-gris);
 
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
@@ -202,9 +202,15 @@ export default {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--homepage {
-    // background: transparent;
-    // border-bottom: 1px solid var(--c-gris);
+    position: absolute;
     box-shadow: none;
+    background: transparent;
+    backdrop-filter: blur(5px);
+    background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0)
+    );
   }
 
   > * {
