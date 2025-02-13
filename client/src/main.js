@@ -309,6 +309,11 @@ new Vue({
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
     },
+    mobile_breakpoint: parseInt(
+      window
+        .getComputedStyle(document.body)
+        .getPropertyValue("--mobile-breakpoint")
+    ),
 
     dropzones: [],
 
@@ -344,10 +349,7 @@ new Vue({
   computed: {
     is_mobile_view() {
       // return false;
-      return (
-        this.window.innerWidth <
-        document.documentElement.style.getPropertyValue("--mobile-breakpoint")
-      );
+      return this.window.innerWidth < this.mobile_breakpoint;
     },
     is_touch_device() {
       return window.matchMedia("(pointer: coarse)").matches;
