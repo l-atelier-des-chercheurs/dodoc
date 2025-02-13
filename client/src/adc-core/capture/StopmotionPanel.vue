@@ -225,7 +225,7 @@
                 :key="'_onion_skin'"
                 v-if="show_live_feed"
               >
-                <label class="u-label">
+                <label class="">
                   <span>{{ $t("onion_skin").toLowerCase() }}</span>
                   <input
                     class="_onion_skin_range"
@@ -349,7 +349,8 @@ export default {
     medias() {
       if (this.medias.length > 0) {
         if (this.show_live_feed) {
-          this.previous_photo_to_show = this.medias[this.medias.length - 1];
+          this.previous_photo_to_show =
+            this.medias[this.medias.length - 1].media;
           this.$nextTick(() => {
             this.$nextTick(() => {
               this.$refs.mediaPreviews.$el.scrollLeft = 1000000;
@@ -374,8 +375,6 @@ export default {
     },
     previous_photo_to_show() {
       this.$emit("showPreviousImage", this.previous_photo_to_show);
-
-      // scroll to
 
       this.$nextTick(() => {
         const active = document.querySelector(
@@ -1002,9 +1001,7 @@ export default {
   padding: calc(var(--spacing) / 4);
   text-align: center;
 
-  .u-label {
-    color: white;
-  }
+  font-variant: small-caps;
 
   input {
     width: 100%;
