@@ -24,7 +24,7 @@
             draggable="false"
           />
           <button class="u-buttonLink" type="button" @click="removeImage">
-            {{ $t("remove_image") }}
+            {{ $t("replace_remove_image") }}
           </button>
         </div>
       </template>
@@ -163,7 +163,8 @@ export default {
   width: 100%;
 
   img {
-    border: 2px solid var(--c-gris);
+    // border: 2px solid var(--c-gris);
+    border-radius: 4px;
 
     &[data-format="square"] {
       width: 100%;

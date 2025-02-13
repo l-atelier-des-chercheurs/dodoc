@@ -393,7 +393,7 @@ export default {
   pick_portrait: "Pick an image for this account",
   pick_media: "Pick one media",
   pick_medias: "Pick one or more medias",
-  remove_image: "Delete this image",
+  replace_remove_image: "Replace or remove this image",
 
   stop_recording: "Stop recording",
   pause_recording: "Pause recording",

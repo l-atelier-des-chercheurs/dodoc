@@ -885,7 +885,7 @@ export default {
   pick_portrait: "Choisissez une image pour ce compte",
   pick_media: "Choisissez un média",
   pick_medias: "Choisissez un ou plusieurs médias",
-  remove_image: "Supprimer cette image",
+  replace_remove_image: "Remplacer ou supprimer cette image",
 
   no_accounts_to_show: "Aucun compte à afficher",
   login_no_account_matches: "Aucun compte ne correspond à ce nom",
