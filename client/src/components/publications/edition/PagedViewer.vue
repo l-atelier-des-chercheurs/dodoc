@@ -15,11 +15,12 @@
     <template v-else>
       <div class="bookpreview" ref="bookpreview" />
     </template>
+    <LoaderSpinner v-if="is_loading" />
   </div>
 </template>
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
-import { Previewer } from "pagedjs";
+import { Handler, Previewer } from "pagedjs";
 
 export default {
   props: {
@@ -45,6 +46,8 @@ export default {
   },
   data() {
     return {
+      is_loading: true,
+
       viewerOptions: {
         useMouseDrag: true,
         useWheelScroll: true,
@@ -150,27 +153,30 @@ export default {
         },
       ];
 
-      paged.preview(pagedjs_html, theme_styles, undefined).then((flow) => {
-        bookpreview.innerHTML = "";
-        const pagesOutput = flow.pagesArea;
-        bookpreview.appendChild(pagesOutput);
+      paged.preview(pagedjs_html, theme_styles, bookpreview).then((flow) => {
+        // bookpreview.innerHTML = "";
+        // const pagesOutput = flow.pagesArea;
+        // bookpreview.appendChild(pagesOutput);
 
-        const custom_styles_el = document.querySelectorAll(
-          "[data-pagedjs-inserted-styles]"
-        )[1];
-        const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
-          ".makertoidentfyendofcustomcss{}"
-        );
+        // const custom_styles_el = document.querySelectorAll(
+        //   "[data-pagedjs-inserted-styles]"
+        // )[1];
+        // const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
+        //   ".makertoidentfyendofcustomcss{}"
+        // );
 
-        const wrap_custom_styles = `
-          .bookpreview {
-            ${custom_css}
-          }
-        `;
-        custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
+        // const wrap_custom_styles = `
+        //   .bookpreview {
+        //     ${custom_css}
+        //   }
+        // `;
+        // custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
 
         this.$nextTick(() => {
           this.addChapterShortcuts();
+          setTimeout(() => {
+            this.is_loading = false;
+          }, 100);
         });
       });
     },
@@ -306,7 +312,7 @@ export default {
         max-height: 100%;
         min-height: 100%;
         height: 100% !important;
-      } 
+      }
       body{
         --pagedjs-bleed-right-left: 0mm;
       }
@@ -331,7 +337,7 @@ export default {
         display: none;
       }
 
-      .pagedjs_right_page .pagedjs_bleed-top .pagedjs_marks-crop:nth-child(1), 
+      .pagedjs_right_page .pagedjs_bleed-top .pagedjs_marks-crop:nth-child(1),
       .pagedjs_right_page .pagedjs_bleed-bottom .pagedjs_marks-crop:nth-child(1){
         width: 0!important;
       }
