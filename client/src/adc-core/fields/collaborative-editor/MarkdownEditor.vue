@@ -1,36 +1,28 @@
 <template>
-  <editor-content :editor="editor" />
+  <div>
+    Ploup
+    <div ref="editor"></div>
+  </div>
 </template>
+
 <script>
-import { Editor, EditorContent } from "@tiptap/vue-2";
-import StarterKit from "@tiptap/starter-kit";
-import { createMarkdownEditor } from "tiptap-markdown";
-
-// import { Highlight } from "@tiptap/extension-highlight";
-// import markdownitMark from "markdown-it-mark";
-
+import { defaultValueCtx, Editor, rootCtx } from "@milkdown/kit/core";
+import { nord } from "@milkdown/theme-nord";
+import { commonmark } from "@milkdown/kit/preset/commonmark";
 export default {
-  components: {
-    EditorContent,
+  name: "Editor",
+  props: {
+    msg: String,
   },
-
-  data() {
-    return {
-      editor: null,
-    };
-  },
-
   mounted() {
-    const MarkdownEditor = createMarkdownEditor(Editor);
-    this.editor = new MarkdownEditor({
-      content: "# Title",
-      extensions: [StarterKit],
-    });
-  },
-
-  beforeDestroy() {
-    this.editor.destroy();
+    Editor.make()
+      .config((ctx) => {
+        ctx.set(rootCtx, this.$refs.editor);
+        ctx.set(defaultValueCtx, this.$props.msg);
+      })
+      .config(nord)
+      .use(commonmark)
+      .create();
   },
 };
 </script>
-<style lang="scss" scoped></style>

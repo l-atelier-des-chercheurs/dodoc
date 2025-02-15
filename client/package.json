@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "^1.0.2",
+    "@milkdown/kit": "^7.6.2",
+    "@milkdown/theme-nord": "^7.6.2",
     "@vitejs/plugin-basic-ssl": "^1.1.0",
     "alertify.js": "^1.0.12",
     "axios": "^0.28.1",

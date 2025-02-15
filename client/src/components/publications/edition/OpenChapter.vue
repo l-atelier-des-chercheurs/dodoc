@@ -34,12 +34,12 @@
       </div>
       <template v-if="chapter._main_text">
         <DLabel :str="$t('content')" />
-        <!-- <MarkdownEditor
-          :content="chapter._main_text.$content"
+        <MarkdownEditor
+          :msg="chapter._main_text.$content"
           :path="chapter._main_text.$path"
           :edit_on_mounted="true"
           :can_edit="can_edit"
-        /> -->
+        />
         <div class="_pickFileButton">
           <button
             type="button"
@@ -80,7 +80,7 @@
   </div>
 </template>
 <script>
-// import MarkdownEditor from "@/adc-core/fields/collaborative-editor/MarkdownEditor.vue";
+import MarkdownEditor from "@/adc-core/fields/collaborative-editor/MarkdownEditor.vue";
 import { marked } from "marked";
 
 import MediaPicker from "@/components/publications/MediaPicker.vue";
@@ -92,7 +92,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    // MarkdownEditor,
+    MarkdownEditor,
     MediaPicker,
   },
   data() {
