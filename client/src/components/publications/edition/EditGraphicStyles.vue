@@ -24,6 +24,7 @@
         </button>
       </transition>
     </div>
+
     <template v-if="!style_file">
       <pre class="_defaultStyles" v-html="default_styles" />
     </template>

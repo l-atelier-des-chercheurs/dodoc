@@ -549,8 +549,8 @@ export default {
   flex-flow: row nowrap;
   justify-content: safe center;
   align-items: flex-start;
-  padding: calc(var(--spacing) * 1);
-  margin: calc(var(--spacing) * 1) 0;
+  padding: calc(var(--spacing) * 2);
+  // margin: calc(var(--spacing) * 1) 0 0;
   gap: calc(var(--spacing) / 2);
   overflow: auto;
   // padding-top: calc(var(--spacing) * 1);

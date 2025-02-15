@@ -1,5 +1,6 @@
 <template>
-  <div class="_docViewer">
+  <div class="_docViewer edition web">
+    <component :is="'style'" v-html="css_styles" />
     <div class="_docViewer--menu">
       <DLabel :str="$t('chapters')" />
       <ol>

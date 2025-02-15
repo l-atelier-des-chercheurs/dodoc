@@ -10,10 +10,10 @@
       v-bind="viewerOptions"
       :style="pagedvar"
     >
-      <div class="bookpreview" ref="bookpreview" />
+      <div class="edition book" ref="bookpreview" />
     </vue-infinite-viewer>
     <template v-else>
-      <div class="bookpreview" ref="bookpreview" />
+      <div class="edition book" ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
   </div>
@@ -111,9 +111,9 @@ export default {
       }
 
       nodes.chapters.forEach((chapter) => {
-        html += `<section class="_chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" >`;
+        html += `<section class="chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" >`;
         if (chapter.title)
-          html += `<h1 class="_chapterTitle">${chapter.title}</h1>`;
+          html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
         if (chapter.content) html += `${chapter.content}`;
         html += `</section>`;
       });
@@ -145,7 +145,7 @@ export default {
       }
       `;
       pagedjs_styles += this.css_styles;
-      pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
+      // pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 
       const theme_styles = [
         {
@@ -184,7 +184,7 @@ export default {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
       const chapters = bookpreview.querySelectorAll(
-        "._chapter[data-chapter-meta-filename]"
+        ".chapter[data-chapter-meta-filename]"
       );
       chapters.forEach((chapter) => {
         chapter.addEventListener("click", () => {
@@ -480,7 +480,7 @@ export default {
   ::v-deep {
     /* To define how the book look on the screen: */
     @media screen {
-      ._chapter {
+      .chapter {
         cursor: pointer !important;
 
         &:hover {
