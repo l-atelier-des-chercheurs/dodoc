@@ -1,15 +1,32 @@
 <template>
   <div class="_editGraphicStyles">
-    <button
-      type="button"
-      class="u-button u-button_bleumarine"
-      v-if="!style_file"
-      @click="createCustom"
-    >
-      {{ $t("edit_default") }}
-    </button>
+    <div class="_topBtns">
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        <b-icon icon="arrow-left-short" />
+        {{ $t("back") }}
+      </button>
+      <transition name="fade_fast" mode="out-in">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine"
+          v-if="!style_file"
+          @click="createCustom"
+        >
+          {{ $t("edit_default_styles") }}
+        </button>
+        <button
+          v-else
+          type="button"
+          class="u-button u-button_red"
+          @click="removeCustom"
+        >
+          {{ $t("back_to_default_styles") }}
+        </button>
+      </transition>
+    </div>
+
     <template v-if="!style_file">
-      <pre v-html="default_styles" />
+      <pre class="_defaultStyles" v-html="default_styles" />
     </template>
     <template v-else>
       <CollaborativeEditor3
@@ -22,9 +39,6 @@
         :can_edit="true"
       />
       <div class="u-spacingBottom" />
-      <button type="button" class="u-button u-button_red" @click="removeCustom">
-        {{ $t("back_to_default") }}
-      </button>
     </template>
   </div>
 </template>
@@ -79,15 +93,30 @@ export default {
   width: 100%;
   overflow: auto;
   color: white;
-  background-color: var(--c-noir);
+  background-color: black;
   z-index: 10;
 
   padding: calc(var(--spacing) * 1);
 
   ::v-deep {
     ._collaborativeEditor.is--editing_is_enabled {
-      background-color: transparent;
+      background-color: var(--c-noir);
     }
   }
+}
+
+._defaultStyles {
+  background-color: var(--c-noir);
+  padding: calc(var(--spacing) / 2);
+  font-family: "Fira Code", monospace;
+  border-radius: 4px;
+}
+
+._topBtns {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+  justify-content: space-between;
+  margin-bottom: calc(var(--spacing) / 1);
 }
 </style>

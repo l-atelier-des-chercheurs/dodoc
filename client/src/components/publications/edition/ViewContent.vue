@@ -64,15 +64,33 @@ export default {
       is_loading: false,
       view_mode: "book",
       format_mode: "A5",
+
+      // custom_styles_nested: "",
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    // custom_styles_unnested: {
+    //   handler() {
+    //     this.custom_styles_nested = this.prepareCustomStyles(
+    //       this.custom_styles_unnested
+    //     );
+    //   },
+    //   immediate: true,
+    // },
+  },
   computed: {
     cover_media() {
       return this.publication.$files.find((f) => f.cover_type === "front");
+    },
+    custom_styles_unnested() {
+      const style_file = this.publication.$files?.find(
+        (f) => f.is_css_styles === true
+      );
+      if (!style_file) return default_styles;
+      return style_file?.$content || "";
     },
     all_chapters() {
       return this.getSectionsWithProps({
@@ -121,16 +139,9 @@ export default {
       return nodes;
     },
     css_styles() {
-      let custom_styles = default_styles;
-
-      const style_file = this.publication.$files?.find(
-        (f) => f.is_css_styles === true
-      );
-      if (style_file) custom_styles = style_file.$content;
-
       return `
       ${pagedengine || ""}
-      ${custom_styles || ""}
+      ${this.custom_styles_unnested}
       `;
     },
   },
@@ -168,6 +179,45 @@ export default {
       }
       return cover;
     },
+    prepareCustomStyles(cssContent) {
+      // const out = postcss()
+      //   .use(
+      //     prefixer({
+      //       prefix: ".bookpreview",
+      //       exclude: ["@"],
+      //     })
+      //   )
+      //   .process(cssContent).css;
+      // return out;
+
+      // makes @page not working… oh well
+
+      return cssContent;
+
+      // return new Promise((resolve, reject) => {
+      //   const plugins = [
+      //     prefixer({
+      //       prefix: ".my-prefix",
+      //       transform: (prefix, selector, prefixedSelector) => {
+      //         // Exclude @page rules
+      //         if (selector.includes("@page")) {
+      //           return selector;
+      //         }
+      //         return prefixedSelector;
+      //       },
+      //     }),
+      //   ];
+
+      //   // Process the CSS content with the configured plugins
+      //   postcss(plugins)
+      //     .process(cssContent)
+      //     .then((result) => {
+      //       // Output the processed CSS
+      //       console.log(result.css);
+      //       debugger;
+      //     });
+      // });
+    },
     parseMarkdown(content, source_medias) {
       // const url_to_medias =
       //   window.location.origin + "/" + this.getParent(this.publication.$path);
@@ -184,9 +234,9 @@ export default {
 
             if (title?.startsWith("=")) {
               if (title.startsWith("=full-page")) {
-                custom_classes.push("_fullPage");
+                custom_classes.push("_isFullPage");
                 if (title.startsWith("=full-page-cover")) {
-                  custom_classes.push("_fullPageCover");
+                  custom_classes.push("_isFullPageCover");
                 }
               } else {
                 [width, height] = title
@@ -219,14 +269,15 @@ export default {
                 });
                 html = _html;
                 if (is_qr_code) {
-                  custom_classes.push("_isQRCode");
+                  custom_classes.push("_isqrcode");
                 }
               }
             }
 
-            if (alt)
-              html += `<div class="_mediaCaption"><span>${alt}</span></div>`;
-            return `<div class='_mediaContainer ${custom_classes.join(
+            if (alt) {
+              html += `<div class="mediaCaption"><span>${alt}</span></div>`;
+            }
+            return `<div class='media ${custom_classes.join(
               " "
             )}'>${html}</div>`;
           },
@@ -303,10 +354,10 @@ export default {
             `;
 
         // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
-        html += `<div class="_mediaInfos">`;
+        html += `<div class="mediaInfos">`;
 
         if (media.$infos.duration) {
-          html += `<div class="_mediaDuration">
+          html += `<div class="mediaDuration">
                 ${this.$t(media.$type)}
                 ${this.formatDurationToHoursMinutesSeconds(
                   media.$infos.duration
@@ -315,10 +366,10 @@ export default {
         }
 
         html += `
-              <div class="_mediaSourceCaption">
+              <div class="mediaSourceCaption">
                 ${media.caption || ""}
               </div>
-              <div class="_mediaSourceCredits">
+              <div class="mediaSourceCredits">
                 ${media.$credits || ""}
               </div>`;
 

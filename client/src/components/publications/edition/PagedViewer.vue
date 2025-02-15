@@ -10,16 +10,17 @@
       v-bind="viewerOptions"
       :style="pagedvar"
     >
-      <div class="bookpreview" ref="bookpreview" />
+      <div class="edition book" ref="bookpreview" />
     </vue-infinite-viewer>
     <template v-else>
-      <div class="bookpreview" ref="bookpreview" />
+      <div class="edition book" ref="bookpreview" />
     </template>
+    <LoaderSpinner v-if="is_loading" />
   </div>
 </template>
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
-import { Previewer } from "pagedjs";
+import { Handler, Previewer } from "pagedjs";
 
 export default {
   props: {
@@ -45,6 +46,8 @@ export default {
   },
   data() {
     return {
+      is_loading: true,
+
       viewerOptions: {
         useMouseDrag: true,
         useWheelScroll: true,
@@ -108,9 +111,9 @@ export default {
       }
 
       nodes.chapters.forEach((chapter) => {
-        html += `<section class="_chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" >`;
+        html += `<section class="chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" >`;
         if (chapter.title)
-          html += `<h1 class="_chapterTitle">${chapter.title}</h1>`;
+          html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
         if (chapter.content) html += `${chapter.content}`;
         html += `</section>`;
       });
@@ -142,7 +145,7 @@ export default {
       }
       `;
       pagedjs_styles += this.css_styles;
-      pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
+      // pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 
       const theme_styles = [
         {
@@ -150,27 +153,30 @@ export default {
         },
       ];
 
-      paged.preview(pagedjs_html, theme_styles, undefined).then((flow) => {
-        bookpreview.innerHTML = "";
-        const pagesOutput = flow.pagesArea;
-        bookpreview.appendChild(pagesOutput);
+      paged.preview(pagedjs_html, theme_styles, bookpreview).then((flow) => {
+        // bookpreview.innerHTML = "";
+        // const pagesOutput = flow.pagesArea;
+        // bookpreview.appendChild(pagesOutput);
 
-        const custom_styles_el = document.querySelectorAll(
-          "[data-pagedjs-inserted-styles]"
-        )[1];
-        const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
-          ".makertoidentfyendofcustomcss{}"
-        );
+        // const custom_styles_el = document.querySelectorAll(
+        //   "[data-pagedjs-inserted-styles]"
+        // )[1];
+        // const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
+        //   ".makertoidentfyendofcustomcss{}"
+        // );
 
-        const wrap_custom_styles = `
-          .bookpreview {
-            ${custom_css}
-          }
-        `;
-        custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
+        // const wrap_custom_styles = `
+        //   .bookpreview {
+        //     ${custom_css}
+        //   }
+        // `;
+        // custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
 
         this.$nextTick(() => {
           this.addChapterShortcuts();
+          setTimeout(() => {
+            this.is_loading = false;
+          }, 100);
         });
       });
     },
@@ -178,7 +184,7 @@ export default {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
       const chapters = bookpreview.querySelectorAll(
-        "._chapter[data-chapter-meta-filename]"
+        ".chapter[data-chapter-meta-filename]"
       );
       chapters.forEach((chapter) => {
         chapter.addEventListener("click", () => {
@@ -306,7 +312,7 @@ export default {
         max-height: 100%;
         min-height: 100%;
         height: 100% !important;
-      } 
+      }
       body{
         --pagedjs-bleed-right-left: 0mm;
       }
@@ -331,7 +337,7 @@ export default {
         display: none;
       }
 
-      .pagedjs_right_page .pagedjs_bleed-top .pagedjs_marks-crop:nth-child(1), 
+      .pagedjs_right_page .pagedjs_bleed-top .pagedjs_marks-crop:nth-child(1),
       .pagedjs_right_page .pagedjs_bleed-bottom .pagedjs_marks-crop:nth-child(1){
         width: 0!important;
       }
@@ -474,7 +480,7 @@ export default {
   ::v-deep {
     /* To define how the book look on the screen: */
     @media screen {
-      ._chapter {
+      .chapter {
         cursor: pointer !important;
 
         &:hover {

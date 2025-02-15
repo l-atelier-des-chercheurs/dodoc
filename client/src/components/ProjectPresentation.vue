@@ -381,14 +381,14 @@ export default {
   max-width: min(var(--max-column-width), 1180px);
   // max-width: var(--max-column-width);
 
-  margin: calc(var(--spacing) / 2) auto 0;
+  margin: calc(var(--spacing) * 1) auto;
   overflow: hidden;
 
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) * 2);
 
   > * {
     flex: 1 1 320px;
@@ -453,6 +453,7 @@ export default {
 ._projectInfos--cover {
   position: relative;
   width: 100%;
+  max-width: 480px;
 
   .is--list & {
     // padding: 2px;
@@ -548,7 +549,8 @@ export default {
   flex-flow: row nowrap;
   justify-content: safe center;
   align-items: flex-start;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 2);
+  // margin: calc(var(--spacing) * 1) 0 0;
   gap: calc(var(--spacing) / 2);
   overflow: auto;
   // padding-top: calc(var(--spacing) * 1);

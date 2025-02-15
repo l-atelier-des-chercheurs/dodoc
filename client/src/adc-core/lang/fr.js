@@ -885,7 +885,7 @@ export default {
   pick_portrait: "Choisissez une image pour ce compte",
   pick_media: "Choisissez un média",
   pick_medias: "Choisissez un ou plusieurs médias",
-  remove_image: "Supprimer cette image",
+  replace_remove_image: "Remplacer ou supprimer cette image",
 
   no_accounts_to_show: "Aucun compte à afficher",
   login_no_account_matches: "Aucun compte ne correspond à ce nom",
@@ -1278,8 +1278,6 @@ export default {
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
-  use_cover: "Afficher une couverture",
-  layout_style: "Placement de l’image",
   full_page: "Pleine page",
   text_top_image_down: "Texte en haut, image en bas",
   image_top_text_down: "Image en haut, texte en bas",
@@ -1290,7 +1288,7 @@ export default {
   no_content: "Pas de contenu",
   book: "Livre",
   normal: "Normal",
-  graphic_styles: "Styles graphiques",
-  edit_default: "Modifier le style par défaut",
-  back_to_default: "Supprimer les modifications",
+  graphic_styles: "Style graphiques",
+  edit_default_styles: "Modifier le style par défaut",
+  back_to_default_styles: "Revenir au style par défaut",
 };
