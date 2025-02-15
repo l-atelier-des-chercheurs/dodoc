@@ -76,7 +76,7 @@ export default {
   gap: calc(var(--spacing) * 2);
   padding: calc(var(--spacing) * 2);
   margin: 0 auto;
-  background-color: var(--body-bg);
+  background-color: var(--c-bodybg);
 
   ._docViewer--menu {
     flex: 0 0 20ch;

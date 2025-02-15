@@ -59,7 +59,7 @@
 
         <div class="_btnRow">
           <DragFile
-            v-if="edit_mode"
+            v-if="edit_mode && page_template !== 'page_by_page'"
             class="_df"
             :size="'small'"
             :file="media_with_linked._linked_media"
@@ -186,14 +186,14 @@ export default {
       return this.medias_with_linked.length > 1;
     },
     single_media_displayed_at_full_ratio() {
-      if (this.medias_with_linked.length > 1) return false;
-
       const theoretical_ratio =
         this.medias_with_linked[0]._linked_media.$infos?.ratio;
       const current_ratio =
         this.publimodule?.height && this.publimodule?.width
           ? this.publimodule?.height / this.publimodule?.width
           : false;
+
+      debugger;
 
       if (!theoretical_ratio || !current_ratio) return false;
 
@@ -234,6 +234,8 @@ export default {
       )
         return false;
 
+      debugger;
+
       const unsupportedTypes = ["stl", "obj", "text", "table", "other"];
       if (unsupportedTypes.includes(media_with_linked._linked_media.$type))
         return false;
@@ -243,6 +245,8 @@ export default {
         this.mediaIsSquare(media_with_linked._linked_media)
       )
         return false;
+
+      if (this.single_media_displayed_at_full_ratio) return false;
 
       return true;
     },
