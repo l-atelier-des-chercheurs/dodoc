@@ -193,8 +193,6 @@ export default {
           ? this.publimodule?.height / this.publimodule?.width
           : false;
 
-      debugger;
-
       if (!theoretical_ratio || !current_ratio) return false;
 
       const dec = 10;
@@ -233,8 +231,6 @@ export default {
         this.page_template !== "page_by_page"
       )
         return false;
-
-      debugger;
 
       const unsupportedTypes = ["stl", "obj", "text", "table", "other"];
       if (unsupportedTypes.includes(media_with_linked._linked_media.$type))

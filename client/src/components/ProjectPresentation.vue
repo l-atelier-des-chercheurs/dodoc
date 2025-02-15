@@ -550,6 +550,7 @@ export default {
   justify-content: safe center;
   align-items: flex-start;
   padding: calc(var(--spacing) * 2);
+  padding-top: calc(var(--spacing) * 1);
   // margin: calc(var(--spacing) * 1) 0 0;
   gap: calc(var(--spacing) / 2);
   overflow: auto;
