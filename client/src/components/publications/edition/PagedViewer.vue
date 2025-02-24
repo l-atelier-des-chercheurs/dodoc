@@ -145,7 +145,7 @@ export default {
       }
       `;
       pagedjs_styles += this.css_styles;
-      // pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
+      pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 
       const theme_styles = [
         {
@@ -166,7 +166,7 @@ export default {
         // );
 
         // const wrap_custom_styles = `
-        //   .bookpreview {
+        //   ._pagedViewer {
         //     ${custom_css}
         //   }
         // `;
