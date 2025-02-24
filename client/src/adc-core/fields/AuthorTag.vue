@@ -119,7 +119,7 @@ export default {
   gap: calc(var(--spacing) / 2);
   background: transparent;
   text-align: left;
-  background-color: white;
+  // background-color: white;
 
   &:where(button, a) {
     border: 1px solid var(--c-gris);

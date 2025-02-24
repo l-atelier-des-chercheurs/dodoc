@@ -787,7 +787,8 @@ export default {
     padding: calc(var(--spacing) / 2);
     max-width: 320px;
     width: 100%;
-    background: var(--c-bleuvert_clair);
+    background: white;
+    // background: var(--c-bleuvert_clair);
     border-radius: 8px;
     box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
   }

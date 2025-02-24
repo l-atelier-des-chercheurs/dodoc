@@ -112,6 +112,11 @@ export default {
   border-radius: 8px;
   overflow: hidden;
 
+  &:hover,
+  &:focus-visible {
+    transform: none;
+  }
+
   &.is--unclosable summary {
     pointer-events: none;
   }
