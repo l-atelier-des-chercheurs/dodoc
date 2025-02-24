@@ -971,7 +971,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
         width: ${d-.1}mm!important;
       }
 
-`;let h=document.createElement("style");h.setAttribute("data-pagedjs-inserted-styles",!0),h.textContent=m,document.head.appendChild(h);var v=e.length,S=[];let f=v%4,b=0;for(f!=0&&(b=4-f),w=0;w<b;w++){let M=document.createElement("div");M.classList.add("pagedjs_page","added"),M.id=`page-${r+w+1}`,t.querySelector(".pagedjs_pages").appendChild(M)}for(var w=v+b;w>=1;w--)S.push(w);for(var g=S.length/2,x=S.length,k=S.slice(0,g),T=S.slice(g,x),z=T.reverse(),D=[],w=0;w<k.length;w++)D[w]=[k[w],z[w]];for(var F=[],w=0;w<D.length;w++)w%2!=0?F[w]=D[w].reverse():F[w]=D[w];var W=F.flat();W.forEach((M,H)=>{M=M,document.querySelector(`#page-${M}`).style.order=H})}}};var wT=function(){var e=this,r=e._self._c;return r("div",{staticClass:"_pagedViewer",class:{"is--infiniteViewer":e.viewer_type==="vue-infinite-viewer"},style:e.pagedvar},[e.viewer_type==="vue-infinite-viewer"?r("vue-infinite-viewer",e._b({staticClass:"_infiniteViewer",style:e.pagedvar},"vue-infinite-viewer",e.viewerOptions,!1),[r("div",{ref:"bookpreview",staticClass:"edition book"})]):[r("div",{ref:"bookpreview",staticClass:"edition book"})],e.is_loading?r("LoaderSpinner"):e._e()],2)},kT=[],CT=Li(xT,wT,kT,!1,null,"03175996");const TT=CT.exports,_T={props:{content_nodes:{type:Object,required:!0},opened_chapter_meta_filename:String,css_styles:{type:String,required:!0}},components:{},data(){return{}},created(){},mounted(){},beforeDestroy(){},watch:{},computed:{opened_chapter(){if(this.opened_chapter_meta_filename)return this.content_nodes.chapters.find(t=>t.meta_filename===this.opened_chapter_meta_filename)}},methods:{}};var ET=function(){var n;var e=this,r=e._self._c;return r("div",{staticClass:"_docViewer edition web"},[r("style",{tag:"component",domProps:{innerHTML:e._s(e.css_styles)}}),r("div",{staticClass:"_docViewer--menu"},[r("DLabel",{attrs:{str:e.$t("chapters")}}),r("ol",e._l(e.content_nodes.chapters,function(a,i){var s;return r("li",{key:i},[r("button",{staticClass:"u-buttonLink",class:{"is--active":a.meta_filename===((s=e.opened_chapter)==null?void 0:s.meta_filename)},attrs:{type:"button"},on:{click:function(o){return e.$emit("openChapter",a.meta_filename)}}},[e._v(" "+e._s(a.title||e.$t("untitled")+" "+(i+1))+" ")])])}),0)],1),r("transition",{attrs:{name:"pagechange",mode:"out-in"}},[e.opened_chapter?r("div",{key:(n=e.opened_chapter)==null?void 0:n.meta_filename,staticClass:"_docViewer--content"},[r("h1",[e._v(e._s(e.opened_chapter.title))]),r("div",{staticClass:"_md",domProps:{innerHTML:e._s(e.opened_chapter.content)}})]):e._e()])],1)},AT=[],OT=Li(_T,ET,AT,!1,null,"5b862afb");const zT=OT.exports,jT=`.media {
+`;let h=document.createElement("style");h.setAttribute("data-pagedjs-inserted-styles",!0),h.textContent=m,document.head.appendChild(h);var v=e.length,S=[];let f=v%4,b=0;for(f!=0&&(b=4-f),w=0;w<b;w++){let M=document.createElement("div");M.classList.add("pagedjs_page","added"),M.id=`page-${r+w+1}`,t.querySelector(".pagedjs_pages").appendChild(M)}for(var w=v+b;w>=1;w--)S.push(w);for(var g=S.length/2,x=S.length,k=S.slice(0,g),T=S.slice(g,x),z=T.reverse(),D=[],w=0;w<k.length;w++)D[w]=[k[w],z[w]];for(var F=[],w=0;w<D.length;w++)w%2!=0?F[w]=D[w].reverse():F[w]=D[w];var W=F.flat();W.forEach((M,H)=>{M=M,document.querySelector(`#page-${M}`).style.order=H})}}};var wT=function(){var e=this,r=e._self._c;return r("div",{staticClass:"_pagedViewer",class:{"is--infiniteViewer":e.viewer_type==="vue-infinite-viewer"},style:e.pagedvar},[e.viewer_type==="vue-infinite-viewer"?r("vue-infinite-viewer",e._b({staticClass:"_infiniteViewer",style:e.pagedvar},"vue-infinite-viewer",e.viewerOptions,!1),[r("div",{ref:"bookpreview",staticClass:"edition book"})]):[r("div",{ref:"bookpreview",staticClass:"edition book"})],e.is_loading?r("LoaderSpinner"):e._e()],2)},kT=[],CT=Li(xT,wT,kT,!1,null,"03175996");const TT=CT.exports,_T={props:{content_nodes:{type:Object,required:!0},opened_chapter_meta_filename:String,css_styles:{type:String,required:!0}},components:{},data(){return{}},created(){},mounted(){},beforeDestroy(){},watch:{},computed:{opened_chapter(){if(this.opened_chapter_meta_filename)return this.content_nodes.chapters.find(t=>t.meta_filename===this.opened_chapter_meta_filename)}},methods:{}};var ET=function(){var n;var e=this,r=e._self._c;return r("div",{staticClass:"_docViewer edition web"},[r("style",{tag:"component",domProps:{innerHTML:e._s(e.css_styles)}}),r("div",{staticClass:"_docViewer--menu"},[r("DLabel",{attrs:{str:e.$t("chapters")}}),r("ol",e._l(e.content_nodes.chapters,function(a,i){var s;return r("li",{key:i},[r("button",{staticClass:"u-buttonLink",class:{"is--active":a.meta_filename===((s=e.opened_chapter)==null?void 0:s.meta_filename)},attrs:{type:"button"},on:{click:function(o){return e.$emit("openChapter",a.meta_filename)}}},[e._v(" "+e._s(a.title||e.$t("untitled")+" "+(i+1))+" ")])])}),0)],1),r("transition",{attrs:{name:"pagechange",mode:"out-in"}},[e.opened_chapter?r("div",{key:(n=e.opened_chapter)==null?void 0:n.meta_filename,staticClass:"_docViewer--content"},[r("h1",[e._v(e._s(e.opened_chapter.title))]),r("div",{staticClass:"_md",domProps:{innerHTML:e._s(e.opened_chapter.content)}})]):e._e()])],1)},AT=[],OT=Li(_T,ET,AT,!1,null,"dc6782cd");const zT=OT.exports,jT=`.media {
   display: inline-block;
   position: relative;
 
@@ -1127,21 +1127,42 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
  * 
  ****************************************************/
 
+/* applies to book + web */
 .edition {
-  p, .media {
-    margin-bottom: 2mm;
-
-    &:empty {
-      /* margin: 0; */
-    }
+  p, .media, h1, h2, h3 {
   }
 }
 
+/* applies to paged book */
 .book {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 12px;
+
+  p, 
+  .media, 
+  h1, 
+  h2, 
+  h3 {
+    margin-bottom: 2mm;
+  }
+   h1 {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+  }
+  h2 { 
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+  } 
+  h3 {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+  }
 }
 
+/* applies to web pages */
 .web {
   font-size: 1rem;
 }
@@ -1196,22 +1217,6 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
   widows: 3;
   orphans: 3; 
   line-height: 1.3;
-}
-
-h1 {
-  font-family: "Work Sans", sans-serif;
-  font-weight: 600;
-  font-size: 24px;
-}
-h2 { 
-  font-family: "Work Sans", sans-serif;
-  font-weight: 600;
-  font-size: 20px;
-} 
-h3 {
-  font-family: "Work Sans", sans-serif;
-  font-weight: 600;
-  font-size: 16px;
 }
 
 .mediaCaption {
