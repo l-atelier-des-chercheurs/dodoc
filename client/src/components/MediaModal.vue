@@ -335,7 +335,6 @@
         </DetailsPane>
       </div>
     </div>
-
     <div class="_selectBtn" v-if="select_mode">
       <button
         type="button"
@@ -560,6 +559,9 @@ export default {
   inset: 0;
   z-index: 10;
   text-align: left;
+
+  display: flex;
+  flex-flow: column nowrap;
   // padding: calc(var(--spacing) / 2);
 
   ._mediaModal--overlay {
@@ -638,11 +640,10 @@ export default {
 
   bottom: 0;
   left: 0;
-  background: none;
   padding: calc(var(--spacing) / 1);
 
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
+  background: white;
+  border: 2px solid var(--c-gris_clair);
 }
 
 ._mediaModal--content {
@@ -717,6 +718,11 @@ export default {
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2);
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 
 ._stickyClose {
@@ -781,7 +787,8 @@ export default {
     padding: calc(var(--spacing) / 2);
     max-width: 320px;
     width: 100%;
-    background: var(--c-bleuvert_clair);
+    background: white;
+    // background: var(--c-bleuvert_clair);
     border-radius: 8px;
     box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
   }

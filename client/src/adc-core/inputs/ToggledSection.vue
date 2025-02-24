@@ -99,7 +99,8 @@ export default {
     border-left: 3px dotted var(--c-gris_fonce);
     padding-left: calc(var(--spacing) / 2);
     margin-left: calc(var(--spacing) / 2);
-    padding-left: calc(var(--spacing) / 4);
+    padding-left: calc(var(--spacing) / 2);
+    padding-top: calc(var(--spacing) / 4);
   }
 }
 </style>

@@ -81,7 +81,7 @@
         <AuthorTag
           v-if="connected_as"
           :path="connected_as.$path"
-          :show_image_only="$root.is_mobile_view"
+          :show_image_only="true"
           @click="showAuthorModal"
         />
         <button
