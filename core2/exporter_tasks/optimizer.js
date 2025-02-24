@@ -1,6 +1,6 @@
 const { promisify } = require("util"),
   fs = require("fs"),
-  decode = require("heic-decode"),
+  heicdecode = require("heic-decode"),
   sharp = require("sharp"),
   ffmpeg = require("fluent-ffmpeg");
 
@@ -23,20 +23,19 @@ module.exports = (function () {
   const API = {
     async convertHEIC({ source, destination, image_width, image_height }) {
       const heic_buffer = await promisify(fs.readFile)(source);
-      const { width, height, data } = await decode({ buffer: heic_buffer });
+      const { width, height, data } = await heicdecode({ buffer: heic_buffer });
 
-      const buffer = new Uint8Array(data);
       const addtl_infos = {
         raw: {
           width,
           height,
           channels: 4,
-          density: 300,
+          // density: 300,
         },
       };
 
       return await _saveImage({
-        source: buffer,
+        source: data,
         addtl_infos,
         destination,
         image_width,
@@ -162,17 +161,27 @@ module.exports = (function () {
 
   async function _saveImage({
     source,
-    addtl_infos = undefined,
+    addtl_infos = {},
     destination,
     image_width,
     image_height,
   }) {
     // check if source has transparency
-    const { hasAlpha } = await sharp(source).metadata();
-    const output_format = hasAlpha ? "png" : "jpeg";
+
+    let output_format = "jpeg";
+    let quality = global.settings.mediaThumbQuality;
+    let background = "white";
+
+    try {
+      const { hasAlpha } = await sharp(source).metadata();
+      if (hasAlpha) {
+        output_format = "png";
+        quality = 100;
+        background = "transparent";
+      }
+    } catch (err) {}
+
     destination = destination + "." + output_format;
-    const quality = hasAlpha ? 100 : global.settings.mediaThumbQuality;
-    const background = hasAlpha ? "transparent" : "white";
 
     const sharp_buffer = await sharp(source, addtl_infos)
       .rotate()
