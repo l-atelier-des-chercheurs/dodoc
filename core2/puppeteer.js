@@ -149,6 +149,7 @@ module.exports = (function () {
             printBackground: true,
             width: `${printToPDF_pagesize.width}mm`,
             height: `${printToPDF_pagesize.height}mm`,
+            margin: { top: 0, left: 0, right: 0, bottom: 0 },
           });
         } else if (recipe === "png") {
           path_to_temp_file = await utils.createUniqueFilenameInCache("png");
