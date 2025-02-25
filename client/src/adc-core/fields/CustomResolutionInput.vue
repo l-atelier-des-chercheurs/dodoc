@@ -22,7 +22,7 @@
         :value="height"
         @input="adjustHeight"
       />
-      {{ $t("pixels") }}
+      {{ unit_i18n }}
     </div>
     <div v-if="is_video">
       <small class="u-instructions">
@@ -56,6 +56,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    unit: {
+      type: String,
+      default: "px",
+    },
   },
   components: {},
   data() {
@@ -73,7 +77,12 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    unit_i18n() {
+      if (this.unit === "px") return this.$t("pixels");
+      else if (this.unit === "mm") return this.$t("millimetres");
+    },
+  },
   methods: {
     adjustWidth(e) {
       const value = Math.round(Number(e.target.value));
@@ -109,6 +118,8 @@ export default {
   }
 }
 ._customResolutionX {
+  font-size: 140%;
+  font-weight: 300;
 }
 
 ._mb {

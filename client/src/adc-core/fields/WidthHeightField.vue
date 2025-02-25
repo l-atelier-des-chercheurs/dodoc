@@ -2,39 +2,42 @@
   <div class="_widthHeightField">
     <fieldset>
       <legend class="u-label">{{ $t("format") }}</legend>
-      <DLabel class="_label" :str="$t('document_type')" :tag="'h3'" />
-      <br />
-      <div
-        v-for="lmode in [
-          {
-            key: 'print',
-            label: $t('print'),
-            instructions: $t('print_instr'),
-          },
-          {
-            key: 'screen',
-            label: $t('screen'),
-            instructions: $t('screen_instr'),
-          },
-        ]"
-        :key="lmode.key"
-      >
-        <div>
-          <input
-            type="radio"
-            v-model="new_layout_mode"
-            :name="lmode.key"
-            :id="'radioi-lmode-' + lmode.key"
-            :value="lmode.key"
-            :disabled="!edit_mode"
-          />
-          <label :for="'radioi-lmode-' + lmode.key">
-            {{ lmode.label }}<br />
-            <small v-html="lmode.instructions" />
-          </label>
-        </div>
+
+      <template v-if="!force_layout_mode">
+        <DLabel class="_label" :str="$t('document_type')" :tag="'h3'" />
         <br />
-      </div>
+        <div
+          v-for="lmode in [
+            {
+              key: 'print',
+              label: $t('print'),
+              instructions: $t('print_instr'),
+            },
+            {
+              key: 'screen',
+              label: $t('screen'),
+              instructions: $t('screen_instr'),
+            },
+          ]"
+          :key="lmode.key"
+        >
+          <div>
+            <input
+              type="radio"
+              v-model="new_layout_mode"
+              :name="lmode.key"
+              :id="'radioi-lmode-' + lmode.key"
+              :value="lmode.key"
+              :disabled="!edit_mode"
+            />
+            <label :for="'radioi-lmode-' + lmode.key">
+              {{ lmode.label }}<br />
+              <small v-html="lmode.instructions" />
+            </label>
+          </div>
+          <br />
+        </div>
+      </template>
 
       <transition name="fade" mode="out-in">
         <div :key="new_layout_mode">
@@ -107,6 +110,7 @@
 export default {
   props: {
     publication: Object,
+    force_layout_mode: String,
   },
   components: {},
   data() {
@@ -211,7 +215,9 @@ export default {
   },
   methods: {
     initValues() {
-      this.new_layout_mode = this.publication.layout_mode || "print";
+      if (this.force_layout_mode) this.new_layout_mode = this.force_layout_mode;
+      else this.new_layout_mode = this.publication.layout_mode || "print";
+
       this.new_page_width = this.publication.page_width || 210;
       this.new_page_height = this.publication.page_height || 297;
     },

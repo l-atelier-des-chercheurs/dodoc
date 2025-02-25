@@ -355,6 +355,7 @@ class Exporter {
       const layout_mode = this.instructions.layout_mode || "print";
       const document_width = this.instructions.page_width || 210;
       const document_height = this.instructions.page_height || 297;
+
       const recipe = this.instructions.recipe;
 
       const reportProgress = (progress) => {

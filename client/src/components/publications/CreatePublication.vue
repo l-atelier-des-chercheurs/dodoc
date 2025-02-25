@@ -141,6 +141,9 @@ export default {
         additional_meta.page_width = 210;
         additional_meta.page_height = 297;
         additional_meta.pages = [{ id: "first_page" }];
+      } else if (this.new_publication_template === "edition") {
+        additional_meta.page_width = 210;
+        additional_meta.page_height = 297;
       }
 
       try {

@@ -81,19 +81,17 @@
 
 /* SET CHAPTER START OPTION */
 
-.book {
-  .chapter[data-starts-on-page="in_flow"]:not(:first-child) {
-    margin-top: 3rem;
-  }
-  .chapter[data-starts-on-page="page"] {
-    break-before: page;
-  }
-  .chapter[data-starts-on-page="left"] {
-    break-before: left;
-  }
-  .chapter[data-starts-on-page="right"] {
-    break-before: right;
-  }
+.chapter[data-starts-on-page="in_flow"]:not(:first-child) {
+  margin-top: 3rem;
+}
+.chapter[data-starts-on-page="page"] {
+  break-before: page;
+}
+.chapter[data-starts-on-page="left"] {
+  break-before: left;
+}
+.chapter[data-starts-on-page="right"] {
+  break-before: right;
 }
 
 /* SET COVER OPTIONS */

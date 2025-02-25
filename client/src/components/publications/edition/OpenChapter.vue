@@ -69,11 +69,32 @@
         />
 
         <BaseModal2
-          v-if="pick_file_shortcut"
-          :title="$t('pick_file')"
-          @close="pick_file_shortcut = null"
+          v-if="picked_file_filename"
+          :title="$t('add_media')"
+          @close="closePickModal"
         >
-          <input type="text" v-model="pick_file_shortcut" readonly />
+          <ToggleInput
+            :content.sync="full_page_media"
+            :label="$t('full_page')"
+          />
+          <div class="u-spacingBottom" />
+
+          <div class="u-inputGroup">
+            <input
+              type="text"
+              ref="urlToCopy"
+              v-model="pick_file_shortcut"
+              readonly
+            />
+            <button
+              type="button"
+              class="u-button u-button_icon u-suffix _clipboardBtn"
+              @click="copyToClipboard"
+            >
+              <b-icon icon="clipboard" v-if="!is_copied" />
+              <b-icon icon="clipboard-check" v-else />
+            </button>
+          </div>
         </BaseModal2>
       </template>
     </div>
@@ -98,7 +119,10 @@ export default {
   data() {
     return {
       show_media_picker: false,
-      pick_file_shortcut: null,
+      picked_file_filename: null,
+      picked_file_caption: "",
+      full_page_media: false,
+      is_copied: false,
     };
   },
   created() {},
@@ -124,6 +148,21 @@ export default {
       if (this.content_type === "html") return "html";
       else if (this.content_type === "markdown") return "raw";
       else return "html";
+    },
+    pick_file_shortcut() {
+      let html = "";
+
+      if (this.picked_file_caption) html += `![${this.picked_file_caption}]`;
+      else html += "![]";
+
+      if (!this.picked_file_filename) html += "()";
+      else {
+        if (this.full_page_media)
+          html += `(${this.picked_file_filename} "=full-page")`;
+        else html += `(${this.picked_file_filename})`;
+      }
+
+      return html;
     },
   },
   methods: {
@@ -163,7 +202,28 @@ export default {
     },
     pickFile({ path_to_source_media_metas }) {
       const source_media_meta = path_to_source_media_metas[0];
-      this.pick_file_shortcut = `![](${this.getFilename(source_media_meta)})`;
+      this.picked_file_filename = this.getFilename(source_media_meta);
+    },
+    copyToClipboard() {
+      this.is_copied = false;
+
+      // Get the text field
+      var copyText = this.$refs.urlToCopy;
+
+      // Select the text field
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // For mobile devices
+
+      // Copy the text inside the text field
+      navigator.clipboard.writeText(copyText.value);
+
+      this.is_copied = true;
+    },
+    closePickModal() {
+      this.picked_file_filename = null;
+      this.picked_file_caption = "";
+      this.full_page_media = false;
+      this.is_copied = false;
     },
   },
 };

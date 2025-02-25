@@ -1,19 +1,17 @@
 <template>
   <div
-    class="_pagedViewer"
+    class="_pagedViewer edition book"
     :class="{ 'is--infiniteViewer': viewer_type === 'vue-infinite-viewer' }"
-    :style="pagedvar"
   >
     <vue-infinite-viewer
       v-if="viewer_type === 'vue-infinite-viewer'"
       class="_infiniteViewer"
       v-bind="viewerOptions"
-      :style="pagedvar"
     >
-      <div class="edition book" ref="bookpreview" />
+      <div class="" ref="bookpreview" />
     </vue-infinite-viewer>
     <template v-else>
-      <div class="edition book" ref="bookpreview" />
+      <div class="" ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
   </div>
@@ -82,14 +80,7 @@ export default {
       this.generateBook();
     },
   },
-  computed: {
-    pagedvar() {
-      return {
-        width: this.format_mode,
-        height: this.format_mode,
-      };
-    },
-  },
+  computed: {},
   methods: {
     makePagedjsHTML() {
       const nodes = this.content_nodes;
@@ -139,11 +130,11 @@ export default {
       if (pagedjs_html.length == 0) pagedjs_html = `<div></div>`;
 
       let pagedjs_styles = `
-      @page {
-        size: ${this.format_mode};
-        --paged-layout: booklet;
-      }
+        @page {
+          size: ${this.format_mode};
+        }
       `;
+      // --paged-layout: booklet;
       pagedjs_styles += this.css_styles;
       pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 
@@ -153,10 +144,10 @@ export default {
         },
       ];
 
-      paged.preview(pagedjs_html, theme_styles, bookpreview).then((flow) => {
-        // bookpreview.innerHTML = "";
-        // const pagesOutput = flow.pagesArea;
-        // bookpreview.appendChild(pagesOutput);
+      paged.preview(pagedjs_html, theme_styles, undefined).then((flow) => {
+        bookpreview.innerHTML = "";
+        const pagesOutput = flow.pagesArea;
+        bookpreview.appendChild(pagesOutput);
 
         // const custom_styles_el = document.querySelectorAll(
         //   "[data-pagedjs-inserted-styles]"
@@ -274,7 +265,7 @@ export default {
       // - delete bleeds inside spread */
 
       var newSize = `
-        @media print{
+      @media print{
         @page{
           size:  ${spread}mm ${height}mm;
         }
@@ -494,6 +485,25 @@ export default {
         flex: 0;
         flex-wrap: wrap;
         margin: 0 auto;
+
+        &::before {
+          content: "➵";
+          position: absolute;
+          // width: calc(
+          //   var(--pagedjs-bleed-left) + var(--pagedjs-pagebox-width)
+          // ) !important;
+          width: var(--pagedjs-width-left);
+          height: var(--pagedjs-height-left);
+
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          font-size: 500%;
+          margin-top: 10mm;
+          color: white;
+          pointer-events: none;
+        }
       }
 
       .pagedjs_page {

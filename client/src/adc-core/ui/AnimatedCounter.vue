@@ -52,7 +52,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._animatedCounter {
-  display: flex;
+  display: inline-flex;
   gap: calc(var(--spacing) / 2);
   align-items: center;
 

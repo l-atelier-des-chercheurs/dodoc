@@ -1198,7 +1198,6 @@ export default {
 
   chapters: "Chapters",
   create_chapter: "Create a chapter",
-  full_page: "Full page",
   text_top_image_down: "Text top, image down",
   image_top_text_down: "Image top, text down",
   in_flow: "In the flow",
@@ -1211,4 +1210,6 @@ export default {
   graphic_styles: "Graphic styles",
   edit_default_styles: "Edit default styles",
   back_to_default_styles: "Reset to default styles",
+
+  millimetres: "millimetres",
 };

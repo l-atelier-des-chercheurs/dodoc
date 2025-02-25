@@ -87,6 +87,7 @@ module.exports = (function () {
         err.code = "failed_to_capture_media_screenshot_page-timeout";
         throw err;
       }, 30_000);
+
       let stopTimeoutAndCloseBrowser = async () => {
         if (page_timeout) {
           clearTimeout(page_timeout);
