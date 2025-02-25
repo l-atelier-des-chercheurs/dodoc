@@ -274,7 +274,7 @@ export default {
       // - delete bleeds inside spread */
 
       var newSize = `
-        @media print{
+      @media print{
         @page{
           size:  ${spread}mm ${height}mm;
         }

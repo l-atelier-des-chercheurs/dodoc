@@ -1,11 +1,15 @@
 <template>
   <BaseModal2 @close="removeAndCloseModal">
     <template v-if="is_exporting">
-      <div class="u-instructions">
+      <div class="u-instructions u-spacingBottom">
         {{ $t("export_in_progress") }}
       </div>
-      <div class="">
-        <b><AnimatedCounter :value="task_progress" /></b>
+
+      <div>
+        <div />
+        <div>
+          <AnimatedCounter :value="task_progress" />
+        </div>
       </div>
     </template>
     <template v-else>
