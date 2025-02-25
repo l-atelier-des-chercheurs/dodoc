@@ -2,13 +2,11 @@
   <div
     class="_pagedViewer"
     :class="{ 'is--infiniteViewer': viewer_type === 'vue-infinite-viewer' }"
-    :style="pagedvar"
   >
     <vue-infinite-viewer
       v-if="viewer_type === 'vue-infinite-viewer'"
       class="_infiniteViewer"
       v-bind="viewerOptions"
-      :style="pagedvar"
     >
       <div class="edition book" ref="bookpreview" />
     </vue-infinite-viewer>
@@ -82,14 +80,7 @@ export default {
       this.generateBook();
     },
   },
-  computed: {
-    pagedvar() {
-      return {
-        width: this.format_mode,
-        height: this.format_mode,
-      };
-    },
-  },
+  computed: {},
   methods: {
     makePagedjsHTML() {
       const nodes = this.content_nodes;
@@ -139,11 +130,11 @@ export default {
       if (pagedjs_html.length == 0) pagedjs_html = `<div></div>`;
 
       let pagedjs_styles = `
-      @page {
-        size: ${this.format_mode};
-        --paged-layout: booklet;
-      }
+        @page {
+          size: ${this.format_mode};
+        }
       `;
+      // --paged-layout: booklet;
       pagedjs_styles += this.css_styles;
       pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 

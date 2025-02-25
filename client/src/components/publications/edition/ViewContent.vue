@@ -5,12 +5,12 @@
         <option value="book">{{ $t("book") }}</option>
         <option value="html">{{ $t("webpage") }}</option>
       </select>
-      <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
+      <!-- <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
         <option value="A4">{{ $t("A4_portrait") }}</option>
         <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
         <option value="A5">{{ $t("A5_portrait") }}</option>
         <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
-      </select>
+      </select> -->
     </div>
 
     <div class="_viewContent--content">
@@ -63,8 +63,6 @@ export default {
     return {
       is_loading: false,
       view_mode: "book",
-      format_mode: "A4",
-
       // custom_styles_nested: "",
     };
   },
@@ -82,6 +80,12 @@ export default {
     // },
   },
   computed: {
+    format_mode() {
+      if (this.publication.page_width && this.publication.page_height) {
+        return `${this.publication.page_width}mm ${this.publication.page_height}mm`;
+      }
+      return "A4";
+    },
     cover_media() {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },

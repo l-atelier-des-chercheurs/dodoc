@@ -48,6 +48,12 @@
         </div>
       </pane>
     </splitpanes>
+    <PublicationSettings v-if="can_edit">
+      <WidthHeightField
+        :publication="publication"
+        :force_layout_mode="'print'"
+      />
+    </PublicationSettings>
   </div>
 </template>
 <script>
@@ -57,6 +63,8 @@ import ChaptersSummary from "@/components/publications/edition/ChaptersSummary.v
 import OpenChapter from "@/components/publications/edition/OpenChapter.vue";
 import ViewContent from "@/components/publications/edition/ViewContent.vue";
 import EditGraphicStyles from "@/components/publications/edition/EditGraphicStyles.vue";
+import PublicationSettings from "@/components/publications/PublicationSettings.vue";
+import WidthHeightField from "@/adc-core/fields/WidthHeightField.vue";
 
 export default {
   props: {
@@ -71,6 +79,8 @@ export default {
     OpenChapter,
     ViewContent,
     EditGraphicStyles,
+    PublicationSettings,
+    WidthHeightField,
   },
   provide() {
     return {

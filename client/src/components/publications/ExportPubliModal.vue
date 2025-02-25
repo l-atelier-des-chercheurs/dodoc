@@ -10,14 +10,14 @@
     </div>
 
     <template v-if="export_mode === 'pdf'">
-      <div class="u-spacingBottom" />
+      <!-- <div class="u-spacingBottom" /> -->
 
-      <CustomResolutionInput
+      <!-- <CustomResolutionInput
         :width.sync="page_width"
         :height.sync="page_height"
         :ratio="publication_ratio"
         :unit="custom_resolution_unit"
-      />
+      /> -->
     </template>
 
     <template v-if="export_mode === 'png'">
