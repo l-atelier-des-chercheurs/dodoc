@@ -8,7 +8,6 @@
   "versioning": true,
   "tokenIsValidForXDays": 60,
 
-  "cacheDirname": "dodoc_cache",
   "contentPath": "dodoc",
 
   "privateKeyPath": "",

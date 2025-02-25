@@ -103,17 +103,13 @@ async function setupApp() {
   // dev.logfunction(`une chaine et un`, { objet: "à la suite" });
   // dev.logfunction(["un", "array", "de", "valeurs"]);
 
-  global.pathToCache = path.join(
-    paths.getCacheFolder(global.is_electron),
-    global.settings.cacheDirname
-  );
+  global.pathToCache = await createCacheFolder().catch((err) => {
+    throw err;
+  });
+
   global.ffmpeg_processes = [];
 
   if (global.settings.cache_content === true) cache.init();
-
-  await cleanCacheFolder().catch((err) => {
-    throw err;
-  });
 
   let full_default_path = path.join(`${global.appRoot}`, `content`);
   if (global.is_electron)
@@ -156,7 +152,7 @@ async function setupApp() {
 async function copyAndRenameUserFolder(full_default_path) {
   dev.logfunction({ full_default_path });
 
-  const user_dir_path = paths.getDocumentsFolder(global.is_electron);
+  const user_dir_path = paths.getDocumentsFolder();
 
   let full_path_to_content;
   const path_is_custom =
@@ -219,13 +215,19 @@ async function contentFolderIsValid(full_path) {
   return true;
 }
 
-async function cleanCacheFolder() {
-  let cachePath = utils.getPathToCache();
-  dev.log(`Emptying temp folder ${cachePath}`);
-  await fs.emptyDir(cachePath).catch((err) => {
+async function createCacheFolder() {
+  const cache_folder_path = path.join(
+    paths.getCacheFolder(),
+    utils.createUniqueName("dodoc_cache")
+  );
+  try {
+    await utils.testWriteFileInFolder(cache_folder_path);
+    dev.log(`Cache folder set to`, cache_folder_path);
+  } catch (err) {
+    dev.error(`-> failed to write to cache folder`, err);
     throw err;
-  });
-  return;
+  }
+  return cache_folder_path;
 }
 
 async function readAppMeta() {

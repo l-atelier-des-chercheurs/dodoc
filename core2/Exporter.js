@@ -204,11 +204,6 @@ class Exporter {
         new_video_name
       );
 
-      const _removeAllImages = async () => {
-        // todo implement this
-        // await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
-      };
-
       this._notifyProgress(20);
 
       const frame_rate = this.instructions.frame_rate || 4;
@@ -256,14 +251,14 @@ class Exporter {
 
           this._notifyProgress(95);
 
-          await _removeAllImages();
+          await this._removeAllImages(full_path_to_folder_in_cache);
           return resolve(full_path_to_new_video);
         })
         .on("error", async (err, stdout, stderr) => {
           dev.error("An error happened: " + err.message);
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
-          await _removeAllImages();
+          await this._removeAllImages(full_path_to_folder_in_cache);
           this._notifyEnded({
             event: "failed",
             info: err.message,
@@ -290,6 +285,15 @@ class Exporter {
       task_id: this.id,
       message,
     });
+  }
+
+  async _removeAllImages(full_path_to_folder_in_cache) {
+    const files = await fs.readdir(full_path_to_folder_in_cache);
+    for (const file of files) {
+      if (file.endsWith(".jpeg")) {
+        await fs.remove(path.join(full_path_to_folder_in_cache, file));
+      }
+    }
   }
 
   async _copyToCacheAndRenameImages({
@@ -808,6 +812,11 @@ class Exporter {
         video_bitrate,
         ffmpeg_cmd: this.ffmpeg_cmd,
         full_path_to_new_video,
+      });
+
+      // cleanup temp
+      temp_videos_array.forEach(async (e) => {
+        await fs.remove(e.video_path);
       });
 
       dev.logverbose("Video created");
