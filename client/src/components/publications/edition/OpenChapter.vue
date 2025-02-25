@@ -69,10 +69,16 @@
         />
 
         <BaseModal2
-          v-if="pick_file_shortcut"
-          :title="$t('pick_file')"
-          @close="pick_file_shortcut = null"
+          v-if="picked_file_filename"
+          :title="$t('add_media')"
+          @close="closePickModal"
         >
+          <ToggleInput
+            :content.sync="full_page_media"
+            :label="$t('full_page')"
+          />
+          <div class="u-spacingBottom" />
+
           <input type="text" v-model="pick_file_shortcut" readonly />
         </BaseModal2>
       </template>
@@ -98,7 +104,9 @@ export default {
   data() {
     return {
       show_media_picker: false,
-      pick_file_shortcut: null,
+      picked_file_filename: null,
+      picked_file_caption: "",
+      full_page_media: false,
     };
   },
   created() {},
@@ -124,6 +132,21 @@ export default {
       if (this.content_type === "html") return "html";
       else if (this.content_type === "markdown") return "raw";
       else return "html";
+    },
+    pick_file_shortcut() {
+      let html = "";
+
+      if (this.picked_file_caption) html += `![${this.picked_file_caption}]`;
+      else html += "![]";
+
+      if (!this.picked_file_filename) html += "()";
+      else {
+        if (this.full_page_media)
+          html += `(${this.picked_file_filename} "=full-page")`;
+        else html += `(${this.picked_file_filename})`;
+      }
+
+      return html;
     },
   },
   methods: {
@@ -163,7 +186,12 @@ export default {
     },
     pickFile({ path_to_source_media_metas }) {
       const source_media_meta = path_to_source_media_metas[0];
-      this.pick_file_shortcut = `![](${this.getFilename(source_media_meta)})`;
+      this.picked_file_filename = this.getFilename(source_media_meta);
+    },
+    closePickModal() {
+      this.picked_file_filename = null;
+      this.picked_file_caption = "";
+      this.full_page_media = false;
     },
   },
 };

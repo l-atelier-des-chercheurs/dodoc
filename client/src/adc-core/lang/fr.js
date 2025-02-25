@@ -1278,7 +1278,6 @@ export default {
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
-  full_page: "Pleine page",
   text_top_image_down: "Texte en haut, image en bas",
   image_top_text_down: "Image en haut, texte en bas",
   in_flow: "À la suite",
