@@ -147,7 +147,10 @@ export default {
     },
     set_print_margins() {
       let margins = 15;
-      if (this.publication && this.publication.template === "page_by_page")
+      if (
+        this.publication &&
+        ["page_by_page", "edition"].includes(this.publication.template)
+      )
         margins = 0;
       return `
       @page {
