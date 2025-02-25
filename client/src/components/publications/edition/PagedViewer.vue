@@ -203,7 +203,7 @@ export default {
         });
     },
     beforePrint() {
-      this.impositionPage();
+      // this.impositionPage();
     },
     impositionPage() {
       // from https://gitlab.coko.foundation/pagedjs/pagedjs-plugins/booklet-imposition/-/blob/master/imposition.js?ref_type=heads
