@@ -145,7 +145,7 @@ export default {
       }
       `;
       pagedjs_styles += this.css_styles;
-      // pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
+      pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 
       const theme_styles = [
         {
@@ -166,7 +166,7 @@ export default {
         // );
 
         // const wrap_custom_styles = `
-        //   .bookpreview {
+        //   ._pagedViewer {
         //     ${custom_css}
         //   }
         // `;
@@ -203,7 +203,7 @@ export default {
         });
     },
     beforePrint() {
-      this.impositionPage();
+      // this.impositionPage();
     },
     impositionPage() {
       // from https://gitlab.coko.foundation/pagedjs/pagedjs-plugins/booklet-imposition/-/blob/master/imposition.js?ref_type=heads

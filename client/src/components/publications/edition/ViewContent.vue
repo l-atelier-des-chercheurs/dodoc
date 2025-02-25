@@ -63,7 +63,7 @@ export default {
     return {
       is_loading: false,
       view_mode: "book",
-      format_mode: "A5",
+      format_mode: "A4",
 
       // custom_styles_nested: "",
     };
