@@ -879,10 +879,13 @@ input[type="checkbox"] {
   }
 
   &:checked {
-    border-color: var(--c-gris_fonce);
+    // border-color: var(--c-gris_fonce);
 
     &::before {
       transform: scale(1);
+    }
+
+    &:hover {
     }
   }
 

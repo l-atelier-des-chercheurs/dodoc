@@ -1291,4 +1291,6 @@ export default {
   graphic_styles: "Style graphiques",
   edit_default_styles: "Modifier le style par défaut",
   back_to_default_styles: "Revenir au style par défaut",
+
+  millimetres: "millimètres",
 };

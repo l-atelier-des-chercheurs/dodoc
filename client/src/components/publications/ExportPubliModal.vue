@@ -9,6 +9,17 @@
       />
     </div>
 
+    <template v-if="export_mode === 'pdf'">
+      <div class="u-spacingBottom" />
+
+      <CustomResolutionInput
+        :width.sync="page_width"
+        :height.sync="page_height"
+        :ratio="publication_ratio"
+        :unit="custom_resolution_unit"
+      />
+    </template>
+
     <template v-if="export_mode === 'png'">
       <template v-if="publication.template === 'page_by_page'">
         <div class="u-spacingBottom" />
@@ -63,6 +74,9 @@ export default {
       task_instructions: false,
       page_to_export_as_image: 1,
 
+      page_width: this.publication.page_width || 210,
+      page_height: this.publication.page_height || 297,
+
       export_mode: "pdf",
       export_options: [
         {
@@ -81,6 +95,8 @@ export default {
     };
   },
   created() {
+    this.publication_ratio = this.page_height / this.page_width;
+
     if (this.page_opened_id && this.publication.pages) {
       const page_number = this.publication.pages.findIndex(
         (p) => p.id === this.page_opened_id
@@ -101,6 +117,14 @@ export default {
       if (this.export_mode === "webpage") return "window";
       return undefined;
     },
+    custom_resolution_unit() {
+      if (
+        this.publication.layout_mode === "print" ||
+        this.publication.template === "edition"
+      )
+        return "mm";
+      return "px";
+    },
   },
   methods: {
     async exportPublication(export_type) {
@@ -114,8 +138,8 @@ export default {
 
       let instructions = {
         recipe: export_type,
-        page_width: this.publication.page_width,
-        page_height: this.publication.page_height,
+        page_width: this.page_width,
+        page_height: this.page_height,
         layout_mode: this.publication.layout_mode || "print",
         suggested_file_name: this.publication.title,
         additional_meta,
