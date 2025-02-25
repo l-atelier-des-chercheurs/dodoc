@@ -87,6 +87,7 @@ module.exports = (function () {
         err.code = "failed_to_capture_media_screenshot_page-timeout";
         throw err;
       }, 30_000);
+
       let stopTimeoutAndCloseBrowser = async () => {
         if (page_timeout) {
           clearTimeout(page_timeout);
@@ -149,6 +150,12 @@ module.exports = (function () {
             printBackground: true,
             width: `${printToPDF_pagesize.width}mm`,
             height: `${printToPDF_pagesize.height}mm`,
+            margin: {
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            },
           });
         } else if (recipe === "png") {
           path_to_temp_file = await utils.createUniqueFilenameInCache("png");
