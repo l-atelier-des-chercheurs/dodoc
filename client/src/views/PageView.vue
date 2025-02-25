@@ -16,7 +16,7 @@
             :can_edit="can_edit"
           />
 
-          <DropDown v-if="can_edit">
+          <DropDown v-if="can_edit" :show_label="false">
             <RemoveMenu
               :modal_title="$t('remove_page_and_content')"
               @remove="removePage"

@@ -129,7 +129,7 @@
               />
             </h3>
 
-            <DropDown :right="true">
+            <DropDown :show_label="false" :right="true">
               <ShareFile :file="file">
                 <b-icon icon="box-arrow-up-right" />
                 {{ $t("share") }}
