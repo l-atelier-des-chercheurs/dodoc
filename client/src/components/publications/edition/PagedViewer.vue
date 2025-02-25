@@ -1,6 +1,6 @@
 <template>
   <div
-    class="_pagedViewer"
+    class="_pagedViewer edition book"
     :class="{ 'is--infiniteViewer': viewer_type === 'vue-infinite-viewer' }"
   >
     <vue-infinite-viewer
@@ -8,10 +8,10 @@
       class="_infiniteViewer"
       v-bind="viewerOptions"
     >
-      <div class="edition book" ref="bookpreview" />
+      <div class="" ref="bookpreview" />
     </vue-infinite-viewer>
     <template v-else>
-      <div class="edition book" ref="bookpreview" />
+      <div class="" ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
   </div>
@@ -144,10 +144,10 @@ export default {
         },
       ];
 
-      paged.preview(pagedjs_html, theme_styles, bookpreview).then((flow) => {
-        // bookpreview.innerHTML = "";
-        // const pagesOutput = flow.pagesArea;
-        // bookpreview.appendChild(pagesOutput);
+      paged.preview(pagedjs_html, theme_styles, undefined).then((flow) => {
+        bookpreview.innerHTML = "";
+        const pagesOutput = flow.pagesArea;
+        bookpreview.appendChild(pagesOutput);
 
         // const custom_styles_el = document.querySelectorAll(
         //   "[data-pagedjs-inserted-styles]"
