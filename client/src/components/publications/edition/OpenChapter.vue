@@ -79,7 +79,22 @@
           />
           <div class="u-spacingBottom" />
 
-          <input type="text" v-model="pick_file_shortcut" readonly />
+          <div class="u-inputGroup">
+            <input
+              type="text"
+              ref="urlToCopy"
+              v-model="pick_file_shortcut"
+              readonly
+            />
+            <button
+              type="button"
+              class="u-button u-button_icon u-suffix _clipboardBtn"
+              @click="copyToClipboard"
+            >
+              <b-icon icon="clipboard" v-if="!is_copied" />
+              <b-icon icon="clipboard-check" v-else />
+            </button>
+          </div>
         </BaseModal2>
       </template>
     </div>
@@ -107,6 +122,7 @@ export default {
       picked_file_filename: null,
       picked_file_caption: "",
       full_page_media: false,
+      is_copied: false,
     };
   },
   created() {},
@@ -188,10 +204,26 @@ export default {
       const source_media_meta = path_to_source_media_metas[0];
       this.picked_file_filename = this.getFilename(source_media_meta);
     },
+    copyToClipboard() {
+      this.is_copied = false;
+
+      // Get the text field
+      var copyText = this.$refs.urlToCopy;
+
+      // Select the text field
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // For mobile devices
+
+      // Copy the text inside the text field
+      navigator.clipboard.writeText(copyText.value);
+
+      this.is_copied = true;
+    },
     closePickModal() {
       this.picked_file_filename = null;
       this.picked_file_caption = "";
       this.full_page_media = false;
+      this.is_copied = false;
     },
   },
 };
