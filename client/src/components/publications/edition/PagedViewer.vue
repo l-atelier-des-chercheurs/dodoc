@@ -485,6 +485,25 @@ export default {
         flex: 0;
         flex-wrap: wrap;
         margin: 0 auto;
+
+        &::before {
+          content: "➵";
+          position: absolute;
+          // width: calc(
+          //   var(--pagedjs-bleed-left) + var(--pagedjs-pagebox-width)
+          // ) !important;
+          width: var(--pagedjs-width-left);
+          height: var(--pagedjs-height-left);
+
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          font-size: 500%;
+          margin-top: 10mm;
+          color: white;
+          pointer-events: none;
+        }
       }
 
       .pagedjs_page {
