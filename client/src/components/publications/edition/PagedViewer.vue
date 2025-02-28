@@ -463,7 +463,7 @@ export default {
   --color-pageBox: violet;
   --color-paper: white;
   --color-marginBox: transparent;
-  --color-pageContent: #eee;
+  --color-pageContent: #ff00ff;
   --pagedjs-crop-color: black;
   --pagedjs-crop-shadow: white;
   --pagedjs-crop-stroke: 1px;

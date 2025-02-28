@@ -1,13 +1,33 @@
 <template>
   <div class="_openChapter">
-    <div class="_topButtons">
-      <div>
+    <button
+      type="button"
+      class="u-button u-button_icon _close_button"
+      @click="$emit('close')"
+    >
+      <b-icon icon="x-lg" :label="$t('close')" />
+    </button>
+    <div class="_openChapter--content">
+      <div class="_topButtons">
+        <TitleField
+          :field_name="'section_title'"
+          :content="chapter.section_title"
+          :maxlength="40"
+          :tag="'h1'"
+          :path="chapter.$path"
+          :can_edit="can_edit"
+        />
+        <DropDown :right="true" :show_label="false">
+          <RemoveMenu @remove="$emit('remove')" />
+        </DropDown>
+
+        <!-- <div>
         <button type="button" class="u-buttonLink" @click="$emit('close')">
           <b-icon icon="arrow-left-short" />
           {{ $t("back") }}
         </button>
-      </div>
-      <!-- <SelectField
+      </div> -->
+        <!-- <SelectField
         :field_name="'content_type'"
         :content="content_type"
         :path="chapter._main_text.$path"
@@ -18,85 +38,74 @@
         :can_edit="can_edit"
         :hide_validation="true"
       /> -->
-      <RemoveMenu @remove="$emit('remove')" />
-    </div>
-    <div class="_content">
-      <div class="u-spacingBottom">
-        <TitleField
-          :label="$t('section_title')"
-          :field_name="'section_title'"
-          :content="chapter.section_title"
-          :maxlength="40"
-          :tag="'h1'"
-          :path="chapter.$path"
-          :can_edit="can_edit"
-        />
       </div>
-      <template v-if="chapter._main_text">
-        <DLabel :str="$t('content')" />
-        <!-- <MarkdownEditor
+      <div class="_content">
+        <template v-if="chapter._main_text">
+          <DLabel :str="$t('content')" />
+          <!-- <MarkdownEditor
           :content="chapter._main_text.$content"
           :path="chapter._main_text.$path"
           :edit_on_mounted="true"
           :can_edit="can_edit"
         /> -->
-        <div class="_pickFileButton">
-          <button
-            type="button"
-            class="u-button u-button_bleumarine"
-            @click="show_media_picker = !show_media_picker"
-          >
-            pick media
-          </button>
-        </div>
-
-        <CollaborativeEditor3
-          :content="chapter._main_text.$content"
-          :path="chapter._main_text.$path"
-          :custom_formats="custom_formats"
-          :save_format="save_format"
-          :can_edit="can_edit"
-          :mode="'always_active'"
-        />
-
-        <MediaPicker
-          v-if="show_media_picker"
-          :publication_path="publication_path"
-          :select_mode="'single'"
-          :pick_from_types="['image', 'video', 'audio']"
-          @addMedias="pickFile"
-          @close="show_media_picker = false"
-        />
-
-        <BaseModal2
-          v-if="picked_file_filename"
-          :title="$t('add_media')"
-          @close="closePickModal"
-        >
-          <ToggleInput
-            :content.sync="full_page_media"
-            :label="$t('full_page')"
-          />
-          <div class="u-spacingBottom" />
-
-          <div class="u-inputGroup">
-            <input
-              type="text"
-              ref="urlToCopy"
-              v-model="pick_file_shortcut"
-              readonly
-            />
+          <div class="_pickFileButton">
             <button
               type="button"
-              class="u-button u-button_icon u-suffix _clipboardBtn"
-              @click="copyToClipboard"
+              class="u-button u-button_bleumarine"
+              @click="show_media_picker = !show_media_picker"
             >
-              <b-icon icon="clipboard" v-if="!is_copied" />
-              <b-icon icon="clipboard-check" v-else />
+              {{ $t("import") }}
             </button>
           </div>
-        </BaseModal2>
-      </template>
+
+          <CollaborativeEditor3
+            :content="chapter._main_text.$content"
+            :path="chapter._main_text.$path"
+            :custom_formats="custom_formats"
+            :save_format="save_format"
+            :can_edit="can_edit"
+            :mode="'always_active'"
+          />
+
+          <MediaPicker
+            v-if="show_media_picker"
+            :publication_path="publication_path"
+            :select_mode="'single'"
+            :pick_from_types="['image', 'video', 'audio']"
+            @addMedias="pickFile"
+            @close="show_media_picker = false"
+          />
+
+          <BaseModal2
+            v-if="picked_file_filename"
+            :title="$t('add_media')"
+            @close="closePickModal"
+          >
+            <ToggleInput
+              :content.sync="full_page_media"
+              :label="$t('full_page')"
+            />
+            <div class="u-spacingBottom" />
+
+            <div class="u-inputGroup">
+              <input
+                type="text"
+                ref="urlToCopy"
+                v-model="pick_file_shortcut"
+                readonly
+              />
+              <button
+                type="button"
+                class="u-button u-button_icon u-suffix _clipboardBtn"
+                @click="copyToClipboard"
+              >
+                <b-icon icon="clipboard" v-if="!is_copied" />
+                <b-icon icon="clipboard-check" v-else />
+              </button>
+            </div>
+          </BaseModal2>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -232,13 +241,13 @@ export default {
 ._openChapter {
   position: absolute;
   top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: var(--c-gris_clair);
-  background-color: white;
   z-index: 10;
+  padding: calc(var(--spacing) * 1);
+
+  background: transparent;
 
   // display: flex;
   // flex-direction: row nowrap;
@@ -247,6 +256,29 @@ export default {
   //   flex: 1 1 0;
   // }
 }
+._openChapter--content {
+  position: relative;
+  height: 100%;
+  background-color: white;
+  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+    0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+    0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
+    0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  overflow: auto;
+
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+}
+
+._close_button {
+  position: absolute;
+  top: 0;
+  text-align: right;
+  right: 0;
+  z-index: 100;
+}
 
 ._topButtons {
   display: flex;
@@ -254,21 +286,22 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: calc(var(--spacing) * 1);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 2) 0;
+  padding: calc(var(--spacing) / 2) 0;
 }
 
 ._content {
-  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
 }
 
 ._pickFileButton {
   position: sticky;
   top: 0;
-  width: 100%;
+  // height: 0;
+  // width: 100%;
   text-align: right;
-  margin: calc(var(--spacing) * 2);
+  // margin: calc(var(--spacing) * 2);
   z-index: 10;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) 0;
   pointer-events: none;
 
   > * {
