@@ -1212,4 +1212,6 @@ export default {
   back_to_default_styles: "Reset to default styles",
 
   millimetres: "millimetres",
+  parent_space_is_private:
+    "The parent space is private, so other projects in this space cannot be viewed.",
 };
