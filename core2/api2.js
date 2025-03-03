@@ -425,7 +425,7 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.error("not allowed to contribute");
+      dev.error(`not allowed to contribute to folder ${path_to_folder}`);
       if (res) return res.status(403).send({ code: "not_allowed" });
       return false;
     }
@@ -443,7 +443,7 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.error("not allowed to contribute");
+      dev.error(`not allowed to admin folder ${path_to_folder}`);
       if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
