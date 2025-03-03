@@ -5,6 +5,7 @@
   >
     <vue-infinite-viewer
       v-if="viewer_type === 'vue-infinite-viewer'"
+      ref="vueinfiniteviewer"
       class="_infiniteViewer"
       v-bind="viewerOptions"
     >
@@ -63,6 +64,7 @@ export default {
   created() {},
   mounted() {
     this.generateBook();
+    if (this.$refs.vueinfiniteviewer) this.$refs.vueinfiniteviewer.setZoom(0.6);
     window.addEventListener("beforeprint", this.beforePrint);
   },
   beforeDestroy() {
