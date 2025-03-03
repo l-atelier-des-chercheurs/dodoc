@@ -161,8 +161,6 @@ export default {
 
       if (!space_slug) return false;
 
-      debugger;
-
       this.projects = await this.$api
         .getFolders({
           path:
