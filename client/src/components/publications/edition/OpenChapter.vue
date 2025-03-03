@@ -246,6 +246,7 @@ export default {
   overflow: auto;
   z-index: 10;
   padding: calc(var(--spacing) * 1);
+  padding-bottom: 0;
 
   background: transparent;
 
@@ -290,7 +291,7 @@ export default {
 }
 
 ._content {
-  padding-bottom: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 1);
 }
 
 ._pickFileButton {
