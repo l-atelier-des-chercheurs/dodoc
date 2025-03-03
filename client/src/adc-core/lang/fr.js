@@ -1292,4 +1292,8 @@ export default {
   back_to_default_styles: "Revenir au style par défaut",
 
   millimetres: "millimètres",
+  parent_space_is_private:
+    "L’espace parent est privé, les autres projets de cet espace ne peuvent donc pas être consultés.",
+  copy_paste_to_include_media:
+    "Copiez/collez dans le contenu pour placer le média.",
 };

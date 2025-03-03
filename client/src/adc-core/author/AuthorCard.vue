@@ -75,7 +75,7 @@
             />
           </div>
 
-          <div v-if="can_edit" class="u-spacingBottom">
+          <div v-if="can_edit" class="">
             <TitleField
               :label="$t('email')"
               :show_label="context === 'full'"

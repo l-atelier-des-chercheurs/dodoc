@@ -1066,7 +1066,7 @@ export default {
   move_drawing: "click and hold to draw",
 
   about_dodoc: "About do•doc",
-  about_dodoc_txt: `do•doc is free and open-source software created to document projects and powered by a diverse community of designers, teachers, artists, trainers, creators and documentation enthusiasts in general.
+  about_dodoc_txt: `do•doc is a free and open-source digital tool created to document projects and powered by a diverse community of designers, teachers, artists, trainers, creators and documentation enthusiasts in general.
   It is used in a multitude of contexts, whether in the classroom, in fablabs, in third places, as well as as an engine for resource platforms accessible online.<br><br>
   The design and development of this tool is managed by the collective <a href="https://latelier-des-chercheurs.fr" title="Atelier des chercheurs" target="_blank">l'Atelier des chercheurs</a> since its beginnings, in 2014,
   but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" title="Forum de l’Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
@@ -1212,4 +1212,7 @@ export default {
   back_to_default_styles: "Reset to default styles",
 
   millimetres: "millimetres",
+  parent_space_is_private:
+    "The parent space is private, so other projects in this space cannot be viewed.",
+  copy_paste_to_include_media: "Copy and paste to include this media.",
 };

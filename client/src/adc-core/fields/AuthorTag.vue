@@ -5,7 +5,10 @@
     :type="component_tag === 'button' ? 'button' : ''"
     :to="author_url"
     :title="author.name"
-    class="u-card2 _author"
+    :class="{
+      'u-card2': !show_image_only,
+    }"
+    class="_author"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
     @click="$emit('click')"

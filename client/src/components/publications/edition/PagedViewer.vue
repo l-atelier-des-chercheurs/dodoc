@@ -5,6 +5,7 @@
   >
     <vue-infinite-viewer
       v-if="viewer_type === 'vue-infinite-viewer'"
+      ref="vueinfiniteviewer"
       class="_infiniteViewer"
       v-bind="viewerOptions"
     >
@@ -63,6 +64,7 @@ export default {
   created() {},
   mounted() {
     this.generateBook();
+    if (this.$refs.vueinfiniteviewer) this.$refs.vueinfiniteviewer.setZoom(0.6);
     window.addEventListener("beforeprint", this.beforePrint);
   },
   beforeDestroy() {
@@ -463,7 +465,7 @@ export default {
   --color-pageBox: violet;
   --color-paper: white;
   --color-marginBox: transparent;
-  --color-pageContent: #eee;
+  --color-pageContent: #ff00ff;
   --pagedjs-crop-color: black;
   --pagedjs-crop-shadow: white;
   --pagedjs-crop-stroke: 1px;

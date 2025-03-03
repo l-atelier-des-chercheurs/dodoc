@@ -1,7 +1,7 @@
 <template>
   <div class="_chaptersSummary">
     <div class="_content">
-      <DLabel :str="$t('content')" />
+      <!-- <DLabel :str="$t('content')" /> -->
       <transition-group
         tag="div"
         name="listComplete"

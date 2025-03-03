@@ -189,7 +189,7 @@ module.exports = dev = (function () {
       args = Array.prototype.slice.call(args);
       args.map((arg) => {
         let str = "";
-        if (typeof arg === "string") str = arg;
+        if (typeof arg === "string" || typeof arg === "number") str = arg;
         else if (Array.isArray(arg)) str = arg.join(", ");
         else if (typeof arg === "object") str = _customStringify(arg);
         if (str.length > 350) {

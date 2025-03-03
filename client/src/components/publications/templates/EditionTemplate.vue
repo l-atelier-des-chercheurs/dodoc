@@ -20,7 +20,7 @@
           </button>
         </div>
 
-        <transition name="scaleInFade" mode="in-out">
+        <transition name="slideupFade" mode="in-out">
           <OpenChapter
             v-if="open_chapter"
             :key="open_chapter.$path"

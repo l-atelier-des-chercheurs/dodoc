@@ -70,6 +70,8 @@ module.exports = (function () {
         });
       }
 
+      await fs.remove(temp_image_path);
+
       return {
         video_path: temp_video_path,
         duration: image_duration,

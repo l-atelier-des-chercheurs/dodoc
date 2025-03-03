@@ -82,16 +82,21 @@ export default {
   width: 40px;
   height: 40px;
   pointer-events: none;
-  transform-origin: center center;
+  transform-origin: top left;
 
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1),
     opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 
   svg {
     position: absolute;
     transform: translate(-50%, -50%) rotate(-55deg);
     background: var(--active-color);
-    border: 2px dotted white;
+    // border: 2px solid black;
+    box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+      0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+      0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
+      0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+
     border-radius: 50%;
     width: 100%;
     height: 100%;
@@ -108,7 +113,7 @@ export default {
   &-enter,
   &-leave-to {
     opacity: 0;
-    transform: scale(0.5) rotate(-35deg);
+    transform: scale(0.3) rotate(95deg);
   }
 }
 </style>
