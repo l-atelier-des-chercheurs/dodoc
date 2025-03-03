@@ -79,7 +79,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_optimize",
       ],
       _generalPasswordCheck,
-      _restrictToLocalAdmins,
+      _restrictToContributors,
       _exportToParent
     );
     app.patch(
@@ -425,7 +425,7 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.error("not allowed to contribute");
+      dev.error(`not allowed to contribute to folder ${path_to_folder}`);
       if (res) return res.status(403).send({ code: "not_allowed" });
       return false;
     }
@@ -443,7 +443,7 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.error("not allowed to contribute");
+      dev.error(`not allowed to admin folder ${path_to_folder}`);
       if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
@@ -498,6 +498,7 @@ module.exports = (function () {
     let d = {};
     d.schema = global.settings.schema;
     d.debug_mode = dev.isDebug();
+    d.is_livereload = dev.isLivereload();
 
     // get instance name
     // get logo/favicon
