@@ -79,7 +79,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_optimize",
       ],
       _generalPasswordCheck,
-      _restrictToLocalAdmins,
+      _restrictToContributors,
       _exportToParent
     );
     app.patch(
