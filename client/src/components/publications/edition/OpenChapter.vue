@@ -1,12 +1,14 @@
 <template>
   <div class="_openChapter">
-    <button
-      type="button"
-      class="u-button u-button_icon _close_button"
-      @click="$emit('close')"
-    >
-      <b-icon icon="x-lg" :label="$t('close')" />
-    </button>
+    <div class="_close_button">
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        @click="$emit('close')"
+      >
+        <b-icon icon="x-lg" :label="$t('close')" />
+      </button>
+    </div>
     <div class="_openChapter--content">
       <div class="_topButtons">
         <TitleField
@@ -87,7 +89,7 @@
             />
             <div class="u-spacingBottom" />
 
-            <div class="u-inputGroup">
+            <div class="u-spacingBottom u-inputGroup">
               <input
                 type="text"
                 ref="urlToCopy"
@@ -102,6 +104,10 @@
                 <b-icon icon="clipboard" v-if="!is_copied" />
                 <b-icon icon="clipboard-check" v-else />
               </button>
+            </div>
+
+            <div class="u-instructions">
+              {{ $t("copy_paste_to_include_media") }}
             </div>
           </BaseModal2>
         </template>
@@ -245,10 +251,7 @@ export default {
   height: 100%;
   overflow: auto;
   z-index: 10;
-  padding: calc(var(--spacing) * 1);
-  padding-bottom: 0;
-
-  background: transparent;
+  background: var(--c-gris_clair);
 
   // display: flex;
   // flex-direction: row nowrap;
@@ -259,22 +262,24 @@ export default {
 }
 ._openChapter--content {
   position: relative;
-  height: 100%;
+  min-height: calc(100% - calc(var(--spacing) * 1));
   background-color: white;
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
     0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
     0 3.5px 6px hsla(230, 13%, 9%, 0.09);
-  overflow: auto;
 
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  margin: calc(var(--spacing) * 1);
+  margin-bottom: 0;
+  padding: calc(var(--spacing) * 1);
 }
 
 ._close_button {
-  position: absolute;
+  position: sticky;
+  height: 0;
   top: 0;
   text-align: right;
   right: 0;
@@ -287,7 +292,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: calc(var(--spacing) * 1);
-  padding: calc(var(--spacing) / 2) 0;
+  padding-bottom: calc(var(--spacing) / 2);
 }
 
 ._content {
@@ -302,7 +307,7 @@ export default {
   text-align: right;
   // margin: calc(var(--spacing) * 2);
   z-index: 10;
-  padding: calc(var(--spacing) / 2) 0;
+  padding: calc(var(--spacing) / 2);
   pointer-events: none;
 
   > * {
