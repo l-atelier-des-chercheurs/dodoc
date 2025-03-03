@@ -142,10 +142,16 @@ async function setupApp() {
       throw err;
     });
 
+  if (port === global.settings.desired_port)
+    dev.log(`Desired port ${port} available`);
+  else
+    dev.log(
+      `Desired port ${global.settings.desired_port} NOT available, using ${port}`
+    );
+
   global.appInfos.port = port;
   global.appInfos.homeURL = `${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`;
 
-  dev.log(`main.js - Found available port: ${port}`);
   return;
 }
 
