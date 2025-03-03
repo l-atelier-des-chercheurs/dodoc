@@ -43,16 +43,6 @@
       <button
         type="button"
         class="u-button u-button_icon"
-        :title="$t('ui_lang_select')"
-        @click="show_lang_modal = !show_lang_modal"
-      >
-        {{ current_lang_code }}
-      </button>
-      <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
-
-      <button
-        type="button"
-        class="u-button u-button_icon"
         :title="$t('about_dodoc')"
         @click="show_credits_modal = !show_credits_modal"
       >
@@ -109,7 +99,6 @@
 </template>
 <script>
 import AuthorList from "@/adc-core/author/AuthorList.vue";
-import LangModal from "@/adc-core/lang/LangModal.vue";
 import CreditsModal from "@/adc-core/modals/CreditsModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 
@@ -118,7 +107,6 @@ export default {
   components: {
     AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
     AuthorList,
-    LangModal,
     CreditsModal,
     BreadCrumbs,
   },
@@ -126,7 +114,6 @@ export default {
     return {
       show_users_modal: false,
       show_authors_modal: false,
-      show_lang_modal: false,
       show_credits_modal: false,
       show_qr_code_modal: false,
       show_settings_modal: false,
@@ -153,10 +140,6 @@ export default {
     },
   },
   computed: {
-    current_lang_code() {
-      this.$i18n.availableLocales;
-      return this.$i18n.locale;
-    },
     url_to_page() {
       // for reactivity
       this.$route.path;
