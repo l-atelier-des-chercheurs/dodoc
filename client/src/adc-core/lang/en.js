@@ -1214,4 +1214,5 @@ export default {
   millimetres: "millimetres",
   parent_space_is_private:
     "The parent space is private, so other projects in this space cannot be viewed.",
+  copy_paste_to_include_media: "Copy and paste to include this media.",
 };
