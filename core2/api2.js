@@ -498,7 +498,6 @@ module.exports = (function () {
     let d = {};
     d.schema = global.settings.schema;
     d.debug_mode = dev.isDebug();
-    d.is_livereload = dev.isLivereload();
 
     // get instance name
     // get logo/favicon
