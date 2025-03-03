@@ -24,7 +24,7 @@
             draggable="false"
           />
           <button class="u-buttonLink" type="button" @click="removeImage">
-            {{ $t("remove_image") }}
+            {{ $t("replace_remove_image") }}
           </button>
         </div>
       </template>

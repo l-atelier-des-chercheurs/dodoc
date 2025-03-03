@@ -8,8 +8,11 @@
           :instructions="$t('media_pickers_instr')"
         />
 
+        <div v-if="parent_folder_is_private" class="u-instructions">
+          {{ $t("parent_space_is_private") }}
+        </div>
         <div
-          v-if="
+          v-else-if="
             sorted_projects &&
             Array.isArray(sorted_projects) &&
             sorted_projects.length === 0
@@ -19,8 +22,7 @@
         >
           {{ $t("no_projects") }}
         </div>
-
-        <select v-else v-model="source_project_path" class="u-spacingBottom">
+        <select v-else v-model="source_project_path">
           <option
             v-for="project in sorted_projects"
             :key="project.$path"
@@ -29,11 +31,17 @@
           />
         </select>
 
+        <div class="u-spacingBottom" />
+
         <ToggleInput
-          v-if="meta_filenames_already_present"
+          v-if="has_already_present_medias > 0"
           class="u-spacingBottom"
           :content.sync="hide_already_present_medias"
-          :label="$t('hide_already_present_medias')"
+          :label="
+            $tc('hide_already_present_medias', has_already_present_medias, {
+              count: has_already_present_medias,
+            })
+          "
         />
 
         <div v-if="source_project_path" class="_projectLib">
@@ -97,6 +105,7 @@ export default {
       source_project: undefined,
       media_focused: undefined,
       hide_already_present_medias: true,
+      parent_folder_is_private: false,
     };
   },
   created() {},
@@ -116,7 +125,13 @@ export default {
     meta_filenames_already_present() {
       if (this.$getMetaFilenamesAlreadyPresent)
         return this.$getMetaFilenamesAlreadyPresent();
-      return false;
+      return [];
+    },
+    has_already_present_medias() {
+      return this.meta_filenames_already_present?.reduce((acc, m) => {
+        if (m.medias?.length > 0) acc += m.medias.length;
+        return acc;
+      }, 0);
     },
     sorted_projects() {
       if (!this.projects) return [];
@@ -146,12 +161,17 @@ export default {
 
       if (!space_slug) return false;
 
-      this.projects = await this.$api.getFolders({
-        path:
-          this.createPath({
-            space_slug,
-          }) + "/projects",
-      });
+      this.projects = await this.$api
+        .getFolders({
+          path:
+            this.createPath({
+              space_slug,
+            }) + "/projects",
+        })
+        .catch((err) => {
+          if (err.code === "folder_private")
+            this.parent_folder_is_private = true;
+        });
 
       if (project_slug) {
         this.source_project_path = this.createPath({

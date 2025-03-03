@@ -21,8 +21,8 @@ export default {
   date_uploaded: "Uploaded on",
   cancel: "Cancel",
   select: "Select",
-  back: "back",
-  save: "save",
+  back: "Back",
+  save: "Save",
   input_url: "URL of the website to embed",
   embed: "Embed",
   table: "Table",
@@ -171,6 +171,7 @@ export default {
   no_publications: "No publications to show",
   no_files: "No file",
   none_m: "None",
+  not_specified: "Not specified",
   none_f: "None",
   none: "None",
 
@@ -392,7 +393,7 @@ export default {
   pick_portrait: "Pick an image for this account",
   pick_media: "Pick one media",
   pick_medias: "Pick one or more medias",
-  remove_image: "Delete this image",
+  replace_remove_image: "Replace or remove this image",
 
   stop_recording: "Stop recording",
   pause_recording: "Pause recording",
@@ -512,6 +513,7 @@ export default {
   story_with_sections: "Story",
   page_by_page: "Page by page",
   cartography: "Cartography",
+  edition: "Multi-support edition",
   export: "Export",
   export_in_pdf: "Export to PDF",
   direct_link: "Direct link",
@@ -1193,4 +1195,23 @@ export default {
   remove_publication: "Delete publication {name}",
 
   not_logged_in: "Not logged in",
+
+  chapters: "Chapters",
+  create_chapter: "Create a chapter",
+  text_top_image_down: "Text top, image down",
+  image_top_text_down: "Image top, text down",
+  in_flow: "In the flow",
+  next_page: "Next page",
+  next_left_page: "Next left page",
+  next_right_page: "Next right page",
+  no_content: "No content",
+  book: "Book",
+  normal: "Normal",
+  graphic_styles: "Graphic styles",
+  edit_default_styles: "Edit default styles",
+  back_to_default_styles: "Reset to default styles",
+
+  millimetres: "millimetres",
+  parent_space_is_private:
+    "The parent space is private, so other projects in this space cannot be viewed.",
 };

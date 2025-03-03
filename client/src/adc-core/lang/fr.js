@@ -20,8 +20,8 @@ export default {
   cancel: "Annuler",
   select: "Sélectionner",
   select_all: "Sélectionner tout",
-  back: "retour",
-  save: "enregistrer",
+  back: "Retour",
+  save: "Enregistrer",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
   url_to_open: "URL de la page à ouvrir",
@@ -41,9 +41,12 @@ export default {
   add: "Ajouter",
   add_item: "Ajouter un élément",
   add_files: "Ajouter des fichiers",
-  hide_already_present_medias: "Masquer les médias déjà inclus",
+  hide_already_present_medias: `
+    Masquer le média déjà inclus dans la publication | 
+    Masquer les {count} médias déjà inclus dans la publication
+    `,
   suggestions: "Suggestions",
-  suggested_cat_kw: "Catégories et mots-clé suggérés",
+  suggested_cat_kw: "Catégories et mots-clés suggérés",
   list_of_suggestions: "Liste des suggestions",
   create_suggestion_list_for: "Créer une liste de suggestions",
 
@@ -196,6 +199,7 @@ export default {
   story_with_sections: "Récit",
   page_by_page: "Page à page",
   cartography: "Cartographie",
+  edition: "Édition multisupport",
   export: "Exporter",
   export_in_pdf: "Exporter en PDF",
   direct_link: "Lien direct",
@@ -316,6 +320,7 @@ export default {
   no_publications: "Aucune publication à afficher",
 
   none_f: "Aucune",
+  not_specified: "Non renseigné",
   none: "Aucun·e",
   reset_all: "Retirer tout",
   filter: "Filtrer",
@@ -880,7 +885,7 @@ export default {
   pick_portrait: "Choisissez une image pour ce compte",
   pick_media: "Choisissez un média",
   pick_medias: "Choisissez un ou plusieurs médias",
-  remove_image: "Supprimer cette image",
+  replace_remove_image: "Remplacer ou supprimer cette image",
 
   no_accounts_to_show: "Aucun compte à afficher",
   login_no_account_matches: "Aucun compte ne correspond à ce nom",
@@ -1270,4 +1275,23 @@ export default {
   remove_publication: "Supprimer la publication {name}",
 
   not_logged_in: "Non connecté",
+
+  chapters: "Chapitres",
+  create_chapter: "Créer un chapitre",
+  text_top_image_down: "Texte en haut, image en bas",
+  image_top_text_down: "Image en haut, texte en bas",
+  in_flow: "À la suite",
+  next_page: "Prochaine page",
+  next_left_page: "Prochaine page de gauche",
+  next_right_page: "Prochaine page de droite",
+  no_content: "Pas de contenu",
+  book: "Livre",
+  normal: "Normal",
+  graphic_styles: "Style graphiques",
+  edit_default_styles: "Modifier le style par défaut",
+  back_to_default_styles: "Revenir au style par défaut",
+
+  millimetres: "millimètres",
+  parent_space_is_private:
+    "L’espace parent est privé, les autres projets de cet espace ne peuvent donc pas être consultés.",
 };
