@@ -1,16 +1,14 @@
 <template>
   <div class="_docViewer edition web">
     <component :is="'style'" v-html="css_styles" />
-    <div class="_docViewer--menu">
-      <DLabel :str="$t('chapters')" />
+    <nav>
+      <label>{{ $t("chapters") }}</label>
       <ol>
         <li v-for="(chapter, index) in content_nodes.chapters" :key="index">
           <button
             type="button"
-            class="u-buttonLink"
             :class="{
-              'is--active':
-                chapter.meta_filename === opened_chapter?.meta_filename,
+              active: chapter.meta_filename === opened_chapter?.meta_filename,
             }"
             @click="$emit('openChapter', chapter.meta_filename)"
           >
@@ -18,16 +16,12 @@
           </button>
         </li>
       </ol>
-    </div>
+    </nav>
     <transition name="pagechange" mode="out-in">
-      <div
-        class="_docViewer--content"
-        v-if="opened_chapter"
-        :key="opened_chapter?.meta_filename"
-      >
+      <section v-if="opened_chapter" :key="opened_chapter?.meta_filename">
         <h1>{{ opened_chapter.title }}</h1>
-        <div class="_md" v-html="opened_chapter.content" />
-      </div>
+        <div class="content" v-html="opened_chapter.content" />
+      </section>
     </transition>
   </div>
 </template>
@@ -66,23 +60,14 @@ export default {
 
 <style lang="scss" scoped>
 ._docViewer {
-  max-width: 1000px;
-  margin: 0 auto;
-
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: flex-start;
-
-  gap: calc(var(--spacing) * 2);
-  padding: calc(var(--spacing) * 2);
-  margin: 0 auto;
-  background-color: var(--c-bodybg);
+  // max-width: 1000px;
+  // background-color: var(--c-bodybg);
 
   ._docViewer--menu {
     flex: 0 0 20ch;
     position: sticky;
     top: 0;
-    background-color: var(--c-gris_clair);
+    // background-color: var(--c-gris_clair);
     padding: calc(var(--spacing) / 1);
 
     ul,

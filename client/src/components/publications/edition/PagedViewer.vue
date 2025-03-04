@@ -1,7 +1,9 @@
 <template>
   <div
     class="_pagedViewer edition book"
-    :class="{ 'is--infiniteViewer': viewer_type === 'vue-infinite-viewer' }"
+    :class="{
+      'is--infiniteViewer': viewer_type === 'vue-infinite-viewer',
+    }"
   >
     <vue-infinite-viewer
       v-if="viewer_type === 'vue-infinite-viewer'"
@@ -12,7 +14,7 @@
       <div class="" ref="bookpreview" />
     </vue-infinite-viewer>
     <template v-else>
-      <div class="" ref="bookpreview" />
+      <div class="_divViewer" ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
   </div>
@@ -447,12 +449,11 @@ export default {
   &.is--infiniteViewer {
     width: 100%;
     height: 100%;
-    background-color: var(--c-gris_fonce);
     overflow: auto;
     height: 100%;
     cursor: move;
+    background-color: var(--c-gris_fonce);
   }
-
   ._infiniteViewer {
     position: absolute;
     top: 0;
@@ -469,6 +470,18 @@ export default {
   --pagedjs-crop-color: black;
   --pagedjs-crop-shadow: white;
   --pagedjs-crop-stroke: 1px;
+
+  &:not(.is--infiniteViewer) {
+    ::v-deep {
+      @media screen {
+        .pagedjs_pages {
+          &::before {
+            color: var(--c-gris_fonce);
+          }
+        }
+      }
+    }
+  }
 
   ::v-deep {
     /* To define how the book look on the screen: */

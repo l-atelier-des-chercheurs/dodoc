@@ -95,7 +95,7 @@
           v-if="show_export_pdf_modal"
           :modal_title="$t('export_publi', { name: publication.title })"
           :publication="publication"
-          :page_opened_id="page_opened_id"
+          :pane_infos="pane_infos"
           @close="show_export_pdf_modal = false"
         />
         <div>
@@ -152,7 +152,7 @@ import ExportPubliModal from "@/components/publications/ExportPubliModal.vue";
 export default {
   props: {
     publication: Object,
-    page_opened_id: String,
+    pane_infos: Object,
     no_back_button: Boolean,
     can_edit: Boolean,
   },

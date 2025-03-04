@@ -64,7 +64,7 @@ export default {
   props: {
     modal_title: String,
     publication: Object,
-    page_opened_id: String,
+    pane_infos: String,
   },
   components: {
     ExportItemAndSaveOrDownload,
@@ -97,9 +97,9 @@ export default {
   created() {
     this.publication_ratio = this.page_height / this.page_width;
 
-    if (this.page_opened_id && this.publication.pages) {
+    if (this.pane_infos && this.pane.page_id && this.publication.pages) {
       const page_number = this.publication.pages.findIndex(
-        (p) => p.id === this.page_opened_id
+        (p) => p.id === this.pane.page_id
       );
       if (page_number) this.page_to_export_as_image = page_number + 1;
     }

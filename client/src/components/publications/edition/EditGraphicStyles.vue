@@ -1,10 +1,15 @@
 <template>
   <div class="_editGraphicStyles">
-    <div class="_topBtns">
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <b-icon icon="arrow-left-short" />
-        {{ $t("back") }}
+    <div class="_close_button">
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        @click="$emit('close')"
+      >
+        <b-icon icon="x-lg" :label="$t('close')" />
       </button>
+    </div>
+    <div class="_topBtns">
       <transition name="fade_fast" mode="out-in">
         <button
           type="button"
@@ -89,8 +94,8 @@ export default {
 ._editGraphicStyles {
   position: absolute;
   top: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
   overflow: auto;
   color: white;
   background-color: black;
@@ -118,5 +123,13 @@ export default {
   gap: calc(var(--spacing) / 2);
   justify-content: space-between;
   margin-bottom: calc(var(--spacing) / 1);
+}
+._close_button {
+  position: sticky;
+  height: 0;
+  top: 0;
+  text-align: right;
+  right: 0;
+  z-index: 100;
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <DetailsPane
+    v-if="can_edit || has_items"
     :header="$t('authors_and_license')"
     :icon="'people'"
     :has_items="has_items"

@@ -560,6 +560,10 @@ export default {
     height: auto;
   }
 
+  &:empty {
+    padding: calc(var(--spacing) / 2);
+  }
+
   ._card {
     flex: 0 0 240px;
     width: 240px;

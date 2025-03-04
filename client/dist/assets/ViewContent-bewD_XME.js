@@ -970,7 +970,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
         width: ${d-.1}mm!important;
       }
 
-`;let h=document.createElement("style");h.setAttribute("data-pagedjs-inserted-styles",!0),h.textContent=m,document.head.appendChild(h);var v=e.length,S=[];let f=v%4,b=0;for(f!=0&&(b=4-f),w=0;w<b;w++){let M=document.createElement("div");M.classList.add("pagedjs_page","added"),M.id=`page-${r+w+1}`,t.querySelector(".pagedjs_pages").appendChild(M)}for(var w=v+b;w>=1;w--)S.push(w);for(var g=S.length/2,x=S.length,k=S.slice(0,g),T=S.slice(g,x),z=T.reverse(),D=[],w=0;w<k.length;w++)D[w]=[k[w],z[w]];for(var F=[],w=0;w<D.length;w++)w%2!=0?F[w]=D[w].reverse():F[w]=D[w];var W=F.flat();W.forEach((M,H)=>{M=M,document.querySelector(`#page-${M}`).style.order=H})}}};var wT=function(){var e=this,r=e._self._c;return r("div",{staticClass:"_pagedViewer edition book",class:{"is--infiniteViewer":e.viewer_type==="vue-infinite-viewer"}},[e.viewer_type==="vue-infinite-viewer"?r("vue-infinite-viewer",e._b({ref:"vueinfiniteviewer",staticClass:"_infiniteViewer"},"vue-infinite-viewer",e.viewerOptions,!1),[r("div",{ref:"bookpreview"})]):[r("div",{ref:"bookpreview"})],e.is_loading?r("LoaderSpinner"):e._e()],2)},kT=[],CT=Li(xT,wT,kT,!1,null,"c0431b87");const TT=CT.exports,_T={props:{content_nodes:{type:Object,required:!0},opened_chapter_meta_filename:String,css_styles:{type:String,required:!0}},components:{},data(){return{}},created(){},mounted(){},beforeDestroy(){},watch:{},computed:{opened_chapter(){if(this.opened_chapter_meta_filename)return this.content_nodes.chapters.find(t=>t.meta_filename===this.opened_chapter_meta_filename)}},methods:{}};var ET=function(){var n;var e=this,r=e._self._c;return r("div",{staticClass:"_docViewer edition web"},[r("style",{tag:"component",domProps:{innerHTML:e._s(e.css_styles)}}),r("div",{staticClass:"_docViewer--menu"},[r("DLabel",{attrs:{str:e.$t("chapters")}}),r("ol",e._l(e.content_nodes.chapters,function(a,i){var s;return r("li",{key:i},[r("button",{staticClass:"u-buttonLink",class:{"is--active":a.meta_filename===((s=e.opened_chapter)==null?void 0:s.meta_filename)},attrs:{type:"button"},on:{click:function(o){return e.$emit("openChapter",a.meta_filename)}}},[e._v(" "+e._s(a.title||e.$t("untitled")+" "+(i+1))+" ")])])}),0)],1),r("transition",{attrs:{name:"pagechange",mode:"out-in"}},[e.opened_chapter?r("div",{key:(n=e.opened_chapter)==null?void 0:n.meta_filename,staticClass:"_docViewer--content"},[r("h1",[e._v(e._s(e.opened_chapter.title))]),r("div",{staticClass:"_md",domProps:{innerHTML:e._s(e.opened_chapter.content)}})]):e._e()])],1)},AT=[],OT=Li(_T,ET,AT,!1,null,"dc6782cd");const zT=OT.exports,jT=`.media {
+`;let h=document.createElement("style");h.setAttribute("data-pagedjs-inserted-styles",!0),h.textContent=m,document.head.appendChild(h);var v=e.length,S=[];let f=v%4,b=0;for(f!=0&&(b=4-f),w=0;w<b;w++){let M=document.createElement("div");M.classList.add("pagedjs_page","added"),M.id=`page-${r+w+1}`,t.querySelector(".pagedjs_pages").appendChild(M)}for(var w=v+b;w>=1;w--)S.push(w);for(var g=S.length/2,x=S.length,k=S.slice(0,g),T=S.slice(g,x),z=T.reverse(),D=[],w=0;w<k.length;w++)D[w]=[k[w],z[w]];for(var F=[],w=0;w<D.length;w++)w%2!=0?F[w]=D[w].reverse():F[w]=D[w];var W=F.flat();W.forEach((M,H)=>{M=M,document.querySelector(`#page-${M}`).style.order=H})}}};var wT=function(){var e=this,r=e._self._c;return r("div",{staticClass:"_pagedViewer edition book",class:{"is--infiniteViewer":e.viewer_type==="vue-infinite-viewer"}},[e.viewer_type==="vue-infinite-viewer"?r("vue-infinite-viewer",e._b({ref:"vueinfiniteviewer",staticClass:"_infiniteViewer"},"vue-infinite-viewer",e.viewerOptions,!1),[r("div",{ref:"bookpreview"})]):[r("div",{ref:"bookpreview",staticClass:"_divViewer"})],e.is_loading?r("LoaderSpinner"):e._e()],2)},kT=[],CT=Li(xT,wT,kT,!1,null,"6200f96a");const TT=CT.exports,_T={props:{content_nodes:{type:Object,required:!0},opened_chapter_meta_filename:String,css_styles:{type:String,required:!0}},components:{},data(){return{}},created(){},mounted(){},beforeDestroy(){},watch:{},computed:{opened_chapter(){if(this.opened_chapter_meta_filename)return this.content_nodes.chapters.find(t=>t.meta_filename===this.opened_chapter_meta_filename)}},methods:{}};var ET=function(){var n;var e=this,r=e._self._c;return r("div",{staticClass:"_docViewer edition web"},[r("style",{tag:"component",domProps:{innerHTML:e._s(e.css_styles)}}),r("nav",[r("label",[e._v(e._s(e.$t("chapters")))]),r("ol",e._l(e.content_nodes.chapters,function(a,i){var s;return r("li",{key:i},[r("button",{class:{active:a.meta_filename===((s=e.opened_chapter)==null?void 0:s.meta_filename)},attrs:{type:"button"},on:{click:function(o){return e.$emit("openChapter",a.meta_filename)}}},[e._v(" "+e._s(a.title||e.$t("untitled")+" "+(i+1))+" ")])])}),0)]),r("transition",{attrs:{name:"pagechange",mode:"out-in"}},[e.opened_chapter?r("section",{key:(n=e.opened_chapter)==null?void 0:n.meta_filename},[r("h1",[e._v(e._s(e.opened_chapter.title))]),r("div",{staticClass:"content",domProps:{innerHTML:e._s(e.opened_chapter.content)}})]):e._e()])],1)},AT=[],OT=Li(_T,ET,AT,!1,null,"dec875f7");const zT=OT.exports,jT=`.media {
   display: inline-block;
   position: relative;
 
@@ -1187,7 +1187,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 
   ol li, ul li{
     color: var(--main-color);
-	list-style: none;
+	  list-style: none;
     margin-bottom: calc(var(--font-size) * var(--line-height) / 2);
   }
 
@@ -1260,13 +1260,12 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 
   ._coverImage{
     background: var(--main-color);
-	img{
-		mix-blend-mode: screen;
-		filter: grayscale(100%) contrast(120%);
-	}
+
+    img{
+      mix-blend-mode: screen;
+      filter: grayscale(100%) contrast(120%);
+    }
   }
-
-
 }
 
 /* --------------------------------------------------- */
@@ -1355,8 +1354,47 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 
 /* applies to web pages */
 .web {
+  margin: 0 auto;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+
+  gap: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
+
+
+  nav {
+    flex: 0 0 15ch;
+    ol {
+      margin-left: calc(var(--spacing));
+      li {
+        margin: 0;
+      }
+    }
+    button {
+      color: var(--main-color);
+      background: transparent;
+      border: none;
+      margin: 0;
+      padding: 0.25em .5em;
+      border-radius: 0.5em;
+      cursor: pointer;
+    }
+    button.active {
+      background: var(--main-color);
+      color: white;
+    }
+  }
+  section {
+    h1 {
+    }
+    .content {
+    }
+  }
+
   p, li{
-	font-size: 20px;
+	  font-size: 20px;
   }
   h1{
     font-size: 2em;
@@ -1377,8 +1415,8 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 
   
   .media{
-	width: 100%;
-	margin: auto !important;  
+    width: 100%;
+    margin: auto !important;  
     margin-bottom: 100px !important;
   }
 
@@ -1391,13 +1429,14 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
   }
 
   blockquote{
-	margin-left: 50px !important;
+	  margin-left: 50px !important;
   }
 
   blockquote,
   blockquote p{
-	font-size: 18px;
+	  font-size: 18px;
   }
+  
 }
 
 
@@ -1417,7 +1456,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 
 
 
-`,IT={props:{publication:Object,viewer_type:{type:String,default:"vue-infinite-viewer"},opened_chapter_meta_filename:String},components:{PagedViewer:TT,DocViewer:zT},data(){return{is_loading:!1,view_mode:"book"}},created(){},mounted(){},beforeDestroy(){},watch:{},computed:{format_mode(){return this.publication.page_width&&this.publication.page_height?`${this.publication.page_width}mm ${this.publication.page_height}mm`:"A4"},cover_media(){return this.publication.$files.find(t=>t.cover_type==="front")},custom_styles_unnested(){var e;const t=(e=this.publication.$files)==null?void 0:e.find(r=>r.is_css_styles===!0);return t?(t==null?void 0:t.$content)||"":LT},all_chapters(){return this.getSectionsWithProps({publication:this.publication,group:"sections_list"}).map(t=>(t.main_text_meta&&(t._main_text=this.publication.$files.find(e=>e.$path.endsWith("/"+t.main_text_meta))),t))},content_nodes(){let t={};const e=this.parseCover();return e&&(t.cover=e),t.chapters=[],this.all_chapters.map(r=>{var a,i,s;let n={};n.title=r.section_title,n.meta_filename=this.getFilename(r.$path),n.starts_on_page=r.section_starts_on_page||"in_flow",(a=r._main_text)!=null&&a.$content&&(((i=r._main_text)==null?void 0:i.content_type)==="markdown"?n.content=this.parseMarkdown(r._main_text.$content,r.source_medias):n.content=(s=r._main_text)==null?void 0:s.$content),t.chapters.push(n)}),t},css_styles(){return`
+`,IT={props:{publication:Object,view_mode:String,viewer_type:{type:String,default:"vue-infinite-viewer"},opened_chapter_meta_filename:String},components:{PagedViewer:TT,DocViewer:zT},data(){return{is_loading:!1}},created(){},mounted(){},beforeDestroy(){},watch:{},computed:{format_mode(){return this.publication.page_width&&this.publication.page_height?`${this.publication.page_width}mm ${this.publication.page_height}mm`:"A4"},cover_media(){return this.publication.$files.find(t=>t.cover_type==="front")},custom_styles_unnested(){var e;const t=(e=this.publication.$files)==null?void 0:e.find(r=>r.is_css_styles===!0);return t?(t==null?void 0:t.$content)||"":LT},all_chapters(){return this.getSectionsWithProps({publication:this.publication,group:"sections_list"}).map(t=>(t.main_text_meta&&(t._main_text=this.publication.$files.find(e=>e.$path.endsWith("/"+t.main_text_meta))),t))},content_nodes(){let t={};const e=this.parseCover();return e&&(t.cover=e),t.chapters=[],this.all_chapters.map(r=>{var a,i,s;let n={};n.title=r.section_title,n.meta_filename=this.getFilename(r.$path),n.starts_on_page=r.section_starts_on_page||"in_flow",(a=r._main_text)!=null&&a.$content&&(((i=r._main_text)==null?void 0:i.content_type)==="markdown"?n.content=this.parseMarkdown(r._main_text.$content,r.source_medias):n.content=(s=r._main_text)==null?void 0:s.$content),t.chapters.push(n)}),t},css_styles(){return`
       ${jT}
       ${this.custom_styles_unnested}
       `}},methods:{parseCover(){var e,r,n;let t;if(this.cover_media&&(this.cover_media.$content||((e=this.cover_media.source_medias)==null?void 0:e.length)>0)){if(t={},((r=this.cover_media.$content)==null?void 0:r.length)>0&&(t.title=this.parseMarkdown(this.cover_media.$content)),((n=this.cover_media.source_medias)==null?void 0:n.length)>0){const a=this.getSourceMedia({source_media:this.cover_media.source_medias[0],folder_path:this.publication.$path});if(a){t.image_meta=a;const i=this.makeMediaFileURL({$path:a.$path,$media_filename:a.$media_filename});i&&(t.image_url=i)}}t.layout_mode=this.cover_media.cover_layout_mode||"normal"}return t},prepareCustomStyles(t){return t},parseMarkdown(t,e){N.use({renderer:{image:(n,a,i)=>{let s,o=[],l,c;if(a!=null&&a.startsWith("=")&&(a.startsWith("=full-page")?(o.push("_isFullPage"),a.startsWith("=full-page-cover")&&o.push("_isFullPageCover")):[l,c]=a.slice(1).split("x").map(p=>p.trim()).filter(Boolean)),n.startsWith("http"))s=`
@@ -1453,4 +1492,4 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
                   ${r?` width="${r}"`:""}
                   ${n?` height="${n}"`:""}
                 >
-              </div>`)}return{html:a,is_qr_code:i}}}};var RT=function(){var e=this,r=e._self._c;return r("div",{staticClass:"_viewContent"},[r("div",{staticClass:"_viewMode"},[r("select",{directives:[{name:"model",rawName:"v-model",value:e.view_mode,expression:"view_mode"}],attrs:{size:"small"},on:{change:function(n){var a=Array.prototype.filter.call(n.target.options,function(i){return i.selected}).map(function(i){var s="_value"in i?i._value:i.value;return s});e.view_mode=n.target.multiple?a:a[0]}}},[r("option",{attrs:{value:"book"}},[e._v(e._s(e.$t("book")))]),r("option",{attrs:{value:"html"}},[e._v(e._s(e.$t("webpage")))])])]),r("div",{staticClass:"_viewContent--content"},[e.view_mode==="book"?r("PagedViewer",{attrs:{content_nodes:e.content_nodes,format_mode:e.format_mode,viewer_type:e.viewer_type,css_styles:e.css_styles,opened_chapter_meta_filename:e.opened_chapter_meta_filename},on:{openChapter:function(n){return e.$emit("openChapter",n)}}}):r("DocViewer",{staticClass:"_docViewer",attrs:{content_nodes:e.content_nodes,css_styles:e.css_styles,opened_chapter_meta_filename:e.opened_chapter_meta_filename},on:{openChapter:function(n){return e.$emit("openChapter",n)}}})],1),e.is_loading?r("LoaderSpinner"):e._e()],1)},PT=[],WT=Li(IT,RT,PT,!1,null,"7cd9a84d");const NT=WT.exports;export{NT as V,LT as d,N as m};
+              </div>`)}return{html:a,is_qr_code:i}}}};var RT=function(){var e=this,r=e._self._c;return r("div",{staticClass:"_viewContent"},[r("div",{staticClass:"_viewMode"},[r("select",{attrs:{size:"small"},domProps:{value:e.view_mode},on:{change:function(n){return e.$emit("changeView",n.target.value)}}},[r("option",{attrs:{value:"book"}},[e._v(e._s(e.$t("book")))]),r("option",{attrs:{value:"html"}},[e._v(e._s(e.$t("webpage")))])])]),r("div",{staticClass:"_viewContent--content"},[e.view_mode==="book"?r("PagedViewer",{attrs:{content_nodes:e.content_nodes,format_mode:e.format_mode,viewer_type:e.viewer_type,css_styles:e.css_styles,opened_chapter_meta_filename:e.opened_chapter_meta_filename},on:{openChapter:function(n){return e.$emit("openChapter",n)}}}):r("DocViewer",{attrs:{content_nodes:e.content_nodes,css_styles:e.css_styles,opened_chapter_meta_filename:e.opened_chapter_meta_filename},on:{openChapter:function(n){return e.$emit("openChapter",n)}}})],1),e.is_loading?r("LoaderSpinner"):e._e()],1)},PT=[],WT=Li(IT,RT,PT,!1,null,"511caf62");const NT=WT.exports;export{NT as V,LT as d,N as m};

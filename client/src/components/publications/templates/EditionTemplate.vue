@@ -1,39 +1,42 @@
 <template>
   <div class="_editionTemplate">
-    <splitpanes class="_splitpanes">
+    <splitpanes v-if="can_edit" class="_splitpanes">
       <pane>
         <ChaptersSummary
           :publication="publication"
           :sections="all_chapters"
           :opened_section_meta_filename="opened_section_meta_filename"
           :can_edit="can_edit"
-          @toggleSection="$emit('toggleSection', $event)"
+          @toggleSection="
+            $emit('updatePane', { key: 'chapter', value: $event })
+          "
         />
 
         <div class="_editGraphics">
           <button
             type="button"
             class="u-button u-button_bleumarine"
-            @click="$emit('toggleSection', 'edit_graphics')"
+            @click="$emit('updatePane', { key: 'edit_graphics', value: true })"
           >
             {{ $t("graphic_styles") }}
           </button>
         </div>
 
         <transition name="slideupFade" mode="in-out">
+          <EditGraphicStyles
+            v-if="open_graphic_styles"
+            :key="'edit_graphics'"
+            :publication="publication"
+            @close="$emit('updatePane', { key: 'edit_graphics', value: false })"
+          />
           <OpenChapter
-            v-if="open_chapter"
+            v-else-if="open_chapter"
             :key="open_chapter.$path"
             :chapter="open_chapter"
             :can_edit="can_edit"
             :publication_path="publication.$path"
             @remove="removeChapter(open_chapter)"
-            @close="$emit('toggleSection', null)"
-          />
-          <EditGraphicStyles
-            v-else-if="open_graphic_styles"
-            :publication="publication"
-            @close="$emit('toggleSection', null)"
+            @close="$emit('updatePane', { key: 'chapter', value: false })"
           />
         </transition>
       </pane>
@@ -42,8 +45,14 @@
           <ViewContent
             :publication="publication"
             :opened_chapter_meta_filename="opened_section_meta_filename"
+            :view_mode="view_mode"
             :can_edit="can_edit"
-            @openChapter="$emit('toggleSection', $event)"
+            @openChapter="
+              $emit('updatePane', { key: 'chapter', value: $event })
+            "
+            @changeView="
+              $emit('updatePane', { key: 'view_mode', value: $event })
+            "
           />
         </div>
       </pane>
@@ -54,6 +63,17 @@
         :force_layout_mode="'print'"
       />
     </PublicationSettings>
+
+    <ViewContent
+      v-else
+      :publication="publication"
+      :opened_chapter_meta_filename="opened_section_meta_filename"
+      :view_mode="view_mode"
+      :viewer_type="'div'"
+      :can_edit="false"
+      @openChapter="$emit('updatePane', { key: 'chapter', value: $event })"
+      @changeView="$emit('updatePane', { key: 'view_mode', value: $event })"
+    />
   </div>
 </template>
 <script>
@@ -69,7 +89,7 @@ import WidthHeightField from "@/adc-core/fields/WidthHeightField.vue";
 export default {
   props: {
     publication: Object,
-    opened_section_meta_filename: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -96,6 +116,9 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    view_mode() {
+      return this.pane_infos?.view_mode || "book";
+    },
     all_chapters() {
       return this.getSectionsWithProps({
         publication: this.publication,
@@ -112,6 +135,9 @@ export default {
         return chapter;
       });
     },
+    opened_section_meta_filename() {
+      return this.pane_infos.chapter;
+    },
     open_chapter() {
       if (this.opened_section_meta_filename) {
         return this.all_chapters.find((f) =>
@@ -121,7 +147,7 @@ export default {
       return false;
     },
     open_graphic_styles() {
-      return this.opened_section_meta_filename === "edit_graphics";
+      return this.pane_infos?.edit_graphics === true;
     },
     meta_filenames_already_present() {
       let current = [],

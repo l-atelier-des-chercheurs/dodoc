@@ -101,6 +101,8 @@ export default {
   only_finished: "Finished projects",
   completed: "Completed",
   my_projects: "My projects",
+  my_projects_instr:
+    "This list displays all the projects you are a referent or contributor to.",
   pinned: "Pinned",
   spaces_pinned: "Spaces pinned",
   projects_pinned: "Projects pinned",
@@ -125,8 +127,8 @@ export default {
   group: "Group",
   show_list: "Show the list",
 
-  login: "login",
-  logout: "logout",
+  login: "Login",
+  logout: "Logout",
   name_or_pseudonym: "Name or nickname",
   email: "Email",
   email_instr: "Contact email, only visible to admins.",

@@ -1,5 +1,5 @@
 <template>
-  <div class="_publicationPreview">
+  <div class="u-card2 _publicationPreview">
     <div class="_publicationPreview--cover">
       <div v-if="cover_thumb">
         <img :src="cover_thumb" />
@@ -150,6 +150,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
+  box-shadow: none;
   // padding: calc(var(--spacing) / 2);
 }
 ._publicationPreview--cover {
