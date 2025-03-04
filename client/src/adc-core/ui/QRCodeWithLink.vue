@@ -1,5 +1,5 @@
 <template>
-  <div class="u-card2 _QRCodeWithLink">
+  <div class="_QRCodeWithLink">
     <div class="_link">
       <div class="u-inputGroup">
         <input
@@ -158,7 +158,7 @@ export default {
 
   gap: calc(var(--spacing) / 2);
 
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  // padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
   // aspect-ratio: 21/29.7;
 
   align-items: center;
