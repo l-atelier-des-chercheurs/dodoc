@@ -247,11 +247,12 @@ export default {
 ._openChapter {
   position: absolute;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
-  z-index: 10;
   background: var(--c-gris_clair);
+  z-index: 10;
 
   // display: flex;
   // flex-direction: row nowrap;

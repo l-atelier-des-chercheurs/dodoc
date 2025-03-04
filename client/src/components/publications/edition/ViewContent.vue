@@ -1,7 +1,11 @@
 <template>
   <div class="_viewContent">
     <div class="_viewMode">
-      <select v-model="view_mode" size="small">
+      <select
+        :value="view_mode"
+        size="small"
+        @change="$emit('changeView', $event.target.value)"
+      >
         <option value="book">{{ $t("book") }}</option>
         <option value="html">{{ $t("webpage") }}</option>
       </select>
@@ -48,6 +52,7 @@ import default_styles from "@/components/publications/edition/default_styles.css
 export default {
   props: {
     publication: Object,
+    view_mode: String,
     viewer_type: {
       type: String,
       default: "vue-infinite-viewer",
@@ -61,7 +66,6 @@ export default {
   data() {
     return {
       is_loading: false,
-      view_mode: "book",
       // custom_styles_nested: "",
     };
   },

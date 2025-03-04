@@ -3,9 +3,11 @@
     <ViewContent
       :publication="publication"
       :opened_chapter_meta_filename="opened_chapter_meta_filename"
+      :view_mode="view_mode"
       :viewer_type="'div'"
       :can_edit="false"
       @openChapter="toggleChapter"
+      @changeView="changeView"
     />
   </div>
 </template>
@@ -28,9 +30,10 @@ export default {
   watch: {},
   computed: {
     opened_chapter_meta_filename() {
-      const query = JSON.parse(JSON.stringify(this.$route.query));
-      if (query.chapter) return query.chapter;
-      return "";
+      return this.$route.query?.chapter || "";
+    },
+    view_mode() {
+      return this.$route.query?.view_mode || "book";
     },
   },
   methods: {
@@ -38,6 +41,12 @@ export default {
       this.updatePageQuery({
         prop: "chapter",
         val: chapter_meta_filename,
+      });
+    },
+    changeView(view_mode) {
+      this.updatePageQuery({
+        prop: "view_mode",
+        val: view_mode,
       });
     },
   },
