@@ -25,7 +25,6 @@
       />
       <DocViewer
         v-else
-        class="_docViewer"
         :content_nodes="content_nodes"
         :css_styles="css_styles"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
@@ -62,7 +61,7 @@ export default {
   data() {
     return {
       is_loading: false,
-      view_mode: "book",
+      view_mode: "doc",
       // custom_styles_nested: "",
     };
   },

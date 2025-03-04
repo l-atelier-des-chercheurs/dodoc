@@ -157,7 +157,7 @@ export default {
   position: relative;
   // overflow: hidden;
   background: white;
-  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 ._header {

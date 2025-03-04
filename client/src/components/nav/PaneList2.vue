@@ -280,7 +280,7 @@ export default {
   margin: 0 auto;
   background-color: #fff;
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  border-top: 1px solid var(--c-gris);
+  // border-top: 1px solid var(--c-gris);
   // border-bottom: 0;
 
   background: var(--panel-color);

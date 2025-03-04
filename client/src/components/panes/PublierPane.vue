@@ -59,9 +59,9 @@ export default {
   // overflow: auto;
   // height: 100%;
   // padding-top: 2px;
-  background: white;
-  background: var(--c-gris_clair);
-  background-color: var(--c-bodybg);
+  // background: white;
+  // background: var(--c-gris_clair);
+  // background-color: var(--c-bodybg);
 
   &.is--editable {
     background: var(--color-publish);
