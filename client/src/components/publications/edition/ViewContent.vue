@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       is_loading: false,
-      view_mode: "doc",
+      view_mode: "book",
       // custom_styles_nested: "",
     };
   },

@@ -254,13 +254,17 @@
       }
     }
     button {
-      background: var(--main-color);
-      color: white;
+      color: var(--main-color);
+      background: transparent;
       border: none;
       margin: 0;
-      padding: 0.25em 1em;
+      padding: 0.25em .5em;
       border-radius: 0.5em;
       cursor: pointer;
+    }
+    button.active {
+      background: var(--main-color);
+      color: white;
     }
   }
   section {

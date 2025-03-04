@@ -30,7 +30,7 @@ import StorySettings from "@/components/publications/story/StorySettings.vue";
 export default {
   props: {
     publication: Object,
-    opened_section_meta_filename: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -47,7 +47,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    opened_section_meta_filename() {
+      return this.pane_infos?.page_id;
+    },
+  },
   methods: {},
 };
 </script>

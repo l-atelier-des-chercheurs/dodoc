@@ -69,7 +69,7 @@ import WidthHeightField from "@/adc-core/fields/WidthHeightField.vue";
 export default {
   props: {
     publication: Object,
-    opened_section_meta_filename: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -111,6 +111,9 @@ export default {
         }
         return chapter;
       });
+    },
+    opened_section_meta_filename() {
+      return this.pane_infos.page_id;
     },
     open_chapter() {
       if (this.opened_section_meta_filename) {

@@ -8,8 +8,7 @@
           <button
             type="button"
             :class="{
-              'is--active':
-                chapter.meta_filename === opened_chapter?.meta_filename,
+              active: chapter.meta_filename === opened_chapter?.meta_filename,
             }"
             @click="$emit('openChapter', chapter.meta_filename)"
           >

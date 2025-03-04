@@ -104,11 +104,9 @@
         <PublierPane
           v-if="pane.type === 'publish'"
           :project="project"
-          :publication_opened="pane.folder"
-          :page_opened_id="pane.page_id"
+          :pane_infos="pane"
           :can_edit="can_edit_project"
-          @update:publication_opened="setItem(pane, 'folder', $event)"
-          @update:page_opened_id="setItem(pane, 'page_id', $event)"
+          @updatePane="($event) => setItem(pane, $event.key, $event.value)"
         />
       </pane>
     </splitpanes>
@@ -160,6 +158,7 @@ export default {
         });
     },
     setItem(pane, prop, $event) {
+      debugger;
       if (
         (Object.prototype.hasOwnProperty.call(pane, prop) &&
           pane[prop] === $event) ||

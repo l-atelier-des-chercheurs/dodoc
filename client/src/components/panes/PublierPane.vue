@@ -9,18 +9,18 @@
       v-if="!publication_opened"
       :project="project"
       :can_edit="can_edit"
-      @togglePubli="$emit('update:publication_opened', $event)"
+      @togglePubli="$emit('updatePane', { key: 'folder', value: $event })"
     />
     <PublicationOpen
       v-else
       :project_path="project.$path"
       :publication_slug="publication_opened"
-      :page_opened_id="page_opened_id"
+      :pane_infos="pane_infos"
       :can_edit="can_edit"
-      @togglePage="$emit('update:page_opened_id', $event)"
+      @togglePage="$emit('updatePane', { key: 'page_id', value: $event })"
       @close="
-        $emit('update:publication_opened', false);
-        $emit('update:page_opened_id', false);
+        $emit('updatePane', { key: 'folder', value: false });
+        $emit('updatePane', { key: 'page_id', value: false });
       "
     />
   </div>
@@ -32,8 +32,7 @@ import PublicationOpen from "@/components/publications/PublicationOpen.vue";
 export default {
   props: {
     project: Object,
-    publication_opened: String,
-    page_opened_id: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -47,7 +46,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    publication_opened() {
+      return this.pane_infos.folder;
+    },
+  },
   methods: {},
 };
 </script>

@@ -19,7 +19,7 @@ import PagesList from "@/components/publications/page_by_page/PagesList.vue";
 export default {
   props: {
     publication: Object,
-    page_opened_id: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -34,7 +34,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    page_opened_id() {
+      return this.pane_infos.page_id;
+    },
+  },
   methods: {},
 };
 </script>

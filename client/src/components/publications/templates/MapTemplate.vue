@@ -20,7 +20,7 @@ import PublicationSettings from "@/components/publications/PublicationSettings.v
 export default {
   props: {
     publication: Object,
-    opened_view_meta_filename: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -35,7 +35,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    opened_view_meta_filename() {
+      return this.pane_infos.page_id;
+    },
+  },
   methods: {},
 };
 </script>
