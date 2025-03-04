@@ -15,7 +15,7 @@
       :publication="publication"
       :opened_section_meta_filename="opened_section_meta_filename"
       :can_edit="can_edit && !display_as_public"
-      @toggleSection="$emit('toggleSection', $event)"
+      @toggleSection="$emit('updatePane', { key: 'section', value: $event })"
     />
     <PublicationSettings v-if="can_edit">
       <StorySettings :publication="publication" />
@@ -49,7 +49,7 @@ export default {
   watch: {},
   computed: {
     opened_section_meta_filename() {
-      return this.pane_infos?.page_id;
+      return this.pane_infos?.section;
     },
   },
   methods: {},

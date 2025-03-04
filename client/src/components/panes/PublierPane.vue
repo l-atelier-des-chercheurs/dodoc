@@ -17,7 +17,7 @@
       :publication_slug="publication_opened"
       :pane_infos="pane_infos"
       :can_edit="can_edit"
-      @togglePage="$emit('updatePane', { key: 'page_id', value: $event })"
+      @updatePane="$emit('updatePane', $event)"
       @close="
         $emit('updatePane', { key: 'folder', value: false });
         $emit('updatePane', { key: 'page_id', value: false });

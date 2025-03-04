@@ -4,7 +4,7 @@
       :publication="publication"
       :opened_view_meta_filename="opened_view_meta_filename"
       :can_edit="can_edit"
-      @toggleView="$emit('toggleView', $event)"
+      @toggleView="$emit('updatePane', { key: 'view', value: $event })"
     />
     <PublicationSettings v-if="can_edit">
       {{ $t("nothing_to_show") }}
@@ -37,7 +37,7 @@ export default {
   watch: {},
   computed: {
     opened_view_meta_filename() {
-      return this.pane_infos.page_id;
+      return this.pane_infos.view;
     },
   },
   methods: {},

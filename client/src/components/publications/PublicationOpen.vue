@@ -24,7 +24,7 @@
         :publication="publication"
         :pane_infos="pane_infos"
         :can_edit="can_edit"
-        @toggleSection="$emit('togglePage', $event)"
+        @updatePane="$emit('updatePane', $event)"
       />
       <PageTemplate
         v-else-if="publication.template === 'page_by_page'"
@@ -32,7 +32,7 @@
         :publication="publication"
         :can_edit="can_edit"
         :pane_infos="pane_infos"
-        @togglePage="$emit('togglePage', $event)"
+        @updatePane="$emit('updatePane', $event)"
       />
       <MapTemplate
         v-else-if="publication.template === 'cartography'"
@@ -40,7 +40,7 @@
         :publication="publication"
         :pane_infos="pane_infos"
         :can_edit="can_edit"
-        @toggleView="$emit('togglePage', $event)"
+        @updatePane="$emit('updatePane', $event)"
       />
       <EditionTemplate
         v-else-if="publication.template === 'edition'"
@@ -48,7 +48,7 @@
         :publication="publication"
         :pane_infos="pane_infos"
         :can_edit="can_edit"
-        @toggleSection="$emit('togglePage', $event)"
+        @updatePane="$emit('updatePane', $event)"
       />
       <div v-else class="u-instructions _noTemplateNotice">
         Ce template n’existe pas : {{ publication.template }}
