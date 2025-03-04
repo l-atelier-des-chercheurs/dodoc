@@ -1,10 +1,9 @@
 <template>
   <DetailsPane
+    v-if="can_edit || has_items"
     :header="$t('files')"
     :icon="'file-earmark-arrow-down'"
-    :has_items="
-      downloadable_files.length > 0 ? downloadable_files.length : false
-    "
+    :has_items="has_items"
   >
     <FilesModule
       :field_name="'downloadable_files'"
@@ -32,6 +31,11 @@ export default {
   computed: {
     downloadable_files() {
       return this.project.downloadable_files || [];
+    },
+    has_items() {
+      return this.downloadable_files.length > 0
+        ? this.downloadable_files.length
+        : false;
     },
   },
   methods: {},

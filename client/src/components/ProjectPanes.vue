@@ -158,7 +158,6 @@ export default {
         });
     },
     setItem(pane, prop, $event) {
-      debugger;
       if (
         (Object.prototype.hasOwnProperty.call(pane, prop) &&
           pane[prop] === $event) ||

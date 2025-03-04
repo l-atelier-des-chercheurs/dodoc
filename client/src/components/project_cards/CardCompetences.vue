@@ -1,8 +1,9 @@
 <template>
   <DetailsPane
+    v-if="can_edit || has_items"
     :header="$t('levels_and_competences')"
     :icon="'bookmark-star'"
-    :has_items="items_count > 0 ? items_count : false"
+    :has_items="has_items"
   >
     <div class="u-spacingBottom">
       <!-- <DLabel :str="$t('skill_level')" /> -->
@@ -226,6 +227,9 @@ export default {
           ? this.project.disciplines.length
           : 0)
       );
+    },
+    has_items() {
+      return this.items_count > 0 ? this.items_count : false;
     },
   },
   methods: {},
