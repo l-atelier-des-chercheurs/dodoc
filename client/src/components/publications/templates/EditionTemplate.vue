@@ -1,6 +1,6 @@
 <template>
   <div class="_editionTemplate">
-    <splitpanes class="_splitpanes">
+    <splitpanes v-if="can_edit" class="_splitpanes">
       <pane>
         <ChaptersSummary
           :publication="publication"
@@ -63,6 +63,17 @@
         :force_layout_mode="'print'"
       />
     </PublicationSettings>
+
+    <ViewContent
+      v-else
+      :publication="publication"
+      :opened_chapter_meta_filename="opened_section_meta_filename"
+      :view_mode="view_mode"
+      :viewer_type="'div'"
+      :can_edit="false"
+      @openChapter="$emit('updatePane', { key: 'chapter', value: $event })"
+      @changeView="$emit('updatePane', { key: 'view_mode', value: $event })"
+    />
   </div>
 </template>
 <script>
