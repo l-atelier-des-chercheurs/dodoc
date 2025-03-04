@@ -63,7 +63,7 @@ export default {
 
   --radio-switch-width: 276px;
   --radio-switch-height: 36px;
-  --radio-switch-padding: 0px;
+  --radio-switch-padding: 2px;
   --radio-switch-radius: 5px;
   --radio-switch-animation-duration: 0.3s;
 }
@@ -94,13 +94,16 @@ menu {
   position: relative;
   display: inline-block;
   display: inline-flex;
-  padding: var(--radio-switch-padding);
+  gap: 2px;
   border-radius: calc(var(--radio-switch-radius) * 1.4);
-  background-color: #fff;
   transition: all var(--radio-switch-animation-duration);
+  overflow: hidden;
+  background-color: var(--c-bodybg);
+  border: 2px solid var(--c-bodybg);
 }
 
 .radio-switch:hover {
+  border-color: var(--c-bodybg);
   // background-color: var(--c-gris);
 }
 // .radio-switch:focus-within {
@@ -112,6 +115,8 @@ menu {
   display: inline-block;
   height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
   width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
+
+  // padding: calc(var(--spacing) / 4);
   // margin: -1px;
 }
 
@@ -142,6 +147,7 @@ menu {
 .radio-switch__input:checked ~ .radio-switch__label {
   color: hsl(var(--ri5-color-white-hsl));
   background-color: var(--c-noir);
+  pointer-events: none;
   // pointer-events: none;
 }
 .radio-switch__input:focus ~ .radio-switch__label {
