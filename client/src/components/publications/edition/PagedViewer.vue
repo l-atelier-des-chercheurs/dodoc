@@ -54,6 +54,7 @@ export default {
         useWheelScroll: true,
         useAutoZoom: true,
 
+        margin: 0,
         zoomRange: [0.4, 10],
         maxPinchWheel: 10,
         displayVerticalScroll: true,
@@ -182,6 +183,11 @@ export default {
         ".chapter[data-chapter-meta-filename]"
       );
       chapters.forEach((chapter) => {
+        const btn = document.createElement("button");
+        btn.classList.add("editChapterBtn");
+        debugger;
+        btn.textContent = chapter.getAttribute("data-chapter-title");
+        chapter.prepend(btn);
         chapter.addEventListener("click", () => {
           this.$emit(
             "openChapter",
@@ -484,14 +490,22 @@ export default {
   }
 
   ::v-deep {
+    .editChapterBtn {
+      display: none;
+    }
+
     /* To define how the book look on the screen: */
     @media screen {
-      .chapter {
-        cursor: pointer !important;
-
-        &:hover {
-          opacity: 0.85;
-        }
+      .editChapterBtn {
+        display: block !important;
+        position: absolute;
+        // top: calc(var(--pagedjs-margin-top) / -1);
+        // left: calc(var(--pagedjs-margin-left) / -1);
+        bottom: 100%;
+        left: -1px;
+        background-color: var(--color-pageContent);
+        font-size: 0.8rem;
+        color: white;
       }
 
       .pagedjs_pages {
