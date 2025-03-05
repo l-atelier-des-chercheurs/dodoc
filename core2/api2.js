@@ -714,7 +714,7 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to create folder: " + message);
+      dev.error("Failed to get folder: " + message);
       res.status(404).send({
         code,
         err_infos,
@@ -733,7 +733,7 @@ module.exports = (function () {
       const { general_password } = await settings.get();
       if (d.$public !== true && general_password) {
         // only allow queries with superadmintoken
-        if (!auth.checkSuperadminToken(req.query?.sat)) {
+        if (!auth.checkSuperadminToken(req.query?.superadmintoken)) {
           const err = new Error("Folder is not public");
           err.code = "folder_not_public";
           throw err;
@@ -749,7 +749,7 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to create folder: " + message);
+      dev.error("Failed to get public folder: " + message);
       res.status(404).send({
         code,
         err_infos,
