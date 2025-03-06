@@ -185,10 +185,10 @@ export default {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--homepage {
-    position: absolute;
+    // position: absolute;
     box-shadow: none;
     background: transparent;
-    backdrop-filter: blur(5px);
+    // backdrop-filter: blur(5px);
     background-image: linear-gradient(
       to bottom,
       rgba(255, 255, 255, 0.3),
