@@ -96,18 +96,18 @@
 
 /* SET COVER OPTIONS */
 
-._cover {
+.cover {
   break-after: page;
 }
-._coverTitle {
+.coverTitle {
   position: relative;
   z-index: 2;
 }
-._coverImage {
+.coverImage {
   position: relative;
   z-index: 1;
 }
-._cover:not([data-layout-mode="normal"]) ._coverImage img {
+.cover:not([data-layout-mode="normal"]) .coverImage img {
   position: absolute;
   top: 0;
   left: 0;
@@ -115,7 +115,7 @@
   height: 100%;
   object-fit: cover;
 }
-._cover[data-layout-mode="full_page"] ._coverImage {
+.cover[data-layout-mode="full_page"] .coverImage {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1);
   left: calc(var(--pagedjs-margin-left) * -1);
@@ -123,22 +123,22 @@
   height: var(--pagedjs-height);
 }
 
-._cover[data-layout-mode="text_top_image_down"] ._coverTitle {
+.cover[data-layout-mode="text_top_image_down"] .coverTitle {
   height: calc(var(--pagedjs-height) / 2);
 }
-._cover[data-layout-mode="text_top_image_down"] ._coverImage {
+.cover[data-layout-mode="text_top_image_down"] .coverImage {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2));
   left: calc(var(--pagedjs-margin-left) * -1);
   width: var(--pagedjs-width);
   height: calc(var(--pagedjs-height) / 2);
 }
-._cover[data-layout-mode="image_top_text_down"] ._coverTitle {
+.cover[data-layout-mode="image_top_text_down"] .coverTitle {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2) + 2rem);
   height: calc(var(--pagedjs-height) / 2);
 }
-._cover[data-layout-mode="image_top_text_down"] ._coverImage {
+.cover[data-layout-mode="image_top_text_down"] .coverImage {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1);
   left: calc(var(--pagedjs-margin-left) * -1);
