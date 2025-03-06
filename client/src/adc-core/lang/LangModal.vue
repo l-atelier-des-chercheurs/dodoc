@@ -144,6 +144,10 @@ export default {
           text: "English",
         },
         {
+          key: "it",
+          text: "Italian",
+        },
+        {
           key: "de",
           text: "Deutsch",
           disabled: true,

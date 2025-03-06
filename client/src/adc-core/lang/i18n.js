@@ -8,7 +8,7 @@ const i18n = () => {
   Vue.use(VueI18n);
 
   let lang_settings = {
-    available: ["fr", "en", "de", "nl", "oc"],
+    available: ["fr", "en", "it", "de", "nl", "oc"],
     default: "en",
     current: "",
     init: function () {
@@ -47,6 +47,7 @@ const i18n = () => {
   const loadLangageFile = async (lang) => {
     let content = null;
     if (lang === "fr") content = await import("@/adc-core/lang/fr.js");
+    if (lang === "it") content = await import("@/adc-core/lang/it.js");
     else content = await import("@/adc-core/lang/en.js");
     return content.default;
   };
