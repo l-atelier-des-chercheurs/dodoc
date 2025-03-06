@@ -278,6 +278,7 @@ export default {
   feature_not_yet_implemented: "Feature not yet implemented",
 
   translate: "Translate",
+  edit_translation: "Edit translation",
   show_missing_translations: "Show missing translations",
   missing_translations: "Missing translations for language:",
   hide_already_translated: "Hide translations already made",

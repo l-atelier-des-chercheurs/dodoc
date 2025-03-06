@@ -40,7 +40,9 @@
           class="_translated"
           v-if="Object.keys(translations_to_share).length > 0"
         >
-          <pre>{{ translations_to_share }}</pre>
+          <textarea disabled style="white-space: pre"
+            >{{ translations_to_share }}
+          </textarea>
           <div
             class="u-instructions"
             v-html="$t('publish_on_forum_to_add_to_contribute_to_code')"
@@ -85,8 +87,20 @@
                 }"
                 @click="translateStr(t.key)"
               >
-                {{ $t("translate") }}
+                <template v-if="isAlreadyTranslated(t.key)">
+                  {{ $t("edit_translation") }}
+                </template>
+                <template v-else>
+                  {{ $t("translate") }}
+                </template>
               </button>
+            </div>
+            <div v-if="isAlreadyTranslated(t.key)">
+              <i>{{ lang_to_find_missing_str.toUpperCase() }}</i>
+              &nbsp;
+              <b-icon icon="arrow-right" />
+              &nbsp;
+              {{ isAlreadyTranslatedValue(t.key) }}
             </div>
             <div v-for="[lang, translation] in t.translations" :key="lang">
               <i>{{ lang.toUpperCase() }}</i>
@@ -103,7 +117,7 @@
             @close="will_translate_str = false"
           >
             <div class="u-spacingBottom">
-              {{ $t("translate") }} ({{ lang_to_find_missing_str }}) =
+              <!-- {{ $t("translate") }} ({{ lang_to_find_missing_str }}) = -->
               {{ will_translate_str }}
             </div>
             <input
@@ -115,6 +129,7 @@
               @keydown.enter.prevent="submitTranslation"
             />
             <button
+              slot="footer"
               type="button"
               class="u-button u-button_bleuvert"
               @click="submitTranslation"
@@ -147,27 +162,27 @@ export default {
           key: "it",
           text: "Italian",
         },
-        {
-          key: "de",
-          text: "Deutsch",
-          disabled: true,
-        },
-        {
-          key: "nl",
-          text: "Nederlands",
-          disabled: true,
-        },
-        {
-          key: "oc",
-          text: "Occitan",
-          disabled: true,
-        },
+        // {
+        //   key: "de",
+        //   text: "Deutsch",
+        //   disabled: true,
+        // },
+        // {
+        //   key: "nl",
+        //   text: "Nederlands",
+        //   disabled: true,
+        // },
+        // {
+        //   key: "oc",
+        //   text: "Occitan",
+        //   disabled: true,
+        // },
       ],
 
       translations: {},
       show_missing_translations: false,
 
-      lang_to_find_missing_str: "en",
+      lang_to_find_missing_str: "it",
       translations_to_share: {},
       hide_already_translated: true,
 
@@ -239,10 +254,15 @@ export default {
     },
     translateStr(str) {
       this.will_translate_str = str;
-      this.new_translation_text = "";
+      this.new_translation_text = this.isAlreadyTranslated(str)
+        ? this.isAlreadyTranslatedValue(str)
+        : "";
     },
     isAlreadyTranslated(key) {
-      return !!this.translations_to_share[this.lang_to_find_missing_str]?.[key];
+      return !!this.isAlreadyTranslatedValue(key);
+    },
+    isAlreadyTranslatedValue(key) {
+      return this.translations_to_share[this.lang_to_find_missing_str]?.[key];
     },
     submitTranslation() {
       if (
@@ -292,9 +312,11 @@ export default {
   border-radius: 4px;
   margin: calc(var(--spacing) / 2) 0;
 
-  > pre {
+  > textarea {
     margin: 0;
     padding: calc(var(--spacing) / 1);
+    min-height: 25vh;
+    max-height: 75vh;
   }
 }
 </style>

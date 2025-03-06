@@ -8,7 +8,7 @@ const i18n = () => {
   Vue.use(VueI18n);
 
   let lang_settings = {
-    available: ["fr", "en", "it", "de", "nl", "oc"],
+    available: ["fr", "en", "it"],
     default: "en",
     current: "",
     init: function () {

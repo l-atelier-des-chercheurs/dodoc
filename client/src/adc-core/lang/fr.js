@@ -1007,6 +1007,7 @@ export default {
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
   translate: "Traduire",
+  edit_translation: "Modifier la traduction",
   show_missing_translations: "Afficher les traductions manquantes",
   missing_translations: "Traductions manquantes pour la langue :",
   hide_already_translated: "Masquer les traductions déjà réalisées",
