@@ -12,7 +12,7 @@
       </select>
     </div>
 
-    <div class="" v-if="is_instance_admin">
+    <div class="">
       <div class="u-spacingBottom" />
       <button
         type="button"
