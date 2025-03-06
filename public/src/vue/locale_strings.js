@@ -14,6 +14,7 @@ module.exports = (function () {
       en: "Camera",
       oc: "Camerà",
       de: "Kamera",
+      it: "Fotocamera",
     },
     pick_a_camera: {
       fr: "Sélectionnez une caméra",
@@ -32,6 +33,7 @@ module.exports = (function () {
       en: "on this device",
       oc: "sus aqueste aparelh",
       de: "auf diesem Gerät",
+      it: "su questo dispositivo",
     },
     stream_remote_mode: {
       fr: "do•doc distant",
@@ -50,12 +52,14 @@ module.exports = (function () {
       en: "Stream used:",
       oc: "Flus utilizat&nbsp;:",
       de: "Stream verwendet:",
+      it: "Stream utilizzato:",
     },
     share_stream: {
       fr: "Partager ce flux",
       en: "Share this stream",
       oc: "Partejar aqueste flus",
       de: "diesen Stream teilen",
+      it: "Condividi questo stream",
     },
     no_stopmotion_created_yet: {
       fr: "Les animations créées apparaîtront dans ce panneau.",
@@ -70,36 +74,42 @@ module.exports = (function () {
       nl: "Toestel",
       oc: "Aparelh",
       de: "Gerät",
+      it: "Dispositivo",
     },
     audioinput: {
       fr: "Entrée audio",
       en: "Audio input",
       oc: "Entrada audiò",
       de: "Audioeingang",
+      it: "Ingresso audio",
     },
     audiooutput: {
       fr: "Sortie audio",
       en: "Audio output",
       oc: "Sortida audiò",
       de: "Audioausgang",
+      it: "Uscita audio",
     },
     "camera2 1, facing front": {
       fr: "Caméra frontale",
       nl: "Camera naar voren gericht ",
       oc: "Camerà frontala",
       de: "Frontkamera",
+      it: "Fotocamera frontale",
     },
     volume: {
       fr: "Volume",
       en: "Sound level",
       oc: "Volum",
       de: "Lautstärke",
+      it: "Volume",
     },
     dimensions: {
       fr: "Résolution",
       en: "Resolution",
       oc: "Resolucion",
       de: "Bildauflösung",
+      it: "Risoluzione",
     },
     onion_skin: {
       fr: "Pelure d’oignon",
@@ -115,6 +125,7 @@ module.exports = (function () {
       nl: "Toenemend",
       oc: "Creissent",
       de: "Aufsteigend",
+      it: "Ascendente",
     },
     descending: {
       fr: "Décroissant",
@@ -122,6 +133,7 @@ module.exports = (function () {
       nl: "Afnemend",
       oc: "Descreissent",
       de: "Absteigend",
+      it: "Discendente",
     },
     most_recent_first: {
       fr: "Le plus récent en premier",
@@ -138,6 +150,7 @@ module.exports = (function () {
       nl: "Project aanmaken ",
       oc: "Crear un projècte",
       de: "Ein Projekt erstellen",
+      it: "Crea un progetto",
     },
     create_a_publication: {
       fr: "Créer une recette",
@@ -157,6 +170,7 @@ module.exports = (function () {
       en: "Create a QR code",
       oc: "Crear un còdi QR",
       de: "Einen QR Code erstellen",
+      it: "Crea un QR code",
     },
     edit_a_chat: {
       fr: "Éditer une discussion",
@@ -169,6 +183,7 @@ module.exports = (function () {
       en: "Edit the title",
       oc: "Modificar lo títol",
       de: "Den Titel ändern",
+      it: "Modifica il titolo",
     },
     chat_name: {
       fr: "Nom du sujet",
@@ -181,18 +196,21 @@ module.exports = (function () {
       en: "Pin to the top",
       oc: "Espillar en naut de la tièra",
       de: "An den Anfang der Liste anheften",
+      it: "Fissa in alto",
     },
     pinned: {
       fr: "Épinglées",
       en: "Pinned",
       oc: "Espilladas",
       de: "Angeheftet",
+      it: "Fissato",
     },
     live: {
       fr: "Direct",
       en: "Live",
       oc: "Dirècte",
       de: "Live",
+      it: "In diretta",
     },
     lines_angle: {
       fr: "Angle des lignes",
@@ -203,6 +221,7 @@ module.exports = (function () {
       fr: "Effets",
       en: "Effects",
       de: "Effekte",
+      it: "Effetti",
     },
     enable_effects: {
       fr: "Activer les effets",
@@ -213,6 +232,7 @@ module.exports = (function () {
       fr: "Choisir la couleur dans la vidéo",
       en: "Pick color in the video",
       de: "Wählen Sie die Farbe im Video",
+      it: "Seleziona un colore sul monitor",
     },
     "click_in_video…": {
       fr: "Cliquez dans la vidéo…",
@@ -238,6 +258,7 @@ module.exports = (function () {
       fr: "Remplacer par",
       en: "Replace with",
       de: "Ersetzen durch",
+      it: "Sostituisci con",
     },
     use_own_risk: {
       fr: "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
@@ -265,11 +286,13 @@ module.exports = (function () {
       fr: "Luminosité",
       en: "Brightness",
       de: "Helligkeit",
+      it: "Luminosità",
     },
     contrast: {
       fr: "Contraste",
       en: "Constrast",
       de: "Kontrast",
+      it: "Contrasto",
     },
     hue: {
       fr: "Teinte",
@@ -280,16 +303,19 @@ module.exports = (function () {
       fr: "Saturation",
       en: "Saturation",
       de: "Sättigung",
+      it: "Saturazione",
     },
     lightness: {
       fr: "Clarté",
       en: "Lightness",
       de: "Helligkeit",
+      it: "Luminosità ",
     },
     dotscreen: {
       fr: "Noir et blanc (tramé)",
       en: "Black and white (halftone)",
       de: "Schwarz und Weiss (Rasterbild)",
+      it: "Bianco e nero (mezzitoni)",
     },
 
     no_content_to_show: {
@@ -309,6 +335,7 @@ module.exports = (function () {
       en: "QR code",
       oc: "còdi QR",
       de: "QR Code",
+      it: "QR code",
     },
     unfold: {
       fr: "Déplier",
@@ -321,6 +348,7 @@ module.exports = (function () {
       en: "create new folder",
       oc: "crear un novèl dorsièr",
       de: "Einen neuen Ordner erstellen",
+      it: "crea una nuova cartella",
     },
 
     show_returning_visitors: {
