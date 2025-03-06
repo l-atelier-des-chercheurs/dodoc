@@ -18,7 +18,17 @@
       </ol>
     </nav>
     <transition name="pagechange" mode="out-in">
-      <section v-if="opened_chapter" :key="opened_chapter?.meta_filename">
+      <section
+        v-if="!opened_chapter"
+        class="cover"
+        :data-layout-mode="content_nodes.cover.layout_mode"
+      >
+        <hgroup class="coverTitle" v-html="content_nodes.cover.title"></hgroup>
+        <div class="coverImage" v-if="content_nodes.cover.image_url">
+          <img :src="content_nodes.cover.image_url" />
+        </div>
+      </section>
+      <section class="chapter" v-else :key="opened_chapter?.meta_filename">
         <h1>{{ opened_chapter.title }}</h1>
         <div class="content" v-html="opened_chapter.content" />
       </section>
