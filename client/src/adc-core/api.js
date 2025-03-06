@@ -430,7 +430,7 @@ export default function () {
         path += "/_public";
 
         let queries = [];
-        if (superadmintoken) queries.push("sat=" + superadmintoken);
+        if (superadmintoken) queries.push("superadmintoken=" + superadmintoken);
         if (queries.length > 0) path += `?${queries.join("&")}`;
 
         const response = await this.$axios.get(`${path}`).catch((err) => {

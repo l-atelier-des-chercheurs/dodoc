@@ -1007,6 +1007,7 @@ export default {
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
   translate: "Traduire",
+  edit_translation: "Modifier la traduction",
   show_missing_translations: "Afficher les traductions manquantes",
   missing_translations: "Traductions manquantes pour la langue :",
   hide_already_translated: "Masquer les traductions déjà réalisées",
@@ -1296,4 +1297,7 @@ export default {
     "L’espace parent est privé, les autres projets de cet espace ne peuvent donc pas être consultés.",
   copy_paste_to_include_media:
     "Copiez/collez dans le contenu pour placer le média.",
+  next_chapter: "Chapitre suivant",
+
+  show_preview: "Afficher l’aperçu",
 };

@@ -124,22 +124,22 @@
   }
 
   hr{
-	border-color: var(--main-color);
+	  border-color: var(--main-color);
   }
 
   /* cover design */
-  ._coverTitle p{
-	font-family: var(--title-font);
+  .coverTitle p{
+    font-family: var(--title-font);
     font-size: 40pt;
-	font-weight: bold;
-	text-align: center;
-	background: white;
-	border-radius: 30px;
-	margin-top: 0.5cm;
-	box-shadow: 0px 0px 10px var(--main-color);
+    font-weight: bold;
+    text-align: center;
+    background: white;
+    border-radius: 30px;
+    margin-top: 0.5cm;
+    box-shadow: 0px 0px 10px var(--main-color);
   }
 
-  ._coverImage{
+  .coverImage{
     background: var(--main-color);
 
     img{
@@ -153,12 +153,13 @@
 
 /* applies to paged book */
 .book {
+
  .media{
-	background: var(--main-color);
+	/* background: var(--main-color); */
 	img{
-		mix-blend-mode: screen;	
+		/* mix-blend-mode: screen;	
 		filter: grayscale(100%) contrast(120%);
-		vertical-align: top;
+		vertical-align: top; */
 	}
  }
  

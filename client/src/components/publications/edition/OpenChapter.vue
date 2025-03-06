@@ -112,6 +112,34 @@
           </BaseModal2>
         </template>
       </div>
+
+      <div class="_navBtns">
+        <div class="_navBtns--content">
+          <button
+            type="button"
+            class="u-linkList"
+            v-if="prev_section"
+            @click="$emit('prev')"
+          >
+            <b-icon icon="arrow-left-square" />
+            <span>
+              {{ prev_section.section_title }}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            class="u-linkList"
+            v-if="next_section"
+            @click="$emit('next')"
+          >
+            <span>
+              {{ next_section.section_title }}
+            </span>
+            <b-icon icon="arrow-right-square" />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -124,6 +152,8 @@ import MediaPicker from "@/components/publications/MediaPicker.vue";
 export default {
   props: {
     chapter: Object,
+    prev_section: Object,
+    next_section: Object,
     publication_path: String,
     can_edit: Boolean,
   },
@@ -314,5 +344,16 @@ export default {
   > * {
     pointer-events: auto;
   }
+}
+._navBtns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: calc(var(--spacing) * 4);
+}
+._navBtns--content {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 1);
 }
 </style>

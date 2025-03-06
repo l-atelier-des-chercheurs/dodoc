@@ -278,6 +278,7 @@ export default {
   feature_not_yet_implemented: "Feature not yet implemented",
 
   translate: "Translate",
+  edit_translation: "Edit translation",
   show_missing_translations: "Show missing translations",
   missing_translations: "Missing translations for language:",
   hide_already_translated: "Hide translations already made",
@@ -1217,4 +1218,7 @@ export default {
   parent_space_is_private:
     "The parent space is private, so other projects in this space cannot be viewed.",
   copy_paste_to_include_media: "Copy and paste to include this media.",
+  next_chapter: "Next chapter",
+
+  show_preview: "Show preview",
 };

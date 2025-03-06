@@ -104,7 +104,8 @@ export default {
       this.is_serversidepreview = true;
 
     let superadmintoken = undefined;
-    if (this.$route.query?.sat) superadmintoken = this.$route.query.sat;
+    if (this.$route.query?.superadmintoken)
+      superadmintoken = this.$route.query.superadmintoken;
 
     if (window.app_infos.page_is_standalone_html) {
       this.publication = window.folder_data;

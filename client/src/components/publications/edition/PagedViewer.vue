@@ -54,6 +54,7 @@ export default {
         useWheelScroll: true,
         useAutoZoom: true,
 
+        margin: 0,
         zoomRange: [0.4, 10],
         maxPinchWheel: 10,
         displayVerticalScroll: true,
@@ -74,7 +75,7 @@ export default {
     window.removeEventListener("beforeprint", this.beforePrint);
   },
   watch: {
-    content_nodes() {
+    content_html() {
       this.generateBook();
     },
     format_mode() {
@@ -84,9 +85,8 @@ export default {
       this.generateBook();
     },
   },
-  computed: {},
-  methods: {
-    makePagedjsHTML() {
+  computed: {
+    content_html() {
       const nodes = this.content_nodes;
 
       // if (this.opened_chapter) {
@@ -94,14 +94,14 @@ export default {
       //   nodes.chapters = [this.opened_chapter];
       // }
 
-      let html = "<div class='_book'>";
+      let html = "<div>";
 
       if (nodes.cover) {
-        html += `<section class="_cover" id="cover" data-layout-mode="${nodes.cover.layout_mode}">`;
+        html += `<section class="cover" id="cover" data-layout-mode="${nodes.cover.layout_mode}">`;
         if (nodes.cover.title)
-          html += `<hgroup class="_coverTitle">${nodes.cover.title}</hgroup>`;
+          html += `<hgroup class="coverTitle">${nodes.cover.title}</hgroup>`;
         if (nodes.cover.image_url)
-          html += `<div class="_coverImage"><img src="${nodes.cover.image_url}" /></div>`;
+          html += `<div class="coverImage"><img src="${nodes.cover.image_url}" /></div>`;
         html += `</section>`;
       }
 
@@ -117,6 +117,8 @@ export default {
 
       return html;
     },
+  },
+  methods: {
     async generateBook() {
       console.log("generateBook");
 
@@ -130,7 +132,7 @@ export default {
 
       let paged = new Previewer();
 
-      let pagedjs_html = this.makePagedjsHTML();
+      let pagedjs_html = this.content_html;
       if (pagedjs_html.length == 0) pagedjs_html = `<div></div>`;
 
       let pagedjs_styles = `
@@ -182,6 +184,11 @@ export default {
         ".chapter[data-chapter-meta-filename]"
       );
       chapters.forEach((chapter) => {
+        const btn = document.createElement("button");
+        btn.classList.add("editChapterBtn");
+        debugger;
+        btn.textContent = chapter.getAttribute("data-chapter-title");
+        chapter.prepend(btn);
         chapter.addEventListener("click", () => {
           this.$emit(
             "openChapter",
@@ -484,14 +491,22 @@ export default {
   }
 
   ::v-deep {
+    .editChapterBtn {
+      display: none;
+    }
+
     /* To define how the book look on the screen: */
     @media screen {
-      .chapter {
-        cursor: pointer !important;
-
-        &:hover {
-          opacity: 0.85;
-        }
+      .editChapterBtn {
+        display: block !important;
+        position: absolute;
+        // top: calc(var(--pagedjs-margin-top) / -1);
+        // left: calc(var(--pagedjs-margin-left) / -1);
+        bottom: 100%;
+        left: -1px;
+        background-color: var(--color-pageContent);
+        font-size: 0.8rem;
+        color: white;
       }
 
       .pagedjs_pages {

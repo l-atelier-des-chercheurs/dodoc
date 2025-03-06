@@ -350,8 +350,8 @@ class Exporter {
         query.page = this.instructions.page;
         query.make_preview = true;
       }
-      if (this.instructions.superadmintoken)
-        query.sat = this.instructions.superadmintoken;
+      const superadmintoken = auth.getSuperadminToken();
+      query.superadmintoken = superadmintoken;
 
       const searchParams = new URLSearchParams(query);
       url += "?" + searchParams.toString();
@@ -406,9 +406,9 @@ class Exporter {
         query.make_preview = true;
       }
 
-      // use superamdin token
-      const sat = auth.getSuperadminToken();
-      query.sat = sat;
+      // use superadmin token
+      const superadmintoken = auth.getSuperadminToken();
+      query.superadmintoken = superadmintoken;
 
       if (Object.keys(query).length > 0) {
         const searchParams = new URLSearchParams(query);
