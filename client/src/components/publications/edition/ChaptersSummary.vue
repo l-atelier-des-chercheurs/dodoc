@@ -144,11 +144,6 @@ export default {
 <style lang="scss" scoped>
 ._chaptersSummary {
   position: relative;
-  height: 100%;
-  overflow: auto;
-  background-color: var(--c-gris_clair);
-
-  padding: calc(var(--spacing) * 2);
 }
 
 ._content {
