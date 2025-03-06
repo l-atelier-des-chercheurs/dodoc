@@ -1296,4 +1296,7 @@ export default {
     "L’espace parent est privé, les autres projets de cet espace ne peuvent donc pas être consultés.",
   copy_paste_to_include_media:
     "Copiez/collez dans le contenu pour placer le média.",
+  next_chapter: "Chapitre suivant",
+
+  show_preview: "Afficher l’aperçu",
 };
