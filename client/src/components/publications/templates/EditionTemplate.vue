@@ -1,16 +1,25 @@
 <template>
   <div class="_editionTemplate">
     <splitpanes v-if="can_edit" class="_splitpanes">
-      <pane>
-        <ChaptersSummary
-          :publication="publication"
-          :sections="all_chapters"
-          :opened_section_meta_filename="opened_section_meta_filename"
-          :can_edit="can_edit"
-          @toggleSection="
-            $emit('updatePane', { key: 'chapter', value: $event })
-          "
-        />
+      <pane v-if="show_edit_pane">
+        <div class="_chapterSummary">
+          <div class="_showPreviewBtn">
+            <ToggleInput
+              :content.sync="show_preview_pane"
+              :label="$t('show_preview') + ' ➵'"
+            />
+          </div>
+
+          <ChaptersSummary
+            :publication="publication"
+            :sections="all_chapters"
+            :opened_section_meta_filename="opened_section_meta_filename"
+            :can_edit="can_edit"
+            @toggleSection="
+              $emit('updatePane', { key: 'chapter', value: $event })
+            "
+          />
+        </div>
 
         <div class="_editGraphics">
           <button
@@ -22,7 +31,7 @@
           </button>
         </div>
 
-        <transition name="slideupFade" mode="in-out">
+        <transition name="scaleInFade_fast" mode="in-out">
           <EditGraphicStyles
             v-if="open_graphic_styles"
             :key="'edit_graphics'"
@@ -30,17 +39,21 @@
             @close="$emit('updatePane', { key: 'edit_graphics', value: false })"
           />
           <OpenChapter
-            v-else-if="open_chapter"
-            :key="open_chapter.$path"
-            :chapter="open_chapter"
+            v-else-if="opened_chapter"
+            :key="opened_chapter.$path"
+            :chapter="opened_chapter"
+            :prev_section="prev_section"
+            :next_section="next_section"
             :can_edit="can_edit"
             :publication_path="publication.$path"
-            @remove="removeChapter(open_chapter)"
+            @remove="removeChapter(opened_chapter)"
             @close="$emit('updatePane', { key: 'chapter', value: false })"
+            @prev="openChapter(-1)"
+            @next="openChapter(1)"
           />
         </transition>
       </pane>
-      <pane>
+      <pane v-if="show_preview_pane">
         <div class="_viewer">
           <ViewContent
             :publication="publication"
@@ -109,7 +122,10 @@ export default {
     };
   },
   data() {
-    return {};
+    return {
+      show_edit_pane: true,
+      show_preview_pane: true,
+    };
   },
   created() {},
   mounted() {},
@@ -138,13 +154,27 @@ export default {
     opened_section_meta_filename() {
       return this.pane_infos.chapter;
     },
-    open_chapter() {
+    opened_chapter() {
       if (this.opened_section_meta_filename) {
         return this.all_chapters.find((f) =>
           f.$path.endsWith(this.opened_section_meta_filename)
         );
       }
       return false;
+    },
+    prev_section() {
+      if (!this.opened_chapter) return false;
+      const idx = this.all_chapters.findIndex((f) =>
+        f.$path.endsWith(this.opened_section_meta_filename)
+      );
+      return this.all_chapters[idx - 1];
+    },
+    next_section() {
+      if (!this.opened_chapter) return false;
+      const idx = this.all_chapters.findIndex((f) =>
+        f.$path.endsWith(this.opened_section_meta_filename)
+      );
+      return this.all_chapters[idx + 1];
     },
     open_graphic_styles() {
       return this.pane_infos?.edit_graphics === true;
@@ -183,6 +213,18 @@ export default {
     },
   },
   methods: {
+    openChapter(dir) {
+      const idx = this.all_chapters.findIndex((f) =>
+        f.$path.endsWith(this.opened_section_meta_filename)
+      );
+      const new_idx = idx + dir;
+      if (new_idx >= 0 && new_idx <= this.all_chapters.length - 1) {
+        this.$emit("updatePane", {
+          key: "chapter",
+          value: this.all_chapters[new_idx].$path,
+        });
+      }
+    },
     async removeChapter(chapter) {
       if (chapter._main_text) {
         await this.$api.deleteItem({
@@ -202,10 +244,23 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 ._splitpanes {
   position: absolute;
   height: 100%;
   width: 100%;
+}
+
+._chapterSummary {
+  posrion: relative;
+  height: 100%;
+  background-color: var(--c-gris_clair);
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+}
+._showPreviewBtn {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: calc(var(--spacing) * 1);
 }
 ._viewer {
   position: absolute;
