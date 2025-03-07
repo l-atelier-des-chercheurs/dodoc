@@ -24,7 +24,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
-    "node": "20.18.1",
+    "node": "22.14.0",
     "npm": "*"
   },
   "dependencies": {
@@ -69,7 +69,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "electron": "33.3.0",
+    "electron": "^35.0.0",
     "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
     "node-gyp": "^10.3.1"
