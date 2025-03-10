@@ -1,4 +1,3 @@
-/dist/
 settings.json
 
 ####### NODE ########
@@ -38,4 +37,5 @@ Temporary Items
 
 changelog.csv
 access.csv
+client/dist/report.html
 tokens.json

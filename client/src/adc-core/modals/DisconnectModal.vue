@@ -39,14 +39,6 @@
           {{ $root.app_infos.instance_meta.contactmail }}
         </a>
       </p>
-
-      <!-- <button
-        type="button"
-        class="u-button u-button_bleumarine"
-        @click="$router.go()"
-      >
-        {{ $t("reload_page") }}
-      </button> -->
     </template>
   </BaseModal2>
 </template>
