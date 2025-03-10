@@ -16,12 +16,9 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron .",
-    "debug": "electron --inspect=5858 . -- --debug --verbose",
-    "debug-lr": "electron --inspect=5858 . -- --debug --verbose --livereload",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "start": "node .",
+    "debug": "node . --inspect=5858 -- --debug --verbose",
+    "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload"
   },
   "engines": {
     "node": "22.14.0",
@@ -35,9 +32,6 @@
     "cheerio": "^0.22.0",
     "compression": "^1.7.5",
     "cors": "^2.8.5",
-    "electron-pdf-window": "^1.0.12",
-    "electron-store": "^8.2.0",
-    "electron-window-state": "^5.0.3",
     "eventemitter2": "^6.4.9",
     "exifr": "^7.1.3",
     "express": "^4.21.2",
@@ -54,8 +48,10 @@
     "node-fetch": "^2.7.0",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
+    "platform-folders": "^0.6.0",
     "portscanner": "^2.2.0",
     "pug": "^3.0.3",
+    "puppeteer": "^24.3.0",
     "rich-text": "^4.1.0",
     "sharedb": "^4.1.5",
     "sharedb-logger": "^0.1.4",
@@ -69,9 +65,6 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "electron": "^35.0.0",
-    "electron-builder": "^24.13.3",
-    "electron-rebuild": "^3.2.9",
     "node-gyp": "^10.3.1"
   },
   "optionalDependencies": {
