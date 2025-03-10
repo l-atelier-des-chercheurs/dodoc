@@ -186,7 +186,6 @@ export default {
       chapters.forEach((chapter) => {
         const btn = document.createElement("button");
         btn.classList.add("editChapterBtn");
-        debugger;
         btn.textContent = chapter.getAttribute("data-chapter-title");
         chapter.prepend(btn);
         chapter.addEventListener("click", () => {

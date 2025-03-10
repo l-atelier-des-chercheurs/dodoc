@@ -12,7 +12,7 @@
 
     <template #footer>
       <div />
-      <button type="button" class="u-button" @click="$emit('closeModal')">
+      <button type="button" class="u-button" @click="$emit('close')">
         {{ $t("close") }}
       </button>
     </template>
