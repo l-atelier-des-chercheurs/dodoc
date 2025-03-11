@@ -44,25 +44,28 @@
         />
 
         <div v-if="Array.isArray(new_authors_paths)" class="_listOfAuthors">
-          <template v-if="new_authors_paths.length > 0">
-            <DLabel class="_label" :str="$t('list_of_accounts')" />
-            <transition-group
-              tag="div"
-              class="_authors"
-              name="listComplete"
-              appear
-            >
-              <AuthorTag
-                v-for="author_path in new_authors_paths"
-                :path="author_path"
-                :key="author_path"
-                :edit_mode="edit_mode"
-                :mode="'remove'"
-                @click="removeAuthor(author_path)"
-              />
-            </transition-group>
-            <br />
-          </template>
+          <DLabel class="_label" :str="$t('list_of_accounts')" />
+          <div v-if="new_authors_paths.length === 0" class="u-instructions">
+            {{ $t("noone") }}
+          </div>
+          <transition-group
+            v-else
+            tag="div"
+            class="_authors"
+            name="listComplete"
+            appear
+          >
+            <AuthorTag
+              v-for="author_path in new_authors_paths"
+              :path="author_path"
+              :key="author_path"
+              :edit_mode="edit_mode"
+              :mode="'remove'"
+              @click="removeAuthor(author_path)"
+            />
+          </transition-group>
+
+          <div class="u-spacingBottom" />
 
           <DLabel class="_label" :str="$t('add_accounts')" />
           <AuthorPicker
