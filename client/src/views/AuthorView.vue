@@ -2,7 +2,7 @@
   <div class="_authorView">
     <div class="_backBtn">
       <router-link :to="'/'" class="u-buttonLink">
-        <b-icon icon="arrow-left-short" />
+        <b-icon icon="house" />
         {{ $t("home") }}
       </router-link>
       <router-link :to="'/@'" class="u-buttonLink">
