@@ -12,11 +12,7 @@
         <component v-if="input_type !== 'editor'" :is="tag" v-text="content" />
         <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
       </div>
-      <EditBtn
-        v-if="can_edit && !edit_mode"
-        class="_edit"
-        @click="enableEditMode"
-      />
+      <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
     </div>
 
     <BaseModal2
@@ -49,7 +45,7 @@
       <SaveCancelButtons
         slot="footer"
         :is_saving="is_saving"
-        :allow_save="allow_save"
+        :allow_save="allow_save && new_content !== content"
         @save="updateText"
         @cancel="cancel"
       />

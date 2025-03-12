@@ -1234,7 +1234,7 @@ export default {
 
   confirm_save_changes:
     "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
-  close_without_saving: "Fermer sans valider",
+  close_without_saving: "Fermer sans enregistrer",
 
   start_by_uploading_images: "Commencez par importer vos images ci-dessous",
   or: "ou",
