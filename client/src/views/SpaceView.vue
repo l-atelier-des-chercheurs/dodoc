@@ -52,7 +52,7 @@
         </ProjectsListWithFilter>
         <CreateFolder
           v-if="show_create_modal"
-          :modal_name="$t('create_a_project')"
+          :type_of_folder="'project'"
           :path="projects_path"
           :default_folder_status="'draft'"
           @close="show_create_modal = false"
