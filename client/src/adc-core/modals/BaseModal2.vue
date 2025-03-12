@@ -261,6 +261,10 @@ header {
   flex-flow: row wrap;
   justify-content: space-between;
   gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  // margin-top: calc(var(--spacing) * 1);
+  // padding: calc(var(--spacing) / 1);
+  // border-top: 1px solid var(--c-gris_clair);
   margin: calc(var(--spacing) * 1);
 }
 

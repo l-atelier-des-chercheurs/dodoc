@@ -7,10 +7,6 @@
       'u-card2': context === 'list',
     }"
   >
-    <!-- <div class="_topHero"> -->
-    <!-- <img
-        src="https://latelier-des-chercheurs.fr/thumbs/ateliers/chepa-le-journal-pour-tou-te-s/cover-1280x800-q60.jpg"
-      /> -->
     <div class="_spaceCover">
       <CoverField
         :context="context"

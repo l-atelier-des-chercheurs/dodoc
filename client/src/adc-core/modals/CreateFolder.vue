@@ -12,16 +12,36 @@
         @onEnter="createFolder"
       />
 
-      <div class="">
-        <ToggleInput
-          :content.sync="new_folder_is_private"
-          :label="$t('private')"
-          :options="{
-            true: $t('private_status_explanations'),
-            false: $t('public_status_explanations'),
-          }"
-        />
-      </div>
+      <div class="u-spacingBottom" />
+
+      <AuthorField
+        :label="$t('admin')"
+        :can_edit="true"
+        :authors_paths="admins"
+        :instructions="admin_instructions"
+        @save="($event) => (admins = $event)"
+      />
+
+      <div class="u-spacingBottom" />
+
+      <AuthorField
+        :label="$t('contributors')"
+        :can_edit="true"
+        :authors_paths="contributors"
+        :instructions="contrib_instructions"
+        @save="($event) => (contributors = $event)"
+      />
+
+      <div class="u-spacingBottom" />
+
+      <ToggleInput
+        :content.sync="new_folder_is_private"
+        :label="$t('private')"
+        :options="{
+          true: $t('private_status_explanations'),
+          false: $t('public_status_explanations'),
+        }"
+      />
 
       <template v-if="error_msg">
         <br />
@@ -48,7 +68,7 @@
 <script>
 export default {
   props: {
-    modal_name: String,
+    type_of_folder: String,
     path: String,
     default_folder_status: { type: String, default: "public" },
   },
@@ -61,18 +81,43 @@ export default {
       is_creating_folder: false,
       allow_save: false,
       error_msg: "",
+
+      admins: "noone",
+      contributors: "noone",
     };
   },
-  created() {},
+  created() {
+    this.admins = this.setDefaultContentAdmins();
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    modal_name() {
+      if (this.type_of_folder === "space") return this.$t("create_a_space");
+      else if (this.type_of_folder === "project")
+        return this.$t("create_a_project");
+      return undefined;
+    },
+    admin_instructions() {
+      if (this.type_of_folder === "space")
+        return this.$t("space_admin_instructions");
+      else if (this.type_of_folder === "project")
+        return this.$t("project_admin_instructions");
+      return undefined;
+    },
+    contrib_instructions() {
+      if (this.type_of_folder === "space")
+        return this.$t("space_contrib_instructions");
+      else if (this.type_of_folder === "project")
+        return this.$t("project_contrib_instructions");
+      return undefined;
+    },
+  },
   methods: {
     async createFolder() {
       this.is_creating_folder = true;
 
-      const $admins = this.setDefaultContentAdmins();
       this.new_folder_title = this.cleanUpString(this.new_folder_title);
 
       try {
@@ -85,7 +130,8 @@ export default {
               this.new_folder_is_private === true
                 ? "private"
                 : this.default_folder_status,
-            $admins,
+            $admins: this.admins,
+            $contributors: this.contributors,
           },
         });
         setTimeout(() => {
