@@ -11,7 +11,13 @@
       <EditBtn v-if="can_edit" @click="enableEditMode" />
     </div>
 
-    <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+    <BaseModal2
+      v-if="edit_mode"
+      :title="label"
+      :confirm_before_closing="content_is_changed"
+      @close="cancel"
+      @save="updateTags"
+    >
       <div class="u-spacingBottom">
         <TagsList
           :tags="new_tags"
@@ -124,6 +130,9 @@ export default {
     shorten_if_too_long() {
       if (this.never_shorten_list) return false;
       return this.edit_mode ? false : true;
+    },
+    content_is_changed() {
+      return JSON.stringify(this.content) !== JSON.stringify(this.new_tags);
     },
   },
   methods: {
