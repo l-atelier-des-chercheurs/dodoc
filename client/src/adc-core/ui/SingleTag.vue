@@ -7,6 +7,8 @@
     :data-tagtype="tag_type"
     :data-tagvalue="tag_str"
     :data-mode="mode"
+    @mouseenter="is_hovered = true"
+    @mouseleave="is_hovered = false"
     @click="mode !== 'inactive' ? $emit('tagClick') : ''"
   >
     <b-icon v-if="icon_to_show" class="_picto" :icon="icon_to_show" />
@@ -30,7 +32,7 @@
       />
       <b-icon
         v-else-if="mode === 'remove'"
-        icon="x-circle"
+        :icon="!is_hovered ? 'x-circle' : 'x-circle-fill'"
         :aria-label="$t('remove')"
         :key="'remove'"
       />
@@ -52,7 +54,9 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      is_hovered: false,
+    };
   },
   created() {},
   mounted() {},
