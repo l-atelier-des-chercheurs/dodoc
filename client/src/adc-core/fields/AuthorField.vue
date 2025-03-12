@@ -77,7 +77,6 @@
         <div class="u-spacingBottom" />
 
         <template slot="footer">
-          <div />
           <SaveCancelButtons
             :is_saving="is_saving"
             :allow_save="allow_save"
